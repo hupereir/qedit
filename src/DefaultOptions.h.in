@@ -1,0 +1,131 @@
+// $Id$
+
+/******************************************************************************
+*
+* Copyright (C) 2002 Hugo PEREIRA XmlOptions::get().add( Option("mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA	02111-1307 USA
+*
+*
+*******************************************************************************/
+
+/*!
+  \file DefaultOptions.h
+  \brief default options
+  \author Hugo Pereira
+  \version $Revision$
+  \date $Date$
+*/
+
+#include "Config.h"
+#include "XmlOptions.h"
+
+//_____________________________________________________
+//! default options installer
+void InstallDefaultOptions( void )
+{
+
+  // set options default values
+  XmlOptions::get().keep( "PIXMAP_PATH" );
+  XmlOptions::get().add( Option( "PIXMAP_PATH", "@prefix@/share/QEdit/pixmaps"));
+
+  // input document_class pattern filenames options are special.
+  // keep the full list
+  XmlOptions::get().keep( "PATTERN_FILENAME" );
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/c_patterns.xml" , "default patterns for c/c++ files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/default_patterns.xml" , "default patterns"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/diff_patterns.xml" , "default patterns for diff files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/fortran_patterns.xml" , "default patterns for fortran files")); 
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/html_patterns.xml" , "default patterns for html files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/latex_patterns.xml", "default patterns for latex files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/makefile_patterns.xml", "default patterns for makefile files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/perl_patterns.xml", "default patterns for perl files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/shell_patterns.xml", "default patterns for shell files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/xml_patterns.xml", "default patterns for xml files"));
+
+  // diff paragraph background colors
+  XmlOptions::get().add( Option( "DIFF_ADDED_COLOR", "#d0eaff" ) );
+  XmlOptions::get().add( Option( "DIFF_CONFLICT_COLOR", "#e0ffd9" ) );
+  
+  // synchronization
+  XmlOptions::get().add( Option( "SYNCHRONIZATION_INTERVAL", "1", "time interval (second) between two synchronization checks" ) );
+  
+  XmlOptions::get().add( Option( "BRACES_COLOR", "red", "selection color when highlighting braces" ) );
+  XmlOptions::get().add( Option( "BACKUP", "0", "make backup when saving file" ) );
+  XmlOptions::get().add( Option( "DB_SIZE", "30" ) );
+  XmlOptions::get().add( Option( "DEBUG_LEVEL", "0" , "debug verbosity level"));
+  XmlOptions::get().add( Option( "DEFAULT_ICON_PATH", "/usr/share/icons" , "default path to look for icons"));
+  XmlOptions::get().add( Option( "FIXED_FONT_NAME", "DejaVu Sans Mono,8,-1,5,50,0,0,0,0,0" , "fixed font"));
+  XmlOptions::get().add( Option( "FONT_NAME", "Sans" , "main font"));
+  XmlOptions::get().add( Option( "ICON_PIXMAP", "@prefix@/share/QEdit/icon.png" , "application icon"));
+  XmlOptions::get().add( Option( "ITEM_COLOR", "#EEF6FF", "background color for even items in ListBox and ListView" ) );
+  XmlOptions::get().add( Option( "TEXT_INDENT", "1" ));
+  XmlOptions::get().add( Option( "TEXT_HIGHLIGHT", "1" ));
+  XmlOptions::get().add( Option( "TEXT_BRACES", "1" ));
+  XmlOptions::get().add( Option( "WRAP_FROM_CLASS", "0", "set to 1 if you wand DocumentClass to enable/disable wrapping" ));
+  XmlOptions::get().add( Option( "TEXT_WRAP", "0" ));
+  XmlOptions::get().add( Option( "WINDOW_HEIGHT", "500" ));
+  XmlOptions::get().add( Option( "WINDOW_WIDTH", "700" ));
+  XmlOptions::get().add( Option( "USE_BIG_PIXMAP", "1" , "big pixmaps in tool buttons" ));
+  XmlOptions::get().add( Option( "USE_TEXT_LABEL", "1" , "text label in tool buttons" ));
+  XmlOptions::get().add( Option( "SERVER_TIMEOUT_DELAY", "3000" , "timeout delay to wait for existing server to answer" ));
+  XmlOptions::get().add( Option( "SORT_FILES_BY_DATE", "0", "sort files by date rather than name in OpenPreviousMenu" ) );
+  XmlOptions::get().add( Option( "FILE_TOOLBAR",   "1" , "toolbar visibility" ));
+  XmlOptions::get().add( Option( "EDITION_TOOLBAR", "1" , "toolbar visibility" ));
+  XmlOptions::get().add( Option( "EXTRA_TOOLBAR", "1" , "toolbar visibility" ));
+  XmlOptions::get().add( Option( "SPLIT_TOOLBAR", "1" , "toolbar visibility" ));
+
+  XmlOptions::get().add( Option( "FILE_TOOLBAR_LOCATION",   "top" , "toolbar location" ));
+  XmlOptions::get().add( Option( "EDITION_TOOLBAR_LOCATION", "top" , "toolbar location" ));
+  XmlOptions::get().add( Option( "EXTRA_TOOLBAR_LOCATION", "top" , "toolbar location" ));
+  XmlOptions::get().add( Option( "SPLIT_TOOLBAR_LOCATION",   "top" , "toolbar location" ));
+
+  XmlOptions::get().add( Option( "TAB_EMULATION", "1" , "enable tab emulation" ));
+  XmlOptions::get().add( Option( "TAB_SIZE", "2" , "emulated tab size" ));
+  XmlOptions::get().add( Option( "AUTO_REPLACE_TAB", "1", "in case of emulated tabs, automatically replace leading tabs in input file" ));
+
+  XmlOptions::get().add( Option( "AUTOSAVE_PATH", "/tmp", "autosave file path name" ) );
+  XmlOptions::get().add( Option( "AUTOSAVE_INTERVAL", "20", "time interval between two automatic save of the file" ) );
+
+  XmlOptions::get().add( Option( "UNDO_DEPTH", "200", "undo history depth" ) ); 
+
+  XmlOptions::get().add( Option( "PRINT_COMMAND", "@LPR@" , "print command"));  
+
+  XmlOptions::get().add( Option( "USE_A2PS", "1", "use a2ps to format text before printing" ) );
+  XmlOptions::get().add( Option( "A2PS_COMMAND", "@A2PS@" , "postscript conversion command"));   
+  XmlOptions::get().add( Option( "DIFF_COMMAND", "@DIFF@", "diff files command" ) );
+  XmlOptions::get().add( Option( "HTML_EDITOR", "@KONQUEROR@" , "to edit html files"  ));
+  XmlOptions::get().add( Option( "USE_HTML_EDITOR", "0" , "to use html editors"  )); 
+
+  XmlOptions::get().add( Option( "OPEN_MODE", "open in new window", "default mode to open new file. either \"open in new window\" or \"open in new view\"" ) );
+  XmlOptions::get().add( Option( "ORIENTATION", "top/bottom", "default orientation for splitters. either \"left/right\" or \"top/bottom\"" ) );
+  
+  XmlOptions::get().add( Option( "SHADE_INACTIVE_VIEWS", "1", "shade inactive views" ) );
+  XmlOptions::get().add( Option( "ACTIVE_COLOR", "#ffffff", "active view paper color" ) );
+  XmlOptions::get().add( Option( "INACTIVE_COLOR", "#f8f8f8", "inactive view color" ) );
+
+  XmlOptions::get().add( Option( "HIGHLIGHT_PARAGRAPH", "1", "active paragraph highlighting" ) );
+  XmlOptions::get().add( Option( "HIGHLIGHT_COLOR", "#FFFDD4", "paragraph highlight color" ) );
+  
+  #ifdef WITH_ASPELL
+  XmlOptions::get().add( Option( "ASPELL", "@ASPELL@", "aspell command" ));
+  XmlOptions::get().add( Option( "DICTIONARY", "en" , "default dictionary"  ));
+  XmlOptions::get().add( Option( "DICTIONARY_FILTER", "none" , "default filter"  ));
+  XmlOptions::get().add( Option( "AUTOSPELL_COLOR", "red", "highlight color for autospell" ));
+  XmlOptions::get().add( Option( "AUTOSPELL_FONT_FORMAT", "0", "highlight font format for autospell" ));
+  XmlOptions::get().add( Option( "MAX_SUGGESTIONS", "0", "maximum number of suggestions. 0 means all." ));
+  #endif
+
+};

@@ -1,0 +1,164 @@
+AC_INIT(configure.in)
+AM_INIT_AUTOMAKE(QEdit, Qt4-1.0)
+AC_PROG_CXX
+AC_PROG_LIBTOOL
+CXXFLAGS="-Wall -Wno-non-virtual-dtor"
+
+dnl *********************************************
+dnl external programs
+dnl *********************************************
+
+dnl *********************************************
+dnl aspell
+dnl *********************************************
+AC_PATH_PROG(ASPELL,    aspell,    aspell)
+
+dnl ****************
+dnl set aspell directory
+AC_ARG_WITH( aspell-dir,         
+  [ --with-aspell-dir=path    Path to aspell directory /usr ], 
+  aspell_dir=$withval, aspell_dir= )
+
+if test "$aspell_dir" = ""; then
+  aspell_dir=/usr
+fi
+
+dnl ************************
+dnl set aspell library directory
+AC_ARG_WITH(qt-libraries,         
+  [ --with-aspell-libraries=path    Path to aspell libraries directory /usr/lib ],
+  aspell_libraries=$withval, aspell_libraries=)
+
+if test "$aspell_libraries" = ""; then
+  aspell_libraries=$aspell_dir/lib
+fi
+
+dnl ************************
+dnl set aspell include directory
+AC_ARG_WITH(aspell-includes,         
+  [ --with-aspell-includes=path    Path to aspell includes directory /usr/include ],
+  aspell_includes=$withval, aspell_includes=)
+
+if test "$aspell_includes" = ""; then
+  aspell_includes=$aspell_dir/include
+fi
+
+dnl ***********************
+dnl aspell configuration checks
+
+echo ""
+aspell=1
+AC_CHECK_FILE($aspell_includes/aspell.h,, [aspell=0] )
+AC_CHECK_FILE($aspell_libraries/libaspell.so, aspell_lib=aspell, [aspell=0] )
+
+
+if test $aspell = 1; then
+	AC_SUBST(aspell_dir)
+	AC_SUBST(aspell_libraries)
+	AC_SUBST(aspell_includes)
+
+	echo ""
+	echo "aspell configuration:"
+	echo "aspell_lib       = " $aspell_lib
+	echo "aspell_dir       = " $aspell_dir
+	echo "aspell_libraries = " $aspell_libraries
+	echo "aspell_includes  = " $aspell_includes
+	echo ""
+else
+	echo ""
+	echo "aspell configuration:"
+	echo "invalid aspell configuration"
+	echo "spell-check disabled"
+	echo ""
+fi
+
+AM_CONDITIONAL(WITH_ASPELL, [test $aspell = 1])
+AC_SUBST(aspell)
+
+dnl *********************************************
+dnl Qt
+dnl *********************************************
+
+dnl ****************
+dnl set Qt directory
+AC_ARG_WITH( qt-dir,         
+  [ --with-qt-dir=path    Path to Qt directory /usr/lib/qt4 ], 
+  qt_dir=$withval, qt_dir= )
+
+if test "$qt_dir" = ""; then
+  qt_dir=/usr/lib/qt4
+fi
+
+dnl ************************
+dnl set Qt library directory
+AC_ARG_WITH(qt-libraries,         
+  [ --with-qt-libraries=path    Path to Qt libraries directory /usr/lib/qt4/lib ],
+  qt_libraries=$withval, qt_libraries=)
+
+if test "$qt_libraries" = ""; then
+  qt_libraries=$qt_dir/lib
+fi
+
+dnl ************************
+dnl set Qt include directory
+AC_ARG_WITH(qt-includes,         
+  [ --with-qt-includes=path    Path to Qt includes directory /usr/lib/qt4/include ],
+  qt_includes=$withval, qt_includes=)
+
+if test "$qt_includes" = ""; then
+  qt_includes=$qt_dir/include
+fi
+
+dnl *********************
+dnl set Qt bin directory
+AC_ARG_WITH(qt-bin,         
+  [ --with-qt-bin=path    Path to Qt bin directory /usr/lib/qt3/bin ],
+  qt_bin=$withval, qt_bin=)
+
+if test "$qt_bin" = ""; then
+  qt_bin=$qt_dir/bin
+fi
+
+dnl ***********************
+dnl Qt configuration checks
+
+AC_CHECK_FILE($qt_includes/QtCore/QtCore, , AC_ERROR(Can not find QtCore include file))
+AC_CHECK_FILE($qt_libraries/libQtCore.so, qt_lib=QtCore,  qt_lib=QtCore )
+
+
+
+AC_PATH_PROG(qt_moc, moc,  $qt_bin/moc)
+
+AC_SUBST(qt_lib)
+AC_SUBST(qt_dir)
+AC_SUBST(qt_libraries)
+AC_SUBST(qt_includes)
+AC_SUBST(qt_bin)
+AC_SUBST(qt_moc)
+
+echo ""
+echo "Qt configuration:"
+echo "qt_lib       = " $qt_lib
+echo "qt_dir       = " $qt_dir
+echo "qt_libraries = " $qt_libraries
+echo "qt_includes  = " $qt_includes
+echo "qt_bin       = " $qt_bin
+echo ""
+
+
+dnl **************************
+dnl retrieve current timestamp
+timestamp=`date +"%G/%m/%d"`
+AC_SUBST(timestamp)
+echo "timestamp = " $timestamp
+
+AC_OUTPUT( Makefile \
+  QEdit.spec \
+  pixmaps/Makefile \
+  base/Makefile \
+  base-qt/Makefile \
+  base-server/Makefile \
+  base-spellcheck/Makefile \
+  src/Makefile \
+  src/Config.h \
+  src/DefaultOptions.h )
