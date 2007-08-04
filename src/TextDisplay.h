@@ -41,12 +41,12 @@
 #include "File.h"
 #include "HighlightPattern.h"
 #include "TextHighlight.h"
+#include "TextIndent.h"
 #include "TimeStamp.h"
 
 // forward declaration
 class DocumentClass;
 class TextBraces;
-class TextIndent;
 class TextMacro;
 
 //! text display window
@@ -216,35 +216,13 @@ class TextDisplay: public CustomTextEdit
   //! state bits
   enum Flag
   {
-      
-    //! indentation
-    INDENT = 1<<0,
-    
-    //! syntax highlighting
-    HIGHLIGHT = 1<<1,
-
-    //! highlight current paragraph
-    HIGHLIGHT_PARAGRAPH = 1<<2,
-    
+              
     //! braces highlighting
     BRACES = 1<<3,
-    
-    //! automatic spellcheck
-    AUTOSPELL = 1<<4,
-
-    // additional bits to tell if previous options are available
-    //! indentation patterns available
-    HAS_INDENT = 1<<5,
-    
-    //! highlight patterns available
-    HAS_HIGHLIGHT = 1<<6,
-
+        
     //! has active/inactive paper color available
     HAS_PAPER = 1<<7,
-    
-    //! braces pattern available
-    HAS_BRACES = 1<<8,
-    
+        
     /*! 
       has wrap is set to true when it is modified
       using the menu. It is then not overwritten
@@ -335,6 +313,23 @@ class TextDisplay: public CustomTextEdit
   //! Get HTML formated text
   QDomElement htmlNode( QDomDocument& document );
 
+  //!@name actions
+  //@{
+    
+  //! toggle indentation
+  QAction* textIndentAction( void )
+  { return indent_action_; }
+  
+  //! toggle text highlighting
+  QAction* textHighlightAction( void )
+  { return text_highlight_action_; }
+ 
+  //! toggle text highlighting
+  QAction* bracesHighlightAction( void )
+  { return braces_highlight_action_; }
+  
+  //@}
+  
   signals:
 
   //! emmited when indentation of current paragraph is required
@@ -357,7 +352,7 @@ class TextDisplay: public CustomTextEdit
   void processMacro( std::string );
 
   //! replace all leading tabs in text when tab emulation is active
-  void replaceLeadingTabs( const bool& confirm );
+  void replaceLeadingTabs( const bool& confirm = true );
 
   //! rehighlight
   void rehighlight( void )
@@ -435,6 +430,18 @@ class TextDisplay: public CustomTextEdit
   
   //! replace selection in multiple files
   void _multipleFileReplace( void );
+  
+  //! toggle text indentation
+  void _toggleTextIndent( bool state )
+  { textIndent().setEnabled( textIndentAction()->isEnabled() && state ); }
+    
+  //! toggle text highlight
+  void _toggleTextHighlight( bool state )
+  { textHighlight().setEnabled( textHighlightAction()->isEnabled() && state ); }
+  
+  //! toggle braces
+  void _toggleBracesHighlight( bool state )
+  { return; }
 
   private:
   
@@ -482,6 +489,20 @@ class TextDisplay: public CustomTextEdit
 
   //@}
 
+  //!@name actions
+  //@{
+  
+  //! toggle indentation
+  QAction* indent_action_;
+  
+  //! toggle text highlighting
+  QAction* text_highlight_action_;
+ 
+  //! toggle text highlighting
+  QAction* braces_highlight_action_;
+  
+  //! 
+  
   //! empty line
   static const QRegExp empty_line_regexp_;
 

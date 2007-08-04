@@ -86,7 +86,7 @@ QDomElement TextMacro::domElement( QDomDocument& parent ) const
   
   // dump attributes
   out.setAttribute( XML::NAME.c_str(), name().c_str() );
-  if( !accelerator().empty() ) out.setAttribute( XML::ACCELERATOR.c_str(), accelerator().c_str() );
+  if( !_accelerator().empty() ) out.setAttribute( XML::ACCELERATOR.c_str(), _accelerator().c_str() );
   
   ostringstream what;
   if( isSeparator() ) what << XML::OPTION_SEPARATOR << " ";

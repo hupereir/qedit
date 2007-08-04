@@ -29,223 +29,117 @@
  \date $Date$
 */
 
-#include <qaccel.h>
-#include <qapplication.h>
-#include <qcheckbox.h>
+#include <QApplication>
 #include <sstream>
 
-#include "ConfigDialog.h"
 #include "DebugMenu.h"
 #include "DocumentClass.h"
-#include "DocumentClassDialog.h"
 #include "DocumentClassManager.h"
 #include "EditFrame.h"
-#include "Help.h"
+#include "HelpManager.h"
 #include "HelpText.h"
 #include "MainFrame.h"
 #include "Menu.h"
 #include "OpenPreviousMenu.h"
-#include "Options.h"
+#include "XmlOptions.h"
 #include "TextDisplay.h"
 #include "TextMacro.h"
 #include "Util.h"
 
 #include "Config.h"
-#if WITH_ASPELL
-#include "AutoSpellConfig.h"
-#include "SpellConfig.h"
-#include "SpellInterface.h"
-#endif
 
 using namespace std;
-using namespace BASE;
+using namespace Qt;
 
 //_______________________________________________
-Menu::Menu( QWidget* parent, const string& name ):
-  QMenuBar( parent, name.c_str() ),
+Menu::Menu( QWidget* parent ):
+  QMenuBar( parent ),
   Counter( "Menu" )
 {
   Debug::Throw( "Menu::Menu.\n" );
 
-  // generic menu
-  QAccel* accelerator = new QAccel( this );
-
   // file menu
-  file_menu_ = new QPopupMenu( this, "file" );
-  connect( file_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdateFileMenu() ) );
+  QMenu* menu = addMenu( "&File" );
 
-  insertItem( "&File", file_menu_ );
-  file_menu_->insertItem( "&New", parent, SLOT( New() ), CTRL+Key_N );
-  file_menu_->insertItem( "Clone", parent, SLOT( Clone() ), SHIFT+CTRL+Key_N );
-  detach_id_ = file_menu_->insertItem( "Detach", parent, SLOT( Detach() ), SHIFT+CTRL+Key_O );
-  file_menu_->insertItem( "&Open", parent, SLOT( Open() ), CTRL+Key_O );
+  // retrieve editframe
+  EditFrame* editframe( static_cast<EditFrame*>( window() ) );
+  
+  menu->addAction( editframe->newAction() );
+  menu->addAction( editFrame->cloneAction() );
+  menu->addAction( editFrame->detachAction() );
+  menu->addAction( editFrame->openAction() );
 
   // open previous menu
-  open_previous_menu_ = new OpenPreviousMenu( file_menu_, "open_previous_menu" );
-  open_previous_menu_->SetDBFile( Util::Getenv( "HOME", "." ) + "/.qedit_db" );
-  if( Options::Find( "DB_SIZE" ) ) open_previous_menu_->SetDBSize( Options::Get<int>( "DB_SIZE" ) );
-  file_menu_->insertItem( "Open Pre&vious", open_previous_menu_ );
-  connect( open_previous_menu_, SIGNAL( FileSelected( const std::string& ) ), parent, SLOT( Open( const std::string& ) ) );
-  
-  file_menu_->insertSeparator();
-  close_view_id_ = file_menu_->insertItem( "&Close active view", parent, SLOT( CloseView() ), CTRL+Key_W );
-  file_menu_->insertItem( "&Close window", parent, SLOT( CloseWindow() ), SHIFT+CTRL+Key_W );
-  save_id_ = file_menu_->insertItem( "&Save", parent, SLOT( Save() ), CTRL+Key_S );
-  file_menu_->insertItem( "Save &As", parent, SLOT( SaveAs() ) );
-  revert_id_ = file_menu_->insertItem( "&Revert to Saved", parent, SLOT( RevertToSave() ) );
-  
-  file_menu_->insertSeparator();
-  document_class_menu_ = new QPopupMenu( file_menu_, "document class" );
-  document_class_menu_->setCheckable( true );
+  open_previous_menu_ = new OpenPreviousMenu( this );
+  open_previous_menu_->setTitle( "Open pre&vious" );
+  open_previous_menu_->setCheck( true );
+  menu->addMenu( open_previous_menu_ );
 
-  file_menu_->insertItem( "&Set Document Class", document_class_menu_ );
-  connect( document_class_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdateDocumentClassMenu() ) );
-  connect( document_class_menu_, SIGNAL( activated( int ) ), this, SLOT( _SelectClassName( int ) ) );
-  file_menu_->insertItem( "Convert to &HTML", parent, SLOT( ConvertToHtml() ) );
-  file_menu_->insertItem( "&Print", parent, SLOT( Print() ), CTRL+Key_P );
+  // connections
+  connect( open_previous_menu_, SIGNAL( fileSelected( FileRecord ) ), editFrame, SLOT( open( FileRecord ) ) );
+  
+  menu->addSeparator();
+  menu->addAction( editframe->closeViewAction() );
+  menu->addAction( editframe->closeWindowAction() );
+  menu->addAction( editframe->saveAction() );
+  menu->addAction( editframe->saveAsAction() );
+  menu->addAction( editframe->revertToSave() );  
+  menu->addSeparator();
+  
+  document_class_menu_ = menu->addMenu( "Set &document class" );
+  connect( document_class_menu_, SIGNAL( aboutToShow() ), SLOT( _updateDocumentClassMenu() ) );
+  connect( document_class_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectClassName( QAction* ) ) );
+  
+  menu->addAction( editframe->htmlAction() );
+  menu->addAction( editframe->printAction() );
 
-  file_menu_->insertSeparator();
-  file_menu_->insertItem( "E&xit", qApp, SLOT( Quit() ), CTRL+Key_Q );
+  menu->addSeparator();
+  menu->addAction( "E&xit", qApp, SLOT( closeAllWindows() ), CTRL+Key_Q );
 
   // Edit menu
-  edit_menu_ = new QPopupMenu( this, "edit" );
-  insertItem( "&Edit", edit_menu_ );
-  connect( edit_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdateEditMenu() ) );
-  undo_id_ = edit_menu_->insertItem( "&Undo", parent, SLOT( Undo() ), CTRL+Key_Z );
-  redo_id_ = edit_menu_->insertItem( "&Redo", parent, SLOT( Redo() ), SHIFT+CTRL+Key_Z );
-  edit_menu_->insertSeparator();
-  cut_id_ = edit_menu_->insertItem( "&Cut", parent, SLOT( Cut() ), CTRL+Key_X );
-  copy_id_ = edit_menu_->insertItem( "&Copy", parent, SLOT( Copy() ), CTRL+Key_C );
-  paste_id_ = edit_menu_->insertItem( "&Paste", parent, SLOT( Paste() ), CTRL+Key_V );
-  edit_menu_->insertItem( "&SelectAll", parent, SLOT( SelectAll() ), CTRL+Key_A );
-  edit_menu_->insertSeparator();
-  upper_case_id_ = edit_menu_->insertItem( "Upp&er-case", parent, SLOT( UpperCase() ), CTRL+Key_U );
-  lower_case_id_ = edit_menu_->insertItem( "Lo&wer-case", parent, SLOT( LowerCase() ), SHIFT+CTRL+Key_U );
-  edit_menu_->insertSeparator();
-
-  fill_id_ = edit_menu_->insertItem( "Fill selection", parent, SLOT( Fill() ), CTRL+Key_J );
-  glue_id_ = edit_menu_->insertItem( "Glue selection", parent, SLOT( Glue() ), SHIFT+CTRL+Key_J );
+  edit_menu_ = addMenu( "&Edit" );
+  connect( edit_menu_, SIGNAL( aboutToShow() ), SLOT( _updateEditMenu() ) );
 
   // Search menu
-  search_menu_ = new QPopupMenu( this, "search" );
-  insertItem( "&Search", search_menu_ );
-  connect( search_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdateSearchMenu() ) );
-  search_menu_->insertItem( "&Find", parent, SLOT( Find() ), CTRL+Key_F );
-  search_menu_->insertItem( "F&ind Again", parent, SLOT( FindAgain() ), CTRL+Key_G );
-  find_selection_id_ = search_menu_->insertItem( "Find &Selection", parent, SLOT( FindSelection() ), CTRL+Key_H );
-  replace_id_ = search_menu_->insertItem( "&Replace", parent, SLOT( Replace() ), CTRL+Key_R );
-  replace_again_id_ = search_menu_->insertItem( "Re&place Again", parent, SLOT( ReplaceAgain() ), CTRL+Key_T );
-  search_menu_->insertSeparator();
-  search_menu_->insertItem( "Goto &Line Number", parent, SLOT( GotoLineNumber() ), CTRL+Key_L );
-
-  // accelerators
-  accelerator->connectItem( accelerator->insertItem(CTRL+Key_K), parent, SLOT( RemoveLine( void ) ) );
-  accelerator->connectItem( accelerator->insertItem(CTRL+Key_G), parent, SLOT( FindAgain( void ) ) );
-  accelerator->connectItem( accelerator->insertItem(CTRL+Key_H), parent, SLOT( FindSelection( void ) ) );
-  accelerator->connectItem( accelerator->insertItem(CTRL+Key_T), parent, SLOT( ReplaceAgain( void ) ) );
-  accelerator->connectItem( accelerator->insertItem(CTRL+Key_U), parent, SLOT( UpperCase( void ) ) );
-  accelerator->connectItem( accelerator->insertItem(CTRL+Key_L), parent, SLOT( GotoLineNumber( void ) ) );
-
-  accelerator->connectItem( accelerator->insertItem(SHIFT+CTRL+Key_G), parent, SLOT( FindAgainBackward( void ) ) );
-  accelerator->connectItem( accelerator->insertItem(SHIFT+CTRL+Key_H), parent, SLOT( FindSelectionBackward( void ) ) );
-  accelerator->connectItem( accelerator->insertItem(SHIFT+CTRL+Key_T), parent, SLOT( ReplaceAgainBackward( void ) ) );
-  accelerator->connectItem( accelerator->insertItem(SHIFT+CTRL+Key_U), parent, SLOT( LowerCase( void ) ) );
-
-  // open mode menu
-  open_mode_menu_ = new QPopupMenu( this, "open_mode" );
-  open_mode_menu_->setCheckable( true );
-  new_window_id_ = open_mode_menu_->insertItem( "Open in new &window" );
-  new_view_id_ = open_mode_menu_->insertItem( "Open in new &view" );
-
-  connect( open_mode_menu_, SIGNAL( activated( int ) ), this, SLOT( _ToggleOpenMode( int ) ) );
-  connect( open_mode_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdateOpenModeMenu() ) );
-  
-  // orientation menu
-  orientation_menu_ = new QPopupMenu( this, "orientation_menu" );
-  orientation_menu_->setCheckable( true );
-  left_right_id_ = orientation_menu_->insertItem( "&Left/Right" );
-  top_bottom_id_ = orientation_menu_->insertItem( "&Top/Bottom" );
-
-  connect( orientation_menu_, SIGNAL( activated( int ) ), this, SLOT( _ToggleOrientation( int ) ) );
-  connect( orientation_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdateOrientationMenu() ) );
+  search_menu_ = addMenu( "&Search" );
+  connect( search_menu_, SIGNAL( aboutToShow() ), SLOT( _updateSearchMenu() ) );
 
   // preferences
-  pref_menu_ = new QPopupMenu( this, "preferences" );
-  insertItem( "&Preferences", pref_menu_ );
-  pref_menu_->setCheckable( true );
-  pref_menu_->insertItem( "Default &Configuration", this, SLOT( _DefaultConfiguration() ) );
-  pref_menu_->insertItem( "D&ocument Classes", this, SLOT( _DocumentClassesConfiguration() ) );
-  #if WITH_ASPELL
-  pref_menu_->insertItem( "S&pell Check Configuration", this, SLOT( _SpellCheckConfiguration() ) );
-  #endif
-
-  pref_menu_->insertSeparator();
-  pref_menu_->insertItem( "Open mode", open_mode_menu_ );
-  pref_menu_->insertItem( "Layout orientation", orientation_menu_ );
-
-  pref_menu_->insertSeparator();
-
-  wrap_id_ = pref_menu_->insertItem( "&Wrap" );
-  tab_emulation_id_ = pref_menu_->insertItem( "&Emulate tabs" ); 
-  indent_id_ = pref_menu_->insertItem( "Indent Text" );
-  highlight_id_ = pref_menu_->insertItem( "&Highlight Text" );
-  highlight_paragraph_id_ = pref_menu_->insertItem( "Highlight &Paragraph" );
-  braces_id_ = pref_menu_->insertItem( "Highlight &Braces" );
-  #if WITH_ASPELL
-  autospell_id_ = pref_menu_->insertItem( "Automatic &Spell Check" );
-  #endif
-
-  connect( pref_menu_, SIGNAL( activated( int ) ), this, SLOT( _TogglePreferences( int ) ) );
-  connect( pref_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdatePrefMenu() ) );
+  preference_menu_ = addMenu( "&Preferences" );
+  connect( search_menu_, SIGNAL( aboutToShow() ), SLOT( _updatePreferenceMenu() ) );
+  connect( preference_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdatePrefMenu() ) );
   
   // macros
-  macro_menu_ = new QPopupMenu( this, "macro" );
-  connect( macro_menu_, SIGNAL( activated( int ) ), this, SLOT( _SelectMacro( int ) ) );
-  connect( macro_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdateMacroMenu() ) );
-  insertItem( "Mac&ro", macro_menu_ );
-  
-  // diff menu
-  diff_menu_ = new QPopupMenu( this, "diff" );
-  connect( diff_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdateDiffMenu() ) );
-  diff_id_ = diff_menu_->insertItem( "&Highlight", parent, SLOT( RunDiff() ) );
-  diff_menu_->insertItem( "&Clear", parent, SLOT( ClearParagraphsBackground() ) );
-  
+  macro_menu_ = addMenu( "&Macro" );
+  connect( macro_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateMacroMenu() ) );
+  connect( macro_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectMacro( QAction* ) ) );
+    
   // windows
-  windows_menu_ = new QPopupMenu( this, "windows" );
-  windows_menu_->setCheckable( true );
-  connect( windows_menu_, SIGNAL( activated( int ) ), this, SLOT( _SelectFile( int ) ) );
-  connect( windows_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdateWindowsMenu() ) );
-  insertItem( "&Windows", windows_menu_ );
+  windows_menu_ = addMenu( "&Windows" );
+  connect( windows_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateWindowsMenu() ) );
+  connect( windows_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectFile( QAction* ) ) );
 
   // create help menu
-  QPopupMenu* menu = new QPopupMenu( this, "help" );
-  insertItem( "&Help", menu, -1 );
-  menu->insertItem( "&Reference manual", &HelpManager::Get(), SLOT( Display() ) );
+  menu = addMenu( "&Help" );
+  menu->addAction( HelpManager::get().displayAction() );
+  menu->addSeparator();
+  menu->addAction( "About &Qt", qApp, SLOT( aboutQt() ), 0 );
+  menu->addAction( "About Q&Edit", qApp, SLOT( about() ), 0 );
 
-  // try load from help file
-  if( Options::Find( "HELP_FILE" ) )
+  File help_file( XmlOptions::get().get<File>( "HELP_FILE" ) );
+  if( help_file.exist() ) HelpManager::get().install( help_file );
+  else
   {
-
-    File help_file( Options::Get<File>( "HELP_FILE" ) );
-    if( help_file.Exist() ) HelpManager::Get().Install( help_file );
-    else
-    {
-      HelpManager::Get().SetFile( help_file );
-      HelpManager::Get().Install( HelpText );
-    }
-  } else HelpManager::Get().Install( HelpText );
-
-  HelpManager::Get().SetCaption( "QEdit reference manual" );
-
-  menu->insertSeparator();
-  menu->insertItem( "About &Qt", qApp, SLOT( aboutQt() ) );
-  menu->insertItem( "About Q&Edit", qApp, SLOT( About() ), 0 );
+    HelpManager::get().setFile( help_file );
+    HelpManager::get().install( HelpText );
+  }
 
   // debug menu
-  menu->insertSeparator();
+  menu->addSeparator();
   DebugMenu *debug_menu( new DebugMenu( this ) );
-  menu->insertItem( "&Debug", debug_menu );
-  debug_menu->insertItem( "D&ump Help", &HelpManager::Get(), SLOT( DumpHelpString() ) );
+  debug_menu->setTitle( "&Debug" );
+  debug_menu->addAction( HelpManager::get().dumpAction() );
+  menu->addMenu( debug_menu );
 
 }
 
@@ -254,226 +148,153 @@ Menu::~Menu( void )
 { Debug::Throw( "Menu::~Menu.\n" ); }
   
 //_______________________________________________
-void Menu::_DefaultConfiguration( void )
-{
-  Debug::Throw( "Menu::_DefaultConfiguration.\n" );
-  ConfigDialog dialog( this );
-  connect( &dialog, SIGNAL( ConfigChanged() ), qApp, SLOT( UpdateConfiguration() ) );
-  dialog.exec();
-}
-
-//_______________________________________________
-void Menu::_DocumentClassesConfiguration( void )
-{
-  Debug::Throw( "Menu::_DocumentClassesConfiguration.\n" );
-  DocumentClassDialog dialog( this );
-  connect( &dialog, SIGNAL( ClassSelected( std::string ) ), parent(), SLOT( SelectClassName( std::string ) ) );
-  dialog.exec();
-}
-
-//_______________________________________________
-void Menu::_SpellCheckConfiguration( void )
-{
-  
-  Debug::Throw( "Menu::_SpellCheckConfiguration.\n" );
-  
-  #if WITH_ASPELL
-  
-  // retrieve frame
-  EditFrame& frame( *static_cast<EditFrame*>(parent()) );
-  
-  // retrieve current display
-  TextDisplay& display( frame.ActiveDisplay() );
-  
-  // retrieve Record
-  if( !display.GetFile().empty() )
-  {
-    FileRecord record( GetOpenPreviousMenu().Get( display.GetFile() ) );
-
-    string filter( record.GetInformation( "filter" ) );
-    if( !filter.empty() ) Options::Get().SetRaw( "DICTIONARY_FILTER", filter );
-    
-    string dictionary( record.GetInformation( "dictionary" ) );
-    if( !dictionary.empty() ) Options::Get().SetRaw( "DICTIONARY_FILTER", filter );
-  }
-  
-  // create dialog
-  CustomDialog dialog( this );
-  QVBox* box( &dialog.GetVBox() );
-  
-  SpellConfig* spell = new SpellConfig( box );
-  AutoSpellConfig* autospell = new AutoSpellConfig( box );
-  
-  spell->Read();
-  autospell->Read();
-  
-  if( dialog.exec() == QDialog::Rejected ) return;
-  spell->Write();
-  autospell->Write();
-  Options::Get().Write();
-
-  // retrieve Record
-  SPELLCHECK::SpellInterface::ResetDictionary();
-  SPELLCHECK::SpellInterface::ResetFilter();
-  
-  if( !display.GetFile().empty() )
-  {
-    SPELLCHECK::SpellInterface interface;
-    
-    FileRecord& record( GetOpenPreviousMenu().Get( display.GetFile() ) );
-    record.AddInformation( "dictionary", interface.Dictionary() );
-    record.AddInformation( "filter", interface.Filter() );
-    
-  }
-    
-  // update frame
-  frame.UpdateFlags();
-      
-  #endif
-  
-}
-
-//_______________________________________________
-void Menu::_UpdateFileMenu( void )
-{
-  Debug::Throw( "Menu::_UpdateFileMenu.\n" );
- 
-  // retrieve parent frame, associated text displays, and current display
-  EditFrame &frame( *static_cast<EditFrame*>(parent () ) );
-  KeySet<TextDisplay> displays( &frame );
-  TextDisplay& display( frame.ActiveDisplay() );
-  
-  const File& file( display.GetFile() );
-  
-  file_menu_->setItemEnabled( detach_id_, frame.GetIndependentDisplays() > 1 );
-  file_menu_->setItemEnabled( close_view_id_, displays.size() > 1 );
-  file_menu_->setItemEnabled( save_id_, !file.empty() );
-  file_menu_->setItemEnabled( revert_id_, (!file.empty() && file.Exist() ) );
-  
-  return;
-}
-
-//_______________________________________________
-void Menu::_UpdateDocumentClassMenu( void )
+void Menu::_updateDocumentClassMenu( void )
 {
   Debug::Throw( "Menu::_UpdateDocumentClassMenu.\n" );
 
   // clear menu
   document_class_menu_->clear();
-
+  document_classes_.clear();
+  QFont font( QMenuBar::font() );
+  font.setWeight( QFont::Bold );
+  
   // retrieve current class from EditFrame
-  EditFrame& frame( *static_cast<EditFrame*>(parent()) ); 
-  const std::string& class_name( frame.ActiveDisplay().GetClassName() );
+  EditFrame& frame( *static_cast<EditFrame*>(window()) ); 
+  const std::string& class_name( frame.activeDisplay().className() );
   
   // retrieve classes from DocumentClass manager
-  const DocumentClassManager::ClassList& classes( static_cast<MainFrame*>(qApp)->GetClassManager().GetList() );
+  const DocumentClassManager::ClassList& classes( static_cast<MainFrame*>(qApp)->classManager().list() );
   for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
   { 
-    int id = document_class_menu_->insertItem( (*iter)->Name() ); 
-    if( (*iter)->Name() == class_name )  document_class_menu_->setItemChecked( id, true );
+    // insert actions
+    QAction* action = document_class_menu_->addAction( (*iter)->name().c_str() ); 
+    if( (*iter)->name() == class_name ) action->setFont( font );
+    document_classes_.insert( make_pair( action, (*iter)->name() ) );    
   }
   
   return;
 
 }
 //_______________________________________________
-void Menu::_UpdateEditMenu( void )
+void Menu::_updateEditMenu( void )
 {
-  Debug::Throw( "Menu::_UpdateEditMenu.\n" );
-  TextDisplay& display( static_cast<EditFrame*>(parent())->ActiveDisplay() );
-
-  bool editable( !display.isReadOnly() );
-  bool has_selection( display.hasSelectedText() );
-
-  edit_menu_->setItemEnabled( undo_id_, editable && display.isUndoAvailable() );
-  edit_menu_->setItemEnabled( redo_id_, editable && display.isRedoAvailable() );
-  edit_menu_->setItemEnabled( cut_id_, editable && has_selection );
-  edit_menu_->setItemEnabled( copy_id_, has_selection );
-  edit_menu_->setItemEnabled( paste_id_, editable );
-  edit_menu_->setItemEnabled( upper_case_id_, editable && has_selection );
-  edit_menu_->setItemEnabled( lower_case_id_, editable && has_selection );
-
-  edit_menu_->setItemEnabled( fill_id_, editable && has_selection );
-  edit_menu_->setItemEnabled( glue_id_, editable && has_selection );
-
-}
-
-//_______________________________________________
-void Menu::_UpdateSearchMenu( void )
-{
-  Debug::Throw( "Menu::_UpdateSearchMenu.\n" );
-
-  TextDisplay& display( static_cast<EditFrame*>(parent())->ActiveDisplay() );
-
-  bool editable( !display.isReadOnly() );
-  bool has_selection( display.hasSelectedText() );
-  search_menu_->setItemEnabled( find_selection_id_, has_selection );
-  search_menu_->setItemEnabled( replace_id_, editable );
-  search_menu_->setItemEnabled( replace_again_id_, editable );
-}
-
-//_______________________________________________
-void Menu::_UpdatePrefMenu( void )
-{
-  Debug::Throw( "Menu::_UpdatePrefMenu.\n" );
-  const TextDisplay& display( static_cast<EditFrame*>(parent())->ActiveDisplay() );
-
-  // set status
-  pref_menu_->setItemChecked( wrap_id_, display.GetFlag( TextDisplay::WRAP ) );
-  pref_menu_->setItemChecked( tab_emulation_id_, display.GetFlag( TextDisplay::TAB_EMULATION ) ); 
-  pref_menu_->setItemChecked( indent_id_, display.GetFlag( TextDisplay::INDENT) && display.GetFlag( TextDisplay::HAS_INDENT) );
-  pref_menu_->setItemChecked( highlight_id_, display.GetFlag( TextDisplay::HIGHLIGHT)&& display.GetFlag( TextDisplay::HAS_HIGHLIGHT) );
-  pref_menu_->setItemChecked( highlight_paragraph_id_, display.GetFlag( TextDisplay::HIGHLIGHT_PARAGRAPH)&& display.GetFlag( TextDisplay::HAS_HIGHLIGHT_PARAGRAPH) );
-  pref_menu_->setItemChecked( braces_id_, display.GetFlag( TextDisplay::BRACES) && display.GetFlag( TextDisplay::HAS_BRACES) );
-
-  #if WITH_ASPELL
-  pref_menu_->setItemChecked( autospell_id_, display.GetFlag( TextDisplay::AUTOSPELL ) );
-  #endif
+  Debug::Throw( "Menu::_updateEditMenu.\n" );
   
-  // enable buttons
-  pref_menu_->setItemEnabled( indent_id_, display.GetFlag( TextDisplay::HAS_INDENT ) );
-  pref_menu_->setItemEnabled( highlight_id_, display.GetFlag( TextDisplay::HAS_HIGHLIGHT ) );
-  pref_menu_->setItemEnabled( highlight_paragraph_id_, display.GetFlag( TextDisplay::HAS_HIGHLIGHT_PARAGRAPH ) );
-  pref_menu_->setItemEnabled( braces_id_, display.GetFlag( TextDisplay::HAS_BRACES ) );
+  edit_menu_->clear();
+  
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  edit_menu_->addAction( display.undoAction() );
+  edit_menu_->addAction( display.redoAction() );
+  edit_menu_->addSeparator();
+  
+  edit_menu_->addAction( display.cutAction() );
+  edit_menu_->addAction( display.copyAction() );
+  edit_menu_->addAction( display.pasteAction() );
+  edit_menu_->addSeparator();
+ 
+  edit_menu_->addAction( display.upperCaseAction() );
+  edit_menu_->addAction( display.lowerCaseAction() );
+  
+}
+
+//_______________________________________________
+void Menu::_updateSearchMenu( void )
+{
+  Debug::Throw( "Menu::_updateSearchMenu.\n" );
+
+  search_menu_->clear();
+  
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  search_menu_->addAction( display.findAction() );
+  search_menu_->addAction( display.findAgainAction() );
+  search_menu_->addAction( display.findSelectionAction() );
+  search_menu_->addAction( display.replaceAction() );
+  search_menu_->addAction( display.replaceAgainAction() );
+  search_menu_->addSeparator();
+  
+  search_menu_->addAction( display.gotoLineAction() );
+
+}
+
+//_______________________________________________
+void Menu::_updatePreferenceMenu( void )
+{
+
+  Debug::Throw( "Menu::_updatePreferenceMenu.\n" );
+
+  // clear menu
+  preference_menu_->clear();
+  
+  // configurations (from mainFrame)
+  MainFrame* mainframe( dynamic_cast<MainFrame*>( qApp ) );
+  preference_menu_->addAction( mainframe->configurationAction() );
+  preference_menu_->addAction( mainframe->documentClassesAction() );
+
+  // open mode menu
+  QMenu* open_mode_menu = new QMenu( "&Default open mode", this );
+  QActionGroup* group( new QActionGroup( open_mode_menu )  );
+  group->setExclusive( true );
+  ( new_window_action_ = group->addAction( "Open in new &window" ) )->setCheckable( true );
+  ( new_view_action_ = group->addAction( "Open in new &view" ) )->setCheckable( true );
+  open_mode_menu->addActions( group->actions() );
+  connect( open_mode_menu, SIGNAL( aboutToShow() ), SLOT( _updateOpenModeMenu() ) );
+  connect( open_mode_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOpenMode() ) );
+  
+  // orientation menu
+  QMenu* orientation_menu = new QMenu( "&Default layout orientation", this );
+  group = new QActionGroup( orientation_menu );
+  group->setExclusive( true );  
+  ( leftright_action_  = group->addAction( "&Left/Right" ) )->setCheckable( true );
+  ( topbottom_action_  = group->addAction( "&Top/Bottom" ) )->setCheckable( true );
+  orientation_menu->addActions( group->actions() );
+  connect( orientation_menu, SIGNAL( aboutToShow() ), SLOT( _updateOrientationMenu() ) );
+  connect( orientation_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOrientation() ) );
+ 
+  preference_menu_->addSeparator();
+
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  preference_menu_->addAction( display.wrapModeAction() );
+  preference_menu_->addAction( display.tabEmulationAction() );
+  preference_menu_->addAction( display.indentAction() );
+  preference_menu_->addAction( display.textHighlightAction() );
+  preference_menu_->addAction( display.bracesHighlightAction() );
   
   return;
 }
 
 //_______________________________________________
-void Menu::_UpdateOpenModeMenu( void )
+void Menu::_updateOpenModeMenu( void )
 {
-  Debug::Throw( "Menu::_UpdateOpenModeMenu.\n" );
-  EditFrame &frame( *static_cast<EditFrame*>( parent() ) );
+  Debug::Throw( "Menu::_updateOpenModeMenu.\n" );
+  EditFrame &frame( *static_cast<EditFrame*>( window() ) );
   
-  open_mode_menu_->setItemChecked( new_window_id_,  frame.GetOpenMode() == EditFrame::NEW_WINDOW );
-  open_mode_menu_->setItemChecked( new_view_id_,  frame.GetOpenMode() == EditFrame::NEW_VIEW );
+  new_window_action_->setChecked( frame.openMode() == EditFrame::NEW_WINDOW );
+  new_view_action_->setChecked( frame.openMode() == EditFrame::NEW_VIEW );
   
   return;
 }
 
 //_______________________________________________
-void Menu::_UpdateOrientationMenu( void )
+void Menu::_updateOrientationMenu( void )
 {
-  Debug::Throw( "Menu::_UpdateOrientationMenu.\n" );
-  EditFrame &frame( *static_cast<EditFrame*>( parent() ) );
+  Debug::Throw( "Menu::_updateOrientationMenu.\n" );
+  EditFrame &frame( *static_cast<EditFrame*>( window() ) );
   
-  orientation_menu_->setItemChecked( left_right_id_,  frame.GetOrientation() == Qt::Horizontal );
-  orientation_menu_->setItemChecked( top_bottom_id_,  frame.GetOrientation() == Qt::Vertical );
+  leftright_action_->setChecked( frame.GetOrientation() == Qt::Horizontal );
+  topbottom_action_->setChecked( frame.GetOrientation() == Qt::Vertical );
   
   return;
 }
 
 //_______________________________________________
-void Menu::_UpdateMacroMenu( void )
+void Menu::_updateMacroMenu( void )
 {
 
-  Debug::Throw( "Menu::_UpdateMacroMenu.\n" );
+  Debug::Throw( "Menu::_updateMacroMenu.\n" );
 
   // retrieve current display
-  TextDisplay& display( static_cast<EditFrame*>(parent())->ActiveDisplay() );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
   
-  Debug::Throw( "Menu::UpdateMacroMenu.\n" );
-
   // clear menu
   macro_menu_->clear();
   macros_.clear();
@@ -485,112 +306,95 @@ void Menu::_UpdateMacroMenu( void )
 
   // insert document class specific macros
   const TextDisplay::MacroList& macros( display.GetMacros() );
+  QAction* action;
   for( TextDisplay::MacroList::const_iterator iter = macros.begin(); iter != macros.end(); iter++ )
   {
     
-    if( (*iter)->IsSeparator() ) macro_menu_->insertSeparator();
+    if( (*iter)->isSeparator() ) macro_menu_->addSeparator();
     else {
       
       // create menu entry
-      int id = macro_menu_->insertItem( (*iter)->Name().c_str() );
-      
-      // set accelerator
-      if( (*iter)->Accelerator().size() ) macro_menu_->setAccel( QKeySequence( (*iter)->Accelerator().c_str() ), id );
-      
-      // set item enable state
-      macro_menu_->setItemEnabled( id, has_selection );
-      
+      action = (*iter)->action();
+      action->setEnabled( has_selection );
+      macro_menu_->addAction( action );
+            
       // insert in map
-      macros_.insert( make_pair( id, (*iter)->Name() ) );
+      macros_.insert( make_pair( action, (*iter)->name() ) );
       
     }
   }
 
   // add default macros
-  if( !macros.empty() ) macro_menu_->insertSeparator();
-
-  // diff files
-  macro_menu_->insertItem( "&Diff", diff_menu_ );
+  if( !macros.empty() ) macro_menu_->addSeparator();
   
   // selection indentation
-  sel_indent_id_ = macro_menu_->insertItem( "&Indent Selection", parent(), SLOT( IndentSelection() ), CTRL+Key_I );
-  macro_menu_->setItemEnabled( sel_indent_id_, editable && has_selection && has_indent );
+  action = macro_menu_->addAction( "&Indent selection", &display, SLOT( indentSelection() ), CTRL+Key_I );
+  action->setEnabled( editable && has_selection && has_indent );
 
   // tab replacement
-  tabs_id_ = macro_menu_->insertItem( "Replace Leading &Tabs", parent(), SLOT( ReplaceLeadingTabs() ) );
-
-  #if WITH_ASPELL
-  // spell checking
-  macro_menu_->insertItem( "S&pell check", parent(), SLOT( SpellCheck() ) );
-  #endif
+  action = macro_menu_->addAction( "Replace Leading &Tabs", &display, SLOT( replaceLeadingTabs() ) );
+  action->setEnabled( display.hasLeadingTabs() );
   
   // syntax highlighting
-  macro_menu_->insertItem( "&Rehighlight", parent(), SLOT( Rehighlight() ) ); 
+  macro_menu_->insertItem( "&Rehighlight", &display, SLOT( rehighlight() ) ); 
   
   return;
 }
 
 //_______________________________________________
-void Menu::_UpdateDiffMenu( void )
+void Menu::_updateWindowsMenu( void )
 {
 
-  Debug::Throw( "Menu::_UpdateDiffMenu.\n" );
-  diff_menu_->setItemEnabled( diff_id_, static_cast<EditFrame*>(parent())->GetIndependentDisplays() == 2 );
-  return;
-  
-}
-
-//_______________________________________________
-void Menu::_UpdateWindowsMenu( void )
-{
-
-  Debug::Throw( "Menu::_UpdateWindowsMenu.\n" );
+  Debug::Throw( "Menu::_updateWindowsMenu.\n" );
   windows_menu_->clear();
-  windows_menu_->insertItem( "&File Information", parent(), SLOT( FileInfo() ) );
   
-  // retrieve current selected file if any
-  TextDisplay& display( static_cast<EditFrame*>( parent() )->ActiveDisplay() );
+  // retrieve current display
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  windows_menu_->insertItem( display.fileInfoAction() );
+  
   const string& current_file( display.GetFile() );
   
   // retrieve list of EditFrames
-  KeySet<EditFrame> frames( dynamic_cast<BASE::Key*>(qApp) );
+  BASE::KeySet<EditFrame> frames( dynamic_cast<BASE::Key*>(qApp) );
 
   // clear files map
   files_.clear();
   
   // insert files into menu
+  QFont font( QMenuBar::font() );
+  font.setWeight( QFont::Bold );
+    
   bool first = true;
-  set<File> file_set;
-  for( KeySet<EditFrame>::const_iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
+  set<File> files;
+  for( BASE::KeySet<EditFrame>::const_iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
   { 
     
     // retrieve associated TextDisplays
-    KeySet<TextDisplay> displays( *frame_iter );
-    for( KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    BASE::KeySet<TextDisplay> displays( *frame_iter );
+    for( BASE::KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
       
       // retrieve file and check
-      const File& file( (*iter)->GetFile() );
+      const File& file( (*iter)->file() );
       if( file.empty() ) continue;
       
       // check if file was already processed
-      if( file_set.find( file ) != file_set.end() ) continue;
-      file_set.insert( file );
+      if( !files.insert( file ).second ) continue;
       
       // if first valid file, add separator
       if( first ) 
       {
-        windows_menu_->insertSeparator(); 
+        windows_menu_->addSeparator(); 
         first = false;
       }
       
       // add menu item
-      // select if current
-      int id = windows_menu_->insertItem( file.c_str() );
-      if( current_file == file ) windows_menu_->setItemChecked( id, true );
+      QAction* action = windows_menu_->addAction( file.c_str() );
+      if( current_file == file ) action->setFont( font );
       
       // insert in map for later callback.
-      files_.insert( make_pair( id, file ) );
+      files_.insert( make_pair( action, file ) );
+    
     }
     
   }
@@ -598,43 +402,47 @@ void Menu::_UpdateWindowsMenu( void )
 }
 
 //_______________________________________________
-void Menu::_SelectClassName( int id )
+void Menu::_selectClassName( QAction* action )
 {
-  Debug::Throw( "Menu::_SelectClassName.\n" );
-  emit DocumentClassSelected( document_class_menu_->text(id) );
+  Debug::Throw( "Menu::_selectClassName.\n" );
+  std::map<Action,string>::iterator iter = document_classes_.find( action );
+  if( iter != document_classes_.end() ) 
+  { emit documentClassSelected( iter->second ); }
+  
   return;
+  
 }
 
 //_______________________________________________
-void Menu::_SelectMacro( int id )
+void Menu::_selectMacro( QAction* action )
 {
   Debug::Throw( "Menu::_SelectMacro.\n" );
   
   // try retrieve id in map
-  MacroMap::iterator iter = macros_.find( id );
+  std::map< QAction*, string >::iterator iter = macros_.find( action );
   if( iter == macros_.end() ) return;
   
   // retrieve current Text Display
-  TextDisplay& display( static_cast<EditFrame*>(parent())->ActiveDisplay() );
-  display.ProcessMacro( iter->second );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  display.processMacro( iter->second );
   
   return;
 }
 
 //_______________________________________________
-void Menu::_SelectFile( int id )
+void Menu::_selectFile( QAction* action )
 {
-  Debug::Throw( "Menu::_SelectFile.\n" );
+  Debug::Throw( "Menu::_selectFile.\n" );
   
   // try retrieve id in map
-  FileMap::iterator iter = files_.find( id );
+  std::map<QAction*, File>::iterator iter = files_.find( action );
   if( iter == files_.end() ) return;
   
   // retrieve all editFrames
-  KeySet<EditFrame> frames( dynamic_cast< BASE::Key* >( qApp ) );
+  BASE::KeySet<EditFrame> frames( dynamic_cast< BASE::Key* >( qApp ) );
   
   // retrieve frame matching file name
-  KeySet<EditFrame>::iterator frame_iter( find_if(
+  BASE::KeySet<EditFrame>::iterator frame_iter( find_if(
     frames.begin(),
     frames.end(),
     EditFrame::SameFileFTor( iter->second ) ) );
@@ -644,83 +452,34 @@ void Menu::_SelectFile( int id )
   { 
     ostringstream what;
     what << "Unable to find a window containing file " << iter->second;
-    QtUtil::InfoDialogExclusive( this, what.str() );
+    QtUtil::indoDialog( this, what.str() );
     return;
   }
   
   // select display in found frame
-  (*frame_iter)->SelectDisplay( iter->second );
-  (*frame_iter)->Uniconify();
+  (*frame_iter)->selectDisplay( iter->second );
+  (*frame_iter)->uniconify();
   
   return;
 }
 
 //_______________________________________________
-void Menu::_TogglePreferences( int id )
+void Menu::_toggleOpenMode( void )
 {
-  Debug::Throw("Menu::_TogglePreferences.\n" );
-  EditFrame& frame( *static_cast<EditFrame*>(parent()) );
-  
-  // update state of all associated editors
-  KeySet<TextDisplay> displays( &frame );
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-    TextDisplay& display( **iter );
-    if( id == wrap_id_ ) {
-      
-      display.SetFlag( TextDisplay::WRAP, !pref_menu_->isItemChecked( id ) );
-      display.SetFlag( TextDisplay::HAS_WRAP, true );
-      
-    } else if( id == tab_emulation_id_ ) display.SetFlag( TextDisplay::TAB_EMULATION, !pref_menu_->isItemChecked( id ) );
-    else if( id == indent_id_ ) display.SetFlag( TextDisplay::INDENT, !pref_menu_->isItemChecked( id ) );
-    else if( id == highlight_id_ ) display.SetFlag( TextDisplay::HIGHLIGHT, !pref_menu_->isItemChecked( id ) );
-    else if( id == highlight_paragraph_id_ ) display.SetFlag( TextDisplay::HIGHLIGHT_PARAGRAPH, !pref_menu_->isItemChecked( id ) );
-    else if( id == braces_id_ ) 
-    {
-      // change flag
-      display.SetFlag( TextDisplay::BRACES, !pref_menu_->isItemChecked( id ) );
-      
-      // update Braces at current position if any
-      display.HighlightBraces();
-    }
+  Debug::Throw("Menu::_toggleOpenMode.\n" );
     
-    #if WITH_ASPELL
-    else if( id == autospell_id_ ) display.SetFlag( TextDisplay::AUTOSPELL, !pref_menu_->isItemChecked( id ) );
-    #endif
-    
-    else return;
-    
-  }
+  EditFrame& frame( *static_cast<EditFrame*>(window()) );
+  frame.setOpenMode( new_window_action_->isChecked() ? EditFrame::NEW_WINDOW : EditFrame::NEW_VIEW );
   
-  // update editor flags and possibly Rehighlight
-  if( frame.UpdateFlags() ) frame.Rehighlight();
-
-  return;
-
-}
-
-//_______________________________________________
-void Menu::_ToggleOpenMode( int id )
-{
-  Debug::Throw("Menu::_ToggleOpenMode.\n" );
-  
-  // do nothing if item is checked (radiobutton behavior)
-  if( open_mode_menu_->isItemChecked( id ) ) return;
-  
-  EditFrame& frame( *static_cast<EditFrame*>(parent()) );
-  frame.SetOpenMode( (id == new_window_id_) ? EditFrame::NEW_WINDOW : EditFrame::NEW_VIEW );
   return;
 }
 
 //_______________________________________________
-void Menu::_ToggleOrientation( int id )
+void Menu::_toggleOrientation( void )
 {
-  Debug::Throw("Menu::_ToggleOrientation.\n" );
+  Debug::Throw("Menu::_toggleOrientation.\n" );
 
-  // do nothing if item is checked (radiobutton behavior)
-  if( orientation_menu_->isItemChecked( id ) ) return;
-
-  EditFrame& frame( *static_cast<EditFrame*>(parent()) );
-  frame.SetOrientation( ( id == left_right_id_ ) ? Qt::Horizontal : Qt::Vertical );
+  EditFrame& frame( *static_cast<EditFrame*>(window()) );
+  frame.setOrientation(  leftright_action_->isChecked() ? Qt::Horizontal : Qt::Vertical );
   return;
 }

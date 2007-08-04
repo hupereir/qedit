@@ -32,8 +32,8 @@
    \date $Date$
 */
 
-#include <qmenubar.h>
-#include <vector>
+#include <QMenuBar>
+#include <map>
 
 #include "Debug.h"
 #include "Counter.h"
@@ -53,81 +53,63 @@ class Menu:public QMenuBar, public Counter
   public:   
   
   //! creator
-  Menu( QWidget* parent, const std::string& name = "menu" );
+  Menu( QWidget* parent );
   
   //! destructor
   ~Menu( void );
 
   //! retrieve OpenPreviousMenu
-  OpenPreviousMenu& GetOpenPreviousMenu( void ) const
+  OpenPreviousMenu& openPreviousMenu( void ) const
   {
-    Exception::CheckPointer( open_previous_menu_, DESCRIPTION( "open_previous_menu_ not initialized.\n" ) );
+    Exception::checkPointer( open_previous_menu_, DESCRIPTION( "open_previous_menu_ not initialized.\n" ) );
     return *open_previous_menu_;
   }
   
   signals:
   
   //! emmited every time a document class is selected
-  void DocumentClassSelected( std::string );
+  void documentClassSelected( std::string );
     
   private slots:
-  
-  //! configuration
-  void _DefaultConfiguration( void );
-  
-  //! document classes
-  void _DocumentClassesConfiguration( void );
-  
-  //! spell check
-  void _SpellCheckConfiguration( void );
-  
-  //! update file menu
-  void _UpdateFileMenu( void );
-  
+    
   //! update document class menu
-  void _UpdateDocumentClassMenu( void );
+  void _updateDocumentClassMenu( void );
   
   //! update edit menu
-  void _UpdateEditMenu( void );
+  void _updateEditMenu( void );
   
   //! update search menu
-  void _UpdateSearchMenu( void );
+  void _updateSearchMenu( void );
   
   //! update preference menu
-  void _UpdatePrefMenu( void );
+  void _updatePreferenceMenu( void );
   
   //! update open mode menu
-  void _UpdateOpenModeMenu( void );
+  void _updateOpenModeMenu( void );
   
   //! update orientation menu
-  void _UpdateOrientationMenu( void );
+  void _updateOrientationMenu( void );
   
   //! update macro menu
-  void _UpdateMacroMenu( void );
-
-  //! update diff menu
-  void _UpdateDiffMenu( void );
+  void _updateMacroMenu( void );
   
   //! update windows menu
-  void _UpdateWindowsMenu( void );
+  void _updateWindowsMenu( void );
   
-  //! update preferences
-  void _TogglePreferences( int );
-
   //! update open mode
-  void _ToggleOpenMode( int );
+  void _toggleOpenMode( void );
 
   //! update orientation
-  void _ToggleOrientation( int );
+  void _toggleOrientation( void );
   
   //! select document class from menu
-  void _SelectClassName( int );
+  void _selectClassName( QAction* );
   
   //! select macro from menu
-  void _SelectMacro( int );
+  void _selectMacro( QAction* );
   
-  //! select macro from menu
-  void _SelectFile( int );
+  //! select file from windows menu
+  void _selectFile( QAction* );
     
   private:
   
@@ -138,96 +120,55 @@ class Menu:public QMenuBar, public Counter
   OpenPreviousMenu* open_previous_menu_;       
   
   //! document class menu
-  QPopupMenu* document_class_menu_;
-  
-  //! file menu
-  QPopupMenu* file_menu_;
+  QMenu* document_class_menu_;
   
   //! edit menu
-  QPopupMenu* edit_menu_;
+  QMenu* edit_menu_;
   
   //! search menu
-  QPopupMenu* search_menu_;
+  QMenu* search_menu_;
   
   //! preference menu
-  QPopupMenu* pref_menu_;
-  
-  //! open mode menu
-  QPopupMenu* open_mode_menu_;
-  
-  //! orientation menu
-  QPopupMenu* orientation_menu_;
+  QMenu* preference_menu_;
   
   //! macro menu
-  QPopupMenu* macro_menu_;
+  QMenu* macro_menu_;
   
   //! diff menu
-  QPopupMenu* diff_menu_; 
-  
-  //! macro menu id
-  int macro_menu_id_;
-  
-  //! map macro menu ID to macro names
-  typedef std::map< int, std::string > MacroMap;
-  
-  //! map macro menu ID to macro names
-  MacroMap macros_;
+  //QMenu* diff_menu_; 
   
   //! windows menu
   /*! it is updated every time it is shown with the list of opened files */ 
-  QPopupMenu* windows_menu_;
-
-  //! map windows menu ID to file name
-  typedef std::map< int, File > FileMap;
-  
-  //! map windows menu ID to file name
-  FileMap files_;
+  QMenu* windows_menu_;
   
   //@}
   
-  //!@name menu items
+  //!@name actions
   //@{
+  
+  //! open new window mode
+  QAction* new_window_action_;
 
-  int detach_id_;
-  int close_view_id_;
-  int save_id_;
-  int revert_id_;
-  int undo_id_;
-  int redo_id_;
-  int cut_id_;
-  int copy_id_;
-  int paste_id_;
-  int upper_case_id_;
-  int lower_case_id_;
-  int fill_id_;
-  int glue_id_;
-  int sel_indent_id_;
-  int tabs_id_;
+  //! open new view mode
+  QAction* new_view_action_;
+  
+  //! left/right orientated new view
+  QAction* leftright_action_;
+
+  //! top/bottom orientated new view
+  QAction* topbottom_action_;
     
-  int find_selection_id_; 
-  int replace_id_;
-  int replace_again_id_;
+  //! map document class to macro names
+  std::map< QAction*, std::string > document_classes_;
   
-  int wrap_id_;
-  int tab_emulation_id_;
-  int indent_id_;
-  int highlight_id_;
-  int highlight_paragraph_id_;
-  int braces_id_;
-  
-  int new_window_id_;
-  int new_view_id_;
-  
-  int left_right_id_;
-  int top_bottom_id_;
-  
-  #if WITH_ASPELL
-  int autospell_id_;
-  #endif
-  
-  int diff_id_;
-  
+  //! map actions to macro names
+  std::map< QAction*, std::string > macros_;
+
+  //! map windows menu ID to file name
+  typedef std::map< QAction*, File > files_;
+
   //@}
+  
 };
 
 #endif

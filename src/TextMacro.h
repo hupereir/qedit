@@ -34,6 +34,7 @@
 
 #include <QDomElement>
 #include <QDomDocument>
+#include <QAction>
 #include <QRegExp>
 #include <string>
 
@@ -60,10 +61,6 @@ class TextMacro: public Counter
   //! name
   virtual const std::string& name( void ) const
   { return name_; }
-
-  //! accelerator
-  virtual const std::string& accelerator( void ) const
-  { return accelerator_; }
 
   //! separator flag
   const bool& isSeparator( void ) const
@@ -111,6 +108,15 @@ class TextMacro: public Counter
 
   };
 
+  //! return action
+  QAction* action( void ) const
+  {
+    QAction* out( new QAction( name().c_str(), 0 ) );
+    out->setCheckable( true );
+    if( !_accelerator().empty() ) out->setShortcut( QKeySequence( _accelerator().c_str() ) );
+    return out;
+  }
+  
   protected:
 
   //! used to store regular expression and corresponding replacement text
@@ -184,6 +190,10 @@ class TextMacro: public Counter
   //! name
   virtual void _setName( const std::string& name )
   { name_ = name; }
+
+  //! accelerator
+  virtual const std::string& _accelerator( void ) const
+  { return accelerator_; }
 
   //! accelerator
   virtual void _setAccelerator( const std::string& value )

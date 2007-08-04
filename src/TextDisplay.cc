@@ -84,6 +84,23 @@ TextDisplay::TextDisplay( QWidget* parent ):
   connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
   connect( this, SIGNAL( indent( QTextBlock& ) ), indent_, SLOT( indent( QTextBlock& ) ) );
   
+  // actions
+  addAction( indent_action_ = new QAction( "&Indent text", this ) );
+  indent_action_->setCheckable( true );
+  connect( indent_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleIndent( bool ) ) );
+
+  addAction( text_highlight_action_ = new QAction( "&Highlight text", this ) );
+  text_highlight_action_->setCheckable( true );
+  connect( text_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextHighlight( bool ) ) );
+  
+  addAction( braces_highlight_action_ = new QAction( "&Highlight braces", this ) );
+  braces_highlight_action_->setCheckable( true );
+  connect( braces_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleBracesHighlight( bool ) ) );
+  
+  // configuration
+  connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
+  connect( qApp, SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
+  
 }
 
 //_____________________________________________________
@@ -383,6 +400,31 @@ void TextDisplay::setActive( const bool& active )
 }
 
 //___________________________________________________________________________
+void TextDisplay::updateConfiguration( void )
+{
+  Debug::Throw( "TextDisplay::updateConfiguration" );
+
+  // base class configuration update
+  CustomTextEdit::updateConfiguration();
+  
+  // local update
+  textIndentAction().setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
+  textHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
+  bracesHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_BRACES" ) );
+  
+  // retrieve active/inactive colors
+  QColor active_color( Options::Get<string>("ACTIVE_COLOR").c_str() );
+  QColor inactive_color( Options::Get<string>("INACTIVE_COLOR").c_str() );
+
+  // paper background color
+  setFlag( TextDisplay::HAS_PAPER, Options::Get<bool>( "SHADE_INACTIVE_VIEWS" ) && active_color.isValid() && inactive_color.isValid() );
+  
+  // update flags
+  updateFlags();
+
+}
+
+//___________________________________________________________________________
 void TextDisplay::updateDocumentClass( void )
 {
 
@@ -414,12 +456,13 @@ void TextDisplay::updateDocumentClass( void )
   if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) && !flag( HAS_WRAP ) )
   { setFlag( WRAP, document_class->wrap() ); }
   
-  setFlag( HAS_BRACES, !document_class->braces().empty() );
-  setFlag( HAS_HIGHLIGHT, !document_class->highlightPatterns().empty() );
-  setFlag( HAS_INDENT, !document_class->indentPatterns().empty() );
+  bracesHighlightAction()->setEnabled( !document_class->braces().empty() );
+  textHighlightAction()->setEnabled( !document_class->highlightPatterns().empty() );
+  textIndentAction()->setEnabled( !document_class->indentPatterns().empty() );
   
   // wrapping
-  toggleWrapMode( flag( WRAP ) );
+  _toggleWrapMode( flag( WRAP ) );
+  wrapModeAction()->setChecked( flag( WRAP ) );
 
   // highlighting
   textHighlight().setPatterns( document_class->highlightPatterns() );
@@ -446,8 +489,8 @@ bool TextDisplay::updateFlags( void )
   
   bool changed( false );
   
-  textIndent().setEnabled( flag( INDENT ) );
-  changed |= textHighlight().setEnabled( flag( HIGHLIGHT ) );
+  textIndent().setEnabled( textIndentAction()->isEnabled() && textIndentAction()->isChecked() );
+  changed |= textHighlight().setEnabled( textHighlightAction()->isEnabled() && textHighlightAction()->isChecked() );
 
   // Active/inactive paper color
   QColor default_color( QWidget().palette().color( QPalette::Base ) );
@@ -456,7 +499,8 @@ bool TextDisplay::updateFlags( void )
   _setPaper( isActive() ? active_color_:inactive_color_ );
 
   // enable/disable wrapping
-  toggleWrapMode( flag( WRAP ) );
+  _toggleWrapMode( flag( WRAP ) );
+  wrapModeAction()->setChecked( flag( WRAP ) );
   
   return changed;
   
@@ -468,7 +512,7 @@ bool TextDisplay::hasLeadingTabs( void ) const
   Debug::Throw( "TextDisplay::hasLeadingTabs.\n" );
 
   // define regexp to perform replacement
-  QRegExp wrong_tab_regexp( hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
+  QRegExp wrong_tab_regexp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
   for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
   { if( wrong_tab_regexp.indexIn( block.text() ) >= 0 ) return true; }
 
@@ -661,7 +705,7 @@ void TextDisplay::replaceLeadingTabs( const bool& confirm )
   {
     
     ostringstream what;
-    if( hasTabEmulation() ) what << "Replace all leading tabs with space characters ?";
+    if( _hasTabEmulation() ) what << "Replace all leading tabs with space characters ?";
     else what << "Replace all leading spaces with tab characters ?";
     if( !QtUtil::questionDialog( this, what.str() ) ) return;
 
@@ -671,8 +715,8 @@ void TextDisplay::replaceLeadingTabs( const bool& confirm )
   setUpdatesEnabled( false );
 
   // define regexp to perform replacement
-  QRegExp wrong_tab_regexp( hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
-  QString wrong_tab( hasTabEmulation() ? _normalTabCharacter():_emulatedTabCharacter() );
+  QRegExp wrong_tab_regexp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
+  QString wrong_tab( _hasTabEmulation() ? _normalTabCharacter():_emulatedTabCharacter() );
   
   // loop over blocks
   for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
