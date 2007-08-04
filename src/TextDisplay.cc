@@ -37,6 +37,7 @@
 #include "DocumentClassManager.h"
 #include "FileSelectionDialog.h"
 #include "HtmlUtil.h"
+#include "HighlightBlockData.h"
 #include "MainFrame.h"
 #include "XmlOptions.h"
 #include "QtUtil.h"
@@ -48,7 +49,7 @@
 #include "Util.h"
 
 using namespace std;
-using namespace BASE;
+using namespace Qt;
 
 // empty line regular expression
 const QRegExp TextDisplay::empty_line_regexp_( "(^\\s*$)" );
@@ -60,9 +61,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   working_directory_( Util::workingDirectory() ), 
   class_name_( "" ),
   flags_( 0 ),
-  modified_( false ),
   active_( false ),
-  highlight_( new TextHighlight( document() ) ),
   indent_( new TextIndent( this ) )
 {
   Debug::Throw( "TextDisplay::TextDisplay.\n" );
@@ -70,9 +69,15 @@ TextDisplay::TextDisplay( QWidget* parent ):
   // tell frame to delete on exit
   setAttribute( Qt::WA_DeleteOnClose );
 
-  setKeyCompression( true );
-
-  highlight_->setEnabled( false );
+  // set customized document
+  CustomTextDocument* document( new CustomTextDocument( this ) );
+  setDocument( document );
+  
+  // text highlight
+  TextHighlight* highlight = new TextHighlight( document );
+  BASE::Key::associate( document, highlight );
+  highlight->setEnabled( false );
+  
   indent_->setEnabled( false );
 
   // connections
@@ -83,44 +88,33 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
 //_____________________________________________________
 TextDisplay::~TextDisplay( void )
-{
-  Debug::Throw( "TextDisplay::~TextDisplay.\n" );
-
-  // note: highlight should be deleted automatically as child of this widget
-  // but for some reason (maybe because it derives from QSyntaxHighlighter) it is not.
-  // needs to be deleted by hand otherwise the code leaks badly
-  delete highlight_;
-
-}
+{ Debug::Throw( "TextDisplay::~TextDisplay.\n" ); }
 
 //___________________________________________________________________________
-void TextDisplay::clone( TextDisplay& display )
+void TextDisplay::synchronize( TextDisplay* display )
 {
  
-  Debug::Throw( "TextDisplay::Clone\n" );
-  
-  setFlags( display.flags() );
-  updateFlags();
-
-  // highlighting
-  textHighlight().setPatterns( display.textHighlight().patterns() );
-  
-  // indentation
-  textIndent().setPatterns( display.textIndent().patterns() );
-  textIndent().setBaseIndentation( display.textIndent().baseIndentation() );
-
-  // braces
-  _setBraces( display._braces() );
- 
-  // macros
-  _setMacros( display.macros() );
-
-  // file
-  setFile( display.file() );
-    
+  Debug::Throw( "TextDisplay::clone\n" );
+      
   // synchronize text
   // (from base class)
-  synchronize( display )
+  synchronize( display );
+
+  // update flags
+  setFlags( display->flags() );
+  updateFlags();
+
+  // indentation
+  textIndent().setPatterns( display->textIndent().patterns() );
+  textIndent().setBaseIndentation( display->textIndent().baseIndentation() );
+
+  _setBraces( display->_braces() );
+  _setMacros( display->macros() );
+  _setPaper( true, display->paper( true ) );
+  _setPaper( false, display->paper( false ) );
+  
+  // file
+  setFile( display->file() );
   
 }
 
@@ -134,14 +128,14 @@ void TextDisplay::openFile( File file )
   file = file.expand();
 
   // check is there is an "AutoSave" file matching with more recent modification time
-  // here, when the Diff is working, I could offer the possibility to show a diff between
+  // here, when the diff is working, I could offer the possibility to show a diff between
   // the saved file and the backup
   bool restore_autosave( false );
   File tmp( file );
   File autosaved( AutoSaveThread::autoSaveName( tmp ) );
   if( autosaved.exist() &&
     ( !tmp.exist() ||
-    ( autosaved.LastModified() > tmp.LastModified() && tmp.Diff(autosaved) ) ) )
+    ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
   {
     ostringstream what;
     what << "A more recent version of file " << file << endl;
@@ -157,92 +151,65 @@ void TextDisplay::openFile( File file )
   }
 
   // retrieve display and associated
-  KeySet<TextDisplay> displays( this );
+  BASE::KeySet<TextDisplay> displays( this );
   displays.insert( this );
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
-    (*iter)->setClassName( getClassName() );
+    (*iter)->setClassName( className() );
     (*iter)->updateDocumentClass();
   }
   
   // check file and try open.
-  ifstream in( tmp.c_str() );
-  if( in )
+  QFile in( tmp.c_str() );
+  if( in.open( QIODevice::ReadOnly ) )
   {
-    // retrieve text
-    string text;
-    while( !(in.rdstate() & ios::failbit ) )
-    {
-      char c = 0;
-      in.get(c);
-
-      // add character to string. Skip null characters.
-      if( c && !(in.rdstate() & ios::failbit ) ) text.push_back( c );
-    }
- 
-    // set text to TextDisplay
-    for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    {
-      (*iter)->setUpdatesEnabled( false );
-      (*iter)->setText( text.c_str() );
-      (*iter)->setUpdatesEnabled( true );
-      (*iter)->updateContents();
-      (*iter)->SetModified( false );
-      (*iter)->_SetSavedText( text );
-      (*iter)->_SetBackupText( text );
-    }
+    
+    QString text( in.readAll() );
+    setPlainText( text );
+    setModified( false );
+    in.close();
     
   }
 
   // save file if restored from autosaved.
-  if( restore_autosave ) Save();
+  if( restore_autosave ) save();
   
   // perform first autosave
-  (static_cast<MainFrame*>(qApp))->GetAutoSave().SaveFiles( this );
+  (static_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
   
 }
-  
-//____________________________________________
-bool TextDisplay::CheckSynchronization( void )
-{
 
-  Debug::Throw( "TextDisplay::CheckSynchronization.\n" );
-  
-  // retrieve associated displays
-  KeySet<TextDisplay> displays( this );
-  if( displays.empty() ) return true;
-  
-  // loop over associates and compare text
-  string reference_text( (const char*) text() );
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { 
-    string local_text( (const char*) (*iter)->text() );
-    if( local_text != reference_text ) return false;
+//_______________________________________________________
+void TextDisplay::setFile( const File& file )
+{ 
+  file_ = file; 
+  if( file.exist() ) 
+  {
+    _setLastSaved( file.lastModified() );
+    _setWorkingDirectory( file.path() );
+    setReadOnly( file.exist() && !file.isWritable() );
   }
   
-  // all files synchronized, update backup
-  BackupText();
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { (*iter)->_SetBackupText( GetBackupText() ); }
+  if( isActive() ) emit needUpdate( WINDOW_TITLE | FILE_NAME ); 
   
-  return true;
 }
   
-  
 //____________________________________________
-bool TextDisplay::FileModified( void )
-{  Debug::Throw( "TextDisplay::FileModified.\n" );
+bool TextDisplay::fileModified( void )
+{  
+  
+  Debug::Throw( "TextDisplay::fileModified.\n" );
 
   // check file size
-  if( !( GetFile().size() && GetFile().Exist() ) ) return false;
-  TimeStamp fileModified( GetFile().LastModified() );
+  if( !( file().size() && file().exist() ) ) return false;
+  TimeStamp fileModified( file().lastModified() );
 
   // check if file was modified and contents is changed
   if(
-    fileModified.IsValid() &&
-    last_save_.IsValid() &&
+    fileModified.isValid() &&
+    last_save_.isValid() &&
     fileModified > last_save_ &&
-    _ContentsChanged() )
+    _contentsChanged() )
   {
     // update last_save to avoid chain questions
     last_save_ = fileModified;
@@ -254,158 +221,156 @@ bool TextDisplay::FileModified( void )
 }  
 
 //___________________________________________________________________________
-void TextDisplay::Save( void )
+void TextDisplay::save( void )
 {
     
-  Debug::Throw( "TextDisplay::Save.\n" );
+  Debug::Throw( "TextDisplay::save.\n" );
   
   // do nothing if not modified
-  if( !Modified() ) return;
+  if( !document()->isModified() ) return;
   
   // check file name
-  if( GetFile().empty() ) return SaveAs();
+  if( file().empty() ) return saveAs();
   
   // check is contents differ from saved file
-  if( _ContentsChanged() )
+  if( _contentsChanged() )
   {
  
     // make backup
-    if(  Options::Get<bool>( "BACKUP" ) && GetFile().Exist() ) GetFile().Backup();
+    if( XmlOptions::get().get<bool>( "BACKUP" ) && file().exist() ) file().backup();
     
     // open output file
-    ofstream out( GetFile().c_str() );
-    if( !out )
+    QFile out( file().c_str() );
+    if( !out.open( QIODevice::WriteOnly ) )
     {
       ostringstream what;
-      what << "Cannot write to file \"" << GetFile() << "\". <Save> canceled.";
-      QtUtil::InfoDialogExclusive( this, what.str() );
+      what << "Cannot write to file \"" << file() << "\". <Save> canceled.";
+      QtUtil::infoDialog( this, what.str() );
       return;
     }
-
-    // retrieve text
-    string text( (const char*) this->text() );
-    out << text;
-
-    // add end of line if needed
-    if( text[text.size()-1] != '\n' ) out << endl;
+    
+    // write file
+    // make sure that last line ends with "end of line"
+    QString text( toPlainText() );
+    out.write( text.toAscii() );
+    if( !text.isEmpty() && text[text.size()-1] != '\n' ) out.write( "\n" );
 
     // close
     out.close();
-    
-    // update saved text
-    _SetSavedText( text );
-    
+        
   }
   
   // update modification state and last_saved time stamp
-  SetModified( false );
-  _SetLastSaved( GetFile().LastModified() );
+  setModified( false );
+  _setLastSaved( file().lastModified() );
   
-  // retrieve associated displays, update saved Text, time, and modification state
-  KeySet<TextDisplay> displays( this );
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-    (*iter)->SetModified( false );
-    (*iter)->_SetSavedText( _GetSavedText() );
-    (*iter)->_SetLastSaved( GetFile().LastModified() );
-  }
+  // retrieve associated displays, update saved time
+  BASE::KeySet<TextDisplay> displays( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  { (*iter)->_setLastSaved( file().lastModified() ); }
   
   return;
   
 }
 
 //___________________________________________________________________________
-void TextDisplay::SaveAs( void )
+void TextDisplay::saveAs( void )
 {
-  Debug::Throw( "TextDisplay::SaveAs.\n" );
+  Debug::Throw( "TextDisplay::saveAs.\n" );
   
   // define default file
-  string default_file( GetFile() );
-  if( default_file.empty() ) default_file = File( "document" ).AddPath( working_directory_ );
+  File default_file( file() );
+  if( default_file.empty() ) default_file = File( "document" ).addPath( workingDirectory() );
 
   // create file dialog
-  CustomFileDialog dialog( this, "file dialog", TRUE );
-  dialog.setMode( QFileDialog::AnyFile );
-  dialog.setSelection( default_file.c_str() );
-  QtUtil::CenterOnPointer( &dialog, false );
+  CustomFileDialog dialog( this );
+  dialog.setFileMode( QFileDialog::AnyFile );
+  dialog.setDirectory( QDir( default_file.path().c_str() ) );
+  dialog.selectFile( default_file.localName().c_str() );
+  QtUtil::centerOnPointer( &dialog );
   if( dialog.exec() == QDialog::Rejected ) return;
 
   // retrieve filename
-  File fullname = File( (const char*) dialog.selectedFile() ).Expand();
+  // retrieve filename
+  QStringList files( dialog.selectedFiles() );
+  if( files.empty() ) return;
+  
+  File file = File( qPrintable( files.front() ) ).expand();
 
   // check if file is directory
-  if( fullname.IsDirectory() )
+  if( file.isDirectory() )
   {
     ostringstream what;
-    what << "file \"" << fullname << "\" is a directory. <Save> canceled.";
-    QtUtil::InfoDialogExclusive( this, what.str() );
+    what << "File \"" << file << "\" is a directory. <Save> canceled.";
+    QtUtil::infoDialog( this, what.str() );
     return;
   }
 
   // check if file exist
-  if( fullname.Exist() )
+  if( file.exist() )
   {
-    if( !fullname.IsWritable() )
+    if( !file.isWritable() )
     {
       ostringstream what;
-      what << "file \"" << fullname << "\" is read-only. <Save> canceled.";
-      QtUtil::InfoDialogExclusive( this, what.str() );
+      what << "File \"" << file << "\" is read-only. <Save> canceled.";
+      QtUtil::infoDialog( this, what.str() );
       return;
-    } else if( !QtUtil::QuestionDialogExclusive( this, "selected file already exist. Overwrite ?" ) )
-    return;
+    } else if( !QtUtil::questionDialog( this, "Selected file already exist. Overwrite ?" ) )
+    { return; }
   }
 
-  KeySet<TextDisplay> displays( this );
+  // update filename and document class for this and associates
+  BASE::KeySet<TextDisplay> displays( this );
   displays.insert( this );
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   { 
     
     // update file
-    (*iter)->SetFile( fullname );
+    (*iter)->setFile( file );
 
     // update document class
     // the class name is reset, to allow a document class
     // matching the new filename to get loaded
-    (*iter)->SetClassName("");
-    (*iter)->UpdateDocumentClass();
-    (*iter)->Rehighlight();
+    (*iter)->setClassName("");
+    (*iter)->updateDocumentClass();
+    
   }
+
+  // save (using new filename)
+  save();
   
-  // save (using new filename 
-  Save();
+  // rehighlight
+  rehighlight();
   
 }
   
 
 //___________________________________________________________
-void TextDisplay::RevertToSave( const bool& check )
+void TextDisplay::revertToSave( void )
 {
 
-  Debug::Throw( "TextDisplay::RevertToSave.\n" );
+  Debug::Throw( "TextDisplay::eevertToSave.\n" );
 
   // check filename
-  if( GetFile().empty() )
+  if( file().empty() )
   {
-    if( check ) QtUtil::InfoDialogExclusive( this, "No filename given. <Revert to save> canceled." );
+    QtUtil::infoDialog( this, "No filename given. <Revert to save> canceled." );
     return;
   }
 
   // ask for confirmation
-  if( check )
-  {
-    ostringstream what;
-    if( Modified() ) what << "Discard changes to " << GetFile().GetLocalName() << "?";
-    else what << "Reload file " << GetFile().GetLocalName() << "?";
-    if( !QtUtil::QuestionDialogExclusive( this, what.str() ) ) return;
-  }
+  ostringstream what;
+  if( document()->isModified() ) what << "Discard changes to " << file().localName() << "?";
+  else what << "Reload file " << file().localName() << "?";
+  if( !QtUtil::questionDialog( this, what.str() ) ) return;
 
-  SetModified( false );
-  OpenFile( GetFile() );
+  setModified( false );
+  openFile( file() );
 
 }
 
 //_____________________________________________________________________
-void TextDisplay::SetActive( const bool& active )
+void TextDisplay::setActive( const bool& active )
 { 
 
   // check if value is changed
@@ -413,206 +378,106 @@ void TextDisplay::SetActive( const bool& active )
   active_ = active;   
   
   // update paper
-  if( GetFlag( HAS_PAPER ) ) setPaper( active_ ? active_color_:inactive_color_ );
-  
-  // clear current paragraph background if inactive
-  if( !active_ ) GetParagraphHighlight().Clear();
-  
+  if( flag( HAS_PAPER ) ) _setPaper( active_ ? active_color_:inactive_color_ );
+    
 }
 
 //___________________________________________________________________________
-void TextDisplay::UpdateDocumentClass( void )
+void TextDisplay::updateDocumentClass( void )
 {
 
   Debug::Throw( "TextDisplay::UpdateDocumentClass\n" );
-  GetTextHighlight().ClearPatterns();
-  GetTextIndent().ClearPatterns();
-  GetTextIndent().SetBaseIndentation(0);
-  _ClearLocations();
-  _ClearBraces();
-  _ClearMacros();
+  textHighlight().clear();
+  textIndent().clear();
+  textIndent().setBaseIndentation(0);
+  _clearBraces();
+  _clearMacros();
 
+  // default document class is empty
   const DocumentClass* document_class( 0 );
   
   // try load document class from class_name
-  if( !class_name_.empty() ) 
-  { document_class = static_cast<MainFrame*>(qApp)->GetClassManager().Get( GetClassName() ); }
+  if( !className().empty() ) 
+  { document_class = static_cast<MainFrame*>(qApp)->classManager().get( className() ); }
 
   // try load from file
-  if( !(document_class || GetFile().empty() ) )
-  { document_class = static_cast<MainFrame*>(qApp)->GetClassManager().Find( GetFile() ); }
+  if( !(document_class || file().empty() ) )
+  { document_class = static_cast<MainFrame*>(qApp)->classManager().find( file() ); }
       
   // abort if no document class is found
   if( !document_class ) return;
  
   // update class name
-  SetClassName( document_class->Name() );
+  setClassName( document_class->name() );
   
   // update Flags
-  if( Options::Get<bool>( "WRAP_FROM_CLASS" ) && !GetFlag( HAS_WRAP ) )
-  { SetFlag( WRAP, document_class->Wrap() ); }
+  if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) && !flag( HAS_WRAP ) )
+  { setFlag( WRAP, document_class->wrap() ); }
   
-  SetFlag( HAS_BRACES, !document_class->Braces().empty() );
-  SetFlag( HAS_HIGHLIGHT, !document_class->HighlightPatterns().empty() );
-  SetFlag( HAS_INDENT, !document_class->IndentPatterns().empty() );
+  setFlag( HAS_BRACES, !document_class->braces().empty() );
+  setFlag( HAS_HIGHLIGHT, !document_class->highlightPatterns().empty() );
+  setFlag( HAS_INDENT, !document_class->indentPatterns().empty() );
   
   // wrapping
-  SetWrap( GetFlag( WRAP ) );
+  toggleWrapMode( flag( WRAP ) );
 
   // highlighting
-  GetTextHighlight().SetPatterns( document_class->HighlightPatterns() );
+  textHighlight().setPatterns( document_class->highlightPatterns() );
 
   // indentation
-  GetTextIndent().SetPatterns( document_class->IndentPatterns() );
-  GetTextIndent().SetBaseIndentation( document_class->GetBaseIndentation() );
+  textIndent().setPatterns( document_class->indentPatterns() );
+  textIndent().setBaseIndentation( document_class->baseIndentation() );
 
   // braces
-  /* change flag and rehighlight */
-  _SetBraces( document_class->Braces() );
-  HighlightBraces();
+  _setBraces( document_class->braces() );
   
   // macros
-  _SetMacros( document_class->TextMacros() );
+  _setMacros( document_class->textMacros() );
 
   return;
   
 }
 
 //___________________________________________________
-bool TextDisplay::UpdateFlags( void )
+bool TextDisplay::updateFlags( void )
 {
   
-  Debug::Throw() << "TextDisplay::UpdateFlags - key: " << GetKey() << endl;
+  Debug::Throw() << "TextDisplay::UpdateFlags - key: " << key() << endl;
   
   bool changed( false );
   
-  GetTextIndent().SetEnabled( GetFlag( INDENT ) );
-  changed |= GetTextHighlight().SetEnabled( GetFlag( HIGHLIGHT ) );
-
-  #if WITH_ASPELL
-  // change text highlight settings
-  changed |= GetTextHighlight().SetAutoSpellEnabled( GetFlag( AUTOSPELL ) );
-  GetTextHighlight().SetColor( QColor( Options::Get<string>("AUTOSPELL_COLOR").c_str() ) );
-  GetTextHighlight().SetFontFormat( Options::Get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
-  GetTextHighlight().UpdateSpellPattern();
-  
-  if( GetFlag( AUTOSPELL ) ) Rehighlight(); 
-  #endif
+  textIndent().setEnabled( flag( INDENT ) );
+  changed |= textHighlight().setEnabled( flag( HIGHLIGHT ) );
 
   // Active/inactive paper color
-  QColor default_color( QWidget().colorGroup().base() );
-  _SetPaper( true, GetFlag( HAS_PAPER ) ? QColor( Options::Get<string>("ACTIVE_COLOR") ) : default_color );
-  _SetPaper( false, GetFlag( HAS_PAPER ) ? QColor( Options::Get<string>("INACTIVE_COLOR") ) : default_color );
-  setPaper( isActive() ? active_color_:inactive_color_ );
+  QColor default_color( QWidget().palette().color( QPalette::Base ) );
+  _setPaper( true, flag( HAS_PAPER ) ? QColor( XmlOptions::get().get<string>("ACTIVE_COLOR").c_str() ) : default_color );
+  _setPaper( false, flag( HAS_PAPER ) ? QColor( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() ) : default_color );
+  _setPaper( isActive() ? active_color_:inactive_color_ );
 
-  // paragraph highlighting
-  GetParagraphHighlight().SetColor( QColor( Options::Get<string>("HIGHLIGHT_COLOR").c_str() ) );
-  GetParagraphHighlight().SetEnabled( GetFlag( HIGHLIGHT_PARAGRAPH ) && GetFlag( HAS_HIGHLIGHT_PARAGRAPH ) );
-  if( GetFlag( HIGHLIGHT_PARAGRAPH ) && GetFlag( HAS_HIGHLIGHT_PARAGRAPH ) )
-  {
-    TextPosition position( GetPosition() );
-    GetParagraphHighlight().Update( position.Paragraph(), position.Index() );
-  }
-    
   // enable/disable wrapping
-  Debug::Throw() << "Wrap" << endl;
-  SetWrap( GetFlag( WRAP ) );
-  
-  // tab emulation
-  Debug::Throw() << "Tabs" << endl;
-  SetTabEmulation( GetFlag( TAB_EMULATION ), Options::Get<unsigned int>("TAB_SIZE") );
+  toggleWrapMode( flag( WRAP ) );
   
   return changed;
   
 }
 
-//___________________________________________________
-void TextDisplay::ClearParagraphsBackground( void )
-{
-  
-  Debug::Throw( "TextDisplay::ClearParagraphsBackground.\n" );
-
-  // change background color
-  for( int i=0; i<paragraphs(); i++ )
-  { clearParagraphBackground(i); }
-  
-  // clear paragraph highlight previous color
-  GetParagraphHighlight().ClearPreviousColor();
-  
-  // rehighlight current paragraph, if needed
-  if( isActive() && GetParagraphHighlight().Enabled() )
-  { GetParagraphHighlight().Update( GetPosition().Paragraph() ); }
-  
-}
-
-//___________________________________________________
-void TextDisplay::PrintLocations( void ) const
-{
-  cout << "TextDisplay::PrintLocations" << endl;
-  cout << "key: " << GetKey() << endl;
-  for( LocationMap::const_iterator iter = locations_.begin(); iter != locations_.end(); iter++ )
-  {
-    
-    const HighlightPattern::LocationSet& locations( iter->second );
-    if( locations.empty() ) continue;
-    
-    cout << "paragraph: " << iter->first;
-    cout << " [ ";
-    for( HighlightPattern::LocationSet::const_iterator iter = locations.begin(); iter != locations.end(); iter++ )
-    { cout << iter->Parent().Id() << " "; }
-    cout << "]" << endl;
-  }
-  
-  cout << endl;
-}
-
-//___________________________________________________
-void TextDisplay::SynchronizeBoxSelection( const TextDisplay& display )
-{
-  _SetHasBoxSelection( display.HasBoxSelection() );
-  _GetBoxSelection().Copy( display._GetBoxSelection() );
-  updateContents( _GetBoxSelection().ClearRect() );
-}
-
-//___________________________________________________
-void TextDisplay::SynchronizeSelection( const TextDisplay& display, const int& selection_number )
-{
-
-  if( selection_number == 0 && !display.hasSelectedText() )
-  {
-    removeSelection();
-    return;
-  }
-
-  int parFrom( 0 );
-  int indexFrom( 0 );
-  int parTo( 0 );
-  int indexTo( 0 );
-  display.getSelection( &parFrom, &indexFrom, &parTo, &indexTo, selection_number );
-  setSelection( parFrom, indexFrom, parTo, indexTo, selection_number );
-
-}
-
 //_______________________________________________________
-bool TextDisplay::HasLeadingTabs( void ) const
+bool TextDisplay::hasLeadingTabs( void ) const
 {
-  Debug::Throw( "TextDisplay::HasLeadingTabs.\n" );
+  Debug::Throw( "TextDisplay::hasLeadingTabs.\n" );
 
   // define regexp to perform replacement
-  QRegExp wrong_tab_regexp = _GetTabEmulation() ? _NormalTabRegExp():_EmulatedTabRegExp();
-  string wrong_tab = _GetTabEmulation() ? NormalTab():EmulatedTab();
-  for( int par=0; par<paragraphs(); par++ )
-  {
-    // look for leading tabs
-    if( wrong_tab_regexp.search( text(par) ) ) return true;
-  }
+  QRegExp wrong_tab_regexp( hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
+  for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
+  { if( wrong_tab_regexp.indexIn( block.text() ) >= 0 ) return true; }
 
   return false;
 
 }
 
 //_______________________________________________________
-QDomElement TextDisplay::HtmlNode( QDomDocument& document )
+QDomElement TextDisplay::htmlNode( QDomDocument& document )
 {
 
   // clear highlight locations and rehighlight
@@ -620,25 +485,25 @@ QDomElement TextDisplay::HtmlNode( QDomDocument& document )
 
   QDomElement out = document.createElement( "pre" );
 
-  // loop over paragraphs
-  // int active_id = 0;
-  for( int par = 0; par < paragraphs(); par++ )
+  // loop over text blocks
+  for( QTextBlock block = TextDisplay::document()->begin(); block.isValid(); block = block.next() )
   {
+    
+    HighlightPattern::LocationSet locations;
+    
+    // try retrieve highlightBlockData
+    HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    if( data ) locations = data->locations();
+    
     // retrieve text
-    string par_text( (const char*) text( par ) );
-
-    // retrieve location list
-    HighlightPattern::LocationSet locations( GetLocations( par ) );
-
+    QString text( block.text() );
     if( locations.empty() )
     {
       
       QDomElement span = out.appendChild( document.createElement( "span" ) ).toElement();
-      span.appendChild( document.createTextNode( par_text.c_str() ) );
+      span.appendChild( document.createTextNode( text ) );
     
     } else {
-      
-      // active_id = locations.ActiveId().second;
       
       QDomElement span;
 
@@ -646,9 +511,8 @@ QDomElement TextDisplay::HtmlNode( QDomDocument& document )
       const HighlightPattern *current_pattern = 0;
 
       // parse text
-      ostringstream what;
-      unsigned int index = 0;
-      while( index < par_text.size() )
+      QString buffer("");
+      for( int index = 0; index < text.size(); index++ )
       {
 
         // parse locations
@@ -657,14 +521,14 @@ QDomElement TextDisplay::HtmlNode( QDomDocument& document )
           locations.rend(),
           HighlightPattern::Location::ContainsFTor( index ) );
 
-        const HighlightPattern* pattern = ( location_iter == locations.rend() ) ? 0:&location_iter->Parent();
+        const HighlightPattern* pattern = ( location_iter == locations.rend() ) ? 0:&location_iter->parent();
         if( pattern != current_pattern || index == 0 )
         {
 
           // append text to current element and reset stream
-          HtmlUtil::TextNode( what.str().c_str(), span, document );
-          what.str("");
-
+          HtmlUtil::textNode( buffer, span, document );
+          buffer = "";
+          
           // update pattern
           current_pattern = pattern;
 
@@ -674,7 +538,7 @@ QDomElement TextDisplay::HtmlNode( QDomDocument& document )
           {
 
             // retrieve font format
-            const unsigned int& format = current_pattern->Style().Format();
+            const unsigned int& format( current_pattern->style().fontFormat() );
             ostringstream format_stream;
             if( format & FORMAT::UNDERLINE ) format_stream << "text-decoration: underline; ";
             if( format & FORMAT::ITALIC ) format_stream << "font-style: italic; ";
@@ -682,21 +546,19 @@ QDomElement TextDisplay::HtmlNode( QDomDocument& document )
             if( format & FORMAT::STRIKE ) format_stream << "text-decoration: line-through; ";
 
             // retrieve color
-            const QColor& color = current_pattern->Style().Color();
-            if( color.isValid() ) format_stream << "color: " << color.name() << "; ";
+            const QColor& color = current_pattern->style().color();
+            if( color.isValid() ) format_stream << "color: " << qPrintable( color.name() ) << "; ";
 
             span.setAttribute( "style", format_stream.str().c_str() );
 
           }
         }
 
-        // convert spaces to non breakable
-        what << par_text[index];
-        index++;
+        buffer += text[index];
 
       }
 
-      span.appendChild( document.createTextNode( what.str().c_str() ) );
+      span.appendChild( document.createTextNode( buffer ) );
 
     }
     out.appendChild( document.createElement( "br" ) );
@@ -706,47 +568,46 @@ QDomElement TextDisplay::HtmlNode( QDomDocument& document )
 }
 
 //_______________________________________________________
-void TextDisplay::IndentSelection( void )
+void TextDisplay::indentSelection( void )
 {
   Debug::Throw( "TextDisplay::IndentSelection.\n" );
 
   // check activity, indentation and text selection
-  if( !indent_->Enabled() ) return;
-  if( !hasSelectedText() ) return;
-
-  // first propagate to associated displays
-  if( isActive() && Synchronized() )
-  {
-    // propagate to other displays
-    KeySet<TextDisplay> displays( this );
-    for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { (*iter)->IndentSelection(); }
-  }
-
-  setUpdatesEnabled( false );
-  SelectionRange range( GetSelectionRange() );
+  if( !indent_->isEnabled() ) return;
+  
+  // retrieve text cursor
+  QTextCursor cursor( textCursor() );
+  if( !cursor.hasSelection() ) return;
+  
+  // retrieve blocks
+  QTextBlock begin( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
+  QTextBlock end( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
 
   // need to remove selection otherwise the first adding of a tab
   // will remove the entire selection.
-  removeSelection();
-  for( int par = range.first.Paragraph(); par <= range.second.Paragraph(); par++ )
-  { emit Indent( par ); }
-
-  // restore selection
-  setSelection( range.first.Paragraph(), 0, range.second.Paragraph(), paragraphLength( range.second.Paragraph() ) );
-  emit selectionChanged();
-
+  setUpdatesEnabled( false );
+  cursor.clearSelection(); 
+  
+  for( QTextBlock block = begin; block != end && block.isValid(); block = block.next() )
+  { emit indent( block ); }
+  
+  // handle last block
+  emit indent( end );
+  
+  // select all indented blocks
+  cursor.setPosition( begin.position(), QTextCursor::MoveAnchor );
+  cursor.setPosition( end.position()+end.length(), QTextCursor::KeepAnchor );
+  setTextCursor( cursor );
   setUpdatesEnabled( true );
-  updateContents();
 
   return;
 }
 
 //_____________________________________________
-void TextDisplay::ProcessMacro( string name )
+void TextDisplay::processMacro( string name )
 {
   
-  Debug::Throw( "TextDisplay::ProcessMacro.\n" );
+  Debug::Throw( "TextDisplay::processMacro.\n" );
 
   // retrieve macro that match argument name
   MacroList::const_iterator macro_iter = find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
@@ -754,318 +615,90 @@ void TextDisplay::ProcessMacro( string name )
   {
     ostringstream what;
     what << "Unable to find macro named " << name;
-    QtUtil::InfoDialogExclusive( this, what.str() );
+    QtUtil::infoDialog( this, what.str() );
     return;
   }
 
   // check display
-  if( !hasSelectedText() ) return;
   if( !isActive() ) return;
+ 
+  // retrieve text cursor
+  QTextCursor cursor( textCursor() );
+  if( !cursor.hasSelection() ) return;
+  
+  // retrieve blocks
+  QTextBlock begin( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
+  QTextBlock end( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
 
-  // disable updates
-  setUpdatesEnabled( false );
-  TextDisplay::SelectionRange range( GetSelectionRange() );
-
-  // remove last line, if range is at beginning
-  if( range.second.Index() == 0 )
-  {
-    range.second.Paragraph()--;
-    range.second.Index() = paragraphLength( range.second.Paragraph() );
-    setSelection( range.first.Paragraph(), range.first.Index(), range.second.Paragraph(), range.second.Index() );
-    emit selectionChanged();
-  }
-
-  Str text( (const char*) selectedText() );
-  unsigned int n_lines_orig( text.Contains( Str("\n") ) );
-  unsigned int last_line_size_orig = text.rfind( "\n" );
-  last_line_size_orig = text.size() - (last_line_size_orig == string::npos ? 0:last_line_size_orig);
-  if( (*macro_iter)->ProcessText( text ) )
-  {
-    // replace selected text
-    insert( text.c_str() );
-
-    // update selection range
-    unsigned int n_lines_new( text.Contains( Str("\n") ) );
-    range.second.Paragraph() += n_lines_new - n_lines_orig;
-
-    unsigned int last_line_size_new = text.rfind( "\n" );
-    last_line_size_new = text.size() - (last_line_size_new == string::npos ? 0:last_line_size_new);
-
-    if( n_lines_new == n_lines_orig ) range.second.Index() += last_line_size_new - last_line_size_orig;
-    else range.second.Index() = last_line_size_new;
-
-    // reinstall selection
-    setSelection( range.first.Paragraph(), range.first.Index(), range.second.Paragraph(), range.second.Index() );
-    emit selectionChanged();
-  }
-
+  // need to remove selection otherwise the first adding of a tab
+  // will remove the entire selection.
+  setUpdatesEnabled( true );
+  cursor.clearSelection(); 
+  
+  for( QTextBlock block = begin; block != end && block.isValid(); block = block.next() )
+  { emit indent( block ); }
+  
+  // handle last block
+  emit indent( end );
+  
+  QString text( cursor.selectedText() );
+  if( (*macro_iter)->processText( text ) )
+  { cursor.insertText( text ); }
+  
   // enable updates
   setUpdatesEnabled( true );
-  updateContents();
   return;
+  
 }
 
 //_______________________________________________________
-void TextDisplay::ReplaceLeadingTabs( const bool& confirm )
+void TextDisplay::replaceLeadingTabs( const bool& confirm )
 {
-  Debug::Throw( "TextDisplay::ReplaceLeadingTabs.\n" );
+  Debug::Throw( "TextDisplay::replaceLeadingTabs.\n" );
 
   // ask for confirmation
-  if( confirm && !QtUtil::QuestionDialogExclusive( this, "Replace all leating tabs with space characters ?" ) ) return;
+  if( confirm )
+  {
+    
+    ostringstream what;
+    if( hasTabEmulation() ) what << "Replace all leading tabs with space characters ?";
+    else what << "Replace all leading spaces with tab characters ?";
+    if( !QtUtil::questionDialog( this, what.str() ) ) return;
 
+  }
+  
   // disable updates
   setUpdatesEnabled( false );
 
   // define regexp to perform replacement
-  QRegExp wrong_tab_regexp = _GetTabEmulation() ? _NormalTabRegExp():_EmulatedTabRegExp();
-  string wrong_tab = _GetTabEmulation() ? NormalTab():EmulatedTab();
-  for( int par=0; par<paragraphs(); par++ )
+  QRegExp wrong_tab_regexp( hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
+  QString wrong_tab( hasTabEmulation() ? _normalTabCharacter():_emulatedTabCharacter() );
+  
+  // loop over blocks
+  for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
   {
 
+    QString text( block.text() );
+    
     // look for leading tabs
-    if( wrong_tab_regexp.search( text(par) ) < 0 ) continue;
-    setSelection( par, 0, par, wrong_tab_regexp.matchedLength() );
-    emit selectionChanged();
+    if( wrong_tab_regexp.indexIn( text ) < 0 ) continue;
+    
+    // select with cursor
+    QTextCursor cursor( block );
+    cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
+    cursor.setPosition( cursor.position() + wrong_tab_regexp.matchedLength(), QTextCursor::KeepAnchor );
 
     // create replacement string and insert.
-    ostringstream what;
+    QString buffer;
     for( int i=0; i< int(wrong_tab_regexp.matchedLength()/wrong_tab.size()); i++ )
-    { what << Tab(); }
-    insert( what.str().c_str() );
+    { buffer += _tabCharacter(); }
+    cursor.insertText( buffer );
 
   }
 
   // enable updates
   setUpdatesEnabled( true );
-  updateContents();
   return;
-}
-
-//_____________________________________________________________________________
-void TextDisplay::cut( void )
-{
-  Debug::Throw() << "TextDisplay::cut." << endl;
-  
-  if( !( Synchronized() && isActive() ) ) return CustomTextEdit::cut();
-
-  KeySet<TextDisplay> displays( this );
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { 
-    (*iter)->setUpdatesEnabled( false );
-    (*iter)->CustomTextEdit::cut();
-  }
-
-  CustomTextEdit::cut();
-
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { 
-    (*iter)->setUpdatesEnabled( true );
-    (*iter)->updateContents();
-  }
-
-  return;  
-}
-
-//_____________________________________________________________________________
-void TextDisplay::paste( void )
-{
-
-  // check if there is some synchronization to maintain
-  if( !( Synchronized() && isActive() ) ) 
-  {
-    // make sure current paragraph is not highlighted when pasting
-    if( GetParagraphHighlight().Enabled() )
-    {
-      
-      GetParagraphHighlight().Update( -1 );
-      CustomTextEdit::paste();
-      GetParagraphHighlight().Update( GetPosition().Paragraph() );
-      
-    } else CustomTextEdit::paste();
-    
-    return;
-    
-  }
-  
-  KeySet<TextDisplay> displays( this );
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { 
-    (*iter)->setUpdatesEnabled( false );
-    (*iter)->CustomTextEdit::paste();
-  }
-  
-  // make sure current paragraph is not highlighted when pasting
-  if( GetParagraphHighlight().Enabled() )
-  {
-    
-    GetParagraphHighlight().Update( -1 );
-    CustomTextEdit::paste();
-    GetParagraphHighlight().Update( GetPosition().Paragraph() );
-  
-  } else CustomTextEdit::paste();
-  
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { 
-    (*iter)->setUpdatesEnabled( true ); 
-    (*iter)->updateContents();
-  }
-
-  return;
-  
-}
-
-//_____________________________________________________________________________
-void TextDisplay::undo( void )
-{
-  
-  // do nothing if synchronized and not active
-  /* because the "base class" undo is called indirectly from the main associated display */
-  if( Synchronized() && !isActive() ) return;
-  
-  // retrieve associated displays
-  /* 
-    it is not possible to use the synchronize key 
-    for the active widget because it is temporarely disabled 
-    in the keyPressedEvent method
-  */
-  KeySet<TextDisplay> displays( this );
-
-  // no associated displays
-  if( displays.empty() )
-  {
-    
-    // clear paragraph highlighting first, if needed
-    if( GetParagraphHighlight().Enabled() )
-    {
-      GetParagraphHighlight().Update( -1 );
-      CustomTextEdit::undo();
-      GetParagraphHighlight().Update( GetPosition().Paragraph() );
-    } else CustomTextEdit::undo();
-    
-    if( isActive() ) emit UndoCalled();
-    return;
-    
-  }
-  
-  // there are associated displays but this one is not active
-  if( !( isActive() && isUndoAvailable() ) ) return;
-  
-  // check if associated displays have undo history
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { if( !(*iter)->isUndoAvailable() ) return; }
-
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { 
-    (*iter)->setUpdatesEnabled( false );
-    (*iter)->CustomTextEdit::undo(); 
-  }
-  
-  // clear paragraph highlighting first, if needed
-  if( GetParagraphHighlight().Enabled() )
-  {
-    GetParagraphHighlight().Update( -1 );
-    CustomTextEdit::undo();
-    GetParagraphHighlight().Update( GetPosition().Paragraph() );
-  } else CustomTextEdit::undo();
-  
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { (*iter)->setUpdatesEnabled( true ); }
-  
-  emit UndoCalled();
-  
-}
-
-//_____________________________________________________________________________
-void TextDisplay::redo( void )
-{
-  
-  // do nothing if synchronized and not active
-  /* because the "base class" undo is called indirectly from the main associated display */
-  if( Synchronized() && !isActive() ) return;
-  
-  // retrieve associated displays
-  /* 
-    it is not possible to use the synchronize key 
-    for the active widget because it is temporarely disabled 
-    in the keyPressedEvent method
-  */
-  KeySet<TextDisplay> displays( this );
-
-  // no associated displays
-  if( displays.empty() )
-  {
-    
-    if( GetParagraphHighlight().Enabled() )
-    {
-      GetParagraphHighlight().Update( -1 );
-      CustomTextEdit::redo();
-      GetParagraphHighlight().Update( GetPosition().Paragraph() );
-    } else CustomTextEdit::redo();    
-    
-    if( isActive() ) emit RedoCalled();
-    return;
-    
-  }
-  
-  // there are associated displays but this one is not active
-  if( !( isActive() && isRedoAvailable() ) ) return;
-  
-  // check if associated displays have redo history
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { if( !(*iter)->isRedoAvailable() ) return; }
-
-  // undo all associated displays
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { 
-    (*iter)->setUpdatesEnabled( false );
-    (*iter)->CustomTextEdit::redo(); 
-  }
-  
-  if( GetParagraphHighlight().Enabled() )
-  {
-    GetParagraphHighlight().Update( -1 );
-    CustomTextEdit::redo();
-    GetParagraphHighlight().Update( GetPosition().Paragraph() );
-  } else CustomTextEdit::redo();
-  
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { (*iter)->setUpdatesEnabled( true ); }
-
-  emit RedoCalled();
-  
-}
-
-//_______________________________________________________
-void TextDisplay::insert( const QString & text, uint flags )
-{
-    
-  if( isActive() && Synchronized() )
-  {
-    Debug::Throw( "TextDisplay::insert - synchronize.\n" );
-
-    // propagate to other displays
-    KeySet<TextDisplay> displays( this );
-    for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    {
-      (*iter)->setUpdatesEnabled( false );
-      (*iter)->SynchronizeBoxSelection( *this );
-      (*iter)->SynchronizeSelection( *this, 0 );
-      (*iter)->SynchronizeSelection( *this, BRACES_SELNUMBER );
-      (*iter)->insert( text, flags );
-      (*iter)->setUpdatesEnabled( true );
-      (*iter)->updateContents();
-    }
-  }
-
-  if( GetParagraphHighlight().Enabled() )
-  {
-    GetParagraphHighlight().Update( -1 );
-    CustomTextEdit::insert( text, flags );
-    GetParagraphHighlight().Update( GetPosition().Paragraph() );
-  } else CustomTextEdit::insert( text, flags );
-  
-  return;
-
 }
 
 //_______________________________________________________
@@ -1074,20 +707,20 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
 
   // check if tab key is pressed
   if( event->key() == Key_Tab && indent_->isEnabled() && !textCursor().hasSelection() )
-  { emit indent( textCursor().block() ) ); }
+  { emit indent( textCursor().block() ); }
   else 
   {
 
     // indent current paragraph when return is pressed
     if( event->key() == Key_Return && indent_->isEnabled() && !textCursor().hasSelection() )
-    { emit indent( textCursor().block() ) ); }
+    { emit indent( textCursor().block() ); }
   
     // process key
     CustomTextEdit::keyPressEvent( event );
 
     // reindent paragraph if needed
-    if( indent_->enabled() && ( event->key() == Key_BraceRight || event->key() == Key_BraceLeft ) && !textCursor().hasSelection() )
-    { emit indent( textCursor().block() ) ); }
+    if( indent_->isEnabled() && ( event->key() == Key_BraceRight || event->key() == Key_BraceLeft ) && !textCursor().hasSelection() )
+    { emit indent( textCursor().block() ); }
 
   }
 
@@ -1102,426 +735,82 @@ void TextDisplay::focusInEvent( QFocusEvent* event )
   CustomTextEdit::focusInEvent( event );
 }
 
-//____________________________________________________________
-#if WITH_ASPELL
-QPopupMenu *TextDisplay::createPopupMenu( const QPoint& point )
-{
-  Debug::Throw( "TextDisplay::createPopupMenu.\n" );
-
-  int par(0);
-  int index( charAt( point, &par ) );
-  TextPosition position( par, index );
-  SPELLCHECK::Word word( highlight_->Misspelled( position ) );
-  if( word.empty() ) return CustomTextEdit::createPopupMenu( point );
-
-  // select range
-  _Select( TextPosition(par, word.position_), word.size() );
-
-  // retrieve menu
-  QPopupMenu* menu = new SPELLCHECK::SuggestionMenu( this, word );
-  connect( menu, SIGNAL( SuggestionSelected( const std::string& ) ), this, SLOT( _ReplaceSelection( const std::string& ) ) );
-  connect( menu, SIGNAL( IgnoreWord( const std::string& ) ), this, SLOT( _IgnoreWord( const std::string& ) ) );
-  connect( menu, SIGNAL( needUpdate( void ) ), this, SLOT( Rehighlight() ) );
-  return menu;
-
-}
-#endif
-
 //_____________________________________________________________________
-void TextDisplay::_CreateReplaceDialog( void )
+void TextDisplay::_createReplaceDialog( void )
 {
   Debug::Throw( "TextDisplay::_CreateReplaceDialog.\n" );
-  CustomTextEdit::_CreateReplaceDialog();
-  ReplaceDialog &dialog( _ReplaceDialog() );
+  CustomTextEdit::_createReplaceDialog();
+  ReplaceDialog &dialog( _replaceDialog() );
 
   // insert multiple file buttons
   QPushButton* button = new QPushButton( "&Files", &dialog );
-  QtUtil::FixSize( button );
-  connect( button, SIGNAL( clicked() ), this, SLOT( _MultipleFileReplace() ) );
-  button->setAutoDefault( false );
-  QToolTip::add( button, "replace all occurence of the search string in the selected files" );
-  dialog.AddDisabledButton( button );
-  dialog.LocationLayout().addWidget( button );
+  connect( button, SIGNAL( clicked() ), this, SLOT( _multipleFileReplace() ) );
+  button->setToolTip( "replace all occurence of the search string in the selected files" );
+  dialog.addDisabledButton( button );
+  dialog.locationLayout().addWidget( button );
 
 }
 
 //_______________________________________________________
-void TextDisplay::_RemoveBoxSelectedText()
+void TextDisplay::_setBraces( const TextDisplay::BracesList& braces )
 {
-  Debug::Throw( "TextDisplay::_RemoveBoxSelectedText.\n" );
-  if( isActive() && Synchronized() )
-  {
-
-    Debug::Throw( "TextDisplay::_RemoveBoxSelectedText - synchronize.\n" );
-
-    // propagate to other displays
-    KeySet<TextDisplay> displays( this );
-    for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    {
-      (*iter)->setUpdatesEnabled( false );
-
-      // make sure current box selections are synchronized
-      (*iter)->SynchronizeBoxSelection( *this );
-      (*iter)->_RemoveBoxSelectedText();
-      (*iter)->setUpdatesEnabled( true );
-      (*iter)->updateContents();
-    }
-  }
-
-  CustomTextEdit::_RemoveBoxSelectedText();
-}
-
-//_______________________________________________________
-void TextDisplay::_InsertBoxSelection( const BoxSelection& box )
-{
-  Debug::Throw( "TextDisplay::_InsertBoxSelection.\n" );
-  if( isActive() && Synchronized() )
-  {
-
-    Debug::Throw( "TextDisplay::_InsertBoxSelection - synchronize.\n" );
-
-    // propagate to other displays
-    KeySet<TextDisplay> displays( this );
-    for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    {
-      (*iter)->setUpdatesEnabled( false );
-
-      // make sure current box selections are synchronized
-      (*iter)->SynchronizeBoxSelection( *this );
-
-      // insert argument box selection
-      (*iter)->_InsertBoxSelection( box );
-      (*iter)->setUpdatesEnabled( true );
-      (*iter)->updateContents();
-    }
-  }
-
-  CustomTextEdit::_InsertBoxSelection( box );
-}
-
-//_______________________________________________________
-void TextDisplay::_ReplaceBoxSelection( const BoxSelection& box )
-{
-  Debug::Throw( "TextDisplay::_ReplaceBoxSelection.\n" );
-  if( isActive() && Synchronized() )
-  {
-
-    Debug::Throw( "TextDisplay::_ReplaceBoxSelection - synchronize.\n" );
-
-    // propagate to other displays
-    KeySet<TextDisplay> displays( this );
-    for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    {
-      (*iter)->setUpdatesEnabled( false );
-
-      // make sure current box selections are synchronized
-      (*iter)->SynchronizeBoxSelection( *this );
-
-      // insert argument box selection
-      (*iter)->_ReplaceBoxSelection( box );
-      (*iter)->setUpdatesEnabled( true );
-      (*iter)->updateContents();
-    }
-  }
-
-  CustomTextEdit::_ReplaceBoxSelection( box );
-}
-
-//_______________________________________________________
-void TextDisplay::_SetBraces( const TextDisplay::BracesList& braces )
-{
-  Debug::Throw( "TextDisplay::_SetBraces.\n" );
+  Debug::Throw( "TextDisplay::_setBraces.\n" );
   braces_ = braces;
   braces_set_.clear();
   for( BracesList::const_iterator iter = braces_.begin(); iter != braces_.end(); iter++ )
   {
-    braces_set_.insert( (*iter)->First() );
-    braces_set_.insert( (*iter)->Second() );
+    braces_set_.insert( (*iter)->first );
+    braces_set_.insert( (*iter)->second );
   }
 }
 
 //_______________________________________________________
-void TextDisplay::_MultipleFileReplace( void )
+void TextDisplay::_setPaper( const QColor& color )
 {
-  Debug::Throw( "TextDisplay::_MultipleFileReplace.\n" );
-  TextSelection selection( _ReplaceDialog().GetSelection( false ) );
+  
+  Debug::Throw( "TextDisplay::_setPaper.\n" );
+  if( !color.isValid() ) return;
+  
+  QPalette palette( TextDisplay::palette() );
+  palette.setColor( QPalette::Base, color );
+  setPalette( palette );
+
+}
+
+//_______________________________________________________
+void TextDisplay::_multipleFileReplace( void )
+{
+  Debug::Throw( "TextDisplay::_multipleFileReplace.\n" );
+  TextSelection selection( _replaceDialog().selection( false ) );
 
   // retrieve selection from replace dialog
   FileSelectionDialog dialog( this, selection );
-  connect( &dialog, SIGNAL( FileSelected( const File&, TextSelection ) ), qApp, SLOT( MultipleFileReplace( const File&, TextSelection ) ) );
+  connect( &dialog, SIGNAL( fileSelected( File, TextSelection ) ), qApp, SLOT( multipleFileReplace( File, TextSelection ) ) );
   dialog.exec();
   return;
 }
 
 //_______________________________________________________
-void TextDisplay::_ReplaceSelection( const std::string& word )
+void TextDisplay::_indentCurrentParagraph( void )
 {
-  #if WITH_ASPELL
-  Debug::Throw( "TextDisplay::_ReplaceSelection.\n" );
-  SelectionRange range( GetSelectionRange() );
-  SPELLCHECK::Word misspelled_word( highlight_->Misspelled( range.first ) );
-  if( misspelled_word.empty() )
-    throw runtime_error( DESCRIPTION( "invalid selection" ) );
-
-  // update selection
-  insert( word );
-  #endif
-}
-
-//_______________________________________________________
-void TextDisplay::_IgnoreWord( const std::string& word )
-{
-  #if WITH_ASPELL
-  highlight_->IgnoreWord( word );
-  #endif
-}
-
-//_______________________________________________________
-void TextDisplay::_IndentCurrentParagraph( void )
-{
-  if( !indent_->Enabled() ) return;
-  int paragraph(0), index(0);
-  getCursorPosition( &paragraph, &index );
-  emit Indent( paragraph );
-
+  if( !indent_->isEnabled() ) return;
+  emit indent( textCursor().block() );
 }
   
-//_______________________________________________________
-void TextDisplay::_HighlightBraces( int paragraph, int index )
-{
-  // clear previously highlighted braces
-  removeSelection( BRACES_SELNUMBER );
-
-  // check flags
-  if( !GetFlag( BRACES ) || braces_set_.empty() ) return;
-
-  // check if paragraph is to be ignored
-  if( IgnoreParagraph( paragraph ) ) return;
-
-  // retrieve current character
-  /*
-    index is decremented by 1 because the braces are to be
-    marked when the cursor is after it
-  */
-  if( index == 0 ) return;
-  index--;
-  char c = ((const char*)text(paragraph))[index];
-
-  // check if character is in braces_set
-  if( braces_set_.find( c ) == braces_set_.end() ) return;
-
-  // check against opening braces
-  BracesList::const_iterator braces = find_if(
-    braces_.begin(),
-    braces_.end(),
-    TextBraces::FirstElementFTor(c) );
-  if( braces != braces_.end() )
-  {
-    unsigned int increment(0);
-    bool found(false);
-    int local_index(0);
-    while( paragraph < paragraphs() && !found )
-    {
-      if( !IgnoreParagraph( paragraph ) )
-      {
-        string local_text( (const char*)text(paragraph) );
-        for( local_index = index; local_index < (int)local_text.size() && !found; local_index++ )
-        {
-          if( local_text[local_index] == (*braces)->First() ) increment++;
-          if( local_text[local_index] == (*braces)->Second() ) increment--;
-          if( increment == 0 ) {
-            found = true;
-            break;
-          }
-        }
-      }
-
-      if( !found )
-      {
-        paragraph++;
-        index = 0;
-      }
-    }
-
-    if( found )
-    {
-      setUpdatesEnabled( false );
-      setSelection( paragraph, local_index, paragraph, local_index+1, BRACES_SELNUMBER );
-      setUpdatesEnabled( true );
-      updateContents();
-    }
-
-    return;
-  }
-
-  // check against closing braces
-  braces = find_if(
-    braces_.begin(),
-    braces_.end(),
-    TextBraces::LastElementFTor(c) );
-  if( braces != braces_.end() )
-  {
-    unsigned int increment(0);
-    bool found(false);
-    int local_index(0);
-    while( paragraph>=0 && !found )
-    {
-      if( !IgnoreParagraph( paragraph ) )
-      {
-        string local_text( (const char*)text(paragraph) );
-        for( local_index = index; local_index >=0 && !found; local_index-- )
-        {
-          if( local_text[local_index] == (*braces)->Second() ) increment++;
-          if( local_text[local_index] == (*braces)->First() ) increment--;
-          if( increment == 0 ) {
-            found = true;
-            break;
-          }
-        }
-      }
-
-      if( !found )
-      {
-        paragraph--;
-        index = (paragraph>=0) ? paragraphLength( paragraph )-1:0;
-      }
-    }
-
-    if( found )
-    {
-      setUpdatesEnabled( false );
-      setSelection( paragraph, local_index, paragraph, local_index+1, BRACES_SELNUMBER );
-      setUpdatesEnabled( true );
-      updateContents();
-    }
-
-    return;
-
-  }
-
-}
-
-//_______________________________________________________
-void TextDisplay::_HighlightParagraph( int paragraph, int index )
-{
-  
-  Debug::Throw( "TextDisplay::_HighlightParagraph.\n" );
-  
-  // see if paragraph highlighting is enabled
-  if( !GetParagraphHighlight().Enabled() ) return;
-  
-  // update
-  GetParagraphHighlight().Update( paragraph, index );
-  
-  // redraw box selection if any
-  if( HasBoxSelection() ) updateContents( _GetBoxSelection().Rect() );
-
-}
-
-
-//_______________________________________________________
-void TextDisplay::_SynchronizeCursor( int paragraph, int index )
-{
-  if( !(Synchronized() && isActive()) ) return;
-  KeySet<TextDisplay> displays( this );
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-    (*iter)->setUpdatesEnabled( false );
-    (*iter)->setCursorPosition( paragraph, index );
-    (*iter)->setUpdatesEnabled( true );
-    (*iter)->updateContents();
-  }
-}
-
-//_______________________________________________________
-void TextDisplay::_SynchronizeSelection( void )
-{
-  if( !(Synchronized() && isActive()) ) return;
-
-  KeySet<TextDisplay> displays( this );
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-    (*iter)->setUpdatesEnabled( false );
-    (*iter)->SynchronizeSelection( *this, 0 );
-    (*iter)->SynchronizeSelection( *this, BRACES_SELNUMBER );
-    (*iter)->setUpdatesEnabled( true );
-    (*iter)->updateContents();
-  }
-}
-
-//_______________________________________________________
-void TextDisplay::_SynchronizeBoxSelection( void )
-{
-  if( !(Synchronized() && isActive()) ) return;
-
-  KeySet<TextDisplay> displays( this );
-  for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-    (*iter)->setUpdatesEnabled( false );
-    (*iter)->SynchronizeBoxSelection( *this );
-    (*iter)->setUpdatesEnabled( true );
-    (*iter)->updateContents();
-  }
-
-}
-
 //_____________________________________________________________
-bool TextDisplay::_ContentsChanged( void ) const
+bool TextDisplay::_contentsChanged( void ) const
 {
+
   // check file
-  if( GetFile().empty() ) return true;
+  if( file().empty() ) return true;
 
   // open file
-  ifstream in( GetFile().c_str() );
-  if( !in ) return true;
+  QFile in( file().c_str() );
+  if( !in.open( QIODevice::ReadOnly ) ) return true;
 
   // dump file into character string
-  string file_text;
-  int par_id(0);
-  while( !(in.rdstate() & ios::failbit ) )
-  {
-    char c;
-    in.get(c);
-
-    // check validity
-    if(in.rdstate() & ios::failbit ) break;
-
-    // check if end of line
-    if( c == '\n' )
-    {
-
-      // check if corresponding paragraph exists
-      if( par_id >= paragraphs() ) return true;
-
-      // retrieve corresponding paragraph
-      // remove last character
-      string text( (const char*) this->text( par_id ) );
-      if( text.size() ) text = text.substr( 0, text.size()-1);
-
-      // compare to current text
-      if( text != file_text ) return true;
-
-      // reset text, increment paragraph
-      file_text = "";
-      par_id++;
-
-    } else file_text.push_back( c );
-  }
-
-  in.close();
-
-  // check last paragraph
-  if( par_id+1 != paragraphs() ) return true;
-  string text( (const char*) this->text( par_id ) );
-  if( text.size() ) text = text.substr( 0, text.size()-1);
-
-  // compare to current text
-  if( text != file_text ) return true;
-
-  // check if there are more paragraphs
-  if( paragraphs() > par_id +1 ) return true;
-
-  // files are identical
-  return false;
+  QString file_text( in.readAll() );
+  QString text( toPlainText() );
+  return (text.size() != file_text.size() || text != file_text );
 
 }

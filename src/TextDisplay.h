@@ -36,6 +36,7 @@
 
 #include "Config.h"
 #include "CustomTextEdit.h"
+#include "CustomTextDocument.h"
 #include "Debug.h"
 #include "File.h"
 #include "HighlightPattern.h"
@@ -63,8 +64,8 @@ class TextDisplay: public CustomTextEdit
   //! destructor
   virtual ~TextDisplay();
   
-  //! clone display configuration
-  virtual void clone( TextDisplay& display );
+  //! clone display configuration and document
+  virtual void synchronize( TextDisplay* display );
 
   //! check if current entry has been modified or not
   void setModified( const bool& value = true )
@@ -115,19 +116,7 @@ class TextDisplay: public CustomTextEdit
   void openFile( File file );
   
   //! set file name
-  void setFile( const File& file )
-  { 
-    file_ = file; 
-    if( file.Exist() ) 
-    {
-      _setLastSaved( file.lastModified() );
-      _setWorkingDirectory( file.path() );
-      setReadOnly( file.exist() && !file.isWritable() );
-    }
-    
-    if( isActive() ) emit needUpdate( WINDOW_TITLE | FILE_NAME ); 
-    
-  }
+  void setFile( const File& file );
   
   //! file
   const File& file( void ) const
@@ -150,7 +139,7 @@ class TextDisplay: public CustomTextEdit
 
     //! constructor
     SameFileFTor( const File& file ):
-      file_( file.Expand() )
+      file_( file.expand() )
     {}
 
     //! predicate
@@ -171,7 +160,7 @@ class TextDisplay: public CustomTextEdit
 
     //! predicate
     bool operator() ( const TextDisplay* display ) const
-    { return display->file().empty() && !display->document().isModified(); }
+    { return display->file().empty() && !display->document()->isModified(); }
 
   };
 
@@ -193,7 +182,7 @@ class TextDisplay: public CustomTextEdit
   void saveAs( void );
 
   //! Revert to save
-  void revertToSave( const bool& check = true );
+  void revertToSave();
   
   //@}
   
@@ -262,6 +251,9 @@ class TextDisplay: public CustomTextEdit
       by the document class setting any more.
     */
     HAS_WRAP = 1<<9,
+    
+    //! WRAP mode
+    WRAP = 1<<10
 
   };
 
@@ -311,8 +303,9 @@ class TextDisplay: public CustomTextEdit
   //! text highlight
   TextHighlight& textHighlight( void )
   {
-    Exception::checkPointer( highlight_, DESCRIPTION( "highlight_ not initialized." ) );
-    return *highlight_;
+    BASE::KeySet<TextHighlight> highlights( dynamic_cast<Key*>( document() ) );
+    Exception::check( highlights.size() == 1, "invalid association to TextHighlight.\n" );
+    return **highlights.begin();
   }
 
   //! text highlight
@@ -417,6 +410,9 @@ class TextDisplay: public CustomTextEdit
     else inactive_color_ = color;
   }
   
+  //! set background color
+  void _setPaper( const QColor& color );
+  
   //! last save time stamp
   void _setLastSaved( const TimeStamp& stamp )
   { last_save_ = stamp; }
@@ -424,6 +420,9 @@ class TextDisplay: public CustomTextEdit
   //! working directory
   void _setWorkingDirectory( const File& file )
   { working_directory_ = file; }
+
+  //! returns true if text contents differs from file contents
+  bool _contentsChanged( void ) const;
   
   protected slots:
 
@@ -462,9 +461,6 @@ class TextDisplay: public CustomTextEdit
 
   //! true if this display is the active display
   bool active_;
-
-  //! true if display should synchronize with others
-  bool synchronize_;
 
   //!@name document classes specific members
   //@{

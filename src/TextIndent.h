@@ -67,9 +67,6 @@ class TextIndent: public QObject, public Counter
   //! base indentation
   void setBaseIndentation( const unsigned int& value )
   { base_indentation_ = value; }
-
-  //! patterns
-  typedef std::list< IndentPattern* > IndentPattern::List;
   
   //! patterns
   const IndentPattern::List& patterns( void ) const
@@ -83,9 +80,9 @@ class TextIndent: public QObject, public Counter
   }
 
   //! patterns
-  void clearPatterns( void )
+  void clear( void )
   {
-    Debug::Throw( "TextIndent::ClearPatterns.\n" );
+    Debug::Throw( "TextIndent::clear.\n" );
     patterns_.clear();
   }
   

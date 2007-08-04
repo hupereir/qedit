@@ -38,12 +38,13 @@
 #include "Config.h"
 #include "Counter.h"
 #include "Debug.h"
+#include "Key.h"
 #include "HighlightPattern.h"
 
 class HighlightPattern;
 
 //! syntax highlighting based on text patterns
-class TextHighlight: public QSyntaxHighlighter, public Counter
+class TextHighlight: public QSyntaxHighlighter, public BASE::Key, public Counter
 {
   
   public:
@@ -80,8 +81,11 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   { patterns_ = patterns; } 
   
   //! patterns
-  void clearPatterns( void )
-  { patterns_.clear(); }
+  void clear( void )
+  { 
+    Debug::Throw( "TextHighlight.clear.\n" ); 
+    patterns_.clear(); 
+  }
   
   private:
   
