@@ -349,18 +349,12 @@ class TextDisplay: public CustomTextEdit
   void indent();
 
   //! emmited when recieve focus
-  void HasFocus( TextDisplay* );
+  void hasFocus( TextDisplay* );
 
   //! emmited whenever editframe toolbar, window title or file name editor needs update
   /* \param flags, bitwise or of UpdateFlags */
   void needUpdate( unsigned int flags );
   
-  //! emmited when undo is performed
-  void UndoCalled( void );
-
-  //! emmited when redo is performed
-  void RedoCalled( void );
-
   public slots:
 
   //! check if current entry has been modified or not
@@ -376,43 +370,17 @@ class TextDisplay: public CustomTextEdit
   }
   
   //! indent selection
-  void IndentSelection( void );
+  void indentSelection( void );
 
   //! process macro by name
-  void ProcessMacro( std::string );
+  void processMacro( std::string );
 
   //! replace all leading tabs in text when tab emulation is active
-  void ReplaceLeadingTabs( const bool& confirm );
+  void replaceLeadingTabs( const bool& confirm );
 
   //! rehighlight
-  void Rehighlight( void )
-  { 
-    _ClearLocations();
-    highlight_->rehighlight(); 
-  }
-
-  //! highlight braces
-  void HighlightBraces( void )
-  {
-    
-    TextPosition position( GetPosition() );
-    _HighlightBraces( position.Paragraph(), position.Index() );
-    
-  }
-  //! insert [overloaded from CustomTextEdit]
-  virtual void insert( const QString & text, uint flags = CheckNewLines | RemoveSelected );
-
-  //! cut [overloaded]
-  virtual void cut( void );
-
-  //! copy [overloaded]
-  virtual void paste( void );
-
-  //! undo [overloaded]
-  virtual void undo( void );
-
-  //! redo [overloaded]
-  virtual void redo( void );
+  void rehighlight( void )
+  { highlight_->setDocument( document() ); }
 
   protected:
 
@@ -422,79 +390,28 @@ class TextDisplay: public CustomTextEdit
   //! focus event [overloaded]
   void focusInEvent( QFocusEvent* );
 
-  #if WITH_ASPELL
-  //! popup menu [overloaded]
-  QPopupMenu* createPopupMenu( const QPoint &point );
-  #endif
-  
   //! create replace dialog
-  virtual void _CreateReplaceDialog( void );
-  
-  //! saved text
-  const std::string& _GetSavedText( void ) const
-  { return saved_text_; }
-  
-  //! saved text
-  void _SetSavedText( const std::string& text )
-  { saved_text_ = text; }
+  virtual void _createReplaceDialog( void );
   
   //!@ name backup text for synchronization
   //@{
   
   //! backup text
-  void _SetBackupText( const std::string text ) 
+  void _setBackupText( const std::string text ) 
   { backup_text_ = text; }
   
   //@}
   
-  //!@name box selection
-  //@{
-
-  //! remove box selected text
-  virtual void _RemoveBoxSelectedText( void );
-
-  //! remove box selected text
-  virtual void _InsertBoxSelection( const BoxSelection& box );
-
-  //! replace box selected text
-  virtual void _ReplaceBoxSelection( const BoxSelection& box );
-
-  //@}
-
-  //! clear locations
-  void _ClearLocations( void )
-  { locations_.clear(); }
-
   //! clear macros
-  void _ClearMacros( void )
+  void _clearMacros( void )
   { macros_.clear(); }
 
   //! macros
-  void _SetMacros( const MacroList& macros)
+  void _setMacros( const MacroList& macros)
   { macros_ = macros; }  
     
-  //! braces
-  typedef std::list< TextBraces* > BracesList;
-  
-  //! braces
-  typedef std::set< char > BracesSet;
-  
-  //! braces
-  const BracesList& _GetBraces( void ) const
-  { return braces_; }
-  
-  //! braces
-  void _ClearBraces( void )
-  {
-    braces_.clear();
-    braces_set_.clear();
-  }
-
-  //! set braces
-  void _SetBraces( const BracesList& );
-
   //! paper color for active/inactive views
-  void _SetPaper( const bool& active, const QColor& color )
+  void _setPaper( const bool& active, const QColor& color )
   { 
     if( !color.isValid() ) return;
     if( active ) active_color_ = color;
@@ -502,48 +419,24 @@ class TextDisplay: public CustomTextEdit
   }
   
   //! last save time stamp
-  void _SetLastSaved( const TimeStamp& stamp )
+  void _setLastSaved( const TimeStamp& stamp )
   { last_save_ = stamp; }
   
   //! working directory
-  void _SetWorkingDirectory( const File& file )
+  void _setWorkingDirectory( const File& file )
   { working_directory_ = file; }
   
-  //! returns true if text contents differs from file contents
-  bool _ContentsChanged( void ) const;
-    
   protected slots:
 
   //! indent paragraph (when return or tab is pressed)
-  void _IndentCurrentParagraph( void );
+  void _indentCurrentParagraph( void );
 
   //! selection changed
-  void _SelectionChanged( void )
+  void _selectionChanged( void )
   { if( isActive() ) emit needUpdate( CUT|COPY ); }
   
-  //! highlight braces
-  void _HighlightBraces( int paragraph, int index );
-
-  //! highlight current paragraph
-  void _HighlightParagraph( int paragraph, int index );
-
-  //! synchronize cursor with associated displays
-  void _SynchronizeCursor( int paragraph, int index );
-
-  //! synchronize selection with associated displays
-  void _SynchronizeSelection( void );
-
-  //! synchronize box selection
-  void _SynchronizeBoxSelection( void );
-
-  //! Replace misspelled selection with correct word
-  void _ReplaceSelection( const std::string& );
-
   //! replace selection in multiple files
-  void _MultipleFileReplace( void );
-
-  //! ignore word
-  void _IgnoreWord( const std::string& word );
+  void _multipleFileReplace( void );
 
   private:
   
@@ -558,9 +451,6 @@ class TextDisplay: public CustomTextEdit
   
   //! display flags
   unsigned int flags_;
-  
-  //! current paragraph highlighting
-  ParagraphHighlight paragraph_highlight_;
   
   //! paper color or active views
   QColor active_color_;
@@ -590,17 +480,8 @@ class TextDisplay: public CustomTextEdit
   //! text indent
   TextIndent* indent_;
 
-  //! text braces
-  BracesList braces_;
-
-  //! keep track of all braces in a single set for fast access
-  BracesSet braces_set_;
-
   //! text macro
   MacroList macros_;
-
-  //! map paragraph and HighlightPattern locations
-  LocationMap locations_;
 
   //@}
 

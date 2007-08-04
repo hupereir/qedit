@@ -27,11 +27,8 @@
   \date $Date$
 */
 
-#include <qaccel.h>
-#include <qapplication.h>
-#include <qcolor.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
+#include <QApplication>
+#include <QPushButton>
 
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
