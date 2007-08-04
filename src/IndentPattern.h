@@ -48,7 +48,7 @@ class IndentPattern: public Counter
   public: 
 
   //! typedef for list of patterns
-  typedef std::list< HighlightPattern* > List;
+  typedef std::list< IndentPattern* > List;
         
   //! constructor from DomElement
   IndentPattern( const QDomElement& element = QDomElement() );

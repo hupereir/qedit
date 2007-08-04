@@ -38,19 +38,14 @@
 #include "FileSelectionDialog.h"
 #include "HtmlUtil.h"
 #include "MainFrame.h"
-#include "Options.h"
+#include "XmlOptions.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
-#include "SyncObject.h"
 #include "TextBraces.h"
 #include "TextDisplay.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
 #include "Util.h"
-
-#if WITH_ASPELL
-#include "SuggestionMenu.h"
-#endif
 
 using namespace std;
 using namespace BASE;
@@ -59,41 +54,30 @@ using namespace BASE;
 const QRegExp TextDisplay::empty_line_regexp_( "(^\\s*$)" );
 
 //___________________________________________________
-TextDisplay::TextDisplay( QWidget* parent, const string& name ):
-  CustomTextEdit( parent, name, WDestructiveClose ),
+TextDisplay::TextDisplay( QWidget* parent ):
+  CustomTextEdit( parent ),
   file_( "" ),
-  working_directory_( Util::GetWorkingDirectory() ), 
+  working_directory_( Util::workingDirectory() ), 
   class_name_( "" ),
   flags_( 0 ),
   modified_( false ),
-  paragraph_highlight_( this ),
   active_( false ),
-  synchronize_( false ),
-  highlight_( new TextHighlight( this ) ),
+  highlight_( new TextHighlight( document() ) ),
   indent_( new TextIndent( this ) )
 {
   Debug::Throw( "TextDisplay::TextDisplay.\n" );
-  setMidLineWidth(10);
 
-  setSelectionAttributes(  BRACES_SELNUMBER, QColor( Options::Get<string>("BRACES_COLOR").c_str() ), false );
+  // tell frame to delete on exit
+  setAttribute( Qt::WA_DeleteOnClose );
+
   setKeyCompression( true );
-  setTextFormat( PlainText );
 
-  highlight_->SetEnabled( false );
-  indent_->SetEnabled( false );
+  highlight_->setEnabled( false );
+  indent_->setEnabled( false );
 
   // connections
-  connect( this, SIGNAL( textChanged() ), this, SLOT( SetModified() ) );
-  connect( this, SIGNAL( cursorPositionChanged( int, int ) ), this, SLOT( _HighlightBraces( int, int ) ) );
-  connect( this, SIGNAL( cursorPositionChanged( int, int ) ), this, SLOT( _HighlightParagraph( int, int ) ) );
-  connect( this, SIGNAL( cursorPositionChanged( int, int ) ), this, SLOT( _SynchronizeCursor( int, int ) ) );
-  connect( this, SIGNAL( selectionChanged() ), this, SLOT( _SelectionChanged() ) );
-  connect( this, SIGNAL( BoxSelectionChanged() ), this, SLOT( _SelectionChanged() ) );
-  
-  connect( this, SIGNAL( selectionChanged() ), this, SLOT( _SynchronizeSelection() ) );
-  connect( this, SIGNAL( BoxSelectionChanged() ), this, SLOT( _SynchronizeBoxSelection() ) );
-  connect( this, SIGNAL( returnPressed() ), this, SLOT( _IndentCurrentParagraph() ) );
-  connect( this, SIGNAL( Indent( const int& ) ), indent_, SLOT( Indent( const int& ) ) );
+  connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
+  connect( this, SIGNAL( indent( QTextBlock& ) ), indent_, SLOT( indent( QTextBlock& ) ) );
   
 }
 
@@ -110,76 +94,53 @@ TextDisplay::~TextDisplay( void )
 }
 
 //___________________________________________________________________________
-void TextDisplay::Clone( TextDisplay& display )
+void TextDisplay::clone( TextDisplay& display )
 {
  
   Debug::Throw( "TextDisplay::Clone\n" );
   
-  SetFlags( display.GetFlags() );
-  UpdateFlags();
+  setFlags( display.flags() );
+  updateFlags();
 
   // highlighting
-  GetTextHighlight().SetPatterns( display.GetTextHighlight().GetPatterns() );
-  
-  // paragraph highlighting
-  GetParagraphHighlight().Clone( display.GetParagraphHighlight() );
+  textHighlight().setPatterns( display.textHighlight().patterns() );
   
   // indentation
-  GetTextIndent().SetPatterns( display.GetTextIndent().GetPatterns() );
-  GetTextIndent().SetBaseIndentation( display.GetTextIndent().GetBaseIndentation() );
+  textIndent().setPatterns( display.textIndent().patterns() );
+  textIndent().setBaseIndentation( display.textIndent().baseIndentation() );
 
   // braces
-  _SetBraces( display._GetBraces() );
+  _setBraces( display._braces() );
  
   // macros
-  _SetMacros( display.GetMacros() );
+  _setMacros( display.macros() );
 
   // file
-  SetFile( display.GetFile() );
+  setFile( display.file() );
     
-  // text and modification state
-  setText( display.text() );
-  _SetSavedText( display._GetSavedText() );
-  _SetBackupText( display.GetBackupText() );
-  SetModified( display.Modified() );
-  
-  // synchronization
-  SynchronizeBoxSelection( display ); 
-  SynchronizeSelection( display, 0 ); 
-  SynchronizeSelection( display, BRACES_SELNUMBER ); 
-
-  // synchronize paragraph background
-  for( int paragraph = 0; paragraph < display.paragraphs(); paragraph++ )
-  { 
-    QColor color( display.paragraphBackgroundColor( paragraph ) );
-    if( color.isValid() ) setParagraphBackgroundColor( paragraph, color ); 
-  }
-  
-  // synchronize cursor position
-  int paragraph( 0 ), index( 0 );
-  display.getCursorPosition( &paragraph, &index );
-  setCursorPosition( paragraph, index );
-
-  // move scrollbars
-  setContentsPos( display.contentsX(), display.contentsY() );
+  // synchronize text
+  // (from base class)
+  synchronize( display )
   
 }
 
 //____________________________________________
-void TextDisplay::OpenFile( File file )
+void TextDisplay::openFile( File file )
 {
   
-  Debug::Throw() << "TextDisplay::OpenFile " << file << endl;
+  Debug::Throw() << "TextDisplay::openFile " << file << endl;
   
   // expand filename
-  file = file.Expand();
+  file = file.expand();
 
   // check is there is an "AutoSave" file matching with more recent modification time
+  // here, when the Diff is working, I could offer the possibility to show a diff between
+  // the saved file and the backup
   bool restore_autosave( false );
   File tmp( file );
-  File autosaved( AutoSaveThread::MakeAutoSaveName( tmp ) );
-  if( autosaved.Exist() &&
-    ( !tmp.Exist() ||
+  File autosaved( AutoSaveThread::autoSaveName( tmp ) );
+  if( autosaved.exist() &&
+    ( !tmp.exist() ||
     ( autosaved.LastModified() > tmp.LastModified() && tmp.Diff(autosaved) ) ) )
   {
     ostringstream what;
@@ -188,7 +149,7 @@ void TextDisplay::OpenFile( File file )
     what << "This probably means that the application crashed the last time ";
     what << "the file was edited." << endl;
     what << "Use autosaved version ?";
-    if( QtUtil::QuestionDialogExclusive( this, what.str() ) )
+    if( QtUtil::questionDialog( this, what.str() ) )
     {
       restore_autosave = true;
       tmp = autosaved;
@@ -200,9 +161,8 @@ void TextDisplay::OpenFile( File file )
   displays.insert( this );
   for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
-    (*iter)->SetFile( file );
-    (*iter)->SetClassName( GetClassName() );
-    (*iter)->UpdateDocumentClass();
+    (*iter)->setClassName( getClassName() );
+    (*iter)->updateDocumentClass();
   }
   
   // check file and try open.
@@ -1112,63 +1072,33 @@ void TextDisplay::insert( const QString & text, uint flags )
 void TextDisplay::keyPressEvent( QKeyEvent* event )
 {
 
-  // duplicate event to other displays.
-  bool was_synchronized( Synchronized() );
-  if( Synchronized() )
-  {
-    if( isActive() )
-    {
-      
-      // temporary turn off synchronization otherwise
-      // key accelerators may be applied twice
-      // (via direct synchronization of the key and via the accelerator associate slot)
-      synchronize_ = false;
-      KeySet<TextDisplay> displays( this );
-      for( KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-      { qApp->sendEvent( *iter, event ); }
-
-    } else setUpdatesEnabled( false );
-  }
-
   // check if tab key is pressed
-  if( event->key() == Key_Tab  && indent_->Enabled() && !( hasSelectedText() || HasBoxSelection() ) )
+  if( event->key() == Key_Tab && indent_->isEnabled() && !textCursor().hasSelection() )
+  { emit indent( textCursor().block() ) ); }
+  else 
   {
 
-    // indent paragraph
-    int paragraph(0), index(0);
-    getCursorPosition( &paragraph, &index );
-    emit Indent( paragraph );
-
-  } else {
-
+    // indent current paragraph when return is pressed
+    if( event->key() == Key_Return && indent_->isEnabled() && !textCursor().hasSelection() )
+    { emit indent( textCursor().block() ) ); }
+  
     // process key
     CustomTextEdit::keyPressEvent( event );
 
     // reindent paragraph if needed
-    if( indent_->Enabled() && ( event->key() == Key_BraceRight || event->key() == Key_BraceLeft ) && !hasSelectedText() )
-    {
-      int paragraph(0), index(0);
-      getCursorPosition( &paragraph, &index );
-      emit Indent( paragraph );
-    }
+    if( indent_->enabled() && ( event->key() == Key_BraceRight || event->key() == Key_BraceLeft ) && !textCursor().hasSelection() )
+    { emit indent( textCursor().block() ) ); }
+
   }
 
-  // set synchronization flag back to origin
-  synchronize_ = was_synchronized;
-
-  // reenable updates
-  if( Synchronized() && !isActive() )
-  {
-    setUpdatesEnabled( true );
-    updateContents();
-  }
   return;
 }
 
 //_______________________________________________________
 void TextDisplay::focusInEvent( QFocusEvent* event )
 {
-  emit HasFocus( this );
+  Debug::Throw() << "TextDisplay::focusInEvent - " << key() << endl;
+  emit hasFocus( this );
   CustomTextEdit::focusInEvent( event );
 }
 

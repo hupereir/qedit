@@ -32,7 +32,7 @@
   \date $Date$
 */
 
-#include <qobject.h>
+#include <QObject>
 #include <list>
 #include <string>
 
@@ -58,39 +58,39 @@ class DocumentClassManager: public QObject, public Counter
   ~DocumentClassManager( void )
   {
     Debug::Throw( "DocumentclassManager::~DocumentClassManager.\n" );
-    Clear();
+    clear();
   }
 
   //! clear document classes
-  void Clear( void );
+  void clear( void );
 
   //! read classes from file
-  bool Read( const File& file );
+  bool read( const File& file );
 
   //! read errors
-  const std::string& GetReadError( void ) const
+  const std::string& readError( void ) const
   { return read_error_; }
   
   //! write all classes to file
-  bool Write( const File& file ) const;
+  bool write( const File& file ) const;
 
   //! write classes to file
-  bool Write( const std::string& class_name, const File& file ) const;
+  bool write( const std::string& class_name, const File& file ) const;
 
   //! get class matching filename. Return 0 if not found
-  const DocumentClass* Find( const File& file ) const;
+  const DocumentClass* find( const File& file ) const;
 
   //! get class matching name. Return 0 if none found
-  const DocumentClass* Get( const std::string& name ) const;
+  const DocumentClass* get( const std::string& name ) const;
 
   //! remove a class matching name.
-  bool Remove( const std::string& name );
+  bool remove( const std::string& name );
 
   //! shortcut to list of document classes
   typedef std::list<DocumentClass*> ClassList;
 
   //! get all classes
-  const ClassList& GetList( void ) const
+  const ClassList& list( void ) const
   { return document_classes_; }
 
   private:

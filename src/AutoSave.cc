@@ -156,7 +156,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
     if( !(*displays.begin())->file().empty() )
     {
       (*iter)->setFile( (*displays.begin())->file() );
-      (*iter)->SetContents( (*displays.begin())->plainText() );
+      (*iter)->SetContents( (*displays.begin())->toPlainText() );
       (*iter)->start();
     }
     

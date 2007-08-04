@@ -45,7 +45,7 @@ TextIndent::TextIndent( TextDisplay* editor ):
 { Debug::Throw( "TextIndent::TextIndent.\n" ); }
   
 //______________________________________________
-void TextIndent::indent( QTextBlock& block )
+void TextIndent::indent( QTextBlock block )
 {
 
   if( !enabled() ) return;
@@ -91,11 +91,8 @@ void TextIndent::indent( QTextBlock& block )
 }
 
 //____________________________________________
-bool TextIndent::_acceptPattern( const QTextBlock& block, const IndentPattern& pattern ) const
+bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern ) const
 {
-
-  // copy current block for navigation
-  QTextBlock local( block );
   
   // retrieve rules associated to pattern
   bool accepted( true );
@@ -105,27 +102,28 @@ bool TextIndent::_acceptPattern( const QTextBlock& block, const IndentPattern& p
 
     // if working on current paragraph
     if( iter->paragraph() == 0 )
-    { if( !iter->accept( local.text() ) ) accepted = false; }
+    { if( !iter->accept( block.text() ) ) accepted = false; }
     else {
 
       // decrepent paragraph, skipping ignored lines
       int decrement = 0;
       do {
-        local = local.previous()
+        block = block.previous()
         decrement--;
-        while( local.isValid() && editor_->ignoreBlock( local ) ) 
-        { local = local.previous(); }
+        while( block.isValid() && editor_->ignoreBlock( block ) ) 
+        { block = block.previous(); }
         
-      } while( local.isValid() && decrement > iter->paragraph() );
+      } while( block.isValid() && decrement > iter->paragraph() );
 
       // check paragraph and regexp
       // here one could have a flag on the indentation pattern rules 
       // to check what is to be done when there is no valid paragraph
       // matching the request. This would allow to enable some patterns 
       // that cannot otherwise.
-      if( !local.isValid() || !iter->accept( local.text() ) ) accepted = false;
+      if( !block.isValid() || !iter->accept( block.text() ) ) accepted = false;
     
     }
+    
   }
 
   return accepted;
@@ -158,7 +156,7 @@ int TextIndent::_tabCount( const QTextBlock& block )
 }
 
 //____________________________________________
-void TextIndent::_increment( QTextBlock& block, const unsigned int& count )
+void TextIndent::_increment( QTextBlock block, const unsigned int& count )
 {
   
   // first make sure that the line has at least base_indentation_ characters
@@ -192,7 +190,7 @@ void TextIndent::_increment( QTextBlock& block, const unsigned int& count )
 }
 
 //____________________________________________
-void TextIndent::_decrement( QTextBlock& block )
+void TextIndent::_decrement( QTextBlock block )
 {
   
   // set a cursor at beginning of block

@@ -65,6 +65,18 @@ class TextDisplay: public CustomTextEdit
   
   //! clone display configuration
   virtual void clone( TextDisplay& display );
+
+  //! check if current entry has been modified or not
+  void setModified( const bool& value = true )
+  {
+    
+    // do nothing if state is unchanged
+    if( value == document()->isModified() ) return;
+    document()->setModified( value );
+    
+    // ask for update in the parent frame
+    if( isActive() ) emit needUpdate( WINDOW_TITLE | UNDO_REDO );
+  }  
   
   //! update flags (to be passed to TextEditor to change button status)
   enum UpdateFlags
@@ -125,19 +137,6 @@ class TextDisplay: public CustomTextEdit
   const File& workingDirectory() const
   { return working_directory_; }
 
-  //!@name text backup for synchronization check
-  //@{
-  
-  //! text backup
-  void makeBackup( void )
-  { backup_text_ = plainText(); }
-
-  //! backup text
-  const QString& backupText( void ) const
-  { return backup_text_; }
-
-  //@}
- 
   //! returns true if file was modified by external application
   bool fileModified( void );
 
@@ -286,7 +285,7 @@ class TextDisplay: public CustomTextEdit
   { return flags_ & bit; }
   
   //! update display based on flags
-  bool applyFlags( void );
+  bool updateFlags( void );
   
   //@}
 
@@ -346,7 +345,7 @@ class TextDisplay: public CustomTextEdit
   signals:
 
   //! emmited when indentation of current paragraph is required
-  void indent();
+  void indent( QTextBlock );
 
   //! emmited when recieve focus
   void hasFocus( TextDisplay* );
@@ -357,17 +356,6 @@ class TextDisplay: public CustomTextEdit
   
   public slots:
 
-  //! check if current entry has been modified or not
-  void setModified( const bool& value = true )
-  {
-    
-    // do nothing if state is unchanged
-    if( value == document()->isModified() ) return;
-    document()->setModified( value );
-    
-    // ask for update in the parent frame
-    if( isActive() ) emit needUpdate( WINDOW_TITLE | UNDO_REDO );
-  }
   
   //! indent selection
   void indentSelection( void );
@@ -392,16 +380,7 @@ class TextDisplay: public CustomTextEdit
 
   //! create replace dialog
   virtual void _createReplaceDialog( void );
-  
-  //!@ name backup text for synchronization
-  //@{
-  
-  //! backup text
-  void _setBackupText( const std::string text ) 
-  { backup_text_ = text; }
-  
-  //@}
-  
+    
   //! clear macros
   void _clearMacros( void )
   { macros_.clear(); }
@@ -409,7 +388,27 @@ class TextDisplay: public CustomTextEdit
   //! macros
   void _setMacros( const MacroList& macros)
   { macros_ = macros; }  
-    
+  
+    //! braces
+  typedef std::list< TextBraces* > BracesList;
+  
+  //! braces
+  typedef std::set< char > BracesSet;
+  
+  //! braces
+  const BracesList& _braces( void ) const
+  { return braces_; }
+  
+  //! braces
+  void _clearBraces( void )
+  {
+    braces_.clear();
+    braces_set_.clear();
+  }
+
+  //! set braces
+  void _setBraces( const BracesList& );
+
   //! paper color for active/inactive views
   void _setPaper( const bool& active, const QColor& color )
   { 
@@ -461,10 +460,6 @@ class TextDisplay: public CustomTextEdit
   //! last save timeStamp
   TimeStamp last_save_;
 
-  //! copy of file text when splitting window
-  /*! it is used in case synchronization is lost between views */
-  std::string backup_text_;
-
   //! true if this display is the active display
   bool active_;
 
@@ -479,6 +474,12 @@ class TextDisplay: public CustomTextEdit
 
   //! text indent
   TextIndent* indent_;
+
+  //! text braces
+  BracesList braces_;
+
+  //! keep track of all braces in a single set for fast access
+  BracesSet braces_set_;
 
   //! text macro
   MacroList macros_;

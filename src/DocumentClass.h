@@ -171,7 +171,7 @@ class DocumentClass: public Counter
   };
   
   //! used to counts number of default patterns registered
-  class isDefaultFTor
+  class IsDefaultFTor
   {
     public:
     

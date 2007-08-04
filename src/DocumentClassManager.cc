@@ -42,7 +42,7 @@
 using namespace std;
 
 //________________________________________________________
-void DocumentClassManager::Clear( void )
+void DocumentClassManager::clear( void )
 {
   Debug::Throw( "DocumentClassManager::Clear.\n" );
   for( ClassList::iterator iter = document_classes_.begin(); iter != document_classes_.end(); iter++ )
@@ -52,21 +52,21 @@ void DocumentClassManager::Clear( void )
 }
 
 //________________________________________________________
-bool DocumentClassManager::Read( const File& filename )
+bool DocumentClassManager::read( const File& filename )
 {
-  Debug::Throw() << "DocumentClassManager::Read - file: " << filename << endl; 
+  Debug::Throw() << "DocumentClassManager::read - file: " << filename << endl; 
   
   // reset Read error
   read_error_ = "";
   
   // try open file
   QFile file( filename.c_str() );
-  if ( !file.open( IO_ReadOnly ) ) return false;
+  if ( !file.open( QIODevice::ReadOnly ) ) return false;
   
   // parse file
   XmlError error( filename );
   QDomDocument document;
-  if ( !document.setContent( &file, &error.Error(), &error.Line(), &error.Column() ) ) {
+  if ( !document.setContent( &file, &error.error(), &error.line(), &error.column() ) ) {
     file.close();
     ostringstream what;
     what << "An error occured while parsing document classes." << endl;
@@ -84,15 +84,16 @@ bool DocumentClassManager::Read( const File& filename )
     QDomElement element = node.toElement();
     if( element.isNull() ) continue;
 
-    string tag_name( (const char*) element.tagName() );
-    if( tag_name == XML::DOCUMENT_CLASS ) {
+    string tag_name( qPrintable( element.tagName() ) );
+    if( tag_name == XML::DOCUMENT_CLASS ) 
+    {
       DocumentClass* document_class = new DocumentClass( element );
       
       // look for document classes with same name 
       ClassList::iterator iter = find_if(
         document_classes_.begin(),
         document_classes_.end(),
-        DocumentClass::SameNameFTor( document_class->Name() ) );
+        DocumentClass::SameNameFTor( document_class->name() ) );
       if( iter != document_classes_.end() )
       {
         delete *iter;
@@ -100,13 +101,13 @@ bool DocumentClassManager::Read( const File& filename )
       }
       
       // add new document class
-      document_class->SetFile( filename );
+      document_class->setFile( filename );
       document_classes_.push_back( document_class );
       
       // reset IndentPattern counter (for debugging)
-      IndentPattern::ResetCounter();
+      IndentPattern::resetCounter();
 
-    } else Debug::Throw() << "MainFrame::_ReadDocumentClasses - unrecognized child " << tag_name << endl;
+    } else Debug::Throw() << "DocumentClassManager::read - unrecognized child " << tag_name << endl;
   }
 
   // store error
@@ -120,38 +121,41 @@ bool DocumentClassManager::Read( const File& filename )
 }
 
 //________________________________________________________
-bool DocumentClassManager::Write( const std::string& class_name, const File& filename ) const
+bool DocumentClassManager::write( const std::string& class_name, const File& filename ) const
 {
-  Debug::Throw() << "DocumentClassManager::Write - class: " << class_name << " file: " << filename << endl;
+  Debug::Throw() << "DocumentClassManager::write - class: " << class_name << " file: " << filename << endl;
   
   // try retrieve DocumentClass
   ClassList::const_iterator iter = find_if( document_classes_.begin(), document_classes_.end(), DocumentClass::SameNameFTor( class_name ) );
   if( iter == document_classes_.end() ) return false;
   
   // try open file
-  ofstream out( filename.c_str() );
-  if( !out ) return false;
+  QFile out( filename.c_str() );
+  if( !out.open( QIODevice::WriteOnly ) ) return false;
   
   // create document
   QDomDocument document;
   
   // create main element
   QDomElement top = document.appendChild( document.createElement( XML::PATTERNS.c_str() ) ).toElement();
-  top.appendChild( (*iter)->DomElement( document ) );
+  top.appendChild( (*iter)->domElement( document ) );
   
-  out << document.toString();
+  out.write( document.toByteArray() );
   out.close();
+
   return true;
+
 }
 
 //________________________________________________________
-bool DocumentClassManager::Write( const File& filename ) const
+bool DocumentClassManager::write( const File& filename ) const
 {
-  Debug::Throw() << "DocumentClassManager::Write - file: " << filename << endl;
+  Debug::Throw() << "DocumentClassManager::write - file: " << filename << endl;
+  
   
   // try open file
-  ofstream out( filename.c_str() );
-  if( !out ) return false;
+  QFile out( filename.c_str() );
+  if( !out.open( QIODevice::WriteOnly ) ) return false;
   
   // create document
   QDomDocument document;
@@ -159,17 +163,19 @@ bool DocumentClassManager::Write( const File& filename ) const
   // create main element
   QDomElement top = document.appendChild( document.createElement( XML::PATTERNS.c_str() ) ).toElement();
   for( ClassList::const_iterator iter = document_classes_.begin(); iter != document_classes_.end(); iter++ )
-  { top.appendChild( (*iter)->DomElement( document ) ); }
-  
-  out << document.toString();
+  { top.appendChild( (*iter)->domElement( document ) ); }
+ 
+  out.write( document.toByteArray() );
   out.close();
+
   return true;
+
 }
 
 //________________________________________________________
-const DocumentClass* DocumentClassManager::Find( const File& filename ) const
+const DocumentClass* DocumentClassManager::find( const File& filename ) const
 {
-  Debug::Throw() << "DocumentClassManager::Find - file: " << filename << endl;  
+  Debug::Throw() << "DocumentClassManager::find - file: " << filename << endl;  
   
   // try load class matching name
   ClassList::const_iterator iter = find_if(
@@ -177,7 +183,6 @@ const DocumentClass* DocumentClassManager::Find( const File& filename ) const
     document_classes_.end(),
     DocumentClass::MatchFileFTor( filename ) );
   if( iter != document_classes_.end() ) return *iter;
-  
   
   // try load default
   iter = find_if(
@@ -191,7 +196,7 @@ const DocumentClass* DocumentClassManager::Find( const File& filename ) const
 }
 
 //________________________________________________________
-const DocumentClass* DocumentClassManager::Get( const string& name ) const
+const DocumentClass* DocumentClassManager::get( const string& name ) const
 {  
   Debug::Throw() << "DocumentClassManager::Get - name: " << name << endl;
   
@@ -208,7 +213,7 @@ const DocumentClass* DocumentClassManager::Get( const string& name ) const
   
 
 //________________________________________________________
-bool DocumentClassManager::Remove( const string& name )
+bool DocumentClassManager::remove( const string& name )
 {
   Debug::Throw() << "DocumentClassManager::Remove - name: " << name << endl; 
   

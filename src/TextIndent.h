@@ -92,12 +92,12 @@ class TextIndent: public QObject, public Counter
   public slots:
 
   //! highlight paragraph
-  virtual void indent( QTextBlock& block );
+  virtual void indent( QTextBlock block );
 
   private:
 
   //! returns true if pattern match current paragraph
-  bool _acceptPattern( const QTextBlock& block, const IndentPattern& pattern ) const;
+  bool _acceptPattern( QTextBlock block, const IndentPattern& pattern ) const;
 
   //! return number of tabs in given paragraph
   int _tabCount( const QTextBlock& block );
@@ -106,11 +106,11 @@ class TextIndent: public QObject, public Counter
   // int _previousTabCount( QTextBlock block );
 
   //! increment paragraph with n tabs
-  void _increment( QTextBlock& block, const unsigned int& count = 1 );
+  void _increment( QTextBlock block, const unsigned int& count = 1 );
 
   //! decrement paragraph
   //! \brief try remove leading tabs up to n
-  void _decrement( QTextBlock& block );
+  void _decrement( QTextBlock block );
 
   //! enabled
   bool enabled_;
