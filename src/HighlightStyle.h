@@ -1,5 +1,6 @@
 #ifndef _HighlightStyle_h_
 #define _HighlightStyle_h_
+
 // $Id$
 
 /******************************************************************************
@@ -35,6 +36,7 @@
 #include <QFont>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QTextCharFormat>
 
 #include <list>
 #include <string>
@@ -87,24 +89,29 @@ class HighlightStyle: public Counter
   { name_ = name; }
   
   //! format
-  virtual const unsigned int& format( void ) const
+  virtual const unsigned int& fontFormat( void ) const
   { return format_; }
   
   //! format 
-  virtual void setFormat( const unsigned int format )
+  virtual void setFontFormat( const unsigned int format )
   { format_ = format; }
   
-  //! fond
-  virtual QFont font( const QFont& font ) const
+  //! formated font
+  virtual QTextCharFormat format() const
   {
-    QFont out( font );
-    out.setBold( format()&FORMAT::BOLD );
-    out.setItalic( format()&FORMAT::ITALIC );
-    out.setUnderline( format()&FORMAT::UNDERLINE );
-    out.setStrikeOut( format()&FORMAT::STRIKE );
+    
+    QTextCharFormat out;
+    
+    out.setFontWeight( (format_&FORMAT::BOLD) ? QFont::Bold : QFont::Normal );
+    out.setFontItalic( format_&FORMAT::ITALIC );
+    out.setFontUnderline( format_&FORMAT::UNDERLINE );
+    out.setFontOverline( format_&FORMAT::OVERLINE );
+    out.setFontStrikeOut( format_&FORMAT::STRIKE );
+    if( color_.isValid() ) out.setForeground( color_ );
+    
     return out;
   }
-  
+
   //! color
   virtual const QColor& color( void ) const
   { return color_; }

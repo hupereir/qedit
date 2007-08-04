@@ -38,7 +38,7 @@
 using namespace std;
 
 //___________________________________________________________________________
-unsigned int HighlightPattern::id_counter_ = 0;
+int HighlightPattern::id_counter_ = 0;
 
 //___________________________________________________________________________
 HighlightPattern::HighlightPattern( const QDomElement& element ):

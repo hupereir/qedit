@@ -28,12 +28,14 @@ endif
 
 CXXFLAGS = @CXXFLAGS@
 
-bin_PROGRAMS = qedit copy_logbook synchronize_logbook
+bin_PROGRAMS = qedit
+noinst_LIBRARIES = libhighlight.a
 
 if WITH_ASPELL 
 libraries = \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   -L$(aspell_libraries) -laspell  \
+  libhighlight.a \
   ../base-spellcheck/libbase-spellcheck.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
@@ -43,6 +45,7 @@ else
 
 libraries =  \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
+  libhighlight.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
@@ -51,18 +54,30 @@ endif
 
 qedit_LDADD =  $(libraries)
 
-
 noinst_HEADERS = \
+  DocumentClass.h \
+  HighlightBlockData.h \
   HighlightStyle.h \
   HighlightPattern.h \
+  IndentPattern.h \
   KeywordPattern.h \
-  RangePattern.h
+  RangePattern.h \
+  TextBraces.h \
+  TextHighlight.h \
+  TextMacro.h
 
-qedit_SOURCES = \
+libhighlight_a_SOURCES = \
   HighlightStyle.cc \
   HighlightPattern.cc \
   KeywordPattern.cc \
-  RangePattern.cc
+  RangePattern.cc \
+  TextHighlight.cc
+
+qedit_SOURCES = \
+  DocumentClass.cc \
+  IndentPattern.cc \
+  TextBraces.cc \
+  TextMacro.cc
 
 nodist_qedit_SOURCES =
 

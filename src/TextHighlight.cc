@@ -20,6 +20,7 @@
 *
 *
 *******************************************************************************/
+
 /*!
   \file TextHighlight.cc
   \brief syntax highlighting based on text patterns
@@ -30,8 +31,8 @@
 
 #include "Debug.h"
 #include "HighlightPattern.h"
+#include "HighlightBlockData.h"
 #include "TextHighlight.h"
-#include "TextDisplay.h"
 
 using namespace std;
 
@@ -39,117 +40,82 @@ using namespace std;
 static const int debug_level = 1;
 
 //_________________________________________________________
-TextHighlight::TextHighlight( TextDisplay* display ):
-  QSyntaxHighlighter( display ),
-  #if WITH_ASPELL==0
+TextHighlight::TextHighlight( QTextDocument* document ):
+  QSyntaxHighlighter( document ),
   Counter( "TextHighlight" ),
-  #endif
-  enabled_( true ),
-  editor_( display ),
-  previous_paragraphs_( 0 )
+  enabled_( false )
 { Debug::Throw( "TextHighlight::TextHighlight.\n" ); }
 
 //_________________________________________________________
-int TextHighlight::highlightParagraph( const QString& text, int active_id )
+void TextHighlight::highlightBlock( const QString& text )
 {
   
   setFormat( 0, text.length(), Qt::black );
-  if( currentParagraph() == 0 ) active_id = 0;
+  if( !isEnabled() ) return;
 
-  // check paragraph length
-  // calculate paragraph increment
-  // update previous paragraphs
-  int paragraphs( editor_->paragraphs() );
-  int increment( paragraphs - previous_paragraphs_ );
-  previous_paragraphs_ = paragraphs;
-
-  // if paragraph increment is non zero, update editor location map
-  if( increment != 0 )
-  {
-    const TextDisplay::LocationMap& previous_map( editor_->GetLocations() );
-    TextDisplay::LocationMap new_map;
+  // try retrieve HighlightBlockData
+  bool need_update( true );
+  HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( currentBlockUserData() );
+  if( data ) need_update = data->isModified(); 
+  else {
     
-    // retrieve all locations that correspond to a paragraph not smaller than current_paragraph
-    TextDisplay::LocationMap::const_iterator iter = previous_map.upper_bound( currentParagraph() );
-    new_map.insert( previous_map.begin(), iter );
-    for(; iter != previous_map.end(); iter++ )
-    {
-      if( iter->first + increment > currentParagraph() )
-      { new_map.insert( make_pair( iter->first + increment, iter->second ) ); }
-    }
+    // try retrieve data from parent type
+    TextBlockData* text_data = dynamic_cast<TextBlockData*>( currentBlockUserData() );
+    data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData();
+    setCurrentBlockUserData( data );
+    
+  }  
 
-    editor_->SetLocations( new_map );
-  }
+  // retrieve active_id from last block state
+  int active_id( previousBlockState() );
   
-  // prepare new set of locations
-  HighlightPattern::LocationSet locations;
-
-  // retrieve current paragraph and decide if updates are needed
-  int current_paragraph = editor_->GetPosition().Paragraph();
-  bool need_update(currentParagraph() <= current_paragraph || !editor_->HasLocations( currentParagraph() ) );
+  // retrieve new set of locations
+  HighlightPattern::LocationSet locations( locationSet( text, active_id ) );
   
-  if( !need_update ) 
-  { 
-    
-    // retrieve old (shifted) locations
-    locations = editor_->GetLocations( currentParagraph() );
-    
-    // check if active ID match
-    if( locations.ActiveId().first != active_id ) 
-    {
-      need_update = true; 
-      locations = GetLocationSet( text, active_id );
-    }
-    
-  } else locations = GetLocationSet( text, active_id );
-    
   // apply new location set
-  if( !locations.empty() ) _Apply( text, locations );
+  if( !locations.empty() ) _apply( text, locations );
   
-  // return updated active ID
-  return locations.ActiveId().second;
-
-}
+  // store active id
+  setCurrentBlockState( active_id );
+  
+  // update data modification state and highlight pattern locations
+  data->setModified( false );
+  data->setLocations( locations );
+  return;
+  
+}  
     
 //_________________________________________________________
-HighlightPattern::LocationSet TextHighlight::GetLocationSet( const QString& text, const int& active_id )
+HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, const int& active_id )
 {
     
   // location list
   HighlightPattern::LocationSet locations;
-  locations.ActiveId().first = active_id;
-  locations.ActiveId().second = active_id;
+  locations.activeId().first = active_id;
+  locations.activeId().second = active_id;
   
-  // retrieve editor current font
-  #if WITH_ASPELL
-  if( enabled_ && !patterns_.empty() && !AutoSpellEnabled() ) 
-  #else
-  if( enabled_ && !patterns_.empty() ) 
-  #endif
+  // check if pattern active_id is still active
+  if( active_id > 0 )
   {
-    // check if Pattern active_id is still active
-    if( active_id )
-    for( PatternList::iterator iter = patterns_.begin(); iter != patterns_.end(); iter++ )
+    
+    // look for matching pattern in list
+    HighlightPattern::List::iterator pattern_iter = find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( active_id ) );
+    Exception::check( pattern_iter != patterns_.end(), DESCRIPTION( "invalid pattern" ) );
+    
+    HighlightPattern &pattern( **pattern_iter );
+    bool active=true;
+    pattern.processText( locations, text, active );
+      
+    // if not active, break the loop to process the other patterns
+    if( active )
     {
-      HighlightPattern &pattern( **iter );
-      if( (int)pattern.Id() != active_id ) continue;
-      
-      bool active=true;
-      pattern.ProcessText( locations, (const char*) text, active );
-      
-      // if not active, break the loop to process the other patterns
-      if( !active ) break;
-      
+    
       // if still active. look for child patterns
-      for( PatternList::iterator iter = patterns_.begin(); iter != patterns_.end(); iter++ )
-      {
-        
-        // keep only child patterns
-        HighlightPattern &pattern( **iter ); 
-        if( (int)pattern.ParentId() != active_id ) continue;
-        pattern.ProcessText( locations, (const char*) text, active ); 
-        
-      }
+      // this could be made faster by storing child patterns into this one
+      for( HighlightPattern::List::const_iterator child_iter = pattern.children().begin(); child_iter != pattern.children().end(); child_iter++ )
+      { (*child_iter)->processText( locations, text, active );}
+    
+//      unique( locations.begin(), locations.end(), HighlightPattern::Location::OverlapFTor() );
       
       // remove patterns that overlap with others
       HighlightPattern::LocationSet::iterator iter = locations.begin();
@@ -162,15 +128,15 @@ HighlightPattern::LocationSet TextHighlight::GetLocationSet( const QString& text
       if( prev != locations.end() ) prev++; 
       while(  iter != locations.end() )
       {
-        if( iter == locations.end() ) break;
         
         // no need to compare prev and iter parent Ids because they are known to be the 
         // active parrent
-        if( iter->Position() < prev->Position()+(int)prev->Length() )
+        if( iter->position() < prev->position()+(int)prev->length() )
         {
+
+          // current iterator overlaps with prev
           HighlightPattern::LocationSet::iterator current = iter;
           iter++;
-          
           locations.erase( current );
           
         } else {
@@ -184,137 +150,133 @@ HighlightPattern::LocationSet TextHighlight::GetLocationSet( const QString& text
       return locations;
     }
     
-    unsigned int active_patterns(0);
-    for( PatternList::iterator iter = patterns_.begin(); iter != patterns_.end(); iter++ )
+  }
+    
+  // no active pattern
+  // normal processing
+  unsigned int active_patterns(0);
+  for( HighlightPattern::List::iterator iter = patterns_.begin(); iter != patterns_.end(); iter++ )
+  {
+    
+    HighlightPattern &pattern( **iter );
+    
+    // do not reprocess active pattern (if any)
+    // sincee it was already done
+    if( (int)pattern.id() == active_id ) continue;
+    
+    // process pattern, store activity
+    bool active = false;
+    pattern.processText( locations, text, active );
+    if( active ) active_patterns |= pattern.id();
+    
+  }
+  
+  // check number of recorded locations
+  if( locations.empty() ) return locations;
+  
+  // remove locations that are front and have parents
+  while( locations.size() && locations.begin()->parentId() ) locations.erase(locations.begin());
+  
+  // remove patterns that overlap with others
+  HighlightPattern::LocationSet::iterator iter = locations.begin();
+  HighlightPattern::LocationSet::iterator prev = locations.begin();
+  HighlightPattern::LocationSet::iterator parent = locations.begin();
+  
+  if( iter != locations.end() ) iter++;
+  while(  iter != locations.end() )
+  {
+    
+    // check if patterns overlap
+    if( iter->position() < prev->position()+(int)prev->length() )
     {
-      HighlightPattern &pattern( **iter );
       
-      // do not reprocess active pattern (if any)
-      if( (int)pattern.Id() == active_id ) continue;
-      
-      // process pattern, store activity
-      bool active = false;
-      pattern.ProcessText( locations, (const char*) text, active );
-      if( active ) active_patterns |= pattern.Id();
-      
-    }
-    
-    // check number of recorded locations
-    if( locations.empty() ) return locations;
-    
-    // remove locations that are at fronts and have parents
-    while( locations.size() && locations.begin()->ParentId() ) locations.erase(locations.begin());
-    
-    // remove patterns that overlap with others
-    HighlightPattern::LocationSet::iterator iter = locations.begin();
-    HighlightPattern::LocationSet::iterator prev = locations.begin();
-    HighlightPattern::LocationSet::iterator parent = locations.begin();
-    
-    if( iter != locations.end() ) iter++;
-    while(  iter != locations.end() )
-    {
-      
-      // check if patterns overlap
-      if( iter->Position() < prev->Position()+(int)prev->Length() )
+      // check if iterator has parent that match
+      if( iter->parentId() == prev->id() ) 
       {
         
-        // check if iterator has parent that match
-        if( iter->ParentId() == prev->Id() ) 
-        {
-          prev = iter;
-          iter++;
-        } else {
-          
-          // remove current pattern
-          HighlightPattern::LocationSet::iterator current = iter;
-          iter++;
-          
-          // remove pattern from active list
-          active_patterns &= (~current->Id());
-          locations.erase( current );
-        }
-      
-      // no overlap with prev. Check against parent
-      } else if( iter->Position() < parent->Position()+(int)parent->Length()  ) {
-        
-        if( iter->ParentId() == parent->Id() )
-        {
-          prev = iter; 
-          iter++;
-        } else {
-        
-          HighlightPattern::LocationSet::iterator current = iter;
-          iter++;
-        
-          // remove pattern from active list
-          active_patterns &= (~current->Id());
-          locations.erase( current );
-        }
-        
-      } else {
-        
-        parent = iter;
         prev = iter;
         iter++;
         
+      } else {
+        
+        // remove current pattern
+        HighlightPattern::LocationSet::iterator current = iter;
+        iter++;
+        
+        // remove pattern from active list
+        active_patterns &= (~current->id());
+        locations.erase( current );
       }
-    }
-    
-    // check activity
-    locations.ActiveId().second = 0;
-    for( HighlightPattern::LocationSet::iterator iter = locations.begin(); iter != locations.end(); iter++ )
-    if( active_patterns & iter->Id() )
+      
+      // no overlap with prev. Check against parent
+    } else if( iter->position() < parent->position()+(int)parent->length()  ) 
     {
-      locations.ActiveId().second = iter->Id();
-      break;
-    }
-    
-    // apply style for all recorded locations
-    if( locations.empty() ) {
-      locations.ActiveId().second = 0;
-      return locations;
+      
+      if( iter->parentId() == parent->id() )
+      {
+        prev = iter; 
+        iter++;
+      } else {
+        
+        HighlightPattern::LocationSet::iterator current = iter;
+        iter++;
+        
+        // remove pattern from active list
+        /* 
+        this may not work in case there are 
+        occurences of the same pattern later in the set
+        besides it is useless since one loops again
+        over patterns afterwards to decide which one is active
+        */
+        // active_patterns &= (~current->id());
+        locations.erase( current );
+      }
+      
+    } else {
+     
+      // no increment. Advance one.
+      parent = iter;
+      prev = iter;
+      iter++;
+      
     }
   }
-  
-  #if WITH_ASPELL
-  else if( AutoSpellEnabled() ) 
+        
+  // check activity
+  // one loop over the remaining locations
+  // stop at the first one that is found in the list of possibly active
+  locations.activeId().second = 0;
+  for( HighlightPattern::LocationSet::iterator iter = locations.begin(); iter != locations.end(); iter++ )
   {
+    if( active_patterns & iter->id() )
+    {
+      locations.activeId().second = iter->id();
+      break;
+    }
+  }
 
-    const SPELLCHECK::Word::Set& words( Parse( currentParagraph(), text ) );
-    for( SPELLCHECK::Word::Set::const_iterator iter = words.begin(); iter != words.end(); iter++ )
-    { locations.insert( HighlightPattern::Location( spell_pattern_, iter->position_, iter->size() ) ); }
-    
-  } 
-  #endif
-  
   return locations;
   
 }
 
 //_________________________________________________________
-void TextHighlight::_Apply( const QString& text, const HighlightPattern::LocationSet& locations, const bool& update_editor )
+void TextHighlight::_apply( const QString& text, const HighlightPattern::LocationSet& locations )
 {
 
   // initialize style
-  QFont base_font( textEdit()->font() );
   HighlightStyle current_style;
-  QFont font;
-  QColor color;
+  QTextCharFormat format;
   for( HighlightPattern::LocationSet::const_iterator iter = locations.begin(); iter != locations.end(); iter++ )
   {
-    if( current_style != iter->Style() )
+    if( current_style != iter->style() )
     {
-      current_style = iter->Style();
-      font = current_style.Font( base_font );
-      color = current_style.Color();
+      current_style = iter->style();
+      format = current_style.format();
     }
 
     // loop over locations and apply
-    setFormat( iter->Position(), iter->Length(), font, color );
+    setFormat( iter->position(), iter->length(), format );
   }
-
-  // store locations in editor
-  if( update_editor ) editor_->SetLocations( currentParagraph(), locations );
 
   return;
 }

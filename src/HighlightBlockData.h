@@ -33,52 +33,58 @@
 */  
 
 #include "TextBlockData.h"
-#include "Word.h"
+#include "HighlightPattern.h"
 
-namespace SPELLCHECK
+//! TextBlock data
+class HighlightBlockData: public TextBlockData
 {
-  //! TextBlock data
-  class HighlightBlockData: public TextBlockData
-  {
+  
+  public: 
+  
+  //! constructor
+  HighlightBlockData():
+    TextBlockData()
+  { Debug::Throw( "HighlightBlockData::HighlightBlockData.\n" ); }
     
-    public: 
+  //! constructor
+  HighlightBlockData( const TextBlockData& reference ):
+    TextBlockData( reference )
+  { Debug::Throw( "HighlightBlockData::HighlightBlockData.\n" ); }
     
-    //! constructor
-    HighlightBlockData():
-      TextBlockData()
-    { Debug::Throw( "HighlightBlockData::HighlightBlockData.\n" ); }
-      
-    //! constructor
-    HighlightBlockData( const TextBlockData& reference ):
-      TextBlockData( reference )
-    { Debug::Throw( "HighlightBlockData::HighlightBlockData.\n" ); }
-      
-    //! constructor
-    HighlightBlockData( const TextBlockData* pointer ):
-      TextBlockData( *pointer )
-    { Debug::Throw( "HighlightBlockData::HighlightBlockData.\n" ); }
- 
-    //! destructor
-    virtual ~HighlightBlockData( void )
-    { Debug::Throw( "HighlightBlockData::~HighlightBlockData.\n" ); }
+  //! constructor
+  HighlightBlockData( const TextBlockData* pointer ):
+    TextBlockData( *pointer )
+  { Debug::Throw( "HighlightBlockData::HighlightBlockData.\n" ); }
     
-    //! active block
-    const Word::Set& misspelledWords( void ) const
-    { return words_; }
-    
-    //! active block
-    void setMisspelledWords( const Word::Set& words )
-    { words_ = words; }
-    
-    //! return misspelled word matching position, if any
-    Word misspelledWord( const int& position ) const;
-    
-    private:
-    
-    //! set to true for current block
-    Word::Set words_;
-    
-  };
+  //! destructor
+  virtual ~HighlightBlockData( void )
+  { Debug::Throw( "HighlightBlockData::~HighlightBlockData.\n" ); }
+  
+  //! modification state
+  const bool& isModified( void ) const
+  { return modified_; }
+  
+  //! modification state
+  void setModified( const bool& value )
+  { modified_ = value; }
+  
+  //! syntax highlighting pattern locations
+  const HighlightPattern::LocationSet& locations( void ) const
+  { return locations_; }
+  
+  //! syntax highlighting pattern locations
+  void setLocations( const HighlightPattern::LocationSet& locations )
+  { locations_ = locations; }
+  
+  private:
+  
+  //! block modification state
+  /*! it is used to tell if patterns must be re-calculated */
+  bool modified_;
+  
+  //! locations and ids of matching syntax highlighting patterns
+  HighlightPattern::LocationSet locations_;
+  
 };
 
 #endif

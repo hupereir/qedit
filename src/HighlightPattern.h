@@ -32,10 +32,12 @@
   \date $Date$
 */
 
-#include <list>
+#include <QDomElement>
+#include <QDomDocument>
+#include <QRegExp>
+
 #include <set>
-#include <qdom.h>
-#include <qregexp.h>
+#include <list>
 #include <string>
 
 #include "HighlightStyle.h"
@@ -67,6 +69,10 @@ class HighlightPattern: public Counter
     
   };
   
+  //! typedef for list of patterns
+  typedef std::list< HighlightPattern* > List;
+
+  
   //! constructor from DomElement
   HighlightPattern( const QDomElement& element = QDomElement() );
   
@@ -74,7 +80,7 @@ class HighlightPattern: public Counter
   QDomElement domElement( QDomDocument& parent ) const;
   
   //! unique id
-  virtual const unsigned int& id( void ) const
+  virtual const int& id( void ) const
   { return id_; }
   
   //! name
@@ -86,21 +92,33 @@ class HighlightPattern: public Counter
   { return parent_; }
   
   //! parent id
-  virtual const unsigned int& parentId( void ) const
+  virtual const int& parentId( void ) const
   { return parent_id_; }
     
   //! parent id
-  virtual void setParentId( const unsigned int& id )
+  virtual void setParentId( const int& id )
   { parent_id_ = id; }
     
   //! text style
   virtual const HighlightStyle& style( void ) const
   { return style_; }
-  
+    
   //! text style 
   virtual void setStyle( const HighlightStyle& style )
   { style_ = style; }
-   
+  
+  //! child patterns
+  virtual const List& children( void ) const
+  { return children_; }
+
+  //! add child
+  virtual void addChild( HighlightPattern* child )
+  { children_.push_back( child ); }
+  
+  //! clear children
+  virtual void clearChildren( void )
+  { children_.clear(); }
+  
   //! comments
   const std::string& comments( void ) const
   { return comments_; }
@@ -134,7 +152,7 @@ class HighlightPattern: public Counter
   //@}
   
   //! validity
-  virtual bool valid( void ) const
+  virtual bool isValid( void ) const
   { return true; }
 
   //! location of text to be formated
@@ -157,7 +175,7 @@ class HighlightPattern: public Counter
     bool operator < (const Location& location ) const
     { 
       return 
-        (position() < location.position()) || 
+        (position() < location.position()) ||
         (position() == location.position() && parentId() < location.parentId() ) ; 
       }
     
@@ -174,11 +192,11 @@ class HighlightPattern: public Counter
     { return *parent_; }
     
     //! pattern id
-    const unsigned int& id( void ) const
+    const int& id( void ) const
     { return parent_->id(); }
     
     //! parent pattern id
-    const unsigned int& parentId( void ) const
+    const int& parentId( void ) const
     { return parent_->parentId(); }
     
     //! style
@@ -208,6 +226,17 @@ class HighlightPattern: public Counter
       
       //! predicted index
       int index_;
+      
+    };
+    
+    // overlaps
+    class OverlapFTor
+    {
+      
+      public:
+      
+      bool operator() (const Location& first, const Location& second ) 
+      { return second.position() < first.position() + (int)first.length(); }
       
     };
     
@@ -241,7 +270,7 @@ class HighlightPattern: public Counter
     LocationSet():
       active_id_( std::make_pair( 0, 0 ) )
     {}
-        
+      
     //! active id
     const std::pair<int,int>& activeId( void ) const
     { return active_id_; }
@@ -284,6 +313,28 @@ class HighlightPattern: public Counter
     
   };
   
+  //! used to pattern by id
+  class SameIdFTor
+  {
+    
+    public:
+    
+    //! constructor
+    SameIdFTor( const int& id ):
+      id_( id )
+    {}
+      
+    //! predicate
+    bool operator() ( const HighlightPattern* pattern ) const
+    { return pattern->id() == id_; }
+    
+    private:
+    
+    //! predicted id
+    int id_;
+    
+  };
+  
   protected:
           
   //! name
@@ -305,14 +356,14 @@ class HighlightPattern: public Counter
   private:
         
   //! unique id counter
-  static unsigned int id_counter_;
+  static int id_counter_;
   
   //! unique id
   /*!
     The unique ID has a single bit set to 1, to use
     faster active pattern masks, with no shift operators
   */
-  unsigned int id_; 
+  int id_; 
   
   //! type
   std::string type_;
@@ -324,10 +375,13 @@ class HighlightPattern: public Counter
   std::string parent_;
   
   //! parent pattern id
-  unsigned int parent_id_;
+  int parent_id_;
   
   //! style
   HighlightStyle style_;
+  
+  //! child patterns
+  List children_;
   
   //! comments
   std::string comments_;
