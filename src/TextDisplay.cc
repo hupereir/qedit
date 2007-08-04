@@ -97,9 +97,12 @@ TextDisplay::TextDisplay( QWidget* parent ):
   braces_highlight_action_->setCheckable( true );
   connect( braces_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleBracesHighlight( bool ) ) );
   
+  addAction( file_info_action_ = new QAction( "&File information", this ) );
+  connect( file_info_action_, SIGNAL( triggered() ), SLOT( _showFileInfo() ) );
+  
   // configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
-  connect( qApp, SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
+  // connect( qApp, SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
   
 }
 
@@ -399,113 +402,6 @@ void TextDisplay::setActive( const bool& active )
     
 }
 
-//___________________________________________________________________________
-void TextDisplay::updateConfiguration( void )
-{
-  Debug::Throw( "TextDisplay::updateConfiguration" );
-
-  // base class configuration update
-  CustomTextEdit::updateConfiguration();
-  
-  // local update
-  textIndentAction().setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
-  textHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
-  bracesHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_BRACES" ) );
-  
-  // retrieve active/inactive colors
-  QColor active_color( Options::Get<string>("ACTIVE_COLOR").c_str() );
-  QColor inactive_color( Options::Get<string>("INACTIVE_COLOR").c_str() );
-
-  // paper background color
-  setFlag( TextDisplay::HAS_PAPER, Options::Get<bool>( "SHADE_INACTIVE_VIEWS" ) && active_color.isValid() && inactive_color.isValid() );
-  
-  // update flags
-  updateFlags();
-
-}
-
-//___________________________________________________________________________
-void TextDisplay::updateDocumentClass( void )
-{
-
-  Debug::Throw( "TextDisplay::UpdateDocumentClass\n" );
-  textHighlight().clear();
-  textIndent().clear();
-  textIndent().setBaseIndentation(0);
-  _clearBraces();
-  _clearMacros();
-
-  // default document class is empty
-  const DocumentClass* document_class( 0 );
-  
-  // try load document class from class_name
-  if( !className().empty() ) 
-  { document_class = static_cast<MainFrame*>(qApp)->classManager().get( className() ); }
-
-  // try load from file
-  if( !(document_class || file().empty() ) )
-  { document_class = static_cast<MainFrame*>(qApp)->classManager().find( file() ); }
-      
-  // abort if no document class is found
-  if( !document_class ) return;
- 
-  // update class name
-  setClassName( document_class->name() );
-  
-  // update Flags
-  if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) && !flag( HAS_WRAP ) )
-  { setFlag( WRAP, document_class->wrap() ); }
-  
-  bracesHighlightAction()->setEnabled( !document_class->braces().empty() );
-  textHighlightAction()->setEnabled( !document_class->highlightPatterns().empty() );
-  textIndentAction()->setEnabled( !document_class->indentPatterns().empty() );
-  
-  // wrapping
-  _toggleWrapMode( flag( WRAP ) );
-  wrapModeAction()->setChecked( flag( WRAP ) );
-
-  // highlighting
-  textHighlight().setPatterns( document_class->highlightPatterns() );
-
-  // indentation
-  textIndent().setPatterns( document_class->indentPatterns() );
-  textIndent().setBaseIndentation( document_class->baseIndentation() );
-
-  // braces
-  _setBraces( document_class->braces() );
-  
-  // macros
-  _setMacros( document_class->textMacros() );
-
-  return;
-  
-}
-
-//___________________________________________________
-bool TextDisplay::updateFlags( void )
-{
-  
-  Debug::Throw() << "TextDisplay::UpdateFlags - key: " << key() << endl;
-  
-  bool changed( false );
-  
-  textIndent().setEnabled( textIndentAction()->isEnabled() && textIndentAction()->isChecked() );
-  changed |= textHighlight().setEnabled( textHighlightAction()->isEnabled() && textHighlightAction()->isChecked() );
-
-  // Active/inactive paper color
-  QColor default_color( QWidget().palette().color( QPalette::Base ) );
-  _setPaper( true, flag( HAS_PAPER ) ? QColor( XmlOptions::get().get<string>("ACTIVE_COLOR").c_str() ) : default_color );
-  _setPaper( false, flag( HAS_PAPER ) ? QColor( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() ) : default_color );
-  _setPaper( isActive() ? active_color_:inactive_color_ );
-
-  // enable/disable wrapping
-  _toggleWrapMode( flag( WRAP ) );
-  wrapModeAction()->setChecked( flag( WRAP ) );
-  
-  return changed;
-  
-}
-
 //_______________________________________________________
 bool TextDisplay::hasLeadingTabs( void ) const
 {
@@ -609,6 +505,114 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document )
   }
 
   return out;
+}
+
+
+//___________________________________________________________________________
+void TextDisplay::updateConfiguration( void )
+{
+  Debug::Throw( "TextDisplay::updateConfiguration" );
+
+  // base class configuration update
+  CustomTextEdit::updateConfiguration();
+  
+  // local update
+  textIndentAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
+  textHighlightAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
+  bracesHighlightAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_BRACES" ) );
+  
+  // retrieve active/inactive colors
+  QColor active_color( XmlOptions::get().get<string>("ACTIVE_COLOR").c_str() );
+  QColor inactive_color( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() );
+
+  // paper background color
+  setFlag( TextDisplay::HAS_PAPER, XmlOptions::get().get<bool>( "SHADE_INACTIVE_VIEWS" ) && active_color.isValid() && inactive_color.isValid() );
+  
+  // update flags
+  updateFlags();
+
+}
+
+//___________________________________________________________________________
+void TextDisplay::updateDocumentClass( void )
+{
+
+  Debug::Throw( "TextDisplay::UpdateDocumentClass\n" );
+  textHighlight().clear();
+  textIndent().clear();
+  textIndent().setBaseIndentation(0);
+  _clearBraces();
+  _clearMacros();
+
+  // default document class is empty
+  const DocumentClass* document_class( 0 );
+  
+  // try load document class from class_name
+  if( !className().empty() ) 
+  { document_class = static_cast<MainFrame*>(qApp)->classManager().get( className() ); }
+
+  // try load from file
+  if( !(document_class || file().empty() ) )
+  { document_class = static_cast<MainFrame*>(qApp)->classManager().find( file() ); }
+      
+  // abort if no document class is found
+  if( !document_class ) return;
+ 
+  // update class name
+  setClassName( document_class->name() );
+  
+  // update Flags
+  if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) && !flag( HAS_WRAP ) )
+  { setFlag( WRAP, document_class->wrap() ); }
+  
+  bracesHighlightAction()->setEnabled( !document_class->braces().empty() );
+  textHighlightAction()->setEnabled( !document_class->highlightPatterns().empty() );
+  textIndentAction()->setEnabled( !document_class->indentPatterns().empty() );
+  
+  // wrapping
+  _toggleWrapMode( flag( WRAP ) );
+  wrapModeAction()->setChecked( flag( WRAP ) );
+
+  // highlighting
+  textHighlight().setPatterns( document_class->highlightPatterns() );
+
+  // indentation
+  textIndent().setPatterns( document_class->indentPatterns() );
+  textIndent().setBaseIndentation( document_class->baseIndentation() );
+
+  // braces
+  _setBraces( document_class->braces() );
+  
+  // macros
+  _setMacros( document_class->textMacros() );
+
+  return;
+  
+}
+
+//___________________________________________________
+bool TextDisplay::updateFlags( void )
+{
+  
+  Debug::Throw() << "TextDisplay::UpdateFlags - key: " << key() << endl;
+  
+  bool changed( false );
+  
+  textIndent().setEnabled( textIndentAction()->isEnabled() && textIndentAction()->isChecked() );
+  changed |= textHighlight().setEnabled( textHighlightAction()->isEnabled() && textHighlightAction()->isChecked() );
+
+  // Active/inactive paper color
+  QColor default_color( QWidget().palette().color( QPalette::Base ) );
+  _setPaper( true, flag( HAS_PAPER ) ? QColor( XmlOptions::get().get<string>("ACTIVE_COLOR").c_str() ) : default_color );
+  _setPaper( false, flag( HAS_PAPER ) ? QColor( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() ) : default_color );
+  _setPaper( isActive() ? active_color_:inactive_color_ );
+
+  // enable/disable wrapping
+  _toggleWrapMode( flag( WRAP ) );
+  wrapModeAction()->setChecked( flag( WRAP ) );
+  
+  return changed;
+  
 }
 
 //_______________________________________________________

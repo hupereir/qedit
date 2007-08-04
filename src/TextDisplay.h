@@ -33,6 +33,7 @@
 
 #include <string>
 #include <QRegExp>
+#include <QAction>
 
 #include "Config.h"
 #include "CustomTextEdit.h"
@@ -204,10 +205,6 @@ class TextDisplay: public CustomTextEdit
   const std::string& className( void ) const 
   { return class_name_; }
   
-  //! set document class
-  /*! returns true if matching document class was found */
-  void updateDocumentClass( void );
-
   //@}
   
   //!@ name TextDisplay display flags
@@ -253,9 +250,6 @@ class TextDisplay: public CustomTextEdit
   //! flag bit status
   bool flag( const Flag& bit ) const
   { return flags_ & bit; }
-  
-  //! update display based on flags
-  bool updateFlags( void );
   
   //@}
 
@@ -328,6 +322,13 @@ class TextDisplay: public CustomTextEdit
   QAction* bracesHighlightAction( void )
   { return braces_highlight_action_; }
   
+  //! file information
+  QAction* fileInfoAction( void )
+  { 
+    file_info_action_->setEnabled( !file().empty() );
+    return file_info_action_; 
+  }
+  
   //@}
   
   signals:
@@ -344,6 +345,15 @@ class TextDisplay: public CustomTextEdit
   
   public slots:
 
+  //! update configuration
+  void updateConfiguration( void );
+  
+  //! set document class
+  /*! returns true if matching document class was found */
+  void updateDocumentClass( void );
+    
+  //! update display based on flags
+  bool updateFlags( void );
   
   //! indent selection
   void indentSelection( void );
@@ -418,6 +428,10 @@ class TextDisplay: public CustomTextEdit
 
   //! returns true if text contents differs from file contents
   bool _contentsChanged( void ) const;
+  
+  //! show file info
+  void _showFileInfo( void )
+  { FileInfoDialog( this ).exec(); }
   
   protected slots:
 
@@ -500,6 +514,9 @@ class TextDisplay: public CustomTextEdit
  
   //! toggle text highlighting
   QAction* braces_highlight_action_;
+ 
+  //! toggle text highlighting
+  QAction* file_info_action_;
   
   //! 
   

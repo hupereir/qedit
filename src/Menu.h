@@ -165,7 +165,7 @@ class Menu:public QMenuBar, public Counter
   std::map< QAction*, std::string > macros_;
 
   //! map windows menu ID to file name
-  typedef std::map< QAction*, File > files_;
+  std::map< QAction*, File > files_;
 
   //@}
   

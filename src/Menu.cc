@@ -41,6 +41,7 @@
 #include "MainFrame.h"
 #include "Menu.h"
 #include "OpenPreviousMenu.h"
+#include "QtUtil.h"
 #include "XmlOptions.h"
 #include "TextDisplay.h"
 #include "TextMacro.h"
@@ -83,7 +84,7 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( editframe->closeWindowAction() );
   menu->addAction( editframe->saveAction() );
   menu->addAction( editframe->saveAsAction() );
-  menu->addAction( editframe->revertToSave() );  
+  menu->addAction( editframe->revertToSaveAction() );  
   menu->addSeparator();
   
   document_class_menu_ = menu->addMenu( "Set &document class" );
@@ -255,7 +256,7 @@ void Menu::_updatePreferenceMenu( void )
   TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
   preference_menu_->addAction( display.wrapModeAction() );
   preference_menu_->addAction( display.tabEmulationAction() );
-  preference_menu_->addAction( display.indentAction() );
+  preference_menu_->addAction( display.textIndentAction() );
   preference_menu_->addAction( display.textHighlightAction() );
   preference_menu_->addAction( display.bracesHighlightAction() );
   
@@ -301,11 +302,11 @@ void Menu::_updateMacroMenu( void )
 
   // retrieve flags needed to set button state
   bool editable( !display.isReadOnly() );
-  bool has_selection( display.hasSelectedText() );
-  bool has_indent( display.GetFlag( TextDisplay::INDENT ) && display.GetFlag( TextDisplay::HAS_INDENT ) );
+  bool has_selection( display.textCursor().hasSelection() );
+  bool has_indent( display.textIndentAction().isEnabled() );
 
   // insert document class specific macros
-  const TextDisplay::MacroList& macros( display.GetMacros() );
+  const TextDisplay::MacroList& macros( display.macros() );
   QAction* action;
   for( TextDisplay::MacroList::const_iterator iter = macros.begin(); iter != macros.end(); iter++ )
   {
@@ -336,7 +337,7 @@ void Menu::_updateMacroMenu( void )
   action->setEnabled( display.hasLeadingTabs() );
   
   // syntax highlighting
-  macro_menu_->insertItem( "&Rehighlight", &display, SLOT( rehighlight() ) ); 
+  macro_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
   
   return;
 }
@@ -350,9 +351,9 @@ void Menu::_updateWindowsMenu( void )
   
   // retrieve current display
   TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
-  windows_menu_->insertItem( display.fileInfoAction() );
+  windows_menu_->addAction( display.fileInfoAction() );
   
-  const string& current_file( display.GetFile() );
+  const string& current_file( display.file() );
   
   // retrieve list of EditFrames
   BASE::KeySet<EditFrame> frames( dynamic_cast<BASE::Key*>(qApp) );
@@ -405,7 +406,7 @@ void Menu::_updateWindowsMenu( void )
 void Menu::_selectClassName( QAction* action )
 {
   Debug::Throw( "Menu::_selectClassName.\n" );
-  std::map<Action,string>::iterator iter = document_classes_.find( action );
+  std::map< QAction*, string >::iterator iter = document_classes_.find( action );
   if( iter != document_classes_.end() ) 
   { emit documentClassSelected( iter->second ); }
   
@@ -452,7 +453,7 @@ void Menu::_selectFile( QAction* action )
   { 
     ostringstream what;
     what << "Unable to find a window containing file " << iter->second;
-    QtUtil::indoDialog( this, what.str() );
+    QtUtil::infoDialog( this, what.str() );
     return;
   }
   
