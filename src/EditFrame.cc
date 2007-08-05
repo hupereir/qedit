@@ -48,6 +48,7 @@
 #include "Debug.h"
 #include "Diff.h"
 #include "DocumentClassManager.h"
+#include "DocumentClassDialog.h"
 #include "EditFrame.h"
 #include "Icons.h"
 #include "MainFrame.h"
@@ -185,10 +186,10 @@ EditFrame::EditFrame(  QWidget* parent, const string& name ):
   action = toolbar->addAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT, path_list ), "Clone view left/right", this, SLOT( _splitViewHorizontal() );
   action->setToolTip( "Clone current view horizontally" );
 
-  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_BOTTOM, path_list ), "Clone view top/bottom", this, SLOT( _openVertical() );
+  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_BOTTOM, path_list ), "Clone view top/bottom", this, SLOT( openVertical() );
   action->setToolTip( "Open a new view vertically" );
 
-  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_RIGHT, path_list ), "Open view left/right", this, SLOT( _openHorizontal() );
+  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_RIGHT, path_list ), "Open view left/right", this, SLOT( openHorizontal() );
   action->setToolTip( "Open a new view horizontally" );
   
   toolbar->addAction( detachAction() );
@@ -869,8 +870,21 @@ void EditFrame::enterEvent( QEvent* e )
 }
 
 //_______________________________________________________
+void EditFrame::_documentClassDialog( void )
+{
+  
+  Debug::Throw( "EditFrame::_documentClassDialog.\n" );
+  DocumentClassDialog dialog( this );
+  connect( &dialog, SIGNAL( classSelected( std::string ) ), SLOT( selectClassName( std::string ) ) );
+  dialog.exec();
+
+
+}
+
+//_______________________________________________________
 void EditFrame::_update( unsigned int flags )
 {
+
   Debug::Throw( "EditFrame::_update().\n" );
 
   if( flags & TextDisplay::WINDOW_TITLE )
@@ -995,6 +1009,9 @@ void EditFrame::_installActions( void )
   paste_action_->setTooltip( "Paste clipboard to text" );
   connect( paste_action_, SIGNAL( triggered() ) SLOT( _paste() ) );
 
+  addAction( document_class_action_ = new QAction( "&Document classes", this ) );
+  connect( document_class_action_, SIGNAL( triggered() ), SLOT( _documentClassConfiguration() ) ); 
+
   addAction( file_info_action_ = new QAction( IconEngine::get( ICON::INFO, path_list ), "&File information", this ) );
   file_info_action_->setTooltip( "Display file informations" );
   connect( file_info_action_, SIGNAL( triggered() ) SLOT( _fileInfo() ) );
@@ -1018,20 +1035,19 @@ void EditFrame::_newFile( const OpenMode& mode, const Qt::Orientation& orientati
   Debug::Throw( "EditFrame::_New.\n" );
 
   // check open_mode
-  if( mode == NEW_WINDOW ) static_cast<MainFrame*>(qApp)->open( "" );
+  if( mode == NEW_WINDOW ) static_cast<MainFrame*>(qApp)->open( FileRecord("") );
   else _splitView( orientation, false );
 
 }
 
 //___________________________________________________________
-void EditFrame::_open( const FileRecord& record, const OpenMode& mode, const Qt::Orientation& orientation )
+void EditFrame::_open( FileRecord record, const OpenMode& mode, const Qt::Orientation& orientation )
 {
 
   Debug::Throw( "EditFrame::_Open.\n" );
 
   // copy to local
-  File local_file( record.file() );
-  if( local_file.empty() )
+  if( record.file().empty() )
   {
 
     // create file dialog
@@ -1043,7 +1059,7 @@ void EditFrame::_open( const FileRecord& record, const OpenMode& mode, const Qt:
     QStringList files( dialog.selectedFiles() );
     if( files.empty() ) return;
   
-    local_file = File( qPrintable( files.front() ) ).expand();
+    record.setFile( File( qPrintable( files.front() ) ).expand() );
   
   }
   
@@ -1051,38 +1067,38 @@ void EditFrame::_open( const FileRecord& record, const OpenMode& mode, const Qt:
   if( mode == NEW_WINDOW )
   {
     // open via the MainFrame to create a new editor
-    static_cast<MainFrame*>(qApp)->open( local_file );
+    static_cast<MainFrame*>(qApp)->open( record );
     return;
   }
 
   // see if file is directory
-  if( local_file.isDirectory() )
+  if( record.file().isDirectory() )
   {
     
     ostringstream what;
-    what << "File \"" << local_file << "\" is a directory. <Open> canceled.";
+    what << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
     QtUtil::infoDialog( this, what.str() );
     return;
     
   }
 
   // see if file exists
-  if( !local_file.exist() )
+  if( !record.file().exist() )
   {
     
     // create NewFileDialog
     
-    int state( NewFileDialog( this, local_file ).exec();
+    int state( NewFileDialog( this, record.file() ).exec();
     switch( state )
     {
       
       case NewFileDialog::CREATE:
       {
-        File fullname( local_file.expand() );
+        File fullname( record.file().expand() );
         if( !fullname.create() )
         {
           ostringstream what;
-          what << "Unable to create file " << local_file << ".";
+          what << "Unable to create file " << record.file() << ".";
           QtUtil::infoDialog( this, what.str() );
           return;
         }
@@ -1101,12 +1117,12 @@ void EditFrame::_open( const FileRecord& record, const OpenMode& mode, const Qt:
   // retrieve all edit frames
   // find one matching
   BASE::KeySet<EditFrame> frames( dynamic_cast<BASE::Key*>(qApp) );
-  BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( local_file ) );
+  BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( record.file() ) );
   if( iter != frames.end() )
   {
 
     // select found display in EditFrame
-    (*iter)->selectDisplay( local_file );
+    (*iter)->selectDisplay( record.file() );
 
     // check if the found frame is the current
     if( *iter == this )
@@ -1166,7 +1182,7 @@ void EditFrame::_open( const FileRecord& record, const OpenMode& mode, const Qt:
     if( display_iter == displays.end() ) _splitView( orientation, false );
 
     // open file in this window
-    setFile( local_file );
+    setFile( record.file() );
 
     // update configuration
     updateConfiguration();

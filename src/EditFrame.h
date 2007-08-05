@@ -114,6 +114,17 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
     }
     
   };
+
+  //! used to select editor with empty, unmodified file
+  class ModifiedFTor
+  {
+    public:
+
+    //! predicate
+    bool operator() ( const EditFrame* frame ) const
+    { return frame->isModified(); }
+    
+  };
   
   //! set file and read
   void setFile( File file, const bool& reset_document_class = true );
@@ -308,6 +319,10 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   QAction* printAction( void )
   { return print_action_; }
   
+  //! document class dialog
+  QAction* documentClassAction( void )
+  { return document_class_action_; }
+
   //! file info
   QAction* fileInfoAction( void )
   { return file_info_action_; }
@@ -323,8 +338,16 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void saveConfiguration( void );
  
   //! open file
-  void open( const FileRecord& record = FileRecord( "" ) )
+  void open( FileRecord record = FileRecord( "" ) )
   { _open( record, openMode(), orientation() ); }
+
+  //! open file horizontally
+  void openHorizontal( FileRecord record = FileRecord( "" ) )
+  { _open( record, NEW_VIEW, Qt::Horizontal ); }
+
+  //! open file vertically
+  void openVertical( FileRecord record = FileRecord( "" ) )
+  { _open( record, NEW_VIEW, Qt::Vertical ); }
   
   //! rehighlight all text displays
   void rehighlight( void );
@@ -354,14 +377,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! new file
   void _newVertical( void )
   { _newFile( NEW_VIEW, Qt::Vertical ); }
-
-  //! open file horizontally
-  void _openHorizontal( void )
-  { _open( FileRecord(""), NEW_VIEW, Qt::Horizontal ); }
-
-  //! open file vertically
-  void _openVertical( void )
-  { _open( FileRecord(""), NEW_VIEW, Qt::Vertical ); }
   
   //! clone current file
   void _splitView( void )
@@ -449,6 +464,9 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
     Debug::Throw( "EditFrame::_paste.\n" );
     activeDisplay().paste(); 
   }
+  
+  //! document class configuration
+  void _documentClassDialog( void );
 
   //! file information
   void _fileInfo( void )
@@ -493,7 +511,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void _newFile( const OpenMode&, const Qt::Orientation& );
 
   //! open file
-  void _open( const FileRecord&,  const OpenMode&, const Qt::Orientation& );
+  void _open( FileRecord,  const OpenMode&, const Qt::Orientation& );
   
   //! close view
   /*! Ask for save if view is modified */
@@ -593,7 +611,10 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   
   //! paste
   QAction* paste_action_;
-   
+ 
+  //! document class configuration
+  QAction* document_class_action_;
+  
   //! file info
   QAction* file_info_action_;
   

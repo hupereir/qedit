@@ -95,7 +95,7 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( editframe->printAction() );
 
   menu->addSeparator();
-  menu->addAction( "E&xit", qApp, SLOT( closeAllWindows() ), CTRL+Key_Q );
+  menu->addAction( "E&xit", qApp, SLOT( exit() ), CTRL+Key_Q );
 
   // Edit menu
   edit_menu_ = addMenu( "&Edit" );
@@ -227,12 +227,12 @@ void Menu::_updatePreferenceMenu( void )
   preference_menu_->clear();
   
   // configurations (from mainFrame)
-  MainFrame* mainframe( dynamic_cast<MainFrame*>( qApp ) );
-  preference_menu_->addAction( mainframe->configurationAction() );
-  preference_menu_->addAction( mainframe->documentClassesAction() );
+  preference_menu_->addAction( "Default &Configuration", qApp, SLOT( configuration() ) );
 
+  // document class configuration
   EditFrame& frame( *static_cast<EditFrame*>(window()) );
-  
+  preference_menu_->addAction( frame.documentClassesAction() );
+
   // open mode menu
   QMenu* open_mode_menu = new QMenu( "&Default open mode", this );
   QActionGroup* group( new QActionGroup( open_mode_menu )  );

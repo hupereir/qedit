@@ -1,6 +1,6 @@
 // $Id$
-#ifndef _NewFileDialog_h_
-#define _NewFileDialog_h_
+#ifndef _ExitDialog_h_
+#define _ExitDialog_h_
 
 /******************************************************************************
 *
@@ -24,57 +24,27 @@
 *******************************************************************************/
 
 /*!
-  \file NewFileDialog.h
-  \brief QDialog used to ask if a new file should be created
+  \file ExitDialog.h
+  \brief QDialog used to exit application
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
 */
 
-#include <QDialog>
+#include <map>
+
+#include "CustomDialog.h"
 #include "Counter.h"
 #include "File.h"
 
 //! QDialog used to ask if a new file should be created
-class NewFileDialog: public QDialog, public Counter
+class ExitDialog: public CustomDialog
 {
-
-  //! Qt macro
-  Q_OBJECT
 
   public:
 
-  //! return codes
-  /*! also used to decide which buttons are to be drawn */
-  enum {
-
-    //! file is to be saved
-    CREATE = 1<<0,
-
-    //! file is not to be saved
-    CANCEL = 1<<1,
-
-    //! exit application
-    EXIT = 1<<2
-
-  };
-
   //! constructor
-  NewFileDialog( QWidget* parent, const File& file, const unsigned int& buttons = CREATE|CANCEL|EXIT );
-
-  private slots:
-
-  //! create new file
-  void _create( void )
-  { done( CREATE ); }
-
-  //! cancel creation/exit editor
-  void _cancel( void )
-  { done( CANCEL ); }
-
-  //! exit application
-  void _exit( void )
-  { done( EXIT ); }
+  ExitDialog( QWidget*, std::map<File,bool> );
 
 };
 

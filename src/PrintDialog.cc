@@ -37,7 +37,6 @@
 #include "CustomGridLayout.h"
 #include "Debug.h"
 #include "Icons.h"
-#include "Options.h"
 #include "PrintDialog.h"
 #include "XmlOptions.h"
 
