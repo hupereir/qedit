@@ -29,13 +29,11 @@ endif
 CXXFLAGS = @CXXFLAGS@
 
 bin_PROGRAMS = qedit
-noinst_LIBRARIES = libhighlight.a
 
 if WITH_ASPELL 
 libraries = \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   -L$(aspell_libraries) -laspell  \
-  libhighlight.a \
   ../base-spellcheck/libbase-spellcheck.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
@@ -45,7 +43,6 @@ else
 
 libraries =  \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
-  libhighlight.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
@@ -55,31 +52,90 @@ endif
 qedit_LDADD =  $(libraries)
 
 noinst_HEADERS = \
-  DocumentClass.h \
-  HighlightBlockData.h \
-  HighlightStyle.h \
-  HighlightPattern.h \
-  IndentPattern.h \
-  KeywordPattern.h \
-  RangePattern.h \
-  TextBraces.h \
-  TextHighlight.h \
-  TextMacro.h
-
-libhighlight_a_SOURCES = \
-  HighlightStyle.cc \
-  HighlightPattern.cc \
-  KeywordPattern.cc \
-  RangePattern.cc \
-  TextHighlight.cc
+	AskForSaveDialog.h \
+	AutoSaveEvent.h \
+	AutoSave.h \
+	AutoSaveThread.h \
+	ConfigurationDialog.h \
+	CustomTextDocument.h \
+	DocumentClassDialog.h \
+	DocumentClass.h \
+	DocumentClassManager.h \
+	EditFrame.h \
+	ExitDialog.h \
+	FileInfoDialog.h \
+	FileModifiedDialog.h \
+	FileRemovedDialog.h \
+	FileSelectionDialog.h \
+	HelpText.h \
+	HighlightBlockData.h \
+	HighlightPattern.h \
+	HighlightStyle.h \
+	HtmlUtil.h \
+	Icons.h \
+	IndentPattern.h \
+	KeywordPattern.h \
+	MainFrame.h \
+	Menu.h \
+	NewFileDialog.h \
+	PrintDialog.h \
+	RangePattern.h \
+	TextBraces.h \
+	TextDisplay.h \
+	TextHighlight.h \
+	TextIndent.h \
+	TextMacro.h \
+	ViewHtmlDialog.h \
+	WindowTitle.h \
+	XmlDef.h
 
 qedit_SOURCES = \
-  DocumentClass.cc \
-  IndentPattern.cc \
-  TextBraces.cc \
-  TextMacro.cc
+	AskForSaveDialog.cc \
+	AutoSave.cc \
+	AutoSaveThread.cc \
+	ConfigurationDialog.cc \
+	DocumentClass.cc \
+	DocumentClassDialog.cc \
+	DocumentClassManager.cc \
+	EditFrame.cc \
+	ExitDialog.cc \
+	FileInfoDialog.cc \
+	FileModifiedDialog.cc \
+	FileRemovedDialog.cc \
+	FileSelectionDialog.cc \
+	HighlightPattern.cc \
+	HighlightStyle.cc \
+	HtmlUtil.cc \
+	IndentPattern.cc \
+	KeywordPattern.cc \
+	MainFrame.cc \
+	Menu.cc \
+	NewFileDialog.cc \
+	PrintDialog.cc \
+  QEdit.cc \
+	RangePattern.cc \
+	TextBraces.cc \
+	TextDisplay.cc \
+	TextHighlight.cc \
+	TextIndent.cc \
+	TextMacro.cc \
+	ViewHtmlDialog.cc
 
-nodist_qedit_SOURCES =
+nodist_qedit_SOURCES = \
+	moc_AskForSaveDialog.cc \
+	moc_AutoSave.cc \
+	moc_DocumentClassDialog.cc \
+	moc_EditFrame.cc \
+	moc_FileModifiedDialog.cc \
+	moc_FileRemovedDialog.cc \
+	moc_FileSelectionDialog.cc \
+	moc_MainFrame.cc \
+	moc_Menu.cc \
+	moc_NewFileDialog.cc \
+	moc_PrintDialog.cc \
+	moc_TextDisplay.cc \
+	moc_TextIndent.cc \
+	moc_ViewHtmlDialog.cc
 
 ### rule to generate qt meta objects
 moc_%.cc: %.h
