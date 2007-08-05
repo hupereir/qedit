@@ -28,9 +28,8 @@
   \date $Date$
 */
 
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
+#include <QLayout>
+#include <QPushButton>
 
 #include "Debug.h"
 #include "DocumentClass.h"
@@ -38,7 +37,7 @@
 #include "DocumentClassManager.h"
 #include "CustomFileDialog.h"
 #include "MainFrame.h"
-#include "Options.h" 
+#include "XmlOptions.h" 
 #include "QtUtil.h"
 
 using namespace std;
@@ -56,205 +55,231 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   QDialog( parent )
 {
   Debug::Throw( "DocumentClassDialog::DocumentClassDialog.\n" );
-  setCaption( "Document Classes" );
+  setWindowTitle( "QEdit - Document Classes" );
   
-  QVBox* box( &GetVBox() );
-  QHBox* hbox( new QHBox( box ) );
-  hbox->setSpacing( 5 );
+  // horizontal layout
+  QHBoxLayout* h_layout( new QHBoxLayout() );
+  h_layout->setMargin(0);
+  h_layout->setSpacing(5);
+  setLayout( h_layout );
   
   // create list
-  list_ = new CustomListView( hbox );
+  h_layout->addWidget( list_ = new CustomListView( this ), 1 );
+  list_->setColumnCount(2);
   
   // add columns
   for( unsigned int i=0; i<n_columns; i++ )
-  { list_->addColumn( column_titles_[i] ); }
-  list_->header()->setStretchEnabled( true, EMPTY ); 
+  { list_->setColumnName( i, column_titles_[i] ); }
   
-  // set connections
-  connect( list_, SIGNAL( doubleClicked( QListViewItem* ) ), this, SLOT( _Select( QListViewItem* ) ) );
-  connect( list_, SIGNAL( returnPressed( QListViewItem* ) ), this, SLOT( _Select( QListViewItem* ) ) );
+  // connections
+  connect( list_, SIGNAL( itemActivated( QTreeWidgetItem* ) ), this, SLOT( _select( QTreeWidgetItem* ) ) );
 
   // add classes
-  _LoadClasses();
+  _load();
   
   // buttons
-  QVBox *vbox( new QVBox( hbox ) );
-  vbox->setSpacing( 5 );
+  QVBoxLayout* v_layout( new QVBoxLayout() );
+  v_layout->setSpacing(5);
+  v_layout->setMargin(0);
+  h_layout->addLayout( v_layout );
+  
   QPushButton *button;
-  button = new QPushButton( "&Select", vbox );
-  connect( button, SIGNAL( clicked() ), this, SLOT( _Select() ) );
-  QToolTip::add( button, "Apply selected document class to current file" );
+  v_layout->addWidget( button = new QPushButton( "&Select", this ) );
+  connect( button, SIGNAL( clicked() ), this, SLOT( _select() ) );
+  button->setToolTip( "Apply selected document class to current file" );
 
-  button = new QPushButton( "&Remove", vbox );
-  connect( button, SIGNAL( clicked() ), this, SLOT( _Remove() ) ); 
-  QToolTip::add( button, "Remove selected document class from list" );
+  v_layout->addWidget( button = new QPushButton( "&Remove", this ) );
+  connect( button, SIGNAL( clicked() ), this, SLOT( _remove() ) ); 
+  button->setToolTip( "Remove selected document class from list" );
 
-  button = new QPushButton( "&Edit", vbox );
-  connect( button, SIGNAL( clicked() ), this, SLOT( _Edit() ) ); 
-  QToolTip::add( button, "Edit file from which selected document class is read" );
+  v_layout->addWidget( button = new QPushButton( "&Edit", this ) );
+  connect( button, SIGNAL( clicked() ), this, SLOT( _edit() ) ); 
+  button->setToolTip( "Edit file from which selected document class is read" );
 
-  button = new QPushButton( "Save &As", vbox ); 
-  connect( button, SIGNAL( clicked() ), this, SLOT( _Save() ) );  
-  QToolTip::add( button, "Save selected document classe to a file" );
+  v_layout->addWidget( button = new QPushButton( "Save &As", this ) ); 
+  connect( button, SIGNAL( clicked() ), this, SLOT( _save() ) );  
+  button->setToolTip( "Save selected document classe to a file" );
 
-  button = new QPushButton( "&Load File", vbox ); 
-  connect( button, SIGNAL( clicked() ), this, SLOT( _LoadFile() ) );  
-  QToolTip::add( button, "Load additional classes from file" );
+  v_layout->addWidget( button = new QPushButton( "&Load File", this ) ); 
+  connect( button, SIGNAL( clicked() ), this, SLOT( _loadFile() ) );  
+  button->setToolTip( "Load additional classes from file" );
 
-  button = new QPushButton( "Rel&oad", vbox ); 
-  connect( button, SIGNAL( clicked() ), this, SLOT( _Reload() ) );
-  QToolTip::add( button, "Reload all classes" );
+  v_layout->addWidget( button = new QPushButton( "Rel&oad", this ) ); 
+  connect( button, SIGNAL( clicked() ), this, SLOT( _reload() ) );
+  button->setToolTip( "Reload all classes" );
 
-  new QVBox( vbox );
+  v_layout->addStretch();
+  
 }
 
 //___________________________________________________
-void DocumentClassDialog::_Select( void )
+void DocumentClassDialog::_select( void )
 {
-  Debug::Throw( "DocumentClassDialog::_Select.\n" );
-  QListViewItem *item( list_->selectedItem() );
+  Debug::Throw( "DocumentClassDialog::_select.\n" );
+  QTreeWidgetItem *item( list_->QTreeWidget::currentItem() );
   if( !item )
   {
-    QtUtil::InfoDialogExclusive( this, "No item selected. <Select> canceled." );
+    QtUtil::infoDialog( this, "No item selected. <Select> canceled." );
     return;
   }
   
-  emit ClassSelected( (const char*) item->text( NAME ) );
+  emit classSelected( qPrintable( item->text( NAME ) ) );
   return;
 }
 
 //___________________________________________________
-void DocumentClassDialog::_Remove( void )
+void DocumentClassDialog::_remove( void )
 {
-  Debug::Throw( "DocumentClassDialog::_Remove.\n" );
-  QListViewItem *item( list_->selectedItem() );
-  if( !item )
-  {
-    QtUtil::InfoDialogExclusive( this, "No item selected. <Remove> canceled." );
-    return;
-  }
+  Debug::Throw( "DocumentClassDialog::_remove.\n" );
+
+  QList<QTreeWidgetItem*> items( list_->QTreeWidget::selectedItems() );
+  if( items.empty() ) return QtUtil::infoDialog( this, "No class selected. <Remove> canceled" );
+
+  ostringstream what;
+  if( items.size() > 1 ) what << "Remove selected classes ?";
+  else what << "Remove the selected class ?";
+  if( !QtUtil::questionDialog( this, what.str() ) ) return;
   
   MainFrame &main_frame( *static_cast<MainFrame*>(qApp) );
-  DocumentClassManager &manager( main_frame.GetClassManager() );
-  if( manager.Remove( (const char*)item->text( NAME ) ) )
+  DocumentClassManager &manager( main_frame.classManager() );
+  
+  bool removed( false );
+  for( QList<QTreeWidgetItem*>::iterator iter = items.begin(); iter != items.end(); iter++ )
+  { removed |= manager.remove( qPrintable( (*iter)->text( NAME ) ) ); }
+  
+  if( removed )
   {
-    main_frame.UpdateEditFrames();
-    _LoadClasses();
+    main_frame.updateEditFrames();
+    _load();
   }
+  
 }
 
 //___________________________________________________
-void DocumentClassDialog::_Edit( void )
+void DocumentClassDialog::_edit( void )
 {
-  Debug::Throw( "DocumentClassDialog::_Edit.\n" );
-  QListViewItem *item( list_->selectedItem() );
-  if( !item )
-  {
-    QtUtil::InfoDialogExclusive( this, "No item selected. <Edit> canceled." );
-    return;
-  }
+  Debug::Throw( "DocumentClassDialog::_edit.\n" );
+
+  QList<QTreeWidgetItem*> items( list_->QTreeWidget::selectedItems() );
+  if( items.empty() ) return QtUtil::infoDialog( this, "No class selected. <Edit> canceled" );
+
+  // loop over selected items and edit
+  for( QList<QTreeWidgetItem*>::iterator iter = items.begin(); iter != items.end(); iter++ )
+  { static_cast<MainFrame*>(qApp)->open( File( qPrintable( (*iter)->text( FILE ) ) ) ); }
   
-  static_cast<MainFrame*>(qApp)->Open( File( (const char*) item->text( FILE ) ) );
+  // close dialog
   close();
+  
   return;
 }
     
 //___________________________________________________
-void DocumentClassDialog::_LoadFile( void )
+void DocumentClassDialog::_loadFile( void )
 {
   Debug::Throw( "DocumentClassDialog::_LoadFile.\n" ); 
 
   // get file from dialog
-  CustomFileDialog dialog( this, "file dialog", TRUE );
-  dialog.setMode( QFileDialog::ExistingFile );
+  CustomFileDialog dialog( this );
+  dialog.setFileMode( QFileDialog::ExistingFile );
   if( dialog.exec() != QDialog::Accepted ) return;
-  File file( (const char*) dialog.selectedFile() );
+  
+  QStringList files( dialog.selectedFiles() );
+  if( files.empty() ) return;
+  
+  File file = File( qPrintable( files.front() ) ).expand();
   
   // try load from file manager and add to options
-  DocumentClassManager &manager( static_cast<MainFrame*>(qApp)->GetClassManager() ); 
-  if( manager.Read( file ) ) {
-    Options::Get().Add( Option( "PATTERN_FILENAME", file ) );
-    _LoadClasses();
+  DocumentClassManager &manager( static_cast<MainFrame*>(qApp)->classManager() ); 
+  if( manager.read( file ) ) {
+    XmlOptions::get().add( Option( "PATTERN_FILENAME", file ) );
+    _load();
   }
   return; 
     
 }
     
 //___________________________________________________
-void DocumentClassDialog::_Save( void )
+void DocumentClassDialog::_save( void )
 {
-  Debug::Throw( "DocumentClassDialog::_Save.\n" );
+  Debug::Throw( "DocumentClassDialog::_save.\n" );
   
-  QListViewItem *item( list_->selectedItem() );
+  QTreeWidgetItem *item( list_->QTreeWidget::currentItem() );
   if( !item )
   {
-    QtUtil::InfoDialogExclusive( this, "No item selected. <Save As> canceled." );
+    QtUtil::infoDialog( this, "No item selected. <Select> canceled." );
     return;
   }
   
   // retrieve file from dialog
-  CustomFileDialog dialog( this, "file dialog", TRUE );
-  dialog.setMode( QFileDialog::AnyFile );
+  CustomFileDialog dialog( this );
+  dialog.setFileMode( QFileDialog::AnyFile );
   if( dialog.exec() != QDialog::Accepted ) return;
-  File file( (const char*) dialog.selectedFile() );
+
+  QStringList files( dialog.selectedFiles() );
+  if( files.empty() ) return;
+  
+  File file = File( qPrintable( files.front() ) ).expand();
   
   // check if file is directory
-  if( file.IsDirectory() )
+  if( file.isDirectory() )
   {
     ostringstream what;
     what << "file \"" << file << "\" is a directory. <Save As> canceled.";
-    QtUtil::InfoDialogExclusive( this, what.str() );
+    QtUtil::infoDialog( this, what.str() );
     return;
   }
 
   // check if file exist
-  if( file.Exist() )
+  if( file.exist() )
   {
-    if( !file.IsWritable() )
+    if( !file.isWritable() )
     {
       ostringstream what;
       what << "file \"" << file << "\" is read-only. <Save As> canceled.";
-      QtUtil::InfoDialogExclusive( this, what.str() );
+      QtUtil::infoDialog( this, what.str() );
       return;
-    } else if( !QtUtil::QuestionDialogExclusive( this, "selected file already exist. Overwrite ?" ) )
+    } else if( !QtUtil::questionDialog( this, "selected file already exist. Overwrite ?" ) )
     return;
   }
   
-  static_cast<MainFrame*>(qApp)->GetClassManager().Write( (const char*) item->text( NAME ), file );
+  static_cast<MainFrame*>(qApp)->classManager().write( qPrintable( item->text( NAME ) ), file );
   return;
 }
 
 //___________________________________________________
-void DocumentClassDialog::_Reload( void )
+void DocumentClassDialog::_reload( void )
 {
-  Debug::Throw( "DocumentClassDialog::_Reload.\n" );  
-  static_cast<MainFrame*>(qApp)->UpdateDocumentClasses();
-  _LoadClasses();
+  Debug::Throw( "DocumentClassDialog::_reload.\n" );  
+  static_cast<MainFrame*>(qApp)->updateDocumentClasses();
+  _load();
 }
 
 //___________________________________________________ 
-void DocumentClassDialog::_LoadClasses()
+void DocumentClassDialog::_load()
 {
-  Debug::Throw( "DocumentClassDialog::_LoadClasses.\n" );
+  Debug::Throw( "DocumentClassDialog::_load.\n" );
   
   // clear list
   list_->clear();
   
   // retrieve classes from DocumentClass manager
-  const DocumentClassManager::ClassList& classes( static_cast<MainFrame*>(qApp)->GetClassManager().GetList() );
+  const DocumentClassManager::ClassList& classes( static_cast<MainFrame*>(qApp)->classManager().list() );
   
   // add to list
   for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
-  { _AddClass( **iter ); }
-  list_->SetItemParity();
+  { _add( **iter ); }
+
+  list_->resizeColumnToContents( NAME );
+  list_->resizeColumnToContents( FILE );
+  
 }
 
 //_________________________________________________________________
-void DocumentClassDialog::_AddClass( const DocumentClass& document_class )
+void DocumentClassDialog::_add( const DocumentClass& document_class )
 {
   Debug::Throw( "DocumentClassDialog::_AddDocumentClass.\n" );
   CustomListView::Item* item( new CustomListView::Item( list_ ) );
-  item->setText( NAME, document_class.Name().c_str() );
-  item->setText( FILE, document_class.GetFile().c_str() );
+  item->setText( NAME, document_class.name().c_str() );
+  item->setText( FILE, document_class.file().c_str() );
   return;
 }

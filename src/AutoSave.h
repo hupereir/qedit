@@ -77,6 +77,9 @@ class AutoSave: public QObject, public Counter
 
   private:
   
+  //! interval between two save (milliseconds)
+  unsigned int interval_;
+  
   //! AutoSave timer
   QTimer timer_;
 

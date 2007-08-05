@@ -58,7 +58,7 @@ class DocumentClassDialog: public QDialog, public Counter
   private slots:
   
   //! select document class
-  void _select( QListViewItem* item )
+  void _select( QTreeWidgetItem* item )
   { emit classSelected( qPrintable( item->text( NAME ) ) ); }
   
   //! select document class

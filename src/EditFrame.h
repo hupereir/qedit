@@ -2,7 +2,6 @@
 #ifndef EditFrame_h
 #define EditFrame_h
 
-
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
@@ -32,18 +31,15 @@
    \date $Date$
 */
 
-#include <qaction.h>
-#include <qmainwindow.h>
-#include <qsplitter.h>
-#include <qtoolbutton.h>
-#include <qtimer.h>
-#include <qvbox.h>
+#include <QAction>
+#include <QSplitter>
 #include <list>
 #include <string>
 
+#include "CustomMainWindow.h"
 #include "Config.h"
 #include "Counter.h"
-#include "File.h"
+#include "FileRecord.h"
 #include "Key.h"
 #include "QtUtil.h"
 #include "TextDisplay.h"
@@ -52,7 +48,7 @@
 
 class CustomLineEdit;
 class Menu;
-class StateFrame;
+class StatusBar;
 
 //! editor main window
 class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
@@ -150,16 +146,16 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
     return out;
   }
   
-  //! returns files that are opened in this display
-  std::set< File > files( void ) const
-  {
-    std::set<File> out;
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { if( !(*iter)->GetFile().empty() ) out.insert( (*iter)->file() ); }
-    
-    return out;
-  }
+//   //! returns files that are opened in this display
+//   std::set< File > files( void ) const
+//   {
+//     std::set<File> out;
+//     BASE::KeySet<TextDisplay> displays( this );
+//     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+//     { if( !(*iter)->file().empty() ) out.insert( (*iter)->file() ); }
+//     
+//     return out;
+//   }
   
   //! return number of independent modified displays
   unsigned int modifiedDisplayCount( void )
@@ -250,7 +246,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   { default_orientation_ = orientation; }
     
   //! change active display manualy
-  void setActiveDisplay( TextDisplay& display )
+  void setActiveDisplay( TextDisplay& display );
  
   //!@name actions
   //@{
@@ -338,15 +334,15 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void saveConfiguration( void );
  
   //! open file
-  void open( FileRecord record = FileRecord( "" ) )
+  void open( FileRecord record = FileRecord() )
   { _open( record, openMode(), orientation() ); }
 
   //! open file horizontally
-  void openHorizontal( FileRecord record = FileRecord( "" ) )
+  void openHorizontal( FileRecord record = FileRecord() )
   { _open( record, NEW_VIEW, Qt::Horizontal ); }
 
   //! open file vertically
-  void openVertical( FileRecord record = FileRecord( "" ) )
+  void openVertical( FileRecord record = FileRecord() )
   { _open( record, NEW_VIEW, Qt::Vertical ); }
   
   //! rehighlight all text displays
@@ -354,7 +350,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
 
   //! uniconify
   void uniconify( void )
-  { QtUtil::Uniconify( this ); }
+  { QtUtil::uniconify( this ); }
  
   protected:
 
@@ -408,7 +404,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
     Debug::Throw( "EditFrame::_closeView.\n" );
     BASE::KeySet< TextDisplay > displays( this );
     if( displays.size() > 1 ) _closeView( activeDisplay() );
-    else closeWindow();
+    else _closeWindow();
   }
     
   //! save
@@ -434,35 +430,35 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void _undo( void )
   { 
     Debug::Throw( "EditFrame::_undo.\n" );
-    activeDisplay().undo(); 
+    activeDisplay().undoAction()->trigger(); 
   }
 
   //! redo
   void _redo( void )
   { 
     Debug::Throw( "EditFrame::_redo.\n" );
-    activeDisplay().redo(); 
+    activeDisplay().redoAction()->trigger(); 
   }
 
   //! cut
   void _cut( void )
   { 
     Debug::Throw( "EditFrame::_cut.\n" );
-    activeDisplay().cut(); 
+    activeDisplay().cutAction()->trigger(); 
   }
 
   //! copy
   void _copy( void )
   { 
     Debug::Throw( "EditFrame::_copy.\n" );
-    activeDisplay().copy(); 
+    activeDisplay().copyAction()->trigger(); 
   }
 
   //! paste
   void _paste( void )
   { 
     Debug::Throw( "EditFrame::_paste.\n" );
-    activeDisplay().paste(); 
+    activeDisplay().pasteAction()->trigger(); 
   }
   
   //! document class configuration
@@ -532,8 +528,8 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! menu
   Menu* menu_;
 
-  //! main box for display
-  QVBox* main_;
+  //! main display widget
+  QWidget* main_;
   
   //! text display with focus
   TextDisplay* active_display_;

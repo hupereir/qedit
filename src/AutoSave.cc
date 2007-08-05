@@ -51,7 +51,7 @@ AutoSave::AutoSave( QObject* parent ):
   timer_.setSingleShot( true );
   connect( &timer_, SIGNAL( timeout() ), this, SLOT( saveFiles() ) );
   
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() );
+  connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
 
 }
 
@@ -84,7 +84,7 @@ void AutoSave::newThread( TextDisplay* display )
   AutoSaveThread *thread = new AutoSaveThread( this );
   
   // associate to EditFrame
-  BASE::Key::Associate( display, thread );
+  BASE::Key::associate( display, thread );
   
   // add to list
   threads_.push_back( thread );
@@ -101,9 +101,9 @@ void AutoSave::updateConfiguration( void )
   Debug::Throw( "AutoSave::updateConfiguration.\n" );
 
   // save AutoSave interval and start timer
-  int interval = 1000*Options::Get<int>("AUTOSAVE_INTERVAL");
-  if( interval > 0 ) {
-    timer_.setInterval( interval );
+  interval_ = 1000*XmlOptions::get().get<unsigned int>("AUTOSAVE_INTERVAL");
+  if( interval_ > 0 ) {
+    timer_.setInterval( interval_ );
     timer_.start();
   } else timer_.stop();
   
@@ -141,7 +141,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
       
       // remove file
       File autosaved( (*iter)->file() );
-      if( autosaved.Exist() && autosaved.IsWritable() ) autosaved.remove();
+      if( autosaved.exist() && autosaved.isWritable() ) autosaved.remove();
       
       // delete thread
       delete *iter;
@@ -156,7 +156,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
     if( !(*displays.begin())->file().empty() )
     {
       (*iter)->setFile( (*displays.begin())->file() );
-      (*iter)->SetContents( (*displays.begin())->toPlainText() );
+      (*iter)->setContents( (*displays.begin())->toPlainText() );
       (*iter)->start();
     }
     
@@ -166,7 +166,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
   if( display && !found )
   { 
     ostringstream what;
-    what << "AutoSave::SaveFiles - unable to find thread matching TextDisplay " << display->GetKey();
+    what << "AutoSave::SaveFiles - unable to find thread matching TextDisplay " << display->key();
     throw logic_error( DESCRIPTION( what.str() ) );
   }
 

@@ -41,7 +41,7 @@
 #include "ArgList.h"
 #include "Counter.h"
 #include "Exception.h"
-#include "File.h"
+#include "FileRecord.h"
 #include "Key.h"
 #include "TextSelection.h"
 
@@ -102,6 +102,10 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   //! create new empty editFrame
   EditFrame& newEditFrame( void );
   
+  signals:
+  
+  void configurationChanged();
+  
   public slots:
 
   //! configuration
@@ -109,7 +113,7 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   
   //! open
   /*! returns false if no file is open (force application to quit) */
-  EditFrame* open( const FileRecord& record );
+  EditFrame* open( FileRecord record );
 
   //! exit safely
   void exit( void );
@@ -119,6 +123,11 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
 
   //! Update Configuration from options
   void updateConfiguration( void );
+
+  /*! emmit configuration changed signal to force 
+  EditFrames to get updated */
+  void updateEditFrames( void )
+  { emit configurationChanged(); }
   
   //! Update Document Classes from options
   void updateDocumentClasses( void );

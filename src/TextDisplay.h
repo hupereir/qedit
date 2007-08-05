@@ -186,7 +186,7 @@ class TextDisplay: public CustomTextEdit
   //! if true file is not checked on enter event
   void setIgnoreWarnings( const bool& value )
   { 
-    Debug::Throw() << "TextDisplay::_setIgnoreWarnings - " << (value ? "true":"false") << endl;
+    Debug::Throw() << "TextDisplay::_setIgnoreWarnings - " << (value ? "true":"false") << std::endl;
     ignore_warnings_ = value; 
   }
     
@@ -441,8 +441,7 @@ class TextDisplay: public CustomTextEdit
   bool _contentsChanged( void ) const;
   
   //! show file info
-  void _showFileInfo( void )
-  { FileInfoDialog( this ).exec(); }
+  void _showFileInfo( void );
   
   protected slots:
 

@@ -60,7 +60,7 @@
 #include "QtUtil.h"
 #include "FileModifiedDialog.h"
 #include "FileRemovedDialog.h"
-#include "StateFrame.h"
+#include "StatusBar.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"

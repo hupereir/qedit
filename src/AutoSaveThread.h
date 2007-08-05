@@ -57,7 +57,7 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
   {}
   
   //! file
-  void SetFile( const File& file )
+  void setFile( const File& file )
   { 
     File tmp( autoSaveName( file ) );
     if( tmp != file_ )

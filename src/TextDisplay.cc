@@ -35,6 +35,8 @@
 #include "CustomFileDialog.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
+#include "#include "FileModifiedDialog.h"
+.h"
 #include "FileModifiedDialog.h"
 #include "FileRemovedDialog.h"
 #include "FileSelectionDialog.h"
@@ -849,6 +851,10 @@ bool TextDisplay::_contentsChanged( void ) const
   return (text.size() != file_text.size() || text != file_text );
 
 }
+
+//_______________________________________________________
+void TextDisplay::_showFileInfo( void )
+{ FileInfoDialog( this ).exec(); }
 
 //_______________________________________________________
 void TextDisplay::_indentCurrentParagraph( void )
