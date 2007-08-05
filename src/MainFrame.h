@@ -113,7 +113,7 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   
   //! open
   /*! returns false if no file is open (force application to quit) */
-  EditFrame* open( FileRecord record );
+  EditFrame* open( FileRecord record = FileRecord() );
 
   //! exit safely
   void exit( void );
@@ -195,17 +195,6 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   */
   QTimer startup_timer_;
 
-  //!@name actions
-  //@{
-  
-  //! configuration dialog
-  QAction* configuration_action_;
-  
-  //! document class dialog
-  QAction* document_class_action_;
-  
-  //@}
-  
 };
 
 #endif

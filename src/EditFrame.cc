@@ -46,10 +46,10 @@
 #include "CustomToolBar.h"
 #include "CustomToolButton.h"
 #include "Debug.h"
-#include "Diff.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassDialog.h"
 #include "EditFrame.h"
+#include "IconEngine.h"
 #include "Icons.h"
 #include "MainFrame.h"
 #include "Menu.h"
@@ -74,21 +74,24 @@
 #endif
 
 using namespace std;
+using namespace Qt;
 
 //_____________________________________________________
-EditFrame::EditFrame(  QWidget* parent, const string& name ):
-  QMainWindow( parent, name.c_str(), WType_TopLevel|WDestructiveClose  ),
+EditFrame::EditFrame(  QWidget* parent ):
+  CustomMainWindow( parent ),
   Counter( "EditFrame" ),
   menu_( 0 ),
   active_display_( 0 ),
   statusbar_( 0 ),
   file_editor_( 0 ),
-  enable_save_all_( false ),
-  enable_check_( true ),
-  default_orientation_( Qt::Horizontal ),
+  default_orientation_( Horizontal ),
   default_open_mode_( NEW_WINDOW )
 {
+  
   Debug::Throw( "EditFrame::EditFrame.\n" );
+
+  // tell frame to delete on exit
+  setAttribute( WA_DeleteOnClose );
 
   // menu
   menu_ = new Menu( this );
@@ -121,10 +124,10 @@ EditFrame::EditFrame(  QWidget* parent, const string& name ):
   layout->addWidget( statusbar_ = new StatusBar( main ) );
 
   // create "hidden" line editor to display filename
-  status_bar_->getLayout().addWidget( file_editor_ = new CustomLineEdit( statusbar_ ), 1, QtAlign::VCenter );
+  statusbar_->getLayout().addWidget( file_editor_ = new CustomLineEdit( statusbar_ ), 1, AlignVCenter );
   statusbar_->addLabels( 2, 0 );
-  statusbar_->label(0).setAlignment( Qt::AlignHCenter | Qt::AlignVCenter | Qt::expandTabs );
-  statusbar_->label(1).setAlignment( Qt::AlignHCenter | Qt::AlignVCenter | Qt::expandTabs );
+  statusbar_->label(0).setAlignment( AlignCenter ); 
+  statusbar_->label(1).setAlignment( AlignCenter ); 
   statusbar_->addClock();
 
   // modify frame and set readOnly
@@ -133,7 +136,7 @@ EditFrame::EditFrame(  QWidget* parent, const string& name ):
   
   // modify color
   QPalette palette( file_editor_->palette() );
-  palette->setColor( QPalette::Base, palette.color( QPalette::Window ) )
+  palette.setColor( QPalette::Base, palette.color( QPalette::Window ) );
   file_editor_->setPalette( palette );
 
   // assign non fixed font
@@ -150,8 +153,7 @@ EditFrame::EditFrame(  QWidget* parent, const string& name ):
   toolbars_.push_back( make_pair( toolbar, "FILE_TOOLBAR" ) );
   addToolBar( toolbar );
 
-  QToolButton* button;
-  toolbar->addAction( newAction() );
+  toolbar->addAction( newFileAction() );
   toolbar->addAction( openAction() ); 
   toolbar->addAction( saveAction() ); 
   //toolbar->addAction( printAction() );
@@ -180,24 +182,24 @@ EditFrame::EditFrame(  QWidget* parent, const string& name ):
   addToolBar( toolbar );
   
   QAction* action;
-  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_TOPBOTTOM, path_list ), "Clone view top/bottom", this, SLOT( _splitViewVertical() );
+  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_TOPBOTTOM, path_list ), "Clone view top/bottom", this, SLOT( _splitViewVertical() ) );
   action->setToolTip( "Clone current view vertically" );
 
-  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT, path_list ), "Clone view left/right", this, SLOT( _splitViewHorizontal() );
+  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT, path_list ), "Clone view left/right", this, SLOT( _splitViewHorizontal() ) );
   action->setToolTip( "Clone current view horizontally" );
 
-  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_BOTTOM, path_list ), "Clone view top/bottom", this, SLOT( openVertical() );
+  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_BOTTOM, path_list ), "Clone view top/bottom", this, SLOT( openVertical() ) );
   action->setToolTip( "Open a new view vertically" );
 
-  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_RIGHT, path_list ), "Open view left/right", this, SLOT( openHorizontal() );
+  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_RIGHT, path_list ), "Open view left/right", this, SLOT( openHorizontal() ) );
   action->setToolTip( "Open a new view horizontally" );
   
   toolbar->addAction( detachAction() );
   toolbar->addAction( closeViewAction() );
  
   //! configuration
-  connect( qApp, SIGNAL( configurationChanged() ), this, SLOT( updateConfiguration() );
-  connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( saveConfiguration() );
+  connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
+  connect( qApp, SIGNAL( aboutToQuit() ), SLOT( saveConfiguration() ) );
  
 }
 
@@ -261,14 +263,14 @@ void EditFrame::updateConfiguration( void )
     bool visibility( XmlOptions::get().find( option_name ) ? XmlOptions::get().get<bool>( option_name ):true );
     bool current_visibility( toolbar->isVisible() );
     
-    ToolBarArea location( (XmlOptions::get().find( location_name )) ? (ToolBarArea) CustomToolBar::nameToArea( XmlOptions::get().get<string>( location_name ) ):LeftToolBarArea );
-    ToolBarArea current_location( toolBarArea( toolbar ) );
+    ToolBarArea location = (XmlOptions::get().find( location_name )) ? (ToolBarArea) CustomToolBar::nameToArea( XmlOptions::get().get<string>( location_name ) ):TopToolBarArea ;
+    ToolBarArea current_location = toolBarArea( toolbar );
     
     Debug::Throw() << "EditFrame::updateConfiguration - " << option_name << " visibility: " << visibility << " location: " << (int)location << endl;
     
     if( visibility )
     {
-      if( !( current_visibility && location == current_location ) ) 
+      if( !( current_visibility && (location == current_location) ) ) 
       {
         addToolBar( location, toolbar );
         toolbar->show();
@@ -279,23 +281,16 @@ void EditFrame::updateConfiguration( void )
     XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
   }  
   
-  // associated displays
-  BASE::KeySet<TextDisplay> displays;
-  if( active_display_only )
-  {
-    displays = BASE::KeySet<TextDisplay>( &activeDisplay() );
-    displays.insert( &activeDisplay() );
-  } else displays = BASE::KeySet<TextDisplay>( this );
-
   // update flags for all displays
-  updateFlags( active_display_only );
+  updateFlags();
 
   // update document classes
+  BASE::KeySet<TextDisplay> displays( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
 
     // this trick allow to run  only once per set of associated displays
-    if( std::find_if( displays.begin(), iter, BASE::Key::isAssociatedFTor( *iter ) ) == iter )
+    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter )
     { 
       (*iter)->rehighlight(); 
       if( !(*iter)->file().empty() )
@@ -329,18 +324,13 @@ void EditFrame::saveConfiguration( void )
 }
 
 //________________________________________________________
-bool EditFrame::updateFlags( const bool& active_display_only )
+bool EditFrame::updateFlags()
 {
   Debug::Throw( "EditFrame::updateFlags.\n" );
 
   // auto spell dictionary and filtering
-  BASE::KeySet<TextDisplay> displays;
-  if( active_display_only ) {
-    displays = BASE::KeySet<TextDisplay>( &activeDisplay() );
-    displays.insert( &activeDisplay() );
-  } else displays = BASE::KeySet<TextDisplay>( this );
-
   bool changed( false );
+  BASE::KeySet<TextDisplay> displays( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
 
@@ -377,6 +367,45 @@ void EditFrame::setActiveDisplay( TextDisplay& display )
   
 }
 
+//____________________________________________
+void EditFrame::save( TextDisplay* display )
+{
+  Debug::Throw( "EditFrame::save.\n" );
+
+  // if no display passed in argument, use active display
+  if( !display ) display = &activeDisplay();
+
+  // save display
+  display->save();
+
+  // add file to menu
+  menu_->openPreviousMenu().add( display->file() );
+
+  return;
+
+}
+
+//____________________________________________
+void EditFrame::saveAll( void )
+{
+  Debug::Throw( "EditFrame::saveAll.\n" );
+
+  // retrieve all displays
+  BASE::KeySet<TextDisplay> displays( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  {
+    if( !(*iter)->document()->isModified() ) continue;
+
+    // save display
+    (*iter)->save();
+
+    // add file to menu
+    menu_->openPreviousMenu().add( (*iter)->file() );
+  }
+
+  return;
+
+}
 
 //________________________________________________________________
 void EditFrame::selectClassName( string name  )
@@ -412,7 +441,7 @@ void EditFrame::rehighlight( void )
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
     // this trick allow to run the rehighlight only once per set of associated displays
-    if( std::find_if( displays.begin(), iter, BASE::Key::isAssociatedFTor( *iter ) ) == iter )
+    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter )
     { (*iter)->rehighlight(); }  
   }
 
@@ -468,25 +497,6 @@ void EditFrame::_detach( void )
 }
 
 //____________________________________________
-void EditFrame::_save( TextDisplay* display )
-{
-  Debug::Throw( "EditFrame::_save.\n" );
-
-  // if no display passed in argument, use active display
-  if( !display ) display = &activeDisplay();
-
-  // save display
-  display->save();
-
-  // add file to menu
-  menu_->openPreviousMenu().add( display->file() );
-
-  return;
-
-}
-
-
-//____________________________________________
 void EditFrame::_saveAs( TextDisplay* display )
 {
   Debug::Throw( "EditFrame::_saveAs.\n" );
@@ -521,30 +531,8 @@ void EditFrame::_revertToSave( void )
   else what << "Reload file " << activeDisplay().file().localName() << "?";
   if( !QtUtil::questionDialog( this, what.str() ) ) return;
 
-  activeDisplay()._revertToSave();
+  activeDisplay().revertToSave();
   
-}
-
-//____________________________________________
-void EditFrame::_saveAll( void )
-{
-  Debug::Throw( "EditFrame::_saveAll.\n" );
-
-  // retrieve all displays
-  BASE::KeySet<TextDisplay> displays( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-    if( !(*iter)->document()->isModified() ) continue;
-
-    // save display
-    (*iter)->save();
-
-    // add file to menu
-    menu_->openPreviousMenu().add( (*iter)->file() );
-  }
-
-  return;
-
 }
 
 //___________________________________________________________
@@ -643,7 +631,7 @@ void EditFrame::_convertToHtml( void )
 
   // edit file if requested
   if( !use_command ) return;
-  string command( dialog.Command() );
+  string command( dialog.command() );
   string path( fullname.path() );
   
   command += string( " " ) + fullname + "&";
@@ -679,7 +667,6 @@ void EditFrame::_print( void )
 
   // create dialog
   PrintDialog dialog( this );
-  dialog.setCaption( "print" );
   dialog.setFile( file );
 
   // exec
@@ -687,7 +674,7 @@ void EditFrame::_print( void )
 
   ostringstream path;
   path << "\"" << file.path() << "\"";
-  Util::RunAt( path.str(), dialog.Command() );
+  Util::runAt( path.str(), dialog.command() );
 
   // update options
   XmlOptions::get().set<bool>( "USE_A2PS", dialog.useA2Ps() );
@@ -711,19 +698,10 @@ void EditFrame::closeEvent( QCloseEvent* event )
   if( isModified() )
   {
 
-    // update enable_save_all_ state, depending on how many files are modified in this window
-    enable_save_all_ |= modifiedDisplayCount() > 1;
-
-    // retrieve all edit frames
-    BASE::KeySet<EditFrame> frames( static_cast<MainFrame*>(qApp) );
-
     // look over TextDisplays
     BASE::KeySet<TextDisplay> displays( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
-
-      // this trick allow to run  only once per set of associated displays
-      if( std::find_if( displays.begin(), iter, BASE::Key::isAssociatedFTor( *iter ) ) != iter ) continue;
 
       // get local reference to display
       TextDisplay& display( **iter );
@@ -731,38 +709,25 @@ void EditFrame::closeEvent( QCloseEvent* event )
       // check if this display is modified
       if( !display.document()->isModified() ) continue;
 
-      // create dialog
-      int state( AskForSaveDialog( this, display.file(), enable_save_all_ ).exec() );
-      if( state == AskForSaveDialog::YES ) save( &display );
-      else if( state == AskForSaveDialog::NO ) 
-      {
-        
-        display.document()->setModified( false );
-      
-      } else if( state == AskForSaveDialog::ALL ) {
+      // this trick allow to run  only once per set of associated displays
+      if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
 
-        // loop over edit frames, only consider frames *after* this one
-        bool found_this( false );
-        for( BASE::KeySet<EditFrame>::iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
-        {
-          
-          if( *frame_iter == this ) 
-          {
-            
-            // for this frame, only save displays located after the current
-            for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
-            {
-              if( *display_iter == &display ) found_this = true;
-              else if( found_this && (*iter)->document()->isModified() ) save( *display_iter );
-            }
-            
-          } else if( found_this && (*frame_iter)->isModified() ) (*frame_iter)->saveAll();
-          
-        }
+      // create dialog
+      int flags( AskForSaveDialog::YES | AskForSaveDialog::NO | AskForSaveDialog::CANCEL );
+      if( modifiedDisplayCount() > 1 ) flags |=  AskForSaveDialog::ALL;
+
+      int state( AskForSaveDialog( this, display.file(), flags ).exec() );
+      
+      if( state == AskForSaveDialog::YES ) save( &display );
+      else if( state == AskForSaveDialog::NO ) display.document()->setModified( false );
+      else if( state == AskForSaveDialog::ALL ) {
+        
+        // for this frame, only save displays located after the current
+        for( BASE::KeySet<TextDisplay>::iterator display_iter = iter; display_iter != displays.end(); display_iter++ )
+        { if( (*display_iter)->document()->isModified() ) save( *display_iter ); }
 
       } else if( state == AskForSaveDialog::CANCEL ) {
 
-        enable_save_all_ = false;
         event->ignore();
         return;
 
@@ -794,7 +759,7 @@ void EditFrame::enterEvent( QEvent* e )
   {
 
     // this trick allow to run  only once per set of associated displays
-    if( std::find_if( displays.begin(), iter, BASE::Key::isAssociatedFTor( *iter ) ) != iter ) continue;
+    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
 
     // keep local reference of current display
     TextDisplay &display( **iter );
@@ -804,13 +769,14 @@ void EditFrame::enterEvent( QEvent* e )
     {
 
       // disable check
-      int state( FileRemovedDialog( this, display.file() ) );
+      int state( FileRemovedDialog( this, display.file() ).exec() );
 
-      if( state == FileRemovedDialog::RESAVE ) { _save( &display ); }
+      if( state == FileRemovedDialog::RESAVE ) { save( &display ); }
       else if( state == FileRemovedDialog::SAVE_AS ) { _saveAs( &display ); }
       else if( state == FileRemovedDialog::CLOSE ) { 
-                
+        
         // register displays as dead
+        BASE::KeySet<TextDisplay> associated_displays( &display );
         dead_displays.insert( associated_displays.begin(), associated_displays.end() );
         dead_displays.insert( &display );
         
@@ -820,12 +786,13 @@ void EditFrame::enterEvent( QEvent* e )
         associated_displays.insert( &display );
         for( BASE::KeySet<TextDisplay>::iterator associated_iter = displays.begin(); associated_iter != displays.end(); associated_iter++ )
         { (*associated_iter)->setIgnoreWarnings( true ); }
-        
-    } else if( !display.ignoreWarnings() && (*iter)->FileModified() )
-    {
+      
+      }
+      
+    } else if( !display.ignoreWarnings() && (*iter)->fileModified() ) {
 
-      int state = FileModifiedDialog( this, display.file() ).exec();
-      if( state == FileModifiedDialog::RESAVE ) { _save( &display ); }
+      int state( FileModifiedDialog( this, display.file() ).exec() );
+      if( state == FileModifiedDialog::RESAVE ) { save( &display ); }
       else if( state == FileModifiedDialog::SAVE_AS ) { _saveAs( &display ); }
       else if( state == FileModifiedDialog::RELOAD ) { 
         
@@ -890,16 +857,16 @@ void EditFrame::_update( unsigned int flags )
   if( flags & TextDisplay::WINDOW_TITLE )
   { _updateWindowTitle(); }
 
-  if( flags & TextDisplay::FILE_NAME && file_editor_ )
+  if( flags & TextDisplay::FILE_NAME )
   { file_editor_->setText( activeDisplay().file().c_str() ); }
 
-  if( flags & TextDisplay::CUT && cut_ )
+  if( flags & TextDisplay::CUT )
   { cutAction()->setEnabled( activeDisplay().cutAction()->isEnabled() ); }
 
-  if( flags & TextDisplay::COPY && copy_ )
+  if( flags & TextDisplay::COPY )
   { copyAction()->setEnabled( activeDisplay().copyAction()->isEnabled() ); }
 
-  if( flags & TextDisplay::PASTE && paste_ )
+  if( flags & TextDisplay::PASTE )
   { pasteAction()->setEnabled( activeDisplay().pasteAction()->isEnabled() ); }
 
   if( flags & TextDisplay::UNDO_REDO )
@@ -915,8 +882,8 @@ void EditFrame::_updateCursorPosition( void )
 {
 
   TextPosition position( activeDisplay().textPosition() );
-  statusBar().label(0).setText( Str( "line : " ).append<int>( position.paragraph()+1 ).c_str() , false );
-  statusBar().label(1).setText( Str( "column : " ).append<int>( position.index()+1 ).c_str() , false );
+  statusbar_->label(0).setText( Str( "line : " ).append<int>( position.paragraph()+1 ).c_str() , false );
+  statusbar_->label(1).setText( Str( "column : " ).append<int>( position.index()+1 ).c_str() , false );
 
   return;
 }
@@ -937,84 +904,84 @@ void EditFrame::_installActions( void )
   list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
 
-  addAction( new_file_action_ = new QAction( IconEngine::get( ICON::FILE_NEW, path_list ), "&New", this ) );
-  new_file_action_->setShortCut( CTRL+Key_N );
-  new_file_action_->setTooltip( "Create a new empty file" );
-  connect( new_file_action_, SIGNAL( triggered() ) SLOT( _newFile() ) );
+  addAction( new_file_action_ = new QAction( IconEngine::get( ICONS::NEW, path_list ), "&New", this ) );
+  new_file_action_->setShortcut( CTRL+Key_N );
+  new_file_action_->setToolTip( "Create a new empty file" );
+  connect( new_file_action_, SIGNAL( triggered() ), SLOT( _newFile() ) );
 
-  addAction( clone_action_ = new QAction( IconEngine::get( ICON::VIEW_LEFTRIGHT, path_list ), "&Clone", this ) );
-  clone_action_->setShortCut( SHIFT+CTRL+Key_N );
-  clone_action_->setTooltip( "Clone current view" );
-  connect( clone_action_, SIGNAL( triggered() ) SLOT( _splitView() ) );
+  addAction( clone_action_ = new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT, path_list ), "&Clone", this ) );
+  clone_action_->setShortcut( SHIFT+CTRL+Key_N );
+  clone_action_->setToolTip( "Clone current view" );
+  connect( clone_action_, SIGNAL( triggered() ), SLOT( _splitView() ) );
 
-  addAction( detach_action_ = new QAction( IconEngine::get( ICON::DETACH, path_list ), "&Detach", this ) );
-  detach_action_->setShortCut( SHIFT+CTRL+Key_O );
-  detach_action_->setTooltip( "Detach current view" );
-  connect( detach_action_, SIGNAL( triggered() ) SLOT( _detach() ) );
+  addAction( detach_action_ = new QAction( IconEngine::get( ICONS::VIEW_DETACH, path_list ), "&Detach", this ) );
+  detach_action_->setShortcut( SHIFT+CTRL+Key_O );
+  detach_action_->setToolTip( "Detach current view" );
+  connect( detach_action_, SIGNAL( triggered() ), SLOT( _detach() ) );
 
-  addAction( open_action_ = new QAction( IconEngine::get( ICON::OPEN, path_list ), "&Open", this ) );
-  open_action_->setShortCut( SHIFT+CTRL+Key_O );
-  open_action_->setTooltip( "Open an existing file" );
-  connect( open_action_, SIGNAL( triggered() ) SLOT( _open() ) );
+  addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN, path_list ), "&Open", this ) );
+  open_action_->setShortcut( SHIFT+CTRL+Key_O );
+  open_action_->setToolTip( "Open an existing file" );
+  connect( open_action_, SIGNAL( triggered() ), SLOT( _open() ) );
  
-  addAction( close_view_action_ = new QAction( IconEngine::get( ICON::VIEW_REMOVE, path_list ), "&Close view", this ) );
-  close_view_action_->setShortCut( CTRL+Key_W );
-  close_view_action_->setTooltip( "Close current view" );
-  connect( close_view_action_, SIGNAL( triggered() ) SLOT( _closeView() ) );
+  addAction( close_view_action_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE, path_list ), "&Close view", this ) );
+  close_view_action_->setShortcut( CTRL+Key_W );
+  close_view_action_->setToolTip( "Close current view" );
+  connect( close_view_action_, SIGNAL( triggered() ), SLOT( _closeView() ) );
  
   addAction( close_window_action_ = new QAction( "&Close view", this ) );
-  close_window_action_->setShortCut( SHIFT+CTRL+Key_W );
-  close_window_action_->setTooltip( "Close current view" );
-  connect( close_window_action_, SIGNAL( triggered() ) SLOT( _closeWindow() ) );
+  close_window_action_->setShortcut( SHIFT+CTRL+Key_W );
+  close_window_action_->setToolTip( "Close current view" );
+  connect( close_window_action_, SIGNAL( triggered() ), SLOT( _closeWindow() ) );
  
-  addAction( save_action_ = new QAction( IconEngine::get( ICON::SAVE, path_list ), "&Save", this ) );
-  save_action_->setShortCut( CTRL+Key_S );
-  save_action_->setTooltip( "Save current file" );
-  connect( save_action_, SIGNAL( triggered() ) SLOT( _save() ) );
+  addAction( save_action_ = new QAction( IconEngine::get( ICONS::SAVE, path_list ), "&Save", this ) );
+  save_action_->setShortcut( CTRL+Key_S );
+  save_action_->setToolTip( "Save current file" );
+  connect( save_action_, SIGNAL( triggered() ), SLOT( save() ) );
  
-  addAction( save_as_action_ = new QAction( IconEngine::get( ICON::SAVE_AS, path_list ), "Save &As", this ) );
-  save_as_action_->setShortCut( SHIFT+CTRL+Key_S );
-  save_as_action_->setTooltip( "Save current file with a different name" );
-  connect( save_as_action_, SIGNAL( triggered() ) SLOT( _saveAs() ) );
+  addAction( save_as_action_ = new QAction( IconEngine::get( ICONS::SAVE_AS, path_list ), "Save &As", this ) );
+  save_as_action_->setShortcut( SHIFT+CTRL+Key_S );
+  save_as_action_->setToolTip( "Save current file with a different name" );
+  connect( save_as_action_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
 
-  addAction( revert_to_save_action_ = new QAction( IconEngine::get( ICON::RELOAD, path_list ), "&Revert to saved", this ) );
-  revert_to_save_action_->setTooltip( "Reload saved version of current file" );
-  connect( revert_to_save_action_, SIGNAL( triggered() ) SLOT( _revertToSave() ) );
+  addAction( revert_to_save_action_ = new QAction( IconEngine::get( ICONS::RELOAD, path_list ), "&Revert to saved", this ) );
+  revert_to_save_action_->setToolTip( "Reload saved version of current file" );
+  connect( revert_to_save_action_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
  
-  addAction( html_action_ = new QAction( IconEngine::get( ICON::HTML, path_list ), "&Html", this ) );
-  html_action_->setTooltip( "convert file to Html" );
-  connect( html_action_, SIGNAL( triggered() ) SLOT( _convertToHtml() ) );
+  addAction( html_action_ = new QAction( IconEngine::get( ICONS::HTML, path_list ), "&Html", this ) );
+  html_action_->setToolTip( "convert file to Html" );
+  connect( html_action_, SIGNAL( triggered() ), SLOT( _convertToHtml() ) );
 
-  addAction( print_action_ = new QAction( IconEngine::get( ICON::PRINT, path_list ), "&Print", this ) );
-  paste_action_->setTooltip( "Paste clipboard to text" );
-  connect( print_action_, SIGNAL( triggered() ) SLOT( _print() ) );
+  addAction( print_action_ = new QAction( IconEngine::get( ICONS::PRINT, path_list ), "&Print", this ) );
+  paste_action_->setToolTip( "Paste clipboard to text" );
+  connect( print_action_, SIGNAL( triggered() ), SLOT( _print() ) );
 
-  addAction( undo_action_ = new QAction( IconEngine::get( ICON::UNDO, path_list ), "&Undo", this ) );
-  undo_action_->setTooltip( "Undo last action" );
-  connect( undo_action_, SIGNAL( triggered() ) SLOT( _undo() ) );
+  addAction( undo_action_ = new QAction( IconEngine::get( ICONS::UNDO, path_list ), "&Undo", this ) );
+  undo_action_->setToolTip( "Undo last action" );
+  connect( undo_action_, SIGNAL( triggered() ), SLOT( _undo() ) );
 
-  addAction( redo_action_ = new QAction( IconEngine::get( ICON::REDO, path_list ), "&Redo", this ) );
-  redo_action_->setTooltip( "Redo last un-done action" );
-  connect( redo_action_, SIGNAL( triggered() ) SLOT( _redo() ) );
+  addAction( redo_action_ = new QAction( IconEngine::get( ICONS::REDO, path_list ), "&Redo", this ) );
+  redo_action_->setToolTip( "Redo last un-done action" );
+  connect( redo_action_, SIGNAL( triggered() ), SLOT( _redo() ) );
 
-  addAction( cut_action_ = new QAction( IconEngine::get( ICON::CUT, path_list ), "&Cut", this ) );
-  cut_action_->setTooltip( "Cut current selection and copy to clipboard" );
-  connect( cut_action_, SIGNAL( triggered() ) SLOT( _cut() ) );
+  addAction( cut_action_ = new QAction( IconEngine::get( ICONS::CUT, path_list ), "&Cut", this ) );
+  cut_action_->setToolTip( "Cut current selection and copy to clipboard" );
+  connect( cut_action_, SIGNAL( triggered() ), SLOT( _cut() ) );
 
-  addAction( copy_action_ = new QAction( IconEngine::get( ICON::COPY, path_list ), "&Copy", this ) );
-  copy_action_->setTooltip( "Copy current selection to clipboard" );
-  connect( copy_action_, SIGNAL( triggered() ) SLOT( _copy() ) );
+  addAction( copy_action_ = new QAction( IconEngine::get( ICONS::COPY, path_list ), "&Copy", this ) );
+  copy_action_->setToolTip( "Copy current selection to clipboard" );
+  connect( copy_action_, SIGNAL( triggered() ), SLOT( _copy() ) );
 
-  addAction( paste_action_ = new QAction( IconEngine::get( ICON::PASTE, path_list ), "&Paste", this ) );
-  paste_action_->setTooltip( "Paste clipboard to text" );
-  connect( paste_action_, SIGNAL( triggered() ) SLOT( _paste() ) );
+  addAction( paste_action_ = new QAction( IconEngine::get( ICONS::PASTE, path_list ), "&Paste", this ) );
+  paste_action_->setToolTip( "Paste clipboard to text" );
+  connect( paste_action_, SIGNAL( triggered() ), SLOT( _paste() ) );
 
   addAction( document_class_action_ = new QAction( "&Document classes", this ) );
   connect( document_class_action_, SIGNAL( triggered() ), SLOT( _documentClassConfiguration() ) ); 
 
-  addAction( file_info_action_ = new QAction( IconEngine::get( ICON::INFO, path_list ), "&File information", this ) );
-  file_info_action_->setTooltip( "Display file informations" );
-  connect( file_info_action_, SIGNAL( triggered() ) SLOT( _fileInfo() ) );
+  addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO, path_list ), "&File information", this ) );
+  file_info_action_->setToolTip( "Display file informations" );
+  connect( file_info_action_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
 
 }
 
@@ -1024,24 +991,23 @@ void EditFrame::_updateWindowTitle()
   Debug::Throw( "EditFrame::_updateWindowTitle.\n" );
   setWindowTitle( WindowTitle( activeDisplay().file() )
     .setReadOnly( activeDisplay().isReadOnly() )
-    .setModified( activeDisplay().document()->isModified() )
-    .c_str() );
+    .setModified( activeDisplay().document()->isModified() ) );
 }
 
 //___________________________________________________________
-void EditFrame::_newFile( const OpenMode& mode, const Qt::Orientation& orientation )
+void EditFrame::_newFile( const OpenMode& mode, const Orientation& orientation )
 {
 
   Debug::Throw( "EditFrame::_New.\n" );
 
   // check open_mode
-  if( mode == NEW_WINDOW ) static_cast<MainFrame*>(qApp)->open( FileRecord("") );
+  if( mode == NEW_WINDOW ) static_cast<MainFrame*>(qApp)->open();
   else _splitView( orientation, false );
 
 }
 
 //___________________________________________________________
-void EditFrame::_open( FileRecord record, const OpenMode& mode, const Qt::Orientation& orientation )
+void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientation& orientation )
 {
 
   Debug::Throw( "EditFrame::_Open.\n" );
@@ -1051,8 +1017,8 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Qt::Orient
   {
 
     // create file dialog
-    CustomFileDialog dialog( this, "file dialog", TRUE );
-    dialog.setMode( QFileDialog::existingFile );
+    CustomFileDialog dialog( this );
+    dialog.setFileMode( QFileDialog::ExistingFile );
     dialog.setDirectory( QDir( activeDisplay().workingDirectory().c_str() ) );
     if( dialog.exec() == QDialog::Rejected ) return;
     
@@ -1088,7 +1054,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Qt::Orient
     
     // create NewFileDialog
     
-    int state( NewFileDialog( this, record.file() ).exec();
+    int state( NewFileDialog( this, record.file() ).exec() );
     switch( state )
     {
       
@@ -1133,7 +1099,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Qt::Orient
 
     ostringstream what;
     what
-      << "The file " << file << " is already opened in another window.\n"
+      << "The file " << record.file() << " is already opened in another window.\n"
       << "Do you want to close the other view and open the file here ?";
     if( !QtUtil::questionDialog( this, what.str() ) )
     {
@@ -1151,7 +1117,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Qt::Orient
     TextDisplay& previous_display( (*iter)->activeDisplay() );
 
     // clone
-    display.synchronize( previous_display );
+    display.synchronize( &previous_display );
 
     // store modification state
     bool modified( previous_display.document()->isModified() );
@@ -1207,14 +1173,14 @@ void EditFrame::_closeView( TextDisplay& display )
   }
 
   // check if display is modified and has no associates in window
-  if( display.document()->siModified() && BASE::KeySet<TextDisplay>( &display ).empty() )
+  if( display.document()->isModified() && BASE::KeySet<TextDisplay>( &display ).empty() )
   {
 
     // create dialog
     AskForSaveDialog dialog( this, display.file(), false );
     int state = dialog.exec();
     if( state == AskForSaveDialog::YES ) { save( &display ); }
-    if( state == AskForSaveDialog::NO ) { display.document()->setModified( false ) };
+    if( state == AskForSaveDialog::NO ) { display.document()->setModified( false ); }
     else if( state == AskForSaveDialog::CANCEL ) return;
 
   }
@@ -1228,10 +1194,12 @@ void EditFrame::_closeView( TextDisplay& display )
   Debug::Throw("EditFrame::_closeView - got parent and grand parent.\n" );
 
   // retrieve children of parent and loop
-  QObjectList children( *parent->children() );
-  for( QObject* child = children.first(); child; child = children.next() )
+  const QObjectList& children( parent->children() );
+  for( QObjectList::const_iterator iter = children.begin(); iter != children.end(); iter++ )
   {
-
+    
+    QObject *child( *iter );
+    
     // check if child is the display
     if( child == &display )
     {
@@ -1274,7 +1242,7 @@ void EditFrame::_closeView( TextDisplay& display )
   if( splitter )
   {
     
-    int dimension = (splitter->orientation() == Qt::Horizontal) ? splitter->width():splitter->height();
+    int dimension = (splitter->orientation() == Horizontal) ? splitter->width():splitter->height();
     
     QList<int> sizes;
     sizes.push_back( dimension/2 );
@@ -1298,7 +1266,7 @@ void EditFrame::_closeView( TextDisplay& display )
     BASE::KeySet<TextDisplay>::reverse_iterator iter = displays.rbegin();
     if( *iter == &display ) iter++;
 
-    Exception::Assert( iter != displays.rend(), DESCRIPTION( "wrong TextDisplay iterator" ) );
+    Exception::check( iter != displays.rend(), DESCRIPTION( "wrong TextDisplay iterator" ) );
     setActiveDisplay( **iter );
 
     // update detach view
@@ -1310,7 +1278,7 @@ void EditFrame::_closeView( TextDisplay& display )
     setActiveDisplay( **displays.rbegin() );
 
     // update detach view
-    detach_view_->setEnabled( independentDisplayCount() > 1 );
+    detach_action_->setEnabled( independentDisplayCount() > 1 );
 
   }
 
@@ -1327,7 +1295,7 @@ void EditFrame::_closeView( TextDisplay& display )
 }
 
 //___________________________________________________________
-TextDisplay& EditFrame::_splitView( const Qt::Orientation& orientation, const bool& clone )
+TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& clone )
 {
   
   Debug::Throw( "EditFrame::_splitView.\n" );
@@ -1342,7 +1310,7 @@ TextDisplay& EditFrame::_splitView( const Qt::Orientation& orientation, const bo
   TextDisplay& display( _newTextDisplay( &splitter ) );
 
   // assign equal size to displays
-  int dimension = (orientation == Qt::Horizontal) ? splitter.width():splitter.height();
+  int dimension = (orientation == Horizontal) ? splitter.width():splitter.height();
     
   QList<int> sizes;
   sizes.push_back( dimension/2 );
@@ -1355,7 +1323,7 @@ TextDisplay& EditFrame::_splitView( const Qt::Orientation& orientation, const bo
   {
     
     // assign equal size to displays
-    int dimension = ( parent_splitter->orientation() == Qt::Horizontal) ? splitter.width():splitter.height();
+    int dimension = ( parent_splitter->orientation() == Horizontal) ? splitter.width():splitter.height();
     
     QList<int> sizes;
     sizes.push_back( dimension/2 );
@@ -1413,7 +1381,7 @@ TextDisplay& EditFrame::_splitView( const Qt::Orientation& orientation, const bo
 }
 
 //____________________________________________________________
-QSplitter& EditFrame::_newSplitter( const Qt::Orientation& orientation, const bool& clone )
+QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& clone )
 {
 
   Debug::Throw( "EditFrame::_newSplitter.\n" );
@@ -1434,7 +1402,7 @@ QSplitter& EditFrame::_newSplitter( const Qt::Orientation& orientation, const bo
 
     // move splitter to the first place if needed
     QSplitter *parent_splitter = dynamic_cast<QSplitter*>( parent );
-    if( parent_splitter ) parent_splitter->insertWidget( splitter, parent_splitter->indexOf( &activeWidget() );
+    if( parent_splitter ) parent_splitter->insertWidget( parent_splitter->indexOf( &activeDisplay() ), splitter );
     else parent->layout()->addWidget( splitter );
 
     // reparent current display
@@ -1451,9 +1419,10 @@ QSplitter& EditFrame::_newSplitter( const Qt::Orientation& orientation, const bo
     QWidget *first_child(0);
 
     // retrieve children and loop
-    QObjectList children( *main_->children() );
-    for( QObject* child = children.first(); child; child = children.next() )
+    const QObjectList& children( main_->children() );
+    for( QObjectList::const_iterator iter = children.begin(); iter != children.end(); iter++ )
     {
+      QObject* child( *iter );
       if(
         dynamic_cast<TextDisplay*>( child ) ||
         dynamic_cast<QSplitter*>( child ) )
@@ -1464,7 +1433,7 @@ QSplitter& EditFrame::_newSplitter( const Qt::Orientation& orientation, const bo
     }
 
     // check child could be retrieved
-    Exception::CheckPointer( first_child, DESCRIPTION( "invalid first child" ) );
+    Exception::checkPointer( first_child, DESCRIPTION( "invalid first child" ) );
 
     // create new splitter
     splitter = new DestructiveCloseSplitter( main_ );
@@ -1492,7 +1461,6 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
   // create textDisplay
   // disable accelerator because they are handled in the menu
   TextDisplay* display = new TextDisplay( parent );
-  display->EnableAccelerator( false );
 
   // connections
   connect( display, SIGNAL( needUpdate( unsigned int ) ), this, SLOT( _update( unsigned int ) ) );

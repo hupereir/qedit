@@ -31,12 +31,14 @@
 
 #include <QMessageBox>
 
+#include "AskForSaveDialog.h"
 #include "AutoSave.h"
 #include "Config.h" 
 #include "ConfigurationDialog.h"
 #include "DocumentClassManager.h"
 #include "EditFrame.h"
 #include "ErrorHandler.h"
+#include "ExitDialog.h"
 #include "MainFrame.h"
 #include "NewFileDialog.h"
 #include "XmlOptions.h"
@@ -57,7 +59,7 @@ void MainFrame::usage( void )
   cout << "  --help\t\t displays this help and exit" << endl;
   cout << "  --tabbed\t\t opens command line files in same window" << endl;
   cout << "  --diff\t\t opens command line files in same window and perform diff" << endl;
-  ApplicationManager::Usage();
+  ApplicationManager::usage();
   return;
 }
 
@@ -69,7 +71,6 @@ MainFrame::MainFrame( int argc, char*argv[] ) :
   application_manager_( 0 ),
   class_manager_( 0 ),
   autosave_( 0 ),
-  sync_( 0 ),
   args_( argc, argv ),
   realized_( false ),
   startup_timer_( this )
@@ -108,14 +109,14 @@ void MainFrame::initApplicationManager( void )
   Debug::Throw( "MainFrame::initApplicationManager.\n" );
 
   if( application_manager_ ) return;
-  if( args_.Find( "--no-server" ) ) 
+  if( args_.find( "--no-server" ) ) 
   {
     realizeWidget();
     return;
   }
 
   // create application manager
-  application_manager_ = new applicationManager( this );
+  application_manager_ = new ApplicationManager( this );
   application_manager_->setApplicationName( XmlOptions::get().get<string>( "APP_NAME" ) );
   connect( 
     application_manager_, SIGNAL( stateChanged( SERVER::ApplicationManager::State ) ),
@@ -124,7 +125,7 @@ void MainFrame::initApplicationManager( void )
   connect( application_manager_, SIGNAL( serverRequest( const ArgList& ) ), SLOT( _processRequest( const ArgList& ) ) );
  
   // retrieve files from arguments and expand if needed
-  ArgList::Arg& last( args_.bet().back() );
+  ArgList::Arg& last( args_.get().back() );
   for( list< string >::iterator iter = last.options().begin(); iter != last.options().end(); iter++ )
   { if( File( *iter ).size() ) (*iter) = File( *iter ).expand(); }
 
@@ -167,7 +168,7 @@ EditFrame& MainFrame::newEditFrame( void )
 {  
   Debug::Throw( "MainFrame::newEditFrame" );
   EditFrame* out = new EditFrame();
-  BASE::Key::Associate( this, out );
+  BASE::Key::associate( this, out );
   return *out;
 }
 
@@ -181,20 +182,20 @@ void MainFrame::configuration( void )
 }
 
 //_______________________________________________
-EditFrame* MainFrame::open( const File& file )
+EditFrame* MainFrame::open( FileRecord record )
 {
   
-  Debug::Throw() << "MainFrame::Open - file: " << file << endl;
+  Debug::Throw() << "MainFrame::Open - file: " << record.file() << endl;
 
   //! set default status to "open"
   open_status_ = OPEN;
   
   // see if file is directory
-  if( file.isDirectory() )
+  if( record.file().isDirectory() )
   {
     
     ostringstream what;
-    what << "File \"" << file << "\" is a directory. <Open> canceled.";
+    what << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
     QtUtil::infoDialog( 0, what.str() );
     
     // update open status and exit
@@ -208,11 +209,11 @@ EditFrame* MainFrame::open( const File& file )
   BASE::KeySet<EditFrame> frames( this );
   
   // try find editor with matching name
-  BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( file ) );
+  BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( record.file() ) );
   if( iter != frames.end() )
   {
     (*iter)->uniconify();
-    (*iter)->selectDisplay( file );
+    (*iter)->selectDisplay( record.file() );
     
     // update open status and exit
     open_status_ = OPEN;
@@ -228,25 +229,25 @@ EditFrame* MainFrame::open( const File& file )
   if( !frame ) frame = &newEditFrame();
 
   // check if file exist
-  if( file.exist() ) frame->setFile( file );
-  else if( !file.empty() ) 
+  if( record.file().exist() ) frame->setFile( record.file() );
+  else if( !record.file().empty() ) 
   {
   
     frame->show();
     
     // create NewFileDialog
-    int state = NewFileDialog( 0, file ).exec();
+    int state = NewFileDialog( 0, record.file() ).exec();
     Debug::Throw() << "MainFrame::Open - New file dialog state: " << state << endl; 
     switch( state )
     {
   
       case NewFileDialog::CREATE:
       {
-        File fullname( file.expand() );
+        File fullname( record.file().expand() );
         if( !fullname.create() )
         {
           ostringstream what;
-          what << "Unable to create file " << file << ".";
+          what << "Unable to create file " << record.file() << ".";
           QtUtil::infoDialog( frame, what.str() );
           frame->setFile( File("") );
         } else frame->setFile( fullname );
@@ -288,8 +289,7 @@ void MainFrame::exit( void )
   if( frames.empty() ) quit();
 
   // retrieve all modified files and store in a map, together with modification state
-  typedef map< File, bool > FileMap;
-  FileMap files;
+  std::map< File, bool > files;
   
   for( BASE::KeySet<EditFrame>::iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
   {
@@ -301,7 +301,7 @@ void MainFrame::exit( void )
 
       // retrieve file
       // store in map if not empty
-      const File& file( (*iter)->GetFile() );
+      const File& file( (*iter)->file() );
       if( !file.empty() ) files.insert( make_pair( file, (*iter)->document()->isModified() ) );
         
     }
@@ -315,19 +315,46 @@ void MainFrame::exit( void )
   for( BASE::KeySet<EditFrame>::iterator iter = frames.begin(); iter != frames.end(); iter++ )
   {
     
-    if( (*iter)->document()->isModified() )
+    if( !(*iter)->isModified() ) continue;
+    
+    // loop over displays
+    bool save_all_enabled = count_if( iter, frames.end(), EditFrame::IsModifiedFTor() ) > 1;
+    BASE::KeySet<TextDisplay> displays( *iter );
+    for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
     {
+      if( !(*display_iter)->document()->isModified() ) continue;
+      save_all_enabled |= (*iter)->modifiedDisplayCount() > 1;
+        
+      int flags( AskForSaveDialog::YES | AskForSaveDialog::NO | AskForSaveDialog::CANCEL );
+      if( save_all_enabled > 1 ) flags |=  AskForSaveDialog::ALL;
       
-      // count number of remaining modified files
-      unsigned int modified_count( count_if( iter, frames.end(), EditFrame::ModifiedFTor() );
-      (*iter)->setEnableSaveAll( n_modified > 1 );
+      int state( AskForSaveDialog( *display_iter, (*display_iter)->file(), flags ).exec() );
+      if( state == AskForSaveDialog::YES ) (*iter)->save( *display_iter );
+      else if( state == AskForSaveDialog::NO ) (*display_iter)->document()->setModified( false );
+      else if( state == AskForSaveDialog::CANCEL ) return;
+      else if( state == AskForSaveDialog::ALL ) {
+        
+        // save all displays for this frame, starting from the current
+        for(; display_iter != displays.end(); display_iter++ ) 
+        { if( (*display_iter)->document()->isModified() ) (*iter)->save( *display_iter ); }
+       
+        // save all editframes starting from the next to this one
+        BASE::KeySet<EditFrame>::iterator sub_iter = iter; 
+        for( sub_iter++; sub_iter != frames.end(); sub_iter++ ) (*sub_iter)->saveAll();
+        
+        // break loop since everybody has been saved
+        break;
+        
+      }
       
     }
     
-    if( !(*iter)->close() ) return;
+    // try close. Should succeed, otherwise it means there is a flow in the algorithm above
+    Exception::check( (*iter)->close(), DESCRIPTION( "close failed.\n" ) );
     
   }
 
+  Debug::Throw( "MainFrame::exit - done.\n" );
   quit();
 
 }
@@ -364,20 +391,13 @@ void MainFrame::updateConfiguration( void )
   Debug::Throw( "MainFrame::updateConfiguration.\n" );
 
   // set fonts
-  if( Options::Find( "FONT_NAME" ) )
-  {
-    QFont font;
-    font.fromString( XmlOptions::get().raw( "FONT_NAME" ).c_str() );
-    setFont( font, true );
-  }
+  QFont font;
+  font.fromString( XmlOptions::get().raw( "FONT_NAME" ).c_str() );
+  setFont( font );
 
-  if( Options::Find( "FIXED_FONT_NAME" ) )
-  {
-    QFont font;
-    font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );
-    setFont( font, true, "QLineEdit" );
-    setFont( font, true, "QTextEdit" );
-  }
+  font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );
+  setFont( font, "QLineEdit" );
+  setFont( font, "QTextEdit" );
   
   Debug::setLevel( XmlOptions::get().get<bool>("DEBUG_LEVEL") );
 
@@ -443,8 +463,8 @@ void MainFrame::_readFilesFromArgs( void )
   Debug::Throw( "MainFrame::_readFilesFromArgs.\n" );
     
   // see if open should be performed in Tabbed mode
-  bool tabbed( args_.Find( "--tabbed" ) );
-  bool diff( args_.Find( "--diff" ) );
+  bool tabbed( args_.find( "--tabbed" ) );
+  bool diff( args_.find( "--diff" ) );
   
   // keep track of opened files
   set<File> files;
@@ -474,7 +494,7 @@ void MainFrame::_readFilesFromArgs( void )
       
       // open in same frame, using default orientation
       if( frame->orientation() == Qt::Horizontal ) frame->openHorizontal( file );
-      else frame->OpenVertical( file );
+      else frame->openVertical( file );
       files.insert( file );
       
     }
@@ -515,7 +535,7 @@ void MainFrame::_applicationManagerStateChanged( SERVER::ApplicationManager::Sta
 
   switch ( state ) {
     case ApplicationManager::ALIVE:
-    RealizeWidget();
+    realizeWidget();
     break;
 
     case ApplicationManager::DEAD:

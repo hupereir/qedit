@@ -118,7 +118,7 @@ class DocumentClass: public Counter
   not to be considered when indenting. This is the case
   for the first 6 space characters in fortran files
   */
-  const unsigned int& baseIndentation( void ) const
+  const int& baseIndentation( void ) const
   { return base_indentation_; }
   
   //! list of text braces
@@ -195,7 +195,7 @@ class DocumentClass: public Counter
   private:
   
   //! base indentation
-  void _setBaseIndentation( const unsigned int& value )
+  void _setBaseIndentation( const int& value )
   { base_indentation_ = value; }
     
   //! name
@@ -236,7 +236,7 @@ class DocumentClass: public Counter
   /*! 
     this is the number of space characters to add prior to any text indentation
   */
-  unsigned int base_indentation_;
+  int base_indentation_;
   
 };
 

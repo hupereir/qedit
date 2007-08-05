@@ -191,7 +191,7 @@ class TextDisplay: public CustomTextEdit
   }
     
   //! returns true if file was modified by external application
-  bool fileModified( void ) const;
+  bool fileModified( void );
 
   //! returns true if file was removed
   bool fileRemoved( void ) const;
@@ -341,6 +341,9 @@ class TextDisplay: public CustomTextEdit
   }
   
   //@}
+  
+  // return true is block is to be ignored from indentation scheme
+  bool ignoreBlock( const QTextBlock& block ) const;
   
   signals:
 

@@ -35,8 +35,7 @@
 #include "CustomFileDialog.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
-#include "#include "FileModifiedDialog.h"
-.h"
+#include "FileInfoDialog.h"
 #include "FileModifiedDialog.h"
 #include "FileRemovedDialog.h"
 #include "FileSelectionDialog.h"
@@ -110,7 +109,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   
   // connections
   // track contents changed for syntax highlighting
-  connect( document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int ) ) );
+  connect( TextDisplay::document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int ) ) );
 
   // track configuration modifications
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
@@ -201,7 +200,7 @@ void TextDisplay::openFile( File file )
     setPlainText( in.readAll() );
     in.close();
     setModified( false );
-    _setIgnoreWarnings( false );
+    setIgnoreWarnings( false );
 
   }
 
@@ -221,7 +220,7 @@ void TextDisplay::setFile( const File& file )
   {
     _setLastSaved( file.lastModified() );
     _setWorkingDirectory( file.path() );
-    _setIgnoreWarnings( false );
+    setIgnoreWarnings( false );
     setReadOnly( file.exist() && !file.isWritable() );
   }
   
@@ -272,7 +271,7 @@ void TextDisplay::save( void )
   // update modification state and last_saved time stamp
   setModified( false );
   _setLastSaved( file().lastModified() );
-  _setIgnoreWarnings( false );
+  setIgnoreWarnings( false );
   
   // retrieve associated displays, update saved time
   BASE::KeySet<TextDisplay> displays( this );
@@ -366,7 +365,7 @@ void TextDisplay::revertToSave( void )
 }
 
 //____________________________________________
-bool TextDisplay::fileRemoved( void )
+bool TextDisplay::fileRemoved( void ) const
 {
   Debug::Throw( "TextDisplay::fileRemoved.\n" );
   return (!file().empty() && last_save_.isValid() && !file().exist() );
@@ -514,6 +513,29 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document )
   return out;
 }
 
+//___________________________________________________________________________
+bool TextDisplay::ignoreBlock( const QTextBlock& block ) const
+{
+  
+  // first check if block text match empty line
+  bool out( false );
+  if( empty_line_regexp_.indexIn( block.text() ) >= 0 ) out = true;
+  else {
+    
+    // try retrieve highlight data
+    HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    if( data ) 
+    {
+      // retrieve locations
+      const HighlightPattern::LocationSet& locations( data->locations() );
+      out = (!locations.empty()) && locations.begin()->parent().flag( HighlightPattern::NO_INDENT );
+    }
+    
+  }
+  
+  return out;
+
+}
 
 //___________________________________________________________________________
 void TextDisplay::updateConfiguration( void )
@@ -727,7 +749,7 @@ void TextDisplay::replaceLeadingTabs( const bool& confirm )
 
   // define regexp to perform replacement
   QRegExp wrong_tab_regexp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
-  QString wrong_tab( _hasTabEmulation() ? _normalTabCharacter():_emulatedTabCharacter() );
+  QString wrong_tab( _hasTabEmulation() ? normalTabCharacter():emulatedTabCharacter() );
   
   // loop over blocks
   for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
@@ -746,7 +768,7 @@ void TextDisplay::replaceLeadingTabs( const bool& confirm )
     // create replacement string and insert.
     QString buffer;
     for( int i=0; i< int(wrong_tab_regexp.matchedLength()/wrong_tab.size()); i++ )
-    { buffer += _tabCharacter(); }
+    { buffer += tabCharacter(); }
     cursor.insertText( buffer );
 
   }
@@ -885,7 +907,7 @@ void TextDisplay::_setBlockModified( int position )
   if( !textHighlight().isEnabled() ) return;
   
   // retrieve block matching position
-  QTextBlock block( document()->findBlock( position );
+  QTextBlock block( document()->findBlock( position ) );
   
   // retrieve associated block data if any
   // set block as modified so that its highlight content gets reprocessed.

@@ -65,10 +65,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! destructor
   ~EditFrame( void );
 
-  //! enable save_all button in AskForSaveDialog
-  void setEnableSaveAll( const bool& enable )
-  { enable_save_all_ = enable; }
-
   //!@name file management
   //@{
   
@@ -112,7 +108,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   };
 
   //! used to select editor with empty, unmodified file
-  class ModifiedFTor
+  class IsModifiedFTor
   {
     public:
 
@@ -145,17 +141,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
     
     return out;
   }
-  
-//   //! returns files that are opened in this display
-//   std::set< File > files( void ) const
-//   {
-//     std::set<File> out;
-//     BASE::KeySet<TextDisplay> displays( this );
-//     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-//     { if( !(*iter)->file().empty() ) out.insert( (*iter)->file() ); }
-//     
-//     return out;
-//   }
   
   //! return number of independent modified displays
   unsigned int modifiedDisplayCount( void )
@@ -215,7 +200,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   
   //! propagate flags to display. Returns true if rehighlight needed
   /*! \param current_display_only if true, only the active display (and clones) is updated */
-  bool updateFlags( const bool& active_display_only = true );
+  bool updateFlags( void );
   
   //@}
 
@@ -252,8 +237,8 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //@{
   
   //! new file
-  QAction* newAction( void )
-  { return new_action_; }
+  QAction* newFileAction( void )
+  { return new_file_action_; }
    
   //! clone display
   QAction* cloneAction( void )
@@ -344,6 +329,16 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! open file vertically
   void openVertical( FileRecord record = FileRecord() )
   { _open( record, NEW_VIEW, Qt::Vertical ); }
+
+  //! save
+  /*! \param display if non 0, save this display. Save Active Display otherwise. */
+  void save( TextDisplay *display = 0 );
+
+  //! save all modified text displays
+  void saveAll( void );
+
+  //! select class name
+  void selectClassName( std::string );
   
   //! rehighlight all text displays
   void rehighlight( void );
@@ -406,20 +401,13 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
     if( displays.size() > 1 ) _closeView( activeDisplay() );
     else _closeWindow();
   }
-    
-  //! save
-  /*! \param display if non 0, save this display. Save Active Display otherwise. */
-  void _save( TextDisplay *display = 0 );
-  
+      
   //! Save As
   void _saveAs( TextDisplay *display = 0 );
 
   //! Revert to save
   void _revertToSave( void );
   
-  //! save all modified text displays
-  void _saveAll( void );
-
   //! convert current file to HTML
   void _convertToHtml( void );
   
@@ -548,20 +536,11 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! last save timeStamp
   TimeStamp last_save_;
   
-  //!@name status
-  //@{
-
-  //! SaveAll button
-  /*! allow for saving all modified files at exit */
-  bool enable_save_all_;
-
-  //@}
-
   //!@name actions
   //@{
   
   //! new file
-  QAction* new_action_;
+  QAction* new_file_action_;
    
   //! clone display
   QAction* clone_action_; 

@@ -65,10 +65,10 @@ Menu::Menu( QWidget* parent ):
   // retrieve editframe
   EditFrame* editframe( static_cast<EditFrame*>( window() ) );
   
-  menu->addAction( editframe->newAction() );
-  menu->addAction( editFrame->cloneAction() );
-  menu->addAction( editFrame->detachAction() );
-  menu->addAction( editFrame->openAction() );
+  menu->addAction( editframe->newFileAction() );
+  menu->addAction( editframe->cloneAction() );
+  menu->addAction( editframe->detachAction() );
+  menu->addAction( editframe->openAction() );
 
   // open previous menu
   open_previous_menu_ = new OpenPreviousMenu( this );
@@ -77,7 +77,7 @@ Menu::Menu( QWidget* parent ):
   menu->addMenu( open_previous_menu_ );
 
   // connections
-  connect( open_previous_menu_, SIGNAL( fileSelected( FileRecord ) ), editFrame, SLOT( open( FileRecord ) ) );
+  connect( open_previous_menu_, SIGNAL( fileSelected( FileRecord ) ), editframe, SLOT( open( FileRecord ) ) );
   
   menu->addSeparator();
   menu->addAction( editframe->closeViewAction() );
@@ -122,24 +122,24 @@ Menu::Menu( QWidget* parent ):
 
   // create help menu
   menu = addMenu( "&Help" );
-  menu->addAction( HelpManager::get().displayAction() );
+  menu->addAction( BASE::HelpManager::get().displayAction() );
   menu->addSeparator();
   menu->addAction( "About &Qt", qApp, SLOT( aboutQt() ), 0 );
   menu->addAction( "About Q&Edit", qApp, SLOT( about() ), 0 );
 
-  File help_file( XmlOptions::get().get<File>( "HELP_FILE" ) );
-  if( help_file.exist() ) HelpManager::get().install( help_file );
+  File help_file( XmlOptions::get().get<File>( "BASE_FILE" ) );
+  if( help_file.exist() ) BASE::HelpManager::get().install( help_file );
   else
   {
-    HelpManager::get().setFile( help_file );
-    HelpManager::get().install( HelpText );
+    BASE::HelpManager::get().setFile( help_file );
+    BASE::HelpManager::get().install( HelpText );
   }
 
   // debug menu
   menu->addSeparator();
   DebugMenu *debug_menu( new DebugMenu( this ) );
   debug_menu->setTitle( "&Debug" );
-  debug_menu->addAction( HelpManager::get().dumpAction() );
+  debug_menu->addAction( BASE::HelpManager::get().dumpAction() );
   menu->addMenu( debug_menu );
 
 }
@@ -231,7 +231,7 @@ void Menu::_updatePreferenceMenu( void )
 
   // document class configuration
   EditFrame& frame( *static_cast<EditFrame*>(window()) );
-  preference_menu_->addAction( frame.documentClassesAction() );
+  preference_menu_->addAction( frame.documentClassAction() );
 
   // open mode menu
   QMenu* open_mode_menu = new QMenu( "&Default open mode", this );
@@ -256,11 +256,11 @@ void Menu::_updatePreferenceMenu( void )
 
   leftright_action_  = group->addAction( "&Left/Right" );
   leftright_action_->setCheckable( true );
-  leftright_action_->setChecked( frame.GetOrientation() == Qt::Horizontal );
+  leftright_action_->setChecked( frame.orientation() == Qt::Horizontal );
   
   topbottom_action_  = group->addAction( "&Top/Bottom" );
   topbottom_action_->setCheckable( true );
-  topbottom_action_->setChecked( frame.GetOrientation() == Qt::Vertical );
+  topbottom_action_->setChecked( frame.orientation() == Qt::Vertical );
 
   orientation_menu->addActions( group->actions() );
   connect( orientation_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOrientation() ) );
@@ -294,7 +294,7 @@ void Menu::_updateMacroMenu( void )
   // retrieve flags needed to set button state
   bool editable( !display.isReadOnly() );
   bool has_selection( display.textCursor().hasSelection() );
-  bool has_indent( display.textIndentAction().isEnabled() );
+  bool has_indent( display.textIndentAction()->isEnabled() );
 
   // insert document class specific macros
   const TextDisplay::MacroList& macros( display.macros() );
@@ -430,7 +430,7 @@ void Menu::_selectFile( QAction* action )
   std::map<QAction*, File>::iterator iter = files_.find( action );
   if( iter == files_.end() ) return;
   
-  // retrieve all editFrames
+  // retrieve all editframes
   BASE::KeySet<EditFrame> frames( dynamic_cast< BASE::Key* >( qApp ) );
   
   // retrieve frame matching file name

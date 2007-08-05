@@ -67,7 +67,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     {
       if( value.find( XML::OPTION_WRAP ) != string::npos ) wrap_ = true;    
       if( value.find( XML::OPTION_DEFAULT ) != string::npos ) default_ = true;    
-    } else if( name== XML::BASE_INDENTATION ) _setBaseIndentation( value.get<unsigned int>() );
+    } else if( name== XML::BASE_INDENTATION ) _setBaseIndentation( value.get<int>() );
     else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized attribute: " << name << endl;
     
   }
@@ -154,7 +154,7 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   if( isDefault() ) what << XML::OPTION_DEFAULT << " ";
   if( what.str().size() ) out.setAttribute( XML::OPTIONS.c_str(), what.str().c_str() ); 
   
-  if( baseIndentation() ) out.setAttribute( XML::BASE_INDENTATION.c_str(), Str().assign<unsigned int>( baseIndentation() ).c_str() );
+  if( baseIndentation() ) out.setAttribute( XML::BASE_INDENTATION.c_str(), Str().assign<int>( baseIndentation() ).c_str() );
 
   // dump highlight styles
   for( set<HighlightStyle>::const_iterator iter = highlight_styles_.begin(); iter != highlight_styles_.end(); iter++ )

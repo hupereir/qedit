@@ -73,7 +73,7 @@ int main (int argc, char *argv[])
     // add user name
     Option option( "USER_NAME", Util::user() );
     option.setRecordable( false );
-    XmlXmlOptions::get().add( option );
+    XmlOptions::get().add( option );
     
     // add application name
     option = Option( "APP_NAME", "QEDIT" );
@@ -89,7 +89,7 @@ int main (int argc, char *argv[])
     installDefaultOptions();
   
     // load user resource file
-    string rcfile = Util::Getenv( "HOME", "." ) + "/.qeditrc";
+    string rcfile = Util::env( "HOME", "." ) + "/.qeditrc";
     XmlOptions::read( rcfile ); 
       
     // set debug level

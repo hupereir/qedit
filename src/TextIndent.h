@@ -32,7 +32,9 @@
   \date $Date$
 */
 
-#include <qobject.h>
+#include <QObject>
+#include <QTextBlock>
+#include <QTextCursor>
 
 #include "Counter.h"
 #include "Debug.h"
@@ -61,11 +63,11 @@ class TextIndent: public QObject, public Counter
   { return enabled_ && !patterns_.empty(); }
   
   //! base indentation
-  const unsigned int& baseIndentation( void ) const
+  const int& baseIndentation( void ) const
   { return base_indentation_; }
 
   //! base indentation
-  void setBaseIndentation( const unsigned int& value )
+  void setBaseIndentation( const int& value )
   { base_indentation_ = value; }
   
   //! patterns
@@ -120,7 +122,7 @@ class TextIndent: public QObject, public Counter
   
   //! base indentation
   /*! this is the number of space characters to add prior to any text indentation */
-  unsigned int base_indentation_;
+  int base_indentation_;
   
   //! list of highlight patterns
   IndentPattern::List patterns_;

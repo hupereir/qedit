@@ -48,7 +48,8 @@ PrintDialog::PrintDialog( QWidget* parent ):
 {
   
   Debug::Throw( "PrintDialog::PrintDialog.\n" );
-
+  setWindowTitle( "QEdit - print" );
+  
   QHBoxLayout *h_layout( new QHBoxLayout() );
   h_layout->setSpacing( 10 ); 
   h_layout->setMargin( 0 ); 
