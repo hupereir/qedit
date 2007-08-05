@@ -238,15 +238,9 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void setOrientation( const Qt::Orientation orientation )
   { default_orientation_ = orientation; }
     
-  //! change active display
+  //! change active display manualy
   void setActiveDisplay( TextDisplay& display )
-  { 
-    Debug::Throw() << "EditFrame::SetActiveDisplay - key: " << display.key() << std::endl;
-    Exception::check( display.IsAssociated( this ), DESCRIPTION( "invalid display" ) );
-    active_display_ = &display; 
-    _update( TextDisplay::ALL );
-  }
-
+ 
   //!@name actions
   //@{
   
@@ -325,16 +319,12 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! update configuration
   void updateConfiguration( void );
   
+  //! update configuration
+  void saveConfiguration( void );
+ 
   //! open file
   void open( const FileRecord& record = FileRecord( "" ) )
   { _open( record, openMode(), orientation() ); }
-    
-  //! save
-  /*! \param display if non 0, save this display. Save Active Display otherwise. */
-  void save( TextDisplay *display = 0 );
-
-  //! save all modified text displays
-  void saveAll( void );
   
   //! rehighlight all text displays
   void rehighlight( void );
@@ -405,11 +395,19 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
     if( displays.size() > 1 ) _closeView( activeDisplay() );
     else closeWindow();
   }
+    
+  //! save
+  /*! \param display if non 0, save this display. Save Active Display otherwise. */
+  void _save( TextDisplay *display = 0 );
+  
   //! Save As
-  void _saveAs( void );
+  void _saveAs( TextDisplay *display = 0 );
 
   //! Revert to save
-  void _revertToSave( const bool& check = true );
+  void _revertToSave( void );
+  
+  //! save all modified text displays
+  void _saveAll( void );
 
   //! convert current file to HTML
   void _convertToHtml( void );
@@ -489,13 +487,13 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void _installActions( void );
 
   //! Update window title
-  void _updateWindowTitle( const TextDisplay* );
+  void _updateWindowTitle();
 
   //! new file
-  void _newFile( const OpenMode& mode, const Qt::Orientation& orientation );
+  void _newFile( const OpenMode&, const Qt::Orientation& );
 
   //! open file
-  void _open( const std::string& file,  const OpenMode& mode, const Qt::Orientation& orientation );
+  void _open( const FileRecord&,  const OpenMode&, const Qt::Orientation& );
   
   //! close view
   /*! Ask for save if view is modified */
@@ -543,9 +541,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   /*! allow for saving all modified files at exit */
   bool enable_save_all_;
 
-  //! enable file check
-  bool enable_check_;
-  
   //@}
 
   //!@name actions

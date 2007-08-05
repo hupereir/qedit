@@ -52,8 +52,8 @@ const char* DocumentClassDialog::column_titles_[ DocumentClassDialog::n_columns 
 };
 
 //______________________________________________________________
-DocumentClassDialog::DocumentClassDialog( QWidget* parent, const string& name ):
-  CustomDialog( parent, name, EXCLUSIVE )
+DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
+  QDialog( parent )
 {
   Debug::Throw( "DocumentClassDialog::DocumentClassDialog.\n" );
   setCaption( "Document Classes" );

@@ -35,6 +35,8 @@
 #include "CustomFileDialog.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
+#include "FileModifiedDialog.h"
+#include "FileRemovedDialog.h"
 #include "FileSelectionDialog.h"
 #include "HtmlUtil.h"
 #include "HighlightBlockData.h"
@@ -61,6 +63,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   working_directory_( Util::workingDirectory() ), 
   class_name_( "" ),
   flags_( 0 ),
+  ignore_warnings_( false ),
   active_( false ),
   indent_( new TextIndent( this ) )
 {
@@ -103,8 +106,14 @@ TextDisplay::TextDisplay( QWidget* parent ):
   addAction( file_info_action_ = new QAction( "&File information", this ) );
   connect( file_info_action_, SIGNAL( triggered() ), SLOT( _showFileInfo() ) );
   
-  // configuration
+  // connections
+  // track contents changed for syntax highlighting
+  connect( document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int ) ) );
+
+  // track configuration modifications
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
+  
+  // track document classes modifications
   // connect( qApp, SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
   
 }
@@ -187,11 +196,11 @@ void TextDisplay::openFile( File file )
   if( in.open( QIODevice::ReadOnly ) )
   {
     
-    QString text( in.readAll() );
-    setPlainText( text );
-    setModified( false );
+    setPlainText( in.readAll() );
     in.close();
-    
+    setModified( false );
+    _setIgnoreWarnings( false );
+
   }
 
   // save file if restored from autosaved.
@@ -199,7 +208,7 @@ void TextDisplay::openFile( File file )
   
   // perform first autosave
   (static_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
-  
+    
 }
 
 //_______________________________________________________
@@ -210,38 +219,13 @@ void TextDisplay::setFile( const File& file )
   {
     _setLastSaved( file.lastModified() );
     _setWorkingDirectory( file.path() );
+    _setIgnoreWarnings( false );
     setReadOnly( file.exist() && !file.isWritable() );
   }
   
   if( isActive() ) emit needUpdate( WINDOW_TITLE | FILE_NAME ); 
   
 }
-  
-//____________________________________________
-bool TextDisplay::fileModified( void )
-{  
-  
-  Debug::Throw( "TextDisplay::fileModified.\n" );
-
-  // check file size
-  if( !( file().size() && file().exist() ) ) return false;
-  TimeStamp fileModified( file().lastModified() );
-
-  // check if file was modified and contents is changed
-  if(
-    fileModified.isValid() &&
-    last_save_.isValid() &&
-    fileModified > last_save_ &&
-    _contentsChanged() )
-  {
-    // update last_save to avoid chain questions
-    last_save_ = fileModified;
-    return true;
-  }
-
-  return false;
-
-}  
 
 //___________________________________________________________________________
 void TextDisplay::save( void )
@@ -286,6 +270,7 @@ void TextDisplay::save( void )
   // update modification state and last_saved time stamp
   setModified( false );
   _setLastSaved( file().lastModified() );
+  _setIgnoreWarnings( false );
   
   // retrieve associated displays, update saved time
   BASE::KeySet<TextDisplay> displays( this );
@@ -373,24 +358,43 @@ void TextDisplay::revertToSave( void )
 {
 
   Debug::Throw( "TextDisplay::eevertToSave.\n" );
-
-  // check filename
-  if( file().empty() )
-  {
-    QtUtil::infoDialog( this, "No filename given. <Revert to save> canceled." );
-    return;
-  }
-
-  // ask for confirmation
-  ostringstream what;
-  if( document()->isModified() ) what << "Discard changes to " << file().localName() << "?";
-  else what << "Reload file " << file().localName() << "?";
-  if( !QtUtil::questionDialog( this, what.str() ) ) return;
-
-  setModified( false );
+  document()->setModified( false );
   openFile( file() );
 
 }
+
+//____________________________________________
+bool TextDisplay::fileRemoved( void )
+{
+  Debug::Throw( "TextDisplay::fileRemoved.\n" );
+  return (!file().empty() && last_save_.isValid() && !file().exist() );
+}
+
+//____________________________________________
+bool TextDisplay::fileModified( void )
+{  
+  
+  Debug::Throw( "TextDisplay::fileModified.\n" );
+
+  // check file size
+  if( !( file().size() && file().exist() ) ) return false;
+  TimeStamp fileModified( file().lastModified() );
+
+  // check if file was modified and contents is changed
+  if(
+    fileModified.isValid() &&
+    last_save_.isValid() &&
+    fileModified > last_save_ &&
+    _contentsChanged() )
+  {
+    // update last_save to avoid chain questions
+    last_save_ = fileModified;
+    return true;
+  }
+
+  return false;
+
+}  
 
 //_____________________________________________________________________
 void TextDisplay::setActive( const bool& active )
@@ -424,8 +428,6 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document )
 {
 
   // clear highlight locations and rehighlight
-  // locations_.clear();
-
   QDomElement out = document.createElement( "pre" );
 
   // loop over text blocks
@@ -828,6 +830,33 @@ void TextDisplay::_setPaper( const QColor& color )
 
 }
 
+//_____________________________________________________________
+bool TextDisplay::_contentsChanged( void ) const
+{
+
+  Debug::Throw( "TextDisplay::_contentsChanged.\n" );
+  
+  // check file
+  if( file().empty() ) return true;
+
+  // open file
+  QFile in( file().c_str() );
+  if( !in.open( QIODevice::ReadOnly ) ) return true;
+
+  // dump file into character string
+  QString file_text( in.readAll() );
+  QString text( toPlainText() );
+  return (text.size() != file_text.size() || text != file_text );
+
+}
+
+//_______________________________________________________
+void TextDisplay::_indentCurrentParagraph( void )
+{
+  if( !indent_->isEnabled() ) return;
+  emit indent( textCursor().block() );
+}
+
 //_______________________________________________________
 void TextDisplay::_multipleFileReplace( void )
 {
@@ -841,27 +870,20 @@ void TextDisplay::_multipleFileReplace( void )
   return;
 }
 
-//_______________________________________________________
-void TextDisplay::_indentCurrentParagraph( void )
-{
-  if( !indent_->isEnabled() ) return;
-  emit indent( textCursor().block() );
-}
-  
 //_____________________________________________________________
-bool TextDisplay::_contentsChanged( void ) const
+void TextDisplay::_setBlockModified( int position )
 {
-
-  // check file
-  if( file().empty() ) return true;
-
-  // open file
-  QFile in( file().c_str() );
-  if( !in.open( QIODevice::ReadOnly ) ) return true;
-
-  // dump file into character string
-  QString file_text( in.readAll() );
-  QString text( toPlainText() );
-  return (text.size() != file_text.size() || text != file_text );
-
+  Debug::Throw( "TextDisplay::_setBlockModified.\n" );
+  
+  // check if highlight is enabled.
+  if( !textHighlight().isEnabled() ) return;
+  
+  // retrieve block matching position
+  QTextBlock block( document()->findBlock( position );
+  
+  // retrieve associated block data if any
+  // set block as modified so that its highlight content gets reprocessed.
+  HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+  if( data ) data->setModified( true );
+  
 }

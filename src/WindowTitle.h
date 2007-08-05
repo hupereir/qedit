@@ -77,7 +77,7 @@ class WindowTitle: public Counter
   {
     std::ostringstream what;
     if( file_.size() ) what << file_.localName();
-    else what << "SpellCheck";
+    else what << "QEdit";
     if( flag_ == MODIFIED ) what << " (modified)";
     if( flag_ == READ_ONLY ) what << " (read-only)";
     if( file_.size() ) what << " - " << file_.path();

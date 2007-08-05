@@ -126,12 +126,6 @@ class TextDisplay: public CustomTextEdit
   //! working directory
   const File& workingDirectory() const
   { return working_directory_; }
-
-  //! returns true if file was modified by external application
-  bool fileModified( void );
-
-  //! returns true if file was removed
-  bool fileRemoved( void );
   
   //! used to select editor with matching filename
   class SameFileFTor
@@ -183,7 +177,24 @@ class TextDisplay: public CustomTextEdit
   void saveAs( void );
 
   //! Revert to save
-  void revertToSave();
+  void revertToSave( void );
+  
+  //! if true file is not checked on enter event
+  const bool& ignoreWarnings() const
+  { return ignore_warnings_; }
+  
+  //! if true file is not checked on enter event
+  void setIgnoreWarnings( const bool& value )
+  { 
+    Debug::Throw() << "TextDisplay::_setIgnoreWarnings - " << (value ? "true":"false") << endl;
+    ignore_warnings_ = value; 
+  }
+    
+  //! returns true if file was modified by external application
+  bool fileModified( void ) const;
+
+  //! returns true if file was removed
+  bool fileRemoved( void ) const;
   
   //@}
   
@@ -371,10 +382,10 @@ class TextDisplay: public CustomTextEdit
   protected:
 
   //! keypress event [overloaded]
-  void keyPressEvent( QKeyEvent* );
+  virtual void keyPressEvent( QKeyEvent* );
 
   //! focus event [overloaded]
-  void focusInEvent( QFocusEvent* );
+  virtual void focusInEvent( QFocusEvent* );
 
   //! create replace dialog
   virtual void _createReplaceDialog( void );
@@ -466,6 +477,9 @@ class TextDisplay: public CustomTextEdit
     return; 
   }
 
+  //! track text modifications for syntax highlighting
+  void _setBlockModified( int position );
+  
   private:
   
   //! file
@@ -489,6 +503,9 @@ class TextDisplay: public CustomTextEdit
   //! last save timeStamp
   TimeStamp last_save_;
 
+  //! if true, _checkFile is disabled
+  bool ignore_warnings_;
+  
   //! true if this display is the active display
   bool active_;
 

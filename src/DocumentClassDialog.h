@@ -31,13 +31,15 @@
   \date $Date$
 */
 
-#include "CustomDialog.h" 
+#include <QDialog>
+
+#include "Counter.h"
 #include "CustomListView.h"
 
 class DocumentClass;
 
 //! list document classes
-class DocumentClassDialog: public CustomDialog
+class DocumentClassDialog: public QDialog, public Counter
 {
 
   //! Qt meta object declaration
@@ -46,13 +48,12 @@ class DocumentClassDialog: public CustomDialog
   public:
   
   //! constructor
-  DocumentClassDialog( QWidget* parent, const std::string& name="document_class_dialog" );
+  DocumentClassDialog( QWidget* parent );
 
   signals:
-
+  
   //! emitted when a document class is selected
   void classSelected( std::string name );
-  
   
   private slots:
   
@@ -81,10 +82,10 @@ class DocumentClassDialog: public CustomDialog
   private:
   
   //! display all classes to listview
-  void _loadClasses( void );
+  void _load( void );
   
   //! add document class to listview
-  void _addClass( const DocumentClass& );
+  void _add( const DocumentClass& );
   
   //! number of columns
   enum { n_columns = 3 };
