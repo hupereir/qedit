@@ -231,58 +231,49 @@ void Menu::_updatePreferenceMenu( void )
   preference_menu_->addAction( mainframe->configurationAction() );
   preference_menu_->addAction( mainframe->documentClassesAction() );
 
+  EditFrame& frame( *static_cast<EditFrame*>(window()) );
+  
   // open mode menu
   QMenu* open_mode_menu = new QMenu( "&Default open mode", this );
   QActionGroup* group( new QActionGroup( open_mode_menu )  );
   group->setExclusive( true );
-  ( new_window_action_ = group->addAction( "Open in new &window" ) )->setCheckable( true );
-  ( new_view_action_ = group->addAction( "Open in new &view" ) )->setCheckable( true );
+  
+  new_window_action_ = group->addAction( "Open in new &window" );
+  new_window_action_->setCheckable( true );
+  new_window_action_->setChecked( frame.openMode() == EditFrame::NEW_WINDOW );
+  
+  new_view_action_ = group->addAction( "Open in new &view" );
+  new_view_action_->setCheckable( true );
+  new_view_action_->setChecked( frame.openMode() == EditFrame::NEW_VIEW );
+  
   open_mode_menu->addActions( group->actions() );
-  connect( open_mode_menu, SIGNAL( aboutToShow() ), SLOT( _updateOpenModeMenu() ) );
   connect( open_mode_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOpenMode() ) );
   
   // orientation menu
   QMenu* orientation_menu = new QMenu( "&Default layout orientation", this );
   group = new QActionGroup( orientation_menu );
   group->setExclusive( true );  
-  ( leftright_action_  = group->addAction( "&Left/Right" ) )->setCheckable( true );
-  ( topbottom_action_  = group->addAction( "&Top/Bottom" ) )->setCheckable( true );
+
+  leftright_action_  = group->addAction( "&Left/Right" );
+  leftright_action_->setCheckable( true );
+  leftright_action_->setChecked( frame.GetOrientation() == Qt::Horizontal );
+  
+  topbottom_action_  = group->addAction( "&Top/Bottom" );
+  topbottom_action_->setCheckable( true );
+  topbottom_action_->setChecked( frame.GetOrientation() == Qt::Vertical );
+
   orientation_menu->addActions( group->actions() );
-  connect( orientation_menu, SIGNAL( aboutToShow() ), SLOT( _updateOrientationMenu() ) );
   connect( orientation_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOrientation() ) );
  
   preference_menu_->addSeparator();
 
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  // textdisplay actions
+  TextDisplay& display( frame.activeDisplay() );
   preference_menu_->addAction( display.wrapModeAction() );
   preference_menu_->addAction( display.tabEmulationAction() );
   preference_menu_->addAction( display.textIndentAction() );
   preference_menu_->addAction( display.textHighlightAction() );
   preference_menu_->addAction( display.bracesHighlightAction() );
-  
-  return;
-}
-
-//_______________________________________________
-void Menu::_updateOpenModeMenu( void )
-{
-  Debug::Throw( "Menu::_updateOpenModeMenu.\n" );
-  EditFrame &frame( *static_cast<EditFrame*>( window() ) );
-  
-  new_window_action_->setChecked( frame.openMode() == EditFrame::NEW_WINDOW );
-  new_view_action_->setChecked( frame.openMode() == EditFrame::NEW_VIEW );
-  
-  return;
-}
-
-//_______________________________________________
-void Menu::_updateOrientationMenu( void )
-{
-  Debug::Throw( "Menu::_updateOrientationMenu.\n" );
-  EditFrame &frame( *static_cast<EditFrame*>( window() ) );
-  
-  leftright_action_->setChecked( frame.GetOrientation() == Qt::Horizontal );
-  topbottom_action_->setChecked( frame.GetOrientation() == Qt::Vertical );
   
   return;
 }

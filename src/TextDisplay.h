@@ -312,7 +312,7 @@ class TextDisplay: public CustomTextEdit
     
   //! toggle indentation
   QAction* textIndentAction( void )
-  { return indent_action_; }
+  { return text_indent_action_; }
   
   //! toggle text highlighting
   QAction* textHighlightAction( void )
@@ -447,15 +447,24 @@ class TextDisplay: public CustomTextEdit
   
   //! toggle text indentation
   void _toggleTextIndent( bool state )
-  { textIndent().setEnabled( textIndentAction()->isEnabled() && state ); }
+  { 
+    Debug::Throw( "TextDisplay::_toggleTextIndent.\n" ); 
+    textIndent().setEnabled( textIndentAction()->isEnabled() && state );
+  }
     
   //! toggle text highlight
   void _toggleTextHighlight( bool state )
-  { textHighlight().setEnabled( textHighlightAction()->isEnabled() && state ); }
+  { 
+    Debug::Throw( "TextDisplay::_toggleTextHighlight.\n" ); 
+    textHighlight().setEnabled( textHighlightAction()->isEnabled() && state ); 
+  }
   
   //! toggle braces
   void _toggleBracesHighlight( bool state )
-  { return; }
+  { 
+    Debug::Throw( "TextDisplay::_toggleBracesHighlight.\n" ); 
+    return; 
+  }
 
   private:
   
@@ -507,7 +516,7 @@ class TextDisplay: public CustomTextEdit
   //@{
   
   //! toggle indentation
-  QAction* indent_action_;
+  QAction* text_indent_action_;
   
   //! toggle text highlighting
   QAction* text_highlight_action_;

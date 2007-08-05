@@ -83,13 +83,7 @@ class Menu:public QMenuBar, public Counter
   
   //! update preference menu
   void _updatePreferenceMenu( void );
-  
-  //! update open mode menu
-  void _updateOpenModeMenu( void );
-  
-  //! update orientation menu
-  void _updateOrientationMenu( void );
-  
+    
   //! update macro menu
   void _updateMacroMenu( void );
   

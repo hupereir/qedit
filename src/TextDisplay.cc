@@ -85,16 +85,19 @@ TextDisplay::TextDisplay( QWidget* parent ):
   connect( this, SIGNAL( indent( QTextBlock& ) ), indent_, SLOT( indent( QTextBlock& ) ) );
   
   // actions
-  addAction( indent_action_ = new QAction( "&Indent text", this ) );
-  indent_action_->setCheckable( true );
-  connect( indent_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleIndent( bool ) ) );
+  addAction( text_indent_action_ = new QAction( "&Indent text", this ) );
+  text_indent_action_->setCheckable( true );
+  text_indent_action_->setChecked( textIndent().isEnabled() );
+  connect( text_indent_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextIndent( bool ) ) );
 
   addAction( text_highlight_action_ = new QAction( "&Highlight text", this ) );
   text_highlight_action_->setCheckable( true );
+  text_highlight_action_->setChecked( textHighlight().isEnabled() );
   connect( text_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextHighlight( bool ) ) );
   
   addAction( braces_highlight_action_ = new QAction( "&Highlight braces", this ) );
   braces_highlight_action_->setCheckable( true );
+  braces_highlight_action_->setChecked( false );
   connect( braces_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleBracesHighlight( bool ) ) );
   
   addAction( file_info_action_ = new QAction( "&File information", this ) );
