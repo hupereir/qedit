@@ -76,7 +76,7 @@ QDomElement RangePattern::domElement( QDomDocument& parent ) const
 //____________________________________________________________
 void RangePattern::processText( LocationSet& locations, const QString& text, bool& active ) const
 {
-
+  
   // check RegExp
   if( begin().isEmpty() || end().isEmpty() ) return;
   
@@ -105,6 +105,7 @@ void RangePattern::processText( LocationSet& locations, const QString& text, boo
       active = false;
       end+=RangePattern::end().matchedLength();
       locations.insert( Location( *this, 0, end ) );
+      
     }
     
   }
@@ -115,7 +116,7 @@ void RangePattern::processText( LocationSet& locations, const QString& text, boo
     
     // look for begin match
     // start from end index, which is either 0, or the last
-    // found end in case of spanning active patterns
+    // found end in case of spanning active patterns    
     begin = end;
     begin = RangePattern::begin().indexIn( text, begin );
     if( begin < 0 ) 
@@ -125,7 +126,7 @@ void RangePattern::processText( LocationSet& locations, const QString& text, boo
     }
     
     // look for end match     
-    int end = RangePattern::end().indexIn( text, begin );
+    end = RangePattern::end().indexIn( text, begin );
     
     // avoid zero length match
     if( begin == end && RangePattern::begin().matchedLength() == RangePattern::end().matchedLength() )
@@ -146,8 +147,9 @@ void RangePattern::processText( LocationSet& locations, const QString& text, boo
     
     // found end matching begin
     // append new text location
-    end+=RangePattern::end().matchedLength();
+    end += RangePattern::end().matchedLength();
     locations.insert( Location( *this, begin, end-begin ) );
+    
   }
   
   return;

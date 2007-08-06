@@ -1,0 +1,101 @@
+<!-- $Id$-->
+<patterns>
+
+  <class name="fortran" pattern="/\w+\.(f|F|(inc))(\.in)?$" base_indentation="6" >
+
+ <!-- highlight styles -->
+ <style format="2" name="Comment" color="#ff8c00" />
+ <style format="1" name="Line Continued" color="#ff0000" />
+ <style format="0" name="Keyword" color="#0000ff" />
+ <style format="0" name="Numeric Constants" color="#808000" />
+ <style format="0" name="Preprocessor" color="#ff00ff" />
+ <style format="0" name="Preprocessor2" color="#aa00aa" />
+ <style format="0" name="Scope" color="#008000" />
+ <style format="0" name="Storage Type" color="#a020f0" />
+ <style format="0" name="String" color="#00cd00" />
+ <style format="0" name="String2" color="#2e8b2e" />
+ <style format="0" name="Word" color="#ff0000" />
+
+ <style format="0" name="Cvs In" color="#ff0000" /> 
+ <style format="0" name="Cvs Out" color="#0000ff" />  
+
+ <!-- highlight patterns -->
+ 
+ <!-- comments  -->
+ <range_pattern style="Comment" name="Comment" options="no_indent no_case" >
+  <begin>^(c|\*)</begin>
+  <end>$</end>
+ </range_pattern>
+
+<!-- comments (c style) -->
+ <range_pattern style="Comment" name="Comment1" >
+  <begin>!</begin>
+  <end>$</end>
+  <comments>middle of line fortran comments</comments>
+ </range_pattern>
+
+
+<!-- line continued -->
+ <keyword_pattern style="Line Continued" name="Line Continued" >
+  <keyword>^     [^ ]</keyword>
+ </keyword_pattern>
+
+ <!-- types -->
+ <keyword_pattern style="Storage Type" name="Storage Type" options="no_case" >
+  <keyword>\b(implicit|(real(\*(4|8))?)|integer|character|logical|external|common|namelist|data)\b</keyword>
+ </keyword_pattern>
+
+ <!-- keywords -->
+ <keyword_pattern style="Keyword" name="Keyword" options="no_case" >
+  <keyword>\b(open|close|read|write|rewind|goto|continue|call|(end)?if|then|else|(end)?do|format|function|subroutine|stop)\b</keyword>
+ </keyword_pattern>
+ 
+ <!-- numeric constants -->
+ <keyword_pattern style="Numeric Constants" name="Numeric Constants" >
+  <keyword>\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f)?\b</keyword>
+ </keyword_pattern>
+ 
+ <!-- strings -->
+ <range_pattern style="String" name="String" >
+  <begin>'</begin>
+  <end>'</end>
+ </range_pattern>
+  
+ <!-- braces -->
+ <braces begin="(" end=")" />
+
+ <!-- indentation rules -->
+ <indent_pattern type="1">
+  <rule par="-1">
+   <regexp>\bTHEN\s*$</regexp>
+  </rule>
+ </indent_pattern>
+ 
+ <indent_pattern type="1">
+  <rule par="-1">
+   <regexp>\bELSE\s*$</regexp>
+  </rule>
+ </indent_pattern>
+ 
+ <indent_pattern type="1">
+  <rule par="-1">
+   <regexp>^\s*(DO|WHILE)\b</regexp>
+  </rule>
+ </indent_pattern>
+
+ <indent_pattern type="2">
+  <rule par="0">
+   <regexp>\b(ENDIF|ELSE|ENDDO)\s*$</regexp>
+  </rule>
+ </indent_pattern>
+
+ <!-- text processing macros -->
+ <macro name="Clean end of line" accelerator="Alt+C">
+  <rule>
+   <regexp>\s+$</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ </class>
+</patterns>

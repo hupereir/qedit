@@ -1,0 +1,131 @@
+<!-- $Id$-->
+<patterns>
+ <class name="shell" pattern="((/\.(((t?c)|ba)?sh)rc)|(/\w+\.(((t?c)|ba)?sh))|(/configure(\.in)?)|.alias)$" first_line_pattern="^\s*#\s*!\s*(/.*bin/)?((t?c|k|ba)?sh)">
+ <!-- highlight styles -->
+ <style format="2" name="Comment" color="#ff8c00" />
+ <style format="0" name="String" color="#00cd00" />
+ <style format="0" name="Keyword" color="#0000ff" />
+ <style format="0" name="Keyword2" color="#0000aa" /> 
+ <style format="0" name="End Of Line" color="#aa0000" /> 
+ <style format="0" name="Function" color="#aa0000" />  
+
+ <!-- highlight patterns -->
+ 
+ <!-- comments -->
+ <range_pattern style="Comment" name="Comment" options="no_indent" >
+  <begin>#|(dnl\s+)</begin>
+  <end>$</end>
+ </range_pattern>
+
+ <!-- strings -->
+ <range_pattern style="String" name="String" >
+  <begin>XML_QUOTE</begin>
+  <end>[^\\]XML_QUOTE</end>
+ </range_pattern>
+
+ <range_pattern style="String" name="String2" >
+  <begin>'</begin>
+  <end>([^\\]'|$)</end>
+ </range_pattern>
+
+ <range_pattern style="String" name="String3" options="span no_indent" >
+  <begin>XML_QUOTE.*\\</begin>
+  <end>([^\\]XML_QUOTE)|([^\\].$)</end>
+ </range_pattern>
+
+ <keyword_pattern style="Keyword2" name="Separator" parent="String3">
+  <keyword>\\</keyword>
+ </keyword_pattern>
+
+ <!-- variables -->
+ <keyword_pattern style="Keyword2" name="Variable" >
+ <keyword>\$((\w+\b)|\{(\?)?(\w+)\})</keyword>
+ </keyword_pattern>
+ 
+ <!-- assigned variables -->
+ <keyword_pattern style="Keyword2" name="Assigned variables" >
+ <keyword>\b(set(env)?|alias)\s+\w+\b</keyword>
+ </keyword_pattern>
+ 
+<!-- keywords --> 
+ <keyword_pattern style="Keyword2" name="Keyword2" parent="Assigned variables" >
+ <keyword>\b(set(env)?|alias)\b</keyword>
+ </keyword_pattern>
+
+ <keyword_pattern style="Keyword" name="Keyword" >
+ <keyword>\b((set)?env|eval|export|umask|bindkey|(end)?if|break|end|then|else|source|echo|fi|test|in|case|esac|for(each)?|print|cd|cp|exit|rm|ls|do(ne)?)\b</keyword>
+ </keyword_pattern>
+
+ <!-- braces -->
+ <keyword_pattern style="Keyword" name="Braces" >
+  <keyword>((\{|\[|\(|\)|\]|\})*(\{|\[|\(|\)|\]|\})(\{|\[|\(|\)|\]|\})*)</keyword>
+ </keyword_pattern>
+
+ <!-- logical operators --> 
+ <keyword_pattern style="Keyword" name="Logical" >
+ <keyword>((\!|\=)?=)|(XML_AND?XML_AND)|(\|?\|)</keyword>
+ </keyword_pattern>
+ 
+ <!-- End of line -->
+ <keyword_pattern style="End Of Line" name="End Of Line" >
+  <keyword>;</keyword>
+ </keyword_pattern>
+
+  <!-- function call --> 
+  <keyword_pattern style="Function" name="Function" > 
+  <keyword>(\b|XML_AND)([^\s]+)\s*(?=\()</keyword> 
+  </keyword_pattern>
+
+ <!-- braces -->
+ <braces begin="(" end=")" />
+ <braces begin="[" end="]" />
+ <braces begin="{" end="}" />
+
+ <!-- text processing macros -->
+
+ <macro name="Add one tab indentation" accelerator="Alt+T">
+  <rule>
+   <regexp>^</regexp>
+   <replacement>XML_TAB</replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove one tab indentation" accelerator="Shift+Alt+T">
+  <rule>
+   <regexp>^\t</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove all tab indentations">
+  <rule>
+   <regexp>^\t+</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ <macro name="Clean end of line" accelerator="Alt+C">
+  <rule>
+   <regexp>\s+$</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+<macro options="separator"/>
+ 
+ <macro name="Add comments">
+  <rule>
+   <regexp>^</regexp>
+   <replacement># </replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove comments">
+  <rule>
+   <regexp># </regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ </class>
+</patterns>

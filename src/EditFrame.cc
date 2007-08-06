@@ -93,32 +93,41 @@ EditFrame::EditFrame(  QWidget* parent ):
   // tell frame to delete on exit
   setAttribute( WA_DeleteOnClose );
 
-  // menu
-  menu_ = new Menu( this );
-  connect( menu_, SIGNAL( documentClassSelected( std::string ) ), this, SLOT( selectClassName( std::string ) ) );
-
   // retrieve pixmap path
   list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
+
+  // install actions
+  _installActions();
+  
+  // menu
+  setMenuBar( menu_ = new Menu( this ) );
+  connect( menu_, SIGNAL( documentClassSelected( std::string ) ), this, SLOT( selectClassName( std::string ) ) );
 
   // main vbox
   QWidget* main( new QWidget( this ) );
   QVBoxLayout* layout( new QVBoxLayout() );
   main->setLayout( layout );
   layout->setMargin(2);
-  layout->setMargin(2);
+  layout->setSpacing(2);
   setCentralWidget( main );
 
   // TextDisplay container
   main_ = new QWidget( main );
   main_->setLayout( new QVBoxLayout() );
+  main_->layout()->setMargin(0);
+  main_->layout()->setSpacing(0);
   layout->addWidget( main_, 1 );
   
   // create new Text display and register autosave thread
   TextDisplay& display = _newTextDisplay( main_ );
+  Debug::Throw( "EditFrame::EditFrame - text display created.\n" );
+
   main_->layout()->addWidget( &display );
+  
   display.setActive( true );
   static_cast<MainFrame*>(qApp)->autoSave().newThread( &display );
+  Debug::Throw( "EditFrame::EditFrame - thread created.\n" );
 
   // state frame
   layout->addWidget( statusbar_ = new StatusBar( main ) );
@@ -143,9 +152,6 @@ EditFrame::EditFrame(  QWidget* parent ):
   QFont font;
   font.fromString( XmlOptions::get().raw( "FONT_NAME" ).c_str() );
   file_editor_->setFont( font );
-
-  // install actions
-  _installActions();
   
   // file toolbar
   CustomToolBar* toolbar;
@@ -200,6 +206,9 @@ EditFrame::EditFrame(  QWidget* parent ):
   //! configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
   connect( qApp, SIGNAL( aboutToQuit() ), SLOT( saveConfiguration() ) );
+  updateConfiguration();
+  
+  Debug::Throw( "EditFrame::EditFrame - done.\n" );
  
 }
 
@@ -211,9 +220,6 @@ EditFrame::~EditFrame( void )
 void EditFrame::setFile( File file , const bool& reset_document_class )
 {
   Debug::Throw() << "EditFrame::setFile - " << file << endl;
-
-  // add file to Menu
-  menu_->openPreviousMenu().add( file );
 
   // look for first empty view
   BASE::KeySet<TextDisplay> displays( this );
@@ -299,6 +305,8 @@ void EditFrame::updateConfiguration( void )
 
   }
 
+  Debug::Throw( "EditFrame::updateConfiguration - done.\n" );
+
 }
 
 //________________________________________________________
@@ -342,6 +350,7 @@ bool EditFrame::updateFlags()
 
   }
 
+  Debug::Throw( "EditFrame::updateFlags - done.\n" );
   return changed;
 
 }
@@ -364,6 +373,8 @@ void EditFrame::setActiveDisplay( TextDisplay& display )
     _update( TextDisplay::ALL );
 
   }
+  
+  Debug::Throw( "EditFrame::setActiveDisplay - done.\n" );
   
 }
 
@@ -674,7 +685,7 @@ void EditFrame::_print( void )
 
   ostringstream path;
   path << "\"" << file.path() << "\"";
-  Util::runAt( path.str(), dialog.command() );
+  Util::runAt( path.str(), Str(dialog.command()).append( " &") );
 
   // update options
   XmlOptions::get().set<bool>( "USE_A2PS", dialog.useA2Ps() );
@@ -857,7 +868,7 @@ void EditFrame::_update( unsigned int flags )
   if( flags & TextDisplay::WINDOW_TITLE )
   { _updateWindowTitle(); }
 
-  if( flags & TextDisplay::FILE_NAME )
+  if( flags & TextDisplay::FILE_NAME && file_editor_ )
   { file_editor_->setText( activeDisplay().file().c_str() ); }
 
   if( flags & TextDisplay::CUT )
@@ -922,7 +933,7 @@ void EditFrame::_installActions( void )
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN, path_list ), "&Open", this ) );
   open_action_->setShortcut( SHIFT+CTRL+Key_O );
   open_action_->setToolTip( "Open an existing file" );
-  connect( open_action_, SIGNAL( triggered() ), SLOT( _open() ) );
+  connect( open_action_, SIGNAL( triggered() ), SLOT( open() ) );
  
   addAction( close_view_action_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE, path_list ), "&Close view", this ) );
   close_view_action_->setShortcut( CTRL+Key_W );
@@ -953,7 +964,7 @@ void EditFrame::_installActions( void )
   connect( html_action_, SIGNAL( triggered() ), SLOT( _convertToHtml() ) );
 
   addAction( print_action_ = new QAction( IconEngine::get( ICONS::PRINT, path_list ), "&Print", this ) );
-  paste_action_->setToolTip( "Paste clipboard to text" );
+  print_action_->setToolTip( "Print current file" );
   connect( print_action_, SIGNAL( triggered() ), SLOT( _print() ) );
 
   addAction( undo_action_ = new QAction( IconEngine::get( ICONS::UNDO, path_list ), "&Undo", this ) );
@@ -977,7 +988,7 @@ void EditFrame::_installActions( void )
   connect( paste_action_, SIGNAL( triggered() ), SLOT( _paste() ) );
 
   addAction( document_class_action_ = new QAction( "&Document classes", this ) );
-  connect( document_class_action_, SIGNAL( triggered() ), SLOT( _documentClassConfiguration() ) ); 
+  connect( document_class_action_, SIGNAL( triggered() ), SLOT( _documentClassDialog() ) ); 
 
   addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO, path_list ), "&File information", this ) );
   file_info_action_->setToolTip( "Display file informations" );
@@ -992,6 +1003,7 @@ void EditFrame::_updateWindowTitle()
   setWindowTitle( WindowTitle( activeDisplay().file() )
     .setReadOnly( activeDisplay().isReadOnly() )
     .setModified( activeDisplay().document()->isModified() ) );
+  Debug::Throw( "EditFrame::_updateWindowTitle - done.\n" );
 }
 
 //___________________________________________________________
@@ -1186,13 +1198,15 @@ void EditFrame::_closeView( TextDisplay& display )
   }
 
   // retrieve parent and grandparent of current display
-  QWidget* parent( display.parentWidget() );
+  QWidget* parent( dynamic_cast<QWidget*>( display.parent() ) );
   Exception::checkPointer( parent, DESCRIPTION( "invalid parent" ) );
   
-  QWidget* grand_parent( parent->parentWidget() );
+  QWidget* grand_parent( dynamic_cast<QWidget*>( parent->parent() ) );
   Exception::checkPointer( grand_parent, DESCRIPTION( "invalid parent" ) );  
   Debug::Throw("EditFrame::_closeView - got parent and grand parent.\n" );
 
+  Debug::Throw() << "parent: " << parent << " grand parent: " << grand_parent << endl;
+  
   // retrieve children of parent and loop
   const QObjectList& children( parent->children() );
   for( QObjectList::const_iterator iter = children.begin(); iter != children.end(); iter++ )
@@ -1218,7 +1232,14 @@ void EditFrame::_closeView( TextDisplay& display )
     QSplitter *child_splitter( dynamic_cast<QSplitter*>(child) );
     if( child_splitter )
     {
+      Debug::Throw("EditFrame::_closeView - child splitter. Reparent.\n" );
       child_splitter->setParent( grand_parent );
+      //if( dynamic_cast<QSplitter*>(grand_parent) == 0 ) 
+      if( grand_parent->layout() ) 
+      {
+        grand_parent->layout()->addWidget( child_splitter );
+        Debug::Throw("EditFrame::_closeView - child display. found layout.\n" );
+      }
       break;
     }
 
@@ -1226,7 +1247,14 @@ void EditFrame::_closeView( TextDisplay& display )
     TextDisplay *child_display( dynamic_cast<TextDisplay*>(child) );
     if( child_display )
     {
+      Debug::Throw("EditFrame::_closeView - child display. Reparent.\n" );
       child_display->setParent( grand_parent );
+      //if( dynamic_cast<QSplitter*>(grand_parent) == 0 ) 
+      if( grand_parent->layout() ) 
+      {
+        Debug::Throw("EditFrame::_closeView - child display. found layout.\n" );
+        grand_parent->layout()->addWidget( child_display );
+      }
       break;
     }
 
@@ -1234,20 +1262,27 @@ void EditFrame::_closeView( TextDisplay& display )
 
   // retrieve displays associated to current
   displays = BASE::KeySet<TextDisplay>( &display );
-  display.close();
+  //display.close();
+  parent->hide();
   parent->close();
+//  delete parent;
+//  delete &display;
+//  parent->hide();
+  Debug::Throw( "EditFrame::_closeView - closed.\n" );
 
   // try resize grand parent (if splitter)
-  QSplitter* splitter( static_cast<QSplitter*>( grand_parent ) );
+  QSplitter* splitter( dynamic_cast<QSplitter*>( grand_parent ) );
   if( splitter )
   {
     
+    Debug::Throw( "EditFrame::_closeView - resizing grand_parent.\n" );
     int dimension = (splitter->orientation() == Horizontal) ? splitter->width():splitter->height();
     
     QList<int> sizes;
     sizes.push_back( dimension/2 );
     sizes.push_back( dimension/2 );
     splitter->setSizes( sizes );
+    Debug::Throw( "EditFrame::_closeView - grand_parent resized.\n" );
   }
 
   // if no associated displays, retrieve all, set the first as active
@@ -1289,8 +1324,10 @@ void EditFrame::_closeView( TextDisplay& display )
   */
   close_view_action_->setEnabled( BASE::KeySet<TextDisplay>(this).size() > 2 );
 
+  
   // change focus
   activeDisplay().setFocus();
+  Debug::Throw( "EditFrame::_closeView - done.\n" );
 
 }
 
@@ -1301,11 +1338,11 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
   Debug::Throw( "EditFrame::_splitView.\n" );
 
   // keep local pointer to current active display
-  TextDisplay& active_display_local( activeDisplay() );
-
+  TextDisplay& active_display_local( activeDisplay() );  
+  
   // create new splitter
   QSplitter& splitter( _newSplitter( orientation, clone ) );
-
+  
   // create new display
   TextDisplay& display( _newTextDisplay( &splitter ) );
 
@@ -1316,11 +1353,15 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
   sizes.push_back( dimension/2 );
   sizes.push_back( dimension/2 );
   splitter.setSizes( sizes );
-    
-  // also resize parent
-  QSplitter *parent_splitter( static_cast<QSplitter*>( splitter.parent() ) );
+
+  Debug::Throw( "EditFrame::_splitView - sizes set.\n" );
+
+  //   // also resize parent
+  QSplitter *parent_splitter( dynamic_cast<QSplitter*>( splitter.parent() ) );
   if( parent_splitter ) 
   {
+    
+    Debug::Throw( "EditFrame::_splitView - resize parent.\n" );
     
     // assign equal size to displays
     int dimension = ( parent_splitter->orientation() == Horizontal) ? splitter.width():splitter.height();
@@ -1331,11 +1372,11 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
     splitter.setSizes( sizes );
     
     parent_splitter->setSizes( sizes );
+    Debug::Throw( "EditFrame::_splitView - parent resized.\n" );
   
   }
-  
-  // show splitter
-  splitter.show();
+ 
+  Debug::Throw( "EditFrame::_splitView - splitter shown.\n" );
 
   // synchronize both displays, if cloned
   if( clone )
@@ -1349,17 +1390,19 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
 
     // clone new display
     display.synchronize( &active_display_local );
-
+    Debug::Throw( "EditFrame::_splitView - synchronized.\n" );
+ 
     // perform associations
     // check if active displays has associates and propagate to new
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     { BASE::Key::associate( &display, *iter ); }
+    Debug::Throw( "EditFrame::_splitView - synchronized (associates).\n" );
 
     // associate this display to AutoSave threads
     BASE::KeySet<AutoSaveThread> threads( &active_display_local );
     for( BASE::KeySet<AutoSaveThread>::iterator iter = threads.begin(); iter != threads.end(); iter++ )
     { BASE::Key::associate( &display, *iter ); }
-
+ 
     // associate new display to active
     BASE::Key::associate( &display, &active_display_local );
 
@@ -1375,6 +1418,7 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
 
   // update close view
   close_view_action_->setEnabled( true );
+  Debug::Throw( "EditFrame::_splitView - done.\n" );
 
   return display;
 
@@ -1402,11 +1446,15 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
 
     // move splitter to the first place if needed
     QSplitter *parent_splitter = dynamic_cast<QSplitter*>( parent );
-    if( parent_splitter ) parent_splitter->insertWidget( parent_splitter->indexOf( &activeDisplay() ), splitter );
-    else parent->layout()->addWidget( splitter );
+    if( parent_splitter ) 
+    {
+      Debug::Throw( "EditFrame::_newSplitter - found parent splitter.\n" );
+      parent_splitter->insertWidget( parent_splitter->indexOf( &activeDisplay() ), splitter );
+    } else parent->layout()->addWidget( splitter );
 
     // reparent current display
     activeDisplay().setParent( splitter );
+    //splitter->addWidget( &activeDisplay() );
 
   } else {
 
@@ -1474,6 +1522,7 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
   setActiveDisplay( *display );
   display->setFocus();
   Debug::Throw() << "EditFrame::_newTextDisplay - key: " << display->key() << endl;
+  Debug::Throw( "EditFrame::newTextDisplay - done.\n" );
 
   return *display;
 

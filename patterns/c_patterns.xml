@@ -1,0 +1,380 @@
+<!-- $Id$-->
+<patterns>
+ <class name="c++" pattern="\.(c|cc|C|cpp|c\+\+|cxx|h|hh|H|css|js|php)(\.in)?$" >
+
+ <!-- highlight styles -->
+ <style format="2" name="Comment" color="#ff8c00" />
+ <style format="0" name="End Of Line" color="#aa0000" />
+ <style format="0" name="Keyword" color="#0000ff" />
+ <style format="0" name="Numeric Constants" color="#808000" />
+ <style format="0" name="Preprocessor" color="#ff00ff" />
+ <style format="0" name="Preprocessor2" color="#aa00aa" />
+ <style format="0" name="Scope" color="#008000" />
+ <style format="0" name="Storage Type" color="#a020f0" />
+ <style format="0" name="String" color="#00cd00" />
+ <style format="0" name="String2" color="#2e8b2e" />
+ <style format="0" name="Word" color="#ff0000" />
+
+ <style format="0" name="Cvs In" color="#ff0000" /> 
+ <style format="0" name="Cvs Out" color="#0000ff" />  
+
+ <!-- highlight patterns -->
+
+ <!-- cvs conflicts -->
+ <range_pattern style="Cvs In" name="Cvs In" options="span">
+  <begin>^\s*XML_LT{7}</begin>
+  <end>^\s*\={3}</end>
+  <comments>cvs conflict</comments>
+ </range_pattern>
+
+ <!-- cvs conflicts -->
+ <range_pattern style="Cvs Out" name="Cvs Out" options="span">
+  <begin>\={3}\s*$</begin>
+  <end>^\s*XML_GT{7}</end>
+  <comments>cvs conflict</comments>
+ </range_pattern>
+
+
+ <!-- End of line -->
+ <keyword_pattern style="End Of Line" name="End Of Line" >
+  <keyword>;\s*$</keyword>
+  <comments>end of line</comments>
+ </keyword_pattern>
+ 
+ <!-- preprocessor command -->
+ <range_pattern style="Preprocessor" name="Preprocessor" options="no_indent" >
+  <begin>^\s*#\s*(include|define|if(n?def)?|line|error|el(se|if)|endif|undef|pragma)\b</begin>
+  <end>$</end>
+  <comments>preprocessor comment</comments>
+ </range_pattern>
+ 
+ <!-- comments (c style) -->
+ <range_pattern style="Comment" name="Comment" options="no_indent" >
+  <begin>^\s*//</begin>
+  <end>$</end>
+  <comments>begin of line C style comments</comments>
+ </range_pattern>
+ 
+ <!-- comments (c style) -->
+ <range_pattern style="Comment" name="Comment1" >
+  <begin>//</begin>
+  <end>$</end>
+  <comments>middle of line C style comments</comments>
+ </range_pattern>
+
+ <!-- comments (c++ style) -->
+ <range_pattern style="Comment" name="Comment2" options="span no_indent" >
+  <begin>^\s*/\*</begin>
+  <end>\*/</end>
+  <comments>begin of line C++ style comments</comments>
+ </range_pattern>
+
+ <!-- comments (c++ style) -->
+ <range_pattern style="Comment" name="Comment2" options="span" >
+  <begin>/\*</begin>
+  <end>\*/</end>
+  <comments>middle of line C++ style comments</comments>
+ </range_pattern>
+
+ <!-- scope -->
+ <range_pattern style="Scope" name="Scope" options="no_indent" >
+  <begin>\b(public|private|protected|signals|slots)\b</begin>
+  <end>(:\s*$)|([^,\s*].$)</end>
+ </range_pattern>
+ 
+ <!-- class -->
+ <range_pattern style="Keyword" name="Class Name">
+  <begin>\bclass\b</begin>
+  <end>(.(?=(;|\{|:))|$)</end> 
+  <comments>class name</comments>
+ </range_pattern>
+  
+ <!-- namespace -->
+ <range_pattern style="Keyword" name="Namespace">
+  <begin>\b(using\s+)?namespace\b</begin>
+  <end>(.(?=(;|\{))|$)</end>
+  <comments>namespace</comments>
+ </range_pattern>
+
+ <!-- keyword -->
+ <keyword_pattern style="Keyword" name="Keyword" >
+  <keyword>\b(abs|break|case|catch|continue|default|delete|do|(dynamic|static|const|reinterpret)_cast|else|emit|fabs|false|for|goto|if|new|return|sizeof|sqrt|swap|switch|this|throw|true|try|while)\b</keyword>
+  <comments>keywords</comments>
+ </keyword_pattern>
+ 
+ <!-- braces -->
+ <keyword_pattern style="Keyword" name="Braces" >
+  <keyword>((\{|\[|\]|\})*(\{|\[|\]|\})(\{|\[|\]|\})*)</keyword>
+  <comments>braces</comments>
+ </keyword_pattern>
+
+ <!-- types -->
+ <keyword_pattern style="Storage Type" name="Storage Type" >
+  <keyword>\b(auto|bool|char|const|double|enum|explicit|export|extern|float|friend|inline|int|long|mutable|operator|register|short|signed|static|struct|template|typedef|typeid|typename|union|unsigned|virtual|void|volatile|wchar_t)\b</keyword>
+  <comments>storage type</comments>
+ </keyword_pattern>
+
+ <keyword_pattern style="Storage Type" name="Stl Storage Type" >
+  <keyword>(\b(std::)?((string(::npos)?)|set|map|list|((i|i?o)(f|string)?stream)|endl|c(out|err|log)|vector)\b)|(::(const_)?(reverse_)?iterator\b)</keyword>
+  <comments>storage type (STL)</comments>
+ </keyword_pattern>
+ 
+ <!-- numeric constants -->
+ <keyword_pattern style="Numeric Constants" name="Numeric Constants" >
+  <keyword>\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f)?\b</keyword>
+  <comments>numeric constants</comments>
+ </keyword_pattern>
+ 
+ <!-- strings -->
+ <range_pattern style="String" name="String" >
+  <begin>XML_QUOTE</begin>
+  <end>([^\\]XML_QUOTE|$)</end>
+  <comments>strings</comments>
+ </range_pattern>
+ 
+ <!-- string single characters -->
+ <keyword_pattern style="String2" name="String single character" >
+  <keyword>'(.|\\(.|\n))'</keyword>
+  <comments>single character strings</comments>
+ </keyword_pattern>
+  
+ <!-- string escape characters -->
+ <keyword_pattern style="String2" name="String Escape Character" parent="String" >
+  <keyword>\\(.|\n)</keyword>
+  <comments>single escape characters</comments>
+ </keyword_pattern>
+ 
+ <!-- braces -->
+ <braces begin="(" end=")" />
+ <braces begin="[" end="]" />
+ <braces begin="{" end="}" />
+
+ <!-- indentation rules -->
+  
+ <!--  
+	pattern 0: 
+  keep unchanged when opening curly bracket at end of previous line but if
+	this line starts with a closing bracket
+-->
+ <indent_pattern type="0">
+  <rule par="0">
+   <regexp>^\s*\}</regexp>
+  </rule>
+  <rule par="-1">
+   <regexp>(\{\s+)($|//)</regexp>
+  </rule>
+ </indent_pattern>
+
+ <!-- 
+	pattern 1: 
+  increment pattern when opening curly bracket at end of previous line and if
+	this line is not a closing bracket
+ --> 
+ <indent_pattern type="1">
+  <rule par="-1">
+   <regexp>(\{\s+)($|//)</regexp>
+  </rule>
+ </indent_pattern>
+  
+ <!-- 
+  pattern 2: 
+  decrement pattern twice when closing curly bracket at beginning of current line,
+  previous line is terminated, but the one before is not and is not openning/closing bracket
+ --> 
+ <indent_pattern type="2" scale="2">
+  <rule par="-1">
+   <regexp>(;\s*($|//))</regexp>
+  </rule>
+  <rule par="-2">
+  <regexp>[^;|\{|\}\s*]\s*($|//)</regexp>
+  </rule>
+  <rule par="0">
+   <regexp>^\s*\}</regexp>
+  </rule>
+ </indent_pattern>
+  
+ <!-- 
+  pattern 3: 
+  decrement pattern when closing curly bracket at beginning of current line 
+ --> 
+ <indent_pattern type="2">
+  <rule par="0">
+   <regexp>^\s*\}</regexp>
+  </rule>
+ </indent_pattern>
+
+ <!-- 
+  pattern 4:
+  decrement when previous line is not terminated, 
+  the one before is not terminated either,
+  and this one is an opening bracket
+ -->
+ <indent_pattern type="2" name="opening bracket">  
+  <rule par="0">
+   <regexp>^\s*\{</regexp>
+  </rule>
+  <rule par="-1">
+   <regexp>[^;\s*]\s*($|//)</regexp>
+  </rule>
+  <rule par="-2">
+  <regexp>[^;|\}|\{|:\s*]\s*($|//)</regexp>
+  </rule>
+ </indent_pattern>
+
+ <!-- 
+  pattern 5: 
+  keep unchanged when previous line is not terminated but this one is an opening bracket
+ -->
+ <indent_pattern type="0"> 
+  <rule par="0">
+   <regexp>^\s*\{</regexp>
+  </rule>
+  <rule par="-1">
+   <regexp>[^;\s*]\s*($|//)</regexp>
+  </rule>
+  <rule par="-2">
+   <regexp>(;|\{|\})\s*($|//)</regexp>
+  </rule>
+ </indent_pattern>
+
+ <!-- pattern 6: keep unchanged when previous line is not terminated but is a closing bracket  -->
+ <indent_pattern type="0"> 
+  <rule par="-1">
+   <regexp>((\}|(\}\s*;))\s*($|//))</regexp>
+  </rule>
+ </indent_pattern>
+
+ <!-- pattern 7: increment when previous line is not terminated but above was -->
+ <indent_pattern type="1">
+  <rule par="-1">
+   <regexp>[^;\s*]\s*($|//)</regexp>
+  </rule>
+  <rule par="-2">
+   <regexp>((;|\{|\})\s*($|//))</regexp>
+  </rule>
+ </indent_pattern>
+
+ <!-- pattern 8: keep unchanged if previous line is terminated and previous is
+ 	- terminated
+	- a bracket -->
+ <indent_pattern type="0">
+  <rule par="-1">
+   <regexp>(;\s*($|//))</regexp>
+  </rule>
+  <rule par="-2">
+   <regexp>((\{|\})\s+($|//))|(;\s*($|//))</regexp>
+  </rule>
+ </indent_pattern>
+ 
+ <!-- pattern 9: decrement when previous line is terminated but above was not -->
+ <indent_pattern type="2">
+  <rule par="-1">
+   <regexp>(;\s*($|//))</regexp>
+  </rule>
+  <rule par="-2">
+   <regexp>[^;\s*]\s*($|//)</regexp>
+  </rule>
+ </indent_pattern>
+
+<!-- text processing macros -->
+
+ <macro name="Add one tab indentation" accelerator="Alt+T">
+  <rule>
+   <regexp>^</regexp>
+   <replacement>XML_TAB</replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove one tab indentation" accelerator="Shift+Alt+T">
+  <rule>
+   <regexp>^\t</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove all tab indentations" accelerator="Shift+Ctrl+I">
+  <rule>
+   <regexp>^\s+</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ <macro name="Clean end of line" accelerator="Alt+C">
+  <rule>
+   <regexp>\s+$</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+<macro options="separator"/>
+ 
+ <macro name="Add C++ comments">
+  <rule>
+   <regexp>^</regexp>
+   <replacement>// </replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove C++ comments">
+  <rule>
+   <regexp>^// </regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+ 
+ <macro options="separator"/>
+
+ <macro name="Add C line comments">
+  <rule>
+   <regexp>^</regexp>
+   <replacement>/*</replacement>
+  </rule>
+  <rule>
+   <regexp>$</regexp>
+   <replacement>*/</replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove C line comments">
+  <rule>
+   <regexp>^\s*/\*</regexp>
+   <replacement></replacement>
+  </rule>
+  <rule>
+   <regexp>\*/\s*$</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ <macro name="Add C bar comments">
+  <rule>
+   <regexp>^</regexp>
+   <replacement>XML_TAB</replacement>
+  </rule>
+  <rule options="no_split">
+   <regexp>^</regexp>
+   <replacement>/*XML_ENDL</replacement>
+  </rule>
+  <rule options="no_split">
+   <regexp>$</regexp>
+   <replacement>XML_ENDL*/</replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove C bar comments">
+  <rule options="no_split">
+   <regexp>^/\*\n?</regexp>
+   <replacement></replacement>
+  </rule>
+  <rule options="no_split">
+   <regexp>\n?\*/$</regexp>
+   <replacement></replacement>
+  </rule>
+  <rule>
+   <regexp>^\t</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ </class>
+</patterns>

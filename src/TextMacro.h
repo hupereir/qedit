@@ -112,7 +112,6 @@ class TextMacro: public Counter
   QAction* action( void ) const
   {
     QAction* out( new QAction( name().c_str(), 0 ) );
-    out->setCheckable( true );
     if( !_accelerator().empty() ) out->setShortcut( QKeySequence( _accelerator().c_str() ) );
     return out;
   }

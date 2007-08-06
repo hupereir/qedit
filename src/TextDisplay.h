@@ -294,8 +294,9 @@ class TextDisplay: public CustomTextEdit
   //! text highlight
   const TextHighlight& textHighlight( void ) const
   {
-    Exception::checkPointer( highlight_, DESCRIPTION( "highlight_ not initialized." ) );
-    return *highlight_;
+    BASE::KeySet<TextHighlight> highlights( dynamic_cast<BASE::Key*>(document()) );
+    Exception::check( highlights.size() == 1, "invalid association to text-highlight" );
+    return **highlights.begin();
   }
 
   //! text indent
@@ -379,8 +380,7 @@ class TextDisplay: public CustomTextEdit
   void replaceLeadingTabs( const bool& confirm = true );
 
   //! rehighlight
-  void rehighlight( void )
-  { highlight_->setDocument( document() ); }
+  void rehighlight( void );
 
   protected:
 
@@ -443,9 +443,6 @@ class TextDisplay: public CustomTextEdit
   //! returns true if text contents differs from file contents
   bool _contentsChanged( void ) const;
   
-  //! show file info
-  void _showFileInfo( void );
-  
   protected slots:
 
   //! indent paragraph (when return or tab is pressed)
@@ -478,7 +475,10 @@ class TextDisplay: public CustomTextEdit
     Debug::Throw( "TextDisplay::_toggleBracesHighlight.\n" ); 
     return; 
   }
-
+  
+  //! show file info
+  void _showFileInfo( void );
+  
   //! track text modifications for syntax highlighting
   void _setBlockModified( int position );
   
@@ -513,9 +513,6 @@ class TextDisplay: public CustomTextEdit
 
   //!@name document classes specific members
   //@{
-
-  //! text highlight
-  TextHighlight* highlight_;
 
   //! text indent
   TextIndent* indent_;

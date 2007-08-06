@@ -29,6 +29,7 @@
 
 #include <QApplication>
 #include <QPushButton>
+#include <QScrollBar>
 
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
@@ -86,7 +87,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
   // connections
   connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
-  connect( this, SIGNAL( indent( QTextBlock& ) ), indent_, SLOT( indent( QTextBlock& ) ) );
+  connect( this, SIGNAL( indent( QTextBlock ) ), indent_, SLOT( indent( QTextBlock ) ) );
   
   // actions
   addAction( text_indent_action_ = new QAction( "&Indent text", this ) );
@@ -116,22 +117,23 @@ TextDisplay::TextDisplay( QWidget* parent ):
   
   // track document classes modifications
   // connect( qApp, SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
+  Debug::Throw( "TextDisplay::TextDisplay - done.\n" );
   
 }
 
 //_____________________________________________________
 TextDisplay::~TextDisplay( void )
-{ Debug::Throw( "TextDisplay::~TextDisplay.\n" ); }
+{ Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; }
 
 //___________________________________________________________________________
 void TextDisplay::synchronize( TextDisplay* display )
 {
  
-  Debug::Throw( "TextDisplay::clone\n" );
+  Debug::Throw( "TextDisplay::synchronize.\n" );
       
   // synchronize text
   // (from base class)
-  synchronize( display );
+  CustomTextEdit::synchronize( display );
 
   // update flags
   setFlags( display->flags() );
@@ -188,6 +190,7 @@ void TextDisplay::openFile( File file )
   displays.insert( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
+    (*iter)->setFile( file );
     (*iter)->setClassName( className() );
     (*iter)->updateDocumentClass();
   }
@@ -358,9 +361,28 @@ void TextDisplay::saveAs( void )
 void TextDisplay::revertToSave( void )
 {
 
-  Debug::Throw( "TextDisplay::eevertToSave.\n" );
+  Debug::Throw( "TextDisplay::revertToSave.\n" );
+  
+  // store scrollbar positions
+  int x( horizontalScrollBar()->value() );
+  int y( verticalScrollBar()->value() );
+  
+  // store cursor position but remove selection
+  int position( textCursor().position() );
+  
+  setUpdatesEnabled( false );
   document()->setModified( false );
   openFile( file() );
+
+  // restore
+  horizontalScrollBar()->setValue( x );
+  verticalScrollBar()->setValue( y );
+  
+  QTextCursor cursor( textCursor() );
+  cursor.setPosition( position );
+  setTextCursor( cursor );
+  setUpdatesEnabled( true );
+  
 
 }
 
@@ -779,6 +801,14 @@ void TextDisplay::replaceLeadingTabs( const bool& confirm )
 }
 
 //_______________________________________________________
+void TextDisplay::rehighlight( void )
+{ 
+  Debug::Throw( "TextDisplay::rehighlight.\n" );
+  textHighlight().setDocument( document() ); 
+}
+
+
+//_______________________________________________________
 void TextDisplay::keyPressEvent( QKeyEvent* event )
 {
 
@@ -846,11 +876,11 @@ void TextDisplay::_setPaper( const QColor& color )
 {
   
   Debug::Throw( "TextDisplay::_setPaper.\n" );
-  if( !color.isValid() ) return;
-  
-  QPalette palette( TextDisplay::palette() );
-  palette.setColor( QPalette::Base, color );
-  setPalette( palette );
+//   if( !color.isValid() ) return;
+//   
+//   QPalette palette( TextDisplay::palette() );
+//   palette.setColor( QPalette::Base, color );
+//   setPalette( palette );
 
 }
 
@@ -875,10 +905,6 @@ bool TextDisplay::_contentsChanged( void ) const
 }
 
 //_______________________________________________________
-void TextDisplay::_showFileInfo( void )
-{ FileInfoDialog( this ).exec(); }
-
-//_______________________________________________________
 void TextDisplay::_indentCurrentParagraph( void )
 {
   if( !indent_->isEnabled() ) return;
@@ -897,6 +923,10 @@ void TextDisplay::_multipleFileReplace( void )
   dialog.exec();
   return;
 }
+
+//_______________________________________________________
+void TextDisplay::_showFileInfo( void )
+{ FileInfoDialog( this ).exec(); }
 
 //_____________________________________________________________
 void TextDisplay::_setBlockModified( int position )

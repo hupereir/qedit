@@ -116,6 +116,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 //   color_display = new OptionColorDisplay( grid, "HIGHLIGHT_COLOR" );
 //   addOptionWidget( color_display );
 //   color_display->setToolTip( "Active paragraph highlight color" );
+//   
+  
   
   // multiple views
   page = &addPage( "Multiple view" );
@@ -175,7 +177,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 //   spinbox->setMinimum( 0 );
 //   spinbox->setMaximum( 300 );
 //   spinbox->setToolTip( "Interval (seconds) between two synchronization check intervals. 0 means no check." );
-  addOptionWidget( spinbox );
+//   addOptionWidget( spinbox );
   
   // toolbars
   page = &addPage( "Toolbars" );
@@ -220,7 +222,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setMaxCount(2);
   box->setLayout( grid_layout );
 
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "use a2ps", box, "USE_A2PS" ), 0, 0, 2, 0 );
+  grid_layout->addWidget( checkbox = new OptionCheckBox( "use a2ps", box, "USE_A2PS" ), 0, 0, 1, 2 );
   checkbox->setToolTip( "Use a2ps to format raw text file before sending to printer." );
   addOptionWidget( checkbox );
 
@@ -246,7 +248,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setMaxCount(2);
   box->setLayout( grid_layout );
   
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "use HTML editor", box, "USE_HTML_EDITOR" ), 0, 0, 2, 0 );
+  grid_layout->addWidget( checkbox = new OptionCheckBox( "use HTML editor", box, "USE_HTML_EDITOR" ), 0, 0, 1, 2 );
   checkbox->setToolTip( "Use editor to open files after conversion to HTML." );
   addOptionWidget( checkbox );
 
@@ -265,7 +267,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setMaxCount(2);
   box->setLayout( grid_layout );
 
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "Save backup", box, "BACKUP" ), 0, 0, 2, 0 );
+  grid_layout->addWidget( checkbox = new OptionCheckBox( "Save backup", box, "BACKUP" ), 0, 0, 1, 2 );
   checkbox->setToolTip( "Make backup of the file prior to saving modifications" );
   addOptionWidget( checkbox );
 
@@ -337,5 +339,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   
   // load initial configuration
   _read();
+  Debug::Throw( "ConfigurationDialog::ConfigurationDialog - done.\n" );
 
 }

@@ -1,0 +1,40 @@
+<!-- $Id$-->
+<patterns>
+ <class name="default" options="default">
+
+ <!-- braces -->
+ <braces begin="(" end=")" />
+ <braces begin="[" end="]" />
+ <braces begin="{" end="}" />
+ 
+ <!-- text processing macros -->
+ <macro name="Add one tab indentation" accelerator="Alt+T">
+  <rule>
+   <regexp>^</regexp>
+   <replacement>XML_TAB</replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove one tab indentation" accelerator="Shift+Alt+T">
+  <rule>
+   <regexp>^\t</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove all tab indentations">
+  <rule>
+   <regexp>^\t+</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ <macro name="Clean end of line" accelerator="Alt+C">
+  <rule>
+   <regexp>\s+$</regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ </class>
+</patterns>

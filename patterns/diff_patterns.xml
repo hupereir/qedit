@@ -1,0 +1,26 @@
+<!-- $Id$-->
+<patterns>
+ <class name="diff" pattern="/\w+\.diff$" >
+
+ <!-- highlight styles -->
+ <style format="0" name="in" color="#0000cd" />
+ <style format="0" name="out" color="#00cd00" />
+ <style format="2" name="delimiter" color="#cd0000" />
+
+ <!-- highlight patterns -->
+ <range_pattern name="in" style="in">
+ <begin>XML_LT</begin>
+ <end>$</end>
+ </range_pattern>
+
+ <range_pattern name="out" style="out">
+ <begin>XML_GT</begin>
+ <end>$</end>
+ </range_pattern>
+
+ <keyword_pattern name="delimiter" style="delimiter" >
+ <keyword>^([0-9]+(,[0-9]+)?(a|c|d)[0-9]+(,[0-9]+)?)|(-+)\s*$</keyword>
+ </keyword_pattern>
+
+ </class>
+</patterns>

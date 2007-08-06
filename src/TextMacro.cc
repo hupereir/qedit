@@ -63,6 +63,8 @@ TextMacro::TextMacro( const QDomElement& element ):
       if( value.find( XML::OPTION_SEPARATOR ) != string::npos ) _setIsSeparator();
     } else cout << "TextMacro::TextMacro - unrecognized attribute: " << name << endl;
   }
+
+  Debug::Throw() << "TextMacro::TextMacro - name: " << name() << endl;
   
   // parse children
   for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() ) 
@@ -74,7 +76,7 @@ TextMacro::TextMacro( const QDomElement& element ):
     else cout << "TextMacro::TextMacro - unrecognized child: " << tag_name << endl;
   }
   
-  Exception::check( !rules_.empty(), DESCRIPTION( "Empty macro") );
+  Exception::check( isSeparator() || !rules_.empty(), DESCRIPTION( "Empty macro") );
   
 }
 

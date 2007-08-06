@@ -107,8 +107,7 @@ Menu::Menu( QWidget* parent ):
 
   // preferences
   preference_menu_ = addMenu( "&Preferences" );
-  connect( search_menu_, SIGNAL( aboutToShow() ), SLOT( _updatePreferenceMenu() ) );
-  connect( preference_menu_, SIGNAL( aboutToShow() ), this, SLOT( _UpdatePrefMenu() ) );
+  connect( preference_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updatePreferenceMenu() ) );
   
   // macros
   macro_menu_ = addMenu( "&Macro" );
@@ -127,7 +126,7 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( "About &Qt", qApp, SLOT( aboutQt() ), 0 );
   menu->addAction( "About Q&Edit", qApp, SLOT( about() ), 0 );
 
-  File help_file( XmlOptions::get().get<File>( "BASE_FILE" ) );
+  File help_file( XmlOptions::get().get<File>( "HELP_FILE" ) );
   if( help_file.exist() ) BASE::HelpManager::get().install( help_file );
   else
   {

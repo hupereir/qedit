@@ -1,0 +1,117 @@
+<!-- $Id$--> 
+<patterns>
+ <class name="makefiles" pattern="/(m|M)akefile(\.am|\.in)?$" >
+
+ <!-- highlight styles --> 
+  <style format="2" name="Comment" color="#ff8c00" /> 
+  <style format="0" name="Macro" color="#ff00ff" /> 
+  <style format="0" name="Tag" color="#0000ff" /> 
+  <style format="0" name="Separator" color="#0000a8" />  
+  <style format="0" name="Rule" color="#ff0000" />  
+  <style format="0" name="String" color="#00cd00" /> 
+  <style format="0" name="Keyword" color="#0000ff" /> 
+  <style format="2" name="Keyword2" color="#0000ff" /> 
+  <style format="2" name="Keyword3" color="#ff00ff" /> 
+  <style format="2" name="Keyword4" color="#ff0000" />  
+  <style name="Command" />  
+
+ <!-- highlight patterns --> 
+
+ <!-- comments -->
+ <range_pattern style="Comment" name="Comment" options="no_indent" >
+  <begin>#</begin>
+  <end>$</end>
+ </range_pattern>
+
+ <!-- command -->
+ <range_pattern name="Command" style="Command" options="span">
+ <begin>^.*\t</begin>
+  <end>([^\\].$)</end> 
+ </range_pattern>
+
+ <keyword_pattern style="Separator" name="Separator3" parent="Command">
+  <keyword>\\</keyword>
+ </keyword_pattern>
+
+ <range_pattern style="String" name="String" parent="Command" >
+  <begin>XML_QUOTE</begin>
+  <end>[^\\]XML_QUOTE</end>
+ </range_pattern>
+
+ <range_pattern style="String" name="String2" parent="Command" >
+  <begin>'</begin>
+  <end>([^\\]'|$)</end>
+ </range_pattern>
+
+ <!-- macro --> 
+ <range_pattern style="Macro" name="Macro" options="span" >
+  <begin>^.+=</begin>
+  <end>([^\\].$)</end> 
+ </range_pattern>
+
+ <!-- rule -->
+ <range_pattern style="Rule" name="Rule" options="span" >
+  <begin>^.+\:</begin>
+  <end>([^\\].$)</end> 
+ </range_pattern>
+
+ <!-- delimiters -->
+ <keyword_pattern style="Separator" name="Separator" parent="Macro">
+  <keyword>\=|\\</keyword>
+ </keyword_pattern>
+
+ <keyword_pattern style="Separator" name="Separator2" parent="Rule">
+  <keyword>\:|\\</keyword>
+ </keyword_pattern>
+
+<!-- variables -->
+
+<keyword_pattern style="Keyword" name="Variable">
+  <keyword>(\$\(\w+\))|(\$\$\w+\b)|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
+ </keyword_pattern>
+
+<keyword_pattern style="Keyword2" name="Variable2" parent="Command">
+  <keyword>(\$\(\w+\))|(\$\$\w+\b)|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
+ </keyword_pattern>
+
+<keyword_pattern style="Keyword3" name="Variable3" parent="Macro">
+  <keyword>(\$\(\w+\))|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
+ </keyword_pattern>
+
+<keyword_pattern style="Keyword4" name="Variable4" parent="Rule">
+  <keyword>(\$\(\w+\))|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
+ </keyword_pattern>
+
+<!-- keywords --> 
+ <keyword_pattern style="Keyword" name="Keyword">
+  <keyword>\b((end)?if|else)\b</keyword>
+ </keyword_pattern>
+
+ <keyword_pattern style="Separator" name="Keyword2" parent="Command" >
+  <keyword>\@|\b((set)?env|set(env)?|umask|bindkey|(end)?if|end|then|else|source|echo|fi|test|in|case|esac|for(each)?|print|cd|cp|exit|rm|ls|do(ne)?)\b</keyword>
+ </keyword_pattern>
+ 
+
+ <!-- braces -->
+ <braces begin="(" end=")" />
+ <braces begin="[" end="]" />
+ <braces begin="{" end="}" />
+
+ <!-- text processing macros -->
+
+ <macro name="Add comments">
+  <rule>
+   <regexp>^</regexp>
+   <replacement># </replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove comments">
+  <rule>
+   <regexp># </regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
+ </class>
+</patterns>

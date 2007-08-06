@@ -166,7 +166,7 @@ void MainFrame::realizeWidget( void )
 //_____________________________________
 EditFrame& MainFrame::newEditFrame( void )
 {  
-  Debug::Throw( "MainFrame::newEditFrame" );
+  Debug::Throw( "MainFrame::newEditFrame.\n" );
   EditFrame* out = new EditFrame();
   BASE::Key::associate( this, out );
   return *out;
@@ -179,6 +179,7 @@ void MainFrame::configuration( void )
   ConfigurationDialog dialog( 0 );
   connect( &dialog, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
   dialog.exec();
+  Debug::Throw( "MainFrame::configuration - done.\n" );
 }
 
 //_______________________________________________
@@ -400,7 +401,9 @@ void MainFrame::updateConfiguration( void )
   setFont( font, "QTextEdit" );
   
   Debug::setLevel( XmlOptions::get().get<bool>("DEBUG_LEVEL") );
-
+  setWindowIcon( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).expand().c_str() ) );
+  
+  
   // update document classes
   updateDocumentClasses();
   

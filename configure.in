@@ -154,11 +154,13 @@ echo "timestamp = " $timestamp
 
 AC_OUTPUT( Makefile \
   QEdit.spec \
-  pixmaps/Makefile \
   base/Makefile \
   base-qt/Makefile \
   base-server/Makefile \
   base-spellcheck/Makefile \
   src/Makefile \
   src/Config.h \
-  src/DefaultOptions.h )
+  src/DefaultOptions.h \
+  patterns/Makefile \
+  pixmaps/Makefile \
+)

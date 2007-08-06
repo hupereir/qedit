@@ -71,6 +71,7 @@ QDomElement KeywordPattern::domElement( QDomDocument& parent ) const
 //____________________________________________________________
 void KeywordPattern::processText( LocationSet& locations, const QString& text, bool& active ) const
 {
+    
   //! disable activity
   active=false;
 

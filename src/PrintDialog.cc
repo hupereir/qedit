@@ -98,7 +98,7 @@ PrintDialog::PrintDialog( QWidget* parent ):
   // command
   mainLayout().addWidget( new QLabel( "command: ", this ) );
   mainLayout().addWidget( command_ = new CustomLineEdit( this ) );
-  
+ 
   // connections
   connect( a2ps_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes( bool ) ) );
   connect( printer_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes( bool ) ) ); 
@@ -108,9 +108,9 @@ PrintDialog::PrintDialog( QWidget* parent ):
   connect( printer_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updatePrintCommand() ) ); 
   connect( file_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updatePrintCommand() ) ); 
   
-  connect( a2ps_command_, SIGNAL( textChanged( const QString& ) ), SLOT( _UpdatePrintCommand() ) );
-  connect( print_command_, SIGNAL( textChanged( const QString& ) ), SLOT( _UpdatePrintCommand() ) );
-  connect( &ps_file_->editor(), SIGNAL( textChanged( const QString& ) ), SLOT( _UpdatePrintCommand() ) );
+  connect( a2ps_command_, SIGNAL( textChanged( const QString& ) ), SLOT( _updatePrintCommand() ) );
+  connect( print_command_, SIGNAL( textChanged( const QString& ) ), SLOT( _updatePrintCommand() ) );
+  connect( &ps_file_->editor(), SIGNAL( textChanged( const QString& ) ), SLOT( _updatePrintCommand() ) );
   
   // initial state
   a2ps_checkbox_->setChecked( XmlOptions::get().get<bool>("USE_A2PS") );
@@ -120,7 +120,7 @@ PrintDialog::PrintDialog( QWidget* parent ):
   print_command_->setText( XmlOptions::get().raw("PRINT_COMMAND").c_str() );
   
 }
-  
+
 //__________________________________________________
 void PrintDialog::setFile( const File& file )
 {

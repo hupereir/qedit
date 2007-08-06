@@ -53,34 +53,42 @@ void TextHighlight::highlightBlock( const QString& text )
   setFormat( 0, text.length(), Qt::black );
   if( !isEnabled() ) return;
 
+    // retrieve active_id from last block state
+  int active_id( previousBlockState() );
+  HighlightPattern::LocationSet locations;
+
   // try retrieve HighlightBlockData
   bool need_update( true );
   HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( currentBlockUserData() );
-  if( data ) need_update = data->isModified(); 
-  else {
+  if( data ) { 
+ 
+    need_update = ( data->isModified() || (locations = data->locations()).activeId().first != active_id );
+        
+  } else {
     
     // try retrieve data from parent type
     TextBlockData* text_data = dynamic_cast<TextBlockData*>( currentBlockUserData() );
     data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData();
     setCurrentBlockUserData( data );
     
-  }  
+  }
 
-  // retrieve active_id from last block state
-  int active_id( previousBlockState() );
-  
-  // retrieve new set of locations
-  HighlightPattern::LocationSet locations( locationSet( text, active_id ) );
+  // create new location set if needed
+  if( need_update ) 
+  {
+    locations = locationSet( text, active_id );
+    
+    // update data modification state and highlight pattern locations
+    data->setModified( false );
+    data->setLocations( locations );
+  }
   
   // apply new location set
   if( !locations.empty() ) _apply( text, locations );
   
   // store active id
-  setCurrentBlockState( active_id );
+  setCurrentBlockState( locations.activeId().second );
   
-  // update data modification state and highlight pattern locations
-  data->setModified( false );
-  data->setLocations( locations );
   return;
   
 }  
@@ -88,7 +96,7 @@ void TextHighlight::highlightBlock( const QString& text )
 //_________________________________________________________
 HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, const int& active_id )
 {
-    
+      
   // location list
   HighlightPattern::LocationSet locations;
   locations.activeId().first = active_id;
@@ -96,8 +104,7 @@ HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, c
   
   // check if pattern active_id is still active
   if( active_id > 0 )
-  {
-    
+  {    
     // look for matching pattern in list
     HighlightPattern::List::iterator pattern_iter = find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( active_id ) );
     Exception::check( pattern_iter != patterns_.end(), DESCRIPTION( "invalid pattern" ) );

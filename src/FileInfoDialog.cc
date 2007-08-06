@@ -53,9 +53,6 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
 {
   Debug::Throw( "FileInfoDialog::FileInfoDialog.\n" );
 
-  // tell frame to delete on exit
-  setAttribute( Qt::WA_DeleteOnClose );
-
   //! try load Question icon
   static CustomPixmap pixmap;
   static bool first( true );
@@ -66,25 +63,32 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
     pixmap.find( ICONS::INFO, path_list );    
   }
   
-  QBoxLayout* layout = new QHBoxLayout();
-  layout->setMargin(10);
-  layout->setSpacing(10);
-  setLayout( layout );
-  
-  QLabel* label = new QLabel(this);
-  label->setPixmap( pixmap );
-  layout->addWidget( label );
+  setLayout( new QVBoxLayout() );
+  layout()->setSpacing(10);
+  layout()->setMargin(10);
 
   QTabWidget *tab_widget = new QTabWidget( this );
-  layout->addWidget( tab_widget );
+  layout()->addWidget( tab_widget );
+  Debug::Throw( "FileInfoDialog::FileInfoDialog - tabWidget booked.\n" );
     
   // box to display additinal information
-  QWidget *box = new QWidget( tab_widget );
-  layout = new QVBoxLayout();
+  QWidget *box;
+  tab_widget->addTab( box = new QWidget( tab_widget ), "&General" );
+  Debug::Throw( "FileInfoDialog::FileInfoDialog - general tab created.\n" );
+
+  QHBoxLayout* h_layout = new QHBoxLayout();
+  h_layout->setMargin(10);
+  h_layout->setSpacing(10);
+  box->setLayout( h_layout );
+  
+  QLabel* label = new QLabel(box);
+  label->setPixmap( pixmap );
+  h_layout->addWidget( label );
+
+  QVBoxLayout* layout = new QVBoxLayout();
   layout->setMargin(5);
   layout->setSpacing( 5 );
-  box->setLayout( layout );
-  tab_widget->addTab( box, "&General" );
+  h_layout->addLayout( layout );
   
   CustomGridLayout* grid_layout = new CustomGridLayout();
   grid_layout->setSpacing( 5 );
@@ -130,22 +134,23 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   grid_layout->setColumnStretch( 1, 1 );
   
   layout->addStretch( 1 );
+  Debug::Throw( "FileInfoDialog::FileInfoDialog - General tab filled.\n" );
   
   // permissions tab
-  box = new QWidget( tab_widget );
+  tab_widget->addTab( box = new QWidget( tab_widget ), "Permissions" );
   layout = new QVBoxLayout();
   layout->setMargin(5);
   layout->setSpacing( 5 );
   box->setLayout( layout );
-  tab_widget->addTab( box, "Permissions" );
+  Debug::Throw( "FileInfoDialog::FileInfoDialog - Permissions tab created.\n" );
   
-  box->layout()->addWidget( new QLabel( "<b>Permissions: </b>", box ) );
+  layout->addWidget( new QLabel( "<b>Permissions: </b>", box ) );
   
   grid_layout = new CustomGridLayout();
   grid_layout->setMargin(0);
   grid_layout->setSpacing( 5 );
   grid_layout->setMaxCount( 4 );
-  box->layout()->addItem( grid_layout );
+  layout->addItem( grid_layout );
   
   grid_layout->addWidget( new QLabel( "", box ) );
   grid_layout->addWidget( new QLabel( "Read", box ), Qt::AlignHCenter );
@@ -181,13 +186,13 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   if( file.exist() )
   {
    
-    box->layout()->addWidget( new QLabel( "<b>Ownership: </b>", box ) );
+    layout->addWidget( new QLabel( "<b>Ownership: </b>", box ) );
 
     grid_layout = new CustomGridLayout();
     grid_layout->setMargin(0);
     grid_layout->setSpacing( 5 );
     grid_layout->setMaxCount( 2 );
-    box->layout()->addItem( grid_layout );
+    layout->addItem( grid_layout );
     
     // user id
     grid_layout->addWidget( label = new QLabel( "user: ", box ) );
@@ -199,16 +204,16 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
     grid_layout->setColumnStretch( 1, 1 );
     
   }
-    
+  Debug::Throw( "FileInfoDialog::FileInfoDialog - Permissions tab filled.\n" );
+
   // misc tab
   // permissions tab
-  box = new QWidget( tab_widget );
+  tab_widget->addTab( box = new QWidget( tab_widget ), "&Miscellaneous" );
   layout = new QVBoxLayout();
   layout->setMargin(5);
   layout->setSpacing( 5 );
   box->setLayout( layout );
-
-  tab_widget->addTab( box, "&Miscellaneous" );
+  Debug::Throw( "FileInfoDialog::FileInfoDialog - Miscellaneous tab booked.\n" );
   
   grid_layout = new CustomGridLayout();
   grid_layout->setMargin(0);
@@ -225,5 +230,6 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   grid_layout->addWidget( new QLabel( Str().assign<int>(parent->blockCount()).c_str(), box ) );
   
   grid_layout->setColumnStretch( 1, 1 );
-    
+  layout->addStretch();
+  Debug::Throw( "FileInfoDialog::FileInfoDialog - Miscellaneous tab fixed.\n" );
 }

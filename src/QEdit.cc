@@ -84,6 +84,11 @@ int main (int argc, char *argv[])
     option = Option( "HELP_FILE", Util::env( "HOME", "." ) + "/.qedit_help" );
     option.setRecordable( false );
     XmlOptions::get().add( option );
+
+    // add DB file
+    option = Option( "DB_FILE", Util::env( "HOME", "." ) + "/.qedit_db" );
+    option.setRecordable( false );
+    XmlOptions::get().add( option );
     
     // load default options
     installDefaultOptions();
