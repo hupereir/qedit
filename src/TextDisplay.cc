@@ -108,7 +108,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   
   // connections
   // track contents changed for syntax highlighting
-  connect( TextDisplay::document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int ) ) );
+  connect( TextDisplay::document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int, int, int ) ) );
   connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
 
   // track configuration modifications
@@ -706,7 +706,7 @@ void TextDisplay::indentSelection( void )
 void TextDisplay::processMacro( string name )
 {
   
-  Debug::Throw( "TextDisplay::processMacro.\n" );
+  Debug::Throw() << "TextDisplay::processMacro - " << name << endl;
 
   // retrieve macro that match argument name
   MacroList::const_iterator macro_iter = find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
@@ -724,28 +724,45 @@ void TextDisplay::processMacro( string name )
   // retrieve text cursor
   QTextCursor cursor( textCursor() );
   if( !cursor.hasSelection() ) return;
-  
-  // retrieve blocks
-  QTextBlock begin( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
-  QTextBlock end( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
 
-  // need to remove selection otherwise the first adding of a tab
-  // will remove the entire selection.
-  setUpdatesEnabled( true );
-  cursor.clearSelection(); 
+  // retrieve blocks
+  int position_begin( min( cursor.position(), cursor.anchor() ) );
+  int position_end( max( cursor.position(), cursor.anchor() ) );
+  QTextBlock begin( document()->findBlock( position_begin ) );
+  QTextBlock end( document()->findBlock( position_end ) );
   
-  for( QTextBlock block = begin; block != end && block.isValid(); block = block.next() )
-  { emit indent( block ); }
+  // enlarge selection so that it matches begin and end of blocks
+  position_begin = begin.position();
+  if( position_end == end.position() )
+  {
+    position_end--;
+    end = end.previous();
+  } else {  position_end = end.position() + end.length() - 1; }
   
-  // handle last block
-  emit indent( end );
+  // prepare text from selected blocks
+  QString text;
+  if( begin == end ) text = begin.text().mid( position_begin, position_end );
+  else {
+    text = begin.text().mid( position_begin - begin.position() ) + "\n";
+    for( QTextBlock block = begin.next(); block.isValid() && block!= end; block = block.next() )
+    { text += block.text() + "\n"; }
+    text += end.text().left( position_end - end.position() );
+  }
   
-  QString text( cursor.selectedText() );
-  if( (*macro_iter)->processText( text ) )
-  { cursor.insertText( text ); }
+  if( !(*macro_iter)->processText( text ) ) return;
+
+  // update selection
+  cursor.setPosition( position_begin );
+  cursor.setPosition( position_end, QTextCursor::KeepAnchor );
   
-  // enable updates
-  setUpdatesEnabled( true );
+  // insert new text
+  cursor.insertText( text );
+  
+  // restore selection
+  cursor.setPosition( position_begin );
+  cursor.setPosition( position_begin + text.size(), QTextCursor::KeepAnchor );
+  setTextCursor( cursor );
+  
   return;
   
 }
@@ -876,11 +893,11 @@ void TextDisplay::_setPaper( const QColor& color )
 {
   
   Debug::Throw( "TextDisplay::_setPaper.\n" );
-//   if( !color.isValid() ) return;
-//   
-//   QPalette palette( TextDisplay::palette() );
-//   palette.setColor( QPalette::Base, color );
-//   setPalette( palette );
+  if( !color.isValid() ) return;
+  
+  QPalette palette( TextDisplay::palette() );
+  palette.setColor( QPalette::Base, color );
+  setPalette( palette );
 
 }
 
@@ -1002,19 +1019,28 @@ void TextDisplay::_showFileInfo( void )
 { FileInfoDialog( this ).exec(); }
 
 //_____________________________________________________________
-void TextDisplay::_setBlockModified( int position )
+void TextDisplay::_setBlockModified( int position, int removed, int added )
 {
-  Debug::Throw( "TextDisplay::_setBlockModified.\n" );
+  Debug::Throw() << "TextDisplay::_setBlockModified - [" << position << "," << removed << "," << added << "]" << endl;
+  QTextBlock begin( document()->findBlock( position ) );
+  QTextBlock end(  document()->findBlock( position + added ) );
   
+  for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
+  { _setBlockModified( block ); }
+  
+  _setBlockModified( end );
+  
+}
+ 
+//_____________________________________________________________
+void TextDisplay::_setBlockModified( const QTextBlock& block )
+{
   // check if highlight is enabled.
   if( !textHighlight().isEnabled() ) return;
-  
-  // retrieve block matching position
-  QTextBlock block( document()->findBlock( position ) );
   
   // retrieve associated block data if any
   // set block as modified so that its highlight content gets reprocessed.
   HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
   if( data ) data->setModified( true );
-  
+
 }

@@ -162,7 +162,8 @@ QDomElement TextMacro::Rule::domElement( QDomDocument& parent ) const
 //_____________________________________________________
 bool TextMacro::Rule::processText( QString& text ) const
 {
-  Debug::Throw( "TextMacro::Rule::ProcessText.\n" );
+  Debug::Throw() << "TextMacro::Rule::ProcessText - text: " << qPrintable( text ) << endl;
+  
   if( !isValid() ) return false;
   
   QString copy( text );
@@ -186,6 +187,6 @@ bool TextMacro::Rule::processText( QString& text ) const
   
   // check if strings are different
   // and return
-  return text == copy;
+  return text != copy;
   
 }

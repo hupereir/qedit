@@ -49,7 +49,7 @@ TextHighlight::TextHighlight( QTextDocument* document ):
 //_________________________________________________________
 void TextHighlight::highlightBlock( const QString& text )
 {
-  
+    
   setFormat( 0, text.length(), Qt::black );
   if( !isEnabled() ) return;
 

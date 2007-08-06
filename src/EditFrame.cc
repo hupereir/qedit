@@ -85,12 +85,12 @@ EditFrame::EditFrame(  QWidget* parent ):
   default_orientation_( Horizontal ),
   default_open_mode_( NEW_WINDOW )
 {
-   
+
   Debug::Throw( "EditFrame::EditFrame.\n" );
 
   // tell frame to delete on exit
   setAttribute( WA_DeleteOnClose );
-   
+
   // retrieve pixmap path
   list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );

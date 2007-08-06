@@ -454,6 +454,9 @@ class TextDisplay: public CustomTextEdit
   //! returns true if text contents differs from file contents
   bool _contentsChanged( void ) const;
   
+  //! track text modifications for syntax highlighting
+  void _setBlockModified( const QTextBlock& );
+  
   protected slots:
 
   //! indent paragraph (when return or tab is pressed)
@@ -479,7 +482,7 @@ class TextDisplay: public CustomTextEdit
   void _showFileInfo( void );
   
   //! track text modifications for syntax highlighting
-  void _setBlockModified( int position );
+  void _setBlockModified( int, int, int );
   
   //! update action status
   virtual void _updateSelectionActions( bool state )
