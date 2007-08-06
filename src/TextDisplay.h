@@ -463,26 +463,13 @@ class TextDisplay: public CustomTextEdit
   void _multipleFileReplace( void );
   
   //! toggle text indentation
-  void _toggleTextIndent( bool state )
-  { 
-    Debug::Throw( "TextDisplay::_toggleTextIndent.\n" ); 
-    textIndent().setEnabled( textIndentAction()->isEnabled() && state );
-  }
+  void _toggleTextIndent( bool state );
     
   //! toggle text highlight
-  void _toggleTextHighlight( bool state )
-  { 
-    Debug::Throw( "TextDisplay::_toggleTextHighlight.\n" ); 
-    if( textHighlight().setEnabled( textHighlightAction()->isEnabled() && state ) )
-    { rehighlight(); }
-  }
+  void _toggleTextHighlight( bool state );
   
   //! toggle braces
-  void _toggleBracesHighlight( bool state )
-  { 
-    Debug::Throw( "TextDisplay::_toggleBracesHighlight.\n" ); 
-    return; 
-  }
+  void _toggleBracesHighlight( bool state );
   
   //! show file info
   void _showFileInfo( void );

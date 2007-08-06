@@ -142,9 +142,8 @@ void TextDisplay::synchronize( TextDisplay* display )
   
   textIndentAction()->setChecked( display->textIndentAction()->isChecked() );
   textHighlightAction()->setChecked( display->textHighlightAction()->isChecked() );
-  
-  //rehighlight();
-  
+  bracesHighlightAction()->setChecked( display->bracesHighlightAction()->isChecked() );
+    
   _setBraces( display->_braces() );
   _setMacros( display->macros() );
   _setPaper( true, display->paper( true ) );
@@ -910,6 +909,79 @@ void TextDisplay::_indentCurrentParagraph( void )
 {
   if( !indent_->isEnabled() ) return;
   emit indent( textCursor().block() );
+}
+
+//_______________________________________________________
+void TextDisplay::_toggleTextIndent( bool state )
+{
+
+  Debug::Throw( "TextDisplay::_toggleTextIndent.\n" ); 
+  
+  // update text indent
+  textIndent().setEnabled( textIndentAction()->isEnabled() && state );
+  
+  // propagate to other displays
+  if( isSynchronized() )
+  {
+    // temporarely disable synchronization
+    // to avoid infinite loop
+    setSynchronized( false );
+    
+    BASE::KeySet<TextDisplay> displays( this );
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    { if( (*iter)->isSynchronized() ) (*iter)->textIndentAction()->setChecked( state ); }
+    setSynchronized( true );
+    
+  }
+  
+}
+
+
+//_______________________________________________________
+void TextDisplay::_toggleTextHighlight( bool state )
+{
+
+  Debug::Throw( "TextDisplay::_toggleTextHighlight.\n" ); 
+  if( textHighlight().setEnabled( textHighlightAction()->isEnabled() && state ) )
+  { rehighlight(); }
+
+  // propagate to other displays
+  if( isSynchronized() )
+  {
+    // temporarely disable synchronization
+    // to avoid infinite loop
+    setSynchronized( false );
+    
+    BASE::KeySet<TextDisplay> displays( this );
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    { if( (*iter)->isSynchronized() ) (*iter)->textHighlightAction()->setChecked( state ); }
+    setSynchronized( true );
+    
+  }
+
+}
+  
+//_______________________________________________________
+void TextDisplay::_toggleBracesHighlight( bool state )
+{
+  
+  Debug::Throw( "TextDisplay::_toggleBracesHighlight.\n" ); 
+
+  // propagate to other displays
+  if( isSynchronized() )
+  {
+    // temporarely disable synchronization
+    // to avoid infinite loop
+    setSynchronized( false );
+    
+    BASE::KeySet<TextDisplay> displays( this );
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    { if( (*iter)->isSynchronized() ) (*iter)->bracesHighlightAction()->setChecked( state ); }
+    setSynchronized( true );
+    
+  }
+  
+  return; 
 }
 
 //_______________________________________________________
