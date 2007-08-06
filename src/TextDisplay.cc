@@ -19,7 +19,6 @@
 *
 *******************************************************************************/
 
-
 /*!
   \file TextDisplay.cc
   \brief text display window
@@ -66,7 +65,6 @@ TextDisplay::TextDisplay( QWidget* parent ):
   file_( "" ),
   working_directory_( Util::workingDirectory() ), 
   class_name_( "" ),
-  flags_( 0 ),
   ignore_warnings_( false ),
   active_( false ),
   indent_( new TextIndent( this ) )
@@ -113,9 +111,9 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
   // track configuration modifications
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
+  connect( qApp, SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
+  updateConfiguration();
   
-  // track document classes modifications
-  // connect( qApp, SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
   Debug::Throw( "TextDisplay::TextDisplay - done.\n" );
   
 }
@@ -138,10 +136,6 @@ void TextDisplay::synchronize( TextDisplay* display )
   // track contents changed for syntax highlighting
   connect( TextDisplay::document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int, int, int ) ) );
   connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
-
-  // update flags
-  setFlags( display->flags() );
-  updateFlags();
 
   // indentation
   textIndent().setPatterns( display->textIndent().patterns() );
@@ -435,7 +429,7 @@ void TextDisplay::setActive( const bool& active )
   active_ = active;   
   
   // update paper
-  if( flag( HAS_PAPER ) ) _setPaper( active_ ? active_color_:inactive_color_ );
+  _setPaper( active_ ? active_color_:inactive_color_ );
     
 }
 
@@ -567,7 +561,7 @@ bool TextDisplay::ignoreBlock( const QTextBlock& block ) const
 //___________________________________________________________________________
 void TextDisplay::updateConfiguration( void )
 {
-  Debug::Throw( "TextDisplay::updateConfiguration" );
+  Debug::Throw( "TextDisplay::updateConfiguration.\n" );
 
   // base class configuration update
   CustomTextEdit::updateConfiguration();
@@ -578,17 +572,14 @@ void TextDisplay::updateConfiguration( void )
   bracesHighlightAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_BRACES" ) );
   
   // retrieve active/inactive colors
+  QColor default_color( QWidget().palette().color( QPalette::Base ) );
   QColor active_color( XmlOptions::get().get<string>("ACTIVE_COLOR").c_str() );
   QColor inactive_color( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() );
-
-  // paper background color
-  setFlag( TextDisplay::HAS_PAPER, XmlOptions::get().get<bool>( "SHADE_INACTIVE_VIEWS" ) && active_color.isValid() && inactive_color.isValid() );
+  bool shade_inactive( XmlOptions::get().get<bool>( "SHADE_INACTIVE_VIEWS" ) );
+  _setPaper( true, active_color_.isValid() && shade_inactive ? active_color_ : default_color );
+  _setPaper( false, inactive_color.isValid() && shade_inactive ? inactive_color : default_color );
+  _setPaper( isActive() ? active_color_:inactive_color_ );
   
-  // update flags
-  updateFlags();
-  updateDocumentClass();
-  rehighlight();
-
 }
 
 //___________________________________________________________________________
@@ -618,58 +609,30 @@ void TextDisplay::updateDocumentClass( void )
  
   // update class name
   setClassName( document_class->name() );
+
+  Debug::Throw() << "TextDisplay::UpdateDocumentClass - class name: " << className() << endl;
   
-  // update Flags
-  if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) && !flag( HAS_WRAP ) )
-  { setFlag( WRAP, document_class->wrap() ); }
+  // wrap mode
+  if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction()->setChecked( document_class->wrap() );
   
+  // check availability of braces/highlight and indentation patterns
+  if( document_class->braces().empty() ) bracesHighlightAction()->setChecked( false );
+  if( document_class->highlightPatterns().empty() ) textHighlightAction()->setChecked( false );
+  if( document_class->indentPatterns().empty() ) textIndentAction()->setChecked( false );
+
+  // enable actions consequently
   bracesHighlightAction()->setEnabled( !document_class->braces().empty() );
   textHighlightAction()->setEnabled( !document_class->highlightPatterns().empty() );
   textIndentAction()->setEnabled( !document_class->indentPatterns().empty() );
   
-  // wrapping
-  _toggleWrapMode( flag( WRAP ) );
-  wrapModeAction()->setChecked( flag( WRAP ) );
-
-  // highlighting
+  // store into class members
   textHighlight().setPatterns( document_class->highlightPatterns() );
-
-  // indentation
   textIndent().setPatterns( document_class->indentPatterns() );
   textIndent().setBaseIndentation( document_class->baseIndentation() );
-
-  // braces
   _setBraces( document_class->braces() );
-  
-  // macros
   _setMacros( document_class->textMacros() );
 
   return;
-  
-}
-
-//___________________________________________________
-bool TextDisplay::updateFlags( void )
-{
-  
-  Debug::Throw() << "TextDisplay::UpdateFlags - key: " << key() << endl;
-  
-  bool changed( false );
-  
-  textIndent().setEnabled( textIndentAction()->isEnabled() && textIndentAction()->isChecked() );
-  changed |= textHighlight().setEnabled( textHighlightAction()->isEnabled() && textHighlightAction()->isChecked() );
-
-  // Active/inactive paper color
-  QColor default_color( QWidget().palette().color( QPalette::Base ) );
-  _setPaper( true, flag( HAS_PAPER ) ? QColor( XmlOptions::get().get<string>("ACTIVE_COLOR").c_str() ) : default_color );
-  _setPaper( false, flag( HAS_PAPER ) ? QColor( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() ) : default_color );
-  _setPaper( isActive() ? active_color_:inactive_color_ );
-
-  // enable/disable wrapping
-  _toggleWrapMode( flag( WRAP ) );
-  wrapModeAction()->setChecked( flag( WRAP ) );
-  
-  return changed;
   
 }
 
@@ -828,6 +791,11 @@ void TextDisplay::replaceLeadingTabs( const bool& confirm )
 void TextDisplay::rehighlight( void )
 { 
   Debug::Throw( "TextDisplay::rehighlight.\n" );
+  
+  // set all block to modified
+  for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
+  { _setBlockModified( block ); }
+  
   textHighlight().setDocument( document() ); 
 }
 

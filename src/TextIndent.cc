@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-\file TextIndent.cc
+  \file TextIndent.cc
   \brief text indentation
   \author Hugo Pereira
   \version $Revision$
@@ -43,13 +43,12 @@ TextIndent::TextIndent( TextDisplay* editor ):
   editor_( editor ),
   base_indentation_( 0 )
 { Debug::Throw( "TextIndent::TextIndent.\n" ); }
-  
+
 //______________________________________________
 void TextIndent::indent( QTextBlock block )
 {
-
   if( !isEnabled() ) return;
-
+  
   // ignore "empty" blocks
   // if( editor_->isEmptyBlock( block ) ) return;
   
@@ -58,7 +57,7 @@ void TextIndent::indent( QTextBlock block )
   
   // disable updates during manipulations
   editor_->setUpdatesEnabled( false );
-
+  
   // retrieve previous valid block to
   // determine the base indentation
   QTextBlock previous_block( block.previous() );
@@ -83,12 +82,12 @@ void TextIndent::indent( QTextBlock block )
         break;
       }
     }
-
+    
     // make sure new_tabs is not negative
     new_tabs = max( new_tabs, 0 );
     _decrement( block );
     _increment( block, new_tabs );
-
+    
   }
 
   // restore cursor
@@ -136,9 +135,11 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
         }
         
       } while( local.isValid() && decrement > iter->paragraph() );
+      
       Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << rule_id << "]"
         << " decrement: " << decrement << " true: " << true_decrement
         << endl;
+      
       // check paragraph and regexp
       // here one could have a flag on the indentation pattern rules 
       // to check what is to be done when there is no valid paragraph
@@ -229,7 +230,7 @@ void TextIndent::_decrement( QTextBlock block )
   cursor.setPosition( block.position() + baseIndentation(), QTextCursor::MoveAnchor );
 
   // leading space characters regexp
-  static const QRegExp regexp( "^\\s+$" );
+  static const QRegExp regexp( "^\\s+" );
 
   // search text and remove characters
   if( regexp.indexIn( block.text().mid( baseIndentation() ) ) >= 0 )

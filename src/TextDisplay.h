@@ -225,52 +225,6 @@ class TextDisplay: public CustomTextEdit
   
   //@}
   
-  //!@ name TextDisplay display flags
-  //@{
-  
-  //! state bits
-  enum Flag
-  {
-              
-    //! braces highlighting
-    BRACES = 1<<3,
-        
-    //! has active/inactive paper color available
-    HAS_PAPER = 1<<7,
-        
-    /*! 
-      has wrap is set to true when it is modified
-      using the menu. It is then not overwritten
-      by the document class setting any more.
-    */
-    HAS_WRAP = 1<<9,
-    
-    //! WRAP mode
-    WRAP = 1<<10
-
-  };
-
-  //! Flags (bitwise or of the Flag bits)
-  const unsigned int& flags( void ) const
-  { return flags_; }
-
-  //! flags (bitwise or of the Flag bits)
-  void setFlags( const unsigned int& flags )
-  { flags_ = flags; }
-  
-  //! update flags
-  void setFlag( const Flag& bit, const bool& value )
-  {
-    if( value ) flags_ |= bit;
-    else flags_ &= (~bit);
-  }
-  
-  //! flag bit status
-  bool flag( const Flag& bit ) const
-  { return flags_ & bit; }
-  
-  //@}
-
   //!@name macro
   //@{
   
@@ -378,9 +332,6 @@ class TextDisplay: public CustomTextEdit
   /*! returns true if matching document class was found */
   void updateDocumentClass( void );
     
-  //! update display based on flags
-  bool updateFlags( void );
-  
   //! indent selection
   void indentSelection( void );
 

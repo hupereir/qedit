@@ -73,7 +73,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
     
   // box to display additinal information
   QWidget *box;
-  tab_widget->addTab( box = new QWidget( tab_widget ), "&General" );
+  tab_widget->addTab( box = new QWidget(), "&General" );
   Debug::Throw( "FileInfoDialog::FileInfoDialog - general tab created.\n" );
 
   QHBoxLayout* h_layout = new QHBoxLayout();
@@ -137,7 +137,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   Debug::Throw( "FileInfoDialog::FileInfoDialog - General tab filled.\n" );
   
   // permissions tab
-  tab_widget->addTab( box = new QWidget( tab_widget ), "Permissions" );
+  tab_widget->addTab( box = new QWidget(), "Permissions" );
   layout = new QVBoxLayout();
   layout->setMargin(5);
   layout->setSpacing( 5 );
@@ -208,7 +208,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
 
   // misc tab
   // permissions tab
-  tab_widget->addTab( box = new QWidget( tab_widget ), "&Miscellaneous" );
+  tab_widget->addTab( box = new QWidget(), "&Miscellaneous" );
   layout = new QVBoxLayout();
   layout->setMargin(5);
   layout->setSpacing( 5 );
@@ -228,7 +228,19 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   // number of lines
   grid_layout->addWidget( new QLabel( "number of lines: ", box ) );
   grid_layout->addWidget( new QLabel( Str().assign<int>(parent->blockCount()).c_str(), box ) );
+
+  grid_layout->addWidget( new QLabel( "Text highlighting: ", box ) );
+  grid_layout->addWidget( new QLabel( (parent->textHighlight().isEnabled() ? "true":"false" ), box ) );
   
+  grid_layout->addWidget( new QLabel( "Text indent: ", box ) );
+  grid_layout->addWidget( new QLabel( (parent->textIndent().isEnabled() ? "true":"false" ), box ) );
+
+  grid_layout->addWidget( new QLabel( "Text wrapping: ", box ) );
+  grid_layout->addWidget( new QLabel( (parent->wrapModeAction()->isChecked() ? "true":"false" ), box ) );
+  
+  grid_layout->addWidget( new QLabel( "Tab emulation: ", box ) );
+  grid_layout->addWidget( new QLabel( (parent->tabEmulationAction()->isChecked() ? "true":"false" ), box ) );
+
   grid_layout->setColumnStretch( 1, 1 );
   layout->addStretch();
   Debug::Throw( "FileInfoDialog::FileInfoDialog - Miscellaneous tab fixed.\n" );

@@ -201,7 +201,7 @@ EditFrame::EditFrame(  QWidget* parent ):
  
   //! configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
-  // connect( qApp, SIGNAL( aboutToQuit() ), SLOT( saveConfiguration() ) );
+  connect( qApp, SIGNAL( aboutToQuit() ), SLOT( saveConfiguration() ) );
   updateConfiguration();
   
   Debug::Throw( "EditFrame::EditFrame - done.\n" );
@@ -283,25 +283,6 @@ void EditFrame::updateConfiguration( void )
     XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
   }  
   
-  // update flags for all displays
-  updateFlags();
-
-  // update document classes
-  BASE::KeySet<TextDisplay> displays( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-
-    // this trick allow to run  only once per set of associated displays
-    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter )
-    { 
-      //(*iter)->updateDocumentClass();
-      (*iter)->rehighlight(); 
-      if( !(*iter)->file().empty() )
-      { menu_->openPreviousMenu().get( (*iter)->file() ).addInformation( "class_name", (*iter)->className() ); }
-    }  
-
-  }
-
   Debug::Throw( "EditFrame::updateConfiguration - done.\n" );
 
 }
@@ -325,30 +306,6 @@ void EditFrame::saveConfiguration( void )
     XmlOptions::get().set<bool>( option_name, !toolbar->isHidden() );
     XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
   }
-
-}
-
-//________________________________________________________
-bool EditFrame::updateFlags()
-{
-  Debug::Throw( "EditFrame::updateFlags.\n" );
-
-  // auto spell dictionary and filtering
-  bool changed( false );
-  BASE::KeySet<TextDisplay> displays( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-
-    // check file
-    if( (*iter)->file().empty() ) continue;
-
-    // update display flags
-    changed |= (*iter)->updateFlags();
-
-  }
-
-  Debug::Throw( "EditFrame::updateFlags - done.\n" );
-  return changed;
 
 }
 

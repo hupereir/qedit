@@ -150,10 +150,7 @@ void DocumentClassDialog::_remove( void )
   { removed |= manager.remove( qPrintable( (*iter)->text( NAME ) ) ); }
   
   if( removed )
-  {
-    main_frame.updateEditFrames();
-    _load();
-  }
+  { _load(); }
   
 }
 

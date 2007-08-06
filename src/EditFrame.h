@@ -195,15 +195,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //!@name configuration
   //@{
  
-  //! update configuration (display specific)
-  // void updateDisplayConfiguration( TextDisplay& display );
-  
-  //! propagate flags to display. Returns true if rehighlight needed
-  /*! \param current_display_only if true, only the active display (and clones) is updated */
-  bool updateFlags( void );
-  
-  //@}
-
   //! default open mode
   enum OpenMode
   {

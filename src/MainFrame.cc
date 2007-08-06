@@ -282,7 +282,6 @@ EditFrame* MainFrame::open( FileRecord record )
   
   // update frame configuration
   frame->show();
-  frame->updateConfiguration();
   return frame;
 
 }
@@ -420,6 +419,8 @@ void MainFrame::updateConfiguration( void )
   Debug::setLevel( XmlOptions::get().get<bool>("DEBUG_LEVEL") );
   setWindowIcon( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).expand().c_str() ) );
   
+  // configuration changed
+  emit configurationChanged();
   
   // update document classes
   updateDocumentClasses();
@@ -447,7 +448,7 @@ void MainFrame::updateDocumentClasses( void )
   if( !what.str().empty() ) QtUtil::infoDialog( 0, what.str() );
   
   // emit configuratino changed to force displays to be updated
-  emit configurationChanged();
+  emit documentClassesChanged();
   
   return;
 }

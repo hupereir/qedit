@@ -106,6 +106,8 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   
   void configurationChanged();
   
+  void documentClassesChanged();
+  
   public slots:
 
   //! configuration
@@ -123,11 +125,6 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
 
   //! Update Configuration from options
   void updateConfiguration( void );
-
-  /*! emmit configuration changed signal to force 
-  EditFrames to get updated */
-  void updateEditFrames( void )
-  { emit configurationChanged(); }
   
   //! Update Document Classes from options
   void updateDocumentClasses( void );
