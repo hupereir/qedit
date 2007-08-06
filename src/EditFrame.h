@@ -493,6 +493,25 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! create new TextDisplay
   TextDisplay& _newTextDisplay( QWidget* parent );
   
+  //! local QSplitter object, derived from Counter
+  /*! helps keeping track of how many splitters are created/deleted */
+  class LocalSplitter: public QSplitter, public Counter
+  {
+    
+    public:
+    
+    //! constructor
+    LocalSplitter( QWidget* parent ):
+      QSplitter( parent ),
+      Counter( "LocalSplitter" )
+    { Debug::Throw( "LocalSplitter::LocalSplitter.\n" ); }
+
+    //! destructor
+    virtual ~LocalSplitter( void )
+    { Debug::Throw( "LocalSplitter::~LocalSplitter.\n" ); }
+    
+  };
+  
   //!@name child widgets
   //@{
 

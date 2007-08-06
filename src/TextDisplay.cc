@@ -71,6 +71,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   active_( false ),
   indent_( new TextIndent( this ) )
 {
+  
   Debug::Throw( "TextDisplay::TextDisplay.\n" );
 
   // tell frame to delete on exit
@@ -108,7 +109,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   // connections
   // track contents changed for syntax highlighting
   connect( TextDisplay::document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int ) ) );
-  connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( bool ) ) );
+  connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
 
   // track configuration modifications
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );

@@ -497,7 +497,7 @@ class TextDisplay: public CustomTextEdit
   }
   
   //! text changed
-  virtual void _textChanged( bool )
+  virtual void _textModified( void )
   { if( isActive() ) emit needUpdate( WINDOW_TITLE ); }
   
   private:
