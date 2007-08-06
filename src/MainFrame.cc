@@ -91,11 +91,6 @@ MainFrame::~MainFrame( void )
 
   XmlOptions::write();
   
-  // delete associated EditFrames
-  // BASE::KeySet<EditFrame> frames( this );
-  // for( BASE::KeySet<EditFrame>::iterator iter = frames.begin(); iter != frames.end(); iter++ )
-  // { delete *iter; }
-
   if( application_manager_ ) delete application_manager_;
   if( class_manager_ ) delete class_manager_;
   if( autosave_ ) delete autosave_;
@@ -237,7 +232,14 @@ EditFrame* MainFrame::open( FileRecord record )
     frame->show();
     
     // create NewFileDialog
-    int state = NewFileDialog( 0, record.file() ).exec();
+    int buttons( NewFileDialog::CREATE | NewFileDialog::CANCEL );
+    bool enable_exit( BASE::KeySet<EditFrame>(this).size() == 1 );
+    if( enable_exit ) buttons |= NewFileDialog::EXIT;
+    
+    NewFileDialog dialog( frame, record.file(), buttons );
+    QtUtil::centerOnParent( &dialog );
+    int state = dialog.exec();
+    
     Debug::Throw() << "MainFrame::Open - New file dialog state: " << state << endl; 
     switch( state )
     {
@@ -257,7 +259,13 @@ EditFrame* MainFrame::open( FileRecord record )
       }
   
       case NewFileDialog::CANCEL:
-      open_status_ = INVALID;
+      if( enable_exit ) open_status_ = INVALID;
+      else {
+        open_status_ = INVALID;
+        frame->close();
+        return 0;
+      }
+      
       break; 
   
       case NewFileDialog::EXIT:
@@ -310,8 +318,13 @@ void MainFrame::exit( void )
   }
   
   // ask for confirmation if more than one file is opened.
-  if( files.size() > 1 && !ExitDialog( 0, files ).exec() ) return;
-
+  if( files.size() > 1 )
+  {
+    ExitDialog dialog( 0, files );
+    QtUtil::centerOnPointer( &dialog );
+    if( !dialog.exec() ) return;
+  }
+  
   // try close all windows one by one
   for( BASE::KeySet<EditFrame>::iterator iter = frames.begin(); iter != frames.end(); iter++ )
   {
@@ -323,13 +336,17 @@ void MainFrame::exit( void )
     BASE::KeySet<TextDisplay> displays( *iter );
     for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
     {
+      
       if( !(*display_iter)->document()->isModified() ) continue;
       save_all_enabled |= (*iter)->modifiedDisplayCount() > 1;
         
       int flags( AskForSaveDialog::YES | AskForSaveDialog::NO | AskForSaveDialog::CANCEL );
-      if( save_all_enabled > 1 ) flags |=  AskForSaveDialog::ALL;
+      if( save_all_enabled ) flags |=  AskForSaveDialog::ALL;
       
-      int state( AskForSaveDialog( *display_iter, (*display_iter)->file(), flags ).exec() );
+      AskForSaveDialog dialog( *display_iter, (*display_iter)->file(), flags );
+      QtUtil::centerOnParent( &dialog );
+      int state( dialog.exec() );
+      
       if( state == AskForSaveDialog::YES ) (*iter)->save( *display_iter );
       else if( state == AskForSaveDialog::NO ) (*display_iter)->document()->setModified( false );
       else if( state == AskForSaveDialog::CANCEL ) return;

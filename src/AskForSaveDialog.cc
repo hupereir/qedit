@@ -120,4 +120,6 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
     connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
   }
   
+  adjustSize();
+  
 }

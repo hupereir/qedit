@@ -110,4 +110,6 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned 
     connect( button, SIGNAL( clicked() ), SLOT( _exit() ) );
   }
   
+  adjustSize();
+  
 }

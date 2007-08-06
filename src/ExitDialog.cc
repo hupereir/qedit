@@ -86,6 +86,6 @@ ExitDialog::ExitDialog( QWidget* parent, std::map< File, bool > files ):
   // rename buttons
   okButton().setText( "&Yes" );
   cancelButton().setText( "&No" );
-  
+  adjustSize();
 }
   
