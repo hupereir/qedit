@@ -350,6 +350,10 @@ class TextDisplay: public CustomTextEdit
   
   //@}
   
+  // return true if block is an empty line
+  bool isEmptyBlock( const QTextBlock& block ) const
+  { return empty_line_regexp_.indexIn( block.text() ) >= 0; }
+  
   // return true is block is to be ignored from indentation scheme
   bool ignoreBlock( const QTextBlock& block ) const;
   
@@ -491,6 +495,10 @@ class TextDisplay: public CustomTextEdit
     CustomTextEdit::_updatePasteAction();
     emit needUpdate( PASTE );
   }
+  
+  //! text changed
+  virtual void _textChanged( bool )
+  { if( isActive() ) emit needUpdate( WINDOW_TITLE ); }
   
   private:
   

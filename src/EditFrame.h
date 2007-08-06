@@ -396,7 +396,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   /*! close current view if more than two view are open, */
   void _closeView( void )
   { 
-    Debug::Throw( "EditFrame::_closeView.\n" );
+    Debug::Throw( "EditFrame::_closeView (SLOT)\n" );
     BASE::KeySet< TextDisplay > displays( this );
     if( displays.size() > 1 ) _closeView( activeDisplay() );
     else _closeWindow();

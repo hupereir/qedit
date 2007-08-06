@@ -85,16 +85,16 @@ EditFrame::EditFrame(  QWidget* parent ):
   default_orientation_( Horizontal ),
   default_open_mode_( NEW_WINDOW )
 {
-  
+   
   Debug::Throw( "EditFrame::EditFrame.\n" );
 
   // tell frame to delete on exit
   setAttribute( WA_DeleteOnClose );
-
+   
   // retrieve pixmap path
   list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
-
+  
   // install actions
   _installActions();
   
@@ -229,39 +229,39 @@ void EditFrame::setFile( File file , const bool& reset_document_class )
     string class_name( menu_->openPreviousMenu().get( file ).information("class_name") );
     display.setClassName( class_name );
   }
-
+   
   // open file in active display
   display.openFile( file );
-
+  
   // store class name from activeDisplay in Menu
   menu_->openPreviousMenu().get( file ).addInformation( "class_name", display.className() );
-
+  
   // set focus
   setActiveDisplay( display );
   display.setFocus();
-
+  
   return;
 }
 
 //________________________________________________________
 void EditFrame::updateConfiguration( void )
 {
-
+  
   Debug::Throw( "EditFrame::updateConfiguration.\n" );
-
+    
   CustomMainWindow::updateConfiguration(); 
   
   // resize
   resize( QSize( XmlOptions::get().get<int>( "WINDOW_WIDTH" ), XmlOptions::get().get<int>( "WINDOW_HEIGHT" ) ) );
-
+   
   // toolbars visibility and location
   for( list< pair<QToolBar*, string> >::iterator iter = toolbars_.begin(); iter != toolbars_.end(); iter++ )
   {
-    
+     
     QToolBar* toolbar( iter->first );
     string option_name( iter->second );
     string location_name( option_name + "_LOCATION" );
-    
+     
     bool visibility( XmlOptions::get().find( option_name ) ? XmlOptions::get().get<bool>( option_name ):true );
     bool current_visibility( toolbar->isVisible() );
     
@@ -278,7 +278,7 @@ void EditFrame::updateConfiguration( void )
         toolbar->show();
       }
     } else toolbar->hide();
-   
+     
     XmlOptions::get().set<bool>( option_name, !toolbar->isHidden() );
     XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
   }  
@@ -1176,6 +1176,7 @@ void EditFrame::_closeView( TextDisplay& display )
   BASE::KeySet<TextDisplay> displays( this );
   if( displays.size() < 2 )
   {
+    Debug::Throw() << "EditFrame::_closeView - full close." << endl;
     close();
     return;
   }
@@ -1225,8 +1226,16 @@ void EditFrame::_closeView( TextDisplay& display )
 
   // retrieve displays associated to current
   displays = BASE::KeySet<TextDisplay>( &display );
+  
+//   // dissassociate from all keys
+//   BASE::KeySet<BASE::Key> keys( &display );
+//   for( BASE::KeySet<BASE::Key>::iterator iter = keys.begin(); iter != keys.end(); iter++ )
+//   { BASE::Key::disassociate( &display, *iter ); }
+
   delete &display;
   delete parent;
+//  display.hide();
+//  parent->close();
   
   // resize grand parent
   if( grand_parent_splitter )
@@ -1484,13 +1493,13 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
   
   // associate display to this editFrame
   BASE::Key::associate( this, display );
-
+  
   // update current display and focus
   setActiveDisplay( *display );
   display->setFocus();
   Debug::Throw() << "EditFrame::_newTextDisplay - key: " << display->key() << endl;
   Debug::Throw( "EditFrame::newTextDisplay - done.\n" );
-
+  
   return *display;
-
+  
 }

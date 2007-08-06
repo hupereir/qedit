@@ -108,6 +108,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   // connections
   // track contents changed for syntax highlighting
   connect( TextDisplay::document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int ) ) );
+  connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( bool ) ) );
 
   // track configuration modifications
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
@@ -540,22 +541,20 @@ bool TextDisplay::ignoreBlock( const QTextBlock& block ) const
 {
   
   // first check if block text match empty line
-  bool out( false );
-  if( empty_line_regexp_.indexIn( block.text() ) >= 0 ) out = true;
-  else {
-    
-    // try retrieve highlight data
-    HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-    if( data ) 
-    {
-      // retrieve locations
-      const HighlightPattern::LocationSet& locations( data->locations() );
-      out = (!locations.empty()) && locations.begin()->parent().flag( HighlightPattern::NO_INDENT );
-    }
+  if( isEmptyBlock( block ) ) return true;
+
+  // try retrieve highlight data
+  HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+  if( data ) 
+  {
+    // retrieve locations
+    const HighlightPattern::LocationSet& locations( data->locations() );
+    return (!locations.empty()) && locations.begin()->parent().flag( HighlightPattern::NO_INDENT );
     
   }
   
-  return out;
+  // all checks passed
+  return false;
 
 }
 
@@ -817,13 +816,13 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
   { emit indent( textCursor().block() ); }
   else 
   {
+  
+    // process key
+    CustomTextEdit::keyPressEvent( event );
 
     // indent current paragraph when return is pressed
     if( event->key() == Key_Return && indent_->isEnabled() && !textCursor().hasSelection() )
     { emit indent( textCursor().block() ); }
-  
-    // process key
-    CustomTextEdit::keyPressEvent( event );
 
     // reindent paragraph if needed
     if( indent_->isEnabled() && ( event->key() == Key_BraceRight || event->key() == Key_BraceLeft ) && !textCursor().hasSelection() )

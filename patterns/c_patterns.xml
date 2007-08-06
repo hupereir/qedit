@@ -156,12 +156,12 @@
   keep unchanged when opening curly bracket at end of previous line but if
 	this line starts with a closing bracket
 -->
- <indent_pattern type="0">
+ <indent_pattern name="0" type="0">
   <rule par="0">
    <regexp>^\s*\}</regexp>
   </rule>
   <rule par="-1">
-   <regexp>(\{\s+)($|//)</regexp>
+   <regexp>(\{\s*)($|//)</regexp>
   </rule>
  </indent_pattern>
 
@@ -170,9 +170,9 @@
   increment pattern when opening curly bracket at end of previous line and if
 	this line is not a closing bracket
  --> 
- <indent_pattern type="1">
+ <indent_pattern name="1" type="1">
   <rule par="-1">
-   <regexp>(\{\s+)($|//)</regexp>
+   <regexp>(\{\s*)($|//)</regexp>
   </rule>
  </indent_pattern>
   
@@ -181,7 +181,7 @@
   decrement pattern twice when closing curly bracket at beginning of current line,
   previous line is terminated, but the one before is not and is not openning/closing bracket
  --> 
- <indent_pattern type="2" scale="2">
+ <indent_pattern name="2" type="2" scale="2">
   <rule par="-1">
    <regexp>(;\s*($|//))</regexp>
   </rule>
@@ -197,7 +197,7 @@
   pattern 3: 
   decrement pattern when closing curly bracket at beginning of current line 
  --> 
- <indent_pattern type="2">
+ <indent_pattern name="3" type="2">
   <rule par="0">
    <regexp>^\s*\}</regexp>
   </rule>
@@ -209,7 +209,7 @@
   the one before is not terminated either,
   and this one is an opening bracket
  -->
- <indent_pattern type="2" name="opening bracket">  
+ <indent_pattern name="4" type="2" name="opening bracket">  
   <rule par="0">
    <regexp>^\s*\{</regexp>
   </rule>
@@ -225,7 +225,7 @@
   pattern 5: 
   keep unchanged when previous line is not terminated but this one is an opening bracket
  -->
- <indent_pattern type="0"> 
+ <indent_pattern name="5" type="0"> 
   <rule par="0">
    <regexp>^\s*\{</regexp>
   </rule>
@@ -238,14 +238,14 @@
  </indent_pattern>
 
  <!-- pattern 6: keep unchanged when previous line is not terminated but is a closing bracket  -->
- <indent_pattern type="0"> 
+ <indent_pattern name="6" type="0"> 
   <rule par="-1">
    <regexp>((\}|(\}\s*;))\s*($|//))</regexp>
   </rule>
  </indent_pattern>
 
  <!-- pattern 7: increment when previous line is not terminated but above was -->
- <indent_pattern type="1">
+ <indent_pattern name="7" type="1">
   <rule par="-1">
    <regexp>[^;\s*]\s*($|//)</regexp>
   </rule>
@@ -257,17 +257,17 @@
  <!-- pattern 8: keep unchanged if previous line is terminated and previous is
  	- terminated
 	- a bracket -->
- <indent_pattern type="0">
+ <indent_pattern name="8" type="0">
   <rule par="-1">
    <regexp>(;\s*($|//))</regexp>
   </rule>
   <rule par="-2">
-   <regexp>((\{|\})\s+($|//))|(;\s*($|//))</regexp>
+   <regexp>((\{|\})\s*($|//))|(;\s*($|//))</regexp>
   </rule>
  </indent_pattern>
  
  <!-- pattern 9: decrement when previous line is terminated but above was not -->
- <indent_pattern type="2">
+ <indent_pattern name="9" type="2">
   <rule par="-1">
    <regexp>(;\s*($|//))</regexp>
   </rule>
