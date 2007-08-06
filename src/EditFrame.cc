@@ -201,7 +201,7 @@ EditFrame::EditFrame(  QWidget* parent ):
  
   //! configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
-  connect( qApp, SIGNAL( aboutToQuit() ), SLOT( saveConfiguration() ) );
+  // connect( qApp, SIGNAL( aboutToQuit() ), SLOT( saveConfiguration() ) );
   updateConfiguration();
   
   Debug::Throw( "EditFrame::EditFrame - done.\n" );
@@ -294,6 +294,7 @@ void EditFrame::updateConfiguration( void )
     // this trick allow to run  only once per set of associated displays
     if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter )
     { 
+      //(*iter)->updateDocumentClass();
       (*iter)->rehighlight(); 
       if( !(*iter)->file().empty() )
       { menu_->openPreviousMenu().get( (*iter)->file() ).addInformation( "class_name", (*iter)->className() ); }

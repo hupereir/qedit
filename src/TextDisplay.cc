@@ -133,6 +133,11 @@ void TextDisplay::synchronize( TextDisplay* display )
   // synchronize text
   // (from base class)
   CustomTextEdit::synchronize( display );
+  
+  // restore connection with document
+  // track contents changed for syntax highlighting
+  connect( TextDisplay::document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int, int, int ) ) );
+  connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
 
   // update flags
   setFlags( display->flags() );
@@ -581,6 +586,8 @@ void TextDisplay::updateConfiguration( void )
   
   // update flags
   updateFlags();
+  updateDocumentClass();
+  rehighlight();
 
 }
 

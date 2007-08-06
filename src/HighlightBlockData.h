@@ -44,21 +44,21 @@ class HighlightBlockData: public TextBlockData
   //! constructor
   HighlightBlockData():
     TextBlockData()
-  { Debug::Throw( "HighlightBlockData::HighlightBlockData.\n" ); }
+  {}
     
   //! constructor
   HighlightBlockData( const TextBlockData& reference ):
     TextBlockData( reference )
-  { Debug::Throw( "HighlightBlockData::HighlightBlockData.\n" ); }
+  {}
     
   //! constructor
   HighlightBlockData( const TextBlockData* pointer ):
     TextBlockData( *pointer )
-  { Debug::Throw( "HighlightBlockData::HighlightBlockData.\n" ); }
+  {}
     
   //! destructor
   virtual ~HighlightBlockData( void )
-  { Debug::Throw( "HighlightBlockData::~HighlightBlockData.\n" ); }
+  {}
   
   //! modification state
   const bool& isModified( void ) const
