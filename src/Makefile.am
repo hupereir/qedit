@@ -57,7 +57,6 @@ noinst_HEADERS = \
 	AutoSave.h \
 	AutoSaveThread.h \
 	ConfigurationDialog.h \
-	CustomTextDocument.h \
 	DocumentClassDialog.h \
 	DocumentClass.h \
 	DocumentClassManager.h \

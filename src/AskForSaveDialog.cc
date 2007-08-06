@@ -50,7 +50,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   
   // create vbox layout
   QVBoxLayout* layout=new QVBoxLayout();
-  layout->setSpacing(10);
+  layout->setSpacing(5);
   layout->setMargin(10);
   setLayout( layout );
   
@@ -87,7 +87,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
     
   // button layout
   QHBoxLayout *button_layout = new QHBoxLayout();     
-  button_layout->setSpacing( 10 );
+  button_layout->setSpacing(5);
   button_layout->setMargin(0);
   layout->addLayout( button_layout );
 

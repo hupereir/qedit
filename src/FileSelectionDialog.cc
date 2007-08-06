@@ -51,7 +51,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
 
   // create vbox layout
   QVBoxLayout* layout=new QVBoxLayout();
-  layout->setSpacing(10);
+  layout->setSpacing(5);
   layout->setMargin(10);
   setLayout( layout );
 
@@ -97,7 +97,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
 
   // button layout
   QHBoxLayout *button_layout( new QHBoxLayout() );
-  button_layout->setSpacing( 10 );
+  button_layout->setSpacing(5);
   button_layout->setMargin(0);
   layout->addLayout( button_layout );
 

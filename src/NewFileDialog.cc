@@ -84,7 +84,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned 
   }  
   // button layout
   QHBoxLayout *button_layout = new QHBoxLayout();     
-  button_layout->setSpacing( 10 );
+  button_layout->setSpacing(5);
   button_layout->setMargin(0);
   layout->addLayout( button_layout );
 

@@ -1,5 +1,6 @@
 // $Id$
 
+
 /******************************************************************************
 *
 * This is free software; you can redistribute it and/or modify it under the
@@ -34,6 +35,7 @@
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
 #include "CustomFileDialog.h"
+#include "CustomTextDocument.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
 #include "FileInfoDialog.h"
@@ -73,16 +75,11 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
   // tell frame to delete on exit
   // setAttribute( Qt::WA_DeleteOnClose );
-
-  // set customized document
-  CustomTextDocument* document( new CustomTextDocument( this ) );
-  setDocument( document );
   
   // text highlight
-  TextHighlight* highlight = new TextHighlight( document );
-  BASE::Key::associate( document, highlight );
+  TextHighlight* highlight = new TextHighlight( document() );
+  BASE::Key::associate(  dynamic_cast<BASE::Key*>(document()), highlight );
   highlight->setEnabled( false );
-  
   indent_->setEnabled( false );
 
   // connections
@@ -142,7 +139,12 @@ void TextDisplay::synchronize( TextDisplay* display )
   // indentation
   textIndent().setPatterns( display->textIndent().patterns() );
   textIndent().setBaseIndentation( display->textIndent().baseIndentation() );
-
+  
+  textIndentAction()->setChecked( display->textIndentAction()->isChecked() );
+  textHighlightAction()->setChecked( display->textHighlightAction()->isChecked() );
+  
+  //rehighlight();
+  
   _setBraces( display->_braces() );
   _setMacros( display->macros() );
   _setPaper( true, display->paper( true ) );
@@ -356,7 +358,6 @@ void TextDisplay::saveAs( void )
   
 }
   
-
 //___________________________________________________________
 void TextDisplay::revertToSave( void )
 {

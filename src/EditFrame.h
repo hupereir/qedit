@@ -461,7 +461,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void _update( unsigned int flags );
 
   //! display cursor position in state frame
-  void _updateCursorPosition();
+  void _updateCursorPosition( void );
 
   //! display focus changed
   void _displayFocusChanged( TextDisplay* display );

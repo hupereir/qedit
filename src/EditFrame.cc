@@ -1,6 +1,5 @@
 // $Id$
 
-
 /***************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
@@ -21,7 +20,6 @@
 *
 *
 ****************************************************************************/
-
 
 /*!
   \file EditFrame.cc
@@ -121,8 +119,6 @@ EditFrame::EditFrame(  QWidget* parent ):
   
   // create new Text display and register autosave thread
   TextDisplay& display = _newTextDisplay( main_ );
-  Debug::Throw( "EditFrame::EditFrame - text display created.\n" );
-
   main_->layout()->addWidget( &display );
   
   display.setActive( true );
@@ -1482,6 +1478,9 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
   connect( display, SIGNAL( needUpdate( unsigned int ) ), this, SLOT( _update( unsigned int ) ) );
   connect( display, SIGNAL( cursorPositionChanged() ), this, SLOT( _updateCursorPosition() ) );
   connect( display, SIGNAL( hasFocus( TextDisplay* ) ), this, SLOT( _displayFocusChanged( TextDisplay* ) ) );
+  
+  connect( display, SIGNAL( undoAvailable( bool ) ), undoAction(), SLOT( setEnabled( bool ) ) );
+  connect( display, SIGNAL( redoAvailable( bool ) ), redoAction(), SLOT( setEnabled( bool ) ) );
   
   // associate display to this editFrame
   BASE::Key::associate( this, display );

@@ -51,8 +51,8 @@ FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):
 
   // create vbox layout
   QVBoxLayout* layout=new QVBoxLayout();
-  layout->setSpacing(10);
-  layout->setMargin(10);
+  layout->setSpacing(5);
+  layout->setMargin(5);
   setLayout( layout );
   
   // create message
@@ -86,7 +86,7 @@ FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):
 
   // button layout
   QHBoxLayout *button_layout = new QHBoxLayout();     
-  button_layout->setSpacing( 10 );
+  button_layout->setSpacing( 5 );
   layout->addLayout( button_layout );
 
   // resave button

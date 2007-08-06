@@ -47,7 +47,7 @@ ExitDialog::ExitDialog( QWidget* parent, std::map< File, bool > files ):
   Debug::Throw( "ExitDialog::ExitDialog.\n" );
 
   QHBoxLayout *h_layout( new QHBoxLayout() );
-  h_layout->setSpacing( 10 ); 
+  h_layout->setSpacing(5); 
   h_layout->setMargin( 0 ); 
   mainLayout().addLayout( h_layout );
   

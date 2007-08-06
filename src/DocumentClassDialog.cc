@@ -59,8 +59,8 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   
   // horizontal layout
   QHBoxLayout* h_layout( new QHBoxLayout() );
-  h_layout->setMargin(0);
-  h_layout->setSpacing(5);
+  h_layout->setMargin(10);
+  h_layout->setSpacing(10);
   setLayout( h_layout );
   
   // create list
@@ -72,7 +72,7 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   { list_->setColumnName( i, column_titles_[i] ); }
   
   // connections
-  connect( list_, SIGNAL( itemActivated( QTreeWidgetItem* ) ), this, SLOT( _select( QTreeWidgetItem* ) ) );
+  connect( list_, SIGNAL( itemActivated( QTreeWidgetItem*, int ) ), this, SLOT( _select( QTreeWidgetItem* ) ) );
 
   // add classes
   _load();
@@ -109,6 +109,8 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   button->setToolTip( "Reload all classes" );
 
   v_layout->addStretch();
+  
+  resize( 480, 300 );
   
 }
 

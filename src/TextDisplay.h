@@ -37,7 +37,6 @@
 
 #include "Config.h"
 #include "CustomTextEdit.h"
-#include "CustomTextDocument.h"
 #include "Debug.h"
 #include "File.h"
 #include "HighlightPattern.h"
@@ -79,7 +78,15 @@ class TextDisplay: public CustomTextEdit
     // ask for update in the parent frame
     if( isActive() ) emit needUpdate( WINDOW_TITLE | UNDO_REDO );
   }  
-  
+
+  //! read-only
+  virtual void setReadOnly( bool readonly )
+  {
+    Debug::Throw( "TextDisplay::setReadOnly.\n" );
+    CustomTextEdit::setReadOnly( readonly );
+    emit needUpdate( WINDOW_TITLE | CUT | PASTE | UNDO_REDO ); 
+  }
+
   //! update flags (to be passed to TextEditor to change button status)
   enum UpdateFlags
   {
@@ -466,7 +473,8 @@ class TextDisplay: public CustomTextEdit
   void _toggleTextHighlight( bool state )
   { 
     Debug::Throw( "TextDisplay::_toggleTextHighlight.\n" ); 
-    textHighlight().setEnabled( textHighlightAction()->isEnabled() && state ); 
+    if( textHighlight().setEnabled( textHighlightAction()->isEnabled() && state ) )
+    { rehighlight(); }
   }
   
   //! toggle braces
@@ -481,6 +489,21 @@ class TextDisplay: public CustomTextEdit
   
   //! track text modifications for syntax highlighting
   void _setBlockModified( int position );
+  
+  //! update action status
+  virtual void _updateSelectionActions( bool state )
+  { 
+    CustomTextEdit::_updateSelectionActions( state );
+    emit needUpdate( CUT|COPY );
+  }
+  
+  //! update paste action 
+  /*! depends on clipboard status and editability */
+  virtual void _updatePasteAction( void )
+  {
+    CustomTextEdit::_updatePasteAction();
+    emit needUpdate( PASTE );
+  }
   
   private:
   
