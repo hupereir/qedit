@@ -468,23 +468,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   
   private:
 
-  //! needed to have "autoDelete" splitters
-  class DestructiveCloseSplitter: public QSplitter, public Counter
-  {
-    
-    public:
-    
-    //! constructor
-    DestructiveCloseSplitter( QWidget* parent ):
-      QSplitter( parent ),
-      Counter( "DestructiveCloseSplitter" )
-    {
-      Debug::Throw( "EditFrame::DestructiveCloseSplitter::DestructiveCloseSplitter.\n" );
-      setAttribute( Qt::WA_DeleteOnClose );
-    }
-    
-  };
-  
   //! install actions
   void _installActions( void );
 

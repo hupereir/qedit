@@ -88,13 +88,12 @@ class DocumentClassDialog: public QDialog, public Counter
   void _add( const DocumentClass& );
   
   //! number of columns
-  enum { n_columns = 3 };
+  enum { n_columns = 2 };
 
   //! column type enumeration
   enum ColumnTypes {
     NAME,
-    FILE,
-    EMPTY
+    FILE
   }; 
   
   //! column titles

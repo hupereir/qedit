@@ -1198,91 +1198,53 @@ void EditFrame::_closeView( TextDisplay& display )
   }
 
   // retrieve parent and grandparent of current display
-  QWidget* parent( dynamic_cast<QWidget*>( display.parent() ) );
+  QWidget* parent( display.parentWidget() );
   Exception::checkPointer( parent, DESCRIPTION( "invalid parent" ) );
   
-  QWidget* grand_parent( dynamic_cast<QWidget*>( parent->parent() ) );
+  QWidget* grand_parent( parent->parentWidget() );
   Exception::checkPointer( grand_parent, DESCRIPTION( "invalid parent" ) );  
-  Debug::Throw("EditFrame::_closeView - got parent and grand parent.\n" );
-
-  Debug::Throw() << "parent: " << parent << " grand parent: " << grand_parent << endl;
+  
+  // try cast to a splitter
+  QSplitter* grand_parent_splitter( dynamic_cast<QSplitter*>( grand_parent ) );
   
   // retrieve children of parent and loop
   const QObjectList& children( parent->children() );
   for( QObjectList::const_iterator iter = children.begin(); iter != children.end(); iter++ )
   {
     
-    QObject *child( *iter );
+    QWidget *child( dynamic_cast<QWidget*>(*iter) );
+    if( !child || child == &display ) continue;
+
+    if( grand_parent_splitter ) grand_parent_splitter->addWidget( child );
+    else if( grand_parent->layout() ) 
+    {
+      child->setParent( grand_parent );
+      grand_parent->layout()->addWidget( child );
+    } else {
+      throw std::logic_error( DESCRIPTION( "could not derive grand-parent type" ) );
+    }
     
-    // check if child is the display
-    if( child == &display )
-    {
-      Debug::Throw("EditFrame::_closeView - got current display.\n" );
-      continue;
-    }
-
-    /*
-      check if child is a QSplitter
-      The parsing must stop once an object is reparented
-      otherwise the loop is broken and the code crashes.
-      this makes no harm because the parent splitter cannot
-      contain more than one display or splitter on top of the
-      current display
-    */
-    QSplitter *child_splitter( dynamic_cast<QSplitter*>(child) );
-    if( child_splitter )
-    {
-      Debug::Throw("EditFrame::_closeView - child splitter. Reparent.\n" );
-      child_splitter->setParent( grand_parent );
-      //if( dynamic_cast<QSplitter*>(grand_parent) == 0 ) 
-      if( grand_parent->layout() ) 
-      {
-        grand_parent->layout()->addWidget( child_splitter );
-        Debug::Throw("EditFrame::_closeView - child display. found layout.\n" );
-      }
-      break;
-    }
-
-    // check if child is a text display
-    TextDisplay *child_display( dynamic_cast<TextDisplay*>(child) );
-    if( child_display )
-    {
-      Debug::Throw("EditFrame::_closeView - child display. Reparent.\n" );
-      child_display->setParent( grand_parent );
-      //if( dynamic_cast<QSplitter*>(grand_parent) == 0 ) 
-      if( grand_parent->layout() ) 
-      {
-        Debug::Throw("EditFrame::_closeView - child display. found layout.\n" );
-        grand_parent->layout()->addWidget( child_display );
-      }
-      break;
-    }
-
+    break;
   }
 
   // retrieve displays associated to current
   displays = BASE::KeySet<TextDisplay>( &display );
-  //display.close();
-  parent->hide();
-  parent->close();
-//  delete parent;
-//  delete &display;
-//  parent->hide();
-  Debug::Throw( "EditFrame::_closeView - closed.\n" );
-
-  // try resize grand parent (if splitter)
-  QSplitter* splitter( dynamic_cast<QSplitter*>( grand_parent ) );
-  if( splitter )
+  delete &display;
+  delete parent;
+  
+  // resize grand parent
+  if( grand_parent_splitter )
   {
     
-    Debug::Throw( "EditFrame::_closeView - resizing grand_parent.\n" );
-    int dimension = (splitter->orientation() == Horizontal) ? splitter->width():splitter->height();
+    int dimension = (grand_parent_splitter->orientation() == Horizontal) ? 
+      grand_parent_splitter->width():
+      grand_parent_splitter->height();
     
     QList<int> sizes;
     sizes.push_back( dimension/2 );
     sizes.push_back( dimension/2 );
-    splitter->setSizes( sizes );
-    Debug::Throw( "EditFrame::_closeView - grand_parent resized.\n" );
+    sizes.push_back( 0 );
+    grand_parent_splitter->setSizes( sizes );
   }
 
   // if no associated displays, retrieve all, set the first as active
@@ -1340,15 +1302,20 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
   // keep local pointer to current active display
   TextDisplay& active_display_local( activeDisplay() );  
   
+  // compute desired dimension of the new splitter
+  // along its splitting direction
+  int dimension(0);
+  if( clone ) dimension = (orientation == Horizontal) ? active_display_local.width():active_display_local.height();
+  else dimension = (orientation == Horizontal) ? main_->width():main_->height();
+  
   // create new splitter
   QSplitter& splitter( _newSplitter( orientation, clone ) );
   
   // create new display
-  TextDisplay& display( _newTextDisplay( &splitter ) );
-
+  TextDisplay& display( _newTextDisplay(0) );
+  splitter.addWidget( &display );
+      
   // assign equal size to displays
-  int dimension = (orientation == Horizontal) ? splitter.width():splitter.height();
-    
   QList<int> sizes;
   sizes.push_back( dimension/2 );
   sizes.push_back( dimension/2 );
@@ -1356,7 +1323,7 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
 
   Debug::Throw( "EditFrame::_splitView - sizes set.\n" );
 
-  //   // also resize parent
+  // also resize parent
   QSplitter *parent_splitter( dynamic_cast<QSplitter*>( splitter.parent() ) );
   if( parent_splitter ) 
   {
@@ -1364,7 +1331,9 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
     Debug::Throw( "EditFrame::_splitView - resize parent.\n" );
     
     // assign equal size to displays
-    int dimension = ( parent_splitter->orientation() == Horizontal) ? splitter.width():splitter.height();
+    int dimension = ( parent_splitter->orientation() == Horizontal) ? 
+      parent_splitter->width():
+      parent_splitter->height();
     
     QList<int> sizes;
     sizes.push_back( dimension/2 );
@@ -1441,7 +1410,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
     QWidget *parent = activeDisplay().parentWidget();
 
     // create a splitter with correct orientation
-    splitter = new DestructiveCloseSplitter( parent );
+    splitter = new QSplitter( parent );
     splitter->setOrientation( orientation );
 
     // move splitter to the first place if needed
@@ -1453,8 +1422,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
     } else parent->layout()->addWidget( splitter );
 
     // reparent current display
-    activeDisplay().setParent( splitter );
-    //splitter->addWidget( &activeDisplay() );
+    splitter->addWidget( &activeDisplay() );
 
   } else {
 
@@ -1484,12 +1452,12 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
     Exception::checkPointer( first_child, DESCRIPTION( "invalid first child" ) );
 
     // create new splitter
-    splitter = new DestructiveCloseSplitter( main_ );
+    splitter = new QSplitter( main_ );
     splitter->setOrientation( orientation );
     main_->layout()->addWidget( splitter );
 
     // reparent first child
-    first_child->setParent( splitter );
+    splitter->addWidget( first_child );
 
   }
 

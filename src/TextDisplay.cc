@@ -72,7 +72,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   Debug::Throw( "TextDisplay::TextDisplay.\n" );
 
   // tell frame to delete on exit
-  setAttribute( Qt::WA_DeleteOnClose );
+  // setAttribute( Qt::WA_DeleteOnClose );
 
   // set customized document
   CustomTextDocument* document( new CustomTextDocument( this ) );

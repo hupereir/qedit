@@ -46,13 +46,13 @@ using namespace std;
 const char* DocumentClassDialog::column_titles_[ DocumentClassDialog::n_columns ] =
 {
   "name",
-  "file",
-  ""
+  "file"
 };
 
 //______________________________________________________________
 DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
-  QDialog( parent )
+  QDialog( parent ),
+  Counter( "DocumentClassDialog" )
 {
   Debug::Throw( "DocumentClassDialog::DocumentClassDialog.\n" );
   setWindowTitle( "QEdit - Document Classes" );
@@ -65,7 +65,7 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   
   // create list
   h_layout->addWidget( list_ = new CustomListView( this ), 1 );
-  list_->setColumnCount(2);
+  list_->setColumnCount(n_columns);
   
   // add columns
   for( unsigned int i=0; i<n_columns; i++ )
