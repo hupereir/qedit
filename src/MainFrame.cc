@@ -236,8 +236,7 @@ EditFrame* MainFrame::open( FileRecord record )
     bool enable_exit( BASE::KeySet<EditFrame>(this).size() == 1 );
     if( enable_exit ) buttons |= NewFileDialog::EXIT;
     
-    NewFileDialog dialog( frame, record.file(), buttons );
-    QtUtil::centerOnParent( &dialog );
+    NewFileDialog dialog( 0, record.file(), buttons );
     int state = dialog.exec();
     
     Debug::Throw() << "MainFrame::Open - New file dialog state: " << state << endl; 

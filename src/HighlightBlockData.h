@@ -43,17 +43,20 @@ class HighlightBlockData: public TextBlockData
   
   //! constructor
   HighlightBlockData():
-    TextBlockData()
+    TextBlockData(),
+    modified_( true )
   {}
     
   //! constructor
   HighlightBlockData( const TextBlockData& reference ):
-    TextBlockData( reference )
+    TextBlockData( reference ),
+    modified_( true )
   {}
     
   //! constructor
   HighlightBlockData( const TextBlockData* pointer ):
-    TextBlockData( *pointer )
+    TextBlockData( *pointer ),
+    modified_( true )
   {}
     
   //! destructor

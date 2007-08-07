@@ -32,9 +32,9 @@
   \date $Date$
 */
 
-#include <QSyntaxHighlighter>
 #include <list>
 
+#include "BaseTextHighlight.h"
 #include "Config.h"
 #include "Counter.h"
 #include "Debug.h"
@@ -44,7 +44,7 @@
 class HighlightPattern;
 
 //! syntax highlighting based on text patterns
-class TextHighlight: public QSyntaxHighlighter, public BASE::Key, public Counter
+class TextHighlight: public BaseTextHighlight
 {
   
   public:

@@ -66,19 +66,21 @@ TextDisplay::TextDisplay( QWidget* parent ):
   working_directory_( Util::workingDirectory() ), 
   class_name_( "" ),
   ignore_warnings_( false ),
-  active_( false ),
-  indent_( new TextIndent( this ) )
+  active_( false )
 {
   
   Debug::Throw( "TextDisplay::TextDisplay.\n" );
 
-  // tell frame to delete on exit
-  // setAttribute( Qt::WA_DeleteOnClose );
+  // disable rich text
+  setAcceptRichText( false );
   
   // text highlight
   TextHighlight* highlight = new TextHighlight( document() );
-  BASE::Key::associate(  dynamic_cast<BASE::Key*>(document()), highlight );
+  setTextHighlight( highlight );
   highlight->setEnabled( false );
+  
+  // text indent
+  indent_ = new TextIndent( this );
   indent_->setEnabled( false );
 
   // connections
@@ -615,16 +617,16 @@ void TextDisplay::updateDocumentClass( void )
   // wrap mode
   if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction()->setChecked( document_class->wrap() );
   
-  // check availability of braces/highlight and indentation patterns
-  if( document_class->braces().empty() ) bracesHighlightAction()->setChecked( false );
-  if( document_class->highlightPatterns().empty() ) textHighlightAction()->setChecked( false );
-  if( document_class->indentPatterns().empty() ) textIndentAction()->setChecked( false );
-
   // enable actions consequently
-  bracesHighlightAction()->setEnabled( !document_class->braces().empty() );
-  textHighlightAction()->setEnabled( !document_class->highlightPatterns().empty() );
-  textIndentAction()->setEnabled( !document_class->indentPatterns().empty() );
-  
+  bracesHighlightAction()->setVisible( !document_class->braces().empty() );
+  textHighlightAction()->setVisible( !document_class->highlightPatterns().empty() );
+  textIndentAction()->setVisible( !document_class->indentPatterns().empty() );
+ 
+//   // enable actions consequently
+//   bracesHighlightAction()->setEnabled( !document_class->braces().empty() );
+//   textHighlightAction()->setEnabled( !document_class->highlightPatterns().empty() );
+//   textIndentAction()->setEnabled( !document_class->indentPatterns().empty() );
+ 
   // store into class members
   textHighlight().setPatterns( document_class->highlightPatterns() );
   textIndent().setPatterns( document_class->indentPatterns() );

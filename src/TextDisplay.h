@@ -409,7 +409,7 @@ class TextDisplay: public CustomTextEdit
   void _setBlockModified( const QTextBlock& );
   
   protected slots:
-
+ 
   //! indent paragraph (when return or tab is pressed)
   void _indentCurrentParagraph( void );
 

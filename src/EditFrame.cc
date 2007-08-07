@@ -307,6 +307,9 @@ void EditFrame::saveConfiguration( void )
     XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
   }
 
+  // write open previous menu.
+  menu_->openPreviousMenu().write();
+  
 }
 
 //________________________________________________________________
@@ -1159,6 +1162,10 @@ void EditFrame::_closeView( TextDisplay& display )
   // retrieve displays associated to current
   displays = BASE::KeySet<TextDisplay>( &display );
   
+  // save display file and class-name to OpenPreviousMenu
+  if( !display.file().empty() )
+  { menu_->openPreviousMenu().get( display.file() ).addInformation( "class_name", display.className() ); }
+  
   // delete display
   delete &display;
 
@@ -1225,7 +1232,7 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
   int dimension(0);
   if( clone ) dimension = (orientation == Horizontal) ? active_display_local.width():active_display_local.height();
   else dimension = (orientation == Horizontal) ? main_->width():main_->height();
-  
+
   // create new splitter
   QSplitter& splitter( _newSplitter( orientation, clone ) );
   
@@ -1233,7 +1240,7 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
   TextDisplay& display( _newTextDisplay(0) );
   
   // insert in splitter, at correct position
-  if( clone ) splitter.insertWidget( splitter.indexOf( &active_display_local) +1, &display  );
+  if( clone ) splitter.insertWidget( splitter.indexOf( &active_display_local)+1, &display  );
   else splitter.addWidget( &display );
   
   // recompute dimension
@@ -1259,8 +1266,7 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
 
     // clone new display
     display.synchronize( &active_display_local );
-    Debug::Throw( "EditFrame::_splitView - synchronized.\n" );
- 
+    
     // perform associations
     // check if active displays has associates and propagate to new
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )

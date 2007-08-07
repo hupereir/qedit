@@ -36,22 +36,21 @@
 
 using namespace std;
 
-//! local debugging verbosity level for this class
-static const int debug_level = 1;
-
 //_________________________________________________________
 TextHighlight::TextHighlight( QTextDocument* document ):
-  QSyntaxHighlighter( document ),
-  Counter( "TextHighlight" ),
+  BaseTextHighlight( document ),
   enabled_( false )
 { Debug::Throw( "TextHighlight::TextHighlight.\n" ); }
 
 //_________________________________________________________
 void TextHighlight::highlightBlock( const QString& text )
 {
-    
-  setFormat( 0, text.length(), Qt::black );
-  if( !isEnabled() ) return;
+  Debug::Throw( "TextHighlight::highlightBlock.\n" ); 
+
+  // base class highlight
+  BaseTextHighlight::highlightBlock( text );
+  
+  if( !isEnabled() || patterns_.empty() ) return;
 
     // retrieve active_id from last block state
   int active_id( previousBlockState() );
@@ -121,9 +120,7 @@ HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, c
       // this could be made faster by storing child patterns into this one
       for( HighlightPattern::List::const_iterator child_iter = pattern.children().begin(); child_iter != pattern.children().end(); child_iter++ )
       { (*child_iter)->processText( locations, text, active );}
-    
-//      unique( locations.begin(), locations.end(), HighlightPattern::Location::OverlapFTor() );
-      
+   
       // remove patterns that overlap with others
       HighlightPattern::LocationSet::iterator iter = locations.begin();
       HighlightPattern::LocationSet::iterator prev = locations.begin();
@@ -272,17 +269,20 @@ void TextHighlight::_apply( const QString& text, const HighlightPattern::Locatio
 
   // initialize style
   HighlightStyle current_style;
-  QTextCharFormat format;
+  QTextCharFormat current_format;
   for( HighlightPattern::LocationSet::const_iterator iter = locations.begin(); iter != locations.end(); iter++ )
   {
     if( current_style != iter->style() )
     {
       current_style = iter->style();
-      format = current_style.format();
+      current_format = current_style.format();
     }
 
-    // loop over locations and apply
+    QTextCharFormat format( current_format );
+    QTextCharFormat old( TextHighlight::format( iter->position() ) );
+    if( old.hasProperty( QTextFormat::BackgroundBrush ) ) format.setBackground( old.background() );
     setFormat( iter->position(), iter->length(), format );
+    
   }
 
   return;

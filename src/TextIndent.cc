@@ -47,7 +47,8 @@ TextIndent::TextIndent( TextDisplay* editor ):
 //______________________________________________
 void TextIndent::indent( QTextBlock block )
 {
-  if( !isEnabled() ) return;
+  
+  if( !isEnabled() || patterns_.empty() ) return;
   
   // ignore "empty" blocks
   // if( editor_->isEmptyBlock( block ) ) return;
