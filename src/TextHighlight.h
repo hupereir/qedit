@@ -41,6 +41,10 @@
 #include "Key.h"
 #include "HighlightPattern.h"
 
+#if WITH_ASPELL
+#include "SpellParser.h"
+#endif
+
 class HighlightPattern;
 class TextBraces;
 
@@ -122,8 +126,27 @@ class TextHighlight: public BaseTextHighlight
     braces_.clear();
     braces_set_.clear();
   }
+
+  #if WITH_ASPELL
+  
+  //! embedded spellcheck parser
+  SPELLCHECK::SpellParser& spellParser( void ) 
+  { return spellparser_; }
+  
+  //! highlight pattern associated to auto-spell
+  const HighlightPattern& spellPattern( void ) const
+  { return spell_pattern_; }
+  
+  //! update highlight pattern associated to auto-spell
+  void updateSpellPattern( void )
+  { spell_pattern_.setStyle( HighlightStyle( "spell_style", spellParser().fontFormat(), spellParser().color() ) ); }
+
+  #endif
   
   private:
+
+  //!@name syntax highlighting
+  //@{
   
   //! apply locations to text
   void _applyPatterns( const QString& text, const HighlightPattern::LocationSet& locations );
@@ -137,6 +160,11 @@ class TextHighlight: public BaseTextHighlight
   //! list of highlight patterns
   HighlightPattern::List patterns_;
   
+  //@}
+  
+  //!@name text braces
+  //@{
+  
   //! braces enabled
   bool braces_enabled_;
   
@@ -145,6 +173,23 @@ class TextHighlight: public BaseTextHighlight
 
   //! keep track of all braces in a single set for fast access
   BracesSet braces_set_;
+  
+  //@}
+  
+  //!@name spell checking
+  //@{
+
+  #if WITH_ASPELL
+  
+  //! spell check parser
+  SPELLCHECK::SpellParser spellparser_; 
+  
+  //! spellcheck highlight pattern
+  HighlightPattern spell_pattern_;
+  
+  #endif
+  
+  //@}
   
 };
 

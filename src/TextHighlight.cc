@@ -63,8 +63,9 @@ void TextHighlight::highlightBlock( const QString& text )
   Debug::Throw( "TextHighlight::highlightBlock.\n" ); 
 
   // base class highlight
+  // this is always performed
   BaseTextHighlight::highlightBlock( text );
-  
+    
   if( !isEnabled() || patterns_.empty() ) return;
 
     // retrieve active_id from last block state
@@ -85,6 +86,9 @@ void TextHighlight::highlightBlock( const QString& text )
     data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData();
     setCurrentBlockUserData( data );
     
+    // store active id
+    setCurrentBlockState( locations.activeId().second );
+    
   }
 
   // create new location set if needed
@@ -95,13 +99,31 @@ void TextHighlight::highlightBlock( const QString& text )
     // update data modification state and highlight pattern locations
     data->setModified( false );
     data->setLocations( locations );
+    
+    // store active id
+    setCurrentBlockState( -1 );
+    
   }
   
+  // before try applying the found locations see if automatic spellcheck is on
+  #if WITH_ASPELL
+  
+  if( spellParser().isEnabled() ) 
+  {
+    // clear locations
+    locations.clear();
+    
+    // insert highlight
+    const SPELLCHECK::Word::Set& words( spellParser().parse( text ) );
+    for( SPELLCHECK::Word::Set::const_iterator iter = words.begin(); iter != words.end(); iter++ )
+    { locations.insert( HighlightPattern::Location( spellPattern(), iter->position(), iter->size() ) ); }
+    
+  } 
+  
+  #endif
+    
   // apply new location set
   if( !locations.empty() ) _applyPatterns( text, locations );
-  
-  // store active id
-  setCurrentBlockState( locations.activeId().second );
   
   return;
   
