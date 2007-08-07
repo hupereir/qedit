@@ -35,6 +35,7 @@
 #include <QRegExp>
 #include <QAction>
 
+#include "AskForSaveDialog.h"
 #include "Config.h"
 #include "CustomTextEdit.h"
 #include "Debug.h"
@@ -188,6 +189,9 @@ class TextDisplay: public CustomTextEdit
     { return display->document()->isModified(); }
 
   };
+  
+  //! ask for save if modified
+  AskForSaveDialog::ReturnCode askForSave( const bool& enable_all = false );
   
   //! Save file
   void save( void );

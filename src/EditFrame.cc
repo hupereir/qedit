@@ -562,13 +562,7 @@ void EditFrame::_print( void )
   const File& file( activeDisplay().file() );
 
   // check if file is modified
-  if( activeDisplay().document()->isModified() )
-  {
-    AskForSaveDialog dialog( this, file );
-    int state = dialog.exec();
-    if( state == AskForSaveDialog::YES ) save();
-    if( state == AskForSaveDialog::CANCEL ) return;
-  }
+  if( activeDisplay().document()->isModified() && activeDisplay().askForSave() == AskForSaveDialog::CANCEL ) return;
 
   // check if file is valid and exists
   if( file.empty() || !file.exist() )
@@ -623,16 +617,10 @@ void EditFrame::closeEvent( QCloseEvent* event )
 
       // this trick allow to run  only once per set of associated displays
       if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
-
-      // create dialog
-      int flags( AskForSaveDialog::YES | AskForSaveDialog::NO | AskForSaveDialog::CANCEL );
-      if( modifiedDisplayCount() > 1 ) flags |=  AskForSaveDialog::ALL;
-
-      int state( AskForSaveDialog( this, display.file(), flags ).exec() );
       
-      if( state == AskForSaveDialog::YES ) display.save();
-      else if( state == AskForSaveDialog::NO ) display.document()->setModified( false );
-      else if( state == AskForSaveDialog::ALL ) {
+      // ask for save
+      int state( display.askForSave( modifiedDisplayCount() > 1 ) );      
+      if( state == AskForSaveDialog::ALL ) {
         
         // for this frame, only save displays located after the current
         for( BASE::KeySet<TextDisplay>::iterator display_iter = iter; display_iter != displays.end(); display_iter++ )
@@ -849,7 +837,7 @@ void EditFrame::_installActions( void )
   addAction( save_action_ = new QAction( IconEngine::get( ICONS::SAVE, path_list ), "&Save", this ) );
   save_action_->setShortcut( CTRL+Key_S );
   save_action_->setToolTip( "Save current file" );
-  connect( save_action_, SIGNAL( triggered() ), SLOT( save() ) );
+  connect( save_action_, SIGNAL( triggered() ), SLOT( _save() ) );
  
   addAction( save_as_action_ = new QAction( IconEngine::get( ICONS::SAVE_AS, path_list ), "Save &As", this ) );
   save_as_action_->setShortcut( SHIFT+CTRL+Key_S );
@@ -1087,17 +1075,10 @@ void EditFrame::_closeView( TextDisplay& display )
   }
 
   // check if display is modified and has no associates in window
-  if( display.document()->isModified() && BASE::KeySet<TextDisplay>( &display ).empty() )
-  {
-
-    // create dialog
-    AskForSaveDialog dialog( this, display.file(), false );
-    int state = dialog.exec();
-    if( state == AskForSaveDialog::YES ) { display.save(); }
-    if( state == AskForSaveDialog::NO ) { display.document()->setModified( false ); }
-    else if( state == AskForSaveDialog::CANCEL ) return;
-
-  }
+  if( 
+    display.document()->isModified() && 
+    BASE::KeySet<TextDisplay>( &display ).empty() &&
+    display.askForSave() ==  AskForSaveDialog::CANCEL ) return;
 
   // retrieve parent and grandparent of current display
   QWidget* parent( display.parentWidget() );  

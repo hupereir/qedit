@@ -131,14 +131,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
 //_____________________________________________________
 TextDisplay::~TextDisplay( void )
-{ 
-  Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; 
-  
-  // save display file and class-name to OpenPreviousMenu
-  if( !file().empty() )
-  { menu().get( file() ).addInformation( "class_name", className() ); }
-
-}
+{ Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; }
 
 //___________________________________________________________________________
 void TextDisplay::synchronize( TextDisplay* display )
@@ -259,10 +252,26 @@ void TextDisplay::setFile( const File& file )
 }
 
 //___________________________________________________________________________
+AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enable_all )
+{
+  Debug::Throw( "TextDisplay::askForSave.\n" );
+  
+  if( !document()->isModified() ) return AskForSaveDialog::YES;
+  
+  int flags( AskForSaveDialog::YES | AskForSaveDialog::NO | AskForSaveDialog::CANCEL );
+  if( enable_all ) flags |=  AskForSaveDialog::ALL;
+  int state( AskForSaveDialog( this, file(), flags ).exec() );
+  if( state == AskForSaveDialog::YES ||  state == AskForSaveDialog::ALL ) save();
+  else if( state == AskForSaveDialog::NO ) setModified( false );
+  
+  return AskForSaveDialog::ReturnCode(state);
+  
+}
+
+//___________________________________________________________________________
 void TextDisplay::save( void )
 {
-    
-  Debug::Throw( "TextDisplay::save.\n" );
+   Debug::Throw( "TextDisplay::save.\n" );
   
   // do nothing if not modified
   if( !document()->isModified() ) return;

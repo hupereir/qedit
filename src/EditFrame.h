@@ -321,11 +321,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void openVertical( FileRecord record = FileRecord() )
   { _open( record, NEW_VIEW, Qt::Vertical ); }
 
-  //! save
-  /*! \param display if non 0, save this display. Save Active Display otherwise. */
-  void save( void )
-  { activeDisplay().save(); }
-
   //! save all modified text displays
   void saveAll( void );
 
@@ -393,7 +388,12 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
     if( displays.size() > 1 ) _closeView( activeDisplay() );
     else _closeWindow();
   }
-      
+  
+  //! save
+  /*! \param display if non 0, save this display. Save Active Display otherwise. */
+  void _save( void )
+  { activeDisplay().save(); }
+  
   //! Save As
   void _saveAs( void )
   { activeDisplay().saveAs(); }
