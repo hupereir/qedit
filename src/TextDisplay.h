@@ -47,6 +47,8 @@
 // forward declaration
 class DocumentClass;
 class TextMacro;
+class HighlightBlockData;
+class OpenPreviousMenu;
 
 //! text display window
 class TextDisplay: public CustomTextEdit
@@ -66,6 +68,17 @@ class TextDisplay: public CustomTextEdit
   //! clone display configuration and document
   virtual void synchronize( TextDisplay* display );
 
+  //! set openPrevious menu
+  void setMenu( OpenPreviousMenu* menu )
+  { menu_ = menu; }
+  
+  //! open previous menu
+  OpenPreviousMenu& menu( void )
+  { 
+    Exception::checkPointer( menu_, DESCRIPTION( "menu_ not initialized" ) );
+    return *menu_;
+  }
+  
   //! check if current entry has been modified or not
   void setModified( const bool& value = true )
   {
@@ -290,9 +303,13 @@ class TextDisplay: public CustomTextEdit
   QAction* textHighlightAction( void )
   { return text_highlight_action_; }
  
-  //! toggle text highlighting
+  //! toggle braces highlighting
   QAction* bracesHighlightAction( void )
   { return braces_highlight_action_; }
+
+  //! spellcheck action
+  QAction* spellcheckAction( void )
+  { return spellcheck_action_; }
   
   //! file information
   QAction* fileInfoAction( void )
@@ -388,6 +405,10 @@ class TextDisplay: public CustomTextEdit
   void _setBlockModified( const QTextBlock& );
   
   protected slots:
+
+  //! highlight current block
+  /*! overloaded from CustomTextEdit. It allows to store the data of the current block */
+  virtual void _highlightCurrentBlock( void );
  
   //! indent paragraph (when return or tab is pressed)
   void _indentCurrentParagraph( void );
@@ -407,6 +428,9 @@ class TextDisplay: public CustomTextEdit
   
   //! toggle braces
   void _toggleBracesHighlight( bool state );
+  
+  //! run spellcheck
+  void _spellcheck( void );
   
   //! show file info
   void _showFileInfo( void );
@@ -485,10 +509,19 @@ class TextDisplay: public CustomTextEdit
   //! toggle text highlighting
   QAction* braces_highlight_action_;
  
+  //! run spell checker
+  QAction* spellcheck_action_;
+  
   //! toggle text highlighting
   QAction* file_info_action_;
   
-  //! 
+  //@}
+  
+  //! parent OpenPrevious menu
+  OpenPreviousMenu* menu_;
+  
+  //! current block data
+  HighlightBlockData* current_block_data_;
   
   //! empty line
   static const QRegExp empty_line_regexp_;

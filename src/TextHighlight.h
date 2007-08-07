@@ -126,8 +126,11 @@ class TextHighlight: public BaseTextHighlight
   private:
   
   //! apply locations to text
-  void _apply( const QString& text, const HighlightPattern::LocationSet& locations );
-
+  void _applyPatterns( const QString& text, const HighlightPattern::LocationSet& locations );
+ 
+  //! parse text to store pairs of matching braces
+  void _parseBraces( const QString& text );
+  
   //! true if highlight is enabled
   bool highlight_enabled_;
 

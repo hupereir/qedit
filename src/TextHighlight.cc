@@ -98,7 +98,7 @@ void TextHighlight::highlightBlock( const QString& text )
   }
   
   // apply new location set
-  if( !locations.empty() ) _apply( text, locations );
+  if( !locations.empty() ) _applyPatterns( text, locations );
   
   // store active id
   setCurrentBlockState( locations.activeId().second );
@@ -279,7 +279,7 @@ HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, c
 }
 
 //_________________________________________________________
-void TextHighlight::_apply( const QString& text, const HighlightPattern::LocationSet& locations )
+void TextHighlight::_applyPatterns( const QString& text, const HighlightPattern::LocationSet& locations )
 {
 
   // initialize style
@@ -302,3 +302,7 @@ void TextHighlight::_apply( const QString& text, const HighlightPattern::Locatio
 
   return;
 }
+
+//_________________________________________________________
+void TextHighlight::_parseBraces( const QString& text )
+{}

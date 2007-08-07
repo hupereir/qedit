@@ -213,7 +213,7 @@ EditFrame::~EditFrame( void )
 { Debug::Throw( "EditFrame::~EditFrame.\n" ); }
 
 //____________________________________________
-void EditFrame::setFile( File file , const bool& reset_document_class )
+void EditFrame::setFile( File file )
 {
   Debug::Throw() << "EditFrame::setFile - " << file << endl;
 
@@ -222,19 +222,9 @@ void EditFrame::setFile( File file , const bool& reset_document_class )
   BASE::KeySet<TextDisplay>::iterator iter = find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
   Exception::check( iter != displays.end(), DESCRIPTION( "no empty display" ) );
   TextDisplay &display( **iter );
-
-  // retrieve document class name from menu, if any
-  if( reset_document_class )
-  {
-    string class_name( menu_->openPreviousMenu().get( file ).information("class_name") );
-    display.setClassName( class_name );
-  }
    
   // open file in active display
   display.openFile( file );
-  
-  // store class name from activeDisplay in Menu
-  menu_->openPreviousMenu().get( file ).addInformation( "class_name", display.className() );
   
   // set focus
   setActiveDisplay( display );
@@ -339,18 +329,8 @@ void EditFrame::setActiveDisplay( TextDisplay& display )
 void EditFrame::save( TextDisplay* display )
 {
   Debug::Throw( "EditFrame::save.\n" );
-
-  // if no display passed in argument, use active display
   if( !display ) display = &activeDisplay();
-
-  // save display
   display->save();
-
-  // add file to menu
-  menu_->openPreviousMenu().add( display->file() );
-
-  return;
-
 }
 
 //____________________________________________
@@ -361,15 +341,7 @@ void EditFrame::saveAll( void )
   // retrieve all displays
   BASE::KeySet<TextDisplay> displays( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-    if( !(*iter)->document()->isModified() ) continue;
-
-    // save display
-    (*iter)->save();
-
-    // add file to menu
-    menu_->openPreviousMenu().add( (*iter)->file() );
-  }
+  { if( (*iter)->document()->isModified() ) (*iter)->save(); }
 
   return;
 
@@ -392,10 +364,6 @@ void EditFrame::selectClassName( string name  )
   
   // rehighlight
   activeDisplay().rehighlight();
-
-  // add information to Menu
-  if( !activeDisplay().file().empty() )
-  { menu_->openPreviousMenu().get( activeDisplay().file() ).addInformation( "class_name", name ); }
 
 }
 
@@ -468,16 +436,8 @@ void EditFrame::_detach( void )
 void EditFrame::_saveAs( TextDisplay* display )
 {
   Debug::Throw( "EditFrame::_saveAs.\n" );
-
-  // if no display passed in argument, use active display
   if( !display ) display = &activeDisplay();
-
   display->saveAs();
-  menu_->openPreviousMenu().add( display->file() );
-  menu_->openPreviousMenu().get( display->file() ).addInformation( "class_name", display->className() );
-
-  return;
-
 }
 
 //___________________________________________________________
@@ -1161,11 +1121,7 @@ void EditFrame::_closeView( TextDisplay& display )
   
   // retrieve displays associated to current
   displays = BASE::KeySet<TextDisplay>( &display );
-  
-  // save display file and class-name to OpenPreviousMenu
-  if( !display.file().empty() )
-  { menu_->openPreviousMenu().get( display.file() ).addInformation( "class_name", display.className() ); }
-  
+    
   // delete display
   delete &display;
 
@@ -1402,6 +1358,7 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
   // create textDisplay
   // disable accelerator because they are handled in the menu
   TextDisplay* display = new TextDisplay( parent );
+  display->setMenu( &menu_->openPreviousMenu() );
 
   // connections
   connect( display, SIGNAL( needUpdate( unsigned int ) ), this, SLOT( _update( unsigned int ) ) );

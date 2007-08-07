@@ -44,13 +44,19 @@
 #include "HtmlUtil.h"
 #include "HighlightBlockData.h"
 #include "MainFrame.h"
-#include "XmlOptions.h"
+#include "OpenPreviousMenu.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
 #include "TextDisplay.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
 #include "Util.h"
+#include "XmlOptions.h"
+
+#include "Config.h"
+#if WITH_ASPELL
+#include "SpellDialog.h"
+#endif
 
 using namespace std;
 using namespace Qt;
@@ -65,7 +71,8 @@ TextDisplay::TextDisplay( QWidget* parent ):
   working_directory_( Util::workingDirectory() ), 
   class_name_( "" ),
   ignore_warnings_( false ),
-  active_( false )
+  active_( false ),
+  current_block_data_( 0 )
 {
   
   Debug::Throw( "TextDisplay::TextDisplay.\n" );
@@ -100,6 +107,11 @@ TextDisplay::TextDisplay( QWidget* parent ):
   braces_highlight_action_->setChecked( textHighlight().isBracesEnabled() );
   connect( braces_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleBracesHighlight( bool ) ) );
   
+  // spell checking
+  addAction( spellcheck_action_ = new QAction( "&Spell check", this ) );
+  connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
+  
+  // file information
   addAction( file_info_action_ = new QAction( "&File information", this ) );
   connect( file_info_action_, SIGNAL( triggered() ), SLOT( _showFileInfo() ) );
   
@@ -119,7 +131,14 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
 //_____________________________________________________
 TextDisplay::~TextDisplay( void )
-{ Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; }
+{ 
+  Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; 
+  
+  // save display file and class-name to OpenPreviousMenu
+  if( !file().empty() )
+  { menu().get( file() ).addInformation( "class_name", className() ); }
+
+}
 
 //___________________________________________________________________________
 void TextDisplay::synchronize( TextDisplay* display )
@@ -158,7 +177,11 @@ void TextDisplay::openFile( File file )
 {
   
   Debug::Throw() << "TextDisplay::openFile " << file << endl;
-  
+
+  // reset class name
+  string class_name( menu().get( file ).information("class_name") );
+  setClassName( class_name );
+
   // expand filename
   file = file.expand();
 
@@ -212,6 +235,10 @@ void TextDisplay::openFile( File file )
   
   // perform first autosave
   (static_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
+  
+  // update openPrevious menu
+  if( !TextDisplay::file().empty() )
+  { menu().get( TextDisplay::file() ).addInformation( "class_name", className() ); }
     
 }
 
@@ -280,6 +307,10 @@ void TextDisplay::save( void )
   BASE::KeySet<TextDisplay> displays( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   { (*iter)->_setLastSaved( file().lastModified() ); }
+  
+  // add file to menu
+  if( !file().empty() )
+  { menu().get( file() ).addInformation( "class_name", className() ); }
   
   return;
   
@@ -353,7 +384,9 @@ void TextDisplay::saveAs( void )
   
   // rehighlight
   rehighlight();
-  
+  if( !TextDisplay::file().empty() )
+  { menu().get( TextDisplay::file() ).addInformation( "class_name", className() ); }
+
 }
   
 //___________________________________________________________
@@ -624,6 +657,11 @@ void TextDisplay::updateDocumentClass( void )
   textIndent().setBaseIndentation( document_class->baseIndentation() );
   _setMacros( document_class->textMacros() );
 
+  
+  // add information to Menu
+  if( !file().empty() )
+  { menu().get( file() ).addInformation( "class_name", className() ); }
+  
   return;
   
 }
@@ -875,6 +913,30 @@ bool TextDisplay::_contentsChanged( void ) const
 
 }
 
+//________________________________________________
+void TextDisplay::_highlightCurrentBlock( void )
+{ 
+  
+  Debug::Throw( "TextDisplay::_highlightCurrentBlock.\n" );
+  
+  // retrieve current block
+  QTextBlock block( textCursor().block() );  
+  
+  HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( block.userData() );
+  if( !data )
+  {
+    data = new HighlightBlockData();
+    block.setUserData( data );
+  } 
+  
+  current_block_data_ = data;
+    
+  // pass to parent class
+  CustomTextEdit::_highlightCurrentBlock();
+  
+  return; 
+}
+
 //_______________________________________________________
 void TextDisplay::_indentCurrentParagraph( void )
 {
@@ -972,8 +1034,36 @@ void TextDisplay::_multipleFileReplace( void )
 }
 
 //_______________________________________________________
+void TextDisplay::_spellcheck( void )
+{ 
+  Debug::Throw( "TextDisplay::_spellcheck.\n" );
+  
+  #if WITH_ASPELL
+  // create dialog
+  SPELLCHECK::SpellDialog dialog( this );
+
+  // update filter and dictionary if available
+  if( !file().empty() )
+  {
+    FileRecord record( menu().get( file() ) );
+
+    string filter( record.information( "filter" ) );
+    if( !filter.empty() ) dialog.interface().setFilter( filter );
+
+    string dictionary( record.information( "dictionary" ) );
+    if( !dictionary.empty() ) dialog.interface().setDictionary( dictionary );
+  }
+
+  #endif
+  
+}
+
+//_______________________________________________________
 void TextDisplay::_showFileInfo( void )
-{ FileInfoDialog( this ).exec(); }
+{ 
+  Debug::Throw( "TextDisplay::_showFileInfo.\n" );
+  FileInfoDialog( this ).exec();
+}
 
 //_____________________________________________________________
 void TextDisplay::_setBlockModified( int position, int removed, int added )

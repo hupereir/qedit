@@ -119,7 +119,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   };
   
   //! set file and read
-  void setFile( File file, const bool& reset_document_class = true );
+  void setFile( File file );
 
   //! returns true if there is at least one display modified in this window
   bool isModified( void ) const
