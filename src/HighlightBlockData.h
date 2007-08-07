@@ -35,6 +35,12 @@
 #include "TextBlockData.h"
 #include "HighlightPattern.h"
 
+#include "Config.h"
+
+#if WITH_ASPELL
+#include "Word.h"
+#endif
+
 //! TextBlock data
 class HighlightBlockData: public TextBlockData
 {
@@ -79,6 +85,19 @@ class HighlightBlockData: public TextBlockData
   void setLocations( const HighlightPattern::LocationSet& locations )
   { locations_ = locations; }
   
+  #if WITH_ASPELL
+  //! set of misspelled words
+  const SPELLCHECK::Word::Set& misspelledWords( void ) const
+  { return words_; }
+  
+  //! set of misspelled words
+  void setMisspelledWords( const SPELLCHECK::Word::Set& words )
+  { words_ = words; }
+  
+  //! return misspelled word matching position, if any
+  SPELLCHECK::Word misspelledWord( const int& position ) const;
+  #endif
+  
   private:
   
   //! block modification state
@@ -87,6 +106,11 @@ class HighlightBlockData: public TextBlockData
   
   //! locations and ids of matching syntax highlighting patterns
   HighlightPattern::LocationSet locations_;
+  
+  #if WITH_ASPELL
+  //! set of misspelled words and position in associated block
+  SPELLCHECK::Word::Set words_;
+  #endif
   
 };
 
