@@ -47,7 +47,6 @@
 #include "XmlOptions.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
-#include "TextBraces.h"
 #include "TextDisplay.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
@@ -77,11 +76,9 @@ TextDisplay::TextDisplay( QWidget* parent ):
   // text highlight
   TextHighlight* highlight = new TextHighlight( document() );
   setTextHighlight( highlight );
-  highlight->setEnabled( false );
   
   // text indent
   indent_ = new TextIndent( this );
-  indent_->setEnabled( false );
 
   // connections
   connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
@@ -95,12 +92,12 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
   addAction( text_highlight_action_ = new QAction( "&Highlight text", this ) );
   text_highlight_action_->setCheckable( true );
-  text_highlight_action_->setChecked( textHighlight().isEnabled() );
+  text_highlight_action_->setChecked( textHighlight().isHighlightEnabled() );
   connect( text_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextHighlight( bool ) ) );
   
   addAction( braces_highlight_action_ = new QAction( "&Highlight braces", this ) );
   braces_highlight_action_->setCheckable( true );
-  braces_highlight_action_->setChecked( false );
+  braces_highlight_action_->setChecked( textHighlight().isBracesEnabled() );
   connect( braces_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleBracesHighlight( bool ) ) );
   
   addAction( file_info_action_ = new QAction( "&File information", this ) );
@@ -147,7 +144,6 @@ void TextDisplay::synchronize( TextDisplay* display )
   textHighlightAction()->setChecked( display->textHighlightAction()->isChecked() );
   bracesHighlightAction()->setChecked( display->bracesHighlightAction()->isChecked() );
     
-  _setBraces( display->_braces() );
   _setMacros( display->macros() );
   _setPaper( true, display->paper( true ) );
   _setPaper( false, display->paper( false ) );
@@ -592,7 +588,6 @@ void TextDisplay::updateDocumentClass( void )
   textHighlight().clear();
   textIndent().clear();
   textIndent().setBaseIndentation(0);
-  _clearBraces();
   _clearMacros();
 
   // default document class is empty
@@ -622,16 +617,11 @@ void TextDisplay::updateDocumentClass( void )
   textHighlightAction()->setVisible( !document_class->highlightPatterns().empty() );
   textIndentAction()->setVisible( !document_class->indentPatterns().empty() );
  
-//   // enable actions consequently
-//   bracesHighlightAction()->setEnabled( !document_class->braces().empty() );
-//   textHighlightAction()->setEnabled( !document_class->highlightPatterns().empty() );
-//   textIndentAction()->setEnabled( !document_class->indentPatterns().empty() );
- 
   // store into class members
   textHighlight().setPatterns( document_class->highlightPatterns() );
+  textHighlight().setBraces( document_class->braces() );
   textIndent().setPatterns( document_class->indentPatterns() );
   textIndent().setBaseIndentation( document_class->baseIndentation() );
-  _setBraces( document_class->braces() );
   _setMacros( document_class->textMacros() );
 
   return;
@@ -853,19 +843,6 @@ void TextDisplay::_createReplaceDialog( void )
 }
 
 //_______________________________________________________
-void TextDisplay::_setBraces( const TextDisplay::BracesList& braces )
-{
-  Debug::Throw( "TextDisplay::_setBraces.\n" );
-  braces_ = braces;
-  braces_set_.clear();
-  for( BracesList::const_iterator iter = braces_.begin(); iter != braces_.end(); iter++ )
-  {
-    braces_set_.insert( (*iter)->first );
-    braces_set_.insert( (*iter)->second );
-  }
-}
-
-//_______________________________________________________
 void TextDisplay::_setPaper( const QColor& color )
 {
   
@@ -936,7 +913,7 @@ void TextDisplay::_toggleTextHighlight( bool state )
 {
 
   Debug::Throw( "TextDisplay::_toggleTextHighlight.\n" ); 
-  if( textHighlight().setEnabled( textHighlightAction()->isEnabled() && state ) )
+  if( textHighlight().setHighlightEnabled( textHighlightAction()->isEnabled() && state ) )
   { rehighlight(); }
 
   // propagate to other displays
@@ -960,7 +937,10 @@ void TextDisplay::_toggleBracesHighlight( bool state )
 {
   
   Debug::Throw( "TextDisplay::_toggleBracesHighlight.\n" ); 
-
+  
+  // propagate to textHighlight
+  textHighlight().setBracesEnabled( state );
+  
   // propagate to other displays
   if( isSynchronized() )
   {
@@ -1013,7 +993,7 @@ void TextDisplay::_setBlockModified( int position, int removed, int added )
 void TextDisplay::_setBlockModified( const QTextBlock& block )
 {
   // check if highlight is enabled.
-  if( !textHighlight().isEnabled() ) return;
+  if( !textHighlight().isHighlightEnabled() ) return;
   
   // retrieve associated block data if any
   // set block as modified so that its highlight content gets reprocessed.

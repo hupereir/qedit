@@ -39,7 +39,7 @@ using namespace std;
 TextIndent::TextIndent( TextDisplay* editor ):
   QObject( editor ),
   Counter( "TextIndent" ),
-  enabled_( true ),
+  enabled_( false ),
   editor_( editor ),
   base_indentation_( 0 )
 { Debug::Throw( "TextIndent::TextIndent.\n" ); }

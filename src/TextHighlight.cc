@@ -32,6 +32,7 @@
 #include "Debug.h"
 #include "HighlightPattern.h"
 #include "HighlightBlockData.h"
+#include "TextBraces.h"
 #include "TextHighlight.h"
 
 using namespace std;
@@ -39,8 +40,22 @@ using namespace std;
 //_________________________________________________________
 TextHighlight::TextHighlight( QTextDocument* document ):
   BaseTextHighlight( document ),
-  enabled_( false )
+  highlight_enabled_( false ),
+  braces_enabled_( false )
 { Debug::Throw( "TextHighlight::TextHighlight.\n" ); }
+
+//_______________________________________________________
+void TextHighlight::setBraces( const TextHighlight::BracesList& braces )
+{
+  Debug::Throw( "TextHighlight::setBraces.\n" );
+  braces_ = braces;
+  braces_set_.clear();
+  for( BracesList::const_iterator iter = braces_.begin(); iter != braces_.end(); iter++ )
+  {
+    braces_set_.insert( (*iter)->first );
+    braces_set_.insert( (*iter)->second );
+  }
+}
 
 //_________________________________________________________
 void TextHighlight::highlightBlock( const QString& text )

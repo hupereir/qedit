@@ -46,7 +46,6 @@
 
 // forward declaration
 class DocumentClass;
-class TextBraces;
 class TextMacro;
 
 //! text display window
@@ -363,26 +362,6 @@ class TextDisplay: public CustomTextEdit
   void _setMacros( const MacroList& macros)
   { macros_ = macros; }  
   
-    //! braces
-  typedef std::list< TextBraces* > BracesList;
-  
-  //! braces
-  typedef std::set< char > BracesSet;
-  
-  //! braces
-  const BracesList& _braces( void ) const
-  { return braces_; }
-  
-  //! braces
-  void _clearBraces( void )
-  {
-    braces_.clear();
-    braces_set_.clear();
-  }
-
-  //! set braces
-  void _setBraces( const BracesList& );
-
   //! paper color for active/inactive views
   void _setPaper( const bool& active, const QColor& color )
   { 
@@ -488,12 +467,6 @@ class TextDisplay: public CustomTextEdit
 
   //! text indent
   TextIndent* indent_;
-
-  //! text braces
-  BracesList braces_;
-
-  //! keep track of all braces in a single set for fast access
-  BracesSet braces_set_;
 
   //! text macro
   MacroList macros_;

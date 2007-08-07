@@ -42,6 +42,7 @@
 #include "HighlightPattern.h"
 
 class HighlightPattern;
+class TextBraces;
 
 //! syntax highlighting based on text patterns
 class TextHighlight: public BaseTextHighlight
@@ -57,21 +58,22 @@ class TextHighlight: public BaseTextHighlight
   
   //! retrieve highlight location for given text
   HighlightPattern::LocationSet locationSet( const QString& text, const int& active_id );
+    
+  //!@name highlight patterns
+  //@{
   
   //! enable highlight. Returns true if changed
-  bool setEnabled( const bool& state )
+  bool setHighlightEnabled( const bool& state )
   { 
-    if( enabled_ == state ) return false;
-    enabled_ = state; 
+    if( highlight_enabled_ == state ) return false;
+    highlight_enabled_ = state; 
     return true;
   }
   
   //! true if enabled
-  const bool& isEnabled( void ) const
-  { return enabled_; }
-  
-  //! patterns
-  
+  const bool& isHighlightEnabled( void ) const
+  { return highlight_enabled_; }
+
   //! patterns
   const HighlightPattern::List& patterns( void ) const
   { return patterns_; }
@@ -80,11 +82,45 @@ class TextHighlight: public BaseTextHighlight
   void setPatterns( const HighlightPattern::List& patterns )
   { patterns_ = patterns; } 
   
+  //@}
+  
+  //!@name braces
+  //@{
+  
+  //! braces enabled
+  const bool& isBracesEnabled( void ) const
+  { return braces_enabled_; }
+  
+  //! braces enabled
+  bool setBracesEnabled( const bool& state )
+  { 
+    if( braces_enabled_ == state ) return false;
+    braces_enabled_ = state; 
+    return true;
+  }
+  
+  //! braces
+  typedef std::list< TextBraces* > BracesList;
+  
+  //! braces
+  typedef std::set< char > BracesSet;
+  
+  //! braces
+  const BracesList& braces( void ) const
+  { return braces_; }
+  
+  //! set braces
+  void setBraces( const BracesList& );
+
+  //@}
+    
   //! patterns
   void clear( void )
   { 
     Debug::Throw( "TextHighlight.clear.\n" ); 
     patterns_.clear(); 
+    braces_.clear();
+    braces_set_.clear();
   }
   
   private:
@@ -93,10 +129,19 @@ class TextHighlight: public BaseTextHighlight
   void _apply( const QString& text, const HighlightPattern::LocationSet& locations );
 
   //! true if highlight is enabled
-  bool enabled_;
+  bool highlight_enabled_;
 
   //! list of highlight patterns
   HighlightPattern::List patterns_;
+  
+  //! braces enabled
+  bool braces_enabled_;
+  
+  //! text braces
+  BracesList braces_;
+
+  //! keep track of all braces in a single set for fast access
+  BracesSet braces_set_;
   
 };
 
