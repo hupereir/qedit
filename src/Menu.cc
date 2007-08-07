@@ -326,6 +326,10 @@ void Menu::_updateMacroMenu( void )
   action = macro_menu_->addAction( "Replace Leading &Tabs", &display, SLOT( replaceLeadingTabs() ) );
   action->setEnabled( display.hasLeadingTabs() );
   
+  #if WITH_ASPELL
+  macro_menu_->addAction( display.spellcheckAction() );
+  #endif
+  
   // syntax highlighting
   macro_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
   

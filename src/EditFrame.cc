@@ -63,11 +63,6 @@
 #include "ViewHtmlDialog.h"
 #include "WindowTitle.h"
 
-#if WITH_ASPELL
-#include "SpellDialog.h"
-#include "SpellInterface.h"
-#endif
-
 using namespace std;
 using namespace Qt;
 
@@ -87,10 +82,6 @@ EditFrame::EditFrame(  QWidget* parent ):
 
   // tell frame to delete on exit
   setAttribute( WA_DeleteOnClose );
-
-  // retrieve pixmap path
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
   
   // install actions
   _installActions();
@@ -180,6 +171,10 @@ EditFrame::EditFrame(  QWidget* parent ):
   toolbars_.push_back( make_pair( toolbar, "SPLIT_TOOLBAR" ) );
   addToolBar( toolbar );
   
+  // retrieve pixmap path
+  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
+  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
+
   QAction* action;
   action = toolbar->addAction( IconEngine::get( ICONS::VIEW_TOPBOTTOM, path_list ), "Clone view top/bottom", this, SLOT( _splitViewVertical() ) );
   action->setToolTip( "Clone current view vertically" );

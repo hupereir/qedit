@@ -43,6 +43,8 @@
 #include "FileSelectionDialog.h"
 #include "HtmlUtil.h"
 #include "HighlightBlockData.h"
+#include "IconEngine.h"
+#include "Icons.h"
 #include "MainFrame.h"
 #include "OpenPreviousMenu.h"
 #include "QtUtil.h"
@@ -106,13 +108,17 @@ TextDisplay::TextDisplay( QWidget* parent ):
   braces_highlight_action_->setCheckable( true );
   braces_highlight_action_->setChecked( textHighlight().isBracesEnabled() );
   connect( braces_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleBracesHighlight( bool ) ) );
-  
+
+  // retrieve pixmap path
+  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
+  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
+
   // spell checking
-  addAction( spellcheck_action_ = new QAction( "&Spell check", this ) );
+  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK, path_list ), "&Spell check", this ) );
   connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
   
   // file information
-  addAction( file_info_action_ = new QAction( "&File information", this ) );
+  addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO, path_list ), "&File information", this ) );
   connect( file_info_action_, SIGNAL( triggered() ), SLOT( _showFileInfo() ) );
   
   // connections
@@ -1114,18 +1120,38 @@ void TextDisplay::_spellcheck( void )
   // create dialog
   SPELLCHECK::SpellDialog dialog( this );
 
-  // update filter and dictionary if available
+  // default dictionary from XmlOptions
+  string default_filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
+  string default_dictionary( XmlOptions::get().raw("DICTIONARY") );
+
+  // try overwrite with file record
   if( !file().empty() )
   {
-    FileRecord record( menu().get( file() ) );
+    
+    FileRecord& record( menu().get( file() ) ); 
+    if( !( record.hasInformation( "filter" ) && dialog.setFilter( record.information( "filter" ) ) ) )
+    { dialog.setFilter( default_filter ); }
 
-    string filter( record.information( "filter" ) );
-    if( !filter.empty() ) dialog.interface().setFilter( filter );
-
-    string dictionary( record.information( "dictionary" ) );
-    if( !dictionary.empty() ) dialog.interface().setDictionary( dictionary );
+    if( !( record.hasInformation( "dictionary" ) && dialog.setDictionary( record.information( "dictionary" ) ) ) )
+    { dialog.setDictionary( default_dictionary ); }
+  
+  }  else {
+    
+    dialog.setFilter( default_filter );
+    dialog.setDictionary( default_dictionary );
+    
   }
+  
+  dialog.nextWord();
+  dialog.exec();
 
+  // try overwrite with file record
+  if( !file().empty() )
+  {
+    FileRecord& record( menu().get( file() ) ); 
+    record.addInformation( "filter", dialog.filter() );
+    record.addInformation( "dictionary", dialog.dictionary() );
+  }
   #endif
   
 }
