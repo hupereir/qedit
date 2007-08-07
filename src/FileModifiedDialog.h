@@ -46,7 +46,8 @@ class FileModifiedDialog: public QDialog, public Counter
   public:
 
   //! return codes
-  enum {
+  enum ReturnCode
+  {
 
     //! re-saved removed file
     RESAVE = 0,

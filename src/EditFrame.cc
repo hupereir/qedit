@@ -34,7 +34,6 @@
 #include <QDomDocument>
 #include <QObjectList>
 
-#include "AskForSaveDialog.h"
 #include "AutoSave.h"
 #include "ClockLabel.h"
 #include "Config.h"
@@ -56,8 +55,6 @@
 #include "XmlOptions.h"
 #include "PrintDialog.h"
 #include "QtUtil.h"
-#include "FileModifiedDialog.h"
-#include "FileRemovedDialog.h"
 #include "StatusBar.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
@@ -665,53 +662,18 @@ void EditFrame::enterEvent( QEvent* e )
     TextDisplay &display( **iter );
     
     // check file
-    if( !display.ignoreWarnings() && display.fileRemoved() )
-    {
-
-      // disable check
-      int state( FileRemovedDialog( this, display.file() ).exec() );
-
-      if( state == FileRemovedDialog::RESAVE ) { display.save(); }
-      else if( state == FileRemovedDialog::SAVE_AS ) { display.saveAs(); }
-      else if( state == FileRemovedDialog::CLOSE ) { 
+    if( display.checkFileRemoved() == FileRemovedDialog::CLOSE ) 
+    { 
         
-        // register displays as dead
-        BASE::KeySet<TextDisplay> associated_displays( &display );
-        dead_displays.insert( associated_displays.begin(), associated_displays.end() );
-        dead_displays.insert( &display );
-        
-      } else if( state == FileRemovedDialog::IGNORE ) {
-        
-        BASE::KeySet<TextDisplay> associated_displays( &display );
-        associated_displays.insert( &display );
-        for( BASE::KeySet<TextDisplay>::iterator associated_iter = displays.begin(); associated_iter != displays.end(); associated_iter++ )
-        { (*associated_iter)->setIgnoreWarnings( true ); }
-      
-      }
-      
-    } else if( !display.ignoreWarnings() && (*iter)->fileModified() ) {
-
-      int state( FileModifiedDialog( this, display.file() ).exec() );
-      if( state == FileModifiedDialog::RESAVE ) { display.save(); }
-      else if( state == FileModifiedDialog::SAVE_AS ) { display.saveAs(); }
-      else if( state == FileModifiedDialog::RELOAD ) { 
-        
-        display.document()->setModified( false ); 
-        display.revertToSave(); 
-        
-      } else if( state == FileModifiedDialog::IGNORE ) { 
-
-        BASE::KeySet<TextDisplay> associated_displays( &display );
-        associated_displays.insert( &display );
-        for( BASE::KeySet<TextDisplay>::iterator associated_iter = displays.begin(); associated_iter != displays.end(); associated_iter++ )
-        { (*associated_iter)->setIgnoreWarnings( true ); }
+      // register displays as dead
+      BASE::KeySet<TextDisplay> associated_displays( &display );
+      dead_displays.insert( associated_displays.begin(), associated_displays.end() );
+      dead_displays.insert( &display );
+            
+    } else (*iter)->checkFileModified();
     
-      }
-
-    }
-
   }
-
+  
   // update window title
   _updateWindowTitle();
 
@@ -721,11 +683,7 @@ void EditFrame::enterEvent( QEvent* e )
 
     Debug::Throw() << "EditFrame::enterEvent - dead displays: " << dead_displays.size() << endl;
     for( BASE::KeySet<TextDisplay>::iterator iter = dead_displays.begin(); iter != dead_displays.end(); iter++ )
-    { 
-      (*iter)->setIgnoreWarnings( true );
-      (*iter)->document()->setModified( false );
-      _closeView( **iter ); 
-    }
+    { _closeView( **iter ); }
 
     // need to close window manually if there is no remaining displays
     if( dead_displays.size() == displays.size() ) close();

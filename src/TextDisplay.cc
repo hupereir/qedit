@@ -219,7 +219,7 @@ void TextDisplay::openFile( File file )
     setPlainText( in.readAll() );
     in.close();
     setModified( false );
-    setIgnoreWarnings( false );
+    _setIgnoreWarnings( false );
 
   }
 
@@ -243,12 +243,75 @@ void TextDisplay::setFile( const File& file )
   {
     _setLastSaved( file.lastModified() );
     _setWorkingDirectory( file.path() );
-    setIgnoreWarnings( false );
+    _setIgnoreWarnings( false );
     setReadOnly( file.exist() && !file.isWritable() );
   }
   
   if( isActive() ) emit needUpdate( WINDOW_TITLE | FILE_NAME ); 
   
+}
+
+//___________________________________________________________________________
+FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
+{
+  Debug::Throw( "TextDisplay::checkFileRemoved.\n" );
+ 
+  if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::IGNORE;
+ 
+  // disable check
+  int state( FileRemovedDialog( this, file() ).exec() );
+  if( state == FileRemovedDialog::RESAVE ) { save(); }
+  else if( state == FileRemovedDialog::SAVE_AS ) { saveAs(); }
+  else if( state == FileRemovedDialog::IGNORE ) {
+ 
+    BASE::KeySet<TextDisplay> displays( this );
+    displays.insert( this );
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    { 
+      (*iter)->_setIgnoreWarnings( true );
+      (*iter)->document()->setModified( false );
+    }
+   
+  } else if( state == FileRemovedDialog::IGNORE ) {
+    
+    BASE::KeySet<TextDisplay> displays( this );
+    displays.insert( this );
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    { (*iter)->_setIgnoreWarnings( true ); }
+    
+  }
+  
+  return FileRemovedDialog::ReturnCode( state );
+  
+}
+
+
+//___________________________________________________________________________
+FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
+{
+  Debug::Throw( "TextDisplay::checkFileModified.\n" );
+ 
+  if( _ignoreWarnings() || !_fileModified() ) return FileModifiedDialog::IGNORE;
+ 
+  int state( FileModifiedDialog( this, file() ).exec() );
+  if( state == FileModifiedDialog::RESAVE ) { save(); }
+  else if( state == FileModifiedDialog::SAVE_AS ) { saveAs(); }
+  else if( state == FileModifiedDialog::RELOAD ) { 
+    
+    document()->setModified( false ); 
+    revertToSave(); 
+        
+  } else if( state == FileModifiedDialog::IGNORE ) { 
+
+    BASE::KeySet<TextDisplay> displays( this );
+    displays.insert( this );
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    { (*iter)->_setIgnoreWarnings( true ); }
+    
+  }
+
+  return FileModifiedDialog::ReturnCode( state );
+
 }
 
 //___________________________________________________________________________
@@ -310,7 +373,7 @@ void TextDisplay::save( void )
   // update modification state and last_saved time stamp
   setModified( false );
   _setLastSaved( file().lastModified() );
-  setIgnoreWarnings( false );
+  _setIgnoreWarnings( false );
   
   // retrieve associated displays, update saved time
   BASE::KeySet<TextDisplay> displays( this );
@@ -426,39 +489,6 @@ void TextDisplay::revertToSave( void )
   
 
 }
-
-//____________________________________________
-bool TextDisplay::fileRemoved( void ) const
-{
-  Debug::Throw( "TextDisplay::fileRemoved.\n" );
-  return (!file().empty() && last_save_.isValid() && !file().exist() );
-}
-
-//____________________________________________
-bool TextDisplay::fileModified( void )
-{  
-  
-  Debug::Throw( "TextDisplay::fileModified.\n" );
-
-  // check file size
-  if( !( file().size() && file().exist() ) ) return false;
-  TimeStamp fileModified( file().lastModified() );
-
-  // check if file was modified and contents is changed
-  if(
-    fileModified.isValid() &&
-    last_save_.isValid() &&
-    fileModified > last_save_ &&
-    _contentsChanged() )
-  {
-    // update last_save to avoid chain questions
-    last_save_ = fileModified;
-    return true;
-  }
-
-  return false;
-
-}  
 
 //_____________________________________________________________________
 void TextDisplay::setActive( const bool& active )
@@ -901,6 +931,39 @@ void TextDisplay::_setPaper( const QColor& color )
   setPalette( palette );
 
 }
+
+//____________________________________________
+bool TextDisplay::_fileRemoved( void ) const
+{
+  Debug::Throw( "TextDisplay::_fileRemoved.\n" );
+  return (!file().empty() && last_save_.isValid() && !file().exist() );
+}
+
+//____________________________________________
+bool TextDisplay::_fileModified( void )
+{  
+  
+  Debug::Throw( "TextDisplay::_fileModified.\n" );
+
+  // check file size
+  if( !( file().size() && file().exist() ) ) return false;
+  TimeStamp fileModified( file().lastModified() );
+
+  // check if file was modified and contents is changed
+  if(
+    fileModified.isValid() &&
+    last_save_.isValid() &&
+    fileModified > last_save_ &&
+    _contentsChanged() )
+  {
+    // update last_save to avoid chain questions
+    last_save_ = fileModified;
+    return true;
+  }
+
+  return false;
+
+}  
 
 //_____________________________________________________________
 bool TextDisplay::_contentsChanged( void ) const

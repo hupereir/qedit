@@ -337,18 +337,11 @@ void MainFrame::exit( void )
       
       if( !(*display_iter)->document()->isModified() ) continue;
       save_all_enabled |= (*iter)->modifiedDisplayCount() > 1;
-        
-      int flags( AskForSaveDialog::YES | AskForSaveDialog::NO | AskForSaveDialog::CANCEL );
-      if( save_all_enabled ) flags |=  AskForSaveDialog::ALL;
+      int state( (*display_iter)->askForSave( save_all_enabled ) );
       
-      AskForSaveDialog dialog( *display_iter, (*display_iter)->file(), flags );
-      QtUtil::centerOnParent( &dialog );
-      int state( dialog.exec() );
-      
-      if( state == AskForSaveDialog::YES ) (*display_iter)->save();
-      else if( state == AskForSaveDialog::NO ) (*display_iter)->document()->setModified( false );
-      else if( state == AskForSaveDialog::CANCEL ) return;
-      else if( state == AskForSaveDialog::ALL ) {
+      if( state == AskForSaveDialog::CANCEL ) return;
+      else if( state == AskForSaveDialog::ALL ) 
+      {
         
         // save all displays for this frame, starting from the current
         for(; display_iter != displays.end(); display_iter++ ) 

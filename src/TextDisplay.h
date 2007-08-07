@@ -36,6 +36,8 @@
 #include <QAction>
 
 #include "AskForSaveDialog.h"
+#include "FileModifiedDialog.h"
+#include "FileRemovedDialog.h"
 #include "Config.h"
 #include "CustomTextEdit.h"
 #include "Debug.h"
@@ -193,6 +195,12 @@ class TextDisplay: public CustomTextEdit
   //! ask for save if modified
   AskForSaveDialog::ReturnCode askForSave( const bool& enable_all = false );
   
+  //! check if file has been removed externally
+  FileRemovedDialog::ReturnCode checkFileRemoved( void );
+
+  //! check if file has been modified externally
+  FileModifiedDialog::ReturnCode checkFileModified( void );
+  
   //! Save file
   void save( void );
   
@@ -201,23 +209,6 @@ class TextDisplay: public CustomTextEdit
 
   //! Revert to save
   void revertToSave( void );
-  
-  //! if true file is not checked on enter event
-  const bool& ignoreWarnings() const
-  { return ignore_warnings_; }
-  
-  //! if true file is not checked on enter event
-  void setIgnoreWarnings( const bool& value )
-  { 
-    Debug::Throw() << "TextDisplay::_setIgnoreWarnings - " << (value ? "true":"false") << std::endl;
-    ignore_warnings_ = value; 
-  }
-    
-  //! returns true if file was modified by external application
-  bool fileModified( void );
-
-  //! returns true if file was removed
-  bool fileRemoved( void ) const;
   
   //@}
   
@@ -402,8 +393,22 @@ class TextDisplay: public CustomTextEdit
   void _setWorkingDirectory( const File& file )
   { working_directory_ = file; }
 
+   //! if true file is not checked on enter event
+  const bool& _ignoreWarnings() const
+  { return ignore_warnings_; }
+  
+  //! if true file is not checked on enter event
+  void _setIgnoreWarnings( const bool& value )
+  { ignore_warnings_ = value; }
+  
   //! returns true if text contents differs from file contents
   bool _contentsChanged( void ) const;
+
+  //! returns true if file was removed
+  bool _fileRemoved( void ) const;
+   
+  //! returns true if file was modified by external application
+  bool _fileModified( void );
   
   //! track text modifications for syntax highlighting
   void _setBlockModified( const QTextBlock& );
