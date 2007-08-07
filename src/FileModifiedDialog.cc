@@ -90,8 +90,13 @@ FileModifiedDialog::FileModifiedDialog( QWidget* parent, const File& file ):
   button_layout->setSpacing( 5 );
   layout->addLayout( button_layout );
 
-  // resave button
+  // reload button.
   QPushButton* button;
+  button_layout->addWidget( button = new QPushButton( "&Reload", this ) );
+  connect( button, SIGNAL( clicked() ), SLOT( _reLoad() ) );
+  button->setToolTip( "Reload file from disc. Modifications will be lost" );
+
+  // resave button
   button_layout->addWidget( button = new QPushButton( "&Re-save", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _reSave() ) );
   button->setToolTip( "Save file again. Disc modifications will be lost" );
@@ -100,11 +105,6 @@ FileModifiedDialog::FileModifiedDialog( QWidget* parent, const File& file ):
   button_layout->addWidget( button = new QPushButton( "&Save as", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _saveAs() ) );
   button->setToolTip( "Save file with a different name" );
-
-  // reload button.
-  button_layout->addWidget( button = new QPushButton( "&Reload", this ) );
-  connect( button, SIGNAL( clicked() ), SLOT( _reLoad() ) );
-  button->setToolTip( "Reload file from disc. Modifications will be lost" );
 
   // ignore button.
   button_layout->addWidget( button = new QPushButton( "&Ignore", this ) );
