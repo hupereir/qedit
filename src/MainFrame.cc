@@ -345,14 +345,14 @@ void MainFrame::exit( void )
       QtUtil::centerOnParent( &dialog );
       int state( dialog.exec() );
       
-      if( state == AskForSaveDialog::YES ) (*iter)->save( *display_iter );
+      if( state == AskForSaveDialog::YES ) (*display_iter)->save();
       else if( state == AskForSaveDialog::NO ) (*display_iter)->document()->setModified( false );
       else if( state == AskForSaveDialog::CANCEL ) return;
       else if( state == AskForSaveDialog::ALL ) {
         
         // save all displays for this frame, starting from the current
         for(; display_iter != displays.end(); display_iter++ ) 
-        { if( (*display_iter)->document()->isModified() ) (*iter)->save( *display_iter ); }
+        { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
        
         // save all editframes starting from the next to this one
         BASE::KeySet<EditFrame>::iterator sub_iter = iter; 

@@ -326,14 +326,6 @@ void EditFrame::setActiveDisplay( TextDisplay& display )
 }
 
 //____________________________________________
-void EditFrame::save( TextDisplay* display )
-{
-  Debug::Throw( "EditFrame::save.\n" );
-  if( !display ) display = &activeDisplay();
-  display->save();
-}
-
-//____________________________________________
 void EditFrame::saveAll( void )
 {
   Debug::Throw( "EditFrame::saveAll.\n" );
@@ -430,14 +422,6 @@ void EditFrame::_detach( void )
 
   return;
   
-}
-
-//____________________________________________
-void EditFrame::_saveAs( TextDisplay* display )
-{
-  Debug::Throw( "EditFrame::_saveAs.\n" );
-  if( !display ) display = &activeDisplay();
-  display->saveAs();
 }
 
 //___________________________________________________________
@@ -646,13 +630,13 @@ void EditFrame::closeEvent( QCloseEvent* event )
 
       int state( AskForSaveDialog( this, display.file(), flags ).exec() );
       
-      if( state == AskForSaveDialog::YES ) save( &display );
+      if( state == AskForSaveDialog::YES ) display.save();
       else if( state == AskForSaveDialog::NO ) display.document()->setModified( false );
       else if( state == AskForSaveDialog::ALL ) {
         
         // for this frame, only save displays located after the current
         for( BASE::KeySet<TextDisplay>::iterator display_iter = iter; display_iter != displays.end(); display_iter++ )
-        { if( (*display_iter)->document()->isModified() ) save( *display_iter ); }
+        { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
 
       } else if( state == AskForSaveDialog::CANCEL ) {
 
@@ -699,8 +683,8 @@ void EditFrame::enterEvent( QEvent* e )
       // disable check
       int state( FileRemovedDialog( this, display.file() ).exec() );
 
-      if( state == FileRemovedDialog::RESAVE ) { save( &display ); }
-      else if( state == FileRemovedDialog::SAVE_AS ) { _saveAs( &display ); }
+      if( state == FileRemovedDialog::RESAVE ) { display.save(); }
+      else if( state == FileRemovedDialog::SAVE_AS ) { display.saveAs(); }
       else if( state == FileRemovedDialog::CLOSE ) { 
         
         // register displays as dead
@@ -720,8 +704,8 @@ void EditFrame::enterEvent( QEvent* e )
     } else if( !display.ignoreWarnings() && (*iter)->fileModified() ) {
 
       int state( FileModifiedDialog( this, display.file() ).exec() );
-      if( state == FileModifiedDialog::RESAVE ) { save( &display ); }
-      else if( state == FileModifiedDialog::SAVE_AS ) { _saveAs( &display ); }
+      if( state == FileModifiedDialog::RESAVE ) { display.save(); }
+      else if( state == FileModifiedDialog::SAVE_AS ) { display.saveAs(); }
       else if( state == FileModifiedDialog::RELOAD ) { 
         
         display.document()->setModified( false ); 
@@ -1109,7 +1093,7 @@ void EditFrame::_closeView( TextDisplay& display )
     // create dialog
     AskForSaveDialog dialog( this, display.file(), false );
     int state = dialog.exec();
-    if( state == AskForSaveDialog::YES ) { save( &display ); }
+    if( state == AskForSaveDialog::YES ) { display.save(); }
     if( state == AskForSaveDialog::NO ) { display.document()->setModified( false ); }
     else if( state == AskForSaveDialog::CANCEL ) return;
 

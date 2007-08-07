@@ -323,7 +323,8 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
 
   //! save
   /*! \param display if non 0, save this display. Save Active Display otherwise. */
-  void save( TextDisplay *display = 0 );
+  void save( void )
+  { activeDisplay().save(); }
 
   //! save all modified text displays
   void saveAll( void );
@@ -394,7 +395,8 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   }
       
   //! Save As
-  void _saveAs( TextDisplay *display = 0 );
+  void _saveAs( void )
+  { activeDisplay().saveAs(); }
 
   //! Revert to save
   void _revertToSave( void );
