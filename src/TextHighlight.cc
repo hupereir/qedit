@@ -29,6 +29,8 @@
   \date $Date$
 */
 
+#include <QTextDocument>
+
 #include "Debug.h"
 #include "HighlightPattern.h"
 #include "HighlightBlockData.h"
@@ -64,7 +66,11 @@ void TextHighlight::setCurrentParenthesis( const int& local, const int& absolute
 {
   
   if( ( local == -1 && local_parenthesis_ != local ) || absolute_parenthesis_ != absolute )
-  { document()->markContentsDirty(block.position()+position,1); }
+  { 
+    cout << "resetting parenthesis" << endl;   
+    local_parenthesis_ = local;
+    document()->markContentsDirty(absolute_parenthesis_,1); 
+  }
   
   local_parenthesis_ = local;
   absolute_parenthesis_ = absolute; 
@@ -74,19 +80,16 @@ void TextHighlight::setCurrentParenthesis( const int& local, const int& absolute
 //_________________________________________________________
 void TextHighlight::highlightBlock( const QString& text )
 {
-  Debug::Throw( "TextHighlight::highlightBlock.\n" ); 
+
+  Debug::Throw(0) << "TextHighlight::highlightBlock - local: " << local_parenthesis_ << " absolute: " << absolute_parenthesis_ << endl;
 
   // base class highlight
   // this is always performed
   BaseTextHighlight::highlightBlock( text );
   
   // highlight parenthesis highlight color, if any
-  if( current_parenthesis_ != -1 ) 
-  { 
-    Debug::Throw(0) << "TextHighlight::highlightBlock - parenthesis:" << current_parenthesis_ << endl; 
-    //if( parenthesis_highlight_format_.background().isValid() )
-    { setFormat( current_parenthesis_, 1, parenthesis_highlight_format_ ); }
-  }
+  if( local_parenthesis_ != -1 ) 
+  { setFormat( local_parenthesis_, 1, parenthesis_highlight_format_ ); }
   
   if( !isHighlightEnabled() )
   {

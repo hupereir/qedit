@@ -1590,7 +1590,7 @@ void TextDisplay::_highlightParenthesis( void )
     return; 
   }
   
-  textHighlight().setCurrentParenthesis( position );
+  textHighlight().setCurrentParenthesis( position, block.position()+position );
   document()->markContentsDirty(block.position()+position,1);
 //   // highlight the found parenthesis
 //   // retrieve block layout

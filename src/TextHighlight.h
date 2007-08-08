@@ -112,12 +112,12 @@ class TextHighlight: public BaseTextHighlight
   void setParenthesis( const TextParenthesis::List& );
  
   //! current parenthesis color
-  bool setParenthesisHighlightColor( const QColor& color )
+  void setParenthesisHighlightColor( const QColor& color )
   { parenthesis_highlight_format_.setBackground(color); }
 
   //! current parenthesis
   /*! returns true if changed */
-  bool setCurrentParenthesis( const int& local, const int& absolute = 0 );
+  void setCurrentParenthesis( const int& local, const int& absolute = 0 );
      
   //@}
     
