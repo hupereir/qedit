@@ -56,8 +56,10 @@
 #include "XmlOptions.h"
 
 #include "Config.h"
+
 #if WITH_ASPELL
 #include "SpellDialog.h"
+#include "SuggestionMenu.h"
 #endif
 
 using namespace std;
@@ -270,12 +272,13 @@ void TextDisplay::openFile( File file )
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
   { menu().get( TextDisplay::file() ).addInformation( "class_name", className() ); }
-    
+  
 }
 
 //_______________________________________________________
 void TextDisplay::setFile( const File& file )
 { 
+  Debug::Throw( "TextDisplay::setFile.\n" );
   file_ = file; 
   if( file.exist() ) 
   {
@@ -998,6 +1001,54 @@ void TextDisplay::focusInEvent( QFocusEvent* event )
   CustomTextEdit::focusInEvent( event );
 }
 
+
+//________________________________________________
+void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
+{
+  
+  Debug::Throw( "CustomTextEdit::contextMenuEvent.\n" );
+  #if WITH_ASPELL
+  
+  // check autospell enability
+  if( !textHighlight().spellParser().isEnabled() ) return CustomTextEdit::contextMenuEvent( event );
+  
+  // block and cursor
+  QTextCursor cursor( cursorForPosition( event->pos() ) );
+  QTextBlock block( cursor.block() );
+  
+  // block data
+  HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+  if( !data ) return CustomTextEdit::contextMenuEvent( event );
+
+
+  // try retrieve misspelled word
+  SPELLCHECK::Word word( data->misspelledWord( cursor.position() - block.position() ) );
+  if( word.empty() || textHighlight().spellParser().interface().isWordIgnored( word ) ) 
+  { return CustomTextEdit::contextMenuEvent( event ); }
+  
+  // change selection to misspelled word
+  cursor.setPosition( word.position() + block.position(), QTextCursor::MoveAnchor );
+  cursor.setPosition( word.position() + word.size() + block.position(), QTextCursor::KeepAnchor );
+  setTextCursor( cursor );
+  
+  // create suggestion menu
+  SPELLCHECK::SuggestionMenu menu( this, word, isReadOnly() );
+  menu.interface().setFilter( textHighlight().spellParser().interface().filter() );
+  menu.interface().setDictionary( textHighlight().spellParser().interface().dictionary() );
+  
+  // set connections
+  connect( &menu, SIGNAL( ignoreWord( std::string ) ), SLOT( _ignoreMisspelledWord( std::string ) ) );
+  connect( &menu, SIGNAL( suggestionSelected( std::string ) ), SLOT( _replaceMisspelledSelection( std::string ) ) );
+  
+  // execute
+  menu.exec( event->globalPos() );
+
+  #else 
+  return CustomTextEdit::contextMenuEvent( event );
+  #endif
+  
+}
+
 //_____________________________________________________________________
 void TextDisplay::_createReplaceDialog( void )
 {
@@ -1236,6 +1287,7 @@ void TextDisplay::_spellcheck( void )
   #if WITH_ASPELL
   // create dialog
   SPELLCHECK::SpellDialog dialog( this );
+  dialog.interface().setIgnoredWords( textHighlight().spellParser().interface().ignoredWords() );
 
   // default dictionary from XmlOptions
   string default_filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
@@ -1274,6 +1326,9 @@ void TextDisplay::_spellcheck( void )
     record.addInformation( "filter", dialog.filter() );
     record.addInformation( "dictionary", dialog.dictionary() );
   }
+  
+  textHighlight().spellParser().interface().mergeIgnoredWords( dialog.interface().ignoredWords() );
+  
   #endif
   
 }
@@ -1373,3 +1428,29 @@ void TextDisplay::_setBlockModified( const QTextBlock& block )
   if( data ) data->setModified( true );
 
 }
+
+//__________________________________________________
+void TextDisplay::_ignoreMisspelledWord( std::string word )
+{ 
+  Debug::Throw() << "TextDisplay::_ignoreMisspelledWord - word: " << word << endl;
+  #if WITH_ASPELL
+  textHighlight().spellParser().interface().ignoreWord( word );
+  rehighlight();
+  #endif
+  return;
+  
+}
+
+//__________________________________________________
+void TextDisplay::_replaceMisspelledSelection( std::string word )
+{ 
+
+  #if WITH_ASPELL
+  Debug::Throw() << "TextDisplay::_replaceMisspelledSelection - word: " << word << endl;
+  QTextCursor cursor( textCursor() );
+  cursor.insertText( word.c_str() );
+  #endif
+  return; 
+
+}
+

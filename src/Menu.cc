@@ -221,20 +221,26 @@ void Menu::_updatePreferenceMenu( void )
 
   Debug::Throw( "Menu::_updatePreferenceMenu.\n" );
 
+  // reference to needed objects
+  EditFrame& frame( *static_cast<EditFrame*>(window()) );
+  TextDisplay& display( frame.activeDisplay() );
+
   // clear menu
   preference_menu_->clear();
   
   // configurations (from mainFrame)
   preference_menu_->addAction( "Default &Configuration", qApp, SLOT( configuration() ) );
 
+  // document class configuration
+  // preference_menu_->addAction( frame.documentClassAction() );
+
   #if WITH_ASPELL
+  preference_menu_->addSeparator();
   preference_menu_->addAction( "&Spell-check configuration", qApp, SLOT( spellCheckConfiguration() ) );
+  preference_menu_->addAction( display.dictionaryMenuAction() );
+  preference_menu_->addAction( display.filterMenuAction() );
   #endif
   
-  // document class configuration
-  EditFrame& frame( *static_cast<EditFrame*>(window()) );
-  preference_menu_->addAction( frame.documentClassAction() );
-
   // open mode menu
   QMenu* open_mode_menu = new QMenu( "&Default open mode", this );
   QActionGroup* group( new QActionGroup( open_mode_menu )  );
@@ -270,7 +276,6 @@ void Menu::_updatePreferenceMenu( void )
   preference_menu_->addSeparator();
 
   // textdisplay actions
-  TextDisplay& display( frame.activeDisplay() );
   preference_menu_->addAction( display.wrapModeAction() );
   preference_menu_->addAction( display.tabEmulationAction() );
   preference_menu_->addAction( display.textIndentAction() );
@@ -281,8 +286,6 @@ void Menu::_updatePreferenceMenu( void )
   #if WITH_ASPELL
   preference_menu_->addSeparator();
   preference_menu_->addAction( display.autoSpellAction() );
-  preference_menu_->addAction( display.dictionaryMenuAction() );
-  preference_menu_->addAction( display.filterMenuAction() );
   #endif
   
   return;

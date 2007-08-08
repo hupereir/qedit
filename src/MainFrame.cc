@@ -261,7 +261,7 @@ EditFrame* MainFrame::open( FileRecord record )
 
   // check if file exist
   if( record.file().exist() ) frame->setFile( record.file() );
-  else if( !record.file().empty() ) 
+  else if( !record.file().empty() )
   {
   
     frame->show();
@@ -312,8 +312,7 @@ EditFrame* MainFrame::open( FileRecord record )
       
       default: throw runtime_error( DESCRIPTION( "invalid return code" ) );
     }
-  }
-  
+  } 
   // update frame configuration
   frame->show();
   return frame;

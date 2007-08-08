@@ -392,6 +392,9 @@ class TextDisplay: public CustomTextEdit
   //! focus event [overloaded]
   virtual void focusInEvent( QFocusEvent* );
 
+  //! context menu event [overloaded]
+  virtual void contextMenuEvent( QContextMenuEvent* );
+
   //! create replace dialog
   virtual void _createReplaceDialog( void );
     
@@ -520,6 +523,12 @@ class TextDisplay: public CustomTextEdit
   //! text changed
   virtual void _textModified( void )
   { if( isActive() ) emit needUpdate( WINDOW_TITLE ); }
+  
+  //! ignore current misspelled word
+  void _ignoreMisspelledWord( std::string );
+  
+  //! replace current selection with spell-checked suggestion
+  void _replaceMisspelledSelection( std::string );
   
   private:
   

@@ -38,12 +38,14 @@
 #include "CustomPixmap.h"
 #include "CustomGridLayout.h"
 #include "Debug.h"
+#include "FileRecord.h"
 #include "Icons.h"
 #include "FileInfoDialog.h"
-#include "XmlOptions.h"
+#include "OpenPreviousMenu.h"
 #include "QtUtil.h"
 #include "TextDisplay.h"
 #include "TimeStamp.h"
+#include "XmlOptions.h"
 
 using namespace std;
 
@@ -129,6 +131,19 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   {
     grid_layout->addWidget( label = new QLabel( "document class: ", box ) );
     grid_layout->addWidget( label = new QLabel( class_name.c_str(), box ) );
+  }
+  
+  FileRecord record( parent->menu().get( file ) );
+  if( record.hasInformation( "dictionary" ) )
+  {
+    grid_layout->addWidget( label = new QLabel( "spell-check dictionary: ", box ) );
+    grid_layout->addWidget( label = new QLabel( record.information( "dictionary" ).c_str(), box ) );
+  }
+
+  if( record.hasInformation( "filter" ) )
+  {
+    grid_layout->addWidget( label = new QLabel( "spell-check filter: ", box ) );
+    grid_layout->addWidget( label = new QLabel( record.information( "filter" ).c_str(), box ) );
   }
   
   grid_layout->setColumnStretch( 1, 1 );

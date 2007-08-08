@@ -165,6 +165,7 @@ EditFrame::EditFrame(  QWidget* parent ):
   addToolBar( toolbar );
 
   toolbar->addAction( fileInfoAction() ); 
+  toolbar->addAction( spellcheckAction() ); 
   
   // splitting toolbar
   toolbar = new CustomToolBar( "Display", this );
@@ -196,6 +197,9 @@ EditFrame::EditFrame(  QWidget* parent ):
   connect( qApp, SIGNAL( aboutToQuit() ), SLOT( saveConfiguration() ) );
   updateConfiguration();
   
+  // update buttons
+  _update( TextDisplay::ALL );
+  
   Debug::Throw( "EditFrame::EditFrame - done.\n" );
  
 }
@@ -216,7 +220,7 @@ void EditFrame::setFile( File file )
   TextDisplay &display( **iter );
    
   // open file in active display
-  display.openFile( file );
+  if( !file.empty() ) display.openFile( file );
   
   // set focus
   setActiveDisplay( display );
@@ -696,6 +700,7 @@ void EditFrame::_documentClassDialog( void )
   Debug::Throw( "EditFrame::_documentClassDialog.\n" );
   DocumentClassDialog dialog( this );
   connect( &dialog, SIGNAL( classSelected( std::string ) ), SLOT( selectClassName( std::string ) ) );
+  connect( &dialog, SIGNAL( classRemoved( std::string ) ), qApp, SIGNAL( documentClassesChanged() ) );
   dialog.exec();
 
 
@@ -711,7 +716,10 @@ void EditFrame::_update( unsigned int flags )
   { _updateWindowTitle(); }
 
   if( flags & TextDisplay::FILE_NAME && file_editor_ )
-  { file_editor_->setText( activeDisplay().file().c_str() ); }
+  { 
+    file_editor_->setText( activeDisplay().file().c_str() ); 
+    fileInfoAction()->setEnabled( !activeDisplay().file().empty() );
+  }
 
   if( flags & TextDisplay::CUT )
   { cutAction()->setEnabled( activeDisplay().cutAction()->isEnabled() ); }
@@ -835,6 +843,13 @@ void EditFrame::_installActions( void )
   addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO, path_list ), "&File information", this ) );
   file_info_action_->setToolTip( "Display file informations" );
   connect( file_info_action_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
+
+  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK, path_list ), "&Spell check", this ) );
+  #if WITH_ASPELL
+  connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
+  #else 
+  spellcheck_action_->setVisible( false );
+  #endif
 
 }
 

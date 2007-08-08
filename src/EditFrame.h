@@ -299,6 +299,10 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   QAction* fileInfoAction( void )
   { return file_info_action_; }
   
+  //! spellcheck 
+  QAction* spellcheckAction( void )
+  { return spellcheck_action_; }
+  
   //@}
 
   public slots:
@@ -449,6 +453,10 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void _fileInfo( void )
   { activeDisplay().fileInfoAction()->trigger(); }
 
+  //! spellcheck
+  void _spellcheck( void )
+  { activeDisplay().spellcheckAction()->trigger(); }
+  
   //! update window title, cut, copy, paste buttons, and filename line editor
   /*! \param flags are bitwise or of TextDisplay::UpdateFlags */
   void _update( unsigned int flags );
@@ -587,6 +595,9 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   
   //! file info
   QAction* file_info_action_;
+  
+  //! spellcheck
+  QAction* spellcheck_action_;
   
   //@}
   

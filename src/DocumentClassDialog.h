@@ -55,6 +55,9 @@ class DocumentClassDialog: public QDialog, public Counter
   //! emitted when a document class is selected
   void classSelected( std::string name );
   
+  //!  emitted when classes need update
+  void classRemoved( std::string name );
+  
   private slots:
   
   //! select document class

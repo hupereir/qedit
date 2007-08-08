@@ -147,10 +147,16 @@ void DocumentClassDialog::_remove( void )
   
   bool removed( false );
   for( QList<QTreeWidgetItem*>::iterator iter = items.begin(); iter != items.end(); iter++ )
-  { removed |= manager.remove( qPrintable( (*iter)->text( NAME ) ) ); }
+  { 
+    string classname( qPrintable( (*iter)->text( NAME ) ) );
+    if( manager.remove( classname ) )
+    { 
+      removed = true;
+      emit classRemoved( classname );
+    }
+  }
   
-  if( removed )
-  { _load(); }
+  if( removed ) _load(); 
   
 }
 
