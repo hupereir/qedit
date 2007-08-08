@@ -321,27 +321,27 @@ class TextDisplay: public CustomTextEdit
     file_info_action_->setEnabled( !file().empty() );
     return file_info_action_; 
   }
-  
-  //@}
-  
+
   #if WITH_ASPELL
   
-  //! dictionary menu
-  SPELLCHECK::DictionaryMenu& dictionaryMenu( void )
+  //! spellcheck dictionary selection
+  QAction* dictionaryMenuAction( void )
   { 
-    Exception::checkPointer( dictionary_menu_, DESCRIPTION( "dictionary_menu_ not initialized" ) );
-    return *dictionary_menu_;
+    dictionary_menu_action_->setEnabled( autoSpellAction()->isChecked() );
+    return dictionary_menu_action_;
   }
-
-  //! filter menu
-  SPELLCHECK::FilterMenu& filterMenu( void )
+  
+  //! spellcheck filter selection
+  QAction* filterMenuAction( void )
   { 
-    Exception::checkPointer( filter_menu_, DESCRIPTION( "filter_menu_ not initialized" ) );
-    return *filter_menu_;
+    filter_menu_action_->setEnabled( autoSpellAction()->isChecked() );
+    return filter_menu_action_;
   }
   
   #endif
   
+  //@}
+    
   // return true if block is an empty line
   bool isEmptyBlock( const QTextBlock& block ) const
   { return empty_line_regexp_.indexIn( block.text() ) >= 0; }
@@ -442,6 +442,18 @@ class TextDisplay: public CustomTextEdit
   //! track text modifications for syntax highlighting
   void _setBlockModified( const QTextBlock& );
   
+  #if WITH_ASPELL
+  
+  //! dictionary menu
+  SPELLCHECK::DictionaryMenu& _dictionaryMenu( void )
+  { return *dictionary_menu_; }
+
+  //! filter menu
+  SPELLCHECK::FilterMenu& _filterMenu( void )
+  { return *filter_menu_; }
+  
+  #endif
+
   protected slots:
 
   //! highlight current block
@@ -570,6 +582,15 @@ class TextDisplay: public CustomTextEdit
   //! toggle text highlighting
   QAction* file_info_action_;
   
+  #if WITH_ASPELL
+
+  //! spellcheck dictionary selection menu
+  QAction* dictionary_menu_action_;
+  
+  //! spellcheck filter selection menu
+  QAction* filter_menu_action_;
+  
+  #endif
   //@}
   
   #if WITH_ASPELL

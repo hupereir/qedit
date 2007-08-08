@@ -114,9 +114,14 @@ TextDisplay::TextDisplay( QWidget* parent ):
   // install menus
   filter_menu_ = new SPELLCHECK::FilterMenu( this );
   dictionary_menu_ = new SPELLCHECK::DictionaryMenu( this );
-  connect( &filterMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectFilter( const std::string& ) ) );
-  connect( &dictionaryMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectDictionary( const std::string& ) ) );
 
+  filter_menu_action_ = _filterMenu().menuAction();
+  dictionary_menu_action_ = _dictionaryMenu().menuAction();
+  
+  connect( &_filterMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectFilter( const std::string& ) ) );
+  connect( &_dictionaryMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectDictionary( const std::string& ) ) );
+
+  
   #endif
   
   // retrieve pixmap path
@@ -124,7 +129,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
 
   // autospell
-  addAction( autospell_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK, path_list ), "&Automatic spell-check", this ) );
+  addAction( autospell_action_ = new QAction( "&Automatic spell-check", this ) );
   autospell_action_->setCheckable( true );
   
   #if WITH_ASPELL
@@ -752,6 +757,7 @@ void TextDisplay::updateSpellCheckConfiguration( void )
   bool changed( false );
   changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<string>("AUTOSPELL_COLOR").c_str() ) );
   changed |= textHighlight().spellParser().setFontFormat( XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
+  textHighlight().updateSpellPattern();
   autoSpellAction()->setChecked( XmlOptions::get().get<bool>("AUTOSPELL") );
   autoSpellAction()->setEnabled( textHighlight().spellParser().color().isValid() );
   
@@ -777,13 +783,13 @@ void TextDisplay::updateSpellCheckConfiguration( void )
   // see if one should/can change the dictionary and filter
   if( filter != interface.filter() && interface.setFilter( filter ) ) 
   {
-    filterMenu().select( filter );
+    _filterMenu().select( filter );
     changed = true;
   }
   
   if( dictionary != interface.dictionary() && interface.setDictionary( dictionary ) ) 
   {
-    dictionaryMenu().select( dictionary );
+    _dictionaryMenu().select( dictionary );
     changed = true;
   }
   
@@ -1189,8 +1195,6 @@ void TextDisplay::_toggleAutoSpell( bool state )
   
   // propagate to textHighlight
   textHighlight().spellParser().setEnabled( state );
-  dictionaryMenu().setEnabled( state );
-  filterMenu().setEnabled( state );
   rehighlight();
   
   // propagate to other displays
@@ -1288,7 +1292,7 @@ void TextDisplay::_selectFilter( const std::string& filter )
   
   // update interface
   interface.setFilter( filter );
-  filterMenu().select( filter );
+  _filterMenu().select( filter );
   
   // update file record
   if( !file().empty() )
@@ -1319,7 +1323,7 @@ void TextDisplay::_selectDictionary( const std::string& dictionary )
   
   // update interface
   interface.setDictionary( dictionary );
-  dictionaryMenu().select( dictionary );
+  _dictionaryMenu().select( dictionary );
   
   // update file record
   if( !file().empty() )

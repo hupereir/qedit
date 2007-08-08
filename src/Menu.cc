@@ -281,8 +281,8 @@ void Menu::_updatePreferenceMenu( void )
   #if WITH_ASPELL
   preference_menu_->addSeparator();
   preference_menu_->addAction( display.autoSpellAction() );
-  preference_menu_->addMenu( &display.dictionaryMenu() );
-  preference_menu_->addMenu( &display.filterMenu() );
+  preference_menu_->addAction( display.dictionaryMenuAction() );
+  preference_menu_->addAction( display.filterMenuAction() );
   #endif
   
   return;
