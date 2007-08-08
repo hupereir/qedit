@@ -107,10 +107,10 @@ namespace XML {
   static const std::string OPTION_SEPARATOR( "separator" );
   //@}
   
-  //!@name text braces
+  //!@name text parenthesis
   //@{
-  //! text braces
-  static const std::string BRACES( "braces" );
+  //! text parenthesis
+  static const std::string PARENTHESIS( "parenthesis" );
   //@}
   
 };

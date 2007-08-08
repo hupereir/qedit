@@ -281,7 +281,7 @@ void Menu::_updatePreferenceMenu( void )
   preference_menu_->addAction( display.textIndentAction() );
   preference_menu_->addAction( display.textHighlightAction() );
   preference_menu_->addAction( display.blockHighlightAction() );
-  preference_menu_->addAction( display.bracesHighlightAction() );
+  preference_menu_->addAction( display.parenthesisHighlightAction() );
   
   #if WITH_ASPELL
   preference_menu_->addSeparator();

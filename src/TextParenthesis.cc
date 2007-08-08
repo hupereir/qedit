@@ -23,8 +23,8 @@
 
 
 /*!
-  \file TextBraces.cc
-  \brief Text braces (for highlighting)
+  \file TextParenthesis.cc
+  \brief Text parenthesis (for highlighting)
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -33,18 +33,18 @@
 
 #include "Debug.h"
 #include "Str.h"
-#include "TextBraces.h"
+#include "TextParenthesis.h"
 #include "XmlDef.h"
 #include "XmlUtil.h"
 
 using namespace std;
 
 //_________________________________________________________
-TextBraces::TextBraces( const QDomElement& element ):
-  Counter( "TextBraces" )
+TextParenthesis::TextParenthesis( const QDomElement& element ):
+  Counter( "TextParenthesis" )
 {
 
-  Debug::Throw( "TextBraces::TextBraces.\n" );
+  Debug::Throw( "TextParenthesis::TextParenthesis.\n" );
   
   // parse attributes
   QDomNamedNodeMap attributes( element.attributes() );
@@ -56,7 +56,7 @@ TextBraces::TextBraces( const QDomElement& element ):
     string value( qPrintable( attribute.value() ) );
     if( name == XML::BEGIN ) first = Str( XmlUtil::xmlToText(value) ).get<char>();
     else if( name == XML::END ) second = Str( XmlUtil::xmlToText(value) ).get<char>();
-    else cout << "TextBraces::TextBraces - unrecognized attribute: " << name << endl;
+    else cout << "TextParenthesis::TextParenthesis - unrecognized attribute: " << name << endl;
   }
   
   // create regexp
@@ -71,10 +71,10 @@ TextBraces::TextBraces( const QDomElement& element ):
 
 
 //_____________________________________________________
-QDomElement TextBraces::domElement( QDomDocument& parent ) const
+QDomElement TextParenthesis::domElement( QDomDocument& parent ) const
 {
-  Debug::Throw( "TextBraces::DomElement.\n" );
-  QDomElement out( parent.createElement( XML::BRACES.c_str() ) );
+  Debug::Throw( "TextParenthesis::DomElement.\n" );
+  QDomElement out( parent.createElement( XML::PARENTHESIS.c_str() ) );
   
   // dump attributes
   out.setAttribute( XML::BEGIN.c_str(), XmlUtil::textToXml( Str().assign<char>(first.toAscii()) ).c_str() );

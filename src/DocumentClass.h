@@ -42,7 +42,7 @@
 #include "Counter.h"
 #include "Debug.h"
 #include "IndentPattern.h"
-#include "TextBraces.h"
+#include "TextParenthesis.h"
 #include "TextMacro.h"
 #include "File.h"
 #include "HighlightPattern.h"
@@ -121,9 +121,9 @@ class DocumentClass: public Counter
   const int& baseIndentation( void ) const
   { return base_indentation_; }
   
-  //! list of text braces
-  const std::list<TextBraces>& braces() const
-  { return text_braces_; }
+  //! list of text parenthesis
+  const std::list<TextParenthesis>& parenthesis() const
+  { return text_parenthesis_; }
   
   //! list of text macros
   const std::list<TextMacro>& textMacros() const
@@ -226,10 +226,10 @@ class DocumentClass: public Counter
   //! list of indentation patterns
   IndentPattern::List indent_patterns_;
   
-  //! list of text braces
-  TextBraces::List text_braces_;
+  //! list of text parenthesis
+  TextParenthesis::List text_parenthesis_;
 
-  //! list of text braces
+  //! list of text parenthesis
   TextMacro::List text_macros_;
   
   //! base indentation

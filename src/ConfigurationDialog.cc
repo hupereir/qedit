@@ -89,8 +89,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   checkbox->setToolTip( "Turn on/off syntax highlighting" );
   addOptionWidget( checkbox );
 
-  box->layout()->addWidget( checkbox = new OptionCheckBox( "Highlight braces", box, "TEXT_BRACES" ) );
-  checkbox->setToolTip( "Turn on/off highlighting of oppening/closing braces" );
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "Highlight parenthesis", box, "TEXT_PARENTHESIS" ) );
+  checkbox->setToolTip( "Turn on/off highlighting of oppening/closing parenthesis" );
   addOptionWidget( checkbox );
 
   box->layout()->addWidget( checkbox = new OptionCheckBox( "Automatic indentation", box, "TEXT_INDENT" ) );

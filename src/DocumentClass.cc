@@ -94,10 +94,10 @@ DocumentClass::DocumentClass( const QDomElement& element ):
       IndentPattern pattern( child_element );
       if( pattern.isValid() ) indent_patterns_.push_back( pattern );
 
-    } else if( tag_name == XML::BRACES ) {
+    } else if( tag_name == XML::PARENTHESIS ) {
 
-      TextBraces braces( child_element );
-      if( braces.isValid() ) text_braces_.push_back( braces );
+      TextParenthesis parenthesis( child_element );
+      if( parenthesis.isValid() ) text_parenthesis_.push_back( parenthesis );
 
     } else if( tag_name == XML::MACRO ) {
 
@@ -168,8 +168,8 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   for( IndentPattern::List::const_iterator iter = indent_patterns_.begin(); iter != indent_patterns_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
 
-  // dump braces
-  for( TextBraces::List::const_iterator iter = text_braces_.begin(); iter != text_braces_.end(); iter++ )
+  // dump parenthesis
+  for( TextParenthesis::List::const_iterator iter = text_parenthesis_.begin(); iter != text_parenthesis_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump text macros
@@ -196,7 +196,7 @@ void DocumentClass::clear( void )
   
   
   indent_patterns_.clear();  
-  text_braces_.clear();
+  text_parenthesis_.clear();
   text_macros_.clear();
 
 }

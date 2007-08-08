@@ -32,7 +32,7 @@
 #include "Debug.h"
 #include "HighlightPattern.h"
 #include "HighlightBlockData.h"
-#include "TextBraces.h"
+#include "TextParenthesis.h"
 #include "TextHighlight.h"
 
 using namespace std;
@@ -41,19 +41,19 @@ using namespace std;
 TextHighlight::TextHighlight( QTextDocument* document ):
   BaseTextHighlight( document ),
   highlight_enabled_( false ),
-  braces_enabled_( false )
+  parenthesis_enabled_( false )
 { Debug::Throw( "TextHighlight::TextHighlight.\n" ); }
 
 //_______________________________________________________
-void TextHighlight::setBraces( const TextBraces::List& braces )
+void TextHighlight::setParenthesis( const TextParenthesis::List& parenthesis )
 {
-  Debug::Throw( "TextHighlight::setBraces.\n" );
-  braces_ = braces;
-  braces_set_.clear();
-  for( TextBraces::List::const_iterator iter = braces_.begin(); iter != braces_.end(); iter++ )
+  Debug::Throw( "TextHighlight::setParenthesis.\n" );
+  parenthesis_ = parenthesis;
+  parenthesis_set_.clear();
+  for( TextParenthesis::List::const_iterator iter = parenthesis_.begin(); iter != parenthesis_.end(); iter++ )
   {
-    braces_set_.insert( iter->first );
-    braces_set_.insert( iter->second );
+    parenthesis_set_.insert( iter->first );
+    parenthesis_set_.insert( iter->second );
   }
 }
 
@@ -343,5 +343,5 @@ void TextHighlight::_applyPatterns( const QString& text, const HighlightPattern:
 }
 
 //_________________________________________________________
-void TextHighlight::_parseBraces( const QString& text )
+void TextHighlight::_parseParenthesis( const QString& text )
 {}

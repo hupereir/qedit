@@ -50,7 +50,7 @@
 #include "OpenPreviousMenu.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
-#include "TextBraces.h"
+#include "TextParenthesis.h"
 #include "TextDisplay.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
@@ -95,7 +95,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
   // connections
   connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
-  connect( this, SIGNAL( cursorPositionChanged() ), SLOT( _highlightBraces() ) );
+  connect( this, SIGNAL( cursorPositionChanged() ), SLOT( _highlightParenthesis() ) );
   connect( this, SIGNAL( indent( QTextBlock ) ), indent_, SLOT( indent( QTextBlock ) ) );
   
   // actions
@@ -109,10 +109,10 @@ TextDisplay::TextDisplay( QWidget* parent ):
   text_highlight_action_->setChecked( textHighlight().isHighlightEnabled() );
   connect( text_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextHighlight( bool ) ) );
   
-  addAction( braces_highlight_action_ = new QAction( "&Highlight braces", this ) );
-  braces_highlight_action_->setCheckable( true );
-  braces_highlight_action_->setChecked( textHighlight().isBracesEnabled() );
-  connect( braces_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleBracesHighlight( bool ) ) );
+  addAction( parenthesis_highlight_action_ = new QAction( "&Highlight parenthesis", this ) );
+  parenthesis_highlight_action_->setCheckable( true );
+  parenthesis_highlight_action_->setChecked( textHighlight().isParenthesisEnabled() );
+  connect( parenthesis_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
 
   #if WITH_ASPELL
   
@@ -196,7 +196,7 @@ void TextDisplay::synchronize( TextDisplay* display )
   
   textIndentAction()->setChecked( display->textIndentAction()->isChecked() );
   textHighlightAction()->setChecked( display->textHighlightAction()->isChecked() );
-  bracesHighlightAction()->setChecked( display->bracesHighlightAction()->isChecked() );
+  parenthesisHighlightAction()->setChecked( display->parenthesisHighlightAction()->isChecked() );
     
   _setMacros( display->macros() );
   _setPaper( true, display->paper( true ) );
@@ -685,7 +685,7 @@ void TextDisplay::updateConfiguration( void )
   // local update
   textIndentAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
   textHighlightAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
-  bracesHighlightAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_BRACES" ) );
+  parenthesisHighlightAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
   
   // retrieve active/inactive colors
   QColor default_color( QWidget().palette().color( QPalette::Base ) );
@@ -731,16 +731,16 @@ void TextDisplay::updateDocumentClass( void )
   if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction()->setChecked( document_class->wrap() );
   
   // enable actions consequently
-  bracesHighlightAction()->setVisible( !document_class->braces().empty() );
+  parenthesisHighlightAction()->setVisible( !document_class->parenthesis().empty() );
   textHighlightAction()->setVisible( !document_class->highlightPatterns().empty() );
   textIndentAction()->setVisible( !document_class->indentPatterns().empty() );
  
   // store into class members
   textHighlight().setPatterns( document_class->highlightPatterns() );
-  textHighlight().setBraces( document_class->braces() );
+  textHighlight().setParenthesis( document_class->parenthesis() );
   textIndent().setPatterns( document_class->indentPatterns() );
   textIndent().setBaseIndentation( document_class->baseIndentation() );
-  _setBraces( document_class->braces() );
+  _setParenthesis( document_class->parenthesis() );
   _setMacros( document_class->textMacros() );
 
   
@@ -1176,15 +1176,15 @@ void TextDisplay::_indentCurrentParagraph( void )
 }
 
 //_______________________________________________________
-void TextDisplay::_setBraces( const TextBraces::List& braces )
+void TextDisplay::_setParenthesis( const TextParenthesis::List& parenthesis )
 {
-  Debug::Throw( "TextDisplay::setBraces.\n" );
-  braces_ = braces;
-  braces_set_.clear();
-  for( TextBraces::List::const_iterator iter = braces_.begin(); iter != braces_.end(); iter++ )
+  Debug::Throw( "TextDisplay::setParenthesis.\n" );
+  parenthesis_ = parenthesis;
+  parenthesis_set_.clear();
+  for( TextParenthesis::List::const_iterator iter = parenthesis_.begin(); iter != parenthesis_.end(); iter++ )
   {
-    braces_set_.insert( iter->first );
-    braces_set_.insert( iter->second );
+    parenthesis_set_.insert( iter->first );
+    parenthesis_set_.insert( iter->second );
   }
 }
 
@@ -1239,13 +1239,13 @@ void TextDisplay::_toggleTextHighlight( bool state )
 }
   
 //_______________________________________________________
-void TextDisplay::_toggleBracesHighlight( bool state )
+void TextDisplay::_toggleParenthesisHighlight( bool state )
 {
   
-  Debug::Throw( "TextDisplay::_toggleBracesHighlight.\n" ); 
+  Debug::Throw( "TextDisplay::_toggleParenthesisHighlight.\n" ); 
   
   // propagate to textHighlight
-  textHighlight().setBracesEnabled( state );
+  textHighlight().setParenthesisEnabled( state );
   
   // propagate to other displays
   if( isSynchronized() )
@@ -1256,7 +1256,7 @@ void TextDisplay::_toggleBracesHighlight( bool state )
     
     BASE::KeySet<TextDisplay> displays( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { if( (*iter)->isSynchronized() ) (*iter)->bracesHighlightAction()->setChecked( state ); }
+    { if( (*iter)->isSynchronized() ) (*iter)->parenthesisHighlightAction()->setChecked( state ); }
     setSynchronized( true );
     
   }
@@ -1482,10 +1482,10 @@ void TextDisplay::_replaceMisspelledSelection( std::string word )
 
 
 //__________________________________________________
-void TextDisplay::_highlightBraces( void )
+void TextDisplay::_highlightParenthesis( void )
 { 
   
-  if( !_isBracesEnabled() ) return;
+  if( !_isParenthesisEnabled() ) return;
   
   // retrieve TextCursor
   QTextCursor cursor( textCursor() );
@@ -1499,13 +1499,13 @@ void TextDisplay::_highlightBraces( void )
   int position(cursor.position()-block.position()-1);
   bool found( false );
   
-  // check if character is in braces_set
+  // check if character is in parenthesis_set
   QChar c( block.text()[position] );
-  if( braces_set_.find( c ) == braces_set_.end() ) return;
+  if( parenthesis_set_.find( c ) == parenthesis_set_.end() ) return;
   
-  // check against opening braces
-  TextBraces::List::const_iterator braces = find_if( braces_.begin(), braces_.end(), TextBraces::FirstElementFTor(c) );
-  if( braces != braces_.end() )
+  // check against opening parenthesis
+  TextParenthesis::List::const_iterator parenthesis = find_if( parenthesis_.begin(), parenthesis_.end(), TextParenthesis::FirstElementFTor(c) );
+  if( parenthesis != parenthesis_.end() )
   {
     int increment( 0 );
     position++;
@@ -1515,10 +1515,10 @@ void TextDisplay::_highlightBraces( void )
       QString text( block.text() );
       
       // parse text
-      while( (position = braces->regexp().indexIn( text, position )) >= 0 )
+      while( (position = parenthesis->regexp().indexIn( text, position )) >= 0 )
       {
-        if( text[position] == braces->first ) increment++;
-        if( text[position] == braces->second ) increment--;
+        if( text[position] == parenthesis->first ) increment++;
+        if( text[position] == parenthesis->second ) increment--;
         if( increment < 0 )
         {
           found = true;
@@ -1537,8 +1537,8 @@ void TextDisplay::_highlightBraces( void )
     }    
   }
   
-  // if not found, check against closing braces
-  if( !( found || (braces = find_if( braces_.begin(), braces_.end(), TextBraces::SecondElementFTor(c) )) == braces_.end()  ) )
+  // if not found, check against closing parenthesis
+  if( !( found || (parenthesis = find_if( parenthesis_.begin(), parenthesis_.end(), TextParenthesis::SecondElementFTor(c) )) == parenthesis_.end()  ) )
   {
     int increment( 0 );
     while( block.isValid() && !found )
@@ -1547,10 +1547,10 @@ void TextDisplay::_highlightBraces( void )
       QString text( block.text() );
       
       // parse text
-      while( (position = braces->regexp().lastIndexIn( text, position-text.length() )) >= 0 )
+      while( (position = parenthesis->regexp().lastIndexIn( text, position-text.length() )) >= 0 )
       { 
-        if( text[position] == braces->first ) increment--;
-        if( text[position] == braces->second ) increment++;
+        if( text[position] == parenthesis->first ) increment--;
+        if( text[position] == parenthesis->second ) increment++;
         if( increment < 0 )
         {
           found = true;

@@ -1,5 +1,5 @@
-#ifndef _TextBraces_h_
-#define _TextBraces_h_
+#ifndef _TextParenthesis_h_
+#define _TextParenthesis_h_
 
 // $Id$
 
@@ -25,8 +25,8 @@
  *******************************************************************************/
 
 /*!
-  \file TextBraces.h
-  \brief Text braces (for highlighting)
+  \file TextParenthesis.h
+  \brief Text parenthesis (for highlighting)
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -45,20 +45,20 @@
 #include "Debug.h"
 #include "Str.h"
 
-//! text braces (for highlighting)
-class TextBraces: public std::pair<QChar,QChar>, public Counter
+//! text parenthesis (for highlighting)
+class TextParenthesis: public std::pair<QChar,QChar>, public Counter
 {
 
   public:
 
-  //! list of braces
-  typedef std::list<TextBraces> List;
+  //! list of parenthesis
+  typedef std::list<TextParenthesis> List;
   
-  //! set of braces
+  //! set of parenthesis
   typedef std::set<QChar> Set;
   
   //! constructor from DomElement
-  TextBraces( const QDomElement& element = QDomElement() );
+  TextParenthesis( const QDomElement& element = QDomElement() );
 
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
@@ -67,11 +67,11 @@ class TextBraces: public std::pair<QChar,QChar>, public Counter
   bool isValid( void ) const
   { return first != second; }
   
-  //! regExp that match either of the two braces
+  //! regExp that match either of the two parenthesis
   const QRegExp& regexp() const
   { return regexp_; }
   
-  //! used to find braces for which first character match
+  //! used to find parenthesis for which first character match
   class FirstElementFTor
   {
     public:
@@ -82,8 +82,8 @@ class TextBraces: public std::pair<QChar,QChar>, public Counter
     {}
     
     //! predicate
-    bool operator() ( const TextBraces& braces ) const
-    { return braces.first == c_; }
+    bool operator() ( const TextParenthesis& parenthesis ) const
+    { return parenthesis.first == c_; }
     
     private:
 
@@ -92,7 +92,7 @@ class TextBraces: public std::pair<QChar,QChar>, public Counter
   
   };
   
-  //! used to find braces for which second character match
+  //! used to find parenthesis for which second character match
   class SecondElementFTor
   {
     public:
@@ -103,8 +103,8 @@ class TextBraces: public std::pair<QChar,QChar>, public Counter
     {}
     
     //! predicate
-    bool operator() ( const TextBraces& braces ) const
-    { return braces.second == c_; }
+    bool operator() ( const TextParenthesis& parenthesis ) const
+    { return parenthesis.second == c_; }
     
     private:
 

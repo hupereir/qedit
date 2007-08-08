@@ -250,7 +250,7 @@ class TextDisplay: public CustomTextEdit
   const QColor& paper( const bool& active ) const
   { return active ? active_color_:inactive_color_;}
  
-  //! returns true if paragraph is to be ignored when identing/parsing braces
+  //! returns true if paragraph is to be ignored when identing/parsing parenthesis
   bool ignoreParagraph( const QTextBlock& paragraph );
 
   //! text highlight
@@ -300,9 +300,9 @@ class TextDisplay: public CustomTextEdit
   QAction* textHighlightAction( void ) const
   { return text_highlight_action_; }
  
-  //! toggle braces highlighting
-  QAction* bracesHighlightAction( void ) const
-  { return braces_highlight_action_; }
+  //! toggle parenthesis highlighting
+  QAction* parenthesisHighlightAction( void ) const
+  { return parenthesis_highlight_action_; }
 
   //! autospell action
   QAction* autoSpellAction( void ) const
@@ -454,19 +454,19 @@ class TextDisplay: public CustomTextEdit
   
   #endif
 
-  //!@name braces
+  //!@name parenthesis
   //@{
   
-  //! braces enabled
-  bool _isBracesEnabled( void ) const
-  { return bracesHighlightAction()->isChecked() && !braces_.empty(); }
+  //! parenthesis enabled
+  bool _isParenthesisEnabled( void ) const
+  { return parenthesisHighlightAction()->isChecked() && !parenthesis_.empty(); }
   
-  //! braces
-  const TextBraces::List& _braces( void ) const
-  { return braces_; }
+  //! parenthesis
+  const TextParenthesis::List& _parenthesis( void ) const
+  { return parenthesis_; }
   
-  //! set braces
-  void _setBraces( const TextBraces::List& );
+  //! set parenthesis
+  void _setParenthesis( const TextParenthesis::List& );
   
   //@}
   
@@ -492,8 +492,8 @@ class TextDisplay: public CustomTextEdit
   //! toggle text highlight
   void _toggleTextHighlight( bool state );
   
-  //! toggle braces
-  void _toggleBracesHighlight( bool state );
+  //! toggle parenthesis
+  void _toggleParenthesisHighlight( bool state );
   
   //!@name spell check
   //@{
@@ -545,8 +545,8 @@ class TextDisplay: public CustomTextEdit
   /*! this method does nothing if not compiled against aspell */
   void _replaceMisspelledSelection( std::string );
   
-  //! highlight braces
-  void _highlightBraces( void );
+  //! highlight parenthesis
+  void _highlightParenthesis( void );
   
   private:
   
@@ -598,7 +598,7 @@ class TextDisplay: public CustomTextEdit
   QAction* text_highlight_action_;
  
   //! toggle text highlighting
-  QAction* braces_highlight_action_;
+  QAction* parenthesis_highlight_action_;
  
   //! toggle autospell
   QAction* autospell_action_;
@@ -636,14 +636,14 @@ class TextDisplay: public CustomTextEdit
   //! current block data
   // HighlightBlockData* current_block_data_;
   
-  //!@name text braces
+  //!@name text parenthesis
   //@{
     
-  //! text braces
-  TextBraces::List braces_;
+  //! text parenthesis
+  TextParenthesis::List parenthesis_;
 
-  //! keep track of all braces in a single set for fast access
-  TextBraces::Set braces_set_;
+  //! keep track of all parenthesis in a single set for fast access
+  TextParenthesis::Set parenthesis_set_;
   
   //@}
   

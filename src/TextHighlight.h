@@ -40,14 +40,14 @@
 #include "Debug.h"
 #include "Key.h"
 #include "HighlightPattern.h"
-#include "TextBraces.h"
+#include "TextParenthesis.h"
 
 #if WITH_ASPELL
 #include "SpellParser.h"
 #endif
 
 class HighlightPattern;
-class TextBraces;
+class TextParenthesis;
 
 //! syntax highlighting based on text patterns
 class TextHighlight: public BaseTextHighlight
@@ -89,27 +89,27 @@ class TextHighlight: public BaseTextHighlight
   
   //@}
   
-  //!@name braces
+  //!@name parenthesis
   //@{
   
-  //! braces enabled
-  const bool& isBracesEnabled( void ) const
-  { return braces_enabled_; }
+  //! parenthesis enabled
+  const bool& isParenthesisEnabled( void ) const
+  { return parenthesis_enabled_; }
   
-  //! braces enabled
-  bool setBracesEnabled( const bool& state )
+  //! parenthesis enabled
+  bool setParenthesisEnabled( const bool& state )
   { 
-    if( braces_enabled_ == state ) return false;
-    braces_enabled_ = state; 
+    if( parenthesis_enabled_ == state ) return false;
+    parenthesis_enabled_ = state; 
     return true;
   }
     
-  //! braces
-  const TextBraces::List& braces( void ) const
-  { return braces_; }
+  //! parenthesis
+  const TextParenthesis::List& parenthesis( void ) const
+  { return parenthesis_; }
   
-  //! set braces
-  void setBraces( const TextBraces::List& );
+  //! set parenthesis
+  void setParenthesis( const TextParenthesis::List& );
 
   //@}
     
@@ -118,8 +118,8 @@ class TextHighlight: public BaseTextHighlight
   { 
     Debug::Throw( "TextHighlight.clear.\n" ); 
     patterns_.clear(); 
-    braces_.clear();
-    braces_set_.clear();
+    parenthesis_.clear();
+    parenthesis_set_.clear();
   }
 
   #if WITH_ASPELL
@@ -146,8 +146,8 @@ class TextHighlight: public BaseTextHighlight
   //! apply locations to text
   void _applyPatterns( const QString& text, const HighlightPattern::LocationSet& locations );
  
-  //! parse text to store pairs of matching braces
-  void _parseBraces( const QString& text );
+  //! parse text to store pairs of matching parenthesis
+  void _parseParenthesis( const QString& text );
   
   //! true if highlight is enabled
   bool highlight_enabled_;
@@ -157,20 +157,20 @@ class TextHighlight: public BaseTextHighlight
   
   //@}
   
-  //!@name text braces
+  //!@name text parenthesis
   //@{
   
-  //! braces enabled
-  bool braces_enabled_;
+  //! parenthesis enabled
+  bool parenthesis_enabled_;
   
-  //! text braces
-  TextBraces::List braces_;
+  //! text parenthesis
+  TextParenthesis::List parenthesis_;
 
-  //! keep track of all braces in a single set for fast access
-  TextBraces::Set braces_set_;
+  //! keep track of all parenthesis in a single set for fast access
+  TextParenthesis::Set parenthesis_set_;
   
-  //! position of current braces to highlight, if any
-  int braces_position_;
+  //! position of current parenthesis to highlight, if any
+  int parenthesis_position_;
   
   //@}
   
