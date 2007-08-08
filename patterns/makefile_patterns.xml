@@ -92,10 +92,10 @@
  </keyword_pattern>
  
 
- <!-- braces -->
- <braces begin="(" end=")" />
- <braces begin="[" end="]" />
- <braces begin="{" end="}" />
+ <!-- parenthesis -->
+ <parenthesis begin="(" end=")" />
+ <parenthesis begin="[" end="]" />
+ <parenthesis begin="{" end="}" />
 
  <!-- text processing macros -->
 

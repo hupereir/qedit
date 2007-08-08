@@ -687,6 +687,8 @@ void TextDisplay::updateConfiguration( void )
   textHighlightAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
   parenthesisHighlightAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
   
+  textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().raw( "PARENTHESIS_COLOR" ).c_str() ) );
+  
   // retrieve active/inactive colors
   QColor default_color( QWidget().palette().color( QPalette::Base ) );
   QColor active_color( XmlOptions::get().get<string>("ACTIVE_COLOR").c_str() );
@@ -1489,11 +1491,19 @@ void TextDisplay::_highlightParenthesis( void )
   
   // retrieve TextCursor
   QTextCursor cursor( textCursor() );
-  if( cursor.atBlockStart() ) return;
+  if( cursor.atBlockStart() ) 
+  {
+    textHighlight().setCurrentParenthesis( -1 );   
+    return;
+  }
   
   // retrieve block
   QTextBlock block( cursor.block() );
-  if( ignoreBlock( block ) ) return;
+  if( ignoreBlock( block ) ) 
+  {
+    textHighlight().setCurrentParenthesis( -1 );   
+    return;
+  }
   
   // store local position in block
   int position(cursor.position()-block.position()-1);
@@ -1501,7 +1511,11 @@ void TextDisplay::_highlightParenthesis( void )
   
   // check if character is in parenthesis_set
   QChar c( block.text()[position] );
-  if( parenthesis_set_.find( c ) == parenthesis_set_.end() ) return;
+  if( parenthesis_set_.find( c ) == parenthesis_set_.end() ) 
+  {
+    textHighlight().setCurrentParenthesis( -1 );   
+    return;
+  }
   
   // check against opening parenthesis
   TextParenthesis::List::const_iterator parenthesis = find_if( parenthesis_.begin(), parenthesis_.end(), TextParenthesis::FirstElementFTor(c) );
@@ -1570,19 +1584,24 @@ void TextDisplay::_highlightParenthesis( void )
   }
   
   // if not found do nothing
-  if( !( found && block.isValid() ) ) return;
+  if( !( found && block.isValid() ) ) 
+  {
+    textHighlight().setCurrentParenthesis( -1 );   
+    return; 
+  }
   
-  // highlight the found parenthesis
-  // retrieve block layout
-  Debug::Throw(0) << "found matching.\n";
-  QTextLayout *layout( block.layout() );
-  QTextLayout::FormatRange range;
-  range.start = position;
-  range.length = 1;
-  range.format.setBackground( Qt::red );
-  QList<QTextLayout::FormatRange> ranges( layout->additionalFormats() );
-  ranges.push_back( range );
-  layout->setAdditionalFormats( ranges );
+  textHighlight().setCurrentParenthesis( position );
   document()->markContentsDirty(block.position()+position,1);
-  
+//   // highlight the found parenthesis
+//   // retrieve block layout
+//   Debug::Throw(0) << "found matching.\n";
+//   QTextLayout *layout( block.layout() );
+//   QTextLayout::FormatRange range;
+//   range.start = position;
+//   range.length = 1;
+//   range.format.setBackground( Qt::red );
+//   QList<QTextLayout::FormatRange> ranges( layout->additionalFormats() );
+//   ranges.push_back( range );
+//   layout->setAdditionalFormats( ranges );
+//   document()->markContentsDirty(block.position()+position,1);
 }

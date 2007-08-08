@@ -87,11 +87,11 @@
  </keyword_pattern>
 
 
-<!-- braces -->
- <braces begin="XML_LT" end="XML_GT" />
- <braces begin="(" end=")" />
- <braces begin="[" end="]" />
- <braces begin="{" end="}" />
+<!-- parenthesis -->
+ <parenthesis begin="XML_LT" end="XML_GT" />
+ <parenthesis begin="(" end=")" />
+ <parenthesis begin="[" end="]" />
+ <parenthesis begin="{" end="}" />
 
 <!-- text processing macros -->
 

@@ -110,7 +110,15 @@ class TextHighlight: public BaseTextHighlight
   
   //! set parenthesis
   void setParenthesis( const TextParenthesis::List& );
+ 
+  //! current parenthesis color
+  bool setParenthesisHighlightColor( const QColor& color )
+  { parenthesis_highlight_format_.setBackground(color); }
 
+  //! current parenthesis
+  /*! returns true if changed */
+  bool setCurrentParenthesis( const int& local, const int& absolute = 0 );
+     
   //@}
     
   //! patterns
@@ -169,8 +177,15 @@ class TextHighlight: public BaseTextHighlight
   //! keep track of all parenthesis in a single set for fast access
   TextParenthesis::Set parenthesis_set_;
   
-  //! position of current parenthesis to highlight, if any
-  int parenthesis_position_;
+  //! parenthesis highlight format
+  QTextCharFormat parenthesis_highlight_format_;
+  
+  //! local (i.e. block wise) position of current parenthesis to highlight, if any
+  /*! -1 if none set */
+  int local_parenthesis_;
+  
+  //! absolute position of current parenthesis to highlight (needed for clearing)
+  int absolute_parenthesis_;
   
   //@}
   

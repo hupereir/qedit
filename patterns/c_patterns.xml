@@ -102,10 +102,10 @@
   <comments>keywords</comments>
  </keyword_pattern>
  
- <!-- braces -->
+ <!-- parenthesis -->
  <keyword_pattern style="Keyword" name="Braces" >
   <keyword>((\{|\[|\]|\})*(\{|\[|\]|\})(\{|\[|\]|\})*)</keyword>
-  <comments>braces</comments>
+  <comments>parenthesis</comments>
  </keyword_pattern>
 
  <!-- types -->
@@ -144,10 +144,10 @@
   <comments>single escape characters</comments>
  </keyword_pattern>
  
- <!-- braces -->
- <braces begin="(" end=")" />
- <braces begin="[" end="]" />
- <braces begin="{" end="}" />
+ <!-- parenthesis -->
+ <parenthesis begin="(" end=")" />
+ <parenthesis begin="[" end="]" />
+ <parenthesis begin="{" end="}" />
 
  <!-- indentation rules -->
   

@@ -2,10 +2,10 @@
 <patterns>
  <class name="default" options="default">
 
- <!-- braces -->
- <braces begin="(" end=")" />
- <braces begin="[" end="]" />
- <braces begin="{" end="}" />
+ <!-- parenthesis -->
+ <parenthesis begin="(" end=")" />
+ <parenthesis begin="[" end="]" />
+ <parenthesis begin="{" end="}" />
  
  <!-- text processing macros -->
  <macro name="Add one tab indentation" accelerator="Alt+T">

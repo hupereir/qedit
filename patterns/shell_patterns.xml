@@ -56,7 +56,7 @@
  <keyword>\b((set)?env|eval|export|umask|bindkey|(end)?if|break|end|then|else|source|echo|fi|test|in|case|esac|for(each)?|print|cd|cp|exit|rm|ls|do(ne)?)\b</keyword>
  </keyword_pattern>
 
- <!-- braces -->
+ <!-- parenthesis -->
  <keyword_pattern style="Keyword" name="Braces" >
   <keyword>((\{|\[|\(|\)|\]|\})*(\{|\[|\(|\)|\]|\})(\{|\[|\(|\)|\]|\})*)</keyword>
  </keyword_pattern>
@@ -76,10 +76,10 @@
   <keyword>(\b|XML_AND)([^\s]+)\s*(?=\()</keyword> 
   </keyword_pattern>
 
- <!-- braces -->
- <braces begin="(" end=")" />
- <braces begin="[" end="]" />
- <braces begin="{" end="}" />
+ <!-- parenthesis -->
+ <parenthesis begin="(" end=")" />
+ <parenthesis begin="[" end="]" />
+ <parenthesis begin="{" end="}" />
 
  <!-- text processing macros -->
 

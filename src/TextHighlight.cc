@@ -41,7 +41,9 @@ using namespace std;
 TextHighlight::TextHighlight( QTextDocument* document ):
   BaseTextHighlight( document ),
   highlight_enabled_( false ),
-  parenthesis_enabled_( false )
+  parenthesis_enabled_( false ),
+  local_parenthesis_( -1 ),
+  absolute_parenthesis_( 0 )
 { Debug::Throw( "TextHighlight::TextHighlight.\n" ); }
 
 //_______________________________________________________
@@ -57,6 +59,18 @@ void TextHighlight::setParenthesis( const TextParenthesis::List& parenthesis )
   }
 }
 
+//_______________________________________________________
+void TextHighlight::setCurrentParenthesis( const int& local, const int& absolute )
+{
+  
+  if( ( local == -1 && local_parenthesis_ != local ) || absolute_parenthesis_ != absolute )
+  { document()->markContentsDirty(block.position()+position,1); }
+  
+  local_parenthesis_ = local;
+  absolute_parenthesis_ = absolute; 
+  
+}
+
 //_________________________________________________________
 void TextHighlight::highlightBlock( const QString& text )
 {
@@ -65,7 +79,15 @@ void TextHighlight::highlightBlock( const QString& text )
   // base class highlight
   // this is always performed
   BaseTextHighlight::highlightBlock( text );
-    
+  
+  // highlight parenthesis highlight color, if any
+  if( current_parenthesis_ != -1 ) 
+  { 
+    Debug::Throw(0) << "TextHighlight::highlightBlock - parenthesis:" << current_parenthesis_ << endl; 
+    //if( parenthesis_highlight_format_.background().isValid() )
+    { setFormat( current_parenthesis_, 1, parenthesis_highlight_format_ ); }
+  }
+  
   if( !isHighlightEnabled() )
   {
     Debug::Throw( "TextHighlight::highlightBlock - disabled.\n" ); 
