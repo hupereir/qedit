@@ -47,6 +47,11 @@
 #include "TextIndent.h"
 #include "TimeStamp.h"
 
+#if WITH_ASPELL
+#include "DictionaryMenu.h"
+#include "FilterMenu.h"
+#endif
+
 // forward declaration
 class DocumentClass;
 class TextMacro;
@@ -302,6 +307,10 @@ class TextDisplay: public CustomTextEdit
   QAction* bracesHighlightAction( void )
   { return braces_highlight_action_; }
 
+  //! autospell action
+  QAction* autoSpellAction( void )
+  { return autospell_action_; }
+  
   //! spellcheck action
   QAction* spellcheckAction( void )
   { return spellcheck_action_; }
@@ -314,6 +323,24 @@ class TextDisplay: public CustomTextEdit
   }
   
   //@}
+  
+  #if WITH_ASPELL
+  
+  //! dictionary menu
+  SPELLCHECK::DictionaryMenu& dictionaryMenu( void )
+  { 
+    Exception::checkPointer( dictionary_menu_, DESCRIPTION( "dictionary_menu_ not initialized" ) );
+    return *dictionary_menu_;
+  }
+
+  //! filter menu
+  SPELLCHECK::FilterMenu& filterMenu( void )
+  { 
+    Exception::checkPointer( filter_menu_, DESCRIPTION( "filter_menu_ not initialized" ) );
+    return *filter_menu_;
+  }
+  
+  #endif
   
   // return true if block is an empty line
   bool isEmptyBlock( const QTextBlock& block ) const
@@ -340,9 +367,11 @@ class TextDisplay: public CustomTextEdit
   void updateConfiguration( void );
   
   //! set document class
-  /*! returns true if matching document class was found */
   void updateDocumentClass( void );
-    
+
+  //! spellcheck configuration
+  void updateSpellCheckConfiguration( void );
+  
   //! indent selection
   void indentSelection( void );
 
@@ -438,8 +467,22 @@ class TextDisplay: public CustomTextEdit
   //! toggle braces
   void _toggleBracesHighlight( bool state );
   
+  //!@name spell check
+  //@{
+  
+  //! autospell
+  void _toggleAutoSpell( bool state );
+  
   //! run spellcheck
   void _spellcheck( void );
+  
+  //! change autospell filter
+  void _selectFilter( const std::string& );
+  
+  //! change autospell dictionary
+  void _selectDictionary( const std::string& );
+  
+  //@}
   
   //! show file info
   void _showFileInfo( void );
@@ -518,6 +561,9 @@ class TextDisplay: public CustomTextEdit
   //! toggle text highlighting
   QAction* braces_highlight_action_;
  
+  //! toggle autospell
+  QAction* autospell_action_;
+  
   //! run spell checker
   QAction* spellcheck_action_;
   
@@ -525,6 +571,16 @@ class TextDisplay: public CustomTextEdit
   QAction* file_info_action_;
   
   //@}
+  
+  #if WITH_ASPELL
+  
+  //! spellcheck dictionary selection menu
+  SPELLCHECK::DictionaryMenu* dictionary_menu_;
+  
+  //! spellcheck filter selection menu
+  SPELLCHECK::FilterMenu* filter_menu_;
+  
+  #endif
   
   //! parent OpenPrevious menu
   OpenPreviousMenu* menu_;

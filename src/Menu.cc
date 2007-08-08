@@ -32,6 +32,7 @@
 #include <QApplication>
 #include <sstream>
 
+#include "Config.h"
 #include "DebugMenu.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
@@ -46,8 +47,6 @@
 #include "TextDisplay.h"
 #include "TextMacro.h"
 #include "Util.h"
-
-#include "Config.h"
 
 using namespace std;
 using namespace Qt;
@@ -228,6 +227,10 @@ void Menu::_updatePreferenceMenu( void )
   // configurations (from mainFrame)
   preference_menu_->addAction( "Default &Configuration", qApp, SLOT( configuration() ) );
 
+  #if WITH_ASPELL
+  preference_menu_->addAction( "&Spell-check configuration", qApp, SLOT( spellCheckConfiguration() ) );
+  #endif
+  
   // document class configuration
   EditFrame& frame( *static_cast<EditFrame*>(window()) );
   preference_menu_->addAction( frame.documentClassAction() );
@@ -272,7 +275,15 @@ void Menu::_updatePreferenceMenu( void )
   preference_menu_->addAction( display.tabEmulationAction() );
   preference_menu_->addAction( display.textIndentAction() );
   preference_menu_->addAction( display.textHighlightAction() );
+  preference_menu_->addAction( display.blockHighlightAction() );
   preference_menu_->addAction( display.bracesHighlightAction() );
+  
+  #if WITH_ASPELL
+  preference_menu_->addSeparator();
+  preference_menu_->addAction( display.autoSpellAction() );
+  preference_menu_->addMenu( &display.dictionaryMenu() );
+  preference_menu_->addMenu( &display.filterMenu() );
+  #endif
   
   return;
 }
@@ -326,9 +337,8 @@ void Menu::_updateMacroMenu( void )
   action = macro_menu_->addAction( "Replace Leading &Tabs", &display, SLOT( replaceLeadingTabs() ) );
   action->setEnabled( display.hasLeadingTabs() );
   
-  #if WITH_ASPELL
+  // spell checker
   macro_menu_->addAction( display.spellcheckAction() );
-  #endif
   
   // syntax highlighting
   macro_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 

@@ -66,9 +66,19 @@ void TextHighlight::highlightBlock( const QString& text )
   // this is always performed
   BaseTextHighlight::highlightBlock( text );
     
-  if( !isEnabled() || patterns_.empty() ) return;
-
-    // retrieve active_id from last block state
+  if( !isHighlightEnabled() )
+  {
+    Debug::Throw( "TextHighlight::highlightBlock - disabled.\n" ); 
+    return;
+  }
+  
+  if( patterns_.empty() ) 
+  {
+    Debug::Throw( "TextHighlight::highlightBlock - no patterns.\n" ); 
+    return;
+  }
+  
+  // retrieve active_id from last block state
   int active_id( previousBlockState() );
   HighlightPattern::LocationSet locations;
 
@@ -85,10 +95,7 @@ void TextHighlight::highlightBlock( const QString& text )
     TextBlockData* text_data = dynamic_cast<TextBlockData*>( currentBlockUserData() );
     data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData();
     setCurrentBlockUserData( data );
-    
-    // store active id
-    setCurrentBlockState( locations.activeId().second );
-    
+        
   }
 
   // create new location set if needed
@@ -101,8 +108,8 @@ void TextHighlight::highlightBlock( const QString& text )
     data->setLocations( locations );
     
     // store active id
-    setCurrentBlockState( -1 );
-    
+    setCurrentBlockState( locations.activeId().second );
+
   }
   
   // before try applying the found locations see if automatic spellcheck is on
@@ -110,6 +117,8 @@ void TextHighlight::highlightBlock( const QString& text )
   
   if( spellParser().isEnabled() ) 
   {
+    Debug::Throw( "TextHighlight::highlightBlock - spelling enabled.\n" );
+    
     // clear locations
     locations.clear();
     
@@ -117,6 +126,10 @@ void TextHighlight::highlightBlock( const QString& text )
     const SPELLCHECK::Word::Set& words( spellParser().parse( text ) );
     for( SPELLCHECK::Word::Set::const_iterator iter = words.begin(); iter != words.end(); iter++ )
     { locations.insert( HighlightPattern::Location( spellPattern(), iter->position(), iter->size() ) ); }
+    
+    // store active id
+    data->setMisspelledWords( words );
+    setCurrentBlockState( -1 );
     
   } 
   
@@ -133,6 +146,8 @@ void TextHighlight::highlightBlock( const QString& text )
 HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, const int& active_id )
 {
       
+  Debug::Throw( "TextHighlight::locationSet.\n" ); 
+
   // location list
   HighlightPattern::LocationSet locations;
   locations.activeId().first = active_id;
@@ -303,6 +318,8 @@ HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, c
 //_________________________________________________________
 void TextHighlight::_applyPatterns( const QString& text, const HighlightPattern::LocationSet& locations )
 {
+
+  Debug::Throw( "TextHighlight::_applyPatterns.\n" ); 
 
   // initialize style
   HighlightStyle current_style;

@@ -47,6 +47,11 @@
 #include "Util.h"
 #include "XmlDef.h"
 
+#if WITH_ASPELL
+#include "SpellCheckConfiguration.h"
+#include "AutoSpellConfiguration.h"
+#endif
+
 using namespace std;
 using namespace SERVER;
 
@@ -175,6 +180,36 @@ void MainFrame::configuration( void )
   connect( &dialog, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
   dialog.exec();
   Debug::Throw( "MainFrame::configuration - done.\n" );
+}
+
+//_______________________________________________
+void MainFrame::spellCheckConfiguration( void )
+{
+  
+  #if WITH_ASPELL
+
+  Debug::Throw( "MainFrame::SpellCheckConfiguration.\n" );
+  
+  // create dialog
+  CustomDialog dialog( 0 );
+  
+  SpellCheckConfiguration* spell_config = new SpellCheckConfiguration( &dialog );
+  dialog.mainLayout().addWidget( spell_config );
+  spell_config->read();
+
+  AutoSpellConfiguration* autospell_config = new AutoSpellConfiguration( &dialog );
+  dialog.mainLayout().addWidget( autospell_config );
+  autospell_config->read();
+  
+  if( dialog.exec() == QDialog::Rejected ) return;
+  spell_config->write();
+  autospell_config->write();
+  XmlOptions::write();
+  
+  emit spellCheckConfigurationChanged();
+  
+  #endif
+  
 }
 
 //_______________________________________________

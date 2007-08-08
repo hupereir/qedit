@@ -109,13 +109,38 @@ TextDisplay::TextDisplay( QWidget* parent ):
   braces_highlight_action_->setChecked( textHighlight().isBracesEnabled() );
   connect( braces_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleBracesHighlight( bool ) ) );
 
+  #if WITH_ASPELL
+  
+  // install menus
+  filter_menu_ = new SPELLCHECK::FilterMenu( this );
+  dictionary_menu_ = new SPELLCHECK::DictionaryMenu( this );
+  connect( &filterMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectFilter( const std::string& ) ) );
+  connect( &dictionaryMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectDictionary( const std::string& ) ) );
+
+  #endif
+  
   // retrieve pixmap path
   list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
 
+  // autospell
+  addAction( autospell_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK, path_list ), "&Automatic spell-check", this ) );
+  autospell_action_->setCheckable( true );
+  
+  #if WITH_ASPELL
+  autospell_action_->setChecked( textHighlight().spellParser().isEnabled() );
+  connect( autospell_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleAutoSpell( bool ) ) );
+  #else 
+  auto_spell_action->setVisible( false );
+  #endif
+
   // spell checking
   addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK, path_list ), "&Spell check", this ) );
+  #if WITH_ASPELL
   connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
+  #else 
+  spellcheck_action_->setVisible( false );
+  #endif
   
   // file information
   addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO, path_list ), "&File information", this ) );
@@ -129,7 +154,9 @@ TextDisplay::TextDisplay( QWidget* parent ):
   // track configuration modifications
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
   connect( qApp, SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
+  connect( qApp, SIGNAL( spellCheckConfigurationChanged() ), SLOT( updateSpellCheckConfiguration() ) );
   updateConfiguration();
+  updateSpellCheckConfiguration();
   
   Debug::Throw( "TextDisplay::TextDisplay - done.\n" );
   
@@ -488,6 +515,9 @@ void TextDisplay::revertToSave( void )
   horizontalScrollBar()->setValue( x );
   verticalScrollBar()->setValue( y );
   
+  // adjust cursor postion
+  position = min( position, toPlainText().size() );
+  
   QTextCursor cursor( textCursor() );
   cursor.setPosition( position );
   setTextCursor( cursor );
@@ -655,7 +685,7 @@ void TextDisplay::updateConfiguration( void )
   _setPaper( true, active_color_.isValid() && shade_inactive ? active_color_ : default_color );
   _setPaper( false, inactive_color.isValid() && shade_inactive ? inactive_color : default_color );
   _setPaper( isActive() ? active_color_:inactive_color_ );
-  
+    
 }
 
 //___________________________________________________________________________
@@ -710,6 +740,59 @@ void TextDisplay::updateDocumentClass( void )
   return;
   
 }
+
+//___________________________________________________________________________
+void TextDisplay::updateSpellCheckConfiguration( void )
+{
+  Debug::Throw( "TextDisplay::updateSpellCheckConfiguration.\n" );
+  
+  #if WITH_ASPELL
+  
+  // spellcheck configuration
+  bool changed( false );
+  changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<string>("AUTOSPELL_COLOR").c_str() ) );
+  changed |= textHighlight().spellParser().setFontFormat( XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
+  autoSpellAction()->setChecked( XmlOptions::get().get<bool>("AUTOSPELL") );
+  autoSpellAction()->setEnabled( textHighlight().spellParser().color().isValid() );
+  
+  // store local reference to spell interface
+  SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
+  
+  // load default filter and dictionaries
+  string filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
+  string dictionary( XmlOptions::get().raw("DICTIONARY") );
+
+  // overwrite with file record
+  if( !file().empty() )
+  {
+    FileRecord& record( menu().get( file() ) ); 
+    if( record.hasInformation( "filter" ) && interface.hasFilter( record.information( "filter" ) ) )
+    { filter = record.information( "filter" ); }
+    
+    if( record.hasInformation( "dictionary" ) && interface.hasDictionary( record.information( "dictionary" ) ) )
+    { dictionary = record.information( "dictionary" ); }
+    
+  }
+  
+  // see if one should/can change the dictionary and filter
+  if( filter != interface.filter() && interface.setFilter( filter ) ) 
+  {
+    filterMenu().select( filter );
+    changed = true;
+  }
+  
+  if( dictionary != interface.dictionary() && interface.setDictionary( dictionary ) ) 
+  {
+    dictionaryMenu().select( dictionary );
+    changed = true;
+  }
+  
+  // rehighlight if needed
+  if( changed && autoSpellAction()->isChecked() && autoSpellAction()->isEnabled() ) rehighlight();
+  
+  #endif
+  
+}  
 
 //_______________________________________________________
 void TextDisplay::indentSelection( void )
@@ -1097,6 +1180,36 @@ void TextDisplay::_toggleBracesHighlight( bool state )
   
   return; 
 }
+  
+//_______________________________________________________
+void TextDisplay::_toggleAutoSpell( bool state )
+{
+  #if WITH_ASPELL
+  Debug::Throw( "TextDisplay::_toggleAutoSpell.\n" ); 
+  
+  // propagate to textHighlight
+  textHighlight().spellParser().setEnabled( state );
+  dictionaryMenu().setEnabled( state );
+  filterMenu().setEnabled( state );
+  rehighlight();
+  
+  // propagate to other displays
+  if( isSynchronized() )
+  {
+    // temporarely disable synchronization
+    // to avoid infinite loop
+    setSynchronized( false );
+    
+    BASE::KeySet<TextDisplay> displays( this );
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    { if( (*iter)->isSynchronized() ) (*iter)->autoSpellAction()->setChecked( state ); }
+    setSynchronized( true );
+    
+  }
+  
+  return; 
+  #endif
+}
 
 //_______________________________________________________
 void TextDisplay::_multipleFileReplace( void )
@@ -1142,6 +1255,11 @@ void TextDisplay::_spellcheck( void )
     
   }
   
+  // connections
+
+  connect( &dialog, SIGNAL( filterChanged( const std::string& ) ), SLOT( _selectFilter( const std::string& ) ) );
+  connect( &dialog, SIGNAL( dictionaryChanged( const std::string& ) ), SLOT( _selectDictionary( const std::string& ) ) );
+
   dialog.nextWord();
   dialog.exec();
 
@@ -1155,6 +1273,68 @@ void TextDisplay::_spellcheck( void )
   #endif
   
 }
+
+//_______________________________________  
+void TextDisplay::_selectFilter( const std::string& filter ) 
+{ 
+  Debug::Throw( "TextDisplay::_selectFilter.\n" ); 
+
+#if WITH_ASPELL
+
+  // local reference to interface
+  SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
+
+  if( filter == interface.filter() || !interface.hasFilter( filter ) ) return;
+  
+  // update interface
+  interface.setFilter( filter );
+  filterMenu().select( filter );
+  
+  // update file record
+  if( !file().empty() )
+  {
+    FileRecord& record( menu().get( file() ) ); 
+    record.addInformation( "filter", interface.filter() ); 
+  }
+
+  // rehighlight if needed
+  if( textHighlight().spellParser().isEnabled() ) rehighlight();
+ 
+  #endif
+  
+  return;
+  
+}
+
+#if WITH_ASPELL
+//_______________________________________  
+void TextDisplay::_selectDictionary( const std::string& dictionary ) 
+{ 
+  Debug::Throw( "TextDisplay::_selectDictionary.\n" ); 
+
+  // local reference to interface
+  SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
+
+  if( dictionary == interface.dictionary() || !interface.hasDictionary( dictionary ) ) return;
+  
+  // update interface
+  interface.setDictionary( dictionary );
+  dictionaryMenu().select( dictionary );
+  
+  // update file record
+  if( !file().empty() )
+  {
+    FileRecord& record( menu().get( file() ) ); 
+    record.addInformation( "dictionary", interface.dictionary() ); 
+  }
+  
+  // rehighlight if needed
+  if( textHighlight().spellParser().isEnabled() ) rehighlight();
+  
+  return;
+  
+}
+#endif
 
 //_______________________________________________________
 void TextDisplay::_showFileInfo( void )

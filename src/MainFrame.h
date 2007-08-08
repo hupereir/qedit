@@ -104,14 +104,22 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   
   signals:
   
+  //! configuration has changed
   void configurationChanged();
   
+  //! spellcheck configuration modified
+  void spellCheckConfigurationChanged();
+  
+  //! document classes have been modified
   void documentClassesChanged();
   
   public slots:
 
   //! configuration
   void configuration( void );
+  
+  //! spellcheck configuration
+  void spellCheckConfiguration( void );
   
   //! open
   /*! returns false if no file is open (force application to quit) */
