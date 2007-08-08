@@ -40,6 +40,7 @@
 #include "Debug.h"
 #include "Key.h"
 #include "HighlightPattern.h"
+#include "TextBraces.h"
 
 #if WITH_ASPELL
 #include "SpellParser.h"
@@ -102,19 +103,13 @@ class TextHighlight: public BaseTextHighlight
     braces_enabled_ = state; 
     return true;
   }
-  
+    
   //! braces
-  typedef std::list< TextBraces* > BracesList;
-  
-  //! braces
-  typedef std::set< char > BracesSet;
-  
-  //! braces
-  const BracesList& braces( void ) const
+  const TextBraces::List& braces( void ) const
   { return braces_; }
   
   //! set braces
-  void setBraces( const BracesList& );
+  void setBraces( const TextBraces::List& );
 
   //@}
     
@@ -169,10 +164,10 @@ class TextHighlight: public BaseTextHighlight
   bool braces_enabled_;
   
   //! text braces
-  BracesList braces_;
+  TextBraces::List braces_;
 
   //! keep track of all braces in a single set for fast access
-  BracesSet braces_set_;
+  TextBraces::Set braces_set_;
   
   //@}
   

@@ -51,6 +51,9 @@ class TextMacro: public Counter
 {
 
   public:
+ 
+  //! style list
+  typedef std::list<TextMacro> List;
 
   //! constructor from DomElement
   TextMacro( const QDomElement& element = QDomElement() );
@@ -98,8 +101,8 @@ class TextMacro: public Counter
     {}
 
     //! predicate
-    bool operator() (const TextMacro* pattern ) const
-    { return (pattern && pattern->name() == name_); }
+    bool operator() (const TextMacro& pattern ) const
+    { return (pattern.name() == name_); }
 
     private:
 

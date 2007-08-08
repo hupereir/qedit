@@ -38,7 +38,7 @@
 #include <QDomElement>
 #include <QTextCharFormat>
 
-#include <list>
+#include <set>
 #include <string>
 
 #include "Counter.h"
@@ -49,6 +49,9 @@ class HighlightStyle: public Counter
 {
   
   public: 
+  
+  //! style set
+  typedef std::set<HighlightStyle> Set;
             
   //! constructor
   HighlightStyle( 

@@ -310,21 +310,21 @@ void Menu::_updateMacroMenu( void )
   bool has_indent( display.textIndentAction()->isEnabled() );
 
   // insert document class specific macros
-  const TextDisplay::MacroList& macros( display.macros() );
+  const TextMacro::List& macros( display.macros() );
   QAction* action;
-  for( TextDisplay::MacroList::const_iterator iter = macros.begin(); iter != macros.end(); iter++ )
+  for( TextMacro::List::const_iterator iter = macros.begin(); iter != macros.end(); iter++ )
   {
     
-    if( (*iter)->isSeparator() ) macro_menu_->addSeparator();
+    if( iter->isSeparator() ) macro_menu_->addSeparator();
     else {
       
       // create menu entry
-      action = (*iter)->action();
+      action = iter->action();
       action->setEnabled( has_selection );
       macro_menu_->addAction( action );
             
       // insert in map
-      macros_.insert( make_pair( action, (*iter)->name() ) );
+      macros_.insert( make_pair( action, iter->name() ) );
       
     }
   }

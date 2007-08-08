@@ -41,14 +41,14 @@
 
 #include "Counter.h"
 #include "Debug.h"
+#include "IndentPattern.h"
+#include "TextBraces.h"
+#include "TextMacro.h"
 #include "File.h"
+#include "HighlightPattern.h"
 #include "HighlightStyle.h"
 
-// forward declaration
-class HighlightPattern;
-class IndentPattern;
-class TextBraces;
-class TextMacro;
+
 
 //! Highlight and indentation patterns for a given document class
 class DocumentClass: public Counter
@@ -104,11 +104,11 @@ class DocumentClass: public Counter
   { return wrap_; }
     
   //! list of highligh patterns
-  const std::list< HighlightPattern* >& highlightPatterns() const
+  const HighlightPattern::List& highlightPatterns() const
   { return highlight_patterns_; }
   
   //! list of indentation patterns
-  const std::list< IndentPattern* >& indentPatterns() const
+  const IndentPattern::List& indentPatterns() const
   { return indent_patterns_; }
 
   //! base indentation
@@ -122,11 +122,11 @@ class DocumentClass: public Counter
   { return base_indentation_; }
   
   //! list of text braces
-  const std::list< TextBraces* >& braces() const
+  const std::list<TextBraces>& braces() const
   { return text_braces_; }
   
   //! list of text macros
-  const std::list< TextMacro* >& textMacros() const
+  const std::list<TextMacro>& textMacros() const
   { return text_macros_; }
   
   //! used to match pointers to DocumentClass with same name
@@ -218,19 +218,19 @@ class DocumentClass: public Counter
   bool wrap_;
   
   //! set of highlight styles
-  std::set< HighlightStyle > highlight_styles_;
+  HighlightStyle::Set highlight_styles_;
   
   //! list of highlight patterns
-  std::list< HighlightPattern* > highlight_patterns_;  
+  HighlightPattern::List highlight_patterns_;  
   
   //! list of indentation patterns
-  std::list< IndentPattern* > indent_patterns_;
+  IndentPattern::List indent_patterns_;
   
   //! list of text braces
-  std::list< TextBraces* > text_braces_;
+  TextBraces::List text_braces_;
 
   //! list of text braces
-  std::list< TextMacro* > text_macros_;
+  TextMacro::List text_macros_;
   
   //! base indentation
   /*! 

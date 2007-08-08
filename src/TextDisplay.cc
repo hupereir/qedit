@@ -49,6 +49,7 @@
 #include "OpenPreviousMenu.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
+#include "TextBraces.h"
 #include "TextDisplay.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
@@ -75,8 +76,8 @@ TextDisplay::TextDisplay( QWidget* parent ):
   working_directory_( Util::workingDirectory() ), 
   class_name_( "" ),
   ignore_warnings_( false ),
-  active_( false ),
-  current_block_data_( 0 )
+  active_( false )
+  // current_block_data_( 0 )
 {
   
   Debug::Throw( "TextDisplay::TextDisplay.\n" );
@@ -93,6 +94,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
   // connections
   connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
+  connect( this, SIGNAL( cursorPositionChanged() ), SLOT( _highlightBraces() ) );
   connect( this, SIGNAL( indent( QTextBlock ) ), indent_, SLOT( indent( QTextBlock ) ) );
   
   // actions
@@ -122,7 +124,6 @@ TextDisplay::TextDisplay( QWidget* parent ):
   
   connect( &_filterMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectFilter( const std::string& ) ) );
   connect( &_dictionaryMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectDictionary( const std::string& ) ) );
-
   
   #endif
   
@@ -738,6 +739,7 @@ void TextDisplay::updateDocumentClass( void )
   textHighlight().setBraces( document_class->braces() );
   textIndent().setPatterns( document_class->indentPatterns() );
   textIndent().setBaseIndentation( document_class->baseIndentation() );
+  _setBraces( document_class->braces() );
   _setMacros( document_class->textMacros() );
 
   
@@ -846,7 +848,7 @@ void TextDisplay::processMacro( string name )
   Debug::Throw() << "TextDisplay::processMacro - " << name << endl;
 
   // retrieve macro that match argument name
-  MacroList::const_iterator macro_iter = find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
+  TextMacro::List::const_iterator macro_iter = find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
   if( macro_iter == macros_.end() )
   {
     ostringstream what;
@@ -886,7 +888,7 @@ void TextDisplay::processMacro( string name )
     text += end.text().left( position_end - end.position() );
   }
   
-  if( !(*macro_iter)->processText( text ) ) return;
+  if( !macro_iter->processText( text ) ) return;
 
   // update selection
   cursor.setPosition( position_begin );
@@ -1147,7 +1149,7 @@ void TextDisplay::_highlightCurrentBlock( void )
     block.setUserData( data );
   } 
   
-  current_block_data_ = data;
+  // current_block_data_ = data;
     
   // pass to parent class
   CustomTextEdit::_highlightCurrentBlock();
@@ -1158,8 +1160,22 @@ void TextDisplay::_highlightCurrentBlock( void )
 //_______________________________________________________
 void TextDisplay::_indentCurrentParagraph( void )
 {
+  Debug::Throw( "TextDisplay::_indentCurrentParagraph.\n" );
   if( !indent_->isEnabled() ) return;
   emit indent( textCursor().block() );
+}
+
+//_______________________________________________________
+void TextDisplay::_setBraces( const TextBraces::List& braces )
+{
+  Debug::Throw( "TextDisplay::setBraces.\n" );
+  braces_ = braces;
+  braces_set_.clear();
+  for( TextBraces::List::const_iterator iter = braces_.begin(); iter != braces_.end(); iter++ )
+  {
+    braces_set_.insert( iter->first );
+    braces_set_.insert( iter->second );
+  }
 }
 
 //_______________________________________________________
@@ -1454,3 +1470,58 @@ void TextDisplay::_replaceMisspelledSelection( std::string word )
 
 }
 
+
+//__________________________________________________
+void TextDisplay::_highlightBraces( void )
+{ 
+  
+  if( !_isBracesEnabled() ) return;
+  
+  // retrieve TextCursor
+  QTextCursor cursor( textCursor() );
+  if( cursor.atBlockStart() ) return;
+  
+  // retrieve block
+  QTextBlock block( cursor.block() );
+  if( ignoreBlock( block ) ) return;
+  
+  // retrieve character locate prior to the cursor
+  int position(cursor.position()-block.position()-1);
+  QChar c( block.text()[position] );
+
+  // check if character is in braces_set
+  if( braces_set_.find( c ) == braces_set_.end() ) return;
+  
+  // check against opening braces
+  TextBraces::List::const_iterator braces = find_if( braces_.begin(), braces_.end(), TextBraces::FirstElementFTor(c) );
+  if( braces != braces_.end() )
+  {
+    bool found( false );
+    int increment( 0 );
+    position++;
+    while( block.isValid() && !found )
+    {
+      // retrieve block text
+      QString text( block.text() );
+      
+      // parse text
+      while( (position = braces->regexp().indexIn( text, position )) >= 0 )
+      {
+        if( text[position] == braces->first ) increment++;
+        if( text[position] == braces->second ) increment--;
+        if( increment < 0 )
+        {
+          found = true;
+          break;
+        }
+        
+      }
+      
+      if( !found )
+      {
+        block = block.next();
+        position = 0; 
+      }
+    }
+  }
+}

@@ -74,12 +74,12 @@ void TextIndent::indent( QTextBlock block )
     int new_tabs = previous_tabs;
     for( IndentPattern::List::iterator iter = patterns_.begin(); iter != patterns_.end(); iter++ )
     {
-      if( _acceptPattern( block, **iter ) )
+      if( _acceptPattern( block, *iter ) )
       {
-        Debug::Throw() << "TextIndent::indent - accepted pattern: " << (*iter)->name() << endl;
-        if( (*iter)->type() == IndentPattern::INCREMENT ) new_tabs += (*iter)->scale();
-        else if( (*iter)->type() == IndentPattern::DECREMENT ) new_tabs -= (*iter)->scale();
-        else if( (*iter)->type() == IndentPattern::DECREMENT_ALL ) new_tabs = 0;
+        Debug::Throw() << "TextIndent::indent - accepted pattern: " << iter->name() << endl;
+        if( iter->type() == IndentPattern::INCREMENT ) new_tabs += iter->scale();
+        else if( iter->type() == IndentPattern::DECREMENT ) new_tabs -= iter->scale();
+        else if( iter->type() == IndentPattern::DECREMENT_ALL ) new_tabs = 0;
         break;
       }
     }

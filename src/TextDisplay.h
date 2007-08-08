@@ -45,6 +45,7 @@
 #include "HighlightPattern.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
+#include "TextMacro.h"
 #include "TimeStamp.h"
 
 #if WITH_ASPELL
@@ -54,7 +55,6 @@
 
 // forward declaration
 class DocumentClass;
-class TextMacro;
 class HighlightBlockData;
 class OpenPreviousMenu;
 
@@ -241,10 +241,7 @@ class TextDisplay: public CustomTextEdit
   //@{
   
   //! list of macros
-  typedef std::list< TextMacro* > MacroList;
-
-  //! list of macros
-  const MacroList& macros( void ) const
+  const TextMacro::List& macros( void ) const
   { return macros_; }
   
   //@}
@@ -296,27 +293,27 @@ class TextDisplay: public CustomTextEdit
   //@{
     
   //! toggle indentation
-  QAction* textIndentAction( void )
+  QAction* textIndentAction( void ) const
   { return text_indent_action_; }
   
   //! toggle text highlighting
-  QAction* textHighlightAction( void )
+  QAction* textHighlightAction( void ) const
   { return text_highlight_action_; }
  
   //! toggle braces highlighting
-  QAction* bracesHighlightAction( void )
+  QAction* bracesHighlightAction( void ) const
   { return braces_highlight_action_; }
 
   //! autospell action
-  QAction* autoSpellAction( void )
+  QAction* autoSpellAction( void ) const
   { return autospell_action_; }
   
   //! spellcheck action
-  QAction* spellcheckAction( void )
+  QAction* spellcheckAction( void ) const
   { return spellcheck_action_; }
   
   //! file information
-  QAction* fileInfoAction( void )
+  QAction* fileInfoAction( void ) const
   { 
     file_info_action_->setEnabled( !file().empty() );
     return file_info_action_; 
@@ -325,14 +322,14 @@ class TextDisplay: public CustomTextEdit
   #if WITH_ASPELL
   
   //! spellcheck dictionary selection
-  QAction* dictionaryMenuAction( void )
+  QAction* dictionaryMenuAction( void ) const
   { 
     dictionary_menu_action_->setEnabled( autoSpellAction()->isChecked() );
     return dictionary_menu_action_;
   }
   
   //! spellcheck filter selection
-  QAction* filterMenuAction( void )
+  QAction* filterMenuAction( void ) const
   { 
     filter_menu_action_->setEnabled( autoSpellAction()->isChecked() );
     return filter_menu_action_;
@@ -403,7 +400,7 @@ class TextDisplay: public CustomTextEdit
   { macros_.clear(); }
 
   //! macros
-  void _setMacros( const MacroList& macros)
+  void _setMacros( const TextMacro::List& macros)
   { macros_ = macros; }  
   
   //! paper color for active/inactive views
@@ -457,6 +454,22 @@ class TextDisplay: public CustomTextEdit
   
   #endif
 
+  //!@name braces
+  //@{
+  
+  //! braces enabled
+  bool _isBracesEnabled( void ) const
+  { return bracesHighlightAction()->isChecked() && !braces_.empty(); }
+  
+  //! braces
+  const TextBraces::List& _braces( void ) const
+  { return braces_; }
+  
+  //! set braces
+  void _setBraces( const TextBraces::List& );
+  
+  //@}
+  
   protected slots:
 
   //! highlight current block
@@ -525,10 +538,15 @@ class TextDisplay: public CustomTextEdit
   { if( isActive() ) emit needUpdate( WINDOW_TITLE ); }
   
   //! ignore current misspelled word
+  /*! this method does nothing if not compiled against aspell */
   void _ignoreMisspelledWord( std::string );
   
   //! replace current selection with spell-checked suggestion
+  /*! this method does nothing if not compiled against aspell */
   void _replaceMisspelledSelection( std::string );
+  
+  //! highlight braces
+  void _highlightBraces( void );
   
   private:
   
@@ -566,7 +584,7 @@ class TextDisplay: public CustomTextEdit
   TextIndent* indent_;
 
   //! text macro
-  MacroList macros_;
+  TextMacro::List macros_;
 
   //@}
 
@@ -616,7 +634,18 @@ class TextDisplay: public CustomTextEdit
   OpenPreviousMenu* menu_;
   
   //! current block data
-  HighlightBlockData* current_block_data_;
+  // HighlightBlockData* current_block_data_;
+  
+  //!@name text braces
+  //@{
+    
+  //! text braces
+  TextBraces::List braces_;
+
+  //! keep track of all braces in a single set for fast access
+  TextBraces::Set braces_set_;
+  
+  //@}
   
   //! empty line
   static const QRegExp empty_line_regexp_;

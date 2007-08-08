@@ -34,19 +34,29 @@
 
 #include <QDomElement>
 #include <QDomDocument>
+#include <QRegExp>
+#include <QChar>
 
+#include <list>
 #include <map>
+#include <set>
 
 #include "Counter.h"
 #include "Debug.h"
 #include "Str.h"
 
 //! text braces (for highlighting)
-class TextBraces: public std::pair<char,char>, public Counter
+class TextBraces: public std::pair<QChar,QChar>, public Counter
 {
 
   public:
 
+  //! list of braces
+  typedef std::list<TextBraces> List;
+  
+  //! set of braces
+  typedef std::set<QChar> Set;
+  
   //! constructor from DomElement
   TextBraces( const QDomElement& element = QDomElement() );
 
@@ -57,24 +67,28 @@ class TextBraces: public std::pair<char,char>, public Counter
   bool isValid( void ) const
   { return first != second; }
   
+  //! regExp that match either of the two braces
+  const QRegExp& regexp() const
+  { return regexp_; }
+  
   //! used to find braces for which first character match
   class FirstElementFTor
   {
     public:
     
     //! constructor
-    FirstElementFTor( const char& c ):
+    FirstElementFTor( const QChar& c ):
       c_( c )
     {}
     
     //! predicate
-    bool operator() ( const TextBraces* braces ) const
-    { return braces->first == c_; }
+    bool operator() ( const TextBraces& braces ) const
+    { return braces.first == c_; }
     
     private:
 
     //! predicted character
-    char c_;
+    QChar c_;
   
   };
   
@@ -84,20 +98,25 @@ class TextBraces: public std::pair<char,char>, public Counter
     public:
     
     //! constructor
-    LastElementFTor( const char& c ):
+    LastElementFTor( const QChar& c ):
       c_( c )
     {}
     
     //! predicate
-    bool operator() ( const TextBraces* braces ) const
-    { return braces->second == c_; }
+    bool operator() ( const TextBraces& braces ) const
+    { return braces.second == c_; }
     
     private:
 
     //! predicted character
-    char c_;
+    QChar c_;
   
   };
+  
+  private:
+  
+  //! regular expression that match either of both characters
+  QRegExp regexp_;
   
 };
 #endif

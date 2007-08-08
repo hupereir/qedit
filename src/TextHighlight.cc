@@ -45,15 +45,15 @@ TextHighlight::TextHighlight( QTextDocument* document ):
 { Debug::Throw( "TextHighlight::TextHighlight.\n" ); }
 
 //_______________________________________________________
-void TextHighlight::setBraces( const TextHighlight::BracesList& braces )
+void TextHighlight::setBraces( const TextBraces::List& braces )
 {
   Debug::Throw( "TextHighlight::setBraces.\n" );
   braces_ = braces;
   braces_set_.clear();
-  for( BracesList::const_iterator iter = braces_.begin(); iter != braces_.end(); iter++ )
+  for( TextBraces::List::const_iterator iter = braces_.begin(); iter != braces_.end(); iter++ )
   {
-    braces_set_.insert( (*iter)->first );
-    braces_set_.insert( (*iter)->second );
+    braces_set_.insert( iter->first );
+    braces_set_.insert( iter->second );
   }
 }
 

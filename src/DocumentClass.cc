@@ -30,13 +30,9 @@
 */
 
 #include "DocumentClass.h"
-#include "HighlightPattern.h"
-#include "IndentPattern.h"
 #include "KeywordPattern.h"
 #include "RangePattern.h"
 #include "Str.h"
-#include "TextMacro.h"
-#include "TextBraces.h"
 #include "XmlDef.h"
 #include "XmlUtil.h"
 
@@ -95,31 +91,28 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 
     } else if( tag_name == XML::INDENT_PATTERN ) {
 
-      IndentPattern* pattern = new IndentPattern( child_element );
-      if( pattern->isValid() ) indent_patterns_.push_back( pattern );
-      else delete pattern;
+      IndentPattern pattern( child_element );
+      if( pattern.isValid() ) indent_patterns_.push_back( pattern );
 
     } else if( tag_name == XML::BRACES ) {
 
-      TextBraces* braces = new TextBraces( child_element );
-      if( braces->isValid() ) text_braces_.push_back( braces );
-      else delete braces;
+      TextBraces braces( child_element );
+      if( braces.isValid() ) text_braces_.push_back( braces );
 
     } else if( tag_name == XML::MACRO ) {
 
-      TextMacro* macro = new TextMacro( child_element );
-      if( macro->isValid() ) text_macros_.push_back( macro );
-      else delete macro;
+      TextMacro macro( child_element );
+      if( macro.isValid() ) text_macros_.push_back( macro );
 
     } else cout << "DocumentClass::DocumentClass - unrecognized child " << qPrintable( child_element.tagName() ) << ".\n";
 
   }
 
   // create parent/children hierarchy between highlight patterns
-  for( list< HighlightPattern* >::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
+  for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
   if( (*iter)->parent().size() )
   {
-    list< HighlightPattern* >::iterator parent_iter( find_if( highlight_patterns_.begin(), highlight_patterns_.end(), HighlightPattern::SameNameFTor( (*iter)->parent() ) ) );
+    HighlightPattern::List::iterator parent_iter( find_if( highlight_patterns_.begin(), highlight_patterns_.end(), HighlightPattern::SameNameFTor( (*iter)->parent() ) ) );
     if( parent_iter != highlight_patterns_.end() ) 
     {
       (*iter)->setParentId( (*parent_iter)->id() );
@@ -128,7 +121,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
   }
 
   // assign styles to patterns
-  for( list< HighlightPattern* >::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
+  for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
   {
     set<HighlightStyle>::iterator style_iter ( highlight_styles_.find( (*iter)->style() ) );
     if( style_iter != highlight_styles_.end() ) (*iter)->setStyle( *style_iter );
@@ -161,20 +154,20 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump highlight patterns
-  for( list<HighlightPattern*>::const_iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
+  for( HighlightPattern::List::const_iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
   { out.appendChild( (*iter)->domElement( parent ) ); }
 
   // dump indent patterns
-  for( list<IndentPattern*>::const_iterator iter = indent_patterns_.begin(); iter != indent_patterns_.end(); iter++ )
-  { out.appendChild( (*iter)->domElement( parent ) ); }
+  for( IndentPattern::List::const_iterator iter = indent_patterns_.begin(); iter != indent_patterns_.end(); iter++ )
+  { out.appendChild( iter->domElement( parent ) ); }
 
   // dump braces
-  for( list<TextBraces*>::const_iterator iter = text_braces_.begin(); iter != text_braces_.end(); iter++ )
-  { out.appendChild( (*iter)->domElement( parent ) ); }
+  for( TextBraces::List::const_iterator iter = text_braces_.begin(); iter != text_braces_.end(); iter++ )
+  { out.appendChild( iter->domElement( parent ) ); }
 
   // dump text macros
-  for( list<TextMacro*>::const_iterator iter = text_macros_.begin(); iter != text_macros_.end(); iter++ )
-  { out.appendChild( (*iter)->domElement( parent ) ); }
+  for( TextMacro::List::const_iterator iter = text_macros_.begin(); iter != text_macros_.end(); iter++ )
+  { out.appendChild( iter->domElement( parent ) ); }
   
   return out;
 }
@@ -189,24 +182,13 @@ void DocumentClass::clear( void )
   highlight_styles_.clear();
   
   // clear highlight patterns
-  for( std::list< HighlightPattern* >::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
+  /* need explicit deletion cause pointers are stored */
+  for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
   { delete *iter; }
   highlight_patterns_.clear();
 
-  // clear indent patterns
-  for( std::list< IndentPattern* >::iterator iter = indent_patterns_.begin(); iter != indent_patterns_.end(); iter++ )
-  { delete *iter; }
-  indent_patterns_.clear();
-
-  // clear text braces
-  for( std::list< TextBraces* >::iterator iter = text_braces_.begin(); iter != text_braces_.end(); iter++ )
-  { delete *iter; }
-  
+  indent_patterns_.clear();  
   text_braces_.clear();
-
-  // clear text macros
-  for( std::list< TextMacro* >::iterator iter = text_macros_.begin(); iter != text_macros_.end(); iter++ )
-  { delete *iter; }
   text_macros_.clear();
 
 }

@@ -29,6 +29,7 @@
   \version $Revision$
   \date $Date$
 */
+#include <QDataStream>
 
 #include "Debug.h"
 #include "Str.h"
@@ -57,6 +58,15 @@ TextBraces::TextBraces( const QDomElement& element ):
     else if( name == XML::END ) second = Str( XmlUtil::xmlToText(value) ).get<char>();
     else cout << "TextBraces::TextBraces - unrecognized attribute: " << name << endl;
   }
+  
+  // create regexp
+  //QDataStream what;
+  //what << first << "|" << second;
+  //what >> regexp_;
+  ostringstream what;
+  what << first.toAscii() << "|" << second.toAscii();
+  regexp_.setPattern( what.str().c_str() );
+  
 }
 
 
@@ -67,7 +77,7 @@ QDomElement TextBraces::domElement( QDomDocument& parent ) const
   QDomElement out( parent.createElement( XML::BRACES.c_str() ) );
   
   // dump attributes
-  out.setAttribute( XML::BEGIN.c_str(), XmlUtil::textToXml( Str().assign<char>(first) ).c_str() );
-  out.setAttribute( XML::END.c_str(), XmlUtil::textToXml( Str().assign<char>(second) ).c_str() );
+  out.setAttribute( XML::BEGIN.c_str(), XmlUtil::textToXml( Str().assign<char>(first.toAscii()) ).c_str() );
+  out.setAttribute( XML::END.c_str(), XmlUtil::textToXml( Str().assign<char>(second.toAscii()) ).c_str() );
   return out;
 }
