@@ -79,7 +79,7 @@ noinst_HEADERS = \
   NewFileDialog.h \
   PrintDialog.h \
   RangePattern.h \
-  TextBraces.h \
+  TextParenthesis.h \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
@@ -114,7 +114,7 @@ qedit_SOURCES = \
   PrintDialog.cc \
   QEdit.cc \
   RangePattern.cc \
-  TextBraces.cc \
+  TextParenthesis.cc \
   TextDisplay.cc \
   TextHighlight.cc \
   TextIndent.cc \

@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QPushButton>
 #include <QScrollBar>
+#include <QTextLayout>
 
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
@@ -80,7 +81,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   // current_block_data_( 0 )
 {
   
-  Debug::Throw( "TextDisplay::TextDisplay.\n" );
+  Debug::Throw("TextDisplay::TextDisplay.\n" );
 
   // disable rich text
   setAcceptRichText( false );
@@ -88,7 +89,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   // text highlight
   TextHighlight* highlight = new TextHighlight( document() );
   setTextHighlight( highlight );
-  
+
   // text indent
   indent_ = new TextIndent( this );
 
@@ -746,6 +747,14 @@ void TextDisplay::updateDocumentClass( void )
   // add information to Menu
   if( !file().empty() )
   { menu().get( file() ).addInformation( "class_name", className() ); }
+
+  // rehighlight text entirely
+  // because Pattern Ids may have changed even if the className has not changed.
+  #if WITH_ASPELL
+  if( textHighlight().isHighlightEnabled() && !textHighlight().spellParser().isEnabled() ) rehighlight();
+  #else
+  if( textHighlight().isHighlightEnabled() ) rehighlight();
+  #endif
   
   return;
   
@@ -880,7 +889,7 @@ void TextDisplay::processMacro( string name )
   
   // prepare text from selected blocks
   QString text;
-  if( begin == end ) text = begin.text().mid( position_begin, position_end );
+  if( begin == end ) text = begin.text().mid( position_begin - begin.position(), position_end-position_begin );
   else {
     text = begin.text().mid( position_begin - begin.position() ) + "\n";
     for( QTextBlock block = begin.next(); block.isValid() && block!= end; block = block.next() )
@@ -888,8 +897,9 @@ void TextDisplay::processMacro( string name )
     text += end.text().left( position_end - end.position() );
   }
   
+  // process macro
   if( !macro_iter->processText( text ) ) return;
-
+  
   // update selection
   cursor.setPosition( position_begin );
   cursor.setPosition( position_end, QTextCursor::KeepAnchor );
@@ -1485,18 +1495,18 @@ void TextDisplay::_highlightBraces( void )
   QTextBlock block( cursor.block() );
   if( ignoreBlock( block ) ) return;
   
-  // retrieve character locate prior to the cursor
+  // store local position in block
   int position(cursor.position()-block.position()-1);
-  QChar c( block.text()[position] );
-
+  bool found( false );
+  
   // check if character is in braces_set
+  QChar c( block.text()[position] );
   if( braces_set_.find( c ) == braces_set_.end() ) return;
   
   // check against opening braces
   TextBraces::List::const_iterator braces = find_if( braces_.begin(), braces_.end(), TextBraces::FirstElementFTor(c) );
   if( braces != braces_.end() )
   {
-    bool found( false );
     int increment( 0 );
     position++;
     while( block.isValid() && !found )
@@ -1515,13 +1525,64 @@ void TextDisplay::_highlightBraces( void )
           break;
         }
         
+        position++;
+        
       }
       
       if( !found )
       {
         block = block.next();
         position = 0; 
+      } 
+    }    
+  }
+  
+  // if not found, check against closing braces
+  if( !( found || (braces = find_if( braces_.begin(), braces_.end(), TextBraces::SecondElementFTor(c) )) == braces_.end()  ) )
+  {
+    int increment( 0 );
+    while( block.isValid() && !found )
+    {
+       // retrieve block text
+      QString text( block.text() );
+      
+      // parse text
+      while( (position = braces->regexp().lastIndexIn( text, position-text.length() )) >= 0 )
+      { 
+        if( text[position] == braces->first ) increment--;
+        if( text[position] == braces->second ) increment++;
+        if( increment < 0 )
+        {
+          found = true;
+          break;
+        }
+        
+        position--;
+                
+      }
+      
+      if( !found )
+      {
+        block = block.previous();
+        if( block.isValid() ) position = block.text().length(); 
       }
     }
   }
+  
+  // if not found do nothing
+  if( !( found && block.isValid() ) ) return;
+  
+  // highlight the found parenthesis
+  // retrieve block layout
+  Debug::Throw(0) << "found matching.\n";
+  QTextLayout *layout( block.layout() );
+  QTextLayout::FormatRange range;
+  range.start = position;
+  range.length = 1;
+  range.format.setBackground( Qt::red );
+  QList<QTextLayout::FormatRange> ranges( layout->additionalFormats() );
+  ranges.push_back( range );
+  layout->setAdditionalFormats( ranges );
+  document()->markContentsDirty(block.position()+position,1);
+  
 }

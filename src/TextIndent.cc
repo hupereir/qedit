@@ -203,6 +203,7 @@ void TextIndent::_increment( QTextBlock block, const unsigned int& count )
   }
   
   // locate cursor at beginning of the paragraph + baseIndentation
+  cursor.joinPreviousEditBlock();
   cursor.setPosition( block.position() + baseIndentation(), QTextCursor::MoveAnchor );
   for( unsigned int i=0; i < count; i++ )
   {    
@@ -219,6 +220,7 @@ void TextIndent::_increment( QTextBlock block, const unsigned int& count )
     }
     
   }
+  cursor.endEditBlock();  
   
 }
 

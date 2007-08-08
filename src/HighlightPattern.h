@@ -78,7 +78,15 @@ class HighlightPattern: public Counter
   
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
-  
+
+  //! set id  
+  /*!
+  The unique ID has a single bit set to 1, to use
+  faster active pattern masks, with no shift operators
+  */
+  void setId( const int& id )
+  { id_ = (1<<id); }
+    
   //! unique id
   virtual const int& id( void ) const
   { return id_; }
@@ -355,9 +363,6 @@ class HighlightPattern: public Counter
   
   private:
         
-  //! unique id counter
-  static int id_counter_;
-  
   //! unique id
   /*!
     The unique ID has a single bit set to 1, to use

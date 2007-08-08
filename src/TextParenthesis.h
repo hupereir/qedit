@@ -93,12 +93,12 @@ class TextBraces: public std::pair<QChar,QChar>, public Counter
   };
   
   //! used to find braces for which second character match
-  class LastElementFTor
+  class SecondElementFTor
   {
     public:
     
     //! constructor
-    LastElementFTor( const QChar& c ):
+    SecondElementFTor( const QChar& c ):
       c_( c )
     {}
     

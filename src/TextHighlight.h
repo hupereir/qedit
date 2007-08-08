@@ -169,6 +169,9 @@ class TextHighlight: public BaseTextHighlight
   //! keep track of all braces in a single set for fast access
   TextBraces::Set braces_set_;
   
+  //! position of current braces to highlight, if any
+  int braces_position_;
+  
   //@}
   
   //!@name spell checking

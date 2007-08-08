@@ -162,7 +162,7 @@ QDomElement TextMacro::Rule::domElement( QDomDocument& parent ) const
 //_____________________________________________________
 bool TextMacro::Rule::processText( QString& text ) const
 {
-  Debug::Throw() << "TextMacro::Rule::ProcessText - text: " << qPrintable( text ) << endl;
+  Debug::Throw( "TextMacro::Rule::ProcessText.\n" );
   
   if( !isValid() ) return false;
   

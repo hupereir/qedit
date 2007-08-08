@@ -38,12 +38,9 @@
 using namespace std;
 
 //___________________________________________________________________________
-int HighlightPattern::id_counter_ = 0;
-
-//___________________________________________________________________________
 HighlightPattern::HighlightPattern( const QDomElement& element ):
   Counter( "HighlightPattern" ),
-  id_( 1<<(id_counter_++) ),
+  id_( 0 ),
   name_( "default" ),
   parent_( "" ),
   parent_id_( 0 ),

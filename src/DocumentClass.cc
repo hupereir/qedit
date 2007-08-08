@@ -108,6 +108,13 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 
   }
 
+  // assign pattern ids
+  // warning: the passed Id is converted internaly into a single bit of a bitset
+  // to facilitate patterns bitMask
+  unsigned int id(0);
+  for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++, id++ )
+  { (*iter)->setId( id ); }
+  
   // create parent/children hierarchy between highlight patterns
   for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
   if( (*iter)->parent().size() )
@@ -186,7 +193,8 @@ void DocumentClass::clear( void )
   for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
   { delete *iter; }
   highlight_patterns_.clear();
-
+  
+  
   indent_patterns_.clear();  
   text_braces_.clear();
   text_macros_.clear();
