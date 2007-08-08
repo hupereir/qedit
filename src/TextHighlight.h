@@ -117,8 +117,11 @@ class TextHighlight: public BaseTextHighlight
 
   //! current parenthesis
   /*! returns true if changed */
-  void setCurrentParenthesis( const int& local, const int& absolute = 0 );
+  void highlightParenthesis( const int& local, const int& absolute );
      
+  //! clear highlighted parenthesis if any
+  void clearParenthesis( void );
+  
   //@}
     
   //! patterns
@@ -142,7 +145,7 @@ class TextHighlight: public BaseTextHighlight
   
   //! update highlight pattern associated to auto-spell
   void updateSpellPattern( void )
-  { spell_pattern_.setStyle( HighlightStyle( "spell_style", spellParser().fontFormat(), spellParser().color() ) ); }
+  { spell_pattern_.setStyle( HighlightStyle( "spellcheck_style", spellParser().fontFormat(), spellParser().color() ) ); }
 
   #endif
   

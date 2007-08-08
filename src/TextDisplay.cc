@@ -1145,30 +1145,6 @@ bool TextDisplay::_contentsChanged( void ) const
 
 }
 
-//________________________________________________
-void TextDisplay::_highlightCurrentBlock( void )
-{ 
-  
-  Debug::Throw( "TextDisplay::_highlightCurrentBlock.\n" );
-  
-  // retrieve current block
-  QTextBlock block( textCursor().block() );  
-  
-  HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( block.userData() );
-  if( !data )
-  {
-    data = new HighlightBlockData();
-    block.setUserData( data );
-  } 
-  
-  // current_block_data_ = data;
-    
-  // pass to parent class
-  CustomTextEdit::_highlightCurrentBlock();
-  
-  return; 
-}
-
 //_______________________________________________________
 void TextDisplay::_indentCurrentParagraph( void )
 {
@@ -1482,28 +1458,22 @@ void TextDisplay::_replaceMisspelledSelection( std::string word )
 
 }
 
-
 //__________________________________________________
 void TextDisplay::_highlightParenthesis( void )
 { 
   
   if( !_isParenthesisEnabled() ) return;
   
+  // store local reference to textHighlight
+  TextHighlight& text_highlight( textHighlight() );
+  
   // retrieve TextCursor
   QTextCursor cursor( textCursor() );
-  if( cursor.atBlockStart() ) 
-  {
-    textHighlight().setCurrentParenthesis( -1 );   
-    return;
-  }
+  if( cursor.atBlockStart() ) return text_highlight.clearParenthesis();   
   
   // retrieve block
   QTextBlock block( cursor.block() );
-  if( ignoreBlock( block ) ) 
-  {
-    textHighlight().setCurrentParenthesis( -1 );   
-    return;
-  }
+  if( ignoreBlock( block ) ) return text_highlight.clearParenthesis();   
   
   // store local position in block
   int position(cursor.position()-block.position()-1);
@@ -1511,11 +1481,7 @@ void TextDisplay::_highlightParenthesis( void )
   
   // check if character is in parenthesis_set
   QChar c( block.text()[position] );
-  if( parenthesis_set_.find( c ) == parenthesis_set_.end() ) 
-  {
-    textHighlight().setCurrentParenthesis( -1 );   
-    return;
-  }
+  if( parenthesis_set_.find( c ) == parenthesis_set_.end() ) return text_highlight.clearParenthesis();   
   
   // check against opening parenthesis
   TextParenthesis::List::const_iterator parenthesis = find_if( parenthesis_.begin(), parenthesis_.end(), TextParenthesis::FirstElementFTor(c) );
@@ -1531,8 +1497,9 @@ void TextDisplay::_highlightParenthesis( void )
       // parse text
       while( (position = parenthesis->regexp().indexIn( text, position )) >= 0 )
       {
-        if( text[position] == parenthesis->first ) increment++;
         if( text[position] == parenthesis->second ) increment--;
+        else if( text[position] == parenthesis->first ) increment++;
+        
         if( increment < 0 )
         {
           found = true;
@@ -1555,16 +1522,18 @@ void TextDisplay::_highlightParenthesis( void )
   if( !( found || (parenthesis = find_if( parenthesis_.begin(), parenthesis_.end(), TextParenthesis::SecondElementFTor(c) )) == parenthesis_.end()  ) )
   {
     int increment( 0 );
+    position--;
     while( block.isValid() && !found )
     {
-       // retrieve block text
+      // retrieve block text
       QString text( block.text() );
-      
+
       // parse text
-      while( (position = parenthesis->regexp().lastIndexIn( text, position-text.length() )) >= 0 )
+      while( (position = parenthesis->regexp().lastIndexIn( text, position )) >= 0 )
       { 
         if( text[position] == parenthesis->first ) increment--;
-        if( text[position] == parenthesis->second ) increment++;
+        else if( text[position] == parenthesis->second ) increment++;
+        
         if( increment < 0 )
         {
           found = true;
@@ -1572,36 +1541,21 @@ void TextDisplay::_highlightParenthesis( void )
         }
         
         position--;
-                
+        
       }
       
       if( !found )
       {
         block = block.previous();
-        if( block.isValid() ) position = block.text().length(); 
+        if( block.isValid() ) position = block.text().length() - 1; 
       }
     }
   }
   
   // if not found do nothing
-  if( !( found && block.isValid() ) ) 
-  {
-    textHighlight().setCurrentParenthesis( -1 );   
-    return; 
-  }
+  if( !found ) text_highlight.clearParenthesis();
+  else text_highlight.highlightParenthesis( position, block.position()+position );
   
-  textHighlight().setCurrentParenthesis( position, block.position()+position );
-  document()->markContentsDirty(block.position()+position,1);
-//   // highlight the found parenthesis
-//   // retrieve block layout
-//   Debug::Throw(0) << "found matching.\n";
-//   QTextLayout *layout( block.layout() );
-//   QTextLayout::FormatRange range;
-//   range.start = position;
-//   range.length = 1;
-//   range.format.setBackground( Qt::red );
-//   QList<QTextLayout::FormatRange> ranges( layout->additionalFormats() );
-//   ranges.push_back( range );
-//   layout->setAdditionalFormats( ranges );
-//   document()->markContentsDirty(block.position()+position,1);
+  return;
+
 }

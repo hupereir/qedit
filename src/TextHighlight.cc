@@ -62,27 +62,35 @@ void TextHighlight::setParenthesis( const TextParenthesis::List& parenthesis )
 }
 
 //_______________________________________________________
-void TextHighlight::setCurrentParenthesis( const int& local, const int& absolute )
+void TextHighlight::clearParenthesis( void )
 {
+
+  Debug::Throw() << "TextHighlight::clearParenthesis - local:"
+    << " " << local_parenthesis_ 
+    << " absolute: " << absolute_parenthesis_ 
+    << endl;
   
-  if( ( local == -1 && local_parenthesis_ != local ) || absolute_parenthesis_ != absolute )
-  { 
-    cout << "resetting parenthesis" << endl;   
-    local_parenthesis_ = local;
-    document()->markContentsDirty(absolute_parenthesis_,1); 
-  }
+  // clear previous parenthesis highlight
+  if(  local_parenthesis_ == -1 ) return;
+  local_parenthesis_ = -1;
+  document()->markContentsDirty(absolute_parenthesis_,1); 
   
+}
+  
+//_______________________________________________________
+void TextHighlight::highlightParenthesis( const int& local, const int& absolute )
+{
+
   local_parenthesis_ = local;
   absolute_parenthesis_ = absolute; 
-  
+  document()->markContentsDirty(absolute_parenthesis_,1); 
+
 }
 
 //_________________________________________________________
 void TextHighlight::highlightBlock( const QString& text )
 {
-
-  Debug::Throw(0) << "TextHighlight::highlightBlock - local: " << local_parenthesis_ << " absolute: " << absolute_parenthesis_ << endl;
-
+  
   // base class highlight
   // this is always performed
   BaseTextHighlight::highlightBlock( text );
@@ -91,17 +99,8 @@ void TextHighlight::highlightBlock( const QString& text )
   if( local_parenthesis_ != -1 ) 
   { setFormat( local_parenthesis_, 1, parenthesis_highlight_format_ ); }
   
-  if( !isHighlightEnabled() )
-  {
-    Debug::Throw( "TextHighlight::highlightBlock - disabled.\n" ); 
-    return;
-  }
-  
-  if( patterns_.empty() ) 
-  {
-    Debug::Throw( "TextHighlight::highlightBlock - no patterns.\n" ); 
-    return;
-  }
+  // check if enabled
+  if( !isHighlightEnabled()  || patterns_.empty() ) return;
   
   // retrieve active_id from last block state
   int active_id( previousBlockState() );
@@ -142,7 +141,6 @@ void TextHighlight::highlightBlock( const QString& text )
   
   if( spellParser().isEnabled() ) 
   {
-    Debug::Throw( "TextHighlight::highlightBlock - spelling enabled.\n" );
     
     // clear locations
     locations.clear();
@@ -171,8 +169,6 @@ void TextHighlight::highlightBlock( const QString& text )
 HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, const int& active_id )
 {
       
-  Debug::Throw( "TextHighlight::locationSet.\n" ); 
-
   // location list
   HighlightPattern::LocationSet locations;
   locations.activeId().first = active_id;
@@ -343,8 +339,6 @@ HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, c
 //_________________________________________________________
 void TextHighlight::_applyPatterns( const QString& text, const HighlightPattern::LocationSet& locations )
 {
-
-  Debug::Throw( "TextHighlight::_applyPatterns.\n" ); 
 
   // initialize style
   HighlightStyle current_style;

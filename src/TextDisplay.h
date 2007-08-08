@@ -472,10 +472,6 @@ class TextDisplay: public CustomTextEdit
   
   protected slots:
 
-  //! highlight current block
-  /*! overloaded from CustomTextEdit. It allows to store the data of the current block */
-  virtual void _highlightCurrentBlock( void );
- 
   //! indent paragraph (when return or tab is pressed)
   void _indentCurrentParagraph( void );
 
