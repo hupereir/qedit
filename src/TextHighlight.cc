@@ -54,8 +54,19 @@ void TextHighlight::highlightBlock( const QString& text )
   // this is always performed
   BaseTextHighlight::highlightBlock( text );
   
-  // check if enabled
+  // try retrieve block data
+  HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( currentBlockUserData() );
+  
+  // check if parenthesis need highlight
+  if( isParenthesisEnabled() && data && data->hasParenthesis() )
+  { setFormat( data->parenthesis(), 1, parenthesis_highlight_format_ ); }
+  
+  // check if syntax highlighting is enabled
+  #if WITH_ASPELL 
+  if( !spellParser().isEnabled() && (!isHighlightEnabled()  || patterns_.empty() ) ) return;
+  #else
   if( !isHighlightEnabled()  || patterns_.empty() ) return;
+  #endif
   
   // retrieve active_id from last block state
   int active_id( previousBlockState() );
@@ -63,7 +74,6 @@ void TextHighlight::highlightBlock( const QString& text )
 
   // try retrieve HighlightBlockData
   bool need_update( true );
-  HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( currentBlockUserData() );
   if( data ) { 
  
     need_update = ( data->isModified() || (locations = data->locations()).activeId().first != active_id );

@@ -347,6 +347,10 @@ class TextDisplay: public CustomTextEdit
   // return true is block is to be ignored from indentation scheme
   bool ignoreBlock( const QTextBlock& block ) const;
   
+  //! return parenthesis highlight object
+  ParenthesisHighlight& parenthesisHighlight( void ) const
+  { return *parenthesis_highlight_; }
+  
   signals:
 
   //! emmited when indentation of current paragraph is required
@@ -460,7 +464,7 @@ class TextDisplay: public CustomTextEdit
   
   //! parenthesis enabled
   bool _isParenthesisEnabled( void ) const
-  { return parenthesisHighlightAction().isChecked() && !parenthesis_.empty(); }
+  { return parenthesisHighlight().isEnabled(); }
   
   //! parenthesis
   const TextParenthesis::List& _parenthesis( void ) const

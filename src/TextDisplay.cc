@@ -113,7 +113,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   
   addAction( parenthesis_highlight_action_ = new QAction( "&Highlight parenthesis", this ) );
   parenthesis_highlight_action_->setCheckable( true );
-  parenthesis_highlight_action_->setChecked( parenthesis_highlight_->isEnabled() );
+  parenthesis_highlight_action_->setChecked( parenthesisHighlight().isEnabled() );
   connect( parenthesis_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
 
   #if WITH_ASPELL
@@ -684,14 +684,17 @@ void TextDisplay::updateConfiguration( void )
   // base class configuration update
   CustomTextEdit::updateConfiguration();
   
-  // local update
+  // indentation
   textIndentAction().setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
+  
+  // syntax highlighting
   textHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
-  parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
-  
+
+  // parenthesis highlight
   textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().raw( "PARENTHESIS_COLOR" ).c_str() ) );
-  
-  // retrieve active/inactive colors
+  parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
+ 
+  // retrieve active/inactive colors for activity shading
   QColor default_color( QWidget().palette().color( QPalette::Base ) );
   QColor active_color( XmlOptions::get().get<string>("ACTIVE_COLOR").c_str() );
   QColor inactive_color( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() );
@@ -746,6 +749,16 @@ void TextDisplay::updateDocumentClass( void )
   _setParenthesis( document_class->parenthesis() );
   _setMacros( document_class->textMacros() );
 
+  // update enability for parenthesis matching
+  textHighlight().setParenthesisEnabled( 
+    textHighlightAction().isChecked() &&
+    textHighlight().parenthesisHighlightColor().isValid() && 
+    !parenthesis_set_.empty() );
+
+  parenthesisHighlight().setEnabled( 
+    textHighlightAction().isChecked() &&
+    textHighlight().parenthesisHighlightColor().isValid() && 
+    !parenthesis_set_.empty() );
   
   // add information to Menu
   if( !file().empty() )
@@ -1221,10 +1234,19 @@ void TextDisplay::_toggleTextHighlight( bool state )
 void TextDisplay::_toggleParenthesisHighlight( bool state )
 {
   
-  Debug::Throw( "TextDisplay::_toggleParenthesisHighlight.\n" ); 
+  Debug::Throw() << "TextDisplay::_toggleParenthesisHighlight -"
+    << " state: " << state
+    << " color: " << textHighlight().parenthesisHighlightColor().isValid()
+    << " parenthesis: " << parenthesis_set_.empty()
+    << endl;
   
   // propagate to textHighlight
   textHighlight().setParenthesisEnabled( 
+    state && 
+    textHighlight().parenthesisHighlightColor().isValid() && 
+    !parenthesis_set_.empty() );
+  
+  parenthesisHighlight().setEnabled( 
     state && 
     textHighlight().parenthesisHighlightColor().isValid() && 
     !parenthesis_set_.empty() );
@@ -1466,10 +1488,14 @@ void TextDisplay::_replaceMisspelledSelection( std::string word )
 void TextDisplay::_highlightParenthesis( void )
 { 
   
-  if( !_isParenthesisEnabled() ) return;
+  if( !_isParenthesisEnabled() )
+  {
+    Debug::Throw(0) << "TextDisplay::_highlightParenthesis - disabled" << endl;
+    return;
+  }
   
-  // store local reference to textHighlight
-  TextHighlight& text_highlight( textHighlight() );
+  // clear previous parenthesis
+  parenthesisHighlight().clear();
   
   // retrieve TextCursor
   QTextCursor cursor( textCursor() );
@@ -1555,6 +1581,8 @@ void TextDisplay::_highlightParenthesis( void )
       }
     }
   }
+  
+  if( found ) parenthesisHighlight().highlight( position + block.position() );
     
   return;
 
