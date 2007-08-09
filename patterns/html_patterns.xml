@@ -90,8 +90,8 @@
 <!-- parenthesis -->
  <parenthesis begin="XML_LT" end="XML_GT" />
  <parenthesis begin="(" end=")" />
- <parenthesis begin="[" end="]" />
- <parenthesis begin="{" end="}" />
+ <parenthesis begin="[" end="]" regexp="\[|\]" /> 
+ <parenthesis begin="{" end="}" regexp="\{|\}" /> 
 
 <!-- text processing macros -->
 

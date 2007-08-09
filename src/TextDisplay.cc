@@ -1178,6 +1178,7 @@ void TextDisplay::_setParenthesis( const TextParenthesis::List& parenthesis )
     parenthesis_set_.insert( iter->first );
     parenthesis_set_.insert( iter->second );
   }
+  
 }
 
 //_______________________________________________________
@@ -1488,11 +1489,7 @@ void TextDisplay::_replaceMisspelledSelection( std::string word )
 void TextDisplay::_highlightParenthesis( void )
 { 
   
-  if( !_isParenthesisEnabled() )
-  {
-    Debug::Throw(0) << "TextDisplay::_highlightParenthesis - disabled" << endl;
-    return;
-  }
+  if( !_isParenthesisEnabled() ) return;
   
   // clear previous parenthesis
   parenthesisHighlight().clear();
@@ -1511,7 +1508,8 @@ void TextDisplay::_highlightParenthesis( void )
   
   // check if character is in parenthesis_set
   QChar c( block.text()[position] );
-  if( parenthesis_set_.find( c ) == parenthesis_set_.end() ) return; 
+  if( parenthesis_set_.find( c ) == parenthesis_set_.end() ) 
+  { return; }
   
   // check against opening parenthesis
   TextParenthesis::List::const_iterator parenthesis = find_if( parenthesis_.begin(), parenthesis_.end(), TextParenthesis::FirstElementFTor(c) );
@@ -1559,8 +1557,9 @@ void TextDisplay::_highlightParenthesis( void )
       QString text( block.text() );
 
       // parse text
-      while( (position = parenthesis->regexp().lastIndexIn( text, position )) >= 0 )
+      while( position >= 0 && (position = parenthesis->regexp().lastIndexIn( text, position )) >= 0 )
       { 
+        
         if( text[position] == parenthesis->first ) increment--;
         else if( text[position] == parenthesis->second ) increment++;
         

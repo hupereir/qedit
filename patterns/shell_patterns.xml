@@ -78,8 +78,8 @@
 
  <!-- parenthesis -->
  <parenthesis begin="(" end=")" />
- <parenthesis begin="[" end="]" />
- <parenthesis begin="{" end="}" />
+ <parenthesis begin="[" end="]" regexp="\[|\]" /> 
+ <parenthesis begin="{" end="}" regexp="\{|\}" /> 
 
  <!-- text processing macros -->
 
