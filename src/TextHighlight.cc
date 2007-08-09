@@ -43,49 +43,8 @@ using namespace std;
 TextHighlight::TextHighlight( QTextDocument* document ):
   BaseTextHighlight( document ),
   highlight_enabled_( false ),
-  parenthesis_enabled_( false ),
-  local_parenthesis_( -1 ),
-  absolute_parenthesis_( 0 )
+  parenthesis_enabled_( false )
 { Debug::Throw( "TextHighlight::TextHighlight.\n" ); }
-
-//_______________________________________________________
-void TextHighlight::setParenthesis( const TextParenthesis::List& parenthesis )
-{
-  Debug::Throw( "TextHighlight::setParenthesis.\n" );
-  parenthesis_ = parenthesis;
-  parenthesis_set_.clear();
-  for( TextParenthesis::List::const_iterator iter = parenthesis_.begin(); iter != parenthesis_.end(); iter++ )
-  {
-    parenthesis_set_.insert( iter->first );
-    parenthesis_set_.insert( iter->second );
-  }
-}
-
-//_______________________________________________________
-void TextHighlight::clearParenthesis( void )
-{
-
-  Debug::Throw() << "TextHighlight::clearParenthesis - local:"
-    << " " << local_parenthesis_ 
-    << " absolute: " << absolute_parenthesis_ 
-    << endl;
-  
-  // clear previous parenthesis highlight
-  if(  local_parenthesis_ == -1 ) return;
-  local_parenthesis_ = -1;
-  document()->markContentsDirty(absolute_parenthesis_,1); 
-  
-}
-  
-//_______________________________________________________
-void TextHighlight::highlightParenthesis( const int& local, const int& absolute )
-{
-
-  local_parenthesis_ = local;
-  absolute_parenthesis_ = absolute; 
-  document()->markContentsDirty(absolute_parenthesis_,1); 
-
-}
 
 //_________________________________________________________
 void TextHighlight::highlightBlock( const QString& text )
@@ -94,10 +53,6 @@ void TextHighlight::highlightBlock( const QString& text )
   // base class highlight
   // this is always performed
   BaseTextHighlight::highlightBlock( text );
-  
-  // highlight parenthesis highlight color, if any
-  if( local_parenthesis_ != -1 ) 
-  { setFormat( local_parenthesis_, 1, parenthesis_highlight_format_ ); }
   
   // check if enabled
   if( !isHighlightEnabled()  || patterns_.empty() ) return;

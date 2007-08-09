@@ -143,29 +143,29 @@ EditFrame::EditFrame(  QWidget* parent ):
   toolbars_.push_back( make_pair( toolbar, "FILE_TOOLBAR" ) );
   addToolBar( toolbar );
 
-  toolbar->addAction( newFileAction() );
-  toolbar->addAction( openAction() ); 
-  toolbar->addAction( saveAction() ); 
-  //toolbar->addAction( printAction() );
+  toolbar->addAction( &newFileAction() );
+  toolbar->addAction( &openAction() ); 
+  toolbar->addAction( &saveAction() ); 
+  //toolbar->addAction( &printAction() );
   
   // edition toolbar
   toolbar = new CustomToolBar( "Edition", this );
   toolbars_.push_back( make_pair( toolbar, "EDITION_TOOLBAR" ) );
   addToolBar( toolbar );
 
-  toolbar->addAction( undoAction() ); 
-  toolbar->addAction( redoAction() ); 
-  toolbar->addAction( cutAction() );
-  toolbar->addAction( copyAction() );
-  toolbar->addAction( pasteAction() );
+  toolbar->addAction( &undoAction() ); 
+  toolbar->addAction( &redoAction() ); 
+  toolbar->addAction( &cutAction() );
+  toolbar->addAction( &copyAction() );
+  toolbar->addAction( &pasteAction() );
 
   // extra toolbar
   toolbar = new CustomToolBar( "Tools", this );
   toolbars_.push_back( make_pair( toolbar, "EXTRA_TOOLBAR" ) );
   addToolBar( toolbar );
 
-  toolbar->addAction( fileInfoAction() ); 
-  toolbar->addAction( spellcheckAction() ); 
+  toolbar->addAction( &fileInfoAction() ); 
+  toolbar->addAction( &spellcheckAction() ); 
   
   // splitting toolbar
   toolbar = new CustomToolBar( "Display", this );
@@ -189,8 +189,8 @@ EditFrame::EditFrame(  QWidget* parent ):
   action = toolbar->addAction( IconEngine::get( ICONS::VIEW_RIGHT, path_list ), "Open view left/right", this, SLOT( openHorizontal() ) );
   action->setToolTip( "Open a new view horizontally" );
   
-  toolbar->addAction( detachAction() );
-  toolbar->addAction( closeViewAction() );
+  toolbar->addAction( &detachAction() );
+  toolbar->addAction( &closeViewAction() );
  
   //! configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
@@ -718,22 +718,22 @@ void EditFrame::_update( unsigned int flags )
   if( flags & TextDisplay::FILE_NAME && file_editor_ )
   { 
     file_editor_->setText( activeDisplay().file().c_str() ); 
-    fileInfoAction()->setEnabled( !activeDisplay().file().empty() );
+    fileInfoAction().setEnabled( !activeDisplay().file().empty() );
   }
 
   if( flags & TextDisplay::CUT )
-  { cutAction()->setEnabled( activeDisplay().cutAction()->isEnabled() ); }
+  { cutAction().setEnabled( activeDisplay().cutAction().isEnabled() ); }
 
   if( flags & TextDisplay::COPY )
-  { copyAction()->setEnabled( activeDisplay().copyAction()->isEnabled() ); }
+  { copyAction().setEnabled( activeDisplay().copyAction().isEnabled() ); }
 
   if( flags & TextDisplay::PASTE )
-  { pasteAction()->setEnabled( activeDisplay().pasteAction()->isEnabled() ); }
+  { pasteAction().setEnabled( activeDisplay().pasteAction().isEnabled() ); }
 
   if( flags & TextDisplay::UNDO_REDO )
   {
-    undoAction()->setEnabled( activeDisplay().undoAction()->isEnabled() );
-    redoAction()->setEnabled( activeDisplay().redoAction()->isEnabled() );
+    undoAction().setEnabled( activeDisplay().undoAction().isEnabled() );
+    redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
   }
 
 }
@@ -1298,8 +1298,8 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
   connect( display, SIGNAL( cursorPositionChanged() ), this, SLOT( _updateCursorPosition() ) );
   connect( display, SIGNAL( hasFocus( TextDisplay* ) ), this, SLOT( _displayFocusChanged( TextDisplay* ) ) );
   
-  connect( display, SIGNAL( undoAvailable( bool ) ), undoAction(), SLOT( setEnabled( bool ) ) );
-  connect( display, SIGNAL( redoAvailable( bool ) ), redoAction(), SLOT( setEnabled( bool ) ) );
+  connect( display, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
+  connect( display, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );
   
   // associate display to this editFrame
   BASE::Key::associate( this, display );

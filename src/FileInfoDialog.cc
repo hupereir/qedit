@@ -251,10 +251,10 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   grid_layout->addWidget( new QLabel( (parent->textIndent().isEnabled() ? "true":"false" ), box ) );
 
   grid_layout->addWidget( new QLabel( "Text wrapping: ", box ) );
-  grid_layout->addWidget( new QLabel( (parent->wrapModeAction()->isChecked() ? "true":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (parent->wrapModeAction().isChecked() ? "true":"false" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Tab emulation: ", box ) );
-  grid_layout->addWidget( new QLabel( (parent->tabEmulationAction()->isChecked() ? "true":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (parent->tabEmulationAction().isChecked() ? "true":"false" ), box ) );
 
   grid_layout->setColumnStretch( 1, 1 );
   layout->addStretch();

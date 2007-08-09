@@ -43,6 +43,7 @@
 #include "Debug.h"
 #include "File.h"
 #include "HighlightPattern.h"
+#include "ParenthesisHighlight.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
@@ -293,46 +294,46 @@ class TextDisplay: public CustomTextEdit
   //@{
     
   //! toggle indentation
-  QAction* textIndentAction( void ) const
-  { return text_indent_action_; }
+  QAction& textIndentAction( void ) const
+  { return *text_indent_action_; }
   
   //! toggle text highlighting
-  QAction* textHighlightAction( void ) const
-  { return text_highlight_action_; }
+  QAction& textHighlightAction( void ) const
+  { return *text_highlight_action_; }
  
   //! toggle parenthesis highlighting
-  QAction* parenthesisHighlightAction( void ) const
-  { return parenthesis_highlight_action_; }
+  QAction& parenthesisHighlightAction( void ) const
+  { return *parenthesis_highlight_action_; }
 
   //! autospell action
-  QAction* autoSpellAction( void ) const
-  { return autospell_action_; }
+  QAction& autoSpellAction( void ) const
+  { return *autospell_action_; }
   
   //! spellcheck action
-  QAction* spellcheckAction( void ) const
-  { return spellcheck_action_; }
+  QAction& spellcheckAction( void ) const
+  { return *spellcheck_action_; }
   
   //! file information
-  QAction* fileInfoAction( void ) const
+  QAction& fileInfoAction( void ) const
   { 
     file_info_action_->setEnabled( !file().empty() );
-    return file_info_action_; 
+    return *file_info_action_; 
   }
 
   #if WITH_ASPELL
   
   //! spellcheck dictionary selection
-  QAction* dictionaryMenuAction( void ) const
+  QAction& dictionaryMenuAction( void ) const
   { 
-    dictionary_menu_action_->setEnabled( autoSpellAction()->isChecked() );
-    return dictionary_menu_action_;
+    dictionary_menu_action_->setEnabled( autoSpellAction().isChecked() );
+    return *dictionary_menu_action_;
   }
   
   //! spellcheck filter selection
-  QAction* filterMenuAction( void ) const
+  QAction& filterMenuAction( void ) const
   { 
-    filter_menu_action_->setEnabled( autoSpellAction()->isChecked() );
-    return filter_menu_action_;
+    filter_menu_action_->setEnabled( autoSpellAction().isChecked() );
+    return *filter_menu_action_;
   }
   
   #endif
@@ -459,7 +460,7 @@ class TextDisplay: public CustomTextEdit
   
   //! parenthesis enabled
   bool _isParenthesisEnabled( void ) const
-  { return parenthesisHighlightAction()->isChecked() && !parenthesis_.empty(); }
+  { return parenthesisHighlightAction().isChecked() && !parenthesis_.empty(); }
   
   //! parenthesis
   const TextParenthesis::List& _parenthesis( void ) const
@@ -640,6 +641,9 @@ class TextDisplay: public CustomTextEdit
 
   //! keep track of all parenthesis in a single set for fast access
   TextParenthesis::Set parenthesis_set_;
+  
+  //§ parenthesis highlight object
+  ParenthesisHighlight* parenthesis_highlight_;
   
   //@}
   

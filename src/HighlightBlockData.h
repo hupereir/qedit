@@ -50,19 +50,22 @@ class HighlightBlockData: public TextBlockData
   //! constructor
   HighlightBlockData():
     TextBlockData(),
-    modified_( true )
+    modified_( true ),
+    parenthesis_( -1 )
   {}
     
   //! constructor
   HighlightBlockData( const TextBlockData& reference ):
     TextBlockData( reference ),
-    modified_( true )
+    modified_( true ),
+    parenthesis_( -1 )
   {}
     
   //! constructor
   HighlightBlockData( const TextBlockData* pointer ):
     TextBlockData( *pointer ),
-    modified_( true )
+    modified_( true ),
+    parenthesis_( -1 )
   {}
     
   //! destructor
@@ -85,6 +88,24 @@ class HighlightBlockData: public TextBlockData
   void setLocations( const HighlightPattern::LocationSet& locations )
   { locations_ = locations; }
   
+  //!@name parenthesis
+  //@{
+  
+  bool hasParenthesis( void ) const
+  { return parenthesis_ != -1; }
+  
+  //! highlighted parenthesis
+  const int& parenthesis( void ) const
+  { return parenthesis_; }
+  
+  //! set parenthesis
+  void setParenthesis( const int& value )
+  { parenthesis_ = value; }
+  
+  //! clear parenthesis
+  void clearParenthesis( void )
+  { parenthesis_ = -1; }
+  
   #if WITH_ASPELL
   //! set of misspelled words
   const SPELLCHECK::Word::Set& misspelledWords( void ) const
@@ -106,6 +127,10 @@ class HighlightBlockData: public TextBlockData
   
   //! locations and ids of matching syntax highlighting patterns
   HighlightPattern::LocationSet locations_;
+  
+  //! highlighted parenthesis location
+  /*! local with respect to the block */
+  int parenthesis_;
   
   #if WITH_ASPELL
   //! set of misspelled words and position in associated block

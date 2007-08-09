@@ -78,7 +78,6 @@ TextDisplay::TextDisplay( QWidget* parent ):
   class_name_( "" ),
   ignore_warnings_( false ),
   active_( false )
-  // current_block_data_( 0 )
 {
   
   Debug::Throw("TextDisplay::TextDisplay.\n" );
@@ -90,6 +89,9 @@ TextDisplay::TextDisplay( QWidget* parent ):
   TextHighlight* highlight = new TextHighlight( document() );
   setTextHighlight( highlight );
 
+  // parenthesis highlight
+  parenthesis_highlight_ = new ParenthesisHighlight( this );
+  
   // text indent
   indent_ = new TextIndent( this );
 
@@ -111,7 +113,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   
   addAction( parenthesis_highlight_action_ = new QAction( "&Highlight parenthesis", this ) );
   parenthesis_highlight_action_->setCheckable( true );
-  parenthesis_highlight_action_->setChecked( textHighlight().isParenthesisEnabled() );
+  parenthesis_highlight_action_->setChecked( parenthesis_highlight_->isEnabled() );
   connect( parenthesis_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
 
   #if WITH_ASPELL
@@ -194,9 +196,9 @@ void TextDisplay::synchronize( TextDisplay* display )
   textIndent().setPatterns( display->textIndent().patterns() );
   textIndent().setBaseIndentation( display->textIndent().baseIndentation() );
   
-  textIndentAction()->setChecked( display->textIndentAction()->isChecked() );
-  textHighlightAction()->setChecked( display->textHighlightAction()->isChecked() );
-  parenthesisHighlightAction()->setChecked( display->parenthesisHighlightAction()->isChecked() );
+  textIndentAction().setChecked( display->textIndentAction().isChecked() );
+  textHighlightAction().setChecked( display->textHighlightAction().isChecked() );
+  parenthesisHighlightAction().setChecked( display->parenthesisHighlightAction().isChecked() );
     
   _setMacros( display->macros() );
   _setPaper( true, display->paper( true ) );
@@ -683,9 +685,9 @@ void TextDisplay::updateConfiguration( void )
   CustomTextEdit::updateConfiguration();
   
   // local update
-  textIndentAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
-  textHighlightAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
-  parenthesisHighlightAction()->setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
+  textIndentAction().setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
+  textHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
+  parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
   
   textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().raw( "PARENTHESIS_COLOR" ).c_str() ) );
   
@@ -730,16 +732,15 @@ void TextDisplay::updateDocumentClass( void )
   Debug::Throw() << "TextDisplay::UpdateDocumentClass - class name: " << className() << endl;
   
   // wrap mode
-  if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction()->setChecked( document_class->wrap() );
+  if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class->wrap() );
   
   // enable actions consequently
-  parenthesisHighlightAction()->setVisible( !document_class->parenthesis().empty() );
-  textHighlightAction()->setVisible( !document_class->highlightPatterns().empty() );
-  textIndentAction()->setVisible( !document_class->indentPatterns().empty() );
+  parenthesisHighlightAction().setVisible( !document_class->parenthesis().empty() );
+  textHighlightAction().setVisible( !document_class->highlightPatterns().empty() );
+  textIndentAction().setVisible( !document_class->indentPatterns().empty() );
  
   // store into class members
   textHighlight().setPatterns( document_class->highlightPatterns() );
-  textHighlight().setParenthesis( document_class->parenthesis() );
   textIndent().setPatterns( document_class->indentPatterns() );
   textIndent().setBaseIndentation( document_class->baseIndentation() );
   _setParenthesis( document_class->parenthesis() );
@@ -774,8 +775,8 @@ void TextDisplay::updateSpellCheckConfiguration( void )
   changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<string>("AUTOSPELL_COLOR").c_str() ) );
   changed |= textHighlight().spellParser().setFontFormat( XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
   textHighlight().updateSpellPattern();
-  autoSpellAction()->setChecked( XmlOptions::get().get<bool>("AUTOSPELL") );
-  autoSpellAction()->setEnabled( textHighlight().spellParser().color().isValid() );
+  autoSpellAction().setChecked( XmlOptions::get().get<bool>("AUTOSPELL") );
+  autoSpellAction().setEnabled( textHighlight().spellParser().color().isValid() );
   
   // store local reference to spell interface
   SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
@@ -810,7 +811,7 @@ void TextDisplay::updateSpellCheckConfiguration( void )
   }
   
   // rehighlight if needed
-  if( changed && autoSpellAction()->isChecked() && autoSpellAction()->isEnabled() ) rehighlight();
+  if( changed && autoSpellAction().isChecked() && autoSpellAction().isEnabled() ) rehighlight();
   
   #endif
   
@@ -1173,7 +1174,7 @@ void TextDisplay::_toggleTextIndent( bool state )
   Debug::Throw( "TextDisplay::_toggleTextIndent.\n" ); 
   
   // update text indent
-  textIndent().setEnabled( textIndentAction()->isEnabled() && state );
+  textIndent().setEnabled( textIndentAction().isEnabled() && state );
   
   // propagate to other displays
   if( isSynchronized() )
@@ -1184,7 +1185,7 @@ void TextDisplay::_toggleTextIndent( bool state )
     
     BASE::KeySet<TextDisplay> displays( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { if( (*iter)->isSynchronized() ) (*iter)->textIndentAction()->setChecked( state ); }
+    { if( (*iter)->isSynchronized() ) (*iter)->textIndentAction().setChecked( state ); }
     setSynchronized( true );
     
   }
@@ -1197,7 +1198,7 @@ void TextDisplay::_toggleTextHighlight( bool state )
 {
 
   Debug::Throw( "TextDisplay::_toggleTextHighlight.\n" ); 
-  if( textHighlight().setHighlightEnabled( textHighlightAction()->isEnabled() && state ) )
+  if( textHighlight().setHighlightEnabled( textHighlightAction().isEnabled() && state ) )
   { rehighlight(); }
 
   // propagate to other displays
@@ -1209,7 +1210,7 @@ void TextDisplay::_toggleTextHighlight( bool state )
     
     BASE::KeySet<TextDisplay> displays( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { if( (*iter)->isSynchronized() ) (*iter)->textHighlightAction()->setChecked( state ); }
+    { if( (*iter)->isSynchronized() ) (*iter)->textHighlightAction().setChecked( state ); }
     setSynchronized( true );
     
   }
@@ -1223,7 +1224,10 @@ void TextDisplay::_toggleParenthesisHighlight( bool state )
   Debug::Throw( "TextDisplay::_toggleParenthesisHighlight.\n" ); 
   
   // propagate to textHighlight
-  textHighlight().setParenthesisEnabled( state );
+  textHighlight().setParenthesisEnabled( 
+    state && 
+    textHighlight().parenthesisHighlightColor().isValid() && 
+    !parenthesis_set_.empty() );
   
   // propagate to other displays
   if( isSynchronized() )
@@ -1234,7 +1238,7 @@ void TextDisplay::_toggleParenthesisHighlight( bool state )
     
     BASE::KeySet<TextDisplay> displays( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { if( (*iter)->isSynchronized() ) (*iter)->parenthesisHighlightAction()->setChecked( state ); }
+    { if( (*iter)->isSynchronized() ) (*iter)->parenthesisHighlightAction().setChecked( state ); }
     setSynchronized( true );
     
   }
@@ -1261,7 +1265,7 @@ void TextDisplay::_toggleAutoSpell( bool state )
     
     BASE::KeySet<TextDisplay> displays( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { if( (*iter)->isSynchronized() ) (*iter)->autoSpellAction()->setChecked( state ); }
+    { if( (*iter)->isSynchronized() ) (*iter)->autoSpellAction().setChecked( state ); }
     setSynchronized( true );
     
   }
@@ -1469,11 +1473,11 @@ void TextDisplay::_highlightParenthesis( void )
   
   // retrieve TextCursor
   QTextCursor cursor( textCursor() );
-  if( cursor.atBlockStart() ) return text_highlight.clearParenthesis();   
+  if( cursor.atBlockStart() ) return;
   
   // retrieve block
   QTextBlock block( cursor.block() );
-  if( ignoreBlock( block ) ) return text_highlight.clearParenthesis();   
+  if( ignoreBlock( block ) ) return;
   
   // store local position in block
   int position(cursor.position()-block.position()-1);
@@ -1481,7 +1485,7 @@ void TextDisplay::_highlightParenthesis( void )
   
   // check if character is in parenthesis_set
   QChar c( block.text()[position] );
-  if( parenthesis_set_.find( c ) == parenthesis_set_.end() ) return text_highlight.clearParenthesis();   
+  if( parenthesis_set_.find( c ) == parenthesis_set_.end() ) return; 
   
   // check against opening parenthesis
   TextParenthesis::List::const_iterator parenthesis = find_if( parenthesis_.begin(), parenthesis_.end(), TextParenthesis::FirstElementFTor(c) );
@@ -1551,11 +1555,7 @@ void TextDisplay::_highlightParenthesis( void )
       }
     }
   }
-  
-  // if not found do nothing
-  if( !found ) text_highlight.clearParenthesis();
-  else text_highlight.highlightParenthesis( position, block.position()+position );
-  
+    
   return;
 
 }

@@ -228,80 +228,80 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //@{
   
   //! new file
-  QAction* newFileAction( void )
-  { return new_file_action_; }
+  QAction& newFileAction( void )
+  { return *new_file_action_; }
    
   //! clone display
-  QAction* cloneAction( void )
-  { return clone_action_; } 
+  QAction& cloneAction( void )
+  { return *clone_action_; } 
   
   //! detach action
-  QAction* detachAction( void )
-  { return detach_action_; } 
+  QAction& detachAction( void )
+  { return *detach_action_; } 
   
   //! open file
-  QAction* openAction( void )
-  { return open_action_; }
+  QAction& openAction( void )
+  { return *open_action_; }
 
   //! close view
-  QAction* closeViewAction( void )
-  { return close_view_action_; }
+  QAction& closeViewAction( void )
+  { return *close_view_action_; }
 
   //! close view
-  QAction* closeWindowAction( void )
-  { return close_window_action_; }
+  QAction& closeWindowAction( void )
+  { return *close_window_action_; }
 
   //! save
-  QAction* saveAction( void )
-  { return save_action_; }
+  QAction& saveAction( void )
+  { return *save_action_; }
 
   //! save as
-  QAction* saveAsAction( void )
-  { return save_as_action_; }
+  QAction& saveAsAction( void )
+  { return *save_as_action_; }
   
   //! revert to saved
-  QAction* revertToSaveAction( void )
-  { return revert_to_save_action_; }
+  QAction& revertToSaveAction( void )
+  { return *revert_to_save_action_; }
   
   //! undo 
-  QAction* undoAction( void )
-  { return undo_action_; }
+  QAction& undoAction( void )
+  { return *undo_action_; }
   
   //! redo
-  QAction* redoAction( void )
-  { return redo_action_; }
+  QAction& redoAction( void )
+  { return *redo_action_; }
   
   //! cut
-  QAction* cutAction( void )
-  { return cut_action_; }
+  QAction& cutAction( void )
+  { return *cut_action_; }
   
   //! copy
-  QAction* copyAction( void )
-  { return copy_action_; }
+  QAction& copyAction( void )
+  { return *copy_action_; }
   
   //! paste
-  QAction* pasteAction( void )
-  { return paste_action_; }
+  QAction& pasteAction( void )
+  { return *paste_action_; }
   
   //! convert to Html
-  QAction* htmlAction( void )
-  { return html_action_; }
+  QAction& htmlAction( void )
+  { return *html_action_; }
   
   //! print
-  QAction* printAction( void )
-  { return print_action_; }
+  QAction& printAction( void )
+  { return *print_action_; }
   
   //! document class dialog
-  QAction* documentClassAction( void )
-  { return document_class_action_; }
+  QAction& documentClassAction( void )
+  { return *document_class_action_; }
 
   //! file info
-  QAction* fileInfoAction( void )
-  { return file_info_action_; }
+  QAction& fileInfoAction( void )
+  { return *file_info_action_; }
   
   //! spellcheck 
-  QAction* spellcheckAction( void )
-  { return spellcheck_action_; }
+  QAction& spellcheckAction( void )
+  { return *spellcheck_action_; }
   
   //@}
 
@@ -415,35 +415,35 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void _undo( void )
   { 
     Debug::Throw( "EditFrame::_undo.\n" );
-    activeDisplay().undoAction()->trigger(); 
+    activeDisplay().undoAction().trigger(); 
   }
 
   //! redo
   void _redo( void )
   { 
     Debug::Throw( "EditFrame::_redo.\n" );
-    activeDisplay().redoAction()->trigger(); 
+    activeDisplay().redoAction().trigger(); 
   }
 
   //! cut
   void _cut( void )
   { 
     Debug::Throw( "EditFrame::_cut.\n" );
-    activeDisplay().cutAction()->trigger(); 
+    activeDisplay().cutAction().trigger(); 
   }
 
   //! copy
   void _copy( void )
   { 
     Debug::Throw( "EditFrame::_copy.\n" );
-    activeDisplay().copyAction()->trigger(); 
+    activeDisplay().copyAction().trigger(); 
   }
 
   //! paste
   void _paste( void )
   { 
     Debug::Throw( "EditFrame::_paste.\n" );
-    activeDisplay().pasteAction()->trigger(); 
+    activeDisplay().pasteAction().trigger(); 
   }
   
   //! document class configuration
@@ -451,11 +451,11 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
 
   //! file information
   void _fileInfo( void )
-  { activeDisplay().fileInfoAction()->trigger(); }
+  { activeDisplay().fileInfoAction().trigger(); }
 
   //! spellcheck
   void _spellcheck( void )
-  { activeDisplay().spellcheckAction()->trigger(); }
+  { activeDisplay().spellcheckAction().trigger(); }
   
   //! update window title, cut, copy, paste buttons, and filename line editor
   /*! \param flags are bitwise or of TextDisplay::UpdateFlags */

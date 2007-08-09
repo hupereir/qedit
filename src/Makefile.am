@@ -77,6 +77,7 @@ noinst_HEADERS = \
   MainFrame.h \
   Menu.h \
   NewFileDialog.h \
+  ParenthesisHighlight.h \
   PrintDialog.h \
   RangePattern.h \
   TextParenthesis.h \
@@ -111,6 +112,7 @@ qedit_SOURCES = \
   MainFrame.cc \
   Menu.cc \
   NewFileDialog.cc \
+  ParenthesisHighlight.cc \
   PrintDialog.cc \
   QEdit.cc \
   RangePattern.cc \
@@ -132,6 +134,7 @@ nodist_qedit_SOURCES = \
   moc_MainFrame.cc \
   moc_Menu.cc \
   moc_NewFileDialog.cc \
+  moc_ParenthesisHighlight.cc \
   moc_PrintDialog.cc \
   moc_TextDisplay.cc \
   moc_TextIndent.cc \

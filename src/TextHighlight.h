@@ -103,34 +103,22 @@ class TextHighlight: public BaseTextHighlight
     parenthesis_enabled_ = state; 
     return true;
   }
-    
-  //! parenthesis
-  const TextParenthesis::List& parenthesis( void ) const
-  { return parenthesis_; }
-  
-  //! set parenthesis
-  void setParenthesis( const TextParenthesis::List& );
- 
-  //! current parenthesis color
+
+  //! parenthesis highlight color
   void setParenthesisHighlightColor( const QColor& color )
   { parenthesis_highlight_format_.setBackground(color); }
-
-  //! current parenthesis
-  /*! returns true if changed */
-  void highlightParenthesis( const int& local, const int& absolute );
-     
-  //! clear highlighted parenthesis if any
-  void clearParenthesis( void );
   
-  //@}
-    
+  //! parenthesis highlight color
+  QColor parenthesisHighlightColor( void )
+  { return parenthesis_highlight_format_.background().color(); }
+
+  //@}  
+  
   //! patterns
   void clear( void )
   { 
     Debug::Throw( "TextHighlight.clear.\n" ); 
     patterns_.clear(); 
-    parenthesis_.clear();
-    parenthesis_set_.clear();
   }
 
   #if WITH_ASPELL
@@ -177,18 +165,8 @@ class TextHighlight: public BaseTextHighlight
   //! text parenthesis
   TextParenthesis::List parenthesis_;
 
-  //! keep track of all parenthesis in a single set for fast access
-  TextParenthesis::Set parenthesis_set_;
-  
   //! parenthesis highlight format
   QTextCharFormat parenthesis_highlight_format_;
-  
-  //! local (i.e. block wise) position of current parenthesis to highlight, if any
-  /*! -1 if none set */
-  int local_parenthesis_;
-  
-  //! absolute position of current parenthesis to highlight (needed for clearing)
-  int absolute_parenthesis_;
   
   //@}
   

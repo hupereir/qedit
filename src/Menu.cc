@@ -62,12 +62,12 @@ Menu::Menu( QWidget* parent ):
   QMenu* menu = addMenu( "&File" );
 
   // retrieve editframe
-  EditFrame* editframe( static_cast<EditFrame*>( window() ) );
+  EditFrame& editframe( *static_cast<EditFrame*>( window() ) );
   
-  menu->addAction( editframe->newFileAction() );
-  menu->addAction( editframe->cloneAction() );
-  menu->addAction( editframe->detachAction() );
-  menu->addAction( editframe->openAction() );
+  menu->addAction( &editframe.newFileAction() );
+  menu->addAction( &editframe.cloneAction() );
+  menu->addAction( &editframe.detachAction() );
+  menu->addAction( &editframe.openAction() );
 
   // open previous menu
   open_previous_menu_ = new OpenPreviousMenu( this );
@@ -76,22 +76,22 @@ Menu::Menu( QWidget* parent ):
   menu->addMenu( open_previous_menu_ );
 
   // connections
-  connect( open_previous_menu_, SIGNAL( fileSelected( FileRecord ) ), editframe, SLOT( open( FileRecord ) ) );
+  connect( open_previous_menu_, SIGNAL( fileSelected( FileRecord ) ), &editframe, SLOT( open( FileRecord ) ) );
   
   menu->addSeparator();
-  menu->addAction( editframe->closeViewAction() );
-  menu->addAction( editframe->closeWindowAction() );
-  menu->addAction( editframe->saveAction() );
-  menu->addAction( editframe->saveAsAction() );
-  menu->addAction( editframe->revertToSaveAction() );  
+  menu->addAction( &editframe.closeViewAction() );
+  menu->addAction( &editframe.closeWindowAction() );
+  menu->addAction( &editframe.saveAction() );
+  menu->addAction( &editframe.saveAsAction() );
+  menu->addAction( &editframe.revertToSaveAction() );  
   menu->addSeparator();
   
   document_class_menu_ = menu->addMenu( "Set &document class" );
   connect( document_class_menu_, SIGNAL( aboutToShow() ), SLOT( _updateDocumentClassMenu() ) );
   connect( document_class_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectClassName( QAction* ) ) );
   
-  menu->addAction( editframe->htmlAction() );
-  menu->addAction( editframe->printAction() );
+  menu->addAction( &editframe.htmlAction() );
+  menu->addAction( &editframe.printAction() );
 
   menu->addSeparator();
   menu->addAction( "E&xit", qApp, SLOT( exit() ), CTRL+Key_Q );
@@ -120,7 +120,7 @@ Menu::Menu( QWidget* parent ):
 
   // create help menu
   menu = addMenu( "&Help" );
-  menu->addAction( BASE::HelpManager::get().displayAction() );
+  menu->addAction( &BASE::HelpManager::get().displayAction() );
   menu->addSeparator();
   menu->addAction( "About &Qt", qApp, SLOT( aboutQt() ), 0 );
   menu->addAction( "About Q&Edit", qApp, SLOT( about() ), 0 );
@@ -137,7 +137,7 @@ Menu::Menu( QWidget* parent ):
   menu->addSeparator();
   DebugMenu *debug_menu( new DebugMenu( this ) );
   debug_menu->setTitle( "&Debug" );
-  debug_menu->addAction( BASE::HelpManager::get().dumpAction() );
+  debug_menu->addAction( &BASE::HelpManager::get().dumpAction() );
   menu->addMenu( debug_menu );
 
 }
@@ -182,17 +182,17 @@ void Menu::_updateEditMenu( void )
   edit_menu_->clear();
   
   TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
-  edit_menu_->addAction( display.undoAction() );
-  edit_menu_->addAction( display.redoAction() );
+  edit_menu_->addAction( &display.undoAction() );
+  edit_menu_->addAction( &display.redoAction() );
   edit_menu_->addSeparator();
   
-  edit_menu_->addAction( display.cutAction() );
-  edit_menu_->addAction( display.copyAction() );
-  edit_menu_->addAction( display.pasteAction() );
+  edit_menu_->addAction( &display.cutAction() );
+  edit_menu_->addAction( &display.copyAction() );
+  edit_menu_->addAction( &display.pasteAction() );
   edit_menu_->addSeparator();
  
-  edit_menu_->addAction( display.upperCaseAction() );
-  edit_menu_->addAction( display.lowerCaseAction() );
+  edit_menu_->addAction( &display.upperCaseAction() );
+  edit_menu_->addAction( &display.lowerCaseAction() );
   
 }
 
@@ -204,14 +204,14 @@ void Menu::_updateSearchMenu( void )
   search_menu_->clear();
   
   TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
-  search_menu_->addAction( display.findAction() );
-  search_menu_->addAction( display.findAgainAction() );
-  search_menu_->addAction( display.findSelectionAction() );
-  search_menu_->addAction( display.replaceAction() );
-  search_menu_->addAction( display.replaceAgainAction() );
+  search_menu_->addAction( &display.findAction() );
+  search_menu_->addAction( &display.findAgainAction() );
+  search_menu_->addAction( &display.findSelectionAction() );
+  search_menu_->addAction( &display.replaceAction() );
+  search_menu_->addAction( &display.replaceAgainAction() );
   search_menu_->addSeparator();
   
-  search_menu_->addAction( display.gotoLineAction() );
+  search_menu_->addAction( &display.gotoLineAction() );
 
 }
 
@@ -232,13 +232,13 @@ void Menu::_updatePreferenceMenu( void )
   preference_menu_->addAction( "Default &Configuration", qApp, SLOT( configuration() ) );
 
   // document class configuration
-  // preference_menu_->addAction( frame.documentClassAction() );
+  // preference_menu_->addAction( &frame.documentClassAction() );
 
   #if WITH_ASPELL
   preference_menu_->addSeparator();
   preference_menu_->addAction( "&Spell-check configuration", qApp, SLOT( spellCheckConfiguration() ) );
-  preference_menu_->addAction( display.dictionaryMenuAction() );
-  preference_menu_->addAction( display.filterMenuAction() );
+  preference_menu_->addAction( &display.dictionaryMenuAction() );
+  preference_menu_->addAction( &display.filterMenuAction() );
   #endif
   
   // open mode menu
@@ -276,16 +276,16 @@ void Menu::_updatePreferenceMenu( void )
   preference_menu_->addSeparator();
 
   // textdisplay actions
-  preference_menu_->addAction( display.wrapModeAction() );
-  preference_menu_->addAction( display.tabEmulationAction() );
-  preference_menu_->addAction( display.textIndentAction() );
-  preference_menu_->addAction( display.textHighlightAction() );
-  preference_menu_->addAction( display.blockHighlightAction() );
-  preference_menu_->addAction( display.parenthesisHighlightAction() );
+  preference_menu_->addAction( &display.wrapModeAction() );
+  preference_menu_->addAction( &display.tabEmulationAction() );
+  preference_menu_->addAction( &display.textIndentAction() );
+  preference_menu_->addAction( &display.textHighlightAction() );
+  preference_menu_->addAction( &display.blockHighlightAction() );
+  preference_menu_->addAction( &display.parenthesisHighlightAction() );
   
   #if WITH_ASPELL
   preference_menu_->addSeparator();
-  preference_menu_->addAction( display.autoSpellAction() );
+  preference_menu_->addAction( &display.autoSpellAction() );
   #endif
   
   return;
@@ -307,7 +307,7 @@ void Menu::_updateMacroMenu( void )
   // retrieve flags needed to set button state
   bool editable( !display.isReadOnly() );
   bool has_selection( display.textCursor().hasSelection() );
-  bool has_indent( display.textIndentAction()->isEnabled() );
+  bool has_indent( display.textIndentAction().isEnabled() );
 
   // insert document class specific macros
   const TextMacro::List& macros( display.macros() );
@@ -341,7 +341,7 @@ void Menu::_updateMacroMenu( void )
   action->setEnabled( display.hasLeadingTabs() );
   
   // spell checker
-  macro_menu_->addAction( display.spellcheckAction() );
+  macro_menu_->addAction( &display.spellcheckAction() );
   
   // syntax highlighting
   macro_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
@@ -358,7 +358,7 @@ void Menu::_updateWindowsMenu( void )
   
   // retrieve current display
   TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
-  windows_menu_->addAction( display.fileInfoAction() );
+  windows_menu_->addAction( &display.fileInfoAction() );
   
   const string& current_file( display.file() );
   
