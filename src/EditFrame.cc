@@ -741,6 +741,8 @@ void EditFrame::_update( unsigned int flags )
 //_____________________________________________
 void EditFrame::_updateCursorPosition( void )
 {
+  
+  return;
   //return;
   TextPosition position( activeDisplay().textPosition() );
   statusbar_->label(0).setText( Str( "line : " ).append<int>( position.paragraph()+1 ).c_str() , false );

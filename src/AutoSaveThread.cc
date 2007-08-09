@@ -45,7 +45,7 @@ using namespace std;
 File AutoSaveThread::autoSaveName( const File& file )
 {
   
-  Debug::Throw( "AutoSaveThread::MakeAutoSaveName.\n" );
+  Debug::Throw( "AutoSaveThread::autoSaveName.\n" );
   
   Str file_path( file.path().replace( "/", "_" ) );
   
@@ -65,14 +65,8 @@ void AutoSaveThread::run( void )
   if( contents_changed_ || file_changed_ )
   {
     QFile out( file().c_str() );
-    if( !out.open( QIODevice::WriteOnly ) )
-    {
-      qApp->postEvent( reciever_, new AutoSaveEvent( file_, false ) ); 
-      return;
-    }
-  
+    if( !out.open( QIODevice::WriteOnly ) ) return; 
     out.write( contents_.toAscii() );
     out.close();
-    qApp->postEvent( reciever_, new AutoSaveEvent( file_, true ) ); 
   }
 }

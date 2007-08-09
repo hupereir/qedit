@@ -62,21 +62,21 @@ class OpenPreviousMenu;
 //! text display window
 class TextDisplay: public CustomTextEdit
 {
-
+  
   //! Qt meta object declaration
   Q_OBJECT
-
-  public:
-
-  //! constructor
-  TextDisplay( QWidget* parent );
-
+    
+    public:
+    
+    //! constructor
+    TextDisplay( QWidget* parent );
+  
   //! destructor
   virtual ~TextDisplay();
   
   //! clone display configuration and document
   virtual void synchronize( TextDisplay* display );
-
+  
   //! set openPrevious menu
   void setMenu( OpenPreviousMenu* menu )
   { menu_ = menu; }

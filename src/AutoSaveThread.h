@@ -34,9 +34,7 @@
 
 
 #include <QThread>
-#include <QEvent>
 
-#include "AutoSaveEvent.h"
 #include "Counter.h"
 #include "Debug.h"
 #include "File.h"

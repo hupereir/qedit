@@ -53,7 +53,6 @@ qedit_LDADD =  $(libraries)
 
 noinst_HEADERS = \
   AskForSaveDialog.h \
-  AutoSaveEvent.h \
   AutoSave.h \
   AutoSaveThread.h \
   ConfigurationDialog.h \

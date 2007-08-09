@@ -852,7 +852,12 @@ void TextDisplay::indentSelection( void )
   cursor.clearSelection(); 
   
   for( QTextBlock block = begin; block != end && block.isValid(); block = block.next() )
-  { emit indent( block ); }
+  { 
+
+    cout << "indent " << qPrintable( block.text().left( 20 ) ) << endl;
+    emit indent( block ); 
+    
+  }
   
   // handle last block
   emit indent( end );

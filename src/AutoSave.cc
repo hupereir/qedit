@@ -174,18 +174,3 @@ void AutoSave::saveFiles( const TextDisplay* display )
   if( !threads_.empty() )  timer_.start();
 
 }
-
-//____________________________________________
-void AutoSave::customEvent( QEvent* event )
-{
-  Debug::Throw( "AutoSave::customEvent.\n" );
-
-  if( event->type() != QEvent::User ) {
-    Debug::Throw() << "AutoSave::customEvent - unrecognized type " << event->type() << endl;
-    return;
-  }
-
-  AutoSaveEvent* autosave_event( static_cast<AutoSaveEvent*>(event) );
-  if( !autosave_event ) return;
-
-}

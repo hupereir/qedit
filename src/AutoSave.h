@@ -70,11 +70,6 @@ class AutoSave: public QObject, public Counter
   /* \param display if set to non 0, only threads that match the display are saved */
   void saveFiles( const TextDisplay* display = 0 );
   
-  protected:
-  
-  //! handle AutoSave events
-  void customEvent( QEvent* event );
-
   private:
   
   //! interval between two save (milliseconds)

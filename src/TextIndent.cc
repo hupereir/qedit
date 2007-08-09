@@ -57,7 +57,7 @@ void TextIndent::indent( QTextBlock block )
   current_cursor_ = editor_->textCursor();
   
   // disable updates during manipulations
-  editor_->setUpdatesEnabled( false );
+  //editor_->setUpdatesEnabled( false );
   
   // retrieve previous valid block to
   // determine the base indentation
@@ -93,7 +93,7 @@ void TextIndent::indent( QTextBlock block )
 
   // restore cursor
   editor_->setTextCursor( current_cursor_ );
-  editor_->setUpdatesEnabled( true );
+  //editor_->setUpdatesEnabled( true );
   
 }
 
