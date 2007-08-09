@@ -525,8 +525,11 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! text display with focus
   TextDisplay* active_display_;
       
+  //! toolbar list
+  typedef std::vector< std::pair<QToolBar*, std::string> > ToolbarList;
+  
   //! map toolbar and option name
-  std::list< std::pair<QToolBar*, std::string> > toolbars_;
+  ToolbarList toolbars_;
 
   //! state frame
   StatusBar* statusbar_;

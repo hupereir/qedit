@@ -35,7 +35,7 @@
 #include <QDomDocument>
 #include <QRegExp>
 
-#include <list>
+#include <vector>
 #include <string>
 
 #include "Counter.h"
@@ -48,7 +48,7 @@ class IndentPattern: public Counter
   public: 
 
   //! typedef for list of patterns
-  typedef std::list< IndentPattern > List;
+  typedef std::vector< IndentPattern > List;
         
   //! constructor from DomElement
   IndentPattern( const QDomElement& element = QDomElement() );
@@ -133,7 +133,7 @@ class IndentPattern: public Counter
   };
   
   //! shortcut to Rules
-  typedef std::list< Rule > RuleList;
+  typedef std::vector< Rule > RuleList;
   
   //! retrieve rules
   const RuleList& rules( void ) const

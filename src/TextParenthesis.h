@@ -37,7 +37,7 @@
 #include <QRegExp>
 #include <QChar>
 
-#include <list>
+#include <vector>
 #include <map>
 #include <set>
 
@@ -52,7 +52,7 @@ class TextParenthesis: public std::pair<QChar,QChar>, public Counter
   public:
 
   //! list of parenthesis
-  typedef std::list<TextParenthesis> List;
+  typedef std::vector<TextParenthesis> List;
   
   //! set of parenthesis
   typedef std::set<QChar> Set;

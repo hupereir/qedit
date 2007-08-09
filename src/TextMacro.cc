@@ -95,7 +95,7 @@ QDomElement TextMacro::domElement( QDomDocument& parent ) const
   if( what.str().size() ) out.setAttribute( XML::OPTIONS.c_str(), what.str().c_str() );
   
   // dump children
-  for( list<Rule>::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
+  for( vector<Rule>::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
   return out;  
 }

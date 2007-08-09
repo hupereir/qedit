@@ -241,7 +241,7 @@ void EditFrame::updateConfiguration( void )
   resize( QSize( XmlOptions::get().get<int>( "WINDOW_WIDTH" ), XmlOptions::get().get<int>( "WINDOW_HEIGHT" ) ) );
    
   // toolbars visibility and location
-  for( list< pair<QToolBar*, string> >::iterator iter = toolbars_.begin(); iter != toolbars_.end(); iter++ )
+  for( ToolbarList::iterator iter = toolbars_.begin(); iter != toolbars_.end(); iter++ )
   {
      
     QToolBar* toolbar( iter->first );
@@ -283,7 +283,7 @@ void EditFrame::saveConfiguration( void )
   XmlOptions::get().set<int>( "WINDOW_WIDTH", width() );
    
   // save toolbars location and visibility
-  for( list< pair<QToolBar*, string> >::iterator iter = toolbars_.begin(); iter != toolbars_.end(); iter++ )
+  for( ToolbarList::iterator iter = toolbars_.begin(); iter != toolbars_.end(); iter++ )
   {
     
     QToolBar* toolbar( iter->first );

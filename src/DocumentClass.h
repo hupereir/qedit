@@ -122,11 +122,11 @@ class DocumentClass: public Counter
   { return base_indentation_; }
   
   //! list of text parenthesis
-  const std::list<TextParenthesis>& parenthesis() const
+  const TextParenthesis::List& parenthesis() const
   { return text_parenthesis_; }
   
   //! list of text macros
-  const std::list<TextMacro>& textMacros() const
+  const TextMacro::List& textMacros() const
   { return text_macros_; }
   
   //! used to match pointers to DocumentClass with same name

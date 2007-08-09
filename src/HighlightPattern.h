@@ -37,7 +37,7 @@
 #include <QRegExp>
 
 #include <set>
-#include <list>
+#include <vector>
 #include <string>
 
 #include "HighlightStyle.h"
@@ -70,7 +70,7 @@ class HighlightPattern: public Counter
   };
   
   //! typedef for list of patterns
-  typedef std::list< HighlightPattern* > List;
+  typedef std::vector< HighlightPattern* > List;
 
   
   //! constructor from DomElement

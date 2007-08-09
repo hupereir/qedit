@@ -53,7 +53,7 @@ class TextMacro: public Counter
   public:
  
   //! style list
-  typedef std::list<TextMacro> List;
+  typedef std::vector<TextMacro> List;
 
   //! constructor from DomElement
   TextMacro( const QDomElement& element = QDomElement() );
@@ -74,7 +74,7 @@ class TextMacro: public Counter
   {
     if( isSeparator() ) return false;
     bool changed( false );
-    for( std::list<Rule>::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
+    for( std::vector<Rule>::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
     { changed |= iter->processText( text ); }
     return changed;
   }
@@ -84,7 +84,7 @@ class TextMacro: public Counter
   {
     if( isSeparator() ) return true;
     if( rules_.empty() ) return false;
-    for( std::list<Rule>::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
+    for( std::vector<Rule>::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
     { if( !iter->isValid() ) return false; }
     return true;
   }
@@ -217,7 +217,7 @@ class TextMacro: public Counter
   bool is_separator_;
 
   //! list of replacement
-  std::list< Rule > rules_;
+  std::vector< Rule > rules_;
 
 };
 #endif

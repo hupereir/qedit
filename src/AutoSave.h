@@ -36,7 +36,7 @@
 #include <QTimer>
 
 #include <string>
-#include <list>
+#include <vector>
 
 #include "AutoSaveThread.h"
 
@@ -84,7 +84,7 @@ class AutoSave: public QObject, public Counter
   QTimer timer_;
 
   //! list of threads
-  typedef std::list< AutoSaveThread* > ThreadList;  
+  typedef std::vector< AutoSaveThread* > ThreadList;  
     
   //! list of threads
   ThreadList threads_;
