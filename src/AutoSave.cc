@@ -147,9 +147,11 @@ void AutoSave::saveFiles( const TextDisplay* display )
       delete *iter;
       
       // remove from list
+      // advance iterator and check for end of list
       iter = threads_.erase( iter );
+      if( iter == threads_.end() ) break;
+      else continue;
       
-      continue;
     }
     
     // update file and content
@@ -172,5 +174,6 @@ void AutoSave::saveFiles( const TextDisplay* display )
 
   // restart timer 
   if( !threads_.empty() )  timer_.start();
+  Debug::Throw( "AutoSave::saveFiles - done. \n" );
 
 }

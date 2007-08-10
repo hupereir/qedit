@@ -44,9 +44,7 @@ using namespace std;
 //________________________________________________________________
 File AutoSaveThread::autoSaveName( const File& file )
 {
-  
-  Debug::Throw( "AutoSaveThread::autoSaveName.\n" );
-  
+    
   Str file_path( file.path().replace( "/", "_" ) );
   
   // retrieve backup path
@@ -59,14 +57,42 @@ File AutoSaveThread::autoSaveName( const File& file )
 }
 
 //_______________________________________________________________
+void AutoSaveThread::setFile( const File& file )
+{ 
+  File tmp( autoSaveName( file ) );
+  if( tmp != file_ )
+  {
+    file_changed_ = true;
+    file_ = tmp;
+  } else file_changed_ = false;
+}
+  
+
+//_______________________________________________________________
+void AutoSaveThread::setContents( const QString& contents )
+{ 
+  
+  if( contents_ != contents )
+  { 
+    contents_changed_ = true;
+    contents_ = contents; 
+  } else contents_changed_ = false;
+
+}
+
+
+//_______________________________________________________________
 void AutoSaveThread::run( void )
 {
-  
+    
   if( contents_changed_ || file_changed_ )
   {
+    
     QFile out( file().c_str() );
     if( !out.open( QIODevice::WriteOnly ) ) return; 
     out.write( contents_.toAscii() );
     out.close();
-  }
+    
+  } 
+  
 }

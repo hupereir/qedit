@@ -52,32 +52,21 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
     reciever_( reciever ),
     file_changed_( true ),
     contents_changed_( true )
-  {}
+  { Debug::Throw( "AutoSaveThread::AutoSaveThread.\n" ); }
+  
+  //! destructor
+  virtual ~AutoSaveThread( void )
+  { Debug::Throw( "AutoSaveThread::~AutoSaveThread.\n" ); }
   
   //! file
-  void setFile( const File& file )
-  { 
-    File tmp( autoSaveName( file ) );
-    if( tmp != file_ )
-    {
-      file_changed_ = true;
-      file_ = tmp;
-    } else file_changed_ = false;
-  }
+  void setFile( const File& file );
   
   //! file
   const File& file( void ) const
   { return file_; }
   
   //! set content
-  void setContents( const QString& contents )
-  { 
-    if( contents_ != contents )
-    { 
-      contents_changed_ = true;
-      contents_ = contents; 
-    } else contents_changed_ = false;
-  }
+  void setContents( const QString& contents );
   
   //! generate a new grid. Post a AutoSaveEvent when finished
   void run( void );  
