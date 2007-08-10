@@ -65,6 +65,13 @@ class Menu:public QMenuBar, public Counter
     return *open_previous_menu_;
   }
   
+  //! macro menu
+  QMenu& macroMenu( void ) const
+  { 
+    Exception::checkPointer( macro_menu_, DESCRIPTION( "macro_menu_ not initialized.\n" ) );
+    return *macro_menu_;
+  }
+  
   signals:
   
   //! emmited every time a document class is selected
@@ -83,10 +90,13 @@ class Menu:public QMenuBar, public Counter
   
   //! update preference menu
   void _updatePreferenceMenu( void );
+
+  //! update tools menu
+  void _updateToolsMenu( void );
     
   //! update macro menu
   void _updateMacroMenu( void );
-  
+
   //! update windows menu
   void _updateWindowsMenu( void );
   
@@ -124,6 +134,9 @@ class Menu:public QMenuBar, public Counter
   
   //! preference menu
   QMenu* preference_menu_;
+  
+  //! toold menu
+  QMenu* tools_menu_;
   
   //! macro menu
   QMenu* macro_menu_;

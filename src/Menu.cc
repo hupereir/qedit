@@ -108,6 +108,10 @@ Menu::Menu( QWidget* parent ):
   preference_menu_ = addMenu( "&Preferences" );
   connect( preference_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updatePreferenceMenu() ) );
   
+  // tools
+  tools_menu_ = addMenu( "&Tools" );
+  connect( tools_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateToolsMenu() ) );
+  
   // macros
   macro_menu_ = addMenu( "&Macro" );
   connect( macro_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateMacroMenu() ) );
@@ -292,6 +296,47 @@ void Menu::_updatePreferenceMenu( void )
 }
 
 //_______________________________________________
+void Menu::_updateToolsMenu( void )
+{
+  
+  Debug::Throw( "Menu::_updateToolsMenu.\n" );
+
+  // retrieve editframe and current display
+  EditFrame& frame( *static_cast<EditFrame*>(window()) );
+  TextDisplay& display( frame.activeDisplay() );
+  
+  // retrieve flags needed to set button state
+  bool editable( !display.isReadOnly() );
+  bool has_selection( display.textCursor().hasSelection() );
+  bool has_indent( display.textIndentAction().isEnabled() );
+
+  // clear menu
+  tools_menu_->clear();
+  
+  // selection indentation
+  QAction *action;
+  action = tools_menu_->addAction( "&Indent selection", &display, SLOT( indentSelection() ), CTRL+Key_I );
+  action->setEnabled( editable && has_selection && has_indent );
+
+  // tab replacement
+  action = tools_menu_->addAction( "Replace Leading &Tabs", &display, SLOT( replaceLeadingTabs() ) );
+  action->setEnabled( display.hasLeadingTabs() );
+  
+  // spell checker
+  tools_menu_->addAction( &display.spellcheckAction() );
+    
+  // diff files
+  tools_menu_->addSeparator();
+  tools_menu_->addAction( &frame.diffAction() );
+  tools_menu_->addAction( &frame.clearDiffAction() );
+  
+  // syntax highlighting
+  tools_menu_->addSeparator();
+  action = tools_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
+
+}
+
+//_______________________________________________
 void Menu::_updateMacroMenu( void )
 {
 
@@ -305,9 +350,7 @@ void Menu::_updateMacroMenu( void )
   macros_.clear();
 
   // retrieve flags needed to set button state
-  bool editable( !display.isReadOnly() );
   bool has_selection( display.textCursor().hasSelection() );
-  bool has_indent( display.textIndentAction().isEnabled() );
 
   // insert document class specific macros
   const TextMacro::List& macros( display.macros() );
@@ -328,23 +371,6 @@ void Menu::_updateMacroMenu( void )
       
     }
   }
-
-  // add default macros
-  if( !macros.empty() ) macro_menu_->addSeparator();
-  
-  // selection indentation
-  action = macro_menu_->addAction( "&Indent selection", &display, SLOT( indentSelection() ), CTRL+Key_I );
-  action->setEnabled( editable && has_selection && has_indent );
-
-  // tab replacement
-  action = macro_menu_->addAction( "Replace Leading &Tabs", &display, SLOT( replaceLeadingTabs() ) );
-  action->setEnabled( display.hasLeadingTabs() );
-  
-  // spell checker
-  macro_menu_->addAction( &display.spellcheckAction() );
-  
-  // syntax highlighting
-  macro_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
   
   return;
 }

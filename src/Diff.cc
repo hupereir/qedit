@@ -49,7 +49,7 @@ Diff::Diff( QObject* parent ):
   process_( this )
 { 
   Debug::Throw( "Diff::Diff\n" );   
-  connect( &process_, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( _parseOutput( void ) ) );
+  connect( &process_, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( _parseOutput( int, QProcess::ExitStatus ) ) );
 }
   
 //_________________________________________________________________
@@ -213,8 +213,8 @@ Diff::Range Diff::_parseRange( const std::string& range )
   // look for "," in string
   size_t position( range.find( "," ) ); 
   Range out( ( position == string::npos ) ?
-    make_pair( Str( range ).get<unsigned int>(), Str( range ).get<unsigned int>() ):
-    make_pair( Str( range.substr( 0, position ) ).get<unsigned int>(), Str( range.substr( position+1, range.size() - position - 1 ) ).get<unsigned int>() ) );
+    Range( Str( range ).get<unsigned int>(), Str( range ).get<unsigned int>() ):
+    Range( Str( range.substr( 0, position ) ).get<unsigned int>(), Str( range.substr( position+1, range.size() - position - 1 ) ).get<unsigned int>() ) );
     
   Debug::Throw() << "Diff::_parseRange - (" << out.first << "," << out.second << ")" << endl;
   return out;

@@ -56,6 +56,7 @@ noinst_HEADERS = \
   AutoSave.h \
   AutoSaveThread.h \
   ConfigurationDialog.h \
+  Diff.h \
   DocumentClassDialog.h \
   DocumentClass.h \
   DocumentClassManager.h \
@@ -93,6 +94,7 @@ qedit_SOURCES = \
   AutoSave.cc \
   AutoSaveThread.cc \
   ConfigurationDialog.cc \
+  Diff.cc \
   DocumentClass.cc \
   DocumentClassDialog.cc \
   DocumentClassManager.cc \
@@ -125,6 +127,7 @@ qedit_SOURCES = \
 nodist_qedit_SOURCES = \
   moc_AskForSaveDialog.cc \
   moc_AutoSave.cc \
+  moc_Diff.cc \
   moc_DocumentClassDialog.cc \
   moc_EditFrame.cc \
   moc_FileModifiedDialog.cc \

@@ -90,12 +90,12 @@ class Diff: public QObject, public Counter
     
     //! constructor
     Range( int unsigned first, unsigned int second ):
-      std::pair<unsigned int, unsigned int>( make_pair( first, second ) )
+      std::pair<unsigned int, unsigned int>( std::make_pair( first, second ) )
     {}
     
     //! true if the range contains index
-    bool contains( int i ) const
-    { return i>= first && i<= second }
+    bool contains( const unsigned int& i ) const
+    { return i>= first && i<= second; }
     
     //! used to retrieve ranges that contains a given block id
     class ContainsFTor

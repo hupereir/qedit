@@ -546,13 +546,13 @@ void MainFrame::_readFilesFromArgs( void )
       
     }
     
-//     // if diff 
-//     if( diff && frame )
-//     { 
-//       if( files.size() == 2 ) frame->RunDiff(); 
-//       else if( files.size() > 2 ) QtUtil::infoDialog( 0, "too many files selected. <Diff> canceled." );
-//       else if( files.size() < 2 ) QtUtil::infoDialog( 0, "too few files selected. <Diff> canceled." );
-//     }
+    // if diff 
+    if( diff && frame )
+    { 
+      if( files.size() == 2 ) frame->diffAction().trigger(); 
+      else if( files.size() > 2 ) QtUtil::infoDialog( 0, "too many files selected. <Diff> canceled." );
+      else if( files.size() < 2 ) QtUtil::infoDialog( 0, "too few files selected. <Diff> canceled." );
+    }
     
     frame->show();
     

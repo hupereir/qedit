@@ -43,6 +43,7 @@
 #include "CustomToolBar.h"
 #include "CustomToolButton.h"
 #include "Debug.h"
+#include "Diff.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassDialog.h"
 #include "EditFrame.h"
@@ -723,6 +724,79 @@ void EditFrame::_documentClassDialog( void )
 }
 
 //_______________________________________________________
+void EditFrame::_diff( void )
+{
+  Debug::Throw( "EditFrame::_diff.\n" );
+ 
+  // retrieve displays
+  int n_displays( independentDisplayCount() );
+
+  // check number of files
+  if( n_displays > 2 )
+  {
+    QtUtil::infoDialog( this, "Too many files opened. Diff canceled." );
+    return;
+  }
+
+  if( n_displays < 2 )
+  {
+    QtUtil::infoDialog( this, "Too few files opened. Diff canceled." );
+    return;
+  }
+
+  // create diff object
+  Diff* diff = new Diff( this );
+
+  // store active display as first to compare
+  TextDisplay& first = activeDisplay();
+  
+  // retrieve displays associated to frame
+  // look for the first one that is not associated to the active display
+  BASE::KeySet<TextDisplay> displays( this );
+  BASE::KeySet<TextDisplay>::iterator iter = displays.begin();
+  for(; iter != displays.end(); iter++ )
+  {
+    if( !( (*iter) == &first || (*iter)->isAssociated( &first ) ) )
+    {
+      diff->setTextDisplays( first, **iter );
+      break;
+    }
+  }
+  
+  // check that one display was found
+  Exception::check( iter != displays.end(), DESCRIPTION( "could not find 2 independent displays" ) );
+  
+  // try run
+  if( !diff->run() )
+  {
+    QtUtil::infoDialog( this, diff->error() );
+    delete diff;
+    return;
+  }
+  
+  // enable clear
+  clearDiffAction().setEnabled( true );  
+  return;
+  
+}
+
+//_______________________________________________________
+void EditFrame::_clearDiff( void )
+{
+  
+  Debug::Throw( "EditFrame::_clearDiff.\n" );
+
+  BASE::KeySet<TextDisplay> displays( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  { (*iter)->clearAllBackgrounds(); }
+  
+  clearDiffAction().setEnabled( false );
+  
+  return;
+
+}
+
+//_______________________________________________________
 void EditFrame::_update( unsigned int flags )
 {
 
@@ -869,6 +943,14 @@ void EditFrame::_installActions( void )
   spellcheck_action_->setVisible( false );
   #endif
 
+  addAction( diff_action_ = new QAction( "&Diff files", this ) );
+  connect( diff_action_, SIGNAL( triggered() ), SLOT( _diff() ) );
+  diff_action_->setEnabled( false );
+
+  addAction( clear_diff_action_ = new QAction( "&Clear", this ) );
+  connect( clear_diff_action_, SIGNAL( triggered() ), SLOT( _clearDiff() ) );
+  clear_diff_action_->setEnabled( false );
+  
 }
 
 //___________________________________________________________
@@ -1128,7 +1210,9 @@ void EditFrame::_closeView( TextDisplay& display )
   setActiveDisplay( **displays.rbegin() );
 
   // update close_view button
-  detach_action_->setEnabled( independentDisplayCount() > 1 );
+  int independent_display_count( independentDisplayCount() );
+  detachAction().setEnabled( independent_display_count > 1 );
+  diffAction().setEnabled( independent_display_count == 2 );
   close_view_action_->setEnabled( BASE::KeySet<TextDisplay>(this).size() > 1 );
   
   // change focus
@@ -1206,12 +1290,13 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
     dynamic_cast<MainFrame*>(qApp)->autoSave().newThread( &display );
 
     // enable detach
-    detach_action_->setEnabled( true );
-
+    detachAction().setEnabled( true );
+    diffAction().setEnabled( independentDisplayCount() == 2 );
+    
   }
 
   // update close view
-  close_view_action_->setEnabled( true );
+  closeViewAction().setEnabled( true );
   Debug::Throw( "EditFrame::_splitView - done.\n" );
 
   return display;

@@ -303,6 +303,14 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   QAction& spellcheckAction( void )
   { return *spellcheck_action_; }
   
+  //! diff files action 
+  QAction& diffAction( void )
+  { return *diff_action_; }
+
+  //! diff files action 
+  QAction& clearDiffAction( void )
+  { return *clear_diff_action_; }
+  
   //@}
 
   public slots:
@@ -457,6 +465,12 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void _spellcheck( void )
   { activeDisplay().spellcheckAction().trigger(); }
   
+  //! diff files
+  void _diff( void );
+  
+  //! clear diff background
+  void _clearDiff( void );
+  
   //! update window title, cut, copy, paste buttons, and filename line editor
   /*! \param flags are bitwise or of TextDisplay::UpdateFlags */
   void _update( unsigned int flags );
@@ -601,6 +615,12 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   
   //! spellcheck
   QAction* spellcheck_action_;
+  
+  //! diff files
+  QAction* diff_action_;
+  
+  //! clear diff
+  QAction* clear_diff_action_;
   
   //@}
   
