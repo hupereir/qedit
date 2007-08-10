@@ -67,7 +67,7 @@ TextParenthesis::TextParenthesis( const QDomElement& element ):
     what << first.toAscii() << "|" << second.toAscii();
     regexp_.setPattern( what.str().c_str() );
   }
-  
+    
 }
 
 

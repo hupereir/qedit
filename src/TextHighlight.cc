@@ -49,18 +49,11 @@ TextHighlight::TextHighlight( QTextDocument* document ):
 //_________________________________________________________
 void TextHighlight::highlightBlock( const QString& text )
 {
-  
+    
   // base class highlight
   // this is always performed
   BaseTextHighlight::highlightBlock( text );
-  
-  // try retrieve block data
-  HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( currentBlockUserData() );
-  
-  // check if parenthesis need highlight
-  if( isParenthesisEnabled() && data && data->hasParenthesis() )
-  { setFormat( data->parenthesis(), 1, parenthesis_highlight_format_ ); }
-  
+    
   // check if syntax highlighting is enabled
   #if WITH_ASPELL 
   if( !spellParser().isEnabled() && (!isHighlightEnabled()  || patterns_.empty() ) ) return;
@@ -68,6 +61,9 @@ void TextHighlight::highlightBlock( const QString& text )
   if( !isHighlightEnabled()  || patterns_.empty() ) return;
   #endif
   
+  // try retrieve block data
+  HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( currentBlockUserData() );
+
   // retrieve active_id from last block state
   int active_id( previousBlockState() );
   HighlightPattern::LocationSet locations;
@@ -125,6 +121,14 @@ void TextHighlight::highlightBlock( const QString& text )
     
   // apply new location set
   if( !locations.empty() ) _applyPatterns( text, locations );
+    
+  // check if parenthesis need highlight
+  if( isParenthesisEnabled() && data && data->hasParenthesis() )
+  { 
+    QTextCharFormat old( TextHighlight::format( data->parenthesis() ) );
+    old.setBackground( parenthesis_highlight_format_.background() );
+    setFormat( data->parenthesis(), 1, parenthesis_highlight_format_ ); 
+  }
   
   return;
   
@@ -199,7 +203,7 @@ HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, c
   unsigned int active_patterns(0);
   for( HighlightPattern::List::iterator iter = patterns_.begin(); iter != patterns_.end(); iter++ )
   {
-    
+        
     HighlightPattern &pattern( **iter );
     
     // do not reprocess active pattern (if any)
