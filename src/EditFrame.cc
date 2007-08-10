@@ -76,7 +76,8 @@ EditFrame::EditFrame(  QWidget* parent ):
   statusbar_( 0 ),
   file_editor_( 0 ),
   default_orientation_( Horizontal ),
-  default_open_mode_( NEW_WINDOW )
+  default_open_mode_( NEW_WINDOW ),
+  position_timer_(this)
 {
 
   Debug::Throw( "EditFrame::EditFrame.\n" );
@@ -200,6 +201,11 @@ EditFrame::EditFrame(  QWidget* parent ):
   
   // update buttons
   _update( TextDisplay::ALL );
+  
+  // position update timer
+  position_timer_.setSingleShot( true );
+  position_timer_.setInterval( 100 );
+  connect( &position_timer_, SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );
   
   Debug::Throw( "EditFrame::EditFrame - done.\n" );
  
@@ -1409,9 +1415,9 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
   display->setMenu( &menu_->openPreviousMenu() );
 
   // connections
-  connect( display, SIGNAL( needUpdate( unsigned int ) ), this, SLOT( _update( unsigned int ) ) );
-  connect( display, SIGNAL( cursorPositionChanged() ), this, SLOT( _updateCursorPosition() ) );
-  connect( display, SIGNAL( hasFocus( TextDisplay* ) ), this, SLOT( _displayFocusChanged( TextDisplay* ) ) );
+  connect( display, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
+  connect( display, SIGNAL( hasFocus( TextDisplay* ) ), SLOT( _displayFocusChanged( TextDisplay* ) ) );
+  connect( display, SIGNAL( cursorPositionChanged() ), &position_timer_, SLOT( start() ) );
   
   connect( display, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
   connect( display, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );

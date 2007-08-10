@@ -123,6 +123,7 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "ASPELL", "@ASPELL@", "aspell command" ));
   XmlOptions::get().add( Option( "DICTIONARY", "en" , "default dictionary"  ));
   XmlOptions::get().add( Option( "DICTIONARY_FILTER", "none" , "default filter"  ));
+  XmlOptions::get().add( Option( "AUTOSPELL", "1", "true to set automatic spellcheck on by default" ));
   XmlOptions::get().add( Option( "AUTOSPELL_COLOR", "red", "highlight color for autospell" ));
   XmlOptions::get().add( Option( "AUTOSPELL_FONT_FORMAT", "0", "highlight font format for autospell" ));
   XmlOptions::get().add( Option( "MAX_SUGGESTIONS", "0", "maximum number of suggestions. 0 means all." ));

@@ -630,6 +630,8 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! default open mode
   OpenMode default_open_mode_;
   
+  //! position update timer
+  QTimer position_timer_;
   
 };
 
