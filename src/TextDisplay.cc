@@ -1369,7 +1369,7 @@ void TextDisplay::_selectFilter( const std::string& filter )
 { 
   Debug::Throw( "TextDisplay::_selectFilter.\n" ); 
 
-#if WITH_ASPELL
+  #if WITH_ASPELL
 
   // local reference to interface
   SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
@@ -1396,12 +1396,12 @@ void TextDisplay::_selectFilter( const std::string& filter )
   
 }
 
-#if WITH_ASPELL
 //_______________________________________  
 void TextDisplay::_selectDictionary( const std::string& dictionary ) 
 { 
   Debug::Throw( "TextDisplay::_selectDictionary.\n" ); 
 
+  #if WITH_ASPELL
   // local reference to interface
   SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
 
@@ -1420,11 +1420,11 @@ void TextDisplay::_selectDictionary( const std::string& dictionary )
   
   // rehighlight if needed
   if( textHighlight().spellParser().isEnabled() ) rehighlight();
+  #endif
   
   return;
   
 }
-#endif
 
 //_______________________________________________________
 void TextDisplay::_showFileInfo( void )
