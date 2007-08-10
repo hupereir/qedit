@@ -142,7 +142,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   autospell_action_->setChecked( textHighlight().spellParser().isEnabled() );
   connect( autospell_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleAutoSpell( bool ) ) );
   #else 
-  auto_spell_action->setVisible( false );
+  autospell_action_->setVisible( false );
   #endif
 
   // spell checking
