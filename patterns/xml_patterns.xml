@@ -9,7 +9,7 @@
 		<style format="0" name="Attribute" color="#ff0000" />
 		<style format="2" name="Attribute2" color="#ff0000" />
 		<style format="0" name="Keyword" color="#0000ff" />
-		<style name="Text"/>
+		<style format="2" name="Text"/>
 		
 		<!-- highlight patterns -->
 		
@@ -21,7 +21,7 @@
 
 		<range_pattern style="Text" name="Text2" options="no_indent">
 			<begin>^\s*(?!(\s|XML_LT))</begin>
-			<end>$</end>
+			<end>.(?=$)</end>
 		</range_pattern>
 
 		<!-- comments -->
@@ -63,7 +63,7 @@
 		</keyword_pattern>
 		
 		<!-- parenthesis -->
-		<parenthesis begin="XML_LT" end="XML_GT" />
+		<parenthesis begin="XML_LT" end="XML_GT"/>
 		<parenthesis begin="(" end=")" />
 		<parenthesis begin="[" end="]" regexp="\[|\]" />
     <parenthesis begin="{" end="}" regexp="\{|\}" />
