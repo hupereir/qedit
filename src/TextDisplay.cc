@@ -81,7 +81,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
 {
   
   Debug::Throw("TextDisplay::TextDisplay.\n" );
-
+  
   // disable rich text
   setAcceptRichText( false );
   
@@ -99,6 +99,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
   connect( this, SIGNAL( cursorPositionChanged() ), SLOT( _highlightParenthesis() ) );
   connect( this, SIGNAL( indent( QTextBlock ) ), indent_, SLOT( indent( QTextBlock ) ) );
+  connect( this, SIGNAL( indent( QTextBlock, QTextBlock ) ), indent_, SLOT( indent( QTextBlock, QTextBlock ) ) );
   
   // actions
   addAction( text_indent_action_ = new QAction( "&Indent text", this ) );
@@ -177,6 +178,37 @@ TextDisplay::TextDisplay( QWidget* parent ):
 TextDisplay::~TextDisplay( void )
 { Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; }
 
+
+//_____________________________________________________
+void TextDisplay::setModified( const bool& value )
+{
+  
+  Debug::Throw() << "TextDisplay::setModified - value: " << value << endl;
+  
+  // do nothing if state is unchanged
+  if( value == document()->isModified() ) 
+  { 
+    Debug::Throw( "TextDisplay::setModified - unchanged.\n" );
+    return; 
+  }
+  
+  document()->setModified( value );
+  
+  // ask for update in the parent frame
+  if( isActive() ) 
+  emit needUpdate( WINDOW_TITLE | UNDO_REDO );
+  
+}  
+  
+//_____________________________________________________
+void TextDisplay::setReadOnly( const bool& value )
+{
+  Debug::Throw() << "TextDisplay::setReadOnly - value: " << value << endl;
+  CustomTextEdit::setReadOnly( value );
+  document()->setModified( false );
+  emit needUpdate( WINDOW_TITLE | CUT | PASTE | UNDO_REDO ); 
+}
+
 //___________________________________________________________________________
 void TextDisplay::synchronize( TextDisplay* display )
 {
@@ -210,7 +242,7 @@ void TextDisplay::synchronize( TextDisplay* display )
 }
 
 //____________________________________________
-void TextDisplay::openFile( File file )
+void TextDisplay::openFile( File file, bool check_autosave )
 {
   
   Debug::Throw() << "TextDisplay::openFile " << file << endl;
@@ -227,8 +259,9 @@ void TextDisplay::openFile( File file )
   // the saved file and the backup
   bool restore_autosave( false );
   File tmp( file );
+  
   File autosaved( AutoSaveThread::autoSaveName( tmp ) );
-  if( autosaved.exist() &&
+  if( check_autosave && autosaved.exist() &&
     ( !tmp.exist() ||
     ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
   {
@@ -262,16 +295,18 @@ void TextDisplay::openFile( File file )
     
     setPlainText( in.readAll() );
     in.close();
+
+    // update flags
     setModified( false );
     _setIgnoreWarnings( false );
 
   }
 
   // save file if restored from autosaved.
-  if( restore_autosave ) save();
+  if( restore_autosave && !isReadOnly() ) save();
   
   // perform first autosave
-  (static_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
+  if( !isReadOnly() ) (static_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
   
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
@@ -521,7 +556,7 @@ void TextDisplay::revertToSave( void )
   
   setUpdatesEnabled( false );
   document()->setModified( false );
-  openFile( file() );
+  openFile( file(), false );
 
   // restore
   horizontalScrollBar()->setValue( x );
@@ -530,11 +565,11 @@ void TextDisplay::revertToSave( void )
   // adjust cursor postion
   position = min( position, toPlainText().size() );
   
+  // restore cursor
   QTextCursor cursor( textCursor() );
   cursor.setPosition( position );
   setTextCursor( cursor );
   setUpdatesEnabled( true );
-  
 
 }
 
@@ -558,7 +593,7 @@ bool TextDisplay::hasLeadingTabs( void ) const
 
   // define regexp to perform replacement
   QRegExp wrong_tab_regexp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
-  for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
+  for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
   { if( wrong_tab_regexp.indexIn( block.text() ) >= 0 ) return true; }
 
   return false;
@@ -709,7 +744,7 @@ void TextDisplay::updateConfiguration( void )
 void TextDisplay::updateDocumentClass( void )
 {
 
-  Debug::Throw( "TextDisplay::UpdateDocumentClass\n" );
+  Debug::Throw( "TextDisplay::updateDocumentClass\n" );
   textHighlight().clear();
   textIndent().clear();
   textIndent().setBaseIndentation(0);
@@ -732,7 +767,7 @@ void TextDisplay::updateDocumentClass( void )
   // update class name
   setClassName( document_class->name() );
 
-  Debug::Throw() << "TextDisplay::UpdateDocumentClass - class name: " << className() << endl;
+  Debug::Throw() << "TextDisplay::updateDocumentClass - class name: " << className() << endl;
   
   // wrap mode
   if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class->wrap() );
@@ -848,20 +883,13 @@ void TextDisplay::indentSelection( void )
 
   // need to remove selection otherwise the first adding of a tab
   // will remove the entire selection.
-  setUpdatesEnabled( false );
   cursor.clearSelection(); 
-  
-  for( QTextBlock block = begin; block != end && block.isValid(); block = block.next() )
-  { emit indent( block ); }
-  
-  // handle last block
-  emit indent( end );
+  emit indent( begin, end );
   
   // select all indented blocks
   cursor.setPosition( begin.position(), QTextCursor::MoveAnchor );
-  cursor.setPosition( end.position()+end.length(), QTextCursor::KeepAnchor );
+  cursor.setPosition( end.position()+end.length()-1, QTextCursor::KeepAnchor );
   setTextCursor( cursor );
-  setUpdatesEnabled( true );
 
   return;
 }
@@ -928,6 +956,9 @@ void TextDisplay::processMacro( string name )
   cursor.setPosition( position_begin + text.size(), QTextCursor::KeepAnchor );
   setTextCursor( cursor );
   
+  // replace leading tabs in selection
+  replaceLeadingTabs( false );
+  
   return;
   
 }
@@ -955,8 +986,29 @@ void TextDisplay::replaceLeadingTabs( const bool& confirm )
   QRegExp wrong_tab_regexp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
   QString wrong_tab( _hasTabEmulation() ? normalTabCharacter():emulatedTabCharacter() );
   
+  // define blocks to process
+  QTextBlock begin;
+  QTextBlock end;
+  
+  // retrieve cursor
+  QTextCursor cursor( textCursor() );
+  if( cursor.hasSelection() ) 
+  {
+    
+    int position_begin( min( cursor.position(), cursor.anchor() ) );
+    int position_end( max( cursor.position(), cursor.anchor() ) );
+    begin = document()->findBlock( position_begin );
+    end = document()->findBlock( position_end );
+    
+  } else {
+    
+    begin = document()->begin(); 
+    end = document()->end(); 
+    
+  }  
+  
   // loop over blocks
-  for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
+  for( QTextBlock block = begin; block.isValid() && block != end.next(); block = block.next() )
   {
 
     QString text( block.text() );

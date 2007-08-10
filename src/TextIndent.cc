@@ -29,7 +29,9 @@
   \date $Date$
 */
 
-#include <qregexp.h>
+#include <QRegExp>
+#include <QProgressDialog>
+
 #include "TextDisplay.h"
 #include "TextIndent.h"
 
@@ -45,9 +47,80 @@ TextIndent::TextIndent( TextDisplay* editor ):
 { Debug::Throw( "TextIndent::TextIndent.\n" ); }
 
 //______________________________________________
-void TextIndent::indent( QTextBlock block )
+void TextIndent::indent( QTextBlock first, QTextBlock last )
 {
   
+  Debug::Throw( "TextIndent::indent (multi-block).\n" );
+  if( !isEnabled() || patterns_.empty() ) return;
+  
+  // store all blocks prior to starting modifications
+  vector<QTextBlock> blocks;
+  for( QTextBlock block( first ); block.isValid() && block != last; block = block.next() )
+  { blocks.push_back( block ); }
+  blocks.push_back( last );
+  
+  QProgressDialog progress("Indenting selected paragraphs ...", "Abort", 0, blocks.size(), editor_);
+  progress.show();
+  
+  // retrieve current cursor
+  current_cursor_ = editor_->textCursor();
+  
+  // retrieve the first valid block prior to the first
+  QTextBlock previous_block( blocks.front().previous() );
+  while( previous_block.isValid() &&  editor_->ignoreBlock( previous_block ) ) 
+  { previous_block = previous_block.previous(); }
+  
+  // get tabs in previous block
+  int previous_tabs( previous_block.isValid() ? _tabCount( previous_block ):0 );
+  int i(0);
+  for( vector<QTextBlock>::iterator block_iter = blocks.begin(); block_iter != blocks.end(); block_iter++, i++ )
+  {
+    
+    // update progress
+    progress.setValue(i);
+    qApp->processEvents();
+    if (progress.wasCanceled()) break;
+    
+    int new_tabs( previous_tabs );
+    if( !previous_block.isValid() ) _decrement( *block_iter );
+    else {
+      
+      for( IndentPattern::List::iterator iter = patterns_.begin(); iter != patterns_.end(); iter++ )
+      {
+        
+        if( _acceptPattern( *block_iter, *iter ) )
+        {
+          Debug::Throw() << "TextIndent::indent - accepted pattern: " << iter->name() << endl;
+          if( iter->type() == IndentPattern::INCREMENT ) new_tabs += iter->scale();
+          else if( iter->type() == IndentPattern::DECREMENT ) new_tabs -= iter->scale();
+          else if( iter->type() == IndentPattern::DECREMENT_ALL ) new_tabs = 0;
+          break;
+        }
+      }
+      
+      // make sure new_tabs is not negative
+      new_tabs = max( new_tabs, 0 );
+      _decrement( *block_iter );
+      _increment( *block_iter, new_tabs );     
+     
+    }
+    
+    if( !editor_->ignoreBlock( *block_iter ) )
+    {
+      previous_block = *block_iter;
+      previous_tabs = new_tabs; 
+    }
+    
+  }
+  
+  editor_->setTextCursor( current_cursor_ );
+  return;
+  
+}
+
+//______________________________________________
+void TextIndent::indent( QTextBlock block )
+{
   if( !isEnabled() || patterns_.empty() ) return;
   
   // ignore "empty" blocks
@@ -55,9 +128,6 @@ void TextIndent::indent( QTextBlock block )
   
   // store block and cursor
   current_cursor_ = editor_->textCursor();
-  
-  // disable updates during manipulations
-  //editor_->setUpdatesEnabled( false );
   
   // retrieve previous valid block to
   // determine the base indentation
@@ -68,7 +138,7 @@ void TextIndent::indent( QTextBlock block )
   // _decrement if first paragraph of text
   if( !previous_block.isValid() ) _decrement( block );
   else {
-
+    
     // get previous paragraph tabs
     int previous_tabs( _tabCount( previous_block ) );
     int new_tabs = previous_tabs;
@@ -90,10 +160,10 @@ void TextIndent::indent( QTextBlock block )
     _increment( block, new_tabs );
     
   }
-
+  
   // restore cursor
   editor_->setTextCursor( current_cursor_ );
-  //editor_->setUpdatesEnabled( true );
+  return;
   
 }
 
@@ -121,7 +191,7 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
       }
       
     } else {
-
+      
       // decrepent paragraph, skipping ignored lines
       int decrement = 0;
       int true_decrement = 0;
@@ -155,14 +225,14 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
     }
     
   }
-
+  
   return accepted;
 }
 
 //____________________________________________
 int TextIndent::_tabCount( const QTextBlock& block )
 {
-   
+  
   QString text( block.text() );
   int count = 0;
   
@@ -207,7 +277,7 @@ void TextIndent::_increment( QTextBlock block, const unsigned int& count )
   cursor.setPosition( block.position() + baseIndentation(), QTextCursor::MoveAnchor );
   for( unsigned int i=0; i < count; i++ )
   {    
-
+    
     int position( current_cursor_.position() );
     int anchor( current_cursor_.anchor() );
     
@@ -231,10 +301,10 @@ void TextIndent::_decrement( QTextBlock block )
   // set a cursor at beginning of block
   QTextCursor cursor( block );
   cursor.setPosition( block.position() + baseIndentation(), QTextCursor::MoveAnchor );
-
+  
   // leading space characters regexp
   static const QRegExp regexp( "^\\s+" );
-
+  
   // search text and remove characters
   if( regexp.indexIn( block.text().mid( baseIndentation() ) ) >= 0 )
   {

@@ -90,9 +90,12 @@ class TextIndent: public QObject, public Counter
   
   public slots:
 
-  //! highlight paragraph
-  virtual void indent( QTextBlock block );
+  //! highlight blocks
+  virtual void indent( QTextBlock first, QTextBlock last );
 
+  //! highlight block
+  virtual void indent( QTextBlock block );
+  
   private:
 
   //! returns true if pattern match current paragraph

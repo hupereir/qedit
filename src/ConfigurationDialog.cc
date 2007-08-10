@@ -120,7 +120,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   
   
   // multiple views
-  page = &addPage( "Multiple view" );
+  page = &addPage( "Multiple views" );
   page->layout()->addWidget( box = new QGroupBox( page ) );  
 
   CustomGridLayout *grid_layout = new CustomGridLayout();

@@ -225,6 +225,8 @@ void EditFrame::setFile( File file )
   // set focus
   setActiveDisplay( display );
   display.setFocus();
+
+  Debug::Throw( "EditFrame::setFile - done.\n" );
   
   return;
 }
@@ -792,6 +794,7 @@ void EditFrame::_installActions( void )
   addAction( detach_action_ = new QAction( IconEngine::get( ICONS::VIEW_DETACH, path_list ), "&Detach", this ) );
   detach_action_->setShortcut( SHIFT+CTRL+Key_O );
   detach_action_->setToolTip( "Detach current view" );
+  detach_action_->setEnabled( false );
   connect( detach_action_, SIGNAL( triggered() ), SLOT( _detach() ) );
 
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN, path_list ), "&Open", this ) );
@@ -802,6 +805,7 @@ void EditFrame::_installActions( void )
   addAction( close_view_action_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE, path_list ), "&Close view", this ) );
   close_view_action_->setShortcut( CTRL+Key_W );
   close_view_action_->setToolTip( "Close current view" );
+  close_view_action_->setEnabled( false );
   connect( close_view_action_, SIGNAL( triggered() ), SLOT( _closeView() ) );
  
   addAction( close_window_action_ = new QAction( "&Close view", this ) );
@@ -871,9 +875,21 @@ void EditFrame::_installActions( void )
 void EditFrame::_updateWindowTitle()
 { 
   Debug::Throw( "EditFrame::_updateWindowTitle.\n" );
+  
+  {
+    bool readonly( activeDisplay().isReadOnly() );
+    bool modified( activeDisplay().document()->isModified() );
+    Debug::Throw() << "EditFrame::_updateWindowTitle -"
+      << " readonly: " << readonly 
+      << " modified: " << modified
+      << endl;
+  }
+  
   setWindowTitle( WindowTitle( activeDisplay().file() )
     .setReadOnly( activeDisplay().isReadOnly() )
-    .setModified( activeDisplay().document()->isModified() ) );
+    .setModified( activeDisplay().document()->isModified() )
+    );
+  
   Debug::Throw( "EditFrame::_updateWindowTitle - done.\n" );
 }
 

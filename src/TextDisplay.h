@@ -24,11 +24,11 @@
 *******************************************************************************/
 
 /*!
-\file TextDisplay.h
-\brief text display window
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
+  \file TextDisplay.h
+  \brief text display window
+  \author Hugo Pereira
+  \version $Revision$
+  \date $Date$
 */
 
 #include <string>
@@ -68,8 +68,8 @@ class TextDisplay: public CustomTextEdit
     
     public:
     
-    //! constructor
-    TextDisplay( QWidget* parent );
+  //! constructor
+  TextDisplay( QWidget* parent );
   
   //! destructor
   virtual ~TextDisplay();
@@ -89,24 +89,10 @@ class TextDisplay: public CustomTextEdit
   }
   
   //! check if current entry has been modified or not
-  void setModified( const bool& value = true )
-  {
-    
-    // do nothing if state is unchanged
-    if( value == document()->isModified() ) return;
-    document()->setModified( value );
-    
-    // ask for update in the parent frame
-    if( isActive() ) emit needUpdate( WINDOW_TITLE | UNDO_REDO );
-  }  
+  void setModified( const bool& value = true );
 
   //! read-only
-  virtual void setReadOnly( bool readonly )
-  {
-    Debug::Throw( "TextDisplay::setReadOnly.\n" );
-    CustomTextEdit::setReadOnly( readonly );
-    emit needUpdate( WINDOW_TITLE | CUT | PASTE | UNDO_REDO ); 
-  }
+  virtual void setReadOnly( const bool& value );
 
   //! update flags (to be passed to TextEditor to change button status)
   enum UpdateFlags
@@ -142,7 +128,7 @@ class TextDisplay: public CustomTextEdit
   //@{
   
   //! open file
-  void openFile( File file );
+  void openFile( File file, bool check_autosave = true );
   
   //! set file name
   void setFile( const File& file );
@@ -353,7 +339,10 @@ class TextDisplay: public CustomTextEdit
   
   signals:
 
-  //! emmited when indentation of current paragraph is required
+  //! emmited when indentation several blocks is required
+  void indent( QTextBlock, QTextBlock );
+
+  //! emmited when indentation of one block is required
   void indent( QTextBlock );
 
   //! emmited when recieve focus
