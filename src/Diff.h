@@ -89,7 +89,7 @@ class Diff: public QObject, public Counter
     public: 
     
     //! constructor
-    Range( int unsigned first, unsigned int second ):
+    Range( unsigned int first = 0, unsigned int second = 0 ):
       std::pair<unsigned int, unsigned int>( std::make_pair( first, second ) )
     {}
     
@@ -116,14 +116,36 @@ class Diff: public QObject, public Counter
       
       //! prediction
       unsigned int id_;
-  
+      
     };
     
+//     //! associated range
+//     void setAssociatedRange( const Range& range )
+//     { associated_range_ = range; }
+//     
+//     //! associated range
+//     const Range& associatedRange( void ) const
+//     { return associated_range_; }
+    
+//     private: 
+//     //! store associated range in other file in case of conflicts
+//     Diff::Range associated_range_;
+
   };
 
   //! range list
   typedef std::set< Range > RangeSet;
   
+  public slots:
+
+  /*! \brief
+    set cursor of both displays at beginning of next conflict,
+    starting from current position in current display 
+    This will not work at all as soon as the files are modified ...
+  */
+  void showNextConflict( void )
+  {}
+
   private slots:
   
   //! parse the diff output

@@ -171,11 +171,16 @@ void Diff::_parseLine( const std::string& line )
   size_t position( line.find( "c" ) );
   if( position != string::npos )
   {
-    vector<string> ranges_string(2);
-    ranges_string[FIRST] = line.substr( 0, position );
-    ranges_string[SECOND] = line.substr( position+1, line.size() - position - 1 );
+    vector<Range> ranges(2);
+    ranges[FIRST] = _parseRange(line.substr( 0, position ));
+    ranges[SECOND] = _parseRange(line.substr( position+1, line.size() - position - 1 ));
+
+    // associate ranges
+    // ranges[FIRST].setAssociatedRange( ranges[SECOND] );
+    // ranges[SECOND].setAssociatedRange( ranges[FIRST] );
+    
     for( unsigned int i = 0; i<= SECOND; i++ )
-    { files_[i].insertConflictRange( _parseRange( ranges_string[i] ) ); }
+    { files_[i].insertConflictRange( ranges[i] ); }
     return;
   }
   
