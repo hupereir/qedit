@@ -132,8 +132,11 @@ void FileSelectionDialog::_replace( void )
 
   // retrieve selection from the list
   QList< QTreeWidgetItem* > items( list_->QTreeWidget::selectedItems() );
+  list<File> files;
   for( QList< QTreeWidgetItem* >::iterator iter = items.begin(); iter != items.end(); iter++ )
-  { emit fileSelected( File( qPrintable( (*iter)->text( FILE ) ) ), selection_ ); }
+  { files.push_back( File( qPrintable( (*iter)->text( FILE ) ) ) ); }
+
+  emit fileSelected( files, selection_ );
   done( QDialog::Accepted );
 
 }

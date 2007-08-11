@@ -480,26 +480,43 @@ void MainFrame::updateDocumentClasses( void )
 }
 
 //___________________________________________________________
-void MainFrame::multipleFileReplace( File file, TextSelection selection )
+void MainFrame::multipleFileReplace( std::list<File> files, TextSelection selection )
 {
-  Debug::Throw() << "MainFrame::MultipleFileRepplace - File: " << file << endl;
+  Debug::Throw( "MainFrame::MultipleFileRepplace.\n" );
     
+  // keep track of number of replacements
+  unsigned int counts(0);
+  
   // retrieve frame associated with file
   BASE::KeySet<EditFrame> frames( this );
-  BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( file ) );
-  Exception::check( iter != frames.end(), DESCRIPTION( "file not found" ) );
+  for( list<File>::iterator iter = files.begin(); iter != files.end(); iter++ )
+  {
+    File& file( *iter );
+    
+    BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( file ) );
+    Exception::check( iter != frames.end(), DESCRIPTION( "file not found" ) );
 
-  // retrieve TextDisplay that match file
-  BASE::KeySet<TextDisplay> displays( *iter );
-  BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) ) );
-  Exception::check( display_iter != displays.end(), DESCRIPTION( "file not found" ) );
+    // retrieve TextDisplay that match file
+    BASE::KeySet<TextDisplay> displays( *iter );
+    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) ) );
+    Exception::check( display_iter != displays.end(), DESCRIPTION( "file not found" ) );
+    
+    // need to set display as active so that synchronization is kept with other possible displays
+    (*iter)->setActiveDisplay( **display_iter );
+    (*display_iter)->setFocus();
+    
+    // perform replacement
+    counts += (*display_iter)->replaceInWindow( selection, false );
   
-  // need to set display as active so that synchronization is kept with other possible displays
-  (*iter)->setActiveDisplay( **display_iter );
-  (*display_iter)->setFocus();
+  }
+  
+  // popup dialog
 
-  // perform replacement
-  (*display_iter)->replaceInWindow( selection, false );
+  ostringstream what;
+  if( !counts ) what << "string not found.";
+  else if( counts == 1 ) what << "1 replacement performed";
+  else what << counts << " replacements performed";
+  QtUtil::infoDialog( 0, what.str() );
   
   return;
 }

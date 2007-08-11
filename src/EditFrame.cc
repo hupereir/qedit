@@ -1040,7 +1040,6 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
   {
     
     // create NewFileDialog
-    
     int state( NewFileDialog( this, record.file() ).exec() );
     switch( state )
     {
@@ -1103,11 +1102,11 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
     // retrieve active display from previous frame
     TextDisplay& previous_display( (*iter)->activeDisplay() );
 
-    // clone
-    display.synchronize( &previous_display );
-
     // store modification state
     bool modified( previous_display.document()->isModified() );
+
+    // clone
+    display.synchronize( &previous_display );
     
     // set previous display as unmdified
     previous_display.document()->setModified( false );
@@ -1123,7 +1122,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
     }
 
     // restore modification state and make new display active
-    display.document()->setModified( modified );
+    display.setModified( modified );
     setActiveDisplay( display );
     display.setFocus();
 

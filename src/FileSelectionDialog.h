@@ -32,6 +32,7 @@
 */
 
 #include <QDialog>
+#include <list>
 
 #include "Counter.h"
 #include "CustomListView.h"
@@ -53,7 +54,7 @@ class FileSelectionDialog: public QDialog, public Counter
   signals:
   
   //! emitted when a file is selected
-  void fileSelected( File file, TextSelection );
+  void fileSelected( std::list<File> files, TextSelection );
   
   private slots:
   

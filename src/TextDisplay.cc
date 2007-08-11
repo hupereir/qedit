@@ -205,7 +205,7 @@ void TextDisplay::setReadOnly( const bool& value )
 {
   Debug::Throw() << "TextDisplay::setReadOnly - value: " << value << endl;
   CustomTextEdit::setReadOnly( value );
-  document()->setModified( false );
+  //document()->setModified( false );
   emit needUpdate( WINDOW_TITLE | CUT | PASTE | UNDO_REDO ); 
 }
 
@@ -349,7 +349,8 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     { 
       (*iter)->_setIgnoreWarnings( true );
-      (*iter)->document()->setModified( false );
+      //(*iter)->document()->setModified( false );
+      (*iter)->setModified( false );
     }
    
   } else if( state == FileRemovedDialog::IGNORE ) {
@@ -378,7 +379,8 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
   else if( state == FileModifiedDialog::SAVE_AS ) { saveAs(); }
   else if( state == FileModifiedDialog::RELOAD ) { 
     
-    document()->setModified( false ); 
+    //document()->setModified( false ); 
+    setModified( false ); 
     revertToSave(); 
         
   } else if( state == FileModifiedDialog::IGNORE ) { 
@@ -555,7 +557,8 @@ void TextDisplay::revertToSave( void )
   int position( textCursor().position() );
   
   setUpdatesEnabled( false );
-  document()->setModified( false );
+  //document()->setModified( false );
+  setModified( false );
   openFile( file(), false );
 
   // restore
@@ -1357,7 +1360,7 @@ void TextDisplay::_multipleFileReplace( void )
 
   // retrieve selection from replace dialog
   FileSelectionDialog dialog( this, selection );
-  connect( &dialog, SIGNAL( fileSelected( File, TextSelection ) ), qApp, SLOT( multipleFileReplace( File, TextSelection ) ) );
+  connect( &dialog, SIGNAL( fileSelected( std::list<File>, TextSelection ) ), qApp, SLOT( multipleFileReplace( std::list<File>, TextSelection ) ) );
   dialog.exec();
   return;
 }

@@ -138,7 +138,7 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   void updateDocumentClasses( void );
 
   //! multiple files replace
-  void multipleFileReplace( File file, TextSelection selection );
+  void multipleFileReplace( std::list<File> file, TextSelection selection );
   
   private slots:
   
