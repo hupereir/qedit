@@ -32,6 +32,7 @@
 #include <QFile>
 
 #include "Diff.h"
+#include "HighlightBlockFlags.h"
 #include "XmlOptions.h"
 #include "TextDisplay.h"
 #include "TimeStamp.h"
@@ -175,10 +176,6 @@ void Diff::_parseLine( const std::string& line )
     ranges[FIRST] = _parseRange(line.substr( 0, position ));
     ranges[SECOND] = _parseRange(line.substr( position+1, line.size() - position - 1 ));
 
-    // associate ranges
-    // ranges[FIRST].setAssociatedRange( ranges[SECOND] );
-    // ranges[SECOND].setAssociatedRange( ranges[FIRST] );
-    
     for( unsigned int i = 0; i<= SECOND; i++ )
     { files_[i].insertConflictRange( ranges[i] ); }
     return;
@@ -229,10 +226,7 @@ Diff::Range Diff::_parseRange( const std::string& range )
 //___________________________________________________________________
 Diff::FileInformation::FileInformation( void ):
   display_( 0 ),
-  is_temporary_( false ),
-  conflict_color_( XmlOptions::get().get<string>( "DIFF_CONFLICT_COLOR" ).c_str() ),
-  added_color_( XmlOptions::get().get<string>( "DIFF_ADDED_COLOR" ).c_str() )
-
+  is_temporary_( false )
 { Debug::Throw( "Diff::FileInformation::FileInformation.\n" ); }
 
 //___________________________________________________________________
@@ -306,13 +300,13 @@ void Diff::FileInformation::highlightDisplay( void )
     
     // see if block is a conflict
     if( find_if( conflicts_.begin(), conflicts_.end(), Range::ContainsFTor( id ) ) != conflicts_.end() )
-    { _display().setBackground( block, conflict_color_ ); }
+    { _display().tagBlock( block, TextBlock::DIFF_CONFLICT ); }
     
     // see if block is a added
     else if( find_if( added_.begin(), added_.end(), Range::ContainsFTor( id ) ) != added_.end() )
-    { _display().setBackground( block, added_color_ ); }
+    { _display().tagBlock( block, TextBlock::DIFF_ADDED ); }
   
-    else _display().clearBackground( block );
+    else _display().clearBlockTag( block );
   }
   
   return; 

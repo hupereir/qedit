@@ -794,7 +794,7 @@ void EditFrame::_clearDiff( void )
 
   BASE::KeySet<TextDisplay> displays( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { (*iter)->clearAllBackgrounds(); }
+  { (*iter)->clearAllBlockTags(); }
   
   clearDiffAction().setEnabled( false );
   

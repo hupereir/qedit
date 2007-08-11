@@ -53,7 +53,7 @@ class Diff: public QObject, public Counter
   Q_OBJECT
   
   public:
-
+  
   //! first/second file 
   enum { 
     
@@ -118,33 +118,11 @@ class Diff: public QObject, public Counter
       unsigned int id_;
       
     };
-    
-//     //! associated range
-//     void setAssociatedRange( const Range& range )
-//     { associated_range_ = range; }
-//     
-//     //! associated range
-//     const Range& associatedRange( void ) const
-//     { return associated_range_; }
-    
-//     private: 
-//     //! store associated range in other file in case of conflicts
-//     Diff::Range associated_range_;
 
   };
 
   //! range list
   typedef std::set< Range > RangeSet;
-  
-  public slots:
-
-  /*! \brief
-    set cursor of both displays at beginning of next conflict,
-    starting from current position in current display 
-    This will not work at all as soon as the files are modified ...
-  */
-  void showNextConflict( void )
-  {}
 
   private slots:
   
@@ -230,15 +208,6 @@ class Diff: public QObject, public Counter
     
     //! conflict paragraphs
     RangeSet conflicts_;
-
-    //!@name colors
-    //@{
-    
-    QColor conflict_color_;
-    
-    QColor added_color_; 
-        
-    //@}
     
   };
   

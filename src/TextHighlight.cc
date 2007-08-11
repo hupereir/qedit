@@ -34,6 +34,7 @@
 #include "Debug.h"
 #include "HighlightPattern.h"
 #include "HighlightBlockData.h"
+#include "HighlightBlockFlags.h"
 #include "TextParenthesis.h"
 #include "TextHighlight.h"
 
@@ -72,7 +73,7 @@ void TextHighlight::highlightBlock( const QString& text )
   bool need_update( true );
   if( data ) { 
  
-    need_update = ( data->isModified() || (locations = data->locations()).activeId().first != active_id );
+    need_update = ( data->hasFlag( TextBlock::MODIFIED ) || (locations = data->locations()).activeId().first != active_id );
         
   } else {
     
@@ -89,7 +90,7 @@ void TextHighlight::highlightBlock( const QString& text )
     locations = locationSet( text, active_id );
     
     // update data modification state and highlight pattern locations
-    data->setModified( false );
+    data->setFlag( TextBlock::MODIFIED, false );
     data->setLocations( locations );
     
     // store active id

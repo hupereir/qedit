@@ -50,36 +50,25 @@ class HighlightBlockData: public TextBlockData
   //! constructor
   HighlightBlockData():
     TextBlockData(),
-    modified_( true ),
     parenthesis_( -1 )
   {}
     
   //! constructor
   HighlightBlockData( const TextBlockData& reference ):
     TextBlockData( reference ),
-    modified_( true ),
     parenthesis_( -1 )
   {}
     
   //! constructor
   HighlightBlockData( const TextBlockData* pointer ):
     TextBlockData( *pointer ),
-    modified_( true ),
     parenthesis_( -1 )
   {}
     
   //! destructor
   virtual ~HighlightBlockData( void )
   {}
-  
-  //! modification state
-  const bool& isModified( void ) const
-  { return modified_; }
-  
-  //! modification state
-  void setModified( const bool& value )
-  { modified_ = value; }
-  
+    
   //! syntax highlighting pattern locations
   const HighlightPattern::LocationSet& locations( void ) const
   { return locations_; }
@@ -120,11 +109,7 @@ class HighlightBlockData: public TextBlockData
   #endif
   
   private:
-  
-  //! block modification state
-  /*! it is used to tell if patterns must be re-calculated */
-  bool modified_;
-  
+    
   //! locations and ids of matching syntax highlighting patterns
   HighlightPattern::LocationSet locations_;
   

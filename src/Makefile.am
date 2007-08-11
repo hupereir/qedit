@@ -68,6 +68,7 @@ noinst_HEADERS = \
   FileSelectionDialog.h \
   HelpText.h \
   HighlightBlockData.h \
+  HighlightBlockFlags.h \
   HighlightPattern.h \
   HighlightStyle.h \
   HtmlUtil.h \

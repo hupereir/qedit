@@ -330,8 +330,17 @@ class TextDisplay: public CustomTextEdit
   bool isEmptyBlock( const QTextBlock& block ) const
   { return empty_line_regexp_.indexIn( block.text() ) >= 0; }
   
-  // return true is block is to be ignored from indentation scheme
+  //! return true is block is to be ignored from indentation scheme
   bool ignoreBlock( const QTextBlock& block ) const;
+  
+  //! tag block (with diff flag)
+  void tagBlock( QTextBlock, const unsigned int& tag );
+  
+  //! clear block tag
+  void clearBlockTag( QTextBlock );
+  
+  //! clear all blocks
+  void clearAllBlockTags( void );
   
   //! return parenthesis highlight object
   ParenthesisHighlight& parenthesisHighlight( void ) const
@@ -549,15 +558,18 @@ class TextDisplay: public CustomTextEdit
   //! associated document class name
   std::string class_name_;
   
-  //! display flags
-  unsigned int flags_;
-  
   //! paper color or active views
   QColor active_color_;
   
   //! paper color for inactive views
   QColor inactive_color_;
-  
+     
+  //! diff conflict color 
+  QColor conflict_color_;
+
+  //! diff added color
+  QColor added_color_; 
+        
   //! last save timeStamp
   TimeStamp last_save_;
 

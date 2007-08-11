@@ -44,6 +44,7 @@
 #include "FileSelectionDialog.h"
 #include "HtmlUtil.h"
 #include "HighlightBlockData.h"
+#include "HighlightBlockFlags.h"
 #include "IconEngine.h"
 #include "Icons.h"
 #include "MainFrame.h"
@@ -169,6 +170,9 @@ TextDisplay::TextDisplay( QWidget* parent ):
   connect( qApp, SIGNAL( spellCheckConfigurationChanged() ), SLOT( updateSpellCheckConfiguration() ) );
   updateConfiguration();
   updateSpellCheckConfiguration();
+  
+  // paper background active color
+  _setPaper( true, QWidget().palette().color( QPalette::Base ) );
   
   Debug::Throw( "TextDisplay::TextDisplay - done.\n" );
   
@@ -715,9 +719,65 @@ bool TextDisplay::ignoreBlock( const QTextBlock& block ) const
 }
 
 //___________________________________________________________________________
+void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
+{
+  Debug::Throw( "TextDisplay::tagBlock.\n" );
+  
+  TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+  if( !data ) block.setUserData( data = new TextBlockData() );
+
+  switch( tag )
+  {
+    case TextBlock::DIFF_ADDED:
+    {
+      data->setFlag( TextBlock::DIFF_ADDED, true );
+      setBackground( block, added_color_ );
+      break;
+    } 
+    
+    case TextBlock::DIFF_CONFLICT:
+    {
+      data->setFlag( TextBlock::DIFF_CONFLICT, true );
+      setBackground( block, conflict_color_ );
+      break;
+    }
+    
+    default:
+    { throw logic_error( DESCRIPTION( "invalid tag" ) ); }
+    
+  }
+  
+  return;
+  
+}
+
+//___________________________________________________________________________
+void TextDisplay::clearBlockTag( QTextBlock block )
+{
+  Debug::Throw( "TextDisplay::clearBlockTag.\n" );
+  TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+  data->setFlag( TextBlock::DIFF_ADDED, false );
+  data->setFlag( TextBlock::DIFF_CONFLICT, false );
+  clearBackground( block );
+}
+
+//___________________________________________________________________________
+void TextDisplay::clearAllBlockTags( void )
+{
+  
+  Debug::Throw( "CustomTextEdit::clearAllBlockTags.\n" );
+  for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
+  { 
+    clearBlockTag( block ); 
+    clearBackground( block );
+  }
+  
+}
+
+//___________________________________________________________________________
 void TextDisplay::updateConfiguration( void )
 {
-  Debug::Throw( "TextDisplay::updateConfiguration.\n" );
+   Debug::Throw( "TextDisplay::updateConfiguration.\n" );
 
   // base class configuration update
   CustomTextEdit::updateConfiguration();
@@ -732,14 +792,16 @@ void TextDisplay::updateConfiguration( void )
   textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().raw( "PARENTHESIS_COLOR" ).c_str() ) );
   parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
  
-  // retrieve active/inactive colors for activity shading
+  // retrieve inactive colors for activity shading
   QColor default_color( QWidget().palette().color( QPalette::Base ) );
-  QColor active_color( XmlOptions::get().get<string>("ACTIVE_COLOR").c_str() );
   QColor inactive_color( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() );
   bool shade_inactive( XmlOptions::get().get<bool>( "SHADE_INACTIVE_VIEWS" ) );
-  _setPaper( true, active_color_.isValid() && shade_inactive ? active_color_ : default_color );
-  _setPaper( false, inactive_color.isValid() && shade_inactive ? inactive_color : default_color );
-  _setPaper( isActive() ? active_color_:inactive_color_ );
+  _setPaper( false, inactive_color.isValid() && shade_inactive ? inactive_color : paper( true ) );
+  _setPaper( paper( isActive() ) );
+  
+  // retrieve diff colors
+  conflict_color_ = QColor( XmlOptions::get().get<string>("DIFF_CONFLICT_COLOR").c_str() );
+  added_color_ = QColor( XmlOptions::get().get<string>("DIFF_ADDED_COLOR").c_str() );
     
 }
 
@@ -1514,7 +1576,7 @@ void TextDisplay::_setBlockModified( const QTextBlock& block )
   // retrieve associated block data if any
   // set block as modified so that its highlight content gets reprocessed.
   HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-  if( data ) data->setModified( true );
+  if( data ) data->setFlag( TextBlock::MODIFIED, true );
 
 }
 
