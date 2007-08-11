@@ -1706,3 +1706,67 @@ void TextDisplay::_highlightParenthesis( void )
   return;
 
 }
+
+//__________________________________________________
+void TextDisplay::_nextTaggedBlock( void )
+{
+  Debug::Throw( "TextDisplay::_nextTaggedBlock.\n" );
+  QTextCursor cursor( textCursor() );
+  QTextBlock block( cursor.block() );
+  TextBlockData* data;
+  
+  // first skipp blocks that have tags if the first one has
+  while( 
+    block.isValid() && 
+    (data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
+    data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT ) )
+  { block = block.next(); }
+  
+  // skip blocks with no tag
+  while( 
+    block.isValid() && 
+    !((data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
+    data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT ) ) )
+  { block = block.next(); }
+  
+  if( !block.isValid() )
+  { return QtUtil::infoDialog( this, "No tagged block found." ); }
+  
+  // update cursor
+  cursor.setPosition( block.position() );
+  setTextCursor( cursor );
+  return;
+  
+}
+
+//__________________________________________________
+void TextDisplay::_previousTaggedBlock( void )
+{
+  Debug::Throw( "TextDisplay::_previousTaggedBlock.\n" );
+  QTextCursor cursor( textCursor() );
+  QTextBlock block( cursor.block() );
+  TextBlockData* data;
+  
+  // first skipp blocks that have tags if the first one has
+  while( 
+    block.isValid() && 
+    (data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
+    data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT ) )
+  { block = block.previous(); }
+  
+  // skip blocks with no tag
+  while( 
+    block.isValid() && 
+    !((data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
+    data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT ) ) )
+  { block = block.previous(); }
+  
+  if( !block.isValid() )
+  { return QtUtil::infoDialog( this, "No tagged block found." ); }
+  
+  // update cursor
+  cursor.setPosition( block.position() );
+  setTextCursor( cursor );
+  return;
+  
+}

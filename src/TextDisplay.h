@@ -547,6 +547,12 @@ class TextDisplay: public CustomTextEdit
   //! highlight parenthesis
   void _highlightParenthesis( void );
   
+  //! find next tagged block, starting from current
+  void _nextTaggedBlock( void );
+  
+  //! find previous tagged block, starting from current
+  void _previousTaggedBlock( void );
+  
   private:
   
   //! file
