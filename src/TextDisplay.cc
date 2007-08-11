@@ -1055,7 +1055,10 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
 {
 
   // check if tab key is pressed
-  if( event->key() == Key_Tab && indent_->isEnabled() && !textCursor().hasSelection() )
+  if( 
+    event->key() == Key_Tab && 
+    indent_->isEnabled() && 
+    !( textCursor().hasSelection() || _boxSelection().state() == BoxSelection::FINISHED ) )
   { emit indent( textCursor().block() ); }
   else 
   {
