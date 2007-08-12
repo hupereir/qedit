@@ -33,8 +33,8 @@
 */
 
 #include <list>
+#include <QSyntaxHighlighter>
 
-#include "BaseTextHighlight.h"
 #include "Config.h"
 #include "Counter.h"
 #include "Debug.h"
@@ -50,7 +50,7 @@ class HighlightPattern;
 class TextParenthesis;
 
 //! syntax highlighting based on text patterns
-class TextHighlight: public BaseTextHighlight
+class TextHighlight: public QSyntaxHighlighter, public Counter
 {
   
   public:

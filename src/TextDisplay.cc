@@ -51,8 +51,8 @@
 #include "OpenPreviousMenu.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
-#include "TextParenthesis.h"
 #include "TextDisplay.h"
+#include "TextHighlight.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
 #include "Util.h"
@@ -87,8 +87,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   setAcceptRichText( false );
   
   // text highlight
-  TextHighlight* highlight = new TextHighlight( document() );
-  setTextHighlight( highlight );
+  text_highlight_ = new TextHighlight( document() );
 
   // parenthesis highlight
   parenthesis_highlight_ = new ParenthesisHighlight( this );
@@ -174,6 +173,7 @@ void TextDisplay::synchronize( TextDisplay* display )
   // synchronize text
   // (from base class)
   CustomTextEdit::synchronize( display );
+  text_highlight_ = &display->textHighlight();
   
   // restore connection with document
   // track contents changed for syntax highlighting

@@ -45,8 +45,8 @@
 #include "HighlightBlockFlags.h"
 #include "HighlightPattern.h"
 #include "ParenthesisHighlight.h"
-#include "TextHighlight.h"
 #include "TextIndent.h"
+#include "TextParenthesis.h"
 #include "TextMacro.h"
 #include "TimeStamp.h"
 
@@ -59,6 +59,7 @@
 class DocumentClass;
 class HighlightBlockData;
 class OpenPreviousMenu;
+class TextHighlight;
 
 //! text display window
 class TextDisplay: public CustomTextEdit
@@ -243,19 +244,11 @@ class TextDisplay: public CustomTextEdit
 
   //! text highlight
   TextHighlight& textHighlight( void )
-  {
-    BASE::KeySet<TextHighlight> highlights( dynamic_cast<Key*>( document() ) );
-    Exception::check( highlights.size() == 1, "invalid association to TextHighlight.\n" );
-    return **highlights.begin();
-  }
+  { return *text_highlight_; }
 
   //! text highlight
   const TextHighlight& textHighlight( void ) const
-  {
-    BASE::KeySet<TextHighlight> highlights( dynamic_cast<BASE::Key*>(document()) );
-    Exception::check( highlights.size() == 1, "invalid association to text-highlight" );
-    return **highlights.begin();
-  }
+  { return *text_highlight_; }
 
   //! text indent
   const TextIndent& textIndent( void ) const
@@ -708,8 +701,8 @@ class TextDisplay: public CustomTextEdit
   //! parent OpenPrevious menu
   OpenPreviousMenu* menu_;
   
-  //! current block data
-  // HighlightBlockData* current_block_data_;
+  //! syntax highlighter
+  TextHighlight* text_highlight_;
   
   //!@name text parenthesis
   //@{

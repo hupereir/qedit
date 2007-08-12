@@ -42,7 +42,8 @@ using namespace std;
 
 //_________________________________________________________
 TextHighlight::TextHighlight( QTextDocument* document ):
-  BaseTextHighlight( document ),
+  QSyntaxHighlighter( document ),
+  Counter( "TextHighlight" ),
   highlight_enabled_( false ),
   parenthesis_enabled_( false )
 { Debug::Throw( "TextHighlight::TextHighlight.\n" ); }
@@ -50,10 +51,6 @@ TextHighlight::TextHighlight( QTextDocument* document ):
 //_________________________________________________________
 void TextHighlight::highlightBlock( const QString& text )
 {
-    
-  // base class highlight
-  // this is always performed
-  BaseTextHighlight::highlightBlock( text );
     
   // check if syntax highlighting is enabled
   #if WITH_ASPELL 

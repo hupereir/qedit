@@ -44,6 +44,7 @@
 #include "OpenPreviousMenu.h"
 #include "QtUtil.h"
 #include "TextDisplay.h"
+#include "TextHighlight.h"
 #include "TimeStamp.h"
 #include "XmlOptions.h"
 
@@ -244,9 +245,15 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   grid_layout->addWidget( new QLabel( "number of lines: ", box ) );
   grid_layout->addWidget( new QLabel( Str().assign<int>(parent->blockCount()).c_str(), box ) );
 
+  grid_layout->addWidget( new QLabel( "Current paragraph highlighting: ", box ) );
+  grid_layout->addWidget( new QLabel( (parent->blockHighlightAction().isChecked() ? "true":"false" ), box ) );
+
   grid_layout->addWidget( new QLabel( "Text highlighting: ", box ) );
-  grid_layout->addWidget( new QLabel( (parent->textHighlight().isEnabled() ? "true":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (parent->textHighlight().isHighlightEnabled() ? "true":"false" ), box ) );
   
+  grid_layout->addWidget( new QLabel( "Matching parenthesis highlighting: ", box ) );
+  grid_layout->addWidget( new QLabel( (parent->textHighlight().isParenthesisEnabled() ? "true":"false" ), box ) );
+
   grid_layout->addWidget( new QLabel( "Text indent: ", box ) );
   grid_layout->addWidget( new QLabel( (parent->textIndent().isEnabled() ? "true":"false" ), box ) );
 
