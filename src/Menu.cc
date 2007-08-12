@@ -329,6 +329,26 @@ void Menu::_updateToolsMenu( void )
   tools_menu_->addSeparator();
   tools_menu_->addAction( &frame.diffAction() );
   tools_menu_->addAction( &frame.clearDiffAction() );
+ 
+  // tag blocks 
+  tools_menu_->addSeparator();
+
+  bool has_tags( display.hasTaggedBlocks() );
+  bool current_block_tagged( has_tags && display.isCurrentBlockTagged() );
+  
+  tools_menu_->addAction( &display.tagBlockAction() );
+  
+  tools_menu_->addAction( &display.nextTagAction() );
+  display.nextTagAction().setEnabled( has_tags );
+  
+  tools_menu_->addAction( &display.previousTagAction() );
+  display.previousTagAction().setEnabled( has_tags );
+
+  tools_menu_->addAction( &display.clearTagAction() );
+  display.clearTagAction().setEnabled( current_block_tagged );
+
+  tools_menu_->addAction( &display.clearAllTagsAction() );
+  display.clearAllTagsAction().setEnabled( has_tags );
   
   // syntax highlighting
   tools_menu_->addSeparator();

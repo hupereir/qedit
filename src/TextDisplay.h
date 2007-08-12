@@ -325,6 +325,26 @@ class TextDisplay: public CustomTextEdit
   
   #endif
   
+  //! tag block action
+  QAction &tagBlockAction( void ) const
+  { return* tag_block_action_; }
+  
+  //! next tag action
+  QAction &nextTagAction( void ) const
+  { return* next_tag_action_; }
+  
+  //! previous tag action
+  QAction &previousTagAction( void ) const
+  { return* previous_tag_action_; }
+  
+  //! clear current block tags action
+  QAction &clearTagAction( void ) const
+  { return* clear_tag_action_; }
+  
+  //! clear all tags action
+  QAction &clearAllTagsAction( void ) const
+  { return* clear_all_tags_action_; }
+  
   //@}
     
   // return true if block is an empty line
@@ -338,9 +358,14 @@ class TextDisplay: public CustomTextEdit
   void tagBlock( QTextBlock, const unsigned int& tag );
   
   //! clear block tags if match argument
-  // void clearBlockTag( QTextBlock, const int& tags = TextBlock::DIFF_ADDED |  TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG );
-  void clearBlockTag( QTextBlock, const int& tags );
- 
+  void clearTag( QTextBlock, const int& tags );
+
+  //! true if current blocks (or selection) has tag
+  bool isCurrentBlockTagged( void );
+  
+  //! true if some blocks have tags
+  bool hasTaggedBlocks( void );
+  
   //! return parenthesis highlight object
   ParenthesisHighlight& parenthesisHighlight( void ) const
   { return *parenthesis_highlight_; }
@@ -383,14 +408,14 @@ class TextDisplay: public CustomTextEdit
   //! rehighlight
   void rehighlight( void );
   
-  //! clear current block tags
-  void clearBlockTag( void );
-
   //! clear all blocks if match argument
   void clearAllTags( const int& tags = TextBlock::ALL_TAGS );
   
   protected:
 
+  //!@name event handlers
+  //@{
+  
   //! keypress event [overloaded]
   virtual void keyPressEvent( QKeyEvent* );
 
@@ -404,6 +429,11 @@ class TextDisplay: public CustomTextEdit
   /*! returns true if autospell context menu is used */
   virtual bool _autoSpellContextEvent( QContextMenuEvent* );
 
+  //@}
+  
+  //! actions
+  void _installActions( void );
+  
   //! create replace dialog
   virtual void _createReplaceDialog( void );
     
@@ -456,12 +486,6 @@ class TextDisplay: public CustomTextEdit
   
   //! update tagged block colors
   void _updateTaggedBlocks( void );
-  
-  //! true if current blocks (or selection) has tag
-  bool _isCurrentBlockTagged( void );
-  
-  //! true if some blocks have tags
-  bool _hasTaggedBlocks( void );
   
   #if WITH_ASPELL
   
@@ -565,12 +589,18 @@ class TextDisplay: public CustomTextEdit
   //! highlight parenthesis
   void _highlightParenthesis( void );
   
+  //! tag current block
+  void _tagBlock( void );
+  
   //! find next tagged block, starting from current
-  void _nextTaggedBlock( void );
+  void _nextTag( void );
   
   //! find previous tagged block, starting from current
-  void _previousTaggedBlock( void );
+  void _previousTag( void );
   
+  //! clear current block tags
+  void _clearTag( void );
+
   private:
   
   //! file
@@ -647,6 +677,22 @@ class TextDisplay: public CustomTextEdit
   QAction* filter_menu_action_;
   
   #endif
+  
+  //! tag block
+  QAction* tag_block_action_; 
+  
+  //! goto next tag
+  QAction* next_tag_action_;
+  
+  //! goto previous tag
+  QAction* previous_tag_action_;
+  
+  //! clear current block tags
+  QAction* clear_tag_action_;
+   
+  //! clear current block tags
+  QAction* clear_all_tags_action_;
+ 
   //@}
   
   #if WITH_ASPELL

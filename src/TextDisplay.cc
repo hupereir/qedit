@@ -102,62 +102,14 @@ TextDisplay::TextDisplay( QWidget* parent ):
   connect( this, SIGNAL( indent( QTextBlock ) ), indent_, SLOT( indent( QTextBlock ) ) );
   connect( this, SIGNAL( indent( QTextBlock, QTextBlock ) ), indent_, SLOT( indent( QTextBlock, QTextBlock ) ) );
   
-  // actions
-  addAction( text_indent_action_ = new QAction( "&Indent text", this ) );
-  text_indent_action_->setCheckable( true );
-  text_indent_action_->setChecked( textIndent().isEnabled() );
-  connect( text_indent_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextIndent( bool ) ) );
-
-  addAction( text_highlight_action_ = new QAction( "&Highlight text", this ) );
-  text_highlight_action_->setCheckable( true );
-  text_highlight_action_->setChecked( textHighlight().isHighlightEnabled() );
-  connect( text_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextHighlight( bool ) ) );
-  
-  addAction( parenthesis_highlight_action_ = new QAction( "&Highlight parenthesis", this ) );
-  parenthesis_highlight_action_->setCheckable( true );
-  parenthesis_highlight_action_->setChecked( parenthesisHighlight().isEnabled() );
-  connect( parenthesis_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
-
   #if WITH_ASPELL
-  
   // install menus
   filter_menu_ = new SPELLCHECK::FilterMenu( this );
   dictionary_menu_ = new SPELLCHECK::DictionaryMenu( this );
-
-  filter_menu_action_ = _filterMenu().menuAction();
-  dictionary_menu_action_ = _dictionaryMenu().menuAction();
-  
-  connect( &_filterMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectFilter( const std::string& ) ) );
-  connect( &_dictionaryMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectDictionary( const std::string& ) ) );
-  
   #endif
   
-  // retrieve pixmap path
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
-
-  // autospell
-  addAction( autospell_action_ = new QAction( "&Automatic spell-check", this ) );
-  autospell_action_->setCheckable( true );
-  
-  #if WITH_ASPELL
-  autospell_action_->setChecked( textHighlight().spellParser().isEnabled() );
-  connect( autospell_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleAutoSpell( bool ) ) );
-  #else 
-  autospell_action_->setVisible( false );
-  #endif
-
-  // spell checking
-  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK, path_list ), "&Spell check", this ) );
-  #if WITH_ASPELL
-  connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
-  #else 
-  spellcheck_action_->setVisible( false );
-  #endif
-  
-  // file information
-  addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO, path_list ), "&File information", this ) );
-  connect( file_info_action_, SIGNAL( triggered() ), SLOT( _showFileInfo() ) );
+  // actions
+  _installActions();
   
   // connections
   // track contents changed for syntax highlighting
@@ -759,9 +711,9 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
 }
 
 //___________________________________________________________________________
-void TextDisplay::clearBlockTag( QTextBlock block, const int& tags )
+void TextDisplay::clearTag( QTextBlock block, const int& tags )
 {
-  Debug::Throw( "TextDisplay::clearBlockTag.\n" );
+  Debug::Throw( "TextDisplay::clearTag.\n" );
   TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
 
   if( tags & TextBlock::DIFF_ADDED ) 
@@ -782,6 +734,52 @@ void TextDisplay::clearBlockTag( QTextBlock block, const int& tags )
     clearBackground( block );
   }
   
+}
+
+
+//_____________________________________________________________
+bool TextDisplay::isCurrentBlockTagged( void )
+{
+
+  Debug::Throw( "TextDisplay::isCurrentBlockTagged.\n" );
+
+  vector<QTextBlock> blocks;
+  QTextCursor cursor( textCursor() );
+  if( cursor.hasSelection() )
+  {
+   
+    QTextBlock first( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
+    QTextBlock last( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
+    for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
+    { blocks.push_back( block ); }
+    if( last.isValid() ) blocks.push_back( last );
+    
+  } else blocks.push_back( cursor.block() );
+  
+  for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+  {
+    TextBlockData *data( dynamic_cast<TextBlockData*>( iter->userData() ) );
+    if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
+  }
+  
+  return false;
+  
+}
+
+//_____________________________________________________________
+bool TextDisplay::hasTaggedBlocks( void )
+{
+ 
+  Debug::Throw( "TextDisplay::hasTaggedBlocks.\n" );
+  
+  // loop over block
+  for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
+  {
+    TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+    if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
+  }
+  
+  return false;
 }
 
 //___________________________________________________________________________
@@ -1127,55 +1125,12 @@ void TextDisplay::rehighlight( void )
 
 
 //___________________________________________________________________________
-void TextDisplay::clearBlockTag( void )
-{
-  
-  Debug::Throw( "CustomTextEdit::clearBlockTag.\n" );
-  
-  vector<QTextBlock> blocks;
-  QTextCursor cursor( textCursor() );
-  if( cursor.hasSelection() )
-  {
-   
-    QTextBlock first( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
-    QTextBlock last( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
-    for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
-    { blocks.push_back( block ); }
-    if( last.isValid() ) blocks.push_back( last );
-    
-  } else {
-    
-    // add previous blocks and current
-    for( QTextBlock block( cursor.block() ); block.isValid(); block = block.previous() )
-    {
-      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
-      if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
-      else break;
-    }
- 
-     // add previous blocks and current
-    for( QTextBlock block( cursor.block().next() ); block.isValid(); block = block.next() )
-    {
-      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
-      if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
-      else break;
-    }
-    
-  }
-
-  // clear background for selected blocks
-  for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
-  { clearBlockTag( *iter, TextBlock::DIFF_ADDED |  TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ); }
-    
-}
-
-//___________________________________________________________________________
 void TextDisplay::clearAllTags( const int& flags )
 {
   
   Debug::Throw( "CustomTextEdit::clearAllTags.\n" );
   for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
-  { clearBlockTag( block, flags ); }
+  { clearTag( block, flags ); }
     
 }
 
@@ -1226,31 +1181,31 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
   if( _autoSpellContextEvent( event ) ) return;
 
   // see if tagged blocks are present
-  bool has_tags( _hasTaggedBlocks() );
-  bool current_block_tagged( has_tags && _isCurrentBlockTagged() );
+  bool has_tags( hasTaggedBlocks() );
+  bool current_block_tagged( has_tags && isCurrentBlockTagged() );
   
   // retrieve default context menu
   QMenu menu( this );
   _installContextMenuActions( menu );
   menu.addSeparator();
-  QAction* action;
-  action = menu.addAction( "Next tagged block", this, SLOT( _nextTaggedBlock() ) );
-  action->setEnabled( has_tags );
   
-  action = menu.addAction( "Previous tagged block", this, SLOT( _previousTaggedBlock() ) );
-  action->setEnabled( has_tags );
+  menu.addAction( &tagBlockAction() );
+  
+  menu.addAction( &nextTagAction() );
+  nextTagAction().setEnabled( has_tags );
+  
+  menu.addAction( &previousTagAction() );
+  previousTagAction().setEnabled( has_tags );
 
-  action = menu.addAction( "Clear current tags", this, SLOT( clearBlockTag() ) );
-  action->setEnabled( current_block_tagged );
+  menu.addAction( &clearTagAction() );
+  clearTagAction().setEnabled( current_block_tagged );
 
-  action = menu.addAction( "Clear all tags", this, SLOT( clearAllTags() ) );
-  action->setEnabled( has_tags );
+  menu.addAction( &clearAllTagsAction() );
+  clearAllTagsAction().setEnabled( has_tags );
   
   // show menu
   menu.exec( event->globalPos() );
-  
-  
-  
+ 
 }
 
 //________________________________________________
@@ -1301,6 +1256,87 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 
 }
 
+//_____________________________________________________________________
+void TextDisplay::_installActions( void )
+{
+  
+  Debug::Throw( "TextDisplay::_installActions.\n" );
+  
+  // actions
+  addAction( text_indent_action_ = new QAction( "&Indent text", this ) );
+  text_indent_action_->setCheckable( true );
+  text_indent_action_->setChecked( textIndent().isEnabled() );
+  connect( text_indent_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextIndent( bool ) ) );
+
+  addAction( text_highlight_action_ = new QAction( "&Highlight text", this ) );
+  text_highlight_action_->setCheckable( true );
+  text_highlight_action_->setChecked( textHighlight().isHighlightEnabled() );
+  connect( text_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextHighlight( bool ) ) );
+  
+  addAction( parenthesis_highlight_action_ = new QAction( "&Highlight parenthesis", this ) );
+  parenthesis_highlight_action_->setCheckable( true );
+  parenthesis_highlight_action_->setChecked( parenthesisHighlight().isEnabled() );
+  connect( parenthesis_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
+  
+  // retrieve pixmap path
+  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
+  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
+
+  // autospell
+  addAction( autospell_action_ = new QAction( "&Automatic spell-check", this ) );
+  autospell_action_->setCheckable( true );
+  
+  #if WITH_ASPELL
+  autospell_action_->setChecked( textHighlight().spellParser().isEnabled() );
+  connect( autospell_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleAutoSpell( bool ) ) );
+  #else 
+  autospell_action_->setVisible( false );
+  #endif
+
+  // spell checking
+  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK, path_list ), "&Spell check", this ) );
+  #if WITH_ASPELL
+  connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
+  #else 
+  spellcheck_action_->setVisible( false );
+  #endif
+  
+  // file information
+  addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO, path_list ), "&File information", this ) );
+  connect( file_info_action_, SIGNAL( triggered() ), SLOT( _showFileInfo() ) );
+  
+  #if WITH_ASPELL
+  
+  filter_menu_action_ = _filterMenu().menuAction();
+  dictionary_menu_action_ = _dictionaryMenu().menuAction();
+  
+  connect( &_filterMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectFilter( const std::string& ) ) );
+  connect( &_dictionaryMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectDictionary( const std::string& ) ) );
+  
+  #endif
+  
+  // tag block action
+  addAction( tag_block_action_ = new QAction( "&Tag current block", this ) );
+  connect( tag_block_action_, SIGNAL( triggered() ), SLOT( _tagBlock( void ) ) );
+
+  // clear current block tags
+  addAction( clear_tag_action_ = new QAction( "Clear current tags", this ) );
+  connect( clear_tag_action_, SIGNAL( triggered() ), SLOT( _clearTag( void ) ) );
+  
+  // clear all tags
+  addAction( clear_all_tags_action_ = new QAction( "Clear all tags", this ) );
+  connect( clear_all_tags_action_, SIGNAL( triggered() ), SLOT( clearAllTags( void ) ) );
+  
+  // next tag action
+  addAction( next_tag_action_ = new QAction( "Goto next tagged block", this ) );
+  connect( next_tag_action_, SIGNAL( triggered() ), SLOT( _nextTag( void ) ) );
+
+  // previous tag action
+  addAction( previous_tag_action_ = new QAction( "Goto previous tagged block", this ) );
+  connect( previous_tag_action_, SIGNAL( triggered() ), SLOT( _previousTag( void ) ) );
+  
+}
+  
 //_____________________________________________________________________
 void TextDisplay::_createReplaceDialog( void )
 {
@@ -1415,51 +1451,6 @@ void TextDisplay::_updateTaggedBlocks( void )
     
   }  
   
-}
-
-//_____________________________________________________________
-bool TextDisplay::_isCurrentBlockTagged( void )
-{
-
-  Debug::Throw( "TextDisplay::_isCurrentBlockTagged.\n" );
-
-  vector<QTextBlock> blocks;
-  QTextCursor cursor( textCursor() );
-  if( cursor.hasSelection() )
-  {
-   
-    QTextBlock first( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
-    QTextBlock last( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
-    for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
-    { blocks.push_back( block ); }
-    if( last.isValid() ) blocks.push_back( last );
-    
-  } else blocks.push_back( cursor.block() );
-  
-  for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
-  {
-    TextBlockData *data( dynamic_cast<TextBlockData*>( iter->userData() ) );
-    if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
-  }
-  
-  return false;
-  
-}
-
-//_____________________________________________________________
-bool TextDisplay::_hasTaggedBlocks( void )
-{
- 
-  Debug::Throw( "TextDisplay::_hasTaggedBlocks.\n" );
-  
-  // loop over block
-  for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
-  {
-    TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
-    if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
-  }
-  
-  return false;
 }
 
 //_______________________________________________________
@@ -1878,9 +1869,51 @@ void TextDisplay::_highlightParenthesis( void )
 }
 
 //__________________________________________________
-void TextDisplay::_nextTaggedBlock( void )
+void TextDisplay::_tagBlock( void )
 {
-  Debug::Throw( "TextDisplay::_nextTaggedBlock.\n" );
+  
+  Debug::Throw( "TextDisplay::_tagBlock.\n" );
+  vector<QTextBlock> blocks;
+  QTextCursor cursor( textCursor() );
+  if( cursor.hasSelection() )
+  {
+   
+    QTextBlock first( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
+    QTextBlock last( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
+    for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
+    { blocks.push_back( block ); }
+    if( last.isValid() ) blocks.push_back( last );
+    
+  } else {
+    
+    // add previous blocks and current
+    for( QTextBlock block( cursor.block() ); block.isValid(); block = block.previous() )
+    {
+      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+      if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
+      else break;
+    }
+ 
+     // add previous blocks and current
+    for( QTextBlock block( cursor.block().next() ); block.isValid(); block = block.next() )
+    {
+      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+      if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
+      else break;
+    }
+    
+  }  
+
+  // clear background for selected blocks
+  for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+  { tagBlock( *iter, TextBlock::USER_TAG ); }
+  
+}
+
+//__________________________________________________
+void TextDisplay::_nextTag( void )
+{
+  Debug::Throw( "TextDisplay::_nextTag.\n" );
   QTextCursor cursor( textCursor() );
   QTextBlock block( cursor.block() );
   TextBlockData* data;
@@ -1889,14 +1922,14 @@ void TextDisplay::_nextTaggedBlock( void )
   while( 
     block.isValid() && 
     (data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
-    data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT ) )
+    data->hasFlag( TextBlock::ALL_TAGS ) )
   { block = block.next(); }
   
   // skip blocks with no tag
   while( 
     block.isValid() && 
     !((data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
-    data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT ) ) )
+    data->hasFlag( TextBlock::ALL_TAGS ) ) )
   { block = block.next(); }
   
   if( !block.isValid() )
@@ -1910,9 +1943,9 @@ void TextDisplay::_nextTaggedBlock( void )
 }
 
 //__________________________________________________
-void TextDisplay::_previousTaggedBlock( void )
+void TextDisplay::_previousTag( void )
 {
-  Debug::Throw( "TextDisplay::_previousTaggedBlock.\n" );
+  Debug::Throw( "TextDisplay::_previousTag.\n" );
   QTextCursor cursor( textCursor() );
   QTextBlock block( cursor.block() );
   TextBlockData* data;
@@ -1921,14 +1954,14 @@ void TextDisplay::_previousTaggedBlock( void )
   while( 
     block.isValid() && 
     (data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
-    data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT ) )
+    data->hasFlag( TextBlock::ALL_TAGS ) )
   { block = block.previous(); }
   
   // skip blocks with no tag
   while( 
     block.isValid() && 
     !((data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
-    data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT ) ) )
+    data->hasFlag( TextBlock::ALL_TAGS ) ) )
   { block = block.previous(); }
   
   if( !block.isValid() )
@@ -1939,4 +1972,48 @@ void TextDisplay::_previousTaggedBlock( void )
   setTextCursor( cursor );
   return;
   
+}
+
+
+//___________________________________________________________________________
+void TextDisplay::_clearTag( void )
+{
+  
+  Debug::Throw( "CustomTextEdit::_clearTag.\n" );
+  
+  vector<QTextBlock> blocks;
+  QTextCursor cursor( textCursor() );
+  if( cursor.hasSelection() )
+  {
+   
+    QTextBlock first( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
+    QTextBlock last( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
+    for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
+    { blocks.push_back( block ); }
+    if( last.isValid() ) blocks.push_back( last );
+    
+  } else {
+    
+    // add previous blocks and current
+    for( QTextBlock block( cursor.block() ); block.isValid(); block = block.previous() )
+    {
+      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+      if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
+      else break;
+    }
+ 
+     // add previous blocks and current
+    for( QTextBlock block( cursor.block().next() ); block.isValid(); block = block.next() )
+    {
+      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+      if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
+      else break;
+    }
+    
+  }
+
+  // clear background for selected blocks
+  for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+  { clearTag( *iter, TextBlock::ALL_TAGS ); }
+    
 }

@@ -306,7 +306,7 @@ void Diff::FileInformation::highlightDisplay( void )
     else if( find_if( added_.begin(), added_.end(), Range::ContainsFTor( id ) ) != added_.end() )
     { _display().tagBlock( block, TextBlock::DIFF_ADDED ); }
   
-    else _display().clearBlockTag( block, TextBlock::DIFF_CONFLICT | TextBlock::DIFF_ADDED );
+    else _display().clearTag( block, TextBlock::DIFF_CONFLICT | TextBlock::DIFF_ADDED );
   }
   
   return; 
