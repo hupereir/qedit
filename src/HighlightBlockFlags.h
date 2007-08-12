@@ -47,8 +47,14 @@ namespace TextBlock
     DIFF_ADDED = 1<<3,
     
     //! block is a diff-wise conflict block 
-    DIFF_CONFLICT = 1<<4
+    DIFF_CONFLICT = 1<<4,
+    
+    //! user tagged blocks
+    USER_TAG = 1<<5,
  
+    //! all tags
+    ALL_TAGS = DIFF_ADDED | DIFF_CONFLICT | USER_TAG
+    
   };
   
 };

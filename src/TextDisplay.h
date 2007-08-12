@@ -42,6 +42,7 @@
 #include "CustomTextEdit.h"
 #include "Debug.h"
 #include "File.h"
+#include "HighlightBlockFlags.h"
 #include "HighlightPattern.h"
 #include "ParenthesisHighlight.h"
 #include "TextHighlight.h"
@@ -336,12 +337,10 @@ class TextDisplay: public CustomTextEdit
   //! tag block (with diff flag)
   void tagBlock( QTextBlock, const unsigned int& tag );
   
-  //! clear block tag
-  void clearBlockTag( QTextBlock );
-  
-  //! clear all blocks
-  void clearAllBlockTags( void );
-  
+  //! clear block tags if match argument
+  // void clearBlockTag( QTextBlock, const int& tags = TextBlock::DIFF_ADDED |  TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG );
+  void clearBlockTag( QTextBlock, const int& tags );
+ 
   //! return parenthesis highlight object
   ParenthesisHighlight& parenthesisHighlight( void ) const
   { return *parenthesis_highlight_; }
@@ -383,7 +382,13 @@ class TextDisplay: public CustomTextEdit
 
   //! rehighlight
   void rehighlight( void );
+  
+  //! clear current block tags
+  void clearBlockTag( void );
 
+  //! clear all blocks if match argument
+  void clearAllTags( const int& tags = TextBlock::ALL_TAGS );
+  
   protected:
 
   //! keypress event [overloaded]
@@ -394,6 +399,10 @@ class TextDisplay: public CustomTextEdit
 
   //! context menu event [overloaded]
   virtual void contextMenuEvent( QContextMenuEvent* );
+
+  //! raise autospell context menu
+  /*! returns true if autospell context menu is used */
+  virtual bool _autoSpellContextEvent( QContextMenuEvent* );
 
   //! create replace dialog
   virtual void _createReplaceDialog( void );
@@ -444,6 +453,15 @@ class TextDisplay: public CustomTextEdit
   
   //! track text modifications for syntax highlighting
   void _setBlockModified( const QTextBlock& );
+  
+  //! update tagged block colors
+  void _updateTaggedBlocks( void );
+  
+  //! true if current blocks (or selection) has tag
+  bool _isCurrentBlockTagged( void );
+  
+  //! true if some blocks have tags
+  bool _hasTaggedBlocks( void );
   
   #if WITH_ASPELL
   
@@ -571,11 +589,14 @@ class TextDisplay: public CustomTextEdit
   QColor inactive_color_;
      
   //! diff conflict color 
-  QColor conflict_color_;
+  QColor diff_conflict_color_;
 
   //! diff added color
-  QColor added_color_; 
-        
+  QColor diff_added_color_; 
+ 
+  //! diff added color
+  QColor user_tag_color_; 
+       
   //! last save timeStamp
   TimeStamp last_save_;
 

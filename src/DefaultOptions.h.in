@@ -62,7 +62,8 @@ void installDefaultOptions( void )
   // synchronization
   XmlOptions::get().add( Option( "SYNCHRONIZATION_INTERVAL", "1", "time interval (second) between two synchronization checks" ) );
   
-  XmlOptions::get().add( Option( "PARENTHESIS_COLOR", "red", "selection color when highlighting parenthesis" ) );
+  XmlOptions::get().add( Option( "PARENTHESIS_COLOR", "red", "color when highlighting matching parenthesis" ) );
+  XmlOptions::get().add( Option( "TAGGED_BLOCK_COLOR", "orange", "color for tagged paragraphs" ) );
   XmlOptions::get().add( Option( "BACKUP", "0", "make backup when saving file" ) );
   XmlOptions::get().add( Option( "DB_SIZE", "30" ) );
   XmlOptions::get().add( Option( "DEBUG_LEVEL", "0" , "debug verbosity level"));

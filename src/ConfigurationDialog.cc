@@ -61,8 +61,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   OptionSpinBox* spinbox;
   OptionColorDisplay* color_display;
   
-  // display
-  QWidget* page = &addPage( "Display" );
+  // document classes 
+  QWidget* page = &addPage( "Document classes" );
   
   page->layout()->addWidget( box = new QGroupBox( "Document classes", page ) );  
   box->setLayout( new QVBoxLayout() );
@@ -76,8 +76,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( listbox );
   listbox->setToolTip( "input files from which the document classes are read" );
 
-  // Text editor configuration
-  textEditConfiguration( page ); 
+  // display
+  page = &addPage( "Display" );
 
   // edition flags
   page->layout()->addWidget( box = new QGroupBox( "Flags", page ) );  
@@ -97,33 +97,47 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   checkbox->setToolTip( "Turn on/off automatic text indentation" );
   addOptionWidget( checkbox );
 
-//   // wrapping
-//   box->layout()->addWidget( checkbox = new OptionCheckBox( "Wrap", box, "TEXT_WRAP" ) );
-//   checkbox->setToolTip( "Turn on/off default text wrapping" );
-//   addOptionWidget( checkbox );
-
   box->layout()->addWidget( checkbox = new OptionCheckBox( "use document class wrap mode", box, "WRAP_FROM_CLASS" ) );
   checkbox->setToolTip( "Use wrap mode read from document class in place of the one specified in the default configuration." );
   addOptionWidget( checkbox );
- 
-//   box = new QVGroupBox( "paragraph highlighting", vbox );
-//   checkbox = new OptionCheckBox( "highlight active paragraph", box, "HIGHLIGHT_PARAGRAPH" );
-//   addOptionWidget( checkbox );
-//   checkbox->setToolTip( "Turn on/off active paragraph highlighting" );
-// 
-//   grid = new QGrid( 2, box );
-//   new QLabel( "paragraph highlight color", grid );
-//   color_display = new OptionColorDisplay( grid, "HIGHLIGHT_COLOR" );
-//   addOptionWidget( color_display );
-//   color_display->setToolTip( "Active paragraph highlight color" );
-//   
   
+  // Text editor configuration
+  textEditConfiguration( page ); 
+
+  // additional colors
+  page->layout()->addWidget( box = new QGroupBox( "Colors", page ) );  
+   
+  CustomGridLayout* grid_layout = new CustomGridLayout();
+  grid_layout->setSpacing(5);
+  grid_layout->setMargin(5);
+  grid_layout->setMaxCount(2);
+  box->setLayout( grid_layout );
+  
+  grid_layout->addWidget( new QLabel( "Parenthesis matching color", box ) ); 
+  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "PARENTHESIS_COLOR" ) );
+  addOptionWidget( color_display );
+  checkbox->setToolTip( "Color for matching parenthesis" );
+
+  grid_layout->addWidget( new QLabel( "Tagged paragraphs color", box ) ); 
+  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "TAGGED_BLOCK_COLOR" ) );
+  addOptionWidget( color_display );
+  checkbox->setToolTip( "Color for tagged paragraphs" );
+  
+  grid_layout->addWidget( new QLabel( "Conflict paragraph highlight color", box ) );
+  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_CONFLICT_COLOR" ) );
+  addOptionWidget( color_display );
+  color_display->setToolTip( "highlight color for diff conflict paragraphs" );
+
+  grid_layout->addWidget( new QLabel( "Added paragraph highlight color", box ) );
+  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_ADDED_COLOR" ) );
+  addOptionWidget( color_display );
+  color_display->setToolTip( "highlight color for diff added paragraphs" );
   
   // multiple views
   page = &addPage( "Multiple views" );
   page->layout()->addWidget( box = new QGroupBox( page ) );  
 
-  CustomGridLayout *grid_layout = new CustomGridLayout();
+  grid_layout = new CustomGridLayout();
   grid_layout->setSpacing(5);
   grid_layout->setMargin(5);
   grid_layout->setMaxCount(2);
@@ -162,22 +176,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "ACTIVE_COLOR" ) );
   addOptionWidget( color_display );
   checkbox->setToolTip( "Active views background color" );
-
-  grid_layout->addWidget( new QLabel( "inactive view color", box ) ); 
-  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "INACTIVE_COLOR" ) );
-  addOptionWidget( color_display );
-  checkbox->setToolTip( "Inactive views background color" );
-
-//   // synchronization flags
-//   box = new QVGroupBox( "synchronization", vbox );
-// 
-//   box = new Qbox( 2, box );
-//   new QLabel( "synchronization interval (seconds)", box );
-//   spinbox = new OptionSpinBox( box, "SYNCHRONIZATION_INTERVAL" );
-//   spinbox->setMinimum( 0 );
-//   spinbox->setMaximum( 300 );
-//   spinbox->setToolTip( "Interval (seconds) between two synchronization check intervals. 0 means no check." );
-//   addOptionWidget( spinbox );
   
   // toolbars
   page = &addPage( "Toolbars" );
@@ -282,25 +280,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->addWidget( edit = new OptionBrowsedLineEdit( box, "AUTOSAVE_PATH" ) );
   edit->setToolTip( "directory when autosaved files are stored" );
   addOptionWidget( edit );
-
-  // diff paragraph colors
-  page->layout()->addWidget( box = new QGroupBox( "Diff highlight colors", page ) );  
-   
-  grid_layout = new CustomGridLayout();
-  grid_layout->setSpacing(5);
-  grid_layout->setMargin(5);
-  grid_layout->setMaxCount(2);
-  box->setLayout( grid_layout );
- 
-  grid_layout->addWidget( new QLabel( "conflict paragraph highlight color", box ) );
-  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_CONFLICT_COLOR" ) );
-  addOptionWidget( color_display );
-  color_display->setToolTip( "highlight color for diff conflict paragraphs" );
-
-  grid_layout->addWidget( new QLabel( "added paragraph highlight color", box ) );
-  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_ADDED_COLOR" ) );
-  addOptionWidget( color_display );
-  color_display->setToolTip( "highlight color for diff added paragraphs" );
 
   // misc
   page->layout()->addWidget( box = new QGroupBox( "Misc", page ) );  

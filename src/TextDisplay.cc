@@ -731,14 +731,21 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
     case TextBlock::DIFF_ADDED:
     {
       data->setFlag( TextBlock::DIFF_ADDED, true );
-      setBackground( block, added_color_ );
+      setBackground( block, diff_added_color_ );
       break;
     } 
     
     case TextBlock::DIFF_CONFLICT:
     {
       data->setFlag( TextBlock::DIFF_CONFLICT, true );
-      setBackground( block, conflict_color_ );
+      setBackground( block, diff_conflict_color_ );
+      break;
+    }
+
+    case TextBlock::USER_TAG:
+    {
+      data->setFlag( TextBlock::USER_TAG, true );
+      setBackground( block, user_tag_color_ );
       break;
     }
     
@@ -752,23 +759,26 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
 }
 
 //___________________________________________________________________________
-void TextDisplay::clearBlockTag( QTextBlock block )
+void TextDisplay::clearBlockTag( QTextBlock block, const int& tags )
 {
   Debug::Throw( "TextDisplay::clearBlockTag.\n" );
   TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
-  data->setFlag( TextBlock::DIFF_ADDED, false );
-  data->setFlag( TextBlock::DIFF_CONFLICT, false );
-  clearBackground( block );
-}
 
-//___________________________________________________________________________
-void TextDisplay::clearAllBlockTags( void )
-{
-  
-  Debug::Throw( "CustomTextEdit::clearAllBlockTags.\n" );
-  for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
+  if( tags & TextBlock::DIFF_ADDED ) 
   { 
-    clearBlockTag( block ); 
+    data->setFlag( TextBlock::DIFF_ADDED, false );
+    clearBackground( block );
+  }
+  
+  if( tags & TextBlock::DIFF_CONFLICT )
+  {
+    data->setFlag( TextBlock::DIFF_CONFLICT, false );
+    clearBackground( block );
+  }
+  
+  if( tags & TextBlock::USER_TAG )
+  {
+    data->setFlag( TextBlock::USER_TAG, false );
     clearBackground( block );
   }
   
@@ -800,9 +810,13 @@ void TextDisplay::updateConfiguration( void )
   _setPaper( paper( isActive() ) );
   
   // retrieve diff colors
-  conflict_color_ = QColor( XmlOptions::get().get<string>("DIFF_CONFLICT_COLOR").c_str() );
-  added_color_ = QColor( XmlOptions::get().get<string>("DIFF_ADDED_COLOR").c_str() );
-    
+  diff_conflict_color_ = QColor( XmlOptions::get().get<string>("DIFF_CONFLICT_COLOR").c_str() );
+  diff_added_color_ = QColor( XmlOptions::get().get<string>("DIFF_ADDED_COLOR").c_str() );
+  user_tag_color_ = QColor( XmlOptions::get().get<string>("TAGGED_BLOCK_COLOR").c_str() );
+  
+  // update paragraph tags
+  _updateTaggedBlocks();
+  
 }
 
 //___________________________________________________________________________
@@ -1112,6 +1126,59 @@ void TextDisplay::rehighlight( void )
 }
 
 
+//___________________________________________________________________________
+void TextDisplay::clearBlockTag( void )
+{
+  
+  Debug::Throw( "CustomTextEdit::clearBlockTag.\n" );
+  
+  vector<QTextBlock> blocks;
+  QTextCursor cursor( textCursor() );
+  if( cursor.hasSelection() )
+  {
+   
+    QTextBlock first( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
+    QTextBlock last( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
+    for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
+    { blocks.push_back( block ); }
+    if( last.isValid() ) blocks.push_back( last );
+    
+  } else {
+    
+    // add previous blocks and current
+    for( QTextBlock block( cursor.block() ); block.isValid(); block = block.previous() )
+    {
+      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+      if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
+      else break;
+    }
+ 
+     // add previous blocks and current
+    for( QTextBlock block( cursor.block().next() ); block.isValid(); block = block.next() )
+    {
+      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+      if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
+      else break;
+    }
+    
+  }
+
+  // clear background for selected blocks
+  for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+  { clearBlockTag( *iter, TextBlock::DIFF_ADDED |  TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ); }
+    
+}
+
+//___________________________________________________________________________
+void TextDisplay::clearAllTags( const int& flags )
+{
+  
+  Debug::Throw( "CustomTextEdit::clearAllTags.\n" );
+  for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
+  { clearBlockTag( block, flags ); }
+    
+}
+
 //_______________________________________________________
 void TextDisplay::keyPressEvent( QKeyEvent* event )
 {
@@ -1155,10 +1222,46 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 {
   
   Debug::Throw( "CustomTextEdit::contextMenuEvent.\n" );
+  
+  if( _autoSpellContextEvent( event ) ) return;
+
+  // see if tagged blocks are present
+  bool has_tags( _hasTaggedBlocks() );
+  bool current_block_tagged( has_tags && _isCurrentBlockTagged() );
+  
+  // retrieve default context menu
+  QMenu menu( this );
+  _installContextMenuActions( menu );
+  menu.addSeparator();
+  QAction* action;
+  action = menu.addAction( "Next tagged block", this, SLOT( _nextTaggedBlock() ) );
+  action->setEnabled( has_tags );
+  
+  action = menu.addAction( "Previous tagged block", this, SLOT( _previousTaggedBlock() ) );
+  action->setEnabled( has_tags );
+
+  action = menu.addAction( "Clear current tags", this, SLOT( clearBlockTag() ) );
+  action->setEnabled( current_block_tagged );
+
+  action = menu.addAction( "Clear all tags", this, SLOT( clearAllTags() ) );
+  action->setEnabled( has_tags );
+  
+  // show menu
+  menu.exec( event->globalPos() );
+  
+  
+  
+}
+
+//________________________________________________
+bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
+{
+  Debug::Throw( "CustomTextEdit::_autoSpellContextEvent.\n" );
+  
   #if WITH_ASPELL
   
   // check autospell enability
-  if( !textHighlight().spellParser().isEnabled() ) return CustomTextEdit::contextMenuEvent( event );
+  if( !textHighlight().spellParser().isEnabled() ) return false;
   
   // block and cursor
   QTextCursor cursor( cursorForPosition( event->pos() ) );
@@ -1166,13 +1269,12 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
   
   // block data
   HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-  if( !data ) return CustomTextEdit::contextMenuEvent( event );
-
+  if( !data ) return false;
 
   // try retrieve misspelled word
   SPELLCHECK::Word word( data->misspelledWord( cursor.position() - block.position() ) );
   if( word.empty() || textHighlight().spellParser().interface().isWordIgnored( word ) ) 
-  { return CustomTextEdit::contextMenuEvent( event ); }
+  { return false; }
   
   // change selection to misspelled word
   cursor.setPosition( word.position() + block.position(), QTextCursor::MoveAnchor );
@@ -1190,11 +1292,13 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
   
   // execute
   menu.exec( event->globalPos() );
-
+  return true;
+      
   #else 
-  return CustomTextEdit::contextMenuEvent( event );
-  #endif
   
+  return false;
+  #endif
+
 }
 
 //_____________________________________________________________________
@@ -1223,6 +1327,27 @@ void TextDisplay::_setPaper( const QColor& color )
   QPalette palette( TextDisplay::palette() );
   palette.setColor( QPalette::Base, color );
   setPalette( palette );
+
+}
+
+
+//_____________________________________________________________
+bool TextDisplay::_contentsChanged( void ) const
+{
+
+  Debug::Throw( "TextDisplay::_contentsChanged.\n" );
+  
+  // check file
+  if( file().empty() ) return true;
+
+  // open file
+  QFile in( file().c_str() );
+  if( !in.open( QIODevice::ReadOnly ) ) return true;
+
+  // dump file into character string
+  QString file_text( in.readAll() );
+  QString text( toPlainText() );
+  return (text.size() != file_text.size() || text != file_text );
 
 }
 
@@ -1260,31 +1385,81 @@ bool TextDisplay::_fileModified( void )
 }  
 
 //_____________________________________________________________
-bool TextDisplay::_contentsChanged( void ) const
+void TextDisplay::_setBlockModified( const QTextBlock& block )
 {
-
-  Debug::Throw( "TextDisplay::_contentsChanged.\n" );
+  // check if highlight is enabled.
+  if( !textHighlight().isHighlightEnabled() ) return;
   
-  // check file
-  if( file().empty() ) return true;
-
-  // open file
-  QFile in( file().c_str() );
-  if( !in.open( QIODevice::ReadOnly ) ) return true;
-
-  // dump file into character string
-  QString file_text( in.readAll() );
-  QString text( toPlainText() );
-  return (text.size() != file_text.size() || text != file_text );
+  // retrieve associated block data if any
+  // set block as modified so that its highlight content gets reprocessed.
+  HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+  if( data ) data->setFlag( TextBlock::MODIFIED, true );
 
 }
 
-//_______________________________________________________
-void TextDisplay::_indentCurrentParagraph( void )
+//_____________________________________________________________
+void TextDisplay::_updateTaggedBlocks( void )
 {
-  Debug::Throw( "TextDisplay::_indentCurrentParagraph.\n" );
-  if( !indent_->isEnabled() ) return;
-  emit indent( textCursor().block() );
+  
+  Debug::Throw( "TextDisplay::_updateTaggedBlocks.\n" );
+  
+  // loop over block
+  for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
+  {
+    TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+    if( !( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) ) continue;
+    
+    if( data->hasFlag( TextBlock::DIFF_ADDED ) ) setBackground( block, diff_added_color_ );
+    if( data->hasFlag( TextBlock::DIFF_CONFLICT ) ) setBackground( block, diff_conflict_color_ );
+    if( data->hasFlag( TextBlock::USER_TAG ) ) setBackground( block, user_tag_color_ );
+    
+  }  
+  
+}
+
+//_____________________________________________________________
+bool TextDisplay::_isCurrentBlockTagged( void )
+{
+
+  Debug::Throw( "TextDisplay::_isCurrentBlockTagged.\n" );
+
+  vector<QTextBlock> blocks;
+  QTextCursor cursor( textCursor() );
+  if( cursor.hasSelection() )
+  {
+   
+    QTextBlock first( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
+    QTextBlock last( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
+    for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
+    { blocks.push_back( block ); }
+    if( last.isValid() ) blocks.push_back( last );
+    
+  } else blocks.push_back( cursor.block() );
+  
+  for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+  {
+    TextBlockData *data( dynamic_cast<TextBlockData*>( iter->userData() ) );
+    if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
+  }
+  
+  return false;
+  
+}
+
+//_____________________________________________________________
+bool TextDisplay::_hasTaggedBlocks( void )
+{
+ 
+  Debug::Throw( "TextDisplay::_hasTaggedBlocks.\n" );
+  
+  // loop over block
+  for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
+  {
+    TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+    if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
+  }
+  
+  return false;
 }
 
 //_______________________________________________________
@@ -1299,6 +1474,14 @@ void TextDisplay::_setParenthesis( const TextParenthesis::List& parenthesis )
     parenthesis_set_.insert( iter->second );
   }
   
+}
+
+//_______________________________________________________
+void TextDisplay::_indentCurrentParagraph( void )
+{
+  Debug::Throw( "TextDisplay::_indentCurrentParagraph.\n" );
+  if( !indent_->isEnabled() ) return;
+  emit indent( textCursor().block() );
 }
 
 //_______________________________________________________
@@ -1565,19 +1748,6 @@ void TextDisplay::_setBlockModified( int position, int removed, int added )
   
   _setBlockModified( end );
   
-}
- 
-//_____________________________________________________________
-void TextDisplay::_setBlockModified( const QTextBlock& block )
-{
-  // check if highlight is enabled.
-  if( !textHighlight().isHighlightEnabled() ) return;
-  
-  // retrieve associated block data if any
-  // set block as modified so that its highlight content gets reprocessed.
-  HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-  if( data ) data->setFlag( TextBlock::MODIFIED, true );
-
 }
 
 //__________________________________________________

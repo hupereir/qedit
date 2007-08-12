@@ -47,6 +47,7 @@
 #include "DocumentClassManager.h"
 #include "DocumentClassDialog.h"
 #include "EditFrame.h"
+#include "HighlightBlockFlags.h"
 #include "IconEngine.h"
 #include "Icons.h"
 #include "MainFrame.h"
@@ -794,7 +795,7 @@ void EditFrame::_clearDiff( void )
 
   BASE::KeySet<TextDisplay> displays( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { (*iter)->clearAllBlockTags(); }
+  { (*iter)->clearAllTags( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT ); }
   
   clearDiffAction().setEnabled( false );
   
