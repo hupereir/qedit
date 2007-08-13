@@ -989,6 +989,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
     CustomFileDialog dialog( this );
     dialog.setFileMode( QFileDialog::ExistingFile );
     dialog.setDirectory( QDir( activeDisplay().workingDirectory().c_str() ) );
+    QtUtil::centerOnParent( &dialog );
     if( dialog.exec() == QDialog::Rejected ) return;
     
     QStringList files( dialog.selectedFiles() );

@@ -449,7 +449,7 @@ void TextDisplay::saveAs( void )
   dialog.setFileMode( QFileDialog::AnyFile );
   dialog.setDirectory( QDir( default_file.path().c_str() ) );
   dialog.selectFile( default_file.localName().c_str() );
-  QtUtil::centerOnPointer( &dialog );
+  QtUtil::centerOnParent( &dialog );
   if( dialog.exec() == QDialog::Rejected ) return;
 
   // retrieve filename
