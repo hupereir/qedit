@@ -259,8 +259,8 @@ EditFrame* MainFrame::open( FileRecord record )
   // if no frame found, create a new one
   if( !frame ) frame = &newEditFrame();
 
-  // check if file exist
-  if( record.file().exist() ) frame->setFile( record.file() );
+  // check if file exists
+  if( record.file().exists() ) frame->setFile( record.file() );
   else if( !record.file().empty() )
   {
   

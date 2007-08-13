@@ -142,12 +142,9 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   //!@name syntax highlighting
   //@{
   
-  //! apply locations to text
-  void _applyPatterns( const QString& text, const HighlightPattern::LocationSet& locations );
+  //! apply locations to current block
+  void _applyPatterns( const HighlightPattern::LocationSet& locations );
  
-  //! parse text to store pairs of matching parenthesis
-  void _parseParenthesis( const QString& text );
-  
   //! true if highlight is enabled
   bool highlight_enabled_;
 

@@ -100,9 +100,9 @@ PrintDialog::PrintDialog( QWidget* parent ):
   mainLayout().addWidget( command_ = new CustomLineEdit( this ) );
  
   // connections
-  connect( a2ps_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes( bool ) ) );
-  connect( printer_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes( bool ) ) ); 
-  connect( file_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes( bool ) ) ); 
+  connect( a2ps_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) );
+  connect( printer_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) ); 
+  connect( file_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) ); 
 
   connect( a2ps_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updatePrintCommand() ) );
   connect( printer_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updatePrintCommand() ) ); 
@@ -131,7 +131,7 @@ void PrintDialog::setFile( const File& file )
 }
 
 //__________________________________________________ 
-void PrintDialog::_updateCheckBoxes( bool state )
+void PrintDialog::_updateCheckBoxes( void )
 {
  
   Debug::Throw( "PrintDialog::_UpdateCheckBoxes.\n" );

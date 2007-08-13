@@ -217,8 +217,8 @@ void TextDisplay::openFile( File file, bool check_autosave )
   File tmp( file );
   
   File autosaved( AutoSaveThread::autoSaveName( tmp ) );
-  if( check_autosave && autosaved.exist() &&
-    ( !tmp.exist() ||
+  if( check_autosave && autosaved.exists() &&
+    ( !tmp.exists() ||
     ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
   {
     ostringstream what;
@@ -275,12 +275,12 @@ void TextDisplay::setFile( const File& file )
 { 
   Debug::Throw( "TextDisplay::setFile.\n" );
   file_ = file; 
-  if( file.exist() ) 
+  if( file.exists() ) 
   {
     _setLastSaved( file.lastModified() );
     _setWorkingDirectory( file.path() );
     _setIgnoreWarnings( false );
-    setReadOnly( file.exist() && !file.isWritable() );
+    setReadOnly( file.exists() && !file.isWritable() );
   }
   
   if( isActive() ) emit needUpdate( WINDOW_TITLE | FILE_NAME ); 
@@ -385,7 +385,7 @@ void TextDisplay::save( void )
   {
  
     // make backup
-    if( XmlOptions::get().get<bool>( "BACKUP" ) && file().exist() ) file().backup();
+    if( XmlOptions::get().get<bool>( "BACKUP" ) && file().exists() ) file().backup();
     
     // open output file
     QFile out( file().c_str() );
@@ -459,8 +459,8 @@ void TextDisplay::saveAs( void )
     return;
   }
 
-  // check if file exist
-  if( file.exist() )
+  // check if file exists
+  if( file.exists() )
   {
     if( !file.isWritable() )
     {
@@ -468,7 +468,7 @@ void TextDisplay::saveAs( void )
       what << "File \"" << file << "\" is read-only. <Save> canceled.";
       QtUtil::infoDialog( this, what.str() );
       return;
-    } else if( !QtUtil::questionDialog( this, "Selected file already exist. Overwrite ?" ) )
+    } else if( !QtUtil::questionDialog( this, "Selected file already exists. Overwrite ?" ) )
     { return; }
   }
 
@@ -1391,7 +1391,7 @@ bool TextDisplay::_contentsChanged( void ) const
 bool TextDisplay::_fileRemoved( void ) const
 {
   Debug::Throw( "TextDisplay::_fileRemoved.\n" );
-  return (!file().empty() && last_save_.isValid() && !file().exist() );
+  return (!file().empty() && last_save_.isValid() && !file().exists() );
 }
 
 //____________________________________________
@@ -1401,7 +1401,7 @@ bool TextDisplay::_fileModified( void )
   Debug::Throw( "TextDisplay::_fileModified.\n" );
 
   // check file size
-  if( !( file().size() && file().exist() ) ) return false;
+  if( !( file().size() && file().exists() ) ) return false;
   TimeStamp fileModified( file().lastModified() );
 
   // check if file was modified and contents is changed

@@ -80,8 +80,8 @@ bool Diff::run( void )
     }
     
     // check if file exists
-    if( !iter->file().exist() ) {
-      error_ = string( "file " ) + iter->file() + string( " does not exist." );
+    if( !iter->file().exists() ) {
+      error_ = string( "file " ) + iter->file() + string( " does not exists." );
       return false;
     }
     
@@ -243,7 +243,7 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
   if( !( 
     _display().document()->isModified() ||
     _display().file().empty() || 
-    !_display().file().exist() ) ) 
+    !_display().file().exists() ) ) 
   {
     
     // use provided file. Set as non-temporary

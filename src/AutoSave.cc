@@ -67,7 +67,7 @@ AutoSave::~AutoSave( void )
        
     // remove file
     File autosaved( (*iter)->file() );
-    if( autosaved.exist() && autosaved.isWritable() ) autosaved.remove();
+    if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
     delete *iter;
   
   }
@@ -141,7 +141,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
       
       // remove file
       File autosaved( (*iter)->file() );
-      if( autosaved.exist() && autosaved.isWritable() ) autosaved.remove();
+      if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
       
       // delete thread
       delete *iter;

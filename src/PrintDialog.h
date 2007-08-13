@@ -75,7 +75,7 @@ class PrintDialog: public CustomDialog
   private slots:
   
   // update checkboxes
-  void _updateCheckBoxes( bool state );
+  void _updateCheckBoxes( void );
   
   // update print command
   void _updatePrintCommand( void );

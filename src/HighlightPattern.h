@@ -296,7 +296,7 @@ class HighlightPattern: public Counter
   
   //! process text and returns the matching locations
   /*! locations and active parameters are changed */
-  virtual void processText( LocationSet& locations, const QString& text, bool& active ) const
+  virtual void processText( LocationSet&, const QString&, bool& ) const
   {}
   
   //! used to get patterns by name

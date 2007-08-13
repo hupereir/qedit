@@ -118,7 +118,7 @@ void TextHighlight::highlightBlock( const QString& text )
   #endif
     
   // apply new location set
-  if( !locations.empty() ) _applyPatterns( text, locations );
+  if( !locations.empty() ) _applyPatterns( locations );
     
   // check if parenthesis need highlight
   if( isParenthesisEnabled() && data && data->hasParenthesis() )
@@ -304,7 +304,7 @@ HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, c
 }
 
 //_________________________________________________________
-void TextHighlight::_applyPatterns( const QString& text, const HighlightPattern::LocationSet& locations )
+void TextHighlight::_applyPatterns( const HighlightPattern::LocationSet& locations )
 {
 
   // initialize style
@@ -327,7 +327,3 @@ void TextHighlight::_applyPatterns( const QString& text, const HighlightPattern:
 
   return;
 }
-
-//_________________________________________________________
-void TextHighlight::_parseParenthesis( const QString& text )
-{}

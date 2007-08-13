@@ -116,15 +116,15 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
       
   // size
   grid_layout->addWidget( label = new QLabel( "size: ", box ) );
-  grid_layout->addWidget( label = new QLabel( file.exist() ? file.sizeString().c_str(): "0", box ) );
+  grid_layout->addWidget( label = new QLabel( file.exists() ? file.sizeString().c_str(): "0", box ) );
   
   // last accessed
   grid_layout->addWidget( label = new QLabel( "last accessed: ", box ) );
-  grid_layout->addWidget( label = new QLabel( file.exist() ? TimeStamp( file.lastAccessed() ).string().c_str():"never", box ) );
+  grid_layout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.lastAccessed() ).string().c_str():"never", box ) );
 
   // last modification
   grid_layout->addWidget( label = new QLabel( "last modified: ", box ) );
-  grid_layout->addWidget( label = new QLabel( file.exist() ? TimeStamp( file.lastModified() ).string().c_str():"never", box ) );
+  grid_layout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.lastModified() ).string().c_str():"never", box ) );
   
   // document class
   const string& class_name( parent->className() );
@@ -199,7 +199,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   }
   
   // group and user id
-  if( file.exist() )
+  if( file.exists() )
   {
    
     layout->addWidget( new QLabel( "<b>Ownership: </b>", box ) );

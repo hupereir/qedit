@@ -1,4 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
+EXTRA_DIST = src.pro
 
 if WITH_ASPELL 
 INCLUDES = \
@@ -55,7 +56,9 @@ noinst_HEADERS = \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
+  Config.h \
   ConfigurationDialog.h \
+  DefaultOptions.h \
   Diff.h \
   DocumentClassDialog.h \
   DocumentClass.h \

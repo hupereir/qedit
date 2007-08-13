@@ -481,8 +481,8 @@ void EditFrame::_convertToHtml( void )
     return;
   }
 
-  // check if file exist
-  if( fullname.exist() )
+  // check if file exists
+  if( fullname.exists() )
   {
     if( !fullname.isWritable() )
     {
@@ -490,7 +490,7 @@ void EditFrame::_convertToHtml( void )
       what << "file \"" << fullname << "\" is read-only. <Convert to Html> canceled.";
       QtUtil::infoDialog( this, what.str() );
       return;
-    } else if( !QtUtil::questionDialog( this, "selected file already exist. Overwrite ?" ) )
+    } else if( !QtUtil::questionDialog( this, "selected file already exists. Overwrite ?" ) )
     return;
   }
 
@@ -571,7 +571,7 @@ void EditFrame::_print( void )
   if( activeDisplay().document()->isModified() && activeDisplay().askForSave() == AskForSaveDialog::CANCEL ) return;
 
   // check if file is valid and exists
-  if( file.empty() || !file.exist() )
+  if( file.empty() || !file.exists() )
   {
     QtUtil::infoDialog( this, "File is not valid for printing. <print> canceled." );
     return;
@@ -880,7 +880,7 @@ void EditFrame::_installActions( void )
 
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN, path_list ), "&Open", this ) );
   open_action_->setShortcut( SHIFT+CTRL+Key_O );
-  open_action_->setToolTip( "Open an existing file" );
+  open_action_->setToolTip( "Open an existsing file" );
   connect( open_action_, SIGNAL( triggered() ), SLOT( open() ) );
  
   addAction( close_view_action_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE, path_list ), "&Close view", this ) );
@@ -1037,7 +1037,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
   }
 
   // see if file exists
-  if( !record.file().exist() )
+  if( !record.file().exists() )
   {
     
     // create NewFileDialog
@@ -1406,7 +1406,7 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
 {
   Debug::Throw( "EditFrame::newTextDisplay.\n" );
 
-  // retrieve existing displays
+  // retrieve existsing displays
   BASE::KeySet<TextDisplay> displays( this );
 
   // create textDisplay

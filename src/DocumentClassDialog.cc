@@ -234,8 +234,8 @@ void DocumentClassDialog::_save( void )
     return;
   }
 
-  // check if file exist
-  if( file.exist() )
+  // check if file exists
+  if( file.exists() )
   {
     if( !file.isWritable() )
     {
@@ -243,7 +243,7 @@ void DocumentClassDialog::_save( void )
       what << "file \"" << file << "\" is read-only. <Save As> canceled.";
       QtUtil::infoDialog( this, what.str() );
       return;
-    } else if( !QtUtil::questionDialog( this, "selected file already exist. Overwrite ?" ) )
+    } else if( !QtUtil::questionDialog( this, "selected file already exists. Overwrite ?" ) )
     return;
   }
   

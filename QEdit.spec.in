@@ -42,8 +42,9 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/share/QEdit/patterns/perl_patterns.xml
 %{prefix}/share/QEdit/patterns/shell_patterns.xml
 %{prefix}/share/QEdit/patterns/xml_patterns.xml
-%{prefix}/share/QEdit/pixmaps/editcopy.png
+
 %{prefix}/share/QEdit/pixmaps/editcut.png
+%{prefix}/share/QEdit/pixmaps/editcopy.png
 %{prefix}/share/QEdit/pixmaps/editpaste.png
 %{prefix}/share/QEdit/pixmaps/filenew.png
 %{prefix}/share/QEdit/pixmaps/fileopen.png
@@ -54,7 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/share/QEdit/pixmaps/redo.png
 %{prefix}/share/QEdit/pixmaps/undo.png
 %{prefix}/share/QEdit/pixmaps/view_bottom.png
-%{prefix}/share/QEdit/pixmaps/view_left_right.png
+%{prefix}/share/QEdit/pixmaps/view_left_right.png 
 %{prefix}/share/QEdit/pixmaps/view_remove.png
 %{prefix}/share/QEdit/pixmaps/view_right.png
 %{prefix}/share/QEdit/pixmaps/view_top_bottom.png
