@@ -283,10 +283,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   QAction& pasteAction( void )
   { return *paste_action_; }
   
-  //! convert to Html
-  QAction& htmlAction( void )
-  { return *html_action_; }
-  
   //! print
   QAction& printAction( void )
   { return *print_action_; }
@@ -413,9 +409,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! Revert to save
   void _revertToSave( void );
   
-  //! convert current file to HTML
-  void _convertToHtml( void );
-  
   //! Print current document
   void _print( void );
   
@@ -507,6 +500,9 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   
   //! create new TextDisplay
   TextDisplay& _newTextDisplay( QWidget* parent );
+
+  /*! it is used to print formatted text to both HTML and PDF */
+  QString _htmlString( const int& );
   
   //! local QSplitter object, derived from Counter
   /*! helps keeping track of how many splitters are created/deleted */
@@ -586,9 +582,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! revert to saved
   QAction* revert_to_save_action_;
  
-  //! convert to Html
-  QAction* html_action_;
-  
   //! print
   QAction* print_action_;
    

@@ -1,3 +1,4 @@
+
 // $Id$
 
 /******************************************************************************
@@ -32,13 +33,11 @@
 #include <QFrame>
 #include <QLayout>
 #include <QButtonGroup> 
+#include <QGroupBox> 
 
-#include "CustomPixmap.h"
-#include "CustomGridLayout.h"
 #include "Debug.h"
-#include "Icons.h"
 #include "PrintDialog.h"
-#include "XmlOptions.h"
+#include "CustomGridLayout.h"
 
 using namespace std;
 
@@ -50,74 +49,71 @@ PrintDialog::PrintDialog( QWidget* parent ):
   Debug::Throw( "PrintDialog::PrintDialog.\n" );
   setWindowTitle( "QEdit - print" );
   
-  QHBoxLayout *h_layout( new QHBoxLayout() );
-  h_layout->setSpacing(5); 
-  h_layout->setMargin( 0 ); 
-  mainLayout().addLayout( h_layout );
-  
-  // add icon
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-  QLabel *label( new QLabel( this ) );
-  label->setPixmap( CustomPixmap().find( ICONS::PRINT, path_list ) );
-  h_layout->addWidget( label );
-  
-  CustomGridLayout* grid_layout = new CustomGridLayout();
-  grid_layout->setSpacing( 5 ); 
-  grid_layout->setMargin( 0 ); 
-  grid_layout->setMaxCount( 2 );
-  h_layout->addLayout( grid_layout );
-  
-  // a2ps
-  grid_layout->addWidget( a2ps_checkbox_ = new QCheckBox( "Use a2ps command", this ) );
-  grid_layout->addWidget(  a2ps_command_ = new CustomLineEdit( this ) );
-  a2ps_checkbox_->setToolTip( "use a2ps to format raw input file" );
-
-  // printer command
-  QButtonGroup *group( new QButtonGroup( this ) );
+  QButtonGroup* group = new QButtonGroup( this );
   group->setExclusive( true );
-  
-  grid_layout->addWidget( printer_checkbox_ = new QRadioButton( "Use printer command", this ) );
-  grid_layout->addWidget( print_command_ = new CustomLineEdit( this ) );
-  group->addButton( printer_checkbox_ );
-  printer_checkbox_->setToolTip( "print to a printer using specified command" );
-  
-  // file
-  grid_layout->addWidget( file_checkbox_ = new QRadioButton( "Print to file", this ) );
-  grid_layout->addWidget( ps_file_ = new BrowsedLineEdit( this ) );
-  group->addButton( file_checkbox_ );
-  file_checkbox_->setToolTip( "print to a postscript file (using a2ps)" );
-  
-  // stretch
-  grid_layout->setColumnStretch( 1, 1 );
-  
-  // separator
-  QFrame* frame( new QFrame( this ) );
-  frame->setFrameStyle( QFrame::HLine | QFrame::Sunken );
-  mainLayout().addWidget( frame );
-  
-  // command
-  mainLayout().addWidget( new QLabel( "command: ", this ) );
-  mainLayout().addWidget( command_ = new CustomLineEdit( this ) );
- 
-  // connections
-  connect( a2ps_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) );
-  connect( printer_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) ); 
-  connect( file_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) ); 
 
-  connect( a2ps_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updatePrintCommand() ) );
-  connect( printer_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updatePrintCommand() ) ); 
-  connect( file_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updatePrintCommand() ) ); 
+  // destination  
+  QGroupBox *box;
+  box = new QGroupBox( "destination", this );
+  box->setLayout( new QVBoxLayout() );
+  box->layout()->setMargin(10);
+  box->layout()->setMargin(5);
+  mainLayout().addWidget( box );  
   
-  connect( a2ps_command_, SIGNAL( textChanged( const QString& ) ), SLOT( _updatePrintCommand() ) );
-  connect( print_command_, SIGNAL( textChanged( const QString& ) ), SLOT( _updatePrintCommand() ) );
-  connect( &ps_file_->editor(), SIGNAL( textChanged( const QString& ) ), SLOT( _updatePrintCommand() ) );
+  QHBoxLayout *h_layout;
+  h_layout = new QHBoxLayout();
+  h_layout->setSpacing(5);
+  h_layout->setMargin(0); 
+  box->layout()->addItem( h_layout );
+
+  h_layout->addWidget( pdf_checkbox_ = new QRadioButton( "Print to PDF file", box ) );
+  group->addButton( pdf_checkbox_ );
+  pdf_checkbox_->setChecked( true );
+
+  h_layout->addWidget( html_checkbox_ = new QRadioButton( "Print to HTML file", box ) );
+  group->addButton( html_checkbox_ );
+  html_checkbox_->setChecked( false );
   
-  // initial state
-  a2ps_checkbox_->setChecked( XmlOptions::get().get<bool>("USE_A2PS") );
-  printer_checkbox_->setChecked( true );
+  box->layout()->addWidget( new QLabel( "Destination file: ", box ) );
+  box->layout()->addWidget( destination_ = new BrowsedLineEdit( box ) );
+  destination_->setMinimumSize( QSize( 350, 0 ) );
   
-  a2ps_command_->setText( XmlOptions::get().raw("A2PS_COMMAND").c_str() );  
-  print_command_->setText( XmlOptions::get().raw("PRINT_COMMAND").c_str() );
+  // options
+  box = new QGroupBox( "options", this );
+  box->setLayout( new QVBoxLayout() );
+  box->layout()->setMargin(10);
+  box->layout()->setMargin(5);
+  mainLayout().addWidget( box );  
+
+  h_layout = new QHBoxLayout();
+  h_layout->setSpacing(5);
+  h_layout->setMargin(0); 
+  box->layout()->addItem( h_layout );
+  
+  h_layout->addWidget( wrap_checkbox_ = new QCheckBox( "Wrap lines to maximum size:", box ) );
+  wrap_checkbox_->setChecked( true );
+
+  h_layout->addWidget( maximum_line_size_ = new QSpinBox( box ) );
+  maximum_line_size_->setMaximum( 1024) ;
+  
+  box->layout()->addWidget( command_checkbox_ = new QCheckBox( "Open/Print destination file with command: ", box ) );
+  command_checkbox_->setChecked( true );
+
+  box->layout()->addWidget( command_ = new CustomComboBox( box ) );
+  command_->setEditable( true );
+  command_->setEditable( true );
+  command_->setCaseSensitive( Qt::CaseSensitive );
+  command_->setAutoCompletion( true );
+  command_->setMinimumSize( QSize( 350, 0 ) );
+
+  // connections
+  connect( pdf_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateFile() ) );
+  connect( html_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateFile() ) );
+  connect( wrap_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) );
+  connect( command_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) );
+  
+  _updateFile();
+  _updateCheckBoxes();
   
 }
 
@@ -125,54 +121,31 @@ PrintDialog::PrintDialog( QWidget* parent ):
 void PrintDialog::setFile( const File& file )
 {
   Debug::Throw( "PrintDialog::setFile.\n" );
-  file_ = file;
-  File ps_file = file.truncatedName() + ".ps";
-  ps_file_->editor().setText( ps_file.c_str() );
+  destination_->editor().setText( file.c_str() );
+  _updateFile();
 }
 
 //__________________________________________________ 
 void PrintDialog::_updateCheckBoxes( void )
 {
- 
-  Debug::Throw( "PrintDialog::_UpdateCheckBoxes.\n" );
-  if( a2ps_checkbox_->isChecked() )
-  {
-    
-    file_checkbox_->setEnabled( true );
-    ps_file_->setEnabled( true );
-    
-    printer_checkbox_->setEnabled( true );
-    print_command_->setEnabled( true );
-    
-  } else {
-    
-    file_checkbox_->setEnabled( false );
-    ps_file_->setEnabled( false );
-    
-    printer_checkbox_->setEnabled( true );
-    printer_checkbox_->setChecked( true );
-    print_command_->setEnabled( true );
-    
-  }
   
-  a2ps_command_->setEnabled( a2ps_checkbox_->isChecked() );
-  print_command_->setEnabled( printer_checkbox_->isChecked() );
-  ps_file_->setEnabled( file_checkbox_->isChecked() );
+  Debug::Throw( "PrintDialog::_updateCheckBoxes.\n" );
+  maximum_line_size_->setEnabled( wrap_checkbox_->isChecked() );
+  command_->setEnabled( command_checkbox_->isChecked() );
   
 }
 
 //__________________________________________________ 
-void PrintDialog::_updatePrintCommand( void )
+void PrintDialog::_updateFile( void )
 {
  
-  Debug::Throw( "PrintDialog::_updatePrintCommand.\n" );
-  ostringstream what;
-  if( a2ps_checkbox_->isChecked() )
-  {
-    if( file_checkbox_->isChecked() ) what << qPrintable( a2ps_command_->text() ) << " -o " << qPrintable( ps_file_->editor().text() ) << " " << file_;
-    else what << qPrintable( a2ps_command_->text() ) << " -o- " << " " << file_ << " | " << qPrintable( print_command_->text() );
-  } else what << qPrintable( print_command_->text() ) << " " << file_;
+  Debug::Throw( "PrintDialog::_updateFile.\n" );
   
-  command_->setText( what.str().c_str() );
+  File file( qPrintable( destination_->editor().text() ) );
+  file = file.empty() ? File("document"):file.truncatedName();
+  if( pdf_checkbox_->isChecked() ) file += ".pdf";
+  else if( html_checkbox_->isChecked() ) file += ".html";
+  
+  destination_->editor().setText( file.c_str() );
   
 }

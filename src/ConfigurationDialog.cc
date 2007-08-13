@@ -172,10 +172,10 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( checkbox );
   checkbox->setToolTip( "Shade the background of inactive views" );
   
-  grid_layout->addWidget( new QLabel( "active view color", box ) ); 
-  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "ACTIVE_COLOR" ) );
+  grid_layout->addWidget( new QLabel( "inactive view color", box ) ); 
+  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "INACTIVE_COLOR" ) );
   addOptionWidget( color_display );
-  checkbox->setToolTip( "Active views background color" );
+  checkbox->setToolTip( "Background color for inactive views" );
   
   // toolbars
   page = &addPage( "Toolbars" );
@@ -213,47 +213,17 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   // printing
   page = &addPage( "Printing" );
   page->layout()->addWidget( box = new QGroupBox( "Printing", page ) );  
-   
-  grid_layout = new CustomGridLayout();
-  grid_layout->setSpacing(5);
-  grid_layout->setMargin(5);
-  grid_layout->setMaxCount(2);
-  box->setLayout( grid_layout );
 
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "use a2ps", box, "USE_A2PS" ), 0, 0, 1, 2 );
-  checkbox->setToolTip( "Use a2ps to format raw text file before sending to printer." );
-  addOptionWidget( checkbox );
+  box->setLayout( new QVBoxLayout() );
+  box->layout()->setMargin(5);
+  box->layout()->setSpacing(5);
 
-  grid_layout->addWidget( new QLabel( "a2ps command", box ) );
-  OptionBrowsedLineEdit* edit;
-  grid_layout->addWidget( edit = new OptionBrowsedLineEdit( box, "A2PS_COMMAND" ) );
-  edit->setToolTip( "a2ps command (and options)" );
-  addOptionWidget( edit );
-
-  grid_layout->addWidget( new QLabel( "print command", box ) );
-  grid_layout->addWidget( edit = new OptionBrowsedLineEdit( box, "PRINT_COMMAND" ) );
-  edit->setToolTip( "print command (and options)" );
-  addOptionWidget( edit );
-
-  grid_layout->setColumnStretch( 1, 1 );
-  
-  // html
-  page->layout()->addWidget( box = new QGroupBox( "Html", page ) );  
-   
-  grid_layout = new CustomGridLayout();
-  grid_layout->setSpacing(5);
-  grid_layout->setMargin(5);
-  grid_layout->setMaxCount(2);
-  box->setLayout( grid_layout );
-  
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "use HTML editor", box, "USE_HTML_EDITOR" ), 0, 0, 1, 2 );
-  checkbox->setToolTip( "Use editor to open files after conversion to HTML." );
-  addOptionWidget( checkbox );
-
-  grid_layout->addWidget( new QLabel( "HTML command", box ) );
-  grid_layout->addWidget( edit = new OptionBrowsedLineEdit( box, "HTML_EDITOR" ) );
-  edit->setToolTip( "HTML editor" );
-  addOptionWidget( edit );
+  box->layout()->addWidget( new QLabel("Printing/editing commands: ", box ) );
+  listbox = new OptionListBox( box, "PRINT_COMMAND" );
+  listbox->setBrowsable( true );
+  addOptionWidget( listbox );
+  listbox->setToolTip( "Available command for printing/editing converted files" );
+  box->layout()->addWidget( listbox );
 
   // misc
   page = &addPage( "Misc" );
@@ -275,7 +245,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   spinbox->setMaximum( 300 );
   spinbox->setToolTip( "interval (seconds) between two autosave. 0 means no autosave." );
   addOptionWidget( spinbox );
-
+  
+  OptionBrowsedLineEdit *edit;
   grid_layout->addWidget( new QLabel( "autosave path", box ) );
   grid_layout->addWidget( edit = new OptionBrowsedLineEdit( box, "AUTOSAVE_PATH" ) );
   edit->setToolTip( "directory when autosaved files are stored" );

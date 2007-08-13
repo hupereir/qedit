@@ -32,11 +32,13 @@
   \date $Date$
 */
 
+#include <QRadioButton>
 #include <QCheckBox>
-#include <QRadioButton> 
+#include <QSpinBox>
 
 #include "BrowsedLineEdit.h"
 #include "CustomDialog.h"
+#include "CustomComboBox.h"
 #include "CustomLineEdit.h"
 #include "File.h"
 #include "QtUtil.h"
@@ -56,55 +58,104 @@ class PrintDialog: public CustomDialog
   //! file
   void setFile( const File& file ); 
   
+  //! max line size
+  void setMaximumLineSize( const int& value )
+  { 
+    if( value <= 0 ) wrap_checkbox_->setChecked( false );
+    else {
+      wrap_checkbox_->setChecked( true );
+      maximum_line_size_->setValue( value ); 
+    }
+    
+  }
+  
+  //! maximum line size
+  int maximumLineSize( void ) const
+  { return wrap_checkbox_->isChecked() ? 0:maximum_line_size_->value(); }
+  
+  //! print mode
+  enum Mode
+  {
+    //! to PDF
+    PDF,
+    
+    //! to HTML
+    HTML
+    
+  };
+  
+  //! mode
+  void setMode( const Mode& mode )
+  { 
+    if( mode == PDF ) pdf_checkbox_->setChecked( true ); 
+    else html_checkbox_->setChecked( true );
+  }
+  
+  //! mode
+  Mode mode( void ) const
+  { return pdf_checkbox_->isChecked() ? PDF:HTML; }
+  
+  //! file
+  QString destinationFile( void ) const
+  { return destination_->editor().text(); }
+  
+  //! use command
+  void setUseCommand( const bool& value )
+  { command_checkbox_->setChecked( value ); }
+  
+  //! use command 
+  bool useCommand( void ) const
+  { return command_checkbox_->isChecked(); }
+  
   //! command
-  std::string command( void ) const
-  { return qPrintable( command_->text() ); }
+  QString command( void ) const
+  { return command_->currentText(); }
   
-  //! use a2ps
-  bool useA2Ps( void ) const
-  { return a2ps_checkbox_->isChecked(); }
+  //! add commands
+  void addCommand( const std::string& command )
+  { command_->addItem( command.c_str() ); }
   
-  //! a2ps command
-  std::string a2psCommand( void ) const
-  { return qPrintable( a2ps_command_->text() ); }
+  //! commands
+  std::list< std::string > commands( void ) const
+  { 
+    Debug::Throw() << "PrintDialog::commands - maxCount: " << command_->maxCount() << std::endl;
+    std::list< std::string > out;
+    for( int row = 0; row < command_->maxCount(); row++ )
+    { out.push_back( qPrintable( command_->itemText( row ) ) ); }
+    
+    return out;
+  }
 
-  //! print command
-  std::string printCommand( void ) const
-  { return qPrintable( print_command_->text() ); }
-  
   private slots:
   
   // update checkboxes
   void _updateCheckBoxes( void );
   
   // update print command
-  void _updatePrintCommand( void );
+  void _updateFile( void );
    
   private:
    
-  //! file to print
-  File file_;
+  //! a2ps checkbox
+  QRadioButton* html_checkbox_;
   
   //! a2ps checkbox
-  QCheckBox* a2ps_checkbox_;
-
-  //! file checkbox
-  QRadioButton* file_checkbox_;
+  QRadioButton* pdf_checkbox_;
     
-  //! printer checkbox
-  QRadioButton* printer_checkbox_;
-  
-  //! a2ps command
-  CustomLineEdit* a2ps_command_;
-  
   //! postscript file
-  BrowsedLineEdit* ps_file_;
+  BrowsedLineEdit* destination_;
+  
+  //! wrap lines
+  QCheckBox* wrap_checkbox_;
+  
+  //! max line size
+  QSpinBox* maximum_line_size_;
+  
+  //! command check box
+  QCheckBox* command_checkbox_;
   
   //! print command
-  CustomLineEdit* print_command_;
+  CustomComboBox* command_;
   
-  //! full command
-  CustomLineEdit* command_;
-      
 };
 #endif

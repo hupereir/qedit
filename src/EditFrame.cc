@@ -33,6 +33,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QObjectList>
+#include <QPrinter>
 
 #include "AutoSave.h"
 #include "ClockLabel.h"
@@ -62,7 +63,6 @@
 #include "TextHighlight.h"
 #include "TextIndent.h"
 #include "Util.h"
-#include "ViewHtmlDialog.h"
 #include "WindowTitle.h"
 
 using namespace std;
@@ -454,112 +454,6 @@ void EditFrame::_revertToSave( void )
 }
 
 //___________________________________________________________
-void EditFrame::_convertToHtml( void )
-{
-  Debug::Throw( "EditFrame::_convertToHtml.\n" );
-
-  // create default file
-  File default_file = activeDisplay().file().empty() ?
-    File( "document.html" ).addPath( activeDisplay().workingDirectory() ):
-    File( activeDisplay().file().truncatedName() + ".html" );
-
-  ViewHtmlDialog dialog( this );
-  dialog.setFile( default_file );
-  dialog.setCommand( XmlOptions::get().raw("HTML_EDITOR") );
-  dialog.setUseCommand( XmlOptions::get().get<bool>("USE_HTML_EDITOR" ) );
-  if( dialog.exec() == QDialog::Rejected ) return;
-
-  // retrieve output file
-  File fullname( dialog.file().expand() );
-
-  // check if file is directory
-  if( fullname.isDirectory() )
-  {
-    ostringstream what;
-    what << "file \"" << fullname << "\" is a directory. <Convert to Html> canceled.";
-    QtUtil::infoDialog( this, what.str() );
-    return;
-  }
-
-  // check if file exists
-  if( fullname.exists() )
-  {
-    if( !fullname.isWritable() )
-    {
-      ostringstream what;
-      what << "file \"" << fullname << "\" is read-only. <Convert to Html> canceled.";
-      QtUtil::infoDialog( this, what.str() );
-      return;
-    } else if( !QtUtil::questionDialog( this, "selected file already exists. Overwrite ?" ) )
-    return;
-  }
-
-  // open stream
-  QFile out( fullname.c_str() );
-  if( !out.open( QIODevice::WriteOnly ) )
-  {
-    ostringstream what;
-    what << "cannot write to file \"" << fullname << "\" <Convert to Html> canceled.";
-    QtUtil::infoDialog( this, what.str() );
-    return;
-  }
-
-  QDomDocument document( "html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\"" );
-
-  // html
-  QDomElement html = document.appendChild( document.createElement( "html" ) ).toElement();
-  html.setAttribute( "xmlns", "http://www.w3.org/1999/xhtml" );
-
-  // head
-  QDomElement head = html.appendChild( document.createElement( "head" ) ).toElement();
-  QDomElement meta;
-
-  // meta information
-  meta = head.appendChild( document.createElement( "meta" ) ).toElement();
-  meta.setAttribute( "content", "text/html; charset=UTF-8" );
-  meta.setAttribute( "http-equiv", "Content-Type" );
-
-  meta = head.appendChild( document.createElement( "meta" ) ).toElement();
-  meta.setAttribute( "content", "QEdit" );
-  meta.setAttribute( "name", "Generator" );
-
-  // title
-  QDomElement title = head.appendChild( document.createElement( "title" ) ).toElement();
-  title.appendChild( document.createTextNode( activeDisplay().file().c_str() ) );
-
-  // body
-  html.
-    appendChild( document.createElement( "body" ) ).
-    appendChild( activeDisplay().htmlNode( document ) );
-
-  /*
-    the following replacements are needed
-    to have correct implementation of leading space characters, tabs
-    and end of line
-  */
-  QString html_string( document.toString(0) );
-  html_string = html_string.replace( "</span>\n", "</span>" );
-  html_string = html_string.replace( "<br/>", "" );
-  out.write( html_string.toAscii() );
-  out.close();
-
-  // see if file is to be opened
-  bool use_command( dialog.useCommand() );
-  XmlOptions::get().set<bool>("USE_HTML_EDITOR", use_command );
-
-  // edit file if requested
-  if( !use_command ) return;
-  string command( dialog.command() );
-  string path( fullname.path() );
-  
-  command += string( " " ) + fullname + "&";
-  Util::runAt( path, command );
-  
-  return;
-
-}
-
-//___________________________________________________________
 void EditFrame::_print( void )
 {
   Debug::Throw( "EditFrame::_print.\n" );
@@ -580,19 +474,108 @@ void EditFrame::_print( void )
   // create dialog
   PrintDialog dialog( this );
   dialog.setFile( file );
+  dialog.setMode( XmlOptions::get().get<string>("PRINT_MODE") == "PDF" ? PrintDialog::PDF : PrintDialog::HTML );
+  dialog.setMaximumLineSize( XmlOptions::get().get<int>( "PRINT_LINE_SIZE" ) ); 
+  dialog.setUseCommand( XmlOptions::get().get<bool>( "USE_PRINT_COMMAND" ) );
+  
+  // add command
+  list<string> commands( XmlOptions::get().specialOptions<string>( "PRINT_COMMAND" ) );
+  for( list<string>::iterator iter = commands.begin(); iter != commands.end(); iter++ )
+  { dialog.addCommand( *iter ); }
 
   // exec
   if( dialog.exec() == QDialog::Rejected ) return;
 
-  ostringstream path;
-  path << "\"" << file.path() << "\"";
-  Util::runAt( path.str(), Str(dialog.command()).append( " &") );
+  // store options
+  XmlOptions::get().set<string>( "PRINT_MODE", dialog.mode() == PrintDialog::PDF ? "PDF":"HTML" );
+  XmlOptions::get().set<int>("PRINT_LINE_SIZE", dialog.maximumLineSize() );
+  XmlOptions::get().set<bool>( "USE_PRINT_COMMAND", dialog.useCommand() );
+  list<string> new_commands( dialog.commands() );
+  for( list<string>::iterator iter = new_commands.begin(); iter != new_commands.end(); iter++ )
+  { 
+    if( std::find( commands.begin(), commands.end(), *iter ) == commands.end() ) 
+    {
+      Option option( "PRINT_COMMAND", *iter );
+      XmlOptions::get().add( option );    
+    }
+  }
+  
+  Debug::Throw( "EditFrame::_print - options saved.\n" );
+  
+  // try open output file
+  File fullname = File( qPrintable( dialog.destinationFile() ) ).expand();
+ 
+  // check if file is directory
+  if( fullname.isDirectory() )
+  {
+    ostringstream what;
+    what << "file \"" << fullname << "\" is a directory. <Print> canceled.";
+    QtUtil::infoDialog( this, what.str() );
+    return;
+  }
 
-  // update options
-  XmlOptions::get().set<bool>( "USE_A2PS", dialog.useA2Ps() );
-  XmlOptions::get().setRaw( "A2PS_COMMAND", dialog.a2psCommand() );
-  XmlOptions::get().setRaw( "PRINT_COMMAND", dialog.printCommand() );
 
+  // check if file exists
+  if( fullname.exists() )
+  {
+    if( !fullname.isWritable() )
+    {
+      ostringstream what;
+      what << "file \"" << fullname << "\" is read-only. <Print> canceled.";
+      QtUtil::infoDialog( this, what.str() );
+      return;
+    } else if( !QtUtil::questionDialog( this, "selected file already exists. Overwrite ?" ) )
+    return;
+  }
+  
+  // retrieve HTML string from current display
+  QString html_string( _htmlString( dialog.maximumLineSize() ) );
+  Debug::Throw( "EditFrame::_print - retrieved html string.\n" );
+  
+  // check print mode
+  PrintDialog::Mode mode( dialog.mode() );
+  if( mode == PrintDialog::HTML )
+  {
+    // open stream
+    QFile out( fullname.c_str() );
+    if( !out.open( QIODevice::WriteOnly ) )
+    {
+      ostringstream what;
+      what << "cannot write to file \"" << fullname << "\" <Print> canceled.";
+      QtUtil::infoDialog( this, what.str() );
+      return;
+    }
+    
+    out.write( html_string.toAscii() );
+    out.close();    
+    Debug::Throw( "EditFrame::_print - html file saved.\n" );
+    
+  } else if( mode == PrintDialog::PDF ) {
+    
+    QTextEdit local(0);
+    local.setLineWrapMode( QTextEdit::WidgetWidth );
+    local.setHtml( html_string );
+    
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(fullname.c_str());
+    
+    local.document()->print(&printer);
+    Debug::Throw( "EditFrame::_print - pdf file saved.\n" );
+    
+  } else return;
+  
+  // try open
+  if( dialog.useCommand() )
+  {
+    string command( qPrintable( dialog.command() ) );
+    string path( fullname.path() );
+    
+    command += string( " " ) + fullname + "&";
+    Util::runAt( path, command );
+  }   
+  
+  Debug::Throw( "EditFrame::_print - done.\n" );
   return;
 
 }
@@ -908,10 +891,6 @@ void EditFrame::_installActions( void )
   revert_to_save_action_->setToolTip( "Reload saved version of current file" );
   connect( revert_to_save_action_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
  
-  addAction( html_action_ = new QAction( IconEngine::get( ICONS::HTML, path_list ), "&Convert to html", this ) );
-  html_action_->setToolTip( "convert file to Html" );
-  connect( html_action_, SIGNAL( triggered() ), SLOT( _convertToHtml() ) );
-
   addAction( print_action_ = new QAction( IconEngine::get( ICONS::PRINT, path_list ), "&Print", this ) );
   print_action_->setToolTip( "Print current file" );
   connect( print_action_, SIGNAL( triggered() ), SLOT( _print() ) );
@@ -1433,4 +1412,47 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
   
   return *display;
   
+}
+
+//_____________________________________________________________________
+QString EditFrame::_htmlString( const int& max_line_size )
+{
+
+  QDomDocument document( "html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\"" );
+
+  // html
+  QDomElement html = document.appendChild( document.createElement( "html" ) ).toElement();
+  html.setAttribute( "xmlns", "http://www.w3.org/1999/xhtml" );
+
+  // head
+  QDomElement head = html.appendChild( document.createElement( "head" ) ).toElement();
+  QDomElement meta;
+
+  // meta information
+  meta = head.appendChild( document.createElement( "meta" ) ).toElement();
+  meta.setAttribute( "content", "text/html; charset=UTF-8" );
+  meta.setAttribute( "http-equiv", "Content-Type" );
+
+  meta = head.appendChild( document.createElement( "meta" ) ).toElement();
+  meta.setAttribute( "content", "QEdit" );
+  meta.setAttribute( "name", "Generator" );
+
+  // title
+  QDomElement title = head.appendChild( document.createElement( "title" ) ).toElement();
+  title.appendChild( document.createTextNode( activeDisplay().file().c_str() ) );
+
+  // body
+  html.
+    appendChild( document.createElement( "body" ) ).
+    appendChild( activeDisplay().htmlNode( document, max_line_size ) );
+
+  /*
+    the following replacements are needed
+    to have correct implementation of leading space characters, tabs
+    and end of line
+  */
+  QString html_string( document.toString(0) );
+  html_string = html_string.replace( "</span>\n", "</span>" );
+  html_string = html_string.replace( "<br/>", "" );
+  return html_string;
 }

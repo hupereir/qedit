@@ -8,6 +8,14 @@ dnl *********************************************
 dnl external programs
 dnl *********************************************
 
+dnl *****************
+dnl external commands
+AC_PATH_PROG(LPR, lpr, lpr)
+AC_PATH_PROG(A2PS, a2ps, a2ps)
+AC_PATH_PROG(KONQUEROR, konqueror,  konqueror)  
+AC_PATH_PROG(ACROREAD, acroread,  acroread)  
+AC_PATH_PROG(DIFF, diff,  diff)  
+
 dnl *********************************************
 dnl aspell
 dnl *********************************************

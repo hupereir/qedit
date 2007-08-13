@@ -41,6 +41,16 @@ void installDefaultOptions( void )
   XmlOptions::get().keep( "PIXMAP_PATH" );
   XmlOptions::get().add( Option( "PIXMAP_PATH", "@prefix@/share/QEdit/pixmaps"));
 
+  // print commands
+  XmlOptions::get().keep( "PRINT_COMMAND" );
+  XmlOptions::get().add( Option( "PRINT_COMMAND", "@KONQUEROR@" , "html file editor"  ));
+  XmlOptions::get().add( Option( "PRINT_COMMAND", "@ACROREAD@" , "pdf files editor"  ));
+  XmlOptions::get().add( Option( "PRINT_COMMAND", "@LPR@" , "print command"));  
+  XmlOptions::get().add( Option( "USE_PRINT_COMMAND", "0", "use print/edit command" ) );
+  XmlOptions::get().add( Option( "PRINT_MODE",    "PDF" , "print mode. Can be either PDF/HTML"));  
+  XmlOptions::get().add( Option( "PRINT_LINE_SIZE", "0" , "Maximum line width. 0 means any."));  
+  
+  
   // input document_class pattern filenames options are special.
   // keep the full list
   XmlOptions::get().keep( "PATTERN_FILENAME" );
@@ -59,9 +69,6 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "DIFF_ADDED_COLOR", "#d0eaff" ) );
   XmlOptions::get().add( Option( "DIFF_CONFLICT_COLOR", "#e0ffd9" ) );
   
-  // synchronization
-  XmlOptions::get().add( Option( "SYNCHRONIZATION_INTERVAL", "1", "time interval (second) between two synchronization checks" ) );
-  
   XmlOptions::get().add( Option( "PARENTHESIS_COLOR", "red", "color when highlighting matching parenthesis" ) );
   XmlOptions::get().add( Option( "TAGGED_BLOCK_COLOR", "#fffdd4", "color for tagged paragraphs" ) );
   XmlOptions::get().add( Option( "BACKUP", "0", "make backup when saving file" ) );
@@ -75,7 +82,7 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "TEXT_INDENT", "1" ));
   XmlOptions::get().add( Option( "TEXT_HIGHLIGHT", "1" ));
   XmlOptions::get().add( Option( "TEXT_PARENTHESIS", "1" ));
-  XmlOptions::get().add( Option( "WRAP_FROM_CLASS", "0", "set to 1 if you wand DocumentClass to enable/disable wrapping" ));
+  XmlOptions::get().add( Option( "WRAP_FROM_CLASS", "1", "set to 1 if you wand DocumentClass to enable/disable wrapping" ));
   XmlOptions::get().add( Option( "TEXT_WRAP", "0" ));
   XmlOptions::get().add( Option( "WINDOW_HEIGHT", "500" ));
   XmlOptions::get().add( Option( "WINDOW_WIDTH", "700" ));
@@ -100,30 +107,24 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "AUTOSAVE_PATH", "/tmp", "autosave file path name" ) );
   XmlOptions::get().add( Option( "AUTOSAVE_INTERVAL", "20", "time interval between two automatic save of the file" ) );
 
-  XmlOptions::get().add( Option( "UNDO_DEPTH", "200", "undo history depth" ) ); 
+  XmlOptions::get().add( Option( "HIGHLIGHT_PARAGRAPH", "1", "active paragraph highlighting" ) );
+  XmlOptions::get().add( Option( "HIGHLIGHT_COLOR", "#FFFDD4", "paragraph highlight color" ) );
 
-  XmlOptions::get().add( Option( "PRINT_COMMAND", "@LPR@" , "print command"));  
-
-  XmlOptions::get().add( Option( "USE_A2PS", "1", "use a2ps to format text before printing" ) );
-  XmlOptions::get().add( Option( "A2PS_COMMAND", "@A2PS@" , "postscript conversion command"));   
+  /* third party commands */
   XmlOptions::get().add( Option( "DIFF_COMMAND", "@DIFF@", "diff files command" ) );
-  XmlOptions::get().add( Option( "HTML_EDITOR", "@KONQUEROR@" , "to edit html files"  ));
-  XmlOptions::get().add( Option( "USE_HTML_EDITOR", "0" , "to use html editors"  )); 
-
+  
+  /* multiple views *///
   XmlOptions::get().add( Option( "OPEN_MODE", "open in new window", "default mode to open new file. either \"open in new window\" or \"open in new view\"" ) );
   XmlOptions::get().add( Option( "ORIENTATION", "top/bottom", "default orientation for splitters. either \"left/right\" or \"top/bottom\"" ) );
   
   XmlOptions::get().add( Option( "SHADE_INACTIVE_VIEWS", "1", "shade inactive views" ) );
   XmlOptions::get().add( Option( "INACTIVE_COLOR", "#f8f8f8", "inactive view color" ) );
-
-  XmlOptions::get().add( Option( "HIGHLIGHT_PARAGRAPH", "1", "active paragraph highlighting" ) );
-  XmlOptions::get().add( Option( "HIGHLIGHT_COLOR", "#FFFDD4", "paragraph highlight color" ) );
   
   #ifdef WITH_ASPELL
   XmlOptions::get().add( Option( "ASPELL", "@ASPELL@", "aspell command" ));
   XmlOptions::get().add( Option( "DICTIONARY", "en" , "default dictionary"  ));
   XmlOptions::get().add( Option( "DICTIONARY_FILTER", "none" , "default filter"  ));
-  XmlOptions::get().add( Option( "AUTOSPELL", "1", "true to set automatic spellcheck on by default" ));
+  XmlOptions::get().add( Option( "AUTOSPELL", "0", "true to set automatic spellcheck on by default" ));
   XmlOptions::get().add( Option( "AUTOSPELL_COLOR", "red", "highlight color for autospell" ));
   XmlOptions::get().add( Option( "AUTOSPELL_FONT_FORMAT", "0", "highlight font format for autospell" ));
   XmlOptions::get().add( Option( "MAX_SUGGESTIONS", "0", "maximum number of suggestions. 0 means all." ));

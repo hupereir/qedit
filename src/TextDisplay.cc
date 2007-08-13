@@ -55,6 +55,7 @@
 #include "TextHighlight.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
+#include "TextSeparator.h"
 #include "Util.h"
 #include "XmlOptions.h"
 
@@ -560,7 +561,7 @@ bool TextDisplay::hasLeadingTabs( void ) const
 }
 
 //_______________________________________________________
-QDomElement TextDisplay::htmlNode( QDomDocument& document )
+QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_size )
 {
 
   // clear highlight locations and rehighlight
@@ -578,73 +579,87 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document )
     
     // retrieve text
     QString text( block.text() );
-    if( locations.empty() )
+      
+    // current pattern
+    QDomElement span;
+    const HighlightPattern *current_pattern = 0;
+    bool line_break( false );
+    int line_index( 0 );
+    
+    // parse text
+    QString buffer("");
+    for( int index = 0; index < text.size(); index++, line_index++ )
     {
       
-      QDomElement span = out.appendChild( document.createElement( "span" ) ).toElement();
-      span.appendChild( document.createTextNode( text ) );
-    
-    } else {
+      // parse locations
+      HighlightPattern::LocationSet::reverse_iterator location_iter = find_if(
+        locations.rbegin(),
+        locations.rend(),
+        HighlightPattern::Location::ContainsFTor( index ) );
       
-      QDomElement span;
-
-      // current pattern
-      const HighlightPattern *current_pattern = 0;
-
-      // parse text
-      QString buffer("");
-      for( int index = 0; index < text.size(); index++ )
+      const HighlightPattern* pattern = ( location_iter == locations.rend() ) ? 0:&location_iter->parent();
+      if( pattern != current_pattern || index == 0 || line_break )
       {
-
-        // parse locations
-        HighlightPattern::LocationSet::reverse_iterator location_iter = find_if(
-          locations.rbegin(),
-          locations.rend(),
-          HighlightPattern::Location::ContainsFTor( index ) );
-
-        const HighlightPattern* pattern = ( location_iter == locations.rend() ) ? 0:&location_iter->parent();
-        if( pattern != current_pattern || index == 0 )
+        
+        // append text to current element and reset stream
+        HtmlUtil::textNode( buffer, span, document );
+        if( line_break ) 
         {
-
-          // append text to current element and reset stream
-          HtmlUtil::textNode( buffer, span, document );
-          buffer = "";
-          
-          // update pattern
-          current_pattern = pattern;
-
-          // update current element
-          span = out.appendChild( document.createElement( "span" ) ).toElement();
-          if( current_pattern )
-          {
-
-            // retrieve font format
-            const unsigned int& format( current_pattern->style().fontFormat() );
-            ostringstream format_stream;
-            if( format & FORMAT::UNDERLINE ) format_stream << "text-decoration: underline; ";
-            if( format & FORMAT::ITALIC ) format_stream << "font-style: italic; ";
-            if( format & FORMAT::BOLD ) format_stream << "font-weight: bold; ";
-            if( format & FORMAT::STRIKE ) format_stream << "text-decoration: line-through; ";
-
-            // retrieve color
-            const QColor& color = current_pattern->style().color();
-            if( color.isValid() ) format_stream << "color: " << qPrintable( color.name() ) << "; ";
-
-            span.setAttribute( "style", format_stream.str().c_str() );
-
-          }
+          out.appendChild( document.createElement( "br" ) );
+          line_break = false;
+          line_index = 0;
         }
-
-        buffer += text[index];
-
+        
+        buffer = "";
+        
+        // update pattern
+        current_pattern = pattern;
+        
+        // update current element
+        span = out.appendChild( document.createElement( "span" ) ).toElement();
+        if( current_pattern )
+        {
+          
+          // retrieve font format
+          const unsigned int& format( current_pattern->style().fontFormat() );
+          ostringstream format_stream;
+          if( format & FORMAT::UNDERLINE ) format_stream << "text-decoration: underline; ";
+          if( format & FORMAT::ITALIC ) format_stream << "font-style: italic; ";
+          if( format & FORMAT::BOLD ) format_stream << "font-weight: bold; ";
+          if( format & FORMAT::STRIKE ) format_stream << "text-decoration: line-through; ";
+          
+          // retrieve color
+          const QColor& color = current_pattern->style().color();
+          if( color.isValid() ) format_stream << "color: " << qPrintable( color.name() ) << "; ";
+          
+          span.setAttribute( "style", format_stream.str().c_str() );
+          
+        }
       }
-
-      span.appendChild( document.createTextNode( buffer ) );
-
+      
+      buffer += text[index];
+      
+      // check for line-break
+      if( max_line_size > 0  && TextSeparator::get().all().find( text[index] ) != TextSeparator::get().all().end() )
+      {
+        
+        // look for next separator in string
+        int next( -1 );
+        for( TextSeparator::SeparatorSet::const_iterator iter = TextSeparator::get().all().begin(); iter != TextSeparator::get().all().end(); iter++ )
+        { 
+          int position( text.indexOf( *iter, index+1 ) );
+          if( position >= 0 && ( next < 0 || position < next ) ) next = position;
+        }
+        
+        if( line_index + next - index > max_line_size ) line_break = true;
+      }
+      
     }
+    
+    span.appendChild( document.createTextNode( buffer ) );
     out.appendChild( document.createElement( "br" ) );
   }
-
+  
   return out;
 }
 

@@ -56,9 +56,7 @@ noinst_HEADERS = \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
-  Config.h \
   ConfigurationDialog.h \
-  DefaultOptions.h \
   Diff.h \
   DocumentClassDialog.h \
   DocumentClass.h \
@@ -89,7 +87,6 @@ noinst_HEADERS = \
   TextHighlight.h \
   TextIndent.h \
   TextMacro.h \
-  ViewHtmlDialog.h \
   WindowTitle.h \
   XmlDef.h
 
@@ -125,8 +122,7 @@ qedit_SOURCES = \
   TextDisplay.cc \
   TextHighlight.cc \
   TextIndent.cc \
-  TextMacro.cc \
-  ViewHtmlDialog.cc
+  TextMacro.cc
 
 nodist_qedit_SOURCES = \
   moc_AskForSaveDialog.cc \
@@ -143,8 +139,7 @@ nodist_qedit_SOURCES = \
   moc_ParenthesisHighlight.cc \
   moc_PrintDialog.cc \
   moc_TextDisplay.cc \
-  moc_TextIndent.cc \
-  moc_ViewHtmlDialog.cc
+  moc_TextIndent.cc
 
 ### rule to generate qt meta objects
 moc_%.cc: %.h

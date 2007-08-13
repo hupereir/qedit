@@ -90,7 +90,6 @@ Menu::Menu( QWidget* parent ):
   connect( document_class_menu_, SIGNAL( aboutToShow() ), SLOT( _updateDocumentClassMenu() ) );
   connect( document_class_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectClassName( QAction* ) ) );
   
-  menu->addAction( &editframe.htmlAction() );
   menu->addAction( &editframe.printAction() );
 
   menu->addSeparator();

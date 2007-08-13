@@ -268,7 +268,7 @@ class TextDisplay: public CustomTextEdit
   bool hasLeadingTabs( void ) const;
 
   //! Get HTML formated text
-  QDomElement htmlNode( QDomDocument& document );
+  QDomElement htmlNode( QDomDocument& document, const int& max_line_size = 0 );
 
   //!@name actions
   //@{
