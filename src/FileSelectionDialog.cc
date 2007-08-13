@@ -122,6 +122,8 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   button_layout->addWidget( button = new QPushButton( "&Cancel", this ) );
   connect( button, SIGNAL( clicked() ), this, SLOT( _cancel() ) );
 
+  adjustSize();
+  
 }
 
 //________________________________________________________

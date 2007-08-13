@@ -265,5 +265,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
 
   grid_layout->setColumnStretch( 1, 1 );
   layout->addStretch();
-  Debug::Throw( "FileInfoDialog::FileInfoDialog - Miscellaneous tab fixed.\n" );
+  
+  adjustSize();
+  
 }

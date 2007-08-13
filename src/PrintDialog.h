@@ -71,7 +71,7 @@ class PrintDialog: public CustomDialog
   
   //! maximum line size
   int maximumLineSize( void ) const
-  { return wrap_checkbox_->isChecked() ? 0:maximum_line_size_->value(); }
+  { return wrap_checkbox_->isChecked() ? maximum_line_size_->value():0; }
   
   //! print mode
   enum Mode
@@ -118,9 +118,9 @@ class PrintDialog: public CustomDialog
   //! commands
   std::list< std::string > commands( void ) const
   { 
-    Debug::Throw() << "PrintDialog::commands - maxCount: " << command_->maxCount() << std::endl;
+    Debug::Throw() << "PrintDialog::commands - maxCount: " << command_->QComboBox::count() << std::endl;
     std::list< std::string > out;
-    for( int row = 0; row < command_->maxCount(); row++ )
+    for( int row = 0; row < command_->QComboBox::count(); row++ )
     { out.push_back( qPrintable( command_->itemText( row ) ) ); }
     
     return out;

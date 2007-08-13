@@ -296,7 +296,10 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
   if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::IGNORE;
  
   // disable check
-  int state( FileRemovedDialog( this, file() ).exec() );
+  FileRemovedDialog dialog( this, file() );
+  QtUtil::centerOnParent( &dialog );
+  int state( dialog.exec() );
+  
   if( state == FileRemovedDialog::RESAVE ) { save(); }
   else if( state == FileRemovedDialog::SAVE_AS ) { saveAs(); }
   else if( state == FileRemovedDialog::IGNORE ) {
@@ -331,7 +334,9 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
  
   if( _ignoreWarnings() || !_fileModified() ) return FileModifiedDialog::IGNORE;
  
-  int state( FileModifiedDialog( this, file() ).exec() );
+  FileModifiedDialog dialog( this, file() );
+  QtUtil::centerOnParent( &dialog );
+  int state( dialog.exec() );
   if( state == FileModifiedDialog::RESAVE ) { save(); }
   else if( state == FileModifiedDialog::SAVE_AS ) { saveAs(); }
   else if( state == FileModifiedDialog::RELOAD ) { 
@@ -362,7 +367,10 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enable_all )
   
   int flags( AskForSaveDialog::YES | AskForSaveDialog::NO | AskForSaveDialog::CANCEL );
   if( enable_all ) flags |=  AskForSaveDialog::ALL;
-  int state( AskForSaveDialog( this, file(), flags ).exec() );
+  
+  AskForSaveDialog dialog( this, file(), flags );
+  QtUtil::centerOnParent( &dialog );
+  int state( dialog.exec() );
   if( state == AskForSaveDialog::YES ||  state == AskForSaveDialog::ALL ) save();
   else if( state == AskForSaveDialog::NO ) setModified( false );
   
@@ -1615,6 +1623,7 @@ void TextDisplay::_multipleFileReplace( void )
   // retrieve selection from replace dialog
   FileSelectionDialog dialog( this, selection );
   connect( &dialog, SIGNAL( fileSelected( std::list<File>, TextSelection ) ), qApp, SLOT( multipleFileReplace( std::list<File>, TextSelection ) ) );
+  QtUtil::centerOnParent( &dialog );
   dialog.exec();
   return;
 }
@@ -1739,7 +1748,9 @@ void TextDisplay::_selectDictionary( const std::string& dictionary )
 void TextDisplay::_showFileInfo( void )
 { 
   Debug::Throw( "TextDisplay::_showFileInfo.\n" );
-  FileInfoDialog( this ).exec();
+  FileInfoDialog dialog( this );
+  QtUtil::centerOnParent( &dialog );
+  dialog.exec();
 }
 
 //_____________________________________________________________

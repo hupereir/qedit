@@ -352,8 +352,8 @@ void MainFrame::exit( void )
   // ask for confirmation if more than one file is opened.
   if( files.size() > 1 )
   {
-    ExitDialog dialog( 0, files );
-    QtUtil::centerOnPointer( &dialog );
+    ExitDialog dialog( activeWindow(), files );
+    QtUtil::centerOnParent( &dialog );
     if( !dialog.exec() ) return;
   }
   

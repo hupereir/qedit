@@ -484,6 +484,7 @@ void EditFrame::_print( void )
   { dialog.addCommand( *iter ); }
 
   // exec
+  QtUtil::centerOnParent( &dialog );
   if( dialog.exec() == QDialog::Rejected ) return;
 
   // store options
@@ -510,7 +511,7 @@ void EditFrame::_print( void )
   {
     ostringstream what;
     what << "file \"" << fullname << "\" is a directory. <Print> canceled.";
-    QtUtil::infoDialog( this, what.str() );
+    QtUtil::infoDialog( this, what.str(), QtUtil::CENTER_ON_PARENT );
     return;
   }
 
@@ -522,9 +523,9 @@ void EditFrame::_print( void )
     {
       ostringstream what;
       what << "file \"" << fullname << "\" is read-only. <Print> canceled.";
-      QtUtil::infoDialog( this, what.str() );
+      QtUtil::infoDialog( this, what.str(), QtUtil::CENTER_ON_PARENT );
       return;
-    } else if( !QtUtil::questionDialog( this, "selected file already exists. Overwrite ?" ) )
+    } else if( !QtUtil::questionDialog( this, "selected file already exists. Overwrite ?", QtUtil::CENTER_ON_PARENT ) )
     return;
   }
   

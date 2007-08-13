@@ -109,6 +109,7 @@ FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):
   button_layout->addWidget( button = new QPushButton( "&Ignore", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _ignore() ) );
   button->setToolTip( "Ignore warning" );
-
+  
+  adjustSize();
 
 }
