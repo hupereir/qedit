@@ -9,5 +9,5 @@ else
 SPELLCHECK_SOURCE_DIR=
 endif
 
-SUBDIRS =  base base-qt base-server $(SPELLCHECK_SOURCE_DIR) patterns pixmaps src
+SUBDIRS =  base base-qt base-server $(SPELLCHECK_SOURCE_DIR) patterns pixmaps src tests
 EXTRA_DIST = INSTALL COPYING autogen.sh icon.png QEdit.spec.in QEdit.spec QEdit.pro

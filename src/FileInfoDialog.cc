@@ -175,23 +175,23 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   
   grid_layout->addWidget( new QLabel( "User permissions", box ) );
   
-  typedef std::map<mode_t, QCheckBox* > CheckBoxMap;
+  typedef std::map< QFile::Permission, QCheckBox* > CheckBoxMap;
   CheckBoxMap checkboxes;
-  grid_layout->addWidget( checkboxes[S_IRUSR] = new QCheckBox( box ), Qt::AlignHCenter ); 
-  grid_layout->addWidget( checkboxes[S_IWUSR] = new QCheckBox( box ), Qt::AlignHCenter ); 
-  grid_layout->addWidget( checkboxes[S_IXUSR] = new QCheckBox( box ), Qt::AlignHCenter ); 
+  grid_layout->addWidget( checkboxes[QFile::ReadUser ]  = new QCheckBox( box ), Qt::AlignHCenter ); 
+  grid_layout->addWidget( checkboxes[QFile::WriteUser]  = new QCheckBox( box ), Qt::AlignHCenter ); 
+  grid_layout->addWidget( checkboxes[QFile::ExeUser  ]  = new QCheckBox( box ), Qt::AlignHCenter ); 
 
   grid_layout->addWidget( new QLabel( "Group permissions", box ) );
-  grid_layout->addWidget( checkboxes[S_IRGRP] = new QCheckBox( box ), Qt::AlignHCenter );  
-  grid_layout->addWidget( checkboxes[S_IWGRP] = new QCheckBox( box ), Qt::AlignHCenter );  
-  grid_layout->addWidget( checkboxes[S_IXGRP] = new QCheckBox( box ), Qt::AlignHCenter );  
+  grid_layout->addWidget( checkboxes[QFile::ReadGroup  ] = new QCheckBox( box ), Qt::AlignHCenter );  
+  grid_layout->addWidget( checkboxes[QFile::WriteGroup ] = new QCheckBox( box ), Qt::AlignHCenter );  
+  grid_layout->addWidget( checkboxes[QFile::ExeGroup   ] = new QCheckBox( box ), Qt::AlignHCenter );  
 
   grid_layout->addWidget( new QLabel( "Others permissions", box ) );
-  grid_layout->addWidget( checkboxes[S_IROTH] = new QCheckBox( box ), Qt::AlignHCenter );  
-  grid_layout->addWidget( checkboxes[S_IWOTH] = new QCheckBox( box ), Qt::AlignHCenter );  
-  grid_layout->addWidget( checkboxes[S_IXOTH] = new QCheckBox( box ), Qt::AlignHCenter );  
+  grid_layout->addWidget( checkboxes[QFile::ReadOther  ] = new QCheckBox( box ), Qt::AlignHCenter );  
+  grid_layout->addWidget( checkboxes[QFile::WriteOther ] = new QCheckBox( box ), Qt::AlignHCenter );  
+  grid_layout->addWidget( checkboxes[QFile::ExeOther   ] = new QCheckBox( box ), Qt::AlignHCenter );  
   
-  mode_t permissions = file.permissions();
+  QFile::Permissions permissions( file.permissions() );
   for( CheckBoxMap::iterator iter = checkboxes.begin(); iter != checkboxes.end(); iter++ )
   { 
     iter->second->setChecked( permissions & iter->first ); 

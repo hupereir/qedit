@@ -4,7 +4,6 @@ QT += xml network
 
 TARGET = qedit
 VERSION = Qt-4.1
-DESTDIR = $$(HOME)/bin/.
 
 INCLUDEPATH = . ../base ../base-qt ../base-server ../base-spellcheck
 DEPENDPATH += . ../base ../base-qt ../base-server ../base-spellcheck
