@@ -709,6 +709,7 @@ void EditFrame::_documentClassDialog( void )
   DocumentClassDialog dialog( this );
   connect( &dialog, SIGNAL( classSelected( std::string ) ), SLOT( selectClassName( std::string ) ) );
   connect( &dialog, SIGNAL( classRemoved( std::string ) ), qApp, SIGNAL( documentClassesChanged() ) );
+  QtUtil::centerOnParent( &dialog );
   dialog.exec();
 
 

@@ -176,8 +176,9 @@ EditFrame& MainFrame::newEditFrame( void )
 void MainFrame::configuration( void )
 {
   Debug::Throw( "MainFrame::configuration.\n" );
-  ConfigurationDialog dialog( 0 );
+  ConfigurationDialog dialog( activeWindow() );
   connect( &dialog, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
+  QtUtil::centerOnParent( &dialog );
   dialog.exec();
   Debug::Throw( "MainFrame::configuration - done.\n" );
 }
@@ -191,7 +192,7 @@ void MainFrame::spellCheckConfiguration( void )
   Debug::Throw( "MainFrame::SpellCheckConfiguration.\n" );
   
   // create dialog
-  CustomDialog dialog( 0 );
+  CustomDialog dialog( activeWindow() );
   
   SpellCheckConfiguration* spell_config = new SpellCheckConfiguration( &dialog );
   dialog.mainLayout().addWidget( spell_config );
@@ -200,6 +201,9 @@ void MainFrame::spellCheckConfiguration( void )
   AutoSpellConfiguration* autospell_config = new AutoSpellConfiguration( &dialog );
   dialog.mainLayout().addWidget( autospell_config );
   autospell_config->read();
+  
+  dialog.adjustSize();
+  QtUtil::centerOnParent( &dialog );
   
   if( dialog.exec() == QDialog::Rejected ) return;
   spell_config->write();

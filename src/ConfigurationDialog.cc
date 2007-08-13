@@ -289,6 +289,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   
   // load initial configuration
   _read();
+  adjustSize();
   Debug::Throw( "ConfigurationDialog::ConfigurationDialog - done.\n" );
 
 }
