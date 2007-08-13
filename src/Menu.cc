@@ -142,6 +142,7 @@ Menu::Menu( QWidget* parent ):
   DebugMenu *debug_menu( new DebugMenu( this ) );
   debug_menu->setTitle( "&Debug" );
   debug_menu->addAction( &BASE::HelpManager::get().dumpAction() );
+  debug_menu->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
   menu->addMenu( debug_menu );
 
 }
@@ -350,10 +351,6 @@ void Menu::_updateToolsMenu( void )
   tools_menu_->addAction( &display.clearAllTagsAction() );
   display.clearAllTagsAction().setEnabled( has_tags );
   
-  // syntax highlighting
-  tools_menu_->addSeparator();
-  action = tools_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
-
 }
 
 //_______________________________________________

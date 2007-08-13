@@ -171,7 +171,7 @@ EditFrame::EditFrame(  QWidget* parent ):
   toolbar->addAction( &spellcheckAction() ); 
   
   // splitting toolbar
-  toolbar = new CustomToolBar( "Display", this );
+  toolbar = new CustomToolBar( "Multiple views", this );
   toolbars_.push_back( make_pair( toolbar, "SPLIT_TOOLBAR" ) );
   addToolBar( toolbar );
   
@@ -908,7 +908,7 @@ void EditFrame::_installActions( void )
   revert_to_save_action_->setToolTip( "Reload saved version of current file" );
   connect( revert_to_save_action_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
  
-  addAction( html_action_ = new QAction( IconEngine::get( ICONS::HTML, path_list ), "&Html", this ) );
+  addAction( html_action_ = new QAction( IconEngine::get( ICONS::HTML, path_list ), "&Convert to html", this ) );
   html_action_->setToolTip( "convert file to Html" );
   connect( html_action_, SIGNAL( triggered() ), SLOT( _convertToHtml() ) );
 
