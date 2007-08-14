@@ -736,9 +736,10 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
 //___________________________________________________________________________
 void TextDisplay::clearTag( QTextBlock block, const int& tags )
 {
-  Debug::Throw( "TextDisplay::clearTag.\n" );
+  Debug::Throw() << "TextDisplay::clearTag - key: " << key() << endl;
   TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
-
+  if( !data ) return;
+  
   if( tags & TextBlock::DIFF_ADDED ) 
   { 
     data->setFlag( TextBlock::DIFF_ADDED, false );
@@ -756,6 +757,7 @@ void TextDisplay::clearTag( QTextBlock block, const int& tags )
     data->setFlag( TextBlock::USER_TAG, false );
     clearBackground( block );
   }
+  Debug::Throw( "TextDisplay::clearTag - done.\n" );
   
 }
 

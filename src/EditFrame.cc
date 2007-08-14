@@ -874,7 +874,7 @@ void EditFrame::_installActions( void )
   close_view_action_->setEnabled( false );
   connect( close_view_action_, SIGNAL( triggered() ), SLOT( _closeView() ) );
  
-  addAction( close_window_action_ = new QAction( "&Close view", this ) );
+  addAction( close_window_action_ = new QAction( "&Close window", this ) );
   close_window_action_->setShortcut( SHIFT+CTRL+Key_W );
   close_window_action_->setToolTip( "Close current view" );
   connect( close_window_action_, SIGNAL( triggered() ), SLOT( _closeWindow() ) );
