@@ -62,7 +62,7 @@ Menu::Menu( QWidget* parent ):
   QMenu* menu = addMenu( "&File" );
 
   // retrieve editframe
-  EditFrame& editframe( *static_cast<EditFrame*>( window() ) );
+  EditFrame& editframe( *dynamic_cast<EditFrame*>( window() ) );
   
   menu->addAction( &editframe.newFileAction() );
   menu->addAction( &editframe.cloneAction() );
@@ -162,11 +162,11 @@ void Menu::_updateDocumentClassMenu( void )
   font.setWeight( QFont::Bold );
   
   // retrieve current class from EditFrame
-  EditFrame& frame( *static_cast<EditFrame*>(window()) ); 
+  EditFrame& frame( *dynamic_cast<EditFrame*>(window()) ); 
   const std::string& class_name( frame.activeDisplay().className() );
   
   // retrieve classes from DocumentClass manager
-  const DocumentClassManager::ClassList& classes( static_cast<MainFrame*>(qApp)->classManager().list() );
+  const DocumentClassManager::ClassList& classes( dynamic_cast<MainFrame*>(qApp)->classManager().list() );
   for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
   { 
     // insert actions
@@ -185,7 +185,7 @@ void Menu::_updateEditMenu( void )
   
   edit_menu_->clear();
   
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  TextDisplay& display( dynamic_cast<EditFrame*>(window())->activeDisplay() );
   edit_menu_->addAction( &display.undoAction() );
   edit_menu_->addAction( &display.redoAction() );
   edit_menu_->addSeparator();
@@ -207,7 +207,7 @@ void Menu::_updateSearchMenu( void )
 
   search_menu_->clear();
   
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  TextDisplay& display( dynamic_cast<EditFrame*>(window())->activeDisplay() );
   search_menu_->addAction( &display.findAction() );
   search_menu_->addAction( &display.findAgainAction() );
   search_menu_->addAction( &display.findSelectionAction() );
@@ -226,7 +226,7 @@ void Menu::_updatePreferenceMenu( void )
   Debug::Throw( "Menu::_updatePreferenceMenu.\n" );
 
   // reference to needed objects
-  EditFrame& frame( *static_cast<EditFrame*>(window()) );
+  EditFrame& frame( *dynamic_cast<EditFrame*>(window()) );
   TextDisplay& display( frame.activeDisplay() );
 
   // clear menu
@@ -302,7 +302,7 @@ void Menu::_updateToolsMenu( void )
   Debug::Throw( "Menu::_updateToolsMenu.\n" );
 
   // retrieve editframe and current display
-  EditFrame& frame( *static_cast<EditFrame*>(window()) );
+  EditFrame& frame( *dynamic_cast<EditFrame*>(window()) );
   TextDisplay& display( frame.activeDisplay() );
   
   // retrieve flags needed to set button state
@@ -359,7 +359,7 @@ void Menu::_updateMacroMenu( void )
   Debug::Throw( "Menu::_updateMacroMenu.\n" );
 
   // retrieve current display
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  TextDisplay& display( dynamic_cast<EditFrame*>(window())->activeDisplay() );
   
   // clear menu
   macro_menu_->clear();
@@ -399,7 +399,7 @@ void Menu::_updateWindowsMenu( void )
   windows_menu_->clear();
   
   // retrieve current display
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  TextDisplay& display( dynamic_cast<EditFrame*>(window())->activeDisplay() );
   windows_menu_->addAction( &display.fileInfoAction() );
   
   const string& current_file( display.file() );
@@ -473,7 +473,7 @@ void Menu::_selectMacro( QAction* action )
   if( iter == macros_.end() ) return;
   
   // retrieve current Text Display
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  TextDisplay& display( dynamic_cast<EditFrame*>(window())->activeDisplay() );
   display.processMacro( iter->second );
   
   return;
@@ -518,7 +518,7 @@ void Menu::_toggleOpenMode( void )
 {
   Debug::Throw("Menu::_toggleOpenMode.\n" );
     
-  EditFrame& frame( *static_cast<EditFrame*>(window()) );
+  EditFrame& frame( *dynamic_cast<EditFrame*>(window()) );
   frame.setOpenMode( new_window_action_->isChecked() ? EditFrame::NEW_WINDOW : EditFrame::NEW_VIEW );
   
   return;
@@ -529,7 +529,7 @@ void Menu::_toggleOrientation( void )
 {
   Debug::Throw("Menu::_toggleOrientation.\n" );
 
-  EditFrame& frame( *static_cast<EditFrame*>(window()) );
+  EditFrame& frame( *dynamic_cast<EditFrame*>(window()) );
   frame.setOrientation(  leftright_action_->isChecked() ? Qt::Horizontal : Qt::Vertical );
   return;
 }

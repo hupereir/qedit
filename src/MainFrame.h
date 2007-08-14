@@ -113,6 +113,11 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   //! document classes have been modified
   void documentClassesChanged();
   
+  signals:
+  
+  //! configuration changed
+  void configurationChanged();
+  
   public slots:
 
   //! configuration

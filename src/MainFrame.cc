@@ -269,6 +269,7 @@ EditFrame* MainFrame::open( FileRecord record )
   {
   
     frame->show();
+    processEvents();
     
     // create NewFileDialog
     int buttons( NewFileDialog::CREATE | NewFileDialog::CANCEL );

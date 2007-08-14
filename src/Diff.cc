@@ -294,7 +294,7 @@ void Diff::FileInformation::highlightDisplay( void )
 { 
     
   // loop over display blocks
-  unsigned int id(0);
+  unsigned int id(1);
   for( QTextBlock block( _display().document()->begin() ); block.isValid(); block = block.next(), id++ )
   {
     
