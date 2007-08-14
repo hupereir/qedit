@@ -36,6 +36,7 @@
 #include "Debug.h"
 #include "DefaultOptions.h"
 #include "ErrorHandler.h"
+#include "FlatStyle.h"
 #include "MainFrame.h"
 #include "XmlOptions.h"
 #include "Util.h"
@@ -103,7 +104,9 @@ int main (int argc, char *argv[])
     if( debug_level ) XmlOptions::get().dump();
 
     // initialize main frame and run loop
+    // QApplication::setStyle(new FlatStyle() );
     MainFrame main_frame( argc, argv );
+    QApplication::setStyle(new FlatStyle() );
     main_frame.initApplicationManager();
     main_frame.exec();
   } catch ( exception& e ) { cout << e.what() << endl; }

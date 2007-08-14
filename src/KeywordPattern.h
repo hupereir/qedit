@@ -66,6 +66,7 @@ class KeywordPattern: public HighlightPattern
   
   private:
   
+  //! associate keyword recongnition regexp
   QRegExp keyword_;
     
 };

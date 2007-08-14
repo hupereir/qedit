@@ -71,7 +71,6 @@ class HighlightPattern: public Counter
   
   //! typedef for list of patterns
   typedef std::vector< HighlightPattern* > List;
-
   
   //! constructor from DomElement
   HighlightPattern( const QDomElement& element = QDomElement() );
@@ -243,6 +242,7 @@ class HighlightPattern: public Counter
       
       public:
       
+      //! predicate
       bool operator() (const Location& first, const Location& second ) 
       { return second.position() < first.position() + (int)first.length(); }
       

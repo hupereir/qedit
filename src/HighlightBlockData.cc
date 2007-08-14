@@ -22,8 +22,8 @@
 *******************************************************************************/
  
 /*!
-  \file SpellCheckBlockData.cc
-  \brief TextBlock data for spellCheck highlighting
+  \file HighlightBlockData.cc
+  \brief TextBlock data for syntax highlighting
   \author Hugo Pereira
   \version $Revision$
   \date $Date$

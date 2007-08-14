@@ -41,7 +41,7 @@
 #include "Word.h"
 #endif
 
-//! TextBlock data
+//! TextBlock data for syntax highlighting
 class HighlightBlockData: public TextBlockData
 {
   

@@ -74,8 +74,8 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 INPUT                  = ./src \
                          ./base \
-                         ./server \
-                         ./spellcheck
+                         ./base-server \
+                         ./base-spellcheck
 FILE_PATTERNS          = *.h \
                          *.cc
 RECURSIVE              = NO
