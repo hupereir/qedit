@@ -36,8 +36,7 @@
 static const char* HelpText[] = {
   //_________________________________________________________
   "Introduction",
-  "<!--<h1>Section: Introduction</h1>-->\n"
-  "<h1>Introduction</h1>\n"
+  "<h2>Introduction</h2>\n"
   "\n"
   "<p>QEdit is a Graphical text editor designed for text files and programming source files. it provides standard menus, dialogs, toolbars and shortcut to perform all actions related to text editing and offers contextual support for easier editing of various programming languages files, such as: \n"
   "\n"
@@ -70,36 +69,43 @@ static const char* HelpText[] = {
 
   //_________________________________________________________
   "Main Window",
-  "<h1>Text Edition Main Window</h1>\n"
+  "<h2>Text Edition Main Window</h2>\n"
   "\n"
   "<p>This section describes the most useful features of the main edition window. More details are given elsewhere in the dedicated sections of this help.\n"
   "\n"
-  "<ul>\n"
+  "<h3>Cut, Copy and Paste</h3>\n"
+  "<p>Cut, Copy and Paste actions are available either from the toolbar, the <i>Edit</i> menu, the pop-up menu opened when right-clicking on the text, or the Ctrl+X Ctrl+C and Ctrl+V key accelerators, respectively. The Cut and Copy actions are enabled only if there is an active selection in the current editor. The paste action is enabled only if some text is available from the clipboard.</p>\n"
   "\n"
-  "<li>Cut, Copy and Paste actions are available either from the toolbar, the <i>Edit</i> menu, the pop-up menu opened when right-clicking on the text, or the Ctrl+X Ctrl+C and Ctrl+V key accelerators, respectively. The Cut and Copy actions are enabled only if there is an active selection in the current editor. The paste action is enabled only if some text is available from the clipboard.</li><br><br>\n"
+  "<h3>Undo and Redo</h3>\n"
+  "<o>Undo and Redo actions are available either from the toolbar, the <i>Edit</i> menu, the pop-up menu opened when right-clicking on the text, or the Ctrl+Z and Shift+Ctrl+Z key accelerators, respectively. The undo/redo lists are kept synchronized between multiple views of the same files. The actions above are enabled only when undoing/redoing is available in the history.</p>\n"
   "\n"
-  "<li>Undo, Redo actions are available either from the toolbar, the <i>Edit</i> menu, the pop-up menu opened when right-clicking on the text, or the Ctrl+Z and Shift+Ctrl+Z key accelerators, respectively. The undo/redo lists are kept synchronized between multiple views of the same files. The actions above are enabled only when undoing/redoing is available in the history.</li><br><br>\n"
+  "<h3>Automatic indentation</h3>\n"
+  "<p>Automatic indentation is available for document classes associated to some file types, such as c/c++ and Perl script files. It is configurable in the corresponding document classes input file loaded at start-up.  When enabled, automatic indentation rules are applied on the current line by pressing the Tab character. It is also performed when the return key is pressed, to start a new line. Automatic indentation can be disabled either in the <i>Default Configuration</i> dialog, in which case it will be disabled for all the following edition sessions, or in the <i>Preferences</i> menu, in which case it is disabled for the current session only.</p>\n"
   "\n"
-  "<li>Automatic indentation is available for document classes associated to some file types, such as c/c++ and Perl script files. It is configurable in the corresponding document classes input file loaded at start-up.  When enabled, automatic indentation rules are applied on the current line by pressing the Tab character. It is also performed when the return key is pressed, to start a new line. Automatic indentation can be disabled either in the <i>Default Configuration</i> dialog, in which case it will be disabled for all the following edition sessions, or in the <i>Preferences</i> menu, in which case it is disabled for the current session only.</li><br><br>\n"
+  "<h3>Text selection</h3>\n"
   "\n"
-  "<li>Normal selection starts when the left button of the mouse is pressed. It is modified (extended or reduced) by moving the mouse pointer with the left button still pressed. The selection ends and is copied to the selection clipboard when the button is released. A drag and drop system allows to move the selected text either in the same window or in a separated file.</li><br><br>\n"
+  "<p>Normal selection starts when the left button of the mouse is pressed. It is modified (extended or reduced) by moving the mouse pointer with the left button still pressed. The selection ends and is copied to the selection clipboard when the button is released. A drag and drop system allows to move the selected text either in the same window or in a separated file.</p>\n"
   "\n"
-  "<li> Box selection is available provided that the font used for edditing has a fixed width. Box selection starts when the left button of the mouse is pressed together with the Ctrl key, and modified  by moving the mouse pointer with the above still pressed. The selection ends and is copied to the selection clipboard when either the left mouse button or the Control key is released. The cut, copy and paste actions, as well as the drag and drop ability are also available for box selection. </li><br><br>\n"
+  "<p> Box selection is available provided that the font used for edditing has a fixed width. Box selection starts when the left button of the mouse is pressed together with the Ctrl key, and modified  by moving the mouse pointer with the above still pressed. The selection ends and is copied to the selection clipboard when either the left mouse button or the Control key is released. The cut, copy and paste actions, as well as the drag and drop ability are also available for box selection. </p>\n"
   "\n"
-  "<li>Auto save of the file is performed at fixed interval of time when the text is modified. It is handled by a separate thread in order not to create any overhead. The auto saved files are located by default in the /tmp directory and recovered automatically in case the editing session ends abruptly.</li><br><br>\n"
+  "<h3>Automatic save</h3>\n"
   "\n"
-  "<li>Automatic spell checking can be turned on in the <i>Preferences</i> menu. It replaces (temporarily) any syntax highlighting patterns and identifies all words that are misspelled in the current text. Correctly spelled words can be selected and used as a replacement when right-clicking on a misspelled word. The dictionary language and document  class associated to the spell-checker is modified in the <i>Preferences</i> menu. Selected dictionaries and filter are stored together with the opened file history. When no values are found, default values are used, that can be modified in the <i>Default Configuration</i> dialog.</li><br><br>\n"
+  "<p>Automatic save of the file is performed at fixed interval of time when the text is modified. It is handled by a separate thread in order not to create any overhead. The auto saved files are located by default in the /tmp directory and recovered automatically in case the editing session ends abruptly.</p>\n"
   "\n"
-  "<li>Printing can be achieved in two different ways: either using the <i>Print</i> button from the <i>File</i> menu or the toolbar, or by converting the current text to HTML using the <i>Convert To HTML</i> button from the <i>File</i> menu, then printing the HTML document using an external browser. The second method has the advantage that the printed text mimic all QEdit syntax highlighting features, but relies on an external HTML browser. The first method also have some text formatting features inherited from the <i>a2ps</i> command, but the later cannot be configured within QEdit.</li><br><br>\n"
-  "</ul>",
+  "<h3>Automatic spell checking</h3>\n"
+  "<p>Automatic spell checking can be turned on in the <i>Preferences</i> menu. It replaces (temporarily) any syntax highlighting patterns and identifies all words that are misspelled in the current text. Correctly spelled words can be selected and used as a replacement when right-clicking on a misspelled word. The dictionary language and document  class associated to the spell-checker is modified in the <i>Preferences</i> menu. Selected dictionaries and filter are stored together with the opened file history. When no values are found, default values are used, that can be modified in the <i>Default Configuration</i> dialog.</p>\n"
+  "\n"
+  "<h3>Printing</h3>\n"
+  "<p>Printing is performed in two steps. The file is first converted into a suitable format (either HTML or PDF), that contains all the syntax highlighting patterns. The converted file can the be either printed or edited using a third-party appication (an HTML or a PDF file viewer), using a dedicated command specified by the user.</p>\n"
+  "",
 
   //_________________________________________________________
   "Main Menu",
-  "<h1>Main Menu</h1>\n"
+  "<h2>Main Menu</h2>\n"
   "\n"
   "<p>The Main Menu is located at the top of the editor. It contains the following sub-menus:\n"
   "\n"
-  "<h2>File menu</h2>\n"
+  "<h3>File menu</h3>\n"
   "<p>The File menu provides basic file operations, such as New/Open/Save/Print and  the corresponding key accelerators, as well as the management of multiple views in the current window. Pressing the Close button closes the current edition window. Pressing the Exit button closes all edition windows and exit QEdit. The following two features are also available:</p>\n"
   "<ul>\n"
   "\n"
@@ -108,30 +114,30 @@ static const char* HelpText[] = {
   "<li>the possibility to manually assign the document class of the current file by selecting the class name in the corresponding sub-menu, in place of the default document class assigned based on either the file extension or its contents.</li><br><br>\n"
   "</ul>\n"
   "\n"
-  "<h2>Edit menu</h2>\n"
+  "<h3>Edit menu</h3>\n"
   "<p>the Edit menu provides basic edition operations, such as Undo/Redo, Cut/Copy and Paste of the current selection and conversion to upper/lower case, as well as the corresponding key accelerators.</p>\n"
   "\n"
-  "<h2>Search menu</h2>\n"
+  "<h3>Search menu</h3>\n"
   "<p>the Search menu provides text find/replace operations and the possibility to select a paragraph by its line number in the text, as well as the corresponding key accelerators.</p>\n"
   "\n"
-  "<h2>Preferences menu</h2>\n"
+  "<h3>Preferences menu</h3>\n"
   "<p>The Preferences menu contains QEdit <i>Default Configuration</i> dialog and the <i>Spell Check Configuration</i> dialog that defines which language and file type is used for spell checking (this feature is available only if QEdit was compiled with <i>aspell</i> support). Several check boxes are also provided to control which features of the current document class should be enabled/disabled in the current session.</p>\n"
   "\n"
-  "<h2>Tools menu</h2>\n"
+  "<h3>Tools menu</h3>\n"
   "<p>The Tools menu provides high-level text modification macros and edition utilities that are common to all document classes. Such macros apply to large portion of the text and perform actions such as text indentation, spell checking (via a pop-up dialog), diff of openened files, etc.</p>\n"
   "\n"
-  "<h2>Macro menu</h2>\n"
+  "<h3>Macro menu</h3>\n"
   "<li>The Macro menu contains high level edition macros associated to the current document class. Such macros usually apply to large portion of the text and perform actions such as applying comments (as specified by the document class language), adding/removing tabulations, cleaning the end of line from empty spaces, etc. The Spell check button opens the spell checking dialog used to correct all misspelled words in the document (this feature is available only if QEdit was compiled with <i>aspell</i> support). Some of the macros are associated to key accelerators depending on the current document class configuration file;</p>\n"
   "\n"
-  "<h2>Windows menu</h2>\n"
+  "<h3>Windows menu</h3>\n"
   "<p>The Windows menu provides informations about the active  edit file and fast access to all other edited files in the session.</p>\n"
   "\n"
-  "<h2>Help menu</h2>\n"
+  "<h3>Help menu</h3>\n"
   "<p>the Help menu provides access to this help, displays information on the version of QEdit that is being used, and the version of <i>Qt</i> against which it was compiled. It also has a <i>debug</i> sub-menu used for maintenance.</p>",
 
   //_________________________________________________________
   "Toolbars",
-  "<h1>Toolbars</h1>\n"
+  "<h2>Toolbars</h2>\n"
   "\n"
   "<p>Several toolbars are located (by default) at the top of the editor window to provide easy access to the most commonly used features. They are: \n"
   "\n"
@@ -150,44 +156,44 @@ static const char* HelpText[] = {
   "<p>By right-clicking on the toolbars a menu is opened that allows to show/hide the displayed toolbars. The toolbars can also be dragged and dropped around the editor window to change their location. The default visibility and location of the toolbars can be set in the <i>configuration</i> dialog, under the <i>toolbars</i> tab.",
 
   //_________________________________________________________
-  "Status frame",
-  "<h1>Status Bar</h1>\n"
+  "Status bar",
+  "<h2>Status Bar</h2>\n"
   "\n"
   "<p>The status bar is located at the bottom of the editor window and displays the full name of the current edited file, the position of the cursor in the text, as well as the current date and time. The file name can be selected by double clicking on it and copied to the clipboard for use in other applications.</p>",
 
   //_________________________________________________________
   "Default Configuration",
-  "<h1>Default Configuration</h1>\n"
+  "<h2>Default Configuration</h2>\n"
   "\n"
   "<p>The default configuration dialog is accessible from the <i>Preferences</i> menu. It consists of several tabs in which a large set of options can be modified by the user to suit his editing habits.\n"
   "\n"
-  "<h2>Base</h2>\n"
+  "<h3>Base</h3>\n"
   "<p>the Base tab allows to modify the font used to display the widgets and the text; the application icon, the location where the toolbar icons are found (since the name of the toolbar icons match the one used for most of the desktop icon themes, this option allows to pick a set of icons that match the current desktop icon theme. Besides, it allows to try find additional icons that are foreseen in qedit, but not included in the distribution); the appearance of the toolbar buttons, and the background color of the items displayed in lists.</p>\n"
   "\n"
-  "<h2>Document classes</h2>\n"
+  "<h3>Document classes</h3>\n"
   "<p>the Document classes tab allows to specify from which files the document classes used to define the set of actions associated to a specific file type are loaded. Such files are written in Xml format and can be edited by hand. New files can be added and loaded in place of the default. Future versions of QEdit should have a Document class manager that allows for easier editing of these files.</p>\n"
   "\n"
-  "<h2>Display</h2>\n"
+  "<h3>Display</h3>\n"
   "<p>The Display tab allows which features of the document classes should be enabled by default. This includes the syntax highlighting, the matching parenthesis highlighting, the automatic indentation, tab emulation, etc. It also allows to configure some of the colors used for the highlighting.</p>\n"
   "\n"
-  "<h2>Multiple views</h2>\n"
+  "<h3>Multiple views</h3>\n"
   "<p>The Multiple views tag allows to configure the default open mode of QEdit (either in a new window or as a new view in an existing window, as well as the default orientation (horizontal or vertical) of new views in a window. The corresponding buttons in the <i>Multiple views</i> toolbar allows to change this default behavior for the current session only.</p>\n"
   "<p>A different color can be used as a background for inactive views as opposed to the active view, to make the later more easily identifiable. This color is also configurable here.</p>\n"
   "\n"
-  "<h2>Toolbars</h2>\n"
+  "<h3>Toolbars</h3>\n"
   "<p>The Toolbars tab allows to decide which toolbars should be visible/hidden by default in every new window, as well as the side of the window at which they should appear</p>\n"
   "\n"
-  "<h2>Printing</h2>\n"
+  "<h3>Printing</h3>\n"
   "<p>The Printing tab allows to configure which commands are used for printing, or displaying an HTML version of the current file, for printing via an external browser</p>\n"
   "\n"
-  "<h2>Misc</h2>\n"
+  "<h3>Misc</h3>\n"
   "<p>the Misc tab allows to modify additional settings that don't enter the above categories such as: the backup and auto-save configurations, the default window size and the sorting of the previously opened files in the <i>Open previous</i> menu.</p>\n"
   "\n"
   "</ul>",
 
   //_________________________________________________________
   "Document Classes",
-  "<h1>Section: Document Classes</h1>\n"
+  "<h2>Document Classes</h2>\n"
   "\n"
   "<p>Document classes consist of a set of recognition patterns associated to a different type of files and used to facilitate its editing. The different patterns cover: \n"
   "\n"
@@ -212,7 +218,7 @@ static const char* HelpText[] = {
 
   //_________________________________________________________
   "Spell Check Configuration",
-  "<h1>Spell Check Configuration</h1>\n"
+  "<h2>Spell Check Configuration</h2>\n"
   "\n"
   "<p>The spell check configuration dialog is accessible from the <i>Preferences</i> menu. It is divided in two boxes. The first box is dedicated to the general configuration of the spell checker and contains the following options:\n"
   "\n"
@@ -237,7 +243,7 @@ static const char* HelpText[] = {
 
   //_________________________________________________________
   "Automatic Spell Check",
-  "<h1>Automatic Spell Check</h1>\n"
+  "<h2>Automatic Spell Check</h2>\n"
   "\n"
   "<p>The automatic spell check is turned on/off in the <i>Preferences</i> menu. when enabled, the current syntax highlighting is turned off and misspelled words are (by default) shown in red and underlined. Right clicking on a misspelled word opens a menu where a list of correctly spelled suggestions is displayed that can be used to replace the current word. Alternatively, the misspelled word can be <i>ignored</i>, meaning that it will not appear red anymore, as long as this edition session is active, or <i>added to the dictionary</i>, meaning that it will be considered correctly spelled for this session and all the following (as well as for other applications using aspell). \n"
   "\n"
@@ -245,17 +251,13 @@ static const char* HelpText[] = {
 
   //_________________________________________________________
   "Printing",
-  "<h1>Printing</h1>\n"
+  "<h2>Printing</h2>\n"
   "\n"
-  "<p>The print dialog is opened using the print button in either the <i>toolbar</i> or the <i>File</i> menu. Files can be printed either directly or using the file formatting command <i>a2ps</i> (provided it is available on the system). <i>a2ps</i> is used to create a postscript file from the raw file. When used, the output postscript file can be either written to disc or sent to the printer.</p>\n"
-  "\n"
-  "<p>The <i>a2ps</i> and <i>print</i> commands are set either in the <i>Default Configuration</i> dialog, or in the <i>Print</i> dialog. They are used to build the full command line used to print the current document. Alternatively, the full command line can be edited directly, in case some options must be added which are not covered by the above.</p>\n"
-  "\n"
-  "<p>Another way to format the text before printing is to convert it into an HTML document. This is achieved by selecting <i>Convert to HTML</i> in the <i>File</i> menu. This opens a dialog to select the name of the HTML file to be created. Optionally, the converted file can be opened using a user defined third-party HTML browser, from where it is usually possible to print it. The advantage of this second method is that the converted HTML file keeps all the syntax hilighting and formatting performed by QEdit.</p>",
+  "<p>The print dialog is opened using the print button in either the <i>toolbar</i> or the <i>File</i> menu. Printing is performed in two steps. The file is first converted into a suitable format (either HTML or PDF), that contains all the syntax highlighting patterns. The converted file can the be either printed or edited using a third-party appication (an HTML or a PDF file viewer), using a dedicated command specified by the user.",
 
   //_________________________________________________________
   "Tab Emulation",
-  "<h1>Tab Emulation</h1>\n"
+  "<h2>Tab Emulation</h2>\n"
   "\n"
   "<p>Tab emulation is used to replace the standard tab character by a fixed amount of space characters. This is useful for portability of the edited document with respect to other applications, such as Emacs. By default tab emulation is on. Tab emulation is enabled/disabled in the <i>Default configuration</i> window. The number of space characters used as a replacement when emulation is on is also selected there. \n"
   "\n"
@@ -268,10 +270,9 @@ static const char* HelpText[] = {
   "\n"
   "<p>Additionally, a text macro called <i>Replace leading tabs</i> is found in the <i>tools</i> menu, which replaces all <i>true</i> leading tab characters with the current emulated tabs.",
 
-
   //_________________________________________________________
   "Regular Expressions",
-  "<h1>Regular Expressions</h1>\n"
+  "<h2>Regular Expressions</h2>\n"
   "\n"
   "<p>Regular expressions provide an efficient way of looking for complicated patterns in a text, using a compact syntax which is interpreted by the Qt build-in regular expression engine. Regular expressions are used extensively to define the syntax highlighting patterns, indentation rules and matching parenthesis in the document class configuration files. In general QEdit users do not need to know about the syntax used by regular expressions unless they wish to modify the document classes configuration files or create a new one. \n"
   "\n"
@@ -281,7 +282,7 @@ static const char* HelpText[] = {
 
   //_________________________________________________________
   "Multiple Views",
-  "<h1>Multiple Views</h1>\n"
+  "<h2>Multiple Views</h2>\n"
   "\n"
   "<p>Multiple views have two usage:</p>\n"
   "<ul>\n"
@@ -298,7 +299,7 @@ static const char* HelpText[] = {
 
   //_________________________________________________________
   "Automatic Backup",
-  "<h1>Automatic Backup</h1>\n"
+  "<h2>Automatic Backup</h2>\n"
   "\n"
   "<p>To prevent loss of information and enforce file recovery whenever the application is terminated abruptly, an automatic save of the files is performed on a regular basis in the <i>/tmp</i> directory. <p>The backup file name is constructed based on the original file name and the user editing it. For instance, the file \n"
   "\n"
@@ -314,7 +315,7 @@ static const char* HelpText[] = {
 
   //_________________________________________________________
   "Mouse Buttons",
-  "<h1>Mouse Buttons</h1>\n"
+  "<h2>Mouse Buttons</h2>\n"
   "\n"
   "<p>By default the mouse buttons are associated to the following actions:\n"
   "<ul>\n"
@@ -337,7 +338,7 @@ static const char* HelpText[] = {
 
   //_________________________________________________________
   "Accelerators",
-  "<h1>Accelerators</h1>\n"
+  "<h2>Accelerators</h2>\n"
   "\n"
   "<p>Key accelerators provide shortcuts to the most commonly used actions by pressing a predefined sequence of keys. They are case insensitive.\n"
   "\n"
@@ -372,7 +373,7 @@ static const char* HelpText[] = {
 
   //_________________________________________________________
   "Contact",
-  "<h1>Contact</h1>\n"
+  "<h2>Contact</h2>\n"
   "\n"
   "<p>Latest versions of QEdit can be downloaded at <p><a href=\"http://www.phenix.bnl.gov/WWW/publish/hpereira/php/show_software_package.php?package=QEdit\">http://www.phenix.bnl.gov/WWW/publish/hpereira/php/show_software_package.php?package=QEdit</a>\n"
   "\n"
@@ -382,13 +383,12 @@ static const char* HelpText[] = {
 
   //_________________________________________________________
   "Notes",
-  "<h1>Notes</h1>\n"
+  "<h2>Notes</h2>\n"
   "\n"
   "<p>This section is left empty for the user to add his own comments on QEdit.",
 
   0
 };
-
 
 
 #endif
