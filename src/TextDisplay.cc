@@ -826,7 +826,6 @@ void TextDisplay::updateConfiguration( void )
   parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
  
   // retrieve inactive colors for activity shading
-  QColor default_color( QWidget().palette().color( QPalette::Base ) );
   QColor inactive_color( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() );
   bool shade_inactive( XmlOptions::get().get<bool>( "SHADE_INACTIVE_VIEWS" ) );
   _setPaper( false, inactive_color.isValid() && shade_inactive ? inactive_color : paper( true ) );
