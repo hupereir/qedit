@@ -149,9 +149,6 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   */
   void _readFilesFromArgs( void );
   
-  //! actions called when application is about to quit
-  void _aboutToQuit( void );
-
   //! process request from application manager
   void _processRequest( const ArgList& );
 

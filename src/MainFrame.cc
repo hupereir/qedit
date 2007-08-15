@@ -39,6 +39,7 @@
 #include "EditFrame.h"
 #include "ErrorHandler.h"
 #include "ExitDialog.h"
+#include "FlatStyle.h"
 #include "MainFrame.h"
 #include "NewFileDialog.h"
 #include "XmlOptions.h"
@@ -81,12 +82,11 @@ MainFrame::MainFrame( int argc, char*argv[] ) :
   startup_timer_( this )
 {
   Debug::Throw( "MainFrame::MainFrame.\n" );
-
-  // about to quit connection
-  connect( this, SIGNAL( aboutToQuit() ), SLOT( _aboutToQuit() ) );
+  setStyle( new FlatStyle() );
 
   startup_timer_.setSingleShot( true );
   connect( &startup_timer_, SIGNAL( timeout() ), SLOT( _readFilesFromArgs() ) );
+  
 }
 
 //____________________________________________
@@ -631,7 +631,3 @@ void MainFrame::_processRequest( const ArgList& args )
   return;
   
 }
-
-//_______________________________________________
-void MainFrame::_aboutToQuit( void )
-{ Debug::Throw( "MainFrame::_aboutToQuit.\n" ); }
