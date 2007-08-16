@@ -565,13 +565,7 @@ void EditFrame::_print( void )
   
   // try open
   if( dialog.useCommand() )
-  {
-    string command( qPrintable( dialog.command() ) );
-    string path( fullname.path() );
-    
-    command += string( " " ) + fullname + "&";
-    Util::runAt( path, command );
-  }   
+  { Util::run( QStringList() << dialog.command() << fullname.c_str() ); }   
   
   Debug::Throw( "EditFrame::_print - done.\n" );
   return;
