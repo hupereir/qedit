@@ -372,6 +372,24 @@ static const char* HelpText[] = {
   "<p>Additional key accelerators are provided with the text edition macros provided by the current document class and are set in the corresponding document class configuration file.",
 
   //_________________________________________________________
+  "Command line",
+  "<h2>Command line arguments</h2>"
+  ""
+  "<p>The following arguments are available when running QEdit from command line:</p>"
+  "<pre>"
+  "--help                 displays this help and exit<br>"
+  "--autospell            switch autospell on for all files<br>"
+  "--filter [filter]      select filter for autospell<br>"
+  "--dictionary [dict]    select dictionary for autospell<br>"
+  "--tabbed               opens command line files in same window<br>"
+  "--diff                 opens command line files in same window and perform diff<br>"
+  "--close                close displays matching specified filenames and exit<br>"
+  "--replace              replace existing instance with new one.<br>"
+  "--no-server            ignore server mode. runs new application instance.<br>"
+  "--abort                exit existing instance.<br>"
+  "</pre>",
+
+  //_________________________________________________________
   "Contact",
   "<h2>Contact</h2>"
   ""
