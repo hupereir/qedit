@@ -5,19 +5,15 @@ QT += xml network
 TARGET = qedit
 VERSION = Qt-4.1
 
-INCLUDEPATH = . ../base ../base-qt ../base-server ../base-spellcheck
-DEPENDPATH += . ../base ../base-qt ../base-server ../base-spellcheck
+INCLUDEPATH = . ../base ../base-qt ../base-server
+DEPENDPATH += . ../base ../base-qt ../base-server
 
 LIBS += \
-  /usr/lib/libaspell.so \
-  ../base-spellcheck/libbase-spellcheck.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
 
 POST_TARGETDEPS = \
-  /usr/lib/libaspell.so \
-  ../base-spellcheck/libbase-spellcheck.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
