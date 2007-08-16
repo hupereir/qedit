@@ -63,10 +63,12 @@ void MainFrame::usage( void )
   cout << endl;
   cout << "Options : " << endl;
   cout << "  --help\t\t displays this help and exit" << endl;
+  cout << "  --tabbed\t\t opens files in same window" << endl;
+  cout << "  --diff\t\t opens files in same window and perform diff" << endl;
   cout << "  --autospell\t\t switch autospell on for all files" << endl;
-  cout << "  --tabbed\t\t opens command line files in same window" << endl;
-  cout << "  --diff\t\t opens command line files in same window and perform diff" << endl;
-  cout << "  --close\t\t close displays matching specified filenames and exit" << endl;
+  cout << "  --filter <filter>\t select filter for autospell" << endl;
+  cout << "  --dictionary <dict>\t select dictionary for autospell" << endl;
+  cout << "  --close\t\t close displays matching file names and exit" << endl;
   ApplicationManager::usage();
   return;
 }
