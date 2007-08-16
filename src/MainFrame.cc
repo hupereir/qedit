@@ -63,8 +63,10 @@ void MainFrame::usage( void )
   cout << endl;
   cout << "Options : " << endl;
   cout << "  --help\t\t displays this help and exit" << endl;
+  cout << "  --autospell\t\t switch autospell on for all files" << endl;
   cout << "  --tabbed\t\t opens command line files in same window" << endl;
   cout << "  --diff\t\t opens command line files in same window and perform diff" << endl;
+  cout << "  --close\t\t close displays matching specified filenames and exit" << endl;
   ApplicationManager::usage();
   return;
 }
@@ -217,11 +219,19 @@ void MainFrame::spellCheckConfiguration( void )
 }
 
 //_______________________________________________
-EditFrame* MainFrame::open( FileRecord record )
+EditFrame* MainFrame::open( FileRecord record, ArgList args )
 {
   
   Debug::Throw() << "MainFrame::Open - file: " << record.file() << endl;
 
+  //! see if autospell action is required
+  bool autospell( args.find( "--autospell" ) );
+  
+  //! see if autospell filter and dictionary are required
+  string filter = ( args.find( "--filter" ) && !args.get( "--filter" ).options().empty() ) ? args.get( "--filter" ).options().front() : "";
+  string dictionary = (args.find( "--dictionary" ) && !args.get( "--dictionary" ).options().empty() ) ? args.get( "--dictionary" ).options().front() : "";
+  Debug::Throw() << "MainFrame::open - filter:" << filter << " dictionary: " << dictionary << endl;
+  
   //! set default status to "open"
   open_status_ = OPEN;
   
@@ -249,6 +259,11 @@ EditFrame* MainFrame::open( FileRecord record )
   {
     (*iter)->uniconify();
     (*iter)->selectDisplay( record.file() );
+  
+    // trigger autospell if required
+    if( autospell ) (*iter)->activeDisplay().autoSpellAction().setChecked( true );
+    if( !filter.empty() ) (*iter)->activeDisplay().selectFilter( filter );
+    if( !dictionary.empty() ) (*iter)->activeDisplay().selectDictionary( filter );
     
     // update open status and exit
     open_status_ = OPEN;
@@ -319,8 +334,15 @@ EditFrame* MainFrame::open( FileRecord record )
       default: throw runtime_error( DESCRIPTION( "invalid return code" ) );
     }
   } 
+  
   // update frame configuration
   frame->show();
+
+  // trigger autospell if required
+  if( autospell ) frame->activeDisplay().autoSpellAction().setChecked( true );
+  if( !filter.empty() ) frame->activeDisplay().selectFilter( filter );
+  if( !dictionary.empty() ) frame->activeDisplay().selectDictionary( filter );
+    
   return frame;
 
 }
@@ -534,16 +556,13 @@ void MainFrame::_readFilesFromArgs( void )
 {
   Debug::Throw( "MainFrame::_readFilesFromArgs.\n" );
     
-  // see if open should be performed in Tabbed mode
-  bool tabbed( args_.find( "--tabbed" ) );
-  bool diff( args_.find( "--diff" ) );
-  
-  // keep track of opened files
-  set<File> files;
-  
   // retrieve files from arguments
   ArgList::Arg last_arg( args_.get().back() );
-  if( tabbed | diff )
+  
+  // see if tabbed mode
+  bool tabbed( args_.find( "--tabbed" ) );
+  bool diff( args_.find( "--diff" ) );
+  if( tabbed || diff )
   {
     
     EditFrame *frame( 0 );
@@ -557,6 +576,7 @@ void MainFrame::_readFilesFromArgs( void )
     else frame = &newEditFrame();
     
     // loop over files and open in current frame
+    set<string> files;
     for( list< string >::const_iterator iter = last_arg.options().begin(); iter != last_arg.options().end(); iter++ )
     {
       
@@ -580,21 +600,45 @@ void MainFrame::_readFilesFromArgs( void )
     }
     
     frame->show();
-    
-  } else {
-    
+    return;
+  } 
+  
+  // close mode
+  if( args_.find( "--close" ) )
+  {
+  
+    // loop over files 
     for( list< string >::const_iterator iter = last_arg.options().begin(); iter != last_arg.options().end(); iter++ )
     {
-      
       File file( *iter );
-      if( !file.empty() ) file = file.expand();
-      open( file );
-      if( open_status_ == EXIT_APP ) return;
+
+      // retrieve all EditFrames
+      BASE::KeySet<EditFrame> frames( this );
+      BASE::KeySet<EditFrame>::iterator frame_iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( file ) );
+      if( frame_iter == frames.end() ) continue;
       
+      // select display and close
+      (*frame_iter)->selectDisplay( file );
+      (*frame_iter)->closeViewAction().trigger();
     }
+    
+    // exit application
+    open_status_ = EXIT_APP;
+    return;
     
   }
   
+  // default mode
+  for( list< string >::const_iterator iter = last_arg.options().begin(); iter != last_arg.options().end(); iter++ )
+  {
+    
+    File file( *iter );
+    if( !file.empty() ) file = file.expand();
+    open( file, args_ );
+    if( open_status_ == EXIT_APP ) return;
+    
+  }
+      
   return;
   
 }

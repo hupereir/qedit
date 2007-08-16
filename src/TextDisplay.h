@@ -404,6 +404,12 @@ class TextDisplay: public CustomTextEdit
   //! clear all blocks if match argument
   void clearAllTags( const int& tags = TextBlock::ALL_TAGS );
   
+  //! change autospell filter
+  void selectFilter( const std::string& );
+  
+  //! change autospell dictionary
+  void selectDictionary( const std::string& );
+  
   protected:
 
   //!@name event handlers
@@ -537,12 +543,6 @@ class TextDisplay: public CustomTextEdit
   
   //! run spellcheck
   void _spellcheck( void );
-  
-  //! change autospell filter
-  void _selectFilter( const std::string& );
-  
-  //! change autospell dictionary
-  void _selectDictionary( const std::string& );
   
   //@}
   

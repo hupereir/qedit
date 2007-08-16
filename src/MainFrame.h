@@ -123,7 +123,7 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   
   //! open
   /*! returns false if no file is open (force application to quit) */
-  EditFrame* open( FileRecord record = FileRecord() );
+  EditFrame* open( FileRecord record = FileRecord(), ArgList args = ArgList() );
 
   //! exit safely
   void exit( void );

@@ -1158,6 +1158,68 @@ void TextDisplay::clearAllTags( const int& flags )
     
 }
 
+//_______________________________________  
+void TextDisplay::selectFilter( const std::string& filter ) 
+{ 
+  Debug::Throw( "TextDisplay::selectFilter.\n" ); 
+
+  #if WITH_ASPELL
+
+  // local reference to interface
+  SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
+
+  if( filter == interface.filter() || !interface.hasFilter( filter ) ) return;
+  
+  // update interface
+  interface.setFilter( filter );
+  _filterMenu().select( filter );
+  
+  // update file record
+  if( !file().empty() )
+  {
+    FileRecord& record( menu().get( file() ) ); 
+    record.addInformation( "filter", interface.filter() ); 
+  }
+
+  // rehighlight if needed
+  if( textHighlight().spellParser().isEnabled() ) rehighlight();
+ 
+  #endif
+  
+  return;
+  
+}
+
+//_______________________________________  
+void TextDisplay::selectDictionary( const std::string& dictionary ) 
+{ 
+  Debug::Throw( "TextDisplay::selectDictionary.\n" ); 
+
+  #if WITH_ASPELL
+  // local reference to interface
+  SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
+
+  if( dictionary == interface.dictionary() || !interface.hasDictionary( dictionary ) ) return;
+  
+  // update interface
+  interface.setDictionary( dictionary );
+  _dictionaryMenu().select( dictionary );
+  
+  // update file record
+  if( !file().empty() )
+  {
+    FileRecord& record( menu().get( file() ) ); 
+    record.addInformation( "dictionary", interface.dictionary() ); 
+  }
+  
+  // rehighlight if needed
+  if( textHighlight().spellParser().isEnabled() ) rehighlight();
+  #endif
+  
+  return;
+  
+}
+
 //_______________________________________________________
 void TextDisplay::keyPressEvent( QKeyEvent* event )
 {
@@ -1334,8 +1396,8 @@ void TextDisplay::_installActions( void )
   filter_menu_action_ = _filterMenu().menuAction();
   dictionary_menu_action_ = _dictionaryMenu().menuAction();
   
-  connect( &_filterMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectFilter( const std::string& ) ) );
-  connect( &_dictionaryMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( _selectDictionary( const std::string& ) ) );
+  connect( &_filterMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( selectFilter( const std::string& ) ) );
+  connect( &_dictionaryMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( selectDictionary( const std::string& ) ) );
   
   #endif
   
@@ -1663,8 +1725,8 @@ void TextDisplay::_spellcheck( void )
   
   // connections
 
-  connect( &dialog, SIGNAL( filterChanged( const std::string& ) ), SLOT( _selectFilter( const std::string& ) ) );
-  connect( &dialog, SIGNAL( dictionaryChanged( const std::string& ) ), SLOT( _selectDictionary( const std::string& ) ) );
+  connect( &dialog, SIGNAL( filterChanged( const std::string& ) ), SLOT( selectFilter( const std::string& ) ) );
+  connect( &dialog, SIGNAL( dictionaryChanged( const std::string& ) ), SLOT( selectDictionary( const std::string& ) ) );
 
   dialog.nextWord();
   dialog.exec();
@@ -1680,68 +1742,6 @@ void TextDisplay::_spellcheck( void )
   textHighlight().spellParser().interface().mergeIgnoredWords( dialog.interface().ignoredWords() );
   
   #endif
-  
-}
-
-//_______________________________________  
-void TextDisplay::_selectFilter( const std::string& filter ) 
-{ 
-  Debug::Throw( "TextDisplay::_selectFilter.\n" ); 
-
-  #if WITH_ASPELL
-
-  // local reference to interface
-  SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
-
-  if( filter == interface.filter() || !interface.hasFilter( filter ) ) return;
-  
-  // update interface
-  interface.setFilter( filter );
-  _filterMenu().select( filter );
-  
-  // update file record
-  if( !file().empty() )
-  {
-    FileRecord& record( menu().get( file() ) ); 
-    record.addInformation( "filter", interface.filter() ); 
-  }
-
-  // rehighlight if needed
-  if( textHighlight().spellParser().isEnabled() ) rehighlight();
- 
-  #endif
-  
-  return;
-  
-}
-
-//_______________________________________  
-void TextDisplay::_selectDictionary( const std::string& dictionary ) 
-{ 
-  Debug::Throw( "TextDisplay::_selectDictionary.\n" ); 
-
-  #if WITH_ASPELL
-  // local reference to interface
-  SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
-
-  if( dictionary == interface.dictionary() || !interface.hasDictionary( dictionary ) ) return;
-  
-  // update interface
-  interface.setDictionary( dictionary );
-  _dictionaryMenu().select( dictionary );
-  
-  // update file record
-  if( !file().empty() )
-  {
-    FileRecord& record( menu().get( file() ) ); 
-    record.addInformation( "dictionary", interface.dictionary() ); 
-  }
-  
-  // rehighlight if needed
-  if( textHighlight().spellParser().isEnabled() ) rehighlight();
-  #endif
-  
-  return;
   
 }
 
