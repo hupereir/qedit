@@ -302,9 +302,6 @@ void EditFrame::saveConfiguration( void )
     XmlOptions::get().set<bool>( option_name, !toolbar->isHidden() );
     XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
   }
-
-  // write open previous menu.
-  menu_->openPreviousMenu().write();
   
 }
 
