@@ -176,9 +176,9 @@ EditFrame& MainFrame::newEditFrame( void )
 void MainFrame::configuration( void )
 {
   Debug::Throw( "MainFrame::configuration.\n" );
-  ConfigurationDialog dialog( activeWindow() );
+  ConfigurationDialog dialog( 0 );
   connect( &dialog, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
-  QtUtil::centerOnParent( &dialog );
+  QtUtil::centerOnWidget( &dialog, activeWindow() );
   dialog.exec();
   Debug::Throw( "MainFrame::configuration - done.\n" );
 }
@@ -429,6 +429,8 @@ void MainFrame::about( void )
   dialog.setWindowIcon( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).expand().c_str() ) );
   dialog.setIconPixmap( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).expand().c_str() ) );
   dialog.setText( what.str().c_str() );
+  dialog.adjustSize();
+  QtUtil::centerOnWidget( &dialog, activeWindow() );
   dialog.exec();
 
 }
