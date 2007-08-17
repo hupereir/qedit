@@ -278,14 +278,20 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
   if( iter != frames.end() ) frame = (*iter );
 
   // if no frame found, create a new one
-  if( !frame ) frame = &newEditFrame();
+  if( !frame )
+  {
+    frame = &newEditFrame();
+    processEvents();
+    //QtUtil::centerOnWidget( frame, activeWindow() );
+  }
+  
+  frame->show();
 
   // check if file exists
   if( record.file().exists() ) frame->setFile( record.file() );
   else if( !record.file().empty() )
   {
   
-    frame->show();
     processEvents();
     
     // create NewFileDialog
@@ -337,9 +343,6 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
     }
   } 
   
-  // update frame configuration
-  frame->show();
-
   // trigger autospell if required
   if( autospell ) frame->activeDisplay().autoSpellAction().setChecked( true );
   if( !filter.empty() ) frame->activeDisplay().selectFilter( filter );
