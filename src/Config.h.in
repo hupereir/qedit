@@ -33,5 +33,4 @@
 
 #define WITH_ASPELL @aspell@
 #define BUILD_TIMESTAMP "@timestamp@"
-#define VERSION "@VERSION@"
 #endif

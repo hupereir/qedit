@@ -59,8 +59,7 @@ TextDisplay.h \
 TextHighlight.h \
 TextIndent.h \
 TextMacro.h \
-TextParenthesis.h \
-ViewHtmlDialog.h \
+TextParenthesis.h
 WindowTitle.h \
 XmlDef.h
 
@@ -96,6 +95,5 @@ TextDisplay.cpp \
 TextHighlight.cpp \
 TextIndent.cpp \
 TextMacro.cpp \
-TextParenthesis.cpp \
-ViewHtmlDialog.cpp
+TextParenthesis.cpp
 
