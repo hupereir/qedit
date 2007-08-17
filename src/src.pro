@@ -4,8 +4,8 @@ QT += xml network
 
 TARGET = qedit
 
-INCLUDEPATH = . ../base ../base-qt ../base-server
-DEPENDPATH += . ../base ../base-qt ../base-server
+INCLUDEPATH = . ../base ../base-qt ../base-server ../extra-includes
+DEPENDPATH += . ../base ../base-qt ../base-server ../extra-includes
 
 LIBS += \
   ../base-server/libbase-server.a \
