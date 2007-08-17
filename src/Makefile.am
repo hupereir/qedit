@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = src.pro pixmaps.qrc
+EXTRA_DIST = src.pro pixmaps.qrc patterns.qrc
 
 if WITH_ASPELL 
 INCLUDES = \
