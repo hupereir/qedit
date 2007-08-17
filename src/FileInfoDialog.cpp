@@ -34,6 +34,7 @@
 #include <QCheckBox>
 #include <sys/stat.h>
 
+#include "AutoSaveThread.h"
 #include "Config.h"
 #include "CustomPixmap.h"
 #include "CustomGridLayout.h"
@@ -264,6 +265,14 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   grid_layout->addWidget( new QLabel( (parent->tabEmulationAction().isChecked() ? "true":"false" ), box ) );
 
   grid_layout->setColumnStretch( 1, 1 );
+  
+  // autosave
+  if( !file.empty() )
+  { 
+    layout->addWidget( new QLabel( "Auto-save filename", box ) );
+    layout->addWidget( new QLabel( AutoSaveThread::autoSaveName( file ).c_str(), box ) );
+  }
+  
   layout->addStretch();
   
   adjustSize();

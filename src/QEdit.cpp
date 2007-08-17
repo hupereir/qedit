@@ -85,12 +85,12 @@ int main (int argc, char *argv[])
     XmlOptions::get().add( option );
     
     // add HelpFile
-    option = Option( "HELP_FILE", Util::home() + "/.qedit_help" );
+    option = Option( "HELP_FILE", File( ".qedit_help").addPath(Util::home()));
     option.setRecordable( false );
     XmlOptions::get().add( option );
 
     // add DB file
-    option = Option( "DB_FILE", Util::home() + "/.qedit_db" );
+    option = Option( "DB_FILE",File(".qedit_db").addPath(Util::home()));
     option.setRecordable( false );
     XmlOptions::get().add( option );
     
@@ -99,7 +99,7 @@ int main (int argc, char *argv[])
     installSystemOptions();
     
     // load user resource file
-    string rcfile = Util::home() + "/.qeditrc";
+    string rcfile = File(".qeditrc").addPath( Util::home() );
     XmlOptions::read( rcfile ); 
       
     // set debug level
