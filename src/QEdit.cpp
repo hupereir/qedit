@@ -71,6 +71,9 @@ int main (int argc, char *argv[])
       return 0;
     }
 
+    // add default value for autosave directory
+    XmlOptions::get().setRaw( "AUTOSAVE_PATH", Util::tmp() );
+
     // add user name
     Option option( "USER_NAME", Util::user() );
     option.setRecordable( false );
@@ -82,12 +85,12 @@ int main (int argc, char *argv[])
     XmlOptions::get().add( option );
     
     // add HelpFile
-    option = Option( "HELP_FILE", Util::env( "HOME", "." ) + "/.qedit_help" );
+    option = Option( "HELP_FILE", Util::home() + "/.qedit_help" );
     option.setRecordable( false );
     XmlOptions::get().add( option );
 
     // add DB file
-    option = Option( "DB_FILE", Util::env( "HOME", "." ) + "/.qedit_db" );
+    option = Option( "DB_FILE", Util::home() + "/.qedit_db" );
     option.setRecordable( false );
     XmlOptions::get().add( option );
     
@@ -96,7 +99,7 @@ int main (int argc, char *argv[])
     installSystemOptions();
     
     // load user resource file
-    string rcfile = Util::env( "HOME", "." ) + "/.qeditrc";
+    string rcfile = Util::home() + "/.qeditrc";
     XmlOptions::read( rcfile ); 
       
     // set debug level

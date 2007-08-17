@@ -191,9 +191,10 @@ EditFrame::EditFrame(  QWidget* parent ):
 
   action = toolbar->addAction( IconEngine::get( ICONS::VIEW_RIGHT, path_list ), "Open view left/right", this, SLOT( openHorizontal() ) );
   action->setToolTip( "Open a new view horizontally" );
-  
-  toolbar->addAction( &detachAction() );
+
+  // detach and close view
   toolbar->addAction( &closeViewAction() );
+  toolbar->addAction( &detachAction() );
  
   //! configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
@@ -862,7 +863,6 @@ void EditFrame::_installActions( void )
   addAction( close_view_action_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE, path_list ), "&Close view", this ) );
   close_view_action_->setShortcut( CTRL+Key_W );
   close_view_action_->setToolTip( "Close current view" );
-  close_view_action_->setEnabled( false );
   connect( close_view_action_, SIGNAL( triggered() ), SLOT( _closeView() ) );
  
   addAction( close_window_action_ = new QAction( "&Close window", this ) );
@@ -1192,7 +1192,6 @@ void EditFrame::_closeView( TextDisplay& display )
   int independent_display_count( independentDisplayCount() );
   detachAction().setEnabled( independent_display_count > 1 );
   diffAction().setEnabled( independent_display_count == 2 );
-  close_view_action_->setEnabled( BASE::KeySet<TextDisplay>(this).size() > 1 );
   
   // change focus
   activeDisplay().setFocus();
@@ -1273,10 +1272,6 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
     diffAction().setEnabled( independentDisplayCount() == 2 );
     
   }
-
-  // update close view
-  closeViewAction().setEnabled( true );
-  Debug::Throw( "EditFrame::_splitView - done.\n" );
 
   return display;
 

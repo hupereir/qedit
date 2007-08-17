@@ -89,8 +89,6 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "EDITION_TOOLBAR_LOCATION", "top" , "toolbar location" ));
   XmlOptions::get().add( Option( "EXTRA_TOOLBAR_LOCATION", "top" , "toolbar location" ));
   XmlOptions::get().add( Option( "SPLIT_TOOLBAR_LOCATION",   "top" , "toolbar location" ));
-
-  XmlOptions::get().add( Option( "AUTOSAVE_PATH", "/tmp", "autosave file path name" ) );
   XmlOptions::get().add( Option( "AUTOSAVE_INTERVAL", "20", "time interval between two automatic save of the file" ) );
 
   XmlOptions::get().add( Option( "HIGHLIGHT_PARAGRAPH", "1", "active paragraph highlighting" ) );
