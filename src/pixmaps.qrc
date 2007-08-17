@@ -1,0 +1,23 @@
+<!DOCTYPE RCC><RCC version="1.0">
+  <qresource>
+    <file alias="icon.png">../pixmaps/icon.png</file>
+    <file alias="pixmaps/editcopy.png">../pixmaps/editcopy.png</file>
+    <file alias="pixmaps/editcut.png">../pixmaps/editcut.png</file>
+    <file alias="pixmaps/editpaste.png">../pixmaps/editpaste.png</file>
+    <file alias="pixmaps/filenew.png">../pixmaps/filenew.png</file>
+    <file alias="pixmaps/fileopen.png">../pixmaps/fileopen.png</file>
+    <file alias="pixmaps/fileprint.png">../pixmaps/fileprint.png</file>
+    <file alias="pixmaps/filesave.png">../pixmaps/filesave.png</file>
+    <file alias="pixmaps/fonts.png">../pixmaps/fonts.png</file>
+    <file alias="pixmaps/icon.png">../pixmaps/icon.png</file>
+    <file alias="pixmaps/info.png">../pixmaps/info.png</file>
+    <file alias="pixmaps/redo.png">../pixmaps/redo.png</file>
+    <file alias="pixmaps/undo.png">../pixmaps/undo.png</file>
+    <file alias="pixmaps/view_bottom.png">../pixmaps/view_bottom.png</file>
+    <file alias="pixmaps/view_left_right.png">../pixmaps/view_left_right.png</file>
+    <file alias="pixmaps/view_remove.png">../pixmaps/view_remove.png</file>
+    <file alias="pixmaps/view_right.png">../pixmaps/view_right.png</file>
+    <file alias="pixmaps/view_top_bottom.png">../pixmaps/view_top_bottom.png</file>
+    <file alias="pixmaps/window_fullscreen.png">../pixmaps/window_fullscreen.png</file>            
+  </qresource>
+</RCC>

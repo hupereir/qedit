@@ -121,26 +121,28 @@ Menu::Menu( QWidget* parent ):
   connect( windows_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateWindowsMenu() ) );
   connect( windows_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectFile( QAction* ) ) );
 
+  // help manager
+  BASE::HelpManager* help( new BASE::HelpManager( this ) );
+  File help_file( XmlOptions::get().get<File>( "HELP_FILE" ) );
+  if( help_file.exists() ) BASE::HelpManager::install( help_file );
+  else
+  {
+    BASE::HelpManager::setFile( help_file );
+    BASE::HelpManager::install( HelpText );
+  }  
+
   // create help menu
   menu = addMenu( "&Help" );
-  menu->addAction( &BASE::HelpManager::get().displayAction() );
+  menu->addAction( &help->displayAction() );
   menu->addSeparator();
   menu->addAction( "About &Qt", qApp, SLOT( aboutQt() ), 0 );
   menu->addAction( "About Q&Edit", qApp, SLOT( about() ), 0 );
-
-  File help_file( XmlOptions::get().get<File>( "HELP_FILE" ) );
-  if( help_file.exists() ) BASE::HelpManager::get().install( help_file );
-  else
-  {
-    BASE::HelpManager::get().setFile( help_file );
-    BASE::HelpManager::get().install( HelpText );
-  }
-
+  
   // debug menu
   menu->addSeparator();
   DebugMenu *debug_menu( new DebugMenu( this ) );
   debug_menu->setTitle( "&Debug" );
-  debug_menu->addAction( &BASE::HelpManager::get().dumpAction() );
+  debug_menu->addAction( &help->dumpAction() );
   debug_menu->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
   menu->addMenu( debug_menu );
 

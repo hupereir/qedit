@@ -1,16 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-noinst_LIBRARIES = libpixmaps.a
-libpixmaps_a_SOURCES = qrc_pixmaps.cpp
-
-INCLUDES =  \
-  -I$(qt_includes) \
-  -I$(qt_includes)/Qt \
-  -I$(qt_includes)/QtCore 
-
 EXTRA_DIST = \
-pixmaps.qrc \
-pixmaps.pro \
 editcopy.png \
 editcut.png \
 editpaste.png \
@@ -30,9 +20,3 @@ view_right.png \
 view_top_bottom.png \
 window_fullscreen.png
 
-clean-local:
-	rm -f qrc_*.cpp
-
-### rule to generate qt meta objects
-qrc_%.cpp: %.qrc
-	$(qt_rcc) -name $* $^ -o $@

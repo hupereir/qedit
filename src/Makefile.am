@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = src.pro
+EXTRA_DIST = src.pro pixmaps.qrc
 
 if WITH_ASPELL 
 INCLUDES = \
@@ -35,7 +35,6 @@ if WITH_ASPELL
 libraries = \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   -L$(aspell_libraries) -laspell  \
-  ../pixmaps/libpixmaps.a \
   ../base-spellcheck/libbase-spellcheck.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
@@ -45,7 +44,6 @@ else
 
 libraries =  \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
-  ../pixmaps/libpixmaps.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
@@ -127,6 +125,7 @@ qedit_SOURCES = \
   TextMacro.cpp
 
 nodist_qedit_SOURCES = \
+  qrc_pixmaps.cpp \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \
   moc_Diff.cpp \
@@ -143,6 +142,13 @@ nodist_qedit_SOURCES = \
   moc_TextDisplay.cpp \
   moc_TextIndent.cpp
 
+clean-local:
+	rm -f moc_*.cpp
+	rm -f qrc_*.cpp
+
 ### rule to generate qt meta objects
 moc_%.cpp: %.h
 	$(qt_moc) $^ -o $@
+
+qrc_%.cpp: %.qrc
+	$(qt_rcc) -name $* $^ -o $@

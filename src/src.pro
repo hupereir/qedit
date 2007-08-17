@@ -19,6 +19,8 @@ POST_TARGETDEPS = \
   ../base/libbase.a \
   ../pixmaps/libpixmaps.a
 
+RESOURCES = pixmaps.qrc
+
 HEADERS = \
 AskForSaveDialog.h \
 AutoSave.h \
