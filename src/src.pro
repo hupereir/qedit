@@ -62,37 +62,37 @@ WindowTitle.h \
 XmlDef.h
 
 SOURCES = \
-AskForSaveDialog.cc \
-AutoSave.cc \
-AutoSaveThread.cc \
-ConfigurationDialog.cc \
-Diff.cc \
-DocumentClass.cc \
-DocumentClassDialog.cc \
-DocumentClassManager.cc \
-EditFrame.cc \
-ExitDialog.cc \
-FileInfoDialog.cc \
-FileModifiedDialog.cc \
-FileRemovedDialog.cc \
-FileSelectionDialog.cc \
-HighlightBlockData.cc \
-HighlightPattern.cc \
-HighlightStyle.cc \
-HtmlUtil.cc \
-IndentPattern.cc \
-KeywordPattern.cc \
-MainFrame.cc \
-Menu.cc \
-NewFileDialog.cc \
-ParenthesisHighlight.cc \
-PrintDialog.cc \
-QEdit.cc \
-RangePattern.cc \
-TextDisplay.cc \
-TextHighlight.cc \
-TextIndent.cc \
-TextMacro.cc \
-TextParenthesis.cc \
-ViewHtmlDialog.cc
+AskForSaveDialog.cpp \
+AutoSave.cpp \
+AutoSaveThread.cpp \
+ConfigurationDialog.cpp \
+Diff.cpp \
+DocumentClass.cpp \
+DocumentClassDialog.cpp \
+DocumentClassManager.cpp \
+EditFrame.cpp \
+ExitDialog.cpp \
+FileInfoDialog.cpp \
+FileModifiedDialog.cpp \
+FileRemovedDialog.cpp \
+FileSelectionDialog.cpp \
+HighlightBlockData.cpp \
+HighlightPattern.cpp \
+HighlightStyle.cpp \
+HtmlUtil.cpp \
+IndentPattern.cpp \
+KeywordPattern.cpp \
+MainFrame.cpp \
+Menu.cpp \
+NewFileDialog.cpp \
+ParenthesisHighlight.cpp \
+PrintDialog.cpp \
+QEdit.cpp \
+RangePattern.cpp \
+TextDisplay.cpp \
+TextHighlight.cpp \
+TextIndent.cpp \
+TextMacro.cpp \
+TextParenthesis.cpp \
+ViewHtmlDialog.cpp
 

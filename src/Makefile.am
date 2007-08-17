@@ -93,56 +93,56 @@ noinst_HEADERS = \
   XmlDef.h
 
 qedit_SOURCES = \
-  AskForSaveDialog.cc \
-  AutoSave.cc \
-  AutoSaveThread.cc \
-  ConfigurationDialog.cc \
-  Diff.cc \
-  DocumentClass.cc \
-  DocumentClassDialog.cc \
-  DocumentClassManager.cc \
-  EditFrame.cc \
-  ExitDialog.cc \
-  FileInfoDialog.cc \
-  FileModifiedDialog.cc \
-  FileRemovedDialog.cc \
-  FileSelectionDialog.cc \
-  HighlightBlockData.cc \
-  HighlightPattern.cc \
-  HighlightStyle.cc \
-  HtmlUtil.cc \
-  IndentPattern.cc \
-  KeywordPattern.cc \
-  MainFrame.cc \
-  Menu.cc \
-  NewFileDialog.cc \
-  ParenthesisHighlight.cc \
-  PrintDialog.cc \
-  QEdit.cc \
-  RangePattern.cc \
-  TextParenthesis.cc \
-  TextDisplay.cc \
-  TextHighlight.cc \
-  TextIndent.cc \
-  TextMacro.cc
+  AskForSaveDialog.cpp \
+  AutoSave.cpp \
+  AutoSaveThread.cpp \
+  ConfigurationDialog.cpp \
+  Diff.cpp \
+  DocumentClass.cpp \
+  DocumentClassDialog.cpp \
+  DocumentClassManager.cpp \
+  EditFrame.cpp \
+  ExitDialog.cpp \
+  FileInfoDialog.cpp \
+  FileModifiedDialog.cpp \
+  FileRemovedDialog.cpp \
+  FileSelectionDialog.cpp \
+  HighlightBlockData.cpp \
+  HighlightPattern.cpp \
+  HighlightStyle.cpp \
+  HtmlUtil.cpp \
+  IndentPattern.cpp \
+  KeywordPattern.cpp \
+  MainFrame.cpp \
+  Menu.cpp \
+  NewFileDialog.cpp \
+  ParenthesisHighlight.cpp \
+  PrintDialog.cpp \
+  QEdit.cpp \
+  RangePattern.cpp \
+  TextParenthesis.cpp \
+  TextDisplay.cpp \
+  TextHighlight.cpp \
+  TextIndent.cpp \
+  TextMacro.cpp
 
 nodist_qedit_SOURCES = \
-  moc_AskForSaveDialog.cc \
-  moc_AutoSave.cc \
-  moc_Diff.cc \
-  moc_DocumentClassDialog.cc \
-  moc_EditFrame.cc \
-  moc_FileModifiedDialog.cc \
-  moc_FileRemovedDialog.cc \
-  moc_FileSelectionDialog.cc \
-  moc_MainFrame.cc \
-  moc_Menu.cc \
-  moc_NewFileDialog.cc \
-  moc_ParenthesisHighlight.cc \
-  moc_PrintDialog.cc \
-  moc_TextDisplay.cc \
-  moc_TextIndent.cc
+  moc_AskForSaveDialog.cpp \
+  moc_AutoSave.cpp \
+  moc_Diff.cpp \
+  moc_DocumentClassDialog.cpp \
+  moc_EditFrame.cpp \
+  moc_FileModifiedDialog.cpp \
+  moc_FileRemovedDialog.cpp \
+  moc_FileSelectionDialog.cpp \
+  moc_MainFrame.cpp \
+  moc_Menu.cpp \
+  moc_NewFileDialog.cpp \
+  moc_ParenthesisHighlight.cpp \
+  moc_PrintDialog.cpp \
+  moc_TextDisplay.cpp \
+  moc_TextIndent.cpp
 
 ### rule to generate qt meta objects
-moc_%.cc: %.h
+moc_%.cpp: %.h
 	$(qt_moc) $^ -o $@
