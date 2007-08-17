@@ -126,6 +126,7 @@ qedit_SOURCES = \
 
 nodist_qedit_SOURCES = \
   qrc_pixmaps.cpp \
+  qrc_patterns.cpp \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \
   moc_Diff.cpp \

@@ -55,16 +55,16 @@ void installDefaultOptions( void )
   // input document_class pattern filenames options are special.
   // keep the full list
   XmlOptions::get().keep( "PATTERN_FILENAME" );
-  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/c_patterns.xml" , "default patterns for c/c++ files"));
-  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/default_patterns.xml" , "default patterns"));
-  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/diff_patterns.xml" , "default patterns for diff files"));
-  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/fortran_patterns.xml" , "default patterns for fortran files")); 
-  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/html_patterns.xml" , "default patterns for html files"));
-  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/latex_patterns.xml", "default patterns for latex files"));
-  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/makefile_patterns.xml", "default patterns for makefile files"));
-  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/perl_patterns.xml", "default patterns for perl files"));
-  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/shell_patterns.xml", "default patterns for shell files"));
-  XmlOptions::get().add( Option( "PATTERN_FILENAME", "@prefix@/share/QEdit/patterns/xml_patterns.xml", "default patterns for xml files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", ":/patterns/c_patterns.xml" , "default patterns for c/c++ files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", ":/patterns/default_patterns.xml" , "default patterns"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", ":/patterns/diff_patterns.xml" , "default patterns for diff files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", ":/patterns/fortran_patterns.xml" , "default patterns for fortran files")); 
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", ":/patterns/html_patterns.xml" , "default patterns for html files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", ":/patterns/latex_patterns.xml", "default patterns for latex files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", ":/patterns/makefile_patterns.xml", "default patterns for makefile files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", ":/patterns/perl_patterns.xml", "default patterns for perl files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", ":/patterns/shell_patterns.xml", "default patterns for shell files"));
+  XmlOptions::get().add( Option( "PATTERN_FILENAME", ":/patterns/xml_patterns.xml", "default patterns for xml files"));
 
   // diff configuration
   XmlOptions::get().add( Option( "DIFF_COMMAND", "@DIFF@", "diff files command" ) );
