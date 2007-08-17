@@ -1,9 +1,8 @@
-
+TEMPLATE = app
 CONFIG += qt
 QT += xml network
 
 TARGET = qedit
-VERSION = Qt-4.1
 
 INCLUDEPATH = . ../base ../base-qt ../base-server
 DEPENDPATH += . ../base ../base-qt ../base-server
