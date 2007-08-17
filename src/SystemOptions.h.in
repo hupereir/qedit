@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-  \file DefaultOptions.h
+  \file SystemOptions.h
   \brief default options
   \author Hugo Pereira
   \version $Revision$
@@ -34,7 +34,7 @@
 
 //_____________________________________________________
 //! default options installer
-void installDefaultOptions( void )
+void installSystemOptions( void )
 {
 
   // print commands
