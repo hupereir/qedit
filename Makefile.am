@@ -19,6 +19,7 @@ SUBDIRS =  \
 EXTRA_DIST =  \
  INSTALL \
  COPYING \
+ icon.ico \
  icon.png \
  autogen.sh \
  QEdit.spec.in \
