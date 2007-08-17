@@ -1755,7 +1755,7 @@ void TextDisplay::_showFileInfo( void )
 }
 
 //_____________________________________________________________
-void TextDisplay::_setBlockModified( int position, int removed, int added )
+void TextDisplay::_setBlockModified( int position, int, int added )
 {
   // Debug::Throw() << "TextDisplay::_setBlockModified - [" << position << "," << removed << "," << added << "]" << endl;
   QTextBlock begin( document()->findBlock( position ) );

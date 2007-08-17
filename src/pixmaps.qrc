@@ -9,7 +9,6 @@
     <file alias="pixmaps/fileprint.png">../pixmaps/fileprint.png</file>
     <file alias="pixmaps/filesave.png">../pixmaps/filesave.png</file>
     <file alias="pixmaps/fonts.png">../pixmaps/fonts.png</file>
-    <file alias="pixmaps/icon.png">../pixmaps/icon.png</file>
     <file alias="pixmaps/info.png">../pixmaps/info.png</file>
     <file alias="pixmaps/redo.png">../pixmaps/redo.png</file>
     <file alias="pixmaps/undo.png">../pixmaps/undo.png</file>
