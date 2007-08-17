@@ -31,7 +31,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc COPYING INSTALL
 %{prefix}/bin/qedit
-%{prefix}/share/QEdit/icon.png
 %{prefix}/share/QEdit/patterns/c_patterns.xml
 %{prefix}/share/QEdit/patterns/default_patterns.xml
 %{prefix}/share/QEdit/patterns/diff_patterns.xml
@@ -42,23 +41,4 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/share/QEdit/patterns/perl_patterns.xml
 %{prefix}/share/QEdit/patterns/shell_patterns.xml
 %{prefix}/share/QEdit/patterns/xml_patterns.xml
-
-%{prefix}/share/QEdit/pixmaps/editcut.png
-%{prefix}/share/QEdit/pixmaps/editcopy.png
-%{prefix}/share/QEdit/pixmaps/editpaste.png
-%{prefix}/share/QEdit/pixmaps/filenew.png
-%{prefix}/share/QEdit/pixmaps/fileopen.png
-%{prefix}/share/QEdit/pixmaps/fileprint.png
-%{prefix}/share/QEdit/pixmaps/filesave.png
-%{prefix}/share/QEdit/pixmaps/fonts.png
-%{prefix}/share/QEdit/pixmaps/info.png
-%{prefix}/share/QEdit/pixmaps/redo.png
-%{prefix}/share/QEdit/pixmaps/undo.png
-%{prefix}/share/QEdit/pixmaps/view_bottom.png
-%{prefix}/share/QEdit/pixmaps/view_left_right.png 
-%{prefix}/share/QEdit/pixmaps/view_remove.png
-%{prefix}/share/QEdit/pixmaps/view_right.png
-%{prefix}/share/QEdit/pixmaps/view_top_bottom.png
-%{prefix}/share/QEdit/pixmaps/window_fullscreen.png
-
 %changelog

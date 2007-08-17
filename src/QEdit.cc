@@ -103,7 +103,7 @@ int main (int argc, char *argv[])
     if( debug_level ) XmlOptions::get().dump();
 
     // initialize main frame and run loop
-    // QApplication::setStyle(new FlatStyle() );
+    Q_INIT_RESOURCE( pixmaps );
     MainFrame main_frame( argc, argv );
     main_frame.initApplicationManager();
     main_frame.exec();

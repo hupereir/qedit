@@ -35,6 +35,7 @@ if WITH_ASPELL
 libraries = \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   -L$(aspell_libraries) -laspell  \
+  ../pixmaps/libpixmaps.a \
   ../base-spellcheck/libbase-spellcheck.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
@@ -44,6 +45,7 @@ else
 
 libraries =  \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
+  ../pixmaps/libpixmaps.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a

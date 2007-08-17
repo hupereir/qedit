@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
 
-SUBDIRS += base base-qt base-server src tests
+SUBDIRS += base base-qt base-server pixmaps src tests
