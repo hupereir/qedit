@@ -168,7 +168,7 @@ AC_OUTPUT( Makefile \
   extra-includes/Makefile \
   src/Makefile \
   src/Config.h \
-  src/DefaultOptions.h \
+  src/SystemOptions.h \
   patterns/Makefile \
   pixmaps/Makefile \
 )

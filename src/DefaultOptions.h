@@ -43,11 +43,6 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "ICON_PIXMAP", ":/icon.png" , "application icon"));
   XmlOptions::get().add( Option( "DEFAULT_ICON_PATH", "/usr/share/icons" , "default path to look for icons"));
 
-  // print commands
-  XmlOptions::get().keep( "PRINT_COMMAND" );
-  XmlOptions::get().add( Option( "PRINT_COMMAND", "@KONQUEROR@" , "html file editor"  ));
-  XmlOptions::get().add( Option( "PRINT_COMMAND", "@ACROREAD@" , "pdf files editor"  ));
-  XmlOptions::get().add( Option( "PRINT_COMMAND", "@LPR@" , "print command"));  
   XmlOptions::get().add( Option( "USE_PRINT_COMMAND", "0", "use print/edit command" ) );
   XmlOptions::get().add( Option( "PRINT_MODE", "PDF" , "print mode. Can be either PDF/HTML"));  
   XmlOptions::get().add( Option( "PRINT_LINE_SIZE", "0" , "Maximum line width. 0 means any."));  
@@ -67,7 +62,6 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "PATTERN_FILENAME", ":/patterns/xml_patterns.xml", "default patterns for xml files"));
 
   // diff configuration
-  XmlOptions::get().add( Option( "DIFF_COMMAND", "@DIFF@", "diff files command" ) );
   XmlOptions::get().add( Option( "DIFF_ADDED_COLOR", "#d0eaff" ) );
   XmlOptions::get().add( Option( "DIFF_CONFLICT_COLOR", "#e0ffd9" ) );
   
@@ -110,7 +104,6 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "INACTIVE_COLOR", "#f8f8f8", "inactive view color" ) );
   
   #ifdef WITH_ASPELL
-  XmlOptions::get().add( Option( "ASPELL", "@ASPELL@", "aspell command" ));
   XmlOptions::get().add( Option( "DICTIONARY", "en" , "default dictionary"  ));
   XmlOptions::get().add( Option( "DICTIONARY_FILTER", "none" , "default filter"  ));
   XmlOptions::get().add( Option( "AUTOSPELL", "0", "true to set automatic spellcheck on by default" ));

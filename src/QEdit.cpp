@@ -35,6 +35,7 @@
 
 #include "Debug.h"
 #include "DefaultOptions.h"
+#include "SystemOptions.h"
 #include "ErrorHandler.h"
 #include "MainFrame.h"
 #include "XmlOptions.h"
@@ -92,7 +93,8 @@ int main (int argc, char *argv[])
     
     // load default options
     installDefaultOptions();
-  
+    installSystemOptions();
+    
     // load user resource file
     string rcfile = Util::env( "HOME", "." ) + "/.qeditrc";
     XmlOptions::read( rcfile ); 
