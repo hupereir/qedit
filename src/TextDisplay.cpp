@@ -218,6 +218,15 @@ void TextDisplay::openFile( File file, bool check_autosave )
   File tmp( file );
   
   File autosaved( AutoSaveThread::autoSaveName( tmp ) );
+
+//   if( autosaved.exists() && tmp.exists() )
+//   {
+//     Debug::Throw(0) << "TextDisplay::openFile - file: " << TimeStamp( tmp.lastModified() ).string() << endl;
+//     Debug::Throw(0) << "TextDisplay::openFile - autosaved: " << TimeStamp( autosaved.lastModified() ).string() << endl;
+//     Debug::Throw(0) << "TextDisplay::openFile - check: " << check_autosave << endl;
+//     Debug::Throw(0) << "TextDisplay::openFile - diff: " << tmp.diff(autosaved) << endl;
+//   }
+  
   if( check_autosave && autosaved.exists() &&
     ( !tmp.exists() ||
     ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
