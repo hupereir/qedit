@@ -270,7 +270,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   // autosave
   if( !file.empty() )
   { 
-    layout->addWidget( new QLabel( "Auto-save filename", box ) );
+    layout->addWidget( new QLabel( "Auto-save filename: ", box ) );
     layout->addWidget( new QLabel( AutoSaveThread::autoSaveName( file ).c_str(), box ) );
   }
   
