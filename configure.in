@@ -141,7 +141,6 @@ AC_SUBST(qt_dir)
 AC_SUBST(qt_libraries)
 AC_SUBST(qt_includes)
 AC_SUBST(qt_bin)
-AC_SUBST(qt_moc)
 
 echo ""
 echo "Qt configuration:"
