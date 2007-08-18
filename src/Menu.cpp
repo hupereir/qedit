@@ -123,7 +123,7 @@ Menu::Menu( QWidget* parent ):
 
   // help manager
   BASE::HelpManager* help( new BASE::HelpManager( this ) );
-  File help_file( XmlOptions::get().get<File>( "HELP_FILE" ) );
+  File help_file( XmlOptions::get().raw( "HELP_FILE" ) );
   if( help_file.exists() ) BASE::HelpManager::install( help_file );
   else
   {
