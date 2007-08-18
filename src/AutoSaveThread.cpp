@@ -45,15 +45,20 @@ using namespace std;
 File AutoSaveThread::autoSaveName( const File& file )
 {
     
+  // replace slash, anti-slash and columns by underscore in the file path
+  // this should allow for having a valid "local" filename out of it for both unix and windows OS
   Str file_path( file.path().replace( "/", "_" ) );
+  file_path = file_path.replace( "\\", "_" );
+  file_path = file_path.replace( ":", "_" );
   
-  // retrieve backup path
+  // retrieve autosave path
   string path( XmlOptions::get().get<string>( "AUTOSAVE_PATH" ) );
   
   // retrieve user name
   string user( Util::user() );
   
-  return File( user + file_path + file.localName() ).addPath( path );
+  return File( user + "_" + file_path + "_" + file.localName() ).addPath( path );
+
 }
 
 //_______________________________________________________________

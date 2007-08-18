@@ -32,7 +32,8 @@
 #include <QLabel>
 #include <QTabWidget>
 #include <QCheckBox>
-#include <sys/stat.h>
+#include <QPushButton>
+//#include <sys/stat.h>
 
 #include "AutoSaveThread.h"
 #include "Config.h"
@@ -274,6 +275,11 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   }
   
   layout->addStretch();
+  
+  // close button 
+  QPushButton *button = new QPushButton( "&Close", this );
+  FileInfoDialog::layout()->addWidget( button );
+  connect( button, SIGNAL( clicked() ), SLOT( close() ) );
   
   adjustSize();
   
