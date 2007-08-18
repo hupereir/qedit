@@ -300,8 +300,14 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
   QtUtil::centerOnParent( &dialog );
   int state( dialog.exec() );
   
-  if( state == FileRemovedDialog::RESAVE ) { save(); }
-  else if( state == FileRemovedDialog::SAVE_AS ) { saveAs(); }
+  if( state == FileRemovedDialog::RESAVE )
+  {
+    
+    // set document as modified (to force the file to be saved) and save
+   setModified( true );
+    save();
+  
+  } else if( state == FileRemovedDialog::SAVE_AS ) { saveAs(); }
   else if( state == FileRemovedDialog::IGNORE ) {
  
     BASE::KeySet<TextDisplay> displays( this );
@@ -309,7 +315,6 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     { 
       (*iter)->_setIgnoreWarnings( true );
-      //(*iter)->document()->setModified( false );
       (*iter)->setModified( false );
     }
    
