@@ -39,7 +39,6 @@
 #include "ErrorHandler.h"
 #include "MainFrame.h"
 #include "XmlOptions.h"
-#include "Util.h"
 
 using namespace std;
 
@@ -71,38 +70,10 @@ int main (int argc, char *argv[])
       return 0;
     }
 
-    // add default value for autosave directory
-    XmlOptions::get().setRaw( "AUTOSAVE_PATH", Util::tmp() );
-
-    // add user name
-    Option option( "USER_NAME", Util::user() );
-    option.setRecordable( false );
-    XmlOptions::get().add( option );
-    
-    // add application name
-    option = Option( "APP_NAME", "QEDIT" );
-    option.setRecordable( false );
-    XmlOptions::get().add( option );
-    
-    // add HelpFile
-    option = Option( "HELP_FILE", File( ".qedit_help").addPath(Util::home()));
-    option.setRecordable( false );
-    XmlOptions::get().add( option );
-
-    // add DB file
-    option = Option( "DB_FILE", File(".qedit_db").addPath(Util::home()));
-    option.setRecordable( false );
-    XmlOptions::get().add( option );
-    
     // load default options
     installDefaultOptions();
     installSystemOptions();
-    
-    // load user resource file
-    option = Option( "RC_FILE", File(".qeditrc").addPath(Util::home()));
-    option.setRecordable( false );
-    XmlOptions::get().add( option );
-    XmlOptions::read( option.raw() );     
+    XmlOptions::read( XmlOptions::get().raw( "RC_FILE" ) );     
       
     // set debug level
     int debug_level( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );

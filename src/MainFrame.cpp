@@ -88,7 +88,7 @@ MainFrame::MainFrame( int argc, char*argv[] ) :
   startup_timer_( this )
 {
   Debug::Throw( "MainFrame::MainFrame.\n" );
-  setStyle( new FlatStyle() );
+  if( XmlOptions::get().get<bool>( "USE_FLAT_THEME" ) ) setStyle( new FlatStyle() );
 
   startup_timer_.setSingleShot( true );
   connect( &startup_timer_, SIGNAL( timeout() ), SLOT( _readFilesFromArgs() ) );

@@ -503,7 +503,7 @@ void TextDisplay::saveAs( void )
     
     // update file
     (*iter)->setFile( file );
-
+    
     // update document class
     // the class name is reset, to allow a document class
     // matching the new filename to get loaded
@@ -512,7 +512,8 @@ void TextDisplay::saveAs( void )
     
   }
 
-  // save (using new filename)
+  // set document as modified and save using new filename
+  document()->setModified( true );
   save();
   
   // rehighlight

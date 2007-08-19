@@ -31,6 +31,7 @@
 
 #include "Config.h"
 #include "XmlOptions.h"
+#include "Util.h"
 
 //_____________________________________________________
 //! default options installer
@@ -41,7 +42,6 @@ void installDefaultOptions( void )
   XmlOptions::get().keep( "PIXMAP_PATH" );
   XmlOptions::get().add( Option( "PIXMAP_PATH", ":/pixmaps"));
   XmlOptions::get().add( Option( "ICON_PIXMAP", ":/icon.png" , "application icon"));
-  XmlOptions::get().add( Option( "DEFAULT_ICON_PATH", "/usr/share/icons" , "default path to look for icons"));
 
   XmlOptions::get().add( Option( "USE_PRINT_COMMAND", "0", "use print/edit command" ) );
   XmlOptions::get().add( Option( "PRINT_MODE", "PDF" , "print mode. Can be either PDF/HTML"));  
@@ -109,5 +109,35 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "AUTOSPELL_FONT_FORMAT", "0", "highlight font format for autospell" ));
   XmlOptions::get().add( Option( "MAX_SUGGESTIONS", "0", "maximum number of suggestions. 0 means all." ));
   #endif
+
+  // run-time non recordable options
+  // default value for autosave directory
+  XmlOptions::get().setRaw( "AUTOSAVE_PATH", Util::tmp() );
+
+  // user name
+  Option option( "USER_NAME", Util::user() );
+  option.setRecordable( false );
+  XmlOptions::get().add( option );
+  
+  // application name
+  option = Option( "APP_NAME", "QEDIT" );
+  option.setRecordable( false );
+  XmlOptions::get().add( option );
+  
+  // HelpFile
+  option = Option( "HELP_FILE", File( ".qedit_help").addPath(Util::home()));
+  option.setRecordable( false );
+  XmlOptions::get().add( option );
+  
+  // DB file
+  option = Option( "DB_FILE", File(".qedit_db").addPath(Util::home()));
+  option.setRecordable( false );
+  XmlOptions::get().add( option );
+  
+      
+  // load user resource file
+  option = Option( "RC_FILE", File(".qeditrc").addPath(Util::home()));
+  option.setRecordable( false );
+  XmlOptions::get().add( option );
 
 };
