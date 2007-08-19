@@ -919,7 +919,7 @@ void EditFrame::_updateConfiguration( void )
     ToolBarArea location = (XmlOptions::get().find( location_name )) ? (ToolBarArea) CustomToolBar::nameToArea( XmlOptions::get().get<string>( location_name ) ):TopToolBarArea ;
     ToolBarArea current_location = toolBarArea( toolbar );
     
-    Debug::Throw() << "EditFrame::updateConfiguration - " << option_name << " visibility: " << visibility << " location: " << (int)location << endl;
+    Debug::Throw() << "EditFrame::_updateConfiguration - " << option_name << " visibility: " << visibility << " location: " << (int)location << endl;
     
     if( visibility )
     {
