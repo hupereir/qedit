@@ -39,14 +39,16 @@
 #include "EditFrame.h"
 #include "HelpManager.h"
 #include "HelpText.h"
+#include "IconEngine.h"
+#include "Icons.h"
 #include "MainFrame.h"
 #include "Menu.h"
 #include "OpenPreviousMenu.h"
 #include "QtUtil.h"
-#include "XmlOptions.h"
 #include "TextDisplay.h"
 #include "TextMacro.h"
 #include "Util.h"
+#include "XmlOptions.h"
 
 using namespace std;
 using namespace Qt;
@@ -57,6 +59,10 @@ Menu::Menu( QWidget* parent ):
   Counter( "Menu" )
 {
   Debug::Throw( "Menu::Menu.\n" );
+
+  // path list for menu
+  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
+  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
 
   // file menu
   QMenu* menu = addMenu( "&File" );
@@ -93,7 +99,8 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &editframe.printAction() );
 
   menu->addSeparator();
-  menu->addAction( "E&xit", qApp, SLOT( exit() ), CTRL+Key_Q );
+  QAction* action = menu->addAction( "E&xit", qApp, SLOT( exit() ), CTRL+Key_Q );
+  action->setIcon( IconEngine::get( ICONS::EXIT, path_list ) );
 
   // Edit menu
   edit_menu_ = addMenu( "&Edit" );
