@@ -111,7 +111,11 @@ class PrintDialog: public CustomDialog
   QString command( void ) const
   { return command_->currentText(); }
   
-  //! add commands
+  //! set command manually
+  void setCommand( const std::string& command )
+  { command_->setEditText( command.c_str() ); }
+  
+  //! add commands to the combo-box list
   void addCommand( const std::string& command )
   { command_->addItem( command.c_str() ); }
   
@@ -134,6 +138,9 @@ class PrintDialog: public CustomDialog
   //! update print command
   void _updateFile( void );
    
+  //! browse print command
+  void _browseCommand( void );
+  
   private:
    
   //! a2ps checkbox

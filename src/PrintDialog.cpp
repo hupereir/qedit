@@ -37,6 +37,7 @@
 
 #include "Debug.h"
 #include "PrintDialog.h"
+#include "CustomFileDialog.h"
 #include "CustomGridLayout.h"
 
 using namespace std;
@@ -99,13 +100,22 @@ PrintDialog::PrintDialog( QWidget* parent ):
   box->layout()->addWidget( command_checkbox_ = new QCheckBox( "Open/Print destination file with command: ", box ) );
   command_checkbox_->setChecked( true );
 
-  box->layout()->addWidget( command_ = new CustomComboBox( box ) );
+  h_layout = new QHBoxLayout();
+  h_layout->setSpacing(5);
+  h_layout->setMargin(0); 
+  box->layout()->addItem( h_layout );
+  h_layout->addWidget( command_ = new CustomComboBox( box ) );
   command_->setEditable( true );
   command_->setEditable( true );
   command_->setCaseSensitive( Qt::CaseSensitive );
   command_->setAutoCompletion( true );
   command_->setMinimumSize( QSize( 350, 0 ) );
 
+  // browse command button associated to the CustomComboBox
+  QPushButton* button = new QPushButton( "...", box );
+  h_layout->addWidget( button );
+  connect( button, SIGNAL( clicked() ), SLOT( _browseCommand() ) );
+  
   // connections
   connect( pdf_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateFile() ) );
   connect( html_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateFile() ) );
@@ -148,4 +158,27 @@ void PrintDialog::_updateFile( void )
   
   destination_->editor().setText( file.c_str() );
   
+}
+
+//__________________________________________________ 
+void PrintDialog::_browseCommand( void )
+{
+ 
+  Debug::Throw( "PrintDialog::_browseCommand.\n" );
+  
+  // open FileDialog
+  CustomFileDialog dialog( this );
+  dialog.setFileMode( QFileDialog::ExistingFile );
+  QtUtil::centerOnParent( &dialog );
+  if( dialog.exec() == QDialog::Rejected ) return;
+  
+  // check selected files
+  QStringList files( dialog.selectedFiles() );
+  if( files.empty() ) return;
+  
+  command_->setEditText( files.front() );
+  command_->addItem( files.front() );
+  
+  return;
+
 }

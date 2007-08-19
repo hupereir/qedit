@@ -39,9 +39,10 @@ void installSystemOptions( void )
 
   // print commands
   XmlOptions::get().keep( "PRINT_COMMAND" );
-  XmlOptions::get().add( Option( "PRINT_COMMAND", "@KONQUEROR@" , "html file editor"  ));
-  XmlOptions::get().add( Option( "PRINT_COMMAND", "@ACROREAD@" , "pdf files editor"  ));
   XmlOptions::get().add( Option( "PRINT_COMMAND", "@LPR@" , "print command"));  
+
+  XmlOptions::get().add( Option( "PDF_EDITOR", "@ACROREAD@" , "pdf file editor"));  
+  XmlOptions::get().add( Option( "HTML_EDITOR", "@KONQUEROR@" , "print command"));    
   XmlOptions::get().add( Option( "DIFF_COMMAND", "@DIFF@", "diff files command" ) );
   
   #ifdef WITH_ASPELL

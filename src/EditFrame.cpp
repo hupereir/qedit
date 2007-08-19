@@ -476,11 +476,17 @@ void EditFrame::_print( void )
   dialog.setMaximumLineSize( XmlOptions::get().get<int>( "PRINT_LINE_SIZE" ) ); 
   dialog.setUseCommand( XmlOptions::get().get<bool>( "USE_PRINT_COMMAND" ) );
   
-  // add command
+  // add commands
+  /* command list contains the HTML editor, PDF editor and any additional user specified command */
   list<string> commands( XmlOptions::get().specialOptions<string>( "PRINT_COMMAND" ) );
+  commands.push_back( XmlOptions::get().raw( "PDF_EDITOR" ) );
+  commands.push_back( XmlOptions::get().raw( "HTML_EDITOR" ) );
   for( list<string>::iterator iter = commands.begin(); iter != commands.end(); iter++ )
   { dialog.addCommand( *iter ); }
 
+  // set command manually that match the selection mode
+  dialog.setCommand( XmlOptions::get().raw( ( dialog.mode() == PrintDialog::PDF ? "PRDF_EDITOR":"HTML_EDITOR" ) ) );
+  
   // exec
   QtUtil::centerOnParent( &dialog );
   if( dialog.exec() == QDialog::Rejected ) return;

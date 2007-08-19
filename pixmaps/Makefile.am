@@ -7,10 +7,14 @@ EXTRA_DIST = \
  filenew.png \
  fileopen.png \
  fileprint.png \
+ filesaveas.png \
  filesave.png \
  fonts.png \
  info.png \
+ messagebox_warning.png \
  redo.png \
+ reload.png \
+ trashcan_empty.png \
  undo.png \
  view_bottom.png \
  view_left_right.png \
@@ -18,4 +22,4 @@ EXTRA_DIST = \
  view_right.png \
  view_top_bottom.png \
  window_fullscreen.png
-
+  

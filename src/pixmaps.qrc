@@ -9,9 +9,13 @@
     <file alias="pixmaps/fileopen.png">../pixmaps/fileopen.png</file>
     <file alias="pixmaps/fileprint.png">../pixmaps/fileprint.png</file>
     <file alias="pixmaps/filesave.png">../pixmaps/filesave.png</file>
+    <file alias="pixmaps/filesaveas.png">../pixmaps/filesaveas.png</file>
     <file alias="pixmaps/fonts.png">../pixmaps/fonts.png</file>
     <file alias="pixmaps/info.png">../pixmaps/info.png</file>
+    <file alias="pixmaps/messagebox_warning.png">../pixmaps/messagebox_warning.png</file>
     <file alias="pixmaps/redo.png">../pixmaps/redo.png</file>
+    <file alias="pixmaps/reload.png">../pixmaps/reload.png</file>
+    <file alias="pixmaps/trashcan_empty.png">../pixmaps/trashcan_empty.png</file>
     <file alias="pixmaps/undo.png">../pixmaps/undo.png</file>
     <file alias="pixmaps/view_bottom.png">../pixmaps/view_bottom.png</file>
     <file alias="pixmaps/view_left_right.png">../pixmaps/view_left_right.png</file>
