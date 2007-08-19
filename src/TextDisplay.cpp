@@ -1,3 +1,4 @@
+
 // $Id$
 
 /******************************************************************************
@@ -999,7 +1000,7 @@ void TextDisplay::processMacro( string name )
 //_______________________________________________________
 void TextDisplay::replaceLeadingTabs( const bool& confirm )
 {
-  Debug::Throw( "TextDisplay::replaceLeadingTabs.\n" );
+  Debug::Throw( 0, "TextDisplay::replaceLeadingTabs.\n" );
 
   // ask for confirmation
   if( confirm )
@@ -1040,17 +1041,26 @@ void TextDisplay::replaceLeadingTabs( const bool& confirm )
     
   }  
   
+  // store blocks
+  vector<QTextBlock> blocks;
+  for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
+  { blocks.push_back( block ); }
+  blocks.push_back( end );
+  
   // loop over blocks
-  for( QTextBlock block = begin; block.isValid() && block != end.next(); block = block.next() )
+  for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
   {
-
-    QString text( block.text() );
+    // check block
+    if( !iter->isValid() ) continue;
+    
+    // retrieve text
+    QString text( iter->text() );
     
     // look for leading tabs
     if( wrong_tab_regexp.indexIn( text ) < 0 ) continue;
     
     // select with cursor
-    QTextCursor cursor( block );
+    QTextCursor cursor( *iter );
     cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
     cursor.setPosition( cursor.position() + wrong_tab_regexp.matchedLength(), QTextCursor::KeepAnchor );
 
@@ -1064,6 +1074,8 @@ void TextDisplay::replaceLeadingTabs( const bool& confirm )
 
   // enable updates
   setUpdatesEnabled( true );
+
+  Debug::Throw( 0, "TextDisplay::replaceLeadingTabs - done.\n" );
   return;
 }
 

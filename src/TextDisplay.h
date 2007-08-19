@@ -68,7 +68,7 @@ class TextDisplay: public CustomTextEdit
   //! Qt meta object declaration
   Q_OBJECT
     
-    public:
+  public:
     
   //! constructor
   TextDisplay( QWidget* parent );
