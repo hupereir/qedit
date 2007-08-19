@@ -40,7 +40,6 @@
 #include "QtUtil.h"
 
 using namespace std;
-using namespace BASE;
 
 //________________________________________________________
 FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& selection ):
@@ -67,13 +66,13 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   std::set< File > file_set;
 
   // retrieve EditFrames
-  KeySet<EditFrame> frames( dynamic_cast< BASE::Key*>( qApp ) );
-  for( KeySet<EditFrame>::const_iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
+  BASE::KeySet<EditFrame> frames( dynamic_cast< BASE::Key*>( qApp ) );
+  for( BASE::KeySet<EditFrame>::const_iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
   {
 
     // retrieve associated TextDisplays
-    KeySet<TextDisplay> displays( *frame_iter );
-    for( KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    BASE::KeySet<TextDisplay> displays( *frame_iter );
+    for( BASE::KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
       // retrieve filename
       const File& file( (*iter)->file() );

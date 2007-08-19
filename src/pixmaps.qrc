@@ -15,6 +15,7 @@
     <file alias="pixmaps/fonts.png">../pixmaps/fonts.png</file>
     <file alias="pixmaps/info.png">../pixmaps/info.png</file>
     <file alias="pixmaps/messagebox_warning.png">../pixmaps/messagebox_warning.png</file>
+    <file alias="pixmaps/qt-logo.png">../pixmaps/qt-logo.png</file>
     <file alias="pixmaps/redo.png">../pixmaps/redo.png</file>
     <file alias="pixmaps/reload.png">../pixmaps/reload.png</file>
     <file alias="pixmaps/toggle_log.png">../pixmaps/toggle_log.png</file>

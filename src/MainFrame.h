@@ -109,7 +109,11 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   //! about
   QAction& aboutAction( void ) const
   { return *about_action_; }
-  
+   
+  //! about
+  QAction& aboutQtAction( void ) const
+  { return *aboutqt_action_; }
+ 
   //! close
   QAction& closeAction( void ) const
   { return *close_action_; }
@@ -224,6 +228,9 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   
   //! about
   QAction* about_action_;
+  
+  //! about Qt
+  QAction* aboutqt_action_;
   
   //! close
   QAction* close_action_;

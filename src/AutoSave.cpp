@@ -37,7 +37,6 @@
 #include "TextDisplay.h"
 
 using namespace std;
-using namespace BASE;
 
 //______________________________________________________
 AutoSave::AutoSave( QObject* parent ):
@@ -133,7 +132,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
     if( (*iter)->isRunning() ) continue;
     
     // retrieve associated EditFrames
-    KeySet<TextDisplay> displays( *iter );
+    BASE::KeySet<TextDisplay> displays( *iter );
 
     // remove thread if none is found
     if( displays.empty() )

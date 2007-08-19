@@ -14,6 +14,7 @@ EXTRA_DIST = \
   fonts.png \
   info.png \
   messagebox_warning.png \
+  qt-logo.png \
   redo.png \
   reload.png \
   toggle_log.png \
