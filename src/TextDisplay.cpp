@@ -168,8 +168,7 @@ void TextDisplay::setReadOnly( const bool& value )
 {
   Debug::Throw() << "TextDisplay::setReadOnly - value: " << value << endl;
   CustomTextEdit::setReadOnly( value );
-  //document()->setModified( false );
-  emit needUpdate( WINDOW_TITLE | CUT | PASTE | UNDO_REDO ); 
+  emit needUpdate( WINDOW_TITLE | CUT | PASTE | UNDO_REDO | SAVE ); 
 }
 
 //___________________________________________________________________________
@@ -224,16 +223,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
   bool restore_autosave( false );
   File tmp( file );
   
-  File autosaved( AutoSaveThread::autoSaveName( tmp ) );
-
-//   if( autosaved.exists() && tmp.exists() )
-//   {
-//     Debug::Throw(0) << "TextDisplay::openFile - file: " << TimeStamp( tmp.lastModified() ).string() << endl;
-//     Debug::Throw(0) << "TextDisplay::openFile - autosaved: " << TimeStamp( autosaved.lastModified() ).string() << endl;
-//     Debug::Throw(0) << "TextDisplay::openFile - check: " << check_autosave << endl;
-//     Debug::Throw(0) << "TextDisplay::openFile - diff: " << tmp.diff(autosaved) << endl;
-//   }
-  
+  File autosaved( AutoSaveThread::autoSaveName( tmp ) );  
   if( check_autosave && autosaved.exists() &&
     ( !tmp.exists() ||
     ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
@@ -279,27 +269,30 @@ void TextDisplay::openFile( File file, bool check_autosave )
   if( restore_autosave && !isReadOnly() ) save();
   
   // perform first autosave
-  if( !isReadOnly() ) (dynamic_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
+  //if( !isReadOnly() ) 
+    (dynamic_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
   
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
   { menu().get( TextDisplay::file() ).addInformation( "class_name", className() ); }
+  
+  Debug::Throw( "TextDisplay::openFile - done.\n" );
   
 }
 
 //_______________________________________________________
 void TextDisplay::setFile( const File& file )
 { 
-  Debug::Throw( "TextDisplay::setFile.\n" );
+  Debug::Throw() << "TextDisplay::setFile - file: " << file << endl;
   file_ = file; 
   if( file.exists() ) 
   {
     _setLastSaved( file.lastModified() );
     _setWorkingDirectory( file.path() );
     _setIgnoreWarnings( false );
-    setReadOnly( file.exists() && !file.isWritable() );
   }
   
+  setReadOnly( file.exists() && !file.isWritable() );
   if( isActive() ) emit needUpdate( WINDOW_TITLE | FILE_NAME ); 
   
 }
@@ -1800,6 +1793,11 @@ void TextDisplay::_setBlockModified( int position, int, int added )
 void TextDisplay::_textModified( void )
 { 
   Debug::Throw( "TextDisplay::_textModified.\n" );
+  
+  // document should never appear modified 
+  // for readonly displays
+  if( document()->isModified() && isReadOnly() ) document()->setModified( false );
+  
   if( isActive() ) emit needUpdate( WINDOW_TITLE ); 
 }
 

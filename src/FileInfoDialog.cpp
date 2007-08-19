@@ -208,6 +208,15 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
     iter->second->setEnabled( false );
   }
   
+  #ifdef Q_WS_X11
+  // add a read-only checkbox since user permissions may not be available
+  grid_layout->addWidget( new QLabel( "read-only", box ) );
+  QCheckBox* checkbox( new QCheckBox( box ) );
+  grid_layout->addWidget( checkbox );
+  checkbox->setEnabled( false );
+  checkbox->setChecked( parent->isReadOnly() );
+  #endif
+  
   // group and user id
   if( file.exists() )
   {

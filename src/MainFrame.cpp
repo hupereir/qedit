@@ -327,6 +327,8 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
   if( autospell ) frame->activeDisplay().autoSpellAction().setChecked( true );
   if( !filter.empty() ) frame->activeDisplay().selectFilter( filter );
   if( !dictionary.empty() ) frame->activeDisplay().selectDictionary( filter );
+
+  Debug::Throw( "MainFrame::Open - done.\n" );
     
   return frame;
 
@@ -669,6 +671,7 @@ void MainFrame::_readFilesFromArgs( void )
     
   }
       
+  Debug::Throw( "MainFrame::_readFilesFromArgs - done.\n" );
   return;
   
 }

@@ -749,6 +749,9 @@ void EditFrame::_update( unsigned int flags )
     undoAction().setEnabled( activeDisplay().undoAction().isEnabled() );
     redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
   }
+  
+  if( flags & TextDisplay::SAVE )
+  { saveAction().setEnabled( !activeDisplay().isReadOnly() ); }
 
 }
 
@@ -767,7 +770,7 @@ void EditFrame::_updateCursorPosition( void )
 void EditFrame::_displayFocusChanged( TextDisplay* display )
 {
   Debug::Throw() << "EditFrame::_DisplayFocusChanged - " << display->key() << endl;
-  setActiveDisplay( *display );
+  setActiveDisplay( *display );  
 }
 
 //___________________________________________________________
