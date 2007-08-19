@@ -56,7 +56,6 @@
 #endif
 
 using namespace std;
-using namespace SERVER;
 using namespace Qt;
 
 //____________________________________________
@@ -72,7 +71,7 @@ void MainFrame::usage( void )
   cout << "  --filter <filter>\t select filter for autospell" << endl;
   cout << "  --dictionary <dict>\t select dictionary for autospell" << endl;
   cout << "  --close\t\t close displays matching file names and exit" << endl;
-  ApplicationManager::usage();
+  SERVER::ApplicationManager::usage();
   return;
 }
 
@@ -123,7 +122,7 @@ void MainFrame::initApplicationManager( void )
   }
 
   // create application manager
-  application_manager_ = new ApplicationManager( this );
+  application_manager_ = new SERVER::ApplicationManager( this );
   application_manager_->setApplicationName( XmlOptions::get().get<string>( "APP_NAME" ) );
   connect( 
     application_manager_, SIGNAL( stateChanged( SERVER::ApplicationManager::State ) ),
@@ -150,11 +149,14 @@ void MainFrame::realizeWidget( void )
   if( realized_ ) return;
   realized_ = true;
   
+  // actions  
+  about_action_ = new QAction( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).c_str() ), "About &QEdit", 0 );
+  connect( about_action_, SIGNAL( triggered() ), SLOT( _about() ) );
+  
   // path list for icons
   list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
 
-  // actions
   close_action_ = new QAction( IconEngine::get( ICONS::EXIT, path_list ), "E&xit", 0 );
   close_action_->setShortcut( CTRL+Key_Q );
   connect( close_action_, SIGNAL( triggered() ), SLOT( _exit() ) );
@@ -164,9 +166,7 @@ void MainFrame::realizeWidget( void )
   
   spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "&Spell-check &Configuration", 0 );
   connect( configuration_action_, SIGNAL( triggered() ), SLOT( _configuration() ) );
-  
-  about_action_ = new QAction( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).c_str() ), "About &QEdit", 0 );
-  connect( about_action_, SIGNAL( triggered() ), SLOT( _about() ) );
+
   
   // class manager
   class_manager_ = new DocumentClassManager();
@@ -677,11 +677,11 @@ void MainFrame::_applicationManagerStateChanged( SERVER::ApplicationManager::Sta
   Debug::Throw() << "MainFrame::_ApplicationManagerStateChanged - state=" << state << endl;
 
   switch ( state ) {
-    case ApplicationManager::ALIVE:
+    case SERVER::ApplicationManager::ALIVE:
     realizeWidget();
     break;
 
-    case ApplicationManager::DEAD:
+    case SERVER::ApplicationManager::DEAD:
     quit();
     break;
 
