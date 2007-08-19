@@ -59,15 +59,11 @@ Menu::Menu( QWidget* parent ):
   Counter( "Menu" )
 {
   Debug::Throw( "Menu::Menu.\n" );
-
-  // path list for menu
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
-
   // file menu
   QMenu* menu = addMenu( "&File" );
 
   // retrieve editframe
+  MainFrame& mainframe( *dynamic_cast<MainFrame*>( qApp ) );
   EditFrame& editframe( *dynamic_cast<EditFrame*>( window() ) );
   
   menu->addAction( &editframe.newFileAction() );
@@ -99,8 +95,7 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &editframe.printAction() );
 
   menu->addSeparator();
-  QAction* action = menu->addAction( "E&xit", qApp, SLOT( exit() ), CTRL+Key_Q );
-  action->setIcon( IconEngine::get( ICONS::EXIT, path_list ) );
+  menu->addAction( &mainframe.closeAction() );
 
   // Edit menu
   edit_menu_ = addMenu( "&Edit" );
@@ -143,7 +138,7 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &help->displayAction() );
   menu->addSeparator();
   menu->addAction( "About &Qt", qApp, SLOT( aboutQt() ), 0 );
-  menu->addAction( "About Q&Edit", qApp, SLOT( about() ), 0 );
+  menu->addAction( &mainframe.aboutAction() );
   
   // debug menu
   menu->addSeparator();
@@ -235,21 +230,19 @@ void Menu::_updatePreferenceMenu( void )
   Debug::Throw( "Menu::_updatePreferenceMenu.\n" );
 
   // reference to needed objects
-  EditFrame& frame( *dynamic_cast<EditFrame*>(window()) );
-  TextDisplay& display( frame.activeDisplay() );
+  MainFrame& mainframe( *dynamic_cast<MainFrame*>(qApp) );
+  EditFrame& editframe( *dynamic_cast<EditFrame*>(window()) );
+  TextDisplay& display( editframe.activeDisplay() );
 
   // clear menu
   preference_menu_->clear();
   
   // configurations (from mainFrame)
-  preference_menu_->addAction( "Default &Configuration", qApp, SLOT( configuration() ) );
-
-  // document class configuration
-  // preference_menu_->addAction( &frame.documentClassAction() );
+  preference_menu_->addAction( &mainframe.configurationAction() );
 
   #if WITH_ASPELL
   preference_menu_->addSeparator();
-  preference_menu_->addAction( "&Spell-check configuration", qApp, SLOT( spellCheckConfiguration() ) );
+  preference_menu_->addAction( &mainframe.spellCheckConfigurationAction() );
   preference_menu_->addAction( &display.dictionaryMenuAction() );
   preference_menu_->addAction( &display.filterMenuAction() );
   #endif
@@ -261,11 +254,11 @@ void Menu::_updatePreferenceMenu( void )
   
   new_window_action_ = group->addAction( "Open in new &window" );
   new_window_action_->setCheckable( true );
-  new_window_action_->setChecked( frame.openMode() == EditFrame::NEW_WINDOW );
+  new_window_action_->setChecked( editframe.openMode() == EditFrame::NEW_WINDOW );
   
   new_view_action_ = group->addAction( "Open in new &view" );
   new_view_action_->setCheckable( true );
-  new_view_action_->setChecked( frame.openMode() == EditFrame::NEW_VIEW );
+  new_view_action_->setChecked( editframe.openMode() == EditFrame::NEW_VIEW );
   
   open_mode_menu->addActions( group->actions() );
   connect( open_mode_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOpenMode() ) );
@@ -277,11 +270,11 @@ void Menu::_updatePreferenceMenu( void )
 
   leftright_action_  = group->addAction( "&Left/Right" );
   leftright_action_->setCheckable( true );
-  leftright_action_->setChecked( frame.orientation() == Qt::Horizontal );
+  leftright_action_->setChecked( editframe.orientation() == Qt::Horizontal );
   
   topbottom_action_  = group->addAction( "&Top/Bottom" );
   topbottom_action_->setCheckable( true );
-  topbottom_action_->setChecked( frame.orientation() == Qt::Vertical );
+  topbottom_action_->setChecked( editframe.orientation() == Qt::Vertical );
 
   orientation_menu->addActions( group->actions() );
   connect( orientation_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOrientation() ) );
@@ -311,8 +304,8 @@ void Menu::_updateToolsMenu( void )
   Debug::Throw( "Menu::_updateToolsMenu.\n" );
 
   // retrieve editframe and current display
-  EditFrame& frame( *dynamic_cast<EditFrame*>(window()) );
-  TextDisplay& display( frame.activeDisplay() );
+  EditFrame& editframe( *dynamic_cast<EditFrame*>(window()) );
+  TextDisplay& display( editframe.activeDisplay() );
   
   // retrieve flags needed to set button state
   bool editable( !display.isReadOnly() );
@@ -336,8 +329,8 @@ void Menu::_updateToolsMenu( void )
     
   // diff files
   tools_menu_->addSeparator();
-  tools_menu_->addAction( &frame.diffAction() );
-  tools_menu_->addAction( &frame.clearDiffAction() );
+  tools_menu_->addAction( &editframe.diffAction() );
+  tools_menu_->addAction( &editframe.clearDiffAction() );
  
   // tag blocks 
   tools_menu_->addSeparator();

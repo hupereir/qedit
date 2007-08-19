@@ -34,6 +34,7 @@
 
 #include <list>
 #include <QApplication>
+#include <QAction>
 #include <QCursor>
 #include <QTimer>
 
@@ -102,6 +103,27 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   //! create new empty editFrame
   EditFrame& newEditFrame( void );
   
+  //!@name actions
+  //@{
+  
+  //! about
+  QAction& aboutAction( void ) const
+  { return *about_action_; }
+  
+  //! close
+  QAction& closeAction( void ) const
+  { return *close_action_; }
+
+  //! configure
+  QAction& configurationAction( void ) const
+  { return *configuration_action_; }
+
+  //! configure
+  QAction& spellCheckConfigurationAction( void ) const
+  { return *spellcheck_configuration_action_; }
+  
+  //@}
+  
   signals:
   
   //! configuration has changed
@@ -114,25 +136,10 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   void documentClassesChanged();
   
   public slots:
-
-  //! configuration
-  void configuration( void );
-  
-  //! spellcheck configuration
-  void spellCheckConfiguration( void );
   
   //! open
   /*! returns false if no file is open (force application to quit) */
   EditFrame* open( FileRecord record = FileRecord(), ArgList args = ArgList() );
-
-  //! exit safely
-  void exit( void );
-
-  //! opens MessageBox about Qt version
-  void about( void );
-
-  //! Update Configuration from options
-  void updateConfiguration( void );
   
   //! Update Document Classes from options
   void updateDocumentClasses( void );
@@ -141,6 +148,21 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   void multipleFileReplace( std::list<File> file, TextSelection selection );
   
   private slots:
+
+  //! opens MessageBox about QEdit version
+  void _about( void );
+  
+  //! configuration
+  void _configuration( void );
+  
+  //! spellcheck configuration
+  void _spellCheckConfiguration( void );
+
+  //! exit safely
+  void _exit( void );
+
+  //! Update Configuration from options
+  void _updateConfiguration( void );
   
   //! read file from arguments. 
   /*!
@@ -197,6 +219,23 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   */
   QTimer startup_timer_;
 
+  //!@name actions
+  //@{
+  
+  //! about
+  QAction* about_action_;
+  
+  //! close
+  QAction* close_action_;
+  
+  //! configure
+  QAction* configuration_action_;
+  
+  //! configure
+  QAction* spellcheck_configuration_action_;
+  
+  //@}
+  
 };
 
 #endif

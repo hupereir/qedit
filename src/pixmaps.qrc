@@ -2,6 +2,7 @@
   <qresource>
     <file alias="icon.png">../icon.png</file>
     <file alias="icon.ico">../icon.ico</file>
+    <file alias="pixmaps/configure.png">../pixmaps/configure.png</file>
     <file alias="pixmaps/editcopy.png">../pixmaps/editcopy.png</file>
     <file alias="pixmaps/editcut.png">../pixmaps/editcut.png</file>
     <file alias="pixmaps/editpaste.png">../pixmaps/editpaste.png</file>

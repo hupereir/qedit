@@ -40,6 +40,8 @@
 #include "ErrorHandler.h"
 #include "ExitDialog.h"
 #include "FlatStyle.h"
+#include "IconEngine.h"
+#include "Icons.h"
 #include "MainFrame.h"
 #include "NewFileDialog.h"
 #include "XmlOptions.h"
@@ -55,6 +57,7 @@
 
 using namespace std;
 using namespace SERVER;
+using namespace Qt;
 
 //____________________________________________
 void MainFrame::usage( void )
@@ -147,6 +150,24 @@ void MainFrame::realizeWidget( void )
   if( realized_ ) return;
   realized_ = true;
   
+  // path list for icons
+  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
+  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
+
+  // actions
+  close_action_ = new QAction( IconEngine::get( ICONS::EXIT, path_list ), "E&xit", 0 );
+  close_action_->setShortcut( CTRL+Key_Q );
+  connect( close_action_, SIGNAL( triggered() ), SLOT( _exit() ) );
+  
+  configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "Default &Configuration", 0 );
+  connect( configuration_action_, SIGNAL( triggered() ), SLOT( _configuration() ) );
+  
+  spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "&Spell-check &Configuration", 0 );
+  connect( configuration_action_, SIGNAL( triggered() ), SLOT( _configuration() ) );
+  
+  about_action_ = new QAction( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).c_str() ), "About &QEdit", 0 );
+  connect( about_action_, SIGNAL( triggered() ), SLOT( _about() ) );
+  
   // class manager
   class_manager_ = new DocumentClassManager();
   
@@ -155,7 +176,7 @@ void MainFrame::realizeWidget( void )
   
   // create first editFrame
   newEditFrame().show(); 
-  updateConfiguration();
+  _updateConfiguration();
 
   // make sure application ends when last window is closed.
   connect( this, SIGNAL( lastWindowClosed() ), SLOT( quit() ) );
@@ -174,50 +195,6 @@ EditFrame& MainFrame::newEditFrame( void )
   EditFrame* out = new EditFrame();
   BASE::Key::associate( this, out );
   return *out;
-}
-
-//___________________________________________________________ 
-void MainFrame::configuration( void )
-{
-  Debug::Throw( "MainFrame::configuration.\n" );
-  ConfigurationDialog dialog( 0 );
-  connect( &dialog, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
-  QtUtil::centerOnWidget( &dialog, activeWindow() );
-  dialog.exec();
-  Debug::Throw( "MainFrame::configuration - done.\n" );
-}
-
-//_______________________________________________
-void MainFrame::spellCheckConfiguration( void )
-{
-  
-  #if WITH_ASPELL
-
-  Debug::Throw( "MainFrame::SpellCheckConfiguration.\n" );
-  
-  // create dialog
-  CustomDialog dialog( activeWindow() );
-  
-  SpellCheckConfiguration* spell_config = new SpellCheckConfiguration( &dialog );
-  dialog.mainLayout().addWidget( spell_config );
-  spell_config->read();
-
-  AutoSpellConfiguration* autospell_config = new AutoSpellConfiguration( &dialog );
-  dialog.mainLayout().addWidget( autospell_config );
-  autospell_config->read();
-  
-  dialog.adjustSize();
-  QtUtil::centerOnParent( &dialog );
-  
-  if( dialog.exec() == QDialog::Rejected ) return;
-  spell_config->write();
-  autospell_config->write();
-  XmlOptions::write();
-  
-  emit spellCheckConfigurationChanged();
-  
-  #endif
-  
 }
 
 //_______________________________________________
@@ -335,7 +312,7 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
       {
         open_status_ = INVALID;
         frame->close();
-        if( BASE::KeySet<EditFrame>(this).size() ==1 ) exit();
+        if( BASE::KeySet<EditFrame>(this).size() ==1 ) _exit();
         return 0;
       }
       
@@ -352,11 +329,150 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
 
 }
 
+//____________________________________________________________
+void MainFrame::updateDocumentClasses( void )
+{
+  Debug::Throw( "MainFrame::updateDocumentClasses.\n" );
+  
+  // clear document classes
+  class_manager_->clear();
+  
+  // load files from options
+  ostringstream what;
+  list<string> files( XmlOptions::get().specialOptions<string>( "PATTERN_FILENAME" ) );
+  for( list<string>::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+  { 
+    class_manager_->read( *iter ); 
+    what << class_manager_->readError();
+  }
+
+  if( !what.str().empty() ) QtUtil::infoDialog( 0, what.str() );
+  
+  // emit configuratino changed to force displays to be updated
+  emit documentClassesChanged();
+  
+  return;
+}
+
+//___________________________________________________________
+void MainFrame::multipleFileReplace( std::list<File> files, TextSelection selection )
+{
+  Debug::Throw( "MainFrame::multipleFileRepplace.\n" );
+    
+  // keep track of number of replacements
+  unsigned int counts(0);
+  
+  // retrieve frame associated with file
+  BASE::KeySet<EditFrame> frames( this );
+  for( list<File>::iterator iter = files.begin(); iter != files.end(); iter++ )
+  {
+    File& file( *iter );
+    
+    BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( file ) );
+    Exception::check( iter != frames.end(), DESCRIPTION( "file not found" ) );
+
+    // retrieve TextDisplay that match file
+    BASE::KeySet<TextDisplay> displays( *iter );
+    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) ) );
+    Exception::check( display_iter != displays.end(), DESCRIPTION( "file not found" ) );
+    
+    // need to set display as active so that synchronization is kept with other possible displays
+    (*iter)->setActiveDisplay( **display_iter );
+    (*display_iter)->setFocus();
+    
+    // perform replacement
+    counts += (*display_iter)->replaceInWindow( selection, false );
+  
+  }
+  
+  // popup dialog
+
+  ostringstream what;
+  if( !counts ) what << "string not found.";
+  else if( counts == 1 ) what << "1 replacement performed";
+  else what << counts << " replacements performed";
+  QtUtil::infoDialog( 0, what.str() );
+  
+  return;
+}
+
+
 //_______________________________________________
-void MainFrame::exit( void )
+void MainFrame::_about( void )
+{
+
+  Debug::Throw( "MainFrame::_about.\n" );
+  ostringstream what;
+  what << "<b>QEdit</b> version " << VERSION << " (" << BUILD_TIMESTAMP << ")<br>";
+  what 
+    << "<p>This application was written for personal use only. "
+    << "It is not meant to be bug free, although all efforts "
+    << "are made so that it remains/becomes so. "
+    
+    << "<p>Suggestions, comments and bug reports are welcome. "
+    << "Please use the following e-mail address:"
+
+    << "<p><a href=\"mailto:hugo.pereira@free.fr\">hugo.pereira@free.fr</a>";
+
+  QMessageBox dialog;
+  dialog.setWindowIcon( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).c_str() ) );
+  dialog.setIconPixmap( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).c_str() ) );
+  dialog.setText( what.str().c_str() );
+  dialog.adjustSize();
+  QtUtil::centerOnWidget( &dialog, activeWindow() );
+  dialog.exec();
+
+}
+
+//___________________________________________________________ 
+void MainFrame::_configuration( void )
+{
+  Debug::Throw( "MainFrame::_configuration.\n" );
+  ConfigurationDialog dialog( 0 );
+  connect( &dialog, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  QtUtil::centerOnWidget( &dialog, activeWindow() );
+  dialog.exec();
+  Debug::Throw( "MainFrame::configuration - done.\n" );
+}
+
+//_______________________________________________
+void MainFrame::_spellCheckConfiguration( void )
 {
   
-  Debug::Throw( "MainFrame::exit.\n" );
+  #if WITH_ASPELL
+
+  Debug::Throw( "MainFrame::_spellCheckConfiguration.\n" );
+  
+  // create dialog
+  CustomDialog dialog( activeWindow() );
+  
+  SpellCheckConfiguration* spell_config = new SpellCheckConfiguration( &dialog );
+  dialog.mainLayout().addWidget( spell_config );
+  spell_config->read();
+
+  AutoSpellConfiguration* autospell_config = new AutoSpellConfiguration( &dialog );
+  dialog.mainLayout().addWidget( autospell_config );
+  autospell_config->read();
+  
+  dialog.adjustSize();
+  QtUtil::centerOnParent( &dialog );
+  
+  if( dialog.exec() == QDialog::Rejected ) return;
+  spell_config->write();
+  autospell_config->write();
+  XmlOptions::write();
+  
+  emit spellCheckConfigurationChanged();
+  
+  #endif
+  
+}
+
+//_______________________________________________
+void MainFrame::_exit( void )
+{
+  
+  Debug::Throw( "MainFrame::_exit.\n" );
 
   // retrieve associated EditFrames
   BASE::KeySet<EditFrame> frames( this );
@@ -430,43 +546,16 @@ void MainFrame::exit( void )
     
   }
 
-  Debug::Throw( "MainFrame::exit - done.\n" );
+  Debug::Throw( "MainFrame::_exit - done.\n" );
   quit();
 
 }
 
-//_______________________________________________
-void MainFrame::about( void )
-{
-
-  Debug::Throw( "MainFrame::about.\n" );
-  ostringstream what;
-  what << "<b>QEdit</b> version " << VERSION << " (" << BUILD_TIMESTAMP << ")<br>";
-  what 
-    << "<p>This application was written for personal use only. "
-    << "It is not meant to be bug free, although all efforts "
-    << "are made so that it remains/becomes so. "
-    
-    << "<p>Suggestions, comments and bug reports are welcome. "
-    << "Please use the following e-mail address:"
-
-    << "<p><a href=\"mailto:hugo.pereira@free.fr\">hugo.pereira@free.fr</a>";
-
-  QMessageBox dialog;
-  dialog.setWindowIcon( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).expand().c_str() ) );
-  dialog.setIconPixmap( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).expand().c_str() ) );
-  dialog.setText( what.str().c_str() );
-  dialog.adjustSize();
-  QtUtil::centerOnWidget( &dialog, activeWindow() );
-  dialog.exec();
-
-}
-
 //_________________________________________________
-void MainFrame::updateConfiguration( void )
+void MainFrame::_updateConfiguration( void )
 {
 
-  Debug::Throw( "MainFrame::updateConfiguration.\n" );
+  Debug::Throw( "MainFrame::_updateConfiguration.\n" );
 
   // set fonts
   QFont font;
@@ -489,73 +578,6 @@ void MainFrame::updateConfiguration( void )
   return;
 }
 
-//____________________________________________________________
-void MainFrame::updateDocumentClasses( void )
-{
-  Debug::Throw( "MainFrame::updateDocumentClasses.\n" );
-  
-  // clear document classes
-  class_manager_->clear();
-  
-  // load files from options
-  ostringstream what;
-  list<string> files( XmlOptions::get().specialOptions<string>( "PATTERN_FILENAME" ) );
-  for( list<string>::const_iterator iter = files.begin(); iter != files.end(); iter++ )
-  { 
-    class_manager_->read( *iter ); 
-    what << class_manager_->readError();
-  }
-
-  if( !what.str().empty() ) QtUtil::infoDialog( 0, what.str() );
-  
-  // emit configuratino changed to force displays to be updated
-  emit documentClassesChanged();
-  
-  return;
-}
-
-//___________________________________________________________
-void MainFrame::multipleFileReplace( std::list<File> files, TextSelection selection )
-{
-  Debug::Throw( "MainFrame::MultipleFileRepplace.\n" );
-    
-  // keep track of number of replacements
-  unsigned int counts(0);
-  
-  // retrieve frame associated with file
-  BASE::KeySet<EditFrame> frames( this );
-  for( list<File>::iterator iter = files.begin(); iter != files.end(); iter++ )
-  {
-    File& file( *iter );
-    
-    BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( file ) );
-    Exception::check( iter != frames.end(), DESCRIPTION( "file not found" ) );
-
-    // retrieve TextDisplay that match file
-    BASE::KeySet<TextDisplay> displays( *iter );
-    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) ) );
-    Exception::check( display_iter != displays.end(), DESCRIPTION( "file not found" ) );
-    
-    // need to set display as active so that synchronization is kept with other possible displays
-    (*iter)->setActiveDisplay( **display_iter );
-    (*display_iter)->setFocus();
-    
-    // perform replacement
-    counts += (*display_iter)->replaceInWindow( selection, false );
-  
-  }
-  
-  // popup dialog
-
-  ostringstream what;
-  if( !counts ) what << "string not found.";
-  else if( counts == 1 ) what << "1 replacement performed";
-  else what << counts << " replacements performed";
-  QtUtil::infoDialog( 0, what.str() );
-  
-  return;
-}
-  
 //___________________________________________________________ 
 void MainFrame::_readFilesFromArgs( void )
 {

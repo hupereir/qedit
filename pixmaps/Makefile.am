@@ -1,6 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = \
+  configure.png \
   editcopy.png \
   editcut.png \
   editpaste.png \
