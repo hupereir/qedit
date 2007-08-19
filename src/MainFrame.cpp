@@ -168,7 +168,7 @@ void MainFrame::realizeWidget( void )
   connect( configuration_action_, SIGNAL( triggered() ), SLOT( _configuration() ) );
   
   spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "&Spell-check &Configuration", 0 );
-  connect( configuration_action_, SIGNAL( triggered() ), SLOT( _configuration() ) );
+  connect( spellcheck_configuration_action_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
 
   
   // class manager

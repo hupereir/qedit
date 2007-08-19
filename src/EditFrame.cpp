@@ -1305,18 +1305,26 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
     if( parent_splitter && parent_splitter->orientation() == orientation ) splitter = parent_splitter;
     else {
       
-      // create a splitter with correct orientation
-      splitter = new LocalSplitter( parent );
-      splitter->setOrientation( orientation );
-
+ 
       // move splitter to the first place if needed
       if( parent_splitter ) 
       {
         
         Debug::Throw( "EditFrame::_newSplitter - found parent splitter.\n" );
+        // create a splitter with correct orientation
+        // give him no parent, because the parent is set in QSplitter::insertWidget()
+        splitter = new LocalSplitter(0);
+        splitter->setOrientation( orientation );
         parent_splitter->insertWidget( parent_splitter->indexOf( &activeDisplay() ), splitter );
         
-      } else parent->layout()->addWidget( splitter );
+      } else {
+        
+        // create a splitter with correct orientation
+        splitter = new LocalSplitter(parent);
+        splitter->setOrientation( orientation );
+        parent->layout()->addWidget( splitter );
+        
+      }
       
       // reparent current display
       splitter->addWidget( &activeDisplay() );
