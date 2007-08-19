@@ -310,12 +310,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //@}
 
   public slots:
-  
-  //! update configuration
-  void updateConfiguration( void );
-  
-  //! update configuration
-  void saveConfiguration( void );
  
   //! open file
   void open( FileRecord record = FileRecord() )
@@ -351,6 +345,12 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void enterEvent( QEvent *event );
     
   protected slots:
+  
+  //! update configuration
+  void _updateConfiguration( void );
+  
+  //! update configuration
+  void _saveConfiguration( void );
 
   //! new file
   void _newFile( void )

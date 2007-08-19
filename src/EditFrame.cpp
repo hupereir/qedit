@@ -197,9 +197,9 @@ EditFrame::EditFrame(  QWidget* parent ):
   toolbar->addAction( &detachAction() );
  
   //! configuration
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
-  connect( qApp, SIGNAL( aboutToQuit() ), SLOT( saveConfiguration() ) );
-  updateConfiguration();
+  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
+  _updateConfiguration();
   
   // update buttons
   _update( TextDisplay::ALL );
@@ -238,72 +238,6 @@ void EditFrame::setFile( File file )
   Debug::Throw( "EditFrame::setFile - done.\n" );
   
   return;
-}
-
-//________________________________________________________
-void EditFrame::updateConfiguration( void )
-{
-  
-  Debug::Throw( "EditFrame::updateConfiguration.\n" );
-    
-  CustomMainWindow::updateConfiguration(); 
-  
-  // resize
-  resize( QSize( XmlOptions::get().get<int>( "WINDOW_WIDTH" ), XmlOptions::get().get<int>( "WINDOW_HEIGHT" ) ) );
-   
-  // toolbars visibility and location
-  for( ToolbarList::iterator iter = toolbars_.begin(); iter != toolbars_.end(); iter++ )
-  {
-     
-    QToolBar* toolbar( iter->first );
-    string option_name( iter->second );
-    string location_name( option_name + "_LOCATION" );
-     
-    bool visibility( XmlOptions::get().find( option_name ) ? XmlOptions::get().get<bool>( option_name ):true );
-    bool current_visibility( toolbar->isVisible() );
-    
-    ToolBarArea location = (XmlOptions::get().find( location_name )) ? (ToolBarArea) CustomToolBar::nameToArea( XmlOptions::get().get<string>( location_name ) ):TopToolBarArea ;
-    ToolBarArea current_location = toolBarArea( toolbar );
-    
-    Debug::Throw() << "EditFrame::updateConfiguration - " << option_name << " visibility: " << visibility << " location: " << (int)location << endl;
-    
-    if( visibility )
-    {
-      if( !( current_visibility && (location == current_location) ) ) 
-      {
-        addToolBar( location, toolbar );
-        toolbar->show();
-      }
-    } else toolbar->hide();
-     
-    XmlOptions::get().set<bool>( option_name, !toolbar->isHidden() );
-    XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
-  }  
-  
-  Debug::Throw( "EditFrame::updateConfiguration - done.\n" );
-
-}
-
-//________________________________________________________
-void EditFrame::saveConfiguration( void )
-{
-  Debug::Throw( "EditFrame::saveConfiguration.\n" );
-
-  // save size
-  XmlOptions::get().set<int>( "WINDOW_HEIGHT", height() );
-  XmlOptions::get().set<int>( "WINDOW_WIDTH", width() );
-   
-  // save toolbars location and visibility
-  for( ToolbarList::iterator iter = toolbars_.begin(); iter != toolbars_.end(); iter++ )
-  {
-    
-    QToolBar* toolbar( iter->first );
-    string option_name( iter->second );
-    string location_name( option_name + "_LOCATION" );
-    XmlOptions::get().set<bool>( option_name, !toolbar->isHidden() );
-    XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
-  }
-  
 }
 
 //________________________________________________________________
@@ -422,7 +356,7 @@ void EditFrame::_detach( void )
 
   // show the new frame
   frame.show();
-  frame.updateConfiguration();
+  frame._updateConfiguration();
 
   return;
   
@@ -640,7 +574,7 @@ void EditFrame::closeEvent( QCloseEvent* event )
   }
 
   // save configuration before closing
-  saveConfiguration();
+  _saveConfiguration();
   
   return;
 }
@@ -960,6 +894,72 @@ void EditFrame::_updateWindowTitle()
   Debug::Throw( "EditFrame::_updateWindowTitle - done.\n" );
 }
 
+//________________________________________________________
+void EditFrame::_updateConfiguration( void )
+{
+  
+  Debug::Throw( "EditFrame::_updateConfiguration.\n" );
+    
+  CustomMainWindow::_updateConfiguration(); 
+  
+  // resize
+  resize( QSize( XmlOptions::get().get<int>( "WINDOW_WIDTH" ), XmlOptions::get().get<int>( "WINDOW_HEIGHT" ) ) );
+   
+  // toolbars visibility and location
+  for( ToolbarList::iterator iter = toolbars_.begin(); iter != toolbars_.end(); iter++ )
+  {
+     
+    QToolBar* toolbar( iter->first );
+    string option_name( iter->second );
+    string location_name( option_name + "_LOCATION" );
+     
+    bool visibility( XmlOptions::get().find( option_name ) ? XmlOptions::get().get<bool>( option_name ):true );
+    bool current_visibility( toolbar->isVisible() );
+    
+    ToolBarArea location = (XmlOptions::get().find( location_name )) ? (ToolBarArea) CustomToolBar::nameToArea( XmlOptions::get().get<string>( location_name ) ):TopToolBarArea ;
+    ToolBarArea current_location = toolBarArea( toolbar );
+    
+    Debug::Throw() << "EditFrame::updateConfiguration - " << option_name << " visibility: " << visibility << " location: " << (int)location << endl;
+    
+    if( visibility )
+    {
+      if( !( current_visibility && (location == current_location) ) ) 
+      {
+        addToolBar( location, toolbar );
+        toolbar->show();
+      }
+    } else toolbar->hide();
+     
+    XmlOptions::get().set<bool>( option_name, !toolbar->isHidden() );
+    XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
+  }  
+  
+  Debug::Throw( "EditFrame::_updateConfiguration - done.\n" );
+
+}
+
+//________________________________________________________
+void EditFrame::_saveConfiguration( void )
+{
+  Debug::Throw( "EditFrame::_saveConfiguration.\n" );
+
+  // save size
+  XmlOptions::get().set<int>( "WINDOW_HEIGHT", height() );
+  XmlOptions::get().set<int>( "WINDOW_WIDTH", width() );
+   
+  // save toolbars location and visibility
+  for( ToolbarList::iterator iter = toolbars_.begin(); iter != toolbars_.end(); iter++ )
+  {
+    
+    QToolBar* toolbar( iter->first );
+    string option_name( iter->second );
+    string location_name( option_name + "_LOCATION" );
+    XmlOptions::get().set<bool>( option_name, !toolbar->isHidden() );
+    XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
+  }
+  
+}
+
 //___________________________________________________________
 void EditFrame::_newFile( const OpenMode& mode, const Orientation& orientation )
 {
@@ -1117,7 +1117,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
     setFile( record.file() );
 
     // update configuration
-    updateConfiguration();
+    _updateConfiguration();
     
   }
  

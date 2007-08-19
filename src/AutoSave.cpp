@@ -50,7 +50,7 @@ AutoSave::AutoSave( QObject* parent ):
   timer_.setSingleShot( true );
   connect( &timer_, SIGNAL( timeout() ), this, SLOT( saveFiles() ) );
   
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
+  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
 }
 
@@ -90,21 +90,6 @@ void AutoSave::newThread( TextDisplay* display )
   
   // save file immediatly
   if( interval_ ) saveFiles( display );
-  
-}
-
-//______________________________________________________
-void AutoSave::updateConfiguration( void )
-{
-  
-  Debug::Throw( "AutoSave::updateConfiguration.\n" );
-
-  // save AutoSave interval and start timer
-  interval_ = 1000*XmlOptions::get().get<unsigned int>("AUTOSAVE_INTERVAL");
-  if( interval_ > 0 ) {
-    timer_.setInterval( interval_ );
-    timer_.start();
-  } else timer_.stop();
   
 }
 
@@ -175,4 +160,19 @@ void AutoSave::saveFiles( const TextDisplay* display )
   if( !threads_.empty() )  timer_.start();
   Debug::Throw( "AutoSave::saveFiles - done. \n" );
 
+}
+
+//______________________________________________________
+void AutoSave::_updateConfiguration( void )
+{
+  
+  Debug::Throw( "AutoSave::_updateConfiguration.\n" );
+
+  // save AutoSave interval and start timer
+  interval_ = 1000*XmlOptions::get().get<unsigned int>("AUTOSAVE_INTERVAL");
+  if( interval_ > 0 ) {
+    timer_.setInterval( interval_ );
+    timer_.start();
+  } else timer_.stop();
+  
 }

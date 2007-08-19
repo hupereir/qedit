@@ -117,11 +117,16 @@ TextDisplay::TextDisplay( QWidget* parent ):
   connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
 
   // track configuration modifications
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( updateConfiguration() ) );
+  
+  // connection from configuration changed to _updateConfiguration should be useless 
+  // because it is already implemented by the base class
+  // to be double-checked
+  //connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  
+  connect( qApp, SIGNAL( spellCheckConfigurationChanged() ), SLOT( _updateSpellCheckConfiguration() ) );
   connect( qApp, SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
-  connect( qApp, SIGNAL( spellCheckConfigurationChanged() ), SLOT( updateSpellCheckConfiguration() ) );
-  updateConfiguration();
-  updateSpellCheckConfiguration();
+  _updateConfiguration();
+  _updateSpellCheckConfiguration();
   
   // paper background active color
   _setPaper( true, QWidget().palette().color( QPalette::Base ) );
@@ -823,40 +828,6 @@ bool TextDisplay::hasTaggedBlocks( void )
 }
 
 //___________________________________________________________________________
-void TextDisplay::updateConfiguration( void )
-{
-   Debug::Throw( "TextDisplay::updateConfiguration.\n" );
-
-  // base class configuration update
-  CustomTextEdit::updateConfiguration();
-  
-  // indentation
-  textIndentAction().setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
-  
-  // syntax highlighting
-  textHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
-
-  // parenthesis highlight
-  textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().raw( "PARENTHESIS_COLOR" ).c_str() ) );
-  parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
- 
-  // retrieve inactive colors for activity shading
-  QColor inactive_color( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() );
-  bool shade_inactive( XmlOptions::get().get<bool>( "SHADE_INACTIVE_VIEWS" ) );
-  _setPaper( false, inactive_color.isValid() && shade_inactive ? inactive_color : paper( true ) );
-  _setPaper( paper( isActive() ) );
-  
-  // retrieve diff colors
-  diff_conflict_color_ = QColor( XmlOptions::get().get<string>("DIFF_CONFLICT_COLOR").c_str() );
-  diff_added_color_ = QColor( XmlOptions::get().get<string>("DIFF_ADDED_COLOR").c_str() );
-  user_tag_color_ = QColor( XmlOptions::get().get<string>("TAGGED_BLOCK_COLOR").c_str() );
-  
-  // update paragraph tags
-  _updateTaggedBlocks();
-  
-}
-
-//___________________________________________________________________________
 void TextDisplay::updateDocumentClass( void )
 {
 
@@ -926,60 +897,6 @@ void TextDisplay::updateDocumentClass( void )
   return;
   
 }
-
-//___________________________________________________________________________
-void TextDisplay::updateSpellCheckConfiguration( void )
-{
-  Debug::Throw( "TextDisplay::updateSpellCheckConfiguration.\n" );
-  
-  #if WITH_ASPELL
-  
-  // spellcheck configuration
-  bool changed( false );
-  changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<string>("AUTOSPELL_COLOR").c_str() ) );
-  changed |= textHighlight().spellParser().setFontFormat( XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
-  textHighlight().updateSpellPattern();
-  autoSpellAction().setChecked( XmlOptions::get().get<bool>("AUTOSPELL") );
-  autoSpellAction().setEnabled( textHighlight().spellParser().color().isValid() );
-  
-  // store local reference to spell interface
-  SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
-  
-  // load default filter and dictionaries
-  string filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
-  string dictionary( XmlOptions::get().raw("DICTIONARY") );
-
-  // overwrite with file record
-  if( !file().empty() )
-  {
-    FileRecord& record( menu().get( file() ) ); 
-    if( record.hasInformation( "filter" ) && interface.hasFilter( record.information( "filter" ) ) )
-    { filter = record.information( "filter" ); }
-    
-    if( record.hasInformation( "dictionary" ) && interface.hasDictionary( record.information( "dictionary" ) ) )
-    { dictionary = record.information( "dictionary" ); }
-    
-  }
-  
-  // see if one should/can change the dictionary and filter
-  if( filter != interface.filter() && interface.setFilter( filter ) ) 
-  {
-    _filterMenu().select( filter );
-    changed = true;
-  }
-  
-  if( dictionary != interface.dictionary() && interface.setDictionary( dictionary ) ) 
-  {
-    _dictionaryMenu().select( dictionary );
-    changed = true;
-  }
-  
-  // rehighlight if needed
-  if( changed && autoSpellAction().isChecked() && autoSpellAction().isEnabled() ) rehighlight();
-  
-  #endif
-  
-}  
 
 //_______________________________________________________
 void TextDisplay::indentSelection( void )
@@ -1567,6 +1484,94 @@ void TextDisplay::_setParenthesis( const TextParenthesis::List& parenthesis )
   }
   
 }
+
+//___________________________________________________________________________
+void TextDisplay::_updateConfiguration( void )
+{
+   Debug::Throw( "TextDisplay::_updateConfiguration.\n" );
+
+  // base class configuration update
+  CustomTextEdit::_updateConfiguration();
+  
+  // indentation
+  textIndentAction().setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
+  
+  // syntax highlighting
+  textHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
+
+  // parenthesis highlight
+  textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().raw( "PARENTHESIS_COLOR" ).c_str() ) );
+  parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
+ 
+  // retrieve inactive colors for activity shading
+  QColor inactive_color( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() );
+  bool shade_inactive( XmlOptions::get().get<bool>( "SHADE_INACTIVE_VIEWS" ) );
+  _setPaper( false, inactive_color.isValid() && shade_inactive ? inactive_color : paper( true ) );
+  _setPaper( paper( isActive() ) );
+  
+  // retrieve diff colors
+  diff_conflict_color_ = QColor( XmlOptions::get().get<string>("DIFF_CONFLICT_COLOR").c_str() );
+  diff_added_color_ = QColor( XmlOptions::get().get<string>("DIFF_ADDED_COLOR").c_str() );
+  user_tag_color_ = QColor( XmlOptions::get().get<string>("TAGGED_BLOCK_COLOR").c_str() );
+  
+  // update paragraph tags
+  _updateTaggedBlocks();
+  
+}
+
+//___________________________________________________________________________
+void TextDisplay::_updateSpellCheckConfiguration( void )
+{
+  Debug::Throw( "TextDisplay::_updateSpellCheckConfiguration.\n" );
+  
+  #if WITH_ASPELL
+  
+  // spellcheck configuration
+  bool changed( false );
+  changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<string>("AUTOSPELL_COLOR").c_str() ) );
+  changed |= textHighlight().spellParser().setFontFormat( XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
+  textHighlight().updateSpellPattern();
+  autoSpellAction().setChecked( XmlOptions::get().get<bool>("AUTOSPELL") );
+  autoSpellAction().setEnabled( textHighlight().spellParser().color().isValid() );
+  
+  // store local reference to spell interface
+  SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
+  
+  // load default filter and dictionaries
+  string filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
+  string dictionary( XmlOptions::get().raw("DICTIONARY") );
+
+  // overwrite with file record
+  if( !file().empty() )
+  {
+    FileRecord& record( menu().get( file() ) ); 
+    if( record.hasInformation( "filter" ) && interface.hasFilter( record.information( "filter" ) ) )
+    { filter = record.information( "filter" ); }
+    
+    if( record.hasInformation( "dictionary" ) && interface.hasDictionary( record.information( "dictionary" ) ) )
+    { dictionary = record.information( "dictionary" ); }
+    
+  }
+  
+  // see if one should/can change the dictionary and filter
+  if( filter != interface.filter() && interface.setFilter( filter ) ) 
+  {
+    _filterMenu().select( filter );
+    changed = true;
+  }
+  
+  if( dictionary != interface.dictionary() && interface.setDictionary( dictionary ) ) 
+  {
+    _dictionaryMenu().select( dictionary );
+    changed = true;
+  }
+  
+  // rehighlight if needed
+  if( changed && autoSpellAction().isChecked() && autoSpellAction().isEnabled() ) rehighlight();
+  
+  #endif
+  
+}  
 
 //_______________________________________________________
 void TextDisplay::_indentCurrentParagraph( void )

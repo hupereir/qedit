@@ -62,13 +62,15 @@ class AutoSave: public QObject, public Counter
     
   public slots:
 
-  //! update configuration 
-  /* update interval between threads */
-  void updateConfiguration( void );
-
   //! Save files
   /* \param display if set to non 0, only threads that match the display are saved */
   void saveFiles( const TextDisplay* display = 0 );
+  
+  protected slots:
+
+  //! update configuration 
+  /* update interval between threads */
+  void _updateConfiguration( void );
   
   private:
   

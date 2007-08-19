@@ -379,15 +379,9 @@ class TextDisplay: public CustomTextEdit
   void needUpdate( unsigned int flags );
   
   public slots:
-
-  //! update configuration
-  void updateConfiguration( void );
   
   //! set document class
   void updateDocumentClass( void );
-
-  //! spellcheck configuration
-  void updateSpellCheckConfiguration( void );
   
   //! indent selection
   void indentSelection( void );
@@ -516,6 +510,12 @@ class TextDisplay: public CustomTextEdit
   
   protected slots:
 
+  //! update configuration
+  void _updateConfiguration( void );
+
+  //! spellcheck configuration
+  void _updateSpellCheckConfiguration( void );
+  
   //! indent paragraph (when return or tab is pressed)
   void _indentCurrentParagraph( void );
 
