@@ -344,7 +344,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! enter event handler
   void enterEvent( QEvent *event );
     
-  protected slots:
+  private slots:
   
   //! update configuration
   void _updateConfiguration( void );

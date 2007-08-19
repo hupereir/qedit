@@ -118,12 +118,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
 
   // track configuration modifications
-  
-  // connection from configuration changed to _updateConfiguration should be useless 
-  // because it is already implemented by the base class
-  // to be double-checked
-  //connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-  
+  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   connect( qApp, SIGNAL( spellCheckConfigurationChanged() ), SLOT( _updateSpellCheckConfiguration() ) );
   connect( qApp, SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
   _updateConfiguration();
@@ -154,6 +149,12 @@ void TextDisplay::setModified( const bool& value )
     return; 
   }
   
+  if( value && isReadOnly() )
+  { 
+    Debug::Throw( "TextDisplay::setModified - rejected.\n" );
+    return; 
+  }
+
   document()->setModified( value );
   
   // ask for update in the parent frame
@@ -361,7 +362,6 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
   else if( state == FileModifiedDialog::SAVE_AS ) { saveAs(); }
   else if( state == FileModifiedDialog::RELOAD ) { 
     
-    //document()->setModified( false ); 
     setModified( false ); 
     revertToSave(); 
         
@@ -519,7 +519,7 @@ void TextDisplay::saveAs( void )
   }
 
   // set document as modified and save using new filename
-  document()->setModified( true );
+  setModified( true );
   save();
   
   // rehighlight
@@ -543,7 +543,6 @@ void TextDisplay::revertToSave( void )
   int position( textCursor().position() );
   
   setUpdatesEnabled( false );
-  //document()->setModified( false );
   setModified( false );
   openFile( file(), false );
 
@@ -1502,9 +1501,6 @@ void TextDisplay::_updateConfiguration( void )
 {
    Debug::Throw( "TextDisplay::_updateConfiguration.\n" );
 
-  // base class configuration update
-  CustomTextEdit::_updateConfiguration();
-  
   // indentation
   textIndentAction().setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
   
@@ -1798,6 +1794,13 @@ void TextDisplay::_setBlockModified( int position, int, int added )
   
   _setBlockModified( end );
   
+}
+
+//__________________________________________________
+void TextDisplay::_textModified( void )
+{ 
+  Debug::Throw( "TextDisplay::_textModified.\n" );
+  if( isActive() ) emit needUpdate( WINDOW_TITLE ); 
 }
 
 //__________________________________________________

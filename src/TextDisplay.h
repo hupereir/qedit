@@ -508,7 +508,7 @@ class TextDisplay: public CustomTextEdit
   
   //@}
   
-  protected slots:
+  private slots:
 
   //! update configuration
   void _updateConfiguration( void );
@@ -568,8 +568,7 @@ class TextDisplay: public CustomTextEdit
   }
   
   //! text changed
-  virtual void _textModified( void )
-  { if( isActive() ) emit needUpdate( WINDOW_TITLE ); }
+  virtual void _textModified( void );
   
   //! ignore current misspelled word
   /*! this method does nothing if not compiled against aspell */

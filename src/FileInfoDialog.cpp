@@ -174,15 +174,23 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   grid_layout->addWidget( new QLabel( "Read", box ), Qt::AlignHCenter );
   grid_layout->addWidget( new QLabel( "Write", box ), Qt::AlignHCenter ); 
   grid_layout->addWidget( new QLabel( "Execute", box ), Qt::AlignHCenter ); 
-  
-  grid_layout->addWidget( new QLabel( "User permissions", box ) );
-  
+    
   typedef std::map< QFile::Permission, QCheckBox* > CheckBoxMap;
   CheckBoxMap checkboxes;
+
+  grid_layout->addWidget( new QLabel( "Owner permissions", box ) );
+  grid_layout->addWidget( checkboxes[QFile::ReadOwner ]  = new QCheckBox( box ), Qt::AlignHCenter ); 
+  grid_layout->addWidget( checkboxes[QFile::WriteOwner ]  = new QCheckBox( box ), Qt::AlignHCenter ); 
+  grid_layout->addWidget( checkboxes[QFile::ExeOwner  ]  = new QCheckBox( box ), Qt::AlignHCenter ); 
+
+  // on unix, right now, Qt does not return the current user permissions. Disable them from the dialog  
+  #ifndef Q_WS_X11
+  grid_layout->addWidget( new QLabel( "User permissions", box ) );
   grid_layout->addWidget( checkboxes[QFile::ReadUser ]  = new QCheckBox( box ), Qt::AlignHCenter ); 
   grid_layout->addWidget( checkboxes[QFile::WriteUser]  = new QCheckBox( box ), Qt::AlignHCenter ); 
   grid_layout->addWidget( checkboxes[QFile::ExeUser  ]  = new QCheckBox( box ), Qt::AlignHCenter ); 
-
+  #endif
+  
   grid_layout->addWidget( new QLabel( "Group permissions", box ) );
   grid_layout->addWidget( checkboxes[QFile::ReadGroup  ] = new QCheckBox( box ), Qt::AlignHCenter );  
   grid_layout->addWidget( checkboxes[QFile::WriteGroup ] = new QCheckBox( box ), Qt::AlignHCenter );  
@@ -213,7 +221,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
     layout->addItem( grid_layout );
     
     // user id
-    grid_layout->addWidget( label = new QLabel( "user: ", box ) );
+    grid_layout->addWidget( label = new QLabel( "owner: ", box ) );
     grid_layout->addWidget( label = new QLabel( file.userName().c_str(), box ) );
     
     // group id

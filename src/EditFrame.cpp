@@ -899,9 +899,7 @@ void EditFrame::_updateConfiguration( void )
 {
   
   Debug::Throw( "EditFrame::_updateConfiguration.\n" );
-    
-  CustomMainWindow::_updateConfiguration(); 
-  
+      
   // resize
   resize( QSize( XmlOptions::get().get<int>( "WINDOW_WIDTH" ), XmlOptions::get().get<int>( "WINDOW_HEIGHT" ) ) );
    
