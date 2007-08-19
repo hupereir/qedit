@@ -14,6 +14,7 @@ EXTRA_DIST = \
  messagebox_warning.png \
  redo.png \
  reload.png \
+ toggle_log.png \
  trashcan_empty.png \
  undo.png \
  view_bottom.png \
