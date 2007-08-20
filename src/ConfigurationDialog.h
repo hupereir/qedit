@@ -39,10 +39,17 @@ class OptionCheckBox;
 class ConfigurationDialog: public BaseConfigurationDialog
 {
   
+  Q_OBJECT
+  
   public:
     
   //! creator
   ConfigurationDialog( QWidget *parent );
+
+  private slots:
+
+  //! restore default options
+  void _restoreDefaults( void );
   
 };
 

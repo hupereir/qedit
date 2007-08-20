@@ -130,6 +130,7 @@ nodist_qedit_SOURCES = \
   qrc_patterns.cpp \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \
+  moc_ConfigurationDialog.cpp \
   moc_Diff.cpp \
   moc_DocumentClassDialog.cpp \
   moc_EditFrame.cpp \
