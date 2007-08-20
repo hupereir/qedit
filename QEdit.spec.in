@@ -7,12 +7,16 @@ Name: QEdit
 Version: %{ver}
 Release: %{rel}
 License: GPL
-Group: User Interface/X
+Group: Applications/Editors
 Source: %{name}-%{ver}.tar.gz
 BuildRoot: /var/tmp/%{name}-buildroot
 
+Requires: qt4-common, libqtcore4, libqtgui4, aspell >= 0.60.4, libaspell15 >= 0.60.4
+
 %description
-Advanced text editor
+Qt based advanced text editor. Supports syntax highlighting, matching-parenthesis highlighting, auto-indentation, 
+customizable text macro for many languages, such as C/C++, fortran, Makefile, HTML/XML, etc. Can be plugged with aspell to provide 
+automatic spell-checking.
 
 %prep
 %setup -q -n %{name}-%{ver} %{rel}
@@ -31,14 +35,4 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc COPYING INSTALL
 %{prefix}/bin/qedit
-%{prefix}/share/QEdit/patterns/c_patterns.xml
-%{prefix}/share/QEdit/patterns/default_patterns.xml
-%{prefix}/share/QEdit/patterns/diff_patterns.xml
-%{prefix}/share/QEdit/patterns/fortran_patterns.xml 
-%{prefix}/share/QEdit/patterns/html_patterns.xml
-%{prefix}/share/QEdit/patterns/latex_patterns.xml
-%{prefix}/share/QEdit/patterns/makefile_patterns.xml
-%{prefix}/share/QEdit/patterns/perl_patterns.xml
-%{prefix}/share/QEdit/patterns/shell_patterns.xml
-%{prefix}/share/QEdit/patterns/xml_patterns.xml
 %changelog
