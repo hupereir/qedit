@@ -13,6 +13,7 @@ EXTRA_DIST = \
   filesave.png \
   fonts.png \
   info.png \
+  indent.png \
   messagebox_warning.png \
   qt-logo.png \
   redo.png \

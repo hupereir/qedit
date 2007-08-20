@@ -296,6 +296,14 @@ class TextDisplay: public CustomTextEdit
   QAction& spellcheckAction( void ) const
   { return *spellcheck_action_; }
   
+  //! indent selection
+  QAction& indentSelectionAction( void ) const
+  { return *indent_selection_action_; }
+  
+  //! replace leading tab actions
+  QAction& leadingTabsAction( void ) const
+  { return *leading_tabs_action_; }
+  
   //! file information
   QAction& fileInfoAction( void ) const
   { 
@@ -386,14 +394,8 @@ class TextDisplay: public CustomTextEdit
   //! set document class
   void updateDocumentClass( void );
   
-  //! indent selection
-  void indentSelection( void );
-
   //! process macro by name
   void processMacro( std::string );
-
-  //! replace all leading tabs in text when tab emulation is active
-  void replaceLeadingTabs( const bool& confirm = true );
 
   //! rehighlight
   void rehighlight( void );
@@ -548,6 +550,12 @@ class TextDisplay: public CustomTextEdit
   void _spellcheck( void );
   
   //@}
+
+  //! indent selection
+  void _indentSelection( void );
+
+  //! replace all leading tabs in text when tab emulation is active
+  void _replaceLeadingTabs( const bool& confirm = true );
   
   //! show file info
   void _showFileInfo( void );
@@ -647,7 +655,7 @@ class TextDisplay: public CustomTextEdit
   
   //! toggle indentation
   QAction* text_indent_action_;
-  
+ 
   //! toggle text highlighting
   QAction* text_highlight_action_;
  
@@ -659,6 +667,12 @@ class TextDisplay: public CustomTextEdit
   
   //! run spell checker
   QAction* spellcheck_action_;
+  
+  //! indent selection
+  QAction* indent_selection_action_;
+  
+  //! replace leading tabs
+  QAction* leading_tabs_action_;
   
   //! toggle text highlighting
   QAction* file_info_action_;

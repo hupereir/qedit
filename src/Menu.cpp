@@ -145,6 +145,7 @@ Menu::Menu( QWidget* parent ):
   DebugMenu *debug_menu( new DebugMenu( this ) );
   debug_menu->setTitle( "&Debug" );
   debug_menu->addAction( &help->dumpAction() );
+  
   debug_menu->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
   menu->addMenu( debug_menu );
 
@@ -316,13 +317,12 @@ void Menu::_updateToolsMenu( void )
   tools_menu_->clear();
   
   // selection indentation
-  QAction *action;
-  action = tools_menu_->addAction( "&Indent selection", &display, SLOT( indentSelection() ), CTRL+Key_I );
-  action->setEnabled( editable && has_selection && has_indent );
+  tools_menu_->addAction( &display.indentSelectionAction() );
+  display.indentSelectionAction().setEnabled( editable && has_selection && has_indent );
 
   // tab replacement
-  action = tools_menu_->addAction( "Replace Leading &Tabs", &display, SLOT( replaceLeadingTabs() ) );
-  action->setEnabled( display.hasLeadingTabs() );
+  tools_menu_->addAction( &display.leadingTabsAction() );
+  display.leadingTabsAction().setEnabled( display.hasLeadingTabs() );
   
   // spell checker
   tools_menu_->addAction( &display.spellcheckAction() );

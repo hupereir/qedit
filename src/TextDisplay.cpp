@@ -891,35 +891,6 @@ void TextDisplay::updateDocumentClass( void )
   
 }
 
-//_______________________________________________________
-void TextDisplay::indentSelection( void )
-{
-  Debug::Throw( "TextDisplay::IndentSelection.\n" );
-
-  // check activity, indentation and text selection
-  if( !indent_->isEnabled() ) return;
-  
-  // retrieve text cursor
-  QTextCursor cursor( textCursor() );
-  if( !cursor.hasSelection() ) return;
-  
-  // retrieve blocks
-  QTextBlock begin( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
-  QTextBlock end( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
-
-  // need to remove selection otherwise the first adding of a tab
-  // will remove the entire selection.
-  cursor.clearSelection(); 
-  emit indent( begin, end );
-  
-  // select all indented blocks
-  cursor.setPosition( begin.position(), QTextCursor::MoveAnchor );
-  cursor.setPosition( end.position()+end.length()-1, QTextCursor::KeepAnchor );
-  setTextCursor( cursor );
-
-  return;
-}
-
 //_____________________________________________
 void TextDisplay::processMacro( string name )
 {
@@ -983,92 +954,10 @@ void TextDisplay::processMacro( string name )
   setTextCursor( cursor );
   
   // replace leading tabs in selection
-  replaceLeadingTabs( false );
+  _replaceLeadingTabs( false );
   
   return;
   
-}
-
-//_______________________________________________________
-void TextDisplay::replaceLeadingTabs( const bool& confirm )
-{
-  Debug::Throw( 0, "TextDisplay::replaceLeadingTabs.\n" );
-
-  // ask for confirmation
-  if( confirm )
-  {
-    
-    ostringstream what;
-    if( _hasTabEmulation() ) what << "Replace all leading tabs with space characters ?";
-    else what << "Replace all leading spaces with tab characters ?";
-    if( !QtUtil::questionDialog( this, what.str() ) ) return;
-
-  }
-  
-  // disable updates
-  setUpdatesEnabled( false );
-
-  // define regexp to perform replacement
-  QRegExp wrong_tab_regexp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
-  QString wrong_tab( _hasTabEmulation() ? normalTabCharacter():emulatedTabCharacter() );
-  
-  // define blocks to process
-  QTextBlock begin;
-  QTextBlock end;
-  
-  // retrieve cursor
-  QTextCursor cursor( textCursor() );
-  if( cursor.hasSelection() ) 
-  {
-    
-    int position_begin( min( cursor.position(), cursor.anchor() ) );
-    int position_end( max( cursor.position(), cursor.anchor() ) );
-    begin = document()->findBlock( position_begin );
-    end = document()->findBlock( position_end );
-    
-  } else {
-    
-    begin = document()->begin(); 
-    end = document()->end(); 
-    
-  }  
-  
-  // store blocks
-  vector<QTextBlock> blocks;
-  for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
-  { blocks.push_back( block ); }
-  blocks.push_back( end );
-  
-  // loop over blocks
-  for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
-  {
-    // check block
-    if( !iter->isValid() ) continue;
-    
-    // retrieve text
-    QString text( iter->text() );
-    
-    // look for leading tabs
-    if( wrong_tab_regexp.indexIn( text ) < 0 ) continue;
-    
-    // select with cursor
-    QTextCursor cursor( *iter );
-    cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
-    cursor.setPosition( cursor.position() + wrong_tab_regexp.matchedLength(), QTextCursor::KeepAnchor );
-
-    // create replacement string and insert.
-    QString buffer;
-    for( int i=0; i< int(wrong_tab_regexp.matchedLength()/wrong_tab.size()); i++ )
-    { buffer += tabCharacter(); }
-    cursor.insertText( buffer );
-
-  }
-
-  // enable updates
-  setUpdatesEnabled( true );
-
-  Debug::Throw( 0, "TextDisplay::replaceLeadingTabs - done.\n" );
-  return;
 }
 
 //_______________________________________________________
@@ -1318,11 +1207,20 @@ void TextDisplay::_installActions( void )
   // spell checking
   addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK, path_list ), "&Spell check", this ) );
   #if WITH_ASPELL
-  connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
+  connect( spellcheck_action_, SIGNAL( triggered( void ) ), SLOT( _spellcheck( void ) ) );
   #else 
   spellcheck_action_->setVisible( false );
   #endif
   
+  // indent selection
+  addAction( indent_selection_action_ = new QAction( IconEngine::get( ICONS::INDENT, path_list ), "&Indent selection", this ) );
+  indent_selection_action_->setShortcut( CTRL+Key_I );
+  connect( indent_selection_action_, SIGNAL( triggered( void ) ), SLOT( _indentSelection( void ) ) );
+  
+  // replace leading tabs
+  addAction( leading_tabs_action_ = new QAction( "&Replace leading tabs", this ) );
+  connect( leading_tabs_action_, SIGNAL( triggered( void ) ), SLOT( _replaceLeadingTabs( void ) ) );
+    
   // file information
   addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO, path_list ), "&File information", this ) );
   connect( file_info_action_, SIGNAL( triggered() ), SLOT( _showFileInfo() ) );
@@ -1765,6 +1663,119 @@ void TextDisplay::_spellcheck( void )
   #endif
   
 }
+
+//_______________________________________________________
+void TextDisplay::_indentSelection( void )
+{
+  Debug::Throw( "TextDisplay::_indentSelection.\n" );
+
+  // check activity, indentation and text selection
+  if( !indent_->isEnabled() ) return;
+  
+  // retrieve text cursor
+  QTextCursor cursor( textCursor() );
+  if( !cursor.hasSelection() ) return;
+  
+  // retrieve blocks
+  QTextBlock begin( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
+  QTextBlock end( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
+
+  // need to remove selection otherwise the first adding of a tab
+  // will remove the entire selection.
+
+  cursor.clearSelection(); 
+  emit indent( begin, end );
+  
+  // select all indented blocks
+  cursor.setPosition( begin.position(), QTextCursor::MoveAnchor );
+  cursor.setPosition( end.position()+end.length()-1, QTextCursor::KeepAnchor );
+  setTextCursor( cursor );
+
+  return;
+}
+
+//_______________________________________________________
+void TextDisplay::_replaceLeadingTabs( const bool& confirm )
+{
+  Debug::Throw( "TextDisplay::_replaceLeadingTabs.\n" );
+
+  // ask for confirmation
+  if( confirm )
+  {
+    
+    ostringstream what;
+    if( _hasTabEmulation() ) what << "Replace all leading tabs with space characters ?";
+    else what << "Replace all leading spaces with tab characters ?";
+    if( !QtUtil::questionDialog( this, what.str() ) ) return;
+
+  }
+  
+  // disable updates
+  setUpdatesEnabled( false );
+
+  // define regexp to perform replacement
+  QRegExp wrong_tab_regexp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
+  QString wrong_tab( _hasTabEmulation() ? normalTabCharacter():emulatedTabCharacter() );
+  
+  // define blocks to process
+  QTextBlock begin;
+  QTextBlock end;
+  
+  // retrieve cursor
+  QTextCursor cursor( textCursor() );
+  if( cursor.hasSelection() ) 
+  {
+    
+    int position_begin( min( cursor.position(), cursor.anchor() ) );
+    int position_end( max( cursor.position(), cursor.anchor() ) );
+    begin = document()->findBlock( position_begin );
+    end = document()->findBlock( position_end );
+    
+  } else {
+    
+    begin = document()->begin(); 
+    end = document()->end(); 
+    
+  }  
+  
+  // store blocks
+  vector<QTextBlock> blocks;
+  for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
+  { blocks.push_back( block ); }
+  blocks.push_back( end );
+  
+  // loop over blocks
+  for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+  {
+    // check block
+    if( !iter->isValid() ) continue;
+    
+    // retrieve text
+    QString text( iter->text() );
+    
+    // look for leading tabs
+    if( wrong_tab_regexp.indexIn( text ) < 0 ) continue;
+    
+    // select with cursor
+    QTextCursor cursor( *iter );
+    cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
+    cursor.setPosition( cursor.position() + wrong_tab_regexp.matchedLength(), QTextCursor::KeepAnchor );
+
+    // create replacement string and insert.
+    QString buffer;
+    for( int i=0; i< int(wrong_tab_regexp.matchedLength()/wrong_tab.size()); i++ )
+    { buffer += tabCharacter(); }
+    cursor.insertText( buffer );
+
+  }
+
+  // enable updates
+  setUpdatesEnabled( true );
+
+  Debug::Throw( "TextDisplay::_replaceLeadingTabs - done.\n" );
+  return;
+}
+
 
 //_______________________________________________________
 void TextDisplay::_showFileInfo( void )
