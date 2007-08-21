@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = src.pro pixmaps.qrc patterns.qrc
+EXTRA_DIST = src.pro pixmaps.qrc
 
 if WITH_ASPELL 
 INCLUDES = \
@@ -13,7 +13,8 @@ INCLUDES = \
   -I$(top_srcdir)/base  \
   -I$(top_srcdir)/base-qt \
   -I$(top_srcdir)/base-server \
-  -I$(top_srcdir)/base-spellcheck
+  -I$(top_srcdir)/base-spellcheck \
+  -I$(top_srcdir)/document-classes
 else
 INCLUDES = \
   -I$(qt_includes) \
@@ -24,7 +25,8 @@ INCLUDES = \
   -I$(qt_includes)/QtGui \
   -I$(top_srcdir)/base  \
   -I$(top_srcdir)/base-qt \
-  -I$(top_srcdir)/base-server
+  -I$(top_srcdir)/base-server \
+  -I$(top_srcdir)/document-classes
 endif
 
 CXXFLAGS = @CXXFLAGS@
@@ -35,6 +37,7 @@ if WITH_ASPELL
 libraries = \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   -L$(aspell_libraries) -laspell  \
+  ../document-classes/libdocument-classes.a \
   ../base-spellcheck/libbase-spellcheck.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
@@ -44,6 +47,7 @@ else
 
 libraries =  \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
+  ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
@@ -59,9 +63,6 @@ noinst_HEADERS = \
   ConfigurationDialog.h \
   Diff.h \
   DefaultOptions.h \
-  DocumentClassDialog.h \
-  DocumentClass.h \
-  DocumentClassManager.h \
   EditFrame.h \
   ExitDialog.h \
   FileInfoDialog.h \
@@ -71,25 +72,17 @@ noinst_HEADERS = \
   HelpText.h \
   HighlightBlockData.h \
   HighlightBlockFlags.h \
-  HighlightPattern.h \
-  HighlightStyle.h \
   HtmlUtil.h \
   Icons.h \
-  IndentPattern.h \
-  KeywordPattern.h \
   MainFrame.h \
   Menu.h \
   NewFileDialog.h \
   ParenthesisHighlight.h \
   PrintDialog.h \
-  RangePattern.h \
-  TextParenthesis.h \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
-  TextMacro.h \
-  WindowTitle.h \
-  XmlDef.h
+  WindowTitle.h
 
 qedit_SOURCES = \
   AskForSaveDialog.cpp \
@@ -97,9 +90,6 @@ qedit_SOURCES = \
   AutoSaveThread.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
-  DocumentClass.cpp \
-  DocumentClassDialog.cpp \
-  DocumentClassManager.cpp \
   EditFrame.cpp \
   ExitDialog.cpp \
   FileInfoDialog.cpp \
@@ -107,11 +97,7 @@ qedit_SOURCES = \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \
   HighlightBlockData.cpp \
-  HighlightPattern.cpp \
-  HighlightStyle.cpp \
   HtmlUtil.cpp \
-  IndentPattern.cpp \
-  KeywordPattern.cpp \
   MainFrame.cpp \
   Menu.cpp \
   NewFileDialog.cpp \
@@ -119,20 +105,16 @@ qedit_SOURCES = \
   PrintDialog.cpp \
   QEdit.cpp \
   RangePattern.cpp \
-  TextParenthesis.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
-  TextIndent.cpp \
-  TextMacro.cpp
+  TextIndent.cpp
 
 nodist_qedit_SOURCES = \
   qrc_pixmaps.cpp \
-  qrc_patterns.cpp \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \
   moc_ConfigurationDialog.cpp \
   moc_Diff.cpp \
-  moc_DocumentClassDialog.cpp \
   moc_EditFrame.cpp \
   moc_FileModifiedDialog.cpp \
   moc_FileRemovedDialog.cpp \

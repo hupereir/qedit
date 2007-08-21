@@ -44,8 +44,6 @@
 #include "CustomToolBar.h"
 #include "Debug.h"
 #include "Diff.h"
-#include "DocumentClassManager.h"
-#include "DocumentClassDialog.h"
 #include "EditFrame.h"
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
@@ -633,20 +631,6 @@ void EditFrame::enterEvent( QEvent* e )
 }
 
 //_______________________________________________________
-void EditFrame::_documentClassDialog( void )
-{
-  
-  Debug::Throw( "EditFrame::_documentClassDialog.\n" );
-  DocumentClassDialog dialog( this );
-  connect( &dialog, SIGNAL( classSelected( std::string ) ), SLOT( selectClassName( std::string ) ) );
-  connect( &dialog, SIGNAL( classRemoved( std::string ) ), qApp, SIGNAL( documentClassesChanged() ) );
-  QtUtil::centerOnParent( &dialog );
-  dialog.exec();
-
-
-}
-
-//_______________________________________________________
 void EditFrame::_diff( void )
 {
   Debug::Throw( "EditFrame::_diff.\n" );
@@ -849,9 +833,6 @@ void EditFrame::_installActions( void )
   addAction( paste_action_ = new QAction( IconEngine::get( ICONS::PASTE, path_list ), "&Paste", this ) );
   paste_action_->setToolTip( "Paste clipboard to text" );
   connect( paste_action_, SIGNAL( triggered() ), SLOT( _paste() ) );
-
-  addAction( document_class_action_ = new QAction( "&Document classes", this ) );
-  connect( document_class_action_, SIGNAL( triggered() ), SLOT( _documentClassDialog() ) ); 
 
   addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO, path_list ), "&File information", this ) );
   file_info_action_->setToolTip( "Display file informations" );

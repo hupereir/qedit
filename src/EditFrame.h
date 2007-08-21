@@ -287,10 +287,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   QAction& printAction( void )
   { return *print_action_; }
   
-  //! document class dialog
-  QAction& documentClassAction( void )
-  { return *document_class_action_; }
-
   //! file info
   QAction& fileInfoAction( void )
   { return *file_info_action_; }
@@ -446,9 +442,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
     activeDisplay().pasteAction().trigger(); 
   }
   
-  //! document class configuration
-  void _documentClassDialog( void );
-
   //! file information
   void _fileInfo( void )
   { activeDisplay().fileInfoAction().trigger(); }
@@ -599,9 +592,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! paste
   QAction* paste_action_;
  
-  //! document class configuration
-  QAction* document_class_action_;
-  
   //! file info
   QAction* file_info_action_;
   

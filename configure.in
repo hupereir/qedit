@@ -164,6 +164,7 @@ AC_OUTPUT( Makefile \
   base-qt/Makefile \
   base-server/Makefile \
   base-spellcheck/Makefile \
+  document-classes/Makefile \
   extra-includes/Makefile \
   src/Makefile \
   src/Config.h \
