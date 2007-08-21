@@ -42,7 +42,6 @@
 #include "CustomLineEdit.h"
 #include "CustomPixmap.h"
 #include "CustomToolBar.h"
-#include "CustomToolButton.h"
 #include "Debug.h"
 #include "Diff.h"
 #include "DocumentClassManager.h"

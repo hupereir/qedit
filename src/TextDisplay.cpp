@@ -964,12 +964,15 @@ void TextDisplay::processMacro( string name )
 void TextDisplay::rehighlight( void )
 { 
   Debug::Throw( "TextDisplay::rehighlight.\n" );
-  
+ 
   // set all block to modified
   for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
   { _setBlockModified( block ); }
   
+//  if( hasTextHighlight() ) 
   textHighlight().setDocument( document() ); 
+  Debug::Throw( "TextDisplay::rehighlight. done.\n" );
+
 }
 
 

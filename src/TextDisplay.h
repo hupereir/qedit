@@ -250,6 +250,10 @@ class TextDisplay: public CustomTextEdit
   { return *text_highlight_; }
 
   //! text highlight
+  bool hasTextHighlight( void )
+  { return text_highlight_; }
+
+  //! text highlight
   const TextHighlight& textHighlight( void ) const
   { return *text_highlight_; }
 
