@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = document-classes.pro patterns.qrc
+EXTRA_DIST = document-classes.pro
 
 INCLUDES =  \
   -I$(qt_includes) \
@@ -25,7 +25,6 @@ noinst_HEADERS = \
 noinst_LIBRARIES = libdocument-classes.a
 
 libdocument_classes_a_SOURCES = \
-  qrc_patterns.cpp \
   DocumentClass.cpp \
   DocumentClassManager.cpp \
   HighlightPattern.cpp \

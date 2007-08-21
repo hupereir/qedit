@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = src.pro pixmaps.qrc
+EXTRA_DIST = src.pro pixmaps.qrc patterns.qrc
 
 if WITH_ASPELL 
 INCLUDES = \
@@ -110,6 +110,7 @@ qedit_SOURCES = \
   TextIndent.cpp
 
 nodist_qedit_SOURCES = \
+  qrc_patterns.cpp \
   qrc_pixmaps.cpp \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \

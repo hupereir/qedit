@@ -13,7 +13,7 @@ SUBDIRS =  \
  base-qt \
  base-server \
  $(SPELLCHECK_SOURCE_DIR) \
- document-classes \ 
+ document-classes \
  extra-includes \
  src
 

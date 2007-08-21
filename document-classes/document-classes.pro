@@ -17,7 +17,6 @@ HEADERS = \
   TextParenthesis.h
 
 SOURCES = \
-  qrc_patterns.cpp \
   DocumentClass.cpp \
   DocumentClassManager.cpp \
   HighlightPattern.cpp \
