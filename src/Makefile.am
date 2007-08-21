@@ -104,7 +104,6 @@ qedit_SOURCES = \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
   QEdit.cpp \
-  RangePattern.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp

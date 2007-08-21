@@ -7,22 +7,24 @@ TARGET = qedit
 VERSION = 1.0
 DEFINES += VERSION=\"$$VERSION\"
 
-INCLUDEPATH = . ../base ../base-qt ../base-server ../extra-includes
-DEPENDPATH += . ../base ../base-qt ../base-server ../extra-includes
+INCLUDEPATH = . ../base ../base-qt ../base-server ../document-classes ../extra-includes
+DEPENDPATH += . ../base ../base-qt ../base-server ../document-classes ../extra-includes
 
 LIBS += \
+  ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
 
 POST_TARGETDEPS = \
+  ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
 
-RESOURCES = \
-  pixmaps.qrc \
-  patterns.qrc
+RESOURCES += \
+  patterns.qrc \
+  pixmaps.qrc
 
 HEADERS = \
   AskForSaveDialog.h \
