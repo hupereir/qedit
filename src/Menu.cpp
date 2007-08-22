@@ -407,7 +407,7 @@ void Menu::_updateWindowsMenu( void )
   const string& current_file( display.file() );
   
   // retrieve list of EditFrames
-  BASE::KeySet<EditFrame> frames( static_cast<BASE::Key*>(qApp) );
+  BASE::KeySet<EditFrame> frames( static_cast<MainFrame*>(qApp) );
 
   // clear files map
   files_.clear();
@@ -491,7 +491,7 @@ void Menu::_selectFile( QAction* action )
   if( iter == files_.end() ) return;
   
   // retrieve all editframes
-  BASE::KeySet<EditFrame> frames( static_cast< BASE::Key* >( qApp ) );
+  BASE::KeySet<EditFrame> frames( static_cast< MainFrame* >( qApp ) );
   
   // retrieve frame matching file name
   BASE::KeySet<EditFrame>::iterator frame_iter( find_if(

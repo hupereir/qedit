@@ -1029,7 +1029,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
   
   // retrieve all edit frames
   // find one matching
-  BASE::KeySet<EditFrame> frames( static_cast<BASE::Key*>(qApp) );
+  BASE::KeySet<EditFrame> frames( static_cast<MainFrame*>(qApp) );
   BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( record.file() ) );
   if( iter != frames.end() )
   {
