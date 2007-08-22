@@ -1128,7 +1128,7 @@ void EditFrame::_closeView( TextDisplay& display )
 
   // retrieve parent and grandparent of current display
   QWidget* parent( display.parentWidget() );  
-  QSplitter* parent_splitter( static_cast<QSplitter*>( parent ) );
+  QSplitter* parent_splitter( dynamic_cast<QSplitter*>( parent ) );
   
   // retrieve displays associated to current
   displays = BASE::KeySet<TextDisplay>( &display );
@@ -1141,13 +1141,13 @@ void EditFrame::_closeView( TextDisplay& display )
   {
     
     // retrieve child
-    QWidget* child( static_cast<QWidget*>( parent_splitter->children().first() ) );
+    QWidget* child( dynamic_cast<QWidget*>( parent_splitter->children().first() ) );
     
     // retrieve splitter parent
     QWidget* grand_parent( parent_splitter->parentWidget() );
     
     // try cast to a splitter
-    QSplitter* grand_parent_splitter( static_cast<QSplitter*>( grand_parent ) );
+    QSplitter* grand_parent_splitter( dynamic_cast<QSplitter*>( grand_parent ) );
     
     // move child to grand_parent_splitter if any
     if( grand_parent_splitter )
@@ -1282,7 +1282,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
 
     // try catch to splitter
     // do not create a new splitter if the parent has same orientation
-    QSplitter *parent_splitter( static_cast<QSplitter*>( parent ) );
+    QSplitter *parent_splitter( dynamic_cast<QSplitter*>( parent ) );
     if( parent_splitter && parent_splitter->orientation() == orientation ) splitter = parent_splitter;
     else {
       
@@ -1339,14 +1339,14 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
     // retrieve children and loop
     const QObjectList& children( main_->children() );
     for( QObjectList::const_iterator iter = children.begin(); iter != children.end() && !child; iter++ )
-    { child = static_cast<QWidget*>( *iter ); }
+    { child = dynamic_cast<QWidget*>( *iter ); }
 
     // check child could be retrieved
     Exception::checkPointer( child, DESCRIPTION( "invalid first child" ) );
 
     // try cast child to splitter
     // if exists and have same orientation, do not create a new one
-    QSplitter* child_splitter( static_cast<QSplitter*>( child ) );
+    QSplitter* child_splitter( dynamic_cast<QSplitter*>( child ) );
     if( child_splitter && child_splitter->orientation() == orientation ) splitter = child_splitter;
     else {
       // create new splitter
