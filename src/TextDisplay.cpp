@@ -270,7 +270,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
   
   // perform first autosave
   //if( !isReadOnly() ) 
-    (dynamic_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
+    (static_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
   
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
@@ -835,11 +835,11 @@ void TextDisplay::updateDocumentClass( void )
   
   // try load document class from class_name
   if( !className().empty() ) 
-  { document_class = dynamic_cast<MainFrame*>(qApp)->classManager().get( className() ); }
+  { document_class = static_cast<MainFrame*>(qApp)->classManager().get( className() ); }
 
   // try load from file
   if( !(document_class || file().empty() ) )
-  { document_class = dynamic_cast<MainFrame*>(qApp)->classManager().find( file() ); }
+  { document_class = static_cast<MainFrame*>(qApp)->classManager().find( file() ); }
       
   // abort if no document class is found
   if( !document_class ) return;

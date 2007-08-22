@@ -110,7 +110,7 @@ EditFrame::EditFrame(  QWidget* parent ):
   main_->layout()->addWidget( &display );
   
   display.setActive( true );
-  dynamic_cast<MainFrame*>(qApp)->autoSave().newThread( &display );
+  static_cast<MainFrame*>(qApp)->autoSave().newThread( &display );
   Debug::Throw( "EditFrame::EditFrame - thread created.\n" );
 
   // state frame
@@ -343,7 +343,7 @@ void EditFrame::_detach( void )
   { _closeView( **iter ); }
 
   // create EditFrame
-  EditFrame& frame( dynamic_cast<MainFrame*>(qApp)->newEditFrame() );
+  EditFrame& frame( static_cast<MainFrame*>(qApp)->newEditFrame() );
 
   // clone its display from the current
   frame.activeDisplay().synchronize( &active_display_local );
@@ -948,7 +948,7 @@ void EditFrame::_newFile( const OpenMode& mode, const Orientation& orientation )
   Debug::Throw( "EditFrame::_New.\n" );
 
   // check open_mode
-  if( mode == NEW_WINDOW ) dynamic_cast<MainFrame*>(qApp)->open();
+  if( mode == NEW_WINDOW ) static_cast<MainFrame*>(qApp)->open();
   else _splitView( orientation, false );
 
 }
@@ -981,7 +981,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
   if( mode == NEW_WINDOW )
   {
     // open via the MainFrame to create a new editor
-    dynamic_cast<MainFrame*>(qApp)->open( record );
+    static_cast<MainFrame*>(qApp)->open( record );
     return;
   }
 
@@ -1029,7 +1029,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
   
   // retrieve all edit frames
   // find one matching
-  BASE::KeySet<EditFrame> frames( dynamic_cast<BASE::Key*>(qApp) );
+  BASE::KeySet<EditFrame> frames( static_cast<BASE::Key*>(qApp) );
   BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( record.file() ) );
   if( iter != frames.end() )
   {
@@ -1128,7 +1128,7 @@ void EditFrame::_closeView( TextDisplay& display )
 
   // retrieve parent and grandparent of current display
   QWidget* parent( display.parentWidget() );  
-  QSplitter* parent_splitter( dynamic_cast<QSplitter*>( parent ) );
+  QSplitter* parent_splitter( static_cast<QSplitter*>( parent ) );
   
   // retrieve displays associated to current
   displays = BASE::KeySet<TextDisplay>( &display );
@@ -1141,13 +1141,13 @@ void EditFrame::_closeView( TextDisplay& display )
   {
     
     // retrieve child
-    QWidget* child( dynamic_cast<QWidget*>( parent_splitter->children().first() ) );
+    QWidget* child( static_cast<QWidget*>( parent_splitter->children().first() ) );
     
     // retrieve splitter parent
     QWidget* grand_parent( parent_splitter->parentWidget() );
     
     // try cast to a splitter
-    QSplitter* grand_parent_splitter( dynamic_cast<QSplitter*>( grand_parent ) );
+    QSplitter* grand_parent_splitter( static_cast<QSplitter*>( grand_parent ) );
     
     // move child to grand_parent_splitter if any
     if( grand_parent_splitter )
@@ -1252,7 +1252,7 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
   } else {
 
     // register new AutoSave thread
-    dynamic_cast<MainFrame*>(qApp)->autoSave().newThread( &display );
+    static_cast<MainFrame*>(qApp)->autoSave().newThread( &display );
 
     // enable detach
     detachAction().setEnabled( true );
@@ -1282,7 +1282,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
 
     // try catch to splitter
     // do not create a new splitter if the parent has same orientation
-    QSplitter *parent_splitter( dynamic_cast<QSplitter*>( parent ) );
+    QSplitter *parent_splitter( static_cast<QSplitter*>( parent ) );
     if( parent_splitter && parent_splitter->orientation() == orientation ) splitter = parent_splitter;
     else {
       
@@ -1339,14 +1339,14 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
     // retrieve children and loop
     const QObjectList& children( main_->children() );
     for( QObjectList::const_iterator iter = children.begin(); iter != children.end() && !child; iter++ )
-    { child = dynamic_cast<QWidget*>( *iter ); }
+    { child = static_cast<QWidget*>( *iter ); }
 
     // check child could be retrieved
     Exception::checkPointer( child, DESCRIPTION( "invalid first child" ) );
 
     // try cast child to splitter
     // if exists and have same orientation, do not create a new one
-    QSplitter* child_splitter( dynamic_cast<QSplitter*>( child ) );
+    QSplitter* child_splitter( static_cast<QSplitter*>( child ) );
     if( child_splitter && child_splitter->orientation() == orientation ) splitter = child_splitter;
     else {
       // create new splitter

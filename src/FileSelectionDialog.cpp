@@ -66,7 +66,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   std::set< File > file_set;
 
   // retrieve EditFrames
-  BASE::KeySet<EditFrame> frames( dynamic_cast< BASE::Key*>( qApp ) );
+  BASE::KeySet<EditFrame> frames( static_cast< BASE::Key*>( qApp ) );
   for( BASE::KeySet<EditFrame>::const_iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
   {
 
