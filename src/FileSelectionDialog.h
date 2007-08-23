@@ -58,7 +58,8 @@ class FileSelectionDialog: public QDialog, public Counter
   
   private slots:
   
-  //! exit editor
+  //! perform replacement
+  /*! emits fileSelected signal for all selected files in the list */
   void _replace( void );
   
   //! exit application

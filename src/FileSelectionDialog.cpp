@@ -61,7 +61,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   list_->setColumnCount(2);
   list_->setColumnName( FILE, "file name" );
   list_->setColumnName( CLASS, "class" );
-  list_->setSelectionMode( QAbstractItemView::ContiguousSelection );
+  list_->setSelectionMode( QAbstractItemView::MultiSelection );
 
   // store set of found files to avoid duplication
   std::set< File > file_set;
