@@ -3,7 +3,7 @@
 %define prefix   /usr
 
 Summary: running processes control
-Name: QEdit
+Name: qedit
 Version: %{ver}
 Release: %{rel}
 License: GPL
