@@ -159,7 +159,7 @@ AC_SUBST(timestamp)
 echo "timestamp = " $timestamp
 
 AC_OUTPUT( Makefile \
-  QEdit.spec \
+  qedit.spec \
   base/Makefile \
   base-qt/Makefile \
   base-server/Makefile \
