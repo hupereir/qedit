@@ -885,35 +885,9 @@ void EditFrame::_updateConfiguration( void )
       
   // resize
   resize( QSize( XmlOptions::get().get<int>( "WINDOW_WIDTH" ), XmlOptions::get().get<int>( "WINDOW_HEIGHT" ) ) );
-   
-  // toolbars visibility and location
-  for( ToolbarList::iterator iter = toolbars_.begin(); iter != toolbars_.end(); iter++ )
-  {
-     
-    QToolBar* toolbar( iter->first );
-    string option_name( iter->second );
-    string location_name( option_name + "_LOCATION" );
-     
-    bool visibility( XmlOptions::get().find( option_name ) ? XmlOptions::get().get<bool>( option_name ):true );
-    bool current_visibility( toolbar->isVisible() );
-    
-    ToolBarArea location = (XmlOptions::get().find( location_name )) ? (ToolBarArea) CustomToolBar::nameToArea( XmlOptions::get().get<string>( location_name ) ):TopToolBarArea ;
-    ToolBarArea current_location = toolBarArea( toolbar );
-    
-    Debug::Throw() << "EditFrame::_updateConfiguration - " << option_name << " visibility: " << visibility << " location: " << (int)location << endl;
-    
-    if( visibility )
-    {
-      if( !( current_visibility && (location == current_location) ) ) 
-      {
-        addToolBar( location, toolbar );
-        toolbar->show();
-      }
-    } else toolbar->hide();
-     
-    XmlOptions::get().set<bool>( option_name, !toolbar->isHidden() );
-    XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
-  }  
+
+  // toolbars
+  CustomToolBar::updateConfiguration( this, toolbars_ );
   
   Debug::Throw( "EditFrame::_updateConfiguration - done.\n" );
 
@@ -928,16 +902,7 @@ void EditFrame::_saveConfiguration( void )
   XmlOptions::get().set<int>( "WINDOW_HEIGHT", height() );
   XmlOptions::get().set<int>( "WINDOW_WIDTH", width() );
    
-  // save toolbars location and visibility
-  for( ToolbarList::iterator iter = toolbars_.begin(); iter != toolbars_.end(); iter++ )
-  {
-    
-    QToolBar* toolbar( iter->first );
-    string option_name( iter->second );
-    string location_name( option_name + "_LOCATION" );
-    XmlOptions::get().set<bool>( option_name, !toolbar->isHidden() );
-    XmlOptions::get().set<string>( location_name, CustomToolBar::areaToName( toolBarArea( toolbar ) ) );
-  }
+  CustomToolBar::saveConfiguration( this, toolbars_ );
   
 }
 

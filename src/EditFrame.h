@@ -37,6 +37,7 @@
 #include <string>
 
 #include "CustomMainWindow.h"
+#include "CustomToolBar.h"
 #include "Config.h"
 #include "Counter.h"
 #include "FileRecord.h"
@@ -527,11 +528,8 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! text display with focus
   TextDisplay* active_display_;
       
-  //! toolbar list
-  typedef std::vector< std::pair<QToolBar*, std::string> > ToolbarList;
-  
   //! map toolbar and option name
-  ToolbarList toolbars_;
+  CustomToolBar::List toolbars_;
 
   //! state frame
   StatusBar* statusbar_;
