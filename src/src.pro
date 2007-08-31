@@ -74,7 +74,7 @@ SOURCES = \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
-  QEdit.cpp \
+  qedit.cpp \
   RangePattern.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \

@@ -103,7 +103,7 @@ qedit_SOURCES = \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
-  QEdit.cpp \
+  qedit.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp
