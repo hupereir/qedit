@@ -11,6 +11,7 @@ SUBDIRS =  \
  pixmaps \
  base \
  base-qt \
+ base-help \
  base-server \
  $(SPELLCHECK_SOURCE_DIR) \
  document-classes \
@@ -23,6 +24,6 @@ EXTRA_DIST =  \
  icon.ico \
  icon.png \
  autogen.sh \
- QEdit.spec.in \
- QEdit.spec \
- QEdit.pro
+ qedit.spec.in \
+ qedit.spec \
+ qedit.pro

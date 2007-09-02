@@ -12,6 +12,7 @@ INCLUDES = \
   -I$(qt_includes)/QtGui \
   -I$(top_srcdir)/base  \
   -I$(top_srcdir)/base-qt \
+  -I$(top_srcdir)/base-help \
   -I$(top_srcdir)/base-server \
   -I$(top_srcdir)/base-spellcheck \
   -I$(top_srcdir)/document-classes
@@ -25,6 +26,7 @@ INCLUDES = \
   -I$(qt_includes)/QtGui \
   -I$(top_srcdir)/base  \
   -I$(top_srcdir)/base-qt \
+  -I$(top_srcdir)/base-help \
   -I$(top_srcdir)/base-server \
   -I$(top_srcdir)/document-classes
 endif
@@ -40,6 +42,7 @@ libraries = \
   ../document-classes/libdocument-classes.a \
   ../base-spellcheck/libbase-spellcheck.a \
   ../base-server/libbase-server.a \
+  ../base-help/libbase-help.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
 
@@ -49,6 +52,7 @@ libraries =  \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
+  ../base-help/libbase-help.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
 

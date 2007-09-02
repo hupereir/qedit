@@ -7,18 +7,20 @@ TARGET = qedit
 VERSION = 1.0
 DEFINES += VERSION=\"$$VERSION\"
 
-INCLUDEPATH = . ../base ../base-qt ../base-server ../document-classes ../extra-includes
-DEPENDPATH += . ../base ../base-qt ../base-server ../document-classes ../extra-includes
+INCLUDEPATH = . ../base ../base-qt ../base-help ../base-server ../document-classes ../extra-includes
+DEPENDPATH += . ../base ../base-qt ../base-help ../base-server ../document-classes ../extra-includes
 
 LIBS += \
   ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
+  ../base-help/libbase-help.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
 
 POST_TARGETDEPS = \
   ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
+  ../base-help/libbase-help.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
 
