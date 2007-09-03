@@ -114,10 +114,10 @@ EditFrame::EditFrame(  QWidget* parent ):
   Debug::Throw( "EditFrame::EditFrame - thread created.\n" );
 
   // state frame
-  layout->addWidget( statusbar_ = new StatusBar( main ) );
+  setStatusBar( statusbar_ = new StatusBar( this ) );
 
   // create "hidden" line editor to display filename
-  statusbar_->getLayout().addWidget( file_editor_ = new CustomLineEdit( statusbar_ ), 1, AlignVCenter );
+  statusbar_->addPermanentWidget( file_editor_ = new CustomLineEdit( statusbar_ ), 1 );
   statusbar_->addLabels( 2, 0 );
   statusbar_->label(0).setAlignment( AlignCenter ); 
   statusbar_->label(1).setAlignment( AlignCenter ); 
