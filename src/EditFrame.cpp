@@ -416,7 +416,7 @@ void EditFrame::_print( void )
   { dialog.addCommand( *iter ); }
 
   // set command manually that match the selection mode
-  dialog.setCommand( XmlOptions::get().raw( ( dialog.mode() == PrintDialog::PDF ? "PRDF_EDITOR":"HTML_EDITOR" ) ) );
+  dialog.setCommand( XmlOptions::get().raw( ( dialog.mode() == PrintDialog::PDF ? "PDF_EDITOR":"HTML_EDITOR" ) ) );
   
   // exec
   QtUtil::centerOnParent( &dialog );
