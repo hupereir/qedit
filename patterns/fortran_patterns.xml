@@ -47,7 +47,7 @@
 
  <!-- keywords -->
  <keyword_pattern style="Keyword" name="Keyword" options="no_case" >
-  <keyword>\b(open|close|read|write|rewind|goto|continue|call|(end)?if|then|else|(end)?do|format|function|subroutine|stop)\b</keyword>
+  <keyword>\b(open|close|read|write|rewind|goto|continue|call|(end)?if|then|else(if)?|(end)?do|format|function|subroutine|stop)\b</keyword>
  </keyword_pattern>
  
  <!-- numeric constants -->
@@ -65,27 +65,33 @@
  <parenthesis begin="(" end=")" />
 
  <!-- indentation rules -->
- <indent_pattern type="1">
-  <rule par="-1">
+ <indent_pattern  name="0" type="1">
+  <rule par="-1" options="no_case">
    <regexp>\bTHEN\s*$</regexp>
   </rule>
  </indent_pattern>
  
- <indent_pattern type="1">
-  <rule par="-1">
+ <indent_pattern name="1" type="1">
+  <rule par="-1" options="no_case">
    <regexp>\bELSE\s*$</regexp>
   </rule>
  </indent_pattern>
  
- <indent_pattern type="1">
-  <rule par="-1">
+ <indent_pattern name="2" type="1">
+  <rule par="-1" options="no_case">
    <regexp>^\s*(DO|WHILE)\b</regexp>
   </rule>
  </indent_pattern>
 
- <indent_pattern type="2">
-  <rule par="0">
-   <regexp>\b(ENDIF|ELSE|ENDDO)\s*$</regexp>
+ <indent_pattern name="3" type="2">
+  <rule par="0" options="no_case">
+   <regexp>\b(ENDIF|ELSE|ENDDO)\s*(!|$)</regexp>
+  </rule>
+ </indent_pattern>
+
+ <indent_pattern name="3" type="2">
+  <rule par="0" options="no_case">
+   <regexp>^\s*ELSE\s*IF\b</regexp>
   </rule>
  </indent_pattern>
 
