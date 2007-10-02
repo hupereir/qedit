@@ -103,5 +103,21 @@
   </rule>
  </macro>
 
+ <macro options="separator"/>
+ 
+ <macro name="Add comments">
+  <rule>
+   <regexp>^</regexp>
+   <replacement>c </replacement>
+  </rule>
+ </macro>
+
+ <macro name="Remove comments">
+  <rule>
+   <regexp>^c </regexp>
+   <replacement></replacement>
+  </rule>
+ </macro>
+
  </class>
 </patterns>

@@ -303,6 +303,10 @@ class TextDisplay: public CustomTextEdit
   //! indent selection
   QAction& indentSelectionAction( void ) const
   { return *indent_selection_action_; }
+ 
+  //! indent selection
+  QAction& baseIndentAction( void ) const
+  { return *base_indent_action_; }
   
   //! replace leading tab actions
   QAction& leadingTabsAction( void ) const
@@ -558,6 +562,9 @@ class TextDisplay: public CustomTextEdit
   //! indent selection
   void _indentSelection( void );
 
+  //! add base indentation
+  void _addBaseIndentation( void );
+  
   //! replace all leading tabs in text when tab emulation is active
   void _replaceLeadingTabs( const bool& confirm = true );
   
@@ -674,6 +681,9 @@ class TextDisplay: public CustomTextEdit
   
   //! indent selection
   QAction* indent_selection_action_;
+  
+  //! add base indentation
+  QAction* base_indent_action_;
   
   //! replace leading tabs
   QAction* leading_tabs_action_;

@@ -856,7 +856,8 @@ void TextDisplay::updateDocumentClass( void )
   parenthesisHighlightAction().setVisible( !document_class->parenthesis().empty() );
   textHighlightAction().setVisible( !document_class->highlightPatterns().empty() );
   textIndentAction().setVisible( !document_class->indentPatterns().empty() );
- 
+  baseIndentAction().setVisible( document_class->baseIndentation() );
+  
   // store into class members
   textHighlight().setPatterns( document_class->highlightPatterns() );
   textIndent().setPatterns( document_class->indentPatterns() );
@@ -1219,6 +1220,11 @@ void TextDisplay::_installActions( void )
   addAction( indent_selection_action_ = new QAction( IconEngine::get( ICONS::INDENT, path_list ), "&Indent selection", this ) );
   indent_selection_action_->setShortcut( CTRL+Key_I );
   connect( indent_selection_action_, SIGNAL( triggered( void ) ), SLOT( _indentSelection( void ) ) );
+  
+  // base indentation
+  addAction( base_indent_action_ = new QAction( IconEngine::get( ICONS::INDENT, path_list ), "&Add base indentation", this ) );
+  base_indent_action_->setShortcut( SHIFT+CTRL+Key_I );
+  connect( base_indent_action_, SIGNAL( triggered( void ) ), SLOT( _addBaseIndentation( void ) ) );
   
   // replace leading tabs
   addAction( leading_tabs_action_ = new QAction( "&Replace leading tabs", this ) );
@@ -1694,6 +1700,69 @@ void TextDisplay::_indentSelection( void )
   cursor.setPosition( end.position()+end.length()-1, QTextCursor::KeepAnchor );
   setTextCursor( cursor );
 
+  return;
+}
+
+//_______________________________________________________
+void TextDisplay::_addBaseIndentation( void )
+{
+  Debug::Throw( "TextDisplay::_addBaseIndentation.\n" );
+
+  // check activity, indentation and text selection
+  if( !indent_->baseIndentation() ) return;
+    
+  // define regexp to perform replacement
+  QRegExp leading_space_regexp( "^\\s*" );
+  QString replacement( indent_->baseIndentation(), ' ' );
+  
+  // define blocks to process
+  QTextBlock begin;
+  QTextBlock end;
+  
+  // retrieve cursor
+  // retrieve text cursor
+  QTextCursor cursor( textCursor() );
+  if( !cursor.hasSelection() ) return;
+    
+  int position_begin( min( cursor.position(), cursor.anchor() ) );
+  int position_end( max( cursor.position(), cursor.anchor() ) );
+  begin = document()->findBlock( position_begin );
+  end = document()->findBlock( position_end );
+   
+  // store blocks
+  vector<QTextBlock> blocks;
+  for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
+  { blocks.push_back( block ); }
+  blocks.push_back( end );
+  
+  // loop over blocks
+  for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+  {
+    // check block
+    if( !iter->isValid() ) continue;
+    
+    // retrieve text
+    QString text( iter->text() );
+    
+    // look for leading tabs
+    if( leading_space_regexp.indexIn( text ) < 0 ) continue;
+    
+    // select with cursor
+    QTextCursor cursor( *iter );
+    cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
+    cursor.setPosition( cursor.position() + leading_space_regexp.matchedLength(), QTextCursor::KeepAnchor );
+
+    cursor.insertText( replacement );
+    
+    
+  }
+  
+  // indent
+  emit indent( begin, end );  
+  
+  // enable updates
+  setUpdatesEnabled( true );
+  
   return;
 }
 

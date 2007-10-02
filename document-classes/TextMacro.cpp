@@ -64,7 +64,7 @@ TextMacro::TextMacro( const QDomElement& element ):
     } else cout << "TextMacro::TextMacro - unrecognized attribute: " << name << endl;
   }
 
-  Debug::Throw() << "TextMacro::TextMacro - name: " << name() << endl;
+  Debug::Throw(0) << "TextMacro::TextMacro - name: " << name() << endl;
   
   // parse children
   for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() ) 
@@ -130,7 +130,9 @@ TextMacro::Rule::Rule( const QDomElement& element ):
     string tag_name( qPrintable( child_element.tagName() ) );
     if( tag_name == XML::REGEXP ) _setPattern( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
     else if( tag_name == XML::REPLACEMENT ) 
-    { _setReplaceText( XmlUtil::xmlToText( qPrintable( child_element.text() ) ).c_str() ); }
+    { 
+      _setReplaceText( XmlUtil::xmlToText( qPrintable( child_element.text() ) ).c_str() ); 
+    }
     else cout << "TextMacro::Rule::Rule - unrecognized child: " << tag_name << endl;
   }
   

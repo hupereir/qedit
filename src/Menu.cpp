@@ -320,6 +320,9 @@ void Menu::_updateToolsMenu( void )
   tools_menu_->addAction( &display.indentSelectionAction() );
   display.indentSelectionAction().setEnabled( editable && has_selection && has_indent );
 
+  //if( display.baseIndentAction().isEnabled() ) 
+  { tools_menu_->addAction( &display.baseIndentAction() ); }
+  
   // tab replacement
   tools_menu_->addAction( &display.leadingTabsAction() );
   display.leadingTabsAction().setEnabled( display.hasLeadingTabs() );
