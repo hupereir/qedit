@@ -259,16 +259,22 @@ int TextIndent::_tabCount( const QTextBlock& block )
 void TextIndent::_increment( QTextBlock block, const unsigned int& count )
 {
   
+  Debug::Throw() << "TextIndent::_increment - count " << count << endl;
+  
   // first make sure that the line has at least base_indentation_ characters
   QTextCursor cursor( block );
   cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
-  if( baseIndentation() )
+
+  if( baseIndentation() && editor_->isEmptyBlock( block ) )
   {
+    int position( current_cursor_.position() );
+    int anchor( current_cursor_.anchor() );
+    
     cursor.insertText( QString( baseIndentation(), ' ' ) );
     if( block == current_cursor_.block() ) 
     { 
-      current_cursor_.setPosition( current_cursor_.anchor() + baseIndentation(), QTextCursor::MoveAnchor ); 
-      current_cursor_.setPosition( current_cursor_.position() + baseIndentation(), QTextCursor::KeepAnchor ); 
+      current_cursor_.setPosition( anchor + baseIndentation(), QTextCursor::MoveAnchor ); 
+      current_cursor_.setPosition( position + baseIndentation(), QTextCursor::KeepAnchor ); 
     }
   }
   
