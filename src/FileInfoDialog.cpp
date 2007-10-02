@@ -33,7 +33,6 @@
 #include <QTabWidget>
 #include <QCheckBox>
 #include <QPushButton>
-//#include <sys/stat.h>
 
 #include "AutoSaveThread.h"
 #include "Config.h"
@@ -88,10 +87,10 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   
   QLabel* label = new QLabel(box);
   label->setPixmap( pixmap );
-  h_layout->addWidget( label );
+  h_layout->addWidget( label, 0, Qt::AlignTop );
 
   QVBoxLayout* layout = new QVBoxLayout();
-  layout->setMargin(5);
+  layout->setMargin(0);
   layout->setSpacing( 5 );
   h_layout->addLayout( layout );
   
