@@ -90,6 +90,18 @@ class IndentPattern: public Counter
   class Rule: public Counter
   {
     public:
+
+    //! pattern flags
+    enum Flag
+    {
+      
+      //! no flag
+      NONE = 0,
+        
+      //! pattern matching should not be case sensitive
+      CASE_INSENSITIVE = 1<<2
+    
+    };   
     
     //! constructor
     Rule( const QDomElement& element = QDomElement() );
@@ -107,6 +119,30 @@ class IndentPattern: public Counter
     
     //! returns true if the text match the rule
     bool accept( const QString& text ) const;
+
+    //!@name flags
+    //@{
+    
+    //! flags
+    const unsigned int& flags( void ) const
+    { return flags_; }
+    
+    //! flags
+    void setFlags( const unsigned int& flags )
+    { flags_ = flags; }
+    
+    //! flags
+    bool flag( const Flag& flag ) const
+    { return flags_ & flag; }
+    
+    //! flags
+    void setFlag( const Flag& flag, const bool& value )
+    { 
+      if( value ) flags_ |= flag; 
+      else flags_ &= (~flag);
+    } 
+    
+    //@}    
     
     private:
     
@@ -123,7 +159,10 @@ class IndentPattern: public Counter
     
     //! regexp
     QRegExp regexp_;
-    
+   
+    //! flags
+    unsigned int flags_;
+   
     //! streamer
     friend std::ostream& operator << ( std::ostream& out, const Rule& rule )
     {

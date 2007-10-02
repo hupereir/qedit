@@ -99,7 +99,8 @@ QDomElement IndentPattern::domElement( QDomDocument& parent ) const
 
 //_____________________________________________________
 IndentPattern::Rule::Rule( const QDomElement& element ):
-  Counter( "IndentPattern::Rule" )
+  Counter( "IndentPattern::Rule" ),
+  flags_( NONE )
 {
   Debug::Throw( "Rule::Rule.\n" );
 
@@ -112,6 +113,10 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
     Str name( qPrintable( attribute.name() ) );
     Str value( qPrintable( attribute.value() ) );
     if( name == XML::PAR ) _setParagraph( value.get<int>() );
+    else if( name == XML::OPTIONS )
+    {
+      if( value.find( XML::OPTION_NO_CASE ) != string::npos ) setFlag( CASE_INSENSITIVE, true ); 
+    } 
     else cout << "Rule::Rule - unrecognized attribute: " << name << endl;
   }
   
@@ -124,6 +129,8 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
     if( tag_name == XML::REGEXP ) _setRegExp( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
     else cout << "Rule::Rule - unrecognized child: " << tag_name << endl;
   }
+  
+  regexp_.setCaseSensitivity( flag( CASE_INSENSITIVE ) ? Qt::CaseInsensitive : Qt::CaseSensitive );
 
 }
 
@@ -133,9 +140,14 @@ QDomElement IndentPattern::Rule::domElement( QDomDocument& parent ) const
   Debug::Throw( "IndentPattern::Rule::DomElement.\n" );
   QDomElement out( parent.createElement( XML::RULE.c_str() ) );
   out.setAttribute( XML::PAR.c_str(), Str().assign<int>( paragraph() ).c_str() );
+  ostringstream what;
+  if( flag( CASE_INSENSITIVE ) ) what << XML::OPTION_NO_CASE << " ";
+  if( what.str().size() ) out.setAttribute( XML::OPTIONS.c_str(), what.str().c_str() );
+
   out.
     appendChild( parent.createElement( XML::REGEXP.c_str() ) ).
     appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( regexp_.pattern() ) ).c_str() ) );
+  
   return out;
 }
 
