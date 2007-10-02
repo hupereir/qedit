@@ -64,7 +64,7 @@ TextMacro::TextMacro( const QDomElement& element ):
     } else cout << "TextMacro::TextMacro - unrecognized attribute: " << name << endl;
   }
 
-  Debug::Throw(0) << "TextMacro::TextMacro - name: " << name() << endl;
+  Debug::Throw() << "TextMacro::TextMacro - name: " << name() << endl;
   
   // parse children
   for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() ) 
