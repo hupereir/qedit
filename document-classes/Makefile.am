@@ -14,7 +14,9 @@ noinst_HEADERS = \
   DocumentClass.h \
   DocumentClassManager.h \
   HighlightPattern.h \
+  HighlightPatternOptions.h \
   HighlightStyle.h \
+  HighlightStyleDialog.h \
   IndentPattern.h \
   KeywordPattern.h \
   RangePattern.h \
@@ -28,7 +30,9 @@ libdocument_classes_a_SOURCES = \
   DocumentClass.cpp \
   DocumentClassManager.cpp \
   HighlightPattern.cpp \
+  HighlightPatternOptions.cpp \
   HighlightStyle.cpp \
+  HighlightStyleDialog.cpp \
   IndentPattern.cpp \
   KeywordPattern.cpp \
   RangePattern.cpp \
