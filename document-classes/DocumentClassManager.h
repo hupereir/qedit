@@ -97,7 +97,7 @@ class DocumentClassManager: public QObject, public Counter
 
   //! list of document classes
   ClassList document_classes_;
-
+  
   //! read error
   std::string read_error_;
 };

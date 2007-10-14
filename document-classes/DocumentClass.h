@@ -96,13 +96,25 @@ class DocumentClass: public Counter
   const bool& isDefault( void ) const
   { return default_; }
   
+  //! filename matching pattern
+  const QRegExp& fileMatchingPattern( void ) const 
+  { return file_pattern_; }
+  
+  //! first line matching pattern
+  const QRegExp& firstLineMatchingPattern( void ) const
+  { return firstline_pattern_; }
+  
   //! return true if document class match filename
   bool match( const File& file ) const;
 
   //! returns true if document class enables wrapping by default
   const bool& wrap( void ) const
   { return wrap_; }
-    
+  
+  //! list of hightlight styles
+  const HighlightStyle::Set& highlightStyles() const
+  { return highlight_styles_; }
+  
   //! list of highligh patterns
   const HighlightPattern::List& highlightPatterns() const
   { return highlight_patterns_; }
