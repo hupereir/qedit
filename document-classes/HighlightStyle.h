@@ -87,6 +87,16 @@ class HighlightStyle: public Counter
   bool operator != (const HighlightStyle& style ) const
   { return name() != style.name(); }
   
+  //! true if any attributes is different from argument
+  /*! this is a stricter comparison than the != operator */
+  bool differs( const HighlightStyle& style ) const
+  { 
+    return 
+      name() != style.name() ||
+      fontFormat() != style.fontFormat() ||
+      color() != style.color();
+  }
+    
   //! name
   virtual void setName( const std::string& name ) 
   { name_ = name; }

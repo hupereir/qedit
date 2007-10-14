@@ -36,8 +36,8 @@
 #include "DocumentClass.h"
 
 class CustomLineEdit;
-class CustomListBox;
 class CustomListView;
+class HighlightStyleList; 
 
 //! Syntax highlighting style editing dialog
 class DocumentClassDialog: public CustomDialog
@@ -52,7 +52,7 @@ class DocumentClassDialog: public CustomDialog
   
   //! style
   void setDocumentClass( const DocumentClass& );
-   
+  
   private:
   
   //! name editor
@@ -65,7 +65,7 @@ class DocumentClassDialog: public CustomDialog
   CustomLineEdit* first_line_pattern_editor_;
   
   //! highlight style list
-  CustomListBox* highlight_style_list_;
+  HighlightStyleList* highlight_style_list_;
 
   //! number of columns
   enum { n_columns_ = 2 };

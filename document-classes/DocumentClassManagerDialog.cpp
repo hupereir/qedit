@@ -32,12 +32,13 @@
 #include <qpushbutton.h>
 #include <qtooltip.h>
 
+#include "CustomFileDialog.h"
 #include "Debug.h"
 #include "DocumentClass.h"
 #include "DocumentClassManagerDialog.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassDialog.h"
-#include "CustomFileDialog.h"
+#include "HighlightStyleList.h"
 #include "Options.h" 
 #include "QtUtil.h"
 #include "XmlOptions.h"
@@ -73,6 +74,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
 
   // set connections
   connect( list_, SIGNAL( itemActivated( QTreeWidgetItem*, int ) ), this, SLOT( _edit() ) );
+  connect( list_, SIGNAL( itemSelectionChanged() ), this, SLOT( _updateButtons() ) );
 
   // add classes
   _loadClasses();
@@ -83,52 +85,56 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   layout->setMargin(0);
   layout->addLayout( v_layout );
   
+  // edit
+  v_layout->addWidget( edit_button_ = new QPushButton( "&Edit", this ) );
+  connect( edit_button_, SIGNAL( clicked() ), this, SLOT( _edit() ) ); 
+  edit_button_->setToolTip( "Edit file from which selected document class is read" );
+
+  // remove
+  v_layout->addWidget( remove_button_ = new QPushButton( "&Remove", this ) );
+  connect( remove_button_, SIGNAL( clicked() ), this, SLOT( _remove() ) ); 
+  remove_button_->setToolTip( "Remove selected document class from list" );
+
+  // save document class to file
+  v_layout->addWidget( save_button_ = new QPushButton( "Save &As", this ) );
+  connect( save_button_, SIGNAL( clicked() ), this, SLOT( _save() ) );  
+  save_button_->setToolTip( "Save selected document classe to a file" );
+
+  // load
   QPushButton *button;
-  v_layout->addWidget( button = new QPushButton( "&Remove", this ) );
-  connect( button, SIGNAL( clicked() ), this, SLOT( _remove() ) ); 
-  button->setToolTip( "Remove selected document class from list" );
-
-  v_layout->addWidget( button = new QPushButton( "&Edit", this ) );
-  connect( button, SIGNAL( clicked() ), this, SLOT( _edit() ) ); 
-  button->setToolTip( "Edit file from which selected document class is read" );
-
-  v_layout->addWidget( button = new QPushButton( "Save &As", this ) );
-  connect( button, SIGNAL( clicked() ), this, SLOT( _save() ) );  
-  button->setToolTip( "Save selected document classe to a file" );
-
   v_layout->addWidget( button = new QPushButton( "&Load File", this ) ); 
   connect( button, SIGNAL( clicked() ), this, SLOT( _loadFile() ) );  
   button->setToolTip( "Load additional classes from file" );
 
+  // reload
   v_layout->addWidget( button = new QPushButton( "Rel&oad", this ) ); 
   connect( button, SIGNAL( clicked() ), this, SLOT( _reload() ) );
   button->setToolTip( "Reload all classes" );
 
+  // update buttons
+  _updateButtons();
+  
   v_layout->addStretch(1);
   adjustSize();
   resize( 500, 250 );
 }
 
 //___________________________________________________
-void DocumentClassManagerDialog::_remove( void )
+void DocumentClassManagerDialog::_updateButtons( void )
 {
-  Debug::Throw( "DocumentClassManagerDialog::_remove.\n" );
-  Item *item( list_->currentItem<Item>() );
-  if( !item )
-  {
-    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
-    return;
-  }
-  
-  if( document_class_manager_->remove( item->documentClass().name() ) )
-  { _loadClasses(); }
+  Debug::Throw( "DocumentClassManagerDialog::_ubdateButtons.\n" );
+  bool has_selection( !list_->QTreeWidget::selectedItems().empty() );  
+  edit_button_->setEnabled( has_selection );
+  remove_button_->setEnabled( has_selection );
+  save_button_->setEnabled( has_selection );
+
 }
 
 //___________________________________________________
 void DocumentClassManagerDialog::_edit( void )
 {
-  Debug::Throw( "DocumentClassManagerDialog::_Edit.\n" );
-  
+  Debug::Throw( "DocumentClassManagerDialog::_edit.\n" );
+ 
   QTreeWidgetItem *item( list_->QTreeWidget::currentItem() );
   if( !item )
   {
@@ -150,11 +156,31 @@ void DocumentClassManagerDialog::_edit( void )
   // create dialog
   DocumentClassDialog dialog( this );
   dialog.setDocumentClass( *document_class );
-  dialog.exec();
+  if( dialog.exec() == QDialog::Accepted ) 
+  { emit updateNeeded(); }
   
   return;
 }
-    
+ 
+//___________________________________________________
+void DocumentClassManagerDialog::_remove( void )
+{
+  Debug::Throw( "DocumentClassManagerDialog::_remove.\n" );
+  Item *item( list_->currentItem<Item>() );
+  if( !item )
+  {
+    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+    return;
+  }
+  
+  if( document_class_manager_->remove( item->documentClass().name() ) )
+  { 
+    _loadClasses(); 
+    emit updateNeeded();
+  }
+  
+}
+
 //___________________________________________________
 void DocumentClassManagerDialog::_loadFile( void )
 {
@@ -263,5 +289,4 @@ void DocumentClassManagerDialog::Item::update( void )
 {
   setText( NAME, documentClass().name().c_str() );
   setText( FILE, documentClass().file().c_str() );
-
 }

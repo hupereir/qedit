@@ -18,6 +18,7 @@ noinst_HEADERS = \
   HighlightPattern.h \
   HighlightPatternOptions.h \
   HighlightStyle.h \
+  HighlightStyleList.h \
   HighlightStyleDialog.h \
   IndentPattern.h \
   KeywordPattern.h \
@@ -36,6 +37,7 @@ libdocument_classes_a_SOURCES = \
   HighlightPattern.cpp \
   HighlightPatternOptions.cpp \
   HighlightStyle.cpp \
+  HighlightStyleList.cpp \
   HighlightStyleDialog.cpp \
   IndentPattern.cpp \
   KeywordPattern.cpp \
@@ -45,7 +47,8 @@ libdocument_classes_a_SOURCES = \
 
 nodist_libdocument_classes_a_SOURCES = \
   moc_DocumentClassDialog.cpp \
-  moc_DocumentClassManagerDialog.cpp
+  moc_DocumentClassManagerDialog.cpp \
+  moc_HighlightStyleList.cpp
 
 clean-local:
 	rm -f moc_*.cpp

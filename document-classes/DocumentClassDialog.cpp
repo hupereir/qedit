@@ -39,6 +39,7 @@
 #include "CustomLineEdit.h"
 #include "CustomListBox.h"
 #include "CustomListView.h"
+#include "HighlightStyleList.h"
 
 using namespace std;
 
@@ -101,24 +102,10 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   // need to add options (checkboxes) for "wrap" and "default" 
 
   // highlight styles
-  tab_widget->addTab( box = new QWidget(), "&Highlight styles" );
-  v_layout = new QVBoxLayout();
-  v_layout->setSpacing(5);
-  v_layout->setMargin(10);
-  box->setLayout( v_layout );
-  v_layout->addWidget( highlight_style_list_ = new CustomListBox( box ), 1 );
-  
-  QPushButton* button;
-  v_layout->addWidget( button = new QPushButton( "&Add", box ) );
-  button->setToolTip( "Add a new highlight style to the list" );
-
-  v_layout->addWidget( button = new QPushButton( "&Edit", box ) );
-  button->setToolTip( "Edit selected highlight style" );
-
-  v_layout->addWidget( button = new QPushButton( "&Remove", box ) );
-  button->setToolTip( "Remove selected highlight style" );
+  tab_widget->addTab( highlight_style_list_ = new HighlightStyleList(), "&Highlight styles" );
 
   // highlight patterns
+  QPushButton* button;
   tab_widget->addTab( box = new QWidget(), "&Highlight patterns" );
   v_layout = new QVBoxLayout();
   v_layout->setSpacing(5);
@@ -170,6 +157,8 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
 void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class )
 {
   
+  Debug::Throw( "DocumentClassDialog::setDocumentClass.\n" );
+  
   // name
   name_editor_->setText( document_class.name().c_str() );
   
@@ -180,10 +169,7 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
   first_line_pattern_editor_->setText( document_class.firstLineMatchingPattern().pattern() );
     
   // highlight styles
-  highlight_style_list_->clear();
-  const HighlightStyle::Set& highlight_styles( document_class.highlightStyles() );
-  for( HighlightStyle::Set::const_iterator iter = highlight_styles.begin(); iter != highlight_styles.end(); iter++ )
-  { new QListWidgetItem( iter->name().c_str(),  highlight_style_list_ ); }
+  highlight_style_list_->setStyles( document_class.highlightStyles() );
   
   // highlight patterns
   

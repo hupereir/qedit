@@ -31,6 +31,8 @@
   \date $Date$
 */
 
+#include <QPushButton>
+
 #include "CustomDialog.h" 
 #include "CustomListView.h"
 
@@ -49,14 +51,22 @@ class DocumentClassManagerDialog: public CustomDialog
   //! constructor
   DocumentClassManagerDialog( QWidget* parent, DocumentClassManager *manager );
 
+  signals:
+  
+  //! emited when document class are modified
+  void updateNeeded( void );
+  
   private slots:
   
-  //! remove a class from the list
-  void _remove( void );
-  
+  //! update button enability
+  void _updateButtons( void );
+    
   //! edit file associated to class
   void _edit( void );
   
+  //! remove a class from the list
+  void _remove( void );
+
   //! load classes from a file
   void _loadFile( void );
 
@@ -94,7 +104,8 @@ class DocumentClassManagerDialog: public CustomDialog
     
     //! constructor
     Item( CustomListView* parent, DocumentClass& document_class ):
-      CustomListView::Item( parent )
+      CustomListView::Item( parent ),
+      document_class_( &document_class )
     { update(); }
     
     //! update from document class
@@ -119,6 +130,15 @@ class DocumentClassManagerDialog: public CustomDialog
   
   //! document classes list
   CustomListView* list_;
+  
+  //! edit
+  QPushButton* edit_button_;
+  
+  //! remove
+  QPushButton* remove_button_;
+  
+  //! save
+  QPushButton* save_button_;
   
 };
 
