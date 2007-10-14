@@ -113,18 +113,15 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
 void DocumentClassManagerDialog::_remove( void )
 {
   Debug::Throw( "DocumentClassManagerDialog::_remove.\n" );
-  QTreeWidgetItem *item( list_->QTreeWidget::currentItem() );
+  Item *item( list_->currentItem<Item>() );
   if( !item )
   {
     QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
     return;
   }
   
-  if( document_class_manager_->remove( qPrintable( item->text( NAME ) ) ) )
-  {
-    //main_frame.updateEditFrames();
-    _loadClasses();
-  }
+  if( document_class_manager_->remove( item->documentClass().name() ) )
+  { _loadClasses(); }
 }
 
 //___________________________________________________
@@ -254,11 +251,17 @@ void DocumentClassManagerDialog::_loadClasses()
 }
 
 //_________________________________________________________________
-void DocumentClassManagerDialog::_addClass( const DocumentClass& document_class )
+void DocumentClassManagerDialog::_addClass( DocumentClass& document_class )
 {
   Debug::Throw( "DocumentClassManagerDialog::_AddDocumentClass.\n" );
-  CustomListView::Item* item( new CustomListView::Item( list_ ) );
-  item->setText( NAME, document_class.name().c_str() );
-  item->setText( FILE, document_class.file().c_str() );
+  new Item( list_, document_class );
   return;
+}
+
+//_________________________________________________________________
+void DocumentClassManagerDialog::Item::update( void )
+{
+  setText( NAME, documentClass().name().c_str() );
+  setText( FILE, documentClass().file().c_str() );
+
 }

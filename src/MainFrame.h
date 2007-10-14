@@ -123,6 +123,10 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   { return *configuration_action_; }
 
   //! configure
+  QAction& documentClassConfigurationAction( void ) const
+  { return *document_class_configuration_action_; }
+
+  //! configure
   QAction& spellCheckConfigurationAction( void ) const
   { return *spellcheck_configuration_action_; }
   
@@ -158,6 +162,9 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   
   //! configuration
   void _configuration( void );
+  
+  //! document class configuration
+  void _documentClassConfiguration( void );
   
   //! spellcheck configuration
   void _spellCheckConfiguration( void );
@@ -237,6 +244,9 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   
   //! configure
   QAction* configuration_action_;
+  
+  //! configure
+  QAction* document_class_configuration_action_;
   
   //! configure
   QAction* spellcheck_configuration_action_;

@@ -12,7 +12,9 @@ INCLUDES =  \
 
 noinst_HEADERS = \
   DocumentClass.h \
+  DocumentClassDialog.h \
   DocumentClassManager.h \
+  DocumentClassManagerDialog.h \
   HighlightPattern.h \
   HighlightPatternOptions.h \
   HighlightStyle.h \
@@ -28,7 +30,9 @@ noinst_LIBRARIES = libdocument-classes.a
 
 libdocument_classes_a_SOURCES = \
   DocumentClass.cpp \
+  DocumentClassDialog.cpp \
   DocumentClassManager.cpp \
+  DocumentClassManagerDialog.cpp \
   HighlightPattern.cpp \
   HighlightPatternOptions.cpp \
   HighlightStyle.cpp \
@@ -38,6 +42,10 @@ libdocument_classes_a_SOURCES = \
   RangePattern.cpp \
   TextMacro.cpp \
   TextParenthesis.cpp
+
+nodist_libdocument_classes_a_SOURCES = \
+  moc_DocumentClassDialog.cpp \
+  moc_DocumentClassManagerDialog.cpp
 
 clean-local:
 	rm -f moc_*.cpp

@@ -36,6 +36,7 @@
 #include "Config.h" 
 #include "ConfigurationDialog.h"
 #include "DocumentClassManager.h"
+#include "DocumentClassManagerDialog.h"
 #include "EditFrame.h"
 #include "ErrorHandler.h"
 #include "ExitDialog.h"
@@ -166,6 +167,9 @@ void MainFrame::realizeWidget( void )
   
   configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "Default &Configuration", 0 );
   connect( configuration_action_, SIGNAL( triggered() ), SLOT( _configuration() ) );
+
+  document_class_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "Document Class &Configuration", 0 );
+  connect( document_class_configuration_action_, SIGNAL( triggered() ), SLOT( _documentClassConfiguration() ) );
   
   spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "&Spell-check &Configuration", 0 );
   connect( spellcheck_configuration_action_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
@@ -438,6 +442,14 @@ void MainFrame::_configuration( void )
   QtUtil::centerOnWidget( &dialog, activeWindow() );
   dialog.exec();
   Debug::Throw( "MainFrame::configuration - done.\n" );
+}
+
+//___________________________________________________________ 
+void MainFrame::_documentClassConfiguration( void )
+{
+  Debug::Throw( "MainFrame::_documentClassConfiguration.\n" );
+  DocumentClassManagerDialog dialog( activeWindow(), &classManager() );
+  dialog.exec();
 }
 
 //_______________________________________________

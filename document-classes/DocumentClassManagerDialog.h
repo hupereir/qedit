@@ -72,7 +72,7 @@ class DocumentClassManagerDialog: public CustomDialog
   void _loadClasses( void );
   
   //! add document class to listview
-  void _addClass( const DocumentClass& );
+  void _addClass( DocumentClass& );
   
   //! number of columns
   enum { n_columns_ = 2 };
@@ -93,7 +93,8 @@ class DocumentClassManagerDialog: public CustomDialog
     public: 
     
     //! constructor
-    Item( CustomListView* parent, DocumentClass& document_class )
+    Item( CustomListView* parent, DocumentClass& document_class ):
+      CustomListView::Item( parent )
     { update(); }
     
     //! update from document class
@@ -102,7 +103,7 @@ class DocumentClassManagerDialog: public CustomDialog
     //! document class
     DocumentClass& documentClass( void )
     { 
-      Exception::CheckPointer( document_class_, "invalid document class" );
+      Exception::checkPointer( document_class_, "invalid document class" );
       return *document_class_;
     }
     

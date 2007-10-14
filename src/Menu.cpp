@@ -240,6 +240,7 @@ void Menu::_updatePreferenceMenu( void )
   
   // configurations (from mainFrame)
   preference_menu_->addAction( &mainframe.configurationAction() );
+  preference_menu_->addAction( &mainframe.documentClassConfigurationAction() );
 
   #if WITH_ASPELL
   preference_menu_->addSeparator();

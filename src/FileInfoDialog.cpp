@@ -238,6 +238,9 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
     grid_layout->setColumnStretch( 1, 1 );
     
   }
+  
+  layout->addStretch(1);
+
   Debug::Throw( "FileInfoDialog::FileInfoDialog - Permissions tab filled.\n" );
 
   // misc tab
