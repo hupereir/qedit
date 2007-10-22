@@ -1066,10 +1066,11 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
     CustomTextEdit::keyPressEvent( event );
 
     // indent current paragraph when return is pressed
-    if( event->key() == Key_Return && indent_->isEnabled() && !textCursor().hasSelection() )
+    if( indent_->isEnabled() && event->key() == Key_Return && !textCursor().hasSelection() )
     { emit indent( textCursor().block() ); }
 
     // reindent paragraph if needed
+    /* remark: this is c++ specific. The list of keys should be set in the document class */
     if( indent_->isEnabled() && ( event->key() == Key_BraceRight || event->key() == Key_BraceLeft ) && !textCursor().hasSelection() )
     { emit indent( textCursor().block() ); }
 
@@ -1371,6 +1372,7 @@ void TextDisplay::_updateTaggedBlocks( void )
   // loop over block
   for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
   {
+    
     TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
     if( !( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) ) continue;
     

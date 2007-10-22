@@ -37,7 +37,7 @@
 
 <!-- line continued -->
  <keyword_pattern style="Line Continued" name="Line Continued" >
-  <keyword>^     [^ ]</keyword>
+  <keyword>^ {5}[^ ]</keyword>
  </keyword_pattern>
 
  <!-- types -->
@@ -47,7 +47,7 @@
 
  <!-- keywords -->
  <keyword_pattern style="Keyword" name="Keyword" options="no_case" >
-  <keyword>\b(open|close|read|write|rewind|goto|continue|call|(end)?if|then|else(if)?|(end)?do|format|function|subroutine|stop)\b</keyword>
+  <keyword>\b(open|close|read|write|rewind|goto|continue|call|(end( )?)?if|then|else(if)?|(end( )?)?do|format|function|subroutine|stop)\b</keyword>
  </keyword_pattern>
  
  <!-- numeric constants -->
@@ -65,6 +65,32 @@
  <parenthesis begin="(" end=")" />
 
  <!-- indentation rules -->
+ 
+ <indent_pattern name="Line Continued" type="0">
+  <rule par="-1">
+  <regexp>^ {5}\S</regexp>
+  </rule>
+  <rule par="0">
+  <regexp>^ {5}\S</regexp>
+  </rule>
+ </indent_pattern> 
+
+ <indent_pattern name="Line Continued" type="1">
+  <rule par="0">
+  <regexp>^ {5}\S</regexp>
+  </rule>
+ </indent_pattern> 
+
+<!-- decrement if previous line is a continued line but this one is not -->
+ <indent_pattern name="Line Terminated" type="2">
+  <rule par="-1">
+  <regexp>^ {5}\S</regexp>
+  </rule>
+  <rule par="0">
+  <regexp>^.{5} </regexp>
+  </rule>
+ </indent_pattern> 
+ 
  <indent_pattern  name="0" type="1">
   <rule par="-1" options="no_case">
    <regexp>\bTHEN\s*$</regexp>
@@ -83,18 +109,39 @@
   </rule>
  </indent_pattern>
 
- <indent_pattern name="3" type="2">
+<!-- decrement twice if previous line is a continued line but this one is not and corresponds to an end of block-->
+ <indent_pattern name="3prime" type="2" scale="2">
+  <rule par="-1">
+  <regexp>^ {5}\S</regexp>
+  </rule>
   <rule par="0" options="no_case">
-   <regexp>\b(ENDIF|ELSE|ENDDO)\s*(!|$)</regexp>
+   <regexp>\b((END( )?IF)|ELSE|(END( )?DO))\s*(!|$)</regexp>
   </rule>
  </indent_pattern>
 
+<!-- decrement at end of block-->
  <indent_pattern name="3" type="2">
+  <rule par="0" options="no_case">
+   <regexp>\b((END( )?IF)|ELSE|(END( )?DO))\s*(!|$)</regexp>
+  </rule>
+ </indent_pattern>
+
+<!-- decrement at else block-->
+ <indent_pattern name="3" type="2" scale="2">
+  <rule par="-1">
+  <regexp>^ {5}\S</regexp>
+  </rule>
   <rule par="0" options="no_case">
    <regexp>^\s*ELSE\s*IF\b</regexp>
   </rule>
  </indent_pattern>
 
+<!-- decrement at else block-->
+ <indent_pattern name="3" type="2">
+  <rule par="0" options="no_case">
+   <regexp>^\s*ELSE\s*IF\b</regexp>
+  </rule>
+ </indent_pattern>
  <!-- text processing macros -->
  <macro name="Clean end of line" accelerator="Alt+C">
   <rule>
