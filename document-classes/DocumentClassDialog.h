@@ -53,6 +53,9 @@ class DocumentClassDialog: public CustomDialog
   //! style
   void setDocumentClass( const DocumentClass& );
   
+  //! true if any document class attribute has been modified
+  bool modified( void );
+  
   private:
   
   //! name editor
@@ -85,6 +88,9 @@ class DocumentClassDialog: public CustomDialog
   //! indent pattern list
   CustomListView* indent_pattern_list_;
 
+  //! modification state
+  bool modified_;
+  
 };
 
 #endif
