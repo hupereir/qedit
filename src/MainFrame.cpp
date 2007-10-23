@@ -357,7 +357,7 @@ void MainFrame::updateDocumentClasses( void )
 
   if( !what.str().empty() ) QtUtil::infoDialog( 0, what.str() );
   
-  // emit configuratino changed to force displays to be updated
+  // emit configuration changed to force displays to be updated
   emit documentClassesChanged();
   
   return;
@@ -449,6 +449,7 @@ void MainFrame::_documentClassConfiguration( void )
 {
   Debug::Throw( "MainFrame::_documentClassConfiguration.\n" );
   DocumentClassManagerDialog dialog( activeWindow(), &classManager() );
+  connect( &dialog, SIGNAL( updateNeeded() ), SIGNAL( documentClassesChanged() ) );
   dialog.exec();
 }
 
