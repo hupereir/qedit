@@ -911,6 +911,9 @@ void TextDisplay::processMacro( string name )
   // check display
   if( !isActive() ) return;
  
+  // check if readonly
+  if( isReadOnly() ) return;
+  
   // retrieve text cursor
   QTextCursor cursor( textCursor() );
   if( !cursor.hasSelection() ) return;
