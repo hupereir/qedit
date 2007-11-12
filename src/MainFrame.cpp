@@ -579,6 +579,7 @@ void MainFrame::_saveAll( void )
   Debug::Throw( "MainFrame::_saveAll.\n" );
 
   // try save all windows one by one
+  BASE::KeySet<EditFrame> frames( this );
   for( BASE::KeySet<EditFrame>::iterator iter = frames.begin(); iter != frames.end(); iter++ )
   {
     
@@ -613,10 +614,7 @@ void MainFrame::_saveAll( void )
       }
       
     }
-    
-    // try close. Should succeed, otherwise it means there is a flow in the algorithm above
-    Exception::check( (*iter)->close(), DESCRIPTION( "close failed.\n" ) );
-    
+     
   }
 
   Debug::Throw( "MainFrame::_saveAll - done.\n" );
