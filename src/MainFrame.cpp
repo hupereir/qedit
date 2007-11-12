@@ -164,6 +164,9 @@ void MainFrame::realizeWidget( void )
   close_action_ = new QAction( IconEngine::get( ICONS::EXIT, path_list ), "E&xit", 0 );
   close_action_->setShortcut( CTRL+Key_Q );
   connect( close_action_, SIGNAL( triggered() ), SLOT( _exit() ) );
+
+  save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE, path_list ), "Save A&ll", 0 );
+  connect( save_all_action_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
   
   configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "Default &Configuration", 0 );
   connect( configuration_action_, SIGNAL( triggered() ), SLOT( _configuration() ) );
@@ -566,6 +569,57 @@ void MainFrame::_exit( void )
 
   Debug::Throw( "MainFrame::_exit - done.\n" );
   quit();
+
+}
+
+//_______________________________________________
+void MainFrame::_saveAll( void )
+{
+  
+  Debug::Throw( "MainFrame::_saveAll.\n" );
+
+  // try save all windows one by one
+  for( BASE::KeySet<EditFrame>::iterator iter = frames.begin(); iter != frames.end(); iter++ )
+  {
+    
+    if( !(*iter)->isModified() ) continue;
+    
+    // loop over displays
+    bool save_all_enabled = count_if( iter, frames.end(), EditFrame::IsModifiedFTor() ) > 1;
+    BASE::KeySet<TextDisplay> displays( *iter );
+    for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
+    {
+      
+      if( !(*display_iter)->document()->isModified() ) continue;
+      
+      save_all_enabled |= (*iter)->modifiedDisplayCount() > 1;
+      int state( (*display_iter)->askForSave( save_all_enabled ) );
+      
+      if( state == AskForSaveDialog::CANCEL ) return;
+      else if( state == AskForSaveDialog::ALL ) 
+      {
+        
+        // save all displays for this frame, starting from the current
+        for(; display_iter != displays.end(); display_iter++ ) 
+        { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
+       
+        // save all editframes starting from the next to this one
+        BASE::KeySet<EditFrame>::iterator sub_iter = iter; 
+        for( sub_iter++; sub_iter != frames.end(); sub_iter++ ) (*sub_iter)->saveAll();
+        
+        // break loop since everybody has been saved
+        break;
+        
+      }
+      
+    }
+    
+    // try close. Should succeed, otherwise it means there is a flow in the algorithm above
+    Exception::check( (*iter)->close(), DESCRIPTION( "close failed.\n" ) );
+    
+  }
+
+  Debug::Throw( "MainFrame::_saveAll - done.\n" );
 
 }
 

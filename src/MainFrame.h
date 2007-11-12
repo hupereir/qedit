@@ -117,6 +117,10 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   //! close
   QAction& closeAction( void ) const
   { return *close_action_; }
+ 
+  //! close
+  QAction& saveAllAction( void ) const
+  { return *save_all_action_; }
 
   //! configure
   QAction& configurationAction( void ) const
@@ -171,6 +175,9 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
 
   //! exit safely
   void _exit( void );
+
+  //! save all edited files
+  void _saveAll( void );
 
   //! Update Configuration from options
   void _updateConfiguration( void );
@@ -241,6 +248,9 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   
   //! close
   QAction* close_action_;
+  
+  //! save all modified files
+  QAction* save_all_action_;
   
   //! configure
   QAction* configuration_action_;

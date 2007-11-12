@@ -85,6 +85,7 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &editframe.closeWindowAction() );
   menu->addAction( &editframe.saveAction() );
   menu->addAction( &editframe.saveAsAction() );
+  menu->addAction( &mainframe.saveAllAction() );
   menu->addAction( &editframe.revertToSaveAction() );  
   menu->addSeparator();
   
