@@ -591,7 +591,7 @@ void EditFrame::enterEvent( QEvent* e )
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
 
-    // this trick allow to run  only once per set of associated displays
+    // this trick allow to run only once per set of displays associated to the same file
     if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
 
     // keep local reference of current display
@@ -606,7 +606,12 @@ void EditFrame::enterEvent( QEvent* e )
       dead_displays.insert( associated_displays.begin(), associated_displays.end() );
       dead_displays.insert( &display );
             
-    } else (*iter)->checkFileModified();
+    } else {
+ 
+      (*iter)->checkFileReadOnly();
+      (*iter)->checkFileModified();
+
+    }
     
   }
   

@@ -198,6 +198,9 @@ class TextDisplay: public CustomTextEdit
   //! check if file has been modified externally
   FileModifiedDialog::ReturnCode checkFileModified( void );
   
+  //! check if file read-only state has changed
+  void checkFileReadOnly( void );
+  
   //! Save file
   void save( void );
   

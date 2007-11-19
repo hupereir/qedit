@@ -269,8 +269,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
   if( restore_autosave && !isReadOnly() ) save();
   
   // perform first autosave
-  //if( !isReadOnly() ) 
-    (static_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
+  (static_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
   
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
@@ -283,6 +282,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
 //_______________________________________________________
 void TextDisplay::setFile( const File& file )
 { 
+  
   Debug::Throw() << "TextDisplay::setFile - file: " << file << endl;
   file_ = file; 
   if( file.exists() ) 
@@ -292,7 +292,9 @@ void TextDisplay::setFile( const File& file )
     _setIgnoreWarnings( false );
   }
   
-  setReadOnly( file.exists() && !file.isWritable() );
+  // check if file is read-only
+  checkFileReadOnly();
+  
   if( isActive() ) emit needUpdate( WINDOW_TITLE | FILE_NAME ); 
   
 }
@@ -369,6 +371,13 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
 
   return FileModifiedDialog::ReturnCode( state );
 
+}
+
+//___________________________________________________________________________
+void TextDisplay::checkFileReadOnly( void )
+{
+  Debug::Throw( "TextDisplay::checkFileReadOnly.\n" );
+  setReadOnly( file().exists() && !file().isWritable() );
 }
 
 //___________________________________________________________________________
