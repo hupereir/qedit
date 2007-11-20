@@ -21,7 +21,7 @@
 *******************************************************************************/
 
 /*!
-   \file QEdit.cc
+   \file qedit.cpp
    \brief main 
    \author Hugo Pereira
    \version $Revision$
