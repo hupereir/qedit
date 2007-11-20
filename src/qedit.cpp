@@ -52,7 +52,6 @@ int main (int argc, char *argv[])
 {
   try {
     
-              
     // Ensure proper cleaning at exit
     signal(SIGINT,  interrupt);
     signal(SIGTERM, interrupt);
