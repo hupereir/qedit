@@ -42,7 +42,6 @@ namespace ICONS
   static const std::string NEW = "filenew.png"; 
   static const std::string OPEN = "fileopen.png"; 
   static const std::string SAVE_AS = "filesaveas.png"; 
-  static const std::string EXIT =  "exit.png";
   static const std::string HTML="html.png";
   static const std::string PDF = "pdf.png";
   static const std::string INDENT="indent.png";

@@ -43,7 +43,7 @@
 using namespace std;
 
 //_______________________________
-//! handles keyboard interuptions
+//! handles keyboard interruptions
 void interrupt( int sig ); 
  
 //__________________________________________
