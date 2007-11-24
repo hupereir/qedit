@@ -23,7 +23,7 @@
 
 
 /*!
-  \file TextParenthesis.cc
+  \file TextParenthesis.cpp
   \brief Text parenthesis (for highlighting)
   \author Hugo Pereira
   \version $Revision$

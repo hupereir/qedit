@@ -22,7 +22,7 @@
  *******************************************************************************/
 
 /*!
-  \file RangePattern.cc
+  \file RangePattern.cpp
   \brief single keyword syntax highlighting
   \author Hugo Pereira
   \version $Revision$

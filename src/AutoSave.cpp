@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-  \file AutoSave.cc
+  \file AutoSave.cpp
   \brief handles threads for file auto-save
   \author  Hugo Pereira
   \version $Revision$

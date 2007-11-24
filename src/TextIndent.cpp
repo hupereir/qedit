@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-  \file TextIndent.cc
+  \file TextIndent.cpp
   \brief text indentation
   \author Hugo Pereira
   \version $Revision$

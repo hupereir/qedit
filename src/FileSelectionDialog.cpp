@@ -21,7 +21,7 @@
 *******************************************************************************/
 
 /*!
-  \file FileSelectionDialog.cc
+  \file FileSelectionDialog.cpp
   \brief QDialog used to select opened files
   \author Hugo Pereira
   \version $Revision$

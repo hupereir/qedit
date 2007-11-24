@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-   \file HighlightPatternOptions.cc
+   \file HighlightPatternOptions.cpp
    \brief font formatting options
    \author Hugo Pereira
    \version $Revision$

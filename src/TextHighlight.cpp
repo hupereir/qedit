@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-  \file TextHighlight.cc
+  \file TextHighlight.cpp
   \brief syntax highlighting based on text patterns
   \author Hugo Pereira
   \version $Revision$

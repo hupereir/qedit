@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-  \file ParenthesisHighlight.cc
+  \file ParenthesisHighlight.cpp
   \brief handles multiple clicks and timeout
   \author Hugo Pereira
   \version $Revision$

@@ -22,7 +22,7 @@
 *******************************************************************************/
  
 /*!
-  \file HighlightBlockData.cc
+  \file HighlightBlockData.cpp
   \brief TextBlock data for syntax highlighting
   \author Hugo Pereira
   \version $Revision$

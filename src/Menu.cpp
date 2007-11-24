@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
- \file Menu.cc
+ \file Menu.cpp
  \brief main menu
  \author Hugo Pereira
  \version $Revision$

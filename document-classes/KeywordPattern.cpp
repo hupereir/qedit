@@ -22,7 +22,7 @@
  *******************************************************************************/
 
 /*!
-  \file KeywordPattern.cc
+  \file KeywordPattern.cpp
   \brief single keyword syntax highlighting
   \author Hugo Pereira
   \version $Revision$

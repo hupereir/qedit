@@ -11,6 +11,7 @@
  <style format="0" name="Preprocessor2" color="#aa00aa" />
  <style format="0" name="Scope" color="#008000" />
  <style format="0" name="Storage Type" color="#a020f0" />
+ <style format="2" name="Math" color="#a020f0" />
  <style format="0" name="String" color="#00cd00" />
  <style format="0" name="String2" color="#2e8b2e" />
  <style format="0" name="Word" color="#ff0000" />
@@ -115,7 +116,12 @@
  </keyword_pattern>
 
  <keyword_pattern style="Storage Type" name="Stl Storage Type" >
-  <keyword>(\b(std::)?((string(::npos)?)|set|map|list|((i|i?o)(f|string)?stream)|endl|c(out|err|log)|vector|sqrt|min|max)\b)|(::(const_)?(reverse_)?iterator\b)</keyword>
+  <keyword>(\b(std::)?((string(::npos)?)|set|map|list|((i|i?o)(f|string)?stream)|endl|c(out|err|log)|vector)\b)|(::(const_)?(reverse_)?iterator\b)</keyword>
+  <comments>storage type (STL)</comments>
+ </keyword_pattern>
+
+ <keyword_pattern style="Math" name="Math" >
+  <keyword>(\b(std::)?((a?(cos|sin|tan))|log|exp|sqrt|pow|(f?abs)|min|max)\b)</keyword>
   <comments>storage type (STL)</comments>
  </keyword_pattern>
  

@@ -23,7 +23,7 @@
 *******************************************************************************/
  
 /*!
-  \file PrintDialog.cc
+  \file PrintDialog.cpp
   \brief print document
   \author Hugo Pereira
   \version $Revision$

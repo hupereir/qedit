@@ -22,7 +22,7 @@
 **********************************************************************************/
 
 /*!
-    \file HtmlUtil.cc
+    \file HtmlUtil.cpp
     \brief Some Html utilities
     \author Hugo Pereira
     \version $Revision$

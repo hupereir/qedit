@@ -22,7 +22,7 @@
  *******************************************************************************/
 
 /*!
-  \file HighlightPattern.cc
+  \file HighlightPattern.cpp
   \brief Base class for syntax highlighting
   \author Hugo Pereira
   \version $Revision$

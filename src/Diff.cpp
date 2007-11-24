@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-  \file Diff.cc
+  \file Diff.cpp
   \brief make diff between two files, stores conflict and added lines for both
   \author  Hugo Pereira
   \version $Revision$
@@ -142,7 +142,7 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
   {
    
     in.getline( buffer, linesize, '\n');  
-    if( (!buffer ) || buffer[0] == '\0' || !(string( buffer ).size()) ) continue;
+    if( buffer[0] == '\0' || !(string( buffer ).size()) ) continue;
    
     static const std::string removed_lines( "<>-" );
     if( removed_lines.find( buffer[0] ) != string::npos ) continue;

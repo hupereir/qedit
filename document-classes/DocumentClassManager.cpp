@@ -22,7 +22,7 @@
  *******************************************************************************/
 
 /*!
-  \file DocumentClassManager.cc
+  \file DocumentClassManager.cpp
   \brief Store list of Document Class
   \author Hugo Pereira
   \version $Revision$

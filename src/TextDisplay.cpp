@@ -21,7 +21,7 @@
 *******************************************************************************/
 
 /*!
-  \file TextDisplay.cc
+  \file TextDisplay.cpp
   \brief text display window
   \author Hugo Pereira
   \version $Revision$

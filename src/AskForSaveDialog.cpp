@@ -21,7 +21,7 @@
 *******************************************************************************/
 
 /*!
-  \file AskForSaveDialog.cc
+  \file AskForSaveDialog.cpp
   \brief QDialog used to ask if modifications of a file should be saved
   \author Hugo Pereira
   \version $Revision$

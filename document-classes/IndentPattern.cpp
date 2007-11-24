@@ -22,7 +22,7 @@
  *******************************************************************************/
 
 /*!
-  \file IndentPattern.cc
+  \file IndentPattern.cpp
   \brief Base class for indentation pattern
   \author Hugo Pereira
   \version $Revision$

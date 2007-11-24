@@ -22,7 +22,7 @@
 ****************************************************************************/
 
 /*!
-  \file EditFrame.cc
+  \file EditFrame.cpp
   \brief editor main window
   \author Hugo Pereira
   \version $Revision$

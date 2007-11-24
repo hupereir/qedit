@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 /*!
-  \file NewFileDialog.cc
+  \file NewFileDialog.cpp
   \brief QDialog used to ask if a new file should be created
   \author Hugo Pereira
   \version $Revision$

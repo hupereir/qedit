@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-   \file FileInfoDialog.cc
+   \file FileInfoDialog.cpp
    \brief  file informations
    \author Hugo Pereira
    \version $Revision$

@@ -21,7 +21,7 @@
 *******************************************************************************/
 
 /*!
-  \file DocumentClassManagerDialog.cc
+  \file DocumentClassManagerDialog.cpp
   \brief list document classes
   \author Hugo Pereira
   \version $Revision$

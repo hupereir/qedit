@@ -22,7 +22,7 @@
  *******************************************************************************/
 
 /*!
-  \file TextMacro.cc
+  \file TextMacro.cpp
   \brief Text modification macro
   \author Hugo Pereira
   \version $Revision$

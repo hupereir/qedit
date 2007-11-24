@@ -23,7 +23,7 @@
 *******************************************************************************/
 
 /*!
-  \file AutoSaveThread.cc
+  \file AutoSaveThread.cpp
   \brief independent thread used to make regular backups of files
   \author  Hugo Pereira
   \version $Revision$

@@ -22,7 +22,7 @@
 *******************************************************************************/
  
 /*!
-  \file ExitDialog.cc
+  \file ExitDialog.cpp
   \brief used to exit the application
   \author Hugo Pereira
   \version $Revision$

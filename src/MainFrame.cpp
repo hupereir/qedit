@@ -22,7 +22,7 @@
  *******************************************************************************/
 
 /*!
-  \file MainFrame.cc
+  \file MainFrame.cpp
   \brief application singleton object
   \author Hugo Pereira
   \version $Revision$

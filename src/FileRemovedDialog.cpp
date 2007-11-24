@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-  \file FileRemovedDialog.cc
+  \file FileRemovedDialog.cpp
   \brief QDialog used when a file has been removed from disk
   \author Hugo Pereira
   \version $Revision$

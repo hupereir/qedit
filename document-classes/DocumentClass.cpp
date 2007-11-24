@@ -22,7 +22,7 @@
  *******************************************************************************/
 
 /*!
-  \file DocumentClass.cc
+  \file DocumentClass.cpp
   \brief Highlight and indentation patterns for a given document class
   \author Hugo Pereira
   \version $Revision$

@@ -139,5 +139,6 @@ clean-local:
 moc_%.cpp: %.h
 	$(qt_moc) $^ -o $@
 
+### document class patterns
 qrc_%.cpp: %.qrc
 	$(qt_rcc) -name $* $^ -o $@
