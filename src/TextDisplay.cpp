@@ -1288,7 +1288,7 @@ void TextDisplay::_createReplaceDialog( void )
 
   // insert multiple file buttons
   QPushButton* button = new QPushButton( "&Files", &dialog );
-  connect( button, SIGNAL( clicked() ), this, SLOT( _multipleFileReplace() ) );
+  connect( button, SIGNAL( clicked() ), SLOT( _multipleFileReplace() ) );
   button->setToolTip( "replace all occurence of the search string in the selected files" );
   dialog.addDisabledButton( button );
   dialog.locationLayout().addWidget( button );

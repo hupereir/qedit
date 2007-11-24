@@ -403,7 +403,8 @@ void MainFrame::multipleFileReplace( std::list<File> files, TextSelection select
   if( !counts ) what << "string not found.";
   else if( counts == 1 ) what << "1 replacement performed";
   else what << counts << " replacements performed";
-  QtUtil::infoDialog( activePopupWidget(), what.str() );
+  //QtUtil::infoDialog( activePopupWidget(), what.str() );
+  QtUtil::infoDialog( activeWindow(), what.str() );
   
   return;
 }
