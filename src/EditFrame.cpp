@@ -686,26 +686,8 @@ void EditFrame::_diff( void )
     return;
   }
   
-  // enable clear
-  clearDiffAction().setEnabled( true );  
   return;
   
-}
-
-//_______________________________________________________
-void EditFrame::_clearDiff( void )
-{
-  
-  Debug::Throw( "EditFrame::_clearDiff.\n" );
-
-  BASE::KeySet<TextDisplay> displays( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { (*iter)->clearAllTags( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT ); }
-  
-  clearDiffAction().setEnabled( false );
-  
-  return;
-
 }
 
 //_______________________________________________________
@@ -853,10 +835,6 @@ void EditFrame::_installActions( void )
   addAction( diff_action_ = new QAction( "&Diff files", this ) );
   connect( diff_action_, SIGNAL( triggered() ), SLOT( _diff() ) );
   diff_action_->setEnabled( false );
-
-  addAction( clear_diff_action_ = new QAction( "&Clear", this ) );
-  connect( clear_diff_action_, SIGNAL( triggered() ), SLOT( _clearDiff() ) );
-  clear_diff_action_->setEnabled( false );
   
 }
 

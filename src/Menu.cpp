@@ -335,11 +335,7 @@ void Menu::_updateToolsMenu( void )
   // diff files
   tools_menu_->addSeparator();
   tools_menu_->addAction( &editframe.diffAction() );
-  tools_menu_->addAction( &editframe.clearDiffAction() );
  
-  // tag blocks 
-  tools_menu_->addSeparator();
-
   bool has_tags( display.hasTaggedBlocks() );
   bool current_block_tagged( has_tags && display.isCurrentBlockTagged() );
   
