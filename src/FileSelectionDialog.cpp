@@ -85,7 +85,8 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
       // retrieve document class
       const string& class_name( (*iter)->className() );
 
-      CustomListView::Item* item( new CustomListView::Item( list_ ) );
+      CustomListView::Item* item( new CustomListView::Item() );
+      list_->addTopLevelItem( item );
       item->setText( FILE, file.expand().c_str() );
       item->setText( CLASS, class_name.c_str() );
 

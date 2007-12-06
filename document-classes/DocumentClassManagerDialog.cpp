@@ -280,7 +280,7 @@ void DocumentClassManagerDialog::_loadClasses()
 void DocumentClassManagerDialog::_addClass( DocumentClass& document_class )
 {
   Debug::Throw( "DocumentClassManagerDialog::_AddDocumentClass.\n" );
-  new Item( list_, document_class );
+  list_->addTopLevelItem( new Item( document_class ) );
   return;
 }
 

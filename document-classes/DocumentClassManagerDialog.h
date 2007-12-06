@@ -103,8 +103,7 @@ class DocumentClassManagerDialog: public CustomDialog
     public: 
     
     //! constructor
-    Item( CustomListView* parent, DocumentClass& document_class ):
-      CustomListView::Item( parent ),
+    Item( DocumentClass& document_class ):
       document_class_( &document_class )
     { update(); }
     
