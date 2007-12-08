@@ -250,10 +250,21 @@
   </rule>
  </indent_pattern>
 
- <!-- pattern 7: increment when previous line is not terminated but above was -->
+<!-- pattern 6.5: keep unchanged if previous line is terminated + comment but above is
+ 	- terminated
+	- a bracket -->
+ <indent_pattern name="6.5" type="0">
+  <rule par="-1">
+   <regexp>(;\s*//)</regexp>
+  </rule>
+ </indent_pattern>
+
+ <!-- pattern 7: increment when previous line is not terminated but above is
+ 	- terminated
+	- a bracket -->
  <indent_pattern name="7" type="1">
   <rule par="-1">
-   <regexp>[^;\s*]\s*($|//)</regexp>
+   <regexp>([^;\s*]\s*$)</regexp>
   </rule>
   <rule par="-2">
    <regexp>((;|\{|\})\s*($|//))</regexp>
