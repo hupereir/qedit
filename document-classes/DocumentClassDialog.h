@@ -36,7 +36,7 @@
 #include "DocumentClass.h"
 
 class CustomLineEdit;
-class CustomListView;
+class TreeWidget;
 class HighlightStyleList; 
 
 //! Syntax highlighting style editing dialog
@@ -83,10 +83,10 @@ class DocumentClassDialog: public CustomDialog
   static const char* column_titles_[ n_columns_ ];
   
   //! highlight pattern list
-  CustomListView* highlight_pattern_list_;
+  TreeWidget* highlight_pattern_list_;
   
   //! indent pattern list
-  CustomListView* indent_pattern_list_;
+  TreeWidget* indent_pattern_list_;
 
   //! modification state
   bool modified_;

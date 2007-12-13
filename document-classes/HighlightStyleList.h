@@ -36,7 +36,7 @@
 #include "Counter.h"
 #include "HighlightStyle.h"
 
-class CustomListBox;
+class ListWidget;
 
 //! List box for HighlightStyles
 class HighlightStyleList: public QWidget, public Counter
@@ -76,7 +76,7 @@ class HighlightStyleList: public QWidget, public Counter
   private:
   
   //! list
-  CustomListBox* list_;
+  ListWidget* list_;
   
   //! buttons
   QPushButton* edit_button_;

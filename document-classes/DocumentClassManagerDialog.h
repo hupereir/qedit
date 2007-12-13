@@ -34,7 +34,7 @@
 #include <QPushButton>
 
 #include "CustomDialog.h" 
-#include "CustomListView.h"
+#include "TreeWidget.h"
 
 class DocumentClass;
 class DocumentClassManager;
@@ -97,7 +97,7 @@ class DocumentClassManagerDialog: public CustomDialog
   static const char* column_titles_[ n_columns_ ];
 
   //! list item
-  class Item: public CustomListView::Item
+  class Item: public TreeWidget::Item
   {
     
     public: 
@@ -128,7 +128,7 @@ class DocumentClassManagerDialog: public CustomDialog
   DocumentClassManager* document_class_manager_;
   
   //! document classes list
-  CustomListView* list_;
+  TreeWidget* list_;
   
   //! edit
   QPushButton* edit_button_;

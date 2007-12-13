@@ -56,7 +56,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   setLayout( layout );
 
   // custom list view
-  list_ = new CustomListView( this );
+  list_ = new TreeWidget( this );
   layout->addWidget( list_ );
   list_->setColumnCount(2);
   list_->setColumnName( FILE, "file name" );
@@ -85,7 +85,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
       // retrieve document class
       const string& class_name( (*iter)->className() );
 
-      CustomListView::Item* item( new CustomListView::Item() );
+      TreeWidget::Item* item( new TreeWidget::Item() );
       list_->addTopLevelItem( item );
       item->setText( FILE, file.expand().c_str() );
       item->setText( CLASS, class_name.c_str() );

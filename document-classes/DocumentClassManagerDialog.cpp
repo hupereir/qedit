@@ -65,7 +65,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   mainLayout().addLayout( layout );
   
   // create list
-  layout->addWidget( list_ = new CustomListView( this ) );
+  layout->addWidget( list_ = new TreeWidget( this ) );
   
   // add columns
   list_->setColumnCount( n_columns_ );

@@ -250,16 +250,23 @@
   </rule>
  </indent_pattern>
 
-<!-- pattern 6.5: keep unchanged if previous line is terminated + comment but above is
+<!-- pattern 6.1: keep unchanged if previous line is terminated + comment but above is
  	- terminated
 	- a bracket -->
- <indent_pattern name="6.5" type="0">
+ <indent_pattern name="6.1" type="0">
   <rule par="-1">
    <regexp>(;\s*//)</regexp>
   </rule>
  </indent_pattern>
 
- <!-- pattern 7: increment when previous line is not terminated but above is
+<!-- pattern 6.2: keep unchanged if  previous line is not terminated but start with "case" -->
+ <indent_pattern name="6.2" type="0">
+  <rule par="-1">
+   <regexp>^\s*(case|(default\s*:))</regexp>
+  </rule>
+ </indent_pattern>
+
+ <!-- pattern 7: increment if previous line is not terminated but above is
  	- terminated
 	- a bracket -->
  <indent_pattern name="7" type="1">
@@ -283,6 +290,16 @@
   </rule>
  </indent_pattern>
  
+<!-- pattern 8.1: keep unchanged if previous line terminated and previous one start with "case" -->
+ <indent_pattern name="8.1" type="0">
+  <rule par="-1">
+   <regexp>(;\s*($|//))</regexp>
+  </rule>
+  <rule par="-2">
+   <regexp>^\s*(case|(default\s*:))</regexp>
+  </rule>
+ </indent_pattern>
+
  <!-- pattern 9: decrement when previous line is terminated but above was not -->
  <indent_pattern name="9" type="2">
   <rule par="-1">

@@ -31,7 +31,7 @@
   \date $Date$
 */
 
-#include "CustomListBox.h"
+#include "ListWidget.h"
 #include "HighlightStyle.h"
 
 //! List box item for HighlightStyle
@@ -41,7 +41,7 @@ class HighlightStyleItem: public QListWidgetItem
   public:
   
   //! constructor
-  HighlightStyleItem( CustomListBox* parent, const HighlightStyle& style ):
+  HighlightStyleItem( ListWidget* parent, const HighlightStyle& style ):
     QListWidgetItem( parent )
   { 
     Debug::Throw( "HighlightStyleItem::HighlightStyleItem" );

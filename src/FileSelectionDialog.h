@@ -35,7 +35,7 @@
 #include <list>
 
 #include "Counter.h"
-#include "CustomListView.h"
+#include "TreeWidget.h"
 #include "File.h"
 #include "TextSelection.h"
 
@@ -71,7 +71,7 @@ class FileSelectionDialog: public QDialog, public Counter
   enum { FILE, CLASS };
   
   //! list of files
-  CustomListView* list_;
+  TreeWidget* list_;
   
   //! text selection
   TextSelection selection_;
