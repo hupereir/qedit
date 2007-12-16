@@ -138,14 +138,17 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   
   signals:
   
+  //! request widget to save their current configuration
+  void saveConfiguration( void );
+  
   //! configuration has changed
-  void configurationChanged();
+  void configurationChanged( void );
   
   //! spellcheck configuration modified
-  void spellCheckConfigurationChanged();
+  void spellCheckConfigurationChanged( void );
   
   //! document classes have been modified
-  void documentClassesChanged();
+  void documentClassesChanged( void );
   
   public slots:
   

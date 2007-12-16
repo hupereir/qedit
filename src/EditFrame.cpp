@@ -139,20 +139,14 @@ EditFrame::EditFrame(  QWidget* parent ):
   
   // file toolbar
   CustomToolBar* toolbar;
-  toolbar = new CustomToolBar( "Main", this );
-  toolbars_.push_back( make_pair( toolbar, "FILE_TOOLBAR" ) );
-  addToolBar( toolbar );
-
+  addToolBar( toolbar = new CustomToolBar( "Main", this, "FILE_TOOLBAR" ) );
   toolbar->addAction( &newFileAction() );
   toolbar->addAction( &openAction() ); 
   toolbar->addAction( &saveAction() ); 
   //toolbar->addAction( &printAction() );
   
   // edition toolbar
-  toolbar = new CustomToolBar( "Edition", this );
-  toolbars_.push_back( make_pair( toolbar, "EDITION_TOOLBAR" ) );
-  addToolBar( toolbar );
-
+  addToolBar( toolbar = new CustomToolBar( "Edition", this, "EDITION_TOOLBAR" ) );
   toolbar->addAction( &undoAction() ); 
   toolbar->addAction( &redoAction() ); 
   toolbar->addAction( &cutAction() );
@@ -160,43 +154,24 @@ EditFrame::EditFrame(  QWidget* parent ):
   toolbar->addAction( &pasteAction() );
 
   // extra toolbar
-  toolbar = new CustomToolBar( "Tools", this );
-  toolbars_.push_back( make_pair( toolbar, "EXTRA_TOOLBAR" ) );
-  addToolBar( toolbar );
-
+  addToolBar( toolbar = new CustomToolBar( "Tools", this, "EXTRA_TOOLBAR" ) );
   toolbar->addAction( &fileInfoAction() ); 
   toolbar->addAction( &spellcheckAction() ); 
   
   // splitting toolbar
-  toolbar = new CustomToolBar( "Multiple views", this );
-  toolbars_.push_back( make_pair( toolbar, "SPLIT_TOOLBAR" ) );
-  addToolBar( toolbar );
-  
-  // retrieve pixmap path
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
-
-  QAction* action;
-  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_TOPBOTTOM, path_list ), "Clone view top/bottom", this, SLOT( _splitViewVertical() ) );
-  action->setToolTip( "Clone current view vertically" );
-
-  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT, path_list ), "Clone view left/right", this, SLOT( _splitViewHorizontal() ) );
-  action->setToolTip( "Clone current view horizontally" );
-
-  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_BOTTOM, path_list ), "Clone view top/bottom", this, SLOT( openVertical() ) );
-  action->setToolTip( "Open a new view vertically" );
-
-  action = toolbar->addAction( IconEngine::get( ICONS::VIEW_RIGHT, path_list ), "Open view left/right", this, SLOT( openHorizontal() ) );
-  action->setToolTip( "Open a new view horizontally" );
-
-  // detach and close view
+  addToolBar( toolbar = new CustomToolBar( "Multiple views", this, "SPLIT_TOOLBAR" ) );
+  toolbar->addAction( &splitViewHorizontalAction() ); 
+  toolbar->addAction( &splitViewVerticalAction() ); 
+  toolbar->addAction( &openHorizontalAction() ); 
+  toolbar->addAction( &openVerticalAction() ); 
   toolbar->addAction( &closeViewAction() );
   toolbar->addAction( &detachAction() );
  
   //! configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( qApp, SIGNAL( saveConfiguration() ), SLOT( _saveConfiguration() ) );
   connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
-  _updateConfiguration();
+ _updateConfiguration();
   
   // update buttons
   _update( TextDisplay::ALL );
@@ -836,6 +811,22 @@ void EditFrame::_installActions( void )
   connect( diff_action_, SIGNAL( triggered() ), SLOT( _diff() ) );
   diff_action_->setEnabled( false );
   
+  addAction( split_view_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_TOPBOTTOM, path_list ), "Clone view top/bottom", this ) );
+  split_view_horizontal_action_->setToolTip( "Clone current view vertically" );
+  connect( split_view_horizontal_action_, SIGNAL( triggered() ), SLOT( _splitViewVertical() ) );
+
+  addAction( split_view_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT, path_list ), "Clone view left/right", this ) );
+  split_view_vertical_action_->setToolTip( "Clone current view horizontally" );
+  connect( split_view_vertical_action_, SIGNAL( triggered() ), SLOT( _splitViewHorizontal() ) );
+
+  addAction( open_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM, path_list ), "Clone view top/bottom", this ) );
+  open_horizontal_action_->setToolTip( "Open a new view vertically" );
+  connect( open_horizontal_action_, SIGNAL( triggered() ), SLOT( openVertical() ) );
+
+  addAction( open_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT, path_list ), "Open view left/right", this ) );
+  open_vertical_action_->setToolTip( "Open a new view horizontally" );
+  connect( open_vertical_action_, SIGNAL( triggered() ), SLOT( openHorizontal() ) );
+  
 }
 
 //___________________________________________________________
@@ -869,11 +860,6 @@ void EditFrame::_updateConfiguration( void )
   // resize
   resize( QSize( XmlOptions::get().get<int>( "WINDOW_WIDTH" ), XmlOptions::get().get<int>( "WINDOW_HEIGHT" ) ) );
 
-  // toolbars
-  CustomToolBar::updateConfiguration( this, toolbars_ );
-  
-  Debug::Throw( "EditFrame::_updateConfiguration - done.\n" );
-
 }
 
 //________________________________________________________
@@ -885,8 +871,6 @@ void EditFrame::_saveConfiguration( void )
   XmlOptions::get().set<int>( "WINDOW_HEIGHT", height() );
   XmlOptions::get().set<int>( "WINDOW_WIDTH", width() );
    
-  CustomToolBar::saveConfiguration( this, toolbars_ );
-  
 }
 
 //___________________________________________________________

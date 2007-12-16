@@ -37,7 +37,6 @@
 #include <string>
 
 #include "CustomMainWindow.h"
-#include "CustomToolBar.h"
 #include "Config.h"
 #include "Counter.h"
 #include "FileRecord.h"
@@ -300,6 +299,22 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   QAction& diffAction( void )
   { return *diff_action_; }
   
+  //! split view horizontal
+  QAction& splitViewHorizontalAction( void )
+  { return * split_view_horizontal_action_; }
+  
+  //! split view vertical
+  QAction& splitViewVerticalAction( void )
+  { return * split_view_vertical_action_; }
+  
+  //! open horizontal
+  QAction& openHorizontalAction( void )
+  { return * open_horizontal_action_; }
+
+  //! open vertical
+  QAction& openVerticalAction( void )
+  { return * open_vertical_action_; }
+  
   //@}
 
   public slots:
@@ -521,9 +536,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! text display with focus
   TextDisplay* active_display_;
       
-  //! map toolbar and option name
-  CustomToolBar::List toolbars_;
-
   //! state frame
   StatusBar* statusbar_;
 
@@ -591,6 +603,18 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   
   //! diff files
   QAction* diff_action_;
+  
+  //! split view horizontal
+  QAction* split_view_horizontal_action_;
+  
+  //! split view vertical
+  QAction* split_view_vertical_action_;
+  
+  //! open horizontal
+  QAction* open_horizontal_action_;
+
+  //! open vertical
+  QAction* open_vertical_action_;
   
   //@}
   
