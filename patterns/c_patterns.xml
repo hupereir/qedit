@@ -266,6 +266,16 @@
   </rule>
  </indent_pattern>
 
+<!-- pattern 6.3: keep unchanged if  previous line is not terminated but start with "case" -->
+ <indent_pattern name="6.3" type="0">
+  <rule par="-1">
+   <regexp>([^;\s*]\s*$)</regexp>
+  </rule>
+  <rule par="-2">
+   <regexp>^\s*(enum)</regexp>
+  </rule>
+ </indent_pattern>
+
  <!-- pattern 7: increment if previous line is not terminated but above is
  	- terminated
 	- a bracket -->

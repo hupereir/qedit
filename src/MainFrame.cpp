@@ -641,6 +641,9 @@ void MainFrame::_updateConfiguration( void )
   Debug::setLevel( XmlOptions::get().get<bool>("DEBUG_LEVEL") );
   setWindowIcon( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).expand().c_str() ) );
   
+  // reload IconEngine cache (in case of icon_path_list that changed)
+  IconEngine::get().reload( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
+
   // configuration changed
   emit configurationChanged();
   
