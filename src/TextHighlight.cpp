@@ -146,7 +146,7 @@ HighlightPattern::LocationSet TextHighlight::locationSet( const QString& text, c
   {    
     // look for matching pattern in list
     HighlightPattern::List::iterator pattern_iter = find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( active_id ) );
-    Exception::check( pattern_iter != patterns_.end(), DESCRIPTION( "invalid pattern" ) );
+    assert( pattern_iter != patterns_.end() );
     
     HighlightPattern &pattern( **pattern_iter );
     bool active=true;

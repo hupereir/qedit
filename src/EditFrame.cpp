@@ -197,7 +197,7 @@ void EditFrame::setFile( File file )
   // look for first empty view
   BASE::KeySet<TextDisplay> displays( this );
   BASE::KeySet<TextDisplay>::iterator iter = find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
-  Exception::check( iter != displays.end(), DESCRIPTION( "no empty display" ) );
+  assert( iter != displays.end() );
   TextDisplay &display( **iter );
    
   // open file in active display
@@ -216,7 +216,7 @@ void EditFrame::setFile( File file )
 void EditFrame::setActiveDisplay( TextDisplay& display )
 { 
   Debug::Throw() << "EditFrame::setActiveDisplay - key: " << display.key() << std::endl;
-  Exception::check( display.isAssociated( this ), DESCRIPTION( "invalid display" ) );
+  assert( display.isAssociated( this ) );
   
   active_display_ = &display;
   if( !activeDisplay().isActive() )
@@ -651,7 +651,7 @@ void EditFrame::_diff( void )
   }
   
   // check that one display was found
-  Exception::check( iter != displays.end(), DESCRIPTION( "could not find 2 independent displays" ) );
+  assert( iter != displays.end() );
   
   // try run
   if( !diff->run() )
@@ -1274,7 +1274,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
     { child = dynamic_cast<QWidget*>( *iter ); }
 
     // check child could be retrieved
-    Exception::checkPointer( child, DESCRIPTION( "invalid first child" ) );
+    assert( child );
 
     // try cast child to splitter
     // if exists and have same orientation, do not create a new one

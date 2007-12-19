@@ -32,7 +32,6 @@
 #include "AutoSave.h"
 #include "Debug.h"
 #include "EditFrame.h"
-#include "Exception.h"
 #include "Options.h"
 #include "TextDisplay.h"
 

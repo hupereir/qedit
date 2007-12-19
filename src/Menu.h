@@ -37,7 +37,8 @@
 
 #include "Debug.h"
 #include "Counter.h"
-#include "Exception.h"
+
+
 #include "File.h"
 
 class OpenPreviousMenu;
@@ -61,14 +62,14 @@ class Menu:public QMenuBar, public Counter
   //! retrieve OpenPreviousMenu
   OpenPreviousMenu& openPreviousMenu( void ) const
   {
-    Exception::checkPointer( open_previous_menu_, DESCRIPTION( "open_previous_menu_ not initialized.\n" ) );
+    assert( open_previous_menu_, DESCRIPTION( "open_previous_menu_ not initialized.\n" ) );
     return *open_previous_menu_;
   }
   
   //! macro menu
   QMenu& macroMenu( void ) const
   { 
-    Exception::checkPointer( macro_menu_, DESCRIPTION( "macro_menu_ not initialized.\n" ) );
+    assert( macro_menu_, DESCRIPTION( "macro_menu_ not initialized.\n" ) );
     return *macro_menu_;
   }
   

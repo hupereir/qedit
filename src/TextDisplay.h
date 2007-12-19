@@ -86,7 +86,8 @@ class TextDisplay: public CustomTextEdit
   //! open previous menu
   OpenPreviousMenu& menu( void )
   { 
-    Exception::checkPointer( menu_, DESCRIPTION( "menu_ not initialized" ) );
+    assert( menu_
+ );
     return *menu_;
   }
   
@@ -263,14 +264,14 @@ class TextDisplay: public CustomTextEdit
   //! text indent
   const TextIndent& textIndent( void ) const
   {
-    Exception::checkPointer( indent_, DESCRIPTION( "indent_ not initialized." ) );
+    assert( indent_, DESCRIPTION( "indent_ not initialized." ) );
     return *indent_;
   }
   
   //! text indent
   TextIndent& textIndent( void )
   {
-    Exception::checkPointer( indent_, DESCRIPTION( "indent_ not initialized." ) );
+    assert( indent_, DESCRIPTION( "indent_ not initialized." ) );
     return *indent_;
   }
 

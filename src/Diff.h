@@ -186,7 +186,8 @@ class Diff: public QObject, public Counter
     //! text display
     TextDisplay& _display( void )
     { 
-      Exception::checkPointer( display_, DESCRIPTION( "invalid display" ) );
+      assert( display_
+ );
       return *display_; 
     }
 

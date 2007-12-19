@@ -381,12 +381,12 @@ void MainFrame::multipleFileReplace( std::list<File> files, TextSelection select
     File& file( *iter );
     
     BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( file ) );
-    Exception::check( iter != frames.end(), DESCRIPTION( "file not found" ) );
+    assert( iter != frames.end() );
 
     // retrieve TextDisplay that match file
     BASE::KeySet<TextDisplay> displays( *iter );
     BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) ) );
-    Exception::check( display_iter != displays.end(), DESCRIPTION( "file not found" ) );
+    assert( display_iter != displays.end() );
     
     // need to set display as active so that synchronization is kept with other possible displays
     (*iter)->setActiveDisplay( **display_iter );
@@ -565,7 +565,7 @@ void MainFrame::_exit( void )
     }
     
     // try close. Should succeed, otherwise it means there is a flow in the algorithm above
-    Exception::check( (*iter)->close(), DESCRIPTION( "close failed.\n" ) );
+    assert( (*iter)->close(), DESCRIPTION( "close failed.\n" ) );
     
   }
 

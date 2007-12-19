@@ -113,7 +113,7 @@ class DocumentClassManagerDialog: public CustomDialog
     //! document class
     DocumentClass& documentClass( void )
     { 
-      Exception::checkPointer( document_class_, "invalid document class" );
+      assert( document_class_, "invalid document class" );
       return *document_class_;
     }
     

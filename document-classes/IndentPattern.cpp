@@ -80,7 +80,7 @@ IndentPattern::IndentPattern( const QDomElement& element ):
     else cout << "IndentPattern::IndentPattern - unrecognized child: " << tag_name << endl;
   }
   
-  Exception::check( !rules().empty(), DESCRIPTION( "empty pattern" ) );
+  assert( !rules().empty() );
   
 }
 

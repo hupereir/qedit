@@ -41,7 +41,8 @@
 #include "ApplicationManager.h"
 #include "ArgList.h"
 #include "Counter.h"
-#include "Exception.h"
+
+
 #include "FileRecord.h"
 #include "Key.h"
 #include "TextSelection.h"
@@ -78,14 +79,16 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   //! retrieve DocumentClassManager
   DocumentClassManager& classManager( void )
   { 
-    Exception::checkPointer( class_manager_, DESCRIPTION( "class_manager_ not initialized" ));
+    assert( class_manager_
+);
     return *class_manager_;
   }
   
   //! retrieve AutoSave
   AutoSave& autoSave( void )
   { 
-    Exception::checkPointer( autosave_, DESCRIPTION( "autosave_ not initialized" ));
+    assert( autosave_
+);
     return *autosave_;
   }
   

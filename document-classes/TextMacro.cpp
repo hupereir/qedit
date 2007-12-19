@@ -76,7 +76,7 @@ TextMacro::TextMacro( const QDomElement& element ):
     else cout << "TextMacro::TextMacro - unrecognized child: " << tag_name << endl;
   }
   
-  Exception::check( isSeparator() || !rules_.empty(), DESCRIPTION( "Empty macro") );
+  assert( isSeparator() || !rules_.empty() );
   
 }
 
