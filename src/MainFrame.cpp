@@ -565,7 +565,7 @@ void MainFrame::_exit( void )
     }
     
     // try close. Should succeed, otherwise it means there is a flow in the algorithm above
-    assert( (*iter)->close(), DESCRIPTION( "close failed.\n" ) );
+    assert( (*iter)->close() );
     
   }
 

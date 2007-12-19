@@ -29,6 +29,8 @@
   \date $Date$
 */
 
+#include <assert.h>
+
 #include "IndentPattern.h"
 #include "Str.h"
 #include "XmlDef.h"

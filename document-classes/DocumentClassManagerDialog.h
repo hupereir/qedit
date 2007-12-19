@@ -31,6 +31,7 @@
   \date $Date$
 */
 
+#include <assert.h>
 #include <QPushButton>
 
 #include "CustomDialog.h" 
@@ -113,7 +114,7 @@ class DocumentClassManagerDialog: public CustomDialog
     //! document class
     DocumentClass& documentClass( void )
     { 
-      assert( document_class_, "invalid document class" );
+      assert( document_class_ );
       return *document_class_;
     }
     

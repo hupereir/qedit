@@ -264,14 +264,14 @@ class TextDisplay: public CustomTextEdit
   //! text indent
   const TextIndent& textIndent( void ) const
   {
-    assert( indent_, DESCRIPTION( "indent_ not initialized." ) );
+    assert( indent_ );
     return *indent_;
   }
   
   //! text indent
   TextIndent& textIndent( void )
   {
-    assert( indent_, DESCRIPTION( "indent_ not initialized." ) );
+    assert( indent_ );
     return *indent_;
   }
 

@@ -32,16 +32,18 @@
   \date $Date$
 */
 
-#include "CustomProcess.h"
-#include "Counter.h"
-#include "Debug.h"
-#include "File.h"
 
+#include <assert.h>
 #include <iostream>
 #include <map>
 #include <set>
 #include <vector>
 #include <string>
+
+#include "CustomProcess.h"
+#include "Counter.h"
+#include "Debug.h"
+#include "File.h"
 
 class TextDisplay;
 

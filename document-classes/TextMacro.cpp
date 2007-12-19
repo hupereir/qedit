@@ -29,6 +29,7 @@
   \date $Date$
 */
 
+#include <assert.h>
 #include <QStringList>
 #include <vector>
 
