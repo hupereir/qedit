@@ -18,6 +18,7 @@ noinst_HEADERS = \
   HighlightPattern.h \
   HighlightPatternOptions.h \
   HighlightStyle.h \
+  HighlightStyleItem.h \
   HighlightStyleList.h \
   HighlightStyleDialog.h \
   IndentPattern.h \

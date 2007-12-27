@@ -4,7 +4,7 @@ QT += xml network
 
 TARGET = qedit
 
-VERSION = 1.0
+VERSION = 1.1
 DEFINES += VERSION=\"$$VERSION\"
 
 INCLUDEPATH = . ../base ../base-qt ../base-help ../base-server ../document-classes ../extra-includes

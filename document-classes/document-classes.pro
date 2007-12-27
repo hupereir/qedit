@@ -6,24 +6,35 @@ INCLUDEPATH += ../base ../base-qt
 DEPENDPATH += . ../base ../base-qt
 
 HEADERS = \  
-  DocumentClass.h \
-  DocumentClassManager.h \
-  HighlightPattern.h \
-  HighlightStyle.h \
-  IndentPattern.h \
-  KeywordPattern.h \
-  RangePattern.h \
-  TextMacro.h \
-  TextParenthesis.h
+DocumentClassDialog.h \
+DocumentClass.h \
+DocumentClassManagerDialog.h \
+DocumentClassManager.h \
+HighlightPattern.h \
+HighlightPatternOptions.h \
+HighlightStyleDialog.h \
+HighlightStyle.h \
+HighlightStyleItem.h \
+HighlightStyleList.h \
+IndentPattern.h \
+KeywordPattern.h \
+RangePattern.h \
+TextMacro.h \
+TextParenthesis.h \
+XmlDef.h
 
 SOURCES = \
-  DocumentClass.cpp \
-  DocumentClassManager.cpp \
-  HighlightPattern.cpp \
-  HighlightStyle.cpp \
-  IndentPattern.cpp \
-  KeywordPattern.cpp \
-  RangePattern.cpp \
-  TextMacro.cpp \
-  TextParenthesis.cpp
-
+DocumentClass.cpp \
+DocumentClassDialog.cpp \
+DocumentClassManager.cpp \
+DocumentClassManagerDialog.cpp \
+HighlightPattern.cpp \
+HighlightPatternOptions.cpp \
+HighlightStyle.cpp \
+HighlightStyleDialog.cpp \
+HighlightStyleList.cpp \
+IndentPattern.cpp \
+KeywordPattern.cpp \
+RangePattern.cpp \
+TextMacro.cpp \
+TextParenthesis.cpp
