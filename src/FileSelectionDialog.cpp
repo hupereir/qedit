@@ -97,13 +97,15 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   button_layout->setMargin(0);
   layout->addLayout( button_layout );
 
+  // generic button
+  QPushButton* button;  
+
   // replace
   button_layout->addWidget( button = new QPushButton( "&Replace", this ) );
   button->setToolTip( "Replace in all selected files" );
   connect( button, SIGNAL( clicked() ), this, SLOT( _replace() ) );
 
   // select all
-  QPushButton* button;  
   button_layout->addWidget( button = new QPushButton( "&Select All", this ) );
   button->setToolTip( "Select all files in list" );
   connect( button, SIGNAL( clicked() ), list_, SLOT( selectAll() ) );
