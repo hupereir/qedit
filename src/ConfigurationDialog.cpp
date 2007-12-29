@@ -79,10 +79,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   box->layout()->addWidget( listbox );
   addOptionWidget( listbox );
   listbox->setToolTip( "input files from which the document classes are read" );
-
-  // display
-  page = &addPage( "Display" );
-
+  
   // edition flags
   page->layout()->addWidget( box = new QGroupBox( "Flags", page ) );  
   box->setLayout( new QVBoxLayout() );
@@ -104,10 +101,14 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   box->layout()->addWidget( checkbox = new OptionCheckBox( "use document class wrap mode", box, "WRAP_FROM_CLASS" ) );
   checkbox->setToolTip( "Use wrap mode read from document class in place of the one specified in the default configuration." );
   addOptionWidget( checkbox );
-  
-  // Text editor configuration
+
+  // edition
+  page = &addPage( "Edition" );
   textEditConfiguration( page ); 
 
+  // display
+  page = &addPage( "Colors" );
+  
   // additional colors
   page->layout()->addWidget( box = new QGroupBox( "Colors", page ) );  
    
@@ -155,7 +156,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( combobox );
   combobox->setToolTip( "Configure how new files should be open." );
 
-  grid_layout->addWidget( new QLabel( "Default open mode ", box ) );
+  grid_layout->addWidget( new QLabel( "Default orientation ", box ) );
   grid_layout->addWidget( combobox = new OptionComboBox( box, "ORIENTATION" ) );
   combobox->addItem( "top/bottom" );
   combobox->addItem( "left/right" );
@@ -276,12 +277,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   spinbox->setMinimum( 5 );
   spinbox->setMaximum( 2048 );
   addOptionWidget( spinbox );
-
-  // sort previous files by date
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "sort previous files by date", box, "SORT_FILES_BY_DATE" ), 2, 0, 1, 2 );
-  checkbox->setToolTip( "Sort files by date rather than name in Open Previous menu." );
-  addOptionWidget( checkbox );
-  new QWidget( box );
   
   // previous file history size
   grid_layout->addWidget( new QLabel( "previous file history size", box ) );
@@ -290,6 +285,12 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   spinbox->setMaximum( 100 );
   addOptionWidget( spinbox );
   spinbox->setToolTip( "number of previously opened files to appear in the Open Previous menu" );
+
+  // sort previous files by date
+  grid_layout->addWidget( checkbox = new OptionCheckBox( "sort previous files by date", box, "SORT_FILES_BY_DATE" ), 3, 0, 1, 2 );
+  checkbox->setToolTip( "Sort files by date rather than name in Open Previous menu." );
+  addOptionWidget( checkbox );
+  new QWidget( box );
   
   // add restore default button to layout
   _buttonLayout().insertStretch( 0, 1 );
