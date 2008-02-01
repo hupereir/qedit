@@ -1325,7 +1325,7 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
   display->setFocus();
   Debug::Throw() << "EditFrame::_newTextDisplay - key: " << display->key() << endl;
   Debug::Throw( "EditFrame::newTextDisplay - done.\n" );
-  
+    
   return *display;
   
 }
