@@ -143,7 +143,6 @@ EditFrame::EditFrame(  QWidget* parent ):
   toolbar->addAction( &newFileAction() );
   toolbar->addAction( &openAction() ); 
   toolbar->addAction( &saveAction() ); 
-  //toolbar->addAction( &printAction() );
   
   // edition toolbar
   addToolBar( toolbar = new CustomToolBar( "Edition", this, "EDITION_TOOLBAR" ) );
