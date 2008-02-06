@@ -100,6 +100,12 @@ class FileSelectionDialog: public QDialog, public Counter
 
     //@}
     
+    protected: 
+
+    //! sorting
+    virtual void _sort( int column, Qt::SortOrder order = Qt::AscendingOrder )
+    {}
+    
     private: 
     
     //! column titles
