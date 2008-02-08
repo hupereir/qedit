@@ -1232,6 +1232,7 @@ void TextDisplay::_installActions( void )
   // indent selection
   addAction( indent_selection_action_ = new QAction( IconEngine::get( ICONS::INDENT, path_list ), "&Indent selection", this ) );
   indent_selection_action_->setShortcut( CTRL+Key_I );
+  indent_selection_action_->setShortcutContext( WidgetShortcut );
   connect( indent_selection_action_, SIGNAL( triggered( void ) ), SLOT( _indentSelection( void ) ) );
   
   // base indentation
@@ -1272,11 +1273,15 @@ void TextDisplay::_installActions( void )
   // next tag action
   addAction( next_tag_action_ = new QAction( "Goto next tagged block", this ) );
   connect( next_tag_action_, SIGNAL( triggered() ), SLOT( _nextTag( void ) ) );
+  next_tag_action_->setShortcut( CTRL+Key_Down );
+  next_tag_action_->setShortcutContext( WidgetShortcut );
 
   // previous tag action
   addAction( previous_tag_action_ = new QAction( "Goto previous tagged block", this ) );
   connect( previous_tag_action_, SIGNAL( triggered() ), SLOT( _previousTag( void ) ) );
-  
+  previous_tag_action_->setShortcut( CTRL+Key_Up );
+  previous_tag_action_->setShortcutContext( WidgetShortcut );
+
 }
   
 //_____________________________________________________________________
