@@ -47,7 +47,7 @@
 
  <!-- keywords -->
  <keyword_pattern style="Keyword" name="Keyword" options="no_case" >
-  <keyword>\b(open|close|read|write|rewind|goto|continue|call|(end( )?)?if|then|else(if)?|(end( )?)?do|format|function|subroutine|stop)\b</keyword>
+  <keyword>\b(open|close|read|write|rewind|goto|continue|call|(end( )?)?if|then|else(if)?|(end( )?)?do|format|function|subroutine|stop|return)\b</keyword>
  </keyword_pattern>
  
  <!-- numeric constants -->
