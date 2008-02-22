@@ -21,6 +21,13 @@
 
  <!-- highlight patterns -->
  
+ <!-- preprocessor command -->
+ <range_pattern style="Preprocessor" name="Preprocessor 2" options="no_indent" >
+  <begin>^\s*(include)\b</begin>
+  <end>$</end>
+  <comments>preprocessor comment</comments>
+ </range_pattern>
+
  <!-- comments  -->
  <range_pattern style="Comment" name="Comment" options="no_indent no_case" >
   <begin>^(c|\*)</begin>
@@ -47,7 +54,7 @@
 
  <!-- keywords -->
  <keyword_pattern style="Keyword" name="Keyword" options="no_case" >
-  <keyword>\b(open|close|read|write|rewind|goto|continue|call|(end( )?)?if|then|else(if)?|(end( )?)?do|format|function|subroutine|stop|return)\b</keyword>
+  <keyword>\b(open|close|read|write|rewind|go( )?to|continue|call|(end( )?)?if|then|else(if)?|(end( )?)?do|format|function|subroutine|stop|save|return|end)\b</keyword>
  </keyword_pattern>
  
  <!-- numeric constants -->
