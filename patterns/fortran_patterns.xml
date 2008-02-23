@@ -1,7 +1,7 @@
 <!-- $Id$-->
 <patterns>
 
-  <class name="fortran" pattern="/\.(f|F|(inc))(\.in)?$" base_indentation="6" >
+  <class name="fortran" pattern="\.(f|F|(inc))(\.in)?$" base_indentation="6" >
 
  <!-- highlight styles -->
  <style format="2" name="Comment" color="#ff8c00" />
@@ -21,7 +21,13 @@
 
  <!-- highlight patterns -->
  
- <!-- preprocessor command -->
+<!-- preprocessor command -->
+ <range_pattern style="Preprocessor" name="Preprocessor" options="no_indent" >
+  <begin>^\s*#\s*(include|define|if(n?def)?|line|error|el(se|if)|endif|undef|pragma)\b</begin>
+  <end>$</end>
+  <comments>preprocessor comment</comments>
+ </range_pattern>
+
  <range_pattern style="Preprocessor" name="Preprocessor 2" options="no_indent" >
   <begin>^\s*(include)\b</begin>
   <end>$</end>
