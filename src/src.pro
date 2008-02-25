@@ -17,12 +17,14 @@ LIBS += \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
 
+
 POST_TARGETDEPS = \
   ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
   ../base-help/libbase-help.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
+
 
 RESOURCES += \
   patterns.qrc \
