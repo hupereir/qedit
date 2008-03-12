@@ -291,14 +291,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   checkbox->setToolTip( "Sort files by date rather than name in Open Previous menu." );
   addOptionWidget( checkbox );
   new QWidget( box );
-  
-  // add restore default button to layout
-  _buttonLayout().insertStretch( 0, 1 );
-  QPushButton* button = new QPushButton( "Restore &Defaults", this );
-  button->setToolTip( "Restore default value for all options.");
-  connect( button, SIGNAL( clicked() ), SLOT( _restoreDefaults() ) );
-  _buttonLayout().insertWidget( 0, button );
-  
+    
   // load initial configuration
   _read();
   adjustSize();
