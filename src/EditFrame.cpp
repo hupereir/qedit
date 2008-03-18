@@ -743,7 +743,7 @@ void EditFrame::_installActions( void )
   connect( detach_action_, SIGNAL( triggered() ), SLOT( _detach() ) );
 
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN, path_list ), "&Open", this ) );
-  open_action_->setShortcut( SHIFT+CTRL+Key_O );
+  open_action_->setShortcut( CTRL+Key_O );
   open_action_->setToolTip( "Open an existsing file" );
   connect( open_action_, SIGNAL( triggered() ), SLOT( open() ) );
  
