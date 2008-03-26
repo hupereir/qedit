@@ -46,15 +46,23 @@ HighlightStyleList::HighlightStyleList( QWidget* parent ):
   modified_( false )
 {
   Debug::Throw( "HighlightStyleList::HighlightStyleList.\n" );
+
+  QHBoxLayout* h_layout;
+  h_layout = new QHBoxLayout();
+  h_layout->setSpacing(5);
+  h_layout->setMargin(10);
+  setLayout( h_layout );
   
-  QVBoxLayout* v_layout = new QVBoxLayout();
-  v_layout->setSpacing(5);
-  v_layout->setMargin(10);
-  setLayout( v_layout );
-  v_layout->addWidget( list_ = new ListWidget( this ), 1 );
+  
+  h_layout->addWidget( list_ = new ListWidget( this ), 1 );
   connect( list_, SIGNAL( itemSelectionChanged() ), SLOT( _updateButtons() ) );
   connect( list_, SIGNAL( itemActivated( QListWidgetItem* ) ), SLOT( _edit() ) ); 
   
+  QVBoxLayout* v_layout = new QVBoxLayout();
+  v_layout->setSpacing(5);
+  v_layout->setMargin(0);
+  h_layout->addLayout( v_layout );
+
   QPushButton* button;
   v_layout->addWidget( button = new QPushButton( "&Add", this ) );
   button->setToolTip( "Add a new highlight style to the list" );
@@ -67,6 +75,8 @@ HighlightStyleList::HighlightStyleList( QWidget* parent ):
   v_layout->addWidget( remove_button_ = new QPushButton( "&Remove", this ) );
   remove_button_->setToolTip( "Remove selected highlight style" );
   connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
+  
+  v_layout->addStretch();
   
   _updateButtons();
   

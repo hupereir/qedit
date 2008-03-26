@@ -77,6 +77,7 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   tab_widget->addTab( box = new QWidget(), "&File pattern" );
   
   QVBoxLayout* v_layout;
+  QHBoxLayout* h_layout;
   v_layout = new QVBoxLayout();
   v_layout->setSpacing(5);
   v_layout->setMargin(10);
@@ -107,16 +108,21 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   // highlight patterns
   QPushButton* button;
   tab_widget->addTab( box = new QWidget(), "&Highlight patterns" );
-  v_layout = new QVBoxLayout();
-  v_layout->setSpacing(5);
-  v_layout->setMargin(10);
-  box->setLayout( v_layout );
-  v_layout->addWidget( highlight_pattern_list_ = new TreeWidget( box ), 1 );
+  h_layout = new QHBoxLayout();
+  h_layout->setSpacing(5);
+  h_layout->setMargin(10);
+  box->setLayout( h_layout );
+  h_layout->addWidget( highlight_pattern_list_ = new TreeWidget( box ), 1 );
   highlight_pattern_list_->setColumnCount( n_columns_ );
   for( int i=0; i<n_columns_; i++ )
   { highlight_pattern_list_->setColumnName( i, column_titles_[i] ); }
   highlight_pattern_list_->setColumnType( INDEX, TreeWidget::NUMBER );
 
+  v_layout = new QVBoxLayout();
+  v_layout->setSpacing(5);
+  v_layout->setMargin(0);
+  h_layout->addLayout( v_layout );
+  
   v_layout->addWidget( button = new QPushButton( "&Add", box ) );
   button->setToolTip( "Add a new highlight pattern to the list" );
 
@@ -126,18 +132,25 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   v_layout->addWidget( button = new QPushButton( "&Remove", box ) );
   button->setToolTip( "Remove selected highlight pattern" );
 
+  v_layout->addStretch();
+  
   // indentation patterns
   // need to add "base indentation" QSpinBox. 
   tab_widget->addTab( box = new QWidget(), "&Indentation patterns" );
-  v_layout = new QVBoxLayout();
-  v_layout->setSpacing(5);
-  v_layout->setMargin(10);
-  box->setLayout( v_layout );
-  v_layout->addWidget( indent_pattern_list_ = new TreeWidget( box ), 1 );
+  h_layout = new QHBoxLayout();
+  h_layout->setSpacing(5);
+  h_layout->setMargin(10);
+  box->setLayout( h_layout );
+  h_layout->addWidget( indent_pattern_list_ = new TreeWidget( box ), 1 );
   indent_pattern_list_->setColumnCount( n_columns_ );
   for( int i=0; i<n_columns_; i++ )
   { indent_pattern_list_->setColumnName( i, column_titles_[i] ); }
   indent_pattern_list_->setColumnType( INDEX, TreeWidget::NUMBER );
+
+  v_layout = new QVBoxLayout();
+  v_layout->setSpacing(5);
+  v_layout->setMargin(0);
+  h_layout->addLayout( v_layout );
 
   v_layout->addWidget( button = new QPushButton( "&Add", box ) );
   button->setToolTip( "Add a new indentation pattern to the list" );
@@ -147,6 +160,8 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
 
   v_layout->addWidget( button = new QPushButton( "&Remove", box ) );
   button->setToolTip( "Remove selected indentation pattern" );
+
+  v_layout->addStretch();
   
   adjustSize();
   resize( 550, 500 );
