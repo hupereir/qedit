@@ -161,6 +161,7 @@ echo "timestamp = " $timestamp
 AC_OUTPUT( Makefile \
   qedit.spec \
   base/Makefile \
+  base-pixmaps/Makefile \
   base-qt/Makefile \
   base-help/Makefile \
   base-server/Makefile \

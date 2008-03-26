@@ -10,6 +10,7 @@ SUBDIRS =  \
  patterns \
  pixmaps \
  base \
+ base-pixmaps \
  base-qt \
  base-help \
  base-server \
