@@ -3,7 +3,6 @@
     <file alias="icon.png">../icon.png</file>
     <file alias="icon.ico">../icon.ico</file>
     <file alias="pixmaps/filenew.png">../pixmaps/filenew.png</file>
-    <file alias="pixmaps/fileopen.png">../pixmaps/fileopen.png</file>
     <file alias="pixmaps/fileprint.png">../pixmaps/fileprint.png</file>
     <file alias="pixmaps/filesave.png">../pixmaps/filesave.png</file>
     <file alias="pixmaps/filesaveas.png">../pixmaps/filesaveas.png</file>

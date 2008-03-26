@@ -2,7 +2,6 @@ AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = \
 filenew.png \
-fileopen.png \
 fileprint.png \
 filesave.png \
 filesaveas.png \
