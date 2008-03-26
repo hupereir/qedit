@@ -2,11 +2,6 @@
   <qresource>
     <file alias="icon.png">../icon.png</file>
     <file alias="icon.ico">../icon.ico</file>
-    <file alias="pixmaps/configure.png">../pixmaps/configure.png</file>
-    <file alias="pixmaps/editcopy.png">../pixmaps/editcopy.png</file>
-    <file alias="pixmaps/editcut.png">../pixmaps/editcut.png</file>
-    <file alias="pixmaps/editpaste.png">../pixmaps/editpaste.png</file>
-    <file alias="pixmaps/exit.png">../pixmaps/exit.png</file>
     <file alias="pixmaps/filenew.png">../pixmaps/filenew.png</file>
     <file alias="pixmaps/fileopen.png">../pixmaps/fileopen.png</file>
     <file alias="pixmaps/fileprint.png">../pixmaps/fileprint.png</file>
@@ -15,16 +10,8 @@
     <file alias="pixmaps/fonts.png">../pixmaps/fonts.png</file>
     <file alias="pixmaps/info.png">../pixmaps/info.png</file>
     <file alias="pixmaps/indent.png">../pixmaps/indent.png</file>
-    <file alias="pixmaps/messagebox_warning.png">../pixmaps/messagebox_warning.png</file>
-    <file alias="pixmaps/qt-logo.png">../pixmaps/qt-logo.png</file>
-    <file alias="pixmaps/redo.png">../pixmaps/redo.png</file>
-    <file alias="pixmaps/reload.png">../pixmaps/reload.png</file>
-    <file alias="pixmaps/toggle_log.png">../pixmaps/toggle_log.png</file>
-    <file alias="pixmaps/trashcan_empty.png">../pixmaps/trashcan_empty.png</file>
-    <file alias="pixmaps/undo.png">../pixmaps/undo.png</file>
     <file alias="pixmaps/view_bottom.png">../pixmaps/view_bottom.png</file>
     <file alias="pixmaps/view_left_right.png">../pixmaps/view_left_right.png</file>
-    <file alias="pixmaps/viewmag.png">../pixmaps/viewmag.png</file>
     <file alias="pixmaps/view_remove.png">../pixmaps/view_remove.png</file>
     <file alias="pixmaps/view_right.png">../pixmaps/view_right.png</file>
     <file alias="pixmaps/view_top_bottom.png">../pixmaps/view_top_bottom.png</file>

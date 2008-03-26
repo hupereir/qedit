@@ -39,7 +39,6 @@ void installDefaultOptions( void )
 {
 
   // set options default values
-  XmlOptions::get().keep( "PIXMAP_PATH" );
   XmlOptions::get().add( Option( "PIXMAP_PATH", ":/pixmaps"));
   XmlOptions::get().add( Option( "ICON_PIXMAP", ":/icon.png" , "application icon"));
 
