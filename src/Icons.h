@@ -39,9 +39,11 @@
 namespace ICONS
 {
   
+  static const std::string CLOSE = "fileclose.png"; 
   static const std::string NEW = "filenew.png"; 
   static const std::string SAVE = "filesave.png";
   static const std::string SAVE_AS = "filesaveas.png"; 
+  static const std::string SAVE_ALL = "save_all.png"; 
   static const std::string HTML="html.png";
   static const std::string PDF = "pdf.png";
   static const std::string INDENT="indent.png";

@@ -165,7 +165,7 @@ void MainFrame::realizeWidget( void )
   close_action_->setShortcut( CTRL+Key_Q );
   connect( close_action_, SIGNAL( triggered() ), SLOT( _exit() ) );
 
-  save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE, path_list ), "Save A&ll", 0 );
+  save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE_ALL, path_list ), "Save A&ll", 0 );
   connect( save_all_action_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
   
   configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "Default &Configuration", 0 );

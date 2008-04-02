@@ -4,11 +4,13 @@
     <file alias="icon.ico">../icon.ico</file>
     <file alias="pixmaps/filenew.png">../pixmaps/filenew.png</file>
     <file alias="pixmaps/fileprint.png">../pixmaps/fileprint.png</file>
+    <file alias="pixmaps/fileclose.png">../pixmaps/fileclose.png</file>
     <file alias="pixmaps/filesave.png">../pixmaps/filesave.png</file>
     <file alias="pixmaps/filesaveas.png">../pixmaps/filesaveas.png</file>
     <file alias="pixmaps/fonts.png">../pixmaps/fonts.png</file>
     <file alias="pixmaps/info.png">../pixmaps/info.png</file>
     <file alias="pixmaps/indent.png">../pixmaps/indent.png</file>
+    <file alias="pixmaps/save_all.png">../pixmaps/save_all.png</file>
     <file alias="pixmaps/view_bottom.png">../pixmaps/view_bottom.png</file>
     <file alias="pixmaps/view_left_right.png">../pixmaps/view_left_right.png</file>
     <file alias="pixmaps/view_remove.png">../pixmaps/view_remove.png</file>
