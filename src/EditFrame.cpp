@@ -277,6 +277,7 @@ void EditFrame::rehighlight( void )
   BASE::KeySet<TextDisplay> displays( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
+
     // this trick allow to run the rehighlight only once per set of associated displays
     if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter )
     { (*iter)->rehighlight(); }  

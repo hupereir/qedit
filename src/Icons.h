@@ -56,6 +56,10 @@ namespace ICONS
   static const std::string VIEW_BOTTOM = "view_bottom.png";
   static const std::string VIEW_REMOVE = "view_remove.png";
   static const std::string VIEW_DETACH = "window_fullscreen.png";
+  
+  static const std::string TAG = "bookmark.png";
+  static const std::string UP = "up.png";
+  static const std::string DOWN = "down.png";
 
   
 };

@@ -1259,7 +1259,7 @@ void TextDisplay::_installActions( void )
   #endif
   
   // tag block action
-  addAction( tag_block_action_ = new QAction( "&Tag current block", this ) );
+  addAction( tag_block_action_ = new QAction( IconEngine::get( ICONS::TAG, path_list ), "&Tag current block", this ) );
   connect( tag_block_action_, SIGNAL( triggered() ), SLOT( _tagBlock( void ) ) );
 
   // clear current block tags
@@ -1271,13 +1271,13 @@ void TextDisplay::_installActions( void )
   connect( clear_all_tags_action_, SIGNAL( triggered() ), SLOT( clearAllTags( void ) ) );
   
   // next tag action
-  addAction( next_tag_action_ = new QAction( "Goto next tagged block", this ) );
+  addAction( next_tag_action_ = new QAction( IconEngine::get( ICONS::DOWN, path_list ), "Goto next tagged block", this ) );
   connect( next_tag_action_, SIGNAL( triggered() ), SLOT( _nextTag( void ) ) );
   next_tag_action_->setShortcut( ALT+Key_Down );
   next_tag_action_->setShortcutContext( WidgetShortcut );
 
   // previous tag action
-  addAction( previous_tag_action_ = new QAction( "Goto previous tagged block", this ) );
+  addAction( previous_tag_action_ = new QAction( IconEngine::get( ICONS::UP, path_list ), "Goto previous tagged block", this ) );
   connect( previous_tag_action_, SIGNAL( triggered() ), SLOT( _previousTag( void ) ) );
   previous_tag_action_->setShortcut( ALT+Key_Up );
   previous_tag_action_->setShortcutContext( WidgetShortcut );
