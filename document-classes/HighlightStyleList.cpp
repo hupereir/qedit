@@ -146,7 +146,7 @@ void HighlightStyleList::_edit( void )
 {
   Debug::Throw( "HighlightStyleList::_edit.\n" );
  
-  // retrieve selected items; make sure they do not include the navigator
+  // retrieve selected items;
   QModelIndexList selection( list_->selectionModel()->selectedRows() );
   if( selection.empty() ) {
     QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );

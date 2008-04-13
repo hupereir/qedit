@@ -36,9 +36,12 @@
 #include <QGroupBox> 
 
 #include "Debug.h"
+#include "Icons.h"
+#include "IconEngine.h"
 #include "PrintDialog.h"
 #include "CustomFileDialog.h"
 #include "CustomGridLayout.h"
+#include "XmlOptions.h"
 
 using namespace std;
 
@@ -112,7 +115,10 @@ PrintDialog::PrintDialog( QWidget* parent ):
   command_->setMinimumSize( QSize( 350, 0 ) );
 
   // browse command button associated to the CustomComboBox
-  QPushButton* button = new QPushButton( "...", box );
+  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
+  assert( !path_list.empty() );
+  QPushButton* button = new QPushButton( box );
+  button->setIcon( IconEngine::get( ICONS::OPEN, path_list ) );
   h_layout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( _browseCommand() ) );
   

@@ -35,6 +35,7 @@
 
 #include "Counter.h"
 #include "HighlightPatternModel.h"
+#include "DocumentClass.h"
 
 class TreeView;
 
@@ -48,9 +49,16 @@ class HighlightPatternList: public QWidget, public Counter
   
   //! constructor
   HighlightPatternList( QWidget* parent = 0 );
-  
-  //! Patterns
+ 
+  //! patterns
   void setPatterns( const HighlightPattern::List& );
+  
+  //! styles
+  void setStyles( const HighlightStyle::Set& styles )
+  {
+    Debug::Throw( "HighlightPatternList::setStyles.\n" );
+    styles_ = styles; 
+  }
   
   //! Patterns
   HighlightPattern::List patterns( void );
@@ -80,6 +88,9 @@ class HighlightPatternList: public QWidget, public Counter
   void _restoreSelection( void );
   
   private:
+  
+  //! style set
+  HighlightStyle::Set styles_;
   
   //! list
   TreeView* list_;

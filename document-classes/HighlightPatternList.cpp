@@ -32,7 +32,7 @@
 #include <QHeaderView>
 #include <QLayout>
 
-// #include "HighlightPatternDialog.h"
+#include "HighlightPatternDialog.h"
 #include "HighlightPatternList.h"
 #include "QtUtil.h"
 #include "TreeView.h"
@@ -123,22 +123,24 @@ void HighlightPatternList::_add( void )
 {
   Debug::Throw( "HighlightPatternList::_add.\n" );
   
-//   // get set of highlight patterns to ensure name unicity
-//   HighlightPatternModel::List patterns( model_.get() );
-//   
-//   HighlightPatternDialog dialog( this );
-//   while( 1 )
-//   {
-//     if( dialog.exec() == QDialog::Rejected ) return;
-//     HighlightPattern pattern( dialog.pattern() );
-//     if( pattern.name().empty() || std::find( patterns.begin(), patterns.end(), pattern ) != patterns.end() ) 
-//     {
-//       QtUtil::infoDialog( this, "Invalid pattern name" );
-//     } else {
-//       model_.add( pattern );
-//       break; 
-//     }
-//   }
+  // get set of highlight patterns to ensure name unicity
+  HighlightPatternModel::List patterns( model_.get() );
+   
+  HighlightPatternDialog dialog( this );
+  dialog.setStyles( styles_ );
+  dialog.setPatterns( patterns );
+  while( 1 )
+  {
+    if( dialog.exec() == QDialog::Rejected ) return;
+    HighlightPattern pattern( dialog.pattern() );
+    if( pattern.name().empty() || std::find( patterns.begin(), patterns.end(), pattern ) != patterns.end() ) 
+    {
+      QtUtil::infoDialog( this, "Invalid pattern name" );
+    } else {
+      model_.add( pattern );
+      break; 
+    }
+  }
    
 }
 
@@ -147,30 +149,33 @@ void HighlightPatternList::_edit( void )
 {
   Debug::Throw( "HighlightPatternList::_edit.\n" );
  
-//   // retrieve selected items; make sure they do not include the navigator
-//   QModelIndexList selection( list_->selectionModel()->selectedRows() );
-//   if( selection.empty() ) {
-//     QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
-//     return;
-//   }
-// 
-//   for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
-//   {
-//   
-//     HighlightPattern old_pattern( model_.get( *iter ) );
-// 
-//     HighlightPatternDialog dialog( this );
-//     dialog.setPattern( old_pattern );
-//     if( dialog.exec() == QDialog::Rejected ) continue;
-//     
-//     HighlightPattern pattern( dialog.pattern() );
-//     if( pattern.differs( old_pattern ) ) 
-//     { 
-//       model_.replace( *iter, pattern ); 
-//       modified_ = true;
-//     }
-// 
-//   }
+  // retrieve selected items
+  QModelIndexList selection( list_->selectionModel()->selectedRows() );
+  if( selection.empty() ) {
+    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+    return;
+  }
+
+  HighlightPatternModel::List patterns( model_.get() );
+  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  {
+  
+    HighlightPattern old_pattern( model_.get( *iter ) );
+
+    HighlightPatternDialog dialog( this );
+    dialog.setStyles( styles_ );
+    dialog.setPatterns( patterns );
+    dialog.setPattern( old_pattern );
+    if( dialog.exec() == QDialog::Rejected ) continue;
+    
+    HighlightPattern pattern( dialog.pattern() );
+    if( pattern.differs( old_pattern ) ) 
+    { 
+      model_.replace( *iter, pattern ); 
+      modified_ = true;
+    }
+
+  }
   
 }
 

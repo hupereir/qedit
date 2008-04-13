@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = document-classes.pro
+EXTRA_DIST = document-classes.pro patterns.qrc
+
+CXXFLAGS = @CXXFLAGS@
 
 INCLUDES =  \
   -I$(qt_includes) \
@@ -16,9 +18,11 @@ noinst_HEADERS = \
   DocumentClassManager.h \
   DocumentClassManagerDialog.h \
   HighlightPattern.h \
+  HighlightPatternDialog.h \
   HighlightPatternList.h \
   HighlightPatternModel.h \
   HighlightPatternOptions.h \
+  HighlightPatternType.h \
   HighlightStyle.h \
   HighlightStyleList.h \
   HighlightStyleModel.h \
@@ -36,9 +40,11 @@ libdocument_classes_a_SOURCES = \
   DocumentClassManager.cpp \
   DocumentClassManagerDialog.cpp \
   HighlightPattern.cpp \
+  HighlightPatternDialog.cpp \
   HighlightPatternList.cpp \
   HighlightPatternModel.cpp \
   HighlightPatternOptions.cpp \
+  HighlightPatternType.cpp \
   HighlightStyle.cpp \
   HighlightStyleList.cpp \
   HighlightStyleModel.cpp \
@@ -48,10 +54,13 @@ libdocument_classes_a_SOURCES = \
   TextParenthesis.cpp
 
 nodist_libdocument_classes_a_SOURCES = \
+  qrc_patterns.cpp \
   moc_DocumentClassDialog.cpp \
   moc_DocumentClassManagerDialog.cpp \
   moc_HighlightStyleList.cpp \
-  moc_HighlightPatternList.cpp
+  moc_HighlightPatternDialog.cpp \
+  moc_HighlightPatternList.cpp \
+  moc_HighlightPatternType.cpp
 
 clean-local:
 	rm -f moc_*.cpp

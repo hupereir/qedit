@@ -28,6 +28,7 @@
    \date $Date$
 */
 
+#include <QApplication>
 #include <iostream>
 #include <unistd.h>
 #include <signal.h>
@@ -35,9 +36,11 @@
 
 #include "Debug.h"
 #include "DefaultOptions.h"
+#include "DocumentClassManager.h"
+#include "DocumentClassManagerDialog.h"
+#include "FlatStyle.h"
 #include "SystemOptions.h"
 #include "ErrorHandler.h"
-#include "MainFrame.h"
 #include "XmlOptions.h"
 
 using namespace std;
@@ -59,15 +62,8 @@ int main (int argc, char *argv[])
     // install error handler
     ErrorHandler::disableMessage( "QServerSocket: failed to bind or listen to the socket" );
     ErrorHandler::disableMessage( "QPixmap::resize: TODO: resize alpha data" );
+    ErrorHandler::disableMessage( "Object::connect:" );
     qInstallMsgHandler( ErrorHandler::Throw );
-
-    // load possible command file
-    ArgList args( argc, argv );
-    if( args.find( "--help" ) )
-    {
-      MainFrame::usage();
-      return 0;
-    }
 
     // load default options
     installDefaultOptions();
@@ -80,11 +76,32 @@ int main (int argc, char *argv[])
     if( debug_level ) XmlOptions::get().dump();
 
     // initialize main frame and run loop
-    Q_INIT_RESOURCE( pixmaps );
-    MainFrame main_frame( argc, argv );
-    main_frame.initApplicationManager();
-    main_frame.exec();
+    QApplication application( argc, argv );
+    
+    // options
+    if( XmlOptions::get().get<bool>( "USE_FLAT_THEME" ) ) application.setStyle( new FlatStyle() );
+    // set fonts
+    QFont font;
+    font.fromString( XmlOptions::get().raw( "FONT_NAME" ).c_str() );
+    application.setFont( font );
+    
+    font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );
+    application.setFont( font, "QLineEdit" );
+    application.setFont( font, "QTextEdit" );
+
+    // read document classes
+    DocumentClassManager manager;
+    list<string> files( XmlOptions::get().specialOptions<string>( "PATTERN_FILENAME" ) );
+    for( list<string>::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+    { manager.read( *iter ); }
+    
+    // prepare dialog
+    DocumentClassManagerDialog dialog(0, &manager);
+    dialog.show();
+    application.exec();
+    
   } catch ( exception& e ) { cout << e.what() << endl; }
+  
   return 0;
 }
 

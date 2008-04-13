@@ -49,10 +49,7 @@ class DocumentClassManager: public QObject, public Counter
   public:
 
   //! constructor
-  DocumentClassManager( QObject* parent = 0 ):
-    QObject( parent ),
-    Counter( "DocumentClassManager" )
-  { Debug::Throw( "DocumentclassManager::DocumentClassManager.\n" ); }
+  DocumentClassManager( QObject* parent = 0 );
 
   //! destructor
   ~DocumentClassManager( void )

@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = src.pro pixmaps.qrc patterns.qrc
+EXTRA_DIST = src.pro pixmaps.qrc
 
 if WITH_ASPELL 
 INCLUDES = \
@@ -33,7 +33,7 @@ endif
 
 CXXFLAGS = @CXXFLAGS@
 
-bin_PROGRAMS = qedit
+bin_PROGRAMS = qedit editDocumentClasses
 
 if WITH_ASPELL 
 libraries = \
@@ -113,7 +113,6 @@ qedit_SOURCES = \
   TextIndent.cpp
 
 nodist_qedit_SOURCES = \
-  qrc_patterns.cpp \
   qrc_pixmaps.cpp \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \
@@ -130,6 +129,9 @@ nodist_qedit_SOURCES = \
   moc_PrintDialog.cpp \
   moc_TextDisplay.cpp \
   moc_TextIndent.cpp
+
+editDocumentClasses_LDADD =  $(libraries)
+editDocumentClasses_SOURCES = editDocumentClasses.cpp
 
 clean-local:
 	rm -f moc_*.cpp

@@ -39,12 +39,13 @@ using namespace std;
 
 //_____________________________________________
 HighlightPatternOptions::HighlightPatternOptions( QWidget* parent ):
-  QWidget( parent )
+  QGroupBox( "Options", parent ),
+  Counter( "HighlightPatternOptions" )
 {
   Debug::Throw( "HighlightPatternOptions::HighlightPatternOptions.\n" );
   setLayout( new QHBoxLayout() );
-  layout()->setMargin(2);
-  layout()->setSpacing(2);
+  layout()->setMargin(5);
+  layout()->setSpacing(5);
   layout()->addWidget( span_ = new QCheckBox( "&Span", this ) );
   layout()->addWidget( no_indent_ = new QCheckBox( "&No indentation", this ) );
   layout()->addWidget( case_sensitive_ = new QCheckBox( "&Case sensitive", this ) );

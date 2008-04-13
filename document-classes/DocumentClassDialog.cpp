@@ -154,6 +154,7 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
   highlight_style_list_->setStyles( document_class.highlightStyles() );
   
   // highlight patterns
+  highlight_pattern_list_->setStyles( document_class.highlightStyles() );
   highlight_pattern_list_->setPatterns( document_class.highlightPatterns() );
   
   // indentation patterns

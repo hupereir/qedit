@@ -70,3 +70,13 @@ QDomElement HighlightStyle::domElement( QDomDocument& parent ) const
   out.setAttribute( XML::COLOR.c_str(), color().name() );
   return out;
 }
+
+
+//_____________________________________________________
+bool HighlightStyle::differs( const HighlightStyle& style ) const
+{ 
+  return 
+    name() != style.name() ||
+    fontFormat() != style.fontFormat() ||
+    color() != style.color();
+}  

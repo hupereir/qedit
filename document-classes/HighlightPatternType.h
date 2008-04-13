@@ -1,5 +1,5 @@
-#ifndef HighlightPatternOptions_h
-#define HighlightPatternOptions_h
+#ifndef HighlightPatternType_h
+#define HighlightPatternType_h
 
 // $Id$
 
@@ -26,8 +26,8 @@
 
 
 /*!
-   \file HighlightPatternOptions.h
-   \brief font formatting
+   \file HighlightPatternType.h
+   \brief highlight pattern type selection
    \author Hugo Pereira
    \version $Revision$
    \date $Date$
@@ -35,34 +35,46 @@
 
 #include <QCheckBox>
 #include <QGroupBox>
+#include <map>
 
 #include "Counter.h"
+#include "HighlightPattern.h"
 
-//! font formating
-class HighlightPatternOptions: public QGroupBox, public Counter
+//! highlight pattern type selection
+class HighlightPatternType: public QGroupBox, public Counter
 {
 
+  //! Qt object 
+  Q_OBJECT
+  
   public:
 
   //! constructor
-  HighlightPatternOptions( QWidget* parent );
+  HighlightPatternType( QWidget* parent );
 
   //! set checkboxes from from
-  void setOptions( const unsigned int& options );
+  void setType( const HighlightPattern::Type& type );
 
   //! get format
-  unsigned int options( void ) const;
+  HighlightPattern::Type type( void ) const;
 
+  signals:
+  
+  //! highlight pattern type changed
+  void typeChanged( HighlightPattern::Type );
+  
+  private slots:
+  
+  //! checkbox clicked
+  void _typeChanged( QAbstractButton* button );
+  
   private:
 
-  //! bold 
-  QCheckBox* span_;
+  //! map checkboxes and highlight pattern type
+  typedef std::map<QAbstractButton*, HighlightPattern::Type> CheckBoxMap;
   
-  //! italic
-  QCheckBox* no_indent_;
-  
-  //! underline
-  QCheckBox* case_sensitive_;
+  //! map checkboxes and highlight pattern type
+  CheckBoxMap checkboxes_;
     
 };
 #endif

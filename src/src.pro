@@ -26,7 +26,7 @@ POST_TARGETDEPS = \
   ../base/libbase.a
 
 
-RESOURCES = pixmaps.qrc ../base-qt/basePixmaps.qrc patterns.qrc
+RESOURCES = pixmaps.qrc ../base-qt/basePixmaps.qrc ../document-classes/patterns.qrc
 
 HEADERS = \
   AskForSaveDialog.h \

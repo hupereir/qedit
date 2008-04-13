@@ -100,16 +100,54 @@ class HighlightPattern: public Counter
   bool operator < (const HighlightPattern& pattern ) const
   { return id() < pattern.id(); }
   
+  //! true if any attributes is different from argument
+  /*! this is a stricter comparison than the != operator */
+  bool differs( const HighlightPattern& pattern ) const;
+    
   //! name
   const std::string& name( void ) const
   { return name_; }
+             
+  //! name
+  void setName( const std::string& name ) 
+  { name_ = name; }
+  
+  //! pattern type
+  enum Type
+  {
+    //! undefined
+    UNDEFINED,
+      
+    //! single keyword
+    KEYWORD_PATTERN,
+    
+    //! range pattern
+    RANGE_PATTERN
+    
+  };   
+ 
+  //!type
+  const Type& type( void ) const
+  { return type_; }
+
+  //!type
+  void setType( const Type& type )
+  { type_ = type; }
+   
+  //! type
+  std::string typeName( void ) const
+  { return typeName( type() ); }
   
   //! type
-  std::string typeName( void ) const;
-  
+  static std::string typeName( const Type& type );
+
   //! parent name
   const std::string& parent( void ) const
   { return parent_; }
+
+  //! parent name
+  void setParent( const std::string& parent )
+  { parent_ = parent; }
   
   //! parent id
   const int& parentId( void ) const
@@ -143,14 +181,26 @@ class HighlightPattern: public Counter
   const QRegExp& keyword( void ) const
   { return keyword_; }
   
+  //! keyword
+  virtual void setKeyword( const std::string& keyword )
+  { keyword_.setPattern( keyword.c_str() ); }
+
   //! begin regexp
   const QRegExp& begin( void ) const
   { return keyword(); }
-  
+
+  //! keyword
+  virtual void setBegin( const std::string& keyword )
+  { setKeyword( keyword ); }
+    
   //! end regexp
   const QRegExp& end( void ) const
   { return end_; }
   
+  //! range end pattern
+  virtual void setEnd( const std::string& keyword )
+  { end_.setPattern( keyword.c_str() ); }
+
   //! comments
   const std::string& comments( void ) const
   { return comments_; }
@@ -186,7 +236,7 @@ class HighlightPattern: public Counter
   //! validity
   bool isValid( void ) const
   { 
-    switch( _type() )
+    switch( type() )
     {
       case KEYWORD_PATTERN: return keyword_.isValid();
       case RANGE_PATTERN: return keyword_.isValid() && end_.isValid();
@@ -198,7 +248,7 @@ class HighlightPattern: public Counter
   /*! locations and active parameters are changed */
   void processText( PatternLocationSet& locations, const QString& text, bool& active ) const
   {
-    switch( _type() )
+    switch( type() )
     {
       case KEYWORD_PATTERN: return _findKeyword( locations, text, active );
       case RANGE_PATTERN: return _findRange( locations, text, active );
@@ -251,48 +301,6 @@ class HighlightPattern: public Counter
   };
   
   protected:
-          
-  //! name
-  void _setName( const std::string& name ) 
-  { name_ = name; }
-  
-  //! parent name
-  void _setParent( const std::string& parent )
-  { parent_ = parent; }
-
-  //! pattern type
-  enum Type
-  {
-    //! undefined
-    UNDEFINED,
-      
-    //! single keyword
-    KEYWORD_PATTERN,
-    
-    //! range pattern
-    RANGE_PATTERN
-    
-  };   
-
-  //!type
-  const Type& _type( void ) const
-  { return type_; }
-  
-  //!type
-  void _setType( const Type& type )
-  { type_ = type; }
-  
-  //! keyword
-  virtual void _setKeyword( const std::string& keyword )
-  { keyword_.setPattern( keyword.c_str() ); }
-
-  //! keyword
-  virtual void _setBegin( const std::string& keyword )
-  { _setKeyword( keyword ); }
-  
-  //! range end pattern
-  virtual void _setEnd( const std::string& keyword )
-  { end_.setPattern( keyword.c_str() ); }
 
   //! find keyword pattern
   void _findKeyword( PatternLocationSet&, const QString&, bool& ) const;

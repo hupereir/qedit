@@ -42,6 +42,23 @@
 using namespace std;
 
 //________________________________________________________
+DocumentClassManager::DocumentClassManager( QObject* parent ):
+  QObject( parent ),
+  Counter( "DocumentClassManager" )
+{ 
+  Debug::Throw( "DocumentclassManager::DocumentClassManager.\n" ); 
+  
+  // initialize Resource pixmaps at first call.
+  static bool first( true );
+  if( first )
+  {
+    first = false;
+    Q_INIT_RESOURCE( patterns );
+  }
+  
+}
+
+//________________________________________________________
 void DocumentClassManager::clear( void )
 {
   Debug::Throw( "DocumentClassManager::Clear.\n" );

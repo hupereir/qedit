@@ -49,7 +49,7 @@ HighlightStyleDialog::HighlightStyleDialog( QWidget* parent ):
   
   CustomGridLayout* grid_layout( new CustomGridLayout() );
   grid_layout->setSpacing( 5 );
-  grid_layout->setMargin( 5 );
+  grid_layout->setMargin( 0 );
   grid_layout->setMaxCount( 2 );
   mainLayout().addLayout( grid_layout );
  

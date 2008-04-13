@@ -51,9 +51,8 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
   flags_( NONE )
 {  
   Debug::Throw( "HighlightPattern::HighlightPattern.\n" );
-  if( element.tagName() == XML::KEYWORD_PATTERN.c_str() ) _setType( KEYWORD_PATTERN );
-  if( element.tagName() == XML::RANGE_PATTERN.c_str() ) _setType( RANGE_PATTERN );
-  //  assert( _type() != UNDEFINED );
+  if( element.tagName() == XML::KEYWORD_PATTERN.c_str() ) setType( KEYWORD_PATTERN );
+  if( element.tagName() == XML::RANGE_PATTERN.c_str() ) setType( RANGE_PATTERN );
   
   QDomNamedNodeMap attributes( element.attributes() );
   for( unsigned int i=0; i<attributes.length(); i++ )
@@ -63,8 +62,8 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     Str name( qPrintable( attribute.name() ) );
     Str value( qPrintable( attribute.value() ) );
       
-    if( name == XML::NAME ) _setName( value );
-    else if( name == XML::PARENT ) _setParent( value );
+    if( name == XML::NAME ) setName( value );
+    else if( name == XML::PARENT ) setParent( value );
     else if( name == XML::STYLE ) setStyle( HighlightStyle( value ) );
 
     else if( name == XML::OPTIONS )
@@ -84,9 +83,9 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     if( child_element.isNull() ) continue;
     string name( qPrintable( child_element.tagName() ) );
     if( name == XML::COMMENTS ) setComments( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
-    else if( name == XML::KEYWORD ) _setKeyword( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
-    else if( name == XML::BEGIN ) _setBegin( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
-    else if( name == XML::END ) _setEnd( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
+    else if( name == XML::KEYWORD ) setKeyword( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
+    else if( name == XML::BEGIN ) setBegin( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
+    else if( name == XML::END ) setEnd( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
   }
  
 }
@@ -114,14 +113,14 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
     appendChild( parent.createTextNode( XmlUtil::textToXml( comments() ).c_str() ) );
 
   // regexps
-  if( _type() == KEYWORD_PATTERN )
+  if( type() == KEYWORD_PATTERN )
   {
     out.
       appendChild( parent.createElement( XML::KEYWORD.c_str() ) ).
       appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( keyword().pattern() ) ).c_str() ) );
   }
   
-  if( _type() == RANGE_PATTERN )
+  if( type() == RANGE_PATTERN )
   {
     out.
       appendChild( parent.createElement( XML::BEGIN.c_str() ) ).
@@ -134,6 +133,20 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
   return out;
 }
 
+
+//____________________________________________________________
+bool HighlightPattern::differs( const HighlightPattern& pattern ) const
+{ 
+  return 
+    name() != pattern.name() ||
+    flags() != pattern.flags() ||
+    type() != pattern.type() ||
+    parent() != pattern.parent() ||
+    style() != pattern.style() ||
+    keyword() != pattern.keyword() ||
+    ( type() == RANGE_PATTERN && end() != pattern.end() );
+}
+  
 //____________________________________________________________
 void HighlightPattern::_findKeyword( PatternLocationSet& locations, const QString& text, bool& active ) const
 {
@@ -156,9 +169,9 @@ void HighlightPattern::_findKeyword( PatternLocationSet& locations, const QStrin
 }
 
 //____________________________________________________________
-string HighlightPattern::typeName( void ) const
+string HighlightPattern::typeName( const Type& type )
 {
-  switch( _type() )
+  switch( type )
   {
     case KEYWORD_PATTERN: return XML::KEYWORD_PATTERN;
     case RANGE_PATTERN: return XML::RANGE_PATTERN;
