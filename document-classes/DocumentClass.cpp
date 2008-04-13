@@ -30,8 +30,7 @@
 */
 
 #include "DocumentClass.h"
-#include "KeywordPattern.h"
-#include "RangePattern.h"
+#include "HighlightPattern.h"
 #include "Str.h"
 #include "XmlDef.h"
 #include "XmlUtil.h"
@@ -76,18 +75,11 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 
     string tag_name( qPrintable( child_element.tagName() ) );
     if( tag_name == XML::STYLE ) highlight_styles_.insert( HighlightStyle( child_element ) );
-    else if( tag_name == XML::KEYWORD_PATTERN )
+    else if( tag_name == XML::KEYWORD_PATTERN || tag_name == XML::RANGE_PATTERN )
     {
 
-      HighlightPattern* pattern = new KeywordPattern( child_element );
-      if( pattern->isValid() ) highlight_patterns_.push_back( pattern );
-      else delete pattern;
-
-    } else if( tag_name == XML::RANGE_PATTERN ) {
-
-      HighlightPattern* pattern = new RangePattern( child_element );
-      if( pattern->isValid() ) highlight_patterns_.push_back( pattern );
-      else delete pattern;
+      HighlightPattern pattern( child_element );
+      if( pattern.isValid() ) highlight_patterns_.push_back( pattern );
 
     } else if( tag_name == XML::INDENT_PATTERN ) {
 
@@ -113,26 +105,26 @@ DocumentClass::DocumentClass( const QDomElement& element ):
   // to facilitate patterns bitMask
   unsigned int id(0);
   for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++, id++ )
-  { (*iter)->setId( id ); }
+  { iter->setId( id ); }
   
   // create parent/children hierarchy between highlight patterns
   for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
-  if( (*iter)->parent().size() )
+  if( iter->parent().size() )
   {
-    HighlightPattern::List::iterator parent_iter( find_if( highlight_patterns_.begin(), highlight_patterns_.end(), HighlightPattern::SameNameFTor( (*iter)->parent() ) ) );
+    HighlightPattern::List::iterator parent_iter( find_if( highlight_patterns_.begin(), highlight_patterns_.end(), HighlightPattern::SameNameFTor( iter->parent() ) ) );
     if( parent_iter != highlight_patterns_.end() ) 
     {
-      (*iter)->setParentId( (*parent_iter)->id() );
-      (*parent_iter)->addChild( *iter );
-    } else Debug::Throw(0) << "DocumentClass::DocumentClass - unable to load parent named " << (*iter)->parent() << endl;
+      iter->setParentId( (*parent_iter).id() );
+      (*parent_iter).addChild( *iter );
+    } else Debug::Throw(0) << "DocumentClass::DocumentClass - unable to load parent named " << iter->parent() << endl;
   }
 
   // assign styles to patterns
   for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
   {
-    set<HighlightStyle>::iterator style_iter ( highlight_styles_.find( (*iter)->style() ) );
-    if( style_iter != highlight_styles_.end() ) (*iter)->setStyle( *style_iter );
-    else Debug::Throw(0) << "HighlightParser::Read - unrecognized style " << (*iter)->style().name() << endl;
+    set<HighlightStyle>::iterator style_iter ( highlight_styles_.find( iter->style() ) );
+    if( style_iter != highlight_styles_.end() ) iter->setStyle( *style_iter );
+    else Debug::Throw(0) << "HighlightParser::Read - unrecognized style " << iter->style().name() << endl;
   }
 
 }
@@ -162,7 +154,7 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
 
   // dump highlight patterns
   for( HighlightPattern::List::const_iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
-  { out.appendChild( (*iter)->domElement( parent ) ); }
+  { out.appendChild( iter->domElement( parent ) ); }
 
   // dump indent patterns
   for( IndentPattern::List::const_iterator iter = indent_patterns_.begin(); iter != indent_patterns_.end(); iter++ )
@@ -185,16 +177,8 @@ void DocumentClass::clear( void )
   
   Debug::Throw( "DocumentClass::clear.\n" );
 
-  // clear styles
   highlight_styles_.clear();
-  
-  // clear highlight patterns
-  /* need explicit deletion cause pointers are stored */
-  for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
-  { delete *iter; }
-  highlight_patterns_.clear();
-  
-  
+  highlight_patterns_.clear();  
   indent_patterns_.clear();  
   text_parenthesis_.clear();
   text_macros_.clear();
@@ -224,7 +208,7 @@ bool DocumentClass::match( const File& file ) const
     while( !(in.rdstate() & ios::failbit ) )
     {
       in.getline( line, linesize, '\n' );
-      if( !( line && strlen(line) && empty_line_regexp.indexIn( line ) < 0 ) ) continue;
+      if( !( strlen(line) && empty_line_regexp.indexIn( line ) < 0 ) ) continue;
       if( firstline_pattern_.indexIn( line ) >= 0 ) return true;
       break;
     }

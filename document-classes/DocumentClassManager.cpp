@@ -45,8 +45,6 @@ using namespace std;
 void DocumentClassManager::clear( void )
 {
   Debug::Throw( "DocumentClassManager::Clear.\n" );
-  for( ClassList::iterator iter = document_classes_.begin(); iter != document_classes_.end(); iter++ )
-  delete *iter;
   document_classes_.clear();
   read_error_ = "";
 }
@@ -87,21 +85,17 @@ bool DocumentClassManager::read( const File& filename )
     string tag_name( qPrintable( element.tagName() ) );
     if( tag_name == XML::DOCUMENT_CLASS ) 
     {
-      DocumentClass* document_class = new DocumentClass( element );
+      DocumentClass document_class( element );
       
       // look for document classes with same name 
       ClassList::iterator iter = find_if(
         document_classes_.begin(),
         document_classes_.end(),
-        DocumentClass::SameNameFTor( document_class->name() ) );
-      if( iter != document_classes_.end() )
-      {
-        delete *iter;
-        document_classes_.erase( iter );
-      }
+        DocumentClass::SameNameFTor( document_class.name() ) );
+      if( iter != document_classes_.end() ) document_classes_.erase( iter );
       
       // add new document class
-      document_class->setFile( filename );
+      document_class.setFile( filename );
       document_classes_.push_back( document_class );
       
       // reset IndentPattern counter (for debugging)
@@ -114,7 +108,7 @@ bool DocumentClassManager::read( const File& filename )
   read_error_ = what.str();
     
   // sort classes (based on Name())
-  document_classes_.sort( DocumentClass::LowerThanFTor() );
+  document_classes_.sort();
 
   return true;
   
@@ -138,7 +132,7 @@ bool DocumentClassManager::write( const std::string& class_name, const File& fil
   
   // create main element
   QDomElement top = document.appendChild( document.createElement( XML::PATTERNS.c_str() ) ).toElement();
-  top.appendChild( (*iter)->domElement( document ) );
+  top.appendChild( iter->domElement( document ) );
   
   out.write( document.toByteArray() );
   out.close();
@@ -163,7 +157,7 @@ bool DocumentClassManager::write( const File& filename ) const
   // create main element
   QDomElement top = document.appendChild( document.createElement( XML::PATTERNS.c_str() ) ).toElement();
   for( ClassList::const_iterator iter = document_classes_.begin(); iter != document_classes_.end(); iter++ )
-  { top.appendChild( (*iter)->domElement( document ) ); }
+  { top.appendChild( iter->domElement( document ) ); }
  
   out.write( document.toByteArray() );
   out.close();
@@ -173,7 +167,7 @@ bool DocumentClassManager::write( const File& filename ) const
 }
 
 //________________________________________________________
-const DocumentClass* DocumentClassManager::find( const File& filename ) const
+DocumentClass DocumentClassManager::find( const File& filename ) const
 {
   Debug::Throw() << "DocumentClassManager::find - file: " << filename << endl;  
   
@@ -192,11 +186,12 @@ const DocumentClass* DocumentClassManager::find( const File& filename ) const
   if( iter != document_classes_.end() ) return *iter;
   
   // nothing found
-  return 0;
+  return DocumentClass();
+  
 }
 
 //________________________________________________________
-const DocumentClass* DocumentClassManager::get( const string& name ) const
+DocumentClass DocumentClassManager::get( const string& name ) const
 {  
   Debug::Throw() << "DocumentClassManager::Get - name: " << name << endl;
   
@@ -208,7 +203,7 @@ const DocumentClass* DocumentClassManager::get( const string& name ) const
   if( iter != document_classes_.end() ) return *iter;
   
   // no match found
-  return 0;
+  return DocumentClass();
 }
   
 
@@ -224,8 +219,7 @@ bool DocumentClassManager::remove( const string& name )
     DocumentClass::SameNameFTor( name ) );
   if( iter == document_classes_.end() ) return false;
   
-  // delete class and remove from list
-  delete *iter;
   document_classes_.erase( iter );
   return true;
+  
 }

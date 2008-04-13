@@ -72,6 +72,8 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   for( unsigned int i=0; i<n_columns_; i++ )
   { list_->setColumnName( i, column_titles_[i] ); }
 
+  list_->setAllColumnsShowFocus( true );
+
   // set connections
   connect( list_, SIGNAL( itemActivated( QTreeWidgetItem*, int ) ), this, SLOT( _edit() ) );
   connect( list_, SIGNAL( itemSelectionChanged() ), this, SLOT( _updateButtons() ) );
@@ -144,18 +146,11 @@ void DocumentClassManagerDialog::_edit( void )
 
   // retrieve DocumentClass matching name
   string name( qPrintable( item->text(NAME) ) );
-  const DocumentClass* document_class( document_class_manager_->get( name ) );
-  if( !document_class )
-  {
-    ostringstream what;
-    what << "No document class matching name " << name << ".\n<Edit> canceled";
-    QtUtil::infoDialog( this, what.str() );
-    return;
-  }
+  DocumentClass document_class( document_class_manager_->get( name ) );
   
   // create dialog
   DocumentClassDialog dialog( this );
-  dialog.setDocumentClass( *document_class );
+  dialog.setDocumentClass( document_class );
   if( dialog.exec() == QDialog::Accepted ) 
   { emit updateNeeded(); }
   
@@ -273,11 +268,11 @@ void DocumentClassManagerDialog::_loadClasses()
   
   // add to list
   for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
-  { _addClass( **iter ); }
+  { _addClass( *iter ); }
 }
 
 //_________________________________________________________________
-void DocumentClassManagerDialog::_addClass( DocumentClass& document_class )
+void DocumentClassManagerDialog::_addClass( const DocumentClass& document_class )
 {
   Debug::Throw( "DocumentClassManagerDialog::_AddDocumentClass.\n" );
   list_->addTopLevelItem( new Item( document_class ) );

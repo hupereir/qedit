@@ -152,8 +152,8 @@ class DocumentClass: public Counter
     {}
     
     //! predicate
-    bool operator() (const DocumentClass* document_class ) const
-    { return document_class->name() == name_; }
+    bool operator() (const DocumentClass& document_class ) const
+    { return document_class.name() == name_; }
     
     private:
     
@@ -172,8 +172,8 @@ class DocumentClass: public Counter
     {}
     
     //! predicate
-    bool operator () (const DocumentClass* document_class ) const
-    { return document_class->match( file_ ) && !document_class->isDefault(); }
+    bool operator () (const DocumentClass& document_class ) const
+    { return document_class.match( file_ ) && !document_class.isDefault(); }
     
     private:
     
@@ -188,22 +188,11 @@ class DocumentClass: public Counter
     public:
     
     //! predicate
-    bool operator() (const DocumentClass* document_class ) const
-    { return document_class->isDefault(); }
+    bool operator() (const DocumentClass& document_class ) const
+    { return document_class.isDefault(); }
     
   };
-  
-  //! used to sort pointers to DocumentClass using "lower than" operator
-  class LowerThanFTor
-  {
-    public:
     
-    //! predicate
-    bool operator() ( const DocumentClass* first, const DocumentClass* second ) const
-    { return *first < *second; }
-  
-  };
-  
   private:
   
   //! base indentation

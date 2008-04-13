@@ -38,6 +38,7 @@
 class CustomLineEdit;
 class TreeWidget;
 class HighlightStyleList; 
+class HighlightPatternList;
 
 //! Syntax highlighting style editing dialog
 class DocumentClassDialog: public CustomDialog
@@ -69,24 +70,12 @@ class DocumentClassDialog: public CustomDialog
   
   //! highlight style list
   HighlightStyleList* highlight_style_list_;
-
-  //! number of columns
-  enum { n_columns_ = 2 };
-
-  //! column type enumeration
-  enum ColumnTypes {
-    INDEX, 
-    NAME
-  };
-  
-  //! column titles
-  static const char* column_titles_[ n_columns_ ];
   
   //! highlight pattern list
-  TreeWidget* highlight_pattern_list_;
+  HighlightPatternList* highlight_pattern_list_;
   
-  //! indent pattern list
-  TreeWidget* indent_pattern_list_;
+//   //! indent pattern list
+//   TreeWidget* indent_pattern_list_;
 
   //! modification state
   bool modified_;

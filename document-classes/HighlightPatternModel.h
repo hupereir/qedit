@@ -1,5 +1,6 @@
-#ifndef _RangePattern_h_
-#define _RangePattern_h_
+#ifndef HighlightPatternModel_h
+#define HighlightPatternModel_h
+
 // $Id$
 
 /******************************************************************************
@@ -24,61 +25,68 @@
  *******************************************************************************/
 
 /*!
-  \file RangePattern.h
-  \brief single keyword syntax highlighting
-  \author Hugo Pereira
+  \file    HighlightPatternModel.h
+  \brief   Stores file information for display in lists
+  \author  Hugo Pereira
   \version $Revision$
-  \date $Date$
+  \date    $Date$
 */
 
-#include <set>
-#include <string>
-
 #include "Counter.h"
+#include "ListModel.h"
 #include "HighlightPattern.h"
 
-//! Base class for syntax highlighting
-class RangePattern: public HighlightPattern
+//! HighlightPattern model. Stores file information for display in lists
+class HighlightPatternModel : public ListModel<HighlightPattern>
 {
   
-  public: 
+  public:
+    
+  //! constructor
+  HighlightPatternModel(QObject *parent = 0):
+    ListModel<HighlightPattern>(parent)  
+  {}
   
-  //! constructor from DomElement
-  RangePattern( const QDomElement& element = QDomElement() );
+  //! destructor
+  virtual ~HighlightPatternModel()
+  {}
   
-  //! dom element
-  QDomElement domElement( QDomDocument& parent ) const;
+  //! number of columns
+  enum { n_columns = 3 };
+
+ //! column type enumeration
+  enum ColumnType { 
+    NAME,
+    PARENT,
+    TYPE
+  };
+
+  //!@name methods reimplemented from base class
+  //@{
   
-  //! keyword
-  virtual void setBegin( const std::string& keyword )
-  { begin_.setPattern( keyword.c_str() ); }
+  // return data for a given index
+  virtual QVariant data(const QModelIndex &index, int role) const;
+   
+  //! header data
+  virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
   
-  //! keyword
-  virtual const QRegExp& begin( void ) const
-  { return begin_; }
+  //! number of columns for a given index
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const
+  { return n_columns; }
+
+  //@}
   
-  //! keyword
-  virtual void setEnd( const std::string& keyword )
-  { end_.setPattern( keyword.c_str() ); }
+  protected:
   
-  //! keyword
-  virtual const QRegExp& end( void ) const
-  { return end_; }
-  
-  //! validity
-  virtual bool isValid( void ) const
-  { return begin().isValid() && end().isValid(); }
-  
-  //! process text and returns the matching locations
-  virtual void processText( LocationSet& locations, const QString& text, bool& active ) const;
-  
+  //! sort
+  virtual void _sort( int column, Qt::SortOrder order = Qt::AscendingOrder )
+  { return; }
+   
   private:
   
-  //! regular expression used to define begin of the range 
-  QRegExp begin_;
-  
-  //! regular expression used to define end of the range 
-  QRegExp end_;
-    
+  //! list column names
+  static const char* column_titles_[n_columns];
+
 };
+
 #endif

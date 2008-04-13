@@ -34,9 +34,9 @@
 #include <QPushButton>
 
 #include "Counter.h"
-#include "HighlightStyle.h"
+#include "HighlightStyleModel.h"
 
-class ListWidget;
+class TreeView;
 
 //! List box for HighlightStyles
 class HighlightStyleList: public QWidget, public Counter
@@ -73,10 +73,19 @@ class HighlightStyleList: public QWidget, public Counter
   //! add new style
   void _add( void );
   
+  //! store selection
+  void _storeSelection( void );
+  
+  //! restore selection
+  void _restoreSelection( void );
+  
   private:
   
   //! list
-  ListWidget* list_;
+  TreeView* list_;
+  
+  //! model
+  HighlightStyleModel model_;
   
   //! buttons
   QPushButton* edit_button_;

@@ -34,22 +34,15 @@
 #include <QPushButton>
 
 #include "CustomDialog.h"
-#include "DocumentClassDialog.h"
 #include "CustomGridLayout.h"
 #include "CustomLineEdit.h"
+#include "DocumentClassDialog.h"
+#include "HighlightStyleList.h"
+#include "HighlightPatternList.h"
 #include "ListWidget.h"
 #include "TreeWidget.h"
-#include "HighlightStyleList.h"
 
 using namespace std;
-
-//__________________________________________________________
-const char* DocumentClassDialog::column_titles_[ DocumentClassDialog::n_columns_ ] = 
-{ 
-  "id",
-  "name"
-};
-
 
 //__________________________________________________________
 DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
@@ -101,67 +94,41 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   first_line_pattern_editor_->setToolTip( "Regular expression used to determine document class from the first line of the file." );
   
   // need to add options (checkboxes) for "wrap" and "default" 
-
+  
   // highlight styles
   tab_widget->addTab( highlight_style_list_ = new HighlightStyleList(), "&Highlight styles" );
 
   // highlight patterns
-  QPushButton* button;
-  tab_widget->addTab( box = new QWidget(), "&Highlight patterns" );
-  h_layout = new QHBoxLayout();
-  h_layout->setSpacing(5);
-  h_layout->setMargin(10);
-  box->setLayout( h_layout );
-  h_layout->addWidget( highlight_pattern_list_ = new TreeWidget( box ), 1 );
-  highlight_pattern_list_->setColumnCount( n_columns_ );
-  for( int i=0; i<n_columns_; i++ )
-  { highlight_pattern_list_->setColumnName( i, column_titles_[i] ); }
-  highlight_pattern_list_->setColumnType( INDEX, TreeWidget::NUMBER );
-
-  v_layout = new QVBoxLayout();
-  v_layout->setSpacing(5);
-  v_layout->setMargin(0);
-  h_layout->addLayout( v_layout );
+  tab_widget->addTab( highlight_pattern_list_ = new HighlightPatternList(), "&Highlight patterns" );
   
-  v_layout->addWidget( button = new QPushButton( "&Add", box ) );
-  button->setToolTip( "Add a new highlight pattern to the list" );
-
-  v_layout->addWidget( button = new QPushButton( "&Edit", box ) );
-  button->setToolTip( "Edit selected highlight pattern" );
-
-  v_layout->addWidget( button = new QPushButton( "&Remove", box ) );
-  button->setToolTip( "Remove selected highlight pattern" );
-
-  v_layout->addStretch();
-  
-  // indentation patterns
-  // need to add "base indentation" QSpinBox. 
-  tab_widget->addTab( box = new QWidget(), "&Indentation patterns" );
-  h_layout = new QHBoxLayout();
-  h_layout->setSpacing(5);
-  h_layout->setMargin(10);
-  box->setLayout( h_layout );
-  h_layout->addWidget( indent_pattern_list_ = new TreeWidget( box ), 1 );
-  indent_pattern_list_->setColumnCount( n_columns_ );
-  for( int i=0; i<n_columns_; i++ )
-  { indent_pattern_list_->setColumnName( i, column_titles_[i] ); }
-  indent_pattern_list_->setColumnType( INDEX, TreeWidget::NUMBER );
-
-  v_layout = new QVBoxLayout();
-  v_layout->setSpacing(5);
-  v_layout->setMargin(0);
-  h_layout->addLayout( v_layout );
-
-  v_layout->addWidget( button = new QPushButton( "&Add", box ) );
-  button->setToolTip( "Add a new indentation pattern to the list" );
-
-  v_layout->addWidget( button = new QPushButton( "&Edit", box ) );
-  button->setToolTip( "Edit selected indentation pattern" );
-
-  v_layout->addWidget( button = new QPushButton( "&Remove", box ) );
-  button->setToolTip( "Remove selected indentation pattern" );
-
-  v_layout->addStretch();
+//   // indentation patterns
+//   // need to add "base indentation" QSpinBox. 
+//   tab_widget->addTab( box = new QWidget(), "&Indentation patterns" );
+//   h_layout = new QHBoxLayout();
+//   h_layout->setSpacing(5);
+//   h_layout->setMargin(10);
+//   box->setLayout( h_layout );
+//   h_layout->addWidget( indent_pattern_list_ = new TreeWidget( box ), 1 );
+//   indent_pattern_list_->setColumnCount( n_columns_ );
+//   for( int i=0; i<n_columns_; i++ )
+//   { indent_pattern_list_->setColumnName( i, column_titles_[i] ); }
+//   indent_pattern_list_->setColumnType( INDEX, TreeWidget::NUMBER );
+// 
+//   v_layout = new QVBoxLayout();
+//   v_layout->setSpacing(5);
+//   v_layout->setMargin(0);
+//   h_layout->addLayout( v_layout );
+// 
+//   v_layout->addWidget( button = new QPushButton( "&Add", box ) );
+//   button->setToolTip( "Add a new indentation pattern to the list" );
+// 
+//   v_layout->addWidget( button = new QPushButton( "&Edit", box ) );
+//   button->setToolTip( "Edit selected indentation pattern" );
+// 
+//   v_layout->addWidget( button = new QPushButton( "&Remove", box ) );
+//   button->setToolTip( "Remove selected indentation pattern" );
+// 
+//   v_layout->addStretch();
   
   adjustSize();
   resize( 550, 500 );
@@ -187,6 +154,7 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
   highlight_style_list_->setStyles( document_class.highlightStyles() );
   
   // highlight patterns
+  highlight_pattern_list_->setPatterns( document_class.highlightPatterns() );
   
   // indentation patterns
   

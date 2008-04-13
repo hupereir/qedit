@@ -44,12 +44,14 @@
 #include "Counter.h"
 #include "Debug.h"
 
+class PatternLocationSet;
+
 //! Base class for syntax highlighting
 class HighlightPattern: public Counter
 {
 
   public: 
-
+    
   //! pattern flags
   enum Flag
   {
@@ -70,7 +72,7 @@ class HighlightPattern: public Counter
   };
   
   //! typedef for list of patterns
-  typedef std::vector< HighlightPattern* > List;
+  typedef std::vector< HighlightPattern > List;
   
   //! constructor from DomElement
   HighlightPattern( const QDomElement& element = QDomElement() );
@@ -87,44 +89,67 @@ class HighlightPattern: public Counter
   { id_ = (1<<id); }
     
   //! unique id
-  virtual const int& id( void ) const
+  const int& id( void ) const
   { return id_; }
   
+  //! equal to operator
+  bool operator == (const HighlightPattern& pattern ) const
+  { return id() == pattern.id(); }
+  
+  //! less than operator
+  bool operator < (const HighlightPattern& pattern ) const
+  { return id() < pattern.id(); }
+  
   //! name
-  virtual const std::string& name( void ) const
+  const std::string& name( void ) const
   { return name_; }
   
+  //! type
+  std::string typeName( void ) const;
+  
   //! parent name
-  virtual const std::string& parent( void ) const
+  const std::string& parent( void ) const
   { return parent_; }
   
   //! parent id
-  virtual const int& parentId( void ) const
+  const int& parentId( void ) const
   { return parent_id_; }
     
   //! parent id
-  virtual void setParentId( const int& id )
+  void setParentId( const int& id )
   { parent_id_ = id; }
     
   //! text style
-  virtual const HighlightStyle& style( void ) const
+  const HighlightStyle& style( void ) const
   { return style_; }
     
   //! text style 
-  virtual void setStyle( const HighlightStyle& style )
+  void setStyle( const HighlightStyle& style )
   { style_ = style; }
   
   //! child patterns
-  virtual const List& children( void ) const
+  const List& children( void ) const
   { return children_; }
 
   //! add child
-  virtual void addChild( HighlightPattern* child )
+  void addChild( HighlightPattern child )
   { children_.push_back( child ); }
   
   //! clear children
-  virtual void clearChildren( void )
+  void clearChildren( void )
   { children_.clear(); }
+  
+  //! keyword regexp
+  const QRegExp& keyword( void ) const
+  { return keyword_; }
+  
+  //! begin regexp
+  const QRegExp& begin( void ) const
+  { return keyword(); }
+  
+  //! end regexp
+  const QRegExp& end( void ) const
+  { return end_; }
   
   //! comments
   const std::string& comments( void ) const
@@ -159,145 +184,27 @@ class HighlightPattern: public Counter
   //@}
   
   //! validity
-  virtual bool isValid( void ) const
-  { return true; }
-
-  //! location of text to be formated
-  class Location: public Counter
-  {
-    public:        
-            
-    //! constructor
-    Location( 
-      const HighlightPattern& parent,
-      const int& position, 
-      const unsigned int& length ):
-        Counter( "HighlightPattern::Location" ),
-        parent_( &parent ),
-        position_( position ),
-        length_( length )
-    { }
-    
-    //! less than operator
-    bool operator < (const Location& location ) const
-    { 
-      return 
-        (position() < location.position()) ||
-        (position() == location.position() && parentId() < location.parentId() ) ; 
-      }
-    
-    //! position
-    const int& position( void ) const
-    { return position_; }
-    
-    //! length
-    const unsigned int& length( void ) const
-    { return length_; }
-    
-    //! parent
-    const HighlightPattern& parent( void ) const
-    { return *parent_; }
-    
-    //! pattern id
-    const int& id( void ) const
-    { return parent_->id(); }
-    
-    //! parent pattern id
-    const int& parentId( void ) const
-    { return parent_->parentId(); }
-    
-    //! style
-    const HighlightStyle& style( void ) const
-    { return parent_->style(); }
-     
-    //! used to find a location matching index
-    class ContainsFTor 
+  bool isValid( void ) const
+  { 
+    switch( _type() )
     {
-    
-      public:
-      
-      //! constructor
-      ContainsFTor( const int& index ):
-        index_( index )
-        {}
-        
-      //! prediction
-      bool operator() (const Location& location )
-      { 
-        return 
-          index_ >= location.position() && 
-          index_ < location.position()+int(location.length()); 
-      }
-      
-      private:
-      
-      //! predicted index
-      int index_;
-      
-    };
-    
-    // overlaps
-    class OverlapFTor
-    {
-      
-      public:
-      
-      //! predicate
-      bool operator() (const Location& first, const Location& second ) 
-      { return second.position() < first.position() + (int)first.length(); }
-      
-    };
-    
-    private:
-
-    //! pointer to parent
-    const HighlightPattern* parent_;
-        
-    //! position in text
-    int position_;
-    
-    //! length of the pattern
-    unsigned int length_;
-
-    //! dump
-    friend std::ostream& operator << (std::ostream& out, const Location& location )
-    {  
-      out << "id: " << location.id() << " parent id:" << location.parentId() << " position: " << location.position() << " length: " << location.length() ;
-      return out;
+      case KEYWORD_PATTERN: return keyword_.isValid();
+      case RANGE_PATTERN: return keyword_.isValid() && end_.isValid();
+      default: return false;
     }
-    
-  };
-  
-  //! set of locations. 
-  class LocationSet: public std::set<Location>
-  {
-    
-    public:
-    
-    //! default constructor
-    LocationSet():
-      active_id_( std::make_pair( 0, 0 ) )
-    {}
-      
-    //! active id
-    const std::pair<int,int>& activeId( void ) const
-    { return active_id_; }
-        
-    //! active id
-    std::pair<int,int>& activeId( void )
-    { return active_id_; }
-    
-    private:
-    
-    //! active patterns from previous and this paragraph
-    std::pair<int, int> active_id_;
-    
-  };
+  }
   
   //! process text and returns the matching locations
   /*! locations and active parameters are changed */
-  virtual void processText( LocationSet&, const QString&, bool& ) const
-  {}
+  void processText( PatternLocationSet& locations, const QString& text, bool& active ) const
+  {
+    switch( _type() )
+    {
+      case KEYWORD_PATTERN: return _findKeyword( locations, text, active );
+      case RANGE_PATTERN: return _findRange( locations, text, active );
+      default: return;
+    }
+  }
   
   //! used to get patterns by name
   class SameNameFTor
@@ -311,8 +218,8 @@ class HighlightPattern: public Counter
     {}
     
     //! predicate
-    bool operator() (const HighlightPattern* pattern ) const
-    { return (pattern && pattern->name() == name_); }
+    bool operator() (const HighlightPattern& pattern ) const
+    { return pattern.name() == name_; }
         
     private:
         
@@ -333,8 +240,8 @@ class HighlightPattern: public Counter
     {}
       
     //! predicate
-    bool operator() ( const HighlightPattern* pattern ) const
-    { return pattern->id() == id_; }
+    bool operator() ( const HighlightPattern& pattern ) const
+    { return pattern.id() == id_; }
     
     private:
     
@@ -346,21 +253,53 @@ class HighlightPattern: public Counter
   protected:
           
   //! name
-  virtual void _setName( const std::string& name ) 
+  void _setName( const std::string& name ) 
   { name_ = name; }
   
   //! parent name
-  virtual void _setParent( const std::string& parent )
+  void _setParent( const std::string& parent )
   { parent_ = parent; }
+
+  //! pattern type
+  enum Type
+  {
+    //! undefined
+    UNDEFINED,
       
+    //! single keyword
+    KEYWORD_PATTERN,
+    
+    //! range pattern
+    RANGE_PATTERN
+    
+  };   
+
   //!type
-  const std::string& _type( void ) const
+  const Type& _type( void ) const
   { return type_; }
   
   //!type
-  virtual void _setType( const std::string& type )
+  void _setType( const Type& type )
   { type_ = type; }
   
+  //! keyword
+  virtual void _setKeyword( const std::string& keyword )
+  { keyword_.setPattern( keyword.c_str() ); }
+
+  //! keyword
+  virtual void _setBegin( const std::string& keyword )
+  { _setKeyword( keyword ); }
+  
+  //! range end pattern
+  virtual void _setEnd( const std::string& keyword )
+  { end_.setPattern( keyword.c_str() ); }
+
+  //! find keyword pattern
+  void _findKeyword( PatternLocationSet&, const QString&, bool& ) const;
+  
+  //! find range pattern
+  void _findRange( PatternLocationSet&, const QString&, bool& ) const;
+
   private:
         
   //! unique id
@@ -371,7 +310,7 @@ class HighlightPattern: public Counter
   int id_; 
   
   //! type
-  std::string type_;
+  Type type_;
       
   //! pattern name
   std::string name_;
@@ -394,6 +333,17 @@ class HighlightPattern: public Counter
   //! flags
   unsigned int flags_;
   
+  //!@name patterns
+  //@{
+  
+  //! keyword regexp (or begin in case of range pattern)
+  QRegExp keyword_;
+  
+  //! range end regexp
+  QRegExp end_;
+  
+  //@}
+  
   //!@name dumpers
   //@{  
   //! dump
@@ -403,14 +353,6 @@ class HighlightPattern: public Counter
     return out;
   }
   
-  //! dump
-  friend std::ostream& operator << (std::ostream& out, const LocationSet& locations )
-  {  
-    out << "[" << locations.activeId().first << "," << locations.activeId().second << "] ";
-    for( LocationSet::const_iterator iter = locations.begin(); iter != locations.end(); iter++ )
-    out << *iter << std::endl;
-    return out;
-  }
   //@}  
 };
 #endif

@@ -1,5 +1,6 @@
-#ifndef _KeywordPattern_h_
-#define _KeywordPattern_h_
+#ifndef HighlightStyleModel_h
+#define HighlightStyleModel_h
+
 // $Id$
 
 /******************************************************************************
@@ -24,50 +25,63 @@
  *******************************************************************************/
 
 /*!
-  \file KeywordPattern.h
-  \brief single keyword syntax highlighting
-  \author Hugo Pereira
+  \file    HighlightStyleModel.h
+  \brief   Stores file information for display in lists
+  \author  Hugo Pereira
   \version $Revision$
-  \date $Date$
+  \date    $Date$
 */
 
-#include <set>
-#include <string>
-
 #include "Counter.h"
-#include "HighlightPattern.h"
+#include "ListModel.h"
+#include "HighlightStyle.h"
 
-//! Base class for syntax highlighting
-class KeywordPattern: public HighlightPattern
+//! HighlightStyle model. Stores file information for display in lists
+class HighlightStyleModel : public ListModel<HighlightStyle>
 {
   
-  public: 
+  public:
+    
+  //! constructor
+  HighlightStyleModel(QObject *parent = 0):
+    ListModel<HighlightStyle>(parent)  
+  {}
   
-  //! constructor from DomElement
-  KeywordPattern( const QDomElement& element = QDomElement() );
+  //! destructor
+  virtual ~HighlightStyleModel()
+  {}
   
-  //! dom element
-  virtual QDomElement domElement( QDomDocument& parent ) const;
+  //! number of columns
+  enum { n_columns = 1 };
 
-  //! keyword
-  virtual void setKeyword( const std::string& keyword )
-  { keyword_.setPattern( keyword.c_str() ); }
-  
-  //! keyword
-  virtual const QRegExp& keyword( void ) const
-  { return keyword_; }
-  
-  //! validity
-  virtual bool isValid( void ) const
-  { return keyword_.isValid(); }
+ //! column type enumeration
+  enum ColumnType { NAME };
 
-  //! process text and returns the matching locations
-  virtual void processText( LocationSet& locations, const QString& text, bool& active ) const;
+  //!@name methods reimplemented from base class
+  //@{
   
+  // return data for a given index
+  virtual QVariant data(const QModelIndex &index, int role) const;
+   
+  //! header data
+  virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+   
+  //! number of columns for a given index
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const
+  { return n_columns; }
+
+  //@}
+  
+  protected:
+  
+  //! sort
+  virtual void _sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+
   private:
   
-  //! associate keyword recongnition regexp
-  QRegExp keyword_;
-    
+  //! list column names
+  static const char* column_titles_[n_columns];
+   
 };
+
 #endif

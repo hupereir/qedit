@@ -16,14 +16,14 @@ noinst_HEADERS = \
   DocumentClassManager.h \
   DocumentClassManagerDialog.h \
   HighlightPattern.h \
+  HighlightPatternList.h \
+  HighlightPatternModel.h \
   HighlightPatternOptions.h \
   HighlightStyle.h \
-  HighlightStyleItem.h \
   HighlightStyleList.h \
+  HighlightStyleModel.h \
   HighlightStyleDialog.h \
   IndentPattern.h \
-  KeywordPattern.h \
-  RangePattern.h \
   TextMacro.h \
   TextParenthesis.h \
   XmlDef.h
@@ -36,20 +36,22 @@ libdocument_classes_a_SOURCES = \
   DocumentClassManager.cpp \
   DocumentClassManagerDialog.cpp \
   HighlightPattern.cpp \
+  HighlightPatternList.cpp \
+  HighlightPatternModel.cpp \
   HighlightPatternOptions.cpp \
   HighlightStyle.cpp \
   HighlightStyleList.cpp \
+  HighlightStyleModel.cpp \
   HighlightStyleDialog.cpp \
   IndentPattern.cpp \
-  KeywordPattern.cpp \
-  RangePattern.cpp \
   TextMacro.cpp \
   TextParenthesis.cpp
 
 nodist_libdocument_classes_a_SOURCES = \
   moc_DocumentClassDialog.cpp \
   moc_DocumentClassManagerDialog.cpp \
-  moc_HighlightStyleList.cpp
+  moc_HighlightStyleList.cpp \
+  moc_HighlightPatternList.cpp
 
 clean-local:
 	rm -f moc_*.cpp

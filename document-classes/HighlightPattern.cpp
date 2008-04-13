@@ -29,8 +29,10 @@
   \date $Date$
 */
 
-#include <qregexp.h>
+#include <assert.h>
+
 #include "HighlightPattern.h"
+#include "PatternLocation.h"
 #include "Str.h"
 #include "XmlDef.h"
 #include "XmlUtil.h"
@@ -41,6 +43,7 @@ using namespace std;
 HighlightPattern::HighlightPattern( const QDomElement& element ):
   Counter( "HighlightPattern" ),
   id_( 0 ),
+  type_( UNDEFINED ),
   name_( "default" ),
   parent_( "" ),
   parent_id_( 0 ),
@@ -48,8 +51,9 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
   flags_( NONE )
 {  
   Debug::Throw( "HighlightPattern::HighlightPattern.\n" );
-  
-  _setType( (element.tagName().isNull()) ? "":qPrintable( element.tagName() ) );
+  if( element.tagName() == XML::KEYWORD_PATTERN.c_str() ) _setType( KEYWORD_PATTERN );
+  if( element.tagName() == XML::RANGE_PATTERN.c_str() ) _setType( RANGE_PATTERN );
+  //  assert( _type() != UNDEFINED );
   
   QDomNamedNodeMap attributes( element.attributes() );
   for( unsigned int i=0; i<attributes.length(); i++ )
@@ -62,6 +66,7 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     if( name == XML::NAME ) _setName( value );
     else if( name == XML::PARENT ) _setParent( value );
     else if( name == XML::STYLE ) setStyle( HighlightStyle( value ) );
+
     else if( name == XML::OPTIONS )
     {
       if( value.find( XML::OPTION_SPAN ) != string::npos ) setFlag( SPAN, true );
@@ -77,8 +82,11 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
   {
     QDomElement child_element = child_node.toElement(); 
     if( child_element.isNull() ) continue;
-    string tag_name( qPrintable( child_element.tagName() ) );
-    if( tag_name == XML::COMMENTS ) setComments( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
+    string name( qPrintable( child_element.tagName() ) );
+    if( name == XML::COMMENTS ) setComments( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
+    else if( name == XML::KEYWORD ) _setKeyword( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
+    else if( name == XML::BEGIN ) _setBegin( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
+    else if( name == XML::END ) _setEnd( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
   }
  
 }
@@ -87,7 +95,8 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
 QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "HighlightPattern::domElement.\n" );
-  QDomElement out( parent.createElement( _type().c_str() ) );
+  
+  QDomElement out( parent.createElement( typeName().c_str() ) );
   out.setAttribute( XML::NAME.c_str(), name().c_str() );
   out.setAttribute( XML::PARENT.c_str(), HighlightPattern::parent().c_str() );
   out.setAttribute( XML::STYLE.c_str(), style().name().c_str() );
@@ -99,9 +108,142 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
   if( flag( CASE_INSENSITIVE ) ) what << XML::OPTION_NO_CASE << " ";
   if( what.str().size() ) out.setAttribute( XML::OPTIONS.c_str(), what.str().c_str() );
 
+  // comments
   out.
     appendChild( parent.createElement( XML::COMMENTS.c_str() ) ).
     appendChild( parent.createTextNode( XmlUtil::textToXml( comments() ).c_str() ) );
+
+  // regexps
+  if( _type() == KEYWORD_PATTERN )
+  {
+    out.
+      appendChild( parent.createElement( XML::KEYWORD.c_str() ) ).
+      appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( keyword().pattern() ) ).c_str() ) );
+  }
   
+  if( _type() == RANGE_PATTERN )
+  {
+    out.
+      appendChild( parent.createElement( XML::BEGIN.c_str() ) ).
+      appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( begin().pattern() ) ).c_str() ) );
+    out.
+      appendChild( parent.createElement( XML::END.c_str() ) ).
+      appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( end().pattern() ) ).c_str() ) );
+  }
+    
   return out;
+}
+
+//____________________________________________________________
+void HighlightPattern::_findKeyword( PatternLocationSet& locations, const QString& text, bool& active ) const
+{
+    
+  //! disable activity
+  active=false;
+
+  //! check RegExp
+  if( keyword().isEmpty() ) return;
+  int position( 0 );
+  while( position >= 0 )
+  {
+    position = keyword().indexIn( text, position );
+    if( position >= 0 )
+    {
+      locations.insert( PatternLocation( *this, position, keyword().matchedLength() ) );
+      position += keyword().matchedLength();
+    }
+  }
+}
+
+//____________________________________________________________
+string HighlightPattern::typeName( void ) const
+{
+  switch( _type() )
+  {
+    case KEYWORD_PATTERN: return XML::KEYWORD_PATTERN;
+    case RANGE_PATTERN: return XML::RANGE_PATTERN;
+    default: assert(0);
+  }
+}   
+
+//____________________________________________________________
+void HighlightPattern::_findRange( PatternLocationSet& locations, const QString& text, bool& active ) const
+{
+  
+  // check RegExp
+  if( begin().isEmpty() || end().isEmpty() ) return;
+  
+  int begin(0);
+  int end(0);
+  
+  // check if pattern spans over paragraphs
+  // and was active in previous paragraph
+  if( flag( SPAN ) && active )
+  {
+      
+    // if active, look for end match
+    end = HighlightPattern::end().indexIn( text, 0 );
+    if( end < 0 )
+    {
+      // no match found.
+      // pattern is still active for next paragraph
+      // the whole paragraph match the pattern
+      locations.insert( PatternLocation( *this, 0, text.size() ) );
+      return;  
+      
+    } else {
+        
+      // found matching end.
+      // pattern is not active any more but one needs to check if it does not start again
+      active = false;
+      end+=HighlightPattern::end().matchedLength();
+      locations.insert( PatternLocation( *this, 0, end ) );
+      
+    }
+    
+  }
+  
+  // look for begin and end in current paragraphs
+  while( 1 )
+  {
+    
+    // look for begin match
+    // start from end index, which is either 0, or the last
+    // found end in case of spanning active patterns    
+    begin = end;
+    begin = HighlightPattern::begin().indexIn( text, begin );
+    if( begin < 0 ) 
+    {
+      active = false;
+      break;
+    }
+    
+    // look for end match     
+    end = HighlightPattern::end().indexIn( text, begin );
+    
+    // avoid zero length match
+    if( begin == end && HighlightPattern::begin().matchedLength() == HighlightPattern::end().matchedLength() )
+    { end = HighlightPattern::end().indexIn( text, begin+HighlightPattern::begin().matchedLength() ); }
+    
+    if( end < 0 ) 
+    {
+      if( flag( SPAN ) )
+      {
+        // no end found. 
+        // Pattern will still be active in next paragraph
+        active = true;
+        locations.insert( PatternLocation( *this, begin, text.size()-begin ) );
+      }
+      
+      break;
+    }
+    
+    // found end matching begin
+    // append new text location
+    end += HighlightPattern::end().matchedLength();
+    locations.insert( PatternLocation( *this, begin, end-begin ) );
+    
+  }
+  
+  return;
 }

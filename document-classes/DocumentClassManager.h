@@ -78,16 +78,16 @@ class DocumentClassManager: public QObject, public Counter
   bool write( const std::string& class_name, const File& file ) const;
 
   //! get class matching filename. Return 0 if not found
-  const DocumentClass* find( const File& file ) const;
+  DocumentClass find( const File& file ) const;
 
   //! get class matching name. Return 0 if none found
-  const DocumentClass* get( const std::string& name ) const;
+  DocumentClass get( const std::string& name ) const;
 
   //! remove a class matching name.
   bool remove( const std::string& name );
 
   //! shortcut to list of document classes
-  typedef std::list<DocumentClass*> ClassList;
+  typedef std::list<DocumentClass> ClassList;
 
   //! get all classes
   const ClassList& list( void ) const

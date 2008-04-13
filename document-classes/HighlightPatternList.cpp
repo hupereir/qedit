@@ -22,8 +22,8 @@
 *******************************************************************************/
  
 /*!
-  \file HighlightStyleList.h
-  \brief List box for HighlightStyles
+  \file HighlightPatternList.h
+  \brief List box for HighlightPatterns
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -32,20 +32,20 @@
 #include <QHeaderView>
 #include <QLayout>
 
-#include "HighlightStyleDialog.h"
-#include "HighlightStyleList.h"
+// #include "HighlightPatternDialog.h"
+#include "HighlightPatternList.h"
 #include "QtUtil.h"
 #include "TreeView.h"
 
 using namespace std;
 
 //____________________________________________________
-HighlightStyleList::HighlightStyleList( QWidget* parent ):
+HighlightPatternList::HighlightPatternList( QWidget* parent ):
   QWidget( parent ),
-  Counter( "HighlightStyleList" ),
+  Counter( "HighlightPatternList" ),
   modified_( false )
 {
-  Debug::Throw( "HighlightStyleList::HighlightStyleList.\n" );
+  Debug::Throw( "HighlightPatternList::HighlightPatternList.\n" );
 
   QHBoxLayout* h_layout;
   h_layout = new QHBoxLayout();
@@ -56,7 +56,7 @@ HighlightStyleList::HighlightStyleList( QWidget* parent ):
   
   h_layout->addWidget( list_ = new TreeView( this ), 1 );
   list_->setModel( &model_ );
-  list_->setSortingEnabled( true );
+  list_->setSortingEnabled( false );
   list_->setAllColumnsShowFocus( true );
   
   connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
@@ -72,15 +72,15 @@ HighlightStyleList::HighlightStyleList( QWidget* parent ):
 
   QPushButton* button;
   v_layout->addWidget( button = new QPushButton( "&Add", this ) );
-  button->setToolTip( "Add a new highlight style to the list" );
+  button->setToolTip( "Add a new highlight pattern to the list" );
   connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
   
   v_layout->addWidget( edit_button_ = new QPushButton( "&Edit", this ) );
-  edit_button_->setToolTip( "Edit selected highlight style" );
+  edit_button_->setToolTip( "Edit selected highlight pattern" );
   connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
   v_layout->addWidget( remove_button_ = new QPushButton( "&Remove", this ) );
-  remove_button_->setToolTip( "Remove selected highlight style" );
+  remove_button_->setToolTip( "Remove selected highlight pattern" );
   connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
   
   v_layout->addStretch();
@@ -90,96 +90,97 @@ HighlightStyleList::HighlightStyleList( QWidget* parent ):
 }
 
 //____________________________________________________
-void HighlightStyleList::setStyles( const HighlightStyle::Set& styles ) 
+void HighlightPatternList::setPatterns( const HighlightPattern::List& patterns ) 
 {
 
-  Debug::Throw( "HighlightStyleList::setStyles.\n" );
-  model_.set( HighlightStyleModel::List( styles.begin(), styles.end() ) );
+  Debug::Throw( "HighlightPatternList::setPatterns.\n" );
+  model_.set( patterns );
+  list_->resizeColumns();
   modified_ = false;
   
 }
 
 //____________________________________________________
-HighlightStyle::Set HighlightStyleList::styles( void ) 
+HighlightPattern::List HighlightPatternList::patterns( void ) 
 {
   
-  Debug::Throw( "HighlightStyleList::styles.\n" );
-  return HighlightStyle::Set( model_.get().begin(), model_.get().end() );
+  Debug::Throw( "HighlightPatternList::patterns.\n" );
+  return model_.get();
   
 }
 
 //____________________________________________________
-void HighlightStyleList::_updateButtons( void )
+void HighlightPatternList::_updateButtons( void )
 {
-  Debug::Throw( "HighlightStyleList::_updateButtons.\n" );
+  Debug::Throw( "HighlightPatternList::_updateButtons.\n" );
   bool has_selection( !list_->selectionModel()->selectedRows().empty() );
   edit_button_->setEnabled( has_selection );
   remove_button_->setEnabled( has_selection );
 }
 
 //____________________________________________________
-void HighlightStyleList::_add( void )
+void HighlightPatternList::_add( void )
 {
-  Debug::Throw( "HighlightStyleList::_add.\n" );
+  Debug::Throw( "HighlightPatternList::_add.\n" );
   
-  // get set of highlight styles to ensure name unicity
-  HighlightStyleModel::List styles( model_.get() );
-  
-  HighlightStyleDialog dialog( this );
-  while( 1 )
-  {
-    if( dialog.exec() == QDialog::Rejected ) return;
-    HighlightStyle style( dialog.style() );
-    if( style.name().empty() || std::find( styles.begin(), styles.end(), style ) != styles.end() ) 
-    {
-      QtUtil::infoDialog( this, "Invalid pattern name" );
-    } else {
-      model_.add( style );
-      break; 
-    }
-  }
+//   // get set of highlight patterns to ensure name unicity
+//   HighlightPatternModel::List patterns( model_.get() );
+//   
+//   HighlightPatternDialog dialog( this );
+//   while( 1 )
+//   {
+//     if( dialog.exec() == QDialog::Rejected ) return;
+//     HighlightPattern pattern( dialog.pattern() );
+//     if( pattern.name().empty() || std::find( patterns.begin(), patterns.end(), pattern ) != patterns.end() ) 
+//     {
+//       QtUtil::infoDialog( this, "Invalid pattern name" );
+//     } else {
+//       model_.add( pattern );
+//       break; 
+//     }
+//   }
    
 }
 
 //____________________________________________________
-void HighlightStyleList::_edit( void )
+void HighlightPatternList::_edit( void )
 {
-  Debug::Throw( "HighlightStyleList::_edit.\n" );
+  Debug::Throw( "HighlightPatternList::_edit.\n" );
  
-  // retrieve selected items; make sure they do not include the navigator
-  QModelIndexList selection( list_->selectionModel()->selectedRows() );
-  if( selection.empty() ) {
-    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
-    return;
-  }
-
-  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
-  {
-  
-    HighlightStyle old_style( model_.get( *iter ) );
-
-    HighlightStyleDialog dialog( this );
-    dialog.setStyle( old_style );
-    if( dialog.exec() == QDialog::Rejected ) continue;
-    
-    HighlightStyle style( dialog.style() );
-    if( style.differs( old_style ) ) 
-    { 
-      model_.replace( *iter, style ); 
-      modified_ = true;
-    }
-
-  }
+//   // retrieve selected items; make sure they do not include the navigator
+//   QModelIndexList selection( list_->selectionModel()->selectedRows() );
+//   if( selection.empty() ) {
+//     QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+//     return;
+//   }
+// 
+//   for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
+//   {
+//   
+//     HighlightPattern old_pattern( model_.get( *iter ) );
+// 
+//     HighlightPatternDialog dialog( this );
+//     dialog.setPattern( old_pattern );
+//     if( dialog.exec() == QDialog::Rejected ) continue;
+//     
+//     HighlightPattern pattern( dialog.pattern() );
+//     if( pattern.differs( old_pattern ) ) 
+//     { 
+//       model_.replace( *iter, pattern ); 
+//       modified_ = true;
+//     }
+// 
+//   }
   
 }
 
 //____________________________________________________
-void HighlightStyleList::_remove( void )
+void HighlightPatternList::_remove( void )
 {
-  Debug::Throw( "HighlightStyleList::_remove.\n" );
+  Debug::Throw( "HighlightPatternList::_remove.\n" );
 
   // retrieve selected items; make sure they do not include the navigator
-  HighlightStyleModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+  HighlightPatternModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() ) {
     QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
     return;
@@ -199,7 +200,7 @@ void HighlightStyleList::_remove( void )
 }
 
 //________________________________________
-void HighlightStyleList::_storeSelection( void )
+void HighlightPatternList::_storeSelection( void )
 {   
   // clear
   model_.clearSelectedIndexes();
@@ -216,7 +217,7 @@ void HighlightStyleList::_storeSelection( void )
 }
 
 //________________________________________
-void HighlightStyleList::_restoreSelection( void )
+void HighlightPatternList::_restoreSelection( void )
 {
 
   // retrieve indexes

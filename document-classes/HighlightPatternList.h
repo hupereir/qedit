@@ -1,5 +1,5 @@
-#ifndef HighlightStyleItem_h
-#define HighlightStyleItem_h
+#ifndef HighlightPatternList_h
+#define HighlightPatternList_h
 
 // $Id$
 /******************************************************************************
@@ -24,45 +24,77 @@
 *******************************************************************************/
  
 /*!
-  \file HighlightStyleItem.h
-  \brief List box item for HighlightStyle
+  \file HighlightPatternList.h
+  \brief List box for HighlightPatterns
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
 */
 
-#include "ListWidget.h"
-#include "HighlightStyle.h"
+#include <QPushButton>
 
-//! List box item for HighlightStyle
-class HighlightStyleItem: public QListWidgetItem
+#include "Counter.h"
+#include "HighlightPatternModel.h"
+
+class TreeView;
+
+//! List box for HighlightPatterns
+class HighlightPatternList: public QWidget, public Counter
 {
+  
+  Q_OBJECT
   
   public:
   
   //! constructor
-  HighlightStyleItem( ListWidget* parent, const HighlightStyle& style ):
-    QListWidgetItem( parent )
-  { 
-    Debug::Throw( "HighlightStyleItem::HighlightStyleItem" );
-    update( style );
-  }
+  HighlightPatternList( QWidget* parent = 0 );
   
-  //! update
-  void update( const HighlightStyle& style )
-  { 
-    style_ = style;
-    setText( style_.name().c_str() );
-  }
+  //! Patterns
+  void setPatterns( const HighlightPattern::List& );
   
-  //! highlightStyle
-  const HighlightStyle& style( void ) const
-  { return style_; }
+  //! Patterns
+  HighlightPattern::List patterns( void );
+  
+  //! true when Patterns are modified
+  bool modified( void ) const
+  { return modified_; }
+  
+  private slots:
+  
+  //! update buttons enability
+  void _updateButtons( void );
+  
+  //! edit selected Pattern
+  void _edit( void );
+  
+  //! remove selected Pattern
+  void _remove( void );
+  
+  //! add new Pattern
+  void _add( void );
+  
+  //! store selection
+  void _storeSelection( void );
+  
+  //! restore selection
+  void _restoreSelection( void );
   
   private:
   
-  //! associated style
-  HighlightStyle style_;
+  //! list
+  TreeView* list_;
+  
+  //! model
+  HighlightPatternModel model_;
+  
+  //! buttons
+  QPushButton* edit_button_;
+  
+  //! buttons
+  QPushButton* remove_button_;
+  
+  //! modification state
+  bool modified_;
   
 };
 

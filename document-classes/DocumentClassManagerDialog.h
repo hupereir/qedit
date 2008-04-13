@@ -35,9 +35,9 @@
 #include <QPushButton>
 
 #include "CustomDialog.h" 
+#include "DocumentClass.h"
 #include "TreeWidget.h"
 
-class DocumentClass;
 class DocumentClassManager;
 
 //! list document classes
@@ -83,7 +83,7 @@ class DocumentClassManagerDialog: public CustomDialog
   void _loadClasses( void );
   
   //! add document class to listview
-  void _addClass( DocumentClass& );
+  void _addClass( const DocumentClass& );
   
   //! number of columns
   enum { n_columns_ = 2 };
@@ -104,24 +104,21 @@ class DocumentClassManagerDialog: public CustomDialog
     public: 
     
     //! constructor
-    Item( DocumentClass& document_class ):
-      document_class_( &document_class )
+    Item( const DocumentClass& document_class ):
+      document_class_( document_class )
     { update(); }
     
     //! update from document class
     void update( void );
     
     //! document class
-    DocumentClass& documentClass( void )
-    { 
-      assert( document_class_ );
-      return *document_class_;
-    }
+    const DocumentClass& documentClass( void )
+    { return document_class_; }
     
     private:
     
     //! document class
-    DocumentClass* document_class_;
+    DocumentClass document_class_;
     
   };
   
