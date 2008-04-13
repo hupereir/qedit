@@ -40,6 +40,8 @@ void installDefaultOptions( void )
 
   // set options default values
   XmlOptions::get().add( Option( "PIXMAP_PATH", ":/pixmaps"));
+  XmlOptions::get().add( Option( "PIXMAP_PATH", "/usr/share/icons/crystalsvg/32x32/mimetypes"));
+  
   XmlOptions::get().add( Option( "ICON_PIXMAP", ":/icon.png" , "application icon"));
 
   XmlOptions::get().add( Option( "USE_PRINT_COMMAND", "0", "use print/edit command" ) );

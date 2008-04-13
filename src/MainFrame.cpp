@@ -360,6 +360,12 @@ void MainFrame::updateDocumentClasses( void )
 
   if( !what.str().empty() ) QtUtil::infoDialog( 0, what.str() );
   
+  // load document classes icons into iconEngine cache, if any
+  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
+  const DocumentClassManager::ClassList& classes( class_manager_->list() );
+  for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
+  { if( !iter->icon().empty() ) { IconEngine::get( iter->icon(), path_list ); } }
+  
   // emit configuration changed to force displays to be updated
   emit documentClassesChanged();
   

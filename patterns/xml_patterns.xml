@@ -1,6 +1,6 @@
 <!-- $Id$-->
 <patterns>
-	<class name="xml" pattern="\.xml$" >
+	<class name="xml" pattern="\.xml$" icon="html.png" >
 		
 		<!-- highlight styles -->
 		<style format="2" name="Comment" color="#ff8c00" />

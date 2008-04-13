@@ -1,6 +1,7 @@
 <!-- $Id$-->
 <patterns>
- <class name="shell" pattern="((/\.(((t?c)|ba)?sh)rc)|(/\w+\.(((t?c)|ba)?sh))|(/configure(\.in)?)|.alias)$" first_line_pattern="^\s*#\s*!\s*(/.*bin/)?((t?c|k|ba)?sh)">
+ <class name="shell" pattern="((/\.(((t?c)|ba)?sh)rc)|(/\w+\.(((t?c)|ba)?sh))|(/configure(\.in)?)|.alias)$" first_line_pattern="^\s*#\s*!\s*(/.*bin/)?((t?c|k|ba)?sh)" icon="shellscript.png">
+
  <!-- highlight styles -->
  <style format="2" name="Comment" color="#ff8c00" />
  <style format="0" name="String" color="#00cd00" />

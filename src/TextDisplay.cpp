@@ -882,7 +882,11 @@ void TextDisplay::updateDocumentClass( void )
 
   // add information to Menu
   if( !file().empty() )
-  { menu().get( file() ).addInformation( "class_name", className() ); }
+  { 
+    FileRecord& record( menu().get( file() ) );
+    record.addInformation( "class_name", className() ); 
+    if( !document_class.icon().empty() ) record.addInformation( "icon", document_class.icon() );
+  }
 
   // rehighlight text entirely
   // because Pattern Ids may have changed even if the className has not changed.

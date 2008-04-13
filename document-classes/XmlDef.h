@@ -43,6 +43,7 @@ namespace XML {
   static const std::string DOCUMENT_CLASS( "class" );
   static const std::string PATTERN( "pattern" );
   static const std::string FIRSTLINE_PATTERN( "first_line_pattern" );
+  static const std::string ICON( "icon" );
   static const std::string OPTIONS( "options" );
   static const std::string OPTION_WRAP( "wrap" );
   static const std::string OPTION_DEFAULT( "default" );

@@ -1,6 +1,6 @@
 <!-- $Id$-->
 <patterns>
- <class name="perl" pattern="\.pr?(l|m)$" >
+ <class name="perl" pattern="\.pr?(l|m)$" icon="source_pl.png">
   <style format="2" name="Comment" color="#ff8c00" /> 
   <style format="0" name="String" color="#00cd00" />
   <style format="0" name="String2" color="#2e8b2e" />

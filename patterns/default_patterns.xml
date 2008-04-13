@@ -1,6 +1,6 @@
 <!-- $Id$-->
 <patterns>
- <class name="default" options="default">
+ <class name="default" options="default" icon="unknown.png">
 
  <!-- parenthesis -->
  <parenthesis begin="(" end=")" />

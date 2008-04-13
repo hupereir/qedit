@@ -44,6 +44,8 @@
 #include "CustomToolBar.h"
 #include "Debug.h"
 #include "Diff.h"
+#include "DocumentClass.h"
+#include "DocumentClassManager.h"
 #include "EditFrame.h"
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
@@ -860,6 +862,18 @@ void EditFrame::_updateConfiguration( void )
   // resize
   resize( QSize( XmlOptions::get().get<int>( "WINDOW_WIDTH" ), XmlOptions::get().get<int>( "WINDOW_HEIGHT" ) ) );
 
+  // assign icons to file in open previous menu based on class manager
+  list<File> files( menu_->openPreviousMenu().files() );
+  for( list<File>::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+  {
+    
+    FileRecord& record( menu_->openPreviousMenu().get( *iter ) ); 
+    if( !record.hasInformation( "class_name" ) ) continue; 
+    DocumentClass document_class( static_cast<MainFrame*>(qApp)->classManager().get( record.information( "class_name" ) ) );
+    if( !document_class.icon().empty() ) record.addInformation( "icon", document_class.icon() );
+  
+  }
+  
 }
 
 //________________________________________________________

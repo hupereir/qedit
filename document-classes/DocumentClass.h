@@ -104,6 +104,10 @@ class DocumentClass: public Counter
   const QRegExp& firstLineMatchingPattern( void ) const
   { return firstline_pattern_; }
   
+  //! icon name
+  const std::string& icon( void ) const
+  { return icon_; }
+  
   //! return true if document class match filename
   bool match( const File& file ) const;
 
@@ -217,6 +221,9 @@ class DocumentClass: public Counter
   
   //! wrap flag
   bool wrap_;
+  
+  //! icon name
+  std::string icon_;
   
   //! set of highlight styles
   HighlightStyle::Set highlight_styles_;

@@ -70,7 +70,6 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   tab_widget->addTab( box = new QWidget(), "&File pattern" );
   
   QVBoxLayout* v_layout;
-  QHBoxLayout* h_layout;
   v_layout = new QVBoxLayout();
   v_layout->setSpacing(5);
   v_layout->setMargin(10);
@@ -104,6 +103,7 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
 //   // indentation patterns
 //   // need to add "base indentation" QSpinBox. 
 //   tab_widget->addTab( box = new QWidget(), "&Indentation patterns" );
+//   QHBoxLayout* h_layout;
 //   h_layout = new QHBoxLayout();
 //   h_layout->setSpacing(5);
 //   h_layout->setMargin(10);

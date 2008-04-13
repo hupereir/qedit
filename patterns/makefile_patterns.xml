@@ -1,6 +1,6 @@
 <!-- $Id$--> 
 <patterns>
-<class name="makefiles" pattern="((/|\b)(m|M)akefile.*$)|(.pro$)" >
+<class name="makefiles" pattern="((/|\b)(m|M)akefile.*$)|(.pro$)" icon="make.png" >
 
  <!-- highlight styles --> 
   <style format="2" name="Comment" color="#ff8c00" /> 

@@ -58,6 +58,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     if( name == XML::NAME ) name_ = value ;
     else if( name == XML::PATTERN ) file_pattern_.setPattern( XmlUtil::xmlToText( value ).c_str() );
     else if( name == XML::FIRSTLINE_PATTERN ) firstline_pattern_.setPattern( XmlUtil::xmlToText( value ).c_str() ); 
+    else if( name == XML::ICON ) icon_ = XmlUtil::xmlToText( value ).c_str();
     else if( name == XML::OPTIONS )
     {
       if( value.find( XML::OPTION_WRAP ) != string::npos ) wrap_ = true;    
@@ -145,9 +146,11 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   if( wrap() ) what << XML::OPTION_WRAP << " ";
   if( isDefault() ) what << XML::OPTION_DEFAULT << " ";
   if( what.str().size() ) out.setAttribute( XML::OPTIONS.c_str(), what.str().c_str() ); 
-  
   if( baseIndentation() ) out.setAttribute( XML::BASE_INDENTATION.c_str(), Str().assign<int>( baseIndentation() ).c_str() );
 
+  // icon
+  if( !icon().empty() ) out.setAttribute( XML::ICON.c_str(), icon().c_str() );
+  
   // dump highlight styles
   for( set<HighlightStyle>::const_iterator iter = highlight_styles_.begin(); iter != highlight_styles_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }

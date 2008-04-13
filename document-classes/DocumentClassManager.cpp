@@ -53,7 +53,7 @@ void DocumentClassManager::clear( void )
 bool DocumentClassManager::read( const File& filename )
 {
   Debug::Throw() << "DocumentClassManager::read - file: " << filename << endl; 
-  
+ 
   // reset Read error
   read_error_ = "";
   
@@ -97,7 +97,7 @@ bool DocumentClassManager::read( const File& filename )
       // add new document class
       document_class.setFile( filename );
       document_classes_.push_back( document_class );
-      
+        
       // reset IndentPattern counter (for debugging)
       IndentPattern::resetCounter();
 
