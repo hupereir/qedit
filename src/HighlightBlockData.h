@@ -32,8 +32,10 @@
   \date $Date$
 */  
 
+#include <map>
+
 #include "TextBlockData.h"
-#include "HighlightPattern.h"
+#include "PatternLocation.h"
 
 #include "Config.h"
 
@@ -70,11 +72,11 @@ class HighlightBlockData: public TextBlockData
   {}
     
   //! syntax highlighting pattern locations
-  const HighlightPattern::LocationSet& locations( void ) const
+  const PatternLocationSet& locations( void ) const
   { return locations_; }
   
   //! syntax highlighting pattern locations
-  void setLocations( const HighlightPattern::LocationSet& locations )
+  void setLocations( const PatternLocationSet& locations )
   { locations_ = locations; }
   
   //!@name parenthesis
@@ -94,8 +96,12 @@ class HighlightBlockData: public TextBlockData
   //! clear parenthesis
   void clearParenthesis( void )
   { parenthesis_ = -1; }
+    
+  //@}
   
   #if WITH_ASPELL
+  //!@name spelling
+  //@{
   //! set of misspelled words
   const SPELLCHECK::Word::Set& misspelledWords( void ) const
   { return words_; }
@@ -106,17 +112,18 @@ class HighlightBlockData: public TextBlockData
   
   //! return misspelled word matching position, if any
   SPELLCHECK::Word misspelledWord( const int& position ) const;
+  //@}
   #endif
   
   private:
     
   //! locations and ids of matching syntax highlighting patterns
-  HighlightPattern::LocationSet locations_;
+  PatternLocationSet locations_;
   
   //! highlighted parenthesis location
   /*! local with respect to the block */
   int parenthesis_;
-  
+      
   #if WITH_ASPELL
   //! set of misspelled words and position in associated block
   SPELLCHECK::Word::Set words_;

@@ -38,8 +38,8 @@
 #include "Config.h"
 #include "Counter.h"
 #include "Debug.h"
-#include "Key.h"
 #include "HighlightPattern.h"
+#include "Key.h"
 #include "TextParenthesis.h"
 
 #if WITH_ASPELL
@@ -47,7 +47,6 @@
 #endif
 
 class HighlightPattern;
-class TextParenthesis;
 
 //! syntax highlighting based on text patterns
 class TextHighlight: public QSyntaxHighlighter, public Counter
@@ -62,8 +61,8 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   virtual void highlightBlock( const QString& text );
   
   //! retrieve highlight location for given text
-  HighlightPattern::LocationSet locationSet( const QString& text, const int& active_id );
-    
+  PatternLocationSet locationSet( const QString& text, const int& active_id ) const;
+  
   //!@name highlight patterns
   //@{
   
@@ -111,6 +110,17 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   //! parenthesis highlight color
   QColor parenthesisHighlightColor( void )
   { return parenthesis_highlight_format_.background().color(); }
+  
+  //! parenthesis
+  const TextParenthesis::List& parenthesis( void ) const
+  { return parenthesis_; }
+  
+  //! parenthesis
+  const TextParenthesis::Set& parenthesisSet( void ) const
+  { return parenthesis_set_; }
+  
+  //! set parenthesis
+  void setParenthesis( const TextParenthesis::List& );
 
   //@}  
   
@@ -138,12 +148,12 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   #endif
   
   private:
-
+  
   //!@name syntax highlighting
   //@{
   
   //! apply locations to current block
-  void _applyPatterns( const HighlightPattern::LocationSet& locations );
+  void _applyPatterns( const PatternLocationSet& locations );
  
   //! true if highlight is enabled
   bool highlight_enabled_;
@@ -161,6 +171,9 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   
   //! text parenthesis
   TextParenthesis::List parenthesis_;
+
+  //! keep track of all parenthesis in a single set for fast access
+  TextParenthesis::Set parenthesis_set_;
 
   //! parenthesis highlight format
   QTextCharFormat parenthesis_highlight_format_;

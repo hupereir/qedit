@@ -46,7 +46,6 @@
 #include "HighlightPattern.h"
 #include "ParenthesisHighlight.h"
 #include "TextIndent.h"
-#include "TextParenthesis.h"
 #include "TextMacro.h"
 #include "TimeStamp.h"
 
@@ -509,22 +508,6 @@ class TextDisplay: public CustomTextEdit
   
   #endif
 
-  //!@name parenthesis
-  //@{
-  
-  //! parenthesis enabled
-  bool _isParenthesisEnabled( void ) const
-  { return parenthesisHighlight().isEnabled(); }
-  
-  //! parenthesis
-  const TextParenthesis::List& _parenthesis( void ) const
-  { return parenthesis_; }
-  
-  //! set parenthesis
-  void _setParenthesis( const TextParenthesis::List& );
-  
-  //@}
-  
   private slots:
 
   //! update configuration
@@ -740,13 +723,7 @@ class TextDisplay: public CustomTextEdit
   
   //!@name text parenthesis
   //@{
-    
-  //! text parenthesis
-  TextParenthesis::List parenthesis_;
-
-  //! keep track of all parenthesis in a single set for fast access
-  TextParenthesis::Set parenthesis_set_;
-  
+      
   //§ parenthesis highlight object
   ParenthesisHighlight* parenthesis_highlight_;
   

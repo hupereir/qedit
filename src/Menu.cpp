@@ -176,9 +176,9 @@ void Menu::_updateDocumentClassMenu( void )
   for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
   { 
     // insert actions
-    QAction* action = document_class_menu_->addAction( (*iter)->name().c_str() ); 
-    if( (*iter)->name() == class_name ) action->setFont( font );
-    document_classes_.insert( make_pair( action, (*iter)->name() ) );    
+    QAction* action = document_class_menu_->addAction( iter->name().c_str() ); 
+    if( iter->name() == class_name ) action->setFont( font );
+    document_classes_.insert( make_pair( action, iter->name() ) );    
   }
   
   return;
