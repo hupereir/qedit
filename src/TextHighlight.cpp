@@ -226,6 +226,9 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, const int& a
     
     // process pattern, store activity
     bool active = false;
+    
+    // here one could check if the pattern appears at least once (by checking return value of processText
+    // and loop over children here (in place of main loop) if yes.
     pattern.processText( locations, text, active );
     if( active ) active_patterns |= pattern.id();
     

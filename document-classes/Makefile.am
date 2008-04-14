@@ -28,6 +28,7 @@ noinst_HEADERS = \
   HighlightStyleModel.h \
   HighlightStyleDialog.h \
   IndentPattern.h \
+  PatternLocation.h \
   TextMacro.h \
   TextParenthesis.h \
   XmlDef.h
