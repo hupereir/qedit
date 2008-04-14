@@ -74,9 +74,6 @@ class DocumentClassDialog: public CustomDialog
   //! highlight pattern list
   HighlightPatternList* highlight_pattern_list_;
   
-//   //! indent pattern list
-//   TreeWidget* indent_pattern_list_;
-
   //! modification state
   bool modified_;
   

@@ -174,7 +174,6 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, const int& a
     {
     
       // if still active. look for child patterns
-      // this could be made faster by storing child patterns into this one
       for( HighlightPattern::List::const_iterator child_iter = pattern.children().begin(); child_iter != pattern.children().end(); child_iter++ )
       { child_iter->processText( locations, text, active );}
    

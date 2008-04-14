@@ -79,13 +79,11 @@ HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
   connect( pattern_type_, SIGNAL( typeChanged( HighlightPattern::Type ) ), SLOT( _updateEditors( HighlightPattern::Type ) ) );
   
   // regular expression
-  QGroupBox* box = new QGroupBox( "Regular expressions", this );
-  mainLayout().addWidget( box );
   grid_layout = new CustomGridLayout();
   grid_layout->setSpacing( 5 );
-  grid_layout->setMargin( 5 );
+  grid_layout->setMargin( 0 );
   grid_layout->setMaxCount( 2 );
-  box->setLayout( grid_layout );  
+  mainLayout().addLayout( grid_layout );  
   
   grid_layout->addWidget( new QLabel( "Regular expression to match: ", this ) );
   grid_layout->addWidget( keyword_regexp_editor_ = new CustomLineEdit( this ) ); 

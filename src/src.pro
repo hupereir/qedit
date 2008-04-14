@@ -77,7 +77,6 @@ SOURCES = \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
   qedit.cpp \
-  RangePattern.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp

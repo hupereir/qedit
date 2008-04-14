@@ -30,6 +30,7 @@
 */
 
 #include <QHBoxLayout>
+#include <QLabel>
 
 #include "Debug.h"
 #include "HighlightPatternOptions.h"
@@ -39,13 +40,14 @@ using namespace std;
 
 //_____________________________________________
 HighlightPatternOptions::HighlightPatternOptions( QWidget* parent ):
-  QGroupBox( "Options", parent ),
+  QWidget( parent ),
   Counter( "HighlightPatternOptions" )
 {
   Debug::Throw( "HighlightPatternOptions::HighlightPatternOptions.\n" );
   setLayout( new QHBoxLayout() );
-  layout()->setMargin(5);
+  layout()->setMargin(0);
   layout()->setSpacing(5);
+  layout()->addWidget( new QLabel( "Options: ", this ) ); 
   layout()->addWidget( span_ = new QCheckBox( "&Span", this ) );
   layout()->addWidget( no_indent_ = new QCheckBox( "&No indentation", this ) );
   layout()->addWidget( case_sensitive_ = new QCheckBox( "&Case sensitive", this ) );

@@ -34,12 +34,12 @@
 */
 
 #include <QCheckBox>
-#include <QGroupBox>
+#include <QWidget>
 
 #include "Counter.h"
 
 //! font formating
-class HighlightPatternOptions: public QGroupBox, public Counter
+class HighlightPatternOptions: public QWidget, public Counter
 {
 
   public:

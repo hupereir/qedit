@@ -34,14 +34,14 @@
 */
 
 #include <QCheckBox>
-#include <QGroupBox>
+#include <QWidget>
 #include <map>
 
 #include "Counter.h"
 #include "HighlightPattern.h"
 
 //! highlight pattern type selection
-class HighlightPatternType: public QGroupBox, public Counter
+class HighlightPatternType: public QWidget, public Counter
 {
 
   //! Qt object 

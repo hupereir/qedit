@@ -32,6 +32,7 @@
 
 #include <assert.h>
 #include <QButtonGroup>
+#include <QLabel>
 #include <QLayout>
 
 #include "HighlightPatternType.h"
@@ -40,15 +41,16 @@ using namespace std;
 
 //___________________________________________________
 HighlightPatternType::HighlightPatternType( QWidget* parent ):
-  QGroupBox( "Type", parent ),
+  QWidget( parent ),
   Counter( "HighlightPatternType" )
 {
 
   Debug::Throw( "HighlightPatternType::HighlightPatternType.\n" );
   setLayout( new QHBoxLayout() );
-  layout()->setMargin(5);
+  layout()->setMargin(0);
   layout()->setSpacing(5);
 
+  layout()->addWidget( new QLabel( "Type: ", this ) );
   QButtonGroup* group = new QButtonGroup();
   group->setExclusive( true );
   connect( group, SIGNAL( buttonClicked( QAbstractButton* ) ), SLOT( _typeChanged( QAbstractButton* ) ) );
