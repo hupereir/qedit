@@ -244,15 +244,18 @@ class HighlightPattern: public Counter
     }
   }
   
-  //! process text and returns the matching locations
-  /*! locations and active parameters are changed */
-  void processText( PatternLocationSet& locations, const QString& text, bool& active ) const
+  //! process text and update the matching locations.
+  /*! 
+  Returns true if at least one match is found. 
+  Locations and active parameters are changed 
+  */
+  bool processText( PatternLocationSet& locations, const QString& text, bool& active ) const
   {
     switch( type() )
     {
       case KEYWORD_PATTERN: return _findKeyword( locations, text, active );
       case RANGE_PATTERN: return _findRange( locations, text, active );
-      default: return;
+      default: return false;
     }
   }
   
@@ -303,10 +306,10 @@ class HighlightPattern: public Counter
   protected:
 
   //! find keyword pattern
-  void _findKeyword( PatternLocationSet&, const QString&, bool& ) const;
+  bool _findKeyword( PatternLocationSet&, const QString&, bool& ) const;
   
   //! find range pattern
-  void _findRange( PatternLocationSet&, const QString&, bool& ) const;
+  bool _findRange( PatternLocationSet&, const QString&, bool& ) const;
 
   private:
         

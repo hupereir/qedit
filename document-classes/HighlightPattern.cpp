@@ -148,27 +148,6 @@ bool HighlightPattern::differs( const HighlightPattern& pattern ) const
 }
   
 //____________________________________________________________
-void HighlightPattern::_findKeyword( PatternLocationSet& locations, const QString& text, bool& active ) const
-{
-    
-  //! disable activity
-  active=false;
-
-  //! check RegExp
-  if( keyword().isEmpty() ) return;
-  int position( 0 );
-  while( position >= 0 )
-  {
-    position = keyword().indexIn( text, position );
-    if( position >= 0 )
-    {
-      locations.insert( PatternLocation( *this, position, keyword().matchedLength() ) );
-      position += keyword().matchedLength();
-    }
-  }
-}
-
-//____________________________________________________________
 string HighlightPattern::typeName( const Type& type )
 {
   switch( type )
@@ -180,14 +159,44 @@ string HighlightPattern::typeName( const Type& type )
 }   
 
 //____________________________________________________________
-void HighlightPattern::_findRange( PatternLocationSet& locations, const QString& text, bool& active ) const
+bool HighlightPattern::_findKeyword( PatternLocationSet& locations, const QString& text, bool& active ) const
+{
+    
+  // disable activity
+  active=false;
+  
+  // check RegExp
+  if( keyword().isEmpty() ) return false;
+
+  // process text
+  bool found( false );
+  int position( 0 );
+  while( position >= 0 )
+  {
+    position = keyword().indexIn( text, position );
+    if( position >= 0 )
+    {
+      found = true;
+      locations.insert( PatternLocation( *this, position, keyword().matchedLength() ) );
+      position += keyword().matchedLength();
+    }
+  }
+  
+  return found;
+  
+}
+
+//____________________________________________________________
+bool HighlightPattern::_findRange( PatternLocationSet& locations, const QString& text, bool& active ) const
 {
   
   // check RegExp
-  if( begin().isEmpty() || end().isEmpty() ) return;
+  if( begin().isEmpty() || end().isEmpty() ) return false;
   
   int begin(0);
   int end(0);
+  
+  bool found( false );
   
   // check if pattern spans over paragraphs
   // and was active in previous paragraph
@@ -198,17 +207,19 @@ void HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
     end = HighlightPattern::end().indexIn( text, 0 );
     if( end < 0 )
     {
+      
       // no match found.
       // pattern is still active for next paragraph
       // the whole paragraph match the pattern
       locations.insert( PatternLocation( *this, 0, text.size() ) );
-      return;  
+      return true;  
       
     } else {
         
       // found matching end.
       // pattern is not active any more but one needs to check if it does not start again
       active = false;
+      found = true;
       end+=HighlightPattern::end().matchedLength();
       locations.insert( PatternLocation( *this, 0, end ) );
       
@@ -244,6 +255,7 @@ void HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
       {
         // no end found. 
         // Pattern will still be active in next paragraph
+        found = true;
         active = true;
         locations.insert( PatternLocation( *this, begin, text.size()-begin ) );
       }
@@ -253,10 +265,11 @@ void HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
     
     // found end matching begin
     // append new text location
+    found = true;
     end += HighlightPattern::end().matchedLength();
     locations.insert( PatternLocation( *this, begin, end-begin ) );
     
   }
   
-  return;
+  return found;
 }

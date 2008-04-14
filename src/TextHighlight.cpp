@@ -229,8 +229,21 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, const int& a
     
     // here one could check if the pattern appears at least once (by checking return value of processText
     // and loop over children here (in place of main loop) if yes.
+    // bool found( pattern.processText( locations, text, active ) );
     pattern.processText( locations, text, active );
     if( active ) active_patterns |= pattern.id();
+    
+//     // if found at least one occurence, also process children
+//     // this does not work in case there are multiple level children patterns
+//     // what one really needs to do is a recursive list.
+//     if( found )
+//     {
+//       for( HighlightPattern::List::const_iterator child_iter = pattern.children().begin(); child_iter != pattern.children().end(); child_iter++ )
+//       { 
+//         child_iter->processText( locations, text, active );
+//         if( active ) active_patterns |= pattern.id();
+//       }
+//     }      
     
   }
   
@@ -285,14 +298,8 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, const int& a
         iter++;
         
         // remove pattern from active list
-        /* 
-        this may not work in case there are 
-        occurences of the same pattern later in the set
-        besides it is useless since one loops again
-        over patterns afterwards to decide which one is active
-        */
-        // active_patterns &= (~current->id());
         locations.erase( current );
+        
       }
       
     } else {
