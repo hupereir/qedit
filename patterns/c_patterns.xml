@@ -116,7 +116,7 @@
  </keyword_pattern>
 
  <keyword_pattern style="Storage Type" name="Stl Storage Type" >
-  <keyword>(\b(std::)?((string(::npos)?)|set|map|list|((i|i?o)(f|string)?stream)|endl|c(out|err|log)|vector)\b)|(::(const_)?(reverse_)?iterator\b)</keyword>
+  <keyword>(\b(std::)?((string(::npos)?)|set|map|pair|list|((i|i?o)(f|string)?stream)|endl|c(out|err|log)|vector)\b)|(::(const_)?(reverse_)?iterator\b)</keyword>
   <comments>storage type (STL)</comments>
  </keyword_pattern>
 
