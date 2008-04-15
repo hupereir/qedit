@@ -73,7 +73,10 @@ class HighlightPattern: public Counter
   
   //! typedef for list of patterns
   typedef std::vector< HighlightPattern > List;
-  
+
+  //! no parent pattern
+  static std::string no_parent_pattern_;  
+
   //! constructor from DomElement
   HighlightPattern( const QDomElement& element = QDomElement() );
   

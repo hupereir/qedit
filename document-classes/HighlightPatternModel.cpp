@@ -36,8 +36,8 @@ using namespace std;
 const char* HighlightPatternModel::column_titles_[HighlightPatternModel::n_columns] = 
 {
   "name",
-  "parent",
-  "type"
+  "type",
+  "parent"
 };
 
 //__________________________________________________________________

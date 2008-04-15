@@ -41,6 +41,7 @@
 #include "HighlightStyle.h"
 
 class CustomLineEdit;
+class CustomTextEdit;
 class HighlightPatternOptions;
 class HighlightPatternType;
 
@@ -81,9 +82,6 @@ class HighlightPatternDialog: public CustomDialog
   //! initial pattern (to avoid duplication of ids)
   HighlightPattern pattern_;
   
-  //! no parent pattern
-  static std::string no_parent_pattern_;
-  
   //! name editor
   CustomLineEdit* name_editor_;
   
@@ -107,6 +105,9 @@ class HighlightPatternDialog: public CustomDialog
   
   //! highlight style combobox
   QComboBox* style_combobox_;
+  
+  //! comments editor
+  CustomTextEdit* comments_editor_;
   
 };
 

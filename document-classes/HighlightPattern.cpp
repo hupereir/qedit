@@ -40,6 +40,10 @@
 using namespace std;
 
 //___________________________________________________________________________
+std::string HighlightPattern::no_parent_pattern_ = "None";
+
+
+//___________________________________________________________________________
 HighlightPattern::HighlightPattern( const QDomElement& element ):
   Counter( "HighlightPattern" ),
   id_( 0 ),

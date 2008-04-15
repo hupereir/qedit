@@ -33,9 +33,10 @@
 #include <QLayout>
 #include <QLabel>
 
-#include "HighlightPatternDialog.h"
 #include "CustomGridLayout.h"
 #include "CustomLineEdit.h"
+#include "CustomTextEdit.h"
+#include "HighlightPatternDialog.h"
 #include "HighlightPatternOptions.h"
 #include "HighlightPatternType.h"
 #include "QtUtil.h"
@@ -43,14 +44,13 @@
 using namespace std;
 
 //________________________________________________________________________
-std::string HighlightPatternDialog::no_parent_pattern_ = "None";
-
-//________________________________________________________________________
 HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
   CustomDialog( parent )
 {
   
   Debug::Throw( "HighlightPatternDialog::HighlightPatternDialog.\n" );
+  
+  mainLayout().setSpacing(5);
   
   // name 
   CustomGridLayout* grid_layout( new CustomGridLayout() );
@@ -66,7 +66,7 @@ HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
   grid_layout->addWidget( new QLabel( "Parent pattern: ", this ) );
   grid_layout->addWidget( parent_combobox_ = new QComboBox( this ) );
   parent_combobox_->setEditable( false );
-  parent_combobox_->addItem( no_parent_pattern_.c_str() );
+  parent_combobox_->addItem( HighlightPattern::no_parent_pattern_.c_str() );
    
   // styles
   grid_layout->addWidget( new QLabel( "Highlight style: ", this ) );
@@ -91,6 +91,10 @@ HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
   grid_layout->addWidget( end_regexp_label_ = new QLabel( "Ending regular expression: ", this ) );
   grid_layout->addWidget( end_regexp_editor_ = new CustomLineEdit( this ) ); 
   
+  // comments
+  mainLayout().addWidget( new QLabel( "Comments: ", this ) );
+  mainLayout().addWidget( comments_editor_ = new CustomTextEdit( this ) );
+  
   _updateEditors( pattern_type_->type() );
   
 }
@@ -102,12 +106,12 @@ void HighlightPatternDialog::setPatterns( const HighlightPattern::List& patterns
   
   // update parent_combobox
   parent_combobox_->clear();
-  parent_combobox_->addItem( no_parent_pattern_.c_str() );
+  parent_combobox_->addItem( HighlightPattern::no_parent_pattern_.c_str() );
   for( HighlightPattern::List::const_iterator iter = patterns.begin(); iter != patterns.end(); iter++ )
   { parent_combobox_->addItem( iter->name().c_str() ); }
   
   //! select default parent pattern
-  parent_combobox_->setCurrentIndex( parent_combobox_->findText( no_parent_pattern_.c_str() ) );
+  parent_combobox_->setCurrentIndex( parent_combobox_->findText( HighlightPattern::no_parent_pattern_.c_str() ) );
 }
 
 //________________________________________________________________________
@@ -125,7 +129,6 @@ void HighlightPatternDialog::setStyles( const HighlightStyle::Set& styles )
   return;
   
 }
-
 
 //________________________________________________________________________
 void HighlightPatternDialog::setPattern( const HighlightPattern& pattern )
@@ -148,9 +151,12 @@ void HighlightPatternDialog::setPattern( const HighlightPattern& pattern )
   style_combobox_->setCurrentIndex( style_combobox_->findText( pattern_.style().name().c_str() ) );
   
   // parent
-  if( pattern.parent().empty() ) { parent_combobox_->setCurrentIndex( parent_combobox_->findText( no_parent_pattern_.c_str() ) ); }
+  if( pattern.parent().empty() ) { parent_combobox_->setCurrentIndex( parent_combobox_->findText( HighlightPattern::no_parent_pattern_.c_str() ) ); }
   else { parent_combobox_->setCurrentIndex( parent_combobox_->findText( pattern_.parent().c_str() ) ); }
 
+  // comments
+  comments_editor_->setPlainText( pattern.comments().c_str() );
+  
   _updateEditors( pattern_type_->type() );
   
   return;
@@ -162,7 +168,9 @@ HighlightPattern HighlightPatternDialog::pattern( void )
   
   Debug::Throw( "HighlightPatternDialog::pattern.\n" );
   pattern_.setName( qPrintable( name_editor_->text() ) );
-  pattern_.setParent( qPrintable( parent_combobox_->itemText( parent_combobox_->currentIndex() ) ) );
+  
+  string parent( qPrintable( parent_combobox_->itemText( parent_combobox_->currentIndex() ) ) );
+  pattern_.setParent( parent == HighlightPattern::no_parent_pattern_ ? "":parent );
 
   // style
   set<HighlightStyle>::iterator style_iter ( styles_.find( HighlightStyle( qPrintable( style_combobox_->itemText( style_combobox_->currentIndex() ) ) ) ) );
@@ -175,6 +183,8 @@ HighlightPattern HighlightPatternDialog::pattern( void )
   pattern_.setKeyword( qPrintable( keyword_regexp_editor_->text() ) );
   if( pattern_.type() == HighlightPattern::RANGE_PATTERN ) 
   { pattern_.setEnd( qPrintable( end_regexp_editor_->text() ) ); }
+  
+  pattern_.setComments( qPrintable( comments_editor_->toPlainText() ) );
   
   return pattern_;
   

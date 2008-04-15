@@ -57,8 +57,8 @@ class HighlightPatternModel : public ListModel<HighlightPattern>
  //! column type enumeration
   enum ColumnType { 
     NAME,
-    PARENT,
-    TYPE
+    TYPE,
+    PARENT
   };
 
   //!@name methods reimplemented from base class
