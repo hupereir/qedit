@@ -36,7 +36,7 @@
 
  <!-- comments  -->
  <range_pattern style="Comment" name="Comment" options="no_indent no_case" >
-  <begin>^(c|\*)</begin>
+  <begin>^(c|C|\*)</begin>
   <end>$</end>
  </range_pattern>
 
