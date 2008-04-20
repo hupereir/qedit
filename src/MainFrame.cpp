@@ -176,7 +176,6 @@ void MainFrame::realizeWidget( void )
   
   spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "&Spell-check &Configuration", 0 );
   connect( spellcheck_configuration_action_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
-
   
   // class manager
   class_manager_ = new DocumentClassManager();
@@ -666,6 +665,21 @@ void MainFrame::_readFilesFromArgs( void )
     
   // retrieve files from arguments
   ArgList::Arg last_arg( args_.get().back() );
+  
+  // check number of files
+  if( last_arg.options().size() > 10 )
+  {
+    ostringstream what;
+    what << "Do you really want to open " << last_arg.options().size() << " files at the same time ?" << endl;
+    what << "This might be very resource intensive and can overload your computer." << endl;
+    what << "If you choose No, only the first file will be opened.";
+    if( !QtUtil::questionDialog( 0, what.str() ) )
+    {
+      ArgList::Arg tmp;
+      tmp.options().push_back( last_arg.options().front() );
+      last_arg = tmp;
+    }
+  }
   
   // see if tabbed mode
   bool tabbed( args_.find( "--tabbed" ) );
