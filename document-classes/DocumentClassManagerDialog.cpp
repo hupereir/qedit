@@ -32,13 +32,16 @@
 #include <qpushbutton.h>
 #include <qtooltip.h>
 
+#include "BaseIcons.h"
 #include "CustomFileDialog.h"
+#include "CustomPixmap.h"
 #include "Debug.h"
 #include "DocumentClass.h"
 #include "DocumentClassManagerDialog.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassDialog.h"
 #include "HighlightStyleList.h"
+
 #include "Options.h" 
 #include "QtUtil.h"
 #include "XmlOptions.h"
@@ -58,8 +61,32 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   document_class_manager_( manager )
 {
   Debug::Throw( "DocumentClassManagerDialog::DocumentClassManagerDialog.\n" );
-  
+ 
   QHBoxLayout* layout = new QHBoxLayout();
+  layout->setSpacing(20);
+  layout->setMargin(0);
+  mainLayout().addLayout( layout );
+
+  //! try load Question icon
+  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
+  CustomPixmap question_pixmap( CustomPixmap().find( ICONS::WARNING, path_list ) );
+  
+  // insert main vertical box
+  if( !question_pixmap.isNull() )
+  {
+    QLabel* label = new QLabel( this );
+    label->setPixmap( question_pixmap );
+    layout->addWidget( label );
+    QtUtil::fixSize( label );
+  }
+  layout->addWidget( new QLabel( 
+    "This feature is work-in-progress and still largely incomplete.\n"
+    "Future versions will allow to modify and save the document classes\n"
+    "used to display documents of various types. Right now it allows \n"
+    "to edit and display some of the document classes components, but \n"
+    "changes made to these are not stored.", this ) );
+  
+  layout = new QHBoxLayout();
   layout->setSpacing(5);
   layout->setMargin(0);
   mainLayout().addLayout( layout );
