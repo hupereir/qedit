@@ -54,6 +54,7 @@ HEADERS = \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
+  TextView.h \
   WindowTitle.h \
   XmlDef.h
  
@@ -79,5 +80,6 @@ SOURCES = \
   qedit.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
-  TextIndent.cpp
+  TextIndent.cpp \
+  TextView.cpp
 

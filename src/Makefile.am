@@ -86,6 +86,7 @@ noinst_HEADERS = \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
+  TextView.h \
   WindowTitle.h
 
 qedit_SOURCES = \
@@ -110,7 +111,8 @@ qedit_SOURCES = \
   qedit.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
-  TextIndent.cpp
+  TextIndent.cpp \
+  TextView.cpp
 
 nodist_qedit_SOURCES = \
   qrc_pixmaps.cpp \
