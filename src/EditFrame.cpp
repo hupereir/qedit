@@ -68,7 +68,7 @@
 using namespace std;
 using namespace Qt;
 
-#define USE_TEXTVIEW
+//#define USE_TEXTVIEW
 
 //_____________________________________________________
 EditFrame::EditFrame(  QWidget* parent ):

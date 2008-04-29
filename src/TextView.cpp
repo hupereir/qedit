@@ -56,7 +56,8 @@ TextView::TextView( QWidget* parent ):
   editor_->setFrameStyle( QFrame::NoFrame );
   
   line_number_widget_ = new LineNumberWidget( &editor(), this );
-    
+  lineNumberWidget().setFixedWidth( lineNumberWidget().fontMetrics().width( "00000" ) + 14 );
+   
   layout->addWidget( &lineNumberWidget(), 0 );
   layout->addWidget( &editor(), 1 );
   
