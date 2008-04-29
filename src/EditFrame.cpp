@@ -61,11 +61,14 @@
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
+#include "TextView.h"
 #include "Util.h"
 #include "WindowTitle.h"
 
 using namespace std;
 using namespace Qt;
+
+#define USE_TEXTVIEW
 
 //_____________________________________________________
 EditFrame::EditFrame(  QWidget* parent ):
@@ -109,7 +112,12 @@ EditFrame::EditFrame(  QWidget* parent ):
   
   // create new Text display and register autosave thread
   TextDisplay& display = _newTextDisplay( main_ );
+  
+  #ifdef USE_TEXTVIEW
+  main_->layout()->addWidget( display.parentWidget() );
+  #else
   main_->layout()->addWidget( &display );
+  #endif
   
   display.setActive( true );
   static_cast<MainFrame*>(qApp)->autoSave().newThread( &display );
@@ -1136,7 +1144,7 @@ void EditFrame::_closeView( TextDisplay& display )
 TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& clone )
 {
   
-  Debug::Throw( "EditFrame::_splitView.\n" );
+  Debug::Throw( 0, "EditFrame::_splitView.\n" );
 
   // keep local pointer to current active display
   TextDisplay& active_display_local( activeDisplay() );  
@@ -1154,9 +1162,14 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
   TextDisplay& display( _newTextDisplay(0) );
   
   // insert in splitter, at correct position
+  #ifdef USE_TEXTVIEW
+  if( clone ) splitter.insertWidget( splitter.indexOf( &active_display_local)+1, display.parentWidget()  );
+  else splitter.addWidget( display.parentWidget() );
+  #else
   if( clone ) splitter.insertWidget( splitter.indexOf( &active_display_local)+1, &display  );
   else splitter.addWidget( &display );
-  
+  #endif
+
   // recompute dimension
   // take the max of active display and splitter,
   // in case no new splitter was created.
@@ -1214,7 +1227,7 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
 QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& clone )
 {
 
-  Debug::Throw( "EditFrame::_newSplitter.\n" );
+  Debug::Throw( 0, "EditFrame::_newSplitter.\n" );
   QSplitter *splitter = 0;
   
   if( clone )
@@ -1313,14 +1326,16 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
 //_____________________________________________________________
 TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
 {
-  Debug::Throw( "EditFrame::newTextDisplay.\n" );
-
-  // retrieve existsing displays
-  BASE::KeySet<TextDisplay> displays( this );
+  Debug::Throw( 0, "EditFrame::_newTextDisplay.\n" );
 
   // create textDisplay
-  // disable accelerator because they are handled in the menu
-  TextDisplay* display = new TextDisplay( parent );
+  #ifdef USE_TEXTVIEW
+  TextView* text_view = new TextView( parent );
+  TextDisplay* display = &text_view->editor();
+  #else
+  TextDisplay* display =new TextDisplay( parent );
+  #endif
+  
   display->setMenu( &menu_->openPreviousMenu() );
 
   // connections
