@@ -43,6 +43,8 @@
 #include "HighlightBlockData.h"
 #include "XmlOptions.h"
 
+using namespace std;
+
 //____________________________________________________________________________
 BlockDelimiterWidget::BlockDelimiterWidget(CustomTextEdit* editor, QWidget* parent): 
   QWidget( parent),
@@ -61,7 +63,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(CustomTextEdit* editor, QWidget* pare
   _updateConfiguration();
   
   // width
-  setFixedWidth( 32 );
+  setFixedWidth( fontMetrics().lineSpacing() );
 
 }
 
@@ -84,7 +86,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   painter.translate( 0, -y_offset );
   
   // calculate height
-  int height( QWidget::height() - metric.lineSpacing() );
+  // int height( QWidget::height() - metric.lineSpacing() );
+  int height( QWidget::height() );
   if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
   
   int block_count = 0;
@@ -92,43 +95,48 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   for( QTextBlock block = document.begin(); block.isValid(); block = block.next() )
   {
     
+    // draw tick if visible
+    int block_y( block.layout()->position().y() );
+    int block_height( block.layout()->boundingRect().height() );
+
     // retrieve data and check this block delimiter
     HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
-    if( !( data && ( data->delimiter().begin_ || data->delimiter().end_ ) ) ) 
-    { continue; }
-    
-    // draw tick if visible
-    QPointF point( block.layout()->position() );
-    if( point.y() + 20 - y_offset < 0 )
-    {
-      if( data->delimiter().begin_ )
-      {
-        // draw begin delimiter
-      } else {
-        // draw end delimiter
-      }
-    }
-    
-    // now set lines
-    if( block_count == 0 && data->delimiter().begin_ )
+    if( data && ( data->delimiter().begin_ || data->delimiter().end_ ) ) 
     { 
-      // set begin point 
-    }
     
-    // update block count
-    block_count = std::max<int>( 0, block_count + data->delimiter().begin_ - data->delimiter().end_ );
-    if( block_count - data->delimiter().end_ < 0 )
-    {
-      // set end point and draw line
+      if( block_y + 20 - y_offset >= 0 )
+      {
+        if( data->delimiter().begin_ ) painter.drawLine( width()/2, block_y, width(), block_y );
+        else painter.drawLine( width()/2, block_y + block_height, width(), block_y + block_height );          
+      }
+            
+      // now set lines
+      if( block_count == 0 && data->delimiter().begin_ )
+      { 
+        // set begin point 
+        start_point = QPoint( width()/2, block_y );
+      }
+      
+      // update block count
+      block_count = std::max<int>( 0, block_count + data->delimiter().begin_ - data->delimiter().end_ );
+      if( block_count == 0 && data->delimiter().end_ )
+      {
+        // set end point and draw line
+        QPoint end_point = QPoint(  width()/2, block_y + block_height );
+        painter.drawLine( start_point, end_point );
+      }
+    
     }
     
     // check if outside of window
-    if ( point.y() - y_offset > height ) 
+    if ( block_y - y_offset > height ) 
     {
       
       if( block_count > 0 )
       {
         // set end point and draw line
+        QPoint end_point = QPoint(  width()/2, height + y_offset );
+        painter.drawLine( start_point, end_point );
       }
       
       // exit loop

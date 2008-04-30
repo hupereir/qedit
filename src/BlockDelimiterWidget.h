@@ -42,7 +42,7 @@
 class CustomTextEdit;
 
 //! display block delimiters
-class BlockDelimiterWidget: public QWidget, public Counter
+class BlockDelimiterWidget: public QWidget, public Counter 
 {
 
   //! Qt meta object

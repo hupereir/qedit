@@ -232,19 +232,7 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, const int& a
     // bool found( pattern.processText( locations, text, active ) );
     pattern.processText( locations, text, active );
     if( active ) active_patterns |= pattern.id();
-    
-//     // if found at least one occurence, also process children
-//     // this does not work in case there are multiple level children patterns
-//     // what one really needs to do is a recursive list.
-//     if( found )
-//     {
-//       for( HighlightPattern::List::const_iterator child_iter = pattern.children().begin(); child_iter != pattern.children().end(); child_iter++ )
-//       { 
-//         child_iter->processText( locations, text, active );
-//         if( active ) active_patterns |= pattern.id();
-//       }
-//     }      
-    
+        
   }
   
   // check number of recorded locations
@@ -358,7 +346,7 @@ void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
 TextBlock::Delimiter TextHighlight::_delimiter( const QString& text ) const
 {
   
-  QRegExp delimiter_regexp( "{|}" );
+  QRegExp delimiter_regexp( "\\{|\\}" );
   TextBlock::Delimiter out;
   int position = 0;
   while( (position = text.indexOf( delimiter_regexp, position ) ) >= 0 )
@@ -373,6 +361,7 @@ TextBlock::Delimiter TextHighlight::_delimiter( const QString& text ) const
     position++;
   }
   
+  //Debug::Throw(0) << "TextHighlight::_delimiter - " << out << endl;
   return out;
  
 }

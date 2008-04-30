@@ -32,6 +32,8 @@
   \date $Date$
 */  
 
+#include <iostream>
+
 #include "TextBlockFlags.h"
 
 namespace TextBlock
@@ -73,6 +75,13 @@ namespace TextBlock
     
     //! number of times the block is of type "end"
     unsigned int end_;
+    
+    //! streamer
+    friend std::ostream& operator << ( std::ostream& out, const Delimiter& dilimiter )
+    {
+      out << "(" << dilimiter.begin_ << "," << dilimiter.end_ << ")";
+      return out;
+    }
     
   };
   

@@ -88,15 +88,15 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   QPainter painter( this );
   painter.translate( 0, -y_offset );
   
-  int height( QWidget::height() - metric.lineSpacing() );
+  int height( QWidget::height() - metric.lineSpacing() + y_offset );
   if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
   
   int block_count(1);
   for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), block_count++ )
   {
-    QPointF point( block.layout()->position() );
-    if ( point.y() + 20 - y_offset < 0 ) continue;    
-    if ( point.y() - y_offset > height ) break;
+    int block_y( block.layout()->position().y() );
+    if ( block_y + 20 - y_offset < 0 ) continue;    
+    if ( block_y > height ) break;
     
     // block highlight
     TextBlockData* data = 0;
@@ -110,7 +110,7 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
       
       painter.setPen( Qt::NoPen );
       painter.drawRect( QRect( 
-        0, point.y(), width(),
+        0, block_y, width(),
         metric.lineSpacing() ) );
       
       painter.setPen( palette().color( QPalette::Text ) );
@@ -120,7 +120,7 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
     QString numtext( QString::number(block_count) );
     
     painter.drawText(
-      0, point.y(), width()-8,
+      0, block_y, width()-8,
       metric.lineSpacing(),
       Qt::AlignRight | Qt::AlignTop, 
       numtext );
