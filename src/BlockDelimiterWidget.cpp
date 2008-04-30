@@ -137,19 +137,15 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
     }
     
     // check if outside of window
-    if( block_begin > height ) 
-    {
-      
-      if( block_count > 0 && start_point.y() < height )
-      {
-        // set end point and draw line
-        QPoint end_point = QPoint(  width()/2, height );
-        painter.drawLine( start_point, end_point );
-      }
-       
-      // exit loop
-      break;
-    }
+    if( block_begin > height ) break;
+  }
+
+  // draw vertical line if needed
+  if( block_count > 0 && start_point.y() < height )
+  {
+    // set end point and draw line
+    QPoint end_point = QPoint(  width()/2, height );
+    painter.drawLine( start_point, end_point );
   }
 
   painter.end();
