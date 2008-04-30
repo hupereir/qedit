@@ -361,7 +361,7 @@ TextBlock::Delimiter TextHighlight::_delimiter( const QString& text ) const
   QRegExp delimiter_regexp( "{|}" );
   TextBlock::Delimiter out;
   int position = 0;
-  while( (position = text.indexOf( delimiter_regexp, position ) ) )
+  while( (position = text.indexOf( delimiter_regexp, position ) ) >= 0 )
   {
     if( text.at( position ) == '{' ) out.begin_++;
     else if( text.at( position ) == '}' )

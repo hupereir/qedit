@@ -45,6 +45,7 @@ class CustomTextEdit;
 class LineNumberWidget: public QWidget, public Counter
 {
 
+  //! Qt meta object
   Q_OBJECT  
 
   public:
@@ -65,9 +66,6 @@ class LineNumberWidget: public QWidget, public Counter
   //! configuration
   void _updateConfiguration( void );
   
-  //! paragraph highlight
-  void _highlightParagraph( void );
-  
   private:
   
   //! editor
@@ -79,9 +77,6 @@ class LineNumberWidget: public QWidget, public Counter
   
   //! current block highlight color
   QColor highlight_color_;
-
-  //! keep track of current block
-  int current_block_;
   
 };
 

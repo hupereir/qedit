@@ -1,6 +1,7 @@
+#ifndef BlockDelimiterWidget_h
+#define BlockDelimiterWidget_h
+
 // $Id$
-#ifndef TextView_h
-#define TextView_h
 
 /******************************************************************************
 *
@@ -17,67 +18,62 @@
 * for more details.
 *
 * You should have received a copy of the GNU General Public License along with
-* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* software; if not, write to the Free Software , Inc., 59 Temple
 * Place, Suite 330, Boston, MA  02111-1307 USA
 *
 *
 *******************************************************************************/
 
 /*!
-  \file TextView.h
-  \brief compound widget to associate TextDisplay and LineNumberWidget
+  \file BlockDelimiterWidget.h
+  \brief display block delimiters
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
 */
 
-#include <QFrame>
+#include <QColor>
+#include <QFont>
+#include <QPaintEvent>
+#include <QWidget>
 
 #include "Counter.h"
 
-class TextDisplay;
-class LineNumberWidget;
-class BlockDelimiterWidget;
+class CustomTextEdit;
 
-class TextView: public QFrame, public Counter
+//! display block delimiters
+class BlockDelimiterWidget: public QWidget, public Counter
 {
-  
+
+  //! Qt meta object
+  Q_OBJECT  
+
   public:
-  
+    
   //! constructor
-  TextView( QWidget* parent );
+  BlockDelimiterWidget(CustomTextEdit*, QWidget* parent);
+
+  //! destructor
+  virtual ~BlockDelimiterWidget();
+  
+  protected:
+  
+  //! paint
+  virtual void paintEvent( QPaintEvent* );
+
+  private slots:
+  
+  //! configuration
+  void _updateConfiguration( void );
+    
+  private:
   
   //! editor
-  TextDisplay &editor( void ) const
-  {
-    assert( editor_ );
-    return *editor_;
-  }
+  CustomTextEdit& _editor( void ) const
+  { return *editor_; }
   
-  //! line editor
-  LineNumberWidget& lineNumberWidget( void ) const
-  { 
-    assert( line_number_widget_ );
-    return *line_number_widget_;
-  }
-  
-  //! block delimitor widget
-  BlockDelimiterWidget& blockDelimiterWidget( void ) const
-  {
-    assert( block_delimiter_widget_ );
-    return *block_delimiter_widget_;
-  }
-  
-  private:
-    
-  //! text display
-  TextDisplay* editor_;
-   
-  //! line number
-  LineNumberWidget* line_number_widget_;
-
-  //! block delimiter
-  BlockDelimiterWidget* block_delimiter_widget_;
+  //! associated editor
+  CustomTextEdit* editor_;
   
 };
 

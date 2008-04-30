@@ -31,6 +31,7 @@
 
 #include <QLayout>
 
+#include "BlockDelimiterWidget.h"
 #include "LineNumberWidget.h"
 #include "TextDisplay.h"
 #include "TextView.h"
@@ -56,8 +57,9 @@ TextView::TextView( QWidget* parent ):
   editor_->setFrameStyle( QFrame::NoFrame );
   
   line_number_widget_ = new LineNumberWidget( &editor(), this );
-  lineNumberWidget().setFixedWidth( lineNumberWidget().fontMetrics().width( "000" ) + 14 );
-   
+  block_delimiter_widget_ = new BlockDelimiterWidget( &editor(), this );
+  
+  layout->addWidget( &blockDelimiterWidget(), 0 );
   layout->addWidget( &lineNumberWidget(), 0 );
   layout->addWidget( &editor(), 1 );
   

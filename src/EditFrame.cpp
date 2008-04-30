@@ -36,6 +36,7 @@
 #include <QPrinter>
 
 #include "AutoSave.h"
+#include "BlockDelimiterWidget.h"
 #include "ClockLabel.h"
 #include "Config.h"
 #include "CustomFileDialog.h"
@@ -68,8 +69,6 @@
 
 using namespace std;
 using namespace Qt;
-
-#define USE_TEXTVIEW
 
 //_____________________________________________________
 EditFrame::EditFrame(  QWidget* parent ):
@@ -113,12 +112,7 @@ EditFrame::EditFrame(  QWidget* parent ):
   
   // create new Text display and register autosave thread
   TextDisplay& display = _newTextDisplay( main_ );
-  
-  #ifdef USE_TEXTVIEW
   main_->layout()->addWidget( display.parentWidget() );
-  #else
-  main_->layout()->addWidget( &display );
-  #endif
   
   display.setActive( true );
   static_cast<MainFrame*>(qApp)->autoSave().newThread( &display );
@@ -841,7 +835,11 @@ void EditFrame::_installActions( void )
   addAction( show_line_number_action_ =new QAction( "Show line numbers", this ) );
   show_line_number_action_->setToolTip( "Show/hide line numbers" );
   show_line_number_action_->setCheckable( true );
-  
+
+  addAction( show_block_delimiter_action_ =new QAction( "Show block delimiters", this ) );
+  show_block_delimiter_action_->setToolTip( "Show/hide block delimiters" );
+  show_block_delimiter_action_->setCheckable( true );
+
 }
 
 //___________________________________________________________
@@ -889,6 +887,7 @@ void EditFrame::_updateConfiguration( void )
   
   //! line number
   showLineNumberAction().setChecked( XmlOptions::get().get<bool>( "SHOW_LINE_NUMBERS" ) );
+  showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
   
 }
 
@@ -900,7 +899,10 @@ void EditFrame::_saveConfiguration( void )
   // save size
   XmlOptions::get().set<int>( "WINDOW_HEIGHT", height() );
   XmlOptions::get().set<int>( "WINDOW_WIDTH", width() );
+  
+  // save options
   XmlOptions::get().set<bool>( "SHOW_LINE_NUMBERS", showLineNumberAction().isChecked() );
+  XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", showBlockDelimiterAction().isChecked() );
 
 }
 
@@ -1090,23 +1092,14 @@ void EditFrame::_closeView( TextDisplay& display )
     display.askForSave() ==  AskForSaveDialog::CANCEL ) return;
 
   // retrieve parent and grandparent of current display
-  #ifdef USE_TEXTVIEW
-  QWidget* parent( display.parentWidget()->parentWidget() );  
-  #else
-  QWidget* parent( display.parentWidget() );  
-  #endif
-  
+  QWidget* parent( display.parentWidget()->parentWidget() );    
   QSplitter* parent_splitter( dynamic_cast<QSplitter*>( parent ) );
   
   // retrieve displays associated to current
   displays = BASE::KeySet<TextDisplay>( &display );
     
   // delete display
-  #ifdef USE_TEXTVIEW
   delete display.parentWidget();
-  #else
-  delete &display;
-  #endif
   
   // check how many children remain in parent_splitter if any
   if( parent_splitter && parent_splitter->count() == 1 ) 
@@ -1180,13 +1173,8 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
   TextDisplay& display( _newTextDisplay(0) );
   
   // insert in splitter, at correct position
-  #ifdef USE_TEXTVIEW
   if( clone ) splitter.insertWidget( splitter.indexOf( active_display_local.parentWidget() )+1, display.parentWidget()  );
   else splitter.addWidget( display.parentWidget() );
-  #else
-  if( clone ) splitter.insertWidget( splitter.indexOf( &active_display_local)+1, &display  );
-  else splitter.addWidget( &display );
-  #endif
 
   // recompute dimension
   // take the max of active display and splitter,
@@ -1255,11 +1243,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
     the new (cloned) TextDisplay will appear side by side with it */
 
     // retrieve parent of current display
-    #ifdef USE_TEXTVIEW
     QWidget* parent( activeDisplay().parentWidget()->parentWidget() );  
-    #else
-    QWidget *parent( activeDisplay().parentWidget() );
-    #endif
 
     // try catch to splitter
     // do not create a new splitter if the parent has same orientation
@@ -1277,11 +1261,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
         // give him no parent, because the parent is set in QSplitter::insertWidget()
         splitter = new LocalSplitter(0);
         splitter->setOrientation( orientation );
-        #ifdef USE_TEXTVIEW
         parent_splitter->insertWidget( parent_splitter->indexOf( activeDisplay().parentWidget() ), splitter );
-        #else
-        parent_splitter->insertWidget( parent_splitter->indexOf( &activeDisplay() ), splitter );
-        #endif
         
       } else {
         
@@ -1293,11 +1273,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
       }
       
       // reparent current display
-      #ifdef USE_TEXTVIEW
       splitter->addWidget( activeDisplay().parentWidget() );
-      #else
-      splitter->addWidget( &activeDisplay() );
-      #endif
       
       // resize parent splitter if any
       if( parent_splitter )
@@ -1359,15 +1335,13 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
   Debug::Throw( "EditFrame::_newTextDisplay.\n" );
 
   // create textDisplay
-  #ifdef USE_TEXTVIEW
   TextView* text_view = new TextView( parent );
   text_view->lineNumberWidget().setVisible( showLineNumberAction().isChecked() );
+  text_view->blockDelimiterWidget().setVisible( showBlockDelimiterAction().isChecked() );
   connect( &showLineNumberAction(), SIGNAL( toggled( bool ) ), &text_view->lineNumberWidget(), SLOT( setVisible( bool ) ) );
-  TextDisplay* display = &text_view->editor();
-  #else
-  TextDisplay* display =new TextDisplay( parent );
-  #endif
+  connect( &showBlockDelimiterAction(), SIGNAL( toggled( bool ) ), &text_view->blockDelimiterWidget(), SLOT( setVisible( bool ) ) );
   
+  TextDisplay* display = &text_view->editor();
   display->setMenu( &menu_->openPreviousMenu() );
 
   // connections

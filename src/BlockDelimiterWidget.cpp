@@ -22,8 +22,8 @@
 *******************************************************************************/
 
 /*!
-  \file LineNumberWidget.cpp
-  \brief display line number of a text editor
+  \file BlockDelimiterWidget.cpp
+  \brief display block delimiters
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -39,22 +39,20 @@
 #include "BlockHighlight.h"
 #include "CustomTextEdit.h"
 #include "Debug.h"
-#include "LineNumberWidget.h"
-#include "TextBlockData.h"
+#include "BlockDelimiterWidget.h"
+#include "HighlightBlockData.h"
 #include "XmlOptions.h"
 
 //____________________________________________________________________________
-LineNumberWidget::LineNumberWidget(CustomTextEdit* editor, QWidget* parent): 
+BlockDelimiterWidget::BlockDelimiterWidget(CustomTextEdit* editor, QWidget* parent): 
   QWidget( parent),
-  Counter( "LineNumberWidget" ),
+  Counter( "BlockDelimiterWidget" ),
   editor_( editor )
 {
-  
-  Debug::Throw( "LineNumberWidget::LineNumberWidget.\n" );
+  Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
   
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
-  connect( &_editor().blockHighlight(), SIGNAL( highlightChanged() ), SLOT( update() ) );
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );  
   
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
@@ -63,89 +61,94 @@ LineNumberWidget::LineNumberWidget(CustomTextEdit* editor, QWidget* parent):
   _updateConfiguration();
   
   // width
-  setFixedWidth( fontMetrics().width( "000" ) + 14 );
+  setFixedWidth( 32 );
 
 }
 
 //__________________________________________
-LineNumberWidget::~LineNumberWidget()
+BlockDelimiterWidget::~BlockDelimiterWidget()
 {
-  Debug::Throw( "LineNumberWidget::~LineNumberWidget.\n" );
+  Debug::Throw( "BlockDelimiterWidget::~BlockDelimiterWidget.\n" );
 }
 
 //__________________________________________
-void LineNumberWidget::paintEvent( QPaintEvent* )
+void BlockDelimiterWidget::paintEvent( QPaintEvent* )
 {  
   
   const QFontMetrics metric( fontMetrics() );
   int y_offset = _editor().verticalScrollBar()->value();
   QTextDocument &document( *_editor().document() );
     
-  // maximum text length
-  int max_length=0;
-
   // brush/pen  
   QPainter painter( this );
   painter.translate( 0, -y_offset );
   
+  // calculate height
   int height( QWidget::height() - metric.lineSpacing() );
   if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
   
-  int block_count(1);
-  for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), block_count++ )
+  int block_count = 0;
+  QPoint start_point;
+  for( QTextBlock block = document.begin(); block.isValid(); block = block.next() )
   {
-    QPointF point( block.layout()->position() );
-    if ( point.y() + 20 - y_offset < 0 ) continue;    
-    if ( point.y() - y_offset > height ) break;
     
-    // block highlight
-    TextBlockData* data = 0;
-    if( 
-      _editor().blockHighlightAction().isChecked() && 
-      ( data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&  
-      data->hasFlag( TextBlock::CURRENT_BLOCK ) )
+    // retrieve data and check this block delimiter
+    HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    if( !( data && ( data->delimiter().begin_ || data->delimiter().end_ ) ) ) 
+    { continue; }
+    
+    // draw tick if visible
+    QPointF point( block.layout()->position() );
+    if( point.y() + 20 - y_offset < 0 )
+    {
+      if( data->delimiter().begin_ )
+      {
+        // draw begin delimiter
+      } else {
+        // draw end delimiter
+      }
+    }
+    
+    // now set lines
+    if( block_count == 0 && data->delimiter().begin_ )
+    { 
+      // set begin point 
+    }
+    
+    // update block count
+    block_count = std::max<int>( 0, block_count + data->delimiter().begin_ - data->delimiter().end_ );
+    if( block_count - data->delimiter().end_ < 0 )
+    {
+      // set end point and draw line
+    }
+    
+    // check if outside of window
+    if ( point.y() - y_offset > height ) 
     {
       
-      painter.setBrush( highlight_color_ );
+      if( block_count > 0 )
+      {
+        // set end point and draw line
+      }
       
-      painter.setPen( Qt::NoPen );
-      painter.drawRect( QRect( 
-        0, point.y(), width(),
-        metric.lineSpacing() ) );
-      
-      painter.setPen( palette().color( QPalette::Text ) );
-      
-    } 
-    
-    QString numtext( QString::number(block_count) );
-    
-    painter.drawText(
-      0, point.y(), width()-8,
-      metric.lineSpacing(),
-      Qt::AlignRight | Qt::AlignTop, 
-      numtext );
-    
-    max_length = std::max( max_length, metric.width(numtext)+metric.width("0")+10 );
-    
+      // exit loop
+      break;
+    }
   }
 
-  setFixedWidth( max_length );
   painter.end();
   
 }
 
 //________________________________________________________
-void LineNumberWidget::_updateConfiguration( void )
+void BlockDelimiterWidget::_updateConfiguration( void )
 {
   
-  Debug::Throw( "LineNumberWidget::_updateConfiguration.\n" );
+  Debug::Throw( "BlockDelimiterWidget::_updateConfiguration.\n" );
 
   // font
   QFont font;
   font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );
   setFont( font );
-
-  // paragraph highlighting
-  highlight_color_ = QColor( XmlOptions::get().raw( "HIGHLIGHT_COLOR" ).c_str() );
   
 }

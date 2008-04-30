@@ -290,6 +290,7 @@ void Menu::_updatePreferenceMenu( void )
 
   // textdisplay actions
   preference_menu_->addAction( &editframe.showLineNumberAction() );
+  preference_menu_->addAction( &editframe.showBlockDelimiterAction() );
   preference_menu_->addAction( &display.wrapModeAction() );
   preference_menu_->addAction( &display.tabEmulationAction() );
   preference_menu_->addAction( &display.textIndentAction() );

@@ -64,6 +64,7 @@ noinst_HEADERS = \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
+  BlockDelimiterWidget.h \
   ConfigurationDialog.h \
   Diff.h \
   DefaultOptions.h \
@@ -94,6 +95,7 @@ qedit_SOURCES = \
   AskForSaveDialog.cpp \
   AutoSave.cpp \
   AutoSaveThread.cpp \
+  BlockDelimiterWidget.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
   EditFrame.cpp \
@@ -120,6 +122,7 @@ nodist_qedit_SOURCES = \
   qrc_pixmaps.cpp \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \
+  moc_BlockDelimiterWidget.cpp \
   moc_ConfigurationDialog.cpp \
   moc_Diff.cpp \
   moc_EditFrame.cpp \
