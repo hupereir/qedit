@@ -36,6 +36,8 @@
 #include <QTextBlock>
 #include <QTextLayout>
 
+#include <vector>
+
 #include "BlockHighlight.h"
 #include "CustomTextEdit.h"
 #include "Debug.h"
@@ -65,6 +67,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(CustomTextEdit* editor, QWidget* pare
   // width
   setFixedWidth( fontMetrics().lineSpacing() );
 
+  
 }
 
 
@@ -91,8 +94,9 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   int height( QWidget::height() + y_offset );
   if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
   
-  int block_count( 0 );
-  QPoint start_point;
+  // keep track of all starting points
+  vector<QPoint> start_points;
+
   for( QTextBlock block = document.begin(); block.isValid(); block = block.next() )
   {
     
@@ -103,37 +107,42 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
     // retrieve data and check this block delimiter
     HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
     if( data && ( data->delimiter().begin() || data->delimiter().end() ) ) 
-    { 
+    {
     
-      if( data->delimiter().begin() && block_begin >= y_offset && block_begin <= height ) 
+      if( data->delimiter().begin() )
       {
         
-        painter.drawLine( width()/2, block_begin, width(), block_begin );
-      
-      } else if( data->delimiter().end() && block_count > 0 && block_end >= y_offset  && block_end <= height && block_count >= 0 ) {
+        // store block starting point
+        QPoint point( width()/2, block_begin );
+        for( int i = 0; i < data->delimiter().begin(); i++ )
+        { start_points.push_back( point ); }
         
-        painter.drawLine( width()/2, block_end, width(), block_end );          
+        // draw tick
+        if( block_begin >= y_offset && block_begin <= height ) 
+        { painter.drawLine( width()/2, block_begin, width(), block_begin ); }
       
-      }
-      
-      // see if begin of top-level block and set starting point if yes
-      if( block_count == 0 && data->delimiter().begin() )
-      { 
-        // set begin point 
-        start_point = QPoint( width()/2, block_begin );
-      }
-      
-      // see if end of top-level block and draw line if yes
-      if( data->delimiter().end() && block_count > 0 && (block_count + data->delimiter().begin() - data->delimiter().end()) <= 0 )
+      } 
+          
+      if( data->delimiter().end() )
       {
-        // set end point and draw line
-        QPoint end_point = QPoint(  width()/2, min( block_end, height ) );
-        painter.drawLine( start_point, end_point );
+        
+        if( (!start_points.empty()) && ( int(start_points.size()) - data->delimiter().end() ) <= 0 )
+        {
+          // set end point and draw line
+          QPoint end_point = QPoint(  width()/2, min( block_end, height ) );
+          painter.drawLine( start_points.front(), end_point );
+        }
+        
+        // draw tick
+        if( (!data->delimiter().begin()) && (!start_points.empty() && block_end >= y_offset  && block_end <= height ) )
+        { painter.drawLine( width()/2, block_end, width(), block_end ); }
+        
+        // pop
+        for( int i = 0; i < data->delimiter().end() && !start_points.empty(); i++ )
+        { start_points.pop_back(); }
+ 
       }
       
-      // update block count
-      block_count = std::max<int>( 0, block_count + data->delimiter().begin() - data->delimiter().end() );
-
     }
     
     // check if outside of window
@@ -141,11 +150,11 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   }
 
   // draw vertical line if needed
-  if( block_count > 0 && start_point.y() < height )
+  if( (!start_points.empty() ) && start_points.front().y() < height )
   {
     // set end point and draw line
     QPoint end_point = QPoint(  width()/2, height );
-    painter.drawLine( start_point, end_point );
+    painter.drawLine( start_points.front(), end_point );
   }
 
   painter.end();
@@ -157,7 +166,7 @@ void BlockDelimiterWidget::_updateConfiguration( void )
 {
   
   Debug::Throw( "BlockDelimiterWidget::_updateConfiguration.\n" );
-
+  
   // font
   QFont font;
   font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );

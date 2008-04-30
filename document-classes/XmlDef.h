@@ -114,6 +114,11 @@ namespace XML {
   static const std::string PARENTHESIS( "parenthesis" );
   //@}
   
+  //!@name block delimiters
+  //@{
+  static const std::string BLOCK_DELIMITER( "block_delimiter" );
+  //@}
+  
 };
 
 #endif

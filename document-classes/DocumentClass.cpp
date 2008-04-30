@@ -89,11 +89,18 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 
     } else if( tag_name == XML::PARENTHESIS ) {
 
+      // parenthesis
       TextParenthesis parenthesis( child_element );
       if( parenthesis.isValid() ) text_parenthesis_.push_back( parenthesis );
 
+    } else if( tag_name == XML::BLOCK_DELIMITER ) {
+      
+      // block delimiters
+      block_delimiters_.push_back( BlockDelimiter( child_element ) );
+      
     } else if( tag_name == XML::MACRO ) {
 
+      // text macrox
       TextMacro macro( child_element );
       if( macro.isValid() ) text_macros_.push_back( macro );
 
@@ -165,6 +172,10 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
 
   // dump parenthesis
   for( TextParenthesis::List::const_iterator iter = text_parenthesis_.begin(); iter != text_parenthesis_.end(); iter++ )
+  { out.appendChild( iter->domElement( parent ) ); }
+
+  // dump block delimiters
+  for( BlockDelimiter::List::const_iterator iter = block_delimiters_.begin(); iter != block_delimiters_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump text macros

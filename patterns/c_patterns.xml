@@ -155,6 +155,9 @@
  <parenthesis begin="[" end="]" regexp="\[|\]"/>
  <parenthesis begin="{" end="}" regexp="\{|\}"/>
 
+ <!-- block delimiters -->
+ <block_delimiter begin="{" end="}" regexp="\{|\}"/>
+
  <!-- indentation rules -->
   
  <!--  

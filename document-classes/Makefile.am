@@ -13,6 +13,7 @@ INCLUDES =  \
   -I$(top_srcdir)/base-qt
 
 noinst_HEADERS = \
+  BlockDelimiter.h \
   DocumentClass.h \
   DocumentClassDialog.h \
   DocumentClassManager.h \
@@ -36,6 +37,7 @@ noinst_HEADERS = \
 noinst_LIBRARIES = libdocument-classes.a
 
 libdocument_classes_a_SOURCES = \
+  BlockDelimiter.cpp \
   DocumentClass.cpp \
   DocumentClassDialog.cpp \
   DocumentClassManager.cpp \

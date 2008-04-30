@@ -864,6 +864,7 @@ void TextDisplay::updateDocumentClass( void )
   // store into class members
   textHighlight().setPatterns( document_class.highlightPatterns() );
   textHighlight().setParenthesis( document_class.parenthesis() );
+  textHighlight().setBlockDelimiters( document_class.blockDelimiters() );
 
   textIndent().setPatterns( document_class.indentPatterns() );
   textIndent().setBaseIndentation( document_class.baseIndentation() );

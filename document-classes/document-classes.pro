@@ -6,6 +6,7 @@ INCLUDEPATH += ../base ../base-qt
 DEPENDPATH += . ../base ../base-qt
 
 HEADERS = \
+  BlockDelimiter.h \
   DocumentClass.h \
   DocumentClassDialog.h \
   DocumentClassManager.h \
@@ -27,6 +28,7 @@ HEADERS = \
   XmlDef.h
 
 SOURCES = \
+  BlockDelimiter.cpp \
   DocumentClass.cpp \
   DocumentClassDialog.cpp \
   DocumentClassManager.cpp \

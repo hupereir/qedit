@@ -35,6 +35,7 @@
 #include <list>
 #include <QSyntaxHighlighter>
 
+#include "BlockDelimiter.h"
 #include "Config.h"
 #include "Counter.h"
 #include "Debug.h"
@@ -123,7 +124,16 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   //! set parenthesis
   void setParenthesis( const TextParenthesis::List& );
 
-  //@}  
+  //@}
+
+  //!@name block delimiters
+  //@{
+  
+  //! block delimiters
+  void setBlockDelimiters( const BlockDelimiter::List& delimiters )
+  { block_delimiters_ = delimiters; }
+  
+  //@}
   
   //! patterns
   void clear( void )
@@ -183,6 +193,9 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   QTextCharFormat parenthesis_highlight_format_;
   
   //@}
+  
+  //! block delimiters
+  BlockDelimiter::List block_delimiters_;
   
   //!@name spell checking
   //@{

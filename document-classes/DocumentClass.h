@@ -39,6 +39,7 @@
 #include <set>
 #include <list>
 
+#include "BlockDelimiter.h"
 #include "Counter.h"
 #include "Debug.h"
 #include "IndentPattern.h"
@@ -140,7 +141,11 @@ class DocumentClass: public Counter
   //! list of text parenthesis
   const TextParenthesis::List& parenthesis() const
   { return text_parenthesis_; }
-  
+
+  //! list of block delimiters
+  const BlockDelimiter::List& blockDelimiters() const
+  { return block_delimiters_; }
+
   //! list of text macros
   const TextMacro::List& textMacros() const
   { return text_macros_; }
@@ -237,6 +242,9 @@ class DocumentClass: public Counter
   //! list of text parenthesis
   TextParenthesis::List text_parenthesis_;
 
+  //! block delimiter
+  BlockDelimiter::List block_delimiters_;
+  
   //! list of text parenthesis
   TextMacro::List text_macros_;
   
