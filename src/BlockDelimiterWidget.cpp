@@ -58,7 +58,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(CustomTextEdit* editor, QWidget* pare
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );  
   
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-
+  
   // update configuration
   _updateConfiguration();
   
@@ -87,7 +87,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   
   // calculate height
   // int height( QWidget::height() - metric.lineSpacing() );
-  int height( QWidget::height() );
+  int height( QWidget::height() + y_offset );
   if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
   
   int block_count = 0;
@@ -96,25 +96,22 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   {
     
     // draw tick if visible
-    int block_y( block.layout()->position().y() );
-    int block_height( block.layout()->boundingRect().height() );
+    int block_begin( block.layout()->position().y() );
+    int block_end( block_begin + block.layout()->boundingRect().height() );
 
     // retrieve data and check this block delimiter
     HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
     if( data && ( data->delimiter().begin_ || data->delimiter().end_ ) ) 
     { 
     
-      if( block_y + 20 - y_offset >= 0 )
-      {
-        if( data->delimiter().begin_ ) painter.drawLine( width()/2, block_y, width(), block_y );
-        else painter.drawLine( width()/2, block_y + block_height, width(), block_y + block_height );          
-      }
+      if( data->delimiter().begin_ && block_begin >= y_offset && block_begin <= height ) painter.drawLine( width()/2, block_begin, width(), block_begin );
+      else if( data->delimiter().end_ && block_end >= y_offset  && block_end <= height ) painter.drawLine( width()/2, block_end, width(), block_end );          
             
       // now set lines
       if( block_count == 0 && data->delimiter().begin_ )
       { 
         // set begin point 
-        start_point = QPoint( width()/2, block_y );
+        start_point = QPoint( width()/2, block_begin );
       }
       
       // update block count
@@ -122,20 +119,20 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
       if( block_count == 0 && data->delimiter().end_ )
       {
         // set end point and draw line
-        QPoint end_point = QPoint(  width()/2, block_y + block_height );
+        QPoint end_point = QPoint(  width()/2, min( block_end, height ) );
         painter.drawLine( start_point, end_point );
       }
     
     }
     
     // check if outside of window
-    if ( block_y - y_offset > height ) 
+    if( block_begin > height ) 
     {
       
-      if( block_count > 0 )
+      if( block_count > 0 && start_point.y() < height )
       {
         // set end point and draw line
-        QPoint end_point = QPoint(  width()/2, height + y_offset );
+        QPoint end_point = QPoint(  width()/2, height );
         painter.drawLine( start_point, end_point );
       }
       

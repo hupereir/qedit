@@ -1383,7 +1383,6 @@ QString EditFrame::_htmlString( const int& max_line_size )
   meta = head.appendChild( document.createElement( "meta" ) ).toElement();
   meta.setAttribute( "content", "text/html; charset=UTF-8" );
   meta.setAttribute( "http-equiv", "Content-Type" );
-
   meta = head.appendChild( document.createElement( "meta" ) ).toElement();
   meta.setAttribute( "content", "QEdit" );
   meta.setAttribute( "name", "Generator" );

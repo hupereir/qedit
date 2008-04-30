@@ -95,7 +95,7 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), block_count++ )
   {
     int block_y( block.layout()->position().y() );
-    if ( block_y + 20 - y_offset < 0 ) continue;    
+    if ( block_y < y_offset ) continue;    
     if ( block_y > height ) break;
     
     // block highlight
