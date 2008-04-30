@@ -67,6 +67,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(CustomTextEdit* editor, QWidget* pare
 
 }
 
+
 //__________________________________________
 BlockDelimiterWidget::~BlockDelimiterWidget()
 {
@@ -90,7 +91,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   int height( QWidget::height() + y_offset );
   if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
   
-  int block_count = 0;
+  int block_count( 0 );
   QPoint start_point;
   for( QTextBlock block = document.begin(); block.isValid(); block = block.next() )
   {
@@ -101,28 +102,38 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
 
     // retrieve data and check this block delimiter
     HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
-    if( data && ( data->delimiter().begin_ || data->delimiter().end_ ) ) 
+    if( data && ( data->delimiter().begin() || data->delimiter().end() ) ) 
     { 
     
-      if( data->delimiter().begin_ && block_begin >= y_offset && block_begin <= height ) painter.drawLine( width()/2, block_begin, width(), block_begin );
-      else if( data->delimiter().end_ && block_end >= y_offset  && block_end <= height ) painter.drawLine( width()/2, block_end, width(), block_end );          
-            
-      // now set lines
-      if( block_count == 0 && data->delimiter().begin_ )
+      if( data->delimiter().begin() && block_begin >= y_offset && block_begin <= height ) 
+      {
+        
+        painter.drawLine( width()/2, block_begin, width(), block_begin );
+      
+      } else if( data->delimiter().end() && block_count > 0 && block_end >= y_offset  && block_end <= height && block_count >= 0 ) {
+        
+        painter.drawLine( width()/2, block_end, width(), block_end );          
+      
+      }
+      
+      // see if begin of top-level block and set starting point if yes
+      if( block_count == 0 && data->delimiter().begin() )
       { 
         // set begin point 
         start_point = QPoint( width()/2, block_begin );
       }
       
-      // update block count
-      block_count = std::max<int>( 0, block_count + data->delimiter().begin_ - data->delimiter().end_ );
-      if( block_count == 0 && data->delimiter().end_ )
+      // see if end of top-level block and draw line if yes
+      if( data->delimiter().end() && block_count > 0 && (block_count + data->delimiter().begin() - data->delimiter().end()) <= 0 )
       {
         // set end point and draw line
         QPoint end_point = QPoint(  width()/2, min( block_end, height ) );
         painter.drawLine( start_point, end_point );
       }
-    
+      
+      // update block count
+      block_count = std::max<int>( 0, block_count + data->delimiter().begin() - data->delimiter().end() );
+
     }
     
     // check if outside of window
@@ -135,7 +146,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
         QPoint end_point = QPoint(  width()/2, height );
         painter.drawLine( start_point, end_point );
       }
-      
+       
       // exit loop
       break;
     }

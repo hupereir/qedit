@@ -65,16 +65,34 @@ namespace TextBlock
     public:
     
     //! constructor
-    Delimiter( const unsigned int& begin = 0, const unsigned int& end = 0 ):
+    Delimiter( const int& begin = 0, const int& end = 0 ):
       begin_( begin ),
       end_( end )
     {}
     
     //! number of times the block is of type "begin"
-    unsigned int begin_;
+    const int& begin( void ) const
+    { return begin_; }
+    
+    //! number of times the block is of type "begin"
+    int& begin( void )
+    { return begin_; }
+
+    //! number of times the block is of type "end"
+    const int& end( void ) const
+    { return end_; }
+        
+    //! number of times the block is of type "end"
+    int& end( void )
+    { return end_; }
+
+    private:
+    
+    //! number of times the block is of type "begin"
+    int begin_;
     
     //! number of times the block is of type "end"
-    unsigned int end_;
+    int end_;
     
     //! streamer
     friend std::ostream& operator << ( std::ostream& out, const Delimiter& dilimiter )

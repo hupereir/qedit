@@ -86,7 +86,7 @@ void TextHighlight::highlightBlock( const QString& text )
   if( data ) { 
  
     need_update = ( data->hasFlag( TextBlock::MODIFIED ) || (locations = data->locations()).activeId().first != active_id );
-    
+   
   } else {
     
     // try retrieve data from parent type
@@ -351,17 +351,16 @@ TextBlock::Delimiter TextHighlight::_delimiter( const QString& text ) const
   int position = 0;
   while( (position = text.indexOf( delimiter_regexp, position ) ) >= 0 )
   {
-    if( text.at( position ) == '{' ) out.begin_++;
+    if( text.at( position ) == '{' ) out.begin()++;
     else if( text.at( position ) == '}' )
     {
-      if( out.begin_ > 0 ) out.begin_--;
-      else out.end_++;
+      if( out.begin() > 0 ) out.begin()--;
+      else out.end()++;
     }
     
     position++;
   }
   
-  //Debug::Throw(0) << "TextHighlight::_delimiter - " << out << endl;
   return out;
  
 }
