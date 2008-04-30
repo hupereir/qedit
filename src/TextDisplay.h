@@ -85,8 +85,7 @@ class TextDisplay: public CustomTextEdit
   //! open previous menu
   OpenPreviousMenu& menu( void )
   { 
-    assert( menu_
- );
+    assert( menu_);
     return *menu_;
   }
   
@@ -299,6 +298,14 @@ class TextDisplay: public CustomTextEdit
   QAction& autoSpellAction( void ) const
   { return *autospell_action_; }
   
+  //! show line numbers
+  QAction& showLineNumberAction( void ) const
+  { return *show_line_number_action_; }
+  
+  //! show line numbers
+  QAction& showBlockDelimiterAction( void ) const
+  { return *show_block_delimiter_action_; }
+
   //! spellcheck action
   QAction& spellcheckAction( void ) const
   { return *spellcheck_action_; }
@@ -534,6 +541,12 @@ class TextDisplay: public CustomTextEdit
   
   //! toggle parenthesis
   void _toggleParenthesisHighlight( bool state );
+
+  //! toggle showLineNumber
+  void _toggleShowLineNumbers( bool state );
+  
+  //! toggle showBlockDelimiter
+  void _toggleShowBlockDelimiters( bool state );
   
   //!@name spell check
   //@{
@@ -662,7 +675,13 @@ class TextDisplay: public CustomTextEdit
  
   //! toggle autospell
   QAction* autospell_action_;
+    
+  //! line number
+  QAction* show_line_number_action_;
   
+  //! line number
+  QAction* show_block_delimiter_action_;
+
   //! run spell checker
   QAction* spellcheck_action_;
   

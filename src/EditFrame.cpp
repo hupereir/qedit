@@ -832,14 +832,6 @@ void EditFrame::_installActions( void )
   open_vertical_action_->setToolTip( "Open a new view horizontally" );
   connect( open_vertical_action_, SIGNAL( triggered() ), SLOT( openHorizontal() ) );
   
-  addAction( show_line_number_action_ =new QAction( "Show line numbers", this ) );
-  show_line_number_action_->setToolTip( "Show/hide line numbers" );
-  show_line_number_action_->setCheckable( true );
-
-  addAction( show_block_delimiter_action_ =new QAction( "Show block delimiters", this ) );
-  show_block_delimiter_action_->setToolTip( "Show/hide block delimiters" );
-  show_block_delimiter_action_->setCheckable( true );
-
 }
 
 //___________________________________________________________
@@ -884,11 +876,7 @@ void EditFrame::_updateConfiguration( void )
     if( !document_class.icon().empty() ) record.addInformation( "icon", document_class.icon() );
   
   }
-  
-  //! line number
-  showLineNumberAction().setChecked( XmlOptions::get().get<bool>( "SHOW_LINE_NUMBERS" ) );
-  showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
-  
+    
 }
 
 //________________________________________________________
@@ -900,10 +888,6 @@ void EditFrame::_saveConfiguration( void )
   XmlOptions::get().set<int>( "WINDOW_HEIGHT", height() );
   XmlOptions::get().set<int>( "WINDOW_WIDTH", width() );
   
-  // save options
-  XmlOptions::get().set<bool>( "SHOW_LINE_NUMBERS", showLineNumberAction().isChecked() );
-  XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", showBlockDelimiterAction().isChecked() );
-
 }
 
 //___________________________________________________________
@@ -1336,12 +1320,13 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
 
   // create textDisplay
   TextView* text_view = new TextView( parent );
-  text_view->lineNumberWidget().setVisible( showLineNumberAction().isChecked() );
-  text_view->blockDelimiterWidget().setVisible( showBlockDelimiterAction().isChecked() );
-  connect( &showLineNumberAction(), SIGNAL( toggled( bool ) ), &text_view->lineNumberWidget(), SLOT( setVisible( bool ) ) );
-  connect( &showBlockDelimiterAction(), SIGNAL( toggled( bool ) ), &text_view->blockDelimiterWidget(), SLOT( setVisible( bool ) ) );
-  
   TextDisplay* display = &text_view->editor();
+
+  text_view->lineNumberWidget().setVisible( display->showLineNumberAction().isChecked() );
+  text_view->blockDelimiterWidget().setVisible( display->showBlockDelimiterAction().isChecked() );
+  connect( &display->showLineNumberAction(), SIGNAL( toggled( bool ) ), &text_view->lineNumberWidget(), SLOT( setVisible( bool ) ) );
+  connect( &display->showBlockDelimiterAction(), SIGNAL( toggled( bool ) ), &text_view->blockDelimiterWidget(), SLOT( setVisible( bool ) ) );
+  
   display->setMenu( &menu_->openPreviousMenu() );
 
   // connections

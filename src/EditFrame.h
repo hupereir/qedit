@@ -315,14 +315,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   QAction& openVerticalAction( void ) const
   { return *open_vertical_action_; }
   
-  //! show line numbers
-  QAction& showLineNumberAction( void ) const
-  { return *show_line_number_action_; }
-  
-  //! show line numbers
-  QAction& showBlockDelimiterAction( void ) const
-  { return *show_block_delimiter_action_; }
-
   //@}
 
   public slots:
@@ -623,12 +615,6 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
 
   //! open vertical
   QAction* open_vertical_action_;
-  
-  //! line number
-  QAction* show_line_number_action_;
-  
-  //! line number
-  QAction* show_block_delimiter_action_;
 
   //@}
   

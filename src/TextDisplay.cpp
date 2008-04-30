@@ -865,7 +865,7 @@ void TextDisplay::updateDocumentClass( void )
   textHighlight().setPatterns( document_class.highlightPatterns() );
   textHighlight().setParenthesis( document_class.parenthesis() );
   textHighlight().setBlockDelimiters( document_class.blockDelimiters() );
-
+  
   textIndent().setPatterns( document_class.indentPatterns() );
   textIndent().setBaseIndentation( document_class.baseIndentation() );
   _setMacros( document_class.textMacros() );
@@ -1206,6 +1206,16 @@ void TextDisplay::_installActions( void )
   parenthesis_highlight_action_->setChecked( parenthesisHighlight().isEnabled() );
   connect( parenthesis_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
 
+  addAction( show_line_number_action_ =new QAction( "Show line numbers", this ) );
+  show_line_number_action_->setToolTip( "Show/hide line numbers" );
+  show_line_number_action_->setCheckable( true );
+  connect( show_line_number_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowLineNumbers( bool ) ) );
+
+  addAction( show_block_delimiter_action_ =new QAction( "Show block delimiters", this ) );
+  show_block_delimiter_action_->setToolTip( "Show/hide block delimiters" );
+  show_block_delimiter_action_->setCheckable( true );
+  connect( show_block_delimiter_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowBlockDelimiters( bool ) ) );
+
   // retrieve pixmap path
   list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
@@ -1416,6 +1426,12 @@ void TextDisplay::_updateConfiguration( void )
   textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().raw( "PARENTHESIS_COLOR" ).c_str() ) );
   parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
 
+  //! line number
+  showLineNumberAction().setChecked( XmlOptions::get().get<bool>( "SHOW_LINE_NUMBERS" ) );
+
+  // block delimiters
+  showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
+
   // retrieve inactive colors for activity shading
   QColor inactive_color( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() );
   bool shade_inactive( XmlOptions::get().get<bool>( "SHADE_INACTIVE_VIEWS" ) );
@@ -1574,6 +1590,7 @@ void TextDisplay::_toggleParenthesisHighlight( bool state )
 
     BASE::KeySet<TextDisplay> displays( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+
     { if( (*iter)->isSynchronized() ) (*iter)->parenthesisHighlightAction().setChecked( state ); }
     setSynchronized( true );
 
@@ -1608,6 +1625,47 @@ void TextDisplay::_toggleAutoSpell( bool state )
 
   return;
   #endif
+}
+
+//_______________________________________________________
+void TextDisplay::_toggleShowLineNumbers( bool state )
+{
+  // propagate to other displays
+  if( isSynchronized() )
+  {
+    // temporarely disable synchronization
+    // to avoid infinite loop
+    setSynchronized( false );
+
+    BASE::KeySet<TextDisplay> displays( this );
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    { if( (*iter)->isSynchronized() ) (*iter)->showLineNumberAction().setChecked( state ); }
+    setSynchronized( true );
+
+  }
+
+  return;
+}
+
+//_______________________________________________________
+void TextDisplay::_toggleShowBlockDelimiters( bool state )
+{
+  
+  // propagate to other displays
+  if( isSynchronized() )
+  {
+    // temporarely disable synchronization
+    // to avoid infinite loop
+    setSynchronized( false );
+
+    BASE::KeySet<TextDisplay> displays( this );
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    { if( (*iter)->isSynchronized() ) (*iter)->showBlockDelimiterAction().setChecked( state ); }
+    setSynchronized( true );
+
+  }
+
+  return;
 }
 
 //_______________________________________________________

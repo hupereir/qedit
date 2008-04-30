@@ -133,6 +133,10 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   void setBlockDelimiters( const BlockDelimiter::List& delimiters )
   { block_delimiters_ = delimiters; }
   
+  //! block delimiters
+  const BlockDelimiter::List& blockDelimiters( void ) const
+  { return block_delimiters_; }
+
   //@}
   
   //! patterns

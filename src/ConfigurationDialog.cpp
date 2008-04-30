@@ -86,6 +86,14 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   box->layout()->setMargin(5);
   box->layout()->setSpacing(5);
 
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "Show line numbers", box, "SHOW_LINE_NUMBERS" ) );
+  checkbox->setToolTip( "Turn on/off line numbers" );
+  addOptionWidget( checkbox );
+
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "Show block delimiters", box, "SHOW_BLOCK_DELIMITERS" ) );
+  checkbox->setToolTip( "Turn on/off block delimiters" );
+  addOptionWidget( checkbox );
+
   box->layout()->addWidget( checkbox = new OptionCheckBox( "Highlight syntax", box, "TEXT_HIGHLIGHT" ) );
   checkbox->setToolTip( "Turn on/off syntax highlighting" );
   addOptionWidget( checkbox );
