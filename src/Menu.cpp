@@ -86,7 +86,7 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &editframe.saveAction() );
   menu->addAction( &editframe.saveAsAction() );
   menu->addAction( &mainframe.saveAllAction() );
-  menu->addAction( &editframe.revertToSaveAction() );  
+  menu->addAction( &editframe.revertToSaveAction() );
   menu->addSeparator();
   
   document_class_menu_ = menu->addMenu( "Set &document class" );
@@ -289,6 +289,7 @@ void Menu::_updatePreferenceMenu( void )
   preference_menu_->addSeparator();
 
   // textdisplay actions
+  preference_menu_->addAction( &editframe.showLineNumberAction() );
   preference_menu_->addAction( &display.wrapModeAction() );
   preference_menu_->addAction( &display.tabEmulationAction() );
   preference_menu_->addAction( &display.textIndentAction() );

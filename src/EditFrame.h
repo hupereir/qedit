@@ -228,92 +228,96 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //@{
   
   //! new file
-  QAction& newFileAction( void )
+  QAction& newFileAction( void ) const
   { return *new_file_action_; }
    
   //! clone display
-  QAction& cloneAction( void )
+  QAction& cloneAction( void ) const
   { return *clone_action_; } 
   
   //! detach action
-  QAction& detachAction( void )
+  QAction& detachAction( void ) const
   { return *detach_action_; } 
   
   //! open file
-  QAction& openAction( void )
+  QAction& openAction( void ) const
   { return *open_action_; }
 
   //! close view
-  QAction& closeViewAction( void )
+  QAction& closeViewAction( void ) const
   { return *close_view_action_; }
 
   //! close view
-  QAction& closeWindowAction( void )
+  QAction& closeWindowAction( void ) const
   { return *close_window_action_; }
 
   //! save
-  QAction& saveAction( void )
+  QAction& saveAction( void ) const
   { return *save_action_; }
 
   //! save as
-  QAction& saveAsAction( void )
+  QAction& saveAsAction( void ) const
   { return *save_as_action_; }
   
   //! revert to saved
-  QAction& revertToSaveAction( void )
+  QAction& revertToSaveAction( void ) const
   { return *revert_to_save_action_; }
   
   //! undo 
-  QAction& undoAction( void )
+  QAction& undoAction( void ) const
   { return *undo_action_; }
   
   //! redo
-  QAction& redoAction( void )
+  QAction& redoAction( void ) const
   { return *redo_action_; }
   
   //! cut
-  QAction& cutAction( void )
+  QAction& cutAction( void ) const
   { return *cut_action_; }
   
   //! copy
-  QAction& copyAction( void )
+  QAction& copyAction( void ) const
   { return *copy_action_; }
   
   //! paste
-  QAction& pasteAction( void )
+  QAction& pasteAction( void ) const
   { return *paste_action_; }
   
   //! print
-  QAction& printAction( void )
+  QAction& printAction( void ) const
   { return *print_action_; }
   
   //! file info
-  QAction& fileInfoAction( void )
+  QAction& fileInfoAction( void ) const
   { return *file_info_action_; }
   
   //! spellcheck 
-  QAction& spellcheckAction( void )
+  QAction& spellcheckAction( void ) const
   { return *spellcheck_action_; }
   
   //! diff files action 
-  QAction& diffAction( void )
+  QAction& diffAction( void ) const
   { return *diff_action_; }
   
   //! split view horizontal
-  QAction& splitViewHorizontalAction( void )
-  { return * split_view_horizontal_action_; }
+  QAction& splitViewHorizontalAction( void ) const
+  { return *split_view_horizontal_action_; }
   
   //! split view vertical
-  QAction& splitViewVerticalAction( void )
-  { return * split_view_vertical_action_; }
+  QAction& splitViewVerticalAction( void ) const
+  { return *split_view_vertical_action_; }
   
   //! open horizontal
-  QAction& openHorizontalAction( void )
-  { return * open_horizontal_action_; }
+  QAction& openHorizontalAction( void ) const
+  { return *open_horizontal_action_; }
 
   //! open vertical
-  QAction& openVerticalAction( void )
-  { return * open_vertical_action_; }
+  QAction& openVerticalAction( void ) const
+  { return *open_vertical_action_; }
+  
+  //! show line numbers
+  QAction& showLineNumberAction( void ) const
+  { return *show_line_number_action_; }
   
   //@}
 
@@ -615,6 +619,9 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
 
   //! open vertical
   QAction* open_vertical_action_;
+  
+  //! line number
+  QAction* show_line_number_action_;
   
   //@}
   

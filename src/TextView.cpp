@@ -45,7 +45,7 @@ TextView::TextView( QWidget* parent ):
   
   Debug::Throw( "TextView::TextView.\n" );
   
-  QVBoxLayout* layout = new QVBoxLayout();
+  QHBoxLayout* layout = new QHBoxLayout();
   layout->setMargin(0);
   layout->setSpacing(0);
   setLayout( layout );
@@ -56,7 +56,7 @@ TextView::TextView( QWidget* parent ):
   editor_->setFrameStyle( QFrame::NoFrame );
   
   line_number_widget_ = new LineNumberWidget( &editor(), this );
-  lineNumberWidget().setFixedWidth( lineNumberWidget().fontMetrics().width( "00000" ) + 14 );
+  lineNumberWidget().setFixedWidth( lineNumberWidget().fontMetrics().width( "000" ) + 14 );
    
   layout->addWidget( &lineNumberWidget(), 0 );
   layout->addWidget( &editor(), 1 );
