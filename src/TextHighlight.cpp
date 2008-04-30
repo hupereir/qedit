@@ -34,7 +34,6 @@
 #include "Debug.h"
 #include "HighlightPattern.h"
 #include "HighlightBlockData.h"
-#include "HighlightBlockFlags.h"
 #include "TextParenthesis.h"
 #include "TextHighlight.h"
 
@@ -106,6 +105,7 @@ void TextHighlight::highlightBlock( const QString& text )
     // update data modification state and highlight pattern locations
     data->setFlag( TextBlock::MODIFIED, false );
     data->setLocations( locations );
+    data->setDelimiter( _delimiter( text ) );
     
     // store active id
     setCurrentBlockState( locations.activeId().second );
@@ -352,4 +352,27 @@ void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
   }
 
   return;
+}
+
+//_________________________________________________________
+TextBlock::Delimiter TextHighlight::_delimiter( const QString& text ) const
+{
+  
+  QRegExp delimiter_regexp( "{|}" );
+  TextBlock::Delimiter out;
+  int position = 0;
+  while( (position = text.indexOf( delimiter_regexp, position ) ) )
+  {
+    if( text.at( position ) == '{' ) out.begin_++;
+    else if( text.at( position ) == '}' )
+    {
+      if( out.begin_ > 0 ) out.begin_--;
+      else out.end_++;
+    }
+    
+    position++;
+  }
+  
+  return out;
+ 
 }

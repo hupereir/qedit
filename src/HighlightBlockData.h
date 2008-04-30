@@ -34,6 +34,7 @@
 
 #include <map>
 
+#include "HighlightBlockFlags.h"
 #include "TextBlockData.h"
 #include "PatternLocation.h"
 
@@ -99,6 +100,19 @@ class HighlightBlockData: public TextBlockData
     
   //@}
   
+  //!@name block limits
+  //@{
+  
+  //! delimiter
+  const TextBlock::Delimiter& delimiter( void ) const
+  { return delimiter_; }
+
+  //! delimiter
+  void setDelimiter( const TextBlock::Delimiter& limit )
+  { delimiter_ = limit; }
+  
+  //@}
+  
   #if WITH_ASPELL
   //!@name spelling
   //@{
@@ -123,7 +137,10 @@ class HighlightBlockData: public TextBlockData
   //! highlighted parenthesis location
   /*! local with respect to the block */
   int parenthesis_;
-      
+     
+  //! delimiter
+  TextBlock::Delimiter delimiter_;
+  
   #if WITH_ASPELL
   //! set of misspelled words and position in associated block
   SPELLCHECK::Word::Set words_;

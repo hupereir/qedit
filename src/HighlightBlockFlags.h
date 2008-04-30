@@ -57,6 +57,25 @@ namespace TextBlock
     
   };
   
+  //! counts how many times a block appears as a begin and a end block
+  class Delimiter
+  {
+    public:
+    
+    //! constructor
+    Delimiter( const unsigned int& begin = 0, const unsigned int& end = 0 ):
+      begin_( begin ),
+      end_( end )
+    {}
+    
+    //! number of times the block is of type "begin"
+    unsigned int begin_;
+    
+    //! number of times the block is of type "end"
+    unsigned int end_;
+    
+  };
+  
 };
 
 

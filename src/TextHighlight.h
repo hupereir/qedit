@@ -39,6 +39,7 @@
 #include "Counter.h"
 #include "Debug.h"
 #include "HighlightPattern.h"
+#include "HighlightBlockFlags.h"
 #include "Key.h"
 #include "TextParenthesis.h"
 
@@ -155,6 +156,9 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   //! apply locations to current block
   void _applyPatterns( const PatternLocationSet& locations );
  
+  //! calculate delimiter object
+  TextBlock::Delimiter _delimiter( const QString& text ) const;
+  
   //! true if highlight is enabled
   bool highlight_enabled_;
 
