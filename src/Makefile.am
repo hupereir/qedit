@@ -78,6 +78,7 @@ noinst_HEADERS = \
   HighlightBlockFlags.h \
   HtmlUtil.h \
   Icons.h \
+  LineNumberWidget.h \
   MainFrame.h \
   Menu.h \
   NewFileDialog.h \
@@ -103,6 +104,7 @@ qedit_SOURCES = \
   FileSelectionDialog.cpp \
   HighlightBlockData.cpp \
   HtmlUtil.cpp \
+  LineNumberWidget.cpp \
   MainFrame.cpp \
   Menu.cpp \
   NewFileDialog.cpp \
@@ -124,6 +126,7 @@ nodist_qedit_SOURCES = \
   moc_FileModifiedDialog.cpp \
   moc_FileRemovedDialog.cpp \
   moc_FileSelectionDialog.cpp \
+  moc_LineNumberWidget.cpp \
   moc_MainFrame.cpp \
   moc_Menu.cpp \
   moc_NewFileDialog.cpp \

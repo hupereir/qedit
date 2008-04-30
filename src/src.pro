@@ -46,6 +46,7 @@ HEADERS = \
   HighlightBlockFlags.h \
   HtmlUtil.h \
   Icons.h \
+  LineNumberWidget.h \
   MainFrame.h \
   Menu.h \
   NewFileDialog.h \
@@ -72,6 +73,7 @@ SOURCES = \
   FileSelectionDialog.cpp \
   HighlightBlockData.cpp \
   HtmlUtil.cpp \
+  LineNumberWidget.cpp \
   MainFrame.cpp \
   Menu.cpp \
   NewFileDialog.cpp \
