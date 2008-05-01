@@ -71,7 +71,7 @@ class FileSelectionDialog: public QDialog, public Counter
   private:
 
   //! file and class pair
-  typedef std::pair< File, std::string> FilePair;
+  typedef std::pair< File, QString> FilePair;
   
   //! model
   class Model: public ListModel<FilePair>

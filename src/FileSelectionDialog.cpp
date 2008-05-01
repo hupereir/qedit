@@ -82,7 +82,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
       if( !file_set.insert( file ).second ) continue;
 
       // retrieve document class
-      const string& class_name( (*iter)->editor().className() );
+      const QString& class_name( (*iter)->editor().className() );
       model_.add( std::make_pair( file.expand(), class_name ) );
 
     }
@@ -172,7 +172,7 @@ QVariant FileSelectionDialog::Model::data( const QModelIndex& index, int role ) 
       return QString( file.first.path().c_str() );
       
       case CLASS:
-      return QString( file.second.c_str() );
+      return QString( file.second );
       
       default:
       return QVariant();

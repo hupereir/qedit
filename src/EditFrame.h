@@ -342,7 +342,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   void saveAll( void );
 
   //! select class name
-  void selectClassName( std::string );
+  void selectClassName( QString );
   
   //! rehighlight all text displays
   void rehighlight( void );

@@ -172,15 +172,15 @@ void Menu::_updateDocumentClassMenu( void )
   
   // retrieve current class from EditFrame
   EditFrame& frame( *static_cast<EditFrame*>(window()) ); 
-  const std::string& class_name( frame.activeView().editor().className() );
+  const QString& class_name( frame.activeView().editor().className() );
   
   // retrieve classes from DocumentClass manager
   const DocumentClassManager::ClassList& classes( static_cast<MainFrame*>(qApp)->classManager().list() );
   for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
   { 
     // insert actions
-    QAction* action = document_class_menu_->addAction( iter->name().c_str() );
-    if( !iter->icon().empty() ) action->setIcon( IconEngine::get( iter->icon(), path_list ) );
+    QAction* action = document_class_menu_->addAction( iter->name() );
+    if( !iter->icon().isEmpty() ) action->setIcon( IconEngine::get( qPrintable( iter->icon() ), path_list ) );
     if( iter->name() == class_name ) action->setFont( font );
     document_classes_.insert( make_pair( action, iter->name() ) );    
   }

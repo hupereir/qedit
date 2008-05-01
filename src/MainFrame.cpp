@@ -250,8 +250,8 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
   
     // trigger autospell if required
     if( autospell ) (*iter)->activeView().editor().autoSpellAction().setChecked( true );
-    if( !filter.empty() ) (*iter)->activeView().editor().selectFilter( filter );
-    if( !dictionary.empty() ) (*iter)->activeView().editor().selectDictionary( filter );
+    if( !filter.empty() ) (*iter)->activeView().editor().selectFilter( filter.c_str() );
+    if( !dictionary.empty() ) (*iter)->activeView().editor().selectDictionary( dictionary.c_str() );
     
     // update open status and exit
     open_status_ = OPEN;
@@ -331,8 +331,8 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
   
   // trigger autospell if required
   if( autospell ) frame->activeView().editor().autoSpellAction().setChecked( true );
-  if( !filter.empty() ) frame->activeView().editor().selectFilter( filter );
-  if( !dictionary.empty() ) frame->activeView().editor().selectDictionary( filter );
+  if( !filter.empty() ) frame->activeView().editor().selectFilter( filter.c_str() );
+  if( !dictionary.empty() ) frame->activeView().editor().selectDictionary( dictionary.c_str() );
 
   Debug::Throw( "MainFrame::Open - done.\n" );
     
@@ -354,7 +354,7 @@ void MainFrame::updateDocumentClasses( void )
   for( list<string>::const_iterator iter = files.begin(); iter != files.end(); iter++ )
   { 
     class_manager_->read( *iter ); 
-    what << class_manager_->readError();
+    what << qPrintable( class_manager_->readError() );
   }
 
   if( !what.str().empty() ) QtUtil::infoDialog( 0, what.str() );
@@ -363,7 +363,7 @@ void MainFrame::updateDocumentClasses( void )
   list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   const DocumentClassManager::ClassList& classes( class_manager_->list() );
   for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
-  { if( !iter->icon().empty() ) { IconEngine::get( iter->icon(), path_list ); } }
+  { if( !iter->icon().isEmpty() ) { IconEngine::get( qPrintable( iter->icon() ), path_list ); } }
   
   // emit configuration changed to force displays to be updated
   emit documentClassesChanged();

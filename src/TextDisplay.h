@@ -179,11 +179,11 @@ class TextDisplay: public CustomTextEdit
   //@{
   
   //! class name
-  void setClassName( const std::string& name )
+  void setClassName( const QString& name )
   { class_name_ = name; }
   
   //! class name
-  const std::string& className( void ) const 
+  const QString& className( void ) const 
   { return class_name_; }
   
   //@}
@@ -373,7 +373,7 @@ class TextDisplay: public CustomTextEdit
   void updateDocumentClass( void );
   
   //! process macro by name
-  void processMacro( std::string );
+  void processMacro( QString );
 
   //! rehighlight
   void rehighlight( void );
@@ -382,10 +382,10 @@ class TextDisplay: public CustomTextEdit
   void clearAllTags( const int& tags = TextBlock::ALL_TAGS );
   
   //! change autospell filter
-  void selectFilter( const std::string& );
+  void selectFilter( const QString& );
   
   //! change autospell dictionary
-  void selectDictionary( const std::string& );
+  void selectDictionary( const QString& );
   
   protected:
 
@@ -554,11 +554,11 @@ class TextDisplay: public CustomTextEdit
   
   //! ignore current misspelled word
   /*! this method does nothing if not compiled against aspell */
-  void _ignoreMisspelledWord( std::string );
+  void _ignoreMisspelledWord( QString );
   
   //! replace current selection with spell-checked suggestion
   /*! this method does nothing if not compiled against aspell */
-  void _replaceMisspelledSelection( std::string );
+  void _replaceMisspelledSelection( QString );
   
   //! highlight parenthesis
   void _highlightParenthesis( void );
@@ -584,7 +584,7 @@ class TextDisplay: public CustomTextEdit
   File working_directory_;
   
   //! associated document class name
-  std::string class_name_;
+  QString class_name_;
   
   //! paper color or active views
   QColor active_color_;

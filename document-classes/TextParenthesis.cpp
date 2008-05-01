@@ -52,12 +52,10 @@ TextParenthesis::TextParenthesis( const QDomElement& element ):
   {
     QDomAttr attribute( attributes.item( i ).toAttr() );
     if( attribute.isNull() ) continue;
-    string name( qPrintable( attribute.name() ) );
-    string value( qPrintable( attribute.value() ) );
-    if( name == XML::BEGIN ) first_.setPattern( XmlUtil::xmlToText(value) );
-    else if( name == XML::END ) second_.setPattern( XmlUtil::xmlToText(value) );
-    else if( name == XML::REGEXP ) regexp_.setPattern( XmlUtil::xmlToText( value ).c_str() );
-    else cout << "TextParenthesis::TextParenthesis - unrecognized attribute: " << name << endl;
+    if( attribute.name() == XML::BEGIN ) first_.setPattern( XmlUtil::xmlToText(attribute.value()) );
+    else if( attribute.name() == XML::END ) second_.setPattern( XmlUtil::xmlToText(attribute.value()) );
+    else if( attribute.name() == XML::REGEXP ) regexp_.setPattern( XmlUtil::xmlToText( attribute.value() ) );
+    else cout << "TextParenthesis::TextParenthesis - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
   }
   
   // create regexp
@@ -74,11 +72,11 @@ TextParenthesis::TextParenthesis( const QDomElement& element ):
 QDomElement TextParenthesis::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "TextParenthesis::DomElement.\n" );
-  QDomElement out( parent.createElement( XML::PARENTHESIS.c_str() ) );
+  QDomElement out( parent.createElement( XML::PARENTHESIS ) );
   
   // dump attributes
-  out.setAttribute( XML::BEGIN.c_str(), XmlUtil::textToXml( Str().assign<char>(first.toAscii()) ).c_str() );
-  out.setAttribute( XML::END.c_str(), XmlUtil::textToXml( Str().assign<char>(second.toAscii()) ).c_str() );
-  out.setAttribute( XML::REGEXP.c_str(), XmlUtil::textToXml( qPrintable( regexp().pattern() ) ).c_str() );
+  out.setAttribute( XML::BEGIN, XmlUtil::textToXml( first().pattern() ) );
+  out.setAttribute( XML::END, XmlUtil::textToXml( second().pattern() ) );
+  out.setAttribute( XML::REGEXP, XmlUtil::textToXml( qPrintable( regexp().pattern() ) ) );
   return out;
 }

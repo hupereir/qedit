@@ -128,11 +128,11 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   grid_layout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.lastModified() ).string().c_str():"never", box ) );
   
   // document class
-  const string& class_name( parent->className() );
-  if( !class_name.empty() )
+  const QString& class_name( parent->className() );
+  if( !class_name.isEmpty() )
   {
     grid_layout->addWidget( label = new QLabel( "document class: ", box ) );
-    grid_layout->addWidget( label = new QLabel( class_name.c_str(), box ) );
+    grid_layout->addWidget( label = new QLabel( class_name, box ) );
   }
   
   FileRecord record( parent->menu().get( file ) );

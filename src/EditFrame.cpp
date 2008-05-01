@@ -93,7 +93,7 @@ EditFrame::EditFrame(  QWidget* parent ):
   
   // menu
   setMenuBar( menu_ = new Menu( this ) );
-  connect( menu_, SIGNAL( documentClassSelected( std::string ) ), this, SLOT( selectClassName( std::string ) ) );
+  connect( menu_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
 
   // main vbox
   QWidget* main( new QWidget( this ) );
@@ -254,7 +254,7 @@ void EditFrame::saveAll( void )
 }
 
 //________________________________________________________________
-void EditFrame::selectClassName( string name  )
+void EditFrame::selectClassName( QString name )
 {
   Debug::Throw( "EditFrame::SelectClassName.\n" );
 
@@ -869,8 +869,8 @@ void EditFrame::_updateConfiguration( void )
     
     FileRecord& record( menu_->openPreviousMenu().get( *iter ) ); 
     if( !record.hasInformation( "class_name" ) ) continue; 
-    DocumentClass document_class( static_cast<MainFrame*>(qApp)->classManager().get( record.information( "class_name" ) ) );
-    if( !document_class.icon().empty() ) record.addInformation( "icon", document_class.icon() );
+    DocumentClass document_class( static_cast<MainFrame*>(qApp)->classManager().get( record.information( "class_name" ).c_str() ) );
+    if( !document_class.icon().isEmpty() ) record.addInformation( "icon", qPrintable( document_class.icon() ) );
   
   }
     
