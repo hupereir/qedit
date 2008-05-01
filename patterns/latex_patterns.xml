@@ -42,9 +42,10 @@
  </keyword_pattern>
 
  <!-- parenthesis -->
- <parenthesis begin="(" end=")" />
+ <parenthesis begin="(" end=")" regexp="\(|\)" />
  <parenthesis begin="[" end="]" regexp="\[|\]" /> 
  <parenthesis begin="{" end="}" regexp="\{|\}" /> 
+ <parenthesis begin="\begin" end="\end" regexp="(\\begin)|(\\end)" /> 
 
  <!-- block delimiters -->
  <block_delimiter begin="{" end="}" regexp="\{|\}"/>

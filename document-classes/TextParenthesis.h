@@ -64,11 +64,11 @@ class TextParenthesis: public Counter
   QDomElement domElement( QDomDocument& parent ) const;
 
   //! regExp that match either of the two parenthesis
-  const QRegExp& first() const
+  const QString& first() const
   { return first_; }
 
   //! regExp that match either of the two parenthesis
-  const QRegExp& second() const
+  const QString& second() const
   { return second_; }
 
   //! regExp that match either of the two parenthesis
@@ -81,23 +81,23 @@ class TextParenthesis: public Counter
     public:
     
     //! constructor
-    MatchFTor( const QString& text, const int& position ):
-      text_( text ),
-      position_( position )
+    MatchFTor( const QString& text ):
+      text_( text )
     {}
     
     //! predicate
     bool operator() ( const TextParenthesis& parenthesis ) const
-    { return text_.indexOf( parenthesis.regexp(), position_ ) == position_; }
+    { 
+      return 
+        text_.left( parenthesis.first().size() ) == parenthesis.first() ||
+        text_.left( parenthesis.second().size() ) == parenthesis.second();
+      }
     
     private:
 
     //! predicted character
     const QString& text_;
-    
-    //! predicted position
-    const int& position_;
-  
+      
   };
   
   //! used to find parenthesis for which first character match
@@ -106,23 +106,19 @@ class TextParenthesis: public Counter
     public:
     
     //! constructor
-    FirstElementFTor( const QString& text, const int& position ):
-      text_( text ),
-      position_( position )
+    FirstElementFTor( const QString& text ):
+      text_( text )
     {}
     
     //! predicate
     bool operator() ( const TextParenthesis& parenthesis ) const
-    { return text_.indexOf( parenthesis.first(), position_ ) == position_; }
+    { return text_.right( parenthesis.first().size() ) == parenthesis.first(); }
     
     private:
 
     //! predicted character
     const QString& text_;
     
-    //! predicted position
-    const int& position_;
-  
   };
   
   //! used to find parenthesis for which first character match
@@ -131,35 +127,41 @@ class TextParenthesis: public Counter
     public:
     
     //! constructor
-    SecondElementFTor( const QString& text, const int& position ):
-      text_( text ),
-      position_( position )
+    SecondElementFTor( const QString& text ):
+      text_( text )
     {}
     
     //! predicate
     bool operator() ( const TextParenthesis& parenthesis ) const
-    { return text_.indexOf( parenthesis.second(), position_ ) == position_; }
+    { return text_.right( parenthesis.second().size() ) == parenthesis.second(); }
     
     private:
 
     //! predicted character
     const QString& text_;
-    
-    //! predicted position
-    const int& position_;
-  
+      
   };
   
   private:
   
   //! regular expression that match first character
-  QRegExp first_;
+  QString first_;
   
   //! regular expression that match second character
-  QRegExp second_;
+  QString second_;
   
   //! regular expression that match either of both characters
   QRegExp regexp_;
+  
+  //! streamer
+  
+  friend std::ostream& operator << ( std::ostream& out, const TextParenthesis& parenthesis )
+  {
+    out << " first: " << qPrintable( parenthesis.first() ) 
+      << " second: " << qPrintable( parenthesis.second() ) 
+      << " regexp: " << qPrintable( parenthesis.regexp().pattern() );
+    return out;
+  }
   
 };
 #endif

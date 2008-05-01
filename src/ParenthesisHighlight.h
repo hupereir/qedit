@@ -67,7 +67,7 @@ class ParenthesisHighlight: public QObject, public Counter
   void clear( void );
     
   //! highlight current (absolute) location
-  void highlight( const int& location );
+  void highlight( const int& location, const int& length );
   
   private slots:
   
@@ -87,6 +87,9 @@ class ParenthesisHighlight: public QObject, public Counter
   
   //! parenthesis location
   int location_;
+  
+  //! length
+  int length_;
   
   //! true when cleared
   bool cleared_;

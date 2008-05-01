@@ -138,7 +138,7 @@ void TextHighlight::highlightBlock( const QString& text )
   { 
     QTextCharFormat old( TextHighlight::format( data->parenthesis() ) );
     old.setBackground( parenthesis_highlight_format_.background() );
-    setFormat( data->parenthesis(), 1, parenthesis_highlight_format_ ); 
+    setFormat( data->parenthesis(), data->parenthesisLength(), parenthesis_highlight_format_ ); 
   }
   
   return;

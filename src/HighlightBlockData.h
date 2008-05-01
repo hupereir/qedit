@@ -53,19 +53,22 @@ class HighlightBlockData: public TextBlockData
   //! constructor
   HighlightBlockData():
     TextBlockData(),
-    parenthesis_( -1 )
+    parenthesis_( -1 ),
+    parenthesis_length_(0)
   {}
     
   //! constructor
   HighlightBlockData( const TextBlockData& reference ):
     TextBlockData( reference ),
-    parenthesis_( -1 )
+    parenthesis_( -1 ),
+    parenthesis_length_(0)
   {}
     
   //! constructor
   HighlightBlockData( const TextBlockData* pointer ):
     TextBlockData( *pointer ),
-    parenthesis_( -1 )
+    parenthesis_( -1 ),
+    parenthesis_length_(0)
   {}
     
   //! destructor
@@ -90,13 +93,23 @@ class HighlightBlockData: public TextBlockData
   const int& parenthesis( void ) const
   { return parenthesis_; }
   
+  //! highlighted parenthesis
+  const int& parenthesisLength( void ) const
+  { return parenthesis_length_; }
+
   //! set parenthesis
-  void setParenthesis( const int& value )
-  { parenthesis_ = value; }
+  void setParenthesis( const int& value, const int& length )
+  { 
+    parenthesis_ = value;
+    parenthesis_length_ = length;
+  }
   
   //! clear parenthesis
   void clearParenthesis( void )
-  { parenthesis_ = -1; }
+  { 
+    parenthesis_ = -1; 
+    parenthesis_length_= 0;
+  }
     
   //@}
   
@@ -138,6 +151,9 @@ class HighlightBlockData: public TextBlockData
   /*! local with respect to the block */
   int parenthesis_;
      
+  //! parenthesis length
+  int parenthesis_length_;
+  
   //! delimiter
   TextBlock::Delimiter delimiter_;
   

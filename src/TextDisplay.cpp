@@ -2000,10 +2000,10 @@ void TextDisplay::_highlightParenthesis( void )
 
   // retrieve block
   QTextBlock block( cursor.block() );
-  if( ignoreBlock( block ) ) return;
+  //if( ignoreBlock( block ) ) return;
 
   // store local position in block
-  int position(cursor.position()-block.position()-1);
+  int position(cursor.position()-block.position());
 
   // retrieve text block data
   HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
@@ -2011,32 +2011,26 @@ void TextDisplay::_highlightParenthesis( void )
 
   QString text( block.text() );
   const TextParenthesis::List& parenthesis( textHighlight().parenthesis() );
-  if( std::find_if( 
-    parenthesis.begin(), 
-    parenthesis.end(), 
-    TextParenthesis::MatchFTor( text, position ) ) == parenthesis.end() )
-  return;
-
+     
   // check against opening parenthesis
   bool found( false );
-  TextParenthesis::List::const_iterator iter = find_if( 
+  TextParenthesis::List::const_iterator iter( find_if( 
     parenthesis.begin(), parenthesis.end(), 
-    TextParenthesis::FirstElementFTor( text, position ) );
+    TextParenthesis::FirstElementFTor( text.left( position ) ) ) );
   
   if( iter != parenthesis.end() )
   {
     int increment( 0 );
-    position++;
     while( block.isValid() && !found )
     {
       // retrieve block text
       QString text( block.text() );
 
       // parse text
-      while( (position = iter->regexp().indexIn( text, position )) >= 0 )
+      while( (position = text.indexOf( iter->regexp(), position ) ) >= 0 )
       {
-        if( text.mid(position, iter->regexp().matchedLength() ).indexOf( iter->second() ) == 0 ) increment--;
-        else if( text.mid(position, iter->regexp().matchedLength() ).indexOf( iter->first() ) == 0 ) increment++;
+        if( text.mid(position, iter->regexp().matchedLength() ) == iter->second() ) increment--;
+        else if( text.mid(position, iter->regexp().matchedLength() ) == iter->first() ) increment++;
 
         if( increment < 0 )
         {
@@ -2058,21 +2052,23 @@ void TextDisplay::_highlightParenthesis( void )
 
   // if not found, check against closing parenthesis
   if( !( found || (iter = 
-    find_if( parenthesis.begin(), parenthesis.end(), TextParenthesis::SecondElementFTor( text, position ) )) == parenthesis.end()  ) )
+    find_if( 
+    parenthesis.begin(), parenthesis.end(), 
+    TextParenthesis::SecondElementFTor( text.left( position ) ) )) == parenthesis.end()  ) )
   {
     int increment( 0 );
-    position--;
+    position -= (iter->second().size() + 1 );
     while( block.isValid() && !found )
     {
       // retrieve block text
       QString text( block.text() );
 
       // parse text
-      while( position >= 0 && (position = iter->regexp().lastIndexIn( text, position )) >= 0 )
+      while( position >= 0 && (position = text.lastIndexOf( iter->regexp(), position ) ) >= 0 )
       {
         
-        if( text.mid(position, iter->regexp().matchedLength() ).indexOf( iter->first() ) == 0 ) increment--;
-        else if( text.mid(position, iter->regexp().matchedLength() ).indexOf( iter->second() ) == 0 ) increment++;
+        if( text.mid(position, iter->regexp().matchedLength() ) == iter->first() ) increment--;
+        else if( text.mid(position, iter->regexp().matchedLength() ) == iter->second() ) increment++;
 
         if( increment < 0 )
         {
@@ -2092,7 +2088,7 @@ void TextDisplay::_highlightParenthesis( void )
     }
   }
 
-  if( found ) parenthesisHighlight().highlight( position + block.position() );
+  if( found ) parenthesisHighlight().highlight( position + block.position(), iter->regexp().matchedLength() );
 
   return;
 

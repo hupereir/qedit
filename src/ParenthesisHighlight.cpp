@@ -45,6 +45,7 @@ ParenthesisHighlight::ParenthesisHighlight( CustomTextEdit* parent ):
   timer_( parent ),
   enabled_( false ),
   location_( -1 ),
+  length_(0),
   cleared_( true )
 { 
   Debug::Throw( "ParenthesisHighlight::ParenthesisHighlight.\n" );
@@ -85,11 +86,12 @@ void ParenthesisHighlight::clear( void )
 }
 
 //______________________________________________________________________
-void ParenthesisHighlight::highlight( const int& location )
+void ParenthesisHighlight::highlight( const int& location, const int& length )
 {
   if( !isEnabled() ) return;
   clear();
   location_ = location;
+  length_ = length;
   _highlight();
 }
 
@@ -112,8 +114,8 @@ void ParenthesisHighlight::_highlight( void )
   } else if( data->hasParenthesis() && data->parenthesis() + block.position() == location_ ) return;
   
   // update parenthesis
-  data->setParenthesis( location_ - block.position() );
-  parent_->document()->markContentsDirty( location_, 1 );
+  data->setParenthesis( location_ - block.position(), length_ );
+  parent_->document()->markContentsDirty( location_, length_ );
   cleared_ = false;
   
   // reset location
