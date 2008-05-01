@@ -77,7 +77,7 @@ class Menu:public QMenuBar, public Counter
   signals:
   
   //! emmited every time a document class is selected
-  void documentClassSelected( std::string );
+  void documentClassSelected( QString );
     
   private slots:
     
@@ -168,10 +168,10 @@ class Menu:public QMenuBar, public Counter
   QAction* topbottom_action_;
     
   //! map document class to macro names
-  std::map< QAction*, std::string > document_classes_;
+  std::map< QAction*, QString > document_classes_;
   
   //! map actions to macro names
-  std::map< QAction*, std::string > macros_;
+  std::map< QAction*, QString > macros_;
 
   //! map windows menu ID to file name
   std::map< QAction*, File > files_;

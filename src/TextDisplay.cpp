@@ -211,7 +211,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
   Debug::Throw() << "TextDisplay::openFile " << file << endl;
 
   // reset class name
-  string class_name( menu().get( file ).information("class_name") );
+  QString class_name( menu().get( file ).information("class_name").c_str() );
   setClassName( class_name );
 
   // expand filename
@@ -273,7 +273,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
 
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
-  { menu().get( TextDisplay::file() ).addInformation( "class_name", className() ); }
+  { menu().get( TextDisplay::file() ).addInformation( "class_name", qPrintable( className() ) ); }
 
   Debug::Throw( "TextDisplay::openFile - done.\n" );
 
@@ -451,7 +451,7 @@ void TextDisplay::save( void )
 
   // add file to menu
   if( !file().empty() )
-  { menu().get( file() ).addInformation( "class_name", className() ); }
+  { menu().get( file() ).addInformation( "class_name", qPrintable( className() ) ); }
 
   return;
 
@@ -527,7 +527,7 @@ void TextDisplay::saveAs( void )
   // rehighlight
   rehighlight();
   if( !TextDisplay::file().empty() )
-  { menu().get( TextDisplay::file() ).addInformation( "class_name", className() ); }
+  { menu().get( TextDisplay::file() ).addInformation( "class_name", qPrintable( className() ) ); }
 
 }
 
@@ -843,11 +843,11 @@ void TextDisplay::updateDocumentClass( void )
   DocumentClass document_class;
 
   // try load document class from class_name
-  if( !className().empty() )
+  if( !className().isEmpty() )
   { document_class = static_cast<MainFrame*>(qApp)->classManager().get( className() ); }
 
   // try load from file
-  if( document_class.name().empty() && !file().empty() )
+  if( document_class.name().isEmpty() && !file().empty() )
   { document_class = static_cast<MainFrame*>(qApp)->classManager().find( file() ); }
 
   // update class name
@@ -878,19 +878,19 @@ void TextDisplay::updateDocumentClass( void )
   textHighlight().setParenthesisEnabled(
     textHighlightAction().isChecked() &&
     textHighlight().parenthesisHighlightColor().isValid() &&
-    !textHighlight().parenthesisSet().empty() );
+    !textHighlight().parenthesis().empty() );
 
   parenthesisHighlight().setEnabled(
     textHighlightAction().isChecked() &&
     textHighlight().parenthesisHighlightColor().isValid() &&
-    !textHighlight().parenthesisSet().empty() );
+    !textHighlight().parenthesis().empty() );
 
   // add information to Menu
   if( !file().empty() )
   { 
     FileRecord& record( menu().get( file() ) );
-    record.addInformation( "class_name", className() ); 
-    if( !document_class.icon().empty() ) record.addInformation( "icon", document_class.icon() );
+    record.addInformation( "class_name", qPrintable( className() ) ); 
+    if( !document_class.icon().isEmpty() ) record.addInformation( "icon", qPrintable( document_class.icon() ) );
   }
 
   // rehighlight text entirely
@@ -906,17 +906,17 @@ void TextDisplay::updateDocumentClass( void )
 }
 
 //_____________________________________________
-void TextDisplay::processMacro( string name )
+void TextDisplay::processMacro( QString name )
 {
 
-  Debug::Throw() << "TextDisplay::processMacro - " << name << endl;
+  Debug::Throw() << "TextDisplay::processMacro - " << qPrintable( name ) << endl;
 
   // retrieve macro that match argument name
   TextMacro::List::const_iterator macro_iter = find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
   if( macro_iter == macros_.end() )
   {
     ostringstream what;
-    what << "Unable to find macro named " << name;
+    what << "Unable to find macro named " << qPrintable( name );
     QtUtil::infoDialog( this, what.str() );
     return;
   }
@@ -1004,7 +1004,7 @@ void TextDisplay::clearAllTags( const int& flags )
 }
 
 //_______________________________________
-void TextDisplay::selectFilter( const std::string& filter )
+void TextDisplay::selectFilter( const QString& filter )
 {
   Debug::Throw( "TextDisplay::selectFilter.\n" );
 
@@ -1013,11 +1013,11 @@ void TextDisplay::selectFilter( const std::string& filter )
   // local reference to interface
   SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
 
-  if( filter == interface.filter() || !interface.hasFilter( filter ) ) return;
+  if( filter == interface.filter().c_str() || !interface.hasFilter( qPrintable( filter ) ) ) return;
 
   // update interface
-  interface.setFilter( filter );
-  _filterMenu().select( filter );
+  interface.setFilter( qPrintable( filter ) );
+  _filterMenu().select( qPrintable( filter ) );
 
   // update file record
   if( !file().empty() )
@@ -1036,7 +1036,7 @@ void TextDisplay::selectFilter( const std::string& filter )
 }
 
 //_______________________________________
-void TextDisplay::selectDictionary( const std::string& dictionary )
+void TextDisplay::selectDictionary( const QString& dictionary )
 {
   Debug::Throw( "TextDisplay::selectDictionary.\n" );
 
@@ -1044,11 +1044,11 @@ void TextDisplay::selectDictionary( const std::string& dictionary )
   // local reference to interface
   SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
 
-  if( dictionary == interface.dictionary() || !interface.hasDictionary( dictionary ) ) return;
+  if( dictionary == interface.dictionary().c_str() || !interface.hasDictionary( qPrintable( dictionary ) ) ) return;
 
   // update interface
-  interface.setDictionary( dictionary );
-  _dictionaryMenu().select( dictionary );
+  interface.setDictionary( qPrintable( dictionary ) );
+  _dictionaryMenu().select( qPrintable( dictionary ) );
 
   // update file record
   if( !file().empty() )
@@ -1176,8 +1176,8 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
   menu.interface().setDictionary( textHighlight().spellParser().interface().dictionary() );
 
   // set connections
-  connect( &menu, SIGNAL( ignoreWord( std::string ) ), SLOT( _ignoreMisspelledWord( std::string ) ) );
-  connect( &menu, SIGNAL( suggestionSelected( std::string ) ), SLOT( _replaceMisspelledSelection( std::string ) ) );
+  connect( &menu, SIGNAL( ignoreWord( QString ) ), SLOT( _ignoreMisspelledWord( QString ) ) );
+  connect( &menu, SIGNAL( suggestionSelected( QString ) ), SLOT( _replaceMisspelledSelection( QString ) ) );
 
   // execute
   menu.exec( event->globalPos() );
@@ -1277,8 +1277,8 @@ void TextDisplay::_installActions( void )
   filter_menu_action_ = _filterMenu().menuAction();
   dictionary_menu_action_ = _dictionaryMenu().menuAction();
 
-  connect( &_filterMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( selectFilter( const std::string& ) ) );
-  connect( &_dictionaryMenu(), SIGNAL( selectionChanged( const std::string& ) ), SLOT( selectDictionary( const std::string& ) ) );
+  connect( &_filterMenu(), SIGNAL( selectionChanged( const QString& ) ), SLOT( selectFilter( const QString& ) ) );
+  connect( &_dictionaryMenu(), SIGNAL( selectionChanged( const QString& ) ), SLOT( selectDictionary( const QString& ) ) );
 
   #endif
 
@@ -1581,19 +1581,19 @@ void TextDisplay::_toggleParenthesisHighlight( bool state )
   Debug::Throw() << "TextDisplay::_toggleParenthesisHighlight -"
     << " state: " << state
     << " color: " << textHighlight().parenthesisHighlightColor().isValid()
-    << " parenthesis: " << textHighlight().parenthesisSet().empty()
+    << " parenthesis: " << textHighlight().parenthesis().empty()
     << endl;
 
   // propagate to textHighlight
   textHighlight().setParenthesisEnabled(
     state &&
     textHighlight().parenthesisHighlightColor().isValid() &&
-    !textHighlight().parenthesisSet().empty() );
+    !textHighlight().parenthesis().empty() );
 
   parenthesisHighlight().setEnabled(
     state &&
     textHighlight().parenthesisHighlightColor().isValid() &&
-    !textHighlight().parenthesisSet().empty() );
+    !textHighlight().parenthesis().empty() );
 
   // propagate to other displays
   if( isSynchronized() )
@@ -1729,9 +1729,8 @@ void TextDisplay::_spellcheck( void )
   }
 
   // connections
-
-  connect( &dialog, SIGNAL( filterChanged( const std::string& ) ), SLOT( selectFilter( const std::string& ) ) );
-  connect( &dialog, SIGNAL( dictionaryChanged( const std::string& ) ), SLOT( selectDictionary( const std::string& ) ) );
+  connect( &dialog, SIGNAL( filterChanged( const QString& ) ), SLOT( selectFilter( const QString& ) ) );
+  connect( &dialog, SIGNAL( dictionaryChanged( const QString& ) ), SLOT( selectDictionary( const QString& ) ) );
 
   dialog.nextWord();
   dialog.exec();
@@ -1962,11 +1961,11 @@ void TextDisplay::_textModified( void )
 }
 
 //__________________________________________________
-void TextDisplay::_ignoreMisspelledWord( std::string word )
+void TextDisplay::_ignoreMisspelledWord( QString word )
 {
-  Debug::Throw() << "TextDisplay::_ignoreMisspelledWord - word: " << word << endl;
+  Debug::Throw() << "TextDisplay::_ignoreMisspelledWord - word: " << qPrintable( word ) << endl;
   #if WITH_ASPELL
-  textHighlight().spellParser().interface().ignoreWord( word );
+  textHighlight().spellParser().interface().ignoreWord( qPrintable( word ) );
   rehighlight();
   #endif
   return;
@@ -1974,13 +1973,13 @@ void TextDisplay::_ignoreMisspelledWord( std::string word )
 }
 
 //__________________________________________________
-void TextDisplay::_replaceMisspelledSelection( std::string word )
+void TextDisplay::_replaceMisspelledSelection( QString word )
 {
 
   #if WITH_ASPELL
-  Debug::Throw() << "TextDisplay::_replaceMisspelledSelection - word: " << word << endl;
+  Debug::Throw() << "TextDisplay::_replaceMisspelledSelection - word: " << qPrintable( word ) << endl;
   QTextCursor cursor( textCursor() );
-  cursor.insertText( word.c_str() );
+  cursor.insertText( word );
   #endif
   return;
 
@@ -2009,16 +2008,22 @@ void TextDisplay::_highlightParenthesis( void )
   // retrieve text block data
   HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
   if( !data ) return;  
-  
-  // check if character is in parenthesis_set
-  QChar c( block.text()[position] );
-  if( textHighlight().parenthesisSet().find( c ) == textHighlight().parenthesisSet().end() )
-  { return; }
+
+  QString text( block.text() );
+  const TextParenthesis::List& parenthesis( textHighlight().parenthesis() );
+  if( std::find_if( 
+    parenthesis.begin(), 
+    parenthesis.end(), 
+    TextParenthesis::MatchFTor( text, position ) ) == parenthesis.end() )
+  return;
 
   // check against opening parenthesis
   bool found( false );
-  TextParenthesis::List::const_iterator iter = find_if( textHighlight().parenthesis().begin(), textHighlight().parenthesis().end(), TextParenthesis::FirstElementFTor(c) );
-  if( iter != textHighlight().parenthesis().end() )
+  TextParenthesis::List::const_iterator iter = find_if( 
+    parenthesis.begin(), parenthesis.end(), 
+    TextParenthesis::FirstElementFTor( text, position ) );
+  
+  if( iter != parenthesis.end() )
   {
     int increment( 0 );
     position++;
@@ -2030,8 +2035,8 @@ void TextDisplay::_highlightParenthesis( void )
       // parse text
       while( (position = iter->regexp().indexIn( text, position )) >= 0 )
       {
-        if( text[position] == iter->second ) increment--;
-        else if( text[position] == iter->first ) increment++;
+        if( text.mid(position, iter->regexp().matchedLength() ).indexOf( iter->second() ) == 0 ) increment--;
+        else if( text.mid(position, iter->regexp().matchedLength() ).indexOf( iter->first() ) == 0 ) increment++;
 
         if( increment < 0 )
         {
@@ -2052,7 +2057,8 @@ void TextDisplay::_highlightParenthesis( void )
   }
 
   // if not found, check against closing parenthesis
-  if( !( found || (iter = find_if( textHighlight().parenthesis().begin(), textHighlight().parenthesis().end(), TextParenthesis::SecondElementFTor(c) )) == textHighlight().parenthesis().end()  ) )
+  if( !( found || (iter = 
+    find_if( parenthesis.begin(), parenthesis.end(), TextParenthesis::SecondElementFTor( text, position ) )) == parenthesis.end()  ) )
   {
     int increment( 0 );
     position--;
@@ -2064,9 +2070,9 @@ void TextDisplay::_highlightParenthesis( void )
       // parse text
       while( position >= 0 && (position = iter->regexp().lastIndexIn( text, position )) >= 0 )
       {
-
-        if( text[position] == iter->first ) increment--;
-        else if( text[position] == iter->second ) increment++;
+        
+        if( text.mid(position, iter->regexp().matchedLength() ).indexOf( iter->first() ) == 0 ) increment--;
+        else if( text.mid(position, iter->regexp().matchedLength() ).indexOf( iter->second() ) == 0 ) increment++;
 
         if( increment < 0 )
         {

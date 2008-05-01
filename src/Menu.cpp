@@ -464,7 +464,7 @@ void Menu::_updateWindowsMenu( void )
 void Menu::_selectClassName( QAction* action )
 {
   Debug::Throw( "Menu::_selectClassName.\n" );
-  std::map< QAction*, string >::iterator iter = document_classes_.find( action );
+  std::map< QAction*, QString >::iterator iter = document_classes_.find( action );
   if( iter != document_classes_.end() ) 
   { emit documentClassSelected( iter->second ); }
   
@@ -478,7 +478,7 @@ void Menu::_selectMacro( QAction* action )
   Debug::Throw( "Menu::_SelectMacro.\n" );
   
   // try retrieve id in map
-  std::map< QAction*, string >::iterator iter = macros_.find( action );
+  std::map< QAction*, QString >::iterator iter = macros_.find( action );
   if( iter == macros_.end() ) return;
   
   // retrieve current Text Display

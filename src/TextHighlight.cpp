@@ -53,12 +53,6 @@ void TextHighlight::setParenthesis( const TextParenthesis::List& parenthesis )
   
   Debug::Throw( "TextHighlight::setParenthesis.\n" );
   parenthesis_ = parenthesis;
-  parenthesis_set_.clear();
-  for( TextParenthesis::List::const_iterator iter = parenthesis_.begin(); iter != parenthesis_.end(); iter++ )
-  {
-    parenthesis_set_.insert( iter->first );
-    parenthesis_set_.insert( iter->second );
-  }
   
 }
 

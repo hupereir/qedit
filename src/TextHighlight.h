@@ -116,11 +116,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   //! parenthesis
   const TextParenthesis::List& parenthesis( void ) const
   { return parenthesis_; }
-  
-  //! parenthesis
-  const TextParenthesis::Set& parenthesisSet( void ) const
-  { return parenthesis_set_; }
-  
+    
   //! set parenthesis
   void setParenthesis( const TextParenthesis::List& );
 
@@ -189,9 +185,6 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   
   //! text parenthesis
   TextParenthesis::List parenthesis_;
-
-  //! keep track of all parenthesis in a single set for fast access
-  TextParenthesis::Set parenthesis_set_;
 
   //! parenthesis highlight format
   QTextCharFormat parenthesis_highlight_format_;
