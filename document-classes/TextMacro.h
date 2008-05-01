@@ -62,7 +62,7 @@ class TextMacro: public Counter
   QDomElement domElement( QDomDocument& parent ) const;
 
   //! name
-  virtual const std::string& name( void ) const
+  virtual const QString& name( void ) const
   { return name_; }
 
   //! separator flag
@@ -96,7 +96,7 @@ class TextMacro: public Counter
     public:
 
     //! constructor
-    SameNameFTor( const std::string& name ):
+    SameNameFTor( const QString& name ):
       name_( name )
     {}
 
@@ -107,15 +107,15 @@ class TextMacro: public Counter
     private:
 
     //! predicate
-    const std::string name_;
+    const QString name_;
 
   };
 
   //! return action
   QAction* action( void ) const
   {
-    QAction* out( new QAction( name().c_str(), 0 ) );
-    if( !_accelerator().empty() ) out->setShortcut( QKeySequence( _accelerator().c_str() ) );
+    QAction* out( new QAction( name(), 0 ) );
+    if( !_accelerator().isEmpty() ) out->setShortcut( QKeySequence( _accelerator() ) );
     return out;
   }
   
@@ -147,8 +147,8 @@ class TextMacro: public Counter
     { return pattern_; }
 
     //! parent name
-    virtual void _setPattern( const std::string& pattern )
-    { pattern_.setPattern( pattern.c_str() ); }
+    virtual void _setPattern( const QString& pattern )
+    { pattern_.setPattern( pattern ); }
 
     //! replacemenet text
     virtual const QString& _replaceText( void ) const
@@ -190,15 +190,15 @@ class TextMacro: public Counter
   { rules_.push_back( rule ); }
 
   //! name
-  virtual void _setName( const std::string& name )
+  virtual void _setName( const QString& name )
   { name_ = name; }
 
   //! accelerator
-  virtual const std::string& _accelerator( void ) const
+  virtual const QString& _accelerator( void ) const
   { return accelerator_; }
 
   //! accelerator
-  virtual void _setAccelerator( const std::string& value )
+  virtual void _setAccelerator( const QString& value )
   { accelerator_ = value; }
 
   //! separator
@@ -208,10 +208,10 @@ class TextMacro: public Counter
   private:
 
   //! macro name
-  std::string name_;
+  QString name_;
 
   //! accelerator
-  std::string accelerator_;
+  QString accelerator_;
 
   //! separator flag
   bool is_separator_;

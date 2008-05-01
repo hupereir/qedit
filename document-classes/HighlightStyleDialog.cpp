@@ -68,7 +68,7 @@ void HighlightStyleDialog::setStyle( const HighlightStyle& style )
 {
   
   Debug::Throw( "HighlightStyleDialog::setStyle\n" );
-  editor_->setText( style.name().c_str() );
+  editor_->setText( style.name() );
   color_->setColor( style.color().name() );
   font_info_->setFormat( style.fontFormat() );
   return;

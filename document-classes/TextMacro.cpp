@@ -55,14 +55,12 @@ TextMacro::TextMacro( const QDomElement& element ):
   {
     QDomAttr attribute( attributes.item( i ).toAttr() );
     if( attribute.isNull() ) continue;
-    Str name( qPrintable( attribute.name() ) );
-    Str value( qPrintable( attribute.value() ) );
-    if( name == XML::NAME ) _setName( value );
-    else if( name == XML::ACCELERATOR ) _setAccelerator( value );
-    else if( name == XML::OPTIONS )
+    if( attribute.name() == XML::NAME ) _setName( attribute.value() );
+    else if( attribute.name() == XML::ACCELERATOR ) _setAccelerator( attribute.value() );
+    else if( attribute.name() == XML::OPTIONS )
     {
-      if( value.find( XML::OPTION_SEPARATOR ) != string::npos ) _setIsSeparator();
-    } else cout << "TextMacro::TextMacro - unrecognized attribute: " << name << endl;
+      if( attribute.value().indexOf( XML::OPTION_SEPARATOR, 0, Qt::CaseInsensitive ) >= 0 ) _setIsSeparator();
+    } else cout << "TextMacro::TextMacro - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
   }
 
   Debug::Throw() << "TextMacro::TextMacro - name: " << name() << endl;
@@ -72,9 +70,8 @@ TextMacro::TextMacro( const QDomElement& element ):
   {
     QDomElement child_element = child_node.toElement(); 
     if( child_element.isNull() ) continue;
-    string tag_name( qPrintable( child_element.tagName() ) );
-    if( tag_name == XML::RULE ) _addRule( Rule( child_element ) );
-    else cout << "TextMacro::TextMacro - unrecognized child: " << tag_name << endl;
+    if( child_element.tagName() == XML::RULE ) _addRule( Rule( child_element ) );
+    else cout << "TextMacro::TextMacro - unrecognized child: " << qPrintable( child_element.tagName() ) << endl;
   }
   
   assert( isSeparator() || !rules_.empty() );
@@ -85,15 +82,13 @@ TextMacro::TextMacro( const QDomElement& element ):
 QDomElement TextMacro::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "TextMacro::domElement.\n" );
-  QDomElement out( parent.createElement( XML::MACRO.c_str() ) );
+  QDomElement out( parent.createElement( XML::MACRO ) );
   
   // dump attributes
-  out.setAttribute( XML::NAME.c_str(), name().c_str() );
-  if( !_accelerator().empty() ) out.setAttribute( XML::ACCELERATOR.c_str(), _accelerator().c_str() );
+  out.setAttribute( XML::NAME, name() );
+  if( !_accelerator().isEmpty() ) out.setAttribute( XML::ACCELERATOR, _accelerator() );
   
-  ostringstream what;
-  if( isSeparator() ) what << XML::OPTION_SEPARATOR << " ";
-  if( what.str().size() ) out.setAttribute( XML::OPTIONS.c_str(), what.str().c_str() );
+  if( isSeparator() ) out.setAttribute( XML::OPTIONS, XML::OPTION_SEPARATOR );
   
   // dump children
   for( vector<Rule>::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
@@ -115,12 +110,10 @@ TextMacro::Rule::Rule( const QDomElement& element ):
   {
     QDomAttr attribute( attributes.item( i ).toAttr() );
     if( attribute.isNull() ) continue;
-    Str name( qPrintable( attribute.name() ) );
-    Str value( qPrintable( attribute.value() ) );
-    if( name == XML::OPTIONS ) 
+    if( attribute.name() == XML::OPTIONS ) 
     {
-      if( value.find( XML::OPTION_NO_SPLIT ) != string::npos ) _setNoSplitting();
-    } else cout << "TextMacro::Rule::Rule - unrecognized attribute: " << name << endl;
+      if( attribute.value().indexOf( XML::OPTION_NO_SPLIT, 0, Qt::CaseInsensitive ) >= 0 ) _setNoSplitting();
+    } else cout << "TextMacro::Rule::Rule - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
   }
   
   // parse children
@@ -128,13 +121,9 @@ TextMacro::Rule::Rule( const QDomElement& element ):
   {
     QDomElement child_element = child_node.toElement(); 
     if( child_element.isNull() ) continue;
-    string tag_name( qPrintable( child_element.tagName() ) );
-    if( tag_name == XML::REGEXP ) _setPattern( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
-    else if( tag_name == XML::REPLACEMENT ) 
-    { 
-      _setReplaceText( XmlUtil::xmlToText( qPrintable( child_element.text() ) ).c_str() ); 
-    }
-    else cout << "TextMacro::Rule::Rule - unrecognized child: " << tag_name << endl;
+    if( child_element.tagName() == XML::REGEXP ) _setPattern( XmlUtil::xmlToText( child_element.text() ) );
+    else if( child_element.tagName() == XML::REPLACEMENT ) _setReplaceText( XmlUtil::xmlToText( child_element.text() ) ); 
+    else cout << "TextMacro::Rule::Rule - unrecognized child: " << qPrintable( child_element.tagName() ) << endl;
   }
   
 }
@@ -144,21 +133,19 @@ QDomElement TextMacro::Rule::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "TextMacro::Rule::domElement.\n" );
   
-  QDomElement out( parent.createElement( XML::RULE.c_str() ) );
+  QDomElement out( parent.createElement( XML::RULE ) );
   
   // options
-  ostringstream what;
-  if( no_splitting_ ) what << XML::OPTION_NO_SPLIT << " ";
-  if( what.str().size() ) out.setAttribute( XML::OPTIONS.c_str(), what.str().c_str() );
+  if( no_splitting_ ) out.setAttribute( XML::OPTIONS, XML::OPTION_NO_SPLIT );
   
   // child
   out.
-    appendChild( parent.createElement( XML::REGEXP.c_str() ) ).
-    appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( _pattern().pattern() ) ).c_str() ) );
+    appendChild( parent.createElement( XML::REGEXP ) ).
+    appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( _pattern().pattern() ) ) ) );
   
   out.
-    appendChild( parent.createElement( XML::REPLACEMENT.c_str() ) ).
-    appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( _replaceText() ) ).c_str() ) );
+    appendChild( parent.createElement( XML::REPLACEMENT ) ).
+    appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( _replaceText() ) ) ) );
   return out;
 }
 

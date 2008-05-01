@@ -61,7 +61,7 @@ class IndentPattern: public Counter
   { return id_; }
   
   //! name
-  const std::string& name() const
+  const QString& name() const
   { return name_; }
   
   //! reset counter
@@ -151,8 +151,8 @@ class IndentPattern: public Counter
     { paragraph_ = par; }
     
     //! set regExp
-    void _setRegExp( const std::string& regexp )
-    { regexp_ = QRegExp( regexp.c_str() ); }      
+    void _setRegExp( const QString& regexp )
+    { regexp_ = QRegExp( regexp ); }      
             
     //! paragraph id (vs current)
     int paragraph_;
@@ -189,7 +189,7 @@ class IndentPattern: public Counter
   protected:
   
   //! name
-  void _setName( const std::string& name )
+  void _setName( const QString& name )
   { name_ = name; }
   
   //! type
@@ -213,7 +213,7 @@ class IndentPattern: public Counter
   unsigned int id_; 
 
   //! pattern name
-  std::string name_;
+  QString name_;
   
   //! type
   Type type_;
@@ -232,7 +232,7 @@ class IndentPattern: public Counter
   //! dumper
   friend std::ostream& operator << ( std::ostream& out, const IndentPattern& pattern )
   {
-    out << "IndentPattern - name: " << pattern.name_ << " type: " << pattern.type_ << std::endl;
+    out << "IndentPattern - name: " << qPrintable( pattern.name() ) << " type: " << pattern.type_ << std::endl;
     for( RuleList::const_iterator iter =  pattern.rules_.begin(); iter != pattern.rules_.end(); iter++ )
     out << "  " << *iter << std::endl;
     return out;
