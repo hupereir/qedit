@@ -64,10 +64,6 @@ BlockDelimiterWidget::BlockDelimiterWidget(CustomTextEdit* editor, QWidget* pare
   // update configuration
   _updateConfiguration();
   
-  // width
-  setFixedWidth( fontMetrics().lineSpacing() );
-
-  
 }
 
 
@@ -181,5 +177,8 @@ void BlockDelimiterWidget::_updateConfiguration( void )
   QFont font;
   font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );
   setFont( font );
-  
+   
+  // width
+  setFixedWidth( fontMetrics().lineSpacing() );
+
 }
