@@ -96,7 +96,11 @@
  <parenthesis begin="(" end=")" />
  <parenthesis begin="[" end="]" regexp="\[|\]" /> 
  <parenthesis begin="{" end="}" regexp="\{|\}" /> 
- <!-- indentation rules -->
+ 
+ <!-- block delimiters -->
+ <block_delimiter begin="{" end="}" regexp="\{|\}"/>
+
+  <!-- indentation rules -->
   
  <!--  
 	pattern 0: 

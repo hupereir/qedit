@@ -67,7 +67,6 @@
 #endif
 
 using namespace std;
-using namespace Qt;
 
 // empty line regular expression
 const QRegExp TextDisplay::empty_line_regexp_( "(^\\s*$)" );
@@ -193,6 +192,8 @@ void TextDisplay::synchronize( TextDisplay* display )
   textIndentAction().setChecked( display->textIndentAction().isChecked() );
   textHighlightAction().setChecked( display->textHighlightAction().isChecked() );
   parenthesisHighlightAction().setChecked( display->parenthesisHighlightAction().isChecked() );
+  showLineNumberAction().setChecked( display->showLineNumberAction().isChecked() );
+  showBlockDelimiterAction().setChecked( display->showBlockDelimiterAction().isChecked() );
 
   _setMacros( display->macros() );
   _setPaper( true, display->paper( true ) );
@@ -865,6 +866,9 @@ void TextDisplay::updateDocumentClass( void )
   textHighlight().setPatterns( document_class.highlightPatterns() );
   textHighlight().setParenthesis( document_class.parenthesis() );
   textHighlight().setBlockDelimiters( document_class.blockDelimiters() );
+    
+  showBlockDelimiterAction().setEnabled( !document_class.blockDelimiters().empty() );
+  emit blockDelimitersAvailable( !document_class.blockDelimiters().empty() );
   
   textIndent().setPatterns( document_class.indentPatterns() );
   textIndent().setBaseIndentation( document_class.baseIndentation() );
@@ -1067,7 +1071,7 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
 
   // check if tab key is pressed
   if(
-    event->key() == Key_Tab &&
+    event->key() == Qt::Key_Tab &&
     indent_->isEnabled() &&
     !( textCursor().hasSelection() || _boxSelection().state() == BoxSelection::FINISHED ) )
   { emit indent( textCursor().block() ); }
@@ -1078,12 +1082,12 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
     CustomTextEdit::keyPressEvent( event );
 
     // indent current paragraph when return is pressed
-    if( indent_->isEnabled() && event->key() == Key_Return && !textCursor().hasSelection() )
+    if( indent_->isEnabled() && event->key() == Qt::Key_Return && !textCursor().hasSelection() )
     { emit indent( textCursor().block() ); }
 
     // reindent paragraph if needed
     /* remark: this is c++ specific. The list of keys should be set in the document class */
-    if( indent_->isEnabled() && ( event->key() == Key_BraceRight || event->key() == Key_BraceLeft ) && !textCursor().hasSelection() )
+    if( indent_->isEnabled() && ( event->key() == Qt::Key_BraceRight || event->key() == Qt::Key_BraceLeft ) && !textCursor().hasSelection() )
     { emit indent( textCursor().block() ); }
 
   }
@@ -1201,6 +1205,8 @@ void TextDisplay::_installActions( void )
   addAction( text_highlight_action_ = new QAction( "&Highlight text", this ) );
   text_highlight_action_->setCheckable( true );
   text_highlight_action_->setChecked( textHighlight().isHighlightEnabled() );
+  text_highlight_action_->setShortcut( Qt::Key_F8 );
+  text_highlight_action_->setShortcutContext( Qt::WidgetShortcut );
   connect( text_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextHighlight( bool ) ) );
 
   addAction( parenthesis_highlight_action_ = new QAction( "&Highlight parenthesis", this ) );
@@ -1211,12 +1217,15 @@ void TextDisplay::_installActions( void )
   addAction( show_line_number_action_ =new QAction( "Show line numbers", this ) );
   show_line_number_action_->setToolTip( "Show/hide line numbers" );
   show_line_number_action_->setCheckable( true );
+  show_line_number_action_->setShortcut( Qt::Key_F11 );
+  show_line_number_action_->setShortcutContext( Qt::WidgetShortcut );
   connect( show_line_number_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowLineNumbers( bool ) ) );
 
   addAction( show_block_delimiter_action_ =new QAction( "Show block delimiters", this ) );
   show_block_delimiter_action_->setToolTip( "Show/hide block delimiters" );
   show_block_delimiter_action_->setCheckable( true );
-  show_block_delimiter_action_->setShortcut( CTRL+Key_B );
+  show_block_delimiter_action_->setShortcut( Qt::Key_F9 );
+  show_block_delimiter_action_->setShortcutContext( Qt::WidgetShortcut );
   connect( show_block_delimiter_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowBlockDelimiters( bool ) ) );
 
   // retrieve pixmap path
@@ -1225,6 +1234,8 @@ void TextDisplay::_installActions( void )
 
   // autospell
   addAction( autospell_action_ = new QAction( "&Automatic spell-check", this ) );
+  autospell_action_->setShortcut( Qt::Key_F6 );
+  autospell_action_->setShortcutContext( Qt::WidgetShortcut );
   autospell_action_->setCheckable( true );
 
   #if WITH_ASPELL
@@ -1244,13 +1255,13 @@ void TextDisplay::_installActions( void )
 
   // indent selection
   addAction( indent_selection_action_ = new QAction( IconEngine::get( ICONS::INDENT, path_list ), "&Indent selection", this ) );
-  indent_selection_action_->setShortcut( CTRL+Key_I );
-  indent_selection_action_->setShortcutContext( WidgetShortcut );
+  indent_selection_action_->setShortcut( Qt::CTRL + Qt::Key_I );
+  indent_selection_action_->setShortcutContext( Qt::WidgetShortcut );
   connect( indent_selection_action_, SIGNAL( triggered( void ) ), SLOT( _indentSelection( void ) ) );
 
   // base indentation
   addAction( base_indent_action_ = new QAction( IconEngine::get( ICONS::INDENT, path_list ), "&Add base indentation", this ) );
-  base_indent_action_->setShortcut( SHIFT+CTRL+Key_I );
+  base_indent_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_I );
   connect( base_indent_action_, SIGNAL( triggered( void ) ), SLOT( _addBaseIndentation( void ) ) );
 
   // replace leading tabs
@@ -1286,14 +1297,14 @@ void TextDisplay::_installActions( void )
   // next tag action
   addAction( next_tag_action_ = new QAction( IconEngine::get( ICONS::DOWN, path_list ), "Goto next tagged block", this ) );
   connect( next_tag_action_, SIGNAL( triggered() ), SLOT( _nextTag( void ) ) );
-  next_tag_action_->setShortcut( ALT+Key_Down );
-  next_tag_action_->setShortcutContext( WidgetShortcut );
+  next_tag_action_->setShortcut( Qt::ALT + Qt::Key_Down );
+  next_tag_action_->setShortcutContext( Qt::WidgetShortcut );
 
   // previous tag action
   addAction( previous_tag_action_ = new QAction( IconEngine::get( ICONS::UP, path_list ), "Goto previous tagged block", this ) );
   connect( previous_tag_action_, SIGNAL( triggered() ), SLOT( _previousTag( void ) ) );
-  previous_tag_action_->setShortcut( ALT+Key_Up );
-  previous_tag_action_->setShortcutContext( WidgetShortcut );
+  previous_tag_action_->setShortcut( Qt::ALT + Qt::Key_Up );
+  previous_tag_action_->setShortcutContext( Qt::WidgetShortcut );
 
 }
 

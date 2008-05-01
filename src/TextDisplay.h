@@ -351,6 +351,9 @@ class TextDisplay: public CustomTextEdit
   
   signals:
 
+  //! emmited when block delimiters are available or not
+  void blockDelimitersAvailable( bool );
+  
   //! emmited when indentation several blocks is required
   void indent( QTextBlock, QTextBlock );
 

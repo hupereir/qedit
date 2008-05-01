@@ -46,6 +46,9 @@
  <parenthesis begin="[" end="]" regexp="\[|\]" /> 
  <parenthesis begin="{" end="}" regexp="\{|\}" /> 
 
+ <!-- block delimiters -->
+ <block_delimiter begin="{" end="}" regexp="\{|\}"/>
+
  <!-- text processing macros -->
 
  <macro name="Add one tab indentation" accelerator="Alt+T">

@@ -1,3 +1,5 @@
+# $Id$
+
 TEMPLATE = app
 CONFIG += qt release
 QT += xml network
