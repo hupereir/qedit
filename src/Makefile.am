@@ -136,7 +136,8 @@ nodist_qedit_SOURCES = \
   moc_ParenthesisHighlight.cpp \
   moc_PrintDialog.cpp \
   moc_TextDisplay.cpp \
-  moc_TextIndent.cpp
+  moc_TextIndent.cpp \
+  moc_TextView.cpp
 
 editDocumentClasses_LDADD =  $(libraries)
 editDocumentClasses_SOURCES = editDocumentClasses.cpp

@@ -321,6 +321,7 @@ void EditFrame::_detach( void )
 
   // keep active display local.
   TextView& active_view_local( activeView() );
+  bool modified( active_view_local.editor().document()->isModified() );
 
   // close all clone views
   for( BASE::KeySet<TextDisplay>::iterator iter = associated_displays.begin(); iter != associated_displays.end(); iter++ )
@@ -333,9 +334,11 @@ void EditFrame::_detach( void )
   frame.activeView().editor().synchronize( &active_view_local.editor() );
 
   // delete active display local
+  active_view_local.editor().document()->setModified( false );
   _closeView( active_view_local );
 
   // show the new frame
+  frame.activeView().editor().document()->setModified( modified );
   frame.show();
   frame._updateConfiguration();
 
@@ -1315,13 +1318,7 @@ TextView& EditFrame::_newTextView( QWidget* parent )
   Debug::Throw( "EditFrame::_newTextDisplay.\n" );
 
   // create textDisplay
-  TextView* view = new TextView( parent );
-
-  view->lineNumberWidget().setVisible( view->editor().showLineNumberAction().isChecked() );
-  view->blockDelimiterWidget().setVisible( view->editor().showBlockDelimiterAction().isChecked() );
-  connect( &view->editor().showLineNumberAction(), SIGNAL( toggled( bool ) ), &view->lineNumberWidget(), SLOT( setVisible( bool ) ) );
-  connect( &view->editor().showBlockDelimiterAction(), SIGNAL( toggled( bool ) ), &view->blockDelimiterWidget(), SLOT( setVisible( bool ) ) );
-  
+  TextView* view = new TextView( parent );  
   view->editor().setMenu( &menu_->openPreviousMenu() );
 
   // connections
