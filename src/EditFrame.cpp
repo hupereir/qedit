@@ -75,7 +75,7 @@ EditFrame::EditFrame(  QWidget* parent ):
   CustomMainWindow( parent ),
   Counter( "EditFrame" ),
   menu_( 0 ),
-  active_display_( 0 ),
+  active_view_( 0 ),
   statusbar_( 0 ),
   file_editor_( 0 ),
   default_orientation_( Horizontal ),
@@ -111,11 +111,11 @@ EditFrame::EditFrame(  QWidget* parent ):
   layout->addWidget( main_, 1 );
   
   // create new Text display and register autosave thread
-  TextDisplay& display = _newTextDisplay( main_ );
-  main_->layout()->addWidget( display.parentWidget() );
+  TextView& view = _newTextView( main_ );
+  main_->layout()->addWidget( &view );
   
-  display.setActive( true );
-  static_cast<MainFrame*>(qApp)->autoSave().newThread( &display );
+  view.editor().setActive( true );
+  static_cast<MainFrame*>(qApp)->autoSave().newThread( &view.editor() );
   Debug::Throw( "EditFrame::EditFrame - thread created.\n" );
 
   // state frame
@@ -199,17 +199,17 @@ void EditFrame::setFile( File file )
   Debug::Throw() << "EditFrame::setFile - " << file << endl;
 
   // look for first empty view
-  BASE::KeySet<TextDisplay> displays( this );
-  BASE::KeySet<TextDisplay>::iterator iter = find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
-  assert( iter != displays.end() );
-  TextDisplay &display( **iter );
+  BASE::KeySet<TextView> views( this );
+  BASE::KeySet<TextView>::iterator iter = find_if( views.begin(), views.end(), TextView::EmptyFileFTor() );
+  assert( iter != views.end() );
+  TextView &view( **iter );
    
   // open file in active display
-  if( !file.empty() ) display.openFile( file );
+  if( !file.empty() ) view.editor().openFile( file );
   
   // set focus
-  setActiveDisplay( display );
-  display.setFocus();
+  setActiveView( view );
+  view.editor().setFocus();
 
   Debug::Throw( "EditFrame::setFile - done.\n" );
   
@@ -217,20 +217,20 @@ void EditFrame::setFile( File file )
 }
 
 //________________________________________________________________
-void EditFrame::setActiveDisplay( TextDisplay& display )
+void EditFrame::setActiveView( TextView& view )
 { 
-  Debug::Throw() << "EditFrame::setActiveDisplay - key: " << display.key() << std::endl;
-  assert( display.isAssociated( this ) );
+  Debug::Throw() << "EditFrame::setActiveView - key: " << view.key() << std::endl;
+  assert( view.isAssociated( this ) );
   
-  active_display_ = &display;
-  if( !activeDisplay().isActive() )
+  active_view_ = &view;
+  if( !activeView().editor().isActive() )
   {
 
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { (*iter)->setActive( false ); }
+    BASE::KeySet<TextView> views( this );
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+    { (*iter)->editor().setActive( false ); }
     
-    activeDisplay().setActive( true );
+    activeView().editor().setActive( true );
     _update( TextDisplay::ALL );
 
   }
@@ -245,9 +245,9 @@ void EditFrame::saveAll( void )
   Debug::Throw( "EditFrame::saveAll.\n" );
 
   // retrieve all displays
-  BASE::KeySet<TextDisplay> displays( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { if( (*iter)->document()->isModified() ) (*iter)->save(); }
+  BASE::KeySet<TextView> views( this );
+  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+  { if( (*iter)->editor().document()->isModified() ) (*iter)->editor().save(); }
 
   return;
 
@@ -260,8 +260,8 @@ void EditFrame::selectClassName( string name  )
 
   // retrieve all displays matching active
   // and update class name
-  BASE::KeySet<TextDisplay> displays( &activeDisplay() );
-  displays.insert( &activeDisplay() );
+  BASE::KeySet<TextDisplay> displays( &activeView().editor() );
+  displays.insert( &activeView().editor() );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
     (*iter)->setClassName( name );
@@ -269,7 +269,7 @@ void EditFrame::selectClassName( string name  )
   }
   
   // rehighlight
-  activeDisplay().rehighlight();
+  activeView().editor().rehighlight();
 
 }
 
@@ -279,13 +279,17 @@ void EditFrame::rehighlight( void )
   Debug::Throw( "EditFrame::Rehighlight.\n" );
 
   // retrieve associated TextDisplay
-  BASE::KeySet<TextDisplay> displays( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  BASE::KeySet<TextView> views( this );
+  BASE::KeySet<TextDisplay> displays;
+  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
   {
 
     // this trick allow to run the rehighlight only once per set of associated displays
-    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter )
-    { (*iter)->rehighlight(); }  
+    if( std::find_if( displays.begin(), displays.end(), BASE::Key::IsAssociatedFTor( &(*iter)->editor() ) ) == displays.end() )
+    { (*iter)->editor().rehighlight(); }  
+    
+    displays.insert( &(*iter)->editor() );
+    
   }
 
   return;
@@ -307,7 +311,7 @@ void EditFrame::_detach( void )
   }
 
   // check number of displays associated to active
-  BASE::KeySet<TextDisplay> associated_displays( &activeDisplay() );
+  BASE::KeySet<TextDisplay> associated_displays( &activeView().editor() );
   if( !
     ( associated_displays.empty() ||
       QtUtil::questionDialog( this,
@@ -316,20 +320,20 @@ void EditFrame::_detach( void )
       "Continue ?" ) ) ) return;
 
   // keep active display local.
-  TextDisplay& active_display_local( activeDisplay() );
+  TextView& active_view_local( activeView() );
 
   // close all clone views
   for( BASE::KeySet<TextDisplay>::iterator iter = associated_displays.begin(); iter != associated_displays.end(); iter++ )
-  { _closeView( **iter ); }
+  { _closeView( *dynamic_cast<TextView*>((*iter)->parentWidget()) ); }
 
   // create EditFrame
   EditFrame& frame( static_cast<MainFrame*>(qApp)->newEditFrame() );
 
   // clone its display from the current
-  frame.activeDisplay().synchronize( &active_display_local );
+  frame.activeView().editor().synchronize( &active_view_local.editor() );
 
   // delete active display local
-  _closeView( active_display_local );
+  _closeView( active_view_local );
 
   // show the new frame
   frame.show();
@@ -346,7 +350,7 @@ void EditFrame::_revertToSave( void )
   Debug::Throw( "EditFrame::_revertToSave.\n" );
 
   // check filename
-  if( activeDisplay().file().empty() )
+  if( activeView().editor().file().empty() )
   {
     QtUtil::infoDialog( this, "No filename given. <Revert to save> canceled." );
     return;
@@ -354,11 +358,11 @@ void EditFrame::_revertToSave( void )
 
   // ask for confirmation
   ostringstream what;
-  if( activeDisplay().document()->isModified() ) what << "Discard changes to " << activeDisplay().file().localName() << "?";
-  else what << "Reload file " << activeDisplay().file().localName() << "?";
+  if( activeView().editor().document()->isModified() ) what << "Discard changes to " << activeView().editor().file().localName() << "?";
+  else what << "Reload file " << activeView().editor().file().localName() << "?";
   if( !QtUtil::questionDialog( this, what.str() ) ) return;
 
-  activeDisplay().revertToSave();
+  activeView().editor().revertToSave();
   
 }
 
@@ -368,10 +372,10 @@ void EditFrame::_print( void )
   Debug::Throw( "EditFrame::_print.\n" );
 
   // retrieve activeDisplay file
-  const File& file( activeDisplay().file() );
+  const File& file( activeView().editor().file() );
 
   // check if file is modified
-  if( activeDisplay().document()->isModified() && activeDisplay().askForSave() == AskForSaveDialog::CANCEL ) return;
+  if( activeView().editor().document()->isModified() && activeView().editor().askForSave() == AskForSaveDialog::CANCEL ) return;
 
   // check if file is valid and exists
   if( file.empty() || !file.exists() )
@@ -497,47 +501,34 @@ void EditFrame::closeEvent( QCloseEvent* event )
 
   // check for modifications
   event->accept();
-
-  if( Debug::level() > 0 )
-  {
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    {
-      
-      // this trick allow to run  only once per set of associated displays
-      if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
-      if( (*iter)->file().empty() ) continue;
-      
-      Debug::Throw() << "EditFrame::closeEvent - closing: " << (*iter)->file() << endl;
-    }
-  }
       
   // look over TextDisplays
-  BASE::KeySet<TextDisplay> displays( this );
   if( isModified() )
   {
 
     // look over TextDisplays
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    BASE::KeySet<TextView> views( this );
+    BASE::KeySet<TextDisplay> displays;
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
     {
 
       // get local reference to display
-      TextDisplay& display( **iter );
+      TextView& view( **iter );
       
       // check if this display is modified
-      if( !display.document()->isModified() ) continue;
+      if( !view.editor().document()->isModified() ) continue;
 
       // this trick allow to run  only once per set of associated displays
-      if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
+      if( std::find_if( displays.begin(), displays.end(), BASE::Key::IsAssociatedFTor( &view.editor() ) ) != displays.end() ) continue;
+      displays.insert( &view.editor() );
       
       // ask for save
-      int state( display.askForSave( modifiedDisplayCount() > 1 ) );      
+      int state( view.editor().askForSave( modifiedDisplayCount() > 1 ) );
       if( state == AskForSaveDialog::ALL ) {
         
         // for this frame, only save displays located after the current
-        for( BASE::KeySet<TextDisplay>::iterator display_iter = iter; display_iter != displays.end(); display_iter++ )
-        { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
+        for( BASE::KeySet<TextView>::iterator view_iter = iter; view_iter != views.end(); view_iter++ )
+        { if( (*view_iter)->editor().document()->isModified() ) (*view_iter)->editor().save(); }
 
       } else if( state == AskForSaveDialog::CANCEL ) {
 
@@ -564,32 +555,35 @@ void EditFrame::enterEvent( QEvent* e )
   QMainWindow::enterEvent( e );
 
   // keep track of displays to be deleted, if any
-  BASE::KeySet<TextDisplay> dead_displays;
+  BASE::KeySet<TextView> dead_views;
 
   // retrieve displays
-  BASE::KeySet<TextDisplay> displays( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  BASE::KeySet<TextView> views( this );
+  BASE::KeySet<TextDisplay> displays;
+  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
   {
 
     // this trick allow to run only once per set of displays associated to the same file
-    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
-
+    if( std::find_if( displays.begin(), displays.end(), BASE::Key::IsAssociatedFTor( &(*iter)->editor() ) ) != displays.end() ) continue;
+    displays.insert( &(*iter)->editor() );
+    
     // keep local reference of current display
-    TextDisplay &display( **iter );
+    TextView &view( **iter );
     
     // check file
-    if( display.checkFileRemoved() == FileRemovedDialog::CLOSE ) 
+    if( view.editor().checkFileRemoved() == FileRemovedDialog::CLOSE ) 
     { 
         
       // register displays as dead
-      BASE::KeySet<TextDisplay> associated_displays( &display );
-      dead_displays.insert( associated_displays.begin(), associated_displays.end() );
-      dead_displays.insert( &display );
+      BASE::KeySet<TextDisplay> associated_displays( &view.editor() );
+      for( BASE::KeySet<TextDisplay>::iterator display_iter = associated_displays.begin(); display_iter != associated_displays.end(); display_iter++ )
+      { dead_views.insert( dynamic_cast<TextView*>( (*display_iter)->parentWidget() ) ); }
+      dead_views.insert( &view );
             
     } else {
  
-      (*iter)->checkFileReadOnly();
-      (*iter)->checkFileModified();
+      (*iter)->editor().checkFileReadOnly();
+      (*iter)->editor().checkFileModified();
 
     }
     
@@ -599,15 +593,15 @@ void EditFrame::enterEvent( QEvent* e )
   _updateWindowTitle();
 
   // delete dead_displays
-  if( !dead_displays.empty() )
+  if( !dead_views.empty() )
   {
 
-    Debug::Throw() << "EditFrame::enterEvent - dead displays: " << dead_displays.size() << endl;
-    for( BASE::KeySet<TextDisplay>::iterator iter = dead_displays.begin(); iter != dead_displays.end(); iter++ )
+    Debug::Throw() << "EditFrame::enterEvent - dead views: " << dead_views.size() << endl;
+    for( BASE::KeySet<TextView>::iterator iter = dead_views.begin(); iter != dead_views.end(); iter++ )
     { _closeView( **iter ); }
 
     // need to close window manually if there is no remaining displays
-    if( dead_displays.size() == displays.size() ) close();
+    if( dead_views.size() == views.size() ) close();
 
   }
 
@@ -640,7 +634,7 @@ void EditFrame::_diff( void )
   Diff* diff = new Diff( this );
 
   // store active display as first to compare
-  TextDisplay& first = activeDisplay();
+  TextDisplay& first = activeView().editor();
   
   // retrieve displays associated to frame
   // look for the first one that is not associated to the active display
@@ -681,27 +675,27 @@ void EditFrame::_update( unsigned int flags )
 
   if( flags & TextDisplay::FILE_NAME && file_editor_ )
   { 
-    file_editor_->setText( activeDisplay().file().c_str() ); 
-    fileInfoAction().setEnabled( !activeDisplay().file().empty() );
+    file_editor_->setText( activeView().editor().file().c_str() ); 
+    fileInfoAction().setEnabled( !activeView().editor().file().empty() );
   }
 
   if( flags & TextDisplay::CUT )
-  { cutAction().setEnabled( activeDisplay().cutAction().isEnabled() ); }
+  { cutAction().setEnabled( activeView().editor().cutAction().isEnabled() ); }
 
   if( flags & TextDisplay::COPY )
-  { copyAction().setEnabled( activeDisplay().copyAction().isEnabled() ); }
+  { copyAction().setEnabled( activeView().editor().copyAction().isEnabled() ); }
 
   if( flags & TextDisplay::PASTE )
-  { pasteAction().setEnabled( activeDisplay().pasteAction().isEnabled() ); }
+  { pasteAction().setEnabled( activeView().editor().pasteAction().isEnabled() ); }
 
   if( flags & TextDisplay::UNDO_REDO )
   {
-    undoAction().setEnabled( activeDisplay().undoAction().isEnabled() );
-    redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
+    undoAction().setEnabled( activeView().editor().undoAction().isEnabled() );
+    redoAction().setEnabled( activeView().editor().redoAction().isEnabled() );
   }
   
   if( flags & TextDisplay::SAVE )
-  { saveAction().setEnabled( !activeDisplay().isReadOnly() ); }
+  { saveAction().setEnabled( !activeView().editor().isReadOnly() ); }
 
 }
 
@@ -709,7 +703,7 @@ void EditFrame::_update( unsigned int flags )
 void EditFrame::_updateCursorPosition( void )
 {
   
-  TextPosition position( activeDisplay().textPosition() );
+  TextPosition position( activeView().editor().textPosition() );
   statusbar_->label(0).setText( Str( "line : " ).append<int>( position.paragraph()+1 ).c_str() , false );
   statusbar_->label(1).setText( Str( "column : " ).append<int>( position.index()+1 ).c_str() , false );
 
@@ -720,7 +714,7 @@ void EditFrame::_updateCursorPosition( void )
 void EditFrame::_displayFocusChanged( TextDisplay* display )
 {
   Debug::Throw() << "EditFrame::_DisplayFocusChanged - " << display->key() << endl;
-  setActiveDisplay( *display );  
+  setActiveView( *dynamic_cast<TextView*>(display->parentWidget()) );  
 }
 
 //___________________________________________________________
@@ -840,17 +834,17 @@ void EditFrame::_updateWindowTitle()
   Debug::Throw( "EditFrame::_updateWindowTitle.\n" );
   
   {
-    bool readonly( activeDisplay().isReadOnly() );
-    bool modified( activeDisplay().document()->isModified() );
+    bool readonly( activeView().editor().isReadOnly() );
+    bool modified( activeView().editor().document()->isModified() );
     Debug::Throw() << "EditFrame::_updateWindowTitle -"
       << " readonly: " << readonly 
       << " modified: " << modified
       << endl;
   }
   
-  setWindowTitle( WindowTitle( activeDisplay().file() )
-    .setReadOnly( activeDisplay().isReadOnly() )
-    .setModified( activeDisplay().document()->isModified() )
+  setWindowTitle( WindowTitle( activeView().editor().file() )
+    .setReadOnly( activeView().editor().isReadOnly() )
+    .setModified( activeView().editor().document()->isModified() )
     );
   
   Debug::Throw( "EditFrame::_updateWindowTitle - done.\n" );
@@ -915,7 +909,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
     // create file dialog
     CustomFileDialog dialog( this );
     dialog.setFileMode( QFileDialog::ExistingFile );
-    dialog.setDirectory( QDir( activeDisplay().workingDirectory().c_str() ) );
+    dialog.setDirectory( QDir( activeView().editor().workingDirectory().c_str() ) );
     QtUtil::centerOnParent( &dialog );
     if( dialog.exec() == QDialog::Rejected ) return;
     
@@ -984,7 +978,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
   {
 
     // select found display in EditFrame
-    (*iter)->selectDisplay( record.file() );
+    (*iter)->selectView( record.file() );
 
     // check if the found frame is the current
     if( *iter == this )
@@ -1005,43 +999,43 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
 
     // look for an empty display
     // create a new view if none is found
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-    TextDisplay& display( display_iter == displays.end() ? _splitView( orientation, false ):**display_iter );
+    BASE::KeySet<TextView> views( this );
+    BASE::KeySet<TextView>::iterator view_iter( find_if( views.begin(), views.end(), TextView::EmptyFileFTor() ) );
+    TextView& view( view_iter == views.end() ? _splitView( orientation, false ):**view_iter );
 
     // retrieve active display from previous frame
-    TextDisplay& previous_display( (*iter)->activeDisplay() );
+    TextView& previous_view( (*iter)->activeView() );
 
     // store modification state
-    bool modified( previous_display.document()->isModified() );
+    bool modified( previous_view.editor().document()->isModified() );
 
     // clone
-    display.synchronize( &previous_display );
+    view.editor().synchronize( &previous_view.editor() );
     
     // set previous display as unmdified
-    previous_display.document()->setModified( false );
+    previous_view.editor().document()->setModified( false );
 
     // close display, or frame, depending on its number of independent files
     if( (*iter)->independentDisplayCount() == 1 ) (*iter)->close();
     else
     {
-      displays = BASE::KeySet<TextDisplay>( &previous_display );
-      displays.insert( &previous_display );
+      BASE::KeySet<TextDisplay> displays( &previous_view.editor() );
+      displays.insert( &previous_view.editor() );
       for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
-      { (*iter)->_closeView( **display_iter ); }
+      { (*iter)->_closeView( *dynamic_cast<TextView*>( (*display_iter)->parentWidget() ) ); }
     }
 
     // restore modification state and make new display active
-    display.setModified( modified );
-    setActiveDisplay( display );
-    display.setFocus();
+    view.editor().setModified( modified );
+    setActiveView( view );
+    view.editor().setFocus();
 
   } else {
 
     // look for an empty display
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-    if( display_iter == displays.end() ) _splitView( orientation, false );
+    BASE::KeySet<TextView> views( this );
+    BASE::KeySet<TextView>::iterator view_iter( find_if( views.begin(), views.end(), TextView::EmptyFileFTor() ) );
+    if( view_iter == views.end() ) _splitView( orientation, false );
 
     // open file in this window
     setFile( record.file() );
@@ -1055,14 +1049,14 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
 }
 
 //___________________________________________________________
-void EditFrame::_closeView( TextDisplay& display )
+void EditFrame::_closeView( TextView& view )
 {
   Debug::Throw( "EditFrame::_closeView.\n" );
 
   // retrieve number of displays
   // if only one display, close the entire window
-  BASE::KeySet<TextDisplay> displays( this );
-  if( displays.size() < 2 )
+  BASE::KeySet<TextView> views( this );
+  if( views.size() < 2 )
   {
     Debug::Throw() << "EditFrame::_closeView - full close." << endl;
     close();
@@ -1071,19 +1065,19 @@ void EditFrame::_closeView( TextDisplay& display )
 
   // check if display is modified and has no associates in window
   if( 
-    display.document()->isModified() && 
-    BASE::KeySet<TextDisplay>( &display ).empty() &&
-    display.askForSave() ==  AskForSaveDialog::CANCEL ) return;
+    view.editor().document()->isModified() && 
+    BASE::KeySet<TextDisplay>( &view.editor() ).empty() &&
+    view.editor().askForSave() ==  AskForSaveDialog::CANCEL ) return;
 
   // retrieve parent and grandparent of current display
-  QWidget* parent( display.parentWidget()->parentWidget() );    
+  QWidget* parent( view.parentWidget() );    
   QSplitter* parent_splitter( dynamic_cast<QSplitter*>( parent ) );
   
   // retrieve displays associated to current
-  displays = BASE::KeySet<TextDisplay>( &display );
+  BASE::KeySet<TextView> displays( &view.editor() );
     
   // delete display
-  delete display.parentWidget();
+  delete &view;
   
   // check how many children remain in parent_splitter if any
   if( parent_splitter && parent_splitter->count() == 1 ) 
@@ -1117,48 +1111,50 @@ void EditFrame::_closeView( TextDisplay& display )
   {
 
     Debug::Throw( "EditFrame::_closeView - no associated display.\n" );
-    displays = BASE::KeySet<TextDisplay>( this );
+    setActiveView( **BASE::KeySet<TextView>( this ).rbegin() );
+
+  } else {
+
+    // update active display
+    setActiveView( *dynamic_cast<TextView*>((*displays.rbegin())->parentWidget()) );
 
   }
-
-  // update active display
-  setActiveDisplay( **displays.rbegin() );
-
+  
   // update close_view button
   int independent_display_count( independentDisplayCount() );
   detachAction().setEnabled( independent_display_count > 1 );
   diffAction().setEnabled( independent_display_count == 2 );
   
   // change focus
-  activeDisplay().setFocus();
+  activeView().editor().setFocus();
   Debug::Throw( "EditFrame::_closeView - done.\n" );
 
 }
 
 //___________________________________________________________
-TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& clone )
+TextView& EditFrame::_splitView( const Orientation& orientation, const bool& clone )
 {
   
   Debug::Throw( "EditFrame::_splitView.\n" );
 
   // keep local pointer to current active display
-  TextDisplay& active_display_local( activeDisplay() );  
+  TextView& active_view_local( activeView() );  
   
   // compute desired dimension of the new splitter
   // along its splitting direction
   int dimension(0);
-  if( clone ) dimension = (orientation == Horizontal) ? active_display_local.width():active_display_local.height();
+  if( clone ) dimension = (orientation == Horizontal) ? active_view_local.width():active_view_local.height();
   else dimension = (orientation == Horizontal) ? main_->width():main_->height();
 
   // create new splitter
   QSplitter& splitter( _newSplitter( orientation, clone ) );
   
   // create new display
-  TextDisplay& display( _newTextDisplay(0) );
+  TextView& view( _newTextView(0) );
   
   // insert in splitter, at correct position
-  if( clone ) splitter.insertWidget( splitter.indexOf( active_display_local.parentWidget() )+1, display.parentWidget()  );
-  else splitter.addWidget( display.parentWidget() );
+  if( clone ) splitter.insertWidget( splitter.indexOf( &active_view_local )+1, &view );
+  else splitter.addWidget( &view );
 
   // recompute dimension
   // take the max of active display and splitter,
@@ -1179,29 +1175,29 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
      if there exists no clone of active display,
      backup text and register a new Sync object
     */
-    BASE::KeySet<TextDisplay> displays( &active_display_local );
+    BASE::KeySet<TextDisplay> displays( &active_view_local.editor() );
 
     // clone new display
-    display.synchronize( &active_display_local );
+    view.editor().synchronize( &active_view_local.editor() );
     
     // perform associations
     // check if active displays has associates and propagate to new
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { BASE::Key::associate( &display, *iter ); }
+    { BASE::Key::associate( &view.editor(), *iter ); }
     Debug::Throw( "EditFrame::_splitView - synchronized (associates).\n" );
 
     // associate this display to AutoSave threads
-    BASE::KeySet<AutoSaveThread> threads( &active_display_local );
+    BASE::KeySet<AutoSaveThread> threads( &active_view_local.editor() );
     for( BASE::KeySet<AutoSaveThread>::iterator iter = threads.begin(); iter != threads.end(); iter++ )
-    { BASE::Key::associate( &display, *iter ); }
+    { BASE::Key::associate( &view.editor(), *iter ); }
  
     // associate new display to active
-    BASE::Key::associate( &display, &active_display_local );
+    BASE::Key::associate( &view.editor(), &active_view_local.editor() );
 
   } else {
 
     // register new AutoSave thread
-    static_cast<MainFrame*>(qApp)->autoSave().newThread( &display );
+    static_cast<MainFrame*>(qApp)->autoSave().newThread( &view.editor() );
 
     // enable detach
     detachAction().setEnabled( true );
@@ -1209,7 +1205,7 @@ TextDisplay& EditFrame::_splitView( const Orientation& orientation, const bool& 
     
   }
 
-  return display;
+  return view;
 
 }
 
@@ -1227,7 +1223,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
     the new (cloned) TextDisplay will appear side by side with it */
 
     // retrieve parent of current display
-    QWidget* parent( activeDisplay().parentWidget()->parentWidget() );  
+    QWidget* parent( activeView().parentWidget() );  
 
     // try catch to splitter
     // do not create a new splitter if the parent has same orientation
@@ -1245,7 +1241,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
         // give him no parent, because the parent is set in QSplitter::insertWidget()
         splitter = new LocalSplitter(0);
         splitter->setOrientation( orientation );
-        parent_splitter->insertWidget( parent_splitter->indexOf( activeDisplay().parentWidget() ), splitter );
+        parent_splitter->insertWidget( parent_splitter->indexOf( &activeView() ), splitter );
         
       } else {
         
@@ -1257,7 +1253,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
       }
       
       // reparent current display
-      splitter->addWidget( activeDisplay().parentWidget() );
+      splitter->addWidget( &activeView() );
       
       // resize parent splitter if any
       if( parent_splitter )
@@ -1314,39 +1310,38 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
 }
 
 //_____________________________________________________________
-TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
+TextView& EditFrame::_newTextView( QWidget* parent )
 {
   Debug::Throw( "EditFrame::_newTextDisplay.\n" );
 
   // create textDisplay
-  TextView* text_view = new TextView( parent );
-  TextDisplay* display = &text_view->editor();
+  TextView* view = new TextView( parent );
 
-  text_view->lineNumberWidget().setVisible( display->showLineNumberAction().isChecked() );
-  text_view->blockDelimiterWidget().setVisible( display->showBlockDelimiterAction().isChecked() );
-  connect( &display->showLineNumberAction(), SIGNAL( toggled( bool ) ), &text_view->lineNumberWidget(), SLOT( setVisible( bool ) ) );
-  connect( &display->showBlockDelimiterAction(), SIGNAL( toggled( bool ) ), &text_view->blockDelimiterWidget(), SLOT( setVisible( bool ) ) );
+  view->lineNumberWidget().setVisible( view->editor().showLineNumberAction().isChecked() );
+  view->blockDelimiterWidget().setVisible( view->editor().showBlockDelimiterAction().isChecked() );
+  connect( &view->editor().showLineNumberAction(), SIGNAL( toggled( bool ) ), &view->lineNumberWidget(), SLOT( setVisible( bool ) ) );
+  connect( &view->editor().showBlockDelimiterAction(), SIGNAL( toggled( bool ) ), &view->blockDelimiterWidget(), SLOT( setVisible( bool ) ) );
   
-  display->setMenu( &menu_->openPreviousMenu() );
+  view->editor().setMenu( &menu_->openPreviousMenu() );
 
   // connections
-  connect( display, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
-  connect( display, SIGNAL( hasFocus( TextDisplay* ) ), SLOT( _displayFocusChanged( TextDisplay* ) ) );
-  connect( display, SIGNAL( cursorPositionChanged() ), &position_timer_, SLOT( start() ) );
+  connect( &view->editor(), SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
+  connect( &view->editor(), SIGNAL( hasFocus( TextDisplay* ) ), SLOT( _displayFocusChanged( TextDisplay* ) ) );
+  connect( &view->editor(), SIGNAL( cursorPositionChanged() ), &position_timer_, SLOT( start() ) );
   
-  connect( display, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
-  connect( display, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );
+  connect( &view->editor(), SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
+  connect( &view->editor(), SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );
   
   // associate display to this editFrame
-  BASE::Key::associate( this, display );
+  BASE::Key::associate( this, view );
   
   // update current display and focus
-  setActiveDisplay( *display );
-  display->setFocus();
-  Debug::Throw() << "EditFrame::_newTextDisplay - key: " << display->key() << endl;
+  setActiveView( *view );
+  view->editor().setFocus();
+  Debug::Throw() << "EditFrame::_newTextDisplay - key: " << view->key() << endl;
   Debug::Throw( "EditFrame::newTextDisplay - done.\n" );
     
-  return *display;
+  return *view;
   
 }
 
@@ -1374,12 +1369,12 @@ QString EditFrame::_htmlString( const int& max_line_size )
 
   // title
   QDomElement title = head.appendChild( document.createElement( "title" ) ).toElement();
-  title.appendChild( document.createTextNode( activeDisplay().file().c_str() ) );
+  title.appendChild( document.createTextNode( activeView().editor().file().c_str() ) );
 
   // body
   html.
     appendChild( document.createElement( "body" ) ).
-    appendChild( activeDisplay().htmlNode( document, max_line_size ) );
+    appendChild( activeView().editor().htmlNode( document, max_line_size ) );
 
   /*
     the following replacements are needed

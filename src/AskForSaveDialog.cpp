@@ -113,6 +113,8 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
     connect( button, SIGNAL( clicked() ), SLOT( _all() ) );
   }
   
+  
+  
   // cancel button
   if( buttons & CANCEL )
   {

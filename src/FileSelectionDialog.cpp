@@ -70,18 +70,19 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   {
 
     // retrieve associated TextDisplays
-    BASE::KeySet<TextDisplay> displays( *frame_iter );
-    for( BASE::KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    BASE::KeySet<TextView> views( *frame_iter );
+    for( BASE::KeySet<TextView>::const_iterator iter = views.begin(); iter != views.end(); iter++ )
     {
+      
       // retrieve filename
-      const File& file( (*iter)->file() );
+      const File& file( (*iter)->editor().file() );
       if( file.empty() ) continue;
 
       // try add file, skipp if already inserted
       if( !file_set.insert( file ).second ) continue;
 
       // retrieve document class
-      const string& class_name( (*iter)->className() );
+      const string& class_name( (*iter)->editor().className() );
       model_.add( std::make_pair( file.expand(), class_name ) );
 
     }

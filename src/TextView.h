@@ -34,12 +34,13 @@
 #include <QFrame>
 
 #include "Counter.h"
+#include "Key.h"
+#include "TextDisplay.h"
 
-class TextDisplay;
 class LineNumberWidget;
 class BlockDelimiterWidget;
 
-class TextView: public QFrame, public Counter
+class TextView: public QFrame, public BASE::Key, public Counter
 {
   
   public:
@@ -67,6 +68,50 @@ class TextView: public QFrame, public Counter
     assert( block_delimiter_widget_ );
     return *block_delimiter_widget_;
   }
+  
+  //! used to select editor with matching filename
+  class SameFileFTor
+  {
+    public:
+
+    //! constructor
+    SameFileFTor( const File& file ):
+      file_( file.expand() )
+    {}
+
+    //! predicate
+    bool operator() ( const TextView* view ) const
+    { return view->editor().file() == file_; }
+
+    private:
+
+    //! predicted file
+    const File file_;
+
+  };
+
+  //! used to select editor with empty, unmodified file
+  class EmptyFileFTor
+  {
+    public:
+
+    //! predicate
+    bool operator() ( const TextView* view ) const
+    { return view->editor().file().empty() && !view->editor().document()->isModified(); }
+
+  };
+
+    
+  //! used to select editor modified files
+  class ModifiedFTor
+  {
+    public:
+
+    //! predicate
+    bool operator() ( const TextView* view ) const
+    { return view->editor().document()->isModified(); }
+
+  };
   
   private:
     

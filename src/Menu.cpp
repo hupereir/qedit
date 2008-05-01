@@ -172,7 +172,7 @@ void Menu::_updateDocumentClassMenu( void )
   
   // retrieve current class from EditFrame
   EditFrame& frame( *static_cast<EditFrame*>(window()) ); 
-  const std::string& class_name( frame.activeDisplay().className() );
+  const std::string& class_name( frame.activeView().editor().className() );
   
   // retrieve classes from DocumentClass manager
   const DocumentClassManager::ClassList& classes( static_cast<MainFrame*>(qApp)->classManager().list() );
@@ -195,7 +195,7 @@ void Menu::_updateEditMenu( void )
   
   edit_menu_->clear();
   
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeView().editor() );
   edit_menu_->addAction( &display.undoAction() );
   edit_menu_->addAction( &display.redoAction() );
   edit_menu_->addSeparator();
@@ -217,7 +217,7 @@ void Menu::_updateSearchMenu( void )
 
   search_menu_->clear();
   
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeView().editor() );
   search_menu_->addAction( &display.findAction() );
   search_menu_->addAction( &display.findAgainAction() );
   search_menu_->addAction( &display.findSelectionAction() );
@@ -238,7 +238,7 @@ void Menu::_updatePreferenceMenu( void )
   // reference to needed objects
   MainFrame& mainframe( *static_cast<MainFrame*>(qApp) );
   EditFrame& editframe( *static_cast<EditFrame*>(window()) );
-  TextDisplay& display( editframe.activeDisplay() );
+  TextDisplay& display( editframe.activeView().editor() );
 
   // clear menu
   preference_menu_->clear();
@@ -314,7 +314,7 @@ void Menu::_updateToolsMenu( void )
 
   // retrieve editframe and current display
   EditFrame& editframe( *static_cast<EditFrame*>(window()) );
-  TextDisplay& display( editframe.activeDisplay() );
+  TextDisplay& display( editframe.activeView().editor() );
   
   // retrieve flags needed to set button state
   bool editable( !display.isReadOnly() );
@@ -368,7 +368,7 @@ void Menu::_updateMacroMenu( void )
   Debug::Throw( "Menu::_updateMacroMenu.\n" );
 
   // retrieve current display
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeView().editor() );
   
   // clear menu
   macro_menu_->clear();
@@ -408,7 +408,7 @@ void Menu::_updateWindowsMenu( void )
   windows_menu_->clear();
   
   // retrieve current display
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeView().editor() );
   windows_menu_->addAction( &display.fileInfoAction() );
   
   const string& current_file( display.file() );
@@ -429,12 +429,12 @@ void Menu::_updateWindowsMenu( void )
   { 
     
     // retrieve associated TextDisplays
-    BASE::KeySet<TextDisplay> displays( *frame_iter );
-    for( BASE::KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    BASE::KeySet<TextView> views( *frame_iter );
+    for( BASE::KeySet<TextView>::const_iterator iter = views.begin(); iter != views.end(); iter++ )
     {
       
       // retrieve file and check
-      const File& file( (*iter)->file() );
+      const File& file( (*iter)->editor().file() );
       if( file.empty() ) continue;
       
       // check if file was already processed
@@ -482,7 +482,7 @@ void Menu::_selectMacro( QAction* action )
   if( iter == macros_.end() ) return;
   
   // retrieve current Text Display
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeView().editor() );
   display.processMacro( iter->second );
   
   return;
@@ -516,7 +516,7 @@ void Menu::_selectFile( QAction* action )
   }
   
   // select display in found frame
-  (*frame_iter)->selectDisplay( iter->second );
+  (*frame_iter)->selectView( iter->second );
   (*frame_iter)->uniconify();
   
   return;

@@ -145,49 +145,6 @@ class TextDisplay: public CustomTextEdit
   const File& workingDirectory() const
   { return working_directory_; }
   
-  //! used to select editor with matching filename
-  class SameFileFTor
-  {
-    public:
-
-    //! constructor
-    SameFileFTor( const File& file ):
-      file_( file.expand() )
-    {}
-
-    //! predicate
-    bool operator() ( const TextDisplay* display ) const
-    { return display->file() == file_; }
-
-    private:
-
-    //! predicted file
-    const File file_;
-
-  };
-
-  //! used to select editor with empty, unmodified file
-  class EmptyFileFTor
-  {
-    public:
-
-    //! predicate
-    bool operator() ( const TextDisplay* display ) const
-    { return display->file().empty() && !display->document()->isModified(); }
-
-  };
-
-  //! used to select editor modified files
-  class ModifiedFTor
-  {
-    public:
-
-    //! predicate
-    bool operator() ( const TextDisplay* display ) const
-    { return display->document()->isModified(); }
-
-  };
-  
   //! ask for save if modified
   AskForSaveDialog::ReturnCode askForSave( const bool& enable_all = false );
   
