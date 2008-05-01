@@ -39,7 +39,7 @@
 #include <QTextCharFormat>
 
 #include <set>
-#include <string>
+#include <QString>
 
 #include "Counter.h"
 #include "TextFormat.h"
@@ -55,7 +55,7 @@ class HighlightStyle: public Counter
             
   //! constructor
   HighlightStyle( 
-    const std::string& name = "default",
+    const QString& name = "default",
     const unsigned int& format = FORMAT::DEFAULT,
     const QColor& color = Qt::black 
   ):
@@ -72,7 +72,7 @@ class HighlightStyle: public Counter
   QDomElement domElement( QDomDocument& parent ) const;
   
   //! name
-  virtual const std::string& name( void ) const
+  virtual const QString& name( void ) const
   { return name_; }
   
   //! lower than operator
@@ -92,7 +92,7 @@ class HighlightStyle: public Counter
   bool differs( const HighlightStyle& style ) const;
     
   //! name
-  virtual void setName( const std::string& name ) 
+  virtual void setName( const QString& name ) 
   { name_ = name; }
   
   //! format
@@ -130,7 +130,7 @@ class HighlightStyle: public Counter
   private:
       
   //! pattern name
-  std::string name_;
+  QString name_;
   
   //! format (bitwise or of TextFormatInfo)
   unsigned int format_;  

@@ -54,9 +54,9 @@ QVariant HighlightPatternModel::data( const QModelIndex& index, int role ) const
   // return text associated to file and column
   if( role == Qt::DisplayRole )
   {
-    if( index.column() == NAME ) return pattern.name().c_str();
-    if( index.column() == PARENT && !pattern.parent().empty() ) return pattern.parent().c_str();
-    if( index.column() == TYPE ) return pattern.typeName().c_str();
+    if( index.column() == NAME ) return pattern.name();
+    if( index.column() == PARENT && !pattern.parent().isEmpty() ) return pattern.parent();
+    if( index.column() == TYPE ) return pattern.typeName();
   }
   
   return QVariant();

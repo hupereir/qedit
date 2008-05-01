@@ -56,12 +56,12 @@ HighlightPatternType::HighlightPatternType( QWidget* parent ):
   connect( group, SIGNAL( buttonClicked( QAbstractButton* ) ), SLOT( _typeChanged( QAbstractButton* ) ) );
   
   QCheckBox* checkbox;
-  group->addButton( checkbox = new QCheckBox( HighlightPattern::typeName( HighlightPattern::KEYWORD_PATTERN ).c_str(), this ) );
+  group->addButton( checkbox = new QCheckBox( HighlightPattern::typeName( HighlightPattern::KEYWORD_PATTERN ), this ) );
   checkboxes_.insert( make_pair( checkbox, HighlightPattern::KEYWORD_PATTERN ) );
   layout()->addWidget( checkbox );
   checkbox->setChecked( true );
   
-  group->addButton( checkbox = new QCheckBox( HighlightPattern::typeName( HighlightPattern::RANGE_PATTERN ).c_str(), this ) );
+  group->addButton( checkbox = new QCheckBox( HighlightPattern::typeName( HighlightPattern::RANGE_PATTERN ), this ) );
   checkboxes_.insert( make_pair( checkbox, HighlightPattern::RANGE_PATTERN ) );
   layout()->addWidget( checkbox );
   

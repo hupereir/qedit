@@ -50,7 +50,7 @@ QVariant HighlightStyleModel::data( const QModelIndex& index, int role ) const
   const HighlightStyle& style( get()[index.row()] );
   
   // return text associated to file and column
-  if( role == Qt::DisplayRole && index.column() == NAME ) return style.name().c_str();
+  if( role == Qt::DisplayRole && index.column() == NAME ) return style.name();
   return QVariant();
   
 }

@@ -33,8 +33,8 @@
 */
 
 #include <QObject>
+#include <QString>
 #include <list>
-#include <string>
 
 #include "Counter.h"
 #include "Debug.h"
@@ -65,23 +65,23 @@ class DocumentClassManager: public QObject, public Counter
   bool read( const File& file );
 
   //! read errors
-  const std::string& readError( void ) const
+  const QString& readError( void ) const
   { return read_error_; }
   
   //! write all classes to file
   bool write( const File& file ) const;
 
   //! write classes to file
-  bool write( const std::string& class_name, const File& file ) const;
+  bool write( const QString& class_name, const File& file ) const;
 
   //! get class matching filename. Return 0 if not found
   DocumentClass find( const File& file ) const;
 
   //! get class matching name. Return 0 if none found
-  DocumentClass get( const std::string& name ) const;
+  DocumentClass get( const QString& name ) const;
 
   //! remove a class matching name.
-  bool remove( const std::string& name );
+  bool remove( const QString& name );
 
   //! shortcut to list of document classes
   typedef std::list<DocumentClass> ClassList;
@@ -96,7 +96,7 @@ class DocumentClassManager: public QObject, public Counter
   ClassList document_classes_;
   
   //! read error
-  std::string read_error_;
+  QString read_error_;
 };
 
 #endif

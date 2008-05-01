@@ -112,7 +112,7 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
   Debug::Throw( "DocumentClassDialog::setDocumentClass.\n" );
   
   // name
-  name_editor_->setText( document_class.name().c_str() );
+  name_editor_->setText( document_class.name() );
   
   // file name matching pattern
   file_pattern_editor_->setText( document_class.fileMatchingPattern().pattern() );

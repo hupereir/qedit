@@ -52,19 +52,19 @@ DocumentClass::DocumentClass( const QDomElement& element ):
   {
     QDomAttr attribute( attributes.item( i ).toAttr() );
     if( attribute.isNull() ) continue;
-    Str name( qPrintable( attribute.name() ) );
-    Str value( qPrintable( attribute.value() ) );
 
-    if( name == XML::NAME ) name_ = value ;
-    else if( name == XML::PATTERN ) file_pattern_.setPattern( XmlUtil::xmlToText( value ).c_str() );
-    else if( name == XML::FIRSTLINE_PATTERN ) firstline_pattern_.setPattern( XmlUtil::xmlToText( value ).c_str() ); 
-    else if( name == XML::ICON ) icon_ = XmlUtil::xmlToText( value ).c_str();
-    else if( name == XML::OPTIONS )
+    if( attribute.name() == XML::NAME ) name_ = attribute.value() ;
+    else if( attribute.name() == XML::PATTERN ) file_pattern_.setPattern( XmlUtil::xmlToText( attribute.value() ) );
+    else if( attribute.name() == XML::FIRSTLINE_PATTERN ) firstline_pattern_.setPattern( XmlUtil::xmlToText( attribute.value() ) ); 
+    else if( attribute.name() == XML::ICON ) icon_ = XmlUtil::xmlToText( attribute.value() );
+    else if( attribute.name() == XML::OPTIONS )
     {
-      if( value.find( XML::OPTION_WRAP ) != string::npos ) wrap_ = true;    
-      if( value.find( XML::OPTION_DEFAULT ) != string::npos ) default_ = true;    
-    } else if( name== XML::BASE_INDENTATION ) _setBaseIndentation( value.get<int>() );
-    else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized attribute: " << name << endl;
+      
+      if( attribute.value().indexOf( XML::OPTION_WRAP, 0, Qt::CaseInsensitive ) >= 0 ) wrap_ = true;    
+      if( attribute.value().indexOf( XML::OPTION_DEFAULT, 0, Qt::CaseInsensitive ) >= 0 ) default_ = true;    
+      
+    } else if( attribute.name() == XML::BASE_INDENTATION ) _setBaseIndentation( attribute.value().toInt() );
+    else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
     
   }
 
@@ -74,31 +74,29 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     QDomElement child_element = child_node.toElement();
     if( child_element.isNull() ) continue;
 
-    string tag_name( qPrintable( child_element.tagName() ) );
-    if( tag_name == XML::STYLE ) highlight_styles_.insert( HighlightStyle( child_element ) );
-    else if( tag_name == XML::KEYWORD_PATTERN || tag_name == XML::RANGE_PATTERN )
+    if( child_element.tagName() == XML::STYLE ) highlight_styles_.insert( HighlightStyle( child_element ) );
+    else if( child_element.tagName() == XML::KEYWORD_PATTERN || child_element.tagName() == XML::RANGE_PATTERN )
     {
 
       HighlightPattern pattern( child_element );
       if( pattern.isValid() ) highlight_patterns_.push_back( pattern );
 
-    } else if( tag_name == XML::INDENT_PATTERN ) {
+    } else if( child_element.tagName() == XML::INDENT_PATTERN ) {
 
       IndentPattern pattern( child_element );
       if( pattern.isValid() ) indent_patterns_.push_back( pattern );
 
-    } else if( tag_name == XML::PARENTHESIS ) {
+    } else if( child_element.tagName() == XML::PARENTHESIS ) {
 
       // parenthesis
-      TextParenthesis parenthesis( child_element );
-      if( parenthesis.isValid() ) text_parenthesis_.push_back( parenthesis );
+      text_parenthesis_.push_back( TextParenthesis( child_element ) );
 
-    } else if( tag_name == XML::BLOCK_DELIMITER ) {
+    } else if( child_element.tagName() == XML::BLOCK_DELIMITER ) {
       
       // block delimiters
       block_delimiters_.push_back( BlockDelimiter( child_element ) );
       
-    } else if( tag_name == XML::MACRO ) {
+    } else if( child_element.tagName() == XML::MACRO ) {
 
       // text macrox
       TextMacro macro( child_element );
@@ -124,7 +122,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     {
       iter->setParentId( (*parent_iter).id() );
       (*parent_iter).addChild( *iter );
-    } else Debug::Throw(0) << "DocumentClass::DocumentClass - unable to load parent named " << iter->parent() << endl;
+    } else Debug::Throw(0) << "DocumentClass::DocumentClass - unable to load parent named " << qPrintable( iter->parent() ) << endl;
   }
 
   // assign styles to patterns
@@ -132,7 +130,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
   {
     set<HighlightStyle>::iterator style_iter ( highlight_styles_.find( iter->style() ) );
     if( style_iter != highlight_styles_.end() ) iter->setStyle( *style_iter );
-    else Debug::Throw(0) << "HighlightParser::Read - unrecognized style " << iter->style().name() << endl;
+    else Debug::Throw(0) << "HighlightParser::Read - unrecognized style " << qPrintable( iter->style().name() ) << endl;
   }
 
 }
@@ -141,22 +139,22 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 QDomElement DocumentClass::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "DocumentClass::domElement.\n" );
-  QDomElement out( parent.createElement( XML::DOCUMENT_CLASS.c_str() ) );
+  QDomElement out( parent.createElement( XML::DOCUMENT_CLASS ) );
   
   // dump attributes
-  out.setAttribute( XML::NAME.c_str(), name_.c_str() );
-  if( !file_pattern_.isEmpty() ) out.setAttribute( XML::PATTERN.c_str(), XmlUtil::textToXml( qPrintable( file_pattern_.pattern() ) ).c_str() );
-  if( !firstline_pattern_.isEmpty() ) out.setAttribute( XML::FIRSTLINE_PATTERN.c_str(), XmlUtil::textToXml( qPrintable( firstline_pattern_.pattern() ) ).c_str() );
+  out.setAttribute( XML::NAME, name_ );
+  if( !file_pattern_.isEmpty() ) out.setAttribute( XML::PATTERN, XmlUtil::textToXml( file_pattern_.pattern() ) );
+  if( !firstline_pattern_.isEmpty() ) out.setAttribute( XML::FIRSTLINE_PATTERN, XmlUtil::textToXml( firstline_pattern_.pattern() ) );
   
   // options
-  ostringstream what;
-  if( wrap() ) what << XML::OPTION_WRAP << " ";
-  if( isDefault() ) what << XML::OPTION_DEFAULT << " ";
-  if( what.str().size() ) out.setAttribute( XML::OPTIONS.c_str(), what.str().c_str() ); 
-  if( baseIndentation() ) out.setAttribute( XML::BASE_INDENTATION.c_str(), Str().assign<int>( baseIndentation() ).c_str() );
+  QString options;
+  if( wrap() ) options += XML::OPTION_WRAP + " ";
+  if( isDefault() ) options += XML::OPTION_DEFAULT + " ";
+  if( !options.isEmpty() ) out.setAttribute( XML::OPTIONS, options ); 
+  if( baseIndentation() ) out.setAttribute( XML::BASE_INDENTATION, Str().assign<int>( baseIndentation() ).c_str() );
 
   // icon
-  if( !icon().empty() ) out.setAttribute( XML::ICON.c_str(), icon().c_str() );
+  if( !icon().isEmpty() ) out.setAttribute( XML::ICON, icon() );
   
   // dump highlight styles
   for( set<HighlightStyle>::const_iterator iter = highlight_styles_.begin(); iter != highlight_styles_.end(); iter++ )

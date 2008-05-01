@@ -172,8 +172,7 @@ void DocumentClassManagerDialog::_edit( void )
   }
 
   // retrieve DocumentClass matching name
-  string name( qPrintable( item->text(NAME) ) );
-  DocumentClass document_class( document_class_manager_->get( name ) );
+  DocumentClass document_class( document_class_manager_->get(  item->text(NAME) ) );
   
   // create dialog
   DocumentClassDialog dialog( this );
@@ -309,6 +308,6 @@ void DocumentClassManagerDialog::_addClass( const DocumentClass& document_class 
 //_________________________________________________________________
 void DocumentClassManagerDialog::Item::update( void )
 {
-  setText( NAME, documentClass().name().c_str() );
+  setText( NAME, documentClass().name() );
   setText( FILE, documentClass().file().c_str() );
 }

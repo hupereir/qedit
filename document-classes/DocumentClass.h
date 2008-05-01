@@ -82,7 +82,7 @@ class DocumentClass: public Counter
   void clear( void );
   
   //! name
-  const std::string& name ( void ) const
+  const QString& name ( void ) const
   { return name_; }
   
   //! file
@@ -106,7 +106,7 @@ class DocumentClass: public Counter
   { return firstline_pattern_; }
   
   //! icon name
-  const std::string& icon( void ) const
+  const QString& icon( void ) const
   { return icon_; }
   
   //! return true if document class match filename
@@ -156,7 +156,7 @@ class DocumentClass: public Counter
     public:
     
     //! constructor
-    SameNameFTor( const std::string& name ):
+    SameNameFTor( const QString& name ):
       name_( name )
     {}
     
@@ -167,7 +167,7 @@ class DocumentClass: public Counter
     private:
     
     //! predicted name
-    std::string name_; 
+    QString name_; 
   };
   
   //! used to get non default document class matching a file
@@ -209,7 +209,7 @@ class DocumentClass: public Counter
   { base_indentation_ = value; }
     
   //! name
-  std::string name_;
+  QString name_;
   
   //! parent file
   File file_;
@@ -228,7 +228,7 @@ class DocumentClass: public Counter
   bool wrap_;
   
   //! icon name
-  std::string icon_;
+  QString icon_;
   
   //! set of highlight styles
   HighlightStyle::Set highlight_styles_;

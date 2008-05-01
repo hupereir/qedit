@@ -54,8 +54,8 @@ TextParenthesis::TextParenthesis( const QDomElement& element ):
     if( attribute.isNull() ) continue;
     string name( qPrintable( attribute.name() ) );
     string value( qPrintable( attribute.value() ) );
-    if( name == XML::BEGIN ) first = Str( XmlUtil::xmlToText(value) ).get<char>();
-    else if( name == XML::END ) second = Str( XmlUtil::xmlToText(value) ).get<char>();
+    if( name == XML::BEGIN ) first_.setPattern( XmlUtil::xmlToText(value) );
+    else if( name == XML::END ) second_.setPattern( XmlUtil::xmlToText(value) );
     else if( name == XML::REGEXP ) regexp_.setPattern( XmlUtil::xmlToText( value ).c_str() );
     else cout << "TextParenthesis::TextParenthesis - unrecognized attribute: " << name << endl;
   }
@@ -63,9 +63,8 @@ TextParenthesis::TextParenthesis( const QDomElement& element ):
   // create regexp
   if( regexp_.pattern().isEmpty() )
   {
-    ostringstream what;
-    what << first.toAscii() << "|" << second.toAscii();
-    regexp_.setPattern( what.str().c_str() );
+    QString pattern = QString("(") + first().pattern() + ")|(" + second().pattern() + ")";
+    regexp_.setPattern( pattern );
   }
     
 }

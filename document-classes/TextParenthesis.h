@@ -46,7 +46,7 @@
 #include "Str.h"
 
 //! text parenthesis (for highlighting)
-class TextParenthesis: public std::pair<QChar,QChar>, public Counter
+class TextParenthesis: public Counter
 {
 
   public:
@@ -55,21 +55,50 @@ class TextParenthesis: public std::pair<QChar,QChar>, public Counter
   typedef std::vector<TextParenthesis> List;
   
   //! set of parenthesis
-  typedef std::set<QChar> Set;
+  typedef std::set<TextParenthesis> Set;
   
   //! constructor from DomElement
   TextParenthesis( const QDomElement& element = QDomElement() );
 
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
-  
-  //! valid (begin and end brace must be different)
-  bool isValid( void ) const
-  { return first != second; }
-  
+
+  //! regExp that match either of the two parenthesis
+  const QRegExp& first() const
+  { return first_; }
+
+  //! regExp that match either of the two parenthesis
+  const QRegExp& second() const
+  { return second_; }
+
   //! regExp that match either of the two parenthesis
   const QRegExp& regexp() const
   { return regexp_; }
+  
+  //! used to find parenthesis for which first character match
+  class MatchFTor
+  {
+    public:
+    
+    //! constructor
+    MatchFTor( const QString& text, const int& position ):
+      text_( text ),
+      position_( position )
+    {}
+    
+    //! predicate
+    bool operator() ( const TextParenthesis& parenthesis ) const
+    { return text_.indexOf( parenthesis.regexp(), position_ ) == position_; }
+    
+    private:
+
+    //! predicted character
+    const QString& text_;
+    
+    //! predicted position
+    const int& position_;
+  
+  };
   
   //! used to find parenthesis for which first character match
   class FirstElementFTor
@@ -77,43 +106,57 @@ class TextParenthesis: public std::pair<QChar,QChar>, public Counter
     public:
     
     //! constructor
-    FirstElementFTor( const QChar& c ):
-      c_( c )
+    FirstElementFTor( const QString& text, const int& position ):
+      text_( text ),
+      position_( position )
     {}
     
     //! predicate
     bool operator() ( const TextParenthesis& parenthesis ) const
-    { return parenthesis.first == c_; }
+    { return text_.indexOf( parenthesis.first(), position_ ) == position_; }
     
     private:
 
     //! predicted character
-    QChar c_;
+    const QString& text_;
+    
+    //! predicted position
+    const int& position_;
   
   };
   
-  //! used to find parenthesis for which second character match
+  //! used to find parenthesis for which first character match
   class SecondElementFTor
   {
     public:
     
     //! constructor
-    SecondElementFTor( const QChar& c ):
-      c_( c )
+    SecondElementFTor( const QString& text, const int& position ):
+      text_( text ),
+      position_( position )
     {}
     
     //! predicate
     bool operator() ( const TextParenthesis& parenthesis ) const
-    { return parenthesis.second == c_; }
+    { return text_.indexOf( parenthesis.second(), position_ ) == position_; }
     
     private:
 
     //! predicted character
-    QChar c_;
+    const QString& text_;
+    
+    //! predicted position
+    const int& position_;
   
   };
   
   private:
+  
+  //! regular expression that match first character
+  QRegExp first_;
+  
+  //! regular expression that match second character
+  QRegExp second_;
   
   //! regular expression that match either of both characters
   QRegExp regexp_;

@@ -133,7 +133,7 @@ void HighlightPatternList::_add( void )
   {
     if( dialog.exec() == QDialog::Rejected ) return;
     HighlightPattern pattern( dialog.pattern() );
-    if( pattern.name().empty() || std::find( patterns.begin(), patterns.end(), pattern ) != patterns.end() ) 
+    if( pattern.name().isEmpty() || std::find( patterns.begin(), patterns.end(), pattern ) != patterns.end() ) 
     {
       QtUtil::infoDialog( this, "Invalid pattern name" );
     } else {

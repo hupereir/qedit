@@ -130,7 +130,7 @@ void HighlightStyleList::_add( void )
   {
     if( dialog.exec() == QDialog::Rejected ) return;
     HighlightStyle style( dialog.style() );
-    if( style.name().empty() || std::find( styles.begin(), styles.end(), style ) != styles.end() ) 
+    if( style.name().isEmpty() || std::find( styles.begin(), styles.end(), style ) != styles.end() ) 
     {
       QtUtil::infoDialog( this, "Invalid pattern name" );
     } else {

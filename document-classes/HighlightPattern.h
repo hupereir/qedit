@@ -35,10 +35,10 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QRegExp>
+#include <QString>
 
 #include <set>
 #include <vector>
-#include <string>
 
 #include "HighlightStyle.h"
 #include "Counter.h"
@@ -75,7 +75,7 @@ class HighlightPattern: public Counter
   typedef std::vector< HighlightPattern > List;
 
   //! no parent pattern
-  static std::string no_parent_pattern_;  
+  static QString no_parent_pattern_;  
 
   //! constructor from DomElement
   HighlightPattern( const QDomElement& element = QDomElement() );
@@ -108,11 +108,11 @@ class HighlightPattern: public Counter
   bool differs( const HighlightPattern& pattern ) const;
     
   //! name
-  const std::string& name( void ) const
+  const QString& name( void ) const
   { return name_; }
              
   //! name
-  void setName( const std::string& name ) 
+  void setName( const QString& name ) 
   { name_ = name; }
   
   //! pattern type
@@ -138,18 +138,18 @@ class HighlightPattern: public Counter
   { type_ = type; }
    
   //! type
-  std::string typeName( void ) const
+  QString typeName( void ) const
   { return typeName( type() ); }
   
   //! type
-  static std::string typeName( const Type& type );
+  static QString typeName( const Type& type );
 
   //! parent name
-  const std::string& parent( void ) const
+  const QString& parent( void ) const
   { return parent_; }
 
   //! parent name
-  void setParent( const std::string& parent )
+  void setParent( const QString& parent )
   { parent_ = parent; }
   
   //! parent id
@@ -185,15 +185,15 @@ class HighlightPattern: public Counter
   { return keyword_; }
   
   //! keyword
-  virtual void setKeyword( const std::string& keyword )
-  { keyword_.setPattern( keyword.c_str() ); }
+  virtual void setKeyword( const QString& keyword )
+  { keyword_.setPattern( keyword ); }
 
   //! begin regexp
   const QRegExp& begin( void ) const
   { return keyword(); }
 
   //! keyword
-  virtual void setBegin( const std::string& keyword )
+  virtual void setBegin( const QString& keyword )
   { setKeyword( keyword ); }
     
   //! end regexp
@@ -201,15 +201,15 @@ class HighlightPattern: public Counter
   { return end_; }
   
   //! range end pattern
-  virtual void setEnd( const std::string& keyword )
-  { end_.setPattern( keyword.c_str() ); }
+  virtual void setEnd( const QString& keyword )
+  { end_.setPattern( keyword ); }
 
   //! comments
-  const std::string& comments( void ) const
+  const QString& comments( void ) const
   { return comments_; }
   
   //! comments
-  void setComments( const std::string& comments )
+  void setComments( const QString& comments )
   { comments_ = comments; }
     
   //!@name flags
@@ -269,7 +269,7 @@ class HighlightPattern: public Counter
     public:
     
     //! constructor    
-    SameNameFTor( const std::string& name ):
+    SameNameFTor( const QString& name ):
       name_( name )
     {}
     
@@ -280,7 +280,7 @@ class HighlightPattern: public Counter
     private:
         
     //! predicate
-    const std::string name_;
+    const QString name_;
     
   };
   
@@ -327,10 +327,10 @@ class HighlightPattern: public Counter
   Type type_;
       
   //! pattern name
-  std::string name_;
+  QString name_;
   
   //! parent pattern name
-  std::string parent_;
+  QString parent_;
   
   //! parent pattern id
   int parent_id_;
@@ -342,7 +342,7 @@ class HighlightPattern: public Counter
   List children_;
   
   //! comments
-  std::string comments_;
+  QString comments_;
   
   //! flags
   unsigned int flags_;
@@ -363,7 +363,7 @@ class HighlightPattern: public Counter
   //! dump
   friend std::ostream& operator << (std::ostream& out, const HighlightPattern& pattern )
   {  
-    out << "id: " << pattern.id() << " name: " << pattern.name() << " parent name:" << pattern.parent();
+    out << "id: " << pattern.id() << " name: " << qPrintable( pattern.name() ) << " parent name:" << qPrintable( pattern.parent() );
     return out;
   }
   

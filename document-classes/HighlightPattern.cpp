@@ -40,7 +40,7 @@
 using namespace std;
 
 //___________________________________________________________________________
-std::string HighlightPattern::no_parent_pattern_ = "None";
+QString HighlightPattern::no_parent_pattern_( "None" );
 
 
 //___________________________________________________________________________
@@ -55,28 +55,26 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
   flags_( NONE )
 {  
   Debug::Throw( "HighlightPattern::HighlightPattern.\n" );
-  if( element.tagName() == XML::KEYWORD_PATTERN.c_str() ) setType( KEYWORD_PATTERN );
-  if( element.tagName() == XML::RANGE_PATTERN.c_str() ) setType( RANGE_PATTERN );
+  if( element.tagName() == XML::KEYWORD_PATTERN ) setType( KEYWORD_PATTERN );
+  if( element.tagName() == XML::RANGE_PATTERN ) setType( RANGE_PATTERN );
   
   QDomNamedNodeMap attributes( element.attributes() );
   for( unsigned int i=0; i<attributes.length(); i++ )
   {
     QDomAttr attribute( attributes.item( i ).toAttr() );
     if( attribute.isNull() ) continue;
-    Str name( qPrintable( attribute.name() ) );
-    Str value( qPrintable( attribute.value() ) );
       
-    if( name == XML::NAME ) setName( value );
-    else if( name == XML::PARENT ) setParent( value );
-    else if( name == XML::STYLE ) setStyle( HighlightStyle( value ) );
+    if( attribute.name() == XML::NAME ) setName( attribute.value() );
+    else if( attribute.name() == XML::PARENT ) setParent( attribute.value() );
+    else if( attribute.name() == XML::STYLE ) setStyle( HighlightStyle( attribute.value() ) );
 
-    else if( name == XML::OPTIONS )
+    else if( attribute.name() == XML::OPTIONS )
     {
-      if( value.find( XML::OPTION_SPAN ) != string::npos ) setFlag( SPAN, true );
-      if( value.find( XML::OPTION_NO_INDENT ) != string::npos ) setFlag( NO_INDENT, true );
-      if( value.find( XML::OPTION_NO_CASE ) != string::npos ) setFlag( CASE_INSENSITIVE, true ); 
+      if( attribute.value().indexOf( XML::OPTION_SPAN, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( SPAN, true );
+      if( attribute.value().indexOf( XML::OPTION_NO_INDENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( NO_INDENT, true );
+      if( attribute.value().indexOf( XML::OPTION_NO_CASE, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CASE_INSENSITIVE, true ); 
     } else 
-    { Debug::Throw() << "HighlightPattern::HighlightPattern - unrecognized attribute " << name << endl; }
+    { Debug::Throw() << "HighlightPattern::HighlightPattern - unrecognized attribute " << qPrintable( attribute.name() ) << endl; }
     
   }
   
@@ -85,11 +83,10 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
   {
     QDomElement child_element = child_node.toElement(); 
     if( child_element.isNull() ) continue;
-    string name( qPrintable( child_element.tagName() ) );
-    if( name == XML::COMMENTS ) setComments( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
-    else if( name == XML::KEYWORD ) setKeyword( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
-    else if( name == XML::BEGIN ) setBegin( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
-    else if( name == XML::END ) setEnd( XmlUtil::xmlToText( qPrintable( child_element.text() ) ) );
+    if( child_element.tagName() == XML::COMMENTS ) setComments( XmlUtil::xmlToText( child_element.text() ) );
+    else if( child_element.tagName() == XML::KEYWORD ) setKeyword( XmlUtil::xmlToText( child_element.text() ) );
+    else if( child_element.tagName() == XML::BEGIN ) setBegin( XmlUtil::xmlToText( child_element.text() ) );
+    else if( child_element.tagName() == XML::END ) setEnd( XmlUtil::xmlToText( child_element.text() ) );
   }
  
 }
@@ -99,39 +96,39 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "HighlightPattern::domElement.\n" );
   
-  QDomElement out( parent.createElement( typeName().c_str() ) );
-  out.setAttribute( XML::NAME.c_str(), name().c_str() );
-  out.setAttribute( XML::PARENT.c_str(), HighlightPattern::parent().c_str() );
-  out.setAttribute( XML::STYLE.c_str(), style().name().c_str() );
+  QDomElement out( parent.createElement( typeName() ) );
+  out.setAttribute( XML::NAME, name() );
+  out.setAttribute( XML::PARENT, HighlightPattern::parent() );
+  out.setAttribute( XML::STYLE, style().name() );
   
   // options:
-  ostringstream what;
-  if( flag( SPAN ) ) what << XML::OPTION_SPAN << " ";
-  if( flag( NO_INDENT ) ) what << XML::OPTION_NO_INDENT << " ";
-  if( flag( CASE_INSENSITIVE ) ) what << XML::OPTION_NO_CASE << " ";
-  if( what.str().size() ) out.setAttribute( XML::OPTIONS.c_str(), what.str().c_str() );
+  QString options;
+  if( flag( SPAN ) ) options += XML::OPTION_SPAN + " ";
+  if( flag( NO_INDENT ) ) options += XML::OPTION_NO_INDENT + " ";
+  if( flag( CASE_INSENSITIVE ) ) options += XML::OPTION_NO_CASE + " ";
+  if( !options.isEmpty() ) out.setAttribute( XML::OPTIONS, options );
 
   // comments
   out.
-    appendChild( parent.createElement( XML::COMMENTS.c_str() ) ).
-    appendChild( parent.createTextNode( XmlUtil::textToXml( comments() ).c_str() ) );
+    appendChild( parent.createElement( XML::COMMENTS ) ).
+    appendChild( parent.createTextNode( XmlUtil::textToXml( comments() ) ) );
 
   // regexps
   if( type() == KEYWORD_PATTERN )
   {
     out.
-      appendChild( parent.createElement( XML::KEYWORD.c_str() ) ).
-      appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( keyword().pattern() ) ).c_str() ) );
+      appendChild( parent.createElement( XML::KEYWORD ) ).
+      appendChild( parent.createTextNode( XmlUtil::textToXml( keyword().pattern() ) ) );
   }
   
   if( type() == RANGE_PATTERN )
   {
     out.
-      appendChild( parent.createElement( XML::BEGIN.c_str() ) ).
-      appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( begin().pattern() ) ).c_str() ) );
+      appendChild( parent.createElement( XML::BEGIN ) ).
+      appendChild( parent.createTextNode( XmlUtil::textToXml( begin().pattern() ) ) );
     out.
-      appendChild( parent.createElement( XML::END.c_str() ) ).
-      appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( end().pattern() ) ).c_str() ) );
+      appendChild( parent.createElement( XML::END ) ).
+      appendChild( parent.createTextNode( XmlUtil::textToXml( end().pattern() ) ) );
   }
     
   return out;
@@ -152,7 +149,7 @@ bool HighlightPattern::differs( const HighlightPattern& pattern ) const
 }
   
 //____________________________________________________________
-string HighlightPattern::typeName( const Type& type )
+QString HighlightPattern::typeName( const Type& type )
 {
   switch( type )
   {
