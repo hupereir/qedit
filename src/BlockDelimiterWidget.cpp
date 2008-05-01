@@ -96,7 +96,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   // keep track of all starting points
   vector<QPointF> start_points;
   vector<QPointF> all_start_points;
-  for( QTextBlock block = document.begin(); block.isValid(); block = block.next() )
+  for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
   {
     
     // draw tick if visible
@@ -108,20 +108,6 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
     if( data && ( data->delimiter().begin() || data->delimiter().end() ) ) 
     {
     
-      if( data->delimiter().begin() )
-      {
-        
-        // store block starting point
-        QPointF point( 0.5*width(), block_begin + 0.2*metric.lineSpacing() );
-        for( int i = 0; i < data->delimiter().begin(); i++ )
-        { start_points.push_back( point ); }
-        
-        // draw tick
-        if( block_begin >= y_offset && block_begin <= height ) 
-        { all_start_points.push_back( point ); }
-      
-      } 
-          
       if( data->delimiter().end() )
       {
         
@@ -141,7 +127,21 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
         { start_points.pop_back(); }
  
       }
+
+      if( data->delimiter().begin() )
+      {
+        
+        // store block starting point
+        QPointF point( 0.5*width(), block_begin + 0.2*metric.lineSpacing() );
+        for( int i = 0; i < data->delimiter().begin(); i++ )
+        { start_points.push_back( point ); }
+        
+        // draw tick
+        if( block_begin >= y_offset && block_begin <= height ) 
+        { all_start_points.push_back( point ); }
       
+      } 
+                
     }
     
     // check if outside of window
