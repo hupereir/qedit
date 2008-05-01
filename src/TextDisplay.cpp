@@ -1171,7 +1171,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
   setTextCursor( cursor );
 
   // create suggestion menu
-  SPELLCHECK::SuggestionMenu menu( this, word, isReadOnly() );
+  SPELLCHECK::SuggestionMenu menu( this, word.c_str(), isReadOnly() );
   menu.interface().setFilter( textHighlight().spellParser().interface().filter() );
   menu.interface().setDictionary( textHighlight().spellParser().interface().dictionary() );
 
@@ -1499,13 +1499,13 @@ void TextDisplay::_updateSpellCheckConfiguration( void )
   // see if one should/can change the dictionary and filter
   if( filter != interface.filter() && interface.setFilter( filter ) )
   {
-    _filterMenu().select( filter );
+    _filterMenu().select( filter.c_str() );
     changed = true;
   }
 
   if( dictionary != interface.dictionary() && interface.setDictionary( dictionary ) )
   {
-    _dictionaryMenu().select( dictionary );
+    _dictionaryMenu().select( dictionary.c_str() );
     changed = true;
   }
 
