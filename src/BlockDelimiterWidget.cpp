@@ -87,7 +87,10 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
     
   // brush/pen  
   QPainter painter( this );
+  //painter.setRenderHints(QPainter::Antialiasing );
+  
   painter.translate( 0, -y_offset );
+  painter.setBrush( palette().color( QPalette::Base ) );
   
   // calculate height
   // int height( QWidget::height() - metric.lineSpacing() );
@@ -95,14 +98,14 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
   
   // keep track of all starting points
-  vector<QPoint> start_points;
-
+  vector<QPointF> start_points;
+  vector<QPointF> all_start_points;
   for( QTextBlock block = document.begin(); block.isValid(); block = block.next() )
   {
     
     // draw tick if visible
-    int block_begin( block.layout()->position().y() );
-    int block_end( block_begin + block.layout()->boundingRect().height() );
+    double block_begin( block.layout()->position().y() );
+    double block_end( block_begin + block.layout()->boundingRect().height() );
 
     // retrieve data and check this block delimiter
     HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
@@ -113,13 +116,13 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
       {
         
         // store block starting point
-        QPoint point( width()/2, block_begin );
+        QPointF point( 0.5*width(), block_begin + 0.2*metric.lineSpacing() );
         for( int i = 0; i < data->delimiter().begin(); i++ )
         { start_points.push_back( point ); }
         
         // draw tick
         if( block_begin >= y_offset && block_begin <= height ) 
-        { painter.drawLine( width()/2, block_begin, width(), block_begin ); }
+        { all_start_points.push_back( point ); }
       
       } 
           
@@ -129,13 +132,13 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
         if( (!start_points.empty()) && ( int(start_points.size()) - data->delimiter().end() ) <= 0 )
         {
           // set end point and draw line
-          QPoint end_point = QPoint(  width()/2, min( block_end, height ) );
+          QPointF end_point(  0.5*width(), min<double>( block_end, height ) );
           painter.drawLine( start_points.front(), end_point );
         }
         
         // draw tick
         if( (!data->delimiter().begin()) && (!start_points.empty() && block_end >= y_offset  && block_end <= height ) )
-        { painter.drawLine( width()/2, block_end, width(), block_end ); }
+        { painter.drawLine( QPointF(0.5*width(), block_end), QPointF(width(), block_end) ); }
         
         // pop
         for( int i = 0; i < data->delimiter().end() && !start_points.empty(); i++ )
@@ -153,10 +156,17 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   if( (!start_points.empty() ) && start_points.front().y() < height )
   {
     // set end point and draw line
-    QPoint end_point = QPoint(  width()/2, height );
+    QPointF end_point(  0.5*width(), height );
     painter.drawLine( start_points.front(), end_point );
   }
 
+  // draw all start points
+  for( vector<QPointF>::const_iterator iter = all_start_points.begin(); iter != all_start_points.end(); iter++ )
+  {
+    painter.drawRect( QRectF( 0.2*width(), iter->y(), 0.6*width(), 0.6*fontMetrics().lineSpacing() ) ); 
+  }
+
+  
   painter.end();
   
 }

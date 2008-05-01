@@ -44,7 +44,7 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element ):
   Counter( "BlockDelimiter" )
 {
 
-  Debug::Throw( 0, "BlockDelimiter::BlockDelimiter.\n" );
+  Debug::Throw( "BlockDelimiter::BlockDelimiter.\n" );
   
   // parse attributes
   QDomNamedNodeMap attributes( element.attributes() );

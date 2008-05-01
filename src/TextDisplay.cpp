@@ -1115,6 +1115,8 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
   // retrieve default context menu
   QMenu menu( this );
   _installContextMenuActions( menu );
+  menu.insertAction( &wrapModeAction(), &showLineNumberAction() );
+  menu.insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
   menu.addSeparator();
 
   menu.addAction( &tagBlockAction() );
@@ -1214,6 +1216,7 @@ void TextDisplay::_installActions( void )
   addAction( show_block_delimiter_action_ =new QAction( "Show block delimiters", this ) );
   show_block_delimiter_action_->setToolTip( "Show/hide block delimiters" );
   show_block_delimiter_action_->setCheckable( true );
+  show_block_delimiter_action_->setShortcut( CTRL+Key_B );
   connect( show_block_delimiter_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowBlockDelimiters( bool ) ) );
 
   // retrieve pixmap path
