@@ -1319,7 +1319,7 @@ TextView& EditFrame::_newTextView( QWidget* parent )
 
   // create textDisplay
   TextView* view = new TextView( parent );  
-  view->editor().setMenu( &menu_->openPreviousMenu() );
+  view->editor().setOpenPreviousMenu( &menu_->openPreviousMenu() );
 
   // connections
   connect( &view->editor(), SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );

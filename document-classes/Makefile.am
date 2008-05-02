@@ -75,3 +75,15 @@ moc_%.cpp: %.h
 
 qrc_%.cpp: %.qrc
 	$(qt_rcc) -name $* $^ -o $@
+
+qrc_patterns.cpp: \
+  ../patterns/c_patterns.xml \
+  ../patterns/default_patterns.xml \
+  ../patterns/diff_patterns.xml \
+  ../patterns/fortran_patterns.xml \
+  ../patterns/html_patterns.xml \
+  ../patterns/latex_patterns.xml \
+  ../patterns/makefile_patterns.xml \
+  ../patterns/perl_patterns.xml \
+  ../patterns/shell_patterns.xml \
+  ../patterns/xml_patterns.xml

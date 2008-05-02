@@ -135,7 +135,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
     grid_layout->addWidget( label = new QLabel( class_name, box ) );
   }
   
-  FileRecord record( parent->menu().get( file ) );
+  FileRecord record( parent->openPreviousMenu().get( file ) );
   if( record.hasInformation( "dictionary" ) )
   {
     grid_layout->addWidget( label = new QLabel( "spell-check dictionary: ", box ) );

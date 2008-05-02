@@ -78,7 +78,8 @@ TextDisplay::TextDisplay( QWidget* parent ):
   working_directory_( Util::workingDirectory() ),
   class_name_( "" ),
   ignore_warnings_( false ),
-  active_( false )
+  active_( false ),
+  open_previous_menu_( 0 )
 {
 
   Debug::Throw("TextDisplay::TextDisplay.\n" );
@@ -211,7 +212,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
   Debug::Throw() << "TextDisplay::openFile " << file << endl;
 
   // reset class name
-  QString class_name( menu().get( file ).information("class_name").c_str() );
+  QString class_name( openPreviousMenu().add( file ).information("class_name").c_str() );
   setClassName( class_name );
 
   // expand filename
@@ -273,7 +274,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
 
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
-  { menu().get( TextDisplay::file() ).addInformation( "class_name", qPrintable( className() ) ); }
+  { openPreviousMenu().get( TextDisplay::file() ).addInformation( "class_name", qPrintable( className() ) ); }
 
   Debug::Throw( "TextDisplay::openFile - done.\n" );
 
@@ -451,7 +452,7 @@ void TextDisplay::save( void )
 
   // add file to menu
   if( !file().empty() )
-  { menu().get( file() ).addInformation( "class_name", qPrintable( className() ) ); }
+  { openPreviousMenu().get( file() ).addInformation( "class_name", qPrintable( className() ) ); }
 
   return;
 
@@ -527,7 +528,7 @@ void TextDisplay::saveAs( void )
   // rehighlight
   rehighlight();
   if( !TextDisplay::file().empty() )
-  { menu().get( TextDisplay::file() ).addInformation( "class_name", qPrintable( className() ) ); }
+  { openPreviousMenu().get( TextDisplay::file() ).addInformation( "class_name", qPrintable( className() ) ); }
 
 }
 
@@ -888,7 +889,7 @@ void TextDisplay::updateDocumentClass( void )
   // add information to Menu
   if( !file().empty() )
   { 
-    FileRecord& record( menu().get( file() ) );
+    FileRecord& record( openPreviousMenu().get( file() ) );
     record.addInformation( "class_name", qPrintable( className() ) ); 
     if( !document_class.icon().isEmpty() ) record.addInformation( "icon", qPrintable( document_class.icon() ) );
   }
@@ -1022,7 +1023,7 @@ void TextDisplay::selectFilter( const QString& filter )
   // update file record
   if( !file().empty() )
   {
-    FileRecord& record( menu().get( file() ) );
+    FileRecord& record( openPreviousMenu().get( file() ) );
     record.addInformation( "filter", interface.filter() );
   }
 
@@ -1053,7 +1054,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
   // update file record
   if( !file().empty() )
   {
-    FileRecord& record( menu().get( file() ) );
+    FileRecord& record( openPreviousMenu().get( file() ) );
     record.addInformation( "dictionary", interface.dictionary() );
   }
 
@@ -1487,7 +1488,7 @@ void TextDisplay::_updateSpellCheckConfiguration( void )
   // overwrite with file record
   if( !file().empty() )
   {
-    FileRecord& record( menu().get( file() ) );
+    FileRecord& record( openPreviousMenu().get( file() ) );
     if( record.hasInformation( "filter" ) && interface.hasFilter( record.information( "filter" ) ) )
     { filter = record.information( "filter" ); }
 
@@ -1714,7 +1715,7 @@ void TextDisplay::_spellcheck( void )
   if( !file().empty() )
   {
 
-    FileRecord& record( menu().get( file() ) );
+    FileRecord& record( openPreviousMenu().get( file() ) );
     if( !( record.hasInformation( "filter" ) && dialog.setFilter( record.information( "filter" ) ) ) )
     { dialog.setFilter( default_filter ); }
 
@@ -1738,7 +1739,7 @@ void TextDisplay::_spellcheck( void )
   // try overwrite with file record
   if( !file().empty() )
   {
-    FileRecord& record( menu().get( file() ) );
+    FileRecord& record( openPreviousMenu().get( file() ) );
     record.addInformation( "filter", dialog.filter() );
     record.addInformation( "dictionary", dialog.dictionary() );
   }

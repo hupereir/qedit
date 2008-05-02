@@ -79,14 +79,14 @@ class TextDisplay: public CustomTextEdit
   virtual void synchronize( TextDisplay* display );
   
   //! set openPrevious menu
-  void setMenu( OpenPreviousMenu* menu )
-  { menu_ = menu; }
+  void setOpenPreviousMenu( OpenPreviousMenu* menu )
+  { open_previous_menu_ = menu; }
   
   //! open previous menu
-  OpenPreviousMenu& menu( void )
+  OpenPreviousMenu& openPreviousMenu( void )
   { 
-    assert( menu_);
-    return *menu_;
+    assert( open_previous_menu_);
+    return *open_previous_menu_;
   }
   
   //! check if current entry has been modified or not
@@ -695,7 +695,7 @@ class TextDisplay: public CustomTextEdit
   #endif
   
   //! parent OpenPrevious menu
-  OpenPreviousMenu* menu_;
+  OpenPreviousMenu* open_previous_menu_;
   
   //! syntax highlighter
   TextHighlight* text_highlight_;
