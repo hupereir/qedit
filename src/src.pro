@@ -34,6 +34,7 @@ HEADERS = \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
+  BlockDelimiterWidget.h \
   ConfigurationDialog.h \
   Diff.h \
   DefaultOptions.h \
@@ -65,6 +66,7 @@ SOURCES = \
   AskForSaveDialog.cpp \
   AutoSave.cpp \
   AutoSaveThread.cpp \
+  BlockDelimiterWidget.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
   EditFrame.cpp \
