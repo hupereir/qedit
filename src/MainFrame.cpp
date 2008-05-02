@@ -268,13 +268,12 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
   {
     frame = &newEditFrame();
     processEvents();
-    //QtUtil::centerOnWidget( frame, activeWindow() );
   }
   
   frame->show();
 
   // check if file exists
-  if( record.file().exists() ) frame->setFile( record.file() );
+  if( record.file().exists() || record.file().empty() ) frame->setFile( record.file() );
   else if( !record.file().empty() )
   {
   

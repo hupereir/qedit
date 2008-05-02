@@ -205,6 +205,7 @@ void EditFrame::setFile( File file )
    
   // open file in active display
   if( !file.empty() ) view.editor().openFile( file );
+  else view.editor().updateDocumentClass();
   
   // set focus
   setActiveView( view );
