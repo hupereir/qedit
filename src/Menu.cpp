@@ -146,8 +146,6 @@ Menu::Menu( QWidget* parent ):
   DebugMenu *debug_menu( new DebugMenu( this ) );
   debug_menu->setTitle( "&Debug" );
   debug_menu->addAction( &help->dumpAction() );
-  
-  debug_menu->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
   menu->addMenu( debug_menu );
 
 }
@@ -359,6 +357,16 @@ void Menu::_updateToolsMenu( void )
   tools_menu_->addAction( &display.clearAllTagsAction() );
   display.clearAllTagsAction().setEnabled( has_tags );
   
+  // rehighlight
+  QAction* action = tools_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
+  bool enabled( display.textHighlightAction().isEnabled() && display.textHighlightAction().isChecked() );
+  
+  #if WITH_ASPELL
+  enabled |= ( display.autoSpellAction().isEnabled() || display.autoSpellAction().isChecked() );
+  #endif
+
+  action->setEnabled( enabled );
+    
 }
 
 //_______________________________________________

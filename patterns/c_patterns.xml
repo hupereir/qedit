@@ -158,6 +158,7 @@
 
  <!-- block delimiters -->
  <block_delimiter begin="{" end="}" regexp="\{|\}"/>
+ <block_delimiter begin="/*" end="*/" regexp="(/\*)|(\*/)"/>
 
  <!-- indentation rules -->
   

@@ -29,7 +29,6 @@
   \version $Revision$
   \date $Date$
 */
-#include <QDataStream>
 
 #include "Debug.h"
 #include "Str.h"
@@ -76,6 +75,6 @@ QDomElement TextParenthesis::domElement( QDomDocument& parent ) const
   // dump attributes
   out.setAttribute( XML::BEGIN, XmlUtil::textToXml( first() ) );
   out.setAttribute( XML::END, XmlUtil::textToXml( second() ) );
-  out.setAttribute( XML::REGEXP, XmlUtil::textToXml( qPrintable( regexp().pattern() ) ) );
+  out.setAttribute( XML::REGEXP, XmlUtil::textToXml( regexp().pattern() ) );
   return out;
 }

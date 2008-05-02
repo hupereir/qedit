@@ -49,6 +49,7 @@
 
  <!-- block delimiters -->
  <block_delimiter begin="{" end="}" regexp="\{|\}"/>
+ <block_delimiter begin="\begin" end="\end" regexp="(\\begin)|(\\end)"/>
 
  <!-- text processing macros -->
 

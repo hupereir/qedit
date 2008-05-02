@@ -37,6 +37,7 @@
 #include <QPaintEvent>
 #include <QWidget>
 
+#include "BlockDelimiter.h"
 #include "Counter.h"
 
 class CustomTextEdit;
@@ -56,6 +57,10 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! destructor
   virtual ~BlockDelimiterWidget();
   
+  //! block delimiters
+  void setBlockDelimiters( const BlockDelimiter::List& delimiters )
+  { delimiters_ = delimiters; }
+  
   protected:
   
   //! paint
@@ -74,6 +79,9 @@ class BlockDelimiterWidget: public QWidget, public Counter
   
   //! associated editor
   CustomTextEdit* editor_;
+  
+  //! block delimiters
+  BlockDelimiter::List delimiters_;
   
 };
 

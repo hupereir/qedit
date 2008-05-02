@@ -35,42 +35,69 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QRegExp>
-#include <QChar>
 
 #include <vector>
-#include <map>
-#include <set>
 
 #include "Counter.h"
 #include "Debug.h"
 #include "Str.h"
 
 //! text parenthesis (for highlighting)
-class BlockDelimiter: public std::pair<QChar,QChar>, public Counter
+class BlockDelimiter: public Counter
 {
 
   public:
 
-  //! list of parenthesis
+  //! list of block delimiters
   typedef std::vector<BlockDelimiter> List;
-  
-  //! set of parenthesis
-  typedef std::set<QChar> Set;
   
   //! constructor from DomElement
   BlockDelimiter( const QDomElement& element = QDomElement() );
 
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
-    
-  //! regExp that match either of the two parenthesis
+   
+  //! Id
+  const unsigned int& id( void ) const
+  { return id_; }
+
+  //! block start
+  const QString& first() const
+  { return first_; }
+
+  //! block end
+  const QString& second() const
+  { return second_; }
+ 
+  //! regExp that match either block start or end
   const QRegExp& regexp() const
   { return regexp_; }
     
   private:
   
+  //! unique id counter
+  static unsigned int id_counter_;
+  
+  //! unique id
+  unsigned int id_; 
+  
+  //! regular expression that match first character
+  QString first_;
+  
+  //! regular expression that match second character
+  QString second_;
+  
   //! regular expression that match either of both characters
   QRegExp regexp_;
+  
+  //! streamer
+  friend std::ostream& operator << ( std::ostream& out, const BlockDelimiter& delimiter )
+  {
+    out << " first: " << qPrintable( delimiter.first() ) 
+      << " second: " << qPrintable( delimiter.second() ) 
+      << " regexp: " << qPrintable( delimiter.regexp().pattern() );
+    return out;
+  }
   
 };
 #endif

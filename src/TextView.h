@@ -33,6 +33,7 @@
 
 #include <QFrame>
 
+#include "BlockDelimiter.h"
 #include "Counter.h"
 #include "Key.h"
 #include "TextDisplay.h"
@@ -108,7 +109,7 @@ class TextView: public QFrame, public BASE::Key, public Counter
   void _toggleShowLineNumbers( bool );
   
   //! enable block delimiters
-  void _enableBlockDelimiters( bool );
+  void _loadBlockDelimiters( BlockDelimiter::List );
   
   //! toggle block delimiters
   void _toggleShowBlockDelimiters( bool );

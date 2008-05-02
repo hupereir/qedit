@@ -64,11 +64,11 @@ TextView::TextView( QWidget* parent ):
   layout->addWidget( &editor(), 1 );
   
   // connections
-  connect( &editor(), SIGNAL( blockDelimitersAvailable( bool ) ), SLOT( _enableBlockDelimiters( bool ) ) );
+  connect( &editor(), SIGNAL( blockDelimitersAvailable( BlockDelimiter::List ) ), SLOT( _loadBlockDelimiters( BlockDelimiter::List ) ) );
   connect( &editor().showBlockDelimiterAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleShowBlockDelimiters( bool ) ) );
   connect( &editor().showLineNumberAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleShowLineNumbers( bool ) ) );
 
-  _enableBlockDelimiters( false );
+  _loadBlockDelimiters( BlockDelimiter::List() );
   _toggleShowBlockDelimiters( editor().showBlockDelimiterAction().isChecked() );
   _toggleShowLineNumbers( editor().showLineNumberAction().isChecked() );
   
@@ -83,12 +83,13 @@ void TextView::_toggleShowLineNumbers( bool state )
 }
 
 //___________________________________________
-void TextView::_enableBlockDelimiters( bool state )
+void TextView::_loadBlockDelimiters( BlockDelimiter::List delimiters )
 {
   
   Debug::Throw( "TextView::_enableBlockDelimiters.\n" );
-  if( !state ) _blockDelimiterWidget().hide();
+  if( delimiters.empty() ) _blockDelimiterWidget().hide();
   else _blockDelimiterWidget().setVisible( editor().showBlockDelimiterAction().isChecked() );
+  _blockDelimiterWidget().setBlockDelimiters( delimiters );
   
 }
 

@@ -35,11 +35,8 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QRegExp>
-#include <QChar>
 
 #include <vector>
-#include <map>
-#include <set>
 
 #include "Counter.h"
 #include "Debug.h"
@@ -54,20 +51,17 @@ class TextParenthesis: public Counter
   //! list of parenthesis
   typedef std::vector<TextParenthesis> List;
   
-  //! set of parenthesis
-  typedef std::set<TextParenthesis> Set;
-  
   //! constructor from DomElement
   TextParenthesis( const QDomElement& element = QDomElement() );
 
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
 
-  //! regExp that match either of the two parenthesis
+  //! oppening parenthesis
   const QString& first() const
   { return first_; }
 
-  //! regExp that match either of the two parenthesis
+  //! closing parenthesis
   const QString& second() const
   { return second_; }
 
@@ -154,7 +148,6 @@ class TextParenthesis: public Counter
   QRegExp regexp_;
   
   //! streamer
-  
   friend std::ostream& operator << ( std::ostream& out, const TextParenthesis& parenthesis )
   {
     out << " first: " << qPrintable( parenthesis.first() ) 

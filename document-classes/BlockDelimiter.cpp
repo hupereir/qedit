@@ -29,7 +29,6 @@
   \version $Revision$
   \date $Date$
 */
-#include <QDataStream>
 
 #include "Debug.h"
 #include "Str.h"
@@ -40,8 +39,12 @@
 using namespace std;
 
 //_________________________________________________________
+unsigned int BlockDelimiter::id_counter_ = 0;
+
+//_________________________________________________________
 BlockDelimiter::BlockDelimiter( const QDomElement& element ):
-  Counter( "BlockDelimiter" )
+  Counter( "BlockDelimiter" ),
+  id_( id_counter_++ )
 {
 
   Debug::Throw( "BlockDelimiter::BlockDelimiter.\n" );
@@ -52,8 +55,8 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element ):
   {
     QDomAttr attribute( attributes.item( i ).toAttr() );
     if( attribute.isNull() ) continue;
-    if( attribute.name() == XML::BEGIN ) first = XmlUtil::xmlToText( attribute.value() )[0];
-    else if( attribute.name() == XML::END ) second = XmlUtil::xmlToText( attribute.value() )[0];
+    if( attribute.name() == XML::BEGIN ) first_ = XmlUtil::xmlToText(attribute.value());
+    else if( attribute.name() == XML::END ) second_ = XmlUtil::xmlToText(attribute.value());
     else if( attribute.name() == XML::REGEXP ) regexp_.setPattern( XmlUtil::xmlToText( attribute.value() ) );
     else cout << "BlockDelimiter::BlockDelimiter - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
   }
@@ -61,7 +64,7 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element ):
   // create regexp
   if( regexp_.pattern().isEmpty() )
   {
-    QString pattern = QString( first ) + "|" + second;
+    QString pattern = QString("(") + first() + ")|(" + second() + ")";
     regexp_.setPattern( pattern );
   }
     
@@ -75,8 +78,8 @@ QDomElement BlockDelimiter::domElement( QDomDocument& parent ) const
   QDomElement out( parent.createElement( XML::BLOCK_DELIMITER ) );
   
   // dump attributes
-  out.setAttribute( XML::BEGIN, XmlUtil::textToXml( first ) );
-  out.setAttribute( XML::END, XmlUtil::textToXml( second ) );
+  out.setAttribute( XML::BEGIN, XmlUtil::textToXml( first() ) );
+  out.setAttribute( XML::END, XmlUtil::textToXml( second() ) );
   out.setAttribute( XML::REGEXP, XmlUtil::textToXml( regexp().pattern() ) );
   return out;
 }

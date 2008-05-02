@@ -869,7 +869,7 @@ void TextDisplay::updateDocumentClass( void )
   textHighlight().setBlockDelimiters( document_class.blockDelimiters() );
     
   showBlockDelimiterAction().setEnabled( !document_class.blockDelimiters().empty() );
-  emit blockDelimitersAvailable( !document_class.blockDelimiters().empty() );
+  emit blockDelimitersAvailable( document_class.blockDelimiters() );
   
   textIndent().setPatterns( document_class.indentPatterns() );
   textIndent().setBaseIndentation( document_class.baseIndentation() );
