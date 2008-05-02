@@ -641,19 +641,19 @@ void EditFrame::_diff( void )
   
   // retrieve displays associated to frame
   // look for the first one that is not associated to the active display
-  BASE::KeySet<TextDisplay> displays( this );
-  BASE::KeySet<TextDisplay>::iterator iter = displays.begin();
-  for(; iter != displays.end(); iter++ )
+  BASE::KeySet<TextView> views( this );
+  BASE::KeySet<TextView>::iterator iter = views.begin();
+  for(; iter != views.end(); iter++ )
   {
-    if( !( (*iter) == &first || (*iter)->isAssociated( &first ) ) )
+    if( !( &(*iter)->editor() == &first || (*iter)->editor().isAssociated( &first ) ) )
     {
-      diff->setTextDisplays( first, **iter );
+      diff->setTextDisplays( first, (*iter)->editor() );
       break;
     }
   }
   
   // check that one display was found
-  assert( iter != displays.end() );
+  assert( iter != views.end() );
   
   // try run
   if( !diff->run() )
