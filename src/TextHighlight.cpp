@@ -100,8 +100,9 @@ void TextHighlight::highlightBlock( const QString& text )
     data->setFlag( TextBlock::MODIFIED, false );
     data->setLocations( locations );
     
-    if( !block_delimiters_.empty() )
-    { data->setDelimiter( _delimiter( text ) ); }
+    //if( !block_delimiters_.empty() )
+    for( BlockDelimiter::List::const_iterator iter = block_delimiters_.begin(); iter != block_delimiters_.end(); iter++ )
+    { data->setDelimiter( iter->id(), _delimiter( *iter, text ) ); }
     
     // store active id
     setCurrentBlockState( locations.activeId().second );
@@ -339,16 +340,15 @@ void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
 }
 
 //_________________________________________________________
-TextBlock::Delimiter TextHighlight::_delimiter( const QString& text ) const
+TextBlock::Delimiter TextHighlight::_delimiter( const BlockDelimiter& delimiter, const QString& text ) const
 {
   
-  const BlockDelimiter& delimiter( block_delimiters_.front() );
   TextBlock::Delimiter out;
   int position = 0;
   while( (position = text.indexOf( delimiter.regexp(), position ) ) >= 0 )
   {
-    if( text.at( position ) == delimiter.first ) out.begin()++;
-    else if( text.at( position ) == delimiter.second )
+    if( text.mid( position ).startsWith( delimiter.first() ) ) out.begin()++;
+    else if( text.mid( position ).startsWith( delimiter.second() ) )
     {
       if( out.begin() > 0 ) out.begin()--;
       else out.end()++;

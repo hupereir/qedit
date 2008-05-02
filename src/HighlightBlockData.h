@@ -116,13 +116,23 @@ class HighlightBlockData: public TextBlockData
   //!@name block limits
   //@{
   
+  //! delimiters
+  typedef std::map<unsigned int, TextBlock::Delimiter > DelimiterMap;
+
+  //! delimiters
+  const DelimiterMap& delimiters( void ) const
+  { return delimiters_; }
+  
   //! delimiter
-  const TextBlock::Delimiter& delimiter( void ) const
-  { return delimiter_; }
+  TextBlock::Delimiter delimiter( const unsigned int& id ) const
+  { 
+    DelimiterMap::const_iterator iter( delimiters_.find(id) );
+    return (iter == delimiters_.end() ) ? TextBlock::Delimiter():iter->second;
+  }
 
   //! delimiter
-  void setDelimiter( const TextBlock::Delimiter& limit )
-  { delimiter_ = limit; }
+  void setDelimiter( const unsigned int& id, const TextBlock::Delimiter& delimiter )
+  { delimiters_[id] = delimiter; }
   
   //@}
   
@@ -153,9 +163,9 @@ class HighlightBlockData: public TextBlockData
      
   //! parenthesis length
   int parenthesis_length_;
-  
+    
   //! delimiter
-  TextBlock::Delimiter delimiter_;
+  DelimiterMap delimiters_;
   
   #if WITH_ASPELL
   //! set of misspelled words and position in associated block
