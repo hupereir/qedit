@@ -60,7 +60,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(CustomTextEdit* editor, QWidget* pare
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );  
   
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-  
+    
   // update configuration
   _updateConfiguration();
   
@@ -125,7 +125,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
       if( delimiter.end() )
       {
         
-        if( !start_points.empty() ) 
+        if( !(start_points.empty() || delimiter.begin() ) ) 
         { segments.push_back( make_pair( start_points.back(), block_end ) ); }
         
         // pop
@@ -139,7 +139,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
     
     }
     
-    if( !start_points.empty() ) segments.push_back( make_pair( start_points.front(), height+1 ) );
+    for( vector<int>::iterator iter = start_points.begin(); iter != start_points.end(); iter++ )
+    { segments.push_back( make_pair( *iter, height+1 ) ); }
   
   }
   
