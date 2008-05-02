@@ -143,14 +143,16 @@ EditFrame::EditFrame(  QWidget* parent ):
   file_editor_->setFont( font );
   
   // file toolbar
-  CustomToolBar* toolbar;
-  addToolBar( toolbar = new CustomToolBar( "Main", this, "FILE_TOOLBAR" ) );
+  //CustomToolBar* toolbar;
+  //addToolBar( toolbar = new CustomToolBar( "Main", this, "FILE_TOOLBAR" ) );
+  CustomToolBar* toolbar = new CustomToolBar( "Main", this, "FILE_TOOLBAR" );
   toolbar->addAction( &newFileAction() );
   toolbar->addAction( &openAction() ); 
   toolbar->addAction( &saveAction() ); 
   
   // edition toolbar
-  addToolBar( toolbar = new CustomToolBar( "Edition", this, "EDITION_TOOLBAR" ) );
+  //addToolBar( toolbar = new CustomToolBar( "Edition", this, "EDITION_TOOLBAR" ) );
+  toolbar = new CustomToolBar( "Edition", this, "EDITION_TOOLBAR" );
   toolbar->addAction( &undoAction() ); 
   toolbar->addAction( &redoAction() ); 
   toolbar->addAction( &cutAction() );
@@ -158,12 +160,14 @@ EditFrame::EditFrame(  QWidget* parent ):
   toolbar->addAction( &pasteAction() );
 
   // extra toolbar
-  addToolBar( toolbar = new CustomToolBar( "Tools", this, "EXTRA_TOOLBAR" ) );
+  // addToolBar( toolbar = new CustomToolBar( "Tools", this, "EXTRA_TOOLBAR" ) );
+  toolbar = new CustomToolBar( "Tools", this, "EXTRA_TOOLBAR" );
   toolbar->addAction( &fileInfoAction() ); 
   toolbar->addAction( &spellcheckAction() ); 
   
   // splitting toolbar
-  addToolBar( toolbar = new CustomToolBar( "Multiple views", this, "SPLIT_TOOLBAR" ) );
+  //addToolBar( toolbar = new CustomToolBar( "Multiple views", this, "SPLIT_TOOLBAR" ) );
+  toolbar = new CustomToolBar( "Multiple views", this, "SPLIT_TOOLBAR" );
   toolbar->addAction( &splitViewHorizontalAction() ); 
   toolbar->addAction( &splitViewVerticalAction() ); 
   toolbar->addAction( &openHorizontalAction() ); 
