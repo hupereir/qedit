@@ -52,6 +52,9 @@ class TextView: public QFrame, public BASE::Key, public Counter
   //! constructor
   TextView( QWidget* parent );
   
+  //! synchronization
+  void synchronize( const TextView* view );
+
   //! editor
   TextDisplay &editor( void ) const
   {

@@ -331,7 +331,7 @@ void EditFrame::_detach( void )
   EditFrame& frame( static_cast<MainFrame*>(qApp)->newEditFrame() );
 
   // clone its display from the current
-  frame.activeView().editor().synchronize( &active_view_local.editor() );
+  frame.activeView().synchronize( &active_view_local );
 
   // delete active display local
   active_view_local.editor().document()->setModified( false );
@@ -1013,7 +1013,7 @@ void EditFrame::_open( FileRecord record, const OpenMode& mode, const Orientatio
     bool modified( previous_view.editor().document()->isModified() );
 
     // clone
-    view.editor().synchronize( &previous_view.editor() );
+    view.synchronize( &previous_view );
     
     // set previous display as unmdified
     previous_view.editor().document()->setModified( false );
@@ -1181,13 +1181,12 @@ TextView& EditFrame::_splitView( const Orientation& orientation, const bool& clo
     BASE::KeySet<TextDisplay> displays( &active_view_local.editor() );
 
     // clone new display
-    view.editor().synchronize( &active_view_local.editor() );
+    view.synchronize( &active_view_local );
     
     // perform associations
     // check if active displays has associates and propagate to new
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     { BASE::Key::associate( &view.editor(), *iter ); }
-    Debug::Throw( "EditFrame::_splitView - synchronized (associates).\n" );
 
     // associate this display to AutoSave threads
     BASE::KeySet<AutoSaveThread> threads( &active_view_local.editor() );

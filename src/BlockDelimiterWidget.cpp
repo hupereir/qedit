@@ -66,11 +66,18 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   
 }
 
-
 //__________________________________________
 BlockDelimiterWidget::~BlockDelimiterWidget()
 {
   Debug::Throw( "BlockDelimiterWidget::~BlockDelimiterWidget.\n" );
+}
+
+//__________________________________________
+void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
+{
+  Debug::Throw( "BlockDelimiterWidget::synchronize.\n" );
+  delimiters_ = widget->delimiters_;
+  segments_ = widget->segments_;
 }
 
 //__________________________________________
@@ -115,7 +122,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
       bool ignored = _editor().ignoreBlock( block );
       
       TextBlock::Delimiter delimiter( data->delimiter( iter->id() ) );
-      if( delimiter.end() )
+      if( delimiter.end() && block_end < height )
       {
         
         if( !(start_points.empty() || delimiter.begin() ) && ignored == start_points.back().ignored() ) 
@@ -166,6 +173,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
 //________________________________________________________
 void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
 {
+  
+  return;
   
   // check button
   if( !( event->button() == Qt::LeftButton ) ) return;
@@ -219,13 +228,49 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   { 
     
     first_block_data->setCollapsed( false );
+    if( !first_block_data->collapsedText().isEmpty() )
+    {
+      
+      // create cursor
+      QTextCursor cursor( first_block );
+      
+      // move at end of first_block
+      cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );      
+      cursor.insertText( first_block_data->collapsedText() );
+      
+    } 
+    
+    // marck first_block as dirty to make sure it is re-highlighted
+    _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
     update();
     
   } else {
     
     first_block_data->setCollapsed( true );
-    update();
     
+    // if next block is not valid, nothing is to be done
+    if( first_block.next().isValid() )
+    {
+      
+      // create cursor
+      QTextCursor cursor( first_block );
+      
+      // move at end of first_block
+      cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );
+      
+      // move at end of last block if valid
+      if( second_block.isValid() ) { cursor.setPosition( second_block.position() + second_block.length(), QTextCursor::KeepAnchor ); }
+      else { cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor ); }
+ 
+      // store selected text in data
+      first_block_data->setCollapsedText( cursor.selectedText() );
+      cursor.removeSelectedText();
+      
+    } 
+    
+    _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);    
+    update();
+          
   }
      
 }

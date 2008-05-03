@@ -76,6 +76,16 @@ TextView::TextView( QWidget* parent ):
 }
 
 //___________________________________________
+void TextView::synchronize( const TextView* view )
+{
+
+  Debug::Throw( "TextView::synchronize.\n" );
+  editor().synchronize( &view->editor() );
+  _blockDelimiterWidget().synchronize( &view->_blockDelimiterWidget() );
+  
+}
+
+//___________________________________________
 void TextView::_toggleShowLineNumbers( bool state )
 {
   Debug::Throw( "TextView::_toggleShowLineNumbers.\n" );
