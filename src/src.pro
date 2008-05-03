@@ -68,6 +68,7 @@ SOURCES = \
   AutoSave.cpp \
   AutoSaveThread.cpp \
   BlockDelimiterWidget.cpp \
+  CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
   EditFrame.cpp \

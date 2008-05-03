@@ -56,16 +56,29 @@ class CollapsedBlockData: public Counter
   { return text_; }
   
   //! text
-  void setText( const QString& text )
-  { text_ = text; }
+  CollapsedBlockData& setText( const QString& text )
+  { 
+    text_ = text; 
+    return this;
+  }
   
   //! children
   const List& children( void ) const
   { return children_; }
   
   //! children
-  void setChildren( const List& children )
-  { children_ = children; }
+  CollapsedBlockData& setChildren( const List& children )
+  { 
+    children_ = children; 
+    return *this;
+  }
+  
+  //! returns all text contained in collapsed data
+  /*!
+  this is equivalent to expanding the entire block.
+  The method is recursive
+  */
+  QString toPlainText( void ) const;
   
   private:
     
