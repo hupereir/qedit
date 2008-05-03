@@ -219,6 +219,56 @@ void BlockDelimiterWidget::_updateConfiguration( void )
 void BlockDelimiterWidget::_updateSegments( void )
 {
 
+  segments_.clear();
+  QTextDocument &document( *_editor().document() );
+  for( BlockDelimiter::List::const_iterator iter = delimiters_.begin(); iter != delimiters_.end(); iter++ )
+  {
+  
+    // keep track of all starting points
+    Segment::List start_points;
+    for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
+    {
+
+      // get block limits
+      int block_begin( block.layout()->position().y() );
+      int block_end( block_begin + block.layout()->boundingRect().height() );
+            
+      // retrieve data and check this block delimiter
+      HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
+      if( !data ) continue;
+
+      // store "ignore" state
+      bool ignored = _editor().ignoreBlock( block );
+      
+      TextBlock::Delimiter delimiter( data->delimiter( iter->id() ) );
+      if( delimiter.end() )
+      {
+        
+        if( !(start_points.empty() || delimiter.begin() ) && ignored == start_points.back().ignored() ) 
+        { segments_.push_back( start_points.back().setSecond( block_end ) ); }
+        
+        // pop
+        for( int i = 0; i < delimiter.end() && !start_points.empty() && ignored == start_points.back().ignored(); i++ )
+        { start_points.pop_back(); }
+          
+      }
+        
+      // if block is collapsed, skip one start point (which is self contained)
+      const bool& collapsed( data->collapsed() );
+      for( int i = (collapsed ? 1:0); i < delimiter.begin(); i++ )
+      { start_points.push_back( Segment( block_begin, block_begin, ignored, collapsed ) ); }
+
+      // if block is collapsed add one self contained segment
+      if( collapsed ) { segments_.push_back( Segment( block_begin, block_begin, ignored, true ) ); }
+    }
+    
+    for( Segment::List::iterator iter = start_points.begin(); iter != start_points.end(); iter++ )
+    { segments_.push_back( *iter ); }
+  
+  }
+  
+}
+
 //________________________________________________________________________________________
 void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData* data ) const
 { 
