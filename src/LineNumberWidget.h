@@ -34,8 +34,10 @@
 
 #include <QColor>
 #include <QFont>
+#include <QMouseEvent>
 #include <QPaintEvent>
 #include <QWidget>
+#include <QWheelEvent>
 
 #include "Counter.h"
 
@@ -61,6 +63,18 @@ class LineNumberWidget: public QWidget, public Counter
   //! paint
   virtual void paintEvent( QPaintEvent* );
   
+  //! mouse press event
+  /*! left button events are forwarded to the editor */
+  virtual void mousePressEvent( QMouseEvent* );
+  
+  //! mouse press event
+  /*! left button events are forwarded to the editor */
+  virtual void mouseReleaseEvent( QMouseEvent* );
+
+  //! wheel event
+  /*! wheel events are forwarded to the editor */
+  virtual void wheelEvent( QWheelEvent* );
+
   private slots:
   
   //! configuration

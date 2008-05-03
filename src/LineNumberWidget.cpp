@@ -134,6 +134,19 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   
 }
 
+//___________________________________________________________
+void LineNumberWidget::mousePressEvent( QMouseEvent* event )
+{ if( event->button() ==  Qt::LeftButton ) qApp->sendEvent( _editor().viewport(), event ); }
+
+//___________________________________________________________
+void LineNumberWidget::mouseReleaseEvent( QMouseEvent* event )
+{ if( event->button() ==  Qt::LeftButton ) qApp->sendEvent( _editor().viewport(), event ); }
+
+//___________________________________________________________
+void LineNumberWidget::wheelEvent( QWheelEvent* event )
+{ qApp->sendEvent( _editor().viewport(), event ); }
+
+
 //________________________________________________________
 void LineNumberWidget::_updateConfiguration( void )
 {

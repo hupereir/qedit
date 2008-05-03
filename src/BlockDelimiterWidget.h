@@ -34,25 +34,27 @@
 
 #include <QColor>
 #include <QFont>
+#include <QMouseEvent>
 #include <QPaintEvent>
+#include <QWheelEvent>
 #include <QWidget>
 
 #include "BlockDelimiter.h"
 #include "Counter.h"
 
-class CustomTextEdit;
+class TextDisplay;
 
 //! display block delimiters
 class BlockDelimiterWidget: public QWidget, public Counter 
 {
 
   //! Qt meta object
-  Q_OBJECT  
+  Q_OBJECT
 
   public:
     
   //! constructor
-  BlockDelimiterWidget(CustomTextEdit*, QWidget* parent);
+  BlockDelimiterWidget(TextDisplay*, QWidget* parent);
 
   //! destructor
   virtual ~BlockDelimiterWidget();
@@ -66,6 +68,16 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! paint
   virtual void paintEvent( QPaintEvent* );
 
+  //! mouse press event
+  virtual void mousePressEvent( QMouseEvent* );
+  
+  //! mouse release event
+  virtual void mouseReleaseEvent( QMouseEvent* );
+  
+  //! wheel event
+  /*! wheel events are forwarded to the editor */
+  virtual void wheelEvent( QWheelEvent* );
+  
   private slots:
   
   //! configuration
@@ -73,15 +85,119 @@ class BlockDelimiterWidget: public QWidget, public Counter
     
   private:
   
+  // used to draw block segment
+  class Segment
+  {
+    
+    public:
+    
+    //! list
+    typedef std::vector<Segment> List;
+    
+    //! constructor
+    Segment( const int& first = 0, const int& second = 0, const bool& ignored = false ):
+      first_( first ),
+      second_( second ),
+      ignored_( ignored )
+    {}
+        
+    //! first point
+    const int& first( void ) const
+    { return first_; }
+    
+    //! first point
+    Segment& setFirst( const int& first )
+    { 
+      first_ = first; 
+      return *this;
+    }
+
+    //! first point
+    const int& second( void ) const
+    { return second_; }
+    
+    //! first point
+    Segment& setSecond( const int& second )
+    { 
+      second_ = second; 
+      return *this;
+    }
+
+    //! ignored
+    const bool& ignored( void ) const
+    { return ignored_; }
+    
+    //! ignored
+    Segment& setIgnored( const bool& ignored ) 
+    { 
+      ignored_ = ignored; 
+      return *this;
+    }
+      
+    //! active rect
+    const QRect& activeRect( void ) const
+    { return active_; }
+    
+    //! draw line
+    void drawLine( QPainter&, const int& );
+    
+    //! draw delimiters
+    void drawFirstDelimiter( QPainter&, const int& );
+
+    //! draw delimiters
+    void drawSecondDelimiter( QPainter&, const int& );
+    
+    //! used to find segment matching a point
+    class ContainsFTor
+    {
+      
+      public:
+      
+      //! creator
+      ContainsFTor( const QPoint& point ):
+        point_( point )
+        {}
+      
+      //! prediction
+      bool operator() (const Segment& segment ) const
+      { return segment.activeRect().contains( point_ ); }
+      
+      private:
+      
+      //! position
+      QPoint point_; 
+      
+    };
+    
+    private:
+    
+    //! first position
+    int first_;
+    
+    //! second position
+    int second_;
+    
+    //! ignore flag
+    bool ignored_;
+    
+    //! active area (for mouse pointing)
+    /*! it is set if drawFirstDelimiter() is called */
+    QRect active_;
+
+  };
+  
   //! editor
-  CustomTextEdit& _editor( void ) const
+  TextDisplay& _editor( void ) const
   { return *editor_; }
   
   //! associated editor
-  CustomTextEdit* editor_;
+  TextDisplay* editor_;
   
   //! block delimiters
   BlockDelimiter::List delimiters_;
+  
+  //! block segments
+  Segment::List segments_;
   
 };
 

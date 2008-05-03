@@ -114,6 +114,10 @@ class TextIndent: public QObject, public Counter
   //! \brief try remove leading tabs up to n
   void _decrement( QTextBlock block );
 
+  //! editor
+  TextDisplay& _editor( void ) const
+  { return *editor_; }
+  
   //! enabled
   bool enabled_;
 

@@ -39,7 +39,7 @@
 #include <vector>
 
 #include "BlockHighlight.h"
-#include "CustomTextEdit.h"
+#include "TextDisplay.h"
 #include "Debug.h"
 #include "BlockDelimiterWidget.h"
 #include "HighlightBlockData.h"
@@ -48,7 +48,7 @@
 using namespace std;
 
 //____________________________________________________________________________
-BlockDelimiterWidget::BlockDelimiterWidget(CustomTextEdit* editor, QWidget* parent): 
+BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent): 
   QWidget( parent),
   Counter( "BlockDelimiterWidget" ),
   editor_( editor )
@@ -82,38 +82,28 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   const QFontMetrics metric( fontMetrics() );
   int y_offset = _editor().verticalScrollBar()->value();
   QTextDocument &document( *_editor().document() );
-    
-  // brush/pen  
-  QPainter painter( this );
-  
-  painter.translate( 0, -y_offset );
-  painter.setBrush( palette().color( QPalette::Base ) );
-  
+      
   // calculate height
   int height( QWidget::height() + y_offset );
   if( _editor().horizontalScrollBar()->isVisible() ) 
   { height -= _editor().horizontalScrollBar()->height(); }
   
-  // store begin/end points
-  typedef std::pair<int, int> Segment;
-  
-  // store segments
-  typedef std::vector<Segment> SegmentList;
-  SegmentList segments;
+  // clear existing segments
+  segments_.clear();
   
   // loop over delimiters
   for( BlockDelimiter::List::const_iterator iter = delimiters_.begin(); iter != delimiters_.end(); iter++ )
   {
   
     // keep track of all starting points
-    vector<int> start_points;
+    Segment::List start_points;
     for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
     {
-      
+
       // get block limits
       double block_begin( block.layout()->position().y() );
       double block_end( block_begin + block.layout()->boundingRect().height() );
-
+      
       // check if outside of window
       if( block_begin > height ) break;
       
@@ -121,45 +111,80 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
       HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
       if( !data ) continue;
 
+      // store "ignore" state
+      bool ignored = _editor().ignoreBlock( block );
+      
       TextBlock::Delimiter delimiter( data->delimiter( iter->id() ) );
       if( delimiter.end() )
       {
         
-        if( !(start_points.empty() || delimiter.begin() ) ) 
-        { segments.push_back( make_pair( start_points.back(), block_end ) ); }
+        if( !(start_points.empty() || delimiter.begin() ) && ignored == start_points.back().ignored() ) 
+        { segments_.push_back( start_points.back().setSecond( block_end ) ); }
         
         // pop
-        for( int i = 0; i < delimiter.end() && !start_points.empty(); i++ )
+        for( int i = 0; i < delimiter.end() && !start_points.empty() && ignored == start_points.back().ignored(); i++ )
         { start_points.pop_back(); }
           
       }
         
       for( int i = 0; i < delimiter.begin(); i++ )
-      { start_points.push_back( block_begin ); }
+      { start_points.push_back( Segment( block_begin, height+1, ignored ) ); }
     
     }
     
-    for( vector<int>::iterator iter = start_points.begin(); iter != start_points.end(); iter++ )
-    { segments.push_back( make_pair( *iter, height+1 ) ); }
+    for( Segment::List::iterator iter = start_points.begin(); iter != start_points.end(); iter++ )
+    { segments_.push_back( *iter ); }
   
   }
   
+  // painter
+  QPainter painter( this );
+  painter.translate( 0, -y_offset );
+  painter.setBrush( palette().color( QPalette::Base ) );
+
   // draw all vertical lines
-  for( SegmentList::const_iterator iter = segments.begin(); iter != segments.end(); iter++ )
-  { painter.drawLine( width()/2, iter->first+0.8*fontMetrics().lineSpacing(), width()/2, iter->second ); }
+  for( Segment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+  { iter->drawLine( painter, width() ); }
     
   // draw ticks
-  for( SegmentList::const_iterator iter = segments.begin(); iter != segments.end(); iter++ )
+  for( Segment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
-    if( iter->first < height ) painter.drawRect( 0.2*width(), iter->first + 0.2*fontMetrics().lineSpacing(), 0.6*width(), 0.6*fontMetrics().lineSpacing() );
-    if( iter->second < height ) painter.drawLine( width()/2, iter->second, width(), iter->second );
+    if( iter->first() < height ) iter->drawFirstDelimiter( painter, width() );    
+    if( iter->second() < height ) iter->drawSecondDelimiter( painter, width() );    
     
   }
   
   painter.end();
   
 }
+
+//________________________________________________________
+void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
+{
+  
+  // check button
+  if( !( event->button() == Qt::LeftButton ) ) return;
+
+  Segment::List::const_iterator iter = find_if( 
+    segments_.begin(), segments_.end(), 
+    Segment::ContainsFTor( event->pos()+QPoint(0, _editor().verticalScrollBar()->value() ) ) );
+  
+  if( iter != segments_.end() )
+  {
+    cout << "BlockDelimiterWidget::mousePressEvent - found segment." << endl;
+  }
+  
+}
+
+//________________________________________________________
+void BlockDelimiterWidget::mouseReleaseEvent( QMouseEvent* event )
+{
+}
+
+//___________________________________________________________
+void BlockDelimiterWidget::wheelEvent( QWheelEvent* event )
+{ qApp->sendEvent( _editor().viewport(), event ); }
 
 //________________________________________________________
 void BlockDelimiterWidget::_updateConfiguration( void )
@@ -176,3 +201,19 @@ void BlockDelimiterWidget::_updateConfiguration( void )
   setFixedWidth( fontMetrics().lineSpacing() );
 
 }
+
+//________________________________________________________
+void BlockDelimiterWidget::Segment::drawLine( QPainter& painter, const int& width )
+{ painter.drawLine( width/2, first_+0.8*width, width/2, second_ ); }
+
+//________________________________________________________
+void BlockDelimiterWidget::Segment::drawFirstDelimiter( QPainter& painter, const int& width )
+{ 
+  active_ = QRect( 0.2*width, first_ + 0.2*width, 0.6*width, 0.6*width );
+  painter.drawRect( active_ );
+  painter.drawLine( 0.35*width, first_ + 0.5*width, 0.65*width, first_ + 0.5*width );
+}
+
+//________________________________________________________
+void BlockDelimiterWidget::Segment::drawSecondDelimiter( QPainter& painter, const int& width )
+{ painter.drawLine( 0.5*width, second_, width, second_ ); }
