@@ -68,13 +68,13 @@ class CollapsedBlockData: public Counter
   { children_ = children; }
   
   private:
-  
+    
   //! text
   QString text_;
   
   //! children
   List children_;
-  
+    
 };
 
 #endif

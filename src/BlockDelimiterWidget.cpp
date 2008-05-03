@@ -288,7 +288,6 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
     
     if( !iter->children().empty() )
     {
-      Debug::Throw( 0, "BlockDelimiterWidget::_expand - adding collapsed data.\n" );
       HighlightBlockData* current_data( new HighlightBlockData() );
       current_data->setCollapsed( true );
       current_data->setCollapsedData( iter->children() );
@@ -312,26 +311,24 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   {
     
     // create collapsed block data to be stored in current block before collapsed
-    CollapsedBlockData::List collapsed_data;      
+    CollapsedBlockData::List collapsed_data_list;      
     for( QTextBlock current = first_block.next(); current.isValid(); current = current.next() )
     {
       
-      collapsed_data.push_back( CollapsedBlockData( current.text() ) );
+      CollapsedBlockData collapsed_data( current.text() );
       HighlightBlockData* current_data = (dynamic_cast<HighlightBlockData*>( current.userData() ) );
+      
       if( current_data && current_data->collapsed() ) 
-      {
-        
-        Debug::Throw( 0, "BlockDelimiterWidget::_collapse - adding collapsed data.\n" );
-        collapsed_data.back().setChildren( data->collapsedData() );
- 
-      }
+      { collapsed_data.setChildren( current_data->collapsedData() ); }
+      
+      collapsed_data_list.push_back( collapsed_data );
       
       if( current == second_block ) break;
       
     }
     
     // store in current block
-    data->setCollapsedData( collapsed_data );
+    data->setCollapsedData( collapsed_data_list );
     
     // create cursor and move at end of block
     QTextCursor cursor( first_block );

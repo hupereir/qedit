@@ -72,7 +72,6 @@ TextView::TextView( QWidget* parent ):
   _toggleShowBlockDelimiters( editor().showBlockDelimiterAction().isChecked() );
   _toggleShowLineNumbers( editor().showLineNumberAction().isChecked() );
   
-
 }
 
 //___________________________________________
