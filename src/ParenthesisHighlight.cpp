@@ -32,13 +32,13 @@
 #include <QTextDocument>
 
 #include "ParenthesisHighlight.h"
-#include "CustomTextEdit.h"
+#include "TextEditor.h"
 #include "HighlightBlockData.h"
 
 using namespace std;
 
 //_______________________________________________________________________
-ParenthesisHighlight::ParenthesisHighlight( CustomTextEdit* parent ):
+ParenthesisHighlight::ParenthesisHighlight( TextEditor* parent ):
   QObject( parent ),
   Counter( "ParenthesisHighlight" ),
   parent_( parent ),

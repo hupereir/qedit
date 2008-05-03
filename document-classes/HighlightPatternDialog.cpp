@@ -34,8 +34,8 @@
 #include <QLabel>
 
 #include "CustomGridLayout.h"
-#include "CustomLineEdit.h"
-#include "CustomTextEdit.h"
+#include "LineEditor.h"
+#include "TextEditor.h"
 #include "HighlightPatternDialog.h"
 #include "HighlightPatternOptions.h"
 #include "HighlightPatternType.h"
@@ -60,7 +60,7 @@ HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
   mainLayout().addLayout( grid_layout );
  
   grid_layout->addWidget( new QLabel( "Name: ", this ) );
-  grid_layout->addWidget( name_editor_ = new CustomLineEdit( this ) );
+  grid_layout->addWidget( name_editor_ = new LineEditor( this ) );
  
   // parent
   grid_layout->addWidget( new QLabel( "Parent pattern: ", this ) );
@@ -86,14 +86,14 @@ HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
   mainLayout().addLayout( grid_layout );  
   
   grid_layout->addWidget( new QLabel( "Regular expression to match: ", this ) );
-  grid_layout->addWidget( keyword_regexp_editor_ = new CustomLineEdit( this ) ); 
+  grid_layout->addWidget( keyword_regexp_editor_ = new LineEditor( this ) ); 
 
   grid_layout->addWidget( end_regexp_label_ = new QLabel( "Ending regular expression: ", this ) );
-  grid_layout->addWidget( end_regexp_editor_ = new CustomLineEdit( this ) ); 
+  grid_layout->addWidget( end_regexp_editor_ = new LineEditor( this ) ); 
   
   // comments
   mainLayout().addWidget( new QLabel( "Comments: ", this ) );
-  mainLayout().addWidget( comments_editor_ = new CustomTextEdit( this ) );
+  mainLayout().addWidget( comments_editor_ = new TextEditor( this ) );
   
   _updateEditors( pattern_type_->type() );
   

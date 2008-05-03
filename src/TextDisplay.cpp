@@ -73,7 +73,7 @@ const QRegExp TextDisplay::empty_line_regexp_( "(^\\s*$)" );
 
 //___________________________________________________
 TextDisplay::TextDisplay( QWidget* parent ):
-  CustomTextEdit( parent ),
+  TextEditor( parent ),
   file_( "" ),
   working_directory_( Util::workingDirectory() ),
   class_name_( "" ),
@@ -166,7 +166,7 @@ void TextDisplay::setModified( const bool& value )
 void TextDisplay::setReadOnly( const bool& value )
 {
   Debug::Throw() << "TextDisplay::setReadOnly - value: " << value << endl;
-  CustomTextEdit::setReadOnly( value );
+  TextEditor::setReadOnly( value );
   emit needUpdate( WINDOW_TITLE | CUT | PASTE | UNDO_REDO | SAVE );
 }
 
@@ -178,7 +178,7 @@ void TextDisplay::synchronize( TextDisplay* display )
 
   // synchronize text
   // (from base class)
-  CustomTextEdit::synchronize( display );
+  TextEditor::synchronize( display );
   text_highlight_ = &display->textHighlight();
 
   // restore connection with document
@@ -998,7 +998,7 @@ void TextDisplay::rehighlight( void )
 void TextDisplay::clearAllTags( const int& flags )
 {
 
-  Debug::Throw( "CustomTextEdit::clearAllTags.\n" );
+  Debug::Throw( "TextEditor::clearAllTags.\n" );
   for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
   { clearTag( block, flags ); }
 
@@ -1080,7 +1080,7 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
   {
 
     // process key
-    CustomTextEdit::keyPressEvent( event );
+    TextEditor::keyPressEvent( event );
 
     // indent current paragraph when return is pressed
     if( indent_->isEnabled() && event->key() == Qt::Key_Return && !textCursor().hasSelection() )
@@ -1101,7 +1101,7 @@ void TextDisplay::focusInEvent( QFocusEvent* event )
 {
   Debug::Throw() << "TextDisplay::focusInEvent - " << key() << endl;
   emit hasFocus( this );
-  CustomTextEdit::focusInEvent( event );
+  TextEditor::focusInEvent( event );
 }
 
 
@@ -1109,7 +1109,7 @@ void TextDisplay::focusInEvent( QFocusEvent* event )
 void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 {
 
-  Debug::Throw( "CustomTextEdit::contextMenuEvent.\n" );
+  Debug::Throw( "TextEditor::contextMenuEvent.\n" );
 
   if( _autoSpellContextEvent( event ) ) return;
 
@@ -1146,7 +1146,7 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 //________________________________________________
 bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 {
-  Debug::Throw( "CustomTextEdit::_autoSpellContextEvent.\n" );
+  Debug::Throw( "TextEditor::_autoSpellContextEvent.\n" );
 
   #if WITH_ASPELL
 
@@ -1313,7 +1313,7 @@ void TextDisplay::_installActions( void )
 void TextDisplay::_createReplaceDialog( void )
 {
   Debug::Throw( "TextDisplay::_CreateReplaceDialog.\n" );
-  CustomTextEdit::_createReplaceDialog();
+  TextEditor::_createReplaceDialog();
   ReplaceDialog &dialog( _replaceDialog() );
 
   // insert multiple file buttons
@@ -2206,7 +2206,7 @@ void TextDisplay::_previousTag( void )
 void TextDisplay::_clearTag( void )
 {
 
-  Debug::Throw( "CustomTextEdit::_clearTag.\n" );
+  Debug::Throw( "TextEditor::_clearTag.\n" );
 
   vector<QTextBlock> blocks;
   QTextCursor cursor( textCursor() );

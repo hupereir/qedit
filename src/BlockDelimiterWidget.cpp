@@ -101,8 +101,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
     {
 
       // get block limits
-      double block_begin( block.layout()->position().y() );
-      double block_end( block_begin + block.layout()->boundingRect().height() );
+      int block_begin( block.layout()->position().y() );
+      int block_end( block_begin + block.layout()->boundingRect().height() );
       
       // check if outside of window
       if( block_begin > height ) break;
@@ -127,9 +127,13 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
           
       }
         
-      for( int i = 0; i < delimiter.begin(); i++ )
-      { start_points.push_back( Segment( block_begin, height+1, ignored ) ); }
-    
+      // if block is collapsed, skip one start point (which is self contained)
+      const bool& collapsed( data->collapsed() );
+      for( int i = (collapsed ? 1:0); i < delimiter.begin(); i++ )
+      { start_points.push_back( Segment( block_begin, height, ignored, collapsed ) ); }
+
+      // if block is collapsed add one self contained segment
+      if( collapsed ) { segments_.push_back( Segment( block_begin, block_begin, ignored, true ) ); }
     }
     
     for( Segment::List::iterator iter = start_points.begin(); iter != start_points.end(); iter++ )
@@ -144,7 +148,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
 
   // draw all vertical lines
   for( Segment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
-  { iter->drawLine( painter, width() ); }
+  { if( iter->second() <= height ) iter->drawLine( painter, width() ); }
     
   // draw ticks
   for( Segment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
@@ -166,15 +170,64 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   // check button
   if( !( event->button() == Qt::LeftButton ) ) return;
 
+  // find segment matching event position
   Segment::List::const_iterator iter = find_if( 
     segments_.begin(), segments_.end(), 
     Segment::ContainsFTor( event->pos()+QPoint(0, _editor().verticalScrollBar()->value() ) ) );
+  if( iter == segments_.end() ) return;
   
-  if( iter != segments_.end() )
+  // find matching begin and end blocks
+  QTextDocument &document( *_editor().document() );
+  QTextBlock first_block;
+  QTextBlock second_block;
+  HighlightBlockData* first_block_data(0);
+  
+  for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
   {
-    cout << "BlockDelimiterWidget::mousePressEvent - found segment." << endl;
+    
+    // get block limits
+    int block_begin( block.layout()->position().y() );
+    int block_end( block_begin + block.layout()->boundingRect().height() );
+    
+    // check if first block match
+    if( block_begin == iter->first() )
+    {
+      first_block = block;
+      
+      // if segment is collapsed, break loop
+      first_block_data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
+      assert( first_block_data );
+      
+      if( first_block_data->collapsed() ) break;
+      
+    }
+    
+    // check if second block match
+    if( first_block.isValid() && block_end == iter->second() )
+    {
+      second_block = block;
+      break;
+    }
+    
   }
+
+  // make sure first block was found
+  assert( first_block.isValid() );
   
+  // check if block is collapsed
+  if( first_block_data->collapsed() )
+  { 
+    
+    first_block_data->setCollapsed( false );
+    update();
+    
+  } else {
+    
+    first_block_data->setCollapsed( true );
+    update();
+    
+  }
+     
 }
 
 //________________________________________________________
@@ -204,16 +257,22 @@ void BlockDelimiterWidget::_updateConfiguration( void )
 
 //________________________________________________________
 void BlockDelimiterWidget::Segment::drawLine( QPainter& painter, const int& width )
-{ painter.drawLine( width/2, first_+0.8*width, width/2, second_ ); }
+{ if( first() != second() ) painter.drawLine( width/2, first_+0.8*width, width/2, second_ ); }
 
 //________________________________________________________
 void BlockDelimiterWidget::Segment::drawFirstDelimiter( QPainter& painter, const int& width )
 { 
-  active_ = QRect( 0.2*width, first_ + 0.2*width, 0.6*width, 0.6*width );
-  painter.drawRect( active_ );
-  painter.drawLine( 0.35*width, first_ + 0.5*width, 0.65*width, first_ + 0.5*width );
+  active_ = QRect( 0.2*width, first() + 0.2*width, 0.6*width, 0.6*width );
+  painter.drawRect( activeRect() );
+  painter.drawLine( 0.35*width, first() + 0.5*width, 0.65*width, first() + 0.5*width );
+  if( collapsed() )
+  { painter.drawLine( 0.5*width, first() + 0.35*width, 0.5*width, first() + 0.65*width ); }
+  
 }
 
 //________________________________________________________
 void BlockDelimiterWidget::Segment::drawSecondDelimiter( QPainter& painter, const int& width )
-{ painter.drawLine( 0.5*width, second_, width, second_ ); }
+{ 
+  if( first() != second() )
+  { painter.drawLine( 0.5*width, second(), width, second() ); }
+}

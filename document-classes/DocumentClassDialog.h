@@ -35,7 +35,7 @@
 #include "CustomDialog.h"
 #include "DocumentClass.h"
 
-class CustomLineEdit;
+class LineEditor;
 class TreeWidget;
 class HighlightStyleList; 
 class HighlightPatternList;
@@ -60,13 +60,13 @@ class DocumentClassDialog: public CustomDialog
   private:
   
   //! name editor
-  CustomLineEdit* name_editor_;
+  LineEditor* name_editor_;
   
   //! file pattern editor
-  CustomLineEdit* file_pattern_editor_;
+  LineEditor* file_pattern_editor_;
   
   //! first line pattern editor
-  CustomLineEdit* first_line_pattern_editor_;
+  LineEditor* first_line_pattern_editor_;
   
   //! highlight style list
   HighlightStyleList* highlight_style_list_;

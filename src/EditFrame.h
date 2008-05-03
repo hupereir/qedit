@@ -46,7 +46,7 @@
 #include "TimeStamp.h"
 
 
-class CustomLineEdit;
+class LineEditor;
 class Menu;
 class StatusBar;
 
@@ -547,7 +547,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   StatusBar* statusbar_;
 
   //! file display lineEdit
-  CustomLineEdit* file_editor_;
+  LineEditor* file_editor_;
    
   //@}
     

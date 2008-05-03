@@ -40,7 +40,7 @@
 #include "FileModifiedDialog.h"
 #include "FileRemovedDialog.h"
 #include "Config.h"
-#include "CustomTextEdit.h"
+#include "TextEditor.h"
 #include "Debug.h"
 #include "File.h"
 #include "HighlightBlockFlags.h"
@@ -62,7 +62,7 @@ class OpenPreviousMenu;
 class TextHighlight;
 
 //! text display window
-class TextDisplay: public CustomTextEdit
+class TextDisplay: public TextEditor
 {
   
   //! Qt meta object declaration
@@ -538,7 +538,7 @@ class TextDisplay: public CustomTextEdit
   //! update action status
   virtual void _updateSelectionActions( bool state )
   { 
-    CustomTextEdit::_updateSelectionActions( state );
+    TextEditor::_updateSelectionActions( state );
     emit needUpdate( CUT|COPY );
   }
   
@@ -546,7 +546,7 @@ class TextDisplay: public CustomTextEdit
   /*! depends on clipboard status and editability */
   virtual void _updatePasteAction( void )
   {
-    CustomTextEdit::_updatePasteAction();
+    TextEditor::_updatePasteAction();
     emit needUpdate( PASTE );
   }
   

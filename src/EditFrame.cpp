@@ -40,7 +40,7 @@
 #include "ClockLabel.h"
 #include "Config.h"
 #include "CustomFileDialog.h"
-#include "CustomLineEdit.h"
+#include "LineEditor.h"
 #include "CustomPixmap.h"
 #include "CustomToolBar.h"
 #include "Debug.h"
@@ -122,7 +122,7 @@ EditFrame::EditFrame(  QWidget* parent ):
   setStatusBar( statusbar_ = new StatusBar( this ) );
 
   // create "hidden" line editor to display filename
-  statusbar_->addPermanentWidget( file_editor_ = new CustomLineEdit( statusbar_ ), 1 );
+  statusbar_->addPermanentWidget( file_editor_ = new LineEditor( statusbar_ ), 1 );
   statusbar_->addLabels( 2, 0 );
   statusbar_->label(0).setAlignment( AlignCenter ); 
   statusbar_->label(1).setAlignment( AlignCenter ); 

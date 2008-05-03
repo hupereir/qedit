@@ -232,4 +232,3 @@ void HighlightStyleList::_restoreSelection( void )
   
   return;
 }
-

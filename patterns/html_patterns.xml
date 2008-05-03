@@ -58,7 +58,7 @@
   <keyword_pattern style="Escape Character" name="Escape Character" >
    <keyword>XML_AND\w+;</keyword>
   </keyword_pattern>
-
+  
  <!-- strings -->
  <range_pattern style="String" name="String" parent="Tag" >
   <begin>XML_QUOTE</begin>
@@ -91,6 +91,9 @@
  <parenthesis begin="(" end=")" />
  <parenthesis begin="[" end="]" regexp="\[|\]" /> 
  <parenthesis begin="{" end="}" regexp="\{|\}" /> 
+
+ <!-- block delimiters -->
+ <block_delimiter begin="XML_LT!--" end="--XML_GT" regexp="(XML_LT\!--)|(--XML_GT)"/>
 
 <!-- text processing macros -->
 

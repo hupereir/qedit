@@ -238,4 +238,3 @@ void HighlightPatternList::_restoreSelection( void )
   
   return;
 }
-

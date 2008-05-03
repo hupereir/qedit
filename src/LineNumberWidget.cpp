@@ -37,14 +37,14 @@
 #include <QTextLayout>
 
 #include "BlockHighlight.h"
-#include "CustomTextEdit.h"
+#include "TextEditor.h"
 #include "Debug.h"
 #include "LineNumberWidget.h"
 #include "TextBlockData.h"
 #include "XmlOptions.h"
 
 //____________________________________________________________________________
-LineNumberWidget::LineNumberWidget(CustomTextEdit* editor, QWidget* parent): 
+LineNumberWidget::LineNumberWidget(TextEditor* editor, QWidget* parent): 
   QWidget( parent),
   Counter( "LineNumberWidget" ),
   editor_( editor )

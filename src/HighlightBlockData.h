@@ -51,11 +51,7 @@ class HighlightBlockData: public TextBlockData
   public: 
   
   //! constructor
-  HighlightBlockData():
-    TextBlockData(),
-    parenthesis_( -1 ),
-    parenthesis_length_(0)
-  {}
+  HighlightBlockData();
     
   //! constructor
   HighlightBlockData( const TextBlockData& reference ):
@@ -134,6 +130,22 @@ class HighlightBlockData: public TextBlockData
   void setDelimiter( const unsigned int& id, const TextBlock::Delimiter& delimiter )
   { delimiters_[id] = delimiter; }
   
+  //! true if block is collapsed
+  const bool& collapsed( void ) const
+  { return collapsed_; }
+  
+  //! true if block is collapsed
+  void setCollapsed( const bool& value )
+  { collapsed_ = value; }
+  
+  //! collapsed text
+  const QString& collapsedText( void ) const
+  { return collapsed_text_; }
+  
+  //! collapsed text
+  void setCollapsedText( const QString& value ) 
+  { collapsed_text_ = value; }
+  
   //@}
   
   #if WITH_ASPELL
@@ -164,8 +176,19 @@ class HighlightBlockData: public TextBlockData
   //! parenthesis length
   int parenthesis_length_;
     
+  //!@name block delimiters
+  //@{
+  
   //! delimiter
   DelimiterMap delimiters_;
+  
+  //! true if block is collapsed
+  bool collapsed_;
+  
+  //! collapsed text
+  QString collapsed_text_;
+  
+  //@}
   
   #if WITH_ASPELL
   //! set of misspelled words and position in associated block

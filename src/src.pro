@@ -88,4 +88,3 @@ SOURCES = \
   TextHighlight.cpp \
   TextIndent.cpp \
   TextView.cpp
-

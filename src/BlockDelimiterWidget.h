@@ -95,10 +95,15 @@ class BlockDelimiterWidget: public QWidget, public Counter
     typedef std::vector<Segment> List;
     
     //! constructor
-    Segment( const int& first = 0, const int& second = 0, const bool& ignored = false ):
+    Segment( 
+      const int& first = 0, 
+      const int& second = 0, 
+      const bool& ignored = false, 
+      const bool& collapsed = false ):
       first_( first ),
       second_( second ),
-      ignored_( ignored )
+      ignored_( ignored ),
+      collapsed_( collapsed )
     {}
         
     //! first point
@@ -134,6 +139,17 @@ class BlockDelimiterWidget: public QWidget, public Counter
       return *this;
     }
       
+    //! collapsed
+    const bool& collapsed( void ) const
+    { return collapsed_; }
+    
+    //! collapsed
+    Segment& setCollapsed( const bool& collapsed )
+    { 
+      collapsed_ = collapsed;
+      return *this;
+    }
+    
     //! active rect
     const QRect& activeRect( void ) const
     { return active_; }
@@ -179,6 +195,9 @@ class BlockDelimiterWidget: public QWidget, public Counter
     
     //! ignore flag
     bool ignored_;
+    
+    //! true if segment corresponds to a collapsed block
+    bool collapsed_;
     
     //! active area (for mouse pointing)
     /*! it is set if drawFirstDelimiter() is called */

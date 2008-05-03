@@ -66,8 +66,11 @@
 		<parenthesis begin="XML_LT" end="XML_GT"/>
 		<parenthesis begin="(" end=")" regexp="\(|\)"/>
 		<parenthesis begin="[" end="]" regexp="\[|\]" />
-    <parenthesis begin="{" end="}" regexp="\{|\}" />
-		
+  <parenthesis begin="{" end="}" regexp="\{|\}" />
+
+  <!-- block delimiters -->
+  <block_delimiter begin="XML_LT!--" end="--XML_GT" regexp="(XML_LT\!--)|(--XML_GT)"/>
+
 		<!-- indentation patterns -->
 
 		<!-- keep unchanged if no tag at this line -->

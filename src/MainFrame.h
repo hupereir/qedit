@@ -272,4 +272,3 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
 };
 
 #endif
-

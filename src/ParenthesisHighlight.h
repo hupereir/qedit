@@ -38,7 +38,7 @@
 #include "Counter.h"
 #include "Debug.h"
 
-class CustomTextEdit;
+class TextEditor;
 
 //! handles parenthesis matching highlighting
 class ParenthesisHighlight: public QObject, public Counter
@@ -49,7 +49,7 @@ class ParenthesisHighlight: public QObject, public Counter
   public:
   
   //! constructor
-  ParenthesisHighlight( CustomTextEdit* parent );
+  ParenthesisHighlight( TextEditor* parent );
   
   //! destructor
   virtual ~ParenthesisHighlight( void )
@@ -77,7 +77,7 @@ class ParenthesisHighlight: public QObject, public Counter
   private:
   
   //! parent editor
-  CustomTextEdit* parent_;
+  TextEditor* parent_;
 
   //! associated timer
   QTimer timer_;

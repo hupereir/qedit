@@ -40,8 +40,8 @@
 #include "HighlightPattern.h"
 #include "HighlightStyle.h"
 
-class CustomLineEdit;
-class CustomTextEdit;
+class LineEditor;
+class TextEditor;
 class HighlightPatternOptions;
 class HighlightPatternType;
 
@@ -83,16 +83,16 @@ class HighlightPatternDialog: public CustomDialog
   HighlightPattern pattern_;
   
   //! name editor
-  CustomLineEdit* name_editor_;
+  LineEditor* name_editor_;
   
   //! keyword regexp editor
-  CustomLineEdit* keyword_regexp_editor_;
+  LineEditor* keyword_regexp_editor_;
   
   //! end regexp label
   QLabel* end_regexp_label_;
   
   //! end regexp edit
-  CustomLineEdit* end_regexp_editor_;
+  LineEditor* end_regexp_editor_;
 
   //! options
   HighlightPatternOptions* pattern_options_;
@@ -107,7 +107,7 @@ class HighlightPatternDialog: public CustomDialog
   QComboBox* style_combobox_;
   
   //! comments editor
-  CustomTextEdit* comments_editor_;
+  TextEditor* comments_editor_;
   
 };
 

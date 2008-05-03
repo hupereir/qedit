@@ -35,7 +35,7 @@
 
 #include "CustomDialog.h"
 #include "CustomGridLayout.h"
-#include "CustomLineEdit.h"
+#include "LineEditor.h"
 #include "DocumentClassDialog.h"
 #include "HighlightStyleList.h"
 #include "HighlightPatternList.h"
@@ -57,7 +57,7 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   
   // name editor
   layout->addWidget( new QLabel( "Name: ", this ) );
-  layout->addWidget( name_editor_ = new CustomLineEdit( this ) );
+  layout->addWidget( name_editor_ = new LineEditor( this ) );
   
   // tab widget
   QTabWidget *tab_widget = new QTabWidget( this );
@@ -85,11 +85,11 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   box->setLayout( grid_layout );
   
   grid_layout->addWidget( new QLabel( "File name matching pattern: ", box ) );
-  grid_layout->addWidget( file_pattern_editor_ = new CustomLineEdit( box ) );
+  grid_layout->addWidget( file_pattern_editor_ = new LineEditor( box ) );
   file_pattern_editor_->setToolTip( "Regular expression used to determine document class from file name." );
   
   grid_layout->addWidget( new QLabel( "First line matching pattern: ", box ) );
-  grid_layout->addWidget( first_line_pattern_editor_ = new CustomLineEdit( box ) );
+  grid_layout->addWidget( first_line_pattern_editor_ = new LineEditor( box ) );
   first_line_pattern_editor_->setToolTip( "Regular expression used to determine document class from the first line of the file." );
   
   // need to add options (checkboxes) for "wrap" and "default" 

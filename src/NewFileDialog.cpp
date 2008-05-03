@@ -65,9 +65,8 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned 
   {
     first = false;
     list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-    question_pixmap.find( "messagebox_warning.png", path_list );    
+    question_pixmap.find( "messagebox_warning.png", path_list );
   }
-  
   // insert main vertical box
   if( question_pixmap.isNull() )
   { layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter ); }

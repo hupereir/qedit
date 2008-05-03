@@ -41,7 +41,7 @@
 
 #include "Counter.h"
 
-class CustomTextEdit;
+class TextEditor;
 
 //! display line number of a text editor
 class LineNumberWidget: public QWidget, public Counter
@@ -53,7 +53,7 @@ class LineNumberWidget: public QWidget, public Counter
   public:
     
   //! constructor
-  LineNumberWidget(CustomTextEdit*, QWidget* parent);
+  LineNumberWidget(TextEditor*, QWidget* parent);
 
   //! destructor
   virtual ~LineNumberWidget();
@@ -83,11 +83,11 @@ class LineNumberWidget: public QWidget, public Counter
   private:
   
   //! editor
-  CustomTextEdit& _editor( void ) const
+  TextEditor& _editor( void ) const
   { return *editor_; }
   
   //! associated editor
-  CustomTextEdit* editor_;
+  TextEditor* editor_;
   
   //! current block highlight color
   QColor highlight_color_;
