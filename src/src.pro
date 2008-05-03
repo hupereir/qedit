@@ -34,6 +34,7 @@ HEADERS = \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
+  CollapsedBlockData.h \
   BlockDelimiterWidget.h \
   ConfigurationDialog.h \
   Diff.h \

@@ -34,6 +34,7 @@
 
 #include <map>
 
+#include "CollapsedBlockData.h"
 #include "HighlightBlockFlags.h"
 #include "TextBlockData.h"
 #include "PatternLocation.h"
@@ -138,13 +139,17 @@ class HighlightBlockData: public TextBlockData
   void setCollapsed( const bool& value )
   { collapsed_ = value; }
   
-  //! collapsed text
-  const QString& collapsedText( void ) const
-  { return collapsed_text_; }
+  //! collapsed data
+  const CollapsedBlockData::List& collapsedData( void ) const
+  { return collapsed_data_; }
   
-  //! collapsed text
-  void setCollapsedText( const QString& value ) 
-  { collapsed_text_ = value; }
+  //! collapsed data
+  void clearCollapsedData( void )
+  { collapsed_data_.clear(); }
+  
+  //! collapsed data
+  void setCollapsedData( const CollapsedBlockData::List& data ) 
+  { collapsed_data_ = data; }
   
   //@}
   
@@ -185,8 +190,11 @@ class HighlightBlockData: public TextBlockData
   //! true if block is collapsed
   bool collapsed_;
   
+  //! collapsed data
+  CollapsedBlockData::List collapsed_data_;
+  
   //! collapsed text
-  QString collapsed_text_;
+  // QString collapsed_text_;
   
   //@}
   

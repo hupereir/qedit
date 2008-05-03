@@ -987,7 +987,6 @@ void TextDisplay::rehighlight( void )
   for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
   { _setBlockModified( block ); }
 
-//  if( hasTextHighlight() )
   textHighlight().setDocument( document() );
   Debug::Throw( "TextDisplay::rehighlight. done.\n" );
 

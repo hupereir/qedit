@@ -36,12 +36,14 @@
 #include <QFont>
 #include <QMouseEvent>
 #include <QPaintEvent>
+#include <QTextBlock>
 #include <QWheelEvent>
 #include <QWidget>
 
 #include "BlockDelimiter.h"
 #include "Counter.h"
 
+class HighlightBlockData;
 class TextDisplay;
 
 //! display block delimiters
@@ -73,10 +75,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
 
   //! mouse press event
   virtual void mousePressEvent( QMouseEvent* );
-  
-  //! mouse release event
-  virtual void mouseReleaseEvent( QMouseEvent* );
-  
+    
   //! wheel event
   /*! wheel events are forwarded to the editor */
   virtual void wheelEvent( QWheelEvent* );
@@ -85,9 +84,19 @@ class BlockDelimiterWidget: public QWidget, public Counter
   
   //! configuration
   void _updateConfiguration( void );
-    
+      
   private:
   
+  // update segments
+  /* this might go into a slot, linked to document being modified */
+  void _updateSegments( void );
+
+  // expand current block
+  void _expand( const QTextBlock&, HighlightBlockData* ) const;
+
+  // collapse blocks 
+  void _collapse( const QTextBlock&, const QTextBlock&, HighlightBlockData* ) const;
+
   // used to draw block segment
   class Segment
   {
@@ -157,14 +166,9 @@ class BlockDelimiterWidget: public QWidget, public Counter
     const QRect& activeRect( void ) const
     { return active_; }
     
-    //! draw line
-    void drawLine( QPainter&, const int& );
-    
-    //! draw delimiters
-    void drawFirstDelimiter( QPainter&, const int& );
-
-    //! draw delimiters
-    void drawSecondDelimiter( QPainter&, const int& );
+    //! active rect
+    void setActiveRect( const QRect& rect )
+    { active_ = rect; }
     
     //! used to find segment matching a point
     class ContainsFTor
@@ -206,7 +210,23 @@ class BlockDelimiterWidget: public QWidget, public Counter
     /*! it is set if drawFirstDelimiter() is called */
     QRect active_;
 
+    //! streamer
+    friend std::ostream& operator << ( std::ostream& out, const Segment& segment )
+    {
+      out << "(" << segment.first() << "," << segment.second() << ") collapsed: " << (segment.collapsed() ? "true":"false" );
+      return out;
+    }
+        
+    //! streamer
+    friend std::ostream& operator << ( std::ostream& out, const Segment::List& segments )
+    {
+      for( Segment::List::const_iterator iter = segments.begin(); iter != segments.end(); iter++ )
+      { out << *iter << std::endl; }
+      return out;
+    }
+
   };
+  
   
   //! editor
   TextDisplay& _editor( void ) const
