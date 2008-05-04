@@ -105,7 +105,9 @@ void TextHighlight::highlightBlock( const QString& text )
     { data->setDelimiter( iter->id(), _delimiter( *iter, text ) ); }
     
     // store active id
-    setCurrentBlockState( locations.activeId().second );
+    /* this is disabled when  current block is collapsed */
+    if( !data->collapsed() ) setCurrentBlockState( locations.activeId().second );
+    else setCurrentBlockState( 0 );
     
   }
     
@@ -158,6 +160,7 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, const int& a
   // check if pattern active_id is still active
   if( active_id > 0 )
   {    
+    
     // look for matching pattern in list
     HighlightPattern::List::const_iterator pattern_iter = find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( active_id ) );
     assert( pattern_iter != patterns_.end() );
@@ -360,4 +363,7 @@ TextBlock::Delimiter TextHighlight::_delimiter( const BlockDelimiter& delimiter,
   return out;
  
 }
+
+
+
 

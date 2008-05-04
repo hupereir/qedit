@@ -278,8 +278,14 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
   // create cursor
   QTextCursor cursor( block );      
   cursor.setPosition( block.position() + block.length() - 1, QTextCursor::MoveAnchor );      
-  cursor.beginEditBlock();
   const CollapsedBlockData::List& collapsed_data( data->collapsedData() );
+  if( collapsed_data.empty() ) return;
+
+  bool modified( _editor().document()->isModified() );
+  bool undo_enabled( _editor().document()->isUndoRedoEnabled() );
+  _editor().document()->setUndoRedoEnabled( false );
+
+  cursor.beginEditBlock();
   for( CollapsedBlockData::List::const_iterator iter = collapsed_data.begin(); iter != collapsed_data.end(); iter++ )
   {
     
@@ -297,7 +303,8 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
   }
   
   cursor.endEditBlock();
-    
+  _editor().document()->setUndoRedoEnabled( undo_enabled );
+  _editor().document()->setModified( modified );
 }
 
 //________________________________________________________________________________________
@@ -313,7 +320,7 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   // see if cursor belongs to collapsible block
   QTextBlock cursor_block( _editor().textCursor().block() );
   bool cursor_found( false );
-  
+    
   // create collapsed block data to be stored in current block before collapsed
   CollapsedBlockData::List collapsed_data_list;      
   for( QTextBlock current = first_block.next(); current.isValid(); current = current.next() )
@@ -338,12 +345,20 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   // store in current block
   data->setCollapsedData( collapsed_data_list );
   
+  bool modified( _editor().document()->isModified() );
+  bool undo_enabled( _editor().document()->isUndoRedoEnabled() );
+  _editor().document()->setUndoRedoEnabled( false );
+  
   // create cursor and move at end of block
   QTextCursor cursor( first_block );
   cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );
   if( second_block.isValid() ) { cursor.setPosition( second_block.position() + second_block.length(), QTextCursor::KeepAnchor ); }
   else { cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor ); }
   cursor.removeSelectedText();
+  
+  // restore state
+  _editor().document()->setUndoRedoEnabled( undo_enabled );
+  _editor().document()->setModified( modified );
   
   // move cursor to end of block
   if( cursor_found )
@@ -353,5 +368,4 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   }
   
 }
-
 

@@ -1182,6 +1182,8 @@ void TextDisplay::paintEvent( QPaintEvent* event )
 {
   Debug::Throw( "TextEditor::paintEvent.\n" );
   
+  TextEditor::paintEvent( event );
+
   // handle block background
   QRect rect = event->rect();
   QTextBlock first( cursorForPosition( rect.topLeft() ).block() );
@@ -1204,9 +1206,7 @@ void TextDisplay::paintEvent( QPaintEvent* event )
     block_rect.setWidth( viewport()->width() + scrollbarPosition().x() );
     painter.drawLine( block_rect.bottomLeft(), block_rect.bottomRight() );
   }
-  
-  return TextEditor::paintEvent( event );
-  
+    
 }
 
 //________________________________________________
@@ -2310,6 +2310,8 @@ void TextDisplay::_clearTag( void )
   { clearTag( *iter, TextBlock::ALL_TAGS ); }
 
 }
+
+
 
 
 
