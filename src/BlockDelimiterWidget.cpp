@@ -51,7 +51,8 @@ using namespace std;
 BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent): 
   QWidget( parent),
   Counter( "BlockDelimiterWidget" ),
-  editor_( editor )
+  editor_( editor ),
+  need_segment_update_( true )
 {
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
@@ -59,7 +60,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   // actions
   _installActions();
   
-  connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
+  connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( _scrollBarPositionChanged() ) );
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );  
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
@@ -92,7 +93,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   if( delimiters_.empty() ) return;
     
   // update segments
-  _updateSegments();
+  if( need_segment_update_ ) _updateSegments();
+  need_segment_update_ = true;
   
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
@@ -284,6 +286,8 @@ void BlockDelimiterWidget::_installActions( void )
 void BlockDelimiterWidget::_updateSegments( void )
 {
 
+  Debug::Throw(0, "BlockDelimiterWidget::_updateSegments.\n" );
+  
   segments_.clear();
   
   // keep track of collapsed blocks
