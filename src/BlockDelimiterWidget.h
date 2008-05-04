@@ -137,6 +137,9 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! true when _updateSegments needs to be called in paintEvent
   bool need_segment_update_; 
   
+  //! true when all blocks have bounding rect and highlight data
+  bool all_blocks_valid_;
+  
   //!@name marker dimension
   //@{
 

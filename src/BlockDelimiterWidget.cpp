@@ -52,7 +52,8 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   QWidget( parent),
   Counter( "BlockDelimiterWidget" ),
   editor_( editor ),
-  need_segment_update_( true )
+  need_segment_update_( true ),
+  all_blocks_valid_( false )
 {
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
@@ -92,8 +93,11 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   // check delimiters
   if( delimiters_.empty() ) return;
     
-  // update segments
-  if( need_segment_update_ ) _updateSegments();
+  // update segments if needed
+  if( need_segment_update_ || !all_blocks_valid_ ) 
+  { _updateSegments(); }
+  
+  // by default next paintEvent will require segment update
   need_segment_update_ = true;
   
   // calculate dimensions
@@ -279,19 +283,18 @@ void BlockDelimiterWidget::_installActions( void )
   addAction( expand_all_action_ = new QAction( "&Expand all blocks", this ) );
   expand_all_action_->setToolTip( "expand all collapsed blocks" );
   connect( expand_all_action_, SIGNAL( triggered() ), SLOT( _expandAllBlocks() ) );
-  
+  expand_all_action_->setEnabled( false );
 }
 
 //________________________________________________________
 void BlockDelimiterWidget::_updateSegments( void )
 {
 
-  Debug::Throw(0, "BlockDelimiterWidget::_updateSegments.\n" );
-  
   segments_.clear();
   
   // keep track of collapsed blocks
   bool has_collapsed_blocks( false );
+  all_blocks_valid_ = true;
   
   QTextDocument &document( *_editor().document() );
   for( BlockDelimiter::List::const_iterator iter = delimiters_.begin(); iter != delimiters_.end(); iter++ )
@@ -307,13 +310,20 @@ void BlockDelimiterWidget::_updateSegments( void )
       // get block limits
       // it might happen that the block rect has not been 
       // defined yet. Such are skipped.
-      if( block.layout()->boundingRect().isNull() ) continue;
+      if( block.layout()->boundingRect().isNull() ) {
+        all_blocks_valid_ = false;
+        continue;
+      }
+      
       int block_begin( block.layout()->position().y() );
       int block_end( block_begin + block.layout()->boundingRect().height() );
             
       // retrieve data and check this block delimiter
       HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
-      if( !data ) continue;
+      if( !data ) {
+        all_blocks_valid_ = false;
+        continue;
+      }
 
       // store "ignore" state
       bool ignored = _editor().ignoreBlock( block );
