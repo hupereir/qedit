@@ -121,3 +121,4 @@ void ParenthesisHighlight::_highlight( void )
   // reset location
   location_ = -1;
 }
+

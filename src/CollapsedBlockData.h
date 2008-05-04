@@ -46,7 +46,7 @@ class CollapsedBlockData: public Counter
   typedef std::vector<CollapsedBlockData> List;
   
   //! constructor
-  CollapsedBlockData( const QString& text ):
+  CollapsedBlockData( const QString& text = QString() ):
     Counter( "CollapsedBlockData" ),
     text_( text )
   {}
@@ -59,7 +59,7 @@ class CollapsedBlockData: public Counter
   CollapsedBlockData& setText( const QString& text )
   { 
     text_ = text; 
-    return this;
+    return *this;
   }
   
   //! children

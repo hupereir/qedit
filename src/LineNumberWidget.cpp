@@ -102,7 +102,7 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
     TextBlockData* data = 0;
     if( 
       _editor().blockHighlightAction().isChecked() && 
-      ( data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&  
+      ( data = static_cast<TextBlockData*>( block.userData() ) ) &&  
       data->hasFlag( TextBlock::CURRENT_BLOCK ) )
     {
       

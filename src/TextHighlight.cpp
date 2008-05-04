@@ -84,7 +84,7 @@ void TextHighlight::highlightBlock( const QString& text )
   } else {
     
     // try retrieve data from parent type
-    TextBlockData* text_data = dynamic_cast<TextBlockData*>( currentBlockUserData() );
+    TextBlockData* text_data = static_cast<TextBlockData*>( currentBlockUserData() );
     data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData();
     setCurrentBlockUserData( data );
         
@@ -360,3 +360,4 @@ TextBlock::Delimiter TextHighlight::_delimiter( const BlockDelimiter& delimiter,
   return out;
  
 }
+

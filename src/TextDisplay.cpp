@@ -28,12 +28,15 @@
 */
 
 #include <QApplication>
+#include <QAbstractTextDocumentLayout>
+#include <QPainter>
 #include <QPushButton>
 #include <QScrollBar>
 #include <QTextLayout>
 
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
+#include "BlockDelimiterWidget.h"
 #include "CustomFileDialog.h"
 #include "CustomTextDocument.h"
 #include "DocumentClass.h"
@@ -270,7 +273,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
   if( restore_autosave && !isReadOnly() ) save();
 
   // perform first autosave
-  (static_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
+  (dynamic_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
 
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
@@ -433,7 +436,7 @@ void TextDisplay::save( void )
     // make sure that last line ends with "end of line"
     QString text( toPlainText() );
     out.write( text.toAscii() );
-    if( !text.isEmpty() && text[text.size()-1] != '\n' ) out.write( "\n" );
+    //if( !text.isEmpty() && text[text.size()-1] != '\n' ) out.write( "\n" );
 
     // close
     out.close();
@@ -592,6 +595,38 @@ bool TextDisplay::hasLeadingTabs( void ) const
 }
 
 //_______________________________________________________
+QString TextDisplay::toPlainText( void ) const
+{
+  
+  Debug::Throw( "TextDisplay::toPlainText.\n" );
+  
+  // output string
+  QString out;
+  
+  // loop over blocks
+  for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
+  {
+    
+    // add current block
+    out += block.text() + "\n";
+    
+    // try retrieve highlight data
+    // add collapsed data if any
+    HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    if( data && data->collapsed() )
+    { 
+      const CollapsedBlockData::List& data_list( data->collapsedData() );
+      for( CollapsedBlockData::List::const_iterator iter = data_list.begin(); iter != data_list.end(); iter++ )
+      { out += iter->toPlainText(); } 
+    }
+    
+  }
+  
+  return out;
+      
+}
+
+//_______________________________________________________
 QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_size )
 {
 
@@ -721,7 +756,7 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
 {
   Debug::Throw( "TextDisplay::tagBlock.\n" );
 
-  TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+  TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
   if( !data ) block.setUserData( data = new TextBlockData() );
 
   switch( tag )
@@ -760,7 +795,7 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
 void TextDisplay::clearTag( QTextBlock block, const int& tags )
 {
   Debug::Throw() << "TextDisplay::clearTag - key: " << key() << endl;
-  TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+  TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
   if( !data ) return;
 
   if( tags & TextBlock::DIFF_ADDED )
@@ -806,7 +841,7 @@ bool TextDisplay::isCurrentBlockTagged( void )
 
   for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
   {
-    TextBlockData *data( dynamic_cast<TextBlockData*>( iter->userData() ) );
+    TextBlockData *data( static_cast<TextBlockData*>( iter->userData() ) );
     if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
   }
 
@@ -823,7 +858,7 @@ bool TextDisplay::hasTaggedBlocks( void )
   // loop over block
   for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
   {
-    TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+    TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
     if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
   }
 
@@ -845,11 +880,11 @@ void TextDisplay::updateDocumentClass( void )
 
   // try load document class from class_name
   if( !className().isEmpty() )
-  { document_class = static_cast<MainFrame*>(qApp)->classManager().get( className() ); }
+  { document_class = dynamic_cast<MainFrame*>(qApp)->classManager().get( className() ); }
 
   // try load from file
   if( document_class.name().isEmpty() && !file().empty() )
-  { document_class = static_cast<MainFrame*>(qApp)->classManager().find( file() ); }
+  { document_class = dynamic_cast<MainFrame*>(qApp)->classManager().find( file() ); }
 
   // update class name
   setClassName( document_class.name() );
@@ -1077,7 +1112,7 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
   { emit indent( textCursor().block() ); }
   else
   {
-
+    
     // process key
     TextEditor::keyPressEvent( event );
 
@@ -1140,6 +1175,38 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
   // show menu
   menu.exec( event->globalPos() );
 
+}
+
+//________________________________________________
+void TextDisplay::paintEvent( QPaintEvent* event )
+{
+  Debug::Throw( "TextEditor::paintEvent.\n" );
+  
+  // handle block background
+  QRect rect = event->rect();
+  QTextBlock first( cursorForPosition( rect.topLeft() ).block() );
+  QTextBlock last( cursorForPosition( rect.bottomRight() ).block() );
+
+  // translate rect from widget to viewport coordinates
+  rect.translate( scrollbarPosition() );
+
+  // create painter and translate from widget to viewport coordinates
+  QPainter painter( viewport() );
+  painter.translate( -scrollbarPosition() );
+  
+  // loop over found blocks
+  for( QTextBlock block( first ); block != last.next() && block.isValid(); block = block.next() )
+  {
+    HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    if( !( data && data->collapsed() ) ) continue;
+    
+    QRectF block_rect( document()->documentLayout()->blockBoundingRect( block ) );
+    block_rect.setWidth( viewport()->width() + scrollbarPosition().x() );
+    painter.drawLine( block_rect.bottomLeft(), block_rect.bottomRight() );
+  }
+  
+  return TextEditor::paintEvent( event );
+  
 }
 
 //________________________________________________
@@ -1399,7 +1466,7 @@ void TextDisplay::_setBlockModified( const QTextBlock& block )
 
   // retrieve associated block data if any
   // set block as modified so that its highlight content gets reprocessed.
-  HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+  TextBlockData* data( static_cast<TextBlockData*>( block.userData() ) );
   if( data ) data->setFlag( TextBlock::MODIFIED, true );
 
 }
@@ -1414,7 +1481,7 @@ void TextDisplay::_updateTaggedBlocks( void )
   for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
   {
 
-    TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+    TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
     if( !( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) ) continue;
 
     if( data->hasFlag( TextBlock::DIFF_ADDED ) ) setBackground( block, diff_added_color_ );
@@ -2115,7 +2182,7 @@ void TextDisplay::_tagBlock( void )
     // add previous blocks and current
     for( QTextBlock block( cursor.block() ); block.isValid(); block = block.previous() )
     {
-      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+      TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
       if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
       else break;
     }
@@ -2123,7 +2190,7 @@ void TextDisplay::_tagBlock( void )
      // add previous blocks and current
     for( QTextBlock block( cursor.block().next() ); block.isValid(); block = block.next() )
     {
-      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+      TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
       if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
       else break;
     }
@@ -2147,14 +2214,14 @@ void TextDisplay::_nextTag( void )
   // first skipp blocks that have tags if the first one has
   while(
     block.isValid() &&
-    (data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
+    (data = static_cast<TextBlockData*>( block.userData() ) ) &&
     data->hasFlag( TextBlock::ALL_TAGS ) )
   { block = block.next(); }
 
   // skip blocks with no tag
   while(
     block.isValid() &&
-    !((data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
+    !((data = static_cast<TextBlockData*>( block.userData() ) ) &&
     data->hasFlag( TextBlock::ALL_TAGS ) ) )
   { block = block.next(); }
 
@@ -2179,14 +2246,14 @@ void TextDisplay::_previousTag( void )
   // first skipp blocks that have tags if the first one has
   while(
     block.isValid() &&
-    (data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
+    (data = static_cast<TextBlockData*>( block.userData() ) ) &&
     data->hasFlag( TextBlock::ALL_TAGS ) )
   { block = block.previous(); }
 
   // skip blocks with no tag
   while(
     block.isValid() &&
-    !((data = dynamic_cast<TextBlockData*>( block.userData() ) ) &&
+    !((data = static_cast<TextBlockData*>( block.userData() ) ) &&
     data->hasFlag( TextBlock::ALL_TAGS ) ) )
   { block = block.previous(); }
 
@@ -2223,7 +2290,7 @@ void TextDisplay::_clearTag( void )
     // add previous blocks and current
     for( QTextBlock block( cursor.block() ); block.isValid(); block = block.previous() )
     {
-      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+      TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
       if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
       else break;
     }
@@ -2231,7 +2298,7 @@ void TextDisplay::_clearTag( void )
      // add previous blocks and current
     for( QTextBlock block( cursor.block().next() ); block.isValid(); block = block.next() )
     {
-      TextBlockData *data( dynamic_cast<TextBlockData*>( block.userData() ) );
+      TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
       if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
       else break;
     }
@@ -2243,3 +2310,9 @@ void TextDisplay::_clearTag( void )
   { clearTag( *iter, TextBlock::ALL_TAGS ); }
 
 }
+
+
+
+
+
+

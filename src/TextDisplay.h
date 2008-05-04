@@ -129,6 +129,7 @@ class TextDisplay: public TextEditor
     
   };
   
+  
   //!@ name file management
   //@{
   
@@ -234,6 +235,13 @@ class TextDisplay: public TextEditor
   //! returns true if current text has leading tabs of wrong type
   bool hasLeadingTabs( void ) const;
 
+  //! convert to plain text
+  /*! 
+  this should be an overloaded function, but the base class method is not virtual
+  however, it is never called via a pointer to the base class, so that it should be fine
+  */
+  QString toPlainText( void ) const;
+  
   //! Get HTML formated text
   QDomElement htmlNode( QDomDocument& document, const int& max_line_size = 0 );
 
@@ -354,7 +362,7 @@ class TextDisplay: public TextEditor
 
   //! emmited when block delimiters are available or not
   void blockDelimitersAvailable( BlockDelimiter::List );
-  
+
   //! emmited when indentation several blocks is required
   void indent( QTextBlock, QTextBlock );
 
@@ -402,10 +410,14 @@ class TextDisplay: public TextEditor
   //! context menu event [overloaded]
   virtual void contextMenuEvent( QContextMenuEvent* );
 
+  //! paint event
+  virtual void paintEvent( QPaintEvent* );
+
   //! raise autospell context menu
   /*! returns true if autospell context menu is used */
   virtual bool _autoSpellContextEvent( QContextMenuEvent* );
 
+  
   //@}
   
   //! actions
@@ -715,3 +727,7 @@ class TextDisplay: public TextEditor
 };
 
 #endif
+
+
+
+

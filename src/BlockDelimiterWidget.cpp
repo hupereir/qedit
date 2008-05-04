@@ -124,7 +124,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
     }
     
     // end tick
-    if( iter->second() < height && iter->first() != iter->second() )
+    if( iter->second() < height && ( iter->first() != iter->second() ) )
     { painter.drawLine( 0.5*width, iter->second(), width, iter->second() ); }
     
   }
@@ -165,7 +165,7 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
       first_block = block;
       
       // if segment is collapsed, break loop
-      first_block_data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
+      first_block_data = dynamic_cast<HighlightBlockData*>( block.userData() );
       assert( first_block_data );
       
       if( first_block_data->collapsed() ) break;
@@ -259,7 +259,7 @@ void BlockDelimiterWidget::_updateSegments( void )
       { start_points.push_back( Segment( block_begin, block_begin, ignored, collapsed ) ); }
 
       // if block is collapsed add one self contained segment
-      if( collapsed ) { segments_.push_back( Segment( block_begin, block_begin, ignored, true ) ); }
+      if( collapsed ) { segments_.push_back( Segment( block_begin, block_end, ignored, true ) ); }
     }
     
     for( Segment::List::iterator iter = start_points.begin(); iter != start_points.end(); iter++ )
@@ -307,39 +307,51 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   data->setCollapsed( true );
     
   // if next block is not valid, nothing is to be done
-  if( first_block.next().isValid() )
+  if( !first_block.next().isValid() ) return;
+
+  // get block associated to cursor
+  // see if cursor belongs to collapsible block
+  QTextBlock cursor_block( _editor().textCursor().block() );
+  bool cursor_found( false );
+  
+  // create collapsed block data to be stored in current block before collapsed
+  CollapsedBlockData::List collapsed_data_list;      
+  for( QTextBlock current = first_block.next(); current.isValid(); current = current.next() )
   {
     
-    // create collapsed block data to be stored in current block before collapsed
-    CollapsedBlockData::List collapsed_data_list;      
-    for( QTextBlock current = first_block.next(); current.isValid(); current = current.next() )
-    {
-      
-      CollapsedBlockData collapsed_data( current.text() );
-      HighlightBlockData* current_data = (dynamic_cast<HighlightBlockData*>( current.userData() ) );
-      
-      if( current_data && current_data->collapsed() ) 
-      { collapsed_data.setChildren( current_data->collapsedData() ); }
-      
-      collapsed_data_list.push_back( collapsed_data );
-      
-      if( current == second_block ) break;
-      
-    }
+    // if current block match cursor, 
+    // one need to move the cursor after the text gets deleted
+    if( current == cursor_block ) cursor_found = true;
     
-    // store in current block
-    data->setCollapsedData( collapsed_data_list );
+    CollapsedBlockData collapsed_data( current.text() );
+    HighlightBlockData* current_data = (dynamic_cast<HighlightBlockData*>( current.userData() ) );
     
-    // create cursor and move at end of block
-    QTextCursor cursor( first_block );
-    cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );
-    if( second_block.isValid() ) { cursor.setPosition( second_block.position() + second_block.length(), QTextCursor::KeepAnchor ); }
-    else { cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor ); }
-    cursor.removeSelectedText();
+    if( current_data && current_data->collapsed() ) 
+    { collapsed_data.setChildren( current_data->collapsedData() ); }
+    
+    collapsed_data_list.push_back( collapsed_data );
+    
+    if( current == second_block ) break;
     
   }
   
+  // store in current block
+  data->setCollapsedData( collapsed_data_list );
+  
+  // create cursor and move at end of block
+  QTextCursor cursor( first_block );
+  cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );
+  if( second_block.isValid() ) { cursor.setPosition( second_block.position() + second_block.length(), QTextCursor::KeepAnchor ); }
+  else { cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor ); }
+  cursor.removeSelectedText();
+  
   // move cursor to end of block
-  _editor().textCursor().setPosition( first_block.position()+first_block.length()-1 );
+  if( cursor_found )
+  { 
+    cursor.setPosition( first_block.position() + first_block.length()-1 );
+    _editor().setTextCursor( cursor );
+  }
   
 }
+
+

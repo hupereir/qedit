@@ -90,7 +90,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   // update segments
   /* this might go into a slot, linked to document being modified */
   void _updateSegments( void );
-
+  
   // expand current block
   void _expand( const QTextBlock&, HighlightBlockData* ) const;
 
@@ -244,3 +244,9 @@ class BlockDelimiterWidget: public QWidget, public Counter
 };
 
 #endif
+
+
+
+
+
+

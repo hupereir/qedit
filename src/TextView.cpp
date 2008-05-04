@@ -71,7 +71,7 @@ TextView::TextView( QWidget* parent ):
   _loadBlockDelimiters( BlockDelimiter::List() );
   _toggleShowBlockDelimiters( editor().showBlockDelimiterAction().isChecked() );
   _toggleShowLineNumbers( editor().showLineNumberAction().isChecked() );
-  
+    
 }
 
 //___________________________________________
@@ -108,3 +108,7 @@ void TextView::_toggleShowBlockDelimiters( bool state )
   Debug::Throw( "TextView::_toggleShowBlockDelimiters.\n" );
   if( editor().showBlockDelimiterAction().isEnabled() ) _blockDelimiterWidget().setVisible( state );
 }
+
+
+
+
