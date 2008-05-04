@@ -28,7 +28,11 @@ POST_TARGETDEPS = \
   ../base/libbase.a
 
 
-RESOURCES = qedit.qrc pixmaps.qrc ../base-qt/basePixmaps.qrc ../document-classes/patterns.qrc
+RESOURCES = pixmaps.qrc ../base-qt/basePixmaps.qrc ../document-classes/patterns.qrc
+
+win32 {
+  RESOURCES += qedit.rc
+}
 
 HEADERS = \
   AskForSaveDialog.h \

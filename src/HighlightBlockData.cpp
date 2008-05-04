@@ -33,8 +33,6 @@
 
 using namespace std;
 
-#if WITH_ASPELL
-
 //____________________________________________________________
 HighlightBlockData::HighlightBlockData( void ):
   TextBlockData(),
@@ -42,6 +40,8 @@ HighlightBlockData::HighlightBlockData( void ):
   parenthesis_length_(0),
   collapsed_( false )
 {}
+
+#if WITH_ASPELL
 
 //____________________________________________________________
 SPELLCHECK::Word HighlightBlockData::misspelledWord( const int& position ) const

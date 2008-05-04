@@ -1,7 +1,7 @@
 # $Id$
 
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = src.pro qedit.qrc pixmaps.qrc 
+EXTRA_DIST = src.pro qedit.rc pixmaps.qrc 
 
 if WITH_ASPELL 
 INCLUDES = \
