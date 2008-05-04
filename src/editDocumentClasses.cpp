@@ -76,6 +76,7 @@ int main (int argc, char *argv[])
     if( debug_level ) XmlOptions::get().dump();
 
     // initialize main frame and run loop
+    Q_INIT_RESOURCE( basePixmaps );
     QApplication application( argc, argv );
     
     // options
