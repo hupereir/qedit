@@ -369,3 +369,4 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   
 }
 
+
