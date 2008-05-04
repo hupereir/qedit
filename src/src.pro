@@ -31,7 +31,7 @@ POST_TARGETDEPS = \
 RESOURCES = pixmaps.qrc ../base-qt/basePixmaps.qrc ../document-classes/patterns.qrc
 
 win32 {
-  RESOURCES += qedit.rc
+  RC_FILE = qedit.rc
 }
 
 HEADERS = \
