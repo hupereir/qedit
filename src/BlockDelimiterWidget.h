@@ -32,6 +32,7 @@
   \date $Date$
 */
 
+#include <QAction>
 #include <QColor>
 #include <QFont>
 #include <QMouseEvent>
@@ -41,6 +42,7 @@
 #include <QWidget>
 
 #include "BlockDelimiter.h"
+#include "BlockDelimiterSegment.h"
 #include "Counter.h"
 
 class HighlightBlockData;
@@ -54,7 +56,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   Q_OBJECT
 
   public:
-    
+  
   //! constructor
   BlockDelimiterWidget(TextDisplay*, QWidget* parent);
 
@@ -67,6 +69,15 @@ class BlockDelimiterWidget: public QWidget, public Counter
   
   //! synchronization
   void synchronize( const BlockDelimiterWidget* );
+  
+  //!@name actions
+  //@{
+  
+  //! expand all
+  QAction& expandAllAction( void ) const
+  { return *expand_all_action_; }
+  
+  //@}
   
   protected:
   
@@ -85,148 +96,23 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! configuration
   void _updateConfiguration( void );
       
+  //! expand all blocks
+  void _expandAllBlocks( void );
+  
   private:
   
-  // update segments
-  /* this might go into a slot, linked to document being modified */
+  //! install actions
+  void _installActions( void );
+  
+  //! update segments
+  /*! this might go into a slot, linked to document being modified */
   void _updateSegments( void );
   
-  // expand current block
-  void _expand( const QTextBlock&, HighlightBlockData* ) const;
+  //! expand current block
+  void _expand( const QTextBlock&, HighlightBlockData*, const bool& recursive = false ) const;
 
-  // collapse blocks 
+  //! collapse blocks 
   void _collapse( const QTextBlock&, const QTextBlock&, HighlightBlockData* ) const;
-
-  // used to draw block segment
-  class Segment
-  {
-    
-    public:
-    
-    //! list
-    typedef std::vector<Segment> List;
-    
-    //! constructor
-    Segment( 
-      const int& first = 0, 
-      const int& second = 0, 
-      const bool& ignored = false, 
-      const bool& collapsed = false ):
-      first_( first ),
-      second_( second ),
-      ignored_( ignored ),
-      collapsed_( collapsed )
-    {}
-        
-    //! first point
-    const int& first( void ) const
-    { return first_; }
-    
-    //! first point
-    Segment& setFirst( const int& first )
-    { 
-      first_ = first; 
-      return *this;
-    }
-
-    //! first point
-    const int& second( void ) const
-    { return second_; }
-    
-    //! first point
-    Segment& setSecond( const int& second )
-    { 
-      second_ = second; 
-      return *this;
-    }
-
-    //! ignored
-    const bool& ignored( void ) const
-    { return ignored_; }
-    
-    //! ignored
-    Segment& setIgnored( const bool& ignored ) 
-    { 
-      ignored_ = ignored; 
-      return *this;
-    }
-      
-    //! collapsed
-    const bool& collapsed( void ) const
-    { return collapsed_; }
-    
-    //! collapsed
-    Segment& setCollapsed( const bool& collapsed )
-    { 
-      collapsed_ = collapsed;
-      return *this;
-    }
-    
-    //! active rect
-    const QRect& activeRect( void ) const
-    { return active_; }
-    
-    //! active rect
-    void setActiveRect( const QRect& rect )
-    { active_ = rect; }
-    
-    //! used to find segment matching a point
-    class ContainsFTor
-    {
-      
-      public:
-      
-      //! creator
-      ContainsFTor( const QPoint& point ):
-        point_( point )
-        {}
-      
-      //! prediction
-      bool operator() (const Segment& segment ) const
-      { return segment.activeRect().contains( point_ ); }
-      
-      private:
-      
-      //! position
-      QPoint point_; 
-      
-    };
-    
-    private:
-    
-    //! first position
-    int first_;
-    
-    //! second position
-    int second_;
-    
-    //! ignore flag
-    bool ignored_;
-    
-    //! true if segment corresponds to a collapsed block
-    bool collapsed_;
-    
-    //! active area (for mouse pointing)
-    /*! it is set if drawFirstDelimiter() is called */
-    QRect active_;
-
-    //! streamer
-    friend std::ostream& operator << ( std::ostream& out, const Segment& segment )
-    {
-      out << "(" << segment.first() << "," << segment.second() << ") collapsed: " << (segment.collapsed() ? "true":"false" );
-      return out;
-    }
-        
-    //! streamer
-    friend std::ostream& operator << ( std::ostream& out, const Segment::List& segments )
-    {
-      for( Segment::List::const_iterator iter = segments.begin(); iter != segments.end(); iter++ )
-      { out << *iter << std::endl; }
-      return out;
-    }
-
-  };
-  
   
   //! editor
   TextDisplay& _editor( void ) const
@@ -239,11 +125,44 @@ class BlockDelimiterWidget: public QWidget, public Counter
   BlockDelimiter::List delimiters_;
   
   //! block segments
-  Segment::List segments_;
+  BlockDelimiterSegment::List segments_;
+  
+  //!@name marker dimension
+  //@{
+
+  /* 
+  note: to speed-up the code, one could store all positions as members 
+  they are:
+    half_width = 0.5*width
+    top = 0.8*width
+    top_left = 0.2*width
+    rect_width = rect_height = 0.6*width
+    marker_left = 0.35*width;
+    marker_right = 0.65*width; 
+  */
+  
+  int width_;
+  int half_width_;
+  int top_;
+  int rect_top_left_;
+  int rect_width_;
+  int marker_top_left_;
+  int marker_bottom_right_;
+  
+  //@}
+  
+  //!@name actions
+  //@{
+  
+  //! expand all
+  QAction* expand_all_action_;
+  
+  //@}
   
 };
 
 #endif
+
 
 
 

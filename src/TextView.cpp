@@ -59,7 +59,7 @@ TextView::TextView( QWidget* parent ):
   line_number_widget_ = new LineNumberWidget( &editor(), this );
   block_delimiter_widget_ = new BlockDelimiterWidget( &editor(), this );
   
-  layout->addWidget( &_blockDelimiterWidget(), 0 );
+  layout->addWidget( &blockDelimiterWidget(), 0 );
   layout->addWidget( &_lineNumberWidget(), 0 );
   layout->addWidget( &editor(), 1 );
   
@@ -80,7 +80,7 @@ void TextView::synchronize( const TextView* view )
 
   Debug::Throw( "TextView::synchronize.\n" );
   editor().synchronize( &view->editor() );
-  _blockDelimiterWidget().synchronize( &view->_blockDelimiterWidget() );
+  blockDelimiterWidget().synchronize( &view->blockDelimiterWidget() );
   
 }
 
@@ -96,9 +96,17 @@ void TextView::_loadBlockDelimiters( BlockDelimiter::List delimiters )
 {
   
   Debug::Throw( "TextView::_enableBlockDelimiters.\n" );
-  if( delimiters.empty() ) _blockDelimiterWidget().hide();
-  else _blockDelimiterWidget().setVisible( editor().showBlockDelimiterAction().isChecked() );
-  _blockDelimiterWidget().setBlockDelimiters( delimiters );
+
+  // expand all collapsed blocks prior to changing the delimiters
+  if( !blockDelimiterWidget().isHidden() && blockDelimiterWidget().expandAllAction().isEnabled() )   
+  { blockDelimiterWidget().expandAllAction().trigger(); } 
+  
+  // update block delimiters
+  blockDelimiterWidget().setBlockDelimiters( delimiters );
+
+  // update widget visibility
+  if( delimiters.empty() ) blockDelimiterWidget().hide();
+  else blockDelimiterWidget().setVisible( editor().showBlockDelimiterAction().isChecked() );
   
 }
 
@@ -106,7 +114,20 @@ void TextView::_loadBlockDelimiters( BlockDelimiter::List delimiters )
 void TextView::_toggleShowBlockDelimiters( bool state )
 {
   Debug::Throw( "TextView::_toggleShowBlockDelimiters.\n" );
-  if( editor().showBlockDelimiterAction().isEnabled() ) _blockDelimiterWidget().setVisible( state );
+  
+  // check if blockDelimiter is allowed to be shown/hidden
+  if( editor().showBlockDelimiterAction().isEnabled() ) 
+  {
+    
+    // expand all collapsed blocks prior to hiding the widget    
+    if( !state && blockDelimiterWidget().expandAllAction().isEnabled() ) 
+    { blockDelimiterWidget().expandAllAction().trigger(); }
+    
+    // update visibility
+    blockDelimiterWidget().setVisible( state );
+    
+  }
+  
 }
 
 

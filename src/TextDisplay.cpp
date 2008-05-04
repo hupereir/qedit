@@ -436,7 +436,7 @@ void TextDisplay::save( void )
     // make sure that last line ends with "end of line"
     QString text( toPlainText() );
     out.write( text.toAscii() );
-    //if( !text.isEmpty() && text[text.size()-1] != '\n' ) out.write( "\n" );
+    if( !text.isEmpty() && text[text.size()-1] != '\n' ) out.write( "\n" );
 
     // close
     out.close();
@@ -608,7 +608,8 @@ QString TextDisplay::toPlainText( void ) const
   {
     
     // add current block
-    out += block.text() + "\n";
+    out += block.text();
+    if( block.next().isValid() ) out += "\n";
     
     // try retrieve highlight data
     // add collapsed data if any
@@ -1204,7 +1205,7 @@ void TextDisplay::paintEvent( QPaintEvent* event )
     
     QRectF block_rect( document()->documentLayout()->blockBoundingRect( block ) );
     block_rect.setWidth( viewport()->width() + scrollbarPosition().x() );
-    painter.drawLine( block_rect.bottomLeft(), block_rect.bottomRight() );
+    painter.drawLine( block_rect.bottomLeft() - QPoint( 2, 0 ), block_rect.bottomRight() );
   }
     
 }
@@ -2267,7 +2268,6 @@ void TextDisplay::_previousTag( void )
 
 }
 
-
 //___________________________________________________________________________
 void TextDisplay::_clearTag( void )
 {
@@ -2308,13 +2308,5 @@ void TextDisplay::_clearTag( void )
   // clear background for selected blocks
   for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
   { clearTag( *iter, TextBlock::ALL_TAGS ); }
-
+  
 }
-
-
-
-
-
-
-
-

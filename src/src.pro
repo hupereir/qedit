@@ -28,13 +28,14 @@ POST_TARGETDEPS = \
   ../base/libbase.a
 
 
-RESOURCES = pixmaps.qrc ../base-qt/basePixmaps.qrc ../document-classes/patterns.qrc
+RESOURCES = qedit.qrc pixmaps.qrc ../base-qt/basePixmaps.qrc ../document-classes/patterns.qrc
 
 HEADERS = \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
   CollapsedBlockData.h \
+  BlockDelimiterSegment.h \
   BlockDelimiterWidget.h \
   ConfigurationDialog.h \
   Diff.h \

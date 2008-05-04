@@ -1,7 +1,7 @@
 # $Id$
 
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = src.pro pixmaps.qrc
+EXTRA_DIST = src.pro qedit.qrc pixmaps.qrc 
 
 if WITH_ASPELL 
 INCLUDES = \
@@ -66,6 +66,7 @@ noinst_HEADERS = \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
+  BlockDelimiterSegment.h \
   BlockDelimiterWidget.h \
   CollapsedBlockData.h \
   ConfigurationDialog.h \

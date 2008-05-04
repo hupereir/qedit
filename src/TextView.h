@@ -62,6 +62,13 @@ class TextView: public QFrame, public BASE::Key, public Counter
     return *editor_;
   }
     
+  //! block delimitor widget
+  BlockDelimiterWidget& blockDelimiterWidget( void ) const
+  {
+    assert( block_delimiter_widget_ );
+    return *block_delimiter_widget_;
+  }
+
   //! used to select editor with matching filename
   class SameFileFTor
   {
@@ -126,13 +133,6 @@ class TextView: public QFrame, public BASE::Key, public Counter
     return *line_number_widget_;
   }
   
-  //! block delimitor widget
-  BlockDelimiterWidget& _blockDelimiterWidget( void ) const
-  {
-    assert( block_delimiter_widget_ );
-    return *block_delimiter_widget_;
-  }
-
   //! text display
   TextDisplay* editor_;
    

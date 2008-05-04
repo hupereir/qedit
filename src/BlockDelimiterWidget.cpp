@@ -56,11 +56,13 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
   
+  // actions
+  _installActions();
+  
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );  
-  
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-    
+
   // update configuration
   _updateConfiguration();
   
@@ -84,6 +86,8 @@ void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
 void BlockDelimiterWidget::paintEvent( QPaintEvent* )
 {  
   
+  Debug::Throw( "BlockDelimiterWidget::paintEvent.\n" );
+  
   // check delimiters
   if( delimiters_.empty() ) return;
     
@@ -93,7 +97,6 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
   int height( QWidget::height() + y_offset );
-  int width( BlockDelimiterWidget::width() );
   if( _editor().horizontalScrollBar()->isVisible() ) 
   { height -= _editor().horizontalScrollBar()->height(); }
 
@@ -101,31 +104,53 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   QPainter painter( this );
   painter.translate( 0, -y_offset );
   painter.setBrush( palette().color( QPalette::Base ) );
-
+  
   // draw all vertical lines
-  for( Segment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+  for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   { 
-    if( iter->first()+0.8*width < height && iter->second() != iter->first() )
-    { painter.drawLine( 0.5*width, iter->first()+0.8*width, 0.5*width, min( height, iter->second() ) ); }
+    if( iter->first()+top_ < height )
+    {
+      
+      if( !iter->empty() ) 
+      { 
+        painter.drawLine( 
+          half_width_, iter->first()+top_, 
+          half_width_, min( height, iter->second() ) ); 
+      } else { 
+        painter.drawLine( 
+          half_width_, iter->first()+top_, 
+          half_width_, height ); 
+      }
+    
+    }
+    
   }
 
   // draw ticks
-  for( Segment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+  for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
     // begin tick
-    if( iter->first()+0.8*width < height ) 
+    if( iter->first()+top_ < height ) 
     {
-      iter->setActiveRect( QRect( 0.2*width, iter->first() + 0.2*width, 0.6*width, 0.6*width ) );
+      iter->setActiveRect( QRect( rect_top_left_, iter->first() + rect_top_left_, rect_width_, rect_width_ ) );
       painter.drawRect( iter->activeRect() );
-      painter.drawLine( 0.35*width, iter->first() + 0.5*width, 0.65*width, iter->first() + 0.5*width );
-      if( iter->collapsed() ) { painter.drawLine( 0.5*width, iter->first() + 0.35*width, 0.5*width, iter->first() + 0.65*width ); }  
+      painter.drawLine( 
+        marker_top_left_, iter->first() + half_width_, 
+        marker_bottom_right_, iter->first() + half_width_ );
+      
+      if( iter->flag( BlockDelimiterSegment::COLLAPSED ) ) 
+      { 
+        painter.drawLine( 
+          half_width_, iter->first() + marker_top_left_, 
+          half_width_, iter->first() + marker_bottom_right_ ); 
+      }  
 
     }
     
     // end tick
-    if( iter->second() < height && ( iter->first() != iter->second() ) )
-    { painter.drawLine( 0.5*width, iter->second(), width, iter->second() ); }
+    if( iter->second() < height && !( iter->flag( BlockDelimiterSegment::FIRST_ONLY ) || iter->empty() ) )
+    { painter.drawLine( half_width_, iter->second(), width_, iter->second() ); }
     
   }
   
@@ -141,17 +166,17 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   if( !( event->button() == Qt::LeftButton ) ) return;
 
   // find segment matching event position
-  Segment::List::const_iterator iter = find_if( 
+  BlockDelimiterSegment::List::const_iterator iter = find_if( 
     segments_.begin(), segments_.end(), 
-    Segment::ContainsFTor( event->pos()+QPoint(0, _editor().verticalScrollBar()->value() ) ) );
+    BlockDelimiterSegment::ContainsFTor( event->pos()+QPoint(0, _editor().verticalScrollBar()->value() ) ) );
   if( iter == segments_.end() ) return;
   
   // find matching begin and end blocks
-  QTextDocument &document( *_editor().document() );
   QTextBlock first_block;
   QTextBlock second_block;
   HighlightBlockData* first_block_data(0);
   
+  QTextDocument &document( *_editor().document() );
   for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
   {
     
@@ -208,28 +233,77 @@ void BlockDelimiterWidget::_updateConfiguration( void )
   QFont font;
   font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );
   setFont( font );
-   
-  // width
-  setFixedWidth( fontMetrics().lineSpacing() );
+     
+  // set dimensions needed to redraw marker and lines
+  // this is done to minimize the amount of maths in the paintEvent method
+  width_ = fontMetrics().lineSpacing();
+  half_width_ = 0.5*width_;
+  top_ = 0.8*width_;
+  rect_top_left_ = 0.2*width_;
+  rect_width_ = 0.6*width_;
+  marker_top_left_ = 0.35*width_;
+  marker_bottom_right_ = 0.65*width_; 
+    
+  // adjust size
+  setFixedWidth( width_ );
 
 }
 
+//________________________________________________________
+void BlockDelimiterWidget::_expandAllBlocks( void )
+{
+  Debug::Throw( "BlockDelimiterWidget::_expandAllBlocks.\n" );
+  
+  QTextDocument &document( *_editor().document() );
+  for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
+  {
+    
+    // retrieve data and check if collapsed
+    HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    if( !( data && data->collapsed() ) ) continue;
+    _expand( block, data, true );
+      
+  }
+  
+  return;
+  
+}
+
+//________________________________________________________
+void BlockDelimiterWidget::_installActions( void )
+{
+  Debug::Throw( "BlockDelimiterWidget::_installActions.\n" );
+
+  addAction( expand_all_action_ = new QAction( "&Expand all blocks", this ) );
+  expand_all_action_->setToolTip( "expand all collapsed blocks" );
+  connect( expand_all_action_, SIGNAL( triggered() ), SLOT( _expandAllBlocks() ) );
+  
+}
 
 //________________________________________________________
 void BlockDelimiterWidget::_updateSegments( void )
 {
 
   segments_.clear();
+  
+  // keep track of collapsed blocks
+  bool has_collapsed_blocks( false );
+  
   QTextDocument &document( *_editor().document() );
   for( BlockDelimiter::List::const_iterator iter = delimiters_.begin(); iter != delimiters_.end(); iter++ )
   {
   
     // keep track of all starting points
-    Segment::List start_points;
-    for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
+    BlockDelimiterSegment::List start_points;
+    int block_id(0);
+
+    for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), block_id++ ) 
     {
 
       // get block limits
+      // it might happen that the block rect has not been 
+      // defined yet. Such are skipped.
+      if( block.layout()->boundingRect().isNull() ) continue;
       int block_begin( block.layout()->position().y() );
       int block_end( block_begin + block.layout()->boundingRect().height() );
             
@@ -240,37 +314,59 @@ void BlockDelimiterWidget::_updateSegments( void )
       // store "ignore" state
       bool ignored = _editor().ignoreBlock( block );
       
+      // get delimiter data
       TextBlock::Delimiter delimiter( data->delimiter( iter->id() ) );
       if( delimiter.end() )
       {
         
-        if( !(start_points.empty() || delimiter.begin() ) && ignored == start_points.back().ignored() ) 
-        { segments_.push_back( start_points.back().setSecond( block_end ) ); }
+        if( !(start_points.empty() ) && ignored == start_points.back().flag( BlockDelimiterSegment::IGNORED ) ) 
+        { 
+          // if block is both begin and end, only the begin flag is to be drawn.
+          if( delimiter.begin() ) start_points.back().setFlag( BlockDelimiterSegment::FIRST_ONLY, true );
+          segments_.push_back( start_points.back().setSecond( block_end ) ); 
+        }
         
         // pop
-        for( int i = 0; i < delimiter.end() && !start_points.empty() && ignored == start_points.back().ignored(); i++ )
+        for( int i = 0; i < delimiter.end() && !start_points.empty() && ignored == start_points.back().flag( BlockDelimiterSegment::IGNORED ); i++ )
         { start_points.pop_back(); }
           
       }
-        
-      // if block is collapsed, skip one start point (which is self contained)
-      const bool& collapsed( data->collapsed() );
-      for( int i = (collapsed ? 1:0); i < delimiter.begin(); i++ )
-      { start_points.push_back( Segment( block_begin, block_begin, ignored, collapsed ) ); }
 
-      // if block is collapsed add one self contained segment
-      if( collapsed ) { segments_.push_back( Segment( block_begin, block_end, ignored, true ) ); }
+      // store collapse state
+      const bool& collapsed( data->collapsed() );
+      
+      // prepare segment flags
+      if( collapsed || delimiter.begin() )
+      {
+        unsigned int flags( BlockDelimiterSegment::NONE );
+        if( ignored ) flags |= BlockDelimiterSegment::IGNORED;
+        if( collapsed ) flags |= BlockDelimiterSegment::COLLAPSED;
+        
+        // if block is collapsed, skip one start point (which is self contained)
+        for( int i = (collapsed ? 1:0); i < delimiter.begin(); i++ )
+        { start_points.push_back( BlockDelimiterSegment(block_begin, block_begin, flags ) ); }
+    
+        // if block is collapsed add one self contained segment
+        if( collapsed ) { 
+          has_collapsed_blocks = true;
+          segments_.push_back( BlockDelimiterSegment( block_begin, block_end, flags ) );
+        }
+      }
+      
     }
     
-    for( Segment::List::iterator iter = start_points.begin(); iter != start_points.end(); iter++ )
+    for( BlockDelimiterSegment::List::iterator iter = start_points.begin(); iter != start_points.end(); iter++ )
     { segments_.push_back( *iter ); }
   
   }
   
+  // update expand all action
+  expandAllAction().setEnabled( has_collapsed_blocks );
+  
 }
 
 //________________________________________________________________________________________
-void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData* data ) const
+void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData* data, const bool& recursive ) const
 { 
     
   data->setCollapsed( false );
@@ -298,6 +394,7 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
       current_data->setCollapsed( true );
       current_data->setCollapsedData( iter->children() );
       cursor.block().setUserData( current_data );
+      if( recursive ) _expand( cursor.block(), current_data, true );
     }
     
   }
@@ -322,7 +419,7 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   bool cursor_found( false );
     
   // create collapsed block data to be stored in current block before collapsed
-  CollapsedBlockData::List collapsed_data_list;      
+  CollapsedBlockData::List collapsed_data_list;  
   for( QTextBlock current = first_block.next(); current.isValid(); current = current.next() )
   {
     
@@ -359,7 +456,7 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   // restore state
   _editor().document()->setUndoRedoEnabled( undo_enabled );
   _editor().document()->setModified( modified );
-  
+ 
   // move cursor to end of block
   if( cursor_found )
   { 
@@ -368,5 +465,3 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   }
   
 }
-
-

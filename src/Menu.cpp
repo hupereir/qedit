@@ -32,6 +32,7 @@
 #include <QApplication>
 #include <sstream>
 
+#include "BlockDelimiterWidget.h"
 #include "Config.h"
 #include "DebugMenu.h"
 #include "DocumentClass.h"
@@ -312,7 +313,8 @@ void Menu::_updateToolsMenu( void )
 
   // retrieve editframe and current display
   EditFrame& editframe( *static_cast<EditFrame*>(window()) );
-  TextDisplay& display( editframe.activeView().editor() );
+  TextView& view( editframe.activeView() );
+  TextDisplay& display( view.editor() );
   
   // retrieve flags needed to set button state
   bool editable( !display.isReadOnly() );
@@ -332,6 +334,9 @@ void Menu::_updateToolsMenu( void )
   // tab replacement
   tools_menu_->addAction( &display.leadingTabsAction() );
   display.leadingTabsAction().setEnabled( display.hasLeadingTabs() );
+  
+  // expand all blocks
+  tools_menu_->addAction( &view.blockDelimiterWidget().expandAllAction() );
   
   // spell checker
   tools_menu_->addAction( &display.spellcheckAction() );
@@ -356,8 +361,9 @@ void Menu::_updateToolsMenu( void )
 
   tools_menu_->addAction( &display.clearAllTagsAction() );
   display.clearAllTagsAction().setEnabled( has_tags );
-  
+
   // rehighlight
+  tools_menu_->addSeparator();
   QAction* action = tools_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
   bool enabled( display.textHighlightAction().isEnabled() && display.textHighlightAction().isChecked() );
   
