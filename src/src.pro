@@ -29,7 +29,6 @@ POST_TARGETDEPS = \
 
 
 RESOURCES = pixmaps.qrc ../base-qt/basePixmaps.qrc ../document-classes/patterns.qrc
-
 RC_FILE = qedit.rc
 
 HEADERS = \
