@@ -35,6 +35,7 @@
 #include "LineNumberWidget.h"
 #include "TextDisplay.h"
 #include "TextView.h"
+#include "XmlOptions.h"
 
 using namespace std;
 
@@ -89,6 +90,10 @@ void TextView::_toggleShowLineNumbers( bool state )
 {
   Debug::Throw( "TextView::_toggleShowLineNumbers.\n" );
   _lineNumberWidget().setVisible( state );
+
+    // update option
+    XmlOptions::get().set<bool>( "SHOW_LINE_NUMBERS", state );
+
 }
 
 //___________________________________________
@@ -125,6 +130,9 @@ void TextView::_toggleShowBlockDelimiters( bool state )
     
     // update visibility
     blockDelimiterWidget().setVisible( state );
+    
+    // update option
+    XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", state );
     
   }
   
