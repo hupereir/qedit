@@ -82,7 +82,7 @@ void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
 void BlockDelimiterWidget::paintEvent( QPaintEvent* )
 {  
   
-  // Debug::Throw(0, "BlockDelimiterWidget::paintEvent.\n" );
+  //Debug::Throw(0, "BlockDelimiterWidget::paintEvent.\n" );
   
   // check delimiters
   if( delimiters_.empty() ) return;
@@ -313,8 +313,6 @@ void BlockDelimiterWidget::_updateSegments( void )
       or the document layout, if the former is not ready yet. 
       One checks that the bounding rect if valid before proceeding.
       */      
-//      QRectF rect( block.layout()->boundingRect() );
-//      if( rect.isNull() ) { rect = _editor().document()->documentLayout()->blockBoundingRect( block ); }
       QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
       assert( !rect.isNull() );
             
@@ -388,6 +386,12 @@ void BlockDelimiterWidget::_updateSegments( void )
     for( BlockDelimiterSegment::List::iterator iter = start_points.begin(); iter != start_points.end(); iter++ )
     { segments_.push_back( *iter ); }
   
+  }
+  
+  // dump collapse map
+  for( CollapsedBlockMap::iterator iter = collapsed_blocks_.begin(); iter != collapsed_blocks_.end(); iter++ )
+  {
+    cout << "BlockDelimiterWidget::_updateSegments - block: " << iter->first << " count: " << iter->second << endl;
   }
   
   // update expand all action

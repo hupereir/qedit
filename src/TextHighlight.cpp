@@ -123,7 +123,7 @@ void TextHighlight::highlightBlock( const QString& text )
   // before try applying the found locations see if automatic spellcheck is on
   #if WITH_ASPELL
   
-  if( spellParser().isEnabled() ) 
+  if( spellParser().isEnabled() )
   {
     
     // clear locations
