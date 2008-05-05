@@ -227,7 +227,9 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   //! orientation
   void setOrientation( const Qt::Orientation orientation )
   { default_orientation_ = orientation; }
-    
+  
+  //@}
+  
   //! change active display manualy
   void setActiveView( TextView& );
  
