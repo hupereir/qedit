@@ -34,7 +34,7 @@
 #include "Debug.h"
 #include "HighlightPattern.h"
 #include "HighlightBlockData.h"
-#include "TextParenthesis.h"
+#include "TextPa<renthesis.h"
 #include "TextHighlight.h"
 
 using namespace std;
@@ -281,8 +281,7 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, const int& a
       }
       
       // no overlap with prev. Check against parent
-    } else if( iter->position() < parent->position()+(int)parent->length()  ) 
-    {
+    } else if( iter->position() < parent->position()+(int)parent->length()  ) {
       
       if( iter->parentId() == parent->id() )
       {
@@ -371,7 +370,3 @@ TextBlock::Delimiter TextHighlight::_delimiter( const BlockDelimiter& delimiter,
   return out;
  
 }
-
-
-
-

@@ -21,7 +21,6 @@
 *
 *******************************************************************************/
 
-
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
 #include <QPainter>
@@ -88,7 +87,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   // check delimiters
   if( delimiters_.empty() ) return;
     
-  // update segments if needed
+  /* update segments if needed */
   if( need_segment_update_ ) 
   { _updateSegments(); }
   
@@ -217,9 +216,9 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   else _collapse( first_block, second_block, first_block_data );
    
   // marck block as dirty to make sure it is re-highlighted
-  _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
   need_segment_update_ = true;
-  update();
+  _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
+  //update();
 
 }
 
@@ -288,6 +287,8 @@ void BlockDelimiterWidget::_installActions( void )
 void BlockDelimiterWidget::_updateSegments( void )
 {
 
+  // Debug::Throw(0, "BlockDelimiterWidget::_updateSegments.\n" );
+  
   segments_.clear();
   
   // keep track of collapsed blocks
@@ -313,8 +314,9 @@ void BlockDelimiterWidget::_updateSegments( void )
       or the document layout, if the former is not ready yet. 
       One checks that the bounding rect if valid before proceeding.
       */      
-      QRectF rect( block.layout()->boundingRect() );
-      if( rect.isNull() ) { rect = _editor().document()->documentLayout()->blockBoundingRect( block ); }
+//      QRectF rect( block.layout()->boundingRect() );
+//      if( rect.isNull() ) { rect = _editor().document()->documentLayout()->blockBoundingRect( block ); }
+      QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
       assert( !rect.isNull() );
             
       int block_begin( block.layout()->position().y() );
