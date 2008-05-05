@@ -120,15 +120,20 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
     previous = iter;
     
     // draw
-    if( !iter->empty() ) 
-    { 
-      painter.drawLine( 
-        half_width_, iter->first()+top_, 
-        half_width_, min( height, iter->second() ) ); 
-    } else { 
-      painter.drawLine( 
-        half_width_, iter->first()+top_, 
-        half_width_, height ); 
+    if( iter->first()+top_ < height )
+    {
+      
+      if( !iter->empty() ) 
+      { 
+        painter.drawLine( 
+          half_width_, iter->first()+top_, 
+          half_width_, min( height, iter->second() ) ); 
+      } else { 
+        painter.drawLine( 
+          half_width_, iter->first()+top_, 
+          half_width_, height ); 
+      }
+      
     }
     
   }
@@ -518,4 +523,3 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   }
   
 }
-
