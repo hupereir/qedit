@@ -63,7 +63,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   _installActions();
   
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( _scrollBarPositionChanged() ) );
-  connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );  
+  connect( &_editor(), SIGNAL( textChanged() ), SLOT( _textModified() ) );
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
   // update configuration
@@ -89,17 +89,20 @@ void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
 void BlockDelimiterWidget::paintEvent( QPaintEvent* )
 {  
   
-  Debug::Throw( "BlockDelimiterWidget::paintEvent.\n" );
-  
   // check delimiters
   if( delimiters_.empty() ) return;
     
   // update segments if needed
-  if( need_segment_update_ || !all_blocks_valid_ ) 
+  /* 
+  this does not work right now. Some times update segments is not called
+  as it should. It is due to several events triggering the paintEvent method
+  with incorrect flags. To be investigated.
+  */
+  // if( need_segment_update_ || !all_blocks_valid_ ) 
   { _updateSegments(); }
   
   // by default next paintEvent will require segment update
-  need_segment_update_ = true;
+  need_segment_update_ = false;
   
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
@@ -168,6 +171,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
 //________________________________________________________
 void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
 {
+
+  Debug::Throw( "BlockDelimiterWidget::mousePressEvent.\n" );
     
   // check button
   if( !( event->button() == Qt::LeftButton ) ) return;
@@ -221,6 +226,7 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   else _collapse( first_block, second_block, first_block_data );
    
   // marck block as dirty to make sure it is re-highlighted
+  all_blocks_valid_ = false;
   _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
   update();
 
@@ -274,6 +280,20 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
   
   return;
   
+}
+
+//________________________________________________________
+void BlockDelimiterWidget::_textModified( void )
+{
+  need_segment_update_ = true;
+  update();
+}
+
+//________________________________________________________
+void BlockDelimiterWidget::_scrollBarPositionChanged( void )
+{
+  //need_segment_update_ = false;
+  update();
 }
 
 //________________________________________________________
