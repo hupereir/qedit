@@ -98,14 +98,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
       
   //! expand all blocks
   void _expandAllBlocks( void );
-  
-  //! update position to match scrollbar
-  void _scrollBarPositionChanged( void )
-  {
-    need_segment_update_ = false;
-    update();
-  }
-  
+    
   private:
   
   //! install actions
@@ -133,12 +126,6 @@ class BlockDelimiterWidget: public QWidget, public Counter
   
   //! block segments
   BlockDelimiterSegment::List segments_;
-  
-  //! true when _updateSegments needs to be called in paintEvent
-  bool need_segment_update_; 
-  
-  //! true when all blocks have bounding rect and highlight data
-  bool all_blocks_valid_;
   
   //!@name marker dimension
   //@{

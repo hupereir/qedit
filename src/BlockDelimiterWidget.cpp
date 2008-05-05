@@ -51,9 +51,7 @@ using namespace std;
 BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent): 
   QWidget( parent),
   Counter( "BlockDelimiterWidget" ),
-  editor_( editor ),
-  need_segment_update_( true ),
-  all_blocks_valid_( false )
+  editor_( editor )
 {
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
@@ -61,7 +59,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   // actions
   _installActions();
   
-  connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( _scrollBarPositionChanged() ) );
+  connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );  
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
@@ -93,13 +91,9 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   // check delimiters
   if( delimiters_.empty() ) return;
     
-  // update segments if needed
-  if( need_segment_update_ || !all_blocks_valid_ ) 
-  { _updateSegments(); }
-  
-  // by default next paintEvent will require segment update
-  need_segment_update_ = true;
-  
+  // re-calculate segments
+  _updateSegments();
+    
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
   int height( QWidget::height() + y_offset );
@@ -294,7 +288,6 @@ void BlockDelimiterWidget::_updateSegments( void )
   
   // keep track of collapsed blocks
   bool has_collapsed_blocks( false );
-  all_blocks_valid_ = true;
   
   QTextDocument &document( *_editor().document() );
   for( BlockDelimiter::List::const_iterator iter = delimiters_.begin(); iter != delimiters_.end(); iter++ )
@@ -310,20 +303,14 @@ void BlockDelimiterWidget::_updateSegments( void )
       // get block limits
       // it might happen that the block rect has not been 
       // defined yet. Such are skipped.
-      if( block.layout()->boundingRect().isNull() ) {
-        all_blocks_valid_ = false;
-        continue;
-      }
+      if( block.layout()->boundingRect().isNull() ) continue;
       
       int block_begin( block.layout()->position().y() );
       int block_end( block_begin + block.layout()->boundingRect().height() );
             
       // retrieve data and check this block delimiter
       HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
-      if( !data ) {
-        all_blocks_valid_ = false;
-        continue;
-      }
+      if( !data ) continue;
 
       // store "ignore" state
       bool ignored = _editor().ignoreBlock( block );
