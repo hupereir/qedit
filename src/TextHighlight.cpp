@@ -61,10 +61,9 @@ void TextHighlight::highlightBlock( const QString& text )
 {
     
   // check if syntax highlighting is enabled
+  bool highlight_enabled( isHighlightEnabled()  && !patterns_.empty() );
   #if WITH_ASPELL 
-  if( !spellParser().isEnabled() && (!isHighlightEnabled()  || patterns_.empty() ) ) return;
-  #else
-  if( !isHighlightEnabled()  || patterns_.empty() ) return;
+  highlight_enabled |= spellParser().isEnabled();
   #endif
   
   // retrieve active_id from last block state
@@ -79,7 +78,10 @@ void TextHighlight::highlightBlock( const QString& text )
   
   if( data ) { 
  
-    need_update = ( data->hasFlag( TextBlock::MODIFIED ) || (locations = data->locations()).activeId().first != active_id );
+    // see if block needs update
+    need_update = 
+      data->hasFlag( TextBlock::MODIFIED ) || 
+      (highlight_enabled && (locations = data->locations()).activeId().first != active_id );
    
   } else {
     
@@ -90,20 +92,24 @@ void TextHighlight::highlightBlock( const QString& text )
         
   }
 
-  // create new location set if needed
+  // block delimiters parsing
   if( need_update ) 
   {
+    for( BlockDelimiter::List::const_iterator iter = block_delimiters_.begin(); iter != block_delimiters_.end(); iter++ )
+    { data->setDelimiter( iter->id(), _delimiter( *iter, text ) ); }
+  }
+  
+  // highlight patterns
+  if( need_update && highlight_enabled )
+  {
     
+    // get new set of highlight locations
     locations = locationSet( text, active_id );
     
     // update data modification state and highlight pattern locations
     data->setFlag( TextBlock::MODIFIED, false );
     data->setLocations( locations );
-    
-    //if( !block_delimiters_.empty() )
-    for( BlockDelimiter::List::const_iterator iter = block_delimiters_.begin(); iter != block_delimiters_.end(); iter++ )
-    { data->setDelimiter( iter->id(), _delimiter( *iter, text ) ); }
-    
+        
     // store active id
     /* this is disabled when  current block is collapsed */
     if( !data->collapsed() ) setCurrentBlockState( locations.activeId().second );
@@ -146,7 +152,7 @@ void TextHighlight::highlightBlock( const QString& text )
   
   return;
   
-}  
+}
     
 //_________________________________________________________
 PatternLocationSet TextHighlight::locationSet( const QString& text, const int& active_id ) const

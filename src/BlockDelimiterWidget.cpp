@@ -463,14 +463,9 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
     // if current block match cursor, 
     // one need to move the cursor after the text gets deleted
     if( current == cursor_block ) cursor_found = true;
-    
-    CollapsedBlockData collapsed_data( current.text() );
-    HighlightBlockData* current_data = (dynamic_cast<HighlightBlockData*>( current.userData() ) );
-    
-    if( current_data && current_data->collapsed() ) 
-    { collapsed_data.setChildren( current_data->collapsedData() ); }
-    
-    collapsed_data_list.push_back( collapsed_data );
+
+    // append collapsed data
+    collapsed_data_list.push_back( CollapsedBlockData( current ) );
     
     if( current == second_block ) break;
     

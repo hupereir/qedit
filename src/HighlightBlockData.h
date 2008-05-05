@@ -114,16 +114,13 @@ class HighlightBlockData: public TextBlockData
   //@{
   
   //! delimiters
-  typedef std::map<unsigned int, TextBlock::Delimiter > DelimiterMap;
-
-  //! delimiters
-  const DelimiterMap& delimiters( void ) const
+  const TextBlock::Delimiter::Map& delimiters( void ) const
   { return delimiters_; }
   
   //! delimiter
   TextBlock::Delimiter delimiter( const unsigned int& id ) const
   { 
-    DelimiterMap::const_iterator iter( delimiters_.find(id) );
+    TextBlock::Delimiter::Map::const_iterator iter( delimiters_.find(id) );
     return (iter == delimiters_.end() ) ? TextBlock::Delimiter():iter->second;
   }
 
@@ -185,7 +182,7 @@ class HighlightBlockData: public TextBlockData
   //@{
   
   //! delimiter
-  DelimiterMap delimiters_;
+  TextBlock::Delimiter::Map delimiters_;
   
   //! true if block is collapsed
   bool collapsed_;

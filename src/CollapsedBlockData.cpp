@@ -30,8 +30,25 @@
 */
 
 #include "CollapsedBlockData.h"
-
+#include "HighlightBlockData.h"
 using namespace std;
+
+//_____________________________________________________________
+CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
+  Counter( "CollapsedBlockData" ),
+  text_( block.text() )
+{
+  
+  HighlightBlockData* data( (dynamic_cast<HighlightBlockData*>( block.userData() ) ) );
+  if( data )
+  {
+    
+    // store children
+    if( data->collapsed() ) { children_ = data->collapsedData(); }
+
+  }
+  
+}
 
 //_____________________________________________________________
 QString CollapsedBlockData::toPlainText( void ) const

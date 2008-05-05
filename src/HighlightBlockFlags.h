@@ -33,6 +33,7 @@
 */  
 
 #include <iostream>
+#include <map>
 
 #include "TextBlockFlags.h"
 
@@ -63,6 +64,10 @@ namespace TextBlock
   class Delimiter
   {
     public:
+    
+    //! delimiters
+    typedef std::map<unsigned int, Delimiter > Map;
+
     
     //! constructor
     Delimiter( const int& begin = 0, const int& end = 0 ):
