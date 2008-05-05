@@ -43,9 +43,12 @@ CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
   if( data )
   {
     
-    // store children
+    delimiters_ = data->delimiters();
+    collapsed_ = data->collapsed();
+    
+    // only store children if block is collapsed
     if( data->collapsed() ) { children_ = data->collapsedData(); }
-
+    
   }
   
 }

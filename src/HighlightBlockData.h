@@ -116,6 +116,10 @@ class HighlightBlockData: public TextBlockData
   //! delimiters
   const TextBlock::Delimiter::Map& delimiters( void ) const
   { return delimiters_; }
+
+  //! delimiters
+  void setDelimiters( const TextBlock::Delimiter::Map& delimiters )
+  { delimiters_ = delimiters; }
   
   //! delimiter
   TextBlock::Delimiter delimiter( const unsigned int& id ) const

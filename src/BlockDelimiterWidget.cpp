@@ -425,20 +425,21 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
     cursor.insertBlock();
     cursor.insertText( iter->text() );
     
-    if( !iter->children().empty() )
-    {
-      HighlightBlockData* current_data( new HighlightBlockData() );
-      current_data->setCollapsed( true );
-      current_data->setCollapsedData( iter->children() );
-      cursor.block().setUserData( current_data );
-      if( recursive ) _expand( cursor.block(), current_data, true );
-    }
+    HighlightBlockData* current_data( new HighlightBlockData() );
+    current_data->setDelimiters( iter->delimiters() );
+    current_data->setCollapsed( iter->collapsed() );
+    if( iter->collapsed() ) { current_data->setCollapsedData( iter->children() ); }
+    cursor.block().setUserData( current_data );
+    
+    // also expands block if collapsed and recursive is set to true
+    if( iter->collapsed() && recursive ) _expand( cursor.block(), current_data, true );
     
   }
   
   cursor.endEditBlock();
   _editor().document()->setUndoRedoEnabled( undo_enabled );
   _editor().document()->setModified( modified );
+  
 }
 
 //________________________________________________________________________________________

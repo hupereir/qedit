@@ -37,6 +37,7 @@
 #include <vector>
 
 #include "Counter.h"
+#include "HighlightBlockFlags.h"
 
 class CollapsedBlockData: public Counter
 {
@@ -53,6 +54,14 @@ class CollapsedBlockData: public Counter
   const QString& text( void ) const
   { return text_; }
     
+  //! delimiters
+  const TextBlock::Delimiter::Map& delimiters( void ) const
+  { return delimiters_; }
+  
+  //! collapsed
+  const bool& collapsed( void ) const
+  { return collapsed_; }
+  
   //! children
   const List& children( void ) const
   { return children_; }
@@ -68,6 +77,12 @@ class CollapsedBlockData: public Counter
     
   //! text
   QString text_;
+  
+  //! delimiters
+  TextBlock::Delimiter::Map delimiters_;
+
+  //! collapsed flag
+  bool collapsed_;
   
   //! children
   List children_;
