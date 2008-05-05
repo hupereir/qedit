@@ -94,7 +94,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   
   // by default next paintEvent will require segment update
   need_segment_update_ = false;
-  
+    
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
   int height( QWidget::height() + y_offset );
@@ -495,3 +495,4 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   }
   
 }
+
