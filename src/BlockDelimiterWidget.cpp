@@ -105,28 +105,31 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   QPainter painter( this );
   painter.translate( 0, -y_offset );
   painter.setBrush( palette().color( QPalette::Base ) );
-  
-  // draw all vertical lines
-  for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
-  { 
-    if( iter->first()+top_ < height )
-    {
-      
-      if( !iter->empty() ) 
-      { 
-        painter.drawLine( 
-          half_width_, iter->first()+top_, 
-          half_width_, min( height, iter->second() ) ); 
-      } else { 
-        painter.drawLine( 
-          half_width_, iter->first()+top_, 
-          half_width_, height ); 
-      }
+
+  // optimize drawing by not drawing overlapping segments
+  BlockDelimiterSegment::List::const_reverse_iterator previous( segments_.rend() );
+  for( BlockDelimiterSegment::List::const_reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
+  {
+    // skip this segment if included in previous
+    if( previous != segments_.rend() && iter->first() >= previous->first() && iter->second() <= previous->second() ) 
+    { continue; }
     
+    previous = iter;
+    
+    // draw
+    if( !iter->empty() ) 
+    { 
+      painter.drawLine( 
+        half_width_, iter->first()+top_, 
+        half_width_, min( height, iter->second() ) ); 
+    } else { 
+      painter.drawLine( 
+        half_width_, iter->first()+top_, 
+        half_width_, height ); 
     }
     
   }
-
+  
   // draw ticks
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
@@ -377,7 +380,9 @@ void BlockDelimiterWidget::_updateSegments( void )
             
     }
     
-    for( BlockDelimiterSegment::List::iterator iter = start_points.begin(); iter != start_points.end(); iter++ )
+    // insert the remaining points as empty segments (that will extend to the end of the document)
+    /* they are inserted in reverse order to optimize segment drawing in paintEvent */
+    for( BlockDelimiterSegment::List::const_reverse_iterator iter = start_points.rbegin(); iter != start_points.rend(); iter++ )
     { segments_.push_back( *iter ); }
     
     // insert total number of collapsed block as last element

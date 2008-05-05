@@ -108,7 +108,7 @@ class BlockDelimiterSegment: public Counter
   }
       
   //! empty segment
-  bool empty( void )
+  bool empty( void ) const
   { return first() == second(); }
   
   //! active rect
