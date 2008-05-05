@@ -54,6 +54,9 @@ class HighlightPattern;
 class TextHighlight: public QSyntaxHighlighter, public Counter
 {
   
+  //! Qt meta object
+  Q_OBJECT
+
   public:
   
   //! constructor
@@ -157,6 +160,11 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   { spell_pattern_.setStyle( HighlightStyle( "spellcheck_style", spellParser().fontFormat(), spellParser().color() ) ); }
 
   #endif
+  
+  signals:
+  
+  //! emmited when block delimiters have changed
+  void needSegmentUpdate( void );
   
   private:
   

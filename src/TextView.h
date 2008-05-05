@@ -68,7 +68,7 @@ class TextView: public QFrame, public BASE::Key, public Counter
     assert( block_delimiter_widget_ );
     return *block_delimiter_widget_;
   }
-
+  
   //! used to select editor with matching filename
   class SameFileFTor
   {

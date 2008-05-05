@@ -600,6 +600,10 @@ QString TextDisplay::toPlainText( void ) const
   
   Debug::Throw( "TextDisplay::toPlainText.\n" );
   
+  // check blockDelimiterAction
+  if( !( showBlockDelimiterAction().isEnabled() && showBlockDelimiterAction().isChecked() ) ) 
+  { return TextEditor::toPlainText(); }
+  
   // output string
   QString out;
   
@@ -613,7 +617,8 @@ QString TextDisplay::toPlainText( void ) const
     
     // try retrieve highlight data
     // add collapsed data if any
-    HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    //HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    HighlightBlockData* data( static_cast<HighlightBlockData*>( block.userData() ) );
     if( data && data->collapsed() )
     { 
       const CollapsedBlockData::List& data_list( data->collapsedData() );
@@ -909,8 +914,7 @@ void TextDisplay::updateDocumentClass( void )
   _setMacros( document_class.textMacros() );
 
   // change showBlockDelimiterAction enable state
-  showBlockDelimiterAction().setEnabled( !document_class.blockDelimiters().empty() );
-  
+  showBlockDelimiterAction().setVisible( !document_class.blockDelimiters().empty() );
   emit blockDelimitersAvailable( document_class.blockDelimiters() );
 
   // update enability for parenthesis matching

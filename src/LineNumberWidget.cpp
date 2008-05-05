@@ -40,7 +40,7 @@
 #include "TextEditor.h"
 #include "Debug.h"
 #include "LineNumberWidget.h"
-#include "TextBlockData.h"
+#include "HighlightBlockData.h"
 #include "XmlOptions.h"
 
 //____________________________________________________________________________
@@ -95,15 +95,13 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), block_count++ )
   {
     int block_y( block.layout()->position().y() );
-    if ( block_y < y_offset ) continue;    
+    
+    // stop if block is outside (below) window
     if ( block_y > height ) break;
     
-    // block highlight
-    TextBlockData* data = 0;
-    if( 
-      _editor().blockHighlightAction().isChecked() && 
-      ( data = static_cast<TextBlockData*>( block.userData() ) ) &&  
-      data->hasFlag( TextBlock::CURRENT_BLOCK ) )
+    // block data
+    HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    if( _editor().blockHighlightAction().isChecked() && data && data->hasFlag( TextBlock::CURRENT_BLOCK ) )
     {
       
       painter.setBrush( highlight_color_ );
@@ -117,15 +115,22 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
       
     } 
     
-    QString numtext( QString::number(block_count) );
+    // do not draw if not in window
+    if ( block_y >= y_offset )    
+    {
+      QString numtext( QString::number(block_count) );
+      
+      painter.drawText(
+        0, block_y, width()-8,
+        metric.lineSpacing(),
+        Qt::AlignRight | Qt::AlignTop, 
+        numtext );
+      
+      max_length = std::max( max_length, metric.width(numtext)+metric.width("0")+10 );
+    }
     
-    painter.drawText(
-      0, block_y, width()-8,
-      metric.lineSpacing(),
-      Qt::AlignRight | Qt::AlignTop, 
-      numtext );
-    
-    max_length = std::max( max_length, metric.width(numtext)+metric.width("0")+10 );
+    // update block count in case of collapsed block
+    if( data && data->collapsed() ) { block_count += data->collapsedBlockCount(); }
     
   }
 

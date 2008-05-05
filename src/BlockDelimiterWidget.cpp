@@ -34,6 +34,7 @@
 
 #include "BlockHighlight.h"
 #include "TextDisplay.h"
+#include "TextHighlight.h"
 #include "Debug.h"
 #include "BlockDelimiterWidget.h"
 #include "HighlightBlockData.h"
@@ -46,8 +47,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   QWidget( parent),
   Counter( "BlockDelimiterWidget" ),
   editor_( editor ),
-  need_segment_update_( true ),
-  all_blocks_valid_( false )
+  need_segment_update_( true )
 {
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
@@ -55,8 +55,9 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   // actions
   _installActions();
   
-  connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( _scrollBarPositionChanged() ) );
-  connect( &_editor(), SIGNAL( textChanged() ), SLOT( _textModified() ) );
+  connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
+  connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );
+  connect( &_editor().textHighlight(), SIGNAL( needSegmentUpdate() ), SLOT( needSegmentUpdate() ) );
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
   // update configuration
@@ -88,14 +89,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   if( delimiters_.empty() ) return;
     
   // update segments if needed
-  /* 
-  this does not work right now. Some times update segments is not called
-  as it should. It is due to several events triggering the paintEvent method
-  with incorrect flags. To be investigated.
-  No. The reason is that the TextBlock delimiter data are updated when re-highlighting
-  which can be done without changing the text.
-  */
-  // if( need_segment_update_ || !all_blocks_valid_ ) 
+  if( need_segment_update_ ) 
   { _updateSegments(); }
   
   // by default next paintEvent will require segment update
@@ -199,7 +193,7 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
       first_block = block;
       
       // if segment is collapsed, break loop
-      first_block_data = dynamic_cast<HighlightBlockData*>( block.userData() );
+      first_block_data = static_cast<HighlightBlockData*>( block.userData() );
       assert( first_block_data );
       
       if( first_block_data->collapsed() ) break;
@@ -223,8 +217,8 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   else _collapse( first_block, second_block, first_block_data );
    
   // marck block as dirty to make sure it is re-highlighted
-  all_blocks_valid_ = false;
   _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
+  need_segment_update_ = true;
   update();
 
 }
@@ -269,29 +263,14 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
   {
     
     // retrieve data and check if collapsed
-    HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    HighlightBlockData* data( static_cast<HighlightBlockData*>( block.userData() ) );
     if( !( data && data->collapsed() ) ) continue;
     _expand( block, data, true );
       
   }
-  
+    
   return;
   
-}
-
-//________________________________________________________
-void BlockDelimiterWidget::_textModified( void )
-{
-  // Debug::Throw(0, "BlockDelimiterWidget::_textModified.\n" );
-  need_segment_update_ = true;
-  update();
-}
-
-//________________________________________________________
-void BlockDelimiterWidget::_scrollBarPositionChanged( void )
-{
-  // Debug::Throw(0, "BlockDelimiterWidget::_scrollBarPositionChanged.\n" );
-  update();
 }
 
 //________________________________________________________
@@ -312,20 +291,22 @@ void BlockDelimiterWidget::_updateSegments( void )
   segments_.clear();
   
   // keep track of collapsed blocks
-  bool has_collapsed_blocks( false );
-  all_blocks_valid_ = true;
+  bool has_collapsed_blocks( false ); 
+  unsigned int collapsed_block_count(0);
+  collapsed_blocks_.clear();
   
-  QTextDocument &document( *_editor().document() );
+  // loop over delimiter types
+  bool first( true );
   for( BlockDelimiter::List::const_iterator iter = delimiters_.begin(); iter != delimiters_.end(); iter++ )
   {
   
     // keep track of all starting points
     BlockDelimiterSegment::List start_points;
-    int block_id(0);
-
-    for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), block_id++ ) 
+    int block_count(0);
+    QTextDocument &document( *_editor().document() );
+    for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), block_count++ ) 
     {
-
+      
       /*
       get block limits
       either use the block layout (if available)
@@ -333,20 +314,15 @@ void BlockDelimiterWidget::_updateSegments( void )
       One checks that the bounding rect if valid before proceeding.
       */      
       QRectF rect( block.layout()->boundingRect() );
-      if( rect.isNull() ) 
-      { rect = _editor().document()->documentLayout()->blockBoundingRect( block ); }
-      
+      if( rect.isNull() ) { rect = _editor().document()->documentLayout()->blockBoundingRect( block ); }
       assert( !rect.isNull() );
             
       int block_begin( block.layout()->position().y() );
       int block_end( block_begin + block.layout()->boundingRect().height() );
             
       // retrieve data and check this block delimiter
-      HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
-      if( !data ) {
-        all_blocks_valid_ = false;
-        continue;
-      }
+      HighlightBlockData* data = (static_cast<HighlightBlockData*>( block.userData() ) );
+      if( !data ) continue;
 
       // store "ignore" state
       bool ignored = _editor().ignoreBlock( block );
@@ -371,10 +347,10 @@ void BlockDelimiterWidget::_updateSegments( void )
 
       // store collapse state
       const bool& collapsed( data->collapsed() );
-      
-      // prepare segment flags
       if( collapsed || delimiter.begin() )
       {
+        
+        // prepare segment flags
         unsigned int flags( BlockDelimiterSegment::NONE );
         if( ignored ) flags |= BlockDelimiterSegment::IGNORED;
         if( collapsed ) flags |= BlockDelimiterSegment::COLLAPSED;
@@ -383,11 +359,27 @@ void BlockDelimiterWidget::_updateSegments( void )
         for( int i = (collapsed ? 1:0); i < delimiter.begin(); i++ )
         { start_points.push_back( BlockDelimiterSegment(block_begin, block_begin, flags ) ); }
     
-        // if block is collapsed add one self contained segment
         if( collapsed ) { 
+ 
+          // store number of collapsed blocks for the current one
+          if( first )
+          {
+            collapsed_blocks_.insert( make_pair( block_count, collapsed_block_count ) );
+            collapsed_block_count += data->collapsedBlockCount();
+          }
+          
+          // add one self contained segment
           has_collapsed_blocks = true;
           segments_.push_back( BlockDelimiterSegment( block_begin, block_end, flags ) );
         }
+        
+      }
+      
+      // insert total number of collapsed block as last element
+      if( first ) 
+      {
+        collapsed_blocks_.insert( make_pair( block_count, collapsed_block_count ) );
+        first = false;
       }
       
     }
@@ -445,7 +437,7 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
 //________________________________________________________________________________________
 void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QTextBlock& second_block, HighlightBlockData* data ) const
 {
-    
+   
   data->setCollapsed( true );
     
   // if next block is not valid, nothing is to be done

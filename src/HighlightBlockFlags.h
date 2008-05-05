@@ -67,13 +67,16 @@ namespace TextBlock
     
     //! delimiters
     typedef std::map<unsigned int, Delimiter > Map;
-
     
     //! constructor
     Delimiter( const int& begin = 0, const int& end = 0 ):
       begin_( begin ),
       end_( end )
     {}
+
+    //! different operator
+    bool operator != (const Delimiter& delimiter ) const
+    { return begin_ != delimiter.begin_ || end_ != delimiter.end_; }
     
     //! number of times the block is of type "begin"
     const int& begin( void ) const

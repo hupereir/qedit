@@ -237,11 +237,12 @@ class TextDisplay: public TextEditor
 
   //! convert to plain text
   /*! 
+  This method makes sure that full text is obtained even when some blocks are collapsed.
   this should be an overloaded function, but the base class method is not virtual
-  however, it is never called via a pointer to the base class, so that it should be fine
+  however, it is never called via a pointer to the base class, so that it should be fine.
   */
   QString toPlainText( void ) const;
-  
+    
   //! Get HTML formated text
   QDomElement htmlNode( QDomDocument& document, const int& max_line_size = 0 );
 

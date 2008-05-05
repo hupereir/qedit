@@ -141,6 +141,7 @@ nodist_qedit_SOURCES = \
   moc_ParenthesisHighlight.cpp \
   moc_PrintDialog.cpp \
   moc_TextDisplay.cpp \
+  moc_TextHighlight.cpp \
   moc_TextIndent.cpp \
   moc_TextView.cpp
 

@@ -69,6 +69,10 @@ class BlockDelimiterWidget: public QWidget, public Counter
   
   //! synchronization
   void synchronize( const BlockDelimiterWidget* );
+    
+  //! number of collapsed block until given block ID
+  unsigned int collapsedBlockCount( const int& block ) const
+  { return ( collapsed_blocks_.empty() ) ? 0 : collapsed_blocks_.lower_bound( block )->second; }
   
   //!@name actions
   //@{
@@ -78,6 +82,12 @@ class BlockDelimiterWidget: public QWidget, public Counter
   { return *expand_all_action_; }
   
   //@}
+  
+  public slots:
+  
+  //! toggle segment update
+  void needSegmentUpdate( void )
+  { need_segment_update_ = true; }
   
   protected:
   
@@ -98,13 +108,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
       
   //! expand all blocks
   void _expandAllBlocks( void );
-
-  //! text modified
-  void _textModified( void );
-  
-  //! update position to match scrollbar
-  void _scrollBarPositionChanged( void );
-  
+    
   private:
   
   //! install actions
@@ -133,11 +137,14 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! block segments
   BlockDelimiterSegment::List segments_;
   
+  //! map block id and number of collapsed blocks
+  typedef std::map<int, int> CollapsedBlockMap;
+  
+  //! map block id and number of collapsed blocks
+  CollapsedBlockMap collapsed_blocks_;
+  
   //! true when _updateSegments needs to be called in paintEvent
   bool need_segment_update_; 
-  
-  //! true when all blocks have bounding rect and highlight data
-  bool all_blocks_valid_;
   
   //!@name marker dimension
   //@{

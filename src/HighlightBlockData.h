@@ -129,8 +129,19 @@ class HighlightBlockData: public TextBlockData
   }
 
   //! delimiter
-  void setDelimiter( const unsigned int& id, const TextBlock::Delimiter& delimiter )
-  { delimiters_[id] = delimiter; }
+  /*! returns true if values changed */
+  bool setDelimiter( const unsigned int& id, const TextBlock::Delimiter& delimiter )
+  { 
+    TextBlock::Delimiter::Map::iterator iter( delimiters_.find(id) );
+    if( iter == delimiters_.end() )
+    {
+      delimiters_.insert( std::make_pair(id, delimiter ) );
+      return true;
+    } else if( iter->second != delimiter ) {
+      iter->second = delimiter;
+      return true;
+    } else return false;
+  }
   
   //! true if block is collapsed
   const bool& collapsed( void ) const
@@ -143,14 +154,13 @@ class HighlightBlockData: public TextBlockData
   //! collapsed data
   const CollapsedBlockData::List& collapsedData( void ) const
   { return collapsed_data_; }
-  
-  //! collapsed data
-  void clearCollapsedData( void )
-  { collapsed_data_.clear(); }
-  
+    
   //! collapsed data
   void setCollapsedData( const CollapsedBlockData::List& data ) 
   { collapsed_data_ = data; }
+  
+  //! number of collapsed blocks stored
+  unsigned int collapsedBlockCount( void ) const;
   
   //@}
   
@@ -193,10 +203,7 @@ class HighlightBlockData: public TextBlockData
   
   //! collapsed data
   CollapsedBlockData::List collapsed_data_;
-  
-  //! collapsed text
-  // QString collapsed_text_;
-  
+    
   //@}
   
   #if WITH_ASPELL

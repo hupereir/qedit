@@ -54,6 +54,16 @@ CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
 }
 
 //_____________________________________________________________
+unsigned int CollapsedBlockData::blockCount( void ) const
+{
+  unsigned int out(1);
+  for( List::const_iterator iter = children().begin(); iter != children().end(); iter++ )
+  { out += iter->blockCount(); }
+  
+  return out;
+}
+
+//_____________________________________________________________
 QString CollapsedBlockData::toPlainText( void ) const
 {
   

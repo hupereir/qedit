@@ -62,6 +62,9 @@ class CollapsedBlockData: public Counter
   const bool& collapsed( void ) const
   { return collapsed_; }
   
+  //! number of blocks stored by this data object
+  unsigned int blockCount( void ) const;
+  
   //! children
   const List& children( void ) const
   { return children_; }

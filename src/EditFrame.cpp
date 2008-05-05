@@ -706,7 +706,16 @@ void EditFrame::_update( unsigned int flags )
 void EditFrame::_updateCursorPosition( void )
 {
   
+  // retrieve position in text
   TextPosition position( activeView().editor().textPosition() );
+  
+  /*
+  if block delimiters are shown, 
+  need to count how many blocks are collapsed prior to current
+  and increment paragraph consequently
+  */
+  position.paragraph() += activeView().blockDelimiterWidget().collapsedBlockCount( position.paragraph() );
+  
   statusbar_->label(0).setText( Str( "line : " ).append<int>( position.paragraph()+1 ).c_str() , false );
   statusbar_->label(1).setText( Str( "column : " ).append<int>( position.index()+1 ).c_str() , false );
 

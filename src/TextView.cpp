@@ -91,8 +91,8 @@ void TextView::_toggleShowLineNumbers( bool state )
   Debug::Throw( "TextView::_toggleShowLineNumbers.\n" );
   _lineNumberWidget().setVisible( state );
 
-    // update option
-    XmlOptions::get().set<bool>( "SHOW_LINE_NUMBERS", state );
+  // update option
+  XmlOptions::get().set<bool>( "SHOW_LINE_NUMBERS", state );
 
 }
 
@@ -121,7 +121,7 @@ void TextView::_toggleShowBlockDelimiters( bool state )
   Debug::Throw( "TextView::_toggleShowBlockDelimiters.\n" );
   
   // check if blockDelimiter is allowed to be shown/hidden
-  if( editor().showBlockDelimiterAction().isEnabled() ) 
+  if( editor().showBlockDelimiterAction().isVisible() ) 
   {
     
     // expand all collapsed blocks prior to hiding the widget    

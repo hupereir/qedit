@@ -75,7 +75,7 @@ class BlockDelimiterSegment: public Counter
   //! flags
   BlockDelimiterSegment& setFlag( const Flag& flag, const bool& value )
   { 
-    if( value ) flags_ |= flag; 
+    if( value ) flags_ |= flag;
     else flags_ &= (~flag);
     return *this;
   } 
@@ -150,6 +150,18 @@ class BlockDelimiterSegment: public Counter
     
     bool operator() ( const BlockDelimiterSegment& segment ) const
     { return segment.flag( COLLAPSED ); }
+    
+  };
+  
+  //! used to sort segments according to starting or ending points
+  /*! top level segments should comme first */
+  class SortFTor
+  {
+    
+    public:
+    
+    bool operator() ( const BlockDelimiterSegment& first, const BlockDelimiterSegment& second ) const
+    { return ( first.first() < second.first() || (first.first() == second.first() && first.second() > second.second() ) ); }
     
   };
   
