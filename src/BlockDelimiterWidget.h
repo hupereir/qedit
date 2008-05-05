@@ -98,13 +98,12 @@ class BlockDelimiterWidget: public QWidget, public Counter
       
   //! expand all blocks
   void _expandAllBlocks( void );
+
+  //! text modified
+  void _textModified( void );
   
   //! update position to match scrollbar
-  void _scrollBarPositionChanged( void )
-  {
-    need_segment_update_ = false;
-    update();
-  }
+  void _scrollBarPositionChanged( void );
   
   private:
   
@@ -143,17 +142,6 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //!@name marker dimension
   //@{
 
-  /* 
-  note: to speed-up the code, one could store all positions as members 
-  they are:
-    half_width = 0.5*width
-    top = 0.8*width
-    top_left = 0.2*width
-    rect_width = rect_height = 0.6*width
-    marker_left = 0.35*width;
-    marker_right = 0.65*width; 
-  */
-  
   int width_;
   int half_width_;
   int top_;

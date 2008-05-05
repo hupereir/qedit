@@ -328,11 +328,14 @@ void BlockDelimiterWidget::_updateSegments( void )
     for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), block_id++ ) 
     {
 
-      // get block limits
-      // it might happen that the block rect has not been 
-      // defined yet. Such are skipped.
+      /*
+      get block limits
+      either use the block layout (if available)
+      or the document layout, if the former is not ready yet. 
+      One checks that the bounding rect if valid before proceeding.
+      */      
       QRectF rect( block.layout()->boundingRect() );
-      if( rect.isNull() )
+      if( rect.isNull() ) 
       { rect = _editor().document()->documentLayout()->blockBoundingRect( block ); }
       
       assert( !rect.isNull() );
