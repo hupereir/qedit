@@ -46,7 +46,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   QWidget( parent),
   Counter( "BlockDelimiterWidget" ),
   editor_( editor ),
-  need_segment_update_( true )
+  need_update_( true )
 {
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
@@ -55,9 +55,12 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   _installActions();
   
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
-  connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( needSegmentUpdate() ) );
+  connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
+  connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );
-  connect( &_editor().textHighlight(), SIGNAL( needSegmentUpdate() ), SLOT( needSegmentUpdate() ) );
+  connect( &_editor().textHighlight(), SIGNAL( needSegmentUpdate() ), SLOT( _needUpdate() ) );
+  connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( _needUpdate() ) );
+  connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( update() ) );
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
   // update configuration
@@ -89,11 +92,11 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   if( delimiters_.empty() ) return;
     
   /* update segments if needed */
-  if( need_segment_update_ ) 
+  if( need_update_ ) 
   { _updateSegments(); }
   
   // by default next paintEvent will require segment update
-  need_segment_update_ = false;
+  need_update_ = false;
     
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
@@ -220,7 +223,7 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   else _collapse( first_block, second_block, first_block_data );
    
   // marck block as dirty to make sure it is re-highlighted
-  need_segment_update_ = true;
+  need_update_ = true;
   _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
 
 }
@@ -253,6 +256,26 @@ void BlockDelimiterWidget::_updateConfiguration( void )
   // adjust size
   setFixedWidth( width_ );
 
+}
+
+//________________________________________________________
+void BlockDelimiterWidget::_contentsChanged( void )
+{
+  // if text is wrapped, line number data needs update at next update
+  /* note: this could be further optimized if one retrieve the position at which the contents changed occured */
+  if( _editor().lineWrapMode() != QTextEdit::NoWrap )
+  { need_update_ = true; }
+}
+
+//________________________________________________________
+void BlockDelimiterWidget::_blockCountChanged( void )
+{
+  
+  // nothing to be done if wrap mode is not NoWrap, because
+  // it is handled in the _contentsChanged slot.
+  if( _editor().lineWrapMode() == QTextEdit::NoWrap )
+  { need_update_ = true; }
+  
 }
 
 //________________________________________________________
@@ -317,7 +340,7 @@ void BlockDelimiterWidget::_updateSegments( void )
       or the document layout, if the former is not ready yet. 
       One checks that the bounding rect if valid before proceeding.
       */      
-      QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
+      QRectF rect( document.documentLayout()->blockBoundingRect( block ) );
       assert( !rect.isNull() );
             
       int block_begin( block.layout()->position().y() );

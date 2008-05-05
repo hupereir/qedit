@@ -82,13 +82,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   { return *expand_all_action_; }
   
   //@}
-  
-  public slots:
-  
-  //! toggle segment update
-  void needSegmentUpdate( void )
-  { need_segment_update_ = true; }
-  
+    
   protected:
   
   //! paint
@@ -108,7 +102,17 @@ class BlockDelimiterWidget: public QWidget, public Counter
       
   //! expand all blocks
   void _expandAllBlocks( void );
+
+  //! need update
+  void _needUpdate( void )
+  { need_update_ = true; }
     
+  //! contents changed
+  void _contentsChanged( void );
+  
+  //! block count changed
+  void _blockCountChanged( void );
+  
   private:
   
   //! install actions
@@ -144,7 +148,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   CollapsedBlockMap collapsed_blocks_;
   
   //! true when _updateSegments needs to be called in paintEvent
-  bool need_segment_update_; 
+  bool need_update_; 
   
   //!@name marker dimension
   //@{

@@ -80,11 +80,57 @@ class LineNumberWidget: public QWidget, public Counter
   //! configuration
   void _updateConfiguration( void );
   
+  //! need update
+  void _needUpdate( void )
+  { need_update_ = true; }
+  
+  //! contents changed
+  void _contentsChanged( void );
+  
+  //! block count changed
+  void _blockCountChanged( void );
+    
   private:
   
   //! editor
   TextEditor& _editor( void ) const
   { return *editor_; }
+
+  //! update line number data
+  void _updateLineNumberData( void );
+  
+  //! map block number and position
+  class LineNumberData
+  {
+    
+    public:
+    
+    //! list of data
+    typedef std::vector<LineNumberData> List;
+    
+    //! constructor
+    LineNumberData( const unsigned int& line_number, const int& y ):
+      line_number_( line_number ),
+      y_( y )
+    {}
+    
+    //! line number
+    const unsigned int& lineNumber( void ) const
+    { return line_number_; }
+    
+    //! y
+    const int& y( void ) const
+    { return y_; }
+    
+    private:
+    
+    //! line number
+    unsigned int line_number_;
+    
+    //! position
+    int y_;
+    
+  };  
   
   //! associated editor
   TextEditor* editor_;
@@ -92,6 +138,11 @@ class LineNumberWidget: public QWidget, public Counter
   //! current block highlight color
   QColor highlight_color_;
   
+  //! line number data
+  LineNumberData::List line_number_data_;
+  
+  //! true when line number data update is needed
+  bool need_update_;
   
 };
 
