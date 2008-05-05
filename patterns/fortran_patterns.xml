@@ -75,7 +75,7 @@
  </range_pattern>
   
  <!-- parenthesis -->
- <parenthesis begin="(" end=")" />
+ <parenthesis begin="(" end=")" regexp="\(|\)" />
 
  <!-- indentation rules -->
  
@@ -155,6 +155,7 @@
    <regexp>^\s*ELSE\s*IF\b</regexp>
   </rule>
  </indent_pattern>
+
  <!-- text processing macros -->
  <macro name="Clean end of line" accelerator="Alt+C">
   <rule>
