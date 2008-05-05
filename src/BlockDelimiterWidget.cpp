@@ -55,6 +55,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   _installActions();
   
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
+  connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( needSegmentUpdate() ) );
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );
   connect( &_editor().textHighlight(), SIGNAL( needSegmentUpdate() ), SLOT( needSegmentUpdate() ) );
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
@@ -373,27 +374,21 @@ void BlockDelimiterWidget::_updateSegments( void )
         }
         
       }
-      
-      // insert total number of collapsed block as last element
-      if( first ) 
-      {
-        collapsed_blocks_.insert( make_pair( block_count, collapsed_block_count ) );
-        first = false;
-      }
-      
+            
     }
     
     for( BlockDelimiterSegment::List::iterator iter = start_points.begin(); iter != start_points.end(); iter++ )
     { segments_.push_back( *iter ); }
-  
+    
+    // insert total number of collapsed block as last element
+    if( first ) 
+    {
+      collapsed_blocks_.insert( make_pair( block_count, collapsed_block_count ) );
+      first = false;
+    }
+
   }
-  
-  // dump collapse map
-  for( CollapsedBlockMap::iterator iter = collapsed_blocks_.begin(); iter != collapsed_blocks_.end(); iter++ )
-  {
-    cout << "BlockDelimiterWidget::_updateSegments - block: " << iter->first << " count: " << iter->second << endl;
-  }
-  
+    
   // update expand all action
   expandAllAction().setEnabled( has_collapsed_blocks );
   

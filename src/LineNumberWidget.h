@@ -92,6 +92,7 @@ class LineNumberWidget: public QWidget, public Counter
   //! current block highlight color
   QColor highlight_color_;
   
+  
 };
 
 #endif
