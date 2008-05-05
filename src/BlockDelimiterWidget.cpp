@@ -218,7 +218,6 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   // marck block as dirty to make sure it is re-highlighted
   need_segment_update_ = true;
   _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
-  //update();
 
 }
 

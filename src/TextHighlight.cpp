@@ -34,7 +34,7 @@
 #include "Debug.h"
 #include "HighlightPattern.h"
 #include "HighlightBlockData.h"
-#include "TextPa<renthesis.h"
+#include "TextParenthesis.h"
 #include "TextHighlight.h"
 
 using namespace std;
