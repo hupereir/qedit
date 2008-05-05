@@ -98,7 +98,8 @@ void TextHighlight::highlightBlock( const QString& text )
     bool segment_changed( false );
     for( BlockDelimiter::List::const_iterator iter = block_delimiters_.begin(); iter != block_delimiters_.end(); iter++ )
     { segment_changed |= data->setDelimiter( iter->id(), _delimiter( *iter, text ) ); }
-    if( segment_changed ) emit needSegmentUpdate();
+    //if( segment_changed )  
+    emit needSegmentUpdate();
   }
   
   // highlight patterns
