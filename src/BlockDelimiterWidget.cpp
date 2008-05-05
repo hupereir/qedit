@@ -21,13 +21,6 @@
 *
 *******************************************************************************/
 
-/*!
-  \file BlockDelimiterWidget.cpp
-  \brief display block delimiters
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
 
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
@@ -89,6 +82,8 @@ void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
 void BlockDelimiterWidget::paintEvent( QPaintEvent* )
 {  
   
+  // Debug::Throw(0, "BlockDelimiterWidget::paintEvent.\n" );
+  
   // check delimiters
   if( delimiters_.empty() ) return;
     
@@ -97,6 +92,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   this does not work right now. Some times update segments is not called
   as it should. It is due to several events triggering the paintEvent method
   with incorrect flags. To be investigated.
+  No. The reason is that the TextBlock delimiter data are updated when re-highlighting
+  which can be done without changing the text.
   */
   // if( need_segment_update_ || !all_blocks_valid_ ) 
   { _updateSegments(); }
@@ -285,6 +282,7 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
 //________________________________________________________
 void BlockDelimiterWidget::_textModified( void )
 {
+  // Debug::Throw(0, "BlockDelimiterWidget::_textModified.\n" );
   need_segment_update_ = true;
   update();
 }
@@ -292,7 +290,7 @@ void BlockDelimiterWidget::_textModified( void )
 //________________________________________________________
 void BlockDelimiterWidget::_scrollBarPositionChanged( void )
 {
-  //need_segment_update_ = false;
+  // Debug::Throw(0, "BlockDelimiterWidget::_scrollBarPositionChanged.\n" );
   update();
 }
 
@@ -339,12 +337,7 @@ void BlockDelimiterWidget::_updateSegments( void )
       { rect = _editor().document()->documentLayout()->blockBoundingRect( block ); }
       
       assert( !rect.isNull() );
-      
-      if( block.layout()->boundingRect().isNull() ) {
-        all_blocks_valid_ = false;
-        continue;
-      }
-      
+            
       int block_begin( block.layout()->position().y() );
       int block_end( block_begin + block.layout()->boundingRect().height() );
             

@@ -903,13 +903,15 @@ void TextDisplay::updateDocumentClass( void )
   textHighlight().setPatterns( document_class.highlightPatterns() );
   textHighlight().setParenthesis( document_class.parenthesis() );
   textHighlight().setBlockDelimiters( document_class.blockDelimiters() );
-    
-  showBlockDelimiterAction().setEnabled( !document_class.blockDelimiters().empty() );
-  emit blockDelimitersAvailable( document_class.blockDelimiters() );
-  
+      
   textIndent().setPatterns( document_class.indentPatterns() );
   textIndent().setBaseIndentation( document_class.baseIndentation() );
   _setMacros( document_class.textMacros() );
+
+  // change showBlockDelimiterAction enable state
+  showBlockDelimiterAction().setEnabled( !document_class.blockDelimiters().empty() );
+  
+  emit blockDelimitersAvailable( document_class.blockDelimiters() );
 
   // update enability for parenthesis matching
   textHighlight().setParenthesisEnabled(
