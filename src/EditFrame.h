@@ -646,7 +646,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   
   //! resize timer
   QBasicTimer resize_timer_;
-  
+
   //! position update timer
   QTimer position_timer_;
   
