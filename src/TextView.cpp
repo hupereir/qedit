@@ -34,6 +34,7 @@
 #include "BlockDelimiterWidget.h"
 #include "LineNumberWidget.h"
 #include "TextDisplay.h"
+#include "TextHighlight.h"
 #include "TextView.h"
 #include "XmlOptions.h"
 
@@ -114,6 +115,12 @@ void TextView::_loadBlockDelimiters( BlockDelimiter::List delimiters )
   if( delimiters.empty() ) blockDelimiterWidget().hide();
   else blockDelimiterWidget().setVisible( editor().showBlockDelimiterAction().isChecked() );
   
+  // update text highlight object
+  editor().textHighlight().setBlockDelimitersEnabled( 
+    (!delimiters.empty()) && 
+    editor().showBlockDelimiterAction().isChecked() 
+    );
+  
 }
 
 //___________________________________________
@@ -132,13 +139,14 @@ void TextView::_toggleShowBlockDelimiters( bool state )
     // update visibility
     blockDelimiterWidget().setVisible( state );
     
+    // update text highlight object
+    editor().textHighlight().setBlockDelimitersEnabled( 
+      (!blockDelimiterWidget().blockDelimiters().empty() ) &&
+      state );
+    
     // update option
     XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", state );
     
   }
   
 }
-
-
-
-

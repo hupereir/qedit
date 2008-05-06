@@ -44,7 +44,8 @@ TextHighlight::TextHighlight( QTextDocument* document ):
   QSyntaxHighlighter( document ),
   Counter( "TextHighlight" ),
   highlight_enabled_( false ),
-  parenthesis_enabled_( false )
+  parenthesis_enabled_( false ),
+  block_delimiters_enabled_( true )
 { Debug::Throw( "TextHighlight::TextHighlight.\n" ); }
 
 //_______________________________________________________
@@ -93,7 +94,7 @@ void TextHighlight::highlightBlock( const QString& text )
   }
 
   // block delimiters parsing
-  if( need_update ) 
+  if( isBlockDelimitersEnabled() && need_update ) 
   {
     bool segment_changed( false );
     for( BlockDelimiter::List::const_iterator iter = block_delimiters_.begin(); iter != block_delimiters_.end(); iter++ )

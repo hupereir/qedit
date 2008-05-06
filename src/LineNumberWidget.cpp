@@ -66,8 +66,15 @@ LineNumberWidget::LineNumberWidget(TextEditor* editor, QWidget* parent):
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( _needUpdate() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( update() ) );
-  connect( &_editor().blockHighlight(), SIGNAL( highlightChanged() ), SLOT( update() ) );
+  connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
+  connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
+
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );  
+
+  // this is needed to update current paragraph highlight
+  // it has not been re-implemented yet
+  // connect( &_editor().blockHighlight(), SIGNAL( highlightChanged() ), SLOT( update() ) );
+  
   
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
@@ -179,6 +186,7 @@ void LineNumberWidget::_updateConfiguration( void )
 //________________________________________________________
 void LineNumberWidget::_contentsChanged( void )
 {
+  
   // if text is wrapped, line number data needs update at next update
   /* note: this could be further optimized if one retrieve the position at which the contents changed occured */
   if( _editor().lineWrapMode() != QTextEdit::NoWrap )
@@ -188,7 +196,7 @@ void LineNumberWidget::_contentsChanged( void )
 //________________________________________________________
 void LineNumberWidget::_blockCountChanged( void )
 {
-  
+    
   // nothing to be done if wrap mode is not NoWrap, because
   // it is handled in the _contentsChanged slot.
   if( _editor().lineWrapMode() == QTextEdit::NoWrap )

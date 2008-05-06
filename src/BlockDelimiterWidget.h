@@ -67,6 +67,10 @@ class BlockDelimiterWidget: public QWidget, public Counter
   void setBlockDelimiters( const BlockDelimiter::List& delimiters )
   { delimiters_ = delimiters; }
   
+  //! block delimiters
+  const BlockDelimiter::List& blockDelimiters( void ) const
+  { return delimiters_; }
+  
   //! synchronization
   void synchronize( const BlockDelimiterWidget* );
       

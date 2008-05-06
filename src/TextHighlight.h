@@ -127,6 +127,18 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
 
   //!@name block delimiters
   //@{
+
+  //! block delimiters enabled
+  const bool& isBlockDelimitersEnabled( void ) const
+  { return block_delimiters_enabled_; }
+  
+  //! block delimiters enabled
+  bool setBlockDelimitersEnabled( const bool& state )
+  {
+    if( block_delimiters_enabled_ == state ) return false;
+    block_delimiters_enabled_ = state;
+    return true;
+  }
   
   //! block delimiters
   void setBlockDelimiters( const BlockDelimiter::List& delimiters )
@@ -199,8 +211,16 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   
   //@}
   
+  //!@name block delimiters
+  //@{
+  
+  //! enabled
+  bool block_delimiters_enabled_; 
+  
   //! block delimiters
   BlockDelimiter::List block_delimiters_;
+  
+  //@}
   
   //!@name spell checking
   //@{
