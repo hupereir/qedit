@@ -104,6 +104,9 @@ class BlockDelimiterWidget: public QWidget, public Counter
   /*! wheel events are forwarded to the editor */
   virtual void wheelEvent( QWheelEvent* );
   
+  //! context menu event [overloaded]
+  virtual void contextMenuEvent( QContextMenuEvent* );
+
   private slots:
   
   //! configuration
@@ -133,6 +136,17 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! update segments
   /*! this might go into a slot, linked to document being modified */
   void _updateSegments( void );
+  
+  //! block pair
+  typedef std::pair<QTextBlock, QTextBlock> TextBlockPair;
+  
+  //! find blocks that match a given segment
+  /*! 
+  \param block running block used to parse the document
+  \param segment the segment to be found
+  \param data the user data associated to the output segment
+  */
+  TextBlockPair _findBlocks( QTextBlock block, const BlockDelimiterSegment& segment, HighlightBlockData*& data ) const;  
   
   //! expand current block
   void _expand( const QTextBlock&, HighlightBlockData*, const bool& recursive = false ) const;

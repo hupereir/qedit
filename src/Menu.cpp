@@ -334,11 +334,7 @@ void Menu::_updateToolsMenu( void )
   // tab replacement
   tools_menu_->addAction( &display.leadingTabsAction() );
   display.leadingTabsAction().setEnabled( display.hasLeadingTabs() );
-  
-  // expand all blocks
-  tools_menu_->addAction( &view.blockDelimiterWidget().expandAllAction() );
-  tools_menu_->addAction( &view.blockDelimiterWidget().collapseAction() );
-  
+    
   // spell checker
   tools_menu_->addAction( &display.spellcheckAction() );
     
@@ -373,6 +369,10 @@ void Menu::_updateToolsMenu( void )
   #endif
 
   action->setEnabled( enabled );
+
+  // blocks delimiters
+  tools_menu_->addAction( &view.blockDelimiterWidget().expandAllAction() );
+  tools_menu_->addAction( &view.blockDelimiterWidget().collapseAction() );
     
 }
 

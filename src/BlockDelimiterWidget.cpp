@@ -48,6 +48,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   editor_( editor ),
   need_update_( true )
 {
+  
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
   
@@ -192,49 +193,16 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
     BlockDelimiterSegment::ContainsFTor( event->pos()+QPoint(0, _editor().verticalScrollBar()->value() ) ) );
   if( iter == segments_.end() ) return;
   
-  // find matching begin and end blocks
-  QTextBlock first_block;
-  QTextBlock second_block;
-  HighlightBlockData* first_block_data(0);
-  
+  // retrieve matching segments
   QTextDocument &document( *_editor().document() );
-  for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
-  {
-    
-    // get block limits
-    int block_begin( block.layout()->position().y() );
-    int block_end( block_begin + block.layout()->boundingRect().height() );
-    
-    // check if first block match
-    if( block_begin == iter->first() )
-    {
-      first_block = block;
-      
-      // if segment is collapsed, break loop
-      first_block_data = static_cast<HighlightBlockData*>( block.userData() );
-      assert( first_block_data );
-      
-      if( first_block_data->collapsed() ) break;
-      
-    }
-    
-    // check if second block match
-    if( first_block.isValid() && block_end == iter->second() )
-    {
-      second_block = block;
-      break;
-    }
-    
-  }
-
-  // make sure first block was found
-  assert( first_block.isValid() );
+  HighlightBlockData* data(0);
+  TextBlockPair blocks( _findBlocks( document.begin(), *iter, data ) );
   
   // check if block is collapsed
-  if( first_block_data->collapsed() ) _expand( first_block, first_block_data );
-  else _collapse( first_block, second_block, first_block_data );
+  if( data->collapsed() ) _expand( blocks.first, data );
+  else _collapse( blocks.first, blocks.second, data );
    
-  // marck block as dirty to make sure it is re-highlighted
+  // force segment update at next update()
   need_update_ = true;
 
 }
@@ -242,6 +210,19 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
 //___________________________________________________________
 void BlockDelimiterWidget::wheelEvent( QWheelEvent* event )
 { qApp->sendEvent( _editor().viewport(), event ); }
+
+//________________________________________________
+void BlockDelimiterWidget::contextMenuEvent( QContextMenuEvent* event )
+{
+
+  Debug::Throw( "BlockDelimiterWidget::contextMenuEvent.\n" );
+  QMenu menu( this );
+  menu.addAction( &collapseAction() );
+  menu.addAction( &expandAllAction() );
+  menu.exec( event->globalPos() );
+  return;
+  
+}
 
 //________________________________________________________
 void BlockDelimiterWidget::_updateConfiguration( void )
@@ -324,9 +305,9 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
   CursorList cursors;
   
   // get first block
-  QTextDocument &document( *_editor().document() );
-  QTextBlock block( document.begin() );
-    
+  QTextBlock block( _editor().document()->begin() );
+  HighlightBlockData* previous_block_data(0);
+  
   // loop over segments in reverse order
   BlockDelimiterSegment::List::const_reverse_iterator previous(segments_.rend() );
   for( BlockDelimiterSegment::List::const_reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
@@ -339,30 +320,33 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
     // update "previous" segment 
     previous = iter;
     
-    Debug::Throw() << "BlockDelimiterWidget::_collapseTopLevelBlocks - looking for " << iter->first() << endl;
-    
-    // find matching block
-    int first( iter->first() - _editor().verticalScrollBar()->value() );
-    for(; block.isValid() && first != block.layout()->position().y(); block = block.next() )
-    {}
+    // get matching blocks
+    HighlightBlockData *data(0);
+    TextBlockPair blocks( _findBlocks( block, *iter, data ) );
 
-    assert( block.isValid() );
-      
-    // check if block is collapsed
-    HighlightBlockData* data( static_cast<HighlightBlockData*>( block.userData() ) );
-    assert( data );
+    // do nothing if block is already collapsed
+    if( data->collapsed() ) {
+      block = blocks.first;
+      continue;
+    }
     
-    if( data->collapsed() ) continue;
+    // store cursor
+    cursors.push_back( _collapsedCursor( blocks.first, blocks.second, data ) ); 
 
-    QTextBlock first_block( block );
+    /* 
+    this hack is needed to avoid loss of information in 
+    case of adjacent blocks to be collapsed
+    the collapsed block data are also added to the block above (prior to its being collapsed)
+    */
+    if( previous_block_data && blocks.first == block )
+    {
+      CollapsedBlockData::List collapsed_data( previous_block_data->collapsedData() );
+      collapsed_data.insert( collapsed_data.end(), data->collapsedData().begin(), data->collapsedData().end() );
+      previous_block_data->setCollapsedData( collapsed_data );
+    } else previous_block_data = data;        
     
-    // look for end block
-    int second( iter->second() - _editor().verticalScrollBar()->value() );
-    for(; block.isValid() && second != block.layout()->position().y() + block.layout()->boundingRect().height(); block = block.next() ) 
-    {}
-    
-    QTextBlock second_block( block );
-    cursors.push_back( _collapsedCursor( first_block, second_block, data ) ); 
+    // increment
+    block = blocks.second;
     
   }
   
@@ -409,13 +393,12 @@ void BlockDelimiterWidget::_installActions( void )
 //________________________________________________________
 void BlockDelimiterWidget::_updateSegments( void )
 {
-
-  // Debug::Throw(0, "BlockDelimiterWidget::_updateSegments.\n" );
   
   segments_.clear();
   
   // keep track of collapsed blocks
   bool has_collapsed_blocks( false ); 
+  bool has_expanded_blocks( false );
   unsigned int collapsed_block_count(0);
   collapsed_blocks_.clear();
   
@@ -494,7 +477,8 @@ void BlockDelimiterWidget::_updateSegments( void )
           // add one self contained segment
           has_collapsed_blocks = true;
           segments_.push_back( BlockDelimiterSegment( block_begin, block_end, flags ) );
-        }
+          
+        } else has_expanded_blocks = true;
         
       }
             
@@ -516,6 +500,42 @@ void BlockDelimiterWidget::_updateSegments( void )
     
   // update expand all action
   expandAllAction().setEnabled( has_collapsed_blocks );
+  collapseAction().setEnabled( has_expanded_blocks );
+  
+}
+
+//_____________________________________________________________________________________
+BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks( 
+  QTextBlock block, 
+  const BlockDelimiterSegment& segment, 
+  HighlightBlockData*& data ) const
+{
+
+  TextBlockPair out;
+  
+  // look for first block
+  for( ; block.isValid() && block.layout()->position().y() != segment.first(); block = block.next() ) 
+  {}
+  
+  assert( block.isValid() );
+  
+  // get data and check
+  data = static_cast<HighlightBlockData*>( block.userData() );
+  assert( data );
+  
+  // store
+  out.first = block;
+
+  // finish if block is collapsed
+  if( data->collapsed() ) return out;
+  
+  // look for second block
+  for( ; block.isValid() && block.layout()->position().y() + block.layout()->boundingRect().height() != segment.second(); block = block.next() )
+  {}
+  
+  // store and return
+  out.second = block;
+  return out;
   
 }
 

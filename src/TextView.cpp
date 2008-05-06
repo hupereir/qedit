@@ -112,14 +112,11 @@ void TextView::_loadBlockDelimiters( BlockDelimiter::List delimiters )
   blockDelimiterWidget().setBlockDelimiters( delimiters );
 
   // update widget visibility
-  if( delimiters.empty() ) blockDelimiterWidget().hide();
-  else blockDelimiterWidget().setVisible( editor().showBlockDelimiterAction().isChecked() );
-  
-  // update text highlight object
-  editor().textHighlight().setBlockDelimitersEnabled( 
-    (!delimiters.empty()) && 
-    editor().showBlockDelimiterAction().isChecked() 
-    );
+  bool visible( editor().showBlockDelimiterAction().isChecked() && !delimiters.empty() );
+  blockDelimiterWidget().setVisible( visible );
+  blockDelimiterWidget().expandAllAction().setVisible( visible );
+  blockDelimiterWidget().collapseAction().setVisible( visible );  
+  editor().textHighlight().setBlockDelimitersEnabled( visible );
   
 }
 
@@ -138,6 +135,8 @@ void TextView::_toggleShowBlockDelimiters( bool state )
     
     // update visibility
     blockDelimiterWidget().setVisible( state );
+    blockDelimiterWidget().expandAllAction().setVisible( state );
+    blockDelimiterWidget().collapseAction().setVisible( state );
     
     // update text highlight object
     editor().textHighlight().setBlockDelimitersEnabled( 
