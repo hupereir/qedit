@@ -38,6 +38,7 @@
 #include <QMouseEvent>
 #include <QPaintEvent>
 #include <QTextBlock>
+#include <QTextCursor>
 #include <QWheelEvent>
 #include <QWidget>
 
@@ -84,6 +85,10 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! expand all
   QAction& expandAllAction( void ) const
   { return *expand_all_action_; }
+
+  //! collapse top level block
+  QAction& collapseAction( void ) const
+  { return *collapse_action_; }
   
   //@}
     
@@ -107,6 +112,9 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! expand all blocks
   void _expandAllBlocks( void );
 
+  //! collapse top level block
+  void _collapseTopLevelBlocks( void );
+  
   //! need update
   void _needUpdate( void )
   { need_update_ = true; }
@@ -131,6 +139,9 @@ class BlockDelimiterWidget: public QWidget, public Counter
 
   //! collapse blocks 
   void _collapse( const QTextBlock&, const QTextBlock&, HighlightBlockData* ) const;
+
+  //! prepare blocks for collapse and returns cursor that match selection to be removed
+  QTextCursor _collapsedCursor( const QTextBlock&, const QTextBlock&, HighlightBlockData* ) const;
   
   //! editor
   TextDisplay& _editor( void ) const
@@ -172,6 +183,9 @@ class BlockDelimiterWidget: public QWidget, public Counter
   
   //! expand all
   QAction* expand_all_action_;
+  
+  //! collapse top level blocks
+  QAction* collapse_action_;
   
   //@}
   

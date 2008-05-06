@@ -337,6 +337,7 @@ void Menu::_updateToolsMenu( void )
   
   // expand all blocks
   tools_menu_->addAction( &view.blockDelimiterWidget().expandAllAction() );
+  tools_menu_->addAction( &view.blockDelimiterWidget().collapseAction() );
   
   // spell checker
   tools_menu_->addAction( &display.spellcheckAction() );

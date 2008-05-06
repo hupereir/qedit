@@ -161,7 +161,7 @@ class BlockDelimiterSegment: public Counter
     public:
     
     bool operator() ( const BlockDelimiterSegment& first, const BlockDelimiterSegment& second ) const
-    { return ( first.first() < second.first() || (first.first() == second.first() && first.second() > second.second() ) ); }
+    { return ( first.first() > second.first() || (first.first() == second.first() && first.second() < second.second() ) ); }
     
   };
   

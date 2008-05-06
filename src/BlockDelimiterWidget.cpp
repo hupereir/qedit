@@ -309,6 +309,85 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
   
 }
 
+
+//________________________________________________________
+void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
+{
+  
+  Debug::Throw( "BlockDelimiterWidget::_collapseTopLevelBlocks.\n" );
+  
+  // sort segments so that top level comes last
+  std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
+  
+  // list of QTextCursor needed to remove blocks
+  typedef std::vector<QTextCursor> CursorList;
+  CursorList cursors;
+  
+  // get first block
+  QTextDocument &document( *_editor().document() );
+  QTextBlock block( document.begin() );
+    
+  // loop over segments in reverse order
+  BlockDelimiterSegment::List::const_reverse_iterator previous(segments_.rend() );
+  for( BlockDelimiterSegment::List::const_reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
+  {
+    
+    // skip this segment if included in previous
+    if( previous != segments_.rend() && iter->first() >= previous->first() && iter->second() <= previous->second() ) 
+    { continue; }
+  
+    // update "previous" segment 
+    previous = iter;
+    
+    Debug::Throw() << "BlockDelimiterWidget::_collapseTopLevelBlocks - looking for " << iter->first() << endl;
+    
+    // find matching block
+    int first( iter->first() - _editor().verticalScrollBar()->value() );
+    for(; block.isValid() && first != block.layout()->position().y(); block = block.next() )
+    {}
+
+    assert( block.isValid() );
+      
+    // check if block is collapsed
+    HighlightBlockData* data( static_cast<HighlightBlockData*>( block.userData() ) );
+    assert( data );
+    
+    if( data->collapsed() ) continue;
+
+    QTextBlock first_block( block );
+    
+    // look for end block
+    int second( iter->second() - _editor().verticalScrollBar()->value() );
+    for(; block.isValid() && second != block.layout()->position().y() + block.layout()->boundingRect().height(); block = block.next() ) 
+    {}
+    
+    QTextBlock second_block( block );
+    cursors.push_back( _collapsedCursor( first_block, second_block, data ) ); 
+    
+  }
+  
+  // remove all text stored in cursor list
+  bool modified( _editor().document()->isModified() );
+  bool undo_enabled( _editor().document()->isUndoRedoEnabled() );
+  _editor().document()->setUndoRedoEnabled( false );
+
+  // create cursor and move at end of block
+  QTextCursor cursor( _editor().textCursor() );
+  cursor.beginEditBlock();
+  for( CursorList::const_iterator iter = cursors.begin(); iter != cursors.end(); iter++ )
+  {
+    cursor.setPosition( iter->anchor() );
+    cursor.setPosition( iter->position(), QTextCursor::KeepAnchor );
+    cursor.removeSelectedText();
+  }  
+  cursor.endEditBlock();
+  
+  // restore state
+  _editor().document()->setUndoRedoEnabled( undo_enabled );
+  _editor().document()->setModified( modified );
+  
+}
+
 //________________________________________________________
 void BlockDelimiterWidget::_installActions( void )
 {
@@ -318,6 +397,13 @@ void BlockDelimiterWidget::_installActions( void )
   expand_all_action_->setToolTip( "expand all collapsed blocks" );
   connect( expand_all_action_, SIGNAL( triggered() ), SLOT( _expandAllBlocks() ) );
   expand_all_action_->setEnabled( false );
+  
+  addAction( collapse_action_ = new QAction( "&Collapse top level blocks", this ) );
+  collapse_action_->setToolTip( "collapse all top level blocks" );
+  connect( collapse_action_, SIGNAL( triggered() ), SLOT( _collapseTopLevelBlocks() ) );
+  collapse_action_->setEnabled( true );
+  
+  
 }
 
 //________________________________________________________
@@ -481,17 +567,37 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
 //________________________________________________________________________________________
 void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QTextBlock& second_block, HighlightBlockData* data ) const
 {
+         
+  bool modified( _editor().document()->isModified() );
+  bool undo_enabled( _editor().document()->isUndoRedoEnabled() );
+  _editor().document()->setUndoRedoEnabled( false );
+
+  // create cursor and move at end of block
+  QTextCursor cursor( _collapsedCursor( first_block, second_block, data ) );
+  cursor.beginEditBlock();
+  cursor.removeSelectedText();
+  cursor.endEditBlock();
+  
+  // restore state
+  _editor().document()->setUndoRedoEnabled( undo_enabled );
+  _editor().document()->setModified( modified );
+      
+}
+
+//________________________________________________________________________________________
+QTextCursor BlockDelimiterWidget::_collapsedCursor( const QTextBlock& first_block, const QTextBlock& second_block, HighlightBlockData* data ) const
+{
    
   data->setCollapsed( true );
     
   // if next block is not valid, nothing is to be done
-  if( !first_block.next().isValid() ) return;
+  if( !first_block.next().isValid() ) return QTextCursor();
 
   // get block associated to cursor
   // see if cursor belongs to collapsible block
   QTextBlock cursor_block( _editor().textCursor().block() );
   bool cursor_found( false );
-    
+
   // create collapsed block data to be stored in current block before collapsed
   CollapsedBlockData::List collapsed_data_list;  
   for( QTextBlock current = first_block.next(); current.isValid(); current = current.next() )
@@ -500,10 +606,9 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
     // if current block match cursor, 
     // one need to move the cursor after the text gets deleted
     if( current == cursor_block ) cursor_found = true;
-
+    
     // append collapsed data
     collapsed_data_list.push_back( CollapsedBlockData( current ) );
-    
     if( current == second_block ) break;
     
   }
@@ -511,34 +616,24 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   // store in current block
   data->setCollapsedData( collapsed_data_list );
   
-  bool modified( _editor().document()->isModified() );
-  bool undo_enabled( _editor().document()->isUndoRedoEnabled() );
-  _editor().document()->setUndoRedoEnabled( false );
-
   // mark contents dirty to force update of current block
   data->setFlag( TextBlock::MODIFIED, true );
   _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
-  
-  // create cursor and move at end of block
-  QTextCursor cursor( first_block );
-  cursor.beginEditBlock();
-  cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );
-  if( second_block.isValid() ) { cursor.setPosition( second_block.position() + second_block.length(), QTextCursor::KeepAnchor ); }
-  else { cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor ); }
-  
-  // remove text to be collapsed
-  cursor.removeSelectedText();
-  cursor.endEditBlock();
-  
-  // restore state
-  _editor().document()->setUndoRedoEnabled( undo_enabled );
-  _editor().document()->setModified( modified );
- 
+   
   // move cursor to end of block
   if( cursor_found )
   { 
+    QTextCursor cursor( _editor().textCursor() );
     cursor.setPosition( first_block.position() + first_block.length()-1 );
     _editor().setTextCursor( cursor );
   }
+  
+  // create cursor and move at end of block
+  QTextCursor cursor( first_block );
+  cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );
+  if( second_block.isValid() ) { cursor.setPosition( second_block.position() + second_block.length(), QTextCursor::KeepAnchor ); }
+  else { cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor ); }
+    
+  return cursor;
   
 }
