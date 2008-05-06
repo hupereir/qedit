@@ -55,12 +55,12 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   _installActions();
   
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
-  connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
-  connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );
   connect( &_editor().textHighlight(), SIGNAL( needSegmentUpdate() ), SLOT( _needUpdate() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( _needUpdate() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( update() ) );
+  connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
+  connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
   // update configuration
@@ -78,16 +78,23 @@ BlockDelimiterWidget::~BlockDelimiterWidget()
 void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
 {
   Debug::Throw( "BlockDelimiterWidget::synchronize.\n" );
+
+  // copy members 
   delimiters_ = widget->delimiters_;
   segments_ = widget->segments_;
+  collapsed_blocks_ = widget->collapsed_blocks_;
+  need_update_ = widget->need_update_;
+  
+  // re-initialize connections
+  connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
+  connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
+
 }
 
 //__________________________________________
 void BlockDelimiterWidget::paintEvent( QPaintEvent* )
 {  
-  
-  //Debug::Throw(0, "BlockDelimiterWidget::paintEvent.\n" );
-  
+    
   // check delimiters
   if( delimiters_.empty() ) return;
     
@@ -133,7 +140,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
           half_width_, iter->first()+top_, 
           half_width_, height ); 
       }
-      
+        
     }
     
   }

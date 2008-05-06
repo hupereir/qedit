@@ -61,7 +61,7 @@ TextView::TextView( QWidget* parent ):
   block_delimiter_widget_ = new BlockDelimiterWidget( &editor(), this );
   
   layout->addWidget( &blockDelimiterWidget(), 0 );
-  layout->addWidget( &_lineNumberWidget(), 0 );
+  layout->addWidget( &lineNumberWidget(), 0 );
   layout->addWidget( &editor(), 1 );
   
   // connections
@@ -82,6 +82,7 @@ void TextView::synchronize( const TextView* view )
   Debug::Throw( "TextView::synchronize.\n" );
   editor().synchronize( &view->editor() );
   blockDelimiterWidget().synchronize( &view->blockDelimiterWidget() );
+  lineNumberWidget().synchronize( &view->lineNumberWidget() );
   
 }
 
@@ -89,7 +90,7 @@ void TextView::synchronize( const TextView* view )
 void TextView::_toggleShowLineNumbers( bool state )
 {
   Debug::Throw( "TextView::_toggleShowLineNumbers.\n" );
-  _lineNumberWidget().setVisible( state );
+  lineNumberWidget().setVisible( state );
 
   // update option
   XmlOptions::get().set<bool>( "SHOW_LINE_NUMBERS", state );

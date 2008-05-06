@@ -69,7 +69,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   
   //! synchronization
   void synchronize( const BlockDelimiterWidget* );
-    
+      
   //! number of collapsed block until given block ID
   unsigned int collapsedBlockCount( const int& block ) const
   { return ( collapsed_blocks_.empty() ) ? 0 : collapsed_blocks_.lower_bound( block )->second; }

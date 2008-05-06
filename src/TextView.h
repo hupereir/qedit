@@ -61,7 +61,14 @@ class TextView: public QFrame, public BASE::Key, public Counter
     assert( editor_ );
     return *editor_;
   }
-    
+  
+  //! line editor
+  LineNumberWidget& lineNumberWidget( void ) const
+  { 
+    assert( line_number_widget_ );
+    return *line_number_widget_;
+  }
+
   //! block delimitor widget
   BlockDelimiterWidget& blockDelimiterWidget( void ) const
   {
@@ -125,14 +132,7 @@ class TextView: public QFrame, public BASE::Key, public Counter
   void _toggleShowBlockDelimiters( bool );
   
   private:
-   
-  //! line editor
-  LineNumberWidget& _lineNumberWidget( void ) const
-  { 
-    assert( line_number_widget_ );
-    return *line_number_widget_;
-  }
-  
+     
   //! text display
   TextDisplay* editor_;
    

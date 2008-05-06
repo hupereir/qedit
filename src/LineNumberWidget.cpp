@@ -64,8 +64,6 @@ LineNumberWidget::LineNumberWidget(TextEditor* editor, QWidget* parent):
   setAutoFillBackground( true );
   
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
-  connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
-  connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( _needUpdate() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( update() ) );
   connect( &_editor().blockHighlight(), SIGNAL( highlightChanged() ), SLOT( update() ) );
@@ -84,6 +82,22 @@ LineNumberWidget::LineNumberWidget(TextEditor* editor, QWidget* parent):
 //__________________________________________
 LineNumberWidget::~LineNumberWidget()
 { Debug::Throw( "LineNumberWidget::~LineNumberWidget.\n" );}
+
+//__________________________________________
+void LineNumberWidget::synchronize( LineNumberWidget* widget )
+{
+ 
+  Debug::Throw( "LineNumberWidget::synchronize.\n" );
+
+  // copy members
+  line_number_data_ = widget->line_number_data_;
+  need_update_ = widget->need_update_;
+  
+  // re-initialize connections
+  connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
+  connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
+  
+}
 
 //__________________________________________
 void LineNumberWidget::paintEvent( QPaintEvent* )

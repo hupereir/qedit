@@ -58,6 +58,12 @@ class LineNumberWidget: public QWidget, public Counter
   //! destructor
   virtual ~LineNumberWidget();
   
+  //! synchronization
+  void synchronize( LineNumberWidget* );
+  
+  //! setup signal slot document connections
+  void setDocumentConnections( void );
+  
   protected:
   
   //! paint
