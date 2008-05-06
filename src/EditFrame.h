@@ -32,7 +32,12 @@
 */
 
 #include <QAction>
+#include <QBasicTimer>
+#include <QResizeEvent>
 #include <QSplitter>
+#include <QTimer>
+#include <QTimerEvent>
+
 #include <list>
 #include <string>
 
@@ -359,8 +364,14 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   virtual void closeEvent( QCloseEvent* );
 
   //! enter event handler
-  void enterEvent( QEvent *event );
+  void enterEvent( QEvent* );
     
+  //! resize event
+  void resizeEvent( QResizeEvent* );
+  
+  //! timer event
+  void timerEvent( QTimerEvent* );
+  
   private slots:
   
   //! update configuration
@@ -632,6 +643,9 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   
   //! default open mode
   OpenMode default_open_mode_;
+  
+  //! resize timer
+  QBasicTimer resize_timer_;
   
   //! position update timer
   QTimer position_timer_;

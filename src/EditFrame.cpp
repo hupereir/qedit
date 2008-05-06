@@ -613,6 +613,31 @@ void EditFrame::enterEvent( QEvent* e )
 }
 
 //_______________________________________________________
+void EditFrame::resizeEvent( QResizeEvent* event )
+{
+  resize_timer_.start( 200, this );
+  return CustomMainWindow::resizeEvent( event );
+}
+
+//_______________________________________________________
+void EditFrame::timerEvent( QTimerEvent* event )
+{
+
+  if( event->timerId() == resize_timer_.timerId() )
+  {
+    
+    // stop timer
+    resize_timer_.stop();
+    
+    // save size
+    XmlOptions::get().set<int>( "WINDOW_HEIGHT", height() );
+    XmlOptions::get().set<int>( "WINDOW_WIDTH", width() );
+  
+  } else return CustomMainWindow::timerEvent( event );
+  
+}
+
+//_______________________________________________________
 void EditFrame::_diff( void )
 {
   Debug::Throw( "EditFrame::_diff.\n" );
@@ -887,14 +912,7 @@ void EditFrame::_updateConfiguration( void )
 
 //________________________________________________________
 void EditFrame::_saveConfiguration( void )
-{
-  Debug::Throw( "EditFrame::_saveConfiguration.\n" );
-
-  // save size
-  XmlOptions::get().set<int>( "WINDOW_HEIGHT", height() );
-  XmlOptions::get().set<int>( "WINDOW_WIDTH", width() );
-  
-}
+{ Debug::Throw( "EditFrame::_saveConfiguration.\n" ); }
 
 //___________________________________________________________
 void EditFrame::_newFile( const OpenMode& mode, const Orientation& orientation )
