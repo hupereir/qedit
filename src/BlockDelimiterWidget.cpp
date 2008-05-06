@@ -8,7 +8,7 @@
 * terms of the GNU General Public License as published by the Free Software
 * Foundation; either version 2 of the License, or (at your option) any later
 * version.
-*
+*                                                                
 * This software is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
@@ -236,7 +236,6 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
    
   // marck block as dirty to make sure it is re-highlighted
   need_update_ = true;
-  _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
 
 }
 
@@ -450,6 +449,11 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
   bool undo_enabled( _editor().document()->isUndoRedoEnabled() );
   _editor().document()->setUndoRedoEnabled( false );
 
+  // mark contents dirty to force update of current block
+  data->setFlag( TextBlock::MODIFIED, true );
+  _editor().document()->markContentsDirty(block.position(), block.length()-1);
+  
+  // add expanded block
   cursor.beginEditBlock();
   for( CollapsedBlockData::List::const_iterator iter = collapsed_data.begin(); iter != collapsed_data.end(); iter++ )
   {
@@ -510,13 +514,21 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   bool modified( _editor().document()->isModified() );
   bool undo_enabled( _editor().document()->isUndoRedoEnabled() );
   _editor().document()->setUndoRedoEnabled( false );
+
+  // mark contents dirty to force update of current block
+  data->setFlag( TextBlock::MODIFIED, true );
+  _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
   
   // create cursor and move at end of block
   QTextCursor cursor( first_block );
+  cursor.beginEditBlock();
   cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );
   if( second_block.isValid() ) { cursor.setPosition( second_block.position() + second_block.length(), QTextCursor::KeepAnchor ); }
   else { cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor ); }
+  
+  // remove text to be collapsed
   cursor.removeSelectedText();
+  cursor.endEditBlock();
   
   // restore state
   _editor().document()->setUndoRedoEnabled( undo_enabled );
