@@ -32,6 +32,7 @@
 */
 
 #include <QFrame>
+#include <QContextMenuEvent>
 
 #include "BlockDelimiter.h"
 #include "Counter.h"
@@ -119,6 +120,11 @@ class TextView: public QFrame, public BASE::Key, public Counter
     { return view->editor().document()->isModified(); }
 
   };
+
+  protected:
+  
+  //! context menu event [overloaded]
+  virtual void contextMenuEvent( QContextMenuEvent* );
   
   private slots:
   

@@ -82,16 +82,32 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //!@name actions
   //@{
   
-  //! expand all
-  QAction& expandAllAction( void ) const
-  { return *expand_all_action_; }
+  //! set action visibility
+  void setActionVisibility( const bool& state );
+  
+  //! expand current block
+  QAction& collapseCurrentAction( void ) const
+  { return *collapse_current_action_; }
+  
+  //! expand current block
+  QAction& expandCurrentAction( void ) const
+  { return *expand_current_action_; }
 
   //! collapse top level block
   QAction& collapseAction( void ) const
   { return *collapse_action_; }
   
+  //! expand all
+  QAction& expandAllAction( void ) const
+  { return *expand_all_action_; }
+
   //@}
     
+  public slots:
+  
+  //! update expand/collapse current block action state
+  void updateCurrentBlockActionState( void );
+  
   protected:
   
   //! paint
@@ -104,19 +120,22 @@ class BlockDelimiterWidget: public QWidget, public Counter
   /*! wheel events are forwarded to the editor */
   virtual void wheelEvent( QWheelEvent* );
   
-  //! context menu event [overloaded]
-  virtual void contextMenuEvent( QContextMenuEvent* );
-
   private slots:
   
   //! configuration
   void _updateConfiguration( void );
-      
-  //! expand all blocks
-  void _expandAllBlocks( void );
+        
+  //! collapse current block
+  void _collapseCurrentBlock( void );
+  
+  //! expand current block
+  void _expandCurrentBlock( void );
 
   //! collapse top level block
   void _collapseTopLevelBlocks( void );
+
+//! expand all blocks
+  void _expandAllBlocks( void );  
   
   //! need update
   void _needUpdate( void )
@@ -195,11 +214,17 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //!@name actions
   //@{
   
-  //! expand all
-  QAction* expand_all_action_;
+  //! collapse current block
+  QAction* collapse_current_action_;
+  
+  //! expand current block
+  QAction* expand_current_action_;
   
   //! collapse top level blocks
   QAction* collapse_action_;
+
+  //! expand all
+  QAction* expand_all_action_;  
   
   //@}
   

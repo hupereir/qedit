@@ -87,6 +87,28 @@ void TextView::synchronize( const TextView* view )
   
 }
 
+//________________________________________________
+void TextView::contextMenuEvent( QContextMenuEvent* event )
+{
+  Debug::Throw( "TextView::contextMenuEvent.\n" );
+ 
+  blockDelimiterWidget().updateCurrentBlockActionState();
+
+  QMenu menu( this );
+  editor().installContextMenuActions( menu );
+  
+  if( !blockDelimiterWidget().isHidden() )
+  {
+    menu.addSeparator();
+    menu.addAction( &blockDelimiterWidget().collapseCurrentAction() );
+    menu.addAction( &blockDelimiterWidget().expandCurrentAction() );
+  }
+  
+  menu.exec( event->globalPos() );
+  
+  return;
+}
+
 //___________________________________________
 void TextView::_toggleShowLineNumbers( bool state )
 {
@@ -114,8 +136,7 @@ void TextView::_loadBlockDelimiters( BlockDelimiter::List delimiters )
   // update widget visibility
   bool visible( editor().showBlockDelimiterAction().isChecked() && !delimiters.empty() );
   blockDelimiterWidget().setVisible( visible );
-  blockDelimiterWidget().expandAllAction().setVisible( visible );
-  blockDelimiterWidget().collapseAction().setVisible( visible );  
+  blockDelimiterWidget().setActionVisibility( visible );
   editor().textHighlight().setBlockDelimitersEnabled( visible );
   
 }
@@ -135,8 +156,7 @@ void TextView::_toggleShowBlockDelimiters( bool state )
     
     // update visibility
     blockDelimiterWidget().setVisible( state );
-    blockDelimiterWidget().expandAllAction().setVisible( state );
-    blockDelimiterWidget().collapseAction().setVisible( state );
+    blockDelimiterWidget().setActionVisibility( state );
     
     // update text highlight object
     editor().textHighlight().setBlockDelimitersEnabled( 

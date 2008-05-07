@@ -93,6 +93,42 @@ void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
 }
 
 //__________________________________________
+void BlockDelimiterWidget::setActionVisibility( const bool& state )
+{
+  Debug::Throw( "BlockDelimiterWidget::setActionVisibility" );
+  
+  collapseCurrentAction().setVisible( state );
+  expandCurrentAction().setVisible( state );
+  collapseAction().setVisible( state );
+  expandAllAction().setVisible( state );
+  
+}
+
+//__________________________________________
+void BlockDelimiterWidget::updateCurrentBlockActionState( void )
+{
+  
+  /* update segments if needed */
+  if( need_update_ ) 
+  { 
+    _updateSegments(); 
+    need_update_ = false;
+  }
+  
+  // by default next paintEvent will require segment update
+  int y( _editor().document()->documentLayout()->blockBoundingRect( _editor().textCursor().block() ).y() );
+
+  BlockDelimiterSegment::ContainsFTor expanded_ftor( y, false );
+  BlockDelimiterSegment::List::iterator expanded_iter = std::find_if( segments_.begin(), segments_.end(), expanded_ftor );
+  collapseCurrentAction().setEnabled( expanded_iter != segments_.end() );
+
+  BlockDelimiterSegment::ContainsFTor collapsed_ftor( y, true );  
+  BlockDelimiterSegment::List::iterator collapsed_iter = std::find_if( segments_.begin(), segments_.end(), collapsed_ftor );
+  expandCurrentAction().setEnabled( collapsed_iter != segments_.end() );
+  
+}
+
+//__________________________________________
 void BlockDelimiterWidget::paintEvent( QPaintEvent* )
 {  
     
@@ -101,10 +137,10 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
     
   /* update segments if needed */
   if( need_update_ ) 
-  { _updateSegments(); }
-  
-  // by default next paintEvent will require segment update
-  need_update_ = false;
+  { 
+    _updateSegments(); 
+    need_update_ = false;
+  }
     
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
@@ -121,24 +157,25 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   BlockDelimiterSegment::List::const_reverse_iterator previous( segments_.rend() );
   for( BlockDelimiterSegment::List::const_reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
   {
+          
     // skip this segment if included in previous
-    if( previous != segments_.rend() && iter->first() >= previous->first() && iter->second() <= previous->second() ) 
+    if( previous != segments_.rend() && iter->begin() >= previous->begin() && iter->end() <= previous->end() ) 
     { continue; }
     
     previous = iter;
     
     // draw
-    if( iter->first()+top_ < height )
+    if( iter->begin()+top_ < height )
     {
       
       if( !iter->empty() ) 
       { 
         painter.drawLine( 
-          half_width_, iter->first()+top_, 
-          half_width_, min( height, iter->second() ) ); 
+          half_width_, iter->begin()+top_, 
+          half_width_, min( height, iter->end() ) ); 
       } else { 
         painter.drawLine( 
-          half_width_, iter->first()+top_, 
+          half_width_, iter->begin()+top_, 
           half_width_, height ); 
       }
         
@@ -151,31 +188,31 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   {
     
     // begin tick
-    if( iter->first()+top_ < height ) 
+    if( iter->begin()+top_ < height ) 
     {
-      iter->setActiveRect( QRect( rect_top_left_, iter->first() + rect_top_left_, rect_width_, rect_width_ ) );
+      iter->setActiveRect( QRect( rect_top_left_, iter->begin() + rect_top_left_, rect_width_, rect_width_ ) );
       painter.drawRect( iter->activeRect() );
       painter.drawLine( 
-        marker_top_left_, iter->first() + half_width_, 
-        marker_bottom_right_, iter->first() + half_width_ );
+        marker_top_left_, iter->begin() + half_width_, 
+        marker_bottom_right_, iter->begin() + half_width_ );
       
       if( iter->flag( BlockDelimiterSegment::COLLAPSED ) ) 
       { 
         painter.drawLine( 
-          half_width_, iter->first() + marker_top_left_, 
-          half_width_, iter->first() + marker_bottom_right_ ); 
+          half_width_, iter->begin() + marker_top_left_, 
+          half_width_, iter->begin() + marker_bottom_right_ ); 
       }  
 
     }
     
     // end tick
-    if( iter->second() < height && !( iter->flag( BlockDelimiterSegment::FIRST_ONLY ) || iter->empty() ) )
-    { painter.drawLine( half_width_, iter->second(), width_, iter->second() ); }
+    if( iter->end() < height && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
+    { painter.drawLine( half_width_, iter->end(), width_, iter->end() ); }
     
   }
   
   painter.end();
-  
+ 
 }
 
 //________________________________________________________
@@ -190,7 +227,7 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   // find segment matching event position
   BlockDelimiterSegment::List::const_iterator iter = find_if( 
     segments_.begin(), segments_.end(), 
-    BlockDelimiterSegment::ContainsFTor( event->pos()+QPoint(0, _editor().verticalScrollBar()->value() ) ) );
+    BlockDelimiterSegment::ActiveFTor( event->pos()+QPoint(0, _editor().verticalScrollBar()->value() ) ) );
   if( iter == segments_.end() ) return;
   
   // retrieve matching segments
@@ -210,19 +247,6 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
 //___________________________________________________________
 void BlockDelimiterWidget::wheelEvent( QWheelEvent* event )
 { qApp->sendEvent( _editor().viewport(), event ); }
-
-//________________________________________________
-void BlockDelimiterWidget::contextMenuEvent( QContextMenuEvent* event )
-{
-
-  Debug::Throw( "BlockDelimiterWidget::contextMenuEvent.\n" );
-  QMenu menu( this );
-  menu.addAction( &collapseAction() );
-  menu.addAction( &expandAllAction() );
-  menu.exec( event->globalPos() );
-  return;
-  
-}
 
 //________________________________________________________
 void BlockDelimiterWidget::_updateConfiguration( void )
@@ -271,25 +295,72 @@ void BlockDelimiterWidget::_blockCountChanged( void )
 }
 
 //________________________________________________________
-void BlockDelimiterWidget::_expandAllBlocks( void )
+void BlockDelimiterWidget::_collapseCurrentBlock( void )
 {
-  Debug::Throw( "BlockDelimiterWidget::_expandAllBlocks.\n" );
-  
-  QTextDocument &document( *_editor().document() );
-  for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
-  {
-    
-    // retrieve data and check if collapsed
-    HighlightBlockData* data( static_cast<HighlightBlockData*>( block.userData() ) );
-    if( !( data && data->collapsed() ) ) continue;
-    _expand( block, data, true );
-      
+  Debug::Throw( "BlockDelimiterWidget::_collapseCurrentBlock.\n" );
+
+  /* update segments if needed */
+  if( need_update_ ) 
+  { 
+    _updateSegments(); 
+    need_update_ = false;
   }
-    
+ 
+  // sort segments so that top level comes last
+  std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
+
+  // get cursor position
+  QTextDocument& document( *_editor().document() );
+  int y( document.documentLayout()->blockBoundingRect( _editor().textCursor().block() ).y() );
+
+  // find matching segment
+  BlockDelimiterSegment::ContainsFTor expanded_ftor( y, false );
+  BlockDelimiterSegment::List::iterator iter = std::find_if( segments_.begin(), segments_.end(), expanded_ftor );
+  if( iter == segments_.end() ) return;
+
+  // find matching blocks
+  HighlightBlockData *data(0);
+  TextBlockPair blocks( _findBlocks( document.begin(), *iter, data ) );
+  
+  // collapse
+  _collapse( blocks.first, blocks.second, data );
+  return;
+
+}
+  
+//________________________________________________________
+void BlockDelimiterWidget::_expandCurrentBlock( void )
+{
+  Debug::Throw( "BlockDelimiterWidget::_expandCurrentBlock.\n" );
+
+  /* update segments if needed */
+  if( need_update_ ) 
+  { 
+    _updateSegments(); 
+    need_update_ = false;
+  }
+
+  // sort segments so that top level comes last
+  std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
+
+  // get cursor position
+  QTextDocument& document( *_editor().document() );
+  int y( document.documentLayout()->blockBoundingRect( _editor().textCursor().block() ).y() );
+
+  // find matching segment
+  BlockDelimiterSegment::ContainsFTor collapsed_ftor( y, true );  
+  BlockDelimiterSegment::List::iterator iter = std::find_if( segments_.begin(), segments_.end(), collapsed_ftor );
+  if( iter == segments_.end() ) return;
+  
+  // find matching blocks
+  HighlightBlockData *data(0);
+  TextBlockPair blocks( _findBlocks( document.begin(), *iter, data ) );
+  
+  // collapse
+  _expand( blocks.first, data );
   return;
   
 }
-
 
 //________________________________________________________
 void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
@@ -297,6 +368,13 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
   
   Debug::Throw( "BlockDelimiterWidget::_collapseTopLevelBlocks.\n" );
   
+  /* update segments if needed */
+  if( need_update_ ) 
+  { 
+    _updateSegments(); 
+    need_update_ = false;
+  }
+
   // sort segments so that top level comes last
   std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
   
@@ -314,7 +392,7 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
   {
     
     // skip this segment if included in previous
-    if( previous != segments_.rend() && iter->first() >= previous->first() && iter->second() <= previous->second() ) 
+    if( previous != segments_.rend() && iter->begin() >= previous->begin() && iter->end() <= previous->end() ) 
     { continue; }
   
     // update "previous" segment 
@@ -373,21 +451,62 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
 }
 
 //________________________________________________________
+void BlockDelimiterWidget::_expandAllBlocks( void )
+{
+  Debug::Throw( "BlockDelimiterWidget::_expandAllBlocks.\n" );
+  
+  /* update segments if needed */
+  if( need_update_ ) 
+  { 
+    _updateSegments(); 
+    need_update_ = false;
+  }
+
+  QTextDocument &document( *_editor().document() );
+  for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
+  {
+    
+    // retrieve data and check if collapsed
+    HighlightBlockData* data( static_cast<HighlightBlockData*>( block.userData() ) );
+    if( !( data && data->collapsed() ) ) continue;
+    _expand( block, data, true );
+      
+  }
+    
+  return;
+  
+}
+
+//________________________________________________________
 void BlockDelimiterWidget::_installActions( void )
 {
+  
   Debug::Throw( "BlockDelimiterWidget::_installActions.\n" );
 
-  addAction( expand_all_action_ = new QAction( "&Expand all blocks", this ) );
-  expand_all_action_->setToolTip( "expand all collapsed blocks" );
-  connect( expand_all_action_, SIGNAL( triggered() ), SLOT( _expandAllBlocks() ) );
-  expand_all_action_->setEnabled( false );
-  
+  addAction( collapse_current_action_ = new QAction( "&Collapse current block", this ) );
+  collapse_current_action_->setToolTip( "collapse current collapsed block" );
+  collapse_current_action_->setShortcut( Qt::CTRL + Qt::Key_Minus );
+  connect( collapse_current_action_, SIGNAL( triggered() ), SLOT( _collapseCurrentBlock() ) );
+  collapse_current_action_->setEnabled( false );
+
+  addAction( expand_current_action_ = new QAction( "&Expand current block", this ) );
+  expand_current_action_->setToolTip( "expand current collapsed block" );
+  expand_current_action_->setShortcut( Qt::CTRL + Qt::Key_Plus );
+  connect( expand_current_action_, SIGNAL( triggered() ), SLOT( _expandCurrentBlock() ) );
+  expand_current_action_->setEnabled( false );
+    
   addAction( collapse_action_ = new QAction( "&Collapse top level blocks", this ) );
   collapse_action_->setToolTip( "collapse all top level blocks" );
+  collapse_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Minus );
   connect( collapse_action_, SIGNAL( triggered() ), SLOT( _collapseTopLevelBlocks() ) );
   collapse_action_->setEnabled( true );
   
-  
+  addAction( expand_all_action_ = new QAction( "&Expand all blocks", this ) );
+  expand_all_action_->setToolTip( "expand all collapsed blocks" );
+  expand_all_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Plus );
+  connect( expand_all_action_, SIGNAL( triggered() ), SLOT( _expandAllBlocks() ) );
+  expand_all_action_->setEnabled( false );
+   
 }
 
 //________________________________________________________
@@ -441,8 +560,8 @@ void BlockDelimiterWidget::_updateSegments( void )
         if( !(start_points.empty() ) && ignored == start_points.back().flag( BlockDelimiterSegment::IGNORED ) ) 
         { 
           // if block is both begin and end, only the begin flag is to be drawn.
-          if( delimiter.begin() ) start_points.back().setFlag( BlockDelimiterSegment::FIRST_ONLY, true );
-          segments_.push_back( start_points.back().setSecond( block_end ) ); 
+          if( delimiter.begin() ) start_points.back().setFlag( BlockDelimiterSegment::BEGIN_ONLY, true );
+          segments_.push_back( start_points.back().setEnd( block_end ) ); 
         }
         
         // pop
@@ -514,7 +633,7 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   TextBlockPair out;
   
   // look for first block
-  for( ; block.isValid() && block.layout()->position().y() != segment.first(); block = block.next() ) 
+  for( ; block.isValid() && block.layout()->position().y() != segment.begin(); block = block.next() ) 
   {}
   
   assert( block.isValid() );
@@ -530,7 +649,7 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   if( data->collapsed() ) return out;
   
   // look for second block
-  for( ; block.isValid() && block.layout()->position().y() + block.layout()->boundingRect().height() != segment.second(); block = block.next() )
+  for( ; block.isValid() && block.layout()->position().y() + block.layout()->boundingRect().height() != segment.end(); block = block.next() )
   {}
   
   // store and return
@@ -657,3 +776,4 @@ QTextCursor BlockDelimiterWidget::_collapsedCursor( const QTextBlock& first_bloc
   return cursor;
   
 }
+

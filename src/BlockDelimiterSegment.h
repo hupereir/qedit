@@ -46,12 +46,12 @@ class BlockDelimiterSegment: public Counter
   
   //! constructor
   BlockDelimiterSegment( 
-    const int& first = 0, 
-    const int& second = 0, 
+    const int& begin = 0, 
+    const int& end = 0, 
     const unsigned int& flags = NONE ):
     Counter( "BlockDelimiterSegment" ),
-    first_( first ),
-    second_( second ),
+    begin_( begin ),
+    end_( end ),
     flags_( flags )
   {}
   
@@ -65,7 +65,7 @@ class BlockDelimiterSegment: public Counter
     NONE = 0,
     COLLAPSED = 1<<0,
     IGNORED = 1<<2,
-    FIRST_ONLY = 1<<3
+    BEGIN_ONLY = 1<<3
   };
    
   //! flags
@@ -85,31 +85,31 @@ class BlockDelimiterSegment: public Counter
   //!@name geometry
   //@{
   
-  //! first point
-  const int& first( void ) const
-  { return first_; }
+  //! begin point
+  const int& begin( void ) const
+  { return begin_; }
   
-  //! first point
-  BlockDelimiterSegment& setFirst( const int& first )
+  //! begin point
+  BlockDelimiterSegment& setBegin( const int& begin )
   { 
-    first_ = first; 
+    begin_ = begin; 
     return *this;
   }
   
-  //! second point
-  const int& second( void ) const
-  { return second_; }
+  //! end point
+  const int& end( void ) const
+  { return end_; }
   
-  //! second point
-  BlockDelimiterSegment& setSecond( const int& second )
+  //! end point
+  BlockDelimiterSegment& setEnd( const int& end )
   { 
-    second_ = second; 
+    end_ = end; 
     return *this;
   }
       
   //! empty segment
   bool empty( void ) const
-  { return first() == second(); }
+  { return begin() == end(); }
   
   //! active rect
   const QRect& activeRect( void ) const
@@ -121,14 +121,14 @@ class BlockDelimiterSegment: public Counter
   
   //@}
   
-  //! used to find segment matching a point
-  class ContainsFTor
+  //! used to find segment for which the active rect match a point
+  class ActiveFTor
   {
     
     public:
     
     //! creator
-    ContainsFTor( const QPoint& point ):
+    ActiveFTor( const QPoint& point ):
       point_( point )
       {}
       
@@ -140,6 +140,35 @@ class BlockDelimiterSegment: public Counter
     
     //! position
     QPoint point_; 
+    
+  };
+
+  //! used to find segment that match the cursor location and collapse state
+  class ContainsFTor
+  {
+    public:
+    
+    //! constructor
+    ContainsFTor( const int& y, const bool& collapsed ):
+    y_( y ),
+    collapsed_( collapsed )
+    {}
+    
+    //! prediction
+    bool operator() (const BlockDelimiterSegment& segment ) const
+    { 
+      return 
+        segment.flag( BlockDelimiterSegment::COLLAPSED ) == collapsed_ && 
+        (( segment.begin() == segment.end() ) ? (y_ >= segment.begin()) : (y_ >= segment.begin() && y_ < segment.end())); 
+    }
+    
+    private:
+    
+    //! position
+    int y_;
+    
+    //! collapse state
+    bool collapsed_; 
     
   };
   
@@ -161,17 +190,17 @@ class BlockDelimiterSegment: public Counter
     public:
     
     bool operator() ( const BlockDelimiterSegment& first, const BlockDelimiterSegment& second ) const
-    { return ( first.first() > second.first() || (first.first() == second.first() && first.second() < second.second() ) ); }
+    { return ( first.begin() > second.begin() || (first.begin() == second.begin() && first.end() < second.end() ) ); }
     
   };
   
   private:
   
   //! first position
-  int first_;
+  int begin_;
   
-  //! second position
-  int second_;
+  //! end position
+  int end_;
     
   //! active area (for mouse pointing)
   /*! it is set if drawFirstDelimiter() is called */
@@ -183,7 +212,7 @@ class BlockDelimiterSegment: public Counter
   //! streamer
   friend std::ostream& operator << ( std::ostream& out, const BlockDelimiterSegment& segment )
   {
-    out << "(" << segment.first() << "," << segment.second() << ") flags: " << segment.flags_;
+    out << "(" << segment.begin() << "," << segment.end() << ") flags: " << segment.flags_;
     return out;
   }
   

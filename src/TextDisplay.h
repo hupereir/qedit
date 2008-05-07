@@ -96,6 +96,9 @@ class TextDisplay: public TextEditor
   //! read-only
   virtual void setReadOnly( const bool& value );
 
+  //! retrieve context menu. Create it on first call
+  virtual void installContextMenuActions( QMenu& menu );
+
   //! update flags (to be passed to TextEditor to change button status)
   enum UpdateFlags
   {

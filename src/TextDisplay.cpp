@@ -173,6 +173,43 @@ void TextDisplay::setReadOnly( const bool& value )
   emit needUpdate( WINDOW_TITLE | CUT | PASTE | UNDO_REDO | SAVE );
 }
 
+
+//______________________________________________________________________________
+void TextDisplay::installContextMenuActions( QMenu& menu )
+{
+  
+  Debug::Throw( "TextDisplay::installContextMenuActions.\n" );
+
+  // see if tagged blocks are present
+  bool has_tags( hasTaggedBlocks() );
+  bool current_block_tagged( has_tags && isCurrentBlockTagged() );
+
+  // retrieve default context menu
+  // second argument is to remove un-necessary actions
+  TextEditor::installContextMenuActions( menu, false );
+  
+  // add specific actions
+  menu.insertAction( &wrapModeAction(), &showLineNumberAction() );
+  menu.insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
+  menu.addSeparator();
+
+  menu.addAction( &tagBlockAction() );
+
+  menu.addAction( &nextTagAction() );
+  nextTagAction().setEnabled( has_tags );
+
+  menu.addAction( &previousTagAction() );
+  previousTagAction().setEnabled( has_tags );
+
+  menu.addAction( &clearTagAction() );
+  clearTagAction().setEnabled( current_block_tagged );
+
+  menu.addAction( &clearAllTagsAction() );
+  clearAllTagsAction().setEnabled( has_tags );
+
+  return;
+}
+
 //___________________________________________________________________________
 void TextDisplay::synchronize( TextDisplay* display )
 {
@@ -1145,7 +1182,6 @@ void TextDisplay::focusInEvent( QFocusEvent* event )
   TextEditor::focusInEvent( event );
 }
 
-
 //________________________________________________
 void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 {
@@ -1153,35 +1189,17 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
   Debug::Throw( "TextEditor::contextMenuEvent.\n" );
 
   if( _autoSpellContextEvent( event ) ) return;
-
-  // see if tagged blocks are present
-  bool has_tags( hasTaggedBlocks() );
-  bool current_block_tagged( has_tags && isCurrentBlockTagged() );
-
-  // retrieve default context menu
-  QMenu menu( this );
-  _installContextMenuActions( menu );
-  menu.insertAction( &wrapModeAction(), &showLineNumberAction() );
-  menu.insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
-  menu.addSeparator();
-
-  menu.addAction( &tagBlockAction() );
-
-  menu.addAction( &nextTagAction() );
-  nextTagAction().setEnabled( has_tags );
-
-  menu.addAction( &previousTagAction() );
-  previousTagAction().setEnabled( has_tags );
-
-  menu.addAction( &clearTagAction() );
-  clearTagAction().setEnabled( current_block_tagged );
-
-  menu.addAction( &clearAllTagsAction() );
-  clearAllTagsAction().setEnabled( has_tags );
-
-  // show menu
-  menu.exec( event->globalPos() );
-
+  else {
+    
+    /* 
+    apart from spell checker, context menu events are ignored 
+    so that they can be handled by parent widget
+    */
+    event->ignore();
+    return;
+    
+  }
+  
 }
 
 //________________________________________________
@@ -1357,7 +1375,7 @@ void TextDisplay::_installActions( void )
   #endif
 
   // tag block action
-  addAction( tag_block_action_ = new QAction( IconEngine::get( ICONS::TAG, path_list ), "&Tag current block", this ) );
+  addAction( tag_block_action_ = new QAction( IconEngine::get( ICONS::TAG, path_list ), "&Tag selected blocks", this ) );
   connect( tag_block_action_, SIGNAL( triggered() ), SLOT( _tagBlock( void ) ) );
 
   // clear current block tags
@@ -1718,6 +1736,7 @@ void TextDisplay::_toggleAutoSpell( bool state )
 //_______________________________________________________
 void TextDisplay::_toggleShowLineNumbers( bool state )
 {
+  
   // propagate to other displays
   if( isSynchronized() )
   {
@@ -2316,3 +2335,5 @@ void TextDisplay::_clearTag( void )
   { clearTag( *iter, TextBlock::ALL_TAGS ); }
   
 }
+
+

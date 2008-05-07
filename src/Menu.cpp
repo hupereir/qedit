@@ -359,6 +359,20 @@ void Menu::_updateToolsMenu( void )
   tools_menu_->addAction( &display.clearAllTagsAction() );
   display.clearAllTagsAction().setEnabled( has_tags );
 
+  // blocks delimiters
+  bool visible( view.blockDelimiterWidget().collapseCurrentAction().isVisible() );
+  if( visible )
+  {
+    
+    view.blockDelimiterWidget().updateCurrentBlockActionState();
+    
+    tools_menu_->addSeparator();
+    tools_menu_->addAction( &view.blockDelimiterWidget().collapseCurrentAction() );
+    tools_menu_->addAction( &view.blockDelimiterWidget().expandCurrentAction() );
+    tools_menu_->addAction( &view.blockDelimiterWidget().collapseAction() );
+    tools_menu_->addAction( &view.blockDelimiterWidget().expandAllAction() );
+  }
+  
   // rehighlight
   tools_menu_->addSeparator();
   QAction* action = tools_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
@@ -370,9 +384,6 @@ void Menu::_updateToolsMenu( void )
 
   action->setEnabled( enabled );
 
-  // blocks delimiters
-  tools_menu_->addAction( &view.blockDelimiterWidget().expandAllAction() );
-  tools_menu_->addAction( &view.blockDelimiterWidget().collapseAction() );
     
 }
 
