@@ -1,6 +1,6 @@
 // $Id$
 
-/******************************************************************************
+/*****************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
 *
@@ -51,10 +51,12 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
+  //setBackgroundRole( QPalette::Base );
   
   // actions
   _installActions();
   
+  // connections
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );
   connect( &_editor().textHighlight(), SIGNAL( needSegmentUpdate() ), SLOT( _needUpdate() ) );
@@ -776,4 +778,6 @@ QTextCursor BlockDelimiterWidget::_collapsedCursor( const QTextBlock& first_bloc
   return cursor;
   
 }
+
+
 

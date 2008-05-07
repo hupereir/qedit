@@ -137,6 +137,7 @@ void TextHighlight::highlightBlock( const QString& text )
     
     // store active id
     data->setMisspelledWords( words );
+    data->setLocations( PatternLocationSet() );
     setCurrentBlockState( -1 );
     
   } 

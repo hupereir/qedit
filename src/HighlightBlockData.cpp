@@ -1,33 +1,33 @@
 // $Id$
 
 /******************************************************************************
-*                         
-* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>             
-*                         
-* This is free software; you can redistribute it and/or modify it under the    
-* terms of the GNU General Public License as published by the Free Software    
-* Foundation; either version 2 of the License, or (at your option) any later   
-* version.                             
-*                          
-* This software is distributed in the hope that it will be useful, but WITHOUT 
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License        
-* for more details.                     
-*                          
-* You should have received a copy of the GNU General Public License along with 
-* software; if not, write to the Free Software Foundation, Inc., 59 Temple     
-* Place, Suite 330, Boston, MA 02111-1307 USA                           
-*                         
-*                         
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA 02111-1307 USA
+*
+*
 *******************************************************************************/
- 
+
 /*!
   \file HighlightBlockData.cpp
   \brief TextBlock data for syntax highlighting
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
-*/  
+*/
 
 #include "HighlightBlockData.h"
 
@@ -45,11 +45,11 @@ HighlightBlockData::HighlightBlockData( void ):
 unsigned int HighlightBlockData::collapsedBlockCount( void ) const
 {
   if( !collapsed() ) return 0;
-  
+
   unsigned int out(0);
   for( CollapsedBlockData::List::const_iterator iter = collapsed_data_.begin(); iter != collapsed_data_.end(); iter++ )
   { out += iter->blockCount(); }
-  
+
   return out;
 }
 
@@ -58,10 +58,10 @@ unsigned int HighlightBlockData::collapsedBlockCount( void ) const
 //____________________________________________________________
 SPELLCHECK::Word HighlightBlockData::misspelledWord( const int& position ) const
 {
-  
+
   Debug::Throw( "HighlightBlockData::misspelledWord.\n" );
   SPELLCHECK::Word::Set::const_iterator iter = find_if( words_.begin(), words_.end(), SPELLCHECK::Word::AtPositionFTor( position ) );
   return (iter == words_.end()) ? SPELLCHECK::Word():*iter;
-  
+
 }
 #endif
