@@ -156,8 +156,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent* )
   painter.setBrush( palette().color( QPalette::Base ) );
 
   // optimize drawing by not drawing overlapping segments
-  BlockDelimiterSegment::List::const_reverse_iterator previous( segments_.rend() );
-  for( BlockDelimiterSegment::List::const_reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
+  BlockDelimiterSegment::List::reverse_iterator previous( segments_.rend() );
+  for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
   {
           
     // skip this segment if included in previous
@@ -389,8 +389,8 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
   HighlightBlockData* previous_block_data(0);
   
   // loop over segments in reverse order
-  BlockDelimiterSegment::List::const_reverse_iterator previous(segments_.rend() );
-  for( BlockDelimiterSegment::List::const_reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
+  BlockDelimiterSegment::List::reverse_iterator previous(segments_.rend() );
+  for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
   {
     
     // skip this segment if included in previous
@@ -607,7 +607,7 @@ void BlockDelimiterWidget::_updateSegments( void )
     
     // insert the remaining points as empty segments (that will extend to the end of the document)
     /* they are inserted in reverse order to optimize segment drawing in paintEvent */
-    for( BlockDelimiterSegment::List::const_reverse_iterator iter = start_points.rbegin(); iter != start_points.rend(); iter++ )
+    for( BlockDelimiterSegment::List::reverse_iterator iter = start_points.rbegin(); iter != start_points.rend(); iter++ )
     { segments_.push_back( *iter ); }
     
     // insert total number of collapsed block as last element

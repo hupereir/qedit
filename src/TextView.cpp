@@ -30,6 +30,7 @@
 */
 
 #include <QLayout>
+#include <QMenu>
 
 #include "BlockDelimiterWidget.h"
 #include "LineNumberWidget.h"
