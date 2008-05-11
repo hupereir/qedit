@@ -51,7 +51,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
-  //setBackgroundRole( QPalette::Base );
+  // setBackgroundRole( QPalette::Base );
   
   // actions
   _installActions();
@@ -778,6 +778,3 @@ QTextCursor BlockDelimiterWidget::_collapsedCursor( const QTextBlock& first_bloc
   return cursor;
   
 }
-
-
-

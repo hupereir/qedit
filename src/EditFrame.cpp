@@ -51,7 +51,6 @@
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
 #include "Icons.h"
-#include "LineNumberWidget.h"
 #include "MainFrame.h"
 #include "Menu.h"
 #include "NewFileDialog.h"

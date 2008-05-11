@@ -62,8 +62,8 @@ TextView::TextView( QWidget* parent ):
   line_number_widget_ = new LineNumberWidget( &editor(), this );
   block_delimiter_widget_ = new BlockDelimiterWidget( &editor(), this );
   
-  layout->addWidget( &blockDelimiterWidget(), 0 );
   layout->addWidget( &lineNumberWidget(), 0 );
+  layout->addWidget( &blockDelimiterWidget(), 0 );
   layout->addWidget( &editor(), 1 );
   
   // connections

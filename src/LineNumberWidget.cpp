@@ -147,7 +147,8 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
       Qt::AlignRight | Qt::AlignTop, 
       numtext );
     
-    max_length = std::max( max_length, metric.width(numtext)+metric.width("0")+10 );
+    //max_length = std::max( max_length, metric.width(numtext)+metric.width("0")+10 );
+    max_length = std::max( max_length, metric.width(numtext) + 14 );
   }
 
   setFixedWidth( max_length );
