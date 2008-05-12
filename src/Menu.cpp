@@ -187,6 +187,7 @@ void Menu::_updateDocumentClassMenu( void )
   return;
 
 }
+
 //_______________________________________________
 void Menu::_updateEditMenu( void )
 {
@@ -346,6 +347,7 @@ void Menu::_updateToolsMenu( void )
   bool current_block_tagged( has_tags && display.isCurrentBlockTagged() );
   
   tools_menu_->addAction( &display.tagBlockAction() );
+  display.tagBlockAction().setEnabled( has_selection );
   
   tools_menu_->addAction( &display.nextTagAction() );
   display.nextTagAction().setEnabled( has_tags );

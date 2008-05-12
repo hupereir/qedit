@@ -182,6 +182,7 @@ void TextDisplay::installContextMenuActions( QMenu& menu )
 
   // see if tagged blocks are present
   bool has_tags( hasTaggedBlocks() );
+  bool has_selection( textCursor().hasSelection() );
   bool current_block_tagged( has_tags && isCurrentBlockTagged() );
 
   // retrieve default context menu
@@ -194,7 +195,8 @@ void TextDisplay::installContextMenuActions( QMenu& menu )
   menu.addSeparator();
 
   menu.addAction( &tagBlockAction() );
-
+  tagBlockAction().setEnabled( has_selection );
+    
   menu.addAction( &nextTagAction() );
   nextTagAction().setEnabled( has_tags );
 
