@@ -370,8 +370,8 @@ void Menu::_updateToolsMenu( void )
     
     tools_menu_->addSeparator();
     tools_menu_->addAction( &view.blockDelimiterWidget().collapseCurrentAction() );
-    tools_menu_->addAction( &view.blockDelimiterWidget().expandCurrentAction() );
     tools_menu_->addAction( &view.blockDelimiterWidget().collapseAction() );
+    tools_menu_->addAction( &view.blockDelimiterWidget().expandCurrentAction() );
     tools_menu_->addAction( &view.blockDelimiterWidget().expandAllAction() );
   }
   

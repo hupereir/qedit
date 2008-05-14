@@ -125,8 +125,8 @@ void TextView::_toggleShowLineNumbers( bool state )
 void TextView::_loadBlockDelimiters( BlockDelimiter::List delimiters )
 {
   
-  Debug::Throw( "TextView::_enableBlockDelimiters.\n" );
-
+  Debug::Throw( "TextView::_loadBlockDelimiters.\n" );
+  
   // expand all collapsed blocks prior to changing the delimiters
   if( !blockDelimiterWidget().isHidden() && blockDelimiterWidget().expandAllAction().isEnabled() )   
   { blockDelimiterWidget().expandAllAction().trigger(); } 
@@ -160,9 +160,9 @@ void TextView::_toggleShowBlockDelimiters( bool state )
     blockDelimiterWidget().setActionVisibility( state );
     
     // update text highlight object
-    editor().textHighlight().setBlockDelimitersEnabled( 
-      (!blockDelimiterWidget().blockDelimiters().empty() ) &&
-      state );
+    bool enabled( (!blockDelimiterWidget().blockDelimiters().empty() ) && state );
+    editor().textHighlight().setBlockDelimitersEnabled( enabled );
+    if( enabled ) { editor().rehighlight(); }
     
     // update option
     XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", state );

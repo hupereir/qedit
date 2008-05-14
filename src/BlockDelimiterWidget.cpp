@@ -51,7 +51,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
-  // setBackgroundRole( QPalette::Base );
+  setBackgroundRole( QPalette::Midlight );
   
   // actions
   _installActions();
@@ -73,9 +73,7 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
 
 //__________________________________________
 BlockDelimiterWidget::~BlockDelimiterWidget()
-{
-  Debug::Throw( "BlockDelimiterWidget::~BlockDelimiterWidget.\n" );
-}
+{ Debug::Throw( "BlockDelimiterWidget::~BlockDelimiterWidget.\n" ); }
 
 //__________________________________________
 void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
@@ -97,12 +95,14 @@ void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
 //__________________________________________
 void BlockDelimiterWidget::setActionVisibility( const bool& state )
 {
-  Debug::Throw( "BlockDelimiterWidget::setActionVisibility" );
+  Debug::Throw( "BlockDelimiterWidget::setActionVisibility.\n" );
   
   collapseCurrentAction().setVisible( state );
   expandCurrentAction().setVisible( state );
   collapseAction().setVisible( state );
   expandAllAction().setVisible( state );
+  
+  //if( state ) { need_update_ = true; }
   
 }
 
@@ -238,9 +238,14 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   TextBlockPair blocks( _findBlocks( document.begin(), *iter, data ) );
   
   // check if block is collapsed
-  if( data->collapsed() ) _expand( blocks.first, data );
-  else _collapse( blocks.first, blocks.second, data );
-   
+  if( data->collapsed() ) 
+  {
+    _expand( blocks.first, data );
+    _editor().ensureCursorVisible();
+  } else {
+    _collapse( blocks.first, blocks.second, data );
+  }
+  
   // force segment update at next update()
   need_update_ = true;
 
@@ -360,6 +365,7 @@ void BlockDelimiterWidget::_expandCurrentBlock( void )
   
   // collapse
   _expand( blocks.first, data );
+  _editor().ensureCursorVisible();
   return;
   
 }
@@ -449,7 +455,7 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
   // restore state
   _editor().document()->setUndoRedoEnabled( undo_enabled );
   _editor().document()->setModified( modified );
-  
+    
 }
 
 //________________________________________________________
@@ -475,6 +481,9 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
       
   }
     
+  // set cursor position
+  _editor().ensureCursorVisible();
+  
   return;
   
 }
@@ -514,7 +523,7 @@ void BlockDelimiterWidget::_installActions( void )
 //________________________________________________________
 void BlockDelimiterWidget::_updateSegments( void )
 {
-  
+    
   segments_.clear();
   
   // keep track of collapsed blocks

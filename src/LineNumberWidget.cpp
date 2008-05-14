@@ -44,38 +44,28 @@
 #include "HighlightBlockData.h"
 #include "XmlOptions.h"
 
-/*
-Note: this code to be optimized by storing the mapping between line number and position in an array, and updating the later only 
-when the QTextDocument::blockCountChanged signal is emmited. 
-No: that won't work, notably when the text is wrapped. Need to update every time the text is modified.
-One could use the QTextDocument::contentsChange( int position, int charsRemoved, int charsAdded ) signal, and only update
-blocks that are _after_ position.
-*/
-
 //____________________________________________________________________________
 LineNumberWidget::LineNumberWidget(TextEditor* editor, QWidget* parent): 
   QWidget( parent),
   Counter( "LineNumberWidget" ),
   editor_( editor ),
-  need_update_( true )
+  need_update_( true ),
+  need_current_block_update_( false )
 {
   
   Debug::Throw( "LineNumberWidget::LineNumberWidget.\n" );
+  setBackgroundRole( QPalette::Midlight );
   setAutoFillBackground( true );
   
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( _needUpdate() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( update() ) );
+  
   connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
   connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
-
+  
+  connect( &_editor().blockHighlight(), SIGNAL( highlightChanged() ), SLOT( _currentBlockChanged() ) );
   connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );  
-
-  // this is needed to update current paragraph highlight
-  // it has not been re-implemented yet
-  // connect( &_editor().blockHighlight(), SIGNAL( highlightChanged() ), SLOT( update() ) );
-  
-  
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
   // update configuration
@@ -118,17 +108,34 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   // font metric and offset
   const QFontMetrics metric( fontMetrics() );
   int y_offset = _editor().verticalScrollBar()->value();
-  
 
   // brush/pen  
   QPainter painter( this );
   painter.translate( 0, -y_offset );
+  
+  // current block highlight
+  if( need_current_block_update_ && highlight_color_.isValid() )
+  {
+    has_current_block_ = _updateCurrentBlockData();
+    if( has_current_block_ ) {
+      
+      // draw background
+      painter.save();
+      painter.setPen( Qt::NoPen );
+      painter.setBrush( highlight_color_ );
+      painter.drawRect( 0, current_block_data_.y(), width(), metric.lineSpacing() );
+      painter.restore();
+      
+    } 
+        
+  }
 
   // maximum text length
   int max_length=0;  
+
+  // visible height
   int height( QWidget::height() - metric.lineSpacing() + y_offset );
   if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
-
   
   // loop over data
   for( LineNumberData::List::const_iterator iter = line_number_data_.begin(); iter != line_number_data_.end(); iter++ )
@@ -151,7 +158,10 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
     max_length = std::max( max_length, metric.width(numtext) + 14 );
   }
 
-  setFixedWidth( max_length );
+  // resize
+  if( max_length != width() ) 
+  { setFixedWidth( max_length ); }
+    
   painter.end();
   
 }
@@ -206,6 +216,13 @@ void LineNumberWidget::_blockCountChanged( void )
 }
 
 //________________________________________________________
+void LineNumberWidget::_currentBlockChanged( void )
+{
+  need_current_block_update_ = true;
+  update();
+}
+
+//________________________________________________________
 void LineNumberWidget::_updateLineNumberData( void )
 {
   
@@ -230,4 +247,50 @@ void LineNumberWidget::_updateLineNumberData( void )
   
   return;
   
+}
+
+//________________________________________________________
+bool LineNumberWidget::_updateCurrentBlockData( void )
+{
+
+  // do nothing if not enabled
+  if( !_editor().blockHighlightAction().isChecked() ) return false;
+  
+  // font metric
+  const QFontMetrics metric( fontMetrics() );
+  
+  // vertical offset
+  int y_offset = _editor().verticalScrollBar()->value();
+
+  // visible height
+  int height( QWidget::height() - metric.lineSpacing() + y_offset );
+  if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
+
+  // get document
+  unsigned int block_count( 1 );
+  QTextDocument &document( *_editor().document() );
+  QTextBlock block = document.begin();
+  LineNumberData::List::iterator iter( line_number_data_.begin() );
+  for( ; block.isValid() && iter != line_number_data_.end(); block = block.next(), block_count++, iter++ )
+  {
+    
+    // skip if block is not (yet) in window
+    if( iter->y() + metric.lineSpacing() < y_offset ) continue;
+    
+    // stop if block is outside (below) window
+    if( iter->y() > height ) break;
+    
+    // block data
+    TextBlockData* data( static_cast<TextBlockData*>( block.userData() ) );
+    
+    // update block count in case of collapsed block
+    if( data && data->hasFlag( TextBlock::CURRENT_BLOCK ) )
+    { 
+      current_block_data_ = *iter;
+      return true;
+    }
+    
+  }
+  
+  return false;
 }
