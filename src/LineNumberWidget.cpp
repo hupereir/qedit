@@ -54,7 +54,6 @@ LineNumberWidget::LineNumberWidget(TextEditor* editor, QWidget* parent):
 {
   
   Debug::Throw( "LineNumberWidget::LineNumberWidget.\n" );
-  setBackgroundRole( QPalette::Midlight );
   setAutoFillBackground( true );
   
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );

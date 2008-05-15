@@ -51,7 +51,6 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
-  setBackgroundRole( QPalette::Midlight );
   
   // actions
   _installActions();
@@ -131,7 +130,7 @@ void BlockDelimiterWidget::updateCurrentBlockActionState( void )
 }
 
 //__________________________________________
-void BlockDelimiterWidget::paintEvent( QPaintEvent* )
+void BlockDelimiterWidget::paintEvent( QPaintEvent*)
 {  
     
   // check delimiters
