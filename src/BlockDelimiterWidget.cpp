@@ -99,10 +99,7 @@ void BlockDelimiterWidget::setActionVisibility( const bool& state )
   collapseCurrentAction().setVisible( state );
   expandCurrentAction().setVisible( state );
   collapseAction().setVisible( state );
-  expandAllAction().setVisible( state );
-  
-  //if( state ) { need_update_ = true; }
-  
+  expandAllAction().setVisible( state );  
 }
 
 //__________________________________________
@@ -239,9 +236,11 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   // check if block is collapsed
   if( data->collapsed() ) 
   {
+    _editor().clearBoxSelection();
     _expand( blocks.first, data );
     _editor().ensureCursorVisible();
   } else {
+    _editor().clearBoxSelection();
     _collapse( blocks.first, blocks.second, data );
   }
   
@@ -329,6 +328,7 @@ void BlockDelimiterWidget::_collapseCurrentBlock( void )
   TextBlockPair blocks( _findBlocks( document.begin(), *iter, data ) );
   
   // collapse
+  _editor().clearBoxSelection();
   _collapse( blocks.first, blocks.second, data );
   return;
 
@@ -363,6 +363,7 @@ void BlockDelimiterWidget::_expandCurrentBlock( void )
   TextBlockPair blocks( _findBlocks( document.begin(), *iter, data ) );
   
   // collapse
+  _editor().clearBoxSelection();
   _expand( blocks.first, data );
   _editor().ensureCursorVisible();
   return;
@@ -439,6 +440,9 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
   bool modified( _editor().document()->isModified() );
   bool undo_enabled( _editor().document()->isUndoRedoEnabled() );
   _editor().document()->setUndoRedoEnabled( false );
+  
+  // clear box selection
+  _editor().clearBoxSelection();
 
   // create cursor and move at end of block
   QTextCursor cursor( _editor().textCursor() );
@@ -462,6 +466,9 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
 {
   Debug::Throw( "BlockDelimiterWidget::_expandAllBlocks.\n" );
   
+  // clear box selection
+  _editor().clearBoxSelection();
+
   /* update segments if needed */
   if( need_update_ ) 
   { 
