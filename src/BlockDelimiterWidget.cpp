@@ -25,6 +25,8 @@
 #include <QAbstractTextDocumentLayout>
 #include <QPainter>
 #include <QScrollBar>
+#include <QStyleOption>
+#include <QStyle>
 #include <QTextDocument>
 #include <QTextBlock>
 #include <QTextLayout>
@@ -195,26 +197,23 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   }
 
   // draw begin ticks
-  painter.setPen( QPen() );
+  // use the QStyle primitive elements for TreeViews
+  QStyleOption option;
+  option.initFrom( this );
+  //painter.setPen( QPen() );
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
-    if( iter->begin()+top_ < height ) 
-    {
-      iter->setActiveRect( QRect( rect_top_left_, iter->begin() + rect_top_left_, rect_width_, rect_width_ ) );
-      painter.drawRect( iter->activeRect() );
-      painter.drawLine( 
-        marker_top_left_, iter->begin() + half_width_, 
-        marker_bottom_right_, iter->begin() + half_width_ );
-      
-      if( iter->flag( BlockDelimiterSegment::COLLAPSED ) ) 
-      { 
-        painter.drawLine( 
-          half_width_, iter->begin() + marker_top_left_, 
-          half_width_, iter->begin() + marker_bottom_right_ ); 
-      }  
+    if( iter->begin()+top_ >= height ) { continue; } 
 
-    }
+    iter->setActiveRect( QRect( rect_top_left_, iter->begin() + rect_top_left_, rect_width_, rect_width_ ) );
+    
+    option.rect = iter->activeRect();
+    option.state = QStyle::State_Children | QStyle::State_Item;
+    if( !iter->flag( BlockDelimiterSegment::COLLAPSED ) ) { option.state |= QStyle::State_Open; }
+    
+    style()->drawPrimitive( QStyle::PE_IndicatorBranch, &option, &painter );
+    
   }
   
   painter.end();
