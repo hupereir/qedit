@@ -75,7 +75,7 @@ BlockDelimiterWidget::~BlockDelimiterWidget()
 { Debug::Throw( "BlockDelimiterWidget::~BlockDelimiterWidget.\n" ); }
 
 //__________________________________________
-void BlockDelimiterWidget::snchronize( const BlockDelimiterWidget* widget )
+void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
 {
   Debug::Throw( "BlockDelimiterWidget::synchronize.\n" );
 
@@ -151,6 +151,10 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   painter.translate( 0, -y_offset );
   painter.setBrush( palette().color( QPalette::Base ) );
   
+  QPen pen;
+  pen.setStyle( Qt::DotLine );
+  painter.setPen( pen );
+  
   // optimize drawing by not drawing overlapping segments
   BlockDelimiterSegment::List::reverse_iterator previous( segments_.rend() );
   for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
@@ -180,12 +184,21 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     }
     
   }
-  
-  // draw ticks
+    
+  // end tick
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
-    // begin tick
+    if( iter->end() <= height && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
+    { painter.drawLine( half_width_, iter->end(), width_, iter->end() ); }
+    
+  }
+
+  // draw begin ticks
+  painter.setPen( QPen() );
+  for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+  {
+    
     if( iter->begin()+top_ < height ) 
     {
       iter->setActiveRect( QRect( rect_top_left_, iter->begin() + rect_top_left_, rect_width_, rect_width_ ) );
@@ -202,11 +215,6 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
       }  
 
     }
-    
-    // end tick
-    if( iter->end() <= height && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
-    { painter.drawLine( half_width_, iter->end(), width_, iter->end() ); }
-    
   }
   
   painter.end();

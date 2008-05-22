@@ -1224,6 +1224,10 @@ void TextDisplay::paintEvent( QPaintEvent* event )
   painter.translate( -scrollbarPosition() );
   
   // loop over found blocks
+  QPen pen;
+  pen.setStyle( Qt::DotLine );
+  painter.setPen( pen );
+  
   for( QTextBlock block( first ); block != last.next() && block.isValid(); block = block.next() )
   {
     HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
@@ -2337,5 +2341,3 @@ void TextDisplay::_clearTag( void )
   { clearTag( *iter, TextBlock::ALL_TAGS ); }
   
 }
-
-
