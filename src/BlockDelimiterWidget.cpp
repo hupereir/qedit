@@ -30,6 +30,7 @@
 #include <QTextDocument>
 #include <QTextBlock>
 #include <QTextLayout>
+#include <QTreeView>
 
 #include <vector>
 
@@ -199,17 +200,16 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   // draw begin ticks
   // use the QStyle primitive elements for TreeViews
   QStyleOption option;
-  option.initFrom( this );
-  //painter.setPen( QPen() );
+  painter.setPen( Qt::black );
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
     if( iter->begin()+top_ >= height ) { continue; } 
 
     iter->setActiveRect( QRect( rect_top_left_, iter->begin() + rect_top_left_, rect_width_, rect_width_ ) );
-    
+    option.initFrom( this );
     option.rect = iter->activeRect();
-    option.state = QStyle::State_Children | QStyle::State_Item;
+    option.state |= QStyle::State_Children;
     if( !iter->flag( BlockDelimiterSegment::COLLAPSED ) ) { option.state |= QStyle::State_Open; }
     
     style()->drawPrimitive( QStyle::PE_IndicatorBranch, &option, &painter );
