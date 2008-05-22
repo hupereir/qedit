@@ -231,10 +231,3 @@ class BlockDelimiterWidget: public QWidget, public Counter
 };
 
 #endif
-
-
-
-
-
-
-

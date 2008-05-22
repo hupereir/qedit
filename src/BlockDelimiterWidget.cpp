@@ -75,7 +75,7 @@ BlockDelimiterWidget::~BlockDelimiterWidget()
 { Debug::Throw( "BlockDelimiterWidget::~BlockDelimiterWidget.\n" ); }
 
 //__________________________________________
-void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
+void BlockDelimiterWidget::snchronize( const BlockDelimiterWidget* widget )
 {
   Debug::Throw( "BlockDelimiterWidget::synchronize.\n" );
 
@@ -150,7 +150,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   QPainter painter( this );
   painter.translate( 0, -y_offset );
   painter.setBrush( palette().color( QPalette::Base ) );
-
+  
   // optimize drawing by not drawing overlapping segments
   BlockDelimiterSegment::List::reverse_iterator previous( segments_.rend() );
   for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
@@ -204,7 +204,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     }
     
     // end tick
-    if( iter->end() < height && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
+    if( iter->end() <= height && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
     { painter.drawLine( half_width_, iter->end(), width_, iter->end() ); }
     
   }
