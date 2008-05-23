@@ -259,9 +259,10 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   // check if block is collapsed
   if( data->collapsed() ) 
   {
+    bool cursor_visible( _editor().isCursorVisible() );
     _editor().clearBoxSelection();
     _expand( blocks.first, data );
-    _editor().ensureCursorVisible();
+    if( cursor_visible ) _editor().ensureCursorVisible();
   } else {
     _editor().clearBoxSelection();
     _collapse( blocks.first, blocks.second, data );
@@ -386,9 +387,10 @@ void BlockDelimiterWidget::_expandCurrentBlock( void )
   TextBlockPair blocks( _findBlocks( document.begin(), *iter, data ) );
   
   // collapse
+  bool cursor_visible( _editor().isCursorVisible() );
   _editor().clearBoxSelection();
   _expand( blocks.first, data );
-  _editor().ensureCursorVisible();
+  if( cursor_visible ) _editor().ensureCursorVisible();
   return;
   
 }
@@ -499,6 +501,7 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
     need_update_ = false;
   }
 
+  bool cursor_visible( _editor().isCursorVisible() );
   QTextDocument &document( *_editor().document() );
   for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
   {
@@ -511,7 +514,7 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
   }
     
   // set cursor position
-  _editor().ensureCursorVisible();
+  if( cursor_visible ) _editor().ensureCursorVisible();
   
   return;
   
