@@ -152,8 +152,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   // create painter
   QPainter painter( this );
   painter.translate( 0, -y_offset );
-  painter.setBrush( palette().color( QPalette::Base ) );
   
+  painter.save();
   QPen pen;
   pen.setStyle( Qt::DotLine );
   painter.setPen( pen );
@@ -178,6 +178,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
         painter.drawLine( 
           half_width_, iter->begin()+top_, 
           half_width_, min( height, iter->end() ) ); 
+        
       } else { 
         painter.drawLine( 
           half_width_, iter->begin()+top_, 
@@ -197,16 +198,31 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     
   }
 
+  painter.restore();
+  
   // draw begin ticks
-  // use the QStyle primitive elements for TreeViews
-  QStyleOption option;
-  painter.setPen( Qt::black );
+  // first draw empty square
+  painter.save();
+  painter.setPen( Qt::NoPen );
+  painter.setBrush( palette().color( QPalette::Base ) );
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
     if( iter->begin()+top_ >= height ) { continue; } 
 
     iter->setActiveRect( QRect( rect_top_left_, iter->begin() + rect_top_left_, rect_width_, rect_width_ ) );
+    painter.drawRect( iter->activeRect() );
+  
+  }
+  painter.restore();
+  
+  // use the QStyle primitive elements for TreeViews
+  QStyleOption option;
+  for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+  {
+    
+    if( iter->begin()+top_ >= height ) { continue; } 
+
     option.initFrom( this );
     option.rect = iter->activeRect();
     option.state |= QStyle::State_Children;
