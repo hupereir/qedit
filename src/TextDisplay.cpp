@@ -654,14 +654,13 @@ QString TextDisplay::toPlainText( void ) const
     out += block.text();
     if( block.next().isValid() ) out += "\n";
     
-    // try retrieve highlight data
-    // add collapsed data if any
-    //HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-    HighlightBlockData* data( static_cast<HighlightBlockData*>( block.userData() ) );
-    if( data && data->collapsed() )
-    { 
-      const CollapsedBlockData& data_list( data->collapsedData() );
-      for( CollapsedBlockData::List::const_iterator iter = data_list.children().begin(); iter != data_list.children().end(); iter++ )
+    // retrieve associated block format
+    QTextBlockFormat block_format( block.blockFormat() );
+    if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
+    {
+      
+      CollapsedBlockData collapsed_data( block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
+      for( CollapsedBlockData::List::const_iterator iter = collapsed_data.children().begin(); iter != collapsed_data.children().end(); iter++ )
       { out += iter->toPlainText(); } 
     }
     
@@ -1230,8 +1229,7 @@ void TextDisplay::paintEvent( QPaintEvent* event )
   
   for( QTextBlock block( first ); block != last.next() && block.isValid(); block = block.next() )
   {
-    HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-    if( !( data && data->collapsed() ) ) continue;
+    if( !block.blockFormat().boolProperty( TextBlock::Collapsed ) ) continue;
     
     QRectF block_rect( document()->documentLayout()->blockBoundingRect( block ) );
     block_rect.setWidth( viewport()->width() + scrollbarPosition().x() );

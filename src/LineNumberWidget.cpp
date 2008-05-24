@@ -236,11 +236,9 @@ void LineNumberWidget::_updateLineNumberData( void )
     // insert new data
     line_number_data_.push_back( LineNumberData( block_count, document.documentLayout()->blockBoundingRect( block ).y() ) );
     
-    // block data
-    HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-    
-    // update block count in case of collapsed block
-    if( data && data->collapsed() ) { block_count += data->collapsedBlockCount(); }
+    QTextBlockFormat block_format( block.blockFormat() );
+    if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
+    { block_count += block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount() - 1; }
     
   }
   

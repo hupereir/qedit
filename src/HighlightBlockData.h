@@ -143,28 +143,6 @@ class HighlightBlockData: public TextBlockData
     } else return false;
   }
   
-  //! true if block is collapsed
-  const bool& collapsed( void ) const
-  { return collapsed_; }
-  
-  //! true if block is collapsed
-  void setCollapsed( const bool& value )
-  { collapsed_ = value; }
-  
-  //! collapsed data
-  const CollapsedBlockData& collapsedData( void ) const
-  { return collapsed_data_; }
-    
-  //! collapsed data
-  //void setCollapsedData( const CollapsedBlockData::List& data ) 
-  //{ collapsed_data_.setChildren( data ); }
-
-  void setCollapsedData( const CollapsedBlockData& data ) 
-  { collapsed_data_ = data; }
-
-  //! number of collapsed blocks stored
-  unsigned int collapsedBlockCount( void ) const;
-  
   //@}
   
   #if WITH_ASPELL
@@ -200,12 +178,6 @@ class HighlightBlockData: public TextBlockData
   
   //! delimiter
   TextBlock::Delimiter::Map delimiters_;
-  
-  //! true if block is collapsed
-  bool collapsed_;
-  
-  //! collapsed data
-  CollapsedBlockData collapsed_data_;
     
   //@}
   

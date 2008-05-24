@@ -38,19 +38,15 @@ CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
   text_( block.text() )
 {
   
+  // this is probably useless. Will need to check
   HighlightBlockData* data( (dynamic_cast<HighlightBlockData*>( block.userData() ) ) );
-  if( data )
-  {
-    
-    delimiters_ = data->delimiters();
-    collapsed_ = data->collapsed();
-    
-    // only store children if block is collapsed
-    if( data->collapsed() ) { children_ = data->collapsedData().children(); }
-    
-  }
+  if( data ) { delimiters_ = data->delimiters(); }
   
   // would need to retrieve the "children" data from the block format rather that from the HighlightBlockData
+  QTextBlockFormat format( block.blockFormat() );
+  collapsed_ = format.boolProperty( TextBlock::Collapsed );
+  if( collapsed_ && format.hasProperty( TextBlock::CollapsedData ) )
+  { setChildren( format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().children() ); }
   
 }
 

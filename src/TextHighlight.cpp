@@ -114,10 +114,12 @@ void TextHighlight::highlightBlock( const QString& text )
     data->setFlag( TextBlock::MODIFIED, false );
     data->setLocations( locations );
         
-    // store active id
-    /* this is disabled when  current block is collapsed */
-    if( !data->collapsed() ) setCurrentBlockState( locations.activeId().second );
-    else setCurrentBlockState( 0 );
+//     // store active id
+//     /* this is disabled when  current block is collapsed */
+//     if( !data->collapsed() ) setCurrentBlockState( locations.activeId().second );
+//     else setCurrentBlockState( 0 );
+    
+    setCurrentBlockState( locations.activeId().second );
     
   }
     

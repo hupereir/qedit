@@ -37,21 +37,8 @@ using namespace std;
 HighlightBlockData::HighlightBlockData( void ):
   TextBlockData(),
   parenthesis_( -1 ),
-  parenthesis_length_(0),
-  collapsed_( false )
+  parenthesis_length_(0)
 {}
-
-//____________________________________________________________
-unsigned int HighlightBlockData::collapsedBlockCount( void ) const
-{
-  if( !collapsed() ) return 0;
-
-  unsigned int out(0);
-  for( CollapsedBlockData::List::const_iterator iter = collapsedData().children().begin(); iter != collapsedData().children().end(); iter++ )
-  { out += iter->blockCount(); }
-
-  return out;
-}
 
 #if WITH_ASPELL
 
