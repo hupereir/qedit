@@ -35,7 +35,6 @@ using namespace std;
 
 //_____________________________________________________________
 CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
-  Counter( "CollapsedBlockData" ),
   text_( block.text() )
 {
   
@@ -47,7 +46,7 @@ CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
     collapsed_ = data->collapsed();
     
     // only store children if block is collapsed
-    if( data->collapsed() ) { children_ = data->collapsedData(); }
+    if( data->collapsed() ) { children_ = data->collapsedData().children(); }
     
   }
   

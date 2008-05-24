@@ -32,6 +32,7 @@
   \date $Date$
 */  
 
+#include <QTextFormat>
 #include <iostream>
 #include <map>
 
@@ -60,6 +61,15 @@ namespace TextBlock
     
   };
   
+  //! block format properties
+  enum BlockFormatProperties
+  {
+    
+    Collapsed = QTextFormat::UserProperty | (1<<0),
+    CollapsedData = QTextFormat::UserProperty | (1<<1)  
+    
+  };
+
   //! counts how many times a block appears as a begin and a end block
   class Delimiter
   {

@@ -660,8 +660,8 @@ QString TextDisplay::toPlainText( void ) const
     HighlightBlockData* data( static_cast<HighlightBlockData*>( block.userData() ) );
     if( data && data->collapsed() )
     { 
-      const CollapsedBlockData::List& data_list( data->collapsedData() );
-      for( CollapsedBlockData::List::const_iterator iter = data_list.begin(); iter != data_list.end(); iter++ )
+      const CollapsedBlockData& data_list( data->collapsedData() );
+      for( CollapsedBlockData::List::const_iterator iter = data_list.children().begin(); iter != data_list.children().end(); iter++ )
       { out += iter->toPlainText(); } 
     }
     

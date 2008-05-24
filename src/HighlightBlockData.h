@@ -152,13 +152,16 @@ class HighlightBlockData: public TextBlockData
   { collapsed_ = value; }
   
   //! collapsed data
-  const CollapsedBlockData::List& collapsedData( void ) const
+  const CollapsedBlockData& collapsedData( void ) const
   { return collapsed_data_; }
     
   //! collapsed data
-  void setCollapsedData( const CollapsedBlockData::List& data ) 
+  //void setCollapsedData( const CollapsedBlockData::List& data ) 
+  //{ collapsed_data_.setChildren( data ); }
+
+  void setCollapsedData( const CollapsedBlockData& data ) 
   { collapsed_data_ = data; }
-  
+
   //! number of collapsed blocks stored
   unsigned int collapsedBlockCount( void ) const;
   
@@ -202,7 +205,7 @@ class HighlightBlockData: public TextBlockData
   bool collapsed_;
   
   //! collapsed data
-  CollapsedBlockData::List collapsed_data_;
+  CollapsedBlockData collapsed_data_;
     
   //@}
   

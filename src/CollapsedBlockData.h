@@ -37,16 +37,21 @@
 #include <QList>
 #include <vector>
 
-#include "Counter.h"
 #include "HighlightBlockFlags.h"
 
-class CollapsedBlockData: public Counter
+//! store collapsed block text and state
+class CollapsedBlockData
 {
   
   public:
-  
+    
   //! list
   typedef QList<CollapsedBlockData> List;
+  
+  //! constructor
+  CollapsedBlockData( void ):
+    collapsed_( false )
+    {}
   
   //! constructor
   CollapsedBlockData( const QTextBlock& block );
@@ -70,6 +75,14 @@ class CollapsedBlockData: public Counter
   const List& children( void ) const
   { return children_; }
     
+  //! children
+  List& children( void )
+  { return children_; }
+  
+  //! children
+  void setChildren( const List& children )
+  { children_ = children; }
+  
   //! returns all text contained in collapsed data
   /*!
   this is equivalent to expanding the entire block.
@@ -93,4 +106,7 @@ class CollapsedBlockData: public Counter
     
 };
 
+Q_DECLARE_METATYPE( CollapsedBlockData )
+
 #endif
+

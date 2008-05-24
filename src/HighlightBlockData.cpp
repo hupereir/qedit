@@ -47,7 +47,7 @@ unsigned int HighlightBlockData::collapsedBlockCount( void ) const
   if( !collapsed() ) return 0;
 
   unsigned int out(0);
-  for( CollapsedBlockData::List::const_iterator iter = collapsed_data_.begin(); iter != collapsed_data_.end(); iter++ )
+  for( CollapsedBlockData::List::const_iterator iter = collapsedData().children().begin(); iter != collapsedData().children().end(); iter++ )
   { out += iter->blockCount(); }
 
   return out;

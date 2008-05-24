@@ -228,16 +228,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   QAction* expand_all_action_;  
   
   //@}
-  
-  //! block format properties
-  enum BlockFormatProperties
-  {
     
-    Collapsed = QTextFormat::UserProperty & 1<<0,
-    CollapsedData = QTextFormat::UserProperty & 1<<1  
-    
-  };
-  
 };
 
 #endif

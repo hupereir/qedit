@@ -451,8 +451,8 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
     */
     if( previous_block_data && blocks.first == block )
     {
-      CollapsedBlockData::List collapsed_data( previous_block_data->collapsedData() );
-      collapsed_data << data->collapsedData();
+      CollapsedBlockData collapsed_data( previous_block_data->collapsedData() );
+      collapsed_data.children() << data->collapsedData().children();
       previous_block_data->setCollapsedData( collapsed_data );
     } else previous_block_data = data;        
     
@@ -616,7 +616,7 @@ void BlockDelimiterWidget::_updateSegments( void )
       // store collapse state
       const bool& collapsed( data->collapsed() );
       
-      bool collapsed_format( block.blockFormat().boolProperty( Collapsed ) );
+      bool collapsed_format( block.blockFormat().boolProperty( TextBlock::Collapsed ) );
       if( collapsed_format != collapsed ) { cout << "BlockDelimiterWidget::_updateSegments - inconsistent collapsed flag" << endl; }
       else if( collapsed ) { cout << "BlockDelimiterWidget::_updateSegments - consistent collapsed flag: " << collapsed_format << endl; }
       
@@ -713,13 +713,20 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
   // create cursor
   QTextCursor cursor( block );      
   cursor.setPosition( block.position() + block.length() - 1, QTextCursor::MoveAnchor );      
-  const CollapsedBlockData::List& collapsed_data( data->collapsedData() );
-  if( collapsed_data.empty() ) return;
+  const CollapsedBlockData& collapsed_data( data->collapsedData() );
+  if( collapsed_data.children().empty() ) return;
+  
+  QVariant variant( block.blockFormat().property( TextBlock::CollapsedData ) );
+  if( variant.isNull() ) { cout << "BlockDelimiterWidget::_expand - invalid CollapsedData property" << endl; }
+  CollapsedBlockData collapsed_data_format( variant.value<CollapsedBlockData>() );
 
+  Debug::Throw(0) << "BlockDelimiterWidget::_expand - collapsed_data: " << qPrintable( collapsed_data.toPlainText() ) << endl;
+  Debug::Throw(0) << "BlockDelimiterWidget::_expand - collapsed_data_format: " << qPrintable( collapsed_data_format.toPlainText() ) << endl;
+  
   bool modified( _editor().document()->isModified() );
   bool undo_enabled( _editor().document()->isUndoRedoEnabled() );
   _editor().document()->setUndoRedoEnabled( false );
-
+  
   // mark contents dirty to force update of current block
   data->setFlag( TextBlock::MODIFIED, true );
   _editor().document()->markContentsDirty(block.position(), block.length()-1);
@@ -729,11 +736,11 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
   
   // update collapsed flag associated to data
   QTextBlockFormat block_format( cursor.blockFormat() );
-  block_format.setProperty( Collapsed, false );
+  block_format.setProperty( TextBlock::Collapsed, false );
   cursor.setBlockFormat( block_format );
   data->setCollapsed( false );
 
-  for( CollapsedBlockData::List::const_iterator iter = collapsed_data.begin(); iter != collapsed_data.end(); iter++ )
+  for( CollapsedBlockData::List::const_iterator iter = collapsed_data.children().begin(); iter != collapsed_data.children().end(); iter++ )
   {
     
     cursor.insertBlock();
@@ -743,13 +750,13 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
     
     // update text block format
     QTextBlockFormat block_format( cursor.blockFormat() );
-    block_format.setProperty( Collapsed, iter->collapsed() );
+    block_format.setProperty( TextBlock::Collapsed, iter->collapsed() );
     cursor.setBlockFormat( block_format );
     
     // update highlight block data
     current_data->setDelimiters( iter->delimiters() );
     current_data->setCollapsed( iter->collapsed() );
-    if( iter->collapsed() ) { current_data->setCollapsedData( iter->children() ); }
+    if( iter->collapsed() ) { current_data->setCollapsedData( *iter ); }
     cursor.block().setUserData( current_data );
         
     // also expands block if collapsed and recursive is set to true
@@ -775,13 +782,6 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   QTextCursor cursor( _collapsedCursor( first_block, second_block, data ) );
   cursor.beginEditBlock();
   cursor.removeSelectedText();
-  
-  // also set the Block format of the first block to Collapsed
-  cursor.setPosition( first_block.position() );
-  QTextBlockFormat block_format( cursor.blockFormat() );
-  block_format.setProperty( Collapsed, true );
-  cursor.setBlockFormat( block_format );
-
   cursor.endEditBlock();
   
   // restore state
@@ -806,7 +806,7 @@ QTextCursor BlockDelimiterWidget::_collapsedCursor( const QTextBlock& first_bloc
   bool cursor_found( false );
 
   // create collapsed block data to be stored in current block before collapsed
-  CollapsedBlockData::List collapsed_data_list;  
+  CollapsedBlockData collapsed_data;  
   for( QTextBlock current = first_block.next(); current.isValid(); current = current.next() )
   {
     
@@ -815,13 +815,13 @@ QTextCursor BlockDelimiterWidget::_collapsedCursor( const QTextBlock& first_bloc
     if( current == cursor_block ) cursor_found = true;
     
     // append collapsed data
-    collapsed_data_list.push_back( CollapsedBlockData( current ) );
+    collapsed_data.children().push_back( CollapsedBlockData( current ) );
     if( current == second_block ) break;
     
   }
   
   // store in current block
-  data->setCollapsedData( collapsed_data_list );
+  data->setCollapsedData( collapsed_data );
   
   // mark contents dirty to force update of current block
   data->setFlag( TextBlock::MODIFIED, true );
@@ -837,6 +837,21 @@ QTextCursor BlockDelimiterWidget::_collapsedCursor( const QTextBlock& first_bloc
   
   // create cursor and move at end of block
   QTextCursor cursor( first_block );
+
+  cout << "BlockDelimiterWidget::_collapsedCursor -"
+    << " UserProperty: " << QTextFormat::UserProperty
+    << " Collapsed: " << TextBlock::Collapsed
+    << " CollapsedData: " << TextBlock::CollapsedData
+    << endl;
+  
+  // update block format
+  QTextBlockFormat block_format( cursor.blockFormat() );
+  block_format.setProperty( TextBlock::Collapsed, true );
+  QVariant variant;
+  variant.setValue( collapsed_data );
+  block_format.setProperty( TextBlock::CollapsedData, variant );
+  cursor.setBlockFormat( block_format );
+  
   cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );
   if( second_block.isValid() ) { cursor.setPosition( second_block.position() + second_block.length(), QTextCursor::KeepAnchor ); }
   else { cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor ); }
