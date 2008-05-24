@@ -21,6 +21,14 @@
 *
 *******************************************************************************/
 
+/*!
+  \file BlockDelimiterWidget.h
+  \brief display block delimiters
+  \author Hugo Pereira
+  \version $Revision$
+  \date $Date$
+*/
+
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
 #include <QPainter>
@@ -580,10 +588,16 @@ void BlockDelimiterWidget::_installActions( void )
 }
 
 //________________________________________________________
+void BlockDelimiterWidget::_synchronizeBlockData( void ) const
+{}
+
+//________________________________________________________
 void BlockDelimiterWidget::_updateSegments( void )
 {
     
   segments_.clear();
+  
+  _synchronizeBlockData();
   
   // keep track of collapsed blocks
   bool has_collapsed_blocks( false ); 
@@ -643,6 +657,14 @@ void BlockDelimiterWidget::_updateSegments( void )
       // store collapse state
       QTextBlockFormat block_format( block.blockFormat() );
       bool collapsed( block_format.boolProperty( TextBlock::Collapsed ) );
+      if( data->hasFlag( TextBlock::COLLAPSED ) != collapsed )
+      {
+        data->setFlag( TextBlock::COLLAPSED, collapsed );
+        data->setFlag( TextBlock::MODIFIED, true );
+        document.markContentsDirty(block.position(), block.length()-1);
+      }
+      
+      // add segment
       if( collapsed || delimiter.begin() )
       {
         
@@ -868,3 +890,4 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
   
 }
+

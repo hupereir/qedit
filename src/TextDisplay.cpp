@@ -358,7 +358,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
   {
 
     // set document as modified (to force the file to be saved) and save
-   setModified( true );
+    setModified( true );
     save();
 
   } else if( state == FileRemovedDialog::SAVE_AS ) { saveAs(); }
@@ -2053,8 +2053,8 @@ void TextDisplay::_textModified( void )
   // document should never appear modified
   // for readonly displays
   if( document()->isModified() && isReadOnly() ) document()->setModified( false );
-
   if( isActive() ) emit needUpdate( WINDOW_TITLE );
+  
 }
 
 //__________________________________________________

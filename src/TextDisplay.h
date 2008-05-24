@@ -314,7 +314,7 @@ class TextDisplay: public TextEditor
     filter_menu_action_->setEnabled( autoSpellAction().isChecked() );
     return *filter_menu_action_;
   }
-  
+ 
   #endif
   
   //! tag block action
