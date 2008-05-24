@@ -60,9 +60,9 @@ class CollapsedBlockData
   const QString& text( void ) const
   { return text_; }
     
-  //! delimiters
-  const TextBlock::Delimiter::Map& delimiters( void ) const
-  { return delimiters_; }
+//   //! delimiters
+//   const TextBlock::Delimiter::Map& delimiters( void ) const
+//   { return delimiters_; }
   
   //! collapsed
   const bool& collapsed( void ) const
@@ -95,8 +95,8 @@ class CollapsedBlockData
   //! text
   QString text_;
   
-  //! delimiters
-  TextBlock::Delimiter::Map delimiters_;
+//  //! delimiters
+//  TextBlock::Delimiter::Map delimiters_;
 
   //! collapsed flag
   bool collapsed_;

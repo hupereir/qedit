@@ -43,18 +43,21 @@ namespace TextBlock
   
   enum
   {
-  
+      
     //! block is modified
     MODIFIED = 1<<2,
-    
+ 
+    //! block is collapsed
+    COLLAPSED = 1<<3,
+   
     //! block is a diff-wise added block
-    DIFF_ADDED = 1<<3,
+    DIFF_ADDED = 1<<4,
     
     //! block is a diff-wise conflict block 
-    DIFF_CONFLICT = 1<<4,
+    DIFF_CONFLICT = 1<<5,
     
     //! user tagged blocks
-    USER_TAG = 1<<5,
+    USER_TAG = 1<<6,
  
     //! all tags
     ALL_TAGS = DIFF_ADDED | DIFF_CONFLICT | USER_TAG

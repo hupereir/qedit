@@ -47,7 +47,7 @@
 #include "BlockDelimiterSegment.h"
 #include "Counter.h"
 
-class HighlightBlockData;
+class TextBlockData;
 class TextDisplay;
 
 //! display block delimiters
@@ -166,17 +166,14 @@ class BlockDelimiterWidget: public QWidget, public Counter
   \param segment the segment to be found
   \param data the user data associated to the output segment
   */
-  TextBlockPair _findBlocks( QTextBlock block, const BlockDelimiterSegment& segment, HighlightBlockData*& data ) const;  
+  TextBlockPair _findBlocks( QTextBlock block, const BlockDelimiterSegment& segment, TextBlockData*& data ) const;  
   
   //! expand current block
-  void _expand( const QTextBlock&, HighlightBlockData*, const bool& recursive = false ) const;
+  void _expand( const QTextBlock&, TextBlockData*, const bool& recursive = false ) const;
 
   //! collapse blocks 
-  void _collapse( const QTextBlock&, const QTextBlock&, HighlightBlockData* ) const;
+  void _collapse( const QTextBlock&, const QTextBlock&, TextBlockData* ) const;
 
-  //! prepare blocks for collapse and returns cursor that match selection to be removed
-  QTextCursor _collapsedCursor( const QTextBlock&, const QTextBlock&, HighlightBlockData* ) const;
-  
   //! editor
   TextDisplay& _editor( void ) const
   { return *editor_; }
