@@ -452,7 +452,7 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
     if( previous_block_data && blocks.first == block )
     {
       CollapsedBlockData::List collapsed_data( previous_block_data->collapsedData() );
-      collapsed_data.insert( collapsed_data.end(), data->collapsedData().begin(), data->collapsedData().end() );
+      collapsed_data << data->collapsedData();
       previous_block_data->setCollapsedData( collapsed_data );
     } else previous_block_data = data;        
     
@@ -615,6 +615,11 @@ void BlockDelimiterWidget::_updateSegments( void )
 
       // store collapse state
       const bool& collapsed( data->collapsed() );
+      
+      bool collapsed_format( block.blockFormat().boolProperty( Collapsed ) );
+      if( collapsed_format != collapsed ) { cout << "BlockDelimiterWidget::_updateSegments - inconsistent collapsed flag" << endl; }
+      else if( collapsed ) { cout << "BlockDelimiterWidget::_updateSegments - consistent collapsed flag: " << collapsed_format << endl; }
+      
       if( collapsed || delimiter.begin() )
       {
         
@@ -705,8 +710,6 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
 void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData* data, const bool& recursive ) const
 { 
     
-  data->setCollapsed( false );
-
   // create cursor
   QTextCursor cursor( block );      
   cursor.setPosition( block.position() + block.length() - 1, QTextCursor::MoveAnchor );      
@@ -723,6 +726,13 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
   
   // add expanded block
   cursor.beginEditBlock();
+  
+  // update collapsed flag associated to data
+  QTextBlockFormat block_format( cursor.blockFormat() );
+  block_format.setProperty( Collapsed, false );
+  cursor.setBlockFormat( block_format );
+  data->setCollapsed( false );
+
   for( CollapsedBlockData::List::const_iterator iter = collapsed_data.begin(); iter != collapsed_data.end(); iter++ )
   {
     
@@ -730,11 +740,18 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
     cursor.insertText( iter->text() );
     
     HighlightBlockData* current_data( new HighlightBlockData() );
+    
+    // update text block format
+    QTextBlockFormat block_format( cursor.blockFormat() );
+    block_format.setProperty( Collapsed, iter->collapsed() );
+    cursor.setBlockFormat( block_format );
+    
+    // update highlight block data
     current_data->setDelimiters( iter->delimiters() );
     current_data->setCollapsed( iter->collapsed() );
     if( iter->collapsed() ) { current_data->setCollapsedData( iter->children() ); }
     cursor.block().setUserData( current_data );
-    
+        
     // also expands block if collapsed and recursive is set to true
     if( iter->collapsed() && recursive ) _expand( cursor.block(), current_data, true );
     
@@ -758,6 +775,13 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   QTextCursor cursor( _collapsedCursor( first_block, second_block, data ) );
   cursor.beginEditBlock();
   cursor.removeSelectedText();
+  
+  // also set the Block format of the first block to Collapsed
+  cursor.setPosition( first_block.position() );
+  QTextBlockFormat block_format( cursor.blockFormat() );
+  block_format.setProperty( Collapsed, true );
+  cursor.setBlockFormat( block_format );
+
   cursor.endEditBlock();
   
   // restore state
@@ -770,6 +794,7 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
 QTextCursor BlockDelimiterWidget::_collapsedCursor( const QTextBlock& first_block, const QTextBlock& second_block, HighlightBlockData* data ) const
 {
    
+  
   data->setCollapsed( true );
     
   // if next block is not valid, nothing is to be done

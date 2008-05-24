@@ -34,6 +34,7 @@
 
 #include <QString>
 #include <QTextBlock>
+#include <QList>
 #include <vector>
 
 #include "Counter.h"
@@ -45,7 +46,7 @@ class CollapsedBlockData: public Counter
   public:
   
   //! list
-  typedef std::vector<CollapsedBlockData> List;
+  typedef QList<CollapsedBlockData> List;
   
   //! constructor
   CollapsedBlockData( const QTextBlock& block );

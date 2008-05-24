@@ -51,6 +51,8 @@ CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
     
   }
   
+  // would need to retrieve the "children" data from the block format rather that from the HighlightBlockData
+  
 }
 
 //_____________________________________________________________
