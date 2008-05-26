@@ -135,7 +135,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! collapse top level block
   void _collapseTopLevelBlocks( void );
 
-//! expand all blocks
+  //! expand all blocks
   void _expandAllBlocks( void );  
   
   //! need update

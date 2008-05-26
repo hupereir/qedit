@@ -117,12 +117,8 @@ void BlockDelimiterWidget::setActionVisibility( const bool& state )
 void BlockDelimiterWidget::updateCurrentBlockActionState( void )
 {
   
-  /* update segments if needed */
-  if( need_update_ ) 
-  { 
-    _updateSegments(); 
-    need_update_ = false;
-  }
+  // update segments if needed
+  _updateSegments(); 
   
   // by default next paintEvent will require segment update
   int y( _editor().document()->documentLayout()->blockBoundingRect( _editor().textCursor().block() ).y() );
@@ -145,11 +141,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   if( delimiters_.empty() ) return;
     
   /* update segments if needed */
-  if( need_update_ ) 
-  { 
-    _updateSegments(); 
-    need_update_ = false;
-  }
+  _updateSegments(); 
     
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
@@ -312,10 +304,15 @@ void BlockDelimiterWidget::_updateConfiguration( void )
 //________________________________________________________
 void BlockDelimiterWidget::_contentsChanged( void )
 {
+  
   // if text is wrapped, line number data needs update at next update
   /* note: this could be further optimized if one retrieve the position at which the contents changed occured */
   if( _editor().lineWrapMode() != QTextEdit::NoWrap )
-  { need_update_ = true; }
+  { 
+    need_update_ = true; 
+    _synchronizeBlockData();
+  }
+  
 }
 
 //________________________________________________________
@@ -325,7 +322,10 @@ void BlockDelimiterWidget::_blockCountChanged( void )
   // nothing to be done if wrap mode is not NoWrap, because
   // it is handled in the _contentsChanged slot.
   if( _editor().lineWrapMode() == QTextEdit::NoWrap )
-  { need_update_ = true; }
+  { 
+    need_update_ = true; 
+    _synchronizeBlockData();
+  }
   
 }
 
@@ -335,12 +335,8 @@ void BlockDelimiterWidget::_collapseCurrentBlock( void )
   Debug::Throw( "BlockDelimiterWidget::_collapseCurrentBlock.\n" );
 
   /* update segments if needed */
-  if( need_update_ ) 
-  { 
-    _updateSegments(); 
-    need_update_ = false;
-  }
- 
+  _updateSegments(); 
+  
   // sort segments so that top level comes last
   std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
 
@@ -372,11 +368,7 @@ void BlockDelimiterWidget::_expandCurrentBlock( void )
   Debug::Throw( "BlockDelimiterWidget::_expandCurrentBlock.\n" );
 
   /* update segments if needed */
-  if( need_update_ ) 
-  { 
-    _updateSegments(); 
-    need_update_ = false;
-  }
+  _updateSegments(); 
 
   // sort segments so that top level comes last
   std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
@@ -409,11 +401,7 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
   Debug::Throw( "BlockDelimiterWidget::_collapseTopLevelBlocks.\n" );
   
   /* update segments if needed */
-  if( need_update_ ) 
-  { 
-    _updateSegments(); 
-    need_update_ = false;
-  }
+  _updateSegments(); 
 
   // sort segments so that top level comes last
   std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
@@ -526,11 +514,7 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
   _editor().clearBoxSelection();
 
   /* update segments if needed */
-  if( need_update_ ) 
-  { 
-    _updateSegments(); 
-    need_update_ = false;
-  }
+  _updateSegments(); 
 
   bool cursor_visible( _editor().isCursorVisible() );
   QTextDocument &document( *_editor().document() );
@@ -589,15 +573,37 @@ void BlockDelimiterWidget::_installActions( void )
 
 //________________________________________________________
 void BlockDelimiterWidget::_synchronizeBlockData( void ) const
-{}
+{
+  
+  QTextDocument &document( *_editor().document() );
+  for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
+  {
+           
+    // retrieve data and check this block delimiter
+    HighlightBlockData* data = (static_cast<HighlightBlockData*>( block.userData() ) );
+    if( !data ) continue;
+    
+    // store collapse state
+    QTextBlockFormat block_format( block.blockFormat() );
+    bool collapsed( block_format.boolProperty( TextBlock::Collapsed ) );
+    if( data->hasFlag( TextBlock::COLLAPSED ) != collapsed )
+    {
+      data->setFlag( TextBlock::COLLAPSED, collapsed );
+      data->setFlag( TextBlock::MODIFIED, true );
+      document.markContentsDirty(block.position(), block.length()-1);
+    }
+    
+  }
+
+}
 
 //________________________________________________________
 void BlockDelimiterWidget::_updateSegments( void )
 {
-    
-  segments_.clear();
+  if( !need_update_ ) return;
+  need_update_ = false;
   
-  _synchronizeBlockData();
+  segments_.clear();
   
   // keep track of collapsed blocks
   bool has_collapsed_blocks( false ); 
@@ -657,12 +663,6 @@ void BlockDelimiterWidget::_updateSegments( void )
       // store collapse state
       QTextBlockFormat block_format( block.blockFormat() );
       bool collapsed( block_format.boolProperty( TextBlock::Collapsed ) );
-      if( data->hasFlag( TextBlock::COLLAPSED ) != collapsed )
-      {
-        data->setFlag( TextBlock::COLLAPSED, collapsed );
-        data->setFlag( TextBlock::MODIFIED, true );
-        document.markContentsDirty(block.position(), block.length()-1);
-      }
       
       // add segment
       if( collapsed || delimiter.begin() )
