@@ -51,4 +51,5 @@ SPELLCHECK::Word HighlightBlockData::misspelledWord( const int& position ) const
   return (iter == words_.end()) ? SPELLCHECK::Word():*iter;
 
 }
+
 #endif
