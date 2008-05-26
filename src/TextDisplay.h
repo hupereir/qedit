@@ -731,7 +731,3 @@ class TextDisplay: public TextEditor
 };
 
 #endif
-
-
-
-
