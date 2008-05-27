@@ -600,8 +600,11 @@ void BlockDelimiterWidget::_synchronizeBlockData( void ) const
 //________________________________________________________
 void BlockDelimiterWidget::_updateSegments( void )
 {
+  
   if( !need_update_ ) return;
   need_update_ = false;
+
+  // Debug::Throw( 0, "BlockDelimiterWidget::_updateSegments.\n" );
   
   segments_.clear();
   
@@ -622,28 +625,28 @@ void BlockDelimiterWidget::_updateSegments( void )
     QTextDocument &document( *_editor().document() );
     for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), block_count++ ) 
     {
-      
-      /*
-      get block limits
-      either use the block layout (if available)
-      or the document layout, if the former is not ready yet. 
-      One checks that the bounding rect if valid before proceeding.
-      */      
-      QRectF rect( document.documentLayout()->blockBoundingRect( block ) );
-      assert( !rect.isNull() );
-            
-      int block_begin( block.layout()->position().y() );
-      int block_end( block_begin + block.layout()->boundingRect().height() );
-            
+
       // retrieve data and check this block delimiter
       HighlightBlockData* data = (static_cast<HighlightBlockData*>( block.userData() ) );
       if( !data ) continue;
 
-      // store "ignore" state
-      bool ignored = _editor().ignoreBlock( block );
-      
       // get delimiter data
       TextBlock::Delimiter delimiter( data->delimiter( iter->id() ) );
+
+      // store collapse state
+      QTextBlockFormat block_format( block.blockFormat() );
+      bool collapsed( block_format.boolProperty( TextBlock::Collapsed ) );
+      
+      // check if something is to be done
+      if( !( collapsed || delimiter.begin() || delimiter.end() ) ) continue;
+      
+      // get block limits
+      QRectF rect( document.documentLayout()->blockBoundingRect( block ) );
+      int block_begin( block.layout()->position().y() );
+      int block_end( block_begin + block.layout()->boundingRect().height() );
+            
+      // store "ignore" state
+      bool ignored = data->ignoreBlock();
       if( delimiter.end() )
       {
         
@@ -659,10 +662,6 @@ void BlockDelimiterWidget::_updateSegments( void )
         { start_points.pop_back(); }
           
       }
-
-      // store collapse state
-      QTextBlockFormat block_format( block.blockFormat() );
-      bool collapsed( block_format.boolProperty( TextBlock::Collapsed ) );
       
       // add segment
       if( collapsed || delimiter.begin() )
@@ -684,7 +683,7 @@ void BlockDelimiterWidget::_updateSegments( void )
           {
             collapsed_blocks_.insert( make_pair( block_count, collapsed_block_count ) );
             
-            assert( block_format.hasProperty( TextBlock::CollapsedData ) );
+            // assert( block_format.hasProperty( TextBlock::CollapsedData ) );
             collapsed_block_count += block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount() - 1;
           }
           
@@ -704,6 +703,7 @@ void BlockDelimiterWidget::_updateSegments( void )
     { segments_.push_back( *iter ); }
     
     // insert total number of collapsed block as last element
+    // this is done only for the first block delimiter pair
     if( first ) 
     {
       collapsed_blocks_.insert( make_pair( block_count, collapsed_block_count ) );
@@ -759,10 +759,10 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
     if( second_data )
     {
       
-      const TextBlock::Delimiter::Map& delimiter_map( second_data->delimiters() );
-      for( TextBlock::Delimiter::Map::const_iterator iter = delimiter_map.begin(); iter != delimiter_map.end(); iter++ )
+      const TextBlock::Delimiter::List& delimiters( second_data->delimiters() );
+      for( TextBlock::Delimiter::List::const_iterator iter = delimiters.begin(); iter != delimiters.end(); iter++ )
       {
-        if( !iter->second.begin() ) continue;
+        if( !iter->begin() ) continue;
         block = block.previous();
         break;
       }

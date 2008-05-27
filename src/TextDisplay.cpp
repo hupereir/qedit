@@ -782,16 +782,7 @@ bool TextDisplay::ignoreBlock( const QTextBlock& block ) const
 
   // try retrieve highlight data
   HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-  if( data )
-  {
-    // retrieve locations
-    const PatternLocationSet& locations( data->locations() );
-    return (!locations.empty()) && locations.begin()->parent().flag( HighlightPattern::NO_INDENT );
-
-  }
-
-  // all checks passed
-  return false;
+  return ( data && data->ignoreBlock() );
 
 }
 
@@ -800,8 +791,8 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
 {
   Debug::Throw( "TextDisplay::tagBlock.\n" );
 
-  TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-  if( !data ) block.setUserData( data = new TextBlockData() );
+  HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+  if( !data ) block.setUserData( data = new HighlightBlockData() );
 
   switch( tag )
   {

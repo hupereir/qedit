@@ -80,6 +80,11 @@ class HighlightBlockData: public TextBlockData
   void setLocations( const PatternLocationSet& locations )
   { locations_ = locations; }
   
+  //! return true if locations correspond to a commented block
+  bool ignoreBlock( void ) const
+  { return (!locations().empty()) && locations().begin()->parent().flag( HighlightPattern::NO_INDENT ); }
+
+  
   //!@name parenthesis
   //@{
   
@@ -114,33 +119,31 @@ class HighlightBlockData: public TextBlockData
   //@{
   
   //! delimiters
-  const TextBlock::Delimiter::Map& delimiters( void ) const
+  const TextBlock::Delimiter::List& delimiters( void ) const
   { return delimiters_; }
 
   //! delimiters
-  void setDelimiters( const TextBlock::Delimiter::Map& delimiters )
+  void setDelimiters( const TextBlock::Delimiter::List& delimiters )
   { delimiters_ = delimiters; }
   
   //! delimiter
   TextBlock::Delimiter delimiter( const unsigned int& id ) const
   { 
-    TextBlock::Delimiter::Map::const_iterator iter( delimiters_.find(id) );
-    return (iter == delimiters_.end() ) ? TextBlock::Delimiter():iter->second;
+    if( delimiters_.size() <= id ) return TextBlock::Delimiter();
+    return delimiters_[id];
   }
 
   //! delimiter
   /*! returns true if values changed */
   bool setDelimiter( const unsigned int& id, const TextBlock::Delimiter& delimiter )
   { 
-    TextBlock::Delimiter::Map::iterator iter( delimiters_.find(id) );
-    if( iter == delimiters_.end() )
-    {
-      delimiters_.insert( std::make_pair(id, delimiter ) );
-      return true;
-    } else if( iter->second != delimiter ) {
-      iter->second = delimiter;
-      return true;
-    } else return false;
+    if( delimiters_.size() > id && delimiters_[id] == delimiter ) return false;
+    
+    if( delimiters_.size() <= id ) { delimiters_.resize( id+1 ); }
+    
+    delimiters_[id] = delimiter;
+    return true;
+    
   }
   
   //@}
@@ -177,7 +180,7 @@ class HighlightBlockData: public TextBlockData
   //@{
   
   //! delimiter
-  TextBlock::Delimiter::Map delimiters_;
+  TextBlock::Delimiter::List delimiters_;
     
   //@}
   

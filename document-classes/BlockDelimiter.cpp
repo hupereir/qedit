@@ -39,12 +39,9 @@
 using namespace std;
 
 //_________________________________________________________
-unsigned int BlockDelimiter::id_counter_ = 0;
-
-//_________________________________________________________
 BlockDelimiter::BlockDelimiter( const QDomElement& element ):
   Counter( "BlockDelimiter" ),
-  id_( id_counter_++ )
+  id_( 0 )
 {
 
   Debug::Throw( "BlockDelimiter::BlockDelimiter.\n" );

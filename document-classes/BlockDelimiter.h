@@ -57,6 +57,10 @@ class BlockDelimiter: public Counter
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
    
+  //! id
+  void setId( const unsigned int& id ) 
+  { id_ = id; }
+  
   //! Id
   const unsigned int& id( void ) const
   { return id_; }
@@ -74,10 +78,7 @@ class BlockDelimiter: public Counter
   { return regexp_; }
     
   private:
-  
-  //! unique id counter
-  static unsigned int id_counter_;
-  
+    
   //! unique id
   unsigned int id_; 
   
