@@ -39,12 +39,10 @@
 using namespace std;
 
 //_________________________________________________________
-BlockDelimiter::BlockDelimiter( const QDomElement& element ):
+BlockDelimiter::BlockDelimiter( const QDomElement& element, const unsigned int& id ):
   Counter( "BlockDelimiter" ),
-  id_( 0 )
+  id_( id )
 {
-
-  Debug::Throw( "BlockDelimiter::BlockDelimiter.\n" );
   
   // parse attributes
   QDomNamedNodeMap attributes( element.attributes() );

@@ -52,15 +52,11 @@ class BlockDelimiter: public Counter
   typedef std::vector<BlockDelimiter> List;
   
   //! constructor from DomElement
-  BlockDelimiter( const QDomElement& element = QDomElement() );
+  BlockDelimiter( const QDomElement& element = QDomElement(), const unsigned int& id = 0 );
 
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
-   
-  //! id
-  void setId( const unsigned int& id ) 
-  { id_ = id; }
-  
+     
   //! Id
   const unsigned int& id( void ) const
   { return id_; }

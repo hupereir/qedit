@@ -94,9 +94,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     } else if( child_element.tagName() == XML::BLOCK_DELIMITER ) {
       
       // block delimiters
-      BlockDelimiter delimiter( child_element );
-      delimiter.setId( block_delimiters_.size() );
-      block_delimiters_.push_back( delimiter );
+      block_delimiters_.push_back( BlockDelimiter( child_element, block_delimiters_.size() ) );
       
     } else if( child_element.tagName() == XML::MACRO ) {
 
