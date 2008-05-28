@@ -604,8 +604,6 @@ void BlockDelimiterWidget::_updateSegments( void )
   if( !need_update_ ) return;
   need_update_ = false;
 
-  // Debug::Throw( 0, "BlockDelimiterWidget::_updateSegments.\n" );
-  
   segments_.clear();
   
   // keep track of collapsed blocks
@@ -613,7 +611,7 @@ void BlockDelimiterWidget::_updateSegments( void )
   bool has_expanded_blocks( false );
   unsigned int collapsed_block_count(0);
   collapsed_blocks_.clear();
-  
+    
   // loop over delimiter types
   bool first( true );
   for( BlockDelimiter::List::const_iterator iter = delimiters_.begin(); iter != delimiters_.end(); iter++ )
@@ -639,12 +637,12 @@ void BlockDelimiterWidget::_updateSegments( void )
       
       // check if something is to be done
       if( !( collapsed || delimiter.begin() || delimiter.end() ) ) continue;
-      
+                  
       // get block limits
       QRectF rect( document.documentLayout()->blockBoundingRect( block ) );
       int block_begin( block.layout()->position().y() );
-      int block_end( block_begin + block.layout()->boundingRect().height() );
-            
+      int block_end( block_begin + block.layout()->boundingRect().height() );      
+      
       // store "ignore" state
       bool ignored = data->ignoreBlock();
       if( delimiter.end() )
@@ -674,7 +672,7 @@ void BlockDelimiterWidget::_updateSegments( void )
         
         // if block is collapsed, skip one start point (which is self contained)
         for( int i = (collapsed ? 1:0); i < delimiter.begin(); i++ )
-        { start_points.push_back( BlockDelimiterSegment(block_begin, block_begin, flags ) ); }
+        { start_points.push_back( BlockDelimiterSegment( flags ).setBegin( block_begin ).setEnd( block_end ) ); }
     
         if( collapsed ) { 
            
@@ -689,7 +687,7 @@ void BlockDelimiterWidget::_updateSegments( void )
           
           // add one self contained segment
           has_collapsed_blocks = true;
-          segments_.push_back( BlockDelimiterSegment( block_begin, block_end, flags ) );
+          segments_.push_back( BlockDelimiterSegment( flags ).setBegin( block_begin ).setEnd( block_end ) );
           
         } else has_expanded_blocks = true;
         

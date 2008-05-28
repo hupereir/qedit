@@ -46,12 +46,8 @@ class BlockDelimiterSegment: public Counter
   
   //! constructor
   BlockDelimiterSegment( 
-    const int& begin = 0, 
-    const int& end = 0, 
     const unsigned int& flags = NONE ):
     Counter( "BlockDelimiterSegment" ),
-    begin_( begin ),
-    end_( end ),
     flags_( flags )
   {}
   
@@ -82,28 +78,81 @@ class BlockDelimiterSegment: public Counter
   
   //@}  
   
+  //! needed to handle block geometry
+  class Marker
+  {
+    public:
+    
+    //! constructor
+    Marker( const int& cursor = 0, const int& position = -1 ):
+      cursor_( cursor ),
+      position_( position ),
+      valid_( position >= 0 )
+    {}
+    
+    //! cursor
+    void setCursor( const int& cursor )
+    { 
+      if( cursor != cursor_ ) {
+        valid_ = false;
+        cursor_ = cursor;
+      }
+    }
+    
+    //! cursor
+    const int& cursor( void ) const
+    { return cursor_; }
+    
+    //! position
+    void setPosition( const int& position )
+    {
+      valid_ = position >= 0;
+      position_ = position;
+    }
+    
+    //! position
+    const int& position( void ) const
+    { return position_; }
+    
+    //! validity
+    const bool& isValid( void ) const
+    { return valid_; }
+    
+    private:
+    
+    //! cursor position
+    int cursor_;
+    
+    //! position
+    int position_;
+    
+    //! validity
+    bool valid_;
+      
+  };
+  
   //!@name geometry
   //@{
   
   //! begin point
   const int& begin( void ) const
-  { return begin_; }
+  { return begin_.position(); }
   
   //! begin point
   BlockDelimiterSegment& setBegin( const int& begin )
   { 
-    begin_ = begin; 
+    begin_.setPosition( begin ); 
     return *this;
   }
   
   //! end point
   const int& end( void ) const
-  { return end_; }
+  { return end_.position(); }
   
   //! end point
   BlockDelimiterSegment& setEnd( const int& end )
   { 
-    end_ = end; 
+    end_.setPosition( end ); 
     return *this;
   }
       
@@ -195,12 +244,12 @@ class BlockDelimiterSegment: public Counter
   };
   
   private:
-  
+    
   //! first position
-  int begin_;
+  Marker begin_;
   
   //! end position
-  int end_;
+  Marker end_;
     
   //! active area (for mouse pointing)
   /*! it is set if drawFirstDelimiter() is called */
