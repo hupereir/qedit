@@ -121,14 +121,12 @@ void BlockDelimiterWidget::updateCurrentBlockActionState( void )
   _updateSegments(); 
   
   // by default next paintEvent will require segment update
-  int y( _editor().document()->documentLayout()->blockBoundingRect( _editor().textCursor().block() ).y() );
+  int cursor( _editor().textCursor().position() );
 
-  BlockDelimiterSegment::ContainsFTor expanded_ftor( y, false );
-  BlockDelimiterSegment::List::iterator expanded_iter = std::find_if( segments_.begin(), segments_.end(), expanded_ftor );
+  BlockDelimiterSegment::List::iterator expanded_iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor, false ) );
   collapseCurrentAction().setEnabled( expanded_iter != segments_.end() );
 
-  BlockDelimiterSegment::ContainsFTor collapsed_ftor( y, true );  
-  BlockDelimiterSegment::List::iterator collapsed_iter = std::find_if( segments_.begin(), segments_.end(), collapsed_ftor );
+  BlockDelimiterSegment::List::iterator collapsed_iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor, true ) );
   expandCurrentAction().setEnabled( collapsed_iter != segments_.end() );
   
 }
@@ -143,6 +141,9 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   /* update segments if needed */
   _updateSegments(); 
     
+  /* update possibly invalid segments */
+  // _updateInvalidSegments();
+  
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
   int height( QWidget::height() + y_offset );
@@ -164,17 +165,17 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   {
           
     // skip this segment if included in previous
-    if( previous != segments_.rend() && iter->begin() >= previous->begin() && iter->end() <= previous->end() ) 
+    if( previous != segments_.rend() && !( iter->begin() < previous->begin() || previous->end() < iter->end() ) ) 
     { continue; }
     
     previous = iter;
     
     // draw
-    if( iter->begin()+top_ < height )
+    if( iter->begin().position()+top_ < height )
     {
       
-      if( !iter->empty() ) painter.drawLine( half_width_, iter->begin()+top_, half_width_, min( height, iter->end() ) ); 
-      else painter.drawLine( half_width_, iter->begin()+top_, half_width_, height ); 
+      if( !iter->empty() ) painter.drawLine( half_width_, iter->begin().position()+top_, half_width_, min( height, iter->end().position() ) ); 
+      else painter.drawLine( half_width_, iter->begin().position()+top_, half_width_, height ); 
         
     }
     
@@ -184,8 +185,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
-    if( iter->end() <= height && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
-    { painter.drawLine( half_width_, iter->end(), width_, iter->end() ); }
+    if( iter->end().position() <= height && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
+    { painter.drawLine( half_width_, iter->end().position(), width_, iter->end().position() ); }
     
   }
 
@@ -199,9 +200,9 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
-    if( iter->begin()+top_ >= height ) { continue; } 
+    if( iter->begin().position()+top_ >= height ) { continue; } 
 
-    iter->setActiveRect( QRect( rect_top_left_, iter->begin() + rect_top_left_, rect_width_, rect_width_ ) );
+    iter->setActiveRect( QRect( rect_top_left_, iter->begin().position() + rect_top_left_, rect_width_, rect_width_ ) );
     painter.drawRect( iter->activeRect() );
   
   }
@@ -212,7 +213,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
-    if( iter->begin()+top_ >= height ) { continue; } 
+    if( iter->begin().position()+top_ >= height ) continue; 
 
     option.initFrom( this );
     option.rect = iter->activeRect();
@@ -342,11 +343,10 @@ void BlockDelimiterWidget::_collapseCurrentBlock( void )
 
   // get cursor position
   QTextDocument& document( *_editor().document() );
-  int y( document.documentLayout()->blockBoundingRect( _editor().textCursor().block() ).y() );
+  int cursor( _editor().textCursor().position() );
 
   // find matching segment
-  BlockDelimiterSegment::ContainsFTor expanded_ftor( y, false );
-  BlockDelimiterSegment::List::iterator iter = std::find_if( segments_.begin(), segments_.end(), expanded_ftor );
+  BlockDelimiterSegment::List::iterator iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor, false ) );
   if( iter == segments_.end() ) return;
 
   // clear box selection
@@ -375,11 +375,10 @@ void BlockDelimiterWidget::_expandCurrentBlock( void )
 
   // get cursor position
   QTextDocument& document( *_editor().document() );
-  int y( document.documentLayout()->blockBoundingRect( _editor().textCursor().block() ).y() );
+  int cursor( _editor().textCursor().position() );
 
   // find matching segment
-  BlockDelimiterSegment::ContainsFTor collapsed_ftor( y, true );  
-  BlockDelimiterSegment::List::iterator iter = std::find_if( segments_.begin(), segments_.end(), collapsed_ftor );
+  BlockDelimiterSegment::List::iterator iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor, true ) );
   if( iter == segments_.end() ) return;
   
   // find matching blocks
@@ -423,7 +422,7 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
   {
     
     // skip this segment if included in previous
-    if( previous != segments_.rend() && iter->begin() >= previous->begin() && iter->end() <= previous->end() ) 
+    if( previous != segments_.rend() && !( iter->begin() < previous->begin() || previous->end() < iter->end() ) ) 
     { continue; }
   
     // update "previous" segment 
@@ -639,10 +638,10 @@ void BlockDelimiterWidget::_updateSegments( void )
       if( !( collapsed || delimiter.begin() || delimiter.end() ) ) continue;
                   
       // get block limits
-      QRectF rect( document.documentLayout()->blockBoundingRect( block ) );
-      int block_begin( block.layout()->position().y() );
-      int block_end( block_begin + block.layout()->boundingRect().height() );      
-      
+      QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
+      BlockMarker block_begin( block.position(), block.layout()->position().y() );
+      BlockMarker block_end( block.position()+block.length() - 1, block.layout()->position().y() + rect.height() );      
+            
       // store "ignore" state
       bool ignored = data->ignoreBlock();
       if( delimiter.end() )
@@ -672,7 +671,7 @@ void BlockDelimiterWidget::_updateSegments( void )
         
         // if block is collapsed, skip one start point (which is self contained)
         for( int i = (collapsed ? 1:0); i < delimiter.begin(); i++ )
-        { start_points.push_back( BlockDelimiterSegment( flags ).setBegin( block_begin ).setEnd( block_end ) ); }
+        { start_points.push_back( BlockDelimiterSegment( block_begin, block_end, flags ) ); }
     
         if( collapsed ) { 
            
@@ -687,7 +686,7 @@ void BlockDelimiterWidget::_updateSegments( void )
           
           // add one self contained segment
           has_collapsed_blocks = true;
-          segments_.push_back( BlockDelimiterSegment( flags ).setBegin( block_begin ).setEnd( block_end ) );
+          segments_.push_back( BlockDelimiterSegment( block_begin, block_end, flags ) );
           
         } else has_expanded_blocks = true;
         
@@ -717,6 +716,33 @@ void BlockDelimiterWidget::_updateSegments( void )
 }
 
 //_____________________________________________________________________________________
+void BlockDelimiterWidget::_updateInvalidSegments( void )
+{
+    
+  for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+  {
+    
+    if( !iter->begin().isValid() )
+    {
+      QTextBlock block( _editor().document()->findBlock( iter->begin().cursor() ) );
+      assert( block.isValid() );
+      QRectF rect( block.layout()->boundingRect() );
+      if( !rect.isNull() ) iter->begin().setPosition( block.layout()->position().y() );
+    }
+    
+    if( !iter->end().isValid() )
+    {
+      QTextBlock block( _editor().document()->findBlock( iter->end().cursor() ) );
+      assert( block.isValid() );
+      QRectF rect( block.layout()->boundingRect() );
+      if( !rect.isNull() ) iter->end().setPosition( block.layout()->position().y() + rect.height() );      
+    }
+    
+  }
+}
+
+
+//_____________________________________________________________________________________
 BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks( 
   QTextBlock block, 
   const BlockDelimiterSegment& segment, 
@@ -727,7 +753,7 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   TextBlockPair out;
   
   // look for first block
-  for( ; block.isValid() && block.layout()->position().y() != segment.begin(); block = block.next() ) 
+  for( ; block.isValid() && block.position() != segment.begin().cursor(); block = block.next() ) 
   {}
   
   assert( block.isValid() );
@@ -747,7 +773,7 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   }
   
   // look for second block
-  for( ; block.isValid() && block.layout()->position().y() + block.layout()->boundingRect().height() != segment.end(); block = block.next() )
+  for( ; block.isValid() && block.position()+block.length()-1 != segment.end().cursor(); block = block.next() )
   {}
   
   // check if second block is also of "begin" type
@@ -888,4 +914,3 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
   
 }
-

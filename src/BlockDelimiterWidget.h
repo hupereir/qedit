@@ -157,9 +157,11 @@ class BlockDelimiterWidget: public QWidget, public Counter
   void _synchronizeBlockData( void ) const;
 
   //! update segments
-  /*! this might go into a slot, linked to document being modified */
   void _updateSegments( void );
     
+  //! update invalid segments
+  void _updateInvalidSegments( void );
+  
   //! block pair
   typedef std::pair<QTextBlock, QTextBlock> TextBlockPair;
   

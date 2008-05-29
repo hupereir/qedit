@@ -35,6 +35,8 @@
 #include <iostream>
 #include <vector>
 
+#include "BlockMarker.h"
+
 // used to draw block segment
 class BlockDelimiterSegment: public Counter
 {
@@ -46,8 +48,12 @@ class BlockDelimiterSegment: public Counter
   
   //! constructor
   BlockDelimiterSegment( 
+    const BlockMarker& begin = BlockMarker(),
+    const BlockMarker& end = BlockMarker(),
     const unsigned int& flags = NONE ):
     Counter( "BlockDelimiterSegment" ),
+    begin_( begin ),
+    end_( end ),
     flags_( flags )
   {}
   
@@ -78,87 +84,42 @@ class BlockDelimiterSegment: public Counter
   
   //@}  
   
-  //! needed to handle block geometry
-  class Marker
-  {
-    public:
-    
-    //! constructor
-    Marker( const int& cursor = 0, const int& position = -1 ):
-      cursor_( cursor ),
-      position_( position ),
-      valid_( position >= 0 )
-    {}
-    
-    //! cursor
-    void setCursor( const int& cursor )
-    { 
-      if( cursor != cursor_ ) {
-        valid_ = false;
-        cursor_ = cursor;
-      }
-    }
-    
-    //! cursor
-    const int& cursor( void ) const
-    { return cursor_; }
-    
-    //! position
-    void setPosition( const int& position )
-    {
-      valid_ = position >= 0;
-      position_ = position;
-    }
-    
-    //! position
-    const int& position( void ) const
-    { return position_; }
-    
-    //! validity
-    const bool& isValid( void ) const
-    { return valid_; }
-    
-    private:
-    
-    //! cursor position
-    int cursor_;
-    
-    //! position
-    int position_;
-    
-    //! validity
-    bool valid_;
-      
-  };
-  
   //!@name geometry
   //@{
   
   //! begin point
-  const int& begin( void ) const
-  { return begin_.position(); }
+  const BlockMarker& begin( void ) const
+  { return begin_; }
   
   //! begin point
-  BlockDelimiterSegment& setBegin( const int& begin )
+  BlockMarker& begin( void )
+  { return begin_; }
+  
+  //! begin point
+  BlockDelimiterSegment& setBegin( const BlockMarker& begin )
   { 
-    begin_.setPosition( begin ); 
+    begin_ = begin; 
     return *this;
   }
   
   //! end point
-  const int& end( void ) const
-  { return end_.position(); }
+  const BlockMarker& end( void ) const
+  { return end_; }
   
   //! end point
-  BlockDelimiterSegment& setEnd( const int& end )
+  BlockMarker& end( void )
+  { return end_; }
+  
+  //! end point
+  BlockDelimiterSegment& setEnd( const BlockMarker& end )
   { 
-    end_.setPosition( end ); 
+    end_ = end; 
     return *this;
   }
       
   //! empty segment
   bool empty( void ) const
-  { return begin() == end(); }
+  { return begin().cursor() == end().cursor(); }
   
   //! active rect
   const QRect& activeRect( void ) const
@@ -198,9 +159,9 @@ class BlockDelimiterSegment: public Counter
     public:
     
     //! constructor
-    ContainsFTor( const int& y, const bool& collapsed ):
-    y_( y ),
-    collapsed_( collapsed )
+    ContainsFTor( const int& cursor, const bool& collapsed ):
+      cursor_( cursor ),
+      collapsed_( collapsed )
     {}
     
     //! prediction
@@ -208,13 +169,13 @@ class BlockDelimiterSegment: public Counter
     { 
       return 
         segment.flag( BlockDelimiterSegment::COLLAPSED ) == collapsed_ && 
-        (( segment.begin() == segment.end() ) ? (y_ >= segment.begin()) : (y_ >= segment.begin() && y_ < segment.end())); 
+        (( segment.empty() ) ? ( cursor_ >= segment.begin().cursor() ) : ( cursor_ >= segment.begin().cursor() && cursor_ <= segment.end().cursor() ) ); 
     }
     
     private:
     
     //! position
-    int y_;
+    int cursor_;
     
     //! collapse state
     bool collapsed_; 
@@ -239,17 +200,17 @@ class BlockDelimiterSegment: public Counter
     public:
     
     bool operator() ( const BlockDelimiterSegment& first, const BlockDelimiterSegment& second ) const
-    { return ( first.begin() > second.begin() || (first.begin() == second.begin() && first.end() < second.end() ) ); }
+    { return ( second.begin() < first.begin() || (first.begin() == second.begin() && first.end() < second.end() ) ); }
     
   };
   
   private:
     
   //! first position
-  Marker begin_;
+  BlockMarker begin_;
   
   //! end position
-  Marker end_;
+  BlockMarker end_;
     
   //! active area (for mouse pointing)
   /*! it is set if drawFirstDelimiter() is called */
@@ -261,7 +222,7 @@ class BlockDelimiterSegment: public Counter
   //! streamer
   friend std::ostream& operator << ( std::ostream& out, const BlockDelimiterSegment& segment )
   {
-    out << "(" << segment.begin() << "," << segment.end() << ") flags: " << segment.flags_;
+    out << "begin: " << segment.begin() << " end: " << segment.end() << " flags: " << segment.flags_;
     return out;
   }
   

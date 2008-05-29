@@ -68,6 +68,7 @@ noinst_HEADERS = \
   AutoSaveThread.h \
   BlockDelimiterSegment.h \
   BlockDelimiterWidget.h \
+  BlockMarker.h \
   CollapsedBlockData.h \
   ConfigurationDialog.h \
   Diff.h \
