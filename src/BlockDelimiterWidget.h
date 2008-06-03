@@ -139,8 +139,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   void _expandAllBlocks( void );  
   
   //! need update
-  void _needUpdate( void )
-  { need_update_ = true; }
+  void _needUpdate( void );
     
   //! contents changed
   void _contentsChanged( void );

@@ -550,6 +550,10 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
   
 }
 
+//__________________________________________________________
+void BlockDelimiterWidget::_needUpdate( void )
+{ need_update_ = true; }
+  
 //________________________________________________________
 void BlockDelimiterWidget::_installActions( void )
 {
