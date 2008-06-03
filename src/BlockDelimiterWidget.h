@@ -159,7 +159,18 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! update segments
   void _updateSegments( void );
   
-  void _updateInvalidSegments( void );
+  enum BlockMarkerType
+  {
+    BEGIN = 1<<0,
+    END = 1<<1,
+    ALL = BEGIN|END
+  };
+ 
+  //! update segment markers
+  void _updateSegmentMarkers( void );
+  
+  //! update segment markers
+  void _updateSegmentMarkers( BlockDelimiterSegment&, const unsigned int& flag = ALL ) const;
   
   //! block pair
   typedef std::pair<QTextBlock, QTextBlock> TextBlockPair;
@@ -170,7 +181,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   \param segment the segment to be found
   \param data the user data associated to the output segment
   */
-  TextBlockPair _findBlocks( QTextBlock block, const BlockDelimiterSegment& segment, TextBlockData*& data ) const;  
+  TextBlockPair _findBlocks( QTextBlock, const BlockDelimiterSegment&, TextBlockData*& ) const;  
   
   //! expand current block
   void _expand( const QTextBlock&, TextBlockData*, const bool& recursive = false ) const;
@@ -199,9 +210,6 @@ class BlockDelimiterWidget: public QWidget, public Counter
   
   //! true when _updateSegments needs to be called in paintEvent
   bool need_update_; 
-  
-  //! true if some segments have invalid markers
-  bool has_invalid_segments_;
   
   //!@name marker dimension
   //@{
