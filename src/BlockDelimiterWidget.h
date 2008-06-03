@@ -158,8 +158,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
 
   //! update segments
   void _updateSegments( void );
-    
-  //! update invalid segments
+  
   void _updateInvalidSegments( void );
   
   //! block pair

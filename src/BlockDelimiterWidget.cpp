@@ -140,16 +140,14 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     
   /* update segments if needed */
   _updateSegments(); 
-    
-  /* update possibly invalid segments */
-  // _updateInvalidSegments();
+  _updateInvalidSegments();
   
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
   int height( QWidget::height() + y_offset );
   if( _editor().horizontalScrollBar()->isVisible() ) 
   { height -= _editor().horizontalScrollBar()->height(); }
-
+  
   // create painter
   QPainter painter( this );
   painter.translate( 0, -y_offset );
@@ -164,6 +162,9 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
   {
           
+    // skip if segment is invalid
+    if( !( iter->begin().isValid() && iter->end().isValid() ) ) continue;
+    
     // skip this segment if included in previous
     if( previous != segments_.rend() && !( iter->begin() < previous->begin() || previous->end() < iter->end() ) ) 
     { continue; }
@@ -200,6 +201,9 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
+    // skip if segment is invalid
+    if( !( iter->begin().isValid() && iter->end().isValid() ) ) continue;
+
     if( iter->begin().position()+top_ >= height ) { continue; } 
 
     iter->setActiveRect( QRect( rect_top_left_, iter->begin().position() + rect_top_left_, rect_width_, rect_width_ ) );
@@ -213,6 +217,9 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
+    // skip if segment is invalid
+    if( !( iter->begin().isValid() && iter->end().isValid() ) ) continue;
+
     if( iter->begin().position()+top_ >= height ) continue; 
 
     option.initFrom( this );
@@ -638,9 +645,13 @@ void BlockDelimiterWidget::_updateSegments( void )
       if( !( collapsed || delimiter.begin() || delimiter.end() ) ) continue;
                   
       // get block limits
-      QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
-      BlockMarker block_begin( block.position(), block.layout()->position().y() );
-      BlockMarker block_end( block.position()+block.length() - 1, block.layout()->position().y() + rect.height() );      
+      // QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
+      // BlockMarker block_begin( block.position(), block.layout()->position().y() );
+      // BlockMarker block_end( block.position()+block.length() - 1, block.layout()->position().y() + rect.height() );      
+  
+      // get block limits
+      BlockMarker block_begin( block.position() );
+      BlockMarker block_end( block.position()+block.length() - 1 );      
             
       // store "ignore" state
       bool ignored = data->ignoreBlock();
@@ -651,6 +662,8 @@ void BlockDelimiterWidget::_updateSegments( void )
         { 
           // if block is both begin and end, only the begin flag is to be drawn.
           if( delimiter.begin() ) start_points.back().setFlag( BlockDelimiterSegment::BEGIN_ONLY, true );
+          
+          // store new segment
           segments_.push_back( start_points.back().setEnd( block_end ) ); 
         }
         
@@ -713,34 +726,62 @@ void BlockDelimiterWidget::_updateSegments( void )
   expandAllAction().setEnabled( has_collapsed_blocks );
   collapseAction().setEnabled( has_expanded_blocks );
   
+  // update invalid segments is always called once, to handle visible block immediately
+  _updateInvalidSegments();
+  
 }
 
-//_____________________________________________________________________________________
+
+//________________________________________________________
 void BlockDelimiterWidget::_updateInvalidSegments( void )
 {
-    
+  
+  /* 
+  should add a member flag like "has_invalid_segments" updated
+  here and in updateSegments, to avoid doing the loop over valid segments
+  */
+
+  // get begin and end cursors
+  int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
+  int last_index = _editor().cursorForPosition( QPoint( 0,  QWidget::height() + fontMetrics().lineSpacing() ) ).position();
+  
+  // loop over segments
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
+    // check if valid
+    if( iter->begin().isValid() && iter->end().isValid() ) continue;
+    
+    // should check if begin or end block are visible.
+    if( iter->begin().cursor() > last_index || iter->end().cursor() < first_index ) continue;
+    
     if( !iter->begin().isValid() )
     {
+      
+      // get block matching begin position
       QTextBlock block( _editor().document()->findBlock( iter->begin().cursor() ) );
       assert( block.isValid() );
-      QRectF rect( block.layout()->boundingRect() );
-      if( !rect.isNull() ) iter->begin().setPosition( block.layout()->position().y() );
+      
+      QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
+      iter->begin().setPosition( block.layout()->position().y() );
+    
     }
     
     if( !iter->end().isValid() )
     {
+      
+      // get block matching begin position
       QTextBlock block( _editor().document()->findBlock( iter->end().cursor() ) );
       assert( block.isValid() );
-      QRectF rect( block.layout()->boundingRect() );
-      if( !rect.isNull() ) iter->end().setPosition( block.layout()->position().y() + rect.height() );      
+      
+      QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
+      iter->end().setPosition( block.layout()->position().y() + rect.height() );
+      
     }
     
   }
+  
 }
-
 
 //_____________________________________________________________________________________
 BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks( 

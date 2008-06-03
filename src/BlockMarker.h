@@ -74,7 +74,7 @@ class BlockMarker
   //! position
   void setPosition( const int& position )
   {
-    valid_ = position >= 0;
+    valid_ = (position >= 0);
     position_ = position;
   }
   
