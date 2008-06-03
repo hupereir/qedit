@@ -200,6 +200,9 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! true when _updateSegments needs to be called in paintEvent
   bool need_update_; 
   
+  //! true if some segments have invalid markers
+  bool has_invalid_segments_;
+  
   //!@name marker dimension
   //@{
 

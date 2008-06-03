@@ -57,7 +57,8 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   QWidget( parent),
   Counter( "BlockDelimiterWidget" ),
   editor_( editor ),
-  need_update_( true )
+  need_update_( true ),
+  has_invalid_segments_( true )
 {
   
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
@@ -727,6 +728,7 @@ void BlockDelimiterWidget::_updateSegments( void )
   collapseAction().setEnabled( has_expanded_blocks );
   
   // update invalid segments is always called once, to handle visible block immediately
+  has_invalid_segments_ = !segments_.empty();
   _updateInvalidSegments();
   
 }
@@ -740,17 +742,20 @@ void BlockDelimiterWidget::_updateInvalidSegments( void )
   should add a member flag like "has_invalid_segments" updated
   here and in updateSegments, to avoid doing the loop over valid segments
   */
-
+  if( !has_invalid_segments_ ) return;
+  
   // get begin and end cursors
   int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
   int last_index = _editor().cursorForPosition( QPoint( 0,  QWidget::height() + fontMetrics().lineSpacing() ) ).position();
   
   // loop over segments
+  has_invalid_segments_ = false;
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
     // check if valid
     if( iter->begin().isValid() && iter->end().isValid() ) continue;
+    has_invalid_segments_ = true;
     
     // should check if begin or end block are visible.
     if( iter->begin().cursor() > last_index || iter->end().cursor() < first_index ) continue;
