@@ -36,6 +36,7 @@
 #include <QFont>
 #include <QMouseEvent>
 #include <QPaintEvent>
+#include <QTextBlock>
 #include <QWidget>
 #include <QWheelEvent>
 
@@ -116,7 +117,7 @@ class LineNumberWidget: public QWidget, public Counter
     
     //! constructor
     LineNumberData( const unsigned int& id = 0, const unsigned int& line_number = 0, const int& cursor = 0):
-      id_( 0 ),
+      id_( id ),
       line_number_( line_number ),
       cursor_( cursor ),
       position_( -1 ),
