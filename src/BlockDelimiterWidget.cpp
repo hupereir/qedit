@@ -140,6 +140,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     
   /* update segments if needed */
   _updateSegments();
+  
   // get begin and end cursor positions
   int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
   int last_index = _editor().cursorForPosition( QPoint( 0,  QWidget::height() + fontMetrics().lineSpacing() ) ).position();
@@ -159,6 +160,11 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   pen.setStyle( Qt::DotLine );
   painter.setPen( pen );
   
+  // retrieve matching segments
+  QTextDocument &document( *_editor().document() );
+  QTextBlock current_block( document.begin() );
+  int current_id( 0 );
+  
   // optimize drawing by not drawing overlapping segments
   BlockDelimiterSegment::List::reverse_iterator previous( segments_.rend() );
   for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
@@ -169,10 +175,10 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     
     // try update segment
     if( iter->begin().cursor() >= first_index && iter->begin().cursor() <= last_index )
-    { _updateSegmentMarkers( *iter, BEGIN ); }
+    { _updateMarker( current_block, current_id, iter->begin(), BEGIN ); }
     
     if( iter->end().cursor() >= first_index && iter->end().cursor() <= last_index )
-    { _updateSegmentMarkers( *iter, END ); }
+    { _updateMarker( current_block, current_id, iter->end(), END ); }
     
     // skip this segment if included in previous
     if( previous != segments_.rend() && !( iter->begin() < previous->begin() || previous->end() < iter->end() ) ) continue;
@@ -659,8 +665,8 @@ void BlockDelimiterWidget::_updateSegments( void )
       // BlockMarker block_end( block.position()+block.length() - 1, block.layout()->position().y() + rect.height() );      
   
       // get block limits
-      BlockMarker block_begin( block.position() );
-      BlockMarker block_end( block.position()+block.length() - 1 );      
+      BlockMarker block_begin( block_count, block.position() );
+      BlockMarker block_end( block_count, block.position()+block.length() - 1 );      
             
       // store "ignore" state
       bool ignored = data->ignoreBlock();
@@ -731,6 +737,10 @@ void BlockDelimiterWidget::_updateSegments( void )
 
   }
     
+  // dump markers
+  //for( BlockDelimiterSegment::List::iterator iter  = segments_.begin(); iter != segments_.end(); iter++ )
+  //{ Debug::Throw(0) << *iter << endl; }
+  
   // update expand all action
   expandAllAction().setEnabled( has_collapsed_blocks );
   collapseAction().setEnabled( has_expanded_blocks );
@@ -742,40 +752,30 @@ void BlockDelimiterWidget::_updateSegments( void )
 void BlockDelimiterWidget::_updateSegmentMarkers( void )
 {
 
+  QTextBlock current_block( _editor().document()->begin() );
+  int current_id = 0;
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
-  { _updateSegmentMarkers( *iter, ALL ); }
+  { 
+    _updateMarker( current_block, current_id, iter->begin(), BEGIN ); 
+    _updateMarker( current_block, current_id, iter->end(), END );
+  }
 
 }
 
 
 //________________________________________________________
-void BlockDelimiterWidget::_updateSegmentMarkers( BlockDelimiterSegment& segment, const unsigned int& flag ) const
+void BlockDelimiterWidget::_updateMarker( QTextBlock& block, int& current_id, BlockMarker& marker, const BlockMarkerType& flag ) const
 {
+
+  // find block matching marker id
+  if( marker.id() < current_id ) { for( ; marker.id() < current_id && block.isValid(); block = block.previous(), current_id-- ) {} }
+  else if( marker.id() > current_id ) { for( ; marker.id() > current_id && block.isValid(); block = block.next(), current_id++ ) {} }
+  assert( block.isValid() );
   
-  if( (flag & BEGIN) && !segment.begin().isValid() )
-  {
-    
-    // get block matching begin position
-    QTextBlock block( _editor().document()->findBlock( segment.begin().cursor() ) );
-    assert( block.isValid() );
-    
-    QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
-    segment.begin().setPosition( block.layout()->position().y() );
-    
-  }
-  
-  if( (flag & END) && !segment.end().isValid() )
-  {
-    
-    // get block matching begin position
-    QTextBlock block( _editor().document()->findBlock( segment.end().cursor() ) );
-    assert( block.isValid() );
-    
-    QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
-    segment.end().setPosition( block.layout()->position().y() + rect.height() );
+  QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
+  if( flag == BEGIN ) { marker.setPosition( block.layout()->position().y() ); }
+  else { marker.setPosition( block.layout()->position().y() + rect.height() ); }
        
-  }
-  
   return;
   
 }

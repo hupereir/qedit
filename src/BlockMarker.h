@@ -40,7 +40,8 @@ class BlockMarker
   public:
   
   //! constructor
-  BlockMarker( const int& cursor = 0, const int& position = -1 ):
+  BlockMarker( const int& id = 0, const int& cursor = 0, const int& position = -1 ):
+    id_( id ),
     cursor_( cursor ),
     position_( position ),
     valid_( position >= 0 )
@@ -57,6 +58,14 @@ class BlockMarker
   //! less than operator
   bool operator < ( const BlockMarker& marker ) const
   { return cursor() < marker.cursor(); }
+  
+  //! id
+  void setId( const int& id )
+  { id_ = id; }
+
+  //! id
+  const int& id( void ) const
+  { return id_; }
   
   //! cursor
   void setCursor( const int& cursor )
@@ -88,6 +97,9 @@ class BlockMarker
   
   private:
   
+  //! id
+  int id_;
+  
   //! cursor position
   int cursor_;
   
@@ -100,7 +112,7 @@ class BlockMarker
   //! streamer
   friend std::ostream& operator << ( std::ostream& out, const BlockMarker& marker )
   {
-    out << "(" << marker.cursor() << "," << marker.position() << ")";
+    out << "(" << marker.id() << "," << marker.cursor() << "," << marker.position() << ")";
     return out;
   }
   

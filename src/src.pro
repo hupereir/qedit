@@ -38,6 +38,7 @@ HEADERS = \
   CollapsedBlockData.h \
   BlockDelimiterSegment.h \
   BlockDelimiterWidget.h \
+  BlockMarker.h \
   ConfigurationDialog.h \
   Diff.h \
   DefaultOptions.h \

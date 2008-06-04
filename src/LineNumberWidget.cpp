@@ -122,7 +122,7 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
       painter.save();
       painter.setPen( Qt::NoPen );
       painter.setBrush( highlight_color_ );
-      painter.drawRect( 0, current_block_data_.y(), width(), metric.lineSpacing() );
+      painter.drawRect( 0, current_block_data_.position(), width(), metric.lineSpacing() );
       painter.restore();
       
     } 
@@ -132,23 +132,26 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   // maximum text length
   int max_length=0;  
 
-  // visible height
-  int height( QWidget::height() - metric.lineSpacing() + y_offset );
-  if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
+  // get begin and end cursor positions
+  int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
+  int last_index = _editor().cursorForPosition( QPoint( 0,  QWidget::height() ) ).position();
   
   // loop over data
-  for( LineNumberData::List::const_iterator iter = line_number_data_.begin(); iter != line_number_data_.end(); iter++ )
+  for( LineNumberData::List::iterator iter = line_number_data_.begin(); iter != line_number_data_.end(); iter++ )
   {
     
     // skip if block is not (yet) in window
-    if( iter->y() + metric.lineSpacing() < y_offset ) continue;
+    if( iter->cursor() < first_index ) continue;
     
     // stop if block is outside (below) window
-    if( iter->y() > height ) break;
+    if( iter->cursor() > last_index ) break;
         
+    // check validity
+    if( !iter->isValid() ) _updateLineNumberData( *iter );
+    
     QString numtext( QString::number( iter->lineNumber() ) );
     painter.drawText(
-      0, iter->y(), width()-8,
+      0, iter->position(), width()-8,
       metric.lineSpacing(),
       Qt::AlignRight | Qt::AlignTop, 
       numtext );
@@ -158,7 +161,7 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   }
 
   // resize
-  if( max_length != width() ) 
+  if( max_length != width() && max_length > 0 ) 
   { setFixedWidth( max_length ); }
     
   painter.end();
@@ -234,7 +237,7 @@ void LineNumberWidget::_updateLineNumberData( void )
   {
     
     // insert new data
-    line_number_data_.push_back( LineNumberData( block_count, document.documentLayout()->blockBoundingRect( block ).y() ) );
+    line_number_data_.push_back( LineNumberData( block_count, block.position() ) );
     
     QTextBlockFormat block_format( block.blockFormat() );
     if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
@@ -247,6 +250,20 @@ void LineNumberWidget::_updateLineNumberData( void )
 }
 
 //________________________________________________________
+void LineNumberWidget::_updateLineNumberData( LineNumberWidget::LineNumberData& data ) const
+{
+  assert( !data.isValid() );
+
+  // get block matching begin position
+  QTextBlock block( _editor().document()->findBlock( data.cursor() ) );
+  assert( block.isValid() );
+  
+  QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
+  data.setPosition( block.layout()->position().y() );
+
+}
+
+//________________________________________________________
 bool LineNumberWidget::_updateCurrentBlockData( void )
 {
 
@@ -256,12 +273,9 @@ bool LineNumberWidget::_updateCurrentBlockData( void )
   // font metric
   const QFontMetrics metric( fontMetrics() );
   
-  // vertical offset
-  int y_offset = _editor().verticalScrollBar()->value();
-
-  // visible height
-  int height( QWidget::height() - metric.lineSpacing() + y_offset );
-  if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
+  // get begin and end cursor positions
+  int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
+  int last_index = _editor().cursorForPosition( QPoint( 0,  QWidget::height() ) ).position();
 
   // get document
   unsigned int block_count( 1 );
@@ -272,10 +286,10 @@ bool LineNumberWidget::_updateCurrentBlockData( void )
   {
     
     // skip if block is not (yet) in window
-    if( iter->y() + metric.lineSpacing() < y_offset ) continue;
+    if( iter->cursor() < first_index ) continue;
     
     // stop if block is outside (below) window
-    if( iter->y() > height ) break;
+    if( iter->cursor() > last_index ) break;
     
     // block data
     TextBlockData* data( static_cast<TextBlockData*>( block.userData() ) );

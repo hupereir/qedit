@@ -104,12 +104,6 @@ class LineNumberWidget: public QWidget, public Counter
   //! editor
   TextEditor& _editor( void ) const
   { return *editor_; }
-
-  //! update line number data
-  void _updateLineNumberData( void );
-  
-  //! update current block data
-  bool _updateCurrentBlockData( void );
   
   //! map block number and position
   class LineNumberData
@@ -121,18 +115,35 @@ class LineNumberWidget: public QWidget, public Counter
     typedef std::vector<LineNumberData> List;
     
     //! constructor
-    LineNumberData( const unsigned int& line_number = 0, const int& y = 0):
+    LineNumberData( const unsigned int& line_number = 0, const int& cursor = 0):
       line_number_( line_number ),
-      y_( y )
+      cursor_( cursor ),
+      position_( -1 ),
+      valid_( false )
     {}
     
+    //! position
+    void setPosition( const int& position )
+    {
+      valid_ = (position >= 0);
+      position_ = position;
+    }
+    
+    //! position
+    const int& position( void ) const
+    { return position_; }
+    
+    //! validity
+    const bool& isValid( void ) const
+    { return valid_; }
+  
     //! line number
     const unsigned int& lineNumber( void ) const
     { return line_number_; }
     
     //! y
-    const int& y( void ) const
-    { return y_; }
+    const int& cursor( void ) const
+    { return cursor_; }
     
     private:
     
@@ -140,9 +151,24 @@ class LineNumberWidget: public QWidget, public Counter
     unsigned int line_number_;
     
     //! position
-    int y_;
+    int cursor_;
+
+    //! position
+    int position_;
+    
+    //! validity
+    bool valid_;
     
   };
+
+  //! update line number data
+  void _updateLineNumberData( void );
+  
+  //! update invalid data 
+  void _updateLineNumberData( LineNumberData& data ) const;
+  
+  //! update current block data
+  bool _updateCurrentBlockData( void );
   
   //! associated editor
   TextEditor* editor_;

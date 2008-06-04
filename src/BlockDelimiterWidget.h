@@ -158,19 +158,19 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! update segments
   void _updateSegments( void );
   
+  //! block marker type
   enum BlockMarkerType
   {
-    BEGIN = 1<<0,
-    END = 1<<1,
-    ALL = BEGIN|END
+    BEGIN,
+    END
   };
  
   //! update segment markers
   void _updateSegmentMarkers( void );
   
   //! update segment markers
-  void _updateSegmentMarkers( BlockDelimiterSegment&, const unsigned int& flag = ALL ) const;
-  
+  void _updateMarker( QTextBlock&, int&, BlockMarker&, const BlockMarkerType& flag ) const;
+
   //! block pair
   typedef std::pair<QTextBlock, QTextBlock> TextBlockPair;
   
