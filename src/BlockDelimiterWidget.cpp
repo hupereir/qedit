@@ -811,7 +811,7 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   }
   
   // look for second block
-  for( ; block.isValid() && id < segment.end().id(); block = block.next(); id++ )
+  for( ; block.isValid() && id < segment.end().id(); block = block.next(), id++ )
   {}
   
   // check if second block is also of "begin" type
