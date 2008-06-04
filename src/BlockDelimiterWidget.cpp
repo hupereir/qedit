@@ -162,8 +162,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   
   // retrieve matching segments
   QTextDocument &document( *_editor().document() );
-  QTextBlock current_block( document.begin() );
-  int current_id( 0 );
+  QTextBlock block( document.begin() );
+  unsigned int id( 0 );
   
   // optimize drawing by not drawing overlapping segments
   BlockDelimiterSegment::List::reverse_iterator previous( segments_.rend() );
@@ -175,10 +175,10 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     
     // try update segment
     if( iter->begin().cursor() >= first_index && iter->begin().cursor() <= last_index )
-    { _updateMarker( current_block, current_id, iter->begin(), BEGIN ); }
+    { _updateMarker( block, id, iter->begin(), BEGIN ); }
     
     if( iter->end().cursor() >= first_index && iter->end().cursor() <= last_index )
-    { _updateMarker( current_block, current_id, iter->end(), END ); }
+    { _updateMarker( block, id, iter->end(), END ); }
     
     // skip this segment if included in previous
     if( previous != segments_.rend() && !( iter->begin() < previous->begin() || previous->end() < iter->end() ) ) continue;
@@ -425,7 +425,7 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
 
   // get first block
   QTextBlock block( _editor().document()->begin() );
-  int id(0);
+  unsigned int id(0);
   
   // create Text cursor
   QTextCursor cursor( block );
@@ -741,24 +741,24 @@ void BlockDelimiterWidget::_updateSegments( void )
 void BlockDelimiterWidget::_updateSegmentMarkers( void )
 {
 
-  QTextBlock current_block( _editor().document()->begin() );
-  int current_id = 0;
+  QTextBlock block( _editor().document()->begin() );
+  unsigned int id = 0;
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   { 
-    _updateMarker( current_block, current_id, iter->begin(), BEGIN ); 
-    _updateMarker( current_block, current_id, iter->end(), END );
+    _updateMarker( block, id, iter->begin(), BEGIN ); 
+    _updateMarker( block, id, iter->end(), END );
   }
 
 }
 
 
 //________________________________________________________
-void BlockDelimiterWidget::_updateMarker( QTextBlock& block, int& current_id, BlockMarker& marker, const BlockMarkerType& flag ) const
+void BlockDelimiterWidget::_updateMarker( QTextBlock& block, unsigned int& id, BlockMarker& marker, const BlockMarkerType& flag ) const
 {
 
   // find block matching marker id
-  if( marker.id() < current_id ) { for( ; marker.id() < current_id && block.isValid(); block = block.previous(), current_id-- ) {} }
-  else if( marker.id() > current_id ) { for( ; marker.id() > current_id && block.isValid(); block = block.next(), current_id++ ) {} }
+  if( marker.id() < id ) { for( ; marker.id() < id && block.isValid(); block = block.previous(), id-- ) {} }
+  else if( marker.id() > id ) { for( ; marker.id() > id && block.isValid(); block = block.next(), id++ ) {} }
   assert( block.isValid() );
   
   QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
@@ -775,14 +775,14 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   TextBlockData*& data ) const
 {
   QTextBlock block( _editor().document()->begin() );
-  int id( 0 );
+  unsigned int id( 0 );
   return _findBlocks( block, id, segment, data );
 }
 
 //_____________________________________________________________________________________
 BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks( 
   QTextBlock& block,
-  int& id,
+  unsigned int& id,
   const BlockDelimiterSegment& segment, 
   TextBlockData*& data ) const
 {

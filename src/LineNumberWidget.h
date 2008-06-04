@@ -115,12 +115,25 @@ class LineNumberWidget: public QWidget, public Counter
     typedef std::vector<LineNumberData> List;
     
     //! constructor
-    LineNumberData( const unsigned int& line_number = 0, const int& cursor = 0):
+    LineNumberData( const unsigned int& id = 0, const unsigned int& line_number = 0, const int& cursor = 0):
+      id_( 0 ),
       line_number_( line_number ),
       cursor_( cursor ),
       position_( -1 ),
       valid_( false )
     {}
+    
+    //! id
+    const unsigned int& id( void ) const
+    { return id_; }
+
+    //! line number
+    const unsigned int& lineNumber( void ) const
+    { return line_number_; }
+    
+    //! y
+    const int& cursor( void ) const
+    { return cursor_; }
     
     //! position
     void setPosition( const int& position )
@@ -136,16 +149,11 @@ class LineNumberWidget: public QWidget, public Counter
     //! validity
     const bool& isValid( void ) const
     { return valid_; }
-  
-    //! line number
-    const unsigned int& lineNumber( void ) const
-    { return line_number_; }
-    
-    //! y
-    const int& cursor( void ) const
-    { return cursor_; }
     
     private:
+    
+    //! block id
+    unsigned int id_;
     
     //! line number
     unsigned int line_number_;
@@ -165,7 +173,7 @@ class LineNumberWidget: public QWidget, public Counter
   void _updateLineNumberData( void );
   
   //! update invalid data 
-  void _updateLineNumberData( LineNumberData& data ) const;
+  void _updateLineNumberData( QTextBlock&, unsigned int&, LineNumberData& ) const;
   
   //! update current block data
   bool _updateCurrentBlockData( void );

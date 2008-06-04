@@ -40,7 +40,7 @@ class BlockMarker
   public:
   
   //! constructor
-  BlockMarker( const int& id = 0, const int& cursor = 0, const int& position = -1 ):
+  BlockMarker( const unsigned int& id = 0, const int& cursor = 0, const int& position = -1 ):
     id_( id ),
     cursor_( cursor ),
     position_( position ),
@@ -60,21 +60,8 @@ class BlockMarker
   { return cursor() < marker.cursor(); }
   
   //! id
-  void setId( const int& id )
-  { id_ = id; }
-
-  //! id
-  const int& id( void ) const
+  const unsigned int& id( void ) const
   { return id_; }
-  
-  //! cursor
-  void setCursor( const int& cursor )
-  { 
-    if( cursor != cursor_ ) {
-      valid_ = false;
-      cursor_ = cursor;
-    }
-  }
   
   //! cursor
   const int& cursor( void ) const
@@ -98,7 +85,7 @@ class BlockMarker
   private:
   
   //! id
-  int id_;
+  unsigned int id_;
   
   //! cursor position
   int cursor_;

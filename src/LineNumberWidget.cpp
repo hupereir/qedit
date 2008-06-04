@@ -137,6 +137,9 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   int last_index = _editor().cursorForPosition( QPoint( 0,  QWidget::height() ) ).position();
   
   // loop over data
+  QTextBlock block( _editor().document()->begin() );
+  unsigned int id( 0 );
+  
   for( LineNumberData::List::iterator iter = line_number_data_.begin(); iter != line_number_data_.end(); iter++ )
   {
     
@@ -147,7 +150,7 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
     if( iter->cursor() > last_index ) break;
         
     // check validity
-    if( !iter->isValid() ) _updateLineNumberData( *iter );
+    if( !iter->isValid() ) _updateLineNumberData( block, id, *iter );
     
     QString numtext( QString::number( iter->lineNumber() ) );
     painter.drawText(
@@ -231,13 +234,14 @@ void LineNumberWidget::_updateLineNumberData( void )
   line_number_data_.clear();
   
   // get document
+  unsigned int id( 0 );
   unsigned int block_count( 1 );
   QTextDocument &document( *_editor().document() );
-  for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), block_count++ )
+  for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), id++, block_count++ )
   {
     
     // insert new data
-    line_number_data_.push_back( LineNumberData( block_count, block.position() ) );
+    line_number_data_.push_back( LineNumberData( id, block_count, block.position() ) );
     
     QTextBlockFormat block_format( block.blockFormat() );
     if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
@@ -250,12 +254,13 @@ void LineNumberWidget::_updateLineNumberData( void )
 }
 
 //________________________________________________________
-void LineNumberWidget::_updateLineNumberData( LineNumberWidget::LineNumberData& data ) const
+void LineNumberWidget::_updateLineNumberData( QTextBlock& block, unsigned int& id, LineNumberWidget::LineNumberData& data ) const
 {
   assert( !data.isValid() );
 
-  // get block matching begin position
-  QTextBlock block( _editor().document()->findBlock( data.cursor() ) );
+  // find block matching data id
+  if( data.id() < id ) { for( ; data.id() < id && block.isValid(); block = block.previous(), id-- ) {} }
+  else if( data.id() > id ) { for( ; data.id() > id && block.isValid(); block = block.next(), id++ ) {} }
   assert( block.isValid() );
   
   QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );

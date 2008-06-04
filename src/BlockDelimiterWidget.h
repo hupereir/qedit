@@ -169,7 +169,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   void _updateSegmentMarkers( void );
   
   //! update segment markers
-  void _updateMarker( QTextBlock&, int&, BlockMarker&, const BlockMarkerType& flag ) const;
+  void _updateMarker( QTextBlock&, unsigned int&, BlockMarker&, const BlockMarkerType& flag ) const;
 
   //! block pair
   typedef std::pair<QTextBlock, QTextBlock> TextBlockPair;
@@ -185,7 +185,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   \param segment the segment to be found
   \param data the user data associated to the output segment
   */
-  TextBlockPair _findBlocks( QTextBlock&, int&, const BlockDelimiterSegment&, TextBlockData*& ) const;  
+  TextBlockPair _findBlocks( QTextBlock&, unsigned int&, const BlockDelimiterSegment&, TextBlockData*& ) const;  
   
   //! expand current block
   void _expand( const QTextBlock&, TextBlockData*, const bool& recursive = false ) const;
