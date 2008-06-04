@@ -258,9 +258,8 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   if( iter == segments_.end() ) return;
   
   // retrieve matching segments
-  QTextDocument &document( *_editor().document() );
   TextBlockData* data(0);
-  TextBlockPair blocks( _findBlocks( document.begin(), *iter, data ) );
+  TextBlockPair blocks( _findBlocks( *iter, data ) );
   
   // check if block is collapsed
   QTextBlockFormat block_format( blocks.first.blockFormat() );
@@ -357,7 +356,6 @@ void BlockDelimiterWidget::_collapseCurrentBlock( void )
   std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
 
   // get cursor position
-  QTextDocument& document( *_editor().document() );
   int cursor( _editor().textCursor().position() );
 
   // find matching segment
@@ -369,7 +367,7 @@ void BlockDelimiterWidget::_collapseCurrentBlock( void )
 
   // find matching blocks
   TextBlockData *data(0);
-  TextBlockPair blocks( _findBlocks( document.begin(), *iter, data ) );
+  TextBlockPair blocks( _findBlocks( *iter, data ) );
   
   // collapse
   _collapse( blocks.first, blocks.second, data );
@@ -390,7 +388,6 @@ void BlockDelimiterWidget::_expandCurrentBlock( void )
   std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
 
   // get cursor position
-  QTextDocument& document( *_editor().document() );
   int cursor( _editor().textCursor().position() );
 
   // find matching segment
@@ -399,7 +396,7 @@ void BlockDelimiterWidget::_expandCurrentBlock( void )
   
   // find matching blocks
   TextBlockData *data(0);
-  TextBlockPair blocks( _findBlocks( document.begin(), *iter, data ) );
+  TextBlockPair blocks( _findBlocks( *iter, data ) );
   
   // collapse
   bool cursor_visible( _editor().isCursorVisible() );
@@ -428,6 +425,7 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
 
   // get first block
   QTextBlock block( _editor().document()->begin() );
+  int id(0);
   
   // create Text cursor
   QTextCursor cursor( block );
@@ -447,17 +445,11 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
 
     // get matching blocks
     TextBlockData *data(0);
-    TextBlockPair blocks( _findBlocks( block, *iter, data ) );
+    TextBlockPair blocks( _findBlocks( block, id, *iter, data ) );
 
     // do nothing if block is already collapsed
     QTextBlockFormat block_format( blocks.first.blockFormat() );
-    if( block_format.boolProperty( TextBlock::Collapsed ) ) 
-    {
-      
-      block = blocks.first;
-      continue;
-      
-    }
+    if( block_format.boolProperty( TextBlock::Collapsed ) ) continue;
     
     // create collapsed block data to be stored in current block before collapsed
     CollapsedBlockData collapsed_data;
@@ -500,10 +492,7 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
     
     // store cursor in list for removal of the edited text at the end of the loop
     cursors.push_back( cursor );
-    
-    // increment
-    block = blocks.second;
-    
+        
   }
   
   // now remove all text stored in cursor list
@@ -782,7 +771,18 @@ void BlockDelimiterWidget::_updateMarker( QTextBlock& block, int& current_id, Bl
 
 //_____________________________________________________________________________________
 BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks( 
-  QTextBlock block, 
+  const BlockDelimiterSegment& segment, 
+  TextBlockData*& data ) const
+{
+  QTextBlock block( _editor().document()->begin() );
+  int id( 0 );
+  return _findBlocks( block, id, segment, data );
+}
+
+//_____________________________________________________________________________________
+BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks( 
+  QTextBlock& block,
+  int& id,
   const BlockDelimiterSegment& segment, 
   TextBlockData*& data ) const
 {
@@ -791,7 +791,7 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   TextBlockPair out;
   
   // look for first block
-  for( ; block.isValid() && block.position() != segment.begin().cursor(); block = block.next() ) 
+  for( ; block.isValid() && id < segment.begin().id(); block = block.next(), id++ ) 
   {}
   
   assert( block.isValid() );
@@ -811,7 +811,7 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   }
   
   // look for second block
-  for( ; block.isValid() && block.position()+block.length()-1 != segment.end().cursor(); block = block.next() )
+  for( ; block.isValid() && id < segment.end().id(); block = block.next(); id++ )
   {}
   
   // check if second block is also of "begin" type
