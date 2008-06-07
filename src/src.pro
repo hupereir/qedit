@@ -81,6 +81,7 @@ SOURCES = \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \
   HighlightBlockData.cpp \
+  HighlightBlockFlags.cpp \
   HtmlUtil.cpp \
   LineNumberWidget.cpp \
   MainFrame.cpp \

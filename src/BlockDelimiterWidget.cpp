@@ -535,9 +535,11 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
   for( QTextBlock block = document.begin(); block.isValid(); block = block.next() ) 
   {
     // retrieve data and check if collapsed
-    HighlightBlockData* data( static_cast<HighlightBlockData*>( block.userData() ) );
     if( block.blockFormat().boolProperty( TextBlock::Collapsed ) )
-    { _expand( block, data, true ); }
+    { 
+      HighlightBlockData* data( static_cast<HighlightBlockData*>( block.userData() ) );
+      _expand( block, data, true ); 
+    }
       
   }
   
@@ -652,12 +654,7 @@ void BlockDelimiterWidget::_updateSegments( void )
       
       // check if something is to be done
       if( !( collapsed || delimiter.begin() || delimiter.end() ) ) continue;
-                  
-      // get block limits
-      // QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
-      // BlockMarker block_begin( block.position(), block.layout()->position().y() );
-      // BlockMarker block_end( block.position()+block.length() - 1, block.layout()->position().y() + rect.height() );      
-  
+                   
       // get block limits
       BlockMarker block_begin( block_count, block.position() );
       BlockMarker block_end( block_count, block.position()+block.length() - 1 );      
