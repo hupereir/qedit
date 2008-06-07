@@ -36,26 +36,30 @@ using namespace std;
 using namespace TextBlock;
 
 //_______________________________________________
-Delimiter& Delimiter::operator += (const Delimiter& delimiter )
+Delimiter Delimiter::operator + (const Delimiter& delimiter ) const
 {
   Debug::Throw( "Delimiter::operator +=\n" );
+  Delimiter out = *this;
+  
   for( int i=0; i < delimiter.end(); i++ )
   {
-    if( begin_ > 0 ) begin_--;
-    else end_++;
+    if( out.begin_ > 0 ) out.begin_--;
+    else out.end_++;
   }
   
-  begin_ += delimiter.begin();
- 
+  out.begin_ += delimiter.begin();
+  return out;
+  
 }
 
 //_______________________________________________
-Delimiter::List& Delimiter::List::operator += (const Delimiter::List& list )
+Delimiter::List Delimiter::List::operator + (const Delimiter::List& list ) const
 {
   Debug::Throw( "Delimiter::List::operator +=\n" );
-  Delimiter::List::iterator first = begin();
+  Delimiter::List out( *this );
+  Delimiter::List::iterator first = out.begin();
   Delimiter::List::const_iterator second = list.begin();
-  for(; first != end(); first++ )
+  for(; first != out.end(); first++ )
   { 
     if( second != list.end() ) {
       *first += *second; 
@@ -64,6 +68,8 @@ Delimiter::List& Delimiter::List::operator += (const Delimiter::List& list )
   }
   
   for(; second != list.end(); second++ )
-  { push_back( *second ); }
+  { out.push_back( *second ); }
+  
+  return out;
   
 }

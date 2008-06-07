@@ -263,7 +263,7 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   if( iter == segments_.end() ) return;
   
   // retrieve matching segments
-  TextBlockData* data(0);
+  HighlightBlockData* data(0);
   TextBlockPair blocks( _findBlocks( *iter, data ) );
   
   // check if block is collapsed
@@ -371,7 +371,7 @@ void BlockDelimiterWidget::_collapseCurrentBlock( void )
   _editor().clearBoxSelection();
 
   // find matching blocks
-  TextBlockData *data(0);
+  HighlightBlockData *data(0);
   TextBlockPair blocks( _findBlocks( *iter, data ) );
   
   // collapse
@@ -400,7 +400,7 @@ void BlockDelimiterWidget::_expandCurrentBlock( void )
   if( iter == segments_.end() ) return;
   
   // find matching blocks
-  TextBlockData *data(0);
+  HighlightBlockData *data(0);
   TextBlockPair blocks( _findBlocks( *iter, data ) );
   
   // collapse
@@ -449,7 +449,7 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
     previous = iter;
 
     // get matching blocks
-    TextBlockData *data(0);
+    HighlightBlockData *data(0);
     TextBlockPair blocks( _findBlocks( block, id, *iter, data ) );
 
     // do nothing if block is already collapsed
@@ -773,7 +773,7 @@ void BlockDelimiterWidget::_updateMarker( QTextBlock& block, unsigned int& id, B
 //_____________________________________________________________________________________
 BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks( 
   const BlockDelimiterSegment& segment, 
-  TextBlockData*& data ) const
+  HighlightBlockData*& data ) const
 {
   QTextBlock block( _editor().document()->begin() );
   unsigned int id( 0 );
@@ -785,7 +785,7 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   QTextBlock& block,
   unsigned int& id,
   const BlockDelimiterSegment& segment, 
-  TextBlockData*& data ) const
+  HighlightBlockData*& data ) const
 {
 
   Debug::Throw( "BlockDelimiterWidget::_findBlocks.\n" );
@@ -798,7 +798,7 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   assert( block.isValid() );
     
   // get data and check
-  data = static_cast<TextBlockData*>( block.userData() );
+  data = static_cast<HighlightBlockData*>( block.userData() );
   assert( data );
 
   // store
@@ -841,7 +841,7 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
 }
 
 //________________________________________________________________________________________
-void BlockDelimiterWidget::_expand( const QTextBlock& block, TextBlockData* data, const bool& recursive ) const
+void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData* data, const bool& recursive ) const
 { 
       
   // retrieve block format
@@ -887,7 +887,7 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, TextBlockData* data
     // also expands block if collapsed and recursive is set to true
     if( iter->collapsed() && recursive ) 
     {
-      TextBlockData *current_data =  new TextBlockData();
+      HighlightBlockData *current_data =  new HighlightBlockData();
       cursor.block().setUserData( current_data );
       _expand( cursor.block(), current_data, true );
     }
@@ -899,7 +899,7 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, TextBlockData* data
 }
 
 //________________________________________________________________________________________
-void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QTextBlock& second_block, TextBlockData* data ) const
+void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QTextBlock& second_block, HighlightBlockData* data ) const
 {
    
   Debug::Throw( "BlockDelimiterWidget::_collapse.\n" );

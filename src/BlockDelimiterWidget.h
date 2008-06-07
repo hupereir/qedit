@@ -47,7 +47,7 @@
 #include "BlockDelimiterSegment.h"
 #include "Counter.h"
 
-class TextBlockData;
+class HighlightBlockData;
 class TextDisplay;
 
 //! display block delimiters
@@ -176,7 +176,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
 
   
   //! find blocks that match a given segment
-  TextBlockPair _findBlocks( const BlockDelimiterSegment&, TextBlockData*& ) const;  
+  TextBlockPair _findBlocks( const BlockDelimiterSegment&, HighlightBlockData*& ) const;  
   
   
   //! find blocks that match a given segment
@@ -185,13 +185,13 @@ class BlockDelimiterWidget: public QWidget, public Counter
   \param segment the segment to be found
   \param data the user data associated to the output segment
   */
-  TextBlockPair _findBlocks( QTextBlock&, unsigned int&, const BlockDelimiterSegment&, TextBlockData*& ) const;  
+  TextBlockPair _findBlocks( QTextBlock&, unsigned int&, const BlockDelimiterSegment&, HighlightBlockData*& ) const;  
   
   //! expand current block
-  void _expand( const QTextBlock&, TextBlockData*, const bool& recursive = false ) const;
+  void _expand( const QTextBlock&, HighlightBlockData*, const bool& recursive = false ) const;
 
   //! collapse blocks 
-  void _collapse( const QTextBlock&, const QTextBlock&, TextBlockData* ) const;
+  void _collapse( const QTextBlock&, const QTextBlock&, HighlightBlockData* ) const;
 
   //! editor
   TextDisplay& _editor( void ) const

@@ -93,7 +93,14 @@ namespace TextBlock
     { return begin_ == delimiter.begin_ && end_ == delimiter.end_; }
 
     //! sum operator (warning: this is not a reflexive operator)
-    Delimiter& operator += (const Delimiter& );
+    Delimiter operator + ( const Delimiter& ) const;
+    
+    //! sum operator (warning: this is not a reflexive operator)
+    Delimiter& operator += ( const Delimiter& delimiter )
+    { 
+      *this = *this + delimiter;
+      return *this;
+    }
     
     //! number of times the block is of type "begin"
     const int& begin( void ) const
@@ -117,7 +124,17 @@ namespace TextBlock
       public:
       
       //! sum operator (warning: this is not a reflexive operator)
-      List& operator += (const List& );
+      List operator = (const List& ) const;
+      
+      //! sum operator (warning: this is not a reflexive operator)
+      List operator + (const List& list ) const;
+      
+      //! sum operator (warning: this is not a reflexive operator)
+      List& operator += (const List& list )
+      { 
+        *this = *this + list;
+        return *this;
+      }
       
     };
     
