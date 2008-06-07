@@ -353,7 +353,7 @@ void BlockDelimiterWidget::_collapseCurrentBlock( void )
   _updateSegmentMarkers();
   
   // sort segments so that top level comes last
-  std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
+  // std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
 
   // get cursor position
   int cursor( _editor().textCursor().position() );
@@ -385,7 +385,7 @@ void BlockDelimiterWidget::_expandCurrentBlock( void )
   _updateSegmentMarkers();
   
   // sort segments so that top level comes last
-  std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
+  // std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
 
   // get cursor position
   int cursor( _editor().textCursor().position() );
@@ -417,7 +417,7 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
   _updateSegmentMarkers();
 
   // sort segments so that top level comes last
-  std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
+  // std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
   
   // list of QTextCursor needed to remove blocks
   typedef std::vector<QTextCursor> CursorList;
@@ -728,10 +728,6 @@ void BlockDelimiterWidget::_updateSegments( void )
     
   // sort segments so that top level comes last
   std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
-
-  // dump markers
-  //for( BlockDelimiterSegment::List::iterator iter  = segments_.begin(); iter != segments_.end(); iter++ )
-  //{ Debug::Throw(0) << *iter << endl; }
   
   // update expand all action
   expandAllAction().setEnabled( has_collapsed_blocks );
