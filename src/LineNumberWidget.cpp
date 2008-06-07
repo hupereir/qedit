@@ -106,12 +106,18 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   
   // font metric and offset
   const QFontMetrics metric( fontMetrics() );
+  
+  // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
+  int height( QWidget::height() + y_offset );
+  if( _editor().horizontalScrollBar()->isVisible() ) 
+  { height -= _editor().horizontalScrollBar()->height(); }
 
   // brush/pen  
   QPainter painter( this );
   painter.translate( 0, -y_offset );
-  
+  painter.setClipRect( 0, 0, width(), height );
+    
   // current block highlight
   if( need_current_block_update_ && highlight_color_.isValid() )
   {
@@ -134,7 +140,7 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
 
   // get begin and end cursor positions
   int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
-  int last_index = _editor().cursorForPosition( QPoint( 0,  QWidget::height() ) ).position();
+  int last_index = _editor().cursorForPosition( QPoint( 0, QWidget::height() ) ).position();
   
   // loop over data
   QTextBlock block( _editor().document()->begin() );
@@ -152,6 +158,9 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
     // check validity
     if( !iter->isValid() ) _updateLineNumberData( block, id, *iter );
     
+    // check position
+    if( iter->isValid() && iter->position() > height ) continue;
+    
     QString numtext( QString::number( iter->lineNumber() ) );
     painter.drawText(
       0, iter->position(), width()-8,
@@ -160,7 +169,12 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
       numtext );
     
     //max_length = std::max( max_length, metric.width(numtext)+metric.width("0")+10 );
-    max_length = std::max( max_length, metric.width(numtext) + 14 );
+    if( metric.width(numtext) + 14 > max_length )
+    {
+      max_length = std::max( max_length, metric.width(numtext) + 14 );
+      painter.setClipRect( 0, 0, max_length, height );
+    }
+    
   }
 
   // resize

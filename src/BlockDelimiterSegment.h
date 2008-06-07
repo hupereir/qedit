@@ -193,7 +193,7 @@ class BlockDelimiterSegment: public Counter
   };
   
   //! used to sort segments according to starting or ending points
-  /*! top level segments should comme first */
+  /*! top level segments should comme last */
   class SortFTor
   {
     

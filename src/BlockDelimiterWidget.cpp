@@ -141,24 +141,26 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   /* update segments if needed */
   _updateSegments();
   
-  // get begin and end cursor positions
-  int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
-  int last_index = _editor().cursorForPosition( QPoint( 0,  QWidget::height() + fontMetrics().lineSpacing() ) ).position();
-  
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
-  int height( QWidget::height() + y_offset );
+  int height( QWidget::height() );
   if( _editor().horizontalScrollBar()->isVisible() ) 
   { height -= _editor().horizontalScrollBar()->height(); }
   
-  // create painter
+  // get begin and end cursor positions
+  int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
+  int last_index = _editor().cursorForPosition( QPoint( 0,  height ) ).position();
+  
+  // create painter and translate
   QPainter painter( this );
   painter.translate( 0, -y_offset );
-  
+  height += y_offset;
+    
   //painter.save();
   QPen pen;
   pen.setStyle( Qt::DotLine );
   painter.setPen( pen );
+  painter.setClipRect( 0, 0, width(), height );
   
   // retrieve matching segments
   QTextDocument &document( *_editor().document() );
@@ -179,7 +181,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     
     if( iter->end().cursor() >= first_index && iter->end().cursor() <= last_index )
     { _updateMarker( block, id, iter->end(), END ); }
-    
+        
     // skip this segment if included in previous
     if( previous != segments_.rend() && !( iter->begin() < previous->begin() || previous->end() < iter->end() ) ) continue;
     else previous = iter;
@@ -199,8 +201,6 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     { painter.drawLine( half_width_, iter->end().position(), width_, iter->end().position() ); }
     
   }
-
-  //painter.restore();
   
   // draw begin ticks
   // first draw empty square
@@ -726,6 +726,9 @@ void BlockDelimiterWidget::_updateSegments( void )
 
   }
     
+  // sort segments so that top level comes last
+  std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
+
   // dump markers
   //for( BlockDelimiterSegment::List::iterator iter  = segments_.begin(); iter != segments_.end(); iter++ )
   //{ Debug::Throw(0) << *iter << endl; }
@@ -950,5 +953,5 @@ void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QText
   data->setFlag( TextBlock::MODIFIED, true );
   data->setFlag( TextBlock::COLLAPSED, true );
   _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
-  
+
 }
