@@ -55,7 +55,12 @@ LineNumberWidget::LineNumberWidget(TextEditor* editor, QWidget* parent):
   
   Debug::Throw( "LineNumberWidget::LineNumberWidget.\n" );
   setAutoFillBackground( true );
-  
+ 
+  // change background color
+  QPalette palette( LineNumberWidget::palette() );
+  palette.setColor( QPalette::Window, palette.color( QPalette::Window ).lighter(110) );
+  setPalette( palette );
+ 
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( _needUpdate() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( update() ) );
