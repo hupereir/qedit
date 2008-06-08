@@ -118,9 +118,7 @@ void TextHighlight::highlightBlock( const QString& text )
     /* this is disabled when  current block is collapsed */
     if( !data->hasFlag( TextBlock::COLLAPSED ) ) setCurrentBlockState( locations.activeId().second );    
     else setCurrentBlockState( 0 ); 
-        
-    //setCurrentBlockState( locations.activeId().second );    
-    
+            
   }
     
   // before try applying the found locations see if automatic spellcheck is on
