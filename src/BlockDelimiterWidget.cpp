@@ -154,7 +154,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   
   // get begin and end cursor positions
   int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
-  int last_index = _editor().cursorForPosition( QPoint( 0,  height ) ).position();
+  int last_index = _editor().cursorForPosition( QPoint( 0,  height ) ).position() + 1;
   
   // create painter and translate
   QPainter painter( this );
@@ -180,12 +180,13 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     // skip segment if outside of visible limits
     if( iter->begin().cursor() > last_index || iter->end().cursor() < first_index ) continue;
     
-    // try update segment
+    // try update segments
     if( iter->begin().cursor() >= first_index && iter->begin().cursor() <= last_index )
     { _updateMarker( block, id, iter->begin(), BEGIN ); }
     
+    // try update segments
     if( iter->end().cursor() >= first_index && iter->end().cursor() <= last_index )
-    { _updateMarker( block, id, iter->end(), END ); }
+    {  _updateMarker( block, id, iter->end(), END ); }
         
     // skip this segment if included in previous
     if( previous != segments_.rend() && !( iter->begin() < previous->begin() || previous->end() < iter->end() ) ) continue;
@@ -654,7 +655,10 @@ void BlockDelimiterWidget::_updateSegments( void )
       
       // check if something is to be done
       if( !( collapsed || delimiter.begin() || delimiter.end() ) ) continue;
-                   
+         
+      // print delimiter
+      // Debug::Throw() << "BlockDelimiterWidget::_updateSegments - block: " << block_count << " delimiter: " << delimiter << endl;
+      
       // get block limits
       BlockMarker block_begin( block_count, block.position() );
       BlockMarker block_end( block_count, block.position()+block.length() - 1 );      
@@ -731,6 +735,13 @@ void BlockDelimiterWidget::_updateSegments( void )
   // sort segments so that top level comes last
   std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
   
+//   // print segments
+//   if( Debug::level() >= 1 ) 
+//   {
+//     for( BlockDelimiterSegment::List::const_iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+//     { Debug::Throw(0) << "BlockDelimiterWidget::_updateSegments - segment: " << *iter << endl; }
+//   }
+      
   // update expand all action
   expandAllAction().setEnabled( has_collapsed_blocks );
   collapseAction().setEnabled( has_expanded_blocks );
