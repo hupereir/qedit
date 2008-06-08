@@ -63,10 +63,10 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   setAutoFillBackground( true );
  
-  // change background color
-  QPalette palette( BlockDelimiterWidget::palette() );
-  palette.setColor( QPalette::Window, palette.color( QPalette::Window ).lighter(110) );
-  setPalette( palette );
+//   // change background color
+//   QPalette palette( BlockDelimiterWidget::palette() );
+//   palette.setColor( QPalette::Window, palette.color( QPalette::Window ).lighter(110) );
+//   setPalette( palette );
   
   // actions
   _installActions();
