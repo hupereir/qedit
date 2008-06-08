@@ -123,28 +123,8 @@ class HighlightBlockData: public TextBlockData
   { return delimiters_; }
 
   //! delimiters
-  void setDelimiters( const TextBlock::Delimiter::List& delimiters )
-  { delimiters_ = delimiters; }
-  
-  //! delimiter
-  TextBlock::Delimiter delimiter( const unsigned int& id ) const
-  { 
-    if( delimiters_.size() <= id ) return TextBlock::Delimiter();
-    return delimiters_[id];
-  }
-
-  //! delimiter
-  /*! returns true if values changed */
-  bool setDelimiter( const unsigned int& id, const TextBlock::Delimiter& delimiter )
-  { 
-    if( delimiters_.size() > id && delimiters_[id] == delimiter ) return false;
-    
-    if( delimiters_.size() <= id ) { delimiters_.resize( id+1 ); }
-    
-    delimiters_[id] = delimiter;
-    return true;
-    
-  }
+  TextBlock::Delimiter::List& delimiters( void )
+  { return delimiters_; }
   
   //@}
   

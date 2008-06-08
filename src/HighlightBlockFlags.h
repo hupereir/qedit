@@ -136,6 +136,12 @@ namespace TextBlock
         return *this;
       }
       
+      //! set value at index i. Resize if needed
+      bool set( const unsigned int&, const TextBlock::Delimiter& );
+      
+      //! get value at index i
+      TextBlock::Delimiter get( const unsigned int& ) const;
+      
     };
     
     

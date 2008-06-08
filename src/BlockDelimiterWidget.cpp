@@ -647,7 +647,7 @@ void BlockDelimiterWidget::_updateSegments( void )
       if( !data ) continue;
 
       // get delimiter data
-      TextBlock::Delimiter delimiter( data->delimiter( iter->id() ) );
+      TextBlock::Delimiter delimiter( data->delimiters().get( iter->id() ) );
 
       // store collapse state
       QTextBlockFormat block_format( block.blockFormat() );
