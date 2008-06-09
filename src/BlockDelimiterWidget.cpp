@@ -178,7 +178,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   {
 
     // skip segment if outside of visible limits
-    if( iter->begin().cursor() > last_index || iter->end().cursor() < first_index ) continue;
+    if( iter->begin().cursor() > last_index+1 || iter->end().cursor() < first_index ) continue;
     
     // try update segments
     if( iter->begin().cursor() >= first_index && iter->begin().cursor() <= last_index )
@@ -194,7 +194,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
 
     // draw
     int begin( iter->begin().isValid() ? iter->begin().position()+top_ : 0 );
-    int end( ( (!iter->empty()) && iter->end().isValid() && iter->end().cursor() < last_index ) ? iter->end().position():height );
+    int end( ( (!iter->empty()) && iter->end().isValid() && iter->end().position() < height ) ? iter->end().position():height );
     painter.drawLine( half_width_, begin, half_width_, end ); 
     
   }
@@ -538,7 +538,7 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
     // retrieve data and check if collapsed
     if( block.blockFormat().boolProperty( TextBlock::Collapsed ) )
     { 
-      HighlightBlockData* data( static_cast<HighlightBlockData*>( block.userData() ) );
+      HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
       _expand( block, data, true ); 
     }
       
@@ -598,7 +598,8 @@ void BlockDelimiterWidget::_synchronizeBlockData( void ) const
   {
            
     // retrieve data and check this block delimiter
-    HighlightBlockData* data = (static_cast<HighlightBlockData*>( block.userData() ) );
+    //HighlightBlockData* data = (static_cast<HighlightBlockData*>( block.userData() ) );
+    HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
     if( !data ) continue;
     
     // store collapse state
@@ -643,7 +644,8 @@ void BlockDelimiterWidget::_updateSegments( void )
     {
 
       // retrieve data and check this block delimiter
-      HighlightBlockData* data = (static_cast<HighlightBlockData*>( block.userData() ) );
+      // HighlightBlockData* data = (static_cast<HighlightBlockData*>( block.userData() ) );
+      HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
       if( !data ) continue;
 
       // get delimiter data
@@ -809,7 +811,8 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   assert( block.isValid() );
     
   // get data and check
-  data = static_cast<HighlightBlockData*>( block.userData() );
+  data = dynamic_cast<HighlightBlockData*>( block.userData() );
+  //data = static_cast<HighlightBlockData*>( block.userData() );
   assert( data );
 
   // store
