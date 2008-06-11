@@ -84,7 +84,7 @@ static const char* HelpText[] = {
   "Logical block markers",
   "<h2>Logical block markers</h2>\n"
   "\n"
-  "<p>For some document classes, blocks of text are well separated in logical structures. For instance, <i>c/c++</i> logical structures are delimited by curly brackets, while <i>LaTeX</i> structures are delimited by <i>\begin</i> and <i>\end</i> tags.</p>\n"
+  "<p>For some document classes, blocks of text are well separated in logical structures. For instance, <i>c/c++</i> logical structures are delimited by curly brackets, while <i>LaTeX</i> structures are delimited by <i>begin</i> and <i>end</i> tags.</p>\n"
   "\n"
   "<p>QEdit offers the possibility to identify these structures and represents them as vertical segments located at the left of the edition window. Such segments are called <i>block delimiters</i>. When available, these delimiters can be made visible by checking the corresponding option in the <i>Preferences</i> menu, or in the <i>Default configuration</i> dialog.</p>\n"
   "\n"
