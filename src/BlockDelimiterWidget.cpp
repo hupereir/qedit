@@ -61,12 +61,14 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
 {
   
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
-  setAutoFillBackground( true );
- 
-//   // change background color
-//   QPalette palette( BlockDelimiterWidget::palette() );
-//   palette.setColor( QPalette::Window, palette.color( QPalette::Window ).lighter(110) );
-//   setPalette( palette );
+  
+  setAutoFillBackground( true );  
+
+  // change background color
+  // the same brush is used as for scrollbars
+  QPalette palette( BlockDelimiterWidget::palette() );
+  palette.setBrush( QPalette::Window, QBrush( palette.color( QPalette::Base ), Qt::Dense4Pattern ) );
+  setPalette( palette );
   
   // actions
   _installActions();
@@ -158,6 +160,9 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   
   // create painter and translate
   QPainter painter( this );
+  
+  //painter.fillRect( rect(), QBrush( palette().color( QPalette::Base ), Qt::Dense4Pattern) );
+  
   painter.translate( 0, -y_offset );
   height += y_offset;
     

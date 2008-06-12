@@ -54,12 +54,14 @@ LineNumberWidget::LineNumberWidget(TextEditor* editor, QWidget* parent):
 {
   
   Debug::Throw( "LineNumberWidget::LineNumberWidget.\n" );
-  setAutoFillBackground( true );
- 
-//   // change background color
-//   QPalette palette( LineNumberWidget::palette() );
-//   palette.setColor( QPalette::Window, palette.color( QPalette::Window ).lighter(110) );
-//   setPalette( palette );
+
+  setAutoFillBackground( true );  
+
+  // change background color
+  // the same brush is used as for scrollbars
+  QPalette palette( LineNumberWidget::palette() );
+  palette.setBrush( QPalette::Window, QBrush( palette.color( QPalette::Base ), Qt::Dense4Pattern ) );
+  setPalette( palette );  
  
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( _needUpdate() ) );
