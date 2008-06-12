@@ -603,7 +603,6 @@ void BlockDelimiterWidget::_synchronizeBlockData( void ) const
   {
            
     // retrieve data and check this block delimiter
-    //HighlightBlockData* data = (static_cast<HighlightBlockData*>( block.userData() ) );
     HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
     if( !data ) continue;
     
@@ -649,7 +648,6 @@ void BlockDelimiterWidget::_updateSegments( void )
     {
 
       // retrieve data and check this block delimiter
-      // HighlightBlockData* data = (static_cast<HighlightBlockData*>( block.userData() ) );
       HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
       if( !data ) continue;
 
@@ -663,9 +661,6 @@ void BlockDelimiterWidget::_updateSegments( void )
       // check if something is to be done
       if( !( collapsed || delimiter.begin() || delimiter.end() ) ) continue;
          
-      // print delimiter
-      // Debug::Throw() << "BlockDelimiterWidget::_updateSegments - block: " << block_count << " delimiter: " << delimiter << endl;
-      
       // get block limits
       BlockMarker block_begin( block_count, block.position() );
       BlockMarker block_end( block_count, block.position()+block.length() - 1 );      
@@ -741,14 +736,7 @@ void BlockDelimiterWidget::_updateSegments( void )
     
   // sort segments so that top level comes last
   std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
-  
-//   // print segments
-//   if( Debug::level() >= 1 ) 
-//   {
-//     for( BlockDelimiterSegment::List::const_iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
-//     { Debug::Throw(0) << "BlockDelimiterWidget::_updateSegments - segment: " << *iter << endl; }
-//   }
-      
+        
   // update expand all action
   expandAllAction().setEnabled( has_collapsed_blocks );
   collapseAction().setEnabled( has_expanded_blocks );
@@ -817,7 +805,6 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
     
   // get data and check
   data = dynamic_cast<HighlightBlockData*>( block.userData() );
-  //data = static_cast<HighlightBlockData*>( block.userData() );
   assert( data );
 
   // store
