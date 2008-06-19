@@ -57,6 +57,7 @@ void HtmlUtil::textNode( const QString& text, QDomElement& parent, QDomDocument&
     parent.appendChild( document.createTextNode( *iter ) );
   }
   
+  Debug::Throw( "HtmlUtil::TextNode - done.\n" );
   return;
   
 }

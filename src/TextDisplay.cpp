@@ -712,15 +712,18 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
       {
 
         // append text to current element and reset stream
-        HtmlUtil::textNode( buffer, span, document );
-        if( line_break )
+        if( !buffer.isEmpty() )
         {
-          out.appendChild( document.createElement( "br" ) );
-          line_break = false;
-          line_index = 0;
-        }
-
-        buffer = "";
+          if( span.isNull() ) span  = out.appendChild( document.createElement( "span" ) ).toElement();
+          HtmlUtil::textNode( buffer, span, document );
+          if( line_break )
+          {
+            out.appendChild( document.createElement( "br" ) );
+            line_break = false;
+            line_index = 0;
+          }
+          buffer = "";
+        }  
 
         // update pattern
         current_pattern = pattern;
@@ -766,8 +769,14 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
 
     }
 
-    span.appendChild( document.createTextNode( buffer ) );
+    if( !buffer.isEmpty() )
+    {
+      if( span.isNull() ) span  = out.appendChild( document.createElement( "span" ) ).toElement();
+      span.appendChild( document.createTextNode( buffer ) );
+    }
+    
     out.appendChild( document.createElement( "br" ) );
+    
   }
 
   return out;
