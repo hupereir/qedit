@@ -95,6 +95,8 @@
  <!-- block delimiters -->
  <block_delimiter begin="XML_LT!--" end="--XML_GT" regexp="(XML_LT\!--)|(--XML_GT)"/>
  <block_delimiter begin="XML_LT?" end="?XML_GT" regexp="(XML_LT\?)|(\?XML_GT)"/>
+ <block_delimiter begin="XML_LTul" end="/ulXML_GT" regexp="(XML_LTul)|(/ulXML_GT)"/>
+ <block_delimiter begin="XML_LTtable" end="/tableXML_GT" regexp="(XML_LTtable)|(/tableXML_GT)"/>
 
 <!-- text processing macros -->
 
