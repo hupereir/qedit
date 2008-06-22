@@ -160,13 +160,11 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   
   // create painter and translate
   QPainter painter( this );
-  
-  //painter.fillRect( rect(), QBrush( palette().color( QPalette::Base ), Qt::Dense4Pattern) );
-  
+    
   painter.translate( 0, -y_offset );
   height += y_offset;
     
-  //painter.save();
+  painter.save();
   QPen pen;
   pen.setStyle( Qt::DotLine );
   painter.setPen( pen );
@@ -204,6 +202,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     
   }
     
+  painter.restore();
+  
   // end tick
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
