@@ -81,7 +81,6 @@ TextDisplay::TextDisplay( QWidget* parent ):
   working_directory_( Util::workingDirectory() ),
   class_name_( "" ),
   ignore_warnings_( false ),
-  active_( false ),
   open_previous_menu_( 0 )
 {
 
@@ -607,15 +606,12 @@ void TextDisplay::revertToSave( void )
 }
 
 //_____________________________________________________________________
-void TextDisplay::setActive( const bool& active )
+bool TextDisplay::setActive( const bool& active )
 {
 
-  // check if value is changed
-  if( isActive() == active ) return;
-  active_ = active;
-
-  // update paper
-  _setPaper( active_ ? active_color_:inactive_color_ );
+  Debug::Throw( "TextDisplay::setActive.\n" );
+  if( TextEditor::setActive( active ) ) 
+  { _setPaper( isActive() ? active_color_:inactive_color_ ); }
 
 }
 
@@ -1173,14 +1169,6 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
   }
 
   return;
-}
-
-//_______________________________________________________
-void TextDisplay::focusInEvent( QFocusEvent* event )
-{
-  Debug::Throw() << "TextDisplay::focusInEvent - " << key() << endl;
-  emit hasFocus( this );
-  TextEditor::focusInEvent( event );
 }
 
 //________________________________________________

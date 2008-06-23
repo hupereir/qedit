@@ -487,13 +487,13 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   
   //! update window title, cut, copy, paste buttons, and filename line editor
   /*! \param flags are bitwise or of TextDisplay::UpdateFlags */
-  void _update( unsigned int flags );
+  void _update( unsigned int );
 
   //! display cursor position in state frame
   void _updateCursorPosition( void );
 
   //! display focus changed
-  void _displayFocusChanged( TextDisplay* display );
+  void _displayFocusChanged( TextEditor* );
   
   private:
 
@@ -520,7 +520,7 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   QSplitter& _newSplitter( const Qt::Orientation&, const bool& clone  );
   
   //! create new TextView
-  TextView& _newTextView( QWidget* parent );
+  TextView& _newTextView( QWidget* );
 
   /*! it is used to print formatted text to both HTML and PDF */
   QString _htmlString( const int& );

@@ -747,10 +747,10 @@ void EditFrame::_updateCursorPosition( void )
 }
 
 //____________________________________________
-void EditFrame::_displayFocusChanged( TextDisplay* display )
+void EditFrame::_displayFocusChanged( TextEditor* editor )
 {
-  Debug::Throw() << "EditFrame::_DisplayFocusChanged - " << display->key() << endl;
-  setActiveView( *dynamic_cast<TextView*>(display->parentWidget()) );  
+  Debug::Throw() << "EditFrame::_DisplayFocusChanged - " << editor->key() << endl;
+  setActiveView( *dynamic_cast<TextView*>(editor->parentWidget()) );  
 }
 
 //___________________________________________________________
@@ -1348,7 +1348,7 @@ TextView& EditFrame::_newTextView( QWidget* parent )
 
   // connections
   connect( &view->editor(), SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
-  connect( &view->editor(), SIGNAL( hasFocus( TextDisplay* ) ), SLOT( _displayFocusChanged( TextDisplay* ) ) );
+  connect( &view->editor(), SIGNAL( hasFocus( TextEditor* ) ), SLOT( _displayFocusChanged( TextEditor* ) ) );
   connect( &view->editor(), SIGNAL( cursorPositionChanged() ), &position_timer_, SLOT( start() ) );
   
   connect( &view->editor(), SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );

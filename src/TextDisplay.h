@@ -171,14 +171,10 @@ class TextDisplay: public TextEditor
   //! Revert to save
   void revertToSave( void );
   
-  //@}
-  
   //! activity
-  void setActive( const bool& value );
+  virtual bool setActive( const bool& value );
 
-  //! activity
-  const bool& isActive( void ) const
-  { return active_; }
+  //@}
 
   //!@name document class
   //@{
@@ -373,9 +369,6 @@ class TextDisplay: public TextEditor
   //! emmited when indentation of one block is required
   void indent( QTextBlock );
 
-  //! emmited when recieve focus
-  void hasFocus( TextDisplay* );
-
   //! emmited whenever editframe toolbar, window title or file name editor needs update
   /* \param flags, bitwise or of UpdateFlags */
   void needUpdate( unsigned int flags );
@@ -407,9 +400,6 @@ class TextDisplay: public TextEditor
   
   //! keypress event [overloaded]
   virtual void keyPressEvent( QKeyEvent* );
-
-  //! focus event [overloaded]
-  virtual void focusInEvent( QFocusEvent* );
 
   //! context menu event [overloaded]
   virtual void contextMenuEvent( QContextMenuEvent* );
@@ -624,9 +614,6 @@ class TextDisplay: public TextEditor
   //! if true, _checkFile is disabled
   bool ignore_warnings_;
   
-  //! true if this display is the active display
-  bool active_;
-
   //!@name document classes specific members
   //@{
 
