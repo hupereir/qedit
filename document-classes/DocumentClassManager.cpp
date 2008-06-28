@@ -29,6 +29,7 @@
   \date $Date$
 */
 
+#include <algorithm>
 #include <qdom.h>
 #include <qfile.h>
 

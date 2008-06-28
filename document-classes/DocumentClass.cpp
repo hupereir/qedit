@@ -29,6 +29,7 @@
   \date $Date$
 */
 
+#include <algorithm>
 #include "DocumentClass.h"
 #include "HighlightPattern.h"
 #include "Str.h"

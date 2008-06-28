@@ -29,6 +29,7 @@
   \date $Date$
 */
 
+#include <algorithm>
 #include "HighlightBlockData.h"
 
 using namespace std;
