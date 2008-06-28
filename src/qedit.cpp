@@ -59,7 +59,6 @@ int main (int argc, char *argv[])
     // install error handler
     ErrorHandler::disableMessage( "QServerSocket: failed to bind or listen to the socket" );
     ErrorHandler::disableMessage( "QPixmap::resize: TODO: resize alpha data" );
-    ErrorHandler::disableMessage( "QPainter::begin: A paint device can only be painted by one painter at a time" );
     
     qInstallMsgHandler( ErrorHandler::Throw );
 

@@ -610,9 +610,11 @@ bool TextDisplay::setActive( const bool& active )
 {
 
   Debug::Throw( "TextDisplay::setActive.\n" );
-  if( TextEditor::setActive( active ) ) 
+  bool out( false );
+  if( out = TextEditor::setActive( active ) ) 
   { _setPaper( isActive() ? active_color_:inactive_color_ ); }
-
+  return out;
+  
 }
 
 //_______________________________________________________
@@ -1194,8 +1196,7 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 //________________________________________________
 void TextDisplay::paintEvent( QPaintEvent* event )
 {
-  Debug::Throw( "TextEditor::paintEvent.\n" );
-  
+  Debug::Throw( "TextEditor::paintEvent.\n" );  
   TextEditor::paintEvent( event );
 
   // handle block background
@@ -1224,6 +1225,7 @@ void TextDisplay::paintEvent( QPaintEvent* event )
     painter.drawLine( block_rect.bottomLeft() - QPoint( 2, 0 ), block_rect.bottomRight() );
   }
     
+  painter.end();
 }
 
 //________________________________________________
