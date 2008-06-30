@@ -36,7 +36,7 @@ endif
 CXXFLAGS = @CXXFLAGS@
 
 noinst_LIBRARIES = libqedit.a
-bin_PROGRAMS = qedit editDocumentClasses testEditor
+bin_PROGRAMS = qedit editDocumentClasses
 
 if WITH_ASPELL 
 libraries = \
@@ -64,7 +64,6 @@ libraries =  \
 endif
 
 qedit_LDADD =  $(libraries)
-testEditor_LDADD =  $(libraries)
 editDocumentClasses_LDADD =  $(libraries)
 
 noinst_HEADERS = \
@@ -152,7 +151,6 @@ nodist_libqedit_a_SOURCES = \
   moc_TextView.cpp
 
 qedit_SOURCES = qedit.cpp
-testEditor_SOURCES = testEditor.cpp
 editDocumentClasses_SOURCES = editDocumentClasses.cpp
 
 clean-local:

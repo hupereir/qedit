@@ -60,7 +60,7 @@ void TextHighlight::setParenthesis( const TextParenthesis::List& parenthesis )
 //_________________________________________________________
 void TextHighlight::highlightBlock( const QString& text )
 {
-    
+      
   // check if syntax highlighting is enabled
   bool highlight_enabled( isHighlightEnabled()  && !patterns_.empty() );
   #if WITH_ASPELL 

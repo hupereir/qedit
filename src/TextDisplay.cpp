@@ -265,34 +265,38 @@ void TextDisplay::openFile( File file, bool check_autosave )
   bool restore_autosave( false );
   File tmp( file );
 
-  File autosaved( AutoSaveThread::autoSaveName( tmp ) );
-  if( check_autosave && autosaved.exists() &&
-    ( !tmp.exists() ||
-    ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
+  if(1) 
   {
-    ostringstream what;
-    what << "A more recent version of file " << file << endl;
-    what << "was found at " << autosaved << "." << endl;
-    what << "This probably means that the application crashed the last time ";
-    what << "the file was edited." << endl;
-    what << "Use autosaved version ?";
-    if( QtUtil::questionDialog( this, what.str() ) )
+    File autosaved( AutoSaveThread::autoSaveName( tmp ) );
+    if( check_autosave && autosaved.exists() &&
+      ( !tmp.exists() ||
+      ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
     {
-      restore_autosave = true;
-      tmp = autosaved;
+      ostringstream what;
+      what << "A more recent version of file " << file << endl;
+      what << "was found at " << autosaved << "." << endl;
+      what << "This probably means that the application crashed the last time ";
+      what << "the file was edited." << endl;
+      what << "Use autosaved version ?";
+      if( QtUtil::questionDialog( this, what.str() ) )
+      {
+        restore_autosave = true;
+        tmp = autosaved;
+      }
     }
+    
+    // retrieve display and associated
+    BASE::KeySet<TextDisplay> displays( this );
+    displays.insert( this );
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    {
+      (*iter)->setFile( file );
+      (*iter)->setClassName( className() );
+      (*iter)->updateDocumentClass();
+    }
+    
   }
-
-  // retrieve display and associated
-  BASE::KeySet<TextDisplay> displays( this );
-  displays.insert( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-    (*iter)->setFile( file );
-    (*iter)->setClassName( className() );
-    (*iter)->updateDocumentClass();
-  }
-
+  
   // check file and try open.
   QFile in( tmp.c_str() );
   if( in.open( QIODevice::ReadOnly ) )
@@ -306,7 +310,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
     _setIgnoreWarnings( false );
 
   }
-
+  
   // save file if restored from autosaved.
   if( restore_autosave && !isReadOnly() ) save();
 
@@ -317,7 +321,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
   if( !TextDisplay::file().empty() )
   { openPreviousMenu().get( TextDisplay::file() ).addInformation( "class_name", qPrintable( className() ) ); }
 
-  Debug::Throw( "TextDisplay::openFile - done.\n" );
+  //Debug::Throw( "TextDisplay::openFile - done.\n" );
 
 }
 
@@ -611,7 +615,7 @@ bool TextDisplay::setActive( const bool& active )
 
   Debug::Throw( "TextDisplay::setActive.\n" );
   bool out( false );
-  if( out = TextEditor::setActive( active ) ) 
+  if( (out = TextEditor::setActive( active ) ) ) 
   { _setPaper( isActive() ? active_color_:inactive_color_ ); }
   return out;
   
@@ -1198,7 +1202,7 @@ void TextDisplay::paintEvent( QPaintEvent* event )
 {
   Debug::Throw( "TextEditor::paintEvent.\n" );  
   TextEditor::paintEvent( event );
-
+  
   // handle block background
   QRect rect = event->rect();
   QTextBlock first( cursorForPosition( rect.topLeft() ).block() );
