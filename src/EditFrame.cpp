@@ -1107,9 +1107,10 @@ void EditFrame::_closeView( TextView& view )
     
   // delete display
   delete &view;
-//   view.clearAssociations();
-//   view.editor().clearAssociations();
-//   view.deleteLater();
+//  view.clearAssociations();
+//  view.editor().clearAssociations();
+//  view.hide();
+//  view.deleteLater();
   
   // check how many children remain in parent_splitter if any
   if( parent_splitter && parent_splitter->count() == 1 ) 
