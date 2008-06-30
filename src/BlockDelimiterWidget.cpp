@@ -316,8 +316,8 @@ void BlockDelimiterWidget::_updateConfiguration( void )
   width_ = fontMetrics().lineSpacing();
   half_width_ = 0.5*width_;
   top_ = 0.8*width_;
-  rect_top_left_ = 0.2*width_;
-  rect_width_ = 0.6*width_;
+  rect_top_left_ = 0.15*width_;
+  rect_width_ = 0.7*width_;
   marker_top_left_ = 0.35*width_;
   marker_bottom_right_ = 0.65*width_; 
     

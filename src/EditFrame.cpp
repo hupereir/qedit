@@ -1107,6 +1107,9 @@ void EditFrame::_closeView( TextView& view )
     
   // delete display
   delete &view;
+//   view.clearAssociations();
+//   view.editor().clearAssociations();
+//   view.deleteLater();
   
   // check how many children remain in parent_splitter if any
   if( parent_splitter && parent_splitter->count() == 1 ) 
@@ -1131,8 +1134,8 @@ void EditFrame::_closeView( TextView& view )
     }
     
     // delete parent_splitter, now that it is empty
-    delete parent_splitter;
-
+    // delete parent_splitter;
+    parent_splitter->deleteLater();
   }
     
   // if no associated displays, retrieve all, set the first as active
