@@ -318,8 +318,6 @@ void BlockDelimiterWidget::_updateConfiguration( void )
   top_ = 0.8*width_;
   rect_top_left_ = 0.15*width_;
   rect_width_ = 0.7*width_;
-  marker_top_left_ = 0.35*width_;
-  marker_bottom_right_ = 0.65*width_; 
     
   // adjust size
   setFixedWidth( width_ );

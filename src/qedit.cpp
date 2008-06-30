@@ -59,6 +59,7 @@ int main (int argc, char *argv[])
     // install error handler
     ErrorHandler::disableMessage( "QServerSocket: failed to bind or listen to the socket" );
     ErrorHandler::disableMessage( "QPixmap::resize: TODO: resize alpha data" );
+    ErrorHandler::disableMessage( "QObject: Do not delete object, 'unnamed', during its event handler!" );
     
     qInstallMsgHandler( ErrorHandler::Throw );
 

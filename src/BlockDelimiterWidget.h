@@ -223,9 +223,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   int top_;
   int rect_top_left_;
   int rect_width_;
-  int marker_top_left_;
   int marker_bottom_right_;
-  
   //@}
   
   //!@name actions
