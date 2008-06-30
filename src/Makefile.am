@@ -35,12 +35,14 @@ endif
 
 CXXFLAGS = @CXXFLAGS@
 
-bin_PROGRAMS = qedit editDocumentClasses
+noinst_LIBRARIES = libqedit.a
+bin_PROGRAMS = qedit editDocumentClasses testEditor
 
 if WITH_ASPELL 
 libraries = \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   -L$(aspell_libraries) -laspell  \
+  libqedit.a \
   ../document-classes/libdocument-classes.a \
   ../base-spellcheck/libbase-spellcheck.a \
   ../base-server/libbase-server.a \
@@ -52,6 +54,7 @@ else
 
 libraries =  \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
+  libqedit.a \
   ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
   ../base-help/libbase-help.a \
@@ -61,6 +64,8 @@ libraries =  \
 endif
 
 qedit_LDADD =  $(libraries)
+testEditor_LDADD =  $(libraries)
+editDocumentClasses_LDADD =  $(libraries)
 
 noinst_HEADERS = \
   AskForSaveDialog.h \
@@ -96,7 +101,7 @@ noinst_HEADERS = \
   TextView.h \
   WindowTitle.h
 
-qedit_SOURCES = \
+libqedit_a_SOURCES = \
   AskForSaveDialog.cpp \
   AutoSave.cpp \
   AutoSaveThread.cpp \
@@ -119,13 +124,12 @@ qedit_SOURCES = \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
-  qedit.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp \
   TextView.cpp
 
-nodist_qedit_SOURCES = \
+nodist_libqedit_a_SOURCES = \
   qrc_pixmaps.cpp \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \
@@ -147,7 +151,8 @@ nodist_qedit_SOURCES = \
   moc_TextIndent.cpp \
   moc_TextView.cpp
 
-editDocumentClasses_LDADD =  $(libraries)
+qedit_SOURCES = qedit.cpp
+testEditor_SOURCES = testEditor.cpp
 editDocumentClasses_SOURCES = editDocumentClasses.cpp
 
 clean-local:

@@ -192,7 +192,7 @@ void MainFrame::realizeWidget( void )
   
   // run startup timer to open files after the call to exec() is 
   // performed in the main routine
-  startup_timer_.start( 0 );
+  startup_timer_.start(0);
   Debug::Throw( "MainFrame::realizeWidget - done.\n" ); 
 
 }
