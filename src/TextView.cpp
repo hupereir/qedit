@@ -54,7 +54,7 @@ TextView::TextView( QWidget* parent ):
   layout->setSpacing(0);
   setLayout( layout );
   
-  setFrameStyle( QFrame::StyledPanel | QFrame::NoFrame );
+  setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
   
   editor_ = new TextDisplay( this );
   editor_->setFrameStyle( QFrame::NoFrame );
