@@ -41,56 +41,49 @@ using namespace std;
 
 //___________________________________________________
 HighlightPatternType::HighlightPatternType( QWidget* parent ):
-  QWidget( parent ),
+  QComboBox( parent ),
   Counter( "HighlightPatternType" )
 {
 
   Debug::Throw( "HighlightPatternType::HighlightPatternType.\n" );
-  setLayout( new QHBoxLayout() );
-  layout()->setMargin(0);
-  layout()->setSpacing(5);
-
-  layout()->addWidget( new QLabel( "Type: ", this ) );
-  QButtonGroup* group = new QButtonGroup();
-  group->setExclusive( true );
-  connect( group, SIGNAL( buttonClicked( QAbstractButton* ) ), SLOT( _typeChanged( QAbstractButton* ) ) );
+  setEditable( false );
+  addItem( HighlightPattern::typeName( HighlightPattern::KEYWORD_PATTERN ) );
+  addItem( HighlightPattern::typeName( HighlightPattern::RANGE_PATTERN ) );
   
-  QCheckBox* checkbox;
-  group->addButton( checkbox = new QCheckBox( HighlightPattern::typeName( HighlightPattern::KEYWORD_PATTERN ), this ) );
-  checkboxes_.insert( make_pair( checkbox, HighlightPattern::KEYWORD_PATTERN ) );
-  layout()->addWidget( checkbox );
-  checkbox->setChecked( true );
   
-  group->addButton( checkbox = new QCheckBox( HighlightPattern::typeName( HighlightPattern::RANGE_PATTERN ), this ) );
-  checkboxes_.insert( make_pair( checkbox, HighlightPattern::RANGE_PATTERN ) );
-  layout()->addWidget( checkbox );
+  connect( this, SIGNAL( activated( const QString & ) ), SLOT( _typeChanged( const QString& ) ) );
   
 }
 
 //___________________________________________________
 void HighlightPatternType::setType( const HighlightPattern::Type& type )
 {
+
   Debug::Throw( "HighlightPatternType::setType.\n" );
-  for( CheckBoxMap::iterator iter = checkboxes_.begin(); iter != checkboxes_.end(); iter++ )
-  { iter->first->setChecked( iter->second == type ); }
+  for( int index = 0; index < QComboBox::count(); index++ )
+  {
+    if( itemText( index ) == HighlightPattern::typeName( type ) )
+    { setCurrentIndex( index ); }
+  }
+
 }
 
 //___________________________________________________
 HighlightPattern::Type HighlightPatternType::type( void ) const
 {
   Debug::Throw( "HighlightPatternType::type.\n" );
-  for( CheckBoxMap::const_iterator iter = checkboxes_.begin(); iter != checkboxes_.end(); iter++ )
-  { if( iter->first->isChecked() ) return iter->second; }
+  QString value( itemText( currentIndex() ) );
+  if( value == HighlightPattern::typeName( HighlightPattern::RANGE_PATTERN ) ) return HighlightPattern::RANGE_PATTERN;
+  else if(  value == HighlightPattern::typeName( HighlightPattern::KEYWORD_PATTERN ) ) return HighlightPattern::KEYWORD_PATTERN;
+  else assert(0);
   return HighlightPattern::UNDEFINED;
 }
 
 //___________________________________________________
-void HighlightPatternType::_typeChanged( QAbstractButton* button )
+void HighlightPatternType::_typeChanged( const QString& value )
 {
   Debug::Throw( "HighlightPatternType::_typeChanged.\n" );
-  if( !button->isChecked() ) return;
-  
-  CheckBoxMap::const_iterator iter( checkboxes_.find( button ) );
-  assert( iter != checkboxes_.end() );
-  emit typeChanged( iter->second );
+  if( value == HighlightPattern::typeName( HighlightPattern::RANGE_PATTERN ) ) emit typeChanged( HighlightPattern::RANGE_PATTERN );
+  else if(  value == HighlightPattern::typeName( HighlightPattern::KEYWORD_PATTERN ) ) emit typeChanged( HighlightPattern::KEYWORD_PATTERN );
+  else assert(0);
 }

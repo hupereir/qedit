@@ -82,6 +82,11 @@ namespace XML {
   //@{
   static const QString INDENT_PATTERN( "indent_pattern" );
   
+  static const QString INDENT_NOTHING( "nothing" );
+  static const QString INDENT_INCREMENT( "increment" );
+  static const QString INDENT_DECREMENT( "decrement" );
+  static const QString INDENT_DECREMENT_ALL( "decrement all" );
+
   //! indentation pattern rule
   static const QString RULE( "rule" );
   static const QString TYPE( "type" );

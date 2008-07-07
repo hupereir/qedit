@@ -85,6 +85,10 @@ class DocumentClass: public Counter
   const QString& name ( void ) const
   { return name_; }
   
+  //! name
+  void setName ( const QString& name )
+  { name_ = name; }
+ 
   //! file
   const File& file( void ) const
   { return file_; }
@@ -96,18 +100,34 @@ class DocumentClass: public Counter
   //! default
   const bool& isDefault( void ) const
   { return default_; }
+
+  //! default
+  void setIsDefault( const bool& value ) 
+  { default_ = value; }
   
   //! filename matching pattern
   const QRegExp& fileMatchingPattern( void ) const 
   { return file_pattern_; }
+
+  //! filename matching pattern
+  void setFileMatchingPattern( const QString& value ) 
+  { file_pattern_.setPattern( value ); }
   
   //! first line matching pattern
   const QRegExp& firstLineMatchingPattern( void ) const
   { return firstline_pattern_; }
   
+  //! first line matching pattern
+  void setFirstLineMatchingPattern( const QString& value )
+  { firstline_pattern_.setPattern( value ); }
+
   //! icon name
   const QString& icon( void ) const
   { return icon_; }
+
+  //! icon name
+  void setIcon( const QString& value )
+  { icon_ = value; }
   
   //! return true if document class match filename
   bool match( const File& file ) const;
@@ -116,6 +136,10 @@ class DocumentClass: public Counter
   const bool& wrap( void ) const
   { return wrap_; }
   
+  //! returns true if document class enables wrapping by default
+  void setWrap( const bool& value )
+  { wrap_ = value; }
+
   //! list of hightlight styles
   const HighlightStyle::Set& highlightStyles() const
   { return highlight_styles_; }
@@ -137,6 +161,9 @@ class DocumentClass: public Counter
   */
   const int& baseIndentation( void ) const
   { return base_indentation_; }
+  
+  void setBaseIndentation( const int& value )
+  { base_indentation_ = value; }
   
   //! list of text parenthesis
   const TextParenthesis::List& parenthesis() const

@@ -7,6 +7,9 @@ DEPENDPATH += . ../base ../base-qt
 
 HEADERS = \
   BlockDelimiter.h \
+  BlockDelimiterDialog.h \
+  BlockDelimiterList.h \
+  BlockDelimiterModel.h \
   DocumentClass.h \
   DocumentClassDialog.h \
   DocumentClassManager.h \
@@ -24,11 +27,23 @@ HEADERS = \
   IndentPattern.h \
   PatternLocation.h \
   TextMacro.h \
+  TextMacroDialog.h \
+  TextMacroList.h \
+  TextMacroModel.h \
+  TextMacroRuleDialog.h \
+  TextMacroRuleList.h \
+  TextMacroRuleModel.h \
   TextParenthesis.h \
+  TextParenthesisDialog.h \
+  TextParenthesisList.h \
+  TextParenthesisModel.h \
   XmlDef.h
 
 SOURCES = \
   BlockDelimiter.cpp \
+  BlockDelimiterDialog.cpp \
+  BlockDelimiterList.cpp \
+  BlockDelimiterModel.cpp \
   DocumentClass.cpp \
   DocumentClassDialog.cpp \
   DocumentClassManager.cpp \
@@ -45,4 +60,13 @@ SOURCES = \
   HighlightStyleDialog.cpp \
   IndentPattern.cpp \
   TextMacro.cpp \
-  TextParenthesis.cpp
+  TextMacroList.cpp \
+  TextMacroModel.cpp \
+  TextMacroDialog.cpp \
+  TextMacroRuleDialog.cpp \
+  TextMacroRuleList.cpp \
+  TextMacroRuleModel.cpp \
+  TextParenthesis.cpp \
+  TextParenthesisDialog.cpp \
+  TextParenthesisList.cpp \
+  TextParenthesisModel.cpp

@@ -32,6 +32,7 @@
 */
 
 #include <QPushButton>
+#include <QGroupBox>
 
 #include "Counter.h"
 #include "HighlightPatternModel.h"
@@ -40,7 +41,7 @@
 class TreeView;
 
 //! List box for HighlightPatterns
-class HighlightPatternList: public QWidget, public Counter
+class HighlightPatternList: public QGroupBox, public Counter
 {
   
   Q_OBJECT
@@ -86,6 +87,12 @@ class HighlightPatternList: public QWidget, public Counter
   
   //! restore selection
   void _restoreSelection( void );
+
+  //! move up selected task
+  void _up( void );
+  
+  //! move down selected task
+  void _down( void );
   
   private:
   
@@ -103,6 +110,12 @@ class HighlightPatternList: public QWidget, public Counter
   
   //! buttons
   QPushButton* remove_button_;
+ 
+  //! buttons
+  QPushButton* move_up_button_;
+  
+  //! buttons
+  QPushButton* move_down_button_;
   
   //! modification state
   bool modified_;

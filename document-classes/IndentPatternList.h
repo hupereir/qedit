@@ -1,5 +1,5 @@
-#ifndef HighlightStyleList_h
-#define HighlightStyleList_h
+#ifndef IndentPatternList_h
+#define IndentPatternList_h
 
 // $Id$
 /******************************************************************************
@@ -24,8 +24,8 @@
 *******************************************************************************/
  
 /*!
-  \file HighlightStyleList.h
-  \brief List box for HighlightStyles
+  \file IndentPatternList.h
+  \brief List box for IndentPatterns
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -35,12 +35,13 @@
 #include <QGroupBox>
 
 #include "Counter.h"
-#include "HighlightStyleModel.h"
+#include "IndentPatternModel.h"
+#include "DocumentClass.h"
 
 class TreeView;
 
-//! List box for HighlightStyles
-class HighlightStyleList: public QGroupBox, public Counter
+//! List box for IndentPatterns
+class IndentPatternList: public QGroupBox, public Counter
 {
   
   Q_OBJECT
@@ -48,15 +49,22 @@ class HighlightStyleList: public QGroupBox, public Counter
   public:
   
   //! constructor
-  HighlightStyleList( QWidget* parent = 0 );
+  IndentPatternList( QWidget* parent = 0 );
+ 
+  //! patterns
+  void setPatterns( const IndentPattern::List& );
   
   //! styles
-  void setStyles( const HighlightStyle::Set& );
+  void setStyles( const HighlightStyle::Set& styles )
+  {
+    Debug::Throw( "IndentPatternList::setStyles.\n" );
+    styles_ = styles; 
+  }
   
-  //! styles
-  HighlightStyle::Set styles( void );
+  //! Patterns
+  IndentPattern::List patterns( void );
   
-  //! true when styles are modified
+  //! true when Patterns are modified
   bool modified( void ) const
   { return modified_; }
   
@@ -65,13 +73,13 @@ class HighlightStyleList: public QGroupBox, public Counter
   //! update buttons enability
   void _updateButtons( void );
   
-  //! edit selected style
+  //! edit selected Pattern
   void _edit( void );
   
-  //! remove selected style
+  //! remove selected Pattern
   void _remove( void );
   
-  //! add new style
+  //! add new Pattern
   void _add( void );
   
   //! store selection
@@ -80,19 +88,34 @@ class HighlightStyleList: public QGroupBox, public Counter
   //! restore selection
   void _restoreSelection( void );
   
+  //! move up selected task
+  void _up( void );
+  
+  //! move down selected task
+  void _down( void );
+
   private:
+  
+  //! style set
+  HighlightStyle::Set styles_;
   
   //! list
   TreeView* list_;
   
   //! model
-  HighlightStyleModel model_;
+  IndentPatternModel model_;
   
   //! buttons
   QPushButton* edit_button_;
   
   //! buttons
   QPushButton* remove_button_;
+ 
+  //! buttons
+  QPushButton* move_up_button_;
+  
+  //! buttons
+  QPushButton* move_down_button_;
   
   //! modification state
   bool modified_;

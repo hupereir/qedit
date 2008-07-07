@@ -1,5 +1,5 @@
-#ifndef HighlightPatternType_h
-#define HighlightPatternType_h
+#ifndef IndentPatternType_h
+#define IndentPatternType_h
 
 // $Id$
 
@@ -26,7 +26,7 @@
 
 
 /*!
-   \file HighlightPatternType.h
+   \file IndentPatternType.h
    \brief highlight pattern type selection
    \author Hugo Pereira
    \version $Revision$
@@ -38,10 +38,10 @@
 #include <map>
 
 #include "Counter.h"
-#include "HighlightPattern.h"
+#include "IndentPattern.h"
 
 //! highlight pattern type selection
-class HighlightPatternType: public QComboBox, public Counter
+class IndentPatternType: public QComboBox, public Counter
 {
 
   //! Qt object 
@@ -50,18 +50,18 @@ class HighlightPatternType: public QComboBox, public Counter
   public:
 
   //! constructor
-  HighlightPatternType( QWidget* parent );
+  IndentPatternType( QWidget* parent );
 
   //! set checkboxes from from
-  void setType( const HighlightPattern::Type& type );
+  void setType( const IndentPattern::Type& type );
 
   //! get format
-  HighlightPattern::Type type( void ) const;
+  IndentPattern::Type type( void ) const;
 
   signals:
   
   //! highlight pattern type changed
-  void typeChanged( HighlightPattern::Type );
+  void typeChanged( IndentPattern::Type );
   
   private slots:
   

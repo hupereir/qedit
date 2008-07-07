@@ -1,5 +1,5 @@
-#ifndef _DocumentClassDialog_h_
-#define _DocumentClassDialog_h_
+#ifndef TextMacroModel_h
+#define TextMacroModel_h
 
 // $Id$
 
@@ -25,67 +25,67 @@
  *******************************************************************************/
 
 /*!
-  \file DocumentClassDialog.h
-  \brief Syntax highlighting style editing dialog
-  \author Hugo Pereira
+  \file    TextMacroModel.h
+  \brief   Stores file information for display in lists
+  \author  Hugo Pereira
   \version $Revision$
-  \date $Date$
+  \date    $Date$
 */
 
-#include "TabbedDialog.h"
-#include "DocumentClass.h"
+#include "Counter.h"
+#include "ListModel.h"
+#include "TextMacro.h"
 
-class DocumentClassConfiguration;
-class HighlightStyleList; 
-class HighlightPatternList;
-class TextParenthesisList;
-class BlockDelimiterList;
-class TextMacroList;
-class IndentPatternList;
-
-//! Syntax highlighting style editing dialog
-class DocumentClassDialog: public TabbedDialog
+//! TextMacro model. Stores file information for display in lists
+class TextMacroModel : public ListModel<TextMacro>
 {
   
-  Q_OBJECT
-  
   public:
-  
+    
   //! constructor
-  DocumentClassDialog( QWidget* parent );
+  TextMacroModel(QObject *parent = 0):
+    ListModel<TextMacro>(parent)  
+  {}
   
-  //! style
-  void setDocumentClass( const DocumentClass& );
+  //! destructor
+  virtual ~TextMacroModel()
+  {}
   
-  //! true if any document class attribute has been modified
-  bool modified( void );
+  //! number of columns
+  enum { n_columns = 2 };
+
+ //! column type enumeration
+  enum ColumnType { 
+    NAME,
+    ACCELERATOR,
+  };
+
+  //!@name methods reimplemented from base class
+  //@{
   
+  // return data for a given index
+  virtual QVariant data(const QModelIndex &index, int role) const;
+   
+  //! header data
+  virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+  
+  //! number of columns for a given index
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const
+  { return n_columns; }
+
+  //@}
+  
+  protected:
+  
+  //! sort
+  virtual void _sort( int column, Qt::SortOrder order = Qt::AscendingOrder )
+  { return; }
+   
   private:
-
-  //! document class configuration
-  DocumentClassConfiguration* document_class_configuration_;
   
-  //! highlight style list
-  HighlightStyleList* highlight_style_list_;
-  
-  //! highlight pattern list
-  HighlightPatternList* highlight_pattern_list_;
-  
-  //! text parenthesis list
-  TextParenthesisList* text_parenthesis_list_;
+  //! list column names
+  static const char* column_titles_[n_columns];
 
-  //! block delimiter list
-  BlockDelimiterList* block_delimiter_list_;
-
-  //! block delimiter list
-  IndentPatternList* indent_pattern_list_;
-
-  //! block delimiter list
-  TextMacroList* text_macro_list_;
-
-  //! modification state
-  bool modified_;
-  
 };
 
 #endif

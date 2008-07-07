@@ -55,26 +55,69 @@ class TextMacro: public Counter
   //! style list
   typedef std::vector<TextMacro> List;
 
+  //! constructor
+  TextMacro( void ):
+    Counter( "TextMacro" ),
+    id_( 0 ),
+    is_separator_( true )
+    {}
+  
   //! constructor from DomElement
-  TextMacro( const QDomElement& element = QDomElement() );
+  TextMacro( const QDomElement& );
 
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
+  
+  //! Id
+  const unsigned int& id( void ) const
+  { return id_; }
 
+  //! set id  
+  void setId( const int& id )
+  { id_ = id; }
+
+  //! equal to operator
+  bool operator == ( const TextMacro& macro ) const
+  { return id() == macro.id(); }
+
+  //! less than operator
+  bool operator < ( const TextMacro& macro ) const
+  { return id() < macro.id(); }
+
+  //! reset counter
+  static void resetCounter( void )
+  { id_counter_ = 0; }
+    
   //! name
   virtual const QString& name( void ) const
   { return name_; }
+
+  //! name
+  virtual void setName( const QString& name )
+  { name_ = name; }
+
+  //! accelerator
+  virtual const QString& accelerator( void ) const
+  { return accelerator_; }
+
+  //! accelerator
+  virtual void setAccelerator( const QString& value )
+  { accelerator_ = value; }
 
   //! separator flag
   const bool& isSeparator( void ) const
   { return is_separator_; }
 
+  //! separator
+  virtual void setIsSeparator( const bool& value = true )
+  { is_separator_ = value; }
+  
   //! modify text passed as argument. Return true if text is modified
   bool processText( QString& text ) const
   {
     if( isSeparator() ) return false;
     bool changed( false );
-    for( std::vector<Rule>::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
+    for( Rule::List::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
     { changed |= iter->processText( text ); }
     return changed;
   }
@@ -84,7 +127,7 @@ class TextMacro: public Counter
   {
     if( isSeparator() ) return true;
     if( rules_.empty() ) return false;
-    for( std::vector<Rule>::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
+    for( Rule::List::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
     { if( !iter->isValid() ) return false; }
     return true;
   }
@@ -115,23 +158,41 @@ class TextMacro: public Counter
   QAction* action( void ) const
   {
     QAction* out( new QAction( name(), 0 ) );
-    if( !_accelerator().isEmpty() ) out->setShortcut( QKeySequence( _accelerator() ) );
+    if( !accelerator().isEmpty() ) out->setShortcut( QKeySequence( accelerator() ) );
     return out;
   }
   
-  protected:
-
   //! used to store regular expression and corresponding replacement text
   class Rule: public Counter
   {
 
     public:
 
+    typedef std::vector<Rule> List;
+    
     //! constructor
-    Rule( const QDomElement& );
+    Rule( const QDomElement& = QDomElement() );
 
     //! dom element
     QDomElement domElement( QDomDocument& parent ) const;
+
+    //! equal to operator
+    bool operator == ( const Rule& rule ) const
+    { 
+      return
+        pattern().pattern() == rule.pattern().pattern() &&
+        replaceText() == rule.replaceText() &&
+        split() == rule.split();
+    }
+      
+    //! less than operator
+    bool operator < ( const Rule& rule ) const
+    { 
+      if( pattern().pattern() != rule.pattern().pattern() ) return pattern().pattern() < rule.pattern().pattern();
+      if( replaceText() != rule.replaceText() ) return replaceText() < rule.replaceText();
+      if( split() != rule.split() ) return split() < rule.split();
+      return false;
+    }
 
     //! validity
     bool isValid( void ) const
@@ -140,31 +201,34 @@ class TextMacro: public Counter
     //! modify text passed as argument. Return true if text is modified
     bool processText( QString& text ) const;
 
-    private:
-
     //! pattern
-    const QRegExp& _pattern( void ) const
+    const QRegExp& pattern( void ) const
     { return pattern_; }
 
     //! parent name
-    virtual void _setPattern( const QString& pattern )
+    virtual void setPattern( const QString& pattern )
     { pattern_.setPattern( pattern ); }
 
     //! replacemenet text
-    virtual const QString& _replaceText( void ) const
+    virtual const QString& replaceText( void ) const
     { return replace_text_; }
 
     //! set replacement text
-    virtual void _setReplaceText( const QString& text )
+    virtual void setReplaceText( const QString& text )
     { replace_text_ = text; }
 
+    bool split() const
+    {  return !no_splitting_; }
+    
     //! splitting flag
     /*! 
       it is used to decide if the text should be splitted 
       line by line and the rule applied independently on each line
     */
-    void _setNoSplitting()
+    void setNoSplitting()
     {  no_splitting_ = true; }
+
+    private:
 
     //!@name flags
     //@{
@@ -185,27 +249,25 @@ class TextMacro: public Counter
 
   };
 
+    //! rules 
+  const Rule::List& rules( void ) const
+  { return rules_; }
+  
+  //! rules
+  void setRules( const Rule::List& rules ) 
+  { rules_ = rules; }
+
   //! add a rule
-  void _addRule( const Rule& rule )
+  void addRule( const Rule& rule )
   { rules_.push_back( rule ); }
 
-  //! name
-  virtual void _setName( const QString& name )
-  { name_ = name; }
-
-  //! accelerator
-  virtual const QString& _accelerator( void ) const
-  { return accelerator_; }
-
-  //! accelerator
-  virtual void _setAccelerator( const QString& value )
-  { accelerator_ = value; }
-
-  //! separator
-  virtual void _setIsSeparator()
-  { is_separator_ = true; }
-
   private:
+ 
+  //! unique id counter
+  static unsigned int id_counter_;
+  
+  //! unique id
+  unsigned int id_; 
 
   //! macro name
   QString name_;
@@ -217,7 +279,7 @@ class TextMacro: public Counter
   bool is_separator_;
 
   //! list of replacement
-  std::vector< Rule > rules_;
+  Rule::List rules_;
 
 };
 #endif

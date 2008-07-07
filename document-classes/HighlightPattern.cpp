@@ -134,7 +134,6 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
   return out;
 }
 
-
 //____________________________________________________________
 bool HighlightPattern::differs( const HighlightPattern& pattern ) const
 { 

@@ -1,5 +1,5 @@
-#ifndef HighlightStyleList_h
-#define HighlightStyleList_h
+#ifndef IndentPatternRuleList_h
+#define IndentPatternRuleList_h
 
 // $Id$
 /******************************************************************************
@@ -24,8 +24,8 @@
 *******************************************************************************/
  
 /*!
-  \file HighlightStyleList.h
-  \brief List box for HighlightStyles
+  \file IndentPatternRuleList.h
+  \brief List box for IndentPatternRules
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -35,12 +35,13 @@
 #include <QGroupBox>
 
 #include "Counter.h"
-#include "HighlightStyleModel.h"
+#include "IndentPatternRuleModel.h"
+#include "DocumentClass.h"
 
 class TreeView;
 
-//! List box for HighlightStyles
-class HighlightStyleList: public QGroupBox, public Counter
+//! List box for IndentPatternRules
+class IndentPatternRuleList: public QGroupBox, public Counter
 {
   
   Q_OBJECT
@@ -48,15 +49,15 @@ class HighlightStyleList: public QGroupBox, public Counter
   public:
   
   //! constructor
-  HighlightStyleList( QWidget* parent = 0 );
+  IndentPatternRuleList( QWidget* parent = 0 );
+ 
+  //! rule
+  void setRules( const IndentPattern::Rule::List& );
   
-  //! styles
-  void setStyles( const HighlightStyle::Set& );
+  //! Rule
+  IndentPattern::Rule::List rules( void );
   
-  //! styles
-  HighlightStyle::Set styles( void );
-  
-  //! true when styles are modified
+  //! true when Rule are modified
   bool modified( void ) const
   { return modified_; }
   
@@ -65,13 +66,13 @@ class HighlightStyleList: public QGroupBox, public Counter
   //! update buttons enability
   void _updateButtons( void );
   
-  //! edit selected style
+  //! edit selected Pattern
   void _edit( void );
   
-  //! remove selected style
+  //! remove selected Pattern
   void _remove( void );
   
-  //! add new style
+  //! add new Pattern
   void _add( void );
   
   //! store selection
@@ -86,14 +87,14 @@ class HighlightStyleList: public QGroupBox, public Counter
   TreeView* list_;
   
   //! model
-  HighlightStyleModel model_;
+  IndentPatternRuleModel model_;
   
   //! buttons
   QPushButton* edit_button_;
   
   //! buttons
   QPushButton* remove_button_;
-  
+
   //! modification state
   bool modified_;
   

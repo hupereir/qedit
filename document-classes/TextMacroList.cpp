@@ -22,8 +22,8 @@
 *******************************************************************************/
  
 /*!
-  \file HighlightPatternList.h
-  \brief List box for HighlightPatterns
+  \file TextMacroList.h
+  \brief List box for TextMacros
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -32,20 +32,20 @@
 #include <QHeaderView>
 #include <QLayout>
 
-#include "HighlightPatternDialog.h"
-#include "HighlightPatternList.h"
+#include "TextMacroDialog.h"
+#include "TextMacroList.h"
 #include "QtUtil.h"
 #include "TreeView.h"
 
 using namespace std;
 
 //____________________________________________________
-HighlightPatternList::HighlightPatternList( QWidget* parent ):
-  QGroupBox( "Highlight patterns", parent ),
-  Counter( "HighlightPatternList" ),
+TextMacroList::TextMacroList( QWidget* parent ):
+  QGroupBox( "Macros", parent ),
+  Counter( "TextMacroList" ),
   modified_( false )
 {
-  Debug::Throw( "HighlightPatternList::HighlightPatternList.\n" );
+  Debug::Throw( "TextMacroList::TextMacroList.\n" );
 
   QHBoxLayout* h_layout;
   h_layout = new QHBoxLayout();
@@ -72,17 +72,21 @@ HighlightPatternList::HighlightPatternList( QWidget* parent ):
 
   QPushButton* button;
   v_layout->addWidget( button = new QPushButton( "&Add", this ) );
-  button->setToolTip( "Add a new highlight pattern to the list" );
+  button->setToolTip( "Add a new macro to the list" );
   connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
+
+  v_layout->addWidget( button = new QPushButton( "&Add separator", this ) );
+  button->setToolTip( "Add separator to the list" );
+  connect( button, SIGNAL( clicked() ), SLOT( _addSeparator() ) );
   
   v_layout->addWidget( edit_button_ = new QPushButton( "&Edit", this ) );
-  edit_button_->setToolTip( "Edit selected highlight pattern" );
+  edit_button_->setToolTip( "Edit selected macro" );
   connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
   v_layout->addWidget( remove_button_ = new QPushButton( "&Remove", this ) );
-  remove_button_->setToolTip( "Remove selected highlight pattern" );
+  remove_button_->setToolTip( "Remove selected macro" );
   connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
-  
+    
   v_layout->addWidget( button = new QPushButton( "Move &up", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _up() ) );
   button->setToolTip( "move up selected items" );
@@ -92,7 +96,6 @@ HighlightPatternList::HighlightPatternList( QWidget* parent ):
   connect( button, SIGNAL( clicked() ), SLOT( _down() ) );
   button->setToolTip( "move down selected items" );  
   move_down_button_ = button;
-  
   v_layout->addStretch();
   
   _updateButtons();
@@ -100,29 +103,29 @@ HighlightPatternList::HighlightPatternList( QWidget* parent ):
 }
 
 //____________________________________________________
-void HighlightPatternList::setPatterns( const HighlightPattern::List& patterns ) 
+void TextMacroList::setMacros( const TextMacro::List& macros ) 
 {
 
-  Debug::Throw( "HighlightPatternList::setPatterns.\n" );
-  model_.set( patterns );
+  Debug::Throw( "TextMacroList::setMacros.\n" );
+  model_.set( macros );
   list_->resizeColumns();
   modified_ = false;
   
 }
 
 //____________________________________________________
-HighlightPattern::List HighlightPatternList::patterns( void ) 
+TextMacro::List TextMacroList::macros( void ) 
 {
   
-  Debug::Throw( "HighlightPatternList::patterns.\n" );
+  Debug::Throw( "TextMacroList::macros.\n" );
   return model_.get();
   
 }
 
 //____________________________________________________
-void HighlightPatternList::_updateButtons( void )
+void TextMacroList::_updateButtons( void )
 {
-  Debug::Throw( "HighlightPatternList::_updateButtons.\n" );
+  Debug::Throw( "TextMacroList::_updateButtons.\n" );
   bool has_selection( !list_->selectionModel()->selectedRows().empty() );
   edit_button_->setEnabled( has_selection );
   remove_button_->setEnabled( has_selection );
@@ -131,35 +134,31 @@ void HighlightPatternList::_updateButtons( void )
 }
 
 //____________________________________________________
-void HighlightPatternList::_add( void )
+void TextMacroList::_add( void )
 {
-  Debug::Throw( "HighlightPatternList::_add.\n" );
-  
-  // get set of highlight patterns to ensure name unicity
-  HighlightPatternModel::List patterns( model_.get() );
+  Debug::Throw( "TextMacroList::_add.\n" );
    
-  HighlightPatternDialog dialog( this );
-  dialog.setStyles( styles_ );
-  dialog.setPatterns( patterns );
-  while( 1 )
-  {
-    if( dialog.exec() == QDialog::Rejected ) return;
-    HighlightPattern pattern( dialog.pattern() );
-    if( pattern.name().isEmpty() || std::find( patterns.begin(), patterns.end(), pattern ) != patterns.end() ) 
-    {
-      QtUtil::infoDialog( this, "Invalid pattern name" );
-    } else {
-      model_.add( pattern );
-      break; 
-    }
-  }
+  TextMacroDialog dialog( this );
+  if( dialog.exec() == QDialog::Rejected ) return;
+  model_.add( dialog.macro() );
    
 }
 
 //____________________________________________________
-void HighlightPatternList::_edit( void )
+void TextMacroList::_addSeparator( void )
 {
-  Debug::Throw( "HighlightPatternList::_edit.\n" );
+  Debug::Throw( "TextMacroList::_addSeparator.\n" );
+   
+  TextMacro macro;
+  macro.setIsSeparator();
+  model_.add( macro );
+   
+}
+
+//____________________________________________________
+void TextMacroList::_edit( void )
+{
+  Debug::Throw( "TextMacroList::_edit.\n" );
  
   // retrieve selected items
   QModelIndexList selection( list_->selectionModel()->selectedRows() );
@@ -168,36 +167,33 @@ void HighlightPatternList::_edit( void )
     return;
   }
 
-  HighlightPatternModel::List patterns( model_.get() );
+  TextMacroModel::List macro( model_.get() );
   for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
   {
   
-    HighlightPattern old_pattern( model_.get( *iter ) );
+    TextMacro old_macro( model_.get( *iter ) );
 
-    HighlightPatternDialog dialog( this );
-    dialog.setStyles( styles_ );
-    dialog.setPatterns( patterns );
-    dialog.setPattern( old_pattern );
+    TextMacroDialog dialog( this );
+    dialog.setMacro( old_macro );
     if( dialog.exec() == QDialog::Rejected ) continue;
     
-    HighlightPattern pattern( dialog.pattern() );
-    if( pattern.differs( old_pattern ) ) 
-    { 
-      model_.replace( *iter, pattern ); 
-      modified_ = true;
-    }
+    TextMacro macro( dialog.macro() );
+    if( macro == old_macro ) continue; 
+    
+    model_.replace( *iter, macro ); 
+    modified_ = true;
 
   }
   
 }
 
 //____________________________________________________
-void HighlightPatternList::_remove( void )
+void TextMacroList::_remove( void )
 {
-  Debug::Throw( "HighlightPatternList::_remove.\n" );
+  Debug::Throw( "TextMacroList::_remove.\n" );
 
   // retrieve selected items; make sure they do not include the navigator
-  HighlightPatternModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+  TextMacroModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() ) {
     QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
     return;
@@ -217,7 +213,7 @@ void HighlightPatternList::_remove( void )
 }
 
 //________________________________________
-void HighlightPatternList::_storeSelection( void )
+void TextMacroList::_storeSelection( void )
 {   
   // clear
   model_.clearSelectedIndexes();
@@ -234,7 +230,7 @@ void HighlightPatternList::_storeSelection( void )
 }
 
 //________________________________________
-void HighlightPatternList::_restoreSelection( void )
+void TextMacroList::_restoreSelection( void )
 {
 
   // retrieve indexes
@@ -252,11 +248,11 @@ void HighlightPatternList::_restoreSelection( void )
 }
 
 //_________________________________________________________
-void HighlightPatternList::_up( void )
+void TextMacroList::_up( void )
 {
 
-  Debug::Throw( "HighlightPatternList::_up.\n" );  
-  HighlightPattern::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+  Debug::Throw( "TextMacroList::_up.\n" );  
+  TextMacro::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() )
   {
     QtUtil::infoDialog( this, "no item selected. <Move up> canceled" );
@@ -265,12 +261,12 @@ void HighlightPatternList::_up( void )
   
   // retrieve selected indexes in list and store in model
   QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-  HighlightPattern::List selected_attributes( model_.get( selected_indexes ) );
+  TextMacro::List selected_attributes( model_.get( selected_indexes ) );
   
-  HighlightPattern::List current_attributes( patterns() );
-  HighlightPattern::List new_attributes;
+  TextMacro::List current_attributes( macros() );
+  TextMacro::List new_attributes;
   
-  for( HighlightPattern::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); iter++ )
+  for( TextMacro::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); iter++ )
   {
 
     // check if new list is not empty, current index is selected and last index is not.
@@ -281,7 +277,7 @@ void HighlightPatternList::_up( void )
       selected_indexes.indexOf( model_.index( new_attributes.back() ) ) != -1 
       ) )
     { 
-      HighlightPattern last( new_attributes.back() );
+      TextMacro last( new_attributes.back() );
       new_attributes.pop_back();
       new_attributes.push_back( *iter );
       new_attributes.push_back( last );
@@ -293,7 +289,7 @@ void HighlightPatternList::_up( void )
   
   // restore selection
   list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  for( HighlightPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
+  for( TextMacro::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
   { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
   
   return;
@@ -301,11 +297,11 @@ void HighlightPatternList::_up( void )
 }
 
 //_________________________________________________________
-void HighlightPatternList::_down( void )
+void TextMacroList::_down( void )
 {
   
-  Debug::Throw( "HighlightPatternList::_down.\n" );  
-  HighlightPattern::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+  Debug::Throw( "TextMacroList::_down.\n" );  
+  TextMacro::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() )
   {
     QtUtil::infoDialog( this, "no item selected. <Move down> canceled" );
@@ -314,12 +310,12 @@ void HighlightPatternList::_down( void )
    
   // retrieve selected indexes in list and store in model
   QModelIndexList selected_indexes( list_->selectionModel()->selectedIndexes() );
-  HighlightPattern::List selected_attributes( model_.get( selected_indexes ) );
+  TextMacro::List selected_attributes( model_.get( selected_indexes ) );
   
-  HighlightPattern::List current_attributes( patterns() );
-  HighlightPattern::List new_attributes;
+  TextMacro::List current_attributes( macros() );
+  TextMacro::List new_attributes;
   
-  for( HighlightPattern::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); iter++ )
+  for( TextMacro::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); iter++ )
   {
    
     // check if new list is not empty, current index is selected and last index is not.
@@ -331,7 +327,7 @@ void HighlightPatternList::_down( void )
       ) )
     { 
       
-      HighlightPattern last( new_attributes.back() );
+      TextMacro last( new_attributes.back() );
       new_attributes.pop_back();
       new_attributes.push_back( *iter );
       new_attributes.push_back( last );
@@ -339,11 +335,11 @@ void HighlightPatternList::_down( void )
     } else new_attributes.push_back( *iter );
   }
     
-  model_.set( HighlightPattern::List( new_attributes.rbegin(), new_attributes.rend() ) );
+  model_.set( TextMacro::List( new_attributes.rbegin(), new_attributes.rend() ) );
   
   // restore selection
   list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  for( HighlightPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
+  for( TextMacro::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
   { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
       
   return;

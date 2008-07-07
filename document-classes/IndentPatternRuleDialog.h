@@ -1,5 +1,5 @@
-#ifndef _DocumentClassDialog_h_
-#define _DocumentClassDialog_h_
+#ifndef _IndentPatternRuleDialog_h_
+#define _IndentPatternRuleDialog_h_
 
 // $Id$
 
@@ -25,66 +25,46 @@
  *******************************************************************************/
 
 /*!
-  \file DocumentClassDialog.h
-  \brief Syntax highlighting style editing dialog
+  \file IndentPatternRuleDialog.h
+  \brief Syntax highlighting delimiter editing dialog
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
 */
 
-#include "TabbedDialog.h"
-#include "DocumentClass.h"
+#include <QCheckBox>
+#include <QSpinBox>
 
-class DocumentClassConfiguration;
-class HighlightStyleList; 
-class HighlightPatternList;
-class TextParenthesisList;
-class BlockDelimiterList;
-class TextMacroList;
-class IndentPatternList;
+#include "CustomDialog.h"
+#include "IndentPattern.h"
 
-//! Syntax highlighting style editing dialog
-class DocumentClassDialog: public TabbedDialog
+class LineEditor;
+
+//! Syntax highlighting delimiter editing dialog
+class IndentPatternRuleDialog: public CustomDialog
 {
-  
-  Q_OBJECT
   
   public:
   
   //! constructor
-  DocumentClassDialog( QWidget* parent );
+  IndentPatternRuleDialog( QWidget* parent );
+
+  //! delimiter
+  void setRule( const IndentPattern::Rule& );
   
-  //! style
-  void setDocumentClass( const DocumentClass& );
-  
-  //! true if any document class attribute has been modified
-  bool modified( void );
-  
+  //! delimiter
+  IndentPattern::Rule rule( void );
+   
   private:
-
-  //! document class configuration
-  DocumentClassConfiguration* document_class_configuration_;
+     
+  //! regexp editor
+  LineEditor* regexp_editor_;
   
-  //! highlight style list
-  HighlightStyleList* highlight_style_list_;
+  //! paragraph spinbox
+  QSpinBox* paragraph_spinbox_;
   
-  //! highlight pattern list
-  HighlightPatternList* highlight_pattern_list_;
-  
-  //! text parenthesis list
-  TextParenthesisList* text_parenthesis_list_;
-
-  //! block delimiter list
-  BlockDelimiterList* block_delimiter_list_;
-
-  //! block delimiter list
-  IndentPatternList* indent_pattern_list_;
-
-  //! block delimiter list
-  TextMacroList* text_macro_list_;
-
-  //! modification state
-  bool modified_;
+  //! case sensitivity
+  QCheckBox* case_checkbox_;
   
 };
 

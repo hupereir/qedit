@@ -57,18 +57,48 @@ class TextParenthesis: public Counter
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
 
-  //! oppening parenthesis
+  //! equal to operator
+  bool operator == ( const TextParenthesis& parenthesis ) const
+  { 
+    return 
+      first() == parenthesis.first() &&
+      second() == parenthesis.second() &&
+      regexp() == parenthesis.regexp();
+  }
+
+  //! less than operator
+  bool operator < ( const TextParenthesis& parenthesis ) const
+  { 
+    if( first() != parenthesis.first() ) return first() < parenthesis.first();
+    if( second() != parenthesis.second() ) return second() < parenthesis.second();
+    if( regexp().pattern() != parenthesis.regexp().pattern() ) return regexp().pattern() < parenthesis.regexp().pattern();
+    return false;
+  }
+  
+  //! block start
   const QString& first() const
   { return first_; }
 
-  //! closing parenthesis
+  //! first
+  void setFirst( const QString& value )
+  { first_ = value; }
+
+  //! block end
   const QString& second() const
   { return second_; }
+  
+  //! second
+  void setSecond( const QString& value )
+  { second_ = value; }
 
-  //! regExp that match either of the two parenthesis
+  //! regExp that match either block start or end
   const QRegExp& regexp() const
   { return regexp_; }
   
+  //! regext
+  void setRegexp( const QString& value )
+  { regexp_.setPattern( value ); }
+
   //! used to find parenthesis for which first character match
   class MatchFTor
   {

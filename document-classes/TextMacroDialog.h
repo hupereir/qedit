@@ -1,5 +1,5 @@
-#ifndef _DocumentClassDialog_h_
-#define _DocumentClassDialog_h_
+#ifndef _TextMacroDialog_h_
+#define _TextMacroDialog_h_
 
 // $Id$
 
@@ -25,66 +25,46 @@
  *******************************************************************************/
 
 /*!
-  \file DocumentClassDialog.h
-  \brief Syntax highlighting style editing dialog
+  \file TextMacroDialog.h
+  \brief Syntax highlighting macro editing dialog
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
 */
 
-#include "TabbedDialog.h"
-#include "DocumentClass.h"
+#include "CustomDialog.h"
+#include "TextMacro.h"
 
-class DocumentClassConfiguration;
-class HighlightStyleList; 
-class HighlightPatternList;
-class TextParenthesisList;
-class BlockDelimiterList;
-class TextMacroList;
-class IndentPatternList;
+class LineEditor;
+class TextMacroRuleList;
 
-//! Syntax highlighting style editing dialog
-class DocumentClassDialog: public TabbedDialog
+//! Syntax highlighting macro editing dialog
+class TextMacroDialog: public CustomDialog
 {
-  
-  Q_OBJECT
   
   public:
   
   //! constructor
-  DocumentClassDialog( QWidget* parent );
+  TextMacroDialog( QWidget* parent );
+
+  //! macro
+  void setMacro( const TextMacro& macro );
   
-  //! style
-  void setDocumentClass( const DocumentClass& );
-  
-  //! true if any document class attribute has been modified
-  bool modified( void );
-  
+  //! macro
+  TextMacro macro( void );
+   
   private:
-
-  //! document class configuration
-  DocumentClassConfiguration* document_class_configuration_;
   
-  //! highlight style list
-  HighlightStyleList* highlight_style_list_;
+  TextMacro macro_;
+     
+  //! name
+  LineEditor* name_editor_;
   
-  //! highlight pattern list
-  HighlightPatternList* highlight_pattern_list_;
+  //! accelerator
+  LineEditor* accelerator_editor_;
   
-  //! text parenthesis list
-  TextParenthesisList* text_parenthesis_list_;
-
-  //! block delimiter list
-  BlockDelimiterList* block_delimiter_list_;
-
-  //! block delimiter list
-  IndentPatternList* indent_pattern_list_;
-
-  //! block delimiter list
-  TextMacroList* text_macro_list_;
-
-  //! modification state
-  bool modified_;
+  //! rules
+  TextMacroRuleList* rule_list_;
   
 };
 

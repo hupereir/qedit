@@ -73,23 +73,20 @@ HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
   grid_layout->addWidget( style_combobox_ = new QComboBox( this ) );
   style_combobox_->setEditable( false );
 
-  // options and type
-  mainLayout().addWidget( pattern_options_ = new HighlightPatternOptions( this ) );
-  mainLayout().addWidget( pattern_type_ = new HighlightPatternType( this ) );  
-  connect( pattern_type_, SIGNAL( typeChanged( HighlightPattern::Type ) ), SLOT( _updateEditors( HighlightPattern::Type ) ) );
+  // type
+  grid_layout->addWidget( new QLabel( "Type: ", this ) );
+  grid_layout->addWidget( pattern_type_ = new HighlightPatternType( this ) );  
   
-  // regular expression
-  grid_layout = new CustomGridLayout();
-  grid_layout->setSpacing( 5 );
-  grid_layout->setMargin( 0 );
-  grid_layout->setMaxCount( 2 );
-  mainLayout().addLayout( grid_layout );  
-  
+  // regular expressions
   grid_layout->addWidget( new QLabel( "Regular expression to match: ", this ) );
   grid_layout->addWidget( keyword_regexp_editor_ = new LineEditor( this ) ); 
 
   grid_layout->addWidget( end_regexp_label_ = new QLabel( "Ending regular expression: ", this ) );
   grid_layout->addWidget( end_regexp_editor_ = new LineEditor( this ) ); 
+
+  // options
+  mainLayout().addWidget( pattern_options_ = new HighlightPatternOptions( this ) );
+  connect( pattern_type_, SIGNAL( typeChanged( HighlightPattern::Type ) ), SLOT( _updateEditors( HighlightPattern::Type ) ) );
   
   // comments
   mainLayout().addWidget( new QLabel( "Comments: ", this ) );
@@ -167,24 +164,24 @@ HighlightPattern HighlightPatternDialog::pattern( void )
 { 
   
   Debug::Throw( "HighlightPatternDialog::pattern.\n" );
-  pattern_.setName( qPrintable( name_editor_->text() ) );
+  pattern_.setName( name_editor_->text() );
   
   QString parent( parent_combobox_->itemText( parent_combobox_->currentIndex() ) );
   pattern_.setParent( parent == HighlightPattern::no_parent_pattern_ ? "":parent );
 
   // style
-  set<HighlightStyle>::iterator style_iter ( styles_.find( HighlightStyle( qPrintable( style_combobox_->itemText( style_combobox_->currentIndex() ) ) ) ) );
+  set<HighlightStyle>::iterator style_iter ( styles_.find( HighlightStyle( style_combobox_->itemText( style_combobox_->currentIndex() ) ) ) );
   if( style_iter != styles_.end() ) pattern_.setStyle( *style_iter );
   else QtUtil::infoDialog( this, "invalid style name" );
   
   pattern_.setFlags( pattern_options_->options() );
   pattern_.setType( pattern_type_->type() );
   
-  pattern_.setKeyword( qPrintable( keyword_regexp_editor_->text() ) );
+  pattern_.setKeyword( keyword_regexp_editor_->text() );
   if( pattern_.type() == HighlightPattern::RANGE_PATTERN ) 
-  { pattern_.setEnd( qPrintable( end_regexp_editor_->text() ) ); }
+  { pattern_.setEnd( end_regexp_editor_->text() ); }
   
-  pattern_.setComments( qPrintable( comments_editor_->toPlainText() ) );
+  pattern_.setComments( comments_editor_->toPlainText() );
   
   return pattern_;
   

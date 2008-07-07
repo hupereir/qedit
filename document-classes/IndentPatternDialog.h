@@ -1,5 +1,5 @@
-#ifndef _HighlightPatternDialog_h_
-#define _HighlightPatternDialog_h_
+#ifndef _IndentPatternDialog_h_
+#define _IndentPatternDialog_h_
 
 // $Id$
 
@@ -25,88 +25,54 @@
  *******************************************************************************/
 
 /*!
-  \file HighlightPatternDialog.h
+  \file IndentPatternDialog.h
   \brief Syntax highlighting pattern editing dialog
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
 */
 
-#include <QComboBox>
-#include <QLabel>
+#include <QSpinBox>
 
 #include "CustomDialog.h"
-#include "HighlightPattern.h"
-#include "HighlightStyle.h"
+#include "IndentPattern.h"
 
 class LineEditor;
-class TextEditor;
-class HighlightPatternOptions;
-class HighlightPatternType;
+class IndentPatternType;
+class IndentPatternRuleList;
 
 //! Syntax highlighting pattern editing dialog
-class HighlightPatternDialog: public CustomDialog
+class IndentPatternDialog: public CustomDialog
 {
-  
-  //! qt object
-  Q_OBJECT
   
   public:
   
   //! constructor
-  HighlightPatternDialog( QWidget* parent );
+  IndentPatternDialog( QWidget* parent );
  
-  //! patterns
-  void setPatterns( const HighlightPattern::List& );
-
-  //! styles
-  void setStyles( const HighlightStyle::Set& );
-
   //! pattern
-  void setPattern( const HighlightPattern& pattern );
+  void setPattern( const IndentPattern& pattern );
   
   //! pattern
-  HighlightPattern pattern( void );
- 
-  private slots:
-  
-  //! update editors depending on type
-  void _updateEditors( HighlightPattern::Type );
-  
+  IndentPattern pattern( void );
+   
   private:
-    
-  //! highlight styles
-  HighlightStyle::Set styles_;
   
   //! initial pattern (to avoid duplication of ids)
-  HighlightPattern pattern_;
+  IndentPattern pattern_;
   
   //! name editor
   LineEditor* name_editor_;
   
-  //! keyword regexp editor
-  LineEditor* keyword_regexp_editor_;
-  
-  //! end regexp label
-  QLabel* end_regexp_label_;
-  
-  //! end regexp edit
-  LineEditor* end_regexp_editor_;
-
-  //! options
-  HighlightPatternOptions* pattern_options_;
-  
   //! type
-  HighlightPatternType* pattern_type_;
+  IndentPatternType* pattern_type_;
+ 
+  //! scale
+  QSpinBox* scale_spinbox_;
   
-  //! parent highlight pattern
-  QComboBox* parent_combobox_;
+  //! rules
+  IndentPatternRuleList* list_;
   
-  //! highlight style combobox
-  QComboBox* style_combobox_;
-  
-  //! comments editor
-  TextEditor* comments_editor_;
   
 };
 

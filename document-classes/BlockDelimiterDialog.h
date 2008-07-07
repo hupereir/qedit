@@ -1,5 +1,5 @@
-#ifndef _DocumentClassDialog_h_
-#define _DocumentClassDialog_h_
+#ifndef _BlockDelimiterDialog_h_
+#define _BlockDelimiterDialog_h_
 
 // $Id$
 
@@ -25,66 +25,43 @@
  *******************************************************************************/
 
 /*!
-  \file DocumentClassDialog.h
-  \brief Syntax highlighting style editing dialog
+  \file BlockDelimiterDialog.h
+  \brief Syntax highlighting delimiter editing dialog
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
 */
 
-#include "TabbedDialog.h"
-#include "DocumentClass.h"
+#include "CustomDialog.h"
+#include "BlockDelimiter.h"
 
-class DocumentClassConfiguration;
-class HighlightStyleList; 
-class HighlightPatternList;
-class TextParenthesisList;
-class BlockDelimiterList;
-class TextMacroList;
-class IndentPatternList;
+class LineEditor;
 
-//! Syntax highlighting style editing dialog
-class DocumentClassDialog: public TabbedDialog
+//! Syntax highlighting delimiter editing dialog
+class BlockDelimiterDialog: public CustomDialog
 {
-  
-  Q_OBJECT
   
   public:
   
   //! constructor
-  DocumentClassDialog( QWidget* parent );
+  BlockDelimiterDialog( QWidget* parent );
+
+  //! delimiter
+  void setDelimiter( const BlockDelimiter& );
   
-  //! style
-  void setDocumentClass( const DocumentClass& );
-  
-  //! true if any document class attribute has been modified
-  bool modified( void );
-  
+  //! delimiter
+  BlockDelimiter delimiter( void );
+   
   private:
-
-  //! document class configuration
-  DocumentClassConfiguration* document_class_configuration_;
+     
+  //! fist delimiter editor
+  LineEditor* first_editor_;
   
-  //! highlight style list
-  HighlightStyleList* highlight_style_list_;
+  //! end editor
+  LineEditor* second_editor_;
   
-  //! highlight pattern list
-  HighlightPatternList* highlight_pattern_list_;
-  
-  //! text parenthesis list
-  TextParenthesisList* text_parenthesis_list_;
-
-  //! block delimiter list
-  BlockDelimiterList* block_delimiter_list_;
-
-  //! block delimiter list
-  IndentPatternList* indent_pattern_list_;
-
-  //! block delimiter list
-  TextMacroList* text_macro_list_;
-
-  //! modification state
-  bool modified_;
+  //! rexexp editor
+  LineEditor* regexp_editor_;
   
 };
 

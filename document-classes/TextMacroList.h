@@ -1,5 +1,5 @@
-#ifndef HighlightStyleList_h
-#define HighlightStyleList_h
+#ifndef TextMacroList_h
+#define TextMacroList_h
 
 // $Id$
 /******************************************************************************
@@ -24,8 +24,8 @@
 *******************************************************************************/
  
 /*!
-  \file HighlightStyleList.h
-  \brief List box for HighlightStyles
+  \file TextMacroList.h
+  \brief List box for TextMacros
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -35,12 +35,13 @@
 #include <QGroupBox>
 
 #include "Counter.h"
-#include "HighlightStyleModel.h"
+#include "TextMacroModel.h"
+#include "DocumentClass.h"
 
 class TreeView;
 
-//! List box for HighlightStyles
-class HighlightStyleList: public QGroupBox, public Counter
+//! List box for TextMacros
+class TextMacroList: public QGroupBox, public Counter
 {
   
   Q_OBJECT
@@ -48,15 +49,15 @@ class HighlightStyleList: public QGroupBox, public Counter
   public:
   
   //! constructor
-  HighlightStyleList( QWidget* parent = 0 );
+  TextMacroList( QWidget* parent = 0 );
+ 
+  //! macro
+  void setMacros( const TextMacro::List& );
   
-  //! styles
-  void setStyles( const HighlightStyle::Set& );
+  //! Macro
+  TextMacro::List macros( void );
   
-  //! styles
-  HighlightStyle::Set styles( void );
-  
-  //! true when styles are modified
+  //! true when Macro are modified
   bool modified( void ) const
   { return modified_; }
   
@@ -65,20 +66,29 @@ class HighlightStyleList: public QGroupBox, public Counter
   //! update buttons enability
   void _updateButtons( void );
   
-  //! edit selected style
+  //! edit selected Pattern
   void _edit( void );
   
-  //! remove selected style
+  //! remove selected Pattern
   void _remove( void );
   
-  //! add new style
+  //! add new Pattern
   void _add( void );
+  
+  //! add new Pattern
+  void _addSeparator( void );
   
   //! store selection
   void _storeSelection( void );
   
   //! restore selection
   void _restoreSelection( void );
+
+  //! move up selected task
+  void _up( void );
+  
+  //! move down selected task
+  void _down( void );
   
   private:
   
@@ -86,7 +96,7 @@ class HighlightStyleList: public QGroupBox, public Counter
   TreeView* list_;
   
   //! model
-  HighlightStyleModel model_;
+  TextMacroModel model_;
   
   //! buttons
   QPushButton* edit_button_;
@@ -94,6 +104,12 @@ class HighlightStyleList: public QGroupBox, public Counter
   //! buttons
   QPushButton* remove_button_;
   
+  //! buttons
+  QPushButton* move_up_button_;
+  
+  //! buttons
+  QPushButton* move_down_button_;
+
   //! modification state
   bool modified_;
   

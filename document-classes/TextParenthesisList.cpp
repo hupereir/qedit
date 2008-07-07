@@ -22,8 +22,8 @@
 *******************************************************************************/
  
 /*!
-  \file HighlightStyleList.h
-  \brief List box for HighlightStyles
+  \file TextParenthesisList.h
+  \brief List box for TextParenthesiss
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -32,20 +32,20 @@
 #include <QHeaderView>
 #include <QLayout>
 
-#include "HighlightStyleDialog.h"
-#include "HighlightStyleList.h"
+#include "TextParenthesisDialog.h"
+#include "TextParenthesisList.h"
 #include "QtUtil.h"
 #include "TreeView.h"
 
 using namespace std;
 
 //____________________________________________________
-HighlightStyleList::HighlightStyleList( QWidget* parent ):
-  QGroupBox( "Highlight styles", parent ),
-  Counter( "HighlightStyleList" ),
+TextParenthesisList::TextParenthesisList( QWidget* parent ):
+  QGroupBox( "Parenthesis", parent ),
+  Counter( "TextParenthesisList" ),
   modified_( false )
 {
-  Debug::Throw( "HighlightStyleList::HighlightStyleList.\n" );
+  Debug::Throw( "TextParenthesisList::TextParenthesisList.\n" );
 
   QHBoxLayout* h_layout;
   h_layout = new QHBoxLayout();
@@ -56,7 +56,7 @@ HighlightStyleList::HighlightStyleList( QWidget* parent ):
   
   h_layout->addWidget( list_ = new TreeView( this ), 1 );
   list_->setModel( &model_ );
-  list_->setSortingEnabled( true );
+  list_->setSortingEnabled( false );
   list_->setAllColumnsShowFocus( true );
   
   connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
@@ -72,15 +72,15 @@ HighlightStyleList::HighlightStyleList( QWidget* parent ):
 
   QPushButton* button;
   v_layout->addWidget( button = new QPushButton( "&Add", this ) );
-  button->setToolTip( "Add a new highlight style to the list" );
+  button->setToolTip( "Add a new parenthesis to the list" );
   connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
   
   v_layout->addWidget( edit_button_ = new QPushButton( "&Edit", this ) );
-  edit_button_->setToolTip( "Edit selected highlight style" );
+  edit_button_->setToolTip( "Edit selected parenthesis" );
   connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
   v_layout->addWidget( remove_button_ = new QPushButton( "&Remove", this ) );
-  remove_button_->setToolTip( "Remove selected highlight style" );
+  remove_button_->setToolTip( "Remove selected parenthesis" );
   connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
   
   v_layout->addStretch();
@@ -90,96 +90,84 @@ HighlightStyleList::HighlightStyleList( QWidget* parent ):
 }
 
 //____________________________________________________
-void HighlightStyleList::setStyles( const HighlightStyle::Set& styles ) 
+void TextParenthesisList::setParenthesis( const TextParenthesis::List& parenthesis ) 
 {
 
-  Debug::Throw( "HighlightStyleList::setStyles.\n" );
-  model_.set( HighlightStyleModel::List( styles.begin(), styles.end() ) );
+  Debug::Throw( "TextParenthesisList::setParenthesis.\n" );
+  model_.set( parenthesis );
+  list_->resizeColumns();
   modified_ = false;
   
 }
 
 //____________________________________________________
-HighlightStyle::Set HighlightStyleList::styles( void ) 
+TextParenthesis::List TextParenthesisList::parenthesis( void ) 
 {
   
-  Debug::Throw( "HighlightStyleList::styles.\n" );
-  return HighlightStyle::Set( model_.get().begin(), model_.get().end() );
+  Debug::Throw( "TextParenthesisList::parenthesis.\n" );
+  return model_.get();
   
 }
 
 //____________________________________________________
-void HighlightStyleList::_updateButtons( void )
+void TextParenthesisList::_updateButtons( void )
 {
-  Debug::Throw( "HighlightStyleList::_updateButtons.\n" );
+  Debug::Throw( "TextParenthesisList::_updateButtons.\n" );
   bool has_selection( !list_->selectionModel()->selectedRows().empty() );
   edit_button_->setEnabled( has_selection );
   remove_button_->setEnabled( has_selection );
 }
 
 //____________________________________________________
-void HighlightStyleList::_add( void )
+void TextParenthesisList::_add( void )
 {
-  Debug::Throw( "HighlightStyleList::_add.\n" );
-  
-  // get set of highlight styles to ensure name unicity
-  HighlightStyleModel::List styles( model_.get() );
-  
-  HighlightStyleDialog dialog( this );
-  while( 1 )
-  {
-    if( dialog.exec() == QDialog::Rejected ) return;
-    HighlightStyle style( dialog.style() );
-    if( style.name().isEmpty() || std::find( styles.begin(), styles.end(), style ) != styles.end() ) 
-    {
-      QtUtil::infoDialog( this, "Invalid pattern name" );
-    } else {
-      model_.add( style );
-      break; 
-    }
-  }
+  Debug::Throw( "TextParenthesisList::_add.\n" );
+   
+  TextParenthesisDialog dialog( this );
+  if( dialog.exec() == QDialog::Rejected ) return;
+  model_.add( dialog.parenthesis() );
    
 }
 
 //____________________________________________________
-void HighlightStyleList::_edit( void )
+void TextParenthesisList::_edit( void )
 {
-  Debug::Throw( "HighlightStyleList::_edit.\n" );
+  Debug::Throw( "TextParenthesisList::_edit.\n" );
  
-  // retrieve selected items;
+  // retrieve selected items
   QModelIndexList selection( list_->selectionModel()->selectedRows() );
   if( selection.empty() ) {
     QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
     return;
   }
 
+  TextParenthesisModel::List parenthesis( model_.get() );
   for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
   {
   
-    HighlightStyle old_style( model_.get( *iter ) );
+    TextParenthesis old_parenthesis( model_.get( *iter ) );
 
-    HighlightStyleDialog dialog( this );
-    dialog.setStyle( old_style );
+    TextParenthesisDialog dialog( this );
+    dialog.setParenthesis( old_parenthesis );
     if( dialog.exec() == QDialog::Rejected ) continue;
     
-    HighlightStyle style( dialog.style() );
-    if( style.differs( old_style ) ) 
-    { 
-      model_.replace( *iter, style ); 
-      modified_ = true;
-    }
+    TextParenthesis parenthesis( dialog.parenthesis() );
+    if( parenthesis == old_parenthesis ) continue; 
+    
+    model_.replace( *iter, parenthesis ); 
+    modified_ = true;
 
   }
   
 }
 
 //____________________________________________________
-void HighlightStyleList::_remove( void )
+void TextParenthesisList::_remove( void )
 {
-  Debug::Throw( "HighlightStyleList::_remove.\n" );
+  Debug::Throw( "TextParenthesisList::_remove.\n" );
 
   // retrieve selected items; make sure they do not include the navigator
-  HighlightStyleModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+  TextParenthesisModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() ) {
     QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
     return;
@@ -199,7 +187,7 @@ void HighlightStyleList::_remove( void )
 }
 
 //________________________________________
-void HighlightStyleList::_storeSelection( void )
+void TextParenthesisList::_storeSelection( void )
 {   
   // clear
   model_.clearSelectedIndexes();
@@ -216,7 +204,7 @@ void HighlightStyleList::_storeSelection( void )
 }
 
 //________________________________________
-void HighlightStyleList::_restoreSelection( void )
+void TextParenthesisList::_restoreSelection( void )
 {
 
   // retrieve indexes

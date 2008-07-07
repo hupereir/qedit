@@ -1,5 +1,5 @@
-#ifndef HighlightStyleList_h
-#define HighlightStyleList_h
+#ifndef DocumentClassConfiguration_h
+#define DocumentClassConfiguration_h
 
 // $Id$
 /******************************************************************************
@@ -24,78 +24,65 @@
 *******************************************************************************/
  
 /*!
-  \file HighlightStyleList.h
-  \brief List box for HighlightStyles
+  \file DocumentClassConfiguration.h
+  \brief document class configuration
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
 */
-
-#include <QPushButton>
+#include <QSpinBox>
 #include <QGroupBox>
+#include <QCheckBox>
 
 #include "Counter.h"
-#include "HighlightStyleModel.h"
+#include "DocumentClass.h"
 
-class TreeView;
+class LineEditor;
+class BrowsedLineEditor;
 
-//! List box for HighlightStyles
-class HighlightStyleList: public QGroupBox, public Counter
+//! List box for HighlightPatterns
+class DocumentClassConfiguration: public QGroupBox, public Counter
 {
-  
-  Q_OBJECT
   
   public:
   
   //! constructor
-  HighlightStyleList( QWidget* parent = 0 );
+  DocumentClassConfiguration( QWidget* parent = 0 );
+
+  //! set document class
+  void setDocumentClass( const DocumentClass& document_class );
   
-  //! styles
-  void setStyles( const HighlightStyle::Set& );
-  
-  //! styles
-  HighlightStyle::Set styles( void );
-  
-  //! true when styles are modified
-  bool modified( void ) const
-  { return modified_; }
-  
-  private slots:
-  
-  //! update buttons enability
-  void _updateButtons( void );
-  
-  //! edit selected style
-  void _edit( void );
-  
-  //! remove selected style
-  void _remove( void );
-  
-  //! add new style
-  void _add( void );
-  
-  //! store selection
-  void _storeSelection( void );
-  
-  //! restore selection
-  void _restoreSelection( void );
-  
+  //! update document class
+  DocumentClass documentClass( void );
+    
   private:
+    
+  //! document class
+  DocumentClass document_class_;
   
-  //! list
-  TreeView* list_;
+  //! name editor
+  LineEditor* name_editor_;
   
-  //! model
-  HighlightStyleModel model_;
+  //! icon
+  LineEditor* icon_editor_;
   
-  //! buttons
-  QPushButton* edit_button_;
+  //! name editor
+  BrowsedLineEditor* file_editor_;
+
+  //! file pattern editor
+  LineEditor* file_pattern_editor_;
   
-  //! buttons
-  QPushButton* remove_button_;
+  //! first line pattern editor
+  LineEditor* first_line_pattern_editor_;
   
-  //! modification state
-  bool modified_;
+  //! base indentation
+  QSpinBox* base_indentation_spinbox_;
+  
+  //! default
+  QCheckBox* default_checkbox_;
+  
+  //! wrap
+  QCheckBox* wrap_checkbox_;
   
 };
 

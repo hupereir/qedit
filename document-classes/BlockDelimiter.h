@@ -26,7 +26,7 @@
 
 /*!
   \file BlockDelimiter.h
-  \brief Text parenthesis (for highlighting)
+  \brief Text delimiter (for highlighting)
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -42,7 +42,7 @@
 #include "Debug.h"
 #include "Str.h"
 
-//! text parenthesis (for highlighting)
+//! text delimiter (for highlighting)
 class BlockDelimiter: public Counter
 {
 
@@ -61,17 +61,48 @@ class BlockDelimiter: public Counter
   const unsigned int& id( void ) const
   { return id_; }
 
+  //! equal to operator
+  bool operator == ( const BlockDelimiter& delimiter ) const
+  { 
+    return 
+      first() == delimiter.first() &&
+      second() == delimiter.second() &&
+      regexp() == delimiter.regexp();
+  }
+
+  //! less than operator
+  bool operator < ( const BlockDelimiter& delimiter ) const
+  { 
+    if( first() != delimiter.first() ) return first() < delimiter.first();
+    if( second() != delimiter.second() ) return second() < delimiter.second();
+    if( regexp().pattern() != delimiter.regexp().pattern() ) return regexp().pattern() < delimiter.regexp().pattern();
+    return false;
+  }
+  
   //! block start
   const QString& first() const
   { return first_; }
 
+  //! first
+  void setFirst( const QString& value )
+  { first_ = value; }
+
   //! block end
   const QString& second() const
   { return second_; }
- 
+  
+  //! second
+  void setSecond( const QString& value )
+  { second_ = value; }
+
   //! regExp that match either block start or end
   const QRegExp& regexp() const
   { return regexp_; }
+  
+  //! regext
+  void setRegexp( const QString& value )
+  { regexp_.setPattern( value ); }
+
     
   private:
     

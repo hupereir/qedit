@@ -80,10 +80,8 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
     QtUtil::fixSize( label );
   }
   layout->addWidget( new QLabel( 
-    "This feature is work-in-progress and still largely incomplete.\n"
-    "Future versions will allow to modify and save the document classes\n"
-    "used to display documents of various types. Right now it allows \n"
-    "to edit and display some of the document classes components, but \n"
+    "This feature is work-in-progress. Right now this allows \n"
+    "to display and edit some of the document classes components, but \n"
     "changes made to these are not stored.", this ) );
   
   layout = new QHBoxLayout();
@@ -107,6 +105,8 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
 
   // add classes
   _loadClasses();
+  list_->sortItems( 0, Qt::AscendingOrder );
+  //list_->sort();
   
   // buttons
   QVBoxLayout *v_layout( new QVBoxLayout() );

@@ -51,19 +51,47 @@ class IndentPattern: public Counter
   typedef std::vector< IndentPattern > List;
         
   //! constructor from DomElement
-  IndentPattern( const QDomElement& element = QDomElement() );
-  
+  IndentPattern( void ):
+    Counter( "IndentPattern" ),
+    id_( 0 ),
+    type_( NOTHING ),
+    scale_( 0 )
+  {}
+    
+  //! constructor from DomElement
+  IndentPattern( const QDomElement& element );
+
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
   
   //! Id
   const unsigned int& id( void ) const
   { return id_; }
+
+  //! set id  
+  void setId( const int& id )
+  { id_ = id; }
+ 
+  //! equal to operator
+  bool operator == (const IndentPattern& pattern ) const
+  { return id() == pattern.id(); }
   
+  //! less than operator
+  bool operator < (const IndentPattern& pattern ) const
+  { return id() < pattern.id(); }
+  
+  //! true if any attributes is different from argument
+  /*! this is a stricter comparison than the != operator */
+  bool differs( const IndentPattern& pattern ) const;
+
   //! name
   const QString& name() const
   { return name_; }
   
+    //! name
+  void setName( const QString& name )
+  { name_ = name; }
+
   //! reset counter
   static void resetCounter( void )
   { id_counter_ = 0; }
@@ -81,15 +109,33 @@ class IndentPattern: public Counter
   const Type& type( void ) const
   { return type_; }
     
+  //! type
+  void setType( const Type& type )
+  { type_ = type; }
+  
+  //! type
+  QString typeName( void ) const
+  { return typeName( type() ); }
+  
+  //! type
+  static QString typeName( const Type& type );
+  
   //! pattern scale
   const unsigned int& scale( void ) const
   { return scale_; }
+    
+  //! scale
+  void setScale( const unsigned int& scale )
+  { scale_ = scale; }
   
   //! indentation rule
   /*! used to check a regExp against a given paragraph */
   class Rule: public Counter
   {
     public:
+
+    //! shortcut to Rules
+    typedef std::vector< Rule > List;
 
     //! pattern flags
     enum Flag
@@ -109,9 +155,39 @@ class IndentPattern: public Counter
     //! dom element
     virtual QDomElement domElement( QDomDocument& parent ) const;
         
+    //! equal to operator
+    bool operator == ( const Rule& rule ) const
+    { 
+      return
+        pattern().pattern() == rule.pattern().pattern() &&
+        paragraph() == rule.paragraph() &&
+        flags() == rule.flags();
+    }
+      
+    //! less than operator
+    bool operator < ( const Rule& rule ) const
+    { 
+      if( pattern().pattern() != rule.pattern().pattern() ) return pattern().pattern() < rule.pattern().pattern();
+      if( paragraph() != rule.paragraph() ) return paragraph() < rule.paragraph();
+      if( flags() != rule.flags() ) return flags() < rule.flags();
+      return false;
+    }
+
     //! paragraph
     const int& paragraph() const
     { return paragraph_; }
+
+    //! set paragraph
+    void setParagraph( const int& par )
+    { paragraph_ = par; }
+   
+    //! regExp
+    void setPattern( const QString& regexp )
+    { regexp_.setPattern( regexp ); }      
+    
+    //! regexp
+    const QRegExp& pattern( void ) const
+    { return regexp_; }
     
     //! true if valid
     bool isValid( void ) const
@@ -119,7 +195,7 @@ class IndentPattern: public Counter
     
     //! returns true if the text match the rule
     bool accept( const QString& text ) const;
-
+ 
     //!@name flags
     //@{
     
@@ -144,16 +220,9 @@ class IndentPattern: public Counter
     
     //@}    
     
+    
     private:
-    
-    //! set paragraph
-    void _setParagraph( const int& par )
-    { paragraph_ = par; }
-    
-    //! set regExp
-    void _setRegExp( const QString& regexp )
-    { regexp_ = QRegExp( regexp ); }      
-            
+                
     //! paragraph id (vs current)
     int paragraph_;
     
@@ -170,40 +239,27 @@ class IndentPattern: public Counter
       return out;
     }  
   };
-  
-  //! shortcut to Rules
-  typedef std::vector< Rule > RuleList;
-  
+    
   //! retrieve rules
-  const RuleList& rules( void ) const
+  const Rule::List& rules( void ) const
   { return rules_; }
+
+  //! add rule
+  void addRule( const Rule& rule )
+  { rules_.push_back( rule ); }
+    
+  //! rules
+  void setRules( const Rule::List& rules ) 
+  { rules_ = rules; }
   
   //! validity
   bool isValid( void ) const
   {
-    for( RuleList::const_iterator iter =  rules_.begin(); iter != rules_.end(); iter++ )
+    for( Rule::List::const_iterator iter =  rules_.begin(); iter != rules_.end(); iter++ )
     if( !iter->isValid() ) return false;
     return true;
   }
-  
-  protected:
-  
-  //! name
-  void _setName( const QString& name )
-  { name_ = name; }
-  
-  //! type
-  void _setType( const Type& type )
-  { type_ = type; }
-
-  //! scale
-  void _setScale( const unsigned int& scale )
-  { scale_ = scale; }
-  
-  //! add rule
-  void _addRule( const Rule& rule )
-  { rules_.push_back( rule ); }
-  
+    
   private:
   
   //! unique id counter
@@ -227,13 +283,13 @@ class IndentPattern: public Counter
   unsigned int scale_;
   
   //! list of rules to match
-  RuleList rules_;
+  Rule::List rules_;
       
   //! dumper
   friend std::ostream& operator << ( std::ostream& out, const IndentPattern& pattern )
   {
     out << "IndentPattern - name: " << qPrintable( pattern.name() ) << " type: " << pattern.type_ << std::endl;
-    for( RuleList::const_iterator iter =  pattern.rules_.begin(); iter != pattern.rules_.end(); iter++ )
+    for( Rule::List::const_iterator iter =  pattern.rules_.begin(); iter != pattern.rules_.end(); iter++ )
     out << "  " << *iter << std::endl;
     return out;
   }

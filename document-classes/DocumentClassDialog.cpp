@@ -29,79 +29,62 @@
   \date $Date$
 */
 
-#include <QLabel>
-#include <QTabWidget>
 #include <QPushButton>
 
-#include "CustomDialog.h"
-#include "CustomGridLayout.h"
-#include "LineEditor.h"
+#include "BlockDelimiterList.h"
+#include "DocumentClassConfiguration.h"
 #include "DocumentClassDialog.h"
 #include "HighlightStyleList.h"
 #include "HighlightPatternList.h"
-#include "ListWidget.h"
+#include "IndentPatternList.h"
+#include "TextMacroList.h"
+#include "TextParenthesisList.h"
 #include "TreeWidget.h"
 
 using namespace std;
 
 //__________________________________________________________
 DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
-  CustomDialog( parent )
+  TabbedDialog( parent )
 {
   
   Debug::Throw( "DocumentClassDialog::DocumentClassDialog.\n" );
-  QHBoxLayout* layout = new QHBoxLayout();
-  layout->setSpacing(5);
-  layout->setMargin(0);
-  mainLayout().addLayout( layout );
+  _setSizeOptionName( "DOCUMENT_CLASS_WINDOW" );
+
+  _list().setMaximumWidth( 120 );
   
-  // name editor
-  layout->addWidget( new QLabel( "Name: ", this ) );
-  layout->addWidget( name_editor_ = new LineEditor( this ) );
-  
-  // tab widget
-  QTabWidget *tab_widget = new QTabWidget( this );
-  mainLayout().addWidget( tab_widget );
-  
-  // box to display additinal information
-  QWidget *box;
-  
-  // pattern matching
-  tab_widget->addTab( box = new QWidget(), "&File pattern" );
-  
-  QVBoxLayout* v_layout;
-  v_layout = new QVBoxLayout();
-  v_layout->setSpacing(5);
-  v_layout->setMargin(10);
-  box->setLayout( v_layout );
-  
-  v_layout->addWidget( box = new QWidget( box ) );
-  v_layout->addStretch(1);
-  
-  CustomGridLayout* grid_layout = new CustomGridLayout();
-  grid_layout->setSpacing(5);
-  grid_layout->setMargin(0);
-  grid_layout->setMaxCount(2);
-  box->setLayout( grid_layout );
-  
-  grid_layout->addWidget( new QLabel( "File name matching pattern: ", box ) );
-  grid_layout->addWidget( file_pattern_editor_ = new LineEditor( box ) );
-  file_pattern_editor_->setToolTip( "Regular expression used to determine document class from file name." );
-  
-  grid_layout->addWidget( new QLabel( "First line matching pattern: ", box ) );
-  grid_layout->addWidget( first_line_pattern_editor_ = new LineEditor( box ) );
-  first_line_pattern_editor_->setToolTip( "Regular expression used to determine document class from the first line of the file." );
-  
-  // need to add options (checkboxes) for "wrap" and "default" 
+  // general
+  QWidget* page = &addPage( "General" );
+  page->layout()->addWidget( document_class_configuration_ = new DocumentClassConfiguration( page ) );
   
   // highlight styles
-  tab_widget->addTab( highlight_style_list_ = new HighlightStyleList(), "&Highlight styles" );
-
-  // highlight patterns
-  tab_widget->addTab( highlight_pattern_list_ = new HighlightPatternList(), "&Highlight patterns" );
+  page = &addPage( "Highlight", true );
   
+  page->layout()->addWidget( highlight_style_list_ = new HighlightStyleList(page) );
+  page->layout()->addWidget( highlight_pattern_list_ = new HighlightPatternList(page) );
+  
+  // delimiters
+  page = &addPage( "Delimiters", true );
+  page->layout()->addWidget( text_parenthesis_list_ = new TextParenthesisList( page ) );
+  page->layout()->addWidget( block_delimiter_list_ = new BlockDelimiterList( page ) );
+  
+  // indentation
+  page = &addPage( "Indentation", true );
+  page->layout()->addWidget( indent_pattern_list_ = new IndentPatternList( page ) );
+  
+  // macro
+  page = &addPage( "Macros", true );
+  page->layout()->addWidget( text_macro_list_ = new TextMacroList() );
+
+  // buttons
+  QPushButton* button;
+  _buttonLayout().addWidget( button = new QPushButton( "&OK", this ) );
+  connect( button, SIGNAL( clicked() ), SLOT( accept() ) );
+  
+  _buttonLayout().addWidget( button = new QPushButton( "&Cancel", this ) );
+  connect( button, SIGNAL( clicked() ), SLOT( reject() ) );
+
   adjustSize();
-  resize( 550, 500 );
   
 }
 
@@ -111,15 +94,9 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
   
   Debug::Throw( "DocumentClassDialog::setDocumentClass.\n" );
   
-  // name
-  name_editor_->setText( document_class.name() );
-  
-  // file name matching pattern
-  file_pattern_editor_->setText( document_class.fileMatchingPattern().pattern() );
-  
-  // first line matching pattern
-  first_line_pattern_editor_->setText( document_class.firstLineMatchingPattern().pattern() );
-    
+  // configuration
+  document_class_configuration_->setDocumentClass( document_class );
+      
   // highlight styles
   highlight_style_list_->setStyles( document_class.highlightStyles() );
   
@@ -127,6 +104,17 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
   highlight_pattern_list_->setStyles( document_class.highlightStyles() );
   highlight_pattern_list_->setPatterns( document_class.highlightPatterns() );
   
-  // indentation patterns
+  // parenthesis
+  text_parenthesis_list_->setParenthesis( document_class.parenthesis() );
+
+  // delimiters
+  block_delimiter_list_->setDelimiters( document_class.blockDelimiters() );
+  
+  //! indentation
+  indent_pattern_list_->setPatterns( document_class.indentPatterns() );
+  
+  // text macros
+  text_macro_list_->setMacros( document_class.textMacros() );
+  
   
 }

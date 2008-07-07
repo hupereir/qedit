@@ -1,5 +1,5 @@
-#ifndef HighlightStyleList_h
-#define HighlightStyleList_h
+#ifndef BlockDelimiterList_h
+#define BlockDelimiterList_h
 
 // $Id$
 /******************************************************************************
@@ -24,8 +24,8 @@
 *******************************************************************************/
  
 /*!
-  \file HighlightStyleList.h
-  \brief List box for HighlightStyles
+  \file BlockDelimiterList.h
+  \brief List box for BlockDelimiters
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -35,12 +35,13 @@
 #include <QGroupBox>
 
 #include "Counter.h"
-#include "HighlightStyleModel.h"
+#include "BlockDelimiterModel.h"
+#include "DocumentClass.h"
 
 class TreeView;
 
-//! List box for HighlightStyles
-class HighlightStyleList: public QGroupBox, public Counter
+//! List box for BlockDelimiters
+class BlockDelimiterList: public QGroupBox, public Counter
 {
   
   Q_OBJECT
@@ -48,15 +49,15 @@ class HighlightStyleList: public QGroupBox, public Counter
   public:
   
   //! constructor
-  HighlightStyleList( QWidget* parent = 0 );
+  BlockDelimiterList( QWidget* parent = 0 );
+ 
+  //! delimiter
+  void setDelimiters( const BlockDelimiter::List& );
   
-  //! styles
-  void setStyles( const HighlightStyle::Set& );
+  //! Delimiter
+  BlockDelimiter::List delimiter( void );
   
-  //! styles
-  HighlightStyle::Set styles( void );
-  
-  //! true when styles are modified
+  //! true when Delimiter are modified
   bool modified( void ) const
   { return modified_; }
   
@@ -65,13 +66,13 @@ class HighlightStyleList: public QGroupBox, public Counter
   //! update buttons enability
   void _updateButtons( void );
   
-  //! edit selected style
+  //! edit selected Pattern
   void _edit( void );
   
-  //! remove selected style
+  //! remove selected Pattern
   void _remove( void );
   
-  //! add new style
+  //! add new Pattern
   void _add( void );
   
   //! store selection
@@ -86,7 +87,7 @@ class HighlightStyleList: public QGroupBox, public Counter
   TreeView* list_;
   
   //! model
-  HighlightStyleModel model_;
+  BlockDelimiterModel model_;
   
   //! buttons
   QPushButton* edit_button_;
