@@ -31,8 +31,10 @@
   \date $Date$
 */
 
-#include <QFrame>
 #include <QContextMenuEvent>
+#include <QFocusEvent>
+#include <QFrame>
+#include <QPaintEvent>
 
 #include "BlockDelimiter.h"
 #include "Counter.h"
@@ -125,6 +127,9 @@ class TextView: public QFrame, public BASE::Key, public Counter
   
   //! context menu event [overloaded]
   virtual void contextMenuEvent( QContextMenuEvent* );
+  
+  //! paintevent
+  virtual void paintEvent( QPaintEvent* );
   
   private slots:
   

@@ -114,8 +114,8 @@ IV.1 Install QEdit using GNU automake
 
 make install
 
-to install the code. By default the installation directory is /usr, and the executable will be copied to /usr/bin/qedit. This 
-requires root privileges at the installation stage. Alternatively a different installation path can be set at configuration 
+to install the code. This will install qedit in the default installation path of your system (e.g. /usr/local/bin, or /usr/bin, depending on the system). 
+This usually requires root privileges at the installation stage. Alternatively a different installation path can be set at configuration 
 time using the --prefix autogen option. 
 
 IV.2 Install QEdit using qmake
@@ -146,9 +146,31 @@ if this happens. An additional file, .qedit_help is created at the same place in
 documentation from within the application. Again, this file can be safely removed if one wants to restore the build-in 
 documentation.
 
-Contact:
---------
+VI. Troubles at configuration:
+------------------------------
 
+autogen.sh may possibly complained of not finding the Qt libraries libraries and/or
+headers. The default path is assumed to be:
+
+/usr/lib/qt4/lib for libraries
+/usr/lib/qt4/include for headers
+/usr/lib/qt4/bin for binaries (namely moc, the Qt meta object file generator)
+
+You can tell autogen.sh where to find non default path:
+
+./autogen.sh --with-Qt=[path]
+
+in which case [path]/lib, [path]/include and [path]/bin will be use in place of
+the defaults.
+
+You can also explicitely define all path:
+using:
+./autogen.sh \
+  --with-Qt-lib=[lib_path] \
+  --with-Qt-include=[include_path] \
+  --with-Qt-bin=[bin_path]
+
+Make sure you have all libraries, header for Qt installed on your platform.
+
+Questions, comments:
 hugo.pereira@free.fr
-
-Last-modified: 2007-08-20

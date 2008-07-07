@@ -38,7 +38,7 @@
 #include "CustomToolBar.h"
 #include "Debug.h"
 #include "OptionListBox.h"
-#include "OptionBrowsedLineEdit.h"
+#include "OptionBrowsedLineEditor.h"
 #include "OptionCheckBox.h"
 #include "OptionColorDisplay.h"
 #include "OptionFontInfo.h"
@@ -259,9 +259,9 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   spinbox->setToolTip( "interval (seconds) between two autosave. 0 means no autosave." );
   addOptionWidget( spinbox );
   
-  OptionBrowsedLineEdit *edit;
+  OptionBrowsedLineEditor *edit;
   grid_layout->addWidget( new QLabel( "autosave path", box ) );
-  grid_layout->addWidget( edit = new OptionBrowsedLineEdit( box, "AUTOSAVE_PATH" ) );
+  grid_layout->addWidget( edit = new OptionBrowsedLineEditor( box, "AUTOSAVE_PATH" ) );
   edit->setToolTip( "directory when autosaved files are stored" );
   addOptionWidget( edit );
 

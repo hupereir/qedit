@@ -1,7 +1,7 @@
 <!-- $Id$-->
 <patterns>
 
-  <class name="fortran" pattern="\.(f|F|(inc))(\.in)?$" base_indentation="6" icon="source_f.png" >
+  <class name="fortran" pattern="\.(f|F|(inc))(\.in)?$" base_indentation="6" icon="text-x-fortransrc.png" >
 
  <!-- highlight styles -->
  <style format="2" name="Comment" color="#ff8c00" />

@@ -1105,19 +1105,24 @@ void EditFrame::_closeView( TextView& view )
   // retrieve displays associated to current
   BASE::KeySet<TextView> displays( &view.editor() );
     
-  // delete display
-  delete &view;
-//  view.clearAssociations();
-//  view.editor().clearAssociations();
-//  view.hide();
-//  view.deleteLater();
-  
   // check how many children remain in parent_splitter if any
-  if( parent_splitter && parent_splitter->count() == 1 ) 
+  // take action if it is less than 2 (the current one to be deleted, and another one)
+  if( parent_splitter && parent_splitter->count() == 2 ) 
   {
     
-    // retrieve child
-    QWidget* child( dynamic_cast<QWidget*>( parent_splitter->children().first() ) );
+    // retrieve child that is not the current editor
+    // need to loop over existing widgets because the editor above has not been deleted yet
+    QWidget* child(0);
+    for( int index = 0; index < parent_splitter->count(); index++ )
+    { 
+      if( parent_splitter->widget( index ) != &view ) 
+      {
+        child = parent_splitter->widget( index );
+        break;
+      }
+    }    
+    assert( child );
+    Debug::Throw( "EditFrame::_closeView - found child.\n" );
     
     // retrieve splitter parent
     QWidget* grand_parent( parent_splitter->parentWidget() );
@@ -1137,26 +1142,34 @@ void EditFrame::_closeView( TextView& view )
     // delete parent_splitter, now that it is empty
     // delete parent_splitter;
     parent_splitter->deleteLater();
-  }
     
-  // if no associated displays, retrieve all, set the first as active
-  if( displays.empty() )
-  {
-
-    Debug::Throw( "EditFrame::_closeView - no associated display.\n" );
-    setActiveView( **BASE::KeySet<TextView>( this ).rbegin() );
-
   } else {
-
-    // update active display
-    setActiveView( *dynamic_cast<TextView*>((*displays.rbegin())->parentWidget()) );
-
+    
+    // the editor is deleted only if its parent splitter is not
+    // otherwise this will trigger double deletion of the editor 
+    // which will then crash
+    view.deleteLater();
+    
   }
   
-  // update close_view button
-  int independent_display_count( independentDisplayCount() );
-  detachAction().setEnabled( independent_display_count > 1 );
-  diffAction().setEnabled( independent_display_count == 2 );
+  // if no associated displays, retrieve all, set the first as active
+  if( displays.empty() )  displays = BASE::KeySet<TextView>( this );
+  
+  bool active_found( false );
+  for( BASE::KeySet<TextView>::reverse_iterator iter = displays.rbegin(); iter != displays.rend(); iter++ )
+  { 
+    if( (*iter) != &view ) {
+      setActiveView( **iter ); 
+      active_found = true;
+      break;
+    }
+  }  
+  assert( active_found );
+  
+//   // update close_view button
+//   int independent_display_count( independentDisplayCount() );
+//   detachAction().setEnabled( independent_display_count > 1 );
+//   diffAction().setEnabled( independent_display_count == 2 );
   
   // change focus
   activeView().editor().setFocus();

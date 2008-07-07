@@ -79,7 +79,7 @@ PrintDialog::PrintDialog( QWidget* parent ):
   html_checkbox_->setChecked( false );
   
   box->layout()->addWidget( new QLabel( "Destination file: ", box ) );
-  box->layout()->addWidget( destination_ = new BrowsedLineEdit( box ) );
+  box->layout()->addWidget( destination_ = new BrowsedLineEditor( box ) );
   destination_->setMinimumSize( QSize( 350, 0 ) );
   
   // options

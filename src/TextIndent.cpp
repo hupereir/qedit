@@ -173,9 +173,9 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
   
   // retrieve rules associated to pattern
   bool accepted( true );
-  const IndentPattern::RuleList& rules( pattern.rules() );
+  const IndentPattern::Rule::List& rules( pattern.rules() );
   int rule_id( 0 );
-  for( IndentPattern::RuleList::const_iterator iter = rules.begin(); iter != rules.end() && accepted; iter++, rule_id++ )
+  for( IndentPattern::Rule::List::const_iterator iter = rules.begin(); iter != rules.end() && accepted; iter++, rule_id++ )
   {
     
     QTextBlock local( block );

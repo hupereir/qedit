@@ -29,8 +29,12 @@
   \date $Date$
 */
 
+#include <QApplication>
 #include <QLayout>
 #include <QMenu>
+#include <QPainter>
+#include <QStyle>
+#include <QStyleOptionFrameV2>
 
 #include "BlockDelimiterWidget.h"
 #include "LineNumberWidget.h"
@@ -70,7 +74,9 @@ TextView::TextView( QWidget* parent ):
   connect( &editor(), SIGNAL( blockDelimitersAvailable( BlockDelimiter::List ) ), SLOT( _loadBlockDelimiters( BlockDelimiter::List ) ) );
   connect( &editor().showBlockDelimiterAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleShowBlockDelimiters( bool ) ) );
   connect( &editor().showLineNumberAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleShowLineNumbers( bool ) ) );
-
+    
+  connect( qApp, SIGNAL( focusChanged( QWidget*, QWidget* ) ), SLOT( update() ) );
+  
   _loadBlockDelimiters( BlockDelimiter::List() );
   _toggleShowBlockDelimiters( editor().showBlockDelimiterAction().isChecked() );
   _toggleShowLineNumbers( editor().showLineNumberAction().isChecked() );
@@ -108,6 +114,25 @@ void TextView::contextMenuEvent( QContextMenuEvent* event )
   menu.exec( event->globalPos() );
   
   return;
+}
+
+//________________________________________________
+void TextView::paintEvent( QPaintEvent* event )
+{
+  
+  Debug::Throw( "TextView::paintEvent.\n" );
+
+  // this is a hack from QFrame::paintEvent
+  // to handle focus.  
+  QPainter painter(this);
+  QStyleOptionFrameV2 panel;
+  panel.initFrom( this );
+  panel.rect = frameRect();
+  panel.state |= QStyle::State_Sunken;
+  if( editor().QTextEdit::hasFocus() ) panel.state |= QStyle::State_HasFocus;
+  style()->drawPrimitive(QStyle::PE_Frame, &panel, &painter, this);
+  painter.end();
+  
 }
 
 //___________________________________________

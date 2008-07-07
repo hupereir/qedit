@@ -1,6 +1,6 @@
 <!-- $Id$-->
 <patterns>
-	<class name="xml" pattern="\.((xml)|(qrc))$" icon="html.png" >
+	<class name="xml" pattern="\.((xml)|(qrc))$" icon="text-xml.png" >
 		
 		<!-- highlight styles -->
 		<style format="2" name="Comment" color="#ff8c00" />
@@ -63,13 +63,14 @@
 		</keyword_pattern>
 		
 		<!-- parenthesis -->
-		<parenthesis begin="XML_LT" end="XML_GT"/>
-		<parenthesis begin="(" end=")" regexp="\(|\)"/>
-		<parenthesis begin="[" end="]" regexp="\[|\]" />
-  <parenthesis begin="{" end="}" regexp="\{|\}" />
+    <parenthesis begin="XML_LT" end="XML_GT"/>
+    <parenthesis begin="(" end=")" regexp="\(|\)"/>
+    <parenthesis begin="[" end="]" regexp="\[|\]" />
+    <parenthesis begin="{" end="}" regexp="\{|\}" />
 
   <!-- block delimiters -->
   <block_delimiter begin="XML_LT!--" end="--XML_GT" regexp="(XML_LT\!--)|(--XML_GT)"/>
+  <block_delimiter begin="XML_LTitem" end="itemXML_GT" regexp="(XML_LTitem)|(itemXML_GT)"/>
 
 		<!-- indentation patterns -->
 

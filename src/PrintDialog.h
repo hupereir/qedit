@@ -36,7 +36,7 @@
 #include <QCheckBox>
 #include <QSpinBox>
 
-#include "BrowsedLineEdit.h"
+#include "BrowsedLineEditor.h"
 #include "CustomDialog.h"
 #include "CustomComboBox.h"
 #include "LineEditor.h"
@@ -150,7 +150,7 @@ class PrintDialog: public CustomDialog
   QRadioButton* pdf_checkbox_;
     
   //! postscript file
-  BrowsedLineEdit* destination_;
+  BrowsedLineEditor* destination_;
   
   //! wrap lines
   QCheckBox* wrap_checkbox_;

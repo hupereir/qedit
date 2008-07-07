@@ -76,7 +76,10 @@ int main (int argc, char *argv[])
     if( debug_level ) XmlOptions::get().dump();
 
     // initialize main frame and run loop
+    // initialize main frame and run loop
     Q_INIT_RESOURCE( basePixmaps );
+    Q_INIT_RESOURCE( patterns );
+    Q_INIT_RESOURCE( pixmaps );
     QApplication application( argc, argv );
     
     // options
@@ -94,7 +97,10 @@ int main (int argc, char *argv[])
     DocumentClassManager manager;
     list<string> files( XmlOptions::get().specialOptions<string>( "PATTERN_FILENAME" ) );
     for( list<string>::const_iterator iter = files.begin(); iter != files.end(); iter++ )
-    { manager.read( *iter ); }
+    { 
+      cout << "editDocumentClasses - reading " << *iter << endl;
+      manager.read( *iter ); 
+    }
     
     // prepare dialog
     DocumentClassManagerDialog dialog(0, &manager);
