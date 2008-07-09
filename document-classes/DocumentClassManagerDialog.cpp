@@ -44,7 +44,6 @@
 
 #include "Options.h" 
 #include "QtUtil.h"
-#include "XmlOptions.h"
 
 using namespace std;
 
@@ -68,8 +67,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   mainLayout().addLayout( layout );
 
   //! try load Question icon
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-  CustomPixmap question_pixmap( CustomPixmap().find( ICONS::WARNING, path_list ) );
+  CustomPixmap question_pixmap( CustomPixmap().find( ICONS::WARNING ) );
   
   // insert main vertical box
   if( !question_pixmap.isNull() )

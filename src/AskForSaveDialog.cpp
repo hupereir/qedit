@@ -34,9 +34,10 @@
 #include <QPushButton>
 
 #include "AskForSaveDialog.h"
+#include "BaseIcons.h"
 #include "CustomPixmap.h"
+#include "IconEngine.h"
 #include "QtUtil.h"
-#include "XmlOptions.h"
 
 using namespace std;
 
@@ -61,14 +62,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   what << "has been modified." << endl << "Save ?";
   
   //! try load Question icon
-  static CustomPixmap question_pixmap;
-  static bool first( true );
-  if( first )
-  {
-    first = false;
-    list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-    question_pixmap.find( "messagebox_warning.png", path_list );    
-  }
+  CustomPixmap question_pixmap = CustomPixmap().find( ICONS::WARNING );
   
   // insert main vertical box
   if( question_pixmap.isNull() )
@@ -95,14 +89,14 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   QPushButton* button;
   if( buttons & YES )
   {
-    button_layout->addWidget( button = new QPushButton( "&Yes", this ) );
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&Yes", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _yes() ) );
   }
   
   // no button
   if( buttons & NO )
   {
-    button_layout->addWidget( button = new QPushButton( "&No", this ) );
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&No", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _no() ) );
   }
   
@@ -118,7 +112,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   // cancel button
   if( buttons & CANCEL )
   {
-    button_layout->addWidget( button = new QPushButton( "&Cancel", this ) );
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
   }
   

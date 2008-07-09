@@ -40,6 +40,7 @@
 #include "CustomGridLayout.h"
 #include "Debug.h"
 #include "FileRecord.h"
+#include "IconEngine.h"
 #include "Icons.h"
 #include "FileInfoDialog.h"
 #include "OpenPreviousMenu.h"
@@ -47,7 +48,6 @@
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "TimeStamp.h"
-#include "XmlOptions.h"
 
 using namespace std;
 
@@ -58,15 +58,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   Debug::Throw( "FileInfoDialog::FileInfoDialog.\n" );
 
   //! try load Question icon
-  static CustomPixmap pixmap;
-  static bool first( true );
-  if( first )
-  {
-    first = false;
-    list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-    pixmap.find( ICONS::INFO, path_list );    
-  }
-  
+  CustomPixmap pixmap = CustomPixmap().find( ICONS::INFORMATION );  
   setLayout( new QVBoxLayout() );
   layout()->setSpacing(10);
   layout()->setMargin(10);
@@ -296,7 +288,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   layout->addStretch();
   
   // close button 
-  QPushButton *button = new QPushButton( "&Close", this );
+  QPushButton *button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Close", this );
   FileInfoDialog::layout()->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( close() ) );
   

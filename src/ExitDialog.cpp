@@ -35,7 +35,6 @@
 #include "CustomPixmap.h"
 #include "Debug.h"
 #include "ExitDialog.h"
-#include "XmlOptions.h"
 
 using namespace std;
 
@@ -52,9 +51,8 @@ ExitDialog::ExitDialog( QWidget* parent, std::map< File, bool > files ):
   mainLayout().addLayout( h_layout );
   
   // add icon
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   QLabel *label( new QLabel( this ) );
-  label->setPixmap( CustomPixmap().find( ICONS::WARNING, path_list ) );
+  label->setPixmap( CustomPixmap().find( ICONS::WARNING ) );
   h_layout->addWidget( label, 0, Qt::AlignHCenter );
 
   // create label text

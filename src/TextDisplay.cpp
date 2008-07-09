@@ -1318,10 +1318,6 @@ void TextDisplay::_installActions( void )
   show_block_delimiter_action_->setShortcutContext( Qt::WidgetShortcut );
   connect( show_block_delimiter_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowBlockDelimiters( bool ) ) );
 
-  // retrieve pixmap path
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
-
   // autospell
   addAction( autospell_action_ = new QAction( "&Automatic spell-check", this ) );
   autospell_action_->setShortcut( Qt::Key_F6 );
@@ -1336,7 +1332,7 @@ void TextDisplay::_installActions( void )
   #endif
 
   // spell checking
-  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK, path_list ), "&Spell check", this ) );
+  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spell check", this ) );
   #if WITH_ASPELL
   connect( spellcheck_action_, SIGNAL( triggered( void ) ), SLOT( _spellcheck( void ) ) );
   #else
@@ -1344,13 +1340,13 @@ void TextDisplay::_installActions( void )
   #endif
 
   // indent selection
-  addAction( indent_selection_action_ = new QAction( IconEngine::get( ICONS::INDENT, path_list ), "&Indent selection", this ) );
+  addAction( indent_selection_action_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Indent selection", this ) );
   indent_selection_action_->setShortcut( Qt::CTRL + Qt::Key_I );
   indent_selection_action_->setShortcutContext( Qt::WidgetShortcut );
   connect( indent_selection_action_, SIGNAL( triggered( void ) ), SLOT( _indentSelection( void ) ) );
 
   // base indentation
-  addAction( base_indent_action_ = new QAction( IconEngine::get( ICONS::INDENT, path_list ), "&Add base indentation", this ) );
+  addAction( base_indent_action_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Add base indentation", this ) );
   base_indent_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_I );
   connect( base_indent_action_, SIGNAL( triggered( void ) ), SLOT( _addBaseIndentation( void ) ) );
 
@@ -1359,7 +1355,7 @@ void TextDisplay::_installActions( void )
   connect( leading_tabs_action_, SIGNAL( triggered( void ) ), SLOT( _replaceLeadingTabs( void ) ) );
 
   // file information
-  addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO, path_list ), "&File information", this ) );
+  addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File information", this ) );
   connect( file_info_action_, SIGNAL( triggered() ), SLOT( _showFileInfo() ) );
 
   #if WITH_ASPELL
@@ -1373,7 +1369,7 @@ void TextDisplay::_installActions( void )
   #endif
 
   // tag block action
-  addAction( tag_block_action_ = new QAction( IconEngine::get( ICONS::TAG, path_list ), "&Tag selected blocks", this ) );
+  addAction( tag_block_action_ = new QAction( IconEngine::get( ICONS::TAG ), "&Tag selected blocks", this ) );
   connect( tag_block_action_, SIGNAL( triggered() ), SLOT( _tagBlock( void ) ) );
 
   // clear current block tags
@@ -1385,13 +1381,13 @@ void TextDisplay::_installActions( void )
   connect( clear_all_tags_action_, SIGNAL( triggered() ), SLOT( clearAllTags( void ) ) );
 
   // next tag action
-  addAction( next_tag_action_ = new QAction( IconEngine::get( ICONS::DOWN, path_list ), "Goto next tagged block", this ) );
+  addAction( next_tag_action_ = new QAction( IconEngine::get( ICONS::DOWN ), "Goto next tagged block", this ) );
   connect( next_tag_action_, SIGNAL( triggered() ), SLOT( _nextTag( void ) ) );
   next_tag_action_->setShortcut( Qt::ALT + Qt::Key_Down );
   next_tag_action_->setShortcutContext( Qt::WidgetShortcut );
 
   // previous tag action
-  addAction( previous_tag_action_ = new QAction( IconEngine::get( ICONS::UP, path_list ), "Goto previous tagged block", this ) );
+  addAction( previous_tag_action_ = new QAction( IconEngine::get( ICONS::UP ), "Goto previous tagged block", this ) );
   connect( previous_tag_action_, SIGNAL( triggered() ), SLOT( _previousTag( void ) ) );
   previous_tag_action_->setShortcut( Qt::ALT + Qt::Key_Up );
   previous_tag_action_->setShortcutContext( Qt::WidgetShortcut );

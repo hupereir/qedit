@@ -759,83 +759,80 @@ void EditFrame::_installActions( void )
 
   Debug::Throw( "EditFrame::_installActions.\n" );
   
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
-
-  addAction( new_file_action_ = new QAction( IconEngine::get( ICONS::NEW, path_list ), "&New", this ) );
+  addAction( new_file_action_ = new QAction( IconEngine::get( ICONS::NEW ), "&New", this ) );
   new_file_action_->setShortcut( CTRL+Key_N );
   new_file_action_->setToolTip( "Create a new empty file" );
   connect( new_file_action_, SIGNAL( triggered() ), SLOT( _newFile() ) );
 
-  addAction( clone_action_ = new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT, path_list ), "&Clone", this ) );
+  addAction( clone_action_ = new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "&Clone", this ) );
   clone_action_->setShortcut( SHIFT+CTRL+Key_N );
   clone_action_->setToolTip( "Clone current view" );
   connect( clone_action_, SIGNAL( triggered() ), SLOT( _splitView() ) );
 
-  addAction( detach_action_ = new QAction( IconEngine::get( ICONS::VIEW_DETACH, path_list ), "&Detach", this ) );
+  addAction( detach_action_ = new QAction( IconEngine::get( ICONS::VIEW_DETACH ), "&Detach", this ) );
   detach_action_->setShortcut( SHIFT+CTRL+Key_O );
   detach_action_->setToolTip( "Detach current view" );
   detach_action_->setEnabled( false );
   connect( detach_action_, SIGNAL( triggered() ), SLOT( _detach() ) );
 
-  addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN, path_list ), "&Open", this ) );
+  addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this ) );
   open_action_->setShortcut( CTRL+Key_O );
   open_action_->setToolTip( "Open an existsing file" );
   connect( open_action_, SIGNAL( triggered() ), SLOT( open() ) );
  
-  addAction( close_view_action_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE, path_list ), "&Close view", this ) );
+  addAction( close_view_action_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "&Close view", this ) );
   close_view_action_->setShortcut( CTRL+Key_W );
   close_view_action_->setToolTip( "Close current view" );
   connect( close_view_action_, SIGNAL( triggered() ), SLOT( _closeView() ) );
  
-  addAction( close_window_action_ = new QAction( IconEngine::get( ICONS::CLOSE, path_list ), "&Close window", this ) );
+  addAction( close_window_action_ = new QAction( IconEngine::get( ICONS::CLOSE ), "&Close window", this ) );
   close_window_action_->setShortcut( SHIFT+CTRL+Key_W );
   close_window_action_->setToolTip( "Close current view" );
   connect( close_window_action_, SIGNAL( triggered() ), SLOT( _closeWindow() ) );
  
-  addAction( save_action_ = new QAction( IconEngine::get( ICONS::SAVE, path_list ), "&Save", this ) );
+  addAction( save_action_ = new QAction( IconEngine::get( ICONS::SAVE ), "&Save", this ) );
   save_action_->setShortcut( CTRL+Key_S );
   save_action_->setToolTip( "Save current file" );
   connect( save_action_, SIGNAL( triggered() ), SLOT( _save() ) );
  
-  addAction( save_as_action_ = new QAction( IconEngine::get( ICONS::SAVE_AS, path_list ), "Save &As", this ) );
+  addAction( save_as_action_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this ) );
   save_as_action_->setShortcut( SHIFT+CTRL+Key_S );
   save_as_action_->setToolTip( "Save current file with a different name" );
   connect( save_as_action_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
 
-  addAction( revert_to_save_action_ = new QAction( IconEngine::get( ICONS::RELOAD, path_list ), "&Revert to saved", this ) );
+  addAction( revert_to_save_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Revert to saved", this ) );
   revert_to_save_action_->setToolTip( "Reload saved version of current file" );
   connect( revert_to_save_action_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
  
-  addAction( print_action_ = new QAction( IconEngine::get( ICONS::PRINT, path_list ), "&Print", this ) );
+  addAction( print_action_ = new QAction( IconEngine::get( ICONS::PRINT ), "&Print", this ) );
   print_action_->setToolTip( "Print current file" );
   connect( print_action_, SIGNAL( triggered() ), SLOT( _print() ) );
 
-  addAction( undo_action_ = new QAction( IconEngine::get( ICONS::UNDO, path_list ), "&Undo", this ) );
+  addAction( undo_action_ = new QAction( IconEngine::get( ICONS::UNDO ), "&Undo", this ) );
   undo_action_->setToolTip( "Undo last action" );
   connect( undo_action_, SIGNAL( triggered() ), SLOT( _undo() ) );
 
-  addAction( redo_action_ = new QAction( IconEngine::get( ICONS::REDO, path_list ), "&Redo", this ) );
+  addAction( redo_action_ = new QAction( IconEngine::get( ICONS::REDO ), "&Redo", this ) );
   redo_action_->setToolTip( "Redo last un-done action" );
   connect( redo_action_, SIGNAL( triggered() ), SLOT( _redo() ) );
 
-  addAction( cut_action_ = new QAction( IconEngine::get( ICONS::CUT, path_list ), "&Cut", this ) );
+  addAction( cut_action_ = new QAction( IconEngine::get( ICONS::CUT ), "&Cut", this ) );
   cut_action_->setToolTip( "Cut current selection and copy to clipboard" );
   connect( cut_action_, SIGNAL( triggered() ), SLOT( _cut() ) );
 
-  addAction( copy_action_ = new QAction( IconEngine::get( ICONS::COPY, path_list ), "&Copy", this ) );
+  addAction( copy_action_ = new QAction( IconEngine::get( ICONS::COPY ), "&Copy", this ) );
   copy_action_->setToolTip( "Copy current selection to clipboard" );
   connect( copy_action_, SIGNAL( triggered() ), SLOT( _copy() ) );
 
-  addAction( paste_action_ = new QAction( IconEngine::get( ICONS::PASTE, path_list ), "&Paste", this ) );
+  addAction( paste_action_ = new QAction( IconEngine::get( ICONS::PASTE ), "&Paste", this ) );
   paste_action_->setToolTip( "Paste clipboard to text" );
   connect( paste_action_, SIGNAL( triggered() ), SLOT( _paste() ) );
 
-  addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO, path_list ), "&File information", this ) );
+  addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File information", this ) );
   file_info_action_->setToolTip( "Display file informations" );
   connect( file_info_action_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
 
-  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK, path_list ), "&Spell check", this ) );
+  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spell check", this ) );
   #if WITH_ASPELL
   connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
   #else 
@@ -846,19 +843,19 @@ void EditFrame::_installActions( void )
   connect( diff_action_, SIGNAL( triggered() ), SLOT( _diff() ) );
   diff_action_->setEnabled( false );
   
-  addAction( split_view_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_TOPBOTTOM, path_list ), "Clone view top/bottom", this ) );
+  addAction( split_view_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_TOPBOTTOM ), "Clone view top/bottom", this ) );
   split_view_horizontal_action_->setToolTip( "Clone current view vertically" );
   connect( split_view_horizontal_action_, SIGNAL( triggered() ), SLOT( _splitViewVertical() ) );
 
-  addAction( split_view_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT, path_list ), "Clone view left/right", this ) );
+  addAction( split_view_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "Clone view left/right", this ) );
   split_view_vertical_action_->setToolTip( "Clone current view horizontally" );
   connect( split_view_vertical_action_, SIGNAL( triggered() ), SLOT( _splitViewHorizontal() ) );
 
-  addAction( open_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM, path_list ), "Clone view top/bottom", this ) );
+  addAction( open_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Clone view top/bottom", this ) );
   open_horizontal_action_->setToolTip( "Open a new view vertically" );
   connect( open_horizontal_action_, SIGNAL( triggered() ), SLOT( openVertical() ) );
 
-  addAction( open_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT, path_list ), "Open view left/right", this ) );
+  addAction( open_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open view left/right", this ) );
   open_vertical_action_->setToolTip( "Open a new view horizontally" );
   connect( open_vertical_action_, SIGNAL( triggered() ), SLOT( openHorizontal() ) );
   

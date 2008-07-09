@@ -154,27 +154,24 @@ void MainFrame::realizeWidget( void )
   about_action_ = new QAction( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).c_str() ), "About &QEdit", 0 );
   connect( about_action_, SIGNAL( triggered() ), SLOT( _about() ) );
    
-  // path list for icons
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-  if( !path_list.size() ) throw runtime_error( DESCRIPTION( "no path to pixmaps" ) );
-
-  aboutqt_action_ = new QAction( IconEngine::get( ICONS::ABOUT_QT, path_list ), "About &Qt", 0 );
+  IconEngine::get().reload();
+  aboutqt_action_ = new QAction( IconEngine::get( ICONS::ABOUT_QT ), "About &Qt", 0 );
   connect( aboutqt_action_, SIGNAL( triggered() ), SLOT( aboutQt() ) ); 
 
-  close_action_ = new QAction( IconEngine::get( ICONS::EXIT, path_list ), "E&xit", 0 );
+  close_action_ = new QAction( IconEngine::get( ICONS::EXIT ), "E&xit", 0 );
   close_action_->setShortcut( CTRL+Key_Q );
   connect( close_action_, SIGNAL( triggered() ), SLOT( _exit() ) );
 
-  save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE_ALL, path_list ), "Save A&ll", 0 );
+  save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save A&ll", 0 );
   connect( save_all_action_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
   
-  configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "Default &Configuration", 0 );
+  configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Default &Configuration", 0 );
   connect( configuration_action_, SIGNAL( triggered() ), SLOT( _configuration() ) );
 
-  document_class_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "Document Class &Configuration", 0 );
+  document_class_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Document Class &Configuration", 0 );
   connect( document_class_configuration_action_, SIGNAL( triggered() ), SLOT( _documentClassConfiguration() ) );
   
-  spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE, path_list ), "&Spell-check &Configuration", 0 );
+  spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "&Spell-check &Configuration", 0 );
   connect( spellcheck_configuration_action_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
   
   // class manager
@@ -362,7 +359,7 @@ void MainFrame::updateDocumentClasses( void )
   list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   const DocumentClassManager::ClassList& classes( class_manager_->list() );
   for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
-  { if( !iter->icon().isEmpty() ) { IconEngine::get( qPrintable( iter->icon() ), path_list ); } }
+  { if( !iter->icon().isEmpty() ) { IconEngine::get( qPrintable( iter->icon() ) ); } }
   
   // emit configuration changed to force displays to be updated
   emit documentClassesChanged();
@@ -646,8 +643,8 @@ void MainFrame::_updateConfiguration( void )
   setWindowIcon( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).expand().c_str() ) );
   
   // reload IconEngine cache (in case of icon_path_list that changed)
-  IconEngine::get().reload( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-
+  IconEngine::get().reload();
+  
   // configuration changed
   emit configurationChanged();
   

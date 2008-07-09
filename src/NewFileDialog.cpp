@@ -33,9 +33,10 @@
 #include <QPushButton>
 
 #include "CustomPixmap.h"
+#include "IconEngine.h"
+#include "Icons.h"
 #include "NewFileDialog.h"
 #include "QtUtil.h"
-#include "XmlOptions.h"
 
 using namespace std;
 
@@ -59,15 +60,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned 
   what << "No such file or directory";
   
   //! try load Question icon
-  static CustomPixmap question_pixmap;
-  static bool first( true );
-  if( first )
-  {
-    first = false;
-    list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-    question_pixmap.find( "messagebox_warning.png", path_list );
-  }
-  // insert main vertical box
+  CustomPixmap question_pixmap( CustomPixmap().find( ICONS::WARNING ) );
   if( question_pixmap.isNull() )
   { layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter ); }
   else
@@ -91,21 +84,21 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned 
   QPushButton* button;
   if( buttons & CREATE )
   {
-    button_layout->addWidget( button = new QPushButton( "&Create", this ) );
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&Create", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _create() ) );
   }
   
   // cancel button. 
   if( buttons & CANCEL )
   {
-    button_layout->addWidget( button = new QPushButton( "&Cancel", this ) );
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
   }
 
   // cancel button. 
   if( buttons & EXIT )
   {
-    button_layout->addWidget( button = new QPushButton( "&Exit", this ) );
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Exit", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _exit() ) );
   }
   

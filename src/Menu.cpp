@@ -165,9 +165,6 @@ void Menu::_updateDocumentClassMenu( void )
   document_classes_.clear();
   QFont font( QMenuBar::font() );
   font.setWeight( QFont::Bold );
-
-  // icons
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   
   // retrieve current class from EditFrame
   EditFrame& frame( *static_cast<EditFrame*>(window()) ); 
@@ -179,7 +176,7 @@ void Menu::_updateDocumentClassMenu( void )
   { 
     // insert actions
     QAction* action = document_class_menu_->addAction( iter->name() );
-    if( !iter->icon().isEmpty() ) action->setIcon( IconEngine::get( qPrintable( iter->icon() ), path_list ) );
+    if( !iter->icon().isEmpty() ) action->setIcon( IconEngine::get( qPrintable( iter->icon() ) ) );
     if( iter->name() == class_name ) action->setFont( font );
     document_classes_.insert( make_pair( action, iter->name() ) );    
   }
