@@ -11,6 +11,7 @@ HEADERS = \
   BlockDelimiterList.h \
   BlockDelimiterModel.h \
   DocumentClass.h \
+  DocumentClassConfiguration.h \
   DocumentClassDialog.h \
   DocumentClassManager.h \
   DocumentClassManagerDialog.h \
@@ -25,6 +26,13 @@ HEADERS = \
   HighlightStyleModel.h \
   HighlightStyleDialog.h \
   IndentPattern.h \
+  IndentPatternDialog.h \
+  IndentPatternList.h \
+  IndentPatternModel.h \
+  IndentPatternRuleDialog.h \
+  IndentPatternRuleList.h \
+  IndentPatternRuleModel.h \
+  IndentPatternType.h \
   PatternLocation.h \
   TextMacro.h \
   TextMacroDialog.h \
@@ -45,6 +53,7 @@ SOURCES = \
   BlockDelimiterList.cpp \
   BlockDelimiterModel.cpp \
   DocumentClass.cpp \
+  DocumentClassConfiguration.cpp \
   DocumentClassDialog.cpp \
   DocumentClassManager.cpp \
   DocumentClassManagerDialog.cpp \
@@ -59,6 +68,13 @@ SOURCES = \
   HighlightStyleModel.cpp \
   HighlightStyleDialog.cpp \
   IndentPattern.cpp \
+  IndentPatternDialog.cpp \
+  IndentPatternList.cpp \
+  IndentPatternModel.cpp \
+  IndentPatternRuleDialog.cpp \
+  IndentPatternRuleList.cpp \
+  IndentPatternRuleModel.cpp \
+  IndentPatternType.cpp \
   TextMacro.cpp \
   TextMacroList.cpp \
   TextMacroModel.cpp \
