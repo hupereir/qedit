@@ -36,6 +36,8 @@
 #include "Debug.h"
 #include "EditFrame.h"
 #include "FileSelectionDialog.h"
+#include "Icons.h"
+#include "IconEngine.h"
 #include "MainFrame.h"
 #include "QtUtil.h"
 #include "TextDisplay.h"
@@ -102,7 +104,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   QPushButton* button;  
 
   // replace
-  button_layout->addWidget( button = new QPushButton( "&Replace", this ) );
+  button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&Replace", this ) );
   button->setToolTip( "Replace in all selected files" );
   connect( button, SIGNAL( clicked() ), this, SLOT( _replace() ) );
 
@@ -117,7 +119,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   connect( button, SIGNAL( clicked() ), list_, SLOT( clearSelection() ) );
 
   // cancel
-  button_layout->addWidget( button = new QPushButton( "&Cancel", this ) );
+  button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Cancel", this ) );
   connect( button, SIGNAL( clicked() ), this, SLOT( _cancel() ) );
 
   adjustSize();
