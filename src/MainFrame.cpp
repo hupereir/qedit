@@ -154,7 +154,6 @@ void MainFrame::realizeWidget( void )
   about_action_ = new QAction( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).c_str() ), "About &QEdit", 0 );
   connect( about_action_, SIGNAL( triggered() ), SLOT( _about() ) );
    
-  IconEngine::get().reload();
   aboutqt_action_ = new QAction( IconEngine::get( ICONS::ABOUT_QT ), "About &Qt", 0 );
   connect( aboutqt_action_, SIGNAL( triggered() ), SLOT( aboutQt() ) ); 
 
