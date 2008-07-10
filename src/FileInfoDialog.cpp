@@ -57,8 +57,6 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
 {
   Debug::Throw( "FileInfoDialog::FileInfoDialog.\n" );
 
-  //! try load Question icon
-  CustomPixmap pixmap = CustomPixmap().find( ICONS::INFORMATION );  
   setLayout( new QVBoxLayout() );
   layout()->setSpacing(10);
   layout()->setMargin(10);
@@ -77,6 +75,9 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   h_layout->setSpacing(10);
   box->setLayout( h_layout );
   
+  //! try load Question icon
+  CustomPixmap pixmap = CustomPixmap().find( ICONS::INFORMATION );  
+
   QLabel* label = new QLabel(box);
   label->setPixmap( pixmap );
   h_layout->addWidget( label, 0, Qt::AlignTop );
@@ -84,7 +85,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   QVBoxLayout* layout = new QVBoxLayout();
   layout->setMargin(0);
   layout->setSpacing( 5 );
-  h_layout->addLayout( layout );
+  h_layout->addLayout( layout, 1 );
   
   CustomGridLayout* grid_layout = new CustomGridLayout();
   grid_layout->setSpacing( 5 );

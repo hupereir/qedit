@@ -79,7 +79,7 @@ ExitDialog::ExitDialog( QWidget* parent, std::map< File, bool > files ):
   }
     
   what << endl << "Exit QEdit ?";
-  h_layout->addWidget( new QLabel( what.str().c_str(), this ) );
+  h_layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter );
 
   // rename buttons
   okButton().setText( "&Yes" );

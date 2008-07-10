@@ -75,12 +75,11 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
     QLabel* label = new QLabel( this );
     label->setPixmap( question_pixmap );
     layout->addWidget( label );
-    QtUtil::fixSize( label );
   }
   layout->addWidget( new QLabel( 
     "This feature is work-in-progress. Right now this allows \n"
     "to display and edit some of the document classes components, but \n"
-    "changes made to these are not stored.", this ) );
+    "changes made to these are not stored.", this ), 1 );
   
   layout = new QHBoxLayout();
   layout->setSpacing(5);

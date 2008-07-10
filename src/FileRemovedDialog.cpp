@@ -74,7 +74,7 @@ FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):
     QLabel* label = new QLabel( this );
     label->setPixmap( question_pixmap );
     h_layout->addWidget( label, 0, Qt::AlignHCenter );
-    h_layout->addWidget( new QLabel( what.str().c_str(), this ), 0, Qt::AlignHCenter );
+    h_layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter );
     
   }
 
