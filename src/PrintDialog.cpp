@@ -128,6 +128,9 @@ PrintDialog::PrintDialog( QWidget* parent ):
   _updateFile();
   _updateCheckBoxes();
   
+  // change button text
+  okButton().setText( "&Print" );
+  okButton().setIcon( IconEngine::get( ICONS::PRINT ));
 }
 
 //__________________________________________________
