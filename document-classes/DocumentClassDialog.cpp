@@ -36,6 +36,8 @@
 #include "DocumentClassDialog.h"
 #include "HighlightStyleList.h"
 #include "HighlightPatternList.h"
+#include "BaseIcons.h"
+#include "IconEngine.h"
 #include "IndentPatternList.h"
 #include "TextMacroList.h"
 #include "TextParenthesisList.h"
@@ -78,10 +80,10 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
 
   // buttons
   QPushButton* button;
-  _buttonLayout().addWidget( button = new QPushButton( "&OK", this ) );
+  _buttonLayout().addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&OK", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( accept() ) );
   
-  _buttonLayout().addWidget( button = new QPushButton( "&Cancel", this ) );
+  _buttonLayout().addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Cancel", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( reject() ) );
 
   adjustSize();
