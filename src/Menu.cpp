@@ -60,6 +60,7 @@ Menu::Menu( QWidget* parent ):
   Counter( "Menu" )
 {
   Debug::Throw( "Menu::Menu.\n" );
+
   // file menu
   QMenu* menu = addMenu( "&File" );
 
@@ -74,7 +75,6 @@ Menu::Menu( QWidget* parent ):
 
   // open previous menu
   open_previous_menu_ = new OpenPreviousMenu( this );
-  open_previous_menu_->setTitle( "Open pre&vious" );
   open_previous_menu_->setCheck( true );
   menu->addMenu( open_previous_menu_ );
 
