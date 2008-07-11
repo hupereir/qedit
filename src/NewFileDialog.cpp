@@ -32,7 +32,7 @@
 #include <QLayout>
 #include <QPushButton>
 
-#include "CustomPixmap.h"
+#include "PixmapEngine.h"
 #include "IconEngine.h"
 #include "Icons.h"
 #include "NewFileDialog.h"
@@ -60,7 +60,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned 
   what << "No such file or directory";
   
   //! try load Question icon
-  CustomPixmap question_pixmap( CustomPixmap().find( ICONS::WARNING ) );
+  QPixmap question_pixmap( PixmapEngine::get( ICONS::WARNING ) );
   if( question_pixmap.isNull() )
   { layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter ); }
   else

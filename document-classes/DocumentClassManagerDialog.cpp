@@ -34,7 +34,7 @@
 
 #include "BaseIcons.h"
 #include "CustomFileDialog.h"
-#include "CustomPixmap.h"
+#include "PixmapEngine.h"
 #include "Debug.h"
 #include "DocumentClass.h"
 #include "DocumentClassManagerDialog.h"
@@ -67,7 +67,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   mainLayout().addLayout( layout );
 
   //! try load Question icon
-  CustomPixmap question_pixmap( CustomPixmap().find( ICONS::WARNING ) );
+  QPixmap question_pixmap( PixmapEngine::get( ICONS::WARNING ) );
   
   // insert main vertical box
   if( !question_pixmap.isNull() )

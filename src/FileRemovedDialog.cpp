@@ -35,7 +35,7 @@
 #include <qpushbutton.h>
 
 #include "FileRemovedDialog.h"
-#include "CustomPixmap.h"
+#include "PixmapEngine.h"
 #include "Icons.h"
 #include "IconEngine.h"
 #include "QtUtil.h"
@@ -61,7 +61,7 @@ FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):
   what << file.localName() << " has been removed.";
 
   //! try load Question icon
-  CustomPixmap question_pixmap = CustomPixmap().find( ICONS::WARNING );
+  QPixmap question_pixmap = PixmapEngine::get( ICONS::WARNING );
   
   // insert main vertical box
   if( question_pixmap.isNull() )

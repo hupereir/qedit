@@ -32,7 +32,7 @@
 #include <QLabel>
 
 #include "Icons.h"
-#include "CustomPixmap.h"
+#include "PixmapEngine.h"
 #include "Debug.h"
 #include "ExitDialog.h"
 
@@ -52,7 +52,7 @@ ExitDialog::ExitDialog( QWidget* parent, std::map< File, bool > files ):
   
   // add icon
   QLabel *label( new QLabel( this ) );
-  label->setPixmap( CustomPixmap().find( ICONS::WARNING ) );
+  label->setPixmap( PixmapEngine::get( ICONS::WARNING ) );
   h_layout->addWidget( label, 0, Qt::AlignHCenter );
 
   // create label text
