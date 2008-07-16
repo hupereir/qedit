@@ -152,7 +152,7 @@ class TextView: public QFrame, public BASE::Key, public Counter
 
   //! block delimiter
   BlockDelimiterWidget* block_delimiter_widget_;
-  
+    
 };
 
 #endif

@@ -101,9 +101,6 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "OPEN_MODE", "open in new window", "default mode to open new file. either \"open in new window\" or \"open in new view\"" ) );
   XmlOptions::get().add( Option( "ORIENTATION", "top/bottom", "default orientation for splitters. either \"left/right\" or \"top/bottom\"" ) );
   
-  XmlOptions::get().add( Option( "SHADE_INACTIVE_VIEWS", "1", "shade inactive views" ) );
-  XmlOptions::get().add( Option( "INACTIVE_COLOR", "#f8f8f8", "inactive view color" ) );
-  
   #ifdef WITH_ASPELL
   XmlOptions::get().add( Option( "DICTIONARY", "en" , "default dictionary"  ));
   XmlOptions::get().add( Option( "DICTIONARY_FILTER", "none" , "default filter"  ));

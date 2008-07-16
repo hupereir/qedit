@@ -171,25 +171,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( combobox );
   combobox->setToolTip( "Configure how new views are organized." );
   grid_layout->setColumnStretch( 1, 1 );
-  
-  // inactive view shading
-  page->layout()->addWidget( box = new QGroupBox( "Shading", page ) );  
-
-  grid_layout = new CustomGridLayout();
-  grid_layout->setSpacing(5);
-  grid_layout->setMargin(5);
-  grid_layout->setMaxCount(2);
-  box->setLayout( grid_layout );
-  
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "shade inactive views", box, "SHADE_INACTIVE_VIEWS" ), 0, 0, 1, 2 );
-  addOptionWidget( checkbox );
-  checkbox->setToolTip( "Shade the background of inactive views" );
-  
-  grid_layout->addWidget( new QLabel( "inactive view color", box ) ); 
-  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "INACTIVE_COLOR" ) );
-  addOptionWidget( color_display );
-  checkbox->setToolTip( "Background color for inactive views" );
-  
+    
   // toolbars
   page = &addPage( "Toolbars" );
   page->layout()->addWidget( box = new QGroupBox( "Toolbars", page ) );  

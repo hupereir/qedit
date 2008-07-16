@@ -125,9 +125,6 @@ TextDisplay::TextDisplay( QWidget* parent ):
   _updateConfiguration();
   _updateSpellCheckConfiguration();
 
-  // paper background active color
-  _setPaper( true, QWidget().palette().color( QPalette::Base ) );
-
   Debug::Throw( "TextDisplay::TextDisplay - done.\n" );
 
 }
@@ -238,8 +235,6 @@ void TextDisplay::synchronize( TextDisplay* display )
   showBlockDelimiterAction().setChecked( display->showBlockDelimiterAction().isChecked() );
 
   _setMacros( display->macros() );
-  _setPaper( true, display->paper( true ) );
-  _setPaper( false, display->paper( false ) );
 
   // file
   setFile( display->file() );
@@ -607,18 +602,6 @@ void TextDisplay::revertToSave( void )
   setTextCursor( cursor );
   setUpdatesEnabled( true );
 
-}
-
-//_____________________________________________________________________
-bool TextDisplay::setActive( const bool& active )
-{
-
-  Debug::Throw( "TextDisplay::setActive.\n" );
-  bool out( false );
-  if( (out = TextEditor::setActive( active ) ) ) 
-  { _setPaper( isActive() ? active_color_:inactive_color_ ); }
-  return out;
-  
 }
 
 //_______________________________________________________
@@ -1410,20 +1393,6 @@ void TextDisplay::_createReplaceDialog( void )
 
 }
 
-//_______________________________________________________
-void TextDisplay::_setPaper( const QColor& color )
-{
-
-  Debug::Throw( "TextDisplay::_setPaper.\n" );
-  if( !color.isValid() ) return;
-
-  QPalette palette( TextDisplay::palette() );
-  palette.setColor( QPalette::Base, color );
-  setPalette( palette );
-
-}
-
-
 //_____________________________________________________________
 bool TextDisplay::_contentsChanged( void ) const
 {
@@ -1531,12 +1500,6 @@ void TextDisplay::_updateConfiguration( void )
 
   // block delimiters
   showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
-
-  // retrieve inactive colors for activity shading
-  QColor inactive_color( XmlOptions::get().get<string>("INACTIVE_COLOR").c_str() );
-  bool shade_inactive( XmlOptions::get().get<bool>( "SHADE_INACTIVE_VIEWS" ) );
-  _setPaper( false, inactive_color.isValid() && shade_inactive ? inactive_color : paper( true ) );
-  _setPaper( paper( isActive() ) );
 
   // retrieve diff colors
   diff_conflict_color_ = QColor( XmlOptions::get().get<string>("DIFF_CONFLICT_COLOR").c_str() );

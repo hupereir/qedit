@@ -171,9 +171,6 @@ class TextDisplay: public TextEditor
   //! Revert to save
   void revertToSave( void );
   
-  //! activity
-  virtual bool setActive( const bool& value );
-
   //@}
 
   //!@name document class
@@ -197,11 +194,7 @@ class TextDisplay: public TextEditor
   { return macros_; }
   
   //@}
-  
-  //! paper color for active/inactive views
-  const QColor& paper( const bool& active ) const
-  { return active ? active_color_:inactive_color_;}
- 
+   
   //! returns true if paragraph is to be ignored when identing/parsing parenthesis
   bool ignoreParagraph( const QTextBlock& paragraph );
 
@@ -427,18 +420,7 @@ class TextDisplay: public TextEditor
   //! macros
   void _setMacros( const TextMacro::List& macros)
   { macros_ = macros; }  
-  
-  //! paper color for active/inactive views
-  void _setPaper( const bool& active, const QColor& color )
-  { 
-    if( !color.isValid() ) return;
-    if( active ) active_color_ = color;
-    else inactive_color_ = color;
-  }
-  
-  //! set background color
-  void _setPaper( const QColor& color );
-  
+      
   //! last save time stamp
   void _setLastSaved( const TimeStamp& stamp )
   { last_save_ = stamp; }
@@ -592,13 +574,7 @@ class TextDisplay: public TextEditor
   
   //! associated document class name
   QString class_name_;
-  
-  //! paper color or active views
-  QColor active_color_;
-  
-  //! paper color for inactive views
-  QColor inactive_color_;
-     
+       
   //! diff conflict color 
   QColor diff_conflict_color_;
 
