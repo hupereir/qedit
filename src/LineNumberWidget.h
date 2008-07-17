@@ -41,6 +41,7 @@
 #include <QWheelEvent>
 
 #include "Counter.h"
+#include "Debug.h"
 
 class TextEditor;
 
@@ -66,8 +67,14 @@ class LineNumberWidget: public QWidget, public Counter
   void setDocumentConnections( void );
   
   //! show vertical line
-  void setShowVerticalLine( const bool& value ) 
-  { show_vertical_line_ = value; }
+  bool setShowVerticalLine( const bool& value ) 
+  { 
+    if( value == show_vertical_line_ ) return false;
+    Debug::Throw() << "LineNumberWidget::setShowVerticalLine - value: " << value << std::endl;
+    show_vertical_line_ = value; 
+    update();
+    return true;
+  }
   
   protected:
   

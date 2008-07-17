@@ -143,7 +143,7 @@ void TextView::_toggleShowLineNumbers( bool state )
 
   // update option
   XmlOptions::get().set<bool>( "SHOW_LINE_NUMBERS", state );
-
+  
 }
 
 //___________________________________________
@@ -165,12 +165,15 @@ void TextView::_loadBlockDelimiters( BlockDelimiter::List delimiters )
   blockDelimiterWidget().setActionVisibility( visible );
   editor().textHighlight().setBlockDelimitersEnabled( visible );
   
+  // update line number widget flags
+  lineNumberWidget().setShowVerticalLine( delimiters.empty() || blockDelimiterWidget().isHidden() ); 
+    
 }
 
 //___________________________________________
 void TextView::_toggleShowBlockDelimiters( bool state )
 {
-  Debug::Throw( "TextView::_toggleShowBlockDelimiters.\n" );
+  Debug::Throw() << "TextView::_toggleShowBlockDelimiters - state: " << state << endl;
   
   // check if blockDelimiter is allowed to be shown/hidden
   if( editor().showBlockDelimiterAction().isVisible() ) 
@@ -183,10 +186,7 @@ void TextView::_toggleShowBlockDelimiters( bool state )
     // update visibility
     blockDelimiterWidget().setVisible( state );
     blockDelimiterWidget().setActionVisibility( state );
-    
-    lineNumberWidget().setShowVerticalLine( !state );
-    if( lineNumberWidget().isVisible() ) lineNumberWidget().update();
-    
+        
     // update text highlight object
     bool enabled( (!blockDelimiterWidget().blockDelimiters().empty() ) && state );
     editor().textHighlight().setBlockDelimitersEnabled( enabled );
@@ -195,6 +195,8 @@ void TextView::_toggleShowBlockDelimiters( bool state )
     // update option
     XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", state );
     
+    lineNumberWidget().setShowVerticalLine( !state );
+    
   }
-  
+    
 }
