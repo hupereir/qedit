@@ -426,7 +426,7 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enable_all )
 {
   Debug::Throw( "TextDisplay::askForSave.\n" );
 
-  if( !document()->isModified() ) return AskForSaveDialog::YES;
+  if( !( document()->isModified() && _contentsChanged() ) ) return AskForSaveDialog::YES;
 
   int flags( AskForSaveDialog::YES | AskForSaveDialog::NO | AskForSaveDialog::CANCEL );
   if( enable_all ) flags |=  AskForSaveDialog::ALL;
@@ -1197,12 +1197,9 @@ void TextDisplay::paintEvent( QPaintEvent* event )
   // create painter and translate from widget to viewport coordinates
   QPainter painter( viewport() );
   painter.translate( -scrollbarPosition() );
+  if( delimiter_foreground_color_.isValid() ) painter.setPen( delimiter_foreground_color_ );
   
-  // loop over found blocks
-  QPen pen;
-  pen.setStyle( Qt::DotLine );
-  painter.setPen( pen );
-  
+  // loop over found blocks  
   for( QTextBlock block( first ); block != last.next() && block.isValid(); block = block.next() )
   {
     if( !block.blockFormat().boolProperty( TextBlock::Collapsed ) ) continue;
@@ -1500,7 +1497,8 @@ void TextDisplay::_updateConfiguration( void )
 
   // block delimiters
   showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
-
+  delimiter_foreground_color_ = QColor( XmlOptions::get().get<string>("DELIMITER_FOREGROUND").c_str() );
+  
   // retrieve diff colors
   diff_conflict_color_ = QColor( XmlOptions::get().get<string>("DIFF_CONFLICT_COLOR").c_str() );
   diff_added_color_ = QColor( XmlOptions::get().get<string>("DIFF_ADDED_COLOR").c_str() );

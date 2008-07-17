@@ -65,6 +65,10 @@ class LineNumberWidget: public QWidget, public Counter
   //! setup signal slot document connections
   void setDocumentConnections( void );
   
+  //! show vertical line
+  void setShowVerticalLine( const bool& value ) 
+  { show_vertical_line_ = value; }
+  
   protected:
   
   //! paint
@@ -105,6 +109,10 @@ class LineNumberWidget: public QWidget, public Counter
   //! editor
   TextEditor& _editor( void ) const
   { return *editor_; }
+  
+  //! vertical line
+  const bool& _showVerticalLine( void ) const
+  { return show_vertical_line_; }
   
   //! map block number and position
   class LineNumberData
@@ -182,9 +190,6 @@ class LineNumberWidget: public QWidget, public Counter
   //! associated editor
   TextEditor* editor_;
   
-  //! current block highlight color
-  QColor highlight_color_;
-  
   //! true when line number data update is needed
   bool need_update_;
 
@@ -193,6 +198,9 @@ class LineNumberWidget: public QWidget, public Counter
   
   //! true if current block
   bool has_current_block_;
+  
+  //! true if vertical line is to be drawn
+  bool show_vertical_line_;
   
   //! line number data
   LineNumberData::List line_number_data_;

@@ -184,6 +184,9 @@ void TextView::_toggleShowBlockDelimiters( bool state )
     blockDelimiterWidget().setVisible( state );
     blockDelimiterWidget().setActionVisibility( state );
     
+    lineNumberWidget().setShowVerticalLine( !state );
+    if( lineNumberWidget().isVisible() ) lineNumberWidget().update();
+    
     // update text highlight object
     bool enabled( (!blockDelimiterWidget().blockDelimiters().empty() ) && state );
     editor().textHighlight().setBlockDelimitersEnabled( enabled );

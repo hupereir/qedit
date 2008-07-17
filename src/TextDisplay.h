@@ -575,6 +575,9 @@ class TextDisplay: public TextEditor
   //! associated document class name
   QString class_name_;
        
+  //! delimiters color
+  QColor delimiter_foreground_color_;
+  
   //! diff conflict color 
   QColor diff_conflict_color_;
 

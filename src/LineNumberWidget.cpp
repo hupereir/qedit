@@ -44,24 +44,21 @@
 #include "HighlightBlockData.h"
 #include "XmlOptions.h"
 
+using namespace std;
+
 //____________________________________________________________________________
 LineNumberWidget::LineNumberWidget(TextEditor* editor, QWidget* parent): 
   QWidget( parent),
   Counter( "LineNumberWidget" ),
   editor_( editor ),
   need_update_( true ),
-  need_current_block_update_( false )
+  need_current_block_update_( false ),
+  show_vertical_line_( false )
 {
   
   Debug::Throw( "LineNumberWidget::LineNumberWidget.\n" );
 
   setAutoFillBackground( true );  
-
-  // change background color
-  // the same brush is used as for scrollbars
-  QPalette palette( LineNumberWidget::palette() );
-  palette.setBrush( QPalette::Window, QBrush( palette.color( QPalette::Base ), Qt::Dense4Pattern ) );
-  setPalette( palette );  
  
   connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( _needUpdate() ) );
@@ -124,17 +121,19 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   QPainter painter( this );
   painter.translate( 0, -y_offset );
   painter.setClipRect( 0, 0, width(), height );
-    
+  painter.setPen( palette().color( QPalette::Text ) ); 
+  
   // current block highlight
-  if( need_current_block_update_ && highlight_color_.isValid() )
+  if( need_current_block_update_ && palette().color( QPalette::Highlight ).isValid() )
   {
     has_current_block_ = _updateCurrentBlockData();
-    if( has_current_block_ ) {
+    if( has_current_block_ ) 
+    {
       
       // draw background
       painter.save();
       painter.setPen( Qt::NoPen );
-      painter.setBrush( highlight_color_ );
+      painter.setBrush( palette().color( QPalette::Highlight ) );
       painter.drawRect( 0, current_block_data_.position(), width(), metric.lineSpacing() );
       painter.restore();
       
@@ -188,6 +187,10 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   if( max_length != width() && max_length > 0 ) 
   { setFixedWidth( max_length ); }
     
+  // draw vertical line
+  if( _showVerticalLine() ) 
+  { painter.drawLine( max_length-1, y_offset, max_length-1, LineNumberWidget::height() + y_offset ); }
+  
   painter.end();
   
 }
@@ -215,9 +218,16 @@ void LineNumberWidget::_updateConfiguration( void )
   font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );
   setFont( font );
 
-  // paragraph highlighting
-  highlight_color_ = QColor( XmlOptions::get().raw( "HIGHLIGHT_COLOR" ).c_str() );
-  
+  // change background color
+  // the same brush is used as for scrollbars
+  QPalette palette( LineNumberWidget::palette() );
+  palette.setBrush( QPalette::Window, QColor( XmlOptions::get().get<string>( "DELIMITER_BACKGROUND" ).c_str() ) );
+  palette.setBrush( QPalette::Text, QColor( XmlOptions::get().get<string>( "DELIMITER_FOREGROUND" ).c_str() ) );
+  palette.setBrush( QPalette::Highlight, QColor( XmlOptions::get().get<string>( "HIGHLIGHT_COLOR" ).c_str() ) );
+  setPalette( palette );
+
+  update();
+
 }
 
 //________________________________________________________

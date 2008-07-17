@@ -146,6 +146,16 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( color_display );
   color_display->setToolTip( "highlight color for diff added paragraphs" );
   
+  grid_layout->addWidget( new QLabel( "Block delimiter foreground", box ) );
+  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DELIMITER_FOREGROUND" ) );
+  addOptionWidget( color_display );
+  color_display->setToolTip( "foreground color for block delimiters and line numbers" );
+
+  grid_layout->addWidget( new QLabel( "Block delimiter background", box ) );
+  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DELIMITER_BACKGROUND" ) );
+  addOptionWidget( color_display );
+  color_display->setToolTip( "background color for block delimiters and line numbers" );
+
   // multiple views
   page = &addPage( "Multiple views" );
   page->layout()->addWidget( box = new QGroupBox( page ) );  

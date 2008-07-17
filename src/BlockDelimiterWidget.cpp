@@ -63,12 +63,6 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
   Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
   
   setAutoFillBackground( true );  
-
-  // change background color
-  // the same brush is used as for scrollbars
-  QPalette palette( BlockDelimiterWidget::palette() );
-  palette.setBrush( QPalette::Window, QBrush( palette.color( QPalette::Base ), Qt::Dense4Pattern ) );
-  setPalette( palette );
   
   // actions
   _installActions();
@@ -151,8 +145,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value();
   int height( QWidget::height() );
-  if( _editor().horizontalScrollBar()->isVisible() ) 
-  { height -= _editor().horizontalScrollBar()->height(); }
+  if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
   
   // get begin and end cursor positions
   int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
@@ -160,14 +153,14 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   
   // create painter and translate
   QPainter painter( this );
-    
+  painter.setPen( palette().color( QPalette::Text ) );  
+  painter.drawLine( width()-1, 0, width()-1, BlockDelimiterWidget::height()-1 );
+
   painter.translate( 0, -y_offset );
   height += y_offset;
     
+  //painter.setPen( QColor( "#136872" ) );
   painter.save();
-  QPen pen;
-  pen.setStyle( Qt::DotLine );
-  painter.setPen( pen );
   painter.setClipRect( 0, 0, width(), height );
   
   // retrieve matching segments
@@ -201,23 +194,23 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     painter.drawLine( half_width_, begin, half_width_, end ); 
     
   }
-    
-  painter.restore();
-  
+      
   // end tick
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
     if( iter->end().isValid() && iter->end().cursor() < last_index && iter->end().cursor() >= first_index && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
-    { painter.drawLine( half_width_, iter->end().position(), width_, iter->end().position() ); }
+    { painter.drawLine( half_width_, iter->end().position(), width_ - 3, iter->end().position() ); }
     
   }
   
+  painter.restore();
+
   // draw begin ticks
   // first draw empty square
   painter.save();
   painter.setPen( Qt::NoPen );
-  painter.setBrush( palette().color( QPalette::Base ) );
+  painter.setBrush( palette().color( QPalette::Window ) );
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
@@ -248,7 +241,7 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     }
     
   }
-  
+    
   painter.end();
  
 }
@@ -313,7 +306,7 @@ void BlockDelimiterWidget::_updateConfiguration( void )
      
   // set dimensions needed to redraw marker and lines
   // this is done to minimize the amount of maths in the paintEvent method
-  width_ = fontMetrics().lineSpacing();
+  width_ = fontMetrics().lineSpacing() + 1;
   half_width_ = 0.5*width_;
   top_ = 0.8*width_;
   rect_top_left_ = 0.15*width_;
@@ -321,6 +314,15 @@ void BlockDelimiterWidget::_updateConfiguration( void )
     
   // adjust size
   setFixedWidth( width_ );
+  
+  // change background color
+  // the same brush is used as for scrollbars
+  QPalette palette( BlockDelimiterWidget::palette() );
+  palette.setBrush( QPalette::Window, QColor( XmlOptions::get().get<string>( "DELIMITER_BACKGROUND" ).c_str() ) );
+  palette.setBrush( QPalette::Text, QColor( XmlOptions::get().get<string>( "DELIMITER_FOREGROUND" ).c_str() ) );
+  setPalette( palette );
+  
+  update();
 
 }
 

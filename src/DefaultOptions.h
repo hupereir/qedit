@@ -110,6 +110,10 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "MAX_SUGGESTIONS", "0", "maximum number of suggestions. 0 means all." ));
   #endif
 
+  // colors
+  XmlOptions::get().add( Option( "DELIMITER_FOREGROUND", "#136872" ) );
+  XmlOptions::get().add( Option( "DELIMITER_BACKGROUND", "#e0ffd9" ) );
+  
   // run-time non recordable options
   // default value for autosave directory
   XmlOptions::get().setRaw( "AUTOSAVE_PATH", Util::tmp() );
