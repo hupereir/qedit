@@ -64,7 +64,7 @@ void installDefaultOptions( void )
 
   // diff configuration
   XmlOptions::get().add( Option( "DIFF_ADDED_COLOR", "#d0eaff" ) );
-  XmlOptions::get().add( Option( "DIFF_CONFLICT_COLOR", "#e0ffd9" ) );
+  XmlOptions::get().add( Option( "DIFF_CONFLICT_COLOR", "#ecffec" ) );
   
   XmlOptions::get().add( Option( "PARENTHESIS_COLOR", "red", "color when highlighting matching parenthesis" ) );
   XmlOptions::get().add( Option( "TAGGED_BLOCK_COLOR", "#fffdd4", "color for tagged paragraphs" ) );
@@ -112,7 +112,7 @@ void installDefaultOptions( void )
 
   // colors
   XmlOptions::get().add( Option( "DELIMITER_FOREGROUND", "#136872" ) );
-  XmlOptions::get().add( Option( "DELIMITER_BACKGROUND", "#e0ffd9" ) );
+  XmlOptions::get().add( Option( "DELIMITER_BACKGROUND", "#ecffec" ) );
   
   // run-time non recordable options
   // default value for autosave directory
