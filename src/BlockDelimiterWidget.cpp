@@ -52,6 +52,8 @@
 
 using namespace std;
 
+//#define NATIVE_STYLE
+
 //____________________________________________________________________________
 BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent): 
   QWidget( parent),
@@ -209,7 +211,11 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   // draw begin ticks
   // first draw empty square
   painter.save();
+        
+  #ifndef NATIVE_STYLE 
   painter.setPen( Qt::NoPen );
+  #endif
+  
   painter.setBrush( palette().color( QPalette::Window ) );
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
@@ -232,12 +238,24 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
     {
 
+      #ifdef NATIVE_STYLE
+      
+      painter.drawLine( rect_top_left_ + 2,  iter->begin().position() + (rect_top_left_ + rect_width_ )/2 + 1, rect_top_left_ + rect_width_ - 2, iter->begin().position() + (rect_top_left_ + rect_width_ )/2 + 1 );
+      if( iter->flag( BlockDelimiterSegment::COLLAPSED ) ) 
+      { painter.drawLine( half_width_,  iter->begin().position() + rect_top_left_ + 2, half_width_, iter->begin().position() + rect_top_left_ + rect_width_ - 2 ); }
+      
+      #else
+      
+      // this implementation uses the style d
       option.initFrom( this );
       option.rect = iter->activeRect();
       option.state |= QStyle::State_Children;
       if( !iter->flag( BlockDelimiterSegment::COLLAPSED ) ) { option.state |= QStyle::State_Open; }
       
       style()->drawPrimitive( QStyle::PE_IndicatorBranch, &option, &painter );
+      
+      #endif
+      
     }
     
   }
