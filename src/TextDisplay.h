@@ -648,6 +648,9 @@ class TextDisplay: public TextEditor
        
   //! left margin width
   int left_margin_;
+
+  //! vertical line
+  bool vertical_line_;
   
   //! delimiters color
   QColor margin_foreground_color_;

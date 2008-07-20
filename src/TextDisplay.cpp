@@ -82,6 +82,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   working_directory_( Util::workingDirectory() ),
   class_name_( "" ),
   left_margin_( 0 ),
+  vertical_line_( false ),
   ignore_warnings_( false ),
   show_line_number_action_( 0 ),
   show_block_delimiter_action_( 0 ),
@@ -250,7 +251,7 @@ void TextDisplay::synchronize( TextDisplay* display )
   textIndentAction().setChecked( display->textIndentAction().isChecked() );
   textHighlightAction().setChecked( display->textHighlightAction().isChecked() );
   parenthesisHighlightAction().setChecked( display->parenthesisHighlightAction().isChecked() );
-  // showLineNumberAction().setChecked( display->showLineNumberAction().isChecked() );
+  showLineNumberAction().setChecked( display->showLineNumberAction().isChecked() );
   showBlockDelimiterAction().setChecked( display->showBlockDelimiterAction().isChecked() );
 
   _setMacros( display->macros() );
@@ -1178,6 +1179,9 @@ bool TextDisplay::event( QEvent* event )
       painter.setPen( Qt::NoPen );
       painter.drawRect( 0, 0, left_margin_, height );
       
+      painter.setPen( margin_foreground_color_ );
+      if( vertical_line_ ) { painter.drawLine( left_margin_-1, 0, left_margin_-1, height ); } 
+      
       int y_offset = verticalScrollBar()->value();      
       painter.translate( 0, -y_offset );
 
@@ -1587,6 +1591,7 @@ void TextDisplay::_updateConfiguration( void )
   showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
   margin_foreground_color_ = QColor( XmlOptions::get().get<string>("DELIMITER_FOREGROUND").c_str() );
   margin_background_color_ = QColor( XmlOptions::get().get<string>("DELIMITER_BACKGROUND").c_str() );
+  vertical_line_ = XmlOptions::get().get<bool>( "DELIMITER_VERTICAL_LINE" );
   
   // retrieve diff colors
   diff_conflict_color_ = QColor( XmlOptions::get().get<string>("DIFF_CONFLICT_COLOR").c_str() );

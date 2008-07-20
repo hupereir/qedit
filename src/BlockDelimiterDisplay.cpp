@@ -150,13 +150,8 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
   int last_index = _editor().cursorForPosition( QPoint( 0,  height ) ).position() + 1;
 
   // add horizontal offset
-  painter.translate( _offset(), 0 );
-  
-  // create painter
-  painter.setPen( foreground_color_ );  
-  
+  painter.translate( _offset(), 0 );    
   height += y_offset;    
-  painter.save();
   
   // retrieve matching segments
   QTextDocument &document( *_editor().document() );
@@ -199,13 +194,10 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     
   }
   
-  painter.restore();
-
   // draw begin ticks
   // first draw empty square
   painter.save();
   painter.setPen( Qt::NoPen );
-  painter.setBrush( background_color_ );
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
@@ -220,6 +212,8 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
   painter.restore();
   
   // use the QStyle primitive elements for TreeViews
+  QColor foreground( painter.pen().color() );
+  painter.save();
   QStyleOption option;
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
@@ -228,7 +222,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     {
 
       option.initFrom( &_editor() );
-      option.palette.setColor( QPalette::Text, foreground_color_ );
+      option.palette.setColor( QPalette::Text, foreground );
       option.rect = iter->activeRect();
       option.state |= QStyle::State_Children;
       if( !iter->flag( BlockDelimiterSegment::COLLAPSED ) ) { option.state |= QStyle::State_Open; }
@@ -237,6 +231,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     }
     
   }
+  painter.restore();
      
 }
 
@@ -296,19 +291,7 @@ void BlockDelimiterDisplay::_updateConfiguration( void )
   top_ = 0.8*width_;
   rect_top_left_ = 0.15*width_;
   rect_width_ = 0.7*width_;
-    
-  // colors
-  {
-    QColor color( XmlOptions::get().get<string>( "DELIMITER_BACKGROUND" ).c_str() );
-    background_color_ = color.isValid() ? color:_editor().palette().color( QPalette::Window );
-  }
-  
-  // colors
-  {
-    QColor color( XmlOptions::get().get<string>( "DELIMITER_FOREGROUND" ).c_str() );
-    foreground_color_ = color.isValid() ? color:_editor().palette().color( QPalette::Text );
-  }
-    
+        
 }
 
 //________________________________________________________

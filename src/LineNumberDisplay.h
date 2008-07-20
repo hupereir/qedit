@@ -184,13 +184,7 @@ class LineNumberDisplay: public QObject, public Counter
  
   //! highlight color
   QColor highlight_color_;
-  
-  //! foreground color
-  QColor foreground_color_;
-  
-  //! background color
-  QColor background_color_;
-  
+    
   //! width
   int width_;
   

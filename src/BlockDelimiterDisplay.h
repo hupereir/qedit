@@ -214,13 +214,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
    
   //! true when _updateSegments needs to be called in paintEvent
   bool need_update_; 
-  
-  //! foreground color
-  QColor foreground_color_;
-  
-  //! background color
-  QColor background_color_;
-  
+    
   //!@name marker dimension
   //@{
 

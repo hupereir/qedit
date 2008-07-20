@@ -118,9 +118,7 @@ void LineNumberDisplay::paint( QPainter& painter )
   if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height() + 2; }
   
   // translate
-  painter.save();
   height += y_offset;
-  painter.setPen( foreground_color_ );  
   
   // current block highlight
   if( need_current_block_update_ && highlight_color_.isValid() )
@@ -171,8 +169,6 @@ void LineNumberDisplay::paint( QPainter& painter )
       numtext );
         
   }
-
-  painter.restore();
   
 }
 
@@ -186,18 +182,6 @@ void LineNumberDisplay::_updateConfiguration( void )
   {
     QColor color( XmlOptions::get().get<string>( "HIGHLIGHT_COLOR" ).c_str() );
     highlight_color_ = color.isValid() ? color:_editor().palette().color( QPalette::Highlight );
-  }
-  
-  // colors
-  {
-    QColor color( XmlOptions::get().get<string>( "DELIMITER_BACKGROUND" ).c_str() );
-    background_color_ = color.isValid() ? color:_editor().palette().color( QPalette::Window );
-  }
-  
-  // colors
-  {
-    QColor color( XmlOptions::get().get<string>( "DELIMITER_FOREGROUND" ).c_str() );
-    foreground_color_ = color.isValid() ? color:_editor().palette().color( QPalette::Text );
   }
 
 }
