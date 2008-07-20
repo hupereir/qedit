@@ -1,5 +1,5 @@
-#ifndef LineNumberWidget_h
-#define LineNumberWidget_h
+#ifndef LineNumberDisplay_h
+#define LineNumberDisplay_h
 
 // $Id$
 
@@ -25,7 +25,7 @@
 *******************************************************************************/
 
 /*!
-  \file LineNumberWidget.h
+  \file LineNumberDisplay.h
   \brief display line number of a text editor
   \author Hugo Pereira
   \version $Revision$
@@ -37,7 +37,7 @@
 #include <QMouseEvent>
 #include <QPaintEvent>
 #include <QTextBlock>
-#include <QWidget>
+#include <QObject>
 #include <QWheelEvent>
 
 #include "Counter.h"
@@ -46,7 +46,7 @@
 class TextEditor;
 
 //! display line number of a text editor
-class LineNumberWidget: public QWidget, public Counter
+class LineNumberDisplay: public QObject, public Counter
 {
 
   //! Qt meta object
@@ -55,44 +55,24 @@ class LineNumberWidget: public QWidget, public Counter
   public:
     
   //! constructor
-  LineNumberWidget(TextEditor*, QWidget* parent);
+  LineNumberDisplay(TextEditor*);
 
   //! destructor
-  virtual ~LineNumberWidget();
+  virtual ~LineNumberDisplay();
   
   //! synchronization
-  void synchronize( LineNumberWidget* );
+  void synchronize( LineNumberDisplay* );
   
-  //! setup signal slot document connections
-  void setDocumentConnections( void );
+  //! width
+  virtual bool updateWidth( const int& );
   
-  //! show vertical line
-  bool setShowVerticalLine( const bool& value ) 
-  { 
-    if( value == show_vertical_line_ ) return false;
-    Debug::Throw() << "LineNumberWidget::setShowVerticalLine - value: " << value << std::endl;
-    show_vertical_line_ = value; 
-    update();
-    return true;
-  }
-  
-  protected:
+  //! width
+  virtual const int& width( void ) const
+  { return width_; }
   
   //! paint
-  virtual void paintEvent( QPaintEvent* );
+  virtual void paint( QPainter& );
   
-  //! mouse press event
-  /*! left button events are forwarded to the editor */
-  virtual void mousePressEvent( QMouseEvent* );
-  
-  //! mouse press event
-  /*! left button events are forwarded to the editor */
-  virtual void mouseReleaseEvent( QMouseEvent* );
-
-  //! wheel event
-  /*! wheel events are forwarded to the editor */
-  virtual void wheelEvent( QWheelEvent* );
-
   private slots:
   
   //! configuration
@@ -116,11 +96,7 @@ class LineNumberWidget: public QWidget, public Counter
   //! editor
   TextEditor& _editor( void ) const
   { return *editor_; }
-  
-  //! vertical line
-  const bool& _showVerticalLine( void ) const
-  { return show_vertical_line_; }
-  
+    
   //! map block number and position
   class LineNumberData
   {
@@ -205,9 +181,18 @@ class LineNumberWidget: public QWidget, public Counter
   
   //! true if current block
   bool has_current_block_;
+ 
+  //! highlight color
+  QColor highlight_color_;
   
-  //! true if vertical line is to be drawn
-  bool show_vertical_line_;
+  //! foreground color
+  QColor foreground_color_;
+  
+  //! background color
+  QColor background_color_;
+  
+  //! width
+  int width_;
   
   //! line number data
   LineNumberData::List line_number_data_;

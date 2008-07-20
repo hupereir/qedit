@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-  \file BlockDelimiterWidget.h
+  \file BlockDelimiterDisplay.h
   \brief display block delimiters
   \author Hugo Pereira
   \version $Revision$
@@ -46,35 +46,29 @@
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "Debug.h"
-#include "BlockDelimiterWidget.h"
+#include "BlockDelimiterDisplay.h"
 #include "HighlightBlockData.h"
 #include "XmlOptions.h"
 
 using namespace std;
 
-//#define NATIVE_STYLE
-
 //____________________________________________________________________________
-BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent): 
-  QWidget( parent),
-  Counter( "BlockDelimiterWidget" ),
+BlockDelimiterDisplay::BlockDelimiterDisplay(TextDisplay* editor ): 
+  QObject( editor ),
+  Counter( "BlockDelimiterDisplay" ),
   editor_( editor ),
-  need_update_( true )
+  need_update_( true ),
+  offset_(0)
 {
   
-  Debug::Throw( "BlockDelimiterWidget::BlockDelimiterWidget.\n" );
-  
-  setAutoFillBackground( true );  
-  
+  Debug::Throw( "BlockDelimiterDisplay::BlockDelimiterDisplay.\n" );
+    
   // actions
   _installActions();
   
   // connections
-  connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
-  connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );
   connect( &_editor().textHighlight(), SIGNAL( needSegmentUpdate() ), SLOT( _needUpdate() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( _needUpdate() ) );
-  connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( update() ) );
   connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
   connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
@@ -85,19 +79,19 @@ BlockDelimiterWidget::BlockDelimiterWidget(TextDisplay* editor, QWidget* parent)
 }
 
 //__________________________________________
-BlockDelimiterWidget::~BlockDelimiterWidget()
-{ Debug::Throw( "BlockDelimiterWidget::~BlockDelimiterWidget.\n" ); }
+BlockDelimiterDisplay::~BlockDelimiterDisplay()
+{ Debug::Throw( "BlockDelimiterDisplay::~BlockDelimiterDisplay.\n" ); }
 
 //__________________________________________
-void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
+void BlockDelimiterDisplay::synchronize( const BlockDelimiterDisplay* display )
 {
-  Debug::Throw( "BlockDelimiterWidget::synchronize.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::synchronize.\n" );
 
   // copy members 
-  delimiters_ = widget->delimiters_;
-  segments_ = widget->segments_;
-  collapsed_blocks_ = widget->collapsed_blocks_;
-  need_update_ = widget->need_update_;
+  delimiters_ = display->delimiters_;
+  segments_ = display->segments_;
+  collapsed_blocks_ = display->collapsed_blocks_;
+  need_update_ = display->need_update_;
   
   // re-initialize connections
   connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
@@ -106,9 +100,9 @@ void BlockDelimiterWidget::synchronize( const BlockDelimiterWidget* widget )
 }
 
 //__________________________________________
-void BlockDelimiterWidget::setActionVisibility( const bool& state )
+void BlockDelimiterDisplay::setActionVisibility( const bool& state )
 {
-  Debug::Throw( "BlockDelimiterWidget::setActionVisibility.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::setActionVisibility.\n" );
   
   collapseCurrentAction().setVisible( state );
   expandCurrentAction().setVisible( state );
@@ -117,7 +111,7 @@ void BlockDelimiterWidget::setActionVisibility( const bool& state )
 }
 
 //__________________________________________
-void BlockDelimiterWidget::updateCurrentBlockActionState( void )
+void BlockDelimiterDisplay::updateCurrentBlockActionState( void )
 {
   
   // update segments if needed
@@ -135,8 +129,10 @@ void BlockDelimiterWidget::updateCurrentBlockActionState( void )
 }
 
 //__________________________________________
-void BlockDelimiterWidget::paintEvent( QPaintEvent*)
+void BlockDelimiterDisplay::paint( QPainter& painter )
 {  
+  
+  Debug::Throw( "BlockDelimiterDisplay::paint.\n" );;
       
   // check delimiters
   if( delimiters_.empty() ) return;
@@ -145,25 +141,22 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   _updateSegments();
   
   // calculate dimensions
-  int y_offset = _editor().verticalScrollBar()->value();
-  int height( QWidget::height() );
-  if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height(); }
+  int y_offset = _editor().verticalScrollBar()->value() - _editor().frameWidth();
+  int height( _editor().height() - 2*_editor().frameWidth() );
+  if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height() + 2; }
   
   // get begin and end cursor positions
   int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
   int last_index = _editor().cursorForPosition( QPoint( 0,  height ) ).position() + 1;
-  
-  // create painter and translate
-  QPainter painter( this );
-  painter.setPen( palette().color( QPalette::Text ) );  
-  painter.drawLine( width()-1, 0, width()-1, BlockDelimiterWidget::height()-1 );
 
-  painter.translate( 0, -y_offset );
-  height += y_offset;
-    
-  //painter.setPen( QColor( "#136872" ) );
+  // add horizontal offset
+  painter.translate( _offset(), 0 );
+  
+  // create painter
+  painter.setPen( foreground_color_ );  
+  
+  height += y_offset;    
   painter.save();
-  painter.setClipRect( 0, 0, width(), height );
   
   // retrieve matching segments
   QTextDocument &document( *_editor().document() );
@@ -211,12 +204,8 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
   // draw begin ticks
   // first draw empty square
   painter.save();
-        
-  #ifndef NATIVE_STYLE 
   painter.setPen( Qt::NoPen );
-  #endif
-  
-  painter.setBrush( palette().color( QPalette::Window ) );
+  painter.setBrush( background_color_ );
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
     
@@ -238,37 +227,24 @@ void BlockDelimiterWidget::paintEvent( QPaintEvent*)
     if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
     {
 
-      #ifdef NATIVE_STYLE
-      
-      painter.drawLine( rect_top_left_ + 2,  iter->begin().position() + (rect_top_left_ + rect_width_ )/2 + 1, rect_top_left_ + rect_width_ - 2, iter->begin().position() + (rect_top_left_ + rect_width_ )/2 + 1 );
-      if( iter->flag( BlockDelimiterSegment::COLLAPSED ) ) 
-      { painter.drawLine( half_width_,  iter->begin().position() + rect_top_left_ + 2, half_width_, iter->begin().position() + rect_top_left_ + rect_width_ - 2 ); }
-      
-      #else
-      
-      // this implementation uses the style d
-      option.initFrom( this );
+      option.initFrom( &_editor() );
+      option.palette.setColor( QPalette::Text, foreground_color_ );
       option.rect = iter->activeRect();
       option.state |= QStyle::State_Children;
       if( !iter->flag( BlockDelimiterSegment::COLLAPSED ) ) { option.state |= QStyle::State_Open; }
       
-      style()->drawPrimitive( QStyle::PE_IndicatorBranch, &option, &painter );
-      
-      #endif
-      
+      _editor().style()->drawPrimitive( QStyle::PE_IndicatorBranch, &option, &painter );
     }
     
   }
-    
-  painter.end();
- 
+     
 }
 
 //________________________________________________________
-void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
+void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
 {
 
-  Debug::Throw( "BlockDelimiterWidget::mousePressEvent.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::mousePressEvent.\n" );
     
   // check button
   if( !( event->button() == Qt::LeftButton ) ) return;
@@ -276,7 +252,7 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   // find segment matching event position
   BlockDelimiterSegment::List::const_iterator iter = find_if( 
     segments_.begin(), segments_.end(), 
-    BlockDelimiterSegment::ActiveFTor( event->pos()+QPoint(0, _editor().verticalScrollBar()->value() ) ) );
+    BlockDelimiterSegment::ActiveFTor( event->pos()+QPoint( -_offset(), _editor().verticalScrollBar()->value() ) ) );
   if( iter == segments_.end() ) return;
   
   // retrieve matching segments
@@ -288,7 +264,7 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
   if( block_format.boolProperty( TextBlock::Collapsed ) ) 
   {
     
-    Debug::Throw( "BlockDelimiterWidget::mousePressEvent - collapsed block found.\n" );
+    Debug::Throw( "BlockDelimiterDisplay::mousePressEvent - collapsed block found.\n" );
     bool cursor_visible( _editor().isCursorVisible() );
     _editor().clearBoxSelection();
     _expand( blocks.first, data );
@@ -296,7 +272,7 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
     
   } else {
     
-    Debug::Throw( "BlockDelimiterWidget::mousePressEvent - expanded block found.\n" );
+    Debug::Throw( "BlockDelimiterDisplay::mousePressEvent - expanded block found.\n" );
     _editor().clearBoxSelection();
     _collapse( blocks.first, blocks.second, data );
     
@@ -307,45 +283,36 @@ void BlockDelimiterWidget::mousePressEvent( QMouseEvent* event )
 
 }
 
-//___________________________________________________________
-void BlockDelimiterWidget::wheelEvent( QWheelEvent* event )
-{ qApp->sendEvent( _editor().viewport(), event ); }
-
 //________________________________________________________
-void BlockDelimiterWidget::_updateConfiguration( void )
+void BlockDelimiterDisplay::_updateConfiguration( void )
 {
   
-  Debug::Throw( "BlockDelimiterWidget::_updateConfiguration.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::_updateConfiguration.\n" );
   
-  // font
-  QFont font;
-  font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );
-  setFont( font );
-     
   // set dimensions needed to redraw marker and lines
   // this is done to minimize the amount of maths in the paintEvent method
-  width_ = fontMetrics().lineSpacing() + 1;
+  width_ = _editor().fontMetrics().lineSpacing() + 1;
   half_width_ = 0.5*width_;
   top_ = 0.8*width_;
   rect_top_left_ = 0.15*width_;
   rect_width_ = 0.7*width_;
     
-  // adjust size
-  setFixedWidth( width_ );
+  // colors
+  {
+    QColor color( XmlOptions::get().get<string>( "DELIMITER_BACKGROUND" ).c_str() );
+    background_color_ = color.isValid() ? color:_editor().palette().color( QPalette::Window );
+  }
   
-  // change background color
-  // the same brush is used as for scrollbars
-  QPalette palette( BlockDelimiterWidget::palette() );
-  palette.setBrush( QPalette::Window, QColor( XmlOptions::get().get<string>( "DELIMITER_BACKGROUND" ).c_str() ) );
-  palette.setBrush( QPalette::Text, QColor( XmlOptions::get().get<string>( "DELIMITER_FOREGROUND" ).c_str() ) );
-  setPalette( palette );
-  
-  update();
-
+  // colors
+  {
+    QColor color( XmlOptions::get().get<string>( "DELIMITER_FOREGROUND" ).c_str() );
+    foreground_color_ = color.isValid() ? color:_editor().palette().color( QPalette::Text );
+  }
+    
 }
 
 //________________________________________________________
-void BlockDelimiterWidget::_contentsChanged( void )
+void BlockDelimiterDisplay::_contentsChanged( void )
 {
   
   // if text is wrapped, line number data needs update at next update
@@ -359,7 +326,7 @@ void BlockDelimiterWidget::_contentsChanged( void )
 }
 
 //________________________________________________________
-void BlockDelimiterWidget::_blockCountChanged( void )
+void BlockDelimiterDisplay::_blockCountChanged( void )
 {
   
   // nothing to be done if wrap mode is not NoWrap, because
@@ -373,9 +340,9 @@ void BlockDelimiterWidget::_blockCountChanged( void )
 }
 
 //________________________________________________________
-void BlockDelimiterWidget::_collapseCurrentBlock( void )
+void BlockDelimiterDisplay::_collapseCurrentBlock( void )
 { 
-  Debug::Throw( "BlockDelimiterWidget::_collapseCurrentBlock.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::_collapseCurrentBlock.\n" );
 
   /* update segments if needed */
   _updateSegments(); 
@@ -404,10 +371,10 @@ void BlockDelimiterWidget::_collapseCurrentBlock( void )
 }
   
 //________________________________________________________
-void BlockDelimiterWidget::_expandCurrentBlock( void )
+void BlockDelimiterDisplay::_expandCurrentBlock( void )
 {   
   
-  Debug::Throw( "BlockDelimiterWidget::_expandCurrentBlock.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::_expandCurrentBlock.\n" );
 
   /* update segments if needed */
   _updateSegments(); 
@@ -436,10 +403,10 @@ void BlockDelimiterWidget::_expandCurrentBlock( void )
 }
 
 //________________________________________________________
-void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
+void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
 { 
   
-  Debug::Throw( "BlockDelimiterWidget::_collapseTopLevelBlocks.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::_collapseTopLevelBlocks.\n" );
   
   /* update segments if needed */
   _updateSegments(); 
@@ -539,10 +506,10 @@ void BlockDelimiterWidget::_collapseTopLevelBlocks( void )
 }
 
 //________________________________________________________
-void BlockDelimiterWidget::_expandAllBlocks( void )
+void BlockDelimiterDisplay::_expandAllBlocks( void )
 { 
   
-  Debug::Throw( "BlockDelimiterWidget::_expandAllBlocks.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::_expandAllBlocks.\n" );
   
   // clear box selection
   _editor().clearBoxSelection();
@@ -577,34 +544,34 @@ void BlockDelimiterWidget::_expandAllBlocks( void )
 }
 
 //__________________________________________________________
-void BlockDelimiterWidget::_needUpdate( void )
+void BlockDelimiterDisplay::_needUpdate( void )
 { need_update_ = true; }
   
 //________________________________________________________
-void BlockDelimiterWidget::_installActions( void )
+void BlockDelimiterDisplay::_installActions( void )
 {
   
-  Debug::Throw( "BlockDelimiterWidget::_installActions.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::_installActions.\n" );
 
-  addAction( collapse_current_action_ = new QAction( "&Collapse current block", this ) );
+  collapse_current_action_ = new QAction( "&Collapse current block", this );
   collapse_current_action_->setToolTip( "collapse current collapsed block" );
   collapse_current_action_->setShortcut( Qt::CTRL + Qt::Key_Minus );
   connect( collapse_current_action_, SIGNAL( triggered() ), SLOT( _collapseCurrentBlock() ) );
   collapse_current_action_->setEnabled( false );
 
-  addAction( expand_current_action_ = new QAction( "&Expand current block", this ) );
+  expand_current_action_ = new QAction( "&Expand current block", this );
   expand_current_action_->setToolTip( "expand current collapsed block" );
   expand_current_action_->setShortcut( Qt::CTRL + Qt::Key_Plus );
   connect( expand_current_action_, SIGNAL( triggered() ), SLOT( _expandCurrentBlock() ) );
   expand_current_action_->setEnabled( false );
     
-  addAction( collapse_action_ = new QAction( "&Collapse top level blocks", this ) );
+  collapse_action_ = new QAction( "&Collapse top level blocks", this );
   collapse_action_->setToolTip( "collapse all top level blocks" );
   collapse_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Minus );
   connect( collapse_action_, SIGNAL( triggered() ), SLOT( _collapseTopLevelBlocks() ) );
   collapse_action_->setEnabled( true );
   
-  addAction( expand_all_action_ = new QAction( "&Expand all blocks", this ) );
+  expand_all_action_ = new QAction( "&Expand all blocks", this );
   expand_all_action_->setToolTip( "expand all collapsed blocks" );
   expand_all_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Plus );
   connect( expand_all_action_, SIGNAL( triggered() ), SLOT( _expandAllBlocks() ) );
@@ -613,7 +580,7 @@ void BlockDelimiterWidget::_installActions( void )
 }
 
 //________________________________________________________
-void BlockDelimiterWidget::_synchronizeBlockData( void ) const
+void BlockDelimiterDisplay::_synchronizeBlockData( void ) const
 {
   
   QTextDocument &document( *_editor().document() );
@@ -639,7 +606,7 @@ void BlockDelimiterWidget::_synchronizeBlockData( void ) const
 }
 
 //________________________________________________________
-void BlockDelimiterWidget::_updateSegments( void )
+void BlockDelimiterDisplay::_updateSegments( void )
 {
   
   if( !need_update_ ) return;
@@ -763,7 +730,7 @@ void BlockDelimiterWidget::_updateSegments( void )
 
 
 //________________________________________________________
-void BlockDelimiterWidget::_updateSegmentMarkers( void )
+void BlockDelimiterDisplay::_updateSegmentMarkers( void )
 {
 
   QTextBlock block( _editor().document()->begin() );
@@ -778,7 +745,7 @@ void BlockDelimiterWidget::_updateSegmentMarkers( void )
 
 
 //________________________________________________________
-void BlockDelimiterWidget::_updateMarker( QTextBlock& block, unsigned int& id, BlockMarker& marker, const BlockMarkerType& flag ) const
+void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, unsigned int& id, BlockMarker& marker, const BlockMarkerType& flag ) const
 {
 
   // find block matching marker id
@@ -795,7 +762,7 @@ void BlockDelimiterWidget::_updateMarker( QTextBlock& block, unsigned int& id, B
 }
 
 //_____________________________________________________________________________________
-BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks( 
+BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks( 
   const BlockDelimiterSegment& segment, 
   HighlightBlockData*& data ) const
 {
@@ -805,14 +772,14 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
 }
 
 //_____________________________________________________________________________________
-BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks( 
+BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks( 
   QTextBlock& block,
   unsigned int& id,
   const BlockDelimiterSegment& segment, 
   HighlightBlockData*& data ) const
 {
 
-  Debug::Throw( "BlockDelimiterWidget::_findBlocks.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::_findBlocks.\n" );
   TextBlockPair out;
   
   // look for first block
@@ -831,7 +798,7 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   // finish if block is collapsed
   if( block.blockFormat().boolProperty( TextBlock::Collapsed ) ) 
   {
-    Debug::Throw( "BlockDelimiterWidget::_findBlocks - done.\n" );
+    Debug::Throw( "BlockDelimiterDisplay::_findBlocks - done.\n" );
     return out;
   }
   
@@ -859,13 +826,13 @@ BlockDelimiterWidget::TextBlockPair BlockDelimiterWidget::_findBlocks(
   
   // store and return
   out.second = block;
-  Debug::Throw( "BlockDelimiterWidget::_findBlocks - done.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::_findBlocks - done.\n" );
   return out;
   
 }
 
 //________________________________________________________________________________________
-void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData* data, const bool& recursive ) const
+void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData* data, const bool& recursive ) const
 { 
       
   // retrieve block format
@@ -923,10 +890,10 @@ void BlockDelimiterWidget::_expand( const QTextBlock& block, HighlightBlockData*
 }
 
 //________________________________________________________________________________________
-void BlockDelimiterWidget::_collapse( const QTextBlock& first_block, const QTextBlock& second_block, HighlightBlockData* data ) const
+void BlockDelimiterDisplay::_collapse( const QTextBlock& first_block, const QTextBlock& second_block, HighlightBlockData* data ) const
 {
    
-  Debug::Throw( "BlockDelimiterWidget::_collapse.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::_collapse.\n" );
   
   // get block associated to cursor
   // see if cursor belongs to collapsible block

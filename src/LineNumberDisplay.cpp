@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 /*!
-  \file LineNumberWidget.cpp
+  \file LineNumberDisplay.cpp
   \brief display line number of a text editor
   \author Hugo Pereira
   \version $Revision$
@@ -40,58 +40,49 @@
 #include "BlockHighlight.h"
 #include "TextEditor.h"
 #include "Debug.h"
-#include "LineNumberWidget.h"
+#include "LineNumberDisplay.h"
 #include "HighlightBlockData.h"
 #include "XmlOptions.h"
 
 using namespace std;
 
 //____________________________________________________________________________
-LineNumberWidget::LineNumberWidget(TextEditor* editor, QWidget* parent): 
-  QWidget( parent),
-  Counter( "LineNumberWidget" ),
+LineNumberDisplay::LineNumberDisplay(TextEditor* editor): 
+  QObject( editor ),
+  Counter( "LineNumberDisplay" ),
   editor_( editor ),
   need_update_( true ),
   need_current_block_update_( false ),
-  show_vertical_line_( false )
+  width_( 0 )
 {
   
-  Debug::Throw( "LineNumberWidget::LineNumberWidget.\n" );
-
-  setAutoFillBackground( true );  
+  Debug::Throw( "LineNumberDisplay::LineNumberDisplay.\n" );
  
-  connect( _editor().verticalScrollBar(), SIGNAL( valueChanged( int ) ), SLOT( update() ) );
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( _needUpdate() ) );
-  connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( update() ) );
-  
   connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
   connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
-  
   connect( &_editor().blockHighlight(), SIGNAL( highlightChanged() ), SLOT( _currentBlockChanged() ) );
-  connect( &_editor(), SIGNAL( textChanged() ), SLOT( update() ) );  
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
   // update configuration
   _updateConfiguration();
   
-  // width
-  setFixedWidth( fontMetrics().width( "000" ) + 14 );
-
 }
 
 //__________________________________________
-LineNumberWidget::~LineNumberWidget()
-{ Debug::Throw( "LineNumberWidget::~LineNumberWidget.\n" );}
+LineNumberDisplay::~LineNumberDisplay()
+{ Debug::Throw( "LineNumberDisplay::~LineNumberDisplay.\n" );}
 
 //__________________________________________
-void LineNumberWidget::synchronize( LineNumberWidget* widget )
+void LineNumberDisplay::synchronize( LineNumberDisplay* display )
 {
  
-  Debug::Throw( "LineNumberWidget::synchronize.\n" );
+  Debug::Throw( "LineNumberDisplay::synchronize.\n" );
 
   // copy members
-  line_number_data_ = widget->line_number_data_;
-  need_update_ = widget->need_update_;
+  line_number_data_ = display->line_number_data_;
+  need_update_ = display->need_update_;
+  width_ = display->width_;
   
   // re-initialize connections
   connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
@@ -100,7 +91,17 @@ void LineNumberWidget::synchronize( LineNumberWidget* widget )
 }
 
 //__________________________________________
-void LineNumberWidget::paintEvent( QPaintEvent* )
+bool LineNumberDisplay::updateWidth( const int& count )
+{
+  Debug::Throw( "LineNumberDisplay::updateWidth.\n" );
+  int new_width( _editor().fontMetrics().width( QString::number( count ) ) + 14 );
+  if( width() == new_width ) return false;
+  width_ = new_width;
+  return true;  
+}
+
+//__________________________________________
+void LineNumberDisplay::paint( QPainter& painter )
 {  
 
   // update line number data if needed
@@ -109,22 +110,20 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
   need_update_ = false;
   
   // font metric and offset
-  const QFontMetrics metric( fontMetrics() );
+  const QFontMetrics metric( _editor().fontMetrics() );
   
   // calculate dimensions
-  int y_offset = _editor().verticalScrollBar()->value();
-  int height( QWidget::height() + y_offset );
-  if( _editor().horizontalScrollBar()->isVisible() ) 
-  { height -= _editor().horizontalScrollBar()->height(); }
-
-  // brush/pen  
-  QPainter painter( this );
-  painter.translate( 0, -y_offset );
-  painter.setClipRect( 0, 0, width(), height );
-  painter.setPen( palette().color( QPalette::Text ) ); 
+  int y_offset = _editor().verticalScrollBar()->value() - _editor().frameWidth();
+  int height( _editor().height() - 2*_editor().frameWidth() );
+  if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height() + 2; }
+  
+  // translate
+  painter.save();
+  height += y_offset;
+  painter.setPen( foreground_color_ );  
   
   // current block highlight
-  if( need_current_block_update_ && palette().color( QPalette::Highlight ).isValid() )
+  if( need_current_block_update_ && highlight_color_.isValid() )
   {
     has_current_block_ = _updateCurrentBlockData();
     if( has_current_block_ ) 
@@ -133,20 +132,17 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
       // draw background
       painter.save();
       painter.setPen( Qt::NoPen );
-      painter.setBrush( palette().color( QPalette::Highlight ) );
-      painter.drawRect( 0, current_block_data_.position(), width(), metric.lineSpacing() );
+      painter.setBrush( highlight_color_ );
+      painter.drawRect( 0, current_block_data_.position(), width_, metric.lineSpacing() );
       painter.restore();
       
     } 
         
   }
 
-  // maximum text length
-  int max_length=0;  
-
   // get begin and end cursor positions
   int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
-  int last_index = _editor().cursorForPosition( QPoint( 0, QWidget::height() ) ).position();
+  int last_index = _editor().cursorForPosition( QPoint( 0, _editor().height() ) ).position();
   
   // loop over data
   QTextBlock block( _editor().document()->begin() );
@@ -169,69 +165,45 @@ void LineNumberWidget::paintEvent( QPaintEvent* )
     
     QString numtext( QString::number( iter->lineNumber() ) );
     painter.drawText(
-      0, iter->position(), width()-8,
+      0, iter->position(), width_-8,
       metric.lineSpacing(),
       Qt::AlignRight | Qt::AlignTop, 
       numtext );
-    
-    //max_length = std::max( max_length, metric.width(numtext)+metric.width("0")+10 );
-    if( metric.width(numtext) + 14 > max_length )
-    {
-      max_length = std::max( max_length, metric.width(numtext) + 14 );
-      painter.setClipRect( 0, 0, max_length, height );
-    }
-    
+        
   }
 
-  // resize
-  if( max_length != width() && max_length > 0 ) 
-  { setFixedWidth( max_length ); }
-    
-  // draw vertical line
-  if( _showVerticalLine() ) 
-  { painter.drawLine( max_length-1, y_offset, max_length-1, LineNumberWidget::height() + y_offset ); }
-  
-  painter.end();
+  painter.restore();
   
 }
 
-//___________________________________________________________
-void LineNumberWidget::mousePressEvent( QMouseEvent* event )
-{ if( event->button() ==  Qt::LeftButton ) qApp->sendEvent( _editor().viewport(), event ); }
-
-//___________________________________________________________
-void LineNumberWidget::mouseReleaseEvent( QMouseEvent* event )
-{ if( event->button() ==  Qt::LeftButton ) qApp->sendEvent( _editor().viewport(), event ); }
-
-//___________________________________________________________
-void LineNumberWidget::wheelEvent( QWheelEvent* event )
-{ qApp->sendEvent( _editor().viewport(), event ); }
-
 //________________________________________________________
-void LineNumberWidget::_updateConfiguration( void )
+void LineNumberDisplay::_updateConfiguration( void )
 {
   
-  Debug::Throw( "LineNumberWidget::_updateConfiguration.\n" );
-
-  // font
-  QFont font;
-  font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );
-  setFont( font );
-
-  // change background color
-  // the same brush is used as for scrollbars
-  QPalette palette( LineNumberWidget::palette() );
-  palette.setBrush( QPalette::Window, QColor( XmlOptions::get().get<string>( "DELIMITER_BACKGROUND" ).c_str() ) );
-  palette.setBrush( QPalette::Text, QColor( XmlOptions::get().get<string>( "DELIMITER_FOREGROUND" ).c_str() ) );
-  palette.setBrush( QPalette::Highlight, QColor( XmlOptions::get().get<string>( "HIGHLIGHT_COLOR" ).c_str() ) );
-  setPalette( palette );
-
-  update();
+  Debug::Throw( "LineNumberDisplay::_updateConfiguration.\n" );
+    
+  // colors
+  {
+    QColor color( XmlOptions::get().get<string>( "HIGHLIGHT_COLOR" ).c_str() );
+    highlight_color_ = color.isValid() ? color:_editor().palette().color( QPalette::Highlight );
+  }
+  
+  // colors
+  {
+    QColor color( XmlOptions::get().get<string>( "DELIMITER_BACKGROUND" ).c_str() );
+    background_color_ = color.isValid() ? color:_editor().palette().color( QPalette::Window );
+  }
+  
+  // colors
+  {
+    QColor color( XmlOptions::get().get<string>( "DELIMITER_FOREGROUND" ).c_str() );
+    foreground_color_ = color.isValid() ? color:_editor().palette().color( QPalette::Text );
+  }
 
 }
 
 //________________________________________________________
-void LineNumberWidget::_contentsChanged( void )
+void LineNumberDisplay::_contentsChanged( void )
 {
   
   // if text is wrapped, line number data needs update at next update
@@ -241,7 +213,7 @@ void LineNumberWidget::_contentsChanged( void )
 }
 
 //________________________________________________________
-void LineNumberWidget::_blockCountChanged( void )
+void LineNumberDisplay::_blockCountChanged( void )
 {
     
   // nothing to be done if wrap mode is not NoWrap, because
@@ -252,14 +224,11 @@ void LineNumberWidget::_blockCountChanged( void )
 }
 
 //________________________________________________________
-void LineNumberWidget::_currentBlockChanged( void )
-{
-  need_current_block_update_ = true;
-  update();
-}
+void LineNumberDisplay::_currentBlockChanged( void )
+{ need_current_block_update_ = true; }
 
 //________________________________________________________
-void LineNumberWidget::_updateLineNumberData( void )
+void LineNumberDisplay::_updateLineNumberData( void )
 {
   
   line_number_data_.clear();
@@ -285,7 +254,7 @@ void LineNumberWidget::_updateLineNumberData( void )
 }
 
 //________________________________________________________
-void LineNumberWidget::_updateLineNumberData( QTextBlock& block, unsigned int& id, LineNumberWidget::LineNumberData& data ) const
+void LineNumberDisplay::_updateLineNumberData( QTextBlock& block, unsigned int& id, LineNumberDisplay::LineNumberData& data ) const
 {
   assert( !data.isValid() );
 
@@ -300,18 +269,18 @@ void LineNumberWidget::_updateLineNumberData( QTextBlock& block, unsigned int& i
 }
 
 //________________________________________________________
-bool LineNumberWidget::_updateCurrentBlockData( void )
+bool LineNumberDisplay::_updateCurrentBlockData( void )
 {
 
   // do nothing if not enabled
   if( !_editor().blockHighlightAction().isChecked() ) return false;
   
   // font metric
-  const QFontMetrics metric( fontMetrics() );
+  const QFontMetrics metric( _editor().fontMetrics() );
   
   // get begin and end cursor positions
   int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
-  int last_index = _editor().cursorForPosition( QPoint( 0,  QWidget::height() ) ).position();
+  int last_index = _editor().cursorForPosition( QPoint( 0, _editor().height() ) ).position();
 
   // get document
   unsigned int block_count( 1 );

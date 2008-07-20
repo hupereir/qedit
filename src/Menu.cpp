@@ -32,7 +32,7 @@
 #include <QApplication>
 #include <sstream>
 
-#include "BlockDelimiterWidget.h"
+#include "BlockDelimiterDisplay.h"
 #include "Config.h"
 #include "DebugMenu.h"
 #include "DocumentClass.h"
@@ -82,7 +82,7 @@ Menu::Menu( QWidget* parent ):
   connect( open_previous_menu_, SIGNAL( fileSelected( FileRecord ) ), &editframe, SLOT( open( FileRecord ) ) );
   
   menu->addSeparator();
-  menu->addAction( &editframe.closeViewAction() );
+  menu->addAction( &editframe.closeDisplayAction() );
   menu->addAction( &editframe.closeWindowAction() );
   menu->addAction( &editframe.saveAction() );
   menu->addAction( &editframe.saveAsAction() );
@@ -168,7 +168,7 @@ void Menu::_updateDocumentClassMenu( void )
   
   // retrieve current class from EditFrame
   EditFrame& frame( *static_cast<EditFrame*>(window()) ); 
-  const QString& class_name( frame.activeView().editor().className() );
+  const QString& class_name( frame.activeDisplay().className() );
   
   // retrieve classes from DocumentClass manager
   const DocumentClassManager::ClassList& classes( static_cast<MainFrame*>(qApp)->classManager().list() );
@@ -192,7 +192,7 @@ void Menu::_updateEditMenu( void )
   
   edit_menu_->clear();
   
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeView().editor() );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
   edit_menu_->addAction( &display.undoAction() );
   edit_menu_->addAction( &display.redoAction() );
   edit_menu_->addSeparator();
@@ -214,7 +214,7 @@ void Menu::_updateSearchMenu( void )
 
   search_menu_->clear();
   
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeView().editor() );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
   search_menu_->addAction( &display.findAction() );
   search_menu_->addAction( &display.findAgainAction() );
   search_menu_->addAction( &display.findSelectionAction() );
@@ -235,7 +235,7 @@ void Menu::_updatePreferenceMenu( void )
   // reference to needed objects
   MainFrame& mainframe( *static_cast<MainFrame*>(qApp) );
   EditFrame& editframe( *static_cast<EditFrame*>(window()) );
-  TextDisplay& display( editframe.activeView().editor() );
+  TextDisplay& display( editframe.activeDisplay() );
 
   // clear menu
   preference_menu_->clear();
@@ -260,9 +260,9 @@ void Menu::_updatePreferenceMenu( void )
   new_window_action_->setCheckable( true );
   new_window_action_->setChecked( editframe.openMode() == EditFrame::NEW_WINDOW );
   
-  new_view_action_ = group->addAction( "Open in new &view" );
-  new_view_action_->setCheckable( true );
-  new_view_action_->setChecked( editframe.openMode() == EditFrame::NEW_VIEW );
+  new_display_action_ = group->addAction( "Open in new &display" );
+  new_display_action_->setCheckable( true );
+  new_display_action_->setChecked( editframe.openMode() == EditFrame::NEW_VIEW );
   
   open_mode_menu->addActions( group->actions() );
   connect( open_mode_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOpenMode() ) );
@@ -311,8 +311,7 @@ void Menu::_updateToolsMenu( void )
 
   // retrieve editframe and current display
   EditFrame& editframe( *static_cast<EditFrame*>(window()) );
-  TextView& view( editframe.activeView() );
-  TextDisplay& display( view.editor() );
+  TextDisplay& display( editframe.activeDisplay() );
   
   // retrieve flags needed to set button state
   bool editable( !display.isReadOnly() );
@@ -359,17 +358,17 @@ void Menu::_updateToolsMenu( void )
   display.clearAllTagsAction().setEnabled( has_tags );
 
   // blocks delimiters
-  bool visible( view.blockDelimiterWidget().collapseCurrentAction().isVisible() );
+  bool visible( display.blockDelimiterDisplay().collapseCurrentAction().isVisible() );
   if( visible )
   {
     
-    view.blockDelimiterWidget().updateCurrentBlockActionState();
+    display.blockDelimiterDisplay().updateCurrentBlockActionState();
     
     tools_menu_->addSeparator();
-    tools_menu_->addAction( &view.blockDelimiterWidget().collapseCurrentAction() );
-    tools_menu_->addAction( &view.blockDelimiterWidget().collapseAction() );
-    tools_menu_->addAction( &view.blockDelimiterWidget().expandCurrentAction() );
-    tools_menu_->addAction( &view.blockDelimiterWidget().expandAllAction() );
+    tools_menu_->addAction( &display.blockDelimiterDisplay().collapseCurrentAction() );
+    tools_menu_->addAction( &display.blockDelimiterDisplay().collapseAction() );
+    tools_menu_->addAction( &display.blockDelimiterDisplay().expandCurrentAction() );
+    tools_menu_->addAction( &display.blockDelimiterDisplay().expandAllAction() );
   }
   
   // rehighlight
@@ -393,7 +392,7 @@ void Menu::_updateMacroMenu( void )
   Debug::Throw( "Menu::_updateMacroMenu.\n" );
 
   // retrieve current display
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeView().editor() );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
   
   // clear menu
   macro_menu_->clear();
@@ -433,7 +432,7 @@ void Menu::_updateWindowsMenu( void )
   windows_menu_->clear();
   
   // retrieve current display
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeView().editor() );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
   windows_menu_->addAction( &display.fileInfoAction() );
   
   const string& current_file( display.file() );
@@ -454,12 +453,12 @@ void Menu::_updateWindowsMenu( void )
   { 
     
     // retrieve associated TextDisplays
-    BASE::KeySet<TextView> views( *frame_iter );
-    for( BASE::KeySet<TextView>::const_iterator iter = views.begin(); iter != views.end(); iter++ )
+    BASE::KeySet<TextDisplay> displays( *frame_iter );
+    for( BASE::KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
       
       // retrieve file and check
-      const File& file( (*iter)->editor().file() );
+      const File& file( (*iter)->file() );
       if( file.empty() ) continue;
       
       // check if file was already processed
@@ -507,7 +506,7 @@ void Menu::_selectMacro( QAction* action )
   if( iter == macros_.end() ) return;
   
   // retrieve current Text Display
-  TextDisplay& display( static_cast<EditFrame*>(window())->activeView().editor() );
+  TextDisplay& display( static_cast<EditFrame*>(window())->activeDisplay() );
   display.processMacro( iter->second );
   
   return;
@@ -541,7 +540,7 @@ void Menu::_selectFile( QAction* action )
   }
   
   // select display in found frame
-  (*frame_iter)->selectView( iter->second );
+  (*frame_iter)->selectDisplay( iter->second );
   (*frame_iter)->uniconify();
   
   return;

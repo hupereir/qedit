@@ -113,6 +113,7 @@ void installDefaultOptions( void )
   // colors
   XmlOptions::get().add( Option( "DELIMITER_FOREGROUND", "#136872" ) );
   XmlOptions::get().add( Option( "DELIMITER_BACKGROUND", "#ecffec" ) );
+  XmlOptions::get().add( Option( "DELIMITER_VERTICAL_LINE", "1" ) );
   
   // run-time non recordable options
   // default value for autosave directory

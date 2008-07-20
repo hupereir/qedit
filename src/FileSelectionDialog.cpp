@@ -58,7 +58,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   layout->setMargin(10);
   setLayout( layout );
 
-  // custom list view
+  // custom list display
   list_ = new TreeView( this );
   list_->setModel( &model_ );
   list_->setSelectionMode( QAbstractItemView::MultiSelection );
@@ -72,19 +72,19 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   {
 
     // retrieve associated TextDisplays
-    BASE::KeySet<TextView> views( *frame_iter );
-    for( BASE::KeySet<TextView>::const_iterator iter = views.begin(); iter != views.end(); iter++ )
+    BASE::KeySet<TextDisplay> displays( *frame_iter );
+    for( BASE::KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
       
       // retrieve filename
-      const File& file( (*iter)->editor().file() );
+      const File& file( (*iter)->file() );
       if( file.empty() ) continue;
 
       // try add file, skipp if already inserted
       if( !file_set.insert( file ).second ) continue;
 
       // retrieve document class
-      const QString& class_name( (*iter)->editor().className() );
+      const QString& class_name( (*iter)->className() );
       model_.add( std::make_pair( file.expand(), class_name ) );
 
     }

@@ -71,7 +71,7 @@ noinst_HEADERS = \
   AutoSave.h \
   AutoSaveThread.h \
   BlockDelimiterSegment.h \
-  BlockDelimiterWidget.h \
+  BlockDelimiterDisplay.h \
   BlockMarker.h \
   CollapsedBlockData.h \
   ConfigurationDialog.h \
@@ -88,7 +88,7 @@ noinst_HEADERS = \
   HighlightBlockFlags.h \
   HtmlUtil.h \
   Icons.h \
-  LineNumberWidget.h \
+  LineNumberDisplay.h \
   MainFrame.h \
   Menu.h \
   NewFileDialog.h \
@@ -97,14 +97,13 @@ noinst_HEADERS = \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
-  TextView.h \
   WindowTitle.h
 
 libqedit_a_SOURCES = \
   AskForSaveDialog.cpp \
   AutoSave.cpp \
   AutoSaveThread.cpp \
-  BlockDelimiterWidget.cpp \
+  BlockDelimiterDisplay.cpp \
   CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
@@ -117,7 +116,7 @@ libqedit_a_SOURCES = \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HtmlUtil.cpp \
-  LineNumberWidget.cpp \
+  LineNumberDisplay.cpp \
   MainFrame.cpp \
   Menu.cpp \
   NewFileDialog.cpp \
@@ -125,21 +124,20 @@ libqedit_a_SOURCES = \
   PrintDialog.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
-  TextIndent.cpp \
-  TextView.cpp
+  TextIndent.cpp
 
 nodist_libqedit_a_SOURCES = \
   qrc_pixmaps.cpp \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \
-  moc_BlockDelimiterWidget.cpp \
+  moc_BlockDelimiterDisplay.cpp \
   moc_ConfigurationDialog.cpp \
   moc_Diff.cpp \
   moc_EditFrame.cpp \
   moc_FileModifiedDialog.cpp \
   moc_FileRemovedDialog.cpp \
   moc_FileSelectionDialog.cpp \
-  moc_LineNumberWidget.cpp \
+  moc_LineNumberDisplay.cpp \
   moc_MainFrame.cpp \
   moc_Menu.cpp \
   moc_NewFileDialog.cpp \
@@ -147,8 +145,7 @@ nodist_libqedit_a_SOURCES = \
   moc_PrintDialog.cpp \
   moc_TextDisplay.cpp \
   moc_TextHighlight.cpp \
-  moc_TextIndent.cpp \
-  moc_TextView.cpp
+  moc_TextIndent.cpp
 
 qedit_SOURCES = qedit.cpp
 editDocumentClasses_SOURCES = editDocumentClasses.cpp

@@ -1,5 +1,5 @@
-#ifndef BlockDelimiterWidget_h
-#define BlockDelimiterWidget_h
+#ifndef BlockDelimiterDisplay_h
+#define BlockDelimiterDisplay_h
 
 // $Id$
 
@@ -25,7 +25,7 @@
 *******************************************************************************/
 
 /*!
-  \file BlockDelimiterWidget.h
+  \file BlockDelimiterDisplay.h
   \brief display block delimiters
   \author Hugo Pereira
   \version $Revision$
@@ -35,13 +35,9 @@
 #include <QAction>
 #include <QColor>
 #include <QFont>
-#include <QMouseEvent>
-#include <QPaintEvent>
 #include <QTextBlock>
 #include <QTextCursor>
-#include <QTextFormat>
-#include <QWheelEvent>
-#include <QWidget>
+#include <QObject>
 
 #include "BlockDelimiter.h"
 #include "BlockDelimiterSegment.h"
@@ -51,7 +47,7 @@ class HighlightBlockData;
 class TextDisplay;
 
 //! display block delimiters
-class BlockDelimiterWidget: public QWidget, public Counter 
+class BlockDelimiterDisplay: public QObject, public Counter 
 {
 
   //! Qt meta object
@@ -60,25 +56,35 @@ class BlockDelimiterWidget: public QWidget, public Counter
   public:
   
   //! constructor
-  BlockDelimiterWidget(TextDisplay*, QWidget* parent);
+  BlockDelimiterDisplay(TextDisplay*);
 
   //! destructor
-  virtual ~BlockDelimiterWidget();
+  virtual ~BlockDelimiterDisplay();
   
   //! block delimiters
-  void setBlockDelimiters( const BlockDelimiter::List& delimiters )
-  { delimiters_ = delimiters; }
+  bool setBlockDelimiters( const BlockDelimiter::List& delimiters )
+  {
+    if( delimiters == delimiters_ ) return false;
+    delimiters_ = delimiters; 
+    return true;
+  }
   
   //! block delimiters
   const BlockDelimiter::List& blockDelimiters( void ) const
   { return delimiters_; }
   
   //! synchronization
-  void synchronize( const BlockDelimiterWidget* );
+  void synchronize( const BlockDelimiterDisplay* );
       
   //! number of collapsed block until given block ID
   unsigned int collapsedBlockCount( const int& block ) const
   { return ( collapsed_blocks_.empty() ) ? 0 : collapsed_blocks_.lower_bound( block )->second; }
+
+  //! paint
+  virtual void paint( QPainter& );
+
+  //! mouse press event
+  virtual void mousePressEvent( QMouseEvent* );
   
   //!@name actions
   //@{
@@ -104,23 +110,15 @@ class BlockDelimiterWidget: public QWidget, public Counter
 
   //@}
     
+  //! offset
+  void setOffset( int offset ) 
+  { offset_ = offset; }
+  
   public slots:
   
   //! update expand/collapse current block action state
   void updateCurrentBlockActionState( void );
-  
-  protected:
-  
-  //! paint
-  virtual void paintEvent( QPaintEvent* );
-
-  //! mouse press event
-  virtual void mousePressEvent( QMouseEvent* );
-    
-  //! wheel event
-  /*! wheel events are forwarded to the editor */
-  virtual void wheelEvent( QWheelEvent* );
-  
+      
   private slots:
   
   //! configuration
@@ -158,6 +156,10 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! update segments
   void _updateSegments( void );
   
+  //! offest
+  const int& _offset( void ) const
+  { return offset_; }
+  
   //! block marker type
   enum BlockMarkerType
   {
@@ -174,10 +176,8 @@ class BlockDelimiterWidget: public QWidget, public Counter
   //! block pair
   typedef std::pair<QTextBlock, QTextBlock> TextBlockPair;
 
-  
   //! find blocks that match a given segment
   TextBlockPair _findBlocks( const BlockDelimiterSegment&, HighlightBlockData*& ) const;  
-  
   
   //! find blocks that match a given segment
   /*! 
@@ -211,13 +211,20 @@ class BlockDelimiterWidget: public QWidget, public Counter
   
   //! map block id and number of collapsed blocks
   CollapsedBlockMap collapsed_blocks_;
-  
+   
   //! true when _updateSegments needs to be called in paintEvent
   bool need_update_; 
+  
+  //! foreground color
+  QColor foreground_color_;
+  
+  //! background color
+  QColor background_color_;
   
   //!@name marker dimension
   //@{
 
+  int offset_;
   int width_;
   int half_width_;
   int top_;
@@ -242,7 +249,7 @@ class BlockDelimiterWidget: public QWidget, public Counter
   QAction* expand_all_action_;  
   
   //@}
-    
+      
 };
 
 #endif

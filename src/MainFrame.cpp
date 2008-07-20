@@ -242,12 +242,12 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
   if( iter != frames.end() )
   {
     (*iter)->uniconify();
-    (*iter)->selectView( record.file() );
+    (*iter)->selectDisplay( record.file() );
   
     // trigger autospell if required
-    if( autospell ) (*iter)->activeView().editor().autoSpellAction().setChecked( true );
-    if( !filter.empty() ) (*iter)->activeView().editor().selectFilter( filter.c_str() );
-    if( !dictionary.empty() ) (*iter)->activeView().editor().selectDictionary( dictionary.c_str() );
+    if( autospell ) (*iter)->activeDisplay().autoSpellAction().setChecked( true );
+    if( !filter.empty() ) (*iter)->activeDisplay().selectFilter( filter.c_str() );
+    if( !dictionary.empty() ) (*iter)->activeDisplay().selectDictionary( dictionary.c_str() );
     
     // update open status and exit
     open_status_ = OPEN;
@@ -325,9 +325,9 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
   } 
   
   // trigger autospell if required
-  if( autospell ) frame->activeView().editor().autoSpellAction().setChecked( true );
-  if( !filter.empty() ) frame->activeView().editor().selectFilter( filter.c_str() );
-  if( !dictionary.empty() ) frame->activeView().editor().selectDictionary( dictionary.c_str() );
+  if( autospell ) frame->activeDisplay().autoSpellAction().setChecked( true );
+  if( !filter.empty() ) frame->activeDisplay().selectFilter( filter.c_str() );
+  if( !dictionary.empty() ) frame->activeDisplay().selectDictionary( dictionary.c_str() );
 
   Debug::Throw( "MainFrame::Open - done.\n" );
     
@@ -384,16 +384,16 @@ void MainFrame::multipleFileReplace( std::list<File> files, TextSelection select
     assert( iter != frames.end() );
 
     // retrieve TextDisplay that match file
-    BASE::KeySet<TextView> views( *iter );
-    BASE::KeySet<TextView>::iterator view_iter( find_if( views.begin(), views.end(), TextView::SameFileFTor( file ) ) );
-    assert( view_iter != views.end() );
+    BASE::KeySet<TextDisplay> displays( *iter );
+    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) ) );
+    assert( display_iter != displays.end() );
     
     // need to set display as active so that synchronization is kept with other possible displays
-    (*iter)->setActiveView( **view_iter );
-    (*view_iter)->editor().setFocus();
+    (*iter)->setActiveDisplay( **display_iter );
+    (*display_iter)->setFocus();
     
     // perform replacement
-    counts += (*view_iter)->editor().replaceInWindow( selection, false );
+    counts += (*display_iter)->replaceInWindow( selection, false );
   
   }
   
@@ -508,14 +508,14 @@ void MainFrame::_exit( void )
   {
       
     // retrieve associated text displays
-    BASE::KeySet<TextView> views( *frame_iter );
-    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+    BASE::KeySet<TextDisplay> displays( *frame_iter );
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
 
       // retrieve file
       // store in map if not empty
-      const File& file( (*iter)->editor().file() );
-      if( !file.empty() ) files.insert( make_pair( file, (*iter)->editor().document()->isModified() ) );
+      const File& file( (*iter)->file() );
+      if( !file.empty() ) files.insert( make_pair( file, (*iter)->document()->isModified() ) );
         
     }
     
@@ -537,21 +537,21 @@ void MainFrame::_exit( void )
     
     // loop over displays
     bool save_all_enabled = count_if( iter, frames.end(), EditFrame::IsModifiedFTor() ) > 1;
-    BASE::KeySet<TextView> views( *iter );
-    for( BASE::KeySet<TextView>::iterator view_iter = views.begin(); view_iter != views.end(); view_iter++ )
+    BASE::KeySet<TextDisplay> displays( *iter );
+    for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
     {
       
-      if( !(*view_iter)->editor().document()->isModified() ) continue;
+      if( !(*display_iter)->document()->isModified() ) continue;
       save_all_enabled |= (*iter)->modifiedDisplayCount() > 1;
-      int state( (*view_iter)->editor().askForSave( save_all_enabled ) );
+      int state( (*display_iter)->askForSave( save_all_enabled ) );
       
       if( state == AskForSaveDialog::CANCEL ) return;
       else if( state == AskForSaveDialog::ALL ) 
       {
         
         // save all displays for this frame, starting from the current
-        for(; view_iter != views.end(); view_iter++ ) 
-        { if( (*view_iter)->editor().document()->isModified() ) (*view_iter)->editor().save(); }
+        for(; display_iter != displays.end(); display_iter++ ) 
+        { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
        
         // save all editframes starting from the next to this one
         BASE::KeySet<EditFrame>::iterator sub_iter = iter; 
@@ -589,22 +589,22 @@ void MainFrame::_saveAll( void )
     
     // loop over displays
     bool save_all_enabled = count_if( iter, frames.end(), EditFrame::IsModifiedFTor() ) > 1;
-    BASE::KeySet<TextView> views( *iter );
-    for( BASE::KeySet<TextView>::iterator view_iter = views.begin(); view_iter != views.end(); view_iter++ )
+    BASE::KeySet<TextDisplay> displays( *iter );
+    for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
     {
       
-      if( !(*view_iter)->editor().document()->isModified() ) continue;
+      if( !(*display_iter)->document()->isModified() ) continue;
       
       save_all_enabled |= (*iter)->modifiedDisplayCount() > 1;
-      int state( (*view_iter)->editor().askForSave( save_all_enabled ) );
+      int state( (*display_iter)->askForSave( save_all_enabled ) );
       
       if( state == AskForSaveDialog::CANCEL ) return;
       else if( state == AskForSaveDialog::ALL ) 
       {
         
         // save all displays for this frame, starting from the current
-        for(; view_iter != views.end(); view_iter++ ) 
-        { if( (*view_iter)->editor().document()->isModified() ) (*view_iter)->editor().save(); }
+        for(; display_iter != displays.end(); display_iter++ ) 
+        { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
        
         // save all editframes starting from the next to this one
         BASE::KeySet<EditFrame>::iterator sub_iter = iter; 
@@ -735,8 +735,8 @@ void MainFrame::_readFilesFromArgs( void )
       if( frame_iter == frames.end() ) continue;
       
       // select display and close
-      (*frame_iter)->selectView( file );
-      (*frame_iter)->closeViewAction().trigger();
+      (*frame_iter)->selectDisplay( file );
+      (*frame_iter)->closeDisplayAction().trigger();
     }
     
     // exit application

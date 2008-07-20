@@ -158,13 +158,13 @@ class Menu:public QMenuBar, public Counter
   //! open new window mode
   QAction* new_window_action_;
 
-  //! open new view mode
-  QAction* new_view_action_;
+  //! open new display mode
+  QAction* new_display_action_;
   
-  //! left/right orientated new view
+  //! left/right orientated new display
   QAction* leftright_action_;
 
-  //! top/bottom orientated new view
+  //! top/bottom orientated new display
   QAction* topbottom_action_;
     
   //! map document class to macro names

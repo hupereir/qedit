@@ -37,7 +37,7 @@ HEADERS = \
   AutoSaveThread.h \
   CollapsedBlockData.h \
   BlockDelimiterSegment.h \
-  BlockDelimiterWidget.h \
+  BlockDelimiterDisplay.h \
   BlockMarker.h \
   ConfigurationDialog.h \
   Diff.h \
@@ -53,7 +53,7 @@ HEADERS = \
   HighlightBlockFlags.h \
   HtmlUtil.h \
   Icons.h \
-  LineNumberWidget.h \
+  LineNumberDisplay.h \
   MainFrame.h \
   Menu.h \
   NewFileDialog.h \
@@ -70,7 +70,7 @@ SOURCES = \
   AskForSaveDialog.cpp \
   AutoSave.cpp \
   AutoSaveThread.cpp \
-  BlockDelimiterWidget.cpp \
+  BlockDelimiterDisplay.cpp \
   CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
@@ -83,7 +83,7 @@ SOURCES = \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HtmlUtil.cpp \
-  LineNumberWidget.cpp \
+  LineNumberDisplay.cpp \
   MainFrame.cpp \
   Menu.cpp \
   NewFileDialog.cpp \

@@ -60,6 +60,8 @@ class DocumentClass;
 class HighlightBlockData;
 class OpenPreviousMenu;
 class TextHighlight;
+class BlockDelimiterDisplay;
+class LineNumberDisplay;
 
 //! text display window
 class TextDisplay: public TextEditor
@@ -97,7 +99,7 @@ class TextDisplay: public TextEditor
   virtual void setReadOnly( const bool& value );
 
   //! retrieve context menu. Create it on first call
-  virtual void installContextMenuActions( QMenu& menu );
+  virtual void installContextMenuActions( QMenu& menu, const bool& all_actions = true );
 
   //! update flags (to be passed to TextEditor to change button status)
   enum UpdateFlags
@@ -209,20 +211,30 @@ class TextDisplay: public TextEditor
   //! text highlight
   const TextHighlight& textHighlight( void ) const
   { return *text_highlight_; }
-
-  //! text indent
-  const TextIndent& textIndent( void ) const
-  {
-    assert( indent_ );
-    return *indent_;
-  }
   
   //! text indent
-  TextIndent& textIndent( void )
+  TextIndent& textIndent( void ) const
   {
     assert( indent_ );
     return *indent_;
   }
+ 
+  //! block delimiter display
+  bool hasBlockDelimiterDisplay( void ) const
+  { return block_delimiter_display_; }
+  
+
+  //! line number display
+  bool hasLineNumberDisplay( void ) const
+  { return line_number_display_; }
+  
+  //! line number display
+  LineNumberDisplay& lineNumberDisplay( void ) const
+  { return *line_number_display_; }
+
+  //! block delimiter display
+  BlockDelimiterDisplay& blockDelimiterDisplay( void ) const
+  { return *block_delimiter_display_; }
 
   //! returns true if current text has leading tabs of wrong type
   bool hasLeadingTabs( void ) const;
@@ -256,14 +268,22 @@ class TextDisplay: public TextEditor
   //! autospell action
   QAction& autoSpellAction( void ) const
   { return *autospell_action_; }
+    
+  //! show block delimiters
+  bool hasBlockDelimiterAction( void ) const
+  { return show_block_delimiter_action_; }
+  
+  //! show block delimiters
+  QAction& showBlockDelimiterAction( void ) const
+  { return *show_block_delimiter_action_; }
+    
+  //! show line numbers
+  bool hasLineNumberAction( void ) const
+  { return show_line_number_action_; }
   
   //! show line numbers
   QAction& showLineNumberAction( void ) const
   { return *show_line_number_action_; }
-  
-  //! show line numbers
-  QAction& showBlockDelimiterAction( void ) const
-  { return *show_block_delimiter_action_; }
 
   //! spellcheck action
   QAction& spellcheckAction( void ) const
@@ -351,10 +371,52 @@ class TextDisplay: public TextEditor
   ParenthesisHighlight& parenthesisHighlight( void ) const
   { return *parenthesis_highlight_; }
   
-  signals:
+    //! used to select editor with matching filename
+  class SameFileFTor
+  {
+    public:
 
-  //! emmited when block delimiters are available or not
-  void blockDelimitersAvailable( BlockDelimiter::List );
+    //! constructor
+    SameFileFTor( const File& file ):
+      file_( file.expand() )
+    {}
+
+    //! predicate
+    bool operator() ( const TextDisplay* display ) const
+    { return display->file() == file_; }
+
+    private:
+
+    //! predicted file
+    const File file_;
+
+  };
+
+  //! used to select editor with empty, unmodified file
+  class EmptyFileFTor
+  {
+    public:
+
+    //! predicate
+    bool operator() ( const TextDisplay* display ) const
+    { return display->file().empty() && !display->document()->isModified(); }
+
+  };
+
+    
+  //! used to select editor modified files
+  class ModifiedFTor
+  {
+    public:
+
+    //! predicate
+    bool operator() ( const TextDisplay* display ) const
+    { return display->document()->isModified(); }
+
+  };
+
+  
+  signals:
 
   //! emmited when indentation several blocks is required
   void indent( QTextBlock, QTextBlock );
@@ -391,6 +453,9 @@ class TextDisplay: public TextEditor
   //!@name event handlers
   //@{
   
+  //! generic event
+  virtual bool event( QEvent* );
+  
   //! keypress event [overloaded]
   virtual void keyPressEvent( QKeyEvent* );
 
@@ -403,7 +468,6 @@ class TextDisplay: public TextEditor
   //! raise autospell context menu
   /*! returns true if autospell context menu is used */
   virtual bool _autoSpellContextEvent( QContextMenuEvent* );
-
   
   //@}
   
@@ -463,7 +527,10 @@ class TextDisplay: public TextEditor
   { return *filter_menu_; }
   
   #endif
-
+  
+  //! update margins
+  bool _updateMargins( void );
+  
   private slots:
 
   //! update configuration
@@ -479,6 +546,10 @@ class TextDisplay: public TextEditor
   void _selectionChanged( void )
   { if( isActive() ) emit needUpdate( CUT|COPY ); }
   
+  //! block count changed
+  /*! needed to adjust width of line number display */
+  void _blockCountChanged( int );
+  
   //! replace selection in multiple files
   void _multipleFileReplace( void );
   
@@ -491,10 +562,10 @@ class TextDisplay: public TextEditor
   //! toggle parenthesis
   void _toggleParenthesisHighlight( bool state );
 
-  //! toggle showLineNumber
+  //! toggle line number display
   void _toggleShowLineNumbers( bool state );
-  
-  //! toggle showBlockDelimiter
+
+  //! toggle block delimiters display
   void _toggleShowBlockDelimiters( bool state );
   
   //!@name spell check
@@ -575,9 +646,15 @@ class TextDisplay: public TextEditor
   //! associated document class name
   QString class_name_;
        
-  //! delimiters color
-  QColor delimiter_foreground_color_;
+  //! left margin width
+  int left_margin_;
   
+  //! delimiters color
+  QColor margin_foreground_color_;
+  
+  //! delimiters color
+  QColor margin_background_color_;
+
   //! diff conflict color 
   QColor diff_conflict_color_;
 
@@ -622,7 +699,7 @@ class TextDisplay: public TextEditor
   //! line number
   QAction* show_line_number_action_;
   
-  //! line number
+  //! block delimiter
   QAction* show_block_delimiter_action_;
 
   //! run spell checker
@@ -682,14 +759,15 @@ class TextDisplay: public TextEditor
   
   //! syntax highlighter
   TextHighlight* text_highlight_;
-  
-  //!@name text parenthesis
-  //@{
-      
-  //§ parenthesis highlight object
+        
+  //! parenthesis highlight object
   ParenthesisHighlight* parenthesis_highlight_;
   
-  //@}
+  //! line numbers
+  LineNumberDisplay* line_number_display_;
+
+  //! block delimiter
+  BlockDelimiterDisplay* block_delimiter_display_;
   
   //! empty line
   static const QRegExp empty_line_regexp_;

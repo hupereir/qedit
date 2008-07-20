@@ -146,16 +146,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( color_display );
   color_display->setToolTip( "highlight color for diff added paragraphs" );
   
-  grid_layout->addWidget( new QLabel( "Block delimiter foreground", box ) );
-  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DELIMITER_FOREGROUND" ) );
-  addOptionWidget( color_display );
-  color_display->setToolTip( "foreground color for block delimiters and line numbers" );
-
-  grid_layout->addWidget( new QLabel( "Block delimiter background", box ) );
-  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DELIMITER_BACKGROUND" ) );
-  addOptionWidget( color_display );
-  color_display->setToolTip( "background color for block delimiters and line numbers" );
-
   // multiple views
   page = &addPage( "Multiple views" );
   page->layout()->addWidget( box = new QGroupBox( page ) );  
@@ -233,16 +223,20 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   // misc
   page = &addPage( "Misc" );
   page->layout()->addWidget( box = new QGroupBox( "Backup and Autosave", page ) );  
+
+  box->setLayout( new QVBoxLayout() );
+  box->layout()->setSpacing(5);
+  box->layout()->setMargin(5);
+
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "Save backup", box, "BACKUP" ) );
+  checkbox->setToolTip( "Make backup of the file prior to saving modifications" );
+  addOptionWidget( checkbox );
    
   grid_layout = new CustomGridLayout();
   grid_layout->setSpacing(5);
-  grid_layout->setMargin(5);
+  grid_layout->setMargin(0);
   grid_layout->setMaxCount(2);
-  box->setLayout( grid_layout );
-
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "Save backup", box, "BACKUP" ), 0, 0, 1, 2 );
-  checkbox->setToolTip( "Make backup of the file prior to saving modifications" );
-  addOptionWidget( checkbox );
+  box->layout()->addItem( grid_layout );
 
   grid_layout->addWidget( new QLabel( "autosave interval (seconds)", box ) );
   grid_layout->addWidget( spinbox = new OptionSpinBox( box, "AUTOSAVE_INTERVAL" ) );
@@ -257,6 +251,34 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   edit->setToolTip( "directory when autosaved files are stored" );
   addOptionWidget( edit );
 
+  // block delimiters
+  page->layout()->addWidget( box = new QGroupBox( "Block delimiters appearance", page ) );  
+ 
+  box->setLayout( new QVBoxLayout() );
+  box->layout()->setSpacing(5);
+  box->layout()->setMargin(5);
+
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "Draw vertical line", box, "DELIMITER_VERTICAL_LINE" ) );
+  checkbox->setToolTip( "Draw vertical line on the left of block delimiter and line number displays" );
+  addOptionWidget( checkbox );
+  
+  grid_layout = new CustomGridLayout();
+  grid_layout->setSpacing(5);
+  grid_layout->setMargin(0);
+  grid_layout->setMaxCount(2);
+  box->layout()->addItem( grid_layout );
+
+  grid_layout->addWidget( new QLabel( "Block delimiter foreground", box ) );
+  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DELIMITER_FOREGROUND" ) );
+  addOptionWidget( color_display );
+  color_display->setToolTip( "foreground color for block delimiters and line numbers" );
+
+  grid_layout->addWidget( new QLabel( "Block delimiter background", box ) );
+  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DELIMITER_BACKGROUND" ) );
+  addOptionWidget( color_display );
+  color_display->setToolTip( "background color for block delimiters and line numbers" );
+
+  
   // misc
   page->layout()->addWidget( box = new QGroupBox( "Misc", page ) );  
    
