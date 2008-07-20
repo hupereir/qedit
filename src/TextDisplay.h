@@ -123,14 +123,17 @@ class TextDisplay: public TextEditor
     //! undo/redo availability
     UNDO_REDO = 1<<5,
     
-    //! spell checking 
-    SPELLCHECK = 1<<6,
-    
     //! save action
-    SAVE = 1<<7,
+    SAVE = 1<<6,
+    
+    //! overwrite mode
+    SPELLCHECK = 1<<7,
+
+    //! overwrite mode
+    OVERWRITE_MODE = 1<<8,
     
     //! all the above
-    ALL = WINDOW_TITLE|FILE_NAME|CUT|COPY|PASTE|UNDO_REDO|SPELLCHECK|SAVE
+    ALL = WINDOW_TITLE|FILE_NAME|CUT|COPY|PASTE|UNDO_REDO|SAVE|SPELLCHECK|OVERWRITE_MODE
     
   };
   

@@ -121,9 +121,10 @@ EditFrame::EditFrame(  QWidget* parent ):
 
   // create "hidden" line editor to display filename
   statusbar_->addPermanentWidget( file_editor_ = new LineEditor( statusbar_ ), 1 );
-  statusbar_->addLabels( 2, 0 );
+  statusbar_->addLabels( 3, 0 );
   statusbar_->label(0).setAlignment( AlignCenter ); 
   statusbar_->label(1).setAlignment( AlignCenter ); 
+  statusbar_->label(2).setAlignment( AlignCenter ); 
   statusbar_->addClock();
 
   // modify frame and set readOnly
@@ -709,6 +710,11 @@ void EditFrame::_update( unsigned int flags )
     undoAction().setEnabled( activeDisplay().undoAction().isEnabled() );
     redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
   }
+ 
+  if( statusbar_ && flags & TextDisplay::OVERWRITE_MODE )
+  {
+    statusbar_->label(0).setText( activeDisplay().overwriteMode() ? "INS":"" );
+  }
   
   if( flags & TextDisplay::SAVE )
   { saveAction().setEnabled( !activeDisplay().isReadOnly() ); }
@@ -729,8 +735,8 @@ void EditFrame::_updateCursorPosition( void )
   */
   if( activeDisplay().hasBlockDelimiterDisplay() ) position.paragraph() += activeDisplay().blockDelimiterDisplay().collapsedBlockCount( position.paragraph() );
   
-  statusbar_->label(0).setText( Str( "line : " ).append<int>( position.paragraph()+1 ).c_str() , false );
-  statusbar_->label(1).setText( Str( "column : " ).append<int>( position.index()+1 ).c_str() , false );
+  statusbar_->label(1).setText( Str( "line : " ).append<int>( position.paragraph()+1 ).c_str() , false );
+  statusbar_->label(2).setText( Str( "column : " ).append<int>( position.index()+1 ).c_str() , false );
 
   return;
 }
@@ -1355,6 +1361,7 @@ TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
   connect( display, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
   connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( _displayFocusChanged( TextEditor* ) ) );
   connect( display, SIGNAL( cursorPositionChanged() ), &position_timer_, SLOT( start() ) );
+  connect( display, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
   
   connect( display, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
   connect( display, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );

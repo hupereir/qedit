@@ -485,6 +485,10 @@ class EditFrame: public CustomMainWindow, public Counter, public BASE::Key
   /*! \param flags are bitwise or of TextDisplay::UpdateFlags */
   void _update( unsigned int );
 
+  //! update overwrite mode
+  void _updateOverwriteMode( void )
+  { _update( TextDisplay::OVERWRITE_MODE ); }
+  
   //! display cursor position in state frame
   void _updateCursorPosition( void );
 

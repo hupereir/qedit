@@ -287,18 +287,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setMargin(5);
   grid_layout->setMaxCount(2);
   box->setLayout( grid_layout );
-
-  grid_layout->addWidget( new QLabel( "main window width", box ) );
-  grid_layout->addWidget( spinbox = new OptionSpinBox( box, "WINDOW_WIDTH" ) );
-  spinbox->setMinimum( 5 );
-  spinbox->setMaximum( 2048 );
-  addOptionWidget( spinbox );
-
-  grid_layout->addWidget( new QLabel( "main window height", box ) );
-  grid_layout->addWidget( spinbox = new OptionSpinBox( box, "WINDOW_HEIGHT" ) );
-  spinbox->setMinimum( 5 );
-  spinbox->setMaximum( 2048 );
-  addOptionWidget( spinbox );
   
   // previous file history size
   grid_layout->addWidget( new QLabel( "previous file history size", box ) );
