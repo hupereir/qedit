@@ -960,6 +960,7 @@ void TextDisplay::updateDocumentClass( void )
   if( blockDelimiterDisplay().expandAllAction().isEnabled() ) blockDelimiterDisplay().expandAllAction().trigger();   
   if( blockDelimiterDisplay().setBlockDelimiters( document_class.blockDelimiters() ) ) update();
   showBlockDelimiterAction().setVisible( !document_class.blockDelimiters().empty() );
+  _updateMargins();
   
   // update enability for parenthesis matching
   textHighlight().setParenthesisEnabled(

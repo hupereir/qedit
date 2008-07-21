@@ -214,6 +214,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
   // use the QStyle primitive elements for TreeViews
   QColor foreground( painter.pen().color() );
   painter.save();
+  painter.setBrush( Qt::NoBrush );
   QStyleOption option;
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
@@ -286,11 +287,20 @@ void BlockDelimiterDisplay::_updateConfiguration( void )
   
   // set dimensions needed to redraw marker and lines
   // this is done to minimize the amount of maths in the paintEvent method
-  width_ = _editor().fontMetrics().lineSpacing() + 1;
-  half_width_ = 0.5*width_;
-  top_ = 0.8*width_;
-  rect_top_left_ = 0.15*width_;
+  width_ = _editor().fontMetrics().lineSpacing();
+  if( width_ % 2 ) width_ --;
   rect_width_ = 0.7*width_;
+  half_width_ = 0.5*width_;
+  top_ = 0.8*width_;  
+  rect_top_left_ = 0.15*width_ + 1;
+
+  
+  Debug::Throw() << "BlockDelimiterDisplay::_updateConfiguration - width: " << width_ << endl;
+  Debug::Throw() << "BlockDelimiterDisplay::_updateConfiguration - half_width_: " << half_width_ << endl;
+  Debug::Throw() << "BlockDelimiterDisplay::_updateConfiguration - top_: " << top_ << endl;
+  Debug::Throw() << "BlockDelimiterDisplay::_updateConfiguration - rect_top_left_: " << rect_top_left_ << endl;
+  Debug::Throw() << "BlockDelimiterDisplay::_updateConfiguration - rect_width_: " << rect_width_ << endl;
+  Debug::Throw() << endl;
         
 }
 
