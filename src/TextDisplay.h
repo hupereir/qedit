@@ -61,7 +61,6 @@ class HighlightBlockData;
 class OpenPreviousMenu;
 class TextHighlight;
 class BlockDelimiterDisplay;
-class LineNumberDisplay;
 
 //! text display window
 class TextDisplay: public TextEditor
@@ -225,15 +224,6 @@ class TextDisplay: public TextEditor
   //! block delimiter display
   bool hasBlockDelimiterDisplay( void ) const
   { return block_delimiter_display_; }
-  
-
-  //! line number display
-  bool hasLineNumberDisplay( void ) const
-  { return line_number_display_; }
-  
-  //! line number display
-  LineNumberDisplay& lineNumberDisplay( void ) const
-  { return *line_number_display_; }
 
   //! block delimiter display
   BlockDelimiterDisplay& blockDelimiterDisplay( void ) const
@@ -280,14 +270,6 @@ class TextDisplay: public TextEditor
   QAction& showBlockDelimiterAction( void ) const
   { return *show_block_delimiter_action_; }
     
-  //! show line numbers
-  bool hasLineNumberAction( void ) const
-  { return show_line_number_action_; }
-  
-  //! show line numbers
-  QAction& showLineNumberAction( void ) const
-  { return *show_line_number_action_; }
-
   //! spellcheck action
   QAction& spellcheckAction( void ) const
   { return *spellcheck_action_; }
@@ -530,10 +512,13 @@ class TextDisplay: public TextEditor
   { return *filter_menu_; }
   
   #endif
-  
+    
   //! update margins
-  bool _updateMargins( void );
-  
+  virtual bool _updateMargins( void );
+    
+  //! draw margins
+  virtual void _drawMargins( QPainter& );
+
   private slots:
 
   //! update configuration
@@ -549,10 +534,6 @@ class TextDisplay: public TextEditor
   void _selectionChanged( void )
   { if( isActive() ) emit needUpdate( CUT|COPY ); }
   
-  //! block count changed
-  /*! needed to adjust width of line number display */
-  void _blockCountChanged( int );
-  
   //! replace selection in multiple files
   void _multipleFileReplace( void );
   
@@ -564,9 +545,6 @@ class TextDisplay: public TextEditor
   
   //! toggle parenthesis
   void _toggleParenthesisHighlight( bool state );
-
-  //! toggle line number display
-  void _toggleShowLineNumbers( bool state );
 
   //! toggle block delimiters display
   void _toggleShowBlockDelimiters( bool state );
@@ -648,19 +626,7 @@ class TextDisplay: public TextEditor
   
   //! associated document class name
   QString class_name_;
-       
-  //! left margin width
-  int left_margin_;
-
-  //! vertical line
-  bool vertical_line_;
   
-  //! delimiters color
-  QColor margin_foreground_color_;
-  
-  //! delimiters color
-  QColor margin_background_color_;
-
   //! diff conflict color 
   QColor diff_conflict_color_;
 
@@ -702,9 +668,6 @@ class TextDisplay: public TextEditor
   //! toggle autospell
   QAction* autospell_action_;
     
-  //! line number
-  QAction* show_line_number_action_;
-  
   //! block delimiter
   QAction* show_block_delimiter_action_;
 
@@ -769,9 +732,6 @@ class TextDisplay: public TextEditor
   //! parenthesis highlight object
   ParenthesisHighlight* parenthesis_highlight_;
   
-  //! line numbers
-  LineNumberDisplay* line_number_display_;
-
   //! block delimiter
   BlockDelimiterDisplay* block_delimiter_display_;
   

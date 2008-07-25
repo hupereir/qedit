@@ -86,10 +86,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   box->layout()->setMargin(5);
   box->layout()->setSpacing(5);
 
-  box->layout()->addWidget( checkbox = new OptionCheckBox( "Show line numbers", box, "SHOW_LINE_NUMBERS" ) );
-  checkbox->setToolTip( "Turn on/off line numbers" );
-  addOptionWidget( checkbox );
-
   box->layout()->addWidget( checkbox = new OptionCheckBox( "Show block delimiters", box, "SHOW_BLOCK_DELIMITERS" ) );
   checkbox->setToolTip( "Turn on/off block delimiters" );
   addOptionWidget( checkbox );
@@ -250,34 +246,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->addWidget( edit = new OptionBrowsedLineEditor( box, "AUTOSAVE_PATH" ) );
   edit->setToolTip( "directory when autosaved files are stored" );
   addOptionWidget( edit );
-
-  // block delimiters
-  page->layout()->addWidget( box = new QGroupBox( "Block delimiters appearance", page ) );  
- 
-  box->setLayout( new QVBoxLayout() );
-  box->layout()->setSpacing(5);
-  box->layout()->setMargin(5);
-
-  box->layout()->addWidget( checkbox = new OptionCheckBox( "Draw vertical line", box, "DELIMITER_VERTICAL_LINE" ) );
-  checkbox->setToolTip( "Draw vertical line on the left of block delimiter and line number displays" );
-  addOptionWidget( checkbox );
-  
-  grid_layout = new CustomGridLayout();
-  grid_layout->setSpacing(5);
-  grid_layout->setMargin(0);
-  grid_layout->setMaxCount(2);
-  box->layout()->addItem( grid_layout );
-
-  grid_layout->addWidget( new QLabel( "Block delimiter foreground", box ) );
-  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DELIMITER_FOREGROUND" ) );
-  addOptionWidget( color_display );
-  color_display->setToolTip( "foreground color for block delimiters and line numbers" );
-
-  grid_layout->addWidget( new QLabel( "Block delimiter background", box ) );
-  grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DELIMITER_BACKGROUND" ) );
-  addOptionWidget( color_display );
-  color_display->setToolTip( "background color for block delimiters and line numbers" );
-
   
   // misc
   page->layout()->addWidget( box = new QGroupBox( "Misc", page ) );  

@@ -72,7 +72,6 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "DB_SIZE", "30" ) );
   XmlOptions::get().add( Option( "DEBUG_LEVEL", "0" , "debug verbosity level"));
 
-  XmlOptions::get().add( Option( "SHOW_LINE_NUMBERS", "0" ));
   XmlOptions::get().add( Option( "SHOW_BLOCK_DELIMITERS", "1" ));
   XmlOptions::get().add( Option( "TEXT_INDENT", "1" ));
   XmlOptions::get().add( Option( "TEXT_HIGHLIGHT", "1" ));
@@ -109,11 +108,6 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "AUTOSPELL_FONT_FORMAT", "0", "highlight font format for autospell" ));
   XmlOptions::get().add( Option( "MAX_SUGGESTIONS", "0", "maximum number of suggestions. 0 means all." ));
   #endif
-
-  // colors
-  XmlOptions::get().add( Option( "DELIMITER_FOREGROUND", "#136872" ) );
-  XmlOptions::get().add( Option( "DELIMITER_BACKGROUND", "#ecffec" ) );
-  XmlOptions::get().add( Option( "DELIMITER_VERTICAL_LINE", "1" ) );
   
   // run-time non recordable options
   // default value for autosave directory

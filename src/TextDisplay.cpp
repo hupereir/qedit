@@ -81,13 +81,9 @@ TextDisplay::TextDisplay( QWidget* parent ):
   file_( "" ),
   working_directory_( Util::workingDirectory() ),
   class_name_( "" ),
-  left_margin_( 0 ),
-  vertical_line_( false ),
   ignore_warnings_( false ),
-  show_line_number_action_( 0 ),
   show_block_delimiter_action_( 0 ),
   open_previous_menu_( 0 ),
-  line_number_display_( 0 ),
   block_delimiter_display_( 0 )
 {
 
@@ -108,9 +104,6 @@ TextDisplay::TextDisplay( QWidget* parent ):
   // block delimiter
   block_delimiter_display_ = new BlockDelimiterDisplay( this );
   
-  // line number
-  line_number_display_ = new LineNumberDisplay( this );
-
   // connections
   connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
   connect( this, SIGNAL( cursorPositionChanged() ), SLOT( _highlightParenthesis() ) );
@@ -132,7 +125,6 @@ TextDisplay::TextDisplay( QWidget* parent ):
   // track contents changed for syntax highlighting
   connect( TextDisplay::document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int, int, int ) ) );
   connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
-  connect( TextDisplay::document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged( int ) ) );
 
   // track configuration modifications
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
@@ -201,7 +193,6 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
   TextEditor::installContextMenuActions( menu, all_actions );
   
   // add specific actions
-  menu.insertAction( &wrapModeAction(), &showLineNumberAction() );
   menu.insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
   menu.addSeparator();
 
@@ -238,7 +229,6 @@ void TextDisplay::synchronize( TextDisplay* display )
   // track contents changed for syntax highlighting
   connect( TextDisplay::document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int, int, int ) ) );
   connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
-  connect( TextDisplay::document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged( int ) ) );
 
   // indentation
   textIndent().setPatterns( display->textIndent().patterns() );
@@ -246,7 +236,6 @@ void TextDisplay::synchronize( TextDisplay* display )
 
   // block delimiters and line numbers
   blockDelimiterDisplay().synchronize( &display->blockDelimiterDisplay() );
-  lineNumberDisplay().synchronize( &display->lineNumberDisplay() );
   
   textIndentAction().setChecked( display->textIndentAction().isChecked() );
   textHighlightAction().setChecked( display->textHighlightAction().isChecked() );
@@ -1157,41 +1146,11 @@ bool TextDisplay::event( QEvent* event )
 {
   
   bool has_block_delimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
-  bool has_line_numbers( hasLineNumberDisplay() && hasLineNumberAction() && showLineNumberAction().isVisible() && showLineNumberAction().isChecked() );
-
   
   // check that all needed widgets/actions are valid and checked.
   switch (event->type()) 
   {
-    
-    case QEvent::Paint:
-    if( has_block_delimiters || has_line_numbers ) 
-    {
-      // block delimiter
-      QPainter painter( this );
-      
-      int height( TextDisplay::height() - 2*frameWidth() );
-      if( horizontalScrollBar()->isVisible() ) { height -= horizontalScrollBar()->height() + 2; }
-      
-      painter.translate( frameWidth(),  frameWidth() );
-      painter.setClipRect( 0, 0, left_margin_, height );
-      
-      painter.setBrush( margin_background_color_ );
-      painter.setPen( Qt::NoPen );
-      painter.drawRect( 0, 0, left_margin_, height );
-      
-      painter.setPen( margin_foreground_color_ );
-      if( vertical_line_ ) { painter.drawLine( left_margin_-1, 0, left_margin_-1, height ); } 
-      
-      int y_offset = verticalScrollBar()->value();      
-      painter.translate( 0, -y_offset );
-
-      if( has_line_numbers ) lineNumberDisplay().paint( painter ); 
-      if( has_block_delimiters ) blockDelimiterDisplay().paint( painter ); 
-      painter.end();
-    }
-    break;
-      
+          
     case QEvent::MouseButtonPress:
     if( has_block_delimiters ) blockDelimiterDisplay().mousePressEvent( static_cast<QMouseEvent*>( event ) );
     break;
@@ -1200,7 +1159,7 @@ bool TextDisplay::event( QEvent* event )
   }
   
   return TextEditor::event( event );
-
+  
 }
 
 //_______________________________________________________
@@ -1266,7 +1225,7 @@ void TextDisplay::paintEvent( QPaintEvent* event )
   // create painter and translate from widget to viewport coordinates
   QPainter painter( viewport() );
   painter.translate( -scrollbarPosition() );
-  if( margin_foreground_color_.isValid() ) painter.setPen( margin_foreground_color_ );
+  if( _marginForegroundColor().isValid() ) painter.setPen( _marginForegroundColor() );
   
   // loop over found blocks  
   for( QTextBlock block( first ); block != last.next() && block.isValid(); block = block.next() )
@@ -1278,12 +1237,6 @@ void TextDisplay::paintEvent( QPaintEvent* event )
     painter.drawLine( block_rect.bottomLeft() - QPoint( 2, 0 ), block_rect.bottomRight() );
   }
   painter.end();
-
-  // this is needed to force update of the block delimiter widget
-  if( 
-    ( showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() ) ||
-    ( showLineNumberAction().isVisible() && showLineNumberAction().isChecked() ) )
-  { QFrame::update(); }
   
 }
 
@@ -1358,13 +1311,6 @@ void TextDisplay::_installActions( void )
   parenthesis_highlight_action_->setCheckable( true );
   parenthesis_highlight_action_->setChecked( parenthesisHighlight().isEnabled() );
   connect( parenthesis_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
-
-  addAction( show_line_number_action_ =new QAction( "Show line numbers", this ) );
-  show_line_number_action_->setToolTip( "Show/hide line numbers" );
-  show_line_number_action_->setCheckable( true );
-  show_line_number_action_->setShortcut( Qt::Key_F11 );
-  show_line_number_action_->setShortcutContext( Qt::WidgetShortcut );
-  connect( show_line_number_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowLineNumbers( bool ) ) );
 
   addAction( show_block_delimiter_action_ =new QAction( "Show block delimiters", this ) );
   show_block_delimiter_action_->setToolTip( "Show/hide block delimiters" );
@@ -1555,21 +1501,30 @@ void TextDisplay::_updateTaggedBlocks( void )
 //___________________________________________________________________________
 bool TextDisplay::_updateMargins( void )
 {
-  int left_margin( 0 );
-  
-  if( showLineNumberAction().isChecked() && showLineNumberAction().isVisible() )
-  { left_margin += lineNumberDisplay().width(); }
+  Debug::Throw( "TextDisplay::_updateMargins.\n" );
 
+  TextEditor::_updateMargins();
+  int left_margin( _leftMargin() );
+  
   blockDelimiterDisplay().setOffset( left_margin );
   if( showBlockDelimiterAction().isChecked() && showBlockDelimiterAction().isVisible() )
   { left_margin += fontMetrics().lineSpacing(); }
   
-  if( left_margin_ == left_margin ) return false;
+  if( left_margin == _leftMargin() ) return false;
   
-  left_margin_ = left_margin;
-  setViewportMargins( left_margin, 0, 0, 0 );
+  _setLeftMargin( left_margin );
+  setViewportMargins( _leftMargin(), 0, 0, 0 );
   return true;
   
+}
+
+
+//__________________________________________________________
+void TextDisplay::_drawMargins( QPainter& painter )
+{
+  TextEditor::_drawMargins( painter );
+  bool has_block_delimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
+  if( has_block_delimiters ) blockDelimiterDisplay().paint( painter ); 
 }
 
 //___________________________________________________________________________
@@ -1588,11 +1543,7 @@ void TextDisplay::_updateConfiguration( void )
   parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
 
   // block delimiters, line numbers and margin
-  showLineNumberAction().setChecked( XmlOptions::get().get<bool>( "SHOW_LINE_NUMBERS" ) );
   showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
-  margin_foreground_color_ = QColor( XmlOptions::get().get<string>("DELIMITER_FOREGROUND").c_str() );
-  margin_background_color_ = QColor( XmlOptions::get().get<string>("DELIMITER_BACKGROUND").c_str() );
-  vertical_line_ = XmlOptions::get().get<bool>( "DELIMITER_VERTICAL_LINE" );
   
   // retrieve diff colors
   diff_conflict_color_ = QColor( XmlOptions::get().get<string>("DIFF_CONFLICT_COLOR").c_str() );
@@ -1784,29 +1735,6 @@ void TextDisplay::_toggleAutoSpell( bool state )
 }
 
 //_______________________________________________________
-void TextDisplay::_toggleShowLineNumbers( bool state )
-{
-
-  _updateMargins();
-  
-  // propagate to other displays
-  if( isSynchronized() )
-  {
-    // temporarely disable synchronization
-    // to avoid infinite loop
-    setSynchronized( false );
-
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { if( (*iter)->isSynchronized() ) (*iter)->showLineNumberAction().setChecked( state ); }
-    setSynchronized( true );
-
-  }
-
-  return;
-}
-
-//_______________________________________________________
 void TextDisplay::_toggleShowBlockDelimiters( bool state )
 {
     
@@ -1827,19 +1755,6 @@ void TextDisplay::_toggleShowBlockDelimiters( bool state )
   }
 
   return;
-}
-
-
-//________________________________________________________
-void TextDisplay::_blockCountChanged( int count )
-{
-  
-  Debug::Throw( "TextDisplay::_blockCountChanged.\n" );
-  if( !( hasLineNumberDisplay() && lineNumberDisplay().updateWidth( count ) ) ) return;
-  if( !( hasLineNumberAction() && showLineNumberAction().isChecked() && showLineNumberAction().isVisible() ) ) return;
-  _updateMargins();
-  update();
-  
 }
 
 //_______________________________________________________

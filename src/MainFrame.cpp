@@ -416,7 +416,7 @@ void MainFrame::_about( void )
 
   Debug::Throw( "MainFrame::_about.\n" );
   ostringstream what;
-  what << "<b>QEdit</b> version " << VERSION << " (" << BUILD_TIMESTAMP << ")<br>";
+  what << "<b>QEdit</b> version " << VERSION << " (" << BUILD_TIMESTAMP << ")";
   what 
     << "<p>This application was written for personal use only. "
     << "It is not meant to be bug free, although all efforts "
