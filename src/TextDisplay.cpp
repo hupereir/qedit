@@ -1740,6 +1740,9 @@ void TextDisplay::_toggleShowBlockDelimiters( bool state )
     
   _updateMargins();
   
+  // update options
+  XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", state );
+
   // propagate to other displays
   if( isSynchronized() )
   {
