@@ -257,7 +257,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   
   // number of lines
   grid_layout->addWidget( new QLabel( "number of lines: ", box ) );
-  grid_layout->addWidget( new QLabel( Str().assign<int>(parent->blockCount()).c_str(), box ) );
+  grid_layout->addWidget( new QLabel( Str().assign<int>(parent->TextEditor::blockCount()).c_str(), box ) );
 
   grid_layout->addWidget( new QLabel( "Current paragraph highlighting: ", box ) );
   grid_layout->addWidget( new QLabel( (parent->blockHighlightAction().isChecked() ? "true":"false" ), box ) );
