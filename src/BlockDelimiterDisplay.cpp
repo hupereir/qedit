@@ -92,6 +92,7 @@ void BlockDelimiterDisplay::synchronize( const BlockDelimiterDisplay* display )
   segments_ = display->segments_;
   collapsed_blocks_ = display->collapsed_blocks_;
   need_update_ = display->need_update_;
+  offset_ = display->offset_;
   
   // re-initialize connections
   connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );

@@ -1510,11 +1510,7 @@ bool TextDisplay::_updateMargins( void )
   if( showBlockDelimiterAction().isChecked() && showBlockDelimiterAction().isVisible() )
   { left_margin += fontMetrics().lineSpacing(); }
   
-  if( left_margin == _leftMargin() ) return false;
-  
-  _setLeftMargin( left_margin );
-  setViewportMargins( _leftMargin(), 0, 0, 0 );
-  return true;
+  return _setLeftMargin( left_margin );
   
 }
 
