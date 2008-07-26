@@ -1351,7 +1351,7 @@ QSplitter& EditFrame::_newSplitter( const Orientation& orientation, const bool& 
 //_____________________________________________________________
 TextDisplay& EditFrame::_newTextDisplay( QWidget* parent )
 {
-  Debug::Throw( "EditFrame::_newTextDisplay.\n" );
+  Debug::Throw( "\nEditFrame::_newTextDisplay.\n" );
 
   // create textDisplay
   TextDisplay* display = new TextDisplay( parent );  

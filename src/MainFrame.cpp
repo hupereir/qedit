@@ -154,23 +154,23 @@ void MainFrame::realizeWidget( void )
   about_action_ = new QAction( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).c_str() ), "About &QEdit", 0 );
   connect( about_action_, SIGNAL( triggered() ), SLOT( _about() ) );
    
-  aboutqt_action_ = new QAction( IconEngine::get( ICONS::ABOUT_QT ), "About &Qt", 0 );
+  aboutqt_action_ = new QAction( IconEngine::get( ICONS::ABOUT_QT ), "About &Qt", this );
   connect( aboutqt_action_, SIGNAL( triggered() ), SLOT( aboutQt() ) ); 
 
-  close_action_ = new QAction( IconEngine::get( ICONS::EXIT ), "E&xit", 0 );
+  close_action_ = new QAction( IconEngine::get( ICONS::EXIT ), "E&xit", this );
   close_action_->setShortcut( CTRL+Key_Q );
   connect( close_action_, SIGNAL( triggered() ), SLOT( _exit() ) );
 
-  save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save A&ll", 0 );
+  save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save A&ll", this );
   connect( save_all_action_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
   
-  configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Default &Configuration", 0 );
+  configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Default &Configuration", this );
   connect( configuration_action_, SIGNAL( triggered() ), SLOT( _configuration() ) );
 
-  document_class_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Document Class &Configuration", 0 );
+  document_class_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Document Class &Configuration", this );
   connect( document_class_configuration_action_, SIGNAL( triggered() ), SLOT( _documentClassConfiguration() ) );
   
-  spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "&Spell-check &Configuration", 0 );
+  spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "&Spell-check &Configuration", this );
   connect( spellcheck_configuration_action_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
   
   // class manager

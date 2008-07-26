@@ -207,12 +207,12 @@ class TextDisplay: public TextEditor
   bool ignoreParagraph( const QTextBlock& paragraph );
 
   //! text highlight
-  TextHighlight& textHighlight( void )
-  { return *text_highlight_; }
-
-  //! text highlight
   bool hasTextHighlight( void )
   { return text_highlight_; }
+
+  //! text highlight
+  TextHighlight& textHighlight( void )
+  { return *text_highlight_; }
 
   //! text highlight
   const TextHighlight& textHighlight( void ) const

@@ -84,6 +84,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   ignore_warnings_( false ),
   show_block_delimiter_action_( 0 ),
   open_previous_menu_( 0 ),
+  text_highlight_( 0 ),
   block_delimiter_display_( 0 )
 {
 
@@ -231,10 +232,14 @@ void TextDisplay::synchronize( TextDisplay* display )
 
   Debug::Throw( "TextDisplay::synchronize.\n" );
 
-  // synchronize text
-  // (from base class)
-  TextEditor::synchronize( display );
+  // replace base class synchronization prior to calling base class synchronization
+  /* 
+  this avoids calling to invalid block of memory which the textHighlight gets deleted
+  when changing the document */
   text_highlight_ = &display->textHighlight();
+
+  // base class synchronization
+  TextEditor::synchronize( display );
 
   // restore connection with document
   // track contents changed for syntax highlighting
@@ -2073,7 +2078,7 @@ void TextDisplay::_replaceMisspelledSelection( QString word )
 void TextDisplay::_highlightParenthesis( void )
 {
 
-  if( !textHighlight().isParenthesisEnabled() ) return;
+  if( !( hasTextHighlight() && textHighlight().isParenthesisEnabled() ) ) return;
 
   // clear previous parenthesis
   parenthesisHighlight().clear();

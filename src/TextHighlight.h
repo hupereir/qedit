@@ -62,6 +62,10 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   //! constructor
   TextHighlight( QTextDocument* );
   
+  //! destructor
+  virtual ~TextHighlight( void )
+  {}
+  
   //! highlight paragraph
   virtual void highlightBlock( const QString& text );
   
