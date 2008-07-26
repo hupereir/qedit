@@ -2,7 +2,7 @@ AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(qedit, qt4_1.3)
 AC_PROG_CXX
 AC_PROG_LIBTOOL
-CXXFLAGS="-Wall -Wno-non-virtual-dtor -g -O2"
+CXXFLAGS="-Wall -Wno-non-virtual-dtor -O2"
 
 dnl *********************************************
 dnl external programs
