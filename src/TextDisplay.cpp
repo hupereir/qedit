@@ -142,6 +142,17 @@ TextDisplay::~TextDisplay( void )
 { Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; }
 
 //_____________________________________________________
+int TextDisplay::blockCount( const QTextBlock& block ) const
+{
+
+  QTextBlockFormat block_format( block.blockFormat() );
+  if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
+  {  return block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount(); }
+  else return TextEditor::blockCount( block );
+  
+}
+
+//_____________________________________________________
 void TextDisplay::setModified( const bool& value )
 {
 

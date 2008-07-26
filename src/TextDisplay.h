@@ -77,6 +77,10 @@ class TextDisplay: public TextEditor
   //! destructor
   virtual ~TextDisplay();
   
+  //! number of block associated to argument
+  /*! reimplemented from base class to account for collapsed blocks */
+  virtual int blockCount( const QTextBlock& ) const;
+  
   //! clone display configuration and document
   virtual void synchronize( TextDisplay* display );
   
