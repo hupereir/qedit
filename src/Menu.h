@@ -124,7 +124,7 @@ class Menu:public QMenuBar, public Counter
   
   //! open previous menu, in which the open files are stored
   OpenPreviousMenu* open_previous_menu_;       
-  
+    
   //! document class menu
   QMenu* document_class_menu_;
   
@@ -142,13 +142,20 @@ class Menu:public QMenuBar, public Counter
   
   //! macro menu
   QMenu* macro_menu_;
-  
-  //! diff menu
-  //QMenu* diff_menu_; 
-  
+    
   //! windows menu
-  /*! it is updated every time it is shown with the list of opened files */ 
   QMenu* windows_menu_;
+  
+  //@}
+  
+  //!@name action groups
+  //@{
+  
+  //! document class action group
+  QActionGroup* document_class_action_group_;
+  
+  //! windows action group
+  QActionGroup* windows_action_group_;
   
   //@}
   

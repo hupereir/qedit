@@ -89,8 +89,10 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &mainframe.saveAllAction() );
   menu->addAction( &editframe.revertToSaveAction() );
   menu->addSeparator();
-  
+
   document_class_menu_ = menu->addMenu( "Set &document class" );
+  document_class_action_group_ = new QActionGroup( document_class_menu_ );
+  document_class_action_group_->setExclusive( true );
   connect( document_class_menu_, SIGNAL( aboutToShow() ), SLOT( _updateDocumentClassMenu() ) );
   connect( document_class_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectClassName( QAction* ) ) );
   
@@ -122,6 +124,8 @@ Menu::Menu( QWidget* parent ):
     
   // windows
   windows_menu_ = addMenu( "&Windows" );
+  windows_action_group_ = new QActionGroup( windows_menu_ );
+  windows_action_group_->setExclusive( true );
   connect( windows_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateWindowsMenu() ) );
   connect( windows_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectFile( QAction* ) ) );
 
@@ -163,8 +167,6 @@ void Menu::_updateDocumentClassMenu( void )
   // clear menu
   document_class_menu_->clear();
   document_classes_.clear();
-  QFont font( QMenuBar::font() );
-  font.setWeight( QFont::Bold );
   
   // retrieve current class from EditFrame
   EditFrame& frame( *static_cast<EditFrame*>(window()) ); 
@@ -177,7 +179,11 @@ void Menu::_updateDocumentClassMenu( void )
     // insert actions
     QAction* action = document_class_menu_->addAction( iter->name() );
     if( !iter->icon().isEmpty() ) action->setIcon( IconEngine::get( qPrintable( iter->icon() ) ) );
-    if( iter->name() == class_name ) action->setFont( font );
+    
+    document_class_action_group_->addAction( action );
+    action->setCheckable( true );
+    action->setChecked( iter->name() == class_name );
+    
     document_classes_.insert( make_pair( action, iter->name() ) );    
   }
   
@@ -442,11 +448,7 @@ void Menu::_updateWindowsMenu( void )
 
   // clear files map
   files_.clear();
-  
-  // insert files into menu
-  QFont font( QMenuBar::font() );
-  font.setWeight( QFont::Bold );
-    
+      
   bool first = true;
   set<File> files;
   for( BASE::KeySet<EditFrame>::const_iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
@@ -473,7 +475,9 @@ void Menu::_updateWindowsMenu( void )
       
       // add menu item
       QAction* action = windows_menu_->addAction( file.c_str() );
-      if( current_file == file ) action->setFont( font );
+      windows_action_group_->addAction( action );
+      action->setCheckable( true );
+      action->setChecked( current_file == file );
       
       // insert in map for later callback.
       files_.insert( make_pair( action, file ) );
