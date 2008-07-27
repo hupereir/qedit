@@ -939,7 +939,7 @@ CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& firs
       if( current_data ) { collapsed_delimiters += current_data->delimiters(); }
       
       // also append possible collapsed delimiters
-      collapsed_delimiters == current_collapsed_data.delimiters();
+      collapsed_delimiters += current_collapsed_data.delimiters();
 
       // append collapsed data
       collapsed_data.children().push_back( current_collapsed_data );
