@@ -436,12 +436,12 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
     // get matching blocks
     HighlightBlockData *data(0);
     TextBlockPair blocks( _findBlocks( block, id, *iter, data ) );
-
+    
     // do nothing if block is already collapsed
     cursor.setPosition( blocks.first.position(), QTextCursor::MoveAnchor );
     QTextBlockFormat block_format( cursor.blockFormat() );
-    
-    if( block_format.boolProperty( TextBlock::Collapsed ) ) continue;
+    if( block_format.boolProperty( TextBlock::Collapsed ) ) 
+    { continue; }
         
     // update block format
     block_format.setProperty( TextBlock::Collapsed, true );
@@ -784,10 +784,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
 
   // finish if block is collapsed
   if( block.blockFormat().boolProperty( TextBlock::Collapsed ) ) 
-  {
-    Debug::Throw( "BlockDelimiterDisplay::_findBlocks - done.\n" );
-    return out;
-  }
+  { return out; }
   
   // look for second block
   for( ; block.isValid() && id < segment.end().id(); block = block.next(), id++ )
@@ -805,6 +802,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
       {
         if( !iter->begin() ) continue;
         block = block.previous();
+        id--;
         break;
       }
       
@@ -812,8 +810,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
   }
   
   // store and return
-  out.second = block;
-  Debug::Throw( "BlockDelimiterDisplay::_findBlocks - done.\n" );
+  out.second = block;  
   return out;
   
 }
