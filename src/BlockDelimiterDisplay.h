@@ -41,6 +41,7 @@
 
 #include "BlockDelimiter.h"
 #include "BlockDelimiterSegment.h"
+#include "CollapsedBlockData.h"
 #include "Counter.h"
 
 class HighlightBlockData;
@@ -193,6 +194,9 @@ class BlockDelimiterDisplay: public QObject, public Counter
   //! collapse blocks 
   void _collapse( const QTextBlock&, const QTextBlock&, HighlightBlockData* ) const;
 
+  //! get collapsed data for all blocs between first and second argument
+  CollapsedBlockData _collapsedData( const QTextBlock&, const QTextBlock& ) const;
+  
   //! editor
   TextDisplay& _editor( void ) const
   { return *editor_; }

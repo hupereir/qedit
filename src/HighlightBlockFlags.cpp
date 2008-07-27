@@ -51,7 +51,7 @@ Delimiter Delimiter::operator + (const Delimiter& delimiter ) const
   return out;
   
 }
-
+  
 //_______________________________________________
 Delimiter::List Delimiter::List::operator + (const Delimiter::List& list ) const
 {

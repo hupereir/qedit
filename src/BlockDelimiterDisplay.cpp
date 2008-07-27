@@ -438,30 +438,15 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
     TextBlockPair blocks( _findBlocks( block, id, *iter, data ) );
 
     // do nothing if block is already collapsed
-    QTextBlockFormat block_format( blocks.first.blockFormat() );
-    if( block_format.boolProperty( TextBlock::Collapsed ) ) continue;
-    
-    // create collapsed block data to be stored in current block before collapsed
-    CollapsedBlockData collapsed_data;
-    if( blocks.second != blocks.first )
-    {
-      for( QTextBlock current = blocks.first.next(); current.isValid(); current = current.next() )
-      {
-        
-        // append collapsed data
-        collapsed_data.children().push_back( CollapsedBlockData( current ) );
-        if( current == blocks.second ) break;
-        
-      }
-    }
-    
-    // move cursor to first block
     cursor.setPosition( blocks.first.position(), QTextCursor::MoveAnchor );
-
+    QTextBlockFormat block_format( cursor.blockFormat() );
+    
+    if( block_format.boolProperty( TextBlock::Collapsed ) ) continue;
+        
     // update block format
     block_format.setProperty( TextBlock::Collapsed, true );
     QVariant variant;
-    variant.setValue( collapsed_data );
+    variant.setValue( _collapsedData( blocks.first, blocks.second ) );
     block_format.setProperty( TextBlock::CollapsedData, variant );
     cursor.setBlockFormat( block_format );  
     
@@ -498,6 +483,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
   return; 
 
 }
+
 
 //________________________________________________________
 void BlockDelimiterDisplay::_expandAllBlocks( void )
@@ -630,12 +616,18 @@ void BlockDelimiterDisplay::_updateSegments( void )
       HighlightBlockData* data = (dynamic_cast<HighlightBlockData*>( block.userData() ) );
       if( !data ) continue;
 
-      // get delimiter data
-      TextBlock::Delimiter delimiter( data->delimiters().get( iter->id() ) );
-
       // store collapse state
       QTextBlockFormat block_format( block.blockFormat() );
       bool collapsed( block_format.boolProperty( TextBlock::Collapsed ) );
+
+      // get delimiter data
+      TextBlock::Delimiter delimiter( data->delimiters().get( iter->id() ) );
+      if( collapsed ) 
+      { 
+        assert( block_format.hasProperty( TextBlock::CollapsedData ) );
+        CollapsedBlockData block_collapsed_data( block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
+        delimiter += block_collapsed_data.delimiters().get( iter->id() ); 
+      }
       
       // check if something is to be done
       if( !( collapsed || delimiter.begin() || delimiter.end() ) ) continue;
@@ -674,7 +666,8 @@ void BlockDelimiterDisplay::_updateSegments( void )
         if( collapsed ) flags |= BlockDelimiterSegment::COLLAPSED;
         
         // if block is collapsed, skip one start point (which is self contained)
-        for( int i = (collapsed ? 1:0); i < delimiter.begin(); i++ )
+        //for( int i = (collapsed ? 1:0); i < delimiter.begin(); i++ )
+        for( int i = 0; i < delimiter.begin(); i++ )
         { start_points.push_back( BlockDelimiterSegment( block_begin, block_end, flags ) ); }
     
         if( collapsed ) { 
@@ -889,32 +882,15 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& first_block, const QTex
    
   Debug::Throw( "BlockDelimiterDisplay::_collapse.\n" );
   
-  // get block associated to cursor
-  // see if cursor belongs to collapsible block
-  QTextBlock cursor_block( _editor().textCursor().block() );  
-
   // create cursor and move at end of block
   QTextCursor cursor( first_block );
-  
-  // create collapsed block data to be stored in current block before collapsed
-  CollapsedBlockData collapsed_data;
-  if( second_block != first_block )
-  {
-    for( QTextBlock current = first_block.next(); current.isValid(); current = current.next() )
-    {
-      
-      // append collapsed data
-      collapsed_data.children().push_back( CollapsedBlockData( current ) );
-      if( current == second_block ) break;
-      
-    }
-  }
-  
+   
   // update block format
   QTextBlockFormat block_format( cursor.blockFormat() );
   block_format.setProperty( TextBlock::Collapsed, true );
+  
   QVariant variant;
-  variant.setValue( collapsed_data );
+  variant.setValue( _collapsedData( first_block, second_block ) );
   block_format.setProperty( TextBlock::CollapsedData, variant );
   
   // start edition
@@ -935,6 +911,44 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& first_block, const QTex
   // mark contents dirty to force update of current block
   data->setFlag( TextBlock::MODIFIED, true );
   data->setFlag( TextBlock::COLLAPSED, true );
+   
+  // mark contents dirty to force update
   _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
 
+}
+
+//________________________________________________________________________________________
+CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& first_block, const QTextBlock& second_block ) const
+{
+
+  CollapsedBlockData collapsed_data;
+  TextBlock::Delimiter::List collapsed_delimiters;
+  if( second_block != first_block )
+  {
+    for( QTextBlock current = first_block.next(); current.isValid(); current = current.next() )
+    {
+
+      // create collapse block data
+      CollapsedBlockData current_collapsed_data( current );
+
+      // update collapsed delimiters
+      // retrieve the TextBlockData associated to this block
+      HighlightBlockData* current_data( dynamic_cast<HighlightBlockData*>( current.userData() ) );
+      if( current_data ) { collapsed_delimiters += current_data->delimiters(); }
+      
+      // also append possible collapsed delimiters
+      collapsed_delimiters == current_collapsed_data.delimiters();
+
+      // append collapsed data
+      collapsed_data.children().push_back( current_collapsed_data );
+
+      if( current == second_block ) break;
+      
+    }
+    
+  }
+  
+  // store collapsed delimiters in collapsed data
+  collapsed_data.delimiters() = collapsed_delimiters;
+  return collapsed_data;
 }

@@ -38,15 +38,14 @@ CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
   text_( block.text() )
 {
   
-//  // this is probably useless. Will need to check
-//  HighlightBlockData* data( (dynamic_cast<HighlightBlockData*>( block.userData() ) ) );
-//  if( data ) { delimiters_ = data->delimiters(); }
-  
   // would need to retrieve the "children" data from the block format rather that from the HighlightBlockData
   QTextBlockFormat format( block.blockFormat() );
   collapsed_ = format.boolProperty( TextBlock::Collapsed );
   if( collapsed_ && format.hasProperty( TextBlock::CollapsedData ) )
-  { setChildren( format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().children() ); }
+  { 
+    delimiters_ = format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().delimiters();
+    setChildren( format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().children() ); 
+  }
   
 }
 

@@ -161,7 +161,7 @@ class HighlightBlockData: public TextBlockData
   
   //! delimiter
   TextBlock::Delimiter::List delimiters_;
-    
+  
   //@}
   
   #if WITH_ASPELL

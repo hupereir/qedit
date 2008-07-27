@@ -122,10 +122,7 @@ namespace TextBlock
     class List: public std::vector<Delimiter> 
     {
       public:
-      
-      //! sum operator (warning: this is not a reflexive operator)
-      List operator = (const List& ) const;
-      
+            
       //! sum operator (warning: this is not a reflexive operator)
       List operator + (const List& list ) const;
       
@@ -141,6 +138,14 @@ namespace TextBlock
       
       //! get value at index i
       TextBlock::Delimiter get( const unsigned int& ) const;
+
+      //! streamer
+      friend std::ostream& operator << ( std::ostream& out, const List& list )
+      {
+        for( List::const_iterator iter = list.begin(); iter != list.end(); iter++ )
+        { out << " " << *iter; }
+        return out;
+      }
       
     };
     
@@ -154,9 +159,9 @@ namespace TextBlock
     int end_;
     
     //! streamer
-    friend std::ostream& operator << ( std::ostream& out, const Delimiter& dilimiter )
+    friend std::ostream& operator << ( std::ostream& out, const Delimiter& delimiter )
     {
-      out << "(" << dilimiter.begin_ << "," << dilimiter.end_ << ")";
+      out << "(" << delimiter.begin_ << "," << delimiter.end_ << ")";
       return out;
     }
     

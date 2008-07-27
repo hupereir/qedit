@@ -60,16 +60,25 @@ class CollapsedBlockData
   const QString& text( void ) const
   { return text_; }
     
-//   //! delimiters
-//   const TextBlock::Delimiter::Map& delimiters( void ) const
-//   { return delimiters_; }
-  
   //! collapsed
   const bool& collapsed( void ) const
   { return collapsed_; }
   
   //! number of blocks stored by this data object
   unsigned int blockCount( void ) const;
+  
+  //!@name block limits
+  //@{
+  
+  //! delimiters
+  const TextBlock::Delimiter::List& delimiters( void ) const
+  { return delimiters_; }
+
+  //! delimiters
+  TextBlock::Delimiter::List& delimiters( void )
+  { return delimiters_; }
+
+  //@}
   
   //! children
   const List& children( void ) const
@@ -95,11 +104,11 @@ class CollapsedBlockData
   //! text
   QString text_;
   
-//  //! delimiters
-//  TextBlock::Delimiter::Map delimiters_;
-
   //! collapsed flag
   bool collapsed_;
+  
+  //! collapsed delimiters
+  TextBlock::Delimiter::List delimiters_;
   
   //! children
   List children_;
