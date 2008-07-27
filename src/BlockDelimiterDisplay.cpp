@@ -770,6 +770,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
   TextBlockPair out;
   
   // look for first block
+  assert( id <= segment.begin().id() );
   for( ; block.isValid() && id < segment.begin().id(); block = block.next(), id++ ) 
   {}
   
