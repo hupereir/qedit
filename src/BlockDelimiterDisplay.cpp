@@ -252,6 +252,12 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
     BlockDelimiterSegment::ActiveFTor( event->pos()+QPoint( -_offset(), _editor().verticalScrollBar()->value() ) ) );
   if( iter == segments_.end() ) return;
   
+  /* 
+  clear box selection
+  because it gets corrupted by the collapsed/expand process 
+  */
+  _editor().clearBoxSelection();
+  
   // retrieve matching segments
   HighlightBlockData* data(0);
   TextBlockPair blocks( _findBlocks( *iter, data ) );
@@ -263,19 +269,17 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
     
     Debug::Throw( "BlockDelimiterDisplay::mousePressEvent - collapsed block found.\n" );
     bool cursor_visible( _editor().isCursorVisible() );
-    _editor().clearBoxSelection();
     _expand( blocks.first, data );
     if( cursor_visible ) _editor().ensureCursorVisible();
     
   } else {
     
     Debug::Throw( "BlockDelimiterDisplay::mousePressEvent - expanded block found.\n" );
-    _editor().clearBoxSelection();
     _collapse( blocks.first, blocks.second, data );
     
   }
   
-  // force segment update at next update()
+  // force segment update at next update
   need_update_ = true;
 
 }
