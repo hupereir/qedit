@@ -32,6 +32,7 @@ RESOURCES = pixmaps.qrc ../base-qt/basePixmaps.qrc ../document-classes/patterns.
 RC_FILE = qedit.rc
 
 HEADERS = \
+  Application.h \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
@@ -52,7 +53,6 @@ HEADERS = \
   HighlightBlockFlags.h \
   HtmlUtil.h \
   Icons.h \
-  Application.h \
   MainWindow.h \
   Menu.h \
   NewFileDialog.h \
@@ -65,6 +65,7 @@ HEADERS = \
   XmlDef.h
  
 SOURCES = \
+  Application.cpp \
   AskForSaveDialog.cpp \
   AutoSave.cpp \
   AutoSaveThread.cpp \
@@ -80,7 +81,6 @@ SOURCES = \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HtmlUtil.cpp \
-  Application.cpp \
   MainWindow.cpp \
   Menu.cpp \
   NewFileDialog.cpp \

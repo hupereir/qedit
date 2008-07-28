@@ -67,6 +67,7 @@ qedit_LDADD =  $(libraries)
 editDocumentClasses_LDADD =  $(libraries)
 
 noinst_HEADERS = \
+  Application.h \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
@@ -87,7 +88,6 @@ noinst_HEADERS = \
   HighlightBlockFlags.h \
   HtmlUtil.h \
   Icons.h \
-  Application.h \
   MainWindow.h \
   Menu.h \
   NewFileDialog.h \
@@ -99,6 +99,7 @@ noinst_HEADERS = \
   WindowTitle.h
 
 libqedit_a_SOURCES = \
+  Application.cpp \
   AskForSaveDialog.cpp \
   AutoSave.cpp \
   AutoSaveThread.cpp \
@@ -114,7 +115,6 @@ libqedit_a_SOURCES = \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HtmlUtil.cpp \
-  Application.cpp \
   MainWindow.cpp \
   Menu.cpp \
   NewFileDialog.cpp \
@@ -126,6 +126,7 @@ libqedit_a_SOURCES = \
 
 nodist_libqedit_a_SOURCES = \
   qrc_pixmaps.cpp \
+  moc_Application.cpp \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \
   moc_BlockDelimiterDisplay.cpp \
@@ -134,7 +135,6 @@ nodist_libqedit_a_SOURCES = \
   moc_FileModifiedDialog.cpp \
   moc_FileRemovedDialog.cpp \
   moc_FileSelectionDialog.cpp \
-  moc_Application.cpp \
   moc_MainWindow.cpp \
   moc_Menu.cpp \
   moc_NewFileDialog.cpp \

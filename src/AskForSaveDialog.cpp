@@ -93,21 +93,19 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
     connect( button, SIGNAL( clicked() ), SLOT( _yes() ) );
   }
   
-  // no button
-  if( buttons & NO )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&No", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _no() ) );
-  }
-  
   // yes to all button
   if( buttons & ALL )
   {
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK_APPLY ), "Yes to &All", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _all() ) );
   }
-  
-  
+
+  // no button
+  if( buttons & NO )
+  {
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&No", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( _no() ) );
+  }  
   
   // cancel button
   if( buttons & CANCEL )
