@@ -103,11 +103,6 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   // generic button
   QPushButton* button;  
 
-  // replace
-  button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&Replace", this ) );
-  button->setToolTip( "Replace in all selected files" );
-  connect( button, SIGNAL( clicked() ), this, SLOT( _replace() ) );
-
   // select all
   button_layout->addWidget( button = new QPushButton( "&Select All", this ) );
   button->setToolTip( "Select all files in list" );
@@ -117,6 +112,11 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   button_layout->addWidget( button = new QPushButton( "&Clear Selection", this ) );
   button->setToolTip( "deselect all files in list" );
   connect( button, SIGNAL( clicked() ), list_, SLOT( clearSelection() ) );
+
+  // replace
+  button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&Replace", this ) );
+  button->setToolTip( "Replace in all selected files" );
+  connect( button, SIGNAL( clicked() ), this, SLOT( _replace() ) );
 
   // cancel
   button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Cancel", this ) );
