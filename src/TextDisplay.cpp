@@ -51,7 +51,7 @@
 #include "IconEngine.h"
 #include "Icons.h"
 #include "LineNumberDisplay.h"
-#include "MainFrame.h"
+#include "Application.h"
 #include "OpenPreviousMenu.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
@@ -335,7 +335,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
   if( restore_autosave && !isReadOnly() ) save();
 
   // perform first autosave
-  (dynamic_cast<MainFrame*>(qApp))->autoSave().saveFiles( this );
+  (dynamic_cast<Application*>(qApp))->autoSave().saveFiles( this );
 
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
@@ -934,11 +934,11 @@ void TextDisplay::updateDocumentClass( void )
 
   // try load document class from class_name
   if( !className().isEmpty() )
-  { document_class = dynamic_cast<MainFrame*>(qApp)->classManager().get( className() ); }
+  { document_class = dynamic_cast<Application*>(qApp)->classManager().get( className() ); }
 
   // try load from file
   if( document_class.name().isEmpty() && !file().empty() )
-  { document_class = dynamic_cast<MainFrame*>(qApp)->classManager().find( file() ); }
+  { document_class = dynamic_cast<Application*>(qApp)->classManager().find( file() ); }
 
   // update class name
   setClassName( document_class.name() );

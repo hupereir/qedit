@@ -42,7 +42,6 @@ HEADERS = \
   ConfigurationDialog.h \
   Diff.h \
   DefaultOptions.h \
-  EditFrame.h \
   ExitDialog.h \
   FileInfoDialog.h \
   FileModifiedDialog.h \
@@ -53,7 +52,8 @@ HEADERS = \
   HighlightBlockFlags.h \
   HtmlUtil.h \
   Icons.h \
-  MainFrame.h \
+  Application.h \
+  MainWindow.h \
   Menu.h \
   NewFileDialog.h \
   ParenthesisHighlight.h \
@@ -72,7 +72,6 @@ SOURCES = \
   CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
-  EditFrame.cpp \
   ExitDialog.cpp \
   FileInfoDialog.cpp \
   FileModifiedDialog.cpp \
@@ -81,7 +80,8 @@ SOURCES = \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HtmlUtil.cpp \
-  MainFrame.cpp \
+  Application.cpp \
+  MainWindow.cpp \
   Menu.cpp \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \

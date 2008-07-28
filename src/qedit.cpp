@@ -37,7 +37,7 @@
 #include "DefaultOptions.h"
 #include "SystemOptions.h"
 #include "ErrorHandler.h"
-#include "MainFrame.h"
+#include "Application.h"
 #include "XmlOptions.h"
 
 using namespace std;
@@ -66,7 +66,7 @@ int main (int argc, char *argv[])
     ArgList args( argc, argv );
     if( args.find( "--help" ) )
     {
-      MainFrame::usage();
+      Application::usage();
       return 0;
     }
 
@@ -84,7 +84,7 @@ int main (int argc, char *argv[])
     Q_INIT_RESOURCE( basePixmaps );
     Q_INIT_RESOURCE( patterns );
     Q_INIT_RESOURCE( pixmaps );
-    MainFrame main_frame( argc, argv );
+    Application main_frame( argc, argv );
     main_frame.initApplicationManager();
     main_frame.exec();
   } catch ( exception& e ) { cout << e.what() << endl; }

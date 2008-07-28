@@ -1,5 +1,5 @@
-#ifndef MainFrame_h
-#define MainFrame_h
+#ifndef Application_h
+#define Application_h
 
 // $Id$
 
@@ -25,7 +25,7 @@
  *******************************************************************************/
 
 /*!
-  \file MainFrame.h
+  \file Application.h
   \brief Application singleton
   \author Hugo Pereira
   \version $Revision$
@@ -49,11 +49,11 @@
 
 class AutoSave;
 class DocumentClassManager;
-class EditFrame;
+class MainWindow;
 class Sync;
 
 //! Application singleton
-class MainFrame: public QApplication, public Counter, public BASE::Key
+class Application: public QApplication, public Counter, public BASE::Key
 {
 
   //! Qt meta object declaration
@@ -65,10 +65,10 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   static void usage( void );
   
   //! constructor
-  MainFrame( int argc, char*argv[] );
+  Application( int argc, char*argv[] );
 
   //! destructor
-  ~MainFrame( void );
+  ~Application( void );
 
   //! initialize application manager
   void initApplicationManager( void );
@@ -104,7 +104,7 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   { restoreOverrideCursor(); }
 
   //! create new empty editFrame
-  EditFrame& newEditFrame( void );
+  MainWindow& newMainWindow( void );
   
   //!@name actions
   //@{
@@ -157,7 +157,7 @@ class MainFrame: public QApplication, public Counter, public BASE::Key
   
   //! open
   /*! returns false if no file is open (force application to quit) */
-  EditFrame* open( FileRecord record = FileRecord(), ArgList args = ArgList() );
+  MainWindow* open( FileRecord record = FileRecord(), ArgList args = ArgList() );
   
   //! Update Document Classes from options
   void updateDocumentClasses( void );

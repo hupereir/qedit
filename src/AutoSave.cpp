@@ -31,7 +31,7 @@
 
 #include "AutoSave.h"
 #include "Debug.h"
-#include "EditFrame.h"
+#include "MainWindow.h"
 #include "Options.h"
 #include "TextDisplay.h"
 
@@ -81,7 +81,7 @@ void AutoSave::newThread( TextDisplay* display )
   // create new Thread
   AutoSaveThread *thread = new AutoSaveThread( this );
   
-  // associate to EditFrame
+  // associate to MainWindow
   BASE::Key::associate( display, thread );
   
   // add to list
@@ -115,7 +115,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
     // if thread is running, skipp
     if( (*iter)->isRunning() ) continue;
     
-    // retrieve associated EditFrames
+    // retrieve associated MainWindows
     BASE::KeySet<TextDisplay> displays( *iter );
 
     // remove thread if none is found

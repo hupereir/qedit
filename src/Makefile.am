@@ -77,7 +77,6 @@ noinst_HEADERS = \
   ConfigurationDialog.h \
   Diff.h \
   DefaultOptions.h \
-  EditFrame.h \
   ExitDialog.h \
   FileInfoDialog.h \
   FileModifiedDialog.h \
@@ -88,7 +87,8 @@ noinst_HEADERS = \
   HighlightBlockFlags.h \
   HtmlUtil.h \
   Icons.h \
-  MainFrame.h \
+  Application.h \
+  MainWindow.h \
   Menu.h \
   NewFileDialog.h \
   ParenthesisHighlight.h \
@@ -106,7 +106,6 @@ libqedit_a_SOURCES = \
   CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
-  EditFrame.cpp \
   ExitDialog.cpp \
   FileInfoDialog.cpp \
   FileModifiedDialog.cpp \
@@ -115,7 +114,8 @@ libqedit_a_SOURCES = \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HtmlUtil.cpp \
-  MainFrame.cpp \
+  Application.cpp \
+  MainWindow.cpp \
   Menu.cpp \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
@@ -131,11 +131,11 @@ nodist_libqedit_a_SOURCES = \
   moc_BlockDelimiterDisplay.cpp \
   moc_ConfigurationDialog.cpp \
   moc_Diff.cpp \
-  moc_EditFrame.cpp \
   moc_FileModifiedDialog.cpp \
   moc_FileRemovedDialog.cpp \
   moc_FileSelectionDialog.cpp \
-  moc_MainFrame.cpp \
+  moc_Application.cpp \
+  moc_MainWindow.cpp \
   moc_Menu.cpp \
   moc_NewFileDialog.cpp \
   moc_ParenthesisHighlight.cpp \

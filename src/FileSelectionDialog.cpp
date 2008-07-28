@@ -34,11 +34,11 @@
 #include <QPushButton>
 
 #include "Debug.h"
-#include "EditFrame.h"
+#include "MainWindow.h"
 #include "FileSelectionDialog.h"
 #include "Icons.h"
 #include "IconEngine.h"
-#include "MainFrame.h"
+#include "Application.h"
 #include "QtUtil.h"
 #include "TextDisplay.h"
 #include "TreeView.h"
@@ -66,9 +66,9 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   // store set of found files to avoid duplication
   std::set< File > file_set;
 
-  // retrieve EditFrames
-  BASE::KeySet<EditFrame> frames( static_cast< MainFrame*>( qApp ) );
-  for( BASE::KeySet<EditFrame>::const_iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
+  // retrieve MainWindows
+  BASE::KeySet<MainWindow> frames( static_cast< Application*>( qApp ) );
+  for( BASE::KeySet<MainWindow>::const_iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
   {
 
     // retrieve associated TextDisplays

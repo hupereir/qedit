@@ -22,7 +22,7 @@
  *******************************************************************************/
 
 /*!
-  \file MainFrame.cpp
+  \file Application.cpp
   \brief application singleton object
   \author Hugo Pereira
   \version $Revision$
@@ -37,13 +37,13 @@
 #include "ConfigurationDialog.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassManagerDialog.h"
-#include "EditFrame.h"
+#include "MainWindow.h"
 #include "ErrorHandler.h"
 #include "ExitDialog.h"
 #include "FlatStyle.h"
 #include "IconEngine.h"
 #include "Icons.h"
-#include "MainFrame.h"
+#include "Application.h"
 #include "NewFileDialog.h"
 #include "XmlOptions.h"
 #include "QtUtil.h"
@@ -60,7 +60,7 @@ using namespace std;
 using namespace Qt;
 
 //____________________________________________
-void MainFrame::usage( void )
+void Application::usage( void )
 {
   cout << "Usage : qedit [options] <file1> <file2> <...>" << endl;
   cout << endl;
@@ -77,9 +77,9 @@ void MainFrame::usage( void )
 }
 
 //____________________________________________
-MainFrame::MainFrame( int argc, char*argv[] ) :
+Application::Application( int argc, char*argv[] ) :
   QApplication( argc, argv ),
-  Counter( "MainFrame" ),
+  Counter( "Application" ),
   open_status_( OPEN ),
   application_manager_( 0 ),
   class_manager_( 0 ),
@@ -88,7 +88,7 @@ MainFrame::MainFrame( int argc, char*argv[] ) :
   realized_( false ),
   startup_timer_( this )
 {
-  Debug::Throw( "MainFrame::MainFrame.\n" );
+  Debug::Throw( "Application::Application.\n" );
   if( XmlOptions::get().get<bool>( "USE_FLAT_THEME" ) ) setStyle( new FlatStyle() );
 
   startup_timer_.setSingleShot( true );
@@ -97,9 +97,9 @@ MainFrame::MainFrame( int argc, char*argv[] ) :
 }
 
 //____________________________________________
-MainFrame::~MainFrame( void )
+Application::~Application( void )
 { 
-  Debug::Throw( "MainFrame::~MainFrame.\n" ); 
+  Debug::Throw( "Application::~Application.\n" ); 
 
   XmlOptions::write();
   
@@ -111,9 +111,9 @@ MainFrame::~MainFrame( void )
 }
 
 //____________________________________________
-void MainFrame::initApplicationManager( void )
+void Application::initApplicationManager( void )
 {
-  Debug::Throw( "MainFrame::initApplicationManager.\n" );
+  Debug::Throw( "Application::initApplicationManager.\n" );
 
   if( application_manager_ ) return;
   if( args_.find( "--no-server" ) ) 
@@ -142,9 +142,9 @@ void MainFrame::initApplicationManager( void )
 }
 
 //____________________________________________
-void MainFrame::realizeWidget( void )
+void Application::realizeWidget( void )
 {
-  Debug::Throw( "MainFrame::realizeWidget.\n" );
+  Debug::Throw( "Application::realizeWidget.\n" );
 
   //! check if the method has already been called.
   if( realized_ ) return;
@@ -180,7 +180,7 @@ void MainFrame::realizeWidget( void )
   autosave_ = new AutoSave();
   
   // create first editFrame
-  newEditFrame().show(); 
+  newMainWindow().show(); 
   _updateConfiguration();
 
   // make sure application ends when last window is closed.
@@ -189,24 +189,24 @@ void MainFrame::realizeWidget( void )
   // run startup timer to open files after the call to exec() is 
   // performed in the main routine
   startup_timer_.start(0);
-  Debug::Throw( "MainFrame::realizeWidget - done.\n" ); 
+  Debug::Throw( "Application::realizeWidget - done.\n" ); 
 
 }
 
 //_____________________________________
-EditFrame& MainFrame::newEditFrame( void )
+MainWindow& Application::newMainWindow( void )
 {  
-  Debug::Throw( "MainFrame::newEditFrame.\n" );
-  EditFrame* out = new EditFrame();
+  Debug::Throw( "Application::newMainWindow.\n" );
+  MainWindow* out = new MainWindow();
   BASE::Key::associate( this, out );
   return *out;
 }
 
 //_______________________________________________
-EditFrame* MainFrame::open( FileRecord record, ArgList args )
+MainWindow* Application::open( FileRecord record, ArgList args )
 {
   
-  Debug::Throw() << "MainFrame::Open - file: " << record.file() << endl;
+  Debug::Throw() << "Application::Open - file: " << record.file() << endl;
 
   //! see if autospell action is required
   bool autospell( args.find( "--autospell" ) );
@@ -214,7 +214,7 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
   //! see if autospell filter and dictionary are required
   string filter = ( args.find( "--filter" ) && !args.get( "--filter" ).options().empty() ) ? args.get( "--filter" ).options().front() : "";
   string dictionary = (args.find( "--dictionary" ) && !args.get( "--dictionary" ).options().empty() ) ? args.get( "--dictionary" ).options().front() : "";
-  Debug::Throw() << "MainFrame::open - filter:" << filter << " dictionary: " << dictionary << endl;
+  Debug::Throw() << "Application::open - filter:" << filter << " dictionary: " << dictionary << endl;
   
   //! set default status to "open"
   open_status_ = OPEN;
@@ -233,12 +233,12 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
     
   }
 
-  // retrieve all EditFrames
-  EditFrame* frame( 0 );
-  BASE::KeySet<EditFrame> frames( this );
+  // retrieve all MainWindows
+  MainWindow* frame( 0 );
+  BASE::KeySet<MainWindow> frames( this );
   
   // try find editor with matching name
-  BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( record.file() ) );
+  BASE::KeySet<MainWindow>::iterator iter = find_if( frames.begin(), frames.end(), MainWindow::SameFileFTor( record.file() ) );
   if( iter != frames.end() )
   {
     (*iter)->uniconify();
@@ -256,13 +256,13 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
   }
   
   // try find empty editor
-  iter = find_if( frames.begin(), frames.end(), EditFrame::EmptyFileFTor() );
+  iter = find_if( frames.begin(), frames.end(), MainWindow::EmptyFileFTor() );
   if( iter != frames.end() ) frame = (*iter );
 
   // if no frame found, create a new one
   if( !frame )
   {
-    frame = &newEditFrame();
+    frame = &newMainWindow();
     processEvents();
   }
   
@@ -277,14 +277,14 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
     
     // create NewFileDialog
     int buttons( NewFileDialog::CREATE | NewFileDialog::CANCEL );
-    bool enable_exit( BASE::KeySet<EditFrame>(this).size() == 1 );
+    bool enable_exit( BASE::KeySet<MainWindow>(this).size() == 1 );
     if( enable_exit ) buttons |= NewFileDialog::EXIT;
     
     NewFileDialog dialog( frame, record.file(), buttons );
     QtUtil::centerOnParent( &dialog );
     int state = dialog.exec();
     
-    Debug::Throw() << "MainFrame::Open - New file dialog state: " << state << endl; 
+    Debug::Throw() << "Application::Open - New file dialog state: " << state << endl; 
     switch( state )
     {
   
@@ -316,7 +316,7 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
       {
         open_status_ = INVALID;
         frame->close();
-        if( BASE::KeySet<EditFrame>(this).size() ==1 ) _exit();
+        if( BASE::KeySet<MainWindow>(this).size() ==1 ) _exit();
         return 0;
       }
       
@@ -329,16 +329,16 @@ EditFrame* MainFrame::open( FileRecord record, ArgList args )
   if( !filter.empty() ) frame->activeDisplay().selectFilter( filter.c_str() );
   if( !dictionary.empty() ) frame->activeDisplay().selectDictionary( dictionary.c_str() );
 
-  Debug::Throw( "MainFrame::Open - done.\n" );
+  Debug::Throw( "Application::Open - done.\n" );
     
   return frame;
 
 }
 
 //____________________________________________________________
-void MainFrame::updateDocumentClasses( void )
+void Application::updateDocumentClasses( void )
 {
-  Debug::Throw( "MainFrame::updateDocumentClasses.\n" );
+  Debug::Throw( "Application::updateDocumentClasses.\n" );
   
   // clear document classes
   class_manager_->clear();
@@ -367,20 +367,20 @@ void MainFrame::updateDocumentClasses( void )
 }
 
 //___________________________________________________________
-void MainFrame::multipleFileReplace( std::list<File> files, TextSelection selection )
+void Application::multipleFileReplace( std::list<File> files, TextSelection selection )
 {
-  Debug::Throw( "MainFrame::multipleFileRepplace.\n" );
+  Debug::Throw( "Application::multipleFileRepplace.\n" );
     
   // keep track of number of replacements
   unsigned int counts(0);
   
   // retrieve frame associated with file
-  BASE::KeySet<EditFrame> frames( this );
+  BASE::KeySet<MainWindow> frames( this );
   for( list<File>::iterator iter = files.begin(); iter != files.end(); iter++ )
   {
     File& file( *iter );
     
-    BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( file ) );
+    BASE::KeySet<MainWindow>::iterator iter = find_if( frames.begin(), frames.end(), MainWindow::SameFileFTor( file ) );
     assert( iter != frames.end() );
 
     // retrieve TextDisplay that match file
@@ -411,10 +411,10 @@ void MainFrame::multipleFileReplace( std::list<File> files, TextSelection select
 
 
 //_______________________________________________
-void MainFrame::_about( void )
+void Application::_about( void )
 {
 
-  Debug::Throw( "MainFrame::_about.\n" );
+  Debug::Throw( "Application::_about.\n" );
   ostringstream what;
   what << "<b>QEdit</b> version " << VERSION << " (" << BUILD_TIMESTAMP << ")";
   what 
@@ -438,33 +438,33 @@ void MainFrame::_about( void )
 }
 
 //___________________________________________________________ 
-void MainFrame::_configuration( void )
+void Application::_configuration( void )
 {
-  Debug::Throw( "MainFrame::_configuration.\n" );
+  Debug::Throw( "Application::_configuration.\n" );
   emit saveConfiguration();
   ConfigurationDialog dialog( 0 );
   connect( &dialog, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   QtUtil::centerOnWidget( &dialog, activeWindow() );
   dialog.exec();
-  Debug::Throw( "MainFrame::configuration - done.\n" );
+  Debug::Throw( "Application::configuration - done.\n" );
 }
 
 //___________________________________________________________ 
-void MainFrame::_documentClassConfiguration( void )
+void Application::_documentClassConfiguration( void )
 {
-  Debug::Throw( "MainFrame::_documentClassConfiguration.\n" );
+  Debug::Throw( "Application::_documentClassConfiguration.\n" );
   DocumentClassManagerDialog dialog( activeWindow(), &classManager() );
   connect( &dialog, SIGNAL( updateNeeded() ), SIGNAL( documentClassesChanged() ) );
   dialog.exec();
 }
 
 //_______________________________________________
-void MainFrame::_spellCheckConfiguration( void )
+void Application::_spellCheckConfiguration( void )
 {
   
   #if WITH_ASPELL
 
-  Debug::Throw( "MainFrame::_spellCheckConfiguration.\n" );
+  Debug::Throw( "Application::_spellCheckConfiguration.\n" );
   
   // create dialog
   CustomDialog dialog( activeWindow() );
@@ -492,19 +492,19 @@ void MainFrame::_spellCheckConfiguration( void )
 }
 
 //_______________________________________________
-void MainFrame::_exit( void )
+void Application::_exit( void )
 {
   
-  Debug::Throw( "MainFrame::_exit.\n" );
+  Debug::Throw( "Application::_exit.\n" );
 
-  // retrieve associated EditFrames
-  BASE::KeySet<EditFrame> frames( this );
+  // retrieve associated MainWindows
+  BASE::KeySet<MainWindow> frames( this );
   if( frames.empty() ) quit();
 
   // retrieve all modified files and store in a map, together with modification state
   std::map< File, bool > files;
   
-  for( BASE::KeySet<EditFrame>::iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
+  for( BASE::KeySet<MainWindow>::iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
   {
       
     // retrieve associated text displays
@@ -530,13 +530,13 @@ void MainFrame::_exit( void )
   }
   
   // try close all windows one by one
-  for( BASE::KeySet<EditFrame>::iterator iter = frames.begin(); iter != frames.end(); iter++ )
+  for( BASE::KeySet<MainWindow>::iterator iter = frames.begin(); iter != frames.end(); iter++ )
   {
     
     if( !(*iter)->isModified() ) continue;
     
     // loop over displays
-    bool save_all_enabled = count_if( iter, frames.end(), EditFrame::IsModifiedFTor() ) > 1;
+    bool save_all_enabled = count_if( iter, frames.end(), MainWindow::IsModifiedFTor() ) > 1;
     BASE::KeySet<TextDisplay> displays( *iter );
     for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
     {
@@ -553,8 +553,8 @@ void MainFrame::_exit( void )
         for(; display_iter != displays.end(); display_iter++ ) 
         { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
        
-        // save all editframes starting from the next to this one
-        BASE::KeySet<EditFrame>::iterator sub_iter = iter; 
+        // save all mainwindows starting from the next to this one
+        BASE::KeySet<MainWindow>::iterator sub_iter = iter; 
         for( sub_iter++; sub_iter != frames.end(); sub_iter++ ) (*sub_iter)->saveAll();
         
         // break loop since everybody has been saved
@@ -569,26 +569,26 @@ void MainFrame::_exit( void )
     
   }
 
-  Debug::Throw( "MainFrame::_exit - done.\n" );
+  Debug::Throw( "Application::_exit - done.\n" );
   quit();
 
 }
 
 //_______________________________________________
-void MainFrame::_saveAll( void )
+void Application::_saveAll( void )
 {
   
-  Debug::Throw( "MainFrame::_saveAll.\n" );
+  Debug::Throw( "Application::_saveAll.\n" );
 
   // try save all windows one by one
-  BASE::KeySet<EditFrame> frames( this );
-  for( BASE::KeySet<EditFrame>::iterator iter = frames.begin(); iter != frames.end(); iter++ )
+  BASE::KeySet<MainWindow> frames( this );
+  for( BASE::KeySet<MainWindow>::iterator iter = frames.begin(); iter != frames.end(); iter++ )
   {
     
     if( !(*iter)->isModified() ) continue;
     
     // loop over displays
-    bool save_all_enabled = count_if( iter, frames.end(), EditFrame::IsModifiedFTor() ) > 1;
+    bool save_all_enabled = count_if( iter, frames.end(), MainWindow::IsModifiedFTor() ) > 1;
     BASE::KeySet<TextDisplay> displays( *iter );
     for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
     {
@@ -606,8 +606,8 @@ void MainFrame::_saveAll( void )
         for(; display_iter != displays.end(); display_iter++ ) 
         { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
        
-        // save all editframes starting from the next to this one
-        BASE::KeySet<EditFrame>::iterator sub_iter = iter; 
+        // save all mainwindows starting from the next to this one
+        BASE::KeySet<MainWindow>::iterator sub_iter = iter; 
         for( sub_iter++; sub_iter != frames.end(); sub_iter++ ) (*sub_iter)->saveAll();
         
         // break loop since everybody has been saved
@@ -619,15 +619,15 @@ void MainFrame::_saveAll( void )
      
   }
 
-  Debug::Throw( "MainFrame::_saveAll - done.\n" );
+  Debug::Throw( "Application::_saveAll - done.\n" );
 
 }
 
 //_________________________________________________
-void MainFrame::_updateConfiguration( void )
+void Application::_updateConfiguration( void )
 {
 
-  Debug::Throw( "MainFrame::_updateConfiguration.\n" );
+  Debug::Throw( "Application::_updateConfiguration.\n" );
 
   // set fonts
   QFont font;
@@ -654,9 +654,9 @@ void MainFrame::_updateConfiguration( void )
 }
 
 //___________________________________________________________ 
-void MainFrame::_readFilesFromArgs( void )
+void Application::_readFilesFromArgs( void )
 {
-  Debug::Throw( "MainFrame::_readFilesFromArgs.\n" );
+  Debug::Throw( "Application::_readFilesFromArgs.\n" );
     
   // retrieve files from arguments
   ArgList::Arg last_arg( args_.get().back() );
@@ -682,15 +682,15 @@ void MainFrame::_readFilesFromArgs( void )
   if( tabbed || diff )
   {
     
-    EditFrame *frame( 0 );
+    MainWindow *frame( 0 );
     
     // try find empty editor
-    BASE::KeySet<EditFrame> frames( this );
+    BASE::KeySet<MainWindow> frames( this );
     
     // retrieve an empty frame if any, or create one
-    BASE::KeySet<EditFrame>::iterator iter = find_if( frames.begin(), frames.end(), EditFrame::EmptyFileFTor() );
+    BASE::KeySet<MainWindow>::iterator iter = find_if( frames.begin(), frames.end(), MainWindow::EmptyFileFTor() );
     if( iter != frames.end() ) frame = (*iter );
-    else frame = &newEditFrame();
+    else frame = &newMainWindow();
     
     // loop over files and open in current frame
     set<string> files;
@@ -729,9 +729,9 @@ void MainFrame::_readFilesFromArgs( void )
     {
       File file( *iter );
 
-      // retrieve all EditFrames
-      BASE::KeySet<EditFrame> frames( this );
-      BASE::KeySet<EditFrame>::iterator frame_iter = find_if( frames.begin(), frames.end(), EditFrame::SameFileFTor( file ) );
+      // retrieve all MainWindows
+      BASE::KeySet<MainWindow> frames( this );
+      BASE::KeySet<MainWindow>::iterator frame_iter = find_if( frames.begin(), frames.end(), MainWindow::SameFileFTor( file ) );
       if( frame_iter == frames.end() ) continue;
       
       // select display and close
@@ -756,16 +756,16 @@ void MainFrame::_readFilesFromArgs( void )
     
   }
       
-  Debug::Throw( "MainFrame::_readFilesFromArgs - done.\n" );
+  Debug::Throw( "Application::_readFilesFromArgs - done.\n" );
   return;
   
 }
 
 //________________________________________________
-void MainFrame::_applicationManagerStateChanged( SERVER::ApplicationManager::State state )
+void Application::_applicationManagerStateChanged( SERVER::ApplicationManager::State state )
 {
 
-  Debug::Throw() << "MainFrame::_ApplicationManagerStateChanged - state=" << state << endl;
+  Debug::Throw() << "Application::_ApplicationManagerStateChanged - state=" << state << endl;
 
   switch ( state ) {
     case SERVER::ApplicationManager::ALIVE:
@@ -785,9 +785,9 @@ void MainFrame::_applicationManagerStateChanged( SERVER::ApplicationManager::Sta
 }
 
 //________________________________________________
-void MainFrame::_processRequest( const ArgList& args )
+void Application::_processRequest( const ArgList& args )
 {
-  Debug::Throw() << "MainFrame::_ProcessRequest - " << args << endl;
+  Debug::Throw() << "Application::_ProcessRequest - " << args << endl;
 
   // copy arguments and try open (via QTimer)
   args_ = args;
