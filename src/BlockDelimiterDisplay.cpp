@@ -137,7 +137,11 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
       
   // check delimiters
   if( delimiters_.empty() ) return;
-    
+  
+  // store colors
+  foreground_ = painter.pen().color();
+  background_ = painter.brush().color();
+  
   /* update segments if needed */
   _updateSegments();
   
@@ -213,25 +217,12 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
   painter.restore();
   
   // use the QStyle primitive elements for TreeViews
-  QColor foreground( painter.pen().color() );
   painter.save();
   painter.setBrush( Qt::NoBrush );
-  QStyleOption option;
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
-  {
-    
+  {    
     if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
-    {
-
-      option.initFrom( &_editor() );
-      option.palette.setColor( QPalette::Text, foreground );
-      option.rect = iter->activeRect();
-      option.state |= QStyle::State_Children;
-      if( !iter->flag( BlockDelimiterSegment::COLLAPSED ) ) { option.state |= QStyle::State_Open; }
-      
-      _editor().style()->drawPrimitive( QStyle::PE_IndicatorBranch, &option, &painter );
-    }
-    
+    { _drawDelimiter( painter, iter->activeRect(), iter->flag( BlockDelimiterSegment::COLLAPSED ) ); } 
   }
   painter.restore();
      
@@ -346,9 +337,6 @@ void BlockDelimiterDisplay::_collapseCurrentBlock( void )
   _updateSegments(); 
   _updateSegmentMarkers();
   
-  // sort segments so that top level comes last
-  // std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
-
   // get cursor position
   int cursor( _editor().textCursor().position() );
 
@@ -953,4 +941,51 @@ CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& firs
   // store collapsed delimiters in collapsed data
   collapsed_data.delimiters() = collapsed_delimiters;
   return collapsed_data;
+}
+
+//_________________________________________________________________________
+void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect, const bool& collapsed ) const
+{
+  
+  bool use_base_style = true;
+  
+  if( use_base_style )
+  {
+    
+    QStyleOption option;
+    option.initFrom( &_editor() );
+    option.palette.setColor( QPalette::Text, foreground_ );
+    option.rect = rect;
+    option.state |= QStyle::State_Children;
+    if( !collapsed ) { option.state |= QStyle::State_Open; }
+      
+    _editor().style()->drawPrimitive( QStyle::PE_IndicatorBranch, &option, &painter );
+    
+  } else {
+    
+    painter.setBrush( foreground_ );
+    painter.setPen( Qt::NoPen );
+    painter.setRenderHints( QPainter::Antialiasing );
+    if( collapsed )
+    {
+      const QPointF points[3] = {
+         QPointF(rect.topLeft()) + QPointF( 1, 1 ),
+         (QPointF(rect.topRight()) + QPointF(rect.bottomRight()))/2 + QPointF(-1,0),
+         QPointF(rect.bottomLeft()) + QPointF( 1, -1 ) 
+      };
+
+      painter.drawConvexPolygon(points, 3);
+      
+    } else {
+
+      const QPointF points[3] = {
+         QPointF(rect.topLeft()) + QPointF( 1, 1 ),
+         QPointF(rect.topRight()) + QPointF( -1, 1 ),
+         (QPointF(rect.bottomLeft())+QPointF(rect.bottomRight()))/2 + QPointF( 0, -1 )
+      };
+
+      painter.drawConvexPolygon(points, 3);
+    }
+  }
+  return;
 }

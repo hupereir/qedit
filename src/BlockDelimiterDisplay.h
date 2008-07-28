@@ -156,7 +156,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
 
   //! update segments
   void _updateSegments( void );
-  
+    
   //! offest
   const int& _offset( void ) const
   { return offset_; }
@@ -201,6 +201,9 @@ class BlockDelimiterDisplay: public QObject, public Counter
   TextDisplay& _editor( void ) const
   { return *editor_; }
   
+  //! draw delimiter
+  void _drawDelimiter( QPainter& painter, const QRect& rect, const bool& collapsed ) const;
+
   //! associated editor
   TextDisplay* editor_;
   
@@ -219,6 +222,10 @@ class BlockDelimiterDisplay: public QObject, public Counter
   //! true when _updateSegments needs to be called in paintEvent
   bool need_update_; 
     
+  QColor foreground_;
+  
+  QColor background_;
+  
   //!@name marker dimension
   //@{
 
