@@ -285,6 +285,7 @@ void BlockDelimiterDisplay::_updateConfiguration( void )
   // this is done to minimize the amount of maths in the paintEvent method
   width_ = _editor().fontMetrics().lineSpacing();
   if( width_ % 2 ) width_ --;
+  if( width_ % 2 ) width_ ++;
   rect_width_ = 0.7*width_;
   half_width_ = 0.5*width_;
   top_ = 0.8*width_;  
@@ -970,7 +971,7 @@ void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect
     {
       const QPointF points[3] = {
          QPointF(rect.topLeft()) + QPointF( 1, 1 ),
-         (QPointF(rect.topRight()) + QPointF(rect.bottomRight()))/2 + QPointF(-1,0),
+         (QPointF(rect.topRight()) + QPointF(rect.bottomRight()))/2 + QPointF(-0.5,0),
          QPointF(rect.bottomLeft()) + QPointF( 1, -1 ) 
       };
 
@@ -980,8 +981,8 @@ void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect
 
       const QPointF points[3] = {
          QPointF(rect.topLeft()) + QPointF( 1, 1 ),
-         QPointF(rect.topRight()) + QPointF( -1, 1 ),
-         (QPointF(rect.bottomLeft())+QPointF(rect.bottomRight()))/2 + QPointF( 0, -1 )
+         QPointF(rect.topRight()) + QPointF( 0, 1 ),
+         (QPointF(rect.bottomLeft())+QPointF(rect.bottomRight()))/2 + QPointF( 0.5, -0.5 )
       };
 
       painter.drawConvexPolygon(points, 3);
