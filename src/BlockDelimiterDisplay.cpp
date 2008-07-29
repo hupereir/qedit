@@ -71,11 +71,7 @@ BlockDelimiterDisplay::BlockDelimiterDisplay(TextDisplay* editor ):
   connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( _needUpdate() ) );
   connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
   connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
-  // update configuration
-  _updateConfiguration();
-  
 }
 
 //__________________________________________
@@ -93,6 +89,9 @@ void BlockDelimiterDisplay::synchronize( const BlockDelimiterDisplay* display )
   collapsed_blocks_ = display->collapsed_blocks_;
   need_update_ = display->need_update_;
   offset_ = display->offset_;
+  
+  // geometry
+  setWidth( display->width() );
   
   // re-initialize connections
   connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
@@ -276,29 +275,21 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_updateConfiguration( void )
+void BlockDelimiterDisplay::setWidth( const int& width )
 {
   
-  Debug::Throw( "BlockDelimiterDisplay::_updateConfiguration.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::setWidth.\n" );
   
   // set dimensions needed to redraw marker and lines
   // this is done to minimize the amount of maths in the paintEvent method
-  width_ = _editor().fontMetrics().lineSpacing();
-  if( width_ % 2 ) width_ --;
-  if( width_ % 2 ) width_ ++;
-  rect_width_ = 0.7*width_;
-  half_width_ = 0.5*width_;
-  top_ = 0.8*width_;  
-  rect_top_left_ = 0.15*width_ + 1;
-
+  width_ = width;
+  if( !( width_ %2 ) ) { width_++; }
   
-  Debug::Throw() << "BlockDelimiterDisplay::_updateConfiguration - width: " << width_ << endl;
-  Debug::Throw() << "BlockDelimiterDisplay::_updateConfiguration - half_width_: " << half_width_ << endl;
-  Debug::Throw() << "BlockDelimiterDisplay::_updateConfiguration - top_: " << top_ << endl;
-  Debug::Throw() << "BlockDelimiterDisplay::_updateConfiguration - rect_top_left_: " << rect_top_left_ << endl;
-  Debug::Throw() << "BlockDelimiterDisplay::_updateConfiguration - rect_width_: " << rect_width_ << endl;
-  Debug::Throw() << endl;
-        
+  rect_width_ = width_ - 4;
+  half_width_ = 0.5*width_;
+  top_ = 2;
+  rect_top_left_ = 2;
+          
 }
 
 //________________________________________________________
@@ -367,9 +358,6 @@ void BlockDelimiterDisplay::_expandCurrentBlock( void )
   _updateSegments(); 
   _updateSegmentMarkers();
   
-  // sort segments so that top level comes last
-  // std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
-
   // get cursor position
   int cursor( _editor().textCursor().position() );
 
@@ -399,9 +387,6 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
   _updateSegments(); 
   _updateSegmentMarkers();
 
-  // sort segments so that top level comes last
-  // std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
-  
   // list of QTextCursor needed to remove blocks
   typedef std::vector<QTextCursor> CursorList;
   CursorList cursors;
@@ -971,7 +956,7 @@ void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect
     {
       const QPointF points[3] = {
          QPointF(rect.topLeft()) + QPointF( 1, 1 ),
-         (QPointF(rect.topRight()) + QPointF(rect.bottomRight()))/2 + QPointF(-0.5,0),
+         QPointF( (rect.topRight() + rect.bottomRight())/2 ) + QPointF(-1,0),
          QPointF(rect.bottomLeft()) + QPointF( 1, -1 ) 
       };
 
@@ -980,9 +965,9 @@ void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect
     } else {
 
       const QPointF points[3] = {
-         QPointF(rect.topLeft()) + QPointF( 1, 1 ),
-         QPointF(rect.topRight()) + QPointF( 0, 1 ),
-         (QPointF(rect.bottomLeft())+QPointF(rect.bottomRight()))/2 + QPointF( 0.5, -0.5 )
+         QPointF(rect.topLeft()) + QPointF( 1.5, 1 ),
+         QPointF(rect.topRight()) + QPointF( -0.5, 1 ),
+         QPointF( (rect.bottomLeft()+rect.bottomRight())/2 ) + QPointF( 0.5, -1 )
       };
 
       painter.drawConvexPolygon(points, 3);

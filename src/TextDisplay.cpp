@@ -1532,7 +1532,7 @@ bool TextDisplay::_updateMargins( void )
   
   blockDelimiterDisplay().setOffset( left_margin );
   if( showBlockDelimiterAction().isChecked() && showBlockDelimiterAction().isVisible() )
-  { left_margin += fontMetrics().lineSpacing(); }
+  { left_margin += blockDelimiterDisplay().width(); }
   
   return _setLeftMargin( left_margin );
   
@@ -1564,6 +1564,8 @@ void TextDisplay::_updateConfiguration( void )
 
   // block delimiters, line numbers and margin
   showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
+  blockDelimiterDisplay().setWidth( fontMetrics().lineSpacing() );
+  _updateMargins();
   
   // retrieve diff colors
   diff_conflict_color_ = QColor( XmlOptions::get().get<string>("DIFF_CONFLICT_COLOR").c_str() );

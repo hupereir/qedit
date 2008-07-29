@@ -81,6 +81,13 @@ class BlockDelimiterDisplay: public QObject, public Counter
   unsigned int collapsedBlockCount( const int& block ) const
   { return ( collapsed_blocks_.empty() ) ? 0 : collapsed_blocks_.lower_bound( block )->second; }
 
+  //! set width
+  void setWidth( const int& );
+  
+  //! width
+  const int& width( void ) const
+  { return width_; }
+  
   //! paint
   virtual void paint( QPainter& );
 
@@ -122,9 +129,6 @@ class BlockDelimiterDisplay: public QObject, public Counter
       
   private slots:
   
-  //! configuration
-  void _updateConfiguration( void );
-        
   //! collapse current block
   void _collapseCurrentBlock( void );
   
