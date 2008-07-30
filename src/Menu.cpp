@@ -44,7 +44,7 @@
 #include "Icons.h"
 #include "Application.h"
 #include "Menu.h"
-#include "OpenPreviousMenu.h"
+#include "RecentFilesMenu.h"
 #include "QtUtil.h"
 #include "TextDisplay.h"
 #include "TextMacro.h"
@@ -74,12 +74,12 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &mainwindow.openAction() );
 
   // open previous menu
-  open_previous_menu_ = new OpenPreviousMenu( this );
-  open_previous_menu_->setCheck( true );
-  menu->addMenu( open_previous_menu_ );
+  recent_files_menu_ = new RecentFilesMenu( this );
+  recent_files_menu_->setCheck( true );
+  menu->addMenu( recent_files_menu_ );
 
   // connections
-  connect( open_previous_menu_, SIGNAL( fileSelected( FileRecord ) ), &mainwindow, SLOT( open( FileRecord ) ) );
+  connect( recent_files_menu_, SIGNAL( fileSelected( FileRecord ) ), &mainwindow, SLOT( open( FileRecord ) ) );
   
   menu->addSeparator();
   menu->addAction( &mainwindow.closeDisplayAction() );

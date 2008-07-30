@@ -43,7 +43,7 @@
 #include "IconEngine.h"
 #include "Icons.h"
 #include "FileInfoDialog.h"
-#include "OpenPreviousMenu.h"
+#include "RecentFilesMenu.h"
 #include "QtUtil.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"

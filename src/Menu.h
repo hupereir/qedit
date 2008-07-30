@@ -42,7 +42,7 @@
 
 #include "File.h"
 
-class OpenPreviousMenu;
+class RecentFilesMenu;
 class TextMacro;
 
 //! menu
@@ -60,11 +60,11 @@ class Menu:public QMenuBar, public Counter
   //! destructor
   ~Menu( void );
 
-  //! retrieve OpenPreviousMenu
-  OpenPreviousMenu& openPreviousMenu( void ) const
+  //! retrieve RecentFilesMenu
+  RecentFilesMenu& openPreviousMenu( void ) const
   {
-    assert( open_previous_menu_ );
-    return *open_previous_menu_;
+    assert( recent_files_menu_ );
+    return *recent_files_menu_;
   }
   
   //! macro menu
@@ -123,7 +123,7 @@ class Menu:public QMenuBar, public Counter
   //@{
   
   //! open previous menu, in which the open files are stored
-  OpenPreviousMenu* open_previous_menu_;       
+  RecentFilesMenu* recent_files_menu_;       
     
   //! document class menu
   QMenu* document_class_menu_;

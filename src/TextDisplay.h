@@ -58,7 +58,7 @@
 // forward declaration
 class DocumentClass;
 class HighlightBlockData;
-class OpenPreviousMenu;
+class RecentFilesMenu;
 class TextHighlight;
 class BlockDelimiterDisplay;
 
@@ -85,14 +85,14 @@ class TextDisplay: public TextEditor
   virtual void synchronize( TextDisplay* display );
   
   //! set openPrevious menu
-  void setOpenPreviousMenu( OpenPreviousMenu* menu )
-  { open_previous_menu_ = menu; }
+  void setRecentFilesMenu( RecentFilesMenu* menu )
+  { recent_files_menu_ = menu; }
   
   //! open previous menu
-  OpenPreviousMenu& openPreviousMenu( void )
+  RecentFilesMenu& openPreviousMenu( void )
   { 
-    assert( open_previous_menu_);
-    return *open_previous_menu_;
+    assert( recent_files_menu_);
+    return *recent_files_menu_;
   }
   
   //! check if current entry has been modified or not
@@ -728,7 +728,7 @@ class TextDisplay: public TextEditor
   #endif
   
   //! parent OpenPrevious menu
-  OpenPreviousMenu* open_previous_menu_;
+  RecentFilesMenu* recent_files_menu_;
   
   //! syntax highlighter
   TextHighlight* text_highlight_;

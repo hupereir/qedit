@@ -53,7 +53,7 @@
 #include "Application.h"
 #include "Menu.h"
 #include "NewFileDialog.h"
-#include "OpenPreviousMenu.h"
+#include "RecentFilesMenu.h"
 #include "PixmapEngine.h"
 #include "XmlOptions.h"
 #include "PrintDialog.h"
@@ -1355,7 +1355,7 @@ TextDisplay& MainWindow::_newTextDisplay( QWidget* parent )
 
   // create textDisplay
   TextDisplay* display = new TextDisplay( parent );  
-  display->setOpenPreviousMenu( &menu_->openPreviousMenu() );
+  display->setRecentFilesMenu( &menu_->openPreviousMenu() );
 
   // connections
   connect( display, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
