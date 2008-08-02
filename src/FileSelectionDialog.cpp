@@ -33,6 +33,7 @@
 #include <QLayout>
 #include <QPushButton>
 
+#include "Application.h"
 #include "Debug.h"
 #include "MainWindow.h"
 #include "FileSelectionDialog.h"
@@ -42,6 +43,7 @@
 #include "QtUtil.h"
 #include "TextDisplay.h"
 #include "TreeView.h"
+#include "WindowServer.h"
 
 using namespace std;
 
@@ -67,7 +69,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   std::set< File > file_set;
 
   // retrieve MainWindows
-  BASE::KeySet<MainWindow> frames( static_cast< Application*>( qApp ) );
+  BASE::KeySet<MainWindow> frames( &static_cast< Application*>( qApp )->windowServer() );
   for( BASE::KeySet<MainWindow>::const_iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
   {
 

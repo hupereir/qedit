@@ -96,6 +96,7 @@ noinst_HEADERS = \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
+  WindowServer.h \
   WindowTitle.h
 
 libqedit_a_SOURCES = \
@@ -122,7 +123,8 @@ libqedit_a_SOURCES = \
   PrintDialog.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
-  TextIndent.cpp
+  TextIndent.cpp \
+  WindowServer.cpp
 
 nodist_libqedit_a_SOURCES = \
   qrc_pixmaps.cpp \
@@ -142,7 +144,8 @@ nodist_libqedit_a_SOURCES = \
   moc_PrintDialog.cpp \
   moc_TextDisplay.cpp \
   moc_TextHighlight.cpp \
-  moc_TextIndent.cpp
+  moc_TextIndent.cpp \
+  moc_WindowServer.cpp
 
 qedit_SOURCES = qedit.cpp
 editDocumentClasses_SOURCES = editDocumentClasses.cpp

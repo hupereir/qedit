@@ -49,6 +49,7 @@
 #include "TextDisplay.h"
 #include "TextMacro.h"
 #include "Util.h"
+#include "WindowServer.h"
 #include "XmlOptions.h"
 
 using namespace std;
@@ -86,7 +87,7 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &mainwindow.closeWindowAction() );
   menu->addAction( &mainwindow.saveAction() );
   menu->addAction( &mainwindow.saveAsAction() );
-  menu->addAction( &application.saveAllAction() );
+  menu->addAction( &application.windowServer().saveAllAction() );
   menu->addAction( &mainwindow.revertToSaveAction() );
   menu->addSeparator();
 
@@ -444,7 +445,7 @@ void Menu::_updateWindowsMenu( void )
   const string& current_file( display.file() );
   
   // retrieve list of MainWindows
-  BASE::KeySet<MainWindow> frames( static_cast<Application*>(qApp) );
+  BASE::KeySet<MainWindow> frames( &static_cast<Application*>(qApp)->windowServer() );
 
   // clear files map
   files_.clear();
@@ -526,7 +527,7 @@ void Menu::_selectFile( QAction* action )
   if( iter == files_.end() ) return;
   
   // retrieve all mainwindows
-  BASE::KeySet<MainWindow> frames( static_cast< Application* >( qApp ) );
+  BASE::KeySet<MainWindow> frames( &static_cast< Application* >( qApp )->windowServer() );
   
   // retrieve frame matching file name
   BASE::KeySet<MainWindow>::iterator frame_iter( find_if(

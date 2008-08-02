@@ -42,18 +42,13 @@
 #include "ArgList.h"
 #include "Counter.h"
 
-
-#include "FileRecord.h"
-#include "Key.h"
-#include "TextSelection.h"
-
 class AutoSave;
 class DocumentClassManager;
-class MainWindow;
+class WindowServer;
 class Sync;
 
 //! Application singleton
-class Application: public QApplication, public Counter, public BASE::Key
+class Application: public QApplication, public Counter
 {
 
   //! Qt meta object declaration
@@ -76,19 +71,24 @@ class Application: public QApplication, public Counter, public BASE::Key
   //! create all widgets
   void realizeWidget( void );
   
-  //! retrieve DocumentClassManager
-  DocumentClassManager& classManager( void )
+  //! Window server
+  WindowServer& windowServer( void ) const
+  {
+    assert( window_server_ );
+    return *window_server_;
+  }
+
+  //! DocumentClassManager
+  DocumentClassManager& classManager( void ) const
   { 
-    assert( class_manager_
-);
+    assert( class_manager_ );
     return *class_manager_;
   }
   
   //! retrieve AutoSave
-  AutoSave& autoSave( void )
+  AutoSave& autoSave( void ) const
   { 
-    assert( autosave_
-);
+    assert( autosave_ );
     return *autosave_;
   }
   
@@ -102,9 +102,6 @@ class Application: public QApplication, public Counter, public BASE::Key
   //! set application idle
   void idle( void )
   { restoreOverrideCursor(); }
-
-  //! create new empty editFrame
-  MainWindow& newMainWindow( void );
   
   //!@name actions
   //@{
@@ -120,10 +117,6 @@ class Application: public QApplication, public Counter, public BASE::Key
   //! close
   QAction& closeAction( void ) const
   { return *close_action_; }
- 
-  //! close
-  QAction& saveAllAction( void ) const
-  { return *save_all_action_; }
 
   //! configure
   QAction& configurationAction( void ) const
@@ -152,18 +145,11 @@ class Application: public QApplication, public Counter, public BASE::Key
   
   //! document classes have been modified
   void documentClassesChanged( void );
-  
+ 
   public slots:
-  
-  //! open
-  /*! returns false if no file is open (force application to quit) */
-  MainWindow* open( FileRecord record = FileRecord(), ArgList args = ArgList() );
   
   //! Update Document Classes from options
   void updateDocumentClasses( void );
-
-  //! multiple files replace
-  void multipleFileReplace( std::list<File> file, TextSelection selection );
   
   private slots:
 
@@ -182,9 +168,6 @@ class Application: public QApplication, public Counter, public BASE::Key
   //! exit safely
   void _exit( void );
 
-  //! save all edited files
-  void _saveAll( void );
-
   //! Update Configuration from options
   void _updateConfiguration( void );
   
@@ -202,28 +185,13 @@ class Application: public QApplication, public Counter, public BASE::Key
   void _applicationManagerStateChanged( SERVER::ApplicationManager::State );
 
   private:
-
-  //! open file status
-  enum OpenStatus
-  {
-    
-    //! file successfully opened
-    OPEN,
-    
-    //! file is invalid
-    INVALID,
-    
-    //! file invalid and application should be closed
-    EXIT_APP
-    
-  };
-    
-  //! current open file status
-  OpenStatus open_status_;
   
   //! pointer to application manager
   SERVER::ApplicationManager* application_manager_;
 
+  //! window server
+  WindowServer* window_server_;
+  
   //! document class manager singleton
   DocumentClassManager* class_manager_;
   
@@ -254,10 +222,7 @@ class Application: public QApplication, public Counter, public BASE::Key
   
   //! close
   QAction* close_action_;
-  
-  //! save all modified files
-  QAction* save_all_action_;
-  
+   
   //! configure
   QAction* configuration_action_;
   

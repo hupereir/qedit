@@ -63,6 +63,7 @@
 #include "TextHighlight.h"
 #include "TextIndent.h"
 #include "Util.h"
+#include "WindowServer.h"
 #include "WindowTitle.h"
 
 using namespace std;
@@ -83,7 +84,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
   Debug::Throw( "MainWindow::MainWindow.\n" );
 
-  // tell frame to delete on exit
+  // tell window to delete on exit
   setAttribute( WA_DeleteOnClose );
   
   // install actions
@@ -321,19 +322,19 @@ void MainWindow::_detach( void )
   { _closeDisplay( *dynamic_cast<TextDisplay*>((*iter)->parentWidget()) ); }
 
   // create MainWindow
-  MainWindow& frame( static_cast<Application*>(qApp)->newMainWindow() );
+  MainWindow& window( static_cast<Application*>(qApp)->windowServer().newMainWindow() );
 
   // clone its display from the current
-  frame.activeDisplay().synchronize( &active_display_local );
+  window.activeDisplay().synchronize( &active_display_local );
 
   // delete active display local
   active_display_local.document()->setModified( false );
   _closeDisplay( active_display_local );
 
-  // show the new frame
-  frame.activeDisplay().document()->setModified( modified );
-  frame.show();
-  frame._updateConfiguration();
+  // show the new window
+  window.activeDisplay().document()->setModified( modified );
+  window.show();
+  window._updateConfiguration();
 
   return;
   
@@ -520,7 +521,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
       int state( display.askForSave( modifiedDisplayCount() > 1 ) );
       if( state == AskForSaveDialog::ALL ) {
         
-        // for this frame, only save displays located after the current
+        // for this window, only save displays located after the current
         for( BASE::KeySet<TextDisplay>::iterator display_iter = iter; display_iter != displays.end(); display_iter++ )
         { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
 
@@ -653,7 +654,7 @@ void MainWindow::_diff( void )
   // store active display as first to compare
   TextDisplay& first = activeDisplay();
   
-  // retrieve displays associated to frame
+  // retrieve displays associated to window
   // look for the first one that is not associated to the active display
   BASE::KeySet<TextDisplay> displays( this );
   BASE::KeySet<TextDisplay>::iterator iter = displays.begin();
@@ -912,7 +913,7 @@ void MainWindow::_newFile( const OpenMode& mode, const Orientation& orientation 
   Debug::Throw( "MainWindow::_New.\n" );
 
   // check open_mode
-  if( mode == NEW_WINDOW ) static_cast<Application*>(qApp)->open();
+  if( mode == NEW_WINDOW ) static_cast<Application*>(qApp)->windowServer().open();
   else _splitDisplay( orientation, false );
 
 }
@@ -945,7 +946,7 @@ void MainWindow::_open( FileRecord record, const OpenMode& mode, const Orientati
   if( mode == NEW_WINDOW )
   {
     // open via the Application to create a new editor
-    static_cast<Application*>(qApp)->open( record );
+    static_cast<Application*>(qApp)->windowServer().open( record );
     return;
   }
 
@@ -991,17 +992,17 @@ void MainWindow::_open( FileRecord record, const OpenMode& mode, const Orientati
     
   }
   
-  // retrieve all edit frames
+  // retrieve all edit windows
   // find one matching
-  BASE::KeySet<MainWindow> frames( static_cast<Application*>(qApp) );
-  BASE::KeySet<MainWindow>::iterator iter = find_if( frames.begin(), frames.end(), MainWindow::SameFileFTor( record.file() ) );
-  if( iter != frames.end() )
+  BASE::KeySet<MainWindow> windows( &static_cast<Application*>(qApp)->windowServer() );
+  BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
+  if( iter != windows.end() )
   {
 
     // select found display in MainWindow
     (*iter)->selectDisplay( record.file() );
 
-    // check if the found frame is the current
+    // check if the found window is the current
     if( *iter == this )
     {
       uniconify();
@@ -1024,7 +1025,7 @@ void MainWindow::_open( FileRecord record, const OpenMode& mode, const Orientati
     BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
     TextDisplay& display( display_iter == displays.end() ? _splitDisplay( orientation, false ):**display_iter );
 
-    // retrieve active display from previous frame
+    // retrieve active display from previous window
     TextDisplay& previous_display( (*iter)->activeDisplay() );
 
     // store modification state
@@ -1036,7 +1037,7 @@ void MainWindow::_open( FileRecord record, const OpenMode& mode, const Orientati
     // set previous display as unmdified
     previous_display.document()->setModified( false );
 
-    // close display, or frame, depending on its number of independent files
+    // close display, or window, depending on its number of independent files
     if( (*iter)->independentDisplayCount() == 1 ) (*iter)->close();
     else
     {
