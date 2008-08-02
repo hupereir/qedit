@@ -37,7 +37,7 @@
 #include "AutoSaveThread.h"
 #include "Config.h"
 #include "CustomPixmap.h"
-#include "CustomGridLayout.h"
+#include "GridLayout.h"
 #include "Debug.h"
 #include "FileRecord.h"
 #include "IconEngine.h"
@@ -87,7 +87,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   layout->setSpacing( 5 );
   h_layout->addLayout( layout, 1 );
   
-  CustomGridLayout* grid_layout = new CustomGridLayout();
+  GridLayout* grid_layout = new GridLayout();
   grid_layout->setSpacing( 5 );
   grid_layout->setMaxCount( 2 );
   layout->addLayout( grid_layout );
@@ -156,7 +156,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   
   layout->addWidget( new QLabel( "<b>Permissions: </b>", box ) );
   
-  grid_layout = new CustomGridLayout();
+  grid_layout = new GridLayout();
   grid_layout->setMargin(0);
   grid_layout->setSpacing( 5 );
   grid_layout->setMaxCount( 4 );
@@ -215,7 +215,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
    
     layout->addWidget( new QLabel( "<b>Ownership: </b>", box ) );
 
-    grid_layout = new CustomGridLayout();
+    grid_layout = new GridLayout();
     grid_layout->setMargin(0);
     grid_layout->setSpacing( 5 );
     grid_layout->setMaxCount( 2 );
@@ -245,7 +245,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
   box->setLayout( layout );
   Debug::Throw( "FileInfoDialog::FileInfoDialog - Miscellaneous tab booked.\n" );
   
-  grid_layout = new CustomGridLayout();
+  grid_layout = new GridLayout();
   grid_layout->setMargin(0);
   grid_layout->setSpacing( 5 );
   grid_layout->setMaxCount( 2 );

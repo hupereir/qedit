@@ -34,7 +34,7 @@
 
 #include "Config.h"
 #include "ConfigurationDialog.h"
-#include "CustomGridLayout.h"
+#include "GridLayout.h"
 #include "CustomToolBar.h"
 #include "Debug.h"
 #include "OptionListBox.h"
@@ -116,7 +116,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   // additional colors
   page->layout()->addWidget( box = new QGroupBox( "Colors", page ) );  
    
-  CustomGridLayout* grid_layout = new CustomGridLayout();
+  GridLayout* grid_layout = new GridLayout();
   grid_layout->setSpacing(5);
   grid_layout->setMargin(5);
   grid_layout->setMaxCount(2);
@@ -146,7 +146,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   page = &addPage( "Multiple views" );
   page->layout()->addWidget( box = new QGroupBox( page ) );  
 
-  grid_layout = new CustomGridLayout();
+  grid_layout = new GridLayout();
   grid_layout->setSpacing(5);
   grid_layout->setMargin(5);
   grid_layout->setMaxCount(2);
@@ -172,7 +172,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   page = &addPage( "Toolbars" );
   page->layout()->addWidget( box = new QGroupBox( "Toolbars", page ) );  
 
-  grid_layout = new CustomGridLayout();
+  grid_layout = new GridLayout();
   grid_layout->setSpacing(5);
   grid_layout->setMargin(5);
   grid_layout->setMaxCount(2);
@@ -228,7 +228,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   checkbox->setToolTip( "Make backup of the file prior to saving modifications" );
   addOptionWidget( checkbox );
    
-  grid_layout = new CustomGridLayout();
+  grid_layout = new GridLayout();
   grid_layout->setSpacing(5);
   grid_layout->setMargin(0);
   grid_layout->setMaxCount(2);
@@ -250,7 +250,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   // misc
   page->layout()->addWidget( box = new QGroupBox( "Misc", page ) );  
    
-  grid_layout = new CustomGridLayout();
+  grid_layout = new GridLayout();
   grid_layout->setSpacing(5);
   grid_layout->setMargin(5);
   grid_layout->setMaxCount(2);

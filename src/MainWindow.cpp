@@ -134,7 +134,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   
   // modify color
   QPalette palette( file_editor_->palette() );
-  palette.setColor( QPalette::Base, palette.color( QPalette::Window ) );
+  palette.setColor( QPalette::Base, Qt::Transparent );
   file_editor_->setPalette( palette );
 
   // assign non fixed font

@@ -35,7 +35,7 @@
 #include <QLayout>
 
 #include "BrowsedLineEditor.h"
-#include "CustomGridLayout.h"
+#include "GridLayout.h"
 #include "DocumentClassConfiguration.h"
 #include "LineEditor.h"
 
@@ -48,7 +48,7 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
 {
   Debug::Throw( "DocumentClassConfiguration::DocumentClassConfiguration.\n" );
 
-  CustomGridLayout* grid_layout = new CustomGridLayout();
+  GridLayout* grid_layout = new GridLayout();
   grid_layout->setSpacing(5);
   grid_layout->setMargin(5);
   grid_layout->setMaxCount(2);

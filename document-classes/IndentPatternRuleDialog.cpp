@@ -33,7 +33,7 @@
 #include <QLayout>
 #include <QLabel>
 
-#include "CustomGridLayout.h"
+#include "GridLayout.h"
 #include "LineEditor.h"
 #include "IndentPatternRuleDialog.h"
 
@@ -50,7 +50,7 @@ IndentPatternRuleDialog::IndentPatternRuleDialog( QWidget* parent ):
   
   mainLayout().setSpacing(5);
   
-  CustomGridLayout* grid_layout( new CustomGridLayout() );
+  GridLayout* grid_layout( new GridLayout() );
   grid_layout->setSpacing( 5 );
   grid_layout->setMargin( 0 );
   grid_layout->setMaxCount( 2 );

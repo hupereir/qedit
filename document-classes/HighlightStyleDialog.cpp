@@ -35,7 +35,7 @@
 
 #include "HighlightStyleDialog.h"
 #include "ColorDisplay.h"
-#include "CustomGridLayout.h"
+#include "GridLayout.h"
 #include "FontInfo.h"
 
 using namespace std;
@@ -47,7 +47,7 @@ HighlightStyleDialog::HighlightStyleDialog( QWidget* parent ):
   
   Debug::Throw( "HighlightStyleDialog::HighlightStyleDialog.\n" );
   
-  CustomGridLayout* grid_layout( new CustomGridLayout() );
+  GridLayout* grid_layout( new GridLayout() );
   grid_layout->setSpacing( 5 );
   grid_layout->setMargin( 0 );
   grid_layout->setMaxCount( 2 );

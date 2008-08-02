@@ -40,7 +40,7 @@
 #include "IconEngine.h"
 #include "PrintDialog.h"
 #include "CustomFileDialog.h"
-#include "CustomGridLayout.h"
+#include "GridLayout.h"
 
 using namespace std;
 
