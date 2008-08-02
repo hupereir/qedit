@@ -22,8 +22,8 @@
 *******************************************************************************/
  
 /*!
-  \file ExitDialog.cpp
-  \brief used to exit the application
+  \file SaveAllDialog.cpp
+  \brief QDialog used to save all modified files
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -34,16 +34,16 @@
 #include "Icons.h"
 #include "PixmapEngine.h"
 #include "Debug.h"
-#include "ExitDialog.h"
+#include "SaveAllDialog.h"
 
 using namespace std;
 
 //__________________________________________________
-ExitDialog::ExitDialog( QWidget* parent, WindowServer::FileMap files ):
+SaveAllDialog::SaveAllDialog( QWidget* parent, WindowServer::FileMap files ):
   CustomDialog( parent, OK_BUTTON | CANCEL_BUTTON )
 {
   
-  Debug::Throw( "ExitDialog::ExitDialog.\n" );
+  Debug::Throw( "SaveAllDialog::SaveAllDialog.\n" );
 
   QHBoxLayout *h_layout( new QHBoxLayout() );
   h_layout->setSpacing(5); 
@@ -59,13 +59,12 @@ ExitDialog::ExitDialog( QWidget* parent, WindowServer::FileMap files ):
   static const unsigned int max_line_size( 50 );
   unsigned int current_line( 0 );
   ostringstream what;
-  what << "Editing: ";
+  what << "Modified: ";
 
   unsigned int index = 0;
   for( WindowServer::FileMap::iterator iter = files.begin(); iter != files.end(); iter++, index++ )
   {
     what << iter->first.localName();
-    if( iter->second ) what << "*";
     if( index < files.size()-2 ) what << ", ";
     else if( index == files.size()-2 ) what << " and ";
     else what << ".";
@@ -78,7 +77,7 @@ ExitDialog::ExitDialog( QWidget* parent, WindowServer::FileMap files ):
     
   }
     
-  what << endl << "Exit QEdit ?";
+  what << endl << "Save ?";
   h_layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter );
 
   // rename buttons

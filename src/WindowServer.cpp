@@ -1,6 +1,5 @@
 // $Id$
 
-
 /******************************************************************************
  *
  * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
@@ -22,6 +21,7 @@
  *
  *******************************************************************************/
 
+
 /*!
   \file WindowServer.cpp
   \brief handles opened edition windows
@@ -39,6 +39,7 @@
 #include "MainWindow.h"
 #include "NewFileDialog.h"
 #include "QtUtil.h"
+#include "SaveAllDialog.h"
 #include "WindowServer.h"
 
 using namespace std;
@@ -71,7 +72,7 @@ MainWindow& WindowServer::newMainWindow( void )
 }
 
 //______________________________________________________
-WindowServer::FileMap WindowServer::files( void ) const
+WindowServer::FileMap WindowServer::files( bool modified_only ) const
 { 
   
   Debug::Throw( "WindowServer::files.\n" );
@@ -89,10 +90,16 @@ WindowServer::FileMap WindowServer::files( void ) const
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
 
+      // check modification status
+      if( modified_only && !(*iter)->document()->isModified() ) continue;
+        
       // retrieve file
       // store in map if not empty
       const File& file( (*iter)->file() );
-      if( !file.empty() ) files.insert( make_pair( file, (*iter)->document()->isModified() ) );
+      if( file.empty() ) continue;
+        
+      // insert in map (together with modification status
+      files.insert( make_pair( file, (*iter)->document()->isModified() ) );
         
     }
     
@@ -133,8 +140,7 @@ bool WindowServer::closeAllWindows( void )
       save_all_enabled |= (*iter)->modifiedDisplayCount() > 1;
       int state( (*display_iter)->askForSave( save_all_enabled ) );
       
-      if( state == AskForSaveDialog::CANCEL ) return false;
-      else if( state == AskForSaveDialog::ALL ) 
+      if( state == AskForSaveDialog::YES_TO_ALL ) 
       {
         
         // save all displays for this window, starting from the current
@@ -148,8 +154,28 @@ bool WindowServer::closeAllWindows( void )
         // break loop since everybody has been saved
         break;
         
-      }
-      
+      } else if( state == AskForSaveDialog::NO_TO_ALL ) {
+        
+        // save all displays for this window, starting from the current
+        for(; display_iter != displays.end(); display_iter++ ) 
+        { if( (*display_iter)->document()->isModified() ) (*display_iter)->setModified( false ); }
+       
+        // save all mainwindows starting from the next to this one
+        BASE::KeySet<MainWindow>::iterator sub_iter = iter; 
+        for( sub_iter++; sub_iter != windows.end(); sub_iter++ )
+        {
+         
+          BASE::KeySet<TextDisplay> sub_displays( *sub_iter );
+          for( BASE::KeySet<TextDisplay>::iterator sub_display_iter = sub_displays.begin(); sub_display_iter != sub_displays.end(); sub_display_iter++ ) 
+          { if( (*sub_display_iter)->document()->isModified() ) (*sub_display_iter)->setModified( false ); }
+
+        }
+        
+        // break loop since everybody has been saved
+        break;
+        
+      } else if( state == AskForSaveDialog::CANCEL ) return false;
+
     }
     
     // try close. Should succeed, otherwise it means there is a flow in the algorithm above
@@ -426,7 +452,6 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   }
   
   // popup dialog
-
   ostringstream what;
   if( !counts ) what << "string not found.";
   else if( counts == 1 ) what << "1 replacement performed";
@@ -442,44 +467,23 @@ void WindowServer::_saveAll( void )
   
   Debug::Throw( "WindowServer::_saveAll.\n" );
 
-  // try save all windows one by one
-  BASE::KeySet<MainWindow> frames( this );
-  for( BASE::KeySet<MainWindow>::iterator iter = frames.begin(); iter != frames.end(); iter++ )
+  // load files
+  FileMap files( WindowServer::files( true ) );
+  
+  // check how many files are modified
+  if( files.empty() )
   {
-    
-    if( !(*iter)->isModified() ) continue;
-    
-    // loop over displays
-    bool save_all_enabled = count_if( iter, frames.end(), MainWindow::IsModifiedFTor() ) > 1;
-    BASE::KeySet<TextDisplay> displays( *iter );
-    for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
-    {
-      
-      if( !(*display_iter)->document()->isModified() ) continue;
-      
-      save_all_enabled |= (*iter)->modifiedDisplayCount() > 1;
-      int state( (*display_iter)->askForSave( save_all_enabled ) );
-      
-      if( state == AskForSaveDialog::CANCEL ) return;
-      else if( state == AskForSaveDialog::ALL ) 
-      {
-        
-        // save all displays for this frame, starting from the current
-        for(; display_iter != displays.end(); display_iter++ ) 
-        { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
-       
-        // save all mainwindows starting from the next to this one
-        BASE::KeySet<MainWindow>::iterator sub_iter = iter; 
-        for( sub_iter++; sub_iter != frames.end(); sub_iter++ ) (*sub_iter)->saveAll();
-        
-        // break loop since everybody has been saved
-        break;
-        
-      }
-      
-    }
-     
+    QtUtil::infoDialog( qApp->activeWindow(), "No files to save" );
+    return;
   }
+  
+  // ask for confirmation
+  if( !SaveAllDialog( qApp->activeWindow(), files ).exec() ) return;
+  
+  // retrieve windows
+  BASE::KeySet<MainWindow> windows( this );
+  for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ )
+  { (*iter)->saveAll(); }
 
   return;
   

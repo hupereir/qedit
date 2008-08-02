@@ -519,12 +519,19 @@ void MainWindow::closeEvent( QCloseEvent* event )
       
       // ask for save
       int state( display.askForSave( modifiedDisplayCount() > 1 ) );
-      if( state == AskForSaveDialog::ALL ) {
+      if( state == AskForSaveDialog::YES_TO_ALL ) 
+      {
         
         // for this window, only save displays located after the current
         for( BASE::KeySet<TextDisplay>::iterator display_iter = iter; display_iter != displays.end(); display_iter++ )
         { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
 
+      } else if( state == AskForSaveDialog::YES_TO_ALL ) {
+        
+        // for this window, only save displays located after the current
+        for( BASE::KeySet<TextDisplay>::iterator display_iter = iter; display_iter != displays.end(); display_iter++ )
+        { if( (*display_iter)->document()->isModified() ) (*display_iter)->setModified( false ); }
+        
       } else if( state == AskForSaveDialog::CANCEL ) {
 
         event->ignore();

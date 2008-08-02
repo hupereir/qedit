@@ -94,10 +94,10 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   }
   
   // yes to all button
-  if( buttons & ALL )
+  if( buttons & YES_TO_ALL )
   {
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK_APPLY ), "Yes to &All", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _all() ) );
+    connect( button, SIGNAL( clicked() ), SLOT( _yesToAll() ) );
   }
 
   // no button
@@ -105,6 +105,13 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   {
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&No", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _no() ) );
+  }  
+
+  // no button
+  if( buttons & NO_TO_ALL )
+  {
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "No to A&ll", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( _noToAll() ) );
   }  
   
   // cancel button

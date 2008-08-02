@@ -58,6 +58,7 @@ HEADERS = \
   NewFileDialog.h \
   ParenthesisHighlight.h \
   PrintDialog.h \
+  SaveAllDialog.h \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
@@ -88,6 +89,7 @@ SOURCES = \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
   qedit.cpp \
+  SaveAllDialog.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp \

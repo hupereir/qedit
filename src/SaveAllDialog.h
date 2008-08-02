@@ -1,6 +1,6 @@
 // $Id$
-#ifndef _ExitDialog_h_
-#define _ExitDialog_h_
+#ifndef _SaveAllDialog_h_
+#define _SaveAllDialog_h_
 
 /******************************************************************************
 *
@@ -24,8 +24,8 @@
 *******************************************************************************/
 
 /*!
-  \file ExitDialog.h
-  \brief QDialog used to exit application
+  \file SaveAllDialog.h
+  \brief QDialog used to save all modified files
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
@@ -39,13 +39,13 @@
 #include "WindowServer.h"
 
 //! QDialog used to ask if a new file should be created
-class ExitDialog: public CustomDialog
+class SaveAllDialog: public CustomDialog
 {
 
   public:
 
   //! constructor
-  ExitDialog( QWidget*, WindowServer::FileMap );
+  SaveAllDialog( QWidget*, WindowServer::FileMap );
 
 };
 

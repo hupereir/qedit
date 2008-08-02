@@ -93,6 +93,7 @@ noinst_HEADERS = \
   NewFileDialog.h \
   ParenthesisHighlight.h \
   PrintDialog.h \
+  SaveAllDialog.h \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
@@ -121,6 +122,7 @@ libqedit_a_SOURCES = \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
+  SaveAllDialog.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp \

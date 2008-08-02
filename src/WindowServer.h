@@ -24,6 +24,7 @@
  *
  *******************************************************************************/
 
+
 /*!
   \file WindowServer.h
   \brief handles opened edition windows
@@ -67,7 +68,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   typedef std::map< File, bool > FileMap;
   
   //! returns list of opened files
-  FileMap files( void ) const;
+  FileMap files( bool modified_only = false ) const;
   
   //! close all windows gracefully
   /*! returns false if the opperation was cancelled. */

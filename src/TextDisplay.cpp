@@ -34,6 +34,7 @@
 #include <QScrollBar>
 #include <QTextLayout>
 
+#include "Application.h"
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
 #include "BlockDelimiterDisplay.h"
@@ -62,6 +63,7 @@
 #include "TextSeparator.h"
 #include "Util.h"
 #include "XmlOptions.h"
+#include "WindowServer.h"
 
 #include "Config.h"
 
@@ -233,8 +235,7 @@ void TextDisplay::synchronize( TextDisplay* display )
   Debug::Throw( "TextDisplay::synchronize.\n" );
 
   // replace base class synchronization prior to calling base class synchronization
-  /* 
-  this avoids calling to invalid block of memory which the textHighlight gets deleted
+  /* this avoids calling to invalid block of memory which the textHighlight gets deleted
   when changing the document */
   text_highlight_ = &display->textHighlight();
 
@@ -454,13 +455,13 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enable_all )
   if( !( document()->isModified() && _contentsChanged() ) ) return AskForSaveDialog::YES;
 
   int flags( AskForSaveDialog::YES | AskForSaveDialog::NO | AskForSaveDialog::CANCEL );
-  if( enable_all ) flags |=  AskForSaveDialog::ALL;
+  if( enable_all ) flags |=  AskForSaveDialog::YES_TO_ALL | AskForSaveDialog::NO_TO_ALL;
 
   AskForSaveDialog dialog( this, file(), flags );
   QtUtil::centerOnParent( &dialog );
   int state( dialog.exec() );
-  if( state == AskForSaveDialog::YES ||  state == AskForSaveDialog::ALL ) save();
-  else if( state == AskForSaveDialog::NO ) setModified( false );
+  if( state == AskForSaveDialog::YES ||  state == AskForSaveDialog::YES_TO_ALL ) save();
+  else if( state == AskForSaveDialog::NO ||  state == AskForSaveDialog::NO_TO_ALL ) setModified( false );
 
   return AskForSaveDialog::ReturnCode(state);
 
@@ -1790,7 +1791,7 @@ void TextDisplay::_multipleFileReplace( void )
 
   // retrieve selection from replace dialog
   FileSelectionDialog dialog( this, selection );
-  connect( &dialog, SIGNAL( fileSelected( std::list<File>, TextSelection ) ), qApp, SLOT( multipleFileReplace( std::list<File>, TextSelection ) ) );
+  connect( &dialog, SIGNAL( fileSelected( std::list<File>, TextSelection ) ), &static_cast<Application*>(qApp)->windowServer(), SLOT( multipleFileReplace( std::list<File>, TextSelection ) ) );
   QtUtil::centerOnParent( &dialog );
   dialog.exec();
   return;

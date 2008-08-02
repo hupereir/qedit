@@ -56,10 +56,13 @@ class AskForSaveDialog: public QDialog, public Counter
     NO = 1<<1,
     
     //! all modified files are to be saved
-    ALL = 1<<2,
+    YES_TO_ALL = 1<<2,
+
+    //! all modified files are to be saved
+    NO_TO_ALL = 1<<3,
 
     //! action is canceled
-    CANCEL = 1<<3
+    CANCEL = 1<<4
         
   };
           
@@ -77,9 +80,13 @@ class AskForSaveDialog: public QDialog, public Counter
   { done( NO ); }
 
   //! discard changes
-  void _all( void )
-  { done( ALL ); }
+  void _yesToAll( void )
+  { done( YES_TO_ALL ); }
   
+  //! discard changes
+  void _noToAll( void )
+  { done( NO_TO_ALL ); }
+
   //! cancel action
   void _cancel( void )
   { done( CANCEL ); }
