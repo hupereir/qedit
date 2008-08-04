@@ -149,7 +149,7 @@ Menu::Menu( QWidget* parent ):
   
   // debug menu
   menu->addSeparator();
-  DebugMenu *debug_menu( new DebugMenu( this ) );
+  DebugMenu *debug_menu( new DebugMenu( this, DebugMenu::DEFAULT|DebugMenu::RECENT_FILES ) );
   debug_menu->setTitle( "&Debug" );
   debug_menu->addAction( &help->dumpAction() );
   menu->addMenu( debug_menu );
