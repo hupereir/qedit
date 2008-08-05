@@ -130,8 +130,9 @@ MainWindow::MainWindow(  QWidget* parent ):
 
   // modify frame and set readOnly
   file_editor_->setReadOnly( true );
+  file_editor_->setHasClearButton( false );
   file_editor_->setFrame( false );
-  
+
   // modify color
   QPalette palette( file_editor_->palette() );
   palette.setColor( QPalette::Base, Qt::transparent );
