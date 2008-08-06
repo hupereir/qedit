@@ -31,19 +31,20 @@
 
 #include <QMessageBox>
 
+#include "Application.h"
 #include "AutoSave.h"
 #include "Config.h" 
 #include "ConfigurationDialog.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassManagerDialog.h"
-#include "MainWindow.h"
 #include "ErrorHandler.h"
 #include "ExitDialog.h"
 #include "FlatStyle.h"
 #include "IconEngine.h"
 #include "Icons.h"
-#include "Application.h"
 #include "XmlOptions.h"
+#include "MainWindow.h"
+#include "NavigationWindow.h"
 #include "QtUtil.h"
 #include "Util.h"
 #include "WindowServer.h"
@@ -79,6 +80,7 @@ Application::Application( int argc, char*argv[] ) :
   QApplication( argc, argv ),
   Counter( "Application" ),
   application_manager_( 0 ),
+  navigation_window_( 0 ),
   window_server_( 0 ),
   class_manager_( 0 ),
   autosave_( 0 ),
@@ -105,6 +107,7 @@ Application::~Application( void )
   if( class_manager_ ) delete class_manager_;
   if( autosave_ ) delete autosave_;
   if( window_server_ ) delete window_server_; 
+  if( navigation_window_ ) delete navigation_window_;
   ErrorHandler::exit();
 
 }
@@ -171,12 +174,18 @@ void Application::realizeWidget( void )
   
   // window server
   window_server_ = new WindowServer();
+
+  // navigation window
+  navigation_window_ = new NavigationWindow();
   
   // class manager
   class_manager_ = new DocumentClassManager();
   
   // autosave
   autosave_ = new AutoSave();
+  
+  // show navigation window
+  navigationWindow().show();
   
   // create first editFrame
   windowServer().newMainWindow().show(); 

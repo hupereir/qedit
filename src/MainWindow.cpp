@@ -97,11 +97,12 @@ MainWindow::MainWindow(  QWidget* parent ):
 
   // main vbox
   QWidget* main( new QWidget( this ) );
+  setCentralWidget( main );
+
   QVBoxLayout* layout( new QVBoxLayout() );
   main->setLayout( layout );
   layout->setMargin(2);
   layout->setSpacing(2);
-  setCentralWidget( main );
 
   // TextDisplay container
   main_ = new QWidget( main );

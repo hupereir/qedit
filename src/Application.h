@@ -44,6 +44,7 @@
 
 class AutoSave;
 class DocumentClassManager;
+class NavigationWindow;
 class WindowServer;
 class Sync;
 
@@ -70,6 +71,13 @@ class Application: public QApplication, public Counter
 
   //! create all widgets
   void realizeWidget( void );
+  
+  //! navigation window
+  NavigationWindow& navigationWindow( void ) const
+  { 
+    assert( navigation_window_ );
+    return *navigation_window_;
+  }
   
   //! Window server
   WindowServer& windowServer( void ) const
@@ -189,6 +197,9 @@ class Application: public QApplication, public Counter
   //! pointer to application manager
   SERVER::ApplicationManager* application_manager_;
 
+  //! navigation window
+  NavigationWindow* navigation_window_;
+  
   //! window server
   WindowServer* window_server_;
   
