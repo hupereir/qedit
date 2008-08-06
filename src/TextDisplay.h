@@ -84,12 +84,12 @@ class TextDisplay: public TextEditor
   //! clone display configuration and document
   virtual void synchronize( TextDisplay* display );
   
-  //! set openPrevious menu
+  //! set recent files menu
   void setRecentFilesMenu( RecentFilesMenu* menu )
   { recent_files_menu_ = menu; }
   
   //! open previous menu
-  RecentFilesMenu& openPreviousMenu( void )
+  RecentFilesMenu& recentFilesMenu( void )
   { 
     assert( recent_files_menu_);
     return *recent_files_menu_;
@@ -727,7 +727,7 @@ class TextDisplay: public TextEditor
   
   #endif
   
-  //! parent OpenPrevious menu
+  //! parent recent files menu
   RecentFilesMenu* recent_files_menu_;
   
   //! syntax highlighter

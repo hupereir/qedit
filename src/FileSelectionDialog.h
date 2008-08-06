@@ -36,7 +36,7 @@
 
 #include "Counter.h"
 #include "File.h"
-#include "ListModel.h"
+#include "FileRecordModel.h"
 #include "TextSelection.h"
 
 class TreeView;
@@ -73,47 +73,7 @@ class FileSelectionDialog: public QDialog, public Counter
   //! file and class pair
   typedef std::pair< File, QString> FilePair;
   
-  //! model
-  class Model: public ListModel<FilePair>
-  {
-    
-    public:
-    
-    //! number of columns
-    enum { n_columns = 3 };
-  
-    //! column types
-    enum ColumnType{ FILE, PATH, CLASS };
-
-    //!@name methods reimplemented from base class
-    //@{
-    
-    // return data for a given index
-    virtual QVariant data(const QModelIndex &index, int role) const;
-    
-    //! header data
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-    
-    //! number of columns for a given index
-    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const
-    { return n_columns; }
-
-    //@}
-    
-    protected: 
-
-    //! sorting
-    virtual void _sort( int column, Qt::SortOrder order = Qt::AscendingOrder )
-    {}
-    
-    private: 
-    
-    //! column titles
-    static const char* column_titles_[ n_columns ];
-
-  };
-  
-  Model model_;
+  FileRecordModel model_;
   
   //! list of files
   TreeView* list_;

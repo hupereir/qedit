@@ -61,7 +61,7 @@ class Menu:public QMenuBar, public Counter
   ~Menu( void );
 
   //! retrieve RecentFilesMenu
-  RecentFilesMenu& openPreviousMenu( void ) const
+  RecentFilesMenu& recentFilesMenu( void ) const
   {
     assert( recent_files_menu_ );
     return *recent_files_menu_;

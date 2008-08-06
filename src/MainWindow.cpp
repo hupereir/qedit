@@ -35,6 +35,7 @@
 #include <QObjectList>
 #include <QPrinter>
 
+#include "Application.h"
 #include "AutoSave.h"
 #include "BlockDelimiterDisplay.h"
 #include "ClockLabel.h"
@@ -46,11 +47,11 @@
 #include "Diff.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
-#include "MainWindow.h"
+#include "FileRecordProperties.h"
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
 #include "Icons.h"
-#include "Application.h"
+#include "MainWindow.h"
 #include "Menu.h"
 #include "NewFileDialog.h"
 #include "RecentFilesMenu.h"
@@ -897,14 +898,14 @@ void MainWindow::_updateConfiguration( void )
   resize( QSize( XmlOptions::get().get<int>( "WINDOW_WIDTH" ), XmlOptions::get().get<int>( "WINDOW_HEIGHT" ) ) );
 
   // assign icons to file in open previous menu based on class manager
-  list<File> files( menu_->openPreviousMenu().files() );
+  list<File> files( menu_->recentFilesMenu().files() );
   for( list<File>::const_iterator iter = files.begin(); iter != files.end(); iter++ )
   {
     
-    FileRecord& record( menu_->openPreviousMenu().get( *iter ) ); 
-    if( !record.hasInformation( "class_name" ) ) continue; 
-    DocumentClass document_class( static_cast<Application*>(qApp)->classManager().get( record.information( "class_name" ).c_str() ) );
-    if( !document_class.icon().isEmpty() ) record.addInformation( "icon", qPrintable( document_class.icon() ) );
+    FileRecord& record( menu_->recentFilesMenu().get( *iter ) ); 
+    if( !record.hasProperty( FileRecordProperties::CLASS_NAME ) ) continue; 
+    DocumentClass document_class( static_cast<Application*>(qApp)->classManager().get( record.property( FileRecordProperties::CLASS_NAME ).c_str() ) );
+    if( !document_class.icon().isEmpty() ) record.addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
   
   }
     
@@ -1364,7 +1365,7 @@ TextDisplay& MainWindow::_newTextDisplay( QWidget* parent )
 
   // create textDisplay
   TextDisplay* display = new TextDisplay( parent );  
-  display->setRecentFilesMenu( &menu_->openPreviousMenu() );
+  display->setRecentFilesMenu( &menu_->recentFilesMenu() );
 
   // connections
   connect( display, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );

@@ -1,5 +1,5 @@
-#ifndef Icons_h
-#define Icons_h
+#ifndef FileRecordProperties_h
+#define FileRecordProperties_h
 
 // $Id$
 
@@ -23,44 +23,22 @@
  *                         
  *                         
  *******************************************************************************/
-
 /*!
-  \file    Icons.h
-  \brief   Icon filenames
+  \file    FileRecordProperties.h
+  \brief   File record property names
   \author  Hugo Pereira
   \version $Revision$
   \date    $Date$
 */
 
 #include <string>
-#include "BaseIcons.h"
-
-//! namespace for icon static name wrappers
-namespace ICONS
+namespace FileRecordProperties
 {
   
-  static const std::string CLOSE = "fileclose.png"; 
-  static const std::string NEW = "filenew.png"; 
-  static const std::string SAVE = "filesave.png";
-  static const std::string SAVE_AS = "filesaveas.png"; 
-  static const std::string SAVE_ALL = "save_all.png"; 
-  static const std::string HTML="html.png";
-  static const std::string PDF = "pdf.png";
-  static const std::string INDENT="indent.png";
-  static const std::string PRINT = "fileprint.png"; 
-  static const std::string INFO = "info.png";
-  static const std::string SPELLCHECK = "fonts.png";
-  static const std::string VIEW_LEFTRIGHT = "view_left_right.png";
-  static const std::string VIEW_TOPBOTTOM = "view_top_bottom.png";
-  static const std::string VIEW_RIGHT = "view_right.png";
-  static const std::string VIEW_BOTTOM = "view_bottom.png";
-  static const std::string VIEW_REMOVE = "view_remove.png";
-  static const std::string VIEW_DETACH = "window_fullscreen.png";
-  
-  static const std::string TAG = "bookmark.png";
-  static const std::string UP = "up.png";
-  static const std::string DOWN = "down.png";
-
+  static const std::string CLASS_NAME = "class_name"; 
+  static const std::string ICON = "icon";
+  static const std::string FILTER = "filter";
+  static const std::string DICTIONARY = "dictionary";
   
 };
 

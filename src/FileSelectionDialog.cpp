@@ -28,6 +28,7 @@
   \date $Date$
 */
 
+#include <algorithm>
 #include <QApplication>
 #include <QLabel>
 #include <QLayout>
@@ -36,11 +37,10 @@
 #include "Application.h"
 #include "Debug.h"
 #include "MainWindow.h"
+#include "RecentFilesMenu.h"
 #include "FileSelectionDialog.h"
 #include "Icons.h"
 #include "IconEngine.h"
-#include "Application.h"
-#include "QtUtil.h"
 #include "TextDisplay.h"
 #include "TreeView.h"
 #include "WindowServer.h"
@@ -66,7 +66,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   list_->setSelectionMode( QAbstractItemView::MultiSelection );
 
   // store set of found files to avoid duplication
-  std::set< File > file_set;
+  FileRecordModel::List files;
 
   // retrieve MainWindows
   BASE::KeySet<MainWindow> frames( &static_cast< Application*>( qApp )->windowServer() );
@@ -81,18 +81,24 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
       // retrieve filename
       const File& file( (*iter)->file() );
       if( file.empty() ) continue;
-
-      // try add file, skipp if already inserted
-      if( !file_set.insert( file ).second ) continue;
-
-      // retrieve document class
-      const QString& class_name( (*iter)->className() );
-      model_.add( std::make_pair( file.expand(), class_name ) );
-
+      
+      // skip if already in list
+      if( std::find_if( files.begin(), files.end(), FileRecord::SameFileFTor( file ) ) != files.end() ) continue; 
+      
+      // get matching record and add to list
+      files.push_back( (*iter)->recentFilesMenu().get( file ) );
+      
     }
   }
 
-  list_->resizeColumnToContents( Model::FILE );
+  model_.add( files );
+  
+  // mask
+  unsigned int mask( (1<<FileRecordModel::FILE)|(1<<FileRecordModel::PATH ));
+  int class_column( model_.findColumn( "class_name" ) );
+  if( class_column >= 0 ) mask |= (1<<class_column);
+  list_->setMask( mask );
+  list_->resizeColumns();
   list_->selectAll();
   layout->addWidget( list_ );
 
@@ -135,70 +141,12 @@ void FileSelectionDialog::_replace( void )
   Debug::Throw( "FileSelectionDialog::_replace.\n" );
 
   // retrieve selection from the list
-  Model::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+  FileRecordModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   list<File> files;
-  for( Model::List::iterator iter = selection.begin(); iter != selection.end(); iter++ )
-  { files.push_back( iter->first ); }
+  for( FileRecordModel::List::iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  { files.push_back( iter->file() ); }
 
   emit fileSelected( files, selection_ );
   done( QDialog::Accepted );
-
-}
-
-//_______________________________________________
-const char* FileSelectionDialog::Model::column_titles_[ FileSelectionDialog::Model::n_columns ] =
-{ 
-  "file name",
-  "path",
-  "class"
-};
-
-//__________________________________________________________________
-QVariant FileSelectionDialog::Model::data( const QModelIndex& index, int role ) const
-{
-  Debug::Throw( "FileSelectionDialog::Model::data.\n" );
-  
-  // check index, role and column
-  if( !index.isValid() ) return QVariant();
-  
-  // retrieve associated file info
-  const FilePair& file( get(index) );
-  
-  // return text associated to file and column
-  if( role == Qt::DisplayRole ) {
-    
-    switch( index.column() )
-    {
-      case FILE:
-      return QString( file.first.localName().c_str() );
-
-      case PATH:
-      return QString( file.first.path().c_str() );
-      
-      case CLASS:
-      return QString( file.second );
-      
-      default:
-      return QVariant();
-    }
-  }
- 
-  return QVariant();
-  
-}
-
-//__________________________________________________________________
-QVariant FileSelectionDialog::Model::headerData(int section, Qt::Orientation orientation, int role) const
-{
-
-  if( 
-    orientation == Qt::Horizontal && 
-    role == Qt::DisplayRole && 
-    section >= 0 && 
-    section < n_columns )
-  { return QString( column_titles_[section] ); }
-  
-  // return empty
-  return QVariant(); 
 
 }

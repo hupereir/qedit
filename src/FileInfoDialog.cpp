@@ -43,6 +43,7 @@
 #include "IconEngine.h"
 #include "Icons.h"
 #include "FileInfoDialog.h"
+#include "FileRecordProperties.h"
 #include "RecentFilesMenu.h"
 #include "QtUtil.h"
 #include "TextDisplay.h"
@@ -128,17 +129,17 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
     grid_layout->addWidget( label = new QLabel( class_name, box ) );
   }
   
-  FileRecord record( parent->openPreviousMenu().get( file ) );
-  if( record.hasInformation( "dictionary" ) )
+  FileRecord record( parent->recentFilesMenu().get( file ) );
+  if( record.hasProperty( FileRecordProperties::DICTIONARY ) )
   {
     grid_layout->addWidget( label = new QLabel( "spell-check dictionary: ", box ) );
-    grid_layout->addWidget( label = new QLabel( record.information( "dictionary" ).c_str(), box ) );
+    grid_layout->addWidget( label = new QLabel( record.property( FileRecordProperties::DICTIONARY ).c_str(), box ) );
   }
 
-  if( record.hasInformation( "filter" ) )
+  if( record.hasProperty( FileRecordProperties::FILTER ) )
   {
     grid_layout->addWidget( label = new QLabel( "spell-check filter: ", box ) );
-    grid_layout->addWidget( label = new QLabel( record.information( "filter" ).c_str(), box ) );
+    grid_layout->addWidget( label = new QLabel( record.property( FileRecordProperties::FILTER ).c_str(), box ) );
   }
   
   grid_layout->setColumnStretch( 1, 1 );

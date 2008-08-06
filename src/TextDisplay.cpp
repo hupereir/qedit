@@ -44,6 +44,7 @@
 #include "DocumentClassManager.h"
 #include "FileInfoDialog.h"
 #include "FileModifiedDialog.h"
+#include "FileRecordProperties.h"
 #include "FileRemovedDialog.h"
 #include "FileSelectionDialog.h"
 #include "HtmlUtil.h"
@@ -52,7 +53,6 @@
 #include "IconEngine.h"
 #include "Icons.h"
 #include "LineNumberDisplay.h"
-#include "Application.h"
 #include "RecentFilesMenu.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
@@ -274,7 +274,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
   Debug::Throw() << "TextDisplay::openFile " << file << endl;
 
   // reset class name
-  QString class_name( openPreviousMenu().add( file ).information("class_name").c_str() );
+  QString class_name( recentFilesMenu().add( file ).property(FileRecordProperties::CLASS_NAME).c_str() );
   setClassName( class_name );
 
   // expand filename
@@ -340,7 +340,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
 
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
-  { openPreviousMenu().get( TextDisplay::file() ).addInformation( "class_name", qPrintable( className() ) ); }
+  { recentFilesMenu().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
 
   //Debug::Throw( "TextDisplay::openFile - done.\n" );
 
@@ -518,7 +518,7 @@ void TextDisplay::save( void )
 
   // add file to menu
   if( !file().empty() )
-  { openPreviousMenu().get( file() ).addInformation( "class_name", qPrintable( className() ) ); }
+  { recentFilesMenu().get( file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
 
   return;
 
@@ -594,7 +594,7 @@ void TextDisplay::saveAs( void )
   // rehighlight
   rehighlight();
   if( !TextDisplay::file().empty() )
-  { openPreviousMenu().get( TextDisplay::file() ).addInformation( "class_name", qPrintable( className() ) ); }
+  { recentFilesMenu().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
 
 }
 
@@ -982,9 +982,9 @@ void TextDisplay::updateDocumentClass( void )
   // add information to Menu
   if( !file().empty() )
   { 
-    FileRecord& record( openPreviousMenu().get( file() ) );
-    record.addInformation( "class_name", qPrintable( className() ) ); 
-    if( !document_class.icon().isEmpty() ) record.addInformation( "icon", qPrintable( document_class.icon() ) );
+    FileRecord& record( recentFilesMenu().get( file() ) );
+    record.addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); 
+    if( !document_class.icon().isEmpty() ) record.addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
   }
 
   // rehighlight text entirely
@@ -1115,8 +1115,8 @@ void TextDisplay::selectFilter( const QString& filter )
   // update file record
   if( !file().empty() )
   {
-    FileRecord& record( openPreviousMenu().get( file() ) );
-    record.addInformation( "filter", interface.filter() );
+    FileRecord& record( recentFilesMenu().get( file() ) );
+    record.addProperty( FileRecordProperties::FILTER, interface.filter() );
   }
 
   // rehighlight if needed
@@ -1146,8 +1146,8 @@ void TextDisplay::selectDictionary( const QString& dictionary )
   // update file record
   if( !file().empty() )
   {
-    FileRecord& record( openPreviousMenu().get( file() ) );
-    record.addInformation( "dictionary", interface.dictionary() );
+    FileRecord& record( recentFilesMenu().get( file() ) );
+    record.addProperty( FileRecordProperties::DICTIONARY, interface.dictionary() );
   }
 
   // rehighlight if needed
@@ -1598,17 +1598,17 @@ void TextDisplay::_updateSpellCheckConfiguration( void )
 
   // load default filter and dictionaries
   string filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
-  string dictionary( XmlOptions::get().raw("DICTIONARY") );
+  string dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
 
   // overwrite with file record
   if( !file().empty() )
   {
-    FileRecord& record( openPreviousMenu().get( file() ) );
-    if( record.hasInformation( "filter" ) && interface.hasFilter( record.information( "filter" ) ) )
-    { filter = record.information( "filter" ); }
+    FileRecord& record( recentFilesMenu().get( file() ) );
+    if( record.hasProperty( FileRecordProperties::FILTER ) && interface.hasFilter( record.property( FileRecordProperties::FILTER ) ) )
+    { filter = record.property( FileRecordProperties::FILTER ); }
 
-    if( record.hasInformation( "dictionary" ) && interface.hasDictionary( record.information( "dictionary" ) ) )
-    { dictionary = record.information( "dictionary" ); }
+    if( record.hasProperty( FileRecordProperties::DICTIONARY ) && interface.hasDictionary( record.property( FileRecordProperties::DICTIONARY ) ) )
+    { dictionary = record.property( FileRecordProperties::DICTIONARY ); }
 
   }
 
@@ -1809,17 +1809,17 @@ void TextDisplay::_spellcheck( void )
 
   // default dictionary from XmlOptions
   string default_filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
-  string default_dictionary( XmlOptions::get().raw("DICTIONARY") );
+  string default_dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
 
   // try overwrite with file record
   if( !file().empty() )
   {
 
-    FileRecord& record( openPreviousMenu().get( file() ) );
-    if( !( record.hasInformation( "filter" ) && dialog.setFilter( record.information( "filter" ) ) ) )
+    FileRecord& record( recentFilesMenu().get( file() ) );
+    if( !( record.hasProperty( FileRecordProperties::FILTER ) && dialog.setFilter( record.property( FileRecordProperties::FILTER ) ) ) )
     { dialog.setFilter( default_filter ); }
 
-    if( !( record.hasInformation( "dictionary" ) && dialog.setDictionary( record.information( "dictionary" ) ) ) )
+    if( !( record.hasProperty( FileRecordProperties::DICTIONARY ) && dialog.setDictionary( record.property( FileRecordProperties::DICTIONARY ) ) ) )
     { dialog.setDictionary( default_dictionary ); }
 
   }  else {
@@ -1839,9 +1839,9 @@ void TextDisplay::_spellcheck( void )
   // try overwrite with file record
   if( !file().empty() )
   {
-    FileRecord& record( openPreviousMenu().get( file() ) );
-    record.addInformation( "filter", dialog.filter() );
-    record.addInformation( "dictionary", dialog.dictionary() );
+    FileRecord& record( recentFilesMenu().get( file() ) );
+    record.addProperty( FileRecordProperties::FILTER, dialog.filter() );
+    record.addProperty( FileRecordProperties::DICTIONARY, dialog.dictionary() );
   }
 
   textHighlight().spellParser().interface().mergeIgnoredWords( dialog.interface().ignoredWords() );
