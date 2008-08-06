@@ -65,10 +65,10 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   MainWindow& newMainWindow( void );
 
   //! map files and modification status
-  typedef std::map< File, bool > FileMap;
+  typedef std::map< FileRecord, bool > FileRecordMap;
   
   //! returns list of opened files
-  FileMap files( bool modified_only = false ) const;
+  FileRecordMap files( bool modified_only = false ) const;
   
   //! close all windows gracefully
   /*! returns false if the opperation was cancelled. */

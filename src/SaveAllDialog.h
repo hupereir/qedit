@@ -45,7 +45,7 @@ class SaveAllDialog: public CustomDialog
   public:
 
   //! constructor
-  SaveAllDialog( QWidget*, WindowServer::FileMap );
+  SaveAllDialog( QWidget*, WindowServer::FileRecordMap );
 
 };
 

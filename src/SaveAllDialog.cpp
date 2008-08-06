@@ -39,7 +39,7 @@
 using namespace std;
 
 //__________________________________________________
-SaveAllDialog::SaveAllDialog( QWidget* parent, WindowServer::FileMap files ):
+SaveAllDialog::SaveAllDialog( QWidget* parent, WindowServer::FileRecordMap files ):
   CustomDialog( parent, OK_BUTTON | CANCEL_BUTTON )
 {
   
@@ -62,9 +62,9 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, WindowServer::FileMap files ):
   what << "Modified: ";
 
   unsigned int index = 0;
-  for( WindowServer::FileMap::iterator iter = files.begin(); iter != files.end(); iter++, index++ )
+  for( WindowServer::FileRecordMap::iterator iter = files.begin(); iter != files.end(); iter++, index++ )
   {
-    what << iter->first.localName();
+    what << iter->first.file().localName();
     if( index < files.size()-2 ) what << ", ";
     else if( index == files.size()-2 ) what << " and ";
     else what << ".";

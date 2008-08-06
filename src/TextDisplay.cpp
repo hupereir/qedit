@@ -53,6 +53,7 @@
 #include "IconEngine.h"
 #include "Icons.h"
 #include "LineNumberDisplay.h"
+#include "NavigationWindow.h"
 #include "RecentFilesMenu.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
@@ -142,7 +143,11 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
 //_____________________________________________________
 TextDisplay::~TextDisplay( void )
-{ Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; }
+{ 
+  Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; 
+  static_cast<Application*>(qApp)->navigationWindow().updateSessionFiles();
+
+}
 
 //_____________________________________________________
 int TextDisplay::blockCount( const QTextBlock& block ) const
@@ -342,8 +347,9 @@ void TextDisplay::openFile( File file, bool check_autosave )
   if( !TextDisplay::file().empty() )
   { recentFilesMenu().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
 
-  //Debug::Throw( "TextDisplay::openFile - done.\n" );
-
+  // update navigationWindow
+  static_cast<Application*>(qApp)->navigationWindow().updateFiles();
+  
 }
 
 //_______________________________________________________

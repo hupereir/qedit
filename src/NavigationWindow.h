@@ -78,8 +78,18 @@ class NavigationWindow: public CustomMainWindow, public Counter
   
   public slots:
   
+  //! update session files
+  void updateSessionFiles( void );
+
+  //! update recent files
+  void updateRecentFiles( void );
+    
   //! update models
-  void update( void );
+  void updateFiles( void )
+  {
+    updateSessionFiles();
+    updateRecentFiles();
+  }
   
   protected:
   
@@ -96,7 +106,7 @@ class NavigationWindow: public CustomMainWindow, public Counter
   
   //! recent files model
   FileRecordModel& _recentFilesModel( void ) 
-  { return session_files_model_; }
+  { return recent_files_model_; }
   
   private slots:
   

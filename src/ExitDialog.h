@@ -45,7 +45,7 @@ class ExitDialog: public CustomDialog
   public:
 
   //! constructor
-  ExitDialog( QWidget*, WindowServer::FileMap );
+  ExitDialog( QWidget*, WindowServer::FileRecordMap );
 
 };
 

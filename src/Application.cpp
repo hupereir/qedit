@@ -320,7 +320,7 @@ void Application::_exit( void )
   Debug::Throw( "Application::_exit.\n" );
 
   // retrieve opened files
-  WindowServer::FileMap files( windowServer().files() );
+  WindowServer::FileRecordMap files( windowServer().files() );
   
   // ask for confirmation if more than one file is opened.
   if( files.size() > 1 )
@@ -371,7 +371,7 @@ void Application::_readFilesFromArgs( void )
 {
   Debug::Throw( "Application::_readFilesFromArgs.\n" );
   windowServer().readFilesFromArguments( args_ );
-  
+  navigationWindow().update();
 }
 
 //________________________________________________

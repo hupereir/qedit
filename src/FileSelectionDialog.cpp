@@ -65,33 +65,12 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   list_->setModel( &model_ );
   list_->setSelectionMode( QAbstractItemView::MultiSelection );
 
-  // store set of found files to avoid duplication
+  // retrieve file records
   FileRecordModel::List files;
-
-  // retrieve MainWindows
-  BASE::KeySet<MainWindow> frames( &static_cast< Application*>( qApp )->windowServer() );
-  for( BASE::KeySet<MainWindow>::const_iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
-  {
-
-    // retrieve associated TextDisplays
-    BASE::KeySet<TextDisplay> displays( *frame_iter );
-    for( BASE::KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    {
-      
-      // retrieve filename
-      const File& file( (*iter)->file() );
-      if( file.empty() ) continue;
-      
-      // skip if already in list
-      if( std::find_if( files.begin(), files.end(), FileRecord::SameFileFTor( file ) ) != files.end() ) continue; 
-      
-      // get matching record and add to list
-      files.push_back( (*iter)->recentFilesMenu().get( file ) );
-      
-    }
-  }
-
-  model_.add( files );
+  WindowServer::FileRecordMap records( static_cast< Application*>( qApp )->windowServer().files() );
+  for( WindowServer::FileRecordMap::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+  { files.push_back( iter->first ); }
+  model_.set( files );
   
   // mask
   unsigned int mask( (1<<FileRecordModel::FILE)|(1<<FileRecordModel::PATH ));

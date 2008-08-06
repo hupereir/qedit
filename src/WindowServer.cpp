@@ -39,6 +39,7 @@
 #include "MainWindow.h"
 #include "NewFileDialog.h"
 #include "QtUtil.h"
+#include "RecentFilesMenu.h"
 #include "SaveAllDialog.h"
 #include "WindowServer.h"
 
@@ -72,13 +73,13 @@ MainWindow& WindowServer::newMainWindow( void )
 }
 
 //______________________________________________________
-WindowServer::FileMap WindowServer::files( bool modified_only ) const
+WindowServer::FileRecordMap WindowServer::files( bool modified_only ) const
 { 
   
   Debug::Throw( "WindowServer::files.\n" );
   
   // output
-  FileMap files;
+  FileRecordMap files;
   
   // get associated main windows
   BASE::KeySet<MainWindow> windows( this );
@@ -99,7 +100,7 @@ WindowServer::FileMap WindowServer::files( bool modified_only ) const
       if( file.empty() ) continue;
         
       // insert in map (together with modification status
-      files.insert( make_pair( file, (*iter)->document()->isModified() ) );
+      files.insert( make_pair( (*iter)->recentFilesMenu().get(file), (*iter)->document()->isModified() ) );
         
     }
     
@@ -468,7 +469,7 @@ void WindowServer::_saveAll( void )
   Debug::Throw( "WindowServer::_saveAll.\n" );
 
   // load files
-  FileMap files( WindowServer::files( true ) );
+  FileRecordMap files( WindowServer::files( true ) );
   
   // check how many files are modified
   if( files.empty() )

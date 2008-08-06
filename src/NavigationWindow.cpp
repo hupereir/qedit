@@ -34,10 +34,13 @@
 #include <QStyleOptionToolButton>
 #include <QLayout>
 
+#include "Application.h"
 #include "CustomToolButton.h"
 #include "Debug.h"
 #include "NavigationWindow.h"
+#include "Singleton.h"
 #include "TreeView.h"
+#include "WindowServer.h"
 
 using namespace std;
 
@@ -69,13 +72,13 @@ NavigationWindow::NavigationWindow( QWidget* parent ):
   
   // create session files tree view
   session_files_list_ = new TreeView(0);  
-  sessionFilesList().setModel( &session_files_model_ );  
+  sessionFilesList().setModel( &_sessionFilesModel() );  
   sessionFilesList().setMask( (1<<FileRecordModel::FILE) );
   stack_->addWidget( &sessionFilesList() );
   
   // create recent files tree view
   recent_files_list_ = new TreeView(0);  
-  recentFilesList().setModel( &recent_files_model_ );  
+  recentFilesList().setModel( &_recentFilesModel() );  
   recentFilesList().setMask( (1<<FileRecordModel::FILE) );
   stack_->addWidget( &recentFilesList() );
   
@@ -105,6 +108,9 @@ NavigationWindow::NavigationWindow( QWidget* parent ):
   buttons_.insert( make_pair( button, &recentFilesList() ) );
   
   v_layout->addStretch( 1 );
+  
+  update();
+  
 }
 
 //______________________________________________________________________
@@ -112,8 +118,50 @@ NavigationWindow::~NavigationWindow( void )
 { Debug::Throw( "NavigationWindow::~NavigationWindow.\n" ); }
 
 //______________________________________________________________________
-void NavigationWindow::update( void )
-{ Debug::Throw( "NavigationWindow:update.\n" ); }
+void NavigationWindow::updateSessionFiles( void )
+{ 
+  Debug::Throw( "NavigationWindow:updateSessionFiles.\n" ); 
+
+  // save mask
+  unsigned int mask( sessionFilesList().mask() );
+
+  // retrieve file records
+  FileRecordModel::List files;
+  WindowServer::FileRecordMap records( static_cast< Application*>( qApp )->windowServer().files() );
+  for( WindowServer::FileRecordMap::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+  { files.push_back( iter->first ); }
+
+  // replace
+  _sessionFilesModel().set( files );
+ 
+  // restore mask and resize columns
+  sessionFilesList().setMask( mask );
+  sessionFilesList().resizeColumns();
+
+}
+
+//______________________________________________________________________
+void NavigationWindow::updateRecentFiles( void )
+{ 
+  Debug::Throw( "NavigationWindow:updateRecentFiles.\n" ); 
+  
+  // save mask
+  unsigned int mask( recentFilesList().mask() );
+  
+  FileRecord::List records;
+  Singleton::FileRecordMap& file_records_map( Singleton::get().fileRecordMap() );
+  for( Singleton::FileRecordMap::const_iterator iter = file_records_map.begin(); iter != file_records_map.end(); iter++ )
+  { records.insert( records.end(), iter->second.begin(), iter->second.end() ); }
+  
+  // replace
+  _recentFilesModel().set( records );
+  
+  // restore mask and resize columns
+  recentFilesList().setMask( mask );
+  recentFilesList().resizeColumns();
+
+
+}
 
 //______________________________________________________________________
 void NavigationWindow::_display( QAbstractButton* button )
