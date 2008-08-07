@@ -86,7 +86,6 @@ TextDisplay::TextDisplay( QWidget* parent ):
   class_name_( "" ),
   ignore_warnings_( false ),
   show_block_delimiter_action_( 0 ),
-  recent_files_menu_( 0 ),
   text_highlight_( 0 ),
   block_delimiter_display_( 0 )
 {

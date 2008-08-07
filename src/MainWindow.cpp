@@ -1342,7 +1342,7 @@ TextDisplay& MainWindow::_newTextDisplay( QWidget* parent )
 
   // create textDisplay
   TextDisplay* display = new TextDisplay( parent );  
-  display->setRecentFilesMenu( &menu_->recentFilesMenu() );
+  BASE::Key::associate( display, &menu_->recentFilesMenu() );
 
   // connections
   connect( display, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );

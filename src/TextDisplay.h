@@ -56,11 +56,11 @@
 #endif
 
 // forward declaration
+class BlockDelimiterDisplay;
 class DocumentClass;
 class HighlightBlockData;
 class RecentFilesMenu;
 class TextHighlight;
-class BlockDelimiterDisplay;
 
 //! text display window
 class TextDisplay: public TextEditor
@@ -85,7 +85,7 @@ class TextDisplay: public TextEditor
   virtual void synchronize( TextDisplay* display );
   
   //! open previous menu
-  RecentFilesMenu& recentFilesMenu( void );
+  RecentFilesMenu& recentFilesMenu( void ) const;
   
   //! check if current entry has been modified or not
   void setModified( const bool& value = true );
