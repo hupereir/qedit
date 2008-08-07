@@ -324,7 +324,7 @@ void MainWindow::_detach( void )
 
   // close all clone displays
   for( BASE::KeySet<TextDisplay>::iterator iter = associated_displays.begin(); iter != associated_displays.end(); iter++ )
-  { _closeDisplay( *dynamic_cast<TextDisplay*>((*iter)->parentWidget()) ); }
+  { _closeDisplay( **iter ); }
 
   // create MainWindow
   MainWindow& window( static_cast<Application*>(qApp)->windowServer().newMainWindow() );
@@ -1030,7 +1030,7 @@ void MainWindow::_open( FileRecord record, const OpenMode& mode, const Orientati
       BASE::KeySet<TextDisplay> displays( &previous_display );
       displays.insert( &previous_display );
       for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
-      { (*iter)->_closeDisplay( *dynamic_cast<TextDisplay*>( (*display_iter)->parentWidget() ) ); }
+      { (*iter)->_closeDisplay( **display_iter ); }
     }
 
     // restore modification state and make new display active
