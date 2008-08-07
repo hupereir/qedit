@@ -185,13 +185,14 @@ void Application::realizeWidget( void )
   autosave_ = new AutoSave();
   
   // show navigation window
-  navigationWindow().show();
+  // navigationWindow().show();
   
   // create first editFrame
   windowServer().newMainWindow().show(); 
   _updateConfiguration();
 
   // make sure application ends when last window is closed.
+  connect( &navigationWindow(), SIGNAL( fileSelected( FileRecord ) ), &windowServer(), SLOT( open( FileRecord ) ) );
   connect( this, SIGNAL( lastWindowClosed() ), SLOT( quit() ) );
   
   // run startup timer to open files after the call to exec() is 

@@ -32,11 +32,8 @@
 */
 
 #include <QAction>
-#include <QBasicTimer>
-#include <QResizeEvent>
 #include <QSplitter>
 #include <QTimer>
-#include <QTimerEvent>
 
 #include <list>
 #include <string>
@@ -362,12 +359,6 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! enter event handler
   void enterEvent( QEvent* );
     
-  //! resize event
-  void resizeEvent( QResizeEvent* );
-  
-  //! timer event
-  void timerEvent( QTimerEvent* );
-  
   private slots:
   
   //! update configuration

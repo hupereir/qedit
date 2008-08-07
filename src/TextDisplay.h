@@ -84,16 +84,8 @@ class TextDisplay: public TextEditor
   //! clone display configuration and document
   virtual void synchronize( TextDisplay* display );
   
-  //! set recent files menu
-  void setRecentFilesMenu( RecentFilesMenu* menu )
-  { recent_files_menu_ = menu; }
-  
   //! open previous menu
-  RecentFilesMenu& recentFilesMenu( void )
-  { 
-    assert( recent_files_menu_);
-    return *recent_files_menu_;
-  }
+  RecentFilesMenu& recentFilesMenu( void );
   
   //! check if current entry has been modified or not
   void setModified( const bool& value = true );
@@ -726,9 +718,6 @@ class TextDisplay: public TextEditor
   SPELLCHECK::FilterMenu* filter_menu_;
   
   #endif
-  
-  //! parent recent files menu
-  RecentFilesMenu* recent_files_menu_;
   
   //! syntax highlighter
   TextHighlight* text_highlight_;

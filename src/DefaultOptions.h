@@ -80,6 +80,7 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "WINDOW_HEIGHT", "500" ));
   XmlOptions::get().add( Option( "WINDOW_WIDTH", "700" ));
   XmlOptions::get().add( Option( "SERVER_TIMEOUT_DELAY", "3000" , "timeout delay to wait for existing server to answer" ));
+  XmlOptions::get().add( Option( "SHOW_NAVIGATION_WINDOW", "0", "show/hide navigation window" ) );
 
   // toolbars
   XmlOptions::get().add( Option( "FILE_TOOLBAR",   "1" , "toolbar visibility" ));

@@ -34,7 +34,10 @@
 #include <assert.h>
 #include <map>
 #include <QAbstractButton>
+#include <QAction>
+#include <QCloseEvent>
 #include <QPaintEvent>
+#include <QShowEvent>
 #include <QStackedWidget>
 
 #include "Counter.h"
@@ -62,19 +65,19 @@ class NavigationWindow: public CustomMainWindow, public Counter
   //! destructor
   ~NavigationWindow( void );
 
-  //! session file list
-  TreeView& sessionFilesList( void ) const
-  { 
-    assert( session_files_list_ );  
-    return *session_files_list_;
-  }
+  //!@name actions
+  //@{
   
-  //! recent file list
-  TreeView& recentFilesList( void ) const
-  {
-    assert( recent_files_list_ );  
-    return *recent_files_list_;
-  }
+  //! visibility
+  QAction& visibilityAction( void ) const
+  { return *visibility_action_; }
+  
+  //@}
+  
+  signals:
+
+  //! signal emited when a file is selected
+  void fileSelected( FileRecord );  
   
   public slots:
   
@@ -93,11 +96,31 @@ class NavigationWindow: public CustomMainWindow, public Counter
   
   protected:
   
+  //! close event
+  void closeEvent( QCloseEvent* );
+  
+  //! show event
+  virtual void showEvent( QShowEvent* );
+    
   //! stack widget
   QStackedWidget& _stack( void ) const
   { 
     assert( stack_ );
     return *stack_;
+  }
+  
+  //! session file list
+  TreeView& _sessionFilesList( void ) const
+  { 
+    assert( session_files_list_ );  
+    return *session_files_list_;
+  }
+  
+  //! recent file list
+  TreeView& _recentFilesList( void ) const
+  {
+    assert( recent_files_list_ );  
+    return *recent_files_list_;
   }
   
   //! session files model
@@ -109,12 +132,55 @@ class NavigationWindow: public CustomMainWindow, public Counter
   { return recent_files_model_; }
   
   private slots:
+     
+  //! update configuration
+  void _updateConfiguration( void );
+  
+  //! update configuration
+  void _saveConfiguration( void );
+  
+  //! sessionFilesItem selected
+  void _sessionFilesItemSelected( const QModelIndex& index )
+  { _itemSelected( _sessionFilesModel(), index ); }
+  
+  //! sessionFilesItem selected
+  void _recentFilesItemSelected( const QModelIndex& index )
+  { _itemSelected( _recentFilesModel(), index ); }
+
+  //!@name selections
+  //@{
+
+  void _storeSessionFilesSelection( void )
+  { _storeSelection( _sessionFilesList(), _sessionFilesModel() ); }
+  
+  void _restoreSessionFilesSelection( void )
+  { _restoreSelection( _sessionFilesList(), _sessionFilesModel() ); }
+
+  void _storeRecentFilesSelection( void )
+  { _storeSelection( _recentFilesList(), _recentFilesModel() ); }
+  
+  void _restoreRecentFilesSelection( void )
+  { _restoreSelection( _recentFilesList(), _recentFilesModel() ); }
+
+  //@}
   
   //! display item page
   virtual void _display( QAbstractButton* );
 
   private:
   
+  //! install actions
+  void _installActions( void );
+  
+  //! item selected
+  void _itemSelected( const FileRecordModel&, const QModelIndex& );
+  
+  //! store selection
+  void _storeSelection( TreeView&, FileRecordModel& );
+  
+  //! store selection
+  void _restoreSelection( TreeView&, FileRecordModel& );
+
   //! stack widget
   QStackedWidget* stack_;
   
@@ -136,6 +202,14 @@ class NavigationWindow: public CustomMainWindow, public Counter
   //! recent files list
   TreeView* recent_files_list_;
       
+  //!@name actions
+  //@{
+  
+  //! visibility
+  QAction* visibility_action_;
+  
+  //@}
+  
 };
 
 #endif

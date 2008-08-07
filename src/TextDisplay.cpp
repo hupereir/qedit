@@ -271,6 +271,14 @@ void TextDisplay::synchronize( TextDisplay* display )
   setFile( display->file() );
 
 }
+  
+//____________________________________________
+RecentFilesMenu& TextDisplay::recentFilesMenu( void ) const
+{ 
+  BASE::KeySet<RecentFilesMenu> menus( this );
+  assert( !menus.empty() );
+  return **menus.begin();
+}
 
 //____________________________________________
 void TextDisplay::openFile( File file, bool check_autosave )
@@ -1326,7 +1334,7 @@ void TextDisplay::_installActions( void )
   Debug::Throw( "TextDisplay::_installActions.\n" );
 
   // actions
-  addAction( text_indent_action_ = new QAction( "&Indent text", this ) );
+  addAction( text_indent_action_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Indent text", this ) );
   text_indent_action_->setCheckable( true );
   text_indent_action_->setChecked( textIndent().isEnabled() );
   connect( text_indent_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextIndent( bool ) ) );
@@ -1351,7 +1359,7 @@ void TextDisplay::_installActions( void )
   connect( show_block_delimiter_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowBlockDelimiters( bool ) ) );
 
   // autospell
-  addAction( autospell_action_ = new QAction( "&Automatic spell-check", this ) );
+  addAction( autospell_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Automatic spell-check", this ) );
   autospell_action_->setShortcut( Qt::Key_F6 );
   autospell_action_->setShortcutContext( Qt::WidgetShortcut );
   autospell_action_->setCheckable( true );

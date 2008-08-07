@@ -85,7 +85,8 @@ MainWindow::MainWindow(  QWidget* parent ):
 {
 
   Debug::Throw( "MainWindow::MainWindow.\n" );
-
+  _setSizeOptionName( "WINDOW" );
+  
   // tell window to delete on exit
   setAttribute( WA_DeleteOnClose );
   
@@ -500,7 +501,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
 {
   Debug::Throw( "MainWindow::closeEvent.\n" );
 
-  // check for modifications
+  // accept event
   event->accept();
       
   // look over TextDisplays
@@ -611,31 +612,6 @@ void MainWindow::enterEvent( QEvent* e )
 
   Debug::Throw( "MainWindow::enterEvent - done.\n" );
 
-}
-
-//_______________________________________________________
-void MainWindow::resizeEvent( QResizeEvent* event )
-{
-  resize_timer_.start( 200, this );
-  return CustomMainWindow::resizeEvent( event );
-}
-
-//_______________________________________________________
-void MainWindow::timerEvent( QTimerEvent* event )
-{
-
-  if( event->timerId() == resize_timer_.timerId() )
-  {
-    
-    // stop timer
-    resize_timer_.stop();
-    
-    // save size
-    XmlOptions::get().set<int>( "WINDOW_HEIGHT", height() );
-    XmlOptions::get().set<int>( "WINDOW_WIDTH", width() );
-  
-  } else return CustomMainWindow::timerEvent( event );
-  
 }
 
 //_______________________________________________________
@@ -896,9 +872,8 @@ void MainWindow::_updateConfiguration( void )
   
   Debug::Throw( "MainWindow::_updateConfiguration.\n" );
       
-  // resize
-  resize( QSize( XmlOptions::get().get<int>( "WINDOW_WIDTH" ), XmlOptions::get().get<int>( "WINDOW_HEIGHT" ) ) );
-
+  resize( sizeHint() );
+  
   // assign icons to file in open previous menu based on class manager
   list<File> files( menu_->recentFilesMenu().files() );
   for( list<File>::const_iterator iter = files.begin(); iter != files.end(); iter++ )

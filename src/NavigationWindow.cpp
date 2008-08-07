@@ -51,9 +51,12 @@ NavigationWindow::NavigationWindow( QWidget* parent ):
 {
   
   Debug::Throw( "NavigationWindow:NavigationWindow.\n" );
+  _setSizeOptionName( "NAVIGATION_WINDOW" );
   
   QWidget* main( new QWidget( this ) );
   setCentralWidget( main );
+  
+  _installActions();
   
   // add horizontal layout for toolbar and stacked widget
   QHBoxLayout *h_layout = new QHBoxLayout();
@@ -72,15 +75,15 @@ NavigationWindow::NavigationWindow( QWidget* parent ):
   
   // create session files tree view
   session_files_list_ = new TreeView(0);  
-  sessionFilesList().setModel( &_sessionFilesModel() );  
-  sessionFilesList().setMask( (1<<FileRecordModel::FILE) );
-  stack_->addWidget( &sessionFilesList() );
+  _sessionFilesList().setModel( &_sessionFilesModel() );  
+  _sessionFilesList().setMask( (1<<FileRecordModel::FILE) );
+  stack_->addWidget( &_sessionFilesList() );
   
   // create recent files tree view
   recent_files_list_ = new TreeView(0);  
-  recentFilesList().setModel( &_recentFilesModel() );  
-  recentFilesList().setMask( (1<<FileRecordModel::FILE) );
-  stack_->addWidget( &recentFilesList() );
+  _recentFilesList().setModel( &_recentFilesModel() );  
+  _recentFilesList().setMask( (1<<FileRecordModel::FILE) );
+  stack_->addWidget( &_recentFilesList() );
   
   // create button group
   QButtonGroup* button_group = new QButtonGroup( this );
@@ -97,7 +100,7 @@ NavigationWindow::NavigationWindow( QWidget* parent ):
   button->setRotation( CustomToolButton::COUNTERCLOCKWISE );
   button->setText( "&Session files" );
   button_group->addButton( button );
-  buttons_.insert( make_pair( button, &sessionFilesList() ) );
+  buttons_.insert( make_pair( button, &_sessionFilesList() ) );
   
   // recent files
   v_layout->addWidget( button = new CustomToolButton( this ) );
@@ -105,11 +108,23 @@ NavigationWindow::NavigationWindow( QWidget* parent ):
   button->setRotation( CustomToolButton::COUNTERCLOCKWISE );
   button->setText( "&Recent files" );
   button_group->addButton( button );
-  buttons_.insert( make_pair( button, &recentFilesList() ) );
-  
+  buttons_.insert( make_pair( button, &_recentFilesList() ) );
   v_layout->addStretch( 1 );
+
+  // connections
+  connect( &_sessionFilesModel(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSessionFilesSelection() ) );
+  connect( &_sessionFilesModel(), SIGNAL( layoutChanged() ), SLOT( _restoreSessionFilesSelection() ) );
+  connect( &_sessionFilesList(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _sessionFilesItemSelected( const QModelIndex& ) ) );
+
+  connect( &_recentFilesModel(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeRecentFilesSelection() ) );
+  connect( &_recentFilesModel(), SIGNAL( layoutChanged() ), SLOT( _restoreRecentFilesSelection() ) );
+  connect( &_recentFilesList(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _recentFilesItemSelected( const QModelIndex& ) ) );
   
-  update();
+  //! configuration
+  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( qApp, SIGNAL( saveConfiguration() ), SLOT( _saveConfiguration() ) );
+  connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
+ _updateConfiguration();
   
 }
 
@@ -122,8 +137,11 @@ void NavigationWindow::updateSessionFiles( void )
 { 
   Debug::Throw( "NavigationWindow:updateSessionFiles.\n" ); 
 
+  // check visibility
+  if( !( isVisible() && _stack().currentWidget() == &_sessionFilesList() ) ) return;
+  
   // save mask
-  unsigned int mask( sessionFilesList().mask() );
+  unsigned int mask( _sessionFilesList().mask() );
 
   // retrieve file records
   FileRecordModel::List files;
@@ -132,11 +150,11 @@ void NavigationWindow::updateSessionFiles( void )
   { files.push_back( iter->first ); }
 
   // replace
-  _sessionFilesModel().set( files );
+  _sessionFilesModel().update( files );
  
   // restore mask and resize columns
-  sessionFilesList().setMask( mask );
-  sessionFilesList().resizeColumns();
+  _sessionFilesList().setMask( mask );
+  _sessionFilesList().resizeColumns();
 
 }
 
@@ -144,9 +162,12 @@ void NavigationWindow::updateSessionFiles( void )
 void NavigationWindow::updateRecentFiles( void )
 { 
   Debug::Throw( "NavigationWindow:updateRecentFiles.\n" ); 
-  
+ 
+  // check visibility
+  if( !( isVisible() && _stack().currentWidget() == &_recentFilesList() ) ) return;
+ 
   // save mask
-  unsigned int mask( recentFilesList().mask() );
+  unsigned int mask( _recentFilesList().mask() );
   
   FileRecord::List records;
   Singleton::FileRecordMap& file_records_map( Singleton::get().fileRecordMap() );
@@ -154,19 +175,49 @@ void NavigationWindow::updateRecentFiles( void )
   { records.insert( records.end(), iter->second.begin(), iter->second.end() ); }
   
   // replace
-  _recentFilesModel().set( records );
+  _recentFilesModel().update( records );
   
   // restore mask and resize columns
-  recentFilesList().setMask( mask );
-  recentFilesList().resizeColumns();
+  _recentFilesList().setMask( mask );
+  _recentFilesList().resizeColumns();
 
 
 }
 
+//____________________________________________
+void NavigationWindow::closeEvent( QCloseEvent* event )
+{
+  Debug::Throw( "NavigationWindow::closeEvent.\n" );
+
+  // accept event
+  visibilityAction().setChecked( false );
+  event->accept();
+}
+
+//____________________________________________
+void NavigationWindow::showEvent( QShowEvent* )
+{
+  Debug::Throw( "NavigationWindow::showEvent.\n" );
+  updateFiles();  
+}
+
+//______________________________________________________________________
+void NavigationWindow::_updateConfiguration( void )
+{ 
+  Debug::Throw( "NavigationWindow::_updateConfiguration.\n" );
+  visibilityAction().setChecked( XmlOptions::get().get<bool>( "SHOW_NAVIGATION_WINDOW" ) );
+}
+
+//______________________________________________________________________
+void NavigationWindow::_saveConfiguration( void )
+{ 
+  Debug::Throw( "NavigationWindow::_saveConfiguration.\n" );
+  XmlOptions::get().set<bool>( "SHOW_NAVIGATION_WINDOW" , visibilityAction().isChecked() );  
+}  
+
 //______________________________________________________________________
 void NavigationWindow::_display( QAbstractButton* button )
-{ 
-  Debug::Throw( "NavigationWindow:_display.\n" ); 
+{   Debug::Throw( "NavigationWindow:_display.\n" ); 
   if( !button->isChecked() ) return;
   
   // retrieve item in map
@@ -174,6 +225,69 @@ void NavigationWindow::_display( QAbstractButton* button )
   assert( iter != buttons_.end() );
 
   // display corresponding widget
-  _stack().setCurrentWidget( iter->second );  
+  _stack().setCurrentWidget( iter->second );
+  updateFiles();
 
+}
+
+//______________________________________________________________________
+void NavigationWindow::_installActions( void )
+{
+  
+  Debug::Throw( "NavigationWindow::_installActions.\n" );
+  addAction( visibility_action_ = new QAction( "&Navigation window", this ) );
+  visibility_action_->setCheckable( true );
+  visibility_action_->setChecked( false );
+  connect( visibility_action_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );
+   
+}
+
+//______________________________________________________________________
+void NavigationWindow::_itemSelected( const FileRecordModel& model, const QModelIndex& index )
+{ 
+  Debug::Throw( "NavigationWindow::_itemSelected.\n" );
+  if( !index.isValid() ) return;
+  emit fileSelected( model.get( index ) );
+}
+
+//______________________________________________________________________
+void NavigationWindow::_storeSelection( TreeView& view, FileRecordModel& model )
+{ 
+  Debug::Throw( "NavigationWindow::_storeSelection.\n" ); 
+
+  // clear
+  model.clearSelectedIndexes();
+  
+  // retrieve selected indexes in list
+  QModelIndexList selected_indexes( view.selectionModel()->selectedRows() );
+  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+  { 
+    // check column
+    if( !iter->column() == 0 ) continue;
+    model.setIndexSelected( *iter, true ); 
+  }
+
+  return;
+  
+}
+
+//______________________________________________________________________
+void NavigationWindow::_restoreSelection( TreeView& view, FileRecordModel& model )
+{ 
+  
+  Debug::Throw( "NavigationWindow::_restoreSelection.\n" ); 
+
+  // retrieve indexes
+  QModelIndexList selected_indexes( model.selectedIndexes() );
+  if( selected_indexes.empty() ) view.selectionModel()->clear();
+  else {
+    
+    view.selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+    { view.selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+  
+  }
+  
+  return;
+  
 }

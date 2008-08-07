@@ -44,6 +44,7 @@
 #include "Icons.h"
 #include "Application.h"
 #include "Menu.h"
+#include "NavigationWindow.h"
 #include "RecentFilesMenu.h"
 #include "QtUtil.h"
 #include "TextDisplay.h"
@@ -437,7 +438,10 @@ void Menu::_updateWindowsMenu( void )
 
   Debug::Throw( "Menu::_updateWindowsMenu.\n" );
   windows_menu_->clear();
-  
+
+  // navigation window
+  windows_menu_->addAction( &static_cast<Application*>(qApp)->navigationWindow().visibilityAction() );
+
   // retrieve current display
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
   windows_menu_->addAction( &display.fileInfoAction() );
