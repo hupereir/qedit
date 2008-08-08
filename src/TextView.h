@@ -42,8 +42,6 @@
 #include "Key.h"
 #include "TextDisplay.h"
 
-class RecentFilesMenu;
-
 //! handles multiple views
 class TextView: public QWidget, public Counter, public BASE::Key
 {
@@ -123,38 +121,10 @@ class TextView: public QWidget, public Counter, public BASE::Key
   }
   
   //! return number of independant displays
-  unsigned int independentDisplayCount( void )
-  { 
-    unsigned int out( 0 );
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { 
-      // increment if no associated display is found in the already processed displays
-      if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++;
-    }
-    
-    return out;
-  }
+  unsigned int independentDisplayCount( void );
   
   //! return number of independent modified displays
-  unsigned int modifiedDisplayCount( void )
-  {
-    
-    unsigned int out( 0 );
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { 
-      // increment if no associated display is found in the already processed displays
-      // and if current is modified
-      if( 
-        std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter && 
-        (*iter)->document()->isModified() )
-      { out++; }
-   }
-    
-    return out;
-    
-  }   
+  unsigned int modifiedDisplayCount( void );
   //@}
   
   //!@name display management
@@ -169,40 +139,13 @@ class TextView: public QWidget, public Counter, public BASE::Key
   { return *active_display_; }
   
   //! select display from file
-  void selectDisplay( const File& file )
-  {
-    
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator iter( std::find_if(
-      displays.begin(),
-      displays.end(),
-      TextDisplay::SameFileFTor( file ) ) );
-    if( iter == displays.end() ) return;
-    
-    // change active display
-    setActiveDisplay( **iter );
-    (*iter)->setFocus();
-    
-    return;
-    
-  }
+  bool selectDisplay( const File& file );
   
   //! change active display manualy
   void setActiveDisplay( TextDisplay& );
 
   //! close display
-  bool closeDisplay( void )
-  {
-    BASE::KeySet< TextDisplay > displays( this );
-    if( displays.size() > 1 ) 
-    {
-    
-      closeDisplay( activeDisplay() );
-      return true;
-    
-    } else return false;
-  
-  }
+  bool closeActiveDisplay( void );
   
   //! close display
   /*! Ask for save if display is modified */
@@ -268,15 +211,9 @@ class TextView: public QWidget, public Counter, public BASE::Key
   void _displayFocusChanged( TextEditor* );
   
   private:
-  
-  //! assiciated recent files menu
-  bool _hasRecentFilesMenu( void ) const;
-  
-  //! open previous menu
-  RecentFilesMenu& _recentFilesMenu( void ) const;
- 
+     
   //! create new splitter
-  QSplitter& _newSplitter( const Qt::Orientation&, const bool& clone  );
+  QSplitter& _newSplitter( const Qt::Orientation&, const bool&  );
   
   //! create new TextDisplay
   TextDisplay& _newTextDisplay( QWidget* );

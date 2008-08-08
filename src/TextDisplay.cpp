@@ -43,6 +43,7 @@
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
 #include "FileInfoDialog.h"
+#include "FileList.h"
 #include "FileModifiedDialog.h"
 #include "FileRecordProperties.h"
 #include "FileRemovedDialog.h"
@@ -54,7 +55,6 @@
 #include "Icons.h"
 #include "LineNumberDisplay.h"
 #include "NavigationWindow.h"
-#include "RecentFilesMenu.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
 #include "TextDisplay.h"
@@ -270,14 +270,6 @@ void TextDisplay::synchronize( TextDisplay* display )
   setFile( display->file() );
 
 }
-  
-//____________________________________________
-RecentFilesMenu& TextDisplay::recentFilesMenu( void ) const
-{ 
-  BASE::KeySet<RecentFilesMenu> menus( this );
-  assert( !menus.empty() );
-  return **menus.begin();
-}
 
 //____________________________________________
 void TextDisplay::openFile( File file, bool check_autosave )
@@ -286,7 +278,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
   Debug::Throw() << "TextDisplay::openFile " << file << endl;
 
   // reset class name
-  QString class_name( recentFilesMenu().add( file ).property(FileRecordProperties::CLASS_NAME).c_str() );
+  QString class_name( static_cast<Application*>(qApp)->recentFiles().add( file ).property(FileRecordProperties::CLASS_NAME).c_str() );
   setClassName( class_name );
 
   // expand filename
@@ -348,14 +340,15 @@ void TextDisplay::openFile( File file, bool check_autosave )
   if( restore_autosave && !isReadOnly() ) save();
 
   // perform first autosave
-  (dynamic_cast<Application*>(qApp))->autoSave().saveFiles( this );
+  Application& application( *static_cast<Application*>(qApp) );
+  application.autoSave().saveFiles( this );
 
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
-  { recentFilesMenu().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
+  { application.recentFiles().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
 
   // update navigationWindow
-  static_cast<Application*>(qApp)->navigationWindow().updateFiles();
+  application.navigationWindow().updateFiles();
   
 }
 
@@ -531,7 +524,7 @@ void TextDisplay::save( void )
 
   // add file to menu
   if( !file().empty() )
-  { recentFilesMenu().get( file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
+  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
 
   return;
 
@@ -607,7 +600,7 @@ void TextDisplay::saveAs( void )
   // rehighlight
   rehighlight();
   if( !TextDisplay::file().empty() )
-  { recentFilesMenu().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
+  { static_cast<Application*>(qApp)->recentFiles().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
 
 }
 
@@ -995,7 +988,7 @@ void TextDisplay::updateDocumentClass( void )
   // add information to Menu
   if( !file().empty() )
   { 
-    FileRecord& record( recentFilesMenu().get( file() ) );
+    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
     record.addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); 
     if( !document_class.icon().isEmpty() ) record.addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
   }
@@ -1128,7 +1121,7 @@ void TextDisplay::selectFilter( const QString& filter )
   // update file record
   if( !file().empty() )
   {
-    FileRecord& record( recentFilesMenu().get( file() ) );
+    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
     record.addProperty( FileRecordProperties::FILTER, interface.filter() );
   }
 
@@ -1159,7 +1152,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
   // update file record
   if( !file().empty() )
   {
-    FileRecord& record( recentFilesMenu().get( file() ) );
+    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
     record.addProperty( FileRecordProperties::DICTIONARY, interface.dictionary() );
   }
 
@@ -1616,7 +1609,7 @@ void TextDisplay::_updateSpellCheckConfiguration( void )
   // overwrite with file record
   if( !file().empty() )
   {
-    FileRecord& record( recentFilesMenu().get( file() ) );
+    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
     if( record.hasProperty( FileRecordProperties::FILTER ) && interface.hasFilter( record.property( FileRecordProperties::FILTER ) ) )
     { filter = record.property( FileRecordProperties::FILTER ); }
 
@@ -1828,7 +1821,7 @@ void TextDisplay::_spellcheck( void )
   if( !file().empty() )
   {
 
-    FileRecord& record( recentFilesMenu().get( file() ) );
+    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
     if( !( record.hasProperty( FileRecordProperties::FILTER ) && dialog.setFilter( record.property( FileRecordProperties::FILTER ) ) ) )
     { dialog.setFilter( default_filter ); }
 
@@ -1852,7 +1845,7 @@ void TextDisplay::_spellcheck( void )
   // try overwrite with file record
   if( !file().empty() )
   {
-    FileRecord& record( recentFilesMenu().get( file() ) );
+    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
     record.addProperty( FileRecordProperties::FILTER, dialog.filter() );
     record.addProperty( FileRecordProperties::DICTIONARY, dialog.dictionary() );
   }
@@ -2043,7 +2036,7 @@ void TextDisplay::_replaceLeadingTabs( const bool& confirm )
 void TextDisplay::_showFileInfo( void )
 {
   Debug::Throw( "TextDisplay::_showFileInfo.\n" );
-  FileInfoDialog dialog( this );
+  FileInfoDialog dialog( this, static_cast<Application*>(qApp)->recentFiles() );
   QtUtil::centerOnParent( &dialog );
   dialog.exec();
 }

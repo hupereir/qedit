@@ -38,7 +38,6 @@
 #include "Diff.h"
 #include "MainWindow.h"
 #include "NewFileDialog.h"
-#include "RecentFilesMenu.h"
 #include "TextView.h"
 #include "WindowServer.h"
 
@@ -101,6 +100,74 @@ void TextView::setFile( File file )
   return;
 }
 
+//________________________________________________________________
+unsigned int TextView::independentDisplayCount( void )
+{
+  unsigned int out( 0 );
+  BASE::KeySet<TextDisplay> displays( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  { 
+    // increment if no associated display is found in the already processed displays
+    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++;
+  }
+  
+  return out;
+}
+
+//________________________________________________________________
+unsigned int TextView::modifiedDisplayCount( void )
+{
+  
+  unsigned int out( 0 );
+  BASE::KeySet<TextDisplay> displays( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  { 
+    // increment if no associated display is found in the already processed displays
+    // and if current is modified
+    if( 
+      std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter && 
+      (*iter)->document()->isModified() )
+    { out++; }
+  }
+    
+  return out;
+  
+}   
+  
+//________________________________________________________________
+bool TextView::selectDisplay( const File& file )
+{
+  
+  BASE::KeySet<TextDisplay> displays( this );
+  BASE::KeySet<TextDisplay>::iterator iter( std::find_if(
+    displays.begin(),
+    displays.end(),
+    TextDisplay::SameFileFTor( file ) ) );
+  if( iter == displays.end() ) return false;
+    
+  // change active display
+  setActiveDisplay( **iter );
+  (*iter)->setFocus();
+  
+  return true;
+  
+}
+  
+  
+//________________________________________________________________
+bool TextView::closeActiveDisplay( void )
+{
+  BASE::KeySet< TextDisplay > displays( this );
+  if( displays.size() > 1 ) 
+  {
+    
+    closeDisplay( activeDisplay() );
+    return true;
+    
+  } else return false;
+  
+}
+  
 //________________________________________________________________
 void TextView::setActiveDisplay( TextDisplay& display )
 { 
@@ -570,18 +637,6 @@ void TextView::_displayFocusChanged( TextEditor* editor )
   setActiveDisplay( *static_cast<TextDisplay*>(editor) );  
 }
 
-//____________________________________________
-bool TextView::_hasRecentFilesMenu( void ) const
-{ return !BASE::KeySet<RecentFilesMenu>(this).empty(); }
-  
-//____________________________________________
-RecentFilesMenu& TextView::_recentFilesMenu( void ) const
-{ 
-  BASE::KeySet<RecentFilesMenu> menus( this );
-  assert( !menus.empty() );
-  return **menus.begin();
-}
-
 //____________________________________________________________
 QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, const bool& clone )
 {
@@ -689,7 +744,6 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
 
   // create textDisplay
   TextDisplay* display = new TextDisplay( parent ); 
-  if( _hasRecentFilesMenu() ) BASE::Key::associate( display, &_recentFilesMenu() );
 
   // connections
   connect( display, SIGNAL( needUpdate( unsigned int ) ), SIGNAL( needUpdate( unsigned int ) ) );

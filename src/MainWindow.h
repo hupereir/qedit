@@ -133,6 +133,10 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
     assert( active_view_ );
     return *active_view_; 
   }
+ 
+  //! change active display manualy
+  void setActiveView( TextView& view )
+  { active_view_ = &view; }
 
   //! active display
   const TextDisplay& activeDisplay( void ) const
@@ -143,8 +147,8 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   { return activeView().activeDisplay(); }
 
   //! select display from file
-  void selectDisplay( const File& file )
-  { activeView().selectDisplay( file ); }
+  bool selectDisplay( const File& file )
+  { return activeView().selectDisplay( file ); }
   
   //@}
   
@@ -340,7 +344,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! close 
   /*! close current display if more than two display are open, */
   void _closeDisplay( void )
-  { if( !activeView().closeDisplay() ) _closeWindow(); }
+  { if( !activeView().closeActiveDisplay() ) _closeWindow(); }
   
   //! save
   void _save( void )
@@ -356,40 +360,28 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! Print current document
   void _print( void );
   
+  //!@name forwarded slots
+  //@{
+  
   //! undo
   void _undo( void )
-  { 
-    Debug::Throw( "MainWindow::_undo.\n" );
-    activeDisplay().undoAction().trigger(); 
-  }
+  { activeDisplay().undoAction().trigger(); }
 
   //! redo
   void _redo( void )
-  { 
-    Debug::Throw( "MainWindow::_redo.\n" );
-    activeDisplay().redoAction().trigger(); 
-  }
+  { activeDisplay().redoAction().trigger(); }
 
   //! cut
   void _cut( void )
-  { 
-    Debug::Throw( "MainWindow::_cut.\n" );
-    activeDisplay().cutAction().trigger(); 
-  }
+  { activeDisplay().cutAction().trigger(); }
 
   //! copy
   void _copy( void )
-  { 
-    Debug::Throw( "MainWindow::_copy.\n" );
-    activeDisplay().copyAction().trigger(); 
-  }
+  { activeDisplay().copyAction().trigger(); }
 
   //! paste
   void _paste( void )
-  { 
-    Debug::Throw( "MainWindow::_paste.\n" );
-    activeDisplay().pasteAction().trigger(); 
-  }
+  { activeDisplay().pasteAction().trigger(); }
   
   //! file information
   void _fileInfo( void )
@@ -402,6 +394,8 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! diff files
   void _diff( void )
   { activeView().diff(); }
+  
+  //@}
   
   //! update window title, cut, copy, paste buttons, and filename line editor
   /*! \param flags are bitwise or of TextDisplay::UpdateFlags */
@@ -426,6 +420,9 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! Update window title
   void _updateWindowTitle();
 
+  //! create new TextView
+  TextView& _newTextView( QWidget* );
+  
   /*! it is used to print formatted text to both HTML and PDF */
   QString _htmlString( const int& );
     

@@ -44,6 +44,7 @@
 
 class AutoSave;
 class DocumentClassManager;
+class FileList;
 class NavigationWindow;
 class WindowServer;
 class Sync;
@@ -71,6 +72,13 @@ class Application: public QApplication, public Counter
 
   //! create all widgets
   void realizeWidget( void );
+  
+  //! file list
+  FileList& recentFiles( void ) const
+  { 
+    assert( recent_files_ );
+    return *recent_files_;
+  }
   
   //! navigation window
   NavigationWindow& navigationWindow( void ) const
@@ -196,6 +204,9 @@ class Application: public QApplication, public Counter
   
   //! pointer to application manager
   SERVER::ApplicationManager* application_manager_;
+  
+  //! recent files list
+  FileList* recent_files_;
 
   //! navigation window
   NavigationWindow* navigation_window_;

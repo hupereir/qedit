@@ -31,15 +31,15 @@
 */
 
 #include <QAction>
-#include <QApplication>
 
+#include "Application.h"
 #include "Debug.h"
+#include "FileList.h"
 #include "Icons.h"
 #include "IconEngine.h"
 #include "MainWindow.h"
 #include "NewFileDialog.h"
 #include "QtUtil.h"
-#include "RecentFilesMenu.h"
 #include "SaveAllDialog.h"
 #include "WindowServer.h"
 
@@ -100,7 +100,7 @@ WindowServer::FileRecordMap WindowServer::files( bool modified_only ) const
       if( file.empty() ) continue;
         
       // insert in map (together with modification status
-      files.insert( make_pair( (*iter)->recentFilesMenu().get(file), (*iter)->document()->isModified() ) );
+      files.insert( make_pair( static_cast<Application*>(qApp)->recentFiles().get(file), (*iter)->document()->isModified() ) );
         
     }
     

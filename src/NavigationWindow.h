@@ -109,12 +109,21 @@ class NavigationWindow: public CustomMainWindow, public Counter
     return *stack_;
   }
   
+  //! @name session files
+  //@{
+  
   //! session file list
   TreeView& _sessionFilesList( void ) const
   { 
     assert( session_files_list_ );  
     return *session_files_list_;
   }
+  
+  //! session files model
+  FileRecordModel& _sessionFilesModel( void ) 
+  { return session_files_model_; }
+  
+  //@}
   
   //! recent file list
   TreeView& _recentFilesList( void ) const
@@ -123,13 +132,9 @@ class NavigationWindow: public CustomMainWindow, public Counter
     return *recent_files_list_;
   }
   
-  //! session files model
-  FileRecordModel& _sessionFilesModel( void ) 
-  { return session_files_model_; }
-  
   //! recent files model
   FileRecordModel& _recentFilesModel( void ) 
-  { return recent_files_model_; }
+  { return recent_files_model_; }  
   
   private slots:
      
@@ -198,7 +203,7 @@ class NavigationWindow: public CustomMainWindow, public Counter
   
   //! recent files model
   FileRecordModel recent_files_model_;
-
+  
   //! recent files list
   TreeView* recent_files_list_;
       

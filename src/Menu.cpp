@@ -76,12 +76,9 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &mainwindow.openAction() );
 
   // open previous menu
-  recent_files_menu_ = new RecentFilesMenu( this );
-  recent_files_menu_->setCheck( true );
-  menu->addMenu( recent_files_menu_ );
-
-  // connections
-  connect( recent_files_menu_, SIGNAL( fileSelected( FileRecord ) ), &mainwindow, SLOT( open( FileRecord ) ) );
+  RecentFilesMenu* recent_files_menu = new RecentFilesMenu( this, application.recentFiles() );
+  connect( recent_files_menu, SIGNAL( fileSelected( FileRecord ) ), &mainwindow, SLOT( open( FileRecord ) ) );
+  menu->addMenu( recent_files_menu );
   
   menu->addSeparator();
   menu->addAction( &mainwindow.closeDisplayAction() );
@@ -146,7 +143,7 @@ Menu::Menu( QWidget* parent ):
   
   // debug menu
   menu->addSeparator();
-  DebugMenu *debug_menu( new DebugMenu( this, DebugMenu::DEFAULT|DebugMenu::RECENT_FILES ) );
+  DebugMenu *debug_menu( new DebugMenu( this ) );
   debug_menu->setTitle( "&Debug" );
   debug_menu->addAction( &help->dumpAction() );
   menu->addMenu( debug_menu );

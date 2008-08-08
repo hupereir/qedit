@@ -47,6 +47,7 @@
 #include "Diff.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
+#include "FileList.h"
 #include "FileRecordProperties.h"
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
@@ -56,7 +57,6 @@
 #include "NavigationWindow.h"
 #include "NewFileDialog.h"
 #include "PixmapEngine.h"
-#include "RecentFilesMenu.h"
 #include "XmlOptions.h"
 #include "PrintDialog.h"
 #include "QtUtil.h"
@@ -95,19 +95,8 @@ MainWindow::MainWindow(  QWidget* parent ):
   connect( menu_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
 
   // main vbox
-  active_view_ = new TextView( this );
-  setCentralWidget( active_view_ );
-
-  // associate active view and menu
-  BASE::Key::associate( &activeView(), &menu_->recentFilesMenu() );
-  BASE::Key::associate( &activeDisplay(), &menu_->recentFilesMenu() );
- 
-  // connections
-  connect( &activeView(), SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
-  connect( &activeView(), SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
-  connect( &activeView(), SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
-  connect( &activeView(), SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
-  connect( &activeView(), SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );
+  setActiveView( _newTextView( this ) );
+  setCentralWidget( &activeView() );
  
   // state frame
   setStatusBar( statusbar_ = new StatusBar( this ) );
@@ -169,9 +158,6 @@ MainWindow::MainWindow(  QWidget* parent ):
   
   // update buttons
   _update( TextDisplay::ALL );
-  
-  // position update timer
-  connect( &activeView().positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );
   
   Debug::Throw( "MainWindow::MainWindow - done.\n" );
  
@@ -498,6 +484,28 @@ void MainWindow::enterEvent( QEvent* e )
 
 }
 
+
+//________________________________________________________
+void MainWindow::_updateConfiguration( void )
+{
+  
+  Debug::Throw( "MainWindow::_updateConfiguration.\n" );
+      
+  resize( sizeHint() );
+  
+  // assign icons to file in open previous menu based on class manager
+  FileRecord::List& records( static_cast<Application*>(qApp)->recentFiles().records() );
+  for( FileRecord::List::iterator iter = records.begin(); iter != records.end(); iter++ )
+  {
+    
+    FileRecord& record( *iter ); 
+    if( !record.hasProperty( FileRecordProperties::CLASS_NAME ) ) continue; 
+    DocumentClass document_class( static_cast<Application*>(qApp)->classManager().get( record.property( FileRecordProperties::CLASS_NAME ).c_str() ) );
+    if( !document_class.icon().isEmpty() ) record.addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
+  
+  }
+    
+}
 //_______________________________________________________
 void MainWindow::_update( unsigned int flags )
 {
@@ -692,30 +700,27 @@ void MainWindow::_updateWindowTitle()
     .setModified( activeDisplay().document()->isModified() )
     );
   
-  Debug::Throw( "MainWindow::_updateWindowTitle - done.\n" );
 }
 
-//________________________________________________________
-void MainWindow::_updateConfiguration( void )
-{
+//___________________________________________________________
+TextView& MainWindow::_newTextView( QWidget *parent )
+{ 
+  Debug::Throw( "MainWindow::_newTextView.\n" );
   
-  Debug::Throw( "MainWindow::_updateConfiguration.\n" );
-      
-  resize( sizeHint() );
+  TextView* view = new TextView( parent );
+ 
+  // connections
+  connect( view, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
+  connect( view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
+  connect( view, SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
+  connect( view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
+  connect( view, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) ); 
+  connect( &view->positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );  
   
-  // assign icons to file in open previous menu based on class manager
-  list<File> files( menu_->recentFilesMenu().files() );
-  for( list<File>::const_iterator iter = files.begin(); iter != files.end(); iter++ )
-  {
-    
-    FileRecord& record( menu_->recentFilesMenu().get( *iter ) ); 
-    if( !record.hasProperty( FileRecordProperties::CLASS_NAME ) ) continue; 
-    DocumentClass document_class( static_cast<Application*>(qApp)->classManager().get( record.property( FileRecordProperties::CLASS_NAME ).c_str() ) );
-    if( !document_class.icon().isEmpty() ) record.addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
+  return *view;
   
-  }
-    
 }
+
 //_____________________________________________________________________
 QString MainWindow::_htmlString( const int& max_line_size )
 {

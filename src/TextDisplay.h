@@ -59,7 +59,6 @@
 class BlockDelimiterDisplay;
 class DocumentClass;
 class HighlightBlockData;
-class RecentFilesMenu;
 class TextHighlight;
 
 //! text display window
@@ -83,9 +82,6 @@ class TextDisplay: public TextEditor
   
   //! clone display configuration and document
   virtual void synchronize( TextDisplay* display );
-  
-  //! open previous menu
-  RecentFilesMenu& recentFilesMenu( void ) const;
   
   //! check if current entry has been modified or not
   void setModified( const bool& value = true );

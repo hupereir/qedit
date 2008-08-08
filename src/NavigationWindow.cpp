@@ -37,8 +37,8 @@
 #include "Application.h"
 #include "CustomToolButton.h"
 #include "Debug.h"
+#include "FileList.h"
 #include "NavigationWindow.h"
-#include "Singleton.h"
 #include "TreeView.h"
 #include "WindowServer.h"
 
@@ -168,14 +168,9 @@ void NavigationWindow::updateRecentFiles( void )
  
   // save mask
   unsigned int mask( _recentFilesList().mask() );
-  
-  FileRecord::List records;
-  Singleton::FileRecordMap& file_records_map( Singleton::get().fileRecordMap() );
-  for( Singleton::FileRecordMap::const_iterator iter = file_records_map.begin(); iter != file_records_map.end(); iter++ )
-  { records.insert( records.end(), iter->second.begin(), iter->second.end() ); }
-  
-  // replace
-  _recentFilesModel().update( records );
+    
+  // update records
+  _recentFilesModel().update( static_cast<Application*>(qApp)->recentFiles().records() );
   
   // restore mask and resize columns
   _recentFilesList().setMask( mask );

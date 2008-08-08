@@ -33,6 +33,7 @@
 
 #include <QDialog>
 
+class FileList;
 class TextDisplay;
 
 //! file informations
@@ -42,7 +43,7 @@ class FileInfoDialog: public QDialog
   public:
       
   //! constructor
-  FileInfoDialog( TextDisplay* parent );
+  FileInfoDialog( TextDisplay*, FileList& );
   
 };
 

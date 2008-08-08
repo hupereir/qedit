@@ -39,12 +39,12 @@
 #include "CustomPixmap.h"
 #include "GridLayout.h"
 #include "Debug.h"
+#include "FileList.h"
 #include "FileRecord.h"
 #include "IconEngine.h"
 #include "Icons.h"
 #include "FileInfoDialog.h"
 #include "FileRecordProperties.h"
-#include "RecentFilesMenu.h"
 #include "QtUtil.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
@@ -53,7 +53,7 @@
 using namespace std;
 
 //_________________________________________________________
-FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
+FileInfoDialog::FileInfoDialog( TextDisplay* parent, FileList& file_list ):
   QDialog( parent )
 {
   Debug::Throw( "FileInfoDialog::FileInfoDialog.\n" );
@@ -129,7 +129,7 @@ FileInfoDialog::FileInfoDialog( TextDisplay* parent ):
     grid_layout->addWidget( label = new QLabel( class_name, box ) );
   }
   
-  FileRecord record( parent->recentFilesMenu().get( file ) );
+  FileRecord record( file_list.get( file ) );
   if( record.hasProperty( FileRecordProperties::DICTIONARY ) )
   {
     grid_layout->addWidget( label = new QLabel( "spell-check dictionary: ", box ) );

@@ -248,7 +248,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( edit );
   
   // misc
-  page->layout()->addWidget( box = new QGroupBox( "Misc", page ) );  
+  page->layout()->addWidget( box = new QGroupBox( "Recent files", page ) );  
    
   grid_layout = new GridLayout();
   grid_layout->setSpacing(5);
@@ -257,7 +257,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   box->setLayout( grid_layout );
   
   // previous file history size
-  grid_layout->addWidget( new QLabel( "previous file history size", box ) );
+  grid_layout->addWidget( new QLabel( "recent files history size", box ) );
   grid_layout->addWidget( spinbox = new OptionSpinBox( box, "DB_SIZE" ) );
   spinbox->setMinimum( 0 );
   spinbox->setMaximum( 100 );
@@ -265,7 +265,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   spinbox->setToolTip( "number of previously opened files to appear in the Open Previous menu" );
 
   // sort previous files by date
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "sort previous files by date", box, "SORT_FILES_BY_DATE" ), 3, 0, 1, 2 );
+  grid_layout->addWidget( checkbox = new OptionCheckBox( "sort recent files by date", box, "SORT_FILES_BY_DATE" ), 3, 0, 1, 2 );
   checkbox->setToolTip( "Sort files by date rather than name in Open Previous menu." );
   addOptionWidget( checkbox );
   new QWidget( box );

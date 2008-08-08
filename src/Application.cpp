@@ -48,6 +48,7 @@
 #include "QtUtil.h"
 #include "Util.h"
 #include "WindowServer.h"
+#include "XmlFileList.h"
 #include "XmlDef.h"
 
 #if WITH_ASPELL
@@ -80,6 +81,7 @@ Application::Application( int argc, char*argv[] ) :
   QApplication( argc, argv ),
   Counter( "Application" ),
   application_manager_( 0 ),
+  recent_files_( 0 ),
   navigation_window_( 0 ),
   window_server_( 0 ),
   class_manager_( 0 ),
@@ -100,14 +102,16 @@ Application::Application( int argc, char*argv[] ) :
 Application::~Application( void )
 { 
   Debug::Throw( "Application::~Application.\n" ); 
-
-  XmlOptions::write();
   
   if( application_manager_ ) delete application_manager_;
   if( class_manager_ ) delete class_manager_;
   if( autosave_ ) delete autosave_;
   if( window_server_ ) delete window_server_; 
   if( navigation_window_ ) delete navigation_window_;
+  if( recent_files_ ) delete recent_files_;
+
+  XmlOptions::write();
+
   ErrorHandler::exit();
 
 }
@@ -171,6 +175,10 @@ void Application::realizeWidget( void )
   
   spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "&Spell-check &Configuration", this );
   connect( spellcheck_configuration_action_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
+  
+  // file list
+  recent_files_ = new XmlFileList();
+  recent_files_->setCheck( true );
   
   // window server
   window_server_ = new WindowServer();
@@ -342,7 +350,7 @@ void Application::_updateConfiguration( void )
 {
 
   Debug::Throw( "Application::_updateConfiguration.\n" );
-
+ 
   // set fonts
   QFont font;
   font.fromString( XmlOptions::get().raw( "FONT_NAME" ).c_str() );
