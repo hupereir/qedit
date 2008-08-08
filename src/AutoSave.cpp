@@ -115,7 +115,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
     // if thread is running, skipp
     if( (*iter)->isRunning() ) continue;
     
-    // retrieve associated MainWindows
+    // retrieve associated displays
     BASE::KeySet<TextDisplay> displays( *iter );
 
     // remove thread if none is found

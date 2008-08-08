@@ -127,8 +127,11 @@ class TextDisplay: public TextEditor
     //! overwrite mode
     OVERWRITE_MODE = 1<<8,
     
+    //! display count
+    DISPLAY_COUNT = 1<<9,
+    
     //! all the above
-    ALL = WINDOW_TITLE|FILE_NAME|CUT|COPY|PASTE|UNDO_REDO|SAVE|SPELLCHECK|OVERWRITE_MODE
+    ALL = WINDOW_TITLE|FILE_NAME|CUT|COPY|PASTE|UNDO_REDO|SAVE|SPELLCHECK|OVERWRITE_MODE|DISPLAY_COUNT
     
   };
   

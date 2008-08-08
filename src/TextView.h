@@ -33,10 +33,12 @@
 */
 
 #include <algorithm>
+#include <QSplitter>
 #include <QTimer>
 #include <QWidget>
 
 #include "Counter.h"
+#include "FileRecord.h"
 #include "Key.h"
 #include "TextDisplay.h"
 
@@ -165,7 +167,7 @@ class TextView: public QWidget, public Counter, public BASE::Key
   //! retrieve active display
   const TextDisplay& activeDisplay( void ) const
   { return *active_display_; }
-
+  
   //! select display from file
   void selectDisplay( const File& file )
   {
@@ -195,17 +197,19 @@ class TextView: public QWidget, public Counter, public BASE::Key
     if( displays.size() > 1 ) 
     {
     
-      _closeDisplay( activeDisplay() );
+      closeDisplay( activeDisplay() );
       return true;
     
     } else return false;
   
   }
+  
+  //! close display
+  /*! Ask for save if display is modified */
+  void closeDisplay( TextDisplay& );
+  
   //@}
 
-  //!@name configuration
-  //@{
- 
   //! default open mode
   enum OpenMode
   {
@@ -215,88 +219,62 @@ class TextView: public QWidget, public Counter, public BASE::Key
     //! new display
     NEW_VIEW
   };
+
+  //! new file
+  void newFile( const OpenMode&, const Qt::Orientation& );
+
+  //! open file
+  void open( FileRecord,  const OpenMode&, const Qt::Orientation& );
+
+  //! split display
+  TextDisplay& splitDisplay( const Qt::Orientation&, const bool& clone );
   
-  //! open mode
-  const OpenMode& openMode( void ) const
-  { return default_open_mode_; }
+  //! save all displays
+  void saveAll( void );
   
-  //! open mode
-  void setOpenMode( const OpenMode& mode )
-  { default_open_mode_ = mode; }
+  //! select class name
+  void selectClassName( QString );
   
-  //! orientation
-  const Qt::Orientation& orientation( void ) const
-  { return default_orientation_; }
+  //! rehighlight all displays
+  void rehighlight( void );
   
-  //! orientation
-  void setOrientation( const Qt::Orientation orientation )
-  { default_orientation_ = orientation; }
+  //! diff files
+  void diff( void );
   
-  //@}
-   
+  //! position timer
+  QTimer& positionTimer( void )
+  { return position_timer_; }
+  
   signals:
   
   //! emitted when parent window must be update
   void needUpdate( unsigned int );
+     
+  //! current display overwrite mode changed
+  void overwriteModeChanged( void );
   
-  public slots:
+  //! independent display count changed
+  void displayCountChanged( void );
+  
+  //! current display undo is available
+  void undoAvailable( bool );
  
-  //! open file
-  void open( FileRecord record = FileRecord() )
-  { _open( record, openMode(), orientation() ); }
-
-  //! open file horizontally
-  void openHorizontal( FileRecord record = FileRecord() )
-  { _open( record, NEW_VIEW, Qt::Horizontal ); }
-
-  //! open file vertically
-  void openVertical( FileRecord record = FileRecord() )
-  { _open( record, NEW_VIEW, Qt::Vertical ); }
-   
+  //! current display redo is available
+  void redoAvailable( bool );
+  
   private slots:
-   
-  //! new file
-  void _newFile( void )
-  { _newFile( openMode(), orientation() ); }
   
-  //! new file
-  void _newHorizontal( void )
-  { _newFile( NEW_VIEW, Qt::Horizontal ); }
+  //! display focus changed
+  void _displayFocusChanged( TextEditor* );
   
-  //! new file
-  void _newVertical( void )
-  { _newFile( NEW_VIEW, Qt::Vertical ); }
-  
-  //! clone current file
-  void _splitDisplay( void )
-  { _splitDisplay( orientation(), true ); }
-
-  //! clone current file horizontal
-  void _splitDisplayHorizontal( void )
-  { _splitDisplay( Qt::Horizontal, true ); }
-
-  //! clone current file horizontal
-  void _splitDisplayVertical( void )
-  { _splitDisplay( Qt::Vertical, true ); }
-
-  //! new file
-  void _newFile( const OpenMode&, const Qt::Orientation& );
-
-  //! open file
-  void _open( FileRecord,  const OpenMode&, const Qt::Orientation& );
-
   private:
+  
+  //! assiciated recent files menu
+  bool _hasRecentFilesMenu( void ) const;
   
   //! open previous menu
   RecentFilesMenu& _recentFilesMenu( void ) const;
-
-  //! close display
-  /*! Ask for save if display is modified */
-  void _closeDisplay( TextDisplay& );
-
-  //! split display
-  TextDisplay& _splitDisplay( const Qt::Orientation&, const bool& clone );
-  
+ 
   //! create new splitter
   QSplitter& _newSplitter( const Qt::Orientation&, const bool& clone  );
   
@@ -325,12 +303,6 @@ class TextView: public QWidget, public Counter, public BASE::Key
   //! text display with focus
   TextDisplay* active_display_;
  
-  //! default orientation for multiple displays
-  Qt::Orientation default_orientation_;
-  
-  //! default open mode
-  OpenMode default_open_mode_;
-
   //! position update timer
   QTimer position_timer_;
   

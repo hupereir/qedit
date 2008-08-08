@@ -36,10 +36,10 @@ HEADERS = \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
-  CollapsedBlockData.h \
   BlockDelimiterSegment.h \
   BlockDelimiterDisplay.h \
   BlockMarker.h \
+  CollapsedBlockData.h \
   ConfigurationDialog.h \
   Diff.h \
   DefaultOptions.h \
@@ -56,6 +56,7 @@ HEADERS = \
   Icons.h \
   MainWindow.h \
   Menu.h \
+  NavigationWindow.h \
   NewFileDialog.h \
   ParenthesisHighlight.h \
   PrintDialog.h \
@@ -63,9 +64,9 @@ HEADERS = \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
+  TextView.h \
   WindowServer.h \
-  WindowTitle.h \
-  XmlDef.h
+  WindowTitle.h
  
 SOURCES = \
   Application.cpp \
@@ -86,12 +87,13 @@ SOURCES = \
   HtmlUtil.cpp \
   MainWindow.cpp \
   Menu.cpp \
+  NavigationWindow.cpp \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
-  qedit.cpp \
   SaveAllDialog.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp \
+  TextView.cpp \
   WindowServer.cpp

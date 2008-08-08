@@ -69,26 +69,23 @@
 #include "WindowTitle.h"
 
 using namespace std;
-using namespace Qt;
 
 //_____________________________________________________
 MainWindow::MainWindow(  QWidget* parent ):
   CustomMainWindow( parent ),
   Counter( "MainWindow" ),
   menu_( 0 ),
-  active_display_( 0 ),
   statusbar_( 0 ),
   file_editor_( 0 ),
-  default_orientation_( Horizontal ),
-  default_open_mode_( NEW_WINDOW ),
-  position_timer_(this)
+  default_orientation_( Qt::Horizontal ),
+  default_open_mode_( TextView::NEW_WINDOW )
 {
 
   Debug::Throw( "MainWindow::MainWindow.\n" );
   _setSizeOptionName( "WINDOW" );
   
   // tell window to delete on exit
-  setAttribute( WA_DeleteOnClose );
+  setAttribute( Qt::WA_DeleteOnClose );
   
   // install actions
   _installActions();
@@ -98,38 +95,28 @@ MainWindow::MainWindow(  QWidget* parent ):
   connect( menu_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
 
   // main vbox
-  QWidget* main( new QWidget( this ) );
-  setCentralWidget( main );
+  active_view_ = new TextView( this );
+  setCentralWidget( active_view_ );
 
-  QVBoxLayout* layout( new QVBoxLayout() );
-  main->setLayout( layout );
-  layout->setMargin(2);
-  layout->setSpacing(2);
-
-  // TextDisplay container
-  main_ = new QWidget( main );
-  main_->setLayout( new QVBoxLayout() );
-  main_->layout()->setMargin(0);
-  main_->layout()->setSpacing(0);
-  layout->addWidget( main_, 1 );
-  
-  // create new Text display and register autosave thread
-  TextDisplay& display = _newTextDisplay( main_ );
-  main_->layout()->addWidget( &display );
-  
-  display.setActive( true );
-  static_cast<Application*>(qApp)->autoSave().newThread( &display );
-  Debug::Throw( "MainWindow::MainWindow - thread created.\n" );
-
+  // associate active view and menu
+  BASE::Key::associate( &activeView(), &menu_->recentFilesMenu() );
+  BASE::Key::associate( &activeDisplay(), &menu_->recentFilesMenu() );
+ 
+  // connections
+  connect( &activeView(), SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
+  connect( &activeView(), SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
+  connect( &activeView(), SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
+  connect( &activeView(), SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );
+ 
   // state frame
   setStatusBar( statusbar_ = new StatusBar( this ) );
 
   // create "hidden" line editor to display filename
   statusbar_->addPermanentWidget( file_editor_ = new LineEditor( statusbar_ ), 1 );
   statusbar_->addLabels( 3, 0 );
-  statusbar_->label(0).setAlignment( AlignCenter ); 
-  statusbar_->label(1).setAlignment( AlignCenter ); 
-  statusbar_->label(2).setAlignment( AlignCenter ); 
+  statusbar_->label(0).setAlignment( Qt::AlignCenter ); 
+  statusbar_->label(1).setAlignment( Qt::AlignCenter ); 
+  statusbar_->label(2).setAlignment( Qt::AlignCenter ); 
   statusbar_->addClock();
 
   // modify frame and set readOnly
@@ -177,17 +164,13 @@ MainWindow::MainWindow(  QWidget* parent ):
  
   //! configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-  connect( qApp, SIGNAL( saveConfiguration() ), SLOT( _saveConfiguration() ) );
-  connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
  _updateConfiguration();
   
   // update buttons
   _update( TextDisplay::ALL );
   
   // position update timer
-  position_timer_.setSingleShot( true );
-  position_timer_.setInterval( 100 );
-  connect( &position_timer_, SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );
+  connect( &activeView().positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );
   
   Debug::Throw( "MainWindow::MainWindow - done.\n" );
  
@@ -198,110 +181,13 @@ MainWindow::~MainWindow( void )
 { Debug::Throw( "MainWindow::~MainWindow.\n" ); }
 
 //____________________________________________
-void MainWindow::setFile( File file )
-{
-  Debug::Throw() << "MainWindow::setFile - " << file << endl;
-
-  // look for first empty display
-  BASE::KeySet<TextDisplay> displays( this );
-  BASE::KeySet<TextDisplay>::iterator iter = find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
-  assert( iter != displays.end() );
-  TextDisplay &display( **iter );
-   
-  // open file in active display
-  if( !file.empty() ) display.openFile( file );
-  else display.updateDocumentClass();
-  
-  // set focus
-  setActiveDisplay( display );
-  display.setFocus();
-
-  Debug::Throw( "MainWindow::setFile - done.\n" );
-  
-  return;
-}
-
-//________________________________________________________________
-void MainWindow::setActiveDisplay( TextDisplay& display )
-{ 
-  Debug::Throw() << "MainWindow::setActiveDisplay - key: " << display.key() << std::endl;
-  assert( display.isAssociated( this ) );
-  
-  active_display_ = &display;
-  if( !activeDisplay().isActive() )
-  {
-
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { (*iter)->setActive( false ); }
-    
-    activeDisplay().setActive( true );
-    _update( TextDisplay::ALL );
-
-  }
-  
-  Debug::Throw( "MainWindow::setActiveDisplay - done.\n" );
-  
-}
-
-//____________________________________________
-void MainWindow::saveAll( void )
-{
-  Debug::Throw( "MainWindow::saveAll.\n" );
-
-  // retrieve all displays
-  BASE::KeySet<TextDisplay> displays( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { if( (*iter)->document()->isModified() ) (*iter)->save(); }
-
-  return;
-
-}
-
-//________________________________________________________________
-void MainWindow::selectClassName( QString name )
-{
-  Debug::Throw( "MainWindow::SelectClassName.\n" );
-
-  // retrieve all displays matching active
-  // and update class name
-  BASE::KeySet<TextDisplay> displays( &activeDisplay() );
-  displays.insert( &activeDisplay() );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-    (*iter)->setClassName( name );
-    (*iter)->updateDocumentClass();
-  }
-  
-  // rehighlight
-  activeDisplay().rehighlight();
-
-}
-
-//________________________________________________________________
-void MainWindow::rehighlight( void )
-{
-  Debug::Throw( "MainWindow::Rehighlight.\n" );
-
-  // retrieve associated TextDisplay
-  BASE::KeySet<TextDisplay> displays( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-    // this trick allow to run the rehighlight only once per set of associated displays
-    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) (*iter)->rehighlight();
-  }
-
-  return;
-}
-
-//____________________________________________
 void MainWindow::_detach( void )
 {
 
   Debug::Throw( "MainWindow::_detach.\n" );
 
   // check number of independent displays
-  if( independentDisplayCount() < 2 )
+  if( activeView().independentDisplayCount() < 2 )
   {
     QtUtil::infoDialog( this,
       "There must be at least two different files opened\n"
@@ -310,7 +196,7 @@ void MainWindow::_detach( void )
   }
 
   // check number of displays associated to active
-  BASE::KeySet<TextDisplay> associated_displays( &activeDisplay() );
+  BASE::KeySet<TextDisplay> associated_displays( &activeView().activeDisplay() );
   if( !
     ( associated_displays.empty() ||
       QtUtil::questionDialog( this,
@@ -319,25 +205,25 @@ void MainWindow::_detach( void )
       "Continue ?" ) ) ) return;
 
   // keep active display local.
-  TextDisplay& active_display_local( activeDisplay() );
+  TextDisplay& active_display_local( activeView().activeDisplay() );
   bool modified( active_display_local.document()->isModified() );
 
   // close all clone displays
   for( BASE::KeySet<TextDisplay>::iterator iter = associated_displays.begin(); iter != associated_displays.end(); iter++ )
-  { _closeDisplay( **iter ); }
+  { activeView().closeDisplay( **iter ); }
 
   // create MainWindow
   MainWindow& window( static_cast<Application*>(qApp)->windowServer().newMainWindow() );
 
   // clone its display from the current
-  window.activeDisplay().synchronize( &active_display_local );
+  window.activeView().activeDisplay().synchronize( &active_display_local );
 
   // delete active display local
   active_display_local.document()->setModified( false );
-  _closeDisplay( active_display_local );
+  activeView().closeDisplay( active_display_local );
 
   // show the new window
-  window.activeDisplay().document()->setModified( modified );
+  window.activeView().activeDisplay().document()->setModified( modified );
   window.show();
   window._updateConfiguration();
 
@@ -509,7 +395,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
   {
 
     // look over TextDisplays
-    BASE::KeySet<TextDisplay> displays( this );
+    BASE::KeySet<TextDisplay> displays( &activeView() );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
 
@@ -547,9 +433,6 @@ void MainWindow::closeEvent( QCloseEvent* event )
     }
 
   }
-
-  // save configuration before closing
-  _saveConfiguration();
   
   return;
 }
@@ -565,7 +448,7 @@ void MainWindow::enterEvent( QEvent* e )
   BASE::KeySet<TextDisplay> dead_displays;
 
   // retrieve displays
-  BASE::KeySet<TextDisplay> displays( this );
+  BASE::KeySet<TextDisplay> displays( &activeView() );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
 
@@ -582,7 +465,7 @@ void MainWindow::enterEvent( QEvent* e )
       // register displays as dead
       BASE::KeySet<TextDisplay> associated_displays( &display );
       for( BASE::KeySet<TextDisplay>::iterator display_iter = associated_displays.begin(); display_iter != associated_displays.end(); display_iter++ )
-      { dead_displays.insert( dynamic_cast<TextDisplay*>( (*display_iter)->parentWidget() ) ); }
+      { dead_displays.insert( *display_iter ); }
       dead_displays.insert( &display );
             
     } else {
@@ -603,7 +486,7 @@ void MainWindow::enterEvent( QEvent* e )
 
     Debug::Throw() << "MainWindow::enterEvent - dead displays: " << dead_displays.size() << endl;
     for( BASE::KeySet<TextDisplay>::iterator iter = dead_displays.begin(); iter != dead_displays.end(); iter++ )
-    { _closeDisplay( **iter ); }
+    { activeView().closeDisplay( **iter ); }
 
     // need to close window manually if there is no remaining displays
     if( dead_displays.size() == displays.size() ) close();
@@ -612,61 +495,6 @@ void MainWindow::enterEvent( QEvent* e )
 
   Debug::Throw( "MainWindow::enterEvent - done.\n" );
 
-}
-
-//_______________________________________________________
-void MainWindow::_diff( void )
-{
-  Debug::Throw( "MainWindow::_diff.\n" );
- 
-  // retrieve displays
-  int n_displays( independentDisplayCount() );
-
-  // check number of files
-  if( n_displays > 2 )
-  {
-    QtUtil::infoDialog( this, "Too many files opened. Diff canceled." );
-    return;
-  }
-
-  if( n_displays < 2 )
-  {
-    QtUtil::infoDialog( this, "Too few files opened. Diff canceled." );
-    return;
-  }
-
-  // create diff object
-  Diff* diff = new Diff( this );
-
-  // store active display as first to compare
-  TextDisplay& first = activeDisplay();
-  
-  // retrieve displays associated to window
-  // look for the first one that is not associated to the active display
-  BASE::KeySet<TextDisplay> displays( this );
-  BASE::KeySet<TextDisplay>::iterator iter = displays.begin();
-  for(; iter != displays.end(); iter++ )
-  {
-    if( !( *iter == &first || (*iter)->isAssociated( &first ) ) )
-    {
-      diff->setTextDisplays( first, *(*iter) );
-      break;
-    }
-  }
-  
-  // check that one display was found
-  assert( iter != displays.end() );
-  
-  // try run
-  if( !diff->run() )
-  {
-    QtUtil::infoDialog( this, diff->error() );
-    delete diff;
-    return;
-  }
-  
-  return;
-  
 }
 
 //_______________________________________________________
@@ -704,6 +532,13 @@ void MainWindow::_update( unsigned int flags )
     statusbar_->label(0).setText( activeDisplay().overwriteMode() ? "INS":"" );
   }
   
+  if( flags & TextDisplay::DISPLAY_COUNT )
+  {
+    int count = activeView().independentDisplayCount();
+    detachAction().setEnabled( count > 1 );
+    diffAction().setEnabled( count == 2 );    
+  }
+  
   if( flags & TextDisplay::SAVE )
   { saveAction().setEnabled( !activeDisplay().isReadOnly() ); }
 
@@ -729,13 +564,6 @@ void MainWindow::_updateCursorPosition( void )
   return;
 }
 
-//____________________________________________
-void MainWindow::_displayFocusChanged( TextEditor* editor )
-{
-  Debug::Throw() << "MainWindow::_DisplayFocusChanged - " << editor->key() << endl;
-  setActiveDisplay( *static_cast<TextDisplay*>(editor) );  
-}
-
 //___________________________________________________________
 void MainWindow::_installActions( void )
 {
@@ -743,43 +571,43 @@ void MainWindow::_installActions( void )
   Debug::Throw( "MainWindow::_installActions.\n" );
   
   addAction( new_file_action_ = new QAction( IconEngine::get( ICONS::NEW ), "&New", this ) );
-  new_file_action_->setShortcut( CTRL+Key_N );
+  new_file_action_->setShortcut( Qt::CTRL+Qt::Key_N );
   new_file_action_->setToolTip( "Create a new empty file" );
   connect( new_file_action_, SIGNAL( triggered() ), SLOT( _newFile() ) );
 
   addAction( clone_action_ = new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "&Clone", this ) );
-  clone_action_->setShortcut( SHIFT+CTRL+Key_N );
+  clone_action_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_N );
   clone_action_->setToolTip( "Clone current display" );
   connect( clone_action_, SIGNAL( triggered() ), SLOT( _splitDisplay() ) );
 
   addAction( detach_action_ = new QAction( IconEngine::get( ICONS::VIEW_DETACH ), "&Detach", this ) );
-  detach_action_->setShortcut( SHIFT+CTRL+Key_O );
+  detach_action_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_O );
   detach_action_->setToolTip( "Detach current display" );
   detach_action_->setEnabled( false );
   connect( detach_action_, SIGNAL( triggered() ), SLOT( _detach() ) );
 
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this ) );
-  open_action_->setShortcut( CTRL+Key_O );
+  open_action_->setShortcut( Qt::CTRL+Qt::Key_O );
   open_action_->setToolTip( "Open an existsing file" );
   connect( open_action_, SIGNAL( triggered() ), SLOT( open() ) );
  
   addAction( close_display_action_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "&Close display", this ) );
-  close_display_action_->setShortcut( CTRL+Key_W );
+  close_display_action_->setShortcut( Qt::CTRL+Qt::Key_W );
   close_display_action_->setToolTip( "Close current display" );
   connect( close_display_action_, SIGNAL( triggered() ), SLOT( _closeDisplay() ) );
  
   addAction( close_window_action_ = new QAction( IconEngine::get( ICONS::CLOSE ), "&Close window", this ) );
-  close_window_action_->setShortcut( SHIFT+CTRL+Key_W );
+  close_window_action_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_W );
   close_window_action_->setToolTip( "Close current display" );
   connect( close_window_action_, SIGNAL( triggered() ), SLOT( _closeWindow() ) );
  
   addAction( save_action_ = new QAction( IconEngine::get( ICONS::SAVE ), "&Save", this ) );
-  save_action_->setShortcut( CTRL+Key_S );
+  save_action_->setShortcut( Qt::CTRL+Qt::Key_S );
   save_action_->setToolTip( "Save current file" );
   connect( save_action_, SIGNAL( triggered() ), SLOT( _save() ) );
  
   addAction( save_as_action_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this ) );
-  save_as_action_->setShortcut( SHIFT+CTRL+Key_S );
+  save_as_action_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_S );
   save_as_action_->setToolTip( "Save current file with a different name" );
   connect( save_as_action_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
 
@@ -887,485 +715,6 @@ void MainWindow::_updateConfiguration( void )
   }
     
 }
-
-//________________________________________________________
-void MainWindow::_saveConfiguration( void )
-{ Debug::Throw( "MainWindow::_saveConfiguration.\n" ); }
-
-//___________________________________________________________
-void MainWindow::_newFile( const OpenMode& mode, const Orientation& orientation )
-{
-
-  Debug::Throw( "MainWindow::_New.\n" );
-
-  // check open_mode
-  if( mode == NEW_WINDOW ) static_cast<Application*>(qApp)->windowServer().open();
-  else _splitDisplay( orientation, false );
-
-}
-
-//___________________________________________________________
-void MainWindow::_open( FileRecord record, const OpenMode& mode, const Orientation& orientation )
-{
-
-  Debug::Throw( "MainWindow::_Open.\n" );
-
-  // copy to local
-  if( record.file().empty() )
-  {
-
-    // create file dialog
-    CustomFileDialog dialog( this );
-    dialog.setFileMode( QFileDialog::ExistingFile );
-    dialog.setDirectory( QDir( activeDisplay().workingDirectory().c_str() ) );
-    QtUtil::centerOnParent( &dialog );
-    if( dialog.exec() == QDialog::Rejected ) return;
-    
-    QStringList files( dialog.selectedFiles() );
-    if( files.empty() ) return;
-  
-    record.setFile( File( qPrintable( files.front() ) ).expand() );
-  
-  }
-  
-  // check open_mode
-  if( mode == NEW_WINDOW )
-  {
-    // open via the Application to create a new editor
-    static_cast<Application*>(qApp)->windowServer().open( record );
-    return;
-  }
-
-  // see if file is directory
-  if( record.file().isDirectory() )
-  {
-    
-    ostringstream what;
-    what << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
-    QtUtil::infoDialog( this, what.str() );
-    return;
-    
-  }
-
-  // see if file exists
-  if( !record.file().exists() )
-  {
-    
-    // create NewFileDialog
-    int state( NewFileDialog( this, record.file() ).exec() );
-    switch( state )
-    {
-      
-      case NewFileDialog::CREATE:
-      {
-        File fullname( record.file().expand() );
-        if( !fullname.create() )
-        {
-          ostringstream what;
-          what << "Unable to create file " << record.file() << ".";
-          QtUtil::infoDialog( this, what.str() );
-          return;
-        }
-        break;
-      }
- 
-      case NewFileDialog::CANCEL: return;
-      case NewFileDialog::EXIT: 
-      close();
-      return;
-      
-    }
-    
-  }
-  
-  // retrieve all edit windows
-  // find one matching
-  BASE::KeySet<MainWindow> windows( &static_cast<Application*>(qApp)->windowServer() );
-  BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
-  if( iter != windows.end() )
-  {
-
-    // select found display in MainWindow
-    (*iter)->selectDisplay( record.file() );
-
-    // check if the found window is the current
-    if( *iter == this )
-    {
-      uniconify();
-      return;
-    }
-
-    ostringstream what;
-    what
-      << "The file " << record.file() << " is already opened in another window.\n"
-      << "Do you want to close the other display and open the file here ?";
-    if( !QtUtil::questionDialog( this, what.str() ) )
-    {
-      (*iter)->uniconify();
-      return;
-    }
-
-    // look for an empty display
-    // create a new display if none is found
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-    TextDisplay& display( display_iter == displays.end() ? _splitDisplay( orientation, false ):**display_iter );
-
-    // retrieve active display from previous window
-    TextDisplay& previous_display( (*iter)->activeDisplay() );
-
-    // store modification state
-    bool modified( previous_display.document()->isModified() );
-
-    // clone
-    display.synchronize( &previous_display );
-    
-    // set previous display as unmdified
-    previous_display.document()->setModified( false );
-
-    // close display, or window, depending on its number of independent files
-    if( (*iter)->independentDisplayCount() == 1 ) (*iter)->close();
-    else
-    {
-      BASE::KeySet<TextDisplay> displays( &previous_display );
-      displays.insert( &previous_display );
-      for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
-      { (*iter)->_closeDisplay( **display_iter ); }
-    }
-
-    // restore modification state and make new display active
-    display.setModified( modified );
-    setActiveDisplay( display );
-    display.setFocus();
-
-  } else {
-
-    // look for an empty display
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-    if( display_iter == displays.end() ) _splitDisplay( orientation, false );
-
-    // open file in this window
-    setFile( record.file() );
-
-    // update configuration
-    _updateConfiguration();
-    
-  }
- 
-  return;
-}
-
-//___________________________________________________________
-void MainWindow::_closeDisplay( TextDisplay& display )
-{
-  Debug::Throw( "MainWindow::_closeDisplay.\n" );
-
-  // retrieve number of displays
-  // if only one display, close the entire window
-  {
-    BASE::KeySet<TextDisplay> displays( this );
-    if( displays.size() < 2 )
-    {
-      Debug::Throw() << "MainWindow::_closeDisplay - full close." << endl;
-      close();
-      return;
-    }
-  }
-  
-  // check if display is modified and has no associates in window
-  if( 
-    display.document()->isModified() && 
-    BASE::KeySet<TextDisplay>( &display ).empty() &&
-    display.askForSave() ==  AskForSaveDialog::CANCEL ) return;
-
-  // retrieve parent and grandparent of current display
-  QWidget* parent( display.parentWidget() );    
-  QSplitter* parent_splitter( dynamic_cast<QSplitter*>( parent ) );
-  
-  // retrieve displays associated to current
-  BASE::KeySet<TextDisplay> displays( &display );
-    
-  // check how many children remain in parent_splitter if any
-  // take action if it is less than 2 (the current one to be deleted, and another one)
-  if( parent_splitter && parent_splitter->count() == 2 ) 
-  {
-    
-    // retrieve child that is not the current editor
-    // need to loop over existing widgets because the editor above has not been deleted yet
-    QWidget* child(0);
-    for( int index = 0; index < parent_splitter->count(); index++ )
-    { 
-      if( parent_splitter->widget( index ) != &display ) 
-      {
-        child = parent_splitter->widget( index );
-        break;
-      }
-    }    
-    assert( child );
-    Debug::Throw( "MainWindow::_closeDisplay - found child.\n" );
-    
-    // retrieve splitter parent
-    QWidget* grand_parent( parent_splitter->parentWidget() );
-    
-    // try cast to a splitter
-    QSplitter* grand_parent_splitter( dynamic_cast<QSplitter*>( grand_parent ) );
-    
-    // move child to grand_parent_splitter if any
-    if( grand_parent_splitter )
-    {  grand_parent_splitter->insertWidget( grand_parent_splitter->indexOf( parent_splitter ), child ); }
-    else
-    {
-      child->setParent( grand_parent );
-      grand_parent->layout()->addWidget( child );
-    }
-    
-    // delete parent_splitter, now that it is empty
-    // delete parent_splitter;
-    parent_splitter->deleteLater();
-    
-  } else {
-    
-    // the editor is deleted only if its parent splitter is not
-    // otherwise this will trigger double deletion of the editor 
-    // which will then crash
-    display.deleteLater();
-    
-  }
-  
-  // if no associated displays, retrieve all, set the first as active
-  if( displays.empty() )  displays = BASE::KeySet<TextDisplay>( this );
-  
-  bool active_found( false );
-  for( BASE::KeySet<TextDisplay>::reverse_iterator iter = displays.rbegin(); iter != displays.rend(); iter++ )
-  { 
-    if( (*iter) != &display ) {
-      setActiveDisplay( **iter ); 
-      active_found = true;
-      break;
-    }
-  }  
-  assert( active_found );
-  
-//   // update close_display button
-//   int independent_display_count( independentDisplayCount() );
-//   detachAction().setEnabled( independent_display_count > 1 );
-//   diffAction().setEnabled( independent_display_count == 2 );
-  
-  // change focus
-  activeDisplay().setFocus();
-  Debug::Throw( "MainWindow::_closeDisplay - done.\n" );
-
-}
-
-//___________________________________________________________
-TextDisplay& MainWindow::_splitDisplay( const Orientation& orientation, const bool& clone )
-{
-  
-  Debug::Throw( "MainWindow::_splitDisplay.\n" );
-
-  // keep local pointer to current active display
-  TextDisplay& active_display_local( activeDisplay() );  
-  
-  // compute desired dimension of the new splitter
-  // along its splitting direction
-  int dimension(0);
-  if( clone ) dimension = (orientation == Horizontal) ? active_display_local.width():active_display_local.height();
-  else dimension = (orientation == Horizontal) ? main_->width():main_->height();
-
-  // create new splitter
-  QSplitter& splitter( _newSplitter( orientation, clone ) );
-  
-  // create new display
-  TextDisplay& display( _newTextDisplay(0) );
-  
-  // insert in splitter, at correct position
-  if( clone ) splitter.insertWidget( splitter.indexOf( &active_display_local )+1, &display );
-  else splitter.addWidget( &display );
-
-  // recompute dimension
-  // take the max of active display and splitter,
-  // in case no new splitter was created.
-  dimension = max( dimension, (orientation == Horizontal) ? splitter.width():splitter.height() );
-  
-  // assign equal size to all splitter children
-  QList<int> sizes;
-  for( int i=0; i<splitter.count(); i++ )
-  { sizes.push_back( dimension/splitter.count() ); }
-  splitter.setSizes( sizes );
-
-  // synchronize both displays, if cloned
-  if( clone )
-  {
-
-    /*
-     if there exists no clone of active display,
-     backup text and register a new Sync object
-    */
-    BASE::KeySet<TextDisplay> displays( &active_display_local );
-
-    // clone new display
-    display.synchronize( &active_display_local );
-    
-    // perform associations
-    // check if active displays has associates and propagate to new
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { BASE::Key::associate( &display, *iter ); }
-
-    // associate this display to AutoSave threads
-    BASE::KeySet<AutoSaveThread> threads( &active_display_local );
-    for( BASE::KeySet<AutoSaveThread>::iterator iter = threads.begin(); iter != threads.end(); iter++ )
-    { BASE::Key::associate( &display, *iter ); }
- 
-    // associate new display to active
-    BASE::Key::associate( &display, &active_display_local );
-
-  } else {
-
-    // register new AutoSave thread
-    static_cast<Application*>(qApp)->autoSave().newThread( &display );
-
-    // enable detach
-    detachAction().setEnabled( true );
-    diffAction().setEnabled( independentDisplayCount() == 2 );
-    
-  }
-
-  return display;
-
-}
-
-//____________________________________________________________
-QSplitter& MainWindow::_newSplitter( const Orientation& orientation, const bool& clone )
-{
-
-  Debug::Throw( "MainWindow::_newSplitter.\n" );
-  QSplitter *splitter = 0;
-  
-  if( clone )
-  {
-    
-    /* in clone mode, a new splitter is added as a parent of the activeDisplay.
-    the new (cloned) TextDisplay will appear side by side with it */
-
-    // retrieve parent of current display
-    QWidget* parent( activeDisplay().parentWidget() );  
-
-    // try catch to splitter
-    // do not create a new splitter if the parent has same orientation
-    QSplitter *parent_splitter( dynamic_cast<QSplitter*>( parent ) );
-    if( parent_splitter && parent_splitter->orientation() == orientation ) splitter = parent_splitter;
-    else {
-      
- 
-      // move splitter to the first place if needed
-      if( parent_splitter ) 
-      {
-        
-        Debug::Throw( "MainWindow::_newSplitter - found parent splitter.\n" );
-        // create a splitter with correct orientation
-        // give him no parent, because the parent is set in QSplitter::insertWidget()
-        splitter = new LocalSplitter(0);
-        splitter->setOrientation( orientation );
-        parent_splitter->insertWidget( parent_splitter->indexOf( &activeDisplay() ), splitter );
-        
-      } else {
-        
-        // create a splitter with correct orientation
-        splitter = new LocalSplitter(parent);
-        splitter->setOrientation( orientation );
-        parent->layout()->addWidget( splitter );
-        
-      }
-      
-      // reparent current display
-      splitter->addWidget( &activeDisplay() );
-      
-      // resize parent splitter if any
-      if( parent_splitter )
-      {
-        int dimension = ( parent_splitter->orientation() == Horizontal) ? 
-          parent_splitter->width():
-          parent_splitter->height();
-    
-        QList<int> sizes;
-        for( int i=0; i<parent_splitter->count(); i++ )
-        { sizes.push_back( dimension/parent_splitter->count() ); }
-        parent_splitter->setSizes( sizes );
-      
-      }
-      
-    }
-    
-  } else {
-
-    /*
-      in no clone mode, a new splitter is created at the top level
-      the new (cloned) TextDisplay will appear side by side with all other displays
-    */
-
-    // keep track of first (either TextDisplay or QSplitter) from main_
-    QWidget *child(0);
-
-    // retrieve children and loop
-    const QObjectList& children( main_->children() );
-    for( QObjectList::const_iterator iter = children.begin(); iter != children.end() && !child; iter++ )
-    { child = dynamic_cast<QWidget*>( *iter ); }
-
-    // check child could be retrieved
-    assert( child );
-
-    // try cast child to splitter
-    // if exists and have same orientation, do not create a new one
-    QSplitter* child_splitter( dynamic_cast<QSplitter*>( child ) );
-    if( child_splitter && child_splitter->orientation() == orientation ) splitter = child_splitter;
-    else {
-      // create new splitter
-      splitter = new LocalSplitter( main_ );
-      splitter->setOrientation( orientation );
-      main_->layout()->addWidget( splitter );
-
-      // reparent first child
-      splitter->addWidget( child );
-    }
-  }
-
-  // return created splitter
-  return *splitter;
-
-}
-
-//_____________________________________________________________
-TextDisplay& MainWindow::_newTextDisplay( QWidget* parent )
-{
-  Debug::Throw( "\nMainWindow::_newTextDisplay.\n" );
-
-  // create textDisplay
-  TextDisplay* display = new TextDisplay( parent );  
-  BASE::Key::associate( display, &menu_->recentFilesMenu() );
-
-  // connections
-  connect( display, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
-  connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( _displayFocusChanged( TextEditor* ) ) );
-  connect( display, SIGNAL( cursorPositionChanged() ), &position_timer_, SLOT( start() ) );
-  connect( display, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
-  
-  connect( display, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
-  connect( display, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );
-  
-  // associate display to this editFrame
-  BASE::Key::associate( this, display );
-  
-  // update current display and focus
-  setActiveDisplay( *display );
-  display->setFocus();
-  Debug::Throw() << "MainWindow::_newTextDisplay - key: " << display->key() << endl;
-  Debug::Throw( "MainWindow::_newTextDisplay - done.\n" );
-    
-  return *display;
-  
-}
-
 //_____________________________________________________________________
 QString MainWindow::_htmlString( const int& max_line_size )
 {

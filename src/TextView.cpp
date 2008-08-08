@@ -35,6 +35,7 @@
 #include "AutoSave.h"
 #include "CustomFileDialog.h"
 #include "Debug.h"
+#include "Diff.h"
 #include "MainWindow.h"
 #include "NewFileDialog.h"
 #include "RecentFilesMenu.h"
@@ -48,8 +49,6 @@ TextView::TextView( QWidget* parent ):
   QWidget( parent ),
   Counter( "TextView" ),
   active_display_( 0 ),
-  default_orientation_( Qt::Horizontal ),
-  default_open_mode_( NEW_WINDOW ),
   position_timer_(this)  
 {
   
@@ -66,6 +65,10 @@ TextView::TextView( QWidget* parent ):
   display.setActive( true );
   static_cast<Application*>(qApp)->autoSave().newThread( &display );
 
+  // position update timer
+  position_timer_.setSingleShot( true );
+  position_timer_.setInterval( 100 );
+  
   Debug::Throw( "TextView::TextView - done.\n" );
 
 }
@@ -122,23 +125,120 @@ void TextView::setActiveDisplay( TextDisplay& display )
 }
 
 //___________________________________________________________
-void TextView::_newFile( const OpenMode& mode, const Qt::Orientation& orientation )
+void TextView::closeDisplay( TextDisplay& display )
+{
+  Debug::Throw( "TextView::closeDisplay.\n" );
+
+  // retrieve number of displays
+  // if only one display, close the entire window
+  {
+    BASE::KeySet<TextDisplay> displays( this );
+    if( displays.size() < 2 )
+    {
+      Debug::Throw() << "TextView::closeDisplay - full close." << endl;
+      close();
+      return;
+    }
+  }
+  
+  // check if display is modified and has no associates in window
+  if( 
+    display.document()->isModified() && 
+    BASE::KeySet<TextDisplay>( &display ).empty() &&
+    display.askForSave() ==  AskForSaveDialog::CANCEL ) return;
+
+  // retrieve parent and grandparent of current display
+  QWidget* parent( display.parentWidget() );    
+  QSplitter* parent_splitter( dynamic_cast<QSplitter*>( parent ) );
+  
+  // retrieve displays associated to current
+  BASE::KeySet<TextDisplay> displays( &display );
+    
+  // check how many children remain in parent_splitter if any
+  // take action if it is less than 2 (the current one to be deleted, and another one)
+  if( parent_splitter && parent_splitter->count() == 2 ) 
+  {
+    
+    // retrieve child that is not the current editor
+    // need to loop over existing widgets because the editor above has not been deleted yet
+    QWidget* child(0);
+    for( int index = 0; index < parent_splitter->count(); index++ )
+    { 
+      if( parent_splitter->widget( index ) != &display ) 
+      {
+        child = parent_splitter->widget( index );
+        break;
+      }
+    }    
+    assert( child );
+    Debug::Throw( "TextView::closeDisplay - found child.\n" );
+    
+    // retrieve splitter parent
+    QWidget* grand_parent( parent_splitter->parentWidget() );
+    
+    // try cast to a splitter
+    QSplitter* grand_parent_splitter( dynamic_cast<QSplitter*>( grand_parent ) );
+    
+    // move child to grand_parent_splitter if any
+    if( grand_parent_splitter )
+    {  grand_parent_splitter->insertWidget( grand_parent_splitter->indexOf( parent_splitter ), child ); }
+    else
+    {
+      child->setParent( grand_parent );
+      grand_parent->layout()->addWidget( child );
+    }
+    
+    // delete parent_splitter, now that it is empty
+    // delete parent_splitter;
+    parent_splitter->deleteLater();
+    
+  } else {
+    
+    // the editor is deleted only if its parent splitter is not
+    // otherwise this will trigger double deletion of the editor 
+    // which will then crash
+    display.deleteLater();
+    
+  }
+  
+  // if no associated displays, retrieve all, set the first as active
+  if( displays.empty() ) displays = BASE::KeySet<TextDisplay>( this );
+  
+  bool active_found( false );
+  for( BASE::KeySet<TextDisplay>::reverse_iterator iter = displays.rbegin(); iter != displays.rend(); iter++ )
+  { 
+    if( (*iter) != &display ) {
+      setActiveDisplay( **iter ); 
+      active_found = true;
+      break;
+    }
+  }  
+  assert( active_found );
+  
+  // change focus
+  activeDisplay().setFocus();
+  Debug::Throw( "TextView::closeDisplay - done.\n" );
+
+}
+
+//___________________________________________________________
+void TextView::newFile( const OpenMode& mode, const Qt::Orientation& orientation )
 {
 
-  Debug::Throw( "TextView::_New.\n" );
+  Debug::Throw( "TextView::newFile.\n" );
 
   // check open_mode
   if( mode == NEW_WINDOW ) static_cast<Application*>(qApp)->windowServer().open();
-  else _splitDisplay( orientation, false );
+  else splitDisplay( orientation, false );
 
 }
 
 
 //___________________________________________________________
-void TextView::_open( FileRecord record, const OpenMode& mode, const Qt::Orientation& orientation )
+void TextView::open( FileRecord record, const OpenMode& mode, const Qt::Orientation& orientation )
 {
 
-  Debug::Throw( "TextView::_Open.\n" );
+  Debug::Throw( "TextView::open.\n" );
 
   // copy to local
   if( record.file().empty() )
@@ -216,10 +316,10 @@ void TextView::_open( FileRecord record, const OpenMode& mode, const Qt::Orienta
   {
 
     // select found display in TextView
-    (*iter)->currentView().selectDisplay( record.file() );
+    (*iter)->activeView().selectDisplay( record.file() );
 
     // check if the found window is the current
-    if( &(*iter)->currentView() == this )
+    if( &(*iter)->activeView() == this )
     {
       (*iter)->uniconify();
       return;
@@ -239,7 +339,7 @@ void TextView::_open( FileRecord record, const OpenMode& mode, const Qt::Orienta
     // create a new display if none is found
     BASE::KeySet<TextDisplay> displays( this );
     BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-    TextDisplay& display( display_iter == displays.end() ? _splitDisplay( orientation, false ):**display_iter );
+    TextDisplay& display( display_iter == displays.end() ? splitDisplay( orientation, false ):**display_iter );
 
     // retrieve active display from previous window
     TextDisplay& previous_display( (*iter)->activeDisplay() );
@@ -257,10 +357,12 @@ void TextView::_open( FileRecord record, const OpenMode& mode, const Qt::Orienta
     if( (*iter)->independentDisplayCount() == 1 ) (*iter)->close();
     else
     {
+      
       BASE::KeySet<TextDisplay> displays( &previous_display );
       displays.insert( &previous_display );
       for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
-      { (*iter)->currentView()._closeDisplay( **display_iter ); }
+      { (*iter)->activeView().closeDisplay( **display_iter ); }
+      
     }
 
     // restore modification state and make new display active
@@ -273,7 +375,7 @@ void TextView::_open( FileRecord record, const OpenMode& mode, const Qt::Orienta
     // look for an empty display
     BASE::KeySet<TextDisplay> displays( this );
     BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-    if( display_iter == displays.end() ) _splitDisplay( orientation, false );
+    if( display_iter == displays.end() ) splitDisplay( orientation, false );
 
     // open file in this window
     setFile( record.file() );
@@ -283,117 +385,11 @@ void TextView::_open( FileRecord record, const OpenMode& mode, const Qt::Orienta
   return;
 }
 
-//____________________________________________
-RecentFilesMenu& TextView::_recentFilesMenu( void ) const
-{ 
-  BASE::KeySet<RecentFilesMenu> menus( this );
-  assert( !menus.empty() );
-  return **menus.begin();
-}
-
 //___________________________________________________________
-void TextView::_closeDisplay( TextDisplay& display )
-{
-  Debug::Throw( "TextView::_closeDisplay.\n" );
-
-  // retrieve number of displays
-  // if only one display, close the entire window
-  {
-    BASE::KeySet<TextDisplay> displays( this );
-    if( displays.size() < 2 )
-    {
-      Debug::Throw() << "TextView::_closeDisplay - full close." << endl;
-      close();
-      return;
-    }
-  }
-  
-  // check if display is modified and has no associates in window
-  if( 
-    display.document()->isModified() && 
-    BASE::KeySet<TextDisplay>( &display ).empty() &&
-    display.askForSave() ==  AskForSaveDialog::CANCEL ) return;
-
-  // retrieve parent and grandparent of current display
-  QWidget* parent( display.parentWidget() );    
-  QSplitter* parent_splitter( dynamic_cast<QSplitter*>( parent ) );
-  
-  // retrieve displays associated to current
-  BASE::KeySet<TextDisplay> displays( &display );
-    
-  // check how many children remain in parent_splitter if any
-  // take action if it is less than 2 (the current one to be deleted, and another one)
-  if( parent_splitter && parent_splitter->count() == 2 ) 
-  {
-    
-    // retrieve child that is not the current editor
-    // need to loop over existing widgets because the editor above has not been deleted yet
-    QWidget* child(0);
-    for( int index = 0; index < parent_splitter->count(); index++ )
-    { 
-      if( parent_splitter->widget( index ) != &display ) 
-      {
-        child = parent_splitter->widget( index );
-        break;
-      }
-    }    
-    assert( child );
-    Debug::Throw( "TextView::_closeDisplay - found child.\n" );
-    
-    // retrieve splitter parent
-    QWidget* grand_parent( parent_splitter->parentWidget() );
-    
-    // try cast to a splitter
-    QSplitter* grand_parent_splitter( dynamic_cast<QSplitter*>( grand_parent ) );
-    
-    // move child to grand_parent_splitter if any
-    if( grand_parent_splitter )
-    {  grand_parent_splitter->insertWidget( grand_parent_splitter->indexOf( parent_splitter ), child ); }
-    else
-    {
-      child->setParent( grand_parent );
-      grand_parent->layout()->addWidget( child );
-    }
-    
-    // delete parent_splitter, now that it is empty
-    // delete parent_splitter;
-    parent_splitter->deleteLater();
-    
-  } else {
-    
-    // the editor is deleted only if its parent splitter is not
-    // otherwise this will trigger double deletion of the editor 
-    // which will then crash
-    display.deleteLater();
-    
-  }
-  
-  // if no associated displays, retrieve all, set the first as active
-  if( displays.empty() )  displays = BASE::KeySet<TextDisplay>( this );
-  
-  bool active_found( false );
-  for( BASE::KeySet<TextDisplay>::reverse_iterator iter = displays.rbegin(); iter != displays.rend(); iter++ )
-  { 
-    if( (*iter) != &display ) {
-      setActiveDisplay( **iter ); 
-      active_found = true;
-      break;
-    }
-  }  
-  assert( active_found );
-  
-  // change focus
-  activeDisplay().setFocus();
-  Debug::Throw( "TextView::_closeDisplay - done.\n" );
-
-}
-
-
-//___________________________________________________________
-TextDisplay& TextView::_splitDisplay( const Qt::Orientation& orientation, const bool& clone )
+TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const bool& clone )
 {
   
-  Debug::Throw( "TextView::_splitDisplay.\n" );
+  Debug::Throw( "TextView::splitDisplay.\n" );
 
   // keep local pointer to current active display
   TextDisplay& active_display_local( activeDisplay() );  
@@ -455,11 +451,135 @@ TextDisplay& TextView::_splitDisplay( const Qt::Orientation& orientation, const 
 
     // register new AutoSave thread
     static_cast<Application*>(qApp)->autoSave().newThread( &display );
-    
+    emit displayCountChanged();
   }
 
   return display;
 
+}
+
+//____________________________________________
+void TextView::saveAll( void )
+{
+  Debug::Throw( "TextView::saveAll.\n" );
+
+  // retrieve all displays
+  BASE::KeySet<TextDisplay> displays( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  { if( (*iter)->document()->isModified() ) (*iter)->save(); }
+
+  return;
+
+}
+
+//________________________________________________________________
+void TextView::selectClassName( QString name )
+{
+  Debug::Throw( "TextView::SelectClassName.\n" );
+
+  // retrieve all displays matching active
+  // and update class name
+  BASE::KeySet<TextDisplay> displays( &activeDisplay() );
+  displays.insert( &activeDisplay() );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  {
+    (*iter)->setClassName( name );
+    (*iter)->updateDocumentClass();
+  }
+  
+  // rehighlight
+  activeDisplay().rehighlight();
+
+}
+
+//________________________________________________________________
+void TextView::rehighlight( void )
+{
+  Debug::Throw( "TextView::rehighlight.\n" );
+
+  // retrieve associated TextDisplay
+  BASE::KeySet<TextDisplay> displays( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  {
+    // this trick allow to run the rehighlight only once per set of associated displays
+    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) (*iter)->rehighlight();
+  }
+
+  return;
+}
+
+//_______________________________________________________
+void TextView::diff( void )
+{
+  Debug::Throw( "TextView::diff.\n" );
+ 
+  // retrieve displays
+  int n_displays( independentDisplayCount() );
+
+  // check number of files
+  if( n_displays > 2 )
+  {
+    QtUtil::infoDialog( this, "Too many files opened. Diff canceled." );
+    return;
+  }
+
+  if( n_displays < 2 )
+  {
+    QtUtil::infoDialog( this, "Too few files opened. Diff canceled." );
+    return;
+  }
+
+  // create diff object
+  Diff* diff = new Diff( this );
+
+  // store active display as first to compare
+  TextDisplay& first = activeDisplay();
+  
+  // retrieve displays associated to window
+  // look for the first one that is not associated to the active display
+  BASE::KeySet<TextDisplay> displays( this );
+  BASE::KeySet<TextDisplay>::iterator iter = displays.begin();
+  for(; iter != displays.end(); iter++ )
+  {
+    if( !( *iter == &first || (*iter)->isAssociated( &first ) ) )
+    {
+      diff->setTextDisplays( first, *(*iter) );
+      break;
+    }
+  }
+  
+  // check that one display was found
+  assert( iter != displays.end() );
+  
+  // try run
+  if( !diff->run() )
+  {
+    QtUtil::infoDialog( this, diff->error() );
+    delete diff;
+    return;
+  }
+  
+  return;
+  
+}
+
+//____________________________________________
+void TextView::_displayFocusChanged( TextEditor* editor )
+{
+  Debug::Throw() << "TextView::_DisplayFocusChanged - " << editor->key() << endl;
+  setActiveDisplay( *static_cast<TextDisplay*>(editor) );  
+}
+
+//____________________________________________
+bool TextView::_hasRecentFilesMenu( void ) const
+{ return !BASE::KeySet<RecentFilesMenu>(this).empty(); }
+  
+//____________________________________________
+RecentFilesMenu& TextView::_recentFilesMenu( void ) const
+{ 
+  BASE::KeySet<RecentFilesMenu> menus( this );
+  assert( !menus.empty() );
+  return **menus.begin();
 }
 
 //____________________________________________________________
@@ -568,17 +688,18 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
   Debug::Throw( "\nTextView::_newTextDisplay.\n" );
 
   // create textDisplay
-  TextDisplay* display = new TextDisplay( parent );  
-  BASE::Key::associate( display, &_recentFilesMenu() );
+  TextDisplay* display = new TextDisplay( parent ); 
+  if( _hasRecentFilesMenu() ) BASE::Key::associate( display, &_recentFilesMenu() );
 
   // connections
   connect( display, SIGNAL( needUpdate( unsigned int ) ), SIGNAL( needUpdate( unsigned int ) ) );
   connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( _displayFocusChanged( TextEditor* ) ) );
   connect( display, SIGNAL( cursorPositionChanged() ), &position_timer_, SLOT( start() ) );
-  connect( display, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
+  connect( display, SIGNAL( overwriteModeChanged() ), SIGNAL( overwriteModeChanged() ) );
   
-  //connect( display, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
-  //connect( display, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );
+  connect( display, SIGNAL( undoAvailable( bool ) ), SIGNAL( undoAvailable( bool ) ) );
+  connect( display, SIGNAL( redoAvailable( bool ) ), SIGNAL( redoAvailable( bool ) ) );
+  connect( display, SIGNAL( destroyed( void ) ), SIGNAL( displayCountChanged( void ) ) );
   
   // associate display to this editFrame
   BASE::Key::associate( this, display );

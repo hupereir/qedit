@@ -99,6 +99,7 @@ noinst_HEADERS = \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
+  TextView.h \
   WindowServer.h \
   WindowTitle.h
 
@@ -129,6 +130,7 @@ libqedit_a_SOURCES = \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp \
+  TextView.cpp \
   WindowServer.cpp
 
 nodist_libqedit_a_SOURCES = \
@@ -151,6 +153,7 @@ nodist_libqedit_a_SOURCES = \
   moc_TextDisplay.cpp \
   moc_TextHighlight.cpp \
   moc_TextIndent.cpp \
+  moc_TextView.cpp \
   moc_WindowServer.cpp
 
 qedit_SOURCES = qedit.cpp

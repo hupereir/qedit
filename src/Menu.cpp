@@ -171,8 +171,8 @@ void Menu::_updateDocumentClassMenu( void )
   document_classes_.clear();
   
   // retrieve current class from MainWindow
-  MainWindow& frame( *static_cast<MainWindow*>(window()) ); 
-  const QString& class_name( frame.activeDisplay().className() );
+  MainWindow& window( *static_cast<MainWindow*>( Menu::window()) ); 
+  const QString& class_name( window.activeDisplay().className() );
   
   // retrieve classes from DocumentClass manager
   const DocumentClassManager::ClassList& classes( static_cast<Application*>(qApp)->classManager().list() );
@@ -266,11 +266,11 @@ void Menu::_updatePreferenceMenu( void )
   
   new_window_action_ = group->addAction( "Open in new &window" );
   new_window_action_->setCheckable( true );
-  new_window_action_->setChecked( mainwindow.openMode() == MainWindow::NEW_WINDOW );
+  new_window_action_->setChecked( mainwindow.openMode() == TextView::NEW_WINDOW );
   
   new_display_action_ = group->addAction( "Open in new &display" );
   new_display_action_->setCheckable( true );
-  new_display_action_->setChecked( mainwindow.openMode() == MainWindow::NEW_VIEW );
+  new_display_action_->setChecked( mainwindow.openMode() == TextView::NEW_VIEW );
   
   open_mode_menu->addActions( group->actions() );
   connect( open_mode_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOpenMode() ) );
@@ -449,18 +449,18 @@ void Menu::_updateWindowsMenu( void )
   const string& current_file( display.file() );
   
   // retrieve list of MainWindows
-  BASE::KeySet<MainWindow> frames( &static_cast<Application*>(qApp)->windowServer() );
+  BASE::KeySet<MainWindow> windows( &static_cast<Application*>(qApp)->windowServer() );
 
   // clear files map
   files_.clear();
       
   bool first = true;
   set<File> files;
-  for( BASE::KeySet<MainWindow>::const_iterator frame_iter = frames.begin(); frame_iter != frames.end(); frame_iter++ )
+  for( BASE::KeySet<MainWindow>::const_iterator window_iter = windows.begin(); window_iter != windows.end(); window_iter++ )
   { 
     
     // retrieve associated TextDisplays
-    BASE::KeySet<TextDisplay> displays( *frame_iter );
+    BASE::KeySet<TextDisplay> displays( &(*window_iter)->activeView() );
     for( BASE::KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
       
@@ -531,16 +531,16 @@ void Menu::_selectFile( QAction* action )
   if( iter == files_.end() ) return;
   
   // retrieve all mainwindows
-  BASE::KeySet<MainWindow> frames( &static_cast< Application* >( qApp )->windowServer() );
+  BASE::KeySet<MainWindow> windows( &static_cast< Application* >( qApp )->windowServer() );
   
-  // retrieve frame matching file name
-  BASE::KeySet<MainWindow>::iterator frame_iter( find_if(
-    frames.begin(),
-    frames.end(),
+  // retrieve window matching file name
+  BASE::KeySet<MainWindow>::iterator window_iter( find_if(
+    windows.begin(),
+    windows.end(),
     MainWindow::SameFileFTor( iter->second ) ) );
   
-  // check if frame was found
-  if( frame_iter == frames.end() )
+  // check if window was found
+  if( window_iter == windows.end() )
   { 
     ostringstream what;
     what << "Unable to find a window containing file " << iter->second;
@@ -548,9 +548,9 @@ void Menu::_selectFile( QAction* action )
     return;
   }
   
-  // select display in found frame
-  (*frame_iter)->selectDisplay( iter->second );
-  (*frame_iter)->uniconify();
+  // select display in found window
+  (*window_iter)->selectDisplay( iter->second );
+  (*window_iter)->uniconify();
   
   return;
 }
@@ -560,8 +560,8 @@ void Menu::_toggleOpenMode( void )
 {
   Debug::Throw("Menu::_toggleOpenMode.\n" );
     
-  MainWindow& frame( *static_cast<MainWindow*>(window()) );
-  frame.setOpenMode( new_window_action_->isChecked() ? MainWindow::NEW_WINDOW : MainWindow::NEW_VIEW );
+  MainWindow& window( *static_cast<MainWindow*>( Menu::window()) );
+  window.setOpenMode( new_window_action_->isChecked() ? TextView::NEW_WINDOW : TextView::NEW_VIEW );
   
   return;
 }
@@ -571,7 +571,7 @@ void Menu::_toggleOrientation( void )
 {
   Debug::Throw("Menu::_toggleOrientation.\n" );
 
-  MainWindow& frame( *static_cast<MainWindow*>(window()) );
-  frame.setOrientation(  leftright_action_->isChecked() ? Qt::Horizontal : Qt::Vertical );
+  MainWindow& window( *static_cast<MainWindow*>( Menu::window()) );
+  window.setOrientation(  leftright_action_->isChecked() ? Qt::Horizontal : Qt::Vertical );
   return;
 }

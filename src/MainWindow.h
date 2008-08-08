@@ -32,7 +32,6 @@
 */
 
 #include <QAction>
-#include <QSplitter>
 #include <QTimer>
 
 #include <list>
@@ -44,9 +43,7 @@
 #include "FileRecord.h"
 #include "Key.h"
 #include "QtUtil.h"
-#include "TextDisplay.h"
-#include "TimeStamp.h"
-
+#include "TextView.h"
 
 class LineEditor;
 class Menu;
@@ -71,151 +68,95 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //@{
   
   //! used to select editor with matching filename
-  class SameFileFTor
+  class SameFileFTor: public TextView::SameFileFTor
   {
     
     public:
 
     //! constructor
     SameFileFTor( const File& file ):
-      file_( file.expand() )
+      TextView::SameFileFTor( file.expand() )
     {}
 
     //! predicate
-    bool operator() ( const MainWindow* frame ) const
-    { 
-      BASE::KeySet<TextDisplay> displays( frame );
-      return std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file_ ) ) != displays.end();
-    }
-
-    private:
-
-    //! predicted file
-    const File file_;
+    bool operator() ( const MainWindow* window ) const
+    { return TextView::SameFileFTor::operator() (&window->activeView() ); }
 
   };
 
   //! used to select editor with empty, unmodified file
-  class EmptyFileFTor
+  class EmptyFileFTor: public TextView::EmptyFileFTor
   {
     public:
 
     //! predicate
-    bool operator() ( const MainWindow* frame ) const
-    { 
-      BASE::KeySet<TextDisplay> displays( frame );
-      return std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) != displays.end();
-    }
+    bool operator() ( const MainWindow* window ) const
+    { return TextView::EmptyFileFTor::operator()( &window->activeView() ); }
     
   };
 
   //! used to select editor with empty, unmodified file
-  class IsModifiedFTor
+  class IsModifiedFTor: public TextView::IsModifiedFTor
   {
     public:
 
     //! predicate
-    bool operator() ( const MainWindow* frame ) const
-    { return frame->isModified(); }
+    bool operator() ( const MainWindow* window ) const
+    { return TextView::IsModifiedFTor::operator()( &window->activeView() ); }
     
   };
   
-  //! set file and read
-  void setFile( File file );
-
   //! returns true if there is at least one display modified in this window
   bool isModified( void ) const
-  {
-    BASE::KeySet<TextDisplay> displays( this );
-    return std::find_if( displays.begin(), displays.end(), TextDisplay::ModifiedFTor() ) != displays.end();
-  }
+  { return activeView().isModified(); }
   
   //! return number of independant displays
   unsigned int independentDisplayCount( void )
-  { 
-    unsigned int out( 0 );
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { 
-      // increment if no associated display is found in the already processed displays
-      if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++;
-    }
-    
-    return out;
-  }
+  { return activeView().independentDisplayCount(); }
   
   //! return number of independent modified displays
   unsigned int modifiedDisplayCount( void )
-  {
-    
-    unsigned int out( 0 );
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { 
-      // increment if no associated display is found in the already processed displays
-      // and if current is modified
-      if( 
-        std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter && 
-        (*iter)->document()->isModified() )
-      { out++; }
-   }
-    
-    return out;
-    
-  }   
+  { return activeView().modifiedDisplayCount(); }
+
   //@}
 
-  //!@name display management
-  //@{
-  
-  //! retrieve active display
-  TextDisplay& activeDisplay( void )
-  { return *active_display_; }
-  
-  //! retrieve active display
+  //! active view
+  TextView& activeView( void )
+  {
+    assert( active_view_ );
+    return *active_view_; 
+  }
+    
+  //! active view
+  const TextView& activeView( void ) const
+  {
+    assert( active_view_ );
+    return *active_view_; 
+  }
+
+  //! active display
   const TextDisplay& activeDisplay( void ) const
-  { return *active_display_; }
+  { return activeView().activeDisplay(); }
+  
+  //! active display
+  TextDisplay& activeDisplay( void )
+  { return activeView().activeDisplay(); }
 
   //! select display from file
   void selectDisplay( const File& file )
-  {
-    
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator iter( std::find_if(
-      displays.begin(),
-      displays.end(),
-      TextDisplay::SameFileFTor( file ) ) );
-    if( iter == displays.end() ) return;
-    
-    // change active display
-    setActiveDisplay( **iter );
-    (*iter)->setFocus();
-    
-    return;
-    
-  }
+  { activeView().selectDisplay( file ); }
   
   //@}
   
   //!@name configuration
   //@{
- 
-  //! default open mode
-  enum OpenMode
-  {
-    //! new window
-    NEW_WINDOW,
-    
-    //! new display
-    NEW_VIEW
-  };
-  
+   
   //! open mode
-  const OpenMode& openMode( void ) const
+  const TextView::OpenMode& openMode( void ) const
   { return default_open_mode_; }
   
   //! open mode
-  void setOpenMode( const OpenMode& mode )
+  void setOpenMode( const TextView::OpenMode& mode )
   { default_open_mode_ = mode; }
   
   //! orientation
@@ -228,9 +169,6 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
   //@}
   
-  //! change active display manualy
-  void setActiveDisplay( TextDisplay& );
- 
   //!@name actions
   //@{
   
@@ -328,24 +266,27 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
  
   //! open file
   void open( FileRecord record = FileRecord() )
-  { _open( record, openMode(), orientation() ); }
+  { activeView().open( record, openMode(), orientation() ); }
 
   //! open file horizontally
   void openHorizontal( FileRecord record = FileRecord() )
-  { _open( record, NEW_VIEW, Qt::Horizontal ); }
+  { activeView().open( record, TextView::NEW_VIEW, Qt::Horizontal ); }
 
   //! open file vertically
   void openVertical( FileRecord record = FileRecord() )
-  { _open( record, NEW_VIEW, Qt::Vertical ); }
+  { activeView().open( record, TextView::NEW_VIEW, Qt::Vertical ); }
 
   //! save all modified text displays
-  void saveAll( void );
+  void saveAll( void )
+  { activeView().saveAll(); }
 
   //! select class name
-  void selectClassName( QString );
+  void selectClassName( QString value )
+  { activeView().selectClassName( value ); }
   
   //! rehighlight all text displays
-  void rehighlight( void );
+  void rehighlight( void )
+  { activeView().rehighlight(); }
 
   //! uniconify
   void uniconify( void )
@@ -363,33 +304,30 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
   //! update configuration
   void _updateConfiguration( void );
-  
-  //! update configuration
-  void _saveConfiguration( void );
-
+ 
   //! new file
   void _newFile( void )
-  { _newFile( openMode(), orientation() ); }
+  { activeView().newFile( openMode(), orientation() ); }
   
   //! new file
   void _newHorizontal( void )
-  { _newFile( NEW_VIEW, Qt::Horizontal ); }
+  { activeView().newFile( TextView::NEW_VIEW, Qt::Horizontal ); }
   
   //! new file
   void _newVertical( void )
-  { _newFile( NEW_VIEW, Qt::Vertical ); }
+  { activeView().newFile( TextView::NEW_VIEW, Qt::Vertical ); }
   
   //! clone current file
   void _splitDisplay( void )
-  { _splitDisplay( orientation(), true ); }
+  { activeView().splitDisplay( orientation(), true ); }
 
   //! clone current file horizontal
   void _splitDisplayHorizontal( void )
-  { _splitDisplay( Qt::Horizontal, true ); }
+  { activeView().splitDisplay( Qt::Horizontal, true ); }
 
   //! clone current file horizontal
   void _splitDisplayVertical( void )
-  { _splitDisplay( Qt::Vertical, true ); }
+  { activeView().splitDisplay( Qt::Vertical, true ); }
 
   //! detach current display
   void _detach( void );
@@ -397,20 +335,12 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! close
   /*! close window */
   void _closeWindow( void )
-  { 
-    Debug::Throw( "MainWindow::_closeWindow.\n" );
-    close();
-  }
+  { close(); }
   
   //! close 
   /*! close current display if more than two display are open, */
   void _closeDisplay( void )
-  { 
-    Debug::Throw( "MainWindow::_closeDisplay (SLOT)\n" );
-    BASE::KeySet< TextDisplay > displays( this );
-    if( displays.size() > 1 ) _closeDisplay( activeDisplay() );
-    else _closeWindow();
-  }
+  { if( !activeView().closeDisplay() ) _closeWindow(); }
   
   //! save
   void _save( void )
@@ -470,7 +400,8 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   { activeDisplay().spellcheckAction().trigger(); }
   
   //! diff files
-  void _diff( void );
+  void _diff( void )
+  { activeView().diff(); }
   
   //! update window title, cut, copy, paste buttons, and filename line editor
   /*! \param flags are bitwise or of TextDisplay::UpdateFlags */
@@ -480,12 +411,13 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   void _updateOverwriteMode( void )
   { _update( TextDisplay::OVERWRITE_MODE ); }
   
-  //! display cursor position in state frame
+  //! update actions based on number of displays in active view
+  void _updateDisplayCount( void )
+  { _update( TextDisplay::DISPLAY_COUNT ); }
+  
+  //! display cursor position in state window
   void _updateCursorPosition( void );
 
-  //! display focus changed
-  void _displayFocusChanged( TextEditor* );
-  
   private:
 
   //! install actions
@@ -494,47 +426,9 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! Update window title
   void _updateWindowTitle();
 
-  //! new file
-  void _newFile( const OpenMode&, const Qt::Orientation& );
-
-  //! open file
-  void _open( FileRecord,  const OpenMode&, const Qt::Orientation& );
-  
-  //! close display
-  /*! Ask for save if display is modified */
-  void _closeDisplay( TextDisplay& );
-
-  //! split display
-  TextDisplay& _splitDisplay( const Qt::Orientation&, const bool& clone );
-  
-  //! create new splitter
-  QSplitter& _newSplitter( const Qt::Orientation&, const bool& clone  );
-  
-  //! create new TextDisplay
-  TextDisplay& _newTextDisplay( QWidget* );
-
   /*! it is used to print formatted text to both HTML and PDF */
   QString _htmlString( const int& );
-  
-  //! local QSplitter object, derived from Counter
-  /*! helps keeping track of how many splitters are created/deleted */
-  class LocalSplitter: public QSplitter, public Counter
-  {
     
-    public:
-    
-    //! constructor
-    LocalSplitter( QWidget* parent ):
-      QSplitter( parent ),
-      Counter( "LocalSplitter" )
-    { Debug::Throw( "LocalSplitter::LocalSplitter.\n" ); }
-
-    //! destructor
-    virtual ~LocalSplitter( void )
-    { Debug::Throw( "LocalSplitter::~LocalSplitter.\n" ); }
-    
-  };
-  
   //!@name child widgets
   //@{
 
@@ -542,12 +436,9 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   Menu* menu_;
 
   //! main display widget
-  QWidget* main_;
+  TextView* active_view_;
   
-  //! text display with focus
-  TextDisplay* active_display_;
-      
-  //! state frame
+  //! state window
   StatusBar* statusbar_;
 
   //! file display lineEdit
@@ -555,9 +446,6 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
    
   //@}
     
-  //! last save timeStamp
-  TimeStamp last_save_;
-  
   //!@name actions
   //@{
   
@@ -633,13 +521,10 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   Qt::Orientation default_orientation_;
   
   //! default open mode
-  OpenMode default_open_mode_;
+  TextView::OpenMode default_open_mode_;
   
   //! resize timer
   QBasicTimer resize_timer_;
-
-  //! position update timer
-  QTimer position_timer_;
   
 };
 

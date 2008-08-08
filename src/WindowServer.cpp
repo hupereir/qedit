@@ -87,7 +87,7 @@ WindowServer::FileRecordMap WindowServer::files( bool modified_only ) const
   {
       
     // retrieve associated text displays
-    BASE::KeySet<TextDisplay> displays( *window_iter );
+    BASE::KeySet<TextDisplay> displays( &(*window_iter)->activeView() );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
 
@@ -133,7 +133,7 @@ bool WindowServer::closeAllWindows( void )
     
     // loop over displays
     bool save_all_enabled = count_if( iter, windows.end(), MainWindow::IsModifiedFTor() ) > 1;
-    BASE::KeySet<TextDisplay> displays( *iter );
+    BASE::KeySet<TextDisplay> displays( &(*iter)->activeView() );
     for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
     {
       
@@ -166,7 +166,7 @@ bool WindowServer::closeAllWindows( void )
         for( sub_iter++; sub_iter != windows.end(); sub_iter++ )
         {
          
-          BASE::KeySet<TextDisplay> sub_displays( *sub_iter );
+          BASE::KeySet<TextDisplay> sub_displays( &(*sub_iter)->activeView() );
           for( BASE::KeySet<TextDisplay>::iterator sub_display_iter = sub_displays.begin(); sub_display_iter != sub_displays.end(); sub_display_iter++ ) 
           { if( (*sub_display_iter)->document()->isModified() ) (*sub_display_iter)->setModified( false ); }
 
@@ -358,7 +358,7 @@ MainWindow* WindowServer::open( FileRecord record, ArgList args )
   window->show();
 
   // check if file exists
-  if( record.file().exists() || record.file().empty() ) window->setFile( record.file() );
+  if( record.file().exists() || record.file().empty() ) window->activeView().setFile( record.file() );
   else if( !record.file().empty() )
   {
   
@@ -383,8 +383,8 @@ MainWindow* WindowServer::open( FileRecord record, ArgList args )
           ostringstream what;
           what << "Unable to create file " << record.file() << ".";
           QtUtil::infoDialog( window, what.str() );
-          window->setFile( File("") );
-        } else window->setFile( fullname );
+          window->activeView().setFile( File("") );
+        } else window->activeView().setFile( fullname );
         open_status_ = OPEN;
         break;
       }
@@ -433,18 +433,19 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   BASE::KeySet<MainWindow> frames( this );
   for( list<File>::iterator iter = files.begin(); iter != files.end(); iter++ )
   {
+    
     File& file( *iter );
     
     BASE::KeySet<MainWindow>::iterator iter = find_if( frames.begin(), frames.end(), MainWindow::SameFileFTor( file ) );
     assert( iter != frames.end() );
 
     // retrieve TextDisplay that match file
-    BASE::KeySet<TextDisplay> displays( *iter );
+    BASE::KeySet<TextDisplay> displays( &(*iter)->activeView() );
     BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) ) );
     assert( display_iter != displays.end() );
     
     // need to set display as active so that synchronization is kept with other possible displays
-    (*iter)->setActiveDisplay( **display_iter );
+    (*iter)->activeView().setActiveDisplay( **display_iter );
     (*display_iter)->setFocus();
     
     // perform replacement
