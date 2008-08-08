@@ -105,6 +105,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   // connections
   connect( &activeView(), SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
   connect( &activeView(), SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
+  connect( &activeView(), SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
   connect( &activeView(), SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
   connect( &activeView(), SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );
  
