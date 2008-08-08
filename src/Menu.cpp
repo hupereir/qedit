@@ -93,8 +93,6 @@ Menu::Menu( QWidget* parent ):
   menu->addSeparator();
 
   document_class_menu_ = menu->addMenu( "Set &document class" );
-  document_class_action_group_ = new QActionGroup( document_class_menu_ );
-  document_class_action_group_->setExclusive( true );
   connect( document_class_menu_, SIGNAL( aboutToShow() ), SLOT( _updateDocumentClassMenu() ) );
   connect( document_class_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectClassName( QAction* ) ) );
   
@@ -126,8 +124,6 @@ Menu::Menu( QWidget* parent ):
     
   // windows
   windows_menu_ = addMenu( "&Windows" );
-  windows_action_group_ = new QActionGroup( windows_menu_ );
-  windows_action_group_->setExclusive( true );
   connect( windows_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateWindowsMenu() ) );
   connect( windows_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectFile( QAction* ) ) );
 
@@ -182,7 +178,6 @@ void Menu::_updateDocumentClassMenu( void )
     QAction* action = document_class_menu_->addAction( iter->name() );
     if( !iter->icon().isEmpty() ) action->setIcon( IconEngine::get( qPrintable( iter->icon() ) ) );
     
-    document_class_action_group_->addAction( action );
     action->setCheckable( true );
     action->setChecked( iter->name() == class_name );
     
@@ -480,7 +475,6 @@ void Menu::_updateWindowsMenu( void )
       
       // add menu item
       QAction* action = windows_menu_->addAction( file.c_str() );
-      windows_action_group_->addAction( action );
       action->setCheckable( true );
       action->setChecked( current_file == file );
       

@@ -148,17 +148,6 @@ class Menu:public QMenuBar, public Counter
   
   //@}
   
-  //!@name action groups
-  //@{
-  
-  //! document class action group
-  QActionGroup* document_class_action_group_;
-  
-  //! windows action group
-  QActionGroup* windows_action_group_;
-  
-  //@}
-  
   //!@name actions
   //@{
   
