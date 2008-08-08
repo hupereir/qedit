@@ -91,6 +91,7 @@ SOURCES = \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
+  qedit.cpp \
   SaveAllDialog.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
