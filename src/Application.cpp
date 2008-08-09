@@ -382,7 +382,6 @@ void Application::_readFilesFromArgs( void )
 {
   Debug::Throw( "Application::_readFilesFromArgs.\n" );
   windowServer().readFilesFromArguments( args_ );
-  navigationWindow().update();
 }
 
 //________________________________________________

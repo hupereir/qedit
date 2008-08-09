@@ -193,9 +193,7 @@ bool WindowServer::closeAllWindows( void )
 //______________________________________________________
 void WindowServer::readFilesFromArguments( ArgList args )
 {
-  
-  Debug::Throw( "WindowServer::readFilesFromArguments.\n" );
-    
+      
   // retrieve files from arguments
   ArgList::Arg last_arg( args.get().back() );
   
@@ -229,7 +227,11 @@ void WindowServer::readFilesFromArguments( ArgList args )
     BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
     if( iter != windows.end() ) window = (*iter );
     else window = &newMainWindow();
-    
+
+    // need to show window immediately to avoid application
+    // to quit if at some point no window remains open    
+    window->show();
+
     // loop over files and open in current window
     set<string> files;
     for( list< string >::const_iterator iter = last_arg.options().begin(); iter != last_arg.options().end(); iter++ )
@@ -254,7 +256,6 @@ void WindowServer::readFilesFromArguments( ArgList args )
       else if( files.size() < 2 ) QtUtil::infoDialog( qApp->activeWindow(), "too few files selected. <Diff> canceled." );
     }
     
-    window->show();
     return;
   } 
   
@@ -356,14 +357,17 @@ MainWindow* WindowServer::open( FileRecord record, ArgList args )
   if( iter != windows.end() ) window = (*iter );
 
   // if no window found, create a new one
-  if( !window ) window = &newMainWindow();
+  if( !window ) {  window = &newMainWindow(); }
+
+  // need to show window immediately to avoid application
+  // to quit if at some point no window remains open
   window->show();
 
   // check if file exists
   if( record.file().exists() || record.file().empty() ) window->activeView().setFile( record.file() );
   else if( !record.file().empty() )
   {
-  
+      
     // create NewFileDialog
     int buttons( NewFileDialog::CREATE | NewFileDialog::CANCEL );
     bool enable_exit( BASE::KeySet<MainWindow>(this).size() == 1 );

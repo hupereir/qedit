@@ -196,6 +196,18 @@ void TextView::setActiveDisplay( TextDisplay& display )
 void TextView::closeDisplay( TextDisplay& display )
 {
   Debug::Throw( "TextView::closeDisplay.\n" );
+
+  // retrieve number of displays
+  // if only one display, close the entire window
+  {
+    BASE::KeySet<TextDisplay> displays( this );
+    if( displays.size() < 2 )
+    {
+      Debug::Throw() << "TextView::closeDisplay - full close." << endl;
+      close();
+      return;
+    }
+  }
   
   // check if display is modified and has no associates in window
   if( 
