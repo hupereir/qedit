@@ -37,6 +37,8 @@
 #include "Application.h"
 #include "CustomToolButton.h"
 #include "Debug.h"
+#include "Icons.h"
+#include "IconEngine.h"
 #include "FileList.h"
 #include "NavigationWindow.h"
 #include "TreeView.h"
@@ -45,9 +47,10 @@
 using namespace std;
 
 //_______________________________________________________________
-NavigationWindow::NavigationWindow( QWidget* parent ):
+NavigationWindow::NavigationWindow( QWidget* parent, FileList& files ):
   CustomMainWindow( parent ),
-  Counter( "MainWindow" )
+  Counter( "MainWindow" ),
+  recent_files_( &files )
 {
   
   Debug::Throw( "NavigationWindow:NavigationWindow.\n" );
@@ -111,7 +114,7 @@ NavigationWindow::NavigationWindow( QWidget* parent ):
   buttons_.insert( make_pair( button, &_recentFilesList() ) );
   v_layout->addStretch( 1 );
 
-  // connections
+  // connections  
   connect( &_sessionFilesModel(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSessionFilesSelection() ) );
   connect( &_sessionFilesModel(), SIGNAL( layoutChanged() ), SLOT( _restoreSessionFilesSelection() ) );
   connect( &_sessionFilesList(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _sessionFilesItemSelected( const QModelIndex& ) ) );
@@ -132,51 +135,17 @@ NavigationWindow::NavigationWindow( QWidget* parent ):
 NavigationWindow::~NavigationWindow( void )
 { Debug::Throw( "NavigationWindow::~NavigationWindow.\n" ); }
 
-//______________________________________________________________________
-void NavigationWindow::updateSessionFiles( void )
-{ 
-  Debug::Throw( "NavigationWindow:updateSessionFiles.\n" ); 
 
-  // check visibility
-  if( !( isVisible() && _stack().currentWidget() == &_sessionFilesList() ) ) return;
+//____________________________________________
+void NavigationWindow::enterEvent( QEvent* e )
+{
+
+  Debug::Throw( "NavigationWindow::enterEvent.\n" );
+  CustomMainWindow::enterEvent( e );
+
+  // check recent files validity
+  _recentFiles().checkValidFiles();
   
-  // save mask
-  unsigned int mask( _sessionFilesList().mask() );
-
-  // retrieve file records
-  FileRecordModel::List files;
-  WindowServer::FileRecordMap records( static_cast< Application*>( qApp )->windowServer().files() );
-  for( WindowServer::FileRecordMap::const_iterator iter = records.begin(); iter != records.end(); iter++ )
-  { files.push_back( iter->first ); }
-
-  // replace
-  _sessionFilesModel().update( files );
- 
-  // restore mask and resize columns
-  _sessionFilesList().setMask( mask );
-  _sessionFilesList().resizeColumns();
-
-}
-
-//______________________________________________________________________
-void NavigationWindow::updateRecentFiles( void )
-{ 
-  Debug::Throw( "NavigationWindow:updateRecentFiles.\n" ); 
- 
-  // check visibility
-  if( !( isVisible() && _stack().currentWidget() == &_recentFilesList() ) ) return;
- 
-  // save mask
-  unsigned int mask( _recentFilesList().mask() );
-    
-  // update records
-  _recentFilesModel().update( static_cast<Application*>(qApp)->recentFiles().records() );
-  
-  // restore mask and resize columns
-  _recentFilesList().setMask( mask );
-  _recentFilesList().resizeColumns();
-
-
 }
 
 //____________________________________________
@@ -193,7 +162,7 @@ void NavigationWindow::closeEvent( QCloseEvent* event )
 void NavigationWindow::showEvent( QShowEvent* )
 {
   Debug::Throw( "NavigationWindow::showEvent.\n" );
-  updateFiles();  
+  _updateFiles();  
 }
 
 //______________________________________________________________________
@@ -201,18 +170,75 @@ void NavigationWindow::_updateConfiguration( void )
 { 
   Debug::Throw( "NavigationWindow::_updateConfiguration.\n" );
   visibilityAction().setChecked( XmlOptions::get().get<bool>( "SHOW_NAVIGATION_WINDOW" ) );
+  
+  // restore TreeView masks
+  if( XmlOptions::get().find( "SESSION_FILES_MASK" ) ) _sessionFilesList().setMask( XmlOptions::get().get<unsigned int>( "SESSION_FILES_MASK" ) );
+  if( XmlOptions::get().find( "RECENT_FILES_MASK" ) ) _recentFilesList().setMask( XmlOptions::get().get<unsigned int>( "RECENT_FILES_MASK" ) );
+  
 }
 
 //______________________________________________________________________
 void NavigationWindow::_saveConfiguration( void )
 { 
+
   Debug::Throw( "NavigationWindow::_saveConfiguration.\n" );
   XmlOptions::get().set<bool>( "SHOW_NAVIGATION_WINDOW" , visibilityAction().isChecked() );  
+  XmlOptions::get().set<unsigned int>( "SESSION_FILES_MASK", _sessionFilesList().mask() );
+  XmlOptions::get().set<unsigned int>( "RECENT_FILES_MASK", _recentFilesList().mask() );
+
 }  
 
 //______________________________________________________________________
+void NavigationWindow::_updateSessionFiles( void )
+{ 
+  Debug::Throw( "NavigationWindow:_updateSessionFiles.\n" ); 
+
+  // check visibility
+  if( !( isVisible() && _stack().currentWidget() == &_sessionFilesList() ) ) return;
+  
+  // save mask
+  unsigned int mask( _sessionFilesList().mask() );
+  
+  // retrieve file records
+  FileRecordModel::List files;
+  WindowServer::FileRecordMap records( static_cast< Application*>( qApp )->windowServer().files() );
+  for( WindowServer::FileRecordMap::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+  { files.push_back( iter->first ); }
+
+  // replace
+  _sessionFilesModel().update( files );
+ 
+  // restore mask and resize columns
+  _sessionFilesList().setMask( mask );
+  _sessionFilesList().resizeColumns();
+
+}
+
+//______________________________________________________________________
+void NavigationWindow::_updateRecentFiles( void )
+{ 
+  Debug::Throw( "NavigationWindow:_updateRecentFiles.\n" ); 
+ 
+  // check visibility
+  if( !( isVisible() && _stack().currentWidget() == &_recentFilesList() ) ) return;
+ 
+  // save mask
+  unsigned int mask( _recentFilesList().mask() );
+    
+  // update records
+  _recentFilesModel().update( _recentFiles().records() );
+  
+  // restore mask and resize columns
+  _recentFilesList().setMask( mask );
+  _recentFilesList().resizeColumns();
+
+}
+
+//______________________________________________________________________
 void NavigationWindow::_display( QAbstractButton* button )
-{   Debug::Throw( "NavigationWindow:_display.\n" ); 
+{  
+  
+  Debug::Throw( "NavigationWindow:_display.\n" ); 
   if( !button->isChecked() ) return;
   
   // retrieve item in map
@@ -221,8 +247,10 @@ void NavigationWindow::_display( QAbstractButton* button )
 
   // display corresponding widget
   _stack().setCurrentWidget( iter->second );
-  updateFiles();
 
+  // update displays
+  _updateFiles();
+  
 }
 
 //______________________________________________________________________
@@ -235,6 +263,14 @@ void NavigationWindow::_installActions( void )
   visibility_action_->setChecked( false );
   connect( visibility_action_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );
    
+  // update session files
+  addAction( session_files_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Update &session files", this ) );
+  connect( session_files_action_, SIGNAL( triggered() ), SLOT( _updateSessionFiles() ) );
+   
+  // update recent files
+  addAction( recent_files_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Update &recent files", this ) );
+  connect( recent_files_action_, SIGNAL( triggered() ), SLOT( _updateRecentFiles() ) );
+  
 }
 
 //______________________________________________________________________

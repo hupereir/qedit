@@ -54,7 +54,6 @@
 #include "IconEngine.h"
 #include "Icons.h"
 #include "LineNumberDisplay.h"
-#include "NavigationWindow.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
 #include "TextDisplay.h"
@@ -142,11 +141,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
 //_____________________________________________________
 TextDisplay::~TextDisplay( void )
-{ 
-  Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; 
-  static_cast<Application*>(qApp)->navigationWindow().updateSessionFiles();
-
-}
+{ Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; }
 
 //_____________________________________________________
 int TextDisplay::blockCount( const QTextBlock& block ) const
@@ -267,7 +262,7 @@ void TextDisplay::synchronize( TextDisplay* display )
   _setMacros( display->macros() );
 
   // file
-  setFile( display->file() );
+  _setFile( display->file() );
 
 }
 
@@ -315,7 +310,7 @@ void TextDisplay::openFile( File file, bool check_autosave )
     displays.insert( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
-      (*iter)->setFile( file );
+      (*iter)->_setFile( file );
       (*iter)->setClassName( className() );
       (*iter)->updateDocumentClass();
     }
@@ -346,17 +341,14 @@ void TextDisplay::openFile( File file, bool check_autosave )
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
   { application.recentFiles().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
-
-  // update navigationWindow
-  application.navigationWindow().updateFiles();
   
 }
 
 //_______________________________________________________
-void TextDisplay::setFile( const File& file )
+void TextDisplay::_setFile( const File& file )
 {
 
-  Debug::Throw() << "TextDisplay::setFile - file: " << file << endl;
+  Debug::Throw() << "TextDisplay::_setFile - file: " << file << endl;
   file_ = file;
   if( file.exists() )
   {
@@ -583,7 +575,7 @@ void TextDisplay::saveAs( void )
   {
 
     // update file
-    (*iter)->setFile( file );
+    (*iter)->_setFile( file );
 
     // update document class
     // the class name is reset, to allow a document class

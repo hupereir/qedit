@@ -86,6 +86,11 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
   //@}
   
+  signals:
+  
+  //! emmited whenever the session file list is modified
+  void sessionFilesChanged( void );
+  
   public slots:
   
   //! open

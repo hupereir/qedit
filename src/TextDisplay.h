@@ -137,10 +137,7 @@ class TextDisplay: public TextEditor
   
   //! open file
   void openFile( File file, bool check_autosave = true );
-  
-  //! set file name
-  void setFile( const File& file );
-  
+    
   //! file
   const File& file( void ) const
   { return file_; }
@@ -457,6 +454,9 @@ class TextDisplay: public TextEditor
   //! create replace dialog
   virtual void _createReplaceDialog( void );
     
+  //! set file name
+  void _setFile( const File& file );
+  
   //! clear macros
   void _clearMacros( void )
   { macros_.clear(); }

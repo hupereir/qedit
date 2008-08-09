@@ -184,23 +184,25 @@ void Application::realizeWidget( void )
   window_server_ = new WindowServer();
 
   // navigation window
-  navigation_window_ = new NavigationWindow();
+  navigation_window_ = new NavigationWindow( 0, recentFiles() );
   
   // class manager
   class_manager_ = new DocumentClassManager();
   
   // autosave
   autosave_ = new AutoSave();
-  
-  // show navigation window
-  // navigationWindow().show();
-  
+    
   // create first editFrame
   windowServer().newMainWindow().show(); 
   _updateConfiguration();
 
-  // make sure application ends when last window is closed.
+  // connections
+  connect( &windowServer(), SIGNAL( sessionFilesChanged() ), &navigationWindow().updateSessionFilesAction(), SLOT( trigger() ) );
+  connect( &recentFiles(), SIGNAL( contentsChanged() ), &navigationWindow().updateRecentFilesAction(), SLOT( trigger() ) );
+  connect( &recentFiles(), SIGNAL( validFilesChecked() ), &navigationWindow().updateRecentFilesAction(), SLOT( trigger() ) );
   connect( &navigationWindow(), SIGNAL( fileSelected( FileRecord ) ), &windowServer(), SLOT( open( FileRecord ) ) );
+
+  // make sure application ends when last window is closed.
   connect( this, SIGNAL( lastWindowClosed() ), SLOT( quit() ) );
   
   // run startup timer to open files after the call to exec() is 

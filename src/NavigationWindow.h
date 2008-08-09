@@ -44,6 +44,7 @@
 #include "CustomMainWindow.h"
 #include "FileRecordModel.h"
 
+class FileList;
 class TreeView;
 
 //! editor windows navigator
@@ -60,7 +61,7 @@ class NavigationWindow: public CustomMainWindow, public Counter
   public:
 
   //! creator
-  NavigationWindow( QWidget* parent = 0 );
+  NavigationWindow( QWidget* parent, FileList&  );
 
   //! destructor
   ~NavigationWindow( void );
@@ -72,30 +73,26 @@ class NavigationWindow: public CustomMainWindow, public Counter
   QAction& visibilityAction( void ) const
   { return *visibility_action_; }
   
+  //! update session files
+  QAction& updateSessionFilesAction( void ) const
+  { return *session_files_action_; }
+  
+  //! update session files
+  QAction& updateRecentFilesAction( void ) const
+  { return *recent_files_action_; }
+
   //@}
   
   signals:
 
   //! signal emited when a file is selected
   void fileSelected( FileRecord );  
-  
-  public slots:
-  
-  //! update session files
-  void updateSessionFiles( void );
-
-  //! update recent files
-  void updateRecentFiles( void );
-    
-  //! update models
-  void updateFiles( void )
-  {
-    updateSessionFiles();
-    updateRecentFiles();
-  }
-  
+      
   protected:
   
+  //! enter event
+  void enterEvent( QEvent* );
+
   //! close event
   void closeEvent( QCloseEvent* );
   
@@ -125,6 +122,13 @@ class NavigationWindow: public CustomMainWindow, public Counter
   
   //@}
   
+  //! recent files
+  FileList& _recentFiles( void ) const
+  { 
+    assert( recent_files_ );
+    return *recent_files_;
+  }
+  
   //! recent file list
   TreeView& _recentFilesList( void ) const
   {
@@ -137,12 +141,18 @@ class NavigationWindow: public CustomMainWindow, public Counter
   { return recent_files_model_; }  
   
   private slots:
-     
+
   //! update configuration
   void _updateConfiguration( void );
   
   //! update configuration
   void _saveConfiguration( void );
+     
+  //! update recent files
+  void _updateRecentFiles( void );
+
+  //! update session files
+  void _updateSessionFiles( void );
   
   //! sessionFilesItem selected
   void _sessionFilesItemSelected( const QModelIndex& index )
@@ -177,6 +187,13 @@ class NavigationWindow: public CustomMainWindow, public Counter
   //! install actions
   void _installActions( void );
   
+  //! update files
+  void _updateFiles( void )
+  {
+    _updateSessionFiles();
+    _updateRecentFiles();
+  }
+  
   //! item selected
   void _itemSelected( const FileRecordModel&, const QModelIndex& );
   
@@ -201,6 +218,9 @@ class NavigationWindow: public CustomMainWindow, public Counter
   //! session files list
   TreeView* session_files_list_;
   
+  //! recent files
+  FileList* recent_files_;
+  
   //! recent files model
   FileRecordModel recent_files_model_;
   
@@ -212,6 +232,12 @@ class NavigationWindow: public CustomMainWindow, public Counter
   
   //! visibility
   QAction* visibility_action_;
+  
+  //! session files
+  QAction* session_files_action_;
+  
+  //! recent files
+  QAction* recent_files_action_;
   
   //@}
   

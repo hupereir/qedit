@@ -38,6 +38,7 @@
 #include "Icons.h"
 #include "IconEngine.h"
 #include "MainWindow.h"
+#include "NavigationWindow.h"
 #include "NewFileDialog.h"
 #include "QtUtil.h"
 #include "SaveAllDialog.h"
@@ -69,6 +70,7 @@ MainWindow& WindowServer::newMainWindow( void )
   Debug::Throw( "WindowServer::newMainWindow.\n" );
   MainWindow* out = new MainWindow();
   BASE::Key::associate( this, out );
+  connect( out, SIGNAL( destroyed() ), SIGNAL( sessionFilesChanged() ) );
   return *out;
 }
 

@@ -429,7 +429,7 @@ void MainWindow::enterEvent( QEvent* e )
 {
 
   Debug::Throw( "MainWindow::enterEvent.\n" );
-  QMainWindow::enterEvent( e );
+  CustomMainWindow::enterEvent( e );
 
   // keep track of displays to be deleted, if any
   BASE::KeySet<TextDisplay> dead_displays;
@@ -713,6 +713,8 @@ TextView& MainWindow::_newTextView( QWidget *parent )
   connect( view, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
   connect( view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
   connect( view, SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
+  connect( view, SIGNAL( displayCountChanged( void ) ), &static_cast<Application*>(qApp)->windowServer(), SIGNAL( sessionFilesChanged( void ) ) );
+  
   connect( view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
   connect( view, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) ); 
   connect( &view->positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );  
