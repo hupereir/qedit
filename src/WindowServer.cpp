@@ -38,7 +38,7 @@
 #include "Icons.h"
 #include "IconEngine.h"
 #include "MainWindow.h"
-#include "NavigationWindow.h"
+#include "NavigationFrame.h"
 #include "NewFileDialog.h"
 #include "QtUtil.h"
 #include "SaveAllDialog.h"
@@ -70,7 +70,14 @@ MainWindow& WindowServer::newMainWindow( void )
   Debug::Throw( "WindowServer::newMainWindow.\n" );
   MainWindow* out = new MainWindow();
   BASE::Key::associate( this, out );
+  
   connect( out, SIGNAL( destroyed() ), SIGNAL( sessionFilesChanged() ) );
+  
+  connect( this, SIGNAL( sessionFilesChanged() ), &out->navigationFrame().updateSessionFilesAction(), SLOT( trigger() ) );
+  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( contentsChanged() ), &out->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
+  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( validFilesChecked() ), &out->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
+  connect( &out->navigationFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( open( FileRecord ) ) );
+
   return *out;
 }
 

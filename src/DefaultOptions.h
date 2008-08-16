@@ -81,6 +81,11 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "WINDOW_WIDTH", "700" ));
   XmlOptions::get().add( Option( "SERVER_TIMEOUT_DELAY", "3000" , "timeout delay to wait for existing server to answer" ));
   XmlOptions::get().add( Option( "SHOW_NAVIGATION_WINDOW", "0", "show/hide navigation window" ) );
+  XmlOptions::get().add( Option( "SHOW_NAVIGATION_FRAME", "0", "show/hide navigation window" ) );
+
+  // splitters
+  XmlOptions::get().add( Option( "NAVIGATION_FRAME_WIDTH", "250" , "navigation frame width" ));
+  XmlOptions::get().add( Option( "CENTRAL_WIDGET_WIDTH", "450" , "central widget width" ));
 
   // toolbars
   XmlOptions::get().add( Option( "FILE_TOOLBAR",   "1" , "toolbar visibility" ));

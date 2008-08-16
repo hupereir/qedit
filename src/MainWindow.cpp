@@ -54,10 +54,10 @@
 #include "Icons.h"
 #include "MainWindow.h"
 #include "Menu.h"
+#include "NavigationFrame.h"
 #include "NavigationWindow.h"
 #include "NewFileDialog.h"
 #include "PixmapEngine.h"
-#include "XmlOptions.h"
 #include "PrintDialog.h"
 #include "QtUtil.h"
 #include "StatusBar.h"
@@ -67,6 +67,7 @@
 #include "Util.h"
 #include "WindowServer.h"
 #include "WindowTitle.h"
+#include "XmlOptions.h"
 
 using namespace std;
 
@@ -94,10 +95,27 @@ MainWindow::MainWindow(  QWidget* parent ):
   setMenuBar( menu_ = new Menu( this ) );
   connect( menu_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
 
-  // main vbox
-  setActiveView( _newTextView( this ) );
-  setCentralWidget( &activeView() );
- 
+  // main widget is a splitter to store navigation window and active view 
+  setCentralWidget( splitter_ = new QSplitter( this ) );
+  splitter_->setOrientation( Qt::Horizontal );
+  setCentralWidget( splitter_ );
+
+  // insert navigationFrame
+  navigation_frame_ = new NavigationFrame(0, static_cast<Application*>(qApp)->recentFiles() );
+  navigationFrame().setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
+  connect( &navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleNavigationFrame( bool ) ) );
+  splitter_->addWidget( &navigationFrame() );
+  
+  // insert main view
+  setActiveView( _newTextView(0) );
+  splitter_->addWidget( &activeView() );
+  
+  // assign stretch factors
+  splitter_->setStretchFactor( 0, 0 );
+  splitter_->setStretchFactor( 1, 1 );
+  
+  connect( splitter_, SIGNAL( splitterMoved( int, int ) ), SLOT( _splitterMoved( int, int ) ) );
+  
   // state frame
   setStatusBar( statusbar_ = new StatusBar( this ) );
 
@@ -151,9 +169,11 @@ MainWindow::MainWindow(  QWidget* parent ):
   toolbar->addAction( &openVerticalAction() ); 
   toolbar->addAction( &closeDisplayAction() );
   toolbar->addAction( &detachAction() );
- 
+  
   //! configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( qApp, SIGNAL( saveConfiguration() ), SLOT( _saveConfiguration() ) );
+  connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
  _updateConfiguration();
   
   // update buttons
@@ -484,7 +504,6 @@ void MainWindow::enterEvent( QEvent* e )
 
 }
 
-
 //________________________________________________________
 void MainWindow::_updateConfiguration( void )
 {
@@ -493,6 +512,9 @@ void MainWindow::_updateConfiguration( void )
       
   resize( sizeHint() );
   
+  // navigation frame visibility
+  navigationFrame().visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_NAVIGATION_FRAME") );
+    
   // assign icons to file in open previous menu based on class manager
   FileRecord::List& records( static_cast<Application*>(qApp)->recentFiles().records() );
   for( FileRecord::List::iterator iter = records.begin(); iter != records.end(); iter++ )
@@ -506,6 +528,25 @@ void MainWindow::_updateConfiguration( void )
   }
     
 }
+
+//________________________________________________________
+void MainWindow::_saveConfiguration( void )
+{ Debug::Throw( "MainWindow::_saveConfiguration.\n" ); }
+
+//________________________________________________________
+void MainWindow::_toggleNavigationFrame( bool state )
+{
+  Debug::Throw( "MainWindow::_toggleNavigationFrame.\n" );
+  XmlOptions::get().set<bool>( "SHOW_NAVIGATION_FRAME", state );
+}
+
+//________________________________________________________
+void MainWindow::_splitterMoved( int position, int index )
+{
+  Debug::Throw( "MainWindow::_splitterMoved.\n" );
+  XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", position ); 
+}
+
 //_______________________________________________________
 void MainWindow::_update( unsigned int flags )
 {

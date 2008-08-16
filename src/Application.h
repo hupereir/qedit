@@ -45,7 +45,6 @@
 class AutoSave;
 class DocumentClassManager;
 class FileList;
-class NavigationWindow;
 class WindowServer;
 class Sync;
 
@@ -78,13 +77,6 @@ class Application: public QApplication, public Counter
   { 
     assert( recent_files_ );
     return *recent_files_;
-  }
-  
-  //! navigation window
-  NavigationWindow& navigationWindow( void ) const
-  { 
-    assert( navigation_window_ );
-    return *navigation_window_;
   }
   
   //! Window server
@@ -208,9 +200,6 @@ class Application: public QApplication, public Counter
   //! recent files list
   FileList* recent_files_;
 
-  //! navigation window
-  NavigationWindow* navigation_window_;
-  
   //! window server
   WindowServer* window_server_;
   

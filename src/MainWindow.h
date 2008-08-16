@@ -32,6 +32,7 @@
 */
 
 #include <QAction>
+#include <QSplitter>
 #include <QTimer>
 
 #include <list>
@@ -47,6 +48,7 @@
 
 class LineEditor;
 class Menu;
+class NavigationFrame;
 class StatusBar;
 
 //! editor main window
@@ -120,6 +122,16 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
 
   //@}
 
+  //! navigation window
+  NavigationFrame& navigationFrame( void ) const
+  { 
+    assert( navigation_frame_ );
+    return *navigation_frame_;
+  }
+  
+  //!@name active view/display managment
+  //@{
+  
   //! active view
   TextView& activeView( void )
   {
@@ -302,13 +314,22 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   virtual void closeEvent( QCloseEvent* );
 
   //! enter event handler
-  void enterEvent( QEvent* );
-    
+  virtual void enterEvent( QEvent* );
+      
   private slots:
   
   //! update configuration
   void _updateConfiguration( void );
  
+  //! update configuration
+  void _saveConfiguration( void );
+
+  //! toggle navigation frame visibility
+  void _toggleNavigationFrame( bool );
+  
+  //! splitter moved
+  void _splitterMoved( int, int );
+  
   //! new file
   void _newFile( void )
   { activeView().newFile( openMode(), orientation() ); }
@@ -432,6 +453,12 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! menu
   Menu* menu_;
 
+  //! main splitter
+  QSplitter* splitter_;
+  
+  //! navigation window
+  NavigationFrame* navigation_frame_;
+  
   //! main display widget
   TextView* active_view_;
   
@@ -519,10 +546,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
   //! default open mode
   TextView::OpenMode default_open_mode_;
-  
-  //! resize timer
-  QBasicTimer resize_timer_;
-  
+    
 };
 
 #endif

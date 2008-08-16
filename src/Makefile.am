@@ -91,7 +91,7 @@ noinst_HEADERS = \
   Icons.h \
   MainWindow.h \
   Menu.h \
-  NavigationWindow.h \
+  NavigationFrame.h \
   NewFileDialog.h \
   ParenthesisHighlight.h \
   PrintDialog.h \
@@ -122,7 +122,7 @@ libqedit_a_SOURCES = \
   HtmlUtil.cpp \
   MainWindow.cpp \
   Menu.cpp \
-  NavigationWindow.cpp \
+  NavigationFrame.cpp \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
@@ -146,7 +146,7 @@ nodist_libqedit_a_SOURCES = \
   moc_FileSelectionDialog.cpp \
   moc_MainWindow.cpp \
   moc_Menu.cpp \
-  moc_NavigationWindow.cpp \
+  moc_NavigationFrame.cpp \
   moc_NewFileDialog.cpp \
   moc_ParenthesisHighlight.cpp \
   moc_PrintDialog.cpp \

@@ -44,7 +44,7 @@
 #include "Icons.h"
 #include "Application.h"
 #include "Menu.h"
-#include "NavigationWindow.h"
+#include "NavigationFrame.h"
 #include "RecentFilesMenu.h"
 #include "QtUtil.h"
 #include "TextDisplay.h"
@@ -283,9 +283,12 @@ void Menu::_updatePreferenceMenu( void )
   orientation_menu->addActions( group->actions() );
   connect( orientation_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOrientation() ) );
  
+  preference_menu_->addMenu( open_mode_menu );
+  preference_menu_->addMenu( orientation_menu );
   preference_menu_->addSeparator();
 
   // textdisplay actions
+  preference_menu_->addAction( &mainwindow.navigationFrame().visibilityAction() );
   preference_menu_->addAction( &display.showLineNumberAction() );
   preference_menu_->addAction( &display.showBlockDelimiterAction() );
   preference_menu_->addAction( &display.wrapModeAction() );
@@ -430,9 +433,6 @@ void Menu::_updateWindowsMenu( void )
 
   Debug::Throw( "Menu::_updateWindowsMenu.\n" );
   windows_menu_->clear();
-
-  // navigation window
-  windows_menu_->addAction( &static_cast<Application*>(qApp)->navigationWindow().visibilityAction() );
 
   // retrieve current display
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
