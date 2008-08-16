@@ -56,7 +56,7 @@ HEADERS = \
   Icons.h \
   MainWindow.h \
   Menu.h \
-  NavigationWindow.h \
+  NavigationFrame.h \
   NewFileDialog.h \
   ParenthesisHighlight.h \
   PrintDialog.h \
@@ -87,7 +87,7 @@ SOURCES = \
   HtmlUtil.cpp \
   MainWindow.cpp \
   Menu.cpp \
-  NavigationWindow.cpp \
+  NavigationFrame.cpp \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \

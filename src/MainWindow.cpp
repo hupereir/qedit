@@ -55,7 +55,6 @@
 #include "MainWindow.h"
 #include "Menu.h"
 #include "NavigationFrame.h"
-#include "NavigationWindow.h"
 #include "NewFileDialog.h"
 #include "PixmapEngine.h"
 #include "PrintDialog.h"

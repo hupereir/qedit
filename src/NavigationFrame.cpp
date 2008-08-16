@@ -135,21 +135,12 @@ NavigationFrame::~NavigationFrame( void )
 
 //______________________________________________________________________
 void NavigationFrame::setDefaultWidth( const int& value )
-{ 
-  Debug::Throw( "NavigationFrame::setDefaultWidth.\n" );
-  default_width_ = value; 
-}
+{ default_width_ = value; }
 
 
 //____________________________________________
 QSize NavigationFrame::sizeHint( void ) const
-{ 
-  //return QWidget::sizeHint();
-  
-  // Debug::Throw(0) << "NavigationFrame::sizeHint - default_width_: " << default_width_ << endl;
-  return (default_width_ ) >= 0 ? QSize( default_width_, 0 ):QWidget::sizeHint(); 
-  
-}
+{ return (default_width_ ) >= 0 ? QSize( default_width_, 0 ):QWidget::sizeHint(); }
 
 //____________________________________________
 void NavigationFrame::enterEvent( QEvent* e )
@@ -261,7 +252,7 @@ void NavigationFrame::_installActions( void )
 {
   
   Debug::Throw( "NavigationFrame::_installActions.\n" );
-  addAction( visibility_action_ = new QAction( "Show &navigation frame", this ) );
+  addAction( visibility_action_ = new QAction( "Show &navigation panel", this ) );
   visibility_action_->setCheckable( true );
   visibility_action_->setChecked( true );
   connect( visibility_action_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );
