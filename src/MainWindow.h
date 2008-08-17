@@ -166,14 +166,6 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
   //!@name configuration
   //@{
-   
-  //! open mode
-  const TextView::OpenMode& openMode( void ) const
-  { return default_open_mode_; }
-  
-  //! open mode
-  void setOpenMode( const TextView::OpenMode& mode )
-  { default_open_mode_ = mode; }
   
   //! orientation
   const Qt::Orientation& orientation( void ) const
@@ -282,7 +274,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
  
   //! open file
   void open( FileRecord record = FileRecord() )
-  { activeView().open( record, openMode(), orientation() ); }
+  { activeView().open( record, TextView::NEW_WINDOW, orientation() ); }
 
   //! open file horizontally
   void openHorizontal( FileRecord record = FileRecord() )
@@ -335,7 +327,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
   //! new file
   void _newFile( void )
-  { activeView().newFile( openMode(), orientation() ); }
+  { activeView().newFile( TextView::NEW_WINDOW, orientation() ); }
   
   //! new file
   void _newHorizontal( void )
@@ -546,10 +538,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
   //! default orientation for multiple displays
   Qt::Orientation default_orientation_;
-  
-  //! default open mode
-  TextView::OpenMode default_open_mode_;
-    
+      
   //! timer
   QBasicTimer resize_timer_;
   

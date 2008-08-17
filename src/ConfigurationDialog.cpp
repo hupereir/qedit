@@ -152,14 +152,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setMaxCount(2);
   box->setLayout( grid_layout );
   
-  grid_layout->addWidget( new QLabel( "Default open mode ", box ) );
   OptionComboBox *combobox;
-  grid_layout->addWidget( combobox = new OptionComboBox( box, "OPEN_MODE" ) );
-  combobox->addItem( "open in new window" );
-  combobox->addItem( "open in new view" );
-  addOptionWidget( combobox );
-  combobox->setToolTip( "Configure how new files should be open." );
-
   grid_layout->addWidget( new QLabel( "Default orientation ", box ) );
   grid_layout->addWidget( combobox = new OptionComboBox( box, "ORIENTATION" ) );
   combobox->addItem( "top/bottom" );

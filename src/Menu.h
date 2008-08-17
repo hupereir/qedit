@@ -38,10 +38,9 @@
 
 #include "Debug.h"
 #include "Counter.h"
-
-
 #include "File.h"
 
+class RecentFilesMenu;
 class TextMacro;
 
 //! menu
@@ -58,7 +57,7 @@ class Menu:public QMenuBar, public Counter
   
   //! destructor
   ~Menu( void );
-
+  
   //! macro menu
   QMenu& macroMenu( void ) const
   { 
@@ -73,6 +72,10 @@ class Menu:public QMenuBar, public Counter
     
   private slots:
     
+  //! update recent files menu
+  /*! this is needed so that the current file appears checked in the menu */
+  void _updateRecentFilesMenu( void );
+  
   //! update document class menu
   void _updateDocumentClassMenu( void );
   
@@ -93,13 +96,7 @@ class Menu:public QMenuBar, public Counter
 
   //! update windows menu
   void _updateWindowsMenu( void );
-  
-  //! update open mode
-  void _toggleOpenMode( void );
-
-  //! update orientation
-  void _toggleOrientation( void );
-  
+    
   //! select document class from menu
   void _selectClassName( QAction* );
   
@@ -110,9 +107,27 @@ class Menu:public QMenuBar, public Counter
   void _selectFile( QAction* );
     
   private:
+    
+  //! local action group
+  /*! used to track memory leaks */
+  class ActionGroup: public QActionGroup, public Counter
+  {
+    
+    public:
+    
+    //! constructor
+    ActionGroup( QObject* parent ):
+      QActionGroup( parent ),
+      Counter( "Menu::ActionGroup" )
+    {}
+    
+  };
   
   //!@name children
   //@{
+    
+  //! recent files menu
+  RecentFilesMenu* recent_files_menu_;
   
   //! document class menu
   QMenu* document_class_menu_;
@@ -137,30 +152,28 @@ class Menu:public QMenuBar, public Counter
   
   //@}
   
-  //!@name actions
+  //!@name action groups
   //@{
   
-  //! open new window mode
-  QAction* new_window_action_;
-
-  //! open new display mode
-  QAction* new_display_action_;
-  
-  //! left/right orientated new display
-  QAction* leftright_action_;
-
-  //! top/bottom orientated new display
-  QAction* topbottom_action_;
+  QActionGroup* document_class_action_group_;
     
+  QActionGroup* windows_action_group_;
+
+  //@}
+  
+  
+  //!@name actions
+  //@{
+        
   //! map document class to macro names
-  std::map< QAction*, QString > document_classes_;
+  std::map< QAction*, QString > document_class_actions_;
   
   //! map actions to macro names
-  std::map< QAction*, QString > macros_;
+  std::map< QAction*, QString > macro_actions_;
 
   //! map windows menu ID to file name
-  std::map< QAction*, File > files_;
-
+  std::map< QAction*, File > file_actions_;
+  
   //@}
   
 };

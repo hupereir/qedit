@@ -177,12 +177,12 @@ class NavigationFrame: public QWidget, public Counter
   //! update configuration
   void _saveConfiguration( void );
      
-  //! update recent files
-  void _updateRecentFiles( void );
-
   //! update session files
   void _updateSessionFiles( void );
   
+  //! update recent files
+  void _updateRecentFiles( void );
+
   //! sessionFilesItem selected
   void _sessionFilesItemSelected( const QModelIndex& index )
   { _itemSelected( _sessionFilesModel(), index ); }
@@ -207,6 +207,12 @@ class NavigationFrame: public QWidget, public Counter
   { _restoreSelection( _recentFilesList(), _recentFilesModel() ); }
 
   //@}
+
+  //! session files sort order
+  void _storeSessionFilesSortMethod( int, Qt::SortOrder );
+  
+  //! recent files sort order
+  void _storeRecentFilesSortMethod( int, Qt::SortOrder );
   
   //! display item page
   virtual void _display( QAbstractButton* );

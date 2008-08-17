@@ -30,6 +30,7 @@
 */
 
 #include "Config.h"
+#include "FileRecordModel.h"
 #include "XmlOptions.h"
 #include "Util.h"
 
@@ -84,9 +85,10 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "SHOW_NAVIGATION_FRAME", "0", "show/hide navigation window" ) );
 
   // splitters
-  XmlOptions::get().add( Option( "NAVIGATION_FRAME_WIDTH", "250" , "navigation frame width" ));
-  XmlOptions::get().add( Option( "CENTRAL_WIDGET_WIDTH", "450" , "central widget width" ));
-
+  XmlOptions::get().add( Option( "NAVIGATION_FRAME_WIDTH", "200" , "navigation frame width" ));
+  XmlOptions::get().set<unsigned int>( "SESSION_FILES_MASK", (1<<FileRecordModel::FILE) );
+  XmlOptions::get().set<unsigned int>( "RECENT_FILES_MASK", (1<<FileRecordModel::FILE) );
+  
   // toolbars
   XmlOptions::get().add( Option( "FILE_TOOLBAR",   "1" , "toolbar visibility" ));
   XmlOptions::get().add( Option( "EDITION_TOOLBAR", "1" , "toolbar visibility" ));
@@ -103,7 +105,6 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "HIGHLIGHT_COLOR", "#FFFDD4", "paragraph highlight color" ) );
   
   /* multiple views */
-  XmlOptions::get().add( Option( "OPEN_MODE", "open in new window", "default mode to open new file. either \"open in new window\" or \"open in new view\"" ) );
   XmlOptions::get().add( Option( "ORIENTATION", "top/bottom", "default orientation for splitters. either \"left/right\" or \"top/bottom\"" ) );
   
   #ifdef WITH_ASPELL

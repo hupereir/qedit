@@ -29,6 +29,7 @@
 */
 
 #include <QButtonGroup>
+#include <QHeaderView>
 #include <QPainter>
 #include <QStylePainter>
 #include <QStyleOptionToolButton>
@@ -49,7 +50,7 @@ using namespace std;
 //_______________________________________________________________
 NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   QWidget( parent ),
-  Counter( "MainWindow" ),
+  Counter( "NavigationFrame" ),
   default_width_( -1 ),
   recent_files_( &files )
 {
@@ -77,13 +78,13 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   // files tree view
   session_files_list_ = new TreeView(0);  
   _sessionFilesList().setModel( &_sessionFilesModel() );  
-  _sessionFilesList().setMask( (1<<FileRecordModel::FILE) );
+  _sessionFilesList().setMaskOptionName( "SESSION_FILES_MASK" );
   _stack().addWidget( &_sessionFilesList() );
   
   // recent files tree view
   recent_files_list_ = new TreeView(0);  
   _recentFilesList().setModel( &_recentFilesModel() );  
-  _recentFilesList().setMask( (1<<FileRecordModel::FILE) );
+  _recentFilesList().setMaskOptionName( "RECENT_FILES_MASK" );
   _stack().addWidget( &_recentFilesList() );
   
   // file system list
@@ -127,20 +128,24 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   buttons_.insert( make_pair( button, &_fileSystemList() ) );
   v_layout->addStretch( 1 );
 
-  // connections  
+  // connections
   connect( &_sessionFilesModel(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSessionFilesSelection() ) );
   connect( &_sessionFilesModel(), SIGNAL( layoutChanged() ), SLOT( _restoreSessionFilesSelection() ) );
+  connect( &_sessionFilesModel(), SIGNAL( layoutChanged() ), &_sessionFilesList(), SLOT( updateMask() ) );
   connect( &_sessionFilesList(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _sessionFilesItemSelected( const QModelIndex& ) ) );
+  connect( _sessionFilesList().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSessionFilesSortMethod( int, Qt::SortOrder ) ) );
 
   connect( &_recentFilesModel(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeRecentFilesSelection() ) );
   connect( &_recentFilesModel(), SIGNAL( layoutChanged() ), SLOT( _restoreRecentFilesSelection() ) );
+  connect( &_recentFilesModel(), SIGNAL( layoutChanged() ), &_recentFilesList(), SLOT( updateMask() ) );
   connect( &_recentFilesList(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _recentFilesItemSelected( const QModelIndex& ) ) );
+  connect( _recentFilesList().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeRecentFilesSortMethod( int, Qt::SortOrder ) ) );
   
   //! configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   connect( qApp, SIGNAL( saveConfiguration() ), SLOT( _saveConfiguration() ) );
   connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
- _updateConfiguration();
+  _updateConfiguration();
   
 }
 
@@ -179,23 +184,29 @@ void NavigationFrame::showEvent( QShowEvent* )
 //______________________________________________________________________
 void NavigationFrame::_updateConfiguration( void )
 { 
-  Debug::Throw( "NavigationFrame::_updateConfiguration.\n" );
+  Debug::Throw( "NavigationFrame::_updateConfiguration.\n" ); 
   
-  // restore TreeView masks
-  if( XmlOptions::get().find( "SESSION_FILES_MASK" ) ) _sessionFilesList().setMask( XmlOptions::get().get<unsigned int>( "SESSION_FILES_MASK" ) );
-  if( XmlOptions::get().find( "RECENT_FILES_MASK" ) ) _recentFilesList().setMask( XmlOptions::get().get<unsigned int>( "RECENT_FILES_MASK" ) );
-  
+  // session files list sorting
+  if( XmlOptions::get().find( "SESSION_FILES_SORT_COLUMN" ) && XmlOptions::get().find( "SESSION_FILES_SORT_ORDER" ) )
+  { 
+    _sessionFilesList().sortByColumn( 
+      XmlOptions::get().get<int>( "RECENT_FILES_SORT_COLUMN" ), 
+      (Qt::SortOrder)(XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ) ); 
+  }
+
+  // recent files list sorting
+  if( XmlOptions::get().find( "RECENT_FILES_SORT_COLUMN" ) && XmlOptions::get().find( "RECENT_FILES_SORT_ORDER" ) )
+  { 
+    _recentFilesList().sortByColumn( 
+      XmlOptions::get().get<int>( "RECENT_FILES_SORT_COLUMN" ), 
+      (Qt::SortOrder)(XmlOptions::get().get<int>( "RECENT_FILES_SORT_ORDER" ) ) ); 
+  }
+
 }
 
 //______________________________________________________________________
 void NavigationFrame::_saveConfiguration( void )
-{ 
-
-  Debug::Throw( "NavigationFrame::_saveConfiguration.\n" );
-  XmlOptions::get().set<unsigned int>( "SESSION_FILES_MASK", _sessionFilesList().mask() );
-  XmlOptions::get().set<unsigned int>( "RECENT_FILES_MASK", _recentFilesList().mask() );
-
-}  
+{ Debug::Throw( "NavigationFrame::_saveConfiguration.\n" ); }  
 
 //______________________________________________________________________
 void NavigationFrame::_updateSessionFiles( void )
@@ -204,10 +215,7 @@ void NavigationFrame::_updateSessionFiles( void )
 
   // check visibility
   if( !( isVisible() && _stack().currentWidget() == &_sessionFilesList() ) ) return;
-  
-  // save mask
-  unsigned int mask( _sessionFilesList().mask() );
-  
+    
   // retrieve file records
   FileRecordModel::List files;
   WindowServer::FileRecordMap records( static_cast< Application*>( qApp )->windowServer().files() );
@@ -216,9 +224,8 @@ void NavigationFrame::_updateSessionFiles( void )
 
   // replace
   _sessionFilesModel().update( files );
- 
+  
   // restore mask and resize columns
-  _sessionFilesList().setMask( mask );
   _sessionFilesList().resizeColumns();
 
 }
@@ -231,16 +238,32 @@ void NavigationFrame::_updateRecentFiles( void )
   // check visibility
   if( !( isVisible() && _stack().currentWidget() == &_recentFilesList() ) ) return;
  
-  // save mask
-  unsigned int mask( _recentFilesList().mask() );
-    
   // update records
   _recentFilesModel().update( _recentFiles().records() );
   
   // restore mask and resize columns
-  _recentFilesList().setMask( mask );
   _recentFilesList().resizeColumns();
 
+}
+
+//______________________________________________________________________
+void NavigationFrame::_storeSessionFilesSortMethod( int column, Qt::SortOrder order )
+{
+  
+  Debug::Throw( "NavigationFrame::_storeSessionFilesSortMethod.\n" );
+  XmlOptions::get().set<int>( "SESSION_FILES_SORT_COLUMN", column );
+  XmlOptions::get().set<int>( "SESSION_FILES_SORT_ORDER", order );
+  
+}
+
+//______________________________________________________________________
+void NavigationFrame::_storeRecentFilesSortMethod( int column, Qt::SortOrder order )
+{
+  
+  Debug::Throw( "NavigationFrame::_storeRecentFilesSortMethod.\n" );
+  XmlOptions::get().set<int>( "RECENT_FILES_SORT_COLUMN", column );
+  XmlOptions::get().set<int>( "RECENT_FILES_SORT_ORDER", order );
+  
 }
 
 //______________________________________________________________________
@@ -270,6 +293,7 @@ void NavigationFrame::_installActions( void )
   addAction( visibility_action_ = new QAction( "Show &navigation panel", this ) );
   visibility_action_->setCheckable( true );
   visibility_action_->setChecked( true );
+  visibility_action_->setShortcut( Qt::Key_F5 );
   connect( visibility_action_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );
    
   // update session files

@@ -76,10 +76,11 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &mainwindow.openAction() );
 
   // open previous menu
-  RecentFilesMenu* recent_files_menu = new RecentFilesMenu( this, application.recentFiles() );
-  connect( recent_files_menu, SIGNAL( fileSelected( FileRecord ) ), &mainwindow, SLOT( open( FileRecord ) ) );
-  menu->addMenu( recent_files_menu );
+  recent_files_menu_ = new RecentFilesMenu( this, application.recentFiles() );
+  connect( recent_files_menu_, SIGNAL( fileSelected( FileRecord ) ), &mainwindow, SLOT( open( FileRecord ) ) );
+  menu->addMenu( recent_files_menu_ );
   
+  // additional actions
   menu->addSeparator();
   menu->addAction( &mainwindow.closeDisplayAction() );
   menu->addAction( &mainwindow.closeWindowAction() );
@@ -89,6 +90,8 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &mainwindow.revertToSaveAction() );
   menu->addSeparator();
 
+  // document class
+  document_class_action_group_ = new ActionGroup( this );
   document_class_menu_ = menu->addMenu( "Set &document class" );
   connect( document_class_menu_, SIGNAL( aboutToShow() ), SLOT( _updateDocumentClassMenu() ) );
   connect( document_class_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectClassName( QAction* ) ) );
@@ -97,6 +100,10 @@ Menu::Menu( QWidget* parent ):
 
   menu->addSeparator();
   menu->addAction( &application.closeAction() );
+
+  // recent files menu current-file needs to be updated prior to the menu to be shown
+  // this is performed every time the "file menu" is shown.
+  connect( menu, SIGNAL( aboutToShow() ), SLOT( _updateRecentFilesMenu() ) );
 
   // Edit menu
   edit_menu_ = addMenu( "&Edit" );
@@ -120,6 +127,7 @@ Menu::Menu( QWidget* parent ):
   connect( macro_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectMacro( QAction* ) ) );
     
   // windows
+  windows_action_group_ = new ActionGroup( this );
   windows_menu_ = addMenu( "&Windows" );
   connect( windows_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateWindowsMenu() ) );
   connect( windows_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectFile( QAction* ) ) );
@@ -155,18 +163,24 @@ Menu::~Menu( void )
 { Debug::Throw( "Menu::~Menu.\n" ); }
   
 //_______________________________________________
+void Menu::_updateRecentFilesMenu( void )
+{
+  Debug::Throw( "Menu::_updateRecentFilesMenu.\n" );
+  recent_files_menu_->setCurrentFile( static_cast<MainWindow*>( Menu::window() )->activeDisplay().file() );
+}
+
+//_______________________________________________
 void Menu::_updateDocumentClassMenu( void )
 {
   Debug::Throw( "Menu::_UpdateDocumentClassMenu.\n" );
-
   // clear menu
   document_class_menu_->clear();
-  document_classes_.clear();
+  document_class_actions_.clear();
   
   // retrieve current class from MainWindow
   MainWindow& window( *static_cast<MainWindow*>( Menu::window()) ); 
   const QString& class_name( window.activeDisplay().className() );
-  
+    
   // retrieve classes from DocumentClass manager
   const DocumentClassManager::ClassList& classes( static_cast<Application*>(qApp)->classManager().list() );
   for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
@@ -177,8 +191,10 @@ void Menu::_updateDocumentClassMenu( void )
     
     action->setCheckable( true );
     action->setChecked( iter->name() == class_name );
+    document_class_action_group_->addAction( action );
     
-    document_classes_.insert( make_pair( action, iter->name() ) );    
+    document_class_actions_.insert( make_pair( action, iter->name() ) );    
+  
   }
   
   return;
@@ -250,44 +266,9 @@ void Menu::_updatePreferenceMenu( void )
   preference_menu_->addAction( &display.dictionaryMenuAction() );
   preference_menu_->addAction( &display.filterMenuAction() );
   #endif
-  
-  // open mode menu
-  QMenu* open_mode_menu = new QMenu( "&Default open mode", this );
-  QActionGroup* group( new QActionGroup( open_mode_menu )  );
-  group->setExclusive( true );
-  
-  new_window_action_ = group->addAction( "Open in new &window" );
-  new_window_action_->setCheckable( true );
-  new_window_action_->setChecked( mainwindow.openMode() == TextView::NEW_WINDOW );
-  
-  new_display_action_ = group->addAction( "Open in new &display" );
-  new_display_action_->setCheckable( true );
-  new_display_action_->setChecked( mainwindow.openMode() == TextView::NEW_VIEW );
-  
-  open_mode_menu->addActions( group->actions() );
-  connect( open_mode_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOpenMode() ) );
-  
-  // orientation menu
-  QMenu* orientation_menu = new QMenu( "&Default layout orientation", this );
-  group = new QActionGroup( orientation_menu );
-  group->setExclusive( true );  
-
-  leftright_action_  = group->addAction( "&Left/Right" );
-  leftright_action_->setCheckable( true );
-  leftright_action_->setChecked( mainwindow.orientation() == Qt::Horizontal );
-  
-  topbottom_action_  = group->addAction( "&Top/Bottom" );
-  topbottom_action_->setCheckable( true );
-  topbottom_action_->setChecked( mainwindow.orientation() == Qt::Vertical );
-
-  orientation_menu->addActions( group->actions() );
-  connect( orientation_menu, SIGNAL( triggered( QAction* ) ), SLOT( _toggleOrientation() ) );
- 
-  preference_menu_->addMenu( open_mode_menu );
-  preference_menu_->addMenu( orientation_menu );
-  preference_menu_->addSeparator();
 
   // textdisplay actions
+  preference_menu_->addSeparator();
   preference_menu_->addAction( &mainwindow.navigationFrame().visibilityAction() );
   preference_menu_->addAction( &display.showLineNumberAction() );
   preference_menu_->addAction( &display.showBlockDelimiterAction() );
@@ -399,7 +380,7 @@ void Menu::_updateMacroMenu( void )
   
   // clear menu
   macro_menu_->clear();
-  macros_.clear();
+  macro_actions_.clear();
 
   // retrieve flags needed to set button state
   bool has_selection( display.textCursor().hasSelection() );
@@ -419,7 +400,7 @@ void Menu::_updateMacroMenu( void )
       macro_menu_->addAction( action );
             
       // insert in map
-      macros_.insert( make_pair( action, iter->name() ) );
+      macro_actions_.insert( make_pair( action, iter->name() ) );
       
     }
   }
@@ -444,7 +425,7 @@ void Menu::_updateWindowsMenu( void )
   BASE::KeySet<MainWindow> windows( &static_cast<Application*>(qApp)->windowServer() );
 
   // clear files map
-  files_.clear();
+  file_actions_.clear();
       
   bool first = true;
   set<File> files;
@@ -474,9 +455,10 @@ void Menu::_updateWindowsMenu( void )
       QAction* action = windows_menu_->addAction( file.c_str() );
       action->setCheckable( true );
       action->setChecked( current_file == file );
+      windows_action_group_->addAction( action );
       
       // insert in map for later callback.
-      files_.insert( make_pair( action, file ) );
+      file_actions_.insert( make_pair( action, file ) );
     
     }
     
@@ -488,8 +470,8 @@ void Menu::_updateWindowsMenu( void )
 void Menu::_selectClassName( QAction* action )
 {
   Debug::Throw( "Menu::_selectClassName.\n" );
-  std::map< QAction*, QString >::iterator iter = document_classes_.find( action );
-  if( iter != document_classes_.end() ) 
+  std::map< QAction*, QString >::iterator iter = document_class_actions_.find( action );
+  if( iter != document_class_actions_.end() ) 
   { emit documentClassSelected( iter->second ); }
   
   return;
@@ -502,8 +484,8 @@ void Menu::_selectMacro( QAction* action )
   Debug::Throw( "Menu::_SelectMacro.\n" );
   
   // try retrieve id in map
-  std::map< QAction*, QString >::iterator iter = macros_.find( action );
-  if( iter == macros_.end() ) return;
+  std::map< QAction*, QString >::iterator iter = macro_actions_.find( action );
+  if( iter == macro_actions_.end() ) return;
   
   // retrieve current Text Display
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
@@ -518,8 +500,8 @@ void Menu::_selectFile( QAction* action )
   Debug::Throw( "Menu::_selectFile.\n" );
   
   // try retrieve id in map
-  std::map<QAction*, File>::iterator iter = files_.find( action );
-  if( iter == files_.end() ) return;
+  std::map<QAction*, File>::iterator iter = file_actions_.find( action );
+  if( iter == file_actions_.end() ) return;
   
   // retrieve all mainwindows
   BASE::KeySet<MainWindow> windows( &static_cast< Application* >( qApp )->windowServer() );
@@ -543,26 +525,5 @@ void Menu::_selectFile( QAction* action )
   (*window_iter)->selectDisplay( iter->second );
   (*window_iter)->uniconify();
   
-  return;
-}
-
-//_______________________________________________
-void Menu::_toggleOpenMode( void )
-{
-  Debug::Throw("Menu::_toggleOpenMode.\n" );
-    
-  MainWindow& window( *static_cast<MainWindow*>( Menu::window()) );
-  window.setOpenMode( new_window_action_->isChecked() ? TextView::NEW_WINDOW : TextView::NEW_VIEW );
-  
-  return;
-}
-
-//_______________________________________________
-void Menu::_toggleOrientation( void )
-{
-  Debug::Throw("Menu::_toggleOrientation.\n" );
-
-  MainWindow& window( *static_cast<MainWindow*>( Menu::window()) );
-  window.setOrientation(  leftright_action_->isChecked() ? Qt::Horizontal : Qt::Vertical );
   return;
 }

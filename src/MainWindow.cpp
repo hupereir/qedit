@@ -77,8 +77,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   menu_( 0 ),
   statusbar_( 0 ),
   file_editor_( 0 ),
-  default_orientation_( Qt::Horizontal ),
-  default_open_mode_( TextView::NEW_WINDOW )
+  default_orientation_( Qt::Horizontal )
 {
 
   Debug::Throw( "MainWindow::MainWindow.\n" );
