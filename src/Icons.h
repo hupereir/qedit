@@ -40,6 +40,11 @@ namespace ICONS
 {
   
   static const std::string CLOSE = "fileclose.png"; 
+  
+  static const std::string DOCUMENT = "document.png"; 
+  static const std::string FOLDER = "folder.png";
+  static const std::string LINK = "link_overlay.png";
+  
   static const std::string NEW = "filenew.png"; 
   static const std::string SAVE = "filesave.png";
   static const std::string SAVE_AS = "filesaveas.png"; 
@@ -60,6 +65,11 @@ namespace ICONS
   static const std::string TAG = "bookmark.png";
   static const std::string UP = "up.png";
   static const std::string DOWN = "down.png";
+  
+  static const std::string PARENT_DIRECTORY = "parent_directory.png";
+  static const std::string PREVIOUS_DIRECTORY = "back.png";
+  static const std::string NEXT_DIRECTORY = "forward.png";
+  static const std::string HOME_DIRECTORY = "gohome.png";
 
   
 };

@@ -73,6 +73,7 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "DB_SIZE", "30" ) );
   XmlOptions::get().add( Option( "DEBUG_LEVEL", "0" , "debug verbosity level"));
 
+  XmlOptions::get().add( Option( "SHOW_HIDDEN_FILES", "1" ));
   XmlOptions::get().add( Option( "SHOW_BLOCK_DELIMITERS", "1" ));
   XmlOptions::get().add( Option( "TEXT_INDENT", "1" ));
   XmlOptions::get().add( Option( "TEXT_HIGHLIGHT", "1" ));

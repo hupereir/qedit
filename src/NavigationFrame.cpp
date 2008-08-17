@@ -30,9 +30,6 @@
 
 #include <QButtonGroup>
 #include <QHeaderView>
-#include <QPainter>
-#include <QStylePainter>
-#include <QStyleOptionToolButton>
 #include <QLayout>
 
 #include "Application.h"
@@ -41,8 +38,10 @@
 #include "Icons.h"
 #include "IconEngine.h"
 #include "FileList.h"
+#include "FileSystemFrame.h"
 #include "NavigationFrame.h"
 #include "TreeView.h"
+#include "Util.h"
 #include "WindowServer.h"
 
 using namespace std;
@@ -88,11 +87,9 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   _stack().addWidget( &_recentFilesList() );
   
   // file system list
-  file_system_list_ = new TreeView(0);
-  _fileSystemList().setModel( &_fileSystemModel() );
-  _fileSystemList().setRootIndex( _fileSystemModel().index( QDir::currentPath() ) );
-  _fileSystemList().setRootIsDecorated( true );
-  _stack().addWidget( &_fileSystemList() );
+  file_system_frame_ = new FileSystemFrame(0);
+  _fileSystemFrame().setPath( Util::workingDirectory() );
+  _stack().addWidget( &_fileSystemFrame() );
   
   // button group
   QButtonGroup* button_group = new QButtonGroup( this );
@@ -125,7 +122,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   button->rotate( CustomToolButton::COUNTERCLOCKWISE );
   button->setText( "&File system" );
   button_group->addButton( button );
-  buttons_.insert( make_pair( button, &_fileSystemList() ) );
+  buttons_.insert( make_pair( button, &_fileSystemFrame() ) );
   v_layout->addStretch( 1 );
 
   // connections

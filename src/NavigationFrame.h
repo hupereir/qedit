@@ -36,7 +36,6 @@
 #include <QAbstractButton>
 #include <QAction>
 #include <QCloseEvent>
-#include <QDirModel>
 #include <QPaintEvent>
 #include <QShowEvent>
 #include <QStackedWidget>
@@ -46,6 +45,7 @@
 #include "FileRecordModel.h"
 
 class FileList;
+class FileSystemFrame;
 class TreeView;
 
 //! editor windows navigator
@@ -127,7 +127,7 @@ class NavigationFrame: public QWidget, public Counter
   //! session files model
   FileRecordModel& _sessionFilesModel( void ) 
   { return session_files_model_; }
-  
+    
   //@}
   
   //!@name recent files
@@ -157,16 +157,12 @@ class NavigationFrame: public QWidget, public Counter
   //@{
   
   //! file system list
-  TreeView& _fileSystemList( void )
+  FileSystemFrame& _fileSystemFrame( void )
   { 
-    assert( file_system_list_ );
-    return *file_system_list_;
+    assert( file_system_frame_ );
+    return *file_system_frame_;
   }
-  
-  //! file sytem model
-  QDirModel& _fileSystemModel( void )
-  { return file_system_model_; }
-  
+    
   //@}
   
   private slots:
@@ -277,12 +273,8 @@ class NavigationFrame: public QWidget, public Counter
   
   //!@name file system
   //@{
-  
-  //! file system model
-  QDirModel file_system_model_;
-  
-  //! file system view
-  TreeView* file_system_list_;
+
+  FileSystemFrame* file_system_frame_;
   
   //@}
   

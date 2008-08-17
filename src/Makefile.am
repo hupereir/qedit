@@ -84,6 +84,9 @@ noinst_HEADERS = \
   FileRecordProperties.h \
   FileRemovedDialog.h \
   FileSelectionDialog.h \
+  FileSystemFrame.h \
+  FileSystemHistory.h \
+  FileSystemModel.h \
   HelpText.h \
   HighlightBlockData.h \
   HighlightBlockFlags.h \
@@ -117,6 +120,9 @@ libqedit_a_SOURCES = \
   FileModifiedDialog.cpp \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \
+  FileSystemFrame.cpp \
+  FileSystemHistory.cpp \
+  FileSystemModel.cpp \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HtmlUtil.cpp \
@@ -144,6 +150,8 @@ nodist_libqedit_a_SOURCES = \
   moc_FileModifiedDialog.cpp \
   moc_FileRemovedDialog.cpp \
   moc_FileSelectionDialog.cpp \
+  moc_FileSystemFrame.cpp \
+  moc_FileSystemModel.cpp \
   moc_MainWindow.cpp \
   moc_Menu.cpp \
   moc_NavigationFrame.cpp \

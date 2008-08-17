@@ -40,7 +40,8 @@ namespace FileRecordProperties
   static const std::string CLASS_NAME = "class_name"; 
   static const std::string FILTER = "filter";
   static const std::string DICTIONARY = "dictionary";
-  
+  static const std::string SIZE = "size";
+  static const std::string TYPE = "type";
 };
 
 #endif
