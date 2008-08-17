@@ -35,6 +35,7 @@
 #include "Application.h"
 #include "Debug.h"
 #include "FileList.h"
+#include "FileSystemFrame.h"
 #include "Icons.h"
 #include "IconEngine.h"
 #include "MainWindow.h"
@@ -77,6 +78,7 @@ MainWindow& WindowServer::newMainWindow( void )
   connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( contentsChanged() ), &out->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
   connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( validFilesChecked() ), &out->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
   connect( &out->navigationFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( open( FileRecord ) ) );
+  connect( &out->navigationFrame().fileSystemFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( open( FileRecord ) ) );
 
   return *out;
 }

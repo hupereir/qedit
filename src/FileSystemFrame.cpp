@@ -62,24 +62,26 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
   // file list
   layout->addWidget( list_ = new TreeView( this ), 1);
-  list().setModel( &model_ );
-  list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
-  list().setMaskOptionName( "FILE_SYSTEM_LIST_MASK" );
+  _list().setModel( &_model() );
+  _list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
+  _list().setMaskOptionName( "FILE_SYSTEM_LIST_MASK" );
     
   // list menu  
-  list().menu().addAction( &previousDirectoryAction() );
-  list().menu().addAction( &nextDirectoryAction() );
-  list().menu().addAction( &parentDirectoryAction() );
-  list().menu().addAction( &homeDirectoryAction() );
+  _list().menu().addAction( &previousDirectoryAction() );
+  _list().menu().addAction( &nextDirectoryAction() );
+  _list().menu().addAction( &parentDirectoryAction() );
+  _list().menu().addAction( &homeDirectoryAction() );
 
-  list().menu().addSeparator();
-  list().menu().addAction( &hiddenFilesAction() );
+  _list().menu().addSeparator();
+  _list().menu().addAction( &hiddenFilesAction() );
+
+  connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
   
   _updateNavigationActions();
 
-  connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
-  connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
-  connect( &model_, SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
+  connect( &_model(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
+  connect( &_model(), SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
+  connect( &_model(), SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
 
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
@@ -95,7 +97,9 @@ void FileSystemFrame::setPath( File path )
 
   assert( path.isDirectory() );
   path_ = path;
+  history_.add( path );
   _reload();
+  _updateNavigationActions();
   
 }
   
@@ -104,7 +108,7 @@ void FileSystemFrame::clear()
 {
 
   Debug::Throw( "FileSystemFrame::Clear.\n" );
-  model_.clear();
+  _model().clear();
 
 }
 
@@ -116,6 +120,38 @@ void FileSystemFrame::enterEvent( QEvent* event )
   reload();
   QWidget::enterEvent( event );
   return;
+  
+}
+
+//______________________________________________________
+void FileSystemFrame::_itemActivated( const QModelIndex& index )
+{
+  Debug::Throw( "FileSystemFrame::_itemActivated.\n" );
+
+  if( !index.isValid() ) return;
+
+  // retrieve file
+  FileRecord record( model_.get( index ) );
+  unsigned int type( record.property<unsigned int>( FileRecordProperties::TYPE ) );
+  if( type & FileSystemModel::FOLDER )
+  {
+
+    // make full name
+    File path( record.file() );
+    path = path.addPath( FileSystemFrame::path() );
+    setPath( path );
+
+  } else if( type & FileSystemModel::NAVIGATOR ) { 
+    
+    parentDirectoryAction().trigger();
+    
+  } else {
+    
+    record.setFile( record.file().addPath( path() ) );
+    Debug::Throw() << "FileSystemFrame::_itemActivated - file: " << record.file() << endl;
+    emit fileSelected( record );
+  
+  }
   
 }
 
@@ -194,8 +230,8 @@ void FileSystemFrame::_reload( void )
   }
 
   // update model and list
-  model_.update( new_files );
-  list().resizeColumnToContents( FileSystemModel::FILE );
+  _model().update( new_files );
+  _list().resizeColumnToContents( FileSystemModel::FILE );
   
 }
 
@@ -205,7 +241,6 @@ void FileSystemFrame::_previousDirectory( void )
   Debug::Throw( "FileSystemFrame::_previousDirectory.\n" );
   if( !history_.previousAvailable() ) return;
   setPath( history_.previous() );
-  emit fileSelected( path() );
 }
 
 //______________________________________________________
@@ -214,7 +249,6 @@ void FileSystemFrame::_nextDirectory( void )
   Debug::Throw( "FileSystemFrame::_nextDirectory.\n" );
   if( !history_.nextAvailable() ) return;
   setPath( history_.next() );
-  emit fileSelected( path() );
 }
 
 //______________________________________________________
@@ -225,7 +259,6 @@ void FileSystemFrame::_parentDirectory( void )
   QDir dir( path().c_str() );
   dir.cdUp();
   setPath( File( qPrintable( dir.absolutePath() ) ) );
-  emit fileSelected( path() );
 
 }
 
@@ -242,15 +275,15 @@ void FileSystemFrame::_storeSelection( void )
 {
     
   // clear
-  model_.clearSelectedIndexes();
+  _model().clearSelectedIndexes();
   
   // retrieve selected indexes in list
-  QModelIndexList selected_indexes( list().selectionModel()->selectedRows() );
+  QModelIndexList selected_indexes( _list().selectionModel()->selectedRows() );
   for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
   { 
     // check column
     if( !iter->column() == 0 ) continue;
-    model_.setIndexSelected( *iter, true ); 
+    _model().setIndexSelected( *iter, true ); 
   }
   
   return;
@@ -262,13 +295,13 @@ void FileSystemFrame::_restoreSelection( void )
 {
 
   // retrieve indexes
-  QModelIndexList selected_indexes( model_.selectedIndexes() );
-  if( selected_indexes.empty() ) list().selectionModel()->clear();
+  QModelIndexList selected_indexes( _model().selectedIndexes() );
+  if( selected_indexes.empty() ) _list().selectionModel()->clear();
   else {
     
-    list().selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+    _list().selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
     for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
-    { list().selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+    { _list().selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
   
   }
   

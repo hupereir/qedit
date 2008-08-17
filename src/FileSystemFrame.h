@@ -65,10 +65,6 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! clear list, add navigator button
   void clear();
-  
-  //! list
-  TreeView& list( void ) const
-  { return *list_; }
     
   //!@name actions
   //@{
@@ -96,12 +92,9 @@ class FileSystemFrame: public QWidget, public Counter
   //@}
   
   signals:
- 
-  //! selection changed
-  void selectionChanged( void );
-  
-  //! file selected. Update RevisionFrame. Do not checkout revisions
-  void fileSelected( File );
+   
+  //! file selected
+  void fileSelected( FileRecord );
    
   public slots:
   
@@ -116,6 +109,11 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! enter event
   virtual void enterEvent( QEvent* );
+  
+  protected slots:
+  
+  //! item activated
+  void _itemActivated( const QModelIndex& );
   
   private slots:
     
@@ -150,6 +148,17 @@ class FileSystemFrame: public QWidget, public Counter
   void _restoreSelection( void );
   
   private:
+  
+  //! list
+  FileSystemModel& _model( void )
+  { return model_; }
+  
+  //! list
+  TreeView& _list( void ) const
+  {
+    assert( list_ );
+    return *list_; 
+  }
   
   //! install actions
   void _installActions( void );

@@ -77,6 +77,18 @@ class NavigationFrame: public QWidget, public Counter
   //! size
   QSize sizeHint( void ) const;  
 
+  //!@name file system
+  //@{
+  
+  //! file system list
+  FileSystemFrame& fileSystemFrame( void )
+  { 
+    assert( file_system_frame_ );
+    return *file_system_frame_;
+  }
+    
+  //@}
+
   //!@name actions
   //@{
   
@@ -152,19 +164,7 @@ class NavigationFrame: public QWidget, public Counter
   { return recent_files_model_; }  
   
   //@}
-  
-  //!@name file system
-  //@{
-  
-  //! file system list
-  FileSystemFrame& _fileSystemFrame( void )
-  { 
-    assert( file_system_frame_ );
-    return *file_system_frame_;
-  }
     
-  //@}
-  
   private slots:
 
   //! update configuration

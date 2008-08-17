@@ -88,8 +88,8 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   
   // file system list
   file_system_frame_ = new FileSystemFrame(0);
-  _fileSystemFrame().setPath( Util::workingDirectory() );
-  _stack().addWidget( &_fileSystemFrame() );
+  fileSystemFrame().setPath( Util::workingDirectory() );
+  _stack().addWidget( &fileSystemFrame() );
   
   // button group
   QButtonGroup* button_group = new QButtonGroup( this );
@@ -122,7 +122,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   button->rotate( CustomToolButton::COUNTERCLOCKWISE );
   button->setText( "&File system" );
   button_group->addButton( button );
-  buttons_.insert( make_pair( button, &_fileSystemFrame() ) );
+  buttons_.insert( make_pair( button, &fileSystemFrame() ) );
   v_layout->addStretch( 1 );
 
   // connections

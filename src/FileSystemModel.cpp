@@ -88,6 +88,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
   
   // retrieve associated file info
   const FileRecord& record( get(index) );
+  unsigned int type( record.property<unsigned int>( FileRecordProperties::TYPE ) );
   
   // return text associated to file and column
   if( role == Qt::DisplayRole ) {
@@ -114,8 +115,17 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
         return what.str().c_str();
       }
       
-      case SIZE: return QString( record.property( FileRecordProperties::SIZE ).c_str() );
-      case TIME: return QString( TimeStamp( record.time() ).string().c_str() );
+      case SIZE: 
+      {
+        if( type | DOCUMENT ) return QString( record.property( FileRecordProperties::SIZE ).c_str() );
+        else return QVariant();
+      }
+      
+      case TIME: 
+      {
+        if( type | DOCUMENT ) return QString( TimeStamp( record.time() ).string().c_str() );
+        else return QVariant();
+      }
       
       default:
       return QVariant();
@@ -124,7 +134,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
     
   } else if( role == Qt::DecorationRole && index.column() == FILE ) {
     
-    return icons_[record.property<unsigned int>( FileRecordProperties::TYPE )];
+    return icons_[type];
     
   }
   
@@ -171,19 +181,30 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
 {
   
   if( order_ == Qt::AscendingOrder ) swap( first, second );
+  unsigned int first_type( first.property<unsigned int>( FileRecordProperties::TYPE ) );
+  unsigned int second_type( second.property<unsigned int>( FileRecordProperties::TYPE ) );
+  
+  if( first_type & NAVIGATOR ) return true;
+  if( second_type & NAVIGATOR ) return false;
+  if( (first_type & FOLDER) && (second_type & DOCUMENT ) ) return true;
+  if( (second_type & FOLDER) && (first_type & DOCUMENT ) ) return false;
   
   switch( type_ )
   {
-
+    
     case FILE: return first.file().localName() < second.file().localName();
-    case TIME: return first.time() < second.time();
-    default: 
+    case TIME: return (first.time() != second.time() ) ? first.time() < second.time() : first.file().localName() < second.file().localName();
+    case SIZE: 
     {
-      string name( qPrintable( column_titles_[type_] ) );
-      return first.property( name ) < second.property( name );
+      long int first_size( first.property<long int>( FileRecordProperties::SIZE ) );
+      long int second_size( second.property<long int>( FileRecordProperties::SIZE ) );
+      return (first_size != second_size ) ? first_size < second_size : first.file().localName() < second.file().localName();
     }
+    
+    default: return true;
+    
   }
- 
+  
 }
 
 //_____________________________________________________________________
