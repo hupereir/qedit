@@ -71,34 +71,41 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   v_layout->setMargin(0);
   h_layout->addLayout( v_layout, 0 );
     
-  // create stack widget
+  // stack widget
   h_layout->addWidget( stack_ = new QStackedWidget( this ) );
   
-  // create session files tree view
+  // files tree view
   session_files_list_ = new TreeView(0);  
   _sessionFilesList().setModel( &_sessionFilesModel() );  
   _sessionFilesList().setMask( (1<<FileRecordModel::FILE) );
-  stack_->addWidget( &_sessionFilesList() );
+  _stack().addWidget( &_sessionFilesList() );
   
-  // create recent files tree view
+  // recent files tree view
   recent_files_list_ = new TreeView(0);  
   _recentFilesList().setModel( &_recentFilesModel() );  
   _recentFilesList().setMask( (1<<FileRecordModel::FILE) );
-  stack_->addWidget( &_recentFilesList() );
+  _stack().addWidget( &_recentFilesList() );
   
-  // create button group
+  // file system list
+  file_system_list_ = new TreeView(0);
+  _fileSystemList().setModel( &_fileSystemModel() );
+  _fileSystemList().setRootIndex( _fileSystemModel().index( QDir::currentPath() ) );
+  _fileSystemList().setRootIsDecorated( true );
+  _stack().addWidget( &_fileSystemList() );
+  
+  // button group
   QButtonGroup* button_group = new QButtonGroup( this );
   connect( button_group, SIGNAL( buttonClicked( QAbstractButton* ) ), SLOT( _display( QAbstractButton* ) ) );
   button_group->setExclusive( true );
 
-  // create matching buttons
+  // matching buttons
   CustomToolButton* button;
   
   // session files
   v_layout->addWidget( button = new CustomToolButton( this ) );
   button->setCheckable( true );
   button->setChecked( true );
-  button->setRotation( CustomToolButton::COUNTERCLOCKWISE );
+  button->rotate( CustomToolButton::COUNTERCLOCKWISE );
   button->setText( "&Session files" );
   button_group->addButton( button );
   buttons_.insert( make_pair( button, &_sessionFilesList() ) );
@@ -106,10 +113,18 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   // recent files
   v_layout->addWidget( button = new CustomToolButton( this ) );
   button->setCheckable( true );
-  button->setRotation( CustomToolButton::COUNTERCLOCKWISE );
+  button->rotate( CustomToolButton::COUNTERCLOCKWISE );
   button->setText( "&Recent files" );
   button_group->addButton( button );
   buttons_.insert( make_pair( button, &_recentFilesList() ) );
+
+  // file system
+  v_layout->addWidget( button = new CustomToolButton( this ) );
+  button->setCheckable( true );
+  button->rotate( CustomToolButton::COUNTERCLOCKWISE );
+  button->setText( "&File system" );
+  button_group->addButton( button );
+  buttons_.insert( make_pair( button, &_fileSystemList() ) );
   v_layout->addStretch( 1 );
 
   // connections  

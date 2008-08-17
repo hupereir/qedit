@@ -316,6 +316,9 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! enter event handler
   virtual void enterEvent( QEvent* );
       
+  //! timer event
+  virtual void timerEvent( QTimerEvent* );
+  
   private slots:
   
   //! update configuration
@@ -328,7 +331,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   void _toggleNavigationFrame( bool );
   
   //! splitter moved
-  void _splitterMoved( int, int );
+  void _splitterMoved( void );
   
   //! new file
   void _newFile( void )
@@ -547,6 +550,9 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! default open mode
   TextView::OpenMode default_open_mode_;
     
+  //! timer
+  QBasicTimer resize_timer_;
+  
 };
 
 #endif

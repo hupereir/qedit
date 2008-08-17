@@ -36,6 +36,7 @@
 #include <QAbstractButton>
 #include <QAction>
 #include <QCloseEvent>
+#include <QDirModel>
 #include <QPaintEvent>
 #include <QShowEvent>
 #include <QStackedWidget>
@@ -113,7 +114,7 @@ class NavigationFrame: public QWidget, public Counter
     return *stack_;
   }
   
-  //! @name session files
+  //!@name session files
   //@{
   
   //! session file list
@@ -129,6 +130,9 @@ class NavigationFrame: public QWidget, public Counter
   
   //@}
   
+  //!@name recent files
+  //@{
+
   //! recent files
   FileList& _recentFiles( void ) const
   { 
@@ -146,6 +150,24 @@ class NavigationFrame: public QWidget, public Counter
   //! recent files model
   FileRecordModel& _recentFilesModel( void ) 
   { return recent_files_model_; }  
+  
+  //@}
+  
+  //!@name file system
+  //@{
+  
+  //! file system list
+  TreeView& _fileSystemList( void )
+  { 
+    assert( file_system_list_ );
+    return *file_system_list_;
+  }
+  
+  //! file sytem model
+  QDirModel& _fileSystemModel( void )
+  { return file_system_model_; }
+  
+  //@}
   
   private slots:
 
@@ -222,11 +244,19 @@ class NavigationFrame: public QWidget, public Counter
   //! map widget to action in the toolbar
   ButtonMap buttons_;
 
+  //!@name session files
+  //@{
+  
   //! session files model
   FileRecordModel session_files_model_;
   
   //! session files list
   TreeView* session_files_list_;
+  
+  //@}
+  
+  //!@name recent files
+  //@{
   
   //! recent files
   FileList* recent_files_;
@@ -237,6 +267,19 @@ class NavigationFrame: public QWidget, public Counter
   //! recent files list
   TreeView* recent_files_list_;
       
+  //@}
+  
+  //!@name file system
+  //@{
+  
+  //! file system model
+  QDirModel file_system_model_;
+  
+  //! file system view
+  TreeView* file_system_list_;
+  
+  //@}
+  
   //!@name actions
   //@{
   

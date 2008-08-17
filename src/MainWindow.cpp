@@ -113,7 +113,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   splitter_->setStretchFactor( 0, 0 );
   splitter_->setStretchFactor( 1, 1 );
   
-  connect( splitter_, SIGNAL( splitterMoved( int, int ) ), SLOT( _splitterMoved( int, int ) ) );
+  connect( splitter_, SIGNAL( splitterMoved( int, int ) ), SLOT( _splitterMoved( void ) ) );
   
   // state frame
   setStatusBar( statusbar_ = new StatusBar( this ) );
@@ -503,6 +503,24 @@ void MainWindow::enterEvent( QEvent* e )
 
 }
 
+//_______________________________________________________
+void MainWindow::timerEvent( QTimerEvent* event )
+{
+
+  if( event->timerId() == resize_timer_.timerId() )
+  {
+    
+    // stop timer
+    resize_timer_.stop();
+    
+    // save size
+    if( navigationFrame().visibilityAction().isChecked() )
+    { XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", navigationFrame().width() ); }
+  
+  } else return CustomMainWindow::timerEvent( event );
+  
+}
+
 //________________________________________________________
 void MainWindow::_updateConfiguration( void )
 {
@@ -540,10 +558,10 @@ void MainWindow::_toggleNavigationFrame( bool state )
 }
 
 //________________________________________________________
-void MainWindow::_splitterMoved( int position, int index )
+void MainWindow::_splitterMoved( )
 {
   Debug::Throw( "MainWindow::_splitterMoved.\n" );
-  XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", position ); 
+  resize_timer_.start( 200, this );  
 }
 
 //_______________________________________________________

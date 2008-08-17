@@ -151,7 +151,28 @@ static const char* HelpText[] = {
 
   //_________________________________________________________
   "Command line",
-  "",
+  "<h2>Command Line</h2>"
+  "<p>QEdit usage is the following: </p>"
+  "<p>qedit [options] [file1] [file2] [...]</p>"
+  "<p>With [options] being one or several of the following:</p>"
+  "<ul>"
+  "<li><i>--help</i> displays this help and exit</li>"
+  "<li><i>--tabbed</i> opens files in same window</li>"
+  "<li><i>--diff</i> opens files in same window and perform diff</li>"
+  "<li><i>--autospell</i> switch autospell on for all files</li>"
+  "<li><i>--filter \"filter name\"</i> select filter for autospell</li>"
+  "<li><i>--dictionary \"dictionary name\"</i> select dictionary for autospell</li>"
+  "<li><i>--close</i> close displays matching file names and exit</li>"
+  "<li><i>--replace</i> replace existing instance with new one.</li>"
+  "<li><i>--no-server</i> ignore server mode. runs new application instance.</li>"
+  "<li><i>--abort<i > exit existing instance.</li>"
+  "</ul>"
+  "<p>and [file1] [file2] [...] the list of files to be opened. </p>"
+  "<p><b>Remarks:</b></p>"
+  "<ul>"
+  "<li>When no files are specified, a blank window is opened. "
+  "<li>Unless the server mode is disabled, opening a file that was already oppened during the same session simply raises the corresponding window.</li>"
+  "</ul>",
 
   //_________________________________________________________
   "Contact",
