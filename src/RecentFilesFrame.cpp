@@ -145,8 +145,8 @@ void RecentFilesFrame::_update( void )
   _list().resizeColumns();
   
   // clean action enability
-  _cleanAction().setEnabled( _recentFiles().hasInvalidFiles() );
-
+  _cleanAction().setEnabled( _recentFiles().hasInvalidFiles() || _recentFiles().hasDuplicatedFiles() );
+  
 }
 
 //______________________________________________________________________
@@ -166,8 +166,9 @@ void RecentFilesFrame::_clean( void )
   
   Debug::Throw( "RecentFilesFrame:_clean.\n" ); 
   if( !_recentFiles().check() && !QtUtil::questionDialog( this,"clear list ?" ) ) return;
-  else if( _recentFiles().check() && !QtUtil::questionDialog( this,"Remove invalid files from list ?" ) ) return;
+  else if( _recentFiles().check() && !QtUtil::questionDialog( this,"Remove invalid/duplicated files from list ?" ) ) return;
   _recentFiles().clean();
+  _recentFiles().clearDuplicates();
   _update();
   
 }
