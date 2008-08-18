@@ -36,11 +36,14 @@
 #include <QIcon>
 #include <QTimer>
 #include <QWidget>
+#include <QFileSystemWatcher>
 
 #include "File.h"
 #include "FileSystemModel.h"
 #include "FileSystemHistory.h"
+#include "FileSystemThread.h"
 
+class CustomComboBox;
 class TreeView;
 
 //! customized ListView for file/directory navigation
@@ -72,7 +75,11 @@ class FileSystemFrame: public QWidget, public Counter
   //! hidden files
   QAction& hiddenFilesAction( void ) const
   { return *hidden_files_action_; }
-    
+  
+  //! reload action
+  QAction& reloadAction( void ) const
+  { return *reload_action_; }
+  
   //! previous directory
   QAction& previousDirectoryAction( void ) const
   { return *previous_directory_action_; }
@@ -100,23 +107,23 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! base directory
   void setPath( File );
-    
-  //! reload (without changing the path)
-  void reload( void )
-  { _reload(); }
-  
+   
   protected:
   
-  //! enter event
-  virtual void enterEvent( QEvent* );
+  //! custom event, used to retrieve file validity check event
+  void customEvent( QEvent* );
   
-  protected slots:
+  //! enter event
+  // virtual void enterEvent( QEvent* );
+  
+  private slots:
   
   //! item activated
   void _itemActivated( const QModelIndex& );
   
-  private slots:
-    
+  //! show hidden files
+  void _toggleShowHiddenFiles( bool state );
+  
   //! update configuration
   void _updateConfiguration( void );
   
@@ -125,10 +132,19 @@ class FileSystemFrame: public QWidget, public Counter
      
   //! update navigation actions based on current location and history
   void _updateNavigationActions( void );
+
+  //! update path
+  void _updatePath( void );
+  
+  //! update path
+  void _updatePath( const QString& );
   
   //! reload directory
+  void _reload( const QString& );
+   
+  //! reload directory
   void _reload( void );
-  
+ 
   //! previous directory
   void _previousDirectory( void );
   
@@ -149,7 +165,14 @@ class FileSystemFrame: public QWidget, public Counter
   
   private:
   
-  //! list
+  //! path comboBox
+  CustomComboBox& _comboBox( void ) const 
+  { 
+    assert( path_combobox_ );
+    return *path_combobox_;
+  }
+  
+  //! model
   FileSystemModel& _model( void )
   { return model_; }
   
@@ -162,6 +185,9 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! install actions
   void _installActions( void );
+  
+  //! path comboBox
+  CustomComboBox* path_combobox_;
   
   //! model
   FileSystemModel model_;
@@ -177,6 +203,9 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! show/hide hidden files
   QAction* hidden_files_action_;
+  
+  //! reload action
+  QAction* reload_action_;
   
   //! previous directory action
   QAction* previous_directory_action_;
@@ -194,7 +223,13 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! path naviagtion history
   FileSystemHistory history_;
-    
+  
+  //! file system watcher
+  QFileSystemWatcher file_system_watcher_;
+  
+  //! thread to list files
+  FileSystemThread thread_;
+
 };
 
 #endif

@@ -87,6 +87,7 @@ noinst_HEADERS = \
   FileSystemFrame.h \
   FileSystemHistory.h \
   FileSystemModel.h \
+  FileSystemThread.h \
   HelpText.h \
   HighlightBlockData.h \
   HighlightBlockFlags.h \
@@ -123,6 +124,7 @@ libqedit_a_SOURCES = \
   FileSystemFrame.cpp \
   FileSystemHistory.cpp \
   FileSystemModel.cpp \
+  FileSystemThread.cpp \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HtmlUtil.cpp \

@@ -104,6 +104,10 @@ MainWindow::MainWindow(  QWidget* parent ):
   connect( &navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleNavigationFrame( bool ) ) );
   splitter_->addWidget( &navigationFrame() );
   
+  // need to add navigationFrame visibility action to this list 
+  // to enable shortcut event if the frame is hidden
+  addAction( &navigationFrame().visibilityAction() );
+  
   // insert main view
   setActiveView( _newTextView(0) );
   splitter_->addWidget( &activeView() );

@@ -178,6 +178,9 @@ class NavigationFrame: public QWidget, public Counter
   
   //! update recent files
   void _updateRecentFiles( void );
+  
+  //! update recent files
+  void _updateFileSystemFiles( void );
 
   //! sessionFilesItem selected
   void _sessionFilesItemSelected( const QModelIndex& index )
@@ -223,6 +226,7 @@ class NavigationFrame: public QWidget, public Counter
   {
     _updateSessionFiles();
     _updateRecentFiles();
+    _updateFileSystemFiles();
   }
   
   //! item selected

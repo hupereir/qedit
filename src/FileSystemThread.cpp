@@ -1,0 +1,88 @@
+// $Id$
+
+/******************************************************************************
+*                         
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>             
+*                         
+* This is free software; you can redistribute it and/or modify it under the    
+* terms of the GNU General Public License as published by the Free Software    
+* Foundation; either version 2 of the License, or (at your option) any later   
+* version.                             
+*                          
+* This software is distributed in the hope that it will be useful, but WITHOUT 
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License        
+* for more details.                     
+*                          
+* You should have received a copy of the GNU General Public License along with 
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple     
+* Place, Suite 330, Boston, MA 02111-1307 USA                           
+*                         
+*                         
+*******************************************************************************/
+
+/*!
+  \file FileSystemThread.cpp
+  \brief check validity of a set of files
+  \author  Hugo Pereira
+  \version $Revision$
+  \date $Date$
+*/
+
+#include <QApplication>
+#include <QDateTime>
+#include <QDir>
+
+#include "FileSystemThread.h"
+#include "FileRecordProperties.h"
+
+using namespace std;
+
+//______________________________________________________
+void FileSystemThread::run( void )
+{
+
+  // loop over directory contents
+  QDir dir( path_.c_str() );
+  QDir::Filters filter = QDir::AllEntries | QDir::NoDotAndDotDot;
+  if( show_hidden_files_ ) filter |= QDir::Hidden;
+  dir.setFilter( filter );
+  QFileInfoList entries( dir.entryInfoList() );
+  FileSystemModel::List new_files;
+  
+  // add navigator
+  FileRecord record( File("..") );
+  record.addProperty( FileRecordProperties::TYPE, Str().assign<unsigned int>( FileSystemModel::NAVIGATOR ) );
+  new_files.push_back( record );
+  
+  // loop over entries and add
+  for( QFileInfoList::iterator iter = entries.begin(); iter != entries.end(); iter++ )
+  {
+    
+    if( iter->fileName() == ".." || iter->fileName() == "." ) continue;
+
+    // create file record
+    FileRecord record( File( qPrintable( iter->fileName() ) ), TimeStamp( iter->lastModified().toTime_t() ) );
+    
+    // assign size
+    record.addProperty( FileRecordProperties::SIZE, Str().assign<long int>( iter->size() ) );
+    
+    // assign type
+    unsigned int type = 0;
+    if( iter->isDir() ) type |= FileSystemModel::FOLDER;
+    else type |= FileSystemModel::DOCUMENT;
+    
+    if( iter->isSymLink() ) type |= FileSystemModel::LINK;
+    
+    record.addProperty( FileRecordProperties::TYPE, Str().assign<unsigned int>( type ) );
+    
+    // add to model
+    new_files.push_back( record );
+    
+  }
+
+  qApp->postEvent( reciever_, new FileSystemEvent( path_, new_files ) );  
+
+  return;
+  
+}

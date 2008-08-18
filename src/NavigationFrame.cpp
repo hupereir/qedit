@@ -88,7 +88,6 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   
   // file system list
   file_system_frame_ = new FileSystemFrame(0);
-  fileSystemFrame().setPath( Util::workingDirectory() );
   _stack().addWidget( &fileSystemFrame() );
   
   // button group
@@ -241,6 +240,17 @@ void NavigationFrame::_updateRecentFiles( void )
   // restore mask and resize columns
   _recentFilesList().resizeColumns();
 
+}
+
+//______________________________________________________________________
+void NavigationFrame::_updateFileSystemFiles( void )
+{
+   Debug::Throw( "NavigationFrame:_updateFileSystemFiles.\n" ); 
+ 
+  // check visibility
+  if( !( isVisible() && _stack().currentWidget() == &fileSystemFrame() ) ) return;
+  if( fileSystemFrame().path().empty() ) fileSystemFrame().setPath( Util::workingDirectory() );
+  
 }
 
 //______________________________________________________________________
