@@ -99,7 +99,9 @@ noinst_HEADERS = \
   NewFileDialog.h \
   ParenthesisHighlight.h \
   PrintDialog.h \
+  RecentFilesFrame.h \
   SaveAllDialog.h \
+  SessionFilesFrame.h \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
@@ -134,7 +136,9 @@ libqedit_a_SOURCES = \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
+  RecentFilesFrame.cpp \
   SaveAllDialog.cpp \
+  SessionFilesFrame.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp \
@@ -160,6 +164,8 @@ nodist_libqedit_a_SOURCES = \
   moc_NewFileDialog.cpp \
   moc_ParenthesisHighlight.cpp \
   moc_PrintDialog.cpp \
+  moc_RecentFilesFrame.cpp \
+  moc_SessionFilesFrame.cpp \
   moc_TextDisplay.cpp \
   moc_TextHighlight.cpp \
   moc_TextIndent.cpp \

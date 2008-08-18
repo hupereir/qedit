@@ -68,38 +68,9 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! clear list, add navigator button
   void clear();
-    
-  //!@name actions
-  //@{
-  
-  //! hidden files
-  QAction& hiddenFilesAction( void ) const
-  { return *hidden_files_action_; }
-  
-  //! reload action
-  QAction& reloadAction( void ) const
-  { return *reload_action_; }
-  
-  //! previous directory
-  QAction& previousDirectoryAction( void ) const
-  { return *previous_directory_action_; }
-  
-  //! next directory
-  QAction& nextDirectoryAction( void ) const
-  { return *next_directory_action_; }
-  
-  // directory above 
-  QAction& parentDirectoryAction( void ) const
-  { return *parent_directory_action_; }
- 
-  // home directory 
-  QAction& homeDirectoryAction( void ) const
-  { return *home_directory_action_; } 
-
-  //@}
-  
+      
   signals:
-   
+    
   //! file selected
   void fileSelected( FileRecord );
    
@@ -109,10 +80,13 @@ class FileSystemFrame: public QWidget, public Counter
   void setPath( File );
    
   protected:
-  
+   
   //! custom event, used to retrieve file validity check event
   void customEvent( QEvent* );
-  
+ 
+  //! show event
+  virtual void showEvent( QShowEvent* );
+
   private slots:
   
   //! item activated
@@ -136,12 +110,15 @@ class FileSystemFrame: public QWidget, public Counter
   //! update path
   void _updatePath( const QString& );
   
-  //! reload directory
-  void _reload( const QString& );
+  //! update directory
+  void _update( const QString& );
    
-  //! reload directory
-  void _reload( void );
+  //! update directory
+  void _update( void );
  
+  //! update actions
+  void _updateActions( void );
+  
   //! previous directory
   void _previousDirectory( void );
   
@@ -154,6 +131,9 @@ class FileSystemFrame: public QWidget, public Counter
   //! home directory
   void _homeDirectory( void );
    
+  //! open
+  void _open( void );
+  
   //! store selected jobs in model
   void _storeSelection( void );
 
@@ -182,7 +162,40 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! install actions
   void _installActions( void );
+
+  //!@name actions
+  //@{
   
+  //! hidden files
+  QAction& _hiddenFilesAction( void ) const
+  { return *hidden_files_action_; }
+  
+  //! update action
+  QAction& _updateAction( void ) const
+  { return *update_action_; }
+  
+  //! previous directory
+  QAction& _previousDirectoryAction( void ) const
+  { return *previous_directory_action_; }
+  
+  //! next directory
+  QAction& _nextDirectoryAction( void ) const
+  { return *next_directory_action_; }
+  
+  // directory above 
+  QAction& _parentDirectoryAction( void ) const
+  { return *parent_directory_action_; }
+ 
+  // home directory 
+  QAction& _homeDirectoryAction( void ) const
+  { return *home_directory_action_; } 
+  
+  //! open action
+  QAction& _openAction( void ) const
+  { return *open_action_; }
+
+  //@}
+
   //! path comboBox
   CustomComboBox* path_combobox_;
   
@@ -201,8 +214,8 @@ class FileSystemFrame: public QWidget, public Counter
   //! show/hide hidden files
   QAction* hidden_files_action_;
   
-  //! reload action
-  QAction* reload_action_;
+  //! update action
+  QAction* update_action_;
   
   //! previous directory action
   QAction* previous_directory_action_;
@@ -216,6 +229,9 @@ class FileSystemFrame: public QWidget, public Counter
   //! home directory action
   QAction* home_directory_action_;
     
+  //! open
+  QAction* open_action_;
+  
   //@}
   
   //! path naviagtion history

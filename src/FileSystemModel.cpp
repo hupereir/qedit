@@ -88,7 +88,6 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
   
   // retrieve associated file info
   const FileRecord& record( get(index) );
-  unsigned int type( record.property<unsigned int>( FileRecordProperties::TYPE ) );
   
   // return text associated to file and column
   if( role == Qt::DisplayRole ) {
@@ -117,13 +116,13 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
       
       case SIZE: 
       {
-        if( type | DOCUMENT ) return QString( record.property( FileRecordProperties::SIZE ).c_str() );
+        if( record.hasFlag( DOCUMENT ) ) return QString( record.property( FileRecordProperties::SIZE ).c_str() );
         else return QVariant();
       }
       
       case TIME: 
       {
-        if( type | DOCUMENT ) return QString( TimeStamp( record.time() ).string().c_str() );
+        if( record.hasFlag( DOCUMENT ) ) return QString( TimeStamp( record.time() ).string().c_str() );
         else return QVariant();
       }
       
@@ -134,7 +133,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
     
   } else if( role == Qt::DecorationRole && index.column() == FILE ) {
     
-    return icons_[type];
+    return icons_[record.flags()&ANY];
     
   }
   
@@ -181,13 +180,11 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
 {
   
   if( order_ == Qt::AscendingOrder ) swap( first, second );
-  unsigned int first_type( first.property<unsigned int>( FileRecordProperties::TYPE ) );
-  unsigned int second_type( second.property<unsigned int>( FileRecordProperties::TYPE ) );
   
-  if( first_type & NAVIGATOR ) return true;
-  if( second_type & NAVIGATOR ) return false;
-  if( (first_type & FOLDER) && (second_type & DOCUMENT ) ) return true;
-  if( (second_type & FOLDER) && (first_type & DOCUMENT ) ) return false;
+  if( first.hasFlag( NAVIGATOR ) ) return true;
+  if( second.hasFlag( NAVIGATOR ) ) return false;
+  if( first.hasFlag( FOLDER ) && second.hasFlag( DOCUMENT ) ) return true;
+  if( second.hasFlag( FOLDER ) && first.hasFlag( DOCUMENT ) ) return false;
   
   switch( type_ )
   {

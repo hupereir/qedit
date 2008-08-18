@@ -65,10 +65,10 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
   // toolbar
   CustomToolBar* toolbar = new CustomToolBar( "navigation toolbar", this, "NAVIGATION_TOOLBAR" );
-  toolbar->addAction( &parentDirectoryAction() );
-  toolbar->addAction( &previousDirectoryAction() );
-  toolbar->addAction( &nextDirectoryAction() );
-  toolbar->addAction( &homeDirectoryAction() );
+  toolbar->addAction( &_parentDirectoryAction() );
+  toolbar->addAction( &_previousDirectoryAction() );
+  toolbar->addAction( &_nextDirectoryAction() );
+  toolbar->addAction( &_homeDirectoryAction() );
   layout->addWidget( toolbar );
   
   // combo box
@@ -86,14 +86,18 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   _list().setMaskOptionName( "FILE_SYSTEM_LIST_MASK" );
     
   // list menu  
-  _list().menu().addAction( &previousDirectoryAction() );
-  _list().menu().addAction( &nextDirectoryAction() );
-  _list().menu().addAction( &parentDirectoryAction() );
-  _list().menu().addAction( &homeDirectoryAction() );
-
+  _list().menu().addAction( &_previousDirectoryAction() );
+  _list().menu().addAction( &_nextDirectoryAction() );
+  _list().menu().addAction( &_parentDirectoryAction() );
+  _list().menu().addAction( &_homeDirectoryAction() );
+  
   _list().menu().addSeparator();
-  _list().menu().addAction( &hiddenFilesAction() );
+  _list().menu().addAction( &_openAction() );
+  
+  _list().menu().addSeparator();
+  _list().menu().addAction( &_hiddenFilesAction() );
 
+  connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateActions() ) );
   connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
   
   _updateNavigationActions();
@@ -102,10 +106,11 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   connect( &_model(), SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
   connect( &_model(), SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
 
-  connect( &file_system_watcher_, SIGNAL( directoryChanged( const QString& ) ), SLOT( _reload( const QString& ) ) );
+  connect( &file_system_watcher_, SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
   _updateConfiguration();
+  _updateActions();
 
 }
 
@@ -119,7 +124,7 @@ void FileSystemFrame::setPath( File path )
   path_ = path;
   history_.add( path );
     
-  _reload();
+  _update();
   _updateNavigationActions();
   
   // update combobox
@@ -144,6 +149,14 @@ void FileSystemFrame::clear()
 
 }
 
+//____________________________________________
+void FileSystemFrame::showEvent( QShowEvent* )
+{
+  Debug::Throw( "FileSystemFrame::showEvent.\n" );
+  if( path().empty() ) setPath( Util::workingDirectory() );  
+  else _update();
+}
+
 //______________________________________________________
 void FileSystemFrame::customEvent( QEvent* event )
 {
@@ -156,7 +169,7 @@ void FileSystemFrame::customEvent( QEvent* event )
   // check path
   if( file_system_event->path() != path() ) 
   {
-    reloadAction().trigger();
+    _updateAction().trigger();
     return;
   }
   
@@ -177,8 +190,7 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
 
   // retrieve file
   FileRecord record( model_.get( index ) );
-  unsigned int type( record.property<unsigned int>( FileRecordProperties::TYPE ) );
-  if( type & FileSystemModel::FOLDER )
+  if( record.hasFlag( FileSystemModel::FOLDER ) )
   {
 
     // make full name
@@ -186,9 +198,9 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
     path = path.addPath( FileSystemFrame::path() );
     setPath( path );
 
-  } else if( type & FileSystemModel::NAVIGATOR ) { 
+  } else if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) { 
     
-    parentDirectoryAction().trigger();
+    _parentDirectoryAction().trigger();
     
   } else {
     
@@ -204,7 +216,7 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
 void FileSystemFrame::_updateConfiguration( void )
 {
   Debug::Throw( "FileSystemFrame::_updateConfiguration.\n" );
-  hiddenFilesAction().setChecked( XmlOptions::get().get<bool>( "SHOW_HIDDEN_FILES" ) );
+  _hiddenFilesAction().setChecked( XmlOptions::get().get<bool>( "SHOW_HIDDEN_FILES" ) );
 }
 
 //______________________________________________________
@@ -215,9 +227,9 @@ void FileSystemFrame::_saveConfiguration( void )
 void FileSystemFrame::_updateNavigationActions( void )
 {
   Debug::Throw( "FileSystemFrame::_updateNavigationActions.\n" );
-  previousDirectoryAction().setEnabled( history_.previousAvailable() );
-  nextDirectoryAction().setEnabled( history_.nextAvailable() );
-  parentDirectoryAction().setEnabled( !QDir( path().c_str() ).isRoot() );
+  _previousDirectoryAction().setEnabled( history_.previousAvailable() );
+  _nextDirectoryAction().setEnabled( history_.nextAvailable() );
+  _parentDirectoryAction().setEnabled( !QDir( path().c_str() ).isRoot() );
   return;
 }
      
@@ -239,7 +251,7 @@ void FileSystemFrame::_updatePath( const QString& value )
   // if path is empty set path to home directory
   if( value.isEmpty() )
   {
-    homeDirectoryAction().trigger();
+    _homeDirectoryAction().trigger();
     return;
   }
   
@@ -251,28 +263,45 @@ void FileSystemFrame::_updatePath( const QString& value )
 }
   
 //______________________________________________________
-void FileSystemFrame::_reload( const QString& value )
+void FileSystemFrame::_update( const QString& value )
 {
-  Debug::Throw( "FileSystemFrame::_reload.\n" );
   if( !isVisible() ) return;
   if( value != path().c_str() ) return;
-  _reload();
+  _update();
   
 }
   
 //______________________________________________________
-void FileSystemFrame::_reload( void )
+void FileSystemFrame::_update( void )
 {
-  Debug::Throw( "FileSystemFrame::_reload.\n" );
+  Debug::Throw( "FileSystemFrame::_update.\n" );
 
   if( path().empty() || !( path().exists() && path().isDirectory() ) ) return;
-  
   if( thread_.isRunning() ) return;
-  thread_.setPath( path(), hiddenFilesAction().isChecked() );
+  thread_.setPath( path(), _hiddenFilesAction().isChecked() );
   thread_.start();
   
   setCursor( Qt::WaitCursor ); 
 
+}
+//______________________________________________________________________
+void FileSystemFrame::_updateActions( void )
+{ 
+  Debug::Throw( "FileSystemFrame:_updateActions.\n" );
+  FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+  
+  bool has_editable_selection( false );
+  for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  {
+    if( iter->hasFlag( FileSystemModel::DOCUMENT ) )
+    {
+      has_editable_selection = true;
+      break;
+    }
+  }
+
+  _openAction().setEnabled( has_editable_selection );
+  
 }
 
 //______________________________________________________
@@ -314,6 +343,25 @@ void FileSystemFrame::_homeDirectory( void )
 {
   Debug::Throw( "FileSystemFrame::_homeDirectory.\n" );
   setPath( Util::home() );
+}
+
+//______________________________________________________________________
+void FileSystemFrame::_open( void )
+{ 
+  
+  Debug::Throw( "FileSystemFrame:_open.\n" ); 
+  FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+  FileSystemModel::List valid_selection;
+  for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  { 
+    if( iter->hasFlag( FileSystemModel::DOCUMENT ) )
+    { valid_selection.push_back( *iter ); }
+  }
+  
+  // one should check the number of files to be edited
+  for( FileSystemModel::List::const_iterator iter = valid_selection.begin(); iter != valid_selection.end(); iter++ )
+  { emit fileSelected( *iter ); }
+  
 }
 
 //________________________________________
@@ -362,32 +410,37 @@ void FileSystemFrame::_installActions( void )
 
   // hidden files
   addAction( hidden_files_action_ = new QAction( "&Show hidden files", this ) );
-  hidden_files_action_->setCheckable( true );
-  connect( hidden_files_action_, SIGNAL( toggled( bool ) ), SLOT( _reload() ) );
-  connect( hidden_files_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowHiddenFiles( bool ) ) );
+  _hiddenFilesAction().setCheckable( true );
+  connect( &_hiddenFilesAction(), SIGNAL( toggled( bool ) ), SLOT( _update() ) );
+  connect( &_hiddenFilesAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleShowHiddenFiles( bool ) ) );
     
-  // reload
-  addAction( reload_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
-  connect( hidden_files_action_, SIGNAL( triggered() ), SLOT( _reload() ) );
+  // update
+  addAction( update_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
+  connect( &_updateAction(), SIGNAL( triggered() ), SLOT( _update() ) );
   
   // previous directory
   addAction( previous_directory_action_ = new QAction( IconEngine::get( ICONS::PREVIOUS_DIRECTORY ), "&Previous", this ) );
-  connect( previous_directory_action_, SIGNAL( triggered() ), SLOT( _previousDirectory() ) );
-  previous_directory_action_->setToolTip( "Change path to previous directory (from history)" );
+  connect( &_previousDirectoryAction(), SIGNAL( triggered() ), SLOT( _previousDirectory() ) );
+  _previousDirectoryAction().setToolTip( "Change path to previous directory (from history)" );
   
   // next directory (from history)
   addAction( next_directory_action_ = new QAction( IconEngine::get( ICONS::NEXT_DIRECTORY ), "&Next", this ) );
-  connect( next_directory_action_, SIGNAL( triggered() ), SLOT( _nextDirectory() ) );
-  next_directory_action_->setToolTip( "Change path to next directory (from history)" );
+  connect( &_nextDirectoryAction(), SIGNAL( triggered() ), SLOT( _nextDirectory() ) );
+  _nextDirectoryAction().setToolTip( "Change path to next directory (from history)" );
   
   // parent directory in tree
   addAction( parent_directory_action_ = new QAction( IconEngine::get( ICONS::PARENT_DIRECTORY ), "&Parent directory", this ) );
-  connect( parent_directory_action_, SIGNAL( triggered() ), SLOT( _parentDirectory() ) );
-  parent_directory_action_->setToolTip( "Change path to parent directory" );
+  connect( &_parentDirectoryAction(), SIGNAL( triggered() ), SLOT( _parentDirectory() ) );
+  _parentDirectoryAction().setToolTip( "Change path to parent directory" );
   
   // home directory
   addAction( home_directory_action_ = new QAction( IconEngine::get( ICONS::HOME_DIRECTORY ), "&Home", this ) );
-  connect( home_directory_action_, SIGNAL( triggered() ), SLOT( _homeDirectory() ) );
-  home_directory_action_->setToolTip( "Change path to user home" );
+  connect( &_homeDirectoryAction(), SIGNAL( triggered() ), SLOT( _homeDirectory() ) );
+  _homeDirectoryAction().setToolTip( "Change path to user home" );
+  
+  // open
+  addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open selected files", this ) );
+  connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
+  _openAction().setToolTip( "Edit selected files" );
 
 }

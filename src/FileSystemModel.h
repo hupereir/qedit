@@ -53,7 +53,8 @@ class FileSystemModel: public ListModel<FileRecord>
     DOCUMENT = 1<<0,
     FOLDER = 1<<1,
     LINK = 1<<2,
-    NAVIGATOR = 1<<3
+    NAVIGATOR = 1<<3,
+    ANY = DOCUMENT | FOLDER | LINK | NAVIGATOR
   };
   
   //! number of columns

@@ -35,18 +35,16 @@
 #include <map>
 #include <QAbstractButton>
 #include <QAction>
-#include <QCloseEvent>
-#include <QPaintEvent>
 #include <QShowEvent>
 #include <QStackedWidget>
 
 #include "Counter.h"
-#include "CustomMainWindow.h"
-#include "FileRecordModel.h"
+#include "FileList.h"
+#include "FileRecord.h"
 
-class FileList;
+class SessionFilesFrame;
+class RecentFilesFrame;
 class FileSystemFrame;
-class TreeView;
 
 //! editor windows navigator
 /*!
@@ -77,18 +75,6 @@ class NavigationFrame: public QWidget, public Counter
   //! size
   QSize sizeHint( void ) const;  
 
-  //!@name file system
-  //@{
-  
-  //! file system list
-  FileSystemFrame& fileSystemFrame( void )
-  { 
-    assert( file_system_frame_ );
-    return *file_system_frame_;
-  }
-    
-  //@}
-
   //!@name actions
   //@{
   
@@ -96,14 +82,12 @@ class NavigationFrame: public QWidget, public Counter
   QAction& visibilityAction( void ) const
   { return *visibility_action_; }
   
-  //! update session files
-  QAction& updateSessionFilesAction( void ) const
-  { return *session_files_action_; }
+  //! update session files action
+  QAction& updateSessionFilesAction( void ) const;
   
-  //! update session files
-  QAction& updateRecentFilesAction( void ) const
-  { return *recent_files_action_; }
-
+  //! update recent files action
+  QAction& updateRecentFilesAction( void ) const;
+  
   //@}
   
   signals:
@@ -112,106 +96,41 @@ class NavigationFrame: public QWidget, public Counter
   void fileSelected( FileRecord );  
       
   protected:
-  
-  //! enter event
-  void enterEvent( QEvent* );
-  
-  //! show event
-  virtual void showEvent( QShowEvent* );
-    
+     
   //! stack widget
   QStackedWidget& _stack( void ) const
   { 
     assert( stack_ );
     return *stack_;
   }
-  
-  //!@name session files
-  //@{
-  
-  //! session file list
-  TreeView& _sessionFilesList( void ) const
-  { 
-    assert( session_files_list_ );  
-    return *session_files_list_;
-  }
-  
-  //! session files model
-  FileRecordModel& _sessionFilesModel( void ) 
-  { return session_files_model_; }
-    
-  //@}
-  
-  //!@name recent files
-  //@{
 
-  //! recent files
-  FileList& _recentFiles( void ) const
-  { 
-    assert( recent_files_ );
-    return *recent_files_;
-  }
+  //!@name file system
+  //@{
   
-  //! recent file list
-  TreeView& _recentFilesList( void ) const
+  //! session files 
+  SessionFilesFrame& _sessionFilesFrame( void ) const
   {
-    assert( recent_files_list_ );  
-    return *recent_files_list_;
+    assert( session_files_frame_ );
+    return *session_files_frame_;
+  }
+ 
+  //! recent files 
+  RecentFilesFrame& _recentFilesFrame( void ) const
+  {
+    assert( recent_files_frame_ );
+    return *recent_files_frame_;
   }
   
-  //! recent files model
-  FileRecordModel& _recentFilesModel( void ) 
-  { return recent_files_model_; }  
-  
-  //@}
+  //! file system
+  FileSystemFrame& _fileSystemFrame( void ) const
+  { 
+    assert( file_system_frame_ );
+    return *file_system_frame_;
+  }
     
-  private slots:
-
-  //! update configuration
-  void _updateConfiguration( void );
-  
-  //! update configuration
-  void _saveConfiguration( void );
-     
-  //! update session files
-  void _updateSessionFiles( void );
-  
-  //! update recent files
-  void _updateRecentFiles( void );
-  
-  //! update recent files
-  void _updateFileSystemFiles( void );
-
-  //! sessionFilesItem selected
-  void _sessionFilesItemSelected( const QModelIndex& index )
-  { _itemSelected( _sessionFilesModel(), index ); }
-  
-  //! sessionFilesItem selected
-  void _recentFilesItemSelected( const QModelIndex& index )
-  { _itemSelected( _recentFilesModel(), index ); }
-
-  //!@name selections
-  //@{
-
-  void _storeSessionFilesSelection( void )
-  { _storeSelection( _sessionFilesList(), _sessionFilesModel() ); }
-  
-  void _restoreSessionFilesSelection( void )
-  { _restoreSelection( _sessionFilesList(), _sessionFilesModel() ); }
-
-  void _storeRecentFilesSelection( void )
-  { _storeSelection( _recentFilesList(), _recentFilesModel() ); }
-  
-  void _restoreRecentFilesSelection( void )
-  { _restoreSelection( _recentFilesList(), _recentFilesModel() ); }
-
   //@}
-
-  //! session files sort order
-  void _storeSessionFilesSortMethod( int, Qt::SortOrder );
   
-  //! recent files sort order
-  void _storeRecentFilesSortMethod( int, Qt::SortOrder );
+  private slots:
   
   //! display item page
   virtual void _display( QAbstractButton* );
@@ -220,24 +139,7 @@ class NavigationFrame: public QWidget, public Counter
   
   //! install actions
   void _installActions( void );
-  
-  //! update files
-  void _updateFiles( void )
-  {
-    _updateSessionFiles();
-    _updateRecentFiles();
-    _updateFileSystemFiles();
-  }
-  
-  //! item selected
-  void _itemSelected( const FileRecordModel&, const QModelIndex& );
-  
-  //! store selection
-  void _storeSelection( TreeView&, FileRecordModel& );
-  
-  //! restore selection
-  void _restoreSelection( TreeView&, FileRecordModel& );
-
+ 
   //! default width
   int default_width_;
 
@@ -250,34 +152,13 @@ class NavigationFrame: public QWidget, public Counter
   //! map widget to action in the toolbar
   ButtonMap buttons_;
 
-  //!@name session files
-  //@{
-  
-  //! session files model
-  FileRecordModel session_files_model_;
-  
-  //! session files list
-  TreeView* session_files_list_;
-  
-  //@}
-  
-  //!@name recent files
-  //@{
+  //! session files
+  SessionFilesFrame *session_files_frame_;
   
   //! recent files
-  FileList* recent_files_;
-  
-  //! recent files model
-  FileRecordModel recent_files_model_;
-  
-  //! recent files list
-  TreeView* recent_files_list_;
-      
-  //@}
-  
-  //!@name file system
-  //@{
+  RecentFilesFrame *recent_files_frame_;
 
+  //! file system
   FileSystemFrame* file_system_frame_;
   
   //@}
@@ -287,13 +168,7 @@ class NavigationFrame: public QWidget, public Counter
   
   //! visibility
   QAction* visibility_action_;
-  
-  //! session files
-  QAction* session_files_action_;
-  
-  //! recent files
-  QAction* recent_files_action_;
-  
+      
   //@}
   
 };

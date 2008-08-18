@@ -49,6 +49,10 @@ HEADERS = \
   FileRecordProperties.h \
   FileRemovedDialog.h \
   FileSelectionDialog.h \
+  FileSystemFrame.h \
+  FileSystemHistory.h \
+  FileSystemModel.h \
+  FileSystemThread.h \
   HelpText.h \
   HighlightBlockData.h \
   HighlightBlockFlags.h \
@@ -60,7 +64,9 @@ HEADERS = \
   NewFileDialog.h \
   ParenthesisHighlight.h \
   PrintDialog.h \
+  RecentFilesFrame.h \
   SaveAllDialog.h \
+  SessionFilesFrame.h \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
@@ -82,6 +88,10 @@ SOURCES = \
   FileModifiedDialog.cpp \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \
+  FileSystemFrame.cpp \
+  FileSystemHistory.cpp \
+  FileSystemModel.cpp \
+  FileSystemThread.cpp \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HtmlUtil.cpp \
@@ -91,10 +101,12 @@ SOURCES = \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
-  qedit.cpp \
+  RecentFilesFrame.cpp \
   SaveAllDialog.cpp \
+  SessionFilesFrame.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp \
   TextView.cpp \
-  WindowServer.cpp
+  WindowServer.cpp \
+  qedit.cpp

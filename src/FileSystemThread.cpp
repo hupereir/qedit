@@ -52,7 +52,7 @@ void FileSystemThread::run( void )
   
   // add navigator
   FileRecord record( File("..") );
-  record.addProperty( FileRecordProperties::TYPE, Str().assign<unsigned int>( FileSystemModel::NAVIGATOR ) );
+  record.setFlags( FileSystemModel::NAVIGATOR );
   new_files.push_back( record );
   
   // loop over entries and add
@@ -68,14 +68,9 @@ void FileSystemThread::run( void )
     record.addProperty( FileRecordProperties::SIZE, Str().assign<long int>( iter->size() ) );
     
     // assign type
-    unsigned int type = 0;
-    if( iter->isDir() ) type |= FileSystemModel::FOLDER;
-    else type |= FileSystemModel::DOCUMENT;
-    
-    if( iter->isSymLink() ) type |= FileSystemModel::LINK;
-    
-    record.addProperty( FileRecordProperties::TYPE, Str().assign<unsigned int>( type ) );
-    
+    record.setFlag( iter->isDir() ? FileSystemModel::FOLDER : FileSystemModel::DOCUMENT );
+    if( iter->isSymLink() ) record.setFlag( FileSystemModel::LINK );
+        
     // add to model
     new_files.push_back( record );
     
