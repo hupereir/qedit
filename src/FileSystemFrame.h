@@ -113,9 +113,6 @@ class FileSystemFrame: public QWidget, public Counter
   //! custom event, used to retrieve file validity check event
   void customEvent( QEvent* );
   
-  //! enter event
-  // virtual void enterEvent( QEvent* );
-  
   private slots:
   
   //! item activated

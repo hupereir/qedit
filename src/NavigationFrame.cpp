@@ -250,6 +250,7 @@ void NavigationFrame::_updateFileSystemFiles( void )
   // check visibility
   if( !( isVisible() && _stack().currentWidget() == &fileSystemFrame() ) ) return;
   if( fileSystemFrame().path().empty() ) fileSystemFrame().setPath( Util::workingDirectory() );
+  else fileSystemFrame().reloadAction().trigger();
   
 }
 

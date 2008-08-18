@@ -69,7 +69,6 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   toolbar->addAction( &previousDirectoryAction() );
   toolbar->addAction( &nextDirectoryAction() );
   toolbar->addAction( &homeDirectoryAction() );
-  toolbar->addAction( &reloadAction() );
   layout->addWidget( toolbar );
   
   // combo box
@@ -169,16 +168,6 @@ void FileSystemFrame::customEvent( QEvent* event )
   
 }
 
-// //______________________________________________________
-// void FileSystemFrame::enterEvent( QEvent* event )
-// {
-//    Debug::Throw( "FileSystemFrame::enterEvent.\n" );
-//   _reload();
-//   QWidget::enterEvent( event );
-//   return;
-//   
-// }
-
 //______________________________________________________
 void FileSystemFrame::_itemActivated( const QModelIndex& index )
 {
@@ -265,6 +254,7 @@ void FileSystemFrame::_updatePath( const QString& value )
 void FileSystemFrame::_reload( const QString& value )
 {
   Debug::Throw( "FileSystemFrame::_reload.\n" );
+  if( !isVisible() ) return;
   if( value != path().c_str() ) return;
   _reload();
   
