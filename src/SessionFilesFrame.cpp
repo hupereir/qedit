@@ -33,6 +33,7 @@
 #include <QLayout>
 
 #include "Application.h"
+#include "ColumnSortingMenu.h"
 #include "Debug.h"
 #include "Icons.h"
 #include "IconEngine.h"
@@ -62,11 +63,13 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   layout()->addWidget( list_ = new TreeView( this ) );
   _list().setModel( &_model() );  
   _list().setMaskOptionName( "SESSION_FILES_MASK" );
+  _list().header()->hide();
   
   // actions
   _installActions();
   
   // add actions to menu
+  _list().menu().addMenu( new ColumnSortingMenu( &_list().menu(), &_list() ) );
   _list().menu().addAction( &_openAction() );
   _list().menu().addSeparator();
   _list().menu().addAction( &static_cast< Application*>( qApp )->windowServer().saveAllAction() );

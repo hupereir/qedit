@@ -33,6 +33,7 @@
 #include <QLayout>
 
 #include "Application.h"
+#include "ColumnSortingMenu.h"
 #include "Debug.h"
 #include "Icons.h"
 #include "IconEngine.h"
@@ -64,11 +65,13 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   _list().setModel( &_model() );  
   _list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
   _list().setMaskOptionName( "RECENT_FILES_MASK" );
+  _list().header()->hide();
   
   // actions
   _installActions();
   
   // add actions to list
+  _list().menu().addMenu( new ColumnSortingMenu( &_list().menu(), &_list() ) );
   _list().menu().addAction( &_openAction() );
   _list().menu().addSeparator();
   _list().menu().addAction( &_cleanAction() );
