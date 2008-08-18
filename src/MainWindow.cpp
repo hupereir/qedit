@@ -574,7 +574,10 @@ void MainWindow::_update( unsigned int flags )
   Debug::Throw( "MainWindow::_update().\n" );
 
   if( flags & TextDisplay::WINDOW_TITLE )
-  { _updateWindowTitle(); }
+  { 
+    _updateWindowTitle(); 
+    emit modificationChanged();
+  }
 
   if( flags & TextDisplay::FILE_NAME && file_editor_ )
   { 

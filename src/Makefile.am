@@ -102,6 +102,7 @@ noinst_HEADERS = \
   RecentFilesFrame.h \
   SaveAllDialog.h \
   SessionFilesFrame.h \
+  SessionFilesModel.h \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
@@ -139,6 +140,7 @@ libqedit_a_SOURCES = \
   RecentFilesFrame.cpp \
   SaveAllDialog.cpp \
   SessionFilesFrame.cpp \
+  SessionFilesModel.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp \
@@ -166,6 +168,7 @@ nodist_libqedit_a_SOURCES = \
   moc_PrintDialog.cpp \
   moc_RecentFilesFrame.cpp \
   moc_SessionFilesFrame.cpp \
+  moc_SessionFilesModel.cpp \
   moc_TextDisplay.cpp \
   moc_TextHighlight.cpp \
   moc_TextIndent.cpp \

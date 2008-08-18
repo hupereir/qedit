@@ -68,6 +68,7 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   
   // add actions to menu
   _list().menu().addAction( &_openAction() );
+  _list().menu().addSeparator();
   _list().menu().addAction( &static_cast< Application*>( qApp )->windowServer().saveAllAction() );
   
   // connections
@@ -121,10 +122,16 @@ void SessionFilesFrame::_update( void )
   if( !isVisible() ) return;
  
   // retrieve file records
-  FileRecordModel::List files;
+  SessionFilesModel::List files;
   WindowServer::FileRecordMap records( static_cast< Application*>( qApp )->windowServer().files() );
   for( WindowServer::FileRecordMap::const_iterator iter = records.begin(); iter != records.end(); iter++ )
-  { files.push_back( iter->first ); }
+  {
+    
+    FileRecord record( iter->first );
+    record.setFlag( SessionFilesModel::MODIFIED, iter->second );
+    // Debug::Throw( 0 ) << "SessionFilesFrame:_update - file: " << record.file() << " modified: " << iter->second << " " << record.hasFlag( SessionFilesModel::MODIFIED ) << endl; 
+    files.push_back( record ); 
+  }
 
   // update model
   _model().update( files );
@@ -144,10 +151,10 @@ void SessionFilesFrame::_open( void )
 { 
   
   Debug::Throw( "SessionFilesFrame:_open.\n" ); 
-  FileRecordModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+  SessionFilesModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
   
   // one should check the number of files to be edited
-  for( FileRecordModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  for( SessionFilesModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
   { emit fileSelected( *iter ); }
   
 }

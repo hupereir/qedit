@@ -38,7 +38,7 @@
 #include <QShowEvent>
 
 #include "Counter.h"
-#include "FileRecordModel.h"
+#include "SessionFilesModel.h"
 
 class TreeView;
 
@@ -88,7 +88,7 @@ class SessionFilesFrame: public QWidget, public Counter
   }
   
   //! model
-  FileRecordModel& _model( void ) 
+  SessionFilesModel& _model( void ) 
   { return model_; }
         
   private slots:
@@ -137,7 +137,7 @@ class SessionFilesFrame: public QWidget, public Counter
   //@}
   
   //! model
-  FileRecordModel model_;
+  SessionFilesModel model_;
   
   //! list
   TreeView* list_;

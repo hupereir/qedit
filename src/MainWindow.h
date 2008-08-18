@@ -270,6 +270,11 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
   //@}
 
+  signals:
+  
+  //! emmited when the document modification state of an editor is changed
+  void modificationChanged( void );
+  
   public slots:
  
   //! open file

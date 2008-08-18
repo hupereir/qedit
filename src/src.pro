@@ -67,6 +67,7 @@ HEADERS = \
   RecentFilesFrame.h \
   SaveAllDialog.h \
   SessionFilesFrame.h \
+  SessionFilesModel.h \
   TextDisplay.h \
   TextHighlight.h \
   TextIndent.h \
@@ -104,6 +105,7 @@ SOURCES = \
   RecentFilesFrame.cpp \
   SaveAllDialog.cpp \
   SessionFilesFrame.cpp \
+  SessionFilesModel.cpp \
   TextDisplay.cpp \
   TextHighlight.cpp \
   TextIndent.cpp \

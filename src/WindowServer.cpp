@@ -72,6 +72,8 @@ MainWindow& WindowServer::newMainWindow( void )
   BASE::Key::associate( this, out );
   
   connect( out, SIGNAL( destroyed() ), SIGNAL( sessionFilesChanged() ) );
+  connect( out, SIGNAL( modificationChanged() ), SIGNAL( sessionFilesChanged() ) );
+  connect( out, SIGNAL( modificationChanged() ), SLOT( _updateActions() ) );
   
   connect( this, SIGNAL( sessionFilesChanged() ), &out->navigationFrame().updateSessionFilesAction(), SLOT( trigger() ) );
   connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( contentsChanged() ), &out->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
@@ -474,6 +476,15 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   QtUtil::infoDialog( qApp->activeWindow(), what.str() );
   
   return;
+}
+
+//_______________________________________________
+void WindowServer::_updateActions( void )
+{
+  
+  Debug::Throw( "WindowServer::_updateActions.\n" );
+  saveAllAction().setEnabled( !files( true ).empty() );
+
 }
 
 //_______________________________________________

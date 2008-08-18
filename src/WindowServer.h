@@ -102,6 +102,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   
   private slots:
   
+  //! update actions
+  void _updateActions( void );
+  
   //! save all edited files
   void _saveAll( void );
   
