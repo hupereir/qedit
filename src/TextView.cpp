@@ -589,4 +589,3 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
   return *display;
   
 }
-

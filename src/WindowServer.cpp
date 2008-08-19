@@ -233,7 +233,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
     what << "Do you really want to open " << files.size() << " files at the same time ?" << endl;
     what << "This might be very resource intensive and can overload your computer." << endl;
     what << "If you choose No, only the first file will be opened.";
-    if( !QtUtil::questionDialog( qApp->activeWindow(), what.str() ) )
+    if( !QtUtil::questionDialog( &_activeWindow(), what.str() ) )
     {
       list<string> tmp;
       tmp.push_back( files.front() );
@@ -254,11 +254,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
       if( first )
       {
       
-        if( _open( File( *iter ).expand() ) );
-        {
-          assert( _hasActiveWindow() );
-          first = false;
-        }
+        if( _open( File( *iter ).expand() ) ) first = false;
         
       } else { _open( File( *iter ).expand(), _activeWindow().orientation() ); }
     
@@ -267,7 +263,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
     if( diff )
     { 
       if( !first && _activeWindow().independentDisplayCount() == 2 ) _activeWindow().diffAction().trigger();
-      else QtUtil::infoDialog( qApp->activeWindow(), "invalid number of files selected. <Diff> canceled." );
+      else QtUtil::infoDialog( &_activeWindow(), "invalid number of files selected. <Diff> canceled." );
     }
     
   } else {
@@ -319,7 +315,7 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   if( !counts ) what << "string not found.";
   else if( counts == 1 ) what << "1 replacement performed";
   else what << counts << " replacements performed";
-  QtUtil::infoDialog( qApp->activeWindow(), what.str() );
+  QtUtil::infoDialog( &_activeWindow(), what.str() );
   
   return;
 }
@@ -372,7 +368,6 @@ void WindowServer::_newFile( Qt::Orientation orientation )
   Debug::Throw( "WindowServer::_newFile.\n" );
    
   // retrieve active view
-  assert( _hasActiveWindow() );
   TextView& active_view( _activeWindow().activeView() );
   TextDisplay* display;
   
@@ -442,7 +437,6 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
   if( !( record.file().exists() || _createNewFile( record ) ) ) return false;
   
   // retrieve active view
-  assert( _hasActiveWindow() );
   TextView& active_view( _activeWindow().activeView() );
   
   // retrieve all windows and find one matching
@@ -530,7 +524,6 @@ void WindowServer::_detach( void )
   
   Debug::Throw( "WindowServer::_detach.\n" );
 
-  assert( _hasActiveWindow() );
   MainWindow& active_window_local( _activeWindow() );
   
   // check number of independent displays
@@ -588,12 +581,12 @@ void WindowServer::_saveAll( void )
   // check how many files are modified
   if( files.empty() )
   {
-    QtUtil::infoDialog( qApp->activeWindow(), "No files to save" );
+    QtUtil::infoDialog( &_activeWindow(), "No files to save" );
     return;
   }
   
   // ask for confirmation
-  if( !SaveAllDialog( qApp->activeWindow(), files ).exec() ) return;
+  if( !SaveAllDialog( &_activeWindow(), files ).exec() ) return;
   
   // retrieve windows
   BASE::KeySet<MainWindow> windows( this );
@@ -636,10 +629,10 @@ FileRecord WindowServer::_selectFileFromDialog( void )
   FileRecord record;
   
   // create file dialog
-  CustomFileDialog dialog( qApp->activeWindow() );
+  CustomFileDialog dialog( &_activeWindow() );
   dialog.setFileMode( QFileDialog::ExistingFile );
   
-  File working_directory( _hasActiveWindow() ? _activeWindow().activeDisplay().workingDirectory() : File( Util::workingDirectory() ) );
+  File working_directory( _activeWindow().activeDisplay().workingDirectory() );
   dialog.setDirectory( QDir( working_directory.c_str() ) );
   
   QtUtil::centerOnParent( &dialog );
@@ -656,7 +649,7 @@ FileRecord WindowServer::_selectFileFromDialog( void )
     
     ostringstream what;
     what << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
-    QtUtil::infoDialog( qApp->activeWindow(), what.str() );
+    QtUtil::infoDialog( &_activeWindow(), what.str() );
     return record;
     
   }
@@ -679,7 +672,7 @@ bool WindowServer::_createNewFile( const FileRecord& record )
   int buttons( NewFileDialog::CREATE | NewFileDialog::CANCEL );
   if( BASE::KeySet<MainWindow>(this).size() == 1 ) buttons |= NewFileDialog::EXIT;
     
-  NewFileDialog dialog( qApp->activeWindow(), record.file(), buttons );
+  NewFileDialog dialog( &_activeWindow(), record.file(), buttons );
   QtUtil::centerOnParent( &dialog );
   int state = dialog.exec();
     
@@ -695,7 +688,7 @@ bool WindowServer::_createNewFile( const FileRecord& record )
         
         ostringstream what;
         what << "Unable to create file " << record.file() << ".";
-        QtUtil::infoDialog( qApp->activeWindow(), what.str() );
+        QtUtil::infoDialog( &_activeWindow(), what.str() );
         return false;
         
       } else return true;
