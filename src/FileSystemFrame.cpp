@@ -206,7 +206,7 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
     
     record.setFile( record.file().addPath( path() ) );
     Debug::Throw() << "FileSystemFrame::_itemActivated - file: " << record.file() << endl;
-    emit fileSelected( record );
+    emit fileActivated( record );
   
   }
   
@@ -360,7 +360,7 @@ void FileSystemFrame::_open( void )
   
   // one should check the number of files to be edited
   for( FileSystemModel::List::const_iterator iter = valid_selection.begin(); iter != valid_selection.end(); iter++ )
-  { emit fileSelected( *iter ); }
+  { emit fileActivated( *iter ); }
   
 }
 

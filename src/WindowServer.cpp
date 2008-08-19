@@ -1,5 +1,6 @@
 // $Id$
 
+
 /******************************************************************************
  *
  * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
@@ -50,6 +51,8 @@
 
 using namespace std;
 
+
+
 //________________________________________________________________
 WindowServer::WindowServer( QObject* parent ):
   QObject( parent ),
@@ -80,6 +83,7 @@ MainWindow& WindowServer::newMainWindow( void )
   connect( window, SIGNAL( destroyed() ), SIGNAL( sessionFilesChanged() ) );
   connect( window, SIGNAL( modificationChanged() ), SIGNAL( sessionFilesChanged() ) );
   connect( window, SIGNAL( modificationChanged() ), SLOT( _updateActions() ) );
+  connect( window, SIGNAL( activated( MainWindow* ) ), SLOT( _activeWindowChanged( MainWindow* ) ) );
   
   connect( this, SIGNAL( sessionFilesChanged() ), &window->navigationFrame().updateSessionFilesAction(), SLOT( trigger() ) );
   connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( contentsChanged() ), &window->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
@@ -92,7 +96,7 @@ MainWindow& WindowServer::newMainWindow( void )
   connect( &window->detachAction(), SIGNAL( triggered() ), SLOT( _detach() ) );
 
   connect( &window->menu().recentFilesMenu(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _open( FileRecord ) ) );
-  connect( &window->navigationFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _open( FileRecord ) ) );
+  connect( &window->navigationFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
 
   return *window;
 }
@@ -111,8 +115,8 @@ WindowServer::FileRecordMap WindowServer::files( bool modified_only ) const
   for( BASE::KeySet<MainWindow>::iterator window_iter = windows.begin(); window_iter != windows.end(); window_iter++ )
   {
       
-    // retrieve associated text displays
-    BASE::KeySet<TextDisplay> displays( &(*window_iter)->activeView() );
+    // retrieve associated TextDisplays
+    BASE::KeySet<TextDisplay> displays( (*window_iter)->associatedDisplays() );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
 
@@ -141,66 +145,68 @@ bool WindowServer::closeAllWindows( void )
   
   Debug::Throw( "WindowServer::closeAllWindows.\n" );
   
+  int state( AskForSaveDialog::UNKNOWN );
+  
   // try close all windows one by one
   BASE::KeySet<MainWindow> windows( this );
   for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ )
   {
     
     // if window is not modified, close
+    //Debug::Throw(0) << "WindowServer::closeAllWindows - window: " << (*iter)->key() << endl;
     if( !(*iter)->isModified() ) 
     {
-      
-      // close window
       assert( (*iter)->close() );
       continue;
+    }
+
+    // save everything if YES_TO_ALL is selected
+    if( state == AskForSaveDialog::YES_TO_ALL ) 
+    {
+      (*iter)->saveAll();
+      assert( (*iter)->close() );
+      continue;
+    }
+
+    // ignore everuthing if NO_TO_ALL was selected
+    if( state == AskForSaveDialog::NO_TO_ALL ) 
+    {
+      (*iter)->ignoreAll();
+      assert( (*iter)->close() );
+      continue;
+    }
     
+    // retrieve all text views associated to this display
+    unsigned int modified_displays(0);
+    BASE::KeySet<TextDisplay> displays;
+    BASE::KeySet<TextView> views( *iter );
+    for( BASE::KeySet<TextView>::iterator view_iter = views.begin(); view_iter != views.end(); view_iter++ )
+    {
+      
+      // update the number of modified displays
+      modified_displays += (*view_iter)->modifiedDisplayCount();
+      
+      // store associated textDisplays in main set
+      BASE::KeySet<TextDisplay> view_displays( *view_iter );
+      displays.insert( view_displays.begin(), view_displays.end() );
+      
     }
     
     // loop over displays
     bool save_all_enabled = count_if( iter, windows.end(), MainWindow::IsModifiedFTor() ) > 1;
-    BASE::KeySet<TextDisplay> displays( &(*iter)->activeView() );
+    
+    save_all_enabled |= ( modified_displays > 1 );
     for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
     {
       
+      //Debug::Throw(0) << "WindowServer::closeAllWindows - display: " << (*display_iter)->key() << " file: " << (*display_iter)->file() << endl;
       if( !(*display_iter)->document()->isModified() ) continue;
-      save_all_enabled |= (*iter)->modifiedDisplayCount() > 1;
-      int state( (*display_iter)->askForSave( save_all_enabled ) );
-      
-      if( state == AskForSaveDialog::YES_TO_ALL ) 
-      {
-        
-        // save all displays for this window, starting from the current
-        for(; display_iter != displays.end(); display_iter++ ) 
-        { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
-       
-        // save all mainwindows starting from the next to this one
-        BASE::KeySet<MainWindow>::iterator sub_iter = iter; 
-        for( sub_iter++; sub_iter != windows.end(); sub_iter++ ) (*sub_iter)->saveAll();
-        
-        // break loop since everybody has been saved
-        break;
-        
-      } else if( state == AskForSaveDialog::NO_TO_ALL ) {
-        
-        // save all displays for this window, starting from the current
-        for(; display_iter != displays.end(); display_iter++ ) 
-        { if( (*display_iter)->document()->isModified() ) (*display_iter)->setModified( false ); }
-       
-        // save all mainwindows starting from the next to this one
-        BASE::KeySet<MainWindow>::iterator sub_iter = iter; 
-        for( sub_iter++; sub_iter != windows.end(); sub_iter++ )
-        {
-         
-          BASE::KeySet<TextDisplay> sub_displays( &(*sub_iter)->activeView() );
-          for( BASE::KeySet<TextDisplay>::iterator sub_display_iter = sub_displays.begin(); sub_display_iter != sub_displays.end(); sub_display_iter++ ) 
-          { if( (*sub_display_iter)->document()->isModified() ) (*sub_display_iter)->setModified( false ); }
 
-        }
-        
-        // break loop since everybody has been saved
-        break;
-        
-      } else if( state == AskForSaveDialog::CANCEL ) return false;
+      state = (*display_iter)->askForSave( save_all_enabled );
+      //Debug::Throw(0) << "WindowServer::closeAllWindows - state: " << state << endl;
+      if( state == AskForSaveDialog::YES_TO_ALL ) (*iter)->saveAll();
+      else if( state == AskForSaveDialog::NO_TO_ALL ) (*iter)->ignoreAll();      
+      else if( state == AskForSaveDialog::CANCEL ) return false;
 
     }
     
@@ -224,8 +230,12 @@ void WindowServer::readFilesFromArguments( ArgList args )
   list<string> files( last_arg.options() );
   
   // close mode
-  if( args.find( "--close" ) ) _closeFiles( last_arg.options() );
-
+  if( args.find( "--close" ) ) 
+  {
+    _closeFiles( last_arg.options() );
+    return;
+  }
+  
   // check number of files
   if( files.size() > 10 )
   {
@@ -262,7 +272,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
     
     if( diff )
     { 
-      if( !first && _activeWindow().independentDisplayCount() == 2 ) _activeWindow().diffAction().trigger();
+      if( !first && _activeWindow().activeView().independentDisplayCount() == 2 ) _activeWindow().diffAction().trigger();
       else QtUtil::infoDialog( &_activeWindow(), "invalid number of files selected. <Diff> canceled." );
     }
     
@@ -293,20 +303,16 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
     
     File& file( *iter );
     
+    // find matching window
     BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
     assert( iter != windows.end() );
-
-    // retrieve TextDisplay that match file
-    BASE::KeySet<TextDisplay> displays( &(*iter)->activeView() );
-    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) ) );
-    assert( display_iter != displays.end() );
     
-    // need to set display as active so that synchronization is kept with other possible displays
-    (*iter)->activeView().setActiveDisplay( **display_iter );
-    (*display_iter)->setFocus();
+    // select the corresponding display
+    /* at least one display must be found, otherwise the algorithm is wrong */
+    assert( (*iter)->selectDisplay( file ) );
     
     // perform replacement
-    counts += (*display_iter)->replaceInWindow( selection, false );
+    counts += (*iter)->activeDisplay().replaceInWindow( selection, false );
   
   }
   
@@ -484,18 +490,12 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
     // set previous display as unmdified
     previous_display.document()->setModified( false );
 
-    // close display, or window, depending on its number of independent files
-    if( (*iter)->independentDisplayCount() == 1 ) (*iter)->close();
-    else
-    {
+    // close display      
+    displays = BASE::KeySet<TextDisplay>( &previous_display );
+    displays.insert( &previous_display );
+    for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
+    { (*iter)->activeView().closeDisplay( **display_iter ); }
       
-      BASE::KeySet<TextDisplay> displays( &previous_display );
-      displays.insert( &previous_display );
-      for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
-      { (*iter)->activeView().closeDisplay( **display_iter ); }
-      
-    }
-
     // restore modification state and make new display active
     display.setModified( modified );
     active_view.setActiveDisplay( display );
@@ -527,14 +527,8 @@ void WindowServer::_detach( void )
   MainWindow& active_window_local( _activeWindow() );
   
   // check number of independent displays
-  if( active_window_local.activeView().independentDisplayCount() < 2 )
-  {
-    QtUtil::infoDialog( &active_window_local,
-      "There must be at least two different files opened\n"
-      "in the same window for the displays to be detachable" );
-    return;
-  }
-
+  assert( active_window_local.activeView().independentDisplayCount() >= 2 );
+  
   // check number of displays associated to active
   TextDisplay& active_display_local( active_window_local.activeView().activeDisplay() );
   BASE::KeySet<TextDisplay> associated_displays( active_display_local );
@@ -590,8 +584,7 @@ void WindowServer::_saveAll( void )
   
   // retrieve windows
   BASE::KeySet<MainWindow> windows( this );
-  for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ )
-  { (*iter)->saveAll(); }
+  for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ ) { (*iter)->saveAll(); }
 
   return;
   
@@ -716,21 +709,7 @@ void WindowServer::_setActiveWindow( MainWindow& window )
 { 
   Debug::Throw() << "WindowServer::setActiveWindow - key: " << window.key() << std::endl;
   assert( window.isAssociated( this ) );
-  
   active_window_ = &window;
-  if( !_activeWindow().isActive() )
-  {
-
-    BASE::KeySet<MainWindow> windows( this );
-    for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ )
-    { (*iter)->setActive( false ); }
-    
-    _activeWindow().setActive( true );
-    
-  }
-  
-  Debug::Throw( "WindowServer::setActiveWindow - done.\n" );
-  
 }
 
 

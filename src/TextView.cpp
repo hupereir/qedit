@@ -138,6 +138,11 @@ unsigned int TextView::modifiedDisplayCount( void )
 bool TextView::selectDisplay( const File& file )
 {
   
+  Debug::Throw( "TextView::selectDisplay.\n" );
+  
+  // check if active display match.
+  if( TextDisplay::SameFileFTor( file )( &activeDisplay() ) ) return true;
+  
   BASE::KeySet<TextDisplay> displays( this );
   BASE::KeySet<TextDisplay>::iterator iter( std::find_if(
     displays.begin(),
@@ -250,8 +255,10 @@ void TextView::closeDisplay( TextDisplay& display )
   if( displays.empty() ) displays = BASE::KeySet<TextDisplay>( this );
   for( BASE::KeySet<TextDisplay>::reverse_iterator iter = displays.rbegin(); iter != displays.rend(); iter++ )
   { 
+    //Debug::Throw(0, "TextView::closeDisplay - changing focus.\n" );
     if( (*iter) != &display ) {
-      setActiveDisplay( **iter ); 
+      //Debug::Throw(0, "TextView::closeDisplay - found active display.\n" );
+      setActiveDisplay( **iter );
       activeDisplay().setFocus();
       break;
     }
@@ -349,6 +356,21 @@ void TextView::saveAll( void )
 
 }
 
+
+//____________________________________________
+void TextView::ignoreAll( void )
+{
+  Debug::Throw( "TextView::ignoreAll.\n" );
+
+  // retrieve all displays
+  BASE::KeySet<TextDisplay> displays( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  { (*iter)->setModified( false ); }
+
+  return;
+
+}
+
 //________________________________________________________________
 void TextView::selectClassName( QString name )
 {
@@ -438,6 +460,63 @@ void TextView::diff( void )
   
   return;
   
+}
+
+//____________________________________________
+void TextView::enterEvent( QEvent* e )
+{
+
+  Debug::Throw( "TextView::enterEvent.\n" );
+  QWidget::enterEvent( e );
+
+  // keep track of displays to be deleted, if any
+  BASE::KeySet<TextDisplay> dead_displays;
+
+  // retrieve displays
+  BASE::KeySet<TextDisplay> displays( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  {
+
+    // this trick allow to run only once per set of displays associated to the same file
+    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
+    
+    // keep local reference of current display
+    TextDisplay &display( **iter );
+    
+    // check file
+    if( display.checkFileRemoved() == FileRemovedDialog::CLOSE ) 
+    { 
+        
+      // register displays as dead
+      BASE::KeySet<TextDisplay> associated_displays( &display );
+      for( BASE::KeySet<TextDisplay>::iterator display_iter = associated_displays.begin(); display_iter != associated_displays.end(); display_iter++ )
+      { dead_displays.insert( *display_iter ); }
+      dead_displays.insert( &display );
+            
+    } else {
+ 
+      (*iter)->checkFileReadOnly();
+      (*iter)->checkFileModified();
+
+    }
+    
+  }
+  
+  // delete dead_displays
+  if( !dead_displays.empty() )
+  {
+
+    Debug::Throw() << "TextView::enterEvent - dead displays: " << dead_displays.size() << endl;
+    for( BASE::KeySet<TextDisplay>::iterator iter = dead_displays.begin(); iter != dead_displays.end(); iter++ )
+    { closeDisplay( **iter ); }
+
+  }
+
+  // update window title
+  emit needUpdate( TextDisplay::WINDOW_TITLE );
+
+  Debug::Throw( "TextView::enterEvent - done.\n" );
+
 }
 
 //____________________________________________

@@ -35,6 +35,7 @@
 
 #include "AskForSaveDialog.h"
 #include "BaseIcons.h"
+#include "GridLayout.h"
 #include "CustomPixmap.h"
 #include "IconEngine.h"
 #include "QtUtil.h"
@@ -80,9 +81,10 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   }
     
   // button layout
-  QHBoxLayout *button_layout = new QHBoxLayout();     
+  GridLayout *button_layout = new GridLayout();
   button_layout->setSpacing(5);
   button_layout->setMargin(0);
+  button_layout->setMaxCount(3);
   layout->addLayout( button_layout );
 
   // yes button
@@ -92,26 +94,12 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK ), "&Yes", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _yes() ) );
   }
-  
-  // yes to all button
-  if( buttons & YES_TO_ALL )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK_APPLY ), "Yes to &All", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _yesToAll() ) );
-  }
 
   // no button
   if( buttons & NO )
   {
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&No", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _no() ) );
-  }  
-
-  // no button
-  if( buttons & NO_TO_ALL )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "No to A&ll", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _noToAll() ) );
   }  
   
   // cancel button
@@ -120,6 +108,21 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
   }
+
+  // yes to all button
+  if( buttons & YES_TO_ALL )
+  {
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK_APPLY ), "Yes to &All", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( _yesToAll() ) );
+  }
+
+  // no button
+  if( buttons & NO_TO_ALL )
+  {
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "No to A&ll", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( _noToAll() ) );
+  }  
+  
   
   adjustSize();
   

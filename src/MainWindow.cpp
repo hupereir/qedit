@@ -74,7 +74,6 @@ using namespace std;
 MainWindow::MainWindow(  QWidget* parent ):
   CustomMainWindow( parent ),
   Counter( "MainWindow" ),
-  active_( false ),
   menu_( 0 ),
   statusbar_( 0 ),
   file_editor_( 0 ),
@@ -95,29 +94,34 @@ MainWindow::MainWindow(  QWidget* parent ):
   connect( menu_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
 
   // main widget is a splitter to store navigation window and active view 
-  setCentralWidget( splitter_ = new QSplitter( this ) );
-  splitter_->setOrientation( Qt::Horizontal );
-  setCentralWidget( splitter_ );
+  QSplitter* splitter = new QSplitter( this );
+  setCentralWidget( splitter );
+  splitter->setOrientation( Qt::Horizontal );
+  setCentralWidget( splitter );
 
   // insert navigationFrame
   navigation_frame_ = new NavigationFrame(0, static_cast<Application*>(qApp)->recentFiles() );
   navigationFrame().setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
   connect( &navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleNavigationFrame( bool ) ) );
-  splitter_->addWidget( &navigationFrame() );
-  
+  splitter->addWidget( &navigationFrame() );
+    
   // need to add navigationFrame visibility action to this list 
   // to enable shortcut event if the frame is hidden
   addAction( &navigationFrame().visibilityAction() );
+  connect( &navigationFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
+  
+  // insert stack widget
+  splitter->addWidget( stack_ = new QStackedWidget(0) );
   
   // insert main view
   setActiveView( _newTextView(0) );
-  splitter_->addWidget( &activeView() );
+  _stack().addWidget( &activeView() );
   
   // assign stretch factors
-  splitter_->setStretchFactor( 0, 0 );
-  splitter_->setStretchFactor( 1, 1 );
+  splitter->setStretchFactor( 0, 0 );
+  splitter->setStretchFactor( 1, 1 );
   
-  connect( splitter_, SIGNAL( splitterMoved( int, int ) ), SLOT( _splitterMoved( void ) ) );
+  connect( splitter, SIGNAL( splitterMoved( int, int ) ), SLOT( _splitterMoved( void ) ) );
   
   // state frame
   setStatusBar( statusbar_ = new StatusBar( this ) );
@@ -177,7 +181,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   connect( qApp, SIGNAL( saveConfiguration() ), SLOT( _saveConfiguration() ) );
   connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
- _updateConfiguration();
+  _updateConfiguration();
   
   // update buttons
   _update( TextDisplay::ALL );
@@ -191,15 +195,17 @@ MainWindow::~MainWindow( void )
 { Debug::Throw( "MainWindow::~MainWindow.\n" ); }
 
 //_____________________________________________________________________
-bool MainWindow::setActive( const bool& active )
+BASE::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
 {
+  BASE::KeySet<TextDisplay> displays;
+  BASE::KeySet<TextView> views( this );
+  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+  { 
+    BASE::KeySet<TextDisplay> view_displays(*iter);
+    displays.insert( view_displays.begin(), view_displays.end() );
+  }
   
-  Debug::Throw( "MainWindow::setActive.\n" );
-  
-  // check if value is changed
-  if( isActive() == active ) return false;
-  active_ = active;
-  return true;
+  return displays;
   
 }
 
@@ -214,7 +220,7 @@ bool MainWindow::selectDisplay( const File& file )
     
     if( (*iter)->selectDisplay( file ) ) 
     {
-      // here one should need to make sure that this view is made visible
+      _stack().setCurrentWidget( *iter );
       return true; 
     }
     
@@ -230,6 +236,15 @@ void MainWindow::saveAll( void )
   BASE::KeySet<TextView> views( this );
   for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
   { (*iter)->saveAll(); }
+}
+
+//_____________________________________________________________________
+void MainWindow::ignoreAll( void )
+{
+  Debug::Throw( "MainWindow::ignoreAll.\n" );
+  BASE::KeySet<TextView> views( this );
+  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+  { (*iter)->ignoreAll(); }
 }
 
 //___________________________________________________________
@@ -384,11 +399,22 @@ void MainWindow::_print( void )
 }
 
 //_______________________________________________________
-void MainWindow::focusInEvent( QFocusEvent* event )
+bool MainWindow::event( QEvent* event )
 {
-  Debug::Throw() << "MainWindow::focusInEvent - " << key() << endl;
-  emit hasFocus( this );
-  CustomMainWindow::focusInEvent( event );
+    
+  // check that all needed widgets/actions are valid and checked.
+  switch (event->type()) 
+  {
+          
+    case QEvent::WindowActivate:
+    emit activated( this );
+    break;
+    
+    default: break;
+  }
+  
+  return CustomMainWindow::event( event );
+  
 }
 
 //____________________________________________
@@ -400,110 +426,50 @@ void MainWindow::closeEvent( QCloseEvent* event )
   event->accept();
       
   // look over TextDisplays
-  if( isModified() )
+  if( !isModified() ) return;
+  
+  // loop over TextViews
+  unsigned int modified_displays(0);
+  BASE::KeySet<TextDisplay> displays;
+  BASE::KeySet<TextView> views( this );
+  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+  {
+    
+    // update the number of modified displays
+    modified_displays += (*iter)->modifiedDisplayCount();
+
+    // store associated textDisplays in main set
+    BASE::KeySet<TextDisplay> view_displays( *iter );
+    displays.insert( view_displays.begin(), view_displays.end() );
+    
+  }
+  
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
 
-    // look over TextDisplays
-    BASE::KeySet<TextDisplay> displays( &activeView() );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    {
-
-      // get local reference to display
-      TextDisplay& display( **iter );
+    // get local reference to display
+    TextDisplay& display( **iter );
+        
+    // check if this display is modified
+    if( !display.document()->isModified() ) continue;
+    
+    // this trick allow to run  only once per set of associated displays
+    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( &display ) ) != iter ) continue;
+    
+    // ask for save
+    int state( display.askForSave( modified_displays > 1 ) );
+    if( state == AskForSaveDialog::YES_TO_ALL ) saveAll();
+    else if( state == AskForSaveDialog::NO_TO_ALL ) ignoreAll();
+    else if( state == AskForSaveDialog::CANCEL ) {
       
-      // check if this display is modified
-      if( !display.document()->isModified() ) continue;
-
-      // this trick allow to run  only once per set of associated displays
-      if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( &display ) ) != iter ) continue;
+      event->ignore();
+      return;
       
-      // ask for save
-      int state( display.askForSave( modifiedDisplayCount() > 1 ) );
-      if( state == AskForSaveDialog::YES_TO_ALL ) 
-      {
-        
-        // for this window, only save displays located after the current
-        for( BASE::KeySet<TextDisplay>::iterator display_iter = iter; display_iter != displays.end(); display_iter++ )
-        { if( (*display_iter)->document()->isModified() ) (*display_iter)->save(); }
-
-      } else if( state == AskForSaveDialog::YES_TO_ALL ) {
-        
-        // for this window, only save displays located after the current
-        for( BASE::KeySet<TextDisplay>::iterator display_iter = iter; display_iter != displays.end(); display_iter++ )
-        { if( (*display_iter)->document()->isModified() ) (*display_iter)->setModified( false ); }
-        
-      } else if( state == AskForSaveDialog::CANCEL ) {
-
-        event->ignore();
-        return;
-
-      }
-
     }
 
   }
   
   return;
-}
-
-//____________________________________________
-void MainWindow::enterEvent( QEvent* e )
-{
-
-  Debug::Throw( "MainWindow::enterEvent.\n" );
-  CustomMainWindow::enterEvent( e );
-
-  // keep track of displays to be deleted, if any
-  BASE::KeySet<TextDisplay> dead_displays;
-
-  // retrieve displays
-  BASE::KeySet<TextDisplay> displays( &activeView() );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-
-    // this trick allow to run only once per set of displays associated to the same file
-    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
-    
-    // keep local reference of current display
-    TextDisplay &display( **iter );
-    
-    // check file
-    if( display.checkFileRemoved() == FileRemovedDialog::CLOSE ) 
-    { 
-        
-      // register displays as dead
-      BASE::KeySet<TextDisplay> associated_displays( &display );
-      for( BASE::KeySet<TextDisplay>::iterator display_iter = associated_displays.begin(); display_iter != associated_displays.end(); display_iter++ )
-      { dead_displays.insert( *display_iter ); }
-      dead_displays.insert( &display );
-            
-    } else {
- 
-      (*iter)->checkFileReadOnly();
-      (*iter)->checkFileModified();
-
-    }
-    
-  }
-  
-  // update window title
-  _updateWindowTitle();
-
-  // delete dead_displays
-  if( !dead_displays.empty() )
-  {
-
-    Debug::Throw() << "MainWindow::enterEvent - dead displays: " << dead_displays.size() << endl;
-    for( BASE::KeySet<TextDisplay>::iterator iter = dead_displays.begin(); iter != dead_displays.end(); iter++ )
-    { activeView().closeDisplay( **iter ); }
-
-    // need to close window manually if there is no remaining displays
-    if( dead_displays.size() == displays.size() ) close();
-
-  }
-
-  Debug::Throw( "MainWindow::enterEvent - done.\n" );
-
 }
 
 //_______________________________________________________

@@ -72,7 +72,7 @@ class FileSystemFrame: public QWidget, public Counter
   signals:
     
   //! file selected
-  void fileSelected( FileRecord );
+  void fileActivated( FileRecord );
    
   public slots:
   

@@ -1,7 +1,8 @@
-// $Id$
 #ifndef MainWindow_h
 #define MainWindow_h
 
+
+// $Id$
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
@@ -33,8 +34,8 @@
 
 #include <QAction>
 #include <QCloseEvent>
-#include <QFocusEvent>
 #include <QSplitter>
+#include <QStackedWidget>
 #include <QTimer>
 
 #include <list>
@@ -68,13 +69,6 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! destructor
   ~MainWindow( void );
 
-  //! activity
-  virtual bool setActive( const bool& value );
-
-  //! activity
-  virtual const bool& isActive( void ) const
-  { return active_; }
-  
   //!@name file management
   //@{
   
@@ -154,15 +148,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! returns true if there is at least one display modified in this window
   bool isModified( void ) const
   { return IsModifiedFTor()(this); }
-  
-  //! return number of independant displays
-  unsigned int independentDisplayCount( void )
-  { return activeView().independentDisplayCount(); }
-  
-  //! return number of independent modified displays
-  unsigned int modifiedDisplayCount( void )
-  { return activeView().modifiedDisplayCount(); }
-
+    
   //@}
 
   //! menu
@@ -208,11 +194,21 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   TextDisplay& activeDisplay( void )
   { return activeView().activeDisplay(); }
 
+  //! get set of all displays associated to this window
+  /*! 
+  this is a convenient function that loops over all associated views
+  and merge their associated displays into a single list
+  */
+  BASE::KeySet<TextDisplay> associatedDisplays( void ) const;
+  
   //! select display from file
   bool selectDisplay( const File& );
   
   //! save all modified text displays
   void saveAll( void );
+  
+  //! ignore all text display modifications
+  void ignoreAll( void );
 
   //@}
   
@@ -324,8 +320,8 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
 
   signals:
  
-  //! emmited when recieve focus
-  void hasFocus( MainWindow* );
+  //! emmited when window is activated
+  void activated( MainWindow* );
   
   //! emmited when the document modification state of an editor is changed
   void modificationChanged( void );
@@ -346,15 +342,12 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
  
   protected:
 
-  //! close event
-  virtual void focusInEvent( QFocusEvent* );
+  //! generic event
+  virtual bool event( QEvent* );
 
   //! close event
   virtual void closeEvent( QCloseEvent* );
 
-  //! enter event handler
-  virtual void enterEvent( QEvent* );
-      
   //! timer event
   virtual void timerEvent( QTimerEvent* );
   
@@ -376,6 +369,15 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! splitter moved
   void _splitterMoved( void );
    
+  //! select display from file
+  /*! 
+  this is triggered by changing the selection in the sessionFilesFrame
+  of the navigation window. This ensures that the selected display
+  is always the active one, as long as it belongs to this window
+  */
+  void _selectDisplay( FileRecord record )
+  { selectDisplay( record.file() ); }
+
   //! clone current file
   void _splitDisplay( void )
   { activeView().splitDisplay( orientation(), true ); }
@@ -478,17 +480,21 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   /*! it is used to print formatted text to both HTML and PDF */
   QString _htmlString( const int& );
   
-  //! true if this window is the active window
-  bool active_;
+  //! stack windget
+  QStackedWidget& _stack( void ) const
+  { 
+    assert( stack_ );
+    return *stack_; 
+  }
     
   //!@name child widgets
   //@{
 
   //! menu
   Menu* menu_;
-
-  //! main splitter
-  QSplitter* splitter_;
+  
+  //! stack widget
+  QStackedWidget* stack_;
   
   //! navigation window
   NavigationFrame* navigation_frame_;

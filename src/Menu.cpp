@@ -432,7 +432,7 @@ void Menu::_updateWindowsMenu( void )
   { 
     
     // retrieve associated TextDisplays
-    BASE::KeySet<TextDisplay> displays( &(*window_iter)->activeView() );
+    BASE::KeySet<TextDisplay> displays( (*window_iter)->associatedDisplays() );
     for( BASE::KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
     {
       

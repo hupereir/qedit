@@ -80,6 +80,8 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   connect( &_model(), SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
 
   connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateActions() ) );
+  connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _checkSelection() ) );
+
   connect( _list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
   connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
  
@@ -150,6 +152,16 @@ void SessionFilesFrame::_updateActions( void )
 }
 
 //______________________________________________________________________
+void SessionFilesFrame::_checkSelection( void )
+{ 
+  Debug::Throw( "SessionFilesFrame:_checkSelection.\n" );
+  SessionFilesModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+  if( selection.empty() ) return;
+  emit fileSelected( selection.back() );
+  
+}
+
+//______________________________________________________________________
 void SessionFilesFrame::_open( void )
 { 
   
@@ -157,8 +169,9 @@ void SessionFilesFrame::_open( void )
   SessionFilesModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
   
   // one should check the number of files to be edited
+  /* needless here since there should be at most only one item selected/activated*/
   for( SessionFilesModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
-  { emit fileSelected( *iter ); }
+  { emit fileActivated( *iter ); }
   
 }
 
@@ -194,7 +207,7 @@ void SessionFilesFrame::_itemSelected( const QModelIndex& index )
 { 
   Debug::Throw( "SessionFilesFrame::_itemSelected.\n" );
   if( !index.isValid() ) return;
-  emit fileSelected( _model().get( index ) );
+  emit fileActivated( _model().get( index ) );
 }
 
 //______________________________________________________________________

@@ -60,18 +60,12 @@ class TextView: public QWidget, public Counter, public BASE::Key
   //!@name display management
   //@{
   
-//   //! returns true if there is at least one display modified in this window
-//   bool isModified( void ) const
-//   {
-//     BASE::KeySet<TextDisplay> displays( this );
-//     return std::find_if( displays.begin(), displays.end(), TextDisplay::ModifiedFTor() ) != displays.end();
-//   }
-  
   //! return number of independant displays
   unsigned int independentDisplayCount( void );
   
   //! return number of independent modified displays
   unsigned int modifiedDisplayCount( void );
+  
   //@}
   
   //!@name display management
@@ -109,6 +103,9 @@ class TextView: public QWidget, public Counter, public BASE::Key
   //! save all displays
   void saveAll( void );
   
+  //! ignore all display modifications
+  void ignoreAll( void );
+  
   //! select class name
   void selectClassName( QString );
   
@@ -138,6 +135,12 @@ class TextView: public QWidget, public Counter, public BASE::Key
  
   //! current display redo is available
   void redoAvailable( bool );
+
+  protected:
+  
+  //! enter event handler
+  /*! it is used to check for removed/externally modified files */
+  virtual void enterEvent( QEvent* );
   
   private slots:
   

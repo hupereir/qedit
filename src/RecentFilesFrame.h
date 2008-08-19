@@ -74,7 +74,7 @@ class RecentFilesFrame: public QWidget, public Counter
   signals:
 
   //! signal emited when a file is selected
-  void fileSelected( FileRecord );  
+  void fileActivated( FileRecord );  
       
   protected:
   

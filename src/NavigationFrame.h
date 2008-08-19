@@ -94,6 +94,9 @@ class NavigationFrame: public QWidget, public Counter
 
   //! signal emited when a file is selected
   void fileSelected( FileRecord );  
+
+  //! signal emited when a file is activated
+  void fileActivated( FileRecord );  
       
   protected:
      

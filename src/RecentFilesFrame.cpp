@@ -183,7 +183,7 @@ void RecentFilesFrame::_open( void )
   
   // one should check the number of files to be edited
   for( FileRecordModel::List::const_iterator iter = valid_selection.begin(); iter != valid_selection.end(); iter++ )
-  { emit fileSelected( *iter ); }
+  { emit fileActivated( *iter ); }
   
 }
 
@@ -225,7 +225,7 @@ void RecentFilesFrame::_itemSelected( const QModelIndex& index )
 { 
   Debug::Throw( "RecentFilesFrame::_itemSelected.\n" );
   if( !index.isValid() ) return;
-  emit fileSelected( _model().get( index ) );
+  emit fileActivated( _model().get( index ) );
 }
 
 //______________________________________________________________________

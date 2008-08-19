@@ -75,8 +75,9 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   
   // connections
   connect( &_sessionFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SIGNAL( fileSelected( FileRecord ) ) );
-  connect( &_recentFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SIGNAL( fileSelected( FileRecord ) ) );
-  connect( &_fileSystemFrame(), SIGNAL( fileSelected( FileRecord ) ), SIGNAL( fileSelected( FileRecord ) ) );
+  connect( &_sessionFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SIGNAL( fileActivated( FileRecord ) ) );
+  connect( &_recentFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SIGNAL( fileActivated( FileRecord ) ) );
+  connect( &_fileSystemFrame(), SIGNAL( fileActivated( FileRecord ) ), SIGNAL( fileActivated( FileRecord ) ) );
   
   // button group
   QButtonGroup* button_group = new QButtonGroup( this );

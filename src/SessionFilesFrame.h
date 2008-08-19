@@ -74,6 +74,9 @@ class SessionFilesFrame: public QWidget, public Counter
 
   //! signal emited when a file is selected
   void fileSelected( FileRecord );  
+
+  //! signal emited when a file is selected
+  void fileActivated( FileRecord );  
       
   protected:
   
@@ -101,7 +104,10 @@ class SessionFilesFrame: public QWidget, public Counter
  
   //! update session files
   void _updateActions( void );
- 
+  
+  //! check file selection
+  void _checkSelection( void );
+  
   //! open
   void _open( void );
 
