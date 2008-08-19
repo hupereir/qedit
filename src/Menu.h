@@ -58,6 +58,13 @@ class Menu:public QMenuBar, public Counter
   //! destructor
   ~Menu( void );
   
+  //! recent files menu
+  RecentFilesMenu& recentFilesMenu( void ) const
+  { 
+    assert( recent_files_menu_ );
+    return *recent_files_menu_;
+  }
+  
   //! macro menu
   QMenu& macroMenu( void ) const
   { 

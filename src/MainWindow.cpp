@@ -74,6 +74,7 @@ using namespace std;
 MainWindow::MainWindow(  QWidget* parent ):
   CustomMainWindow( parent ),
   Counter( "MainWindow" ),
+  active_( false ),
   menu_( 0 ),
   statusbar_( 0 ),
   file_editor_( 0 ),
@@ -189,55 +190,46 @@ MainWindow::MainWindow(  QWidget* parent ):
 MainWindow::~MainWindow( void )
 { Debug::Throw( "MainWindow::~MainWindow.\n" ); }
 
-//____________________________________________
-void MainWindow::_detach( void )
+//_____________________________________________________________________
+bool MainWindow::setActive( const bool& active )
 {
-
-  Debug::Throw( "MainWindow::_detach.\n" );
-
-  // check number of independent displays
-  if( activeView().independentDisplayCount() < 2 )
-  {
-    QtUtil::infoDialog( this,
-      "There must be at least two different files opened\n"
-      "in the same window for the displays to be detachable" );
-    return;
-  }
-
-  // check number of displays associated to active
-  BASE::KeySet<TextDisplay> associated_displays( &activeView().activeDisplay() );
-  if( !
-    ( associated_displays.empty() ||
-      QtUtil::questionDialog( this,
-      "Active display has clones in the current window.\n"
-      "They will be closed when the display is detached.\n"
-      "Continue ?" ) ) ) return;
-
-  // keep active display local.
-  TextDisplay& active_display_local( activeView().activeDisplay() );
-  bool modified( active_display_local.document()->isModified() );
-
-  // close all clone displays
-  for( BASE::KeySet<TextDisplay>::iterator iter = associated_displays.begin(); iter != associated_displays.end(); iter++ )
-  { activeView().closeDisplay( **iter ); }
-
-  // create MainWindow
-  MainWindow& window( static_cast<Application*>(qApp)->windowServer().newMainWindow() );
-
-  // clone its display from the current
-  window.activeView().activeDisplay().synchronize( &active_display_local );
-
-  // delete active display local
-  active_display_local.document()->setModified( false );
-  activeView().closeDisplay( active_display_local );
-
-  // show the new window
-  window.activeView().activeDisplay().document()->setModified( modified );
-  window.show();
-  window._updateConfiguration();
-
-  return;
   
+  Debug::Throw( "MainWindow::setActive.\n" );
+  
+  // check if value is changed
+  if( isActive() == active ) return false;
+  active_ = active;
+  return true;
+  
+}
+
+//_____________________________________________________________________
+bool MainWindow::selectDisplay( const File& file )
+{
+    
+  Debug::Throw( "MainWindow::selectDisplay.\n" );
+  BASE::KeySet<TextView> views( this );
+  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+  { 
+    
+    if( (*iter)->selectDisplay( file ) ) 
+    {
+      // here one should need to make sure that this view is made visible
+      return true; 
+    }
+    
+  }
+  
+  return false;
+}
+  
+//_____________________________________________________________________
+void MainWindow::saveAll( void )
+{
+  Debug::Throw( "MainWindow::saveAll.\n" );
+  BASE::KeySet<TextView> views( this );
+  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+  { (*iter)->saveAll(); }
 }
 
 //___________________________________________________________
@@ -391,6 +383,14 @@ void MainWindow::_print( void )
 
 }
 
+//_______________________________________________________
+void MainWindow::focusInEvent( QFocusEvent* event )
+{
+  Debug::Throw() << "MainWindow::focusInEvent - " << key() << endl;
+  emit hasFocus( this );
+  CustomMainWindow::focusInEvent( event );
+}
+
 //____________________________________________
 void MainWindow::closeEvent( QCloseEvent* event )
 {
@@ -525,6 +525,16 @@ void MainWindow::timerEvent( QTimerEvent* event )
 }
 
 //________________________________________________________
+void MainWindow::_checkViews( void )
+{
+  
+  Debug::Throw( "MainWindow::_checkViews.\n" );
+  BASE::KeySet<TextView> views( this );
+  if( views.empty() ) close();
+  
+}
+  
+//________________________________________________________
 void MainWindow::_updateConfiguration( void )
 {
   
@@ -646,7 +656,6 @@ void MainWindow::_installActions( void )
   addAction( new_file_action_ = new QAction( IconEngine::get( ICONS::NEW ), "&New", this ) );
   new_file_action_->setShortcut( Qt::CTRL+Qt::Key_N );
   new_file_action_->setToolTip( "Create a new empty file" );
-  connect( new_file_action_, SIGNAL( triggered() ), SLOT( _newFile() ) );
 
   addAction( clone_action_ = new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "&Clone", this ) );
   clone_action_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_N );
@@ -657,13 +666,17 @@ void MainWindow::_installActions( void )
   detach_action_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_O );
   detach_action_->setToolTip( "Detach current display" );
   detach_action_->setEnabled( false );
-  connect( detach_action_, SIGNAL( triggered() ), SLOT( _detach() ) );
 
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this ) );
   open_action_->setShortcut( Qt::CTRL+Qt::Key_O );
-  open_action_->setToolTip( "Open an existsing file" );
-  connect( open_action_, SIGNAL( triggered() ), SLOT( open() ) );
- 
+  open_action_->setToolTip( "Open an existing file" );
+  
+  addAction( open_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Clone display top/bottom", this ) );
+  open_horizontal_action_->setToolTip( "Open a new display vertically" );
+
+  addAction( open_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open display left/right", this ) );
+  open_vertical_action_->setToolTip( "Open a new display horizontally" );
+  
   addAction( close_display_action_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "&Close display", this ) );
   close_display_action_->setShortcut( Qt::CTRL+Qt::Key_W );
   close_display_action_->setToolTip( "Close current display" );
@@ -734,14 +747,6 @@ void MainWindow::_installActions( void )
   addAction( split_display_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "Clone display left/right", this ) );
   split_display_vertical_action_->setToolTip( "Clone current display horizontally" );
   connect( split_display_vertical_action_, SIGNAL( triggered() ), SLOT( _splitDisplayHorizontal() ) );
-
-  addAction( open_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Clone display top/bottom", this ) );
-  open_horizontal_action_->setToolTip( "Open a new display vertically" );
-  connect( open_horizontal_action_, SIGNAL( triggered() ), SLOT( openVertical() ) );
-
-  addAction( open_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open display left/right", this ) );
-  open_vertical_action_->setToolTip( "Open a new display horizontally" );
-  connect( open_vertical_action_, SIGNAL( triggered() ), SLOT( openHorizontal() ) );
   
 }
 
@@ -773,6 +778,8 @@ TextView& MainWindow::_newTextView( QWidget *parent )
   
   TextView* view = new TextView( parent );
  
+  BASE::Key::associate( this, view );
+  
   // connections
   connect( view, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
   connect( view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
@@ -782,6 +789,8 @@ TextView& MainWindow::_newTextView( QWidget *parent )
   connect( view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
   connect( view, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) ); 
   connect( &view->positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );  
+
+  connect( view, SIGNAL( destroyed( void ) ), SLOT( _checkViews( void ) ) ); 
   
   return *view;
   

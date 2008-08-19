@@ -59,66 +59,13 @@ class TextView: public QWidget, public Counter, public BASE::Key
  
   //!@name display management
   //@{
- 
-  //! used to select editor with matching filename
-  class SameFileFTor
-  {
-    
-    public:
-
-    //! constructor
-    SameFileFTor( const File& file ):
-      file_( file.expand() )
-    {}
-
-    //! predicate
-    bool operator() ( const TextView* view ) const
-    { 
-      BASE::KeySet<TextDisplay> displays( view );
-      return std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file_ ) ) != displays.end();
-    }
-
-    private:
-
-    //! predicted file
-    const File file_;
-
-  };
   
-  //! used to select editor with empty, unmodified file
-  class EmptyFileFTor
-  {
-    public:
-
-    //! predicate
-    bool operator() ( const TextView* view ) const
-    { 
-      BASE::KeySet<TextDisplay> displays( view );
-      return std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) != displays.end();
-    }
-    
-  };
-
-  //! used to select editor with empty, unmodified file
-  class IsModifiedFTor
-  {
-    public:
-
-    //! predicate
-    bool operator() ( const TextView* view ) const
-    { return view->isModified(); }
-    
-  };
-  
-  //! set file and read
-  void setFile( File file );
-
-  //! returns true if there is at least one display modified in this window
-  bool isModified( void ) const
-  {
-    BASE::KeySet<TextDisplay> displays( this );
-    return std::find_if( displays.begin(), displays.end(), TextDisplay::ModifiedFTor() ) != displays.end();
-  }
+//   //! returns true if there is at least one display modified in this window
+//   bool isModified( void ) const
+//   {
+//     BASE::KeySet<TextDisplay> displays( this );
+//     return std::find_if( displays.begin(), displays.end(), TextDisplay::ModifiedFTor() ) != displays.end();
+//   }
   
   //! return number of independant displays
   unsigned int independentDisplayCount( void );
@@ -145,7 +92,7 @@ class TextView: public QWidget, public Counter, public BASE::Key
   void setActiveDisplay( TextDisplay& );
 
   //! close display
-  bool closeActiveDisplay( void );
+  void closeActiveDisplay( void );
   
   //! close display
   /*! Ask for save if display is modified */
@@ -153,22 +100,9 @@ class TextView: public QWidget, public Counter, public BASE::Key
   
   //@}
 
-  //! default open mode
-  enum OpenMode
-  {
-    //! new window
-    NEW_WINDOW,
-    
-    //! new display
-    NEW_VIEW
-  };
-
-  //! new file
-  void newFile( const OpenMode&, const Qt::Orientation& );
-
-  //! open file
-  void open( FileRecord,  const OpenMode&, const Qt::Orientation& );
-
+  //! set file and read
+  void setFile( File file );
+     
   //! split display
   TextDisplay& splitDisplay( const Qt::Orientation&, const bool& clone );
   
@@ -207,11 +141,19 @@ class TextView: public QWidget, public Counter, public BASE::Key
   
   private slots:
   
+  //! check number of displays
+  /*! 
+  this is triggered by TextDisplay::destroyed()
+  when no display is found the entire window is closed
+  the active display is updated otherwise
+  */
+  void _checkDisplays( void );
+  
   //! display focus changed
-  void _displayFocusChanged( TextEditor* );
+  void _activeDisplayChanged( TextEditor* );
   
   private:
-     
+ 
   //! create new splitter
   QSplitter& _newSplitter( const Qt::Orientation&, const bool&  );
   

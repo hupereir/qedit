@@ -33,15 +33,19 @@
 #include <QAction>
 
 #include "Application.h"
+#include "CustomFileDialog.h"
 #include "Debug.h"
 #include "FileList.h"
 #include "Icons.h"
 #include "IconEngine.h"
 #include "MainWindow.h"
+#include "Menu.h"
 #include "NavigationFrame.h"
 #include "NewFileDialog.h"
 #include "QtUtil.h"
+#include "RecentFilesMenu.h"
 #include "SaveAllDialog.h"
+#include "Util.h"
 #include "WindowServer.h"
 
 using namespace std;
@@ -50,14 +54,14 @@ using namespace std;
 WindowServer::WindowServer( QObject* parent ):
   QObject( parent ),
   Counter( "WindowServer" ),
-  open_status_( OPEN )
+  active_window_( 0 )
 { 
   Debug::Throw( "WindowServer::WindowServer.\n" ); 
   
   // create actions
   save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save A&ll", this );
   connect( save_all_action_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
-  
+    
 }
 
 //________________________________________________________________
@@ -68,19 +72,29 @@ WindowServer::~WindowServer( void )
 MainWindow& WindowServer::newMainWindow( void )
 {  
   Debug::Throw( "WindowServer::newMainWindow.\n" );
-  MainWindow* out = new MainWindow();
-  BASE::Key::associate( this, out );
-  
-  connect( out, SIGNAL( destroyed() ), SIGNAL( sessionFilesChanged() ) );
-  connect( out, SIGNAL( modificationChanged() ), SIGNAL( sessionFilesChanged() ) );
-  connect( out, SIGNAL( modificationChanged() ), SLOT( _updateActions() ) );
-  
-  connect( this, SIGNAL( sessionFilesChanged() ), &out->navigationFrame().updateSessionFilesAction(), SLOT( trigger() ) );
-  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( contentsChanged() ), &out->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
-  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( validFilesChecked() ), &out->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
-  connect( &out->navigationFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( open( FileRecord ) ) );
+  MainWindow* window = new MainWindow();
 
-  return *out;
+  BASE::Key::associate( this, window );
+  _setActiveWindow( *window );
+  
+  connect( window, SIGNAL( destroyed() ), SIGNAL( sessionFilesChanged() ) );
+  connect( window, SIGNAL( modificationChanged() ), SIGNAL( sessionFilesChanged() ) );
+  connect( window, SIGNAL( modificationChanged() ), SLOT( _updateActions() ) );
+  
+  connect( this, SIGNAL( sessionFilesChanged() ), &window->navigationFrame().updateSessionFilesAction(), SLOT( trigger() ) );
+  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( contentsChanged() ), &window->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
+  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( validFilesChecked() ), &window->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
+
+  connect( &window->newFileAction(), SIGNAL( triggered() ), SLOT( _newFile() ) );
+  connect( &window->openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
+  connect( &window->openHorizontalAction(), SIGNAL( triggered() ), SLOT( _openHorizontal() ) );
+  connect( &window->openVerticalAction(), SIGNAL( triggered() ), SLOT( _openVertical() ) );
+  connect( &window->detachAction(), SIGNAL( triggered() ), SLOT( _detach() ) );
+
+  connect( &window->menu().recentFilesMenu(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _open( FileRecord ) ) );
+  connect( &window->navigationFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _open( FileRecord ) ) );
+
+  return *window;
 }
 
 //______________________________________________________
@@ -206,234 +220,66 @@ void WindowServer::readFilesFromArguments( ArgList args )
   // retrieve files from arguments
   ArgList::Arg last_arg( args.get().back() );
   
+  // load files
+  list<string> files( last_arg.options() );
+  
+  // close mode
+  if( args.find( "--close" ) ) _closeFiles( last_arg.options() );
+
   // check number of files
-  if( last_arg.options().size() > 10 )
+  if( files.size() > 10 )
   {
     ostringstream what;
-    what << "Do you really want to open " << last_arg.options().size() << " files at the same time ?" << endl;
+    what << "Do you really want to open " << files.size() << " files at the same time ?" << endl;
     what << "This might be very resource intensive and can overload your computer." << endl;
     what << "If you choose No, only the first file will be opened.";
     if( !QtUtil::questionDialog( qApp->activeWindow(), what.str() ) )
     {
-      ArgList::Arg tmp;
-      tmp.options().push_back( last_arg.options().front() );
-      last_arg = tmp;
+      list<string> tmp;
+      tmp.push_back( files.front() );
+      files = tmp;
     }
   }
   
-  // see if tabbed mode
+  // tabbed | diff mode
   bool tabbed( args.find( "--tabbed" ) );
   bool diff( args.find( "--diff" ) );
-  if( tabbed || diff )
+  if( ( tabbed || diff ) && files.size() > 1 )
   {
-    
-    MainWindow *window( 0 );
-    
-    // try find empty editor
-    BASE::KeySet<MainWindow> windows( this );
-    
-    // retrieve an empty window if any, or create one
-    BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
-    if( iter != windows.end() ) window = (*iter );
-    else window = &newMainWindow();
 
-    // need to show window immediately to avoid application
-    // to quit if at some point no window remains open    
-    window->show();
-
-    // loop over files and open in current window
-    set<string> files;
-    for( list< string >::const_iterator iter = last_arg.options().begin(); iter != last_arg.options().end(); iter++ )
+    bool first( true );
+    for( list< string >::const_iterator iter = files.begin(); iter != files.end(); iter++ )
     {
+    
+      if( first )
+      {
       
-      
-      File file( *iter );
-      if( file.size() ) file = file.expand();
-      
-      // open in same window, using default orientation
-      if( window->orientation() == Qt::Horizontal ) window->openHorizontal( file );
-      else window->openVertical( file );
-      files.insert( file );
-      
+        if( _open( File( *iter ).expand() ) );
+        {
+          assert( _hasActiveWindow() );
+          first = false;
+        }
+        
+      } else { _open( File( *iter ).expand(), _activeWindow().orientation() ); }
+    
     }
     
-    // if diff 
-    if( diff && window )
+    if( diff )
     { 
-      if( files.size() == 2 ) window->diffAction().trigger(); 
-      else if( files.size() > 2 ) QtUtil::infoDialog( qApp->activeWindow(), "too many files selected. <Diff> canceled." );
-      else if( files.size() < 2 ) QtUtil::infoDialog( qApp->activeWindow(), "too few files selected. <Diff> canceled." );
+      if( !first && _activeWindow().independentDisplayCount() == 2 ) _activeWindow().diffAction().trigger();
+      else QtUtil::infoDialog( qApp->activeWindow(), "invalid number of files selected. <Diff> canceled." );
     }
     
-    return;
-  } 
+  } else {
   
-  // close mode
-  if( args.find( "--close" ) )
-  {
-  
-    // loop over files 
-    for( list< string >::const_iterator iter = last_arg.options().begin(); iter != last_arg.options().end(); iter++ )
-    {
-      File file( *iter );
-
-      // retrieve all MainWindows
-      BASE::KeySet<MainWindow> windows( this );
-      BASE::KeySet<MainWindow>::iterator window_iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
-      if( window_iter == windows.end() ) continue;
-      
-      // select display and close
-      (*window_iter)->selectDisplay( file );
-      (*window_iter)->closeDisplayAction().trigger();
-    }
-    
-    // exit application
-    open_status_ = EXIT_APP;
-    return;
-    
+    // default mode
+    for( list< string >::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+    { _open( File( *iter ).expand() ); }
+     
   }
   
-  // default mode
-  for( list< string >::const_iterator iter = last_arg.options().begin(); iter != last_arg.options().end(); iter++ )
-  {
-    
-    File file( *iter );
-    if( !file.empty() ) file = file.expand();
-    open( file, args );
-    if( open_status_ == EXIT_APP ) return;
-    
-  }
-      
   return;
   
-}
-
-//_______________________________________________
-MainWindow* WindowServer::open( FileRecord record, ArgList args )
-{
-  
-  Debug::Throw() << "WindowServer::Open - file: " << record.file() << endl;
-
-  //! see if autospell action is required
-  bool autospell( args.find( "--autospell" ) );
-  
-  //! see if autospell filter and dictionary are required
-  string filter = ( args.find( "--filter" ) && !args.get( "--filter" ).options().empty() ) ? args.get( "--filter" ).options().front() : "";
-  string dictionary = (args.find( "--dictionary" ) && !args.get( "--dictionary" ).options().empty() ) ? args.get( "--dictionary" ).options().front() : "";
-  Debug::Throw() << "WindowServer::open - filter:" << filter << " dictionary: " << dictionary << endl;
-  
-  //! set default status to "open"
-  open_status_ = OPEN;
-  
-  // see if file is directory
-  if( record.file().isDirectory() )
-  {
-    
-    ostringstream what;
-    what << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
-    QtUtil::infoDialog( qApp->activeWindow(), what.str() );
-    
-    // update open status and exit
-    open_status_ = INVALID;
-    return 0;
-    
-  }
-
-  // retrieve all MainWindows
-  MainWindow* window( 0 );
-  BASE::KeySet<MainWindow> windows( this );
-  
-  // try find editor with matching name
-  BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
-  if( iter != windows.end() )
-  {
-    (*iter)->uniconify();
-    (*iter)->selectDisplay( record.file() );
-  
-    // trigger autospell if required
-    if( autospell ) (*iter)->activeDisplay().autoSpellAction().setChecked( true );
-    if( !filter.empty() ) (*iter)->activeDisplay().selectFilter( filter.c_str() );
-    if( !dictionary.empty() ) (*iter)->activeDisplay().selectDictionary( dictionary.c_str() );
-    
-    // update open status and exit
-    open_status_ = OPEN;
-    return (*iter);
-    
-  }
-  
-  // try find empty editor
-  iter = find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
-  if( iter != windows.end() ) window = (*iter );
-
-  // if no window found, create a new one
-  if( !window ) {  window = &newMainWindow(); }
-
-  // need to show window immediately to avoid application
-  // to quit if at some point no window remains open
-  window->show();
-
-  // check if file exists
-  if( record.file().exists() || record.file().empty() ) window->activeView().setFile( record.file() );
-  else if( !record.file().empty() )
-  {
-      
-    // create NewFileDialog
-    int buttons( NewFileDialog::CREATE | NewFileDialog::CANCEL );
-    bool enable_exit( BASE::KeySet<MainWindow>(this).size() == 1 );
-    if( enable_exit ) buttons |= NewFileDialog::EXIT;
-    
-    NewFileDialog dialog( window, record.file(), buttons );
-    QtUtil::centerOnParent( &dialog );
-    int state = dialog.exec();
-    
-    Debug::Throw() << "WindowServer::Open - New file dialog state: " << state << endl; 
-    switch( state )
-    {
-  
-      case NewFileDialog::CREATE:
-      {
-        File fullname( record.file().expand() );
-        if( !fullname.create() )
-        {
-          ostringstream what;
-          what << "Unable to create file " << record.file() << ".";
-          QtUtil::infoDialog( window, what.str() );
-          window->activeView().setFile( File("") );
-        } else window->activeView().setFile( fullname );
-        open_status_ = OPEN;
-        break;
-      }
-  
-      case NewFileDialog::CANCEL:
-      if( enable_exit ) open_status_ = INVALID;
-      else {
-        open_status_ = INVALID;
-        window->close();
-        return 0;
-      }
-      
-      break; 
-  
-      case NewFileDialog::EXIT:
-      {
-        open_status_ = INVALID;
-        window->close();
-        return 0;
-      }
-      
-      default: throw runtime_error( DESCRIPTION( "invalid return code" ) );
-    }
-  } 
-  
-  // trigger autospell if required
-  if( autospell ) window->activeDisplay().autoSpellAction().setChecked( true );
-  if( !filter.empty() ) window->activeDisplay().selectFilter( filter.c_str() );
-  if( !dictionary.empty() ) window->activeDisplay().selectDictionary( dictionary.c_str() );
-
-  Debug::Throw( "WindowServer::Open - done.\n" );
-    
-  return window;
-
 }
 
 //___________________________________________________________
@@ -445,14 +291,14 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   unsigned int counts(0);
   
   // retrieve frame associated with file
-  BASE::KeySet<MainWindow> frames( this );
+  BASE::KeySet<MainWindow> windows( this );
   for( list<File>::iterator iter = files.begin(); iter != files.end(); iter++ )
   {
     
     File& file( *iter );
     
-    BASE::KeySet<MainWindow>::iterator iter = find_if( frames.begin(), frames.end(), MainWindow::SameFileFTor( file ) );
-    assert( iter != frames.end() );
+    BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
+    assert( iter != windows.end() );
 
     // retrieve TextDisplay that match file
     BASE::KeySet<TextDisplay> displays( &(*iter)->activeView() );
@@ -478,6 +324,13 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   return;
 }
 
+//____________________________________________
+void WindowServer::_activeWindowChanged( MainWindow* window )
+{
+  Debug::Throw() << "WindowServer::_activeWindowChanged - " << window->key() << endl;
+  _setActiveWindow( *window );
+}
+
 //_______________________________________________
 void WindowServer::_updateActions( void )
 {
@@ -488,9 +341,245 @@ void WindowServer::_updateActions( void )
 }
 
 //_______________________________________________
-void WindowServer::_saveAll( void )
+void WindowServer::_newFile( void )
 {
   
+  Debug::Throw( "WindowServer::_newFile.\n" );
+  
+  // retrieve all MainWindows
+  MainWindow* window( 0 );
+  BASE::KeySet<MainWindow> windows( this );
+ 
+  // try find empty editor
+  BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
+  if( iter != windows.end() ) window = (*iter );
+  
+  // if no window found, create a new one
+  if( !window ) {  window = &newMainWindow(); }
+
+  // need to show window immediately to avoid application
+  // to quit if at some point no window remains open
+  window->show();
+  return;
+   
+}
+
+
+//_______________________________________________
+void WindowServer::_newFile( Qt::Orientation orientation )
+{
+  
+  Debug::Throw( "WindowServer::_newFile.\n" );
+   
+  // retrieve active view
+  assert( _hasActiveWindow() );
+  TextView& active_view( _activeWindow().activeView() );
+  TextDisplay* display;
+  
+  // look for an empty display
+  // create a new display if none is found
+  BASE::KeySet<TextDisplay> displays( active_view );
+  BASE::KeySet<TextDisplay>::iterator iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
+  display = ( iter == displays.end() ) ? &active_view.splitDisplay( orientation, false ):*iter;
+  
+  active_view.setActiveDisplay( *display );
+  return;
+
+}
+  
+//_______________________________________________
+bool WindowServer::_open( FileRecord record )
+{
+  
+  Debug::Throw( "WindowServer::_open.\n" );
+  
+  // do nothing if record is empty
+  if( record.file().empty() ) return false;
+  
+  // create file if it does not exist
+  if( !( record.file().exists() || _createNewFile( record ) ) ) return false;
+  
+  // retrieve all MainWindows
+  MainWindow* window( 0 );
+  BASE::KeySet<MainWindow> windows( this );
+  
+  // try find editor with matching name
+  BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
+  if( iter != windows.end() )
+  {
+    
+    (*iter)->uniconify();
+    (*iter)->selectDisplay( record.file() );
+    _setActiveWindow( **iter );
+    return true;
+    
+  } 
+    
+  // try find empty editor
+  iter = find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
+  if( iter != windows.end() ) window = (*iter );
+  
+  // if no window found, create a new one
+  if( !window ) {  window = &newMainWindow(); }
+
+  // need to show window immediately to avoid application
+  // to quit if at some point no window remains open
+  window->show();
+  window->activeView().setFile( record.file() );
+  return true;
+  
+}
+
+//_______________________________________________
+bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
+{  
+  Debug::Throw( "WindowServer::_open.\n" );
+  
+  // do nothing if record is empty
+  if( record.file().empty() ) return false;
+
+  // create file if it does not exist
+  if( !( record.file().exists() || _createNewFile( record ) ) ) return false;
+  
+  // retrieve active view
+  assert( _hasActiveWindow() );
+  TextView& active_view( _activeWindow().activeView() );
+  
+  // retrieve all windows and find one matching
+  BASE::KeySet<MainWindow> windows( this );
+  BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
+  if( iter != windows.end() )
+  {
+
+    // select found display in TextView
+    (*iter)->activeView().selectDisplay( record.file() );
+
+    // check if the found window is the current
+    if( &(*iter)->activeView() == &active_view )
+    {
+      (*iter)->uniconify();
+      _setActiveWindow( **iter );
+      return true;
+    }
+
+    ostringstream what;
+    what
+      << "The file " << record.file() << " is already opened in another window.\n"
+      << "Do you want to close the other display and open the file here ?";
+    if( !QtUtil::questionDialog( &_activeWindow(), what.str() ) )
+    {
+      (*iter)->uniconify();
+      return false;
+    }
+    
+    // look for an empty display
+    // create a new display if none is found
+    BASE::KeySet<TextDisplay> displays( &active_view );
+    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
+    TextDisplay& display( display_iter == displays.end() ? active_view.splitDisplay( orientation, false ):**display_iter );
+
+    // retrieve active display from previous window
+    TextDisplay& previous_display( (*iter)->activeDisplay() );
+
+    // store modification state
+    bool modified( previous_display.document()->isModified() );
+
+    // clone
+    display.synchronize( &previous_display );
+    
+    // set previous display as unmdified
+    previous_display.document()->setModified( false );
+
+    // close display, or window, depending on its number of independent files
+    if( (*iter)->independentDisplayCount() == 1 ) (*iter)->close();
+    else
+    {
+      
+      BASE::KeySet<TextDisplay> displays( &previous_display );
+      displays.insert( &previous_display );
+      for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
+      { (*iter)->activeView().closeDisplay( **display_iter ); }
+      
+    }
+
+    // restore modification state and make new display active
+    display.setModified( modified );
+    active_view.setActiveDisplay( display );
+    display.setFocus();
+
+  } else {
+
+    // look for an empty display
+    // create a new display if none is found
+    BASE::KeySet<TextDisplay> displays( active_view );
+    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
+    if( display_iter == displays.end() ) active_view.splitDisplay( orientation, false );
+
+    // open file in this window
+    active_view.setFile( record.file() );
+    
+  }
+  
+  return true;
+  
+}
+
+//_______________________________________________
+void WindowServer::_detach( void )
+{
+  
+  Debug::Throw( "WindowServer::_detach.\n" );
+
+  assert( _hasActiveWindow() );
+  MainWindow& active_window_local( _activeWindow() );
+  
+  // check number of independent displays
+  if( active_window_local.activeView().independentDisplayCount() < 2 )
+  {
+    QtUtil::infoDialog( &active_window_local,
+      "There must be at least two different files opened\n"
+      "in the same window for the displays to be detachable" );
+    return;
+  }
+
+  // check number of displays associated to active
+  TextDisplay& active_display_local( active_window_local.activeView().activeDisplay() );
+  BASE::KeySet<TextDisplay> associated_displays( active_display_local );
+  if( !( associated_displays.empty() ||
+    QtUtil::questionDialog( &active_window_local,
+    "Active display has clones in the current window.\n"
+    "They will be closed when the display is detached.\n"
+    "Continue ?" ) ) ) return;
+
+  // save modification state
+  bool modified( active_display_local.document()->isModified() );
+
+  // close all clone displays
+  for( BASE::KeySet<TextDisplay>::iterator iter = associated_displays.begin(); iter != associated_displays.end(); iter++ )
+  { active_window_local.activeView().closeDisplay( **iter ); }
+
+  // create MainWindow
+  MainWindow& window( newMainWindow() );
+
+  // clone its display from the current
+  window.activeView().activeDisplay().synchronize( &active_display_local );
+
+  // delete active display local
+  active_display_local.document()->setModified( false );
+  active_window_local.activeView().closeDisplay( active_display_local );
+
+  // show the new window
+  window.activeView().activeDisplay().document()->setModified( modified );
+  window.show();
+  // window._updateConfiguration();
+
+  return;
+  
+}
+  
+//_______________________________________________
+void WindowServer::_saveAll( void )
+{
   Debug::Throw( "WindowServer::_saveAll.\n" );
 
   // load files
@@ -512,5 +601,157 @@ void WindowServer::_saveAll( void )
   { (*iter)->saveAll(); }
 
   return;
+  
+}
+
+//________________________________________________________________
+void WindowServer::_closeFiles( const list<string>& files )
+{
+  
+  // loop over files 
+  for( list< string >::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+  {
+    File file( *iter );
+
+    // retrieve all MainWindows
+    BASE::KeySet<MainWindow> windows( this );
+    BASE::KeySet<MainWindow>::iterator window_iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
+    if( window_iter == windows.end() ) continue;
+    
+    // select display and close
+    (*window_iter)->selectDisplay( file );
+    (*window_iter)->closeDisplayAction().trigger();
+  }
+  
+  return;
+    
+}
+
+//_______________________________________________
+FileRecord WindowServer::_selectFileFromDialog( void )
+{
+  
+  Debug::Throw( "WindowServer::_selectFileFromDialog.\n" );
+  
+  FileRecord record;
+  
+  // create file dialog
+  CustomFileDialog dialog( qApp->activeWindow() );
+  dialog.setFileMode( QFileDialog::ExistingFile );
+  
+  File working_directory( _hasActiveWindow() ? _activeWindow().activeDisplay().workingDirectory() : File( Util::workingDirectory() ) );
+  dialog.setDirectory( QDir( working_directory.c_str() ) );
+  
+  QtUtil::centerOnParent( &dialog );
+  if( dialog.exec() == QDialog::Rejected ) return record;
+  
+  QStringList files( dialog.selectedFiles() );
+  if( files.empty() ) return record;
+  
+  File file = File( qPrintable( files.front() ) ).expand();
+
+  // see if file is directory
+  if( file.isDirectory() )
+  {
+    
+    ostringstream what;
+    what << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
+    QtUtil::infoDialog( qApp->activeWindow(), what.str() );
+    return record;
+    
+  }
+  
+  // assign file to record
+  record.setFile( file );
+  return record;
+  
+}
+
+//_______________________________________________
+bool WindowServer::_createNewFile( const FileRecord& record )
+{
+  Debug::Throw( "WindowServer::_createNewFile.\n" );
+  
+  // check file is valid
+  if( record.file().empty() ) return false;
+  
+  // create NewFileDialog
+  int buttons( NewFileDialog::CREATE | NewFileDialog::CANCEL );
+  if( BASE::KeySet<MainWindow>(this).size() == 1 ) buttons |= NewFileDialog::EXIT;
+    
+  NewFileDialog dialog( qApp->activeWindow(), record.file(), buttons );
+  QtUtil::centerOnParent( &dialog );
+  int state = dialog.exec();
+    
+  Debug::Throw() << "WindowServer::Open - New file dialog state: " << state << endl; 
+  switch( state )
+  {
+    
+    case NewFileDialog::CREATE:
+    {
+      File fullname( record.file().expand() );
+      if( !fullname.create() )
+      {
+        
+        ostringstream what;
+        what << "Unable to create file " << record.file() << ".";
+        QtUtil::infoDialog( qApp->activeWindow(), what.str() );
+        return false;
+        
+      } else return true;
+        
+    }
+    
+    break;
+
+    case NewFileDialog::EXIT: qApp->quit();
+  
+    case NewFileDialog::CANCEL: return false;
+      
+    default: 
+    assert(0);
+    break; 
+  
+  }
+  
+  return false;
+  
+}
+
+//________________________________________________________________
+void WindowServer::_setActiveWindow( MainWindow& window )
+{ 
+  Debug::Throw() << "WindowServer::setActiveWindow - key: " << window.key() << std::endl;
+  assert( window.isAssociated( this ) );
+  
+  active_window_ = &window;
+  if( !_activeWindow().isActive() )
+  {
+
+    BASE::KeySet<MainWindow> windows( this );
+    for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ )
+    { (*iter)->setActive( false ); }
+    
+    _activeWindow().setActive( true );
+    
+  }
+  
+  Debug::Throw( "WindowServer::setActiveWindow - done.\n" );
+  
+}
+
+
+//________________________________________________________________
+bool WindowServer::_hasActiveWindow( void ) const
+{ 
+  
+  // check if active window exists
+  if( !active_window_ ) return false;
+  
+  // check if found in list of associated windows
+  BASE::KeySet<MainWindow> windows( this );
+  
+  // not sure it works when the window pointed to by active_window_ has been removed
+  return windows.find( active_window_ ) != windows.end();
   
 }

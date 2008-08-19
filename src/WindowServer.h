@@ -79,7 +79,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   
   //!@name actions
   //@{
-   
+
   //! close
   QAction& saveAllAction( void ) const
   { return *save_all_action_; }
@@ -92,41 +92,87 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   void sessionFilesChanged( void );
   
   public slots:
-  
-  //! open
-  /*! returns 0 if no file is open (force application to quit) */
-  MainWindow* open( FileRecord record = FileRecord(), ArgList args = ArgList() );
  
   //! multiple files replace
   void multipleFileReplace( std::list<File>, TextSelection );
   
   private slots:
   
+  //! active window changed
+  void _activeWindowChanged( MainWindow* );
+  
   //! update actions
   void _updateActions( void );
+ 
+  //!@ new file methods
+  //@{
+
+  //! new file
+  void _newFile( void );
+
+  //! new file
+  void _newFile( Qt::Orientation );
+  
+  //@}
+
+  //!@ open methods
+  //@{
+  
+  //! from dialog
+  bool _open( void )
+  { return _open( _selectFileFromDialog() ); }
+
+  //! open file
+  bool _open( FileRecord );
+
+  //! open in active view
+  bool _openHorizontal( void )
+  { return _open( _selectFileFromDialog(), Qt::Vertical ); }
+
+  //! open in active view
+  bool _openVertical( void )
+  { return _open( _selectFileFromDialog(), Qt::Horizontal ); }
+  
+  //@}
+  
+  //! detach
+  /*! this closes the active view and opens it in a separate window */
+  void _detach( void );
   
   //! save all edited files
   void _saveAll( void );
   
   private:
+    
+  //! open file
+  bool _open( FileRecord, Qt::Orientation );
 
-  //! open file status
-  enum OpenStatus
-  {
+  //! close files 
+  void _closeFiles( const std::list<std::string>& );
+  
+  //! select file record from dialog
+  /*! return empty record if no file is opened or file is directory */
+  FileRecord _selectFileFromDialog( void );
+  
+  //! returns true if new file should be created
+  bool _createNewFile( const FileRecord& );
+  
+  //! active window
+  void _setActiveWindow( MainWindow& );
+  
+  //! true when active window is valid
+  bool _hasActiveWindow( void ) const;
+  
+  //! active window
+  MainWindow& _activeWindow( void )
+  { return *active_window_; }
+  
+  //! active window
+  const MainWindow& _activeWindow( void ) const
+  { return *active_window_; }
     
-    //! file successfully opened
-    OPEN,
-    
-    //! file is invalid
-    INVALID,
-    
-    //! file invalid and application should be closed
-    EXIT_APP
-    
-  };
-    
-  //! current open file status
-  OpenStatus open_status_;
+  //! active window
+  MainWindow* active_window_;
 
   //!@name actions
   //@{

@@ -77,7 +77,6 @@ Menu::Menu( QWidget* parent ):
 
   // open previous menu
   recent_files_menu_ = new RecentFilesMenu( this, application.recentFiles() );
-  connect( recent_files_menu_, SIGNAL( fileSelected( FileRecord ) ), &mainwindow, SLOT( open( FileRecord ) ) );
   menu->addMenu( recent_files_menu_ );
   
   // additional actions

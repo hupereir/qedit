@@ -267,10 +267,10 @@ void TextDisplay::synchronize( TextDisplay* display )
 }
 
 //____________________________________________
-void TextDisplay::openFile( File file, bool check_autosave )
+void TextDisplay::setFile( File file, bool check_autosave )
 {
 
-  Debug::Throw() << "TextDisplay::openFile " << file << endl;
+  Debug::Throw() << "TextDisplay::setFile " << file << endl;
 
   // reset class name
   QString class_name( static_cast<Application*>(qApp)->recentFiles().add( file ).property(FileRecordProperties::CLASS_NAME).c_str() );
@@ -611,7 +611,7 @@ void TextDisplay::revertToSave( void )
 
   setUpdatesEnabled( false );
   setModified( false );
-  openFile( file(), false );
+  setFile( file(), false );
 
   // restore
   horizontalScrollBar()->setValue( x );

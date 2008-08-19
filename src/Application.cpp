@@ -178,18 +178,19 @@ void Application::realizeWidget( void )
   // file list
   recent_files_ = new XmlFileList();
   recent_files_->setCheck( true );
-  
-  // window server
-  window_server_ = new WindowServer();
 
   // class manager
   class_manager_ = new DocumentClassManager();
   
   // autosave
   autosave_ = new AutoSave();
+  
+  // window server
+  window_server_ = new WindowServer();
+  
+  // create first window and show
+  windowServer().newMainWindow().show();
     
-  // create first editFrame
-  windowServer().newMainWindow().show(); 
   _updateConfiguration();
 
   // make sure application ends when last window is closed.

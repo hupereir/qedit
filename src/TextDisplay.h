@@ -76,6 +76,38 @@ class TextDisplay: public TextEditor
   //! destructor
   virtual ~TextDisplay();
   
+  //! used to select editor with matching filename
+  class SameFileFTor
+  {
+    public:
+
+    //! constructor
+    SameFileFTor( const File& file ):
+      file_( file.expand() )
+    {}
+
+    //! predicate
+    bool operator() ( const TextDisplay* display ) const
+    { return display->file() == file_; }
+
+    private:
+
+    //! predicted file
+    const File file_;
+
+  };
+
+  //! used to select editor with empty, unmodified file
+  class EmptyFileFTor
+  {
+    public:
+
+    //! predicate
+    bool operator() ( const TextDisplay* display ) const
+    { return display->file().empty() && !display->document()->isModified(); }
+
+  };
+
   //! number of block associated to argument
   /*! reimplemented from base class to account for collapsed blocks */
   virtual int blockCount( const QTextBlock& ) const;
@@ -136,7 +168,7 @@ class TextDisplay: public TextEditor
   //@{
   
   //! open file
-  void openFile( File file, bool check_autosave = true );
+  void setFile( File file, bool check_autosave = true );
     
   //! file
   const File& file( void ) const
@@ -347,51 +379,6 @@ class TextDisplay: public TextEditor
   //! return parenthesis highlight object
   ParenthesisHighlight& parenthesisHighlight( void ) const
   { return *parenthesis_highlight_; }
-  
-    //! used to select editor with matching filename
-  class SameFileFTor
-  {
-    public:
-
-    //! constructor
-    SameFileFTor( const File& file ):
-      file_( file.expand() )
-    {}
-
-    //! predicate
-    bool operator() ( const TextDisplay* display ) const
-    { return display->file() == file_; }
-
-    private:
-
-    //! predicted file
-    const File file_;
-
-  };
-
-  //! used to select editor with empty, unmodified file
-  class EmptyFileFTor
-  {
-    public:
-
-    //! predicate
-    bool operator() ( const TextDisplay* display ) const
-    { return display->file().empty() && !display->document()->isModified(); }
-
-  };
-
-    
-  //! used to select editor modified files
-  class ModifiedFTor
-  {
-    public:
-
-    //! predicate
-    bool operator() ( const TextDisplay* display ) const
-    { return display->document()->isModified(); }
-
-  };
-
   
   signals:
 

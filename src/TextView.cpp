@@ -39,7 +39,6 @@
 #include "MainWindow.h"
 #include "NewFileDialog.h"
 #include "TextView.h"
-#include "WindowServer.h"
 
 using namespace std;
 
@@ -88,7 +87,7 @@ void TextView::setFile( File file )
   TextDisplay &display( **iter );
    
   // open file in active display
-  if( !file.empty() ) display.openFile( file );
+  if( !file.empty() ) display.setFile( file );
   else display.updateDocumentClass();
   
   // set focus
@@ -107,7 +106,7 @@ unsigned int TextView::independentDisplayCount( void )
   unsigned int out( 0 );
   BASE::KeySet<TextDisplay> displays( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { 
+  {     
     // increment if no associated display is found in the already processed displays
     if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++;
   }
@@ -154,20 +153,9 @@ bool TextView::selectDisplay( const File& file )
   
 }
   
-  
 //________________________________________________________________
-bool TextView::closeActiveDisplay( void )
-{
-  BASE::KeySet< TextDisplay > displays( this );
-  if( displays.size() > 1 ) 
-  {
-    
-    closeDisplay( activeDisplay() );
-    return true;
-    
-  } else return false;
-  
-}
+void TextView::closeActiveDisplay( void )
+{ closeDisplay( activeDisplay() ); }
   
 //________________________________________________________________
 void TextView::setActiveDisplay( TextDisplay& display )
@@ -195,19 +183,8 @@ void TextView::setActiveDisplay( TextDisplay& display )
 //___________________________________________________________
 void TextView::closeDisplay( TextDisplay& display )
 {
+  
   Debug::Throw( "TextView::closeDisplay.\n" );
-
-  // retrieve number of displays
-  // if only one display, close the entire window
-  {
-    BASE::KeySet<TextDisplay> displays( this );
-    if( displays.size() < 2 )
-    {
-      Debug::Throw() << "TextView::closeDisplay - full close." << endl;
-      close();
-      return;
-    }
-  }
   
   // check if display is modified and has no associates in window
   if( 
@@ -221,7 +198,7 @@ void TextView::closeDisplay( TextDisplay& display )
   
   // retrieve displays associated to current
   BASE::KeySet<TextDisplay> displays( &display );
-    
+
   // check how many children remain in parent_splitter if any
   // take action if it is less than 2 (the current one to be deleted, and another one)
   if( parent_splitter && parent_splitter->count() == 2 ) 
@@ -271,186 +248,17 @@ void TextView::closeDisplay( TextDisplay& display )
   
   // if no associated displays, retrieve all, set the first as active
   if( displays.empty() ) displays = BASE::KeySet<TextDisplay>( this );
-  
-  bool active_found( false );
   for( BASE::KeySet<TextDisplay>::reverse_iterator iter = displays.rbegin(); iter != displays.rend(); iter++ )
   { 
     if( (*iter) != &display ) {
       setActiveDisplay( **iter ); 
-      active_found = true;
+      activeDisplay().setFocus();
       break;
     }
   }  
-  assert( active_found );
-  
-  // change focus
-  activeDisplay().setFocus();
+    
   Debug::Throw( "TextView::closeDisplay - done.\n" );
-
-}
-
-//___________________________________________________________
-void TextView::newFile( const OpenMode& mode, const Qt::Orientation& orientation )
-{
-
-  Debug::Throw( "TextView::newFile.\n" );
-
-  // check open_mode
-  if( mode == NEW_WINDOW ) static_cast<Application*>(qApp)->windowServer().open();
-  else splitDisplay( orientation, false );
-
-}
-
-
-//___________________________________________________________
-void TextView::open( FileRecord record, const OpenMode& mode, const Qt::Orientation& orientation )
-{
-
-  Debug::Throw( "TextView::open.\n" );
-
-  // copy to local
-  if( record.file().empty() )
-  {
-
-    // create file dialog
-    CustomFileDialog dialog( this );
-    dialog.setFileMode( QFileDialog::ExistingFile );
-    dialog.setDirectory( QDir( activeDisplay().workingDirectory().c_str() ) );
-    QtUtil::centerOnParent( &dialog );
-    if( dialog.exec() == QDialog::Rejected ) return;
-    
-    QStringList files( dialog.selectedFiles() );
-    if( files.empty() ) return;
   
-    record.setFile( File( qPrintable( files.front() ) ).expand() );
-  
-  }
-  
-  // check open_mode
-  if( mode == NEW_WINDOW )
-  {
-    // open via the Application to create a new editor
-    static_cast<Application*>(qApp)->windowServer().open( record );
-    return;
-  }
-
-  // see if file is directory
-  if( record.file().isDirectory() )
-  {
-    
-    ostringstream what;
-    what << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
-    QtUtil::infoDialog( this, what.str() );
-    return;
-    
-  }
-
-  // see if file exists
-  if( !record.file().exists() )
-  {
-    
-    // create NewFileDialog
-    int state( NewFileDialog( this, record.file() ).exec() );
-    switch( state )
-    {
-      
-      case NewFileDialog::CREATE:
-      {
-        File fullname( record.file().expand() );
-        if( !fullname.create() )
-        {
-          ostringstream what;
-          what << "Unable to create file " << record.file() << ".";
-          QtUtil::infoDialog( this, what.str() );
-          return;
-        }
-        break;
-      }
- 
-      case NewFileDialog::CANCEL: return;
-      case NewFileDialog::EXIT: 
-      close();
-      return;
-      
-    }
-    
-  }
-  
-  // retrieve all edit windows
-  // find one matching
-  BASE::KeySet<MainWindow> windows( &static_cast<Application*>(qApp)->windowServer() );
-  BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
-  if( iter != windows.end() )
-  {
-
-    // select found display in TextView
-    (*iter)->activeView().selectDisplay( record.file() );
-
-    // check if the found window is the current
-    if( &(*iter)->activeView() == this )
-    {
-      (*iter)->uniconify();
-      return;
-    }
-
-    ostringstream what;
-    what
-      << "The file " << record.file() << " is already opened in another window.\n"
-      << "Do you want to close the other display and open the file here ?";
-    if( !QtUtil::questionDialog( this, what.str() ) )
-    {
-      (*iter)->uniconify();
-      return;
-    }
-
-    // look for an empty display
-    // create a new display if none is found
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-    TextDisplay& display( display_iter == displays.end() ? splitDisplay( orientation, false ):**display_iter );
-
-    // retrieve active display from previous window
-    TextDisplay& previous_display( (*iter)->activeDisplay() );
-
-    // store modification state
-    bool modified( previous_display.document()->isModified() );
-
-    // clone
-    display.synchronize( &previous_display );
-    
-    // set previous display as unmdified
-    previous_display.document()->setModified( false );
-
-    // close display, or window, depending on its number of independent files
-    if( (*iter)->independentDisplayCount() == 1 ) (*iter)->close();
-    else
-    {
-      
-      BASE::KeySet<TextDisplay> displays( &previous_display );
-      displays.insert( &previous_display );
-      for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
-      { (*iter)->activeView().closeDisplay( **display_iter ); }
-      
-    }
-
-    // restore modification state and make new display active
-    display.setModified( modified );
-    setActiveDisplay( display );
-    display.setFocus();
-
-  } else {
-
-    // look for an empty display
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-    if( display_iter == displays.end() ) splitDisplay( orientation, false );
-
-    // open file in this window
-    setFile( record.file() );
-    
-  }
- 
-  return;
 }
 
 //___________________________________________________________
@@ -514,6 +322,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
  
     // associate new display to active
     BASE::Key::associate( &display, &active_display_local );
+    emit displayCountChanged();
 
   } else {
 
@@ -632,9 +441,19 @@ void TextView::diff( void )
 }
 
 //____________________________________________
-void TextView::_displayFocusChanged( TextEditor* editor )
+void TextView::_checkDisplays( void )
 {
-  Debug::Throw() << "TextView::_DisplayFocusChanged - " << editor->key() << endl;
+
+  Debug::Throw() << "TextView::_checkDisplays" << endl;
+  BASE::KeySet<TextDisplay> displays( this );
+  if( displays.empty() ) deleteLater();
+  
+}
+
+//____________________________________________
+void TextView::_activeDisplayChanged( TextEditor* editor )
+{
+  Debug::Throw() << "TextView::_activeDisplayChanged - " << editor->key() << endl;
   setActiveDisplay( *static_cast<TextDisplay*>(editor) );  
 }
 
@@ -748,13 +567,15 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
 
   // connections
   connect( display, SIGNAL( needUpdate( unsigned int ) ), SIGNAL( needUpdate( unsigned int ) ) );
-  connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( _displayFocusChanged( TextEditor* ) ) );
+  connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( _activeDisplayChanged( TextEditor* ) ) );
   connect( display, SIGNAL( cursorPositionChanged() ), &position_timer_, SLOT( start() ) );
   connect( display, SIGNAL( overwriteModeChanged() ), SIGNAL( overwriteModeChanged() ) );
   
   connect( display, SIGNAL( undoAvailable( bool ) ), SIGNAL( undoAvailable( bool ) ) );
   connect( display, SIGNAL( redoAvailable( bool ) ), SIGNAL( redoAvailable( bool ) ) );
-  connect( display, SIGNAL( destroyed( void ) ), SIGNAL( displayCountChanged( void ) ) );
+
+  connect( display, SIGNAL( destroyed( void ) ), SLOT( _checkDisplays( void ) ) );  
+  connect( display, SIGNAL( destroyed( void ) ), SIGNAL( displayCountChanged( void ) ) );  
   
   // associate display to this editFrame
   BASE::Key::associate( this, display );
