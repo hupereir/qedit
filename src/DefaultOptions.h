@@ -31,8 +31,10 @@
 
 #include "Config.h"
 #include "FileRecordModel.h"
-#include "XmlOptions.h"
+#include "MainWindow.h"
 #include "Util.h"
+#include "WindowServer.h"
+#include "XmlOptions.h"
 
 //_____________________________________________________
 //! default options installer
@@ -106,7 +108,8 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "HIGHLIGHT_COLOR", "#FFFDD4", "paragraph highlight color" ) );
   
   /* multiple views */
-  XmlOptions::get().add( Option( "ORIENTATION", "top/bottom", "default orientation for splitters. either \"left/right\" or \"top/bottom\"" ) );
+  XmlOptions::get().add( Option( "OPEN_MODE", WindowServer::MULTIPLE_WINDOWS ) );
+  XmlOptions::get().add( Option( "ORIENTATION", MainWindow::TOP_BOTTOM, "default orientation for splitters. either \"left/right\" or \"top/bottom\"" ) );
   
   #ifdef WITH_ASPELL
   XmlOptions::get().add( Option( "DICTIONARY", "en" , "default dictionary"  ));

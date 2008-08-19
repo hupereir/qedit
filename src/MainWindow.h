@@ -67,6 +67,10 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
 
   public:
 
+  //!@name orientation strings
+  static const std::string LEFT_RIGHT;
+  static const std::string TOP_BOTTOM;
+    
   //! creator
   MainWindow( QWidget* parent = 0 );
 
@@ -225,11 +229,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! orientation
   const Qt::Orientation& orientation( void ) const
   { return default_orientation_; }
-  
-  //! orientation
-  void setOrientation( const Qt::Orientation orientation )
-  { default_orientation_ = orientation; }
-  
+   
   //@}
   
   //!@name actions
@@ -365,8 +365,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   virtual void findFromDialog( void );
   
   //! replace text from dialog
-  virtual void replaceFromDialog( void )
-  {}
+  virtual void replaceFromDialog( void );
 
   //! select line from dialog
   virtual void selectLineFromDialog( void );
@@ -492,10 +491,25 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   void _find( TextSelection selection )
   { activeDisplay().find( selection ); }
   
+  //! find
+  void _replace( TextSelection selection )
+  { activeDisplay().replace( selection ); }
+  
+  //! find
+  void _replaceInSelection( TextSelection selection )
+  { activeDisplay().replaceInSelection( selection ); }
+  
+  //! find
+  void _replaceInWindow( TextSelection selection )
+  { activeDisplay().replaceInWindow( selection ); }
+
   //! select line
   void _selectLine( int value )
   { activeDisplay().selectLine( value ); }
-  
+      
+  //! replace selection in multiple files
+  void _multipleFileReplace( void );
+
   //@}
   
   //! update window title, cut, copy, paste buttons, and filename line editor
@@ -522,8 +536,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   void _createFindDialog( void );
   
   //! create replace dialog
-  void _createReplaceDialog( void )
-  {}
+  void _createReplaceDialog( void );
 
   //! find dialog
   virtual FindDialog& _findDialog( void )
@@ -538,6 +551,10 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
     assert( replace_dialog_ );
     return *replace_dialog_;
   }
+   
+  //! orientation
+  void _setOrientation( const Qt::Orientation orientation )
+  { default_orientation_ = orientation; }
   
   //! Update window title
   void _updateWindowTitle();

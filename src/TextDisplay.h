@@ -437,9 +437,6 @@ class TextDisplay: public TextEditor
   
   //! actions
   void _installActions( void );
-  
-  //! create replace dialog
-  virtual void _createReplaceDialog( void );
     
   //! set file name
   void _setFile( const File& file );
@@ -515,9 +512,6 @@ class TextDisplay: public TextEditor
   //! selection changed
   void _selectionChanged( void )
   { if( isActive() ) emit needUpdate( CUT|COPY ); }
-  
-  //! replace selection in multiple files
-  void _multipleFileReplace( void );
   
   //! toggle text indentation
   void _toggleTextIndent( bool state );

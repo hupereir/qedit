@@ -50,12 +50,15 @@
 
 using namespace std;
 
-
+//________________________________________________________________
+const string WindowServer::SINGLE_WINDOW = "open in current window";
+const string WindowServer::MULTIPLE_WINDOWS = "open in new window";
 
 //________________________________________________________________
 WindowServer::WindowServer( QObject* parent ):
   QObject( parent ),
   Counter( "WindowServer" ),
+  open_mode_( ACTIVE_WINDOW ),
   active_window_( 0 )
 { 
   Debug::Throw( "WindowServer::WindowServer.\n" ); 
@@ -63,7 +66,10 @@ WindowServer::WindowServer( QObject* parent ):
   // create actions
   save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save A&ll", this );
   connect( save_all_action_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
-    
+ 
+  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  _updateConfiguration();
+  
 }
 
 //________________________________________________________________
@@ -326,6 +332,15 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
 }
 
 //____________________________________________
+void WindowServer::_updateConfiguration( void )
+{
+  
+    Debug::Throw( "WindowServer::_updateConfiguration.\n" );
+    _setOpenMode( XmlOptions::get().raw( "OPEN_MODE" ) == MULTIPLE_WINDOWS ? NEW_WINDOW:ACTIVE_WINDOW );
+  
+}
+
+//____________________________________________
 void WindowServer::_activeWindowChanged( MainWindow* window )
 {
   Debug::Throw() << "WindowServer::_activeWindowChanged - " << window->key() << endl;
@@ -356,11 +371,23 @@ void WindowServer::_newFile( void )
   if( iter != windows.end() ) window = (*iter );
   
   // if no window found, create a new one
-  if( !window ) {  window = &newMainWindow(); }
-
-  // need to show window immediately to avoid application
-  // to quit if at some point no window remains open
-  window->show();
+  if( !window ) {
+    
+    if( _openMode() == NEW_WINDOW )
+    {
+      window = &newMainWindow();
+      window->show();
+      
+    } else {
+      
+      window = &_activeWindow();
+      window->newTextView();
+      window->uniconify();
+      
+    }
+    
+  }
+  
   return;
    
 }
@@ -391,7 +418,7 @@ void WindowServer::_newFile( Qt::Orientation orientation )
 bool WindowServer::_open( FileRecord record )
 {
   
-  Debug::Throw( "WindowServer::_open.\n" );
+  Debug::Throw() << "WindowServer::_open - file: " << record.file() << "." << endl;
   
   // do nothing if record is empty
   if( record.file().empty() ) return false;
@@ -417,19 +444,33 @@ bool WindowServer::_open( FileRecord record )
     
   // try find empty editor
   iter = find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
-  if( iter != windows.end() ) window = (*iter );
+  if( iter != windows.end() ) 
+  {
+    window = (*iter );
+    window->uniconify();
+  }
   
   // if no window found, create a new one
-  // if( !window ) {  window = &newMainWindow(); }
- 
-  if( !window ) {  
-    window = &_activeWindow();
-    window->newTextView();
+  if( !window ) {
+    
+    if( _openMode() == NEW_WINDOW )
+    {
+      window = &newMainWindow();
+      window->show();
+      
+    } else {
+      
+      window = &_activeWindow();
+      window->newTextView();
+      window->uniconify();
+      
+    }
+    
   }
-
+  
   // need to show window immediately to avoid application
   // to quit if at some point no window remains open
-  window->show();
+  Debug::Throw() << "WindowServer::_open - before set-file" << endl;
   window->activeView().setFile( record.file() );
   return true;
   

@@ -148,7 +148,7 @@ class SessionFilesFrame: public QWidget, public Counter
   TreeView* list_;
   
   //@}
-  
+    
   //!@name actions
   //@{
   

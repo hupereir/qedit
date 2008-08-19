@@ -50,6 +50,7 @@
 #include "FileList.h"
 #include "FindDialog.h"
 #include "FileRecordProperties.h"
+#include "FileSelectionDialog.h"
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
 #include "Icons.h"
@@ -73,6 +74,10 @@
 #include "XmlOptions.h"
 
 using namespace std;
+
+//_____________________________________________________
+const std::string MainWindow::LEFT_RIGHT = "left/right";
+const std::string MainWindow::TOP_BOTTOM = "top/bottom";
 
 //_____________________________________________________
 MainWindow::MainWindow(  QWidget* parent ):
@@ -338,6 +343,46 @@ void MainWindow::findFromDialog( void )
   // changes focus
   _findDialog().activateWindow();
   _findDialog().editor().setFocus();
+
+  return;
+}
+
+//_____________________________________________________________________
+void MainWindow::replaceFromDialog( void )
+{
+  Debug::Throw( "MainWindow::replaceFromDialog.\n" );
+
+  // create
+  if( !replace_dialog_ ) _createReplaceDialog();
+
+  // raise dialog
+  //QtUtil::centerOnPointer( &_replaceDialog() );
+  QtUtil::centerOnParent( &_replaceDialog() );
+  _replaceDialog().show();
+
+  /*
+    setting the default text values
+    must be done after the dialog is shown
+    otherwise it may be automatically resized
+    to very large sizes due to the input text
+  */
+
+  // synchronize combo-boxes
+  _replaceDialog().synchronize();
+  _replaceDialog().clearLabel();
+
+  // update find text
+  QString text;
+  if( !( text = qApp->clipboard()->text( QClipboard::Selection) ).isEmpty() ) _replaceDialog().setText( text );
+  else if( activeDisplay().textCursor().hasSelection() ) _replaceDialog().setText( activeDisplay().textCursor().selectedText() );
+  else if( !( text = TextDisplay::lastSelection().text() ).isEmpty() ) _replaceDialog().setText( text );
+
+  // update replace text
+  if( !TextDisplay::lastSelection().replaceText().isEmpty() ) _replaceDialog().setReplaceText( TextDisplay::lastSelection().replaceText() );
+
+  // changes focus
+  _replaceDialog().activateWindow();
+  _replaceDialog().editor().setFocus();
 
   return;
 }
@@ -627,6 +672,9 @@ void MainWindow::_updateConfiguration( void )
   
   }
     
+  // default orientation
+  _setOrientation( XmlOptions::get().raw( "ORIENTATION" ) == LEFT_RIGHT ? Qt::Horizontal : Qt::Vertical );
+  
 }
 
 //________________________________________________________
@@ -657,6 +705,20 @@ void MainWindow::_activeViewChanged( void )
   if( !widget ) close();
   else setActiveView( *static_cast<TextView*>( widget ) );
 
+}
+
+//_______________________________________________________
+void MainWindow::_multipleFileReplace( void )
+{
+  Debug::Throw( "MainWindow::_multipleFileReplace.\n" );
+  TextSelection selection( _replaceDialog().selection( false ) );
+
+  // retrieve selection from replace dialog
+  FileSelectionDialog dialog( this, selection );
+  connect( &dialog, SIGNAL( fileSelected( std::list<File>, TextSelection ) ), &static_cast<Application*>(qApp)->windowServer(), SLOT( multipleFileReplace( std::list<File>, TextSelection ) ) );
+  QtUtil::centerOnParent( &dialog );
+  dialog.exec();
+  return;
 }
 
 //_______________________________________________________
@@ -876,6 +938,34 @@ void MainWindow::_createFindDialog( void )
 
   return;
 
+}
+
+//_____________________________________________________________________
+void MainWindow::_createReplaceDialog( void )
+{
+  Debug::Throw( "MainWindow::_CreateReplaceDialog.\n" );
+  if( !replace_dialog_ )
+  {
+
+    replace_dialog_ = new ReplaceDialog( this );
+    replace_dialog_->polish();
+
+    connect( replace_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
+    connect( replace_dialog_, SIGNAL( replace( TextSelection ) ), SLOT( _replace( TextSelection ) ) );
+    connect( replace_dialog_, SIGNAL( replaceInWindow( TextSelection ) ), SLOT( _replaceInWindow( TextSelection ) ) );
+    connect( replace_dialog_, SIGNAL( replaceInSelection( TextSelection ) ), SLOT( _replaceInSelection( TextSelection ) ) );
+    connect( this, SIGNAL( noMatchFound() ), replace_dialog_, SLOT( noMatchFound() ) );
+    connect( this, SIGNAL( matchFound() ), replace_dialog_, SLOT( clearLabel() ) );
+
+    // insert multiple file buttons
+    QPushButton* button = new QPushButton( "&Files", replace_dialog_ );
+    connect( button, SIGNAL( clicked() ), SLOT( _multipleFileReplace() ) );
+    button->setToolTip( "replace all occurence of the search string in the selected files" );
+    replace_dialog_->addDisabledButton( button );
+    replace_dialog_->locationLayout().addWidget( button );
+
+  }
+  
 }
 
 //___________________________________________________________

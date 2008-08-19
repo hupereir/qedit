@@ -81,7 +81,7 @@ void TextView::setFile( File file )
   Debug::Throw() << "TextView::setFile - " << file << endl;
 
   // look for first empty display
-  BASE::KeySet<TextDisplay> displays( this );
+  BASE::KeySet<TextDisplay> displays( this );  
   BASE::KeySet<TextDisplay>::iterator iter = find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
   assert( iter != displays.end() );
   TextDisplay &display( **iter );
@@ -670,7 +670,7 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
   connect( display, SIGNAL( matchFound() ), &window, SIGNAL( matchFound() ) );
   
   display->replaceAction().disconnect();
-
+  connect( &display->replaceAction(), SIGNAL( triggered() ), &window, SLOT( replaceFromDialog() ) );
   
   // associate display to this editFrame
   BASE::Key::associate( this, display );

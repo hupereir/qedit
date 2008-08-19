@@ -55,6 +55,15 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   
   public: 
   
+  //!@name Open mode string
+  //@{
+  
+  static const std::string SINGLE_WINDOW;
+  
+  static const std::string MULTIPLE_WINDOWS;
+  
+  //@}
+  
   //! constructor
   WindowServer( QObject* parent = 0 );
   
@@ -97,6 +106,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   void multipleFileReplace( std::list<File>, TextSelection );
   
   private slots:
+  
+  //! update configuration
+  void _updateConfiguration( void );
   
   //! active window changed
   void _activeWindowChanged( MainWindow* );
@@ -170,7 +182,30 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   //! active window
   const MainWindow& _activeWindow( void ) const
   { return *active_window_; }
+
+  //! open mode
+  enum OpenMode
+  {
     
+    // single stacked window
+    ACTIVE_WINDOW,
+    
+    // multiple windows
+    NEW_WINDOW
+    
+  };
+  
+  //! open mode
+  const OpenMode& _openMode( void ) const
+  { return open_mode_; }
+  
+  //! open mode
+  void _setOpenMode( const OpenMode& mode )
+  { open_mode_ = mode; }
+  
+  //! open mode
+  OpenMode open_mode_;
+  
   //! active window
   MainWindow* active_window_;
 

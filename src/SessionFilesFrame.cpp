@@ -99,14 +99,14 @@ SessionFilesFrame::~SessionFilesFrame( void )
 //____________________________________________
 void SessionFilesFrame::selectFile( const File& file )
 {
-  Debug::Throw( "SessionFilesFrame::selectFile.\n" );
+  Debug::Throw() << "SessionFilesFrame::selectFile - file: " << file << ".\n";
 
-  // check file. If empty, clear selection
-  if( file.empty() ) 
-  {
-    _list().selectionModel()->clear();
-    return;
-  }
+//   // check file. If empty, clear selection
+//   if( file.empty() ) 
+//   {
+//     _list().selectionModel()->clear();
+//     return;
+//   }
   
   // find model index that match the file
   QModelIndex index( _model().index( FileRecord( file ) ) );
@@ -114,7 +114,7 @@ void SessionFilesFrame::selectFile( const File& file )
   // check if index is valid and not selected
   if( ( !index.isValid() ) || _list().selectionModel()->isSelected( index ) ) return;
   
-  // select found index
+  // select found index but disable the selection changed callback
   _list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
   
 }
@@ -171,6 +171,7 @@ void SessionFilesFrame::_updateActions( void )
 void SessionFilesFrame::_checkSelection( void )
 { 
   Debug::Throw( "SessionFilesFrame:_checkSelection.\n" );
+    
   SessionFilesModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
   if( selection.empty() ) return;
   emit fileSelected( selection.back() );

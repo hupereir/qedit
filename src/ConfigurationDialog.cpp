@@ -37,12 +37,15 @@
 #include "GridLayout.h"
 #include "CustomToolBar.h"
 #include "Debug.h"
+
+#include "MainWindow.h"
 #include "OptionListBox.h"
 #include "OptionBrowsedLineEditor.h"
 #include "OptionCheckBox.h"
 #include "OptionColorDisplay.h"
 #include "OptionFontInfo.h"
 #include "OptionSpinBox.h"
+#include "WindowServer.h"
 
 // forward declaration
 void installDefaultOptions( void );
@@ -153,10 +156,22 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   box->setLayout( grid_layout );
   
   OptionComboBox *combobox;
-  grid_layout->addWidget( new QLabel( "Default orientation ", box ) );
+  
+  // opening
+  grid_layout->addWidget( new QLabel( "Default open mode ", box ) );
+  grid_layout->addWidget( combobox = new OptionComboBox( box, "OPEN_MODE" ) );
+  combobox->addItem( WindowServer::MULTIPLE_WINDOWS.c_str() );
+  combobox->addItem( WindowServer::SINGLE_WINDOW.c_str() );
+  
+  addOptionWidget( combobox );
+  combobox->setToolTip( "Configure how new files are oppened." );
+  
+  // splitting
+  grid_layout->addWidget( new QLabel( "Default splitting orientation ", box ) );
   grid_layout->addWidget( combobox = new OptionComboBox( box, "ORIENTATION" ) );
-  combobox->addItem( "top/bottom" );
-  combobox->addItem( "left/right" );
+  combobox->addItem( MainWindow::TOP_BOTTOM.c_str() );
+  combobox->addItem( MainWindow::LEFT_RIGHT.c_str() );
+  
   addOptionWidget( combobox );
   combobox->setToolTip( "Configure how new views are organized." );
   grid_layout->setColumnStretch( 1, 1 );

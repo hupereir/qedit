@@ -47,7 +47,6 @@
 #include "FileModifiedDialog.h"
 #include "FileRecordProperties.h"
 #include "FileRemovedDialog.h"
-#include "FileSelectionDialog.h"
 #include "HtmlUtil.h"
 #include "HighlightBlockData.h"
 #include "HighlightBlockFlags.h"
@@ -63,7 +62,6 @@
 #include "TextSeparator.h"
 #include "Util.h"
 #include "XmlOptions.h"
-#include "WindowServer.h"
 
 #include "Config.h"
 
@@ -285,38 +283,34 @@ void TextDisplay::setFile( File file, bool check_autosave )
   bool restore_autosave( false );
   File tmp( file );
 
-  if(1) 
+  File autosaved( AutoSaveThread::autoSaveName( tmp ) );
+  if( check_autosave && autosaved.exists() &&
+    ( !tmp.exists() ||
+    ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
   {
-    File autosaved( AutoSaveThread::autoSaveName( tmp ) );
-    if( check_autosave && autosaved.exists() &&
-      ( !tmp.exists() ||
-      ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
+    ostringstream what;
+    what << "A more recent version of file " << file << endl;
+    what << "was found at " << autosaved << "." << endl;
+    what << "This probably means that the application crashed the last time ";
+    what << "the file was edited." << endl;
+    what << "Use autosaved version ?";
+    if( QtUtil::questionDialog( this, what.str() ) )
     {
-      ostringstream what;
-      what << "A more recent version of file " << file << endl;
-      what << "was found at " << autosaved << "." << endl;
-      what << "This probably means that the application crashed the last time ";
-      what << "the file was edited." << endl;
-      what << "Use autosaved version ?";
-      if( QtUtil::questionDialog( this, what.str() ) )
-      {
-        restore_autosave = true;
-        tmp = autosaved;
-      }
+      restore_autosave = true;
+      tmp = autosaved;
     }
-    
-    // retrieve display and associated
-    BASE::KeySet<TextDisplay> displays( this );
-    displays.insert( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    {
-      (*iter)->_setFile( file );
-      (*iter)->setClassName( className() );
-      (*iter)->updateDocumentClass();
-    }
-    
   }
-  
+    
+  // retrieve display and associated
+  BASE::KeySet<TextDisplay> displays( this );
+  displays.insert( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  {
+    (*iter)->_setFile( file );
+    (*iter)->setClassName( className() );
+    (*iter)->updateDocumentClass();
+  }
+    
   // check file and try open.
   QFile in( tmp.c_str() );
   if( in.open( QIODevice::ReadOnly ) )
@@ -1418,22 +1412,6 @@ void TextDisplay::_installActions( void )
 
 }
 
-//_____________________________________________________________________
-void TextDisplay::_createReplaceDialog( void )
-{
-  Debug::Throw( "TextDisplay::_CreateReplaceDialog.\n" );
-  TextEditor::_createReplaceDialog();
-  ReplaceDialog &dialog( _replaceDialog() );
-
-  // insert multiple file buttons
-  QPushButton* button = new QPushButton( "&Files", &dialog );
-  connect( button, SIGNAL( clicked() ), SLOT( _multipleFileReplace() ) );
-  button->setToolTip( "replace all occurence of the search string in the selected files" );
-  dialog.addDisabledButton( button );
-  dialog.locationLayout().addWidget( button );
-
-}
-
 //_____________________________________________________________
 bool TextDisplay::_contentsChanged( void ) const
 {
@@ -1778,20 +1756,6 @@ void TextDisplay::_toggleShowBlockDelimiters( bool state )
 
   }
 
-  return;
-}
-
-//_______________________________________________________
-void TextDisplay::_multipleFileReplace( void )
-{
-  Debug::Throw( "TextDisplay::_multipleFileReplace.\n" );
-  TextSelection selection( _replaceDialog().selection( false ) );
-
-  // retrieve selection from replace dialog
-  FileSelectionDialog dialog( this, selection );
-  connect( &dialog, SIGNAL( fileSelected( std::list<File>, TextSelection ) ), &static_cast<Application*>(qApp)->windowServer(), SLOT( multipleFileReplace( std::list<File>, TextSelection ) ) );
-  QtUtil::centerOnParent( &dialog );
-  dialog.exec();
   return;
 }
 
