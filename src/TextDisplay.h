@@ -131,7 +131,7 @@ class TextDisplay: public TextEditor
     //! window title
     WINDOW_TITLE = 1<<0, 
     
-    //! file name (in bottom status bar)
+    //! file name (in bottom status bar and navigation frame)
     FILE_NAME = 1<<1,
     
     //! cut availability

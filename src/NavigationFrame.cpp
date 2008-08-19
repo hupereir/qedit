@@ -74,8 +74,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   _stack().addWidget( file_system_frame_ = new FileSystemFrame(0) );
   
   // connections
-  connect( &_sessionFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SIGNAL( fileSelected( FileRecord ) ) );
-  connect( &_sessionFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SIGNAL( fileActivated( FileRecord ) ) );
+  connect( &sessionFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SIGNAL( fileActivated( FileRecord ) ) );
   connect( &_recentFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SIGNAL( fileActivated( FileRecord ) ) );
   connect( &_fileSystemFrame(), SIGNAL( fileActivated( FileRecord ) ), SIGNAL( fileActivated( FileRecord ) ) );
   
@@ -94,7 +93,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   button->rotate( CustomToolButton::COUNTERCLOCKWISE );
   button->setText( "&Session files" );
   button_group->addButton( button );
-  buttons_.insert( make_pair( button, &_sessionFilesFrame() ) );
+  buttons_.insert( make_pair( button, &sessionFilesFrame() ) );
   
   // recent files
   v_layout->addWidget( button = new CustomToolButton( this ) );
@@ -125,7 +124,7 @@ void NavigationFrame::setDefaultWidth( const int& value )
 
 //______________________________________________________________________
 QAction& NavigationFrame::updateSessionFilesAction( void ) const
-{ return _sessionFilesFrame().updateAction(); }
+{ return sessionFilesFrame().updateAction(); }
 
 //______________________________________________________________________
 QAction& NavigationFrame::updateRecentFilesAction( void ) const

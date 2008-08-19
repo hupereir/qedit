@@ -656,6 +656,22 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
   connect( display, SIGNAL( destroyed( void ) ), SLOT( _checkDisplays( void ) ) );  
   connect( display, SIGNAL( destroyed( void ) ), SIGNAL( displayCountChanged( void ) ) );  
   
+  // retrieve parent main window
+  MainWindow &window = *static_cast<MainWindow*>( TextView::window() );
+  
+  // customize display actions
+  /* this is needed to be able to handle a single dialog for stacked windows */
+  display->gotoLineAction().disconnect();
+  connect( &display->gotoLineAction(), SIGNAL( triggered() ), &window, SLOT( selectLineFromDialog() ) );
+  
+  display->findAction().disconnect();
+  connect( &display->findAction(), SIGNAL( triggered() ), &window, SLOT( findFromDialog() ) );
+  connect( display, SIGNAL( noMatchFound() ), &window, SIGNAL( noMatchFound() ) );
+  connect( display, SIGNAL( matchFound() ), &window, SIGNAL( matchFound() ) );
+  
+  display->replaceAction().disconnect();
+
+  
   // associate display to this editFrame
   BASE::Key::associate( this, display );
   

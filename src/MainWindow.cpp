@@ -48,6 +48,7 @@
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
 #include "FileList.h"
+#include "FindDialog.h"
 #include "FileRecordProperties.h"
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
@@ -59,6 +60,9 @@
 #include "PixmapEngine.h"
 #include "PrintDialog.h"
 #include "QtUtil.h"
+#include "ReplaceDialog.h"
+#include "SelectLineDialog.h"
+#include "SessionFilesFrame.h"
 #include "StatusBar.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
@@ -77,6 +81,9 @@ MainWindow::MainWindow(  QWidget* parent ):
   menu_( 0 ),
   statusbar_( 0 ),
   file_editor_( 0 ),
+  find_dialog_( 0 ),
+  replace_dialog_( 0 ),
+  select_line_dialog_( 0 ),
   default_orientation_( Qt::Horizontal )
 {
 
@@ -108,14 +115,14 @@ MainWindow::MainWindow(  QWidget* parent ):
   // need to add navigationFrame visibility action to this list 
   // to enable shortcut event if the frame is hidden
   addAction( &navigationFrame().visibilityAction() );
-  connect( &navigationFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
+  connect( &navigationFrame().sessionFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
   
   // insert stack widget
   splitter->addWidget( stack_ = new QStackedWidget(0) );
+  connect( &_stack(), SIGNAL( widgetRemoved( int ) ), SLOT( _activeViewChanged() ) );
   
-  // insert main view
-  setActiveView( _newTextView(0) );
-  _stack().addWidget( &activeView() );
+  // create first text view
+  newTextView();
   
   // assign stretch factors
   splitter->setStretchFactor( 0, 0 );
@@ -194,6 +201,52 @@ MainWindow::MainWindow(  QWidget* parent ):
 MainWindow::~MainWindow( void )
 { Debug::Throw( "MainWindow::~MainWindow.\n" ); }
 
+//___________________________________________________________
+void MainWindow::newTextView( void )
+{ 
+  Debug::Throw( "MainWindow::newTextView.\n" );
+
+  // create new view and add to this file
+  TextView* view = new TextView( this );
+  BASE::Key::associate( this, view );
+
+  // add to stack and set active
+  _stack().addWidget( view );
+  setActiveView( *view );
+  
+  // connections
+  connect( view, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
+  connect( view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
+  connect( view, SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
+  connect( view, SIGNAL( displayCountChanged( void ) ), &static_cast<Application*>(qApp)->windowServer(), SIGNAL( sessionFilesChanged( void ) ) );
+  connect( view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
+  connect( view, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) ); 
+
+  connect( &view->positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );  
+  
+  return;
+  
+}
+
+//_____________________________________________________________________
+void MainWindow::setActiveView( TextView& view )
+{ 
+
+  // do nothing if active view did not change
+  if( active_view_ == &view ) return;
+  
+  // store active view
+  active_view_ = &view; 
+  
+  // update stack if needed
+  if( _stack().currentWidget() !=  &activeView() ) _stack().setCurrentWidget( &activeView() );
+
+  // update displays, actions, etc.
+  _update( TextDisplay::ALL );
+
+}
+
+
 //_____________________________________________________________________
 BASE::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
 {
@@ -220,7 +273,10 @@ bool MainWindow::selectDisplay( const File& file )
     
     if( (*iter)->selectDisplay( file ) ) 
     {
-      _stack().setCurrentWidget( *iter );
+      // make sure selected view is visible
+      // and update everything if not
+      if( _stack().currentWidget() != *iter )
+      { setActiveView( **iter ); }
       return true; 
     }
     
@@ -245,6 +301,64 @@ void MainWindow::ignoreAll( void )
   BASE::KeySet<TextView> views( this );
   for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
   { (*iter)->ignoreAll(); }
+}
+
+//_____________________________________________________________________
+void MainWindow::findFromDialog( void )
+{
+  Debug::Throw( "MainWindow::findFromDialog.\n" );
+
+  // create
+  if( !find_dialog_ ) _createFindDialog();
+
+  // enable/disable regexp
+  _findDialog().enableRegExp( true );
+
+  // raise dialog
+  QtUtil::centerOnParent( &_findDialog() );
+  _findDialog().show();
+
+  /*
+    setting the default text values
+    must be done after the dialog is shown
+    otherwise it may be automatically resized
+    to very large sizes due to the input text
+  */
+
+  // set default string to find
+  _findDialog().synchronize();
+  _findDialog().clearLabel();
+
+  // set default text
+  QString text;
+  if( !( text = qApp->clipboard()->text( QClipboard::Selection) ).isEmpty() ) _findDialog().setText( text );
+  else if( activeDisplay().textCursor().hasSelection() ) _findDialog().setText( activeDisplay().textCursor().selectedText() );
+  else if( !( text = TextDisplay::lastSelection().text() ).isEmpty() ) _findDialog().setText( text );
+
+  // changes focus
+  _findDialog().activateWindow();
+  _findDialog().editor().setFocus();
+
+  return;
+}
+
+//________________________________________________
+void MainWindow::selectLineFromDialog( void )
+{
+
+  Debug::Throw( "TextEditor::selectLineFromDialog.\n" );
+  if( !select_line_dialog_ )
+  {
+    select_line_dialog_ = new SelectLineDialog( this );
+    connect( select_line_dialog_, SIGNAL( lineSelected( int ) ), SLOT( _selectLine( int ) ) );
+  }
+
+  select_line_dialog_->editor().clear();
+  QtUtil::centerOnParent( select_line_dialog_ );
+  select_line_dialog_->show();
+  select_line_dialog_->activateWindow();
+  select_line_dialog_->editor().setFocus();
+
 }
 
 //___________________________________________________________
@@ -489,16 +603,6 @@ void MainWindow::timerEvent( QTimerEvent* event )
   } else return CustomMainWindow::timerEvent( event );
   
 }
-
-//________________________________________________________
-void MainWindow::_checkViews( void )
-{
-  
-  Debug::Throw( "MainWindow::_checkViews.\n" );
-  BASE::KeySet<TextView> views( this );
-  if( views.empty() ) close();
-  
-}
   
 //________________________________________________________
 void MainWindow::_updateConfiguration( void )
@@ -543,6 +647,18 @@ void MainWindow::_splitterMoved( )
   resize_timer_.start( 200, this );  
 }
 
+//________________________________________________________
+void MainWindow::_activeViewChanged( void )
+{
+  
+  Debug::Throw() << "MainWindow::_activeViewChanged" << endl;
+
+  QWidget *widget( _stack().currentWidget() );
+  if( !widget ) close();
+  else setActiveView( *static_cast<TextView*>( widget ) );
+
+}
+
 //_______________________________________________________
 void MainWindow::_update( unsigned int flags )
 {
@@ -555,10 +671,23 @@ void MainWindow::_update( unsigned int flags )
     emit modificationChanged();
   }
 
-  if( flags & TextDisplay::FILE_NAME && file_editor_ )
+  if( flags & TextDisplay::FILE_NAME )
   { 
-    file_editor_->setText( activeDisplay().file().c_str() ); 
-    fileInfoAction().setEnabled( !activeDisplay().file().empty() );
+    
+    // update file editor
+    if( file_editor_ )
+    {
+      file_editor_->setText( activeDisplay().file().c_str() ); 
+      fileInfoAction().setEnabled( !activeDisplay().file().empty() );
+    }
+    
+    // update session file frame
+    if( navigation_frame_ )
+    { navigationFrame().sessionFilesFrame().selectFile( activeDisplay().file() ); }
+    
+    // cursor position
+    if( statusbar_ ) _updateCursorPosition();
+    
   }
 
   if( flags & TextDisplay::CUT )
@@ -583,9 +712,21 @@ void MainWindow::_update( unsigned int flags )
   
   if( flags & TextDisplay::DISPLAY_COUNT )
   {
-    int count = activeView().independentDisplayCount();
-    detachAction().setEnabled( count > 1 );
-    diffAction().setEnabled( count == 2 );    
+    int display_count = activeView().independentDisplayCount();
+    int view_count = BASE::KeySet<TextView>( this ).size();
+
+    // update detach action
+    detachAction().setEnabled( display_count > 1 || view_count > 1 );
+    
+    // update diff action
+    diffAction().setEnabled( display_count == 2 );    
+    
+    // update navigation frame
+    if( view_count > 1 && !navigationFrame().visibilityAction().isChecked() )
+    { navigationFrame().visibilityAction().setChecked( true ); }
+    
+    navigationFrame().visibilityAction().setEnabled( view_count <= 1 );
+      
   }
   
   if( flags & TextDisplay::SAVE )
@@ -716,6 +857,27 @@ void MainWindow::_installActions( void )
   
 }
 
+//______________________________________________________________________
+void MainWindow::_createFindDialog( void )
+{
+
+  Debug::Throw( "MainWindow::_createFindDialog.\n" );
+  if( !find_dialog_ )
+  {
+
+    find_dialog_ = new FindDialog( this );
+    find_dialog_->polish();
+
+    connect( find_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
+    connect( this, SIGNAL( noMatchFound() ), find_dialog_, SLOT( noMatchFound() ) );
+    connect( this, SIGNAL( matchFound() ), find_dialog_, SLOT( clearLabel() ) );
+
+  }
+
+  return;
+
+}
+
 //___________________________________________________________
 void MainWindow::_updateWindowTitle()
 { 
@@ -734,31 +896,6 @@ void MainWindow::_updateWindowTitle()
     .setReadOnly( activeDisplay().isReadOnly() )
     .setModified( activeDisplay().document()->isModified() )
     );
-  
-}
-
-//___________________________________________________________
-TextView& MainWindow::_newTextView( QWidget *parent )
-{ 
-  Debug::Throw( "MainWindow::_newTextView.\n" );
-  
-  TextView* view = new TextView( parent );
- 
-  BASE::Key::associate( this, view );
-  
-  // connections
-  connect( view, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
-  connect( view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
-  connect( view, SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
-  connect( view, SIGNAL( displayCountChanged( void ) ), &static_cast<Application*>(qApp)->windowServer(), SIGNAL( sessionFilesChanged( void ) ) );
-  
-  connect( view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
-  connect( view, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) ); 
-  connect( &view->positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );  
-
-  connect( view, SIGNAL( destroyed( void ) ), SLOT( _checkViews( void ) ) ); 
-  
-  return *view;
   
 }
 

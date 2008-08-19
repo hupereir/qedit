@@ -72,6 +72,13 @@ class NavigationFrame: public QWidget, public Counter
   const int& defaultWidth( void ) const
   { return default_width_; }
   
+    //! session files 
+  SessionFilesFrame& sessionFilesFrame( void ) const
+  {
+    assert( session_files_frame_ );
+    return *session_files_frame_;
+  }
+  
   //! size
   QSize sizeHint( void ) const;  
 
@@ -92,9 +99,6 @@ class NavigationFrame: public QWidget, public Counter
   
   signals:
 
-  //! signal emited when a file is selected
-  void fileSelected( FileRecord );  
-
   //! signal emited when a file is activated
   void fileActivated( FileRecord );  
       
@@ -109,14 +113,7 @@ class NavigationFrame: public QWidget, public Counter
 
   //!@name file system
   //@{
-  
-  //! session files 
-  SessionFilesFrame& _sessionFilesFrame( void ) const
-  {
-    assert( session_files_frame_ );
-    return *session_files_frame_;
-  }
- 
+   
   //! recent files 
   RecentFilesFrame& _recentFilesFrame( void ) const
   {

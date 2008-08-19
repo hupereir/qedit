@@ -97,10 +97,26 @@ SessionFilesFrame::~SessionFilesFrame( void )
 { Debug::Throw( "SessionFilesFrame::~SessionFilesFrame.\n" ); }
 
 //____________________________________________
-void SessionFilesFrame::showEvent( QShowEvent* )
+void SessionFilesFrame::selectFile( const File& file )
 {
-  Debug::Throw( "SessionFilesFrame::showEvent.\n" );
-  _update();
+  Debug::Throw( "SessionFilesFrame::selectFile.\n" );
+
+  // check file. If empty, clear selection
+  if( file.empty() ) 
+  {
+    _list().selectionModel()->clear();
+    return;
+  }
+  
+  // find model index that match the file
+  QModelIndex index( _model().index( FileRecord( file ) ) );
+  
+  // check if index is valid and not selected
+  if( ( !index.isValid() ) || _list().selectionModel()->isSelected( index ) ) return;
+  
+  // select found index
+  _list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+  
 }
 
 //______________________________________________________________________
@@ -124,7 +140,7 @@ void SessionFilesFrame::_update( void )
   Debug::Throw( "SessionFilesFrame:_update.\n" ); 
  
   // check visibility
-  if( !isVisible() ) return;
+  // if( !isVisible() ) return;
  
   // retrieve file records
   SessionFilesModel::List files;

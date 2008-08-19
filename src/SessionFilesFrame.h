@@ -35,7 +35,6 @@
 #include <map>
 #include <QAction>
 #include <QPaintEvent>
-#include <QShowEvent>
 
 #include "Counter.h"
 #include "SessionFilesModel.h"
@@ -61,6 +60,9 @@ class SessionFilesFrame: public QWidget, public Counter
   //! destructor
   ~SessionFilesFrame( void );
 
+  //! select file in list
+  void selectFile( const File& );
+  
   //!@name actions
   //@{
   
@@ -79,9 +81,6 @@ class SessionFilesFrame: public QWidget, public Counter
   void fileActivated( FileRecord );  
       
   protected:
-  
-  //! show event
-  virtual void showEvent( QShowEvent* );
   
   //! list
   TreeView& _list( void ) const

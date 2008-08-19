@@ -1,6 +1,5 @@
 // $Id$
 
-
 /******************************************************************************
  *
  * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
@@ -421,7 +420,12 @@ bool WindowServer::_open( FileRecord record )
   if( iter != windows.end() ) window = (*iter );
   
   // if no window found, create a new one
-  if( !window ) {  window = &newMainWindow(); }
+  // if( !window ) {  window = &newMainWindow(); }
+ 
+  if( !window ) {  
+    window = &_activeWindow();
+    window->newTextView();
+  }
 
   // need to show window immediately to avoid application
   // to quit if at some point no window remains open
@@ -527,7 +531,7 @@ void WindowServer::_detach( void )
   MainWindow& active_window_local( _activeWindow() );
   
   // check number of independent displays
-  assert( active_window_local.activeView().independentDisplayCount() >= 2 );
+  assert( active_window_local.activeView().independentDisplayCount() > 1 || BASE::KeySet<TextView>( &_activeWindow() ).size() > 1 );
   
   // check number of displays associated to active
   TextDisplay& active_display_local( active_window_local.activeView().activeDisplay() );

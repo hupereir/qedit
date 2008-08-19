@@ -54,6 +54,10 @@ class Menu;
 class NavigationFrame;
 class StatusBar;
 
+class FindDialog;
+class ReplaceDialog;
+class SelectLineDialog;
+
 //! editor main window
 class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
 {
@@ -168,6 +172,10 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //!@name active view/display managment
   //@{
   
+
+  //! create new TextView
+  void newTextView( void );
+
   //! active view
   TextView& activeView( void )
   {
@@ -183,8 +191,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   }
  
   //! change active display manualy
-  void setActiveView( TextView& view )
-  { active_view_ = &view; }
+  void setActiveView( TextView& view );
 
   //! active display
   const TextDisplay& activeDisplay( void ) const
@@ -325,6 +332,17 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
   //! emmited when the document modification state of an editor is changed
   void modificationChanged( void );
+
+  //!@name re-implemented from text editor
+  //@{
+  
+  //! emmited from TextDisplay when no match is found for find/replace request
+  void noMatchFound( void );
+  
+  //! emmited from TextDisplay when no match is found for find/replace request
+  void matchFound( void );
+  
+  //@}
   
   public slots:
  
@@ -340,6 +358,21 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   void uniconify( void )
   { QtUtil::uniconify( this ); }
  
+  //!@name reimplemented from TextEditor
+  //@{
+
+  //! find text from dialog
+  virtual void findFromDialog( void );
+  
+  //! replace text from dialog
+  virtual void replaceFromDialog( void )
+  {}
+
+  //! select line from dialog
+  virtual void selectLineFromDialog( void );
+  
+  //@}
+  
   protected:
 
   //! generic event
@@ -355,7 +388,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
   //! check TextViews
   /*! close window if no more text views */
-  void _checkViews( void );
+  // void _checkViews( void );
   
   //! update configuration
   void _updateConfiguration( void );
@@ -368,7 +401,13 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
   //! splitter moved
   void _splitterMoved( void );
-   
+  
+  //! active view changed 
+  /*! 
+  this is triggered by StackedWidget::currentWidgetChanged 
+  */
+  void _activeViewChanged( void );
+  
   //! select display from file
   /*! 
   this is triggered by changing the selection in the sessionFilesFrame
@@ -449,6 +488,14 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   void _diff( void )
   { activeView().diff(); }
   
+  //! find
+  void _find( TextSelection selection )
+  { activeDisplay().find( selection ); }
+  
+  //! select line
+  void _selectLine( int value )
+  { activeDisplay().selectLine( value ); }
+  
   //@}
   
   //! update window title, cut, copy, paste buttons, and filename line editor
@@ -471,11 +518,29 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! install actions
   void _installActions( void );
 
+  //! create find dialog
+  void _createFindDialog( void );
+  
+  //! create replace dialog
+  void _createReplaceDialog( void )
+  {}
+
+  //! find dialog
+  virtual FindDialog& _findDialog( void )
+  {
+    assert( find_dialog_ );
+    return *find_dialog_;
+  }
+
+  //! replace dialog
+  virtual ReplaceDialog& _replaceDialog( void )
+  {
+    assert( replace_dialog_ );
+    return *replace_dialog_;
+  }
+  
   //! Update window title
   void _updateWindowTitle();
-
-  //! create new TextView
-  TextView& _newTextView( QWidget* );
   
   /*! it is used to print formatted text to both HTML and PDF */
   QString _htmlString( const int& );
@@ -510,6 +575,20 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
    
   //@}
     
+  //!@name dialogs (re-implemented from TextEditor)
+  //@{
+  
+  //! find dialog
+  FindDialog* find_dialog_;
+
+  //! find dialog
+  ReplaceDialog* replace_dialog_;
+  
+  //! line number dialog
+  SelectLineDialog* select_line_dialog_;
+  
+  //@}
+  
   //!@name actions
   //@{
   
