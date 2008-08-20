@@ -52,6 +52,8 @@ TextView::TextView( QWidget* parent ):
   
   Debug::Throw( "TextView::TextView.\n" );
 
+  setAttribute( Qt::WA_DeleteOnClose );
+
   // main layout
   setLayout( new QVBoxLayout() );
   layout()->setMargin(0);
@@ -67,8 +69,6 @@ TextView::TextView( QWidget* parent ):
   position_timer_.setSingleShot( true );
   position_timer_.setInterval( 100 );
   
-  Debug::Throw( "TextView::TextView - done.\n" );
-
 }
 
 //___________________________________________________________________
@@ -118,9 +118,7 @@ void TextView::setFile( File file )
   setActiveDisplay( display );
   display.setFocus();
   emit displayCountChanged();
-  
-  Debug::Throw( "TextView::setFile - done.\n" );
-  
+    
   return;
 }
 
@@ -554,7 +552,7 @@ void TextView::_checkDisplays( void )
 
   Debug::Throw() << "TextView::_checkDisplays" << endl;
   BASE::KeySet<TextDisplay> displays( this );
-  if( displays.empty() ) deleteLater();
+  if( displays.empty() ) close();
   
 }
 

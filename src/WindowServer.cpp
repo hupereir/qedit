@@ -108,7 +108,7 @@ MainWindow& WindowServer::newMainWindow( void )
 }
 
 //______________________________________________________
-FileRecord::List WindowServer::files( bool modified_only ) const
+FileRecord::List WindowServer::files( bool modified_only, QWidget* active_window ) const
 { 
   
   Debug::Throw( "WindowServer::files.\n" );
@@ -137,7 +137,12 @@ FileRecord::List WindowServer::files( bool modified_only ) const
       
       // insert in map (together with modification status
       FileRecord record =  (file.empty() || (*iter)->isNewDocument() ) ? FileRecord( file ):application.recentFiles().get(file);
-      files.push_back( record.setFlag( FileRecordProperties::MODIFIED, (*iter)->document()->isModified() ) );
+            
+      // assign flags and store
+      unsigned int flags( FileRecordProperties::NONE );
+      if( (*iter)->document()->isModified() ) flags |= FileRecordProperties::MODIFIED;
+      if( *window_iter == active_window ) flags |= FileRecordProperties::CURRENT;
+      files.push_back( record.setFlags( flags ) );
         
     }
     

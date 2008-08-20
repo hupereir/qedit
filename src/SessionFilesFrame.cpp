@@ -133,8 +133,8 @@ void SessionFilesFrame::_update( void )
 { 
   Debug::Throw( "SessionFilesFrame:_update.\n" ); 
  
-  // update model
-  _model().update( static_cast< Application*>( qApp )->windowServer().files() );
+  // update model with file list retrieved from WindowServer, and proper tags.
+  _model().update( static_cast< Application*>( qApp )->windowServer().files( false, window() ) );
   _list().resizeColumns();
 
   Debug::Throw( "SessionFilesFrame:_update - done.\n" ); 
