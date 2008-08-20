@@ -96,6 +96,7 @@ noinst_HEADERS = \
   MainWindow.h \
   Menu.h \
   NavigationFrame.h \
+  NewDocumentNameServer.h \
   NewFileDialog.h \
   ParenthesisHighlight.h \
   PrintDialog.h \
@@ -133,6 +134,7 @@ libqedit_a_SOURCES = \
   HtmlUtil.cpp \
   MainWindow.cpp \
   Menu.cpp \
+  NewDocumentNameServer.cpp \
   NavigationFrame.cpp \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \

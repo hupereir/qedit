@@ -420,46 +420,33 @@ void Menu::_updateWindowsMenu( void )
   
   const string& current_file( display.file() );
   
-  // retrieve list of MainWindows
-  BASE::KeySet<MainWindow> windows( &static_cast<Application*>(qApp)->windowServer() );
-
   // clear files map
   file_actions_.clear();
       
+  // retrieve all files
   bool first = true;
-  set<File> files;
-  for( BASE::KeySet<MainWindow>::const_iterator window_iter = windows.begin(); window_iter != windows.end(); window_iter++ )
+  WindowServer::FileRecordMap records( static_cast<Application*>(qApp)->windowServer().files() );
+  for( WindowServer::FileRecordMap::const_iterator iter = records.begin(); iter != records.end(); iter++ )
   { 
     
-    // retrieve associated TextDisplays
-    BASE::KeySet<TextDisplay> displays( (*window_iter)->associatedDisplays() );
-    for( BASE::KeySet<TextDisplay>::const_iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    {
-      
-      // retrieve file and check
-      const File& file( (*iter)->file() );
-      if( file.empty() ) continue;
-      
-      // check if file was already processed
-      if( !files.insert( file ).second ) continue;
-      
-      // if first valid file, add separator
-      if( first ) 
-      {
-        windows_menu_->addSeparator(); 
-        first = false;
-      }
-      
-      // add menu item
-      QAction* action = windows_menu_->addAction( file.c_str() );
-      action->setCheckable( true );
-      action->setChecked( current_file == file );
-      windows_action_group_->addAction( action );
-      
-      // insert in map for later callback.
-      file_actions_.insert( make_pair( action, file ) );
+    // retrieve file and check
+    const File& file( iter->first.file() );
     
+    // if first valid file, add separator
+    if( first ) 
+    {
+      windows_menu_->addSeparator(); 
+      first = false;
     }
+      
+    // add menu item
+    QAction* action = windows_menu_->addAction( file.c_str() );
+    action->setCheckable( true );
+    action->setChecked( current_file == file );
+    windows_action_group_->addAction( action );
+      
+    // insert in map for later callback.
+    file_actions_.insert( make_pair( action, file ) );
     
   }
   

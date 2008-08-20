@@ -81,7 +81,6 @@ Application::Application( int argc, char*argv[] ) :
   Counter( "Application" ),
   application_manager_( 0 ),
   recent_files_( 0 ),
-//   navigation_window_( 0 ),
   window_server_( 0 ),
   class_manager_( 0 ),
   autosave_( 0 ),
@@ -106,7 +105,6 @@ Application::~Application( void )
   if( class_manager_ ) delete class_manager_;
   if( autosave_ ) delete autosave_;
   if( window_server_ ) delete window_server_; 
-  // if( navigation_window_ ) delete navigation_window_;
   if( recent_files_ ) delete recent_files_;
 
   XmlOptions::write();
@@ -189,8 +187,30 @@ void Application::realizeWidget( void )
   window_server_ = new WindowServer();
   
   // create first window and show
-  windowServer().newMainWindow().show();
+  MainWindow& window( windowServer().newMainWindow() );
+  window.show();
+
+  // check number of valid files
+  // this needs to be done here so that when calling qedit the first time
+  // with no argument, a "new Document" is created (as opposed to an empty file display)
+  // in contrast: this is not necessary via processRequest, since there should then already
+  // be a window opened.
+  {
+    list<string> files( args_.get().back().options() );
+    bool has_valid_file( false );
+    for( list<string>::const_iterator iter( files.begin() ); iter != files.end(); iter++ )
+    { 
+      if( !iter->empty() ) 
+      {
+        has_valid_file = true;
+        break;
+      }
+    }
     
+    if( !has_valid_file ) window.activeDisplay().setIsNewDocument();
+  }
+  
+  // update configuration
   _updateConfiguration();
 
   // make sure application ends when last window is closed.
@@ -199,6 +219,7 @@ void Application::realizeWidget( void )
   // run startup timer to open files after the call to exec() is 
   // performed in the main routine
   startup_timer_.start(0);
+  
   Debug::Throw( "Application::realizeWidget - done.\n" ); 
 
 }

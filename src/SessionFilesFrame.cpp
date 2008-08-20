@@ -100,14 +100,7 @@ SessionFilesFrame::~SessionFilesFrame( void )
 void SessionFilesFrame::selectFile( const File& file )
 {
   Debug::Throw() << "SessionFilesFrame::selectFile - file: " << file << ".\n";
-
-//   // check file. If empty, clear selection
-//   if( file.empty() ) 
-//   {
-//     _list().selectionModel()->clear();
-//     return;
-//   }
-  
+ 
   // find model index that match the file
   QModelIndex index( _model().index( FileRecord( file ) ) );
   
@@ -154,6 +147,7 @@ void SessionFilesFrame::_update( void )
   _model().update( files );
   _list().resizeColumns();
 
+  Debug::Throw( "SessionFilesFrame:_update - done.\n" ); 
 
 }
 

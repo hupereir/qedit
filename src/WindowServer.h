@@ -24,7 +24,6 @@
  *
  *******************************************************************************/
 
-
 /*!
   \file WindowServer.h
   \brief handles opened edition windows

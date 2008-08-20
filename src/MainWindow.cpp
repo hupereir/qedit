@@ -271,7 +271,8 @@ BASE::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
 bool MainWindow::selectDisplay( const File& file )
 {
     
-  Debug::Throw( "MainWindow::selectDisplay.\n" );
+  Debug::Throw() << "MainWindow::selectDisplay - file: " << file << endl;
+  
   BASE::KeySet<TextView> views( this );
   for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
   { 
@@ -413,7 +414,7 @@ void MainWindow::_revertToSave( void )
   Debug::Throw( "MainWindow::_revertToSave.\n" );
 
   // check filename
-  if( activeDisplay().file().empty() )
+  if( activeDisplay().file().empty() || activeDisplay().isNewDocument() )
   {
     QtUtil::infoDialog( this, "No filename given. <Revert to save> canceled." );
     return;
@@ -740,7 +741,7 @@ void MainWindow::_update( unsigned int flags )
     if( file_editor_ )
     {
       file_editor_->setText( activeDisplay().file().c_str() ); 
-      fileInfoAction().setEnabled( !activeDisplay().file().empty() );
+      fileInfoAction().setEnabled( !( activeDisplay().file().empty() || activeDisplay().isNewDocument() ) );
     }
     
     // update session file frame

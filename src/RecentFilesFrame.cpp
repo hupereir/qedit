@@ -146,6 +146,8 @@ void RecentFilesFrame::_update( void )
   
   // clean action enability
   _cleanAction().setEnabled( _recentFiles().cleanEnabled() );
+
+  Debug::Throw( "RecentFilesFrame:_update - done.\n" ); 
   
 }
 

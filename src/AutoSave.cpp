@@ -138,10 +138,11 @@ void AutoSave::saveFiles( const TextDisplay* display )
     }
     
     // update file and content
-    if( !(*displays.begin())->file().empty() )
+    TextDisplay& display( **displays.begin() );
+    if( !( display.file().empty() || display.isNewDocument() ) )
     {
-      (*iter)->setFile( (*displays.begin())->file() );
-      (*iter)->setContents( (*displays.begin())->toPlainText() );
+      (*iter)->setFile( display.file() );
+      (*iter)->setContents( display.toPlainText() );
       (*iter)->start();
     }
     

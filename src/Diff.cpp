@@ -243,6 +243,7 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
   if( !( 
     _display().document()->isModified() ||
     _display().file().empty() || 
+    _display().isNewDocument() ||
     !_display().file().exists() ) ) 
   {
     

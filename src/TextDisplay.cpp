@@ -74,12 +74,14 @@ using namespace std;
 
 // empty line regular expression
 const QRegExp TextDisplay::empty_line_regexp_( "(^\\s*$)" );
+NewDocumentNameServer TextDisplay::name_server_;
 
 //___________________________________________________
 TextDisplay::TextDisplay( QWidget* parent ):
   TextEditor( parent ),
   file_( "" ),
   working_directory_( Util::workingDirectory() ),
+  is_new_document_( false ),
   class_name_( "" ),
   ignore_warnings_( false ),
   show_block_delimiter_action_( 0 ),
@@ -261,7 +263,40 @@ void TextDisplay::synchronize( TextDisplay* display )
 
   // file
   _setFile( display->file() );
+  _setIsNewDocument( display->isNewDocument() );
+}
 
+//____________________________________________
+void TextDisplay::setIsNewDocument( void )
+{
+
+  Debug::Throw( "TextDisplay::setIsNewDocument.\n" );
+  
+  // do nothing if already set
+  if( isNewDocument() ) return;
+  
+  // generate filename
+  File file( name_server_.get() );
+  
+  // retrieve display and associated
+  BASE::KeySet<TextDisplay> displays( this );
+  displays.insert( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  {
+    (*iter)->_setIsNewDocument( true );
+    (*iter)->_setFile( file );
+    (*iter)->setClassName( className() );
+    (*iter)->updateDocumentClass();
+
+    // disable file info action
+    (*iter)->fileInfoAction().setEnabled( false );
+
+  }
+      
+  // perform first autosave
+  Application& application( *static_cast<Application*>(qApp) );
+  application.autoSave().saveFiles( this );
+  
 }
 
 //____________________________________________
@@ -269,6 +304,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
 {
 
   Debug::Throw() << "TextDisplay::setFile " << file << endl;
+  assert( !file.empty() );
 
   // reset class name
   QString class_name( static_cast<Application*>(qApp)->recentFiles().add( file ).property(FileRecordProperties::CLASS_NAME).c_str() );
@@ -306,9 +342,14 @@ void TextDisplay::setFile( File file, bool check_autosave )
   displays.insert( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
+    (*iter)->_setIsNewDocument( false );
     (*iter)->_setFile( file );
     (*iter)->setClassName( className() );
     (*iter)->updateDocumentClass();
+    
+    // enable file info action
+    (*iter)->fileInfoAction().setEnabled( true );
+    
   }
     
   // check file and try open.
@@ -324,14 +365,14 @@ void TextDisplay::setFile( File file, bool check_autosave )
     _setIgnoreWarnings( false );
 
   }
-  
+    
   // save file if restored from autosaved.
   if( restore_autosave && !isReadOnly() ) save();
 
   // perform first autosave
   Application& application( *static_cast<Application*>(qApp) );
   application.autoSave().saveFiles( this );
-
+  
   // update openPrevious menu
   if( !TextDisplay::file().empty() )
   { application.recentFiles().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
@@ -343,8 +384,9 @@ void TextDisplay::_setFile( const File& file )
 {
 
   Debug::Throw() << "TextDisplay::_setFile - file: " << file << endl;
+  
   file_ = file;
-  if( file.exists() )
+  if( !isNewDocument() && file.exists() )
   {
     _setLastSaved( file.lastModified() );
     _setWorkingDirectory( file.path() );
@@ -468,7 +510,7 @@ void TextDisplay::save( void )
   if( !document()->isModified() ) return;
 
   // check file name
-  if( file().empty() ) return saveAs();
+  if( file().empty() || isNewDocument() ) return saveAs();
 
   // check is contents differ from saved file
   if( _contentsChanged() )
@@ -552,14 +594,15 @@ void TextDisplay::saveAs( void )
   // check if file exists
   if( file.exists() )
   {
+    
     if( !file.isWritable() )
     {
       ostringstream what;
       what << "File \"" << file << "\" is read-only. <Save> canceled.";
       QtUtil::infoDialog( this, what.str() );
       return;
-    } else if( !QtUtil::questionDialog( this, "Selected file already exists. Overwrite ?" ) )
-    { return; }
+    } else if( !QtUtil::questionDialog( this, "Selected file already exists. Overwrite ?" ) ) return;
+    
   }
 
   // update filename and document class for this and associates
@@ -569,13 +612,17 @@ void TextDisplay::saveAs( void )
   {
 
     // update file
+    (*iter)->_setIsNewDocument( false );
     (*iter)->_setFile( file );
-
+ 
     // update document class
     // the class name is reset, to allow a document class
     // matching the new filename to get loaded
     (*iter)->setClassName("");
     (*iter)->updateDocumentClass();
+
+    // enable file info action
+    (*iter)->fileInfoAction().setEnabled( true );
 
   }
 
@@ -585,7 +632,7 @@ void TextDisplay::saveAs( void )
 
   // rehighlight
   rehighlight();
-  if( !TextDisplay::file().empty() )
+  if( !( TextDisplay::file().empty() || isNewDocument() ) )
   { static_cast<Application*>(qApp)->recentFiles().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
 
 }
@@ -924,10 +971,14 @@ void TextDisplay::updateDocumentClass( void )
 
   // default document class is empty
   DocumentClass document_class;
-
+  
   // try load document class from class_name
   if( !className().isEmpty() )
   { document_class = dynamic_cast<Application*>(qApp)->classManager().get( className() ); }
+
+  // load default if new document
+  if( isNewDocument() )
+  { document_class = dynamic_cast<Application*>(qApp)->classManager().defaultClass(); }
 
   // try load from file
   if( document_class.name().isEmpty() && !file().empty() )
@@ -972,7 +1023,7 @@ void TextDisplay::updateDocumentClass( void )
     !textHighlight().parenthesis().empty() );
 
   // add information to Menu
-  if( !file().empty() )
+  if( !( file().empty() || isNewDocument() ) )
   { 
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
     record.addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); 
@@ -1105,7 +1156,7 @@ void TextDisplay::selectFilter( const QString& filter )
   _filterMenu().select( qPrintable( filter ) );
 
   // update file record
-  if( !file().empty() )
+  if( !( file().empty() || isNewDocument() ) )
   {
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
     record.addProperty( FileRecordProperties::FILTER, interface.filter() );
@@ -1136,7 +1187,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
   _dictionaryMenu().select( qPrintable( dictionary ) );
 
   // update file record
-  if( !file().empty() )
+  if( !( file().empty() || isNewDocument() ) )
   {
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
     record.addProperty( FileRecordProperties::DICTIONARY, interface.dictionary() );
@@ -1419,7 +1470,7 @@ bool TextDisplay::_contentsChanged( void ) const
   Debug::Throw( "TextDisplay::_contentsChanged.\n" );
 
   // check file
-  if( file().empty() ) return true;
+  if( file().empty() || isNewDocument() ) return true;
 
   // open file
   QFile in( file().c_str() );
@@ -1436,7 +1487,7 @@ bool TextDisplay::_contentsChanged( void ) const
 bool TextDisplay::_fileRemoved( void ) const
 {
   Debug::Throw( "TextDisplay::_fileRemoved.\n" );
-  return (!file().empty() && last_save_.isValid() && !file().exists() );
+  return ( !( file().empty() || isNewDocument() ) && last_save_.isValid() && !file().exists() );
 }
 
 //____________________________________________
@@ -1577,7 +1628,7 @@ void TextDisplay::_updateSpellCheckConfiguration( void )
   string dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
 
   // overwrite with file record
-  if( !file().empty() )
+  if( !( file().empty() || isNewDocument() ) )
   {
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
     if( record.hasProperty( FileRecordProperties::FILTER ) && interface.hasFilter( record.property( FileRecordProperties::FILTER ) ) )
@@ -1774,7 +1825,7 @@ void TextDisplay::_spellcheck( void )
   string default_dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
 
   // try overwrite with file record
-  if( !file().empty() )
+  if( !( file().empty()  || isNewDocument() ) )
   {
 
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
@@ -1799,7 +1850,7 @@ void TextDisplay::_spellcheck( void )
   dialog.exec();
 
   // try overwrite with file record
-  if( !file().empty() )
+  if( !( file().empty() || isNewDocument() ) )
   {
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
     record.addProperty( FileRecordProperties::FILTER, dialog.filter() );

@@ -116,6 +116,7 @@ WindowServer::FileRecordMap WindowServer::files( bool modified_only ) const
   FileRecordMap files;
   
   // get associated main windows
+  Application& application( *static_cast<Application*>( qApp ) );
   BASE::KeySet<MainWindow> windows( this );
   for( BASE::KeySet<MainWindow>::iterator window_iter = windows.begin(); window_iter != windows.end(); window_iter++ )
   {
@@ -134,12 +135,14 @@ WindowServer::FileRecordMap WindowServer::files( bool modified_only ) const
       if( file.empty() ) continue;
       
       // insert in map (together with modification status
-      files.insert( make_pair( static_cast<Application*>(qApp)->recentFiles().get(file), (*iter)->document()->isModified() ) );
+      FileRecord record =  (file.empty() || (*iter)->isNewDocument() ) ? FileRecord( file ):application.recentFiles().get(file);
+      files.insert( make_pair( record, (*iter)->document()->isModified() ) );
         
     }
     
   }
   
+  Debug::Throw( "WindowServer::files - done.\n" );
   return files;
   
 }
@@ -158,7 +161,6 @@ bool WindowServer::closeAllWindows( void )
   {
     
     // if window is not modified, close
-    //Debug::Throw(0) << "WindowServer::closeAllWindows - window: " << (*iter)->key() << endl;
     if( !(*iter)->isModified() ) 
     {
       assert( (*iter)->close() );
@@ -204,11 +206,9 @@ bool WindowServer::closeAllWindows( void )
     for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
     {
       
-      //Debug::Throw(0) << "WindowServer::closeAllWindows - display: " << (*display_iter)->key() << " file: " << (*display_iter)->file() << endl;
       if( !(*display_iter)->document()->isModified() ) continue;
 
       state = (*display_iter)->askForSave( save_all_enabled );
-      //Debug::Throw(0) << "WindowServer::closeAllWindows - state: " << state << endl;
       if( state == AskForSaveDialog::YES_TO_ALL ) (*iter)->saveAll();
       else if( state == AskForSaveDialog::NO_TO_ALL ) (*iter)->ignoreAll();      
       else if( state == AskForSaveDialog::CANCEL ) return false;
@@ -363,30 +363,47 @@ void WindowServer::_newFile( void )
   Debug::Throw( "WindowServer::_newFile.\n" );
   
   // retrieve all MainWindows
-  MainWindow* window( 0 );
   BASE::KeySet<MainWindow> windows( this );
- 
+    
   // try find empty editor
+  TextView* view(0);
   BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
-  if( iter != windows.end() ) window = (*iter );
+  if( iter != windows.end() ) 
+  {
+    
+    // select the view that contains the empty display
+    BASE::KeySet<TextView> views( *iter );
+    BASE::KeySet<TextView>::iterator view_iter( find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
+    assert( view_iter != views.end() );
+    (*iter)->setActiveView( **view_iter );
+    view = *view_iter;
+    
+    // uniconify
+    (*iter)->uniconify();
+    
+  }
   
   // if no window found, create a new one
-  if( !window ) {
+  if( !view ) {
     
     if( _openMode() == NEW_WINDOW )
     {
-      window = &newMainWindow();
-      window->show();
+      
+      MainWindow &window( newMainWindow() );
+      view = &window.activeView();
+      window.show();
       
     } else {
       
-      window = &_activeWindow();
-      window->newTextView();
-      window->uniconify();
+      view = &_activeWindow().newTextView();
+      _activeWindow().uniconify();
       
     }
     
   }
+  
+  // mark view as new document
+  view->activeDisplay().setIsNewDocument();
   
   return;
    
@@ -401,7 +418,7 @@ void WindowServer::_newFile( Qt::Orientation orientation )
    
   // retrieve active view
   TextView& active_view( _activeWindow().activeView() );
-  TextDisplay* display;
+  TextDisplay* display(0);
   
   // look for an empty display
   // create a new display if none is found
@@ -409,6 +426,7 @@ void WindowServer::_newFile( Qt::Orientation orientation )
   BASE::KeySet<TextDisplay>::iterator iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
   display = ( iter == displays.end() ) ? &active_view.splitDisplay( orientation, false ):*iter;
   
+  display->setIsNewDocument();
   active_view.setActiveDisplay( *display );
   return;
 
@@ -422,9 +440,6 @@ bool WindowServer::_open( FileRecord record )
   
   // do nothing if record is empty
   if( record.file().empty() ) return false;
-  
-  // create file if it does not exist
-  if( !( record.file().exists() || _createNewFile( record ) ) ) return false;
   
   // retrieve all MainWindows
   BASE::KeySet<MainWindow> windows( this );
@@ -440,6 +455,9 @@ bool WindowServer::_open( FileRecord record )
     return true;
     
   } 
+  
+  // create file if it does not exist
+  if( !( record.file().exists() || _createNewFile( record ) ) ) return false;
     
   // try find empty editor
   TextView* view(0);
@@ -478,8 +496,7 @@ bool WindowServer::_open( FileRecord record )
     
   }
   
-  // need to show window immediately to avoid application
-  // to quit if at some point no window remains open
+  // assign file
   view->setFile( record.file() );
   
   return true;

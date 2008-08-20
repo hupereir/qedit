@@ -45,6 +45,7 @@
 #include "File.h"
 #include "HighlightBlockFlags.h"
 #include "HighlightPattern.h"
+#include "NewDocumentNameServer.h"
 #include "ParenthesisHighlight.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
@@ -81,10 +82,19 @@ class TextDisplay: public TextEditor
   {
     public:
 
+//     //! constructor
+//     SameFileFTor( const File& file ):
+//       file_( file.expand() )
+//     {}
+
     //! constructor
-    SameFileFTor( const File& file ):
-      file_( file.expand() )
-    {}
+    SameFileFTor( const File& file )
+    {
+      
+      if( file.isAbsolute() ) file_ = file.expand();
+      else file_ = file;
+    
+    }
 
     //! predicate
     bool operator() ( const TextDisplay* display ) const
@@ -93,7 +103,7 @@ class TextDisplay: public TextEditor
     private:
 
     //! predicted file
-    const File file_;
+    File file_;
 
   };
 
@@ -104,7 +114,11 @@ class TextDisplay: public TextEditor
 
     //! predicate
     bool operator() ( const TextDisplay* display ) const
-    { return display->file().empty() && !display->document()->isModified(); }
+    { 
+      return 
+        display->file().empty() || 
+        (display->isNewDocument() && !display->document()->isModified() ); 
+      }
 
   };
 
@@ -167,9 +181,16 @@ class TextDisplay: public TextEditor
   //!@ name file management
   //@{
   
-  //! open file
+  //! file
   void setFile( File file, bool check_autosave = true );
     
+  //! define as new document
+  void setIsNewDocument( void );
+  
+  //! is new document
+  const bool& isNewDocument( void ) const
+  { return is_new_document_; }
+
   //! file
   const File& file( void ) const
   { return file_; }
@@ -312,10 +333,7 @@ class TextDisplay: public TextEditor
   
   //! file information
   QAction& fileInfoAction( void ) const
-  { 
-    file_info_action_->setEnabled( !file().empty() );
-    return *file_info_action_; 
-  }
+  { return *file_info_action_; }
 
   #if WITH_ASPELL
   
@@ -440,6 +458,10 @@ class TextDisplay: public TextEditor
     
   //! set file name
   void _setFile( const File& file );
+    
+  //! is new document
+  void _setIsNewDocument( bool value )
+  { is_new_document_ = value; }
   
   //! clear macros
   void _clearMacros( void )
@@ -600,6 +622,9 @@ class TextDisplay: public TextEditor
   //! working directory
   File working_directory_;
   
+  //! true if display corresponds to a new document
+  bool is_new_document_;
+  
   //! associated document class name
   QString class_name_;
   
@@ -707,6 +732,9 @@ class TextDisplay: public TextEditor
   
   //! block delimiter
   BlockDelimiterDisplay* block_delimiter_display_;
+  
+  //! new document name server
+  static NewDocumentNameServer name_server_;
   
   //! empty line
   static const QRegExp empty_line_regexp_;
