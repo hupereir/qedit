@@ -74,6 +74,9 @@ class DocumentClassManager: public QObject, public Counter
   //! write classes to file
   bool write( const QString& class_name, const File& file ) const;
 
+  //! get default document class
+  DocumentClass defaultClass( void ) const;
+  
   //! get class matching filename. Return 0 if not found
   DocumentClass find( const File& file ) const;
 

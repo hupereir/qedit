@@ -171,6 +171,23 @@ bool DocumentClassManager::write( const File& filename ) const
   return true;
 
 }
+  
+//________________________________________________________
+DocumentClass DocumentClassManager::defaultClass( void ) const
+{
+
+  Debug::Throw( "DocumentClassManager::defaultClass.\n" );
+  
+  // try load default
+  ClassList::const_iterator iter = find_if(
+    document_classes_.begin(),
+    document_classes_.end(),
+    DocumentClass::IsDefaultFTor() );
+  if( iter != document_classes_.end() ) return *iter;
+  
+  // nothing found
+  return DocumentClass();
+}
 
 //________________________________________________________
 DocumentClass DocumentClassManager::find( const File& filename ) const
@@ -184,15 +201,7 @@ DocumentClass DocumentClassManager::find( const File& filename ) const
     DocumentClass::MatchFileFTor( filename ) );
   if( iter != document_classes_.end() ) return *iter;
   
-  // try load default
-  iter = find_if(
-    document_classes_.begin(),
-    document_classes_.end(),
-    DocumentClass::IsDefaultFTor() );
-  if( iter != document_classes_.end() ) return *iter;
-  
-  // nothing found
-  return DocumentClass();
+  return defaultClass();
   
 }
 
