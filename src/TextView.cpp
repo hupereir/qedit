@@ -76,6 +76,30 @@ TextView::~TextView()
 { Debug::Throw( "TextView::~TextView.\n" ); }
 
 //____________________________________________
+void TextView::setIsNewDocument( void )
+{
+  Debug::Throw( "TextView::setIsNewDocument.\n" );
+
+  // look for first empty display
+  BASE::KeySet<TextDisplay> displays( this );  
+  BASE::KeySet<TextDisplay>::iterator iter = find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
+  assert( iter != displays.end() );
+  TextDisplay &display( **iter );
+   
+  // set display as new document
+  display.setIsNewDocument();
+  
+  // set focus
+  setActiveDisplay( display );
+  display.setFocus();
+  emit displayCountChanged();
+  
+  Debug::Throw( "TextView::setIsNewDocument - done.\n" );
+  
+  return;
+}
+
+//____________________________________________
 void TextView::setFile( File file )
 {
   Debug::Throw() << "TextView::setFile - " << file << endl;

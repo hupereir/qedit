@@ -403,7 +403,7 @@ void WindowServer::_newFile( void )
   }
   
   // mark view as new document
-  view->activeDisplay().setIsNewDocument();
+  view->setIsNewDocument();
   
   return;
    
@@ -418,16 +418,14 @@ void WindowServer::_newFile( Qt::Orientation orientation )
    
   // retrieve active view
   TextView& active_view( _activeWindow().activeView() );
-  TextDisplay* display(0);
   
   // look for an empty display
   // create a new display if none is found
   BASE::KeySet<TextDisplay> displays( active_view );
   BASE::KeySet<TextDisplay>::iterator iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-  display = ( iter == displays.end() ) ? &active_view.splitDisplay( orientation, false ):*iter;
+  if( iter == displays.end() ) &active_view.splitDisplay( orientation, false );
   
-  display->setIsNewDocument();
-  active_view.setActiveDisplay( *display );
+  active_view.setIsNewDocument();
   return;
 
 }

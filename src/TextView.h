@@ -94,6 +94,9 @@ class TextView: public QWidget, public Counter, public BASE::Key
   
   //@}
 
+  //! set new document
+  void setIsNewDocument( void );
+  
   //! set file and read
   void setFile( File file );
      
