@@ -36,7 +36,7 @@
 
 #include "Icons.h"
 #include "CustomPixmap.h"
-#include "FileRecordBaseProperties.h"
+#include "FileRecordProperties.h"
 #include "SessionFilesModel.h"
 #include "XmlOptions.h"
 
@@ -66,8 +66,12 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
   // retrieve associated file info
   const FileRecord& record( get(index) );
   
-  if( role == Qt::DecorationRole && index.column() == FILE ) return _icon( record.hasFlag( MODIFIED ) ? MODIFIED:NONE );
-  else return FileRecordModel::data( index, role );
+  if( role == Qt::DecorationRole && index.column() == ICON ) 
+  {
+    return _icon( record.hasFlag( FileRecordProperties::MODIFIED ) ? 
+      FileRecordProperties::MODIFIED:
+      FileRecordProperties::NONE );
+  } else return FileRecordModel::data( index, role );
  
   return QVariant();
   
@@ -95,7 +99,7 @@ QIcon SessionFilesModel::_icon( unsigned int type )
   QSize scaled(size*0.9);
  
   QIcon icon;
-  if( type == MODIFIED ) 
+  if( type == FileRecordProperties::MODIFIED ) 
   {
   
     icon = CustomPixmap()
@@ -103,7 +107,7 @@ QIcon SessionFilesModel::_icon( unsigned int type )
       .merge( CustomPixmap().find( ICONS::SAVE )
       .scale( scaled ), CustomPixmap::CENTER );
     
-  } else if( type == NONE ) {
+  } else if( type == FileRecordProperties::NONE ) {
     
     icon = CustomPixmap().empty( size );
     

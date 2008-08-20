@@ -343,7 +343,7 @@ void Application::_exit( void )
   Debug::Throw( "Application::_exit.\n" );
 
   // retrieve opened files
-  WindowServer::FileRecordMap files( windowServer().files() );
+  FileRecord::List files( windowServer().files() );
   
   // ask for confirmation if more than one file is opened.
   if( files.size() > 1 )

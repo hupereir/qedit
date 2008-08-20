@@ -35,6 +35,7 @@
 #include "CustomFileDialog.h"
 #include "Debug.h"
 #include "FileList.h"
+#include "FileRecordProperties.h"
 #include "Icons.h"
 #include "IconEngine.h"
 #include "MainWindow.h"
@@ -107,13 +108,13 @@ MainWindow& WindowServer::newMainWindow( void )
 }
 
 //______________________________________________________
-WindowServer::FileRecordMap WindowServer::files( bool modified_only ) const
+FileRecord::List WindowServer::files( bool modified_only ) const
 { 
   
   Debug::Throw( "WindowServer::files.\n" );
   
   // output
-  FileRecordMap files;
+  FileRecord::List files;
   
   // get associated main windows
   Application& application( *static_cast<Application*>( qApp ) );
@@ -136,12 +137,14 @@ WindowServer::FileRecordMap WindowServer::files( bool modified_only ) const
       
       // insert in map (together with modification status
       FileRecord record =  (file.empty() || (*iter)->isNewDocument() ) ? FileRecord( file ):application.recentFiles().get(file);
-      files.insert( make_pair( record, (*iter)->document()->isModified() ) );
+      files.push_back( record.setFlag( FileRecordProperties::MODIFIED, (*iter)->document()->isModified() ) );
         
     }
     
   }
   
+  sort( files.begin(), files.end(), FileRecord::FileFTor() );
+  files.erase( unique( files.begin(), files.end(), FileRecord::SameFileFTor() ), files.end() );
   Debug::Throw( "WindowServer::files - done.\n" );
   return files;
   
@@ -423,7 +426,7 @@ void WindowServer::_newFile( Qt::Orientation orientation )
   // create a new display if none is found
   BASE::KeySet<TextDisplay> displays( active_view );
   BASE::KeySet<TextDisplay>::iterator iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-  if( iter == displays.end() ) &active_view.splitDisplay( orientation, false );
+  if( iter == displays.end() ) active_view.splitDisplay( orientation, false );
   
   active_view.setIsNewDocument();
   return;
@@ -640,7 +643,7 @@ void WindowServer::_saveAll( void )
   Debug::Throw( "WindowServer::_saveAll.\n" );
 
   // load files
-  FileRecordMap files( WindowServer::files( true ) );
+  FileRecord::List files( WindowServer::files( true ) );
   
   // check how many files are modified
   if( files.empty() )

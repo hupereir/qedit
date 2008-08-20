@@ -35,9 +35,10 @@
 #include "Application.h"
 #include "ColumnSortingMenu.h"
 #include "Debug.h"
+#include "FileList.h"
+#include "FileRecordProperties.h"
 #include "Icons.h"
 #include "IconEngine.h"
-#include "FileList.h"
 #include "SessionFilesFrame.h"
 #include "TreeView.h"
 #include "Util.h"
@@ -61,7 +62,7 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   
   // list
   layout()->addWidget( list_ = new TreeView( this ) );
-  _list().setModel( &_model() );  
+  _list().setModel( &_model() );
   _list().setMaskOptionName( "SESSION_FILES_MASK" );
   _list().header()->hide();
   
@@ -132,19 +133,8 @@ void SessionFilesFrame::_update( void )
 { 
   Debug::Throw( "SessionFilesFrame:_update.\n" ); 
  
-  // retrieve file records
-  SessionFilesModel::List files;
-  WindowServer::FileRecordMap records( static_cast< Application*>( qApp )->windowServer().files() );
-  for( WindowServer::FileRecordMap::const_iterator iter = records.begin(); iter != records.end(); iter++ )
-  {
-    
-    FileRecord record( iter->first );
-    record.setFlag( SessionFilesModel::MODIFIED, iter->second );
-    files.push_back( record ); 
-  }
-
   // update model
-  _model().update( files );
+  _model().update( static_cast< Application*>( qApp )->windowServer().files() );
   _list().resizeColumns();
 
   Debug::Throw( "SessionFilesFrame:_update - done.\n" ); 

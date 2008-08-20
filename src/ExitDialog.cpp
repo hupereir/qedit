@@ -31,6 +31,7 @@
 
 #include <QLabel>
 
+#include "FileRecordProperties.h"
 #include "Icons.h"
 #include "PixmapEngine.h"
 #include "Debug.h"
@@ -39,7 +40,7 @@
 using namespace std;
 
 //__________________________________________________
-ExitDialog::ExitDialog( QWidget* parent, WindowServer::FileRecordMap files ):
+ExitDialog::ExitDialog( QWidget* parent, FileRecord::List files ):
   CustomDialog( parent, OK_BUTTON | CANCEL_BUTTON )
 {
   
@@ -62,10 +63,10 @@ ExitDialog::ExitDialog( QWidget* parent, WindowServer::FileRecordMap files ):
   what << "Editing: ";
 
   unsigned int index = 0;
-  for( WindowServer::FileRecordMap::iterator iter = files.begin(); iter != files.end(); iter++, index++ )
+  for( FileRecord::List::const_iterator iter = files.begin(); iter != files.end(); iter++, index++ )
   {
-    what << iter->first.file().localName();
-    if( iter->second ) what << "*";
+    what << iter->file().localName();
+    if( iter->hasFlag( FileRecordProperties::MODIFIED ) ) what << "*";
     if( index < files.size()-2 ) what << ", ";
     else if( index == files.size()-2 ) what << " and ";
     else what << ".";

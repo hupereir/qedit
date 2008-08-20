@@ -67,11 +67,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   list_->setSelectionMode( QAbstractItemView::MultiSelection );
 
   // retrieve file records
-  FileRecordModel::List files;
-  WindowServer::FileRecordMap records( static_cast< Application*>( qApp )->windowServer().files() );
-  for( WindowServer::FileRecordMap::const_iterator iter = records.begin(); iter != records.end(); iter++ )
-  { files.push_back( iter->first ); }
-  model_.set( files );
+  model_.set( static_cast< Application*>( qApp )->windowServer().files() );
   
   // mask
   unsigned int mask( (1<<FileRecordModel::FILE)|(1<<FileRecordModel::PATH ));

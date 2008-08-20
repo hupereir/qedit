@@ -36,7 +36,7 @@
 #include "CustomDialog.h"
 #include "Counter.h"
 #include "File.h"
-#include "WindowServer.h"
+#include "FileRecord.h"
 
 //! QDialog used to ask if a new file should be created
 class SaveAllDialog: public CustomDialog
@@ -45,7 +45,7 @@ class SaveAllDialog: public CustomDialog
   public:
 
   //! constructor
-  SaveAllDialog( QWidget*, WindowServer::FileRecordMap );
+  SaveAllDialog( QWidget*, FileRecord::List );
 
 };
 

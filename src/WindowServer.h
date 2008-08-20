@@ -72,11 +72,8 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   //! create new empty main window
   MainWindow& newMainWindow( void );
 
-  //! map files and modification status
-  typedef std::map< FileRecord, bool > FileRecordMap;
-  
   //! returns list of opened files
-  FileRecordMap files( bool modified_only = false ) const;
+  FileRecord::List files( bool modified_only = false ) const;
   
   //! close all windows gracefully
   /*! returns false if the opperation was cancelled. */

@@ -89,8 +89,8 @@ void installDefaultOptions( void )
 
   // splitters
   XmlOptions::get().add( Option( "NAVIGATION_FRAME_WIDTH", "200" , "navigation frame width" ));
-  XmlOptions::get().set<unsigned int>( "SESSION_FILES_MASK", (1<<FileRecordModel::FILE) );
-  XmlOptions::get().set<unsigned int>( "RECENT_FILES_MASK", (1<<FileRecordModel::FILE) );
+  XmlOptions::get().set<unsigned int>( "SESSION_FILES_MASK", (1<<FileRecordModel::ICON)|(1<<FileRecordModel::FILE) );
+  XmlOptions::get().set<unsigned int>( "RECENT_FILES_MASK", (1<<FileRecordModel::ICON)|(1<<FileRecordModel::FILE) );
   
   // toolbars
   XmlOptions::get().add( Option( "FILE_TOOLBAR",   "1" , "toolbar visibility" ));

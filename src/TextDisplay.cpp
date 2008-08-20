@@ -1164,8 +1164,7 @@ void TextDisplay::selectFilter( const QString& filter )
   // update file record
   if( !( file().empty() || isNewDocument() ) )
   {
-    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
-    record.addProperty( FileRecordProperties::FILTER, interface.filter() );
+    static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::FILTER, interface.filter() );
   }
 
   // rehighlight if needed
@@ -1195,8 +1194,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
   // update file record
   if( !( file().empty() || isNewDocument() ) )
   {
-    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
-    record.addProperty( FileRecordProperties::DICTIONARY, interface.dictionary() );
+    static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::DICTIONARY, interface.dictionary() );
   }
 
   // rehighlight if needed
@@ -1858,9 +1856,9 @@ void TextDisplay::_spellcheck( void )
   // try overwrite with file record
   if( !( file().empty() || isNewDocument() ) )
   {
-    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
-    record.addProperty( FileRecordProperties::FILTER, dialog.filter() );
-    record.addProperty( FileRecordProperties::DICTIONARY, dialog.dictionary() );
+    static_cast<Application*>(qApp)->recentFiles().get( file() )
+      .addProperty( FileRecordProperties::FILTER, dialog.filter() )
+      .addProperty( FileRecordProperties::DICTIONARY, dialog.dictionary() );
   }
 
   textHighlight().spellParser().interface().mergeIgnoredWords( dialog.interface().ignoredWords() );

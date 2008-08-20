@@ -45,12 +45,6 @@ class SessionFilesModel: public FileRecordModel
   Q_OBJECT
   
   public:
-
-  enum State
-  {
-    NONE = 0,
-    MODIFIED = 1<<0
-  };
   
   //! constructor
   SessionFilesModel( QObject* parent = 0 );

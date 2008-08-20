@@ -41,6 +41,14 @@ namespace FileRecordProperties
   static const std::string FILTER = "filter";
   static const std::string DICTIONARY = "dictionary";
   static const std::string SIZE = "size";
+  
+  //! needed to tag session file records
+  enum State
+  {
+    NONE = 0,
+    MODIFIED = 1<<0,
+    CURRENT = 1<<1
+  };
 };
 
 #endif

@@ -425,12 +425,12 @@ void Menu::_updateWindowsMenu( void )
       
   // retrieve all files
   bool first = true;
-  WindowServer::FileRecordMap records( static_cast<Application*>(qApp)->windowServer().files() );
-  for( WindowServer::FileRecordMap::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+  FileRecord::List records( static_cast<Application*>(qApp)->windowServer().files() );
+  for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
   { 
     
     // retrieve file and check
-    const File& file( iter->first.file() );
+    const File& file( iter->file() );
     
     // if first valid file, add separator
     if( first ) 
