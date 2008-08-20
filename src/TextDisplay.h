@@ -82,11 +82,6 @@ class TextDisplay: public TextEditor
   {
     public:
 
-//     //! constructor
-//     SameFileFTor( const File& file ):
-//       file_( file.expand() )
-//     {}
-
     //! constructor
     SameFileFTor( const File& file )
     {
@@ -191,6 +186,10 @@ class TextDisplay: public TextEditor
   const bool& isNewDocument( void ) const
   { return is_new_document_; }
 
+  //! new document name server
+  static NewDocumentNameServer& newDocumentNameServer( void )
+  { return name_server_; }
+  
   //! file
   const File& file( void ) const
   { return file_; }

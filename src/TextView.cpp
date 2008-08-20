@@ -203,6 +203,11 @@ void TextView::closeDisplay( TextDisplay& display )
   
   // retrieve displays associated to current
   BASE::KeySet<TextDisplay> displays( &display );
+  
+  // check if display is a new document
+  // remove its filename from server if needed
+  if( display.isNewDocument() && displays.empty() )
+  { TextDisplay::newDocumentNameServer().remove( display.file() ); }
 
   // check how many children remain in parent_splitter if any
   // take action if it is less than 2 (the current one to be deleted, and another one)

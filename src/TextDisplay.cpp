@@ -336,7 +336,10 @@ void TextDisplay::setFile( File file, bool check_autosave )
       tmp = autosaved;
     }
   }
-    
+   
+  // remove new document version from name server
+  if( isNewDocument() ) { name_server_.remove( TextDisplay::file() ); }
+  
   // retrieve display and associated
   BASE::KeySet<TextDisplay> displays( this );
   displays.insert( this );
@@ -565,7 +568,7 @@ void TextDisplay::saveAs( void )
 
   // define default file
   File default_file( file() );
-  if( default_file.empty() ) default_file = File( "document" ).addPath( workingDirectory() );
+  if( default_file.empty() || isNewDocument() ) default_file = File( "document" ).addPath( workingDirectory() );
 
   // create file dialog
   CustomFileDialog dialog( this );
@@ -604,6 +607,9 @@ void TextDisplay::saveAs( void )
     } else if( !QtUtil::questionDialog( this, "Selected file already exists. Overwrite ?" ) ) return;
     
   }
+
+  // remove new document version from name server
+  if( isNewDocument() ) { name_server_.remove( TextDisplay::file() ); }
 
   // update filename and document class for this and associates
   BASE::KeySet<TextDisplay> displays( this );
