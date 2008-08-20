@@ -83,7 +83,8 @@ void SessionFilesModel::_updateConfiguration( void )
 //________________________________________________________
 QIcon SessionFilesModel::_icon( unsigned int type )
 {
-  Debug::Throw( "SessionFilesModel::_modifiedIcon.\n" );
+
+  //Debug::Throw( "SessionFilesModel::_icon.\n" );
    
   IconCache::const_iterator iter( icons_.find( type ) );
   if( iter != icons_.end() ) return iter->second;

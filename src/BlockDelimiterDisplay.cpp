@@ -72,6 +72,10 @@ BlockDelimiterDisplay::BlockDelimiterDisplay(TextDisplay* editor ):
   connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
   connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
 
+  // initialize width
+  // the value is meaningless but needed to avoid early non-initialize variables
+  setWidth(0);
+  
 }
 
 //__________________________________________

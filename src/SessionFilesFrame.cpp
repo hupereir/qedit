@@ -139,9 +139,6 @@ void SessionFilesFrame::_update( void )
 { 
   Debug::Throw( "SessionFilesFrame:_update.\n" ); 
  
-  // check visibility
-  // if( !isVisible() ) return;
- 
   // retrieve file records
   SessionFilesModel::List files;
   WindowServer::FileRecordMap records( static_cast< Application*>( qApp )->windowServer().files() );
@@ -150,13 +147,13 @@ void SessionFilesFrame::_update( void )
     
     FileRecord record( iter->first );
     record.setFlag( SessionFilesModel::MODIFIED, iter->second );
-    // Debug::Throw( 0 ) << "SessionFilesFrame:_update - file: " << record.file() << " modified: " << iter->second << " " << record.hasFlag( SessionFilesModel::MODIFIED ) << endl; 
     files.push_back( record ); 
   }
 
   // update model
   _model().update( files );
   _list().resizeColumns();
+
 
 }
 
@@ -253,7 +250,6 @@ void SessionFilesFrame::_restoreSelection( void )
 { 
   
   Debug::Throw( "SessionFilesFrame::_restoreSelection.\n" ); 
-
   // retrieve indexes
   QModelIndexList selected_indexes( _model().selectedIndexes() );
   if( selected_indexes.empty() ) _list().selectionModel()->clear();

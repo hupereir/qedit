@@ -178,7 +178,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
 
   //! create new TextView
-  void newTextView( void );
+  TextView& newTextView( void );
 
   //! active view
   TextView& activeView( void )

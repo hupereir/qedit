@@ -21,7 +21,6 @@
  *
  *******************************************************************************/
 
-
 /*!
   \file WindowServer.cpp
   \brief handles opened edition windows
@@ -61,6 +60,7 @@ WindowServer::WindowServer( QObject* parent ):
   open_mode_( ACTIVE_WINDOW ),
   active_window_( 0 )
 { 
+  
   Debug::Throw( "WindowServer::WindowServer.\n" ); 
   
   // create actions
@@ -132,7 +132,7 @@ WindowServer::FileRecordMap WindowServer::files( bool modified_only ) const
       // store in map if not empty
       const File& file( (*iter)->file() );
       if( file.empty() ) continue;
-        
+      
       // insert in map (together with modification status
       files.insert( make_pair( static_cast<Application*>(qApp)->recentFiles().get(file), (*iter)->document()->isModified() ) );
         
@@ -427,7 +427,6 @@ bool WindowServer::_open( FileRecord record )
   if( !( record.file().exists() || _createNewFile( record ) ) ) return false;
   
   // retrieve all MainWindows
-  MainWindow* window( 0 );
   BASE::KeySet<MainWindow> windows( this );
   
   // try find editor with matching name
@@ -443,26 +442,37 @@ bool WindowServer::_open( FileRecord record )
   } 
     
   // try find empty editor
+  TextView* view(0);
   iter = find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
   if( iter != windows.end() ) 
   {
-    window = (*iter );
-    window->uniconify();
+    
+    // select the view that contains the empty display
+    BASE::KeySet<TextView> views( *iter );
+    BASE::KeySet<TextView>::iterator view_iter( find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
+    assert( view_iter != views.end() );
+    (*iter)->setActiveView( **view_iter );
+    view = *view_iter;
+    
+    // uniconify
+    (*iter)->uniconify();
+    
   }
   
   // if no window found, create a new one
-  if( !window ) {
+  if( !view ) {
     
     if( _openMode() == NEW_WINDOW )
     {
-      window = &newMainWindow();
-      window->show();
+      
+      MainWindow &window( newMainWindow() );
+      view = &window.activeView();
+      window.show();
       
     } else {
       
-      window = &_activeWindow();
-      window->newTextView();
-      window->uniconify();
+      view = &_activeWindow().newTextView();
+      _activeWindow().uniconify();
       
     }
     
@@ -470,8 +480,8 @@ bool WindowServer::_open( FileRecord record )
   
   // need to show window immediately to avoid application
   // to quit if at some point no window remains open
-  Debug::Throw() << "WindowServer::_open - before set-file" << endl;
-  window->activeView().setFile( record.file() );
+  view->setFile( record.file() );
+  
   return true;
   
 }

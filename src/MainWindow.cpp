@@ -207,7 +207,7 @@ MainWindow::~MainWindow( void )
 { Debug::Throw( "MainWindow::~MainWindow.\n" ); }
 
 //___________________________________________________________
-void MainWindow::newTextView( void )
+TextView& MainWindow::newTextView( void )
 { 
   Debug::Throw( "MainWindow::newTextView.\n" );
 
@@ -229,7 +229,7 @@ void MainWindow::newTextView( void )
 
   connect( &view->positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );  
   
-  return;
+  return *view;
   
 }
 
