@@ -662,14 +662,19 @@ void MainWindow::_updateConfiguration( void )
   navigationFrame().visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_NAVIGATION_FRAME") );
     
   // assign icons to file in open previous menu based on class manager
-  FileRecord::List& records( static_cast<Application*>(qApp)->recentFiles().records() );
+  FileList& recent_files( static_cast<Application*>(qApp)->recentFiles() );
+  DocumentClassManager& class_manager(static_cast<Application*>(qApp)->classManager()); 
+  FileRecord::List records( recent_files.records() );
   for( FileRecord::List::iterator iter = records.begin(); iter != records.end(); iter++ )
   {
     
     FileRecord& record( *iter ); 
     if( !record.hasProperty( FileRecordProperties::CLASS_NAME ) ) continue; 
-    DocumentClass document_class( static_cast<Application*>(qApp)->classManager().get( record.property( FileRecordProperties::CLASS_NAME ).c_str() ) );
-    if( !document_class.icon().isEmpty() ) record.addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
+    DocumentClass document_class( class_manager.get( record.property( FileRecordProperties::CLASS_NAME ).c_str() ) );
+    if( document_class.icon().isEmpty() ) continue;
+    
+    // set icon property and store in recent_files list
+    recent_files.get( record.file() ).addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
   
   }
     

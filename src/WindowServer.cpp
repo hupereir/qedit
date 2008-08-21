@@ -140,7 +140,7 @@ FileRecord::List WindowServer::files( bool modified_only, QWidget* window ) cons
       if( file.empty() ) continue;
       
       // insert in map (together with modification status)
-      FileRecord record =  application.recentFiles().has( file ) ? application.recentFiles().get(file):FileRecord( file );
+      FileRecord record = (*iter)->isNewDocument() ? FileRecord( file ):application.recentFiles().get(file);
             
       // set flags
       unsigned int flags( FileRecordProperties::NONE );
