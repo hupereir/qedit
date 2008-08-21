@@ -47,7 +47,8 @@ namespace FileRecordProperties
   {
     NONE = 0,
     MODIFIED = 1<<0,
-    CURRENT = 1<<1
+    ACTIVE = 1<<1,
+    SELECTED = 1<<2
   };
 };
 

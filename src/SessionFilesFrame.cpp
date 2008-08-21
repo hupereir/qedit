@@ -51,8 +51,6 @@ using namespace std;
 SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   QWidget( parent ),
   Counter( "SessionFilesFrame" )
-  //,
-  //selection_change_enabled_( true )
 {
   
   Debug::Throw( "SessionFilesFrame:SessionFilesFrame.\n" );
@@ -78,15 +76,12 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   _list().menu().addAction( &static_cast< Application*>( qApp )->windowServer().saveAllAction() );
   
   // connections
-  connect( &_model(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
-  connect( &_model(), SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
   connect( &_model(), SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
-
   connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateActions() ) );
   connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _checkSelection() ) );
 
   connect( _list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
-  connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
+  connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
  
   //! configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
@@ -103,9 +98,7 @@ SessionFilesFrame::~SessionFilesFrame( void )
 void SessionFilesFrame::selectFile( const File& file )
 {
   Debug::Throw() << "SessionFilesFrame::selectFile - file: " << file << ".\n";
- 
-  //_setSelectionChangeEnabled( false );
-  
+   
   // find model index that match the file
   QModelIndex index( _model().index( FileRecord( file ) ) );
   
@@ -115,8 +108,6 @@ void SessionFilesFrame::selectFile( const File& file )
   // select found index but disable the selection changed callback
   _list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
   
-  //_setSelectionChangeEnabled( true );
-
 }
 
 //______________________________________________________________________
@@ -139,10 +130,17 @@ void SessionFilesFrame::_update( void )
 { 
   Debug::Throw( "SessionFilesFrame:_update.\n" ); 
  
-  // update model with file list retrieved from WindowServer, and proper tags.
-  _model().update( static_cast< Application*>( qApp )->windowServer().files( false, window() ) );
+  // store in model
+  FileRecord::List files( static_cast< Application*>( qApp )->windowServer().files( false, window() ) );
+  _model().update( files );
+
+  // resize columns
   _list().resizeColumns();
 
+  // make sure selected record appear selected in list
+  FileRecord::List::const_iterator iter = find_if( files.begin(), files.end(), FileRecord::HasFlagFTor( FileRecordProperties::SELECTED ) );
+  if( iter != files.end() ) selectFile( iter->file() );  
+  
   Debug::Throw( "SessionFilesFrame:_update - done.\n" ); 
 
 }
@@ -151,8 +149,6 @@ void SessionFilesFrame::_update( void )
 void SessionFilesFrame::_updateActions( void )
 { 
   Debug::Throw( "SessionFilesFrame:_updateActions.\n" );
-
-  // if( !_selectionChangeEnabled() ) return;
   _openAction().setEnabled( !_list().selectionModel()->selectedRows().isEmpty() );
 }
 
@@ -161,7 +157,6 @@ void SessionFilesFrame::_checkSelection( void )
 { 
   Debug::Throw( "SessionFilesFrame:_checkSelection.\n" );
     
-  // if( !_selectionChangeEnabled() ) return;
   SessionFilesModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
   if( selection.empty() ) return;
   emit fileSelected( selection.back() );
@@ -175,8 +170,6 @@ void SessionFilesFrame::_open( void )
   Debug::Throw( "SessionFilesFrame:_open.\n" ); 
   SessionFilesModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
   
-  // one should check the number of files to be edited
-  /* needless here since there should be at most only one item selected/activated*/
   for( SessionFilesModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
   { emit fileActivated( *iter ); }
   
@@ -210,52 +203,9 @@ void SessionFilesFrame::_installActions( void )
 }
 
 //______________________________________________________________________
-void SessionFilesFrame::_itemSelected( const QModelIndex& index )
+void SessionFilesFrame::_itemActivated( const QModelIndex& index )
 { 
-  Debug::Throw( "SessionFilesFrame::_itemSelected.\n" );
+  Debug::Throw( "SessionFilesFrame::_itemActivated.\n" );
   if( !index.isValid() ) return;
   emit fileActivated( _model().get( index ) );
-}
-
-//______________________________________________________________________
-void SessionFilesFrame::_storeSelection( void )
-{ 
-  Debug::Throw( "SessionFilesFrame::_storeSelection.\n" ); 
-
-  // clear
-  //_setSelectionChangeEnabled( false );
-  _model().clearSelectedIndexes();
-  
-  // retrieve selected indexes in list
-  QModelIndexList selected_indexes( _list().selectionModel()->selectedRows() );
-  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
-  { 
-    // check column
-    if( !iter->column() == 0 ) continue;
-    _model().setIndexSelected( *iter, true ); 
-  }
-
-  return;
-  
-}
-
-//______________________________________________________________________
-void SessionFilesFrame::_restoreSelection( void )
-{ 
-  
-  Debug::Throw( "SessionFilesFrame::_restoreSelection.\n" ); 
-  // retrieve indexes
-  QModelIndexList selected_indexes( _model().selectedIndexes() );
-  if( selected_indexes.empty() ) _list().selectionModel()->clear();
-  else {
-    
-    _list().selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
-    { _list().selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
-  
-  }
-  
-  //_setSelectionChangeEnabled( true );
-  return;
-  
 }

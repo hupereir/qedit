@@ -111,18 +111,7 @@ class SessionFilesFrame: public QWidget, public Counter
   void _open( void );
 
   //! sessionFilesItem selected
-  void _itemSelected( const QModelIndex& index );
-
-  //!@name selections
-  //@{
-
-  //! restore selection
-  void _storeSelection( void );
-  
-  //! store selection
-  void _restoreSelection( void );
-
-  //@}
+  void _itemActivated( const QModelIndex& index );
 
   //! session files sort order
   void _storeSortMethod( int, Qt::SortOrder );
@@ -140,28 +129,13 @@ class SessionFilesFrame: public QWidget, public Counter
   { return *open_action_; }
   
   //@}
-  
-  // selection callbacks enability
-  // const bool& _selectionChangeEnabled( void ) const
-  // { return selection_change_enabled_; }
-  
-  //! selection callbacks enability
-  // void _setSelectionChangeEnabled( const bool value )
-  // { selection_change_enabled_ = value; }
-  
+ 
   //! model
   SessionFilesModel model_;
   
   //! list
   TreeView* list_;
-  
-  //! true when selection callbacks are enabled
-  /*! 
-  this is used to disable the selectionChanged callbacks
-  when the list is being updated (and store/restore selection are called
-  */
-  // bool selection_change_enabled_;
-  
+    
   //!@name actions
   //@{
   

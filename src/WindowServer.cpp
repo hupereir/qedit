@@ -58,6 +58,7 @@ const string WindowServer::MULTIPLE_WINDOWS = "open in new window";
 WindowServer::WindowServer( QObject* parent ):
   QObject( parent ),
   Counter( "WindowServer" ),
+  first_call_( true ),
   open_mode_( ACTIVE_WINDOW ),
   active_window_( 0 )
 { 
@@ -108,7 +109,7 @@ MainWindow& WindowServer::newMainWindow( void )
 }
 
 //______________________________________________________
-FileRecord::List WindowServer::files( bool modified_only, QWidget* active_window ) const
+FileRecord::List WindowServer::files( bool modified_only, QWidget* window ) const
 { 
   
   Debug::Throw( "WindowServer::files.\n" );
@@ -121,7 +122,10 @@ FileRecord::List WindowServer::files( bool modified_only, QWidget* active_window
   BASE::KeySet<MainWindow> windows( this );
   for( BASE::KeySet<MainWindow>::iterator window_iter = windows.begin(); window_iter != windows.end(); window_iter++ )
   {
-      
+
+    // check if current window match the one passed in argument
+    bool active_window( *window_iter == window );
+    
     // retrieve associated TextDisplays
     BASE::KeySet<TextDisplay> displays( (*window_iter)->associatedDisplays() );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
@@ -135,13 +139,19 @@ FileRecord::List WindowServer::files( bool modified_only, QWidget* active_window
       const File& file( (*iter)->file() );
       if( file.empty() ) continue;
       
-      // insert in map (together with modification status
-      FileRecord record =  (file.empty() || (*iter)->isNewDocument() ) ? FileRecord( file ):application.recentFiles().get(file);
+      // insert in map (together with modification status)
+      FileRecord record =  application.recentFiles().has( file ) ? application.recentFiles().get(file):FileRecord( file );
             
-      // assign flags and store
+      // set flags
       unsigned int flags( FileRecordProperties::NONE );
       if( (*iter)->document()->isModified() ) flags |= FileRecordProperties::MODIFIED;
-      if( *window_iter == active_window ) flags |= FileRecordProperties::CURRENT;
+      if( active_window )
+      {
+        flags |= FileRecordProperties::ACTIVE;
+        if( *iter == &(*window_iter)->activeDisplay() ) flags |= FileRecordProperties::SELECTED;
+      }
+      
+      // assign flags and store
       files.push_back( record.setFlags( flags ) );
         
     }
@@ -246,6 +256,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
   if( args.find( "--close" ) ) 
   {
     _closeFiles( last_arg.options() );
+    _setFirstCall( false );
     return;
   }
   
@@ -264,6 +275,9 @@ void WindowServer::readFilesFromArguments( ArgList args )
     }
   }
   
+  // check if at least one file is opened
+  bool file_opened( false );
+  
   // tabbed | diff mode
   bool tabbed( args.find( "--tabbed" ) );
   bool diff( args.find( "--diff" ) );
@@ -277,7 +291,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
       if( first )
       {
       
-        if( _open( File( *iter ).expand() ) ) 
+        if( file_opened |= _open( File( *iter ).expand() ) ) 
         {
           _applyArguments( _activeWindow().activeDisplay(), args );
           first = false;
@@ -285,7 +299,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
         
       } else { 
         
-        if( _open( File( *iter ).expand(), _activeWindow().orientation() ) )
+        if( file_opened |= _open( File( *iter ).expand(), _activeWindow().orientation() ) )
         { _applyArguments( _activeWindow().activeDisplay(), args ); }
         
       }
@@ -304,13 +318,19 @@ void WindowServer::readFilesFromArguments( ArgList args )
     for( list< string >::const_iterator iter = files.begin(); iter != files.end(); iter++ )
     { 
       
-      if( _open( File( *iter ).expand() ) )
+      if( file_opened |= _open( File( *iter ).expand() ) )
       { _applyArguments( _activeWindow().activeDisplay(), args ); }
       
     }
      
   }
   
+  // at first call and if no file was oppened,
+  // set the current display as a new document.
+  if( _firstCall() && !file_opened )
+  { _activeWindow().activeView().setIsNewDocument(); }
+  
+  _setFirstCall( false );
   return;
   
 }

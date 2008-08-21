@@ -190,26 +190,6 @@ void Application::realizeWidget( void )
   MainWindow& window( windowServer().newMainWindow() );
   window.show();
 
-  // check number of valid files
-  // this needs to be done here so that when calling qedit the first time
-  // with no argument, a "new Document" is created (as opposed to an empty file display)
-  // in contrast: this is not necessary via processRequest, since there should then already
-  // be a window opened.
-  {
-    list<string> files( args_.get().back().options() );
-    bool has_valid_file( false );
-    for( list<string>::const_iterator iter( files.begin() ); iter != files.end(); iter++ )
-    { 
-      if( !iter->empty() ) 
-      {
-        has_valid_file = true;
-        break;
-      }
-    }
-    
-    if( !has_valid_file ) window.activeDisplay().setIsNewDocument();
-  }
-  
   // update configuration
   _updateConfiguration();
 

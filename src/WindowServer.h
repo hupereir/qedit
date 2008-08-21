@@ -204,6 +204,17 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   void _setOpenMode( const OpenMode& mode )
   { open_mode_ = mode; }
   
+  //! first call
+  const bool& _firstCall( void ) const
+  { return first_call_; }
+  
+  //! first call
+  void _setFirstCall( bool value )
+  { first_call_ = value; }
+
+  //! true at first call (via Application::realizeWidget)
+  bool first_call_;
+  
   //! open mode
   OpenMode open_mode_;
   
