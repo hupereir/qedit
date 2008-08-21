@@ -32,10 +32,12 @@
 #include <QAction>
 
 #include "Application.h"
+#include "CloseAllDialog.h"
 #include "CustomFileDialog.h"
 #include "Debug.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
+#include "FileSystemFrame.h"
 #include "Icons.h"
 #include "IconEngine.h"
 #include "MainWindow.h"
@@ -43,8 +45,10 @@
 #include "NavigationFrame.h"
 #include "NewFileDialog.h"
 #include "QtUtil.h"
+#include "RecentFilesFrame.h"
 #include "RecentFilesMenu.h"
 #include "SaveAllDialog.h"
+#include "SessionFilesFrame.h"
 #include "Util.h"
 #include "WindowServer.h"
 
@@ -92,9 +96,9 @@ MainWindow& WindowServer::newMainWindow( void )
   connect( window, SIGNAL( modificationChanged() ), SLOT( _updateActions() ) );
   connect( window, SIGNAL( activated( MainWindow* ) ), SLOT( _activeWindowChanged( MainWindow* ) ) );
   
-  connect( this, SIGNAL( sessionFilesChanged() ), &window->navigationFrame().updateSessionFilesAction(), SLOT( trigger() ) );
-  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( contentsChanged() ), &window->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
-  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( validFilesChecked() ), &window->navigationFrame().updateRecentFilesAction(), SLOT( trigger() ) );
+  connect( this, SIGNAL( sessionFilesChanged() ), &window->navigationFrame().sessionFilesFrame().updateAction(), SLOT( trigger() ) );
+  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( contentsChanged() ), &window->navigationFrame().recentFilesFrame().updateAction(), SLOT( trigger() ) );
+  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( validFilesChecked() ), &window->navigationFrame().recentFilesFrame().updateAction(), SLOT( trigger() ) );
 
   connect( &window->newFileAction(), SIGNAL( triggered() ), SLOT( _newFile() ) );
   connect( &window->openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
@@ -103,7 +107,13 @@ MainWindow& WindowServer::newMainWindow( void )
   connect( &window->detachAction(), SIGNAL( triggered() ), SLOT( _detach() ) );
 
   connect( &window->menu().recentFilesMenu(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _open( FileRecord ) ) );
-  connect( &window->navigationFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
+  
+  connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
+  connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( filesSaved( FileRecord::List ) ), SLOT( _save( FileRecord::List ) ) );
+  connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( filesClosed( FileRecord::List ) ), SLOT( _close( FileRecord::List ) ) );
+
+  connect( &window->navigationFrame().recentFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
+  connect( &window->navigationFrame().fileSystemFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
 
   return *window;
 }
@@ -696,25 +706,58 @@ void WindowServer::_detach( void )
 void WindowServer::_saveAll( void )
 {
   Debug::Throw( "WindowServer::_saveAll.\n" );
-
-  // load files
-  FileRecord::List files( WindowServer::files( true ) );
+  _save( files( true ) ); 
+  return;
   
-  // check how many files are modified
-  if( files.empty() )
-  {
-    QtUtil::infoDialog( &_activeWindow(), "No files to save" );
-    return;
-  }
+}
+
+//_______________________________________________
+void WindowServer::_save( FileRecord::List records )
+{
+  Debug::Throw( "WindowServer::_save.\n" );
+  
+  // check how many records are modified
+  assert( !records.empty() );
   
   // ask for confirmation
-  if( !SaveAllDialog( &_activeWindow(), files ).exec() ) return;
+  if( records.size() > 1 && !SaveAllDialog( &_activeWindow(), records ).exec() ) return;
   
   // retrieve windows
   BASE::KeySet<MainWindow> windows( this );
-  for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ ) { (*iter)->saveAll(); }
+  for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ ) 
+  { 
+  
+    // retrieve displays
+    BASE::KeySet<TextDisplay> displays( (*iter)->associatedDisplays() );
+    for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
+    {
+      TextDisplay& display( **display_iter );
+      if( !display.document()->isModified() ) continue;
+      if( find_if( records.begin(), records.end(), FileRecord::SameFileFTor( display.file() ) ) == records.end() ) continue;
+      display.save();
+    }
+  
+  }
 
-  return;
+}
+
+
+//_______________________________________________
+void WindowServer::_close( FileRecord::List records )
+{
+  Debug::Throw( "WindowServer::_close.\n" );
+  
+  // check how many records are modified
+  assert( !records.empty() );
+  
+  // ask for confirmation
+  if( records.size() > 1 && !CloseAllDialog( &_activeWindow(), records ).exec() ) return;
+  
+  list<string> files;
+  for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+  { files.push_back( iter->file() ); }
+  
+  _closeFiles( files );
   
 }
 
@@ -733,8 +776,10 @@ void WindowServer::_closeFiles( const list<string>& files )
     if( window_iter == windows.end() ) continue;
     
     // select display and close
+    // this code should be modified to properly use yes_to_all and no_to_all similar to closeAllWindows
     (*window_iter)->selectDisplay( file );
     (*window_iter)->closeDisplayAction().trigger();
+    
   }
   
   return;

@@ -39,6 +39,7 @@ HEADERS = \
   BlockDelimiterSegment.h \
   BlockDelimiterDisplay.h \
   BlockMarker.h \
+  CloseAllDialog.h \
   CollapsedBlockData.h \
   ConfigurationDialog.h \
   Diff.h \
@@ -61,6 +62,7 @@ HEADERS = \
   MainWindow.h \
   Menu.h \
   NavigationFrame.h \
+  NewDocumentNameServer.h \
   NewFileDialog.h \
   ParenthesisHighlight.h \
   PrintDialog.h \
@@ -81,6 +83,7 @@ SOURCES = \
   AutoSave.cpp \
   AutoSaveThread.cpp \
   BlockDelimiterDisplay.cpp \
+  CloseAllDialog.cpp \
   CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
@@ -99,6 +102,7 @@ SOURCES = \
   MainWindow.cpp \
   Menu.cpp \
   NavigationFrame.cpp \
+  NewDocumentNameServer.cpp \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \

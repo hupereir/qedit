@@ -136,39 +136,42 @@ class TextDisplay: public TextEditor
   //! update flags (to be passed to TextEditor to change button status)
   enum UpdateFlags
   {
-    
-    //! window title
-    WINDOW_TITLE = 1<<0, 
-    
+        
     //! file name (in bottom status bar and navigation frame)
-    FILE_NAME = 1<<1,
+    FILE_NAME = 1<<0,
     
+    //! read only
+    READ_ONLY = 1<<1,
+    
+    //! modified
+    MODIFIED = 1<<2,
+      
     //! cut availability
-    CUT = 1<<2,
+    CUT = 1<<3,
 
     //! copy availability
-    COPY = 1<<3,
+    COPY = 1<<4,
     
     //! paster availability
-    PASTE = 1<<4,
+    PASTE = 1<<5,
     
     //! undo/redo availability
-    UNDO_REDO = 1<<5,
+    UNDO_REDO = 1<<6,
     
     //! save action
-    SAVE = 1<<6,
+    SAVE = 1<<7,
     
     //! overwrite mode
-    SPELLCHECK = 1<<7,
+    SPELLCHECK = 1<<8,
 
     //! overwrite mode
-    OVERWRITE_MODE = 1<<8,
+    OVERWRITE_MODE = 1<<9,
     
     //! display count
-    DISPLAY_COUNT = 1<<9,
+    DISPLAY_COUNT = 1<<10,
     
     //! all the above
-    ALL = WINDOW_TITLE|FILE_NAME|CUT|COPY|PASTE|UNDO_REDO|SAVE|SPELLCHECK|OVERWRITE_MODE|DISPLAY_COUNT
+    ALL = FILE_NAME|MODIFIED|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SAVE|SPELLCHECK|OVERWRITE_MODE|DISPLAY_COUNT
     
   };
   

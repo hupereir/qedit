@@ -1,6 +1,7 @@
 #ifndef WindowServer_h
 #define WindowServer_h
 
+
 // $Id$
 
 /******************************************************************************
@@ -151,6 +152,12 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   
   //! save all edited files
   void _saveAll( void );
+  
+  //! save selected file
+  void _save( FileRecord::List );
+  
+  //! close selected files
+  void _close( FileRecord::List );
   
   private:
     

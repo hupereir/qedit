@@ -72,11 +72,26 @@ class NavigationFrame: public QWidget, public Counter
   const int& defaultWidth( void ) const
   { return default_width_; }
   
-    //! session files 
+  //! session files 
   SessionFilesFrame& sessionFilesFrame( void ) const
   {
     assert( session_files_frame_ );
     return *session_files_frame_;
+  }
+ 
+  
+  //! recent files 
+  RecentFilesFrame& recentFilesFrame( void ) const
+  {
+    assert( recent_files_frame_ );
+    return *recent_files_frame_;
+  }
+
+  //! file system
+  FileSystemFrame& fileSystemFrame( void ) const
+  { 
+    assert( file_system_frame_ );
+    return *file_system_frame_;
   }
   
   //! size
@@ -89,19 +104,8 @@ class NavigationFrame: public QWidget, public Counter
   QAction& visibilityAction( void ) const
   { return *visibility_action_; }
   
-  //! update session files action
-  QAction& updateSessionFilesAction( void ) const;
-  
-  //! update recent files action
-  QAction& updateRecentFilesAction( void ) const;
-  
   //@}
-  
-  signals:
-
-  //! signal emited when a file is activated
-  void fileActivated( FileRecord );  
-      
+        
   protected:
      
   //! stack widget
@@ -110,26 +114,7 @@ class NavigationFrame: public QWidget, public Counter
     assert( stack_ );
     return *stack_;
   }
-
-  //!@name file system
-  //@{
    
-  //! recent files 
-  RecentFilesFrame& _recentFilesFrame( void ) const
-  {
-    assert( recent_files_frame_ );
-    return *recent_files_frame_;
-  }
-  
-  //! file system
-  FileSystemFrame& _fileSystemFrame( void ) const
-  { 
-    assert( file_system_frame_ );
-    return *file_system_frame_;
-  }
-    
-  //@}
-  
   private slots:
   
   //! display item page

@@ -48,9 +48,10 @@
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
 #include "FileList.h"
-#include "FindDialog.h"
 #include "FileRecordProperties.h"
 #include "FileSelectionDialog.h"
+#include "FileSystemFrame.h"
+#include "FindDialog.h"
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
 #include "Icons.h"
@@ -272,6 +273,9 @@ bool MainWindow::selectDisplay( const File& file )
 {
     
   Debug::Throw() << "MainWindow::selectDisplay - file: " << file << endl;
+  
+  // do nothing if already selected
+  if( activeView().activeDisplay().file() == file ) return true;
   
   BASE::KeySet<TextView> views( this );
   for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
@@ -731,12 +735,18 @@ void MainWindow::_multipleFileReplace( void )
 void MainWindow::_update( unsigned int flags )
 {
 
-  Debug::Throw( "MainWindow::_update().\n" );
+  Debug::Throw() << "MainWindow::_update - flags: " << flags << endl;
 
-  if( flags & TextDisplay::WINDOW_TITLE )
-  { 
-    _updateWindowTitle(); 
+  if( flags & ( TextDisplay::FILE_NAME | TextDisplay::READ_ONLY | TextDisplay::MODIFIED ) )
+  { _updateWindowTitle(); }
+    
+  if( flags & TextDisplay::MODIFIED )
+  {
+    
+    // emitting modificationChanged
+    Debug::Throw() << "MainWindow::_update - modification changed." << endl;
     emit modificationChanged();
+    
   }
 
   if( flags & TextDisplay::FILE_NAME )
@@ -751,32 +761,33 @@ void MainWindow::_update( unsigned int flags )
     
     // update session file frame
     if( navigation_frame_ )
-    { navigationFrame().sessionFilesFrame().selectFile( activeDisplay().file() ); }
+    { 
+      navigationFrame().sessionFilesFrame().selectFile( activeDisplay().file() ); 
+      navigationFrame().fileSystemFrame().setHome( activeDisplay().workingDirectory() );
+    }
     
     // cursor position
     if( statusbar_ ) _updateCursorPosition();
     
   }
 
-  if( flags & TextDisplay::CUT )
+  if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
   { cutAction().setEnabled( activeDisplay().cutAction().isEnabled() ); }
 
   if( flags & TextDisplay::COPY )
   { copyAction().setEnabled( activeDisplay().copyAction().isEnabled() ); }
 
-  if( flags & TextDisplay::PASTE )
+  if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
   { pasteAction().setEnabled( activeDisplay().pasteAction().isEnabled() ); }
 
-  if( flags & TextDisplay::UNDO_REDO )
+  if( flags & (TextDisplay::UNDO_REDO|TextDisplay::MODIFIED) )
   {
     undoAction().setEnabled( activeDisplay().undoAction().isEnabled() );
     redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
   }
  
   if( statusbar_ && flags & TextDisplay::OVERWRITE_MODE )
-  {
-    statusbar_->label(0).setText( activeDisplay().overwriteMode() ? "INS":"" );
-  }
+  { statusbar_->label(0).setText( activeDisplay().overwriteMode() ? "INS":"" ); }
   
   if( flags & TextDisplay::DISPLAY_COUNT )
   {
@@ -983,6 +994,7 @@ void MainWindow::_updateWindowTitle()
     bool readonly( activeDisplay().isReadOnly() );
     bool modified( activeDisplay().document()->isModified() );
     Debug::Throw() << "MainWindow::_updateWindowTitle -"
+      << " file: " << activeDisplay().file()
       << " readonly: " << readonly 
       << " modified: " << modified
       << endl;

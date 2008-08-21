@@ -62,35 +62,34 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   
   // list
   layout()->addWidget( list_ = new TreeView( this ) );
-  _list().setModel( &_model() );  
-  _list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
-  _list().setMaskOptionName( "RECENT_FILES_MASK" );
-  _list().header()->hide();
+  list().setModel( &_model() );  
+  list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
+  list().setMaskOptionName( "RECENT_FILES_MASK" );
+  list().header()->hide();
   
   // actions
   _installActions();
   
   // add actions to list
-  _list().menu().addMenu( new ColumnSortingMenu( &_list().menu(), &_list() ) );
-  _list().menu().addAction( &_openAction() );
-  _list().menu().addSeparator();
-  _list().menu().addAction( &_cleanAction() );
+  list().menu().addMenu( new ColumnSortingMenu( &list().menu(), &list() ) );
+  list().menu().addAction( &_openAction() );
+  list().menu().addSeparator();
+  list().menu().addAction( &_cleanAction() );
+  connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions() ) );
   
   // connections
   connect( &_model(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
   connect( &_model(), SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
-  connect( &_model(), SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
+  connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
 
-  connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateActions() ) );
-  connect( _list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
-  connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
+  connect( list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
+  connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
 
   connect( &_recentFiles(), SIGNAL( validFilesChecked( void ) ), SLOT( _update( void ) ) );
   
   // configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   _updateConfiguration();
-  _updateActions();
   
 }
 
@@ -125,7 +124,7 @@ void RecentFilesFrame::_updateConfiguration( void )
   // session files list sorting
   if( XmlOptions::get().find( "RECENT_FILES_SORT_COLUMN" ) && XmlOptions::get().find( "RECENT_FILES_SORT_ORDER" ) )
   { 
-    _list().sortByColumn( 
+    list().sortByColumn( 
       XmlOptions::get().get<int>( "RECENT_FILES_SORT_COLUMN" ), 
       (Qt::SortOrder)(XmlOptions::get().get<int>( "RECENT_FILES_SORT_ORDER" ) ) ); 
   }
@@ -142,7 +141,7 @@ void RecentFilesFrame::_update( void )
  
   // update records
   _model().update( _recentFiles().records() );
-  _list().resizeColumns();
+  list().resizeColumns();
   
   // clean action enability
   _cleanAction().setEnabled( _recentFiles().cleanEnabled() );
@@ -155,7 +154,7 @@ void RecentFilesFrame::_update( void )
 void RecentFilesFrame::_updateActions( void )
 { 
   Debug::Throw( "RecentFilesFrame:_updateActions.\n" );
-  FileRecordModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+  FileRecordModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
   
   bool has_valid_selection( find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
   _openAction().setEnabled( has_valid_selection );
@@ -178,7 +177,7 @@ void RecentFilesFrame::_open( void )
 { 
   
   Debug::Throw( "RecentFilesFrame:_open.\n" ); 
-  FileRecordModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+  FileRecordModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
   FileRecordModel::List valid_selection;
   for( FileRecordModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
   { if( iter->isValid() ) valid_selection.push_back( *iter ); }
@@ -239,7 +238,7 @@ void RecentFilesFrame::_storeSelection( void )
   _model().clearSelectedIndexes();
   
   // retrieve selected indexes in list
-  QModelIndexList selected_indexes( _list().selectionModel()->selectedRows() );
+  QModelIndexList selected_indexes( list().selectionModel()->selectedRows() );
   for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
   { 
     // check column
@@ -259,12 +258,12 @@ void RecentFilesFrame::_restoreSelection( void )
 
   // retrieve indexes
   QModelIndexList selected_indexes( _model().selectedIndexes() );
-  if( selected_indexes.empty() ) _list().selectionModel()->clear();
+  if( selected_indexes.empty() ) list().selectionModel()->clear();
   else {
     
-    _list().selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+    list().selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
     for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
-    { _list().selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+    { list().selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
   
   }
   

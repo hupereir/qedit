@@ -74,12 +74,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   _stack().addWidget( session_files_frame_ = new SessionFilesFrame(0) );  
   _stack().addWidget( recent_files_frame_ = new RecentFilesFrame(0, files) );  
   _stack().addWidget( file_system_frame_ = new FileSystemFrame(0) );
-  
-  // connections
-  connect( &sessionFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SIGNAL( fileActivated( FileRecord ) ) );
-  connect( &_recentFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SIGNAL( fileActivated( FileRecord ) ) );
-  connect( &_fileSystemFrame(), SIGNAL( fileActivated( FileRecord ) ), SIGNAL( fileActivated( FileRecord ) ) );
-  
+    
   // button group
   QButtonGroup* button_group = new QButtonGroup( this );
   connect( button_group, SIGNAL( buttonClicked( QAbstractButton* ) ), SLOT( _display( QAbstractButton* ) ) );
@@ -105,7 +100,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   button->setToolTip( "Files recently opened" );
   
   button_group->addButton( button );
-  buttons_.insert( make_pair( button, &_recentFilesFrame() ) );
+  buttons_.insert( make_pair( button, &recentFilesFrame() ) );
 
   // file system
   v_layout->addWidget( button = _newToolButton( this ) );
@@ -114,7 +109,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   button->setToolTip( "File system browser" );
 
   button_group->addButton( button );
-  buttons_.insert( make_pair( button, &_fileSystemFrame() ) );
+  buttons_.insert( make_pair( button, &fileSystemFrame() ) );
   v_layout->addStretch( 1 );
     
 }
@@ -126,14 +121,6 @@ NavigationFrame::~NavigationFrame( void )
 //______________________________________________________________________
 void NavigationFrame::setDefaultWidth( const int& value )
 { default_width_ = value; }
-
-//______________________________________________________________________
-QAction& NavigationFrame::updateSessionFilesAction( void ) const
-{ return sessionFilesFrame().updateAction(); }
-
-//______________________________________________________________________
-QAction& NavigationFrame::updateRecentFilesAction( void ) const
-{ return _recentFilesFrame().updateAction(); }
 
 //____________________________________________
 QSize NavigationFrame::sizeHint( void ) const

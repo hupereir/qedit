@@ -190,7 +190,12 @@ void TextView::setActiveDisplay( TextDisplay& display )
   Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << std::endl;
   assert( display.isAssociated( this ) );
   
-  active_display_ = &display;
+  if( active_display_ != &display )
+  {
+    active_display_ = &display;
+    emit needUpdate( TextDisplay::ALL );
+  }
+  
   if( !activeDisplay().isActive() )
   {
 
@@ -199,8 +204,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
     { (*iter)->setActive( false ); }
     
     activeDisplay().setActive( true );
-    emit needUpdate( TextDisplay::ALL );
-
+    
   }
   
   Debug::Throw( "TextView::setActiveDisplay - done.\n" );
@@ -540,7 +544,7 @@ void TextView::enterEvent( QEvent* e )
   }
 
   // update window title
-  emit needUpdate( TextDisplay::WINDOW_TITLE );
+  // emit needUpdate( TextDisplay::WINDOW_TITLE );
 
   Debug::Throw( "TextView::enterEvent - done.\n" );
 

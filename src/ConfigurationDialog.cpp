@@ -34,6 +34,7 @@
 
 #include "Config.h"
 #include "ConfigurationDialog.h"
+#include "FileList.h"
 #include "GridLayout.h"
 #include "CustomToolBar.h"
 #include "Debug.h"
@@ -45,6 +46,11 @@
 #include "OptionColorDisplay.h"
 #include "OptionFontInfo.h"
 #include "OptionSpinBox.h"
+
+#include "RecentFilesFrame.h"
+#include "SessionFilesFrame.h"
+#include "TreeView.h"
+#include "TreeViewConfiguration.h"
 #include "WindowServer.h"
 
 // forward declaration
@@ -145,6 +151,33 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( color_display );
   color_display->setToolTip( "highlight color for diff added paragraphs" );
   
+  // multiple views
+  page = &addPage( "Navigation" );
+  
+  QHBoxLayout *h_layout = new QHBoxLayout();
+  h_layout->setSpacing(5); 
+  h_layout->setMargin(0);
+  page->layout()->addItem( h_layout );
+  
+  SessionFilesFrame session_frame(0);
+  TreeViewConfiguration *listview_config = new TreeViewConfiguration( 
+    page, 
+    &session_frame.list(), 
+    session_frame.list().maskOptionName() );
+  h_layout->addWidget( listview_config );
+  listview_config->setTitle( "session files" );
+  addOptionWidget( listview_config );
+
+  FileList tmp(0);
+  RecentFilesFrame recent_frame(0, tmp );
+  listview_config = new TreeViewConfiguration( 
+    page, 
+    &recent_frame.list(), 
+    recent_frame.list().maskOptionName() );
+  listview_config->setTitle( "recent files" );
+  h_layout->addWidget( listview_config );
+  addOptionWidget( listview_config );
+
   // multiple views
   page = &addPage( "Multiple views" );
   page->layout()->addWidget( box = new QGroupBox( page ) );  

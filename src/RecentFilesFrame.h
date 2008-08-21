@@ -62,6 +62,13 @@ class RecentFilesFrame: public QWidget, public Counter
   //! destructor
   ~RecentFilesFrame( void );
 
+  //! list
+  TreeView& list( void ) const
+  { 
+    assert( list_ );  
+    return *list_;
+  }
+
   //!@name actions
   //@{
   
@@ -90,15 +97,7 @@ class RecentFilesFrame: public QWidget, public Counter
     assert( recent_files_ );
     return *recent_files_;
   }
-  
-  
-  //! list
-  TreeView& _list( void ) const
-  { 
-    assert( list_ );  
-    return *list_;
-  }
-  
+      
   //! model
   FileRecordModel& _model( void ) 
   { return model_; }

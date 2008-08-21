@@ -50,6 +50,7 @@ using namespace std;
 FileSystemFrame::FileSystemFrame( QWidget *parent ):
   QWidget( parent ),
   Counter( "FileSystemFrame" ),
+  home_path_( Util::home() ),
   file_system_watcher_( this ),
   thread_( this )
 {
@@ -141,6 +142,10 @@ void FileSystemFrame::setPath( File path )
 }
   
 //_________________________________________________________
+void FileSystemFrame::setHome( const File& path )
+{ home_path_ = path; }
+
+//_________________________________________________________
 void FileSystemFrame::clear()
 {
 
@@ -204,9 +209,7 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
     
   } else {
     
-    record.setFile( record.file().addPath( path() ) );
-    Debug::Throw() << "FileSystemFrame::_itemActivated - file: " << record.file() << endl;
-    emit fileActivated( record );
+    emit fileActivated( record.setFile( record.file().addPath( path() ) ) );
   
   }
   
@@ -342,7 +345,7 @@ void FileSystemFrame::_parentDirectory( void )
 void FileSystemFrame::_homeDirectory( void )
 {
   Debug::Throw( "FileSystemFrame::_homeDirectory.\n" );
-  setPath( Util::home() );
+  setPath( home() );
 }
 
 //______________________________________________________________________
@@ -359,8 +362,8 @@ void FileSystemFrame::_open( void )
   }
   
   // one should check the number of files to be edited
-  for( FileSystemModel::List::const_iterator iter = valid_selection.begin(); iter != valid_selection.end(); iter++ )
-  { emit fileActivated( *iter ); }
+  for( FileSystemModel::List::iterator iter = valid_selection.begin(); iter != valid_selection.end(); iter++ )
+  { emit fileActivated( iter->setFile( iter->file().addPath( path() ) ) ); }
   
 }
 
@@ -436,7 +439,7 @@ void FileSystemFrame::_installActions( void )
   // home directory
   addAction( home_directory_action_ = new QAction( IconEngine::get( ICONS::HOME_DIRECTORY ), "&Home", this ) );
   connect( &_homeDirectoryAction(), SIGNAL( triggered() ), SLOT( _homeDirectory() ) );
-  _homeDirectoryAction().setToolTip( "Change path to user home" );
+  _homeDirectoryAction().setToolTip( "Change path to current file working directory" );
   
   // open
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open selected files", this ) );

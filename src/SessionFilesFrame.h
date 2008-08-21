@@ -60,6 +60,13 @@ class SessionFilesFrame: public QWidget, public Counter
   //! destructor
   ~SessionFilesFrame( void );
 
+  //! list
+  TreeView& list( void ) const
+  { 
+    assert( list_ );  
+    return *list_;
+  }
+
   //! select file in list
   void selectFile( const File& );
   
@@ -74,21 +81,20 @@ class SessionFilesFrame: public QWidget, public Counter
   
   signals:
 
-  //! signal emited when a file is selected
+  //! signal emitted when a file is selected
   void fileSelected( FileRecord );  
 
-  //! signal emited when a file is selected
+  //! signal emitted when a file is selected
   void fileActivated( FileRecord );  
       
+  //! signal emitted when file is asked to be closed
+  void filesClosed( FileRecord::List );
+  
+  //! signal emitted when file is asked to be saved
+  void filesSaved( FileRecord::List );
+  
   protected:
-  
-  //! list
-  TreeView& _list( void ) const
-  { 
-    assert( list_ );  
-    return *list_;
-  }
-  
+    
   //! model
   SessionFilesModel& _model( void ) 
   { return model_; }
@@ -110,6 +116,12 @@ class SessionFilesFrame: public QWidget, public Counter
   //! open
   void _open( void );
 
+  //! save
+  void _save( void );
+  
+  //! close
+  void _close( void );
+  
   //! sessionFilesItem selected
   void _itemActivated( const QModelIndex& index );
 
@@ -128,6 +140,14 @@ class SessionFilesFrame: public QWidget, public Counter
   QAction& _openAction( void ) const
   { return *open_action_; }
   
+  //! save action
+  QAction& _saveAction( void ) const
+  { return *save_action_; }
+  
+  //! close action
+  QAction& _closeAction( void ) const
+  { return *close_action_; }
+  
   //@}
  
   //! model
@@ -144,6 +164,12 @@ class SessionFilesFrame: public QWidget, public Counter
  
   //! open action
   QAction* open_action_;
+  
+  //! save action
+  QAction* save_action_;
+  
+  //! close action
+  QAction *close_action_;
       
   //@}
   

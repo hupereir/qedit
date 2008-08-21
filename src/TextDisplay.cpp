@@ -176,8 +176,7 @@ void TextDisplay::setModified( const bool& value )
   document()->setModified( value );
 
   // ask for update in the parent frame
-  if( isActive() )
-  emit needUpdate( WINDOW_TITLE | UNDO_REDO );
+  if( isActive() ) emit needUpdate( MODIFIED );
 
 }
 
@@ -185,8 +184,11 @@ void TextDisplay::setModified( const bool& value )
 void TextDisplay::setReadOnly( const bool& value )
 {
   Debug::Throw() << "TextDisplay::setReadOnly - value: " << value << endl;
+  
+  bool changed = (value != isReadOnly() );
   TextEditor::setReadOnly( value );
-  emit needUpdate( WINDOW_TITLE | CUT | PASTE | UNDO_REDO | SAVE );
+  
+  if( changed && isActive() ) emit needUpdate( READ_ONLY );
 }
 
 
@@ -399,7 +401,7 @@ void TextDisplay::_setFile( const File& file )
   // check if file is read-only
   checkFileReadOnly();
 
-  if( isActive() ) emit needUpdate( WINDOW_TITLE | FILE_NAME );
+  if( isActive() ) emit needUpdate( FILE_NAME );
 
 }
 
@@ -2077,7 +2079,7 @@ void TextDisplay::_textModified( void )
   // document should never appear modified
   // for readonly displays
   if( document()->isModified() && isReadOnly() ) document()->setModified( false );
-  if( isActive() ) emit needUpdate( WINDOW_TITLE );
+  if( isActive() ) emit needUpdate( MODIFIED );
   
 }
 

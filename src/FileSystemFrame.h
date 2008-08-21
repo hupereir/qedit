@@ -66,6 +66,13 @@ class FileSystemFrame: public QWidget, public Counter
   const File& path( void ) const
   { return path_; }
   
+  //! home path
+  const File& home( void ) const
+  { return home_path_; }
+  
+  //! home path
+  void setHome( const File& path );
+  
   //! clear list, add navigator button
   void clear();
       
@@ -233,6 +240,9 @@ class FileSystemFrame: public QWidget, public Counter
   QAction* open_action_;
   
   //@}
+
+  //! home directory
+  File home_path_;
   
   //! path naviagtion history
   FileSystemHistory history_;
