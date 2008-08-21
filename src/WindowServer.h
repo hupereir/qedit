@@ -45,6 +45,7 @@
 #include "TextSelection.h"
 
 class MainWindow;
+class TextDisplay;
 
 class WindowServer: public QObject, public Counter, public BASE::Key
 {
@@ -165,6 +166,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   
   //! returns true if new file should be created
   bool _createNewFile( const FileRecord& );
+  
+  //! apply command-line arguments to currant display
+  void _applyArguments( TextDisplay&, ArgList );
   
   //! active window
   void _setActiveWindow( MainWindow& );

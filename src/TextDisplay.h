@@ -338,17 +338,11 @@ class TextDisplay: public TextEditor
   
   //! spellcheck dictionary selection
   QAction& dictionaryMenuAction( void ) const
-  { 
-    dictionary_menu_action_->setEnabled( autoSpellAction().isChecked() );
-    return *dictionary_menu_action_;
-  }
+  { return *dictionary_menu_action_; }
   
   //! spellcheck filter selection
   QAction& filterMenuAction( void ) const
-  { 
-    filter_menu_action_->setEnabled( autoSpellAction().isChecked() );
-    return *filter_menu_action_;
-  }
+  { return *filter_menu_action_; }
  
   #endif
   

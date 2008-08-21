@@ -33,10 +33,10 @@
 
 #include <assert.h>
 #include <map>
-#include <QAbstractButton>
 #include <QAction>
 #include <QShowEvent>
 #include <QStackedWidget>
+#include <QToolButton>
 
 #include "Counter.h"
 #include "FileList.h"
@@ -136,6 +136,9 @@ class NavigationFrame: public QWidget, public Counter
   virtual void _display( QAbstractButton* );
 
   private:
+  
+  //! tool button
+  QToolButton* _newToolButton( QWidget* parent ) const;
   
   //! install actions
   void _installActions( void );

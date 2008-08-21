@@ -36,6 +36,8 @@
 #include "CustomToolButton.h"
 #include "Debug.h"
 #include "FileSystemFrame.h"
+#include "IconEngine.h"
+#include "Icons.h"
 #include "NavigationFrame.h"
 #include "RecentFilesFrame.h"
 #include "SessionFilesFrame.h"
@@ -84,30 +86,33 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   button_group->setExclusive( true );
 
   // matching buttons
-  CustomToolButton* button;
+  QToolButton* button;
   
   // session files
-  v_layout->addWidget( button = new CustomToolButton( this ) );
-  button->setCheckable( true );
+  v_layout->addWidget( button = _newToolButton( this ) );  
   button->setChecked( true );
-  button->rotate( CustomToolButton::COUNTERCLOCKWISE );
-  button->setText( "&Session files" );
+  button->setText( " &Session files" );
+  button->setIcon( IconEngine::get( ICONS::DOCUMENT ) );
+  button->setToolTip( "Files currently opened" );
+  
   button_group->addButton( button );
   buttons_.insert( make_pair( button, &sessionFilesFrame() ) );
   
   // recent files
-  v_layout->addWidget( button = new CustomToolButton( this ) );
-  button->setCheckable( true );
-  button->rotate( CustomToolButton::COUNTERCLOCKWISE );
-  button->setText( "&Recent files" );
+  v_layout->addWidget( button = _newToolButton( this ) );
+  button->setText( " &Recent files" );
+  button->setIcon( IconEngine::get( ICONS::NEW ) );
+  button->setToolTip( "Files recently opened" );
+  
   button_group->addButton( button );
   buttons_.insert( make_pair( button, &_recentFilesFrame() ) );
 
   // file system
-  v_layout->addWidget( button = new CustomToolButton( this ) );
-  button->setCheckable( true );
-  button->rotate( CustomToolButton::COUNTERCLOCKWISE );
-  button->setText( "&File system" );
+  v_layout->addWidget( button = _newToolButton( this ) );
+  button->setText( " &File system" );
+  button->setIcon( IconEngine::get( ICONS::FOLDER ) );
+  button->setToolTip( "File system browser" );
+
   button_group->addButton( button );
   buttons_.insert( make_pair( button, &_fileSystemFrame() ) );
   v_layout->addStretch( 1 );
@@ -161,4 +166,23 @@ void NavigationFrame::_installActions( void )
   visibility_action_->setShortcut( Qt::Key_F5 );
   connect( visibility_action_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );
     
+}
+
+//______________________________________________________________________
+QToolButton* NavigationFrame::_newToolButton( QWidget* parent ) const
+{
+  
+  CustomToolButton* button = new CustomToolButton( parent );
+  button->setCheckable( true );
+  
+  // customize button appearence
+  button->setUpdateFromOptions( false );
+  button->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+  button->setIconSize( QSize( 16, 16 ), CustomToolButton::SMALL );
+  button->QToolButton::setIconSize( button->smallIconSize() );
+
+  // rotate
+  button->rotate( CustomToolButton::COUNTERCLOCKWISE );
+  return button;
+
 }

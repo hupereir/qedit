@@ -51,6 +51,8 @@ using namespace std;
 SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   QWidget( parent ),
   Counter( "SessionFilesFrame" )
+  //,
+  //selection_change_enabled_( true )
 {
   
   Debug::Throw( "SessionFilesFrame:SessionFilesFrame.\n" );
@@ -102,6 +104,8 @@ void SessionFilesFrame::selectFile( const File& file )
 {
   Debug::Throw() << "SessionFilesFrame::selectFile - file: " << file << ".\n";
  
+  //_setSelectionChangeEnabled( false );
+  
   // find model index that match the file
   QModelIndex index( _model().index( FileRecord( file ) ) );
   
@@ -111,6 +115,8 @@ void SessionFilesFrame::selectFile( const File& file )
   // select found index but disable the selection changed callback
   _list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
   
+  //_setSelectionChangeEnabled( true );
+
 }
 
 //______________________________________________________________________
@@ -145,6 +151,8 @@ void SessionFilesFrame::_update( void )
 void SessionFilesFrame::_updateActions( void )
 { 
   Debug::Throw( "SessionFilesFrame:_updateActions.\n" );
+
+  // if( !_selectionChangeEnabled() ) return;
   _openAction().setEnabled( !_list().selectionModel()->selectedRows().isEmpty() );
 }
 
@@ -153,6 +161,7 @@ void SessionFilesFrame::_checkSelection( void )
 { 
   Debug::Throw( "SessionFilesFrame:_checkSelection.\n" );
     
+  // if( !_selectionChangeEnabled() ) return;
   SessionFilesModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
   if( selection.empty() ) return;
   emit fileSelected( selection.back() );
@@ -214,6 +223,7 @@ void SessionFilesFrame::_storeSelection( void )
   Debug::Throw( "SessionFilesFrame::_storeSelection.\n" ); 
 
   // clear
+  //_setSelectionChangeEnabled( false );
   _model().clearSelectedIndexes();
   
   // retrieve selected indexes in list
@@ -245,6 +255,7 @@ void SessionFilesFrame::_restoreSelection( void )
   
   }
   
+  //_setSelectionChangeEnabled( true );
   return;
   
 }

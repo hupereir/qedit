@@ -1644,13 +1644,13 @@ void TextDisplay::_updateSpellCheckConfiguration( void )
   }
 
   // see if one should/can change the dictionary and filter
-  if( filter != interface.filter() && interface.setFilter( filter ) )
+  if( filter == interface.filter() || interface.setFilter( filter ) )
   {
     _filterMenu().select( filter.c_str() );
     changed = true;
   }
 
-  if( dictionary != interface.dictionary() && interface.setDictionary( dictionary ) )
+  if( dictionary == interface.dictionary() || interface.setDictionary( dictionary ) )
   {
     _dictionaryMenu().select( dictionary.c_str() );
     changed = true;
@@ -1766,6 +1766,10 @@ void TextDisplay::_toggleAutoSpell( bool state )
   #if WITH_ASPELL
   Debug::Throw( "TextDisplay::_toggleAutoSpell.\n" );
 
+  // enable menus
+  dictionaryMenuAction().setEnabled( state );
+  filterMenuAction().setEnabled( state );
+  
   // propagate to textHighlight
   textHighlight().spellParser().setEnabled( state );
   rehighlight();

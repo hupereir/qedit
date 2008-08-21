@@ -141,14 +141,27 @@ class SessionFilesFrame: public QWidget, public Counter
   
   //@}
   
+  // selection callbacks enability
+  // const bool& _selectionChangeEnabled( void ) const
+  // { return selection_change_enabled_; }
+  
+  //! selection callbacks enability
+  // void _setSelectionChangeEnabled( const bool value )
+  // { selection_change_enabled_ = value; }
+  
   //! model
   SessionFilesModel model_;
   
   //! list
   TreeView* list_;
   
-  //@}
-    
+  //! true when selection callbacks are enabled
+  /*! 
+  this is used to disable the selectionChanged callbacks
+  when the list is being updated (and store/restore selection are called
+  */
+  // bool selection_change_enabled_;
+  
   //!@name actions
   //@{
   

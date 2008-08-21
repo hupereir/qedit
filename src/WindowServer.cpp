@@ -277,9 +277,18 @@ void WindowServer::readFilesFromArguments( ArgList args )
       if( first )
       {
       
-        if( _open( File( *iter ).expand() ) ) first = false;
+        if( _open( File( *iter ).expand() ) ) 
+        {
+          _applyArguments( _activeWindow().activeDisplay(), args );
+          first = false;
+        }
         
-      } else { _open( File( *iter ).expand(), _activeWindow().orientation() ); }
+      } else { 
+        
+        if( _open( File( *iter ).expand(), _activeWindow().orientation() ) )
+        { _applyArguments( _activeWindow().activeDisplay(), args ); }
+        
+      }
     
     }
     
@@ -293,7 +302,12 @@ void WindowServer::readFilesFromArguments( ArgList args )
   
     // default mode
     for( list< string >::const_iterator iter = files.begin(); iter != files.end(); iter++ )
-    { _open( File( *iter ).expand() ); }
+    { 
+      
+      if( _open( File( *iter ).expand() ) )
+      { _applyArguments( _activeWindow().activeDisplay(), args ); }
+      
+    }
      
   }
   
@@ -447,6 +461,17 @@ bool WindowServer::_open( FileRecord record )
   // do nothing if record is empty
   if( record.file().empty() ) return false;
   
+  // see if file is directory
+  if( record.file().isDirectory() )
+  {
+    
+    ostringstream what;
+    what << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
+    QtUtil::infoDialog( &_activeWindow(), what.str() );
+    return false;
+    
+  }
+  
   // retrieve all MainWindows
   BASE::KeySet<MainWindow> windows( this );
   
@@ -512,7 +537,8 @@ bool WindowServer::_open( FileRecord record )
 //_______________________________________________
 bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
 {  
-  Debug::Throw( "WindowServer::_open.\n" );
+  
+  Debug::Throw() << "WindowServer::_open - file: " << record.file() << " orientation: " << orientation << endl;
   
   // do nothing if record is empty
   if( record.file().empty() ) return false;
@@ -528,17 +554,22 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
   BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
   if( iter != windows.end() )
   {
-
-    // select found display in TextView
-    (*iter)->activeView().selectDisplay( record.file() );
-
-    // check if the found window is the current
-    if( &(*iter)->activeView() == &active_view )
+    
+    // find matching view
+    BASE::KeySet<TextView> views( *iter );
+    BASE::KeySet<TextView>::iterator view_iter = find_if( views.begin(), views.end(), MainWindow::SameFileFTor( record.file() ) );
+    assert( view_iter != views.end() );
+    
+    // check if the found view is the current
+    if( *view_iter == &active_view )
     {
       (*iter)->uniconify();
       _setActiveWindow( **iter );
       return true;
     }
+
+    // select found display in TextView
+    (*view_iter)->selectDisplay( record.file() );
 
     ostringstream what;
     what
@@ -557,7 +588,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
     TextDisplay& display( display_iter == displays.end() ? active_view.splitDisplay( orientation, false ):**display_iter );
 
     // retrieve active display from previous window
-    TextDisplay& previous_display( (*iter)->activeDisplay() );
+    TextDisplay& previous_display( (*view_iter)->activeDisplay() );
 
     // store modification state
     bool modified( previous_display.document()->isModified() );
@@ -572,7 +603,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
     displays = BASE::KeySet<TextDisplay>( &previous_display );
     displays.insert( &previous_display );
     for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
-    { (*iter)->activeView().closeDisplay( **display_iter ); }
+    { (*view_iter)->closeDisplay( **display_iter ); }
       
     // restore modification state and make new display active
     display.setModified( modified );
@@ -636,7 +667,6 @@ void WindowServer::_detach( void )
   // show the new window
   window.activeView().activeDisplay().document()->setModified( modified );
   window.show();
-  // window._updateConfiguration();
 
   return;
   
@@ -713,17 +743,6 @@ FileRecord WindowServer::_selectFileFromDialog( void )
   if( files.empty() ) return record;
   
   File file = File( qPrintable( files.front() ) ).expand();
-
-  // see if file is directory
-  if( file.isDirectory() )
-  {
-    
-    ostringstream what;
-    what << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
-    QtUtil::infoDialog( &_activeWindow(), what.str() );
-    return record;
-    
-  }
   
   // assign file to record
   record.setFile( file );
@@ -779,6 +798,25 @@ bool WindowServer::_createNewFile( const FileRecord& record )
   }
   
   return false;
+  
+}
+
+//________________________________________________________________
+void WindowServer::_applyArguments( TextDisplay& display, ArgList args )
+{ 
+  Debug::Throw( "WindowServer::_applyArguments.\n" );
+
+  //! see if autospell action is required
+  bool autospell( args.find( "--autospell" ) );
+  
+  //! see if autospell filter and dictionary are required
+  string filter = ( args.find( "--filter" ) && !args.get( "--filter" ).options().empty() ) ? args.get( "--filter" ).options().front() : "";
+  string dictionary = (args.find( "--dictionary" ) && !args.get( "--dictionary" ).options().empty() ) ? args.get( "--dictionary" ).options().front() : "";
+  Debug::Throw() << "WindowServer::_applyArguments - filter:" << filter << " dictionary: " << dictionary << endl;
+  
+  if( autospell ) display.autoSpellAction().setChecked( true );
+  if( !filter.empty() ) display.selectFilter( filter.c_str() );
+  if( !dictionary.empty() ) display.selectDictionary( dictionary.c_str() );
   
 }
 
