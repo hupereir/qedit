@@ -348,7 +348,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
 //___________________________________________________________
 void WindowServer::multipleFileReplace( std::list<File> files, TextSelection selection )
 {
-  Debug::Throw( 0, "WindowServer::multipleFileReplace.\n" );
+  Debug::Throw( "WindowServer::multipleFileReplace.\n" );
     
   // keep track of number of replacements
   unsigned int counts(0);
@@ -359,19 +359,19 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   {
     
     File& file( *iter );
-    Debug::Throw( 0 ) << "WindowServer::multipleFileReplace - file: " << file << endl;
     
     // find matching window
     BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
     assert( iter != windows.end() );
     
-    // select the corresponding display
-    /* at least one display must be found, otherwise the algorithm is wrong */
-    assert( (*iter)->selectDisplay( file ) );
+    // loop over views
+    BASE::KeySet<TextView> views( *iter );
+    for( BASE::KeySet<TextView>::iterator view_iter = views.begin(); view_iter != views.end(); view_iter++ )
+    {
+      if( !(*view_iter)->selectDisplay( file ) ) continue;
+      counts += (*view_iter)->activeDisplay().replaceInWindow( selection, false );
+    }
     
-    // perform replacement
-    counts += (*iter)->activeDisplay().replaceInWindow( selection, false );
-  
   }
   
   // popup dialog

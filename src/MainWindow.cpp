@@ -106,17 +106,24 @@ MainWindow::MainWindow(  QWidget* parent ):
   setMenuBar( menu_ = new Menu( this ) );
   connect( menu_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
 
-  // main widget is a splitter to store navigation window and active view 
-  QSplitter* splitter = new QSplitter( this );
-  setCentralWidget( splitter );
-  splitter->setOrientation( Qt::Horizontal );
-  setCentralWidget( splitter );
+  // main widget
+  QWidget* main = new QWidget( this );
+  main->setLayout( new QHBoxLayout() );
+  main->layout()->setMargin(2);
+  main->layout()->setSpacing(2);
+  setCentralWidget( main );
 
   // insert navigationFrame
-  navigation_frame_ = new NavigationFrame(0, static_cast<Application*>(qApp)->recentFiles() );
-  navigationFrame().setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
+  main->layout()->addWidget( navigation_frame_ = new NavigationFrame(0, static_cast<Application*>(qApp)->recentFiles() ) );
+  navigationFrame().stack().setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
+  
+  // main widget is a splitter to store navigation window and active view 
+  QSplitter* splitter = new QSplitter( this );
+  splitter->setOrientation( Qt::Horizontal );
+  main->layout()->addWidget( splitter );
+  
+  splitter->addWidget( &navigationFrame().stack() );
   connect( &navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleNavigationFrame( bool ) ) );
-  splitter->addWidget( &navigationFrame() );
     
   // need to add navigationFrame visibility action to this list 
   // to enable shortcut event if the frame is hidden
@@ -648,7 +655,7 @@ void MainWindow::timerEvent( QTimerEvent* event )
     
     // save size
     if( navigationFrame().visibilityAction().isChecked() )
-    { XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", navigationFrame().width() ); }
+    { XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", navigationFrame().stack().width() ); }
   
   } else return CustomMainWindow::timerEvent( event );
   
@@ -800,12 +807,6 @@ void MainWindow::_update( unsigned int flags )
     // update diff action
     diffAction().setEnabled( display_count == 2 );    
     
-    // update navigation frame
-    if( view_count > 1 && !navigationFrame().visibilityAction().isChecked() )
-    { navigationFrame().visibilityAction().setChecked( true ); }
-    
-    navigationFrame().visibilityAction().setEnabled( view_count <= 1 );
-      
   }
   
   if( flags & TextDisplay::SAVE )

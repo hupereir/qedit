@@ -65,13 +65,44 @@ class NavigationFrame: public QWidget, public Counter
   //! destructor
   ~NavigationFrame( void );
 
-  //! default size
-  void setDefaultWidth( const int& );
+  //! local stack widget re-implementation
+  /*! allows to control the default stack width in parent splitter */
+  class Stack: public QStackedWidget, public Counter
+  {
+    public:
+    
+    //! constructor
+    Stack( QWidget* parent = 0 ):
+      QStackedWidget( parent ),
+      Counter( "NavigationFrame::Stack" ),
+      default_width_( -1 )
+    {} 
+    
+    //! default size
+    void setDefaultWidth( const int& );
+    
+    //! default width
+    const int& defaultWidth( void ) const
+    { return default_width_; }
+    
   
-  //! default width
-  const int& defaultWidth( void ) const
-  { return default_width_; }
+    //! size
+    QSize sizeHint( void ) const;  
+    
+    private:
+    
+    //! default width;
+    int default_width_;
+    
+  };
   
+  //! stack widget
+  Stack& stack( void ) const
+  { 
+    assert( stack_ );
+    return *stack_;
+  }
+    
   //! session files 
   SessionFilesFrame& sessionFilesFrame( void ) const
   {
@@ -94,9 +125,6 @@ class NavigationFrame: public QWidget, public Counter
     return *file_system_frame_;
   }
   
-  //! size
-  QSize sizeHint( void ) const;  
-
   //!@name actions
   //@{
   
@@ -106,20 +134,14 @@ class NavigationFrame: public QWidget, public Counter
   
   //@}
         
-  protected:
-     
-  //! stack widget
-  QStackedWidget& _stack( void ) const
-  { 
-    assert( stack_ );
-    return *stack_;
-  }
-   
   private slots:
   
   //! display item page
   virtual void _display( QAbstractButton* );
 
+  //! toggle visibility
+  virtual void _toggleVisibility( bool );
+  
   private:
   
   //! tool button
@@ -128,11 +150,8 @@ class NavigationFrame: public QWidget, public Counter
   //! install actions
   void _installActions( void );
  
-  //! default width
-  int default_width_;
-
   //! stack widget
-  QStackedWidget* stack_;
+  Stack* stack_;
   
   //! map widget to action
   typedef std::map<QAbstractButton*, QWidget* > ButtonMap;
