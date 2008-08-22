@@ -61,6 +61,8 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
 {
   Debug::Throw( "DocumentClassManagerDialog::DocumentClassManagerDialog.\n" );
  
+  _setSizeOptionName( "DOCUMENT_CLASS_MANAGER_DIALOG" );
+  
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setSpacing(20);
   layout->setMargin(0);
@@ -142,7 +144,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   
   v_layout->addStretch(1);
   adjustSize();
-  resize( 500, 250 );
+
 }
 
 //___________________________________________________
