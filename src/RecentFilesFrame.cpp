@@ -124,9 +124,23 @@ void RecentFilesFrame::_updateConfiguration( void )
   // session files list sorting
   if( XmlOptions::get().find( "RECENT_FILES_SORT_COLUMN" ) && XmlOptions::get().find( "RECENT_FILES_SORT_ORDER" ) )
   { 
+   
     list().sortByColumn( 
       XmlOptions::get().get<int>( "RECENT_FILES_SORT_COLUMN" ), 
       (Qt::SortOrder)(XmlOptions::get().get<int>( "RECENT_FILES_SORT_ORDER" ) ) ); 
+
+  } else if( XmlOptions::get().find( "SORT_FILES_BY_DATE" ) ) {
+    
+    list().sortByColumn( 
+      FileRecordModel::TIME, 
+      Qt::DescendingOrder ); 
+  
+  } else {
+    
+    list().sortByColumn( 
+      FileRecordModel::FILE, 
+      Qt::DescendingOrder ); 
+    
   }
 
 }

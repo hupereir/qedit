@@ -59,4 +59,4 @@ EXTRA_DIST = \
   oxygen/view_remove.png \
   oxygen/view_right.png \
   oxygen/view_top_bottom.png \
-  oxygen/window_fullscreen.png \
+  oxygen/window_fullscreen.png

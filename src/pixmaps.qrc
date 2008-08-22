@@ -46,14 +46,14 @@
     <file alias="pixmaps/oxygen/fonts.png">../pixmaps/oxygen/fonts.png</file>
     <file alias="pixmaps/oxygen/forward.png">../pixmaps/oxygen/forward.png</file>
     <file alias="pixmaps/oxygen/gohome.png">../pixmaps/oxygen/gohome.png</file>
-    <file alias="pixmaps/crystal/history.png">../pixmaps/crystal/history.png</file>
+    <file alias="pixmaps/oxygen/history.png">../pixmaps/oxygen/history.png</file>
     <file alias="pixmaps/oxygen/info.png">../pixmaps/oxygen/info.png</file>
     <file alias="pixmaps/oxygen/indent.png">../pixmaps/oxygen/indent.png</file>
     <file alias="pixmaps/oxygen/link_overlay.png">../pixmaps/oxygen/link_overlay.png</file>
     <file alias="pixmaps/oxygen/parent_directory.png">../pixmaps/oxygen/parent_directory.png</file>
     <file alias="pixmaps/oxygen/save_all.png">../pixmaps/oxygen/save_all.png</file>
     <file alias="pixmaps/oxygen/up.png">../pixmaps/oxygen/up.png</file>
-    <file alias="pixmaps/crystal/user-home.png">../pixmaps/crystal/user-home.png</file>
+    <file alias="pixmaps/oxygen/user-home.png">../pixmaps/oxygen/user-home.png</file>
     <file alias="pixmaps/oxygen/view_bottom.png">../pixmaps/oxygen/view_bottom.png</file>
     <file alias="pixmaps/oxygen/view_left_right.png">../pixmaps/oxygen/view_left_right.png</file>
     <file alias="pixmaps/oxygen/view_remove.png">../pixmaps/oxygen/view_remove.png</file>

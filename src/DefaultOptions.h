@@ -46,6 +46,8 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "PIXMAP_PATH", "/usr/share/icons/crystalsvg/32x32/mimetypes"));
   
   XmlOptions::get().add( Option( "ICON_PIXMAP", ":/icon.png" , "application icon"));
+  
+  XmlOptions::get().add( Option( "FIXED_FONT_NAME", "fixed" , "fixed font"  )); 
 
   XmlOptions::get().add( Option( "USE_PRINT_COMMAND", "0", "use print/edit command" ) );
   XmlOptions::get().add( Option( "PRINT_MODE", "PDF" , "print mode. Can be either PDF/HTML"));  

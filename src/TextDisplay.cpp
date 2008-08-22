@@ -205,27 +205,33 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
 
   // retrieve default context menu
   // second argument is to remove un-necessary actions
-  TextEditor::installContextMenuActions( menu, all_actions );
+  // TextEditor::installContextMenuActions( menu, all_actions );
+  TextEditor::installContextMenuActions( menu, false );
   
   // add specific actions
   menu.insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
   menu.addSeparator();
-
-  menu.addAction( &tagBlockAction() );
-  tagBlockAction().setEnabled( has_selection );
+  
+  if( 0 )
+  {
     
-  menu.addAction( &nextTagAction() );
-  nextTagAction().setEnabled( has_tags );
-
-  menu.addAction( &previousTagAction() );
-  previousTagAction().setEnabled( has_tags );
-
-  menu.addAction( &clearTagAction() );
-  clearTagAction().setEnabled( current_block_tagged );
-
-  menu.addAction( &clearAllTagsAction() );
-  clearAllTagsAction().setEnabled( has_tags );
-
+    menu.addAction( &tagBlockAction() );
+    tagBlockAction().setEnabled( has_selection );
+    
+    menu.addAction( &nextTagAction() );
+    nextTagAction().setEnabled( has_tags );
+    
+    menu.addAction( &previousTagAction() );
+    previousTagAction().setEnabled( has_tags );
+    
+    menu.addAction( &clearTagAction() );
+    clearTagAction().setEnabled( current_block_tagged );
+    
+    menu.addAction( &clearAllTagsAction() );
+    clearAllTagsAction().setEnabled( has_tags );
+  
+  }
+  
   return;
 }
 
