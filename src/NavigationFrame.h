@@ -51,58 +51,24 @@ class FileSystemFrame;
   displays an up-to-date list of recent files
   as well as files opened in current session
 */
-class NavigationFrame: public QWidget, public Counter
+class NavigationFrame: public QStackedWidget, public Counter
 {
-
-  //! Qt meta object declaration
-  Q_OBJECT
 
   public:
 
   //! creator
   NavigationFrame( QWidget* parent, FileList&  );
 
-  //! destructor
-  ~NavigationFrame( void );
-
-  //! local stack widget re-implementation
-  /*! allows to control the default stack width in parent splitter */
-  class Stack: public QStackedWidget, public Counter
-  {
-    public:
+  //! default size
+  void setDefaultWidth( const int& );
     
-    //! constructor
-    Stack( QWidget* parent = 0 ):
-      QStackedWidget( parent ),
-      Counter( "NavigationFrame::Stack" ),
-      default_width_( -1 )
-    {} 
+  //! default width
+  const int& defaultWidth( void ) const
+  { return default_width_; }
     
-    //! default size
-    void setDefaultWidth( const int& );
-    
-    //! default width
-    const int& defaultWidth( void ) const
-    { return default_width_; }
-    
-  
-    //! size
-    QSize sizeHint( void ) const;  
-    
-    private:
-    
-    //! default width;
-    int default_width_;
-    
-  };
-  
-  //! stack widget
-  Stack& stack( void ) const
-  { 
-    assert( stack_ );
-    return *stack_;
-  }
-    
+  //! size
+  QSize sizeHint( void ) const;  
+       
   //! session files 
   SessionFilesFrame& sessionFilesFrame( void ) const
   {
@@ -133,32 +99,15 @@ class NavigationFrame: public QWidget, public Counter
   { return *visibility_action_; }
   
   //@}
-        
-  private slots:
-  
-  //! display item page
-  virtual void _display( QAbstractButton* );
-
-  //! toggle visibility
-  virtual void _toggleVisibility( bool );
-  
+          
   private:
-  
-  //! tool button
-  QToolButton* _newToolButton( QWidget* parent ) const;
   
   //! install actions
   void _installActions( void );
  
-  //! stack widget
-  Stack* stack_;
+  //! default width;
+  int default_width_;
   
-  //! map widget to action
-  typedef std::map<QAbstractButton*, QWidget* > ButtonMap;
-  
-  //! map widget to action in the toolbar
-  ButtonMap buttons_;
-
   //! session files
   SessionFilesFrame *session_files_frame_;
   

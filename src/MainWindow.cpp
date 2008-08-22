@@ -41,6 +41,7 @@
 #include "ClockLabel.h"
 #include "Config.h"
 #include "CustomFileDialog.h"
+#include "CustomToolButton.h"
 #include "LineEditor.h"
 #include "CustomToolBar.h"
 #include "Debug.h"
@@ -58,6 +59,7 @@
 #include "MainWindow.h"
 #include "Menu.h"
 #include "NavigationFrame.h"
+#include "NavigationToolBar.h"
 #include "NewFileDialog.h"
 #include "PixmapEngine.h"
 #include "PrintDialog.h"
@@ -105,24 +107,17 @@ MainWindow::MainWindow(  QWidget* parent ):
   // menu
   setMenuBar( menu_ = new Menu( this ) );
   connect( menu_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
-
-  // main widget
-  QWidget* main = new QWidget( this );
-  main->setLayout( new QHBoxLayout() );
-  main->layout()->setMargin(2);
-  main->layout()->setSpacing(2);
-  setCentralWidget( main );
-
-  // insert navigationFrame
-  main->layout()->addWidget( navigation_frame_ = new NavigationFrame(0, static_cast<Application*>(qApp)->recentFiles() ) );
-  navigationFrame().stack().setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
   
   // main widget is a splitter to store navigation window and active view 
   QSplitter* splitter = new QSplitter( this );
   splitter->setOrientation( Qt::Horizontal );
-  main->layout()->addWidget( splitter );
+  setCentralWidget( splitter );
   
-  splitter->addWidget( &navigationFrame().stack() );
+  // insert navigationFrame
+  navigation_frame_ = new NavigationFrame(0, static_cast<Application*>(qApp)->recentFiles() );
+  navigationFrame().setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
+  splitter->addWidget( &navigationFrame() );
+
   connect( &navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleNavigationFrame( bool ) ) );
     
   // need to add navigationFrame visibility action to this list 
@@ -168,7 +163,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   QFont font;
   font.fromString( XmlOptions::get().raw( "FONT_NAME" ).c_str() );
   file_editor_->setFont( font );
-  
+    
   // file toolbar
   CustomToolBar* toolbar = new CustomToolBar( "Main", this, "FILE_TOOLBAR" );
   toolbar->addAction( &newFileAction() );
@@ -196,6 +191,10 @@ MainWindow::MainWindow(  QWidget* parent ):
   toolbar->addAction( &openVerticalAction() ); 
   toolbar->addAction( &closeDisplayAction() );
   toolbar->addAction( &detachAction() );
+  
+  // navigation toolbar
+  NavigationToolBar* navigation_toolbar = new NavigationToolBar( this ); 
+  navigation_toolbar->connect( navigationFrame() );
   
   //! configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
@@ -655,7 +654,7 @@ void MainWindow::timerEvent( QTimerEvent* event )
     
     // save size
     if( navigationFrame().visibilityAction().isChecked() )
-    { XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", navigationFrame().stack().width() ); }
+    { XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", navigationFrame().width() ); }
   
   } else return CustomMainWindow::timerEvent( event );
   

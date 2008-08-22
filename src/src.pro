@@ -62,6 +62,7 @@ HEADERS = \
   MainWindow.h \
   Menu.h \
   NavigationFrame.h \
+  NavigationToolBar.h \
   NewDocumentNameServer.h \
   NewFileDialog.h \
   ParenthesisHighlight.h \
@@ -102,6 +103,7 @@ SOURCES = \
   MainWindow.cpp \
   Menu.cpp \
   NavigationFrame.cpp \
+  NavigationToolBar.cpp \
   NewDocumentNameServer.cpp \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \

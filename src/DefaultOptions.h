@@ -120,6 +120,13 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "MAX_SUGGESTIONS", "0", "maximum number of suggestions. 0 means all." ));
   #endif
   
+  XmlOptions::get().add( Option( "NAVIGATION_SIDEBAR", "1" ) );
+  XmlOptions::get().add( Option( "NAVIGATION_SIDEBAR_LOCATION", "left" ) );
+  
+  // toolbars default configuration
+  XmlOptions::get().add( Option( "NAVIGATION_SIDEBAR_ICON_SIZE", "16" , "text label in tool buttons"  )); 
+  XmlOptions::get().add( Option( "NAVIGATION_SIDEBAR_TEXT_POSITION", "3" , "text label in tool buttons"  )); 
+
   // run-time non recordable options
   // default value for autosave directory
   XmlOptions::get().setRaw( "AUTOSAVE_PATH", Util::tmp() );
