@@ -6,6 +6,7 @@
     <file alias="pixmaps/crystal/back.png">../pixmaps/crystal/back.png</file>
     <file alias="pixmaps/crystal/bookmark.png">../pixmaps/crystal/bookmark.png</file>
     <file alias="pixmaps/crystal/document.png">../pixmaps/crystal/document.png</file>
+    <file alias="pixmaps/crystal/documents.png">../pixmaps/crystal/documents.png</file>
     <file alias="pixmaps/crystal/down.png">../pixmaps/crystal/down.png</file>
     <file alias="pixmaps/crystal/filenew.png">../pixmaps/crystal/filenew.png</file>
     <file alias="pixmaps/crystal/fileprint.png">../pixmaps/crystal/fileprint.png</file>
@@ -16,12 +17,14 @@
     <file alias="pixmaps/crystal/fonts.png">../pixmaps/crystal/fonts.png</file>
     <file alias="pixmaps/crystal/forward.png">../pixmaps/crystal/forward.png</file>
     <file alias="pixmaps/crystal/gohome.png">../pixmaps/crystal/gohome.png</file>
+    <file alias="pixmaps/crystal/history.png">../pixmaps/crystal/history.png</file>
     <file alias="pixmaps/crystal/info.png">../pixmaps/crystal/info.png</file>
     <file alias="pixmaps/crystal/indent.png">../pixmaps/crystal/indent.png</file>
     <file alias="pixmaps/crystal/link_overlay.png">../pixmaps/crystal/link_overlay.png</file>
     <file alias="pixmaps/crystal/parent_directory.png">../pixmaps/crystal/parent_directory.png</file>
     <file alias="pixmaps/crystal/save_all.png">../pixmaps/crystal/save_all.png</file>
     <file alias="pixmaps/crystal/up.png">../pixmaps/crystal/up.png</file>
+    <file alias="pixmaps/crystal/user-home.png">../pixmaps/crystal/user-home.png</file>
     <file alias="pixmaps/crystal/view_bottom.png">../pixmaps/crystal/view_bottom.png</file>
     <file alias="pixmaps/crystal/view_left_right.png">../pixmaps/crystal/view_left_right.png</file>
     <file alias="pixmaps/crystal/view_remove.png">../pixmaps/crystal/view_remove.png</file>
@@ -32,6 +35,7 @@
     <file alias="pixmaps/oxygen/back.png">../pixmaps/oxygen/back.png</file>
     <file alias="pixmaps/oxygen/bookmark.png">../pixmaps/oxygen/bookmark.png</file>
     <file alias="pixmaps/oxygen/document.png">../pixmaps/oxygen/document.png</file>
+    <file alias="pixmaps/oxygen/documents.png">../pixmaps/oxygen/documents.png</file>
     <file alias="pixmaps/oxygen/down.png">../pixmaps/oxygen/down.png</file>
     <file alias="pixmaps/oxygen/filenew.png">../pixmaps/oxygen/filenew.png</file>
     <file alias="pixmaps/oxygen/fileprint.png">../pixmaps/oxygen/fileprint.png</file>
@@ -42,12 +46,14 @@
     <file alias="pixmaps/oxygen/fonts.png">../pixmaps/oxygen/fonts.png</file>
     <file alias="pixmaps/oxygen/forward.png">../pixmaps/oxygen/forward.png</file>
     <file alias="pixmaps/oxygen/gohome.png">../pixmaps/oxygen/gohome.png</file>
+    <file alias="pixmaps/crystal/history.png">../pixmaps/crystal/history.png</file>
     <file alias="pixmaps/oxygen/info.png">../pixmaps/oxygen/info.png</file>
     <file alias="pixmaps/oxygen/indent.png">../pixmaps/oxygen/indent.png</file>
     <file alias="pixmaps/oxygen/link_overlay.png">../pixmaps/oxygen/link_overlay.png</file>
     <file alias="pixmaps/oxygen/parent_directory.png">../pixmaps/oxygen/parent_directory.png</file>
     <file alias="pixmaps/oxygen/save_all.png">../pixmaps/oxygen/save_all.png</file>
     <file alias="pixmaps/oxygen/up.png">../pixmaps/oxygen/up.png</file>
+    <file alias="pixmaps/crystal/user-home.png">../pixmaps/crystal/user-home.png</file>
     <file alias="pixmaps/oxygen/view_bottom.png">../pixmaps/oxygen/view_bottom.png</file>
     <file alias="pixmaps/oxygen/view_left_right.png">../pixmaps/oxygen/view_left_right.png</file>
     <file alias="pixmaps/oxygen/view_remove.png">../pixmaps/oxygen/view_remove.png</file>

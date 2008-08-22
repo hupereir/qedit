@@ -44,6 +44,10 @@ namespace ICONS
   static const std::string DOCUMENT = "document.png"; 
   static const std::string FOLDER = "folder.png";
   static const std::string LINK = "link_overlay.png";
+
+  static const std::string DOCUMENTS = "documents.png"; 
+  static const std::string HISTORY = "history.png"; 
+  static const std::string FILESYSTEM = "user-home.png"; 
   
   static const std::string NEW = "filenew.png"; 
   static const std::string SAVE = "filesave.png";
