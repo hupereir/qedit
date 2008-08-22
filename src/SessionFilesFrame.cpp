@@ -64,7 +64,6 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   layout()->addWidget( list_ = new TreeView( this ) );
   list().setModel( &_model() );
   list().setMaskOptionName( "SESSION_FILES_MASK" );
-  list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
   list().header()->hide();
   
   // actions
@@ -232,17 +231,17 @@ void SessionFilesFrame::_installActions( void )
   connect( update_action_, SIGNAL( triggered() ), SLOT( _update() ) );
 
   // open
-  addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open selected files", this ) );
+  addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this ) );
   connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
   _openAction().setToolTip( "Open selected files" );
   
   // save
-  addAction( save_action_ = new QAction( IconEngine::get( ICONS::SAVE ), "&Save selected files", this ) );
+  addAction( save_action_ = new QAction( IconEngine::get( ICONS::SAVE ), "&Save", this ) );
   connect( &_saveAction(), SIGNAL( triggered() ), SLOT( _save() ) );
   _saveAction().setToolTip( "Save selected files" );
 
   // save
-  addAction( close_action_ = new QAction( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Close selected files", this ) );
+  addAction( close_action_ = new QAction( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Close", this ) );
   connect( &_closeAction(), SIGNAL( triggered() ), SLOT( _close() ) );
   _closeAction().setToolTip( "Close selected files" );
 

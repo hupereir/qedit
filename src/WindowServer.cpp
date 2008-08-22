@@ -348,7 +348,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
 //___________________________________________________________
 void WindowServer::multipleFileReplace( std::list<File> files, TextSelection selection )
 {
-  Debug::Throw( "WindowServer::multipleFileRepplace.\n" );
+  Debug::Throw( 0, "WindowServer::multipleFileReplace.\n" );
     
   // keep track of number of replacements
   unsigned int counts(0);
@@ -359,6 +359,7 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   {
     
     File& file( *iter );
+    Debug::Throw( 0 ) << "WindowServer::multipleFileReplace - file: " << file << endl;
     
     // find matching window
     BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );

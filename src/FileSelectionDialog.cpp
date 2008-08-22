@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <QApplication>
+#include <QHeaderView>
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
@@ -45,6 +46,7 @@
 #include "TextDisplay.h"
 #include "TreeView.h"
 #include "WindowServer.h"
+#include "XmlOptions.h"
 
 using namespace std;
 
@@ -63,19 +65,22 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
 
   // custom list display
   list_ = new TreeView( this );
-  list_->setModel( &model_ );
-  list_->setSelectionMode( QAbstractItemView::MultiSelection );
+  _list().setModel( &model_ );
+  _list().setSelectionMode( QAbstractItemView::MultiSelection );
+  connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
 
   // retrieve file records
   model_.set( static_cast< Application*>( qApp )->windowServer().files() );
   
   // mask
-  unsigned int mask( (1<<FileRecordModel::FILE)|(1<<FileRecordModel::PATH ));
+  unsigned int mask( 
+    (1<<FileRecordModel::ICON)|
+    (1<<FileRecordModel::FILE)|
+    (1<<FileRecordModel::PATH ));
   int class_column( model_.findColumn( "class_name" ) );
   if( class_column >= 0 ) mask |= (1<<class_column);
-  list_->setMask( mask );
-  list_->resizeColumns();
-  list_->selectAll();
+  _list().setMask( mask );
+  _list().resizeColumns();  
   layout->addWidget( list_ );
 
   // button layout
@@ -91,22 +96,50 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   button_layout->addWidget( button = new QPushButton( "&Select All", this ) );
   button->setToolTip( "Select all files in list" );
   connect( button, SIGNAL( clicked() ), list_, SLOT( selectAll() ) );
-
+  select_all_button_ = button;
+  
   // deselect all
   button_layout->addWidget( button = new QPushButton( "&Clear Selection", this ) );
   button->setToolTip( "deselect all files in list" );
   connect( button, SIGNAL( clicked() ), list_, SLOT( clearSelection() ) );
-
+  clear_selection_button_ = button;
+  
   // replace
   button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&Replace", this ) );
   button->setToolTip( "Replace in all selected files" );
   connect( button, SIGNAL( clicked() ), this, SLOT( _replace() ) );
-
+  replace_button_ = button;
+  
   // cancel
   button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Cancel", this ) );
   connect( button, SIGNAL( clicked() ), this, SLOT( _cancel() ) );
 
+  _updateButtons();
+
+  // sort list and select all items
+  if( XmlOptions::get().find( "SESSION_FILES_SORT_COLUMN" ) && XmlOptions::get().find( "SESSION_FILES_SORT_ORDER" ) )
+  { 
+    _list().sortByColumn( 
+      XmlOptions::get().get<int>( "SESSION_FILES_SORT_COLUMN" ), 
+      (Qt::SortOrder)(XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ) ); 
+  }
+
+  _list().selectAll();
+
+  
   adjustSize();
+  
+}
+
+//________________________________________________________
+void FileSelectionDialog::_updateButtons( void )
+{
+
+  Debug::Throw( "FileSelectionDialog::_updateButtons.\n" );
+  QList<QModelIndex> selection( _list().selectionModel()->selectedRows() );
+  
+  clear_selection_button_->setEnabled( !selection.empty() );
+  replace_button_->setEnabled( !selection.empty() );
   
 }
 
@@ -117,7 +150,7 @@ void FileSelectionDialog::_replace( void )
   Debug::Throw( "FileSelectionDialog::_replace.\n" );
 
   // retrieve selection from the list
-  FileRecordModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+  FileRecordModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
   list<File> files;
   for( FileRecordModel::List::iterator iter = selection.begin(); iter != selection.end(); iter++ )
   { files.push_back( iter->file() ); }

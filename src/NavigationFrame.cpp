@@ -33,6 +33,7 @@
 #include <QLayout>
 
 #include "Application.h"
+#include "CustomPixmap.h"
 #include "CustomToolButton.h"
 #include "Debug.h"
 #include "FileSystemFrame.h"
@@ -87,7 +88,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   v_layout->addWidget( button = _newToolButton( this ) );  
   button->setChecked( true );
   button->setText( " &Session files" );
-  button->setIcon( IconEngine::get( ICONS::DOCUMENT ) );
+  button->setIcon( IconEngine::get( CustomPixmap().find( ICONS::DOCUMENT ).rotate( CustomPixmap::CLOCKWISE ) ) );
   button->setToolTip( "Files currently opened" );
   
   button_group->addButton( button );
@@ -96,7 +97,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   // recent files
   v_layout->addWidget( button = _newToolButton( this ) );
   button->setText( " &Recent files" );
-  button->setIcon( IconEngine::get( ICONS::NEW ) );
+  button->setIcon( IconEngine::get( CustomPixmap().find( ICONS::NEW ).rotate( CustomPixmap::CLOCKWISE ) ) );
   button->setToolTip( "Files recently opened" );
   
   button_group->addButton( button );
@@ -105,7 +106,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   // file system
   v_layout->addWidget( button = _newToolButton( this ) );
   button->setText( " &File system" );
-  button->setIcon( IconEngine::get( ICONS::FOLDER ) );
+  button->setIcon( IconEngine::get( CustomPixmap().find( ICONS::OPEN ).rotate( CustomPixmap::CLOCKWISE ) ) );
   button->setToolTip( "File system browser" );
 
   button_group->addButton( button );

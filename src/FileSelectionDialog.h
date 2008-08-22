@@ -32,6 +32,7 @@
 */
 
 #include <QDialog>
+#include <QPushButton>
 #include <list>
 
 #include "Counter.h"
@@ -64,12 +65,18 @@ class FileSelectionDialog: public QDialog, public Counter
   /*! emits fileSelected signal for all selected files in the list */
   void _replace( void );
   
+  //! update buttons
+  void _updateButtons( void );
+  
   //! exit application
   void _cancel( void )
   { done( QDialog::Rejected ); }
   
   private:
 
+  TreeView& _list( void ) const
+  { return *list_; }
+  
   //! file and class pair
   typedef std::pair< File, QString> FilePair;
   
@@ -80,6 +87,15 @@ class FileSelectionDialog: public QDialog, public Counter
   
   //! text selection
   TextSelection selection_;
+
+  //!@name buttons
+  //@{
+  
+  QPushButton* select_all_button_;
+  QPushButton* clear_selection_button_;
+  QPushButton* replace_button_;
+  
+  //@}
   
 };
 
