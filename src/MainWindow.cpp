@@ -706,7 +706,7 @@ void MainWindow::_toggleNavigationFrame( bool state )
 }
 
 //________________________________________________________
-void MainWindow::_splitterMoved( )
+void MainWindow::_splitterMoved( void )
 {
   Debug::Throw( "MainWindow::_splitterMoved.\n" );
   resize_timer_.start( 200, this );  
