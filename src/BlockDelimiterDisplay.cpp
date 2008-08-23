@@ -723,8 +723,8 @@ void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, unsigned int& id, 
   assert( block.isValid() );
   
   QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
-  if( flag == BEGIN ) { marker.setPosition( block.layout()->position().y() ); }
-  else { marker.setPosition( block.layout()->position().y() + rect.height() ); }
+  if( flag == BEGIN ) { marker.setPosition( (int) block.layout()->position().y() ); }
+  else { marker.setPosition( (int) (block.layout()->position().y() + rect.height()) ); }
        
   return;
   
