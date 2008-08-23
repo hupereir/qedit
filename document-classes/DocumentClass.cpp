@@ -43,6 +43,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
   Counter( "DocumentClass" ),
   default_( false ),
   wrap_( false ),
+  emulate_tabs_( false ),
   base_indentation_( 0 )
 {
   Debug::Throw( "DocumentClass::DocumentClass.\n" );
@@ -62,6 +63,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     {
       
       if( attribute.value().indexOf( XML::OPTION_WRAP, 0, Qt::CaseInsensitive ) >= 0 ) wrap_ = true;    
+      if( attribute.value().indexOf( XML::OPTION_EMULATE_TABS, 0, Qt::CaseInsensitive ) >= 0 ) emulate_tabs_ = true;    
       if( attribute.value().indexOf( XML::OPTION_DEFAULT, 0, Qt::CaseInsensitive ) >= 0 ) default_ = true;    
       
     } else if( attribute.name() == XML::BASE_INDENTATION ) _setBaseIndentation( attribute.value().toInt() );
@@ -150,6 +152,7 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   // options
   QString options;
   if( wrap() ) options += XML::OPTION_WRAP + " ";
+  if( emulateTabs() ) options += XML::OPTION_EMULATE_TABS + " ";
   if( isDefault() ) options += XML::OPTION_DEFAULT + " ";
   if( !options.isEmpty() ) out.setAttribute( XML::OPTIONS, options ); 
   if( baseIndentation() ) out.setAttribute( XML::BASE_INDENTATION, Str().assign<int>( baseIndentation() ).c_str() );

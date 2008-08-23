@@ -1,6 +1,6 @@
 <!-- $Id$-->
 <patterns>
- <class name="c++" pattern="\.(c|cc|C|cpp|c\+\+|cxx|h|hh|hpp|H|css|js|php)(\.in)?$" icon="text-x-csrc.png">
+ <class name="c++" pattern="\.(c|cc|C|cpp|c\+\+|cxx|h|hh|hpp|H|css|js|php)(\.in)?$" options="emulate_tabs" icon="text-x-csrc.png">
 
  <!-- highlight styles -->
  <style format="2" name="Comment" color="#ff8c00" />

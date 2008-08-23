@@ -83,6 +83,7 @@ void installDefaultOptions( void )
   XmlOptions::get().add( Option( "TEXT_HIGHLIGHT", "1" ));
   XmlOptions::get().add( Option( "TEXT_PARENTHESIS", "1" ));
   XmlOptions::get().add( Option( "WRAP_FROM_CLASS", "1", "set to 1 if you wand DocumentClass to enable/disable wrapping" ));
+  XmlOptions::get().add( Option( "EMULATE_TABS_FROM_CLASS", "1", "set to 1 if you wand DocumentClass to enable/disable tab emulation" ));
   XmlOptions::get().add( Option( "WINDOW_HEIGHT", "500" ));
   XmlOptions::get().add( Option( "WINDOW_WIDTH", "700" ));
   XmlOptions::get().add( Option( "SERVER_TIMEOUT_DELAY", "3000" , "timeout delay to wait for existing server to answer" ));

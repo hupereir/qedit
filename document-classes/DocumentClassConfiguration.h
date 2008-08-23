@@ -84,6 +84,9 @@ class DocumentClassConfiguration: public QGroupBox, public Counter
   //! wrap
   QCheckBox* wrap_checkbox_;
   
+  //! wrap
+  QCheckBox* tab_emulation_checkbox_;
+
 };
 
 #endif

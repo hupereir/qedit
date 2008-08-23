@@ -1,6 +1,6 @@
 <!-- $Id$-->
 <patterns>
-	<class name="xml" pattern="\.((xml)|(qrc))$" icon="text-xml.png" >
+	<class name="xml" pattern="\.((xml)|(qrc))$" options="emulate_tabs" icon="text-xml.png" >
 		
 		<!-- highlight styles -->
 		<style format="2" name="Comment" color="#ff8c00" />
@@ -136,13 +136,6 @@
 		<macro name="Remove all tab indentations">
 			<rule>
 				<regexp>^\s+</regexp>
-				<replacement></replacement>
-			</rule>
-		</macro>
-		
-		<macro name="Clean end of line">
-			<rule>
-				<regexp>\s+$</regexp>
 				<replacement></replacement>
 			</rule>
 		</macro>

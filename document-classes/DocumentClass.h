@@ -140,6 +140,14 @@ class DocumentClass: public Counter
   void setWrap( const bool& value )
   { wrap_ = value; }
 
+  //! returns true if document class enables tab emulation by default
+  const bool& emulateTabs( void ) const
+  { return emulate_tabs_; }
+  
+  //! returns true if document class enables tab emulation by default
+  void setEmulateTabs( const bool& value )
+  { emulate_tabs_ = value; }
+
   //! list of hightlight styles
   const HighlightStyle::Set& highlightStyles() const
   { return highlight_styles_; }
@@ -253,6 +261,9 @@ class DocumentClass: public Counter
   
   //! wrap flag
   bool wrap_;
+  
+  //! tab emulation
+  bool emulate_tabs_;
   
   //! icon name
   QString icon_;

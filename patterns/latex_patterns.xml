@@ -1,6 +1,6 @@
 <!-- $Id$-->
 <patterns>
- <class name="latex" pattern="\.(tex|sty|cls|def)$" options="wrap" icon="text-x-tex.png">
+ <class name="latex" pattern="\.(tex|sty|cls|def)$" options="wrap emulate_tabs" icon="text-x-tex.png">
 
  <!-- highlight styles -->
  <style format="2" name="Comment" color="#ff8c00" />

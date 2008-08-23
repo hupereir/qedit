@@ -1,6 +1,6 @@
 <!-- $Id$-->
 <patterns>
- <class name="diff" pattern="/\w+\.diff$" icon="unknown.png" >
+ <class name="diff" pattern="/\w+\.diff$" options="emulate_tabs" icon="unknown.png" >
 
  <!-- highlight styles -->
  <style format="0" name="in" color="#0000cd" />

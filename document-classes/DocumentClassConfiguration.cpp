@@ -48,11 +48,15 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
 {
   Debug::Throw( "DocumentClassConfiguration::DocumentClassConfiguration.\n" );
 
+  setLayout( new QVBoxLayout() );
+  layout()->setSpacing(5);
+  layout()->setMargin(5);
+  
   GridLayout* grid_layout = new GridLayout();
   grid_layout->setSpacing(5);
-  grid_layout->setMargin(5);
+  grid_layout->setMargin(0);
   grid_layout->setMaxCount(2);
-  setLayout( grid_layout );
+  layout()->addItem( grid_layout );
   
   // file editor
   grid_layout->addWidget( new QLabel( "File: ", this ) );
@@ -80,14 +84,20 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
   base_indentation_spinbox_->setMinimum(0);
   base_indentation_spinbox_->setValue(0);
   
+  // flags
+  
   // default
-  grid_layout->addWidget( default_checkbox_ = new QCheckBox( "Default", this ) );
+  layout()->addWidget( default_checkbox_ = new QCheckBox( "Default", this ) );
   default_checkbox_->setToolTip( "use this document class when no other is found that match a given file" );
   default_checkbox_->setChecked( false );
 
   // wrap mode
-  grid_layout->addWidget( wrap_checkbox_ = new QCheckBox( "Wrap", this ) );
+  layout()->addWidget( wrap_checkbox_ = new QCheckBox( "Wrap", this ) );
   wrap_checkbox_->setChecked( false );
+
+  // wrap mode
+  layout()->addWidget( tab_emulation_checkbox_ = new QCheckBox( "Emulate tabs", this ) );
+  tab_emulation_checkbox_->setChecked( false );
 
 }
 
@@ -118,7 +128,8 @@ void DocumentClassConfiguration::setDocumentClass( const DocumentClass& document
   // flags
   default_checkbox_->setChecked( document_class.isDefault() );
   wrap_checkbox_->setChecked( document_class.wrap() );
-   
+  tab_emulation_checkbox_->setChecked( document_class.wrap() );
+  
 }
   
 //_________________________________________________________________________
@@ -131,6 +142,7 @@ DocumentClass DocumentClassConfiguration::documentClass( void )
   document_class_.setFirstLineMatchingPattern( first_line_pattern_editor_->text() );
   document_class_.setBaseIndentation( base_indentation_spinbox_->value() );
   document_class_.setWrap( wrap_checkbox_->isChecked() );
+  document_class_.setEmulateTabs( tab_emulation_checkbox_->isChecked() );
   document_class_.setIsDefault( default_checkbox_->isChecked() );
   return document_class_;
 }

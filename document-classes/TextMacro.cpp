@@ -169,7 +169,6 @@ bool TextMacro::Rule::processText( QString& text ) const
     QStringList lines( text.split( '\n' ) );
           
     // process each line
-    /* note: the index is incremented in the loop to check for the last line */
     ostringstream what;
     for( QStringList::iterator iter = lines.begin(); iter != lines.end(); iter++ )
     { iter->replace( pattern_, replace_text_ ); }

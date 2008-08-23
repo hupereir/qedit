@@ -1003,6 +1003,11 @@ void TextDisplay::updateDocumentClass( void )
 
   // wrap mode
   if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
+  if( XmlOptions::get().get<bool>( "EMULATE_TABS_FROM_CLASS" ) ) tabEmulationAction().setChecked( document_class.emulateTabs() );
+
+	// need to update tab size here because at the time it was set in _updateConfiguration,
+	// the font might not have been right
+	 _setTabSize( XmlOptions::get().get<int>("TAB_SIZE") );
 
   // enable actions consequently
   parenthesisHighlightAction().setVisible( !document_class.parenthesis().empty() );

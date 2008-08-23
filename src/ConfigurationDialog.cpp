@@ -115,6 +115,10 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   checkbox->setToolTip( "Use wrap mode read from document class in place of the one specified in the default configuration." );
   addOptionWidget( checkbox );
 
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "use document class tab emulation mode", box, "EMULATE_TABS_FROM_CLASS" ) );
+  checkbox->setToolTip( "Use tab emulation mode read from document class in place of the one specified in the default configuration." );
+  addOptionWidget( checkbox );
+
   // edition
   page = &addPage( "Edition" );
   textEditConfiguration( page ); 

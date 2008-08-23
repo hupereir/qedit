@@ -112,8 +112,8 @@ void RecentFilesFrame::enterEvent( QEvent* e )
 //____________________________________________
 void RecentFilesFrame::showEvent( QShowEvent* )
 {
-  Debug::Throw( "RecentFilesFrame::showEvent.\n" );
-  _update();
+  // Debug::Throw( "RecentFilesFrame::showEvent.\n" );
+  // _update();
 }
 
 //______________________________________________________________________
@@ -151,7 +151,7 @@ void RecentFilesFrame::_update( void )
   Debug::Throw( "RecentFilesFrame:_update.\n" ); 
  
   // check visibility
-  if( !isVisible() ) return;
+  // if( !isVisible() ) return;
  
   // update records
   _model().update( _recentFiles().records() );

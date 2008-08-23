@@ -1,6 +1,6 @@
 <!-- $Id$-->
 <patterns>
- <class name="html" pattern="\.(html?)$" first_line_pattern="^\s*XML_LT\!DOCTYPE\s*HTML" icon="text-html.png" > 
+ <class name="html" pattern="\.(html?)$" first_line_pattern="^\s*XML_LT\!DOCTYPE\s*HTML" options="emulate_tabs" icon="text-html.png" > 
   <!-- highlight styles -->
   <style format="0" name="Preprocessor" color="#ff00ff" />
   <style format="0" name="Preprocessor2" color="#aa00aa" />
