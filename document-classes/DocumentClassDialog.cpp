@@ -96,6 +96,11 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
   
   Debug::Throw( "DocumentClassDialog::setDocumentClass.\n" );
   
+  // set window title
+  ostringstream what;
+  what << "Document class: " << qPrintable( document_class.name() );
+  setWindowTitle( what.str().c_str() );
+  
   // configuration
   document_class_configuration_->setDocumentClass( document_class );
       
