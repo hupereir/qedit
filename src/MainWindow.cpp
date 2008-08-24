@@ -290,7 +290,6 @@ bool MainWindow::selectDisplay( const File& file )
     if( (*iter)->selectDisplay( file ) ) 
     {
       // make sure selected view is visible
-      // and update everything if not
       if( _stack().currentWidget() != *iter )
       { setActiveView( **iter ); }
       return true; 

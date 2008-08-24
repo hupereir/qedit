@@ -77,6 +77,10 @@
  <!-- parenthesis -->
  <parenthesis begin="(" end=")" regexp="\(|\)" />
 
+ <!-- block delimiters -->
+ <block_delimiter begin="then" end="end" regexp="(then)|(end\s*if)"/>
+ <block_delimiter begin=" do " end="end" regexp="(do )|(end\s*do)"/>
+
  <!-- indentation rules -->
  
  <indent_pattern name="Line Continued" type="0">

@@ -425,7 +425,7 @@ void Menu::_updateWindowsMenu( void )
       
   // retrieve all files
   bool first = true;
-  FileRecord::List records( static_cast<Application*>(qApp)->windowServer().files() );
+  FileRecord::List records( static_cast<Application*>(qApp)->windowServer().records() );
   for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
   { 
     

@@ -937,8 +937,7 @@ CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& firs
 void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect, const bool& collapsed ) const
 {
   
-  bool use_base_style = true;
-  
+  bool use_base_style = false;
   if( use_base_style )
   {
     

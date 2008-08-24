@@ -147,15 +147,15 @@ void SessionFilesFrame::_update( void )
   Debug::Throw( "SessionFilesFrame:_update.\n" ); 
  
   // store in model
-  FileRecord::List files( static_cast< Application*>( qApp )->windowServer().files( false, window() ) );
-  _model().update( files );
+  FileRecord::List records( static_cast< Application*>( qApp )->windowServer().records( false, window() ) );
+  _model().update( records );
 
   // resize columns
   list().resizeColumns();
 
   // make sure selected record appear selected in list
-  FileRecord::List::const_iterator iter = find_if( files.begin(), files.end(), FileRecord::HasFlagFTor( FileRecordProperties::SELECTED ) );
-  if( iter != files.end() ) selectFile( iter->file() );  
+  FileRecord::List::const_iterator iter = find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::SELECTED ) );
+  if( iter != records.end() ) selectFile( iter->file() );  
   
   Debug::Throw( "SessionFilesFrame:_update - done.\n" ); 
 

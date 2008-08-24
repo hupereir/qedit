@@ -35,7 +35,6 @@
 #include <map>
 #include <QAction>
 #include <QPaintEvent>
-#include <QShowEvent>
 
 #include "Counter.h"
 #include "FileRecordModel.h"
@@ -88,9 +87,6 @@ class RecentFilesFrame: public QWidget, public Counter
   //! enter event
   void enterEvent( QEvent* );
   
-  //! show event
-  virtual void showEvent( QShowEvent* );
- 
   //! recent files
   FileList& _recentFiles( void ) const
   { 

@@ -70,7 +70,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
 
   // retrieve file records
-  model_.set( static_cast< Application*>( qApp )->windowServer().files() );
+  model_.set( static_cast< Application*>( qApp )->windowServer().records() );
   
   // mask
   unsigned int mask( 

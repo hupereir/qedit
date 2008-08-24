@@ -1811,12 +1811,17 @@ void TextDisplay::_toggleShowBlockDelimiters( bool state )
     
   _updateMargins();
   
+  // need to expand all blocks if block delimiters is being hidden
+  if( !state && hasBlockDelimiterDisplay() && blockDelimiterDisplay().expandAllAction().isEnabled() )
+  { blockDelimiterDisplay().expandAllAction().trigger(); }
+  
   // update options
   XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", state );
 
   // propagate to other displays
   if( isSynchronized() )
   {
+    
     // temporarely disable synchronization
     // to avoid infinite loop
     setSynchronized( false );

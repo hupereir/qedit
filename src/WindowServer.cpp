@@ -119,13 +119,13 @@ MainWindow& WindowServer::newMainWindow( void )
 }
 
 //______________________________________________________
-FileRecord::List WindowServer::files( bool modified_only, QWidget* window ) const
+FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) const
 { 
   
-  Debug::Throw( "WindowServer::files.\n" );
+  Debug::Throw( "WindowServer::records.\n" );
   
   // output
-  FileRecord::List files;
+  FileRecord::List records;
   
   // get associated main windows
   Application& application( *static_cast<Application*>( qApp ) );
@@ -162,16 +162,16 @@ FileRecord::List WindowServer::files( bool modified_only, QWidget* window ) cons
       }
       
       // assign flags and store
-      files.push_back( record.setFlags( flags ) );
+      records.push_back( record.setFlags( flags ) );
         
     }
     
   }
   
-  sort( files.begin(), files.end(), FileRecord::FileFTor() );
-  files.erase( unique( files.begin(), files.end(), FileRecord::SameFileFTor() ), files.end() );
-  Debug::Throw( "WindowServer::files - done.\n" );
-  return files;
+  sort( records.begin(), records.end(), FileRecord::FileFTor() );
+  records.erase( unique( records.begin(), records.end(), FileRecord::SameFileFTor() ), records.end() );
+  Debug::Throw( "WindowServer::records - done.\n" );
+  return records;
   
 }
 
@@ -405,7 +405,7 @@ void WindowServer::_updateActions( void )
 {
   
   Debug::Throw( "WindowServer::_updateActions.\n" );
-  saveAllAction().setEnabled( !files( true ).empty() );
+  saveAllAction().setEnabled( !records( true ).empty() );
 
 }
 
@@ -707,7 +707,7 @@ void WindowServer::_detach( void )
 void WindowServer::_saveAll( void )
 {
   Debug::Throw( "WindowServer::_saveAll.\n" );
-  _save( files( true ) ); 
+  _save( records( true ) ); 
   return;
   
 }
@@ -826,7 +826,7 @@ bool WindowServer::_createNewFile( const FileRecord& record )
   
   // create NewFileDialog
   int buttons( NewFileDialog::CREATE | NewFileDialog::CANCEL );
-  if( BASE::KeySet<MainWindow>(this).size() == 1 ) buttons |= NewFileDialog::EXIT;
+  if( records().empty() ) buttons |= NewFileDialog::EXIT;
     
   NewFileDialog dialog( &_activeWindow(), record.file(), buttons );
   QtUtil::centerOnParent( &dialog );

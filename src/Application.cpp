@@ -323,12 +323,12 @@ void Application::_exit( void )
   Debug::Throw( "Application::_exit.\n" );
 
   // retrieve opened files
-  FileRecord::List files( windowServer().files() );
+  FileRecord::List records( windowServer().records() );
   
   // ask for confirmation if more than one file is opened.
-  if( files.size() > 1 )
+  if( records.size() > 1 )
   {
-    ExitDialog dialog( activeWindow(), files );
+    ExitDialog dialog( activeWindow(), records );
     QtUtil::centerOnParent( &dialog );
     if( !dialog.exec() ) return;
   }
