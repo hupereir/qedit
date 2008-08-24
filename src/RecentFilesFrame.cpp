@@ -78,11 +78,12 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions() ) );
   
   // connections
-  connect( &_model(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
-  connect( &_model(), SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
+  // connect( &_model(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
+  // connect( &_model(), SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
   connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
 
   connect( list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
+  connect( list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _checkSelection() ) );
   connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
 
   connect( &_recentFiles(), SIGNAL( validFilesChecked( void ) ), SLOT( _update( void ) ) );
@@ -96,6 +97,22 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
 //______________________________________________________________________
 RecentFilesFrame::~RecentFilesFrame( void )
 { Debug::Throw( "RecentFilesFrame::~RecentFilesFrame.\n" ); }
+
+//____________________________________________
+void RecentFilesFrame::selectFile( const File& file )
+{
+  Debug::Throw() << "RecentFilesFrame::selectFile - file: " << file << ".\n";
+   
+  // find model index that match the file
+  QModelIndex index( _model().index( FileRecord( file ) ) );
+  
+  // check if index is valid and not selected
+  if( ( !index.isValid() ) || list().selectionModel()->isSelected( index ) ) return;
+  
+  // select found index but disable the selection changed callback
+  list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+  
+}
 
 //____________________________________________
 void RecentFilesFrame::enterEvent( QEvent* e )
@@ -162,6 +179,17 @@ void RecentFilesFrame::_updateActions( void )
   
   bool has_valid_selection( find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
   _openAction().setEnabled( has_valid_selection );
+  
+}
+
+//______________________________________________________________________
+void RecentFilesFrame::_checkSelection( void )
+{ 
+  Debug::Throw( "RecentFilesFrame:_checkSelection.\n" );
+    
+  QList<QModelIndex> selection( list().selectionModel()->selectedRows() );
+  if( selection.isEmpty() ) return;
+  emit fileSelected( model_.get( selection.back() ) );
   
 }
 

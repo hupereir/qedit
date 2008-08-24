@@ -106,8 +106,10 @@ class NavigationToolBar: public CustomToolBar
       
   //! stack widget
   NavigationFrame* navigation_frame_;
-
-  //@}
+  
+  //! enablility
+  /*! this is used to avoid circular action triggers */
+  bool enabled_;
   
 };
 

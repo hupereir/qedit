@@ -64,6 +64,7 @@
 #include "PixmapEngine.h"
 #include "PrintDialog.h"
 #include "QtUtil.h"
+#include "RecentFilesFrame.h"
 #include "ReplaceDialog.h"
 #include "SelectLineDialog.h"
 #include "SessionFilesFrame.h"
@@ -124,6 +125,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   // to enable shortcut event if the frame is hidden
   addAction( &navigationFrame().visibilityAction() );
   connect( &navigationFrame().sessionFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
+  connect( &navigationFrame().recentFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
   
   // insert stack widget
   splitter->addWidget( stack_ = new QStackedWidget(0) );
@@ -768,6 +770,7 @@ void MainWindow::_update( unsigned int flags )
     if( navigation_frame_ )
     { 
       navigationFrame().sessionFilesFrame().selectFile( activeDisplay().file() ); 
+      navigationFrame().recentFilesFrame().selectFile( activeDisplay().file() ); 
       navigationFrame().fileSystemFrame().setHome( activeDisplay().workingDirectory() );
     }
     

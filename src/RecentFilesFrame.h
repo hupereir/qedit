@@ -68,6 +68,9 @@ class RecentFilesFrame: public QWidget, public Counter
     return *list_;
   }
 
+  //! select file in list
+  void selectFile( const File& );
+
   //!@name actions
   //@{
   
@@ -78,6 +81,9 @@ class RecentFilesFrame: public QWidget, public Counter
   //@}
   
   signals:
+
+  //! signal emitted when a file is selected
+  void fileSelected( FileRecord );  
 
   //! signal emited when a file is selected
   void fileActivated( FileRecord );  
@@ -108,6 +114,9 @@ class RecentFilesFrame: public QWidget, public Counter
 
   //! update action
   void _updateActions( void );
+ 
+  //! check file selection
+  void _checkSelection( void );
  
   //! clean
   void _clean( void );

@@ -52,7 +52,8 @@ using namespace std;
 //_______________________________________________________________
 NavigationToolBar::NavigationToolBar( QWidget* parent ):
   CustomToolBar( "side bar", parent, "NAVIGATION_SIDEBAR" ),
-  navigation_frame_( 0 )
+  navigation_frame_( 0 ),
+  enabled_( true )
 { 
   Debug::Throw( "NavigationToolBar:NavigationToolBar.\n" ); 
   setContextMenuPolicy( Qt::CustomContextMenu );  
@@ -208,10 +209,13 @@ void NavigationToolBar::_orientationChanged( Qt::Orientation orientation )
 void NavigationToolBar::_display( QAbstractButton* button )
 {  
   
-  Debug::Throw() << "NavigationToolBar:_display - checked: " << button->isChecked() << endl;
-  bool state( button->isChecked() );
+  Debug::Throw( "NavigationToolBar:_display.\n" );
+  
+  if( !enabled_ ) return;
+  enabled_ = false;
   
   // retrieve widget in map
+  bool state( button->isChecked() );
   QWidget* widget (0);
   for( ButtonMap::iterator iter = buttons_.begin(); iter != buttons_.end(); iter++ )
   { 
@@ -232,10 +236,11 @@ void NavigationToolBar::_display( QAbstractButton* button )
   } else if( widget == _navigationFrame().currentWidget() ) {
     
     _navigationFrame().visibilityAction().setChecked( false );
-    return;
     
   }
   
+  enabled_ = true;
+  return;
   
 }
 
