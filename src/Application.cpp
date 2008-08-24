@@ -269,9 +269,8 @@ void Application::_configuration( void )
   emit saveConfiguration();
   ConfigurationDialog dialog( 0 );
   connect( &dialog, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-  QtUtil::centerOnWidget( &dialog, activeWindow() );
-  dialog.exec();
-  Debug::Throw( "Application::configuration - done.\n" );
+  dialog.move( QtUtil::centerOnWidget( dialog.sizeHint(), activeWindow() ) );
+  dialog.show();
 }
 
 //___________________________________________________________ 
