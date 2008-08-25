@@ -93,7 +93,19 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   { return *save_all_action_; }
 
   //@}
-  
+    
+  //! open mode
+  enum OpenMode
+  {
+    
+    // single stacked window
+    ACTIVE_WINDOW,
+    
+    // multiple windows
+    NEW_WINDOW
+    
+  };
+
   signals:
   
   //! emmited whenever the session file list is modified
@@ -119,7 +131,8 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   //@{
 
   //! new file
-  void _newFile( void );
+  void _newFile( void )
+  { _newFile( _openMode() ); }
 
   //! new file
   void _newFile( Qt::Orientation );
@@ -134,8 +147,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   { return _open( _selectFileFromDialog() ); }
 
   //! open file
-  bool _open( FileRecord );
-
+  bool _open( FileRecord record )
+  { return _open( record, _openMode() ); }
+  
   //! open in active view
   bool _openHorizontal( void )
   { return _open( _selectFileFromDialog(), Qt::Vertical ); }
@@ -161,6 +175,12 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   
   private:
     
+  //! new file
+  void _newFile( OpenMode );
+
+  //! open file
+  bool _open( FileRecord, OpenMode );
+
   //! open file
   bool _open( FileRecord, Qt::Orientation );
 
@@ -190,18 +210,6 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   //! active window
   const MainWindow& _activeWindow( void ) const
   { return *active_window_; }
-
-  //! open mode
-  enum OpenMode
-  {
-    
-    // single stacked window
-    ACTIVE_WINDOW,
-    
-    // multiple windows
-    NEW_WINDOW
-    
-  };
   
   //! open mode
   const OpenMode& _openMode( void ) const

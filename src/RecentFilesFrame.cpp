@@ -75,15 +75,13 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   list().menu().addAction( &_openAction() );
   list().menu().addSeparator();
   list().menu().addAction( &_cleanAction() );
-  connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions() ) );
+  connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions( void ) ) );
   
   // connections
-  // connect( &_model(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
-  // connect( &_model(), SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
   connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
 
   connect( list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
-  connect( list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _checkSelection() ) );
+  connect( list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _checkSelection( void ) ) );
   connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
 
   connect( &_recentFiles(), SIGNAL( validFilesChecked( void ) ), SLOT( _update( void ) ) );
@@ -175,7 +173,7 @@ void RecentFilesFrame::_update( void )
 void RecentFilesFrame::_updateActions( void )
 { 
   Debug::Throw( "RecentFilesFrame:_updateActions.\n" );
-  FileRecordModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
+  FileRecordModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
   
   bool has_valid_selection( find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
   _openAction().setEnabled( has_valid_selection );
@@ -189,7 +187,7 @@ void RecentFilesFrame::_checkSelection( void )
     
   QList<QModelIndex> selection( list().selectionModel()->selectedRows() );
   if( selection.isEmpty() ) return;
-  emit fileSelected( model_.get( selection.back() ) );
+  emit fileSelected( _model().get( selection.back() ) );
   
 }
 
@@ -209,7 +207,7 @@ void RecentFilesFrame::_open( void )
 { 
   
   Debug::Throw( "RecentFilesFrame:_open.\n" ); 
-  FileRecordModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
+  FileRecordModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
   FileRecordModel::List valid_selection;
   for( FileRecordModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
   { if( iter->isValid() ) valid_selection.push_back( *iter ); }
@@ -259,46 +257,4 @@ void RecentFilesFrame::_itemSelected( const QModelIndex& index )
   Debug::Throw( "RecentFilesFrame::_itemSelected.\n" );
   if( !index.isValid() ) return;
   emit fileActivated( _model().get( index ) );
-}
-
-//______________________________________________________________________
-void RecentFilesFrame::_storeSelection( void )
-{ 
-  Debug::Throw( "RecentFilesFrame::_storeSelection.\n" ); 
-
-  // clear
-  _model().clearSelectedIndexes();
-  
-  // retrieve selected indexes in list
-  QModelIndexList selected_indexes( list().selectionModel()->selectedRows() );
-  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
-  { 
-    // check column
-    if( !iter->column() == 0 ) continue;
-    _model().setIndexSelected( *iter, true ); 
-  }
-
-  return;
-  
-}
-
-//______________________________________________________________________
-void RecentFilesFrame::_restoreSelection( void )
-{ 
-  
-  Debug::Throw( "RecentFilesFrame::_restoreSelection.\n" ); 
-
-  // retrieve indexes
-  QModelIndexList selected_indexes( _model().selectedIndexes() );
-  if( selected_indexes.empty() ) list().selectionModel()->clear();
-  else {
-    
-    list().selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
-    { list().selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
-  
-  }
-  
-  return;
-  
 }

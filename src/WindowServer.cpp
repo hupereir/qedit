@@ -328,8 +328,13 @@ void WindowServer::readFilesFromArguments( ArgList args )
     for( list< string >::const_iterator iter = files.begin(); iter != files.end(); iter++ )
     { 
       
-      if( file_opened |= _open( File( *iter ).expand() ) )
-      { _applyArguments( _activeWindow().activeDisplay(), args ); }
+      OpenMode mode( _openMode() );
+      if( args.find( "--same-window" ) ) mode = ACTIVE_WINDOW;
+      else if( args.find( "--new-window" ) ) mode = NEW_WINDOW;
+      
+      bool opened = _open( File( *iter ).expand(), mode );
+      if( opened ) { _applyArguments( _activeWindow().activeDisplay(), args ); }
+      file_opened |= opened;
       
     }
      
@@ -410,7 +415,7 @@ void WindowServer::_updateActions( void )
 }
 
 //_______________________________________________
-void WindowServer::_newFile( void )
+void WindowServer::_newFile( WindowServer::OpenMode mode )
 {
   
   Debug::Throw( "WindowServer::_newFile.\n" );
@@ -439,7 +444,7 @@ void WindowServer::_newFile( void )
   // if no window found, create a new one
   if( !view ) {
     
-    if( _openMode() == NEW_WINDOW )
+    if( mode == NEW_WINDOW )
     {
       
       MainWindow &window( newMainWindow() );
@@ -484,7 +489,7 @@ void WindowServer::_newFile( Qt::Orientation orientation )
 }
   
 //_______________________________________________
-bool WindowServer::_open( FileRecord record )
+bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
 {
   
   Debug::Throw() << "WindowServer::_open - file: " << record.file() << "." << endl;
@@ -542,7 +547,7 @@ bool WindowServer::_open( FileRecord record )
   // if no window found, create a new one
   if( !view ) {
     
-    if( _openMode() == NEW_WINDOW )
+    if( mode == NEW_WINDOW )
     {
       
       MainWindow &window( newMainWindow() );

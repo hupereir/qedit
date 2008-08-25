@@ -1127,7 +1127,7 @@ void TextDisplay::processMacro( QString name )
   setTextCursor( cursor );
 
   // replace leading tabs in selection
-  _replaceLeadingTabs( false );
+  if( !_hasTabEmulation() ) { _replaceLeadingTabs( false ); }
 
   return;
 

@@ -66,6 +66,8 @@ void Application::usage( void )
   cout << "Options : " << endl;
   cout << "  --help\t\t displays this help and exit" << endl;
   cout << "  --tabbed\t\t opens files in same window" << endl;
+  cout << "  --same-window\t\t open files in same window" << endl;
+  cout << "  --new-window\t\t open files in a new window" << endl;
   cout << "  --diff\t\t opens files in same window and perform diff" << endl;
   cout << "  --autospell\t\t switch autospell on for all files" << endl;
   cout << "  --filter <filter>\t select filter for autospell" << endl;

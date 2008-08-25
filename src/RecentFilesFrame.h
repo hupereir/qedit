@@ -127,17 +127,6 @@ class RecentFilesFrame: public QWidget, public Counter
   //! sessionFilesItem selected
   void _itemSelected( const QModelIndex& index );
 
-  //!@name selections
-  //@{
-
-  //! restore selection
-  void _storeSelection( void );
-  
-  //! store selection
-  void _restoreSelection( void );
-
-  //@}
-
   //! session files sort order
   void _storeSortMethod( int, Qt::SortOrder );
     
