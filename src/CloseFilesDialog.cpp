@@ -22,7 +22,7 @@
 *******************************************************************************/
  
 /*!
-  \file ExitDialog.cpp
+  \file CloseFilesDialog.cpp
   \brief used to exit the application
   \author Hugo Pereira
   \version $Revision$
@@ -35,16 +35,16 @@
 #include "Icons.h"
 #include "PixmapEngine.h"
 #include "Debug.h"
-#include "ExitDialog.h"
+#include "CloseFilesDialog.h"
 
 using namespace std;
 
 //__________________________________________________
-ExitDialog::ExitDialog( QWidget* parent, FileRecord::List files ):
+CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
   CustomDialog( parent, OK_BUTTON | CANCEL_BUTTON )
 {
   
-  Debug::Throw( "ExitDialog::ExitDialog.\n" );
+  Debug::Throw( "CloseFilesDialog::CloseFilesDialog.\n" );
 
   QHBoxLayout *h_layout( new QHBoxLayout() );
   h_layout->setSpacing(5); 

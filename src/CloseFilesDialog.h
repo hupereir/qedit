@@ -1,6 +1,6 @@
 // $Id$
-#ifndef _ExitDialog_h_
-#define _ExitDialog_h_
+#ifndef _CloseFilesDialog_h_
+#define _CloseFilesDialog_h_
 
 /******************************************************************************
 *
@@ -24,7 +24,7 @@
 *******************************************************************************/
 
 /*!
-  \file ExitDialog.h
+  \file CloseFilesDialog.h
   \brief QDialog used to exit application
   \author Hugo Pereira
   \version $Revision$
@@ -39,13 +39,13 @@
 #include "FileRecord.h"
 
 //! QDialog used to ask if a new file should be created
-class ExitDialog: public CustomDialog
+class CloseFilesDialog: public CustomDialog
 {
 
   public:
 
   //! constructor
-  ExitDialog( QWidget*, FileRecord::List );
+  CloseFilesDialog( QWidget*, FileRecord::List );
 
 };
 

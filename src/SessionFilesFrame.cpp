@@ -63,6 +63,7 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   // list
   layout()->addWidget( list_ = new TreeView( this ) );
   list().setModel( &_model() );
+  list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
   list().setMaskOptionName( "SESSION_FILES_MASK" );
   list().header()->hide();
   
@@ -103,11 +104,13 @@ void SessionFilesFrame::selectFile( const File& file )
   QModelIndex index( _model().index( FileRecord( file ) ) );
   
   // check if index is valid and not selected
-  if( ( !index.isValid() ) || list().selectionModel()->isSelected( index ) ) return;
+  // if( ( !index.isValid() ) || list().selectionModel()->isSelected( index ) ) return;
+  if( ( !index.isValid() ) || (index == list().selectionModel()->currentIndex() ) ) return;
   
   // select found index but disable the selection changed callback
   list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  
+  list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
+ 
 }
 
 //______________________________________________________________________
