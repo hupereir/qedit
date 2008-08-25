@@ -114,10 +114,7 @@ class RecentFilesFrame: public QWidget, public Counter
 
   //! update action
   void _updateActions( void );
- 
-  //! check file selection
-  void _checkSelection( void );
- 
+  
   //! clean
   void _clean( void );
   
@@ -126,6 +123,9 @@ class RecentFilesFrame: public QWidget, public Counter
   
   //! sessionFilesItem selected
   void _itemSelected( const QModelIndex& index );
+
+  //! sessionFilesItem selected
+  void _itemActivated( const QModelIndex& index );
 
   //! session files sort order
   void _storeSortMethod( int, Qt::SortOrder );

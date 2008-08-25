@@ -81,8 +81,8 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
 
   connect( list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
-  connect( list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _checkSelection( void ) ) );
-  connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
+  connect( list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
+  connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
 
   connect( &_recentFiles(), SIGNAL( validFilesChecked( void ) ), SLOT( _update( void ) ) );
   
@@ -181,17 +181,6 @@ void RecentFilesFrame::_updateActions( void )
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_checkSelection( void )
-{ 
-  Debug::Throw( "RecentFilesFrame:_checkSelection.\n" );
-    
-  QList<QModelIndex> selection( list().selectionModel()->selectedRows() );
-  if( selection.isEmpty() ) return;
-  emit fileSelected( _model().get( selection.back() ) );
-  
-}
-
-//______________________________________________________________________
 void RecentFilesFrame::_clean( void )
 { 
   
@@ -229,6 +218,24 @@ void RecentFilesFrame::_storeSortMethod( int column, Qt::SortOrder order )
 }
 
 //______________________________________________________________________
+void RecentFilesFrame::_itemSelected( const QModelIndex& index )
+{ 
+  
+  Debug::Throw( "RecentFilesFrame::_itemSelected.\n" );
+  if( !index.isValid() ) return;  
+  emit fileSelected( model_.get( index ) );
+  
+}
+
+//______________________________________________________________________
+void RecentFilesFrame::_itemActivated( const QModelIndex& index )
+{ 
+  Debug::Throw( "RecentFilesFrame::_itemActivated.\n" );
+  if( !index.isValid() ) return;
+  emit fileActivated( _model().get( index ) );
+}
+
+//______________________________________________________________________
 void RecentFilesFrame::_installActions( void )
 {
   
@@ -249,12 +256,4 @@ void RecentFilesFrame::_installActions( void )
   connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
   _openAction().setToolTip( "Show selected files" );
   
-}
-
-//______________________________________________________________________
-void RecentFilesFrame::_itemSelected( const QModelIndex& index )
-{ 
-  Debug::Throw( "RecentFilesFrame::_itemSelected.\n" );
-  if( !index.isValid() ) return;
-  emit fileActivated( _model().get( index ) );
 }

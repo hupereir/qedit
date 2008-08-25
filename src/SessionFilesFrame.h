@@ -110,9 +110,6 @@ class SessionFilesFrame: public QWidget, public Counter
   //! update session files
   void _updateActions( void );
   
-  //! check file selection
-  void _checkSelection( void );
-  
   //! open
   void _open( void );
 
@@ -122,6 +119,9 @@ class SessionFilesFrame: public QWidget, public Counter
   //! close
   void _close( void );
   
+  //! sessionFilesItem selected
+  void _itemSelected( const QModelIndex& index );
+
   //! sessionFilesItem selected
   void _itemActivated( const QModelIndex& index );
 

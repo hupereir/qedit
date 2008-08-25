@@ -79,7 +79,7 @@ ExitDialog::ExitDialog( QWidget* parent, FileRecord::List files ):
     
   }
     
-  what << endl << "Exit QEdit ?";
+  what << endl << "Close ?";
   h_layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter );
 
   // rename buttons

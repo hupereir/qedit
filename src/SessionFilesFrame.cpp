@@ -80,8 +80,7 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   
   // connections
   connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
-  connect( list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _checkSelection() ) );
-
+  connect( list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
   connect( list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
   connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
  
@@ -177,17 +176,6 @@ void SessionFilesFrame::_updateActions( void )
 }
 
 //______________________________________________________________________
-void SessionFilesFrame::_checkSelection( void )
-{ 
-  Debug::Throw( "SessionFilesFrame:_checkSelection.\n" );
-    
-  QList<QModelIndex> selection( list().selectionModel()->selectedRows() );
-  if( selection.isEmpty() ) return;
-  emit fileSelected( model_.get( selection.back() ) );
-  
-}
-
-//______________________________________________________________________
 void SessionFilesFrame::_open( void )
 { 
   
@@ -236,6 +224,24 @@ void SessionFilesFrame::_storeSortMethod( int column, Qt::SortOrder order )
 }
 
 //______________________________________________________________________
+void SessionFilesFrame::_itemSelected( const QModelIndex& index )
+{ 
+
+  Debug::Throw( "SessionFilesFrame::_itemSelected.\n" );
+  if( !index.isValid() ) return;
+  emit fileSelected( model_.get( index ) );
+
+}
+
+//______________________________________________________________________
+void SessionFilesFrame::_itemActivated( const QModelIndex& index )
+{ 
+  Debug::Throw( "SessionFilesFrame::_itemActivated.\n" );
+  if( !index.isValid() ) return;
+  emit fileActivated( _model().get( index ) );
+}
+
+//______________________________________________________________________
 void SessionFilesFrame::_installActions( void )
 {
   
@@ -260,12 +266,4 @@ void SessionFilesFrame::_installActions( void )
   connect( &_closeAction(), SIGNAL( triggered() ), SLOT( _close() ) );
   _closeAction().setToolTip( "Close selected files" );
 
-}
-
-//______________________________________________________________________
-void SessionFilesFrame::_itemActivated( const QModelIndex& index )
-{ 
-  Debug::Throw( "SessionFilesFrame::_itemActivated.\n" );
-  if( !index.isValid() ) return;
-  emit fileActivated( _model().get( index ) );
 }

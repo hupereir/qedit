@@ -39,7 +39,6 @@ HEADERS = \
   BlockDelimiterSegment.h \
   BlockDelimiterDisplay.h \
   BlockMarker.h \
-  CloseAllDialog.h \
   CollapsedBlockData.h \
   ConfigurationDialog.h \
   Diff.h \
@@ -84,7 +83,6 @@ SOURCES = \
   AutoSave.cpp \
   AutoSaveThread.cpp \
   BlockDelimiterDisplay.cpp \
-  CloseAllDialog.cpp \
   CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \

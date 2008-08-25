@@ -38,7 +38,6 @@
 #include "DocumentClassManager.h"
 #include "DocumentClassManagerDialog.h"
 #include "ErrorHandler.h"
-#include "ExitDialog.h"
 #include "FlatStyle.h"
 #include "IconEngine.h"
 #include "Icons.h"
@@ -323,19 +322,9 @@ void Application::_exit( void )
   
   Debug::Throw( "Application::_exit.\n" );
 
-  // retrieve opened files
-  FileRecord::List records( windowServer().records() );
-  
-  // ask for confirmation if more than one file is opened.
-  if( records.size() > 1 )
-  {
-    ExitDialog dialog( activeWindow(), records );
-    QtUtil::centerOnParent( &dialog );
-    if( !dialog.exec() ) return;
-  }
-  
   // try close all windows gracefully, and return if operation is canceled
   if( !windowServer().closeAllWindows() ) return;
+  
   quit();
 
 }
