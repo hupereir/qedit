@@ -96,9 +96,9 @@ SessionFilesFrame::~SessionFilesFrame( void )
 { Debug::Throw( "SessionFilesFrame::~SessionFilesFrame.\n" ); }
 
 //____________________________________________
-void SessionFilesFrame::selectFile( const File& file )
+void SessionFilesFrame::select( const File& file )
 {
-  Debug::Throw() << "SessionFilesFrame::selectFile - file: " << file << ".\n";
+  Debug::Throw() << "SessionFilesFrame::select - file: " << file << ".\n";
    
   // find model index that match the file
   QModelIndex index( _model().index( FileRecord( file ) ) );
@@ -156,7 +156,7 @@ void SessionFilesFrame::_update( void )
 
   // make sure selected record appear selected in list
   FileRecord::List::const_iterator iter = find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::SELECTED ) );
-  if( iter != records.end() ) selectFile( iter->file() );  
+  if( iter != records.end() ) select( iter->file() );  
   
   Debug::Throw( "SessionFilesFrame:_update - done.\n" ); 
 

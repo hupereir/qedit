@@ -771,8 +771,8 @@ void MainWindow::_update( unsigned int flags )
     // update session file frame
     if( navigation_frame_ )
     { 
-      navigationFrame().sessionFilesFrame().selectFile( activeDisplay().file() ); 
-      navigationFrame().recentFilesFrame().selectFile( activeDisplay().file() ); 
+      navigationFrame().sessionFilesFrame().select( activeDisplay().file() ); 
+      navigationFrame().recentFilesFrame().select( activeDisplay().file() ); 
       navigationFrame().fileSystemFrame().setHome( activeDisplay().workingDirectory() );
     }
     

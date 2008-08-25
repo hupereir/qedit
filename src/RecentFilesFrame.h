@@ -69,7 +69,7 @@ class RecentFilesFrame: public QWidget, public Counter
   }
 
   //! select file in list
-  void selectFile( const File& );
+  void select( const File& );
 
   //!@name actions
   //@{
