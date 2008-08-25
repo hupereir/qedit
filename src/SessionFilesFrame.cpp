@@ -50,7 +50,8 @@ using namespace std;
 //_______________________________________________________________
 SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   QWidget( parent ),
-  Counter( "SessionFilesFrame" )
+  Counter( "SessionFilesFrame" ),
+  enabled_( true )
 {
   
   Debug::Throw( "SessionFilesFrame:SessionFilesFrame.\n" );
@@ -98,8 +99,10 @@ SessionFilesFrame::~SessionFilesFrame( void )
 //____________________________________________
 void SessionFilesFrame::select( const File& file )
 {
+  if( !_enabled() ) return;
+
   Debug::Throw() << "SessionFilesFrame::select - file: " << file << ".\n";
-   
+  
   // find model index that match the file
   QModelIndex index( _model().index( FileRecord( file ) ) );
   
@@ -107,9 +110,11 @@ void SessionFilesFrame::select( const File& file )
   if( ( !index.isValid() ) || (index == list().selectionModel()->currentIndex() ) ) return;
   
   // select found index but disable the selection changed callback
+  _setEnabled( false );
   list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
   list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
- 
+  _setEnabled( true );
+  
 }
 
 //______________________________________________________________________
@@ -230,9 +235,12 @@ void SessionFilesFrame::_itemSelected( const QModelIndex& index )
 { 
 
   Debug::Throw( "SessionFilesFrame::_itemSelected.\n" );
-  if( !index.isValid() ) return;
+  if( !( index.isValid() && _enabled() ) ) return;
+  
+  _setEnabled( false );
   emit fileSelected( model_.get( index ) );
-
+  _setEnabled( true );
+  
 }
 
 //______________________________________________________________________

@@ -132,6 +132,9 @@ class RecentFilesFrame: public QWidget, public Counter
     
   private:
   
+  //!@name actions
+  //@{
+  
   //! install actions
   void _installActions( void );
    
@@ -142,7 +145,17 @@ class RecentFilesFrame: public QWidget, public Counter
   //! open action
   QAction& _openAction( void ) const
   { return *open_action_; }
+   
+  //@}
   
+  //! true when list selection updates are enabled
+  void _setEnabled( bool value )
+  { enabled_ = value; }
+  
+  //! true when list selection updates are enabled
+  bool _enabled( void ) const
+  { return enabled_; }
+ 
   //! recent files
   FileList* recent_files_;
   
@@ -151,6 +164,9 @@ class RecentFilesFrame: public QWidget, public Counter
   
   //! list
   TreeView* list_;
+  
+  //! true when list selection updates are enabled
+  bool enabled_;
   
   //@}
   

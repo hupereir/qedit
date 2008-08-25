@@ -50,7 +50,8 @@ using namespace std;
 RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   QWidget( parent ),
   Counter( "RecentFilesFrame" ),
-  recent_files_( &files )
+  recent_files_( &files ),
+  enabled_( true )
 {
   
   Debug::Throw( "RecentFilesFrame:RecentFilesFrame.\n" );
@@ -97,9 +98,12 @@ RecentFilesFrame::~RecentFilesFrame( void )
 { Debug::Throw( "RecentFilesFrame::~RecentFilesFrame.\n" ); }
 
 //____________________________________________
-void RecentFilesFrame::selectFile( const File& file )
+void RecentFilesFrame::select( const File& file )
 {
-  Debug::Throw() << "RecentFilesFrame::selectFile - file: " << file << ".\n";
+  
+  if( !enabled_ ) return;
+  
+  Debug::Throw() << "RecentFilesFrame::select - file: " << file << ".\n";
    
   // find model index that match the file
   QModelIndex index( _model().index( FileRecord( file ) ) );
@@ -108,8 +112,10 @@ void RecentFilesFrame::selectFile( const File& file )
   if( ( !index.isValid() ) || (index == list().selectionModel()->currentIndex() ) ) return;
 
   // select found index but disable the selection changed callback
+  enabled_ = false;
   list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
   list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
+  enabled_ = true;
   
 }
 
@@ -232,8 +238,12 @@ void RecentFilesFrame::_itemSelected( const QModelIndex& index )
 void RecentFilesFrame::_itemActivated( const QModelIndex& index )
 { 
   Debug::Throw( "RecentFilesFrame::_itemActivated.\n" );
-  if( !index.isValid() ) return;
+  if( !( index.isValid() && _enabled() ) ) return;
+  
+  _setEnabled( false );
   emit fileActivated( _model().get( index ) );
+  _setEnabled( true );
+  
 }
 
 //______________________________________________________________________

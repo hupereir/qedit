@@ -132,7 +132,7 @@ class SessionFilesFrame: public QWidget, public Counter
   
   //! install actions
   void _installActions( void );
-
+  
   //!@name actions
   //@{
   
@@ -149,13 +149,24 @@ class SessionFilesFrame: public QWidget, public Counter
   { return *close_action_; }
   
   //@}
- 
+  
+  //! true when list selection updates are enabled
+  void _setEnabled( bool value )
+  { enabled_ = value; }
+  
+  //! true when list selection updates are enabled
+  bool _enabled( void ) const
+  { return enabled_; }
+  
   //! model
   SessionFilesModel model_;
   
   //! list
   TreeView* list_;
     
+  //! true when list selection updates are enabled
+  bool enabled_;
+  
   //!@name actions
   //@{
   
