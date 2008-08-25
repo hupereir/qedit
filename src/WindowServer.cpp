@@ -34,7 +34,7 @@
 #include "Application.h"
 #include "CustomFileDialog.h"
 #include "Debug.h"
-#include "ExitDialog.h"
+#include "CloseFilesDialog.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
 #include "FileSystemFrame.h"
@@ -187,7 +187,7 @@ bool WindowServer::closeAllWindows( void )
   // ask for confirmation if more than one file is opened.
   if( records.size() > 1 )
   {
-    ExitDialog dialog( qApp->activeWindow(), records );
+    CloseFilesDialog dialog( qApp->activeWindow(), records );
     QtUtil::centerOnParent( &dialog );
     if( !dialog.exec() ) return false;
   }
@@ -768,7 +768,7 @@ void WindowServer::_close( FileRecord::List records )
   assert( !records.empty() );
   
   // ask for confirmation
-  if( records.size() > 1 && !ExitDialog( &_activeWindow(), records ).exec() ) return;
+  if( records.size() > 1 && !CloseFilesDialog( &_activeWindow(), records ).exec() ) return;
   
   list<string> files;
   for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )

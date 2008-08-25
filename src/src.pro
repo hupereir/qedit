@@ -43,7 +43,7 @@ HEADERS = \
   ConfigurationDialog.h \
   Diff.h \
   DefaultOptions.h \
-  ExitDialog.h \
+  CloseFilesDialog.h \
   FileInfoDialog.h \
   FileModifiedDialog.h \
   FileRecordProperties.h \
@@ -86,7 +86,7 @@ SOURCES = \
   CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
-  ExitDialog.cpp \
+  CloseFilesDialog.cpp \
   FileInfoDialog.cpp \
   FileModifiedDialog.cpp \
   FileRemovedDialog.cpp \
