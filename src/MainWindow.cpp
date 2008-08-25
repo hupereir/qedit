@@ -129,6 +129,8 @@ MainWindow::MainWindow(  QWidget* parent ):
   
   // insert stack widget
   splitter->addWidget( stack_ = new QStackedWidget(0) );
+  stack_->layout()->setMargin(0);
+  
   connect( &_stack(), SIGNAL( widgetRemoved( int ) ), SLOT( _activeViewChanged() ) );
   
   // create first text view

@@ -270,7 +270,7 @@ void Application::_configuration( void )
   ConfigurationDialog dialog( 0 );
   connect( &dialog, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   dialog.move( QtUtil::centerOnWidget( dialog.sizeHint(), activeWindow() ) );
-  dialog.show();
+  dialog.exec();
 }
 
 //___________________________________________________________ 

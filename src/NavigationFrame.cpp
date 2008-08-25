@@ -29,6 +29,7 @@
 */
 
 #include <QHeaderView>
+#include <QLayout>
 
 #include "Application.h"
 #include "Debug.h"
@@ -47,6 +48,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
 {
   
   Debug::Throw( "NavigationFrame:NavigationFrame.\n" );
+  layout()->setMargin(0);
   
   // stack widget
   addWidget( session_files_frame_ = new SessionFilesFrame(0) );  
