@@ -104,7 +104,6 @@ void SessionFilesFrame::selectFile( const File& file )
   QModelIndex index( _model().index( FileRecord( file ) ) );
   
   // check if index is valid and not selected
-  // if( ( !index.isValid() ) || list().selectionModel()->isSelected( index ) ) return;
   if( ( !index.isValid() ) || (index == list().selectionModel()->currentIndex() ) ) return;
   
   // select found index but disable the selection changed callback
