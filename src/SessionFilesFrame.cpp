@@ -246,9 +246,14 @@ void SessionFilesFrame::_itemSelected( const QModelIndex& index )
 //______________________________________________________________________
 void SessionFilesFrame::_itemActivated( const QModelIndex& index )
 { 
+  
   Debug::Throw( "SessionFilesFrame::_itemActivated.\n" );
   if( !index.isValid() ) return;
+  
+  _setEnabled( false );
   emit fileActivated( _model().get( index ) );
+  _setEnabled( true );
+  
 }
 
 //______________________________________________________________________

@@ -1,7 +1,6 @@
 #ifndef WindowServer_h
 #define WindowServer_h
 
-
 // $Id$
 
 /******************************************************************************
@@ -80,7 +79,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   
   //! close all windows gracefully
   /*! returns false if the opperation was cancelled. */
-  bool closeAllWindows( void );
+  bool closeAll( void );
   
   //! read file from arguments and open relevant windows
   void readFilesFromArguments( ArgList );
@@ -185,7 +184,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   bool _open( FileRecord, Qt::Orientation );
 
   //! close files 
-  void _closeFiles( const std::list<std::string>& );
+  bool _close( const std::list<std::string>& );
   
   //! select file record from dialog
   /*! return empty record if no file is opened or file is directory */

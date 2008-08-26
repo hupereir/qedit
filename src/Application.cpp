@@ -323,7 +323,7 @@ void Application::_exit( void )
   Debug::Throw( "Application::_exit.\n" );
 
   // try close all windows gracefully, and return if operation is canceled
-  if( !windowServer().closeAllWindows() ) return;
+  if( !windowServer().closeAll() ) return;
   
   quit();
 

@@ -176,14 +176,14 @@ FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) co
 }
 
 //______________________________________________________
-bool WindowServer::closeAllWindows( void )
+bool WindowServer::closeAll( void )
 { 
   
-  Debug::Throw( "WindowServer::closeAllWindows.\n" );
-  
+  Debug::Throw( "WindowServer::closeAll.\n" );
+
   // retrieve opened files
   FileRecord::List records( WindowServer::records() );
-  
+    
   // ask for confirmation if more than one file is opened.
   if( records.size() > 1 )
   {
@@ -191,75 +191,12 @@ bool WindowServer::closeAllWindows( void )
     QtUtil::centerOnParent( &dialog );
     if( !dialog.exec() ) return false;
   }
-
-  int state( AskForSaveDialog::UNKNOWN );
   
-  // try close all windows one by one
-  BASE::KeySet<MainWindow> windows( this );
-  for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ )
-  {
-    
-    // if window is not modified, close
-    if( !(*iter)->isModified() ) 
-    {
-      assert( (*iter)->close() );
-      continue;
-    }
+  list<string> files;
+  for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+  { files.push_back( iter->file() ); }
 
-    // save everything if YES_TO_ALL is selected
-    if( state == AskForSaveDialog::YES_TO_ALL ) 
-    {
-      (*iter)->saveAll();
-      assert( (*iter)->close() );
-      continue;
-    }
-
-    // ignore everuthing if NO_TO_ALL was selected
-    if( state == AskForSaveDialog::NO_TO_ALL ) 
-    {
-      (*iter)->ignoreAll();
-      assert( (*iter)->close() );
-      continue;
-    }
-    
-    // retrieve all text views associated to this display
-    unsigned int modified_displays(0);
-    BASE::KeySet<TextDisplay> displays;
-    BASE::KeySet<TextView> views( *iter );
-    for( BASE::KeySet<TextView>::iterator view_iter = views.begin(); view_iter != views.end(); view_iter++ )
-    {
-      
-      // update the number of modified displays
-      modified_displays += (*view_iter)->modifiedDisplayCount();
-      
-      // store associated textDisplays in main set
-      BASE::KeySet<TextDisplay> view_displays( *view_iter );
-      displays.insert( view_displays.begin(), view_displays.end() );
-      
-    }
-    
-    // loop over displays
-    bool save_all_enabled = count_if( iter, windows.end(), MainWindow::IsModifiedFTor() ) > 1;
-    
-    save_all_enabled |= ( modified_displays > 1 );
-    for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
-    {
-      
-      if( !(*display_iter)->document()->isModified() ) continue;
-
-      state = (*display_iter)->askForSave( save_all_enabled );
-      if( state == AskForSaveDialog::YES_TO_ALL ) (*iter)->saveAll();
-      else if( state == AskForSaveDialog::NO_TO_ALL ) (*iter)->ignoreAll();      
-      else if( state == AskForSaveDialog::CANCEL ) return false;
-
-    }
-    
-    // try close. Should succeed, otherwise it means there is a flow in the algorithm above
-    assert( (*iter)->close() );
-    
-  }
-
-  return true;
+  return _close( files );
   
 }
 
@@ -276,7 +213,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
   // close mode
   if( args.find( "--close" ) ) 
   {
-    _closeFiles( last_arg.options() );
+    _close( last_arg.options() );
     _setFirstCall( false );
     return;
   }
@@ -774,33 +711,86 @@ void WindowServer::_close( FileRecord::List records )
   for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
   { files.push_back( iter->file() ); }
   
-  _closeFiles( files );
+  _close( files );
   
 }
 
 //________________________________________________________________
-void WindowServer::_closeFiles( const list<string>& files )
+bool WindowServer::_close( const list<string>& files )
 {
-  
-  // loop over files 
-  for( list< string >::const_iterator iter = files.begin(); iter != files.end(); iter++ )
-  {
-    File file( *iter );
+ 
+  int state( AskForSaveDialog::UNKNOWN );
 
-    // retrieve all MainWindows
-    BASE::KeySet<MainWindow> windows( this );
-    BASE::KeySet<MainWindow>::iterator window_iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
-    if( window_iter == windows.end() ) continue;
-    
-    // select display and close
-    // this code should be modified to properly use yes_to_all and no_to_all similar to closeAllWindows
-    (*window_iter)->selectDisplay( file );
-    (*window_iter)->closeDisplayAction().trigger();
-    
+  // need a first loop over associated windows to store modified files
+  set<string> modified_files;
+  BASE::KeySet<MainWindow> windows( this );
+  for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ ) 
+  { 
+    BASE::KeySet<TextDisplay> displays( (*iter)->associatedDisplays() );
+    for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
+    {
+      
+      // see if file is in list
+      TextDisplay& display( **display_iter );
+      if( find( files.begin(), files.end(), display.file() ) == files.end() ) continue;
+      if( display.document()->isModified() ) modified_files.insert( display.file() );
+      
+    }
+   
   }
   
-  return;
+  // retrieve windows
+  for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ ) 
+  { 
     
+    // retrieve views
+    BASE::KeySet<TextView> views( *iter );
+    for( BASE::KeySet<TextView>::iterator view_iter = views.begin(); view_iter != views.end(); view_iter++ )
+    {
+      
+      TextView& view( **view_iter );
+      BASE::KeySet<TextDisplay> displays( &view );
+      for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
+      {
+        TextDisplay& display( **display_iter );
+        
+        // see if file is in list
+        if( find( files.begin(), files.end(), display.file() ) == files.end() ) continue;
+        
+        if( !display.document()->isModified() ) 
+        {
+          view.closeDisplay( display );
+          continue;
+        }
+        
+        // savea everything if YES_TO_ALL is selected
+        if( state == AskForSaveDialog::YES_TO_ALL ) 
+        {
+          display.save();
+          view.closeDisplay( display );
+          continue;
+        }
+        
+        // save nothing if NO_TO_ALL is selected
+        if( state == AskForSaveDialog::NO_TO_ALL ) 
+        {
+          display.document()->setModified( false );
+          view.closeDisplay( display );
+          continue;
+        }
+         
+        state = display.askForSave( modified_files.size() > 1 );
+        if( state == AskForSaveDialog::YES_TO_ALL || state == AskForSaveDialog::YES ) display.save();
+        else if( state == AskForSaveDialog::NO_TO_ALL  || state == AskForSaveDialog::YES ) display.document()->setModified( false );   
+        else if( state == AskForSaveDialog::CANCEL ) return false;
+        modified_files.erase( display.file() );
+        view.closeDisplay( display );
+        
+      }
+    }
+  }
+  
+  return true;
 }
 
 //_______________________________________________

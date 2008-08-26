@@ -101,7 +101,7 @@ RecentFilesFrame::~RecentFilesFrame( void )
 void RecentFilesFrame::select( const File& file )
 {
   
-  if( !enabled_ ) return;
+  if( !_enabled() ) return;
   
   Debug::Throw() << "RecentFilesFrame::select - file: " << file << ".\n";
    
@@ -112,10 +112,10 @@ void RecentFilesFrame::select( const File& file )
   if( ( !index.isValid() ) || (index == list().selectionModel()->currentIndex() ) ) return;
 
   // select found index but disable the selection changed callback
-  enabled_ = false;
+  _setEnabled( false );
   list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
   list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
-  enabled_ = true;
+  _setEnabled( true );
   
 }
 
@@ -230,7 +230,10 @@ void RecentFilesFrame::_itemSelected( const QModelIndex& index )
   
   Debug::Throw( "RecentFilesFrame::_itemSelected.\n" );
   if( !index.isValid() ) return;  
+  
+  _setEnabled( false );
   emit fileSelected( model_.get( index ) );
+  _setEnabled( true );
   
 }
 
