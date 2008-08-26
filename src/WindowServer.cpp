@@ -757,34 +757,27 @@ bool WindowServer::_close( const list<string>& files )
         // see if file is in list
         if( find( files.begin(), files.end(), display.file() ) == files.end() ) continue;
         
-        if( !display.document()->isModified() ) 
+        Debug::Throw() << "WindowServer::_close - file: " << display.file() << endl;
+        
+        if( display.document()->isModified() ) 
         {
-          view.closeDisplay( display );
-          continue;
+          
+          if( state == AskForSaveDialog::YES_TO_ALL ) display.save();
+          else if( state == AskForSaveDialog::NO_TO_ALL ) display.document()->setModified( false );
+          else 
+          {
+            state = display.askForSave( modified_files.size() > 1 );
+            if( state == AskForSaveDialog::YES_TO_ALL || state == AskForSaveDialog::YES ) display.save();
+            else if( state == AskForSaveDialog::NO_TO_ALL  || state == AskForSaveDialog::YES ) display.document()->setModified( false );   
+            else if( state == AskForSaveDialog::CANCEL ) return false;
+            modified_files.erase( display.file() );
+            view.closeDisplay( display );
+          }
+          
         }
         
-        // savea everything if YES_TO_ALL is selected
-        if( state == AskForSaveDialog::YES_TO_ALL ) 
-        {
-          display.save();
-          view.closeDisplay( display );
-          continue;
-        }
-        
-        // save nothing if NO_TO_ALL is selected
-        if( state == AskForSaveDialog::NO_TO_ALL ) 
-        {
-          display.document()->setModified( false );
-          view.closeDisplay( display );
-          continue;
-        }
-         
-        state = display.askForSave( modified_files.size() > 1 );
-        if( state == AskForSaveDialog::YES_TO_ALL || state == AskForSaveDialog::YES ) display.save();
-        else if( state == AskForSaveDialog::NO_TO_ALL  || state == AskForSaveDialog::YES ) display.document()->setModified( false );   
-        else if( state == AskForSaveDialog::CANCEL ) return false;
-        modified_files.erase( display.file() );
         view.closeDisplay( display );
+        qApp->processEvents();
         
       }
     }

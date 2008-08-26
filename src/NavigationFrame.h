@@ -75,7 +75,6 @@ class NavigationFrame: public QStackedWidget, public Counter
     assert( session_files_frame_ );
     return *session_files_frame_;
   }
- 
   
   //! recent files 
   RecentFilesFrame& recentFilesFrame( void ) const

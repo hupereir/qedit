@@ -248,9 +248,15 @@ TextView& MainWindow::newTextView( void )
 void MainWindow::setActiveView( TextView& view )
 { 
 
+  Debug::Throw() << "MainWindow::setActiveView - key: " << view.key() << endl;
+
   // do nothing if active view did not change
   if( active_view_ == &view ) return;
   
+  // this check is needed because the active view passed as argument
+  // might be closing and have no associated display
+  if( BASE::KeySet<TextDisplay>( &view ).empty() ) return;
+
   // store active view
   active_view_ = &view; 
   

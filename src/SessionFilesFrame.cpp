@@ -279,6 +279,7 @@ void SessionFilesFrame::_installActions( void )
   // save
   addAction( close_action_ = new QAction( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Close", this ) );
   connect( &_closeAction(), SIGNAL( triggered() ), SLOT( _close() ) );
+  _closeAction().setShortcut( Qt::Key_Delete );
   _closeAction().setToolTip( "Close selected files" );
 
 }

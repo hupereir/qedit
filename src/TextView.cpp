@@ -73,7 +73,7 @@ TextView::TextView( QWidget* parent ):
 
 //___________________________________________________________________
 TextView::~TextView()
-{ Debug::Throw( "TextView::~TextView.\n" ); }
+{ Debug::Throw() << "TextView::~TextView - " << key() << endl; }
 
 //____________________________________________
 void TextView::setIsNewDocument( void )
@@ -554,9 +554,13 @@ void TextView::enterEvent( QEvent* e )
 void TextView::_checkDisplays( void )
 {
 
-  Debug::Throw() << "TextView::_checkDisplays" << endl;
+  Debug::Throw() << "TextView::_checkDisplays - key: " << key() << endl;
   BASE::KeySet<TextDisplay> displays( this );
-  if( displays.empty() ) close();
+  if( displays.empty() ) 
+  {
+    Debug::Throw() << "TextView::_checkDisplays - closing" << endl;
+    close();
+  }
   
 }
 

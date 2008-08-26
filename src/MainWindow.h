@@ -33,10 +33,11 @@
 */
 
 #include <QAction>
+#include <QBasicTimer>
 #include <QCloseEvent>
 #include <QSplitter>
 #include <QStackedWidget>
-#include <QTimer>
+#include <QTimerEvent>
 
 #include <list>
 #include <string>
