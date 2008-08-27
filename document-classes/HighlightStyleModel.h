@@ -37,14 +37,15 @@
 #include "HighlightStyle.h"
 
 //! HighlightStyle model. Stores file information for display in lists
-class HighlightStyleModel : public ListModel<HighlightStyle>
+class HighlightStyleModel : public ListModel<HighlightStyle>, public Counter
 {
   
   public:
     
   //! constructor
   HighlightStyleModel(QObject *parent = 0):
-    ListModel<HighlightStyle>(parent)  
+    ListModel<HighlightStyle>(parent),
+    Counter( "HighlightStyleModel" )
   {}
   
   //! destructor

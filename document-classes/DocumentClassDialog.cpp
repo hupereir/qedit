@@ -41,7 +41,7 @@
 #include "IndentPatternList.h"
 #include "TextMacroList.h"
 #include "TextParenthesisList.h"
-#include "TreeWidget.h"
+#include "TreeView.h"
 
 using namespace std;
 

@@ -94,7 +94,7 @@ bool DocumentClassManager::read( const File& filename )
       DocumentClass document_class( element );
       
       // look for document classes with same name 
-      ClassList::iterator iter = find_if(
+      List::iterator iter = find_if(
         document_classes_.begin(),
         document_classes_.end(),
         DocumentClass::SameNameFTor( document_class.name() ) );
@@ -126,7 +126,7 @@ bool DocumentClassManager::write( const QString& class_name, const File& filenam
   Debug::Throw() << "DocumentClassManager::write - class: " << qPrintable( class_name ) << " file: " << filename << endl;
   
   // try retrieve DocumentClass
-  ClassList::const_iterator iter = find_if( document_classes_.begin(), document_classes_.end(), DocumentClass::SameNameFTor( class_name ) );
+  List::const_iterator iter = find_if( document_classes_.begin(), document_classes_.end(), DocumentClass::SameNameFTor( class_name ) );
   if( iter == document_classes_.end() ) return false;
   
   // try open file
@@ -162,7 +162,7 @@ bool DocumentClassManager::write( const File& filename ) const
   
   // create main element
   QDomElement top = document.appendChild( document.createElement( XML::PATTERNS ) ).toElement();
-  for( ClassList::const_iterator iter = document_classes_.begin(); iter != document_classes_.end(); iter++ )
+  for( List::const_iterator iter = document_classes_.begin(); iter != document_classes_.end(); iter++ )
   { top.appendChild( iter->domElement( document ) ); }
  
   out.write( document.toByteArray() );
@@ -179,7 +179,7 @@ DocumentClass DocumentClassManager::defaultClass( void ) const
   Debug::Throw( "DocumentClassManager::defaultClass.\n" );
   
   // try load default
-  ClassList::const_iterator iter = find_if(
+  List::const_iterator iter = find_if(
     document_classes_.begin(),
     document_classes_.end(),
     DocumentClass::IsDefaultFTor() );
@@ -197,7 +197,7 @@ DocumentClass DocumentClassManager::find( const File& filename ) const
   Debug::Throw() << "DocumentClassManager::find - file: " << filename << endl;  
   
   // try load class matching name
-  ClassList::const_iterator iter = find_if(
+  List::const_iterator iter = find_if(
     document_classes_.begin(),
     document_classes_.end(),
     DocumentClass::MatchFileFTor( filename ) );
@@ -213,7 +213,7 @@ DocumentClass DocumentClassManager::get( const QString& name ) const
   Debug::Throw() << "DocumentClassManager::Get - name: " << qPrintable( name ) << endl;
   
   // try load class matching name
-  ClassList::const_iterator iter = find_if(
+  List::const_iterator iter = find_if(
     document_classes_.begin(),
     document_classes_.end(),
     DocumentClass::SameNameFTor( name ) );
@@ -230,7 +230,7 @@ bool DocumentClassManager::remove( const QString& name )
   Debug::Throw() << "DocumentClassManager::Remove - name: " << qPrintable( name ) << endl; 
   
   // find class list matching name
-  ClassList::iterator iter = find_if(
+  List::iterator iter = find_if(
     document_classes_.begin(),
     document_classes_.end(),
     DocumentClass::SameNameFTor( name ) );

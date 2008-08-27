@@ -1,5 +1,5 @@
-#ifndef TextMacroModel_h
-#define TextMacroModel_h
+#ifndef DocumentClassModel_h
+#define DocumentClassModel_h
 
 // $Id$
 
@@ -25,7 +25,7 @@
  *******************************************************************************/
 
 /*!
-  \file    TextMacroModel.h
+  \file    DocumentClassModel.h
   \brief   Stores file information for display in lists
   \author  Hugo Pereira
   \version $Revision$
@@ -34,22 +34,22 @@
 
 #include "Counter.h"
 #include "ListModel.h"
-#include "TextMacro.h"
+#include "DocumentClass.h"
 
-//! TextMacro model. Stores file information for display in lists
-class TextMacroModel : public ListModel<TextMacro>, public Counter
+//! DocumentClass model. Stores file information for display in lists
+class DocumentClassModel : public ListModel<DocumentClass>, public Counter
 {
   
   public:
     
   //! constructor
-  TextMacroModel(QObject *parent = 0):
-    ListModel<TextMacro>(parent),
-    Counter( "TextMacroModel" )
+  DocumentClassModel(QObject *parent = 0):
+    ListModel<DocumentClass>(parent),
+    Counter( "DocumentClassModel" )
   {}
   
   //! destructor
-  virtual ~TextMacroModel()
+  virtual ~DocumentClassModel()
   {}
   
   //! number of columns
@@ -58,7 +58,7 @@ class TextMacroModel : public ListModel<TextMacro>, public Counter
  //! column type enumeration
   enum ColumnType { 
     NAME,
-    ACCELERATOR,
+    FILE,
   };
 
   //!@name methods reimplemented from base class
@@ -79,13 +79,37 @@ class TextMacroModel : public ListModel<TextMacro>, public Counter
   protected:
   
   //! sort
-  virtual void _sort( int column, Qt::SortOrder order = Qt::AscendingOrder )
-  { return; }
+  virtual void _sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
    
   private:
   
   //! list column names
   static const char* column_titles_[n_columns];
+
+  //! used to sort document classes
+  class SortFTor
+  {
+    
+    public:
+    
+    //! constructor
+    SortFTor( const ColumnType& type, Qt::SortOrder order = Qt::AscendingOrder ):
+      type_( type ),
+      order_( order )
+      {}
+      
+    //! prediction
+    bool operator() ( const DocumentClass& first, const DocumentClass& second ) const;
+    
+    private:
+    
+    //! column
+    ColumnType type_;
+    
+    //! order
+    Qt::SortOrder order_;
+    
+  };
 
 };
 

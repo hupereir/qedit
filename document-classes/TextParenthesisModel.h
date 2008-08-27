@@ -37,14 +37,15 @@
 #include "TextParenthesis.h"
 
 //! TextParenthesis model. Stores file information for display in lists
-class TextParenthesisModel : public ListModel<TextParenthesis>
+class TextParenthesisModel : public ListModel<TextParenthesis>, public Counter
 {
   
   public:
     
   //! constructor
   TextParenthesisModel(QObject *parent = 0):
-    ListModel<TextParenthesis>(parent)  
+    ListModel<TextParenthesis>(parent),
+    Counter( "TextParenthesisModel" )
   {}
   
   //! destructor

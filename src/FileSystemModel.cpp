@@ -48,7 +48,8 @@ FileSystemModel::IconCache FileSystemModel::icons_;
 
 //__________________________________________________________________
 FileSystemModel::FileSystemModel( QObject* parent ):
-  ListModel<FileRecord>( parent )
+  ListModel<FileRecord>( parent ),
+  Counter( "FileSystemModel" )
 {
   Debug::Throw("FileSystemModel::FileSystemModel.\n" );
 

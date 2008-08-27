@@ -15,6 +15,7 @@ HEADERS = \
   DocumentClassDialog.h \
   DocumentClassManager.h \
   DocumentClassManagerDialog.h \
+  DocumentClassModel.h \
   HighlightPattern.h \
   HighlightPatternDialog.h \
   HighlightPatternList.h \
@@ -57,6 +58,7 @@ SOURCES = \
   DocumentClassDialog.cpp \
   DocumentClassManager.cpp \
   DocumentClassManagerDialog.cpp \
+  DocumentClassModel.cpp \
   HighlightPattern.cpp \
   HighlightPatternDialog.cpp \
   HighlightPatternList.cpp \

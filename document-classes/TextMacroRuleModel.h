@@ -37,14 +37,15 @@
 #include "TextMacro.h"
 
 //! TextMacroRule model. Stores file information for display in lists
-class TextMacroRuleModel : public ListModel<TextMacro::Rule>
+class TextMacroRuleModel : public ListModel<TextMacro::Rule>, public Counter
 {
   
   public:
     
   //! constructor
   TextMacroRuleModel(QObject *parent = 0):
-    ListModel<TextMacro::Rule>(parent)  
+    ListModel<TextMacro::Rule>(parent),  
+    Counter( "TextMacroModel" )
   {}
   
   //! destructor

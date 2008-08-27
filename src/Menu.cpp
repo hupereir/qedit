@@ -181,8 +181,8 @@ void Menu::_updateDocumentClassMenu( void )
   const QString& class_name( window.activeDisplay().className() );
     
   // retrieve classes from DocumentClass manager
-  const DocumentClassManager::ClassList& classes( static_cast<Application*>(qApp)->classManager().list() );
-  for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
+  const DocumentClassManager::List& classes( static_cast<Application*>(qApp)->classManager().list() );
+  for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
   { 
     // insert actions
     QAction* action = document_class_menu_->addAction( iter->name() );

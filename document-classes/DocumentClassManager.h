@@ -87,16 +87,16 @@ class DocumentClassManager: public QObject, public Counter
   bool remove( const QString& name );
 
   //! shortcut to list of document classes
-  typedef std::list<DocumentClass> ClassList;
+  typedef std::list<DocumentClass> List;
 
   //! get all classes
-  const ClassList& list( void ) const
+  const List& list( void ) const
   { return document_classes_; }
 
   private:
 
   //! list of document classes
-  ClassList document_classes_;
+  List document_classes_;
   
   //! read error
   QString read_error_;

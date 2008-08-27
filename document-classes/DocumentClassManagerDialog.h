@@ -35,10 +35,10 @@
 #include <QPushButton>
 
 #include "CustomDialog.h" 
-#include "DocumentClass.h"
-#include "TreeWidget.h"
+#include "DocumentClassModel.h"
 
 class DocumentClassManager;
+class TreeView;
 
 //! list document classes
 class DocumentClassManagerDialog: public CustomDialog
@@ -82,51 +82,18 @@ class DocumentClassManagerDialog: public CustomDialog
   //! display all classes to listview
   void _loadClasses( void );
   
-  //! add document class to listview
-  void _addClass( const DocumentClass& );
-  
-  //! number of columns
-  enum { n_columns_ = 2 };
-
-  //! column type enumeration
-  enum ColumnTypes {
-    NAME,
-    FILE
-  }; 
-  
-  //! column titles
-  static const char* column_titles_[ n_columns_ ];
-
-  //! list item
-  class Item: public TreeWidget::Item
-  {
-    
-    public: 
-    
-    //! constructor
-    Item( const DocumentClass& document_class ):
-      document_class_( document_class )
-    { update(); }
-    
-    //! update from document class
-    void update( void );
-    
-    //! document class
-    const DocumentClass& documentClass( void )
-    { return document_class_; }
-    
-    private:
-    
-    //! document class
-    DocumentClass document_class_;
-    
-  };
+  //! list
+  TreeView& _list( void ) const
+  { return *list_; }
   
   //! document class manager
   DocumentClassManager* document_class_manager_;
   
+  //! model
+  DocumentClassModel model_;
+  
   //! document classes list
-  TreeWidget* list_;
+  TreeView* list_;
   
   //! edit
   QPushButton* edit_button_;

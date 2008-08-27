@@ -37,14 +37,15 @@
 #include "HighlightPattern.h"
 
 //! HighlightPattern model. Stores file information for display in lists
-class HighlightPatternModel : public ListModel<HighlightPattern>
+class HighlightPatternModel : public ListModel<HighlightPattern>, public Counter
 {
   
   public:
     
   //! constructor
   HighlightPatternModel(QObject *parent = 0):
-    ListModel<HighlightPattern>(parent)  
+    ListModel<HighlightPattern>(parent),
+    Counter( "HighlightPatternModel" )
   {}
   
   //! destructor

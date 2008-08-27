@@ -80,6 +80,10 @@ class DocumentClass: public Counter
     if( document_class.isDefault() ) return false;
     return name() < document_class.name(); 
   }
+
+  //! lower than operator
+  bool operator == (const DocumentClass& document_class ) const
+  { return name() == document_class.name(); }
   
   //! clear patterns and styles
   void clear( void );

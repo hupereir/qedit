@@ -227,8 +227,8 @@ void Application::updateDocumentClasses( void )
   
   // load document classes icons into iconEngine cache, if any
   list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
-  const DocumentClassManager::ClassList& classes( class_manager_->list() );
-  for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
+  const DocumentClassManager::List& classes( class_manager_->list() );
+  for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
   { if( !iter->icon().isEmpty() ) { IconEngine::get( qPrintable( iter->icon() ) ); } }
   
   // emit configuration changed to force displays to be updated

@@ -34,25 +34,18 @@
 
 #include "BaseIcons.h"
 #include "CustomFileDialog.h"
-#include "PixmapEngine.h"
 #include "Debug.h"
 #include "DocumentClass.h"
 #include "DocumentClassManagerDialog.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassDialog.h"
 #include "HighlightStyleList.h"
-
 #include "Options.h" 
+#include "PixmapEngine.h"
 #include "QtUtil.h"
+#include "TreeView.h"
 
 using namespace std;
-
-//______________________________________________________________
-const char* DocumentClassManagerDialog::column_titles_[ DocumentClassManagerDialog::n_columns_ ] =
-{
-  "name",
-  "file"
-};
 
 //______________________________________________________________
 DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, DocumentClassManager* manager ):
@@ -89,23 +82,15 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   mainLayout().addLayout( layout );
   
   // create list
-  layout->addWidget( list_ = new TreeWidget( this ) );
-  
-  // add columns
-  list_->setColumnCount( n_columns_ );
-  for( unsigned int i=0; i<n_columns_; i++ )
-  { list_->setColumnName( i, column_titles_[i] ); }
-
-  list_->setAllColumnsShowFocus( true );
+  layout->addWidget( list_ = new TreeView( this ) );
+  list_->setModel( &model_ );
 
   // set connections
-  connect( list_, SIGNAL( itemActivated( QTreeWidgetItem*, int ) ), this, SLOT( _edit() ) );
-  connect( list_, SIGNAL( itemSelectionChanged() ), this, SLOT( _updateButtons() ) );
+  connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _edit() ) );
+  connect( _list().selectionModel(), SIGNAL( selectionChanged( const QItemSelection& , const QItemSelection& ) ), SLOT( _updateButtons() ) );
 
   // add classes
   _loadClasses();
-  list_->sortItems( 0, Qt::AscendingOrder );
-  //list_->sort();
   
   // buttons
   QVBoxLayout *v_layout( new QVBoxLayout() );
@@ -151,7 +136,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
 void DocumentClassManagerDialog::_updateButtons( void )
 {
   Debug::Throw( "DocumentClassManagerDialog::_ubdateButtons.\n" );
-  bool has_selection( !list_->QTreeWidget::selectedItems().empty() );  
+  bool has_selection( !_list().selectionModel()->selectedRows().empty() );  
   edit_button_->setEnabled( has_selection );
   remove_button_->setEnabled( has_selection );
   save_button_->setEnabled( has_selection );
@@ -162,16 +147,15 @@ void DocumentClassManagerDialog::_updateButtons( void )
 void DocumentClassManagerDialog::_edit( void )
 {
   Debug::Throw( "DocumentClassManagerDialog::_edit.\n" );
- 
-  QTreeWidgetItem *item( list_->QTreeWidget::currentItem() );
-  if( !item )
+  QModelIndex current( _list().selectionModel()->currentIndex() );
+  if( !current.isValid() ) 
   {
     QtUtil::infoDialog( this, "No item selected. <Edit> canceled." );
     return;
   }
 
   // retrieve DocumentClass matching name
-  DocumentClass document_class( document_class_manager_->get(  item->text(NAME) ) );
+  const DocumentClass& document_class( model_.get( current ) );
   
   // create dialog
   DocumentClassDialog dialog( this );
@@ -186,14 +170,14 @@ void DocumentClassManagerDialog::_edit( void )
 void DocumentClassManagerDialog::_remove( void )
 {
   Debug::Throw( "DocumentClassManagerDialog::_remove.\n" );
-  Item *item( list_->currentItem<Item>() );
-  if( !item )
+  QModelIndex current( _list().selectionModel()->currentIndex() );
+  if( !current.isValid() ) 
   {
     QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
     return;
   }
   
-  if( document_class_manager_->remove( item->documentClass().name() ) )
+  if( document_class_manager_->remove( model_.get( current ).name() ) )
   { 
     _loadClasses(); 
     emit updateNeeded();
@@ -231,8 +215,8 @@ void DocumentClassManagerDialog::_save( void )
 {
   Debug::Throw( "DocumentClassManagerDialog::_save.\n" );
   
-  QTreeWidgetItem *item( list_->QTreeWidget::currentItem() );
-  if( !item )
+  QModelIndex current( _list().selectionModel()->currentIndex() );
+  if( !current.isValid() ) 
   {
     QtUtil::infoDialog( this, "No item selected. <Save As> canceled." );
     return;
@@ -269,7 +253,7 @@ void DocumentClassManagerDialog::_save( void )
     return;
   }
   
-  document_class_manager_->write( qPrintable( item->text( NAME ) ), file );
+  document_class_manager_->write( qPrintable( model_.get( current ).name() ), file );
   return;
 }
 
@@ -283,30 +267,13 @@ void DocumentClassManagerDialog::_reload( void )
 //___________________________________________________ 
 void DocumentClassManagerDialog::_loadClasses()
 {
+  
   Debug::Throw( "DocumentClassManagerDialog::_loadClasses.\n" );
   
-  // clear list
-  list_->clear();
-  
   // retrieve classes from DocumentClass manager
-  const DocumentClassManager::ClassList& classes( document_class_manager_->list() );
+  const DocumentClassManager::List& classes( document_class_manager_->list() );
   
   // add to list
-  for( DocumentClassManager::ClassList::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
-  { _addClass( *iter ); }
-}
+  model_.update( DocumentClassModel::List( classes.begin(), classes.end() ) );
 
-//_________________________________________________________________
-void DocumentClassManagerDialog::_addClass( const DocumentClass& document_class )
-{
-  Debug::Throw( "DocumentClassManagerDialog::_AddDocumentClass.\n" );
-  list_->addTopLevelItem( new Item( document_class ) );
-  return;
-}
-
-//_________________________________________________________________
-void DocumentClassManagerDialog::Item::update( void )
-{
-  setText( NAME, documentClass().name() );
-  setText( FILE, documentClass().file().c_str() );
 }

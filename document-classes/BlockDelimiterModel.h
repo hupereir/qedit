@@ -37,14 +37,15 @@
 #include "BlockDelimiter.h"
 
 //! BlockDelimiter model. Stores file information for display in lists
-class BlockDelimiterModel : public ListModel<BlockDelimiter>
+class BlockDelimiterModel : public ListModel<BlockDelimiter>, public Counter
 {
   
   public:
     
   //! constructor
   BlockDelimiterModel(QObject *parent = 0):
-    ListModel<BlockDelimiter>(parent)  
+    ListModel<BlockDelimiter>(parent),
+    Counter( "BlockDelimiterModel" )
   {}
   
   //! destructor
