@@ -212,25 +212,20 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
   menu.insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
   menu.addSeparator();
   
-  if( 0 )
-  {
+  // tags submenu
+  QMenu* submenu = menu.addMenu( "&Tags" );
     
-    menu.addAction( &tagBlockAction() );
-    tagBlockAction().setEnabled( has_selection );
-    
-    menu.addAction( &nextTagAction() );
-    nextTagAction().setEnabled( has_tags );
-    
-    menu.addAction( &previousTagAction() );
-    previousTagAction().setEnabled( has_tags );
-    
-    menu.addAction( &clearTagAction() );
-    clearTagAction().setEnabled( current_block_tagged );
-    
-    menu.addAction( &clearAllTagsAction() );
-    clearAllTagsAction().setEnabled( has_tags );
+  submenu->addAction( &tagBlockAction() );    
+  submenu->addAction( &nextTagAction() );    
+  submenu->addAction( &previousTagAction() );
+  submenu->addAction( &clearTagAction() );
+  submenu->addAction( &clearAllTagsAction() );
   
-  }
+  tagBlockAction().setEnabled( has_selection );
+  nextTagAction().setEnabled( has_tags );
+  previousTagAction().setEnabled( has_tags );
+  clearTagAction().setEnabled( current_block_tagged );
+  clearAllTagsAction().setEnabled( has_tags );
   
   return;
 }
