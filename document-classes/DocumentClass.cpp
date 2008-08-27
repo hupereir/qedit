@@ -39,6 +39,15 @@
 using namespace std;
 
 //________________________________________________________
+DocumentClass::DocumentClass( void ):
+  Counter( "DocumentClass" ),
+  default_( false ),
+  wrap_( false ),
+  emulate_tabs_( false ),
+  base_indentation_( 0 )
+{ Debug::Throw( "DocumentClass::DocumentClass.\n" ); }
+
+//________________________________________________________
 DocumentClass::DocumentClass( const QDomElement& element ):
   Counter( "DocumentClass" ),
   default_( false ),
@@ -70,7 +79,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
     
   }
-
+  
   // parse children
   for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() )
   {

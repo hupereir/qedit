@@ -58,7 +58,10 @@ class DocumentClass: public Counter
   public:
       
   //! constructor
-  DocumentClass( const QDomElement& element = QDomElement() );
+  DocumentClass( void );
+  
+  //! constructor
+  DocumentClass( const QDomElement& );
     
   //! destructor
   ~DocumentClass( void )
@@ -82,11 +85,11 @@ class DocumentClass: public Counter
   void clear( void );
   
   //! name
-  const QString& name ( void ) const
+  const QString& name( void ) const
   { return name_; }
   
   //! name
-  void setName ( const QString& name )
+  void setName( const QString& name )
   { name_ = name; }
  
   //! file

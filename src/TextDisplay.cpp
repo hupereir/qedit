@@ -980,19 +980,24 @@ void TextDisplay::updateDocumentClass( void )
 
   // default document class is empty
   DocumentClass document_class;
+  Application& application( *static_cast<Application*>(qApp) );
   
   // try load document class from class_name
   if( !className().isEmpty() )
-  { document_class = dynamic_cast<Application*>(qApp)->classManager().get( className() ); }
+  { document_class = application.classManager().get( className() ); }
 
   // load default if new document
   if( isNewDocument() )
-  { document_class = dynamic_cast<Application*>(qApp)->classManager().defaultClass(); }
+  { document_class = application.classManager().defaultClass(); }
 
   // try load from file
   if( document_class.name().isEmpty() && !file().empty() )
-  { document_class = dynamic_cast<Application*>(qApp)->classManager().find( file() ); }
+  { document_class = application.classManager().find( file() ); }
 
+  // try load from file
+  if( document_class.name().isEmpty() )
+  { document_class = application.classManager().defaultClass(); }
+  
   // update class name
   setClassName( document_class.name() );
 

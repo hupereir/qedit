@@ -183,10 +183,12 @@ DocumentClass DocumentClassManager::defaultClass( void ) const
     document_classes_.begin(),
     document_classes_.end(),
     DocumentClass::IsDefaultFTor() );
-  if( iter != document_classes_.end() ) return *iter;
+  if( iter != document_classes_.end() ) 
+  { return *iter; }
   
   // nothing found
   return DocumentClass();
+
 }
 
 //________________________________________________________

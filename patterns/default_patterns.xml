@@ -1,6 +1,6 @@
 <!-- $Id$-->
 <patterns>
- <class name="default" options="default" options="emulate_tabs" icon="unknown.png">
+ <class name="default" options="default emulate_tabs" icon="unknown.png">
 
  <!-- parenthesis -->
  <parenthesis begin="(" end=")" regexp="\(|\)" />
