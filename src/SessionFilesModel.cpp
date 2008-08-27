@@ -72,11 +72,7 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
     return _icon( record.hasFlag( FileRecordProperties::MODIFIED ) ? 
       FileRecordProperties::MODIFIED:
       FileRecordProperties::NONE );
-  
-//   } else if( role == Qt::ForegroundRole && index.column() == FILE ) {
-//     
-//     return record.hasFlag( FileRecordProperties::ACTIVE ) ? Qt::black : Qt::red;
-    
+
   } else return FileRecordModel::data( index, role );
  
   return QVariant();
