@@ -42,7 +42,7 @@ using namespace std;
 
 //________________________________________________________
 NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned int& buttons ):
-  QDialog( parent ),
+  BaseDialog( parent ),
   Counter( "NewFileDialog" )
 {
   

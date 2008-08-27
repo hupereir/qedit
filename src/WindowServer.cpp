@@ -187,8 +187,8 @@ bool WindowServer::closeAll( void )
   // ask for confirmation if more than one file is opened.
   if( records.size() > 1 )
   {
-    CloseFilesDialog dialog( qApp->activeWindow(), records );
-    QtUtil::centerOnParent( &dialog );
+    CloseFilesDialog dialog( &_activeWindow(), records );
+    dialog.centerOnParent();
     if( !dialog.exec() ) return false;
   }
   
@@ -828,7 +828,7 @@ bool WindowServer::_createNewFile( const FileRecord& record )
   if( records().empty() ) buttons |= NewFileDialog::EXIT;
     
   NewFileDialog dialog( &_activeWindow(), record.file(), buttons );
-  QtUtil::centerOnParent( &dialog );
+  dialog.centerOnParent();
   int state = dialog.exec();
     
   Debug::Throw() << "WindowServer::Open - New file dialog state: " << state << endl; 

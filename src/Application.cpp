@@ -189,6 +189,7 @@ void Application::realizeWidget( void )
   
   // create first window and show
   MainWindow& window( windowServer().newMainWindow() );
+  window.centerOnDesktop();
   window.show();
 
   // update configuration
@@ -270,7 +271,7 @@ void Application::_configuration( void )
   emit saveConfiguration();
   ConfigurationDialog dialog( 0 );
   connect( &dialog, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-  dialog.move( QtUtil::centerOnWidget( dialog.sizeHint(), activeWindow() ) );
+  dialog.centerOnWidget( activeWindow() );
   dialog.exec();
 }
 
@@ -301,9 +302,7 @@ void Application::_spellCheckConfiguration( void )
   AutoSpellConfiguration* autospell_config = new AutoSpellConfiguration( &dialog );
   dialog.mainLayout().addWidget( autospell_config );
   autospell_config->read();
-  
-  dialog.adjustSize();
-  QtUtil::centerOnParent( &dialog );
+  dialog.centerOnWidget( activeWindow() );
   
   if( dialog.exec() == QDialog::Rejected ) return;
   spell_config->write();
