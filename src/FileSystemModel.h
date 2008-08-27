@@ -101,32 +101,20 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
   
   private:
   
-  //! used to sort Counters
-  class SortFTor
+  
+  //! used to sort IconCaches
+  class SortFTor: public ItemModel::SortFTor
   {
     
     public:
     
     //! constructor
-    SortFTor( const int& type, Qt::SortOrder order, const std::vector<QString>& column_titles ):
-      column_titles_( column_titles ),
-      type_( type ),
-      order_( order )
+    SortFTor( const int& type, Qt::SortOrder order = Qt::AscendingOrder ):
+      ItemModel::SortFTor( type, order )
       {}
       
     //! prediction
-    bool operator() ( FileRecord first, FileRecord second ) const;
-    
-    private:
-
-    // column titles
-    std::vector<QString> column_titles_;
-    
-    //! column
-    int type_;
-    
-    //! order
-    Qt::SortOrder order_;
+    bool operator() ( Option, Option ) const;
     
   };
    

@@ -86,30 +86,23 @@ class DocumentClassModel : public ListModel<DocumentClass>, public Counter
   //! list column names
   static const char* column_titles_[n_columns];
 
-  //! used to sort document classes
-  class SortFTor
+  
+  //! used to sort IconCaches
+  class SortFTor: public ItemModel::SortFTor
   {
     
     public:
     
     //! constructor
-    SortFTor( const ColumnType& type, Qt::SortOrder order = Qt::AscendingOrder ):
-      type_( type ),
-      order_( order )
+    SortFTor( const int& type, Qt::SortOrder order = Qt::AscendingOrder ):
+      ItemModel::SortFTor( type, order )
       {}
       
     //! prediction
-    bool operator() ( const DocumentClass& first, const DocumentClass& second ) const;
-    
-    private:
-    
-    //! column
-    ColumnType type_;
-    
-    //! order
-    Qt::SortOrder order_;
+    bool operator() ( DocumentClass, DocumentClass ) const;
     
   };
+
 
 };
 
