@@ -45,6 +45,9 @@ void HtmlUtil::textNode( const QString& text, QDomElement& parent, QDomDocument&
   if( lines.empty() ) return;
 
   // loop over lines
+  
+  // need to convert line accents
+  
   // first append the first line
   QStringList::iterator iter = lines.begin(); 
   parent.appendChild( document.createTextNode( *iter ) );
