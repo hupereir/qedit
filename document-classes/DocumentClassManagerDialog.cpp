@@ -203,7 +203,7 @@ void DocumentClassManagerDialog::_loadFile( void )
   // try load from file manager and add to options
   if( document_class_manager_->read( file ) ) 
   {
-    XmlOptions::get().add( Option( "PATTERN_FILENAME", file ) );
+    XmlOptions::get().add( "PATTERN_FILENAME", Option( file ) );
     _loadClasses();
   }
   return; 

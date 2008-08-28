@@ -496,11 +496,10 @@ void MainWindow::_print( void )
   list<string> new_commands( dialog.commands() );
   for( list<string>::iterator iter = new_commands.begin(); iter != new_commands.end(); iter++ )
   { 
+    
     if( std::find( commands.begin(), commands.end(), *iter ) == commands.end() ) 
-    {
-      Option option( "PRINT_COMMAND", *iter );
-      XmlOptions::get().add( option );    
-    }
+    { XmlOptions::get().add( "PRINT_COMMAND", *iter ); }
+    
   }
   
   Debug::Throw( "MainWindow::_print - options saved.\n" );
