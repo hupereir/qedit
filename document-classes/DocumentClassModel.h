@@ -85,7 +85,6 @@ class DocumentClassModel : public ListModel<DocumentClass>, public Counter
   
   //! list column names
   static const char* column_titles_[n_columns];
-
   
   //! used to sort IconCaches
   class SortFTor: public ItemModel::SortFTor
@@ -99,7 +98,7 @@ class DocumentClassModel : public ListModel<DocumentClass>, public Counter
       {}
       
     //! prediction
-    bool operator() ( DocumentClass, DocumentClass ) const;
+    bool operator() ( const DocumentClass&, const DocumentClass& ) const;
     
   };
 
