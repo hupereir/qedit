@@ -38,7 +38,6 @@
 #include "DocumentClassManager.h"
 #include "DocumentClassManagerDialog.h"
 #include "ErrorHandler.h"
-#include "FlatStyle.h"
 #include "IconEngine.h"
 #include "Icons.h"
 #include "XmlOptions.h"
@@ -78,23 +77,16 @@ void Application::usage( void )
 
 //____________________________________________
 Application::Application( int argc, char*argv[] ) :
-  QApplication( argc, argv ),
+  BaseApplication( argc, argv ),
   Counter( "Application" ),
-  application_manager_( 0 ),
   recent_files_( 0 ),
   window_server_( 0 ),
   class_manager_( 0 ),
   autosave_( 0 ),
-  args_( argc, argv ),
-  realized_( false ),
   startup_timer_( this )
 {
-  Debug::Throw( "Application::Application.\n" );
-  if( XmlOptions::get().get<bool>( "USE_FLAT_THEME" ) ) setStyle( new FlatStyle() );
-
   startup_timer_.setSingleShot( true );
-  connect( &startup_timer_, SIGNAL( timeout() ), SLOT( _readFilesFromArgs() ) );
-  
+  connect( &startup_timer_, SIGNAL( timeout() ), SLOT( _readFilesFromArguments() ) );
 }
 
 //____________________________________________
@@ -102,15 +94,10 @@ Application::~Application( void )
 { 
   Debug::Throw( "Application::~Application.\n" ); 
   
-  if( application_manager_ ) delete application_manager_;
   if( class_manager_ ) delete class_manager_;
   if( autosave_ ) delete autosave_;
   if( window_server_ ) delete window_server_; 
   if( recent_files_ ) delete recent_files_;
-
-  XmlOptions::write();
-
-  ErrorHandler::exit();
 
 }
 
@@ -119,54 +106,27 @@ void Application::initApplicationManager( void )
 {
   Debug::Throw( "Application::initApplicationManager.\n" );
 
-  if( application_manager_ ) return;
-  if( args_.find( "--no-server" ) ) 
-  {
-    realizeWidget();
-    return;
-  }
-
-  // create application manager
-  application_manager_ = new SERVER::ApplicationManager( this );
-  application_manager_->setApplicationName( XmlOptions::get().get<string>( "APP_NAME" ) );
-  connect( 
-    application_manager_, SIGNAL( stateChanged( SERVER::ApplicationManager::State ) ),
-    SLOT( _applicationManagerStateChanged( SERVER::ApplicationManager::State ) ) );
-    
-  connect( application_manager_, SIGNAL( serverRequest( const ArgList& ) ), SLOT( _processRequest( const ArgList& ) ) );
- 
   // retrieve files from arguments and expand if needed
-  ArgList::Arg& last( args_.get().back() );
+  ArgList::Arg& last( _arguments().get().back() );
   for( list< string >::iterator iter = last.options().begin(); iter != last.options().end(); iter++ )
   { if( File( *iter ).size() ) (*iter) = File( *iter ).expand(); }
 
-  // pass args to application manager
-  application_manager_->init( args_ );
+  // base class initialization
+  BaseApplication::initApplicationManager();
 
 }
 
 //____________________________________________
-void Application::realizeWidget( void )
+bool Application::realizeWidget( void )
 {
   Debug::Throw( "Application::realizeWidget.\n" );
 
   //! check if the method has already been called.
-  if( realized_ ) return;
-  realized_ = true;
+  if( !BaseApplication::realizeWidget() ) return false;
   
-  // actions  
-  about_action_ = new QAction( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).c_str() ), "About &QEdit", 0 );
-  connect( about_action_, SIGNAL( triggered() ), SLOT( _about() ) );
-   
-  aboutqt_action_ = new QAction( IconEngine::get( ICONS::ABOUT_QT ), "About &Qt", this );
-  connect( aboutqt_action_, SIGNAL( triggered() ), SLOT( aboutQt() ) ); 
-
-  close_action_ = new QAction( IconEngine::get( ICONS::EXIT ), "E&xit", this );
-  close_action_->setShortcut( CTRL+Key_Q );
-  connect( close_action_, SIGNAL( triggered() ), SLOT( _exit() ) );
-
-  configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Default &Configuration", this );
-  connect( configuration_action_, SIGNAL( triggered() ), SLOT( _configuration() ) );
+  // need to modify closeAction signal for proper exit
+  closeAction().disconnect();
+  connect( &closeAction(), SIGNAL( triggered() ), SLOT( _exit() ) );
 
   document_class_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Document Class &Configuration", this );
   connect( document_class_configuration_action_, SIGNAL( triggered() ), SLOT( _documentClassConfiguration() ) );
@@ -192,24 +152,26 @@ void Application::realizeWidget( void )
   window.centerOnDesktop();
   window.show();
 
-  // update configuration
-  _updateConfiguration();
-
   // make sure application ends when last window is closed.
   connect( this, SIGNAL( lastWindowClosed() ), SLOT( quit() ) );
+  connect( this, SIGNAL( configurationChanged() ), SLOT( _updateDocumentClasses() ) );
+
+  // update configuration
+  emit configurationChanged();
   
   // run startup timer to open files after the call to exec() is 
   // performed in the main routine
   startup_timer_.start(0);
   
   Debug::Throw( "Application::realizeWidget - done.\n" ); 
-
+  return true;
+  
 }
 
 //____________________________________________________________
-void Application::updateDocumentClasses( void )
+void Application::_updateDocumentClasses( void )
 {
-  Debug::Throw( "Application::updateDocumentClasses.\n" );
+  Debug::Throw( "Application::_updateDocumentClasses.\n" );
   
   // clear document classes
   class_manager_->clear();
@@ -237,40 +199,13 @@ void Application::updateDocumentClasses( void )
   return;
 }
 
-//_______________________________________________
-void Application::_about( void )
-{
-
-  Debug::Throw( "Application::_about.\n" );
-  ostringstream what;
-  what << "<b>QEdit</b> version " << VERSION << " (" << BUILD_TIMESTAMP << ")";
-  what 
-    << "<p>This application was written for personal use only. "
-    << "It is not meant to be bug free, although all efforts "
-    << "are made so that it remains/becomes so. "
-    
-    << "<p>Suggestions, comments and bug reports are welcome. "
-    << "Please use the following e-mail address:"
-
-    << "<p><a href=\"mailto:hugo.pereira@free.fr\">hugo.pereira@free.fr</a>";
-
-  QMessageBox dialog;
-  dialog.setWindowIcon( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).c_str() ) );
-  dialog.setIconPixmap( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).c_str() ) );
-  dialog.setText( what.str().c_str() );
-  dialog.adjustSize();
-  QtUtil::centerOnWidget( &dialog, activeWindow() );
-  dialog.exec();
-
-}
-
 //___________________________________________________________ 
 void Application::_configuration( void )
 {
   Debug::Throw( "Application::_configuration.\n" );
   emit saveConfiguration();
   ConfigurationDialog dialog( 0 );
-  connect( &dialog, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( &dialog, SIGNAL( configurationChanged() ), SIGNAL( configurationChanged() ) );
   dialog.centerOnWidget( activeWindow() );
   dialog.exec();
 }
@@ -320,72 +255,16 @@ void Application::_exit( void )
 {
   
   Debug::Throw( "Application::_exit.\n" );
-
-  // try close all windows gracefully, and return if operation is canceled
   if( !windowServer().closeAll() ) return;
-  
   quit();
 
 }
 
-//_________________________________________________
-void Application::_updateConfiguration( void )
-{
-
-  Debug::Throw( "Application::_updateConfiguration.\n" );
- 
-  // set fonts
-  QFont font;
-  font.fromString( XmlOptions::get().raw( "FONT_NAME" ).c_str() );
-  setFont( font );
-
-  font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );
-  setFont( font, "QLineEdit" );
-  setFont( font, "QTextEdit" );
-  
-  Debug::setLevel( XmlOptions::get().get<bool>("DEBUG_LEVEL") );
-  setWindowIcon( QPixmap( File( XmlOptions::get().raw( "ICON_PIXMAP" ) ).expand().c_str() ) );
-  
-  // reload IconEngine cache (in case of icon_path_list that changed)
-  IconEngine::get().reload();
-  
-  // configuration changed
-  emit configurationChanged();
-  
-  // update document classes
-  updateDocumentClasses();
-  
-  return;
-}
-
 //___________________________________________________________ 
-void Application::_readFilesFromArgs( void )
+void Application::_readFilesFromArguments( void )
 {
   Debug::Throw( "Application::_readFilesFromArgs.\n" );
-  windowServer().readFilesFromArguments( args_ );
-}
-
-//________________________________________________
-void Application::_applicationManagerStateChanged( SERVER::ApplicationManager::State state )
-{
-
-  Debug::Throw() << "Application::_ApplicationManagerStateChanged - state=" << state << endl;
-
-  switch ( state ) {
-    case SERVER::ApplicationManager::ALIVE:
-    realizeWidget();
-    break;
-
-    case SERVER::ApplicationManager::DEAD:
-    quit();
-    break;
-
-    default:
-    break;
-  }
-
-  return;
-
+  windowServer().readFilesFromArguments( _arguments() );
 }
 
 //________________________________________________
@@ -394,7 +273,7 @@ void Application::_processRequest( const ArgList& args )
   Debug::Throw() << "Application::_ProcessRequest - " << args << endl;
 
   // copy arguments and try open (via QTimer)
-  args_ = args;
+  _setArguments( args );
   startup_timer_.start( 100 );
   return;
   

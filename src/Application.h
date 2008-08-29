@@ -33,13 +33,10 @@
 */
 
 #include <list>
-#include <QApplication>
-#include <QAction>
-#include <QCursor>
 #include <QTimer>
 
-#include "ApplicationManager.h"
-#include "ArgList.h"
+#include "BaseApplication.h"
+#include "Config.h"
 #include "Counter.h"
 
 class AutoSave;
@@ -49,7 +46,7 @@ class WindowServer;
 class Sync;
 
 //! Application singleton
-class Application: public QApplication, public Counter
+class Application: public BaseApplication, public Counter
 {
 
   //! Qt meta object declaration
@@ -65,12 +62,12 @@ class Application: public QApplication, public Counter
 
   //! destructor
   ~Application( void );
-
+  
   //! initialize application manager
-  void initApplicationManager( void );
+  virtual void initApplicationManager( void );
 
   //! create all widgets
-  void realizeWidget( void );
+  bool realizeWidget( void );
   
   //! file list
   FileList& recentFiles( void ) const
@@ -100,35 +97,8 @@ class Application: public QApplication, public Counter
     return *autosave_;
   }
   
-  //! set application busy
-  void busy( void ) 
-  {
-    setOverrideCursor( Qt::WaitCursor ); 
-    processEvents(); 
-  }
-  
-  //! set application idle
-  void idle( void )
-  { restoreOverrideCursor(); }
-  
   //!@name actions
   //@{
-  
-  //! about
-  QAction& aboutAction( void ) const
-  { return *about_action_; }
-   
-  //! about
-  QAction& aboutQtAction( void ) const
-  { return *aboutqt_action_; }
- 
-  //! close
-  QAction& closeAction( void ) const
-  { return *close_action_; }
-
-  //! configure
-  QAction& configurationAction( void ) const
-  { return *configuration_action_; }
 
   //! configure
   QAction& documentClassConfigurationAction( void ) const
@@ -142,27 +112,20 @@ class Application: public QApplication, public Counter
   
   signals:
   
-  //! request widget to save their current configuration
-  void saveConfiguration( void );
-  
-  //! configuration has changed
-  void configurationChanged( void );
-  
   //! spellcheck configuration modified
   void spellCheckConfigurationChanged( void );
   
   //! document classes have been modified
   void documentClassesChanged( void );
  
-  public slots:
-  
-  //! Update Document Classes from options
-  void updateDocumentClasses( void );
-  
-  private slots:
+  protected slots:
 
-  //! opens MessageBox about QEdit version
-  void _about( void );
+  //! Update Document Classes from options
+  void _updateDocumentClasses( void );
+
+  //! about
+  void _about( void )
+  { BaseApplication::_about( "qedit", VERSION, BUILD_TIMESTAMP ); }
   
   //! configuration
   void _configuration( void );
@@ -175,27 +138,18 @@ class Application: public QApplication, public Counter
 
   //! exit safely
   void _exit( void );
-
-  //! Update Configuration from options
-  void _updateConfiguration( void );
   
   //! read file from arguments. 
   /*!
     this is a slot because it must be called after the call
     to "exec()" in the main routine, by means of a single shot QTimer
   */
-  void _readFilesFromArgs( void );
+  void _readFilesFromArguments( void );
   
   //! process request from application manager
   void _processRequest( const ArgList& );
 
-  //! application manager state is changed
-  void _applicationManagerStateChanged( SERVER::ApplicationManager::State );
-
   private:
-  
-  //! pointer to application manager
-  SERVER::ApplicationManager* application_manager_;
   
   //! recent files list
   FileList* recent_files_;
@@ -209,12 +163,6 @@ class Application: public QApplication, public Counter
   //! file autoSave manager
   AutoSave* autosave_;
   
-  //! command line arguments
-  ArgList args_;
-
-  //! true when Realized Widget has been called.
-  bool realized_;
-
   //! startup single shot timer
   /*!
     it allows to call startup methods after the exec() function
@@ -224,18 +172,6 @@ class Application: public QApplication, public Counter
 
   //!@name actions
   //@{
-  
-  //! about
-  QAction* about_action_;
-  
-  //! about Qt
-  QAction* aboutqt_action_;
-  
-  //! close
-  QAction* close_action_;
-   
-  //! configure
-  QAction* configuration_action_;
   
   //! configure
   QAction* document_class_configuration_action_;
