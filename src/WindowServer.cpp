@@ -204,6 +204,8 @@ bool WindowServer::closeAll( void )
 void WindowServer::readFilesFromArguments( ArgList args )
 {
       
+  Debug::Throw() << "WindowServer::readFilesFromArguments." << endl;
+  
   // retrieve files from arguments
   ArgList::Arg last_arg( args.get().back() );
   
@@ -290,9 +292,11 @@ void WindowServer::readFilesFromArguments( ArgList args )
   
   // at first call and if no file was oppened,
   // set the current display as a new document.
-  if( _firstCall() && !file_opened )
-  { _activeWindow().activeView().setIsNewDocument(); }
-  
+  if( !file_opened )
+  {
+    if( _firstCall() ) { _activeWindow().activeView().setIsNewDocument(); }
+    else { QtUtil::uniconify( &_activeWindow() ); }      
+  }
   _setFirstCall( false );
   return;
   

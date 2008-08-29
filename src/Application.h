@@ -62,7 +62,7 @@ class Application: public BaseApplication, public Counter
 
   //! destructor
   ~Application( void );
-  
+
   //! initialize application manager
   virtual void initApplicationManager( void );
 
