@@ -295,7 +295,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
   if( !file_opened )
   {
     if( _firstCall() ) { _activeWindow().activeView().setIsNewDocument(); }
-    else { QtUtil::uniconify( &_activeWindow() ); }      
+    else { _activeWindow().uniconify(); }      
   }
   _setFirstCall( false );
   return;

@@ -415,8 +415,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
 
   // disable check
   FileRemovedDialog dialog( this, file() );
-  QtUtil::centerOnParent( &dialog );
-  int state( dialog.exec() );
+  int state( dialog.centerOnParent().exec() );
 
   if( state == FileRemovedDialog::RESAVE )
   {
@@ -458,8 +457,7 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
   if( _ignoreWarnings() || !_fileModified() ) return FileModifiedDialog::IGNORE;
 
   FileModifiedDialog dialog( this, file() );
-  QtUtil::centerOnParent( &dialog );
-  int state( dialog.exec() );
+  int state( dialog.centerOnParent().exec() );
   if( state == FileModifiedDialog::RESAVE ) { save(); }
   else if( state == FileModifiedDialog::SAVE_AS ) { saveAs(); }
   else if( state == FileModifiedDialog::RELOAD ) {
@@ -498,8 +496,7 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enable_all )
   if( enable_all ) flags |=  AskForSaveDialog::YES_TO_ALL | AskForSaveDialog::NO_TO_ALL;
 
   AskForSaveDialog dialog( this, file(), flags );
-  QtUtil::centerOnParent( &dialog );
-  int state( dialog.exec() );
+  int state( dialog.centerOnParent().exec() );
   if( state == AskForSaveDialog::YES ||  state == AskForSaveDialog::YES_TO_ALL ) save();
   else if( state == AskForSaveDialog::NO ||  state == AskForSaveDialog::NO_TO_ALL ) setModified( false );
 
@@ -2069,9 +2066,9 @@ void TextDisplay::_replaceLeadingTabs( const bool& confirm )
 void TextDisplay::_showFileInfo( void )
 {
   Debug::Throw( "TextDisplay::_showFileInfo.\n" );
-  FileInfoDialog dialog( this, static_cast<Application*>(qApp)->recentFiles() );
-  QtUtil::centerOnParent( &dialog );
-  dialog.exec();
+  FileInfoDialog( this, static_cast<Application*>(qApp)->recentFiles() )
+    .centerOnParent()
+    .exec();
 }
 
 //_____________________________________________________________

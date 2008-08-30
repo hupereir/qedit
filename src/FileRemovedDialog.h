@@ -31,12 +31,12 @@
   \date $Date$
 */
 
-#include <qdialog.h>
+#include "BaseDialog.h"
 #include "Counter.h"
 #include "File.h"
 
 //! QDialog used when a file has been removed from disk
-class FileRemovedDialog: public QDialog, public Counter
+class FileRemovedDialog: public BaseDialog, public Counter
 {
   
   //! Qt macro

@@ -31,13 +31,13 @@
    \date $Date$
 */
 
-#include <QDialog>
+#include "BaseDialog.h"
 
 class FileList;
 class TextDisplay;
 
 //! file informations
-class FileInfoDialog: public QDialog
+class FileInfoDialog: public BaseDialog
 {
   
   public:

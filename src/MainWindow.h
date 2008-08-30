@@ -354,10 +354,6 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! rehighlight all text displays
   void rehighlight( void )
   { activeView().rehighlight(); }
-
-  //! uniconify
-  void uniconify( void )
-  { QtUtil::uniconify( this ); }
  
   //!@name reimplemented from TextEditor
   //@{

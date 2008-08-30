@@ -45,7 +45,7 @@ using namespace std;
 
 //________________________________________________________
 FileModifiedDialog::FileModifiedDialog( QWidget* parent, const File& file ):
-  QDialog( parent ),
+  BaseDialog( parent ),
   Counter( "FileModifiedDialog" )
 {
 

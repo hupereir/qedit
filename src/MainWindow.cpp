@@ -340,8 +340,7 @@ void MainWindow::findFromDialog( void )
   _findDialog().enableRegExp( true );
 
   // raise dialog
-  QtUtil::centerOnParent( &_findDialog() );
-  _findDialog().show();
+  _findDialog().centerOnParent().show();
 
   /*
     setting the default text values
@@ -376,9 +375,7 @@ void MainWindow::replaceFromDialog( void )
   if( !replace_dialog_ ) _createReplaceDialog();
 
   // raise dialog
-  //QtUtil::centerOnPointer( &_replaceDialog() );
-  QtUtil::centerOnParent( &_replaceDialog() );
-  _replaceDialog().show();
+  _replaceDialog().centerOnParent().show();
 
   /*
     setting the default text values
@@ -419,8 +416,7 @@ void MainWindow::selectLineFromDialog( void )
   }
 
   select_line_dialog_->editor().clear();
-  QtUtil::centerOnParent( select_line_dialog_ );
-  select_line_dialog_->show();
+  select_line_dialog_->centerOnParent().show();
   select_line_dialog_->activateWindow();
   select_line_dialog_->editor().setFocus();
 
@@ -486,8 +482,7 @@ void MainWindow::_print( void )
   dialog.setCommand( XmlOptions::get().raw( ( dialog.mode() == PrintDialog::PDF ? "PDF_EDITOR":"HTML_EDITOR" ) ) );
   
   // exec
-  QtUtil::centerOnParent( &dialog );
-  if( dialog.exec() == QDialog::Rejected ) return;
+  if( !dialog.centerOnParent().exec() ) return;
 
   // store options
   XmlOptions::get().set<string>( "PRINT_MODE", dialog.mode() == PrintDialog::PDF ? "PDF":"HTML" );

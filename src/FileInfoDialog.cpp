@@ -54,7 +54,7 @@ using namespace std;
 
 //_________________________________________________________
 FileInfoDialog::FileInfoDialog( TextDisplay* parent, FileList& file_list ):
-  QDialog( parent )
+  BaseDialog( parent )
 {
   Debug::Throw( "FileInfoDialog::FileInfoDialog.\n" );
 

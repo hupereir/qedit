@@ -31,13 +31,13 @@
   \date $Date$
 */
 
-#include <QDialog>
+#include "BaseDialog.h"
 
 #include "Counter.h"
 #include "File.h"
 
 //! QDialog used to ask if a new file should be created
-class FileModifiedDialog: public QDialog, public Counter
+class FileModifiedDialog: public BaseDialog, public Counter
 {
 
   //! Qt macro

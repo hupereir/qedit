@@ -31,12 +31,12 @@
   \date $Date$
 */
 
-#include <QDialog>
+#include "BaseDialog.h"
 #include "Counter.h"
 #include "File.h"
 
 //! QDialog used to ask if modifications of a file should be saved
-class AskForSaveDialog: public QDialog, public Counter
+class AskForSaveDialog: public BaseDialog, public Counter
 {
   
   //! Qt macro
