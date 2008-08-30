@@ -35,6 +35,7 @@
 #include <QAbstractButton>
 #include <map>
 
+#include "IconSize.h"
 #include "CustomToolBar.h"
 #include "CustomToolButton.h"
 
@@ -71,7 +72,7 @@ class NavigationToolBar: public CustomToolBar
   void _updateToolButtonStyle( Qt::ToolButtonStyle );
  
   //! toolbar text position
-  void _updateToolButtonIconSize( CustomToolButton::IconSize );
+  void _updateToolButtonIconSize( IconSize::Size );
   
   //! make sure proper buttons are changed when navigation frame visibility is changed
   virtual void _navigationFrameVisibilityChanged( bool );

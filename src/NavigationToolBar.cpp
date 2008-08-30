@@ -119,10 +119,7 @@ void NavigationToolBar::_updateConfiguration( void )
   Debug::Throw( "NavigationToolBar::_updateConfiguration.\n" );
   
   // icon size
-  QSize icon_size;
-  int icon_width( XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) );
-  if( icon_width <= 0 ) icon_width = style()->pixelMetric( QStyle::PM_ToolBarIconSize );
-  icon_size = QSize( icon_width, icon_width );
+  IconSize icon_size( IconSize( this, (IconSize::Size)XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) ) );
   setIconSize( icon_size );
   
   // text label for toolbars
@@ -151,7 +148,7 @@ void NavigationToolBar::_updateToolButtonStyle( Qt::ToolButtonStyle style )
 }
 
 //____________________________________________________________
-void NavigationToolBar::_updateToolButtonIconSize( CustomToolButton::IconSize size )
+void NavigationToolBar::_updateToolButtonIconSize( IconSize::Size size )
 {
   
   Debug::Throw( "NavigationToolBar::_updateToolButtonIconSize.\n" );
@@ -254,7 +251,7 @@ void NavigationToolBar::_raiseMenu( const QPoint& point )
   ToolBarMenu& menu( mainwindow->toolBarMenu( this ) );
 
   menu.toolButtonStyleMenu().select( (Qt::ToolButtonStyle) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION" ) );
-  menu.iconSizeMenu().select( (CustomToolButton::IconSize) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) );
+  menu.iconSizeMenu().select( (IconSize::Size) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) );
   
   CustomToolBar::connect( &menu.toolButtonStyleMenu(), SIGNAL( styleSelected( Qt::ToolButtonStyle ) ), SLOT( _updateToolButtonStyle( Qt::ToolButtonStyle ) ) );
   CustomToolBar::connect( &menu.iconSizeMenu(), SIGNAL( iconSizeSelected( CustomToolButton::IconSize ) ), SLOT( _updateToolButtonIconSize( CustomToolButton::IconSize ) ) );  
