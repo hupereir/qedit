@@ -47,7 +47,6 @@
 #include "Counter.h"
 #include "FileRecord.h"
 #include "Key.h"
-#include "QtUtil.h"
 #include "TextView.h"
 
 class LineEditor;

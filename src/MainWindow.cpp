@@ -64,6 +64,8 @@
 #include "PixmapEngine.h"
 #include "PrintDialog.h"
 #include "QtUtil.h"
+#include "InformationDialog.h"
+#include "QuestionDialog.h"
 #include "RecentFilesFrame.h"
 #include "ReplaceDialog.h"
 #include "SelectLineDialog.h"
@@ -431,7 +433,7 @@ void MainWindow::_revertToSave( void )
   // check filename
   if( activeDisplay().file().empty() || activeDisplay().isNewDocument() )
   {
-    QtUtil::infoDialog( this, "No filename given. <Revert to save> canceled." );
+    InformationDialog( this, "No filename given. <Revert to save> canceled." ).exec();
     return;
   }
 
@@ -439,7 +441,7 @@ void MainWindow::_revertToSave( void )
   ostringstream what;
   if( activeDisplay().document()->isModified() ) what << "Discard changes to " << activeDisplay().file().localName() << "?";
   else what << "Reload file " << activeDisplay().file().localName() << "?";
-  if( !QtUtil::questionDialog( this, what.str() ) ) return;
+  if( !QuestionDialog( this, what.str().c_str() ).exec() ) return;
 
   activeDisplay().revertToSave();
   
@@ -459,7 +461,7 @@ void MainWindow::_print( void )
   // check if file is valid and exists
   if( file.empty() || !file.exists() )
   {
-    QtUtil::infoDialog( this, "File is not valid for printing. <print> canceled." );
+    InformationDialog( this, "File is not valid for printing. <print> canceled." ).exec();
     return;
   }
 
@@ -507,7 +509,7 @@ void MainWindow::_print( void )
   {
     ostringstream what;
     what << "file \"" << fullname << "\" is a directory. <Print> canceled.";
-    QtUtil::infoDialog( this, what.str(), QtUtil::CENTER_ON_PARENT );
+    InformationDialog( this, what.str().c_str(), BaseDialog::CENTER_ON_PARENT ).exec();
     return;
   }
 
@@ -519,9 +521,9 @@ void MainWindow::_print( void )
     {
       ostringstream what;
       what << "file \"" << fullname << "\" is read-only. <Print> canceled.";
-      QtUtil::infoDialog( this, what.str(), QtUtil::CENTER_ON_PARENT );
+      InformationDialog( this, what.str().c_str(), BaseDialog::CENTER_ON_PARENT ).exec();
       return;
-    } else if( !QtUtil::questionDialog( this, "selected file already exists. Overwrite ?", QtUtil::CENTER_ON_PARENT ) )
+    } else if( !QuestionDialog( this, "selected file already exists. Overwrite ?", BaseDialog::CENTER_ON_PARENT ).exec() )
     return;
   }
   
@@ -539,7 +541,7 @@ void MainWindow::_print( void )
     {
       ostringstream what;
       what << "cannot write to file \"" << fullname << "\" <Print> canceled.";
-      QtUtil::infoDialog( this, what.str() );
+      InformationDialog( this, what.str().c_str() ).exec();
       return;
     }
     

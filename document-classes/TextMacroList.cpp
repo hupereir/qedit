@@ -34,7 +34,8 @@
 
 #include "TextMacroDialog.h"
 #include "TextMacroList.h"
-#include "QtUtil.h"
+#include "InformationDialog.h"
+#include "QuestionDialog.h"
 #include "TreeView.h"
 
 using namespace std;
@@ -163,7 +164,7 @@ void TextMacroList::_edit( void )
   // retrieve selected items
   QModelIndexList selection( list_->selectionModel()->selectedRows() );
   if( selection.empty() ) {
-    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
     return;
   }
 
@@ -195,7 +196,7 @@ void TextMacroList::_remove( void )
   // retrieve selected items; make sure they do not include the navigator
   TextMacroModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() ) {
-    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
     return;
   }
   
@@ -204,7 +205,7 @@ void TextMacroList::_remove( void )
   what << "Remove selected item";
   if( selection.size()>1 ) what << "s";
   what << " ?";
-  if( !QtUtil::questionDialog( this, what.str() ) ) return;
+  if( !QuestionDialog( this, what.str().c_str() ).exec() ) return;
   
   // remove items
   model_.remove( selection );
@@ -255,7 +256,7 @@ void TextMacroList::_up( void )
   TextMacro::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() )
   {
-    QtUtil::infoDialog( this, "no item selected. <Move up> canceled" );
+    InformationDialog( this, "no item selected. <Move up> canceled" ).exec();
     return;
   }
   
@@ -304,7 +305,7 @@ void TextMacroList::_down( void )
   TextMacro::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() )
   {
-    QtUtil::infoDialog( this, "no item selected. <Move down> canceled" );
+    InformationDialog( this, "no item selected. <Move down> canceled" ).exec();
     return;
   }
    

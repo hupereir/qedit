@@ -28,9 +28,9 @@
   \date $Date$
 */
 
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
+#include <QLabel>
+#include <QLayout>
+#include <QPushButton>
 
 #include "BaseIcons.h"
 #include "CustomFileDialog.h"
@@ -42,7 +42,8 @@
 #include "HighlightStyleList.h"
 #include "Options.h" 
 #include "PixmapEngine.h"
-#include "QtUtil.h"
+#include "QuestionDialog.h"
+#include "InformationDialog.h"
 #include "TreeView.h"
 
 using namespace std;
@@ -150,7 +151,7 @@ void DocumentClassManagerDialog::_edit( void )
   QModelIndex current( _list().selectionModel()->currentIndex() );
   if( !current.isValid() ) 
   {
-    QtUtil::infoDialog( this, "No item selected. <Edit> canceled." );
+    InformationDialog( this, "No item selected. <Edit> canceled." ).exec();
     return;
   }
 
@@ -173,7 +174,7 @@ void DocumentClassManagerDialog::_remove( void )
   QModelIndex current( _list().selectionModel()->currentIndex() );
   if( !current.isValid() ) 
   {
-    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
     return;
   }
   
@@ -218,7 +219,7 @@ void DocumentClassManagerDialog::_save( void )
   QModelIndex current( _list().selectionModel()->currentIndex() );
   if( !current.isValid() ) 
   {
-    QtUtil::infoDialog( this, "No item selected. <Save As> canceled." );
+    InformationDialog( this, "No item selected. <Save As> canceled." ).exec();
     return;
   }
   
@@ -236,7 +237,7 @@ void DocumentClassManagerDialog::_save( void )
   {
     ostringstream what;
     what << "file \"" << file << "\" is a directory. <Save As> canceled.";
-    QtUtil::infoDialog( this, what.str() );
+    InformationDialog( this, what.str().c_str() ).exec();
     return;
   }
 
@@ -247,9 +248,9 @@ void DocumentClassManagerDialog::_save( void )
     {
       ostringstream what;
       what << "file \"" << file << "\" is read-only. <Save As> canceled.";
-      QtUtil::infoDialog( this, what.str() );
+      InformationDialog( this, what.str().c_str() ).exec();
       return;
-    } else if( !QtUtil::questionDialog( this, "selected file already exist. Overwrite ?" ) )
+    } else if( !QuestionDialog( this, "selected file already exist. Overwrite ?" ).exec() )
     return;
   }
   

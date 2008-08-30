@@ -39,7 +39,7 @@
 #include "HighlightPatternDialog.h"
 #include "HighlightPatternOptions.h"
 #include "HighlightPatternType.h"
-#include "QtUtil.h"
+#include "InformationDialog.h"
 
 using namespace std;
 
@@ -172,7 +172,7 @@ HighlightPattern HighlightPatternDialog::pattern( void )
   // style
   set<HighlightStyle>::iterator style_iter ( styles_.find( HighlightStyle( style_combobox_->itemText( style_combobox_->currentIndex() ) ) ) );
   if( style_iter != styles_.end() ) pattern_.setStyle( *style_iter );
-  else QtUtil::infoDialog( this, "invalid style name" );
+  else InformationDialog( this, "invalid style name" ).exec();
   
   pattern_.setFlags( pattern_options_->options() );
   pattern_.setType( pattern_type_->type() );

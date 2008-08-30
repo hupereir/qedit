@@ -44,7 +44,8 @@
 #include "Menu.h"
 #include "NavigationFrame.h"
 #include "NewFileDialog.h"
-#include "QtUtil.h"
+#include "InformationDialog.h"
+#include "QuestionDialog.h"
 #include "RecentFilesFrame.h"
 #include "RecentFilesMenu.h"
 #include "SaveAllDialog.h"
@@ -227,7 +228,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
     what << "Do you really want to open " << files.size() << " files at the same time ?" << endl;
     what << "This might be very resource intensive and can overload your computer." << endl;
     what << "If you choose No, only the first file will be opened.";
-    if( !QtUtil::questionDialog( &_activeWindow(), what.str() ) )
+    if( !QuestionDialog( &_activeWindow(), what.str().c_str() ).exec() )
     {
       list<string> tmp;
       tmp.push_back( files.front() );
@@ -269,7 +270,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
     if( diff )
     { 
       if( !first && _activeWindow().activeView().independentDisplayCount() == 2 ) _activeWindow().diffAction().trigger();
-      else QtUtil::infoDialog( &_activeWindow(), "invalid number of files selected. <Diff> canceled." );
+      else InformationDialog( &_activeWindow(), "invalid number of files selected. <Diff> canceled." ).exec();
     }
     
   } else {
@@ -336,7 +337,7 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   if( !counts ) what << "string not found.";
   else if( counts == 1 ) what << "1 replacement performed";
   else what << counts << " replacements performed";
-  QtUtil::infoDialog( &_activeWindow(), what.str() );
+  InformationDialog( &_activeWindow(), what.str().c_str() ).exec();
   
   return;
 }
@@ -455,7 +456,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     
     ostringstream what;
     what << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
-    QtUtil::infoDialog( &_activeWindow(), what.str() );
+    InformationDialog( &_activeWindow(), what.str().c_str() ).exec();
     return false;
     
   }
@@ -563,7 +564,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
     what
       << "The file " << record.file() << " is already opened in another window.\n"
       << "Do you want to close the other display and open the file here ?";
-    if( !QtUtil::questionDialog( &_activeWindow(), what.str() ) )
+    if( !QuestionDialog( &_activeWindow(), what.str().c_str() ).exec() )
     {
       (*iter)->uniconify();
       return false;
@@ -630,10 +631,10 @@ void WindowServer::_detach( void )
   TextDisplay& active_display_local( active_window_local.activeView().activeDisplay() );
   BASE::KeySet<TextDisplay> associated_displays( active_display_local );
   if( !( associated_displays.empty() ||
-    QtUtil::questionDialog( &active_window_local,
+    QuestionDialog( &active_window_local,
     "Active display has clones in the current window.\n"
     "They will be closed when the display is detached.\n"
-    "Continue ?" ) ) ) return;
+    "Continue ?" ).exec() ) ) return;
 
   // save modification state
   bool modified( active_display_local.document()->isModified() );
@@ -847,7 +848,7 @@ bool WindowServer::_createNewFile( const FileRecord& record )
         
         ostringstream what;
         what << "Unable to create file " << record.file() << ".";
-        QtUtil::infoDialog( &_activeWindow(), what.str() );
+        InformationDialog( &_activeWindow(), what.str().c_str() ).exec();
         return false;
         
       } else return true;

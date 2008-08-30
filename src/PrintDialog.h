@@ -41,7 +41,6 @@
 #include "CustomComboBox.h"
 #include "LineEditor.h"
 #include "File.h"
-#include "QtUtil.h"
 
 //! print document
 class PrintDialog: public CustomDialog

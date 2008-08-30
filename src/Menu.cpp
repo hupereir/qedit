@@ -46,7 +46,7 @@
 #include "Menu.h"
 #include "NavigationFrame.h"
 #include "RecentFilesMenu.h"
-#include "QtUtil.h"
+#include "InformationDialog.h"
 #include "TextDisplay.h"
 #include "TextMacro.h"
 #include "Util.h"
@@ -503,7 +503,7 @@ void Menu::_selectFile( QAction* action )
   { 
     ostringstream what;
     what << "Unable to find a window containing file " << iter->second;
-    QtUtil::infoDialog( this, what.str() );
+    InformationDialog( this, what.str().c_str() ).exec();
     return;
   }
   

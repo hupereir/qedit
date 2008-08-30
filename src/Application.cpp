@@ -42,7 +42,7 @@
 #include "Icons.h"
 #include "XmlOptions.h"
 #include "MainWindow.h"
-#include "QtUtil.h"
+#include "InformationDialog.h"
 #include "Util.h"
 #include "WindowServer.h"
 #include "XmlFileList.h"
@@ -185,7 +185,7 @@ void Application::_updateDocumentClasses( void )
     what << qPrintable( class_manager_->readError() );
   }
 
-  if( !what.str().empty() ) QtUtil::infoDialog( 0, what.str() );
+  if( !what.str().empty() ) InformationDialog( 0, what.str().c_str() ).exec();
   
   // load document classes icons into iconEngine cache, if any
   list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );

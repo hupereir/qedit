@@ -36,6 +36,7 @@
 #include "CustomFileDialog.h"
 #include "Debug.h"
 #include "Diff.h"
+#include "InformationDialog.h"
 #include "MainWindow.h"
 #include "NewFileDialog.h"
 #include "TextView.h"
@@ -449,13 +450,13 @@ void TextView::diff( void )
   // check number of files
   if( n_displays > 2 )
   {
-    QtUtil::infoDialog( this, "Too many files opened. Diff canceled." );
+    InformationDialog( this, "Too many files opened. Diff canceled." ).exec();
     return;
   }
 
   if( n_displays < 2 )
   {
-    QtUtil::infoDialog( this, "Too few files opened. Diff canceled." );
+    InformationDialog( this, "Too few files opened. Diff canceled." ).exec();
     return;
   }
 
@@ -484,7 +485,7 @@ void TextView::diff( void )
   // try run
   if( !diff->run() )
   {
-    QtUtil::infoDialog( this, diff->error() );
+    InformationDialog( this, diff->error().c_str() ).exec();
     delete diff;
     return;
   }

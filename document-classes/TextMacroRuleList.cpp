@@ -34,7 +34,8 @@
 
 #include "TextMacroRuleDialog.h"
 #include "TextMacroRuleList.h"
-#include "QtUtil.h"
+#include "QuestionDialog.h"
+#include "InformationDialog.h"
 #include "TreeView.h"
 
 using namespace std;
@@ -149,7 +150,7 @@ void TextMacroRuleList::_edit( void )
   // retrieve selected items
   QModelIndexList selection( list_->selectionModel()->selectedRows() );
   if( selection.empty() ) {
-    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
     return;
   }
 
@@ -181,7 +182,7 @@ void TextMacroRuleList::_remove( void )
   // retrieve selected items; make sure they do not include the navigator
   TextMacroRuleModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() ) {
-    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
     return;
   }
   
@@ -190,7 +191,7 @@ void TextMacroRuleList::_remove( void )
   what << "Remove selected item";
   if( selection.size()>1 ) what << "s";
   what << " ?";
-  if( !QtUtil::questionDialog( this, what.str() ) ) return;
+  if( !QuestionDialog( this, what.str().c_str() ).exec() ) return;
   
   // remove items
   model_.remove( selection );
@@ -242,7 +243,7 @@ void TextMacroRuleList::_up( void )
   TextMacro::Rule::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() )
   {
-    QtUtil::infoDialog( this, "no item selected. <Move up> canceled" );
+    InformationDialog( this, "no item selected. <Move up> canceled" ).exec();
     return;
   }
   
@@ -291,7 +292,7 @@ void TextMacroRuleList::_down( void )
   TextMacro::Rule::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() )
   {
-    QtUtil::infoDialog( this, "no item selected. <Move down> canceled" );
+    InformationDialog( this, "no item selected. <Move down> canceled" ).exec();
     return;
   }
    

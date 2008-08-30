@@ -38,9 +38,10 @@
 #include "Debug.h"
 #include "Icons.h"
 #include "IconEngine.h"
-#include "PrintDialog.h"
 #include "CustomFileDialog.h"
 #include "GridLayout.h"
+#include "PrintDialog.h"
+#include "QtUtil.h"
 
 using namespace std;
 

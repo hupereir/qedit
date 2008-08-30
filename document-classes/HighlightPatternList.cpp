@@ -34,7 +34,8 @@
 
 #include "HighlightPatternDialog.h"
 #include "HighlightPatternList.h"
-#include "QtUtil.h"
+#include "InformationDialog.h"
+#include "QuestionDialog.h"
 #include "TreeView.h"
 
 using namespace std;
@@ -147,7 +148,7 @@ void HighlightPatternList::_add( void )
     HighlightPattern pattern( dialog.pattern() );
     if( pattern.name().isEmpty() || std::find( patterns.begin(), patterns.end(), pattern ) != patterns.end() ) 
     {
-      QtUtil::infoDialog( this, "Invalid pattern name" );
+      InformationDialog( this, "Invalid pattern name" ).exec();
     } else {
       model_.add( pattern );
       break; 
@@ -164,7 +165,7 @@ void HighlightPatternList::_edit( void )
   // retrieve selected items
   QModelIndexList selection( list_->selectionModel()->selectedRows() );
   if( selection.empty() ) {
-    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
     return;
   }
 
@@ -199,7 +200,7 @@ void HighlightPatternList::_remove( void )
   // retrieve selected items; make sure they do not include the navigator
   HighlightPatternModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() ) {
-    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
     return;
   }
   
@@ -208,7 +209,7 @@ void HighlightPatternList::_remove( void )
   what << "Remove selected item";
   if( selection.size()>1 ) what << "s";
   what << " ?";
-  if( !QtUtil::questionDialog( this, what.str() ) ) return;
+  if( !QuestionDialog( this, what.str().c_str() ).exec() ) return;
   
   // remove items
   model_.remove( selection );
@@ -259,7 +260,7 @@ void HighlightPatternList::_up( void )
   HighlightPattern::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() )
   {
-    QtUtil::infoDialog( this, "no item selected. <Move up> canceled" );
+    InformationDialog( this, "no item selected. <Move up> canceled" ).exec();
     return;
   }
   
@@ -308,7 +309,7 @@ void HighlightPatternList::_down( void )
   HighlightPattern::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() )
   {
-    QtUtil::infoDialog( this, "no item selected. <Move down> canceled" );
+    InformationDialog( this, "no item selected. <Move down> canceled" ).exec();
     return;
   }
    

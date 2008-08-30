@@ -52,7 +52,9 @@
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
 #include "Icons.h"
+#include "InformationDialog.h"
 #include "LineNumberDisplay.h"
+#include "QuestionDialog.h"
 #include "QtUtil.h"
 #include "ReplaceDialog.h"
 #include "TextDisplay.h"
@@ -333,7 +335,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
     what << "This probably means that the application crashed the last time ";
     what << "the file was edited." << endl;
     what << "Use autosaved version ?";
-    if( QtUtil::questionDialog( this, what.str() ) )
+    if( QuestionDialog( this, what.str().c_str() ).exec() )
     {
       restore_autosave = true;
       tmp = autosaved;
@@ -528,7 +530,7 @@ void TextDisplay::save( void )
     {
       ostringstream what;
       what << "Cannot write to file \"" << file() << "\". <Save> canceled.";
-      QtUtil::infoDialog( this, what.str() );
+      InformationDialog( this, what.str().c_str() ).exec();
       return;
     }
 
@@ -590,7 +592,7 @@ void TextDisplay::saveAs( void )
   {
     ostringstream what;
     what << "File \"" << file << "\" is a directory. <Save> canceled.";
-    QtUtil::infoDialog( this, what.str() );
+    InformationDialog( this, what.str().c_str() ).exec();
     return;
   }
 
@@ -602,9 +604,9 @@ void TextDisplay::saveAs( void )
     {
       ostringstream what;
       what << "File \"" << file << "\" is read-only. <Save> canceled.";
-      QtUtil::infoDialog( this, what.str() );
+      InformationDialog( this, what.str().c_str() ).exec();
       return;
-    } else if( !QtUtil::questionDialog( this, "Selected file already exists. Overwrite ?" ) ) return;
+    } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).exec() ) return;
     
   }
 
@@ -1070,7 +1072,7 @@ void TextDisplay::processMacro( QString name )
   {
     ostringstream what;
     what << "Unable to find macro named " << qPrintable( name );
-    QtUtil::infoDialog( this, what.str() );
+    InformationDialog( this, what.str().c_str() ).exec();
     return;
   }
 
@@ -1991,7 +1993,7 @@ void TextDisplay::_replaceLeadingTabs( const bool& confirm )
     ostringstream what;
     if( _hasTabEmulation() ) what << "Replace all leading tabs with space characters ?";
     else what << "Replace all leading spaces with tab characters ?";
-    if( !QtUtil::questionDialog( this, what.str() ) ) return;
+    if( !QuestionDialog( this, what.str().c_str() ).exec() ) return;
 
   }
 
@@ -2295,7 +2297,10 @@ void TextDisplay::_nextTag( void )
   { block = block.next(); }
 
   if( !block.isValid() )
-  { return QtUtil::infoDialog( this, "No tagged block found." ); }
+  { 
+    InformationDialog( this, "No tagged block found." ).exec();
+    return;
+  }
 
   // update cursor
   cursor.setPosition( block.position() );
@@ -2327,7 +2332,10 @@ void TextDisplay::_previousTag( void )
   { block = block.previous(); }
 
   if( !block.isValid() )
-  { return QtUtil::infoDialog( this, "No tagged block found." ); }
+  { 
+    InformationDialog( this, "No tagged block found." ).exec();
+    return;
+  }
 
   // update cursor
   cursor.setPosition( block.position() );

@@ -34,7 +34,8 @@
 
 #include "HighlightStyleDialog.h"
 #include "HighlightStyleList.h"
-#include "QtUtil.h"
+#include "InformationDialog.h"
+#include "QuestionDialog.h"
 #include "TreeView.h"
 
 using namespace std;
@@ -132,7 +133,7 @@ void HighlightStyleList::_add( void )
     HighlightStyle style( dialog.style() );
     if( style.name().isEmpty() || std::find( styles.begin(), styles.end(), style ) != styles.end() ) 
     {
-      QtUtil::infoDialog( this, "Invalid pattern name" );
+      InformationDialog( this, "Invalid pattern name" ).exec();
     } else {
       model_.add( style );
       break; 
@@ -149,7 +150,7 @@ void HighlightStyleList::_edit( void )
   // retrieve selected items;
   QModelIndexList selection( list_->selectionModel()->selectedRows() );
   if( selection.empty() ) {
-    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
     return;
   }
 
@@ -181,7 +182,7 @@ void HighlightStyleList::_remove( void )
   // retrieve selected items; make sure they do not include the navigator
   HighlightStyleModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
   if( selection.empty() ) {
-    QtUtil::infoDialog( this, "No item selected. <Remove> canceled." );
+    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
     return;
   }
   
@@ -190,7 +191,7 @@ void HighlightStyleList::_remove( void )
   what << "Remove selected item";
   if( selection.size()>1 ) what << "s";
   what << " ?";
-  if( !QtUtil::questionDialog( this, what.str() ) ) return;
+  if( !QuestionDialog( this, what.str().c_str() ).exec() ) return;
   
   // remove items
   model_.remove( selection );

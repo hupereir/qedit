@@ -38,6 +38,7 @@
 #include "Icons.h"
 #include "IconEngine.h"
 #include "FileList.h"
+#include "QuestionDialog.h"
 #include "QtUtil.h"
 #include "RecentFilesFrame.h"
 #include "TreeView.h"
@@ -192,7 +193,7 @@ void RecentFilesFrame::_clean( void )
 { 
   
   Debug::Throw( "RecentFilesFrame:_clean.\n" ); 
-  if( !QtUtil::questionDialog( this,"Remove invalid or duplicated files from list ?" ) ) return;
+  if( !QuestionDialog( this,"Remove invalid or duplicated files from list ?" ).exec() ) return;
   _recentFiles().clean();
   _update();
   

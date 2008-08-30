@@ -36,7 +36,7 @@
 #include "XmlOptions.h"
 #include "TextDisplay.h"
 #include "TimeStamp.h"
-#include "QtUtil.h"
+#include "InformationDialog.h"
 #include "Util.h"
 
 
@@ -128,7 +128,7 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
   {
     ostringstream what;
     what << "diff excited with code " << code;
-    QtUtil::infoDialog( 0, what.str() );
+    InformationDialog( 0, what.str().c_str() ).exec();
     return;
   }
     
