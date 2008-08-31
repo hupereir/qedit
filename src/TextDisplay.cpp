@@ -178,7 +178,7 @@ void TextDisplay::setModified( const bool& value )
   document()->setModified( value );
 
   // ask for update in the parent frame
-  if( isActive() ) emit needUpdate( MODIFIED );
+  if( isActive() && ( file().size() || isNewDocument() ) ) emit needUpdate( MODIFIED );
 
 }
 
@@ -345,6 +345,20 @@ void TextDisplay::setFile( File file, bool check_autosave )
   // remove new document version from name server
   if( isNewDocument() ) { name_server_.remove( TextDisplay::file() ); }
   
+  // check file and try open.
+  QFile in( tmp.c_str() );
+  if( in.open( QIODevice::ReadOnly ) )
+  {
+
+    setPlainText( in.readAll() );
+    in.close();
+
+    // update flags
+    setModified( false );
+    _setIgnoreWarnings( false );
+
+  }
+
   // retrieve display and associated
   BASE::KeySet<TextDisplay> displays( this );
   displays.insert( this );
@@ -358,20 +372,6 @@ void TextDisplay::setFile( File file, bool check_autosave )
     // enable file info action
     (*iter)->fileInfoAction().setEnabled( true );
     
-  }
-    
-  // check file and try open.
-  QFile in( tmp.c_str() );
-  if( in.open( QIODevice::ReadOnly ) )
-  {
-
-    setPlainText( in.readAll() );
-    in.close();
-
-    // update flags
-    setModified( false );
-    _setIgnoreWarnings( false );
-
   }
     
   // save file if restored from autosaved.
@@ -2094,7 +2094,7 @@ void TextDisplay::_textModified( void )
   // document should never appear modified
   // for readonly displays
   if( document()->isModified() && isReadOnly() ) document()->setModified( false );
-  if( isActive() ) emit needUpdate( MODIFIED );
+  if( isActive() && ( file().size() || isNewDocument() ) ) emit needUpdate( MODIFIED );
   
 }
 

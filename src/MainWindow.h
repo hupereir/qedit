@@ -552,6 +552,9 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   void _setOrientation( const Qt::Orientation orientation )
   { default_orientation_ = orientation; }
   
+  //! make connection between this window and child text view
+  void _connectView( TextView& view );
+  
   //! Update window title
   void _updateWindowTitle();
   

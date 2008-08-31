@@ -209,8 +209,6 @@ MainWindow::MainWindow(  QWidget* parent ):
   _updateConfiguration();
   
   // update buttons
-  _update( TextDisplay::ALL );
-  
   Debug::Throw( "MainWindow::MainWindow - done.\n" );
  
 }
@@ -233,14 +231,7 @@ TextView& MainWindow::newTextView( void )
   setActiveView( *view );
   
   // connections
-  connect( view, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
-  connect( view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
-  connect( view, SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
-  connect( view, SIGNAL( displayCountChanged( void ) ), &static_cast<Application*>(qApp)->windowServer(), SIGNAL( sessionFilesChanged( void ) ) );
-  connect( view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
-  connect( view, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) ); 
-
-  connect( &view->positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );  
+  _connectView( *view );
   
   return *view;
   
@@ -266,7 +257,8 @@ void MainWindow::setActiveView( TextView& view )
   if( _stack().currentWidget() !=  &activeView() ) _stack().setCurrentWidget( &activeView() );
 
   // update displays, actions, etc.
-  _update( TextDisplay::ALL );
+  if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
+  { _update( TextDisplay::ALL ); }
 
 }
 
@@ -989,6 +981,19 @@ void MainWindow::_createReplaceDialog( void )
 
   }
   
+}
+
+//_________________________________________________________________
+void MainWindow::_connectView( TextView& view )
+{
+  Debug::Throw( "MainWindow::_connectView.\n" );
+  connect( &view, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
+  connect( &view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
+  connect( &view, SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
+  connect( &view, SIGNAL( displayCountChanged( void ) ), &static_cast<Application*>(qApp)->windowServer(), SIGNAL( sessionFilesChanged( void ) ) );
+  connect( &view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
+  connect( &view, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) ); 
+  connect( &view.positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );  
 }
 
 //___________________________________________________________

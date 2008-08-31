@@ -34,6 +34,7 @@
 #include <QLayout>
 #include <QButtonGroup> 
 #include <QGroupBox> 
+#include <QLabel>
 
 #include "Debug.h"
 #include "Icons.h"

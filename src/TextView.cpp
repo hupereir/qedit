@@ -193,8 +193,11 @@ void TextView::setActiveDisplay( TextDisplay& display )
   
   if( active_display_ != &display )
   {
+    
     active_display_ = &display;
-    emit needUpdate( TextDisplay::ALL );
+    if( display.file().size() || display.isNewDocument() ) 
+    { emit needUpdate( TextDisplay::ALL ); }
+    
   }
   
   if( !activeDisplay().isActive() )
@@ -545,8 +548,6 @@ void TextView::enterEvent( QEvent* e )
   }
 
   // update window title
-  // emit needUpdate( TextDisplay::WINDOW_TITLE );
-
   Debug::Throw( "TextView::enterEvent - done.\n" );
 
 }

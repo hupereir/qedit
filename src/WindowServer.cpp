@@ -46,6 +46,7 @@
 #include "NewFileDialog.h"
 #include "InformationDialog.h"
 #include "QuestionDialog.h"
+#include "QtUtil.h"
 #include "RecentFilesFrame.h"
 #include "RecentFilesMenu.h"
 #include "SaveAllDialog.h"
@@ -782,7 +783,7 @@ bool WindowServer::_close( const list<string>& files )
         }
         
         view.closeDisplay( display );
-        qApp->processEvents();
+        // qApp->processEvents();
         
       }
     }
