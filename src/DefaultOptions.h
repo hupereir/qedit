@@ -117,7 +117,6 @@ void installDefaultOptions( void )
   #ifdef WITH_ASPELL
   XmlOptions::get().add( "DICTIONARY", Option( "en" , "default dictionary"  ) );
   XmlOptions::get().add( "DICTIONARY_FILTER", Option( "none" , "default filter"  ) );
-  XmlOptions::get().add( "AUTOSPELL", Option( "0", "true to set automatic spellcheck on by default" ) );
   XmlOptions::get().add( "AUTOSPELL_COLOR", Option( "red", "highlight color for autospell" ) );
   XmlOptions::get().add( "AUTOSPELL_FONT_FORMAT", Option( "0", "highlight font format for autospell" ) );
   XmlOptions::get().add( "MAX_SUGGESTIONS", Option( "0", "maximum number of suggestions. 0 means all." ) );

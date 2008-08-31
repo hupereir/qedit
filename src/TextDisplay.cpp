@@ -288,10 +288,12 @@ void TextDisplay::setIsNewDocument( void )
   displays.insert( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
+    
     (*iter)->_setIsNewDocument( true );
     (*iter)->_setFile( file );
     (*iter)->setClassName( className() );
     (*iter)->updateDocumentClass();
+    (*iter)->_updateSpellCheckConfiguration();
 
     // disable file info action
     (*iter)->fileInfoAction().setEnabled( false );
@@ -351,9 +353,12 @@ void TextDisplay::setFile( File file, bool check_autosave )
   displays.insert( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
+    
     (*iter)->_setIsNewDocument( false );
     (*iter)->setClassName( className() );
     (*iter)->updateDocumentClass( file );    
+    (*iter)->_updateSpellCheckConfiguration( file );
+    
   }
   
   // check file and try open.
@@ -384,10 +389,6 @@ void TextDisplay::setFile( File file, bool check_autosave )
   // perform first autosave
   Application& application( *static_cast<Application*>(qApp) );
   application.autoSave().saveFiles( this );
-  
-  // update openPrevious menu
-  if( !TextDisplay::file().empty() )
-  { application.recentFiles().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
   
 }
 
@@ -644,8 +645,6 @@ void TextDisplay::saveAs( void )
 
   // rehighlight
   rehighlight();
-  if( !( TextDisplay::file().empty() || isNewDocument() ) )
-  { static_cast<Application*>(qApp)->recentFiles().get( TextDisplay::file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
 
 }
 
@@ -739,22 +738,27 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
   // clear highlight locations and rehighlight
   QDomElement out = document.createElement( "pre" );
 
+  int active_id( 0 ); 
+  
   // loop over text blocks
   for( QTextBlock block = TextDisplay::document()->begin(); block.isValid(); block = block.next() )
   {
 
+    // need to redo highlighting rather that us HighlightBlockData
+    // because the latter do not store autospell patterns.
     PatternLocationSet locations;
-
-    // try retrieve highlightBlockData
-    HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-    if( data ) locations = data->locations();
-
+    if( textHighlight().isHighlightEnabled() ) 
+    { 
+      locations = textHighlight().locationSet( block.text(), active_id );
+      active_id = locations.activeId().second;
+    }
+    
     // retrieve text
     QString text( block.text() );
 
     // current pattern
     QDomElement span;
-    int current_pattern_id = 0;
+    int current_pattern_id = -1;
     bool line_break( false );
     int line_index( 0 );
 
@@ -769,7 +773,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
         locations.rend(),
         PatternLocation::ContainsFTor( index ) );
 
-      int pattern_id( ( location_iter == locations.rend() ) ? 0:location_iter->id() );
+      int pattern_id( ( location_iter == locations.rend() ) ? -1:location_iter->id() );
       if( pattern_id != current_pattern_id || index == 0 || line_break )
       {
 
@@ -794,7 +798,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
         span = out.appendChild( document.createElement( "span" ) ).toElement();
         if( location_iter !=  locations.rend() )
         {
-
+                    
           // retrieve font format
           const unsigned int& format( location_iter->fontFormat() );
           ostringstream format_stream;
@@ -993,7 +997,7 @@ void TextDisplay::updateDocumentClass( File file )
   { document_class = application.classManager().get( className() ); }
 
   // load default if new document
-  if( isNewDocument() )
+  if( document_class.name().isEmpty() && isNewDocument() )
   { document_class = application.classManager().defaultClass(); }
 
   // try load from file
@@ -1182,9 +1186,7 @@ void TextDisplay::selectFilter( const QString& filter )
 
   // update file record
   if( !( file().empty() || isNewDocument() ) )
-  {
-    static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::FILTER, interface.filter() );
-  }
+  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::FILTER, interface.filter() ); }
 
   // rehighlight if needed
   if( textHighlight().spellParser().isEnabled() ) rehighlight();
@@ -1212,9 +1214,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
 
   // update file record
   if( !( file().empty() || isNewDocument() ) )
-  {
-    static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::DICTIONARY, interface.dictionary() );
-  }
+  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::DICTIONARY, interface.dictionary() ); }
 
   // rehighlight if needed
   if( textHighlight().spellParser().isEnabled() ) rehighlight();
@@ -1629,7 +1629,7 @@ void TextDisplay::_updateConfiguration( void )
 }
 
 //___________________________________________________________________________
-void TextDisplay::_updateSpellCheckConfiguration( void )
+void TextDisplay::_updateSpellCheckConfiguration( File file )
 {
   Debug::Throw( "TextDisplay::_updateSpellCheckConfiguration.\n" );
 
@@ -1640,7 +1640,6 @@ void TextDisplay::_updateSpellCheckConfiguration( void )
   changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<string>("AUTOSPELL_COLOR").c_str() ) );
   changed |= textHighlight().spellParser().setFontFormat( XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
   textHighlight().updateSpellPattern();
-  autoSpellAction().setChecked( XmlOptions::get().get<bool>("AUTOSPELL") );
   autoSpellAction().setEnabled( textHighlight().spellParser().color().isValid() );
 
   // store local reference to spell interface
@@ -1651,9 +1650,10 @@ void TextDisplay::_updateSpellCheckConfiguration( void )
   string dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
 
   // overwrite with file record
-  if( !( file().empty() || isNewDocument() ) )
+  if( file.empty() ) file = TextDisplay::file();
+  if( !( file.empty() || isNewDocument() ) )
   {
-    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
+    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
     if( record.hasProperty( FileRecordProperties::FILTER ) && interface.hasFilter( record.property( FileRecordProperties::FILTER ) ) )
     { filter = record.property( FileRecordProperties::FILTER ); }
 
@@ -1676,7 +1676,8 @@ void TextDisplay::_updateSpellCheckConfiguration( void )
   }
 
   // rehighlight if needed
-  if( changed && autoSpellAction().isChecked() && autoSpellAction().isEnabled() ) rehighlight();
+  if( changed && autoSpellAction().isChecked() && autoSpellAction().isEnabled() ) 
+  { rehighlight(); }
 
   #endif
 
@@ -1786,8 +1787,8 @@ void TextDisplay::_toggleAutoSpell( bool state )
   Debug::Throw( "TextDisplay::_toggleAutoSpell.\n" );
 
   // enable menus
-  dictionaryMenuAction().setEnabled( state );
-  filterMenuAction().setEnabled( state );
+  // dictionaryMenuAction().setEnabled( state );
+  // filterMenuAction().setEnabled( state );
   
   // propagate to textHighlight
   textHighlight().spellParser().setEnabled( state );

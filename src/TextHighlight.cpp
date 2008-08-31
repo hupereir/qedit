@@ -108,7 +108,7 @@ void TextHighlight::highlightBlock( const QString& text )
   {
     
     // get new set of highlight locations
-    locations = locationSet( text, active_id );
+    locations = _highlightLocationSet( text, active_id );
     
     // update data modification state and highlight pattern locations
     data->setFlag( TextBlock::MODIFIED, false );
@@ -126,17 +126,9 @@ void TextHighlight::highlightBlock( const QString& text )
   
   if( spellParser().isEnabled() )
   {
-    
+        
     // clear locations
-    locations.clear();
-    
-    // insert highlight
-    const SPELLCHECK::Word::Set& words( spellParser().parse( text ) );
-    for( SPELLCHECK::Word::Set::const_iterator iter = words.begin(); iter != words.end(); iter++ )
-    { locations.insert( PatternLocation( spellPattern(), iter->position(), iter->size() ) ); }
-    
-    // store active id
-    data->setMisspelledWords( words );
+    locations = _spellCheckLocationSet( text, data );
     data->setLocations( PatternLocationSet() );
     setCurrentBlockState( -1 );
     
@@ -160,7 +152,17 @@ void TextHighlight::highlightBlock( const QString& text )
 }
     
 //_________________________________________________________
-PatternLocationSet TextHighlight::locationSet( const QString& text, const int& active_id ) const
+PatternLocationSet TextHighlight::locationSet( const QString& text, const int& active_id )
+{
+  
+  if( spellParser().isEnabled() ) return _spellCheckLocationSet( text );
+  else if( isHighlightEnabled()  && !patterns_.empty() ) return _highlightLocationSet( text, active_id );
+  else return PatternLocationSet();
+  
+}
+
+//_________________________________________________________
+PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, const int& active_id ) const
 {
       
   // location list
@@ -325,13 +327,30 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, const int& a
   return locations;
   
 }
+    
+//_________________________________________________________
+PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, HighlightBlockData* data )
+{
+
+  PatternLocationSet locations;
+  
+  // insert highlight
+  const SPELLCHECK::Word::Set& words( spellParser().parse( text ) );
+  for( SPELLCHECK::Word::Set::const_iterator iter = words.begin(); iter != words.end(); iter++ )
+  { locations.insert( PatternLocation( spellPattern(), iter->position(), iter->size() ) ); }
+  
+  // store misspelled words
+  if( data ) data->setMisspelledWords( words );
+  return locations;
+  
+}
 
 //_________________________________________________________
 void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
 {
 
   // initialize style
-  int pattern_id(0);
+  int pattern_id(-1);
   QTextCharFormat current_format;
   for( PatternLocationSet::const_iterator iter = locations.begin(); iter != locations.end(); iter++ )
   {

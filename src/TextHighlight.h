@@ -49,6 +49,7 @@
 #endif
 
 class HighlightPattern;
+class HighlightBlockData;
 
 //! syntax highlighting based on text patterns
 class TextHighlight: public QSyntaxHighlighter, public Counter
@@ -70,7 +71,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   virtual void highlightBlock( const QString& text );
   
   //! retrieve highlight location for given text
-  PatternLocationSet locationSet( const QString& text, const int& active_id ) const;
+  PatternLocationSet locationSet( const QString& text, const int& active_id );
   
   //!@name highlight patterns
   //@{
@@ -166,7 +167,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   //! embedded spellcheck parser
   SPELLCHECK::SpellParser& spellParser( void ) 
   { return spellparser_; }
-  
+    
   //! highlight pattern associated to auto-spell
   const HighlightPattern& spellPattern( void ) const
   { return spell_pattern_; }
@@ -186,7 +187,13 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
   
   //!@name syntax highlighting
   //@{
+
+  //! retrieve highlight location for given text
+  PatternLocationSet _highlightLocationSet( const QString& text, const int& active_id ) const;
   
+  //! retrieve highlight location for given text
+  PatternLocationSet _spellCheckLocationSet( const QString& text, HighlightBlockData* data = 0 );
+
   //! apply locations to current block
   void _applyPatterns( const PatternLocationSet& locations );
  

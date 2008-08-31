@@ -410,7 +410,7 @@ class TextDisplay: public TextEditor
   
   //! set document class
   void updateDocumentClass( File file = File() );
-  
+
   //! process macro by name
   void processMacro( QString );
 
@@ -522,8 +522,8 @@ class TextDisplay: public TextEditor
   void _updateConfiguration( void );
 
   //! spellcheck configuration
-  void _updateSpellCheckConfiguration( void );
-  
+  void _updateSpellCheckConfiguration( File file = File() );
+      
   //! indent paragraph (when return or tab is pressed)
   void _indentCurrentParagraph( void );
 

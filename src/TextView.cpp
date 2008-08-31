@@ -103,8 +103,10 @@ void TextView::setIsNewDocument( void )
 //____________________________________________
 void TextView::setFile( File file )
 {
+  
   Debug::Throw() << "TextView::setFile - " << file << endl;
-
+  assert( !file.empty() );
+  
   // look for first empty display
   BASE::KeySet<TextDisplay> displays( this );  
   BASE::KeySet<TextDisplay>::iterator iter = find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
@@ -112,8 +114,10 @@ void TextView::setFile( File file )
   TextDisplay &display( **iter );
    
   // open file in active display
-  if( !file.empty() ) display.setFile( file );
-  else display.updateDocumentClass();
+  display.setFile( file );
+  
+  // if( !file.empty() ) display.setFile( file );
+  // else display.updateDocumentClass();
   
   // set focus
   setActiveDisplay( display );
