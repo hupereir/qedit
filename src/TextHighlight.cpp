@@ -155,8 +155,14 @@ void TextHighlight::highlightBlock( const QString& text )
 PatternLocationSet TextHighlight::locationSet( const QString& text, const int& active_id )
 {
   
+  #if WITH_ASPELL
+
   if( spellParser().isEnabled() ) return _spellCheckLocationSet( text );
-  else if( isHighlightEnabled()  && !patterns_.empty() ) return _highlightLocationSet( text, active_id );
+  else 
+    
+  #endif
+  
+  if( isHighlightEnabled()  && !patterns_.empty() ) return _highlightLocationSet( text, active_id );
   else return PatternLocationSet();
   
 }
@@ -334,6 +340,8 @@ PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, H
 
   PatternLocationSet locations;
   
+  #if WITH_ASPELL
+
   // insert highlight
   const SPELLCHECK::Word::Set& words( spellParser().parse( text ) );
   for( SPELLCHECK::Word::Set::const_iterator iter = words.begin(); iter != words.end(); iter++ )
@@ -341,6 +349,9 @@ PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, H
   
   // store misspelled words
   if( data ) data->setMisspelledWords( words );
+  
+  #endif
+  
   return locations;
   
 }
