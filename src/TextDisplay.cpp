@@ -290,10 +290,10 @@ void TextDisplay::setIsNewDocument( void )
   {
     
     (*iter)->_setIsNewDocument( true );
-    (*iter)->_setFile( file );
     (*iter)->setClassName( className() );
     (*iter)->updateDocumentClass();
     (*iter)->_updateSpellCheckConfiguration();
+    (*iter)->_setFile( file );
 
     // disable file info action
     (*iter)->fileInfoAction().setEnabled( false );
@@ -619,6 +619,10 @@ void TextDisplay::saveAs( void )
   if( isNewDocument() ) { name_server_.remove( TextDisplay::file() ); }
 
   // update filename and document class for this and associates
+  // the class name is reset, to allow a document class
+  // matching the new filename to get loaded
+  setClassName( "" );
+  
   BASE::KeySet<TextDisplay> displays( this );
   displays.insert( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
@@ -626,13 +630,9 @@ void TextDisplay::saveAs( void )
 
     // update file
     (*iter)->_setIsNewDocument( false );
-    (*iter)->_setFile( file );
- 
-    // update document class
-    // the class name is reset, to allow a document class
-    // matching the new filename to get loaded
-    (*iter)->setClassName("");
-    (*iter)->updateDocumentClass();
+    (*iter)->setClassName( className() );
+    (*iter)->updateDocumentClass( file );
+    (*iter)->_setFile( file ); 
 
     // enable file info action
     (*iter)->fileInfoAction().setEnabled( true );
@@ -1012,7 +1012,16 @@ void TextDisplay::updateDocumentClass( File file )
   setClassName( document_class.name() );
 
   // wrap mode
-  if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
+  if( !( file.empty() || isNewDocument() ) )
+  { 
+    
+    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
+    if( record.hasProperty( FileRecordProperties::WRAPPED ) ) wrapModeAction().setChecked( record.property<bool>( FileRecordProperties::WRAPPED ) );
+    else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
+
+  } else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
+  
+  // tab emulation
   if( XmlOptions::get().get<bool>( "EMULATE_TABS_FROM_CLASS" ) ) tabEmulationAction().setChecked( document_class.emulateTabs() );
 
   // need to update tab size here because at the time it was set in _updateConfiguration,
@@ -1056,6 +1065,7 @@ void TextDisplay::updateDocumentClass( File file )
   { 
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
     record.addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); 
+    record.addProperty<bool>( FileRecordProperties::WRAPPED, wrapModeAction().isChecked() ); 
     if( !document_class.icon().isEmpty() ) record.addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
   }
 
@@ -1596,6 +1606,20 @@ void TextDisplay::_drawMargins( QPainter& painter )
   TextEditor::_drawMargins( painter );
   bool has_block_delimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
   if( has_block_delimiters ) blockDelimiterDisplay().paint( painter ); 
+}
+
+//___________________________________________________________________________
+bool TextDisplay::_toggleWrapMode( bool state )
+{
+  
+  Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "true":"false") << endl;
+  if( !TextEditor::_toggleWrapMode( state ) ) return false;
+  
+  if( !( file().empty() || isNewDocument() ) )
+  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty<bool>( FileRecordProperties::WRAPPED, state ); }
+    
+  return true;
+  
 }
 
 //___________________________________________________________________________

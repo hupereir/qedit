@@ -516,6 +516,11 @@ class TextDisplay: public TextEditor
   //! draw margins
   virtual void _drawMargins( QPainter& );
 
+  protected slots:
+  
+  /*! returns true if changed */
+  virtual bool _toggleWrapMode( bool );
+
   private slots:
 
   //! update configuration
