@@ -34,7 +34,7 @@
 #include "IndentPattern.h"
 #include "Str.h"
 #include "XmlDef.h"
-#include "XmlUtil.h"
+#include "XmlString.h"
 
 using namespace std;
 
@@ -145,7 +145,7 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
   for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() ) 
   {
     QDomElement child_element = child_node.toElement(); 
-    if( child_element.tagName() == XML::REGEXP ) setPattern( XmlUtil::xmlToText( child_element.text() ) );
+    if( child_element.tagName() == XML::REGEXP ) setPattern( XmlString( child_element.text() ).toText() );
     else cout << "Rule::Rule - unrecognized child: " << qPrintable( child_element.tagName() ) << endl;
   }
   
@@ -164,7 +164,7 @@ QDomElement IndentPattern::Rule::domElement( QDomDocument& parent ) const
   
   out.
     appendChild( parent.createElement( XML::REGEXP ) ).
-    appendChild( parent.createTextNode( XmlUtil::textToXml( pattern().pattern() ) ) );
+    appendChild( parent.createTextNode( XmlString( pattern().pattern() ).toXml() ) );
   
   return out;
 }

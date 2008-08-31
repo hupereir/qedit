@@ -34,7 +34,7 @@
 #include "HighlightPattern.h"
 #include "Str.h"
 #include "XmlDef.h"
-#include "XmlUtil.h"
+#include "XmlString.h"
 
 using namespace std;
 
@@ -65,9 +65,9 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     if( attribute.isNull() ) continue;
 
     if( attribute.name() == XML::NAME ) name_ = attribute.value() ;
-    else if( attribute.name() == XML::PATTERN ) file_pattern_.setPattern( XmlUtil::xmlToText( attribute.value() ) );
-    else if( attribute.name() == XML::FIRSTLINE_PATTERN ) firstline_pattern_.setPattern( XmlUtil::xmlToText( attribute.value() ) ); 
-    else if( attribute.name() == XML::ICON ) icon_ = XmlUtil::xmlToText( attribute.value() );
+    else if( attribute.name() == XML::PATTERN ) file_pattern_.setPattern( XmlString( attribute.value() ).toText() );
+    else if( attribute.name() == XML::FIRSTLINE_PATTERN ) firstline_pattern_.setPattern( XmlString( attribute.value() ).toText() ); 
+    else if( attribute.name() == XML::ICON ) icon_ = XmlString( attribute.value() ).toText();
     else if( attribute.name() == XML::OPTIONS )
     {
       
@@ -155,8 +155,8 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   
   // dump attributes
   out.setAttribute( XML::NAME, name_ );
-  if( !file_pattern_.isEmpty() ) out.setAttribute( XML::PATTERN, XmlUtil::textToXml( file_pattern_.pattern() ) );
-  if( !firstline_pattern_.isEmpty() ) out.setAttribute( XML::FIRSTLINE_PATTERN, XmlUtil::textToXml( firstline_pattern_.pattern() ) );
+  if( !file_pattern_.isEmpty() ) out.setAttribute( XML::PATTERN, XmlString( file_pattern_.pattern() ).toXml() );
+  if( !firstline_pattern_.isEmpty() ) out.setAttribute( XML::FIRSTLINE_PATTERN, XmlString( firstline_pattern_.pattern() ).toXml() );
   
   // options
   QString options;

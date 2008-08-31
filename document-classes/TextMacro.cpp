@@ -36,7 +36,7 @@
 #include "Str.h"
 #include "TextMacro.h"
 #include "XmlDef.h"
-#include "XmlUtil.h"
+#include "XmlString.h"
 
 using namespace std;
 
@@ -125,8 +125,8 @@ TextMacro::Rule::Rule( const QDomElement& element ):
   {
     QDomElement child_element = child_node.toElement(); 
     if( child_element.isNull() ) continue;
-    if( child_element.tagName() == XML::REGEXP ) setPattern( XmlUtil::xmlToText( child_element.text() ) );
-    else if( child_element.tagName() == XML::REPLACEMENT ) setReplaceText( XmlUtil::xmlToText( child_element.text() ) ); 
+    if( child_element.tagName() == XML::REGEXP ) setPattern( XmlString( child_element.text() ).toText() );
+    else if( child_element.tagName() == XML::REPLACEMENT ) setReplaceText( XmlString( child_element.text() ).toText() ); 
     else cout << "TextMacro::Rule::Rule - unrecognized child: " << qPrintable( child_element.tagName() ) << endl;
   }
   
@@ -145,11 +145,11 @@ QDomElement TextMacro::Rule::domElement( QDomDocument& parent ) const
   // child
   out.
     appendChild( parent.createElement( XML::REGEXP ) ).
-    appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( pattern().pattern() ) ) ) );
+    appendChild( parent.createTextNode( XmlString( pattern().pattern() ).toXml() ) );
   
   out.
     appendChild( parent.createElement( XML::REPLACEMENT ) ).
-    appendChild( parent.createTextNode( XmlUtil::textToXml( qPrintable( replaceText() ) ) ) );
+    appendChild( parent.createTextNode( XmlString( replaceText() ).toXml() ) );
   return out;
 }
 

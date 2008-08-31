@@ -35,7 +35,7 @@
 #include "PatternLocation.h"
 #include "Str.h"
 #include "XmlDef.h"
-#include "XmlUtil.h"
+#include "XmlString.h"
 
 using namespace std;
 
@@ -83,10 +83,10 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
   {
     QDomElement child_element = child_node.toElement(); 
     if( child_element.isNull() ) continue;
-    if( child_element.tagName() == XML::COMMENTS ) setComments( XmlUtil::xmlToText( child_element.text() ) );
-    else if( child_element.tagName() == XML::KEYWORD ) setKeyword( XmlUtil::xmlToText( child_element.text() ) );
-    else if( child_element.tagName() == XML::BEGIN ) setBegin( XmlUtil::xmlToText( child_element.text() ) );
-    else if( child_element.tagName() == XML::END ) setEnd( XmlUtil::xmlToText( child_element.text() ) );
+    if( child_element.tagName() == XML::COMMENTS ) setComments( XmlString( child_element.text() ).toText() );
+    else if( child_element.tagName() == XML::KEYWORD ) setKeyword( XmlString( child_element.text() ).toText() );
+    else if( child_element.tagName() == XML::BEGIN ) setBegin( XmlString( child_element.text() ).toText() );
+    else if( child_element.tagName() == XML::END ) setEnd( XmlString( child_element.text() ).toText() );
   }
  
 }
@@ -111,24 +111,24 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
   // comments
   out.
     appendChild( parent.createElement( XML::COMMENTS ) ).
-    appendChild( parent.createTextNode( XmlUtil::textToXml( comments() ) ) );
+    appendChild( parent.createTextNode( XmlString( comments() ).toXml() ) );
 
   // regexps
   if( type() == KEYWORD_PATTERN )
   {
     out.
       appendChild( parent.createElement( XML::KEYWORD ) ).
-      appendChild( parent.createTextNode( XmlUtil::textToXml( keyword().pattern() ) ) );
+      appendChild( parent.createTextNode( XmlString( keyword().pattern() ).toXml() ) );
   }
   
   if( type() == RANGE_PATTERN )
   {
     out.
       appendChild( parent.createElement( XML::BEGIN ) ).
-      appendChild( parent.createTextNode( XmlUtil::textToXml( begin().pattern() ) ) );
+      appendChild( parent.createTextNode( XmlString( begin().pattern() ).toXml() ) );
     out.
       appendChild( parent.createElement( XML::END ) ).
-      appendChild( parent.createTextNode( XmlUtil::textToXml( end().pattern() ) ) );
+      appendChild( parent.createTextNode( XmlString( end().pattern() ).toXml() ) );
   }
     
   return out;

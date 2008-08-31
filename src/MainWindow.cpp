@@ -1028,7 +1028,7 @@ QString MainWindow::_htmlString( const int& max_line_size )
 
   // meta information
   meta = head.appendChild( document.createElement( "meta" ) ).toElement();
-  meta.setAttribute( "content", "text/html; charset=UTF-8" );
+  meta.setAttribute( "content", "text/html; charset=iso-8859-1" );
   meta.setAttribute( "http-equiv", "Content-Type" );
   meta = head.appendChild( document.createElement( "meta" ) ).toElement();
   meta.setAttribute( "content", "QEdit" );
@@ -1048,6 +1048,7 @@ QString MainWindow::_htmlString( const int& max_line_size )
     to have correct implementation of leading space characters, tabs
     and end of line
   */
+  //QString html_string( document.toString(0) );
   QString html_string( document.toString(0) );
   html_string = html_string.replace( "</span>\n", "</span>" );
   html_string = html_string.replace( "<br/>", "" );

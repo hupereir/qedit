@@ -34,7 +34,7 @@
 #include "Str.h"
 #include "BlockDelimiter.h"
 #include "XmlDef.h"
-#include "XmlUtil.h"
+#include "XmlString.h"
 
 using namespace std;
 
@@ -50,9 +50,9 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element, const unsigned int& 
   {
     QDomAttr attribute( attributes.item( i ).toAttr() );
     if( attribute.isNull() ) continue;
-    if( attribute.name() == XML::BEGIN ) first_ = XmlUtil::xmlToText(attribute.value());
-    else if( attribute.name() == XML::END ) second_ = XmlUtil::xmlToText(attribute.value());
-    else if( attribute.name() == XML::REGEXP ) regexp_.setPattern( XmlUtil::xmlToText( attribute.value() ) );
+    if( attribute.name() == XML::BEGIN ) first_ = XmlString( attribute.value() ).toText();
+    else if( attribute.name() == XML::END ) second_ = XmlString( attribute.value() ).toText();
+    else if( attribute.name() == XML::REGEXP ) regexp_.setPattern( XmlString( attribute.value() ).toText() );
     else cout << "BlockDelimiter::BlockDelimiter - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
   }
   
@@ -73,8 +73,8 @@ QDomElement BlockDelimiter::domElement( QDomDocument& parent ) const
   QDomElement out( parent.createElement( XML::BLOCK_DELIMITER ) );
   
   // dump attributes
-  out.setAttribute( XML::BEGIN, XmlUtil::textToXml( first() ) );
-  out.setAttribute( XML::END, XmlUtil::textToXml( second() ) );
-  out.setAttribute( XML::REGEXP, XmlUtil::textToXml( regexp().pattern() ) );
+  out.setAttribute( XML::BEGIN, XmlString( first() ).toXml() );
+  out.setAttribute( XML::END, XmlString( second() ).toXml() );
+  out.setAttribute( XML::REGEXP, XmlString( regexp().pattern() ).toXml() );
   return out;
 }
