@@ -176,11 +176,7 @@ class FileSystemFrame: public QWidget, public Counter
   //! hidden files
   QAction& _hiddenFilesAction( void ) const
   { return *hidden_files_action_; }
-  
-  //! update action
-  QAction& _updateAction( void ) const
-  { return *update_action_; }
-  
+    
   //! previous directory
   QAction& _previousDirectoryAction( void ) const
   { return *previous_directory_action_; }
@@ -220,9 +216,6 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! show/hide hidden files
   QAction* hidden_files_action_;
-  
-  //! update action
-  QAction* update_action_;
   
   //! previous directory action
   QAction* previous_directory_action_;

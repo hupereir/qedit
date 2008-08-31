@@ -71,14 +71,10 @@ class RecentFilesFrame: public QWidget, public Counter
   //! select file in list
   void select( const File& );
 
-  //!@name actions
-  //@{
+  public slots:
   
-  //! visibility
-  QAction& updateAction( void ) const
-  { return *update_action_; }
-  
-  //@}
+  //! update
+  void update( void );
   
   signals:
 
@@ -87,7 +83,7 @@ class RecentFilesFrame: public QWidget, public Counter
 
   //! signal emited when a file is selected
   void fileActivated( FileRecord );  
-      
+  
   protected:
   
   //! enter event
@@ -109,9 +105,6 @@ class RecentFilesFrame: public QWidget, public Counter
   //! update configuration
   void _updateConfiguration( void );
      
-  //! update session files
-  void _update( void );
-
   //! update action
   void _updateActions( void );
   

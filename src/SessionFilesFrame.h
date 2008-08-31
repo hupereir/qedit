@@ -70,14 +70,10 @@ class SessionFilesFrame: public QWidget, public Counter
   //! select file in list
   void select( const File& );
   
-  //!@name actions
-  //@{
-  
-  //! visibility
-  QAction& updateAction( void ) const
-  { return *update_action_; }
-  
-  //@}
+  public slots:
+   
+  //! update session files
+  void update( void );
   
   signals:
 
@@ -104,9 +100,6 @@ class SessionFilesFrame: public QWidget, public Counter
   //! update configuration
   void _updateConfiguration( void );
      
-  //! update session files
-  void _update( void );
- 
   //! update session files
   void _updateActions( void );
   
@@ -170,9 +163,6 @@ class SessionFilesFrame: public QWidget, public Counter
   //!@name actions
   //@{
   
-  //! update
-  QAction* update_action_;
- 
   //! open action
   QAction* open_action_;
   

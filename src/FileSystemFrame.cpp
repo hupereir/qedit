@@ -174,7 +174,7 @@ void FileSystemFrame::customEvent( QEvent* event )
   // check path
   if( file_system_event->path() != path() ) 
   {
-    _updateAction().trigger();
+    _update();
     return;
   }
   
@@ -417,10 +417,6 @@ void FileSystemFrame::_installActions( void )
   connect( &_hiddenFilesAction(), SIGNAL( toggled( bool ) ), SLOT( _update() ) );
   connect( &_hiddenFilesAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleShowHiddenFiles( bool ) ) );
     
-  // update
-  addAction( update_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
-  connect( &_updateAction(), SIGNAL( triggered() ), SLOT( _update() ) );
-  
   // previous directory
   addAction( previous_directory_action_ = new QAction( IconEngine::get( ICONS::PREVIOUS_DIRECTORY ), "&Previous", this ) );
   connect( &_previousDirectoryAction(), SIGNAL( triggered() ), SLOT( _previousDirectory() ) );

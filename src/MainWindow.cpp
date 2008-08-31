@@ -258,7 +258,7 @@ void MainWindow::setActiveView( TextView& view )
 
   // update displays, actions, etc.
   if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
-  { _update( TextDisplay::ALL ); }
+  { _update( TextDisplay::ACTIVE_DISPLAY_CHANGED ); }
 
 }
 
@@ -744,13 +744,7 @@ void MainWindow::_update( unsigned int flags )
   { _updateWindowTitle(); }
     
   if( flags & TextDisplay::MODIFIED )
-  {
-    
-    // emitting modificationChanged
-    Debug::Throw() << "MainWindow::_update - modification changed." << endl;
-    emit modificationChanged();
-    
-  }
+  { emit modificationChanged(); }
 
   if( flags & TextDisplay::FILE_NAME )
   { 
@@ -784,12 +778,15 @@ void MainWindow::_update( unsigned int flags )
   if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
   { pasteAction().setEnabled( activeDisplay().pasteAction().isEnabled() ); }
 
-  if( flags & (TextDisplay::UNDO_REDO|TextDisplay::MODIFIED) )
+  if( flags & (TextDisplay::UNDO_REDO|TextDisplay::READ_ONLY) )
   {
     undoAction().setEnabled( activeDisplay().undoAction().isEnabled() );
     redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
   }
  
+  if( flags & TextDisplay::READ_ONLY )
+  { saveAction().setEnabled( !activeDisplay().isReadOnly() ); }
+
   if( statusbar_ && flags & TextDisplay::OVERWRITE_MODE )
   { statusbar_->label(0).setText( activeDisplay().overwriteMode() ? "INS":"" ); }
   
@@ -806,9 +803,6 @@ void MainWindow::_update( unsigned int flags )
     
   }
   
-  if( flags & TextDisplay::SAVE )
-  { saveAction().setEnabled( !activeDisplay().isReadOnly() ); }
-
 }
 
 //_____________________________________________

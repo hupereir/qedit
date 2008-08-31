@@ -98,9 +98,9 @@ MainWindow& WindowServer::newMainWindow( void )
   connect( window, SIGNAL( modificationChanged() ), SLOT( _updateActions() ) );
   connect( window, SIGNAL( activated( MainWindow* ) ), SLOT( _activeWindowChanged( MainWindow* ) ) );
   
-  connect( this, SIGNAL( sessionFilesChanged() ), &window->navigationFrame().sessionFilesFrame().updateAction(), SLOT( trigger() ) );
-  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( contentsChanged() ), &window->navigationFrame().recentFilesFrame().updateAction(), SLOT( trigger() ) );
-  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( validFilesChecked() ), &window->navigationFrame().recentFilesFrame().updateAction(), SLOT( trigger() ) );
+  connect( this, SIGNAL( sessionFilesChanged() ), &window->navigationFrame().sessionFilesFrame(), SLOT( update() ) );
+  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( contentsChanged() ), &window->navigationFrame().recentFilesFrame(), SLOT( update() ) );
+  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( validFilesChecked() ), &window->navigationFrame().recentFilesFrame(), SLOT( update() ) );
 
   connect( &window->newFileAction(), SIGNAL( triggered() ), SLOT( _newFile() ) );
   connect( &window->openAction(), SIGNAL( triggered() ), SLOT( _open() ) );

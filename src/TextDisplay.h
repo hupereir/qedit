@@ -158,20 +158,20 @@ class TextDisplay: public TextEditor
     //! undo/redo availability
     UNDO_REDO = 1<<6,
     
-    //! save action
-    SAVE = 1<<7,
-    
     //! overwrite mode
-    SPELLCHECK = 1<<8,
+    SPELLCHECK = 1<<7,
 
     //! overwrite mode
-    OVERWRITE_MODE = 1<<9,
+    OVERWRITE_MODE = 1<<8,
     
     //! display count
-    DISPLAY_COUNT = 1<<10,
+    DISPLAY_COUNT = 1<<9,
+    
+    //! active file changed
+    ACTIVE_DISPLAY_CHANGED = FILE_NAME|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SPELLCHECK|OVERWRITE_MODE,
     
     //! all the above
-    ALL = FILE_NAME|MODIFIED|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SAVE|SPELLCHECK|OVERWRITE_MODE|DISPLAY_COUNT
+    ALL = FILE_NAME|MODIFIED|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SPELLCHECK|OVERWRITE_MODE|DISPLAY_COUNT
     
   };
   

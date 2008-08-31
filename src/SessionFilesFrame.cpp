@@ -118,6 +118,26 @@ void SessionFilesFrame::select( const File& file )
 }
 
 //______________________________________________________________________
+void SessionFilesFrame::update( void )
+{ 
+  Debug::Throw( "SessionFilesFrame:update.\n" ); 
+ 
+  // store in model
+  FileRecord::List records( static_cast< Application*>( qApp )->windowServer().records( false, window() ) );
+  _model().update( records );
+
+  // resize columns
+  list().resizeColumns();
+
+  // make sure selected record appear selected in list
+  FileRecord::List::const_iterator iter = find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::SELECTED ) );
+  if( iter != records.end() ) select( iter->file() );  
+  
+  Debug::Throw( "SessionFilesFrame:_update - done.\n" ); 
+
+}
+
+//______________________________________________________________________
 void SessionFilesFrame::_updateConfiguration( void )
 { 
   Debug::Throw( "SessionFilesFrame::_updateConfiguration.\n" ); 
@@ -144,26 +164,6 @@ void SessionFilesFrame::_updateConfiguration( void )
     
   }
 
-
-}
-
-//______________________________________________________________________
-void SessionFilesFrame::_update( void )
-{ 
-  Debug::Throw( "SessionFilesFrame:_update.\n" ); 
- 
-  // store in model
-  FileRecord::List records( static_cast< Application*>( qApp )->windowServer().records( false, window() ) );
-  _model().update( records );
-
-  // resize columns
-  list().resizeColumns();
-
-  // make sure selected record appear selected in list
-  FileRecord::List::const_iterator iter = find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::SELECTED ) );
-  if( iter != records.end() ) select( iter->file() );  
-  
-  Debug::Throw( "SessionFilesFrame:_update - done.\n" ); 
 
 }
 
@@ -261,10 +261,6 @@ void SessionFilesFrame::_installActions( void )
 {
   
   Debug::Throw( "SessionFilesFrame::_installActions.\n" );
-
-  // update
-  addAction( update_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Update &recent files", this ) );
-  connect( update_action_, SIGNAL( triggered() ), SLOT( _update() ) );
 
   // open
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this ) );

@@ -86,7 +86,7 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   connect( list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
   connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
 
-  connect( &_recentFiles(), SIGNAL( validFilesChecked( void ) ), SLOT( _update( void ) ) );
+  connect( &_recentFiles(), SIGNAL( validFilesChecked( void ) ), SLOT( update( void ) ) );
   
   // configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
@@ -117,6 +117,22 @@ void RecentFilesFrame::select( const File& file )
   list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
   list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
   _setEnabled( true );
+  
+}
+
+//______________________________________________________________________
+void RecentFilesFrame::update( void )
+{ 
+  Debug::Throw( "RecentFilesFrame:update.\n" ); 
+ 
+  // update records
+  _model().update( _recentFiles().records() );
+  list().resizeColumns();
+  
+  // clean action enability
+  _cleanAction().setEnabled( _recentFiles().cleanEnabled() );
+
+  Debug::Throw( "RecentFilesFrame:_update - done.\n" ); 
   
 }
 
@@ -162,22 +178,6 @@ void RecentFilesFrame::_updateConfiguration( void )
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_update( void )
-{ 
-  Debug::Throw( "RecentFilesFrame:_update.\n" ); 
- 
-  // update records
-  _model().update( _recentFiles().records() );
-  list().resizeColumns();
-  
-  // clean action enability
-  _cleanAction().setEnabled( _recentFiles().cleanEnabled() );
-
-  Debug::Throw( "RecentFilesFrame:_update - done.\n" ); 
-  
-}
-
-//______________________________________________________________________
 void RecentFilesFrame::_updateActions( void )
 { 
   Debug::Throw( "RecentFilesFrame:_updateActions.\n" );
@@ -195,7 +195,7 @@ void RecentFilesFrame::_clean( void )
   Debug::Throw( "RecentFilesFrame:_clean.\n" ); 
   if( !QuestionDialog( this,"Remove invalid or duplicated files from list ?" ).exec() ) return;
   _recentFiles().clean();
-  _update();
+  update();
   
 }
 
@@ -255,10 +255,6 @@ void RecentFilesFrame::_installActions( void )
 {
   
   Debug::Throw( "RecentFilesFrame::_installActions.\n" );
-
-  // update
-  addAction( update_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Update &recent files", this ) );
-  connect( &updateAction(), SIGNAL( triggered() ), SLOT( _update() ) );
 
   // clean
   addAction( clean_action_ = new QAction( IconEngine::get( ICONS::DELETE ), "&Clean", this ) );
