@@ -344,6 +344,17 @@ void TextDisplay::setFile( File file, bool check_autosave )
    
   // remove new document version from name server
   if( isNewDocument() ) { name_server_.remove( TextDisplay::file() ); }
+
+  // retrieve display and associated, update document class
+  // this is needed to avoid highlight glitch when oppening file
+  BASE::KeySet<TextDisplay> displays( this );
+  displays.insert( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  {
+    (*iter)->_setIsNewDocument( false );
+    (*iter)->setClassName( className() );
+    (*iter)->updateDocumentClass( file );    
+  }
   
   // check file and try open.
   QFile in( tmp.c_str() );
@@ -359,19 +370,12 @@ void TextDisplay::setFile( File file, bool check_autosave )
 
   }
 
-  // retrieve display and associated
-  BASE::KeySet<TextDisplay> displays( this );
-  displays.insert( this );
+  // finally set file. This is needed to be done _after_ the text is loaded in the display
+  // in order to minimize the amount of slots that are sent
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
-    (*iter)->_setIsNewDocument( false );
     (*iter)->_setFile( file );
-    (*iter)->setClassName( className() );
-    (*iter)->updateDocumentClass();
-    
-    // enable file info action
     (*iter)->fileInfoAction().setEnabled( true );
-    
   }
     
   // save file if restored from autosaved.
@@ -968,7 +972,7 @@ bool TextDisplay::hasTaggedBlocks( void )
 }
 
 //___________________________________________________________________________
-void TextDisplay::updateDocumentClass( void )
+void TextDisplay::updateDocumentClass( File file )
 {
 
   Debug::Throw( "TextDisplay::updateDocumentClass\n" );
@@ -977,6 +981,9 @@ void TextDisplay::updateDocumentClass( void )
   textIndent().setBaseIndentation(0);
   _clearMacros();
 
+  // use current file is argument is empty
+  if( file.empty() ) file = TextDisplay::file();
+  
   // default document class is empty
   DocumentClass document_class;
   Application& application( *static_cast<Application*>(qApp) );
@@ -990,8 +997,8 @@ void TextDisplay::updateDocumentClass( void )
   { document_class = application.classManager().defaultClass(); }
 
   // try load from file
-  if( document_class.name().isEmpty() && !file().empty() )
-  { document_class = application.classManager().find( file() ); }
+  if( document_class.name().isEmpty() && !file.empty() )
+  { document_class = application.classManager().find( file ); }
 
   // try load from file
   if( document_class.name().isEmpty() )
@@ -1041,9 +1048,9 @@ void TextDisplay::updateDocumentClass( void )
     !textHighlight().parenthesis().empty() );
 
   // add information to Menu
-  if( !( file().empty() || isNewDocument() ) )
+  if( !( file.empty() || isNewDocument() ) )
   { 
-    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
+    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
     record.addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); 
     if( !document_class.icon().isEmpty() ) record.addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
   }

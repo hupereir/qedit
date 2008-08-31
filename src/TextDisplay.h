@@ -409,7 +409,7 @@ class TextDisplay: public TextEditor
   public slots:
   
   //! set document class
-  void updateDocumentClass( void );
+  void updateDocumentClass( File file = File() );
   
   //! process macro by name
   void processMacro( QString );
