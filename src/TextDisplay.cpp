@@ -47,7 +47,7 @@
 #include "FileModifiedDialog.h"
 #include "FileRecordProperties.h"
 #include "FileRemovedDialog.h"
-#include "HtmlUtil.h"
+#include "HtmlTextNode.h"
 #include "HighlightBlockData.h"
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
@@ -773,7 +773,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
         if( !buffer.isEmpty() )
         {
           if( span.isNull() ) span  = out.appendChild( document.createElement( "span" ) ).toElement();
-          HtmlUtil::textNode( buffer, span, document );
+          HtmlTextNode( buffer, span, document );
           if( line_break )
           {
             out.appendChild( document.createElement( "br" ) );

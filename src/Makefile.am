@@ -91,7 +91,6 @@ noinst_HEADERS = \
   HelpText.h \
   HighlightBlockData.h \
   HighlightBlockFlags.h \
-  HtmlUtil.h \
   Icons.h \
   MainWindow.h \
   Menu.h \
@@ -132,7 +131,6 @@ libqedit_a_SOURCES = \
   FileSystemThread.cpp \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
-  HtmlUtil.cpp \
   MainWindow.cpp \
   Menu.cpp \
   NavigationFrame.cpp \
