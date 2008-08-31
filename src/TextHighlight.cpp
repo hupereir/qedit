@@ -331,14 +331,14 @@ void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
 {
 
   // initialize style
-  HighlightStyle current_style;
+  int pattern_id(0);
   QTextCharFormat current_format;
   for( PatternLocationSet::const_iterator iter = locations.begin(); iter != locations.end(); iter++ )
   {
-    if( current_style != iter->style() )
-    {
-      current_style = iter->style();
-      current_format = current_style.format();
+    if( pattern_id != iter->id() )
+    { 
+      pattern_id = iter->id();
+      current_format = iter->format(); 
     }
 
     QTextCharFormat format( current_format );

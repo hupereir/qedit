@@ -36,7 +36,6 @@
 #include <QFont>
 #include <QDomDocument>
 #include <QDomElement>
-#include <QTextCharFormat>
 
 #include <set>
 #include <QString>
@@ -103,22 +102,6 @@ class HighlightStyle: public Counter
   virtual void setFontFormat( const unsigned int format )
   { format_ = format; }
   
-  //! formated font
-  virtual QTextCharFormat format() const
-  {
-    
-    QTextCharFormat out;
-    
-    out.setFontWeight( (format_&FORMAT::BOLD) ? QFont::Bold : QFont::Normal );
-    out.setFontItalic( format_&FORMAT::ITALIC );
-    out.setFontUnderline( format_&FORMAT::UNDERLINE );
-    out.setFontOverline( format_&FORMAT::OVERLINE );
-    out.setFontStrikeOut( format_&FORMAT::STRIKE );
-    if( color_.isValid() ) out.setForeground( color_ );
-    
-    return out;
-  }
-
   //! color
   virtual const QColor& color( void ) const
   { return color_; }

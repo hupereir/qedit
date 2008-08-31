@@ -464,8 +464,9 @@ void TextView::diff( void )
   }
 
   // create diff object
-  Diff* diff = new Diff( this );
-
+  // Diff* diff = new Diff( this );
+  Diff *diff( new Diff( this ) );
+  
   // store active display as first to compare
   TextDisplay& first = activeDisplay();
   
@@ -489,7 +490,7 @@ void TextView::diff( void )
   if( !diff->run() )
   {
     InformationDialog( this, diff->error().c_str() ).exec();
-    delete diff;
+    diff->deleteLater();
     return;
   }
   

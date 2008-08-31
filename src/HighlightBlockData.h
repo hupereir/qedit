@@ -82,7 +82,7 @@ class HighlightBlockData: public TextBlockData
   
   //! return true if locations correspond to a commented block
   bool ignoreBlock( void ) const
-  { return (!locations().empty()) && locations().begin()->parent().flag( HighlightPattern::NO_INDENT ); }
+  { return (!locations().empty()) && locations().begin()->flag( HighlightPattern::NO_INDENT ); }
 
   
   //!@name parenthesis

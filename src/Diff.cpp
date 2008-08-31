@@ -156,8 +156,8 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
   for( vector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); iter++ )
   { iter->highlightDisplay(); }
   
-  // delete object
-  _autoDelete();
+  // delete this object
+  deleteLater();
   
   return;
   

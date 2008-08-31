@@ -750,7 +750,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
 
     // current pattern
     QDomElement span;
-    const HighlightPattern *current_pattern = 0;
+    int current_pattern_id = 0;
     bool line_break( false );
     int line_index( 0 );
 
@@ -765,8 +765,8 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
         locations.rend(),
         PatternLocation::ContainsFTor( index ) );
 
-      const HighlightPattern* pattern = ( location_iter == locations.rend() ) ? 0:&location_iter->parent();
-      if( pattern != current_pattern || index == 0 || line_break )
+      int pattern_id( ( location_iter == locations.rend() ) ? 0:location_iter->id() );
+      if( pattern_id != current_pattern_id || index == 0 || line_break )
       {
 
         // append text to current element and reset stream
@@ -784,15 +784,15 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
         }  
 
         // update pattern
-        current_pattern = pattern;
+        current_pattern_id = pattern_id;
 
         // update current element
         span = out.appendChild( document.createElement( "span" ) ).toElement();
-        if( current_pattern )
+        if( location_iter !=  locations.rend() )
         {
 
           // retrieve font format
-          const unsigned int& format( current_pattern->style().fontFormat() );
+          const unsigned int& format( location_iter->fontFormat() );
           ostringstream format_stream;
           if( format & FORMAT::UNDERLINE ) format_stream << "text-decoration: underline; ";
           if( format & FORMAT::ITALIC ) format_stream << "font-style: italic; ";
@@ -800,7 +800,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
           if( format & FORMAT::STRIKE ) format_stream << "text-decoration: line-through; ";
 
           // retrieve color
-          const QColor& color = current_pattern->style().color();
+          const QColor& color = location_iter->color();
           if( color.isValid() ) format_stream << "color: " << qPrintable( color.name() ) << "; ";
 
           span.setAttribute( "style", format_stream.str().c_str() );

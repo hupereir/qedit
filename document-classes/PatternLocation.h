@@ -26,16 +26,18 @@
 
 /*!
   \file PatternLocation.h
-  \brief Base class for syntax highlighting
+  \brief encapsulate highlight location, pattern and style
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
 */
 
+#include <QTextCharFormat>
+
 #include "Counter.h"
 #include "HighlightPattern.h"
 
-//! PatternLocation of text to be formated
+//! encapsulate highlight location, pattern and style
 class PatternLocation: public Counter
 {
   public:        
@@ -46,7 +48,11 @@ class PatternLocation: public Counter
     const int& position, 
     const unsigned int& length ):
     Counter( "PatternLocation" ),
-    parent_( parent ),
+    id_( parent.id() ),
+    parent_id_( parent.parentId() ),
+    flags_( parent.flags() ),
+    format_( parent.style().fontFormat() ),
+    color_( parent.style().color() ),
     position_( position ),
     length_( length )
   { }
@@ -59,6 +65,9 @@ class PatternLocation: public Counter
       (position() == location.position() && parentId() < location.parentId() ) ; 
   }
     
+  //!@name location
+  //@{
+  
   //! position
   const int& position( void ) const
   { return position_; }
@@ -67,22 +76,7 @@ class PatternLocation: public Counter
   const unsigned int& length( void ) const
   { return length_; }
   
-  //! parent
-  const HighlightPattern& parent( void ) const
-  { return parent_; }
-  
-  //! pattern id
-  const int& id( void ) const
-  { return parent_.id(); }
-  
-  //! parent pattern id
-  const int& parentId( void ) const
-  { return parent_.parentId(); }
-  
-  //! style
-  const HighlightStyle& style( void ) const
-  { return parent_.style(); }
-  
+    
   //! used to find a location matching index
   class ContainsFTor 
   {
@@ -120,11 +114,75 @@ class PatternLocation: public Counter
     { return second.position() < first.position() + (int)first.length(); }
     
   };
-      
+  
+  //@}
+  
+  //!@name highlight pattern
+  //@{
+  
+  //! pattern id
+  int id( void ) const
+  { return id_; }
+  
+  //! parent pattern id
+  int parentId( void ) const
+  { return parent_id_; }
+
+  //! flags
+  unsigned int flags( void ) const
+  { return flags_; }
+
+  //! flags
+  bool flag( const HighlightPattern::Flag& flag ) const
+  { return flags() & flag; }
+
+  //@}
+  
+  //!@name highlight style
+  //@{
+
+  //! format
+  unsigned int fontFormat( void ) const
+  { return format_; }
+
+  //! color
+  virtual QColor color( void ) const
+  { return color_; }
+  
+  //! formated font
+  virtual QTextCharFormat format() const
+  {
+    
+    QTextCharFormat out;
+    
+    out.setFontWeight( (format_&FORMAT::BOLD) ? QFont::Bold : QFont::Normal );
+    out.setFontItalic( format_&FORMAT::ITALIC );
+    out.setFontUnderline( format_&FORMAT::UNDERLINE );
+    out.setFontOverline( format_&FORMAT::OVERLINE );
+    out.setFontStrikeOut( format_&FORMAT::STRIKE );
+    if( color_.isValid() ) out.setForeground( color_ );
+    
+    return out;
+  }
+  
+  //}
+
   private:
   
-  //! pointer to parent
-  HighlightPattern parent_;
+  //! pattern id
+  int id_;
+  
+  //! pattern parent id
+  int parent_id_;
+  
+  //! pattern flags
+  unsigned int flags_;
+  
+  //! style font format
+  unsigned int format_;
+  
+  //! style color
+  QColor color_;
   
   //! position in text
   int position_;

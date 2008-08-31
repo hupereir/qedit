@@ -130,13 +130,9 @@ class Diff: public QObject, public Counter
   
   //! parse the diff output
   void _parseOutput( int, QProcess::ExitStatus );
-  
-  //! autodelete object
-  void _autoDelete( void )
-  { delete this; }
-  
+    
   private:
-
+  
   //! clear ranges
   void _clear( void );
     
