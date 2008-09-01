@@ -85,7 +85,6 @@ noinst_HEADERS = \
   CloseFilesDialog.h \
   FileInfoDialog.h \
   FileModifiedDialog.h \
-  FileRecordProperties.h \
   FileRemovedDialog.h \
   FileSelectionDialog.h \
   HelpText.h \

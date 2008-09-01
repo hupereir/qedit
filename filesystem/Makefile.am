@@ -20,8 +20,10 @@ CXXFLAGS = @CXXFLAGS@
 noinst_LIBRARIES = libfilesystem.a
 
 noinst_HEADERS = \
+  FileRecordProperties.h \
   FileSystemFrame.h \
   FileSystemHistory.h \
+  FileSystemIcons.h \
   FileSystemModel.h \
   FileSystemThread.h
 

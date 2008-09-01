@@ -48,13 +48,8 @@ HEADERS = \
   CloseFilesDialog.h \
   FileInfoDialog.h \
   FileModifiedDialog.h \
-  FileRecordProperties.h \
   FileRemovedDialog.h \
   FileSelectionDialog.h \
-  FileSystemFrame.h \
-  FileSystemHistory.h \
-  FileSystemModel.h \
-  FileSystemThread.h \
   HelpText.h \
   HighlightBlockData.h \
   HighlightBlockFlags.h \
@@ -92,10 +87,6 @@ SOURCES = \
   FileModifiedDialog.cpp \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \
-  FileSystemFrame.cpp \
-  FileSystemHistory.cpp \
-  FileSystemModel.cpp \
-  FileSystemThread.cpp \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   MainWindow.cpp \

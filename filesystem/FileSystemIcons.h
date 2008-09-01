@@ -1,5 +1,5 @@
-#ifndef Icons_h
-#define Icons_h
+#ifndef FileSystemIcons_h
+#define FileSystemIcons_h
 
 // $Id$
 
@@ -39,33 +39,15 @@
 namespace ICONS
 {
   
-  static const std::string CLOSE = "fileclose.png"; 
+  static const std::string DOCUMENT = "document.png"; 
+  static const std::string FOLDER = "folder.png";
+  static const std::string LINK = "link_overlay.png";
+
+  static const std::string PARENT_DIRECTORY = "parent_directory.png";
+  static const std::string PREVIOUS_DIRECTORY = "back.png";
+  static const std::string NEXT_DIRECTORY = "forward.png";
+  static const std::string HOME_DIRECTORY = "gohome.png";
   
-  static const std::string DOCUMENTS = "documents.png"; 
-  static const std::string HISTORY = "history.png"; 
-  static const std::string FILESYSTEM = "user-home.png"; 
-  
-  static const std::string NEW = "filenew.png"; 
-  static const std::string SAVE = "filesave.png";
-  static const std::string SAVE_AS = "filesaveas.png"; 
-  static const std::string SAVE_ALL = "save_all.png"; 
-  static const std::string HTML="html.png";
-  static const std::string PDF = "pdf.png";
-  static const std::string INDENT="indent.png";
-  static const std::string PRINT = "fileprint.png"; 
-  static const std::string INFO = "info.png";
-  static const std::string SPELLCHECK = "fonts.png";
-  static const std::string VIEW_LEFTRIGHT = "view_left_right.png";
-  static const std::string VIEW_TOPBOTTOM = "view_top_bottom.png";
-  static const std::string VIEW_RIGHT = "view_right.png";
-  static const std::string VIEW_BOTTOM = "view_bottom.png";
-  static const std::string VIEW_REMOVE = "view_remove.png";
-  static const std::string VIEW_DETACH = "window_fullscreen.png";
-  
-  static const std::string TAG = "bookmark.png";
-  static const std::string UP = "up.png";
-  static const std::string DOWN = "down.png";
-    
 };
 
 #endif

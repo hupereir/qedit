@@ -32,11 +32,11 @@
 #include <QLayout>
 #include <QDir>
 
+#include "FileSystemIcons.h"
 #include "CustomComboBox.h"
 #include "CustomToolBar.h"
 #include "FileRecordProperties.h"
 #include "FileSystemFrame.h"
-#include "Icons.h"
 #include "IconEngine.h"
 #include "QtUtil.h"
 #include "TextEditor.h"

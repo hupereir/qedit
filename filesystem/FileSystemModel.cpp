@@ -35,10 +35,10 @@
 #include <assert.h>
 
 #include "CustomPixmap.h"
-#include "IconEngine.h"
-#include "Icons.h"
+#include "FileSystemIcons.h"
 #include "FileRecordProperties.h"
 #include "FileSystemModel.h"
+#include "IconEngine.h"
 #include "XmlOptions.h"
 
 using namespace std;
