@@ -25,17 +25,20 @@ noinst_HEADERS = \
   FileSystemHistory.h \
   FileSystemIcons.h \
   FileSystemModel.h \
-  FileSystemThread.h
+  FileSystemThread.h \
+  RemoveFilesDialog.h
 
 libfilesystem_a_SOURCES = \
 	FileSystemFrame.cpp \
 	FileSystemHistory.cpp \
 	FileSystemModel.cpp \
-	FileSystemThread.cpp
+	FileSystemThread.cpp \
+  RemoveFilesDialog.cpp
 
 nodist_libfilesystem_a_SOURCES = \
   moc_FileSystemFrame.cpp \
-  moc_FileSystemModel.cpp
+  moc_FileSystemModel.cpp \
+  moc_RemoveFilesDialog.cpp
 
 clean-local:
 	rm -f moc_*.cpp

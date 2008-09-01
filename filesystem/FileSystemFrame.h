@@ -140,6 +140,9 @@ class FileSystemFrame: public QWidget, public Counter
    
   //! open
   void _open( void );
+
+  //! remove (from dialog)
+  void _remove( void );
   
   //! store selected jobs in model
   void _storeSelection( void );
@@ -197,6 +200,10 @@ class FileSystemFrame: public QWidget, public Counter
   QAction& _openAction( void ) const
   { return *open_action_; }
 
+  //! remove action
+  QAction& _removeAction( void ) const
+  { return *remove_action_; }
+  
   //@}
 
   //! path comboBox
@@ -231,6 +238,9 @@ class FileSystemFrame: public QWidget, public Counter
     
   //! open
   QAction* open_action_;
+  
+  //! remove
+  QAction* remove_action_;
   
   //@}
 

@@ -39,6 +39,7 @@
 #include "FileSystemFrame.h"
 #include "IconEngine.h"
 #include "QtUtil.h"
+#include "RemoveFilesDialog.h"
 #include "TextEditor.h"
 #include "TreeView.h"
 #include "Util.h"
@@ -94,6 +95,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   
   _list().menu().addSeparator();
   _list().menu().addAction( &_openAction() );
+  _list().menu().addAction( &_removeAction() );
   
   _list().menu().addSeparator();
   _list().menu().addAction( &_hiddenFilesAction() );
@@ -287,6 +289,7 @@ void FileSystemFrame::_update( void )
   setCursor( Qt::WaitCursor ); 
 
 }
+
 //______________________________________________________________________
 void FileSystemFrame::_updateActions( void )
 { 
@@ -294,16 +297,19 @@ void FileSystemFrame::_updateActions( void )
   FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
   
   bool has_editable_selection( false );
+  bool has_removable_selection( false );
   for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
   {
+    if( !iter->hasFlag( FileSystemModel::NAVIGATOR ) ) has_removable_selection = true;
     if( iter->hasFlag( FileSystemModel::DOCUMENT ) )
-    {
-      has_editable_selection = true;
+    { 
+      has_editable_selection = true; 
       break;
     }
   }
 
   _openAction().setEnabled( has_editable_selection );
+  _removeAction().setEnabled( has_removable_selection );
   
 }
 
@@ -365,6 +371,39 @@ void FileSystemFrame::_open( void )
   for( FileSystemModel::List::iterator iter = valid_selection.begin(); iter != valid_selection.end(); iter++ )
   { emit fileActivated( iter->setFile( iter->file().addPath( path() ) ) ); }
   
+}
+
+//______________________________________________________________________
+void FileSystemFrame::_remove( void )
+{ 
+  
+  // get selection
+  FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+  FileSystemModel::List valid_selection;
+  for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  { 
+    if( !iter->hasFlag( FileSystemModel::NAVIGATOR ) )
+    { valid_selection.push_back( *iter ); }
+  }
+  
+  if( valid_selection.empty() ) return;
+  
+  RemoveFilesDialog dialog( this, valid_selection );
+  if( !dialog.exec() ) return;
+  
+  bool recursive( dialog.recursive() );
+  valid_selection = dialog.selectedFiles();
+  
+  // loop over selected files and remove
+    // retrieve selected items and remove corresponding files
+  for( FileSystemModel::List::iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  { 
+    File file( iter->file().addPath( path() ) );
+    if( !file.exists() ) continue;
+    if( file.isDirectory() && !dialog.recursive() ) continue;
+    file.removeRecursive();
+  }
+
 }
 
 //________________________________________
@@ -441,5 +480,11 @@ void FileSystemFrame::_installActions( void )
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open selected files", this ) );
   connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
   _openAction().setToolTip( "Edit selected files" );
+
+  // remove
+  addAction( remove_action_ = new QAction( IconEngine::get( ICONS::DELETE ), "Remo&ve", this ) );
+  connect( remove_action_, SIGNAL( triggered() ), SLOT( _remove() ) );
+  remove_action_->setShortcut( Qt::Key_Delete );
+  remove_action_->setToolTip( "Remove selected files locally" );
 
 }
