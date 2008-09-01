@@ -13,7 +13,7 @@ INCLUDEPATH = . ../base ../base-qt ../base-help ../base-server ../document-class
 DEPENDPATH += . ../base ../base-qt ../base-help ../base-server ../document-classes ../extra-includes ../filesystem
 
 LIBS += \
-  ../document-classes/libfilesystem.a \
+  ../filesystem/libfilesystem.a \
   ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
   ../base-help/libbase-help.a \
@@ -22,13 +22,12 @@ LIBS += \
 
 
 POST_TARGETDEPS = \
-  ../document-classes/libfilesystem.a \
+  ../filesystem/libfilesystem.a \
   ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
   ../base-help/libbase-help.a \
   ../base-qt/libbase-qt.a \
   ../base/libbase.a
-
 
 RESOURCES = pixmaps.qrc ../base-qt/basePixmaps.qrc ../document-classes/patterns.qrc
 RC_FILE = qedit.rc

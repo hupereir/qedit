@@ -45,7 +45,7 @@ libraries = \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   -L$(aspell_libraries) -laspell  \
   libqedit.a \
-  ../document-classes/libfilesystem.a \
+  ../filesystem/libfilesystem.a \
   ../document-classes/libdocument-classes.a \
   ../base-spellcheck/libbase-spellcheck.a \
   ../base-server/libbase-server.a \
@@ -58,7 +58,7 @@ else
 libraries =  \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   libqedit.a \
-  ../document-classes/libfilesystem.a \
+  ../filesystem/libfilesystem.a \
   ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
   ../base-help/libbase-help.a \
