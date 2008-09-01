@@ -121,9 +121,12 @@ bool Application::realizeWidget( void )
 {
   Debug::Throw( "Application::realizeWidget.\n" );
 
-  //! check if the method has already been called.
+  // check if the method has already been called.
   if( !BaseApplication::realizeWidget() ) return false;
   
+  // rename about action
+  aboutAction().setText( "About &qedit" );
+
   // need to modify closeAction signal for proper exit
   closeAction().disconnect();
   connect( &closeAction(), SIGNAL( triggered() ), SLOT( _exit() ) );
