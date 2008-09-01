@@ -99,23 +99,24 @@ MainWindow& WindowServer::newMainWindow( void )
   connect( window, SIGNAL( activated( MainWindow* ) ), SLOT( _activeWindowChanged( MainWindow* ) ) );
   
   connect( this, SIGNAL( sessionFilesChanged() ), &window->navigationFrame().sessionFilesFrame(), SLOT( update() ) );
-  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( contentsChanged() ), &window->navigationFrame().recentFilesFrame(), SLOT( update() ) );
-  connect( &static_cast<Application*>(qApp)->recentFiles(), SIGNAL( validFilesChecked() ), &window->navigationFrame().recentFilesFrame(), SLOT( update() ) );
 
   connect( &window->newFileAction(), SIGNAL( triggered() ), SLOT( _newFile() ) );
+
+  // open actions
   connect( &window->openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
   connect( &window->openHorizontalAction(), SIGNAL( triggered() ), SLOT( _openHorizontal() ) );
   connect( &window->openVerticalAction(), SIGNAL( triggered() ), SLOT( _openVertical() ) );
   connect( &window->detachAction(), SIGNAL( triggered() ), SLOT( _detach() ) );
 
+  // open actions
   connect( &window->menu().recentFilesMenu(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _open( FileRecord ) ) );
-  
   connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
-  connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( filesSaved( FileRecord::List ) ), SLOT( _save( FileRecord::List ) ) );
-  connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( filesClosed( FileRecord::List ) ), SLOT( _close( FileRecord::List ) ) );
-
   connect( &window->navigationFrame().recentFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
   connect( &window->navigationFrame().fileSystemFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
+
+  // other actions
+  connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( filesSaved( FileRecord::List ) ), SLOT( _save( FileRecord::List ) ) );
+  connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( filesClosed( FileRecord::List ) ), SLOT( _close( FileRecord::List ) ) );
 
   return *window;
 }
@@ -292,12 +293,18 @@ void WindowServer::readFilesFromArguments( ArgList args )
      
   }
   
-  // at first call and if no file was oppened,
-  // set the current display as a new document.
   if( !file_opened )
   {
-    if( _firstCall() ) { _activeWindow().activeView().setIsNewDocument(); }
-    else { _activeWindow().uniconify(); }      
+    if( _firstCall() ) { 
+      
+      // at first call and if no file was oppened,
+      // set the current display as a new document.
+      // also force update of the recent files frame
+      _activeWindow().activeView().setIsNewDocument(); 
+      _activeWindow().navigationFrame().recentFilesFrame().update();
+      
+    } else { _activeWindow().uniconify(); }      
+    
   }
   _setFirstCall( false );
   return;

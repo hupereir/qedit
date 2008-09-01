@@ -17,6 +17,7 @@ SUBDIRS =  \
  $(SPELLCHECK_SOURCE_DIR) \
  document-classes \
  extra-includes \
+ filesystem \
  src
 
 EXTRA_DIST =  \

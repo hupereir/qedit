@@ -1312,7 +1312,6 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 //________________________________________________
 void TextDisplay::paintEvent( QPaintEvent* event )
 {
-  Debug::Throw( "TextEditor::paintEvent.\n" );  
   TextEditor::paintEvent( event );
   
   // handle block background

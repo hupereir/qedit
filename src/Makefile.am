@@ -17,7 +17,8 @@ INCLUDES = \
   -I$(top_srcdir)/base-help \
   -I$(top_srcdir)/base-server \
   -I$(top_srcdir)/base-spellcheck \
-  -I$(top_srcdir)/document-classes
+  -I$(top_srcdir)/document-classes \
+  -I$(top_srcdir)/filesystem
 else
 INCLUDES = \
   -I$(qt_includes) \
@@ -30,7 +31,8 @@ INCLUDES = \
   -I$(top_srcdir)/base-qt \
   -I$(top_srcdir)/base-help \
   -I$(top_srcdir)/base-server \
-  -I$(top_srcdir)/document-classes
+  -I$(top_srcdir)/document-classes \
+  -I$(top_srcdir)/filesystem
 endif
 
 CXXFLAGS = @CXXFLAGS@
@@ -43,6 +45,7 @@ libraries = \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   -L$(aspell_libraries) -laspell  \
   libqedit.a \
+  ../document-classes/libfilesystem.a \
   ../document-classes/libdocument-classes.a \
   ../base-spellcheck/libbase-spellcheck.a \
   ../base-server/libbase-server.a \
@@ -55,6 +58,7 @@ else
 libraries =  \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   libqedit.a \
+  ../document-classes/libfilesystem.a \
   ../document-classes/libdocument-classes.a \
   ../base-server/libbase-server.a \
   ../base-help/libbase-help.a \
@@ -84,10 +88,6 @@ noinst_HEADERS = \
   FileRecordProperties.h \
   FileRemovedDialog.h \
   FileSelectionDialog.h \
-  FileSystemFrame.h \
-  FileSystemHistory.h \
-  FileSystemModel.h \
-  FileSystemThread.h \
   HelpText.h \
   HighlightBlockData.h \
   HighlightBlockFlags.h \
@@ -125,10 +125,6 @@ libqedit_a_SOURCES = \
   FileModifiedDialog.cpp \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \
-  FileSystemFrame.cpp \
-  FileSystemHistory.cpp \
-  FileSystemModel.cpp \
-  FileSystemThread.cpp \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   MainWindow.cpp \
@@ -160,8 +156,6 @@ nodist_libqedit_a_SOURCES = \
   moc_FileModifiedDialog.cpp \
   moc_FileRemovedDialog.cpp \
   moc_FileSelectionDialog.cpp \
-  moc_FileSystemFrame.cpp \
-  moc_FileSystemModel.cpp \
   moc_MainWindow.cpp \
   moc_Menu.cpp \
   moc_NavigationToolBar.cpp \

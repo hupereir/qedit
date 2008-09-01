@@ -168,6 +168,7 @@ AC_OUTPUT( Makefile \
   base-spellcheck/Makefile \
   document-classes/Makefile \
   extra-includes/Makefile \
+  filesystem/Makefile \
   src/Makefile \
   src/Config.h \
   src/SystemOptions.h \

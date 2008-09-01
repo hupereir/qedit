@@ -87,11 +87,12 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
 
   connect( &_recentFiles(), SIGNAL( validFilesChecked( void ) ), SLOT( update( void ) ) );
+  connect( &_recentFiles(), SIGNAL( contentsChanged( void ) ), SLOT( update( void ) ) );
   
   // configuration
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   _updateConfiguration();
-  
+ 
 }
 
 //______________________________________________________________________
