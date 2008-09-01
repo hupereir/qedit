@@ -11,10 +11,12 @@ HEADERS = \
   FileSystemHistory.h \
   FileSystemIcons.h \
   FileSystemModel.h \
-  FileSystemThread.h
+  FileSystemThread.h \
+  RemoveFilesDialog.h
 
 SOURCES = \
   FileSystemFrame.cpp \
   FileSystemHistory.cpp \
   FileSystemModel.cpp \
-  FileSystemThread.cpp
+  FileSystemThread.cpp \
+  RemoveFilesDialog.cpp

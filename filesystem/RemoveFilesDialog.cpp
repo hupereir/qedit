@@ -67,15 +67,15 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
   h_layout->addLayout( v_layout );
 
   v_layout->addWidget( list_ = new TreeView( this ), 1 );
-  _list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
+  _list().setSelectionMode( QAbstractItemView::MultiSelection ); 
   
   model_.add( files );
   model_.sort( FileSystemModel::FILE, Qt::AscendingOrder );
-  _list().resizeColumnToContents( FileSystemModel::FILE );
-  _list().selectAll();
 
   _list().setModel( &model_ );
   _list().setMask( XmlOptions::get().get<int>( "FILE_SYSTEM_LIST_MASK" ) );
+  _list().resizeColumnToContents( FileSystemModel::FILE );
+  _list().selectAll();
     
   // vertical layout for selection buttons and comments
   v_layout = new QVBoxLayout();
