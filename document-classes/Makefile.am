@@ -1,3 +1,5 @@
+# $Id$
+
 AUTOMAKE_OPTIONS = foreign
 EXTRA_DIST = document-classes.pro patterns.qrc
 

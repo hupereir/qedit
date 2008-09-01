@@ -3,6 +3,8 @@
 AUTOMAKE_OPTIONS = foreign
 EXTRA_DIST = filesystem.pro
 
+CXXFLAGS = @CXXFLAGS@
+
 INCLUDES = \
   -I$(aspell_includes) \
   -I$(qt_includes) \
