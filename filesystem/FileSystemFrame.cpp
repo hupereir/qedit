@@ -29,10 +29,12 @@
    \date $Date$
 */
 
+#include <QHeaderView>
 #include <QLayout>
 #include <QDir>
 
 #include "FileSystemIcons.h"
+#include "ColumnSortingMenu.h"
 #include "CustomComboBox.h"
 #include "CustomToolBar.h"
 #include "FileRecordProperties.h"
@@ -57,14 +59,15 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 {
 
   Debug::Throw( "FileSystemFrame::FileSystemFrame.\n" );
+
   QVBoxLayout *layout = new QVBoxLayout();
-  layout->setSpacing(5);
+  layout->setSpacing(2);
   layout->setMargin(0);
   setLayout( layout );
 
   // install actions
   _installActions();
-
+  
   // toolbar
   CustomToolBar* toolbar = new CustomToolBar( "navigation toolbar", this, "NAVIGATION_TOOLBAR" );
   toolbar->addAction( &_parentDirectoryAction() );
@@ -86,8 +89,11 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   _list().setModel( &_model() );
   _list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
   _list().setMaskOptionName( "FILE_SYSTEM_LIST_MASK" );
-    
+  _list().header()->hide();
+  
   // list menu  
+  _list().menu().addMenu( new ColumnSortingMenu( &_list().menu(), &_list() ) );
+  _list().menu().addSeparator();
   _list().menu().addAction( &_previousDirectoryAction() );
   _list().menu().addAction( &_nextDirectoryAction() );
   _list().menu().addAction( &_parentDirectoryAction() );
@@ -391,7 +397,6 @@ void FileSystemFrame::_remove( void )
   RemoveFilesDialog dialog( this, valid_selection );
   if( !dialog.exec() ) return;
   
-  bool recursive( dialog.recursive() );
   valid_selection = dialog.selectedFiles();
   
   // loop over selected files and remove

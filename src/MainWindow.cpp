@@ -252,9 +252,11 @@ void MainWindow::setActiveView( TextView& view )
 
   // store active view
   active_view_ = &view; 
+  activeView().activeDisplay().setFocus();
   
   // update stack if needed
-  if( _stack().currentWidget() !=  &activeView() ) _stack().setCurrentWidget( &activeView() );
+  if( _stack().currentWidget() !=  &activeView() ) 
+  { _stack().setCurrentWidget( &activeView() ); }
 
   // update displays, actions, etc.
   if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )

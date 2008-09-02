@@ -254,7 +254,7 @@ void NavigationToolBar::_raiseMenu( const QPoint& point )
   menu.iconSizeMenu().select( (IconSize::Size) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) );
   
   CustomToolBar::connect( &menu.toolButtonStyleMenu(), SIGNAL( styleSelected( Qt::ToolButtonStyle ) ), SLOT( _updateToolButtonStyle( Qt::ToolButtonStyle ) ) );
-  CustomToolBar::connect( &menu.iconSizeMenu(), SIGNAL( iconSizeSelected( CustomToolButton::IconSize ) ), SLOT( _updateToolButtonIconSize( CustomToolButton::IconSize ) ) );  
+  CustomToolBar::connect( &menu.iconSizeMenu(), SIGNAL( iconSizeSelected( IconSize::Size ) ), SLOT( _updateToolButtonIconSize( IconSize::Size ) ) );  
 
   // move and show menu
   menu.adjustSize();
