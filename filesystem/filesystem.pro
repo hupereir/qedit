@@ -13,7 +13,9 @@ HEADERS = \
   FileSystemIcons.h \
   FileSystemModel.h \
   FileSystemThread.h \
-  RemoveFilesDialog.h
+  RemoveFilesDialog.h \
+  RenameFileDialog.h
+
 
 SOURCES = \
   FileInformationDialog.cpp \
@@ -21,4 +23,5 @@ SOURCES = \
   FileSystemHistory.cpp \
   FileSystemModel.cpp \
   FileSystemThread.cpp \
-  RemoveFilesDialog.cpp
+  RemoveFilesDialog.cpp \
+  RenameFileDialog.cpp

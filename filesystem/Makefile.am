@@ -25,7 +25,9 @@ noinst_HEADERS = \
   FileSystemIcons.h \
   FileSystemModel.h \
   FileSystemThread.h \
-  RemoveFilesDialog.h
+  RemoveFilesDialog.h \
+  RenameFileDialog.h
+
 
 libfilesystem_a_SOURCES = \
   FileInformationDialog.cpp \
@@ -33,12 +35,16 @@ libfilesystem_a_SOURCES = \
 	FileSystemHistory.cpp \
 	FileSystemModel.cpp \
 	FileSystemThread.cpp \
-  RemoveFilesDialog.cpp
+  RemoveFilesDialog.cpp \
+  RenameFileDialog.cpp
+
 
 nodist_libfilesystem_a_SOURCES = \
   moc_FileSystemFrame.cpp \
   moc_FileSystemModel.cpp \
-  moc_RemoveFilesDialog.cpp
+  moc_RemoveFilesDialog.cpp \
+  moc_RenameFileDialog.cpp
+
 
 clean-local:
 	rm -f moc_*.cpp

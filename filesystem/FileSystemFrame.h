@@ -143,7 +143,10 @@ class FileSystemFrame: public QWidget, public Counter
 
   //! remove (from dialog)
   void _remove( void );
-  
+ 
+  //! remove (from dialog)
+  void _rename( void );
+ 
   //! file properties
   void _fileProperties( void );
   
@@ -207,7 +210,11 @@ class FileSystemFrame: public QWidget, public Counter
   QAction& _removeAction( void ) const
   { return *remove_action_; }
   
-  //! remove action
+  //! rename action
+  QAction& _renameAction( void ) const
+  { return *rename_action_; }
+
+  //! file properties action
   QAction& _filePropertiesAction( void ) const
   { return *file_properties_action_; }
 
@@ -248,7 +255,10 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! remove
   QAction* remove_action_;
-  
+   
+  //! rename
+  QAction* rename_action_;
+ 
   //! properties
   QAction* file_properties_action_;
   

@@ -43,6 +43,7 @@
 #include "IconEngine.h"
 #include "QtUtil.h"
 #include "RemoveFilesDialog.h"
+#include "RenameFileDialog.h"
 #include "TextEditor.h"
 #include "TreeView.h"
 #include "Util.h"
@@ -103,6 +104,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   _list().menu().addSeparator();
   _list().menu().addAction( &_hiddenFilesAction() );
   _list().menu().addAction( &_openAction() );
+  _list().menu().addAction( &_renameAction() );
   _list().menu().addAction( &_removeAction() );
   
   _list().menu().addSeparator();
@@ -321,7 +323,9 @@ void FileSystemFrame::_updateActions( void )
   _removeAction().setEnabled( has_removable_selection );
   
   QModelIndex index( _list().selectionModel()->currentIndex() );
-  _filePropertiesAction().setEnabled( index.isValid() && !_model().get( index ).hasFlag( FileSystemModel::NAVIGATOR ) );
+  bool has_valid_file( index.isValid() && !_model().get( index ).hasFlag( FileSystemModel::NAVIGATOR ) );
+  _filePropertiesAction().setEnabled( has_valid_file );
+  _renameAction().setEnabled( has_valid_file );
 }
 
 //______________________________________________________
@@ -419,6 +423,27 @@ void FileSystemFrame::_remove( void )
 }
 
 //________________________________________
+void FileSystemFrame::_rename( void )
+{
+  
+  Debug::Throw( "FileSystemFrame::_rename.\n" );
+  QModelIndex index( _list().selectionModel()->currentIndex() );
+  if( !index.isValid() ) return;
+  
+  FileRecord record( _model().get( index ) );
+  if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) return;
+  RenameFileDialog dialog( this, record );
+  if( !dialog.centerOnWidget( window() ).exec() ) return;
+  
+  File new_file( dialog.file() );
+  if( new_file == record.file() ) return;
+  
+  // rename
+  record.file().addPath( path() ).rename( new_file.addPath( path() ) );
+  
+}
+
+//________________________________________
 void FileSystemFrame::_fileProperties( void )
 {
   
@@ -513,9 +538,14 @@ void FileSystemFrame::_installActions( void )
   remove_action_->setShortcut( Qt::Key_Delete );
   remove_action_->setToolTip( "Remove selected files locally" );
 
+  // rename
+  addAction( rename_action_ = new QAction( "Rename", this ) );
+  connect( rename_action_, SIGNAL( triggered() ), SLOT( _rename() ) );
+  rename_action_->setShortcut( Qt::Key_F2 );
+  rename_action_->setToolTip( "Change selected file name" );
+
   // file properties
   addAction( file_properties_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File properties", this ) );
-  file_properties_action_->setShortcut( Qt::ALT + Qt::Key_Return );
   file_properties_action_->setToolTip( "Display current file properties" );
   connect( file_properties_action_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
 
