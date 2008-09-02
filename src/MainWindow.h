@@ -296,8 +296,8 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   { return *print_action_; }
   
   //! file info
-  QAction& fileInfoAction( void ) const
-  { return *file_info_action_; }
+  QAction& filePropertiesAction( void ) const
+  { return *file_properties_action_; }
   
   //! spellcheck 
   QAction& spellcheckAction( void ) const
@@ -473,7 +473,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   
   //! file information
   void _fileInfo( void )
-  { activeDisplay().fileInfoAction().trigger(); }
+  { activeDisplay().filePropertiesAction().trigger(); }
 
   //! spellcheck
   void _spellcheck( void )
@@ -660,7 +660,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   QAction* paste_action_;
  
   //! file info
-  QAction* file_info_action_;
+  QAction* file_properties_action_;
   
   //! spellcheck
   QAction* spellcheck_action_;

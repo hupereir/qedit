@@ -39,6 +39,8 @@
 namespace ICONS
 {
   
+  static const std::string INFO = "info.png";
+
   static const std::string DOCUMENT = "document.png"; 
   static const std::string FOLDER = "folder.png";
   static const std::string LINK = "link_overlay.png";

@@ -416,7 +416,7 @@ void Menu::_updateWindowsMenu( void )
 
   // retrieve current display
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
-  windows_menu_->addAction( &display.fileInfoAction() );
+  windows_menu_->addAction( &display.filePropertiesAction() );
   
   const string& current_file( display.file() );
   

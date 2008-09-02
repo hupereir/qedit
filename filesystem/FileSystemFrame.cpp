@@ -37,6 +37,7 @@
 #include "ColumnSortingMenu.h"
 #include "CustomComboBox.h"
 #include "CustomToolBar.h"
+#include "FileInformationDialog.h"
 #include "FileRecordProperties.h"
 #include "FileSystemFrame.h"
 #include "IconEngine.h"
@@ -100,12 +101,14 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   _list().menu().addAction( &_homeDirectoryAction() );
   
   _list().menu().addSeparator();
+  _list().menu().addAction( &_hiddenFilesAction() );
   _list().menu().addAction( &_openAction() );
   _list().menu().addAction( &_removeAction() );
   
   _list().menu().addSeparator();
-  _list().menu().addAction( &_hiddenFilesAction() );
+  _list().menu().addAction( &_filePropertiesAction() );
 
+  connect( _list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _updateActions() ) );
   connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateActions() ) );
   connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
   
@@ -317,6 +320,8 @@ void FileSystemFrame::_updateActions( void )
   _openAction().setEnabled( has_editable_selection );
   _removeAction().setEnabled( has_removable_selection );
   
+  QModelIndex index( _list().selectionModel()->currentIndex() );
+  _filePropertiesAction().setEnabled( index.isValid() && !_model().get( index ).hasFlag( FileSystemModel::NAVIGATOR ) );
 }
 
 //______________________________________________________
@@ -383,6 +388,8 @@ void FileSystemFrame::_open( void )
 void FileSystemFrame::_remove( void )
 { 
   
+  Debug::Throw( "FileSystemFrame::_remove.\n" );
+
   // get selection
   FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
   FileSystemModel::List valid_selection;
@@ -412,9 +419,23 @@ void FileSystemFrame::_remove( void )
 }
 
 //________________________________________
+void FileSystemFrame::_fileProperties( void )
+{
+  
+  Debug::Throw( "FileSystemFrame::_fileProperties.\n" );
+  QModelIndex index( _list().selectionModel()->currentIndex() );
+  if( !index.isValid() ) return;
+  
+  FileRecord record( _model().get( index ) );
+  if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) return;
+  
+  FileInformationDialog( this, record ).centerOnWidget( window() ).exec();
+  
+}
+
+//________________________________________
 void FileSystemFrame::_storeSelection( void )
 {
-    
   // clear
   _model().clearSelectedIndexes();
   
@@ -491,5 +512,11 @@ void FileSystemFrame::_installActions( void )
   connect( remove_action_, SIGNAL( triggered() ), SLOT( _remove() ) );
   remove_action_->setShortcut( Qt::Key_Delete );
   remove_action_->setToolTip( "Remove selected files locally" );
+
+  // file properties
+  addAction( file_properties_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File properties", this ) );
+  file_properties_action_->setShortcut( Qt::ALT + Qt::Key_Return );
+  file_properties_action_->setToolTip( "Display current file properties" );
+  connect( file_properties_action_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
 
 }

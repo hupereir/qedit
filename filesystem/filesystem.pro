@@ -6,6 +6,7 @@ INCLUDEPATH += ../base ../base-qt
 DEPENDPATH += . ../base ../base-qt
 
 HEADERS = \
+  FileInformationDialog.h \
   FileRecordProperties.h \
   FileSystemFrame.h \
   FileSystemHistory.h \
@@ -15,6 +16,7 @@ HEADERS = \
   RemoveFilesDialog.h
 
 SOURCES = \
+  FileInformationDialog.cpp \
   FileSystemFrame.cpp \
   FileSystemHistory.cpp \
   FileSystemModel.cpp \

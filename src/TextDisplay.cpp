@@ -29,6 +29,7 @@
 
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
+#include <QLabel>
 #include <QPainter>
 #include <QPushButton>
 #include <QScrollBar>
@@ -42,11 +43,12 @@
 #include "CustomTextDocument.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
-#include "FileInfoDialog.h"
+#include "FileInformationDialog.h"
 #include "FileList.h"
 #include "FileModifiedDialog.h"
 #include "FileRecordProperties.h"
 #include "FileRemovedDialog.h"
+#include "GridLayout.h"
 #include "HtmlTextNode.h"
 #include "HighlightBlockData.h"
 #include "HighlightBlockFlags.h"
@@ -296,7 +298,7 @@ void TextDisplay::setIsNewDocument( void )
     (*iter)->_setFile( file );
 
     // disable file info action
-    (*iter)->fileInfoAction().setEnabled( false );
+    (*iter)->filePropertiesAction().setEnabled( false );
 
   }
       
@@ -354,7 +356,6 @@ void TextDisplay::setFile( File file, bool check_autosave )
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
     
-    (*iter)->_setIsNewDocument( false );
     (*iter)->setClassName( className() );
     (*iter)->updateDocumentClass( file );    
     (*iter)->_updateSpellCheckConfiguration( file );
@@ -379,8 +380,9 @@ void TextDisplay::setFile( File file, bool check_autosave )
   // in order to minimize the amount of slots that are sent
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
+    (*iter)->_setIsNewDocument( false );
     (*iter)->_setFile( file );
-    (*iter)->fileInfoAction().setEnabled( true );
+    (*iter)->filePropertiesAction().setEnabled( true );
   }
     
   // save file if restored from autosaved.
@@ -635,7 +637,7 @@ void TextDisplay::saveAs( void )
     (*iter)->_setFile( file ); 
 
     // enable file info action
-    (*iter)->fileInfoAction().setEnabled( true );
+    (*iter)->filePropertiesAction().setEnabled( true );
 
   }
 
@@ -996,13 +998,13 @@ void TextDisplay::updateDocumentClass( File file )
   if( !className().isEmpty() )
   { document_class = application.classManager().get( className() ); }
 
+  // try load from file
+  if( document_class.name().isEmpty() && !( file.empty() || isNewDocument() ) )
+  { document_class = application.classManager().find( file ); }
+
   // load default if new document
   if( document_class.name().isEmpty() && isNewDocument() )
   { document_class = application.classManager().defaultClass(); }
-
-  // try load from file
-  if( document_class.name().isEmpty() && !file.empty() )
-  { document_class = application.classManager().find( file ); }
 
   // try load from file
   if( document_class.name().isEmpty() )
@@ -1456,8 +1458,10 @@ void TextDisplay::_installActions( void )
   connect( leading_tabs_action_, SIGNAL( triggered( void ) ), SLOT( _replaceLeadingTabs( void ) ) );
 
   // file information
-  addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File information", this ) );
-  connect( file_info_action_, SIGNAL( triggered() ), SLOT( _showFileInfo() ) );
+  addAction( file_properties_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File properties", this ) );
+  file_properties_action_->setShortcut( Qt::ALT + Qt::Key_Return );
+  file_properties_action_->setToolTip( "Display current file properties" );
+  connect( file_properties_action_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
 
   #if WITH_ASPELL
 
@@ -2096,12 +2100,69 @@ void TextDisplay::_replaceLeadingTabs( const bool& confirm )
 
 
 //_______________________________________________________
-void TextDisplay::_showFileInfo( void )
+void TextDisplay::_fileProperties( void )
 {
-  Debug::Throw( "TextDisplay::_showFileInfo.\n" );
-  FileInfoDialog( this, static_cast<Application*>(qApp)->recentFiles() )
-    .centerOnParent()
-    .exec();
+  Debug::Throw( "TextDisplay::_fileProperties.\n" );
+  if( file().empty() || isNewDocument() ) return;
+
+  // prior to showing the dialog 
+  // one should add needed tab for misc information
+  const FileRecord& record(  static_cast<Application*>(qApp)->recentFiles().get( file() ) );
+  FileInformationDialog dialog( this, record );
+  
+  // add additional informations frame
+  QWidget* box( new QWidget() );
+  QVBoxLayout* layout = new QVBoxLayout();
+  layout->setMargin(5);
+  layout->setSpacing( 5 );
+  box->setLayout( layout );
+  Debug::Throw( "FileInformationDialog::FileInformationDialog - Miscellaneous tab booked.\n" );
+  
+  GridLayout* grid_layout = new GridLayout();
+  grid_layout->setMargin(0);
+  grid_layout->setSpacing( 5 );
+  grid_layout->setMaxCount( 2 );
+  layout->addLayout( grid_layout );
+  
+  // number of characters
+  grid_layout->addWidget( new QLabel( "number of characters: ", box ) );
+  grid_layout->addWidget( new QLabel( Str().assign<int>(toPlainText().size()).c_str(), box ) );
+  
+  // number of lines
+  grid_layout->addWidget( new QLabel( "number of lines: ", box ) );
+  grid_layout->addWidget( new QLabel( Str().assign<int>(TextEditor::blockCount()).c_str(), box ) );
+  
+  grid_layout->addWidget( new QLabel( "Current paragraph highlighting: ", box ) );
+  grid_layout->addWidget( new QLabel( (blockHighlightAction().isChecked() ? "true":"false" ), box ) );
+  
+  grid_layout->addWidget( new QLabel( "Text highlighting: ", box ) );
+  grid_layout->addWidget( new QLabel( (textHighlight().isHighlightEnabled() ? "true":"false" ), box ) );
+  
+  grid_layout->addWidget( new QLabel( "Matching parenthesis highlighting: ", box ) );
+  grid_layout->addWidget( new QLabel( (textHighlight().isParenthesisEnabled() ? "true":"false" ), box ) );
+  
+  grid_layout->addWidget( new QLabel( "Text indent: ", box ) );
+  grid_layout->addWidget( new QLabel( (textIndent().isEnabled() ? "true":"false" ), box ) );
+  
+  grid_layout->addWidget( new QLabel( "Text wrapping: ", box ) );
+  grid_layout->addWidget( new QLabel( (wrapModeAction().isChecked() ? "true":"false" ), box ) );
+  
+  grid_layout->addWidget( new QLabel( "Tab emulation: ", box ) );
+  grid_layout->addWidget( new QLabel( (tabEmulationAction().isChecked() ? "true":"false" ), box ) );
+  
+  grid_layout->setColumnStretch( 1, 1 );
+  
+  // autosave
+  layout->addWidget( new QLabel( "Auto-save filename: ", box ) );
+  layout->addWidget( new QLabel( AutoSaveThread::autoSaveName( file() ).c_str(), box ) );
+  
+  layout->addStretch();
+  
+  dialog.tabWidget().addTab( box, "&Miscellaneous" );
+  
+  // execute dialog
+  dialog.centerOnParent().exec();
+  
 }
 
 //_____________________________________________________________

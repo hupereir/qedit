@@ -144,6 +144,9 @@ class FileSystemFrame: public QWidget, public Counter
   //! remove (from dialog)
   void _remove( void );
   
+  //! file properties
+  void _fileProperties( void );
+  
   //! store selected jobs in model
   void _storeSelection( void );
 
@@ -204,6 +207,10 @@ class FileSystemFrame: public QWidget, public Counter
   QAction& _removeAction( void ) const
   { return *remove_action_; }
   
+  //! remove action
+  QAction& _filePropertiesAction( void ) const
+  { return *file_properties_action_; }
+
   //@}
 
   //! path comboBox
@@ -241,6 +248,9 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! remove
   QAction* remove_action_;
+  
+  //! properties
+  QAction* file_properties_action_;
   
   //@}
 

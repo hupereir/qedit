@@ -186,7 +186,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
   // extra toolbar
   toolbar = new CustomToolBar( "Tools", this, "EXTRA_TOOLBAR" );
-  toolbar->addAction( &fileInfoAction() ); 
+  toolbar->addAction( &filePropertiesAction() ); 
   toolbar->addAction( &spellcheckAction() ); 
   
   // splitting toolbar
@@ -755,7 +755,7 @@ void MainWindow::_update( unsigned int flags )
     if( file_editor_ )
     {
       file_editor_->setText( activeDisplay().file().c_str() ); 
-      fileInfoAction().setEnabled( !( activeDisplay().file().empty() || activeDisplay().isNewDocument() ) );
+      filePropertiesAction().setEnabled( !( activeDisplay().file().empty() || activeDisplay().isNewDocument() ) );
     }
     
     // update session file frame
@@ -905,9 +905,9 @@ void MainWindow::_installActions( void )
   paste_action_->setToolTip( "Paste clipboard to text" );
   connect( paste_action_, SIGNAL( triggered() ), SLOT( _paste() ) );
 
-  addAction( file_info_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File information", this ) );
-  file_info_action_->setToolTip( "Display file informations" );
-  connect( file_info_action_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
+  addAction( file_properties_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File information", this ) );
+  file_properties_action_->setToolTip( "Display file informations" );
+  connect( file_properties_action_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
 
   addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spell check", this ) );
   #if WITH_ASPELL

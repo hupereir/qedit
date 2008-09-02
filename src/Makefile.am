@@ -83,7 +83,6 @@ noinst_HEADERS = \
   Diff.h \
   DefaultOptions.h \
   CloseFilesDialog.h \
-  FileInfoDialog.h \
   FileModifiedDialog.h \
   FileRemovedDialog.h \
   FileSelectionDialog.h \
@@ -120,7 +119,6 @@ libqedit_a_SOURCES = \
   ConfigurationDialog.cpp \
   Diff.cpp \
   CloseFilesDialog.cpp \
-  FileInfoDialog.cpp \
   FileModifiedDialog.cpp \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \

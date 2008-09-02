@@ -334,8 +334,8 @@ class TextDisplay: public TextEditor
   { return *leading_tabs_action_; }
   
   //! file information
-  QAction& fileInfoAction( void ) const
-  { return *file_info_action_; }
+  QAction& filePropertiesAction( void ) const
+  { return *file_properties_action_; }
 
   #if WITH_ASPELL
   
@@ -569,7 +569,7 @@ class TextDisplay: public TextEditor
   void _replaceLeadingTabs( const bool& confirm = true );
   
   //! show file info
-  void _showFileInfo( void );
+  void _fileProperties( void );
   
   //! track text modifications for syntax highlighting
   void _setBlockModified( int, int, int );
@@ -686,7 +686,7 @@ class TextDisplay: public TextEditor
   QAction* leading_tabs_action_;
   
   //! toggle text highlighting
-  QAction* file_info_action_;
+  QAction* file_properties_action_;
   
   #if WITH_ASPELL
 

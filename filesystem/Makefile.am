@@ -20,6 +20,7 @@ CXXFLAGS = @CXXFLAGS@
 noinst_LIBRARIES = libfilesystem.a
 
 noinst_HEADERS = \
+  FileInformationDialog.h \
   FileRecordProperties.h \
   FileSystemFrame.h \
   FileSystemHistory.h \
@@ -29,6 +30,7 @@ noinst_HEADERS = \
   RemoveFilesDialog.h
 
 libfilesystem_a_SOURCES = \
+  FileInformationDialog.cpp \
 	FileSystemFrame.cpp \
 	FileSystemHistory.cpp \
 	FileSystemModel.cpp \

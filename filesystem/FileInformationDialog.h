@@ -1,5 +1,5 @@
-#ifndef FileInfoDialog_h
-#define FileInfoDialog_h
+#ifndef FileInformationDialog_h
+#define FileInformationDialog_h
 // $Id$
 
 /******************************************************************************
@@ -24,7 +24,7 @@
 *******************************************************************************/
 
 /*!
-   \file FileInfoDialog.h
+   \file FileInformationDialog.h
    \brief file informations
    \author Hugo Pereira
    \version $Revision$
@@ -32,18 +32,28 @@
 */
 
 #include "BaseDialog.h"
+#include "FileRecord.h"
 
-class FileList;
-class TextDisplay;
+#include <QTabWidget>
 
 //! file informations
-class FileInfoDialog: public BaseDialog
+class FileInformationDialog: public BaseDialog
 {
   
   public:
       
   //! constructor
-  FileInfoDialog( TextDisplay*, FileList& );
+  FileInformationDialog( QWidget*, const FileRecord& );
+
+  //! tab widget
+  /*! needed for customization */
+  QTabWidget& tabWidget( void ) const
+  { return *tab_widget_; }
+  
+  private:
+  
+  //! tab widget
+  QTabWidget* tab_widget_;
   
 };
 
