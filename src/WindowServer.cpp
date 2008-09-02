@@ -526,6 +526,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
   
   // assign file
   view->setFile( record.file() );
+  qApp->processEvents();
   
   return true;
   

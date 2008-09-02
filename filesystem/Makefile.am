@@ -15,8 +15,6 @@ INCLUDES = \
   -I$(top_srcdir)/base  \
   -I$(top_srcdir)/base-qt
 
-CXXFLAGS = @CXXFLAGS@
-
 noinst_LIBRARIES = libfilesystem.a
 
 noinst_HEADERS = \
