@@ -103,8 +103,9 @@ RecentFilesFrame::~RecentFilesFrame( void )
 void RecentFilesFrame::select( const File& file )
 {
   
-  if( !_enabled() ) return;
-  
+  // do nothing if disabled unless the sort column is TIME
+  if( !( list().header()->sortIndicatorSection() == FileRecordModel::TIME || _enabled() ) ) return;
+
   Debug::Throw() << "RecentFilesFrame::select - file: " << file << ".\n";
    
   // find model index that match the file
