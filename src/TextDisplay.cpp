@@ -293,7 +293,7 @@ void TextDisplay::setIsNewDocument( void )
     
     (*iter)->_setIsNewDocument( true );
     (*iter)->setClassName( className() );
-    (*iter)->updateDocumentClass();
+    (*iter)->_updateDocumentClass( File(), true );
     (*iter)->_updateSpellCheckConfiguration();
     (*iter)->_setFile( file );
 
@@ -357,7 +357,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
   {
     
     (*iter)->setClassName( className() );
-    (*iter)->updateDocumentClass( file );    
+    (*iter)->_updateDocumentClass( file, false );    
     (*iter)->_updateSpellCheckConfiguration( file );
     
   }
@@ -633,7 +633,7 @@ void TextDisplay::saveAs( void )
     // update file
     (*iter)->_setIsNewDocument( false );
     (*iter)->setClassName( className() );
-    (*iter)->updateDocumentClass( file );
+    (*iter)->_updateDocumentClass( file, false );
     (*iter)->_setFile( file ); 
 
     // enable file info action
@@ -978,17 +978,15 @@ bool TextDisplay::hasTaggedBlocks( void )
 }
 
 //___________________________________________________________________________
-void TextDisplay::updateDocumentClass( File file )
+void TextDisplay::_updateDocumentClass( File file, bool new_document )
 {
 
-  Debug::Throw( "TextDisplay::updateDocumentClass\n" );
+  Debug::Throw( "TextDisplay::_updateDocumentClass\n" );
+  
   textHighlight().clear();
   textIndent().clear();
   textIndent().setBaseIndentation(0);
   _clearMacros();
-
-  // use current file is argument is empty
-  if( file.empty() ) file = TextDisplay::file();
   
   // default document class is empty
   DocumentClass document_class;
@@ -996,25 +994,30 @@ void TextDisplay::updateDocumentClass( File file )
   
   // try load document class from class_name
   if( !className().isEmpty() )
-  { document_class = application.classManager().get( className() ); }
+  { 
+    Debug::Throw( "TextDisplay::updateDocumentClass - try use className().\n" );
+    document_class = application.classManager().get( className() ); 
+  }
 
   // try load from file
-  if( document_class.name().isEmpty() && !( file.empty() || isNewDocument() ) )
-  { document_class = application.classManager().find( file ); }
+  if( document_class.name().isEmpty() && !( file.empty() || new_document ) )
+  { 
+    Debug::Throw( "TextDisplay::updateDocumentClass - try use filename.\n" );
+    document_class = application.classManager().find( file ); 
+  }
 
-  // load default if new document
-  if( document_class.name().isEmpty() && isNewDocument() )
-  { document_class = application.classManager().defaultClass(); }
-
-  // try load from file
+  // use default
   if( document_class.name().isEmpty() )
-  { document_class = application.classManager().defaultClass(); }
+  { 
+    Debug::Throw( "TextDisplay::updateDocumentClass - using default.\n" );
+    document_class = application.classManager().defaultClass(); 
+  }
   
   // update class name
   setClassName( document_class.name() );
 
   // wrap mode
-  if( !( file.empty() || isNewDocument() ) )
+  if( !( file.empty() || new_document ) )
   { 
     
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
@@ -1063,7 +1066,7 @@ void TextDisplay::updateDocumentClass( File file )
     !textHighlight().parenthesis().empty() );
 
   // add information to Menu
-  if( !( file.empty() || isNewDocument() ) )
+  if( !( file.empty() || new_document ) )
   { 
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
     record.addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); 

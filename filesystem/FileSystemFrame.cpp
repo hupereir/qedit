@@ -103,6 +103,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   
   _list().menu().addSeparator();
   _list().menu().addAction( &_hiddenFilesAction() );
+  _list().menu().addSeparator();
   _list().menu().addAction( &_openAction() );
   _list().menu().addAction( &_renameAction() );
   _list().menu().addAction( &_removeAction() );

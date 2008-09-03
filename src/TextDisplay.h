@@ -409,7 +409,8 @@ class TextDisplay: public TextEditor
   public slots:
   
   //! set document class
-  void updateDocumentClass( File file = File() );
+  void updateDocumentClass( void )
+  { _updateDocumentClass( file(), isNewDocument() ); }
 
   //! process macro by name
   void processMacro( QString );
@@ -451,8 +452,12 @@ class TextDisplay: public TextEditor
   
   //! actions
   void _installActions( void );
-    
-  //! set file name
+  
+  //! update document class
+  /*! first parameter is file name, second tells if document is a new untitled document or not */
+  void _updateDocumentClass( File, bool );
+  
+    //! set file name
   void _setFile( const File& file );
     
   //! is new document
