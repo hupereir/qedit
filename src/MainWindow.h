@@ -54,7 +54,7 @@ class Menu;
 class NavigationFrame;
 class StatusBar;
 
-class FindDialog;
+class BaseFindDialog;
 class ReplaceDialog;
 class SelectLineDialog;
 
@@ -529,13 +529,13 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   void _installActions( void );
 
   //! create find dialog
-  void _createFindDialog( void );
+  void _createBaseFindDialog( void );
   
   //! create replace dialog
   void _createReplaceDialog( void );
 
   //! find dialog
-  virtual FindDialog& _findDialog( void )
+  virtual BaseFindDialog& _findDialog( void )
   {
     assert( find_dialog_ );
     return *find_dialog_;
@@ -595,7 +595,7 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //@{
   
   //! find dialog
-  FindDialog* find_dialog_;
+  BaseFindDialog* find_dialog_;
 
   //! find dialog
   ReplaceDialog* replace_dialog_;

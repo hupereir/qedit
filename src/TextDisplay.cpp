@@ -58,7 +58,7 @@
 #include "LineNumberDisplay.h"
 #include "QuestionDialog.h"
 #include "QtUtil.h"
-#include "ReplaceDialog.h"
+#include "BaseReplaceDialog.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"

@@ -61,6 +61,7 @@ HEADERS = \
   ParenthesisHighlight.h \
   PrintDialog.h \
   RecentFilesFrame.h \
+  ReplaceDialog.h \
   SaveAllDialog.h \
   SessionFilesFrame.h \
   SessionFilesModel.h \
@@ -95,6 +96,7 @@ SOURCES = \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
   RecentFilesFrame.cpp \
+  ReplaceDialog.cpp \
   SaveAllDialog.cpp \
   SessionFilesFrame.cpp \
   SessionFilesModel.cpp \

@@ -108,6 +108,7 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
   // accept
   button_layout->addWidget( accept_button_ = new QPushButton( IconEngine::get( ICONS::DELETE ), "&Remove", this ) );
   connect( accept_button_, SIGNAL( clicked() ), SLOT( accept() ) );
+  accept_button_->setDefault( true );
   
   // cancel
   button_layout->addWidget( cancel_button_ = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Cancel", this ) );

@@ -52,7 +52,7 @@
 #include "FileRecordProperties.h"
 #include "FileSelectionDialog.h"
 #include "FileSystemFrame.h"
-#include "FindDialog.h"
+#include "BaseFindDialog.h"
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
 #include "Icons.h"
@@ -330,7 +330,7 @@ void MainWindow::findFromDialog( void )
   Debug::Throw( "MainWindow::findFromDialog.\n" );
 
   // create
-  if( !find_dialog_ ) _createFindDialog();
+  if( !find_dialog_ ) _createBaseFindDialog();
 
   // enable/disable regexp
   _findDialog().enableRegExp( true );
@@ -937,16 +937,14 @@ void MainWindow::_installActions( void )
 }
 
 //______________________________________________________________________
-void MainWindow::_createFindDialog( void )
+void MainWindow::_createBaseFindDialog( void )
 {
 
-  Debug::Throw( "MainWindow::_createFindDialog.\n" );
+  Debug::Throw( "MainWindow::_createBaseFindDialog.\n" );
   if( !find_dialog_ )
   {
 
-    find_dialog_ = new FindDialog( this );
-    find_dialog_->polish();
-
+    find_dialog_ = new BaseFindDialog( this );
     connect( find_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
     connect( this, SIGNAL( noMatchFound() ), find_dialog_, SLOT( noMatchFound() ) );
     connect( this, SIGNAL( matchFound() ), find_dialog_, SLOT( clearLabel() ) );
@@ -965,21 +963,13 @@ void MainWindow::_createReplaceDialog( void )
   {
 
     replace_dialog_ = new ReplaceDialog( this );
-    replace_dialog_->polish();
-
     connect( replace_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
     connect( replace_dialog_, SIGNAL( replace( TextSelection ) ), SLOT( _replace( TextSelection ) ) );
     connect( replace_dialog_, SIGNAL( replaceInWindow( TextSelection ) ), SLOT( _replaceInWindow( TextSelection ) ) );
     connect( replace_dialog_, SIGNAL( replaceInSelection( TextSelection ) ), SLOT( _replaceInSelection( TextSelection ) ) );
-    connect( this, SIGNAL( noMatchFound() ), replace_dialog_, SLOT( noMatchFound() ) );
-    connect( this, SIGNAL( matchFound() ), replace_dialog_, SLOT( clearLabel() ) );
-
-    // insert multiple file buttons
-    QPushButton* button = new QPushButton( "&Files", replace_dialog_ );
-    connect( button, SIGNAL( clicked() ), SLOT( _multipleFileReplace() ) );
-    button->setToolTip( "replace all occurence of the search string in the selected files" );
-    replace_dialog_->addDisabledButton( button );
-    replace_dialog_->locationLayout().addWidget( button );
+    connect( replace_dialog_, SIGNAL( replaceInFiles( void ) ), SLOT( _multipleFileReplace( void ) ) );
+    connect( this, SIGNAL( noMatchFound( void ) ), replace_dialog_, SLOT( noMatchFound( void ) ) );
+    connect( this, SIGNAL( matchFound( void ) ), replace_dialog_, SLOT( clearLabel( void ) ) );
 
   }
   
