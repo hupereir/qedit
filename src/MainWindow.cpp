@@ -887,26 +887,32 @@ void MainWindow::_installActions( void )
 
   addAction( undo_action_ = new QAction( IconEngine::get( ICONS::UNDO ), "&Undo", this ) );
   undo_action_->setToolTip( "Undo last action" );
+  undo_action_->setEnabled( false );
   connect( undo_action_, SIGNAL( triggered() ), SLOT( _undo() ) );
 
   addAction( redo_action_ = new QAction( IconEngine::get( ICONS::REDO ), "&Redo", this ) );
   redo_action_->setToolTip( "Redo last un-done action" );
+  redo_action_->setEnabled( false );
   connect( redo_action_, SIGNAL( triggered() ), SLOT( _redo() ) );
 
   addAction( cut_action_ = new QAction( IconEngine::get( ICONS::CUT ), "&Cut", this ) );
   cut_action_->setToolTip( "Cut current selection and copy to clipboard" );
+  cut_action_->setEnabled( false );
   connect( cut_action_, SIGNAL( triggered() ), SLOT( _cut() ) );
 
   addAction( copy_action_ = new QAction( IconEngine::get( ICONS::COPY ), "&Copy", this ) );
   copy_action_->setToolTip( "Copy current selection to clipboard" );
+  copy_action_->setEnabled( false );
   connect( copy_action_, SIGNAL( triggered() ), SLOT( _copy() ) );
 
   addAction( paste_action_ = new QAction( IconEngine::get( ICONS::PASTE ), "&Paste", this ) );
   paste_action_->setToolTip( "Paste clipboard to text" );
+  paste_action_->setEnabled( !qApp->clipboard()->text().isEmpty() );
   connect( paste_action_, SIGNAL( triggered() ), SLOT( _paste() ) );
 
   addAction( file_properties_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File information", this ) );
   file_properties_action_->setToolTip( "Display file informations" );
+  file_properties_action_->setEnabled( false );
   connect( file_properties_action_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
 
   addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spell check", this ) );
