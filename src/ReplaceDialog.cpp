@@ -50,5 +50,6 @@ ReplaceDialog::ReplaceDialog( QWidget* parent, Qt::WFlags flags ):
   button->setToolTip( "replace all occurence of the search string in the selected files" );
   _addDisabledButton( button );
   _locationLayout().addWidget( button );
+  button->setAutoDefault( false );
 
 }
