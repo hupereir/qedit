@@ -303,7 +303,9 @@ void WindowServer::readFilesFromArguments( ArgList args )
       _activeWindow().activeView().setIsNewDocument(); 
       _activeWindow().navigationFrame().recentFilesFrame().update();
       
-    } else { _activeWindow().uniconify(); }      
+    } 
+    
+    _activeWindow().uniconify();
     
   }
   _setFirstCall( false );

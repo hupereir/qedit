@@ -152,8 +152,6 @@ bool Application::realizeWidget( void )
   
   // create first window and show
   MainWindow& window( windowServer().newMainWindow() );
-  window.centerOnDesktop();
-  window.show();
 
   // make sure application ends when last window is closed.
   connect( this, SIGNAL( lastWindowClosed() ), SLOT( quit() ) );
