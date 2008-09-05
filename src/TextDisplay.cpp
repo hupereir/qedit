@@ -85,6 +85,15 @@ TextDisplay::TextDisplay( QWidget* parent ):
   TextEditor( parent ),
   file_( "" ),
   working_directory_( Util::workingDirectory() ),
+  
+  // store property ids associated to property names
+  // this is used to speed-up fileRecord access
+  class_name_property_id_( FileRecord::PropertyId::get( FileRecordProperties::CLASS_NAME ) ),
+  icon_property_id_( FileRecord::PropertyId::get( FileRecordProperties::ICON ) ),
+  wrap_property_id_( FileRecord::PropertyId::get( FileRecordProperties::WRAPPED ) ),
+  dictionary_property_id_( FileRecord::PropertyId::get( FileRecordProperties::DICTIONARY ) ),
+  filter_property_id_( FileRecord::PropertyId::get( FileRecordProperties::FILTER ) ),
+  
   is_new_document_( false ),
   class_name_( "" ),
   ignore_warnings_( false ),
@@ -316,7 +325,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
   assert( !file.empty() );
 
   // reset class name
-  QString class_name( static_cast<Application*>(qApp)->recentFiles().add( file ).property(FileRecordProperties::CLASS_NAME).c_str() );
+  QString class_name( static_cast<Application*>(qApp)->recentFiles().add( file ).property(class_name_property_id_).c_str() );
   setClassName( class_name );
 
   // expand filename
@@ -564,7 +573,7 @@ void TextDisplay::save( void )
 
   // add file to menu
   if( !file().empty() )
-  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); }
+  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( class_name_property_id_, qPrintable( className() ) ); }
 
   return;
 
@@ -1021,7 +1030,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   { 
     
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
-    if( record.hasProperty( FileRecordProperties::WRAPPED ) ) wrapModeAction().setChecked( Str( record.property( FileRecordProperties::WRAPPED ) ).get<bool>() );
+    if( record.hasProperty( wrap_property_id_ ) ) wrapModeAction().setChecked( Str( record.property( wrap_property_id_ ) ).get<bool>() );
     else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
 
   } else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
@@ -1069,9 +1078,9 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   if( !( file.empty() || new_document ) )
   { 
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
-    record.addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); 
-    record.addProperty( FileRecordProperties::WRAPPED, Str().assign<bool>( wrapModeAction().isChecked() ) ); 
-    if( !document_class.icon().isEmpty() ) record.addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
+    record.addProperty( class_name_property_id_, qPrintable( className() ) ); 
+    record.addProperty( wrap_property_id_, Str().assign<bool>( wrapModeAction().isChecked() ) ); 
+    if( !document_class.icon().isEmpty() ) record.addProperty( icon_property_id_, qPrintable( document_class.icon() ) );
   }
 
   // rehighlight text entirely
@@ -1201,7 +1210,7 @@ void TextDisplay::selectFilter( const QString& filter )
 
   // update file record
   if( !( file().empty() || isNewDocument() ) )
-  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::FILTER, interface.filter() ); }
+  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( filter_property_id_, interface.filter() ); }
 
   // rehighlight if needed
   if( textHighlight().spellParser().isEnabled() ) rehighlight();
@@ -1229,7 +1238,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
 
   // update file record
   if( !( file().empty() || isNewDocument() ) )
-  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::DICTIONARY, interface.dictionary() ); }
+  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( dictionary_property_id_, interface.dictionary() ); }
 
   // rehighlight if needed
   if( textHighlight().spellParser().isEnabled() ) rehighlight();
@@ -1622,7 +1631,7 @@ bool TextDisplay::_toggleWrapMode( bool state )
   if( !TextEditor::_toggleWrapMode( state ) ) return false;
   
   if( !( file().empty() || isNewDocument() ) )
-  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::WRAPPED, Str().assign<bool>(state) ); }
+  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( wrap_property_id_, Str().assign<bool>(state) ); }
     
   return true;
   
@@ -1684,11 +1693,11 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
   if( !( file.empty() || isNewDocument() ) )
   {
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
-    if( record.hasProperty( FileRecordProperties::FILTER ) && interface.hasFilter( record.property( FileRecordProperties::FILTER ) ) )
-    { filter = record.property( FileRecordProperties::FILTER ); }
+    if( record.hasProperty( filter_property_id_ ) && interface.hasFilter( record.property( filter_property_id_ ) ) )
+    { filter = record.property( filter_property_id_ ); }
 
-    if( record.hasProperty( FileRecordProperties::DICTIONARY ) && interface.hasDictionary( record.property( FileRecordProperties::DICTIONARY ) ) )
-    { dictionary = record.property( FileRecordProperties::DICTIONARY ); }
+    if( record.hasProperty( dictionary_property_id_ ) && interface.hasDictionary( record.property( dictionary_property_id_ ) ) )
+    { dictionary = record.property( dictionary_property_id_ ); }
 
   }
 
@@ -1892,10 +1901,10 @@ void TextDisplay::_spellcheck( void )
   {
 
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
-    if( !( record.hasProperty( FileRecordProperties::FILTER ) && dialog.setFilter( record.property( FileRecordProperties::FILTER ) ) ) )
+    if( !( record.hasProperty( filter_property_id_ ) && dialog.setFilter( record.property( filter_property_id_ ) ) ) )
     { dialog.setFilter( default_filter ); }
 
-    if( !( record.hasProperty( FileRecordProperties::DICTIONARY ) && dialog.setDictionary( record.property( FileRecordProperties::DICTIONARY ) ) ) )
+    if( !( record.hasProperty( dictionary_property_id_ ) && dialog.setDictionary( record.property( dictionary_property_id_ ) ) ) )
     { dialog.setDictionary( default_dictionary ); }
 
   }  else {
@@ -1916,8 +1925,8 @@ void TextDisplay::_spellcheck( void )
   if( !( file().empty() || isNewDocument() ) )
   {
     static_cast<Application*>(qApp)->recentFiles().get( file() )
-      .addProperty( FileRecordProperties::FILTER, dialog.filter() )
-      .addProperty( FileRecordProperties::DICTIONARY, dialog.dictionary() );
+      .addProperty( filter_property_id_, dialog.filter() )
+      .addProperty( dictionary_property_id_, dialog.dictionary() );
   }
 
   textHighlight().spellParser().interface().mergeIgnoredWords( dialog.interface().ignoredWords() );

@@ -108,17 +108,17 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
     public:
     
     //! constructor
-    SortFTor( const int& type, Qt::SortOrder order, const std::vector<QString>& column_titles ):
-      ItemModel::SortFTor( type, order ),
-      column_titles_( column_titles )
-      {}
+    SortFTor( const int&, Qt::SortOrder, const std::vector<QString>& );
       
     //! prediction
     bool operator() ( FileRecord, FileRecord ) const;
     
     private:
 
-    // column titles
+    //! size property id 
+    FileRecord::PropertyId::Id size_property_id_;
+    
+    //! column titles
     std::vector<QString> column_titles_;
     
   };
@@ -128,6 +128,9 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
  
   //! column titles
   std::vector<QString> column_titles_;
+  
+  //! size property id
+  FileRecord::PropertyId::Id size_property_id_;
   
   //! icon cache
   typedef std::map<unsigned int, QIcon> IconCache;

@@ -82,11 +82,7 @@ class FileSystemThread: public QThread, public Counter
   public:
   
   //! constructor
-  FileSystemThread( QObject* reciever ):
-    Counter( "FileSystemThread" ),
-    reciever_( reciever ),
-    show_hidden_files_( false )
-  {}
+  FileSystemThread( QObject* );
 
   
   //! set file
@@ -103,6 +99,9 @@ class FileSystemThread: public QThread, public Counter
  
   //! reciever object for posted events
   QObject* reciever_;
+  
+  //! size property id
+  FileRecord::PropertyId::Id size_property_id_;
   
   //! filename where data is to be saved
   File path_;

@@ -38,10 +38,10 @@ namespace FileRecordProperties
 {
   
   static const std::string CLASS_NAME = "class_name"; 
-  static const std::string FILTER = "filter";
-  static const std::string DICTIONARY = "dictionary";
-  static const std::string SIZE = "size";
   static const std::string WRAPPED = "wrap";
+  static const std::string DICTIONARY = "dictionary";
+  static const std::string FILTER = "filter";
+  static const std::string SIZE = "size";
   
   //! needed to tag session file records
   enum State

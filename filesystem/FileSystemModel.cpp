@@ -49,7 +49,8 @@ FileSystemModel::IconCache FileSystemModel::icons_;
 //__________________________________________________________________
 FileSystemModel::FileSystemModel( QObject* parent ):
   ListModel<FileRecord>( parent ),
-  Counter( "FileSystemModel" )
+  Counter( "FileSystemModel" ),
+  size_property_id_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) )
 {
   Debug::Throw("FileSystemModel::FileSystemModel.\n" );
 
@@ -117,7 +118,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
       
       case SIZE: 
       {
-        if( record.hasFlag( DOCUMENT ) ) return QString( record.property( FileRecordProperties::SIZE ).c_str() );
+        if( record.hasFlag( DOCUMENT ) ) return QString( record.property( size_property_id_ ).c_str() );
         else return QVariant();
       }
       
@@ -177,6 +178,13 @@ void FileSystemModel::_sort( int column, Qt::SortOrder order )
 { std::sort( _get().begin(), _get().end(), SortFTor( column, order, column_titles_ ) ); }
   
 //________________________________________________________
+FileSystemModel::SortFTor::SortFTor( const int& type, Qt::SortOrder order, const std::vector<QString>& column_titles ):
+  ItemModel::SortFTor( type, order ),
+  size_property_id_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) ),
+  column_titles_( column_titles )
+{}
+
+//________________________________________________________
 bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord second ) const
 {
   
@@ -194,8 +202,8 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
     case TIME: return (first.time() != second.time() ) ? first.time() < second.time() : first.file().localName() < second.file().localName();
     case SIZE: 
     {
-      long first_size( Str(first.property( FileRecordProperties::SIZE ) ).get<long>() );
-      long second_size( Str(second.property( FileRecordProperties::SIZE )).get<long>() );
+      long first_size( Str(first.property( size_property_id_ ) ).get<long>() );
+      long second_size( Str(second.property( size_property_id_ )).get<long>() );
       return (first_size != second_size ) ? first_size < second_size : first.file().localName() < second.file().localName();
     }
     

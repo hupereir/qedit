@@ -38,6 +38,15 @@
 
 using namespace std;
 
+
+//______________________________________________________
+FileSystemThread::FileSystemThread( QObject* reciever ):
+  Counter( "FileSystemThread" ),
+  reciever_( reciever ),
+  size_property_id_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) ),
+  show_hidden_files_( false )
+{}
+  
 //______________________________________________________
 void FileSystemThread::run( void )
 {
@@ -65,7 +74,7 @@ void FileSystemThread::run( void )
     FileRecord record( File( qPrintable( iter->fileName() ) ), TimeStamp( iter->lastModified().toTime_t() ) );
     
     // assign size
-    record.addProperty( FileRecordProperties::SIZE, Str().assign<long int>( iter->size() ) );
+    record.addProperty( size_property_id_, Str().assign<long int>( iter->size() ) );
     
     // assign type
     record.setFlag( iter->isDir() ? FileSystemModel::FOLDER : FileSystemModel::DOCUMENT );

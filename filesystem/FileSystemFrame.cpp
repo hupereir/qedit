@@ -38,7 +38,6 @@
 #include "CustomComboBox.h"
 #include "CustomToolBar.h"
 #include "FileInformationDialog.h"
-#include "FileRecordProperties.h"
 #include "FileSystemFrame.h"
 #include "IconEngine.h"
 #include "QtUtil.h"

@@ -628,6 +628,15 @@ class TextDisplay: public TextEditor
   //! working directory
   File working_directory_;
   
+  //!@name property ids
+  //@{
+  FileRecord::PropertyId::Id class_name_property_id_;
+  FileRecord::PropertyId::Id icon_property_id_;
+  FileRecord::PropertyId::Id wrap_property_id_;
+  FileRecord::PropertyId::Id dictionary_property_id_;
+  FileRecord::PropertyId::Id filter_property_id_;
+  //@}
+  
   //! true if display corresponds to a new document
   bool is_new_document_;
   
