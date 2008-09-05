@@ -300,6 +300,7 @@ void WindowServer::readFilesFromArguments( ArgList args )
       // at first call and if no file was oppened,
       // set the current display as a new document.
       // also force update of the recent files frame
+      // and center on desktop
       _activeWindow().activeView().setIsNewDocument(); 
       _activeWindow().navigationFrame().recentFilesFrame().update();
       
@@ -501,7 +502,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     assert( view_iter != views.end() );
     (*iter)->setActiveView( **view_iter );
     view = *view_iter;
-    
+          
     // uniconify
     (*iter)->uniconify();
     
@@ -519,7 +520,10 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
       
     } else {
       
+      // create new view
       view = &_activeWindow().newTextView();
+            
+      // uniconify
       _activeWindow().uniconify();
       
     }

@@ -82,9 +82,9 @@ int main (int argc, char *argv[])
     Q_INIT_RESOURCE( basePixmaps );
     Q_INIT_RESOURCE( patterns );
     Q_INIT_RESOURCE( pixmaps );
-    Application main_frame( argc, argv );
-    main_frame.initApplicationManager();
-    main_frame.exec();
+    Application application( argc, argv );
+    application.initApplicationManager();
+    application.exec();
   } catch ( exception& e ) { cout << e.what() << endl; }
   
   return 0;
