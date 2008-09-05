@@ -2173,7 +2173,7 @@ void TextDisplay::_fileProperties( void )
   dialog.tabWidget().addTab( box, "&Miscellaneous" );
   
   // execute dialog
-  dialog.centerOnParent().exec();
+  dialog.centerOnWidget( window() ).exec();
   
 }
 

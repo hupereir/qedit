@@ -52,4 +52,7 @@ ReplaceDialog::ReplaceDialog( QWidget* parent, Qt::WFlags flags ):
   _locationLayout().addWidget( button );
   button->setAutoDefault( false );
 
+  // tab order
+  setTabOrder( &_replaceWindowButton(), button );
+  
 }

@@ -195,7 +195,7 @@ void RecentFilesFrame::_clean( void )
 { 
   
   Debug::Throw( "RecentFilesFrame:_clean.\n" ); 
-  if( !QuestionDialog( this,"Remove invalid or duplicated files from list ?" ).exec() ) return;
+  if( !QuestionDialog( window(),"Remove invalid or duplicated files from list ?" ).exec() ) return;
   _recentFiles().clean();
   update();
   

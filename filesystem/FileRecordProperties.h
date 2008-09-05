@@ -47,8 +47,14 @@ namespace FileRecordProperties
   enum State
   {
     NONE = 0,
+      
+    //! tag modified files
     MODIFIED = 1<<0,
+    
+    //! tag files that belong to current window
     ACTIVE = 1<<1,
+    
+    //! tag current file
     SELECTED = 1<<2
   };
 };

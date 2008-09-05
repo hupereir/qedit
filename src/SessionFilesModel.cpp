@@ -33,6 +33,7 @@
 #include <assert.h>
 #include <QIcon>
 #include <QApplication>
+#include <QPalette>
 
 #include "Icons.h"
 #include "CustomPixmap.h"
@@ -73,6 +74,12 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
       FileRecordProperties::MODIFIED:
       FileRecordProperties::NONE );
 
+  } else if( role == Qt::ForegroundRole ) {
+    
+    return record.hasFlag( FileRecordProperties::ACTIVE ) ? 
+      QPalette().color( QPalette::Text ):
+      QPalette().color( QPalette::Disabled, QPalette::Text );
+    
   } else return FileRecordModel::data( index, role );
  
   return QVariant();
