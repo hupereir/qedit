@@ -42,7 +42,7 @@
 #include "Config.h"
 #include "TextEditor.h"
 #include "Debug.h"
-#include "File.h"
+#include "FileRecord.h"
 #include "HighlightBlockFlags.h"
 #include "HighlightPattern.h"
 #include "NewDocumentNameServer.h"
