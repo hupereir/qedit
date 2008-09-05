@@ -194,8 +194,8 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
     case TIME: return (first.time() != second.time() ) ? first.time() < second.time() : first.file().localName() < second.file().localName();
     case SIZE: 
     {
-      long int first_size( first.property<long int>( FileRecordProperties::SIZE ) );
-      long int second_size( second.property<long int>( FileRecordProperties::SIZE ) );
+      long first_size( Str(first.property( FileRecordProperties::SIZE ) ).get<long>() );
+      long second_size( Str(second.property( FileRecordProperties::SIZE )).get<long>() );
       return (first_size != second_size ) ? first_size < second_size : first.file().localName() < second.file().localName();
     }
     

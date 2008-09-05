@@ -1021,7 +1021,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   { 
     
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
-    if( record.hasProperty( FileRecordProperties::WRAPPED ) ) wrapModeAction().setChecked( record.property<bool>( FileRecordProperties::WRAPPED ) );
+    if( record.hasProperty( FileRecordProperties::WRAPPED ) ) wrapModeAction().setChecked( Str( record.property( FileRecordProperties::WRAPPED ) ).get<bool>() );
     else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
 
   } else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
@@ -1070,7 +1070,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   { 
     FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
     record.addProperty( FileRecordProperties::CLASS_NAME, qPrintable( className() ) ); 
-    record.addProperty<bool>( FileRecordProperties::WRAPPED, wrapModeAction().isChecked() ); 
+    record.addProperty( FileRecordProperties::WRAPPED, Str().assign<bool>( wrapModeAction().isChecked() ) ); 
     if( !document_class.icon().isEmpty() ) record.addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
   }
 
@@ -1622,7 +1622,7 @@ bool TextDisplay::_toggleWrapMode( bool state )
   if( !TextEditor::_toggleWrapMode( state ) ) return false;
   
   if( !( file().empty() || isNewDocument() ) )
-  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty<bool>( FileRecordProperties::WRAPPED, state ); }
+  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( FileRecordProperties::WRAPPED, Str().assign<bool>(state) ); }
     
   return true;
   
