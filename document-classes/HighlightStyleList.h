@@ -56,9 +56,10 @@ class HighlightStyleList: public QGroupBox, public Counter
   //! styles
   HighlightStyle::Set styles( void );
   
-  //! true when styles are modified
-  bool modified( void ) const
-  { return modified_; }
+  signals:
+  
+  //! emitted when list is modified
+  void modified( void );
   
   private slots:
   
@@ -93,9 +94,6 @@ class HighlightStyleList: public QGroupBox, public Counter
   
   //! buttons
   QPushButton* remove_button_;
-  
-  //! modification state
-  bool modified_;
   
 };
 

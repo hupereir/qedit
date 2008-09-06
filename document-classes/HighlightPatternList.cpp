@@ -43,8 +43,7 @@ using namespace std;
 //____________________________________________________
 HighlightPatternList::HighlightPatternList( QWidget* parent ):
   QGroupBox( "Highlight patterns", parent ),
-  Counter( "HighlightPatternList" ),
-  modified_( false )
+  Counter( "HighlightPatternList" )
 {
   Debug::Throw( "HighlightPatternList::HighlightPatternList.\n" );
 
@@ -103,19 +102,16 @@ HighlightPatternList::HighlightPatternList( QWidget* parent ):
 //____________________________________________________
 void HighlightPatternList::setPatterns( const HighlightPattern::List& patterns ) 
 {
-
   Debug::Throw( "HighlightPatternList::setPatterns.\n" );
   model_.set( patterns );
   list_->resizeColumns();
-  modified_ = false;
-  
 }
 
 //____________________________________________________
 HighlightPattern::List HighlightPatternList::patterns( void ) 
 {
   
-  Debug::Throw( "HighlightPatternList::patterns.\n" );
+  Debug::Throw( "HighlightPatternList::patterns.\n" );  
   return model_.get();
   
 }
@@ -151,6 +147,7 @@ void HighlightPatternList::_add( void )
       InformationDialog( this, "Invalid pattern name" ).exec();
     } else {
       model_.add( pattern );
+      emit modified();
       break; 
     }
   }
@@ -185,7 +182,7 @@ void HighlightPatternList::_edit( void )
     if( pattern.differs( old_pattern ) ) 
     { 
       model_.replace( *iter, pattern ); 
-      modified_ = true;
+      emit modified();
     }
 
   }
@@ -213,8 +210,8 @@ void HighlightPatternList::_remove( void )
   
   // remove items
   model_.remove( selection );
-  modified_ = true;
-  
+  emit modified();
+      
 }
 
 //________________________________________

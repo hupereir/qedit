@@ -86,6 +86,9 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   _buttonLayout().addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Cancel", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( reject() ) );
 
+  // connections
+  connect( &_highlightStyleList(), SIGNAL( modified( void ) ), SLOT( _updateStyles( void ) ) );
+  
   adjustSize();
   
 }
@@ -123,5 +126,20 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
   // text macros
   text_macro_list_->setMacros( document_class.textMacros() );
   
+  
+}
+
+//___________________________________________________________________________________
+void DocumentClassDialog::_updateStyles( void )
+{
+  
+  Debug::Throw( "DocumentClassDialog::_updateStyles.\n" );
+  
+  // update styles associated to patterns
+  HighlightStyle::Set styles(  _highlightStyleList().styles() );
+  
+  _highlightPatternList().setStyles( styles );
+  
+  // should also update document class
   
 }

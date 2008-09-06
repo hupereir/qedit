@@ -63,10 +63,11 @@ class HighlightPatternList: public QGroupBox, public Counter
   
   //! Patterns
   HighlightPattern::List patterns( void );
+   
+  signals:
   
-  //! true when Patterns are modified
-  bool modified( void ) const
-  { return modified_; }
+  //! emmitted when modified
+  void modified( void );
   
   private slots:
   
@@ -116,9 +117,6 @@ class HighlightPatternList: public QGroupBox, public Counter
   
   //! buttons
   QPushButton* move_down_button_;
-  
-  //! modification state
-  bool modified_;
   
 };
 

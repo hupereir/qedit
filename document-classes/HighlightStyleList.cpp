@@ -43,8 +43,7 @@ using namespace std;
 //____________________________________________________
 HighlightStyleList::HighlightStyleList( QWidget* parent ):
   QGroupBox( "Highlight styles", parent ),
-  Counter( "HighlightStyleList" ),
-  modified_( false )
+  Counter( "HighlightStyleList" )
 {
   Debug::Throw( "HighlightStyleList::HighlightStyleList.\n" );
 
@@ -96,7 +95,6 @@ void HighlightStyleList::setStyles( const HighlightStyle::Set& styles )
 
   Debug::Throw( "HighlightStyleList::setStyles.\n" );
   model_.set( HighlightStyleModel::List( styles.begin(), styles.end() ) );
-  modified_ = false;
   
 }
 
@@ -136,6 +134,7 @@ void HighlightStyleList::_add( void )
       InformationDialog( this, "Invalid pattern name" ).exec();
     } else {
       model_.add( style );
+      emit modified();
       break; 
     }
   }
@@ -167,7 +166,7 @@ void HighlightStyleList::_edit( void )
     if( style.differs( old_style ) ) 
     { 
       model_.replace( *iter, style ); 
-      modified_ = true;
+      emit modified();
     }
 
   }
@@ -195,7 +194,7 @@ void HighlightStyleList::_remove( void )
   
   // remove items
   model_.remove( selection );
-  modified_ = true;
+  emit modified();
   
 }
 

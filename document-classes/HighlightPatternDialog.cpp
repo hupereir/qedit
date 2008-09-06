@@ -153,7 +153,8 @@ void HighlightPatternDialog::setPattern( const HighlightPattern& pattern )
 
   // comments
   comments_editor_->setPlainText( pattern.comments() );
-  
+
+  // editors enability
   _updateEditors( pattern_type_->type() );
   
   return;

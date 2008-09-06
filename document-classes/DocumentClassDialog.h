@@ -58,9 +58,46 @@ class DocumentClassDialog: public TabbedDialog
   void setDocumentClass( const DocumentClass& );
   
   //! true if any document class attribute has been modified
-  bool modified( void );
+  bool modified( void )
+  { return modified_; }
+  
+  private slots:
+  
+  //! update styles
+  void _updateStyles( void );
   
   private:
+
+  //!@name ref accessors
+  //@{
+  
+  DocumentClassConfiguration& _documentClassConfiguration( void ) const
+  { return *document_class_configuration_; }
+  
+  HighlightStyleList& _highlightStyleList( void ) const
+  { return *highlight_style_list_; }
+
+  //! highlight pattern list
+  HighlightPatternList& _highlightPatternList( void ) const
+  { return * highlight_pattern_list_; }
+  
+  //! text parenthesis list
+  TextParenthesisList& _textParenthesisList( void ) const
+  { return * text_parenthesis_list_; }
+
+  //! block delimiter list
+  BlockDelimiterList& _blockDelimiterList( void ) const
+  { return * block_delimiter_list_; }
+
+  //! block delimiter list
+  IndentPatternList& _indentPattenrList( void ) const
+  { return * indent_pattern_list_; }
+
+  //! block delimiter list
+  TextMacroList& _textMacroList( void ) const
+  { return * text_macro_list_; }
+  
+  //@}
 
   //! document class configuration
   DocumentClassConfiguration* document_class_configuration_;
@@ -82,8 +119,8 @@ class DocumentClassDialog: public TabbedDialog
 
   //! block delimiter list
   TextMacroList* text_macro_list_;
-
-  //! modification state
+  
+  //! modified
   bool modified_;
   
 };
