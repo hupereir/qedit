@@ -104,6 +104,7 @@ int main (int argc, char *argv[])
     
     // prepare dialog
     DocumentClassManagerDialog dialog(0, &manager);
+    dialog.centerOnDesktop();
     dialog.show();
     application.exec();
     
