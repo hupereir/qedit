@@ -51,11 +51,23 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
   layout->setSpacing( 10 );
   layout->setMargin( 10 );
   setLayout( layout );
+
+  // label 
+  QLabel* text_label( new QLabel( "Remove files selected from following list ?", this ) );  
   
-  layout->addWidget( new QLabel( "Selected files: ", this ) );
- 
+  //! try load Question icon
+  QPixmap question_pixmap( PixmapEngine::get( ICONS::WARNING ) );      
+  QHBoxLayout *h_layout( new QHBoxLayout() );
+  h_layout->setSpacing(10);
+  h_layout->setMargin(0);
+  layout->addLayout( h_layout );
+  QLabel* label = new QLabel( this );
+  label->setPixmap( question_pixmap );
+  h_layout->addWidget( label, 0, Qt::AlignHCenter );
+  h_layout->addWidget( text_label, 1, Qt::AlignLeft );
+      
   // horizontal layout for list and comments
-  QHBoxLayout* h_layout( new QHBoxLayout() );
+  h_layout = new QHBoxLayout();
   h_layout->setSpacing( 5 );
   h_layout->setMargin( 0 );
   layout->addLayout( h_layout, 1 );
