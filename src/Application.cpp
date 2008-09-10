@@ -153,8 +153,6 @@ bool Application::realizeWidget( void )
   // create first window and show
   windowServer().newMainWindow().centerOnDesktop();
 
-  // make sure application ends when last window is closed.
-  connect( this, SIGNAL( lastWindowClosed() ), SLOT( quit() ) );
   connect( this, SIGNAL( configurationChanged() ), SLOT( _updateDocumentClasses() ) );
 
   // update configuration
@@ -266,6 +264,10 @@ void Application::_readFilesFromArguments( void )
 {
   Debug::Throw( "Application::_readFilesFromArgs.\n" );
   windowServer().readFilesFromArguments( _arguments() );
+
+  // make sure application ends when last window is closed.
+  connect( this, SIGNAL( lastWindowClosed() ), SLOT( quit() ) );
+
 }
 
 //________________________________________________
