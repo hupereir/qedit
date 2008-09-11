@@ -48,8 +48,9 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
 {
   
   Debug::Throw( "NavigationFrame:NavigationFrame.\n" );
-  layout()->setMargin(0);
-  
+  layout()->setMargin(2);
+  layout()->setSpacing(2);
+
   // stack widget
   addWidget( session_files_frame_ = new SessionFilesFrame(0) );  
   addWidget( recent_files_frame_ = new RecentFilesFrame(0, files) );  
