@@ -743,7 +743,12 @@ void MainWindow::_update( unsigned int flags )
   Debug::Throw() << "MainWindow::_update - flags: " << flags << endl;
 
   if( flags & ( TextDisplay::FILE_NAME | TextDisplay::READ_ONLY | TextDisplay::MODIFIED ) )
-  { _updateWindowTitle(); }
+  { 
+    
+    _updateWindowTitle(); 
+    saveAction().setEnabled( !activeDisplay().isReadOnly() && activeDisplay().document()->isModified() );
+  
+  }
     
   if( flags & TextDisplay::MODIFIED )
   { emit modificationChanged(); }
@@ -786,9 +791,6 @@ void MainWindow::_update( unsigned int flags )
     redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
   }
  
-  if( flags & TextDisplay::READ_ONLY )
-  { saveAction().setEnabled( !activeDisplay().isReadOnly() ); }
-
   if( statusbar_ && flags & TextDisplay::OVERWRITE_MODE )
   { statusbar_->label(0).setText( activeDisplay().overwriteMode() ? "INS":"" ); }
   

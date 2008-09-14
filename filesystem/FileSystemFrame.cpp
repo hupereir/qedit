@@ -70,7 +70,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   _installActions();
   
   // toolbar
-  CustomToolBar* toolbar = new CustomToolBar( "navigation toolbar", this, "NAVIGATION_TOOLBAR" );
+  CustomToolBar* toolbar = new CustomToolBar( "Navigation toolbar", this, "NAVIGATION_TOOLBAR" );
   toolbar->addAction( &_parentDirectoryAction() );
   toolbar->addAction( &_previousDirectoryAction() );
   toolbar->addAction( &_nextDirectoryAction() );
