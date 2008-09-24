@@ -2,7 +2,7 @@
 %define rel      0
 %define prefix   /usr
 
-Summary: running processes control
+Summary: Qt based advanced text editor
 Name: qedit
 Version: %{ver}
 Release: %{rel}
