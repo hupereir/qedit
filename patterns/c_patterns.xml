@@ -99,11 +99,16 @@
 
  <!-- keyword -->
  <keyword_pattern style="Keyword" name="Keyword" >
-  <keyword>\b(abs|break|case|catch|continue|default|delete|do|(dynamic|static|const|reinterpret)_cast|else|emit|fabs|false|for|goto|if|new|return|sizeof|swap|switch|this|throw|true|try|while)\b</keyword>
+  <keyword>\b(break|case|catch|continue|default|delete|do|(dynamic|static|const|reinterpret)_cast|else|emit|fabs|false|for|goto|if|new|return|sizeof|switch|this|throw|true|try|while)\b</keyword>
   <comments>keywords</comments>
  </keyword_pattern>
  
- <!-- parenthesis -->
+ <keyword_pattern style="Keyword" name="Stl Keyword" >
+  <keyword>\b(std::)?((abs|swap|make_pair|(count|find)_if|endl|c(out|err|log)))\b</keyword>
+  <comments>keywords</comments>
+ </keyword_pattern>
+
+<!-- parenthesis -->
  <keyword_pattern style="Keyword" name="Braces" >
   <keyword>((\{|\[|\]|\})*(\{|\[|\]|\})(\{|\[|\]|\})*)</keyword>
   <comments>parenthesis</comments>
@@ -116,11 +121,11 @@
  </keyword_pattern>
 
  <keyword_pattern style="Storage Type" name="Stl Storage Type" >
-  <keyword>(\b(std::)?((string(::npos)?)|set|map|pair|list|((i|i?o)(f|string)?stream)|endl|c(out|err|log)|vector)\b)|(::(const_)?(reverse_)?iterator\b)</keyword>
+  <keyword>(\b(std::)?((string(::npos)?)|set|map|pair|list|((i|i?o)(f|string)?stream)|vector)\b)|(::(const_)?(reverse_)?iterator\b)</keyword>
   <comments>storage type (STL)</comments>
  </keyword_pattern>
 
- <keyword_pattern style="Math" name="Math" >
+ <keyword_pattern style="Keyword" name="Math" >
   <keyword>(\b(std::)?((a?(cos|sin|tan))|log|exp|sqrt|pow|(f?abs)|min|max)\b)</keyword>
   <comments>storage type (STL)</comments>
  </keyword_pattern>
