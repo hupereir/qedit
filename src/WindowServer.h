@@ -87,7 +87,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   //!@name actions
   //@{
 
-  //! close
+  //! save all
   QAction& saveAllAction( void ) const
   { return *save_all_action_; }
 
@@ -148,6 +148,18 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   //! open file
   bool _open( FileRecord record )
   { return _open( record, _openMode() ); }
+
+  //! open in new window
+  bool _openInNewWindow( FileRecord record )
+  { return _open( record, NEW_WINDOW ); }
+  
+  //! open in active window
+  bool _openInActiveWindow( FileRecord record )
+  { return _open( record, ACTIVE_WINDOW ); }
+  
+  //! open in current tab
+  bool _openInActiveView( FileRecord record )
+  { return _open( record, _orientation() ); }
   
   //! open in active view
   bool _openHorizontal( void )
@@ -210,6 +222,14 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   const MainWindow& _activeWindow( void ) const
   { return *active_window_; }
   
+  //! default orientation for split tabs
+  const Qt::Orientation _orientation( void ) const
+  { return default_orientation_; }
+  
+  //! default orientation for split tabs
+  void _setOrientation( const Qt::Orientation& value )
+  { default_orientation_ = value; }
+  
   //! open mode
   const OpenMode& _openMode( void ) const
   { return open_mode_; }
@@ -217,7 +237,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   //! open mode
   void _setOpenMode( const OpenMode& mode )
   { open_mode_ = mode; }
-  
+
   //! first call
   const bool& _firstCall( void ) const
   { return first_call_; }
@@ -228,6 +248,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
   //! true at first call (via Application::realizeWidget)
   bool first_call_;
+  
+  //! default orientation
+  Qt::Orientation default_orientation_; 
   
   //! open mode
   OpenMode open_mode_;

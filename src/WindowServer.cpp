@@ -65,6 +65,7 @@ WindowServer::WindowServer( QObject* parent ):
   QObject( parent ),
   Counter( "WindowServer" ),
   first_call_( true ),
+  default_orientation_( Qt::Horizontal ),
   open_mode_( ACTIVE_WINDOW ),
   active_window_( 0 )
 { 
@@ -357,8 +358,9 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
 void WindowServer::_updateConfiguration( void )
 {
   
-    Debug::Throw( "WindowServer::_updateConfiguration.\n" );
-    _setOpenMode( XmlOptions::get().raw( "OPEN_MODE" ) == MULTIPLE_WINDOWS ? NEW_WINDOW:ACTIVE_WINDOW );
+  Debug::Throw( "WindowServer::_updateConfiguration.\n" );
+  _setOpenMode( XmlOptions::get().raw( "OPEN_MODE" ) == MULTIPLE_WINDOWS ? NEW_WINDOW:ACTIVE_WINDOW );
+  _setOrientation( XmlOptions::get().raw( "ORIENTATION" ) == MainWindow::LEFT_RIGHT ? Qt::Horizontal : Qt::Vertical );
   
 }
 
