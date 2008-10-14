@@ -67,6 +67,7 @@ void installDefaultOptions( void )
   XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/perl_patterns.xml", "default patterns for perl files") );
   XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/shell_patterns.xml", "default patterns for shell files") );
   XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/xml_patterns.xml", "default patterns for xml files") );
+  XmlOptions::get().add( "CUSTOM_BLOCK_DELIMITERS", Option( "1", "use custom symbols for block delimiters") );
 
   // diff configuration
   XmlOptions::get().add( "DIFF_ADDED_COLOR", "#d0eaff" );

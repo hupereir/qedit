@@ -58,6 +58,7 @@ BlockDelimiterDisplay::BlockDelimiterDisplay(TextDisplay* editor ):
   Counter( "BlockDelimiterDisplay" ),
   editor_( editor ),
   need_update_( true ),
+  custom_symbols_( false ),
   offset_(0)
 {
   
@@ -937,20 +938,8 @@ CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& firs
 void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect, const bool& collapsed ) const
 {
   
-  bool use_base_style = true;
-  if( use_base_style )
+  if( custom_symbols_ )
   {
-    
-    QStyleOption option;
-    option.initFrom( &_editor() );
-    option.palette.setColor( QPalette::Text, foreground_ );
-    option.rect = rect;
-    option.state |= QStyle::State_Children;
-    if( !collapsed ) { option.state |= QStyle::State_Open; }
-      
-    _editor().style()->drawPrimitive( QStyle::PE_IndicatorBranch, &option, &painter );
-    
-  } else {
     
     painter.setBrush( foreground_ );
     painter.setPen( Qt::NoPen );
@@ -975,6 +964,19 @@ void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect
 
       painter.drawConvexPolygon(points, 3);
     }
-  }
+    
+  } else {
+    
+    QStyleOption option;
+    option.initFrom( &_editor() );
+    option.palette.setColor( QPalette::Text, foreground_ );
+    option.rect = rect;
+    option.state |= QStyle::State_Children;
+    if( !collapsed ) { option.state |= QStyle::State_Open; }
+      
+    _editor().style()->drawPrimitive( QStyle::PE_IndicatorBranch, &option, &painter );
+    
+  } 
+
   return;
 }

@@ -1655,6 +1655,7 @@ void TextDisplay::_updateConfiguration( void )
   // block delimiters, line numbers and margin
   showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
   blockDelimiterDisplay().setWidth( fontMetrics().lineSpacing() );
+  blockDelimiterDisplay().setCustomSymbols( XmlOptions::get().get<bool>( "CUSTOM_BLOCK_DELIMITERS" ) );
   _updateMargins();
   
   // retrieve diff colors

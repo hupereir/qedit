@@ -88,6 +88,10 @@ class BlockDelimiterDisplay: public QObject, public Counter
   const int& width( void ) const
   { return width_; }
   
+  //! custom delimiter symbols
+  void setCustomSymbols( bool value )
+  { custom_symbols_ = value; }
+  
   //! paint
   virtual void paint( QPainter& );
 
@@ -226,8 +230,13 @@ class BlockDelimiterDisplay: public QObject, public Counter
   //! true when _updateSegments needs to be called in paintEvent
   bool need_update_; 
     
+  //! use custom block delimiters
+  bool custom_symbols_;
+  
+  //! foreground color
   QColor foreground_;
   
+  //! background color
   QColor background_;
   
   //!@name marker dimension
