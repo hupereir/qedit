@@ -260,7 +260,7 @@ void MainWindow::setActiveView( TextView& view )
 
   // update displays, actions, etc.
   if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
-  { _update( TextDisplay::ACTIVE_DISPLAY_CHANGED ); }
+  { _update( TextDisplay::ACTIVE_VIEW_CHANGED ); }
 
 }
 
