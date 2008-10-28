@@ -476,8 +476,11 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
 
   FileModifiedDialog dialog( this, file() );
   int state( dialog.centerOnParent().exec() );
-  if( state == FileModifiedDialog::RESAVE ) { save(); }
-  else if( state == FileModifiedDialog::SAVE_AS ) { saveAs(); }
+  if( state == FileModifiedDialog::RESAVE ) 
+  {
+    document()->setModified( true );
+    save(); 
+  } else if( state == FileModifiedDialog::SAVE_AS ) { saveAs(); }
   else if( state == FileModifiedDialog::RELOAD ) {
 
     setModified( false );
