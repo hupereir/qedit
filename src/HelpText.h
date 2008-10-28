@@ -174,14 +174,6 @@ static const char* HelpText[] = {
   "<li>Unless the server mode is disabled, opening a file that was already oppened during the same session simply raises the corresponding window.</li>"
   "</ul>",
 
-  //_________________________________________________________
-  "Contact",
-  "<h2>Contact</h2><p>Latest versions of QEdit can be downloaded at <p><a href=\"http://www.phenix.bnl.gov/WWW/publish/hpereira/php/show_software_package.php?package=QEdit\">http://www.phenix.bnl.gov/WWW/publish/hpereira/php/show_software_package.php?package=QEdit</a><p>For suggestions and bug reports, please contact the author directly at: <p><a href=\"mailto:hugo.pereira@free.fr\">hugo.pereira@free.fr</a>",
-
-  //_________________________________________________________
-  "Notes",
-  "<h2>Notes</h2><p>This section is left empty for the user to add his own comments on QEdit.",
-
   0
 };
 

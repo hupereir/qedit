@@ -32,9 +32,11 @@
 #include <QApplication>
 #include <sstream>
 
+#include "Application.h"
 #include "BlockDelimiterDisplay.h"
 #include "Config.h"
 #include "DebugMenu.h"
+#include "DefaultHelpText.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
 #include "MainWindow.h"
@@ -42,7 +44,6 @@
 #include "HelpText.h"
 #include "IconEngine.h"
 #include "Icons.h"
-#include "Application.h"
 #include "Menu.h"
 #include "NavigationFrame.h"
 #include "RecentFilesMenu.h"
@@ -139,6 +140,7 @@ Menu::Menu( QWidget* parent ):
   {
     BASE::HelpManager::setFile( help_file );
     BASE::HelpManager::install( HelpText );
+    BASE::HelpManager::install( BASE::HelpText, false );
   }  
 
   // create help menu
