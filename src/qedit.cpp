@@ -50,45 +50,43 @@ void interrupt( int sig );
 //! main function
 int main (int argc, char *argv[])
 {
-  try {
-    
-    // Ensure proper cleaning at exit
-    signal(SIGINT,  interrupt);
-    signal(SIGTERM, interrupt);
-    
-    // install error handler
-    ErrorHandler::disableMessage( "QServerSocket: failed to bind or listen to the socket" );
-    qInstallMsgHandler( ErrorHandler::Throw );
-    
-    // load possible command file
-    ArgList args( argc, argv );
-    if( args.find( "--help" ) )
-    {
-      Application::usage();
-      return 0;
-    }
-
-    // load default options
-    installDefaultOptions();
-    installSystemOptions();
-    XmlOptions::read( XmlOptions::get().raw( "RC_FILE" ) );     
-      
-    // set debug level
-    int debug_level( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );
-    Debug::setLevel( debug_level );
-    if( debug_level ) XmlOptions::get().dump();
-
-    // initialize main frame and run loop
-    Q_INIT_RESOURCE( basePixmaps );
-    Q_INIT_RESOURCE( patterns );
-    Q_INIT_RESOURCE( pixmaps );
-    Application application( argc, argv );
-    application.initApplicationManager();
-    application.exec();
-  } catch ( exception& e ) { cout << e.what() << endl; }
   
+  // Ensure proper cleaning at exit
+  signal(SIGINT,  interrupt);
+  signal(SIGTERM, interrupt);
+  
+  // install error handler
+  ErrorHandler::disableMessage( "QServerSocket: failed to bind or listen to the socket" );
+  qInstallMsgHandler( ErrorHandler::Throw );
+  
+  // load possible command file
+  ArgList args( argc, argv );
+  if( args.find( "--help" ) )
+  {
+    Application::usage();
+    return 0;
+  }
+  
+  // load default options
+  installDefaultOptions();
+  installSystemOptions();
+  XmlOptions::read( XmlOptions::get().raw( "RC_FILE" ) );     
+  
+  // set debug level
+  int debug_level( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );
+  Debug::setLevel( debug_level );
+  if( debug_level ) XmlOptions::get().dump();
+  
+  // initialize main frame and run loop
+  Q_INIT_RESOURCE( basePixmaps );
+  Q_INIT_RESOURCE( patterns );
+  Q_INIT_RESOURCE( pixmaps );
+  Application application( argc, argv );
+  application.initApplicationManager();
+  application.exec();
+
   return 0;
-  
+
 }
 
 //_____________________________________________

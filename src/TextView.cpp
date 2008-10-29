@@ -594,7 +594,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, const boo
     // retrieve parent of current display
     QWidget* parent( activeDisplay().parentWidget() );  
 
-    // try catch to splitter
+    // try cast to splitter
     // do not create a new splitter if the parent has same orientation
     QSplitter *parent_splitter( dynamic_cast<QSplitter*>( parent ) );
     if( parent_splitter && parent_splitter->orientation() == orientation ) splitter = parent_splitter;

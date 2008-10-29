@@ -906,8 +906,7 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
       break;
     }
 
-    default:
-    { throw logic_error( DESCRIPTION( "invalid tag" ) ); }
+    default: break;
 
   }
 

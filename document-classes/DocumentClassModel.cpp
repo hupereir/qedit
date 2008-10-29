@@ -96,9 +96,7 @@ bool DocumentClassModel::SortFTor::operator () ( const DocumentClass& first, con
     
     case NAME: return ( order_ == Qt::AscendingOrder ) ? second.name() < first.name() : first.name() < second.name();
     case FILE: return ( order_ == Qt::AscendingOrder ) ? second.file() < first.file() : first.file() < second.file();
-    default:
-    throw runtime_error( DESCRIPTION( "invalid column" ) );
-    return true;
+    default: return true;
   }
 
 }

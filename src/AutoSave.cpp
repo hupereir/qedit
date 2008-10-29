@@ -149,13 +149,8 @@ void AutoSave::saveFiles( const TextDisplay* display )
   }
   
   // check if thread matching display was found
-  if( display && !found )
-  { 
-    ostringstream what;
-    what << "AutoSave::SaveFiles - unable to find thread matching TextDisplay " << display->key();
-    throw logic_error( DESCRIPTION( what.str() ) );
-  }
-
+  assert( found || !display );
+  
   // restart timer 
   if( !threads_.empty() )  timer_.start();
   Debug::Throw( "AutoSave::saveFiles - done. \n" );
