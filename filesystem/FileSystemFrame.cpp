@@ -35,6 +35,7 @@
 
 #include "FileSystemIcons.h"
 #include "ColumnSortingMenu.h"
+#include "ColumnSelectionMenu.h"
 #include "CustomComboBox.h"
 #include "CustomToolBar.h"
 #include "FileInformationDialog.h"
@@ -94,6 +95,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   
   // list menu  
   _list().menu().addMenu( new ColumnSortingMenu( &_list().menu(), &_list() ) );
+  _list().menu().addMenu( new ColumnSelectionMenu( &_list().menu(), &_list() ) );
   _list().menu().addSeparator();
   _list().menu().addAction( &_previousDirectoryAction() );
   _list().menu().addAction( &_nextDirectoryAction() );

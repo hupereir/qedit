@@ -55,8 +55,12 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   addWidget( session_files_frame_ = new SessionFilesFrame(0) );  
   addWidget( recent_files_frame_ = new RecentFilesFrame(0, files) );  
   addWidget( file_system_frame_ = new FileSystemFrame(0) );
-
+  
+  // current widget
   setCurrentWidget( &sessionFilesFrame() );
+  
+  // connections
+  connect( this, SIGNAL( currentChanged( int ) ), SLOT( _updateCurrentWidget() ) );
   
   // actions
   _installActions();
@@ -82,4 +86,17 @@ void NavigationFrame::_installActions( void )
   visibility_action_->setShortcut( Qt::Key_F5 );
   connect( visibility_action_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );
     
+}
+
+//______________________________________________________________________
+void NavigationFrame::_updateCurrentWidget( void )
+{
+  
+  Debug::Throw( "NavigationFrame::_updateCurrentWidget.\n" );
+  if( !currentWidget() ) return;
+  
+  if( currentWidget() == &sessionFilesFrame() ) { sessionFilesFrame().update(); }
+  else if( currentWidget() == &recentFilesFrame() ) { recentFilesFrame().update(); }
+  else if( currentWidget() == &fileSystemFrame() ) { fileSystemFrame().update(); }
+  
 }

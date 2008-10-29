@@ -34,6 +34,7 @@
 
 #include "Application.h"
 #include "ColumnSortingMenu.h"
+#include "ColumnSelectionMenu.h"
 #include "Debug.h"
 #include "Icons.h"
 #include "IconEngine.h"
@@ -74,6 +75,7 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   
   // add actions to list
   list().menu().addMenu( new ColumnSortingMenu( &list().menu(), &list() ) );
+  list().menu().addMenu( new ColumnSelectionMenu( &list().menu(), &list() ) );
   list().menu().addAction( &_openAction() );
   list().menu().addSeparator();
   list().menu().addAction( &_cleanAction() );
@@ -125,16 +127,17 @@ void RecentFilesFrame::select( const File& file )
 //______________________________________________________________________
 void RecentFilesFrame::update( void )
 { 
+
   Debug::Throw( "RecentFilesFrame:update.\n" ); 
  
   // update records
   _model().update( _recentFiles().records() );
   list().resizeColumns();
+  list().update();
   
   // clean action enability
   _cleanAction().setEnabled( _recentFiles().cleanEnabled() );
-
-  Debug::Throw( "RecentFilesFrame:_update - done.\n" ); 
+  Debug::Throw( "RecentFilesFrame:update - done.\n" ); 
   
 }
 

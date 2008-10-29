@@ -34,6 +34,7 @@
 
 #include "Application.h"
 #include "ColumnSortingMenu.h"
+#include "ColumnSelectionMenu.h"
 #include "Debug.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
@@ -73,6 +74,7 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   
   // add actions to menu
   list().menu().addMenu( new ColumnSortingMenu( &list().menu(), &list() ) );
+  list().menu().addMenu( new ColumnSelectionMenu( &list().menu(), &list() ) );
   list().menu().addSeparator();
   list().menu().addAction( &_openAction() );
   list().menu().addAction( &_saveAction() );

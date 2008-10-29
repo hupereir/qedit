@@ -157,6 +157,7 @@ nodist_libqedit_a_SOURCES = \
   moc_FileSelectionDialog.cpp \
   moc_MainWindow.cpp \
   moc_Menu.cpp \
+  moc_NavigationFrame.cpp \
   moc_NavigationToolBar.cpp \
   moc_NewFileDialog.cpp \
   moc_ParenthesisHighlight.cpp \

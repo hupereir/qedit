@@ -54,6 +54,8 @@ class FileSystemFrame;
 class NavigationFrame: public QStackedWidget, public Counter
 {
 
+  Q_OBJECT
+  
   public:
 
   //! creator
@@ -99,6 +101,11 @@ class NavigationFrame: public QStackedWidget, public Counter
   
   //@}
           
+  private slots:
+  
+  //! update current widget
+  void _updateCurrentWidget( void );
+  
   private:
   
   //! install actions
