@@ -29,6 +29,8 @@
   \date $Date$
 */
 
+#include <sstream>
+
 #include <QHeaderView>
 #include <QLayout>
 
