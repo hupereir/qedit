@@ -6,6 +6,10 @@ QT += xml network
 
 TARGET = qedit
 
+win32 {
+  DESTDIR = "C:/Program Files" 
+}
+
 VERSION = 1.3
 DEFINES += VERSION=\"$$VERSION\"
 
