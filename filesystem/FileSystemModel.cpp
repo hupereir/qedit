@@ -224,7 +224,7 @@ void FileSystemModel::_installIcons( void ) const
   // pixmap size
   unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
   QSize size( pixmap_size, pixmap_size );
-  QSize scaled(size*0.9);
+  QSize scale(size*0.9);
 
   // type icons
   typedef std::map< int, string > IconNames;
@@ -242,13 +242,13 @@ void FileSystemModel::_installIcons( void ) const
     icons_[iter->first] = CustomPixmap()
       .empty( size )
       .merge( CustomPixmap().find( iter->second )
-      .scale( scaled ), CustomPixmap::CENTER );
+      .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
 
     icons_[iter->first | LINK] = CustomPixmap()
       .empty( size )
       .merge( CustomPixmap().find( iter->second )
       .merge( link, CustomPixmap::BOTTOM_LEFT )
-      .scale( scaled ), CustomPixmap::CENTER );
+      .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
 
   }
 

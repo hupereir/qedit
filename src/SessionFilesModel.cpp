@@ -105,7 +105,7 @@ QIcon SessionFilesModel::_icon( unsigned int type )
   // pixmap size
   unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
   QSize size( pixmap_size, pixmap_size );
-  QSize scaled(size*0.9);
+  QSize scale(size*0.9);
  
   QIcon icon;
   if( type == FileRecordProperties::MODIFIED ) 
@@ -114,7 +114,7 @@ QIcon SessionFilesModel::_icon( unsigned int type )
     icon = CustomPixmap()
       .empty( size )
       .merge( CustomPixmap().find( ICONS::SAVE )
-      .scale( scaled ), CustomPixmap::CENTER );
+      .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
     
   } else if( type == FileRecordProperties::NONE ) {
     
