@@ -81,6 +81,7 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   list().menu().addAction( &_cleanAction() );
 
   // connections
+  connect( &_model(), SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
   connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions( void ) ) );
   connect( list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
   connect( list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
