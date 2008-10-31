@@ -112,6 +112,8 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   _list().menu().addSeparator();
   _list().menu().addAction( &_filePropertiesAction() );
 
+  // connections
+  connect( &_model(), SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
   connect( _list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _updateActions() ) );
   connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateActions() ) );
   connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );

@@ -82,8 +82,6 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   list().menu().addAction( &_closeAction() );
   
   // connections
-  connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
-  
   connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions() ) );
   connect( list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
   connect( list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
