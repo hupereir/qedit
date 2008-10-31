@@ -120,7 +120,6 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
   connect( &_model(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
   connect( &_model(), SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
-  connect( &_model(), SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
 
   connect( &file_system_watcher_, SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
   connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
