@@ -1331,15 +1331,12 @@ void TextDisplay::paintEvent( QPaintEvent* event )
   TextEditor::paintEvent( event );
   
   // handle block background
-  QRect rect = event->rect();
-  QTextBlock first( cursorForPosition( rect.topLeft() ).block() );
-  QTextBlock last( cursorForPosition( rect.bottomRight() ).block() );
-
-  // translate rect from widget to viewport coordinates
-  rect.translate( scrollbarPosition() );
+  QTextBlock first( cursorForPosition( event->rect().topLeft() ).block() );
+  QTextBlock last( cursorForPosition( event->rect().bottomRight() ).block() );
 
   // create painter and translate from widget to viewport coordinates
   QPainter painter( viewport() );
+  painter.setClipRect( event->rect() );
   painter.translate( -scrollbarPosition() );
   if( _marginForegroundColor().isValid() ) painter.setPen( _marginForegroundColor() );
   
