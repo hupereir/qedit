@@ -150,7 +150,6 @@ nodist_libqedit_a_SOURCES = \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \
   moc_BlockDelimiterDisplay.cpp \
-  moc_ConfigurationDialog.cpp \
   moc_Diff.cpp \
   moc_FileModifiedDialog.cpp \
   moc_FileRemovedDialog.cpp \
