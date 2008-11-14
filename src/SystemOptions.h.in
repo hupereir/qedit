@@ -2,7 +2,7 @@
 
 /******************************************************************************
 *
-* Copyright (C) 2002 Hugo PEREIRA XmlOptions::get().add( Option("mailto: hugo.pereira@free.fr>
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
 *
 * This is free software; you can redistribute it and/or modify it under the
 * terms of the GNU General Public License as published by the Free Software
@@ -38,15 +38,17 @@ void installSystemOptions( void )
 {
 
   // print commands
+  XmlOptions::get().setAutoDefault( true );
   XmlOptions::get().keep( "PRINT_COMMAND" );
   XmlOptions::get().add( "PRINT_COMMAND", Option( "@LPR@" , "print command") );  
 
-  XmlOptions::get().add( "PDF_EDITOR", Option( "@ACROREAD@" , "pdf file editor") );  
-  XmlOptions::get().add( "HTML_EDITOR", Option( "@KONQUEROR@" , "print command") );    
-  XmlOptions::get().add( "DIFF_COMMAND", Option( "@DIFF@", "diff files command" ) );
+  XmlOptions::get().set( "PDF_EDITOR", Option( "@ACROREAD@" , "pdf file editor") );  
+  XmlOptions::get().set( "HTML_EDITOR", Option( "@KONQUEROR@" , "print command") );    
+  XmlOptions::get().set( "DIFF_COMMAND", Option( "@DIFF@", "diff files command" ) );
   
   #ifdef WITH_ASPELL
-  XmlOptions::get().add( "ASPELL", Option( "@ASPELL@", "aspell command" ) );
+  XmlOptions::get().set( "ASPELL", Option( "@ASPELL@", "aspell command" ) );
   #endif
+  XmlOptions::get().setAutoDefault( false );
 
 };

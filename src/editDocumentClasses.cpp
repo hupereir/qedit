@@ -72,7 +72,7 @@ int main (int argc, char *argv[])
   // set debug level
   int debug_level( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );
   Debug::setLevel( debug_level );
-  if( debug_level ) XmlOptions::get().dump();
+  if( debug_level ) cout << XmlOptions::get();
   
   // initialize main frame and run loop
   // initialize main frame and run loop
