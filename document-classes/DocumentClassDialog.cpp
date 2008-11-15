@@ -51,7 +51,7 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
 {
   
   Debug::Throw( "DocumentClassDialog::DocumentClassDialog.\n" );
-  _setSizeOptionName( "DOCUMENT_CLASS_WINDOW" );
+  setSizeOptionName( "DOCUMENT_CLASS_WINDOW" );
 
   _list().setMaximumWidth( 120 );
   

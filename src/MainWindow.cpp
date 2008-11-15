@@ -99,7 +99,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 {
 
   Debug::Throw( "MainWindow::MainWindow.\n" );
-  _setSizeOptionName( "WINDOW" );
+  setSizeOptionName( "WINDOW" );
   
   // tell window to delete on exit
   setAttribute( Qt::WA_DeleteOnClose );
