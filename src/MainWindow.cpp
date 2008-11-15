@@ -503,7 +503,7 @@ void MainWindow::_print( void )
   {
     ostringstream what;
     what << "file \"" << fullname << "\" is a directory. <Print> canceled.";
-    InformationDialog( this, what.str().c_str(), BaseDialog::CENTER_ON_PARENT ).exec();
+    InformationDialog( this, what.str().c_str() ).centerOnParent().exec();
     return;
   }
 
@@ -515,9 +515,9 @@ void MainWindow::_print( void )
     {
       ostringstream what;
       what << "file \"" << fullname << "\" is read-only. <Print> canceled.";
-      InformationDialog( this, what.str().c_str(), BaseDialog::CENTER_ON_PARENT ).exec();
+      InformationDialog( this, what.str().c_str() ).centerOnParent().exec();
       return;
-    } else if( !QuestionDialog( this, "selected file already exists. Overwrite ?", BaseDialog::CENTER_ON_PARENT ).exec() )
+    } else if( !QuestionDialog( this, "selected file already exists. Overwrite ?" ).centerOnParent().exec() )
     return;
   }
   
