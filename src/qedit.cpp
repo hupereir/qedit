@@ -56,7 +56,6 @@ int main (int argc, char *argv[])
   signal(SIGTERM, interrupt);
   
   // install error handler
-  ErrorHandler::disableMessage( "QServerSocket: failed to bind or listen to the socket" );
   qInstallMsgHandler( ErrorHandler::Throw );
   
   // load possible command file

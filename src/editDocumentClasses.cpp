@@ -59,9 +59,7 @@ int main (int argc, char *argv[])
   signal(SIGTERM, interrupt);
   
   // install error handler
-  ErrorHandler::disableMessage( "QServerSocket: failed to bind or listen to the socket" );
-  ErrorHandler::disableMessage( "QPixmap::resize: TODO: resize alpha data" );
-  ErrorHandler::disableMessage( "Object::connect:" );
+  ErrorHandler::get().disableMessage( "Object::connect:" );
   qInstallMsgHandler( ErrorHandler::Throw );
   
   // load default options

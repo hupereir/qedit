@@ -37,7 +37,6 @@
 #include "ConfigurationDialog.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassManagerDialog.h"
-#include "ErrorHandler.h"
 #include "IconEngine.h"
 #include "Icons.h"
 #include "XmlOptions.h"
