@@ -94,7 +94,11 @@ class TextIndent: public QObject, public Counter
   virtual void indent( QTextBlock first, QTextBlock last );
 
   //! highlight block
-  virtual void indent( QTextBlock block );
+  /*! 
+  new_line argument is used in case there is a default base indentation, 
+  to properly indent paragraphs when return key is pressed 
+  */
+  virtual void indent( QTextBlock block, bool new_line = false );
   
   private:
 
@@ -104,15 +108,15 @@ class TextIndent: public QObject, public Counter
   //! return number of tabs in given paragraph
   int _tabCount( const QTextBlock& block );
 
-  //! number of tabs in previous valid paragraph
-  // int _previousTabCount( QTextBlock block );
-
-  //! increment paragraph with n tabs
-  void _increment( QTextBlock block, const unsigned int& count = 1 );
+  //! add base indentation
+  void _addBaseIndentation( QTextBlock block );
 
   //! decrement paragraph
   //! \brief try remove leading tabs up to n
   void _decrement( QTextBlock block );
+
+  //! increment paragraph with n tabs
+  void _increment( QTextBlock block, const unsigned int& count = 1 );
 
   //! editor
   TextDisplay& _editor( void ) const

@@ -119,8 +119,9 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
 }
 
 //______________________________________________
-void TextIndent::indent( QTextBlock block )
+void TextIndent::indent( QTextBlock block, bool new_line )
 {
+  
   if( !isEnabled() || patterns_.empty() ) return;
   
   // ignore "empty" blocks
@@ -134,7 +135,10 @@ void TextIndent::indent( QTextBlock block )
   QTextBlock previous_block( block.previous() );
   while( previous_block.isValid() &&  _editor().ignoreBlock( previous_block ) ) 
   { previous_block = previous_block.previous(); }
-  
+
+  // add base indentation if needed
+  if( new_line && baseIndentation() ) _addBaseIndentation( block );  
+
   // _decrement if first paragraph of text
   if( !previous_block.isValid() ) _decrement( block );
   else {
@@ -146,6 +150,7 @@ void TextIndent::indent( QTextBlock block )
     {
       if( _acceptPattern( block, *iter ) )
       {
+        
         Debug::Throw() << "TextIndent::indent - accepted pattern: " << qPrintable( iter->name() ) << endl;
         if( iter->type() == IndentPattern::INCREMENT ) new_tabs += iter->scale();
         else if( iter->type() == IndentPattern::DECREMENT ) new_tabs -= iter->scale();
@@ -156,7 +161,11 @@ void TextIndent::indent( QTextBlock block )
     
     // make sure new_tabs is not negative
     new_tabs = max( new_tabs, 0 );
+    
+    // remove all leading tabs
     _decrement( block );
+    
+    // add new tabs
     _increment( block, new_tabs );
     
   }
@@ -256,6 +265,61 @@ int TextIndent::_tabCount( const QTextBlock& block )
 }
 
 //____________________________________________
+void TextIndent::_addBaseIndentation( QTextBlock block )
+{
+  
+  assert( baseIndentation() );
+  
+  // set a cursor at beginning of block
+  QTextCursor cursor( block );
+  cursor.joinPreviousEditBlock();
+  cursor.setPosition( block.position(), QTextCursor::MoveAnchor );
+
+  int position( current_cursor_.position() );
+  int anchor( current_cursor_.anchor() );
+    
+  // insert tab characters
+  cursor.insertText( QString( baseIndentation(), ' ') );
+  if( block == current_cursor_.block() ) 
+  { 
+    current_cursor_.setPosition( anchor + baseIndentation(), QTextCursor::MoveAnchor ); 
+    current_cursor_.setPosition( position + baseIndentation(), QTextCursor::KeepAnchor ); 
+  }
+    
+  cursor.endEditBlock();  
+  
+}
+
+//____________________________________________
+void TextIndent::_decrement( QTextBlock block )
+{
+  
+  // set a cursor at beginning of block
+  QTextCursor cursor( block );
+  cursor.setPosition( block.position() + baseIndentation(), QTextCursor::MoveAnchor );
+  
+  // leading space characters regexp
+  static const QRegExp regexp( "^\\s+" );
+  
+  // search text and remove characters
+  if( regexp.indexIn( block.text().mid( baseIndentation() ) ) >= 0 )
+  {
+    int position( current_cursor_.position() );
+    int anchor( current_cursor_.anchor() );
+    int length( regexp.matchedLength() );
+    Debug::Throw() << "TextIndent::_decrement - matched length: " << length << endl;
+    
+    cursor.setPosition( cursor.position() + length, QTextCursor::KeepAnchor );
+    cursor.removeSelectedText();
+    if( current_cursor_.block() == block && current_cursor_.position() - block.position() > baseIndentation() ) 
+    {
+      current_cursor_.setPosition( max( 0, anchor - length ), QTextCursor::MoveAnchor ); 
+      current_cursor_.setPosition( max( 0, position - length ), QTextCursor::KeepAnchor );
+    }
+  } else { Debug::Throw() << "TextIndent::_decrement - no match" << endl; } 
+}
+
+//____________________________________________
 void TextIndent::_increment( QTextBlock block, const unsigned int& count )
 {
   
@@ -298,33 +362,4 @@ void TextIndent::_increment( QTextBlock block, const unsigned int& count )
   }
   cursor.endEditBlock();  
   
-}
-
-//____________________________________________
-void TextIndent::_decrement( QTextBlock block )
-{
-  
-  // set a cursor at beginning of block
-  QTextCursor cursor( block );
-  cursor.setPosition( block.position() + baseIndentation(), QTextCursor::MoveAnchor );
-  
-  // leading space characters regexp
-  static const QRegExp regexp( "^\\s+" );
-  
-  // search text and remove characters
-  if( regexp.indexIn( block.text().mid( baseIndentation() ) ) >= 0 )
-  {
-    int position( current_cursor_.position() );
-    int anchor( current_cursor_.anchor() );
-    int length( regexp.matchedLength() );
-    Debug::Throw() << "TextIndent::_decrement - matched length: " << length << endl;
-    
-    cursor.setPosition( cursor.position() + length, QTextCursor::KeepAnchor );
-    cursor.removeSelectedText();
-    if( current_cursor_.block() == block && current_cursor_.position() - block.position() > baseIndentation() ) 
-    {
-      current_cursor_.setPosition( max( 0, anchor - length ), QTextCursor::MoveAnchor ); 
-      current_cursor_.setPosition( max( 0, position - length ), QTextCursor::KeepAnchor );
-    }
-  } else { Debug::Throw() << "TextIndent::_decrement - no match" << endl; } 
 }

@@ -135,7 +135,7 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
     if( attribute.name() == XML::PAR ) setParagraph( attribute.value().toInt() );
     else if( attribute.name() == XML::OPTIONS )
     {
-      if( attribute.value().indexOf( XML::OPTION_NO_CASE, 0, Qt::CaseInsensitive ) > 0 ) setFlag( CASE_INSENSITIVE, true ); 
+      if( attribute.value().indexOf( XML::OPTION_NO_CASE, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CASE_INSENSITIVE, true ); 
     } 
     else cout << "Rule::Rule - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
   }

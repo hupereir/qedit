@@ -122,7 +122,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   // connections
   connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
   connect( this, SIGNAL( cursorPositionChanged() ), SLOT( _highlightParenthesis() ) );
-  connect( this, SIGNAL( indent( QTextBlock ) ), indent_, SLOT( indent( QTextBlock ) ) );
+  connect( this, SIGNAL( indent( QTextBlock, bool ) ), indent_, SLOT( indent( QTextBlock, bool ) ) );
   connect( this, SIGNAL( indent( QTextBlock, QTextBlock ) ), indent_, SLOT( indent( QTextBlock, QTextBlock ) ) );
 
   #if WITH_ASPELL
@@ -1288,7 +1288,7 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
     event->key() == Qt::Key_Tab &&
     indent_->isEnabled() &&
     !( textCursor().hasSelection() || _boxSelection().state() == BoxSelection::FINISHED ) )
-  { emit indent( textCursor().block() ); }
+  { emit indent( textCursor().block(), false ); }
   else
   {
     
@@ -1297,12 +1297,12 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
     
     // indent current paragraph when return is pressed
     if( indent_->isEnabled() && event->key() == Qt::Key_Return && !textCursor().hasSelection() )
-    { emit indent( textCursor().block() ); }
+    { emit indent( textCursor().block(), true ); }
     
     // reindent paragraph if needed
     /* remark: this is c++ specific. The list of keys should be set in the document class */
     if( indent_->isEnabled() && ( event->key() == Qt::Key_BraceRight || event->key() == Qt::Key_BraceLeft ) && !textCursor().hasSelection() )
-    { emit indent( textCursor().block() ); }
+    { emit indent( textCursor().block(), false ); }
 
   }
 
@@ -1727,7 +1727,7 @@ void TextDisplay::_indentCurrentParagraph( void )
 {
   Debug::Throw( "TextDisplay::_indentCurrentParagraph.\n" );
   if( !indent_->isEnabled() ) return;
-  emit indent( textCursor().block() );
+  emit indent( textCursor().block(), false );
 }
 
 //_______________________________________________________

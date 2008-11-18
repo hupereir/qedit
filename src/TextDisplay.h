@@ -403,7 +403,7 @@ class TextDisplay: public TextEditor
   void indent( QTextBlock, QTextBlock );
 
   //! emmited when indentation of one block is required
-  void indent( QTextBlock );
+  void indent( QTextBlock, bool  );
 
   //! emmited whenever mainwindow toolbar, window title or file name editor needs update
   /* \param flags, bitwise or of UpdateFlags */
