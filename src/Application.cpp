@@ -75,8 +75,8 @@ void Application::usage( void )
 }
 
 //____________________________________________
-Application::Application( int argc, char*argv[] ) :
-  BaseApplication( argc, argv ),
+Application::Application( ArgList arguments ):
+  BaseApplication( 0, arguments ),
   Counter( "Application" ),
   recent_files_( 0 ),
   window_server_( 0 ),
@@ -204,7 +204,7 @@ void Application::_configuration( void )
   emit saveConfiguration();
   ConfigurationDialog dialog( 0 );
   connect( &dialog, SIGNAL( configurationChanged() ), SIGNAL( configurationChanged() ) );
-  dialog.centerOnWidget( activeWindow() );
+  dialog.centerOnWidget( qApp->activeWindow() );
   dialog.exec();
 }
 
@@ -212,7 +212,7 @@ void Application::_configuration( void )
 void Application::_documentClassConfiguration( void )
 {
   Debug::Throw( "Application::_documentClassConfiguration.\n" );
-  DocumentClassManagerDialog dialog( activeWindow(), &classManager() );
+  DocumentClassManagerDialog dialog( qApp->activeWindow(), &classManager() );
   connect( &dialog, SIGNAL( updateNeeded() ), SIGNAL( documentClassesChanged() ) );
   dialog.exec();
 }
@@ -226,7 +226,7 @@ void Application::_spellCheckConfiguration( void )
   Debug::Throw( "Application::_spellCheckConfiguration.\n" );
   
   // create dialog
-  CustomDialog dialog( activeWindow() );
+  CustomDialog dialog( qApp->activeWindow() );
   
   SpellCheckConfiguration* spell_config = new SpellCheckConfiguration( &dialog );
   dialog.mainLayout().addWidget( spell_config );
@@ -235,7 +235,7 @@ void Application::_spellCheckConfiguration( void )
   AutoSpellConfiguration* autospell_config = new AutoSpellConfiguration( &dialog );
   dialog.mainLayout().addWidget( autospell_config );
   autospell_config->read();
-  dialog.centerOnWidget( activeWindow() );
+  dialog.centerOnWidget( qApp->activeWindow() );
   
   if( dialog.exec() == QDialog::Rejected ) return;
   spell_config->write();
@@ -254,7 +254,7 @@ void Application::_exit( void )
   
   Debug::Throw( "Application::_exit.\n" );
   if( !windowServer().closeAll() ) return;
-  quit();
+  qApp->quit();
 
 }
 
@@ -265,7 +265,7 @@ void Application::_readFilesFromArguments( void )
   windowServer().readFilesFromArguments( _arguments() );
 
   // make sure application ends when last window is closed.
-  connect( this, SIGNAL( lastWindowClosed() ), SLOT( quit() ) );
+  connect( qApp, SIGNAL( lastWindowClosed() ), qApp, SLOT( quit() ) );
 
 }
 

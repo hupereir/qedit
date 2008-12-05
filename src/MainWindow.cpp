@@ -70,6 +70,7 @@
 #include "ReplaceDialog.h"
 #include "SelectLineDialog.h"
 #include "SessionFilesFrame.h"
+#include "Singleton.h"
 #include "StatusBar.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
@@ -117,7 +118,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   setCentralWidget( splitter );
   
   // insert navigationFrame
-  navigation_frame_ = new NavigationFrame(0, static_cast<Application*>(qApp)->recentFiles() );
+  navigation_frame_ = new NavigationFrame(0, Singleton::get().application<Application>()->recentFiles() );
   navigationFrame().setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
   splitter->addWidget( &navigationFrame() );
 
@@ -203,8 +204,8 @@ MainWindow::MainWindow(  QWidget* parent ):
   navigation_toolbar->connect( navigationFrame() );
   
   //! configuration
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-  connect( qApp, SIGNAL( saveConfiguration() ), SLOT( _saveConfiguration() ) );
+  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( Singleton::get().application(), SIGNAL( saveConfiguration() ), SLOT( _saveConfiguration() ) );
   connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
   _updateConfiguration();
   
@@ -671,8 +672,8 @@ void MainWindow::_updateConfiguration( void )
   navigationFrame().visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_NAVIGATION_FRAME") );
     
   // assign icons to file in open previous menu based on class manager
-  FileList& recent_files( static_cast<Application*>(qApp)->recentFiles() );
-  DocumentClassManager& class_manager(static_cast<Application*>(qApp)->classManager()); 
+  FileList& recent_files( Singleton::get().application<Application>()->recentFiles() );
+  DocumentClassManager& class_manager(Singleton::get().application<Application>()->classManager()); 
   FileRecord::List records( recent_files.records() );
   for( FileRecord::List::iterator iter = records.begin(); iter != records.end(); iter++ )
   {
@@ -730,7 +731,10 @@ void MainWindow::_multipleFileReplace( void )
 
   // retrieve selection from replace dialog
   FileSelectionDialog dialog( this, selection );
-  connect( &dialog, SIGNAL( fileSelected( std::list<File>, TextSelection ) ), &static_cast<Application*>(qApp)->windowServer(), SLOT( multipleFileReplace( std::list<File>, TextSelection ) ) );
+  connect( &dialog, 
+    SIGNAL( fileSelected( std::list<File>, TextSelection ) ), 
+    &Singleton::get().application<Application>()->windowServer(), 
+    SLOT( multipleFileReplace( std::list<File>, TextSelection ) ) );
   QtUtil::centerOnParent( &dialog );
   dialog.exec();
   return;
@@ -984,7 +988,7 @@ void MainWindow::_connectView( TextView& view )
   connect( &view, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
   connect( &view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
   connect( &view, SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
-  connect( &view, SIGNAL( displayCountChanged( void ) ), &static_cast<Application*>(qApp)->windowServer(), SIGNAL( sessionFilesChanged( void ) ) );
+  connect( &view, SIGNAL( displayCountChanged( void ) ), &Singleton::get().application<Application>()->windowServer(), SIGNAL( sessionFilesChanged( void ) ) );
   connect( &view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
   connect( &view, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) ); 
   connect( &view.positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );  

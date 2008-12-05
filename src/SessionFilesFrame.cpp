@@ -41,6 +41,7 @@
 #include "Icons.h"
 #include "IconEngine.h"
 #include "SessionFilesFrame.h"
+#include "Singleton.h"
 #include "TreeView.h"
 #include "Util.h"
 #include "WindowServer.h"
@@ -78,7 +79,7 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   list().menu().addSeparator();
   list().menu().addAction( &_openAction() );
   list().menu().addAction( &_saveAction() );
-  list().menu().addAction( &static_cast< Application*>( qApp )->windowServer().saveAllAction() );
+  list().menu().addAction( &Singleton::get().application<Application>()->windowServer().saveAllAction() );
   list().menu().addAction( &_closeAction() );
   
   // connections
@@ -89,7 +90,7 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
  
   //! configuration
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   _updateConfiguration();
   
 }
@@ -125,7 +126,7 @@ void SessionFilesFrame::update( void )
   Debug::Throw( "SessionFilesFrame:update.\n" ); 
  
   // store in model
-  FileRecord::List records( static_cast< Application*>( qApp )->windowServer().records( false, window() ) );
+  FileRecord::List records( Singleton::get().application<Application>()->windowServer().records( false, window() ) );
   _model().update( records );
   
   list().updateMask();

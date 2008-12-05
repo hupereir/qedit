@@ -29,7 +29,6 @@
  \date $Date$
 */
 
-#include <QApplication>
 #include <sstream>
 
 #include "Application.h"
@@ -48,6 +47,7 @@
 #include "NavigationFrame.h"
 #include "RecentFilesMenu.h"
 #include "InformationDialog.h"
+#include "Singleton.h"
 #include "TextDisplay.h"
 #include "TextMacro.h"
 #include "Util.h"
@@ -68,7 +68,7 @@ Menu::Menu( QWidget* parent ):
   QMenu* menu = addMenu( "&File" );
 
   // retrieve mainwindow
-  Application& application( *static_cast<Application*>( qApp ) );
+  Application& application( *Singleton::get().application<Application>() );
   MainWindow& mainwindow( *static_cast<MainWindow*>( window() ) );
   
   menu->addAction( &mainwindow.newFileAction() );
@@ -183,7 +183,7 @@ void Menu::_updateDocumentClassMenu( void )
   const QString& class_name( window.activeDisplay().className() );
     
   // retrieve classes from DocumentClass manager
-  const DocumentClassManager::List& classes( static_cast<Application*>(qApp)->classManager().list() );
+  const DocumentClassManager::List& classes( Singleton::get().application<Application>()->classManager().list() );
   for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
   { 
     // insert actions
@@ -250,7 +250,7 @@ void Menu::_updatePreferenceMenu( void )
   Debug::Throw( "Menu::_updatePreferenceMenu.\n" );
 
   // reference to needed objects
-  Application& application( *static_cast<Application*>(qApp) );
+  Application& application( *Singleton::get().application<Application>() );
   MainWindow& mainwindow( *static_cast<MainWindow*>(window()) );
   TextDisplay& display( mainwindow.activeDisplay() );
 
@@ -427,7 +427,7 @@ void Menu::_updateWindowsMenu( void )
       
   // retrieve all files
   bool first = true;
-  FileRecord::List records( static_cast<Application*>(qApp)->windowServer().records() );
+  FileRecord::List records( Singleton::get().application<Application>()->windowServer().records() );
   for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
   { 
     
@@ -492,7 +492,7 @@ void Menu::_selectFile( QAction* action )
   if( iter == file_actions_.end() ) return;
   
   // retrieve all mainwindows
-  BASE::KeySet<MainWindow> windows( &static_cast< Application* >( qApp )->windowServer() );
+  BASE::KeySet<MainWindow> windows( &Singleton::get().application<Application>()->windowServer() );
   
   // retrieve window matching file name
   BASE::KeySet<MainWindow>::iterator window_iter( find_if(

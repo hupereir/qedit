@@ -30,7 +30,6 @@
   \date $Date$
 */
 
-#include <QApplication>
 #include <algorithm>
 #include <assert.h>
 
@@ -39,6 +38,7 @@
 #include "FileRecordProperties.h"
 #include "FileSystemModel.h"
 #include "IconEngine.h"
+#include "Singleton.h"
 #include "XmlOptions.h"
 
 using namespace std;
@@ -58,7 +58,7 @@ FileSystemModel::FileSystemModel( QObject* parent ):
   column_titles_.push_back( "size" );
   column_titles_.push_back( "time" );
 
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
 }
   

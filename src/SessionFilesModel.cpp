@@ -32,13 +32,13 @@
 #include <algorithm>
 #include <assert.h>
 #include <QIcon>
-#include <QApplication>
 #include <QPalette>
 
 #include "Icons.h"
 #include "CustomPixmap.h"
 #include "FileRecordProperties.h"
 #include "SessionFilesModel.h"
+#include "Singleton.h"
 #include "XmlOptions.h"
 
 using namespace std;
@@ -53,7 +53,7 @@ SessionFilesModel::SessionFilesModel( QObject* parent ):
   
   Debug::Throw("SessionFilesModel::SessionFilesModel.\n" );
   setShowIcons( false );
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
 }
   

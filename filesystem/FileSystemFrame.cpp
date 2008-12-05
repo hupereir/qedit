@@ -29,6 +29,7 @@
    \date $Date$
 */
 
+#include <QApplication>
 #include <QHeaderView>
 #include <QLayout>
 #include <QDir>
@@ -44,6 +45,7 @@
 #include "QtUtil.h"
 #include "RemoveFilesDialog.h"
 #include "RenameFileDialog.h"
+#include "Singleton.h"
 #include "TextEditor.h"
 #include "TreeView.h"
 #include "Util.h"
@@ -124,7 +126,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   connect( &_model(), SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
 
   connect( &file_system_watcher_, SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
   _updateConfiguration();
   _updateActions();

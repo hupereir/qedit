@@ -58,7 +58,7 @@ class Application: public BaseApplication, public Counter
   static void usage( void );
   
   //! constructor
-  Application( int argc, char*argv[] );
+  Application( ArgList );
 
   //! destructor
   ~Application( void );

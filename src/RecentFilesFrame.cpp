@@ -32,7 +32,6 @@
 #include <QHeaderView>
 #include <QLayout>
 
-#include "Application.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
 #include "Debug.h"
@@ -42,6 +41,7 @@
 #include "QuestionDialog.h"
 #include "QtUtil.h"
 #include "RecentFilesFrame.h"
+#include "Singleton.h"
 #include "TreeView.h"
 #include "Util.h"
 #include "XmlOptions.h"
@@ -91,7 +91,7 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   connect( &_recentFiles(), SIGNAL( contentsChanged( void ) ), SLOT( update( void ) ) );
   
   // configuration
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   _updateConfiguration();
  
 }

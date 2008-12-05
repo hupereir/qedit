@@ -30,6 +30,7 @@
 */
 
 #include <QAction>
+#include <QApplication>
 
 #include "Application.h"
 #include "CustomFileDialog.h"
@@ -51,6 +52,7 @@
 #include "RecentFilesMenu.h"
 #include "SaveAllDialog.h"
 #include "SessionFilesFrame.h"
+#include "Singleton.h"
 #include "Util.h"
 #include "WindowServer.h"
 
@@ -76,7 +78,7 @@ WindowServer::WindowServer( QObject* parent ):
   save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save A&ll", this );
   connect( save_all_action_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
  
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   _updateConfiguration();
   
 }
@@ -132,7 +134,7 @@ FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) co
   FileRecord::List records;
   
   // get associated main windows
-  Application& application( *static_cast<Application*>( qApp ) );
+  Application& application( *Singleton::get().application<Application>() );
   BASE::KeySet<MainWindow> windows( this );
   for( BASE::KeySet<MainWindow>::iterator window_iter = windows.begin(); window_iter != windows.end(); window_iter++ )
   {
@@ -799,7 +801,6 @@ bool WindowServer::_close( const list<string>& files )
         }
         
         view.closeDisplay( display );
-        // qApp->processEvents();
         
       }
     }

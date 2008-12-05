@@ -37,6 +37,7 @@
 
 #include "AskForSaveDialog.h"
 #include "BlockDelimiter.h"
+#include "FileList.h"
 #include "FileModifiedDialog.h"
 #include "FileRemovedDialog.h"
 #include "Config.h"
@@ -455,6 +456,9 @@ class TextDisplay: public TextEditor
   
   //! actions
   void _installActions( void );
+  
+  //! recent files
+  FileList& _recentFiles( void ) const;
   
   //! update document class
   /*! first parameter is file name, second tells if document is a new untitled document or not */

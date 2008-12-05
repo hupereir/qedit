@@ -39,6 +39,7 @@
 #include "InformationDialog.h"
 #include "MainWindow.h"
 #include "NewFileDialog.h"
+#include "Singleton.h"
 #include "TextView.h"
 
 using namespace std;
@@ -64,7 +65,7 @@ TextView::TextView( QWidget* parent ):
   TextDisplay& display = _newTextDisplay( this );
   layout()->addWidget( &display );
   display.setActive( true );
-  static_cast<Application*>(qApp)->autoSave().newThread( &display );
+  Singleton::get().application<Application>()->autoSave().newThread( &display );
 
   // position update timer
   position_timer_.setSingleShot( true );
@@ -373,7 +374,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
   } else {
 
     // register new AutoSave thread
-    static_cast<Application*>(qApp)->autoSave().newThread( &display );
+    Singleton::get().application<Application>()->autoSave().newThread( &display );
 
   }
 

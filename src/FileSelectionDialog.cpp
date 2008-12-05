@@ -30,7 +30,6 @@
 */
 
 #include <algorithm>
-#include <QApplication>
 #include <QHeaderView>
 #include <QLabel>
 #include <QLayout>
@@ -43,6 +42,7 @@
 #include "FileSelectionDialog.h"
 #include "Icons.h"
 #include "IconEngine.h"
+#include "Singleton.h"
 #include "TextDisplay.h"
 #include "TreeView.h"
 #include "WindowServer.h"
@@ -70,7 +70,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
 
   // retrieve file records
-  model_.set( static_cast< Application*>( qApp )->windowServer().records() );
+  model_.set( Singleton::get().application<Application>()->windowServer().records() );
   
   // mask
   unsigned int mask( 

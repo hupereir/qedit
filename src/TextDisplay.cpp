@@ -44,7 +44,6 @@
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
 #include "FileInformationDialog.h"
-#include "FileList.h"
 #include "FileModifiedDialog.h"
 #include "FileRecordProperties.h"
 #include "FileRemovedDialog.h"
@@ -59,6 +58,7 @@
 #include "QuestionDialog.h"
 #include "QtUtil.h"
 #include "BaseReplaceDialog.h"
+#include "Singleton.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
@@ -142,9 +142,9 @@ TextDisplay::TextDisplay( QWidget* parent ):
   connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
 
   // track configuration modifications
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-  connect( qApp, SIGNAL( spellCheckConfigurationChanged() ), SLOT( _updateSpellCheckConfiguration() ) );
-  connect( qApp, SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
+  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( Singleton::get().application(), SIGNAL( spellCheckConfigurationChanged() ), SLOT( _updateSpellCheckConfiguration() ) );
+  connect( Singleton::get().application(), SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
   _updateConfiguration();
   _updateSpellCheckConfiguration();
 
@@ -312,7 +312,7 @@ void TextDisplay::setIsNewDocument( void )
   }
       
   // perform first autosave
-  Application& application( *static_cast<Application*>(qApp) );
+  Application& application( *Singleton::get().application<Application>() );
   application.autoSave().saveFiles( this );
   
 }
@@ -325,7 +325,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
   assert( !file.empty() );
 
   // reset class name
-  QString class_name( static_cast<Application*>(qApp)->recentFiles().add( file ).property(class_name_property_id_).c_str() );
+  QString class_name( _recentFiles().add( file ).property(class_name_property_id_).c_str() );
   setClassName( class_name );
 
   // expand filename
@@ -398,7 +398,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
   if( restore_autosave && !isReadOnly() ) save();
 
   // perform first autosave
-  Application& application( *static_cast<Application*>(qApp) );
+  Application& application( *Singleton::get().application<Application>() );
   application.autoSave().saveFiles( this );
   
 }
@@ -576,7 +576,7 @@ void TextDisplay::save( void )
 
   // add file to menu
   if( !file().empty() )
-  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( class_name_property_id_, qPrintable( className() ) ); }
+  { _recentFiles().get( file() ).addProperty( class_name_property_id_, qPrintable( className() ) ); }
 
   return;
 
@@ -1001,7 +1001,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   
   // default document class is empty
   DocumentClass document_class;
-  Application& application( *static_cast<Application*>(qApp) );
+  Application& application( *Singleton::get().application<Application>() );
   
   // try load document class from class_name
   if( !className().isEmpty() )
@@ -1031,7 +1031,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   if( !( file.empty() || new_document ) )
   { 
     
-    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
+    FileRecord& record( _recentFiles().get( file ) );
     if( record.hasProperty( wrap_property_id_ ) ) wrapModeAction().setChecked( Str( record.property( wrap_property_id_ ) ).get<bool>() );
     else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
 
@@ -1079,7 +1079,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   // add information to Menu
   if( !( file.empty() || new_document ) )
   { 
-    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
+    FileRecord& record( _recentFiles().get( file ) );
     record.addProperty( class_name_property_id_, qPrintable( className() ) ); 
     record.addProperty( wrap_property_id_, Str().assign<bool>( wrapModeAction().isChecked() ) ); 
     if( !document_class.icon().isEmpty() ) record.addProperty( icon_property_id_, qPrintable( document_class.icon() ) );
@@ -1212,7 +1212,7 @@ void TextDisplay::selectFilter( const QString& filter )
 
   // update file record
   if( !( file().empty() || isNewDocument() ) )
-  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( filter_property_id_, interface.filter() ); }
+  { _recentFiles().get( file() ).addProperty( filter_property_id_, interface.filter() ); }
 
   // rehighlight if needed
   if( textHighlight().spellParser().isEnabled() ) rehighlight();
@@ -1240,7 +1240,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
 
   // update file record
   if( !( file().empty() || isNewDocument() ) )
-  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( dictionary_property_id_, interface.dictionary() ); }
+  { _recentFiles().get( file() ).addProperty( dictionary_property_id_, interface.dictionary() ); }
 
   // rehighlight if needed
   if( textHighlight().spellParser().isEnabled() ) rehighlight();
@@ -1511,6 +1511,10 @@ void TextDisplay::_installActions( void )
 }
 
 //_____________________________________________________________
+FileList& TextDisplay::_recentFiles( void ) const
+{ return Singleton::get().application<Application>()->recentFiles(); }
+
+//_____________________________________________________________
 bool TextDisplay::_contentsChanged( void ) const
 {
 
@@ -1630,7 +1634,7 @@ bool TextDisplay::_toggleWrapMode( bool state )
   if( !TextEditor::_toggleWrapMode( state ) ) return false;
   
   if( !( file().empty() || isNewDocument() ) )
-  { static_cast<Application*>(qApp)->recentFiles().get( file() ).addProperty( wrap_property_id_, Str().assign<bool>(state) ); }
+  { _recentFiles().get( file() ).addProperty( wrap_property_id_, Str().assign<bool>(state) ); }
     
   return true;
   
@@ -1692,7 +1696,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
   if( file.empty() ) file = TextDisplay::file();
   if( !( file.empty() || isNewDocument() ) )
   {
-    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file ) );
+    FileRecord& record( _recentFiles().get( file ) );
     if( record.hasProperty( filter_property_id_ ) && interface.hasFilter( record.property( filter_property_id_ ) ) )
     { filter = record.property( filter_property_id_ ); }
 
@@ -1900,7 +1904,7 @@ void TextDisplay::_spellcheck( void )
   if( !( file().empty()  || isNewDocument() ) )
   {
 
-    FileRecord& record( static_cast<Application*>(qApp)->recentFiles().get( file() ) );
+    FileRecord& record( _recentFiles().get( file() ) );
     if( !( record.hasProperty( filter_property_id_ ) && dialog.setFilter( record.property( filter_property_id_ ) ) ) )
     { dialog.setFilter( default_filter ); }
 
@@ -1924,7 +1928,7 @@ void TextDisplay::_spellcheck( void )
   // try overwrite with file record
   if( !( file().empty() || isNewDocument() ) )
   {
-    static_cast<Application*>(qApp)->recentFiles().get( file() )
+    _recentFiles().get( file() )
       .addProperty( filter_property_id_, dialog.filter() )
       .addProperty( dictionary_property_id_, dialog.dictionary() );
   }
@@ -2119,7 +2123,7 @@ void TextDisplay::_fileProperties( void )
 
   // prior to showing the dialog 
   // one should add needed tab for misc information
-  const FileRecord& record(  static_cast<Application*>(qApp)->recentFiles().get( file() ) );
+  const FileRecord& record(  _recentFiles().get( file() ) );
   FileInformationDialog dialog( this, record );
   
   // add additional informations frame

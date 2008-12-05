@@ -33,6 +33,7 @@
 #include "Debug.h"
 #include "MainWindow.h"
 #include "Options.h"
+#include "Singleton.h"
 #include "TextDisplay.h"
 
 using namespace std;
@@ -49,7 +50,7 @@ AutoSave::AutoSave( QObject* parent ):
   timer_.setSingleShot( true );
   connect( &timer_, SIGNAL( timeout() ), this, SLOT( saveFiles() ) );
   
-  connect( qApp, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
 }
 
