@@ -90,8 +90,7 @@ void installDefaultOptions( void )
   XmlOptions::get().set( "WINDOW_HEIGHT", "500" );
   XmlOptions::get().set( "WINDOW_WIDTH", "700" );
   XmlOptions::get().set( "SERVER_TIMEOUT_DELAY", Option( "3000" , "timeout delay to wait for existing server to answer" ) );
-  XmlOptions::get().set( "SHOW_NAVIGATION_WINDOW", Option( "0", "show/hide navigation window" ) );
-  XmlOptions::get().set( "SHOW_NAVIGATION_FRAME", Option( "0", "show/hide navigation window" ) );
+  XmlOptions::get().set( "SHOW_NAVIGATION_FRAME", Option( "1", "show/hide navigation window" ) );
 
   // splitters
   XmlOptions::get().set( "NAVIGATION_FRAME_WIDTH", Option( "200" , "navigation frame width" ) );
@@ -114,7 +113,7 @@ void installDefaultOptions( void )
   XmlOptions::get().set( "HIGHLIGHT_COLOR", Option( "#FFFDD4", "paragraph highlight color" ) );
   
   /* multiple views */
-  XmlOptions::get().set( "OPEN_MODE", Option( WindowServer::MULTIPLE_WINDOWS, "define how new files should be opened when running in server mode" ) );
+  XmlOptions::get().set( "OPEN_MODE", Option( WindowServer::SINGLE_WINDOW, "define how new files should be opened when running in server mode" ) );
   XmlOptions::get().set( "ORIENTATION", Option( MainWindow::TOP_BOTTOM, "default orientation for splitters. either \"left/right\" or \"top/bottom\"" ) );
   
   #ifdef WITH_ASPELL

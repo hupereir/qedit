@@ -37,7 +37,6 @@
 #include "DefaultOptions.h"
 #include "SystemOptions.h"
 #include "ErrorHandler.h"
-#include "FlatStyle.h"
 #include "Application.h"
 #include "Singleton.h"
 #include "XmlOptions.h"
@@ -83,7 +82,6 @@ int main (int argc, char *argv[])
   Q_INIT_RESOURCE( patterns );
   Q_INIT_RESOURCE( pixmaps );
   QApplication application( argc, argv );
-  if( XmlOptions::get().get<bool>( "USE_FLAT_THEME" ) ) application.setStyle( new FlatStyle() );
   
   Application singleton( ArgList( argc, argv ) );
   Singleton::get().setApplication( &singleton );
