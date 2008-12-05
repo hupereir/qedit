@@ -291,7 +291,7 @@ void BlockDelimiterDisplay::setWidth( const int& width )
   if( !( width_ %2 ) ) { width_++; }
   
   rect_width_ = width_ - 4;
-  half_width_ = 0.5*width_;
+  half_width_ = int(0.5*width_);
   top_ = 2;
   rect_top_left_ = 2;
           
