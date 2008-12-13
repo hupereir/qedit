@@ -32,6 +32,7 @@
 
 #include <fstream>
 #include <QApplication>
+#include <QDir>
 #include <QFile>
 
 #include "AutoSaveThread.h"
@@ -45,20 +46,12 @@ using namespace std;
 File AutoSaveThread::autoSaveName( const File& file )
 {
     
-  // replace slash, anti-slash and columns by underscore in the file path
-  // this should allow for having a valid "local" filename out of it for both unix and windows OS
-  Str file_path( file.path().replace( "/", "_" ) );
-  file_path = file_path.replace( "\\", "_" );
-  file_path = file_path.replace( ":", "_" );
+  // one should really use QFile/QDir to construct the path.
+  // it is unclear whether the current construct works on windows
+  File tmp_file = XmlOptions::get().get<string>( "AUTOSAVE_PATH" ) + "/qedit/" + Util::user() + file;
+  //Debug::Throw(0) << "AutoSaveThread::autoSaveName - file:" << tmp_file << endl;
+  return tmp_file;
   
-  // retrieve autosave path
-  string path( XmlOptions::get().get<string>( "AUTOSAVE_PATH" ) );
-  
-  // retrieve user name
-  string user( Util::user() );
-  
-  return File( user + "_" + file_path + "_" + file.localName() ).addPath( path );
-
 }
 
 //_______________________________________________________________
@@ -93,6 +86,11 @@ void AutoSaveThread::run( void )
   if( contents_changed_ || file_changed_ )
   {
     
+    // make sure path exists
+    QDir path( file().path().c_str() );
+    if( !( path.exists() || path.mkpath( "." ) ) ) return; 
+    
+    // write to file
     QFile out( file().c_str() );
     if( !out.open( QIODevice::WriteOnly ) ) return; 
     out.write( contents_.toAscii() );
