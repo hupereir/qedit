@@ -34,6 +34,7 @@
 #include <QApplication>
 #include <QDir>
 #include <QFile>
+#include <QTextStream>
 
 #include "AutoSaveThread.h"
 #include "XmlOptions.h"
@@ -50,12 +51,14 @@ File AutoSaveThread::autoSaveName( const File& file )
   QString relative_name = QDir::root().relativeFilePath( file.c_str() );
   
   // get qedit default autosave path
-  QDir autosave_path( XmlOptions::get().get<string>( "AUTOSAVE_PATH" ).c_str() );
-  autosave_path.cd( ".qedit" );
-  autosave_path.cd( Util::user().c_str() );
-
+  QString autosave_path;
+  QTextStream( &autosave_path )
+    << XmlOptions::get().get<string>( "AUTOSAVE_PATH" ).c_str()
+    << "/.qedit/" 
+    << Util::user().c_str();
+  
   // generate autosave name
-  File tmp_file = File( qPrintable( relative_name ) ).addPath( qPrintable( autosave_path.canonicalPath() ) );
+  File tmp_file = File( qPrintable( relative_name ) ).addPath( qPrintable( QDir( autosave_path ).absolutePath() ) );
   return tmp_file;
   
 }
