@@ -46,10 +46,16 @@ using namespace std;
 File AutoSaveThread::autoSaveName( const File& file )
 {
     
-  // one should really use QFile/QDir to construct the path.
-  // it is unclear whether the current construct works on windows
-  File tmp_file = XmlOptions::get().get<string>( "AUTOSAVE_PATH" ) + "/qedit/" + Util::user() + file;
-  //Debug::Throw(0) << "AutoSaveThread::autoSaveName - file:" << tmp_file << endl;
+  // get full path of current file, relative to root.
+  QString relative_name = QDir::root().relativeFilePath( file.c_str() );
+  
+  // get qedit default autosave path
+  QDir autosave_path( XmlOptions::get().get<string>( "AUTOSAVE_PATH" ).c_str() );
+  autosave_path.cd( ".qedit" );
+  autosave_path.cd( Util::user().c_str() );
+
+  // generate autosave name
+  File tmp_file = File( qPrintable( relative_name ) ).addPath( qPrintable( autosave_path.canonicalPath() ) );
   return tmp_file;
   
 }
