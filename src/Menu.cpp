@@ -135,12 +135,12 @@ Menu::Menu( QWidget* parent ):
   // help manager
   BASE::HelpManager* help( new BASE::HelpManager( this ) );
   File help_file( XmlOptions::get().raw( "HELP_FILE" ) );
-  if( help_file.exists() ) BASE::HelpManager::install( help_file );
+  if( help_file.exists() ) help->install( help_file.c_str() );
   else
   {
-    BASE::HelpManager::setFile( help_file );
-    BASE::HelpManager::install( HelpText );
-    BASE::HelpManager::install( BASE::HelpText, false );
+    help->setFile( help_file.c_str() );
+    help->install( HelpText );
+    help->install( BASE::HelpText, false );
   }  
 
   // create help menu

@@ -125,6 +125,12 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
    
   //! install pixmaps
   void _installIcons( void ) const;
+
+  //! icon cache
+  typedef std::map<unsigned int, QIcon> IconCache;
+       
+  //! type icon cache
+  static IconCache& _icons( void ); 
  
   //! column titles
   std::vector<QString> column_titles_;
@@ -132,12 +138,6 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
   //! size property id
   FileRecord::PropertyId::Id size_property_id_;
   
-  //! icon cache
-  typedef std::map<unsigned int, QIcon> IconCache;
-   
-  //! type icon cache
-  static IconCache icons_; 
-    
 };
 
 #endif

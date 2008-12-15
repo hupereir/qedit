@@ -194,8 +194,7 @@ class TextDisplay: public TextEditor
   { return is_new_document_; }
 
   //! new document name server
-  static NewDocumentNameServer& newDocumentNameServer( void )
-  { return name_server_; }
+  static NewDocumentNameServer& newDocumentNameServer( void );
   
   //! file
   const File& file( void ) const
@@ -377,7 +376,7 @@ class TextDisplay: public TextEditor
     
   // return true if block is an empty line
   bool isEmptyBlock( const QTextBlock& block ) const
-  { return empty_line_regexp_.indexIn( block.text() ) >= 0; }
+  { return _emptyLineRegExp().indexIn( block.text() ) >= 0; }
   
   //! return true is block is to be ignored from indentation scheme
   bool ignoreBlock( const QTextBlock& block ) const;
@@ -629,6 +628,9 @@ class TextDisplay: public TextEditor
 
   private:
   
+  //! empty line
+  static QRegExp& _emptyLineRegExp( void );
+
   //! file
   File file_;
 
@@ -755,12 +757,6 @@ class TextDisplay: public TextEditor
   //! block delimiter
   BlockDelimiterDisplay* block_delimiter_display_;
   
-  //! new document name server
-  static NewDocumentNameServer name_server_;
-  
-  //! empty line
-  static const QRegExp empty_line_regexp_;
-
 };
 
 #endif

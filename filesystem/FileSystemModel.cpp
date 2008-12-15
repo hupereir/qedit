@@ -44,7 +44,11 @@
 using namespace std;
 
 //_______________________________________________
-FileSystemModel::IconCache FileSystemModel::icons_;
+FileSystemModel::IconCache& FileSystemModel::_icons( void )
+{
+  static IconCache cache;
+  return cache;
+}
 
 //__________________________________________________________________
 FileSystemModel::FileSystemModel( QObject* parent ):
@@ -135,7 +139,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
     
   } else if( role == Qt::DecorationRole && index.column() == FILE ) {
     
-    return icons_[record.flags()&ANY];
+    return _icons()[record.flags()&ANY];
     
   }
   
@@ -167,7 +171,7 @@ void FileSystemModel::_updateConfiguration( void )
   Debug::Throw( "FileSystemModel::_updateConfiguration.\n" );
 
   // install pixmaps
-  icons_.clear();
+  _icons().clear();
   _installIcons();
   reset();
   
@@ -219,7 +223,7 @@ void FileSystemModel::_installIcons( void ) const
 
   Debug::Throw( "FileSystemModel::_installIcons.\n" );
 
-  if( !icons_.empty() ) return;
+  if( !_icons().empty() ) return;
 
   // pixmap size
   unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
@@ -239,12 +243,12 @@ void FileSystemModel::_installIcons( void ) const
   for( IconNames::iterator iter = type_names.begin(); iter != type_names.end(); iter++ )
   {
 
-    icons_[iter->first] = CustomPixmap()
+    _icons()[iter->first] = CustomPixmap()
       .empty( size )
       .merge( CustomPixmap().find( iter->second )
       .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
 
-    icons_[iter->first | LINK] = CustomPixmap()
+    _icons()[iter->first | LINK] = CustomPixmap()
       .empty( size )
       .merge( CustomPixmap().find( iter->second )
       .merge( link, CustomPixmap::BOTTOM_LEFT )

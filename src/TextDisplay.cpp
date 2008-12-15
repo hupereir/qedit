@@ -76,9 +76,19 @@
 
 using namespace std;
 
-// empty line regular expression
-const QRegExp TextDisplay::empty_line_regexp_( "(^\\s*$)" );
-NewDocumentNameServer TextDisplay::name_server_;
+//___________________________________________________
+NewDocumentNameServer& TextDisplay::newDocumentNameServer( void )
+{
+  static NewDocumentNameServer server;
+  return server;
+}
+
+//___________________________________________________
+QRegExp& TextDisplay::_emptyLineRegExp( void )
+{
+  static QRegExp regexp( "(^\\s*$)" );
+  return regexp;
+}
 
 //___________________________________________________
 TextDisplay::TextDisplay( QWidget* parent ):
@@ -292,7 +302,7 @@ void TextDisplay::setIsNewDocument( void )
   if( isNewDocument() ) return;
   
   // generate filename
-  File file( name_server_.get() );
+  File file( NewDocumentNameServer().get() );
   
   // retrieve display and associated
   BASE::KeySet<TextDisplay> displays( this );
@@ -356,7 +366,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
   }
    
   // remove new document version from name server
-  if( isNewDocument() ) { name_server_.remove( TextDisplay::file() ); }
+  if( isNewDocument() ) { NewDocumentNameServer().remove( TextDisplay::file() ); }
 
   // retrieve display and associated, update document class
   // this is needed to avoid highlight glitch when oppening file
@@ -630,7 +640,7 @@ void TextDisplay::saveAs( void )
   }
 
   // remove new document version from name server
-  if( isNewDocument() ) { name_server_.remove( TextDisplay::file() ); }
+  if( isNewDocument() ) { NewDocumentNameServer().remove( TextDisplay::file() ); }
 
   // update filename and document class for this and associates
   // the class name is reset, to allow a document class

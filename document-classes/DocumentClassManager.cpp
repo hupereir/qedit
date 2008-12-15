@@ -69,7 +69,7 @@ bool DocumentClassManager::read( const File& filename )
   if ( !file.open( QIODevice::ReadOnly ) ) return false;
   
   // parse file
-  XmlError error( filename );
+  XmlError error( filename.c_str() );
   QDomDocument document;
   if ( !document.setContent( &file, &error.error(), &error.line(), &error.column() ) ) {
     file.close();

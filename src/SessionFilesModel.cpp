@@ -44,7 +44,11 @@
 using namespace std;
 
 //__________________________________________________________________
-SessionFilesModel::IconCache SessionFilesModel::icons_;
+SessionFilesModel::IconCache& SessionFilesModel::_icons( void )
+{ 
+  static IconCache cache;
+  return cache;
+}
 
 //__________________________________________________________________
 SessionFilesModel::SessionFilesModel( QObject* parent ):
@@ -90,7 +94,7 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
 void SessionFilesModel::_updateConfiguration( void )
 {
   Debug::Throw( "SessionFilesModel::_updateConfiguration.\n" );
-  icons_.clear();
+  _icons().clear();
 }
 
 //________________________________________________________
@@ -99,8 +103,8 @@ QIcon SessionFilesModel::_icon( unsigned int type )
 
   //Debug::Throw( "SessionFilesModel::_icon.\n" );
    
-  IconCache::const_iterator iter( icons_.find( type ) );
-  if( iter != icons_.end() ) return iter->second;
+  IconCache::const_iterator iter( _icons().find( type ) );
+  if( iter != _icons().end() ) return iter->second;
 
   // pixmap size
   unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
@@ -123,7 +127,7 @@ QIcon SessionFilesModel::_icon( unsigned int type )
   } else assert(0);
 
   // store in map and return
-  icons_.insert( make_pair( type, icon ) );
+  _icons().insert( make_pair( type, icon ) );
   return icon;
    
 }

@@ -33,7 +33,7 @@
 */
 
 //! help text
-static const char* HelpText[] = {
+static const QString HelpText[] = {
   //_________________________________________________________
   "Introduction",
   "<h2>Introduction</h2><p>QEdit is a Graphical text editor designed for text files and programming source files. it provides standard menus, dialogs, toolbars and shortcut to perform all actions related to text editing and offers contextual support for easier editing of various programming languages files, such as: <ul><li>C/C++;</li><li>Makefiles and shell scripts;</li><li>Perl scripts;</li><li>HTML and XML;</li><li>diff files.</li></ul><p>Each of the above is considered as a <i>Document Class</i> and associated to a set of syntax highlighting patterns, indentation rules, text edition macros, and parenthesis matching highlighting.<p> QEdit is highly customizable to fit a wide range of editing habits. Most of its features have been ported from existing text editors, such as <i>Emacs</i> or <i>NEdit</i>, although not all of the features of the previous two editors can be found. Some features have been originally designed for QEdit that cannot be easily found in the above two editors, such as: <ul><li> an original interface to <i>aspell</i> for spell checking, either using a dialog or via syntax highlighting of the misspelled words;</li>"

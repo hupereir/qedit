@@ -71,7 +71,7 @@ class SessionFilesModel: public FileRecordModel
   typedef std::map<unsigned int, QIcon> IconCache;
    
   //! type icon cache
-  static IconCache icons_; 
+  static IconCache& _icons( void ); 
      
 };
 
