@@ -33,7 +33,7 @@
 using namespace std;
 
 //__________________________________________________________________
-const char* TextMacroRuleModel::column_titles_[TextMacroRuleModel::n_columns] = 
+const QString TextMacroRuleModel::column_titles_[TextMacroRuleModel::n_columns] = 
 {
   "regular expression",
   "replacement text",
@@ -72,7 +72,7 @@ QVariant TextMacroRuleModel::headerData(int section, Qt::Orientation orientation
     role == Qt::DisplayRole && 
     section >= 0 && 
     section < n_columns )
-  { return QString( column_titles_[section] ); }
+  { return column_titles_[section]; }
   
   // return empty
   return QVariant(); 

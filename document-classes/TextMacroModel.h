@@ -85,7 +85,7 @@ class TextMacroModel : public ListModel<TextMacro>, public Counter
   private:
   
   //! list column names
-  static const char* column_titles_[n_columns];
+  static const QString column_titles_[n_columns];
 
 };
 

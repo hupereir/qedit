@@ -33,7 +33,7 @@
 using namespace std;
 
 //__________________________________________________________________
-const char* BlockDelimiterModel::column_titles_[BlockDelimiterModel::n_columns] = 
+const QString BlockDelimiterModel::column_titles_[BlockDelimiterModel::n_columns] = 
 {
   "first",
   "second",
@@ -72,7 +72,7 @@ QVariant BlockDelimiterModel::headerData(int section, Qt::Orientation orientatio
     role == Qt::DisplayRole && 
     section >= 0 && 
     section < n_columns )
-  { return QString( column_titles_[section] ); }
+  { return column_titles_[section]; }
   
   // return empty
   return QVariant(); 

@@ -87,7 +87,7 @@ class IndentPatternModel : public ListModel<IndentPattern>, public Counter
   private:
   
   //! list column names
-  static const char* column_titles_[n_columns];
+  static const QString column_titles_[n_columns];
 
 };
 

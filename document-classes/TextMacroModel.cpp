@@ -33,7 +33,7 @@
 using namespace std;
 
 //__________________________________________________________________
-const char* TextMacroModel::column_titles_[TextMacroModel::n_columns] = 
+const QString TextMacroModel::column_titles_[TextMacroModel::n_columns] = 
 {
   "name",
   "accelerator",
@@ -70,7 +70,7 @@ QVariant TextMacroModel::headerData(int section, Qt::Orientation orientation, in
     role == Qt::DisplayRole && 
     section >= 0 && 
     section < n_columns )
-  { return QString( column_titles_[section] ); }
+  { return column_titles_[section]; }
   
   // return empty
   return QVariant(); 

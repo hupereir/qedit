@@ -84,7 +84,7 @@ class DocumentClassModel : public ListModel<DocumentClass>, public Counter
   private:
   
   //! list column names
-  static const char* column_titles_[n_columns];
+  static const QString column_titles_[n_columns];
   
   //! used to sort IconCaches
   class SortFTor: public ItemModel::SortFTor

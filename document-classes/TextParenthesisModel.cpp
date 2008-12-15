@@ -33,7 +33,7 @@
 using namespace std;
 
 //__________________________________________________________________
-const char* TextParenthesisModel::column_titles_[TextParenthesisModel::n_columns] = 
+const QString TextParenthesisModel::column_titles_[TextParenthesisModel::n_columns] = 
 {
   "first",
   "second",
@@ -72,7 +72,7 @@ QVariant TextParenthesisModel::headerData(int section, Qt::Orientation orientati
     role == Qt::DisplayRole && 
     section >= 0 && 
     section < n_columns )
-  { return QString( column_titles_[section] ); }
+  { return column_titles_[section]; }
   
   // return empty
   return QVariant(); 

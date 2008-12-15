@@ -39,12 +39,16 @@
 using namespace std;
 
 //___________________________________________________________________________
-unsigned int IndentPattern::id_counter_ = 0;
+unsigned int& IndentPattern::_counter( void )
+{
+  static unsigned int counter( 0 );
+  return counter;
+}
 
 //_____________________________________________________
 IndentPattern::IndentPattern( const QDomElement& element ):
   Counter( "IndentPattern" ),
-  id_( id_counter_++ ),
+  id_( _counter()++ ),
   name_( "" ),
   type_( NOTHING ),
   scale_( 1 )

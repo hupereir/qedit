@@ -33,7 +33,7 @@
 using namespace std;
 
 //__________________________________________________________________
-const char* HighlightStyleModel::column_titles_[HighlightStyleModel::n_columns] = 
+const QString HighlightStyleModel::column_titles_[HighlightStyleModel::n_columns] = 
 {
   "name"
 };
@@ -64,7 +64,7 @@ QVariant HighlightStyleModel::headerData(int section, Qt::Orientation orientatio
     role == Qt::DisplayRole && 
     section >= 0 && 
     section < n_columns )
-  { return QString( column_titles_[section] ); }
+  { return column_titles_[section]; }
   
   // return empty
   return QVariant(); 

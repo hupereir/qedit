@@ -94,7 +94,7 @@ class IndentPattern: public Counter
 
   //! reset counter
   static void resetCounter( void )
-  { id_counter_ = 0; }
+  { _counter() = 0; }
   
   //! pattern type enumeration
   enum Type
@@ -263,7 +263,7 @@ class IndentPattern: public Counter
   private:
   
   //! unique id counter
-  static unsigned int id_counter_;
+  static unsigned int& _counter( void );
   
   //! unique id
   unsigned int id_; 

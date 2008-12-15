@@ -33,7 +33,7 @@
 using namespace std;
 
 //__________________________________________________________________
-const char* IndentPatternModel::column_titles_[IndentPatternModel::n_columns] = 
+const QString IndentPatternModel::column_titles_[IndentPatternModel::n_columns] = 
 {
   "id",
   "name",
@@ -74,7 +74,7 @@ QVariant IndentPatternModel::headerData(int section, Qt::Orientation orientation
     role == Qt::DisplayRole && 
     section >= 0 && 
     section < n_columns )
-  { return QString( column_titles_[section] ); }
+  { return column_titles_[section]; }
   
   // return empty
   return QVariant(); 

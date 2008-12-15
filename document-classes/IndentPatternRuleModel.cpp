@@ -33,7 +33,7 @@
 using namespace std;
 
 //__________________________________________________________________
-const char* IndentPatternRuleModel::column_titles_[IndentPatternRuleModel::n_columns] = 
+const QString IndentPatternRuleModel::column_titles_[IndentPatternRuleModel::n_columns] = 
 {
   "regular expression",
   "paragraph offset",
@@ -72,7 +72,7 @@ QVariant IndentPatternRuleModel::headerData(int section, Qt::Orientation orienta
     role == Qt::DisplayRole && 
     section >= 0 && 
     section < n_columns )
-  { return QString( column_titles_[section] ); }
+  { return column_titles_[section]; }
   
   // return empty
   return QVariant(); 
