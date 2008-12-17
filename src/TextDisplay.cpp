@@ -32,6 +32,7 @@
 #include <QLabel>
 #include <QPainter>
 #include <QPushButton>
+#include <QMenu>
 #include <QScrollBar>
 #include <QTextLayout>
 
