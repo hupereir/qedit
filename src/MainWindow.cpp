@@ -729,14 +729,14 @@ void MainWindow::_multipleFileReplace( void )
   Debug::Throw( "MainWindow::_multipleFileReplace.\n" );
   TextSelection selection( _replaceDialog().selection( false ) );
 
-  // retrieve selection from replace dialog
+  // show dialog and check answer
   FileSelectionDialog dialog( this, selection );
-  connect( &dialog, 
-    SIGNAL( fileSelected( std::list<File>, TextSelection ) ), 
-    &Singleton::get().application<Application>()->windowServer(), 
-    SLOT( multipleFileReplace( std::list<File>, TextSelection ) ) );
   QtUtil::centerOnParent( &dialog );
-  dialog.exec();
+  if( !dialog.centerOnWidget( qApp->activeWindow() ).exec() ) return;
+
+  // replace all in selected files
+  Singleton::get().application<Application>()->windowServer().multipleFileReplace( dialog.selectedFiles(), selection );
+
   return;
 }
 
@@ -974,8 +974,12 @@ void MainWindow::_createReplaceDialog( void )
     connect( replace_dialog_, SIGNAL( replaceInWindow( TextSelection ) ), SLOT( _replaceInWindow( TextSelection ) ) );
     connect( replace_dialog_, SIGNAL( replaceInSelection( TextSelection ) ), SLOT( _replaceInSelection( TextSelection ) ) );
     connect( replace_dialog_, SIGNAL( replaceInFiles( void ) ), SLOT( _multipleFileReplace( void ) ) );
+
     connect( this, SIGNAL( noMatchFound( void ) ), replace_dialog_, SLOT( noMatchFound( void ) ) );
     connect( this, SIGNAL( matchFound( void ) ), replace_dialog_, SLOT( clearLabel( void ) ) );
+    connect( this, SIGNAL( busy( int ) ), replace_dialog_, SLOT( busy( int ) ) );
+    connect( this, SIGNAL( progressAvailable( int ) ), replace_dialog_, SLOT( progressAvailable( int ) ) );
+    connect( this, SIGNAL( idle( void ) ), replace_dialog_, SLOT( idle( void ) ) );
 
   }
   
@@ -992,6 +996,7 @@ void MainWindow::_connectView( TextView& view )
   connect( &view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
   connect( &view, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) ); 
   connect( &view.positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );  
+  
 }
 
 //___________________________________________________________

@@ -342,7 +342,17 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
   //! emmited from TextDisplay when no match is found for find/replace request
   void matchFound( void );
   
+  //! busy
+  void busy( int );
+  
+  //! progressAvailable
+  void progressAvailable( int );
+  
+  //! idle
+  void idle( void );
+  
   //@}
+  
   
   public slots:
  
@@ -548,6 +558,10 @@ class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
     return *replace_dialog_;
   }
    
+  //! replace dialog
+  virtual bool _hasReplaceDialog( void ) const
+  { return bool( replace_dialog_ ); }
+  
   //! orientation
   void _setOrientation( const Qt::Orientation orientation )
   { default_orientation_ = orientation; }

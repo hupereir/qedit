@@ -31,11 +31,9 @@
   \date $Date$
 */
 
-#include <QDialog>
-#include <QPushButton>
 #include <list>
 
-#include "Counter.h"
+#include "CustomDialog.h"
 #include "File.h"
 #include "FileRecordModel.h"
 #include "TextSelection.h"
@@ -43,7 +41,7 @@
 class TreeView;
 
 //! QDialog used to select opened files
-class FileSelectionDialog: public QDialog, public Counter
+class FileSelectionDialog: public CustomDialog
 {
   
   //! Qt macro
@@ -54,24 +52,17 @@ class FileSelectionDialog: public QDialog, public Counter
   //! constructor
   FileSelectionDialog( QWidget* parent, const TextSelection& );
   
-  signals:
-  
-  //! emitted when one or several files are selected
-  void fileSelected( std::list<File> files, TextSelection );
+  //! selected files
+  typedef std::list<File> FileList;
+
+  //! selected files
+  FileList selectedFiles( void ) const;
   
   private slots:
   
-  //! perform replacement
-  /*! emits fileSelected signal for all selected files in the list */
-  void _replace( void );
-  
   //! update buttons
   void _updateButtons( void );
-  
-  //! exit application
-  void _cancel( void )
-  { done( QDialog::Rejected ); }
-  
+    
   private:
 
   TreeView& _list( void ) const

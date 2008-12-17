@@ -105,15 +105,13 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     
   };
 
+  //! multiple files replace
+  void multipleFileReplace( std::list<File>, TextSelection );
+
   signals:
   
   //! emmited whenever the session file list is modified
   void sessionFilesChanged( void );
-  
-  public slots:
- 
-  //! multiple files replace
-  void multipleFileReplace( std::list<File>, TextSelection );
   
   private slots:
   

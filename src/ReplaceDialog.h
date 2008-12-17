@@ -52,6 +52,11 @@ class ReplaceDialog: public BaseReplaceDialog
   
   //! emmited when Replace is pressed
   void replaceInFiles();
+  
+  protected slots:
+  
+  //! set show progress to true, and emit replace in files
+  void _replaceInFiles( void );
     
 };
 #endif

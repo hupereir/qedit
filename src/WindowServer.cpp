@@ -31,6 +31,7 @@
 
 #include <QAction>
 #include <QApplication>
+#include <QTextStream>
 
 #include "Application.h"
 #include "CustomFileDialog.h"
@@ -347,11 +348,12 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   }
   
   // popup dialog
-  ostringstream what;
+  QString buffer;
+  QTextStream what( &buffer );
   if( !counts ) what << "string not found.";
   else if( counts == 1 ) what << "1 replacement performed";
   else what << counts << " replacements performed";
-  InformationDialog( &_activeWindow(), what.str().c_str() ).exec();
+  InformationDialog( &_activeWindow(), buffer ).centerOnWidget( qApp->activeWindow() ).exec();
   
   return;
 }
