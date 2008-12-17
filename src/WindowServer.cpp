@@ -31,6 +31,7 @@
 
 #include <QAction>
 #include <QApplication>
+#include <QProgressDialog>
 #include <QTextStream>
 
 #include "Application.h"
@@ -326,6 +327,12 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   // keep track of number of replacements
   unsigned int counts(0);
   
+  // create progressDialog
+  QProgressDialog dialog;
+  dialog.setLabelText( "Replace text in selection" );
+  QtUtil::centerOnWidget( &dialog, qApp->activeWindow() );
+  dialog.show();
+  
   // retrieve frame associated with file
   BASE::KeySet<MainWindow> windows( this );
   for( list<File>::iterator iter = files.begin(); iter != files.end(); iter++ )
@@ -342,10 +349,14 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
     for( BASE::KeySet<TextView>::iterator view_iter = views.begin(); view_iter != views.end(); view_iter++ )
     {
       if( !(*view_iter)->selectDisplay( file ) ) continue;
+      connect( &(*view_iter)->activeDisplay(), SIGNAL( busy( int ) ), &dialog, SLOT( setMaximum( int ) ) );
+      connect( &(*view_iter)->activeDisplay(), SIGNAL( progressAvailable( int ) ), &dialog, SLOT( setValue( int ) ) );
       counts += (*view_iter)->activeDisplay().replaceInWindow( selection, false );
     }
     
   }
+  
+  dialog.hide();
   
   // popup dialog
   QString buffer;
