@@ -40,18 +40,12 @@ using namespace std;
 
 //____________________________________________________________________________
 RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::List& files ):
-  BaseDialog( parent ),
-  Counter( "RemoveFilesDialog" )
+  CustomDialog( parent )
 {
   
   Debug::Throw( "RemoveFilesDialog::RemoveFilesDialog.\n" );
   setSizeGripEnabled( true );
   
-  QVBoxLayout* layout( new QVBoxLayout() );
-  layout->setSpacing( 10 );
-  layout->setMargin( 10 );
-  setLayout( layout );
-
   // label 
   QLabel* text_label( new QLabel( "Remove files selected from following list ?", this ) );  
   
@@ -60,7 +54,7 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
   QHBoxLayout *h_layout( new QHBoxLayout() );
   h_layout->setSpacing(10);
   h_layout->setMargin(0);
-  layout->addLayout( h_layout );
+  mainLayout().addLayout( h_layout );
   QLabel* label = new QLabel( this );
   label->setPixmap( question_pixmap );
   h_layout->addWidget( label, 0, Qt::AlignHCenter );
@@ -70,7 +64,7 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
   h_layout = new QHBoxLayout();
   h_layout->setSpacing( 5 );
   h_layout->setMargin( 0 );
-  layout->addLayout( h_layout, 1 );
+  mainLayout().addLayout( h_layout, 1 );
 
   // file list
   QVBoxLayout* v_layout = new QVBoxLayout();
@@ -111,21 +105,6 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
 
   v_layout->addStretch(1);
   
-  // buttons
-  QHBoxLayout* button_layout( new QHBoxLayout() );
-  button_layout->setSpacing( 5 );
-  button_layout->setMargin( 0 );
-  layout->addLayout( button_layout, 0 );
-  
-  // accept
-  button_layout->addWidget( accept_button_ = new QPushButton( IconEngine::get( ICONS::DELETE ), "&Remove", this ) );
-  connect( accept_button_, SIGNAL( clicked() ), SLOT( accept() ) );
-  accept_button_->setDefault( true );
-  
-  // cancel
-  button_layout->addWidget( cancel_button_ = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Cancel", this ) );
-  connect( cancel_button_, SIGNAL( clicked() ), this, SLOT( reject() ) );
-  
   // connection
   connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
   _updateButtons();
@@ -142,5 +121,5 @@ void RemoveFilesDialog::_updateButtons( void )
   Debug::Throw( "RemoveFilesDialog::_updateButtons.\n" );
   bool has_selection( !_list().selectionModel()->selectedRows().empty() );
   clear_selection_button_->setEnabled( has_selection );
-  accept_button_->setEnabled( has_selection );
+  okButton().setEnabled( has_selection );
 }

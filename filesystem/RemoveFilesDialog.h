@@ -37,15 +37,14 @@
 #include <QPushButton>
 #include <QCheckBox>
 
-#include "BaseDialog.h"
-#include "Counter.h"
+#include "CustomDialog.h"
 #include "FileSystemModel.h"
 
 class TreeView;
 class TextEditor;
 
 //! QDialog used to commit selected files
-class RemoveFilesDialog: public BaseDialog, public Counter
+class RemoveFilesDialog: public CustomDialog
 {
   
   //! Qt meta object
@@ -79,21 +78,7 @@ class RemoveFilesDialog: public BaseDialog, public Counter
   //! model
   FileSystemModel& _model()
   { return model_; }
- 
-  //! accept button
-  QPushButton& _acceptButton( void ) const
-  {
-    assert( accept_button_ );
-    return *accept_button_; 
-  }
-  
-  //! cancel button
-  QPushButton& _cancelButton( void ) const
-  {
-    assert( cancel_button_ );
-    return *cancel_button_; 
-  }
-  
+   
   protected slots:
   
   //! update button states
@@ -109,12 +94,6 @@ class RemoveFilesDialog: public BaseDialog, public Counter
   
   //! true to remove directories recursively
   QCheckBox* recursive_checkbox_;
-
-  //! accept button
-  QPushButton *accept_button_;
-  
-  //! cancel button
-  QPushButton* cancel_button_;
 
   //! clear selection button
   QPushButton* clear_selection_button_;
