@@ -48,6 +48,7 @@
 #include "OptionSpinBox.h"
 
 #include "RecentFilesFrame.h"
+#include "ServerConfiguration.h"
 #include "SessionFilesFrame.h"
 #include "TreeView.h"
 #include "TreeViewConfiguration.h"
@@ -260,6 +261,13 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( listbox );
   listbox->setToolTip( "Available command for printing/editing converted files" );
   box->layout()->addWidget( listbox );
+
+  // server
+  SERVER::ServerConfiguration* server_configuration;
+
+  page = &addPage( "Server" );
+  page->layout()->addWidget( server_configuration = new SERVER::ServerConfiguration( page ));
+  addOptionWidget( server_configuration );
 
   // misc
   page = &addPage( "Misc" );
