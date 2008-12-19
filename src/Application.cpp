@@ -270,12 +270,12 @@ void Application::_readFilesFromArguments( void )
 }
 
 //________________________________________________
-void Application::_processRequest( const ArgList& args )
+void Application::_processRequest( const ArgList& arguments )
 {
-  Debug::Throw() << "Application::_ProcessRequest - " << args << endl;
+  Debug::Throw() << "Application::_ProcessRequest - " << arguments << endl;
 
   // copy arguments and try open (via QTimer)
-  _setArguments( args );
+  _setArguments( arguments );
   startup_timer_.start( 100 );
   return;
   

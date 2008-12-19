@@ -42,7 +42,7 @@
 #include <list>
 #include <string>
 
-#include "CustomMainWindow.h"
+#include "BaseMainWindow.h"
 #include "Config.h"
 #include "Counter.h"
 #include "FileRecord.h"
@@ -59,7 +59,7 @@ class ReplaceDialog;
 class SelectLineDialog;
 
 //! editor main window
-class MainWindow: public CustomMainWindow, public Counter, public BASE::Key
+class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 {
 
   //! Qt meta object declaration

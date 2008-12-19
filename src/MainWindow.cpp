@@ -88,7 +88,7 @@ const std::string MainWindow::TOP_BOTTOM = "top/bottom";
 
 //_____________________________________________________
 MainWindow::MainWindow(  QWidget* parent ):
-  CustomMainWindow( parent ),
+  BaseMainWindow( parent ),
   Counter( "MainWindow" ),
   menu_( 0 ),
   statusbar_( 0 ),
@@ -583,7 +583,7 @@ bool MainWindow::event( QEvent* event )
     default: break;
   }
   
-  return CustomMainWindow::event( event );
+  return BaseMainWindow::event( event );
   
 }
 
@@ -656,7 +656,7 @@ void MainWindow::timerEvent( QTimerEvent* event )
     if( navigationFrame().visibilityAction().isChecked() )
     { XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", navigationFrame().width() ); }
   
-  } else return CustomMainWindow::timerEvent( event );
+  } else return BaseMainWindow::timerEvent( event );
   
 }
   
