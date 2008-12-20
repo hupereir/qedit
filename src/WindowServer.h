@@ -37,7 +37,7 @@
 #include <QAction>
 #include <QObject>
 
-#include "ArgList.h"
+#include "CommandLineArguments.h"
 #include "Counter.h"
 #include "File.h"
 #include "FileRecord.h"
@@ -82,7 +82,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   bool closeAll( void );
   
   //! read file from arguments and open relevant windows
-  void readFilesFromArguments( ArgList );
+  void readFilesFromArguments( CommandLineArguments );
   
   //!@name actions
   //@{
@@ -180,8 +180,11 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   void _save( FileRecord::List );
   
   //! close selected files
-  void _close( FileRecord::List );
+  void _close( QStringList );
   
+  //! close selected files
+  void _close( FileRecord::List );
+
   private:
     
   //! new file
@@ -204,7 +207,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   bool _createNewFile( const FileRecord& );
   
   //! apply command-line arguments to currant display
-  void _applyArguments( TextDisplay&, ArgList );
+  void _applyArguments( TextDisplay&, CommandLineArguments );
   
   //! active window
   void _setActiveWindow( MainWindow& );

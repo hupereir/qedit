@@ -55,27 +55,35 @@
 using namespace std;
 using namespace Qt;
 
+
 //____________________________________________
-void Application::usage( void )
+CommandLineParser Application::commandLineParser( CommandLineArguments arguments, bool ignore_warnings )
 {
-  cout << "Usage : qedit [options] <file1> <file2> <...>" << endl;
-  cout << endl;
-  cout << "Options : " << endl;
-  cout << "  --help\t\t displays this help and exit" << endl;
-  cout << "  --tabbed\t\t opens files in same window" << endl;
-  cout << "  --same-window\t\t open files in same window" << endl;
-  cout << "  --new-window\t\t open files in a new window" << endl;
-  cout << "  --diff\t\t opens files in same window and perform diff" << endl;
-  cout << "  --autospell\t\t switch autospell on for all files" << endl;
-  cout << "  --filter <filter>\t select filter for autospell" << endl;
-  cout << "  --dictionary <dict>\t select dictionary for autospell" << endl;
-  cout << "  --close\t\t close displays matching file names and exit" << endl;
-  SERVER::ApplicationManager::usage();
-  return;
+  Debug::Throw( "Application::commandLineParser.\n" );
+  CommandLineParser out( SERVER::ApplicationManager::commandLineParser() );
+
+  out.registerFlag( "--tabbed", "opens files in same window");
+  out.registerFlag( "--same-window", "open files in same window");
+  out.registerFlag( "--new-window", "open files in a new window");
+  out.registerFlag( "--diff", "opens files in same window and perform diff");
+  out.registerFlag( "--autospell", "switch autospell on for all files");
+  out.registerFlag( "--close", "close displays matching file names and exit");
+  out.registerOption( "--filter", "string", "select filter for autospell");
+  out.registerOption( "--dictionary", "string", "select dictionary for autospell");
+  if( !arguments.isEmpty() ) out.parse( arguments, ignore_warnings );
+  return out;
+  
 }
 
 //____________________________________________
-Application::Application( ArgList arguments ):
+void Application::usage( void )
+{
+  cout << "Usage : qedit [options] [files]" << endl;
+  commandLineParser().usage();
+}
+
+//____________________________________________
+Application::Application( CommandLineArguments arguments ):
   BaseApplication( 0, arguments ),
   Counter( "Application" ),
   recent_files_( 0 ),
@@ -106,9 +114,13 @@ void Application::initApplicationManager( void )
   Debug::Throw( "Application::initApplicationManager.\n" );
 
   // retrieve files from arguments and expand if needed
-  ArgList::Arg& last( _arguments().get().back() );
-  for( list< string >::iterator iter = last.options().begin(); iter != last.options().end(); iter++ )
-  { if( File( *iter ).size() ) (*iter) = File( *iter ).expand(); }
+  CommandLineParser parser( commandLineParser( _arguments() ) );
+  QStringList& orphans( parser.orphans() );
+  for( QStringList::iterator iter = orphans.begin(); iter != orphans.end(); iter++ )
+  { if( !iter->isEmpty() ) (*iter) = File( qPrintable( *iter ) ).expand().c_str(); }
+
+  // replace arguments
+  _setArguments( parser.arguments() );
 
   // base class initialization
   BaseApplication::initApplicationManager();
@@ -270,9 +282,9 @@ void Application::_readFilesFromArguments( void )
 }
 
 //________________________________________________
-void Application::_processRequest( const ArgList& arguments )
+void Application::_processRequest( const CommandLineArguments& arguments )
 {
-  Debug::Throw() << "Application::_ProcessRequest - " << arguments << endl;
+  Debug::Throw() << "Application::_ProcessRequest - " << qPrintable( arguments.join( " " ) ) << endl;
 
   // copy arguments and try open (via QTimer)
   _setArguments( arguments );

@@ -209,66 +209,61 @@ bool WindowServer::closeAll( void )
 }
 
 //______________________________________________________
-void WindowServer::readFilesFromArguments( ArgList args )
+void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
 {
       
   Debug::Throw() << "WindowServer::readFilesFromArguments." << endl;
   
   // retrieve files from arguments
-  ArgList::Arg last_arg( args.get().back() );
-  
-  // load files
-  list<string> files( last_arg.options() );
+  CommandLineParser parser( Application::commandLineParser( arguments ) );
+  QStringList filenames( parser.orphans() );
   
   // close mode
-  if( args.find( "--close" ) ) 
+  if( parser.hasFlag( "--close" ) ) 
   {
-    _close( last_arg.options() );
+    _close( filenames );
     _setFirstCall( false );
     return;
   }
   
   // check number of files
-  if( files.size() > 10 )
+  if( filenames.size() > 10 )
   {
     ostringstream what;
-    what << "Do you really want to open " << files.size() << " files at the same time ?" << endl;
+    what << "Do you really want to open " << filenames.size() << " files at the same time ?" << endl;
     what << "This might be very resource intensive and can overload your computer." << endl;
     what << "If you choose No, only the first file will be opened.";
     if( !QuestionDialog( &_activeWindow(), what.str().c_str() ).exec() )
-    {
-      list<string> tmp;
-      tmp.push_back( files.front() );
-      files = tmp;
-    }
+    { filenames = filenames.mid(0,1); }
+    
   }
   
   // check if at least one file is opened
   bool file_opened( false );
   
   // tabbed | diff mode
-  bool tabbed( args.find( "--tabbed" ) );
-  bool diff( args.find( "--diff" ) );
-  if( ( tabbed || diff ) && files.size() > 1 )
+  bool tabbed( parser.hasFlag( "--tabbed" ) );
+  bool diff( parser.hasFlag( "--diff" ) );
+  if( ( tabbed || diff ) && filenames.size() > 1 )
   {
 
     bool first( true );
-    for( list< string >::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+    for( QStringList::const_iterator iter = filenames.begin(); iter != filenames.end(); iter++ )
     {
     
       if( first )
       {
       
-        if( file_opened |= _open( File( *iter ).expand() ) ) 
+        if( file_opened |= _open( File( qPrintable( *iter ) ).expand() ) ) 
         {
-          _applyArguments( _activeWindow().activeDisplay(), args );
+          _applyArguments( _activeWindow().activeDisplay(), arguments );
           first = false;
         }
         
       } else { 
         
-        if( file_opened |= _open( File( *iter ).expand(), _activeWindow().orientation() ) )
-        { _applyArguments( _activeWindow().activeDisplay(), args ); }
+        if( file_opened |= _open( File( qPrintable( *iter ) ).expand(), _activeWindow().orientation() ) )
+        { _applyArguments( _activeWindow().activeDisplay(), arguments ); }
         
       }
     
@@ -283,15 +278,15 @@ void WindowServer::readFilesFromArguments( ArgList args )
   } else {
   
     // default mode
-    for( list< string >::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+    for( QStringList::const_iterator iter = filenames.begin(); iter != filenames.end(); iter++ )
     { 
       
       OpenMode mode( _openMode() );
-      if( args.find( "--same-window" ) ) mode = ACTIVE_WINDOW;
-      else if( args.find( "--new-window" ) ) mode = NEW_WINDOW;
+      if( parser.hasFlag( "--same-window" ) ) mode = ACTIVE_WINDOW;
+      else if( parser.hasFlag( "--new-window" ) ) mode = NEW_WINDOW;
       
-      bool opened = _open( File( *iter ).expand(), mode );
-      if( opened ) { _applyArguments( _activeWindow().activeDisplay(), args ); }
+      bool opened = _open( File( qPrintable( *iter ) ).expand(), mode );
+      if( opened ) { _applyArguments( _activeWindow().activeDisplay(), arguments ); }
       file_opened |= opened;
       
     }
@@ -734,6 +729,18 @@ void WindowServer::_save( FileRecord::List records )
 
 
 //_______________________________________________
+void WindowServer::_close( QStringList filenames )
+{
+
+  FileRecord::List records;
+  for( QStringList::const_iterator iter = filenames.begin(); iter != filenames.end(); iter++ )
+  { records.push_back( FileRecord( File( qPrintable( *iter ) ) ) ); }
+  
+  _close( records );
+  
+}
+
+//_______________________________________________
 void WindowServer::_close( FileRecord::List records )
 {
   Debug::Throw( "WindowServer::_close.\n" );
@@ -903,21 +910,26 @@ bool WindowServer::_createNewFile( const FileRecord& record )
 }
 
 //________________________________________________________________
-void WindowServer::_applyArguments( TextDisplay& display, ArgList args )
+void WindowServer::_applyArguments( TextDisplay& display, CommandLineArguments arguments )
 { 
   Debug::Throw( "WindowServer::_applyArguments.\n" );
 
+  CommandLineParser parser( Application::commandLineParser( arguments ) );
+  
   //! see if autospell action is required
-  bool autospell( args.find( "--autospell" ) );
+  bool autospell( parser.hasFlag( "--autospell" ) );
   
   //! see if autospell filter and dictionary are required
-  string filter = ( args.find( "--filter" ) && !args.get( "--filter" ).options().empty() ) ? args.get( "--filter" ).options().front() : "";
-  string dictionary = (args.find( "--dictionary" ) && !args.get( "--dictionary" ).options().empty() ) ? args.get( "--dictionary" ).options().front() : "";
-  Debug::Throw() << "WindowServer::_applyArguments - filter:" << filter << " dictionary: " << dictionary << endl;
+  QString filter = parser.hasOption( "--filter" ) ? parser.option( "--filter" ) : "";
+  QString dictionary = parser.hasOption( "--dictionary" ) ? parser.option( "--dictionary" ) : "";
+  Debug::Throw() << "WindowServer::_applyArguments -"
+    << " filter:" << qPrintable( filter )
+    << " dictionary: " << qPrintable( dictionary ) 
+    << endl;
   
   if( autospell ) display.autoSpellAction().setChecked( true );
-  if( !filter.empty() ) display.selectFilter( filter.c_str() );
-  if( !dictionary.empty() ) display.selectDictionary( dictionary.c_str() );
+  if( !filter.isEmpty() ) display.selectFilter( filter );
+  if( !dictionary.isEmpty() ) display.selectDictionary( dictionary );
   
 }
 

@@ -36,6 +36,8 @@
 #include <QTimer>
 
 #include "BaseApplication.h"
+#include "CommandLineArguments.h"
+#include "CommandLineParser.h"
 #include "Config.h"
 #include "Counter.h"
 
@@ -54,11 +56,14 @@ class Application: public BaseApplication, public Counter
 
   public:
 
+  //! command line parser
+  static CommandLineParser commandLineParser( CommandLineArguments arguments = CommandLineArguments(), bool ignore_warnings = true );
+  
   //! command line help
   static void usage( void );
   
   //! constructor
-  Application( ArgList );
+  Application( CommandLineArguments );
 
   //! destructor
   ~Application( void );
@@ -147,7 +152,7 @@ class Application: public BaseApplication, public Counter
   void _readFilesFromArguments( void );
   
   //! process request from application manager
-  void _processRequest( const ArgList& );
+  void _processRequest( const CommandLineArguments& );
 
   private:
   

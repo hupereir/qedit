@@ -60,8 +60,8 @@ int main (int argc, char *argv[])
   qInstallMsgHandler( ErrorHandler::Throw );
   
   // load possible command file
-  ArgList args( argc, argv );
-  if( args.find( "--help" ) )
+  CommandLineArguments arguments( argc, argv );
+  if( Application::commandLineParser( arguments, false ).hasFlag( "--help" ) )
   {
     Application::usage();
     return 0;
@@ -83,7 +83,7 @@ int main (int argc, char *argv[])
   Q_INIT_RESOURCE( pixmaps );
   QApplication application( argc, argv );
   
-  Application singleton( ArgList( argc, argv ) );
+  Application singleton( arguments );
   Singleton::get().setApplication( &singleton );
   singleton.initApplicationManager();
   
