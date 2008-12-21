@@ -86,9 +86,21 @@ void ParenthesisHighlight::clear( void )
 }
 
 //______________________________________________________________________
+void ParenthesisHighlight::synchronize( const ParenthesisHighlight& highlight )
+{
+  Debug::Throw( "ParenthesisHighlight::synchronized.\n" );
+  enabled_ = highlight.enabled_;
+  cleared_ = highlight.cleared_;
+  location_ = highlight.location_;
+  length_ = highlight.length_;
+}
+
+//______________________________________________________________________
 void ParenthesisHighlight::highlight( const int& location, const int& length )
 {
+
   if( !isEnabled() ) return;
+  
   clear();
   location_ = location;
   length_ = length;

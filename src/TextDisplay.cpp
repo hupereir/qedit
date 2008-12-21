@@ -259,10 +259,11 @@ void TextDisplay::synchronize( TextDisplay* display )
 
   Debug::Throw( "TextDisplay::synchronize.\n" );
 
-  // replace base class synchronization prior to calling base class synchronization
+  // replace base class syntax highlighter prior to calling base class synchronization
+  text_highlight_ = &display->textHighlight();
+
   /* this avoids calling to invalid block of memory which the textHighlight gets deleted
   when changing the document */
-  text_highlight_ = &display->textHighlight();
 
   // base class synchronization
   TextEditor::synchronize( display );
@@ -276,15 +277,20 @@ void TextDisplay::synchronize( TextDisplay* display )
   textIndent().setPatterns( display->textIndent().patterns() );
   textIndent().setBaseIndentation( display->textIndent().baseIndentation() );
 
+  // parenthesis
+  parenthesisHighlight().synchronize( display->parenthesisHighlight() );
+
   // block delimiters and line numbers
   blockDelimiterDisplay().synchronize( &display->blockDelimiterDisplay() );
   
+  // actions
   textIndentAction().setChecked( display->textIndentAction().isChecked() );
   textHighlightAction().setChecked( display->textHighlightAction().isChecked() );
   parenthesisHighlightAction().setChecked( display->parenthesisHighlightAction().isChecked() );
   showLineNumberAction().setChecked( display->showLineNumberAction().isChecked() );
   showBlockDelimiterAction().setChecked( display->showBlockDelimiterAction().isChecked() );
 
+  // macros
   _setMacros( display->macros() );
 
   // file
@@ -2256,7 +2262,6 @@ void TextDisplay::_highlightParenthesis( void )
 
   // retrieve block
   QTextBlock block( cursor.block() );
-  //if( ignoreBlock( block ) ) return;
 
   // store local position in block
   int position(cursor.position()-block.position());
@@ -2345,7 +2350,7 @@ void TextDisplay::_highlightParenthesis( void )
   }
 
   if( found ) parenthesisHighlight().highlight( position + block.position(), iter->regexp().matchedLength() );
-
+  
   return;
 
 }

@@ -62,6 +62,9 @@ class ParenthesisHighlight: public QObject, public Counter
   //! enable/disable
   const bool& isEnabled( void ) const
   { return enabled_; }
+
+  //! synchronize
+  void synchronize( const ParenthesisHighlight& );
   
   //! clear highlighted block
   void clear( void );
@@ -73,7 +76,7 @@ class ParenthesisHighlight: public QObject, public Counter
   
   //! delayed highlighting
   void _highlight( void );
-  
+      
   private:
   
   //! parent editor
