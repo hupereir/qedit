@@ -43,6 +43,7 @@
 #include "CustomFileDialog.h"
 #include "CustomToolButton.h"
 #include "LineEditor.h"
+#include "Command.h"
 #include "CustomToolBar.h"
 #include "Debug.h"
 #include "Diff.h"
@@ -75,7 +76,6 @@
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
-#include "Util.h"
 #include "WindowServer.h"
 #include "WindowTitle.h"
 #include "XmlOptions.h"
@@ -561,7 +561,7 @@ void MainWindow::_print( void )
   
   // try open
   if( dialog.useCommand() )
-  { Util::run( QStringList() << dialog.command() << fullname.c_str() ); }   
+  { (Command( dialog.command() ) << fullname.c_str() ).run(); }   
   
   Debug::Throw( "MainWindow::_print - done.\n" );
   return;
