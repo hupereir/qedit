@@ -34,12 +34,13 @@
 #include <assert.h>
 #include <map>
 #include <QAction>
+#include <QBasicTimer>
 #include <QPaintEvent>
+#include <QTimerEvent>
 
 #include "Counter.h"
 #include "SessionFilesModel.h"
-
-class TreeView;
+#include "TreeView.h"
 
 //! editor windows navigator
 /*!
@@ -94,7 +95,7 @@ class SessionFilesFrame: public QWidget, public Counter
   //! model
   SessionFilesModel& _model( void ) 
   { return model_; }
-        
+  
   private slots:
 
   //! update configuration
@@ -153,6 +154,43 @@ class SessionFilesFrame: public QWidget, public Counter
   
   //! model
   SessionFilesModel model_;
+  
+  class View: public TreeView
+  {
+    
+    public:
+    
+    //! constructor
+    View( QWidget* parent, SessionFilesModel* model ):
+      TreeView( parent ),
+      model_( model )
+      { setModel( model ); }
+      
+    protected:
+        
+    //! timer event 
+    /*! it is used to enable/disable drag */
+    virtual void timerEvent( QTimerEvent* );
+    
+    //! mouse press
+    virtual void mousePressEvent( QMouseEvent* );
+    
+    //! mouse release
+    virtual void mouseReleaseEvent( QMouseEvent* );
+    
+    //! mouse move
+    virtual void mouseMoveEvent( QMouseEvent* );
+
+    private:
+    
+    //! local pointer to model
+    SessionFilesModel* model_;
+
+    //! drag timer
+    QBasicTimer drag_timer_;
+  
+    
+  };
   
   //! list
   TreeView* list_;
