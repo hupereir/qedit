@@ -220,9 +220,20 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
   }
   painter.restore();
   
-  // use the QStyle primitive elements for TreeViews
+  // draw delimiters
   painter.save();
-  painter.setBrush( Qt::NoBrush );
+  if( custom_symbols_ )
+  {
+    // local style for custom painting
+    // should define this only once -per paint event-,
+    // before entering the loop over delimiters
+    painter.setBrush( foreground_ );
+    QPen pen( foreground_ );
+    pen.setWidth( 1.5 );
+    painter.setPen( pen );
+    painter.setRenderHints( QPainter::Antialiasing );
+  } else painter.setBrush( Qt::NoBrush );
+  
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {    
     if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
@@ -940,26 +951,26 @@ void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect
   
   if( custom_symbols_ )
   {
-    
-    painter.setBrush( foreground_ );
-    painter.setPen( Qt::NoPen );
-    painter.setRenderHints( QPainter::Antialiasing );
+    QRectF local( rect );
+    local.adjust( 1.5, 1.5, -1.5, -1.5 );
     if( collapsed )
     {
+      double offset( local.height()/6 );
       const QPointF points[3] = {
-         QPointF(rect.topLeft()) + QPointF( 1, 1 ),
-         QPointF( (rect.topRight() + rect.bottomRight())/2 ) + QPointF(-1,0),
-         QPointF(rect.bottomLeft()) + QPointF( 1, -1 ) 
+         QPointF(local.topLeft()) + QPointF( offset, 0 ),
+         QPointF(local.bottomLeft()) + QPointF( offset, 0 ),
+         local.topLeft() + QPointF( local.width()*2/3, local.height()/2 ) + QPointF( offset, 0 )
       };
 
       painter.drawConvexPolygon(points, 3);
       
     } else {
 
+      double offset( local.width()/6 );
       const QPointF points[3] = {
-         QPointF(rect.topLeft()) + QPointF( 1.5, 1 ),
-         QPointF(rect.topRight()) + QPointF( -0.5, 1 ),
-         QPointF( (rect.bottomLeft()+rect.bottomRight())/2 ) + QPointF( 0.5, -1 )
+        QPointF(local.topLeft()) + QPointF( 0, offset ),
+        QPointF(local.topRight()) + QPointF( 0, offset ),
+        local.topLeft() + QPointF( local.width()/2, local.height()*2/3 ) + QPointF( 0, offset )
       };
 
       painter.drawConvexPolygon(points, 3);
