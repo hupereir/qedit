@@ -98,12 +98,14 @@ bool Diff::run( void )
   _clear();
   
   // create command and pass to process
-  ostringstream what; 
-  what << XmlOptions::get().raw( "DIFF_COMMAND" ) << " " << files_[FIRST].file() << " " << files_[SECOND].file();
-  Debug::Throw() << "Diff::run - command: " << what.str() << endl;
-
+  QStringList command;
+  command 
+    << XmlOptions::get().raw( "DIFF_COMMAND" ).c_str()
+    << files_[FIRST].file().c_str() 
+    << files_[SECOND].file().c_str();
+  
   // run
-  process_.start( what.str() ); 
+  process_.start( command ); 
   return true;
   
 }
