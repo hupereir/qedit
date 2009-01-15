@@ -74,6 +74,12 @@ class AutoSave: public QObject, public Counter
   
   private:
   
+  bool _enabled( void ) const
+  { return enabled_ && interval_; }
+  
+  //! true when enabled
+  bool enabled_;
+  
   //! interval between two save (milliseconds)
   unsigned int interval_;
   

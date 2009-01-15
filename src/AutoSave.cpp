@@ -42,6 +42,7 @@ using namespace std;
 AutoSave::AutoSave( QObject* parent ):
   QObject( parent ),
   Counter( "AutoSave" ),
+  enabled_( false ),
   interval_( 0 ),
   timer_( this )
 {
@@ -89,7 +90,7 @@ void AutoSave::newThread( TextDisplay* display )
   threads_.push_back( thread );
   
   // save file immediatly
-  if( interval_ ) saveFiles( display );
+  if( _enabled() ) saveFiles( display );
   
 }
 
@@ -100,7 +101,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
   Debug::Throw( "AutoSave::saveFiles.\n" );
   
   // do nothing if interval is 0
-  if( !interval_ || threads_.empty() ) return;
+  if( !( _enabled() ) || threads_.empty() ) return;
 
   // needed to see if display was found.
   bool found( false );
@@ -165,6 +166,7 @@ void AutoSave::_updateConfiguration( void )
   Debug::Throw( "AutoSave::_updateConfiguration.\n" );
 
   // save AutoSave interval and start timer
+  enabled_ = XmlOptions::get().get<bool>( "AUTOSAVE" );
   interval_ = 1000*XmlOptions::get().get<unsigned int>("AUTOSAVE_INTERVAL");
   if( interval_ > 0 ) {
     timer_.setInterval( interval_ );

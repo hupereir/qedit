@@ -60,22 +60,22 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   page->layout()->addWidget( document_class_configuration_ = new DocumentClassConfiguration( page ) );
   
   // highlight styles
-  page = &addPage( "Highlight", true );
+  page = &addPage( "Highlight", "Syntax highlighting styles and patterns", true );
   
   page->layout()->addWidget( highlight_style_list_ = new HighlightStyleList(page) );
   page->layout()->addWidget( highlight_pattern_list_ = new HighlightPatternList(page) );
   
   // delimiters
-  page = &addPage( "Delimiters", true );
+  page = &addPage( "Delimiters", "Parenthesis and block delimiters", true );
   page->layout()->addWidget( text_parenthesis_list_ = new TextParenthesisList( page ) );
   page->layout()->addWidget( block_delimiter_list_ = new BlockDelimiterList( page ) );
   
   // indentation
-  page = &addPage( "Indentation", true );
+  page = &addPage( "Indentation", "Indentation rules", true );
   page->layout()->addWidget( indent_pattern_list_ = new IndentPatternList( page ) );
   
   // macro
-  page = &addPage( "Macros", true );
+  page = &addPage( "Macros", "Text processing macros", true );
   page->layout()->addWidget( text_macro_list_ = new TextMacroList() );
 
   // buttons

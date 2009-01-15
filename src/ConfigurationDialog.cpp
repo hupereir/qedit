@@ -72,7 +72,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   OptionColorDisplay* color_display;
   
   // document classes 
-  QWidget* page = &addPage( "Document classes" );
+  QWidget* page = &addPage( "Document classes", "Document classes definitions and flags" );
   
   page->layout()->addWidget( box = new QGroupBox( "Document classes", page ) );  
   box->setLayout( new QVBoxLayout() );
@@ -121,11 +121,11 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( checkbox );
 
   // edition
-  page = &addPage( "Edition" );
-  textEditConfiguration( page ); 
+  // page = &addPage( "Edition" );
+  textEditConfiguration(); 
 
   // display
-  page = &addPage( "Colors" );
+  page = &addPage( "Colors", "Text edition color settings" );
   
   // additional colors
   page->layout()->addWidget( box = new QGroupBox( "Colors", page ) );  
@@ -136,28 +136,28 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setMaxCount(2);
   box->setLayout( grid_layout );
   
-  grid_layout->addWidget( new QLabel( "Parenthesis matching color", box ) ); 
+  grid_layout->addWidget( new QLabel( "Parenthesis matching", box ) ); 
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "PARENTHESIS_COLOR" ) );
   addOptionWidget( color_display );
   checkbox->setToolTip( "Color for matching parenthesis" );
 
-  grid_layout->addWidget( new QLabel( "Tagged paragraphs color", box ) ); 
+  grid_layout->addWidget( new QLabel( "Tagged paragraphs", box ) ); 
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "TAGGED_BLOCK_COLOR" ) );
   addOptionWidget( color_display );
   checkbox->setToolTip( "Color for tagged paragraphs" );
   
-  grid_layout->addWidget( new QLabel( "Conflict paragraph highlight color", box ) );
+  grid_layout->addWidget( new QLabel( "Conflicting paragraphs", box ) );
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_CONFLICT_COLOR" ) );
   addOptionWidget( color_display );
-  color_display->setToolTip( "highlight color for diff conflict paragraphs" );
+  color_display->setToolTip( "Highlight color for diff conflict paragraphs" );
 
-  grid_layout->addWidget( new QLabel( "Added paragraph highlight color", box ) );
+  grid_layout->addWidget( new QLabel( "Added paragraphs", box ) );
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_ADDED_COLOR" ) );
   addOptionWidget( color_display );
-  color_display->setToolTip( "highlight color for diff added paragraphs" );
+  color_display->setToolTip( "Highlight color for diff added paragraphs" );
   
   // multiple views
-  page = &addPage( "Navigation" );
+  page = &addPage( "Navigation", "Visible columns in navigation tabs" );
   
   QHBoxLayout *h_layout = new QHBoxLayout();
   h_layout->setSpacing(5); 
@@ -170,7 +170,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     &session_frame.list(), 
     session_frame.list().maskOptionName() );
   h_layout->addWidget( listview_config );
-  listview_config->setTitle( "session files" );
+  listview_config->setTitle( "Session files" );
   addOptionWidget( listview_config );
 
   FileList tmp(0);
@@ -179,12 +179,12 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     page, 
     &recent_frame.list(), 
     recent_frame.list().maskOptionName() );
-  listview_config->setTitle( "recent files" );
+  listview_config->setTitle( "Recent files" );
   h_layout->addWidget( listview_config );
   addOptionWidget( listview_config );
 
   // multiple views
-  page = &addPage( "Multiple views" );
+  page = &addPage( "Multiple views", "Multiple views configuration" );
   page->layout()->addWidget( box = new QGroupBox( page ) );  
 
   grid_layout = new GridLayout();
@@ -215,7 +215,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setColumnStretch( 1, 1 );
     
   // toolbars
-  page = &addPage( "Toolbars" );
+  page = &addPage( "Toolbars", "Toolbars visibility and location" );
   page->layout()->addWidget( box = new QGroupBox( "Toolbars", page ) );  
 
   grid_layout = new GridLayout();
@@ -248,29 +248,28 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( combobox );
 
   // printing
-  page = &addPage( "Printing" );
-  page->layout()->addWidget( box = new QGroupBox( "Printing", page ) );  
+  page = &addPage( "Printing", "Commands used for printing" );
+  page->layout()->addWidget( box = new QGroupBox( page ) );  
 
   box->setLayout( new QVBoxLayout() );
   box->layout()->setMargin(5);
   box->layout()->setSpacing(5);
 
-  box->layout()->addWidget( new QLabel("Printing/editing commands: ", box ) );
   listbox = new OptionListBox( box, "PRINT_COMMAND" );
   listbox->setBrowsable( true );
   addOptionWidget( listbox );
   listbox->setToolTip( "Available command for printing/editing converted files" );
   box->layout()->addWidget( listbox );
 
+ 
+  // misc
+  page = &addPage( "Misc", "Additional unsorted settings" );
+  
   // server
   SERVER::ServerConfiguration* server_configuration;
-
-  page = &addPage( "Server" );
-  page->layout()->addWidget( server_configuration = new SERVER::ServerConfiguration( page ));
+  page->layout()->addWidget( server_configuration = new SERVER::ServerConfiguration( page, "Server configuration" ));
   addOptionWidget( server_configuration );
 
-  // misc
-  page = &addPage( "Misc" );
   page->layout()->addWidget( box = new QGroupBox( "Backup and Autosave", page ) );  
 
   box->setLayout( new QVBoxLayout() );
@@ -281,23 +280,29 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   checkbox->setToolTip( "Make backup of the file prior to saving modifications" );
   addOptionWidget( checkbox );
    
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "Autosave", box, "AUTOSAVE" ) );
+  checkbox->setToolTip( 
+    "Make automatic copies of edited files in\n"
+    "specified directory to allow crash recovery." );
+  addOptionWidget( checkbox );
+
   grid_layout = new GridLayout();
   grid_layout->setSpacing(5);
   grid_layout->setMargin(0);
   grid_layout->setMaxCount(2);
   box->layout()->addItem( grid_layout );
 
-  grid_layout->addWidget( new QLabel( "autosave interval (seconds)", box ) );
+  grid_layout->addWidget( new QLabel( "Autosave interval (seconds)", box ) );
   grid_layout->addWidget( spinbox = new OptionSpinBox( box, "AUTOSAVE_INTERVAL" ) );
-  spinbox->setMinimum( 0 );
+  spinbox->setMinimum( 1 );
   spinbox->setMaximum( 300 );
-  spinbox->setToolTip( "interval (seconds) between two autosave. 0 means no autosave." );
+  spinbox->setToolTip( "Interval (seconds) between two autosave." );
   addOptionWidget( spinbox );
   
   OptionBrowsedLineEditor *edit;
-  grid_layout->addWidget( new QLabel( "autosave path", box ) );
+  grid_layout->addWidget( new QLabel( "Autosave path", box ) );
   grid_layout->addWidget( edit = new OptionBrowsedLineEditor( box, "AUTOSAVE_PATH" ) );
-  edit->setToolTip( "directory when autosaved files are stored" );
+  edit->setToolTip( "Directory where autosaved files are stored" );
   addOptionWidget( edit );
   
   // misc
@@ -310,15 +315,15 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   box->setLayout( grid_layout );
   
   // previous file history size
-  grid_layout->addWidget( new QLabel( "recent files history size", box ) );
+  grid_layout->addWidget( new QLabel( "Recent files history size", box ) );
   grid_layout->addWidget( spinbox = new OptionSpinBox( box, "DB_SIZE" ) );
   spinbox->setMinimum( 0 );
   spinbox->setMaximum( 100 );
   addOptionWidget( spinbox );
-  spinbox->setToolTip( "number of previously opened files to appear in the Open Previous menu" );
+  spinbox->setToolTip( "Number of previously opened files to appear in the Open Previous menu" );
 
   // sort previous files by date
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "sort recent files by date", box, "SORT_FILES_BY_DATE" ), 3, 0, 1, 2 );
+  grid_layout->addWidget( checkbox = new OptionCheckBox( "Sort recent files by date", box, "SORT_FILES_BY_DATE" ), 3, 0, 1, 2 );
   checkbox->setToolTip( "Sort files by date rather than name in Open Previous menu." );
   addOptionWidget( checkbox );
   new QWidget( box );
