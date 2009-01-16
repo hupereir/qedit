@@ -545,7 +545,7 @@ void FileSystemFrame::_installActions( void )
   remove_action_->setToolTip( "Remove selected files locally" );
 
   // rename
-  addAction( rename_action_ = new QAction( "Rename", this ) );
+  addAction( rename_action_ = new QAction( IconEngine::get( ICONS::RENAME ), "Rename", this ) );
   connect( rename_action_, SIGNAL( triggered() ), SLOT( _rename() ) );
   rename_action_->setShortcut( Qt::Key_F2 );
   rename_action_->setToolTip( "Change selected file name" );
