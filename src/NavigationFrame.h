@@ -35,10 +35,9 @@
 #include <map>
 #include <QAction>
 #include <QShowEvent>
-#include <QStackedWidget>
 #include <QToolButton>
 
-#include "Counter.h"
+#include "AnimatedStackedWidget.h"
 #include "FileList.h"
 #include "FileRecord.h"
 
@@ -51,7 +50,7 @@ class FileSystemFrame;
   displays an up-to-date list of recent files
   as well as files opened in current session
 */
-class NavigationFrame: public QStackedWidget, public Counter
+class NavigationFrame: public AnimatedStackedWidget
 {
 
   Q_OBJECT

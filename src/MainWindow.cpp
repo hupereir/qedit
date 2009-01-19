@@ -131,8 +131,9 @@ MainWindow::MainWindow(  QWidget* parent ):
   connect( &navigationFrame().recentFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
   
   // insert stack widget
-  splitter->addWidget( stack_ = new QStackedWidget(0) );
-  stack_->layout()->setMargin(2);
+  splitter->addWidget( stack_ = new AnimatedStackedWidget(0) );
+  _stack().transitionWidget().setMode( TransitionWidget::FADE_SECOND );
+  _stack().layout()->setMargin(2);
   
   connect( &_stack(), SIGNAL( widgetRemoved( int ) ), SLOT( _activeViewChanged() ) );
   

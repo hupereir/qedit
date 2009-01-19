@@ -1,7 +1,6 @@
 #ifndef MainWindow_h
 #define MainWindow_h
 
-
 // $Id$
 /******************************************************************************
 *
@@ -36,12 +35,12 @@
 #include <QBasicTimer>
 #include <QCloseEvent>
 #include <QSplitter>
-#include <QStackedWidget>
 #include <QTimerEvent>
 
 #include <list>
 #include <string>
 
+#include "AnimatedStackedWidget.h"
 #include "BaseMainWindow.h"
 #include "Config.h"
 #include "Counter.h"
@@ -576,7 +575,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   QString _htmlString( const int& );
   
   //! stack windget
-  QStackedWidget& _stack( void ) const
+  AnimatedStackedWidget& _stack( void ) const
   { 
     assert( stack_ );
     return *stack_; 
@@ -589,7 +588,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   Menu* menu_;
   
   //! stack widget
-  QStackedWidget* stack_;
+  AnimatedStackedWidget* stack_;
   
   //! navigation window
   NavigationFrame* navigation_frame_;

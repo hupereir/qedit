@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
@@ -42,8 +41,7 @@ using namespace std;
 
 //_______________________________________________________________
 NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
-  QStackedWidget( parent ),
-  Counter( "NavigationFrame" ),
+  AnimatedStackedWidget( parent ),
   default_width_( -1 )
 {
   
