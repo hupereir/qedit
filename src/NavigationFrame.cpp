@@ -49,6 +49,9 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   layout()->setMargin(2);
   layout()->setSpacing(2);
 
+  // fading mode
+  // transitionWidget().setMode( TransitionWidget::FADE_SECOND );
+  
   // stack widget
   addWidget( session_files_frame_ = new SessionFilesFrame(0) );  
   addWidget( recent_files_frame_ = new RecentFilesFrame(0, files) );  
