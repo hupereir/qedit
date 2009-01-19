@@ -512,6 +512,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     BASE::KeySet<TextView> views( *iter );
     BASE::KeySet<TextView>::iterator view_iter( find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
     assert( view_iter != views.end() );
+    (*view_iter)->setFile( record.file() );
     (*iter)->setActiveView( **view_iter );
     view = *view_iter;
           
@@ -528,12 +529,13 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
       
       MainWindow &window( newMainWindow() );
       view = &window.activeView();
+      view->setFile( record.file() );
       window.show();
       
     } else {
       
       // create new view
-      view = &_activeWindow().newTextView();
+      view = &_activeWindow().newTextView( record );
             
       // uniconify
       _activeWindow().uniconify();
@@ -543,7 +545,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
   }
   
   // assign file
-  view->setFile( record.file() );
+  //view->setFile( record.file() );
   qApp->processEvents();
   
   return true;

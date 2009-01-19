@@ -177,7 +177,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   
 
   //! create new TextView
-  TextView& newTextView( void );
+  TextView& newTextView( FileRecord record = FileRecord() );
 
   //! active view
   TextView& activeView( void )

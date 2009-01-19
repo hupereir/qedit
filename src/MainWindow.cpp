@@ -220,21 +220,24 @@ MainWindow::~MainWindow( void )
 { Debug::Throw( "MainWindow::~MainWindow.\n" ); }
 
 //___________________________________________________________
-TextView& MainWindow::newTextView( void )
+TextView& MainWindow::newTextView( FileRecord record )
 { 
   Debug::Throw( "MainWindow::newTextView.\n" );
 
   // create new view and add to this file
   TextView* view = new TextView( this );
   BASE::Key::associate( this, view );
-
-  // add to stack and set active
-  _stack().addWidget( view );
-  setActiveView( *view );
-  
+   
   // connections
   _connectView( *view );
   
+  // open file if valid
+  if( record.file().exists() ) view->setFile( record.file() );
+  
+  // add to stack and set active
+  _stack().addWidget( view );
+  setActiveView( *view );
+ 
   return *view;
   
 }
@@ -258,7 +261,10 @@ void MainWindow::setActiveView( TextView& view )
   
   // update stack if needed
   if( _stack().currentWidget() !=  &activeView() ) 
-  { _stack().setCurrentWidget( &activeView() ); }
+  { 
+    _stack().transitionWidget().setMode( BASE::KeySet<TextDisplay>( &activeView() ).size() > 1 ? TransitionWidget::FADE_BOTH:TransitionWidget::FADE_SECOND );
+    _stack().setCurrentWidget( &activeView() ); 
+  }
 
   // update displays, actions, etc.
   if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
