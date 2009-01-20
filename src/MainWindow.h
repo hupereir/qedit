@@ -35,12 +35,12 @@
 #include <QBasicTimer>
 #include <QCloseEvent>
 #include <QSplitter>
+#include <QStackedWidget>
 #include <QTimerEvent>
 
 #include <list>
 #include <string>
 
-#include "AnimatedStackedWidget.h"
 #include "BaseMainWindow.h"
 #include "Config.h"
 #include "Counter.h"
@@ -56,6 +56,7 @@ class StatusBar;
 class BaseFindDialog;
 class ReplaceDialog;
 class SelectLineDialog;
+class TransitionWidget;
 
 //! editor main window
 class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
@@ -389,11 +390,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   virtual void timerEvent( QTimerEvent* );
   
   private slots:
-  
-  //! check TextViews
-  /*! close window if no more text views */
-  // void _checkViews( void );
-  
+    
   //! update configuration
   void _updateConfiguration( void );
  
@@ -532,6 +529,9 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   //! display cursor position in state window
   void _updateCursorPosition( void );
 
+  //! animations
+  void _animationFinished( void );
+  
   private:
 
   //! install actions
@@ -575,12 +575,13 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   QString _htmlString( const int& );
   
   //! stack windget
-  AnimatedStackedWidget& _stack( void ) const
-  { 
-    assert( stack_ );
-    return *stack_; 
-  }
+  QStackedWidget& _stack( void ) const
+  { return *stack_; }
     
+  //! transition widget
+  TransitionWidget& _transitionWidget( void ) const
+  { return *transition_widget_; }
+  
   //!@name child widgets
   //@{
 
@@ -588,7 +589,10 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   Menu* menu_;
   
   //! stack widget
-  AnimatedStackedWidget* stack_;
+  QStackedWidget* stack_;
+  
+  //! transition widget
+  TransitionWidget* transition_widget_;
   
   //! navigation window
   NavigationFrame* navigation_frame_;

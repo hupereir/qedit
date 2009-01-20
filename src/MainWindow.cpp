@@ -57,6 +57,7 @@
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
 #include "Icons.h"
+#include "InformationDialog.h"
 #include "MainWindow.h"
 #include "Menu.h"
 #include "NavigationFrame.h"
@@ -65,7 +66,6 @@
 #include "PixmapEngine.h"
 #include "PrintDialog.h"
 #include "QtUtil.h"
-#include "InformationDialog.h"
 #include "QuestionDialog.h"
 #include "RecentFilesFrame.h"
 #include "ReplaceDialog.h"
@@ -76,6 +76,7 @@
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
+#include "TransitionWidget.h"
 #include "WindowServer.h"
 #include "WindowTitle.h"
 #include "XmlOptions.h"
@@ -131,11 +132,17 @@ MainWindow::MainWindow(  QWidget* parent ):
   connect( &navigationFrame().recentFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
   
   // insert stack widget
-  splitter->addWidget( stack_ = new AnimatedStackedWidget(0) );
-  _stack().transitionWidget().setMode( TransitionWidget::FADE_SECOND );
+  splitter->addWidget( stack_ = new QStackedWidget(0) );
   _stack().layout()->setMargin(2);
   
   connect( &_stack(), SIGNAL( widgetRemoved( int ) ), SLOT( _activeViewChanged() ) );
+  
+  // transition widget
+  transition_widget_ = new TransitionWidget( this );
+  _transitionWidget().setMode( TransitionWidget::FADE_FIRST );
+  _transitionWidget().hide();
+  connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), &_transitionWidget(), SLOT( hide() ) );
+  connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
   
   // create first text view
   newTextView();
@@ -262,8 +269,18 @@ void MainWindow::setActiveView( TextView& view )
   // update stack if needed
   if( _stack().currentWidget() !=  &activeView() ) 
   { 
-    _stack().transitionWidget().setMode( BASE::KeySet<TextDisplay>( &activeView() ).size() > 1 ? TransitionWidget::FADE_BOTH:TransitionWidget::FADE_SECOND );
+    
+    if( _transitionWidget().enabled() )
+    {
+      _transitionWidget().resize( _stack().size() );
+      _transitionWidget().setStartWidget( &_stack() );
+      _transitionWidget().setParent( &activeView() );
+      _transitionWidget().show();
+    }
+
     _stack().setCurrentWidget( &activeView() ); 
+    if( _transitionWidget().enabled() ) { _transitionWidget().start(); }
+    
   }
 
   // update displays, actions, etc.
@@ -839,6 +856,10 @@ void MainWindow::_updateCursorPosition( void )
 
   return;
 }
+
+//_____________________________________________
+void MainWindow::_animationFinished( void )
+{ _transitionWidget().setParent( this ); }
 
 //___________________________________________________________
 void MainWindow::_installActions( void )
