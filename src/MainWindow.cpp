@@ -35,6 +35,7 @@
 #include <QObjectList>
 #include <QPrinter>
 
+#include "AnimatedLineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
 #include "BlockDelimiterDisplay.h"
@@ -42,7 +43,6 @@
 #include "Config.h"
 #include "CustomFileDialog.h"
 #include "CustomToolButton.h"
-#include "LineEditor.h"
 #include "Command.h"
 #include "CustomToolBar.h"
 #include "Debug.h"
@@ -139,9 +139,8 @@ MainWindow::MainWindow(  QWidget* parent ):
   
   // transition widget
   transition_widget_ = new TransitionWidget( this );
-  _transitionWidget().setFadingMode( TransitionWidget::FADE_FIRST );
-  _transitionWidget().setCopyMode( TransitionWidget::GRAB );
   _transitionWidget().hide();
+  
   connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), &_transitionWidget(), SLOT( hide() ) );
   connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
   
@@ -158,7 +157,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   setStatusBar( statusbar_ = new StatusBar( this ) );
 
   // create "hidden" line editor to display filename
-  statusbar_->addPermanentWidget( file_editor_ = new LineEditor( statusbar_ ), 1 );
+  statusbar_->addPermanentWidget( file_editor_ = new AnimatedLineEditor( statusbar_ ), 1 );
   statusbar_->addLabels( 3, 0 );
   statusbar_->label(0).setAlignment( Qt::AlignCenter ); 
   statusbar_->label(1).setAlignment( Qt::AlignCenter ); 
@@ -388,7 +387,6 @@ void MainWindow::findFromDialog( void )
   {
     const int max_length( 1024 );
     text = text.left( max_length );
-    Debug::Throw(0) << "TextEditor::_findFromDialog - text: " << qPrintable( text ) << endl;
     _findDialog().setText( text );
   }
 
