@@ -376,10 +376,21 @@ void MainWindow::findFromDialog( void )
   _findDialog().clearLabel();
 
   // set default text
+  // update find text
   QString text;
-  if( !( text = qApp->clipboard()->text( QClipboard::Selection) ).isEmpty() ) _findDialog().setText( text );
-  else if( activeDisplay().textCursor().hasSelection() ) _findDialog().setText( activeDisplay().textCursor().selectedText() );
-  else if( !( text = TextDisplay::lastSelection().text() ).isEmpty() ) _findDialog().setText( text );
+  if( ( text = qApp->clipboard()->text( QClipboard::Selection) ).isEmpty() )
+  {
+    if( activeDisplay().textCursor().hasSelection() ) text = activeDisplay().textCursor().selectedText();
+    else text = TextDisplay::lastSelection().text();
+  }
+  
+  if( !text.isEmpty() )
+  {
+    const int max_length( 1024 );
+    text = text.left( max_length );
+    Debug::Throw(0) << "TextEditor::_findFromDialog - text: " << qPrintable( text ) << endl;
+    _findDialog().setText( text );
+  }
 
   // changes focus
   _findDialog().activateWindow();
