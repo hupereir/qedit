@@ -36,6 +36,7 @@
 #include <QScrollBar>
 #include <QTextLayout>
 
+#include "AnimatedTabWidget.h"
 #include "Application.h"
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
