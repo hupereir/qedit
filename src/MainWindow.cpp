@@ -139,7 +139,8 @@ MainWindow::MainWindow(  QWidget* parent ):
   
   // transition widget
   transition_widget_ = new TransitionWidget( this );
-  _transitionWidget().setMode( TransitionWidget::FADE_FIRST );
+  _transitionWidget().setFadingMode( TransitionWidget::FADE_FIRST );
+  _transitionWidget().setCopyMode( TransitionWidget::GRAB );
   _transitionWidget().hide();
   connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), &_transitionWidget(), SLOT( hide() ) );
   connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
