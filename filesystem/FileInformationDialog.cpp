@@ -33,6 +33,7 @@
 #include <QCheckBox>
 #include <QPushButton>
 
+#include "AnimatedTabWidget.h"
 #include "BaseIcons.h"
 #include "CustomPixmap.h"
 #include "GridLayout.h"
@@ -58,7 +59,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
   layout()->setSpacing(10);
   layout()->setMargin(10);
 
-  tab_widget_ = new QTabWidget( this );
+  tab_widget_ = new AnimatedTabWidget( this );
   layout()->addWidget( &tabWidget() );
   Debug::Throw( "FileInformationDialog::FileInformationDialog - tabWidget booked.\n" );
     

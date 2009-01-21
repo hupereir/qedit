@@ -34,7 +34,7 @@
 #include "BaseDialog.h"
 #include "FileRecord.h"
 
-#include <QTabWidget>
+class AnimatedTabWidget;
 
 //! file informations
 class FileInformationDialog: public BaseDialog
@@ -47,13 +47,13 @@ class FileInformationDialog: public BaseDialog
 
   //! tab widget
   /*! needed for customization */
-  QTabWidget& tabWidget( void ) const
+  AnimatedTabWidget& tabWidget( void ) const
   { return *tab_widget_; }
   
   private:
   
   //! tab widget
-  QTabWidget* tab_widget_;
+  AnimatedTabWidget* tab_widget_;
   
 };
 
