@@ -865,6 +865,7 @@ void MainWindow::_updateCursorPosition( void )
 //_____________________________________________
 void MainWindow::_animationFinished( void )
 { 
+  Debug::Throw( "MainWindow::_animationFinished.\n" );
   _transitionWidget().setParent( this );
   _transitionWidget().hide();
 

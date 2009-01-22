@@ -49,7 +49,6 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
   //! constructor
   AutoSaveThread( QObject* reciever ):
     Counter( "AutoSaveThread" ),
-    reciever_( reciever ),
     file_changed_( true ),
     contents_changed_( true )
   { Debug::Throw( "AutoSaveThread::AutoSaveThread.\n" ); }
@@ -75,10 +74,7 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
   static File autoSaveName( const File& file );
   
   private:
- 
-  //! reciever object for posted events
-  QObject* reciever_;
-  
+   
   //! filename where data is to be saved
   File file_;
   
