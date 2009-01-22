@@ -136,7 +136,7 @@ unsigned int TextView::independentDisplayCount( void )
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {     
     // increment if no associated display is found in the already processed displays
-    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++;
+    if( find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++;
   }
   
   return out;
@@ -153,7 +153,7 @@ unsigned int TextView::modifiedDisplayCount( void )
     // increment if no associated display is found in the already processed displays
     // and if current is modified
     if( 
-      std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter && 
+      find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter && 
       (*iter)->document()->isModified() )
     { out++; }
   }
@@ -172,7 +172,7 @@ bool TextView::selectDisplay( const File& file )
   if( TextDisplay::SameFileFTor( file )( &activeDisplay() ) ) return true;
   
   BASE::KeySet<TextDisplay> displays( this );
-  BASE::KeySet<TextDisplay>::iterator iter( std::find_if(
+  BASE::KeySet<TextDisplay>::iterator iter( find_if(
     displays.begin(),
     displays.end(),
     TextDisplay::SameFileFTor( file ) ) );
@@ -193,7 +193,7 @@ void TextView::closeActiveDisplay( void )
 //________________________________________________________________
 void TextView::setActiveDisplay( TextDisplay& display )
 { 
-  Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << std::endl;
+  Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << endl;
   assert( display.isAssociated( this ) );
   
   if( active_display_ != &display )
@@ -209,6 +209,8 @@ void TextView::setActiveDisplay( TextDisplay& display )
   {
 
     BASE::KeySet<TextDisplay> displays( this );
+    displays.erase( &activeDisplay() );
+    
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     { (*iter)->setActive( false ); }
     
@@ -441,7 +443,7 @@ void TextView::rehighlight( void )
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
     // this trick allow to run the rehighlight only once per set of associated displays
-    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) (*iter)->rehighlight();
+    if( find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) (*iter)->rehighlight();
   }
 
   return;
@@ -519,7 +521,7 @@ void TextView::enterEvent( QEvent* e )
   {
 
     // this trick allow to run only once per set of displays associated to the same file
-    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
+    if( find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
     
     // keep local reference of current display
     TextDisplay &display( **iter );

@@ -140,7 +140,6 @@ MainWindow::MainWindow(  QWidget* parent ):
   // transition widget
   transition_widget_ = new TransitionWidget( this );
   _transitionWidget().hide();
-  
   connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
   
   // create first text view
@@ -278,14 +277,11 @@ void MainWindow::setActiveView( TextView& view )
     }
 
     _stack().setCurrentWidget( &activeView() ); 
-    if( _transitionWidget().isEnabled() && isVisible() ) { _transitionWidget().start(); }
     
-  }
-
-  // update displays, actions, etc.
-  if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
-  { _update( TextDisplay::ACTIVE_VIEW_CHANGED ); }
-
+    if( _transitionWidget().isEnabled() && isVisible() ) { _transitionWidget().start(); }
+    else _animationFinished();
+  } else _animationFinished();
+  
 }
 
 
@@ -871,6 +867,11 @@ void MainWindow::_animationFinished( void )
 { 
   _transitionWidget().setParent( this );
   _transitionWidget().hide();
+
+  // update displays, actions, etc.
+  if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
+  { _update( TextDisplay::ACTIVE_VIEW_CHANGED ); }
+
 }
 
 //___________________________________________________________
