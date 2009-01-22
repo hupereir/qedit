@@ -35,7 +35,7 @@
 #include <QObjectList>
 #include <QPrinter>
 
-#include "AnimatedLineEditor.h"
+#include "LineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
 #include "BlockDelimiterDisplay.h"
@@ -141,7 +141,6 @@ MainWindow::MainWindow(  QWidget* parent ):
   transition_widget_ = new TransitionWidget( this );
   _transitionWidget().hide();
   
-  connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), &_transitionWidget(), SLOT( hide() ) );
   connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
   
   // create first text view
@@ -157,7 +156,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   setStatusBar( statusbar_ = new StatusBar( this ) );
 
   // create "hidden" line editor to display filename
-  statusbar_->addPermanentWidget( file_editor_ = new AnimatedLineEditor( statusbar_ ), 1 );
+  statusbar_->addPermanentWidget( file_editor_ = new LineEditor( statusbar_ ), 1 );
   statusbar_->addLabels( 3, 0 );
   statusbar_->label(0).setAlignment( Qt::AlignCenter ); 
   statusbar_->label(1).setAlignment( Qt::AlignCenter ); 
@@ -869,7 +868,10 @@ void MainWindow::_updateCursorPosition( void )
 
 //_____________________________________________
 void MainWindow::_animationFinished( void )
-{ _transitionWidget().setParent( this ); }
+{ 
+  _transitionWidget().setParent( this );
+  _transitionWidget().hide();
+}
 
 //___________________________________________________________
 void MainWindow::_installActions( void )
