@@ -44,7 +44,7 @@
 #include "FileSystemThread.h"
 
 class CustomComboBox;
-class TreeView;
+class AnimatedTreeView;
 
 //! customized ListView for file/directory navigation
 class FileSystemFrame: public QWidget, public Counter
@@ -157,7 +157,7 @@ class FileSystemFrame: public QWidget, public Counter
   void _restoreSelection( void );
   
   private:
-  
+    
   //! path comboBox
   CustomComboBox& _comboBox( void ) const 
   { 
@@ -170,7 +170,7 @@ class FileSystemFrame: public QWidget, public Counter
   { return model_; }
   
   //! list
-  TreeView& _list( void ) const
+  AnimatedTreeView& _list( void ) const
   {
     assert( list_ );
     return *list_; 
@@ -227,8 +227,8 @@ class FileSystemFrame: public QWidget, public Counter
   FileSystemModel model_;
   
   //! list of files
-  TreeView* list_;
-
+  AnimatedTreeView* list_;
+  
   //! current path
   File path_;
         

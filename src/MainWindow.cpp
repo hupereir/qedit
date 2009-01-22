@@ -269,7 +269,7 @@ void MainWindow::setActiveView( TextView& view )
   if( _stack().currentWidget() !=  &activeView() ) 
   { 
     
-    if( _transitionWidget().enabled() )
+    if( _transitionWidget().isEnabled() && isVisible() )
     {
       _transitionWidget().resize( _stack().size() );
       _transitionWidget().setStartWidget( &_stack() );
@@ -278,7 +278,7 @@ void MainWindow::setActiveView( TextView& view )
     }
 
     _stack().setCurrentWidget( &activeView() ); 
-    if( _transitionWidget().enabled() ) { _transitionWidget().start(); }
+    if( _transitionWidget().isEnabled() && isVisible() ) { _transitionWidget().start(); }
     
   }
 

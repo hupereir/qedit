@@ -34,6 +34,7 @@
 #include <QLayout>
 #include <QDir>
 
+#include "AnimatedTreeView.h"
 #include "FileSystemIcons.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
@@ -46,8 +47,6 @@
 #include "RemoveFilesDialog.h"
 #include "RenameFileDialog.h"
 #include "Singleton.h"
-#include "TextEditor.h"
-#include "TreeView.h"
 #include "Util.h"
 #include "XmlOptions.h"
 
@@ -89,7 +88,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   connect( _comboBox().lineEdit(), SIGNAL(returnPressed()), SLOT( _updatePath( void ) ) );
   
   // file list
-  layout->addWidget( list_ = new TreeView( this ), 1);
+  layout->addWidget( list_ = new AnimatedTreeView( this ), 1);
   _list().setModel( &_model() );
   _list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
   _list().setMaskOptionName( "FILE_SYSTEM_LIST_MASK" );
@@ -138,12 +137,18 @@ void FileSystemFrame::setPath( File path )
 {
 
   Debug::Throw() << "FileSystemFrame::setPath - path: " << path << endl;
-
+  
+  // update path
   assert( path.isDirectory() );
   path_ = path;
   history_.add( path );
     
+  // transition
+  _list().initializeAnimation();
   _update();
+  
+  _list().startAnimation();
+  
   _updateNavigationActions();
   
   // update combobox
