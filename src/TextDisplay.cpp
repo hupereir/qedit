@@ -93,7 +93,7 @@ QRegExp& TextDisplay::_emptyLineRegExp( void )
 
 //___________________________________________________
 TextDisplay::TextDisplay( QWidget* parent ):
-  TextEditor( parent ),
+  AnimatedTextEditor( parent ),
   file_( "" ),
   working_directory_( Util::workingDirectory() ),
   
@@ -174,7 +174,7 @@ int TextDisplay::blockCount( const QTextBlock& block ) const
   QTextBlockFormat block_format( block.blockFormat() );
   if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
   {  return block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount(); }
-  else return TextEditor::blockCount( block );
+  else return AnimatedTextEditor::blockCount( block );
   
 }
 
@@ -210,7 +210,7 @@ void TextDisplay::setReadOnly( const bool& value )
   Debug::Throw() << "TextDisplay::setReadOnly - value: " << value << endl;
   
   bool changed = (value != isReadOnly() );
-  TextEditor::setReadOnly( value );
+  AnimatedTextEditor::setReadOnly( value );
   
   if( changed && isActive() ) emit needUpdate( READ_ONLY );
 }
@@ -229,8 +229,7 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
 
   // retrieve default context menu
   // second argument is to remove un-necessary actions
-  // TextEditor::installContextMenuActions( menu, all_actions );
-  TextEditor::installContextMenuActions( menu, false );
+  AnimatedTextEditor::installContextMenuActions( menu, false );
   
   // add specific actions
   menu.insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
@@ -267,7 +266,7 @@ void TextDisplay::synchronize( TextDisplay* display )
   when changing the document */
 
   // base class synchronization
-  TextEditor::synchronize( display );
+  AnimatedTextEditor::synchronize( display );
 
   // restore connection with document
   // track contents changed for syntax highlighting
@@ -691,8 +690,7 @@ void TextDisplay::revertToSave( void )
 
   // store cursor position but remove selection
   int position( textCursor().position() );
-
-  setUpdatesEnabled( false );
+  
   setModified( false );
   setFile( file(), false );
 
@@ -707,7 +705,6 @@ void TextDisplay::revertToSave( void )
   QTextCursor cursor( textCursor() );
   cursor.setPosition( position );
   setTextCursor( cursor );
-  setUpdatesEnabled( true );
 
 }
 
@@ -733,7 +730,7 @@ QString TextDisplay::toPlainText( void ) const
   
   // check blockDelimiterAction
   if( !( showBlockDelimiterAction().isEnabled() && showBlockDelimiterAction().isChecked() ) ) 
-  { return TextEditor::toPlainText(); }
+  { return AnimatedTextEditor::toPlainText(); }
   
   // output string
   QString out;
@@ -1205,7 +1202,7 @@ void TextDisplay::rehighlight( void )
 void TextDisplay::clearAllTags( const int& flags )
 {
 
-  Debug::Throw( "TextEditor::clearAllTags.\n" );
+  Debug::Throw( "AnimatedTextEditor::clearAllTags.\n" );
   for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
   { clearTag( block, flags ); }
 
@@ -1284,7 +1281,7 @@ bool TextDisplay::event( QEvent* event )
     default: break;
   }
   
-  return TextEditor::event( event );
+  return AnimatedTextEditor::event( event );
   
 }
 
@@ -1302,7 +1299,7 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
   {
     
     // process key
-    TextEditor::keyPressEvent( event );
+    AnimatedTextEditor::keyPressEvent( event );
     
     // indent current paragraph when return is pressed
     if( indent_->isEnabled() && event->key() == Qt::Key_Return && !textCursor().hasSelection() )
@@ -1322,12 +1319,12 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
 void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 {
 
-  Debug::Throw( "TextEditor::contextMenuEvent.\n" );
+  Debug::Throw( "AnimatedTextEditor::contextMenuEvent.\n" );
 
   if( _autoSpellContextEvent( event ) ) return;
   else {
     
-    TextEditor::contextMenuEvent( event );
+    AnimatedTextEditor::contextMenuEvent( event );
     return;
     
   }
@@ -1337,7 +1334,7 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 //________________________________________________
 void TextDisplay::paintEvent( QPaintEvent* event )
 {
-  TextEditor::paintEvent( event );
+  AnimatedTextEditor::paintEvent( event );
   
   // handle block background
   QTextBlock first( cursorForPosition( event->rect().topLeft() ).block() );
@@ -1365,7 +1362,7 @@ void TextDisplay::paintEvent( QPaintEvent* event )
 //________________________________________________
 bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 {
-  Debug::Throw( "TextEditor::_autoSpellContextEvent.\n" );
+  Debug::Throw( "TextDisplay::_autoSpellContextEvent.\n" );
 
   #if WITH_ASPELL
 
@@ -1615,7 +1612,7 @@ bool TextDisplay::_updateMargins( void )
 {
   Debug::Throw( "TextDisplay::_updateMargins.\n" );
 
-  TextEditor::_updateMargins();
+  AnimatedTextEditor::_updateMargins();
   int left_margin( _leftMargin() );
   
   blockDelimiterDisplay().setOffset( left_margin );
@@ -1630,7 +1627,7 @@ bool TextDisplay::_updateMargins( void )
 //__________________________________________________________
 void TextDisplay::_drawMargins( QPainter& painter )
 {
-  TextEditor::_drawMargins( painter );
+  AnimatedTextEditor::_drawMargins( painter );
   bool has_block_delimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
   if( has_block_delimiters ) blockDelimiterDisplay().paint( painter ); 
 }
@@ -1640,7 +1637,7 @@ bool TextDisplay::_toggleWrapMode( bool state )
 {
   
   Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "true":"false") << endl;
-  if( !TextEditor::_toggleWrapMode( state ) ) return false;
+  if( !AnimatedTextEditor::_toggleWrapMode( state ) ) return false;
   
   if( !( file().empty() || isNewDocument() ) )
   { _recentFiles().get( file() ).addProperty( wrap_property_id_, Str().assign<bool>(state) ); }
@@ -2155,7 +2152,7 @@ void TextDisplay::_fileProperties( void )
   
   // number of lines
   grid_layout->addWidget( new QLabel( "number of lines: ", box ) );
-  grid_layout->addWidget( new QLabel( Str().assign<int>(TextEditor::blockCount()).c_str(), box ) );
+  grid_layout->addWidget( new QLabel( Str().assign<int>(AnimatedTextEditor::blockCount()).c_str(), box ) );
   
   grid_layout->addWidget( new QLabel( "Current paragraph highlighting: ", box ) );
   grid_layout->addWidget( new QLabel( (blockHighlightAction().isChecked() ? "true":"false" ), box ) );
@@ -2464,7 +2461,7 @@ void TextDisplay::_previousTag( void )
 void TextDisplay::_clearTag( void )
 {
 
-  Debug::Throw( "TextEditor::_clearTag.\n" );
+  Debug::Throw( "AnimatedTextEditor::_clearTag.\n" );
 
   vector<QTextBlock> blocks;
   QTextCursor cursor( textCursor() );

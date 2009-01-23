@@ -35,13 +35,13 @@
 #include <QRegExp>
 #include <QAction>
 
+#include "AnimatedTextEditor.h"
 #include "AskForSaveDialog.h"
 #include "BlockDelimiter.h"
 #include "FileList.h"
 #include "FileModifiedDialog.h"
 #include "FileRemovedDialog.h"
 #include "Config.h"
-#include "TextEditor.h"
 #include "Debug.h"
 #include "FileRecord.h"
 #include "HighlightBlockFlags.h"
@@ -64,7 +64,7 @@ class HighlightBlockData;
 class TextHighlight;
 
 //! text display window
-class TextDisplay: public TextEditor
+class TextDisplay: public AnimatedTextEditor
 {
   
   //! Qt meta object declaration
@@ -588,7 +588,7 @@ class TextDisplay: public TextEditor
   //! update action status
   virtual void _updateSelectionActions( bool state )
   { 
-    TextEditor::_updateSelectionActions( state );
+    AnimatedTextEditor::_updateSelectionActions( state );
     emit needUpdate( CUT|COPY );
   }
   
@@ -596,7 +596,7 @@ class TextDisplay: public TextEditor
   /*! depends on clipboard status and editability */
   virtual void _updatePasteAction( void )
   {
-    TextEditor::_updatePasteAction();
+    AnimatedTextEditor::_updatePasteAction();
     emit needUpdate( PASTE );
   }
   
