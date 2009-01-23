@@ -1281,14 +1281,6 @@ bool TextDisplay::event( QEvent* event )
     if( has_block_delimiters ) blockDelimiterDisplay().mousePressEvent( static_cast<QMouseEvent*>( event ) );
     break;
     
-    case QEvent::Wheel:
-    {
-      QWheelEvent *wheel_event( static_cast<QWheelEvent*>(event) );
-      if( QRect( frameWidth(),  frameWidth(), _leftMargin(), height() ).contains( wheel_event->pos() ) )
-      { qApp->sendEvent( viewport(), event ); }
-      return false;
-    }
-    
     default: break;
   }
   

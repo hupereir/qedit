@@ -136,9 +136,7 @@ void BlockDelimiterDisplay::updateCurrentBlockActionState( void )
 //__________________________________________
 void BlockDelimiterDisplay::paint( QPainter& painter )
 {  
-  
-  Debug::Throw( "BlockDelimiterDisplay::paint.\n" );;
-      
+        
   // check delimiters
   if( delimiters_.empty() ) return;
   
