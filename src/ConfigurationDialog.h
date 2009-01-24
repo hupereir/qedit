@@ -1,3 +1,6 @@
+#ifndef _ConfigurationDialog_h_
+#define _ConfigurationDialog_h_
+
 // $Id$
 /******************************************************************************
 *                         
@@ -28,9 +31,6 @@
   \date $Date$
 */
 
-#ifndef _ConfigurationDialog_h_
-#define _ConfigurationDialog_h_
-
 #include "BaseConfigurationDialog.h"
 
 class OptionCheckBox;
@@ -42,7 +42,7 @@ class ConfigurationDialog: public BaseConfigurationDialog
   public:
     
   //! creator
-  ConfigurationDialog( QWidget *parent );
+  ConfigurationDialog( QWidget *parent = 0 );
   
 };
 
