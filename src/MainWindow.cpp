@@ -278,7 +278,7 @@ void MainWindow::setActiveView( TextView& view )
 
     _stack().setCurrentWidget( &activeView() ); 
     
-    if( _transitionWidget().isEnabled() && isVisible() ) { _transitionWidget().start(); }
+    if( _transitionWidget().isEnabled() && isVisible() ) _transitionWidget().start(); 
     else _animationFinished();
   } else _animationFinished();
   
