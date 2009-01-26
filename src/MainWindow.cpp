@@ -202,7 +202,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   toolbar->addAction( &spellcheckAction() ); 
   
   // splitting toolbar
-  toolbar = new CustomToolBar( "Multiple displays", this, "SPLIT_TOOLBAR" );
+  toolbar = new CustomToolBar( "Multiple Displays", this, "SPLIT_TOOLBAR" );
   toolbar->addAction( &splitDisplayHorizontalAction() ); 
   toolbar->addAction( &splitDisplayVerticalAction() ); 
   toolbar->addAction( &openHorizontalAction() ); 

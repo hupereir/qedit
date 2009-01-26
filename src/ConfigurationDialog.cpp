@@ -228,12 +228,12 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->addWidget( new QLabel( "Visibility", box ) );
   grid_layout->addWidget( new QLabel( "Location", box ) );
 
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "Main toolbar", box, "FILE_TOOLBAR" ) );
+  grid_layout->addWidget( checkbox = new OptionCheckBox( "Main Toolbar", box, "FILE_TOOLBAR" ) );
   grid_layout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "FILE_TOOLBAR_LOCATION" ) );
   addOptionWidget( checkbox );
   addOptionWidget( combobox );
 
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "Edition toolbar", box, "EDITION_TOOLBAR" ));
+  grid_layout->addWidget( checkbox = new OptionCheckBox( "Edition Toolbar", box, "EDITION_TOOLBAR" ));
   grid_layout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "EDITION_TOOLBAR_LOCATION" ));
   addOptionWidget( checkbox );
   addOptionWidget( combobox );
@@ -243,7 +243,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( checkbox );
   addOptionWidget( combobox );
 
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "Multiple views toolbar", box, "SPLIT_TOOLBAR" ));
+  grid_layout->addWidget( checkbox = new OptionCheckBox( "Multiple views Toolbar", box, "SPLIT_TOOLBAR" ));
   grid_layout->addWidget( new CustomToolBar::LocationComboBox( box, "SPLIT_TOOLBAR_LOCATION" ));
   addOptionWidget( checkbox );
   addOptionWidget( combobox );
