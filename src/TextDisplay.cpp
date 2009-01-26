@@ -1636,7 +1636,7 @@ void TextDisplay::_drawMargins( QPainter& painter )
 bool TextDisplay::_toggleWrapMode( bool state )
 {
   
-  Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "True":"false") << endl;
+  Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "True":"False") << endl;
   if( !AnimatedTextEditor::_toggleWrapMode( state ) ) return false;
   
   if( !( file().empty() || isNewDocument() ) )
@@ -2147,30 +2147,30 @@ void TextDisplay::_fileProperties( void )
   layout->addLayout( grid_layout );
   
   // number of characters
-  grid_layout->addWidget( new QLabel( "number of characters: ", box ) );
+  grid_layout->addWidget( new QLabel( "Number of characters: ", box ) );
   grid_layout->addWidget( new QLabel( Str().assign<int>(toPlainText().size()).c_str(), box ) );
   
   // number of lines
-  grid_layout->addWidget( new QLabel( "number of lines: ", box ) );
+  grid_layout->addWidget( new QLabel( "Number of lines: ", box ) );
   grid_layout->addWidget( new QLabel( Str().assign<int>(AnimatedTextEditor::blockCount()).c_str(), box ) );
   
   grid_layout->addWidget( new QLabel( "Current paragraph highlighting: ", box ) );
-  grid_layout->addWidget( new QLabel( (blockHighlightAction().isChecked() ? "True":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (blockHighlightAction().isChecked() ? "True":"False" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Text highlighting: ", box ) );
-  grid_layout->addWidget( new QLabel( (textHighlight().isHighlightEnabled() ? "True":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (textHighlight().isHighlightEnabled() ? "True":"False" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Matching parenthesis highlighting: ", box ) );
-  grid_layout->addWidget( new QLabel( (textHighlight().isParenthesisEnabled() ? "True":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (textHighlight().isParenthesisEnabled() ? "True":"False" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Text indent: ", box ) );
-  grid_layout->addWidget( new QLabel( (textIndent().isEnabled() ? "True":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (textIndent().isEnabled() ? "True":"False" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Text wrapping: ", box ) );
-  grid_layout->addWidget( new QLabel( (wrapModeAction().isChecked() ? "True":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (wrapModeAction().isChecked() ? "True":"False" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Tab emulation: ", box ) );
-  grid_layout->addWidget( new QLabel( (tabEmulationAction().isChecked() ? "True":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (tabEmulationAction().isChecked() ? "True":"False" ), box ) );
   
   grid_layout->setColumnStretch( 1, 1 );
   

@@ -155,7 +155,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
   Debug::Throw( "FileInformationDialog::FileInformationDialog - General tab filled.\n" );
   
   // permissions tab
-  tabWidget().addTab( box = new QWidget(), "Permissions" );
+  tabWidget().addTab( box = new QWidget(), "&Permissions" );
   layout = new QVBoxLayout();
   layout->setMargin(5);
   layout->setSpacing( 5 );
