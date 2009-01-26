@@ -48,7 +48,7 @@
 #include "Key.h"
 #include "TextView.h"
 
-class LineEditor;
+class AnimatedLineEditor;
 class Menu;
 class NavigationFrame;
 class StatusBar;
@@ -604,7 +604,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   StatusBar* statusbar_;
 
   //! file display lineEdit
-  LineEditor* file_editor_;
+  AnimatedLineEditor* file_editor_;
    
   //@}
     

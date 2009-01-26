@@ -35,7 +35,7 @@
 #include <QObjectList>
 #include <QPrinter>
 
-#include "LineEditor.h"
+#include "AnimatedLineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
 #include "BlockDelimiterDisplay.h"
@@ -160,7 +160,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   setStatusBar( statusbar_ = new StatusBar( this ) );
 
   // create "Hidden" line editor to display filename
-  statusbar_->addPermanentWidget( file_editor_ = new LineEditor( statusbar_ ), 1 );
+  statusbar_->addPermanentWidget( file_editor_ = new AnimatedLineEditor( statusbar_ ), 1 );
   statusbar_->addLabels( 3, 0 );
   statusbar_->label(0).setAlignment( Qt::AlignCenter ); 
   statusbar_->label(1).setAlignment( Qt::AlignCenter ); 
