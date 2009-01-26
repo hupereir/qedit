@@ -79,7 +79,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
   
   // session files
   addWidget( button = _newToolButton( this,  IconEngine::get( ICONS::DOCUMENTS ) ) );  
-  button->setText( " &Session files" );
+  button->setText( " &Session Files" );
   button->setToolTip( "Files currently opened" );
   button->setChecked( true );
   
@@ -88,7 +88,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
   
   // recent files
   addWidget( button = _newToolButton( this, IconEngine::get( ICONS::HISTORY ) ) );
-  button->setText( " &Recent files" );
+  button->setText( " &Recent Files" );
   button->setToolTip( "Files recently opened" );
   
   button_group->addButton( button );
@@ -96,7 +96,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
 
   // file system
   addWidget( button = _newToolButton( this, IconEngine::get( ICONS::FILESYSTEM ) ) );
-  button->setText( " &File system" );
+  button->setText( " &File System" );
   button->setToolTip( "File system browser" );
 
   button_group->addButton( button );
