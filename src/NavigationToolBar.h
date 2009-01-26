@@ -33,6 +33,7 @@
 
 #include <assert.h>
 #include <QAbstractButton>
+#include <QContextMenuEvent>
 #include <map>
 
 #include "IconSize.h"
@@ -63,6 +64,11 @@ class NavigationToolBar: public CustomToolBar
   //! set target 
   void connect( NavigationFrame& );       
   
+  protected:
+  
+  //! context menu
+  virtual void contextMenuEvent( QContextMenuEvent* );
+  
   private slots:
   
   //! update configuration
@@ -82,10 +88,6 @@ class NavigationToolBar: public CustomToolBar
 
   //! display item page
   virtual void _display( QAbstractButton* );
-
-  //! raise menu
-  /*! it is a clone of the main window menu, but connected to different slots */
-  void _raiseMenu( const QPoint& point );
   
   private:
   

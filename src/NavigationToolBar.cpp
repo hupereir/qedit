@@ -56,9 +56,7 @@ NavigationToolBar::NavigationToolBar( QWidget* parent ):
   enabled_( true )
 { 
   Debug::Throw( "NavigationToolBar:NavigationToolBar.\n" ); 
-  setContextMenuPolicy( Qt::CustomContextMenu );  
   CustomToolBar::connect( this, SIGNAL( orientationChanged( Qt::Orientation ) ), SLOT( _orientationChanged( Qt::Orientation ) ) );
-  CustomToolBar::connect( this, SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _raiseMenu( const QPoint& ) ) );  
 }
 
 //_______________________________________________________________
@@ -242,9 +240,9 @@ void NavigationToolBar::_display( QAbstractButton* button )
 }
 
 //______________________________________________________________________
-void NavigationToolBar::_raiseMenu( const QPoint& point )
+void NavigationToolBar::contextMenuEvent( QContextMenuEvent* event )
 {  
-  Debug::Throw( "NavigationToolBar::_raiseMenu.\n" );
+  Debug::Throw( "NavigationToolBar::contextMenuEvent.\n" );
   
   MainWindow* mainwindow( dynamic_cast<MainWindow*>( window() ) );
   if( !mainwindow ) return;
@@ -258,8 +256,8 @@ void NavigationToolBar::_raiseMenu( const QPoint& point )
 
   // move and show menu
   menu.adjustSize();
-  QtUtil::moveWidget( &menu, mapToGlobal( point ) );
-  menu.show();
+  menu.exec( event->globalPos() );
+  menu.deleteLater();
 
 }
   
