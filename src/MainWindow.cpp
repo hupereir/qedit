@@ -862,7 +862,7 @@ void MainWindow::_updateCursorPosition( void )
   if( activeDisplay().hasBlockDelimiterDisplay() ) position.paragraph() += activeDisplay().blockDelimiterDisplay().collapsedBlockCount( position.paragraph() );
   
   statusbar_->label(1).setText( Str( "Line : " ).append<int>( position.paragraph()+1 ).c_str() , false );
-  statusbar_->label(2).setText( Str( "column : " ).append<int>( position.index()+1 ).c_str() , false );
+  statusbar_->label(2).setText( Str( "Column : " ).append<int>( position.index()+1 ).c_str() , false );
 
   return;
 }
