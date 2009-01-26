@@ -81,7 +81,7 @@ void NavigationFrame::_installActions( void )
 {
   
   Debug::Throw( "NavigationFrame::_installActions.\n" );
-  addAction( visibility_action_ = new QAction( "Show &navigation panel", this ) );
+  addAction( visibility_action_ = new QAction( "Show &Navigation Panel", this ) );
   visibility_action_->setCheckable( true );
   visibility_action_->setChecked( true );
   visibility_action_->setShortcut( Qt::Key_F5 );

@@ -513,7 +513,7 @@ void FileSystemFrame::_installActions( void )
   Debug::Throw( "FileSystemFrame::_installActions.\n" );
 
   // hidden files
-  addAction( hidden_files_action_ = new QAction( "&Show hidden files", this ) );
+  addAction( hidden_files_action_ = new QAction( "&Show Hidden Files", this ) );
   _hiddenFilesAction().setCheckable( true );
   connect( &_hiddenFilesAction(), SIGNAL( toggled( bool ) ), SLOT( _update() ) );
   connect( &_hiddenFilesAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleShowHiddenFiles( bool ) ) );
@@ -529,7 +529,7 @@ void FileSystemFrame::_installActions( void )
   _nextDirectoryAction().setToolTip( "Change path to next directory (from history)" );
   
   // parent directory in tree
-  addAction( parent_directory_action_ = new QAction( IconEngine::get( ICONS::PARENT_DIRECTORY ), "&Parent directory", this ) );
+  addAction( parent_directory_action_ = new QAction( IconEngine::get( ICONS::PARENT_DIRECTORY ), "&Parent Directory", this ) );
   connect( &_parentDirectoryAction(), SIGNAL( triggered() ), SLOT( _parentDirectory() ) );
   _parentDirectoryAction().setToolTip( "Change path to parent directory" );
   
@@ -539,7 +539,7 @@ void FileSystemFrame::_installActions( void )
   _homeDirectoryAction().setToolTip( "Change path to current file working directory" );
   
   // open
-  addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open selected files", this ) );
+  addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open Selected Files", this ) );
   connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
   _openAction().setToolTip( "Edit selected files" );
 
@@ -556,7 +556,7 @@ void FileSystemFrame::_installActions( void )
   rename_action_->setToolTip( "Change selected file name" );
 
   // file properties
-  addAction( file_properties_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File properties", this ) );
+  addAction( file_properties_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File Properties", this ) );
   file_properties_action_->setToolTip( "Display current file properties" );
   connect( file_properties_action_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
 

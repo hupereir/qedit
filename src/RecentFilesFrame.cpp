@@ -268,7 +268,7 @@ void RecentFilesFrame::_installActions( void )
   _cleanAction().setToolTip( "Clean invalid files" );
 
   // open
-  addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open selected files", this ) );
+  addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open Selected Files", this ) );
   connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
   _openAction().setToolTip( "Show selected files" );
   

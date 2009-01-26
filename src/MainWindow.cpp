@@ -904,18 +904,18 @@ void MainWindow::_installActions( void )
   open_action_->setShortcut( Qt::CTRL+Qt::Key_O );
   open_action_->setToolTip( "Open an existing file" );
   
-  addAction( open_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Clone display top/bottom", this ) );
+  addAction( open_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Clone Display Top/Bottom", this ) );
   open_horizontal_action_->setToolTip( "Open a new display vertically" );
 
-  addAction( open_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open display left/right", this ) );
+  addAction( open_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open Display Left/Right", this ) );
   open_vertical_action_->setToolTip( "Open a new display horizontally" );
   
-  addAction( close_display_action_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "&Close display", this ) );
+  addAction( close_display_action_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "&Close Display", this ) );
   close_display_action_->setShortcut( Qt::CTRL+Qt::Key_W );
   close_display_action_->setToolTip( "Close current display" );
   connect( close_display_action_, SIGNAL( triggered() ), SLOT( _closeDisplay() ) );
  
-  addAction( close_window_action_ = new QAction( IconEngine::get( ICONS::CLOSE ), "&Close window", this ) );
+  addAction( close_window_action_ = new QAction( IconEngine::get( ICONS::CLOSE ), "&Close Window", this ) );
   close_window_action_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_W );
   close_window_action_->setToolTip( "Close current display" );
   connect( close_window_action_, SIGNAL( triggered() ), SLOT( _closeWindow() ) );
@@ -930,7 +930,7 @@ void MainWindow::_installActions( void )
   save_as_action_->setToolTip( "Save current file with a different name" );
   connect( save_as_action_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
 
-  addAction( revert_to_save_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Revert to saved", this ) );
+  addAction( revert_to_save_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
   revert_to_save_action_->setToolTip( "Reload saved version of current file" );
   connect( revert_to_save_action_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
  
@@ -963,27 +963,27 @@ void MainWindow::_installActions( void )
   paste_action_->setEnabled( !qApp->clipboard()->text().isEmpty() );
   connect( paste_action_, SIGNAL( triggered() ), SLOT( _paste() ) );
 
-  addAction( file_properties_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File information", this ) );
+  addAction( file_properties_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File Information", this ) );
   file_properties_action_->setToolTip( "Display file informations" );
   file_properties_action_->setEnabled( false );
   connect( file_properties_action_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
 
-  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spell check", this ) );
+  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spell Check", this ) );
   #if WITH_ASPELL
   connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
   #else 
   spellcheck_action_->setVisible( false );
   #endif
 
-  addAction( diff_action_ = new QAction( "&Diff files", this ) );
+  addAction( diff_action_ = new QAction( "&Diff Files", this ) );
   connect( diff_action_, SIGNAL( triggered() ), SLOT( _diff() ) );
   diff_action_->setEnabled( false );
   
-  addAction( split_display_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_TOPBOTTOM ), "Clone display top/bottom", this ) );
+  addAction( split_display_horizontal_action_ =new QAction( IconEngine::get( ICONS::VIEW_TOPBOTTOM ), "Clone Display Top/Bottom", this ) );
   split_display_horizontal_action_->setToolTip( "Clone current display vertically" );
   connect( split_display_horizontal_action_, SIGNAL( triggered() ), SLOT( _splitDisplayVertical() ) );
 
-  addAction( split_display_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "Clone display left/right", this ) );
+  addAction( split_display_vertical_action_ =new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "Clone Display Left/Right", this ) );
   split_display_vertical_action_->setToolTip( "Clone current display horizontally" );
   connect( split_display_vertical_action_, SIGNAL( triggered() ), SLOT( _splitDisplayHorizontal() ) );
   
