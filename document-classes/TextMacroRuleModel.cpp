@@ -35,9 +35,9 @@ using namespace std;
 //__________________________________________________________________
 const QString TextMacroRuleModel::column_titles_[TextMacroRuleModel::n_columns] = 
 {
-  "regular expression",
-  "replacement text",
-  "split"
+  "Regular Expression",
+  "Replacement Text",
+  "Split"
 };
 
 //__________________________________________________________________

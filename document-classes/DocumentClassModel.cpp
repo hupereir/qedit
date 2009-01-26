@@ -35,8 +35,8 @@ using namespace std;
 //__________________________________________________________________
 const QString DocumentClassModel::column_titles_[DocumentClassModel::n_columns] = 
 {
-  "name",
-  "file",
+  "Name",
+  "File",
 };
 
 //__________________________________________________________________

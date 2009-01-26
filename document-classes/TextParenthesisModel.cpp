@@ -35,9 +35,9 @@ using namespace std;
 //__________________________________________________________________
 const QString TextParenthesisModel::column_titles_[TextParenthesisModel::n_columns] = 
 {
-  "first",
-  "second",
-  "regular expression"
+  "First",
+  "Second",
+  "Regular Expression"
 };
 
 //__________________________________________________________________

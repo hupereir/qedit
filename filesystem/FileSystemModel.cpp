@@ -58,9 +58,9 @@ FileSystemModel::FileSystemModel( QObject* parent ):
 {
   Debug::Throw("FileSystemModel::FileSystemModel.\n" );
 
-  column_titles_.push_back( "file" );
-  column_titles_.push_back( "size" );
-  column_titles_.push_back( "time" );
+  column_titles_.push_back( "File" );
+  column_titles_.push_back( "Size" );
+  column_titles_.push_back( "Time" );
 
   connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 

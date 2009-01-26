@@ -35,9 +35,9 @@ using namespace std;
 //__________________________________________________________________
 const QString IndentPatternRuleModel::column_titles_[IndentPatternRuleModel::n_columns] = 
 {
-  "regular expression",
-  "paragraph offset",
-  "case sensitive"
+  "Regular Expression",
+  "Paragraph Offset",
+  "Case Sensitive"
 };
 
 //__________________________________________________________________

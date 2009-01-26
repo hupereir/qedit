@@ -35,7 +35,7 @@ using namespace std;
 //__________________________________________________________________
 const QString HighlightStyleModel::column_titles_[HighlightStyleModel::n_columns] = 
 {
-  "name"
+  "Name"
 };
 
 //__________________________________________________________________

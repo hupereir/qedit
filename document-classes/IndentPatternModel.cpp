@@ -35,10 +35,10 @@ using namespace std;
 //__________________________________________________________________
 const QString IndentPatternModel::column_titles_[IndentPatternModel::n_columns] = 
 {
-  "id",
-  "name",
-  "type",
-  "scale"
+  "Id",
+  "Name",
+  "Type",
+  "Scale"
 };
 
 //__________________________________________________________________

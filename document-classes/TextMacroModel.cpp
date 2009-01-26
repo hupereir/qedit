@@ -35,8 +35,8 @@ using namespace std;
 //__________________________________________________________________
 const QString TextMacroModel::column_titles_[TextMacroModel::n_columns] = 
 {
-  "name",
-  "accelerator",
+  "Name",
+  "Accelerator",
 };
 
 //__________________________________________________________________

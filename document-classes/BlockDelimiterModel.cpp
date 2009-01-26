@@ -35,9 +35,9 @@ using namespace std;
 //__________________________________________________________________
 const QString BlockDelimiterModel::column_titles_[BlockDelimiterModel::n_columns] = 
 {
-  "first",
-  "second",
-  "regular expression"
+  "First",
+  "Second",
+  "Regular Expression"
 };
 
 //__________________________________________________________________
