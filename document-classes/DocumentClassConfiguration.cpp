@@ -88,7 +88,7 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
   
   // default
   layout()->addWidget( default_checkbox_ = new QCheckBox( "Default", this ) );
-  default_checkbox_->setToolTip( "use this document class when no other is found that match a given file" );
+  default_checkbox_->setToolTip( "Use this document class when no other is found that match a given file" );
   default_checkbox_->setChecked( false );
 
   // wrap mode

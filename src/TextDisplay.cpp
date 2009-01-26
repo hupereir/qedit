@@ -362,7 +362,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
     what << "A more recent version of file " << file << endl;
     what << "was found at " << autosaved << "." << endl;
     what << "This probably means that the application crashed the last time ";
-    what << "the file was edited." << endl;
+    what << "The file was edited." << endl;
     what << "Use autosaved version ?";
     if( QuestionDialog( this, what.str().c_str() ).exec() )
     {
@@ -605,7 +605,7 @@ void TextDisplay::saveAs( void )
 
   // define default file
   File default_file( file() );
-  if( default_file.empty() || isNewDocument() ) default_file = File( "document" ).addPath( workingDirectory() );
+  if( default_file.empty() || isNewDocument() ) default_file = File( "Document" ).addPath( workingDirectory() );
 
   // create file dialog
   CustomFileDialog dialog( this );
@@ -764,7 +764,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
 {
 
   // clear highlight locations and rehighlight
-  QDomElement out = document.createElement( "pre" );
+  QDomElement out = document.createElement( "Pre" );
 
   int active_id( 0 ); 
   
@@ -808,11 +808,11 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
         // append text to current element and reset stream
         if( !buffer.isEmpty() )
         {
-          if( span.isNull() ) span  = out.appendChild( document.createElement( "span" ) ).toElement();
+          if( span.isNull() ) span  = out.appendChild( document.createElement( "Span" ) ).toElement();
           HtmlTextNode( buffer, span, document );
           if( line_break )
           {
-            out.appendChild( document.createElement( "br" ) );
+            out.appendChild( document.createElement( "Br" ) );
             line_break = false;
             line_index = 0;
           }
@@ -823,23 +823,23 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
         current_pattern_id = pattern_id;
 
         // update current element
-        span = out.appendChild( document.createElement( "span" ) ).toElement();
+        span = out.appendChild( document.createElement( "Span" ) ).toElement();
         if( location_iter !=  locations.rend() )
         {
                     
           // retrieve font format
           const unsigned int& format( location_iter->fontFormat() );
           ostringstream format_stream;
-          if( format & FORMAT::UNDERLINE ) format_stream << "text-decoration: underline; ";
+          if( format & FORMAT::UNDERLINE ) format_stream << "Text-decoration: underline; ";
           if( format & FORMAT::ITALIC ) format_stream << "font-style: italic; ";
           if( format & FORMAT::BOLD ) format_stream << "font-weight: bold; ";
-          if( format & FORMAT::STRIKE ) format_stream << "text-decoration: line-through; ";
+          if( format & FORMAT::STRIKE ) format_stream << "Text-decoration: line-through; ";
 
           // retrieve color
           const QColor& color = location_iter->color();
           if( color.isValid() ) format_stream << "color: " << qPrintable( color.name() ) << "; ";
 
-          span.setAttribute( "style", format_stream.str().c_str() );
+          span.setAttribute( "Style", format_stream.str().c_str() );
 
         }
       }
@@ -865,11 +865,11 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
 
     if( !buffer.isEmpty() )
     {
-      if( span.isNull() ) span  = out.appendChild( document.createElement( "span" ) ).toElement();
+      if( span.isNull() ) span  = out.appendChild( document.createElement( "Span" ) ).toElement();
       span.appendChild( document.createTextNode( buffer ) );
     }
     
-    out.appendChild( document.createElement( "br" ) );
+    out.appendChild( document.createElement( "Br" ) );
     
   }
 
@@ -1636,7 +1636,7 @@ void TextDisplay::_drawMargins( QPainter& painter )
 bool TextDisplay::_toggleWrapMode( bool state )
 {
   
-  Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "true":"false") << endl;
+  Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "True":"false") << endl;
   if( !AnimatedTextEditor::_toggleWrapMode( state ) ) return false;
   
   if( !( file().empty() || isNewDocument() ) )
@@ -2155,22 +2155,22 @@ void TextDisplay::_fileProperties( void )
   grid_layout->addWidget( new QLabel( Str().assign<int>(AnimatedTextEditor::blockCount()).c_str(), box ) );
   
   grid_layout->addWidget( new QLabel( "Current paragraph highlighting: ", box ) );
-  grid_layout->addWidget( new QLabel( (blockHighlightAction().isChecked() ? "true":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (blockHighlightAction().isChecked() ? "True":"false" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Text highlighting: ", box ) );
-  grid_layout->addWidget( new QLabel( (textHighlight().isHighlightEnabled() ? "true":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (textHighlight().isHighlightEnabled() ? "True":"false" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Matching parenthesis highlighting: ", box ) );
-  grid_layout->addWidget( new QLabel( (textHighlight().isParenthesisEnabled() ? "true":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (textHighlight().isParenthesisEnabled() ? "True":"false" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Text indent: ", box ) );
-  grid_layout->addWidget( new QLabel( (textIndent().isEnabled() ? "true":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (textIndent().isEnabled() ? "True":"false" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Text wrapping: ", box ) );
-  grid_layout->addWidget( new QLabel( (wrapModeAction().isChecked() ? "true":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (wrapModeAction().isChecked() ? "True":"false" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Tab emulation: ", box ) );
-  grid_layout->addWidget( new QLabel( (tabEmulationAction().isChecked() ? "true":"false" ), box ) );
+  grid_layout->addWidget( new QLabel( (tabEmulationAction().isChecked() ? "True":"false" ), box ) );
   
   grid_layout->setColumnStretch( 1, 1 );
   

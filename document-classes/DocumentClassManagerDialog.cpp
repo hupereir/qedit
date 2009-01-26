@@ -74,8 +74,8 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   }
   layout->addWidget( new QLabel( 
     "This feature is work-in-progress. Right now this allows \n"
-    "to display and edit some of the document classes components, but \n"
-    "changes made to these are not stored.", this ), 1 );
+    "To display and edit some of the document classes components, but \n"
+    "Changes made to these are not stored.", this ), 1 );
   
   layout = new QHBoxLayout();
   layout->setSpacing(5);
@@ -250,7 +250,7 @@ void DocumentClassManagerDialog::_save( void )
       what << "file \"" << file << "\" is read-only. <Save As> canceled.";
       InformationDialog( this, what.str().c_str() ).exec();
       return;
-    } else if( !QuestionDialog( this, "selected file already exist. Overwrite ?" ).exec() )
+    } else if( !QuestionDialog( this, "Selected file already exist. Overwrite ?" ).exec() )
     return;
   }
   

@@ -84,14 +84,14 @@ IndentPatternList::IndentPatternList( QWidget* parent ):
   remove_button_->setToolTip( "Remove selected Indent pattern" );
   connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
   
-  v_layout->addWidget( button = new QPushButton( "Move &up", this ) );
+  v_layout->addWidget( button = new QPushButton( "Move &Up", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _up() ) );
-  button->setToolTip( "move up selected items" );
+  button->setToolTip( "Move up selected items" );
   move_up_button_ = button;
   
-  v_layout->addWidget( button = new QPushButton( "Move &down", this ) );
+  v_layout->addWidget( button = new QPushButton( "Move &Down", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _down() ) );
-  button->setToolTip( "move down selected items" );  
+  button->setToolTip( "Move down selected items" );  
   move_down_button_ = button;
   
   v_layout->addStretch();
@@ -203,7 +203,7 @@ void IndentPatternList::_remove( void )
   // ask for confirmation
   ostringstream what;
   what << "Remove selected item";
-  if( selection.size()>1 ) what << "s";
+  if( selection.size()>1 ) what << "S";
   what << " ?";
   if( !QuestionDialog( this, what.str().c_str() ).exec() ) return;
   

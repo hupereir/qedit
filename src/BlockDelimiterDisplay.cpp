@@ -422,7 +422,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
     if( previous != segments_.rend() && !( iter->begin() < previous->begin() || previous->end() < iter->end() ) ) 
     { continue; }
   
-    // update "previous" segment 
+    // update "Previous" segment 
     previous = iter;
 
     // get matching blocks
@@ -526,25 +526,25 @@ void BlockDelimiterDisplay::_installActions( void )
   Debug::Throw( "BlockDelimiterDisplay::_installActions.\n" );
 
   collapse_current_action_ = new QAction( "&Collapse Current Block", this );
-  collapse_current_action_->setToolTip( "collapse current collapsed block" );
+  collapse_current_action_->setToolTip( "Collapse current collapsed block" );
   collapse_current_action_->setShortcut( Qt::CTRL + Qt::Key_Minus );
   connect( collapse_current_action_, SIGNAL( triggered() ), SLOT( _collapseCurrentBlock() ) );
   collapse_current_action_->setEnabled( false );
 
   expand_current_action_ = new QAction( "&Expand Current Block", this );
-  expand_current_action_->setToolTip( "expand current collapsed block" );
+  expand_current_action_->setToolTip( "Expand current collapsed block" );
   expand_current_action_->setShortcut( Qt::CTRL + Qt::Key_Plus );
   connect( expand_current_action_, SIGNAL( triggered() ), SLOT( _expandCurrentBlock() ) );
   expand_current_action_->setEnabled( false );
     
   collapse_action_ = new QAction( "&Collapse Top-Level Blocks", this );
-  collapse_action_->setToolTip( "collapse all top level blocks" );
+  collapse_action_->setToolTip( "Collapse all top level blocks" );
   collapse_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Minus );
   connect( collapse_action_, SIGNAL( triggered() ), SLOT( _collapseTopLevelBlocks() ) );
   collapse_action_->setEnabled( true );
   
   expand_all_action_ = new QAction( "&Expand All Blocks", this );
-  expand_all_action_->setToolTip( "expand all collapsed blocks" );
+  expand_all_action_->setToolTip( "Expand all collapsed blocks" );
   expand_all_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Plus );
   connect( expand_all_action_, SIGNAL( triggered() ), SLOT( _expandAllBlocks() ) );
   expand_all_action_->setEnabled( false );
@@ -628,7 +628,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
       BlockMarker block_begin( block_count, block.position() );
       BlockMarker block_end( block_count, block.position()+block.length() - 1 );      
             
-      // store "ignore" state
+      // store "Ignore" state
       bool ignored = data->ignoreBlock();
       if( delimiter.end() )
       {
@@ -783,7 +783,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
   for( ; block.isValid() && id < segment.end().id(); block = block.next(), id++ )
   {}
   
-  // check if second block is also of "begin" type
+  // check if second block is also of "Begin" type
   if( block != out.first )
   {
     HighlightBlockData *second_data( dynamic_cast<HighlightBlockData*>( block.userData() ) );

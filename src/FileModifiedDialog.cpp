@@ -91,12 +91,12 @@ FileModifiedDialog::FileModifiedDialog( QWidget* parent, const File& file ):
   button->setToolTip( "Reload file from disc. Modifications will be lost" );
 
   // resave button
-  button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE ), "&Re-save", this ) );
+  button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE ), "&Save Again", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _reSave() ) );
   button->setToolTip( "Save file again. Disc modifications will be lost" );
     
   // save as button
-  button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE_AS ), "&Save as", this ) );
+  button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE_AS ), "&Save As", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _saveAs() ) );
   button->setToolTip( "Save file with a different name" );
 

@@ -85,7 +85,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   listbox->setBrowsable( true );
   box->layout()->addWidget( listbox );
   addOptionWidget( listbox );
-  listbox->setToolTip( "input files from which the document classes are read" );
+  listbox->setToolTip( "Input files from which the document classes are read" );
   
   // edition flags
   page->layout()->addWidget( box = new QGroupBox( "Flags", page ) );  
@@ -97,7 +97,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   checkbox->setToolTip( "Turn on/off block delimiters" );
   addOptionWidget( checkbox );
 
-  box->layout()->addWidget( checkbox = new OptionCheckBox( "use custom block delimiters", box, "CUSTOM_BLOCK_DELIMITERS" ) );
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "Use custom block delimiters", box, "CUSTOM_BLOCK_DELIMITERS" ) );
   checkbox->setToolTip( "Use custom block delimiter symbols in place of style based." );
   addOptionWidget( checkbox );
 
@@ -113,11 +113,11 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   checkbox->setToolTip( "Turn on/off automatic text indentation" );
   addOptionWidget( checkbox );
 
-  box->layout()->addWidget( checkbox = new OptionCheckBox( "use document class wrap mode", box, "WRAP_FROM_CLASS" ) );
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "Use document class wrap mode", box, "WRAP_FROM_CLASS" ) );
   checkbox->setToolTip( "Use wrap mode read from document class in place of the one specified in the default configuration." );
   addOptionWidget( checkbox );
 
-  box->layout()->addWidget( checkbox = new OptionCheckBox( "use document class tab emulation mode", box, "EMULATE_TABS_FROM_CLASS" ) );
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "Use document class tab emulation mode", box, "EMULATE_TABS_FROM_CLASS" ) );
   checkbox->setToolTip( "Use tab emulation mode read from document class in place of the one specified in the default configuration." );
   addOptionWidget( checkbox );
 
@@ -284,7 +284,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   box->layout()->addWidget( checkbox = new OptionCheckBox( "Autosave", box, "AUTOSAVE" ) );
   checkbox->setToolTip( 
     "Make automatic copies of edited files in\n"
-    "specified directory to allow crash recovery." );
+    "Specified directory to allow crash recovery." );
   addOptionWidget( checkbox );
 
   grid_layout = new GridLayout();

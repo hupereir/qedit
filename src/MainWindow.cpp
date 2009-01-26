@@ -84,8 +84,8 @@
 using namespace std;
 
 //_____________________________________________________
-const std::string MainWindow::LEFT_RIGHT = "left/right";
-const std::string MainWindow::TOP_BOTTOM = "top/bottom";
+const std::string MainWindow::LEFT_RIGHT = "Left/right";
+const std::string MainWindow::TOP_BOTTOM = "Top/bottom";
 
 //_____________________________________________________
 MainWindow::MainWindow(  QWidget* parent ):
@@ -159,7 +159,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   // state frame
   setStatusBar( statusbar_ = new StatusBar( this ) );
 
-  // create "hidden" line editor to display filename
+  // create "Hidden" line editor to display filename
   statusbar_->addPermanentWidget( file_editor_ = new LineEditor( statusbar_ ), 1 );
   statusbar_->addLabels( 3, 0 );
   statusbar_->label(0).setAlignment( Qt::AlignCenter ); 
@@ -462,7 +462,7 @@ void MainWindow::_revertToSave( void )
   // check filename
   if( activeDisplay().file().empty() || activeDisplay().isNewDocument() )
   {
-    InformationDialog( this, "No filename given. <Revert to save> canceled." ).exec();
+    InformationDialog( this, "No filename given. <Reload> canceled." ).exec();
     return;
   }
 
@@ -552,7 +552,7 @@ void MainWindow::_print( void )
       what << "file \"" << fullname << "\" is read-only. <Print> canceled.";
       InformationDialog( this, what.str().c_str() ).centerOnParent().exec();
       return;
-    } else if( !QuestionDialog( this, "selected file already exists. Overwrite ?" ).centerOnParent().exec() )
+    } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).centerOnParent().exec() )
     return;
   }
   
@@ -861,7 +861,7 @@ void MainWindow::_updateCursorPosition( void )
   */
   if( activeDisplay().hasBlockDelimiterDisplay() ) position.paragraph() += activeDisplay().blockDelimiterDisplay().collapsedBlockCount( position.paragraph() );
   
-  statusbar_->label(1).setText( Str( "line : " ).append<int>( position.paragraph()+1 ).c_str() , false );
+  statusbar_->label(1).setText( Str( "Line : " ).append<int>( position.paragraph()+1 ).c_str() , false );
   statusbar_->label(2).setText( Str( "column : " ).append<int>( position.index()+1 ).c_str() , false );
 
   return;
@@ -931,11 +931,13 @@ void MainWindow::_installActions( void )
   connect( save_as_action_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
 
   addAction( revert_to_save_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
+  revert_to_save_action_->setShortcut( Qt::Key_F5 );
   revert_to_save_action_->setToolTip( "Reload saved version of current file" );
   connect( revert_to_save_action_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
  
   addAction( print_action_ = new QAction( IconEngine::get( ICONS::PRINT ), "&Print", this ) );
   print_action_->setToolTip( "Print current file" );
+  print_action_->setShortcut( Qt::CTRL + Qt::Key_P );
   connect( print_action_, SIGNAL( triggered() ), SLOT( _print() ) );
 
   addAction( undo_action_ = new QAction( IconEngine::get( ICONS::UNDO ), "&Undo", this ) );
@@ -1072,31 +1074,31 @@ void MainWindow::_updateWindowTitle()
 QString MainWindow::_htmlString( const int& max_line_size )
 {
 
-  QDomDocument document( "html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\"" );
+  QDomDocument document( "Html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\"" );
 
   // html
-  QDomElement html = document.appendChild( document.createElement( "html" ) ).toElement();
-  html.setAttribute( "xmlns", "http://www.w3.org/1999/xhtml" );
+  QDomElement html = document.appendChild( document.createElement( "Html" ) ).toElement();
+  html.setAttribute( "xmlns", "Http://www.w3.org/1999/xhtml" );
 
   // head
-  QDomElement head = html.appendChild( document.createElement( "head" ) ).toElement();
+  QDomElement head = html.appendChild( document.createElement( "Head" ) ).toElement();
   QDomElement meta;
 
   // meta information
   meta = head.appendChild( document.createElement( "meta" ) ).toElement();
-  meta.setAttribute( "content", "text/html; charset=iso-8859-1" );
-  meta.setAttribute( "http-equiv", "Content-Type" );
+  meta.setAttribute( "content", "Text/html; charset=iso-8859-1" );
+  meta.setAttribute( "Http-equiv", "Content-Type" );
   meta = head.appendChild( document.createElement( "meta" ) ).toElement();
   meta.setAttribute( "content", "QEdit" );
   meta.setAttribute( "name", "Generator" );
 
   // title
-  QDomElement title = head.appendChild( document.createElement( "title" ) ).toElement();
+  QDomElement title = head.appendChild( document.createElement( "Title" ) ).toElement();
   title.appendChild( document.createTextNode( activeDisplay().file().c_str() ) );
 
   // body
   html.
-    appendChild( document.createElement( "body" ) ).
+    appendChild( document.createElement( "Body" ) ).
     appendChild( activeDisplay().htmlNode( document, max_line_size ) );
 
   /*

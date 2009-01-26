@@ -84,7 +84,6 @@ void NavigationFrame::_installActions( void )
   addAction( visibility_action_ = new QAction( "Show &Navigation Panel", this ) );
   visibility_action_->setCheckable( true );
   visibility_action_->setChecked( true );
-  visibility_action_->setShortcut( Qt::Key_F5 );
   connect( visibility_action_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );
     
 }

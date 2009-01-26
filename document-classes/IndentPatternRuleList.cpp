@@ -177,7 +177,7 @@ void IndentPatternRuleList::_remove( void )
   // ask for confirmation
   ostringstream what;
   what << "Remove selected item";
-  if( selection.size()>1 ) what << "s";
+  if( selection.size()>1 ) what << "S";
   what << " ?";
   if( !QuestionDialog( this, what.str().c_str() ).exec() ) return;
   

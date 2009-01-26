@@ -84,7 +84,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
 
   // deselect all
   buttonLayout().insertWidget( 0, button = new QPushButton( "&Clear Selection", this ) );
-  button->setToolTip( "deselect all files in list" );
+  button->setToolTip( "Deselect all files in list" );
   connect( button, SIGNAL( clicked() ), list_, SLOT( clearSelection() ) );
   clear_selection_button_ = button;
 

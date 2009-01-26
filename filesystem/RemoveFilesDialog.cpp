@@ -97,7 +97,7 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
 
   // deselect all
   v_layout->addWidget( clear_selection_button_ = new QPushButton( "&Clear Selection", this ) );
-  clear_selection_button_->setToolTip( "deselect all files in list" );
+  clear_selection_button_->setToolTip( "Deselect all files in list" );
   connect( clear_selection_button_, SIGNAL( clicked() ), _list().selectionModel(), SLOT( clear() ) );
   
   v_layout->addWidget( recursive_checkbox_ = new QCheckBox( "Remove recusively", this ) );
