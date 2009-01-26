@@ -74,8 +74,8 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   }
   layout->addWidget( new QLabel( 
     "This feature is work-in-progress. Right now this allows \n"
-    "To display and edit some of the document classes components, but \n"
-    "Changes made to these are not stored.", this ), 1 );
+    "to display and edit some of the document classes components, but \n"
+    "changes made to these are not stored.", this ), 1 );
   
   layout = new QHBoxLayout();
   layout->setSpacing(5);

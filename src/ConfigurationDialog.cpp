@@ -284,7 +284,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   box->layout()->addWidget( checkbox = new OptionCheckBox( "Autosave", box, "AUTOSAVE" ) );
   checkbox->setToolTip( 
     "Make automatic copies of edited files in\n"
-    "Specified directory to allow crash recovery." );
+    "specified directory to allow crash recovery." );
   addOptionWidget( checkbox );
 
   grid_layout = new GridLayout();
