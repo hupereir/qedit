@@ -57,7 +57,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
 {
   
   setWindowTitle( "file selection" );
-  setSizeOptionName( "FILE_SELECTION_DIALOG" );
+  setOptionName( "FILE_SELECTION_DIALOG" );
   
   // custom list display
   list_ = new TreeView( this );

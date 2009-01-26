@@ -54,7 +54,7 @@ PrintDialog::PrintDialog( QWidget* parent ):
   Debug::Throw( "PrintDialog::PrintDialog.\n" );
   setWindowTitle( "QEdit - print" );
   
-  setSizeOptionName( "PRINT_DIALOG" );
+  setOptionName( "PRINT_DIALOG" );
   
   QButtonGroup* group = new QButtonGroup( this );
   group->setExclusive( true );
