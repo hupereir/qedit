@@ -53,7 +53,6 @@ namespace ICONS
   static const std::string HTML="html.png";
   static const std::string PDF = "pdf.png";
   static const std::string INDENT="indent.png";
-  static const std::string PRINT = "fileprint.png"; 
   static const std::string SPELLCHECK = "fonts.png";
   static const std::string VIEW_LEFTRIGHT = "view_left_right.png";
   static const std::string VIEW_TOPBOTTOM = "view_top_bottom.png";

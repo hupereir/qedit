@@ -36,7 +36,6 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QString>
-#include <QStringList>
 
 #include "BrowsedLineEditor.h"
 #include "CustomDialog.h"
@@ -120,17 +119,6 @@ class PrintDialog: public CustomDialog
   void addCommand( QString command )
   { _commandEditor().addItem( command ); }
   
-  //! commands
-  QStringList commands( void ) const
-  { 
-    Debug::Throw() << "PrintDialog::commands - maxCount: " << _commandEditor().QComboBox::count() << std::endl;
-    QStringList out;
-    for( int row = 0; row < _commandEditor().QComboBox::count(); row++ )
-    { out.push_back( _commandEditor().itemText( row ) ); }
-    
-    return out;
-  }
-
   private slots:
   
   //! update checkboxes

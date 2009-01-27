@@ -9,7 +9,6 @@
     <file alias="pixmaps/crystal/documents.png">../pixmaps/crystal/documents.png</file>
     <file alias="pixmaps/crystal/down.png">../pixmaps/crystal/down.png</file>
     <file alias="pixmaps/crystal/filenew.png">../pixmaps/crystal/filenew.png</file>
-    <file alias="pixmaps/crystal/fileprint.png">../pixmaps/crystal/fileprint.png</file>
     <file alias="pixmaps/crystal/fileclose.png">../pixmaps/crystal/fileclose.png</file>
     <file alias="pixmaps/crystal/filesave.png">../pixmaps/crystal/filesave.png</file>
     <file alias="pixmaps/crystal/filesaveas.png">../pixmaps/crystal/filesaveas.png</file>
@@ -38,7 +37,6 @@
     <file alias="pixmaps/oxygen/documents.png">../pixmaps/oxygen/documents.png</file>
     <file alias="pixmaps/oxygen/down.png">../pixmaps/oxygen/down.png</file>
     <file alias="pixmaps/oxygen/filenew.png">../pixmaps/oxygen/filenew.png</file>
-    <file alias="pixmaps/oxygen/fileprint.png">../pixmaps/oxygen/fileprint.png</file>
     <file alias="pixmaps/oxygen/fileclose.png">../pixmaps/oxygen/fileclose.png</file>
     <file alias="pixmaps/oxygen/filesave.png">../pixmaps/oxygen/filesave.png</file>
     <file alias="pixmaps/oxygen/filesaveas.png">../pixmaps/oxygen/filesaveas.png</file>

@@ -517,19 +517,14 @@ void MainWindow::_print( void )
 
   // store options
   XmlOptions::get().set<string>( "PRINT_MODE", dialog.mode() == PrintDialog::PDF ? "PDF":"HTML" );
-  XmlOptions::get().set<int>("PRINT_LINE_SIZE", dialog.maximumLineSize() );
+  XmlOptions::get().set<int>( "PRINT_LINE_SIZE", dialog.maximumLineSize() );
   XmlOptions::get().set<bool>( "USE_PRINT_COMMAND", dialog.useCommand() );
 
-  QStringList new_commands( dialog.commands() );
-  for( QStringList::const_iterator iter = new_commands.begin(); iter != new_commands.end(); iter++ )
-  { 
-    
-    if( std::find( commands.begin(), commands.end(), qPrintable( *iter ) ) == commands.end() ) 
-    { XmlOptions::get().add( "PRINT_COMMAND", qPrintable( *iter ) ); }
-    
-  }
-  
-  Debug::Throw( "MainWindow::_print - options saved.\n" );
+  // check print mode and store options
+  PrintDialog::Mode mode( dialog.mode() );
+  QString command( dialog.command() );
+  XmlOptions::get().add( "PRINT_COMMAND", Option( qPrintable( command ), Option::RECORDABLE|Option::CURRENT ) );  
+  XmlOptions::get().set( mode == PrintDialog::HTML ? "HTML_EDITOR" : "PDF_EDITOR", Option( qPrintable( command ), Option::RECORDABLE|Option::CURRENT ) );  
   
   // try open output file
   File fullname = File( qPrintable( dialog.destinationFile() ) ).expand();
@@ -561,8 +556,6 @@ void MainWindow::_print( void )
   QString html_string( _htmlString( dialog.maximumLineSize() ) );
   Debug::Throw( "MainWindow::_print - retrieved html string.\n" );
   
-  // check print mode
-  PrintDialog::Mode mode( dialog.mode() );
   if( mode == PrintDialog::HTML )
   {
     // open stream

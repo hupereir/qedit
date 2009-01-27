@@ -31,6 +31,7 @@
 
 #include <QFrame>
 #include <QLayout>
+#include <QToolButton>
 #include <QButtonGroup> 
 #include <QGroupBox> 
 #include <QLabel>
@@ -66,59 +67,52 @@ PrintDialog::PrintDialog( QWidget* parent ):
   box->layout()->setMargin(5);
   mainLayout().addWidget( box );  
   
-  QHBoxLayout *h_layout;
-  h_layout = new QHBoxLayout();
-  h_layout->setSpacing(5);
-  h_layout->setMargin(0); 
-  box->layout()->addItem( h_layout );
-
-  h_layout->addWidget( pdf_checkbox_ = new QRadioButton( "Print to PDF file", box ) );
+  box->layout()->addWidget( pdf_checkbox_ = new QRadioButton( "Print to PDF file", box ) );
   group->addButton( pdf_checkbox_ );
   pdf_checkbox_->setChecked( true );
 
-  h_layout->addWidget( html_checkbox_ = new QRadioButton( "Print to HTML file", box ) );
+  box->layout()->addWidget( html_checkbox_ = new QRadioButton( "Print to HTML file", box ) );
   group->addButton( html_checkbox_ );
   html_checkbox_->setChecked( false );
   
   box->layout()->addWidget( new QLabel( "Destination file: ", box ) );
   box->layout()->addWidget( destination_editor_ = new BrowsedLineEditor( box ) );
-  _destinationEditor().setMinimumSize( QSize( 350, 0 ) );
+  _destinationEditor().setMinimumSize( QSize( 150, 0 ) );
   
   // options
   box = new QGroupBox( "options", this );
-  box->setLayout( new QVBoxLayout() );
-  box->layout()->setMargin(10);
-  box->layout()->setMargin(5);
+  GridLayout* grid_layout = new GridLayout();
+  grid_layout->setSpacing(5);
+  grid_layout->setMargin(10);
+  grid_layout->setMaxCount(2);
+  box->setLayout( grid_layout );
   mainLayout().addWidget( box );  
-
-  h_layout = new QHBoxLayout();
-  h_layout->setSpacing(5);
-  h_layout->setMargin(0);
-  box->layout()->addItem( h_layout );
-  
-  h_layout->addWidget( wrap_checkbox_ = new QCheckBox( "Wrap lines to maximum size:", box ) );
+    
+  grid_layout->addWidget( wrap_checkbox_ = new QCheckBox( "Wrap lines to maximum size:", box ) );
   wrap_checkbox_->setChecked( true );
 
-  h_layout->addWidget( maximum_line_size_ = new QSpinBox( box ) );
+  grid_layout->addWidget( maximum_line_size_ = new QSpinBox( box ) );
   maximum_line_size_->setMaximum( 1024) ;
   
-  box->layout()->addWidget( command_checkbox_ = new QCheckBox( "Open/Print destination file with command: ", box ) );
+  grid_layout->addWidget( command_checkbox_ = new QCheckBox( "Open/print with: ", box ) );
   command_checkbox_->setChecked( true );
 
-  h_layout = new QHBoxLayout();
-  h_layout->setSpacing(5);
+  QHBoxLayout *h_layout = new QHBoxLayout();
+  h_layout->setSpacing(2);
   h_layout->setMargin(0); 
-  box->layout()->addItem( h_layout );
+  grid_layout->addLayout( h_layout );
+  
   h_layout->addWidget( command_editor_ = new CustomComboBox( box ) );
   _commandEditor().setEditable( true );
   _commandEditor().setEditable( true );
   _commandEditor().setCaseSensitive( Qt::CaseSensitive );
   _commandEditor().setAutoCompletion( true );
-  _commandEditor().setMinimumSize( QSize( 350, 0 ) );
+  _commandEditor().setMinimumSize( QSize( 150, 0 ) );
 
   // browse command button associated to the CustomComboBox
-  QPushButton* button = new QPushButton( box );
+  QToolButton* button = new QToolButton( box );
   button->setIcon( IconEngine::get( ICONS::OPEN ) );
+  button->setAutoRaise( false );
   h_layout->addWidget( button );
   connect( button, SIGNAL( clicked() ), SLOT( _browseCommand() ) );
   

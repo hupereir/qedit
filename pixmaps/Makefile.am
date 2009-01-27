@@ -9,7 +9,6 @@ EXTRA_DIST = \
   crystal/editcut.png \
   crystal/fileclose.png \
   crystal/filenew.png \
-  crystal/fileprint.png \
   crystal/filesaveas.png \
   crystal/filesave.png \
   crystal/folder.png \
@@ -39,7 +38,6 @@ EXTRA_DIST = \
   oxygen/editcut.png \
   oxygen/fileclose.png \
   oxygen/filenew.png \
-  oxygen/fileprint.png \
   oxygen/filesaveas.png \
   oxygen/filesave.png \
   oxygen/folder.png \
