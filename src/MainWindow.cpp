@@ -507,10 +507,10 @@ void MainWindow::_print( void )
   commands.push_back( XmlOptions::get().raw( "PDF_EDITOR" ) );
   commands.push_back( XmlOptions::get().raw( "HTML_EDITOR" ) );
   for( list<string>::iterator iter = commands.begin(); iter != commands.end(); iter++ )
-  { dialog.addCommand( *iter ); }
+  { dialog.addCommand( iter->c_str() ); }
 
   // set command manually that match the selection mode
-  dialog.setCommand( XmlOptions::get().raw( ( dialog.mode() == PrintDialog::PDF ? "PDF_EDITOR":"HTML_EDITOR" ) ) );
+  dialog.setCommand( XmlOptions::get().raw( ( dialog.mode() == PrintDialog::PDF ? "PDF_EDITOR":"HTML_EDITOR" ) ).c_str() );
   
   // exec
   if( !dialog.centerOnParent().exec() ) return;
@@ -519,12 +519,13 @@ void MainWindow::_print( void )
   XmlOptions::get().set<string>( "PRINT_MODE", dialog.mode() == PrintDialog::PDF ? "PDF":"HTML" );
   XmlOptions::get().set<int>("PRINT_LINE_SIZE", dialog.maximumLineSize() );
   XmlOptions::get().set<bool>( "USE_PRINT_COMMAND", dialog.useCommand() );
-  list<string> new_commands( dialog.commands() );
-  for( list<string>::iterator iter = new_commands.begin(); iter != new_commands.end(); iter++ )
+
+  QStringList new_commands( dialog.commands() );
+  for( QStringList::const_iterator iter = new_commands.begin(); iter != new_commands.end(); iter++ )
   { 
     
-    if( std::find( commands.begin(), commands.end(), *iter ) == commands.end() ) 
-    { XmlOptions::get().add( "PRINT_COMMAND", *iter ); }
+    if( std::find( commands.begin(), commands.end(), qPrintable( *iter ) ) == commands.end() ) 
+    { XmlOptions::get().add( "PRINT_COMMAND", qPrintable( *iter ) ); }
     
   }
   
@@ -536,9 +537,9 @@ void MainWindow::_print( void )
   // check if file is directory
   if( fullname.isDirectory() )
   {
-    ostringstream what;
-    what << "file \"" << fullname << "\" is a directory. <Print> canceled.";
-    InformationDialog( this, what.str().c_str() ).centerOnParent().exec();
+    QString buffer;
+    QTextStream( &buffer ) << "file \"" << fullname.c_str() << "\" is a directory. <Print> canceled.";
+    InformationDialog( this, buffer ).centerOnParent().exec();
     return;
   }
 
@@ -548,9 +549,9 @@ void MainWindow::_print( void )
   {
     if( !fullname.isWritable() )
     {
-      ostringstream what;
-      what << "file \"" << fullname << "\" is read-only. <Print> canceled.";
-      InformationDialog( this, what.str().c_str() ).centerOnParent().exec();
+      QString buffer;
+      QTextStream( &buffer ) << "file \"" << fullname.c_str() << "\" is read-only. <Print> canceled.";
+      InformationDialog( this, buffer ).centerOnParent().exec();
       return;
     } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).centerOnParent().exec() )
     return;
@@ -568,9 +569,9 @@ void MainWindow::_print( void )
     QFile out( fullname.c_str() );
     if( !out.open( QIODevice::WriteOnly ) )
     {
-      ostringstream what;
-      what << "cannot write to file \"" << fullname << "\" <Print> canceled.";
-      InformationDialog( this, what.str().c_str() ).exec();
+      QString buffer;
+      QTextStream( &buffer ) << "cannot write to file \"" << fullname.c_str() << "\" <Print> canceled.";
+      InformationDialog( this, buffer ).exec();
       return;
     }
     

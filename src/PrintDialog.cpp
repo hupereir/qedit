@@ -1,4 +1,3 @@
-
 // $Id$
 
 /******************************************************************************
@@ -82,8 +81,8 @@ PrintDialog::PrintDialog( QWidget* parent ):
   html_checkbox_->setChecked( false );
   
   box->layout()->addWidget( new QLabel( "Destination file: ", box ) );
-  box->layout()->addWidget( destination_ = new BrowsedLineEditor( box ) );
-  destination_->setMinimumSize( QSize( 350, 0 ) );
+  box->layout()->addWidget( destination_editor_ = new BrowsedLineEditor( box ) );
+  _destinationEditor().setMinimumSize( QSize( 350, 0 ) );
   
   // options
   box = new QGroupBox( "options", this );
@@ -94,7 +93,7 @@ PrintDialog::PrintDialog( QWidget* parent ):
 
   h_layout = new QHBoxLayout();
   h_layout->setSpacing(5);
-  h_layout->setMargin(0); 
+  h_layout->setMargin(0);
   box->layout()->addItem( h_layout );
   
   h_layout->addWidget( wrap_checkbox_ = new QCheckBox( "Wrap lines to maximum size:", box ) );
@@ -110,12 +109,12 @@ PrintDialog::PrintDialog( QWidget* parent ):
   h_layout->setSpacing(5);
   h_layout->setMargin(0); 
   box->layout()->addItem( h_layout );
-  h_layout->addWidget( command_ = new CustomComboBox( box ) );
-  command_->setEditable( true );
-  command_->setEditable( true );
-  command_->setCaseSensitive( Qt::CaseSensitive );
-  command_->setAutoCompletion( true );
-  command_->setMinimumSize( QSize( 350, 0 ) );
+  h_layout->addWidget( command_editor_ = new CustomComboBox( box ) );
+  _commandEditor().setEditable( true );
+  _commandEditor().setEditable( true );
+  _commandEditor().setCaseSensitive( Qt::CaseSensitive );
+  _commandEditor().setAutoCompletion( true );
+  _commandEditor().setMinimumSize( QSize( 350, 0 ) );
 
   // browse command button associated to the CustomComboBox
   QPushButton* button = new QPushButton( box );
@@ -141,7 +140,7 @@ PrintDialog::PrintDialog( QWidget* parent ):
 void PrintDialog::setFile( const File& file )
 {
   Debug::Throw( "PrintDialog::setFile.\n" );
-  destination_->editor().setText( file.c_str() );
+  _destinationEditor().editor().setText( file.c_str() );
   _updateFile();
 }
 
@@ -151,7 +150,7 @@ void PrintDialog::_updateCheckBoxes( void )
   
   Debug::Throw( "PrintDialog::_updateCheckBoxes.\n" );
   maximum_line_size_->setEnabled( wrap_checkbox_->isChecked() );
-  command_->setEnabled( command_checkbox_->isChecked() );
+  _commandEditor().setEnabled( command_checkbox_->isChecked() );
   
 }
 
@@ -161,12 +160,12 @@ void PrintDialog::_updateFile( void )
  
   Debug::Throw( "PrintDialog::_updateFile.\n" );
   
-  File file( qPrintable( destination_->editor().text() ) );
+  File file( qPrintable( _destinationEditor().editor().text() ) );
   file = file.empty() ? File("document"):file.truncatedName();
   if( pdf_checkbox_->isChecked() ) file += ".pdf";
   else if( html_checkbox_->isChecked() ) file += ".html";
   
-  destination_->editor().setText( file.c_str() );
+  _destinationEditor().editor().setText( file.c_str() );
   
 }
 
@@ -186,8 +185,8 @@ void PrintDialog::_browseCommand( void )
   QStringList files( dialog.selectedFiles() );
   if( files.empty() ) return;
   
-  command_->setEditText( files.front() );
-  command_->addItem( files.front() );
+  _commandEditor().setEditText( files.front() );
+  _commandEditor().addItem( files.front() );
   
   return;
 

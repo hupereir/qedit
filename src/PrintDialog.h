@@ -35,6 +35,8 @@
 #include <QRadioButton>
 #include <QCheckBox>
 #include <QSpinBox>
+#include <QString>
+#include <QStringList>
 
 #include "BrowsedLineEditor.h"
 #include "CustomDialog.h"
@@ -96,7 +98,7 @@ class PrintDialog: public CustomDialog
   
   //! file
   QString destinationFile( void ) const
-  { return destination_->editor().text(); }
+  { return _destinationEditor().editor().text(); }
   
   //! use command
   void setUseCommand( const bool& value )
@@ -108,23 +110,23 @@ class PrintDialog: public CustomDialog
   
   //! command
   QString command( void ) const
-  { return command_->currentText(); }
+  { return _commandEditor().currentText(); }
   
   //! set command manually
-  void setCommand( const std::string& command )
-  { command_->setEditText( command.c_str() ); }
+  void setCommand( QString command )
+  { _commandEditor().setEditText( command ); }
   
   //! add commands to the combo-box list
-  void addCommand( const std::string& command )
-  { command_->addItem( command.c_str() ); }
+  void addCommand( QString command )
+  { _commandEditor().addItem( command ); }
   
   //! commands
-  std::list< std::string > commands( void ) const
+  QStringList commands( void ) const
   { 
-    Debug::Throw() << "PrintDialog::commands - maxCount: " << command_->QComboBox::count() << std::endl;
-    std::list< std::string > out;
-    for( int row = 0; row < command_->QComboBox::count(); row++ )
-    { out.push_back( qPrintable( command_->itemText( row ) ) ); }
+    Debug::Throw() << "PrintDialog::commands - maxCount: " << _commandEditor().QComboBox::count() << std::endl;
+    QStringList out;
+    for( int row = 0; row < _commandEditor().QComboBox::count(); row++ )
+    { out.push_back( _commandEditor().itemText( row ) ); }
     
     return out;
   }
@@ -140,6 +142,16 @@ class PrintDialog: public CustomDialog
   //! browse print command
   void _browseCommand( void );
   
+  protected:
+  
+  //! destination
+  BrowsedLineEditor& _destinationEditor( void ) const
+  { return *destination_editor_; }
+  
+  //! command editor
+  CustomComboBox& _commandEditor( void ) const
+  { return *command_editor_; }
+  
   private:
    
   //! a2ps checkbox
@@ -149,7 +161,7 @@ class PrintDialog: public CustomDialog
   QRadioButton* pdf_checkbox_;
     
   //! postscript file
-  BrowsedLineEditor* destination_;
+  BrowsedLineEditor* destination_editor_;
   
   //! wrap lines
   QCheckBox* wrap_checkbox_;
@@ -161,7 +173,7 @@ class PrintDialog: public CustomDialog
   QCheckBox* command_checkbox_;
   
   //! print command
-  CustomComboBox* command_;
+  CustomComboBox* command_editor_;
   
 };
 #endif
