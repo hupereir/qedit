@@ -144,6 +144,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   
   // transition widget
   transition_widget_ = new TransitionWidget( this );
+  _transitionWidget().setFlag( TransitionWidget::FROM_PARENT, false );
   _transitionWidget().hide();
   connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
   
@@ -275,10 +276,8 @@ void MainWindow::setActiveView( TextView& view )
     
     if( _transitionWidget().isEnabled() && isVisible() )
     {
-      _transitionWidget().resize( _stack().size() );
-      _transitionWidget().setStartWidget( &_stack() );
       _transitionWidget().setParent( &activeView() );
-      _transitionWidget().show();
+      _transitionWidget().initialize( &_stack() );
     }
 
     _stack().setCurrentWidget( &activeView() ); 
