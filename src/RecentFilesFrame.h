@@ -101,9 +101,6 @@ class RecentFilesFrame: public QWidget, public Counter
   { return model_; }
         
   private slots:
-
-  //! update configuration
-  void _updateConfiguration( void );
      
   //! update action
   void _updateActions( void );
@@ -119,9 +116,6 @@ class RecentFilesFrame: public QWidget, public Counter
 
   //! sessionFilesItem selected
   void _itemActivated( const QModelIndex& index );
-
-  //! session files sort order
-  void _storeSortMethod( int, Qt::SortOrder );
     
   private:
   

@@ -41,7 +41,6 @@
 #include "QuestionDialog.h"
 #include "QtUtil.h"
 #include "RecentFilesFrame.h"
-#include "Singleton.h"
 #include "TreeView.h"
 #include "Util.h"
 #include "XmlOptions.h"
@@ -67,7 +66,7 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   layout()->addWidget( list_ = new TreeView( this ) );
   list().setModel( &_model() );  
   list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
-  list().setMaskOptionName( "RECENT_FILES_MASK" );
+  list().setOptionName( "RECENT_FILES" );
   list().header()->hide();
   
   // actions
@@ -83,17 +82,12 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   // connections
   connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
   connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions( void ) ) );
-  connect( list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
   connect( list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
   connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
 
   connect( &_recentFiles(), SIGNAL( validFilesChecked( void ) ), SLOT( update( void ) ) );
   connect( &_recentFiles(), SIGNAL( contentsChanged( void ) ), SLOT( update( void ) ) );
-  
-  // configuration
-  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-  _updateConfiguration();
- 
+   
 }
 
 //______________________________________________________________________
@@ -154,35 +148,6 @@ void RecentFilesFrame::enterEvent( QEvent* e )
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_updateConfiguration( void )
-{ 
-  Debug::Throw( "RecentFilesFrame::_updateConfiguration.\n" ); 
-  
-  // session files list sorting
-  if( XmlOptions::get().find( "RECENT_FILES_SORT_COLUMN" ) && XmlOptions::get().find( "RECENT_FILES_SORT_ORDER" ) )
-  { 
-   
-    list().sortByColumn( 
-      XmlOptions::get().get<int>( "RECENT_FILES_SORT_COLUMN" ), 
-      (Qt::SortOrder)(XmlOptions::get().get<int>( "RECENT_FILES_SORT_ORDER" ) ) ); 
-
-  } else if( XmlOptions::get().find( "SORT_FILES_BY_DATE" ) ) {
-    
-    list().sortByColumn( 
-      FileRecordModel::TIME, 
-      Qt::DescendingOrder ); 
-  
-  } else {
-    
-    list().sortByColumn( 
-      FileRecordModel::FILE, 
-      Qt::DescendingOrder ); 
-    
-  }
-
-}
-
-//______________________________________________________________________
 void RecentFilesFrame::_updateActions( void )
 { 
   Debug::Throw( "RecentFilesFrame:_updateActions.\n" );
@@ -217,16 +182,6 @@ void RecentFilesFrame::_open( void )
   // one should check the number of files to be edited
   for( FileRecordModel::List::const_iterator iter = valid_selection.begin(); iter != valid_selection.end(); iter++ )
   { emit fileActivated( *iter ); }
-  
-}
-
-//______________________________________________________________________
-void RecentFilesFrame::_storeSortMethod( int column, Qt::SortOrder order )
-{
-  
-  Debug::Throw( "RecentFilesFrame::_storeSortMethod.\n" );
-  XmlOptions::get().set<int>( "RECENT_FILES_SORT_COLUMN", column );
-  XmlOptions::get().set<int>( "RECENT_FILES_SORT_ORDER", order );
   
 }
 

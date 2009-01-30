@@ -91,7 +91,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   layout->addWidget( list_ = new AnimatedTreeView( this ), 1);
   _list().setModel( &_model() );
   _list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
-  _list().setMaskOptionName( "FILE_SYSTEM_LIST_MASK" );
+  _list().setOptionName( "FILE_SYSTEM_LIST" );
   _list().header()->hide();
   
   // list menu  

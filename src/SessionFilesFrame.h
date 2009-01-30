@@ -98,9 +98,6 @@ class SessionFilesFrame: public QWidget, public Counter
   
   private slots:
 
-  //! update configuration
-  void _updateConfiguration( void );
-     
   //! update session files
   void _updateActions( void );
   
@@ -119,9 +116,6 @@ class SessionFilesFrame: public QWidget, public Counter
   //! sessionFilesItem selected
   void _itemActivated( const QModelIndex& index );
 
-  //! session files sort order
-  void _storeSortMethod( int, Qt::SortOrder );
-    
   private:
   
   //! install actions

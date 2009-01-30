@@ -65,7 +65,7 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   // list
   layout()->addWidget( list_ = new View( this, &_model() ) );
   list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
-  list().setMaskOptionName( "SESSION_FILES_MASK" );
+  list().setOptionName( "SESSION_FILES" );
   list().header()->hide();
   list().setDragEnabled(true);
 
@@ -85,13 +85,8 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
   connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions() ) );
   connect( list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
-  connect( list().header(), SIGNAL( sortIndicatorChanged( int, Qt::SortOrder ) ), SLOT( _storeSortMethod( int, Qt::SortOrder ) ) );
   connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
  
-  //! configuration
-  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-  _updateConfiguration();
-    
 }
 
 //______________________________________________________________________
@@ -136,36 +131,6 @@ void SessionFilesFrame::update( void )
   if( iter != records.end() ) select( iter->file() );  
   
   Debug::Throw( "SessionFilesFrame:_update - done.\n" ); 
-
-}
-
-//______________________________________________________________________
-void SessionFilesFrame::_updateConfiguration( void )
-{ 
-  Debug::Throw( "SessionFilesFrame::_updateConfiguration.\n" ); 
-  
-  // session files list sorting
-  if( XmlOptions::get().find( "SESSION_FILES_SORT_COLUMN" ) && XmlOptions::get().find( "SESSION_FILES_SORT_ORDER" ) )
-  { 
-    
-    list().sortByColumn( 
-      XmlOptions::get().get<int>( "SESSION_FILES_SORT_COLUMN" ), 
-      (Qt::SortOrder) XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ); 
-
-  } else if( XmlOptions::get().find( "SORT_FILES_BY_DATE" ) ) {
-    
-    list().sortByColumn( 
-      FileRecordModel::TIME, 
-      Qt::DescendingOrder ); 
-  
-  } else {
-    
-    list().sortByColumn( 
-      FileRecordModel::FILE, 
-      Qt::DescendingOrder ); 
-    
-  }
-
 
 }
 
@@ -219,16 +184,6 @@ void SessionFilesFrame::_close( void )
   Debug::Throw( "SessionFilesFrame:_close.\n" ); 
   SessionFilesModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
   if( !selection.empty() ) emit filesClosed( selection );
-  
-}
-
-//______________________________________________________________________
-void SessionFilesFrame::_storeSortMethod( int column, Qt::SortOrder order )
-{
-  
-  Debug::Throw( "SessionFilesFrame::_storeSortMethod.\n" );
-  XmlOptions::get().set<int>( "SESSION_FILES_SORT_COLUMN", column );
-  XmlOptions::get().set<int>( "SESSION_FILES_SORT_ORDER", order );
   
 }
 
