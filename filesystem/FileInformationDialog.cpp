@@ -55,9 +55,13 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
 {
   Debug::Throw( "FileInformationDialog::FileInformationDialog.\n" );
 
+  // file name  
+  const File& file( record.file() ); 
+  setWindowTitle( QString( file.empty() ? "File Information":file.localName().c_str() )+ " - qedit" );
+  
   setLayout( new QVBoxLayout() );
-  layout()->setSpacing(10);
-  layout()->setMargin(10);
+  layout()->setSpacing(5);
+  layout()->setMargin(2);
 
   tab_widget_ = new AnimatedTabWidget( this );
   layout()->addWidget( &tabWidget() );
@@ -69,8 +73,8 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
   Debug::Throw( "FileInformationDialog::FileInformationDialog - general tab created.\n" );
 
   QHBoxLayout* h_layout = new QHBoxLayout();
-  h_layout->setMargin(10);
-  h_layout->setSpacing(10);
+  h_layout->setMargin(5);
+  h_layout->setSpacing(5);
   box->setLayout( h_layout );
   
   //! try load Question icon
@@ -89,10 +93,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
   grid_layout->setSpacing( 5 );
   grid_layout->setMaxCount( 2 );
   layout->addLayout( grid_layout );
-  
-  // file name  
-  const File& file( record.file() ); 
-  
+    
   grid_layout->addWidget( label = new QLabel( "file: ", box ) );
   grid_layout->addWidget( label = new QLabel( file.empty() ? "untitled":file.localName().c_str(), box ) );
   QFont font( label->font() );
@@ -234,11 +235,11 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
   layout->addStretch(1);
 
   Debug::Throw( "FileInformationDialog::FileInformationDialog - Permissions tab filled.\n" );
-  
-  // close button 
-  QPushButton *button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Close", this );
-  FileInformationDialog::layout()->addWidget( button );
-  connect( button, SIGNAL( clicked() ), SLOT( close() ) );
+
+//   // close button 
+//   QPushButton *button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Close", this );
+//   FileInformationDialog::layout()->addWidget( button );
+//   connect( button, SIGNAL( clicked() ), SLOT( close() ) );
   
   adjustSize();
   
