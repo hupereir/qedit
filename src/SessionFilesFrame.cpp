@@ -255,8 +255,8 @@ void SessionFilesFrame::View::timerEvent( QTimerEvent* event )
 void SessionFilesFrame::View::mousePressEvent( QMouseEvent* event )
 { 
   Debug::Throw( "SessionFilesFrame::View::mousePressEvent.\n" );
-  model_->setDragEnabled(false);
-  drag_timer_.start( 200, this );
+  //model_->setDragEnabled(false);
+  //drag_timer_.start( 200, this );
   return TreeView::mousePressEvent( event ); 
 }
 
@@ -264,13 +264,10 @@ void SessionFilesFrame::View::mousePressEvent( QMouseEvent* event )
 void SessionFilesFrame::View::mouseReleaseEvent( QMouseEvent* event )
 { 
   Debug::Throw( "SessionFilesFrame::View::mouseReleaseEvent.\n" );
-  drag_timer_.stop();
+  //drag_timer_.stop();
   return TreeView::mouseReleaseEvent( event ); 
 }
 
 //______________________________________________________________________
 void SessionFilesFrame::View::mouseMoveEvent( QMouseEvent* event )
-{ 
-  //drag_timer_.start( 200, this );
-  return TreeView::mouseMoveEvent( event ); 
-}
+{ return TreeView::mouseMoveEvent( event ); }

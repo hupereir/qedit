@@ -48,6 +48,7 @@
 #include "NavigationFrame.h"
 #include "NewFileDialog.h"
 #include "InformationDialog.h"
+#include "ProgressDialog.h"
 #include "QuestionDialog.h"
 #include "QtUtil.h"
 #include "RecentFilesFrame.h"
@@ -320,15 +321,17 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   Debug::Throw( "WindowServer::multipleFileReplace.\n" );
     
   // keep track of number of replacements
-  unsigned int counts(0);
+  unsigned int counts(0);  
   
   // create progressDialog
-  QProgressDialog dialog;
-  dialog.setLabelText( "Replace text in selection" );
+  ProgressDialog dialog;
+  dialog.setAttribute( Qt::WA_DeleteOnClose );
   QtUtil::centerOnWidget( &dialog, qApp->activeWindow() );
   dialog.show();
   
-  // retrieve frame associated with file
+  // loop over files to get relevant displays
+  int maximum(0);
+  BASE::KeySet<TextDisplay> displays;
   BASE::KeySet<MainWindow> windows( this );
   for( list<File>::iterator iter = files.begin(); iter != files.end(); iter++ )
   {
@@ -344,14 +347,28 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
     for( BASE::KeySet<TextView>::iterator view_iter = views.begin(); view_iter != views.end(); view_iter++ )
     {
       if( !(*view_iter)->selectDisplay( file ) ) continue;
-      connect( &(*view_iter)->activeDisplay(), SIGNAL( busy( int ) ), &dialog, SLOT( setMaximum( int ) ) );
-      connect( &(*view_iter)->activeDisplay(), SIGNAL( progressAvailable( int ) ), &dialog, SLOT( setValue( int ) ) );
-      counts += (*view_iter)->activeDisplay().replaceInWindow( selection, false );
+      TextDisplay* display( &(*view_iter)->activeDisplay() );
+      connect( display, SIGNAL( progressAvailable( int ) ), &dialog, SLOT( setValue( int ) ) );
+      maximum += display->toPlainText().size();
+      displays.insert( display );
     }
     
   }
+
+  dialog.setMaximum( maximum );
+  //QtUtil::centerOnWidget( &dialog, qApp->activeWindow() );
+  //dialog.show();
+
+  // loop over displays and perform replacement
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  {
+    counts += (*iter)->replaceInWindow( selection, false );
+    dialog.setOffset( dialog.value() );
+  }
   
-  dialog.hide();
+  // close progress dialog
+  // dialog.close();
+  dialog.close();
   
   // popup dialog
   QString buffer;

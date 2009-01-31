@@ -64,6 +64,7 @@ HEADERS = \
   NewFileDialog.h \
   ParenthesisHighlight.h \
   PrintDialog.h \
+  ProgressDialog.h \
   RecentFilesFrame.h \
   ReplaceDialog.h \
   SaveAllDialog.h \

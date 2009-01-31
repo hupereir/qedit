@@ -246,7 +246,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   //! first call
   void _setFirstCall( bool value )
   { first_call_ = value; }
-
+  
   //! true at first call (via Application::realizeWidget)
   bool first_call_;
   

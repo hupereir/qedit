@@ -1019,9 +1019,6 @@ void MainWindow::_createReplaceDialog( void )
 
     connect( this, SIGNAL( noMatchFound( void ) ), replace_dialog_, SLOT( noMatchFound( void ) ) );
     connect( this, SIGNAL( matchFound( void ) ), replace_dialog_, SLOT( clearLabel( void ) ) );
-    connect( this, SIGNAL( busy( int ) ), replace_dialog_, SLOT( busy( int ) ) );
-    connect( this, SIGNAL( progressAvailable( int ) ), replace_dialog_, SLOT( progressAvailable( int ) ) );
-    connect( this, SIGNAL( idle( void ) ), replace_dialog_, SLOT( idle( void ) ) );
 
   }
   

@@ -714,10 +714,6 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
   connect( display, SIGNAL( noMatchFound() ), &window, SIGNAL( noMatchFound() ) );
   connect( display, SIGNAL( matchFound() ), &window, SIGNAL( matchFound() ) );
   
-  connect( display, SIGNAL( busy( int ) ), &window, SIGNAL( busy( int ) ) );
-  connect( display, SIGNAL( progressAvailable( int ) ), &window, SIGNAL( progressAvailable( int ) ) );
-  connect( display, SIGNAL( idle( void ) ), &window, SIGNAL( idle( void ) ) );
-
   display->replaceAction().disconnect();
   connect( &display->replaceAction(), SIGNAL( triggered() ), &window, SLOT( replaceFromDialog() ) );
   
