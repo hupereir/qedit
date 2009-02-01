@@ -353,15 +353,15 @@ void MainWindow::findFromDialog( void )
 {
   Debug::Throw( "MainWindow::findFromDialog.\n" );
 
-  // create
-  if( !find_dialog_ ) _createBaseFindDialog();
-
-  // enable/disable regexp
-  _findDialog().enableRegExp( true );
-
-  // raise dialog
-  _findDialog().centerOnParent().show();
-
+  // set default text
+  // update find text
+  QString text( activeDisplay().selection().text() );
+  if( !text.isEmpty() )
+  {
+    const int max_length( 1024 );
+    text = text.left( max_length );
+  }
+  
   /*
     setting the default text values
     must be done after the dialog is shown
@@ -370,25 +370,13 @@ void MainWindow::findFromDialog( void )
   */
 
   // set default string to find
+  if( !find_dialog_ ) _createBaseFindDialog();
+  _findDialog().enableRegExp( true );
+  _findDialog().centerOnParent().show();
   _findDialog().synchronize();
   _findDialog().clearLabel();
-
-  // set default text
-  // update find text
-  QString text;
-  if( ( text = qApp->clipboard()->text( QClipboard::Selection) ).isEmpty() )
-  {
-    if( activeDisplay().textCursor().hasSelection() ) text = activeDisplay().textCursor().selectedText();
-    else text = TextDisplay::lastSelection().text();
-  }
+  _findDialog().setText( text );
   
-  if( !text.isEmpty() )
-  {
-    const int max_length( 1024 );
-    text = text.left( max_length );
-    _findDialog().setText( text );
-  }
-
   // changes focus
   _findDialog().activateWindow();
   _findDialog().editor().setFocus();
