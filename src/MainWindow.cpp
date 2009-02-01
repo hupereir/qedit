@@ -999,6 +999,7 @@ void MainWindow::_createReplaceDialog( void )
   {
 
     replace_dialog_ = new ReplaceDialog( this );
+    replace_dialog_->setWindowTitle( "Replace in Text" );
     connect( replace_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
     connect( replace_dialog_, SIGNAL( replace( TextSelection ) ), SLOT( _replace( TextSelection ) ) );
     connect( replace_dialog_, SIGNAL( replaceInWindow( TextSelection ) ), SLOT( _replaceInWindow( TextSelection ) ) );
