@@ -123,6 +123,10 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
   grid_layout->addWidget( label = new QLabel( "size: ", box ) );
   grid_layout->addWidget( label = new QLabel( file.exists() ? file.sizeString().c_str(): "0", box ) );
   
+  //  created
+  grid_layout->addWidget( label = new QLabel( "created: ", box ) );
+  grid_layout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.created() ).string().c_str():"unknown", box ) );
+  
   // last accessed
   grid_layout->addWidget( label = new QLabel( "last accessed: ", box ) );
   grid_layout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.lastAccessed() ).string().c_str():"never", box ) );
