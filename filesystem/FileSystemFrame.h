@@ -91,9 +91,6 @@ class FileSystemFrame: public QWidget, public Counter
   //! custom event, used to retrieve file validity check event
   void customEvent( QEvent* );
  
-  //! show event
-  virtual void showEvent( QShowEvent* );
-
   private slots:
   
   //! item activated
@@ -152,6 +149,9 @@ class FileSystemFrame: public QWidget, public Counter
 
   //! restore selected jobs from model
   void _restoreSelection( void );
+  
+  //! animation finished
+  void _animationFinished( void );
   
   private:
     

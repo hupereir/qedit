@@ -47,6 +47,7 @@
 #include "RemoveFilesDialog.h"
 #include "RenameFileDialog.h"
 #include "Singleton.h"
+#include "TransitionWidget.h"
 #include "Util.h"
 #include "XmlOptions.h"
 
@@ -113,6 +114,8 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   _list().menu().addSeparator();
   _list().menu().addAction( &_filePropertiesAction() );
 
+  connect( &_list().transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
+  
   // connections
   connect( &_model(), SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
   connect( _list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _updateActions() ) );
@@ -144,22 +147,15 @@ void FileSystemFrame::setPath( File path )
   assert( path.isDirectory() );
   path_ = path;
   history_.add( path );
-    
-  _list().initializeAnimation();
-  _update();
-  _list().startAnimation();
-  _updateNavigationActions();
   
-  // update combobox
-  if( _comboBox().findText( path.c_str() ) < 0 )
-  { _comboBox().addItem( path.c_str() ); }
-  
-  _comboBox().setEditText( path.c_str() );
-
-  // reset file system watcher
-  QStringList directories( file_system_watcher_.directories() );
-  if( !directories.isEmpty() ) file_system_watcher_.removePaths( directories );
-  file_system_watcher_.addPath( path.c_str() );
+  if( _list().initializeAnimation() )
+  {
+    _update();
+    _list().startAnimation();
+  } else {
+    _update();
+    _animationFinished();
+  }
   
 }
   
@@ -502,6 +498,25 @@ void FileSystemFrame::_restoreSelection( void )
   }
   
   return;
+}
+
+//_____________________________________________
+void FileSystemFrame::_animationFinished( void )
+{
+
+  Debug::Throw( "FileSystemFrame::_animationFinished.\n" );
+  _updateNavigationActions();
+  
+  // update combobox
+  if( _comboBox().findText( path().c_str() ) < 0 )
+  { _comboBox().addItem( path().c_str() ); }
+  
+  _comboBox().setEditText( path().c_str() );
+
+  // reset file system watcher
+  QStringList directories( file_system_watcher_.directories() );
+  if( !directories.isEmpty() ) file_system_watcher_.removePaths( directories );
+  file_system_watcher_.addPath( path().c_str() );
 }
 
 //_____________________________________________
