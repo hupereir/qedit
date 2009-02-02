@@ -138,17 +138,17 @@ void FileSystemFrame::setPath( File path )
 
   Debug::Throw() << "FileSystemFrame::setPath - path: " << path << endl;
   
+  // check if changed
+  if( path_ == path ) return;
+  
   // update path
   assert( path.isDirectory() );
   path_ = path;
   history_.add( path );
     
-  // transition
   _list().initializeAnimation();
   _update();
-  
   _list().startAnimation();
-  
   _updateNavigationActions();
   
   // update combobox
@@ -166,7 +166,11 @@ void FileSystemFrame::setPath( File path )
   
 //_________________________________________________________
 void FileSystemFrame::setHome( const File& path )
-{ home_path_ = path; }
+{ 
+  Debug::Throw( "FileSystemFrame::setHome.\n" );
+  home_path_ = path; 
+  if( FileSystemFrame::path().empty() ) setPath( path );  
+}
 
 //_________________________________________________________
 void FileSystemFrame::clear()
@@ -177,13 +181,13 @@ void FileSystemFrame::clear()
 
 }
 
-//____________________________________________
-void FileSystemFrame::showEvent( QShowEvent* )
-{
-  Debug::Throw( "FileSystemFrame::showEvent.\n" );
-  if( path().empty() ) setPath( Util::workingDirectory() );  
-  else _update();
-}
+// //____________________________________________
+// void FileSystemFrame::showEvent( QShowEvent* )
+// {
+//   Debug::Throw( "FileSystemFrame::showEvent.\n" );
+//   if( path().empty() ) setPath( Util::workingDirectory() );  
+//   //else _update();
+// }
 
 //______________________________________________________
 void FileSystemFrame::customEvent( QEvent* event )
@@ -307,7 +311,6 @@ void FileSystemFrame::_update( void )
   if( thread_.isRunning() ) return;
   thread_.setPath( path(), _hiddenFilesAction().isChecked() );
   thread_.start();
-  
   setCursor( Qt::WaitCursor ); 
 
 }
