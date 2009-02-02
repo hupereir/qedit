@@ -126,7 +126,6 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
   connect( &file_system_watcher_, SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
   connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-  connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
   _updateConfiguration();
   _updateActions();
 
@@ -249,10 +248,6 @@ void FileSystemFrame::_updateConfiguration( void )
   Debug::Throw( "FileSystemFrame::_updateConfiguration.\n" );
   _hiddenFilesAction().setChecked( XmlOptions::get().get<bool>( "SHOW_HIDDEN_FILES" ) );
 }
-
-//______________________________________________________
-void FileSystemFrame::_saveConfiguration( void )
-{ Debug::Throw( "FileSystemFrame::_saveConfiguration.\n" ); }
     
 //______________________________________________________
 void FileSystemFrame::_updateNavigationActions( void )

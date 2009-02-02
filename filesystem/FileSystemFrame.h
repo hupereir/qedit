@@ -104,10 +104,7 @@ class FileSystemFrame: public QWidget, public Counter
   
   //! update configuration
   void _updateConfiguration( void );
-  
-  //! save configuration
-  void _saveConfiguration( void );
-     
+       
   //! update navigation actions based on current location and history
   void _updateNavigationActions( void );
 
