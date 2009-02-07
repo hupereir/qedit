@@ -54,7 +54,7 @@ TextParenthesis::TextParenthesis( const QDomElement& element ):
     if( attribute.name() == XML::BEGIN ) first_ = XmlString( attribute.value() ).toText();
     else if( attribute.name() == XML::END ) second_ = XmlString( attribute.value() ).toText();
     else if( attribute.name() == XML::REGEXP ) regexp_.setPattern( XmlString( attribute.value() ).toText() );
-    else cout << "TextParenthesis::TextParenthesis - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
+    else Debug::Throw(0) << "TextParenthesis::TextParenthesis - unrecognized attribute: " << attribute.name() << endl;
   }
   
   // create regexp

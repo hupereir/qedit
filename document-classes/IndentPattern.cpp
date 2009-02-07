@@ -66,7 +66,7 @@ IndentPattern::IndentPattern( const QDomElement& element ):
     if( attribute.name() == XML::TYPE ) setType( (Type) attribute.value().toInt() );
     else if( attribute.name() == XML::NAME ) setName( attribute.value() );
     else if( attribute.name() == XML::SCALE ) setScale( attribute.value().toInt() );
-    else cout << "IndentPattern::IndentPattern - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
+    else Debug::Throw(0) << "IndentPattern::IndentPattern - unrecognized attribute: " << attribute.name() << endl;
     
   }
   
@@ -80,7 +80,7 @@ IndentPattern::IndentPattern( const QDomElement& element ):
       Rule rule( child_element );
       if( rule.isValid() ) addRule( rule );
     }
-    else cout << "IndentPattern::IndentPattern - unrecognized child: " << qPrintable( child_element.tagName() ) << endl;
+    else Debug::Throw(0) << "IndentPattern::IndentPattern - unrecognized child: " << child_element.tagName() << endl;
   }
   
   assert( !rules().empty() );
@@ -141,7 +141,7 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
     {
       if( attribute.value().indexOf( XML::OPTION_NO_CASE, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CASE_INSENSITIVE, true ); 
     } 
-    else cout << "Rule::Rule - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
+    else Debug::Throw(0) << "Rule::Rule - unrecognized attribute: " << attribute.name() << endl;
   }
   
   // parse children
@@ -150,7 +150,7 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
   {
     QDomElement child_element = child_node.toElement(); 
     if( child_element.tagName() == XML::REGEXP ) setPattern( XmlString( child_element.text() ).toText() );
-    else cout << "Rule::Rule - unrecognized child: " << qPrintable( child_element.tagName() ) << endl;
+    else Debug::Throw(0) << "Rule::Rule - unrecognized child: " << child_element.tagName() << endl;
   }
   
   regexp_.setCaseSensitivity( flag( CASE_INSENSITIVE ) ? Qt::CaseInsensitive : Qt::CaseSensitive );

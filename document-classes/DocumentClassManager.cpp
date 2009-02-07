@@ -106,7 +106,7 @@ bool DocumentClassManager::read( const File& filename )
       // reset IndentPattern counter (for debugging)
       IndentPattern::resetCounter();
 
-    } else Debug::Throw() << "DocumentClassManager::read - unrecognized child " << qPrintable( element.tagName() ) << endl;
+    } else Debug::Throw() << "DocumentClassManager::read - unrecognized child " << element.tagName() << endl;
   }
 
   // store error
@@ -122,7 +122,7 @@ bool DocumentClassManager::read( const File& filename )
 //________________________________________________________
 bool DocumentClassManager::write( const QString& class_name, const File& filename ) const
 {
-  Debug::Throw() << "DocumentClassManager::write - class: " << qPrintable( class_name ) << " file: " << filename << endl;
+  Debug::Throw() << "DocumentClassManager::write - class: " << class_name << " file: " << filename << endl;
   
   // try retrieve DocumentClass
   List::const_iterator iter = find_if( document_classes_.begin(), document_classes_.end(), DocumentClass::SameNameFTor( class_name ) );
@@ -209,7 +209,7 @@ DocumentClass DocumentClassManager::find( const File& filename ) const
 //________________________________________________________
 DocumentClass DocumentClassManager::get( const QString& name ) const
 {  
-  Debug::Throw() << "DocumentClassManager::Get - name: " << qPrintable( name ) << endl;
+  Debug::Throw() << "DocumentClassManager::Get - name: " << name << endl;
   
   // try load class matching name
   List::const_iterator iter = find_if(
@@ -226,7 +226,7 @@ DocumentClass DocumentClassManager::get( const QString& name ) const
 //________________________________________________________
 bool DocumentClassManager::remove( const QString& name )
 {
-  Debug::Throw() << "DocumentClassManager::Remove - name: " << qPrintable( name ) << endl; 
+  Debug::Throw() << "DocumentClassManager::Remove - name: " << name << endl; 
   
   // find class list matching name
   List::iterator iter = find_if(

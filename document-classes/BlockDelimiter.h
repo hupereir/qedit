@@ -119,11 +119,11 @@ class BlockDelimiter: public Counter
   QRegExp regexp_;
   
   //! streamer
-  friend std::ostream& operator << ( std::ostream& out, const BlockDelimiter& delimiter )
+  friend QTextStream& operator << ( QTextStream& out, const BlockDelimiter& delimiter )
   {
-    out << " first: " << qPrintable( delimiter.first() ) 
-      << " second: " << qPrintable( delimiter.second() ) 
-      << " regexp: " << qPrintable( delimiter.regexp().pattern() );
+    out << " first: " << delimiter.first()
+      << " second: " << delimiter.second() 
+      << " regexp: " << delimiter.regexp().pattern();
     return out;
   }
   

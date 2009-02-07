@@ -361,9 +361,9 @@ class HighlightPattern: public Counter
   //!@name dumpers
   //@{  
   //! dump
-  friend std::ostream& operator << (std::ostream& out, const HighlightPattern& pattern )
+  friend QTextStream& operator << ( QTextStream& out, const HighlightPattern& pattern )
   {  
-    out << "id: " << pattern.id() << " name: " << qPrintable( pattern.name() ) << " parent name:" << qPrintable( pattern.parent() );
+    out << "id: " << pattern.id() << " name: " << pattern.name() << " parent name:" << pattern.parent();
     return out;
   }
   

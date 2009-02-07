@@ -53,7 +53,7 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element, const unsigned int& 
     if( attribute.name() == XML::BEGIN ) first_ = XmlString( attribute.value() ).toText();
     else if( attribute.name() == XML::END ) second_ = XmlString( attribute.value() ).toText();
     else if( attribute.name() == XML::REGEXP ) regexp_.setPattern( XmlString( attribute.value() ).toText() );
-    else cout << "BlockDelimiter::BlockDelimiter - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
+    else Debug::Throw(0) << "BlockDelimiter::BlockDelimiter - unrecognized attribute: " << attribute.name() << endl;
   }
   
   // create regexp

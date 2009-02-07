@@ -76,7 +76,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
       if( attribute.value().indexOf( XML::OPTION_DEFAULT, 0, Qt::CaseInsensitive ) >= 0 ) default_ = true;    
       
     } else if( attribute.name() == XML::BASE_INDENTATION ) _setBaseIndentation( attribute.value().toInt() );
-    else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
+    else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized attribute: " << attribute.name() << endl;
     
   }
   
@@ -114,7 +114,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
       TextMacro macro( child_element );
       if( macro.isValid() ) text_macros_.push_back( macro );
 
-    } else cout << "DocumentClass::DocumentClass - unrecognized child " << qPrintable( child_element.tagName() ) << ".\n";
+    } else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized child " << child_element.tagName() << ".\n";
 
   }
 
@@ -134,7 +134,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     {
       iter->setParentId( (*parent_iter).id() );
       (*parent_iter).addChild( *iter );
-    } else Debug::Throw(0) << "DocumentClass::DocumentClass - unable to load parent named " << qPrintable( iter->parent() ) << endl;
+    } else Debug::Throw(0) << "DocumentClass::DocumentClass - unable to load parent named " << iter->parent() << endl;
   }
 
   // assign styles to patterns
@@ -142,7 +142,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
   {
     set<HighlightStyle>::iterator style_iter ( highlight_styles_.find( iter->style() ) );
     if( style_iter != highlight_styles_.end() ) iter->setStyle( *style_iter );
-    else Debug::Throw(0) << "HighlightParser::Read - unrecognized style " << qPrintable( iter->style().name() ) << endl;
+    else Debug::Throw(0) << "HighlightParser::Read - unrecognized style " << iter->style().name() << endl;
   }
 
 }

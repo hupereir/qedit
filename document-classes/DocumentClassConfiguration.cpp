@@ -137,7 +137,7 @@ DocumentClass DocumentClassConfiguration::documentClass( void )
 {
   document_class_.setName( name_editor_->text() );
   document_class_.setIcon( icon_editor_->text() );
-  document_class_.setFile( File( qPrintable( file_editor_->editor().text() ) ) );
+  document_class_.setFile( file_editor_->editor().text() );
   document_class_.setFileMatchingPattern( file_pattern_editor_->text() );
   document_class_.setFirstLineMatchingPattern( first_line_pattern_editor_->text() );
   document_class_.setBaseIndentation( base_indentation_spinbox_->value() );

@@ -53,7 +53,7 @@ HighlightStyle::HighlightStyle( const QDomElement& element ):
     if( attribute.name() == XML::NAME ) setName( attribute.value() );
     else if( attribute.name() == XML::FORMAT ) setFontFormat( attribute.value().toInt() );
     else if( attribute.name() == XML::COLOR ) setColor( QColor( attribute.value() ) );
-    else   cout << "Option::Option - unrecognized attribute " << qPrintable( attribute.name() ) << ".\n";
+    else Debug::Throw(0) << "Option::Option - unrecognized attribute " << attribute.name() << ".\n";
   
   }
 }

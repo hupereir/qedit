@@ -199,7 +199,7 @@ void DocumentClassManagerDialog::_loadFile( void )
   QStringList files( dialog.selectedFiles() );
   if( files.empty() ) return;
       
-  File file = File( qPrintable( files.front() ) ).expand();
+  File file = File( files.front() ).expand();
   
   // try load from file manager and add to options
   if( document_class_manager_->read( file ) ) 
@@ -230,7 +230,7 @@ void DocumentClassManagerDialog::_save( void )
   
   QStringList files( dialog.selectedFiles() );
   if( files.empty() ) return;
-  File file = File( qPrintable( files.front() ) );
+  File file( files.front() );
   
   // check if file is directory
   if( file.isDirectory() )
@@ -254,7 +254,7 @@ void DocumentClassManagerDialog::_save( void )
     return;
   }
   
-  document_class_manager_->write( qPrintable( model_.get( current ).name() ), file );
+  document_class_manager_->write( model_.get( current ).name(), file );
   return;
 }
 

@@ -178,11 +178,11 @@ class TextParenthesis: public Counter
   QRegExp regexp_;
   
   //! streamer
-  friend std::ostream& operator << ( std::ostream& out, const TextParenthesis& parenthesis )
+  friend QTextStream& operator << ( QTextStream& out, const TextParenthesis& parenthesis )
   {
-    out << " first: " << qPrintable( parenthesis.first() ) 
-      << " second: " << qPrintable( parenthesis.second() ) 
-      << " regexp: " << qPrintable( parenthesis.regexp().pattern() );
+    out << " first: " << parenthesis.first() 
+      << " second: " << parenthesis.second() 
+      << " regexp: " << parenthesis.regexp().pattern();
     return out;
   }
   

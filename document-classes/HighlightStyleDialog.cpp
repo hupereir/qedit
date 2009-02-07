@@ -80,6 +80,6 @@ void HighlightStyleDialog::setStyle( const HighlightStyle& style )
 HighlightStyle HighlightStyleDialog::style( void ) const
 {
   Debug::Throw( "HighlightStyleDialog::style\n" );
-  return HighlightStyle( qPrintable( editor_->text() ), font_info_->format(), QColor( color_->colorName() ) );
+  return HighlightStyle( editor_->text(), font_info_->format(), QColor( color_->colorName() ) );
 }
   

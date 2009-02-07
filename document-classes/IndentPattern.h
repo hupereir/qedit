@@ -233,9 +233,9 @@ class IndentPattern: public Counter
     unsigned int flags_;
    
     //! streamer
-    friend std::ostream& operator << ( std::ostream& out, const Rule& rule )
+    friend QTextStream& operator << ( QTextStream& out, const Rule& rule )
     {
-      out << "Rule - par_id: " << rule.paragraph_ << " RegExp: \"" << qPrintable( rule.regexp_.pattern() ) << "\"";
+      out << "Rule - par_id: " << rule.paragraph_ << " RegExp: \"" << rule.regexp_.pattern() << "\"";
       return out;
     }  
   };
@@ -286,11 +286,11 @@ class IndentPattern: public Counter
   Rule::List rules_;
       
   //! dumper
-  friend std::ostream& operator << ( std::ostream& out, const IndentPattern& pattern )
+  friend QTextStream& operator << ( QTextStream& out, const IndentPattern& pattern )
   {
-    out << "IndentPattern - name: " << qPrintable( pattern.name() ) << " type: " << pattern.type_ << std::endl;
+    out << "IndentPattern - name: " << pattern.name() << " type: " << pattern.type_ << endl;
     for( Rule::List::const_iterator iter =  pattern.rules_.begin(); iter != pattern.rules_.end(); iter++ )
-    out << "  " << *iter << std::endl;
+    out << "  " << *iter << endl;
     return out;
   }
   

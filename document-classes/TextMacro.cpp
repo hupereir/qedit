@@ -64,10 +64,10 @@ TextMacro::TextMacro( const QDomElement& element ):
     else if( attribute.name() == XML::OPTIONS )
     {
       if( attribute.value().indexOf( XML::OPTION_SEPARATOR, 0, Qt::CaseInsensitive ) >= 0 ) setIsSeparator();
-    } else cout << "TextMacro::TextMacro - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
+    } else Debug::Throw(0) << "TextMacro::TextMacro - unrecognized attribute: " << attribute.name() << endl;
   }
 
-  Debug::Throw() << "TextMacro::TextMacro - name: " << qPrintable( name() ) << endl;
+  Debug::Throw() << "TextMacro::TextMacro - name: " << name() << endl;
   
   // parse children
   for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() ) 
@@ -75,7 +75,7 @@ TextMacro::TextMacro( const QDomElement& element ):
     QDomElement child_element = child_node.toElement(); 
     if( child_element.isNull() ) continue;
     if( child_element.tagName() == XML::RULE ) addRule( Rule( child_element ) );
-    else cout << "TextMacro::TextMacro - unrecognized child: " << qPrintable( child_element.tagName() ) << endl;
+    else Debug::Throw(0) << "TextMacro::TextMacro - unrecognized child: " << child_element.tagName() << endl;
   }
   
   assert( isSeparator() || !rules_.empty() );
@@ -117,7 +117,7 @@ TextMacro::Rule::Rule( const QDomElement& element ):
     if( attribute.name() == XML::OPTIONS ) 
     {
       if( attribute.value().indexOf( XML::OPTION_NO_SPLIT, 0, Qt::CaseInsensitive ) >= 0 ) setNoSplitting();
-    } else cout << "TextMacro::Rule::Rule - unrecognized attribute: " << qPrintable( attribute.name() ) << endl;
+    } else Debug::Throw(0) << "TextMacro::Rule::Rule - unrecognized attribute: " << attribute.name() << endl;
   }
   
   // parse children
@@ -127,7 +127,7 @@ TextMacro::Rule::Rule( const QDomElement& element ):
     if( child_element.isNull() ) continue;
     if( child_element.tagName() == XML::REGEXP ) setPattern( XmlString( child_element.text() ).toText() );
     else if( child_element.tagName() == XML::REPLACEMENT ) setReplaceText( XmlString( child_element.text() ).toText() ); 
-    else cout << "TextMacro::Rule::Rule - unrecognized child: " << qPrintable( child_element.tagName() ) << endl;
+    else Debug::Throw(0) << "TextMacro::Rule::Rule - unrecognized child: " << child_element.tagName() << endl;
   }
   
 }

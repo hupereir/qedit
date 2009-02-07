@@ -74,7 +74,7 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
       if( attribute.value().indexOf( XML::OPTION_NO_INDENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( NO_INDENT, true );
       if( attribute.value().indexOf( XML::OPTION_NO_CASE, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CASE_INSENSITIVE, true ); 
     } else 
-    { Debug::Throw() << "HighlightPattern::HighlightPattern - unrecognized attribute " << qPrintable( attribute.name() ) << endl; }
+    { Debug::Throw() << "HighlightPattern::HighlightPattern - unrecognized attribute " << attribute.name() << endl; }
     
   }
   
