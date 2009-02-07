@@ -65,24 +65,23 @@ bool DocumentClassManager::read( const File& filename )
   read_error_ = "";
   
   // try open file
-  QFile file( filename.c_str() );
+  QFile file( filename );
   if ( !file.open( QIODevice::ReadOnly ) ) return false;
   
   // parse file
-  XmlError error( filename.c_str() );
+  XmlError error( filename );
   QDomDocument document;
   if ( !document.setContent( &file, &error.error(), &error.line(), &error.column() ) ) {
     file.close();
-    ostringstream what;
-    what << "An error occured while parsing document classes." << endl;
-    what << error;
-    what << endl;
-    read_error_ = what.str().c_str();
+    QString buffer;
+    QTextStream( &buffer ) 
+      << "An error occured while parsing document classes." << endl
+      << error
+      << endl;
+    read_error_ = buffer;
     return false;
   }
   
-  // parse DomElement
-  ostringstream what;
   QDomElement doc_element = document.documentElement();
   for(QDomNode node = doc_element.firstChild(); !node.isNull(); node = node.nextSibling() )
   {
@@ -111,7 +110,7 @@ bool DocumentClassManager::read( const File& filename )
   }
 
   // store error
-  read_error_ = what.str().c_str();
+  read_error_.clear();
     
   // sort classes (based on Name())
   document_classes_.sort();
@@ -130,7 +129,7 @@ bool DocumentClassManager::write( const QString& class_name, const File& filenam
   if( iter == document_classes_.end() ) return false;
   
   // try open file
-  QFile out( filename.c_str() );
+  QFile out( filename );
   if( !out.open( QIODevice::WriteOnly ) ) return false;
   
   // create document
@@ -154,7 +153,7 @@ bool DocumentClassManager::write( const File& filename ) const
   
   
   // try open file
-  QFile out( filename.c_str() );
+  QFile out( filename );
   if( !out.open( QIODevice::WriteOnly ) ) return false;
   
   // create document

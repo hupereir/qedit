@@ -187,11 +187,12 @@ void TextMacroRuleList::_remove( void )
   }
   
   // ask for confirmation
-  ostringstream what;
+  QString buffer;
+  QTextStream what( &buffer );
   what << "Remove selected item";
   if( selection.size()>1 ) what << "S";
   what << " ?";
-  if( !QuestionDialog( this, what.str().c_str() ).exec() ) return;
+  if( !QuestionDialog( this, buffer ).exec() ) return;
   
   // remove items
   model_.remove( selection );

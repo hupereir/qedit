@@ -54,7 +54,7 @@ QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
   if( role == Qt::DisplayRole )
   {
     if( index.column() == NAME ) return document_class.name();
-    if( index.column() == FILE ) return document_class.file().c_str();
+    if( index.column() == FILE ) return document_class.file();
   }
   
   return QVariant();

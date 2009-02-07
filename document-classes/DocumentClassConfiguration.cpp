@@ -114,7 +114,7 @@ void DocumentClassConfiguration::setDocumentClass( const DocumentClass& document
   icon_editor_->setText( document_class.icon() );
   
   // file editor
-  file_editor_->editor().setText( document_class.file().c_str() );
+  file_editor_->editor().setText( document_class.file() );
   
   // file name matching pattern
   file_pattern_editor_->setText( document_class.fileMatchingPattern().pattern() );

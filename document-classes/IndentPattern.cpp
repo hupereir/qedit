@@ -92,9 +92,9 @@ QDomElement IndentPattern::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "IndentPattern::domElement.\n" );
   QDomElement out( parent.createElement( XML::INDENT_PATTERN ) );
-  out.setAttribute( XML::TYPE, Str().assign<unsigned int>( type() ).c_str() );
+  out.setAttribute( XML::TYPE, Str().assign<unsigned int>( type() ) );
   if( !name().isEmpty() ) out.setAttribute( XML::NAME, name() );
-  if( scale() > 1 ) out.setAttribute( XML::SCALE, Str().assign<unsigned int>( scale() ).c_str() );
+  if( scale() > 1 ) out.setAttribute( XML::SCALE, Str().assign<unsigned int>( scale() ) );
   for( Rule::List::const_iterator iter = rules().begin(); iter != rules().end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
   return out;
@@ -162,8 +162,7 @@ QDomElement IndentPattern::Rule::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "IndentPattern::Rule::DomElement.\n" );
   QDomElement out( parent.createElement( XML::RULE ) );
-  out.setAttribute( XML::PAR, Str().assign<int>( paragraph() ).c_str() );
-  ostringstream what;
+  out.setAttribute( XML::PAR, Str().assign<int>( paragraph() ) );
   if( flag( CASE_INSENSITIVE ) )  out.setAttribute( XML::OPTIONS, XML::OPTION_NO_CASE );
   
   out.

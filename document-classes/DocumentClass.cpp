@@ -164,7 +164,7 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   if( emulateTabs() ) options += XML::OPTION_EMULATE_TABS + " ";
   if( isDefault() ) options += XML::OPTION_DEFAULT + " ";
   if( !options.isEmpty() ) out.setAttribute( XML::OPTIONS, options ); 
-  if( baseIndentation() ) out.setAttribute( XML::BASE_INDENTATION, Str().assign<int>( baseIndentation() ).c_str() );
+  if( baseIndentation() ) out.setAttribute( XML::BASE_INDENTATION, Str().assign<int>( baseIndentation() ) );
 
   // icon
   if( !icon().isEmpty() ) out.setAttribute( XML::ICON, icon() );
@@ -220,20 +220,18 @@ bool DocumentClass::match( const File& file ) const
   if( default_ ) return true;
 
   // check if file pattern match
-  if( !file_pattern_.isEmpty() && file_pattern_.isValid() && file_pattern_.indexIn( file.c_str() ) >= 0 ) return true;
+  if( !file_pattern_.isEmpty() && file_pattern_.isValid() && file_pattern_.indexIn( file ) >= 0 ) return true;
   
   // check if first line of file match firstline_pattern_
-  ifstream in( file.c_str() );
-  if( !firstline_pattern_.isEmpty() && firstline_pattern_.isValid() && in )
+  QFile in( file );
+  if( !firstline_pattern_.isEmpty() && firstline_pattern_.isValid() && in.open( QIODevice::ReadOnly ) )
   {
     
-    static const int linesize( 256 );
+    QString line;
     static const QRegExp empty_line_regexp( "(^\\s*$)" ); 
-    char line[linesize];
-    while( !(in.rdstate() & ios::failbit ) )
+    while( !(line = in.readLine(1024)).isNull() )
     {
-      in.getline( line, linesize, '\n' );
-      if( !( strlen(line) && empty_line_regexp.indexIn( line ) < 0 ) ) continue;
+      if( line.isEmpty() || empty_line_regexp.indexIn( line ) >= 0 ) continue;
       if( firstline_pattern_.indexIn( line ) >= 0 ) return true;
       break;
     }

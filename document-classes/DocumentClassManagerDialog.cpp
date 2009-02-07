@@ -235,9 +235,9 @@ void DocumentClassManagerDialog::_save( void )
   // check if file is directory
   if( file.isDirectory() )
   {
-    ostringstream what;
-    what << "file \"" << file << "\" is a directory. <Save As> canceled.";
-    InformationDialog( this, what.str().c_str() ).exec();
+    QString buffer;
+    QTextStream( &buffer ) << "file \"" << file << "\" is a directory. <Save As> canceled.";
+    InformationDialog( this, buffer ).exec();
     return;
   }
 
@@ -246,9 +246,9 @@ void DocumentClassManagerDialog::_save( void )
   {
     if( !file.isWritable() )
     {
-      ostringstream what;
-      what << "file \"" << file << "\" is read-only. <Save As> canceled.";
-      InformationDialog( this, what.str().c_str() ).exec();
+      QString buffer;
+      QTextStream( &buffer ) << "file \"" << file << "\" is read-only. <Save As> canceled.";
+      InformationDialog( this, buffer ).exec();
       return;
     } else if( !QuestionDialog( this, "Selected file already exist. Overwrite ?" ).exec() )
     return;

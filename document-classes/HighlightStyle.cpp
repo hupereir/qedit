@@ -64,7 +64,7 @@ QDomElement HighlightStyle::domElement( QDomDocument& parent ) const
   Debug::Throw( "HighlighStyle::DomElement.\n" );
   QDomElement out = parent.createElement( XML::STYLE );
   out.setAttribute( XML::NAME, name() );
-  out.setAttribute( XML::FORMAT, Str().assign<unsigned int>(fontFormat()).c_str() );
+  out.setAttribute( XML::FORMAT, Str().assign<unsigned int>(fontFormat()) );
   out.setAttribute( XML::COLOR, color().name() );
   return out;
 }
