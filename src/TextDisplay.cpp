@@ -302,13 +302,18 @@ void TextDisplay::synchronize( TextDisplay* display )
 void TextDisplay::setIsNewDocument( void )
 {
 
-  Debug::Throw( "TextDisplay::setIsNewDocument.\n" );
+  Debug::Throw( 0, "TextDisplay::setIsNewDocument.\n" );
   
   // do nothing if already set
-  if( isNewDocument() ) return;
+  if( isNewDocument() ) 
+  {
+    Debug::Throw( "TextDisplay::setIsNewDocument - done.\n" );
+    return;
+  }
   
   // generate filename
   File file( NewDocumentNameServer().get() );
+  Debug::Throw() << "TextDisplay::setIsNewDocument - file: " << file << endl;
   
   // retrieve display and associated
   BASE::KeySet<TextDisplay> displays( this );
@@ -316,20 +321,28 @@ void TextDisplay::setIsNewDocument( void )
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
     
+    Debug::Throw() << "TextDisplay::setIsNewDocument - processing: " << (*iter)->key() << endl;
     (*iter)->_setIsNewDocument( true );
     (*iter)->setClassName( className() );
     (*iter)->_updateDocumentClass( File(), true );
+    Debug::Throw() << "TextDisplay::setIsNewDocument - document class done." << endl;
+
     (*iter)->_updateSpellCheckConfiguration();
+    Debug::Throw() << "TextDisplay::setIsNewDocument - spellcheck done." << endl;
+    
     (*iter)->_setFile( file );
+    Debug::Throw() << "TextDisplay::setIsNewDocument - file set." << endl;
 
     // disable file info action
     (*iter)->filePropertiesAction().setEnabled( false );
 
   }
+  Debug::Throw( "TextDisplay::setIsNewDocument - filename set.\n" );
       
   // perform first autosave
   Application& application( *Singleton::get().application<Application>() );
   application.autoSave().saveFiles( this );
+  Debug::Throw( "TextDisplay::setIsNewDocument - done.\n" );
   
 }
 
@@ -417,6 +430,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
   // perform first autosave
   Application& application( *Singleton::get().application<Application>() );
   application.autoSave().saveFiles( this );
+  Debug::Throw( "TextDisplay::setFile - done.\n" );
   
 }
 
@@ -438,6 +452,7 @@ void TextDisplay::_setFile( const File& file )
   checkFileReadOnly();
 
   if( isActive() ) emit needUpdate( FILE_NAME );
+  Debug::Throw( "TextDisplay::_setFile - done.\n" );
 
 }
 

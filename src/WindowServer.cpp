@@ -513,6 +513,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     (*iter)->uniconify();
     (*iter)->selectDisplay( record.file() );
     _setActiveWindow( **iter );
+    Debug::Throw() << "WindowServer::_open - file: " << record.file() << " found matching." << endl;
     return true;
     
   } 
@@ -566,6 +567,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
   //view->setFile( record.file() );
   qApp->processEvents();
   
+  Debug::Throw() << "WindowServer::_open - file: " << record.file() << " done." << endl;
   return true;
   
 }

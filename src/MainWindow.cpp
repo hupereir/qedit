@@ -769,6 +769,7 @@ void MainWindow::_update( unsigned int flags )
     saveAction().setEnabled( !activeDisplay().isReadOnly() && activeDisplay().document()->isModified() );
   
   }
+  Debug::Throw() << "MainWindow::_update - window title done. "<< endl;
     
   if( flags & TextDisplay::MODIFIED )
   { emit modificationChanged(); }
@@ -783,6 +784,8 @@ void MainWindow::_update( unsigned int flags )
       filePropertiesAction().setEnabled( !( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() ) );
     }
     
+    Debug::Throw() << "MainWindow::_update - file editor done. "<< endl;
+    
     // update session file frame
     if( navigation_frame_ )
     { 
@@ -791,8 +794,11 @@ void MainWindow::_update( unsigned int flags )
       navigationFrame().fileSystemFrame().setHome( activeDisplay().workingDirectory() );
     }
     
+    Debug::Throw() << "MainWindow::_update - navigation frame done. "<< endl;
+    
     // cursor position
     if( statusbar_ ) _updateCursorPosition();
+    Debug::Throw() << "MainWindow::_update - statusbar done. "<< endl;
     
   }
 
@@ -826,13 +832,15 @@ void MainWindow::_update( unsigned int flags )
     diffAction().setEnabled( display_count == 2 );    
     
   }
+
+  Debug::Throw() << "MainWindow::_update - done." << endl;
   
 }
 
 //_____________________________________________
 void MainWindow::_updateCursorPosition( void )
 {
-  
+    
   // retrieve position in text
   TextPosition position( activeDisplay().textPosition() );
   
@@ -841,10 +849,11 @@ void MainWindow::_updateCursorPosition( void )
   need to count how many blocks are collapsed prior to current
   and increment paragraph consequently
   */
-  if( activeDisplay().hasBlockDelimiterDisplay() ) position.paragraph() += activeDisplay().blockDelimiterDisplay().collapsedBlockCount( position.paragraph() );
+  if( activeDisplay().hasBlockDelimiterDisplay() ) position.paragraph() += activeDisplay().blockDelimiterDisplay().collapsedBlockCount( position.paragraph() );  
   
-  statusbar_->label(1).setText( Str( "Line : " ).append<int>( position.paragraph()+1 ) , false );
-  statusbar_->label(2).setText( Str( "Column : " ).append<int>( position.index()+1 ) , false );
+  // update labels
+  statusbar_->label(1).setText( QString( "Line : " ) + QString().setNum( position.paragraph()+1 ) , false );
+  statusbar_->label(2).setText( QString( "Column : " ) + QString().setNum( position.index()+1 ) , false );
 
   return;
 }

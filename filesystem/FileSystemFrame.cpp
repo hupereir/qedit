@@ -270,7 +270,7 @@ void FileSystemFrame::_updatePath( const QString& value )
   }
   
   // check if path exists and is a directory
-  File path( qPrintable( value ) );
+  File path( value );
   if( !( path.exists() && path.isDirectory() ) ) { setPath( path_ ); }
   else setPath( path );
 
@@ -357,7 +357,7 @@ void FileSystemFrame::_parentDirectory( void )
   Debug::Throw( "FileSystemFrame::_parentDirectory.\n" );
   QDir dir( path() );
   dir.cdUp();
-  setPath( File( qPrintable( dir.absolutePath() ) ) );
+  setPath( dir.absolutePath() );
 
 }
 
