@@ -117,9 +117,6 @@ void TextView::setFile( File file )
   // open file in active display
   display.setFile( file );
   
-  // if( !file.empty() ) display.setFile( file );
-  // else display.updateDocumentClass();
-  
   // set focus
   setActiveDisplay( display );
   display.setFocus();
