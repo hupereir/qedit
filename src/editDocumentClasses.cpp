@@ -70,7 +70,7 @@ int main (int argc, char *argv[])
   // set debug level
   int debug_level( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );
   Debug::setLevel( debug_level );
-  if( debug_level ) cout << XmlOptions::get();
+  if( debug_level ) XmlOptions::get().print();
   
   // initialize main frame and run loop
   // initialize main frame and run loop
@@ -83,20 +83,20 @@ int main (int argc, char *argv[])
   if( XmlOptions::get().get<bool>( "USE_FLAT_THEME" ) ) application.setStyle( new FlatStyle() );
   // set fonts
   QFont font;
-  font.fromString( XmlOptions::get().raw( "FONT_NAME" ).c_str() );
+  font.fromString( XmlOptions::get().raw( "FONT_NAME" ) );
   application.setFont( font );
   
-  font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ).c_str() );
+  font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ) );
   application.setFont( font, "QLineEdit" );
   application.setFont( font, "QTextEdit" );
   
   // read document classes
   DocumentClassManager manager;
-  list<string> files( XmlOptions::get().specialOptions<string>( "PATTERN_FILENAME" ) );
-  for( list<string>::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+  Options::List files( XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) );
+  for( Options::List::const_iterator iter = files.begin(); iter != files.end(); iter++ )
   { 
-    cout << "editDocumentClasses - reading " << *iter << endl;
-    manager.read( *iter ); 
+    Debug::Throw(0) << "editDocumentClasses - reading " << iter->raw() << endl;
+    manager.read( iter->raw() ); 
   }
   
   // prepare dialog

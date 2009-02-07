@@ -52,7 +52,7 @@ void FileSystemThread::run( void )
 {
 
   // loop over directory contents
-  QDir dir( path_.c_str() );
+  QDir dir( path_ );
   QDir::Filters filter = QDir::AllEntries | QDir::NoDotAndDotDot;
   if( show_hidden_files_ ) filter |= QDir::Hidden;
   dir.setFilter( filter );
@@ -74,7 +74,7 @@ void FileSystemThread::run( void )
     FileRecord record( File( qPrintable( iter->fileName() ) ), TimeStamp( iter->lastModified().toTime_t() ) );
     
     // assign size
-    record.addProperty( size_property_id_, Str().assign<long int>( iter->size() ) );
+    record.addProperty( size_property_id_, QString().setNum(iter->size()) );
     
     // assign type
     record.setFlag( iter->isDir() ? FileSystemModel::FOLDER : FileSystemModel::DOCUMENT );

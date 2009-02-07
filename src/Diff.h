@@ -81,7 +81,7 @@ class Diff: public QObject, public Counter
   bool run( void );
   
   //! error message
-  const std::string& error( void ) const
+  const QString& error( void ) const
   { return error_; }
   
   //! paragraph range
@@ -137,10 +137,10 @@ class Diff: public QObject, public Counter
   void _clear( void );
     
   //! parse a diff line
-  void _parseLine( const std::string& line );
+  void _parseLine( const QString& line );
 
   //! parse a diff line
-  static Range _parseRange( const std::string& range );
+  static Range _parseRange( const QString& range );
 
   //! file specific diff informations
   class FileInformation
@@ -217,7 +217,7 @@ class Diff: public QObject, public Counter
   CustomProcess process_;
   
   //! possible error string
-  std::string error_;
+  QString error_;
   
 };
 

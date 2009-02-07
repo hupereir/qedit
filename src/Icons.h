@@ -32,7 +32,7 @@
   \date    $Date$
 */
 
-#include <string>
+#include <QString>
 #include "BaseIcons.h"
 #include "FileSystemIcons.h"
 
@@ -40,30 +40,30 @@
 namespace ICONS
 {
   
-  static const std::string CLOSE = "fileclose.png"; 
+  static const QString CLOSE = "fileclose.png"; 
   
-  static const std::string DOCUMENTS = "documents.png"; 
-  static const std::string HISTORY = "history.png"; 
-  static const std::string FILESYSTEM = "user-home.png"; 
+  static const QString DOCUMENTS = "documents.png"; 
+  static const QString HISTORY = "history.png"; 
+  static const QString FILESYSTEM = "user-home.png"; 
   
-  static const std::string NEW = "filenew.png"; 
-  static const std::string SAVE = "filesave.png";
-  static const std::string SAVE_AS = "filesaveas.png"; 
-  static const std::string SAVE_ALL = "save_all.png"; 
-  static const std::string HTML="html.png";
-  static const std::string PDF = "pdf.png";
-  static const std::string INDENT="indent.png";
-  static const std::string SPELLCHECK = "fonts.png";
-  static const std::string VIEW_LEFTRIGHT = "view_left_right.png";
-  static const std::string VIEW_TOPBOTTOM = "view_top_bottom.png";
-  static const std::string VIEW_RIGHT = "view_right.png";
-  static const std::string VIEW_BOTTOM = "view_bottom.png";
-  static const std::string VIEW_REMOVE = "view_remove.png";
-  static const std::string VIEW_DETACH = "window_fullscreen.png";
+  static const QString NEW = "filenew.png"; 
+  static const QString SAVE = "filesave.png";
+  static const QString SAVE_AS = "filesaveas.png"; 
+  static const QString SAVE_ALL = "save_all.png"; 
+  static const QString HTML="html.png";
+  static const QString PDF = "pdf.png";
+  static const QString INDENT="indent.png";
+  static const QString SPELLCHECK = "fonts.png";
+  static const QString VIEW_LEFTRIGHT = "view_left_right.png";
+  static const QString VIEW_TOPBOTTOM = "view_top_bottom.png";
+  static const QString VIEW_RIGHT = "view_right.png";
+  static const QString VIEW_BOTTOM = "view_bottom.png";
+  static const QString VIEW_REMOVE = "view_remove.png";
+  static const QString VIEW_DETACH = "window_fullscreen.png";
   
-  static const std::string TAG = "bookmark.png";
-  static const std::string UP = "up.png";
-  static const std::string DOWN = "down.png";
+  static const QString TAG = "bookmark.png";
+  static const QString UP = "up.png";
+  static const QString DOWN = "down.png";
     
 };
 

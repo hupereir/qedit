@@ -50,7 +50,6 @@ AutoSave::AutoSave( QObject* parent ):
   Debug::Throw( "AutoSave::AutoSave.\n" );
   timer_.setSingleShot( true );
   connect( &timer_, SIGNAL( timeout() ), this, SLOT( saveFiles() ) );
-  
   connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
 }
@@ -141,7 +140,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
     
     // update file and content
     TextDisplay& display( **displays.begin() );
-    if( !( display.file().empty() || display.isNewDocument() ) )
+    if( !( display.file().isEmpty() || display.isNewDocument() ) )
     {
       (*iter)->setFile( display.file() );
       (*iter)->setContents( display.toPlainText() );

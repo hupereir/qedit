@@ -104,7 +104,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
       case FILE:
       {
         // store local nmae
-        string local_name( record.file().localName() );
+        QString local_name( record.file().localName() );
         
         // loop over previous rows to find a match and increment version number
         unsigned int version( 0 );
@@ -114,15 +114,16 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
         }
         
         // form output string.
-        ostringstream what;
+        QString buffer;
+        QTextStream what( &buffer );
         what << local_name;
         if( version ) what << " (" << version+1 << ")";
-        return what.str().c_str();
+        return buffer;
       }
       
       case SIZE: 
       {
-        if( record.hasFlag( DOCUMENT ) ) return QString( record.property( size_property_id_ ).c_str() );
+        if( record.hasFlag( DOCUMENT ) ) return QString( record.property( size_property_id_ ) );
         else return QVariant();
       }
       
@@ -206,8 +207,8 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
     case TIME: return (first.time() != second.time() ) ? first.time() < second.time() : first.file().localName() < second.file().localName();
     case SIZE: 
     {
-      long first_size( Str(first.property( size_property_id_ ) ).get<long>() );
-      long second_size( Str(second.property( size_property_id_ )).get<long>() );
+      long first_size( first.property( size_property_id_ ).toInt() );
+      long second_size( second.property( size_property_id_ ).toInt() );
       return (first_size != second_size ) ? first_size < second_size : first.file().localName() < second.file().localName();
     }
     
@@ -231,7 +232,7 @@ void FileSystemModel::_installIcons( void ) const
   QSize scale(size*0.9);
 
   // type icons
-  typedef std::map< int, string > IconNames;
+  typedef std::map< int, QString > IconNames;
   IconNames type_names;
   type_names[DOCUMENT] = ICONS::DOCUMENT;
   type_names[FOLDER] = ICONS::FOLDER;

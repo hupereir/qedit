@@ -84,8 +84,8 @@
 using namespace std;
 
 //_____________________________________________________
-const std::string MainWindow::LEFT_RIGHT = "Left/right";
-const std::string MainWindow::TOP_BOTTOM = "Top/bottom";
+const QString MainWindow::LEFT_RIGHT = "Left/right";
+const QString MainWindow::TOP_BOTTOM = "Top/bottom";
 
 //_____________________________________________________
 MainWindow::MainWindow(  QWidget* parent ):
@@ -180,7 +180,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
   // assign non fixed font
   QFont font;
-  font.fromString( XmlOptions::get().raw( "FONT_NAME" ).c_str() );
+  font.fromString( XmlOptions::get().raw( "FONT_NAME" ) );
   file_editor_->setFont( font );
     
   // file toolbar
@@ -447,17 +447,18 @@ void MainWindow::_revertToSave( void )
   Debug::Throw( "MainWindow::_revertToSave.\n" );
 
   // check filename
-  if( activeDisplay().file().empty() || activeDisplay().isNewDocument() )
+  if( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() )
   {
     InformationDialog( this, "No filename given. <Reload> canceled." ).exec();
     return;
   }
 
   // ask for confirmation
-  ostringstream what;
+  QString buffer;
+  QTextStream what( &buffer );
   if( activeDisplay().document()->isModified() ) what << "Discard changes to " << activeDisplay().file().localName() << "?";
   else what << "Reload file " << activeDisplay().file().localName() << "?";
-  if( !QuestionDialog( this, what.str().c_str() ).exec() ) return;
+  if( !QuestionDialog( this, buffer ).exec() ) return;
 
   activeDisplay().revertToSave();
   
@@ -475,7 +476,7 @@ void MainWindow::_print( void )
   if( activeDisplay().document()->isModified() && activeDisplay().askForSave() == AskForSaveDialog::CANCEL ) return;
 
   // check if file is valid and exists
-  if( file.empty() || !file.exists() )
+  if( file.isEmpty() || !file.exists() )
   {
     InformationDialog( this, "File is not valid for printing. <print> canceled." ).exec();
     return;
@@ -494,16 +495,16 @@ void MainWindow::_print( void )
   commands.push_back( XmlOptions::get().option( "PDF_EDITOR" ) );
   commands.push_back( XmlOptions::get().option( "HTML_EDITOR" ) );
   for( Options::List::iterator iter = commands.begin(); iter != commands.end(); iter++ )
-  { dialog.addCommand( iter->raw().c_str() ); }
+  { dialog.addCommand( iter->raw() ); }
 
   // set command manually that match the selection mode
-  dialog.setCommand( XmlOptions::get().raw( ( dialog.mode() == PrintDialog::PDF ? "PDF_EDITOR":"HTML_EDITOR" ) ).c_str() );
+  dialog.setCommand( XmlOptions::get().raw( ( dialog.mode() == PrintDialog::PDF ? "PDF_EDITOR":"HTML_EDITOR" ) ) );
   
   // exec
   if( !dialog.centerOnParent().exec() ) return;
 
   // store options
-  XmlOptions::get().set<string>( "PRINT_MODE", dialog.mode() == PrintDialog::PDF ? "PDF":"HTML" );
+  XmlOptions::get().set( "PRINT_MODE", dialog.mode() == PrintDialog::PDF ? "PDF":"HTML" );
   XmlOptions::get().set<int>( "PRINT_LINE_SIZE", dialog.maximumLineSize() );
   XmlOptions::get().set<bool>( "USE_PRINT_COMMAND", dialog.useCommand() );
 
@@ -520,7 +521,7 @@ void MainWindow::_print( void )
   if( fullname.isDirectory() )
   {
     QString buffer;
-    QTextStream( &buffer ) << "file \"" << fullname.c_str() << "\" is a directory. <Print> canceled.";
+    QTextStream( &buffer ) << "file \"" << fullname << "\" is a directory. <Print> canceled.";
     InformationDialog( this, buffer ).centerOnParent().exec();
     return;
   }
@@ -532,7 +533,7 @@ void MainWindow::_print( void )
     if( !fullname.isWritable() )
     {
       QString buffer;
-      QTextStream( &buffer ) << "file \"" << fullname.c_str() << "\" is read-only. <Print> canceled.";
+      QTextStream( &buffer ) << "file \"" << fullname << "\" is read-only. <Print> canceled.";
       InformationDialog( this, buffer ).centerOnParent().exec();
       return;
     } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).centerOnParent().exec() )
@@ -546,11 +547,11 @@ void MainWindow::_print( void )
   if( mode == PrintDialog::HTML )
   {
     // open stream
-    QFile out( fullname.c_str() );
+    QFile out( fullname );
     if( !out.open( QIODevice::WriteOnly ) )
     {
       QString buffer;
-      QTextStream( &buffer ) << "cannot write to file \"" << fullname.c_str() << "\" <Print> canceled.";
+      QTextStream( &buffer ) << "cannot write to file \"" << fullname << "\" <Print> canceled.";
       InformationDialog( this, buffer ).exec();
       return;
     }
@@ -567,7 +568,7 @@ void MainWindow::_print( void )
     
     QPrinter printer(QPrinter::HighResolution);
     printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOutputFileName(fullname.c_str());
+    printer.setOutputFileName(fullname);
     
     local.document()->print(&printer);
     Debug::Throw( "MainWindow::_print - pdf file saved.\n" );
@@ -576,7 +577,7 @@ void MainWindow::_print( void )
   
   // try open
   if( dialog.useCommand() )
-  { (Command( dialog.command() ) << fullname.c_str() ).run(); }   
+  { (Command( dialog.command() ) << fullname ).run(); }   
   
   Debug::Throw( "MainWindow::_print - done.\n" );
   return;
@@ -695,7 +696,7 @@ void MainWindow::_updateConfiguration( void )
     
     FileRecord& record( *iter ); 
     if( !record.hasProperty( FileRecordProperties::CLASS_NAME ) ) continue; 
-    DocumentClass document_class( class_manager.get( record.property( FileRecordProperties::CLASS_NAME ).c_str() ) );
+    DocumentClass document_class( class_manager.get( record.property( FileRecordProperties::CLASS_NAME ) ) );
     if( document_class.icon().isEmpty() ) continue;
     
     // set icon property and store in recent_files list
@@ -778,8 +779,8 @@ void MainWindow::_update( unsigned int flags )
     // update file editor
     if( file_editor_ )
     {
-      file_editor_->setText( activeDisplay().file().c_str() ); 
-      filePropertiesAction().setEnabled( !( activeDisplay().file().empty() || activeDisplay().isNewDocument() ) );
+      file_editor_->setText( activeDisplay().file() ); 
+      filePropertiesAction().setEnabled( !( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() ) );
     }
     
     // update session file frame
@@ -842,8 +843,8 @@ void MainWindow::_updateCursorPosition( void )
   */
   if( activeDisplay().hasBlockDelimiterDisplay() ) position.paragraph() += activeDisplay().blockDelimiterDisplay().collapsedBlockCount( position.paragraph() );
   
-  statusbar_->label(1).setText( Str( "Line : " ).append<int>( position.paragraph()+1 ).c_str() , false );
-  statusbar_->label(2).setText( Str( "Column : " ).append<int>( position.index()+1 ).c_str() , false );
+  statusbar_->label(1).setText( Str( "Line : " ).append<int>( position.paragraph()+1 ) , false );
+  statusbar_->label(2).setText( Str( "Column : " ).append<int>( position.index()+1 ) , false );
 
   return;
 }
@@ -1073,7 +1074,7 @@ QString MainWindow::_htmlString( const int& max_line_size )
 
   // title
   QDomElement title = head.appendChild( document.createElement( "Title" ) ).toElement();
-  title.appendChild( document.createTextNode( activeDisplay().file().c_str() ) );
+  title.appendChild( document.createTextNode( activeDisplay().file() ) );
 
   // body
   html.

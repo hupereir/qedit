@@ -32,7 +32,6 @@
 */
 
 #include <QString>
-#include <sstream>
 
 #include "Counter.h"
 #include "File.h"
@@ -75,13 +74,14 @@ class WindowTitle: public Counter
   //! cast to string
   operator const QString& (void)
   {
-    std::ostringstream what;
+    QString out;
+    QTextStream what( &out );
     if( file_.size() ) what << file_.localName();
     else what << "QEdit";
     if( flag_ == MODIFIED ) what << " (modified)";
     if( flag_ == READ_ONLY ) what << " (read-only)";
     if( file_.size() ) what << " - " << file_.path();
-    return title_ = what.str().c_str();
+    return title_ = out;
   }
   
   private:

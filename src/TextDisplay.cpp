@@ -338,10 +338,10 @@ void TextDisplay::setFile( File file, bool check_autosave )
 {
 
   Debug::Throw() << "TextDisplay::setFile " << file << endl;
-  assert( !file.empty() );
+  assert( !file.isEmpty() );
 
   // reset class name
-  QString class_name( _recentFiles().add( file ).property(class_name_property_id_).c_str() );
+  QString class_name( _recentFiles().add( file ).property(class_name_property_id_) );
   setClassName( class_name );
 
   // expand filename
@@ -358,13 +358,14 @@ void TextDisplay::setFile( File file, bool check_autosave )
     ( !tmp.exists() ||
     ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
   {
-    ostringstream what;
+    QString buffer;
+    QTextStream what( &buffer );
     what << "A more recent version of file " << file << endl;
     what << "was found at " << autosaved << "." << endl;
     what << "This probably means that the application crashed the last time ";
     what << "The file was edited." << endl;
     what << "Use autosaved version ?";
-    if( QuestionDialog( this, what.str().c_str() ).exec() )
+    if( QuestionDialog( this, buffer ).exec() )
     {
       restore_autosave = true;
       tmp = autosaved;
@@ -388,7 +389,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
   }
   
   // check file and try open.
-  QFile in( tmp.c_str() );
+  QFile in( tmp );
   if( in.open( QIODevice::ReadOnly ) )
   {
 
@@ -550,7 +551,7 @@ void TextDisplay::save( void )
   if( !document()->isModified() ) return;
 
   // check file name
-  if( file().empty() || isNewDocument() ) return saveAs();
+  if( file().isEmpty() || isNewDocument() ) return saveAs();
 
   // check is contents differ from saved file
   if( _contentsChanged() )
@@ -560,12 +561,12 @@ void TextDisplay::save( void )
     if( XmlOptions::get().get<bool>( "BACKUP" ) && file().exists() ) file().backup();
 
     // open output file
-    QFile out( file().c_str() );
+    QFile out( file() );
     if( !out.open( QIODevice::WriteOnly ) )
     {
-      ostringstream what;
-      what << "Cannot write to file \"" << file() << "\". <Save> canceled.";
-      InformationDialog( this, what.str().c_str() ).exec();
+      QString buffer;
+      QTextStream( &buffer ) << "Cannot write to file \"" << file() << "\". <Save> canceled.";
+      InformationDialog( this, buffer ).exec();
       return;
     }
 
@@ -591,7 +592,7 @@ void TextDisplay::save( void )
   { (*iter)->_setLastSaved( file().lastModified() ); }
 
   // add file to menu
-  if( !file().empty() )
+  if( !file().isEmpty() )
   { _recentFiles().get( file() ).addProperty( class_name_property_id_, qPrintable( className() ) ); }
 
   return;
@@ -605,29 +606,29 @@ void TextDisplay::saveAs( void )
 
   // define default file
   File default_file( file() );
-  if( default_file.empty() || isNewDocument() ) default_file = File( "Document" ).addPath( workingDirectory() );
+  if( default_file.isEmpty() || isNewDocument() ) default_file = File( "Document" ).addPath( workingDirectory() );
 
   // create file dialog
   CustomFileDialog dialog( this );
   dialog.setFileMode( QFileDialog::AnyFile );
-  dialog.setDirectory( QDir( default_file.path().c_str() ) );
-  dialog.selectFile( default_file.localName().c_str() );
+  dialog.setDirectory( QDir( default_file.path() ) );
+  dialog.selectFile( default_file.localName() );
   QtUtil::centerOnParent( &dialog );
   if( dialog.exec() == QDialog::Rejected ) return;
 
   // retrieve filename
   // retrieve filename
   QStringList files( dialog.selectedFiles() );
-  if( files.empty() ) return;
+  if( files.isEmpty() ) return;
 
   File file = File( qPrintable( files.front() ) ).expand();
 
   // check if file is directory
   if( file.isDirectory() )
   {
-    ostringstream what;
-    what << "File \"" << file << "\" is a directory. <Save> canceled.";
-    InformationDialog( this, what.str().c_str() ).exec();
+    QString buffer;
+    QTextStream( &buffer ) << "File \"" << file << "\" is a directory. <Save> canceled.";
+    InformationDialog( this, buffer ).exec();
     return;
   }
 
@@ -637,9 +638,9 @@ void TextDisplay::saveAs( void )
     
     if( !file.isWritable() )
     {
-      ostringstream what;
-      what << "File \"" << file << "\" is read-only. <Save> canceled.";
-      InformationDialog( this, what.str().c_str() ).exec();
+      QString buffer;
+      QTextStream( &buffer ) << "File \"" << file << "\" is read-only. <Save> canceled.";
+      InformationDialog( this, buffer ).exec();
       return;
     } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).exec() ) return;
     
@@ -829,7 +830,8 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
                     
           // retrieve font format
           const unsigned int& format( location_iter->fontFormat() );
-          ostringstream format_stream;
+          QString buffer;
+          QTextStream format_stream( &buffer );
           if( format & FORMAT::UNDERLINE ) format_stream << "Text-decoration: underline; ";
           if( format & FORMAT::ITALIC ) format_stream << "font-style: italic; ";
           if( format & FORMAT::BOLD ) format_stream << "font-weight: bold; ";
@@ -839,7 +841,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
           const QColor& color = location_iter->color();
           if( color.isValid() ) format_stream << "color: " << qPrintable( color.name() ) << "; ";
 
-          span.setAttribute( "Style", format_stream.str().c_str() );
+          span.setAttribute( "Style", buffer );
 
         }
       }
@@ -1025,7 +1027,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   }
 
   // try load from file
-  if( document_class.name().isEmpty() && !( file.empty() || new_document ) )
+  if( document_class.name().isEmpty() && !( file.isEmpty() || new_document ) )
   { 
     Debug::Throw( "TextDisplay::updateDocumentClass - try use filename.\n" );
     document_class = application.classManager().find( file ); 
@@ -1042,7 +1044,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   setClassName( document_class.name() );
 
   // wrap mode
-  if( !( file.empty() || new_document ) )
+  if( !( file.isEmpty() || new_document ) )
   { 
     
     FileRecord& record( _recentFiles().get( file ) );
@@ -1091,7 +1093,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
     !textHighlight().parenthesis().empty() );
 
   // add information to Menu
-  if( !( file.empty() || new_document ) )
+  if( !( file.isEmpty() || new_document ) )
   { 
     FileRecord& record( _recentFiles().get( file ) );
     record.addProperty( class_name_property_id_, qPrintable( className() ) ); 
@@ -1121,9 +1123,9 @@ void TextDisplay::processMacro( QString name )
   TextMacro::List::const_iterator macro_iter = find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
   if( macro_iter == macros_.end() )
   {
-    ostringstream what;
-    what << "Unable to find macro named " << qPrintable( name );
-    InformationDialog( this, what.str().c_str() ).exec();
+    QString buffer;
+    QTextStream( &buffer ) << "Unable to find macro named " << name;
+    InformationDialog( this, buffer ).exec();
     return;
   }
 
@@ -1218,14 +1220,14 @@ void TextDisplay::selectFilter( const QString& filter )
   // local reference to interface
   SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
 
-  if( filter == interface.filter().c_str() || !interface.hasFilter( qPrintable( filter ) ) ) return;
+  if( filter == interface.filter() || !interface.hasFilter( qPrintable( filter ) ) ) return;
 
   // update interface
   interface.setFilter( qPrintable( filter ) );
   _filterMenu().select( qPrintable( filter ) );
 
   // update file record
-  if( !( file().empty() || isNewDocument() ) )
+  if( !( file().isEmpty() || isNewDocument() ) )
   { _recentFiles().get( file() ).addProperty( filter_property_id_, interface.filter() ); }
 
   // rehighlight if needed
@@ -1246,14 +1248,14 @@ void TextDisplay::selectDictionary( const QString& dictionary )
   // local reference to interface
   SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
 
-  if( dictionary == interface.dictionary().c_str() || !interface.hasDictionary( qPrintable( dictionary ) ) ) return;
+  if( dictionary == interface.dictionary() || !interface.hasDictionary( qPrintable( dictionary ) ) ) return;
 
   // update interface
   interface.setDictionary( qPrintable( dictionary ) );
   _dictionaryMenu().select( qPrintable( dictionary ) );
 
   // update file record
-  if( !( file().empty() || isNewDocument() ) )
+  if( !( file().isEmpty() || isNewDocument() ) )
   { _recentFiles().get( file() ).addProperty( dictionary_property_id_, interface.dictionary() ); }
 
   // rehighlight if needed
@@ -1379,7 +1381,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 
   // try retrieve misspelled word
   SPELLCHECK::Word word( data->misspelledWord( cursor.position() - block.position() ) );
-  if( word.empty() || textHighlight().spellParser().interface().isWordIgnored( word ) )
+  if( word.isEmpty() || textHighlight().spellParser().interface().isWordIgnored( word ) )
   { return false; }
 
   // change selection to misspelled word
@@ -1388,7 +1390,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
   setTextCursor( cursor );
 
   // create suggestion menu
-  SPELLCHECK::SuggestionMenu menu( this, word.c_str(), isReadOnly() );
+  SPELLCHECK::SuggestionMenu menu( this, word, isReadOnly() );
   menu.interface().setFilter( textHighlight().spellParser().interface().filter() );
   menu.interface().setDictionary( textHighlight().spellParser().interface().dictionary() );
 
@@ -1527,10 +1529,10 @@ bool TextDisplay::_contentsChanged( void ) const
   Debug::Throw( "TextDisplay::_contentsChanged.\n" );
 
   // check file
-  if( file().empty() || isNewDocument() ) return true;
+  if( file().isEmpty() || isNewDocument() ) return true;
 
   // open file
-  QFile in( file().c_str() );
+  QFile in( file() );
   if( !in.open( QIODevice::ReadOnly ) ) return true;
 
   // dump file into character string
@@ -1544,7 +1546,7 @@ bool TextDisplay::_contentsChanged( void ) const
 bool TextDisplay::_fileRemoved( void ) const
 {
   Debug::Throw( "TextDisplay::_fileRemoved.\n" );
-  return ( !( file().empty() || isNewDocument() ) && last_save_.isValid() && !file().exists() );
+  return ( !( file().isEmpty() || isNewDocument() ) && last_save_.isValid() && !file().exists() );
 }
 
 //____________________________________________
@@ -1639,7 +1641,7 @@ bool TextDisplay::_toggleWrapMode( bool state )
   Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "True":"False") << endl;
   if( !AnimatedTextEditor::_toggleWrapMode( state ) ) return false;
   
-  if( !( file().empty() || isNewDocument() ) )
+  if( !( file().isEmpty() || isNewDocument() ) )
   { _recentFiles().get( file() ).addProperty( wrap_property_id_, Str().assign<bool>(state) ); }
     
   return true;
@@ -1658,7 +1660,7 @@ void TextDisplay::_updateConfiguration( void )
   textHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
 
   // parenthesis highlight
-  textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().raw( "PARENTHESIS_COLOR" ).c_str() ) );
+  textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().raw( "PARENTHESIS_COLOR" ) ) );
   parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
 
   // block delimiters, line numbers and margin
@@ -1668,9 +1670,9 @@ void TextDisplay::_updateConfiguration( void )
   _updateMargins();
   
   // retrieve diff colors
-  diff_conflict_color_ = QColor( XmlOptions::get().raw("DIFF_CONFLICT_COLOR").c_str() );
-  diff_added_color_ = QColor( XmlOptions::get().raw("DIFF_ADDED_COLOR").c_str() );
-  user_tag_color_ = QColor( XmlOptions::get().raw("TAGGED_BLOCK_COLOR").c_str() );
+  diff_conflict_color_ = QColor( XmlOptions::get().raw("DIFF_CONFLICT_COLOR") );
+  diff_added_color_ = QColor( XmlOptions::get().raw("DIFF_ADDED_COLOR") );
+  user_tag_color_ = QColor( XmlOptions::get().raw("TAGGED_BLOCK_COLOR") );
 
   // update paragraph tags
   _updateTaggedBlocks();
@@ -1686,7 +1688,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
 
   // spellcheck configuration
   bool changed( false );
-  changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().raw("AUTOSPELL_COLOR").c_str() ) );
+  changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().raw("AUTOSPELL_COLOR") ) );
   changed |= textHighlight().spellParser().setFontFormat( XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
   textHighlight().updateSpellPattern();
   autoSpellAction().setEnabled( textHighlight().spellParser().color().isValid() );
@@ -1695,12 +1697,12 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
   SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
 
   // load default filter and dictionaries
-  string filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
-  string dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
+  QString filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
+  QString dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
 
   // overwrite with file record
-  if( file.empty() ) file = TextDisplay::file();
-  if( !( file.empty() || isNewDocument() ) )
+  if( file.isEmpty() ) file = TextDisplay::file();
+  if( !( file.isEmpty() || isNewDocument() ) )
   {
     FileRecord& record( _recentFiles().get( file ) );
     if( record.hasProperty( filter_property_id_ ) && interface.hasFilter( record.property( filter_property_id_ ) ) )
@@ -1714,13 +1716,13 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
   // see if one should/can change the dictionary and filter
   if( filter == interface.filter() || interface.setFilter( filter ) )
   {
-    _filterMenu().select( filter.c_str() );
+    _filterMenu().select( filter );
     changed = true;
   }
 
   if( dictionary == interface.dictionary() || interface.setDictionary( dictionary ) )
   {
-    _dictionaryMenu().select( dictionary.c_str() );
+    _dictionaryMenu().select( dictionary );
     changed = true;
   }
 
@@ -1903,11 +1905,11 @@ void TextDisplay::_spellcheck( void )
   dialog.interface().setIgnoredWords( textHighlight().spellParser().interface().ignoredWords() );
 
   // default dictionary from XmlOptions
-  string default_filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
-  string default_dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
+  QString default_filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
+  QString default_dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
 
   // try overwrite with file record
-  if( !( file().empty()  || isNewDocument() ) )
+  if( !( file().isEmpty()  || isNewDocument() ) )
   {
 
     FileRecord& record( _recentFiles().get( file() ) );
@@ -1932,7 +1934,7 @@ void TextDisplay::_spellcheck( void )
   dialog.exec();
 
   // try overwrite with file record
-  if( !( file().empty() || isNewDocument() ) )
+  if( !( file().isEmpty() || isNewDocument() ) )
   {
     _recentFiles().get( file() )
       .addProperty( filter_property_id_, dialog.filter() )
@@ -2047,10 +2049,11 @@ void TextDisplay::_replaceLeadingTabs( const bool& confirm )
   if( confirm )
   {
 
-    ostringstream what;
+    QString buffer;
+    QTextStream what( &buffer );
     if( _hasTabEmulation() ) what << "Replace all leading tabs with space characters ?";
     else what << "Replace all leading spaces with tab characters ?";
-    if( !QuestionDialog( this, what.str().c_str() ).exec() ) return;
+    if( !QuestionDialog( this, buffer ).exec() ) return;
 
   }
 
@@ -2125,7 +2128,7 @@ void TextDisplay::_replaceLeadingTabs( const bool& confirm )
 void TextDisplay::_fileProperties( void )
 {
   Debug::Throw( "TextDisplay::_fileProperties.\n" );
-  if( file().empty() || isNewDocument() ) return;
+  if( file().isEmpty() || isNewDocument() ) return;
 
   // prior to showing the dialog 
   // one should add needed tab for misc information
@@ -2148,11 +2151,11 @@ void TextDisplay::_fileProperties( void )
   
   // number of characters
   grid_layout->addWidget( new QLabel( "Number of characters: ", box ) );
-  grid_layout->addWidget( new QLabel( Str().assign<int>(toPlainText().size()).c_str(), box ) );
+  grid_layout->addWidget( new QLabel( QString().setNum(toPlainText().size()), box ) );
   
   // number of lines
   grid_layout->addWidget( new QLabel( "Number of lines: ", box ) );
-  grid_layout->addWidget( new QLabel( Str().assign<int>(AnimatedTextEditor::blockCount()).c_str(), box ) );
+  grid_layout->addWidget( new QLabel( QString().setNum( AnimatedTextEditor::blockCount()), box ) );
   
   grid_layout->addWidget( new QLabel( "Current paragraph highlighting: ", box ) );
   grid_layout->addWidget( new QLabel( (blockHighlightAction().isChecked() ? "True":"False" ), box ) );
@@ -2176,7 +2179,7 @@ void TextDisplay::_fileProperties( void )
   
   // autosave
   layout->addWidget( new QLabel( "Auto-save filename: ", box ) );
-  layout->addWidget( new QLabel( AutoSaveThread::autoSaveName( file() ).c_str(), box ) );
+  layout->addWidget( new QLabel( AutoSaveThread::autoSaveName( file() ), box ) );
   
   layout->addStretch();
   

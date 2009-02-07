@@ -58,15 +58,15 @@ FileModifiedDialog::FileModifiedDialog( QWidget* parent, const File& file ):
   setLayout( layout );
   
   // create message
-  ostringstream what;
-  what << file.localName() << " has been modified by another application." << endl;
+  QString buffer;
+  QTextStream( &buffer ) << file.localName() << " has been modified by another application." << endl;
 
   //! try load Question icon
   CustomPixmap question_pixmap = CustomPixmap().find( ICONS::WARNING );
   
   // insert main vertical box
   if( question_pixmap.isNull() )
-  { layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter ); }
+  { layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter ); }
   else
   {
     
@@ -75,7 +75,7 @@ FileModifiedDialog::FileModifiedDialog( QWidget* parent, const File& file ):
     QLabel* label = new QLabel( this );
     label->setPixmap( question_pixmap );
     h_layout->addWidget( label, 0, Qt::AlignHCenter );
-    h_layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter );
+    h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
     
   }
 

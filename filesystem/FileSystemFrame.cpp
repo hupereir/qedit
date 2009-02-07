@@ -164,7 +164,7 @@ void FileSystemFrame::setHome( const File& path )
 { 
   Debug::Throw( "FileSystemFrame::setHome.\n" );
   home_path_ = path; 
-  if( FileSystemFrame::path().empty() ) setPath( path );  
+  if( FileSystemFrame::path().isEmpty() ) setPath( path );  
 }
 
 //_________________________________________________________
@@ -175,14 +175,6 @@ void FileSystemFrame::clear()
   _model().clear();
 
 }
-
-// //____________________________________________
-// void FileSystemFrame::showEvent( QShowEvent* )
-// {
-//   Debug::Throw( "FileSystemFrame::showEvent.\n" );
-//   if( path().empty() ) setPath( Util::workingDirectory() );  
-//   //else _update();
-// }
 
 //______________________________________________________
 void FileSystemFrame::customEvent( QEvent* event )
@@ -251,7 +243,7 @@ void FileSystemFrame::_updateNavigationActions( void )
   Debug::Throw( "FileSystemFrame::_updateNavigationActions.\n" );
   _previousDirectoryAction().setEnabled( history_.previousAvailable() );
   _nextDirectoryAction().setEnabled( history_.nextAvailable() );
-  _parentDirectoryAction().setEnabled( !QDir( path().c_str() ).isRoot() );
+  _parentDirectoryAction().setEnabled( !QDir( path() ).isRoot() );
   return;
 }
      
@@ -265,10 +257,10 @@ void FileSystemFrame::_updatePath( void )
 //______________________________________________________
 void FileSystemFrame::_updatePath( const QString& value )
 {
-  Debug::Throw( "FileSystemFrame::_updatePath.\n" );
+  Debug::Throw() << "FileSystemFrame::_updatePath - value: " << value << endl;
   
   // check if path has changed
-  if( value == path().c_str() ) return;
+  if( value == path() ) return;
   
   // if path is empty set path to home directory
   if( value.isEmpty() )
@@ -281,6 +273,8 @@ void FileSystemFrame::_updatePath( const QString& value )
   File path( qPrintable( value ) );
   if( !( path.exists() && path.isDirectory() ) ) { setPath( path_ ); }
   else setPath( path );
+
+  Debug::Throw() << "FileSystemFrame::_updatePath - done." << endl;
   
 }
   
@@ -288,7 +282,7 @@ void FileSystemFrame::_updatePath( const QString& value )
 void FileSystemFrame::_update( const QString& value )
 {
   if( !isVisible() ) return;
-  if( value != path().c_str() ) return;
+  if( value != path() ) return;
   _update();
   
 }
@@ -298,7 +292,7 @@ void FileSystemFrame::_update( void )
 {
   Debug::Throw( "FileSystemFrame::_update.\n" );
 
-  if( path().empty() || !( path().exists() && path().isDirectory() ) ) return;
+  if( path().isEmpty() || !( path().exists() && path().isDirectory() ) ) return;
   if( thread_.isRunning() ) return;
   thread_.setPath( path(), _hiddenFilesAction().isChecked() );
   thread_.start();
@@ -361,7 +355,7 @@ void FileSystemFrame::_parentDirectory( void )
 {
 
   Debug::Throw( "FileSystemFrame::_parentDirectory.\n" );
-  QDir dir( path().c_str() );
+  QDir dir( path() );
   dir.cdUp();
   setPath( File( qPrintable( dir.absolutePath() ) ) );
 
@@ -508,15 +502,15 @@ void FileSystemFrame::_animationFinished( void )
   _updateNavigationActions();
   
   // update combobox
-  if( _comboBox().findText( path().c_str() ) < 0 )
-  { _comboBox().addItem( path().c_str() ); }
+  if( _comboBox().findText( path() ) < 0 )
+  { _comboBox().addItem( path() ); }
   
-  _comboBox().setEditText( path().c_str() );
+  _comboBox().setEditText( path() );
 
   // reset file system watcher
   QStringList directories( file_system_watcher_.directories() );
   if( !directories.isEmpty() ) file_system_watcher_.removePaths( directories );
-  file_system_watcher_.addPath( path().c_str() );
+  file_system_watcher_.addPath( path() );
 }
 
 //_____________________________________________

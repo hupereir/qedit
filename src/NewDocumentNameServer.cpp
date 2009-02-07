@@ -30,37 +30,38 @@
 */
 
 #include <algorithm>
-#include <sstream>
+#include <QTextStream>
 
 #include "NewDocumentNameServer.h"
 
 using namespace std;
 
 //_____________________________________
-const string NewDocumentNameServer::default_name_ = "new document";
+const QString NewDocumentNameServer::default_name_ = "new document";
 
 //______________________________________
-string NewDocumentNameServer::get( void )
+QString NewDocumentNameServer::get( void )
 {
   
   unsigned int version( versions_.empty() ? 0: versions_.back()+1 );
-  string out( _get( version ) );
+  QString out( _get( version ) );
   versions_.push_back( version );
   return out;
 
 }
 
 //______________________________________
-void NewDocumentNameServer::remove( string name )
+void NewDocumentNameServer::remove( QString name )
 { versions_.erase( remove_if( versions_.begin(), versions_.end(), SameVersionFTor( name ) ), versions_.end() ); }
 
 //______________________________________
-string NewDocumentNameServer::_get( const unsigned int& version )
+QString NewDocumentNameServer::_get( const unsigned int& version )
 {
 
-  ostringstream what;
+  QString buffer;
+  QTextStream what ( &buffer );
   what << default_name_;
   if( version > 0 ) { what << " (" << version+1 << ")"; }
-  return what.str();
+  return buffer;
   
 }

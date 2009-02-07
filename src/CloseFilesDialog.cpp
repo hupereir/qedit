@@ -59,7 +59,8 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
   // create label text
   static const unsigned int max_line_size( 50 );
   unsigned int current_line( 0 );
-  ostringstream what;
+  QString buffer;
+  QTextStream what( &buffer );
   what << "Editing: ";
 
   unsigned int index = 0;
@@ -71,7 +72,7 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
     else if( index == files.size()-2 ) what << " and ";
     else what << ".";
     
-    if( what.str().size() >= (current_line+1)*max_line_size )
+    if( buffer.size() >= (current_line+1)*max_line_size )
     {
       what << endl;
       current_line++;
@@ -80,7 +81,7 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
   }
     
   what << endl << "Close ?";
-  h_layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter );
+  h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
   // rename buttons
   okButton().setText( "&Yes" );

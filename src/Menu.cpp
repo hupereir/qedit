@@ -135,10 +135,10 @@ Menu::Menu( QWidget* parent ):
   // help manager
   BASE::HelpManager* help( new BASE::HelpManager( this ) );
   File help_file( XmlOptions::get().raw( "HELP_FILE" ) );
-  if( help_file.exists() ) help->install( help_file.c_str() );
+  if( help_file.exists() ) help->install( help_file );
   else
   {
-    help->setFile( help_file.c_str() );
+    help->setFile( help_file );
     help->install( HelpText );
     help->install( BASE::HelpText, false );
   }  
@@ -420,7 +420,7 @@ void Menu::_updateWindowsMenu( void )
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
   windows_menu_->addAction( &display.filePropertiesAction() );
   
-  const string& current_file( display.file() );
+  const QString& current_file( display.file() );
   
   // clear files map
   file_actions_.clear();
@@ -442,7 +442,7 @@ void Menu::_updateWindowsMenu( void )
     }
       
     // add menu item
-    QAction* action = windows_menu_->addAction( file.c_str() );
+    QAction* action = windows_menu_->addAction( file );
     action->setCheckable( true );
     action->setChecked( current_file == file );
     windows_action_group_->addAction( action );
@@ -503,9 +503,9 @@ void Menu::_selectFile( QAction* action )
   // check if window was found
   if( window_iter == windows.end() )
   { 
-    ostringstream what;
-    what << "Unable to find a window containing file " << iter->second;
-    InformationDialog( this, what.str().c_str() ).exec();
+    QString buffer;
+    QTextStream( &buffer ) << "Unable to find a window containing file " << iter->second;
+    InformationDialog( this, buffer ).exec();
     return;
   }
   

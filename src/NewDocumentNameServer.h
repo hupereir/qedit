@@ -33,7 +33,7 @@
 */
 
 #include <vector>
-#include <string>
+#include <QString>
 
 class NewDocumentNameServer
 {
@@ -45,22 +45,22 @@ class NewDocumentNameServer
   {}
   
   //! get name
-  std::string get( void );
+  QString get( void );
   
   //! remove (this is used to avoid that version number is incremented too quickly)
-  void remove( std::string );
+  void remove( QString );
   
   private:
   
   //! generate file name matching a given version
-  static std::string _get( const unsigned int& version );
+  static QString _get( const unsigned int& version );
     
   class SameVersionFTor
   {
     public: 
     
     //! constructor
-    SameVersionFTor( const std::string& name ):
+    SameVersionFTor( const QString& name ):
       name_( name )
       {}
       
@@ -71,12 +71,12 @@ class NewDocumentNameServer
     private:
     
     //! prediction
-    std::string name_;
+    QString name_;
     
   };
   
   //! default name
-  static const std::string default_name_;
+  static const QString default_name_;
  
   // version (appended)
   std::vector<unsigned int> versions_;

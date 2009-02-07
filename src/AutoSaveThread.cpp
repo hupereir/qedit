@@ -48,14 +48,14 @@ File AutoSaveThread::autoSaveName( const File& file )
 {
     
   // get full path of current file, relative to root.
-  QString relative_name = QDir::root().relativeFilePath( file.c_str() );
+  QString relative_name = QDir::root().relativeFilePath( file );
   
   // get qedit default autosave path
   QString autosave_path;
   QTextStream( &autosave_path )
-    << XmlOptions::get().raw( "AUTOSAVE_PATH" ).c_str()
+    << XmlOptions::get().raw( "AUTOSAVE_PATH" )
     << "/.qedit/" 
-    << Util::user().c_str();
+    << Util::user();
   
   // generate autosave name
   File tmp_file = File( qPrintable( relative_name ) ).addPath( qPrintable( QDir( autosave_path ).absolutePath() ) );
@@ -96,11 +96,11 @@ void AutoSaveThread::run( void )
   {
     
     // make sure path exists
-    QDir path( file().path().c_str() );
+    QDir path( file().path() );
     if( !( path.exists() || path.mkpath( "." ) ) ) return; 
     
     // write to file
-    QFile out( file().c_str() );
+    QFile out( file() );
     if( !out.open( QIODevice::WriteOnly ) ) return; 
     out.write( contents_.toAscii() );
     out.close();

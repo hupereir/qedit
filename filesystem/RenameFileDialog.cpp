@@ -31,7 +31,6 @@
 */
 
 #include <QLabel>
-#include <sstream>
 
 #include "Debug.h"
 #include "LineEditor.h"
@@ -46,18 +45,18 @@ RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):
   
   Debug::Throw( "RenameFileDialog::RenameFileDialog.\n" );
   
-  ostringstream what;
-  what << "Rename the item '" << record.file() << "' to:"; 
-  mainLayout().addWidget( new QLabel( what.str().c_str(), this ) );
+  QString buffer;
+  QTextStream( &buffer ) << "Rename the item '" << record.file() << "' to:"; 
+  mainLayout().addWidget( new QLabel( buffer, this ) );
   mainLayout().addWidget( editor_ = new LineEditor( this ) );
 
   // set editor text
-  _editor().setText( record.file().c_str() );
+  _editor().setText( record.file() );
   _editor().setFocus();
 
   // get short name and select
   File short_file( record.file().truncatedName() );
-  if( !short_file.empty() ) _editor().setSelection( 0, short_file.size() );
+  if( !short_file.isEmpty() ) _editor().setSelection( 0, short_file.size() );
   else _editor().selectAll();
   connect( &_editor(), SIGNAL( textChanged( const QString& ) ), SLOT( _updateButtons() ) );
   

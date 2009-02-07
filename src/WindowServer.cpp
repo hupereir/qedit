@@ -62,8 +62,8 @@
 using namespace std;
 
 //________________________________________________________________
-const string WindowServer::SINGLE_WINDOW = "open in current window";
-const string WindowServer::MULTIPLE_WINDOWS = "open in new window";
+const QString WindowServer::SINGLE_WINDOW = "open in current window";
+const QString WindowServer::MULTIPLE_WINDOWS = "open in new window";
 
 //________________________________________________________________
 WindowServer::WindowServer( QObject* parent ):
@@ -156,7 +156,7 @@ FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) co
       // retrieve file
       // store in map if not empty
       const File& file( (*iter)->file() );
-      if( file.empty() ) continue;
+      if( file.isEmpty() ) continue;
       
       // insert in map (together with modification status)
       FileRecord record = (*iter)->isNewDocument() ? FileRecord( file ):application.recentFiles().get(file);
@@ -201,7 +201,7 @@ bool WindowServer::closeAll( void )
     if( !dialog.exec() ) return false;
   }
   
-  list<string> files;
+  list<QString> files;
   for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
   { files.push_back( iter->file() ); }
 
@@ -230,11 +230,12 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
   // check number of files
   if( filenames.size() > 10 )
   {
-    ostringstream what;
+    QString buffer;
+    QTextStream what( &buffer );
     what << "Do you really want to open " << filenames.size() << " files at the same time ?" << endl;
     what << "This might be very resource intensive and can overload your computer." << endl;
     what << "If you choose No, only the first file will be opened.";
-    if( !QuestionDialog( &_activeWindow(), what.str().c_str() ).exec() )
+    if( !QuestionDialog( &_activeWindow(), buffer ).exec() )
     { filenames = filenames.mid(0,1); }
     
   }
@@ -488,15 +489,15 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
   Debug::Throw() << "WindowServer::_open - file: " << record.file() << "." << endl;
   
   // do nothing if record is empty
-  if( record.file().empty() ) return false;
+  if( record.file().isEmpty() ) return false;
   
   // see if file is directory
   if( record.file().isDirectory() )
   {
     
-    ostringstream what;
-    what << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
-    InformationDialog( &_activeWindow(), what.str().c_str() ).exec();
+    QString buffer;
+    QTextStream( &buffer ) << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
+    InformationDialog( &_activeWindow(), buffer ).exec();
     return false;
     
   }
@@ -576,7 +577,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
   Debug::Throw() << "WindowServer::_open - file: " << record.file() << " orientation: " << orientation << endl;
   
   // do nothing if record is empty
-  if( record.file().empty() ) return false;
+  if( record.file().isEmpty() ) return false;
 
   // create file if it does not exist
   if( !( record.file().exists() || _createNewFile( record ) ) ) return false;
@@ -606,11 +607,11 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
     // select found display in TextView
     (*view_iter)->selectDisplay( record.file() );
 
-    ostringstream what;
-    what
+    QString buffer;
+    QTextStream( &buffer )
       << "The file " << record.file() << " is already opened in another window.\n"
       << "Do you want to close the other display and open the file here ?";
-    if( !QuestionDialog( &_activeWindow(), what.str().c_str() ).exec() )
+    if( !QuestionDialog( &_activeWindow(), buffer ).exec() )
     {
       (*iter)->uniconify();
       return false;
@@ -753,7 +754,7 @@ void WindowServer::_close( QStringList filenames )
 
   FileRecord::List records;
   for( QStringList::const_iterator iter = filenames.begin(); iter != filenames.end(); iter++ )
-  { records.push_back( FileRecord( File( qPrintable( *iter ) ) ) ); }
+  { records.push_back( FileRecord( *iter ) ); }
   
   _close( records );
   
@@ -770,7 +771,7 @@ void WindowServer::_close( FileRecord::List records )
   // ask for confirmation
   if( records.size() > 1 && !CloseFilesDialog( &_activeWindow(), records ).exec() ) return;
   
-  list<string> files;
+  list<QString> files;
   for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
   { files.push_back( iter->file() ); }
   
@@ -779,13 +780,13 @@ void WindowServer::_close( FileRecord::List records )
 }
 
 //________________________________________________________________
-bool WindowServer::_close( const list<string>& files )
+bool WindowServer::_close( const list<QString>& files )
 {
  
   int state( AskForSaveDialog::UNKNOWN );
 
   // need a first loop over associated windows to store modified files
-  set<string> modified_files;
+  set<QString> modified_files;
   BASE::KeySet<MainWindow> windows( this );
   for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ ) 
   { 
@@ -861,7 +862,7 @@ FileRecord WindowServer::_selectFileFromDialog( void )
   dialog.setFileMode( QFileDialog::ExistingFile );
   
   File working_directory( _activeWindow().activeDisplay().workingDirectory() );
-  dialog.setDirectory( QDir( working_directory.c_str() ) );
+  dialog.setDirectory( QDir( working_directory ) );
   
   QtUtil::centerOnParent( &dialog );
   if( dialog.exec() == QDialog::Rejected ) return record;
@@ -883,7 +884,7 @@ bool WindowServer::_createNewFile( const FileRecord& record )
   Debug::Throw( "WindowServer::_createNewFile.\n" );
   
   // check file is valid
-  if( record.file().empty() ) return false;
+  if( record.file().isEmpty() ) return false;
   
   // create NewFileDialog
   int buttons( NewFileDialog::CREATE | NewFileDialog::CANCEL );
@@ -903,9 +904,9 @@ bool WindowServer::_createNewFile( const FileRecord& record )
       if( !fullname.create() )
       {
         
-        ostringstream what;
-        what << "Unable to create file " << record.file() << ".";
-        InformationDialog( &_activeWindow(), what.str().c_str() ).exec();
+        QString buffer;
+        QTextStream( &buffer ) << "Unable to create file " << record.file() << ".";
+        InformationDialog( &_activeWindow(), buffer ).exec();
         return false;
         
       } else return true;
@@ -955,7 +956,7 @@ void WindowServer::_applyArguments( TextDisplay& display, CommandLineArguments a
 //________________________________________________________________
 void WindowServer::_setActiveWindow( MainWindow& window )
 { 
-  Debug::Throw() << "WindowServer::setActiveWindow - key: " << window.key() << std::endl;
+  Debug::Throw() << "WindowServer::setActiveWindow - key: " << window.key() << endl;
   assert( window.isAssociated( this ) );
   active_window_ = &window;
 }

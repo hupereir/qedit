@@ -57,7 +57,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
 
   // file name  
   const File& file( record.file() ); 
-  setWindowTitle( QString( file.empty() ? "File Information":file.localName().c_str() )+ " - qedit" );
+  setWindowTitle( (file.isEmpty() ? File("File Information"):file.localName() )+ " - qedit" );
   
   setLayout( new QVBoxLayout() );
   layout()->setSpacing(5);
@@ -95,33 +95,34 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
   layout->addLayout( grid_layout );
     
   grid_layout->addWidget( label = new QLabel( "file: ", box ) );
-  grid_layout->addWidget( label = new QLabel( file.empty() ? "untitled":file.localName().c_str(), box ) );
+  grid_layout->addWidget( label = new QLabel( file.isEmpty() ? File("untitled"):file.localName(), box ) );
   QFont font( label->font() );
   font.setWeight( QFont::Bold );
   label->setFont( font );
     
   // path
-  if( !file.empty() )
+  if( !file.isEmpty() )
   { 
     grid_layout->addWidget( label = new QLabel( "path: ", box ) );
-    grid_layout->addWidget( label = new QLabel( file.path().c_str(), box ) );
+    grid_layout->addWidget( label = new QLabel( file.path(), box ) );
   }
   
   // type
   if( record.hasFlag( FileSystemModel::FOLDER | FileSystemModel::DOCUMENT ) )
   {
     grid_layout->addWidget( label = new QLabel( "type: ", box ) );
-    ostringstream what;
+    QString buffer;
+    QTextStream what( &buffer );
     if( record.hasFlag( FileSystemModel::LINK ) ) what << "link to ";
     if( record.hasFlag( FileSystemModel::FOLDER ) ) what << "folder";
     if( record.hasFlag( FileSystemModel::DOCUMENT ) ) what << "document";
-    grid_layout->addWidget( label = new QLabel( what.str().c_str(), box ) );
+    grid_layout->addWidget( label = new QLabel( buffer, box ) );
   
   }
 
   // size
   grid_layout->addWidget( label = new QLabel( "size: ", box ) );
-  grid_layout->addWidget( label = new QLabel( file.exists() ? file.sizeString().c_str(): "0", box ) );
+  grid_layout->addWidget( label = new QLabel( file.exists() ? file.sizeString(): "0", box ) );
   
   //  created
   grid_layout->addWidget( label = new QLabel( "created: ", box ) );
@@ -139,19 +140,19 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
   if( record.hasProperty( FileRecordProperties::CLASS_NAME ) )
   {
     grid_layout->addWidget( label = new QLabel( "document class: ", box ) );
-    grid_layout->addWidget( label = new QLabel( record.property( FileRecordProperties::CLASS_NAME ).c_str(), box ) );
+    grid_layout->addWidget( label = new QLabel( record.property( FileRecordProperties::CLASS_NAME ), box ) );
   }
   
   if( record.hasProperty( FileRecordProperties::DICTIONARY ) )
   {
     grid_layout->addWidget( label = new QLabel( "spell-check dictionary: ", box ) );
-    grid_layout->addWidget( label = new QLabel( record.property( FileRecordProperties::DICTIONARY ).c_str(), box ) );
+    grid_layout->addWidget( label = new QLabel( record.property( FileRecordProperties::DICTIONARY ), box ) );
   }
 
   if( record.hasProperty( FileRecordProperties::FILTER ) )
   {
     grid_layout->addWidget( label = new QLabel( "spell-check filter: ", box ) );
-    grid_layout->addWidget( label = new QLabel( record.property( FileRecordProperties::FILTER ).c_str(), box ) );
+    grid_layout->addWidget( label = new QLabel( record.property( FileRecordProperties::FILTER ), box ) );
   }
   
   grid_layout->setColumnStretch( 1, 1 );
@@ -227,11 +228,11 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     
     // user id
     grid_layout->addWidget( label = new QLabel( "owner: ", box ) );
-    grid_layout->addWidget( label = new QLabel( file.userName().c_str(), box ) );
+    grid_layout->addWidget( label = new QLabel( file.userName(), box ) );
     
     // group id
     grid_layout->addWidget( label = new QLabel( "group: ", box ) );
-    grid_layout->addWidget( label = new QLabel( file.groupName().c_str(), box ) );
+    grid_layout->addWidget( label = new QLabel( file.groupName(), box ) );
     grid_layout->setColumnStretch( 1, 1 );
     
   }

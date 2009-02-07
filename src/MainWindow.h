@@ -68,8 +68,8 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   public:
 
   //!@name orientation strings
-  static const std::string LEFT_RIGHT;
-  static const std::string TOP_BOTTOM;
+  static const QString LEFT_RIGHT;
+  static const QString TOP_BOTTOM;
     
   //! creator
   MainWindow( QWidget* parent = 0 );

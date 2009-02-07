@@ -134,7 +134,7 @@ PrintDialog::PrintDialog( QWidget* parent ):
 void PrintDialog::setFile( const File& file )
 {
   Debug::Throw( "PrintDialog::setFile.\n" );
-  _destinationEditor().editor().setText( file.c_str() );
+  _destinationEditor().editor().setText( file );
   _updateFile();
 }
 
@@ -155,11 +155,11 @@ void PrintDialog::_updateFile( void )
   Debug::Throw( "PrintDialog::_updateFile.\n" );
   
   File file( qPrintable( _destinationEditor().editor().text() ) );
-  file = file.empty() ? File("document"):file.truncatedName();
+  file = file.isEmpty() ? File("document"):file.truncatedName();
   if( pdf_checkbox_->isChecked() ) file += ".pdf";
   else if( html_checkbox_->isChecked() ) file += ".html";
   
-  _destinationEditor().editor().setText( file.c_str() );
+  _destinationEditor().editor().setText( file );
   
 }
 

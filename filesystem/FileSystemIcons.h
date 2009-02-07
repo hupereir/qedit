@@ -32,23 +32,23 @@
   \date    $Date$
 */
 
-#include <string>
+#include <QString>
 #include "BaseIcons.h"
 
 //! namespace for icon static name wrappers
 namespace ICONS
 {
   
-  static const std::string INFO = "info.png";
+  static const QString INFO = "info.png";
 
-  static const std::string DOCUMENT = "document.png"; 
-  static const std::string FOLDER = "folder.png";
-  static const std::string LINK = "link_overlay.png";
+  static const QString DOCUMENT = "document.png"; 
+  static const QString FOLDER = "folder.png";
+  static const QString LINK = "link_overlay.png";
 
-  static const std::string PARENT_DIRECTORY = "parent_directory.png";
-  static const std::string PREVIOUS_DIRECTORY = "back.png";
-  static const std::string NEXT_DIRECTORY = "forward.png";
-  static const std::string HOME_DIRECTORY = "gohome.png";
+  static const QString PARENT_DIRECTORY = "parent_directory.png";
+  static const QString PREVIOUS_DIRECTORY = "back.png";
+  static const QString NEXT_DIRECTORY = "forward.png";
+  static const QString HOME_DIRECTORY = "gohome.png";
   
 };
 

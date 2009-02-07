@@ -199,8 +199,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   // opening
   grid_layout->addWidget( new QLabel( "Default open mode ", box ) );
   grid_layout->addWidget( combobox = new OptionComboBox( box, "OPEN_MODE" ) );
-  combobox->addItem( WindowServer::MULTIPLE_WINDOWS.c_str() );
-  combobox->addItem( WindowServer::SINGLE_WINDOW.c_str() );
+  combobox->addItem( WindowServer::MULTIPLE_WINDOWS );
+  combobox->addItem( WindowServer::SINGLE_WINDOW );
   
   addOptionWidget( combobox );
   combobox->setToolTip( "Configure how new files are oppened." );
@@ -208,8 +208,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   // splitting
   grid_layout->addWidget( new QLabel( "Default splitting orientation ", box ) );
   grid_layout->addWidget( combobox = new OptionComboBox( box, "ORIENTATION" ) );
-  combobox->addItem( MainWindow::TOP_BOTTOM.c_str() );
-  combobox->addItem( MainWindow::LEFT_RIGHT.c_str() );
+  combobox->addItem( MainWindow::TOP_BOTTOM );
+  combobox->addItem( MainWindow::LEFT_RIGHT );
   
   addOptionWidget( combobox );
   combobox->setToolTip( "Configure how new views are organized." );

@@ -58,9 +58,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   //!@name Open mode string
   //@{
   
-  static const std::string SINGLE_WINDOW;
+  static const QString SINGLE_WINDOW;
   
-  static const std::string MULTIPLE_WINDOWS;
+  static const QString MULTIPLE_WINDOWS;
   
   //@}
   
@@ -197,7 +197,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   bool _open( FileRecord, Qt::Orientation );
 
   //! close files 
-  bool _close( const std::list<std::string>& );
+  bool _close( const std::list<QString>& );
   
   //! select file record from dialog
   /*! return empty record if no file is opened or file is directory */

@@ -29,6 +29,7 @@
    \date    $Date$
 */
 
+#include "Debug.h"
 #include "FileSystemHistory.h"
 
 using namespace std;

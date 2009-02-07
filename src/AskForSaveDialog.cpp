@@ -28,7 +28,6 @@
   \date $Date$
 */
 
-#include <sstream>
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
@@ -57,7 +56,8 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   setLayout( layout );
   
   // create message
-  ostringstream what;
+  QString buffer;
+  QTextStream what( &buffer );
   what << "File ";
   if( file.size() ) what << "\"" << file.localName() << "\" ";
   what << "has been modified." << endl << "Save ?";
@@ -67,7 +67,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   
   // insert main vertical box
   if( question_pixmap.isNull() )
-  { layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter ); }
+  { layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter ); }
   else
   {
     
@@ -76,7 +76,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
     QLabel* label = new QLabel( this );
     label->setPixmap( question_pixmap );
     h_layout->addWidget( label, 0, Qt::AlignHCenter );
-    h_layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter );
+    h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
     
   }
     

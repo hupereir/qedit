@@ -31,17 +31,17 @@
   \date    $Date$
 */
 
-#include <string>
+#include <QString>
 #include "FileRecordBaseProperties.h"
 
 namespace FileRecordProperties
 {
   
-  static const std::string CLASS_NAME = "class_name"; 
-  static const std::string WRAPPED = "wrap";
-  static const std::string DICTIONARY = "dictionary";
-  static const std::string FILTER = "filter";
-  static const std::string SIZE = "size";
+  static const QString CLASS_NAME = "class_name"; 
+  static const QString WRAPPED = "wrap";
+  static const QString DICTIONARY = "dictionary";
+  static const QString FILTER = "filter";
+  static const QString SIZE = "size";
   
   //! needed to tag session file records
   enum State

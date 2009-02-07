@@ -117,7 +117,7 @@ void Application::initApplicationManager( void )
   CommandLineParser parser( commandLineParser( _arguments() ) );
   QStringList& orphans( parser.orphans() );
   for( QStringList::iterator iter = orphans.begin(); iter != orphans.end(); iter++ )
-  { if( !iter->isEmpty() ) (*iter) = File( qPrintable( *iter ) ).expand().c_str(); }
+  { if( !iter->isEmpty() ) (*iter) = File( qPrintable( *iter ) ).expand(); }
 
   // replace arguments
   _setArguments( parser.arguments() );
@@ -187,21 +187,21 @@ void Application::_updateDocumentClasses( void )
   class_manager_->clear();
   
   // load files from options
-  ostringstream what;
-  list<string> files( XmlOptions::get().specialOptions<string>( "PATTERN_FILENAME" ) );
-  for( list<string>::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+  QString buffer;
+  QTextStream what( &buffer );
+  Options::List files( XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) );
+  for( Options::List::const_iterator iter = files.begin(); iter != files.end(); iter++ )
   { 
-    class_manager_->read( *iter ); 
-    what << qPrintable( class_manager_->readError() );
+    class_manager_->read( iter->raw() ); 
+    what << class_manager_->readError();
   }
 
-  if( !what.str().empty() ) InformationDialog( 0, what.str().c_str() ).exec();
+  if( !buffer.isEmpty() ) InformationDialog( 0, buffer ).exec();
   
   // load document classes icons into iconEngine cache, if any
-  list<string> path_list( XmlOptions::get().specialOptions<string>( "PIXMAP_PATH" ) );
   const DocumentClassManager::List& classes( class_manager_->list() );
   for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
-  { if( !iter->icon().isEmpty() ) { IconEngine::get( qPrintable( iter->icon() ) ); } }
+  { if( !iter->icon().isEmpty() ) { IconEngine::get( iter->icon() ); } }
   
   // emit configuration changed to force displays to be updated
   emit documentClassesChanged();

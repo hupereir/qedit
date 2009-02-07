@@ -106,7 +106,7 @@ void TextView::setFile( File file )
 {
   
   Debug::Throw() << "TextView::setFile - " << file << endl;
-  assert( !file.empty() );
+  assert( !file.isEmpty() );
   
   // look for first empty display
   BASE::KeySet<TextDisplay> displays( this );  
@@ -493,7 +493,7 @@ void TextView::diff( void )
   // try run
   if( !diff->run() )
   {
-    InformationDialog( this, diff->error().c_str() ).exec();
+    InformationDialog( this, diff->error() ).exec();
     diff->deleteLater();
     return;
   }

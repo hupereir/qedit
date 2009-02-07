@@ -29,10 +29,9 @@
   \date $Date$
 */
 
-#include <sstream>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
+#include <QLabel>
+#include <QLayout>
+#include <QPushButton>
 
 #include "FileRemovedDialog.h"
 #include "PixmapEngine.h"
@@ -57,15 +56,15 @@ FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):
   setLayout( layout );
   
   // create message
-  ostringstream what;
-  what << file.localName() << " has been removed.";
+  QString buffer;
+  QTextStream( &buffer ) << file.localName() << " has been removed.";
 
   //! try load Question icon
   QPixmap question_pixmap = PixmapEngine::get( ICONS::WARNING );
   
   // insert main vertical box
   if( question_pixmap.isNull() )
-  { layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter ); }
+  { layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter ); }
   else
   {
     
@@ -74,7 +73,7 @@ FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):
     QLabel* label = new QLabel( this );
     label->setPixmap( question_pixmap );
     h_layout->addWidget( label, 0, Qt::AlignHCenter );
-    h_layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter );
+    h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
     
   }
 

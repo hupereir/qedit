@@ -112,7 +112,7 @@ class TextDisplay: public AnimatedTextEditor
     bool operator() ( const TextDisplay* display ) const
     { 
       return 
-        display->file().empty() || 
+        display->file().isEmpty() || 
         (display->isNewDocument() && !display->document()->isModified() ); 
       }
 

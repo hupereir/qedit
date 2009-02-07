@@ -73,7 +73,7 @@ bool Diff::run( void )
   { 
     
     // check if filename is empty
-    if( iter->file().empty() ) 
+    if( iter->file().isEmpty() ) 
     {
       error_ = "invalid file name.";
       return false;
@@ -81,14 +81,14 @@ bool Diff::run( void )
     
     // check if file exists
     if( !iter->file().exists() ) {
-      error_ = string( "file " ) + iter->file() + string( " does not exists." );
+      error_ = QString( "file " ) + iter->file() + " does not exists.";
       return false;
     }
     
     // check if file is a directory
     if( iter->file().isDirectory() ) 
     {
-      error_ = string( "file " ) + iter->file() + string( " is a directory." );
+      error_ = QString( "file " ) + iter->file() + " is a directory.";
       return false;
     }
     
@@ -100,9 +100,9 @@ bool Diff::run( void )
   // create command and pass to process
   QStringList command;
   command 
-    << XmlOptions::get().raw( "DIFF_COMMAND" ).c_str()
-    << files_[FIRST].file().c_str() 
-    << files_[SECOND].file().c_str();
+    << XmlOptions::get().raw( "DIFF_COMMAND" )
+    << files_[FIRST].file() 
+    << files_[SECOND].file();
   
   // run
   process_.start( command ); 
@@ -128,26 +128,21 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
   // check exit code
   if( status != QProcess::NormalExit )
   {
-    ostringstream what;
-    what << "diff excited with code " << code;
-    InformationDialog( 0, what.str().c_str() ).exec();
+    QString buffer;
+    QTextStream( &buffer ) << "diff excited with code " << code;
+    InformationDialog( 0, buffer ).exec();
     return;
   }
     
   // retrieve all stdout and put into stream
   QByteArray out( process_.readAllStandardOutput() );
-  istringstream in( out.constData() );
+  QStringList in( QString( out ).split( "\n" ) );
 
-  const int linesize( 512 );
-  char buffer[linesize];
-  while ((in.rdstate() & ios::failbit) == 0 ) 
+  for( QStringList::const_iterator iter = in.begin(); iter != in.end(); iter++ )
   {
-   
-    in.getline( buffer, linesize, '\n');  
-    if( buffer[0] == '\0' || !(string( buffer ).size()) ) continue;
-   
-    static const std::string removed_lines( "<>-" );
-    if( removed_lines.find( buffer[0] ) != string::npos ) continue;
+    QString buffer = *iter;
+    static const QString removed_lines( "<>-" );
+    if( removed_lines.indexOf( buffer[0] ) != 0 ) continue;
     
     // parse remaining lines
     _parseLine( buffer );
@@ -166,17 +161,17 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
 }
 
 //______________________________________________________
-void Diff::_parseLine( const std::string& line )
+void Diff::_parseLine( const QString& line )
 {
   Debug::Throw() << "Diff::_parseLine - " << line << endl;
   
   // see if line is a conflict
-  size_t position( line.find( "c" ) );
-  if( position != string::npos )
+  int position( line.indexOf( "c" ) );
+  if( position >= 0 )
   {
     vector<Range> ranges(2);
-    ranges[FIRST] = _parseRange(line.substr( 0, position ));
-    ranges[SECOND] = _parseRange(line.substr( position+1, line.size() - position - 1 ));
+    ranges[FIRST] = _parseRange(line.left( position ));
+    ranges[SECOND] = _parseRange(line.mid( position+1 ));
 
     for( unsigned int i = 0; i<= SECOND; i++ )
     { files_[i].insertConflictRange( ranges[i] ); }
@@ -185,19 +180,19 @@ void Diff::_parseLine( const std::string& line )
   
   
   // see if line is added
-  position = line.find( "a" );
-  if( position != string::npos )
+  position = line.indexOf( "a" );
+  if( position >= 0 )
   {
-    string range( line.substr( position+1, line.size() - position - 1 ) );
+    QString range( line.mid( position+1, line.size() ) );
     files_[SECOND].insertAddedRange( _parseRange( range ) );
     return;
   }
   
   // see if line is deleted
-  position = line.find( "d" );
-  if( position != string::npos )
+  position = line.indexOf( "d" );
+  if( position >= 0 )
   {
-    string range( line.substr( 0, position ) );
+    QString range( line.left( position ) );
     files_[FIRST].insertAddedRange( _parseRange( range ) );
     return;
   }
@@ -209,16 +204,16 @@ void Diff::_parseLine( const std::string& line )
 }
 
 //_____________________________________________________
-Diff::Range Diff::_parseRange( const std::string& range )
+Diff::Range Diff::_parseRange( const QString& range )
 {
   
   Debug::Throw() << "Diff::_parseRange - " << range << endl;
   
   // look for "," in string
-  size_t position( range.find( "," ) ); 
-  Range out( ( position == string::npos ) ?
-    Range( Str( range ).get<unsigned int>(), Str( range ).get<unsigned int>() ):
-    Range( Str( range.substr( 0, position ) ).get<unsigned int>(), Str( range.substr( position+1, range.size() - position - 1 ) ).get<unsigned int>() ) );
+  int position( range.indexOf( "," ) ); 
+  Range out( ( position < 0 ) ?
+    Range( range.toUInt(), range.toUInt() ):
+    Range( range.left( position ).toUInt(), range.mid( position+1 ).toUInt() ) );
     
   Debug::Throw() << "Diff::_parseRange - (" << out.first << "," << out.second << ")" << endl;
   return out;
@@ -244,7 +239,7 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
   // if exists and if display is not modified
   if( !( 
     _display().document()->isModified() ||
-    _display().file().empty() || 
+    _display().file().isEmpty() || 
     _display().isNewDocument() ||
     !_display().file().exists() ) ) 
   {
@@ -256,17 +251,17 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
   } else {
    
     // create temporary file
-    ostringstream what;
-    what << "/tmp/_qedit_" << Util::user() << "_" << TimeStamp::now().unixTime() << "_" << Util::pid();
+    QString buffer;
+    QTextStream( &buffer ) << "/tmp/_qedit_" << Util::user() << "_" << TimeStamp::now().unixTime() << "_" << Util::pid();
     
     // store
-    file_ = what.str();
+    file_ = buffer;
     
     // try dump text in file
-    QFile out( what.str().c_str() );
+    QFile out( buffer );
     if( !out.open( QIODevice::WriteOnly ) ) 
     {
-      Debug::Throw() << "Diff::FileInformation::setDisplay - cannot write to file " << what.str() << endl;
+      Debug::Throw() << "Diff::FileInformation::setDisplay - cannot write to file " << buffer << endl;
       return;
     }
 

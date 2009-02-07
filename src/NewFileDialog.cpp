@@ -55,14 +55,15 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned 
   setLayout( layout );
   
   // create message
-  ostringstream what;
-  what << "Can't open " << file << "." << endl;
-  what << "No such file or directory";
+  QString buffer;
+  QTextStream( &buffer )  
+    << "Can't open " << file << "." << endl
+    << "No such file or directory";
   
   //! try load Question icon
   QPixmap question_pixmap( PixmapEngine::get( ICONS::WARNING ) );
   if( question_pixmap.isNull() )
-  { layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter ); }
+  { layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter ); }
   else
   {
     
@@ -71,7 +72,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned 
     QLabel* label = new QLabel( this );
     label->setPixmap( question_pixmap );
     h_layout->addWidget( label, 0, Qt::AlignHCenter );
-    h_layout->addWidget( new QLabel( what.str().c_str(), this ), 1, Qt::AlignHCenter );
+    h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
     
   }  
   // button layout
