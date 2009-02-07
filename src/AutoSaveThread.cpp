@@ -58,7 +58,7 @@ File AutoSaveThread::autoSaveName( const File& file )
     << Util::user();
   
   // generate autosave name
-  File tmp_file = File( qPrintable( relative_name ) ).addPath( qPrintable( QDir( autosave_path ).absolutePath() ) );
+  File tmp_file = File( relative_name ).addPath( QDir( autosave_path ).absolutePath() );
   return tmp_file;
   
 }

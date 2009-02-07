@@ -72,7 +72,7 @@ File RenameFileDialog::file( void ) const
 {
   
   QString text( _editor().text() );
-  return ( text.isEmpty() || text.isNull() ) ? File():File( qPrintable( text ) );
+  return ( text.isEmpty() || text.isNull() ) ? File():File( text );
   
 }
 

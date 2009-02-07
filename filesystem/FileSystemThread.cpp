@@ -71,7 +71,7 @@ void FileSystemThread::run( void )
     if( iter->fileName() == ".." || iter->fileName() == "." ) continue;
 
     // create file record
-    FileRecord record( File( qPrintable( iter->fileName() ) ), TimeStamp( iter->lastModified().toTime_t() ) );
+    FileRecord record( File( iter->fileName() ), TimeStamp( iter->lastModified().toTime_t() ) );
     
     // assign size
     record.addProperty( size_property_id_, QString().setNum(iter->size()) );

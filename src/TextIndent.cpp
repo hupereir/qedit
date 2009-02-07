@@ -90,7 +90,7 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
         
         if( _acceptPattern( *block_iter, *iter ) )
         {
-          Debug::Throw() << "TextIndent::indent - accepted pattern: " << qPrintable( iter->name() ) << endl;
+          Debug::Throw() << "TextIndent::indent - accepted pattern: " << iter->name() << endl;
           if( iter->type() == IndentPattern::INCREMENT ) new_tabs += iter->scale();
           else if( iter->type() == IndentPattern::DECREMENT ) new_tabs -= iter->scale();
           else if( iter->type() == IndentPattern::DECREMENT_ALL ) new_tabs = 0;
@@ -151,7 +151,7 @@ void TextIndent::indent( QTextBlock block, bool new_line )
       if( _acceptPattern( block, *iter ) )
       {
         
-        Debug::Throw() << "TextIndent::indent - accepted pattern: " << qPrintable( iter->name() ) << endl;
+        Debug::Throw() << "TextIndent::indent - accepted pattern: " << iter->name() << endl;
         if( iter->type() == IndentPattern::INCREMENT ) new_tabs += iter->scale();
         else if( iter->type() == IndentPattern::DECREMENT ) new_tabs -= iter->scale();
         else if( iter->type() == IndentPattern::DECREMENT_ALL ) new_tabs = 0;
@@ -195,7 +195,7 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
       
       if( !iter->accept( local.text() ) ) 
       {
-        Debug::Throw() << "TextIndent::_acceptPattern - [" << qPrintable( pattern.name() ) << "," << rule_id << "] rejected" << endl;
+        Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << rule_id << "] rejected" << endl;
         accepted = false; 
       }
       
@@ -216,7 +216,7 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
         
       } while( local.isValid() && decrement > iter->paragraph() );
       
-      Debug::Throw() << "TextIndent::_acceptPattern - [" << qPrintable( pattern.name() ) << "," << rule_id << "]"
+      Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << rule_id << "]"
         << " decrement: " << decrement << " true: " << true_decrement
         << endl;
       
@@ -227,7 +227,7 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
       // that cannot otherwise.
       if( !local.isValid() || !iter->accept( local.text() ) ) 
       {
-        Debug::Throw() << "TextIndent::_acceptPattern - [" << qPrintable( pattern.name() ) << "," << rule_id << "] rejected" << endl;
+        Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << rule_id << "] rejected" << endl;
         accepted = false;
       }
       

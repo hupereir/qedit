@@ -154,7 +154,7 @@ void PrintDialog::_updateFile( void )
  
   Debug::Throw( "PrintDialog::_updateFile.\n" );
   
-  File file( qPrintable( _destinationEditor().editor().text() ) );
+  File file( _destinationEditor().editor().text() );
   file = file.isEmpty() ? File("document"):file.truncatedName();
   if( pdf_checkbox_->isChecked() ) file += ".pdf";
   else if( html_checkbox_->isChecked() ) file += ".html";

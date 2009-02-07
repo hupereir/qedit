@@ -256,7 +256,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
       if( first )
       {
       
-        if( file_opened |= _open( File( qPrintable( *iter ) ).expand() ) ) 
+        if( file_opened |= _open( File( *iter ).expand() ) ) 
         {
           _applyArguments( _activeWindow().activeDisplay(), arguments );
           first = false;
@@ -264,7 +264,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
         
       } else { 
         
-        if( file_opened |= _open( File( qPrintable( *iter ) ).expand(), _activeWindow().orientation() ) )
+        if( file_opened |= _open( File( *iter ).expand(), _activeWindow().orientation() ) )
         { _applyArguments( _activeWindow().activeDisplay(), arguments ); }
         
       }
@@ -287,7 +287,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
       if( parser.hasFlag( "--same-window" ) ) mode = ACTIVE_WINDOW;
       else if( parser.hasFlag( "--new-window" ) ) mode = NEW_WINDOW;
       
-      bool opened = _open( File( qPrintable( *iter ) ).expand(), mode );
+      bool opened = _open( File( *iter ).expand(), mode );
       if( opened ) { _applyArguments( _activeWindow().activeDisplay(), arguments ); }
       file_opened |= opened;
       
@@ -872,7 +872,7 @@ FileRecord WindowServer::_selectFileFromDialog( void )
   QStringList files( dialog.selectedFiles() );
   if( files.empty() ) return record;
   
-  File file = File( qPrintable( files.front() ) ).expand();
+  File file = File( files.front() ).expand();
   
   // assign file to record
   record.setFile( file );
@@ -945,8 +945,8 @@ void WindowServer::_applyArguments( TextDisplay& display, CommandLineArguments a
   QString filter = parser.hasOption( "--filter" ) ? parser.option( "--filter" ) : "";
   QString dictionary = parser.hasOption( "--dictionary" ) ? parser.option( "--dictionary" ) : "";
   Debug::Throw() << "WindowServer::_applyArguments -"
-    << " filter:" << qPrintable( filter )
-    << " dictionary: " << qPrintable( dictionary ) 
+    << " filter:" << filter
+    << " dictionary: " << dictionary 
     << endl;
   
   if( autospell ) display.autoSpellAction().setChecked( true );

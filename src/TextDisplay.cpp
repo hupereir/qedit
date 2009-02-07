@@ -608,7 +608,7 @@ void TextDisplay::save( void )
 
   // add file to menu
   if( !file().isEmpty() )
-  { _recentFiles().get( file() ).addProperty( class_name_property_id_, qPrintable( className() ) ); }
+  { _recentFiles().get( file() ).addProperty( class_name_property_id_, className() ); }
 
   return;
 
@@ -636,7 +636,7 @@ void TextDisplay::saveAs( void )
   QStringList files( dialog.selectedFiles() );
   if( files.isEmpty() ) return;
 
-  File file = File( qPrintable( files.front() ) ).expand();
+  File file = File( files.front() ).expand();
 
   // check if file is directory
   if( file.isDirectory() )
@@ -854,7 +854,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
 
           // retrieve color
           const QColor& color = location_iter->color();
-          if( color.isValid() ) format_stream << "color: " << qPrintable( color.name() ) << "; ";
+          if( color.isValid() ) format_stream << "color: " << color.name() << "; ";
 
           span.setAttribute( "Style", buffer );
 
@@ -1111,9 +1111,9 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   if( !( file.isEmpty() || new_document ) )
   { 
     FileRecord& record( _recentFiles().get( file ) );
-    record.addProperty( class_name_property_id_, qPrintable( className() ) ); 
+    record.addProperty( class_name_property_id_, className() ); 
     record.addProperty( wrap_property_id_, Str().assign<bool>( wrapModeAction().isChecked() ) ); 
-    if( !document_class.icon().isEmpty() ) record.addProperty( icon_property_id_, qPrintable( document_class.icon() ) );
+    if( !document_class.icon().isEmpty() ) record.addProperty( icon_property_id_, document_class.icon() );
   }
 
   // rehighlight text entirely
@@ -1132,7 +1132,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
 void TextDisplay::processMacro( QString name )
 {
 
-  Debug::Throw() << "TextDisplay::processMacro - " << qPrintable( name ) << endl;
+  Debug::Throw() << "TextDisplay::processMacro - " << name << endl;
 
   // retrieve macro that match argument name
   TextMacro::List::const_iterator macro_iter = find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
@@ -1235,11 +1235,11 @@ void TextDisplay::selectFilter( const QString& filter )
   // local reference to interface
   SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
 
-  if( filter == interface.filter() || !interface.hasFilter( qPrintable( filter ) ) ) return;
+  if( filter == interface.filter() || !interface.hasFilter( filter ) ) return;
 
   // update interface
-  interface.setFilter( qPrintable( filter ) );
-  _filterMenu().select( qPrintable( filter ) );
+  interface.setFilter( filter );
+  _filterMenu().select( filter );
 
   // update file record
   if( !( file().isEmpty() || isNewDocument() ) )
@@ -1263,11 +1263,11 @@ void TextDisplay::selectDictionary( const QString& dictionary )
   // local reference to interface
   SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
 
-  if( dictionary == interface.dictionary() || !interface.hasDictionary( qPrintable( dictionary ) ) ) return;
+  if( dictionary == interface.dictionary() || !interface.hasDictionary( dictionary ) ) return;
 
   // update interface
-  interface.setDictionary( qPrintable( dictionary ) );
-  _dictionaryMenu().select( qPrintable( dictionary ) );
+  interface.setDictionary( dictionary );
+  _dictionaryMenu().select( dictionary );
 
   // update file record
   if( !( file().isEmpty() || isNewDocument() ) )
@@ -2233,9 +2233,9 @@ void TextDisplay::_textModified( void )
 //__________________________________________________
 void TextDisplay::_ignoreMisspelledWord( QString word )
 {
-  Debug::Throw() << "TextDisplay::_ignoreMisspelledWord - word: " << qPrintable( word ) << endl;
+  Debug::Throw() << "TextDisplay::_ignoreMisspelledWord - word: " << word << endl;
   #if WITH_ASPELL
-  textHighlight().spellParser().interface().ignoreWord( qPrintable( word ) );
+  textHighlight().spellParser().interface().ignoreWord( word );
   rehighlight();
   #endif
   return;
@@ -2247,7 +2247,7 @@ void TextDisplay::_replaceMisspelledSelection( QString word )
 {
 
   #if WITH_ASPELL
-  Debug::Throw() << "TextDisplay::_replaceMisspelledSelection - word: " << qPrintable( word ) << endl;
+  Debug::Throw() << "TextDisplay::_replaceMisspelledSelection - word: " << word << endl;
   QTextCursor cursor( textCursor() );
   cursor.insertText( word );
   #endif

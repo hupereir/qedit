@@ -117,7 +117,7 @@ void Application::initApplicationManager( void )
   CommandLineParser parser( commandLineParser( _arguments() ) );
   QStringList& orphans( parser.orphans() );
   for( QStringList::iterator iter = orphans.begin(); iter != orphans.end(); iter++ )
-  { if( !iter->isEmpty() ) (*iter) = File( qPrintable( *iter ) ).expand(); }
+  { if( !iter->isEmpty() ) (*iter) = File( *iter ).expand(); }
 
   // replace arguments
   _setArguments( parser.arguments() );
@@ -284,7 +284,7 @@ void Application::_readFilesFromArguments( void )
 //________________________________________________
 void Application::_processRequest( const CommandLineArguments& arguments )
 {
-  Debug::Throw() << "Application::_ProcessRequest - " << qPrintable( arguments.join( " " ) ) << endl;
+  Debug::Throw() << "Application::_ProcessRequest - " << arguments.join( " " ) << endl;
 
   // copy arguments and try open (via QTimer)
   _setArguments( arguments );

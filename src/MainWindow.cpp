@@ -511,11 +511,11 @@ void MainWindow::_print( void )
   // check print mode and store options
   PrintDialog::Mode mode( dialog.mode() );
   QString command( dialog.command() );
-  XmlOptions::get().add( "PRINT_COMMAND", Option( qPrintable( command ), Option::RECORDABLE|Option::CURRENT ) );  
-  XmlOptions::get().set( mode == PrintDialog::HTML ? "HTML_EDITOR" : "PDF_EDITOR", Option( qPrintable( command ), Option::RECORDABLE|Option::CURRENT ) );  
+  XmlOptions::get().add( "PRINT_COMMAND", Option( command, Option::RECORDABLE|Option::CURRENT ) );  
+  XmlOptions::get().set( mode == PrintDialog::HTML ? "HTML_EDITOR" : "PDF_EDITOR", Option( command, Option::RECORDABLE|Option::CURRENT ) );  
   
   // try open output file
-  File fullname = File( qPrintable( dialog.destinationFile() ) ).expand();
+  File fullname = File( dialog.destinationFile() ).expand();
  
   // check if file is directory
   if( fullname.isDirectory() )
@@ -700,7 +700,7 @@ void MainWindow::_updateConfiguration( void )
     if( document_class.icon().isEmpty() ) continue;
     
     // set icon property and store in recent_files list
-    recent_files.get( record.file() ).addProperty( FileRecordProperties::ICON, qPrintable( document_class.icon() ) );
+    recent_files.get( record.file() ).addProperty( FileRecordProperties::ICON, document_class.icon() );
   
   }
     

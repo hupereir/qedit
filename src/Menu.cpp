@@ -188,7 +188,7 @@ void Menu::_updateDocumentClassMenu( void )
   { 
     // insert actions
     QAction* action = document_class_menu_->addAction( iter->name() );
-    if( !iter->icon().isEmpty() ) action->setIcon( IconEngine::get( qPrintable( iter->icon() ) ) );
+    if( !iter->icon().isEmpty() ) action->setIcon( IconEngine::get( iter->icon() ) );
     
     action->setCheckable( true );
     action->setChecked( iter->name() == class_name );
