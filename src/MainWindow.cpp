@@ -484,7 +484,7 @@ void MainWindow::_print( void )
   // create dialog
   PrintDialog dialog( this );
   dialog.setFile( file );
-  dialog.setMode( XmlOptions::get().get<string>("PRINT_MODE") == "PDF" ? PrintDialog::PDF : PrintDialog::HTML );
+  dialog.setMode( XmlOptions::get().raw("PRINT_MODE") == "PDF" ? PrintDialog::PDF : PrintDialog::HTML );
   dialog.setMaximumLineSize( XmlOptions::get().get<int>( "PRINT_LINE_SIZE" ) ); 
   dialog.setUseCommand( XmlOptions::get().get<bool>( "USE_PRINT_COMMAND" ) );
   

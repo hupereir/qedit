@@ -128,7 +128,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
       
       case TIME: 
       {
-        if( record.hasFlag( DOCUMENT ) ) return QString( TimeStamp( record.time() ).string().c_str() );
+        if( record.hasFlag( DOCUMENT ) ) return QString( TimeStamp( record.time() ).toString() );
         else return QVariant();
       }
       

@@ -53,7 +53,7 @@ File AutoSaveThread::autoSaveName( const File& file )
   // get qedit default autosave path
   QString autosave_path;
   QTextStream( &autosave_path )
-    << XmlOptions::get().get<string>( "AUTOSAVE_PATH" ).c_str()
+    << XmlOptions::get().raw( "AUTOSAVE_PATH" ).c_str()
     << "/.qedit/" 
     << Util::user().c_str();
   

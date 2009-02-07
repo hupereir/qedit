@@ -125,15 +125,15 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
   
   //  created
   grid_layout->addWidget( label = new QLabel( "created: ", box ) );
-  grid_layout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.created() ).string().c_str():"unknown", box ) );
+  grid_layout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.created() ).toString():"unknown", box ) );
   
   // last accessed
   grid_layout->addWidget( label = new QLabel( "last accessed: ", box ) );
-  grid_layout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.lastAccessed() ).string().c_str():"never", box ) );
+  grid_layout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.lastAccessed() ).toString():"never", box ) );
 
   // last modification
   grid_layout->addWidget( label = new QLabel( "last modified: ", box ) );
-  grid_layout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.lastModified() ).string().c_str():"never", box ) );
+  grid_layout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.lastModified() ).toString():"never", box ) );
   
   // document class
   if( record.hasProperty( FileRecordProperties::CLASS_NAME ) )

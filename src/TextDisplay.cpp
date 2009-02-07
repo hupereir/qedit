@@ -1668,9 +1668,9 @@ void TextDisplay::_updateConfiguration( void )
   _updateMargins();
   
   // retrieve diff colors
-  diff_conflict_color_ = QColor( XmlOptions::get().get<string>("DIFF_CONFLICT_COLOR").c_str() );
-  diff_added_color_ = QColor( XmlOptions::get().get<string>("DIFF_ADDED_COLOR").c_str() );
-  user_tag_color_ = QColor( XmlOptions::get().get<string>("TAGGED_BLOCK_COLOR").c_str() );
+  diff_conflict_color_ = QColor( XmlOptions::get().raw("DIFF_CONFLICT_COLOR").c_str() );
+  diff_added_color_ = QColor( XmlOptions::get().raw("DIFF_ADDED_COLOR").c_str() );
+  user_tag_color_ = QColor( XmlOptions::get().raw("TAGGED_BLOCK_COLOR").c_str() );
 
   // update paragraph tags
   _updateTaggedBlocks();
@@ -1686,7 +1686,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
 
   // spellcheck configuration
   bool changed( false );
-  changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<string>("AUTOSPELL_COLOR").c_str() ) );
+  changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().raw("AUTOSPELL_COLOR").c_str() ) );
   changed |= textHighlight().spellParser().setFontFormat( XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
   textHighlight().updateSpellPattern();
   autoSpellAction().setEnabled( textHighlight().spellParser().color().isValid() );
