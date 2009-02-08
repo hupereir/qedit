@@ -230,7 +230,7 @@ class BlockDelimiterSegment: public Counter
   friend QTextStream& operator << ( QTextStream& out, const BlockDelimiterSegment::List& segments )
   {
     for( BlockDelimiterSegment::List::const_iterator iter = segments.begin(); iter != segments.end(); iter++ )
-    { out << *iter << std::endl; }
+    { out << *iter << endl; }
     return out;
   }
   

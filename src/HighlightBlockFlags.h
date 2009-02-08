@@ -33,6 +33,7 @@
 */  
 
 #include <QTextFormat>
+#include <QTextStream>
 
 #include <map>
 

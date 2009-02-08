@@ -78,7 +78,7 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
 //____________________________________________
 void Application::usage( void )
 {
-  cout << "Usage : qedit [options] [files]" << endl;
+  Debug::Throw(0) << "Usage : qedit [options] [files]" << endl;
   commandLineParser().usage();
 }
 

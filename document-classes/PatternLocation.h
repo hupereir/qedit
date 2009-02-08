@@ -229,7 +229,7 @@ class PatternLocationSet: public std::set<PatternLocation>
   {  
     out << "[" << locations.activeId().first << "," << locations.activeId().second << "] ";
     for( PatternLocationSet::const_iterator iter = locations.begin(); iter != locations.end(); iter++ )
-      out << *iter << std::endl;
+    { out << *iter << endl; }
     return out;
   }
 
