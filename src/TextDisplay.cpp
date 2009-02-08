@@ -302,7 +302,7 @@ void TextDisplay::synchronize( TextDisplay* display )
 void TextDisplay::setIsNewDocument( void )
 {
 
-  Debug::Throw( 0, "TextDisplay::setIsNewDocument.\n" );
+  Debug::Throw( "TextDisplay::setIsNewDocument.\n" );
   
   // do nothing if already set
   if( isNewDocument() ) 
