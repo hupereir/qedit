@@ -35,7 +35,7 @@
 #include <QObject>
 #include <QTimer>
 
-#include <string>
+
 #include <vector>
 
 #include "AutoSaveThread.h"

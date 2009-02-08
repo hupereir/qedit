@@ -36,7 +36,7 @@
 #include <QRegExp>
 
 #include <vector>
-#include <string>
+
 
 #include "Counter.h"
 #include "Debug.h"

@@ -31,7 +31,7 @@
   \date $Date$
 */
 
-#include <string>
+
 #include <QRegExp>
 #include <QAction>
 

@@ -32,7 +32,7 @@
    \date $Date$
 */
 
-#include <string>
+
 
 #include "CustomDialog.h"
 #include "FileRecord.h"

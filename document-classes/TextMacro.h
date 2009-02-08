@@ -36,7 +36,7 @@
 #include <QDomDocument>
 #include <QAction>
 #include <QRegExp>
-#include <string>
+
 
 #include "Counter.h"
 #include "Debug.h"

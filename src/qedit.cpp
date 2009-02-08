@@ -28,10 +28,10 @@
    \date $Date$
 */
 
-#include <iostream>
+
 #include <unistd.h>
 #include <signal.h>
-#include <string>
+
 
 #include "Debug.h"
 #include "DefaultOptions.h"

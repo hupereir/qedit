@@ -39,7 +39,7 @@
 #include <QTimerEvent>
 
 #include <list>
-#include <string>
+
 
 #include "BaseMainWindow.h"
 #include "Config.h"
