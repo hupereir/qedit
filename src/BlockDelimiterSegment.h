@@ -32,7 +32,7 @@
 \date $Date$
 */
 
-#include <iostream>
+
 #include <vector>
 
 #include "BlockMarker.h"
@@ -220,14 +220,14 @@ class BlockDelimiterSegment: public Counter
   unsigned int flags_;  
 
   //! streamer
-  friend std::ostream& operator << ( std::ostream& out, const BlockDelimiterSegment& segment )
+  friend QTextStream& operator << ( QTextStream& out, const BlockDelimiterSegment& segment )
   {
     out << "begin: " << segment.begin() << " end: " << segment.end() << " flags: " << segment.flags_;
     return out;
   }
   
   //! streamer
-  friend std::ostream& operator << ( std::ostream& out, const BlockDelimiterSegment::List& segments )
+  friend QTextStream& operator << ( QTextStream& out, const BlockDelimiterSegment::List& segments )
   {
     for( BlockDelimiterSegment::List::const_iterator iter = segments.begin(); iter != segments.end(); iter++ )
     { out << *iter << std::endl; }

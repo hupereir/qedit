@@ -27,7 +27,7 @@
   \date $Date$
 */
 
-#include <sstream>
+
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>

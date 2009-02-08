@@ -33,7 +33,7 @@
 */
 
 #include <string.h>
-#include <sstream>
+
 
 #include "Counter.h"
 #include "Debug.h"

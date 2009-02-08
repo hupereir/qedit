@@ -29,7 +29,7 @@
  \date $Date$
 */
 
-#include <sstream>
+
 
 #include "Application.h"
 #include "BlockDelimiterDisplay.h"

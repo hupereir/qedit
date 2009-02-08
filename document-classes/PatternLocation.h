@@ -191,7 +191,7 @@ class PatternLocation: public Counter
   unsigned int length_;
   
   //! dump
-  friend std::ostream& operator << (std::ostream& out, const PatternLocation& location )
+  friend QTextStream& operator << (QTextStream& out, const PatternLocation& location )
   {  
     out << "id: " << location.id() << " parent id:" << location.parentId() << " position: " << location.position() << " length: " << location.length() ;
     return out;
@@ -225,7 +225,7 @@ class PatternLocationSet: public std::set<PatternLocation>
   std::pair<int, int> active_id_;
   
   //! dump
-  friend std::ostream& operator << (std::ostream& out, const PatternLocationSet& locations )
+  friend QTextStream& operator << (QTextStream& out, const PatternLocationSet& locations )
   {  
     out << "[" << locations.activeId().first << "," << locations.activeId().second << "] ";
     for( PatternLocationSet::const_iterator iter = locations.begin(); iter != locations.end(); iter++ )

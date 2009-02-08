@@ -33,7 +33,7 @@
 #include <QLayout>
 #include <QPushButton>
 
-#include <sstream>
+
 
 #include "FileModifiedDialog.h"
 #include "CustomPixmap.h"

@@ -30,7 +30,7 @@
   \date $Date$
 */
 
-#include <fstream>
+
 #include <QApplication>
 #include <QDir>
 #include <QFile>

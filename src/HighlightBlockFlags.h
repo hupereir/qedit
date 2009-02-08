@@ -33,7 +33,7 @@
 */  
 
 #include <QTextFormat>
-#include <iostream>
+
 #include <map>
 
 #include "TextBlockFlags.h"
@@ -140,7 +140,7 @@ namespace TextBlock
       TextBlock::Delimiter get( const unsigned int& ) const;
 
       //! streamer
-      friend std::ostream& operator << ( std::ostream& out, const List& list )
+      friend QTextStream& operator << ( QTextStream& out, const List& list )
       {
         for( List::const_iterator iter = list.begin(); iter != list.end(); iter++ )
         { out << " " << *iter; }
@@ -159,7 +159,7 @@ namespace TextBlock
     int end_;
     
     //! streamer
-    friend std::ostream& operator << ( std::ostream& out, const Delimiter& delimiter )
+    friend QTextStream& operator << ( QTextStream& out, const Delimiter& delimiter )
     {
       out << "(" << delimiter.begin_ << "," << delimiter.end_ << ")";
       return out;

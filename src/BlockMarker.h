@@ -97,7 +97,7 @@ class BlockMarker
   bool valid_;
   
   //! streamer
-  friend std::ostream& operator << ( std::ostream& out, const BlockMarker& marker )
+  friend QTextStream& operator << ( QTextStream& out, const BlockMarker& marker )
   {
     out << "(" << marker.id() << "," << marker.cursor() << "," << marker.position() << ")";
     return out;
