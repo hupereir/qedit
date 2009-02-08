@@ -140,9 +140,12 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
 
   for( QStringList::const_iterator iter = in.begin(); iter != in.end(); iter++ )
   {
+    
     QString buffer = *iter;
+    //Debug::Throw(0) << "Diff::_parseOutput - buffer: " << buffer << endl;
+    
     static const QString removed_lines( "<>-" );
-    if( removed_lines.indexOf( buffer[0] ) != 0 ) continue;
+    if( removed_lines.indexOf( buffer[0] ) >= 0 ) continue;
     
     // parse remaining lines
     _parseLine( buffer );
