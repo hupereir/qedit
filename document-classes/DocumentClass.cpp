@@ -229,14 +229,18 @@ bool DocumentClass::match( const File& file ) const
     
     QString line;
     static const QRegExp empty_line_regexp( "(^\\s*$)" ); 
-    while( !(line = in.readLine(1024)).isNull() )
+    while(  in.bytesAvailable() && !(line = in.readLine(1024)).isNull() )
     {
+
+      // skip empty lines
       if( line.isEmpty() || empty_line_regexp.indexIn( line ) >= 0 ) continue;
-      if( firstline_pattern_.indexIn( line ) >= 0 ) return true;
-      break;
+      
+      // check non empty lines
+      return ( firstline_pattern_.indexIn( line ) >= 0 );
+      
     }
   }
   
-  // no match
+  // no match 
   return false;
 }
