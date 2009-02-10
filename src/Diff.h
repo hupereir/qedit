@@ -117,14 +117,14 @@ class Diff: public QObject, public Counter
     //! add added range
     void insertAddedRange( const Range& range )
     { 
-      for( unsigned int index = range.first; index < range.second; index++ )
+      for( unsigned int index = range.first; index <= range.second; index++ )
       { added_.insert( index ); }
     }
     
     //! add conflict range
     void insertConflictRange( const Range& range )
     { 
-      for( unsigned int index = range.first; index < range.second; index++ )
+      for( unsigned int index = range.first; index <= range.second; index++ )
       { conflicts_.insert( index ); }
     }
 
