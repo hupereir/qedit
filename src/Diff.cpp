@@ -101,8 +101,8 @@ bool Diff::run( void )
   QStringList command;
   command 
     << XmlOptions::get().raw( "DIFF_COMMAND" )
-    << files_[FIRST].file() 
-    << files_[SECOND].file();
+    << files_[0].file() 
+    << files_[1].file();
   
   // run
   process_.start( command ); 
@@ -123,7 +123,7 @@ void Diff::_clear( void )
 //________________________________________________________________
 void Diff::_parseOutput( int code, QProcess::ExitStatus status )
 {
-  Debug::Throw( "Diff::_parseOutput.\n" );
+  Debug::Throw(  "Diff::_parseOutput.\n" );
 
   // check exit code
   if( status != QProcess::NormalExit )
@@ -137,19 +137,18 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
   // retrieve all stdout and put into stream
   QByteArray out( process_.readAllStandardOutput() );
   QStringList in( QString( out ).split( "\n" ) );
-
+  int index(0);
   for( QStringList::const_iterator iter = in.begin(); iter != in.end(); iter++ )
   {
     
     QString buffer = *iter;
-    //Debug::Throw(0) << "Diff::_parseOutput - buffer: " << buffer << endl;
+    index++;
     
     static const QString removed_lines( "<>-" );
     if( removed_lines.indexOf( buffer[0] ) >= 0 ) continue;
     
     // parse remaining lines
     _parseLine( buffer );
-    
   }
   
   // highlight displays 
@@ -173,10 +172,10 @@ void Diff::_parseLine( const QString& line )
   if( position >= 0 )
   {
     vector<Range> ranges(2);
-    ranges[FIRST] = _parseRange(line.left( position ));
-    ranges[SECOND] = _parseRange(line.mid( position+1 ));
+    ranges[0] = _parseRange(line.left( position ));
+    ranges[1] = _parseRange(line.mid( position+1 ));
 
-    for( unsigned int i = 0; i<= SECOND; i++ )
+    for( unsigned int i = 0; i<= 1; i++ )
     { files_[i].insertConflictRange( ranges[i] ); }
     return;
   }
@@ -187,7 +186,7 @@ void Diff::_parseLine( const QString& line )
   if( position >= 0 )
   {
     QString range( line.mid( position+1, line.size() ) );
-    files_[SECOND].insertAddedRange( _parseRange( range ) );
+    files_[1].insertAddedRange( _parseRange( range ) );
     return;
   }
   
@@ -196,7 +195,7 @@ void Diff::_parseLine( const QString& line )
   if( position >= 0 )
   {
     QString range( line.left( position ) );
-    files_[FIRST].insertAddedRange( _parseRange( range ) );
+    files_[0].insertAddedRange( _parseRange( range ) );
     return;
   }
 
@@ -294,21 +293,36 @@ Diff::FileInformation::~FileInformation( void )
 void Diff::FileInformation::highlightDisplay( void )
 { 
     
+  Debug::Throw() << "Diff::FileInformation::highlightDisplay." << endl;
+  
   // loop over display blocks
   unsigned int id(1);
+  _display().setUpdatesEnabled( false );
   for( QTextBlock block( _display().document()->begin() ); block.isValid(); block = block.next(), id++ )
   {
     
     // see if block is a conflict
-    if( find_if( conflicts_.begin(), conflicts_.end(), Range::ContainsFTor( id ) ) != conflicts_.end() )
-    { _display().tagBlock( block, TextBlock::DIFF_CONFLICT ); }
+    if( conflicts_.find( id ) != conflicts_.end() )
+    { 
+      
+      _display().tagBlock( block, TextBlock::DIFF_CONFLICT ); 
+      
+    } else if( added_.find( id ) != added_.end() ) {
+      
+      _display().tagBlock( block, TextBlock::DIFF_ADDED ); 
     
-    // see if block is a added
-    else if( find_if( added_.begin(), added_.end(), Range::ContainsFTor( id ) ) != added_.end() )
-    { _display().tagBlock( block, TextBlock::DIFF_ADDED ); }
-  
-    else _display().clearTag( block, TextBlock::DIFF_CONFLICT | TextBlock::DIFF_ADDED );
+    } else _display().clearTag( block, TextBlock::DIFF_CONFLICT | TextBlock::DIFF_ADDED );
+    
   }
   
+  _display().setUpdatesEnabled( true );
+
+  // get associated displays and update all
+  // this is needed due to the setUpdatesEnabled above
+  BASE::KeySet<TextDisplay> displays( &_display() );
+  displays.insert( &_display() );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  { (*iter)->viewport()->update(); }
+
   return; 
 };

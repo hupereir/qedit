@@ -39,7 +39,6 @@
 #include <set>
 #include <vector>
 
-
 #include "CustomProcess.h"
 #include "Counter.h"
 #include "Debug.h"
@@ -55,16 +54,6 @@ class Diff: public QObject, public Counter
   Q_OBJECT
   
   public:
-  
-  //! first/second file 
-  enum { 
-    
-    //! tag for first file
-    FIRST,
-    
-    //! tag for second file
-    SECOND
-  };
 
   //! constructor
   Diff( QObject* parent );
@@ -72,8 +61,8 @@ class Diff: public QObject, public Counter
   //! store files from text Displays
   void setTextDisplays( TextDisplay& first, TextDisplay& second )
   { 
-    files_[FIRST].setDisplay( first );
-    files_[SECOND].setDisplay( second );
+    files_[0].setDisplay( first );
+    files_[1].setDisplay( second );
   }
     
   //! run process
@@ -85,46 +74,10 @@ class Diff: public QObject, public Counter
   { return error_; }
   
   //! paragraph range
-  class Range: public std::pair< unsigned int, unsigned int > 
-  {
-    
-    public: 
-    
-    //! constructor
-    Range( unsigned int first = 0, unsigned int second = 0 ):
-      std::pair<unsigned int, unsigned int>( std::make_pair( first, second ) )
-    {}
-    
-    //! true if the range contains index
-    bool contains( const unsigned int& i ) const
-    { return i>= first && i<= second; }
-    
-    //! used to retrieve ranges that contains a given block id
-    class ContainsFTor
-    {
-      
-      public:
-  
-      //! constructor
-      ContainsFTor( const unsigned int& id ):
-        id_( id )
-        {}
-        
-      //! predicate
-      bool operator() ( const Range& range )
-      { return range.contains( id_ ); }
-      
-      private:
-      
-      //! prediction
-      unsigned int id_;
-      
-    };
-
-  };
+  typedef std::pair< unsigned int, unsigned int > Range;
 
   //! range list
-  typedef std::set< Range > RangeSet;
+  typedef std::set< unsigned int > BlockSet;
 
   private slots:
   
@@ -163,11 +116,18 @@ class Diff: public QObject, public Counter
     
     //! add added range
     void insertAddedRange( const Range& range )
-    { added_.insert( range ); }
+    { 
+      for( unsigned int index = range.first; index < range.second; index++ )
+      { added_.insert( index ); }
+    }
     
     //! add conflict range
     void insertConflictRange( const Range& range )
-    { conflicts_.insert( range ); }
+    { 
+      for( unsigned int index = range.first; index < range.second; index++ )
+      { conflicts_.insert( index ); }
+    }
+
 
     //! clear
     void clear( void )
@@ -184,8 +144,7 @@ class Diff: public QObject, public Counter
     //! text display
     TextDisplay& _display( void )
     { 
-      assert( display_
- );
+      assert( display_  );
       return *display_; 
     }
 
@@ -203,10 +162,10 @@ class Diff: public QObject, public Counter
     bool is_temporary_;
     
     //! added paragraphs
-    RangeSet added_;
+    BlockSet added_;
     
     //! conflict paragraphs
-    RangeSet conflicts_;
+    BlockSet conflicts_;
     
   };
   

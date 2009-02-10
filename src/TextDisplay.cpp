@@ -913,29 +913,22 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
 
   HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
   if( !data ) block.setUserData( data = new HighlightBlockData() );
-
+  if( data->hasFlag( tag ) ) return;
+  data->setFlag( tag, true );
+  
   switch( tag )
   {
     case TextBlock::DIFF_ADDED:
-    {
-      data->setFlag( TextBlock::DIFF_ADDED, true );
-      setBackground( block, diff_added_color_ );
-      break;
-    }
-
+    setBackground( block, diff_added_color_ );
+    break;
+    
     case TextBlock::DIFF_CONFLICT:
-    {
-      data->setFlag( TextBlock::DIFF_CONFLICT, true );
-      setBackground( block, diff_conflict_color_ );
-      break;
-    }
+    setBackground( block, diff_conflict_color_ );
+    break;
 
     case TextBlock::USER_TAG:
-    {
-      data->setFlag( TextBlock::USER_TAG, true );
-      setBackground( block, user_tag_color_ );
-      break;
-    }
+    setBackground( block, user_tag_color_ );
+    break;
 
     default: break;
 
@@ -952,23 +945,24 @@ void TextDisplay::clearTag( QTextBlock block, const int& tags )
   TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
   if( !data ) return;
 
-  if( tags & TextBlock::DIFF_ADDED )
+  if( tags & TextBlock::DIFF_ADDED && data->hasFlag( TextBlock::DIFF_ADDED ) )
   {
     data->setFlag( TextBlock::DIFF_ADDED, false );
     clearBackground( block );
   }
 
-  if( tags & TextBlock::DIFF_CONFLICT )
+  if( tags & TextBlock::DIFF_CONFLICT && data->hasFlag( TextBlock::DIFF_CONFLICT ) )
   {
     data->setFlag( TextBlock::DIFF_CONFLICT, false );
     clearBackground( block );
   }
 
-  if( tags & TextBlock::USER_TAG )
+  if( tags & TextBlock::USER_TAG && data->hasFlag( TextBlock::USER_TAG ) )
   {
     data->setFlag( TextBlock::USER_TAG, false );
     clearBackground( block );
   }
+  
   Debug::Throw( "TextDisplay::clearTag - done.\n" );
 
 }
@@ -1220,9 +1214,19 @@ void TextDisplay::clearAllTags( const int& flags )
 {
 
   Debug::Throw( "AnimatedTextEditor::clearAllTags.\n" );
+  
+  setUpdatesEnabled( false );
   for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
   { clearTag( block, flags ); }
-
+  setUpdatesEnabled( true );
+  
+  // get associated displays and update all
+  // this is needed due to the setUpdatesEnabled above
+  BASE::KeySet<TextDisplay> displays( this );
+  displays.insert( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  { (*iter)->viewport()->update(); }
+  
 }
 
 //_______________________________________
