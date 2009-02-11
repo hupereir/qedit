@@ -39,7 +39,7 @@
 #include "Debug.h"
 #include "Icons.h"
 #include "IconEngine.h"
-#include "CustomFileDialog.h"
+#include "FileDialog.h"
 #include "GridLayout.h"
 #include "PrintDialog.h"
 #include "QtUtil.h"
@@ -170,17 +170,11 @@ void PrintDialog::_browseCommand( void )
   Debug::Throw( "PrintDialog::_browseCommand.\n" );
   
   // open FileDialog
-  CustomFileDialog dialog( this );
-  dialog.setFileMode( QFileDialog::ExistingFile );
-  QtUtil::centerOnParent( &dialog );
-  if( dialog.exec() == QDialog::Rejected ) return;
-  
-  // check selected files
-  QStringList files( dialog.selectedFiles() );
-  if( files.empty() ) return;
-  
-  _commandEditor().setEditText( files.front() );
-  _commandEditor().addItem( files.front() );
+  QString file( FileDialog(this).getFile() );
+  if( !file.isNull() ) {
+    _commandEditor().setEditText( file );
+    _commandEditor().addItem( file );
+  }
   
   return;
 

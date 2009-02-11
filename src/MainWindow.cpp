@@ -41,7 +41,6 @@
 #include "BlockDelimiterDisplay.h"
 #include "ClockLabel.h"
 #include "Config.h"
-#include "CustomFileDialog.h"
 #include "CustomToolButton.h"
 #include "Command.h"
 #include "CustomToolBar.h"

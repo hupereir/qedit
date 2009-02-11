@@ -35,7 +35,7 @@
 #include <QTextStream>
 
 #include "Application.h"
-#include "CustomFileDialog.h"
+#include "FileDialog.h"
 #include "Debug.h"
 #include "CloseFilesDialog.h"
 #include "FileList.h"
@@ -860,20 +860,10 @@ FileRecord WindowServer::_selectFileFromDialog( void )
   FileRecord record;
   
   // create file dialog
-  CustomFileDialog dialog( &_activeWindow() );
-  dialog.setFileMode( QFileDialog::ExistingFile );
-  
-  File working_directory( _activeWindow().activeDisplay().workingDirectory() );
-  dialog.setDirectory( QDir( working_directory ) );
-  
-  QtUtil::centerOnParent( &dialog );
-  if( dialog.exec() == QDialog::Rejected ) return record;
-  
-  QStringList files( dialog.selectedFiles() );
-  if( files.empty() ) return record;
-  
-  File file = File( files.front() ).expand();
-  
+  File file( FileDialog( &_activeWindow() ).selectFile(_activeWindow().activeDisplay().workingDirectory() ).getFile() );
+  if( file.isNull() ) return record;
+  else file = file.expand();
+
   // assign file to record
   record.setFile( file );
   return record;

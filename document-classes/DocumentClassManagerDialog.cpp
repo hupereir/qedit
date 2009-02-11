@@ -33,7 +33,7 @@
 #include <QPushButton>
 
 #include "BaseIcons.h"
-#include "CustomFileDialog.h"
+#include "FileDialog.h"
 #include "Debug.h"
 #include "DocumentClass.h"
 #include "DocumentClassManagerDialog.h"
@@ -192,15 +192,9 @@ void DocumentClassManagerDialog::_loadFile( void )
   Debug::Throw( "DocumentClassManagerDialog::_loadFile.\n" ); 
 
   // get file from dialog
-  CustomFileDialog dialog( this );
-  dialog.setFileMode( QFileDialog::ExistingFile );
-  if( dialog.exec() != QDialog::Accepted ) return;
-
-  QStringList files( dialog.selectedFiles() );
-  if( files.empty() ) return;
+  File file( FileDialog( this ).getFile() );
+  if( file.isNull() ) return;
       
-  File file = File( files.front() ).expand();
-  
   // try load from file manager and add to options
   if( document_class_manager_->read( file ) ) 
   {
@@ -224,13 +218,11 @@ void DocumentClassManagerDialog::_save( void )
   }
   
   // retrieve file from dialog
-  CustomFileDialog dialog( this );
+  FileDialog dialog( this );
   dialog.setFileMode( QFileDialog::AnyFile );
-  if( dialog.exec() != QDialog::Accepted ) return;
-  
-  QStringList files( dialog.selectedFiles() );
-  if( files.empty() ) return;
-  File file( files.front() );
+  dialog.setAcceptMode( QFileDialog::AcceptSave );
+  File file( dialog.getFile() );
+  if( file.isNull() ) return;
   
   // check if file is directory
   if( file.isDirectory() )

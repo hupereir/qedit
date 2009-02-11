@@ -41,7 +41,7 @@
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
 #include "BlockDelimiterDisplay.h"
-#include "CustomFileDialog.h"
+#include "FileDialog.h"
 #include "CustomTextDocument.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
@@ -624,19 +624,13 @@ void TextDisplay::saveAs( void )
   if( default_file.isEmpty() || isNewDocument() ) default_file = File( "Document" ).addPath( workingDirectory() );
 
   // create file dialog
-  CustomFileDialog dialog( this );
+  FileDialog dialog( this );
   dialog.setFileMode( QFileDialog::AnyFile );
-  dialog.setDirectory( QDir( default_file.path() ) );
-  dialog.selectFile( default_file.localName() );
-  QtUtil::centerOnParent( &dialog );
-  if( dialog.exec() == QDialog::Rejected ) return;
-
-  // retrieve filename
-  // retrieve filename
-  QStringList files( dialog.selectedFiles() );
-  if( files.isEmpty() ) return;
-
-  File file = File( files.front() ).expand();
+  dialog.setAcceptMode( QFileDialog::AcceptSave );
+  dialog.selectFile( default_file );
+  File file( dialog.getFile() );
+  if( file.isNull() ) return;
+  else file = file.expand();
 
   // check if file is directory
   if( file.isDirectory() )
