@@ -523,6 +523,10 @@ void TextView::enterEvent( QEvent* e )
     TextDisplay &display( **iter );
     
     // check file
+    // here one should rather start a thread to check for modified files/removed files
+    // and proces the output in a custom event.
+    // the thread should store full fileNames, 
+    // and when checked, post an event that contains the files, and the status
     if( display.checkFileRemoved() == FileRemovedDialog::CLOSE ) 
     { 
         

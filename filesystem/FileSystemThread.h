@@ -47,7 +47,7 @@ class FileSystemEvent: public QEvent, public Counter
         
   //! constructor
   FileSystemEvent( File path, FileSystemModel::List files ):
-    QEvent( QEvent::User ),
+    QEvent( eventType() ),
     Counter( "FileSystemEvent" ),
     path_( path ),
     files_( files )
@@ -56,6 +56,9 @@ class FileSystemEvent: public QEvent, public Counter
   //! destructor
   ~FileSystemEvent( void )
   {}
+  
+  //! static event type
+  static QEvent::Type eventType( void );
   
   //! path
   const File& path( void )

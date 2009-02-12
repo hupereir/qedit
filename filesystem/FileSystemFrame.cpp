@@ -180,7 +180,7 @@ void FileSystemFrame::clear()
 void FileSystemFrame::customEvent( QEvent* event )
 {
       
-  if( event->type() != QEvent::User ) return;
+  if( event->type() != FileSystemEvent::eventType() ) return;
   
   FileSystemEvent* file_system_event( dynamic_cast<FileSystemEvent*>(event) );
   if( !file_system_event ) return;
