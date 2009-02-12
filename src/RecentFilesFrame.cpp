@@ -51,8 +51,7 @@ using namespace std;
 RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
   QWidget( parent ),
   Counter( "RecentFilesFrame" ),
-  recent_files_( &files ),
-  enabled_( true )
+  recent_files_( &files )
 {
   
   Debug::Throw( "RecentFilesFrame:RecentFilesFrame.\n" );
@@ -98,22 +97,21 @@ RecentFilesFrame::~RecentFilesFrame( void )
 void RecentFilesFrame::select( const File& file )
 {
   
-  // do nothing if disabled unless the sort column is TIME
-  if( !( list().header()->sortIndicatorSection() == FileRecordModel::TIME || _enabled() ) ) return;
-
   Debug::Throw() << "RecentFilesFrame::select - file: " << file << ".\n";
    
   // find model index that match the file
   QModelIndex index( _model().index( FileRecord( file ) ) );
   
   // check if index is valid and not selected
-  if( ( !index.isValid() ) || (index == list().selectionModel()->currentIndex() ) ) return;
+  if( !index.isValid() ) return;
 
-  // select found index but disable the selection changed callback
-  _setEnabled( false );
-  list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
-  _setEnabled( true );
+  // ensure index is selected
+  if( !list().selectionModel()->isSelected( index ) )
+  { list().selectionModel()->select( index, QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+  
+  // ensure index is current
+  if( index != list().selectionModel()->currentIndex() )
+  { list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows ); }
   
 }
 
@@ -191,10 +189,7 @@ void RecentFilesFrame::_itemSelected( const QModelIndex& index )
   
   Debug::Throw( "RecentFilesFrame::_itemSelected.\n" );
   if( !index.isValid() ) return;  
-  
-  _setEnabled( false );
   emit fileSelected( model_.get( index ) );
-  _setEnabled( true );
   
 }
 
@@ -202,11 +197,8 @@ void RecentFilesFrame::_itemSelected( const QModelIndex& index )
 void RecentFilesFrame::_itemActivated( const QModelIndex& index )
 { 
   Debug::Throw( "RecentFilesFrame::_itemActivated.\n" );
-  if( !( index.isValid() && _enabled() ) ) return;
-  
-  _setEnabled( false );
+  if( !index.isValid() ) return;  
   emit fileActivated( _model().get( index ) );
-  _setEnabled( true );
   
 }
 

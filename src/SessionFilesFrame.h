@@ -137,15 +137,7 @@ class SessionFilesFrame: public QWidget, public Counter
   { return *close_action_; }
   
   //@}
-  
-  //! true when list selection updates are enabled
-  void _setEnabled( bool value )
-  { enabled_ = value; }
-  
-  //! true when list selection updates are enabled
-  bool _enabled( void ) const
-  { return enabled_; }
-  
+    
   //! model
   SessionFilesModel model_;
   
@@ -172,9 +164,6 @@ class SessionFilesFrame: public QWidget, public Counter
     //! mouse release
     virtual void mouseReleaseEvent( QMouseEvent* );
     
-    //! mouse move
-    virtual void mouseMoveEvent( QMouseEvent* );
-
     private:
     
     //! local pointer to model
@@ -189,9 +178,6 @@ class SessionFilesFrame: public QWidget, public Counter
   //! list
   TreeView* list_;
     
-  //! true when list selection updates are enabled
-  bool enabled_;
-  
   //!@name actions
   //@{
   

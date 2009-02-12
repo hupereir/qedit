@@ -51,8 +51,7 @@ using namespace std;
 //_______________________________________________________________
 SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   QWidget( parent ),
-  Counter( "SessionFilesFrame" ),
-  enabled_( true )
+  Counter( "SessionFilesFrame" )
 {
   
   Debug::Throw( "SessionFilesFrame:SessionFilesFrame.\n" );
@@ -96,7 +95,6 @@ SessionFilesFrame::~SessionFilesFrame( void )
 //____________________________________________
 void SessionFilesFrame::select( const File& file )
 {
-  if( !_enabled() ) return;
 
   Debug::Throw() << "SessionFilesFrame::select - file: " << file << ".\n";
   
@@ -104,13 +102,15 @@ void SessionFilesFrame::select( const File& file )
   QModelIndex index( _model().index( FileRecord( file ) ) );
   
   // check if index is valid and not selected
-  if( ( !index.isValid() ) || (index == list().selectionModel()->currentIndex() ) ) return;
+  if( !index.isValid() ) return;
+
+  // ensure index is selected
+  if( !list().selectionModel()->isSelected( index ) )
+  { list().selectionModel()->select( index, QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
   
-  // select found index but disable the selection changed callback
-  _setEnabled( false );
-  list().selectionModel()->select( index,  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
-  _setEnabled( true );
+  // ensure index is current
+  if( index != list().selectionModel()->currentIndex() )
+  { list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows ); }
   
 }
 
@@ -192,11 +192,8 @@ void SessionFilesFrame::_itemSelected( const QModelIndex& index )
 { 
 
   Debug::Throw( "SessionFilesFrame::_itemSelected.\n" );
-  if( !( index.isValid() && _enabled() ) ) return;
-  
-  _setEnabled( false );
+  if( !( index.isValid() ) ) return;
   emit fileSelected( model_.get( index ) );
-  _setEnabled( true );
   
 }
 
@@ -206,10 +203,7 @@ void SessionFilesFrame::_itemActivated( const QModelIndex& index )
   
   Debug::Throw( "SessionFilesFrame::_itemActivated.\n" );
   if( !index.isValid() ) return;
-  
-  _setEnabled( false );
   emit fileActivated( _model().get( index ) );
-  _setEnabled( true );
   
 }
 
@@ -255,8 +249,8 @@ void SessionFilesFrame::View::timerEvent( QTimerEvent* event )
 void SessionFilesFrame::View::mousePressEvent( QMouseEvent* event )
 { 
   Debug::Throw( "SessionFilesFrame::View::mousePressEvent.\n" );
-  //model_->setDragEnabled(false);
-  //drag_timer_.start( 200, this );
+  model_->setDragEnabled(false);
+  drag_timer_.start( 200, this );
   return TreeView::mousePressEvent( event ); 
 }
 
@@ -264,10 +258,6 @@ void SessionFilesFrame::View::mousePressEvent( QMouseEvent* event )
 void SessionFilesFrame::View::mouseReleaseEvent( QMouseEvent* event )
 { 
   Debug::Throw( "SessionFilesFrame::View::mouseReleaseEvent.\n" );
-  //drag_timer_.stop();
+  drag_timer_.stop();
   return TreeView::mouseReleaseEvent( event ); 
 }
-
-//______________________________________________________________________
-void SessionFilesFrame::View::mouseMoveEvent( QMouseEvent* event )
-{ return TreeView::mouseMoveEvent( event ); }

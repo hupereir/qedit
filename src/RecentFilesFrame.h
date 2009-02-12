@@ -135,14 +135,6 @@ class RecentFilesFrame: public QWidget, public Counter
    
   //@}
   
-  //! true when list selection updates are enabled
-  void _setEnabled( bool value )
-  { enabled_ = value; }
-  
-  //! true when list selection updates are enabled
-  bool _enabled( void ) const
-  { return enabled_; }
- 
   //! recent files
   FileList* recent_files_;
   
@@ -151,10 +143,7 @@ class RecentFilesFrame: public QWidget, public Counter
   
   //! list
   TreeView* list_;
-  
-  //! true when list selection updates are enabled
-  bool enabled_;
-  
+    
   //@}
   
   //!@name actions
