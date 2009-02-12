@@ -1570,17 +1570,17 @@ bool TextDisplay::_fileModified( void )
 
   // check file size
   if( !( file().size() && file().exists() ) ) return false;
-  TimeStamp fileModified( file().lastModified() );
+  TimeStamp file_modified( file().lastModified() );
 
   // check if file was modified and contents is changed
   if(
-    fileModified.isValid() &&
+    file_modified.isValid() &&
     last_save_.isValid() &&
-    fileModified > last_save_ &&
+    file_modified > last_save_ &&
     _contentsChanged() )
   {
     // update last_save to avoid chain questions
-    last_save_ = fileModified;
+    last_save_ = file_modified;
     return true;
   }
 
