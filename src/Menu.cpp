@@ -343,17 +343,11 @@ void Menu::_updateToolsMenu( void )
   display.clearAllTagsAction().setEnabled( has_tags );
 
   // blocks delimiters
-  bool visible( display.blockDelimiterDisplay().collapseCurrentAction().isVisible() );
-  if( visible )
+  if( display.showBlockDelimiterAction().isEnabled() && display.showBlockDelimiterAction().isChecked() )
   {
-    
-    display.blockDelimiterDisplay().updateCurrentBlockActionState();
-    
     tools_menu_->addSeparator();
-    tools_menu_->addAction( &display.blockDelimiterDisplay().collapseCurrentAction() );
-    tools_menu_->addAction( &display.blockDelimiterDisplay().collapseAction() );
-    tools_menu_->addAction( &display.blockDelimiterDisplay().expandCurrentAction() );
-    tools_menu_->addAction( &display.blockDelimiterDisplay().expandAllAction() );
+    display.blockDelimiterDisplay().updateCurrentBlockActionState();
+    display.blockDelimiterDisplay().addActions( *tools_menu_ );
   }
   
   // rehighlight

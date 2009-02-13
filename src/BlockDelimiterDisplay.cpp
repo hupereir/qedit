@@ -105,14 +105,14 @@ void BlockDelimiterDisplay::synchronize( const BlockDelimiterDisplay* display )
 }
 
 //__________________________________________
-void BlockDelimiterDisplay::setActionVisibility( const bool& state )
+void BlockDelimiterDisplay::addActions( QMenu& menu )
 {
-  Debug::Throw( "BlockDelimiterDisplay::setActionVisibility.\n" );
   
-  collapseCurrentAction().setVisible( state );
-  expandCurrentAction().setVisible( state );
-  collapseAction().setVisible( state );
-  expandAllAction().setVisible( state );  
+  menu.addAction( &_collapseCurrentAction() );
+  menu.addAction( &_collapseAction() );
+  menu.addAction( &_expandCurrentAction() );
+  menu.addAction( &expandAllAction() );
+  
 }
 
 //__________________________________________
@@ -121,15 +121,10 @@ void BlockDelimiterDisplay::updateCurrentBlockActionState( void )
   
   // update segments if needed
   _updateSegments(); 
+  _selectSegmentFromCursor(  _editor().textCursor().position() );
   
-  // by default next paintEvent will require segment update
-  int cursor( _editor().textCursor().position() );
-
-  BlockDelimiterSegment::List::iterator expanded_iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor, false ) );
-  collapseCurrentAction().setEnabled( expanded_iter != segments_.end() );
-
-  BlockDelimiterSegment::List::iterator collapsed_iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor, true ) );
-  expandCurrentAction().setEnabled( collapsed_iter != segments_.end() );
+  _collapseCurrentAction().setEnabled( _selectedSegment().isValid() && !_selectedSegment().flag( BlockDelimiterSegment::COLLAPSED ) );
+  _expandCurrentAction().setEnabled( _selectedSegment().isValid() && _selectedSegment().flag( BlockDelimiterSegment::COLLAPSED ) );
   
 }
 
@@ -246,46 +241,73 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
 {
 
   Debug::Throw( "BlockDelimiterDisplay::mousePressEvent.\n" );
+
+  // get position from event
+  _updateSegments(); 
+  _updateSegmentMarkers();
+  _selectSegmentFromPosition( event->pos()+QPoint( -_offset(), _editor().verticalScrollBar()->value() ) );
     
   // check button
-  if( !( event->button() == Qt::LeftButton ) ) return;
-
-  // find segment matching event position
-  BlockDelimiterSegment::List::const_iterator iter = find_if( 
-    segments_.begin(), segments_.end(), 
-    BlockDelimiterSegment::ActiveFTor( event->pos()+QPoint( -_offset(), _editor().verticalScrollBar()->value() ) ) );
-  if( iter == segments_.end() ) return;
-  
-  /* 
-  clear box selection
-  because it gets corrupted by the collapsed/expand process 
-  */
-  _editor().clearBoxSelection();
-  
-  // retrieve matching segments
-  HighlightBlockData* data(0);
-  TextBlockPair blocks( _findBlocks( *iter, data ) );
-  
-  // check if block is collapsed
-  QTextBlockFormat block_format( blocks.first.blockFormat() );
-  if( block_format.boolProperty( TextBlock::Collapsed ) ) 
+  switch( event->button() )
   {
+
+    // left mouse button collape/expand current block
+    case Qt::LeftButton:
+    if( _selectedSegment().isValid() )
+    {
+  
+      
+      /* 
+      clear box selection
+      because it gets corrupted by the collapsed/expand process 
+      */
+      _editor().clearBoxSelection();
+      
+      // retrieve matching segments
+      HighlightBlockData* data(0);
+      TextBlockPair blocks( _findBlocks( _selectedSegment(), data ) );
+      
+      // check if block is collapsed
+      QTextBlockFormat block_format( blocks.first.blockFormat() );
+      if( block_format.boolProperty( TextBlock::Collapsed ) ) 
+      {
+        
+        bool cursor_visible( _editor().isCursorVisible() );
+        _expand( blocks.first, data );
+        if( cursor_visible ) _editor().ensureCursorVisible();
+        
+      } else {
+        
+        _collapse( blocks.first, blocks.second, data );
+        
+      }
+
+      // force segment update at next update
+      need_update_ = true;
+      
+    }
+    break;
     
-    Debug::Throw( "BlockDelimiterDisplay::mousePressEvent - collapsed block found.\n" );
-    bool cursor_visible( _editor().isCursorVisible() );
-    _expand( blocks.first, data );
-    if( cursor_visible ) _editor().ensureCursorVisible();
+    // right mouse button raise menu
+    case Qt::RightButton:
+    {
+      
+      // update collapse and expand current action state
+      _expandCurrentAction().setEnabled( _selectedSegment().isValid() && _selectedSegment().flag( BlockDelimiterSegment::COLLAPSED ) );
+      _collapseCurrentAction().setEnabled( _selectedSegment().isValid() && !_selectedSegment().flag( BlockDelimiterSegment::COLLAPSED ) );
+      QMenu menu( &_editor() );
+      addActions( menu );
+      menu.exec( event->globalPos() );
+      
+    }
+    break;
     
-  } else {
-    
-    Debug::Throw( "BlockDelimiterDisplay::mousePressEvent - expanded block found.\n" );
-    _collapse( blocks.first, blocks.second, data );
+    default: break;
     
   }
   
-  // force segment update at next update
-  need_update_ = true;
-
+  return;
+  
 }
 
 //________________________________________________________
@@ -337,28 +359,27 @@ void BlockDelimiterDisplay::_blockCountChanged( void )
 //________________________________________________________
 void BlockDelimiterDisplay::_collapseCurrentBlock( void )
 { 
-  Debug::Throw( "BlockDelimiterDisplay::_collapseCurrentBlock.\n" );
+  Debug::Throw(  "BlockDelimiterDisplay::_collapseCurrentBlock.\n" );
 
   /* update segments if needed */
   _updateSegments(); 
   _updateSegmentMarkers();
+
+  if( _selectedSegment().isValid() && !_selectedSegment().flag( BlockDelimiterSegment::COLLAPSED ) )
+  {
+    
+    // clear box selection
+    _editor().clearBoxSelection();
+
+    // find matching blocks
+    HighlightBlockData *data(0);
+    TextBlockPair blocks( _findBlocks( _selectedSegment(), data ) );
+    
+    // collapse
+    _collapse( blocks.first, blocks.second, data );
+    
+  } 
   
-  // get cursor position
-  int cursor( _editor().textCursor().position() );
-
-  // find matching segment
-  BlockDelimiterSegment::List::iterator iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor, false ) );
-  if( iter == segments_.end() ) return;
-
-  // clear box selection
-  _editor().clearBoxSelection();
-
-  // find matching blocks
-  HighlightBlockData *data(0);
-  TextBlockPair blocks( _findBlocks( *iter, data ) );
-  
-  // collapse
-  _collapse( blocks.first, blocks.second, data );
   return;
 }
   
@@ -371,30 +392,29 @@ void BlockDelimiterDisplay::_expandCurrentBlock( void )
   /* update segments if needed */
   _updateSegments(); 
   _updateSegmentMarkers();
-  
-  // get cursor position
-  int cursor( _editor().textCursor().position() );
 
-  // find matching segment
-  BlockDelimiterSegment::List::iterator iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor, true ) );
-  if( iter == segments_.end() ) return;
+  if( _selectedSegment().isValid() && _selectedSegment().flag( BlockDelimiterSegment::COLLAPSED ) )
+  {
+    
+    // find matching blocks
+    HighlightBlockData *data(0);
+    TextBlockPair blocks( _findBlocks( _selectedSegment(), data ) );
+    
+    // collapse
+    bool cursor_visible( _editor().isCursorVisible() );
+    _editor().clearBoxSelection();
+    _expand( blocks.first, data );
+    if( cursor_visible ) _editor().ensureCursorVisible();
+   
+  }
   
-  // find matching blocks
-  HighlightBlockData *data(0);
-  TextBlockPair blocks( _findBlocks( *iter, data ) );
-  
-  // collapse
-  bool cursor_visible( _editor().isCursorVisible() );
-  _editor().clearBoxSelection();
-  _expand( blocks.first, data );
-  if( cursor_visible ) _editor().ensureCursorVisible();
   return;
+  
 }
 
 //________________________________________________________
 void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
-{ 
-  
+{
   Debug::Throw( "BlockDelimiterDisplay::_collapseTopLevelBlocks.\n" );
   
   /* update segments if needed */
@@ -703,11 +723,10 @@ void BlockDelimiterDisplay::_updateSegments( void )
         
   // update expand all action
   expandAllAction().setEnabled( has_collapsed_blocks );
-  collapseAction().setEnabled( has_expanded_blocks );
+  _collapseAction().setEnabled( has_expanded_blocks );
   
 }
-
-
+  
 //________________________________________________________
 void BlockDelimiterDisplay::_updateSegmentMarkers( void )
 {
@@ -721,7 +740,6 @@ void BlockDelimiterDisplay::_updateSegmentMarkers( void )
   }
 
 }
-
 
 //________________________________________________________
 void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, unsigned int& id, BlockMarker& marker, const BlockMarkerType& flag ) const
@@ -806,6 +824,28 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
   out.second = block;  
   return out;
   
+}
+
+//________________________________________________________
+void BlockDelimiterDisplay::_selectSegmentFromCursor( const int& cursor )
+{
+  Debug::Throw( "BlockDelimiterDisplay::_selectSegmentFromCursor.\n" );
+  BlockDelimiterSegment::List::iterator iter = std::find_if( 
+    segments_.begin(), segments_.end(), 
+    BlockDelimiterSegment::ContainsFTor( cursor ) );
+  _setSelectedSegment( iter == segments_.end() ? BlockDelimiterSegment():*iter );
+  
+}
+
+
+//________________________________________________________
+void BlockDelimiterDisplay::_selectSegmentFromPosition( const QPoint& position )
+{
+  Debug::Throw( "BlockDelimiterDisplay::_selectSegmentFromPosition.\n" );
+  BlockDelimiterSegment::List::const_iterator iter = find_if( 
+    segments_.begin(), segments_.end(), 
+    BlockDelimiterSegment::ActiveFTor( position ) );
+  _setSelectedSegment( iter == segments_.end() ? BlockDelimiterSegment():*iter );
 }
 
 //________________________________________________________________________________________

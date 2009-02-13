@@ -129,7 +129,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
   // block delimiter
   block_delimiter_display_ = new BlockDelimiterDisplay( this );
-  
+
   // connections
   connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
   connect( this, SIGNAL( cursorPositionChanged() ), SLOT( _highlightParenthesis() ) );
@@ -2285,6 +2285,7 @@ void TextDisplay::_highlightParenthesis( void )
     parenthesis.begin(), parenthesis.end(), 
     TextParenthesis::FirstElementFTor( text.left( position ) ) ) );
   
+  
   if( iter != parenthesis.end() )
   {
     int increment( 0 );
@@ -2294,10 +2295,11 @@ void TextDisplay::_highlightParenthesis( void )
       QString text( block.text() );
 
       // parse text
-      while( (position = text.indexOf( iter->regexp(), position ) ) >= 0 )
+      // while( (position = text.indexOf( iter->regexp(), position ) ) >= 0 )
+      while( (position = iter->regexp().indexIn( text, position ) ) >= 0 )
       {
-        if( text.mid(position, iter->regexp().matchedLength() ) == iter->second() ) increment--;
-        else if( text.mid(position, iter->regexp().matchedLength() ) == iter->first() ) increment++;
+        if( iter->regexp().cap() == iter->second() ) increment--;
+        else if( iter->regexp().cap() == iter->first() ) increment++;
 
         if( increment < 0 )
         {
@@ -2305,7 +2307,7 @@ void TextDisplay::_highlightParenthesis( void )
           break;
         }
 
-        position++;
+        position += iter->regexp().matchedLength();
 
       }
 
@@ -2323,35 +2325,35 @@ void TextDisplay::_highlightParenthesis( void )
     parenthesis.begin(), parenthesis.end(), 
     TextParenthesis::SecondElementFTor( text.left( position ) ) )) == parenthesis.end()  ) )
   {
+        
     int increment( 0 );
-    position -= (iter->second().size() + 1 );
+    position -= (iter->second().size() );
     while( block.isValid() && !found )
     {
       // retrieve block text
       QString text( block.text() );
 
       // parse text
-      while( position >= 0 && (position = text.lastIndexOf( iter->regexp(), position ) ) >= 0 )
+      while( position >= 0 && (position = iter->regexp().lastIndexIn( text.left(position) ) ) >= 0 )
       {
         
-        if( text.mid(position, iter->regexp().matchedLength() ) == iter->first() ) increment--;
-        else if( text.mid(position, iter->regexp().matchedLength() ) == iter->second() ) increment++;
-
+        if( iter->regexp().cap() == iter->first() ) increment--;
+        else if( iter->regexp().cap() == iter->second() ) increment++;
+        
         if( increment < 0 )
         {
           found = true;
           break;
         }
 
-        position--;
-
       }
 
       if( !found )
       {
         block = block.previous();
-        if( block.isValid() ) position = block.text().length() - 1;
+        if( block.isValid() ) position = block.text().length() ;
       }
+      
     }
   }
 

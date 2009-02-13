@@ -57,7 +57,6 @@ class BlockDelimiterSegment: public Counter
     flags_( flags )
   {}
   
-  
   //!@name flags
   //@{
   
@@ -82,7 +81,11 @@ class BlockDelimiterSegment: public Counter
     return *this;
   } 
   
-  //@}  
+  //@}
+  
+  //! validity
+  bool isValid( void ) const
+  { return ( begin().isValid() && ( flag( BEGIN_ONLY ) || end().isValid() ) ); }
   
   //!@name geometry
   //@{
@@ -159,26 +162,18 @@ class BlockDelimiterSegment: public Counter
     public:
     
     //! constructor
-    ContainsFTor( const int& cursor, const bool& collapsed ):
-      cursor_( cursor ),
-      collapsed_( collapsed )
+    ContainsFTor( const int& cursor ):
+      cursor_( cursor )
     {}
     
     //! prediction
     bool operator() (const BlockDelimiterSegment& segment ) const
-    { 
-      return 
-        segment.flag( BlockDelimiterSegment::COLLAPSED ) == collapsed_ && 
-        (( segment.empty() ) ? ( cursor_ >= segment.begin().cursor() ) : ( cursor_ >= segment.begin().cursor() && cursor_ <= segment.end().cursor() ) ); 
-    }
+    { return cursor_ >= segment.begin().cursor() && ( segment.empty() || cursor_ <= segment.end().cursor() ); }
     
     private:
     
     //! position
     int cursor_;
-    
-    //! collapse state
-    bool collapsed_; 
     
   };
   

@@ -54,7 +54,7 @@ void TextHighlight::setParenthesis( const TextParenthesis::List& parenthesis )
   
   Debug::Throw( "TextHighlight::setParenthesis.\n" );
   parenthesis_ = parenthesis;
-  
+   
 }
 
 //_________________________________________________________

@@ -97,40 +97,21 @@ class BlockDelimiterDisplay: public QObject, public Counter
 
   //! mouse press event
   virtual void mousePressEvent( QMouseEvent* );
-  
-  //!@name actions
-  //@{
-  
-  //! set action visibility
-  void setActionVisibility( const bool& state );
-  
-  //! expand current block
-  QAction& collapseCurrentAction( void ) const
-  { return *collapse_current_action_; }
-  
-  //! expand current block
-  QAction& expandCurrentAction( void ) const
-  { return *expand_current_action_; }
-
-  //! collapse top level block
-  QAction& collapseAction( void ) const
-  { return *collapse_action_; }
-  
-  //! expand all
-  QAction& expandAllAction( void ) const
-  { return *expand_all_action_; }
-
-  //@}
     
   //! offset
   void setOffset( int offset ) 
   { offset_ = offset; }
   
-  public slots:
-  
+  //! add block delimiters actions to specified menu
+  void addActions( QMenu& );
+            
+  //! expand all
+  QAction& expandAllAction( void ) const
+  { return *expand_all_action_; }
+
   //! update expand/collapse current block action state
   void updateCurrentBlockActionState( void );
-      
+
   private slots:
   
   //! collapse current block
@@ -169,6 +150,23 @@ class BlockDelimiterDisplay: public QObject, public Counter
   const int& _offset( void ) const
   { return offset_; }
   
+  //!@name actions
+  //@{
+  
+  //! expand current block
+  QAction& _collapseCurrentAction( void ) const
+  { return *collapse_current_action_; }
+  
+  //! expand current block
+  QAction& _expandCurrentAction( void ) const
+  { return *expand_current_action_; }
+
+  //! collapse top level block
+  QAction& _collapseAction( void ) const
+  { return *collapse_action_; }
+
+  //@}
+  
   //! block marker type
   enum BlockMarkerType
   {
@@ -195,6 +193,20 @@ class BlockDelimiterDisplay: public QObject, public Counter
   \param data the user data associated to the output segment
   */
   TextBlockPair _findBlocks( QTextBlock&, unsigned int&, const BlockDelimiterSegment&, HighlightBlockData*& ) const;  
+
+  //! select segment from cursor
+  void _selectSegmentFromCursor( const int& );
+  
+  //! select segment from mouse position
+  void _selectSegmentFromPosition( const QPoint& );
+  
+  //! selected segment
+  void _setSelectedSegment( const BlockDelimiterSegment& segment )
+  { selected_segment_ = segment; }
+  
+  //! selected segment
+  const BlockDelimiterSegment& _selectedSegment( void ) const
+  { return selected_segment_; }
   
   //! expand current block
   void _expand( const QTextBlock&, HighlightBlockData*, const bool& recursive = false ) const;
@@ -220,6 +232,9 @@ class BlockDelimiterDisplay: public QObject, public Counter
   
   //! block segments
   BlockDelimiterSegment::List segments_;
+  
+  //! selected block segment
+  BlockDelimiterSegment selected_segment_;
   
   //! map block id and number of collapsed blocks
   typedef std::map<int, int> CollapsedBlockMap;
