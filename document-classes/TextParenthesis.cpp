@@ -63,7 +63,9 @@ TextParenthesis::TextParenthesis( const QDomElement& element ):
     QString pattern = QString("(") + first() + ")|(" + second() + ")";
     regexp_.setPattern( pattern );
   }
-    
+  
+  //regexp_.setMinimal( true );
+  
 }
 
 //_____________________________________________________
