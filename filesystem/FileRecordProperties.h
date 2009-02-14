@@ -56,6 +56,7 @@ namespace FileRecordProperties
     
     //! tag current file
     SELECTED = 1<<2
+    
   };
 };
 

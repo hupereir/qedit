@@ -1578,9 +1578,6 @@ bool TextDisplay::_contentsChanged( void ) const
   QString file_text( in.readAll() );
   QString text( toPlainText() );
   
-  Debug::Throw(0) << "file_text: \"" << file_text << "\"" << endl;
-  Debug::Throw(0) << "text: \"" << text << "\"" << endl;
-  
   return (text.size() != file_text.size() || text != file_text );
 
 }

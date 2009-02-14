@@ -176,6 +176,10 @@ class FileSystemFrame: public QWidget, public Counter
   //! install actions
   void _installActions( void );
 
+  //! file system watcher
+  QFileSystemWatcher& _fileSystemWatcher( void )
+  { return file_system_watcher_; }
+  
   //!@name actions
   //@{
   

@@ -127,7 +127,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   connect( &_model(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
   connect( &_model(), SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
 
-  connect( &file_system_watcher_, SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
+  connect( &_fileSystemWatcher(), SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
   connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   _updateConfiguration();
   _updateActions();
@@ -508,9 +508,11 @@ void FileSystemFrame::_animationFinished( void )
   _comboBox().setEditText( path() );
 
   // reset file system watcher
-  QStringList directories( file_system_watcher_.directories() );
-  if( !directories.isEmpty() ) file_system_watcher_.removePaths( directories );
-  file_system_watcher_.addPath( path() );
+  QStringList directories( _fileSystemWatcher().directories() );
+  if( !directories.isEmpty() ) _fileSystemWatcher().removePaths( directories );
+  
+  _fileSystemWatcher().addPath( path() );
+  
 }
 
 //_____________________________________________
