@@ -31,6 +31,7 @@
 
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
+#include <QMenu>
 #include <QPainter>
 #include <QScrollBar>
 #include <QStyleOption>
