@@ -43,6 +43,7 @@
 #include "FileRemovedDialog.h"
 #include "Config.h"
 #include "Debug.h"
+#include "FileCheck.h"
 #include "FileRecord.h"
 #include "HighlightBlockFlags.h"
 #include "HighlightPattern.h"
@@ -203,6 +204,10 @@ class TextDisplay: public AnimatedTextEditor
   //! working directory
   const File& workingDirectory() const
   { return working_directory_; }
+
+  //! file check data
+  void setFileCheckData( const FileCheck::Data& data )
+  { file_check_data_ = data; }
   
   //! ask for save if modified
   AskForSaveDialog::ReturnCode askForSave( const bool& enable_all = false );
@@ -374,6 +379,9 @@ class TextDisplay: public AnimatedTextEditor
   
   //@}
     
+  //!@name block interface
+  //@{
+  
   // return true if block is an empty line
   bool isEmptyBlock( const QTextBlock& block ) const
   { return _emptyLineRegExp().indexIn( block.text() ) >= 0; }
@@ -392,6 +400,8 @@ class TextDisplay: public AnimatedTextEditor
   
   //! true if some blocks have tags
   bool hasTaggedBlocks( void );
+  
+  //@}
   
   //! return parenthesis highlight object
   ParenthesisHighlight& parenthesisHighlight( void ) const
@@ -469,6 +479,10 @@ class TextDisplay: public AnimatedTextEditor
   //! is new document
   void _setIsNewDocument( bool value )
   { is_new_document_ = value; }
+  
+  //! file check data
+  const FileCheck::Data& _fileCheckData( void ) const
+  { return file_check_data_; }
   
   //! clear macros
   void _clearMacros( void )
@@ -651,6 +665,9 @@ class TextDisplay: public AnimatedTextEditor
   
   //! associated document class name
   QString class_name_;
+  
+  //! filesystem check data
+  FileCheck::Data file_check_data_;
   
   //! diff conflict color 
   QColor diff_conflict_color_;

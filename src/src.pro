@@ -49,6 +49,7 @@ HEADERS = \
   Diff.h \
   DefaultOptions.h \
   CloseFilesDialog.h \
+  FileCheck.h \
   FileModifiedDialog.h \
   FileRemovedDialog.h \
   FileSelectionDialog.h \
@@ -87,6 +88,7 @@ SOURCES = \
   ConfigurationDialog.cpp \
   Diff.cpp \
   CloseFilesDialog.cpp \
+  FileCheck.cpp \
   FileModifiedDialog.cpp \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \

@@ -65,6 +65,7 @@ TextView::TextView( QWidget* parent ):
   layout()->addWidget( &display );
   display.setActive( true );
   Singleton::get().application<Application>()->autoSave().newThread( &display );
+  Singleton::get().application<Application>()->fileCheck().registerDisplay( &display );
 
   // position update timer
   position_timer_.setSingleShot( true );
@@ -373,6 +374,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
 
     // register new AutoSave thread
     Singleton::get().application<Application>()->autoSave().newThread( &display );
+    Singleton::get().application<Application>()->fileCheck().registerDisplay( &display );
 
   }
 

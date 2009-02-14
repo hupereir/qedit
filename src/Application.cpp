@@ -37,6 +37,7 @@
 #include "ConfigurationDialog.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassManagerDialog.h"
+#include "FileCheck.h"
 #include "IconEngine.h"
 #include "Icons.h"
 #include "XmlOptions.h"
@@ -90,6 +91,7 @@ Application::Application( CommandLineArguments arguments ):
   window_server_( 0 ),
   class_manager_( 0 ),
   autosave_( 0 ),
+  file_check_( 0 ),
   startup_timer_( this )
 {
   startup_timer_.setSingleShot( true );
@@ -102,6 +104,7 @@ Application::~Application( void )
   Debug::Throw( "Application::~Application.\n" ); 
   
   if( class_manager_ ) delete class_manager_;
+  if( file_check_ ) delete file_check_;
   if( autosave_ ) delete autosave_;
   if( window_server_ ) delete window_server_; 
   if( recent_files_ ) delete recent_files_;
@@ -157,6 +160,9 @@ bool Application::realizeWidget( void )
   
   // autosave
   autosave_ = new AutoSave();
+  
+  // file check
+  file_check_ = new FileCheck();
   
   // window server
   window_server_ = new WindowServer();

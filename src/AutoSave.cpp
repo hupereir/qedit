@@ -133,6 +133,8 @@ void AutoSave::saveFiles( const TextDisplay* display )
       // remove from list
       // advance iterator and check for end of list
       iter = threads_.erase( iter );
+      
+      // check if at end
       if( iter == threads_.end() ) break;
       else continue;
       

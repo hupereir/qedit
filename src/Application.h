@@ -43,6 +43,7 @@
 
 class AutoSave;
 class DocumentClassManager;
+class FileCheck;
 class FileList;
 class WindowServer;
 class Sync;
@@ -100,6 +101,13 @@ class Application: public BaseApplication, public Counter
   { 
     assert( autosave_ );
     return *autosave_;
+  }
+  
+  //! file check
+  FileCheck& fileCheck( void ) const
+  { 
+    assert( file_check_ );
+    return *file_check_; 
   }
   
   //!@name actions
@@ -167,6 +175,9 @@ class Application: public BaseApplication, public Counter
   
   //! file autoSave manager
   AutoSave* autosave_;
+  
+  //! file check
+  FileCheck* file_check_;
   
   //! startup single shot timer
   /*!

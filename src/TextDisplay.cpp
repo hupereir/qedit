@@ -165,7 +165,13 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
 //_____________________________________________________
 TextDisplay::~TextDisplay( void )
-{ Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; }
+{ 
+  
+  Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; 
+  if( !( isNewDocument() || file().isEmpty() ) && BASE::KeySet<TextDisplay>( this ).empty() )
+  { Singleton::get().application<Application>()->fileCheck().removeFile( file() ); }
+    
+}
 
 //_____________________________________________________
 int TextDisplay::blockCount( const QTextBlock& block ) const
@@ -296,6 +302,8 @@ void TextDisplay::synchronize( TextDisplay* display )
   // file
   _setFile( display->file() );
   _setIsNewDocument( display->isNewDocument() );
+  _setLastSaved( last_save_ );
+  
 }
 
 //____________________________________________
@@ -321,17 +329,11 @@ void TextDisplay::setIsNewDocument( void )
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
     
-    Debug::Throw() << "TextDisplay::setIsNewDocument - processing: " << (*iter)->key() << endl;
     (*iter)->_setIsNewDocument( true );
     (*iter)->setClassName( className() );
     (*iter)->_updateDocumentClass( File(), true );
-    Debug::Throw() << "TextDisplay::setIsNewDocument - document class done." << endl;
-
     (*iter)->_updateSpellCheckConfiguration();
-    Debug::Throw() << "TextDisplay::setIsNewDocument - spellcheck done." << endl;
-    
     (*iter)->_setFile( file );
-    Debug::Throw() << "TextDisplay::setIsNewDocument - file set." << endl;
 
     // disable file info action
     (*iter)->filePropertiesAction().setEnabled( false );
@@ -443,9 +445,14 @@ void TextDisplay::_setFile( const File& file )
   file_ = file;
   if( !isNewDocument() && file.exists() )
   {
+    
     _setLastSaved( file.lastModified() );
     _setWorkingDirectory( file.path() );
     _setIgnoreWarnings( false );
+    
+    // add file to file check
+    Singleton::get().application<Application>()->fileCheck().addFile( file );
+    
   }
 
   // check if file is read-only
@@ -463,6 +470,11 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
 
   if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::IGNORE;
 
+  BASE::KeySet<TextDisplay> displays( this );
+  displays.insert( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  { (*iter)->setFileCheckData( FileCheck::Data() ); }
+
   // disable check
   FileRemovedDialog dialog( this, file() );
   int state( dialog.centerOnParent().exec() );
@@ -474,8 +486,11 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
     setModified( true );
     save();
 
-  } else if( state == FileRemovedDialog::SAVE_AS ) { saveAs(); }
-  else if( state == FileRemovedDialog::IGNORE ) {
+  } else if( state == FileRemovedDialog::SAVE_AS ) {
+    
+    saveAs(); 
+  
+  } else if( state == FileRemovedDialog::IGNORE ) {
 
     BASE::KeySet<TextDisplay> displays( this );
     displays.insert( this );
@@ -484,13 +499,6 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
       (*iter)->_setIgnoreWarnings( true );
       (*iter)->setModified( false );
     }
-
-  } else if( state == FileRemovedDialog::IGNORE ) {
-
-    BASE::KeySet<TextDisplay> displays( this );
-    displays.insert( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { (*iter)->_setIgnoreWarnings( true ); }
 
   }
 
@@ -504,8 +512,25 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
 {
   Debug::Throw( "TextDisplay::checkFileModified.\n" );
 
-  if( _ignoreWarnings() || !_fileModified() ) return FileModifiedDialog::IGNORE;
+  if( _ignoreWarnings() )
+  {
+    Debug::Throw( "TextDisplay::checkFileModified - warnings ignored.\n" );
+    return FileModifiedDialog::IGNORE;
+  }
+  
+  if( !_fileModified() ) 
+  {
+    Debug::Throw( "TextDisplay::checkFileModified - file not changed.\n" );
+    return FileModifiedDialog::IGNORE;
+  }
+  
+  // clear file check data
+  BASE::KeySet<TextDisplay> displays( this );
+  displays.insert( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  { (*iter)->setFileCheckData( FileCheck::Data() ); }
 
+  // create dialog
   FileModifiedDialog dialog( this, file() );
   int state( dialog.centerOnParent().exec() );
   if( state == FileModifiedDialog::RESAVE ) 
@@ -655,8 +680,9 @@ void TextDisplay::saveAs( void )
     
   }
 
-  // remove new document version from name server
+  // remove new document version from name server, and FileCheck, if needed
   if( isNewDocument() ) { NewDocumentNameServer().remove( TextDisplay::file() ); }
+  else if( !TextDisplay::file().isEmpty() ) { Singleton::get().application<Application>()->fileCheck().removeFile( TextDisplay::file() ); }
 
   // update filename and document class for this and associates
   // the class name is reset, to allow a document class
@@ -1551,6 +1577,10 @@ bool TextDisplay::_contentsChanged( void ) const
   // dump file into character string
   QString file_text( in.readAll() );
   QString text( toPlainText() );
+  
+  Debug::Throw(0) << "file_text: \"" << file_text << "\"" << endl;
+  Debug::Throw(0) << "text: \"" << text << "\"" << endl;
+  
   return (text.size() != file_text.size() || text != file_text );
 
 }
@@ -1559,7 +1589,11 @@ bool TextDisplay::_contentsChanged( void ) const
 bool TextDisplay::_fileRemoved( void ) const
 {
   Debug::Throw( "TextDisplay::_fileRemoved.\n" );
-  return ( !( file().isEmpty() || isNewDocument() ) && last_save_.isValid() && !file().exists() );
+  return 
+    !( file().isEmpty() || isNewDocument() ) && 
+    last_save_.isValid() && 
+    _fileCheckData().flag() == FileCheck::Data::REMOVED;  
+  
 }
 
 //____________________________________________
@@ -1569,23 +1603,19 @@ bool TextDisplay::_fileModified( void )
   Debug::Throw( "TextDisplay::_fileModified.\n" );
 
   // check file size
-  if( !( file().size() && file().exists() ) ) return false;
-  TimeStamp file_modified( file().lastModified() );
+  if( !file().size() ) return false;
+  if( _fileCheckData().flag() != FileCheck::Data::MODIFIED ) return false;
+  if( !last_save_.isValid() ) return false;
+  
+  TimeStamp file_modified( _fileCheckData().timeStamp() );
+  if( !file_modified.isValid() ) return false;
+  if( !(file_modified > last_save_ ) ) return false;
+  if( !_contentsChanged() ) return false;
 
-  // check if file was modified and contents is changed
-  if(
-    file_modified.isValid() &&
-    last_save_.isValid() &&
-    file_modified > last_save_ &&
-    _contentsChanged() )
-  {
-    // update last_save to avoid chain questions
-    last_save_ = file_modified;
-    return true;
-  }
-
-  return false;
-
+  // update last_save to avoid chain questions
+  last_save_ = file_modified;
+  return true;
+    
 }
 
 //_____________________________________________________________
