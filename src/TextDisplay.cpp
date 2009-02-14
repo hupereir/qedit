@@ -302,7 +302,7 @@ void TextDisplay::synchronize( TextDisplay* display )
   // file
   _setFile( display->file() );
   _setIsNewDocument( display->isNewDocument() );
-  _setLastSaved( last_save_ );
+  _setLastSaved( last_saved_ );
   
 }
 
@@ -1588,7 +1588,7 @@ bool TextDisplay::_fileRemoved( void ) const
   Debug::Throw( "TextDisplay::_fileRemoved.\n" );
   return 
     !( file().isEmpty() || isNewDocument() ) && 
-    last_save_.isValid() && 
+    last_saved_.isValid() && 
     _fileCheckData().flag() == FileCheck::Data::REMOVED;  
   
 }
@@ -1602,15 +1602,15 @@ bool TextDisplay::_fileModified( void )
   // check file size
   if( !file().size() ) return false;
   if( _fileCheckData().flag() != FileCheck::Data::MODIFIED ) return false;
-  if( !last_save_.isValid() ) return false;
+  if( !last_saved_.isValid() ) return false;
   
   TimeStamp file_modified( _fileCheckData().timeStamp() );
   if( !file_modified.isValid() ) return false;
-  if( !(file_modified > last_save_ ) ) return false;
+  if( !(file_modified > last_saved_ ) ) return false;
   if( !_contentsChanged() ) return false;
 
   // update last_save to avoid chain questions
-  last_save_ = file_modified;
+  last_saved_ = file_modified;
   return true;
     
 }

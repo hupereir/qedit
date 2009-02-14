@@ -205,6 +205,10 @@ class TextDisplay: public AnimatedTextEditor
   const File& workingDirectory() const
   { return working_directory_; }
 
+  //! last saved time stamp
+  const TimeStamp& lastSaved( void ) const
+  { return last_saved_; }
+  
   //! file check data
   void setFileCheckData( const FileCheck::Data& data )
   { file_check_data_ = data; }
@@ -494,7 +498,7 @@ class TextDisplay: public AnimatedTextEditor
       
   //! last save time stamp
   void _setLastSaved( const TimeStamp& stamp )
-  { last_save_ = stamp; }
+  { last_saved_ = stamp; }
   
   //! working directory
   void _setWorkingDirectory( const File& file )
@@ -679,7 +683,7 @@ class TextDisplay: public AnimatedTextEditor
   QColor user_tag_color_; 
        
   //! last save timeStamp
-  TimeStamp last_save_;
+  TimeStamp last_saved_;
 
   //! if true, _checkFile is disabled
   bool ignore_warnings_;
