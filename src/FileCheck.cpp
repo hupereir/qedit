@@ -98,17 +98,26 @@ void FileCheck::_fileChanged( const QString& file )
   {
     
     File local( file );
-    if( !local.exists() ) data.setFlag( Data::REMOVED );
-    else {
+    if( !local.exists() ) {
+
+      Debug::Throw(0) << "FileCheck::_fileChanged - removed" << endl;
+      data.setFlag( Data::REMOVED );
+
+    } else {
+    
       data.setFlag( Data::MODIFIED );
       data.setTimeStamp( local.lastModified() );
+      
     }      
   
     // assign to this display and others
     BASE::KeySet<TextDisplay> associates( *iter );
     associates.insert( *iter );
     for( BASE::KeySet<TextDisplay>::iterator iter = associates.begin(); iter != associates.end(); iter++ )
-    { (*iter)->setFileCheckData( data ); }
+    { 
+      if( data.flag() == Data::REMOVED || ((*iter)->lastSaved().isValid() && (*iter)->lastSaved() < data.timeStamp()) )
+      { (*iter)->setFileCheckData( data ); }
+    }
     
   } else { 
     
