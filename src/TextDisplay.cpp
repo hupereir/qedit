@@ -1588,7 +1588,7 @@ bool TextDisplay::_fileRemoved( void ) const
   Debug::Throw( "TextDisplay::_fileRemoved.\n" );
   return 
     !( file().isEmpty() || isNewDocument() ) && 
-    last_saved_.isValid() && 
+    lastSaved().isValid() && 
     _fileCheckData().flag() == FileCheck::Data::REMOVED;  
   
 }
@@ -1602,7 +1602,7 @@ bool TextDisplay::_fileModified( void )
   // check file size
   if( !file().size() ) return false;
   if( _fileCheckData().flag() != FileCheck::Data::MODIFIED ) return false;
-  if( !last_saved_.isValid() ) return false;
+  if( !lastSaved().isValid() ) return false;
   
   TimeStamp file_modified( _fileCheckData().timeStamp() );
   if( !file_modified.isValid() ) return false;
@@ -2325,8 +2325,9 @@ void TextDisplay::_highlightParenthesis( void )
       // while( (position = text.indexOf( iter->regexp(), position ) ) >= 0 )
       while( (position = iter->regexp().indexIn( text, position ) ) >= 0 )
       {
-        if( iter->regexp().cap() == iter->second() ) increment--;
-        else if( iter->regexp().cap() == iter->first() ) increment++;
+
+        if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->second() ) increment--;
+        else if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment++;
 
         if( increment < 0 )
         {
@@ -2364,8 +2365,8 @@ void TextDisplay::_highlightParenthesis( void )
       while( position >= 0 && (position = iter->regexp().lastIndexIn( text.left(position) ) ) >= 0 )
       {
         
-        if( iter->regexp().cap() == iter->first() ) increment--;
-        else if( iter->regexp().cap() == iter->second() ) increment++;
+        if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment--;
+        else if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->second() ) increment++;
         
         if( increment < 0 )
         {
