@@ -74,14 +74,33 @@ void FileCheck::removeFile( const QString& file, bool forced )
 {
   
   Debug::Throw() << "FileCheck::removeFile: " << file << endl;
-  FileSet::iterator iter( files_.find( file ) );
-  assert( iter != files_.end() );
+  if( !forced )
+  {
+    FileSet::iterator iter( files_.find( file ) );
+    assert( iter != files_.end() );
+  }
+  
   files_.erase( file );
+  _fileSystemWatcher().removePath( file );
   
   return;
   
 }
 
+//______________________________________________________
+void FileCheck::printMonitoredFiles( void )
+{
+  
+  Debug::Throw( 0, "FileCheck::printMonitoredFiles.\n" );
+  QStringList files( _fileSystemWatcher().files());  
+  
+  for( QStringList::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+  { Debug::Throw(0) << "FileCheck::printMonitoredFiles - " << *iter << endl; }
+  
+  Debug::Throw(0) << endl;
+
+}
+    
 //______________________________________________________
 void FileCheck::_fileChanged( const QString& file )
 {

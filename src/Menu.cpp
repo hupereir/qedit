@@ -155,6 +155,7 @@ Menu::Menu( QWidget* parent ):
   DebugMenu *debug_menu( new DebugMenu( this ) );
   debug_menu->setTitle( "&Debug" );
   debug_menu->addAction( &help->dumpAction() );
+  debug_menu->addAction( "Dump monitored files", &application.fileCheck(), SLOT( printMonitoredFiles() ) );
   menu->addMenu( debug_menu );
 
 }

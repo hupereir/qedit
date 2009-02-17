@@ -57,13 +57,13 @@ class FileCheck: public QObject, public BASE::Key, public Counter
   ~FileCheck( void );
   
   //! register new dispay
-  void registerDisplay( TextDisplay* display );
+  void registerDisplay( TextDisplay* );
     
   //! add file
-  void addFile( const QString& file );
+  void addFile( const QString& );
 
   //! remove file
-  void removeFile( const QString& file, bool forced = false );
+  void removeFile( const QString&, bool forced = false );
  
   class Data
   {
@@ -108,6 +108,11 @@ class FileCheck: public QObject, public BASE::Key, public Counter
     TimeStamp time_stamp_;
     
   };
+  
+  public slots:
+  
+  //! print list of monitored files
+  void printMonitoredFiles( void );
   
   private slots:
   
