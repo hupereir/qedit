@@ -32,8 +32,11 @@
   \date $Date$
 */
 
+#include <QBasicTimer>
 #include <QFileSystemWatcher>
 #include <QObject>
+#include <QTimerEvent>
+
 #include <set>
 
 #include "Key.h"
@@ -65,6 +68,7 @@ class FileCheck: public QObject, public BASE::Key, public Counter
   //! remove file
   void removeFile( const QString&, bool forced = false );
  
+  //! used to monitor file changes
   class Data
   {
     public:
@@ -78,11 +82,28 @@ class FileCheck: public QObject, public BASE::Key, public Counter
     };
     
     //! constructor
-    Data( Flag flag = NONE, TimeStamp stamp = TimeStamp() ):
+    Data( QString file = QString(), Flag flag = NONE, TimeStamp stamp = TimeStamp() ):
+      file_( file ),
       flag_( flag ),
       time_stamp_( stamp )
     {}
-
+    
+    //! equal to operator
+    bool operator == ( const Data& data ) const
+    { return file() == data.file(); }
+    
+    //! less than operator 
+    bool operator < ( const Data& data ) const
+    { return file() < data.file(); }
+    
+    //! file
+    void setFile( const QString& file )
+    { file_ = file; }
+    
+    //! file
+    const QString& file( void ) const
+    { return file_; }
+    
     //! flag
     void setFlag( const Flag& flag )
     { flag_ = flag; }
@@ -101,6 +122,9 @@ class FileCheck: public QObject, public BASE::Key, public Counter
       
     private:
     
+    //! file
+    QString file_;
+    
     //! flag
     Flag flag_;
     
@@ -109,10 +133,18 @@ class FileCheck: public QObject, public BASE::Key, public Counter
     
   };
   
+  //! map data to file
+  typedef std::set<Data> DataSet;  
+  
   public slots:
   
   //! print list of monitored files
   void printMonitoredFiles( void );
+  
+  protected:
+  
+  //! timer event, to handle multiple file modification at once
+  virtual void timerEvent( QTimerEvent* event );
   
   private slots:
   
@@ -133,6 +165,12 @@ class FileCheck: public QObject, public BASE::Key, public Counter
   //! file set
   FileSet files_;
   
+  //! map files and modification data
+  DataSet data_;
+
+  //! resize timer
+  QBasicTimer timer_;
+
 };
 
 #endif

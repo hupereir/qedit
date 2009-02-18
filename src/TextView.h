@@ -115,6 +115,9 @@ class TextView: public QWidget, public Counter, public BASE::Key
   //! rehighlight all displays
   void rehighlight( void );
   
+  //! check modified displays
+  void checkModifiedDisplays( void );
+  
   //! diff files
   void diff( void );
   

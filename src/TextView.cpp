@@ -447,6 +447,61 @@ void TextView::rehighlight( void )
   return;
 }
 
+//____________________________________________
+void TextView::checkModifiedDisplays( void )
+{
+  
+  Debug::Throw( "TextView::checkModifiedDisplays.\n" );
+  
+  // keep track of displays to be deleted, if any
+  BASE::KeySet<TextDisplay> dead_displays;
+
+  // retrieve displays
+  BASE::KeySet<TextDisplay> displays( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  {
+
+    // this trick allow to run only once per set of displays associated to the same file
+    if( find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
+    
+    // keep local reference of current display
+    TextDisplay &display( **iter );
+    
+    // check file
+    // here one should rather start a thread to check for modified files/removed files
+    // and proces the output in a custom event.
+    // the thread should store full fileNames, 
+    // and when checked, post an event that contains the files, and the status
+    if( display.checkFileRemoved() == FileRemovedDialog::CLOSE ) 
+    { 
+        
+      // register displays as dead
+      BASE::KeySet<TextDisplay> associated_displays( &display );
+      for( BASE::KeySet<TextDisplay>::iterator display_iter = associated_displays.begin(); display_iter != associated_displays.end(); display_iter++ )
+      { dead_displays.insert( *display_iter ); }
+      dead_displays.insert( &display );
+            
+    } else {
+ 
+      (*iter)->checkFileReadOnly();
+      (*iter)->checkFileModified();
+
+    }
+    
+  }
+  
+  // delete dead_displays
+  if( !dead_displays.empty() )
+  {
+
+    Debug::Throw() << "TextView::checkModifiedDisplays - dead displays: " << dead_displays.size() << endl;
+    for( BASE::KeySet<TextDisplay>::iterator iter = dead_displays.begin(); iter != dead_displays.end(); iter++ )
+    { closeDisplay( **iter ); }
+
+  }
+
+}
+
 //_______________________________________________________
 void TextView::diff( void )
 {
@@ -504,63 +559,15 @@ void TextView::diff( void )
 }
 
 //____________________________________________
-void TextView::enterEvent( QEvent* e )
+void TextView::enterEvent( QEvent* event )
 {
 
   Debug::Throw( "TextView::enterEvent.\n" );
-  QWidget::enterEvent( e );
-
-  // keep track of displays to be deleted, if any
-  BASE::KeySet<TextDisplay> dead_displays;
-
-  // retrieve displays
-  BASE::KeySet<TextDisplay> displays( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-
-    // this trick allow to run only once per set of displays associated to the same file
-    if( find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
-    
-    // keep local reference of current display
-    TextDisplay &display( **iter );
-    
-    // check file
-    // here one should rather start a thread to check for modified files/removed files
-    // and proces the output in a custom event.
-    // the thread should store full fileNames, 
-    // and when checked, post an event that contains the files, and the status
-    if( display.checkFileRemoved() == FileRemovedDialog::CLOSE ) 
-    { 
-        
-      // register displays as dead
-      BASE::KeySet<TextDisplay> associated_displays( &display );
-      for( BASE::KeySet<TextDisplay>::iterator display_iter = associated_displays.begin(); display_iter != associated_displays.end(); display_iter++ )
-      { dead_displays.insert( *display_iter ); }
-      dead_displays.insert( &display );
-            
-    } else {
- 
-      (*iter)->checkFileReadOnly();
-      (*iter)->checkFileModified();
-
-    }
-    
-  }
+  QWidget::enterEvent( event );
+  checkModifiedDisplays();
   
-  // delete dead_displays
-  if( !dead_displays.empty() )
-  {
+}  
 
-    Debug::Throw() << "TextView::enterEvent - dead displays: " << dead_displays.size() << endl;
-    for( BASE::KeySet<TextDisplay>::iterator iter = dead_displays.begin(); iter != dead_displays.end(); iter++ )
-    { closeDisplay( **iter ); }
-
-  }
-
-  // update window title
-  Debug::Throw( "TextView::enterEvent - done.\n" );
-
-}
 
 //____________________________________________
 void TextView::_checkDisplays( void )

@@ -36,6 +36,7 @@
 #include "File.h"
 #include "FileCheck.h"
 #include "TextDisplay.h"
+#include "TextView.h"
 
 using namespace std;
 
@@ -108,41 +109,76 @@ void FileCheck::_fileChanged( const QString& file )
   Debug::Throw() << "FileCheck::_fileChanged: " << file << endl;  
   
   // filecheck data
-  Data data;
+  Data data( file );
+  File local( file );
   
-  // find associated display with matching file
-  BASE::KeySet<TextDisplay> displays( this );
-  BASE::KeySet<TextDisplay>::iterator iter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) ) );
-  if( iter != displays.end() )
+  if( !local.exists() ) 
   {
     
-    File local( file );
-    if( !local.exists() ) {
-
-      Debug::Throw(0) << "FileCheck::_fileChanged - removed" << endl;
-      data.setFlag( Data::REMOVED );
-
-    } else {
+    Debug::Throw(0) << "FileCheck::_fileChanged - removed" << endl;
+    data.setFlag( Data::REMOVED );
     
-      data.setFlag( Data::MODIFIED );
-      data.setTimeStamp( local.lastModified() );
-      
-    }      
+  } else {
+    
+    data.setFlag( Data::MODIFIED );
+    data.setTimeStamp( local.lastModified() );
+    
+  }      
+
+  data_.insert( data ); 
+  timer_.start( 200, this );
   
-    // assign to this display and others
-    BASE::KeySet<TextDisplay> associates( *iter );
-    associates.insert( *iter );
-    for( BASE::KeySet<TextDisplay>::iterator iter = associates.begin(); iter != associates.end(); iter++ )
-    { 
-      if( data.flag() == Data::REMOVED || ((*iter)->lastSaved().isValid() && (*iter)->lastSaved() < data.timeStamp()) )
-      { (*iter)->setFileCheckData( data ); }
+}
+
+//______________________________________________________
+void FileCheck::timerEvent( QTimerEvent* event )
+{
+  if( event->timerId() == timer_.timerId() )
+  {
+        
+    // stop timer
+    timer_.stop();
+    if( data_.empty() ) return;
+    
+    BASE::KeySet<TextDisplay> displays( this );
+    for( DataSet::const_iterator iter = data_.begin(); iter != data_.end(); iter++ )
+    {
+      
+      BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( iter->file() ) ) );
+      if( display_iter != displays.end() )
+      {
+        
+        // assign to this display and others
+        BASE::KeySet<TextDisplay> associates( *display_iter );
+        associates.insert( *display_iter );
+        for( BASE::KeySet<TextDisplay>::iterator display_iter = associates.begin(); display_iter != associates.end(); display_iter++ )
+        { 
+          
+          // check whether data are still relevant for this display
+          if( !( iter->flag() == Data::REMOVED || ((*display_iter)->lastSaved().isValid() && (*display_iter)->lastSaved() < iter->timeStamp()) ) ) continue;
+          
+          (*display_iter)->setFileCheckData( *iter ); 
+          if( !(*display_iter)->isActive() ) continue;
+
+          // retrieve associated TextView
+          BASE::KeySet<TextView> views( *display_iter );
+          if( !views.empty() ) (*views.begin())->checkModifiedDisplays();
+      
+        }
+      
+      } else { 
+        
+        // permanently remove file from list
+        removeFile( iter->file(), true ); 
+        
+      }
+      
     }
     
-  } else { 
+    // clear 
+    data_.clear();
     
-    // remove file from list otherwise
-    removeFile( file, true );
-    
-  }
-      
-}
+  } else return QObject::timerEvent( event );
+
+  
+}  
