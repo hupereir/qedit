@@ -66,7 +66,7 @@ class FileCheck: public QObject, public BASE::Key, public Counter
   void addFile( const QString& );
 
   //! remove file
-  void removeFile( const QString&, bool forced = false );
+  void removeFile( const QString& );
  
   //! used to monitor file changes
   class Data

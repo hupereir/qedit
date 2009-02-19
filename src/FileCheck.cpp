@@ -74,16 +74,10 @@ void FileCheck::addFile( const QString& file )
 }
 
 //______________________________________________________
-void FileCheck::removeFile( const QString& file, bool forced )
+void FileCheck::removeFile( const QString& file )
 {
   
   Debug::Throw() << "FileCheck::removeFile: " << file << endl;
-  if( !forced )
-  {
-    FileSet::iterator iter( files_.find( file ) );
-    assert( iter != files_.end() );
-  }
-  
   files_.erase( file );
   _fileSystemWatcher().removePath( file );
   
@@ -120,6 +114,7 @@ void FileCheck::_fileChanged( const QString& file )
     
     Debug::Throw(0) << "FileCheck::_fileChanged - removed" << endl;
     data.setFlag( Data::REMOVED );
+    removeFile( file );
     
   } else {
     
@@ -172,7 +167,7 @@ void FileCheck::timerEvent( QTimerEvent* event )
       } else { 
         
         // permanently remove file from list
-        removeFile( iter->file(), true ); 
+        removeFile( iter->file() ); 
         
       }
       
