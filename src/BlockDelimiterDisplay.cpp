@@ -994,6 +994,7 @@ void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect
     local.adjust( 1.5, 1.5, -1.5, -1.5 );
     if( collapsed )
     {
+      
       double offset( local.height()/6 );
       const QPointF points[3] = {
          QPointF(local.topLeft()) + QPointF( offset, 0 ),
