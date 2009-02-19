@@ -626,6 +626,11 @@ void TextDisplay::save( void )
   _setLastSaved( file().lastModified() );
   _setIgnoreWarnings( false );
 
+  // re-add to file checker
+  if( !file().isEmpty() )
+  { Singleton::get().application<Application>()->fileCheck().addFile( file() ); }
+
+  
   // retrieve associated displays, update saved time
   BASE::KeySet<TextDisplay> displays( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )

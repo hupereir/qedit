@@ -55,7 +55,10 @@ FileCheck::~FileCheck( void )
 
 //______________________________________________________
 void FileCheck::registerDisplay( TextDisplay* display )
-{ BASE::Key::associate( this, display ); }
+{ 
+  Debug::Throw( "FileCheck::registerDisplay.\n" );
+  if( !isAssociated( display ) ) { BASE::Key::associate( this, display ); }
+}
 
 //______________________________________________________
 void FileCheck::addFile( const QString& file )
