@@ -2327,7 +2327,6 @@ void TextDisplay::_highlightParenthesis( void )
       QString text( block.text() );
 
       // parse text
-      // while( (position = text.indexOf( iter->regexp(), position ) ) >= 0 )
       while( (position = iter->regexp().indexIn( text, position ) ) >= 0 )
       {
 
