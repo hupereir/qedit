@@ -156,7 +156,7 @@ void FileCheck::timerEvent( QTimerEvent* event )
           if( !( iter->flag() == Data::REMOVED || ((*display_iter)->lastSaved().isValid() && (*display_iter)->lastSaved() < iter->timeStamp()) ) ) continue;
           
           (*display_iter)->setFileCheckData( *iter ); 
-          if( !(*display_iter)->isActive() ) continue;
+          if( !( (*display_iter)->isActive() && (*display_iter)->QTextEdit::hasFocus() ) ) continue;
 
           // retrieve associated TextView
           BASE::KeySet<TextView> views( *display_iter );
