@@ -102,7 +102,7 @@ static const QString HelpText[] = {
   "<p>When a logical block is collapsed, only its first line is displayed in the editor window, and an horizontal line is drawn to indicate that some text is hidden at this location. The first line is still editable. However, when one deletes this line, the full logical block gets erased.</p>\n"
   "\n"
   "\n"
-  "<p>In the current implementation, expanding or collapsing one or several logical blocks has the unfortunate side effect that the document undo/redo history gets erased.</p> \n"
+  "<p>In the current implementation, the action of expanding or collapsing one or several logical blocks is included in the undo/redo history. This allows notably to easily recover from inconsiderate removal of collapsed blocks. As a side effect, such actions mark the file as <i>modified</i> even if its contents is actually unchanged. It is unfortunate, but harmless.</p> \n"
   "",
 
   //_________________________________________________________
