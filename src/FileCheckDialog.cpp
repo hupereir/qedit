@@ -41,10 +41,10 @@
 using namespace std;
 
 //________________________________________________________
-FileCheckDialog::FileCheckDialog( QWidget* parent, const QStringList& files ):
+FileCheckDialog::FileCheckDialog( QWidget* parent ):
   CustomDialog( parent, CustomDialog::OK_BUTTON )
 {
-  
+  Debug::Throw( "FileCheckDialog::FileCheckDialog.\n" );
   setWindowTitle( "monitored files" );
   setOptionName( "FILE_CHECK_DIALOG" );
   
@@ -52,30 +52,35 @@ FileCheckDialog::FileCheckDialog( QWidget* parent, const QStringList& files ):
   mainLayout().addWidget( list_ = new TreeView( this ) );
   _list().setModel( &model_ );
   _list().setSelectionMode( QAbstractItemView::NoSelection );
-  
-  // retrieve file records
-  FileRecordModel::List records;
-  for( QStringList::const_iterator iter = files.begin(); iter != files.end(); iter++ )
-  { records.push_back( Singleton::get().application<Application>()->recentFiles().get( *iter ) ); }
-  
-  model_.set( records );
-    
-  // mask
-  unsigned int mask( 
-    (1<<FileRecordModel::ICON)|
-    (1<<FileRecordModel::FILE)|
-    (1<<FileRecordModel::PATH ));
-  int class_column( model_.findColumn( "class_name" ) );
-  if( class_column >= 0 ) mask |= (1<<class_column);
-  _list().setMask( mask );
-  
-  // sorting
-  _list().header()->setSortIndicator( FileRecordModel::FILE, Qt::AscendingOrder );
+       
+//   // mask
+//   unsigned int mask( 
+//     (1<<FileRecordModel::ICON)|
+//     (1<<FileRecordModel::FILE)|
+//     (1<<FileRecordModel::PATH ));
+//   int class_column( model_.findColumn( "class_name" ) );
+//   if( class_column >= 0 ) mask |= (1<<class_column);
+//   _list().setMask( mask );
+//   
+//   // sorting
+//   _list().header()->setSortIndicator( FileRecordModel::FILE, Qt::AscendingOrder );
   
   // add options
   _list().setOptionName( "FILE_CHECK_LIST" );
   
-  // resize columns
+}
+
+//________________________________________________________
+void FileCheckDialog::setFiles( const QStringList& files )
+{
+  
+  Debug::Throw( "FileCheckDialog::setFiles.\n" );
+  FileRecordModel::List records;
+  for( QStringList::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+  { records.push_back( Singleton::get().application<Application>()->recentFiles().get( *iter ) ); }
+  model_.set( records );
+
+  _list().updateMask();
   _list().resizeColumns();  
-    
+
 }

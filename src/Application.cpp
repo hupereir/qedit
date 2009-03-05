@@ -309,6 +309,8 @@ void Application::_showMonitoredFiles( void )
 { 
   
   Debug::Throw( "Application::_showMonitoredFiles.\n" );
-  FileCheckDialog( qApp->activeWindow(), fileCheck().fileSystemWatcher().files() ).exec();
+  FileCheckDialog dialog( qApp->activeWindow() ); 
+  dialog.setFiles( fileCheck().fileSystemWatcher().files() );
+  dialog.exec();
   
 }
