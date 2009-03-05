@@ -671,19 +671,20 @@ void TextDisplay::saveAs( void )
     return;
   }
 
-  // check if file exists
-  if( file.exists() )
-  {
-    
-    if( !file.isWritable() )
-    {
-      QString buffer;
-      QTextStream( &buffer ) << "File \"" << file << "\" is read-only. <Save> canceled.";
-      InformationDialog( this, buffer ).exec();
-      return;
-    } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).exec() ) return;
-    
-  }
+//   // check if file exists
+//   // this is unnecessary: properly handled in the FileDialog openning.
+//   if( file.exists() )
+//   {
+//     
+//     if( !file.isWritable() )
+//     {
+//       QString buffer;
+//       QTextStream( &buffer ) << "File \"" << file << "\" is read-only. <Save> canceled.";
+//       InformationDialog( this, buffer ).exec();
+//       return;
+//     } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).exec() ) return;
+//     
+//   }
 
   // remove new document version from name server, and FileCheck, if needed
   if( isNewDocument() ) { NewDocumentNameServer().remove( TextDisplay::file() ); }
