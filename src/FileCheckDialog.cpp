@@ -29,23 +29,12 @@
   \date $Date$
 */
 
-#include <QHeaderView>
-#include <QLabel>
-#include <QLayout>
-#include <QPushButton>
-
 #include "Application.h"
 #include "Debug.h"
-#include "MainWindow.h"
-#include "RecentFilesMenu.h"
 #include "FileCheckDialog.h"
-#include "Icons.h"
-#include "IconEngine.h"
+#include "FileList.h"
 #include "Singleton.h"
-#include "TextDisplay.h"
 #include "TreeView.h"
-#include "WindowServer.h"
-#include "XmlOptions.h"
 
 using namespace std;
 
@@ -61,6 +50,7 @@ FileCheckDialog::FileCheckDialog( QWidget* parent, const QStringList& files ):
   list_ = new TreeView( this );
   _list().setModel( &model_ );
   _list().setSelectionMode( QAbstractItemView::NoSelection );
+  _list().setOptionName( "FILE_CHECK_LIST" );
   
   // retrieve file records
   FileRecordModel::List records;
@@ -71,6 +61,7 @@ FileCheckDialog::FileCheckDialog( QWidget* parent, const QStringList& files ):
     
   // mask
   unsigned int mask( 
+    (1<<FileRecordModel::ICON)|
     (1<<FileRecordModel::FILE)|
     (1<<FileRecordModel::PATH ));
   int class_column( model_.findColumn( "class_name" ) );

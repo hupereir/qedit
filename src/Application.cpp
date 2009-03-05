@@ -304,7 +304,6 @@ void Application::_processRequest( const CommandLineArguments& arguments )
   
 }
 
-
 //_____________________________________________
 void Application::_showMonitoredFiles( void )
 { 
