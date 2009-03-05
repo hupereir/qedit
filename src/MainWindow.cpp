@@ -48,6 +48,7 @@
 #include "Diff.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
+#include "FileCheckDialog.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
 #include "FileSelectionDialog.h"

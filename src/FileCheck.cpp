@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <assert.h>
+#include <QApplication>
 
 #include "Debug.h"
 #include "File.h"
@@ -83,20 +84,6 @@ void FileCheck::removeFile( const QString& file )
   
   return;
   
-}
-
-//______________________________________________________
-void FileCheck::printMonitoredFiles( void )
-{
-  
-  Debug::Throw( 0, "FileCheck::printMonitoredFiles.\n" );
-  QStringList files( _fileSystemWatcher().files());  
-  
-  for( QStringList::const_iterator iter = files.begin(); iter != files.end(); iter++ )
-  { Debug::Throw(0) << "FileCheck::printMonitoredFiles - " << *iter << endl; }
-  
-  Debug::Throw(0) << endl;
-
 }
     
 //______________________________________________________

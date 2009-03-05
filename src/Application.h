@@ -121,6 +121,10 @@ class Application: public BaseApplication, public Counter
   QAction& spellCheckConfigurationAction( void ) const
   { return *spellcheck_configuration_action_; }
   
+  //! monitored files 
+  QAction& monitoredFilesAction( void ) const
+  { return *monitored_files_action_; }
+  
   //@}
   
   signals:
@@ -161,6 +165,9 @@ class Application: public BaseApplication, public Counter
   
   //! process request from application manager
   void _processRequest( const CommandLineArguments& );
+    
+  //! monitored files
+  void _showMonitoredFiles( void );
 
   private:
   
@@ -194,6 +201,9 @@ class Application: public BaseApplication, public Counter
   
   //! configure
   QAction* spellcheck_configuration_action_;
+  
+  //! show monitored files
+  QAction* monitored_files_action_;
   
   //@}
   

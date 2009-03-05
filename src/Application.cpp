@@ -38,6 +38,7 @@
 #include "DocumentClassManager.h"
 #include "DocumentClassManagerDialog.h"
 #include "FileCheck.h"
+#include "FileCheckDialog.h"
 #include "IconEngine.h"
 #include "Icons.h"
 #include "XmlOptions.h"
@@ -150,6 +151,10 @@ bool Application::realizeWidget( void )
   
   spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "&Spell-check &Configuration", this );
   connect( spellcheck_configuration_action_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
+  
+  monitored_files_action_ = new QAction( "Show Monitored Files", this );
+  monitored_files_action_->setToolTip( "Show monitored files" );
+  connect( monitored_files_action_, SIGNAL( triggered() ), SLOT( _showMonitoredFiles() ) );
   
   // file list
   recent_files_ = new XmlFileList();
@@ -296,5 +301,15 @@ void Application::_processRequest( const CommandLineArguments& arguments )
   _setArguments( arguments );
   startup_timer_.start( 100 );
   return;
+  
+}
+
+
+//_____________________________________________
+void Application::_showMonitoredFiles( void )
+{ 
+  
+  Debug::Throw( "Application::_showMonitoredFiles.\n" );
+  FileCheckDialog( qApp->activeWindow(), fileCheck().fileSystemWatcher().files() ).exec();
   
 }

@@ -1,6 +1,6 @@
 // $Id$
-#ifndef _FileSelectionDialog_h_
-#define _FileSelectionDialog_h_
+#ifndef _FileCheckDialog_h_
+#define _FileCheckDialog_h_
  
 /******************************************************************************
 *                         
@@ -24,43 +24,28 @@
 *******************************************************************************/
  
 /*!
-  \file FileSelectionDialog.h
+  \file FileCheckDialog.h
   \brief QDialog used to select opened files
   \author Hugo Pereira
   \version $Revision$
   \date $Date$
 */
 
-#include <list>
+#include <QStringList>
 
 #include "CustomDialog.h"
 #include "FileRecordModel.h"
-#include "TextSelection.h"
 
 class TreeView;
 
 //! QDialog used to select opened files
-class FileSelectionDialog: public CustomDialog
+class FileCheckDialog: public CustomDialog
 {
   
-  //! Qt macro
-  Q_OBJECT
-      
   public:
           
   //! constructor
-  FileSelectionDialog( QWidget* parent, const TextSelection& );
-  
-  //! selected files
-  typedef std::list<File> FileList;
-
-  //! selected files
-  FileList selectedFiles( void ) const;
-  
-  private slots:
-  
-  //! update buttons
-  void _updateButtons( void );
+  FileCheckDialog( QWidget* parent, const QStringList& );
     
   private:
 
@@ -73,19 +58,7 @@ class FileSelectionDialog: public CustomDialog
   
   //! list of files
   TreeView* list_;
-  
-  //! text selection
-  TextSelection selection_;
-
-  //!@name buttons
-  //@{
-  
-  QPushButton* select_all_button_;
-  QPushButton* clear_selection_button_;
-  QPushButton* replace_button_;
-  
-  //@}
-  
+    
 };
 
 #endif
