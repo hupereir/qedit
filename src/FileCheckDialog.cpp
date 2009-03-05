@@ -29,6 +29,8 @@
   \date $Date$
 */
 
+#include <QHeaderView>
+
 #include "Application.h"
 #include "Debug.h"
 #include "FileCheckDialog.h"
@@ -47,10 +49,9 @@ FileCheckDialog::FileCheckDialog( QWidget* parent, const QStringList& files ):
   setOptionName( "FILE_CHECK_DIALOG" );
   
   // custom list display
-  list_ = new TreeView( this );
+  mainLayout().addWidget( list_ = new TreeView( this ) );
   _list().setModel( &model_ );
   _list().setSelectionMode( QAbstractItemView::NoSelection );
-  _list().setOptionName( "FILE_CHECK_LIST" );
   
   // retrieve file records
   FileRecordModel::List records;
@@ -67,9 +68,14 @@ FileCheckDialog::FileCheckDialog( QWidget* parent, const QStringList& files ):
   int class_column( model_.findColumn( "class_name" ) );
   if( class_column >= 0 ) mask |= (1<<class_column);
   _list().setMask( mask );
+  
+  // sorting
+  _list().header()->setSortIndicator( FileRecordModel::FILE, Qt::AscendingOrder );
+  
+  // add options
+  _list().setOptionName( "FILE_CHECK_LIST" );
+  
+  // resize columns
   _list().resizeColumns();  
-  mainLayout().addWidget( list_ );
-  
-  adjustSize();
-  
+    
 }
