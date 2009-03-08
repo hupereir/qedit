@@ -74,9 +74,9 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
   if( role == Qt::DecorationRole && index.column() == ICON ) 
   {
     
-    return _icon( record.hasFlag( FileRecordProperties::MODIFIED ) ? 
-      FileRecordProperties::MODIFIED:
-      FileRecordProperties::NONE );
+    if( record.hasFlag( FileRecordProperties::MODIFIED ) ) return _icon( FileRecordProperties::MODIFIED );
+    else if( record.hasFlag( FileRecordProperties::ALTERED ) ) return _icon( FileRecordProperties::ALTERED );
+    else return _icon( FileRecordProperties::NONE );
 
   } else if( role == Qt::ForegroundRole ) {
     
@@ -118,6 +118,13 @@ QIcon SessionFilesModel::_icon( unsigned int type )
     icon = CustomPixmap()
       .empty( size )
       .merge( CustomPixmap().find( ICONS::SAVE )
+      .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
+  
+  } else if( type == FileRecordProperties::ALTERED ) {
+    
+    icon = CustomPixmap()
+      .empty( size )
+      .merge( CustomPixmap().find( ICONS::WARNING )
       .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
     
   } else if( type == FileRecordProperties::NONE ) {

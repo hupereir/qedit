@@ -115,9 +115,6 @@ class TextView: public QWidget, public Counter, public BASE::Key
   //! rehighlight all displays
   void rehighlight( void );
   
-  //! check modified displays
-  void checkModifiedDisplays( void );
-  
   //! diff files
   void diff( void );
   
@@ -142,11 +139,10 @@ class TextView: public QWidget, public Counter, public BASE::Key
   //! current display redo is available
   void redoAvailable( bool );
 
-  protected:
+  public slots:
   
-  //! enter event handler
-  /*! it is used to check for removed/externally modified files */
-  virtual void enterEvent( QEvent* );
+  //! check modified displays
+  void checkDisplayModifications( TextEditor* );
   
   private slots:
   

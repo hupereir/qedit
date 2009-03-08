@@ -18,7 +18,6 @@
 * software; if not, write to the Free Software Foundation, Inc., 59 Temple     
 * Place, Suite 330, Boston, MA 02111-1307 USA                           
 *                         
-*                         
 *******************************************************************************/
 
 /*!
@@ -140,14 +139,16 @@ void FileCheck::timerEvent( QTimerEvent* event )
         { 
           
           // check whether data are still relevant for this display
-          if( !( iter->flag() == Data::REMOVED || ((*display_iter)->lastSaved().isValid() && (*display_iter)->lastSaved() < iter->timeStamp()) ) ) continue;
+          if( !( iter->flag() == Data::REMOVED || ((*display_iter)->lastSaved().isValid() && (*display_iter)->lastSaved() < iter->timeStamp()) ) ) 
+          { continue; }
           
-          (*display_iter)->setFileCheckData( *iter ); 
-          if( !( (*display_iter)->isActive() && (*display_iter)->QTextEdit::hasFocus() ) ) continue;
+          (*display_iter)->setFileCheckData( *iter );
+          if( !( (*display_iter)->isActive() && (*display_iter)->QTextEdit::hasFocus() ) ) 
+          { continue; }
 
           // retrieve associated TextView
           BASE::KeySet<TextView> views( *display_iter );
-          if( !views.empty() ) (*views.begin())->checkModifiedDisplays();
+          if( !views.empty() ) (*views.begin())->checkDisplayModifications( *display_iter );
       
         }
       

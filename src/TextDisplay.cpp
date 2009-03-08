@@ -468,12 +468,12 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
 {
   Debug::Throw( "TextDisplay::checkFileRemoved.\n" );
 
-  if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::IGNORE;
-
   BASE::KeySet<TextDisplay> displays( this );
   displays.insert( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   { (*iter)->setFileCheckData( FileCheck::Data() ); }
+
+  if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::IGNORE;
 
   // disable check
   FileRemovedDialog dialog( this, file() );
@@ -518,17 +518,18 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
     return FileModifiedDialog::IGNORE;
   }
   
-  if( !_fileModified() ) 
-  {
-    Debug::Throw( "TextDisplay::checkFileModified - file not changed.\n" );
-    return FileModifiedDialog::IGNORE;
-  }
-  
   // clear file check data
   BASE::KeySet<TextDisplay> displays( this );
   displays.insert( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   { (*iter)->setFileCheckData( FileCheck::Data() ); }
+  
+  // check if file is really modified
+  if( !_fileModified() ) 
+  {
+    Debug::Throw( "TextDisplay::checkFileModified - file not changed.\n" );
+    return FileModifiedDialog::IGNORE;
+  }
 
   // create dialog
   FileModifiedDialog dialog( this, file() );
@@ -564,6 +565,22 @@ void TextDisplay::checkFileReadOnly( void )
 }
 
 //___________________________________________________________________________
+void TextDisplay::setFileCheckData( const FileCheck::Data& data )
+{ 
+  Debug::Throw( "TextDisplay::setFileCheckData.\n" );
+  
+  // check if data flag is different from stored
+  bool flags_changed( data.flag() != file_check_data_.flag() );
+  
+  // update data
+  file_check_data_ = data; 
+  
+  // emit file modification signal, to update session file frames
+  if( flags_changed ) emit needUpdate( MODIFIED );
+  
+}
+
+//___________________________________________________________________________
 AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enable_all )
 {
   Debug::Throw( "TextDisplay::askForSave.\n" );
@@ -581,6 +598,7 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enable_all )
   return AskForSaveDialog::ReturnCode(state);
 
 }
+
 
 //___________________________________________________________________________
 void TextDisplay::save( void )
@@ -1592,10 +1610,13 @@ bool TextDisplay::_contentsChanged( void ) const
 bool TextDisplay::_fileRemoved( void ) const
 {
   Debug::Throw( "TextDisplay::_fileRemoved.\n" );
-  return 
-    !( file().isEmpty() || isNewDocument() ) && 
-    lastSaved().isValid() && 
-    _fileCheckData().flag() == FileCheck::Data::REMOVED;  
+  
+  // check new document
+  if( file().isEmpty() || isNewDocument() ) return false;
+  if( !lastSaved().isValid() ) return false;
+
+  // check fileCheck data and confirm that file has dissapeared.
+  return fileCheckData().flag() == FileCheck::Data::REMOVED && !file().exists();  
   
 }
 
@@ -1607,10 +1628,10 @@ bool TextDisplay::_fileModified( void )
 
   // check file size
   if( !file().size() ) return false;
-  if( _fileCheckData().flag() != FileCheck::Data::MODIFIED ) return false;
+  if( fileCheckData().flag() != FileCheck::Data::MODIFIED ) return false;
   if( !lastSaved().isValid() ) return false;
   
-  TimeStamp file_modified( _fileCheckData().timeStamp() );
+  TimeStamp file_modified( fileCheckData().timeStamp() );
   if( !file_modified.isValid() ) return false;
   if( !(file_modified > last_saved_ ) ) return false;
   if( !_contentsChanged() ) return false;

@@ -21,7 +21,7 @@
 * Place, Suite 330, Boston, MA  02111-1307 USA
 *
 *
-****************************************************************************/
+****************************************************************************
 
 /*!
    \file MainWindow.h
@@ -528,10 +528,14 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   
   //! display cursor position in state window
   void _updateCursorPosition( void );
+  
+  //! replace transition widget
+  /*! this is needed when transition widget gets deleted via its parent Display, during animation */
+  void _replaceTransitionWidget( void );
 
   //! animations
   void _animationFinished( void );
-  
+    
   private:
 
   //! install actions

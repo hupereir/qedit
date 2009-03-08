@@ -99,13 +99,13 @@ MainWindow& WindowServer::newMainWindow( void )
   BASE::Key::associate( this, window );
   _setActiveWindow( *window );
   
+  // these connections are needed to make sure all windows recieve modifications of session files
   connect( window, SIGNAL( destroyed() ), SIGNAL( sessionFilesChanged() ) );
   connect( window, SIGNAL( modificationChanged() ), SIGNAL( sessionFilesChanged() ) );
   connect( window, SIGNAL( modificationChanged() ), SLOT( _updateActions() ) );
-  connect( window, SIGNAL( activated( MainWindow* ) ), SLOT( _activeWindowChanged( MainWindow* ) ) );
-  
   connect( this, SIGNAL( sessionFilesChanged() ), &window->navigationFrame().sessionFilesFrame(), SLOT( update() ) );
 
+  connect( window, SIGNAL( activated( MainWindow* ) ), SLOT( _activeWindowChanged( MainWindow* ) ) );
   connect( &window->newFileAction(), SIGNAL( triggered() ), SLOT( _newFile() ) );
 
   // open actions
@@ -143,7 +143,7 @@ FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) co
   {
 
     // check if current window match the one passed in argument
-    bool active_window( *window_iter == window );
+    bool is_active_window( *window_iter == window );
     
     // retrieve associated TextDisplays
     BASE::KeySet<TextDisplay> displays( (*window_iter)->associatedDisplays() );
@@ -164,7 +164,9 @@ FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) co
       // set flags
       unsigned int flags( FileRecordProperties::NONE );
       if( (*iter)->document()->isModified() ) flags |= FileRecordProperties::MODIFIED;
-      if( active_window )
+      if( (*iter)->fileCheckData().flag() != FileCheck::Data::NONE ) flags |= FileRecordProperties::ALTERED;
+      
+      if( is_active_window )
       {
         flags |= FileRecordProperties::ACTIVE;
         if( *iter == &(*window_iter)->activeDisplay() ) flags |= FileRecordProperties::SELECTED;

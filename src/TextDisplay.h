@@ -210,8 +210,11 @@ class TextDisplay: public AnimatedTextEditor
   { return last_saved_; }
   
   //! file check data
-  void setFileCheckData( const FileCheck::Data& data )
-  { file_check_data_ = data; }
+  void setFileCheckData( const FileCheck::Data& data );
+  
+  //! file check data
+  const FileCheck::Data& fileCheckData( void ) const
+  { return file_check_data_; }
   
   //! ask for save if modified
   AskForSaveDialog::ReturnCode askForSave( const bool& enable_all = false );
@@ -483,10 +486,6 @@ class TextDisplay: public AnimatedTextEditor
   //! is new document
   void _setIsNewDocument( bool value )
   { is_new_document_ = value; }
-  
-  //! file check data
-  const FileCheck::Data& _fileCheckData( void ) const
-  { return file_check_data_; }
   
   //! clear macros
   void _clearMacros( void )

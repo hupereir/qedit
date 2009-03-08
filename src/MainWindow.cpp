@@ -146,6 +146,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   transition_widget_ = new TransitionWidget( this );
   _transitionWidget().setFlag( TransitionWidget::FROM_PARENT, false );
   _transitionWidget().hide();
+  connect( &_transitionWidget(), SIGNAL( destroyed() ), SLOT( _replaceTransitionWidget() ) );
   connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
   
   // create first text view
@@ -228,7 +229,10 @@ MainWindow::MainWindow(  QWidget* parent ):
 
 //___________________________________________________________
 MainWindow::~MainWindow( void )
-{ Debug::Throw( "MainWindow::~MainWindow.\n" ); }
+{ 
+  Debug::Throw( "MainWindow::~MainWindow.\n" ); 
+  disconnect( &_transitionWidget(), SIGNAL( destroyed() ) );
+}
 
 //___________________________________________________________
 TextView& MainWindow::newTextView( FileRecord record )
@@ -858,6 +862,20 @@ void MainWindow::_updateCursorPosition( void )
   return;
 }
 
+
+//_____________________________________________
+void MainWindow::_replaceTransitionWidget( void )
+{ 
+  
+  Debug::Throw( "MainWindow::_replaceTransitionWidget.\n" );
+  
+  // transition widget
+  transition_widget_ = new TransitionWidget( this );
+  _transitionWidget().setFlag( TransitionWidget::FROM_PARENT, false );
+  _transitionWidget().hide();
+
+}
+
 //_____________________________________________
 void MainWindow::_animationFinished( void )
 { 
@@ -868,6 +886,8 @@ void MainWindow::_animationFinished( void )
   // update displays, actions, etc.
   if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
   { _update( TextDisplay::ACTIVE_VIEW_CHANGED ); }
+
+  Debug::Throw( "MainWindow::_animationFinished - done.\n" );
 
 }
 

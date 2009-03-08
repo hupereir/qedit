@@ -448,53 +448,38 @@ void TextView::rehighlight( void )
 }
 
 //____________________________________________
-void TextView::checkModifiedDisplays( void )
+void TextView::checkDisplayModifications( TextEditor* editor )
 {
   
-  Debug::Throw( "TextView::checkModifiedDisplays.\n" );
+  Debug::Throw( "TextView::checkDisplayModifications.\n" );
+
+  // convert to TextDisplay
+  TextDisplay& display( *static_cast<TextDisplay*>( editor ) );
   
-  // keep track of displays to be deleted, if any
-  BASE::KeySet<TextDisplay> dead_displays;
-
-  // retrieve displays
-  BASE::KeySet<TextDisplay> displays( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-
-    // this trick allow to run only once per set of displays associated to the same file
-    if( find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) != iter ) continue;
-    
-    // keep local reference of current display
-    TextDisplay &display( **iter );
-    
-    // check file
-    // here one should rather start a thread to check for modified files/removed files
-    // and proces the output in a custom event.
-    // the thread should store full fileNames, 
-    // and when checked, post an event that contains the files, and the status
-    if( display.checkFileRemoved() == FileRemovedDialog::CLOSE ) 
-    { 
+  BASE::KeySet<TextDisplay>  dead_displays;
+  
+  // check file
+  if( display.checkFileRemoved() == FileRemovedDialog::CLOSE ) 
+  { 
         
-      // register displays as dead
-      BASE::KeySet<TextDisplay> associated_displays( &display );
-      for( BASE::KeySet<TextDisplay>::iterator display_iter = associated_displays.begin(); display_iter != associated_displays.end(); display_iter++ )
-      { dead_displays.insert( *display_iter ); }
-      dead_displays.insert( &display );
+    // register displays as dead
+    BASE::KeySet<TextDisplay> associated_displays( &display );
+    for( BASE::KeySet<TextDisplay>::iterator display_iter = associated_displays.begin(); display_iter != associated_displays.end(); display_iter++ )
+    { dead_displays.insert( *display_iter ); }
+    dead_displays.insert( &display );
             
-    } else {
- 
-      (*iter)->checkFileReadOnly();
-      (*iter)->checkFileModified();
-
-    }
+  } else {
+    
+    display.checkFileReadOnly();
+    display.checkFileModified();
     
   }
-  
-  // delete dead_displays
+    
+  // delete dead displays
   if( !dead_displays.empty() )
   {
 
-    Debug::Throw() << "TextView::checkModifiedDisplays - dead displays: " << dead_displays.size() << endl;
+    Debug::Throw() << "TextView::checkDisplayModifications - dead displays: " << dead_displays.size() << endl;
     for( BASE::KeySet<TextDisplay>::iterator iter = dead_displays.begin(); iter != dead_displays.end(); iter++ )
     { closeDisplay( **iter ); }
 
@@ -557,17 +542,6 @@ void TextView::diff( void )
   return;
   
 }
-
-//____________________________________________
-void TextView::enterEvent( QEvent* event )
-{
-
-  Debug::Throw( "TextView::enterEvent.\n" );
-  QWidget::enterEvent( event );
-  checkModifiedDisplays();
-  
-}  
-
 
 //____________________________________________
 void TextView::_checkDisplays( void )
@@ -701,6 +675,7 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
   // connections
   connect( display, SIGNAL( needUpdate( unsigned int ) ), SIGNAL( needUpdate( unsigned int ) ) );
   connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( _activeDisplayChanged( TextEditor* ) ) );
+  connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( checkDisplayModifications( TextEditor* ) ) );
   connect( display, SIGNAL( cursorPositionChanged() ), &position_timer_, SLOT( start() ) );
   connect( display, SIGNAL( overwriteModeChanged() ), SIGNAL( overwriteModeChanged() ) );
   
