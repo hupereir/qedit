@@ -468,11 +468,6 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
 {
   Debug::Throw( "TextDisplay::checkFileRemoved.\n" );
 
-  BASE::KeySet<TextDisplay> displays( this );
-  displays.insert( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { (*iter)->setFileCheckData( FileCheck::Data() ); }
-
   if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::IGNORE;
 
   // disable check
@@ -518,19 +513,13 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
     return FileModifiedDialog::IGNORE;
   }
   
-  // clear file check data
-  BASE::KeySet<TextDisplay> displays( this );
-  displays.insert( this );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  { (*iter)->setFileCheckData( FileCheck::Data() ); }
-  
   // check if file is really modified
   if( !_fileModified() ) 
   {
     Debug::Throw( "TextDisplay::checkFileModified - file not changed.\n" );
     return FileModifiedDialog::IGNORE;
   }
-
+    
   // create dialog
   FileModifiedDialog dialog( this, file() );
   int state( dialog.centerOnParent().exec() );
@@ -562,6 +551,22 @@ void TextDisplay::checkFileReadOnly( void )
 {
   Debug::Throw( "TextDisplay::checkFileReadOnly.\n" );
   setReadOnly( file().exists() && !file().isWritable() );
+}
+
+//____________________________________________
+void TextDisplay::clearFileCheckData( void )
+{
+
+  Debug::Throw( "TextDisplay::clearFileCheckData.\n" );
+  
+  if( fileCheckData().flag() == FileCheck::Data::NONE ) return; 
+  
+  // clear file check data
+  BASE::KeySet<TextDisplay> displays( this );
+  displays.insert( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  { (*iter)->setFileCheckData( FileCheck::Data() ); }
+
 }
 
 //___________________________________________________________________________
@@ -1609,14 +1614,26 @@ bool TextDisplay::_contentsChanged( void ) const
 //____________________________________________
 bool TextDisplay::_fileRemoved( void ) const
 {
-  Debug::Throw( "TextDisplay::_fileRemoved.\n" );
+  Debug::Throw( 0, "TextDisplay::_fileRemoved.\n" );
   
   // check new document
   if( file().isEmpty() || isNewDocument() ) return false;
   if( !lastSaved().isValid() ) return false;
 
-  // check fileCheck data and confirm that file has dissapeared.
-  return fileCheckData().flag() == FileCheck::Data::REMOVED && !file().exists();  
+  // check file flag
+  if( fileCheckData().flag() != FileCheck::Data::REMOVED ) 
+  { return false; }
+  
+  // make sure file is still removed
+  if( !file().exists() ) return true;
+  else {
+        
+    // file has been re-created in the meantime.
+    // need to re-ad it to FileChecker
+    Singleton::get().application<Application>()->fileCheck().addFile( file() );
+    return false;
+    
+  }
   
 }
 

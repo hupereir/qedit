@@ -209,6 +209,9 @@ class TextDisplay: public AnimatedTextEditor
   const TimeStamp& lastSaved( void ) const
   { return last_saved_; }
   
+  //! clear file check data
+  void clearFileCheckData( void );
+
   //! file check data
   void setFileCheckData( const FileCheck::Data& data );
   

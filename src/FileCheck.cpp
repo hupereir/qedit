@@ -98,7 +98,6 @@ void FileCheck::_fileChanged( const QString& file )
   if( !local.exists() ) 
   {
     
-    Debug::Throw(0) << "FileCheck::_fileChanged - removed" << endl;
     data.setFlag( Data::REMOVED );
     removeFile( file );
     

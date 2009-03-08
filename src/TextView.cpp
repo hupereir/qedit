@@ -475,6 +475,9 @@ void TextView::checkDisplayModifications( TextEditor* editor )
     
   }
     
+  // clear flags
+  display.clearFileCheckData();
+  
   // delete dead displays
   if( !dead_displays.empty() )
   {
