@@ -1614,7 +1614,7 @@ bool TextDisplay::_contentsChanged( void ) const
 //____________________________________________
 bool TextDisplay::_fileRemoved( void ) const
 {
-  Debug::Throw( 0, "TextDisplay::_fileRemoved.\n" );
+  Debug::Throw( "TextDisplay::_fileRemoved.\n" );
   
   // check new document
   if( file().isEmpty() || isNewDocument() ) return false;
