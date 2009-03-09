@@ -55,7 +55,10 @@ namespace FileRecordProperties
     ACTIVE = 1<<1,
     
     //! tag current file
-    SELECTED = 1<<2
+    SELECTED = 1<<2,
+    
+    //! file has been altered (modified/removed) by external application
+    ALTERED = 1<<3
     
   };
 };
