@@ -11,7 +11,7 @@ win32 {
 }
 
 VERSION = 2.0
-DEFINES += VERSION=\"$$VERSION\"
+VERSION = 2.0.0
 
 INCLUDEPATH = . ../base ../base-qt ../base-help ../base-server ../document-classes ../extra-includes ../filesystem
 DEPENDPATH += . ../base ../base-qt ../base-help ../base-server ../document-classes ../extra-includes ../filesystem

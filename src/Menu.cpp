@@ -29,8 +29,6 @@
  \date $Date$
 */
 
-
-
 #include "Application.h"
 #include "BlockDelimiterDisplay.h"
 #include "Config.h"
@@ -38,14 +36,15 @@
 #include "DefaultHelpText.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
-#include "MainWindow.h"
 #include "HelpManager.h"
 #include "HelpText.h"
 #include "IconEngine.h"
 #include "Icons.h"
+#include "MainWindow.h"
 #include "Menu.h"
 #include "NavigationFrame.h"
 #include "RecentFilesMenu.h"
+#include "SessionFilesFrame.h"
 #include "InformationDialog.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
@@ -446,6 +445,12 @@ void Menu::_updateWindowsMenu( void )
     file_actions_.insert( make_pair( action, file ) );
     
   }
+  
+  
+  windows_menu_->addSeparator(); 
+  SessionFilesFrame& session_files_frame( static_cast<MainWindow*>(window())->navigationFrame().sessionFilesFrame() );
+  windows_menu_->addAction( &session_files_frame.previousFileAction() );
+  windows_menu_->addAction( &session_files_frame.nextFileAction() );
   
 }
 

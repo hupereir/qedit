@@ -135,6 +135,9 @@ MainWindow::MainWindow(  QWidget* parent ):
   addAction( &navigationFrame().visibilityAction() );
   connect( &navigationFrame().sessionFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
   connect( &navigationFrame().recentFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
+
+  addAction( &navigationFrame().sessionFilesFrame().nextFileAction() );
+  addAction( &navigationFrame().sessionFilesFrame().previousFileAction() );
   
   // insert stack widget
   splitter->addWidget( stack_ = new QStackedWidget(0) );

@@ -79,7 +79,10 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   list().menu().addAction( &_saveAction() );
   list().menu().addAction( &Singleton::get().application<Application>()->windowServer().saveAllAction() );
   list().menu().addAction( &_closeAction() );
-  
+  list().menu().addSeparator();
+  list().menu().addAction( &previousFileAction() );
+  list().menu().addAction( &nextFileAction() );
+
   // connections
   connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
   connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions() ) );
@@ -140,13 +143,81 @@ void SessionFilesFrame::_updateActions( void )
   
   Debug::Throw( "SessionFilesFrame:_updateActions.\n" );
 
-  // check selected files
-  SessionFilesModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
+  // get number of entries in model
+  int counts( _model().rowCount() );
   
-  _openAction().setEnabled( !selection.empty() );
-  _closeAction().setEnabled( !selection.empty() );
+  // get selected files
+  SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
+  bool has_selection( !selection.empty() );
+  
+  _openAction().setEnabled( has_selection );
+  _closeAction().setEnabled( has_selection );
   _saveAction().setEnabled( find_if( selection.begin(), selection.end(), FileRecord::HasFlagFTor( FileRecordProperties::MODIFIED ) ) != selection.end() );
 
+  previousFileAction().setEnabled( counts >= 2 && has_selection );
+  nextFileAction().setEnabled( counts >= 2 && has_selection );
+  
+}
+
+//______________________________________________________________________
+void SessionFilesFrame::_selectPreviousFile( void )
+{ 
+  
+  Debug::Throw( "SessionFilesFrame:_selectPreviousFile.\n" ); 
+
+  // check counts
+  int counts( _model().rowCount() );
+  if( counts < 2 ) return;
+  
+  // get current index
+  QModelIndex current_index( list().selectionModel()->currentIndex() );
+  if( !current_index.isValid() ) return;
+    
+  // get previous
+  QModelIndex index( current_index );
+  while( (index = _model().index( index.row()-1, current_index.column())).isValid() )
+  {
+    FileRecord record( _model().get( index ) );
+    if( record.hasFlag( FileRecordProperties::ACTIVE ) ) break;
+  }
+  
+  if( !index.isValid() ) index = _model().index( counts-1, current_index.column() );
+  if( (!index.isValid()) || index == current_index ) return;
+  
+  // select new index
+  list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
+  
+}
+
+
+//______________________________________________________________________
+void SessionFilesFrame::_selectNextFile( void )
+{ 
+  
+  Debug::Throw( "SessionFilesFrame:_selectNextFile.\n" ); 
+
+  // check counts
+  int counts( _model().rowCount() );
+  if( counts < 2 ) return;
+  
+  // get current index
+  QModelIndex current_index( list().selectionModel()->currentIndex() );
+  if( !current_index.isValid() ) return;
+    
+  // get previous
+  QModelIndex index( current_index );
+  while( (index = _model().index( index.row()+1, current_index.column())).isValid() )
+  {
+    FileRecord record( _model().get( index ) );
+    if( record.hasFlag( FileRecordProperties::ACTIVE ) ) break;
+  }
+  
+  if( !index.isValid() ) index = _model().index( 0, current_index.column() );
+  if( (!index.isValid()) || index == current_index ) return;
+  
+  // select new index
+  list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
+  
 }
 
 //______________________________________________________________________
@@ -154,7 +225,7 @@ void SessionFilesFrame::_open( void )
 { 
   
   Debug::Throw( "SessionFilesFrame:_open.\n" ); 
-  SessionFilesModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
+  SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
   
   for( SessionFilesModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
   { emit fileActivated( *iter ); }
@@ -166,7 +237,7 @@ void SessionFilesFrame::_save( void )
 { 
   
   Debug::Throw( "SessionFilesFrame:_save.\n" ); 
-  SessionFilesModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
+  SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
 
   SessionFilesModel::List modified_records;
   for( SessionFilesModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
@@ -182,7 +253,7 @@ void SessionFilesFrame::_close( void )
 { 
   
   Debug::Throw( "SessionFilesFrame:_close.\n" ); 
-  SessionFilesModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
+  SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
   if( !selection.empty() ) emit filesClosed( selection );
   
 }
@@ -193,7 +264,7 @@ void SessionFilesFrame::_itemSelected( const QModelIndex& index )
 
   Debug::Throw( "SessionFilesFrame::_itemSelected.\n" );
   if( !( index.isValid() ) ) return;
-  emit fileSelected( model_.get( index ) );
+  emit fileSelected( _model().get( index ) );
   
 }
 
@@ -213,6 +284,16 @@ void SessionFilesFrame::_installActions( void )
   
   Debug::Throw( "SessionFilesFrame::_installActions.\n" );
 
+  // next file
+  addAction( next_file_action_ = new QAction( IconEngine::get(  ICONS::DOWN ), "Select &next File", this ) );
+  connect( &nextFileAction(), SIGNAL( triggered() ), SLOT( _selectNextFile() ) );
+  nextFileAction().setShortcut( Qt::CTRL + Qt::Key_Tab );
+    
+  // previous file
+  addAction( previous_file_action_ = new QAction( IconEngine::get(  ICONS::UP ), "Select &Previous File", this ) );
+  connect( &previousFileAction(), SIGNAL( triggered() ), SLOT( _selectPreviousFile() ) );
+  previousFileAction().setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Tab );
+    
   // open
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this ) );
   connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );

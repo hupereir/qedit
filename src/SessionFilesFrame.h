@@ -71,6 +71,19 @@ class SessionFilesFrame: public QWidget, public Counter
   //! select file in list
   void select( const File& );
   
+  //!@name actions
+  //@{
+  
+  //! previous file
+  QAction& previousFileAction( void ) const
+  { return *previous_file_action_; }
+  
+  //! previous file
+  QAction& nextFileAction( void ) const
+  { return *next_file_action_; }
+
+  //@}
+  
   public slots:
    
   //! update session files
@@ -98,6 +111,12 @@ class SessionFilesFrame: public QWidget, public Counter
   
   private slots:
 
+  //! previous file
+  void _selectPreviousFile( void );
+  
+  //! next file
+  void _selectNextFile( void );
+  
   //! update session files
   void _updateActions( void );
   
@@ -180,6 +199,12 @@ class SessionFilesFrame: public QWidget, public Counter
     
   //!@name actions
   //@{
+  
+  //! previous file
+  QAction* previous_file_action_;
+  
+  //! next file
+  QAction* next_file_action_;
   
   //! open action
   QAction* open_action_;
