@@ -52,7 +52,7 @@ FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):
   // create vbox layout
   QVBoxLayout* layout=new QVBoxLayout();
   layout->setSpacing(5);
-  layout->setMargin(5);
+  layout->setMargin(10);
   setLayout( layout );
   
   // create message
@@ -77,11 +77,17 @@ FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):
     
   }
 
+  // horizontal separator
+  QFrame* frame( new QFrame( this ) );
+  frame->setFrameStyle( QFrame::HLine | QFrame::Sunken );
+  layout->addWidget( frame );
+
   // button layout
   QHBoxLayout *button_layout = new QHBoxLayout();     
   button_layout->setSpacing( 5 );
   layout->addLayout( button_layout );
-
+  button_layout->addStretch(1);
+  
   // resave button
   QPushButton* button;
   button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE ), "&Save Again", this ) );

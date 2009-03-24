@@ -33,8 +33,6 @@
 #include <QLayout>
 #include <QPushButton>
 
-
-
 #include "FileModifiedDialog.h"
 #include "CustomPixmap.h"
 #include "Icons.h"
@@ -79,11 +77,18 @@ FileModifiedDialog::FileModifiedDialog( QWidget* parent, const File& file ):
     
   }
 
+  // horizontal separator
+  QFrame* frame( new QFrame( this ) );
+  frame->setFrameStyle( QFrame::HLine | QFrame::Sunken );
+  layout->addWidget( frame );
+ 
   // button layout
-  QHBoxLayout *button_layout = new QHBoxLayout();     
+  QHBoxLayout *button_layout = new QHBoxLayout(); 
+  button_layout->setMargin(0);
   button_layout->setSpacing( 5 );
   layout->addLayout( button_layout );
-
+  button_layout->addStretch( 1 );
+  
   // reload button.
   QPushButton* button;
   button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );

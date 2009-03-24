@@ -50,7 +50,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned 
   
   // create vbox layout
   QVBoxLayout* layout=new QVBoxLayout();
-  layout->setSpacing(10);
+  layout->setSpacing(5);
   layout->setMargin(10);
   setLayout( layout );
   
@@ -75,12 +75,20 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned 
     h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
     
   }  
+  
+  // horizontal separator
+  QFrame* frame( new QFrame( this ) );
+  frame->setFrameStyle( QFrame::HLine | QFrame::Sunken );
+  layout->addWidget( frame ); 
+  
   // button layout
   QHBoxLayout *button_layout = new QHBoxLayout();     
   button_layout->setSpacing(5);
   button_layout->setMargin(0);
   layout->addLayout( button_layout );
 
+  button_layout->addStretch(1);
+  
   // yes button
   QPushButton* button;
   if( buttons & CREATE )

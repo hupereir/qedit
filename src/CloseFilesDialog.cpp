@@ -41,7 +41,7 @@ using namespace std;
 
 //__________________________________________________
 CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
-  CustomDialog( parent, OK_BUTTON | CANCEL_BUTTON )
+  CustomDialog( parent, OK_BUTTON | CANCEL_BUTTON | SEPARATOR )
 {
   
   Debug::Throw( "CloseFilesDialog::CloseFilesDialog.\n" );

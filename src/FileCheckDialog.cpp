@@ -52,19 +52,7 @@ FileCheckDialog::FileCheckDialog( QWidget* parent ):
   mainLayout().addWidget( list_ = new TreeView( this ) );
   _list().setModel( &model_ );
   _list().setSelectionMode( QAbstractItemView::NoSelection );
-       
-//   // mask
-//   unsigned int mask( 
-//     (1<<FileRecordModel::ICON)|
-//     (1<<FileRecordModel::FILE)|
-//     (1<<FileRecordModel::PATH ));
-//   int class_column( model_.findColumn( "class_name" ) );
-//   if( class_column >= 0 ) mask |= (1<<class_column);
-//   _list().setMask( mask );
-//   
-//   // sorting
-//   _list().header()->setSortIndicator( FileRecordModel::FILE, Qt::AscendingOrder );
-  
+   
   // add options
   _list().setOptionName( "FILE_CHECK_LIST" );
   
