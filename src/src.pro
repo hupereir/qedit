@@ -1,17 +1,16 @@
-# $Id$
-
 TEMPLATE = app
+TARGET = qedit
+
 CONFIG += qt release
 QT += xml network
 
-TARGET = qedit
-
 win32 {
+  DEFINES += QT_STATIC
   DESTDIR = "C:/Program Files" 
 }
 
-VERSION = 2.0
 VERSION = 2.0.0
+DEFINES += VERSION=\\\"$$VERSION\\\"
 
 INCLUDEPATH = . ../base ../base-qt ../base-help ../base-server ../document-classes ../extra-includes ../filesystem
 DEPENDPATH += . ../base ../base-qt ../base-help ../base-server ../document-classes ../extra-includes ../filesystem
