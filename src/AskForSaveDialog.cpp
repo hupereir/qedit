@@ -28,6 +28,7 @@
   \date $Date$
 */
 
+#include <QFrame>
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
@@ -79,34 +80,25 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
     h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
     
   }
+
+  QFrame* frame( new QFrame( this ) );
+  frame->setFrameStyle( QFrame::HLine | QFrame::Sunken );
+  layout->addWidget( frame );
     
   // button layout
-  GridLayout *button_layout = new GridLayout();
+  QHBoxLayout *button_layout = new QHBoxLayout();
   button_layout->setSpacing(5);
   button_layout->setMargin(0);
-  button_layout->setMaxCount(3);
   layout->addLayout( button_layout );
 
+  button_layout->addStretch( 1 );
+    
   // yes button
   QPushButton* button;
   if( buttons & YES )
   {
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK ), "&Yes", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _yes() ) );
-  }
-
-  // no button
-  if( buttons & NO )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&No", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _no() ) );
-  }  
-  
-  // cancel button
-  if( buttons & CANCEL )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
   }
 
   // yes to all button
@@ -117,12 +109,25 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   }
 
   // no button
+  if( buttons & NO )
+  {
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&No", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( _no() ) );
+  }  
+  
+  // no button
   if( buttons & NO_TO_ALL )
   {
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "No to A&ll", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _noToAll() ) );
   }  
-  
+
+  // cancel button
+  if( buttons & CANCEL )
+  {
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
+  }  
   
   adjustSize();
   

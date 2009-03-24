@@ -1,6 +1,7 @@
 #ifndef HighlightStyleModel_h
 #define HighlightStyleModel_h
 
+
 // $Id$
 
 /******************************************************************************

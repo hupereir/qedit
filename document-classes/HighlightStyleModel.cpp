@@ -1,5 +1,6 @@
 // $Id$
 
+
 /******************************************************************************
  *                         
  * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>             
@@ -29,7 +30,9 @@
   \date    $Date$
 */
 
+#include "Debug.h"
 #include "HighlightStyleModel.h"
+
 using namespace std;
 
 //__________________________________________________________________
