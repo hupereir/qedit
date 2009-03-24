@@ -51,7 +51,7 @@ using namespace std;
 
 //_________________________________________________________
 FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord& record ):
-  BaseDialog( parent )
+  CustomDialog( parent, OK_BUTTON )
 {
   Debug::Throw( "FileInformationDialog::FileInformationDialog.\n" );
 
@@ -59,12 +59,8 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
   const File& file( record.file() ); 
   setWindowTitle( (file.isEmpty() ? File("File Information"):file.localName() )+ " - qedit" );
   
-  setLayout( new QVBoxLayout() );
-  layout()->setSpacing(5);
-  layout()->setMargin(2);
-
   tab_widget_ = new AnimatedTabWidget( this );
-  layout()->addWidget( &tabWidget() );
+  mainLayout().addWidget( &tabWidget() );
   Debug::Throw( "FileInformationDialog::FileInformationDialog - tabWidget booked.\n" );
     
   // box to display additinal information

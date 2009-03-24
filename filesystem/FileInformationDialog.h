@@ -31,13 +31,13 @@
    \date $Date$
 */
 
-#include "BaseDialog.h"
+#include "CustomDialog.h"
 #include "FileRecord.h"
 
 class AnimatedTabWidget;
 
 //! file informations
-class FileInformationDialog: public BaseDialog
+class FileInformationDialog: public CustomDialog
 {
   
   public:
