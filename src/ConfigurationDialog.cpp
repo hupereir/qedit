@@ -32,13 +32,13 @@
 #include <QLabel>
 #include <QGroupBox>
 
+#include "Application.h"
 #include "Config.h"
 #include "ConfigurationDialog.h"
 #include "FileList.h"
 #include "GridLayout.h"
 #include "CustomToolBar.h"
 #include "Debug.h"
-
 #include "MainWindow.h"
 #include "OptionListBox.h"
 #include "OptionBrowsedLineEditor.h"
@@ -46,10 +46,11 @@
 #include "OptionColorDisplay.h"
 #include "OptionFontInfo.h"
 #include "OptionSpinBox.h"
-
+#include "RecentFilesConfiguration.h"
 #include "RecentFilesFrame.h"
 #include "ServerConfiguration.h"
 #include "SessionFilesFrame.h"
+#include "Singleton.h"
 #include "TreeView.h"
 #include "TreeViewConfiguration.h"
 #include "WindowServer.h"
@@ -261,8 +262,13 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( listbox );
   listbox->setToolTip( "Available command for printing/editing converted files" );
   box->layout()->addWidget( listbox );
-
  
+  // recent files
+  page = &addPage( "Recent files", "Recent files list settings", true );
+  RecentFilesConfiguration* recent_files_configuration = new RecentFilesConfiguration( page, Singleton::get().application<Application>()->recentFiles() );
+  page->layout()->addWidget( recent_files_configuration );
+  addOptionWidget( recent_files_configuration );
+
   // misc
   page = &addPage( "Misc", "Additional unsorted settings" );
   
@@ -305,30 +311,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->addWidget( edit = new OptionBrowsedLineEditor( box, "AUTOSAVE_PATH" ) );
   edit->setToolTip( "Directory where autosaved files are stored" );
   addOptionWidget( edit );
-  
-  // misc
-  page->layout()->addWidget( box = new QGroupBox( "Recent files", page ) );  
-   
-  grid_layout = new GridLayout();
-  grid_layout->setSpacing(5);
-  grid_layout->setMargin(5);
-  grid_layout->setMaxCount(2);
-  box->setLayout( grid_layout );
-  
-  // previous file history size
-  grid_layout->addWidget( new QLabel( "Recent files history size", box ) );
-  grid_layout->addWidget( spinbox = new OptionSpinBox( box, "DB_SIZE" ) );
-  spinbox->setMinimum( 0 );
-  spinbox->setMaximum( 100 );
-  addOptionWidget( spinbox );
-  spinbox->setToolTip( "Number of previously opened files to appear in the Open Previous menu" );
-
-  // sort previous files by date
-  grid_layout->addWidget( checkbox = new OptionCheckBox( "Sort recent files by date", box, "SORT_FILES_BY_DATE" ), 3, 0, 1, 2 );
-  checkbox->setToolTip( "Sort files by date rather than name in Open Previous menu." );
-  addOptionWidget( checkbox );
-  new QWidget( box );
-    
+      
   // load initial configuration
   _read();
 
