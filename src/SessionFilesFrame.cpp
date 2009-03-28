@@ -66,7 +66,9 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
   list().setOptionName( "SESSION_FILES" );
   list().header()->hide();
-  list().setDragEnabled(true);
+  list().setDragEnabled( true );
+  list().setAcceptDrops( true );
+  list().setDropIndicatorShown(true);
 
   // actions
   _installActions();

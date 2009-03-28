@@ -32,16 +32,23 @@
 #include <algorithm>
 #include <assert.h>
 #include <QIcon>
+#include <QMimeData>
 #include <QPalette>
+#include <QSet>
 
 #include "Icons.h"
 #include "CustomPixmap.h"
 #include "FileRecordProperties.h"
 #include "SessionFilesModel.h"
 #include "Singleton.h"
+#include "XmlFileList.h"
+#include "XmlFileRecord.h"
 #include "XmlOptions.h"
 
 using namespace std;
+
+//______________________________________________________________
+const QString SessionFilesModel::DRAG = "base/sessionfilesmodel/drag";
 
 //__________________________________________________________________
 SessionFilesModel::IconCache& SessionFilesModel::_icons( void )
@@ -61,6 +68,16 @@ SessionFilesModel::SessionFilesModel( QObject* parent ):
 
 }
   
+//__________________________________________________________________
+Qt::ItemFlags SessionFilesModel::flags(const QModelIndex &index) const
+{
+  
+  // get flags from parent class
+  Qt::ItemFlags flags( FileRecordModel::flags( index ) );
+  return flags | Qt::ItemIsDropEnabled;
+  
+}
+
 //__________________________________________________________________
 QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
 {
@@ -137,4 +154,109 @@ QIcon SessionFilesModel::_icon( unsigned int type )
   _icons().insert( make_pair( type, icon ) );
   return icon;
    
+}
+
+//______________________________________________________________________
+QStringList SessionFilesModel::mimeTypes( void ) const
+{
+  QStringList types;
+  types << DRAG;
+  return types;
+}
+
+//______________________________________________________________________
+QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
+{
+
+  // return FileRecordModel::mimeData( indexes );
+  std::set<QString> filenames;
+  std::set<FileRecord> records;
+  for( QModelIndexList::const_iterator iter = indexes.begin(); iter != indexes.end(); iter++ )
+  { 
+  
+    if( iter->isValid() ) 
+    {
+      FileRecord record( get(*iter ) );
+      records.insert( record );
+      filenames.insert( record.file() ); 
+    }
+    
+  }
+  
+  if( filenames.empty() ) return 0;
+  else {
+    
+    QMimeData *mime = new QMimeData();
+    
+    // fill text data
+    QString full_text;
+    QTextStream buffer( &full_text );
+    for( std::set<QString>::const_iterator iter = filenames.begin(); iter != filenames.end(); iter++ )
+    { buffer << *iter << endl; }
+    mime->setText( full_text );
+    
+    // fill DRAG data. Use XML
+    QDomDocument document;
+    QDomElement top = document.appendChild( document.createElement( XmlFileRecord::XML_FILE_LIST ) ).toElement();
+    for( std::set<FileRecord>::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+    { 
+      
+      if( iter->file().isEmpty() ) continue;
+      top.appendChild( XmlFileRecord( *iter ).domElement( document ) ); 
+      
+    }
+    mime->setData( DRAG, document.toByteArray() ); 
+    return mime;
+    
+  }
+
+}
+
+
+//__________________________________________________________________
+bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction action, int row, int column, const QModelIndex& parent)
+{ 
+    
+  Debug::Throw(0) << "SessionFilesModel::dropMineData." << endl;
+  //return FileRecordModel::dropMimeData( data, action, row, column, parent );
+
+  // check action
+  if( action == Qt::IgnoreAction) return true;
+
+  // Drag from Keyword model
+  if( !data->hasFormat( DRAG ) ) return false;
+  
+  FileRecordModel::List records;
+  
+  // get dropped file record (use XML)
+  // dom document
+  QDomDocument document;
+  if( !document.setContent( data->data( DRAG ), false ) ) return false;
+  
+  QDomElement doc_element = document.documentElement();
+  QDomNode node = doc_element.firstChild();
+  for(QDomNode node = doc_element.firstChild(); !node.isNull(); node = node.nextSibling() )
+  {
+    QDomElement element = node.toElement();
+    if( element.isNull() ) continue;
+
+    // special options
+    if( element.tagName() == XmlFileRecord::XML_RECORD ) 
+    {
+    
+      XmlFileRecord record( element );
+      if( !record.file().isEmpty() ) 
+      {
+        Debug::Throw(0) << "SessionFilesModel::dropMineData - adding " << record.file() << endl;        
+        records.push_back( record );
+      }
+      
+    }
+  }
+  
+  // get current index
+  QModelIndex index( SessionFilesModel::index( row, column, parent ) );
+  
+  return false; 
+  
 }

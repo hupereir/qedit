@@ -49,11 +49,26 @@ class SessionFilesModel: public FileRecordModel
   //! constructor
   SessionFilesModel( QObject* parent = 0 );
   
+  //! drag mime type
+   static const QString DRAG;
+  
   //!@name methods reimplemented from base class
   //@{
   
-  // return data for a given index
+  //! flags
+  virtual Qt::ItemFlags flags(const QModelIndex& ) const;
+
+  //! return data for a given index
   virtual QVariant data(const QModelIndex &, int ) const;
+  
+  //! mime type
+  virtual QStringList mimeTypes( void ) const;
+  
+  //! mime data
+  virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
+  
+  //! drop mine data
+  virtual bool dropMimeData(const QMimeData*, Qt::DropAction, int row, int column, const QModelIndex&);
   
   //@}
 
