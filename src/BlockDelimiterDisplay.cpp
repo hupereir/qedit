@@ -223,7 +223,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     // before entering the loop over delimiters
     painter.setBrush( foreground_ );
     QPen pen( foreground_ );
-    pen.setWidth( 1.5 );
+    pen.setWidthF( 1.5 );
     painter.setPen( pen );
     painter.setRenderHints( QPainter::Antialiasing );
   } else painter.setBrush( Qt::NoBrush );
