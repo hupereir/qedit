@@ -138,22 +138,22 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setMaxCount(2);
   box->setLayout( grid_layout );
   
-  grid_layout->addWidget( new QLabel( "Parenthesis matching", box ) ); 
+  grid_layout->addWidget( new QLabel( "Parenthesis matching: ", box ) ); 
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "PARENTHESIS_COLOR" ) );
   addOptionWidget( color_display );
-  checkbox->setToolTip( "Color for matching parenthesis" );
+  checkbox->setToolTip( "Color for matching parenthesis: " );
 
-  grid_layout->addWidget( new QLabel( "Tagged paragraphs", box ) ); 
+  grid_layout->addWidget( new QLabel( "Tagged paragraphs: ", box ) ); 
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "TAGGED_BLOCK_COLOR" ) );
   addOptionWidget( color_display );
   checkbox->setToolTip( "Color for tagged paragraphs" );
   
-  grid_layout->addWidget( new QLabel( "Conflicting paragraphs", box ) );
+  grid_layout->addWidget( new QLabel( "Conflicting paragraphs: ", box ) );
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_CONFLICT_COLOR" ) );
   addOptionWidget( color_display );
   color_display->setToolTip( "Highlight color for diff conflict paragraphs" );
 
-  grid_layout->addWidget( new QLabel( "Added paragraphs", box ) );
+  grid_layout->addWidget( new QLabel( "Added paragraphs: ", box ) );
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_ADDED_COLOR" ) );
   addOptionWidget( color_display );
   color_display->setToolTip( "Highlight color for diff added paragraphs" );
@@ -198,7 +198,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   OptionComboBox *combobox;
   
   // opening
-  grid_layout->addWidget( new QLabel( "Default open mode ", box ) );
+  grid_layout->addWidget( new QLabel( "Default open mode: ", box ) );
   grid_layout->addWidget( combobox = new OptionComboBox( box, "OPEN_MODE" ) );
   combobox->addItem( WindowServer::MULTIPLE_WINDOWS );
   combobox->addItem( WindowServer::SINGLE_WINDOW );
@@ -207,7 +207,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   combobox->setToolTip( "Configure how new files are oppened." );
   
   // splitting
-  grid_layout->addWidget( new QLabel( "Default splitting orientation ", box ) );
+  grid_layout->addWidget( new QLabel( "Default splitting orientation: ", box ) );
   grid_layout->addWidget( combobox = new OptionComboBox( box, "ORIENTATION" ) );
   combobox->addItem( MainWindow::TOP_BOTTOM );
   combobox->addItem( MainWindow::LEFT_RIGHT );
@@ -299,7 +299,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setMaxCount(2);
   box->layout()->addItem( grid_layout );
 
-  grid_layout->addWidget( new QLabel( "Autosave interval (seconds)", box ) );
+  grid_layout->addWidget( new QLabel( "Autosave interval (seconds): ", box ) );
   grid_layout->addWidget( spinbox = new OptionSpinBox( box, "AUTOSAVE_INTERVAL" ) );
   spinbox->setMinimum( 1 );
   spinbox->setMaximum( 300 );
@@ -307,11 +307,28 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( spinbox );
   
   OptionBrowsedLineEditor *edit;
-  grid_layout->addWidget( new QLabel( "Autosave path", box ) );
+  grid_layout->addWidget( new QLabel( "Autosave path: ", box ) );
   grid_layout->addWidget( edit = new OptionBrowsedLineEditor( box, "AUTOSAVE_PATH" ) );
   edit->setToolTip( "Directory where autosaved files are stored" );
   addOptionWidget( edit );
-      
+  
+  // misc
+  page->layout()->addWidget( box = new QGroupBox( "Misc", page ) );  
+
+  box->setLayout( new QVBoxLayout() );
+  box->layout()->setSpacing(5);
+  box->layout()->setMargin(5);
+
+  h_layout = new QHBoxLayout();
+  h_layout->setSpacing(5); 
+  h_layout->setMargin(0);
+  box->layout()->addItem( h_layout );
+
+  h_layout->addWidget( new QLabel( "Diff command: ", box ) );
+  h_layout->addWidget( edit = new OptionBrowsedLineEditor( box, "DIFF_COMMAND" ) );
+  edit->setToolTip( "Command used to diff files" );
+  addOptionWidget( edit );
+  
   // load initial configuration
   _read();
 
