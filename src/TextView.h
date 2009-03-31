@@ -128,7 +128,7 @@ class TextView: public QWidget, public Counter, public BASE::Key
   void needUpdate( unsigned int );
      
   //! current display overwrite mode changed
-  void overwriteModeChanged( void );
+  void modifiersChanged( unsigned int );
   
   //! independent display count changed
   void displayCountChanged( void );

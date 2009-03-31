@@ -518,9 +518,9 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   /*! \param flags are bitwise or of TextDisplay::UpdateFlags */
   void _update( unsigned int );
 
-  //! update overwrite mode
-  void _updateOverwriteMode( void )
-  { _update( TextDisplay::OVERWRITE_MODE ); }
+  //! update modifiers
+  void _updateModifiers( void )
+  { _update( TextDisplay::MODIFIERS ); }
   
   //! update actions based on number of displays in active view
   void _updateDisplayCount( void )

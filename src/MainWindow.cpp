@@ -824,8 +824,15 @@ void MainWindow::_update( unsigned int flags )
     redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
   }
  
-  if( statusbar_ && flags & TextDisplay::OVERWRITE_MODE )
-  { statusbar_->label(0).setText( activeDisplay().overwriteMode() ? "INS":"" ); }
+  if( statusbar_ && flags & TextDisplay::MODIFIERS )
+  {
+    Debug::Throw() << "MainWindow::_update - modifiers." << endl;
+    QStringList modifiers;
+    if( activeDisplay().modifier( TextEditor::MODIFIER_INSERT ) ) modifiers << "INS";
+    if( activeDisplay().modifier( TextEditor::MODIFIER_CAPS_LOCK ) ) modifiers << "CAPS";
+    if( activeDisplay().modifier( TextEditor::MODIFIER_NUM_LOCK ) ) modifiers << "NUM";
+    statusbar_->label(0).setText( modifiers.join( " " ) ); 
+  }
   
   if( flags & TextDisplay::DISPLAY_COUNT )
   {
@@ -1050,7 +1057,7 @@ void MainWindow::_createReplaceDialog( void )
 void MainWindow::_connectView( TextView& view )
 {
   Debug::Throw( "MainWindow::_connectView.\n" );
-  connect( &view, SIGNAL( overwriteModeChanged() ), SLOT( _updateOverwriteMode() ) );
+  connect( &view, SIGNAL( modifiersChanged( unsigned int ) ), SLOT( _updateModifiers( void ) ) );
   connect( &view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
   connect( &view, SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
   connect( &view, SIGNAL( displayCountChanged( void ) ), &Singleton::get().application<Application>()->windowServer(), SIGNAL( sessionFilesChanged( void ) ) );
