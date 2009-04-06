@@ -136,32 +136,28 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setSpacing(5);
   grid_layout->setMargin(5);
   grid_layout->setMaxCount(2);
+  grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
   box->setLayout( grid_layout );
   
-  QLabel* label;
-  grid_layout->addWidget( label = new QLabel( "Parenthesis matching: ", box ) ); 
+  grid_layout->addWidget( new QLabel( "Parenthesis matching: ", box ) ); 
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "PARENTHESIS_COLOR" ) );
   addOptionWidget( color_display );
   checkbox->setToolTip( "Color for matching parenthesis: " );
-  label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
   
-  grid_layout->addWidget( label = new QLabel( "Tagged paragraphs: ", box ) ); 
+  grid_layout->addWidget( new QLabel( "Tagged paragraphs: ", box ) ); 
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "TAGGED_BLOCK_COLOR" ) );
   addOptionWidget( color_display );
   checkbox->setToolTip( "Color for tagged paragraphs" );
-  label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
   
-  grid_layout->addWidget( label = new QLabel( "Conflicting paragraphs: ", box ) );
+  grid_layout->addWidget( new QLabel( "Conflicting paragraphs: ", box ) );
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_CONFLICT_COLOR" ) );
   addOptionWidget( color_display );
   color_display->setToolTip( "Highlight color for diff conflict paragraphs" );
-  label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
 
-  grid_layout->addWidget( label = new QLabel( "Added paragraphs: ", box ) );
+  grid_layout->addWidget( new QLabel( "Added paragraphs: ", box ) );
   grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_ADDED_COLOR" ) );
   addOptionWidget( color_display );
   color_display->setToolTip( "Highlight color for diff added paragraphs" );
-  label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
   
   // multiple views
   page = &addPage( "Navigation", "Visible columns in navigation tabs" );
@@ -198,26 +194,25 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setSpacing(5);
   grid_layout->setMargin(5);
   grid_layout->setMaxCount(2);
+  grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
   box->setLayout( grid_layout );
   
   OptionComboBox *combobox;
   
   // opening
-  grid_layout->addWidget( label = new QLabel( "Default open mode: ", box ) );
+  grid_layout->addWidget( new QLabel( "Default open mode: ", box ) );
   grid_layout->addWidget( combobox = new OptionComboBox( box, "OPEN_MODE" ) );
   combobox->addItem( WindowServer::MULTIPLE_WINDOWS );
   combobox->addItem( WindowServer::SINGLE_WINDOW );
-  label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
   
   addOptionWidget( combobox );
   combobox->setToolTip( "Configure how new files are oppened." );
   
   // splitting
-  grid_layout->addWidget( label = new QLabel( "Default splitting orientation: ", box ) );
+  grid_layout->addWidget( new QLabel( "Default splitting orientation: ", box ) );
   grid_layout->addWidget( combobox = new OptionComboBox( box, "ORIENTATION" ) );
   combobox->addItem( MainWindow::TOP_BOTTOM );
   combobox->addItem( MainWindow::LEFT_RIGHT );
-  label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
   
   addOptionWidget( combobox );
   combobox->setToolTip( "Configure how new views are organized." );
@@ -304,22 +299,21 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->setSpacing(5);
   grid_layout->setMargin(0);
   grid_layout->setMaxCount(2);
+  grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
   box->layout()->addItem( grid_layout );
 
-  grid_layout->addWidget( label = new QLabel( "Autosave interval (seconds): ", box ) );
+  grid_layout->addWidget( new QLabel( "Autosave interval (seconds): ", box ) );
   grid_layout->addWidget( spinbox = new OptionSpinBox( box, "AUTOSAVE_INTERVAL" ) );
   spinbox->setMinimum( 1 );
   spinbox->setMaximum( 300 );
   spinbox->setToolTip( "Interval (seconds) between two autosave." );
   addOptionWidget( spinbox );
-  label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
   
   OptionBrowsedLineEditor *edit;
-  grid_layout->addWidget( label = new QLabel( "Autosave path: ", box ) );
+  grid_layout->addWidget( new QLabel( "Autosave path: ", box ) );
   grid_layout->addWidget( edit = new OptionBrowsedLineEditor( box, "AUTOSAVE_PATH" ) );
   edit->setToolTip( "Directory where autosaved files are stored" );
   addOptionWidget( edit );
-  label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
   
   // misc
   page->layout()->addWidget( box = new QGroupBox( "Misc", page ) );  
@@ -333,6 +327,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   h_layout->setMargin(0);
   box->layout()->addItem( h_layout );
 
+  QLabel* label;
   h_layout->addWidget( label = new QLabel( "Diff command: ", box ) );
   h_layout->addWidget( edit = new OptionBrowsedLineEditor( box, "DIFF_COMMAND" ) );
   edit->setToolTip( "Command used to diff files" );
