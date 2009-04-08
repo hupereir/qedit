@@ -1612,7 +1612,7 @@ bool TextDisplay::_fileRemoved( void ) const
   */
   
   // check file flag
-  if( fileCheckData().flag() != FileCheck::Data::REMOVED ) 
+  if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::REMOVED ) ) 
   { return false; }
   
   // make sure file is still removed
@@ -1634,16 +1634,16 @@ bool TextDisplay::_fileModified( void )
 
   Debug::Throw( "TextDisplay::_fileModified.\n" );
 
-  // check file size
-  if( !file().size() ) return false;
-  if( fileCheckData().flag() != FileCheck::Data::MODIFIED ) return false;
+  // check file
+  if( file().isEmpty() || isNewDocument() ) return false;
+  if( ! ( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::MODIFIED ) ) return false;
   if( !lastSaved().isValid() ) return false;
   
-  TimeStamp file_modified( fileCheckData().timeStamp() );
+  const TimeStamp file_modified( _fileIsAfs() ? TimeStamp(file().lastModified()) : fileCheckData().timeStamp() );
   if( !file_modified.isValid() ) return false;
   if( !(file_modified > last_saved_ ) ) return false;
   if( !_contentsChanged() ) return false;
-
+  
   // update last_save to avoid chain questions
   last_saved_ = file_modified;
   return true;
@@ -2579,3 +2579,7 @@ void TextDisplay::_clearTag( void )
   { clearTag( *iter, TextBlock::ALL_TAGS ); }
   
 }
+
+//___________________________________________________________________________
+bool TextDisplay::_fileIsAfs( void ) const
+{ return file().indexOf( "/afs" ) == 0; }

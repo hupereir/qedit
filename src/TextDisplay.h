@@ -646,6 +646,9 @@ class TextDisplay: public AnimatedTextEditor
   //! clear current block tags
   void _clearTag( void );
 
+  //! returns true if file is on afs
+  bool _fileIsAfs( void ) const;
+  
   private:
   
   //! empty line
