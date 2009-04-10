@@ -150,11 +150,15 @@ void FileSystemFrame::setPath( File path )
   
   if( _list().initializeAnimation() )
   {
+    
     _update();
     _list().startAnimation();
+    
   } else {
+    
     _update();
     _animationFinished();
+    
   }
   
 }
@@ -452,6 +456,7 @@ void FileSystemFrame::_fileProperties( void )
   
   FileRecord record( _model().get( index ) );
   if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) return;
+  if( !record.file().isAbsolute() ) { record.setFile( record.file().addPath( path() ) ); }
   
   FileInformationDialog( this, record ).centerOnWidget( window() ).exec();
   
