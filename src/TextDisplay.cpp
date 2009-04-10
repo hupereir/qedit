@@ -2250,11 +2250,11 @@ void TextDisplay::_fileProperties( void )
   
   grid_layout->addWidget( new QLabel( "Tab emulation: ", box ) );
   grid_layout->addWidget( new QLabel( (tabEmulationAction().isChecked() ? "True":"False" ), box ) );
-  
+
+  grid_layout->addWidget( new QLabel( "Auto-save file name: ", box ) );
   grid_layout->setColumnStretch( 1, 1 );
   
   // autosave
-  layout->addWidget( new QLabel( "Auto-save filename: ", box ) );
   layout->addWidget( new QLabel( AutoSaveThread::autoSaveName( file() ), box ) );
   
   layout->addStretch();
