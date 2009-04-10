@@ -193,26 +193,31 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
   {
     
     if( iter->end().isValid() && iter->end().cursor() < last_index && iter->end().cursor() >= first_index && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
-    { painter.drawLine( half_width_, iter->end().position(), width_ - 3, iter->end().position() ); }
+    //{ painter.drawLine( half_width_, iter->end().position(), width_ - 3, iter->end().position() ); }
+    { painter.drawLine( half_width_, iter->end().position(), width_, iter->end().position() ); }
     
   }
   
   // draw begin ticks
   // first draw empty square
-  painter.save();
-  painter.setPen( Qt::NoPen );
-  for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+  //if( !custom_symbols_ )
   {
-    
-    // check validity
-    if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
+    painter.save();
+    painter.setPen( Qt::NoPen );
+    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
     {
-      iter->setActiveRect( QRect( rect_top_left_, iter->begin().position() + rect_top_left_, rect_width_, rect_width_ ) );
-      painter.drawRect( iter->activeRect() );
+      
+      // check validity
+      if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
+      {
+        iter->setActiveRect( QRect( rect_top_left_, iter->begin().position() + rect_top_left_, rect_width_, rect_width_ ) );
+        painter.drawRect( iter->activeRect() );
+      }
+      
     }
-    
+    painter.restore();
+  
   }
-  painter.restore();
   
   // draw delimiters
   painter.save();

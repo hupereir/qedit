@@ -259,6 +259,14 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
   return;
 }
 
+//__________________________________________________________
+void TextDisplay::drawMargins( QPainter& painter )
+{
+  AnimatedTextEditor::drawMargins( painter );
+  bool has_block_delimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
+  if( has_block_delimiters ) blockDelimiterDisplay().paint( painter ); 
+}
+
 //___________________________________________________________________________
 void TextDisplay::synchronize( TextDisplay* display )
 {
@@ -1408,7 +1416,8 @@ void TextDisplay::paintEvent( QPaintEvent* event )
     
     QRectF block_rect( document()->documentLayout()->blockBoundingRect( block ) );
     block_rect.setWidth( viewport()->width() + scrollbarPosition().x() );
-    painter.drawLine( block_rect.bottomLeft() - QPoint( 2, 0 ), block_rect.bottomRight() );
+    QLineF line( QPointF( 0, block_rect.bottomLeft().y() ), block_rect.bottomRight() );
+    painter.drawLine( line );
   }
   painter.end();
   
@@ -1698,15 +1707,6 @@ bool TextDisplay::_updateMargins( void )
   
   return _setLeftMargin( left_margin );
   
-}
-
-
-//__________________________________________________________
-void TextDisplay::_drawMargins( QPainter& painter )
-{
-  AnimatedTextEditor::_drawMargins( painter );
-  bool has_block_delimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
-  if( has_block_delimiters ) blockDelimiterDisplay().paint( painter ); 
 }
 
 //___________________________________________________________________________
