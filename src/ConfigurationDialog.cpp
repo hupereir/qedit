@@ -98,10 +98,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   checkbox->setToolTip( "Turn on/off block delimiters" );
   addOptionWidget( checkbox );
 
-  box->layout()->addWidget( checkbox = new OptionCheckBox( "Use custom block delimiters", box, "CUSTOM_BLOCK_DELIMITERS" ) );
-  checkbox->setToolTip( "Use custom block delimiter symbols in place of style based." );
-  addOptionWidget( checkbox );
-
   box->layout()->addWidget( checkbox = new OptionCheckBox( "Highlight syntax", box, "TEXT_HIGHLIGHT" ) );
   checkbox->setToolTip( "Turn on/off syntax highlighting" );
   addOptionWidget( checkbox );

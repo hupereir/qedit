@@ -34,8 +34,6 @@
 #include <QMenu>
 #include <QPainter>
 #include <QScrollBar>
-#include <QStyleOption>
-#include <QStyle>
 #include <QTextDocument>
 #include <QTextBlock>
 #include <QTextLayout>
@@ -59,7 +57,6 @@ BlockDelimiterDisplay::BlockDelimiterDisplay(TextDisplay* editor ):
   Counter( "BlockDelimiterDisplay" ),
   editor_( editor ),
   need_update_( true ),
-  custom_symbols_( false ),
   offset_(0)
 {
   
@@ -145,8 +142,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
   
   // calculate dimensions
   int y_offset = _editor().verticalScrollBar()->value() - _editor().frameWidth();
-  int height( _editor().height() - 2*_editor().frameWidth() );
-  if( _editor().horizontalScrollBar()->isVisible() ) { height -= _editor().horizontalScrollBar()->height() + 2; }
+  int height( _editor().contentsRect().height() );
   
   // get begin and end cursor positions
   int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
@@ -184,7 +180,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     // draw
     int begin( iter->begin().isValid() ? iter->begin().position()+top_ : 0 );
     int end( ( (!iter->empty()) && iter->end().isValid() && iter->end().position() < height ) ? iter->end().position():height );
-    painter.drawLine( half_width_, begin, half_width_, end ); 
+    painter.drawLine( half_width_, begin + half_width_, half_width_, end ); 
     
   }
       
@@ -193,52 +189,33 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
   {
     
     if( iter->end().isValid() && iter->end().cursor() < last_index && iter->end().cursor() >= first_index && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
-    //{ painter.drawLine( half_width_, iter->end().position(), width_ - 3, iter->end().position() ); }
     { painter.drawLine( half_width_, iter->end().position(), width_, iter->end().position() ); }
     
   }
-  
-  // draw begin ticks
-  // first draw empty square
-  //if( !custom_symbols_ )
+    
+  // begin tick
+  for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {
-    painter.save();
-    painter.setPen( Qt::NoPen );
-    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
-    {
+    
+    // check validity
+    // update active rect
+    if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
+    { iter->setActiveRect( QRect( rect_top_left_, iter->begin().position() + rect_top_left_, rect_width_, rect_width_ ) ); }
       
-      // check validity
-      if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
-      {
-        iter->setActiveRect( QRect( rect_top_left_, iter->begin().position() + rect_top_left_, rect_width_, rect_width_ ) );
-        painter.drawRect( iter->activeRect() );
-      }
-      
-    }
-    painter.restore();
-  
   }
   
   // draw delimiters
-  painter.save();
-  if( custom_symbols_ )
-  {
-    // local style for custom painting
-    // should define this only once -per paint event-,
-    // before entering the loop over delimiters
-    painter.setBrush( foreground_ );
-    QPen pen( foreground_ );
-    pen.setWidthF( 1.5 );
-    painter.setPen( pen );
-    painter.setRenderHints( QPainter::Antialiasing );
-  } else painter.setBrush( Qt::NoBrush );
+  painter.setBrush( foreground_ );
+  QPen pen( foreground_ );
+  pen.setWidthF( 1.5 );
+  painter.setPen( pen );
+  painter.setRenderHints( QPainter::Antialiasing );
   
   for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
   {    
     if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
     { _drawDelimiter( painter, iter->activeRect(), iter->flag( BlockDelimiterSegment::COLLAPSED ) ); } 
   }
-  painter.restore();
      
 }
 
@@ -501,7 +478,6 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
   return; 
 
 }
-
 
 //________________________________________________________
 void BlockDelimiterDisplay::_expandAllBlocks( void )
@@ -993,46 +969,31 @@ CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& firs
 void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect, const bool& collapsed ) const
 {
   
-  if( custom_symbols_ )
+  QRectF local( rect );
+  local.adjust( 1.5, 1.5, -1.5, -1.5 );
+  if( collapsed )
   {
-    QRectF local( rect );
-    local.adjust( 1.5, 1.5, -1.5, -1.5 );
-    if( collapsed )
-    {
-      
-      double offset( local.height()/6 );
-      const QPointF points[3] = {
-         QPointF(local.topLeft()) + QPointF( offset, 0 ),
-         QPointF(local.bottomLeft()) + QPointF( offset, 0 ),
-         local.topLeft() + QPointF( local.width()*2/3, local.height()/2 ) + QPointF( offset, 0 )
-      };
+    
+    double offset( local.height()/6 );
+    const QPointF points[3] = {
+      QPointF(local.topLeft()) + QPointF( offset, 0 ),
+      QPointF(local.bottomLeft()) + QPointF( offset, 0 ),
+      local.topLeft() + QPointF( local.width()*2/3, local.height()/2 ) + QPointF( offset, 0 )
+    };
 
-      painter.drawConvexPolygon(points, 3);
-      
-    } else {
-
-      double offset( local.width()/6 );
-      const QPointF points[3] = {
-        QPointF(local.topLeft()) + QPointF( 0, offset ),
-        QPointF(local.topRight()) + QPointF( 0, offset ),
-        local.topLeft() + QPointF( local.width()/2, local.height()*2/3 ) + QPointF( 0, offset )
-      };
-
-      painter.drawConvexPolygon(points, 3);
-    }
+    painter.drawConvexPolygon(points, 3);
     
   } else {
     
-    QStyleOption option;
-    option.initFrom( &_editor() );
-    option.palette.setColor( QPalette::Text, foreground_ );
-    option.rect = rect;
-    option.state |= QStyle::State_Children;
-    if( !collapsed ) { option.state |= QStyle::State_Open; }
+    double offset( local.width()/6 );
+    const QPointF points[3] = {
+      QPointF(local.topLeft()) + QPointF( 0, offset ),
+      QPointF(local.topRight()) + QPointF( 0, offset ),
+      local.topLeft() + QPointF( local.width()/2, local.height()*2/3 ) + QPointF( 0, offset )
+    };
       
-    _editor().style()->drawPrimitive( QStyle::PE_IndicatorBranch, &option, &painter );
-    
-  } 
-
+    painter.drawConvexPolygon(points, 3);
+  }
+  
   return;
 }

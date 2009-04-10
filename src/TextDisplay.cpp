@@ -60,6 +60,7 @@
 #include "QuestionDialog.h"
 #include "QtUtil.h"
 #include "Singleton.h"
+#include "TextEditorMarginWidget.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
@@ -260,9 +261,9 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
 }
 
 //__________________________________________________________
-void TextDisplay::drawMargins( QPainter& painter )
+void TextDisplay::paintMargin( QPainter& painter )
 {
-  AnimatedTextEditor::drawMargins( painter );
+  AnimatedTextEditor::paintMargin( painter );
   bool has_block_delimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
   if( has_block_delimiters ) blockDelimiterDisplay().paint( painter ); 
 }
@@ -1130,7 +1131,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   if( blockDelimiterDisplay().expandAllAction().isEnabled() ) blockDelimiterDisplay().expandAllAction().trigger();   
   if( blockDelimiterDisplay().setBlockDelimiters( document_class.blockDelimiters() ) ) update();
   showBlockDelimiterAction().setVisible( !document_class.blockDelimiters().empty() );
-  _updateMargins();
+  _updateMargin();
   
   // update enability for parenthesis matching
   textHighlight().setParenthesisEnabled(
@@ -1407,7 +1408,7 @@ void TextDisplay::paintEvent( QPaintEvent* event )
   QPainter painter( viewport() );
   painter.setClipRect( event->rect() );
   painter.translate( -scrollbarPosition() );
-  if( _marginForegroundColor().isValid() ) painter.setPen( _marginForegroundColor() );
+  painter.setPen( _marginWidget().palette().color( QPalette::WindowText ) );
   
   // loop over found blocks  
   for( QTextBlock block( first ); block != last.next() && block.isValid(); block = block.next() )
@@ -1694,11 +1695,11 @@ void TextDisplay::_updateTaggedBlocks( void )
 }
 
 //___________________________________________________________________________
-bool TextDisplay::_updateMargins( void )
+bool TextDisplay::_updateMargin( void )
 {
-  Debug::Throw( "TextDisplay::_updateMargins.\n" );
+  Debug::Throw( "TextDisplay::_updateMargin.\n" );
 
-  AnimatedTextEditor::_updateMargins();
+  AnimatedTextEditor::_updateMargin();
   int left_margin( _leftMargin() );
   
   blockDelimiterDisplay().setOffset( left_margin );
@@ -1741,8 +1742,7 @@ void TextDisplay::_updateConfiguration( void )
   // block delimiters, line numbers and margin
   showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
   blockDelimiterDisplay().setWidth( fontMetrics().lineSpacing() );
-  blockDelimiterDisplay().setCustomSymbols( XmlOptions::get().get<bool>( "CUSTOM_BLOCK_DELIMITERS" ) );
-  _updateMargins();
+  _updateMargin();
   
   // retrieve diff colors
   diff_conflict_color_ = QColor( XmlOptions::get().raw("DIFF_CONFLICT_COLOR") );
@@ -1942,7 +1942,7 @@ void TextDisplay::_toggleAutoSpell( bool state )
 void TextDisplay::_toggleShowBlockDelimiters( bool state )
 {
     
-  _updateMargins();
+  _updateMargin();
   
   // need to expand all blocks if block delimiters is being hidden
   if( !state && hasBlockDelimiterDisplay() && blockDelimiterDisplay().expandAllAction().isEnabled() )

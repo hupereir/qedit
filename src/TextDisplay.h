@@ -136,7 +136,7 @@ class TextDisplay: public AnimatedTextEditor
   virtual void installContextMenuActions( QMenu& menu, const bool& all_actions = true );
 
   //! draw margins
-  virtual void drawMargins( QPainter& );
+  virtual void paintMargin( QPainter& );
 
   //! update flags (to be passed to TextEditor to change button status)
   enum UpdateFlags
@@ -545,7 +545,7 @@ class TextDisplay: public AnimatedTextEditor
   #endif
     
   //! update margins
-  virtual bool _updateMargins( void );
+  virtual bool _updateMargin( void );
     
   protected slots:
   
