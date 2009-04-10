@@ -4,13 +4,32 @@ TARGET = qedit
 CONFIG += qt release
 QT += xml network
 
-win32 {
-  DEFINES += QT_STATIC
-  DESTDIR = "C:/Program Files" 
-}
-
 VERSION = 2.1.2
 DEFINES += VERSION=\\\"$$VERSION\\\"
+
+win32 {
+
+  DEFINES += QT_STATIC
+  DESTDIR = "C:\Program Files" 
+ 
+  # this is needed to copy target into relevant versioned name
+  exists( \"$$DESTDIR\\upx.exe\" ) {
+     
+     # if available, use upx to compress the file
+     version.commands = "\"$$DESTDIR\\upx.exe\" -9 -f -o \"$$DESTDIR\\$$TARGET-qt4_"$$VERSION".exe\""  "\"$$DESTDIR\\"$$TARGET".exe\"
+
+  } else {
+
+     # simple copy
+     version.commands = @copy "\"$$DESTDIR\\"$$TARGET".exe\" \"$$DESTDIR\\$$TARGET-qt4_"$$VERSION".exe\""
+
+  }
+
+  # add to Post targets
+  QMAKE_EXTRA_TARGETS += version
+  QMAKE_POST_LINK += $$version.commands
+  
+}
 
 INCLUDEPATH = . ../base ../base-qt ../base-help ../base-server ../document-classes ../extra-includes ../filesystem
 DEPENDPATH += . ../base ../base-qt ../base-help ../base-server ../document-classes ../extra-includes ../filesystem
