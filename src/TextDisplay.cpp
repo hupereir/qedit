@@ -2222,6 +2222,7 @@ void TextDisplay::_fileProperties( void )
   grid_layout->setMargin(0);
   grid_layout->setSpacing( 5 );
   grid_layout->setMaxCount( 2 );
+    grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
   layout->addLayout( grid_layout );
   
   // number of characters
@@ -2232,16 +2233,16 @@ void TextDisplay::_fileProperties( void )
   grid_layout->addWidget( new QLabel( "Number of lines: ", box ) );
   grid_layout->addWidget( new QLabel( QString().setNum( AnimatedTextEditor::blockCount()), box ) );
   
-  grid_layout->addWidget( new QLabel( "Current paragraph highlighting: ", box ) );
-  grid_layout->addWidget( new QLabel( (blockHighlightAction().isChecked() ? "True":"False" ), box ) );
-  
   grid_layout->addWidget( new QLabel( "Text highlighting: ", box ) );
   grid_layout->addWidget( new QLabel( (textHighlight().isHighlightEnabled() ? "True":"False" ), box ) );
+
+  grid_layout->addWidget( new QLabel( "Paragraph highlighting: ", box ) );
+  grid_layout->addWidget( new QLabel( (blockHighlightAction().isChecked() ? "True":"False" ), box ) );
   
-  grid_layout->addWidget( new QLabel( "Matching parenthesis highlighting: ", box ) );
+  grid_layout->addWidget( new QLabel( "Parenthesis highlighting: ", box ) );
   grid_layout->addWidget( new QLabel( (textHighlight().isParenthesisEnabled() ? "True":"False" ), box ) );
   
-  grid_layout->addWidget( new QLabel( "Text indent: ", box ) );
+  grid_layout->addWidget( new QLabel( "Text indentation: ", box ) );
   grid_layout->addWidget( new QLabel( (textIndent().isEnabled() ? "True":"False" ), box ) );
   
   grid_layout->addWidget( new QLabel( "Text wrapping: ", box ) );
