@@ -232,20 +232,36 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   addOptionWidget( checkbox );
   addOptionWidget( combobox );
 
+  checkbox->setChecked( false );
+  combobox->setEnabled( false );
+  connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
+
   grid_layout->addWidget( checkbox = new OptionCheckBox( "Edition Toolbar", box, "EDITION_TOOLBAR" ));
   grid_layout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "EDITION_TOOLBAR_LOCATION" ));
   addOptionWidget( checkbox );
   addOptionWidget( combobox );
+
+  checkbox->setChecked( false );
+  combobox->setEnabled( false );
+  connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
 
   grid_layout->addWidget( checkbox = new OptionCheckBox( "Tools", box, "EXTRA_TOOLBAR" ));
   grid_layout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "EXTRA_TOOLBAR_LOCATION" ));
   addOptionWidget( checkbox );
   addOptionWidget( combobox );
 
+  checkbox->setChecked( false );
+  combobox->setEnabled( false );
+  connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
+
   grid_layout->addWidget( checkbox = new OptionCheckBox( "Multiple views Toolbar", box, "SPLIT_TOOLBAR" ));
   grid_layout->addWidget( new CustomToolBar::LocationComboBox( box, "SPLIT_TOOLBAR_LOCATION" ));
   addOptionWidget( checkbox );
   addOptionWidget( combobox );
+
+  checkbox->setChecked( false );
+  combobox->setEnabled( false );
+  connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
 
   // printing
   page = &addPage( "Printing", "Commands used for printing" );
@@ -281,11 +297,11 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   box->layout()->setSpacing(5);
   box->layout()->setMargin(5);
 
-  box->layout()->addWidget( checkbox = new OptionCheckBox( "Save backup", box, "BACKUP" ) );
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "Make backup of files when saving modifications", box, "BACKUP" ) );
   checkbox->setToolTip( "Make backup of the file prior to saving modifications" );
   addOptionWidget( checkbox );
    
-  box->layout()->addWidget( checkbox = new OptionCheckBox( "Autosave", box, "AUTOSAVE" ) );
+  box->layout()->addWidget( checkbox = new OptionCheckBox( "Save files automatically for crash recovery", box, "AUTOSAVE" ) );
   checkbox->setToolTip( 
     "Make automatic copies of edited files in\n"
     "specified directory to allow crash recovery." );
@@ -310,7 +326,13 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   grid_layout->addWidget( edit = new OptionBrowsedLineEditor( box, "AUTOSAVE_PATH" ) );
   edit->setToolTip( "Directory where autosaved files are stored" );
   addOptionWidget( edit );
-  
+
+  checkbox->setChecked( false );
+  spinbox->setEnabled( false );
+  edit->setEnabled( false );
+  connect( checkbox, SIGNAL( toggled( bool ) ), spinbox, SLOT( setEnabled( bool ) ) );
+  connect( checkbox, SIGNAL( toggled( bool ) ), edit, SLOT( setEnabled( bool ) ) );
+
   // misc
   page->layout()->addWidget( box = new QGroupBox( "Misc", page ) );  
 
