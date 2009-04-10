@@ -86,13 +86,13 @@
  <macro name="Add comments">
   <rule>
    <regexp>^</regexp>
-   <replacement>%</replacement>
+   <replacement>% </replacement>
   </rule>
  </macro>
 
  <macro name="Remove comments">
   <rule>
-   <regexp>^%</regexp>
+   <regexp>^% </regexp>
    <replacement></replacement>
   </rule>
  </macro>

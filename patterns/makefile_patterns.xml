@@ -148,7 +148,7 @@
 
     <macro name="Remove comments">
       <rule>
-      <regexp># </regexp>
+      <regexp>^# </regexp>
       <replacement></replacement>
       </rule>
     </macro>
