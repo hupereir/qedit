@@ -1741,8 +1741,14 @@ void TextDisplay::_updateConfiguration( void )
 
   // block delimiters, line numbers and margin
   showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
-  blockDelimiterDisplay().setWidth( fontMetrics().lineSpacing() );
-  _updateMargin();
+
+  {
+    QFont font;
+    font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ) );
+    int line_spacing = QFontMetrics( font ).lineSpacing() + 1;
+    blockDelimiterDisplay().setWidth( line_spacing );
+    _updateMargin();
+  }
   
   // retrieve diff colors
   diff_conflict_color_ = QColor( XmlOptions::get().raw("DIFF_CONFLICT_COLOR") );
@@ -1861,6 +1867,7 @@ void TextDisplay::_toggleTextHighlight( bool state )
     BASE::KeySet<TextDisplay> displays( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     { if( (*iter)->isSynchronized() ) (*iter)->textHighlightAction().setChecked( state ); }
+
     setSynchronized( true );
 
   }
