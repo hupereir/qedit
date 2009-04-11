@@ -1,5 +1,5 @@
-#ifndef Icons_h
-#define Icons_h
+#ifndef DocumentClassIcons_h
+#define DocumentClassIcons_h
 
 // $Id$
 
@@ -34,33 +34,16 @@
 
 #include <QString>
 #include "BaseIcons.h"
-#include "DocumentClassIcons.h"
-#include "FileSystemIcons.h"
 
 //! namespace for icon static name wrappers
 namespace ICONS
 {
   
-  static const QString CLOSE = "fileclose.png"; 
-  
-  static const QString DOCUMENTS = "documents.png"; 
-  static const QString HISTORY = "history.png"; 
-  static const QString FILESYSTEM = "user-home.png"; 
-  
-  static const QString NEW = "filenew.png"; 
-  static const QString SAVE_ALL = "save_all.png"; 
-  static const QString HTML="html.png";
-  static const QString PDF = "pdf.png";
-  static const QString INDENT="indent.png";
-  static const QString SPELLCHECK = "fonts.png";
-  static const QString VIEW_LEFTRIGHT = "view_left_right.png";
-  static const QString VIEW_TOPBOTTOM = "view_top_bottom.png";
-  static const QString VIEW_RIGHT = "view_right.png";
-  static const QString VIEW_BOTTOM = "view_bottom.png";
-  static const QString VIEW_REMOVE = "view_remove.png";
-  static const QString VIEW_DETACH = "window_fullscreen.png";
-  
-  static const QString TAG = "bookmark.png";
+  static const QString SAVE = "filesave.png";
+  static const QString SAVE_AS = "filesaveas.png"; 
+
+  static const QString UP = "up.png";
+  static const QString DOWN = "down.png";
     
 };
 

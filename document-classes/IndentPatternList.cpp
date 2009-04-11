@@ -32,6 +32,8 @@
 #include <QHeaderView>
 #include <QLayout>
 
+#include "DocumentClassIcons.h"
+#include "IconEngine.h"
 #include "IndentPatternDialog.h"
 #include "IndentPatternList.h"
 #include "InformationDialog.h"
@@ -72,24 +74,24 @@ IndentPatternList::IndentPatternList( QWidget* parent ):
   h_layout->addLayout( v_layout );
 
   QPushButton* button;
-  v_layout->addWidget( button = new QPushButton( "&Add", this ) );
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
   button->setToolTip( "Add a new Indent pattern to the list" );
   connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
-  
-  v_layout->addWidget( edit_button_ = new QPushButton( "&Edit", this ) );
-  edit_button_->setToolTip( "Edit selected Indent pattern" );
-  connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
-  v_layout->addWidget( remove_button_ = new QPushButton( "&Remove", this ) );
+  v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
   remove_button_->setToolTip( "Remove selected Indent pattern" );
   connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
   
-  v_layout->addWidget( button = new QPushButton( "Move &Up", this ) );
+  v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
+  edit_button_->setToolTip( "Edit selected Indent pattern" );
+  connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
+  
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move &Up", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _up() ) );
   button->setToolTip( "Move up selected items" );
   move_up_button_ = button;
   
-  v_layout->addWidget( button = new QPushButton( "Move &Down", this ) );
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move &Down", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _down() ) );
   button->setToolTip( "Move down selected items" );  
   move_down_button_ = button;

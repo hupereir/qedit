@@ -42,7 +42,7 @@ using namespace std;
 
 //________________________________________________________________________
 HighlightStyleDialog::HighlightStyleDialog( QWidget* parent ):
-  CustomDialog( parent )
+  CustomDialog( parent, CustomDialog::OK_BUTTON|CustomDialog::CANCEL_BUTTON|CustomDialog::SEPARATOR )
 {
   
   Debug::Throw( "HighlightStyleDialog::HighlightStyleDialog.\n" );
@@ -51,6 +51,7 @@ HighlightStyleDialog::HighlightStyleDialog( QWidget* parent ):
   grid_layout->setSpacing( 5 );
   grid_layout->setMargin( 0 );
   grid_layout->setMaxCount( 2 );
+  grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
   mainLayout().addLayout( grid_layout );
  
   grid_layout->addWidget( new QLabel( "Name: ", this ) );

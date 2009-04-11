@@ -13,6 +13,7 @@ HEADERS = \
   DocumentClass.h \
   DocumentClassConfiguration.h \
   DocumentClassDialog.h \
+  DocumentClassIcons.h \
   DocumentClassManager.h \
   DocumentClassManagerDialog.h \
   DocumentClassModel.h \

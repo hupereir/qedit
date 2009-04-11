@@ -32,14 +32,14 @@
 #include <QLayout>
 #include <QPushButton>
 
-#include "BaseIcons.h"
-#include "FileDialog.h"
 #include "Debug.h"
 #include "DocumentClass.h"
+#include "DocumentClassIcons.h"
 #include "DocumentClassManagerDialog.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassDialog.h"
-#include "HighlightStyleList.h"
+#include "FileDialog.h"
+#include "IconEngine.h"
 #include "Options.h" 
 #include "PixmapEngine.h"
 #include "QuestionDialog.h"
@@ -72,6 +72,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
     label->setPixmap( question_pixmap );
     layout->addWidget( label );
   }
+  
   layout->addWidget( new QLabel( 
     "This feature is work-in-progress. Right now this allows \n"
     "to display and edit some of the document classes components, but \n"
@@ -100,28 +101,28 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   layout->addLayout( v_layout );
   
   // edit
-  v_layout->addWidget( edit_button_ = new QPushButton( "&Edit", this ) );
+  v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
   connect( edit_button_, SIGNAL( clicked() ), this, SLOT( _edit() ) ); 
   edit_button_->setToolTip( "Edit file from which selected document class is read" );
 
   // remove
-  v_layout->addWidget( remove_button_ = new QPushButton( "&Remove", this ) );
+  v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
   connect( remove_button_, SIGNAL( clicked() ), this, SLOT( _remove() ) ); 
   remove_button_->setToolTip( "Remove selected document class from list" );
 
   // save document class to file
-  v_layout->addWidget( save_button_ = new QPushButton( "Save &As", this ) );
+  v_layout->addWidget( save_button_ = new QPushButton( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this ) );
   connect( save_button_, SIGNAL( clicked() ), this, SLOT( _save() ) );  
   save_button_->setToolTip( "Save selected document classe to a file" );
 
   // load
   QPushButton *button;
-  v_layout->addWidget( button = new QPushButton( "&Load File", this ) ); 
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::OPEN ), "&Load File", this ) ); 
   connect( button, SIGNAL( clicked() ), this, SLOT( _loadFile() ) );  
   button->setToolTip( "Load additional classes from file" );
 
   // reload
-  v_layout->addWidget( button = new QPushButton( "Rel&oad", this ) ); 
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::RELOAD ), "Rel&oad", this ) ); 
   connect( button, SIGNAL( clicked() ), this, SLOT( _reload() ) );
   button->setToolTip( "Reload all classes" );
 

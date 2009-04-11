@@ -32,8 +32,10 @@
 #include <QHeaderView>
 #include <QLayout>
 
+#include "BaseIcons.h"
 #include "HighlightStyleDialog.h"
 #include "HighlightStyleList.h"
+#include "IconEngine.h"
 #include "InformationDialog.h"
 #include "QuestionDialog.h"
 #include "TreeView.h"
@@ -71,17 +73,17 @@ HighlightStyleList::HighlightStyleList( QWidget* parent ):
   h_layout->addLayout( v_layout );
 
   QPushButton* button;
-  v_layout->addWidget( button = new QPushButton( "&Add", this ) );
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
   button->setToolTip( "Add a new highlight style to the list" );
   connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
-  
-  v_layout->addWidget( edit_button_ = new QPushButton( "&Edit", this ) );
-  edit_button_->setToolTip( "Edit selected highlight style" );
-  connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
-  v_layout->addWidget( remove_button_ = new QPushButton( "&Remove", this ) );
+  v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
   remove_button_->setToolTip( "Remove selected highlight style" );
   connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
+  
+  v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
+  edit_button_->setToolTip( "Edit selected highlight style" );
+  connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
   
   v_layout->addStretch();
   

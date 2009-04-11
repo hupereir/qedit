@@ -43,7 +43,7 @@ using namespace std;
 
 //____________________________________________________
 DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
-  QGroupBox( "General", parent ),
+  QWidget( parent ),
   Counter( "DocumentClassConfiguration" )
 {
   Debug::Throw( "DocumentClassConfiguration::DocumentClassConfiguration.\n" );
@@ -56,6 +56,7 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
   grid_layout->setSpacing(5);
   grid_layout->setMargin(0);
   grid_layout->setMaxCount(2);
+  grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
   layout()->addItem( grid_layout );
   
   // file editor

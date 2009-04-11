@@ -30,9 +30,10 @@
   \version $Revision$
   \date $Date$
 */
-#include <QSpinBox>
-#include <QGroupBox>
+
 #include <QCheckBox>
+#include <QSpinBox>
+#include <QWidget>
 
 #include "Counter.h"
 #include "DocumentClass.h"
@@ -41,7 +42,7 @@ class LineEditor;
 class BrowsedLineEditor;
 
 //! List box for HighlightPatterns
-class DocumentClassConfiguration: public QGroupBox, public Counter
+class DocumentClassConfiguration: public QWidget, public Counter
 {
   
   public:

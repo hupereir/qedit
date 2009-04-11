@@ -56,7 +56,7 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   _list().setMaximumWidth( 120 );
   
   // general
-  QWidget* page = &addPage( "General" );
+  QWidget* page = &addPage( "General", "Document class general settings" );
   page->layout()->addWidget( document_class_configuration_ = new DocumentClassConfiguration( page ) );
   
   // highlight styles
@@ -79,6 +79,8 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   page->layout()->addWidget( text_macro_list_ = new TextMacroList() );
 
   // buttons
+  _buttonLayout().addStretch( 1 );
+  
   QPushButton* button;
   _buttonLayout().addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&OK", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( accept() ) );

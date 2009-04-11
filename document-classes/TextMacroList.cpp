@@ -32,10 +32,12 @@
 #include <QHeaderView>
 #include <QLayout>
 
-#include "TextMacroDialog.h"
-#include "TextMacroList.h"
+#include "DocumentClassIcons.h"
+#include "IconEngine.h"
 #include "InformationDialog.h"
 #include "QuestionDialog.h"
+#include "TextMacroDialog.h"
+#include "TextMacroList.h"
 #include "TreeView.h"
 
 using namespace std;
@@ -72,28 +74,28 @@ TextMacroList::TextMacroList( QWidget* parent ):
   h_layout->addLayout( v_layout );
 
   QPushButton* button;
-  v_layout->addWidget( button = new QPushButton( "&Add", this ) );
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
   button->setToolTip( "Add a new macro to the list" );
   connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
 
-  v_layout->addWidget( button = new QPushButton( "&Add Separator", this ) );
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add Separator", this ) );
   button->setToolTip( "Add separator to the list" );
   connect( button, SIGNAL( clicked() ), SLOT( _addSeparator() ) );
-  
-  v_layout->addWidget( edit_button_ = new QPushButton( "&Edit", this ) );
-  edit_button_->setToolTip( "Edit selected macro" );
-  connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
-  v_layout->addWidget( remove_button_ = new QPushButton( "&Remove", this ) );
+  v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
   remove_button_->setToolTip( "Remove selected macro" );
   connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
+  
+  v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
+  edit_button_->setToolTip( "Edit selected macro" );
+  connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
     
-  v_layout->addWidget( button = new QPushButton( "Move &Up", this ) );
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move &Up", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _up() ) );
   button->setToolTip( "Move up selected items" );
   move_up_button_ = button;
   
-  v_layout->addWidget( button = new QPushButton( "Move &Down", this ) );
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move &Down", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _down() ) );
   button->setToolTip( "Move down selected items" );  
   move_down_button_ = button;

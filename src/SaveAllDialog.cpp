@@ -56,8 +56,8 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
   h_layout->addWidget( label, 0, Qt::AlignHCenter );
 
   // create label text
-  static const unsigned int max_line_size( 50 );
-  unsigned int current_line( 0 );
+  static const int max_line_size( 50 );
+  int current_line( 0 );
   QString buffer;
   QTextStream what( &buffer );
   what << "Modified: ";
