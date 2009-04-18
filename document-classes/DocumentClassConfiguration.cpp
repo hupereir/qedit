@@ -34,10 +34,10 @@
 #include <QLabel>
 #include <QLayout>
 
+#include "AnimatedLineEditor.h"
 #include "BrowsedLineEditor.h"
 #include "GridLayout.h"
 #include "DocumentClassConfiguration.h"
-#include "LineEditor.h"
 
 using namespace std;
 

@@ -828,6 +828,7 @@ void MainWindow::_update( unsigned int flags )
   {
     Debug::Throw() << "MainWindow::_update - modifiers." << endl;
     QStringList modifiers;
+    if( activeDisplay().modifier( TextEditor::MODIFIER_WRAP ) ) modifiers << "WRAP";
     if( activeDisplay().modifier( TextEditor::MODIFIER_INSERT ) ) modifiers << "INS";
     if( activeDisplay().modifier( TextEditor::MODIFIER_CAPS_LOCK ) ) modifiers << "CAPS";
     if( activeDisplay().modifier( TextEditor::MODIFIER_NUM_LOCK ) ) modifiers << "NUM";
