@@ -35,7 +35,7 @@
 #include "CustomDialog.h"
 #include "TextMacro.h"
 
-class LineEditor;
+class AnimatedLineEditor;
 class TextMacroRuleList;
 
 //! Syntax highlighting macro editing dialog
@@ -58,10 +58,10 @@ class TextMacroDialog: public CustomDialog
   TextMacro macro_;
      
   //! name
-  LineEditor* name_editor_;
+  AnimatedLineEditor* name_editor_;
   
   //! accelerator
-  LineEditor* accelerator_editor_;
+  AnimatedLineEditor* accelerator_editor_;
   
   //! rules
   TextMacroRuleList* rule_list_;

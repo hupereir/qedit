@@ -34,7 +34,7 @@
 #include <QLabel>
 
 #include "GridLayout.h"
-#include "LineEditor.h"
+#include "AnimatedLineEditor.h"
 #include "IndentPatternDialog.h"
 #include "IndentPatternRuleList.h"
 #include "IndentPatternType.h"
@@ -60,7 +60,7 @@ IndentPatternDialog::IndentPatternDialog( QWidget* parent ):
   mainLayout().addLayout( grid_layout );
  
   grid_layout->addWidget( new QLabel( "Name: ", this ) );
-  grid_layout->addWidget( name_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( name_editor_ = new AnimatedLineEditor( this ) );
  
   // type
   grid_layout->addWidget( new QLabel( "Type: ", this ) );

@@ -37,7 +37,7 @@
 #include "CustomDialog.h"
 #include "FileRecord.h"
 
-class LineEditor;
+class AnimatedLineEditor;
 
 //! Edit/create keyword popup dialog
 class RenameFileDialog: public CustomDialog
@@ -65,11 +65,11 @@ class RenameFileDialog: public CustomDialog
   private:
         
   //! line editor
-  LineEditor& _editor( void ) const
+  AnimatedLineEditor& _editor( void ) const
   { return *editor_; }
   
   //! editor
-  LineEditor *editor_;  
+  AnimatedLineEditor *editor_;  
         
 };
 

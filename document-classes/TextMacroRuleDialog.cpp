@@ -34,7 +34,7 @@
 #include <QLabel>
 
 #include "GridLayout.h"
-#include "LineEditor.h"
+#include "AnimatedLineEditor.h"
 #include "TextMacroRuleDialog.h"
 
 /* One should add validity checking */
@@ -59,10 +59,10 @@ TextMacroRuleDialog::TextMacroRuleDialog( QWidget* parent ):
  
   //
   grid_layout->addWidget( new QLabel( "Regular expression to match: ", this ) );
-  grid_layout->addWidget( regexp_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( regexp_editor_ = new AnimatedLineEditor( this ) );
  
   grid_layout->addWidget( new QLabel( "Replacement text: ", this ) );
-  grid_layout->addWidget( text_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( text_editor_ = new AnimatedLineEditor( this ) );
 
   mainLayout().addWidget( split_checkbox_ = new QCheckBox( "Perform replacement line by line", this ) );
   split_checkbox_->setChecked( true );

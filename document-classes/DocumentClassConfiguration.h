@@ -38,7 +38,7 @@
 #include "Counter.h"
 #include "DocumentClass.h"
 
-class LineEditor;
+class AnimatedLineEditor;
 class BrowsedLineEditor;
 
 //! List box for HighlightPatterns
@@ -62,19 +62,19 @@ class DocumentClassConfiguration: public QWidget, public Counter
   DocumentClass document_class_;
   
   //! name editor
-  LineEditor* name_editor_;
+  AnimatedLineEditor* name_editor_;
   
   //! icon
-  LineEditor* icon_editor_;
+  AnimatedLineEditor* icon_editor_;
   
   //! name editor
   BrowsedLineEditor* file_editor_;
 
   //! file pattern editor
-  LineEditor* file_pattern_editor_;
+  AnimatedLineEditor* file_pattern_editor_;
   
   //! first line pattern editor
-  LineEditor* first_line_pattern_editor_;
+  AnimatedLineEditor* first_line_pattern_editor_;
   
   //! base indentation
   QSpinBox* base_indentation_spinbox_;

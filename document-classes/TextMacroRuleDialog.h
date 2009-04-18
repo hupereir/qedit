@@ -37,7 +37,7 @@
 #include "CustomDialog.h"
 #include "TextMacro.h"
 
-class LineEditor;
+class AnimatedLineEditor;
 
 //! Syntax highlighting delimiter editing dialog
 class TextMacroRuleDialog: public CustomDialog
@@ -57,10 +57,10 @@ class TextMacroRuleDialog: public CustomDialog
   private:
      
   //! regexp editor
-  LineEditor* regexp_editor_;
+  AnimatedLineEditor* regexp_editor_;
   
   //! end editor
-  LineEditor* text_editor_;
+  AnimatedLineEditor* text_editor_;
   
   //! rexexp editor
   QCheckBox* split_checkbox_;

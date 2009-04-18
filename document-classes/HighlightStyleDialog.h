@@ -35,7 +35,7 @@
 #include "CustomDialog.h"
 #include "HighlightStyle.h"
 
-class LineEditor;
+class AnimatedLineEditor;
 class ColorDisplay;
 class FontInfo;
 
@@ -57,7 +57,7 @@ class HighlightStyleDialog: public CustomDialog
   private:
   
   //! name editor
-  LineEditor* editor_;
+  AnimatedLineEditor* editor_;
   
   //! highlight color
   ColorDisplay* color_;

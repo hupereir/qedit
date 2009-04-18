@@ -65,18 +65,18 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
 
   // name editor
   grid_layout->addWidget( new QLabel( "Name: ", this ) );
-  grid_layout->addWidget( name_editor_ = new LineEditor( this ) );  
+  grid_layout->addWidget( name_editor_ = new AnimatedLineEditor( this ) );  
   
   // icon editor
   grid_layout->addWidget( new QLabel( "Icon: ", this ) );
-  grid_layout->addWidget( icon_editor_ = new LineEditor( this ) );  
+  grid_layout->addWidget( icon_editor_ = new AnimatedLineEditor( this ) );  
   
   grid_layout->addWidget( new QLabel( "File name pattern: ", this ) );
-  grid_layout->addWidget( file_pattern_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( file_pattern_editor_ = new AnimatedLineEditor( this ) );
   file_pattern_editor_->setToolTip( "Regular expression used to determine document class from file name." );
   
   grid_layout->addWidget( new QLabel( "First line pattern: ", this ) );
-  grid_layout->addWidget( first_line_pattern_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( first_line_pattern_editor_ = new AnimatedLineEditor( this ) );
   first_line_pattern_editor_->setToolTip( "Regular expression used to determine document class from the first line of the file." );
   
   // base indentation

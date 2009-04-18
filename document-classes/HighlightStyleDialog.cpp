@@ -33,6 +33,7 @@
 #include <QLayout>
 #include <QLabel>
 
+#include "AnimatedLineEditor.h"
 #include "HighlightStyleDialog.h"
 #include "ColorDisplay.h"
 #include "GridLayout.h"
@@ -55,7 +56,7 @@ HighlightStyleDialog::HighlightStyleDialog( QWidget* parent ):
   mainLayout().addLayout( grid_layout );
  
   grid_layout->addWidget( new QLabel( "Name: ", this ) );
-  grid_layout->addWidget( editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( editor_ = new AnimatedLineEditor( this ) );
  
   grid_layout->addWidget( new QLabel( "Font color: ", this ) );
   grid_layout->addWidget( color_ = new ColorDisplay( this ) );

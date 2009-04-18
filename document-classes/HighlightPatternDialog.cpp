@@ -34,7 +34,7 @@
 #include <QLabel>
 
 #include "GridLayout.h"
-#include "LineEditor.h"
+#include "AnimatedLineEditor.h"
 #include "TextEditor.h"
 #include "HighlightPatternDialog.h"
 #include "HighlightPatternOptions.h"
@@ -61,7 +61,7 @@ HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
   mainLayout().addLayout( grid_layout );
  
   grid_layout->addWidget( new QLabel( "Name: ", this ) );
-  grid_layout->addWidget( name_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( name_editor_ = new AnimatedLineEditor( this ) );
  
   // parent
   grid_layout->addWidget( new QLabel( "Parent pattern: ", this ) );
@@ -80,10 +80,10 @@ HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
   
   // regular expressions
   grid_layout->addWidget( new QLabel( "Regular expression to match: ", this ) );
-  grid_layout->addWidget( keyword_regexp_editor_ = new LineEditor( this ) ); 
+  grid_layout->addWidget( keyword_regexp_editor_ = new AnimatedLineEditor( this ) ); 
 
   grid_layout->addWidget( end_regexp_label_ = new QLabel( "Ending regular expression: ", this ) );
-  grid_layout->addWidget( end_regexp_editor_ = new LineEditor( this ) ); 
+  grid_layout->addWidget( end_regexp_editor_ = new AnimatedLineEditor( this ) ); 
 
   // options
   mainLayout().addWidget( pattern_options_ = new HighlightPatternOptions( this ) );

@@ -35,7 +35,7 @@
 #include "CustomDialog.h"
 #include "TextParenthesis.h"
 
-class LineEditor;
+class AnimatedLineEditor;
 
 //! Syntax highlighting parenthesis editing dialog
 class TextParenthesisDialog: public CustomDialog
@@ -55,13 +55,13 @@ class TextParenthesisDialog: public CustomDialog
   private:
      
   //! fist parenthesis editor
-  LineEditor* first_editor_;
+  AnimatedLineEditor* first_editor_;
   
   //! end editor
-  LineEditor* second_editor_;
+  AnimatedLineEditor* second_editor_;
   
   //! rexexp editor
-  LineEditor* regexp_editor_;
+  AnimatedLineEditor* regexp_editor_;
   
 };
 

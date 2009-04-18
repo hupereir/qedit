@@ -37,7 +37,7 @@
 #include "CustomDialog.h"
 #include "IndentPattern.h"
 
-class LineEditor;
+class AnimatedLineEditor;
 class IndentPatternType;
 class IndentPatternRuleList;
 
@@ -62,7 +62,7 @@ class IndentPatternDialog: public CustomDialog
   IndentPattern pattern_;
   
   //! name editor
-  LineEditor* name_editor_;
+  AnimatedLineEditor* name_editor_;
   
   //! type
   IndentPatternType* pattern_type_;

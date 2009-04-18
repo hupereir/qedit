@@ -34,7 +34,7 @@
 #include <QLabel>
 
 #include "GridLayout.h"
-#include "LineEditor.h"
+#include "AnimatedLineEditor.h"
 #include "IndentPatternRuleDialog.h"
 
 /* One should add validity checking */
@@ -59,7 +59,7 @@ IndentPatternRuleDialog::IndentPatternRuleDialog( QWidget* parent ):
  
   //
   grid_layout->addWidget( new QLabel( "Regular expression to match: ", this ) );
-  grid_layout->addWidget( regexp_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( regexp_editor_ = new AnimatedLineEditor( this ) );
  
   grid_layout->addWidget( new QLabel( "Paragraph to match (befor current): ", this ) );
   grid_layout->addWidget( paragraph_spinbox_ = new QSpinBox( this ) );

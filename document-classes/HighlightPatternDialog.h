@@ -39,7 +39,7 @@
 #include "HighlightPattern.h"
 #include "HighlightStyle.h"
 
-class LineEditor;
+class AnimatedLineEditor;
 class TextEditor;
 class HighlightPatternOptions;
 class HighlightPatternType;
@@ -82,16 +82,16 @@ class HighlightPatternDialog: public CustomDialog
   HighlightPattern pattern_;
   
   //! name editor
-  LineEditor* name_editor_;
+  AnimatedLineEditor* name_editor_;
   
   //! keyword regexp editor
-  LineEditor* keyword_regexp_editor_;
+  AnimatedLineEditor* keyword_regexp_editor_;
   
   //! end regexp label
   QLabel* end_regexp_label_;
   
   //! end regexp edit
-  LineEditor* end_regexp_editor_;
+  AnimatedLineEditor* end_regexp_editor_;
 
   //! options
   HighlightPatternOptions* pattern_options_;

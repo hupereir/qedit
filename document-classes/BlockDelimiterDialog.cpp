@@ -34,7 +34,7 @@
 #include <QLabel>
 
 #include "GridLayout.h"
-#include "LineEditor.h"
+#include "AnimatedLineEditor.h"
 #include "BlockDelimiterDialog.h"
 
 /* One should add validity checking */
@@ -59,13 +59,13 @@ BlockDelimiterDialog::BlockDelimiterDialog( QWidget* parent ):
  
   //
   grid_layout->addWidget( new QLabel( "First delimiter string: ", this ) );
-  grid_layout->addWidget( first_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( first_editor_ = new AnimatedLineEditor( this ) );
  
   grid_layout->addWidget( new QLabel( "Second delimiter string: ", this ) );
-  grid_layout->addWidget( second_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( second_editor_ = new AnimatedLineEditor( this ) );
 
   grid_layout->addWidget( new QLabel( "Regular expression to match both delimiters: ", this ) );
-  grid_layout->addWidget( regexp_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( regexp_editor_ = new AnimatedLineEditor( this ) );
   
 }
 

@@ -38,7 +38,7 @@
 #include "CustomDialog.h"
 #include "IndentPattern.h"
 
-class LineEditor;
+class AnimatedLineEditor;
 
 //! Syntax highlighting delimiter editing dialog
 class IndentPatternRuleDialog: public CustomDialog
@@ -58,7 +58,7 @@ class IndentPatternRuleDialog: public CustomDialog
   private:
      
   //! regexp editor
-  LineEditor* regexp_editor_;
+  AnimatedLineEditor* regexp_editor_;
   
   //! paragraph spinbox
   QSpinBox* paragraph_spinbox_;

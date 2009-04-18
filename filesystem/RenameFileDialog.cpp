@@ -33,7 +33,7 @@
 #include <QLabel>
 
 #include "Debug.h"
-#include "LineEditor.h"
+#include "AnimatedLineEditor.h"
 #include "RenameFileDialog.h"
 
 using namespace std;
@@ -48,7 +48,7 @@ RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):
   QString buffer;
   QTextStream( &buffer ) << "Rename the item '" << record.file() << "' to:"; 
   mainLayout().addWidget( new QLabel( buffer, this ) );
-  mainLayout().addWidget( editor_ = new LineEditor( this ) );
+  mainLayout().addWidget( editor_ = new AnimatedLineEditor( this ) );
 
   // set editor text
   _editor().setText( record.file() );

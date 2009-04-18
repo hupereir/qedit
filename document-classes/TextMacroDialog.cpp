@@ -34,7 +34,7 @@
 #include <QLabel>
 
 #include "GridLayout.h"
-#include "LineEditor.h"
+#include "AnimatedLineEditor.h"
 #include "TextMacroDialog.h"
 #include "TextMacroRuleList.h"
 
@@ -60,11 +60,11 @@ TextMacroDialog::TextMacroDialog( QWidget* parent ):
  
   // name
   grid_layout->addWidget( new QLabel( "Name: ", this ) );
-  grid_layout->addWidget( name_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( name_editor_ = new AnimatedLineEditor( this ) );
  
   // accelerator
   grid_layout->addWidget( new QLabel( "Accelerator: ", this ) );
-  grid_layout->addWidget( accelerator_editor_ = new LineEditor( this ) );
+  grid_layout->addWidget( accelerator_editor_ = new AnimatedLineEditor( this ) );
 
   // list
   mainLayout().addWidget( rule_list_ = new TextMacroRuleList( this ) );
