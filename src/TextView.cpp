@@ -372,7 +372,6 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
  
     // associate new display to active
     BASE::Key::associate( &display, &active_display_local );
-    emit displayCountChanged();
 
   } else {
 
@@ -382,6 +381,9 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
 
   }
 
+  // display count has changed
+  emit displayCountChanged();
+  
   return display;
 
 }

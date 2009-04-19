@@ -163,41 +163,7 @@ class SessionFilesFrame: public QWidget, public Counter
     
   //! model
   SessionFilesModel model_;
-  
-  class View: public TreeView
-  {
     
-    public:
-    
-    //! constructor
-    View( QWidget* parent, SessionFilesModel* model ):
-      TreeView( parent ),
-      model_( model )
-      { setModel( model ); }
-      
-    protected:
-        
-    //! timer event 
-    /*! it is used to enable/disable drag */
-    virtual void timerEvent( QTimerEvent* );
-    
-    //! mouse press
-    virtual void mousePressEvent( QMouseEvent* );
-    
-    //! mouse release
-    virtual void mouseReleaseEvent( QMouseEvent* );
-    
-    private:
-    
-    //! local pointer to model
-    SessionFilesModel* model_;
-
-    //! drag timer
-    QBasicTimer drag_timer_;
-  
-    
-  };
-  
   //! list
   TreeView* list_;
     

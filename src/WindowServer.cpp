@@ -115,6 +115,7 @@ MainWindow& WindowServer::newMainWindow( void )
   connect( &window->detachAction(), SIGNAL( triggered() ), SLOT( _detach() ) );
 
   connect( &window->navigationFrame().sessionFilesFrame().model(), SIGNAL( reparentFiles( const File&, const File& ) ), SLOT( _reparent( const File&, const File& ) ) );
+  connect( &window->navigationFrame().sessionFilesFrame().model(), SIGNAL( reparentFilesToMain( const File&, const File& ) ), SLOT( _reparentToMain( const File&, const File& ) ) );
   
   // open actions
   connect( &window->menu().recentFilesMenu(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _open( FileRecord ) ) );
@@ -680,21 +681,21 @@ void WindowServer::_detach( void )
   // check number of independent displays
   assert( active_window_local.activeView().independentDisplayCount() > 1 || BASE::KeySet<TextView>( &_activeWindow() ).size() > 1 );
   
-  // check number of displays associated to active
+  // get current display
   TextDisplay& active_display_local( active_window_local.activeView().activeDisplay() );
-  BASE::KeySet<TextDisplay> associated_displays( active_display_local );
-  if( !( associated_displays.empty() ||
-    QuestionDialog( &active_window_local,
-    "Active display has clones in the current window.\n"
-    "They will be closed when the display is detached.\n"
-    "Continue ?" ).exec() ) ) return;
 
+  // check number of displays associated to active
+  if( !BASE::KeySet<TextDisplay>(active_display_local).empty() )
+  {
+    InformationDialog( &active_window_local,
+      "Software limitation:\n"
+      "Active display has clones in the current window.\n"
+      "It cannot be detached." ).exec();
+    return;
+  }
+    
   // save modification state
   bool modified( active_display_local.document()->isModified() );
-
-  // close all clone displays
-  for( BASE::KeySet<TextDisplay>::iterator iter = associated_displays.begin(); iter != associated_displays.end(); iter++ )
-  { active_window_local.activeView().closeDisplay( **iter ); }
   
   // create MainWindow
   MainWindow& window( newMainWindow() );
@@ -703,13 +704,13 @@ void WindowServer::_detach( void )
   // clone its display from the current
   window.activeView().activeDisplay().synchronize( &active_display_local );
 
-  // delete active display local
+  // close display
   active_display_local.document()->setModified( false );
   active_window_local.activeView().closeDisplay( active_display_local );
 
-  // show the new window
+  // update modification state
   window.activeView().activeDisplay().document()->setModified( modified );
-
+   
   return;
   
 }
@@ -718,38 +719,93 @@ void WindowServer::_detach( void )
 void WindowServer::_reparent( const File& first, const File& second )
 {
   
-  Debug::Throw(0) << "WindowServer::_reparent - first: " << first << " second: " << second << endl;
+  Debug::Throw( "WindowServer::_reparent.\n" );
 
   // retrieve windows
-  TextDisplay& active_display_local( _findDisplay( first ) );
+  TextDisplay& first_display( _findDisplay( first ) );
+  TextView& first_view( _findView( first ) );
   
   // check for first display clones
-  BASE::KeySet<TextDisplay> associated_displays( active_display_local );
-  if( !( associated_displays.empty() ||
-    QuestionDialog( &active_display_local,
-    "Dropped display has clones in the current window.\n"
-    "They will be closed when the display is reparented.\n"
-    "Continue ?" ).exec() ) ) return;
+  if( !BASE::KeySet<TextDisplay>(first_display).empty() )
+  {
+    InformationDialog( &first_display,
+      "Software limitation:\n"
+      "Dropped display has clones in the current window.\n"
+      "It cannot be reparented.\n" ).exec();
+    return;
+  }
   
   // save modification state
-  bool modified( active_display_local.document()->isModified() );
-
-  // close all clone displays
-  for( BASE::KeySet<TextDisplay>::iterator iter = associated_displays.begin(); iter != associated_displays.end(); iter++ )
-  { 
-    BASE::KeySet<TextView> views( **iter );
-    assert( views.size() == 1 );
-    (*views.begin())->closeDisplay( **iter );
-  }
+  bool modified( first_display.document()->isModified() );
 
   // retrieve second display and corresponding view
-  TextDisplay& second_display( _findDisplay( second ) );
-  BASE::KeySet<TextView> views( second_display );
-  assert( views.size() == 1 );
-  TextView& view = **views.begin();
+  TextView& view = _findView( second );
   
+  // do nothing if first and second display already belong to the same view
+  if( &view == &first_view ) return;
   
+  // create new display in text view
+  view.selectDisplay( second );
+  TextDisplay& new_display = view.splitDisplay( _orientation(), false );
+  new_display.synchronize( &first_display );
   
+  // close display
+  first_display.document()->setModified( false );
+  first_view.closeDisplay( first_display );
+  
+  // restore modification state
+  new_display.setModified( modified );
+
+  // select display in proper view
+  BASE::KeySet<MainWindow> windows( view );
+  assert( windows.size() == 1 );
+  (*windows.begin())->navigationFrame().sessionFilesFrame().select( first );
+
+  return;
+  
+}
+ 
+//_______________________________________________
+void WindowServer::_reparentToMain( const File& first, const File& second )
+{
+  
+  Debug::Throw( "WindowServer::_reparentToMain.\n" );
+
+  // retrieve windows
+  TextDisplay& first_display( _findDisplay( first ) );
+  TextView& first_view( _findView( first ) );
+  MainWindow& first_window( _findWindow( first ) );
+
+  // retrieve main window associated to second file
+  MainWindow& window( _findWindow( second ) );
+  
+  // make sure first view has multiple files
+  if( (&first_window == &window ) && first_view.independentDisplayCount() < 2 ) return;
+  
+  // check for first display clones
+  if( !BASE::KeySet<TextDisplay>(first_display).empty() )
+  {
+    InformationDialog( &first_display,
+      "Software limitation:\n"
+      "Dropped display has clones in the current window.\n"
+      "It cannot be reparented.\n" ).exec();
+    return;
+  }
+  
+  // save modification state
+  bool modified( first_display.document()->isModified() );
+
+  // create new text view in window
+  TextView& view( window.newTextView() );
+  view.activeDisplay().synchronize( &first_display );
+  
+  // close display
+  first_display.document()->setModified( false );
+  first_view.closeDisplay( first_display );
+
+  // restore modification state
+  view.activeDisplay().setModified( modified );
+ 
   return;
   
 }
@@ -896,6 +952,44 @@ bool WindowServer::_close( const list<QString>& files )
 }
 
 //_______________________________________________
+MainWindow& WindowServer::_findWindow( const File& file )
+{
+  MainWindow* out( 0 );
+  
+  // retrieve windows
+  BASE::KeySet<MainWindow> windows( this );
+  for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ ) 
+  { 
+  
+    // retrieve displays
+    BASE::KeySet<TextDisplay> displays( (*iter)->associatedDisplays() );
+    for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
+    {
+      if( (*display_iter)->file() == file ) 
+      {
+        out = *iter;
+        break;
+      }
+    }
+  
+  }
+
+  assert( out );
+  return *out;
+  
+}
+
+//_______________________________________________
+TextView& WindowServer::_findView( const File& file )
+{
+
+  TextDisplay& display = _findDisplay( file );
+  BASE::KeySet<TextView> views( display );
+  assert( views.size() == 1 );
+  return **views.begin();
+}
+
+//_______________________________________________
 TextDisplay& WindowServer::_findDisplay( const File& file )
 {
   TextDisplay* out( 0 );
@@ -922,7 +1016,6 @@ TextDisplay& WindowServer::_findDisplay( const File& file )
   return *out;
   
 }
-
 //_______________________________________________
 FileRecord WindowServer::_selectFileFromDialog( void )
 {

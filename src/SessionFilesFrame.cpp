@@ -62,8 +62,9 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   layout()->setSpacing(2);
   
   // list
-  layout()->addWidget( list_ = new View( this, &_model() ) );
-  list().setSelectionMode( QAbstractItemView::ContiguousSelection ); 
+  _model().setDragEnabled( true );
+  layout()->addWidget( list_ = new TreeView( this ) );
+  list().setModel( &_model() );
   list().setOptionName( "SESSION_FILES" );
   list().header()->hide();
   list().setDragEnabled( true );
@@ -312,35 +313,4 @@ void SessionFilesFrame::_installActions( void )
   _closeAction().setShortcut( Qt::Key_Delete );
   _closeAction().setToolTip( "Close selected files" );
 
-}
-
-//______________________________________________________________________
-void SessionFilesFrame::View::timerEvent( QTimerEvent* event )
-{ 
-  if( event->timerId() == drag_timer_.timerId() )
-  {
-    Debug::Throw( "SessionFilesFrame::View::timerEvent - timer event recieved.\n" );
-    drag_timer_.stop();
-    model_->setDragEnabled(true);
-
-  }
-  
-  return TreeView::timerEvent( event ); 
-}
-
-//______________________________________________________________________
-void SessionFilesFrame::View::mousePressEvent( QMouseEvent* event )
-{ 
-  Debug::Throw( "SessionFilesFrame::View::mousePressEvent.\n" );
-  model_->setDragEnabled(false);
-  drag_timer_.start( 200, this );
-  return TreeView::mousePressEvent( event ); 
-}
-
-//______________________________________________________________________
-void SessionFilesFrame::View::mouseReleaseEvent( QMouseEvent* event )
-{ 
-  Debug::Throw( "SessionFilesFrame::View::mouseReleaseEvent.\n" );
-  drag_timer_.stop();
-  return TreeView::mouseReleaseEvent( event ); 
 }

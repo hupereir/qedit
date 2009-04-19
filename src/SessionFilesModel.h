@@ -74,9 +74,12 @@ class SessionFilesModel: public FileRecordModel
   
   signals:
   
-  //! signal file reorganization
+  //! file reorganization
   void reparentFiles( const File&, const File& );
 
+  //! file reorganization
+  void reparentFilesToMain( const File&, const File& );
+  
   private slots:
   
   //! configuration
