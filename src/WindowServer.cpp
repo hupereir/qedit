@@ -698,6 +698,7 @@ void WindowServer::_detach( void )
   
   // create MainWindow
   MainWindow& window( newMainWindow() );
+  window.show();
 
   // clone its display from the current
   window.activeView().activeDisplay().synchronize( &active_display_local );
@@ -708,7 +709,6 @@ void WindowServer::_detach( void )
 
   // show the new window
   window.activeView().activeDisplay().document()->setModified( modified );
-  window.show();
 
   return;
   

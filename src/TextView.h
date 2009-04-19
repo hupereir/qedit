@@ -164,31 +164,27 @@ class TextView: public QWidget, public Counter, public BASE::Key
   
   //! create new TextDisplay
   TextDisplay& _newTextDisplay( QWidget* );
-  
-  //! local QSplitter object, derived from Counter
-  /*! helps keeping track of how many splitters are created/deleted */
-  class LocalSplitter: public QSplitter, public Counter
-  {
-    
-    public:
-    
-    //! constructor
-    LocalSplitter( QWidget* parent ):
-      QSplitter( parent ),
-      Counter( "LocalSplitter" )
-    { Debug::Throw( "LocalSplitter::LocalSplitter.\n" ); }
-
-    //! destructor
-    virtual ~LocalSplitter( void )
-    { Debug::Throw( "LocalSplitter::~LocalSplitter.\n" ); }
-    
-  };
- 
+   
   //! text display with focus
   TextDisplay* active_display_;
  
   //! position update timer
   QTimer position_timer_;
+  
+};
+
+//! local QSplitter object, derived from Counter
+/*! helps keeping track of how many splitters are created/deleted */
+class LocalSplitter: public QSplitter, public Counter
+{
+  
+  public:
+  
+  //! constructor
+  LocalSplitter( QWidget* );
+  
+  //! destructor
+  virtual ~LocalSplitter( void );
   
 };
 
