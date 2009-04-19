@@ -71,6 +71,7 @@ WindowServer::WindowServer( QObject* parent ):
   Counter( "WindowServer" ),
   first_call_( true ),
   default_orientation_( Qt::Horizontal ),
+  default_diff_orientation_( Qt::Vertical ),
   open_mode_( ACTIVE_WINDOW ),
   active_window_( 0 )
 { 
@@ -253,6 +254,13 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
   bool diff( parser.hasFlag( "--diff" ) );
   if( ( tabbed || diff ) && filenames.size() > 1 )
   {
+    Qt::Orientation orientation( defaultOrientation( diff ? DIFF:NORMAL ) );
+    if( parser.hasOption( "--orientation" ) )
+    {
+      QString value( parser.option( "--orientation" ) );
+      if( value == "vertical" ) orientation = Qt::Vertical;
+      else if( value == "horizontal" ) orientation = Qt::Horizontal;
+    }
 
     bool first( true );
     for( QStringList::const_iterator iter = filenames.begin(); iter != filenames.end(); iter++ )
@@ -269,7 +277,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
         
       } else { 
         
-        if( file_opened |= _open( File( *iter ).expand(), _activeWindow().orientation() ) )
+        if( file_opened |= _open( File( *iter ).expand(), orientation ) )
         { _applyArguments( _activeWindow().activeDisplay(), arguments ); }
         
       }
@@ -393,7 +401,8 @@ void WindowServer::_updateConfiguration( void )
   
   Debug::Throw( "WindowServer::_updateConfiguration.\n" );
   _setOpenMode( XmlOptions::get().raw( "OPEN_MODE" ) == MULTIPLE_WINDOWS ? NEW_WINDOW:ACTIVE_WINDOW );
-  _setOrientation( XmlOptions::get().raw( "ORIENTATION" ) == MainWindow::LEFT_RIGHT ? Qt::Horizontal : Qt::Vertical );
+  _setDefaultOrientation( NORMAL, XmlOptions::get().raw( "ORIENTATION" ) == MainWindow::LEFT_RIGHT ? Qt::Horizontal : Qt::Vertical );
+  _setDefaultOrientation( DIFF, XmlOptions::get().raw( "DIFF_ORIENTATION" ) == MainWindow::LEFT_RIGHT ? Qt::Horizontal : Qt::Vertical );
   
 }
 
@@ -746,7 +755,7 @@ void WindowServer::_reparent( const File& first, const File& second )
   
   // create new display in text view
   view.selectDisplay( second );
-  TextDisplay& new_display = view.splitDisplay( _orientation(), false );
+  TextDisplay& new_display = view.splitDisplay( defaultOrientation( NORMAL ), false );
   new_display.synchronize( &first_display );
   
   // close display

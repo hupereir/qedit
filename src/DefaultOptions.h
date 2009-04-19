@@ -116,6 +116,7 @@ void installDefaultOptions( void )
   /* multiple views */
   XmlOptions::get().set( "OPEN_MODE", Option( WindowServer::SINGLE_WINDOW, "define how new files should be opened when running in server mode" ) );
   XmlOptions::get().set( "ORIENTATION", Option( MainWindow::TOP_BOTTOM, "default orientation for splitters. either \"left/right\" or \"top/bottom\"" ) );
+  XmlOptions::get().set( "DIFF_ORIENTATION", Option( MainWindow::LEFT_RIGHT, "default orientation for splitters. either \"left/right\" or \"top/bottom\"" ) );
   
   #ifdef WITH_ASPELL
   XmlOptions::get().set( "DICTIONARY", Option( "en" , "default dictionary"  ) );

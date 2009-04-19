@@ -96,8 +96,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   file_editor_( 0 ),
   find_dialog_( 0 ),
   replace_dialog_( 0 ),
-  select_line_dialog_( 0 ),
-  default_orientation_( Qt::Horizontal )
+  select_line_dialog_( 0 )
 {
 
   Debug::Throw( "MainWindow::MainWindow.\n" );
@@ -711,9 +710,6 @@ void MainWindow::_updateConfiguration( void )
   
   }
     
-  // default orientation
-  _setOrientation( XmlOptions::get().raw( "ORIENTATION" ) == LEFT_RIGHT ? Qt::Horizontal : Qt::Vertical );
-  
 }
 
 //________________________________________________________
@@ -745,6 +741,10 @@ void MainWindow::_activeViewChanged( void )
   else setActiveView( *static_cast<TextView*>( widget ) );
 
 }
+
+//_______________________________________________________
+void MainWindow::_splitDisplay( void )
+{ activeView().splitDisplay( Singleton::get().application<Application>()->windowServer().defaultOrientation(), true ); }
 
 //_______________________________________________________
 void MainWindow::_multipleFileReplace( void )

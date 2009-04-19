@@ -109,6 +109,17 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   //! multiple files replace
   void multipleFileReplace( std::list<File>, TextSelection );
 
+  //! orientation
+  enum OrientationMode
+  {
+    NORMAL,
+    DIFF
+  };
+  
+  //! default orientation
+  const Qt::Orientation& defaultOrientation( const OrientationMode& mode = NORMAL )
+  { return mode == NORMAL ? default_orientation_:default_diff_orientation_; }
+  
   signals:
   
   //! emmited whenever the session file list is modified
@@ -158,7 +169,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   
   //! open in current tab
   bool _openInActiveView( FileRecord record )
-  { return _open( record, _orientation() ); }
+  { return _open( record, defaultOrientation( NORMAL ) ); }
   
   //! open in active view
   bool _openHorizontal( void )
@@ -248,13 +259,30 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   { return *active_window_; }
   
   //! default orientation for split tabs
-  const Qt::Orientation _orientation( void ) const
-  { return default_orientation_; }
+  void _setDefaultOrientation( const OrientationMode& mode, const Qt::Orientation& value )
+  { 
+    switch( mode )
+    { 
+      case DIFF:
+      default_diff_orientation_ = value;
+      break;
+      
+      default:
+      case NORMAL: 
+      default_orientation_ = value;
+      break;
+    }
+    
+  }
   
   //! default orientation for split tabs
-  void _setOrientation( const Qt::Orientation& value )
-  { default_orientation_ = value; }
+  const Qt::Orientation _defaultdiffOrientation( void ) const
+  { return default_diff_orientation_; }
   
+  //! default orientation for split tabs
+  void _setDiffOrientation( const Qt::Orientation& value )
+  { default_diff_orientation_ = value; }
+
   //! open mode
   const OpenMode& _openMode( void ) const
   { return open_mode_; }
@@ -276,6 +304,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   
   //! default orientation
   Qt::Orientation default_orientation_; 
+  
+  //! default orientation (diff mode
+  Qt::Orientation default_diff_orientation_;
   
   //! open mode
   OpenMode open_mode_;

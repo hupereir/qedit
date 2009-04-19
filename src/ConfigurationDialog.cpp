@@ -205,13 +205,23 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   combobox->setToolTip( "Configure how new files are oppened." );
   
   // splitting
-  grid_layout->addWidget( new QLabel( "Default splitting orientation: ", box ) );
+  grid_layout->addWidget( new QLabel( "Default view orientation: ", box ) );
   grid_layout->addWidget( combobox = new OptionComboBox( box, "ORIENTATION" ) );
   combobox->addItem( MainWindow::TOP_BOTTOM );
   combobox->addItem( MainWindow::LEFT_RIGHT );
   
   addOptionWidget( combobox );
   combobox->setToolTip( "Configure how new views are organized." );
+  
+  // splitting
+  grid_layout->addWidget( new QLabel( "Default view orientation (diff mode): ", box ) );
+  grid_layout->addWidget( combobox = new OptionComboBox( box, "DIFF_ORIENTATION" ) );
+  combobox->addItem( MainWindow::TOP_BOTTOM );
+  combobox->addItem( MainWindow::LEFT_RIGHT );
+  
+  addOptionWidget( combobox );
+  combobox->setToolTip( "Configure how new views are organized in <i>diff</i> mode." );
+
   grid_layout->setColumnStretch( 1, 1 );
     
   // toolbars

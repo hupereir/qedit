@@ -72,6 +72,7 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
   out.registerFlag( "--close", "close displays matching file names and exit");
   out.registerOption( "--filter", "string", "select filter for autospell");
   out.registerOption( "--dictionary", "string", "select dictionary for autospell");
+  out.registerOption( "--orientation", "string", "select view orientation for tabbed edition (vertical|horizontal)");
   if( !arguments.isEmpty() ) out.parse( arguments, ignore_warnings );
   return out;
   

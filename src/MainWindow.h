@@ -226,10 +226,6 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   //!@name configuration
   //@{
   
-  //! orientation
-  const Qt::Orientation& orientation( void ) const
-  { return default_orientation_; }
-   
   //@}
   
   //!@name actions
@@ -419,8 +415,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   { selectDisplay( record.file() ); }
 
   //! clone current file
-  void _splitDisplay( void )
-  { activeView().splitDisplay( orientation(), true ); }
+  void _splitDisplay( void );
 
   //! clone current file horizontal
   void _splitDisplayHorizontal( void )
@@ -564,11 +559,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   //! replace dialog
   virtual bool _hasReplaceDialog( void ) const
   { return bool( replace_dialog_ ); }
-  
-  //! orientation
-  void _setOrientation( const Qt::Orientation orientation )
-  { default_orientation_ = orientation; }
-  
+    
   //! make connection between this window and child text view
   void _connectView( TextView& view );
   
@@ -697,9 +688,6 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   
   //@}
   
-  //! default orientation for multiple displays
-  Qt::Orientation default_orientation_;
-      
   //! timer
   QBasicTimer resize_timer_;
   
