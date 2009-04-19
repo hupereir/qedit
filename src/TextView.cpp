@@ -223,7 +223,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
 void TextView::closeDisplay( TextDisplay& display )
 {
   
-  Debug::Throw( "TextView::closeDisplay.\n" );
+  Debug::Throw() << "TextView::closeDisplay - display: " << display.key() << endl;
   
   // check if display is modified and has no associates in window
   if( 
@@ -270,11 +270,15 @@ void TextView::closeDisplay( TextDisplay& display )
     
     // move child to grand_parent_splitter if any
     if( grand_parent_splitter )
-    {  grand_parent_splitter->insertWidget( grand_parent_splitter->indexOf( parent_splitter ), child ); }
-    else
-    {
+    {  
+      
+      grand_parent_splitter->insertWidget( grand_parent_splitter->indexOf( parent_splitter ), child ); 
+    
+    } else {
+      
       child->setParent( grand_parent );
       grand_parent->layout()->addWidget( child );
+      
     }
     
     // delete parent_splitter, now that it is empty
@@ -286,6 +290,7 @@ void TextView::closeDisplay( TextDisplay& display )
     // the editor is deleted only if its parent splitter is not
     // otherwise this will trigger double deletion of the editor 
     // which will then crash
+    // display.setParent(0);
     display.deleteLater();
     
   }
@@ -296,7 +301,6 @@ void TextView::closeDisplay( TextDisplay& display )
   { 
     //Debug::Throw(0, "TextView::closeDisplay - changing focus.\n" );
     if( (*iter) != &display ) {
-      //Debug::Throw(0, "TextView::closeDisplay - found active display.\n" );
       setActiveDisplay( **iter );
       activeDisplay().setFocus();
       break;

@@ -71,6 +71,11 @@ class SessionFilesModel: public FileRecordModel
   virtual bool dropMimeData(const QMimeData*, Qt::DropAction, int row, int column, const QModelIndex&);
   
   //@}
+  
+  signals:
+  
+  //! signal file reorganization
+  void reparentFiles( const File&, const File& );
 
   private slots:
   

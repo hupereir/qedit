@@ -173,6 +173,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
   /*! this closes the active view and opens it in a separate window */
   void _detach( void );
   
+  //! close display containing first file, create matching one in Window that contains second
+  void _reparent( const File&, const File& );
+  
   //! save all edited files
   void _saveAll( void );
   
@@ -198,6 +201,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
   //! close files 
   bool _close( const std::list<QString>& );
+  
+  //! find display matching given file
+  TextDisplay& _findDisplay( const File& );
   
   //! select file record from dialog
   /*! return empty record if no file is opened or file is directory */

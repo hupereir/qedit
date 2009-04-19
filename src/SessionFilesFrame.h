@@ -84,6 +84,10 @@ class SessionFilesFrame: public QWidget, public Counter
 
   //@}
   
+  //! model
+  const SessionFilesModel& model( void ) const
+  { return model_; }
+
   public slots:
    
   //! update session files

@@ -217,8 +217,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction action, int row, int column, const QModelIndex& parent)
 { 
     
-  Debug::Throw(0) << "SessionFilesModel::dropMineData." << endl;
-  //return FileRecordModel::dropMimeData( data, action, row, column, parent );
+  Debug::Throw(0) << "SessionFilesModel::dropMineData - row: " << row << " column: " << column << endl;
 
   // check action
   if( action == Qt::IgnoreAction) return true;
@@ -247,16 +246,27 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
       XmlFileRecord record( element );
       if( !record.file().isEmpty() ) 
       {
-        Debug::Throw(0) << "SessionFilesModel::dropMineData - adding " << record.file() << endl;        
+        Debug::Throw(0) << "SessionFilesModel::dropMineData - adding source" << record.file() << endl;        
         records.push_back( record );
       }
       
     }
   }
   
-  // get current index
-  QModelIndex index( SessionFilesModel::index( row, column, parent ) );
+  // get current record
+  if( parent.isValid() )
+  {
+    
+    FileRecord target( get( parent ) );
+    Debug::Throw(0) << "SessionFilesModel::dropMineData - target " << target.file() << endl;        
   
+    // loop over sources and emit proper signal
+    for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+    { emit reparentFiles( iter->file(), target.file() ); }
+    return true;
+    
+  }
+    
   return false; 
   
 }

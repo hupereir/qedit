@@ -114,6 +114,8 @@ MainWindow& WindowServer::newMainWindow( void )
   connect( &window->openVerticalAction(), SIGNAL( triggered() ), SLOT( _openVertical() ) );
   connect( &window->detachAction(), SIGNAL( triggered() ), SLOT( _detach() ) );
 
+  connect( &window->navigationFrame().sessionFilesFrame().model(), SIGNAL( reparentFiles( const File&, const File& ) ), SLOT( _reparent( const File&, const File& ) ) );
+  
   // open actions
   connect( &window->menu().recentFilesMenu(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _open( FileRecord ) ) );
   connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
@@ -693,7 +695,7 @@ void WindowServer::_detach( void )
   // close all clone displays
   for( BASE::KeySet<TextDisplay>::iterator iter = associated_displays.begin(); iter != associated_displays.end(); iter++ )
   { active_window_local.activeView().closeDisplay( **iter ); }
-
+  
   // create MainWindow
   MainWindow& window( newMainWindow() );
 
@@ -712,6 +714,46 @@ void WindowServer::_detach( void )
   
 }
   
+//_______________________________________________
+void WindowServer::_reparent( const File& first, const File& second )
+{
+  
+  Debug::Throw(0) << "WindowServer::_reparent - first: " << first << " second: " << second << endl;
+
+  // retrieve windows
+  TextDisplay& active_display_local( _findDisplay( first ) );
+  
+  // check for first display clones
+  BASE::KeySet<TextDisplay> associated_displays( active_display_local );
+  if( !( associated_displays.empty() ||
+    QuestionDialog( &active_display_local,
+    "Dropped display has clones in the current window.\n"
+    "They will be closed when the display is reparented.\n"
+    "Continue ?" ).exec() ) ) return;
+  
+  // save modification state
+  bool modified( active_display_local.document()->isModified() );
+
+  // close all clone displays
+  for( BASE::KeySet<TextDisplay>::iterator iter = associated_displays.begin(); iter != associated_displays.end(); iter++ )
+  { 
+    BASE::KeySet<TextView> views( **iter );
+    assert( views.size() == 1 );
+    (*views.begin())->closeDisplay( **iter );
+  }
+
+  // retrieve second display and corresponding view
+  TextDisplay& second_display( _findDisplay( second ) );
+  BASE::KeySet<TextView> views( second_display );
+  assert( views.size() == 1 );
+  TextView& view = **views.begin();
+  
+  
+  
+  return;
+  
+}
+
 //_______________________________________________
 void WindowServer::_saveAll( void )
 {
@@ -851,6 +893,34 @@ bool WindowServer::_close( const list<QString>& files )
   }
   
   return true;
+}
+
+//_______________________________________________
+TextDisplay& WindowServer::_findDisplay( const File& file )
+{
+  TextDisplay* out( 0 );
+  
+  // retrieve windows
+  BASE::KeySet<MainWindow> windows( this );
+  for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); iter++ ) 
+  { 
+  
+    // retrieve displays
+    BASE::KeySet<TextDisplay> displays( (*iter)->associatedDisplays() );
+    for( BASE::KeySet<TextDisplay>::iterator display_iter = displays.begin(); display_iter != displays.end(); display_iter++ )
+    {
+      if( (*display_iter)->file() == file ) 
+      {
+        out = *display_iter;
+        break;
+      }
+    }
+  
+  }
+
+  assert( out );
+  return *out;
+  
 }
 
 //_______________________________________________
