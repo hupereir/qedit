@@ -112,8 +112,8 @@ Menu::Menu( QWidget* parent ):
   search_menu_ = addMenu( "&Search" );
   connect( search_menu_, SIGNAL( aboutToShow() ), SLOT( _updateSearchMenu() ) );
 
-  // preferences
-  preference_menu_ = addMenu( "&Preferences" );
+  // Settings
+  preference_menu_ = addMenu( "&Settings" );
   connect( preference_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updatePreferenceMenu() ) );
   
   // tools
@@ -127,7 +127,7 @@ Menu::Menu( QWidget* parent ):
     
   // windows
   windows_action_group_ = new ActionGroup( this );
-  windows_menu_ = addMenu( "&Windows" );
+  windows_menu_ = addMenu( "&Window" );
   connect( windows_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateWindowsMenu() ) );
   connect( windows_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectFile( QAction* ) ) );
 
