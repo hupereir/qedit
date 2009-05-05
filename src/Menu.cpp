@@ -257,19 +257,7 @@ void Menu::_updatePreferenceMenu( void )
   // clear menu
   preference_menu_->clear();
   
-  // configurations (from application)
-  preference_menu_->addAction( &application.configurationAction() );
-  preference_menu_->addAction( &application.documentClassConfigurationAction() );
-
-  #if WITH_ASPELL
-  preference_menu_->addSeparator();
-  preference_menu_->addAction( &application.spellCheckConfigurationAction() );
-  preference_menu_->addAction( &display.dictionaryMenuAction() );
-  preference_menu_->addAction( &display.filterMenuAction() );
-  #endif
-
   // textdisplay actions
-  preference_menu_->addSeparator();
   preference_menu_->addAction( &mainwindow.navigationFrame().visibilityAction() );
   preference_menu_->addAction( &display.showLineNumberAction() );
   preference_menu_->addAction( &display.showBlockDelimiterAction() );
@@ -283,8 +271,18 @@ void Menu::_updatePreferenceMenu( void )
   #if WITH_ASPELL
   preference_menu_->addSeparator();
   preference_menu_->addAction( &display.autoSpellAction() );
+  preference_menu_->addAction( &display.dictionaryMenuAction() );
+  preference_menu_->addAction( &display.filterMenuAction() );
   #endif
   
+  // configurations (from application)
+  preference_menu_->addSeparator();
+  #if WITH_ASPELL
+  preference_menu_->addAction( &application.spellCheckConfigurationAction() );
+  #endif
+  preference_menu_->addAction( &application.documentClassConfigurationAction() );
+  preference_menu_->addAction( &application.configurationAction() );
+
   return;
 }
 

@@ -290,7 +290,6 @@ void TextView::closeDisplay( TextDisplay& display )
     // the editor is deleted only if its parent splitter is not
     // otherwise this will trigger double deletion of the editor 
     // which will then crash
-    // display.setParent(0);
     display.deleteLater();
     
   }

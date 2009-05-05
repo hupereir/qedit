@@ -147,15 +147,17 @@ bool Application::realizeWidget( void )
   closeAction().disconnect();
   connect( &closeAction(), SIGNAL( triggered() ), SLOT( _exit() ) );
 
-  document_class_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Document Class &Configuration", this );
+  document_class_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Document Classes ...", this );
   connect( document_class_configuration_action_, SIGNAL( triggered() ), SLOT( _documentClassConfiguration() ) );
   
-  spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "&Spell-check &Configuration", this );
+  spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Spell Checking ...", this );
   connect( spellcheck_configuration_action_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
   
   monitored_files_action_ = new QAction( "Show Monitored Files", this );
   monitored_files_action_->setToolTip( "Show monitored files" );
   connect( monitored_files_action_, SIGNAL( triggered() ), SLOT( _showMonitoredFiles() ) );
+  
+  configurationAction().setText( "Configure qedit ..." );
   
   // file list
   recent_files_ = new XmlFileList();
