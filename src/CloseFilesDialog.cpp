@@ -46,6 +46,8 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
   
   Debug::Throw( "CloseFilesDialog::CloseFilesDialog.\n" );
 
+  setWindowTitle( "Close Files - qedit" );
+  
   QHBoxLayout *h_layout( new QHBoxLayout() );
   h_layout->setSpacing(5); 
   h_layout->setMargin( 0 ); 
@@ -72,7 +74,7 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
     else if( index == files.size()-2 ) what << " and ";
     else what << ".";
     
-    if( buffer.size() >= (current_line+1)*max_line_size )
+    if( buffer.size() >= int((current_line+1)*max_line_size) )
     {
       what << endl;
       current_line++;

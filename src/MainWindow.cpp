@@ -1022,6 +1022,7 @@ void MainWindow::_createBaseFindDialog( void )
   {
 
     find_dialog_ = new BaseFindDialog( this );
+    find_dialog_->setWindowTitle( "Find in Text - qedit" );
     connect( find_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
     connect( this, SIGNAL( noMatchFound() ), find_dialog_, SLOT( noMatchFound() ) );
     connect( this, SIGNAL( matchFound() ), find_dialog_, SLOT( clearLabel() ) );
@@ -1040,7 +1041,7 @@ void MainWindow::_createReplaceDialog( void )
   {
 
     replace_dialog_ = new ReplaceDialog( this );
-    replace_dialog_->setWindowTitle( "Replace in Text" );
+    replace_dialog_->setWindowTitle( "Replace in Text - qedit" );
     connect( replace_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
     connect( replace_dialog_, SIGNAL( replace( TextSelection ) ), SLOT( _replace( TextSelection ) ) );
     connect( replace_dialog_, SIGNAL( replaceInWindow( TextSelection ) ), SLOT( _replaceInWindow( TextSelection ) ) );
