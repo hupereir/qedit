@@ -133,6 +133,7 @@ Menu::Menu( QWidget* parent ):
 
   // help manager
   BASE::HelpManager* help( new BASE::HelpManager( this ) );
+  help->setWindowTitle( "Qedit Handbook" );
   File help_file( XmlOptions::get().raw( "HELP_FILE" ) );
   if( help_file.exists() ) help->install( help_file );
   else
