@@ -340,11 +340,7 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   ProgressDialog dialog;
   dialog.setAttribute( Qt::WA_DeleteOnClose );
   QtUtil::centerOnWidget( &dialog, qApp->activeWindow() );
-  
-  QString title( "Replace in Text" );
-  QString host( Util::host( true ) );
-  if( host != "localhost" ) QTextStream( &title ) << " [" << host << "]";
-  dialog.setWindowTitle( title );
+  dialog.setWindowTitle( Util::windowTitle( "Replace in Text" ) );
   dialog.show();
   
   // loop over files to get relevant displays
