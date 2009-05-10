@@ -605,6 +605,7 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enable_all )
   if( enable_all ) flags |=  AskForSaveDialog::YES_TO_ALL | AskForSaveDialog::NO_TO_ALL;
 
   AskForSaveDialog dialog( this, file(), flags );
+  dialog.setWindowTitle( "Save Files - qedit" );
   int state( dialog.centerOnParent().exec() );
   if( state == AskForSaveDialog::YES ||  state == AskForSaveDialog::YES_TO_ALL ) save();
   else if( state == AskForSaveDialog::NO ||  state == AskForSaveDialog::NO_TO_ALL ) setModified( false );

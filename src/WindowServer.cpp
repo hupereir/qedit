@@ -31,7 +31,6 @@
 
 #include <QAction>
 #include <QApplication>
-#include <QProgressDialog>
 #include <QTextStream>
 
 #include "Application.h"
@@ -341,6 +340,11 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   ProgressDialog dialog;
   dialog.setAttribute( Qt::WA_DeleteOnClose );
   QtUtil::centerOnWidget( &dialog, qApp->activeWindow() );
+  
+  QString title( "Replace in Text" );
+  QString host( Util::host( true ) );
+  if( host != "localhost" ) QTextStream( &title ) << " [" << host << "]";
+  dialog.setWindowTitle( title );
   dialog.show();
   
   // loop over files to get relevant displays
@@ -370,8 +374,6 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   }
 
   dialog.setMaximum( maximum );
-  //QtUtil::centerOnWidget( &dialog, qApp->activeWindow() );
-  //dialog.show();
 
   // loop over displays and perform replacement
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
@@ -390,7 +392,7 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   if( !counts ) what << "string not found.";
   else if( counts == 1 ) what << "1 replacement performed";
   else what << counts << " replacements performed";
-  InformationDialog( &_activeWindow(), buffer ).centerOnWidget( qApp->activeWindow() ).exec();
+  InformationDialog( &_activeWindow(), buffer ).setWindowTitle( "Replace in Text" ).centerOnWidget( qApp->activeWindow() ).exec();
   
   return;
 }
