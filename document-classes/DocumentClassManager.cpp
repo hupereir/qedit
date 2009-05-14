@@ -73,12 +73,11 @@ bool DocumentClassManager::read( const File& filename )
   QDomDocument document;
   if ( !document.setContent( &file, &error.error(), &error.line(), &error.column() ) ) {
     file.close();
-    QString buffer;
-    QTextStream( &buffer ) 
+    read_error_.clear();
+    QTextStream( &read_error_ ) 
       << "An error occured while parsing document classes." << endl
       << error
       << endl;
-    read_error_ = buffer;
     return false;
   }
   
