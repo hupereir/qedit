@@ -151,13 +151,15 @@ Menu::Menu( QWidget* parent ):
   menu->addAction( &application.aboutAction() );
   
   // debug menu
+  #ifdef DEBUG
   menu->addSeparator();
   DebugMenu *debug_menu( new DebugMenu( this ) );
   debug_menu->setTitle( "&Debug" );
   debug_menu->addAction( &help->dumpAction() );
   debug_menu->addAction( &application.monitoredFilesAction() );
   menu->addMenu( debug_menu );
-
+  #endif
+  
 }
 
 //_______________________________________________
