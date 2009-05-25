@@ -112,10 +112,6 @@ Menu::Menu( QWidget* parent ):
   search_menu_ = addMenu( "&Search" );
   connect( search_menu_, SIGNAL( aboutToShow() ), SLOT( _updateSearchMenu() ) );
 
-  // Settings
-  preference_menu_ = addMenu( "&Settings" );
-  connect( preference_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updatePreferenceMenu() ) );
-  
   // tools
   tools_menu_ = addMenu( "&Tools" );
   connect( tools_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateToolsMenu() ) );
@@ -124,6 +120,10 @@ Menu::Menu( QWidget* parent ):
   macro_menu_ = addMenu( "&Macro" );
   connect( macro_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateMacroMenu() ) );
   connect( macro_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectMacro( QAction* ) ) );
+
+  // Settings
+  preference_menu_ = addMenu( "&Settings" );
+  connect( preference_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updatePreferenceMenu() ) );
     
   // windows
   windows_action_group_ = new ActionGroup( this );
