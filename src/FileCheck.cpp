@@ -29,7 +29,7 @@
 */
 
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 #include <QApplication>
 
 #include "Debug.h"

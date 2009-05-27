@@ -31,7 +31,7 @@
 */
 
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 
 #include "CustomPixmap.h"
 #include "FileSystemIcons.h"

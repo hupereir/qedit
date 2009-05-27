@@ -31,7 +31,7 @@
    \date $Date$
 */
 
-#include <assert.h>
+#include <cassert>
 #include <QAbstractButton>
 #include <QContextMenuEvent>
 #include <map>

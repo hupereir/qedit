@@ -30,7 +30,7 @@
    \date $Date$
 */
 
-#include <assert.h>
+#include <cassert>
 #include <QButtonGroup>
 #include <QLabel>
 #include <QLayout>

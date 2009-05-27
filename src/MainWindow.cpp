@@ -867,8 +867,8 @@ void MainWindow::_updateCursorPosition( void )
   if( activeDisplay().hasBlockDelimiterDisplay() ) position.paragraph() += activeDisplay().blockDelimiterDisplay().collapsedBlockCount( position.paragraph() );  
   
   // update labels
-  statusbar_->label(1).setText( QString( "Line : " ) + QString().setNum( position.paragraph()+1 ) , false );
-  statusbar_->label(2).setText( QString( "Column : " ) + QString().setNum( position.index()+1 ) , false );
+  statusbar_->label(1).setText( QString( "Line: " ) + QString().setNum( position.paragraph()+1 ) , false );
+  statusbar_->label(2).setText( QString( "Column: " ) + QString().setNum( position.index()+1 ) , false );
 
   return;
 }

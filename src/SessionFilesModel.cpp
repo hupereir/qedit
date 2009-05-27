@@ -30,7 +30,7 @@
 */
 
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 #include <QIcon>
 #include <QMimeData>
 #include <QPalette>
