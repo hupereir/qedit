@@ -481,7 +481,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
 
   // disable check
   FileRemovedDialog dialog( this, file() );
-  int state( dialog.centerOnParent().exec() );
+  int state( dialog.centerOnWidget( window() ).exec() );
 
   if( state == FileRemovedDialog::RESAVE )
   {
@@ -531,7 +531,7 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
     
   // create dialog
   FileModifiedDialog dialog( this, file() );
-  int state( dialog.centerOnParent().exec() );
+  int state( dialog.centerOnWidget( window() ).exec() );
   if( state == FileModifiedDialog::RESAVE ) 
   {
     document()->setModified( true );
