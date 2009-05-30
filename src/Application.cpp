@@ -295,15 +295,22 @@ void Application::_readFilesFromArguments( void )
 
 }
 
+  
 //________________________________________________
-void Application::_processRequest( const CommandLineArguments& arguments )
+bool Application::_processCommand( SERVER::ServerCommand command )
 {
-  Debug::Throw() << "Application::_ProcessRequest - " << arguments.join( " " ) << endl;
 
-  // copy arguments and try open (via QTimer)
-  _setArguments( arguments );
-  startup_timer_.start( 100 );
-  return;
+  Debug::Throw( "Application::_processCommand.\n" );
+  if( BaseApplication::_processCommand( command ) ) return true;
+  if( command.command() == SERVER::ServerCommand::RAISE )
+  {
+    // copy arguments and try open (via QTimer)
+    _setArguments( command.arguments() );
+    startup_timer_.start( 100 );
+    return true;
+  }
+  
+  return false;
   
 }
 

@@ -164,7 +164,7 @@ class Application: public BaseApplication, public Counter
   void _readFilesFromArguments( void );
   
   //! process request from application manager
-  void _processRequest( const CommandLineArguments& );
+  virtual bool _processCommand( SERVER::ServerCommand );
     
   //! monitored files
   void _showMonitoredFiles( void );
