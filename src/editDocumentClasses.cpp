@@ -39,6 +39,7 @@
 #include "DocumentClassManager.h"
 #include "DocumentClassManagerDialog.h"
 #include "FlatStyle.h"
+#include "Singleton.h"
 #include "SystemOptions.h"
 #include "ErrorHandler.h"
 #include "XmlOptions.h"
@@ -81,6 +82,7 @@ int main (int argc, char *argv[])
   
   // options
   if( XmlOptions::get().get<bool>( "USE_FLAT_THEME" ) ) application.setStyle( new FlatStyle() );
+  
   // set fonts
   QFont font;
   font.fromString( XmlOptions::get().raw( "FONT_NAME" ) );
@@ -89,6 +91,9 @@ int main (int argc, char *argv[])
   font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ) );
   application.setFont( font, "QLineEdit" );
   application.setFont( font, "QTextEdit" );
+
+  // dummy singleton object
+  Singleton::get().setApplication( new QObject() );
   
   // read document classes
   DocumentClassManager manager;
@@ -103,6 +108,8 @@ int main (int argc, char *argv[])
   DocumentClassManagerDialog dialog(0, &manager);
   dialog.centerOnDesktop();
   dialog.show();
+  
+  
   application.exec();
   
   return 0;
