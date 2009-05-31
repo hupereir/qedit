@@ -48,7 +48,7 @@ using namespace std;
 
 //__________________________________________________
 PrintDialog::PrintDialog( QWidget* parent ):
-  CustomDialog( parent, OK_BUTTON | CANCEL_BUTTON )
+  CustomDialog( parent, OkButton | CancelButton )
 {
   
   Debug::Throw( "PrintDialog::PrintDialog.\n" );

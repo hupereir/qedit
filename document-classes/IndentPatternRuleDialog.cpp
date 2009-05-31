@@ -43,7 +43,7 @@ using namespace std;
 
 //________________________________________________________________________
 IndentPatternRuleDialog::IndentPatternRuleDialog( QWidget* parent ):
-  CustomDialog( parent, CustomDialog::OK_BUTTON|CustomDialog::CANCEL_BUTTON|CustomDialog::SEPARATOR )
+  CustomDialog( parent, OkButton|CancelButton|CustomDialog::Separator )
 {
   
   Debug::Throw( "IndentPatternRuleDialog::IndentPatternRuleDialog.\n" );

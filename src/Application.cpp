@@ -300,10 +300,10 @@ void Application::_readFilesFromArguments( void )
 bool Application::_processCommand( SERVER::ServerCommand command )
 {
 
-  Debug::Throw( "Application::_processCommand.\n" );
   if( BaseApplication::_processCommand( command ) ) return true;
   if( command.command() == SERVER::ServerCommand::RAISE )
   {
+    
     // copy arguments and try open (via QTimer)
     _setArguments( command.arguments() );
     startup_timer_.start( 100 );

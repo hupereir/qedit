@@ -40,7 +40,7 @@ using namespace std;
 
 //__________________________________________________
 SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
-  CustomDialog( parent, OK_BUTTON | CANCEL_BUTTON | SEPARATOR )
+  CustomDialog( parent, OkButton | CancelButton| Separator )
 {
   
   Debug::Throw( "SaveAllDialog::SaveAllDialog.\n" );

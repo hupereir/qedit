@@ -42,7 +42,7 @@ using namespace std;
 
 //________________________________________________________
 FileCheckDialog::FileCheckDialog( QWidget* parent ):
-  CustomDialog( parent, CustomDialog::OK_BUTTON )
+  CustomDialog( parent, OkButton )
 {
   Debug::Throw( "FileCheckDialog::FileCheckDialog.\n" );
   setWindowTitle( "monitored files" );

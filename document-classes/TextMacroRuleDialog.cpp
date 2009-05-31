@@ -43,7 +43,7 @@ using namespace std;
 
 //________________________________________________________________________
 TextMacroRuleDialog::TextMacroRuleDialog( QWidget* parent ):
-  CustomDialog( parent, CustomDialog::OK_BUTTON|CustomDialog::CANCEL_BUTTON|CustomDialog::SEPARATOR )
+  CustomDialog( parent, OkButton|CancelButton|CustomDialog::Separator )
 {
   
   Debug::Throw( "TextMacroRuleDialog::TextMacroRuleDialog.\n" );

@@ -50,7 +50,7 @@ class DocumentClassManagerDialog: public CustomDialog
   public:
   
   //! constructor
-  DocumentClassManagerDialog( QWidget* parent, DocumentClassManager *manager );
+  DocumentClassManagerDialog( QWidget*, DocumentClassManager* );
 
   signals:
   

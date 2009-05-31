@@ -51,7 +51,7 @@ using namespace std;
 
 //_________________________________________________________
 FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord& record ):
-  CustomDialog( parent, OK_BUTTON )
+  CustomDialog( parent, OkButton )
 {
   Debug::Throw( "FileInformationDialog::FileInformationDialog.\n" );
 
