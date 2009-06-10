@@ -104,9 +104,7 @@ PrintDialog::PrintDialog( QWidget* parent ):
   
   h_layout->addWidget( command_editor_ = new CustomComboBox( box ) );
   _commandEditor().setEditable( true );
-  _commandEditor().setEditable( true );
-  _commandEditor().setCaseSensitive( Qt::CaseSensitive );
-  _commandEditor().setAutoCompletion( true );
+  _commandEditor().setAutoCompletion( true, Qt::CaseSensitive  );
   _commandEditor().setMinimumSize( QSize( 150, 0 ) );
 
   // browse command button associated to the CustomComboBox
