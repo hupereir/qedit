@@ -34,6 +34,7 @@
 #include <QApplication>
 #include <QDir>
 #include <QFile>
+#include <QLabel>
 #include <QTextStream>
 
 #include "AutoSaveThread.h"
@@ -48,7 +49,8 @@ File AutoSaveThread::autoSaveName( const File& file )
 {
     
   // get full path of current file, relative to root.
-  QString relative_name = QDir::root().relativeFilePath( file ).replace( "/", "_" );
+  // replace special characters by "_"
+  QString relative_name = QDir::root().relativeFilePath( file ).replace( "/", "_" ).replace(":","_");
   
   // get qedit default autosave path
   QString autosave_path;
@@ -57,7 +59,7 @@ File AutoSaveThread::autoSaveName( const File& file )
     << "/qedit"; 
   
   // generate autosave name
-  File tmp_file = File( relative_name ).addPath( QDir( autosave_path ).absolutePath() );
+  File tmp_file = File( relative_name ).addPath( QDir( autosave_path ).absolutePath() );  
   return tmp_file;
   
 }
