@@ -202,7 +202,7 @@
    <regexp>(;\s*($|//))</regexp>
   </rule>
   <rule par="-2">
-  <regexp>[^;|\{|\}\s*]\s*($|//)</regexp>
+  <regexp>[^;|\{|\}|(^\s*default\s*:)|(^\s*case)\s*]\s*($|//)</regexp>
   </rule>
   <rule par="0">
    <regexp>^\s*\}</regexp>
@@ -225,7 +225,7 @@
   the one before is not terminated either,
   and this one is an opening bracket
  -->
- <indent_pattern name="4" type="2" name="opening bracket">  
+ <indent_pattern name="4" type="2">  
   <rule par="0">
    <regexp>^\s*\{</regexp>
   </rule>
