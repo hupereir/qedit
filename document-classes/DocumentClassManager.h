@@ -69,10 +69,10 @@ class DocumentClassManager: public QObject, public Counter
   { return read_error_; }
   
   //! write all classes to file
-  bool write( const File& file ) const;
+  bool write( const File& ) const;
 
   //! write classes to file
-  bool write( const QString& class_name, const File& file ) const;
+  bool write( const QString&, const File& ) const;
 
   //! get default document class
   DocumentClass defaultClass( void ) const;

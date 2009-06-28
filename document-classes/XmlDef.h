@@ -48,6 +48,8 @@ namespace XML {
   static const QString OPTION_WRAP( "wrap" );
   static const QString OPTION_EMULATE_TABS( "emulate_tabs" );
   static const QString OPTION_DEFAULT( "default" );
+  static const QString TAB_SIZE( "tab_size" );
+  
   //@}
   
   //!@name highlight style

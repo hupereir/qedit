@@ -146,25 +146,44 @@ bool DocumentClassManager::write( const QString& class_name, const File& filenam
 }
 
 //________________________________________________________
-bool DocumentClassManager::write( const File& filename ) const
+bool DocumentClassManager::write( const File& path ) const
 {
-  Debug::Throw() << "DocumentClassManager::write - file: " << filename << endl;
+  Debug::Throw() << "DocumentClassManager::write - path: " << path << endl;
+
+  if( !path.exists() ) 
+  { 
+    Debug::Throw(0) << "DocumentClassManager::write - path " << path << " does not exist" << endl;
+    return false;
+  }
   
   
-  // try open file
-  QFile out( filename );
-  if( !out.open( QIODevice::WriteOnly ) ) return false;
+  if( !path.isDirectory() )
+  {
+    Debug::Throw(0) << "DocumentClassManager::write - path " << path << " is not a directory" << endl;
+    return false;
+  }
+
   
-  // create document
-  QDomDocument document;
-  
-  // create main element
-  QDomElement top = document.appendChild( document.createElement( XML::PATTERNS ) ).toElement();
   for( List::const_iterator iter = document_classes_.begin(); iter != document_classes_.end(); iter++ )
-  { top.appendChild( iter->domElement( document ) ); }
- 
-  out.write( document.toByteArray() );
-  out.close();
+  {
+    File filename( iter->file().localName().addPath( path ) );
+    Debug::Throw(0) << "DocumentClassManager::write - writing class " << iter->name() << " to file " << filename << endl;
+  
+    // try open file
+    QFile out( filename );
+    if( !out.open( QIODevice::WriteOnly ) ) continue;
+    
+    // create document
+    QDomDocument document;
+    
+    // create main element
+    QDomElement top = document.appendChild( document.createElement( XML::PATTERNS ) ).toElement();
+    top.appendChild( iter->domElement( document ) );
+    
+    out.write( document.toByteArray() );
+    out.close();
+  
+  }
 
   return true;
 

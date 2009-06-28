@@ -71,8 +71,11 @@ class DocumentClassManagerDialog: public CustomDialog
   //! load classes from a file
   void _loadFile( void );
 
-  //! save classes to a file
+  //! save selected classes to a file
   void _save( void );
+  
+  //! save all classes to given path
+  void _saveAll( void );
   
   //! reload document classes
   void _reload( void );

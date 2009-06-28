@@ -115,8 +115,13 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   connect( save_button_, SIGNAL( clicked() ), this, SLOT( _save() ) );  
   save_button_->setToolTip( "Save selected document classe to a file" );
 
-  // load
+  // save all document class to directory
   QPushButton *button;
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE ), "Save &All", this ) );
+  connect( button, SIGNAL( clicked() ), this, SLOT( _saveAll() ) );  
+  button->setToolTip( "Save all document classes to directory" );
+
+  // load
   v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::OPEN ), "&Load File", this ) ); 
   connect( button, SIGNAL( clicked() ), this, SLOT( _loadFile() ) );  
   button->setToolTip( "Load additional classes from file" );
@@ -249,6 +254,22 @@ void DocumentClassManagerDialog::_save( void )
   
   document_class_manager_->write( model_.get( current ).name(), file );
   return;
+}
+
+//___________________________________________________
+void DocumentClassManagerDialog::_saveAll( void )
+{
+  Debug::Throw( "DocumentClassManagerDialog::_saveAll.\n" );
+  
+  // retrieve file from dialog
+  FileDialog dialog( this );
+  dialog.setFileMode( QFileDialog::Directory );
+  dialog.setAcceptMode( QFileDialog::AcceptOpen );
+  File file( dialog.getFile() );
+  if( file.isNull() ) return;
+  
+  document_class_manager_->write( file );
+  
 }
 
 //___________________________________________________

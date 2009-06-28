@@ -29,11 +29,14 @@
   \date $Date$
 */
 
+#include <QDomComment>
+
 #include <algorithm>
 #include "DocumentClass.h"
 #include "HighlightPattern.h"
 #include "Str.h"
 #include "XmlDef.h"
+#include "XmlOption.h"
 #include "XmlString.h"
 
 using namespace std;
@@ -68,14 +71,17 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     else if( attribute.name() == XML::PATTERN ) file_pattern_.setPattern( XmlString( attribute.value() ).toText() );
     else if( attribute.name() == XML::FIRSTLINE_PATTERN ) firstline_pattern_.setPattern( XmlString( attribute.value() ).toText() ); 
     else if( attribute.name() == XML::ICON ) icon_ = XmlString( attribute.value() ).toText();
+    
+    // these are kept for backward compatibility
     else if( attribute.name() == XML::OPTIONS )
     {
       
-      if( attribute.value().indexOf( XML::OPTION_WRAP, 0, Qt::CaseInsensitive ) >= 0 ) wrap_ = true;    
+      if( attribute.value().indexOf( XML::OPTION_WRAP, 0, Qt::CaseInsensitive ) >= 0 ) setWrap( true );    
       if( attribute.value().indexOf( XML::OPTION_EMULATE_TABS, 0, Qt::CaseInsensitive ) >= 0 ) emulate_tabs_ = true;    
       if( attribute.value().indexOf( XML::OPTION_DEFAULT, 0, Qt::CaseInsensitive ) >= 0 ) default_ = true;    
       
     } else if( attribute.name() == XML::BASE_INDENTATION ) _setBaseIndentation( attribute.value().toInt() );
+    
     else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized attribute: " << attribute.name() << endl;
     
   }
@@ -114,8 +120,19 @@ DocumentClass::DocumentClass( const QDomElement& element ):
       TextMacro macro( child_element );
       if( macro.isValid() ) text_macros_.push_back( macro );
 
+    } else if( child_element.tagName() == OPTIONS::OPTION ) {
+      
+      XmlOption option( child_element );
+      if( option.name() == XML::OPTION_WRAP ) setWrap( option.get<bool>() );
+      else if( option.name() == XML::OPTION_EMULATE_TABS ) setEmulateTabs( option.get<bool>() );
+      else if( option.name() == XML::OPTION_DEFAULT ) setIsDefault( option.get<bool>() );
+      else if( option.name() == XML::BASE_INDENTATION ) _setBaseIndentation( option.get<int>() );
+      else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized option " << option.name() << endl;
+        
     } else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized child " << child_element.tagName() << ".\n";
 
+    
+    
   }
 
   // assign pattern ids
@@ -158,38 +175,50 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   if( !file_pattern_.isEmpty() ) out.setAttribute( XML::PATTERN, XmlString( file_pattern_.pattern() ).toXml() );
   if( !firstline_pattern_.isEmpty() ) out.setAttribute( XML::FIRSTLINE_PATTERN, XmlString( firstline_pattern_.pattern() ).toXml() );
   
-  // options
-  QString options;
-  if( wrap() ) options += XML::OPTION_WRAP + " ";
-  if( emulateTabs() ) options += XML::OPTION_EMULATE_TABS + " ";
-  if( isDefault() ) options += XML::OPTION_DEFAULT + " ";
-  if( !options.isEmpty() ) out.setAttribute( XML::OPTIONS, options ); 
-  if( baseIndentation() ) out.setAttribute( XML::BASE_INDENTATION, Str().assign<int>( baseIndentation() ) );
-
   // icon
   if( !icon().isEmpty() ) out.setAttribute( XML::ICON, icon() );
   
+  // options
+  out.appendChild( parent.createTextNode( "\n\n" ) );
+  out.appendChild( parent.createComment( "Options" ) );
+  out.appendChild( XmlOption( XML::OPTION_WRAP, Option().set<bool>( wrap() ) ).domElement( parent ) );
+  out.appendChild( XmlOption( XML::OPTION_EMULATE_TABS, Option().set<bool>( emulateTabs() ) ).domElement( parent ) );
+  out.appendChild( XmlOption( XML::OPTION_DEFAULT, Option().set<bool>( isDefault() ) ).domElement( parent ) );
+  out.appendChild( XmlOption( XML::BASE_INDENTATION, Option().set<int>( baseIndentation() ) ).domElement( parent ) );  
+  
   // dump highlight styles
+  out.appendChild( parent.createTextNode( "\n\n" ) );
+  out.appendChild( parent.createComment( "Highlight styles" ) );
   for( set<HighlightStyle>::const_iterator iter = highlight_styles_.begin(); iter != highlight_styles_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump highlight patterns
+  out.appendChild( parent.createTextNode( "\n\n" ) );
+  out.appendChild( parent.createComment( "Highlight patterns" ) );
   for( HighlightPattern::List::const_iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump indent patterns
+  out.appendChild( parent.createTextNode( "\n\n" ) );
+  out.appendChild( parent.createComment( "Indentation patterns" ) );
   for( IndentPattern::List::const_iterator iter = indent_patterns_.begin(); iter != indent_patterns_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump parenthesis
+  out.appendChild( parent.createTextNode( "\n\n" ) );
+  out.appendChild( parent.createComment( "Parenthesis" ) );
   for( TextParenthesis::List::const_iterator iter = text_parenthesis_.begin(); iter != text_parenthesis_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump block delimiters
+  out.appendChild( parent.createTextNode( "\n\n" ) );
+  out.appendChild( parent.createComment( "Block delimiters" ) );
   for( BlockDelimiter::List::const_iterator iter = block_delimiters_.begin(); iter != block_delimiters_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump text macros
+  out.appendChild( parent.createTextNode( "\n\n" ) );
+  out.appendChild( parent.createComment( "Text macros" ) );
   for( TextMacro::List::const_iterator iter = text_macros_.begin(); iter != text_macros_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
   
