@@ -1,40 +1,65 @@
-<!-- $Id$-->
 <patterns>
- <class name="default" options="default emulate_tabs" icon="unknown.png">
+ <class icon="unknown.png" name="default" >
 
- <!-- parenthesis -->
- <parenthesis begin="(" end=")" regexp="\(|\)" />
- <parenthesis begin="[" end="]" regexp="\[|\]" /> 
- <parenthesis begin="{" end="}" regexp="\{|\}" /> 
- 
- <!-- text processing macros -->
- <macro name="Add one tab indentation" accelerator="Alt+T">
-  <rule>
-   <regexp>^</regexp>
-   <replacement>XML_TAB</replacement>
-  </rule>
- </macro>
+<!--Options-->
+  <Option>
+   <Name>wrap</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>emulate_tabs</Name>
+   <Value>1</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>default</Name>
+   <Value>1</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>base_indentation</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
 
- <macro name="Remove one tab indentation" accelerator="Shift+Alt+T">
-  <rule>
-   <regexp>^\t</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
+<!--Highlight styles-->
 
- <macro name="Remove all tab indentations">
-  <rule>
-   <regexp>^\t+</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
+<!--Highlight patterns-->
 
- <macro name="Clean end of line" accelerator="Alt+C">
-  <rule>
-   <regexp>\s+$</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
+<!--Indentation patterns-->
 
+<!--Parenthesis-->
+  <parenthesis begin="(" end=")" regexp="\(|\)" />
+  <parenthesis begin="[" end="]" regexp="\[|\]" />
+  <parenthesis begin="{" end="}" regexp="\{|\}" />
+
+<!--Block delimiters-->
+
+<!--Text macros-->
+  <macro accelerator="Alt+T" name="Add one tab indentation" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement>XML_TAB</replacement>
+   </rule>
+  </macro>
+  <macro accelerator="Shift+Alt+T" name="Remove one tab indentation" >
+   <rule>
+    <regexp>^\t</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro name="Remove all tab indentations" >
+   <rule>
+    <regexp>^\t+</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro accelerator="Alt+C" name="Clean end of line" >
+   <rule>
+    <regexp>\s+$</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
  </class>
 </patterns>

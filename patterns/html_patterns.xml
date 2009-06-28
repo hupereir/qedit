@@ -1,195 +1,195 @@
-<!-- $Id$-->
 <patterns>
- <class name="html" pattern="\.(html?)$" first_line_pattern="^\s*XML_LT\!DOCTYPE\s*HTML" options="emulate_tabs" icon="text-html.png" > 
-  <!-- highlight styles -->
+ <class pattern="\.(html?)$" icon="text-html.png" first_line_pattern="^\s*XML_LT\!DOCTYPE\s*HTML" name="html" >
+
+<!--Options-->
+  <Option>
+   <Name>wrap</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>emulate_tabs</Name>
+   <Value>1</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>default</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>base_indentation</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+
+<!--Highlight styles-->
+  <style format="0" name="Attribute" color="#0000ff" />
+  <style format="2" name="Attribute2" color="#0000ff" />
+  <style format="2" name="Comment" color="#ff8c00" />
+  <style format="1" name="Escape Character" color="#0000ff" />
+  <style format="0" name="Keyword" color="#0000ff" />
   <style format="0" name="Preprocessor" color="#ff00ff" />
   <style format="0" name="Preprocessor2" color="#aa00aa" />
-  <style format="2" name="Comment" color="#ff8c00" />
-  <style format="0" name="Tag" color="#ff0000" /> 
   <style format="0" name="String" color="#00cd00" />
   <style format="0" name="String2" color="#2e8b2e" />
   <style format="1" name="String3" color="#2e8b2e" />
-  <style format="0" name="Attribute" color="#0000ff" />
-  <style format="2" name="Attribute2" color="#0000ff" />
-  <style format="1" name="Escape Character" color="#0000ff" /> 
-  <style format="0" name="Keyword" color="#0000ff" /> 
- 
-  <!-- highlight patterns -->
-  
-  <!-- comments -->
-  <range_pattern style="Comment" name="Comment" options="span no_indent" >
+  <style format="0" name="Tag" color="#ff0000" />
+
+<!--Highlight patterns-->
+  <range_pattern options="span no_indent " style="Comment" parent="" name="Comment" >
+   <comments></comments>
    <begin>XML_LT!--</begin>
    <end>--XML_GT</end>
   </range_pattern>
- 
-  <!-- preprocessor tag -->
-  <range_pattern style="Preprocessor" name="Preprocessor Tag" options="span no_indent" >
+  <range_pattern options="span no_indent " style="Preprocessor" parent="" name="Preprocessor Tag" >
+   <comments></comments>
    <begin>XML_LT!</begin>
    <end>XML_GT</end>
   </range_pattern>
-
- <!-- preprocessor strings -->
- <range_pattern style="String2" name="Preprocessor String" parent="Preprocessor Tag" >
-  <begin>XML_QUOTE</begin>
-  <end>(XML_QUOTE|$)</end>
- </range_pattern>
-
- <range_pattern style="String2" name="Preprocessor String2" parent="Preprocessor Tag" >
-  <begin>'</begin>
-  <end>('|$)</end>
- </range_pattern>
-
- <!-- keyword -->
- <keyword_pattern style="Preprocessor2" name="Preprocessor keyword" parent="Preprocessor Tag" >
-  <keyword>(XML_LT!|XML_GT|PUBLIC)</keyword>
- </keyword_pattern>
-
- <keyword_pattern style="String3" name="Preprocessor keyword2" parent="Preprocessor Tag" >
-  <keyword>HTML</keyword>
- </keyword_pattern>
-
-  <!-- tags -->
-  <range_pattern style="Tag" name="Tag" >
+  <range_pattern style="String2" parent="Preprocessor Tag" name="Preprocessor String" >
+   <comments></comments>
+   <begin>XML_QUOTE</begin>
+   <end>(XML_QUOTE|$)</end>
+  </range_pattern>
+  <range_pattern style="String2" parent="Preprocessor Tag" name="Preprocessor String2" >
+   <comments></comments>
+   <begin>'</begin>
+   <end>('|$)</end>
+  </range_pattern>
+  <keyword_pattern style="Preprocessor2" parent="Preprocessor Tag" name="Preprocessor keyword" >
+   <comments></comments>
+   <keyword>(XML_LT!|XML_GT|PUBLIC)</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="String3" parent="Preprocessor Tag" name="Preprocessor keyword2" >
+   <comments></comments>
+   <keyword>HTML</keyword>
+  </keyword_pattern>
+  <range_pattern style="Tag" parent="" name="Tag" >
+   <comments></comments>
    <begin>XML_LT/?</begin>
    <end>/?XML_GT</end>
   </range_pattern>
-
-  <!-- escape characters -->
-  <keyword_pattern style="Escape Character" name="Escape Character" >
+  <keyword_pattern style="Escape Character" parent="" name="Escape Character" >
+   <comments></comments>
    <keyword>XML_AND\w+;</keyword>
   </keyword_pattern>
-  
- <!-- strings -->
- <range_pattern style="String" name="String" parent="Tag" >
-  <begin>XML_QUOTE</begin>
-  <end>(XML_QUOTE|$)</end>
- </range_pattern>
+  <range_pattern style="String" parent="Tag" name="String" >
+   <comments></comments>
+   <begin>XML_QUOTE</begin>
+   <end>(XML_QUOTE|$)</end>
+  </range_pattern>
+  <range_pattern style="String" parent="Tag" name="String2" >
+   <comments></comments>
+   <begin>'</begin>
+   <end>('|$)</end>
+  </range_pattern>
+  <keyword_pattern style="Attribute" parent="Tag" name="Attribute" >
+   <comments></comments>
+   <keyword>\b(\w+(-\w*)?)(?=\=)</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Attribute2" parent="Tag" name="Attribute" >
+   <comments></comments>
+   <keyword>\b(\w+\s+)(?=\=)</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword" parent="Tag" name="Keyword" >
+   <comments></comments>
+   <keyword>(XML_LT/?|/?XML_GT|=)</keyword>
+  </keyword_pattern>
 
- <range_pattern style="String" name="String2" parent="Tag" >
-  <begin>'</begin>
-  <end>('|$)</end>
- </range_pattern>
+<!--Indentation patterns-->
 
- <!-- attributes -->
- <keyword_pattern style="Attribute" name="Attribute" parent="Tag" >
-  <keyword>\b(\w+(-\w*)?)(?=\=)</keyword>
- </keyword_pattern>
+<!--Parenthesis-->
+  <parenthesis begin="XML_LT" end="XML_GT" regexp="(XML_LT)|(XML_GT)" />
+  <parenthesis begin="(" end=")" regexp="\(|\)" />
+  <parenthesis begin="[" end="]" regexp="\[|\]" />
+  <parenthesis begin="{" end="}" regexp="\{|\}" />
 
- <!-- attributes (with whitespace prior to the = sign, indicating error -->
- <keyword_pattern style="Attribute2" name="Attribute" parent="Tag" >
-  <keyword>\b(\w+\s+)(?=\=)</keyword>
- </keyword_pattern>
+<!--Block delimiters-->
+  <block_delimiter begin="XML_LT!--" end="--XML_GT" regexp="(XML_LT\!--)|(--XML_GT)" />
+  <block_delimiter begin="XML_LT?" end="?XML_GT" regexp="(XML_LT\?)|(\?XML_GT)" />
+  <block_delimiter begin="XML_LTul" end="/ulXML_GT" regexp="(XML_LTul)|(/ulXML_GT)" />
+  <block_delimiter begin="XML_LTtable" end="/tableXML_GT" regexp="(XML_LTtable)|(/tableXML_GT)" />
 
- <!-- keyword -->
- <keyword_pattern style="Keyword" name="Keyword" parent="Tag" >
-  <keyword>(XML_LT/?|/?XML_GT|=)</keyword>
- </keyword_pattern>
-
-
-<!-- parenthesis -->
- <parenthesis begin="XML_LT" end="XML_GT" />
- <parenthesis begin="(" end=")" regexp="\(|\)" />
- <parenthesis begin="[" end="]" regexp="\[|\]" /> 
- <parenthesis begin="{" end="}" regexp="\{|\}" /> 
-
- <!-- block delimiters -->
- <block_delimiter begin="XML_LT!--" end="--XML_GT" regexp="(XML_LT\!--)|(--XML_GT)"/>
- <block_delimiter begin="XML_LT?" end="?XML_GT" regexp="(XML_LT\?)|(\?XML_GT)"/>
- <block_delimiter begin="XML_LTul" end="/ulXML_GT" regexp="(XML_LTul)|(/ulXML_GT)"/>
- <block_delimiter begin="XML_LTtable" end="/tableXML_GT" regexp="(XML_LTtable)|(/tableXML_GT)"/>
-
-<!-- text processing macros -->
-
-<!-- add one tab character. Note that the ascii code must be used and that single_char option is specified -->
- <macro name="Add one tab indentation">
-  <rule >
-   <regexp>^</regexp>
-   <replacement>XML_TAB</replacement>
-  </rule>
- </macro>
-
- <macro name="Remove one tab indentation">
-  <rule>
-   <regexp>^\t</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
- <macro name="Remove all tab indentations">
-  <rule>
-   <regexp>^\t+</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
- <macro name="Clean end of line">
-  <rule>
-   <regexp>\s+$</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
-
- <macro name="Clean end of line" accelerator="Alt+C">
-  <rule>
-   <regexp>\s+$</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
- <macro options="separator"/>
-
- <macro name="Add line comments">
-  <rule>
-   <regexp>^</regexp>
-   <replacement>XML_LT!--</replacement>
-  </rule>
-  <rule>
-   <regexp>$</regexp>
-   <replacement>--XML_GT</replacement>
-  </rule>
- </macro>
-
- <macro name="Remove line comments">
-  <rule>
-   <regexp>^\s*XML_LT\!--</regexp>
-   <replacement></replacement>
-  </rule>
-  <rule>
-   <regexp>--XML_GT\s*$</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
- <macro name="Add bar comments">
-  <rule>
-   <regexp>^</regexp>
-   <replacement>XML_TAB</replacement>
-  </rule>
-  <rule options="no_split">
-   <regexp>^</regexp>
-   <replacement>XML_LT!--XML_ENDL</replacement>
-  </rule>
-  <rule options="no_split">
-   <regexp>$</regexp>
-   <replacement>XML_ENDL--XML_GT</replacement>
-  </rule>
- </macro>
-
- <macro name="Remove bar comments">
-  <rule options="no_split">
-   <regexp>^\s*XML_LT\!--\n?</regexp>
-   <replacement></replacement>
-  </rule>
-  <rule options="no_split">
-   <regexp>\n?--XML_GT\s*$</regexp>
-   <replacement></replacement>
-  </rule>
-  <rule>
-   <regexp>^\t</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
+<!--Text macros-->
+  <macro name="Add one tab indentation" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement>XML_TAB</replacement>
+   </rule>
+  </macro>
+  <macro name="Remove one tab indentation" >
+   <rule>
+    <regexp>^\t</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro name="Remove all tab indentations" >
+   <rule>
+    <regexp>^\t+</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro name="Clean end of line" >
+   <rule>
+    <regexp>\s+$</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro accelerator="Alt+C" name="Clean end of line" >
+   <rule>
+    <regexp>\s+$</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro options="separator" name="generic" />
+  <macro name="Add line comments" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement>XML_LT!--</replacement>
+   </rule>
+   <rule>
+    <regexp>$</regexp>
+    <replacement>--XML_GT</replacement>
+   </rule>
+  </macro>
+  <macro name="Remove line comments" >
+   <rule>
+    <regexp>^\s*XML_LT\!--</regexp>
+    <replacement></replacement>
+   </rule>
+   <rule>
+    <regexp>--XML_GT\s*$</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro name="Add bar comments" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement>XML_TAB</replacement>
+   </rule>
+   <rule options="no_split" >
+    <regexp>^</regexp>
+    <replacement>XML_LT!--XML_ENDL</replacement>
+   </rule>
+   <rule options="no_split" >
+    <regexp>$</regexp>
+    <replacement>XML_ENDL--XML_GT</replacement>
+   </rule>
+  </macro>
+  <macro name="Remove bar comments" >
+   <rule options="no_split" >
+    <regexp>^\s*XML_LT\!--\n?</regexp>
+    <replacement></replacement>
+   </rule>
+   <rule options="no_split" >
+    <regexp>\n?--XML_GT\s*$</regexp>
+    <replacement></replacement>
+   </rule>
+   <rule>
+    <regexp>^\t</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
  </class>
 </patterns>

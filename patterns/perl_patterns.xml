@@ -1,290 +1,243 @@
-<!-- $Id$-->
 <patterns>
- <class name="perl" pattern="\.pr?(l|m)$" options="emulate_tabs" icon="text-x-script.png">
-  <style format="2" name="Comment" color="#ff8c00" /> 
+ <class pattern="\.pr?(l|m)$" icon="text-x-script.png" name="perl" >
+
+<!--Options-->
+  <Option>
+   <Name>wrap</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>emulate_tabs</Name>
+   <Value>1</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>default</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>base_indentation</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+
+<!--Highlight styles-->
+  <style format="2" name="Comment" color="#ff8c00" />
+  <style format="0" name="End Of Line" color="#a90000" />
+  <style format="0" name="Function" color="#d2691e" />
+  <style format="0" name="Keyword" color="#0000ff" />
+  <style format="0" name="Keyword2" color="#0000aa" />
+  <style format="2" name="Keyword3" color="#00cd00" />
+  <style format="2" name="Keyword4" color="#2e8b2e" />
+  <style format="0" name="Numeric Constants" color="#808000" />
   <style format="0" name="String" color="#00cd00" />
   <style format="0" name="String2" color="#2e8b2e" />
-  <style format="0" name="End Of Line" color="#a90000" /> 
-  <style format="0" name="Keyword" color="#0000ff" />
-  <style format="0" name="Keyword2" color="#0000aa" /> 
-  <style format="2" name="Keyword3" color="#00cd00" /> 
-  <style format="2" name="Keyword4" color="#2e8b2e" /> 
-  <style format="2" name="Tag" color="#ff0000" /> 
-  <style format="0" name="Function" color="#d2691e" /> 
-  <style format="0" name="Numeric Constants" color="#808000" /> 
+  <style format="2" name="Tag" color="#ff0000" />
 
- <!-- highlight patterns --> 
-
- <!-- End of line -->
- <keyword_pattern style="End Of Line" name="End Of Line" >
-  <keyword>;\s*$</keyword>
- </keyword_pattern>
- 
- <!-- parenthesis -->
- <keyword_pattern style="Keyword" name="Braces" >
-  <keyword>((\{|\[|\(|\)|\]|\})*(\{|\[|\(|\)|\]|\})(\{|\[|\(|\)|\]|\})*)</keyword>
- </keyword_pattern>
-
- <!-- numeric constants -->
- <keyword_pattern style="Numeric Constants" name="Numeric Constants" >
-  <keyword>\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f)?\b</keyword>
- </keyword_pattern>
-
-<!-- strings -->
- <range_pattern style="String" name="String" >
-  <begin>XML_QUOTE</begin>
-  <end>([^\\]XML_QUOTE|$)</end>
- </range_pattern>
-
- <range_pattern style="String2" name="String2" >
-  <begin>'</begin>
-  <end>([^\\]'|$)</end>
- </range_pattern>
- 
- <range_pattern style="String2" name="String3" >
-  <begin>`</begin>
-  <end>([^\\]`|$)</end>
- </range_pattern>
- 
- <keyword_pattern style="String2" name="String Escape Character" parent="String" >
-  <keyword>\\(.|\n)</keyword>
- </keyword_pattern>
-
-  <!-- variables -->
-  <keyword_pattern style="Keyword2" name="Variable" >
-  <keyword>(\$|@|%)#?(\w+)\b</keyword>
+<!--Highlight patterns-->
+  <keyword_pattern style="End Of Line" parent="" name="End Of Line" >
+   <comments></comments>
+   <keyword>;\s*$</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword" parent="" name="Braces" >
+   <comments></comments>
+   <keyword>((\{|\[|\(|\)|\]|\})*(\{|\[|\(|\)|\]|\})(\{|\[|\(|\)|\]|\})*)</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Numeric Constants" parent="" name="Numeric Constants" >
+   <comments></comments>
+   <keyword>\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f)?\b</keyword>
+  </keyword_pattern>
+  <range_pattern style="String" parent="" name="String" >
+   <comments></comments>
+   <begin>XML_QUOTE</begin>
+   <end>([^\\]XML_QUOTE|$)</end>
+  </range_pattern>
+  <range_pattern style="String2" parent="" name="String2" >
+   <comments></comments>
+   <begin>'</begin>
+   <end>([^\\]'|$)</end>
+  </range_pattern>
+  <range_pattern style="String2" parent="" name="String3" >
+   <comments></comments>
+   <begin>`</begin>
+   <end>([^\\]`|$)</end>
+  </range_pattern>
+  <keyword_pattern style="String2" parent="String" name="String Escape Character" >
+   <comments></comments>
+   <keyword>\\(.|\n)</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword2" parent="" name="Variable" >
+   <comments></comments>
+   <keyword>(\$|@|%)#?(\w+)\b</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword3" parent="String" name="Variable2" >
+   <comments></comments>
+   <keyword>(\$|@)#?(\w+)\b</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword4" parent="String2" name="Variable3" >
+   <comments></comments>
+   <keyword>\$#?(\w+)\b</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword4" parent="String3" name="Variable4" >
+   <comments></comments>
+   <keyword>\$#?(\w+)\b</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword" parent="" name="Keyword" >
+   <comments></comments>
+   <keyword>\b(if|foreach|use|els(e|if)|push|sub|print|my|return|chdir|chomp|next|last|redo)\b</keyword>
+  </keyword_pattern>
+  <range_pattern options="no_indent " style="Comment" parent="" name="Comment" >
+   <comments></comments>
+   <begin>#</begin>
+   <end>$</end>
+  </range_pattern>
+  <keyword_pattern style="Tag" parent="" name="Tag" >
+   <comments></comments>
+   <keyword>(^[A-Z]+\s*:)|(\bgoto\s+[A-Z]+\b)</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword" parent="Tag" name="Tag Keyword" >
+   <comments></comments>
+   <keyword>\b(goto)\b</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Function" parent="" name="Function" >
+   <comments></comments>
+   <keyword>(\b|XML_AND)(\w+)\s*(?=\()</keyword>
   </keyword_pattern>
 
-  <keyword_pattern style="Keyword3" name="Variable2" parent="String" >
-  <keyword>(\$|@)#?(\w+)\b</keyword>
-  </keyword_pattern>
+<!--Indentation patterns-->
+  <indent_pattern type="0" name="0" >
+   <rule par="0" >
+    <regexp>^\s*\}</regexp>
+   </rule>
+   <rule par="-1" >
+    <regexp>(\{\s*)($|#)</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="1" name="1" >
+   <rule par="-1" >
+    <regexp>(\{\s*)($|#)</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern scale="2" type="2" name="2" >
+   <rule par="-1" >
+    <regexp>(;\s*($|#))</regexp>
+   </rule>
+   <rule par="-2" >
+    <regexp>[^;|\{|\}\s*]\s*($|#)</regexp>
+   </rule>
+   <rule par="0" >
+    <regexp>^\s*\}</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="2" name="3" >
+   <rule par="0" >
+    <regexp>^\s*\}</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="2" name="4" >
+   <rule par="0" >
+    <regexp>^\s*\{</regexp>
+   </rule>
+   <rule par="-1" >
+    <regexp>[^;\s*]\s*($|#)</regexp>
+   </rule>
+   <rule par="-2" >
+    <regexp>[^;|\}|\{|:\s*]\s*($|#)</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="0" name="5" >
+   <rule par="0" >
+    <regexp>^\s*\{</regexp>
+   </rule>
+   <rule par="-1" >
+    <regexp>[^;\s*]\s*($|#)</regexp>
+   </rule>
+   <rule par="-2" >
+    <regexp>(;|\{|\})\s*($|#)</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="0" name="6" >
+   <rule par="-1" >
+    <regexp>((\}|(\}\s*;))\s*($|#))</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="0" name="6.1" >
+   <rule par="-1" >
+    <regexp>(;\s*#)</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="1" name="7" >
+   <rule par="-1" >
+    <regexp>([^;\s*]\s*$)</regexp>
+   </rule>
+   <rule par="-2" >
+    <regexp>((;|\{|\})\s*($|#))</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="0" name="8" >
+   <rule par="-1" >
+    <regexp>(;\s*($|#))</regexp>
+   </rule>
+   <rule par="-2" >
+    <regexp>((\{|\})\s*($|#))|(;\s*($|#))</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="2" name="9" >
+   <rule par="-1" >
+    <regexp>(;\s*($|#))</regexp>
+   </rule>
+   <rule par="-2" >
+    <regexp>[^;\s*]\s*($|#)</regexp>
+   </rule>
+  </indent_pattern>
 
-  <keyword_pattern style="Keyword4" name="Variable3" parent="String2" >
-  <keyword>\$#?(\w+)\b</keyword>
-  </keyword_pattern>
+<!--Parenthesis-->
+  <parenthesis begin="(" end=")" regexp="\(|\)" />
+  <parenthesis begin="[" end="]" regexp="\[|\]" />
+  <parenthesis begin="{" end="}" regexp="\{|\}" />
 
-  <keyword_pattern style="Keyword4" name="Variable4" parent="String3" >
-  <keyword>\$#?(\w+)\b</keyword>
-  </keyword_pattern>
- 
- <!-- keywords -->
- <keyword_pattern style="Keyword" name="Keyword" >
- <keyword>\b(if|foreach|use|els(e|if)|push|sub|print|my|return|chdir|chomp|next|last|redo)\b</keyword>
- </keyword_pattern>
+<!--Block delimiters-->
+  <block_delimiter begin="{" end="}" regexp="\{|\}" />
 
- <!-- comments --> 
- <range_pattern style="Comment" name="Comment" options="no_indent" >
-  <begin>#</begin>
-  <end>$</end>
- </range_pattern>
- 
-  <!-- tags -->
-  <keyword_pattern style="Tag" name="Tag" >
-  <keyword>(^[A-Z]+\s*:)|(\bgoto\s+[A-Z]+\b)</keyword>
-  </keyword_pattern>
-
- <keyword_pattern style="Keyword" name="Tag Keyword" parent="Tag" >
- <keyword>\b(goto)\b</keyword>
- </keyword_pattern> 
-
-  <!-- function call --> 
-  <keyword_pattern style="Function" name="Function" > 
-  <keyword>(\b|XML_AND)(\w+)\s*(?=\()</keyword>
-  </keyword_pattern>
-
- <!-- parenthesis -->
- <parenthesis begin="(" end=")" regexp="\(|\)" />
- <parenthesis begin="[" end="]" regexp="\[|\]" /> 
- <parenthesis begin="{" end="}" regexp="\{|\}" /> 
- 
- <!-- block delimiters -->
- <block_delimiter begin="{" end="}" regexp="\{|\}"/>
-
-  <!-- indentation rules -->
-  
- <!--  
-	pattern 0: 
-  keep unchanged when opening curly bracket at end of previous line but if
-	this line starts with a closing bracket
--->
- <indent_pattern name="0" type="0">
-  <rule par="0">
-   <regexp>^\s*\}</regexp>
-  </rule>
-  <rule par="-1">
-   <regexp>(\{\s*)($|#)</regexp>
-  </rule>
- </indent_pattern>
-
- <!-- 
-	pattern 1: 
-  increment pattern when opening curly bracket at end of previous line and if
-	this line is not a closing bracket
- --> 
- <indent_pattern name="1" type="1">
-  <rule par="-1">
-   <regexp>(\{\s*)($|#)</regexp>
-  </rule>
- </indent_pattern>
-  
- <!-- 
-  pattern 2: 
-  decrement pattern twice when closing curly bracket at beginning of current line,
-  previous line is terminated, but the one before is not and is not openning/closing bracket
- --> 
- <indent_pattern name="2" type="2" scale="2">
-  <rule par="-1">
-   <regexp>(;\s*($|#))</regexp>
-  </rule>
-  <rule par="-2">
-  <regexp>[^;|\{|\}\s*]\s*($|#)</regexp>
-  </rule>
-  <rule par="0">
-   <regexp>^\s*\}</regexp>
-  </rule>
- </indent_pattern>
-  
- <!-- 
-  pattern 3: 
-  decrement pattern when closing curly bracket at beginning of current line 
- --> 
- <indent_pattern name="3" type="2">
-  <rule par="0">
-   <regexp>^\s*\}</regexp>
-  </rule>
- </indent_pattern>
-
- <!-- 
-  pattern 4:
-  decrement when previous line is not terminated, 
-  the one before is not terminated either,
-  and this one is an opening bracket
- -->
- <indent_pattern name="4" type="2">  
-  <rule par="0">
-   <regexp>^\s*\{</regexp>
-  </rule>
-  <rule par="-1">
-   <regexp>[^;\s*]\s*($|#)</regexp>
-  </rule>
-  <rule par="-2">
-  <regexp>[^;|\}|\{|:\s*]\s*($|#)</regexp>
-  </rule>
- </indent_pattern>
-
- <!-- 
-  pattern 5: 
-  keep unchanged when previous line is not terminated but this one is an opening bracket
- -->
- <indent_pattern name="5" type="0"> 
-  <rule par="0">
-   <regexp>^\s*\{</regexp>
-  </rule>
-  <rule par="-1">
-   <regexp>[^;\s*]\s*($|#)</regexp>
-  </rule>
-  <rule par="-2">
-   <regexp>(;|\{|\})\s*($|#)</regexp>
-  </rule>
- </indent_pattern>
-
- <!-- pattern 6: keep unchanged when previous line is not terminated but is a closing bracket  -->
- <indent_pattern name="6" type="0"> 
-  <rule par="-1">
-   <regexp>((\}|(\}\s*;))\s*($|#))</regexp>
-  </rule>
- </indent_pattern>
-
-<!-- pattern 6.1: keep unchanged if previous line is terminated + comment but above is
- 	- terminated
-	- a bracket -->
- <indent_pattern name="6.1" type="0">
-  <rule par="-1">
-   <regexp>(;\s*#)</regexp>
-  </rule>
- </indent_pattern>
-
-
- <!-- pattern 7: increment if previous line is not terminated but above is
- 	- terminated
-	- a bracket -->
- <indent_pattern name="7" type="1">
-  <rule par="-1">
-   <regexp>([^;\s*]\s*$)</regexp>
-  </rule>
-  <rule par="-2">
-   <regexp>((;|\{|\})\s*($|#))</regexp>
-  </rule>
- </indent_pattern>
-
- <!-- pattern 8: keep unchanged if previous line is terminated and previous is
- 	- terminated
-	- a bracket -->
- <indent_pattern name="8" type="0">
-  <rule par="-1">
-   <regexp>(;\s*($|#))</regexp>
-  </rule>
-  <rule par="-2">
-   <regexp>((\{|\})\s*($|#))|(;\s*($|#))</regexp>
-  </rule>
- </indent_pattern>
- 
- <!-- pattern 9: decrement when previous line is terminated but above was not -->
- <indent_pattern name="9" type="2">
-  <rule par="-1">
-   <regexp>(;\s*($|#))</regexp>
-  </rule>
-  <rule par="-2">
-   <regexp>[^;\s*]\s*($|#)</regexp>
-  </rule>
- </indent_pattern>
-
- <!-- text processing macros -->
-
- <macro name="Add one tab indentation" accelerator="Alt+T">
-  <rule>
-   <regexp>^</regexp>
-   <replacement>XML_TAB</replacement>
-  </rule>
- </macro>
-
- <macro name="Remove one tab indentation" accelerator="Shift+Alt+T">
-  <rule>
-   <regexp>^\t</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
- <macro name="Remove all tab indentations">
-  <rule>
-   <regexp>^\s+</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
- <macro name="Clean end of line" accelerator="Alt+C">
-  <rule>
-   <regexp>\s+$</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
-<macro options="separator"/>
- 
- <macro name="Add comments">
-  <rule>
-   <regexp>^</regexp>
-   <replacement># </replacement>
-  </rule>
- </macro>
-
- <macro name="Remove comments">
-  <rule>
-   <regexp>^# </regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
-
-</class>
+<!--Text macros-->
+  <macro accelerator="Alt+T" name="Add one tab indentation" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement>XML_TAB</replacement>
+   </rule>
+  </macro>
+  <macro accelerator="Shift+Alt+T" name="Remove one tab indentation" >
+   <rule>
+    <regexp>^\t</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro name="Remove all tab indentations" >
+   <rule>
+    <regexp>^\s+</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro accelerator="Alt+C" name="Clean end of line" >
+   <rule>
+    <regexp>\s+$</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro options="separator" name="generic" />
+  <macro name="Add comments" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement># </replacement>
+   </rule>
+  </macro>
+  <macro name="Remove comments" >
+   <rule>
+    <regexp>^# </regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+ </class>
 </patterns>

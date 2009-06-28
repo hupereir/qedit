@@ -1,26 +1,55 @@
-<!-- $Id$-->
 <patterns>
- <class name="diff" pattern="/\w+\.diff$" options="emulate_tabs" icon="unknown.png" >
+ <class pattern="/\w+\.diff$" icon="unknown.png" name="diff" >
 
- <!-- highlight styles -->
- <style format="0" name="in" color="#0000cd" />
- <style format="0" name="out" color="#00cd00" />
- <style format="2" name="delimiter" color="#cd0000" />
+<!--Options-->
+  <Option>
+   <Name>wrap</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>emulate_tabs</Name>
+   <Value>1</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>default</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>base_indentation</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
 
- <!-- highlight patterns -->
- <range_pattern name="in" style="in">
- <begin>XML_LT</begin>
- <end>$</end>
- </range_pattern>
+<!--Highlight styles-->
+  <style format="2" name="delimiter" color="#cd0000" />
+  <style format="0" name="in" color="#0000cd" />
+  <style format="0" name="out" color="#00cd00" />
 
- <range_pattern name="out" style="out">
- <begin>XML_GT</begin>
- <end>$</end>
- </range_pattern>
+<!--Highlight patterns-->
+  <range_pattern style="in" parent="" name="in" >
+   <comments></comments>
+   <begin>XML_LT</begin>
+   <end>$</end>
+  </range_pattern>
+  <range_pattern style="out" parent="" name="out" >
+   <comments></comments>
+   <begin>XML_GT</begin>
+   <end>$</end>
+  </range_pattern>
+  <keyword_pattern style="delimiter" parent="" name="delimiter" >
+   <comments></comments>
+   <keyword>^([0-9]+(,[0-9]+)?(a|c|d)[0-9]+(,[0-9]+)?)|(-+)\s*$</keyword>
+  </keyword_pattern>
 
- <keyword_pattern name="delimiter" style="delimiter" >
- <keyword>^([0-9]+(,[0-9]+)?(a|c|d)[0-9]+(,[0-9]+)?)|(-+)\s*$</keyword>
- </keyword_pattern>
+<!--Indentation patterns-->
 
+<!--Parenthesis-->
+
+<!--Block delimiters-->
+
+<!--Text macros-->
  </class>
 </patterns>

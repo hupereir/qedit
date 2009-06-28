@@ -1,157 +1,162 @@
-<!-- $Id$--> 
 <patterns>
-  <class name="makefiles" pattern="((/|\b)(m|M)akefile.*$)|(.pro$)" icon="text-x-makefile.png" >
+ <class pattern="((/|\b)(m|M)akefile.*$)|(.pro$)" icon="text-x-makefile.png" name="makefiles" >
 
-    <!-- highlight styles --> 
-    <style format="2" name="Comment" color="#ff8c00" /> 
-    <style format="0" name="Macro" color="#ff00ff" /> 
-    <style format="0" name="Tag" color="#0000ff" /> 
-    <style format="0" name="Separator" color="#0000a8" />  
-    <style format="0" name="Rule" color="#ff0000" />  
-    <style format="0" name="String" color="#00cd00" /> 
-    <style format="0" name="Keyword" color="#0000ff" /> 
-    <style format="2" name="Keyword2" color="#0000ff" /> 
-    <style format="2" name="Keyword3" color="#ff00ff" /> 
-    <style format="2" name="Keyword4" color="#ff0000" />  
-    <style name="Command" />  
+<!--Options-->
+  <Option>
+   <Name>wrap</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>emulate_tabs</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>default</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>base_indentation</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
 
-    <!-- highlight patterns --> 
+<!--Highlight styles-->
+  <style format="0" name="Command" color="#000000" />
+  <style format="2" name="Comment" color="#ff8c00" />
+  <style format="0" name="Keyword" color="#0000ff" />
+  <style format="2" name="Keyword2" color="#0000ff" />
+  <style format="2" name="Keyword3" color="#ff00ff" />
+  <style format="2" name="Keyword4" color="#ff0000" />
+  <style format="0" name="Macro" color="#ff00ff" />
+  <style format="0" name="Rule" color="#ff0000" />
+  <style format="0" name="Separator" color="#0000a8" />
+  <style format="0" name="String" color="#00cd00" />
+  <style format="0" name="Tag" color="#0000ff" />
 
-    <!-- comments -->
-    <range_pattern style="Comment" name="Comment" options="no_indent" >
-    <begin>#</begin>
-    <end>$</end>
-    </range_pattern>
+<!--Highlight patterns-->
+  <range_pattern options="no_indent " style="Comment" parent="" name="Comment" >
+   <comments></comments>
+   <begin>#</begin>
+   <end>$</end>
+  </range_pattern>
+  <range_pattern options="span " style="Command" parent="" name="Command" >
+   <comments></comments>
+   <begin>^.*\t</begin>
+   <end>([^\\]$)</end>
+  </range_pattern>
+  <keyword_pattern style="Separator" parent="Command" name="Separator3" >
+   <comments></comments>
+   <keyword>\\</keyword>
+  </keyword_pattern>
+  <range_pattern style="String" parent="Command" name="String" >
+   <comments></comments>
+   <begin>XML_QUOTE</begin>
+   <end>[^\\]XML_QUOTE</end>
+  </range_pattern>
+  <range_pattern style="String" parent="Command" name="String2" >
+   <comments></comments>
+   <begin>'</begin>
+   <end>([^\\]'|$)</end>
+  </range_pattern>
+  <range_pattern options="span " style="Macro" parent="" name="Macro" >
+   <comments></comments>
+   <begin>^.+=</begin>
+   <end>([^\\]$)</end>
+  </range_pattern>
+  <range_pattern options="span " style="Rule" parent="" name="Rule" >
+   <comments></comments>
+   <begin>^.+\:</begin>
+   <end>([^\\]$)</end>
+  </range_pattern>
+  <keyword_pattern style="Separator" parent="Macro" name="Separator" >
+   <comments></comments>
+   <keyword>\=|\\</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Separator" parent="Rule" name="Separator2" >
+   <comments></comments>
+   <keyword>\:|\\</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword" parent="" name="Variable" >
+   <comments></comments>
+   <keyword>(\$\(\w+\))|(\$\$\w+\b)|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword2" parent="Command" name="Variable2" >
+   <comments></comments>
+   <keyword>(\$\(\w+\))|(\$\$\w+\b)|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword3" parent="Macro" name="Variable3" >
+   <comments></comments>
+   <keyword>(\$\(\w+\))|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword4" parent="Rule" name="Variable4" >
+   <comments></comments>
+   <keyword>(\$\(\w+\))|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword" parent="" name="Keyword" >
+   <comments></comments>
+   <keyword>\b((end)?if|else)\b</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Separator" parent="Command" name="Keyword2" >
+   <comments></comments>
+   <keyword>\@|\b((set)?env|set(env)?|umask|bindkey|(end)?if|end|then|else|source|echo|fi|test|in|case|esac|for(each)?|print|cd|cp|exit|rm|ls|do(ne)?)\b</keyword>
+  </keyword_pattern>
 
-    <!-- command -->
-    <range_pattern name="Command" style="Command" options="span">
-    <begin>^.*\t</begin>
-    <end>([^\\]$)</end> 
-    </range_pattern>
+<!--Indentation patterns-->
 
-    <keyword_pattern style="Separator" name="Separator3" parent="Command">
-    <keyword>\\</keyword>
-    </keyword_pattern>
+<!--Parenthesis-->
+  <parenthesis begin="(" end=")" regexp="\(|\)" />
+  <parenthesis begin="[" end="]" regexp="\[|\]" />
+  <parenthesis begin="{" end="}" regexp="\{|\}" />
 
-    <range_pattern style="String" name="String" parent="Command" >
-    <begin>XML_QUOTE</begin>
-    <end>[^\\]XML_QUOTE</end>
-    </range_pattern>
+<!--Block delimiters-->
 
-    <range_pattern style="String" name="String2" parent="Command" >
-    <begin>'</begin>
-    <end>([^\\]'|$)</end>
-    </range_pattern>
-
-    <!-- macro --> 
-    <range_pattern style="Macro" name="Macro" options="span" >
-    <begin>^.+=</begin>
-    <end>([^\\]$)</end> 
-    </range_pattern>
-
-    <!-- rule -->
-    <range_pattern style="Rule" name="Rule" options="span" >
-    <begin>^.+\:</begin>
-    <end>([^\\]$)</end> 
-    </range_pattern>
-
-    <!-- delimiters -->
-    <keyword_pattern style="Separator" name="Separator" parent="Macro">
-    <keyword>\=|\\</keyword>
-    </keyword_pattern>
-
-    <keyword_pattern style="Separator" name="Separator2" parent="Rule">
-    <keyword>\:|\\</keyword>
-    </keyword_pattern>
-
-    <!-- variables -->
-
-    <keyword_pattern style="Keyword" name="Variable">
-    <keyword>(\$\(\w+\))|(\$\$\w+\b)|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
-    </keyword_pattern>
-
-    <keyword_pattern style="Keyword2" name="Variable2" parent="Command">
-    <keyword>(\$\(\w+\))|(\$\$\w+\b)|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
-    </keyword_pattern>
-
-    <keyword_pattern style="Keyword3" name="Variable3" parent="Macro">
-    <keyword>(\$\(\w+\))|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
-    </keyword_pattern>
-
-    <keyword_pattern style="Keyword4" name="Variable4" parent="Rule">
-    <keyword>(\$\(\w+\))|(\$(\w|\^|\@))|(\@\w+\@)</keyword>
-    </keyword_pattern>
-
-    <!-- keywords --> 
-    <keyword_pattern style="Keyword" name="Keyword">
-    <keyword>\b((end)?if|else)\b</keyword>
-    </keyword_pattern>
-
-    <keyword_pattern style="Separator" name="Keyword2" parent="Command" >
-    <keyword>\@|\b((set)?env|set(env)?|umask|bindkey|(end)?if|end|then|else|source|echo|fi|test|in|case|esac|for(each)?|print|cd|cp|exit|rm|ls|do(ne)?)\b</keyword>
-    </keyword_pattern>
-
-
-    <!-- parenthesis -->
-    <parenthesis begin="(" end=")" regexp="\(|\)" />
-    <parenthesis begin="[" end="]" regexp="\[|\]" /> 
-    <parenthesis begin="{" end="}" regexp="\{|\}" /> 
-
-    <!-- text processing macros -->
-    <!-- add one tab character. Note that the ascii code must be used and that single_char option is specified -->
-    
-    <macro name="Add one tab indentation">
-      <rule>
-      <regexp>^</regexp>
-      <replacement>XML_TAB</replacement>
-      </rule>
-    </macro>
-
-    <macro name="Remove one tab indentation">
-      <rule>
-      <regexp>^\t</regexp>
-      <replacement></replacement>
-      </rule>
-    </macro>
-
-    <macro options="separator"/>
-   
-    <macro name="Add leading space characters">
-      <rule>
-      <regexp>^</regexp>
-      <replacement>XML_NONE  </replacement>
-      </rule>
-    </macro>
-
-    <macro name="Remove leading spaces and tabs">
-      <rule>
-      <regexp>^\s+</regexp>
-      <replacement></replacement>
-      </rule>
-    </macro>
-
-    <macro name="Clean end of line" accelerator="Alt+C">
-      <rule>
-      <regexp>\s+$</regexp>
-      <replacement></replacement>
-      </rule>
-    </macro>
-
-    <macro options="separator"/>
-
-    <macro name="Add comments">
-      <rule>
-      <regexp>^</regexp>
-      <replacement># </replacement>
-      </rule>
-    </macro>
-
-    <macro name="Remove comments">
-      <rule>
-      <regexp>^# </regexp>
-      <replacement></replacement>
-      </rule>
-    </macro>
-
-  </class>
+<!--Text macros-->
+  <macro name="Add one tab indentation" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement>XML_TAB</replacement>
+   </rule>
+  </macro>
+  <macro name="Remove one tab indentation" >
+   <rule>
+    <regexp>^\t</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro options="separator" name="generic" />
+  <macro name="Add leading space characters" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement>  </replacement>
+   </rule>
+  </macro>
+  <macro name="Remove leading spaces and tabs" >
+   <rule>
+    <regexp>^\s+</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro accelerator="Alt+C" name="Clean end of line" >
+   <rule>
+    <regexp>\s+$</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro options="separator" name="generic" />
+  <macro name="Add comments" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement># </replacement>
+   </rule>
+  </macro>
+  <macro name="Remove comments" >
+   <rule>
+    <regexp>^# </regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+ </class>
 </patterns>

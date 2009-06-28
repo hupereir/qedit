@@ -1,188 +1,176 @@
-<!-- $Id$-->
 <patterns>
+ <class pattern="\.(f|F|(inc))(\.in)?$" icon="text-x-fortransrc.png" name="fortran" >
 
-  <class name="fortran" pattern="\.(f|F|(inc))(\.in)?$" base_indentation="6" options="emulate_tabs" icon="text-x-fortransrc.png" >
+<!--Options-->
+  <Option>
+   <Name>wrap</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>emulate_tabs</Name>
+   <Value>1</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>default</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>base_indentation</Name>
+   <Value>6</Value>
+   <flags>2</flags>
+  </Option>
 
- <!-- highlight styles -->
- <style format="2" name="Comment" color="#ff8c00" />
- <style format="1" name="Line Continued" color="#ff0000" />
- <style format="0" name="Keyword" color="#0000ff" />
- <style format="0" name="Numeric Constants" color="#808000" />
- <style format="0" name="Preprocessor" color="#ff00ff" />
- <style format="0" name="Preprocessor2" color="#aa00aa" />
- <style format="0" name="Scope" color="#008000" />
- <style format="0" name="Storage Type" color="#a020f0" />
- <style format="0" name="String" color="#00cd00" />
- <style format="0" name="String2" color="#2e8b2e" />
- <style format="0" name="Word" color="#ff0000" />
+<!--Highlight styles-->
+  <style format="2" name="Comment" color="#ff8c00" />
+  <style format="0" name="Cvs In" color="#ff0000" />
+  <style format="0" name="Cvs Out" color="#0000ff" />
+  <style format="0" name="Keyword" color="#0000ff" />
+  <style format="1" name="Line Continued" color="#ff0000" />
+  <style format="0" name="Numeric Constants" color="#808000" />
+  <style format="0" name="Preprocessor" color="#ff00ff" />
+  <style format="0" name="Preprocessor2" color="#aa00aa" />
+  <style format="0" name="Scope" color="#008000" />
+  <style format="0" name="Storage Type" color="#a020f0" />
+  <style format="0" name="String" color="#00cd00" />
+  <style format="0" name="String2" color="#2e8b2e" />
+  <style format="0" name="Word" color="#ff0000" />
 
- <style format="0" name="Cvs In" color="#ff0000" /> 
- <style format="0" name="Cvs Out" color="#0000ff" />  
+<!--Highlight patterns-->
+  <range_pattern options="no_indent " style="Preprocessor" parent="" name="Preprocessor" >
+   <comments>preprocessor comment</comments>
+   <begin>^\s*#\s*(include|define|if(n?def)?|line|error|el(se|if)|endif|undef|pragma)\b</begin>
+   <end>$</end>
+  </range_pattern>
+  <range_pattern options="no_indent " style="Preprocessor" parent="" name="Preprocessor 2" >
+   <comments>preprocessor comment</comments>
+   <begin>^\s*(include)\b</begin>
+   <end>$</end>
+  </range_pattern>
+  <range_pattern options="no_indent no_case " style="Comment" parent="" name="Comment" >
+   <comments></comments>
+   <begin>^(c|C|\*)</begin>
+   <end>$</end>
+  </range_pattern>
+  <range_pattern style="Comment" parent="" name="Comment1" >
+   <comments>middle of line fortran comments</comments>
+   <begin>!</begin>
+   <end>$</end>
+  </range_pattern>
+  <keyword_pattern style="Line Continued" parent="" name="Line Continued" >
+   <comments></comments>
+   <keyword>^ {5}[^ ]</keyword>
+  </keyword_pattern>
+  <keyword_pattern options="no_case " style="Storage Type" parent="" name="Storage Type" >
+   <comments></comments>
+   <keyword>\b(implicit|(real(\*(4|8))?)|integer|character|logical|external|common|namelist|data)\b</keyword>
+  </keyword_pattern>
+  <keyword_pattern options="no_case " style="Keyword" parent="" name="Keyword" >
+   <comments></comments>
+   <keyword>\b(open|close|read|write|rewind|go( )?to|continue|call|(end( )?)?if|then|else(if)?|(end( )?)?do|format|function|subroutine|stop|save|return|end)\b</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Numeric Constants" parent="" name="Numeric Constants" >
+   <comments></comments>
+   <keyword>\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f)?\b</keyword>
+  </keyword_pattern>
+  <range_pattern style="String" parent="" name="String" >
+   <comments></comments>
+   <begin>'</begin>
+   <end>'</end>
+  </range_pattern>
 
- <!-- highlight patterns -->
- 
-<!-- preprocessor command -->
- <range_pattern style="Preprocessor" name="Preprocessor" options="no_indent" >
-  <begin>^\s*#\s*(include|define|if(n?def)?|line|error|el(se|if)|endif|undef|pragma)\b</begin>
-  <end>$</end>
-  <comments>preprocessor comment</comments>
- </range_pattern>
+<!--Indentation patterns-->
+  <indent_pattern type="0" name="Line Continued" >
+   <rule par="-1" >
+    <regexp>^ {5}\S</regexp>
+   </rule>
+   <rule par="0" >
+    <regexp>^ {5}\S</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="1" name="Line Continued" >
+   <rule par="0" >
+    <regexp>^ {5}\S</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="2" name="Line Terminated" >
+   <rule par="-1" >
+    <regexp>^ {5}\S</regexp>
+   </rule>
+   <rule par="0" >
+    <regexp>^.{5} </regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="1" name="0" >
+   <rule options="no_case" par="-1" >
+    <regexp>\bTHEN\s*$</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="1" name="1" >
+   <rule options="no_case" par="-1" >
+    <regexp>\bELSE\s*$</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="1" name="2" >
+   <rule options="no_case" par="-1" >
+    <regexp>^\s*(DO|WHILE)\b</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern scale="2" type="2" name="3prime" >
+   <rule par="-1" >
+    <regexp>^ {5}\S</regexp>
+   </rule>
+   <rule options="no_case" par="0" >
+    <regexp>\b((END( )?IF)|ELSE|(END( )?DO))\s*(!|$)</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="2" name="3" >
+   <rule options="no_case" par="0" >
+    <regexp>\b((END( )?IF)|ELSE|(END( )?DO))\s*(!|$)</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern scale="2" type="2" name="3" >
+   <rule par="-1" >
+    <regexp>^ {5}\S</regexp>
+   </rule>
+   <rule options="no_case" par="0" >
+    <regexp>^\s*ELSE\s*IF\b</regexp>
+   </rule>
+  </indent_pattern>
+  <indent_pattern type="2" name="3" >
+   <rule options="no_case" par="0" >
+    <regexp>^\s*ELSE\s*IF\b</regexp>
+   </rule>
+  </indent_pattern>
 
- <range_pattern style="Preprocessor" name="Preprocessor 2" options="no_indent" >
-  <begin>^\s*(include)\b</begin>
-  <end>$</end>
-  <comments>preprocessor comment</comments>
- </range_pattern>
+<!--Parenthesis-->
+  <parenthesis begin="(" end=")" regexp="\(|\)" />
 
- <!-- comments  -->
- <range_pattern style="Comment" name="Comment" options="no_indent no_case" >
-  <begin>^(c|C|\*)</begin>
-  <end>$</end>
- </range_pattern>
+<!--Block delimiters-->
+  <block_delimiter begin="then" end="end" regexp="(then)|(end\s*if)" />
+  <block_delimiter begin=" do " end="end" regexp="(do )|(end\s*do)" />
 
-<!-- comments (c style) -->
- <range_pattern style="Comment" name="Comment1" >
-  <begin>!</begin>
-  <end>$</end>
-  <comments>middle of line fortran comments</comments>
- </range_pattern>
-
-
-<!-- line continued -->
- <keyword_pattern style="Line Continued" name="Line Continued" >
-  <keyword>^ {5}[^ ]</keyword>
- </keyword_pattern>
-
- <!-- types -->
- <keyword_pattern style="Storage Type" name="Storage Type" options="no_case" >
-  <keyword>\b(implicit|(real(\*(4|8))?)|integer|character|logical|external|common|namelist|data)\b</keyword>
- </keyword_pattern>
-
- <!-- keywords -->
- <keyword_pattern style="Keyword" name="Keyword" options="no_case" >
-  <keyword>\b(open|close|read|write|rewind|go( )?to|continue|call|(end( )?)?if|then|else(if)?|(end( )?)?do|format|function|subroutine|stop|save|return|end)\b</keyword>
- </keyword_pattern>
- 
- <!-- numeric constants -->
- <keyword_pattern style="Numeric Constants" name="Numeric Constants" >
-  <keyword>\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f)?\b</keyword>
- </keyword_pattern>
- 
- <!-- strings -->
- <range_pattern style="String" name="String" >
-  <begin>'</begin>
-  <end>'</end>
- </range_pattern>
-  
- <!-- parenthesis -->
- <parenthesis begin="(" end=")" regexp="\(|\)" />
-
- <!-- block delimiters -->
- <block_delimiter begin="then" end="end" regexp="(then)|(end\s*if)"/>
- <block_delimiter begin=" do " end="end" regexp="(do )|(end\s*do)"/>
-
- <!-- indentation rules -->
- 
- <indent_pattern name="Line Continued" type="0">
-  <rule par="-1">
-  <regexp>^ {5}\S</regexp>
-  </rule>
-  <rule par="0">
-  <regexp>^ {5}\S</regexp>
-  </rule>
- </indent_pattern> 
-
- <indent_pattern name="Line Continued" type="1">
-  <rule par="0">
-  <regexp>^ {5}\S</regexp>
-  </rule>
- </indent_pattern> 
-
-<!-- decrement if previous line is a continued line but this one is not -->
- <indent_pattern name="Line Terminated" type="2">
-  <rule par="-1">
-  <regexp>^ {5}\S</regexp>
-  </rule>
-  <rule par="0">
-  <regexp>^.{5} </regexp>
-  </rule>
- </indent_pattern> 
- 
- <indent_pattern  name="0" type="1">
-  <rule par="-1" options="no_case">
-   <regexp>\bTHEN\s*$</regexp>
-  </rule>
- </indent_pattern>
- 
- <indent_pattern name="1" type="1">
-  <rule par="-1" options="no_case">
-   <regexp>\bELSE\s*$</regexp>
-  </rule>
- </indent_pattern>
- 
- <indent_pattern name="2" type="1">
-  <rule par="-1" options="no_case">
-   <regexp>^\s*(DO|WHILE)\b</regexp>
-  </rule>
- </indent_pattern>
-
-<!-- decrement twice if previous line is a continued line but this one is not and corresponds to an end of block-->
- <indent_pattern name="3prime" type="2" scale="2">
-  <rule par="-1">
-  <regexp>^ {5}\S</regexp>
-  </rule>
-  <rule par="0" options="no_case">
-   <regexp>\b((END( )?IF)|ELSE|(END( )?DO))\s*(!|$)</regexp>
-  </rule>
- </indent_pattern>
-
-<!-- decrement at end of block-->
- <indent_pattern name="3" type="2">
-  <rule par="0" options="no_case">
-   <regexp>\b((END( )?IF)|ELSE|(END( )?DO))\s*(!|$)</regexp>
-  </rule>
- </indent_pattern>
-
-<!-- decrement at else block-->
- <indent_pattern name="3" type="2" scale="2">
-  <rule par="-1">
-  <regexp>^ {5}\S</regexp>
-  </rule>
-  <rule par="0" options="no_case">
-   <regexp>^\s*ELSE\s*IF\b</regexp>
-  </rule>
- </indent_pattern>
-
-<!-- decrement at else block-->
- <indent_pattern name="3" type="2">
-  <rule par="0" options="no_case">
-   <regexp>^\s*ELSE\s*IF\b</regexp>
-  </rule>
- </indent_pattern>
-
- <!-- text processing macros -->
- <macro name="Clean end of line" accelerator="Alt+C">
-  <rule>
-   <regexp>\s+$</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
- <macro options="separator"/>
- 
- <macro name="Add comments">
-  <rule>
-   <regexp>^</regexp>
-   <replacement>c </replacement>
-  </rule>
- </macro>
-
- <macro name="Remove comments">
-  <rule>
-   <regexp>^c </regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
+<!--Text macros-->
+  <macro accelerator="Alt+C" name="Clean end of line" >
+   <rule>
+    <regexp>\s+$</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro options="separator" name="generic" />
+  <macro name="Add comments" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement>c </replacement>
+   </rule>
+  </macro>
+  <macro name="Remove comments" >
+   <rule>
+    <regexp>^c </regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
  </class>
 </patterns>

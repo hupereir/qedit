@@ -1,101 +1,113 @@
-<!-- $Id$-->
 <patterns>
- <class name="latex" pattern="\.(tex|sty|cls|def)$" options="wrap emulate_tabs" icon="text-x-tex.png">
+ <class pattern="\.(tex|sty|cls|def)$" icon="text-x-tex.png" name="latex" >
 
- <!-- highlight styles -->
- <style format="2" name="Comment" color="#ff8c00" />
- <style format="0" name="Braces" color="#0000ff" />
- <style format="0" name="Keyword" color="#ff0000" /> 
- <style format="0" name="Attribute" color="#0000aa" /> 
- <style format="0" name="Math" color="#0000ff" />
-<!-- comments -->
- <range_pattern style="Comment" name="Comment">
-  <begin>%</begin>
-  <end>$</end>
- </range_pattern>
+<!--Options-->
+  <Option>
+   <Name>wrap</Name>
+   <Value>1</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>emulate_tabs</Name>
+   <Value>1</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>default</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>base_indentation</Name>
+   <Value>0</Value>
+   <flags>2</flags>
+  </Option>
 
-<!-- keyword attribute range -->
- <range_pattern style="Attribute" name="Attribute" options="span">
-  <begin>\\((\w+)|[^\s\d])(\[(\s|\d|\w)*\])?\{</begin>
-  <end>[^\\]\}</end>
- </range_pattern>
+<!--Highlight styles-->
+  <style format="0" name="Attribute" color="#0000aa" />
+  <style format="0" name="Braces" color="#0000ff" />
+  <style format="2" name="Comment" color="#ff8c00" />
+  <style format="0" name="Keyword" color="#ff0000" />
+  <style format="0" name="Math" color="#0000ff" />
 
-<!-- math -->
- <range_pattern style="Math" name="Math" options="span">
- <begin>\$</begin>
- <end>\$</end>
- </range_pattern>
+<!--Highlight patterns-->
+  <range_pattern style="Comment" parent="" name="Comment" >
+   <comments></comments>
+   <begin>%</begin>
+   <end>$</end>
+  </range_pattern>
+  <range_pattern options="span " style="Attribute" parent="" name="Attribute" >
+   <comments></comments>
+   <begin>\\((\w+)|[^\s\d])(\[(\s|\d|\w)*\])?\{</begin>
+   <end>[^\\]\}</end>
+  </range_pattern>
+  <range_pattern options="span " style="Math" parent="" name="Math" >
+   <comments></comments>
+   <begin>\$</begin>
+   <end>\$</end>
+  </range_pattern>
+  <keyword_pattern style="Braces" parent="" name="Braces" >
+   <comments></comments>
+   <keyword>((\{|\[|\]|\})*(\{|\[|\]|\})(\{|\[|\]|\})*)</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword" parent="" name="Keyword" >
+   <comments></comments>
+   <keyword>\\((\w+\b)|[^\s\d])</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Keyword" parent="Attribute" name="Keyword2" >
+   <comments></comments>
+   <keyword>\\((\w+\b)|[^\s\d])</keyword>
+  </keyword_pattern>
 
-<!-- parenthesis -->
- <keyword_pattern style="Braces" name="Braces" >
-  <keyword>((\{|\[|\]|\})*(\{|\[|\]|\})(\{|\[|\]|\})*)</keyword>
- </keyword_pattern>
+<!--Indentation patterns-->
 
-<!-- keyword (any string or single non space/digit character following a backslash)-->
- <keyword_pattern style="Keyword" name="Keyword" >
-  <keyword>\\((\w+\b)|[^\s\d])</keyword>
- </keyword_pattern>
+<!--Parenthesis-->
+  <parenthesis begin="(" end=")" regexp="\(|\)" />
+  <parenthesis begin="[" end="]" regexp="\[|\]" />
+  <parenthesis begin="{" end="}" regexp="\{|\}" />
+  <parenthesis begin="\begin" end="\end" regexp="(\\begin)|(\\end)" />
 
-<!-- keyword (any string or single non space/digit character following a backslash)-->
- <keyword_pattern style="Keyword" name="Keyword2" parent="Attribute" >
-  <keyword>\\((\w+\b)|[^\s\d])</keyword>
- </keyword_pattern>
+<!--Block delimiters-->
+  <block_delimiter begin="{" end="}" regexp="\{|\}" />
+  <block_delimiter begin="\begin" end="\end" regexp="(\\begin)|(\\end)" />
 
- <!-- parenthesis -->
- <parenthesis begin="(" end=")" regexp="\(|\)" />
- <parenthesis begin="[" end="]" regexp="\[|\]" /> 
- <parenthesis begin="{" end="}" regexp="\{|\}" /> 
- <parenthesis begin="\begin" end="\end" regexp="(\\begin)|(\\end)" /> 
-
- <!-- block delimiters -->
- <block_delimiter begin="{" end="}" regexp="\{|\}"/>
- <block_delimiter begin="\begin" end="\end" regexp="(\\begin)|(\\end)"/>
-
- <!-- text processing macros -->
-
- <macro name="Add one tab indentation" accelerator="Alt+T">
-  <rule>
-   <regexp>^</regexp>
-   <replacement>XML_TAB</replacement>
-  </rule>
- </macro>
-
- <macro name="Remove one tab indentation" accelerator="Shift+Alt+T">
-  <rule>
-   <regexp>^\t</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
- <macro name="Remove all tab indentations">
-  <rule>
-   <regexp>^\t+</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
- <macro name="Clean end of line" accelerator="Alt+C">
-  <rule>
-   <regexp>\s+$</regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
-<macro options="separator"/>
- 
- <macro name="Add comments">
-  <rule>
-   <regexp>^</regexp>
-   <replacement>% </replacement>
-  </rule>
- </macro>
-
- <macro name="Remove comments">
-  <rule>
-   <regexp>^% </regexp>
-   <replacement></replacement>
-  </rule>
- </macro>
-
+<!--Text macros-->
+  <macro accelerator="Alt+T" name="Add one tab indentation" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement>XML_TAB</replacement>
+   </rule>
+  </macro>
+  <macro accelerator="Shift+Alt+T" name="Remove one tab indentation" >
+   <rule>
+    <regexp>^\t</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro name="Remove all tab indentations" >
+   <rule>
+    <regexp>^\t+</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro accelerator="Alt+C" name="Clean end of line" >
+   <rule>
+    <regexp>\s+$</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
+  <macro options="separator" name="generic" />
+  <macro name="Add comments" >
+   <rule>
+    <regexp>^</regexp>
+    <replacement>% </replacement>
+   </rule>
+  </macro>
+  <macro name="Remove comments" >
+   <rule>
+    <regexp>^% </regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
  </class>
 </patterns>
