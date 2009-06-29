@@ -46,7 +46,7 @@ DocumentClassToolBar::DocumentClassToolBar( QWidget* parent ):
 {
   
   Debug::Throw( "DocumentClassToolBar::DocumentClassToolBar.\n" );
-  addWidget( new QLabel( "Document class: ", this ) );
+  addWidget( new QLabel( " Document class: ", this ) );
   addWidget( combobox_ = new QComboBox( this ) );
 
   connect( Singleton::get().application(), SIGNAL( documentClassesChanged() ), SLOT( update() ) );
@@ -54,9 +54,10 @@ DocumentClassToolBar::DocumentClassToolBar( QWidget* parent ):
 }
 
 //________________________________________________________________
-void DocumentClassToolBar::update( QString )
+void DocumentClassToolBar::update( QString class_name )
 {
   Debug::Throw( "DocumentClassToolBar::update.\n" );
+  _comboBox().setCurrentIndex( _comboBox().findText( class_name ) );
 }
 
 //________________________________________________________________

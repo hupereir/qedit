@@ -145,38 +145,41 @@ class TextDisplay: public AnimatedTextEditor
     //! file name (in bottom status bar and navigation frame)
     FILE_NAME = 1<<0,
     
+    //! document class
+    DOCUMENT_CLASS = 1<<1,
+
     //! read only
-    READ_ONLY = 1<<1,
+    READ_ONLY = 1<<2,
     
     //! modified
-    MODIFIED = 1<<2,
+    MODIFIED = 1<<3,
       
     //! cut availability
-    CUT = 1<<3,
+    CUT = 1<<4,
 
     //! copy availability
-    COPY = 1<<4,
+    COPY = 1<<5,
     
     //! paster availability
-    PASTE = 1<<5,
+    PASTE = 1<<6,
     
     //! undo/redo availability
-    UNDO_REDO = 1<<6,
+    UNDO_REDO = 1<<7,
     
     //! overwrite mode
-    SPELLCHECK = 1<<7,
+    SPELLCHECK = 1<<8,
 
     //! keyword modifiers
-    MODIFIERS = 1<<8,
+    MODIFIERS = 1<<9,
     
     //! display count
-    DISPLAY_COUNT = 1<<9,
+    DISPLAY_COUNT = 1<<10,
     
     //! active file changed
-    ACTIVE_DISPLAY_CHANGED = FILE_NAME|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SPELLCHECK|MODIFIERS,
+    ACTIVE_DISPLAY_CHANGED = FILE_NAME|DOCUMENT_CLASS|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SPELLCHECK|MODIFIERS,
 
     //! active file changed
-    ACTIVE_VIEW_CHANGED = FILE_NAME|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SPELLCHECK|MODIFIERS|DISPLAY_COUNT,
+    ACTIVE_VIEW_CHANGED = FILE_NAME|DOCUMENT_CLASS|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SPELLCHECK|MODIFIERS|DISPLAY_COUNT,
     
     //! all the above
     ALL = FILE_NAME|MODIFIED|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SPELLCHECK|MODIFIERS|DISPLAY_COUNT

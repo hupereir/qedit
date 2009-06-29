@@ -37,7 +37,6 @@
 #include <QSplitter>
 #include <QStackedWidget>
 #include <QTimerEvent>
-
 #include <list>
 
 
@@ -49,6 +48,7 @@
 #include "TextView.h"
 
 class AnimatedLineEditor;
+class DocumentClassToolBar;
 class Menu;
 class NavigationFrame;
 class StatusBar;
@@ -560,9 +560,36 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   }
    
   //! replace dialog
-  virtual bool _hasReplaceDialog( void ) const
+  bool _hasReplaceDialog( void ) const
   { return bool( replace_dialog_ ); }
     
+  //! navigation frame
+  bool _hasNavigationFrame( void ) const
+  { return bool( navigation_frame_ ); }
+  
+  //! status bar
+  bool _hasStatusBar( void ) const
+  { return bool( statusbar_ ); }
+  
+  StatusBar& _statusBar( void ) const
+  { return *statusbar_; }
+  
+  //! document class toolbar
+  bool _hasDocumentClassToolBar( void ) const
+  { return bool( document_class_toolbar_ ); }
+  
+  //! document class toolbar
+  DocumentClassToolBar& _documentClassToolBar( void ) const
+  { return *document_class_toolbar_; }
+  
+  //! file editor
+  bool _hasFileEditor( void ) const
+  { return bool( file_editor_ ); }
+  
+  //! file editor
+  AnimatedLineEditor& _fileEditor( void ) const
+  { return *file_editor_; }
+  
   //! make connection between this window and child text view
   void _connectView( TextView& view );
   
@@ -604,6 +631,9 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   //! file display lineEdit
   AnimatedLineEditor* file_editor_;
      
+  //! document class toolbar
+  DocumentClassToolBar* document_class_toolbar_; 
+  
   //@}
     
   //!@name dialogs (re-implemented from TextEditor)

@@ -1166,6 +1166,9 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   if( textHighlight().isHighlightEnabled() ) rehighlight();
   #endif
 
+  // propagate
+  emit needUpdate( DOCUMENT_CLASS );
+  
   return;
 
 }

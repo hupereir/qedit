@@ -95,6 +95,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   menu_( 0 ),
   statusbar_( 0 ),
   file_editor_( 0 ),
+  document_class_toolbar_( 0 ),
   find_dialog_( 0 ),
   replace_dialog_( 0 ),
   select_line_dialog_( 0 )
@@ -757,16 +758,16 @@ void MainWindow::_update( unsigned int flags )
   { 
     
     // update file editor
-    if( file_editor_ )
+    if( _hasFileEditor() )
     {
-      file_editor_->setText( activeDisplay().file() ); 
+      _fileEditor().setText( activeDisplay().file() ); 
       filePropertiesAction().setEnabled( !( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() ) );
     }
     
     Debug::Throw() << "MainWindow::_update - file editor done. "<< endl;
     
     // update session file frame
-    if( navigation_frame_ )
+    if( _hasNavigationFrame() )
     { 
       navigationFrame().sessionFilesFrame().select( activeDisplay().file() ); 
       navigationFrame().recentFilesFrame().select( activeDisplay().file() ); 
@@ -776,11 +777,14 @@ void MainWindow::_update( unsigned int flags )
     Debug::Throw() << "MainWindow::_update - navigation frame done. "<< endl;
     
     // cursor position
-    if( statusbar_ ) _updateCursorPosition();
+    if( _hasStatusBar() ) _updateCursorPosition();
     Debug::Throw() << "MainWindow::_update - statusbar done. "<< endl;
     
   }
 
+  if( flags & (TextDisplay::DOCUMENT_CLASS ) && _hasDocumentClassToolBar() )
+  { _documentClassToolBar().update( activeDisplay().className() ); }
+  
   if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
   { cutAction().setEnabled( activeDisplay().cutAction().isEnabled() ); }
 
@@ -1017,7 +1021,7 @@ void MainWindow::_installToolbars( void )
   toolbar->addAction( &detachAction() );
   
   // document class toolbar
-  new DocumentClassToolBar( this );
+  document_class_toolbar_ = new DocumentClassToolBar( this );
 
   // navigation toolbar
   NavigationToolBar* navigation_toolbar = new NavigationToolBar( this ); 
