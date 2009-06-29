@@ -1022,7 +1022,8 @@ void MainWindow::_installToolbars( void )
   
   // document class toolbar
   document_class_toolbar_ = new DocumentClassToolBar( this );
-
+  connect( document_class_toolbar_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
+  
   // navigation toolbar
   NavigationToolBar* navigation_toolbar = new NavigationToolBar( this ); 
   navigation_toolbar->connect( navigationFrame() );
