@@ -148,13 +148,21 @@ class DocumentClass: public Counter
   { wrap_ = value; }
 
   //! returns true if document class enables tab emulation by default
-  const bool& emulateTabs( void ) const
+  bool emulateTabs( void ) const
   { return emulate_tabs_; }
   
   //! returns true if document class enables tab emulation by default
-  void setEmulateTabs( const bool& value )
+  void setEmulateTabs( bool value )
   { emulate_tabs_ = value; }
 
+  //! tab size
+  int tabSize( void ) const
+  { return tab_size_; }
+  
+  //! tab size
+  void setTabSize( int value )
+  { tab_size_ = value; }
+  
   //! list of hightlight styles
   const HighlightStyle::Set& highlightStyles() const
   { return highlight_styles_; }
@@ -271,6 +279,9 @@ class DocumentClass: public Counter
   
   //! tab emulation
   bool emulate_tabs_;
+  
+  //! tab size
+  int tab_size_;
   
   //! icon name
   QString icon_;

@@ -59,14 +59,14 @@ using namespace std;
 
 //_________________________________________________________
 ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
-  BaseConfigurationDialog( parent )
+    BaseConfigurationDialog( parent )
 {
   Debug::Throw( "ConfigurationDialog::ConfigurationDialog.\n" );
   setWindowTitle( "Configuration - qedit" );
   
   // base configuration
   baseConfiguration();
-
+  
   // generic objects
   QGroupBox *box;
   OptionCheckBox* checkbox;
@@ -110,18 +110,97 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   checkbox->setToolTip( "Turn on/off automatic text indentation" );
   addOptionWidget( checkbox );
 
-  box->layout()->addWidget( checkbox = new OptionCheckBox( "Use document class wrap mode", box, "WRAP_FROM_CLASS" ) );
-  checkbox->setToolTip( "Use wrap mode read from document class in place of the one specified in the default configuration." );
-  addOptionWidget( checkbox );
-
-  box->layout()->addWidget( checkbox = new OptionCheckBox( "Use document class tab emulation mode", box, "EMULATE_TABS_FROM_CLASS" ) );
-  checkbox->setToolTip( "Use tab emulation mode read from document class in place of the one specified in the default configuration." );
-  addOptionWidget( checkbox );
-
   // edition
-  // page = &addPage( "Edition" );
-  textEditConfiguration(); 
+  page = &addPage( "Text Edition" );
+  
+  // tab emulation
+  // needs customization with respect to BaseConfigurationDialog in order
+  // to disabled relevant widgets depending on whether tab emulation is read 
+  // from document class or not.
+  {
+    
+    QGroupBox* box = new QGroupBox( "Tab emulation", page );
+    QVBoxLayout* layout = new QVBoxLayout();
+    layout->setMargin(5);
+    layout->setSpacing(5);
+    box->setLayout( layout );
+    page->layout()->addWidget( box );
+    
+    OptionCheckBox* checkbox;
+    box->layout()->addWidget( checkbox = new OptionCheckBox( "Use document class tab emulation mode", box, "EMULATE_TABS_FROM_CLASS" ) );
+    checkbox->setToolTip( "Use tab emulation mode read from document class in place of the one specified in the default configuration." );
 
+    addOptionWidget( checkbox );
+
+    // need a widget to contains following options, 
+    // so that they can be disabled all at once
+    QWidget* widget = new QWidget( box );
+    layout->addWidget( widget );
+    widget->setLayout( layout = new QVBoxLayout() );
+    layout->setMargin(0);
+    layout->setSpacing(5);
+    
+    // enable/disabled widget based on checkbox state
+    connect( checkbox, SIGNAL( toggled( bool ) ), widget, SLOT( setDisabled( bool ) ) );
+    
+    // tab emulation
+    checkbox = new OptionCheckBox( "Emulate tabs", box, "TAB_EMULATION" );
+    checkbox->setToolTip( "Turn on/off tab emulation using space characters" );
+    layout->addWidget( checkbox );
+    addOptionWidget( checkbox );
+    
+    // tab size
+    QHBoxLayout* h_layout = new QHBoxLayout();
+    h_layout->setSpacing(5);
+    h_layout->setMargin(0);
+    layout->addLayout( h_layout );
+    
+    h_layout->addWidget(new QLabel( "Tab size: ", box ) );
+    OptionSpinBox* spinbox = new OptionSpinBox( box, "TAB_SIZE" );
+    spinbox->setMinimum( 2 );
+    spinbox->setMaximum( 20 );
+    spinbox->setToolTip( "Tab size (in unit of space characters)." );
+    h_layout->addWidget( spinbox );
+    h_layout->addStretch( 1 );
+    addOptionWidget( spinbox );
+    
+  }
+  
+  // default text-edition configuration
+  textEditConfiguration( page, ALL_TEXT_EDITION & ~(TAB_EMULATION|TEXT_EDITION_FLAGS) ); 
+
+  // wrap mode
+  // needs customization with respect to BaseConfigurationDialog in order
+  // to disabled relevant widgets depending on whether tab emulation is read 
+  // from document class or not.
+  {
+    
+    // misc
+    QGroupBox* box;
+    page->layout()->addWidget( box = new QGroupBox( "Flags", page ) );
+    QVBoxLayout* layout = new QVBoxLayout();
+    layout->setMargin(5);
+    layout->setSpacing(5);
+    box->setLayout( layout );
+    
+    box->layout()->addWidget( checkbox = new OptionCheckBox( "Use document class wrap mode", box, "WRAP_FROM_CLASS" ) );
+    checkbox->setToolTip( "Use wrap mode read from document class in place of the one specified in the default configuration." );
+    addOptionWidget( checkbox );
+    
+    OptionCheckBox* wrap_checkbox = new OptionCheckBox( "Wrap text", box, "WRAP_TEXT" );
+    wrap_checkbox->setToolTip( "Turn on/off line wrapping at editor border" );
+    layout->addWidget( wrap_checkbox );
+    addOptionWidget( wrap_checkbox );
+  
+    connect( checkbox, SIGNAL( toggled( bool ) ), wrap_checkbox, SLOT( setDisabled( bool ) ) );
+    
+    layout->addWidget( checkbox = new OptionCheckBox( "Show line numbers", box, "SHOW_LINE_NUMBERS" ) );
+    checkbox->setToolTip( "Turn on/off line numbers" );
+    addOptionWidget( checkbox );
+
+    
+  }
+  
   // display
   page = &addPage( "Colors", "Text edition color settings" );
   

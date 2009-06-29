@@ -47,6 +47,7 @@ DocumentClass::DocumentClass( void ):
   default_( false ),
   wrap_( false ),
   emulate_tabs_( false ),
+  tab_size_( 0 ),
   base_indentation_( 0 )
 { Debug::Throw( "DocumentClass::DocumentClass.\n" ); }
 
@@ -127,6 +128,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
       else if( option.name() == XML::OPTION_EMULATE_TABS ) setEmulateTabs( option.get<bool>() );
       else if( option.name() == XML::OPTION_DEFAULT ) setIsDefault( option.get<bool>() );
       else if( option.name() == XML::BASE_INDENTATION ) _setBaseIndentation( option.get<int>() );
+      else if( option.name() == XML::TAB_SIZE ) setTabSize( option.get<int>() );
       else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized option " << option.name() << endl;
         
     } else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized child " << child_element.tagName() << ".\n";
@@ -185,6 +187,9 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   out.appendChild( XmlOption( XML::OPTION_EMULATE_TABS, Option().set<bool>( emulateTabs() ) ).domElement( parent ) );
   out.appendChild( XmlOption( XML::OPTION_DEFAULT, Option().set<bool>( isDefault() ) ).domElement( parent ) );
   out.appendChild( XmlOption( XML::BASE_INDENTATION, Option().set<int>( baseIndentation() ) ).domElement( parent ) );  
+  
+  if( tabSize() > 0 ) 
+  { out.appendChild( XmlOption( XML::BASE_INDENTATION, Option().set<int>( tabSize() ) ).domElement( parent ) ); }
   
   // dump highlight styles
   out.appendChild( parent.createTextNode( "\n\n" ) );

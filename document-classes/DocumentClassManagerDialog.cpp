@@ -100,15 +100,26 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   layout->setMargin(0);
   layout->addLayout( v_layout );
   
-  // edit
-  v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
-  connect( edit_button_, SIGNAL( clicked() ), this, SLOT( _edit() ) ); 
-  edit_button_->setToolTip( "Edit file from which selected document class is read" );
+  // load
+  QPushButton *button;
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Open", this ) ); 
+  connect( button, SIGNAL( clicked() ), this, SLOT( _loadFile() ) );  
+  button->setToolTip( "Load additional classes from file" );
 
   // remove
   v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
   connect( remove_button_, SIGNAL( clicked() ), this, SLOT( _remove() ) ); 
   remove_button_->setToolTip( "Remove selected document class from list" );
+  
+  // edit
+  v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
+  connect( edit_button_, SIGNAL( clicked() ), this, SLOT( _edit() ) ); 
+  edit_button_->setToolTip( "Edit file from which selected document class is read" );
+
+  // reload
+  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::RELOAD ), "Rel&oad", this ) ); 
+  connect( button, SIGNAL( clicked() ), this, SLOT( _reload() ) );
+  button->setToolTip( "Reload all classes" );
 
   // save document class to file
   v_layout->addWidget( save_button_ = new QPushButton( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this ) );
@@ -116,20 +127,9 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   save_button_->setToolTip( "Save selected document classe to a file" );
 
   // save all document class to directory
-  QPushButton *button;
   v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE ), "Save &All", this ) );
   connect( button, SIGNAL( clicked() ), this, SLOT( _saveAll() ) );  
   button->setToolTip( "Save all document classes to directory" );
-
-  // load
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::OPEN ), "&Load File", this ) ); 
-  connect( button, SIGNAL( clicked() ), this, SLOT( _loadFile() ) );  
-  button->setToolTip( "Load additional classes from file" );
-
-  // reload
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::RELOAD ), "Rel&oad", this ) ); 
-  connect( button, SIGNAL( clicked() ), this, SLOT( _reload() ) );
-  button->setToolTip( "Reload all classes" );
 
   // update buttons
   _updateButtons();

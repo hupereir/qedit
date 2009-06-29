@@ -29,7 +29,7 @@
   \date $Date$
 */
 
-
+#include <QGroupBox>
 #include <QHeaderView>
 #include <QLabel>
 #include <QLayout>
@@ -86,18 +86,24 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
   base_indentation_spinbox_->setValue(0);
   
   // flags
+  QGroupBox* box;
+  layout()->addWidget( box = new QGroupBox( "Options", this ) );
+  
+  box->setLayout( new QVBoxLayout() );
+  box->layout()->setMargin(5);
+  box->layout()->setSpacing(5);
   
   // default
-  layout()->addWidget( default_checkbox_ = new QCheckBox( "Default", this ) );
+  box->layout()->addWidget( default_checkbox_ = new QCheckBox( "Default", box ) );
   default_checkbox_->setToolTip( "Use this document class when no other is found that match a given file" );
   default_checkbox_->setChecked( false );
 
   // wrap mode
-  layout()->addWidget( wrap_checkbox_ = new QCheckBox( "Wrap", this ) );
+  box->layout()->addWidget( wrap_checkbox_ = new QCheckBox( "Wrap", box ) );
   wrap_checkbox_->setChecked( false );
 
-  // wrap mode
-  layout()->addWidget( tab_emulation_checkbox_ = new QCheckBox( "Emulate tabs", this ) );
+  // tab emulation
+  box->layout()->addWidget( tab_emulation_checkbox_ = new QCheckBox( "Emulate tabs", box ) );
   tab_emulation_checkbox_->setChecked( false );
 
 }

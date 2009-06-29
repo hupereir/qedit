@@ -13,6 +13,11 @@
    <flags>2</flags>
   </Option>
   <Option>
+   <Name>tab_size</Name>
+   <Value>2</Value>
+   <flags>2</flags>
+  </Option>
+  <Option>
    <Name>default</Name>
    <Value>0</Value>
    <flags>2</flags>

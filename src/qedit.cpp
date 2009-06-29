@@ -32,14 +32,16 @@
 #include <unistd.h>
 #include <signal.h>
 
-
 #include "Debug.h"
 #include "DefaultOptions.h"
+#include "DocumentClass.h"
+#include "DocumentClassManager.h"
 #include "SystemOptions.h"
 #include "ErrorHandler.h"
-#include "Application.h"
 #include "Singleton.h"
 #include "XmlOptions.h"
+
+#include "Application.h"
 
 using namespace std;
 
@@ -88,7 +90,7 @@ int main (int argc, char *argv[])
   singleton.initApplicationManager();
   
   application.exec();
-
+    
   return 0;
 
 }
