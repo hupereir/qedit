@@ -110,7 +110,8 @@ class TextView: public QWidget, public Counter, public BASE::Key
   void ignoreAll( void );
   
   //! select class name
-  void selectClassName( QString );
+  void selectClassName( QString value )
+  { activeDisplay().selectClassName( value ); }
   
   //! rehighlight all displays
   void rehighlight( void );

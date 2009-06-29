@@ -175,7 +175,6 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   
   //!@name active view/display managment
   //@{
-  
 
   //! create new TextView
   TextView& newTextView( FileRecord record = FileRecord() );

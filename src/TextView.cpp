@@ -417,26 +417,6 @@ void TextView::ignoreAll( void )
 }
 
 //________________________________________________________________
-void TextView::selectClassName( QString name )
-{
-  Debug::Throw( "TextView::SelectClassName.\n" );
-
-  // retrieve all displays matching active
-  // and update class name
-  BASE::KeySet<TextDisplay> displays( &activeDisplay() );
-  displays.insert( &activeDisplay() );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-    (*iter)->setClassName( name );
-    (*iter)->updateDocumentClass();
-  }
-  
-  // rehighlight
-  activeDisplay().rehighlight();
-
-}
-
-//________________________________________________________________
 void TextView::rehighlight( void )
 {
   Debug::Throw( "TextView::rehighlight.\n" );

@@ -45,6 +45,7 @@
 #include "CustomTextDocument.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
+#include "DocumentClassMenu.h"
 #include "FileInformationDialog.h"
 #include "FileModifiedDialog.h"
 #include "FileRecordProperties.h"
@@ -256,6 +257,12 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
   previousTagAction().setEnabled( has_tags );
   clearTagAction().setEnabled( current_block_tagged );
   clearAllTagsAction().setEnabled( has_tags );
+  
+  // document class menu
+  submenu = new DocumentClassMenu( this );
+  submenu->setTitle( "&Document class" );
+  connect( submenu, SIGNAL( documentClassSelected( QString ) ), SLOT( selectClassName( QString ) ) );
+  menu.addMenu( submenu );
   
   return;
 }
@@ -1333,6 +1340,27 @@ void TextDisplay::selectDictionary( const QString& dictionary )
   #endif
 
   return;
+
+}
+
+
+//________________________________________________________________
+void TextDisplay::selectClassName( QString name )
+{
+  Debug::Throw( "TextDisplay::SelectClassName.\n" );
+
+  // retrieve all displays matching active
+  // and update class name
+  BASE::KeySet<TextDisplay> displays( this );
+  displays.insert( this );
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  {
+    (*iter)->setClassName( name );
+    (*iter)->updateDocumentClass();
+  }
+  
+  // rehighlight
+  rehighlight();
 
 }
 

@@ -456,6 +456,9 @@ class TextDisplay: public AnimatedTextEditor
   //! change autospell dictionary
   void selectDictionary( const QString& );
   
+  //! select class name
+  void selectClassName( QString );
+  
   protected:
 
   //!@name event handlers
