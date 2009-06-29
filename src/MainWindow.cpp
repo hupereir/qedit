@@ -48,6 +48,7 @@
 #include "Diff.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
+#include "DocumentClassToolBar.h"
 #include "FileCheckDialog.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
@@ -185,38 +186,9 @@ MainWindow::MainWindow(  QWidget* parent ):
   QFont font;
   font.fromString( XmlOptions::get().raw( "FONT_NAME" ) );
   file_editor_->setFont( font );
-    
-  // file toolbar
-  CustomToolBar* toolbar = new CustomToolBar( "Main", this, "FILE_TOOLBAR" );
-  toolbar->addAction( &newFileAction() );
-  toolbar->addAction( &openAction() ); 
-  toolbar->addAction( &saveAction() ); 
-  
-  // edition toolbar
-  toolbar = new CustomToolBar( "Edition", this, "EDITION_TOOLBAR" );
-  toolbar->addAction( &undoAction() ); 
-  toolbar->addAction( &redoAction() ); 
-  toolbar->addAction( &cutAction() );
-  toolbar->addAction( &copyAction() );
-  toolbar->addAction( &pasteAction() );
-
-  // extra toolbar
-  toolbar = new CustomToolBar( "Tools", this, "EXTRA_TOOLBAR" );
-  toolbar->addAction( &filePropertiesAction() ); 
-  toolbar->addAction( &spellcheckAction() ); 
-  
-  // splitting toolbar
-  toolbar = new CustomToolBar( "Multiple Displays", this, "SPLIT_TOOLBAR" );
-  toolbar->addAction( &splitDisplayHorizontalAction() ); 
-  toolbar->addAction( &splitDisplayVerticalAction() ); 
-  toolbar->addAction( &openHorizontalAction() ); 
-  toolbar->addAction( &openVerticalAction() ); 
-  toolbar->addAction( &closeDisplayAction() );
-  toolbar->addAction( &detachAction() );
-  
-  // navigation toolbar
-  NavigationToolBar* navigation_toolbar = new NavigationToolBar( this ); 
-  navigation_toolbar->connect( navigationFrame() );
+ 
+  // toolbars
+  _installToolbars();
   
   //! configuration
   connect( &application, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
@@ -873,7 +845,6 @@ void MainWindow::_updateCursorPosition( void )
   return;
 }
 
-
 //_____________________________________________
 void MainWindow::_replaceTransitionWidget( void )
 { 
@@ -1011,6 +982,48 @@ void MainWindow::_installActions( void )
   split_display_vertical_action_->setToolTip( "Clone current display horizontally" );
   connect( split_display_vertical_action_, SIGNAL( triggered() ), SLOT( _splitDisplayHorizontal() ) );
   
+}
+
+//______________________________________________________________________
+void MainWindow::_installToolbars( void )
+{
+  
+  // file toolbar
+  CustomToolBar* toolbar = new CustomToolBar( "Main", this, "FILE_TOOLBAR" );
+  toolbar->addAction( &newFileAction() );
+  toolbar->addAction( &openAction() ); 
+  toolbar->addAction( &saveAction() ); 
+  
+  // edition toolbar
+  toolbar = new CustomToolBar( "Edition", this, "EDITION_TOOLBAR" );
+  toolbar->addAction( &undoAction() ); 
+  toolbar->addAction( &redoAction() ); 
+  toolbar->addAction( &cutAction() );
+  toolbar->addAction( &copyAction() );
+  toolbar->addAction( &pasteAction() );
+
+  // extra toolbar
+  toolbar = new CustomToolBar( "Tools", this, "EXTRA_TOOLBAR" );
+  toolbar->addAction( &filePropertiesAction() ); 
+  toolbar->addAction( &spellcheckAction() ); 
+  
+  // splitting toolbar
+  toolbar = new CustomToolBar( "Multiple Displays", this, "SPLIT_TOOLBAR" );
+  toolbar->addAction( &splitDisplayHorizontalAction() ); 
+  toolbar->addAction( &splitDisplayVerticalAction() ); 
+  toolbar->addAction( &openHorizontalAction() ); 
+  toolbar->addAction( &openVerticalAction() ); 
+  toolbar->addAction( &closeDisplayAction() );
+  toolbar->addAction( &detachAction() );
+  
+  // document class toolbar
+  new DocumentClassToolBar( this );
+
+  // navigation toolbar
+  NavigationToolBar* navigation_toolbar = new NavigationToolBar( this ); 
+  navigation_toolbar->connect( navigationFrame() );
+  
+ 
 }
 
 //______________________________________________________________________

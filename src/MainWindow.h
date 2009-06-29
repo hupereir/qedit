@@ -536,6 +536,9 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   //! install actions
   void _installActions( void );
 
+  //! install toolbars
+  void _installToolbars( void );
+  
   //! create find dialog
   void _createBaseFindDialog( void );
   
@@ -600,7 +603,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
   //! file display lineEdit
   AnimatedLineEditor* file_editor_;
-   
+     
   //@}
     
   //!@name dialogs (re-implemented from TextEditor)

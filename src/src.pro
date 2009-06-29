@@ -65,6 +65,7 @@ HEADERS = \
   CollapsedBlockData.h \
   ConfigurationDialog.h \
   Diff.h \
+  DocumentClassToolBar.h \
   DefaultOptions.h \
   CloseFilesDialog.h \
   FileCheck.h \
@@ -106,6 +107,7 @@ SOURCES = \
   CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
+  DocumentClassToolBar.cpp \
   CloseFilesDialog.cpp \
   FileCheck.cpp \
   FileCheckDialog.cpp \
