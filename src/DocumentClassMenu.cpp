@@ -62,7 +62,7 @@ void DocumentClassMenu::_update( void )
   actions_.clear();
   
   // retrieve current class from MainWindow
-  MainWindow& window( *static_cast<MainWindow*>( DocumentClassMenu::window()) ); 
+  MainWindow& window( *static_cast<MainWindow*>( parentWidget()->window()) ); 
   const QString& class_name( window.activeDisplay().className() );
     
   // retrieve classes from DocumentClass manager
