@@ -117,7 +117,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   
   // menu
   setMenuBar( menu_ = new Menu( this ) );
-  connect( menu_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
+  connect( &menu().documentClassMenu(), SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
   
   // main widget is a splitter to store navigation window and active view 
   QSplitter* splitter = new QSplitter( this );
@@ -205,7 +205,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 //___________________________________________________________
 MainWindow::~MainWindow( void )
 { 
-  Debug::Throw( "MainWindow::~MainWindow.\n" ); 
+  Debug::Throw( 0, "MainWindow::~MainWindow.\n" ); 
   disconnect( &_transitionWidget(), SIGNAL( destroyed() ) );
 }
 
@@ -586,6 +586,7 @@ bool MainWindow::event( QEvent* event )
 void MainWindow::closeEvent( QCloseEvent* event )
 {
   Debug::Throw( "MainWindow::closeEvent.\n" );
+  //Debug::Throw(0) << "MainWindow::closeEvent - windowState: " << QString( saveState() ) << endl;
 
   // accept event
   event->accept();

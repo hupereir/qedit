@@ -34,12 +34,9 @@
 #include "Config.h"
 #include "DebugMenu.h"
 #include "DefaultHelpText.h"
-#include "DocumentClass.h"
-#include "DocumentClassManager.h"
+#include "DocumentClassMenu.h"
 #include "HelpManager.h"
 #include "HelpText.h"
-#include "IconEngine.h"
-#include "Icons.h"
 #include "MainWindow.h"
 #include "Menu.h"
 #include "NavigationFrame.h"
@@ -90,11 +87,10 @@ Menu::Menu( QWidget* parent ):
   menu->addSeparator();
 
   // document class
-  document_class_action_group_ = new ActionGroup( this );
-  document_class_menu_ = menu->addMenu( "Set &document class" );
-  connect( document_class_menu_, SIGNAL( aboutToShow() ), SLOT( _updateDocumentClassMenu() ) );
-  connect( document_class_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectClassName( QAction* ) ) );
-  
+  menu->addMenu( document_class_menu_ = new DocumentClassMenu( this ) );
+  document_class_menu_->setTitle( "Set &document class" );
+
+  // print and close
   menu->addAction( &mainwindow.printAction() );
 
   menu->addSeparator();
@@ -171,38 +167,6 @@ void Menu::_updateRecentFilesMenu( void )
 {
   Debug::Throw( "Menu::_updateRecentFilesMenu.\n" );
   recent_files_menu_->setCurrentFile( static_cast<MainWindow*>( Menu::window() )->activeDisplay().file() );
-}
-
-//_______________________________________________
-void Menu::_updateDocumentClassMenu( void )
-{
-  Debug::Throw( "Menu::_UpdateDocumentClassMenu.\n" );
-  // clear menu
-  document_class_menu_->clear();
-  document_class_actions_.clear();
-  
-  // retrieve current class from MainWindow
-  MainWindow& window( *static_cast<MainWindow*>( Menu::window()) ); 
-  const QString& class_name( window.activeDisplay().className() );
-    
-  // retrieve classes from DocumentClass manager
-  const DocumentClassManager::List& classes( Singleton::get().application<Application>()->classManager().list() );
-  for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
-  { 
-    // insert actions
-    QAction* action = document_class_menu_->addAction( iter->name() );
-    if( !iter->icon().isEmpty() ) action->setIcon( IconEngine::get( iter->icon() ) );
-    
-    action->setCheckable( true );
-    action->setChecked( iter->name() == class_name );
-    document_class_action_group_->addAction( action );
-    
-    document_class_actions_.insert( make_pair( action, iter->name() ) );    
-  
-  }
-  
-  return;
-
 }
 
 //_______________________________________________
@@ -452,18 +416,6 @@ void Menu::_updateWindowsMenu( void )
   SessionFilesFrame& session_files_frame( static_cast<MainWindow*>(window())->navigationFrame().sessionFilesFrame() );
   windows_menu_->addAction( &session_files_frame.previousFileAction() );
   windows_menu_->addAction( &session_files_frame.nextFileAction() );
-  
-}
-
-//_______________________________________________
-void Menu::_selectClassName( QAction* action )
-{
-  Debug::Throw( "Menu::_selectClassName.\n" );
-  std::map< QAction*, QString >::iterator iter = document_class_actions_.find( action );
-  if( iter != document_class_actions_.end() ) 
-  { emit documentClassSelected( iter->second ); }
-  
-  return;
   
 }
 

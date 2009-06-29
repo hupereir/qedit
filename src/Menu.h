@@ -40,6 +40,7 @@
 #include "Counter.h"
 #include "File.h"
 
+class QMenu;
 class RecentFilesMenu;
 class TextMacro;
 
@@ -65,27 +66,26 @@ class Menu:public QMenuBar, public Counter
     return *recent_files_menu_;
   }
   
+  //! document class Menu
+  QMenu& documentClassMenu( void ) const
+  { 
+    assert( document_class_menu_ );
+    return *document_class_menu_;
+  }
+  
   //! macro menu
   QMenu& macroMenu( void ) const
   { 
     assert( macro_menu_ );
     return *macro_menu_;
   }
-  
-  signals:
-  
-  //! emmited every time a document class is selected
-  void documentClassSelected( QString );
     
   private slots:
     
   //! update recent files menu
   /*! this is needed so that the current file appears checked in the menu */
   void _updateRecentFilesMenu( void );
-  
-  //! update document class menu
-  void _updateDocumentClassMenu( void );
-  
+   
   //! update edit menu
   void _updateEditMenu( void );
   
@@ -103,9 +103,6 @@ class Menu:public QMenuBar, public Counter
 
   //! update windows menu
   void _updateWindowsMenu( void );
-    
-  //! select document class from menu
-  void _selectClassName( QAction* );
   
   //! select macro from menu
   void _selectMacro( QAction* );
@@ -161,9 +158,7 @@ class Menu:public QMenuBar, public Counter
   
   //!@name action groups
   //@{
-  
-  QActionGroup* document_class_action_group_;
-    
+      
   QActionGroup* windows_action_group_;
 
   //@}
@@ -171,9 +166,6 @@ class Menu:public QMenuBar, public Counter
   
   //!@name actions
   //@{
-        
-  //! map document class to macro names
-  std::map< QAction*, QString > document_class_actions_;
   
   //! map actions to macro names
   std::map< QAction*, QString > macro_actions_;

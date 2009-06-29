@@ -1,5 +1,5 @@
-#ifndef DocumentClassToolBar_h
-#define DocumentClassToolBar_h
+#ifndef DocumentClassMenu_h
+#define DocumentClassMenu_h
 
 // $Id$
 /******************************************************************************
@@ -24,59 +24,57 @@
 ****************************************************************************/
 
 /*!
-\file DocumentClassToolBar.h
-\bried display available document classes
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
+   \file DocumentClassMenu.h
+   \brief display available document classes
+   \author Hugo Pereira
+   \version $Revision$
+   \date $Date$
 */
-#include <QComboBox>
 
-#include "CustomToolBar.h"
+#include <QMenu>
+#include <QAction>
+#include <QActionGroup>
+
+#include <map>
+
+#include "Counter.h"
 
 //! display available document classes
-class DocumentClassToolBar: public CustomToolBar
+class DocumentClassMenu: public QMenu, public Counter
 {
   
   Q_OBJECT
   
   public:
-    
+  
   //! constructor
-  DocumentClassToolBar( QWidget* parent );
+  DocumentClassMenu( QWidget* );
 
   //! destructor
-  virtual ~DocumentClassToolBar( void )
+  virtual ~DocumentClassMenu( void )
   {}
 
-  //! update selection
-  void update( QString );
-
   signals:
-
+  
   //! emmited every time a document class is selected
   void documentClassSelected( QString );
-
-  private slots:
-
-  //! update list
-  void _update( void );
   
-  //! current index changed
-  void _currentIndexChanged( int );
-  
+  protected slots:
+
+  //! update
+  void _update( void );  
+    
+  //! select document class from menu
+  void _selectClassName( QAction* );
+
   private:
   
-  //! document class selection combo box
-  QComboBox& _comboBox( void ) const
-  { return *combobox_; }
-  
-  //! document class selection combo box
-  QComboBox* combobox_;
-  
-  //! current class
-  QString current_class_;
-  
+  //! actions
+  QActionGroup* action_group_;
+          
+  //! map document class to macro names
+  std::map< QAction*, QString > actions_;
+
 };
 
 #endif

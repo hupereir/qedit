@@ -82,6 +82,7 @@ noinst_HEADERS = \
   ConfigurationDialog.h \
   Diff.h \
   DefaultOptions.h \
+  DocumentClassMenu.h \
   DocumentClassToolBar.h \
   CloseFilesDialog.h \
   FileCheck.h \
@@ -123,6 +124,7 @@ libqedit_a_SOURCES = \
   CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
+  DocumentClassMenu.cpp \
   DocumentClassToolBar.cpp \
   CloseFilesDialog.cpp \
   FileCheck.cpp \
@@ -158,6 +160,7 @@ nodist_libqedit_a_SOURCES = \
   moc_AutoSave.cpp \
   moc_BlockDelimiterDisplay.cpp \
   moc_Diff.cpp \
+  moc_DocumentClassMenu.cpp \
   moc_DocumentClassToolBar.cpp \
 	 moc_FileCheck.cpp \
   moc_FileModifiedDialog.cpp \
