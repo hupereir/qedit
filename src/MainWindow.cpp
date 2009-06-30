@@ -147,11 +147,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   connect( &_stack(), SIGNAL( widgetRemoved( int ) ), SLOT( _activeViewChanged() ) );
   
   // transition widget
-  transition_widget_ = new TransitionWidget( this );
-  _transitionWidget().setFlag( TransitionWidget::FROM_PARENT, false );
-  _transitionWidget().hide();
-  connect( &_transitionWidget(), SIGNAL( destroyed() ), SLOT( _replaceTransitionWidget() ) );
-  connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
+  _replaceTransitionWidget();
   
   // create first text view
   newTextView();
@@ -205,7 +201,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 //___________________________________________________________
 MainWindow::~MainWindow( void )
 { 
-  Debug::Throw( 0, "MainWindow::~MainWindow.\n" ); 
+  Debug::Throw( "MainWindow::~MainWindow.\n" ); 
   disconnect( &_transitionWidget(), SIGNAL( destroyed() ) );
 }
 
@@ -263,6 +259,7 @@ void MainWindow::setActiveView( TextView& view )
     
     if( _transitionWidget().isEnabled() && isVisible() ) _transitionWidget().start(); 
     else _animationFinished();
+    
   } else _animationFinished();
   
 }
@@ -856,10 +853,11 @@ void MainWindow::_replaceTransitionWidget( void )
   
   Debug::Throw( "MainWindow::_replaceTransitionWidget.\n" );
   
-  // transition widget
   transition_widget_ = new TransitionWidget( this );
   _transitionWidget().setFlag( TransitionWidget::FROM_PARENT, false );
   _transitionWidget().hide();
+  connect( &_transitionWidget(), SIGNAL( destroyed() ), SLOT( _replaceTransitionWidget() ) );
+  connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
 
 }
 
