@@ -212,7 +212,6 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 
 }
 
-
 //__________________________________________________________________
 bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction action, int row, int column, const QModelIndex& parent)
 { 
@@ -260,9 +259,33 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
     
   } else {
     
-    FileRecord target( get( index( 0, 0 ) ) );
+    // look for first active file in this window
+    FileRecord target;
+    QModelIndex target_index;
+    for( int row = 0; row < rowCount(); row++ )
+    { 
+      
+      QModelIndex index( SessionFilesModel::index( row, 0 ) );
+      if( flags( index ) & Qt::ItemIsEnabled )
+      { 
+        FileRecord record( get( index ) );
+        if( record.hasFlag( FileRecordProperties::ACTIVE ) )
+        {
+          target_index = index;
+          target = record;
+          break;
+        }
+        
+      }
+    }
+    
+    // check that target_index is valid
+    if( !target_index.isValid() ) return false;
+  
+    // emit relevant reparent signal
     for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
     { emit reparentFilesToMain( iter->file(), target.file() ); }
+    
     return true;
 
   }

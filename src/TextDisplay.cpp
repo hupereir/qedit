@@ -260,7 +260,7 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
   
   // document class menu
   submenu = new DocumentClassMenu( this );
-  submenu->setTitle( "&Document class" );
+  submenu->setTitle( "&Select document class" );
   connect( submenu, SIGNAL( documentClassSelected( QString ) ), SLOT( selectClassName( QString ) ) );
   menu.addMenu( submenu );
   

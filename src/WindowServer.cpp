@@ -762,12 +762,15 @@ void WindowServer::_reparent( const File& first, const File& second )
   
   // restore modification state
   new_display.setModified( modified );
+  view.setActiveDisplay( new_display );
 
-  // select display in proper view
+  // make view active
   BASE::KeySet<MainWindow> windows( view );
   assert( windows.size() == 1 );
-  (*windows.begin())->navigationFrame().sessionFilesFrame().select( first );
-
+  MainWindow& window( **windows.begin() );
+  window.setActiveView( view );  
+  window.raise();
+  
   return;
   
 }
@@ -812,7 +815,10 @@ void WindowServer::_reparentToMain( const File& first, const File& second )
 
   // restore modification state
   view.activeDisplay().setModified( modified );
- 
+  
+  // raise window
+  window.raise();
+  
   return;
   
 }
