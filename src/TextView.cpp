@@ -75,7 +75,9 @@ TextView::TextView( QWidget* parent ):
 
 //___________________________________________________________________
 TextView::~TextView()
-{ Debug::Throw() << "TextView::~TextView - " << key() << endl; }
+{ 
+  Debug::Throw() << "TextView::~TextView - " << key() << endl; 
+}
 
 //____________________________________________
 void TextView::setIsNewDocument( void )
@@ -282,24 +284,27 @@ void TextView::closeDisplay( TextDisplay& display )
     }
     
     // delete parent_splitter, now that it is empty
-    // delete parent_splitter;
+    display.setIsClosed( true );
     parent_splitter->deleteLater();
+    
     
   } else {
     
     // the editor is deleted only if its parent splitter is not
     // otherwise this will trigger double deletion of the editor 
     // which will then crash
+    display.setIsClosed( true );
     display.deleteLater();
     
   }
   
   // if no associated displays, retrieve all, set the first as active
+  Debug::Throw( "TextView::closeDisplay - changing focus.\n" );
   if( displays.empty() ) displays = BASE::KeySet<TextDisplay>( this );
   for( BASE::KeySet<TextDisplay>::reverse_iterator iter = displays.rbegin(); iter != displays.rend(); iter++ )
   { 
-    //Debug::Throw(0, "TextView::closeDisplay - changing focus.\n" );
-    if( (*iter) != &display ) {
+    if( (*iter) != &display && !(*iter)->isClosed() ) 
+    {
       setActiveDisplay( **iter );
       activeDisplay().setFocus();
       break;
@@ -379,9 +384,6 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
     Singleton::get().application<Application>()->fileCheck().registerDisplay( &display );
 
   }
-
-  // display count has changed
-  emit displayCountChanged();
   
   return display;
 
@@ -541,7 +543,20 @@ void TextView::_checkDisplays( void )
   {
     Debug::Throw() << "TextView::_checkDisplays - closing" << endl;
     close();
-  }
+  } 
+    
+  emit displayCountChanged();
+  
+  // this should not happen and will likely generate a crash later on.
+  // it is meant for debugging
+  if( displays.find( &activeDisplay() ) == displays.end() )
+  { active_display_ = 0; }
+  
+//   if( displays.find( &activeDisplay() ) == displays.end() )
+//   {
+//     if( !displays.empty() ) active_display_ = *displays.begin();
+//     else active_display_ = 0; 
+//   }
   
 }
 

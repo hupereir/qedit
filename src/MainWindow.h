@@ -196,9 +196,14 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   //! change active display manualy
   void setActiveView( TextView& view );
 
+  
   //! active display
   const TextDisplay& activeDisplay( void ) const
   { return activeView().activeDisplay(); }
+  
+  //! active display
+  bool isActiveDisplay( const TextDisplay& display ) const
+  { return activeView().isActiveDisplay( display ); }
   
   //! active display
   TextDisplay& activeDisplay( void )

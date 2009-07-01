@@ -73,7 +73,10 @@ class TextView: public QWidget, public Counter, public BASE::Key
   
   //! retrieve active display
   TextDisplay& activeDisplay( void )
-  { return *active_display_; }
+  { 
+    assert( active_display_ );
+    return *active_display_; 
+  }
   
   //! retrieve active display
   const TextDisplay& activeDisplay( void ) const
@@ -81,6 +84,10 @@ class TextView: public QWidget, public Counter, public BASE::Key
   
   //! select display from file
   bool selectDisplay( const File& file );
+  
+  //! true if display passed in argument is active
+  bool isActiveDisplay( const TextDisplay& display ) const
+  { return &display == active_display_; }
   
   //! change active display manualy
   void setActiveDisplay( TextDisplay& );

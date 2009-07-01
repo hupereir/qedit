@@ -107,6 +107,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   dictionary_property_id_( FileRecord::PropertyId::get( FileRecordProperties::DICTIONARY ) ),
   filter_property_id_( FileRecord::PropertyId::get( FileRecordProperties::FILTER ) ),
   
+  closed_( false ),
   is_new_document_( false ),
   class_name_( "" ),
   ignore_warnings_( false ),

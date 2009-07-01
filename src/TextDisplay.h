@@ -187,6 +187,14 @@ class TextDisplay: public AnimatedTextEditor
   };
   
   
+  // true if widget is to be deleted
+  bool isClosed( void ) const
+  { return closed_; }
+  
+  // set to true if widget is to be deleted
+  void setIsClosed( bool value ) 
+  { closed_ = value; }
+  
   //!@ name file management
   //@{
   
@@ -674,6 +682,9 @@ class TextDisplay: public AnimatedTextEditor
   FileRecord::PropertyId::Id dictionary_property_id_;
   FileRecord::PropertyId::Id filter_property_id_;
   //@}
+  
+  //! true if display is to be deleted
+  bool closed_;
   
   //! true if display corresponds to a new document
   bool is_new_document_;

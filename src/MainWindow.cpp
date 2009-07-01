@@ -798,7 +798,7 @@ void MainWindow::_update( unsigned int flags )
     redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
   }
  
-  if( statusbar_ && flags & TextDisplay::MODIFIERS )
+  if( _hasStatusBar() && flags & TextDisplay::MODIFIERS )
   {
     Debug::Throw() << "MainWindow::_update - modifiers." << endl;
     QStringList modifiers;
@@ -806,11 +806,13 @@ void MainWindow::_update( unsigned int flags )
     if( activeDisplay().modifier( TextEditor::MODIFIER_INSERT ) ) modifiers << "INS";
     if( activeDisplay().modifier( TextEditor::MODIFIER_CAPS_LOCK ) ) modifiers << "CAPS";
     if( activeDisplay().modifier( TextEditor::MODIFIER_NUM_LOCK ) ) modifiers << "NUM";
-    statusbar_->label(0).setText( modifiers.join( " " ) ); 
+    if( !modifiers.isEmpty() ) _statusBar().label(0).setText( modifiers.join( " " ) ); 
+    Debug::Throw() << "MainWindow::_update - modifiers - done." << endl;
   }
   
   if( flags & TextDisplay::DISPLAY_COUNT )
   {
+    Debug::Throw() << "MainWindow::_update - display count." << endl;
     int display_count = activeView().independentDisplayCount();
     int view_count = BASE::KeySet<TextView>( this ).size();
 
@@ -819,6 +821,7 @@ void MainWindow::_update( unsigned int flags )
     
     // update diff action
     diffAction().setEnabled( display_count == 2 );    
+    Debug::Throw() << "MainWindow::_update - display count - done." << endl;
     
   }
 
@@ -1106,6 +1109,7 @@ void MainWindow::_updateWindowTitle()
     .setModified( activeDisplay().document()->isModified() )
     );
   
+  Debug::Throw( "MainWindow::_updateWindowTitle. Done.\n" );
 }
 
 //_____________________________________________________________________

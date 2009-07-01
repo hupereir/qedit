@@ -172,7 +172,7 @@ FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) co
       if( is_active_window )
       {
         flags |= FileRecordProperties::ACTIVE;
-        if( *iter == &(*window_iter)->activeDisplay() ) flags |= FileRecordProperties::SELECTED;
+        if( (*window_iter)->isActiveDisplay( **iter ) ) flags |= FileRecordProperties::SELECTED;
       }
       
       // assign flags and store

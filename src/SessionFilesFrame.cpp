@@ -71,6 +71,9 @@ SessionFilesFrame::SessionFilesFrame( QWidget* parent ):
   list().setAcceptDrops( true );
   list().setDropIndicatorShown(true);
 
+  // selection mode
+  list().setSelectionMode( QAbstractItemView::ContiguousSelection );
+  
   // actions
   _installActions();
   
