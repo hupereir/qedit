@@ -453,6 +453,7 @@ void TextView::checkDisplayModifications( TextEditor* editor )
     BASE::KeySet<TextDisplay> associated_displays( &display );
     for( BASE::KeySet<TextDisplay>::iterator display_iter = associated_displays.begin(); display_iter != associated_displays.end(); display_iter++ )
     { dead_displays.insert( *display_iter ); }
+    display.document()->setModified( false );
     dead_displays.insert( &display );
             
   } else {

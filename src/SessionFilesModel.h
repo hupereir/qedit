@@ -50,7 +50,7 @@ class SessionFilesModel: public FileRecordModel
   SessionFilesModel( QObject* parent = 0 );
   
   //! drag mime type
-   static const QString DRAG;
+  static const QString DRAG;
   
   //!@name methods reimplemented from base class
   //@{
