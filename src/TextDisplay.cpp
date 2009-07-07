@@ -254,7 +254,7 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
   submenu->addAction( &clearTagAction() );
   submenu->addAction( &clearAllTagsAction() );
   
-  tagBlockAction().setEnabled( has_selection );
+  tagBlockAction().setText( has_selection ? "&Tag selected blocks":"&Tag current block" );
   nextTagAction().setEnabled( has_tags );
   previousTagAction().setEnabled( has_tags );
   clearTagAction().setEnabled( current_block_tagged );
@@ -2547,29 +2547,11 @@ void TextDisplay::_tagBlock( void )
     { blocks.push_back( block ); }
     if( last.isValid() ) blocks.push_back( last );
 
-  } else {
-
-    // add previous blocks and current
-    for( QTextBlock block( cursor.block() ); block.isValid(); block = block.previous() )
-    {
-      TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-      if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
-      else break;
-    }
-
-     // add previous blocks and current
-    for( QTextBlock block( cursor.block().next() ); block.isValid(); block = block.next() )
-    {
-      TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-      if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks.push_back( block );
-      else break;
-    }
-
-  }
+  } else blocks.push_back( cursor.block() );
 
   // clear background for selected blocks
   for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
-  { tagBlock( *iter, TextBlock::USER_TAG ); }
+  { if( iter->isValid() ) tagBlock( *iter, TextBlock::USER_TAG ); }
 
 }
 

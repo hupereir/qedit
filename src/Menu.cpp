@@ -293,7 +293,7 @@ void Menu::_updateToolsMenu( void )
   bool current_block_tagged( has_tags && display.isCurrentBlockTagged() );
   
   tools_menu_->addAction( &display.tagBlockAction() );
-  display.tagBlockAction().setEnabled( has_selection );
+  display.tagBlockAction().setText( has_selection ? "&Tag selected blocks":"&Tag current block" );
   
   tools_menu_->addAction( &display.nextTagAction() );
   display.nextTagAction().setEnabled( has_tags );
