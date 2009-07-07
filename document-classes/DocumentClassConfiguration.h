@@ -88,6 +88,9 @@ class DocumentClassConfiguration: public QWidget, public Counter
   //! wrap
   QCheckBox* tab_emulation_checkbox_;
 
+  //! tab size
+  QSpinBox* tab_size_spinbox_;
+  
 };
 
 #endif

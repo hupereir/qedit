@@ -106,6 +106,22 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
   box->layout()->addWidget( tab_emulation_checkbox_ = new QCheckBox( "Emulate tabs", box ) );
   tab_emulation_checkbox_->setChecked( false );
 
+  QHBoxLayout *layout = new QHBoxLayout();
+  layout->setMargin(0);
+  layout->setSpacing(5);
+  box->layout()->addItem( layout );
+  QLabel* label = new QLabel( "Tab size: ", box );
+  layout->addWidget( label, 0, Qt::AlignVCenter|Qt::AlignRight );
+
+  tab_size_spinbox_ = new QSpinBox( box );
+  tab_size_spinbox_->setMinimum( 0 );
+  tab_size_spinbox_->setMaximum( 20 );
+  tab_size_spinbox_->setToolTip( 
+    "Tab size (in unit of space characters).\n "
+    "When zero value is specified, the default qedit tab size is used." );
+  label->setBuddy( tab_size_spinbox_ );
+  layout->addWidget( tab_size_spinbox_ );
+  
 }
 
 //_________________________________________________________________________
@@ -136,7 +152,8 @@ void DocumentClassConfiguration::setDocumentClass( const DocumentClass& document
   default_checkbox_->setChecked( document_class.isDefault() );
   wrap_checkbox_->setChecked( document_class.wrap() );
   tab_emulation_checkbox_->setChecked( document_class.wrap() );
-  
+  tab_size_spinbox_->setValue( document_class.tabSize() );
+
 }
   
 //_________________________________________________________________________
@@ -150,6 +167,7 @@ DocumentClass DocumentClassConfiguration::documentClass( void )
   document_class_.setBaseIndentation( base_indentation_spinbox_->value() );
   document_class_.setWrap( wrap_checkbox_->isChecked() );
   document_class_.setEmulateTabs( tab_emulation_checkbox_->isChecked() );
+  document_class_.setTabSize( tab_size_spinbox_->value() );
   document_class_.setIsDefault( default_checkbox_->isChecked() );
   return document_class_;
 }

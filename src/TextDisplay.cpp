@@ -38,6 +38,7 @@
 #include <QTextLayout>
 
 #include "AnimatedTabWidget.h"
+#include "AnimatedLineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
