@@ -139,7 +139,7 @@ void SessionFilesFrame::update( void )
   FileRecord::List::const_iterator iter = find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::SELECTED ) );
   if( iter != records.end() ) select( iter->file() );  
   
-  Debug::Throw( "SessionFilesFrame:_update - done.\n" ); 
+  Debug::Throw( "SessionFilesFrame:update - done.\n" ); 
 
 }
 

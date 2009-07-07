@@ -544,6 +544,7 @@ void TextView::_checkDisplays( void )
   {
     Debug::Throw() << "TextView::_checkDisplays - closing" << endl;
     close();
+    return;
   } 
     
   emit displayCountChanged();
@@ -552,12 +553,6 @@ void TextView::_checkDisplays( void )
   // it is meant for debugging
   if( displays.find( &activeDisplay() ) == displays.end() )
   { active_display_ = 0; }
-  
-//   if( displays.find( &activeDisplay() ) == displays.end() )
-//   {
-//     if( !displays.empty() ) active_display_ = *displays.begin();
-//     else active_display_ = 0; 
-//   }
   
 }
 
