@@ -29,6 +29,7 @@
 
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
+#include <QCheckBox>
 #include <QLabel>
 #include <QPainter>
 #include <QPushButton>
@@ -490,28 +491,34 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
   // disable check
   FileRemovedDialog dialog( this, file() );
   int state( dialog.centerOnWidget( window() ).exec() );
-
-  if( state == FileRemovedDialog::RESAVE )
+  switch( state )
   {
 
+    case FileRemovedDialog::RESAVE:
     // set document as modified (to force the file to be saved) and save
     setModified( true );
     save();
-
-  } else if( state == FileRemovedDialog::SAVE_AS ) {
+    break;
     
+    case FileRemovedDialog::SAVE_AS:
     saveAs(); 
-  
-  } else if( state == FileRemovedDialog::IGNORE ) {
-
-    BASE::KeySet<TextDisplay> displays( this );
-    displays.insert( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    break;
+    
+    case FileRemovedDialog::IGNORE:
+    case FileRemovedDialog::CLOSE:
     {
-      (*iter)->_setIgnoreWarnings( true );
-      (*iter)->setModified( false );
+      BASE::KeySet<TextDisplay> displays( this );
+      displays.insert( this );
+      for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+      {
+        (*iter)->_setIgnoreWarnings( true );
+        (*iter)->setModified( false );
+      }
     }
-
+    break;
+    
+    default: break;
+  
   }
 
   return FileRemovedDialog::ReturnCode( state );
@@ -540,25 +547,35 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
   // create dialog
   FileModifiedDialog dialog( this, file() );
   int state( dialog.centerOnWidget( window() ).exec() );
-  if( state == FileModifiedDialog::RESAVE ) 
+  switch( state )
   {
+    
+    case FileModifiedDialog::RESAVE:
     document()->setModified( true );
     save(); 
-  } else if( state == FileModifiedDialog::SAVE_AS ) { saveAs(); }
-  else if( state == FileModifiedDialog::RELOAD ) {
-
+    break;
+    
+    case FileModifiedDialog::SAVE_AS:
+    saveAs();
+    break;
+  
+    case FileModifiedDialog::RELOAD:
     setModified( false );
     revertToSave();
-
-  } else if( state == FileModifiedDialog::IGNORE ) {
-
-    BASE::KeySet<TextDisplay> displays( this );
-    displays.insert( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-    { (*iter)->_setIgnoreWarnings( true ); }
-
+    break;
+    
+    case FileModifiedDialog::IGNORE:
+    {
+      BASE::KeySet<TextDisplay> displays( this );
+      displays.insert( this );
+      for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+      { (*iter)->_setIgnoreWarnings( true ); }
+    }
+    break;
+    
+    default: break;
   }
-
+  
   return FileModifiedDialog::ReturnCode( state );
 
 }
@@ -2278,28 +2295,72 @@ void TextDisplay::_fileProperties( void )
   grid_layout->addWidget( new QLabel( QString().setNum( AnimatedTextEditor::blockCount()), box ) );
   
   grid_layout->addWidget( new QLabel( "Text highlighting: ", box ) );
-  grid_layout->addWidget( new QLabel( (textHighlight().isHighlightEnabled() ? "True":"False" ), box ) );
-
+  {
+    QCheckBox* checkbox( new QCheckBox( box ) );
+    checkbox->setChecked( textHighlight().isHighlightEnabled() );
+    checkbox->setEnabled( false );
+    grid_layout->addWidget( checkbox );
+  }
+    
   grid_layout->addWidget( new QLabel( "Paragraph highlighting: ", box ) );
-  grid_layout->addWidget( new QLabel( (blockHighlightAction().isChecked() ? "True":"False" ), box ) );
+  {
+    QCheckBox* checkbox( new QCheckBox( box ) );
+    checkbox->setChecked( blockHighlightAction().isChecked() );
+    checkbox->setEnabled( false );
+    grid_layout->addWidget( checkbox );
+  }
   
   grid_layout->addWidget( new QLabel( "Parenthesis highlighting: ", box ) );
-  grid_layout->addWidget( new QLabel( (textHighlight().isParenthesisEnabled() ? "True":"False" ), box ) );
+  {
+    QCheckBox* checkbox( new QCheckBox( box ) );
+    checkbox->setChecked( textHighlight().isParenthesisEnabled() );
+    checkbox->setEnabled( false );
+    grid_layout->addWidget( checkbox );
+  }
   
   grid_layout->addWidget( new QLabel( "Text indentation: ", box ) );
-  grid_layout->addWidget( new QLabel( (textIndent().isEnabled() ? "True":"False" ), box ) );
+  {
+    QCheckBox* checkbox( new QCheckBox( box ) );
+    checkbox->setChecked(  textIndent().isEnabled() );
+    checkbox->setEnabled( false );
+    grid_layout->addWidget( checkbox );
+  }
   
   grid_layout->addWidget( new QLabel( "Text wrapping: ", box ) );
-  grid_layout->addWidget( new QLabel( (wrapModeAction().isChecked() ? "True":"False" ), box ) );
+  {
+    QCheckBox* checkbox( new QCheckBox( box ) );
+    checkbox->setChecked( wrapModeAction().isChecked() );
+    checkbox->setEnabled( false );
+    grid_layout->addWidget( checkbox );
+  }
   
   grid_layout->addWidget( new QLabel( "Tab emulation: ", box ) );
-  grid_layout->addWidget( new QLabel( (tabEmulationAction().isChecked() ? "True":"False" ), box ) );
+  {
+    QCheckBox* checkbox( new QCheckBox( box ) );
+    checkbox->setChecked( tabEmulationAction().isChecked() );
+    checkbox->setEnabled( false );
+    grid_layout->addWidget( checkbox );
+  }
 
   grid_layout->addWidget( new QLabel( "Auto-save file name: ", box ) );
   grid_layout->setColumnStretch( 1, 1 );
-  
-  // autosave
-  layout->addWidget( new QLabel( AutoSaveThread::autoSaveName( file() ), box ) );
+
+  {
+    // auto save
+    AnimatedLineEditor* editor = new AnimatedLineEditor( box );
+    editor->setReadOnly( true );
+    editor->setHasClearButton( false );
+    editor->setFrame( false );
+    
+    // modify color
+    QPalette palette( editor->palette() );
+    palette.setColor( QPalette::Base, Qt::transparent );
+    editor->setPalette( palette );
+    
+    // set text and add to layout
+    editor->setText( AutoSaveThread::autoSaveName( file() ) );
+    grid_layout->addWidget( editor );
+  }
   
   layout->addStretch();
   
