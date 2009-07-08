@@ -5,6 +5,17 @@ EXTRA_DIST = document-classes.pro patterns.qrc
 
 CXXFLAGS = @CXXFLAGS@
 
+if WITH_ASPELL 
+INCLUDES =  \
+  -I$(qt_includes) \
+  -I$(qt_includes)/Qt \
+  -I$(qt_includes)/QtCore  \
+  -I$(qt_includes)/QtXml \
+  -I$(qt_includes)/QtGui \
+  -I$(top_srcdir)/base \
+  -I$(top_srcdir)/base-qt \
+  -I$(top_srcdir)/base-spellcheck
+else
 INCLUDES =  \
   -I$(qt_includes) \
   -I$(qt_includes)/Qt \
@@ -13,12 +24,17 @@ INCLUDES =  \
   -I$(qt_includes)/QtGui \
   -I$(top_srcdir)/base \
   -I$(top_srcdir)/base-qt
+endif
 
 noinst_HEADERS = \
   BlockDelimiter.h \
   BlockDelimiterDialog.h \
+  BlockDelimiterDisplay.h \
   BlockDelimiterList.h \
   BlockDelimiterModel.h \
+  BlockDelimiterSegment.h \
+  BlockMarker.h \
+  CollapsedBlockData.h \
   DocumentClass.h \
   DocumentClassConfiguration.h \
   DocumentClassDialog.h \
@@ -26,6 +42,8 @@ noinst_HEADERS = \
   DocumentClassManager.h \
   DocumentClassManagerDialog.h \
   DocumentClassModel.h \
+  HighlightBlockData.h \
+  HighlightBlockFlags.h \
   HighlightPattern.h \
   HighlightPatternDialog.h \
   HighlightPatternList.h \
@@ -45,6 +63,8 @@ noinst_HEADERS = \
   IndentPatternRuleModel.h \
   IndentPatternType.h \
   PatternLocation.h \
+  TextHighlight.h \
+  TextIndent.h \
   TextMacro.h \
   TextMacroDialog.h \
   TextMacroList.h \
@@ -63,14 +83,18 @@ noinst_LIBRARIES = libdocument-classes.a
 libdocument_classes_a_SOURCES = \
   BlockDelimiter.cpp \
   BlockDelimiterDialog.cpp \
+  BlockDelimiterDisplay.cpp \
   BlockDelimiterList.cpp \
   BlockDelimiterModel.cpp \
+  CollapsedBlockData.cpp \
   DocumentClass.cpp \
   DocumentClassConfiguration.cpp \
   DocumentClassDialog.cpp \
   DocumentClassManager.cpp \
   DocumentClassManagerDialog.cpp \
   DocumentClassModel.cpp \
+  HighlightBlockData.cpp \
+  HighlightBlockFlags.cpp \
   HighlightPattern.cpp \
   HighlightPatternDialog.cpp \
   HighlightPatternList.cpp \
@@ -89,6 +113,8 @@ libdocument_classes_a_SOURCES = \
   IndentPatternRuleList.cpp \
   IndentPatternRuleModel.cpp \
   IndentPatternType.cpp \
+  TextHighlight.cpp \
+  TextIndent.cpp \
   TextMacro.cpp \
   TextMacroList.cpp \
   TextMacroModel.cpp \
@@ -103,6 +129,7 @@ libdocument_classes_a_SOURCES = \
 
 nodist_libdocument_classes_a_SOURCES = \
   qrc_patterns.cpp \
+  moc_BlockDelimiterDisplay.cpp \
   moc_BlockDelimiterList.cpp \
   moc_DocumentClassDialog.cpp \
   moc_DocumentClassManagerDialog.cpp \
@@ -113,6 +140,8 @@ nodist_libdocument_classes_a_SOURCES = \
   moc_IndentPatternList.cpp \
   moc_IndentPatternRuleList.cpp \
   moc_IndentPatternType.cpp \
+  moc_TextHighlight.cpp \
+  moc_TextIndent.cpp \
   moc_TextMacroList.cpp \
   moc_TextMacroRuleList.cpp \
   moc_TextParenthesisList.cpp
