@@ -75,10 +75,6 @@ noinst_HEADERS = \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
-  BlockDelimiterSegment.h \
-  BlockDelimiterDisplay.h \
-  BlockMarker.h \
-  CollapsedBlockData.h \
   ConfigurationDialog.h \
   Diff.h \
   DefaultOptions.h \
@@ -91,8 +87,6 @@ noinst_HEADERS = \
   FileRemovedDialog.h \
   FileSelectionDialog.h \
   HelpText.h \
-  HighlightBlockData.h \
-  HighlightBlockFlags.h \
   Icons.h \
   MainWindow.h \
   Menu.h \
@@ -109,8 +103,6 @@ noinst_HEADERS = \
   SessionFilesFrame.h \
   SessionFilesModel.h \
   TextDisplay.h \
-  TextHighlight.h \
-  TextIndent.h \
   TextView.h \
   WindowServer.h \
   WindowTitle.h
@@ -120,8 +112,6 @@ libqedit_a_SOURCES = \
   AskForSaveDialog.cpp \
   AutoSave.cpp \
   AutoSaveThread.cpp \
-  BlockDelimiterDisplay.cpp \
-  CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
   DocumentClassMenu.cpp \
@@ -132,8 +122,6 @@ libqedit_a_SOURCES = \
   FileModifiedDialog.cpp \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \
-  HighlightBlockData.cpp \
-  HighlightBlockFlags.cpp \
   MainWindow.cpp \
   Menu.cpp \
   NavigationFrame.cpp \
@@ -148,8 +136,6 @@ libqedit_a_SOURCES = \
   SessionFilesFrame.cpp \
   SessionFilesModel.cpp \
   TextDisplay.cpp \
-  TextHighlight.cpp \
-  TextIndent.cpp \
   TextView.cpp \
   WindowServer.cpp
 
@@ -158,7 +144,6 @@ nodist_libqedit_a_SOURCES = \
   moc_Application.cpp \
   moc_AskForSaveDialog.cpp \
   moc_AutoSave.cpp \
-  moc_BlockDelimiterDisplay.cpp \
   moc_Diff.cpp \
   moc_DocumentClassMenu.cpp \
   moc_DocumentClassToolBar.cpp \
@@ -179,8 +164,6 @@ nodist_libqedit_a_SOURCES = \
   moc_SessionFilesFrame.cpp \
   moc_SessionFilesModel.cpp \
   moc_TextDisplay.cpp \
-  moc_TextHighlight.cpp \
-  moc_TextIndent.cpp \
   moc_TextView.cpp \
   moc_WindowServer.cpp
 

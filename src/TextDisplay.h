@@ -407,11 +407,11 @@ class TextDisplay: public AnimatedTextEditor
   //@{
   
   // return true if block is an empty line
-  bool isEmptyBlock( const QTextBlock& block ) const
+  virtual bool isEmptyBlock( const QTextBlock& block ) const
   { return _emptyLineRegExp().indexIn( block.text() ) >= 0; }
   
   //! return true is block is to be ignored from indentation scheme
-  bool ignoreBlock( const QTextBlock& block ) const;
+  virtual bool ignoreBlock( const QTextBlock& block ) const;
   
   //! tag block (with diff flag)
   void tagBlock( QTextBlock, const unsigned int& tag );

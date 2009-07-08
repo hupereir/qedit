@@ -134,6 +134,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
   // block delimiter
   block_delimiter_display_ = new BlockDelimiterDisplay( this );
+  connect( &textHighlight(), SIGNAL( needSegmentUpdate() ), &blockDelimiterDisplay(), SLOT( needUpdate() ) );
 
   // connections
   connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
@@ -1615,7 +1616,7 @@ void TextDisplay::_installActions( void )
   connect( tag_block_action_, SIGNAL( triggered() ), SLOT( _tagBlock( void ) ) );
 
   // clear current block tags
-  addAction( clear_tag_action_ = new QAction( "Clear Current Tags", this ) );
+  addAction( clear_tag_action_ = new QAction( "Clear Current Tag", this ) );
   connect( clear_tag_action_, SIGNAL( triggered() ), SLOT( _clearTag( void ) ) );
 
   // clear all tags
