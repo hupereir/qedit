@@ -107,7 +107,7 @@ int main (int argc, char *argv[])
   // prepare dialog
   DocumentClassManagerDialog dialog(0, &manager);
   dialog.centerOnDesktop();
-  dialog.setWindowTitle( "Document classes - qedit" );
+  dialog.setWindowTitle( "Document Classes - qedit" );
   dialog.show();
   
   
