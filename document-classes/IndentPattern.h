@@ -48,29 +48,7 @@ class IndentPattern: public Counter
   public: 
 
   //! typedef for list of patterns
-  class List: public std::vector< IndentPattern >
-  {
-    public:
-    
-    //! constructor
-    List( void )
-    {}
-    
-    //! constructor
-    List( const std::vector<IndentPattern>& other ):
-      std::vector<IndentPattern>(other)
-      {}
-
-    bool differs( const std::vector< IndentPattern >& other ) const
-    {
-      if( other.size() != size() ) return true;
-      for( unsigned int i=0; i<size(); i++ )
-      { if( (*this)[i].differs( other[i] ) ) return true; }
-    
-      return false;
-    }
-    
-  };
+  typedef std::vector< IndentPattern > List;
     
   //! constructor
   IndentPattern( void );
@@ -89,17 +67,28 @@ class IndentPattern: public Counter
   void setId( const int& id )
   { id_ = id; }
  
+  //! equal to ftor
+  class WeakEqualFTor: public std::binary_function< IndentPattern, IndentPattern, bool>
+  {
+    public:
+    
+    bool operator()( const IndentPattern& first, const IndentPattern& second ) const
+    { return first.id() == second.id(); }
+    
+  };
+  
+  //! less than ftor
+  class WeakLessThanFTor: public std::binary_function< IndentPattern, IndentPattern, bool>
+  {
+    public:
+    
+    bool operator()( const IndentPattern& first, const IndentPattern& second ) const
+    { return first.id() < second.id(); }
+    
+  };
+
   //! equal to operator
-  bool operator == (const IndentPattern& pattern ) const
-  { return id() == pattern.id(); }
-  
-  //! less than operator
-  bool operator < (const IndentPattern& pattern ) const
-  { return id() < pattern.id(); }
-  
-  //! true if any attributes is different from argument
-  /*! this is a stricter comparison than the != operator */
-  bool differs( const IndentPattern& ) const;
+  bool operator == (const IndentPattern& ) const;
 
   //! name
   const QString& name() const

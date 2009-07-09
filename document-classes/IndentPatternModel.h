@@ -37,14 +37,14 @@
 #include "IndentPattern.h"
 
 //! IndentPattern model. Stores file information for display in lists
-class IndentPatternModel : public ListModel<IndentPattern>, public Counter
+class IndentPatternModel : public ListModel<IndentPattern, IndentPattern::WeakEqualFTor, IndentPattern::WeakLessThanFTor>, public Counter
 {
   
   public:
     
   //! constructor
   IndentPatternModel(QObject *parent = 0):
-    ListModel<IndentPattern>(parent),
+    ListModel<IndentPattern, IndentPattern::WeakEqualFTor, IndentPattern::WeakLessThanFTor>(parent),
     Counter( "IndentPatternModel" )
   {}
   

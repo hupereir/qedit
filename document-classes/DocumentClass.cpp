@@ -147,19 +147,27 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 }
 
 //______________________________________________________
-bool DocumentClass::differs( const DocumentClass& other ) const
-{ 
+bool DocumentClass::operator == ( const DocumentClass& other ) const
+{
   
-  // 
+  return 
+    name() == other.name() &&
+    file() == other.file() &&
+    fileMatchingPattern() == other.fileMatchingPattern() &&
+    firstLineMatchingPattern() == other.firstLineMatchingPattern() &&
+    isDefault() == other.isDefault() &&
+    wrap() == other.wrap() &&
+    emulateTabs() == other.emulateTabs() &&
+    tabSize() == other.tabSize() &&
+    icon() == other.icon() &&
+    highlightStyles() == other.highlightStyles() &&
+    highlightPatterns() == other.highlightPatterns() &&
+    indentPatterns() == other.indentPatterns() &&
+    parenthesis() == other.parenthesis() &&
+    blockDelimiters() == other.blockDelimiters() &&
+    textMacros() == other.textMacros() &&
+    baseIndentation() == other.baseIndentation();
   
-  if( highlightStyles().differs( other.highlightStyles() ) ) return true;
-  if( highlightPatterns().differs( other.highlightPatterns() ) ) return true;
-  if( indentPatterns().differs( other.indentPatterns() ) ) return true;
-  if( parenthesis().differs( other.parenthesis() ) ) return true;
-  if( blockDelimiters().differs( other.blockDelimiters() ) ) return true;
-  if( textMacros().differs( other.textMacros() ) ) return true;
-  
-  return false; 
 }
 
 //______________________________________________________

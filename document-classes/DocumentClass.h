@@ -73,21 +73,32 @@ class DocumentClass: public Counter
   //! write to DomElement
   QDomElement domElement( QDomDocument& parent ) const;
 
-  //! lower than operator
-  bool operator < (const DocumentClass& document_class ) const
-  { 
-    if( isDefault() )  return true;
-    if( document_class.isDefault() ) return false;
-    return name() < document_class.name(); 
-  }
+  //! strict equal to operator
+  bool operator == (const DocumentClass& document_class ) const;
 
-  //! lower than operator
-  bool operator == (const DocumentClass& document_class ) const
-  { return name() == document_class.name(); }
+  //! equal to ftor
+  class WeakEqualFTor: public std::binary_function< DocumentClass, DocumentClass, bool>
+  {
+    public:
+    
+    bool operator()( const DocumentClass& first, const DocumentClass& second ) const
+    { return first.name() == second.name(); }
+    
+  };
   
-  //! true if any attributes is different from argument
-  /*! this is a stricter comparison than the != operator */
-  bool differs( const DocumentClass& ) const;
+  //! less than ftor
+  class WeakLessThanFTor: public std::binary_function< DocumentClass, DocumentClass, bool>
+  {
+    public:
+    
+    bool operator()( const DocumentClass& first, const DocumentClass& second ) const
+    {    
+      if( first.isDefault() )  return true;
+      if( second.isDefault() ) return false;
+      return first.name() < second.name(); 
+    }
+    
+  };  
   
   //! clear patterns and styles
   void clear( void );

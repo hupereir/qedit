@@ -112,7 +112,7 @@ bool DocumentClassManager::read( const File& filename )
   read_error_.clear();
     
   // sort classes (based on Name())
-  document_classes_.sort();
+  document_classes_.sort( DocumentClass::WeakLessThanFTor() );
 
   return true;
   

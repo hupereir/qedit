@@ -105,7 +105,7 @@ HighlightStyle::Set HighlightStyleList::styles( void )
 {
   
   Debug::Throw( "HighlightStyleList::styles.\n" );
-  return HighlightStyle::Set( std::set<HighlightStyle>( model_.get().begin(), model_.get().end() ) );
+  return HighlightStyle::Set( model_.get().begin(), model_.get().end() );
   
 }
 
@@ -165,7 +165,7 @@ void HighlightStyleList::_edit( void )
     if( dialog.exec() == QDialog::Rejected ) continue;
     
     HighlightStyle style( dialog.style() );
-    if( style.differs( old_style ) ) 
+    if( !( style == old_style ) ) 
     { 
       model_.replace( *iter, style ); 
       emit modified();

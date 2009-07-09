@@ -109,13 +109,13 @@ QDomElement IndentPattern::domElement( QDomDocument& parent ) const
 }
 
 //____________________________________________________________
-bool IndentPattern::differs( const IndentPattern& pattern ) const
+bool IndentPattern::operator == ( const IndentPattern& other ) const
 { 
   return 
-    name() != pattern.name() ||
-    type() != pattern.type() ||
-    scale() != pattern.scale() ||
-    rules() != pattern.rules();
+    name() == other.name() &&
+    type() == other.type() &&
+    scale() == other.scale() &&
+    rules() == other.rules();
 }
 
 //____________________________________________________________

@@ -37,14 +37,14 @@
 #include "DocumentClass.h"
 
 //! DocumentClass model. Stores file information for display in lists
-class DocumentClassModel : public ListModel<DocumentClass>, public Counter
+class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>, public Counter
 {
   
   public:
     
   //! constructor
   DocumentClassModel(QObject *parent = 0):
-    ListModel<DocumentClass>(parent),
+    ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>(parent),
     Counter( "DocumentClassModel" )
   {}
   

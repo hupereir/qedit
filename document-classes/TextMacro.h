@@ -53,30 +53,7 @@ class TextMacro: public Counter
   public:
  
   //! list
-  class List: public std::vector< TextMacro >
-  {
-    public:
-    
-    //! constructor
-    List( void )
-    {}
-    
-    //! constructor
-    List( const std::vector<TextMacro>& other ):
-      std::vector<TextMacro>(other)
-      {}
-
-    bool differs( const std::vector< TextMacro >& other ) const
-    {
-      
-      if( other.size() != size() ) return true;
-      for( unsigned int i=0; i<size(); i++ )
-      { if( (*this)[i].differs( other[i] ) ) return true; }
-    
-      return false;
-    }
-    
-  };
+  typedef std::vector< TextMacro > List;
 
   //! constructor
   TextMacro( void ):
@@ -100,23 +77,35 @@ class TextMacro: public Counter
   { id_ = id; }
 
   //! equal to operator
-  bool operator == ( const TextMacro& macro ) const
-  { return id() == macro.id(); }
-
-  //! less than operator
-  bool operator < ( const TextMacro& macro ) const
-  { return id() < macro.id(); }
-
-  //! strong difference operator
-  bool differs( const TextMacro& other ) const
+  bool operator == ( const TextMacro& other ) const
   {
-    if( name() != other.name() ) return true;
-    if( accelerator() != other.accelerator() ) return true;
-    if( isSeparator() != other.isSeparator() ) return true;
-    if( rules() != other.rules() ) return true;
-    return false;
-    
+    return 
+      name() == other.name() &&
+      accelerator() == other.accelerator() && 
+      isSeparator() == other.isSeparator() &&
+      rules() == other.rules();
+
   }
+ 
+  //! equal to ftor
+  class WeakEqualFTor: public std::binary_function< TextMacro, TextMacro, bool>
+  {
+    public:
+    
+    bool operator()( const TextMacro& first, const TextMacro& second ) const
+    { return first.id() == second.id(); }
+    
+  };
+  
+  //! less than ftor
+  class WeakLessThanFTor: public std::binary_function< TextMacro, TextMacro, bool>
+  {
+    public:
+    
+    bool operator()( const TextMacro& first, const TextMacro& second ) const
+    { return first.id() < second.id(); }
+    
+  };
   
   //! reset counter
   static void resetCounter( void )

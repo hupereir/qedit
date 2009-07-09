@@ -37,14 +37,14 @@
 #include "TextMacro.h"
 
 //! TextMacro model. Stores file information for display in lists
-class TextMacroModel : public ListModel<TextMacro>, public Counter
+class TextMacroModel : public ListModel<TextMacro, TextMacro::WeakEqualFTor, TextMacro::WeakLessThanFTor>, public Counter
 {
   
   public:
     
   //! constructor
   TextMacroModel(QObject *parent = 0):
-    ListModel<TextMacro>(parent),
+    ListModel<TextMacro, TextMacro::WeakEqualFTor, TextMacro::WeakLessThanFTor>(parent),
     Counter( "TextMacroModel" )
   {}
   

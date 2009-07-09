@@ -135,16 +135,16 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
 }
 
 //____________________________________________________________
-bool HighlightPattern::differs( const HighlightPattern& pattern ) const
+bool HighlightPattern::operator ==( const HighlightPattern& other ) const
 { 
   return 
-    name() != pattern.name() ||
-    flags() != pattern.flags() ||
-    type() != pattern.type() ||
-    parent() != pattern.parent() ||
-    style() != pattern.style() ||
-    keyword() != pattern.keyword() ||
-    ( type() == RANGE_PATTERN && end() != pattern.end() );
+    name() == other.name() &&
+    flags() == other.flags() &&
+    type() == other.type() &&
+    parent() == other.parent() &&
+    style() == other.style() &&
+    keyword() == other.keyword() &&
+    ( type() != RANGE_PATTERN || end() == other.end() );
 }
   
 //____________________________________________________________

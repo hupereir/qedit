@@ -71,10 +71,10 @@ QDomElement HighlightStyle::domElement( QDomDocument& parent ) const
 
 
 //_____________________________________________________
-bool HighlightStyle::differs( const HighlightStyle& style ) const
+bool HighlightStyle::operator == ( const HighlightStyle& other ) const
 { 
   return 
-    name() != style.name() ||
-    fontFormat() != style.fontFormat() ||
-    color() != style.color();
+    name() == other.name() &&
+    fontFormat() == other.fontFormat() &&
+    color() == other.color();
 }  

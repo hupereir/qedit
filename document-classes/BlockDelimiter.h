@@ -49,31 +49,7 @@ class BlockDelimiter: public Counter
   public:
 
   //! typedef for list of patterns
-  class List: public std::vector< BlockDelimiter >
-  {
-    public:
-    
-    //! constructor
-    List( void )
-    {}
-    
-    //! constructor
-    List( const std::vector<BlockDelimiter>& other ):
-      std::vector<BlockDelimiter>(other)
-      {}
-    
-    //! strong difference operator
-    bool differs( const std::vector< BlockDelimiter >& other ) const
-    {
-      
-      if( other.size() != size() ) return true;
-      for( unsigned int i=0; i<size(); i++ )
-      { if( !( (*this)[i] == other[i] ) ) return true; }
-    
-      return false;
-    }
-    
-  };
+  typedef std::vector< BlockDelimiter > List;
 
   //! constructor from DomElement
   BlockDelimiter( const QDomElement& element = QDomElement(), const unsigned int& id = 0 );
@@ -86,20 +62,20 @@ class BlockDelimiter: public Counter
   { return id_; }
 
   //! equal to operator
-  bool operator == ( const BlockDelimiter& delimiter ) const
+  bool operator == ( const BlockDelimiter& other ) const
   { 
     return 
-      first() == delimiter.first() &&
-      second() == delimiter.second() &&
-      regexp() == delimiter.regexp();
+      first() == other.first() &&
+      second() == other.second() &&
+      regexp() == other.regexp();
   }
-
+  
   //! less than operator
-  bool operator < ( const BlockDelimiter& delimiter ) const
+  bool operator < ( const BlockDelimiter& other ) const
   { 
-    if( first() != delimiter.first() ) return first() < delimiter.first();
-    if( second() != delimiter.second() ) return second() < delimiter.second();
-    if( regexp().pattern() != delimiter.regexp().pattern() ) return regexp().pattern() < delimiter.regexp().pattern();
+    if( first() != other.first() ) return first() < other.first();
+    if( second() != other.second() ) return second() < other.second();
+    if( regexp().pattern() != other.regexp().pattern() ) return regexp().pattern() < other.regexp().pattern();
     return false;
   }
   

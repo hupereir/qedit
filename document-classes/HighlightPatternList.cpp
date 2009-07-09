@@ -181,7 +181,7 @@ void HighlightPatternList::_edit( void )
     if( dialog.exec() == QDialog::Rejected ) continue;
     
     HighlightPattern pattern( dialog.pattern() );
-    if( pattern.differs( old_pattern ) ) 
+    if( !( pattern == old_pattern ) ) 
     { 
       model_.replace( *iter, pattern ); 
       emit modified();

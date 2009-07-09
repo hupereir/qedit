@@ -147,7 +147,7 @@ void DocumentClassManagerDialog::_edit( void )
   if( dialog.exec() == QDialog::Accepted ) 
   { 
     DocumentClass new_document_class( dialog.documentClass() );
-    if( new_document_class.differs( document_class ) ) 
+    if( !( new_document_class == document_class ) ) 
     {
       // replace class in model
       new_document_class.setModified( true );

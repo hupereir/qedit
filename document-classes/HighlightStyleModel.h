@@ -38,14 +38,14 @@
 #include "HighlightStyle.h"
 
 //! HighlightStyle model. Stores file information for display in lists
-class HighlightStyleModel : public ListModel<HighlightStyle>, public Counter
+class HighlightStyleModel : public ListModel<HighlightStyle, HighlightStyle::WeakEqualFTor, HighlightStyle::WeakLessThanFTor>, public Counter
 {
   
   public:
     
   //! constructor
   HighlightStyleModel(QObject *parent = 0):
-    ListModel<HighlightStyle>(parent),
+    ListModel<HighlightStyle, HighlightStyle::WeakEqualFTor, HighlightStyle::WeakLessThanFTor>(parent),
     Counter( "HighlightStyleModel" )
   {}
   

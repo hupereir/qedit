@@ -48,33 +48,6 @@ class HighlightStyle: public Counter
 {
   
   public: 
-  
-  //! typedef for list of patterns
-  class Set: public std::set< HighlightStyle >
-  {
-    public:
- 
-    //! constructor
-    Set( void )
-    {}
-    
-    //! constructor
-    Set( const std::set<HighlightStyle>& other ):
-      std::set<HighlightStyle>(other)
-      {}
-   
-    bool differs( const std::set< HighlightStyle >& other ) const
-    {
-      if( other.size() != size() ) return true;
-      std::set< HighlightStyle >::const_iterator first( begin() );
-      std::set< HighlightStyle >::const_iterator second( other.begin() );
-      for(; first != end(); first++, second++ )
-      { if( first->differs( *second ) ) return false; }
-      
-      return true;
-    }
-    
-  };
             
   //! constructor
   HighlightStyle( 
@@ -98,21 +71,32 @@ class HighlightStyle: public Counter
   virtual const QString& name( void ) const
   { return name_; }
   
-  //! lower than operator
-  bool operator < (const HighlightStyle& style ) const
-  { return name() < style.name(); }
+  //! equal to ftor
+  class WeakEqualFTor: public std::binary_function< HighlightStyle, HighlightStyle, bool>
+  {
+    public:
+    
+    bool operator()( const HighlightStyle& first, const HighlightStyle& second ) const
+    { return first.name() == second.name(); }
+    
+  };
   
-  //! equal to operator
-  bool operator == (const HighlightStyle& style ) const
-  { return name() == style.name(); }
+  //! less than ftor
+  class WeakLessThanFTor: public std::binary_function< HighlightStyle, HighlightStyle, bool>
+  {
+    public:
+    
+    bool operator()( const HighlightStyle& first, const HighlightStyle& second ) const
+    { return first.name() < second.name(); }
+    
+  };
   
-  //! different from operator
-  bool operator != (const HighlightStyle& style ) const
-  { return name() != style.name(); }
-  
+  //! typedef for list of patterns
+  typedef std::set< HighlightStyle, HighlightStyle::WeakLessThanFTor > Set;
+    
   //! true if any attributes is different from argument
   /*! this is a stricter comparison than the != operator */
-  bool differs( const HighlightStyle& style ) const;
+  bool operator == ( const HighlightStyle& style ) const;
     
   //! name
   virtual void setName( const QString& name ) 

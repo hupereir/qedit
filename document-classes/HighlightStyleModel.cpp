@@ -78,6 +78,6 @@ QVariant HighlightStyleModel::headerData(int section, Qt::Orientation orientatio
 void HighlightStyleModel::_sort( int column, Qt::SortOrder order )
 { 
   Debug::Throw() << "HighlightStyleModel::sort - column: " << column << " order: " << order << endl;
-  if( order == Qt::DescendingOrder ) std::sort( _get().begin(), _get().end() );
-  else std::sort( _get().rbegin(), _get().rend() );
+  if( order == Qt::DescendingOrder ) std::sort( _get().begin(), _get().end(), HighlightStyle::WeakLessThanFTor() );
+  else std::sort( _get().rbegin(), _get().rend(), HighlightStyle::WeakLessThanFTor() );
 }

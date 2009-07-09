@@ -72,29 +72,7 @@ class HighlightPattern: public Counter
   };
   
   //! typedef for list of patterns
-  class List: public std::vector< HighlightPattern >
-  {
-    public:
-
-    //! constructor
-    List( void )
-    {}
-    
-    //! constructor
-    List( const std::vector<HighlightPattern>& other ):
-      std::vector<HighlightPattern>(other)
-      {}
-    
-    bool differs( const std::vector< HighlightPattern >& other ) const
-    {
-      if( other.size() != size() ) return true;
-      for( unsigned int i=0; i<size(); i++ )
-      { if( (*this)[i].differs( other[i] ) ) return true; }
-    
-      return false;
-    }
-    
-  };
+  typedef std::vector< HighlightPattern > List;
 
   //! no parent pattern
   static QString no_parent_pattern_;  
@@ -118,16 +96,27 @@ class HighlightPattern: public Counter
   { return id_; }
   
   //! equal to operator
-  bool operator == (const HighlightPattern& pattern ) const
-  { return id() == pattern.id(); }
+  bool operator == (const HighlightPattern& other ) const;
   
-  //! less than operator
-  bool operator < (const HighlightPattern& pattern ) const
-  { return id() < pattern.id(); }
+  //! equal to ftor
+  class WeakEqualFTor: public std::binary_function< HighlightPattern, HighlightPattern, bool>
+  {
+    public:
+    
+    bool operator()( const HighlightPattern& first, const HighlightPattern& second ) const
+    { return first.id() == second.id(); }
+    
+  };
   
-  //! true if any attributes is different from argument
-  /*! this is a stricter comparison than the != operator */
-  bool differs( const HighlightPattern& pattern ) const;
+  //! less than ftor
+  class WeakLessThanFTor: public std::binary_function< HighlightPattern, HighlightPattern, bool>
+  {
+    public:
+    
+    bool operator()( const HighlightPattern& first, const HighlightPattern& second ) const
+    { return first.id() < second.id(); }
+    
+  };
     
   //! name
   const QString& name( void ) const
