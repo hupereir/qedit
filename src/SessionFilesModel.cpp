@@ -148,7 +148,7 @@ QIcon SessionFilesModel::_icon( unsigned int type )
     
     icon = CustomPixmap().empty( size );
     
-  } else assert(0);
+  } else assert( false );
 
   // store in map and return
   _icons().insert( make_pair( type, icon ) );

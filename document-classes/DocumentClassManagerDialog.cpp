@@ -36,7 +36,6 @@
 #include "DocumentClass.h"
 #include "DocumentClassIcons.h"
 #include "DocumentClassManagerDialog.h"
-#include "DocumentClassManager.h"
 #include "DocumentClassDialog.h"
 #include "FileDialog.h"
 #include "IconEngine.h"
@@ -50,10 +49,11 @@
 using namespace std;
 
 //______________________________________________________________
-DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, DocumentClassManager* manager ):
+DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, const DocumentClassManager& manager ):
   BaseMainWindow( parent ),
   Counter( "DocumentClassManagerDialog" ),
-  document_class_manager_( manager )
+  backup_( manager ),
+  modified_( false )
 {
   Debug::Throw( "DocumentClassManagerDialog::DocumentClassManagerDialog.\n" );
  
@@ -67,8 +67,6 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   toolbar->addAction( &_newAction() );
   toolbar->addAction( &_openAction() ); 
   toolbar->addAction( &_saveAction() ); 
-  toolbar->addAction( &_saveAsAction() ); 
-  toolbar->addAction( &_saveAllAction() ); 
   toolbar->addAction( &_editAction() ); 
   toolbar->addAction( &_removeAction() ); 
   toolbar->addAction( &_reloadAction() ); 
@@ -87,17 +85,19 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   
   // create list
   main->layout()->addWidget( list_ = new TreeView( main ) );
-  list_->setModel( &model_ );
+  _list().setModel( &_model() );
+  _list().setOptionName( "DOCUMENT_CLASS_MANAGER_LIST" );
 
   // set connections
   connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _edit() ) );
   connect( _list().selectionModel(), SIGNAL( selectionChanged( const QItemSelection& , const QItemSelection& ) ), SLOT( _updateActions() ) );
 
-  _loadClasses();
+  _loadClasses( manager );
   _updateActions();
   
+  _updateWindowTitle();
   adjustSize();
-
+  
 }
 
 //___________________________________________________
@@ -108,8 +108,6 @@ void DocumentClassManagerDialog::_updateActions( void )
   bool has_selection( !_list().selectionModel()->selectedRows().empty() );  
   _editAction().setEnabled( has_selection );
   _removeAction().setEnabled( has_selection );
-  _saveAction().setEnabled( has_selection );
-  _saveAsAction().setEnabled( has_selection );
 
 }
 
@@ -122,7 +120,14 @@ void DocumentClassManagerDialog::_add( void )
   // create dialog
   DocumentClassDialog dialog( this );
   if( dialog.exec() == QDialog::Accepted ) 
-  { emit updateNeeded(); }
+  { 
+     
+    DocumentClass new_document_class( dialog.documentClass() );
+    new_document_class.setModified( true );
+    _model().add( new_document_class ); 
+    _list().resizeColumns();
+  
+  }
   
   return;
 }
@@ -152,7 +157,7 @@ void DocumentClassManagerDialog::_edit( void )
       // replace class in model
       new_document_class.setModified( true );
       _model().replace( current, new_document_class ); 
-      emit updateNeeded(); 
+      _list().resizeColumns();
     }
     
   }
@@ -171,12 +176,9 @@ void DocumentClassManagerDialog::_remove( void )
     return;
   }
   
-  if( document_class_manager_->remove( _model().get( current ).name() ) )
-  { 
-    _loadClasses(); 
-    emit updateNeeded();
-  }
-  
+  // remove from model
+  _model().remove( _model().get( current ) );
+    
 }
 
 //___________________________________________________
@@ -189,11 +191,8 @@ void DocumentClassManagerDialog::_loadFile( void )
   if( file.isNull() ) return;
       
   // try load from file manager and add to options
-  if( document_class_manager_->read( file ) ) 
-  {
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( file ) );
-    _loadClasses();
-  }
+  DocumentClassManager manager;
+  if( manager.read( file ) ) _loadClasses( manager );
   return; 
     
 }
@@ -201,113 +200,55 @@ void DocumentClassManagerDialog::_loadFile( void )
 //___________________________________________________
 void DocumentClassManagerDialog::_save( void )
 {
+
   Debug::Throw( "DocumentClassManagerDialog::_save.\n" );
+  assert( _modified() );
 
-  QModelIndex current( _list().selectionModel()->currentIndex() );
-  if( !current.isValid() ) 
+  // write all classes to disc
+  QStringList warnings;
+  DocumentClassModel::List classes( _model().get() );
+  for( DocumentClassModel::List::iterator iter = classes.begin(); iter != classes.end(); iter++ )
   {
-    InformationDialog( this, "No item selected. <Save> canceled." ).exec();
-    return;
-  }
-  
-  DocumentClass document_class( _model().get( current ) );
-
-  // check filename
-  File file( document_class.file() );
-  if( file.indexOf( ":" ) == 0 )
-  {
-    QString what;
-    QTextStream( &what ) << "Cannot write document class to file " << file;
-    InformationDialog( this, what ).centerOnParent().exec();
-    return;
-  }
-  
-  // write
-  if( !document_class_manager_->write( document_class.name(), file ) )
-  {
-    QString what;
-    QTextStream( &what ) << "Cannot write document class to file " << file;
-    InformationDialog( this, what ).centerOnParent().exec();
-  };
-  
-  document_class.setModified( false );
-  _model().replace( current, document_class );
-  
-  return;
-
-}
-
-//___________________________________________________
-void DocumentClassManagerDialog::_saveAs( void )
-{
-  Debug::Throw( "DocumentClassManagerDialog::_saveAs.\n" );
-  
-  QModelIndex current( _list().selectionModel()->currentIndex() );
-  if( !current.isValid() ) 
-  {
-    InformationDialog( this, "No item selected. <Save As> canceled." ).exec();
-    return;
-  }
-  
-  // retrieve file from dialog
-  FileDialog dialog( this );
-  dialog.setFileMode( QFileDialog::AnyFile );
-  dialog.setAcceptMode( QFileDialog::AcceptSave );
-  File file( dialog.getFile() );
-  if( file.isNull() ) return;
-  
-  // check if file is directory
-  if( file.isDirectory() )
-  {
-    QString buffer;
-    QTextStream( &buffer ) << "file \"" << file << "\" is a directory. <Save As> canceled.";
-    InformationDialog( this, buffer ).exec();
-    return;
-  }
-
-  // check if file exist
-  if( file.exists() )
-  {
-    if( !file.isWritable() )
+    
+    DocumentClass& document_class( *iter );
+    if( !document_class.modified() ) continue;
+    if( !document_class.file().isWritable() ) 
     {
-      QString buffer;
-      QTextStream( &buffer ) << "file \"" << file << "\" is read-only. <Save As> canceled.";
-      InformationDialog( this, buffer ).exec();
-      return;
-    } else if( !QuestionDialog( this, "Selected file already exist. Overwrite ?" ).exec() )
-    return;
-  }
-  
-  DocumentClass document_class( _model().get( current ) );
-  document_class.setFile( file );
-  document_class.setModified( true );
-  _model().replace( current, document_class );
-  _save();
-  return;
-}
+      
+      QString what;
+      QTextStream( &what ) << "Cannot write document class named " << document_class.name() << " to file " << document_class.file();
+      warnings.push_back( what );
+      
+    } else if( !DocumentClassManager().write( document_class, document_class.file() ) ) {
+        
+      QString what;
+      QTextStream( &what ) << "Failed to write document class named " << document_class.name() << " to file " << document_class.file();
+      warnings.push_back( what );
+      
+    } else { 
+      
+      document_class.setModified( false );
+      _model().add( document_class );
+      
+    }
 
-//___________________________________________________
-void DocumentClassManagerDialog::_saveAll( void )
-{
-  Debug::Throw( "DocumentClassManagerDialog::_saveAll.\n" );
+  }
+
+  // update DocumentClassManager
+  backup_.setClasses( DocumentClassManager::List( classes.begin(), classes.end() ) );
   
-  // retrieve file from dialog
-  FileDialog dialog( this );
-  dialog.setFileMode( QFileDialog::Directory );
-  dialog.setAcceptMode( QFileDialog::AcceptOpen );
-  File file( dialog.getFile() );
-  if( file.isNull() ) return;
+  // check modifications
+  _checkModified();
   
-  document_class_manager_->write( file );
+  // write fileNames to options
+  
+  return;
   
 }
 
 //___________________________________________________
 void DocumentClassManagerDialog::_reload( void )
-{
-  Debug::Throw( "DocumentClassManagerDialog::_Reload.\n" );  
-  _loadClasses();
-}
+{}
 
 //________________________________________________________
 void DocumentClassManagerDialog::_installActions( void )
@@ -324,23 +265,13 @@ void DocumentClassManagerDialog::_installActions( void )
   open_action_->setToolTip( "Load additional classes from file" );
   open_action_->setShortcut( Qt::CTRL + Qt::Key_O );
 
-  // save document class to file
+  // save
   addAction( save_action_ = new QAction( IconEngine::get( ICONS::SAVE ), "Save", this  ) );
   connect( save_action_, SIGNAL( triggered() ), SLOT( _save() ) );  
-  save_action_->setToolTip( "Save selected document classe to file" );
+  save_action_->setToolTip( "Save document classes modifications" );
   save_action_->setShortcut( Qt::CTRL + Qt::Key_S );
-
-  // save document class to file
-  addAction( save_as_action_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this  ) );
-  connect( save_as_action_, SIGNAL( triggered() ), SLOT( _saveAs() ) );  
-  save_as_action_->setToolTip( "Save selected document classe to file" );
-  save_as_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_S );
-
-  // save document class to file
-  addAction( save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save &All", this  ) );
-  connect( save_all_action_, SIGNAL( triggered() ), SLOT( _saveAll() ) );  
-  save_all_action_->setToolTip( "Save all document classes" );
-
+  save_action_->setEnabled( false );
+  
   // edit
   addAction( edit_action_ = new QAction( IconEngine::get( ICONS::EDIT ), "&Edit", this  ) );
   connect( edit_action_, SIGNAL( triggered() ), SLOT( _edit() ) ); 
@@ -360,15 +291,46 @@ void DocumentClassManagerDialog::_installActions( void )
 }
 
 //___________________________________________________ 
-void DocumentClassManagerDialog::_loadClasses()
+void DocumentClassManagerDialog::_loadClasses( const DocumentClassManager& manager )
 {
   
   Debug::Throw( "DocumentClassManagerDialog::_loadClasses.\n" );
   
   // retrieve classes from DocumentClass manager
-  const DocumentClassManager::List& classes( document_class_manager_->list() );
+  const DocumentClassManager::List& classes( manager.classes() );
   
   // add to list
-  _model().update( DocumentClassModel::List( classes.begin(), classes.end() ) );
+  _model().add( DocumentClassModel::List( classes.begin(), classes.end() ) );
+  _list().resizeColumns();
+  
+}
 
+//___________________________________________________ 
+void DocumentClassManagerDialog::_checkModified( void )
+{
+  
+  const DocumentClassModel::List& classes( _model().get() );
+  _setModified( !( DocumentClassManager::List( classes.begin(), classes.end() ) == backup_.classes() ) );
+  
+}
+
+//___________________________________________________ 
+void DocumentClassManagerDialog::_setModified( bool value )
+{
+  
+  if( modified_ == value ) return;
+  
+  modified_ = value;
+  _saveAction().setEnabled( modified_ );
+  _updateWindowTitle();
+}
+
+//___________________________________________________ 
+void DocumentClassManagerDialog::_updateWindowTitle( void )
+{
+  QString title;
+  QTextStream what( &title );
+  what << "Document Classes - qedit";
+  if( _modified() ) what << " (modified)" << endl;
+  setWindowTitle( title );
 }

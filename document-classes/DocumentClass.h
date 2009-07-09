@@ -303,6 +303,18 @@ class DocumentClass: public Counter
     
   };
     
+  //! modified
+  class ModifiedFTor
+  {
+    
+    public:
+    
+    //! predicate
+    bool operator() (const DocumentClass& document_class ) const
+    { return document_class.modified(); }
+    
+  };
+  
   private:
   
   //! base indentation

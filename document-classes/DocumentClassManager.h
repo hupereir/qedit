@@ -32,7 +32,6 @@
   \date $Date$
 */
 
-#include <QObject>
 #include <QString>
 #include <list>
 
@@ -43,13 +42,13 @@
 class DocumentClass;
 
 //! Store list of Document Class
-class DocumentClassManager: public QObject, public Counter
+class DocumentClassManager: public Counter
 {
 
   public:
 
   //! constructor
-  DocumentClassManager( QObject* parent = 0 );
+  DocumentClassManager( void );
 
   //! destructor
   ~DocumentClassManager( void )
@@ -69,10 +68,13 @@ class DocumentClassManager: public QObject, public Counter
   { return read_error_; }
   
   //! write all classes to file
-  bool write( const File& ) const;
+  bool write( const File& path ) const;
 
   //! write classe to file
   bool write( const QString&, const File& ) const;
+
+  //! write classe to file
+  bool write( const DocumentClass&, const File& ) const;
 
   //! get default document class
   DocumentClass defaultClass( void ) const;
@@ -90,9 +92,13 @@ class DocumentClassManager: public QObject, public Counter
   typedef std::list<DocumentClass> List;
 
   //! get all classes
-  const List& list( void ) const
+  const List& classes( void ) const
   { return document_classes_; }
 
+  //! set all classes
+  void setClasses( const List& classes )
+  { document_classes_ = classes; }
+  
   private:
 
   //! list of document classes

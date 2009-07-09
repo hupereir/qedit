@@ -32,6 +32,8 @@
   \date    $Date$
 */
 
+#include <QIcon>
+
 #include "Counter.h"
 #include "ListModel.h"
 #include "DocumentClass.h"
@@ -39,24 +41,25 @@
 //! DocumentClass model. Stores file information for display in lists
 class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>, public Counter
 {
-  
+
+  //! Qt meta object declaration
+  Q_OBJECT;
+    
   public:
     
   //! constructor
-  DocumentClassModel(QObject *parent = 0):
-    ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>(parent),
-    Counter( "DocumentClassModel" )
-  {}
+  DocumentClassModel(QObject *parent = 0);
   
   //! destructor
   virtual ~DocumentClassModel()
   {}
   
   //! number of columns
-  enum { n_columns = 2 };
+  enum { n_columns = 3 };
 
  //! column type enumeration
   enum ColumnType { 
+    ICON,
     NAME,
     FILE,
   };
@@ -80,7 +83,12 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
   
   //! sort
   virtual void _sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
-   
+
+  private slots:
+  
+  //! configuration
+  void _updateConfiguration( void );
+  
   private:
   
   //! list column names
@@ -102,6 +110,14 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     
   };
 
+  //! icon
+  static QIcon _icon( const QString& );
+  
+  //! icon cache
+  typedef std::map<QString, QIcon> IconCache;
+   
+  //! type icon cache
+  static IconCache& _icons( void ); 
 
 };
 

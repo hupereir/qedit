@@ -43,8 +43,7 @@
 using namespace std;
 
 //________________________________________________________
-DocumentClassManager::DocumentClassManager( QObject* parent ):
-  QObject( parent ),
+DocumentClassManager::DocumentClassManager( void ):
   Counter( "DocumentClassManager" )
 { Debug::Throw( "DocumentclassManager::DocumentClassManager.\n" ); }
 
@@ -125,7 +124,13 @@ bool DocumentClassManager::write( const QString& class_name, const File& filenam
   
   // try retrieve DocumentClass
   List::const_iterator iter = find_if( document_classes_.begin(), document_classes_.end(), DocumentClass::SameNameFTor( class_name ) );
-  if( iter == document_classes_.end() ) return false;
+  return ( iter == document_classes_.end() ) ? false : write( *iter,  filename );
+  
+}
+  
+//________________________________________________________
+bool DocumentClassManager::write( const DocumentClass& document_class, const File& filename ) const
+{
   
   // try open file
   QFile out( filename );
@@ -136,7 +141,7 @@ bool DocumentClassManager::write( const QString& class_name, const File& filenam
   
   // create main element
   QDomElement top = document.appendChild( document.createElement( XML::PATTERNS ) ).toElement();
-  top.appendChild( iter->domElement( document ) );
+  top.appendChild( document_class.domElement( document ) );
   
   out.write( document.toByteArray() );
   out.close();

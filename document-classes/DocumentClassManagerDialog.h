@@ -37,8 +37,8 @@
 
 #include "BaseMainWindow.h" 
 #include "DocumentClassModel.h"
+#include "DocumentClassManager.h"
 
-class DocumentClassManager;
 class TreeView;
 
 //! list document classes
@@ -51,7 +51,7 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   public:
   
   //! constructor
-  DocumentClassManagerDialog( QWidget*, DocumentClassManager* );
+  DocumentClassManagerDialog( QWidget*, const DocumentClassManager& );
 
   signals:
   
@@ -70,13 +70,7 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   
   QAction& _saveAction( void ) const
   { return *save_action_; }
-  
-  QAction& _saveAsAction( void ) const
-  { return *save_as_action_; }
-  
-  QAction& _saveAllAction( void ) const
-  { return *save_all_action_; }
-  
+    
   QAction& _editAction( void ) const
   { return *edit_action_; }
   
@@ -105,14 +99,8 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   //! load classes from a file
   void _loadFile( void );
 
-  //! save selected classes to a file
-  void _save( void );
-  
-  //! save selected classes to a file
-  void _saveAs( void );
-
   //! save all classes to given path
-  void _saveAll( void );
+  void _save( void );
   
   //! reload document classes
   void _reload( void );
@@ -123,7 +111,20 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   void _installActions( void );
 
   //! display all classes to listview
-  void _loadClasses( void );
+  void _loadClasses( const DocumentClassManager& );
+  
+  //! modification state
+  bool _modified( void ) const
+  { return modified_; }
+  
+  //! check modification state
+  void _checkModified( void );
+  
+  //! set modification state
+  void _setModified( bool value );
+  
+  //! window title
+  void _updateWindowTitle( void );
   
   //! model
   const DocumentClassModel& _model( void ) const
@@ -137,8 +138,8 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   TreeView& _list( void ) const
   { return *list_; }
   
-  //! document class manager
-  DocumentClassManager* document_class_manager_;
+  //! document class manager backup
+  DocumentClassManager backup_;
   
   //! model
   DocumentClassModel model_;
@@ -146,6 +147,9 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   //! document classes list
   TreeView* list_;
  
+  //! check if modified
+  bool modified_;
+  
   //!@name actions
   //#{
   
@@ -154,10 +158,6 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   QAction *open_action_;
   
   QAction *save_action_;
-  
-  QAction *save_as_action_;
-  
-  QAction *save_all_action_;
   
   QAction *edit_action_;
   

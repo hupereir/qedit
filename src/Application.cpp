@@ -214,7 +214,7 @@ void Application::_updateDocumentClasses( void )
   if( !buffer.isEmpty() ) InformationDialog( 0, buffer ).exec();
   
   // load document classes icons into iconEngine cache, if any
-  const DocumentClassManager::List& classes( class_manager_->list() );
+  const DocumentClassManager::List& classes( class_manager_->classes() );
   for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
   { if( !iter->icon().isEmpty() ) { IconEngine::get( iter->icon() ); } }
   
@@ -239,7 +239,7 @@ void Application::_configuration( void )
 void Application::_documentClassConfiguration( void )
 {
   Debug::Throw( "Application::_documentClassConfiguration.\n" );
-  DocumentClassManagerDialog* dialog = new DocumentClassManagerDialog( qApp->activeWindow(), &classManager() );
+  DocumentClassManagerDialog* dialog = new DocumentClassManagerDialog( qApp->activeWindow(), classManager() );
   connect( dialog, SIGNAL( updateNeeded() ), SIGNAL( documentClassesChanged() ) );
   
   dialog->setWindowModality( Qt::ApplicationModal );

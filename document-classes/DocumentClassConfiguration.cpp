@@ -123,6 +123,7 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
     "When zero value is specified, the default qedit tab size is used." );
   label->setBuddy( tab_size_spinbox_ );
   layout->addWidget( tab_size_spinbox_ );
+  layout->addStretch(1);
   
 }
 

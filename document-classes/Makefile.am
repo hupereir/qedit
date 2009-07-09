@@ -131,6 +131,7 @@ nodist_libdocument_classes_a_SOURCES = \
   qrc_patterns.cpp \
   moc_BlockDelimiterDisplay.cpp \
   moc_BlockDelimiterList.cpp \
+  	moc_DocumentClassModel.cpp \
   moc_DocumentClassDialog.cpp \
   moc_DocumentClassManagerDialog.cpp \
   moc_HighlightStyleList.cpp \

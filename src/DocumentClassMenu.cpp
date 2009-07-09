@@ -66,7 +66,7 @@ void DocumentClassMenu::_update( void )
   const QString& class_name( window.activeDisplay().className() );
     
   // retrieve classes from DocumentClass manager
-  const DocumentClassManager::List& classes( Singleton::get().application<Application>()->classManager().list() );
+  const DocumentClassManager::List& classes( Singleton::get().application<Application>()->classManager().classes() );
   for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
   { 
     // insert actions
