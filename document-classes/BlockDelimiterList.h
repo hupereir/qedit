@@ -55,7 +55,7 @@ class BlockDelimiterList: public QGroupBox, public Counter
   void setDelimiters( const BlockDelimiter::List& );
   
   //! Delimiter
-  BlockDelimiter::List delimiter( void );
+  BlockDelimiter::List delimiters( void );
   
   //! true when Delimiter are modified
   bool modified( void ) const

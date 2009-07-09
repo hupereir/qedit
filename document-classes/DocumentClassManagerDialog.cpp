@@ -30,8 +30,8 @@
 
 #include <QLabel>
 #include <QLayout>
-#include <QPushButton>
 
+#include "CustomToolBar.h"
 #include "Debug.h"
 #include "DocumentClass.h"
 #include "DocumentClassIcons.h"
@@ -50,104 +50,77 @@ using namespace std;
 
 //______________________________________________________________
 DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, DocumentClassManager* manager ):
-  CustomDialog( parent ),
+  BaseMainWindow( parent ),
+  Counter( "DocumentClassManagerDialog" ),
   document_class_manager_( manager )
 {
   Debug::Throw( "DocumentClassManagerDialog::DocumentClassManagerDialog.\n" );
  
   setOptionName( "DOCUMENT_CLASS_MANAGER_DIALOG" );
   
-  QHBoxLayout* layout = new QHBoxLayout();
-  layout->setSpacing(20);
-  layout->setMargin(0);
-  mainLayout().addLayout( layout );
+  // actions
+  _installActions();
+  
+  // toolbar
+  QToolBar* toolbar = new QToolBar( this );
+  toolbar->addAction( &_newAction() );
+  toolbar->addAction( &_openAction() ); 
+  toolbar->addAction( &_saveAction() ); 
+  toolbar->addAction( &_saveAsAction() ); 
+  toolbar->addAction( &_saveAllAction() ); 
+  toolbar->addAction( &_editAction() ); 
+  toolbar->addAction( &_removeAction() ); 
+  toolbar->addAction( &_reloadAction() ); 
 
-  //! try load Question icon
-  QPixmap question_pixmap( PixmapEngine::get( ICONS::WARNING ) );
+  addToolBar( Qt::TopToolBarArea, toolbar );
   
-  // insert main vertical box
-  if( !question_pixmap.isNull() )
-  {
-    QLabel* label = new QLabel( this );
-    label->setPixmap( question_pixmap );
-    layout->addWidget( label );
-  }
-  
-  layout->addWidget( new QLabel( 
-    "This feature is work-in-progress. Right now this allows \n"
-    "to display and edit some of the document classes components, but \n"
-    "changes made to these are not stored.", this ), 1 );
-  
-  layout = new QHBoxLayout();
-  layout->setSpacing(5);
-  layout->setMargin(0);
-  mainLayout().addLayout( layout );
+  // main widget
+  QWidget* main = new QWidget( this );
+  main->setLayout( new QVBoxLayout() );
+  main->layout()->setMargin(2);
+  main->layout()->setSpacing(5);
+  setCentralWidget( main );
   
   // create list
-  layout->addWidget( list_ = new TreeView( this ) );
+  main->layout()->addWidget( list_ = new TreeView( main ) );
   list_->setModel( &model_ );
 
   // set connections
   connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _edit() ) );
-  connect( _list().selectionModel(), SIGNAL( selectionChanged( const QItemSelection& , const QItemSelection& ) ), SLOT( _updateButtons() ) );
+  connect( _list().selectionModel(), SIGNAL( selectionChanged( const QItemSelection& , const QItemSelection& ) ), SLOT( _updateActions() ) );
 
-  // add classes
   _loadClasses();
+  _updateActions();
   
-  // buttons
-  QVBoxLayout *v_layout( new QVBoxLayout() );
-  v_layout->setSpacing(5);
-  layout->setMargin(0);
-  layout->addLayout( v_layout );
-  
-  // load
-  QPushButton *button;
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Open", this ) ); 
-  connect( button, SIGNAL( clicked() ), this, SLOT( _loadFile() ) );  
-  button->setToolTip( "Load additional classes from file" );
-
-  // remove
-  v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
-  connect( remove_button_, SIGNAL( clicked() ), this, SLOT( _remove() ) ); 
-  remove_button_->setToolTip( "Remove selected document class from list" );
-  
-  // edit
-  v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
-  connect( edit_button_, SIGNAL( clicked() ), this, SLOT( _edit() ) ); 
-  edit_button_->setToolTip( "Edit file from which selected document class is read" );
-
-  // reload
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::RELOAD ), "Rel&oad", this ) ); 
-  connect( button, SIGNAL( clicked() ), this, SLOT( _reload() ) );
-  button->setToolTip( "Reload all classes" );
-
-  // save document class to file
-  v_layout->addWidget( save_button_ = new QPushButton( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this ) );
-  connect( save_button_, SIGNAL( clicked() ), this, SLOT( _save() ) );  
-  save_button_->setToolTip( "Save selected document classe to a file" );
-
-  // save all document class to directory
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE ), "Save &All", this ) );
-  connect( button, SIGNAL( clicked() ), this, SLOT( _saveAll() ) );  
-  button->setToolTip( "Save all document classes to directory" );
-
-  // update buttons
-  _updateButtons();
-  
-  v_layout->addStretch(1);
   adjustSize();
 
 }
 
 //___________________________________________________
-void DocumentClassManagerDialog::_updateButtons( void )
+void DocumentClassManagerDialog::_updateActions( void )
 {
-  Debug::Throw( "DocumentClassManagerDialog::_ubdateButtons.\n" );
+  
+  Debug::Throw( "DocumentClassManagerDialog::_updateActions.\n" );
   bool has_selection( !_list().selectionModel()->selectedRows().empty() );  
-  edit_button_->setEnabled( has_selection );
-  remove_button_->setEnabled( has_selection );
-  save_button_->setEnabled( has_selection );
+  _editAction().setEnabled( has_selection );
+  _removeAction().setEnabled( has_selection );
+  _saveAction().setEnabled( has_selection );
+  _saveAsAction().setEnabled( has_selection );
 
+}
+
+//___________________________________________________
+void DocumentClassManagerDialog::_add( void )
+{
+  
+  Debug::Throw( "DocumentClassManagerDialog::_add.\n" );
+
+  // create dialog
+  DocumentClassDialog dialog( this );
+  if( dialog.exec() == QDialog::Accepted ) 
+  { emit updateNeeded(); }
+  
+  return;
 }
 
 //___________________________________________________
@@ -168,7 +141,16 @@ void DocumentClassManagerDialog::_edit( void )
   DocumentClassDialog dialog( this );
   dialog.setDocumentClass( document_class );
   if( dialog.exec() == QDialog::Accepted ) 
-  { emit updateNeeded(); }
+  { 
+    DocumentClass new_document_class( dialog.documentClass() );
+    if( new_document_class.differs( document_class ) ) 
+    {
+      // replace class in model
+      model_.replace( current, new_document_class ); 
+      emit updateNeeded(); 
+    }
+    
+  }
   
   return;
 }
@@ -215,6 +197,42 @@ void DocumentClassManagerDialog::_loadFile( void )
 void DocumentClassManagerDialog::_save( void )
 {
   Debug::Throw( "DocumentClassManagerDialog::_save.\n" );
+
+  QModelIndex current( _list().selectionModel()->currentIndex() );
+  if( !current.isValid() ) 
+  {
+    InformationDialog( this, "No item selected. <Save> canceled." ).exec();
+    return;
+  }
+  
+  const DocumentClass& document_class( model_.get( current ) );
+
+  // check filename
+  File file( document_class.file() );
+  if( file.indexOf( ":" ) == 0 )
+  {
+    QString what;
+    QTextStream( &what ) << "Cannot write document class to file " << file;
+    InformationDialog( this, what ).centerOnParent().exec();
+    return;
+  }
+  
+  // write
+  if( !document_class_manager_->write( document_class.name(), file ) )
+  {
+    QString what;
+    QTextStream( &what ) << "Cannot write document class to file " << file;
+    InformationDialog( this, what ).centerOnParent().exec();
+  };
+  
+  return;
+
+}
+
+//___________________________________________________
+void DocumentClassManagerDialog::_saveAs( void )
+{
+  Debug::Throw( "DocumentClassManagerDialog::_saveAs.\n" );
   
   QModelIndex current( _list().selectionModel()->currentIndex() );
   if( !current.isValid() ) 
@@ -277,6 +295,56 @@ void DocumentClassManagerDialog::_reload( void )
 {
   Debug::Throw( "DocumentClassManagerDialog::_Reload.\n" );  
   _loadClasses();
+}
+
+//________________________________________________________
+void DocumentClassManagerDialog::_installActions( void )
+{
+  
+  addAction( new_action_ = new QAction( IconEngine::get( ICONS::NEW ), "&New", this  ) ); 
+  connect( new_action_, SIGNAL( triggered() ), SLOT( _add() ) );  
+  new_action_->setToolTip( "Create new document class" );
+  new_action_->setShortcut( Qt::CTRL + Qt::Key_N );
+
+  //! open
+  addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this  ) ); 
+  connect( open_action_, SIGNAL( triggered() ), SLOT( _loadFile() ) );  
+  open_action_->setToolTip( "Load additional classes from file" );
+  open_action_->setShortcut( Qt::CTRL + Qt::Key_O );
+
+  // save document class to file
+  addAction( save_action_ = new QAction( IconEngine::get( ICONS::SAVE ), "Save", this  ) );
+  connect( save_action_, SIGNAL( triggered() ), SLOT( _save() ) );  
+  save_action_->setToolTip( "Save selected document classe to file" );
+  save_action_->setShortcut( Qt::CTRL + Qt::Key_S );
+
+  // save document class to file
+  addAction( save_as_action_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this  ) );
+  connect( save_as_action_, SIGNAL( triggered() ), SLOT( _saveAs() ) );  
+  save_as_action_->setToolTip( "Save selected document classe to file" );
+  save_as_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_S );
+
+  // save document class to file
+  addAction( save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save &All", this  ) );
+  connect( save_all_action_, SIGNAL( triggered() ), SLOT( _saveAll() ) );  
+  save_all_action_->setToolTip( "Save all document classes" );
+
+  // edit
+  addAction( edit_action_ = new QAction( IconEngine::get( ICONS::EDIT ), "&Edit", this  ) );
+  connect( edit_action_, SIGNAL( triggered() ), SLOT( _edit() ) ); 
+  edit_action_->setToolTip( "Edit file from which selected document class is read" );
+
+  // remove
+  addAction( remove_action_ = new QAction( IconEngine::get( ICONS::REMOVE ), "&Remove", this  ) );
+  connect( remove_action_, SIGNAL( triggered() ), SLOT( _remove() ) ); 
+  remove_action_->setToolTip( "Remove selected document class from list" );
+  
+  // reload
+  addAction( reload_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Rel&oad", this  ) ); 
+  connect( reload_action_, SIGNAL( triggered() ), SLOT( _reload() ) );
+  reload_action_->setToolTip( "Reload all classes" );
+  reload_action_->setShortcut( Qt::Key_F5 );
+
 }
 
 //___________________________________________________ 

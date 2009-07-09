@@ -62,7 +62,9 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
   // file editor
   grid_layout->addWidget( new QLabel( "File: ", this ) );
   grid_layout->addWidget( file_editor_ = new BrowsedLineEditor( this ) );  
-
+  file_editor_->setAcceptMode( QFileDialog::AcceptSave );
+  file_editor_->setFileMode( QFileDialog::AnyFile );
+  
   // name editor
   grid_layout->addWidget( new QLabel( "Name: ", this ) );
   grid_layout->addWidget( name_editor_ = new AnimatedLineEditor( this ) );  
@@ -128,8 +130,6 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
 void DocumentClassConfiguration::setDocumentClass( const DocumentClass& document_class )
 {
   
-  document_class_ = document_class;
-  
   // name
   name_editor_->setText( document_class.name() );
 
@@ -159,15 +159,16 @@ void DocumentClassConfiguration::setDocumentClass( const DocumentClass& document
 //_________________________________________________________________________
 DocumentClass DocumentClassConfiguration::documentClass( void )
 {
-  document_class_.setName( name_editor_->text() );
-  document_class_.setIcon( icon_editor_->text() );
-  document_class_.setFile( file_editor_->editor().text() );
-  document_class_.setFileMatchingPattern( file_pattern_editor_->text() );
-  document_class_.setFirstLineMatchingPattern( first_line_pattern_editor_->text() );
-  document_class_.setBaseIndentation( base_indentation_spinbox_->value() );
-  document_class_.setWrap( wrap_checkbox_->isChecked() );
-  document_class_.setEmulateTabs( tab_emulation_checkbox_->isChecked() );
-  document_class_.setTabSize( tab_size_spinbox_->value() );
-  document_class_.setIsDefault( default_checkbox_->isChecked() );
-  return document_class_;
+  DocumentClass out;
+  out.setName( name_editor_->text() );
+  out.setIcon( icon_editor_->text() );
+  out.setFile( file_editor_->editor().text() );
+  out.setFileMatchingPattern( file_pattern_editor_->text() );
+  out.setFirstLineMatchingPattern( first_line_pattern_editor_->text() );
+  out.setBaseIndentation( base_indentation_spinbox_->value() );
+  out.setWrap( wrap_checkbox_->isChecked() );
+  out.setEmulateTabs( tab_emulation_checkbox_->isChecked() );
+  out.setTabSize( tab_size_spinbox_->value() );
+  out.setIsDefault( default_checkbox_->isChecked() );
+  return out;
 }

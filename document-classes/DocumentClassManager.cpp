@@ -156,7 +156,6 @@ bool DocumentClassManager::write( const File& path ) const
     return false;
   }
   
-  
   if( !path.isDirectory() )
   {
     Debug::Throw(0) << "DocumentClassManager::write - path " << path << " is not a directory" << endl;

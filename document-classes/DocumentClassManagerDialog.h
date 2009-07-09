@@ -32,16 +32,17 @@
 */
 
 #include <cassert>
+#include <QAction>
 #include <QPushButton>
 
-#include "CustomDialog.h" 
+#include "BaseMainWindow.h" 
 #include "DocumentClassModel.h"
 
 class DocumentClassManager;
 class TreeView;
 
 //! list document classes
-class DocumentClassManagerDialog: public CustomDialog
+class DocumentClassManagerDialog: public BaseMainWindow, public Counter
 {
 
   //! Qt meta object declaration
@@ -57,11 +58,44 @@ class DocumentClassManagerDialog: public CustomDialog
   //! emited when document class are modified
   void updateNeeded( void );
   
-  private slots:
+  protected:
   
-  //! update button enability
-  void _updateButtons( void );
+  //!@name actions
+  //@{
+  QAction& _newAction( void ) const
+  { return *new_action_; }
+  
+  QAction& _openAction( void ) const
+  { return *open_action_; }
+  
+  QAction& _saveAction( void ) const
+  { return *save_action_; }
+  
+  QAction& _saveAsAction( void ) const
+  { return *save_as_action_; }
+  
+  QAction& _saveAllAction( void ) const
+  { return *save_all_action_; }
+  
+  QAction& _editAction( void ) const
+  { return *edit_action_; }
+  
+  QAction& _reloadAction( void ) const
+  { return *reload_action_; }
+  
+  QAction& _removeAction( void ) const
+  { return *remove_action_; }
+
+  //@}
+  
+  private slots:
     
+  //! update button enability
+  void _updateActions( void );
+    
+  //! add new document class
+  void _add( void );
+  
   //! edit file associated to class
   void _edit( void );
   
@@ -74,6 +108,9 @@ class DocumentClassManagerDialog: public CustomDialog
   //! save selected classes to a file
   void _save( void );
   
+  //! save selected classes to a file
+  void _saveAs( void );
+
   //! save all classes to given path
   void _saveAll( void );
   
@@ -82,6 +119,9 @@ class DocumentClassManagerDialog: public CustomDialog
   
   private:
   
+  //! actions
+  void _installActions( void );
+
   //! display all classes to listview
   void _loadClasses( void );
   
@@ -97,15 +137,27 @@ class DocumentClassManagerDialog: public CustomDialog
   
   //! document classes list
   TreeView* list_;
+ 
+  //!@name actions
+  //#{
   
-  //! edit
-  QPushButton* edit_button_;
+  QAction *new_action_;
   
-  //! remove
-  QPushButton* remove_button_;
+  QAction *open_action_;
   
-  //! save
-  QPushButton* save_button_;
+  QAction *save_action_;
+  
+  QAction *save_as_action_;
+  
+  QAction *save_all_action_;
+  
+  QAction *edit_action_;
+  
+  QAction *reload_action_;
+  
+  QAction *remove_action_;
+  
+  //@}
   
 };
 

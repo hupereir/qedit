@@ -104,7 +104,7 @@ void BlockDelimiterList::setDelimiters( const BlockDelimiter::List& delimiter )
 }
 
 //____________________________________________________
-BlockDelimiter::List BlockDelimiterList::delimiter( void ) 
+BlockDelimiter::List BlockDelimiterList::delimiters( void ) 
 {
   
   Debug::Throw( "BlockDelimiterList::delimiter.\n" );

@@ -57,9 +57,12 @@ class DocumentClassDialog: public TabbedDialog
   //! style
   void setDocumentClass( const DocumentClass& );
   
+  //! return document class
+  DocumentClass documentClass( void );
+
   //! true if any document class attribute has been modified
   bool modified( void )
-  { return modified_; }
+  { return modified_; }  
   
   private slots:
   
@@ -90,7 +93,7 @@ class DocumentClassDialog: public TabbedDialog
   { return * block_delimiter_list_; }
 
   //! block delimiter list
-  IndentPatternList& _indentPattenrList( void ) const
+  IndentPatternList& _indentPatternList( void ) const
   { return * indent_pattern_list_; }
 
   //! block delimiter list

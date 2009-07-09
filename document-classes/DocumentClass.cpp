@@ -137,6 +137,24 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     
   }
 
+  // associate elements
+  QStringList warnings = associatePatterns();
+  for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); iter++ )
+  { Debug::Throw(0) << "DocumentClass::read - " << *iter << endl; }
+  
+}
+
+//______________________________________________________
+bool DocumentClass::differs( const DocumentClass& ) const
+{ return true; }
+
+//______________________________________________________
+QStringList DocumentClass::associatePatterns( void )
+{
+  
+  Debug::Throw( "DocumentClass::associatePatterns.\n" );
+  QStringList out;
+
   // assign pattern ids
   // warning: the passed Id is converted internaly into a single bit of a bitset
   // to facilitate patterns bitMask
@@ -153,7 +171,11 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     {
       iter->setParentId( (*parent_iter).id() );
       (*parent_iter).addChild( *iter );
-    } else Debug::Throw(0) << "DocumentClass::DocumentClass - unable to load parent named " << iter->parent() << endl;
+    } else {
+      QString what;
+      QTextStream( &what ) << "Unable to find highlight pattern named " << iter->parent();
+      out.push_back( what );
+    }
   }
 
   // assign styles to patterns
@@ -161,10 +183,18 @@ DocumentClass::DocumentClass( const QDomElement& element ):
   {
     set<HighlightStyle>::iterator style_iter ( highlight_styles_.find( iter->style() ) );
     if( style_iter != highlight_styles_.end() ) iter->setStyle( *style_iter );
-    else Debug::Throw(0) << "HighlightParser::Read - unrecognized style " << iter->style().name() << endl;
+    else {
+      QString what;
+      QTextStream( &what ) << "Unable to find highlight style named " << iter->style().name();
+      out.push_back( what );
+    }
+    
   }
+  
+  return out;
 
 }
+  
 
 //________________________________________________
 QDomElement DocumentClass::domElement( QDomDocument& parent ) const

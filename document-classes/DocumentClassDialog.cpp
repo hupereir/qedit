@@ -39,6 +39,7 @@
 #include "BaseIcons.h"
 #include "IconEngine.h"
 #include "IndentPatternList.h"
+#include "InformationDialog.h"
 #include "TextMacroList.h"
 #include "TextParenthesisList.h"
 #include "TreeView.h"
@@ -132,6 +133,38 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
 }
 
 //___________________________________________________________________________________
+DocumentClass DocumentClassDialog::documentClass( void )
+{
+  
+  Debug::Throw( "DocumentClassDialog::documentClass.\n" );
+  DocumentClass out( _documentClassConfiguration().documentClass() );
+  out.setHighlightStyles( _highlightStyleList().styles() );
+  out.setHighlightPatterns( _highlightPatternList().patterns() );
+  QStringList warnings = out.associatePatterns();
+  
+  out.setIndentPatterns( _indentPatternList().patterns() );
+  out.setParenthesis( _textParenthesisList().parenthesis() );
+  out.setBlockDelimiters( _blockDelimiterList().delimiters() );
+  out.setTextMacros( _textMacroList().macros() );
+  
+  if( !warnings.empty() )
+  {
+    QString message;
+    QTextStream what( &message );
+    what << "Document class named " << out.name() << " contains the following error";
+    if( warnings.size() > 1 ) what << "s";
+    what << ": " << endl;
+    
+    for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); iter++ )
+    { what << "  " << *iter << endl; }
+    
+    InformationDialog( this, message ).centerOnParent().exec();
+  }
+  
+  return out;
+}
+
+//___________________________________________________________________________________
 void DocumentClassDialog::_updateStyles( void )
 {
   
@@ -139,9 +172,6 @@ void DocumentClassDialog::_updateStyles( void )
   
   // update styles associated to patterns
   HighlightStyle::Set styles(  _highlightStyleList().styles() );
-  
   _highlightPatternList().setStyles( styles );
-  
-  // should also update document class
-  
+    
 }

@@ -85,6 +85,10 @@ class DocumentClass: public Counter
   bool operator == (const DocumentClass& document_class ) const
   { return name() == document_class.name(); }
   
+  //! true if any attributes is different from argument
+  /*! this is a stricter comparison than the != operator */
+  bool differs( const DocumentClass& ) const;
+  
   //! clear patterns and styles
   void clear( void );
   
@@ -163,18 +167,30 @@ class DocumentClass: public Counter
   void setTabSize( int value )
   { tab_size_ = value; }
   
-  //! list of hightlight styles
+  //! hightlight styles
   const HighlightStyle::Set& highlightStyles() const
   { return highlight_styles_; }
   
-  //! list of highligh patterns
+  //! highlight styles
+  void setHighlightStyles( const HighlightStyle::Set& styles )
+  { highlight_styles_ = styles; }
+  
+  //! highligh patterns
   const HighlightPattern::List& highlightPatterns() const
   { return highlight_patterns_; }
+ 
+  //! highlight styles
+  void setHighlightPatterns( const HighlightPattern::List& patterns )
+  { highlight_patterns_ = patterns; }
   
   //! list of indentation patterns
   const IndentPattern::List& indentPatterns() const
   { return indent_patterns_; }
 
+  //! indentation patterns
+  void setIndentPatterns( const IndentPattern::List& patterns )
+  { indent_patterns_ = patterns; }
+  
   //! base indentation
   /*! 
   it is used which classes for which
@@ -188,17 +204,33 @@ class DocumentClass: public Counter
   void setBaseIndentation( const int& value )
   { base_indentation_ = value; }
   
-  //! list of text parenthesis
+  //! text parenthesis
   const TextParenthesis::List& parenthesis() const
   { return text_parenthesis_; }
 
-  //! list of block delimiters
+  //! text parenthesis
+  void setParenthesis( const TextParenthesis::List& parenthesis )
+  { text_parenthesis_ = parenthesis; }
+  
+  //! block delimiters
   const BlockDelimiter::List& blockDelimiters() const
   { return block_delimiters_; }
 
-  //! list of text macros
+  //! block delimiters
+  void setBlockDelimiters( const BlockDelimiter::List& delimiters )
+  { block_delimiters_ = delimiters; }
+  
+  //! text macros
   const TextMacro::List& textMacros() const
   { return text_macros_; }
+  
+  //! text macros
+  void setTextMacros( const TextMacro::List& macros )
+  { text_macros_ = macros; }
+  
+  //! perform associations between highlight patterns and highlight styles
+  /*! returns list of warnings if any */
+  QStringList associatePatterns( void );
   
   //! used to match pointers to DocumentClass with same name
   class SameNameFTor

@@ -39,8 +39,10 @@
 namespace ICONS
 {
   
+  static const QString NEW = "filenew.png"; 
   static const QString SAVE = "filesave.png";
   static const QString SAVE_AS = "filesaveas.png"; 
+  static const QString SAVE_ALL = "save_all.png"; 
 
   static const QString UP = "up.png";
   static const QString DOWN = "down.png";

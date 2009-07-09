@@ -82,7 +82,7 @@ class IndentPattern: public Counter
   
   //! true if any attributes is different from argument
   /*! this is a stricter comparison than the != operator */
-  bool differs( const IndentPattern& pattern ) const;
+  bool differs( const IndentPattern& ) const;
 
   //! name
   const QString& name() const
@@ -118,7 +118,7 @@ class IndentPattern: public Counter
   { return typeName( type() ); }
   
   //! type
-  static QString typeName( const Type& type );
+  static QString typeName( const Type& );
   
   //! pattern scale
   const unsigned int& scale( void ) const

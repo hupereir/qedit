@@ -59,15 +59,11 @@ HEADERS = \
   AskForSaveDialog.h \
   AutoSave.h \
   AutoSaveThread.h \
-  BlockDelimiterSegment.h \
-  BlockDelimiterDisplay.h \
-  BlockMarker.h \
-  CollapsedBlockData.h \
   ConfigurationDialog.h \
   Diff.h \
+  DefaultOptions.h \
   DocumentClassMenu.h \
   DocumentClassToolBar.h \
-  DefaultOptions.h \
   CloseFilesDialog.h \
   FileCheck.h \
   FileCheckDialog.h \
@@ -75,8 +71,6 @@ HEADERS = \
   FileRemovedDialog.h \
   FileSelectionDialog.h \
   HelpText.h \
-  HighlightBlockData.h \
-  HighlightBlockFlags.h \
   Icons.h \
   MainWindow.h \
   Menu.h \
@@ -93,8 +87,6 @@ HEADERS = \
   SessionFilesFrame.h \
   SessionFilesModel.h \
   TextDisplay.h \
-  TextHighlight.h \
-  TextIndent.h \
   TextView.h \
   WindowServer.h \
   WindowTitle.h
@@ -104,8 +96,6 @@ SOURCES = \
   AskForSaveDialog.cpp \
   AutoSave.cpp \
   AutoSaveThread.cpp \
-  BlockDelimiterDisplay.cpp \
-  CollapsedBlockData.cpp \
   ConfigurationDialog.cpp \
   Diff.cpp \
   DocumentClassMenu.cpp \
@@ -116,8 +106,6 @@ SOURCES = \
   FileModifiedDialog.cpp \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \
-  HighlightBlockData.cpp \
-  HighlightBlockFlags.cpp \
   MainWindow.cpp \
   Menu.cpp \
   NavigationFrame.cpp \
@@ -126,14 +114,12 @@ SOURCES = \
   NewFileDialog.cpp \
   ParenthesisHighlight.cpp \
   PrintDialog.cpp \
-  RecentFilesFrame.cpp \
   ReplaceDialog.cpp \
+  RecentFilesFrame.cpp \
   SaveAllDialog.cpp \
   SessionFilesFrame.cpp \
   SessionFilesModel.cpp \
   TextDisplay.cpp \
-  TextHighlight.cpp \
-  TextIndent.cpp \
   TextView.cpp \
   WindowServer.cpp \
   qedit.cpp

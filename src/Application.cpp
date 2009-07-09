@@ -30,6 +30,7 @@
 */
 
 #include <QMessageBox>
+#include <QEventLoop>
 
 #include "Application.h"
 #include "AutoSave.h"
@@ -238,9 +239,18 @@ void Application::_configuration( void )
 void Application::_documentClassConfiguration( void )
 {
   Debug::Throw( "Application::_documentClassConfiguration.\n" );
-  DocumentClassManagerDialog dialog( qApp->activeWindow(), &classManager() );
-  connect( &dialog, SIGNAL( updateNeeded() ), SIGNAL( documentClassesChanged() ) );
-  dialog.exec();
+  DocumentClassManagerDialog* dialog = new DocumentClassManagerDialog( qApp->activeWindow(), &classManager() );
+  connect( dialog, SIGNAL( updateNeeded() ), SIGNAL( documentClassesChanged() ) );
+  
+  dialog->setWindowModality( Qt::ApplicationModal );
+  dialog->setAttribute( Qt::WA_DeleteOnClose );
+  dialog->show();
+  
+  // this allows to have the dialog effictively modal.
+  QEventLoop loop;
+  connect( dialog, SIGNAL( destroyed() ), &loop, SLOT( quit() ) );
+  loop.exec();
+  
 }
 
 //_______________________________________________

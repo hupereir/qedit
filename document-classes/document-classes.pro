@@ -2,14 +2,18 @@ TEMPLATE = lib
 CONFIG = staticlib qt
 QT += xml
 
-INCLUDEPATH += ../base ../base-qt
-DEPENDPATH += . ../base ../base-qt
+INCLUDEPATH += ../base ../base-qt ../extra-includes
+DEPENDPATH += . ../base ../base-qt ../extra-includes
 
 HEADERS = \
   BlockDelimiter.h \
   BlockDelimiterDialog.h \
+  BlockDelimiterDisplay.h \
   BlockDelimiterList.h \
   BlockDelimiterModel.h \
+  BlockDelimiterSegment.h \
+  BlockMarker.h \
+  CollapsedBlockData.h \
   DocumentClass.h \
   DocumentClassConfiguration.h \
   DocumentClassDialog.h \
@@ -17,6 +21,8 @@ HEADERS = \
   DocumentClassManager.h \
   DocumentClassManagerDialog.h \
   DocumentClassModel.h \
+  HighlightBlockData.h \
+  HighlightBlockFlags.h \
   HighlightPattern.h \
   HighlightPatternDialog.h \
   HighlightPatternList.h \
@@ -36,6 +42,8 @@ HEADERS = \
   IndentPatternRuleModel.h \
   IndentPatternType.h \
   PatternLocation.h \
+  TextHighlight.h \
+  TextIndent.h \
   TextMacro.h \
   TextMacroDialog.h \
   TextMacroList.h \
@@ -52,14 +60,18 @@ HEADERS = \
 SOURCES = \
   BlockDelimiter.cpp \
   BlockDelimiterDialog.cpp \
+  BlockDelimiterDisplay.cpp \
   BlockDelimiterList.cpp \
   BlockDelimiterModel.cpp \
+  CollapsedBlockData.cpp \
   DocumentClass.cpp \
   DocumentClassConfiguration.cpp \
   DocumentClassDialog.cpp \
   DocumentClassManager.cpp \
   DocumentClassManagerDialog.cpp \
   DocumentClassModel.cpp \
+  HighlightBlockData.cpp \
+  HighlightBlockFlags.cpp \
   HighlightPattern.cpp \
   HighlightPatternDialog.cpp \
   HighlightPatternList.cpp \
@@ -78,6 +90,8 @@ SOURCES = \
   IndentPatternRuleList.cpp \
   IndentPatternRuleModel.cpp \
   IndentPatternType.cpp \
+  TextHighlight.cpp \
+  TextIndent.cpp \
   TextMacro.cpp \
   TextMacroList.cpp \
   TextMacroModel.cpp \

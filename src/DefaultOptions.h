@@ -104,6 +104,9 @@ void installDefaultOptions( void )
   XmlOptions::get().set( "SPLIT_TOOLBAR", Option( "1" , "toolbar visibility" ) );
   XmlOptions::get().set( "NAVIGATION_TOOLBAR", Option( "1" , "toolbar visibility" ) );
 
+  XmlOptions::get().set( "DOCUMENTCLASSDIALOG_TOOLBAR", Option( "1" , "toolbar visibility" ) );
+  XmlOptions::get().set( "DOCUMENTCLASSDIALOG_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
+
   XmlOptions::get().set( "FILE_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
   XmlOptions::get().set( "EDITION_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
   XmlOptions::get().set( "EXTRA_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
