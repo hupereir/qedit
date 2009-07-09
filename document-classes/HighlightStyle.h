@@ -49,8 +49,32 @@ class HighlightStyle: public Counter
   
   public: 
   
-  //! style set
-  typedef std::set<HighlightStyle> Set;
+  //! typedef for list of patterns
+  class Set: public std::set< HighlightStyle >
+  {
+    public:
+ 
+    //! constructor
+    Set( void )
+    {}
+    
+    //! constructor
+    Set( const std::set<HighlightStyle>& other ):
+      std::set<HighlightStyle>(other)
+      {}
+   
+    bool differs( const std::set< HighlightStyle >& other ) const
+    {
+      if( other.size() != size() ) return true;
+      std::set< HighlightStyle >::const_iterator first( begin() );
+      std::set< HighlightStyle >::const_iterator second( other.begin() );
+      for(; first != end(); first++, second++ )
+      { if( first->differs( *second ) ) return false; }
+      
+      return true;
+    }
+    
+  };
             
   //! constructor
   HighlightStyle( 

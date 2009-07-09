@@ -105,7 +105,7 @@ HighlightStyle::Set HighlightStyleList::styles( void )
 {
   
   Debug::Throw( "HighlightStyleList::styles.\n" );
-  return HighlightStyle::Set( model_.get().begin(), model_.get().end() );
+  return HighlightStyle::Set( std::set<HighlightStyle>( model_.get().begin(), model_.get().end() ) );
   
 }
 

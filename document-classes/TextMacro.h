@@ -52,8 +52,31 @@ class TextMacro: public Counter
 
   public:
  
-  //! style list
-  typedef std::vector<TextMacro> List;
+  //! list
+  class List: public std::vector< TextMacro >
+  {
+    public:
+    
+    //! constructor
+    List( void )
+    {}
+    
+    //! constructor
+    List( const std::vector<TextMacro>& other ):
+      std::vector<TextMacro>(other)
+      {}
+
+    bool differs( const std::vector< TextMacro >& other ) const
+    {
+      
+      if( other.size() != size() ) return true;
+      for( unsigned int i=0; i<size(); i++ )
+      { if( (*this)[i].differs( other[i] ) ) return true; }
+    
+      return false;
+    }
+    
+  };
 
   //! constructor
   TextMacro( void ):
@@ -84,6 +107,17 @@ class TextMacro: public Counter
   bool operator < ( const TextMacro& macro ) const
   { return id() < macro.id(); }
 
+  //! strong difference operator
+  bool differs( const TextMacro& other ) const
+  {
+    if( name() != other.name() ) return true;
+    if( accelerator() != other.accelerator() ) return true;
+    if( isSeparator() != other.isSeparator() ) return true;
+    if( rules() != other.rules() ) return true;
+    return false;
+    
+  }
+  
   //! reset counter
   static void resetCounter( void )
   { id_counter_ = 0; }

@@ -125,6 +125,14 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   //! display all classes to listview
   void _loadClasses( void );
   
+  //! model
+  const DocumentClassModel& _model( void ) const
+  { return model_; }
+  
+  //! model
+  DocumentClassModel& _model( void )
+  { return model_; }
+
   //! list
   TreeView& _list( void ) const
   { return *list_; }

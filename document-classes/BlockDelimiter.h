@@ -48,9 +48,33 @@ class BlockDelimiter: public Counter
 
   public:
 
-  //! list of block delimiters
-  typedef std::vector<BlockDelimiter> List;
-  
+  //! typedef for list of patterns
+  class List: public std::vector< BlockDelimiter >
+  {
+    public:
+    
+    //! constructor
+    List( void )
+    {}
+    
+    //! constructor
+    List( const std::vector<BlockDelimiter>& other ):
+      std::vector<BlockDelimiter>(other)
+      {}
+    
+    //! strong difference operator
+    bool differs( const std::vector< BlockDelimiter >& other ) const
+    {
+      
+      if( other.size() != size() ) return true;
+      for( unsigned int i=0; i<size(); i++ )
+      { if( !( (*this)[i] == other[i] ) ) return true; }
+    
+      return false;
+    }
+    
+  };
+
   //! constructor from DomElement
   BlockDelimiter( const QDomElement& element = QDomElement(), const unsigned int& id = 0 );
 

@@ -92,6 +92,14 @@ class DocumentClass: public Counter
   //! clear patterns and styles
   void clear( void );
   
+  //! true when document class needs saving
+  bool modified( void ) const
+  { return modified_; }
+  
+  //! true when document class needs saving
+  void setModified( bool value )
+  { modified_ = value; }
+  
   //! name
   const QString& name( void ) const
   { return name_; }
@@ -341,6 +349,9 @@ class DocumentClass: public Counter
     this is the number of space characters to add prior to any text indentation
   */
   int base_indentation_;
+  
+  //! true when document class needs to be saved
+  bool modified_;
   
 };
 

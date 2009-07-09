@@ -48,16 +48,33 @@ class IndentPattern: public Counter
   public: 
 
   //! typedef for list of patterns
-  typedef std::vector< IndentPattern > List;
-        
-  //! constructor from DomElement
-  IndentPattern( void ):
-    Counter( "IndentPattern" ),
-    id_( 0 ),
-    type_( NOTHING ),
-    scale_( 0 )
-  {}
+  class List: public std::vector< IndentPattern >
+  {
+    public:
     
+    //! constructor
+    List( void )
+    {}
+    
+    //! constructor
+    List( const std::vector<IndentPattern>& other ):
+      std::vector<IndentPattern>(other)
+      {}
+
+    bool differs( const std::vector< IndentPattern >& other ) const
+    {
+      if( other.size() != size() ) return true;
+      for( unsigned int i=0; i<size(); i++ )
+      { if( (*this)[i].differs( other[i] ) ) return true; }
+    
+      return false;
+    }
+    
+  };
+    
+  //! constructor
+  IndentPattern( void );
+  
   //! constructor from DomElement
   IndentPattern( const QDomElement& element );
 

@@ -48,8 +48,29 @@ class TextParenthesis: public Counter
 
   public:
 
-  //! list of parenthesis
-  typedef std::vector<TextParenthesis> List;
+  //! typedef for list of patterns
+  class List: public std::vector< TextParenthesis >
+  {
+    public:
+    //! constructor
+    List( void )
+    {}
+    
+    //! constructor
+    List( const std::vector<TextParenthesis>& other ):
+      std::vector<TextParenthesis>(other)
+      {}
+    
+    bool differs( const std::vector< TextParenthesis >& other ) const
+    {
+      if( other.size() != size() ) return true;
+      for( unsigned int i=0; i<size(); i++ )
+      { if( !( (*this)[i] == other[i] ) ) return true; }
+    
+      return false;
+    }
+    
+  };
   
   //! constructor from DomElement
   TextParenthesis( const QDomElement& element = QDomElement() );

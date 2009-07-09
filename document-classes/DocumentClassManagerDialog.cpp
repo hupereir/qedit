@@ -40,10 +40,11 @@
 #include "DocumentClassDialog.h"
 #include "FileDialog.h"
 #include "IconEngine.h"
+#include "InformationDialog.h"
 #include "Options.h" 
 #include "PixmapEngine.h"
 #include "QuestionDialog.h"
-#include "InformationDialog.h"
+#include "StatusBar.h"
 #include "TreeView.h"
 
 using namespace std;
@@ -62,7 +63,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   _installActions();
   
   // toolbar
-  QToolBar* toolbar = new QToolBar( this );
+  CustomToolBar* toolbar = new CustomToolBar( "main", this, "DOCUMENT_CLASS_MANAGER_TOOLBAR" );
   toolbar->addAction( &_newAction() );
   toolbar->addAction( &_openAction() ); 
   toolbar->addAction( &_saveAction() ); 
@@ -72,7 +73,10 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, Documen
   toolbar->addAction( &_removeAction() ); 
   toolbar->addAction( &_reloadAction() ); 
 
-  addToolBar( Qt::TopToolBarArea, toolbar );
+  StatusBar *statusbar = new StatusBar( this );
+  setStatusBar( statusbar );
+  statusbar->addLabel(1);
+  statusbar->addClock();
   
   // main widget
   QWidget* main = new QWidget( this );
@@ -135,7 +139,7 @@ void DocumentClassManagerDialog::_edit( void )
   }
 
   // retrieve DocumentClass matching name
-  const DocumentClass& document_class( model_.get( current ) );
+  const DocumentClass& document_class( _model().get( current ) );
   
   // create dialog
   DocumentClassDialog dialog( this );
@@ -146,7 +150,8 @@ void DocumentClassManagerDialog::_edit( void )
     if( new_document_class.differs( document_class ) ) 
     {
       // replace class in model
-      model_.replace( current, new_document_class ); 
+      new_document_class.setModified( true );
+      _model().replace( current, new_document_class ); 
       emit updateNeeded(); 
     }
     
@@ -166,7 +171,7 @@ void DocumentClassManagerDialog::_remove( void )
     return;
   }
   
-  if( document_class_manager_->remove( model_.get( current ).name() ) )
+  if( document_class_manager_->remove( _model().get( current ).name() ) )
   { 
     _loadClasses(); 
     emit updateNeeded();
@@ -205,7 +210,7 @@ void DocumentClassManagerDialog::_save( void )
     return;
   }
   
-  const DocumentClass& document_class( model_.get( current ) );
+  DocumentClass document_class( _model().get( current ) );
 
   // check filename
   File file( document_class.file() );
@@ -224,6 +229,9 @@ void DocumentClassManagerDialog::_save( void )
     QTextStream( &what ) << "Cannot write document class to file " << file;
     InformationDialog( this, what ).centerOnParent().exec();
   };
+  
+  document_class.setModified( false );
+  _model().replace( current, document_class );
   
   return;
 
@@ -270,7 +278,11 @@ void DocumentClassManagerDialog::_saveAs( void )
     return;
   }
   
-  document_class_manager_->write( model_.get( current ).name(), file );
+  DocumentClass document_class( _model().get( current ) );
+  document_class.setFile( file );
+  document_class.setModified( true );
+  _model().replace( current, document_class );
+  _save();
   return;
 }
 
@@ -357,6 +369,6 @@ void DocumentClassManagerDialog::_loadClasses()
   const DocumentClassManager::List& classes( document_class_manager_->list() );
   
   // add to list
-  model_.update( DocumentClassModel::List( classes.begin(), classes.end() ) );
+  _model().update( DocumentClassModel::List( classes.begin(), classes.end() ) );
 
 }

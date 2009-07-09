@@ -48,7 +48,8 @@ DocumentClass::DocumentClass( void ):
   wrap_( false ),
   emulate_tabs_( false ),
   tab_size_( 0 ),
-  base_indentation_( 0 )
+  base_indentation_( 0 ),
+  modified_( false )
 { Debug::Throw( "DocumentClass::DocumentClass.\n" ); }
 
 //________________________________________________________
@@ -57,7 +58,8 @@ DocumentClass::DocumentClass( const QDomElement& element ):
   default_( false ),
   wrap_( false ),
   emulate_tabs_( false ),
-  base_indentation_( 0 )
+  base_indentation_( 0 ),
+  modified_( false )
 {
   Debug::Throw( "DocumentClass::DocumentClass.\n" );
 
@@ -145,8 +147,20 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 }
 
 //______________________________________________________
-bool DocumentClass::differs( const DocumentClass& ) const
-{ return true; }
+bool DocumentClass::differs( const DocumentClass& other ) const
+{ 
+  
+  // 
+  
+  if( highlightStyles().differs( other.highlightStyles() ) ) return true;
+  if( highlightPatterns().differs( other.highlightPatterns() ) ) return true;
+  if( indentPatterns().differs( other.indentPatterns() ) ) return true;
+  if( parenthesis().differs( other.parenthesis() ) ) return true;
+  if( blockDelimiters().differs( other.blockDelimiters() ) ) return true;
+  if( textMacros().differs( other.textMacros() ) ) return true;
+  
+  return false; 
+}
 
 //______________________________________________________
 QStringList DocumentClass::associatePatterns( void )

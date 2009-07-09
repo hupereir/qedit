@@ -72,7 +72,29 @@ class HighlightPattern: public Counter
   };
   
   //! typedef for list of patterns
-  typedef std::vector< HighlightPattern > List;
+  class List: public std::vector< HighlightPattern >
+  {
+    public:
+
+    //! constructor
+    List( void )
+    {}
+    
+    //! constructor
+    List( const std::vector<HighlightPattern>& other ):
+      std::vector<HighlightPattern>(other)
+      {}
+    
+    bool differs( const std::vector< HighlightPattern >& other ) const
+    {
+      if( other.size() != size() ) return true;
+      for( unsigned int i=0; i<size(); i++ )
+      { if( (*this)[i].differs( other[i] ) ) return true; }
+    
+      return false;
+    }
+    
+  };
 
   //! no parent pattern
   static QString no_parent_pattern_;  

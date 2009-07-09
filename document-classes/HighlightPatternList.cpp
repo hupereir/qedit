@@ -340,7 +340,7 @@ void HighlightPatternList::_down( void )
     } else new_attributes.push_back( *iter );
   }
     
-  model_.set( HighlightPattern::List( new_attributes.rbegin(), new_attributes.rend() ) );
+  model_.set( HighlightPatternModel::List( new_attributes.rbegin(), new_attributes.rend() ) );
   
   // restore selection
   list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );

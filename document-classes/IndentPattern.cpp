@@ -46,14 +46,22 @@ unsigned int& IndentPattern::_counter( void )
 }
 
 //_____________________________________________________
+IndentPattern::IndentPattern( void ):
+  Counter( "IndentPattern" ),
+  id_(0),
+  name_( "" ),
+  type_( NOTHING ),
+  scale_( 1 )
+{ assert( false ); }
+
+//_____________________________________________________
 IndentPattern::IndentPattern( const QDomElement& element ):
   Counter( "IndentPattern" ),
   id_( _counter()++ ),
   name_( "" ),
   type_( NOTHING ),
   scale_( 1 )
-{
-  
+{  
   Debug::Throw( "IndentPattern::IndentPattern.\n" );
   
   // parse attributes
