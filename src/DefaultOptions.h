@@ -98,19 +98,19 @@ void installDefaultOptions( void )
   XmlOptions::get().set<unsigned int>( "RECENT_FILES_MASK", (1<<FileRecordModel::ICON)|(1<<FileRecordModel::FILE) );
   
   // toolbars
-  XmlOptions::get().set( "FILE_TOOLBAR", Option( "1" , "toolbar visibility" ) );
+  XmlOptions::get().set( "DOCUMENT_CLASS_MANAGER_TOOLBAR", Option( "1" , "toolbar visibility" ) );
   XmlOptions::get().set( "EDITION_TOOLBAR", Option( "1" , "toolbar visibility" ) );
   XmlOptions::get().set( "EXTRA_TOOLBAR", Option( "1" , "toolbar visibility" ) );
-  XmlOptions::get().set( "SPLIT_TOOLBAR", Option( "1" , "toolbar visibility" ) );
+  XmlOptions::get().set( "FILE_TOOLBAR", Option( "1" , "toolbar visibility" ) );
   XmlOptions::get().set( "NAVIGATION_TOOLBAR", Option( "1" , "toolbar visibility" ) );
+  XmlOptions::get().set( "SPLIT_TOOLBAR", Option( "1" , "toolbar visibility" ) );
 
-  XmlOptions::get().set( "DOCUMENTCLASSDIALOG_TOOLBAR", Option( "1" , "toolbar visibility" ) );
-  XmlOptions::get().set( "DOCUMENTCLASSDIALOG_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
-
-  XmlOptions::get().set( "FILE_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
+  XmlOptions::get().set( "DOCUMENT_CLASS_MANAGER_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
   XmlOptions::get().set( "EDITION_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
   XmlOptions::get().set( "EXTRA_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
+  XmlOptions::get().set( "FILE_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
   XmlOptions::get().set( "SPLIT_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
+
   XmlOptions::get().set( "AUTOSAVE", "1" );
   XmlOptions::get().set( "AUTOSAVE_INTERVAL", Option( "20", "time interval between two automatic save of the file" ) );
 

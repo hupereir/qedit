@@ -425,7 +425,7 @@ void MainWindow::_revertToSave( void )
   // check filename
   if( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() )
   {
-    InformationDialog( this, "No filename given. <Reload> canceled." ).exec();
+    InformationDialog( this, "No filename given. <Reload> canceled." ).setWindowTitle( "Reload document - qedit" ).exec();
     return;
   }
 
@@ -434,7 +434,7 @@ void MainWindow::_revertToSave( void )
   QTextStream what( &buffer );
   if( activeDisplay().document()->isModified() ) what << "Discard changes to " << activeDisplay().file().localName() << "?";
   else what << "Reload file " << activeDisplay().file().localName() << "?";
-  if( !QuestionDialog( this, buffer ).exec() ) return;
+  if( !QuestionDialog( this, buffer ).setWindowTitle( "Reload document - qedit" ).exec() ) return;
 
   activeDisplay().revertToSave();
   
@@ -498,7 +498,7 @@ void MainWindow::_print( void )
   {
     QString buffer;
     QTextStream( &buffer ) << "file \"" << fullname << "\" is a directory. <Print> canceled.";
-    InformationDialog( this, buffer ).centerOnParent().exec();
+    InformationDialog( this, buffer ).setWindowTitle( "Print document - qedit" ).centerOnParent().exec();
     return;
   }
 
@@ -510,9 +510,9 @@ void MainWindow::_print( void )
     {
       QString buffer;
       QTextStream( &buffer ) << "file \"" << fullname << "\" is read-only. <Print> canceled.";
-      InformationDialog( this, buffer ).centerOnParent().exec();
+      InformationDialog( this, buffer ).setWindowTitle( "Print document - qedit" ).centerOnParent().exec();
       return;
-    } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).centerOnParent().exec() )
+    } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).setWindowTitle( "Print document - qedit" ).centerOnParent().exec() )
     return;
   }
   
@@ -528,7 +528,7 @@ void MainWindow::_print( void )
     {
       QString buffer;
       QTextStream( &buffer ) << "cannot write to file \"" << fullname << "\" <Print> canceled.";
-      InformationDialog( this, buffer ).exec();
+      InformationDialog( this, buffer ).setWindowTitle( "Print document - qedit" ).exec();
       return;
     }
     
@@ -583,7 +583,6 @@ bool MainWindow::event( QEvent* event )
 void MainWindow::closeEvent( QCloseEvent* event )
 {
   Debug::Throw( "MainWindow::closeEvent.\n" );
-  //Debug::Throw(0) << "MainWindow::closeEvent - windowState: " << QString( saveState() ) << endl;
 
   // accept event
   event->accept();

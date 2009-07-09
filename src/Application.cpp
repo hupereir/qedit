@@ -244,6 +244,7 @@ void Application::_documentClassConfiguration( void )
   
   dialog->setWindowModality( Qt::ApplicationModal );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
+  dialog->setWindowTitle( "Document classes - qedit" );
   dialog->show();
   
   // this allows to have the dialog effictively modal.
