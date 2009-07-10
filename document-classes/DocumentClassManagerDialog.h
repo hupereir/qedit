@@ -52,13 +52,11 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   
   //! constructor
   DocumentClassManagerDialog( QWidget*, const DocumentClassManager& );
-
-  signals:
-  
-  //! emited when document class are modified
-  void updateNeeded( void );
   
   protected:
+  
+  //! close event
+  virtual void closeEvent( QCloseEvent* );
   
   //!@name actions
   //@{
@@ -125,6 +123,9 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   
   //! window title
   void _updateWindowTitle( void );
+  
+  //! save document classes, return possible warnings
+  QStringList _saveDocumentClasses( void );
   
   //! model
   const DocumentClassModel& _model( void ) const

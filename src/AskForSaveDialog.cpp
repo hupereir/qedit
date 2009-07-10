@@ -99,6 +99,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   {
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK ), "&Yes", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _yes() ) );
+    button->setToolTip( "Save modified file to disk" );
   }
 
   // yes to all button
@@ -106,6 +107,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   {
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK_APPLY ), "Yes to &All", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _yesToAll() ) );
+    button->setToolTip( "Save all modified files to disk" );
   }
 
   // no button
@@ -113,6 +115,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   {
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&No", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _no() ) );
+    button->setToolTip( "Ignore file modifications" );
   }  
   
   // no button
@@ -120,6 +123,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   {
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "No to A&ll", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _noToAll() ) );
+    button->setToolTip( "Ignore all files modifications" );
   }  
 
   // cancel button
@@ -127,6 +131,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const uns
   {
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
+    button->setToolTip( "Cancel current action" );
   }  
   
   adjustSize();

@@ -63,7 +63,7 @@ class DocumentClassDialog: public TabbedDialog
   //! true if any document class attribute has been modified
   bool modified( void )
   { return modified_; }  
-  
+   
   private slots:
   
   //! update styles

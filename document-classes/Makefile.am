@@ -42,6 +42,7 @@ noinst_HEADERS = \
   DocumentClassManager.h \
   DocumentClassManagerDialog.h \
   DocumentClassModel.h \
+  DocumentClassModifiedDialog.h \
   HighlightBlockData.h \
   HighlightBlockFlags.h \
   HighlightPattern.h \
@@ -93,6 +94,7 @@ libdocument_classes_a_SOURCES = \
   DocumentClassManager.cpp \
   DocumentClassManagerDialog.cpp \
   DocumentClassModel.cpp \
+  DocumentClassModifiedDialog.cpp \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HighlightPattern.cpp \
@@ -134,6 +136,7 @@ nodist_libdocument_classes_a_SOURCES = \
   	moc_DocumentClassModel.cpp \
   moc_DocumentClassDialog.cpp \
   moc_DocumentClassManagerDialog.cpp \
+  moc_DocumentClassModifiedDialog.cpp \
   moc_HighlightStyleList.cpp \
   moc_HighlightPatternDialog.cpp \
   moc_HighlightPatternList.cpp \

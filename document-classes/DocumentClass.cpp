@@ -241,7 +241,7 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   out.appendChild( XmlOption( XML::BASE_INDENTATION, Option().set<int>( baseIndentation() ) ).domElement( parent ) );  
   
   if( tabSize() > 0 ) 
-  { out.appendChild( XmlOption( XML::BASE_INDENTATION, Option().set<int>( tabSize() ) ).domElement( parent ) ); }
+  { out.appendChild( XmlOption( XML::TAB_SIZE, Option().set<int>( tabSize() ) ).domElement( parent ) ); }
   
   // dump highlight styles
   out.appendChild( parent.createTextNode( "\n\n" ) );

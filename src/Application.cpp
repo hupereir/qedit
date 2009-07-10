@@ -65,10 +65,10 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
   Debug::Throw( "Application::commandLineParser.\n" );
   CommandLineParser out( SERVER::ApplicationManager::commandLineParser() );
 
-  out.registerFlag( "--tabbed", "opens files in same window");
-  out.registerFlag( "--same-window", "open files in same window");
-  out.registerFlag( "--new-window", "open files in a new window");
-  out.registerFlag( "--diff", "opens files in same window and perform diff");
+	out.registerFlag( "--tabbed", "opens files in same window");
+	out.registerFlag( "--same-window", "open files in same window");
+	out.registerFlag( "--new-window", "open files in a new window");
+	out.registerFlag( "--diff", "opens files in same window and perform diff");
   out.registerFlag( "--autospell", "switch autospell on for all files");
   out.registerFlag( "--close", "close displays matching file names and exit");
   out.registerOption( "--filter", "string", "select filter for autospell");
@@ -179,11 +179,10 @@ bool Application::realizeWidget( void )
   // create first window and show
   windowServer().newMainWindow().centerOnDesktop();
 
-  connect( this, SIGNAL( configurationChanged() ), SLOT( _updateDocumentClasses() ) );
-
   // update configuration
   emit configurationChanged();
-  
+  _updateDocumentClasses();
+
   // run startup timer to open files after the call to exec() is 
   // performed in the main routine
   startup_timer_.start(0);
@@ -239,18 +238,19 @@ void Application::_configuration( void )
 void Application::_documentClassConfiguration( void )
 {
   Debug::Throw( "Application::_documentClassConfiguration.\n" );
-  DocumentClassManagerDialog* dialog = new DocumentClassManagerDialog( qApp->activeWindow(), classManager() );
-  connect( dialog, SIGNAL( updateNeeded() ), SIGNAL( documentClassesChanged() ) );
-  
+  DocumentClassManagerDialog* dialog = new DocumentClassManagerDialog( qApp->activeWindow(), classManager() );  
   dialog->setWindowModality( Qt::ApplicationModal );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
   dialog->setWindowTitle( "Document Classes - qedit" );
   dialog->show();
-  
+    
   // this allows to have the dialog effictively modal.
   QEventLoop loop;
   connect( dialog, SIGNAL( destroyed() ), &loop, SLOT( quit() ) );
   loop.exec();
+    
+  // update document classes
+  _updateDocumentClasses();
   
 }
 

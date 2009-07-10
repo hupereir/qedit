@@ -2279,7 +2279,7 @@ void TextDisplay::_fileProperties( void )
   layout->setMargin(5);
   layout->setSpacing( 5 );
   box->setLayout( layout );
-  Debug::Throw( "FileInformationDialog::FileInformationDialog - Miscellaneous tab booked.\n" );
+  Debug::Throw( "TextDisplay::_fileProperties - Miscellaneous tab booked.\n" );
   
   GridLayout* grid_layout = new GridLayout();
   grid_layout->setMargin(0);
@@ -2344,10 +2344,31 @@ void TextDisplay::_fileProperties( void )
     grid_layout->addWidget( checkbox );
   }
 
-  grid_layout->addWidget( new QLabel( "Auto-save file name: ", box ) );
-  grid_layout->setColumnStretch( 1, 1 );
+  {
+  	grid_layout->addWidget( new QLabel( "Document class file name: ", box ) );
+  	grid_layout->setColumnStretch( 1, 1 );
+
+  	// document class file
+    AnimatedLineEditor* editor = new AnimatedLineEditor( box );
+    editor->setReadOnly( true );
+    editor->setHasClearButton( false );
+    editor->setFrame( false );
+    
+    // modify color
+    QPalette palette( editor->palette() );
+    palette.setColor( QPalette::Base, Qt::transparent );
+    editor->setPalette( palette );
+    
+    // set text and add to layout
+    editor->setText( Singleton::get().application<Application>()->classManager().get( className() ).file() );
+    grid_layout->addWidget( editor );
+  }
 
   {
+  
+  	grid_layout->addWidget( new QLabel( "Auto-save file name: ", box ) );
+  	grid_layout->setColumnStretch( 1, 1 );
+
     // auto save
     AnimatedLineEditor* editor = new AnimatedLineEditor( box );
     editor->setReadOnly( true );

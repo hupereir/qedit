@@ -22,11 +22,11 @@
 *******************************************************************************/
 
 /*!
-  \file ConfigurationDialog.cpp
-  \brief xMaze configuration dialog
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file ConfigurationDialog.cpp
+\brief xMaze configuration dialog
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QLabel>
@@ -75,21 +75,9 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   
   // document classes 
   QWidget* page = &addPage( "Document classes", "Document classes definitions and flags" );
-  
-  page->layout()->addWidget( box = new QGroupBox( "Document classes", page ) );  
-  box->setLayout( new QVBoxLayout() );
-  box->layout()->setMargin(5);
-  box->layout()->setSpacing(5);
-  
-  box->layout()->addWidget( new QLabel( "Configuration files", box ) );
-  OptionListBox* listbox = new OptionListBox( box, "PATTERN_FILENAME" );
-  listbox->setBrowsable( true );
-  box->layout()->addWidget( listbox );
-  addOptionWidget( listbox );
-  listbox->setToolTip( "Input files from which the document classes are read" );
-  
+   
   // edition flags
-  page->layout()->addWidget( box = new QGroupBox( "Flags", page ) );  
+  page->layout()->addWidget( box = new QGroupBox( "Options", page ) );  
   box->setLayout( new QVBoxLayout() );
   box->layout()->setMargin(5);
   box->layout()->setSpacing(5);
@@ -360,7 +348,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
   box->layout()->setMargin(5);
   box->layout()->setSpacing(5);
 
-  listbox = new OptionListBox( box, "PRINT_COMMAND" );
+  OptionListBox* listbox = new OptionListBox( box, "PRINT_COMMAND" );
   listbox->setBrowsable( true );
   addOptionWidget( listbox );
   listbox->setToolTip( "Available command for printing/editing converted files" );

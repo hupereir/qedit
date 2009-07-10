@@ -152,7 +152,7 @@ void DocumentClassConfiguration::setDocumentClass( const DocumentClass& document
   // flags
   default_checkbox_->setChecked( document_class.isDefault() );
   wrap_checkbox_->setChecked( document_class.wrap() );
-  tab_emulation_checkbox_->setChecked( document_class.wrap() );
+  tab_emulation_checkbox_->setChecked( document_class.emulateTabs() );
   tab_size_spinbox_->setValue( document_class.tabSize() );
 
 }

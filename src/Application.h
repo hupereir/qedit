@@ -74,12 +74,12 @@ class Application: public BaseApplication, public Counter
 
   //! create all widgets
   bool realizeWidget( void );
-  
+    
   //! file list
   FileList& recentFiles( void ) const
   { 
-    assert( recent_files_ );
-    return *recent_files_;
+  	assert( recent_files_ );
+  	return *recent_files_;
   }
   
   //! Window server

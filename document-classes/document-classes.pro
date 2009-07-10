@@ -21,6 +21,7 @@ HEADERS = \
   DocumentClassManager.h \
   DocumentClassManagerDialog.h \
   DocumentClassModel.h \
+  DocumentClassModifiedDialog.h \
   HighlightBlockData.h \
   HighlightBlockFlags.h \
   HighlightPattern.h \
@@ -70,6 +71,7 @@ SOURCES = \
   DocumentClassManager.cpp \
   DocumentClassManagerDialog.cpp \
   DocumentClassModel.cpp \
+  DocumentClassModifiedDialog.cpp \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HighlightPattern.cpp \
