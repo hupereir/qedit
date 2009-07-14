@@ -48,6 +48,8 @@ IndentPatternRuleDialog::IndentPatternRuleDialog( QWidget* parent ):
   
   Debug::Throw( "IndentPatternRuleDialog::IndentPatternRuleDialog.\n" );
   
+  setWindowTitle( "Indentation Pattern settings - qedit" );
+  
   mainLayout().setSpacing(5);
   
   GridLayout* grid_layout( new GridLayout() );

@@ -34,6 +34,8 @@
 #include "BlockDelimiterList.h"
 #include "DocumentClassConfiguration.h"
 #include "DocumentClassDialog.h"
+#include "DocumentClassPreview.h"
+#include "DocumentClassTextEditor.h"
 #include "HighlightStyleList.h"
 #include "HighlightPatternList.h"
 #include "BaseIcons.h"
@@ -78,7 +80,12 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
   // macro
   page = &addPage( "Macros", "Text processing macros", true );
   page->layout()->addWidget( text_macro_list_ = new TextMacroList() );
-
+  
+  // preview
+  page = &addPage( "Preview", "Document class preview and testing", true );
+  page->layout()->addWidget( preview_ = new DocumentClassPreview() );
+  connect( &_preview().reloadButton(), SIGNAL( clicked( void ) ), SLOT( _updatePreview( void ) ) ); 
+  
   // buttons
   _buttonLayout().addStretch( 1 );
   
@@ -104,7 +111,7 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
   
   // set window title
   QString buffer;
-  QTextStream( &buffer ) << "Document class: " << document_class.name();
+  QTextStream( &buffer ) << "Document class: " << document_class.name() << " - qedit";
   setWindowTitle( buffer );
   
   // configuration
@@ -129,6 +136,8 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
   // text macros
   text_macro_list_->setMacros( document_class.textMacros() );
   
+  // update preview
+  _updatePreview();
   
 }
 
@@ -174,4 +183,14 @@ void DocumentClassDialog::_updateStyles( void )
   HighlightStyle::Set styles(  _highlightStyleList().styles() );
   _highlightPatternList().setStyles( styles );
     
+}
+
+//___________________________________________________________________________________
+void DocumentClassDialog::_updatePreview( void )
+{
+  Debug::Throw( "DocumentClassDialog::_updatePreview.\n" );
+  
+  // get document class
+  _preview().editor().setDocumentClass( documentClass() );
+  _preview().editor().rehighlight();
 }

@@ -29,6 +29,7 @@
 */
 
 #include <QApplication>
+#include <QPixmap>
 
 #include <unistd.h>
 #include <signal.h>
@@ -91,6 +92,7 @@ int main (int argc, char *argv[])
   font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ) );
   application.setFont( font, "QLineEdit" );
   application.setFont( font, "QTextEdit" );
+  application.setWindowIcon( QPixmap( XmlOptions::get().raw( "ICON_PIXMAP" ) ) );
 
   // dummy singleton object
   Singleton::get().setApplication( new QObject() );
@@ -99,10 +101,7 @@ int main (int argc, char *argv[])
   DocumentClassManager manager;
   Options::List files( XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) );
   for( Options::List::const_iterator iter = files.begin(); iter != files.end(); iter++ )
-  { 
-    Debug::Throw(0) << "editDocumentClasses - reading " << iter->raw() << endl;
-    manager.read( iter->raw() ); 
-  }
+  { manager.read( iter->raw() ); }
   
   // prepare dialog
   DocumentClassManagerDialog dialog(0, manager);

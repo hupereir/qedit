@@ -22,6 +22,8 @@ HEADERS = \
   DocumentClassManagerDialog.h \
   DocumentClassModel.h \
   DocumentClassModifiedDialog.h \
+  DocumentClassPreview.h \
+  DocumentClassTextEditor.h \
   HighlightBlockData.h \
   HighlightBlockFlags.h \
   HighlightPattern.h \
@@ -42,6 +44,7 @@ HEADERS = \
   IndentPatternRuleList.h \
   IndentPatternRuleModel.h \
   IndentPatternType.h \
+  ParenthesisHighlight.h \
   PatternLocation.h \
   TextHighlight.h \
   TextIndent.h \
@@ -72,6 +75,8 @@ SOURCES = \
   DocumentClassManagerDialog.cpp \
   DocumentClassModel.cpp \
   DocumentClassModifiedDialog.cpp \
+  DocumentClassPreview.cpp \
+  DocumentClassTextEditor.cpp \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HighlightPattern.cpp \
@@ -92,6 +97,7 @@ SOURCES = \
   IndentPatternRuleList.cpp \
   IndentPatternRuleModel.cpp \
   IndentPatternType.cpp \
+  ParenthesisHighlight.cpp \
   TextHighlight.cpp \
   TextIndent.cpp \
   TextMacro.cpp \

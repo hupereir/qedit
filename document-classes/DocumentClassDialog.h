@@ -36,6 +36,7 @@
 #include "DocumentClass.h"
 
 class DocumentClassConfiguration;
+class DocumentClassPreview;
 class HighlightStyleList; 
 class HighlightPatternList;
 class TextParenthesisList;
@@ -69,6 +70,9 @@ class DocumentClassDialog: public TabbedDialog
   //! update styles
   void _updateStyles( void );
   
+  //! update preview
+  void _updatePreview( void );
+  
   private:
 
   //!@name ref accessors
@@ -82,23 +86,27 @@ class DocumentClassDialog: public TabbedDialog
 
   //! highlight pattern list
   HighlightPatternList& _highlightPatternList( void ) const
-  { return * highlight_pattern_list_; }
+  { return *highlight_pattern_list_; }
   
   //! text parenthesis list
   TextParenthesisList& _textParenthesisList( void ) const
-  { return * text_parenthesis_list_; }
+  { return *text_parenthesis_list_; }
 
   //! block delimiter list
   BlockDelimiterList& _blockDelimiterList( void ) const
-  { return * block_delimiter_list_; }
+  { return *block_delimiter_list_; }
 
   //! block delimiter list
   IndentPatternList& _indentPatternList( void ) const
-  { return * indent_pattern_list_; }
+  { return *indent_pattern_list_; }
 
   //! block delimiter list
   TextMacroList& _textMacroList( void ) const
-  { return * text_macro_list_; }
+  { return *text_macro_list_; }
+  
+  //! document class preview
+  DocumentClassPreview& _preview( void ) const
+  { return *preview_; }
   
   //@}
 
@@ -122,6 +130,9 @@ class DocumentClassDialog: public TabbedDialog
 
   //! block delimiter list
   TextMacroList* text_macro_list_;
+  
+  //! preview
+  DocumentClassPreview* preview_;
   
   //! modified
   bool modified_;

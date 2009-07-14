@@ -38,7 +38,8 @@ const QString IndentPatternModel::column_titles_[IndentPatternModel::n_columns] 
   "Id",
   "Name",
   "Type",
-  "Scale"
+  "Scale",
+  "Comments"
 };
 
 //__________________________________________________________________
@@ -59,6 +60,7 @@ QVariant IndentPatternModel::data( const QModelIndex& index, int role ) const
     if( index.column() == NAME ) return pattern.name();
     if( index.column() == TYPE ) return pattern.typeName();
     if( index.column() == SCALE ) return pattern.scale();
+    if( index.column() == COMMENTS ) return pattern.comments();
   }
   
   return QVariant();

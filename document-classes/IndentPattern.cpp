@@ -52,7 +52,8 @@ IndentPattern::IndentPattern( void ):
   name_( "" ),
   type_( NOTHING ),
   scale_( 1 )
-{ assert( false ); }
+{}
+//{ assert( false ); }
 
 //_____________________________________________________
 IndentPattern::IndentPattern( const QDomElement& element ):
@@ -87,8 +88,11 @@ IndentPattern::IndentPattern( const QDomElement& element ):
     {
       Rule rule( child_element );
       if( rule.isValid() ) addRule( rule );
-    }
-    else Debug::Throw(0) << "IndentPattern::IndentPattern - unrecognized child: " << child_element.tagName() << endl;
+    } else if( child_element.tagName() == XML::COMMENTS ) {
+      
+      setComments( XmlString( child_element.text() ).toText() );
+      
+    } else Debug::Throw(0) << "IndentPattern::IndentPattern - unrecognized child: " << child_element.tagName() << endl;
   }
   
   assert( !rules().empty() );
@@ -103,8 +107,17 @@ QDomElement IndentPattern::domElement( QDomDocument& parent ) const
   out.setAttribute( XML::TYPE, Str().assign<unsigned int>( type() ) );
   if( !name().isEmpty() ) out.setAttribute( XML::NAME, name() );
   if( scale() > 1 ) out.setAttribute( XML::SCALE, Str().assign<unsigned int>( scale() ) );
+  
   for( Rule::List::const_iterator iter = rules().begin(); iter != rules().end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
+  
+  if( !comments().isEmpty() )
+  { 
+    out.
+      appendChild( parent.createElement( XML::COMMENTS ) ).
+      appendChild( parent.createTextNode( XmlString( comments() ).toXml() ) );
+  }
+  
   return out;
 }
 
@@ -115,7 +128,8 @@ bool IndentPattern::operator == ( const IndentPattern& other ) const
     name() == other.name() &&
     type() == other.type() &&
     scale() == other.scale() &&
-    rules() == other.rules();
+    rules() == other.rules() &&
+    comments() == other.comments();
 }
 
 //____________________________________________________________

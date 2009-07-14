@@ -35,6 +35,7 @@
 
 #include "GridLayout.h"
 #include "AnimatedLineEditor.h"
+#include "AnimatedTextEditor.h"
 #include "IndentPatternDialog.h"
 #include "IndentPatternRuleList.h"
 #include "IndentPatternType.h"
@@ -49,6 +50,8 @@ IndentPatternDialog::IndentPatternDialog( QWidget* parent ):
   
   Debug::Throw( "IndentPatternDialog::IndentPatternDialog.\n" );
   
+  setWindowTitle( "Indentation Pattern settings - qedit" );
+
   mainLayout().setSpacing(5);
   
   // name 
@@ -74,6 +77,10 @@ IndentPatternDialog::IndentPatternDialog( QWidget* parent ):
   scale_spinbox_->setValue(0);
   
   // comments
+  mainLayout().addWidget( new QLabel( "Comments: ", this ) );
+  mainLayout().addWidget( comments_ = new AnimatedTextEditor( this ) );
+  
+  // rules
   mainLayout().addWidget( list_ = new IndentPatternRuleList( this ) );
     
 }
@@ -88,6 +95,7 @@ void IndentPatternDialog::setPattern( const IndentPattern& pattern )
   name_editor_->setText( pattern_.name() );
   pattern_type_->setType( pattern_.type() );
   scale_spinbox_->setValue( pattern_.scale() );
+  comments_->setText( pattern_.comments() );
   list_->setRules( pattern_.rules() );  
   return;
 }
@@ -100,6 +108,7 @@ IndentPattern IndentPatternDialog::pattern( void )
   pattern_.setName( name_editor_->text() );
   pattern_.setScale( scale_spinbox_->value() );
   pattern_.setType( pattern_type_->type() );
+  pattern_.setComments( comments_->toPlainText() );
   pattern_.setRules( list_->rules() );
   
   return pattern_;

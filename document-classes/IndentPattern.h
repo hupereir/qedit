@@ -134,6 +134,14 @@ class IndentPattern: public Counter
   void setScale( const unsigned int& scale )
   { scale_ = scale; }
   
+  //! comments
+  const QString& comments( void ) const
+  { return comments_; }
+  
+  //! comments
+  void setComments( const QString& value )
+  { comments_ = value; }
+  
   //! indentation rule
   /*! used to check a regExp against a given paragraph */
   class Rule: public Counter
@@ -276,7 +284,7 @@ class IndentPattern: public Counter
 
   //! pattern name
   QString name_;
-  
+
   //! type
   Type type_;
           
@@ -287,6 +295,9 @@ class IndentPattern: public Counter
   */
   
   unsigned int scale_;
+
+  //! comments
+  QString comments_;
   
   //! list of rules to match
   Rule::List rules_;

@@ -52,12 +52,16 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
   layout()->setSpacing(5);
   layout()->setMargin(5);
   
+  // flags
+  QGroupBox* box;
+  layout()->addWidget( box = new QGroupBox( "Class definition", this ) );
+  
   GridLayout* grid_layout = new GridLayout();
   grid_layout->setSpacing(5);
-  grid_layout->setMargin(0);
+  grid_layout->setMargin(5);
   grid_layout->setMaxCount(2);
   grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-  layout()->addItem( grid_layout );
+  box->setLayout( grid_layout );
   
   // file editor
   grid_layout->addWidget( new QLabel( "File: ", this ) );
@@ -73,6 +77,16 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
   grid_layout->addWidget( new QLabel( "Icon: ", this ) );
   grid_layout->addWidget( icon_editor_ = new AnimatedLineEditor( this ) );  
   
+  // patterns
+  layout()->addWidget( box = new QGroupBox( "Matching patterns", this ) );
+  
+  grid_layout = new GridLayout();
+  grid_layout->setSpacing(5);
+  grid_layout->setMargin(5);
+  grid_layout->setMaxCount(2);
+  grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+  box->setLayout( grid_layout );  
+  
   grid_layout->addWidget( new QLabel( "File name pattern: ", this ) );
   grid_layout->addWidget( file_pattern_editor_ = new AnimatedLineEditor( this ) );
   file_pattern_editor_->setToolTip( "Regular expression used to determine document class from file name." );
@@ -81,14 +95,7 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
   grid_layout->addWidget( first_line_pattern_editor_ = new AnimatedLineEditor( this ) );
   first_line_pattern_editor_->setToolTip( "Regular expression used to determine document class from the first line of the file." );
   
-  // base indentation
-  grid_layout->addWidget( new QLabel( "Base indentation: ", this ) );
-  grid_layout->addWidget( base_indentation_spinbox_ = new QSpinBox( this ) );
-  base_indentation_spinbox_->setMinimum(0);
-  base_indentation_spinbox_->setValue(0);
-  
-  // flags
-  QGroupBox* box;
+  // options
   layout()->addWidget( box = new QGroupBox( "Options", this ) );
   
   box->setLayout( new QVBoxLayout() );
@@ -112,8 +119,17 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
   layout->setMargin(0);
   layout->setSpacing(5);
   box->layout()->addItem( layout );
+  
+  grid_layout = new GridLayout();
+  grid_layout->setSpacing(5);
+  grid_layout->setMargin(0);
+  grid_layout->setMaxCount(2);
+  grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+  layout->addLayout( grid_layout );
+  layout->addStretch(1);
+  
   QLabel* label = new QLabel( "Tab size: ", box );
-  layout->addWidget( label, 0, Qt::AlignVCenter|Qt::AlignRight );
+  grid_layout->addWidget( label );
 
   tab_size_spinbox_ = new QSpinBox( box );
   tab_size_spinbox_->setMinimum( 0 );
@@ -122,8 +138,13 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
     "Tab size (in unit of space characters).\n "
     "When zero value is specified, the default qedit tab size is used." );
   label->setBuddy( tab_size_spinbox_ );
-  layout->addWidget( tab_size_spinbox_ );
-  layout->addStretch(1);
+  grid_layout->addWidget( tab_size_spinbox_ );
+    
+  // base indentation
+  grid_layout->addWidget( new QLabel( "Base indentation: ", box ) );
+  grid_layout->addWidget( base_indentation_spinbox_ = new QSpinBox( box ) );
+  base_indentation_spinbox_->setMinimum(0);
+  base_indentation_spinbox_->setValue(0);
   
 }
 

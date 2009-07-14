@@ -40,6 +40,7 @@
 class AnimatedLineEditor;
 class IndentPatternType;
 class IndentPatternRuleList;
+class TextEditor;
 
 //! Syntax highlighting pattern editing dialog
 class IndentPatternDialog: public CustomDialog
@@ -69,6 +70,9 @@ class IndentPatternDialog: public CustomDialog
  
   //! scale
   QSpinBox* scale_spinbox_;
+  
+  //! comments
+  TextEditor* comments_;
   
   //! rules
   IndentPatternRuleList* list_;

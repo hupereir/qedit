@@ -30,6 +30,8 @@
 
 #include <QLabel>
 #include <QLayout>
+#include <QMenuBar>
+#include <QMenu>
 
 #include "CustomToolBar.h"
 #include "Debug.h"
@@ -64,14 +66,11 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, const D
   _installActions();
   
   // toolbar
-  CustomToolBar* toolbar = new CustomToolBar( "main", this, "DOCUMENT_CLASS_MANAGER_TOOLBAR" );
-  toolbar->addAction( &_newAction() );
-  toolbar->addAction( &_openAction() ); 
-  toolbar->addAction( &_saveAction() ); 
-  toolbar->addAction( &_editAction() ); 
-  toolbar->addAction( &_removeAction() ); 
-  toolbar->addAction( &_reloadAction() ); 
-
+  _installToolBars();
+  
+  // menu
+  _installMenuBar();
+  
   StatusBar *statusbar = new StatusBar( this );
   setStatusBar( statusbar );
   statusbar->addLabel(1);
@@ -299,12 +298,20 @@ void DocumentClassManagerDialog::_installActions( void )
 {
   
   Debug::Throw( "DocumentClassManagerDialog::_installActions" );
+  
+  // clos action
+  addAction( close_action_ = new QAction( IconEngine::get( ICONS::EXIT ), "&Exit", this  ) ); 
+  connect( close_action_, SIGNAL( triggered() ), SLOT( close() ) );  
+  close_action_->setToolTip( "Exit document class edition" );
+  close_action_->setShortcut( Qt::CTRL + Qt::Key_Q );
+
+  // new document class
   addAction( new_action_ = new QAction( IconEngine::get( ICONS::NEW ), "&New", this  ) ); 
   connect( new_action_, SIGNAL( triggered() ), SLOT( _add() ) );  
   new_action_->setToolTip( "Create new document class" );
   new_action_->setShortcut( Qt::CTRL + Qt::Key_N );
 
-  //! open
+  // open
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this  ) ); 
   connect( open_action_, SIGNAL( triggered() ), SLOT( _loadFile() ) );  
   open_action_->setToolTip( "Load additional classes from file" );
@@ -335,6 +342,35 @@ void DocumentClassManagerDialog::_installActions( void )
   reload_action_->setEnabled( false );
   
 
+}
+
+//___________________________________________________ 
+void DocumentClassManagerDialog::_installMenuBar( void )
+{
+  
+  Debug::Throw( "DocumentClassManagerDialog::_installMenuBar.\n" );  
+  QMenuBar* menubar = new QMenuBar( this );
+
+  QMenu* menu = menubar->addMenu( "&File" );
+  menu->addAction( &_closeAction() );
+  
+  setMenuBar( menubar );
+
+}
+
+//___________________________________________________ 
+void DocumentClassManagerDialog::_installToolBars( void )
+{
+
+  Debug::Throw( "DocumentClassManagerDialog::_installToolBars.\n" );  
+  CustomToolBar* toolbar = new CustomToolBar( "main", this, "DOCUMENT_CLASS_MANAGER_TOOLBAR" );
+  toolbar->addAction( &_newAction() );
+  toolbar->addAction( &_openAction() ); 
+  toolbar->addAction( &_saveAction() ); 
+  toolbar->addAction( &_editAction() ); 
+  toolbar->addAction( &_removeAction() ); 
+  toolbar->addAction( &_reloadAction() ); 
+  
 }
 
 //___________________________________________________ 

@@ -44,7 +44,7 @@ using namespace std;
 
 //____________________________________________________
 IndentPatternList::IndentPatternList( QWidget* parent ):
-  QGroupBox( "Indent patterns", parent ),
+  QGroupBox( "Indentation patterns", parent ),
   Counter( "IndentPatternList" ),
   modified_( false )
 {

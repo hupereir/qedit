@@ -48,6 +48,8 @@ HighlightStyleDialog::HighlightStyleDialog( QWidget* parent ):
   
   Debug::Throw( "HighlightStyleDialog::HighlightStyleDialog.\n" );
   
+  setWindowTitle( "Highlight Style settings - qedit" );
+
   GridLayout* grid_layout( new GridLayout() );
   grid_layout->setSpacing( 5 );
   grid_layout->setMargin( 0 );

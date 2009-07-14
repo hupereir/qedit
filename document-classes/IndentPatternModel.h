@@ -53,14 +53,15 @@ class IndentPatternModel : public ListModel<IndentPattern, IndentPattern::WeakEq
   {}
   
   //! number of columns
-  enum { n_columns = 4 };
+  enum { n_columns = 5 };
 
  //! column type enumeration
   enum ColumnType { 
     ID,
     NAME,
     TYPE,
-    SCALE
+    SCALE,
+    COMMENTS
   };
 
   //!@name methods reimplemented from base class

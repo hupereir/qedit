@@ -60,6 +60,10 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   
   //!@name actions
   //@{
+
+  QAction& _closeAction( void ) const
+  { return *close_action_; }
+  
   QAction& _newAction( void ) const
   { return *new_action_; }
   
@@ -80,8 +84,8 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
 
   //@}
   
-  private slots:
-    
+  private slots:    
+  
   //! update button enability
   void _updateActions( void );
     
@@ -107,7 +111,13 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   
   //! actions
   void _installActions( void );
+  
+  //! toolbars
+  void _installToolBars( void );
 
+  //! menus
+  void _installMenuBar( void );
+  
   //! display all classes to listview
   void _loadClasses( const DocumentClassManager& );
   
@@ -153,6 +163,8 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
   
   //!@name actions
   //#{
+  
+  QAction *close_action_;
   
   QAction *new_action_;
   

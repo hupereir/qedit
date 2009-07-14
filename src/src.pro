@@ -78,7 +78,6 @@ HEADERS = \
   NavigationToolBar.h \
   NewDocumentNameServer.h \
   NewFileDialog.h \
-  ParenthesisHighlight.h \
   PrintDialog.h \
   ProgressDialog.h \
   RecentFilesFrame.h \
@@ -112,7 +111,6 @@ SOURCES = \
   NavigationToolBar.cpp \
   NewDocumentNameServer.cpp \
   NewFileDialog.cpp \
-  ParenthesisHighlight.cpp \
   PrintDialog.cpp \
   ReplaceDialog.cpp \
   RecentFilesFrame.cpp \

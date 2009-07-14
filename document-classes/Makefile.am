@@ -43,6 +43,8 @@ noinst_HEADERS = \
   DocumentClassManagerDialog.h \
   DocumentClassModel.h \
   DocumentClassModifiedDialog.h \
+  DocumentClassPreview.h \
+  DocumentClassTextEditor.h \
   HighlightBlockData.h \
   HighlightBlockFlags.h \
   HighlightPattern.h \
@@ -63,6 +65,7 @@ noinst_HEADERS = \
   IndentPatternRuleList.h \
   IndentPatternRuleModel.h \
   IndentPatternType.h \
+  ParenthesisHighlight.h \
   PatternLocation.h \
   TextHighlight.h \
   TextIndent.h \
@@ -95,6 +98,8 @@ libdocument_classes_a_SOURCES = \
   DocumentClassManagerDialog.cpp \
   DocumentClassModel.cpp \
   DocumentClassModifiedDialog.cpp \
+  DocumentClassPreview.cpp \
+  DocumentClassTextEditor.cpp \
   HighlightBlockData.cpp \
   HighlightBlockFlags.cpp \
   HighlightPattern.cpp \
@@ -115,6 +120,7 @@ libdocument_classes_a_SOURCES = \
   IndentPatternRuleList.cpp \
   IndentPatternRuleModel.cpp \
   IndentPatternType.cpp \
+  ParenthesisHighlight.cpp \
   TextHighlight.cpp \
   TextIndent.cpp \
   TextMacro.cpp \
@@ -137,6 +143,7 @@ nodist_libdocument_classes_a_SOURCES = \
   moc_DocumentClassDialog.cpp \
   moc_DocumentClassManagerDialog.cpp \
   moc_DocumentClassModifiedDialog.cpp \
+  moc_DocumentClassTextEditor.cpp \
   moc_HighlightStyleList.cpp \
   moc_HighlightPatternDialog.cpp \
   moc_HighlightPatternList.cpp \
@@ -144,6 +151,7 @@ nodist_libdocument_classes_a_SOURCES = \
   moc_IndentPatternList.cpp \
   moc_IndentPatternRuleList.cpp \
   moc_IndentPatternType.cpp \
+  moc_ParenthesisHighlight.cpp \
   moc_TextHighlight.cpp \
   moc_TextIndent.cpp \
   moc_TextMacroList.cpp \
