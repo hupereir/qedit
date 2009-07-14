@@ -42,7 +42,7 @@
 
 class QMenu;
 class RecentFilesMenu;
-class TextMacro;
+class TextMacroMenu;
 
 //! menu
 class Menu:public QMenuBar, public Counter 
@@ -74,7 +74,7 @@ class Menu:public QMenuBar, public Counter
   }
   
   //! macro menu
-  QMenu& macroMenu( void ) const
+  TextMacroMenu& macroMenu( void ) const
   { 
     assert( macro_menu_ );
     return *macro_menu_;
@@ -105,7 +105,7 @@ class Menu:public QMenuBar, public Counter
   void _updateWindowsMenu( void );
   
   //! select macro from menu
-  void _selectMacro( QAction* );
+  void _selectMacro( QString );
   
   //! select file from windows menu
   void _selectFile( QAction* );
@@ -149,7 +149,7 @@ class Menu:public QMenuBar, public Counter
   QMenu* tools_menu_;
   
   //! macro menu
-  QMenu* macro_menu_;
+  TextMacroMenu* macro_menu_;
     
   //! windows menu
   QMenu* windows_menu_;
@@ -167,9 +167,6 @@ class Menu:public QMenuBar, public Counter
   //!@name actions
   //@{
   
-  //! map actions to macro names
-  std::map< QAction*, QString > macro_actions_;
-
   //! map windows menu ID to file name
   std::map< QAction*, File > file_actions_;
   

@@ -45,7 +45,7 @@
 #include "InformationDialog.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
-#include "TextMacro.h"
+#include "TextMacroMenu.h"
 #include "Util.h"
 #include "WindowServer.h"
 #include "XmlOptions.h"
@@ -113,9 +113,10 @@ Menu::Menu( QWidget* parent ):
   connect( tools_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateToolsMenu() ) );
   
   // macros
-  macro_menu_ = addMenu( "&Macro" );
+  addMenu( macro_menu_ = new TextMacroMenu( this ) );
+  macro_menu_->setTitle( "&Macro" );
   connect( macro_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateMacroMenu() ) );
-  connect( macro_menu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectMacro( QAction* ) ) );
+  connect( macro_menu_, SIGNAL( textMacroSelected( QString ) ), SLOT( _selectMacro( QString ) ) );
 
   // Settings
   preference_menu_ = addMenu( "&Settings" );
@@ -337,34 +338,9 @@ void Menu::_updateMacroMenu( void )
 
   // retrieve current display
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
-  
-  // clear menu
-  macro_menu_->clear();
-  macro_actions_.clear();
-
-  // retrieve flags needed to set button state
   bool has_selection( display.textCursor().hasSelection() );
 
-  // insert document class specific macros
-  const TextMacro::List& macros( display.macros() );
-  QAction* action;
-  for( TextMacro::List::const_iterator iter = macros.begin(); iter != macros.end(); iter++ )
-  {
-    
-    if( iter->isSeparator() ) macro_menu_->addSeparator();
-    else {
-      
-      // create menu entry
-      action = iter->action();
-      action->setEnabled( has_selection );
-      macro_menu_->addAction( action );
-            
-      // insert in map
-      macro_actions_.insert( make_pair( action, iter->name() ) );
-      
-    }
-  }
-  
+  macroMenu().setTextMacros( display.macros(), has_selection );  
   return;
 }
 
@@ -420,18 +396,10 @@ void Menu::_updateWindowsMenu( void )
 }
 
 //_______________________________________________
-void Menu::_selectMacro( QAction* action )
+void Menu::_selectMacro( QString name )
 {
   Debug::Throw( "Menu::_SelectMacro.\n" );
-  
-  // try retrieve id in map
-  std::map< QAction*, QString >::iterator iter = macro_actions_.find( action );
-  if( iter == macro_actions_.end() ) return;
-  
-  // retrieve current Text Display
-  TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
-  display.processMacro( iter->second );
-  
+  static_cast<MainWindow*>(window())->activeDisplay().processMacro( name );
   return;
 }
 

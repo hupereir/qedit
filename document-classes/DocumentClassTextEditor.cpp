@@ -198,12 +198,6 @@ void DocumentClassTextEditor::processMacro( QString name )
     return;
   }
 
-  // check display
-  if( !isActive() ) return;
-
-  // check if readonly
-  if( isReadOnly() ) return;
-
   // retrieve text cursor
   QTextCursor cursor( textCursor() );
   if( !cursor.hasSelection() ) return;

@@ -32,6 +32,7 @@
 #include "DocumentClassIcons.h"
 #include "DocumentClassPreview.h"
 #include "DocumentClassTextEditor.h"
+#include "TextMacroMenu.h"
 #include "IconEngine.h"
 
 #include <QLayout>
@@ -52,8 +53,19 @@ DocumentClassPreview::DocumentClassPreview( QWidget* parent ):
   v_layout->setSpacing(5);
   layout()->addItem( v_layout );
   
+  QPushButton* button;
+  v_layout->addWidget( button = new QPushButton( "&Macros", this ) );
+  button->setMenu( menu_ = new TextMacroMenu( this ) );
+  
   v_layout->addWidget( reload_button_ = new QPushButton( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
   v_layout->addStretch( 1 );
   reloadButton().setToolTip( "Reload document class and update text editor consistently." );
+
+  connect( &macroMenu(), SIGNAL( textMacroSelected( QString ) ), &editor(), SLOT( processMacro( QString ) ) );
+  connect( &editor(), SIGNAL( selectionChanged() ), SLOT( _updateSelection() ) );
   
 }
+
+//____________________________________________________________
+void DocumentClassPreview::_updateSelection( void )
+{ macroMenu().setEnabled( editor().textCursor().hasSelection() ); }

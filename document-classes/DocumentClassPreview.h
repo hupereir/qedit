@@ -38,11 +38,15 @@
 #include "DocumentClass.h"
 
 class DocumentClassTextEditor;
+class TextMacroMenu;
 
 //! document class preview
 class DocumentClassPreview: public QWidget, public Counter
 {
     
+  //! Qt meta object
+  Q_OBJECT
+  
   public:
   
   //! constructor
@@ -56,6 +60,15 @@ class DocumentClassPreview: public QWidget, public Counter
   QPushButton& reloadButton( void ) const
   { return *reload_button_; }
 
+  //! text macro menu
+  TextMacroMenu& macroMenu( void ) const
+  { return *menu_; }
+  
+  protected slots:
+  
+  //! selection
+  void _updateSelection( void );
+  
   private:
   
   //! editor
@@ -63,6 +76,9 @@ class DocumentClassPreview: public QWidget, public Counter
   
   //! reload button
   QPushButton* reload_button_;
+  
+  //! text macro menu
+  TextMacroMenu* menu_;
   
 };
 

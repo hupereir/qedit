@@ -43,6 +43,7 @@
 #include "IndentPatternList.h"
 #include "InformationDialog.h"
 #include "TextMacroList.h"
+#include "TextMacroMenu.h"
 #include "TextParenthesisList.h"
 #include "TreeView.h"
 
@@ -98,7 +99,6 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
 
   // connections
   connect( &_highlightStyleList(), SIGNAL( modified( void ) ), SLOT( _updateStyles( void ) ) );
-  
   adjustSize();
   
 }
@@ -191,6 +191,8 @@ void DocumentClassDialog::_updatePreview( void )
   Debug::Throw( "DocumentClassDialog::_updatePreview.\n" );
   
   // get document class
-  _preview().editor().setDocumentClass( documentClass() );
+  DocumentClass document_class( documentClass() );
+  _preview().macroMenu().setTextMacros( document_class.textMacros(), _preview().editor().textCursor().hasSelection() );
+  _preview().editor().setDocumentClass( document_class );
   _preview().editor().rehighlight();
 }

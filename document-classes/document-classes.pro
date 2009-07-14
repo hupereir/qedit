@@ -51,6 +51,7 @@ HEADERS = \
   TextMacro.h \
   TextMacroDialog.h \
   TextMacroList.h \
+  TextMacroMenu.h \
   TextMacroModel.h \
   TextMacroRuleDialog.h \
   TextMacroRuleList.h \
@@ -102,6 +103,7 @@ SOURCES = \
   TextIndent.cpp \
   TextMacro.cpp \
   TextMacroList.cpp \
+  TextMacroMenu.cpp \
   TextMacroModel.cpp \
   TextMacroDialog.cpp \
   TextMacroRuleDialog.cpp \

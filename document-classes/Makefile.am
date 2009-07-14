@@ -72,6 +72,7 @@ noinst_HEADERS = \
   TextMacro.h \
   TextMacroDialog.h \
   TextMacroList.h \
+  TextMacroMenu.h \
   TextMacroModel.h \
   TextMacroRuleDialog.h \
   TextMacroRuleList.h \
@@ -125,6 +126,7 @@ libdocument_classes_a_SOURCES = \
   TextIndent.cpp \
   TextMacro.cpp \
   TextMacroList.cpp \
+  TextMacroMenu.cpp \
   TextMacroModel.cpp \
   TextMacroDialog.cpp \
   TextMacroRuleDialog.cpp \
@@ -143,6 +145,7 @@ nodist_libdocument_classes_a_SOURCES = \
   moc_DocumentClassDialog.cpp \
   moc_DocumentClassManagerDialog.cpp \
   moc_DocumentClassModifiedDialog.cpp \
+  moc_DocumentClassPreview.cpp \
   moc_DocumentClassTextEditor.cpp \
   moc_HighlightStyleList.cpp \
   moc_HighlightPatternDialog.cpp \
@@ -155,6 +158,7 @@ nodist_libdocument_classes_a_SOURCES = \
   moc_TextHighlight.cpp \
   moc_TextIndent.cpp \
   moc_TextMacroList.cpp \
+  moc_TextMacroMenu.cpp \
   moc_TextMacroRuleList.cpp \
   moc_TextParenthesisList.cpp
 
