@@ -37,6 +37,7 @@ const QString HighlightPatternModel::column_titles_[HighlightPatternModel::n_col
 {
   "Name",
   "Type",
+  "Style",
   "Parent"
 };
 
@@ -54,9 +55,17 @@ QVariant HighlightPatternModel::data( const QModelIndex& index, int role ) const
   // return text associated to file and column
   if( role == Qt::DisplayRole )
   {
-    if( index.column() == NAME ) return pattern.name();
-    if( index.column() == PARENT && !pattern.parent().isEmpty() ) return pattern.parent();
-    if( index.column() == TYPE ) return pattern.typeName();
+    switch( index.column() )
+    {
+      
+      case NAME: return pattern.name();
+      case PARENT: return pattern.parent().isEmpty() ? QVariant():pattern.parent();
+      case STYLE: return pattern.style().name();
+      case TYPE: return pattern.typeName();
+      default: break;
+      
+    }
+    
   }
   
   return QVariant();

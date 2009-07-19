@@ -53,12 +53,13 @@ class HighlightPatternModel : public ListModel< HighlightPattern, HighlightPatte
   {}
   
   //! number of columns
-  enum { n_columns = 3 };
+  enum { n_columns = 4 };
 
  //! column type enumeration
   enum ColumnType { 
     NAME,
     TYPE,
+    STYLE,
     PARENT
   };
 
