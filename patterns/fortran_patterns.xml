@@ -12,6 +12,13 @@
    <Value>1</Value>
    <flags>2</flags>
   </Option>
+
+  <Option>
+   <Name>tab_size</Name>
+   <Value>3</Value>
+   <flags>2</flags>
+  </Option>
+
   <Option>
    <Name>default</Name>
    <Value>0</Value>
