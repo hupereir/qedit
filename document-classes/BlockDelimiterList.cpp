@@ -80,6 +80,7 @@ BlockDelimiterList::BlockDelimiterList( QWidget* parent ):
   
   v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
   remove_button_->setToolTip( "Remove selected delimiter" );
+  remove_button_->setShortcut( Qt::Key_Delete );
   connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
 
   v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
