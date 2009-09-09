@@ -96,22 +96,6 @@ QRegExp& TextDisplay::_emptyLineRegExp( void )
 }
 
 //___________________________________________________
-const TextMacro& TextDisplay::_cleanLinesMacro( void )
-{
-  static TextMacro macro;
-  if( macro.isSeparator() )
-  {
-    macro.setIsSeparator( false );
-    TextMacro::Rule rule;
-    rule.setPattern( "\\s+$" );
-    rule.setReplaceText( "" );
-    macro.addRule( rule );
-  }
-  
-  return macro;
-}
-
-//___________________________________________________
 TextDisplay::TextDisplay( QWidget* parent ):
   AnimatedTextEditor( parent ),
   file_( "" ),
@@ -672,9 +656,7 @@ void TextDisplay::save( void )
   // check is contents differ from saved file
   if( _contentsChanged() )
   {
-    
-    //_processMacro( _cleanLinesMacro(), true );
-    
+
     // make backup
     if( XmlOptions::get().get<bool>( "BACKUP" ) && file().exists() ) file().backup();
 
@@ -1234,17 +1216,6 @@ void TextDisplay::processMacro( QString name )
     return;
   }
 
-  // process macro
-  _processMacro( *macro_iter, false );
-
-}
-
-//_____________________________________________
-void TextDisplay::_processMacro( const TextMacro& macro, bool full_text )
-{
-
-  Debug::Throw() << "TextDisplay::_processMacro." << endl;
-
   // check display
   if( !isActive() ) return;
 
@@ -1253,27 +1224,11 @@ void TextDisplay::_processMacro( const TextMacro& macro, bool full_text )
 
   // retrieve text cursor
   QTextCursor cursor( textCursor() );
-  if( !( full_text || cursor.hasSelection() ) ) return;
+  if( !cursor.hasSelection() ) return;
 
   // retrieve blocks
-  int current_position( cursor.position() );
-  int position_begin = 0;
-  int position_end = 0;
-  if( full_text )
-  {
-    QTextCursor local( document() );
-    position_begin = local.position();
-    
-    local.movePosition( QTextCursor::End );
-    position_end = local.position();
-  
-  } else {
-  
-    position_begin = min( cursor.position(), cursor.anchor() );
-    position_end = max( cursor.position(), cursor.anchor() );
-    
-  }
-    
+  int position_begin( min( cursor.position(), cursor.anchor() ) );
+  int position_end( max( cursor.position(), cursor.anchor() ) );
   QTextBlock begin( document()->findBlock( position_begin ) );
   QTextBlock end( document()->findBlock( position_end ) );
 
@@ -1296,8 +1251,7 @@ void TextDisplay::_processMacro( const TextMacro& macro, bool full_text )
   }
 
   // process macro
-  TextMacro::Result result( macro.processText( text ) );
-  if( !result.first ) return;
+  if( !macro_iter->processText( text ) ) return;
 
   // update selection
   cursor.setPosition( position_begin );

@@ -558,9 +558,6 @@ class TextDisplay: public AnimatedTextEditor
 
   #endif
 
-  //! process macro
-  virtual void _processMacro( const TextMacro&, bool );
-
   //! update margins
   virtual bool _updateMargin( void );
 
@@ -671,9 +668,6 @@ class TextDisplay: public AnimatedTextEditor
   //! empty line
   static QRegExp& _emptyLineRegExp( void );
 
-  //! clean lines macro
-  static const TextMacro& _cleanLinesMacro( void );
-  
   //! file
   File file_;
 
