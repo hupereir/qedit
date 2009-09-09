@@ -37,11 +37,11 @@
 //! display available document classes
 class DocumentClassToolBar: public CustomToolBar
 {
-  
+
   Q_OBJECT
-  
+
   public:
-    
+
   //! constructor
   DocumentClassToolBar( QWidget* parent );
 
@@ -61,22 +61,22 @@ class DocumentClassToolBar: public CustomToolBar
 
   //! update list
   void _update( void );
-  
+
   //! current index changed
   void _currentIndexChanged( int );
-  
+
   private:
-  
+
   //! document class selection combo box
   QComboBox& _comboBox( void ) const
   { return *combobox_; }
-  
+
   //! document class selection combo box
   QComboBox* combobox_;
-  
+
   //! current class
   QString current_class_;
-  
+
 };
 
 #endif

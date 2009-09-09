@@ -29,7 +29,7 @@
     <file alias="pixmaps/crystal/view_remove.png">../pixmaps/crystal/view_remove.png</file>
     <file alias="pixmaps/crystal/view_right.png">../pixmaps/crystal/view_right.png</file>
     <file alias="pixmaps/crystal/view_top_bottom.png">../pixmaps/crystal/view_top_bottom.png</file>
-    <file alias="pixmaps/crystal/window_fullscreen.png">../pixmaps/crystal/window_fullscreen.png</file>            
+    <file alias="pixmaps/crystal/window_fullscreen.png">../pixmaps/crystal/window_fullscreen.png</file>
 
     <file alias="pixmaps/oxygen/back.png">../pixmaps/oxygen/back.png</file>
     <file alias="pixmaps/oxygen/bookmark.png">../pixmaps/oxygen/bookmark.png</file>
@@ -57,6 +57,6 @@
     <file alias="pixmaps/oxygen/view_remove.png">../pixmaps/oxygen/view_remove.png</file>
     <file alias="pixmaps/oxygen/view_right.png">../pixmaps/oxygen/view_right.png</file>
     <file alias="pixmaps/oxygen/view_top_bottom.png">../pixmaps/oxygen/view_top_bottom.png</file>
-    <file alias="pixmaps/oxygen/window_fullscreen.png">../pixmaps/oxygen/window_fullscreen.png</file>            
+    <file alias="pixmaps/oxygen/window_fullscreen.png">../pixmaps/oxygen/window_fullscreen.png</file>
   </qresource>
 </RCC>

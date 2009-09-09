@@ -50,7 +50,7 @@ class TextParenthesis: public Counter
 
   //! typedef for list of patterns
   typedef std::vector< TextParenthesis > List;
-  
+
   //! constructor from DomElement
   TextParenthesis( const QDomElement& element = QDomElement() );
 
@@ -59,8 +59,8 @@ class TextParenthesis: public Counter
 
   //! equal to operator
   bool operator == ( const TextParenthesis& parenthesis ) const
-  { 
-    return 
+  {
+    return
       first() == parenthesis.first() &&
       second() == parenthesis.second() &&
       regexp() == parenthesis.regexp();
@@ -68,13 +68,13 @@ class TextParenthesis: public Counter
 
   //! less than operator
   bool operator < ( const TextParenthesis& parenthesis ) const
-  { 
+  {
     if( first() != parenthesis.first() ) return first() < parenthesis.first();
     if( second() != parenthesis.second() ) return second() < parenthesis.second();
     if( regexp().pattern() != parenthesis.regexp().pattern() ) return regexp().pattern() < parenthesis.regexp().pattern();
     return false;
   }
-  
+
   //! block start
   const QString& first() const
   { return first_; }
@@ -86,7 +86,7 @@ class TextParenthesis: public Counter
   //! block end
   const QString& second() const
   { return second_; }
-  
+
   //! second
   void setSecond( const QString& value )
   { second_ = value; }
@@ -94,7 +94,7 @@ class TextParenthesis: public Counter
   //! regExp that match either block start or end
   const QRegExp& regexp() const
   { return regexp_; }
-  
+
   //! regext
   void setRegexp( const QString& value )
   { regexp_.setPattern( value ); }
@@ -103,88 +103,88 @@ class TextParenthesis: public Counter
   class MatchFTor
   {
     public:
-    
+
     //! constructor
     MatchFTor( const QString& text ):
       text_( text )
     {}
-    
+
     //! predicate
     bool operator() ( const TextParenthesis& parenthesis ) const
-    { 
-      return 
+    {
+      return
         text_.left( parenthesis.first().size() ) == parenthesis.first() ||
         text_.left( parenthesis.second().size() ) == parenthesis.second();
       }
-    
+
     private:
 
     //! predicted character
     const QString& text_;
-      
+
   };
-  
+
   //! used to find parenthesis for which first character match
   class FirstElementFTor
   {
     public:
-    
+
     //! constructor
     FirstElementFTor( const QString& text ):
       text_( text )
     {}
-    
+
     //! predicate
     bool operator() ( const TextParenthesis& parenthesis ) const
     { return text_.right( parenthesis.first().size() ) == parenthesis.first(); }
-    
+
     private:
 
     //! predicted character
     const QString& text_;
-    
+
   };
-  
+
   //! used to find parenthesis for which first character match
   class SecondElementFTor
   {
     public:
-    
+
     //! constructor
     SecondElementFTor( const QString& text ):
       text_( text )
     {}
-    
+
     //! predicate
     bool operator() ( const TextParenthesis& parenthesis ) const
     { return text_.right( parenthesis.second().size() ) == parenthesis.second(); }
-    
+
     private:
 
     //! predicted character
     const QString& text_;
-      
+
   };
-  
+
   private:
-  
+
   //! regular expression that match first character
   QString first_;
-  
+
   //! regular expression that match second character
   QString second_;
-  
+
   //! regular expression that match either of both characters
   QRegExp regexp_;
-  
+
   //! streamer
   friend QTextStream& operator << ( QTextStream& out, const TextParenthesis& parenthesis )
   {
-    out << " first: " << parenthesis.first() 
-      << " second: " << parenthesis.second() 
+    out << " first: " << parenthesis.first()
+      << " second: " << parenthesis.second()
       << " regexp: " << parenthesis.regexp().pattern();
     return out;
   }
-  
+
 };
 #endif

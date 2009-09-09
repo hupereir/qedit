@@ -4,24 +4,24 @@
 // $Id$
 
 /******************************************************************************
-*                         
-* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>             
-*                         
-* This is free software; you can redistribute it and/or modify it under the    
-* terms of the GNU General Public License as published by the Free Software    
-* Foundation; either version 2 of the License, or (at your option) any later   
-* version.                             
-*                          
-* This software is distributed in the hope that it will be useful, but WITHOUT 
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License        
-* for more details.                     
-*                          
-* You should have received a copy of the GNU General Public License along with 
-* software; if not, write to the Free Software Foundation, Inc., 59 Temple     
-* Place, Suite 330, Boston, MA 02111-1307 USA                           
-*                         
-*                         
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA 02111-1307 USA
+*
+*
 *******************************************************************************/
 
 /*!
@@ -43,47 +43,47 @@
 //! independent thread used to automatically save file
 class AutoSaveThread: public QThread, public BASE::Key, public Counter
 {
-    
+
   public:
-      
+
   //! constructor
   AutoSaveThread( QObject* reciever ):
     Counter( "AutoSaveThread" ),
     file_changed_( true ),
     contents_changed_( true )
   { Debug::Throw( "AutoSaveThread::AutoSaveThread.\n" ); }
-  
+
   //! destructor
   virtual ~AutoSaveThread( void )
   { Debug::Throw( "AutoSaveThread::~AutoSaveThread.\n" ); }
-  
+
   //! file
   void setFile( const File& file );
-  
+
   //! file
   const File& file( void ) const
   { return file_; }
-  
+
   //! set content
   void setContents( const QString& contents );
-  
+
   //! generate a new grid. Post a AutoSaveEvent when finished
-  void run( void );  
-  
+  void run( void );
+
   //! create backup file name from file
   static File autoSaveName( const File& file );
-  
+
   private:
-   
+
   //! filename where data is to be saved
   File file_;
-  
+
   //! content to be saved
   QString contents_;
-  
+
   //! modification flag
   bool file_changed_;
-  
+
   //! modification flag
   bool contents_changed_;
 

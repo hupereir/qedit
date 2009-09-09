@@ -47,13 +47,13 @@ HighlightPatternOptions::HighlightPatternOptions( QWidget* parent ):
   setLayout( new QHBoxLayout() );
   layout()->setMargin(0);
   layout()->setSpacing(5);
-  layout()->addWidget( new QLabel( "Options: ", this ) ); 
+  layout()->addWidget( new QLabel( "Options: ", this ) );
   layout()->addWidget( span_ = new QCheckBox( "&Span", this ) );
   layout()->addWidget( no_indent_ = new QCheckBox( "&No indentation", this ) );
   layout()->addWidget( case_sensitive_ = new QCheckBox( "&Case sensitive", this ) );
 
   span_->setToolTip( "Highlight pattern spans over several paragraphs" );
-  no_indent_->setToolTip( 
+  no_indent_->setToolTip(
     "Paragraphs matching the pattern are skipped from automatic indentation.\n"
     "This is typically the case for comments." );
   case_sensitive_->setToolTip( "Highlight pattern matching is case sensitive" );

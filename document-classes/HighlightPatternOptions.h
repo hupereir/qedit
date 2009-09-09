@@ -55,14 +55,14 @@ class HighlightPatternOptions: public QWidget, public Counter
 
   private:
 
-  //! bold 
+  //! bold
   QCheckBox* span_;
-  
+
   //! italic
   QCheckBox* no_indent_;
-  
+
   //! underline
   QCheckBox* case_sensitive_;
-    
+
 };
 #endif

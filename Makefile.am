@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
 
-if WITH_ASPELL 
+if WITH_ASPELL
 SPELLCHECK_SOURCE_DIR=base-spellcheck
-else 
+else
 SPELLCHECK_SOURCE_DIR=
 endif
 

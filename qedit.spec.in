@@ -14,8 +14,8 @@ BuildRoot: /var/tmp/%{name}-buildroot
 Requires: qt4-common >= 4.2 , libqtcore4 >= 4.2, libqtgui4 >= 4.2, aspell >= 0.60.4, libaspell15 >= 0.60.4
 
 %description
-Qt based advanced text editor. Supports syntax highlighting, matching-parenthesis highlighting, auto-indentation, 
-customizable text macro for many languages, such as C/C++, fortran, Makefile, HTML/XML, etc. Can be plugged with aspell to provide 
+Qt based advanced text editor. Supports syntax highlighting, matching-parenthesis highlighting, auto-indentation,
+customizable text macro for many languages, such as C/C++, fortran, Makefile, HTML/XML, etc. Can be plugged with aspell to provide
 automatic spell-checking.
 
 %prep

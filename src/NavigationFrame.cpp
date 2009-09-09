@@ -44,28 +44,28 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
   AnimatedStackedWidget( parent ),
   default_width_( -1 )
 {
-  
+
   Debug::Throw( "NavigationFrame:NavigationFrame.\n" );
   layout()->setMargin(2);
   layout()->setSpacing(2);
 
   // fading mode
   // transitionWidget().setMode( TransitionWidget::FADE_SECOND );
-  
+
   // stack widget
-  addWidget( session_files_frame_ = new SessionFilesFrame(0) );  
-  addWidget( recent_files_frame_ = new RecentFilesFrame(0, files) );  
+  addWidget( session_files_frame_ = new SessionFilesFrame(0) );
+  addWidget( recent_files_frame_ = new RecentFilesFrame(0, files) );
   addWidget( file_system_frame_ = new FileSystemFrame(0) );
-  
+
   // current widget
   setCurrentWidget( &sessionFilesFrame() );
-  
+
   // connections
   connect( this, SIGNAL( currentChanged( int ) ), SLOT( _updateCurrentWidget() ) );
-  
+
   // actions
   _installActions();
-    
+
 }
 
 //______________________________________________________________________
@@ -79,24 +79,24 @@ QSize NavigationFrame::sizeHint( void ) const
 //______________________________________________________________________
 void NavigationFrame::_installActions( void )
 {
-  
+
   Debug::Throw( "NavigationFrame::_installActions.\n" );
   addAction( visibility_action_ = new QAction( "Show &Navigation Panel", this ) );
   visibility_action_->setCheckable( true );
   visibility_action_->setChecked( true );
   connect( visibility_action_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );
-    
+
 }
 
 //______________________________________________________________________
 void NavigationFrame::_updateCurrentWidget( void )
 {
-  
+
   Debug::Throw( "NavigationFrame::_updateCurrentWidget.\n" );
   if( !currentWidget() ) return;
-  
+
   if( currentWidget() == &sessionFilesFrame() ) { sessionFilesFrame().update(); }
   else if( currentWidget() == &recentFilesFrame() ) { recentFilesFrame().update(); }
   else if( currentWidget() == &fileSystemFrame() ) { fileSystemFrame().update(); }
-  
+
 }

@@ -37,16 +37,16 @@ using namespace std;
 CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
   text_( block.text() )
 {
-  
+
   // would need to retrieve the "children" data from the block format rather that from the HighlightBlockData
   QTextBlockFormat format( block.blockFormat() );
   collapsed_ = format.boolProperty( TextBlock::Collapsed );
   if( collapsed_ && format.hasProperty( TextBlock::CollapsedData ) )
-  { 
+  {
     delimiters_ = format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().delimiters();
-    setChildren( format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().children() ); 
+    setChildren( format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().children() );
   }
-  
+
 }
 
 //_____________________________________________________________
@@ -55,18 +55,18 @@ unsigned int CollapsedBlockData::blockCount( void ) const
   unsigned int out(1);
   for( List::const_iterator iter = children().begin(); iter != children().end(); iter++ )
   { out += iter->blockCount(); }
-  
+
   return out;
 }
 
 //_____________________________________________________________
 QString CollapsedBlockData::toPlainText( void ) const
 {
-  
+
   QString out( text() + "\n" );
   for( List::const_iterator iter = children().begin(); iter != children().end(); iter++ )
   { out += iter->toPlainText(); }
-  
+
   return out;
-  
+
 }

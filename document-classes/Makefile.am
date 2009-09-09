@@ -5,7 +5,7 @@ EXTRA_DIST = document-classes.pro patterns.qrc
 
 CXXFLAGS = @CXXFLAGS@
 
-if WITH_ASPELL 
+if WITH_ASPELL
 INCLUDES =  \
   -I$(qt_includes) \
   -I$(qt_includes)/Qt \

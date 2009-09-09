@@ -1,24 +1,24 @@
 // $Id$
 
 /******************************************************************************
-*                         
-* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>             
-*                         
-* This is free software; you can redistribute it and/or modify it under the    
-* terms of the GNU General Public License as published by the Free Software    
-* Foundation; either version 2 of the License, or (at your option) any later   
-* version.                             
-*                          
-* This software is distributed in the hope that it will be useful, but WITHOUT 
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License        
-* for more details.                     
-*                          
-* You should have received a copy of the GNU General Public License along with 
-* software; if not, write to the Free Software Foundation, Inc., 59 Temple     
-* Place, Suite 330, Boston, MA 02111-1307 USA                           
-*                         
-*                         
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA 02111-1307 USA
+*
+*
 *******************************************************************************/
 
 /*!
@@ -48,78 +48,78 @@ Diff::Diff( QObject* parent ):
   Counter( "Diff" ),
   files_(2),
   process_( this )
-{ 
-  Debug::Throw( "Diff::Diff\n" );   
+{
+  Debug::Throw( "Diff::Diff\n" );
   connect( &process_, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( _parseOutput( int, QProcess::ExitStatus ) ) );
 }
-  
+
 //_________________________________________________________________
 bool Diff::run( void )
 {
   Debug::Throw( "Diff::run.\n" );
-  
+
   // see if process is not already running
   if( process_.state() != QProcess::NotRunning )
   {
     error_ = "diff command already running.";
     return false;
   }
-  
+
   // reset error
   error_ = "";
-  
+
   // check files
   for( vector<FileInformation>::const_iterator iter = files_.begin(); iter != files_.end(); iter++ )
-  { 
-    
+  {
+
     // check if filename is empty
-    if( iter->file().isEmpty() ) 
+    if( iter->file().isEmpty() )
     {
       error_ = "invalid file name.";
       return false;
     }
-    
+
     // check if file exists
     if( !iter->file().exists() ) {
       error_ = QString( "file " ) + iter->file() + " does not exists.";
       return false;
     }
-    
+
     // check if file is a directory
-    if( iter->file().isDirectory() ) 
+    if( iter->file().isDirectory() )
     {
       error_ = QString( "file " ) + iter->file() + " is a directory.";
       return false;
     }
-    
+
   }
 
   // clear paragraph ranges
   _clear();
-  
+
   // create command and pass to process
   QStringList command;
-  command 
+  command
     << XmlOptions::get().raw( "DIFF_COMMAND" )
-    << files_[0].file() 
+    << files_[0].file()
     << files_[1].file();
-  
+
   // run
-  process_.start( command ); 
+  process_.start( command );
   return true;
-  
+
 }
 
 //________________________________________________________________
 void Diff::_clear( void )
-{ 
-  
+{
+
   Debug::Throw( "Diff::_Clear.\n" );
   for( vector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); iter++ )
-  { iter->clear(); }  
+  { iter->clear(); }
   return;
 }
-  
+
 //________________________________________________________________
 void Diff::_parseOutput( int code, QProcess::ExitStatus status )
 {
@@ -133,40 +133,40 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
     InformationDialog( 0, buffer ).exec();
     return;
   }
-    
+
   // retrieve all stdout and put into stream
   QByteArray out( process_.readAllStandardOutput() );
   QStringList in( QString( out ).split( "\n" ) );
   int index(0);
   for( QStringList::const_iterator iter = in.begin(); iter != in.end(); iter++ )
   {
-    
+
     QString buffer = *iter;
     index++;
-    
+
     static const QString removed_lines( "<>-" );
     if( removed_lines.indexOf( buffer[0] ) >= 0 ) continue;
-    
+
     // parse remaining lines
     _parseLine( buffer );
   }
-  
-  // highlight displays 
+
+  // highlight displays
   for( vector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); iter++ )
   { iter->highlightDisplay(); }
-  
+
   // delete this object
   deleteLater();
-  
+
   return;
-  
+
 }
 
 //______________________________________________________
 void Diff::_parseLine( const QString& line )
 {
   Debug::Throw() << "Diff::_parseLine - " << line << endl;
-  
+
   // see if line is a conflict
   int position( line.indexOf( "c" ) );
   if( position >= 0 )
@@ -179,8 +179,8 @@ void Diff::_parseLine( const QString& line )
     { files_[i].insertConflictRange( ranges[i] ); }
     return;
   }
-  
-  
+
+
   // see if line is added
   position = line.indexOf( "a" );
   if( position >= 0 )
@@ -189,7 +189,7 @@ void Diff::_parseLine( const QString& line )
     files_[1].insertAddedRange( _parseRange( range ) );
     return;
   }
-  
+
   // see if line is deleted
   position = line.indexOf( "d" );
   if( position >= 0 )
@@ -202,26 +202,26 @@ void Diff::_parseLine( const QString& line )
   // dump error message if line format was not recognized
   Debug::Throw() << "Diff::_parseLine - unrecognized line format: " << line;
   return;
-  
+
 }
 
 //_____________________________________________________
 Diff::Range Diff::_parseRange( const QString& range )
 {
-  
+
   Debug::Throw() << "Diff::_parseRange - " << range << endl;
-  
+
   // look for "," in string
-  int position( range.indexOf( "," ) ); 
+  int position( range.indexOf( "," ) );
   Range out( ( position < 0 ) ?
     Range( range.toUInt(), range.toUInt() ):
     Range( range.left( position ).toUInt(), range.mid( position+1 ).toUInt() ) );
-    
+
   Debug::Throw() << "Diff::_parseRange - (" << out.first << "," << out.second << ")" << endl;
   return out;
-  
+
 }
- 
+
 //___________________________________________________________________
 Diff::FileInformation::FileInformation( void ):
   display_( 0 ),
@@ -230,38 +230,38 @@ Diff::FileInformation::FileInformation( void ):
 
 //___________________________________________________________________
 void Diff::FileInformation::setDisplay( TextDisplay& display )
-{ 
-  
-  Debug::Throw( "Diff::FileInformation::setDisplay.\n" ); 
-  
+{
+
+  Debug::Throw( "Diff::FileInformation::setDisplay.\n" );
+
   // keep pointer to display
   display_ = &display;
-  
+
   // try use provided filename
   // if exists and if display is not modified
-  if( !( 
+  if( !(
     _display().document()->isModified() ||
-    _display().file().isEmpty() || 
+    _display().file().isEmpty() ||
     _display().isNewDocument() ||
-    !_display().file().exists() ) ) 
+    !_display().file().exists() ) )
   {
-    
+
     // use provided file. Set as non-temporary
     file_ = _display().file().expand();
     is_temporary_ = false;
 
   } else {
-   
+
     // create temporary file
     QString buffer;
     QTextStream( &buffer ) << "/tmp/_qedit_" << Util::user() << "_" << TimeStamp::now().unixTime() << "_" << Util::pid();
-    
+
     // store
     file_ = buffer;
-    
+
     // try dump text in file
     QFile out( buffer );
-    if( !out.open( QIODevice::WriteOnly ) ) 
+    if( !out.open( QIODevice::WriteOnly ) )
     {
       Debug::Throw() << "Diff::FileInformation::setDisplay - cannot write to file " << buffer << endl;
       return;
@@ -270,15 +270,15 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
     // dump text
     out.write( _display().toPlainText().toAscii() );
     out.close();
-    
+
     // keep file as temporary, so that
     // it gets deleted at destruction
     is_temporary_ = true;
-    
+
   }
-  
+
   Debug::Throw() << "Diff::FileInformation::setDisplay - file: " << file_ << endl;
-  
+
   return;
 }
 
@@ -291,30 +291,30 @@ Diff::FileInformation::~FileInformation( void )
 
 //________________________________________________________________________
 void Diff::FileInformation::highlightDisplay( void )
-{ 
-    
+{
+
   Debug::Throw() << "Diff::FileInformation::highlightDisplay." << endl;
-  
+
   // loop over display blocks
   unsigned int id(1);
   _display().setUpdatesEnabled( false );
   for( QTextBlock block( _display().document()->begin() ); block.isValid(); block = block.next(), id++ )
   {
-    
+
     // see if block is a conflict
     if( conflicts_.find( id ) != conflicts_.end() )
-    { 
-      
-      _display().tagBlock( block, TextBlock::DIFF_CONFLICT ); 
-      
+    {
+
+      _display().tagBlock( block, TextBlock::DIFF_CONFLICT );
+
     } else if( added_.find( id ) != added_.end() ) {
-      
-      _display().tagBlock( block, TextBlock::DIFF_ADDED ); 
-    
+
+      _display().tagBlock( block, TextBlock::DIFF_ADDED );
+
     } else _display().clearTag( block, TextBlock::DIFF_CONFLICT | TextBlock::DIFF_ADDED );
-    
+
   }
-  
+
   _display().setUpdatesEnabled( true );
 
   // get associated displays and update all
@@ -324,5 +324,5 @@ void Diff::FileInformation::highlightDisplay( void )
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   { (*iter)->viewport()->update(); }
 
-  return; 
+  return;
 };

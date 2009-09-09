@@ -49,10 +49,10 @@ HighlightPatternType::HighlightPatternType( QWidget* parent ):
   setEditable( false );
   addItem( HighlightPattern::typeName( HighlightPattern::KEYWORD_PATTERN ) );
   addItem( HighlightPattern::typeName( HighlightPattern::RANGE_PATTERN ) );
-  
-  
+
+
   connect( this, SIGNAL( activated( const QString & ) ), SLOT( _typeChanged( const QString& ) ) );
-  
+
 }
 
 //___________________________________________________

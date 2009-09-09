@@ -42,34 +42,34 @@
 //! store collapsed block text and state
 class CollapsedBlockData
 {
-  
+
   public:
-    
+
   //! list
   typedef QList<CollapsedBlockData> List;
-  
+
   //! constructor
   CollapsedBlockData( void ):
     collapsed_( false )
     {}
-  
+
   //! constructor
   CollapsedBlockData( const QTextBlock& block );
-    
+
   //! text
   const QString& text( void ) const
   { return text_; }
-    
+
   //! collapsed
   const bool& collapsed( void ) const
   { return collapsed_; }
-  
+
   //! number of blocks stored by this data object
   unsigned int blockCount( void ) const;
-  
+
   //!@name block limits
   //@{
-  
+
   //! delimiters
   const TextBlock::Delimiter::List& delimiters( void ) const
   { return delimiters_; }
@@ -79,43 +79,42 @@ class CollapsedBlockData
   { return delimiters_; }
 
   //@}
-  
+
   //! children
   const List& children( void ) const
   { return children_; }
-    
+
   //! children
   List& children( void )
   { return children_; }
-  
+
   //! children
   void setChildren( const List& children )
   { children_ = children; }
-  
+
   //! returns all text contained in collapsed data
   /*!
   this is equivalent to expanding the entire block.
   The method is recursive
   */
   QString toPlainText( void ) const;
-  
+
   private:
-    
+
   //! text
   QString text_;
-  
+
   //! collapsed flag
   bool collapsed_;
-  
+
   //! collapsed delimiters
   TextBlock::Delimiter::List delimiters_;
-  
+
   //! children
   List children_;
-    
+
 };
 
 Q_DECLARE_METATYPE( CollapsedBlockData )
 
 #endif
-

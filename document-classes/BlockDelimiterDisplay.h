@@ -48,59 +48,59 @@ class HighlightBlockData;
 class TextEditor;
 
 //! display block delimiters
-class BlockDelimiterDisplay: public QObject, public Counter 
+class BlockDelimiterDisplay: public QObject, public Counter
 {
 
   //! Qt meta object
   Q_OBJECT
 
   public:
-  
+
   //! constructor
   BlockDelimiterDisplay(TextEditor*);
 
   //! destructor
   virtual ~BlockDelimiterDisplay();
-  
+
   //! block delimiters
   bool setBlockDelimiters( const BlockDelimiter::List& delimiters )
   {
     if( delimiters == delimiters_ ) return false;
-    delimiters_ = delimiters; 
+    delimiters_ = delimiters;
     return true;
   }
-  
+
   //! block delimiters
   const BlockDelimiter::List& blockDelimiters( void ) const
   { return delimiters_; }
-  
+
   //! synchronization
   void synchronize( const BlockDelimiterDisplay* );
-      
+
   //! number of collapsed block until given block ID
   unsigned int collapsedBlockCount( const int& block ) const
   { return ( collapsed_blocks_.empty() ) ? 0 : collapsed_blocks_.lower_bound( block )->second; }
 
   //! set width
   void setWidth( const int& );
-  
+
   //! width
   const int& width( void ) const
   { return width_; }
-   
+
   //! paint
   virtual void paint( QPainter& );
 
   //! mouse press event
   virtual void mousePressEvent( QMouseEvent* );
-    
+
   //! offset
-  void setOffset( int offset ) 
+  void setOffset( int offset )
   { offset_ = offset; }
-  
+
   //! add block delimiters actions to specified menu
   void addActions( QMenu& );
-            
+
   //! expand all
   QAction& expandAllAction( void ) const
   { return *expand_all_action_; }
@@ -109,15 +109,15 @@ class BlockDelimiterDisplay: public QObject, public Counter
   void updateCurrentBlockActionState( void );
 
   public slots:
-      
+
   //! need update
   void needUpdate( void );
-  
+
   private slots:
-  
+
   //! collapse current block
   void _collapseCurrentBlock( void );
-  
+
   //! expand current block
   void _expandCurrentBlock( void );
 
@@ -125,36 +125,36 @@ class BlockDelimiterDisplay: public QObject, public Counter
   void _collapseTopLevelBlocks( void );
 
   //! expand all blocks
-  void _expandAllBlocks( void );  
-    
+  void _expandAllBlocks( void );
+
   //! contents changed
   void _contentsChanged( void );
-  
+
   //! block count changed
   void _blockCountChanged( void );
-  
+
   private:
-  
+
   //! install actions
   void _installActions( void );
-  
+
   //! synchronize BlockFormats and BlockData
   void _synchronizeBlockData( void ) const;
 
   //! update segments
   void _updateSegments( void );
-    
+
   //! offest
   const int& _offset( void ) const
   { return offset_; }
-  
+
   //!@name actions
   //@{
-  
+
   //! expand current block
   QAction& _collapseCurrentAction( void ) const
   { return *collapse_current_action_; }
-  
+
   //! expand current block
   QAction& _expandCurrentAction( void ) const
   { return *expand_current_action_; }
@@ -164,17 +164,17 @@ class BlockDelimiterDisplay: public QObject, public Counter
   { return *collapse_action_; }
 
   //@}
-  
+
   //! block marker type
   enum BlockMarkerType
   {
     BEGIN,
     END
   };
- 
+
   //! update segment markers
   void _updateSegmentMarkers( void );
-  
+
   //! update segment markers
   void _updateMarker( QTextBlock&, unsigned int&, BlockMarker&, const BlockMarkerType& flag ) const;
 
@@ -182,73 +182,73 @@ class BlockDelimiterDisplay: public QObject, public Counter
   typedef std::pair<QTextBlock, QTextBlock> TextBlockPair;
 
   //! find blocks that match a given segment
-  TextBlockPair _findBlocks( const BlockDelimiterSegment&, HighlightBlockData*& ) const;  
-  
+  TextBlockPair _findBlocks( const BlockDelimiterSegment&, HighlightBlockData*& ) const;
+
   //! find blocks that match a given segment
-  /*! 
+  /*!
   \param block running block used to parse the document
   \param segment the segment to be found
   \param data the user data associated to the output segment
   */
-  TextBlockPair _findBlocks( QTextBlock&, unsigned int&, const BlockDelimiterSegment&, HighlightBlockData*& ) const;  
+  TextBlockPair _findBlocks( QTextBlock&, unsigned int&, const BlockDelimiterSegment&, HighlightBlockData*& ) const;
 
   //! select segment from cursor
   void _selectSegmentFromCursor( const int& );
-  
+
   //! select segment from mouse position
   void _selectSegmentFromPosition( const QPoint& );
-  
+
   //! selected segment
   void _setSelectedSegment( const BlockDelimiterSegment& segment )
   { selected_segment_ = segment; }
-  
+
   //! selected segment
   const BlockDelimiterSegment& _selectedSegment( void ) const
   { return selected_segment_; }
-  
+
   //! expand current block
   void _expand( const QTextBlock&, HighlightBlockData*, const bool& recursive = false ) const;
 
-  //! collapse blocks 
+  //! collapse blocks
   void _collapse( const QTextBlock&, const QTextBlock&, HighlightBlockData* ) const;
 
   //! get collapsed data for all blocs between first and second argument
   CollapsedBlockData _collapsedData( const QTextBlock&, const QTextBlock& ) const;
-  
+
   //! editor
   TextEditor& _editor( void ) const
   { return *editor_; }
-  
+
   //! draw delimiter
   void _drawDelimiter( QPainter& painter, const QRect& rect, const bool& collapsed ) const;
 
   //! associated editor
   TextEditor* editor_;
-  
+
   //! block delimiters
   BlockDelimiter::List delimiters_;
-  
+
   //! block segments
   BlockDelimiterSegment::List segments_;
-  
+
   //! selected block segment
   BlockDelimiterSegment selected_segment_;
-  
+
   //! map block id and number of collapsed blocks
   typedef std::map<int, int> CollapsedBlockMap;
-  
+
   //! map block id and number of collapsed blocks
   CollapsedBlockMap collapsed_blocks_;
-   
+
   //! true when _updateSegments needs to be called in paintEvent
-  bool need_update_; 
-    
+  bool need_update_;
+
   //! foreground color
   QColor foreground_;
-  
+
   //! background color
   QColor background_;
-  
+
   //!@name marker dimension
   //@{
 
@@ -260,24 +260,24 @@ class BlockDelimiterDisplay: public QObject, public Counter
   int rect_width_;
   int marker_bottom_right_;
   //@}
-  
+
   //!@name actions
   //@{
-  
+
   //! collapse current block
   QAction* collapse_current_action_;
-  
+
   //! expand current block
   QAction* expand_current_action_;
-  
+
   //! collapse top level blocks
   QAction* collapse_action_;
 
   //! expand all
-  QAction* expand_all_action_;  
-  
+  QAction* expand_all_action_;
+
   //@}
-      
+
 };
 
 #endif

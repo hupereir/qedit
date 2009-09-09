@@ -57,7 +57,7 @@ class FileModifiedDialog: public BaseDialog, public Counter
 
     //! re-load modified file
     RELOAD = 2,
-    
+
     //! ignore warning
     IGNORE = 3
 
@@ -65,6 +65,10 @@ class FileModifiedDialog: public BaseDialog, public Counter
 
   //! constructor
   FileModifiedDialog( QWidget* parent, const File& file );
+
+  //! destructor
+  virtual ~FileModifiedDialog( void )
+  {}
 
   private slots:
 

@@ -10,11 +10,11 @@ DEFINES += VERSION=\\\"$$VERSION\\\"
 win32 {
 
   DEFINES += QT_STATIC
-  DESTDIR = "C:\Program Files" 
- 
+  DESTDIR = "C:\Program Files"
+
   # this is needed to copy target into relevant versioned name
   exists( \"$$DESTDIR\\upx.exe\" ) {
-     
+
      # if available, use upx to compress the file
      version.commands = "\"$$DESTDIR\\upx.exe\" -9 -f -o \"$$DESTDIR\\$$TARGET-qt4_"$$VERSION".exe\""  "\"$$DESTDIR\\"$$TARGET".exe\"
 
@@ -28,7 +28,7 @@ win32 {
   # add to Post targets
   QMAKE_EXTRA_TARGETS += version
   QMAKE_POST_LINK += $$version.commands
-  
+
 }
 
 INCLUDEPATH = . ../base ../base-qt ../base-help ../base-server ../document-classes ../extra-includes ../filesystem
@@ -89,7 +89,7 @@ HEADERS = \
   TextView.h \
   WindowServer.h \
   WindowTitle.h
- 
+
 SOURCES = \
   Application.cpp \
   AskForSaveDialog.cpp \

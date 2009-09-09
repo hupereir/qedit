@@ -63,8 +63,8 @@ class RecentFilesFrame: public QWidget, public Counter
 
   //! list
   TreeView& list( void ) const
-  { 
-    assert( list_ );  
+  {
+    assert( list_ );
     return *list_;
   }
 
@@ -72,94 +72,94 @@ class RecentFilesFrame: public QWidget, public Counter
   void select( const File& );
 
   public slots:
-  
+
   //! update
   void update( void );
-  
+
   signals:
 
   //! signal emitted when a file is selected
-  void fileSelected( FileRecord );  
+  void fileSelected( FileRecord );
 
   //! signal emited when a file is selected
-  void fileActivated( FileRecord );  
-  
+  void fileActivated( FileRecord );
+
   protected:
-  
+
   //! enter event
   void enterEvent( QEvent* );
-  
+
   //! recent files
   FileList& _recentFiles( void ) const
-  { 
+  {
     assert( recent_files_ );
     return *recent_files_;
   }
-      
+
   //! model
-  FileRecordModel& _model( void ) 
+  FileRecordModel& _model( void )
   { return model_; }
-        
+
   private slots:
-     
+
   //! update action
   void _updateActions( void );
-  
+
   //! clean
   void _clean( void );
-  
+
   //! open
   void _open( void );
-  
+
   //! sessionFilesItem selected
   void _itemSelected( const QModelIndex& index );
 
   //! sessionFilesItem selected
   void _itemActivated( const QModelIndex& index );
-    
+
   private:
-  
+
   //!@name actions
   //@{
-  
+
   //! install actions
   void _installActions( void );
-   
+
   //! clean action
   QAction& _cleanAction( void ) const
   { return *clean_action_; }
-  
+
   //! open action
   QAction& _openAction( void ) const
   { return *open_action_; }
-   
+
   //@}
-  
+
   //! recent files
   FileList* recent_files_;
-  
+
   //! model
   FileRecordModel model_;
-  
+
   //! list
   TreeView* list_;
-    
+
   //@}
-  
+
   //!@name actions
   //@{
-  
+
   //! update
   QAction* update_action_;
-      
+
   //! clean action
   QAction* clean_action_;
-  
+
   //! open action
   QAction* open_action_;
-  
+
   //@}
-  
+
 };
 
 #endif

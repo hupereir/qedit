@@ -42,11 +42,11 @@
 //! display available document classes
 class DocumentClassMenu: public QMenu, public Counter
 {
-  
+
   Q_OBJECT
-  
+
   public:
-  
+
   //! constructor
   DocumentClassMenu( QWidget* );
 
@@ -55,23 +55,23 @@ class DocumentClassMenu: public QMenu, public Counter
   {}
 
   signals:
-  
+
   //! emmited every time a document class is selected
   void documentClassSelected( QString );
-  
+
   protected slots:
 
   //! update
-  void _update( void );  
-    
+  void _update( void );
+
   //! select document class from menu
   void _selectClassName( QAction* );
 
   private:
-  
+
   //! actions
   QActionGroup* action_group_;
-          
+
   //! map document class to macro names
   std::map< QAction*, QString > actions_;
 

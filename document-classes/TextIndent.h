@@ -50,7 +50,7 @@ class TextIndent: public QObject, public Counter
   Q_OBJECT
 
   public:
-  
+
   //! constructor
   TextIndent( TextEditor* editor );
 
@@ -61,7 +61,7 @@ class TextIndent: public QObject, public Counter
   //! enabled
   bool isEnabled( void ) const
   { return enabled_ && !patterns_.empty(); }
-  
+
   //! base indentation
   const int& baseIndentation( void ) const
   { return base_indentation_; }
@@ -69,11 +69,11 @@ class TextIndent: public QObject, public Counter
   //! base indentation
   void setBaseIndentation( const int& value )
   { base_indentation_ = value; }
-  
+
   //! patterns
   const IndentPattern::List& patterns( void ) const
   { return patterns_; }
-  
+
   //! patterns
   void setPatterns( const IndentPattern::List& patterns )
   {
@@ -87,19 +87,19 @@ class TextIndent: public QObject, public Counter
     Debug::Throw( "TextIndent::clear.\n" );
     patterns_.clear();
   }
-  
+
   public slots:
 
   //! highlight blocks
   virtual void indent( QTextBlock first, QTextBlock last );
 
   //! highlight block
-  /*! 
-  new_line argument is used in case there is a default base indentation, 
-  to properly indent paragraphs when return key is pressed 
+  /*!
+  new_line argument is used in case there is a default base indentation,
+  to properly indent paragraphs when return key is pressed
   */
   virtual void indent( QTextBlock block, bool new_line = false );
-  
+
   private:
 
   //! returns true if pattern match current paragraph
@@ -121,23 +121,23 @@ class TextIndent: public QObject, public Counter
   //! editor
   TextEditor& _editor( void ) const
   { return *editor_; }
-  
+
   //! enabled
   bool enabled_;
 
   //! destination editor
   TextEditor* editor_;
-  
+
   //! current cursor
   QTextCursor current_cursor_;
-  
+
   //! base indentation
   /*! this is the number of space characters to add prior to any text indentation */
   int base_indentation_;
-  
+
   //! list of highlight patterns
   IndentPattern::List patterns_;
-  
+
 };
 
 #endif

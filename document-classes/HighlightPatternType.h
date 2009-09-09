@@ -44,9 +44,9 @@
 class HighlightPatternType: public QComboBox, public Counter
 {
 
-  //! Qt object 
+  //! Qt object
   Q_OBJECT
-  
+
   public:
 
   //! constructor
@@ -59,14 +59,14 @@ class HighlightPatternType: public QComboBox, public Counter
   HighlightPattern::Type type( void ) const;
 
   signals:
-  
+
   //! highlight pattern type changed
   void typeChanged( HighlightPattern::Type );
-  
+
   private slots:
-  
+
   //! checkbox clicked
   void _typeChanged( const QString& button );
-    
+
 };
 #endif

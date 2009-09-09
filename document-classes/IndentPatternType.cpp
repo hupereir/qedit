@@ -51,9 +51,9 @@ IndentPatternType::IndentPatternType( QWidget* parent ):
   addItem( IndentPattern::typeName( IndentPattern::INCREMENT ) );
   addItem( IndentPattern::typeName( IndentPattern::DECREMENT ) );
   addItem( IndentPattern::typeName( IndentPattern::DECREMENT_ALL ) );
-  
+
   connect( this, SIGNAL( activated( const QString & ) ), SLOT( _typeChanged( const QString& ) ) );
-  
+
 }
 
 //___________________________________________________

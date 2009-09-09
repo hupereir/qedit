@@ -38,7 +38,7 @@
 class BlockMarker
 {
   public:
-  
+
   //! constructor
   BlockMarker( const unsigned int& id = 0, const int& cursor = 0, const int& position = -1 ):
     id_( id ),
@@ -46,7 +46,7 @@ class BlockMarker
     position_( position ),
     valid_( position >= 0 )
   {}
-  
+
   //! equal to operator
   bool operator == ( const BlockMarker& marker ) const
   { return cursor() == marker.cursor(); }
@@ -58,51 +58,51 @@ class BlockMarker
   //! less than operator
   bool operator < ( const BlockMarker& marker ) const
   { return cursor() < marker.cursor(); }
-  
+
   //! id
   const unsigned int& id( void ) const
   { return id_; }
-  
+
   //! cursor
   const int& cursor( void ) const
   { return cursor_; }
-  
+
   //! position
   void setPosition( const int& position )
   {
     valid_ = (position >= 0);
     position_ = position;
   }
-  
+
   //! position
   const int& position( void ) const
   { return position_; }
-  
+
   //! validity
   const bool& isValid( void ) const
   { return valid_; }
-  
+
   private:
-  
+
   //! id
   unsigned int id_;
-  
+
   //! cursor position
   int cursor_;
-  
+
   //! position
   int position_;
-  
+
   //! validity
   bool valid_;
-  
+
   //! streamer
   friend QTextStream& operator << ( QTextStream& out, const BlockMarker& marker )
   {
     out << "(" << marker.id() << "," << marker.cursor() << "," << marker.position() << ")";
     return out;
   }
-  
+
 };
 
 

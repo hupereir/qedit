@@ -54,30 +54,34 @@ class NavigationFrame: public AnimatedStackedWidget
 {
 
   Q_OBJECT
-  
+
   public:
 
   //! creator
   NavigationFrame( QWidget* parent, FileList&  );
 
+  //! destructor
+  virtual ~NavigationFrame( void )
+  {}
+
   //! default size
   void setDefaultWidth( const int& );
-    
+
   //! default width
   const int& defaultWidth( void ) const
   { return default_width_; }
-    
+
   //! size
-  QSize sizeHint( void ) const;  
-       
-  //! session files 
+  QSize sizeHint( void ) const;
+
+  //! session files
   SessionFilesFrame& sessionFilesFrame( void ) const
   {
     assert( session_files_frame_ );
     return *session_files_frame_;
   }
-  
-  //! recent files 
+
+  //! recent files
   RecentFilesFrame& recentFilesFrame( void ) const
   {
     assert( recent_files_frame_ );
@@ -86,52 +90,52 @@ class NavigationFrame: public AnimatedStackedWidget
 
   //! file system
   FileSystemFrame& fileSystemFrame( void ) const
-  { 
+  {
     assert( file_system_frame_ );
     return *file_system_frame_;
   }
-  
+
   //!@name actions
   //@{
-  
+
   //! visibility
   QAction& visibilityAction( void ) const
   { return *visibility_action_; }
-  
+
   //@}
-          
+
   private slots:
-  
+
   //! update current widget
   void _updateCurrentWidget( void );
-  
+
   private:
-  
+
   //! install actions
   void _installActions( void );
- 
+
   //! default width;
   int default_width_;
-  
+
   //! session files
   SessionFilesFrame *session_files_frame_;
-  
+
   //! recent files
   RecentFilesFrame *recent_files_frame_;
 
   //! file system
   FileSystemFrame* file_system_frame_;
-  
+
   //@}
-  
+
   //!@name actions
   //@{
-  
+
   //! visibility
   QAction* visibility_action_;
-      
+
   //@}
-  
+
 };
 
 #endif

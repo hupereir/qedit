@@ -51,32 +51,32 @@ DocumentClassModifiedDialog::DocumentClassModifiedDialog( QWidget* parent ):
   Debug::Throw( "DocumentClassModifiedDialog::DocumentClassModifiedDialog.\n" );
 
   setWindowTitle( "Document Classes Modified - qedit" );
-  
+
   // create vbox layout
   QVBoxLayout* layout=new QVBoxLayout();
   layout->setSpacing(5);
   layout->setMargin(10);
   setLayout( layout );
-  
+
   // create message
   QString buffer( "Document classes have been modified.\nSave ?" );
 
   //! try load Question icon
   QPixmap question_pixmap = PixmapEngine::get( ICONS::WARNING );
-  
+
   // insert main vertical box
   if( question_pixmap.isNull() )
   { layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter ); }
   else
   {
-    
+
     QHBoxLayout *h_layout( new QHBoxLayout() );
     layout->addLayout( h_layout, 1 );
     QLabel* label = new QLabel( this );
     label->setPixmap( question_pixmap );
     h_layout->addWidget( label, 0, Qt::AlignHCenter );
     h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
-    
+
   }
 
   // horizontal separator
@@ -85,18 +85,18 @@ DocumentClassModifiedDialog::DocumentClassModifiedDialog( QWidget* parent ):
   layout->addWidget( frame );
 
   // button layout
-  QHBoxLayout *button_layout = new QHBoxLayout();     
+  QHBoxLayout *button_layout = new QHBoxLayout();
   button_layout->setSpacing( 5 );
   layout->addLayout( button_layout );
   button_layout->addStretch(1);
-  
+
   // resave button
   QPushButton* button;
   button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK ), "&Yes", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _yes() ) );
   button->setToolTip( "Save document classes modifications" );
-  
-  
+
+
   // save as button
   button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&No", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _no() ) );
@@ -106,7 +106,7 @@ DocumentClassModifiedDialog::DocumentClassModifiedDialog( QWidget* parent ):
   button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
   connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
   button->setToolTip( "Cancel current action" );
-  
+
   adjustSize();
 
 }

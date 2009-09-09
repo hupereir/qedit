@@ -66,7 +66,7 @@ class DocumentClassManager: public Counter
   //! read errors
   const QString& readError( void ) const
   { return read_error_; }
-  
+
   //! write all classes to file
   bool write( const File& path ) const;
 
@@ -78,7 +78,7 @@ class DocumentClassManager: public Counter
 
   //! get default document class
   DocumentClass defaultClass( void ) const;
-  
+
   //! get class matching filename. Return 0 if not found
   DocumentClass find( const File& file ) const;
 
@@ -98,12 +98,12 @@ class DocumentClassManager: public Counter
   //! set all classes
   void setClasses( const List& classes )
   { document_classes_ = classes; }
-  
+
   private:
 
   //! list of document classes
   List document_classes_;
-  
+
   //! read error
   QString read_error_;
 };

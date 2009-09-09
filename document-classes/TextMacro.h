@@ -51,7 +51,7 @@ class TextMacro: public Counter
 {
 
   public:
- 
+
   //! list
   typedef std::vector< TextMacro > List;
 
@@ -61,56 +61,56 @@ class TextMacro: public Counter
     id_( 0 ),
     is_separator_( true )
     {}
-  
+
   //! constructor from DomElement
   TextMacro( const QDomElement& );
 
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
-  
+
   //! Id
   const unsigned int& id( void ) const
   { return id_; }
 
-  //! set id  
+  //! set id
   void setId( const int& id )
   { id_ = id; }
 
   //! equal to operator
   bool operator == ( const TextMacro& other ) const
   {
-    return 
+    return
       name() == other.name() &&
-      accelerator() == other.accelerator() && 
+      accelerator() == other.accelerator() &&
       isSeparator() == other.isSeparator() &&
       rules() == other.rules();
 
   }
- 
+
   //! equal to ftor
   class WeakEqualFTor: public std::binary_function< TextMacro, TextMacro, bool>
   {
     public:
-    
+
     bool operator()( const TextMacro& first, const TextMacro& second ) const
     { return first.id() == second.id(); }
-    
+
   };
-  
+
   //! less than ftor
   class WeakLessThanFTor: public std::binary_function< TextMacro, TextMacro, bool>
   {
     public:
-    
+
     bool operator()( const TextMacro& first, const TextMacro& second ) const
     { return first.id() < second.id(); }
-    
+
   };
-  
+
   //! reset counter
   static void resetCounter( void )
   { id_counter_ = 0; }
-    
+
   //! name
   virtual const QString& name( void ) const
   { return name_; }
@@ -134,7 +134,7 @@ class TextMacro: public Counter
   //! separator
   virtual void setIsSeparator( const bool& value = true )
   { is_separator_ = value; }
-  
+
   //! modify text passed as argument. Return true if text is modified
   bool processText( QString& text ) const
   {
@@ -184,7 +184,7 @@ class TextMacro: public Counter
     if( !accelerator().isEmpty() ) out->setShortcut( QKeySequence( accelerator() ) );
     return out;
   }
-  
+
   //! used to store regular expression and corresponding replacement text
   class Rule: public Counter
   {
@@ -192,7 +192,7 @@ class TextMacro: public Counter
     public:
 
     typedef std::vector<Rule> List;
-    
+
     //! constructor
     Rule( const QDomElement& = QDomElement() );
 
@@ -201,16 +201,16 @@ class TextMacro: public Counter
 
     //! equal to operator
     bool operator == ( const Rule& rule ) const
-    { 
+    {
       return
         pattern().pattern() == rule.pattern().pattern() &&
         replaceText() == rule.replaceText() &&
         split() == rule.split();
     }
-      
+
     //! less than operator
     bool operator < ( const Rule& rule ) const
-    { 
+    {
       if( pattern().pattern() != rule.pattern().pattern() ) return pattern().pattern() < rule.pattern().pattern();
       if( replaceText() != rule.replaceText() ) return replaceText() < rule.replaceText();
       if( split() != rule.split() ) return split() < rule.split();
@@ -242,10 +242,10 @@ class TextMacro: public Counter
 
     bool split() const
     {  return !no_splitting_; }
-    
+
     //! splitting flag
-    /*! 
-      it is used to decide if the text should be splitted 
+    /*!
+      it is used to decide if the text should be splitted
       line by line and the rule applied independently on each line
     */
     void setNoSplitting()
@@ -257,8 +257,8 @@ class TextMacro: public Counter
     //@{
 
     //! splitting flag
-    /*! 
-      it is used to decide if the text should be splitted 
+    /*!
+      it is used to decide if the text should be splitted
       line by line and the rule applied independently on each line
     */
     bool no_splitting_;
@@ -272,12 +272,12 @@ class TextMacro: public Counter
 
   };
 
-    //! rules 
+    //! rules
   const Rule::List& rules( void ) const
   { return rules_; }
-  
+
   //! rules
-  void setRules( const Rule::List& rules ) 
+  void setRules( const Rule::List& rules )
   { rules_ = rules; }
 
   //! add a rule
@@ -285,12 +285,12 @@ class TextMacro: public Counter
   { rules_.push_back( rule ); }
 
   private:
- 
+
   //! unique id counter
   static unsigned int id_counter_;
-  
+
   //! unique id
-  unsigned int id_; 
+  unsigned int id_;
 
   //! macro name
   QString name_;

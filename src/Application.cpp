@@ -34,7 +34,7 @@
 
 #include "Application.h"
 #include "AutoSave.h"
-#include "Config.h" 
+#include "Config.h"
 #include "ConfigurationDialog.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassManagerDialog.h"
@@ -76,7 +76,7 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
   out.registerOption( "--orientation", "string", "select view orientation for tabbed edition (vertical|horizontal)");
   if( !arguments.isEmpty() ) out.parse( arguments, ignore_warnings );
   return out;
-  
+
 }
 
 //____________________________________________
@@ -103,13 +103,13 @@ Application::Application( CommandLineArguments arguments ):
 
 //____________________________________________
 Application::~Application( void )
-{ 
-  Debug::Throw( "Application::~Application.\n" ); 
-  
+{
+  Debug::Throw( "Application::~Application.\n" );
+
   if( class_manager_ ) delete class_manager_;
   if( file_check_ ) delete file_check_;
   if( autosave_ ) delete autosave_;
-  if( window_server_ ) delete window_server_; 
+  if( window_server_ ) delete window_server_;
   if( recent_files_ ) delete recent_files_;
 
 }
@@ -140,7 +140,7 @@ bool Application::realizeWidget( void )
 
   // check if the method has already been called.
   if( !BaseApplication::realizeWidget() ) return false;
-  
+
   // rename about action
   aboutAction().setText( "About &qedit" );
 
@@ -150,32 +150,32 @@ bool Application::realizeWidget( void )
 
   document_class_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Document Classes ...", this );
   connect( document_class_configuration_action_, SIGNAL( triggered() ), SLOT( _documentClassConfiguration() ) );
-  
+
   spellcheck_configuration_action_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Spell Checking ...", this );
   connect( spellcheck_configuration_action_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
-  
+
   monitored_files_action_ = new QAction( "Show Monitored Files", this );
   monitored_files_action_->setToolTip( "Show monitored files" );
   connect( monitored_files_action_, SIGNAL( triggered() ), SLOT( _showMonitoredFiles() ) );
-  
+
   configurationAction().setText( "Configure qedit ..." );
-  
+
   // file list
   recent_files_ = new XmlFileList();
   recent_files_->setCheck( true );
 
   // class manager
   class_manager_ = new DocumentClassManager();
-  
+
   // autosave
   autosave_ = new AutoSave();
-  
+
   // file check
   file_check_ = new FileCheck();
-  
+
   // window server
   window_server_ = new WindowServer();
-  
+
   // create first window and show
   windowServer().newMainWindow().centerOnDesktop();
 
@@ -183,47 +183,47 @@ bool Application::realizeWidget( void )
   emit configurationChanged();
   _updateDocumentClasses();
 
-  // run startup timer to open files after the call to exec() is 
+  // run startup timer to open files after the call to exec() is
   // performed in the main routine
   startup_timer_.start(0);
-  
-  Debug::Throw( "Application::realizeWidget - done.\n" ); 
+
+  Debug::Throw( "Application::realizeWidget - done.\n" );
   return true;
-  
+
 }
 
 //____________________________________________________________
 void Application::_updateDocumentClasses( void )
 {
   Debug::Throw( "Application::_updateDocumentClasses.\n" );
-  
+
   // clear document classes
   class_manager_->clear();
-  
+
   // load files from options
   QString buffer;
   QTextStream what( &buffer );
   Options::List files( XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) );
   for( Options::List::const_iterator iter = files.begin(); iter != files.end(); iter++ )
-  { 
-    class_manager_->read( iter->raw() ); 
+  {
+    class_manager_->read( iter->raw() );
     what << class_manager_->readError();
   }
 
   if( !buffer.isEmpty() ) InformationDialog( 0, buffer ).exec();
-  
+
   // load document classes icons into iconEngine cache, if any
   const DocumentClassManager::List& classes( class_manager_->classes() );
   for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
   { if( !iter->icon().isEmpty() ) { IconEngine::get( iter->icon() ); } }
-  
+
   // emit configuration changed to force displays to be updated
   emit documentClassesChanged();
-  
+
   return;
 }
 
-//___________________________________________________________ 
+//___________________________________________________________
 void Application::_configuration( void )
 {
   Debug::Throw( "Application::_configuration.\n" );
@@ -234,37 +234,37 @@ void Application::_configuration( void )
   dialog.exec();
 }
 
-//___________________________________________________________ 
+//___________________________________________________________
 void Application::_documentClassConfiguration( void )
 {
   Debug::Throw( "Application::_documentClassConfiguration.\n" );
-  DocumentClassManagerDialog* dialog = new DocumentClassManagerDialog( qApp->activeWindow(), classManager() );  
+  DocumentClassManagerDialog* dialog = new DocumentClassManagerDialog( qApp->activeWindow(), classManager() );
   dialog->setWindowModality( Qt::ApplicationModal );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
   dialog->setWindowTitle( "Document Classes - qedit" );
   dialog->show();
-    
+
   // this allows to have the dialog effictively modal.
   QEventLoop loop;
   connect( dialog, SIGNAL( destroyed() ), &loop, SLOT( quit() ) );
   loop.exec();
-    
+
   // update document classes
   _updateDocumentClasses();
-  
+
 }
 
 //_______________________________________________
 void Application::_spellCheckConfiguration( void )
 {
-  
+
   #if WITH_ASPELL
 
   Debug::Throw( "Application::_spellCheckConfiguration.\n" );
-  
+
   // create dialog
   CustomDialog dialog( qApp->activeWindow() );
-  
+
   SpellCheckConfiguration* spell_config = new SpellCheckConfiguration( &dialog );
   dialog.mainLayout().addWidget( spell_config );
   spell_config->read();
@@ -273,29 +273,29 @@ void Application::_spellCheckConfiguration( void )
   dialog.mainLayout().addWidget( autospell_config );
   autospell_config->read();
   dialog.centerOnWidget( qApp->activeWindow() );
-  
+
   if( dialog.exec() == QDialog::Rejected ) return;
   spell_config->write();
   autospell_config->write();
   XmlOptions::write();
-  
+
   emit spellCheckConfigurationChanged();
-  
+
   #endif
-  
+
 }
 
 //_______________________________________________
 void Application::_exit( void )
 {
-  
+
   Debug::Throw( "Application::_exit.\n" );
   if( !windowServer().closeAll() ) return;
   qApp->quit();
 
 }
 
-//___________________________________________________________ 
+//___________________________________________________________
 void Application::_readFilesFromArguments( void )
 {
   Debug::Throw( "Application::_readFilesFromArgs.\n" );
@@ -306,7 +306,7 @@ void Application::_readFilesFromArguments( void )
 
 }
 
-  
+
 //________________________________________________
 bool Application::_processCommand( SERVER::ServerCommand command )
 {
@@ -314,24 +314,24 @@ bool Application::_processCommand( SERVER::ServerCommand command )
   if( BaseApplication::_processCommand( command ) ) return true;
   if( command.command() == SERVER::ServerCommand::RAISE )
   {
-    
+
     // copy arguments and try open (via QTimer)
     _setArguments( command.arguments() );
     startup_timer_.start( 100 );
     return true;
   }
-  
+
   return false;
-  
+
 }
 
 //_____________________________________________
 void Application::_showMonitoredFiles( void )
-{ 
-  
+{
+
   Debug::Throw( "Application::_showMonitoredFiles.\n" );
-  FileCheckDialog dialog( qApp->activeWindow() ); 
+  FileCheckDialog dialog( qApp->activeWindow() );
   dialog.setFiles( fileCheck().fileSystemWatcher().files() );
   dialog.exec();
-  
+
 }

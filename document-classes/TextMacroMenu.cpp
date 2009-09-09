@@ -36,8 +36,8 @@ using namespace std;
 TextMacroMenu::TextMacroMenu( QWidget* parent ):
   QMenu( parent ),
   Counter( "TextMacroMenu" )
-{ 
-  Debug::Throw( "TextMacroMenu::TextMacroMenu.\n" ); 
+{
+  Debug::Throw( "TextMacroMenu::TextMacroMenu.\n" );
   connect( this, SIGNAL( triggered( QAction* ) ), SLOT( _processAction( QAction* ) ) );
 }
 
@@ -48,24 +48,24 @@ void TextMacroMenu::setTextMacros( const TextMacro::List& macros, bool enabled )
   clear();
   actions_.clear();
   QAction* action;
-  
+
   for( TextMacro::List::const_iterator iter = macros.begin(); iter != macros.end(); iter++ )
   {
-    
+
     if( iter->isSeparator() ) addSeparator();
     else {
-      
+
       // create menu entry
       action = iter->action();
       action->setEnabled( enabled );
       addAction( action );
-            
+
       // insert in map
       actions_.insert( make_pair( action, iter->name() ) );
-      
+
     }
   }
-  
+
 }
 
 //___________________________________________________________
@@ -78,9 +78,9 @@ void TextMacroMenu::setEnabled( bool enabled )
 //___________________________________________________________
 void TextMacroMenu::_processAction( QAction* action )
 {
-  
+
   // try retrieve id in map
   std::map< QAction*, QString >::iterator iter = actions_.find( action );
   if( iter != actions_.end() ) emit textMacroSelected( iter->second );
-  
+
 }

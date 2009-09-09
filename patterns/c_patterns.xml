@@ -151,6 +151,7 @@
    </rule>
    <comments>keep unchanged when opening curly bracket at end of previous line but if this line starts with a closing bracket</comments>
   </indent_pattern>
+
   <indent_pattern type="1" name="1" >
    <rule par="-1" >
     <regexp>(\{\s*)($|//)</regexp>
@@ -185,7 +186,7 @@
    <rule par="-2" >
     <regexp>[^;|\}|\{|:\s*]\s*($|//)</regexp>
    </rule>
-   <comments>decrement when previous line is not terminated, 
+   <comments>decrement when previous line is not terminated,
 the one before is not terminated either,
 and this one is an opening bracket</comments>
   </indent_pattern>

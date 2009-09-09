@@ -112,14 +112,14 @@ int DocumentClassTextEditor::blockCount( const QTextBlock& block ) const
   if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
   {  return block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount(); }
   else return AnimatedTextEditor::blockCount( block );
-  
+
 }
 
 //__________________________________________________________
 void DocumentClassTextEditor::paintMargin( QPainter& painter )
 {
   AnimatedTextEditor::paintMargin( painter );
-  blockDelimiterDisplay().paint( painter ); 
+  blockDelimiterDisplay().paint( painter );
 }
 
 //___________________________________________________________________________
@@ -140,24 +140,24 @@ void DocumentClassTextEditor::setDocumentClass( const DocumentClass& document_cl
 {
 
   Debug::Throw( "DocumentClassTextEditor::_updateDocumentClass\n" );
-  
+
   textHighlight().clear();
   textIndent().clear();
   textIndent().setBaseIndentation(0);
   _clearMacros();
-  
+
   wrapModeAction().setChecked( document_class.wrap() );
   tabEmulationAction().setChecked( document_class.emulateTabs() );
-  
-  if( document_class.tabSize() > 0 ) 
+
+  if( document_class.tabSize() > 0 )
   { _setTabSize( document_class.tabSize() ); }
-  
+
   // store into class members
   textHighlight().setPatterns( document_class.highlightPatterns() );
   textHighlight().setParenthesis( document_class.parenthesis() );
   textHighlight().setBlockDelimiters( document_class.blockDelimiters() );
   textHighlight().setHighlightEnabled( true );
-      
+
   textIndent().setPatterns( document_class.indentPatterns() );
   textIndent().setBaseIndentation( document_class.baseIndentation() );
   textIndent().setEnabled( true );
@@ -165,10 +165,10 @@ void DocumentClassTextEditor::setDocumentClass( const DocumentClass& document_cl
   _setMacros( document_class.textMacros() );
 
   // update block delimiters
-  if( blockDelimiterDisplay().expandAllAction().isEnabled() ) blockDelimiterDisplay().expandAllAction().trigger();   
+  if( blockDelimiterDisplay().expandAllAction().isEnabled() ) blockDelimiterDisplay().expandAllAction().trigger();
   if( blockDelimiterDisplay().setBlockDelimiters( document_class.blockDelimiters() ) ) update();
   _updateMargin();
-  
+
   // update enability for parenthesis matching
   textHighlight().setParenthesisEnabled(
     textHighlight().parenthesisHighlightColor().isValid() &&
@@ -177,7 +177,7 @@ void DocumentClassTextEditor::setDocumentClass( const DocumentClass& document_cl
   parenthesisHighlight().setEnabled(
     textHighlight().parenthesisHighlightColor().isValid() &&
     !textHighlight().parenthesis().empty() );
-  
+
   return;
 
 }
@@ -262,28 +262,28 @@ void DocumentClassTextEditor::rehighlight( void )
 //_______________________________________________________
 bool DocumentClassTextEditor::event( QEvent* event )
 {
-  
+
   bool has_block_delimiters( hasBlockDelimiterDisplay() );
-  
+
   // check that all needed widgets/actions are valid and checked.
-  switch (event->type()) 
+  switch (event->type())
   {
-          
+
     case QEvent::MouseButtonPress:
     if( has_block_delimiters ) blockDelimiterDisplay().mousePressEvent( static_cast<QMouseEvent*>( event ) );
     break;
-    
+
     default: break;
   }
-  
+
   return AnimatedTextEditor::event( event );
-  
+
 }
 
 //_______________________________________________________
 void DocumentClassTextEditor::keyPressEvent( QKeyEvent* event )
 {
-  
+
   // check if tab key is pressed
   if(
     event->key() == Qt::Key_Tab &&
@@ -292,14 +292,14 @@ void DocumentClassTextEditor::keyPressEvent( QKeyEvent* event )
   { emit indent( textCursor().block(), false ); }
   else
   {
-    
+
     // process key
     AnimatedTextEditor::keyPressEvent( event );
-    
+
     // indent current paragraph when return is pressed
     if( indent_->isEnabled() && event->key() == Qt::Key_Return && !textCursor().hasSelection() )
     { emit indent( textCursor().block(), true ); }
-    
+
     // reindent paragraph if needed
     /* remark: this is c++ specific. The list of keys should be set in the document class */
     if( indent_->isEnabled() && ( event->key() == Qt::Key_BraceRight || event->key() == Qt::Key_BraceLeft ) && !textCursor().hasSelection() )
@@ -314,7 +314,7 @@ void DocumentClassTextEditor::keyPressEvent( QKeyEvent* event )
 void DocumentClassTextEditor::paintEvent( QPaintEvent* event )
 {
   AnimatedTextEditor::paintEvent( event );
-  
+
   // handle block background
   QTextBlock first( cursorForPosition( event->rect().topLeft() ).block() );
   QTextBlock last( cursorForPosition( event->rect().bottomRight() ).block() );
@@ -324,19 +324,19 @@ void DocumentClassTextEditor::paintEvent( QPaintEvent* event )
   painter.setClipRect( event->rect() );
   painter.translate( -scrollbarPosition() );
   painter.setPen( _marginWidget().palette().color( QPalette::WindowText ) );
-  
-  // loop over found blocks  
+
+  // loop over found blocks
   for( QTextBlock block( first ); block != last.next() && block.isValid(); block = block.next() )
   {
     if( !block.blockFormat().boolProperty( TextBlock::Collapsed ) ) continue;
-    
+
     QRectF block_rect( document()->documentLayout()->blockBoundingRect( block ) );
     block_rect.setWidth( viewport()->width() + scrollbarPosition().x() );
     QLineF line( QPointF( 0, block_rect.bottomLeft().y() ), block_rect.bottomRight() );
     painter.drawLine( line );
   }
   painter.end();
-  
+
 }
 
 //_____________________________________________________________
@@ -359,12 +359,12 @@ bool DocumentClassTextEditor::_updateMargin( void )
 
   AnimatedTextEditor::_updateMargin();
   int left_margin( _leftMargin() );
-  
+
   blockDelimiterDisplay().setOffset( left_margin );
   if( hasBlockDelimiterDisplay() ) left_margin += blockDelimiterDisplay().width();
-  
+
   return _setLeftMargin( left_margin );
-  
+
 }
 
 //___________________________________________________________________________
@@ -381,8 +381,8 @@ void DocumentClassTextEditor::_updateConfiguration( void )
     int line_spacing = QFontMetrics( font ).lineSpacing() + 1;
     blockDelimiterDisplay().setWidth( line_spacing );
     _updateMargin();
-  }  
-  
+  }
+
 }
 
 //_______________________________________________________
@@ -427,18 +427,18 @@ void DocumentClassTextEditor::_highlightParenthesis( void )
 
   // retrieve text block data
   HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-  if( !data ) return;  
+  if( !data ) return;
 
   QString text( block.text() );
   const TextParenthesis::List& parenthesis( textHighlight().parenthesis() );
-     
+
   // check against opening parenthesis
   bool found( false );
-  TextParenthesis::List::const_iterator iter( find_if( 
-    parenthesis.begin(), parenthesis.end(), 
+  TextParenthesis::List::const_iterator iter( find_if(
+    parenthesis.begin(), parenthesis.end(),
     TextParenthesis::FirstElementFTor( text.left( position ) ) ) );
-  
-  
+
+
   if( iter != parenthesis.end() )
   {
     int increment( 0 );
@@ -473,12 +473,12 @@ void DocumentClassTextEditor::_highlightParenthesis( void )
   }
 
   // if not found, check against closing parenthesis
-  if( !( found || (iter = 
-    find_if( 
-    parenthesis.begin(), parenthesis.end(), 
+  if( !( found || (iter =
+    find_if(
+    parenthesis.begin(), parenthesis.end(),
     TextParenthesis::SecondElementFTor( text.left( position ) ) )) == parenthesis.end()  ) )
   {
-        
+
     int increment( 0 );
     position -= (iter->second().size() );
     while( block.isValid() && !found )
@@ -489,10 +489,10 @@ void DocumentClassTextEditor::_highlightParenthesis( void )
       // parse text
       while( position >= 0 && (position = iter->regexp().lastIndexIn( text.left(position) ) ) >= 0 )
       {
-        
+
         if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment--;
         else if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->second() ) increment++;
-        
+
         if( increment < 0 )
         {
           found = true;
@@ -506,12 +506,12 @@ void DocumentClassTextEditor::_highlightParenthesis( void )
         block = block.previous();
         if( block.isValid() ) position = block.text().length() ;
       }
-      
+
     }
   }
 
   if( found ) parenthesisHighlight().highlight( position + block.position(), iter->regexp().matchedLength() );
-  
+
   return;
 
 }

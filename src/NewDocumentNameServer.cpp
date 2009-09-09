@@ -42,7 +42,7 @@ const QString NewDocumentNameServer::default_name_ = "new document";
 //______________________________________
 QString NewDocumentNameServer::get( void )
 {
-  
+
   unsigned int version( versions_.empty() ? 0: versions_.back()+1 );
   QString out( _get( version ) );
   versions_.push_back( version );
@@ -63,5 +63,5 @@ QString NewDocumentNameServer::_get( const unsigned int& version )
   what << default_name_;
   if( version > 0 ) { what << " (" << version+1 << ")"; }
   return buffer;
-  
+
 }

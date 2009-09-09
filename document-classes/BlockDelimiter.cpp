@@ -43,7 +43,7 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element, const unsigned int& 
   Counter( "BlockDelimiter" ),
   id_( id )
 {
-  
+
   // parse attributes
   QDomNamedNodeMap attributes( element.attributes() );
   for( unsigned int i=0; i<attributes.length(); i++ )
@@ -55,14 +55,14 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element, const unsigned int& 
     else if( attribute.name() == XML::REGEXP ) regexp_.setPattern( XmlString( attribute.value() ).toText() );
     else Debug::Throw(0) << "BlockDelimiter::BlockDelimiter - unrecognized attribute: " << attribute.name() << endl;
   }
-  
+
   // create regexp
   if( regexp_.pattern().isEmpty() )
   {
     QString pattern = QString("(") + first() + ")|(" + second() + ")";
     regexp_.setPattern( pattern );
   }
-    
+
 }
 
 
@@ -71,7 +71,7 @@ QDomElement BlockDelimiter::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "BlockDelimiter::DomElement.\n" );
   QDomElement out( parent.createElement( XML::BLOCK_DELIMITER ) );
-  
+
   // dump attributes
   out.setAttribute( XML::BEGIN, XmlString( first() ).toXml() );
   out.setAttribute( XML::END, XmlString( second() ).toXml() );

@@ -2,26 +2,26 @@
 // $Id$
 
 /******************************************************************************
-*                         
-* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>             
-*                         
-* This is free software; you can redistribute it and/or modify it under the    
-* terms of the GNU General Public License as published by the Free Software    
-* Foundation; either version 2 of the License, or (at your option) any later   
-* version.                             
-*                          
-* This software is distributed in the hope that it will be useful, but WITHOUT 
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        
-* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License        
-* for more details.                     
-*                          
-* You should have received a copy of the GNU General Public License along with 
-* software; if not, write to the Free Software Foundation, Inc., 59 Temple     
-* Place, Suite 330, Boston, MA  02111-1307 USA                           
-*                         
-*                         
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA  02111-1307 USA
+*
+*
 *******************************************************************************/
- 
+
 /*!
   \file FileSystemModel.cpp
   \brief model for object records
@@ -65,54 +65,54 @@ FileSystemModel::FileSystemModel( QObject* parent ):
   connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
 }
-  
+
 //__________________________________________________________________
 Qt::ItemFlags FileSystemModel::flags(const QModelIndex &index) const
 {
-  
+
   // default flags
   Qt::ItemFlags flags;
   if( index.isValid() )
   {
-  
+
     // check associated record validity
     const FileRecord& record( get(index) );
     if( record.isValid() ) flags |=  Qt::ItemIsEnabled |  Qt::ItemIsSelectable;
-  
+
   }
-  
+
   return flags;
-  
+
 }
 
 //__________________________________________________________________
 QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
 {
-  
+
   // check index, role and column
   if( !index.isValid() ) return QVariant();
-  
+
   // retrieve associated file info
   const FileRecord& record( get(index) );
-  
+
   // return text associated to file and column
   if( role == Qt::DisplayRole ) {
-          
+
     switch( index.column() )
     {
-      
+
       case FILE:
       {
         // store local nmae
         QString local_name( record.file().localName() );
-        
+
         // loop over previous rows to find a match and increment version number
         unsigned int version( 0 );
         for( int row = 0; row < index.row(); row++ )
-        { 
-          if( get( FileSystemModel::index( row, FILE ) ).file().localName() == local_name ) version++; 
+        {
+          if( get( FileSystemModel::index( row, FILE ) ).file().localName() == local_name ) version++;
         }
-        
+
         // form output string.
         QString buffer;
         QTextStream what( &buffer );
@@ -120,50 +120,50 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
         if( version ) what << " (" << version+1 << ")";
         return buffer;
       }
-      
-      case SIZE: 
+
+      case SIZE:
       {
         if( record.hasFlag( DOCUMENT ) ) return QString( record.property( size_property_id_ ) );
         else return QVariant();
       }
-      
-      case TIME: 
+
+      case TIME:
       {
         if( record.hasFlag( DOCUMENT ) ) return QString( TimeStamp( record.time() ).toString() );
         else return QVariant();
       }
-      
+
       default:
       return QVariant();
-   
+
     }
-    
+
   } else if( role == Qt::DecorationRole && index.column() == FILE ) {
-    
+
     return _icons()[record.flags()&ANY];
-    
+
   }
-  
+
   return QVariant();
-  
+
 }
 
 //__________________________________________________________________
 QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 
-  if( 
-    orientation == Qt::Horizontal && 
-    role == Qt::DisplayRole && 
-    section >= 0 && 
+  if(
+    orientation == Qt::Horizontal &&
+    role == Qt::DisplayRole &&
+    section >= 0 &&
     section < (int) column_titles_.size() )
   { return column_titles_[section]; }
-  
+
   // return empty
-  return QVariant(); 
+  return QVariant();
 
 }
-  
+
 
 //_________________________________________________________
 void FileSystemModel::_updateConfiguration( void )
@@ -175,13 +175,13 @@ void FileSystemModel::_updateConfiguration( void )
   _icons().clear();
   _installIcons();
   reset();
-  
+
 }
 
 //____________________________________________________________
 void FileSystemModel::_sort( int column, Qt::SortOrder order )
 { std::sort( _get().begin(), _get().end(), SortFTor( column, order, column_titles_ ) ); }
-  
+
 //________________________________________________________
 FileSystemModel::SortFTor::SortFTor( const int& type, Qt::SortOrder order, const std::vector<QString>& column_titles ):
   ItemModel::SortFTor( type, order ),
@@ -192,30 +192,30 @@ FileSystemModel::SortFTor::SortFTor( const int& type, Qt::SortOrder order, const
 //________________________________________________________
 bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord second ) const
 {
-  
+
   if( order_ == Qt::AscendingOrder ) swap( first, second );
-  
+
   if( first.hasFlag( NAVIGATOR ) ) return true;
   if( second.hasFlag( NAVIGATOR ) ) return false;
   if( first.hasFlag( FOLDER ) && second.hasFlag( DOCUMENT ) ) return true;
   if( second.hasFlag( FOLDER ) && first.hasFlag( DOCUMENT ) ) return false;
-  
+
   switch( type_ )
   {
-    
+
     case FILE: return first.file().localName() < second.file().localName();
     case TIME: return (first.time() != second.time() ) ? first.time() < second.time() : first.file().localName() < second.file().localName();
-    case SIZE: 
+    case SIZE:
     {
       long first_size( first.property( size_property_id_ ).toInt() );
       long second_size( second.property( size_property_id_ ).toInt() );
       return (first_size != second_size ) ? first_size < second_size : first.file().localName() < second.file().localName();
     }
-    
+
     default: return true;
-    
+
   }
-  
+
 }
 
 //_____________________________________________________________________

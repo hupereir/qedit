@@ -44,7 +44,7 @@ TextParenthesis::TextParenthesis( const QDomElement& element ):
 {
 
   Debug::Throw( "TextParenthesis::TextParenthesis.\n" );
-  
+
   // parse attributes
   QDomNamedNodeMap attributes( element.attributes() );
   for( unsigned int i=0; i<attributes.length(); i++ )
@@ -56,16 +56,16 @@ TextParenthesis::TextParenthesis( const QDomElement& element ):
     else if( attribute.name() == XML::REGEXP ) regexp_.setPattern( XmlString( attribute.value() ).toText() );
     else Debug::Throw(0) << "TextParenthesis::TextParenthesis - unrecognized attribute: " << attribute.name() << endl;
   }
-  
+
   // create regexp
   if( regexp_.pattern().isEmpty() )
   {
     QString pattern = QString("(") + first() + ")|(" + second() + ")";
     regexp_.setPattern( pattern );
   }
-  
+
   //regexp_.setMinimal( true );
-  
+
 }
 
 //_____________________________________________________
@@ -73,7 +73,7 @@ QDomElement TextParenthesis::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "TextParenthesis::DomElement.\n" );
   QDomElement out( parent.createElement( XML::PARENTHESIS ) );
-  
+
   // dump attributes
   out.setAttribute( XML::BEGIN, XmlString( first() ).toXml() );
   out.setAttribute( XML::END, XmlString( second() ).toXml() );

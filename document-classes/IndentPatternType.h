@@ -44,9 +44,9 @@
 class IndentPatternType: public QComboBox, public Counter
 {
 
-  //! Qt object 
+  //! Qt object
   Q_OBJECT
-  
+
   public:
 
   //! constructor
@@ -59,14 +59,14 @@ class IndentPatternType: public QComboBox, public Counter
   IndentPattern::Type type( void ) const;
 
   signals:
-  
+
   //! highlight pattern type changed
   void typeChanged( IndentPattern::Type );
-  
+
   private slots:
-  
+
   //! checkbox clicked
   void _typeChanged( const QString& button );
-    
+
 };
 #endif

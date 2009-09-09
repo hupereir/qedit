@@ -55,10 +55,10 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   CustomDialog( parent ),
   selection_( selection )
 {
-  
+
   setWindowTitle( "file selection" );
   setOptionName( "FILE_SELECTION_DIALOG" );
-  
+
   // custom list display
   list_ = new TreeView( this );
   _list().setModel( &model_ );
@@ -67,20 +67,20 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
 
   // retrieve file records
   model_.set( Singleton::get().application<Application>()->windowServer().records() );
-  
+
   // mask
-  unsigned int mask( 
+  unsigned int mask(
     (1<<FileRecordModel::ICON)|
     (1<<FileRecordModel::FILE)|
     (1<<FileRecordModel::PATH ));
   int class_column( model_.findColumn( "class_name" ) );
   if( class_column >= 0 ) mask |= (1<<class_column);
   _list().setMask( mask );
-  _list().resizeColumns();  
+  _list().resizeColumns();
   mainLayout().addWidget( list_ );
 
   // generic button
-  QPushButton* button;  
+  QPushButton* button;
 
   // deselect all
   buttonLayout().insertWidget( 0, button = new QPushButton( "&Clear Selection", this ) );
@@ -93,7 +93,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   button->setToolTip( "Select all files in list" );
   connect( button, SIGNAL( clicked() ), list_, SLOT( selectAll() ) );
   select_all_button_ = button;
-    
+
   // replace
   okButton().setToolTip( "Replace in all selected files" );
   okButton().setText( "&Replace" );
@@ -101,17 +101,17 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
 
   // sort list and select all items
   if( XmlOptions::get().find( "SESSION_FILES_SORT_COLUMN" ) && XmlOptions::get().find( "SESSION_FILES_SORT_ORDER" ) )
-  { 
-    _list().sortByColumn( 
-      XmlOptions::get().get<int>( "SESSION_FILES_SORT_COLUMN" ), 
-      (Qt::SortOrder)(XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ) ); 
+  {
+    _list().sortByColumn(
+      XmlOptions::get().get<int>( "SESSION_FILES_SORT_COLUMN" ),
+      (Qt::SortOrder)(XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ) );
   }
 
   _list().selectAll();
 
-  
+
   adjustSize();
-  
+
 }
 
 //________________________________________________________
@@ -120,10 +120,10 @@ void FileSelectionDialog::_updateButtons( void )
 
   Debug::Throw( "FileSelectionDialog::_updateButtons.\n" );
   QList<QModelIndex> selection( _list().selectionModel()->selectedRows() );
-  
+
   clear_selection_button_->setEnabled( !selection.empty() );
   okButton().setEnabled( !selection.empty() );
-  
+
 }
 
 //________________________________________________________

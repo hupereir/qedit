@@ -1,24 +1,24 @@
 // $Id$
 
 /******************************************************************************
-*									       
-* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>			       
-*									       
-* This is free software; you can redistribute it and/or modify it under the    
-* terms of the GNU General Public License as published by the Free Software    
-* Foundation; either version 2 of the License, or (at your option) any later   
-* version.							               
-* 									       
-* This software is distributed in the hope that it will be useful, but WITHOUT 
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        
-* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License        
-* for more details.							       
-* 									       
-* You should have received a copy of the GNU General Public License along with 
-* software; if not, write to the Free Software Foundation, Inc., 59 Temple     
-* Place, Suite 330, Boston, MA  02111-1307 USA		                       
-*									       
-*									       
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA  02111-1307 USA
+*
+*
 *******************************************************************************/
 
 How to install QEdit
@@ -27,7 +27,7 @@ How to install QEdit
 I/ Get a tarball of latest release and unpack
 ---------------------------------------------
 
-gtar -xzvf QEdit-X.X.tar.gz 
+gtar -xzvf QEdit-X.X.tar.gz
 
 or
 
@@ -35,115 +35,115 @@ tar -xzvf QEdit-X.X.tar.gz
 
 II/ compile the sources.
 ------------------------
-There are two ways of compiling QEdit, either using the GNU automake tool-set, or using the Qt qmake tool-set. 
+There are two ways of compiling QEdit, either using the GNU automake tool-set, or using the Qt qmake tool-set.
 
 The first method has been tested on linux operating systems only. It allows for checking a larger set of environment
 variables and check for third-party applications that can be used by QEdit. This includes aspell (a command-line
-spell-checker), an HTML viewer (konqueror, by default), a "diff" program (/usr/bin/diff by default), and a PDF viewer 
-(acroread, by default). 
+spell-checker), an HTML viewer (konqueror, by default), a "diff" program (/usr/bin/diff by default), and a PDF viewer
+(acroread, by default).
 
 The second method is platform independent and should work identically on Unix/Linux, Windows, or OS-X operating systems.
-It does not allow for searching third-party applications at configuration time. However these can be manually set using 
-QEdit configuration interface. Moreover, QEdit would still work without any of these applications, although with the 
+It does not allow for searching third-party applications at configuration time. However these can be manually set using
+QEdit configuration interface. Moreover, QEdit would still work without any of these applications, although with the
 corresponding features disabled.
 
-For both methods, a full and working installation of Qt4 must be present, including not only the libraries but also the 
-header files (these are usually included in the "libqt4-devel" package for linux distributions) as well as Qt compilation 
-tools such as "moc" and "rcc" (these also are usually included in the "libqt4-devel" package). 
+For both methods, a full and working installation of Qt4 must be present, including not only the libraries but also the
+header files (these are usually included in the "libqt4-devel" package for linux distributions) as well as Qt compilation
+tools such as "moc" and "rcc" (these also are usually included in the "libqt4-devel" package).
 
 For windows, you also need a c++ compiler. MinGW was used for testing this package. It can be downloaded at http://www.mingw.org/
 
 II.1 Configure using GNU automake
 ---------------------------------
 
-This method should work on all unix-like platform and requires the gnu automake tool-set. 
+This method should work on all unix-like platform and requires the gnu automake tool-set.
 
 cd QEdit-X.X/
 mkdir build;
 cd build;
 ../autogen.sh
 
-Notes: 
+Notes:
 a/ the use of a separate directory, here "build" to run autogen, allows to keep a clear separation between the source code and
-the compiled code. The autogen.sh script can be run from virtually any directory, provided that you pre-pend the correct 
+the compiled code. The autogen.sh script can be run from virtually any directory, provided that you pre-pend the correct
 path to it.
 
 b/ a number of options can be used together with autogen, notably to tell QEdit where to find the Qt libraries, the aspell
-libraries, etc. One option of importance is the --prefix option, which determines where the final executable is installed. 
+libraries, etc. One option of importance is the --prefix option, which determines where the final executable is installed.
 Type "../autogen.sh --help" to get the complete list of available options.
 
 II.2 Configure using QT4 qmake
 ------------------------------
 
-This method should work on all platforms but offers less configuration options. 
+This method should work on all platforms but offers less configuration options.
 
 cd QEdit-X.X/
 mkdir build;
 cd build;
 qmake ../QEdit.pro
 
-Notes: 
+Notes:
 a/ the use of a separate directory, here "build" to run qmake, allows to keep a clear separation between the source code and
 the compiled code. qmake can be run from virtually any directory, provided that you pre-pend the correct path to QEdit.pro.
 
-b/ a number of options can be used together with qmake, related to the Qt4 configuration. Type "qmake --help"  to get the 
+b/ a number of options can be used together with qmake, related to the Qt4 configuration. Type "qmake --help"  to get the
 complete list of available options.
 
 III.  Compile the code
 ----------------------
-Whether you use automake tools or qmake, simply type 
+Whether you use automake tools or qmake, simply type
 
 make
 
-To compile the code. The compiled executable should be located either in 
+To compile the code. The compiled executable should be located either in
 
 QEdit-X.X/build/src/qedit
 
-or 
+or
 
 QEdit-X.X/build/src/release/qedit
 
-depending on the platform. Since it does not require other libraries than the ones found at configuration stage, the executable 
+depending on the platform. Since it does not require other libraries than the ones found at configuration stage, the executable
 should be movable to any other place without breaking dependencies.
 
 IV. Installing the code
 -----------------------
 
-IV.1 Install QEdit using GNU automake 
+IV.1 Install QEdit using GNU automake
 -------------------------------------
 
 make install
 
-to install the code. This will install qedit in the default installation path of your system (e.g. /usr/local/bin, or /usr/bin, depending on the system). 
-This usually requires root privileges at the installation stage. Alternatively a different installation path can be set at configuration 
-time using the --prefix autogen option. 
+to install the code. This will install qedit in the default installation path of your system (e.g. /usr/local/bin, or /usr/bin, depending on the system).
+This usually requires root privileges at the installation stage. Alternatively a different installation path can be set at configuration
+time using the --prefix autogen option.
 
 IV.2 Install QEdit using qmake
 ------------------------------
 
-So far, no installation path was added to the qmake input file and typing "make install" will do nothing. 
-After the compilation is completed, the executable should be located either in 
+So far, no installation path was added to the qmake input file and typing "make install" will do nothing.
+After the compilation is completed, the executable should be located either in
 
 QEdit-X.X/build/src/qedit
 
-or 
+or
 
 QEdit-X.X/build/src/release/qedit
 
-depending on the platform. 
+depending on the platform.
 
-However, since it does not require other libraries than the ones found at configuration stage, the executable should be movable 
+However, since it does not require other libraries than the ones found at configuration stage, the executable should be movable
 to any other place without breaking dependencies.
 
 V. QEdit run-time configuration files
 -------------------------------------
 
-QEdit should run out of the box without needing any configuration file. However it will create its own configuration files the 
-first time it runs, located in users HOME directory. The files are called .qeditrc and .qedit_db. They are needed to keep track 
-of users modifications to the internal configuration and store the list of previously opened files, respectively. It is 
-recommended not to modify nor delete these files, although QEdit should still run, at least with its default configuration, 
-if this happens. An additional file, .qedit_help is created at the same place in case the user modifies QEdit editable 
-documentation from within the application. Again, this file can be safely removed if one wants to restore the build-in 
+QEdit should run out of the box without needing any configuration file. However it will create its own configuration files the
+first time it runs, located in users HOME directory. The files are called .qeditrc and .qedit_db. They are needed to keep track
+of users modifications to the internal configuration and store the list of previously opened files, respectively. It is
+recommended not to modify nor delete these files, although QEdit should still run, at least with its default configuration,
+if this happens. An additional file, .qedit_help is created at the same place in case the user modifies QEdit editable
+documentation from within the application. Again, this file can be safely removed if one wants to restore the build-in
 documentation.
 
 VI. Troubles at configuration:

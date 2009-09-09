@@ -100,7 +100,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   AnimatedTextEditor( parent ),
   file_( "" ),
   working_directory_( Util::workingDirectory() ),
-  
+
   // store property ids associated to property names
   // this is used to speed-up fileRecord access
   class_name_property_id_( FileRecord::PropertyId::get( FileRecordProperties::CLASS_NAME ) ),
@@ -108,7 +108,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
   wrap_property_id_( FileRecord::PropertyId::get( FileRecordProperties::WRAPPED ) ),
   dictionary_property_id_( FileRecord::PropertyId::get( FileRecordProperties::DICTIONARY ) ),
   filter_property_id_( FileRecord::PropertyId::get( FileRecordProperties::FILTER ) ),
-  
+
   closed_( false ),
   is_new_document_( false ),
   class_name_( "" ),
@@ -143,11 +143,11 @@ TextDisplay::TextDisplay( QWidget* parent ):
   connect( this, SIGNAL( indent( QTextBlock, QTextBlock ) ), indent_, SLOT( indent( QTextBlock, QTextBlock ) ) );
 
   #if WITH_ASPELL
-  
+
   // install menus
   filter_menu_ = new SPELLCHECK::FilterMenu( this );
   dictionary_menu_ = new SPELLCHECK::DictionaryMenu( this );
-  
+
   #endif
 
   // actions
@@ -171,12 +171,12 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
 //_____________________________________________________
 TextDisplay::~TextDisplay( void )
-{ 
-  
-  Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl; 
+{
+
+  Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl;
   if( !( isNewDocument() || file().isEmpty() ) && BASE::KeySet<TextDisplay>( this ).empty() )
   { Singleton::get().application<Application>()->fileCheck().removeFile( file() ); }
-    
+
 }
 
 //_____________________________________________________
@@ -187,7 +187,7 @@ int TextDisplay::blockCount( const QTextBlock& block ) const
   if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
   {  return block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount(); }
   else return AnimatedTextEditor::blockCount( block );
-  
+
 }
 
 //_____________________________________________________
@@ -220,10 +220,10 @@ void TextDisplay::setModified( const bool& value )
 void TextDisplay::setReadOnly( const bool& value )
 {
   Debug::Throw() << "TextDisplay::setReadOnly - value: " << value << endl;
-  
+
   bool changed = (value != isReadOnly() );
   AnimatedTextEditor::setReadOnly( value );
-  
+
   if( changed && isActive() ) emit needUpdate( READ_ONLY );
 }
 
@@ -231,7 +231,7 @@ void TextDisplay::setReadOnly( const bool& value )
 //______________________________________________________________________________
 void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_actions )
 {
-  
+
   Debug::Throw( "TextDisplay::installContextMenuActions.\n" );
 
   // see if tagged blocks are present
@@ -242,32 +242,32 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
   // retrieve default context menu
   // second argument is to remove un-necessary actions
   AnimatedTextEditor::installContextMenuActions( menu, false );
-  
+
   // add specific actions
   menu.insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
   menu.addSeparator();
-  
+
   // tags submenu
   QMenu* submenu = menu.addMenu( "&Tags" );
-    
-  submenu->addAction( &tagBlockAction() );    
-  submenu->addAction( &nextTagAction() );    
+
+  submenu->addAction( &tagBlockAction() );
+  submenu->addAction( &nextTagAction() );
   submenu->addAction( &previousTagAction() );
   submenu->addAction( &clearTagAction() );
   submenu->addAction( &clearAllTagsAction() );
-  
+
   tagBlockAction().setText( has_selection ? "&Tag selected blocks":"&Tag current block" );
   nextTagAction().setEnabled( has_tags );
   previousTagAction().setEnabled( has_tags );
   clearTagAction().setEnabled( current_block_tagged );
   clearAllTagsAction().setEnabled( has_tags );
-  
+
   // document class menu
   submenu = new DocumentClassMenu( this );
   submenu->setTitle( "&Select document class" );
   connect( submenu, SIGNAL( documentClassSelected( QString ) ), SLOT( selectClassName( QString ) ) );
   menu.addMenu( submenu );
-  
+
   return;
 }
 
@@ -276,7 +276,7 @@ void TextDisplay::paintMargin( QPainter& painter )
 {
   AnimatedTextEditor::paintMargin( painter );
   bool has_block_delimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
-  if( has_block_delimiters ) blockDelimiterDisplay().paint( painter ); 
+  if( has_block_delimiters ) blockDelimiterDisplay().paint( painter );
 }
 
 //___________________________________________________________________________
@@ -308,7 +308,7 @@ void TextDisplay::synchronize( TextDisplay* display )
 
   // block delimiters and line numbers
   blockDelimiterDisplay().synchronize( &display->blockDelimiterDisplay() );
-  
+
   // actions
   textIndentAction().setChecked( display->textIndentAction().isChecked() );
   textHighlightAction().setChecked( display->textHighlightAction().isChecked() );
@@ -323,7 +323,7 @@ void TextDisplay::synchronize( TextDisplay* display )
   _setFile( display->file() );
   _setIsNewDocument( display->isNewDocument() );
   _setLastSaved( last_saved_ );
-  
+
 }
 
 //____________________________________________
@@ -331,24 +331,24 @@ void TextDisplay::setIsNewDocument( void )
 {
 
   Debug::Throw( "TextDisplay::setIsNewDocument.\n" );
-  
+
   // do nothing if already set
-  if( isNewDocument() ) 
+  if( isNewDocument() )
   {
     Debug::Throw( "TextDisplay::setIsNewDocument - done.\n" );
     return;
   }
-  
+
   // generate filename
   File file( NewDocumentNameServer().get() );
   Debug::Throw() << "TextDisplay::setIsNewDocument - file: " << file << endl;
-  
+
   // retrieve display and associated
   BASE::KeySet<TextDisplay> displays( this );
   displays.insert( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
-    
+
     (*iter)->_setIsNewDocument( true );
     (*iter)->setClassName( className() );
     (*iter)->_updateDocumentClass( File(), true );
@@ -360,12 +360,12 @@ void TextDisplay::setIsNewDocument( void )
 
   }
   Debug::Throw( "TextDisplay::setIsNewDocument - filename set.\n" );
-      
+
   // perform first autosave
   Application& application( *Singleton::get().application<Application>() );
   application.autoSave().saveFiles( this );
   Debug::Throw( "TextDisplay::setIsNewDocument - done.\n" );
-  
+
 }
 
 //____________________________________________
@@ -406,7 +406,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
       tmp = autosaved;
     }
   }
-   
+
   // remove new document version from name server
   if( isNewDocument() ) { NewDocumentNameServer().remove( TextDisplay::file() ); }
 
@@ -416,13 +416,13 @@ void TextDisplay::setFile( File file, bool check_autosave )
   displays.insert( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   {
-    
+
     (*iter)->setClassName( className() );
-    (*iter)->_updateDocumentClass( file, false );    
+    (*iter)->_updateDocumentClass( file, false );
     (*iter)->_updateSpellCheckConfiguration( file );
-    
+
   }
-  
+
   // check file and try open.
   QFile in( tmp );
   if( in.open( QIODevice::ReadOnly ) )
@@ -445,7 +445,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
     (*iter)->_setFile( file );
     (*iter)->filePropertiesAction().setEnabled( true );
   }
-    
+
   // save file if restored from autosaved.
   if( restore_autosave && !isReadOnly() ) save();
 
@@ -453,7 +453,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
   Application& application( *Singleton::get().application<Application>() );
   application.autoSave().saveFiles( this );
   Debug::Throw( "TextDisplay::setFile - done.\n" );
-  
+
 }
 
 //_______________________________________________________
@@ -461,18 +461,18 @@ void TextDisplay::_setFile( const File& file )
 {
 
   Debug::Throw() << "TextDisplay::_setFile - file: " << file << endl;
-  
+
   file_ = file;
   if( !isNewDocument() && file.exists() )
   {
-    
+
     _setLastSaved( file.lastModified() );
     _setWorkingDirectory( file.path() );
     _setIgnoreWarnings( false );
-    
+
     // add file to file check
     Singleton::get().application<Application>()->fileCheck().addFile( file );
-    
+
   }
 
   // check if file is read-only
@@ -501,11 +501,11 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
     setModified( true );
     save();
     break;
-    
+
     case FileRemovedDialog::SAVE_AS:
-    saveAs(); 
+    saveAs();
     break;
-    
+
     case FileRemovedDialog::IGNORE:
     case FileRemovedDialog::CLOSE:
     {
@@ -518,9 +518,9 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
       }
     }
     break;
-    
+
     default: break;
-  
+
   }
 
   return FileRemovedDialog::ReturnCode( state );
@@ -538,34 +538,34 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
     Debug::Throw( "TextDisplay::checkFileModified - warnings ignored.\n" );
     return FileModifiedDialog::IGNORE;
   }
-  
+
   // check if file is really modified
-  if( !_fileModified() ) 
+  if( !_fileModified() )
   {
     Debug::Throw( "TextDisplay::checkFileModified - file not changed.\n" );
     return FileModifiedDialog::IGNORE;
   }
-    
+
   // create dialog
   FileModifiedDialog dialog( this, file() );
   int state( dialog.centerOnWidget( window() ).exec() );
   switch( state )
   {
-    
+
     case FileModifiedDialog::RESAVE:
     document()->setModified( true );
-    save(); 
+    save();
     break;
-    
+
     case FileModifiedDialog::SAVE_AS:
     saveAs();
     break;
-  
+
     case FileModifiedDialog::RELOAD:
     setModified( false );
     revertToSave();
     break;
-    
+
     case FileModifiedDialog::IGNORE:
     {
       BASE::KeySet<TextDisplay> displays( this );
@@ -574,10 +574,10 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
       { (*iter)->_setIgnoreWarnings( true ); }
     }
     break;
-    
+
     default: break;
   }
-  
+
   return FileModifiedDialog::ReturnCode( state );
 
 }
@@ -594,9 +594,9 @@ void TextDisplay::clearFileCheckData( void )
 {
 
   Debug::Throw( "TextDisplay::clearFileCheckData.\n" );
-  
-  if( fileCheckData().flag() == FileCheck::Data::NONE ) return; 
-  
+
+  if( fileCheckData().flag() == FileCheck::Data::NONE ) return;
+
   // clear file check data
   BASE::KeySet<TextDisplay> displays( this );
   displays.insert( this );
@@ -607,18 +607,18 @@ void TextDisplay::clearFileCheckData( void )
 
 //___________________________________________________________________________
 void TextDisplay::setFileCheckData( const FileCheck::Data& data )
-{ 
+{
   Debug::Throw( "TextDisplay::setFileCheckData.\n" );
-  
+
   // check if data flag is different from stored
   bool flags_changed( data.flag() != file_check_data_.flag() );
-  
+
   // update data
-  file_check_data_ = data; 
-  
+  file_check_data_ = data;
+
   // emit file modification signal, to update session file frames
   if( flags_changed ) emit needUpdate( MODIFIED );
-  
+
 }
 
 //___________________________________________________________________________
@@ -690,7 +690,7 @@ void TextDisplay::save( void )
   if( !file().isEmpty() )
   { Singleton::get().application<Application>()->fileCheck().addFile( file() ); }
 
-  
+
   // retrieve associated displays, update saved time
   BASE::KeySet<TextDisplay> displays( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
@@ -739,7 +739,7 @@ void TextDisplay::saveAs( void )
   // the class name is reset, to allow a document class
   // matching the new filename to get loaded
   setClassName( "" );
-  
+
   BASE::KeySet<TextDisplay> displays( this );
   displays.insert( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
@@ -749,7 +749,7 @@ void TextDisplay::saveAs( void )
     (*iter)->_setIsNewDocument( false );
     (*iter)->setClassName( className() );
     (*iter)->_updateDocumentClass( file, false );
-    (*iter)->_setFile( file ); 
+    (*iter)->_setFile( file );
 
     // enable file info action
     (*iter)->filePropertiesAction().setEnabled( true );
@@ -777,7 +777,7 @@ void TextDisplay::revertToSave( void )
 
   // store cursor position but remove selection
   int position( textCursor().position() );
-  
+
   setModified( false );
   setFile( file(), false );
 
@@ -812,38 +812,38 @@ bool TextDisplay::hasLeadingTabs( void ) const
 //_______________________________________________________
 QString TextDisplay::toPlainText( void ) const
 {
-  
+
   Debug::Throw( "TextDisplay::toPlainText.\n" );
-  
+
   // check blockDelimiterAction
-  if( !( showBlockDelimiterAction().isEnabled() && showBlockDelimiterAction().isChecked() ) ) 
+  if( !( showBlockDelimiterAction().isEnabled() && showBlockDelimiterAction().isChecked() ) )
   { return AnimatedTextEditor::toPlainText(); }
-  
+
   // output string
   QString out;
-  
+
   // loop over blocks
   for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
   {
-    
+
     // add current block
     out += block.text();
     if( block.next().isValid() ) out += "\n";
-    
+
     // retrieve associated block format
     QTextBlockFormat block_format( block.blockFormat() );
     if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
     {
-      
+
       CollapsedBlockData collapsed_data( block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
       for( CollapsedBlockData::List::const_iterator iter = collapsed_data.children().begin(); iter != collapsed_data.children().end(); iter++ )
-      { out += iter->toPlainText(); } 
+      { out += iter->toPlainText(); }
     }
-    
+
   }
-  
+
   return out;
-      
+
 }
 
 //_______________________________________________________
@@ -853,8 +853,8 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
   // clear highlight locations and rehighlight
   QDomElement out = document.createElement( "Pre" );
 
-  int active_id( 0 ); 
-  
+  int active_id( 0 );
+
   // loop over text blocks
   for( QTextBlock block = TextDisplay::document()->begin(); block.isValid(); block = block.next() )
   {
@@ -862,12 +862,12 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
     // need to redo highlighting rather that us HighlightBlockData
     // because the latter do not store autospell patterns.
     PatternLocationSet locations;
-    if( textHighlight().isHighlightEnabled() ) 
-    { 
+    if( textHighlight().isHighlightEnabled() )
+    {
       locations = textHighlight().locationSet( block.text(), active_id );
       active_id = locations.activeId().second;
     }
-    
+
     // retrieve text
     QString text( block.text() );
 
@@ -904,7 +904,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
             line_index = 0;
           }
           buffer = "";
-        }  
+        }
 
         // update pattern
         current_pattern_id = pattern_id;
@@ -913,7 +913,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
         span = out.appendChild( document.createElement( "Span" ) ).toElement();
         if( location_iter !=  locations.rend() )
         {
-                    
+
           // retrieve font format
           const unsigned int& format( location_iter->fontFormat() );
           QString buffer;
@@ -956,9 +956,9 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
       if( span.isNull() ) span  = out.appendChild( document.createElement( "Span" ) ).toElement();
       span.appendChild( document.createTextNode( buffer ) );
     }
-    
+
     out.appendChild( document.createElement( "Br" ) );
-    
+
   }
 
   return out;
@@ -986,13 +986,13 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
   if( !data ) block.setUserData( data = new HighlightBlockData() );
   if( data->hasFlag( tag ) ) return;
   data->setFlag( tag, true );
-  
+
   switch( tag )
   {
     case TextBlock::DIFF_ADDED:
     setBackground( block, diff_added_color_ );
     break;
-    
+
     case TextBlock::DIFF_CONFLICT:
     setBackground( block, diff_conflict_color_ );
     break;
@@ -1033,7 +1033,7 @@ void TextDisplay::clearTag( QTextBlock block, const int& tags )
     data->setFlag( TextBlock::USER_TAG, false );
     clearBackground( block );
   }
-  
+
   Debug::Throw( "TextDisplay::clearTag - done.\n" );
 
 }
@@ -1089,61 +1089,61 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
 {
 
   Debug::Throw( "TextDisplay::_updateDocumentClass\n" );
-  
+
   textHighlight().clear();
   textIndent().clear();
   textIndent().setBaseIndentation(0);
   _clearMacros();
-  
+
   // default document class is empty
   DocumentClass document_class;
   Application& application( *Singleton::get().application<Application>() );
-  
+
   // try load document class from class_name
   if( !className().isEmpty() )
-  { 
+  {
     Debug::Throw( "TextDisplay::updateDocumentClass - try use className().\n" );
-    document_class = application.classManager().get( className() ); 
+    document_class = application.classManager().get( className() );
   }
 
   // try load from file
   if( document_class.name().isEmpty() && !( file.isEmpty() || new_document ) )
-  { 
+  {
     Debug::Throw( "TextDisplay::updateDocumentClass - try use filename.\n" );
-    document_class = application.classManager().find( file ); 
+    document_class = application.classManager().find( file );
   }
 
   // use default
   if( document_class.name().isEmpty() )
-  { 
+  {
     Debug::Throw( "TextDisplay::updateDocumentClass - using default.\n" );
-    document_class = application.classManager().defaultClass(); 
+    document_class = application.classManager().defaultClass();
   }
-  
+
   // update class name
   setClassName( document_class.name() );
 
   // wrap mode
   if( !( file.isEmpty() || new_document ) )
-  { 
-    
+  {
+
     FileRecord& record( _recentFiles().get( file ) );
     if( record.hasProperty( wrap_property_id_ ) ) wrapModeAction().setChecked( Str( record.property( wrap_property_id_ ) ).get<bool>() );
     else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
 
   } else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
-  
+
   // need to update tab size here because at the time it was set in _updateConfiguration,
   // the font might not have been right
   _setTabSize( XmlOptions::get().get<int>("TAB_SIZE") );
 
   // tab emulation
-  if( XmlOptions::get().get<bool>( "EMULATE_TABS_FROM_CLASS" ) ) 
+  if( XmlOptions::get().get<bool>( "EMULATE_TABS_FROM_CLASS" ) )
   {
     tabEmulationAction().setChecked( document_class.emulateTabs() );
     if( document_class.tabSize() > 0 ) _setTabSize( document_class.tabSize() );
   }
- 
+
   // enable actions consequently
   parenthesisHighlightAction().setVisible( !document_class.parenthesis().empty() );
   textHighlightAction().setVisible( !document_class.highlightPatterns().empty() );
@@ -1154,17 +1154,17 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   textHighlight().setPatterns( document_class.highlightPatterns() );
   textHighlight().setParenthesis( document_class.parenthesis() );
   textHighlight().setBlockDelimiters( document_class.blockDelimiters() );
-      
+
   textIndent().setPatterns( document_class.indentPatterns() );
   textIndent().setBaseIndentation( document_class.baseIndentation() );
   _setMacros( document_class.textMacros() );
 
   // update block delimiters
-  if( blockDelimiterDisplay().expandAllAction().isEnabled() ) blockDelimiterDisplay().expandAllAction().trigger();   
+  if( blockDelimiterDisplay().expandAllAction().isEnabled() ) blockDelimiterDisplay().expandAllAction().trigger();
   if( blockDelimiterDisplay().setBlockDelimiters( document_class.blockDelimiters() ) ) update();
   showBlockDelimiterAction().setVisible( !document_class.blockDelimiters().empty() );
   _updateMargin();
-  
+
   // update enability for parenthesis matching
   textHighlight().setParenthesisEnabled(
     textHighlightAction().isChecked() &&
@@ -1178,10 +1178,10 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
 
   // add information to Menu
   if( !( file.isEmpty() || new_document ) )
-  { 
+  {
     FileRecord& record( _recentFiles().get( file ) );
-    record.addProperty( class_name_property_id_, className() ); 
-    record.addProperty( wrap_property_id_, Str().assign<bool>( wrapModeAction().isChecked() ) ); 
+    record.addProperty( class_name_property_id_, className() );
+    record.addProperty( wrap_property_id_, Str().assign<bool>( wrapModeAction().isChecked() ) );
     if( !document_class.icon().isEmpty() ) record.addProperty( icon_property_id_, document_class.icon() );
   }
 
@@ -1195,7 +1195,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
 
   // propagate
   emit needUpdate( DOCUMENT_CLASS );
-  
+
   return;
 
 }
@@ -1215,6 +1215,17 @@ void TextDisplay::processMacro( QString name )
     InformationDialog( this, buffer ).exec();
     return;
   }
+
+  // process macro
+  _processMacro( *macro_iter, false );
+
+}
+
+//_____________________________________________
+void TextDisplay::_processMacro( const TextMacro& macro, bool full_text )
+{
+
+  Debug::Throw() << "TextDisplay::_processMacro." << endl;
 
   // check display
   if( !isActive() ) return;
@@ -1251,7 +1262,7 @@ void TextDisplay::processMacro( QString name )
   }
 
   // process macro
-  if( !macro_iter->processText( text ) ) return;
+  if( !macro.processText( text ) ) return;
 
   // update selection
   cursor.setPosition( position_begin );
@@ -1292,19 +1303,19 @@ void TextDisplay::clearAllTags( const int& flags )
 {
 
   Debug::Throw( "AnimatedTextEditor::clearAllTags.\n" );
-  
+
   setUpdatesEnabled( false );
   for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
   { clearTag( block, flags ); }
   setUpdatesEnabled( true );
-  
+
   // get associated displays and update all
   // this is needed due to the setUpdatesEnabled above
   BASE::KeySet<TextDisplay> displays( this );
   displays.insert( this );
   for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
   { (*iter)->viewport()->update(); }
-  
+
 }
 
 //_______________________________________
@@ -1378,7 +1389,7 @@ void TextDisplay::selectClassName( QString name )
     (*iter)->setClassName( name );
     (*iter)->updateDocumentClass();
   }
-  
+
   // rehighlight
   rehighlight();
 
@@ -1387,28 +1398,28 @@ void TextDisplay::selectClassName( QString name )
 //_______________________________________________________
 bool TextDisplay::event( QEvent* event )
 {
-  
+
   bool has_block_delimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
-  
+
   // check that all needed widgets/actions are valid and checked.
-  switch (event->type()) 
+  switch (event->type())
   {
-          
+
     case QEvent::MouseButtonPress:
     if( has_block_delimiters ) blockDelimiterDisplay().mousePressEvent( static_cast<QMouseEvent*>( event ) );
     break;
-    
+
     default: break;
   }
-  
+
   return AnimatedTextEditor::event( event );
-  
+
 }
 
 //_______________________________________________________
 void TextDisplay::keyPressEvent( QKeyEvent* event )
 {
-  
+
   // check if tab key is pressed
   if(
     event->key() == Qt::Key_Tab &&
@@ -1417,14 +1428,14 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
   { emit indent( textCursor().block(), false ); }
   else
   {
-    
+
     // process key
     AnimatedTextEditor::keyPressEvent( event );
-    
+
     // indent current paragraph when return is pressed
     if( indent_->isEnabled() && event->key() == Qt::Key_Return && !textCursor().hasSelection() )
     { emit indent( textCursor().block(), true ); }
-    
+
     // reindent paragraph if needed
     /* remark: this is c++ specific. The list of keys should be set in the document class */
     if( indent_->isEnabled() && ( event->key() == Qt::Key_BraceRight || event->key() == Qt::Key_BraceLeft ) && !textCursor().hasSelection() )
@@ -1443,19 +1454,19 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 
   if( _autoSpellContextEvent( event ) ) return;
   else {
-    
+
     AnimatedTextEditor::contextMenuEvent( event );
     return;
-    
+
   }
-  
+
 }
 
 //________________________________________________
 void TextDisplay::paintEvent( QPaintEvent* event )
 {
   AnimatedTextEditor::paintEvent( event );
-  
+
   // handle block background
   QTextBlock first( cursorForPosition( event->rect().topLeft() ).block() );
   QTextBlock last( cursorForPosition( event->rect().bottomRight() ).block() );
@@ -1465,19 +1476,19 @@ void TextDisplay::paintEvent( QPaintEvent* event )
   painter.setClipRect( event->rect() );
   painter.translate( -scrollbarPosition() );
   painter.setPen( _marginWidget().palette().color( QPalette::WindowText ) );
-  
-  // loop over found blocks  
+
+  // loop over found blocks
   for( QTextBlock block( first ); block != last.next() && block.isValid(); block = block.next() )
   {
     if( !block.blockFormat().boolProperty( TextBlock::Collapsed ) ) continue;
-    
+
     QRectF block_rect( document()->documentLayout()->blockBoundingRect( block ) );
     block_rect.setWidth( viewport()->width() + scrollbarPosition().x() );
     QLineF line( QPointF( 0, block_rect.bottomLeft().y() ), block_rect.bottomRight() );
     painter.drawLine( line );
   }
   painter.end();
-  
+
 }
 
 //________________________________________________
@@ -1657,7 +1668,7 @@ bool TextDisplay::_contentsChanged( void ) const
   // dump file into character string
   QString file_text( in.readAll() );
   QString text( toPlainText() );
-  
+
   return (text.size() != file_text.size() || text != file_text );
 
 }
@@ -1666,32 +1677,32 @@ bool TextDisplay::_contentsChanged( void ) const
 bool TextDisplay::_fileRemoved( void ) const
 {
   Debug::Throw( "TextDisplay::_fileRemoved.\n" );
-  
+
   // check new document
   if( file().isEmpty() || isNewDocument() ) return false;
   if( !lastSaved().isValid() ) return false;
 
-  /* 
+  /*
   for "afs" files, one should do the check anyway, disregarding
   fileCheckData, because the latter is not triggered properly
   when modifying the file remotely
   */
-  
+
   // check file flag
-  if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::REMOVED ) ) 
+  if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::REMOVED ) )
   { return false; }
-  
+
   // make sure file is still removed
   if( !file().exists() ) return true;
   else {
-        
+
     // file has been re-created in the meantime.
     // need to re-ad it to FileChecker
     Singleton::get().application<Application>()->fileCheck().addFile( file() );
     return false;
-    
+
   }
-  
+
 }
 
 //____________________________________________
@@ -1704,16 +1715,16 @@ bool TextDisplay::_fileModified( void )
   if( file().isEmpty() || isNewDocument() ) return false;
   if( ! ( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::MODIFIED ) ) return false;
   if( !lastSaved().isValid() ) return false;
-  
+
   const TimeStamp file_modified( _fileIsAfs() ? TimeStamp(file().lastModified()) : fileCheckData().timeStamp() );
   if( !file_modified.isValid() ) return false;
   if( !(file_modified > last_saved_ ) ) return false;
   if( !_contentsChanged() ) return false;
-  
+
   // update last_save to avoid chain questions
   last_saved_ = file_modified;
   return true;
-    
+
 }
 
 //_____________________________________________________________
@@ -1757,27 +1768,27 @@ bool TextDisplay::_updateMargin( void )
 
   AnimatedTextEditor::_updateMargin();
   int left_margin( _leftMargin() );
-  
+
   blockDelimiterDisplay().setOffset( left_margin );
   if( showBlockDelimiterAction().isChecked() && showBlockDelimiterAction().isVisible() )
   { left_margin += blockDelimiterDisplay().width(); }
-  
+
   return _setLeftMargin( left_margin );
-  
+
 }
 
 //___________________________________________________________________________
 bool TextDisplay::_toggleWrapMode( bool state )
 {
-  
+
   Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "True":"False") << endl;
   if( !AnimatedTextEditor::_toggleWrapMode( state ) ) return false;
-  
+
   if( !( file().isEmpty() || isNewDocument() ) )
   { _recentFiles().get( file() ).addProperty( wrap_property_id_, Str().assign<bool>(state) ); }
-    
+
   return true;
-  
+
 }
 
 //___________________________________________________________________________
@@ -1805,7 +1816,7 @@ void TextDisplay::_updateConfiguration( void )
     blockDelimiterDisplay().setWidth( line_spacing );
     _updateMargin();
   }
-  
+
   // retrieve diff colors
   diff_conflict_color_ = QColor( XmlOptions::get().raw("DIFF_CONFLICT_COLOR") );
   diff_added_color_ = QColor( XmlOptions::get().raw("DIFF_ADDED_COLOR") );
@@ -1864,7 +1875,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
   }
 
   // rehighlight if needed
-  if( changed && autoSpellAction().isChecked() && autoSpellAction().isEnabled() ) 
+  if( changed && autoSpellAction().isChecked() && autoSpellAction().isEnabled() )
   { rehighlight(); }
 
   #endif
@@ -1978,7 +1989,7 @@ void TextDisplay::_toggleAutoSpell( bool state )
   // enable menus
   // dictionaryMenuAction().setEnabled( state );
   // filterMenuAction().setEnabled( state );
-  
+
   // propagate to textHighlight
   textHighlight().spellParser().setEnabled( state );
   rehighlight();
@@ -2004,20 +2015,20 @@ void TextDisplay::_toggleAutoSpell( bool state )
 //_______________________________________________________
 void TextDisplay::_toggleShowBlockDelimiters( bool state )
 {
-    
+
   _updateMargin();
-  
+
   // need to expand all blocks if block delimiters is being hidden
   if( !state && hasBlockDelimiterDisplay() && blockDelimiterDisplay().expandAllAction().isEnabled() )
   { blockDelimiterDisplay().expandAllAction().trigger(); }
-  
+
   // update options
   XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", state );
 
   // propagate to other displays
   if( isSynchronized() )
   {
-    
+
     // temporarely disable synchronization
     // to avoid infinite loop
     setSynchronized( false );
@@ -2268,11 +2279,11 @@ void TextDisplay::_fileProperties( void )
   Debug::Throw( "TextDisplay::_fileProperties.\n" );
   if( file().isEmpty() || isNewDocument() ) return;
 
-  // prior to showing the dialog 
+  // prior to showing the dialog
   // one should add needed tab for misc information
   const FileRecord& record(  _recentFiles().get( file() ) );
   FileInformationDialog dialog( this, record );
-  
+
   // add additional informations frame
   QWidget* box( new QWidget() );
   QVBoxLayout* layout = new QVBoxLayout();
@@ -2280,22 +2291,22 @@ void TextDisplay::_fileProperties( void )
   layout->setSpacing( 5 );
   box->setLayout( layout );
   Debug::Throw( "TextDisplay::_fileProperties - Miscellaneous tab booked.\n" );
-  
+
   GridLayout* grid_layout = new GridLayout();
   grid_layout->setMargin(0);
   grid_layout->setSpacing( 5 );
   grid_layout->setMaxCount( 2 );
     grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
   layout->addLayout( grid_layout );
-  
+
   // number of characters
   grid_layout->addWidget( new QLabel( "Number of characters: ", box ) );
   grid_layout->addWidget( new QLabel( QString().setNum(toPlainText().size()), box ) );
-  
+
   // number of lines
   grid_layout->addWidget( new QLabel( "Number of lines: ", box ) );
   grid_layout->addWidget( new QLabel( QString().setNum( AnimatedTextEditor::blockCount()), box ) );
-  
+
   grid_layout->addWidget( new QLabel( "Text highlighting: ", box ) );
   {
     QCheckBox* checkbox( new QCheckBox( box ) );
@@ -2303,7 +2314,7 @@ void TextDisplay::_fileProperties( void )
     checkbox->setEnabled( false );
     grid_layout->addWidget( checkbox );
   }
-    
+
   grid_layout->addWidget( new QLabel( "Paragraph highlighting: ", box ) );
   {
     QCheckBox* checkbox( new QCheckBox( box ) );
@@ -2311,7 +2322,7 @@ void TextDisplay::_fileProperties( void )
     checkbox->setEnabled( false );
     grid_layout->addWidget( checkbox );
   }
-  
+
   grid_layout->addWidget( new QLabel( "Parenthesis highlighting: ", box ) );
   {
     QCheckBox* checkbox( new QCheckBox( box ) );
@@ -2319,7 +2330,7 @@ void TextDisplay::_fileProperties( void )
     checkbox->setEnabled( false );
     grid_layout->addWidget( checkbox );
   }
-  
+
   grid_layout->addWidget( new QLabel( "Text indentation: ", box ) );
   {
     QCheckBox* checkbox( new QCheckBox( box ) );
@@ -2327,7 +2338,7 @@ void TextDisplay::_fileProperties( void )
     checkbox->setEnabled( false );
     grid_layout->addWidget( checkbox );
   }
-  
+
   grid_layout->addWidget( new QLabel( "Text wrapping: ", box ) );
   {
     QCheckBox* checkbox( new QCheckBox( box ) );
@@ -2335,7 +2346,7 @@ void TextDisplay::_fileProperties( void )
     checkbox->setEnabled( false );
     grid_layout->addWidget( checkbox );
   }
-  
+
   grid_layout->addWidget( new QLabel( "Tab emulation: ", box ) );
   {
     QCheckBox* checkbox( new QCheckBox( box ) );
@@ -2353,19 +2364,19 @@ void TextDisplay::_fileProperties( void )
     editor->setReadOnly( true );
     editor->setHasClearButton( false );
     editor->setFrame( false );
-    
+
     // modify color
     QPalette palette( editor->palette() );
     palette.setColor( QPalette::Base, Qt::transparent );
     editor->setPalette( palette );
-    
+
     // set text and add to layout
     editor->setText( Singleton::get().application<Application>()->classManager().get( className() ).file() );
     grid_layout->addWidget( editor );
   }
 
   {
-  
+
   	grid_layout->addWidget( new QLabel( "Auto-save file name: ", box ) );
   	grid_layout->setColumnStretch( 1, 1 );
 
@@ -2374,24 +2385,24 @@ void TextDisplay::_fileProperties( void )
     editor->setReadOnly( true );
     editor->setHasClearButton( false );
     editor->setFrame( false );
-    
+
     // modify color
     QPalette palette( editor->palette() );
     palette.setColor( QPalette::Base, Qt::transparent );
     editor->setPalette( palette );
-    
+
     // set text and add to layout
     editor->setText( AutoSaveThread::autoSaveName( file() ) );
     grid_layout->addWidget( editor );
   }
-  
+
   layout->addStretch();
-  
+
   dialog.tabWidget().addTab( box, "&Miscellaneous" );
-  
+
   // execute dialog
   dialog.centerOnWidget( window() ).exec();
-  
+
 }
 
 //_____________________________________________________________
@@ -2416,7 +2427,7 @@ void TextDisplay::_textModified( void )
   // for readonly displays
   if( document()->isModified() && isReadOnly() ) document()->setModified( false );
   if( isActive() && ( file().size() || isNewDocument() ) ) emit needUpdate( MODIFIED );
-  
+
 }
 
 //__________________________________________________
@@ -2465,18 +2476,18 @@ void TextDisplay::_highlightParenthesis( void )
 
   // retrieve text block data
   HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-  if( !data ) return;  
+  if( !data ) return;
 
   QString text( block.text() );
   const TextParenthesis::List& parenthesis( textHighlight().parenthesis() );
-     
+
   // check against opening parenthesis
   bool found( false );
-  TextParenthesis::List::const_iterator iter( find_if( 
-    parenthesis.begin(), parenthesis.end(), 
+  TextParenthesis::List::const_iterator iter( find_if(
+    parenthesis.begin(), parenthesis.end(),
     TextParenthesis::FirstElementFTor( text.left( position ) ) ) );
-  
-  
+
+
   if( iter != parenthesis.end() )
   {
     int increment( 0 );
@@ -2511,12 +2522,12 @@ void TextDisplay::_highlightParenthesis( void )
   }
 
   // if not found, check against closing parenthesis
-  if( !( found || (iter = 
-    find_if( 
-    parenthesis.begin(), parenthesis.end(), 
+  if( !( found || (iter =
+    find_if(
+    parenthesis.begin(), parenthesis.end(),
     TextParenthesis::SecondElementFTor( text.left( position ) ) )) == parenthesis.end()  ) )
   {
-        
+
     int increment( 0 );
     position -= (iter->second().size() );
     while( block.isValid() && !found )
@@ -2527,10 +2538,10 @@ void TextDisplay::_highlightParenthesis( void )
       // parse text
       while( position >= 0 && (position = iter->regexp().lastIndexIn( text.left(position) ) ) >= 0 )
       {
-        
+
         if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment--;
         else if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->second() ) increment++;
-        
+
         if( increment < 0 )
         {
           found = true;
@@ -2544,12 +2555,12 @@ void TextDisplay::_highlightParenthesis( void )
         block = block.previous();
         if( block.isValid() ) position = block.text().length() ;
       }
-      
+
     }
   }
 
   if( found ) parenthesisHighlight().highlight( position + block.position(), iter->regexp().matchedLength() );
-  
+
   return;
 
 }
@@ -2601,7 +2612,7 @@ void TextDisplay::_nextTag( void )
   { block = block.next(); }
 
   if( !block.isValid() )
-  { 
+  {
     InformationDialog( this, "No tagged block found." ).exec();
     return;
   }
@@ -2636,7 +2647,7 @@ void TextDisplay::_previousTag( void )
   { block = block.previous(); }
 
   if( !block.isValid() )
-  { 
+  {
     InformationDialog( this, "No tagged block found." ).exec();
     return;
   }
@@ -2688,7 +2699,7 @@ void TextDisplay::_clearTag( void )
   // clear background for selected blocks
   for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
   { clearTag( *iter, TextBlock::ALL_TAGS ); }
-  
+
 }
 
 //___________________________________________________________________________

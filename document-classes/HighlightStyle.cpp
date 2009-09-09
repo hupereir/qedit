@@ -1,24 +1,24 @@
 // $Id$
 
 /******************************************************************************
- *                         
- * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>             
- *                         
- * This is free software; you can redistribute it and/or modify it under the    
- * terms of the GNU General Public License as published by the Free Software    
- * Foundation; either version 2 of the License, or (at your option) any later   
- * version.                             
- *                          
- * This software is distributed in the hope that it will be useful, but WITHOUT 
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License        
- * for more details.                     
- *                          
- * You should have received a copy of the GNU General Public License along with 
- * software; if not, write to the Free Software Foundation, Inc., 59 Temple     
- * Place, Suite 330, Boston, MA  02111-1307 USA                           
- *                         
- *                         
+ *
+ * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+ *
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * software; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA  02111-1307 USA
+ *
+ *
  *******************************************************************************/
 
 /*!
@@ -42,19 +42,19 @@ HighlightStyle::HighlightStyle( const QDomElement& element ):
       color_( Qt::black )
 {
   Debug::Throw( "HighlightStyle::HighlightStyle.\n" );
-      
+
   // parse attributes
   QDomNamedNodeMap attributes( element.attributes() );
   for( unsigned int i=0; i<attributes.length(); i++ )
   {
     QDomAttr attribute( attributes.item( i ).toAttr() );
     if( attribute.isNull() ) continue;
-    
+
     if( attribute.name() == XML::NAME ) setName( attribute.value() );
     else if( attribute.name() == XML::FORMAT ) setFontFormat( attribute.value().toInt() );
     else if( attribute.name() == XML::COLOR ) setColor( QColor( attribute.value() ) );
     else Debug::Throw(0) << "Option::Option - unrecognized attribute " << attribute.name() << ".\n";
-  
+
   }
 }
 
@@ -72,9 +72,9 @@ QDomElement HighlightStyle::domElement( QDomDocument& parent ) const
 
 //_____________________________________________________
 bool HighlightStyle::operator == ( const HighlightStyle& other ) const
-{ 
-  return 
+{
+  return
     name() == other.name() &&
     fontFormat() == other.fontFormat() &&
     color() == other.color();
-}  
+}

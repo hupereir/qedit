@@ -47,7 +47,7 @@ ParenthesisHighlight::ParenthesisHighlight( TextEditor* parent ):
   location_( -1 ),
   length_(0),
   cleared_( true )
-{ 
+{
   Debug::Throw( "ParenthesisHighlight::ParenthesisHighlight.\n" );
   timer_.setSingleShot( true );
   timer_.setInterval( 50 );
@@ -59,18 +59,18 @@ void ParenthesisHighlight::clear( void )
 {
 
   if( cleared_ ) return;
-  
+
   // loop over all blocks
   for( QTextBlock block = parent_->document()->begin(); block.isValid(); block = block.next() )
   {
-        
+
     // retrieve block data
     HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
     if( !( data && data->hasParenthesis() ) ) continue;
-    
+
     // do not clear current block if parenthesis is unchanged
-    if( 
-      block.contains( location_ ) && 
+    if(
+      block.contains( location_ ) &&
       data->hasParenthesis() &&
       data->parenthesis() + block.position() == location_ &&
       isEnabled() ) continue;
@@ -78,9 +78,9 @@ void ParenthesisHighlight::clear( void )
     // clear parenthesis
     data->clearParenthesis();
     parent_->document()->markContentsDirty(block.position(), block.length()-1);
-    
+
   }
-  
+
   cleared_ = true;
 
 }
@@ -100,7 +100,7 @@ void ParenthesisHighlight::highlight( const int& location, const int& length )
 {
 
   if( !isEnabled() ) return;
-  
+
   clear();
   location_ = location;
   length_ = length;
@@ -110,11 +110,11 @@ void ParenthesisHighlight::highlight( const int& location, const int& length )
 //______________________________________________________________________
 void ParenthesisHighlight::_highlight( void )
 {
-  
+
   // retrieve block matching location
-  QTextBlock block( parent_->document()->findBlock( location_ ) );  
+  QTextBlock block( parent_->document()->findBlock( location_ ) );
   if( !block.isValid() ) return;
-  
+
   HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( block.userData() );
   if( !data )
   {
@@ -122,15 +122,14 @@ void ParenthesisHighlight::_highlight( void )
     TextBlockData* text_data = dynamic_cast<TextBlockData*>( block.userData() );
     data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData();
     block.setUserData( data );
-    
+
   } else if( data->hasParenthesis() && data->parenthesis() + block.position() == location_ ) return;
-  
+
   // update parenthesis
   data->setParenthesis( location_ - block.position(), length_ );
   parent_->document()->markContentsDirty( location_, length_ );
   cleared_ = false;
-  
+
   // reset location
   location_ = -1;
 }
-

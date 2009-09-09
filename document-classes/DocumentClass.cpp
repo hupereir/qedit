@@ -72,23 +72,23 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 
     if( attribute.name() == XML::NAME ) name_ = attribute.value() ;
     else if( attribute.name() == XML::PATTERN ) file_pattern_.setPattern( XmlString( attribute.value() ).toText() );
-    else if( attribute.name() == XML::FIRSTLINE_PATTERN ) firstline_pattern_.setPattern( XmlString( attribute.value() ).toText() ); 
+    else if( attribute.name() == XML::FIRSTLINE_PATTERN ) firstline_pattern_.setPattern( XmlString( attribute.value() ).toText() );
     else if( attribute.name() == XML::ICON ) icon_ = XmlString( attribute.value() ).toText();
-    
+
     // these are kept for backward compatibility
     else if( attribute.name() == XML::OPTIONS )
     {
-      
-      if( attribute.value().indexOf( XML::OPTION_WRAP, 0, Qt::CaseInsensitive ) >= 0 ) setWrap( true );    
-      if( attribute.value().indexOf( XML::OPTION_EMULATE_TABS, 0, Qt::CaseInsensitive ) >= 0 ) emulate_tabs_ = true;    
-      if( attribute.value().indexOf( XML::OPTION_DEFAULT, 0, Qt::CaseInsensitive ) >= 0 ) default_ = true;    
-      
+
+      if( attribute.value().indexOf( XML::OPTION_WRAP, 0, Qt::CaseInsensitive ) >= 0 ) setWrap( true );
+      if( attribute.value().indexOf( XML::OPTION_EMULATE_TABS, 0, Qt::CaseInsensitive ) >= 0 ) emulate_tabs_ = true;
+      if( attribute.value().indexOf( XML::OPTION_DEFAULT, 0, Qt::CaseInsensitive ) >= 0 ) default_ = true;
+
     } else if( attribute.name() == XML::BASE_INDENTATION ) _setBaseIndentation( attribute.value().toInt() );
-    
+
     else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized attribute: " << attribute.name() << endl;
-    
+
   }
-  
+
   // parse children
   for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() )
   {
@@ -113,10 +113,10 @@ DocumentClass::DocumentClass( const QDomElement& element ):
       text_parenthesis_.push_back( TextParenthesis( child_element ) );
 
     } else if( child_element.tagName() == XML::BLOCK_DELIMITER ) {
-      
+
       // block delimiters
       block_delimiters_.push_back( BlockDelimiter( child_element, block_delimiters_.size() ) );
-      
+
     } else if( child_element.tagName() == XML::MACRO ) {
 
       // text macrox
@@ -124,7 +124,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
       if( macro.isValid() ) text_macros_.push_back( macro );
 
     } else if( child_element.tagName() == OPTIONS::OPTION ) {
-      
+
       XmlOption option( child_element );
       if( option.name() == XML::OPTION_WRAP ) setWrap( option.get<bool>() );
       else if( option.name() == XML::OPTION_EMULATE_TABS ) setEmulateTabs( option.get<bool>() );
@@ -132,25 +132,25 @@ DocumentClass::DocumentClass( const QDomElement& element ):
       else if( option.name() == XML::BASE_INDENTATION ) _setBaseIndentation( option.get<int>() );
       else if( option.name() == XML::TAB_SIZE ) setTabSize( option.get<int>() );
       else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized option " << option.name() << endl;
-        
+
     } else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized child " << child_element.tagName() << ".\n";
 
-    
-    
+
+
   }
 
   // associate elements
   QStringList warnings = associatePatterns();
   for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); iter++ )
   { Debug::Throw(0) << "DocumentClass::read - " << *iter << endl; }
-  
+
 }
 
 //______________________________________________________
 bool DocumentClass::operator == ( const DocumentClass& other ) const
 {
-  
-  return 
+
+  return
     name() == other.name() &&
     file() == other.file() &&
     fileMatchingPattern() == other.fileMatchingPattern() &&
@@ -167,13 +167,13 @@ bool DocumentClass::operator == ( const DocumentClass& other ) const
     blockDelimiters() == other.blockDelimiters() &&
     textMacros() == other.textMacros() &&
     baseIndentation() == other.baseIndentation();
-  
+
 }
 
 //______________________________________________________
 QStringList DocumentClass::associatePatterns( void )
 {
-  
+
   Debug::Throw( "DocumentClass::associatePatterns.\n" );
   QStringList out;
 
@@ -183,13 +183,13 @@ QStringList DocumentClass::associatePatterns( void )
   unsigned int id(0);
   for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++, id++ )
   { iter->setId( id ); }
-  
+
   // create parent/children hierarchy between highlight patterns
   for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
   if( iter->parent().size() )
   {
     HighlightPattern::List::iterator parent_iter( find_if( highlight_patterns_.begin(), highlight_patterns_.end(), HighlightPattern::SameNameFTor( iter->parent() ) ) );
-    if( parent_iter != highlight_patterns_.end() ) 
+    if( parent_iter != highlight_patterns_.end() )
     {
       iter->setParentId( (*parent_iter).id() );
       (*parent_iter).addChild( *iter );
@@ -210,39 +210,39 @@ QStringList DocumentClass::associatePatterns( void )
       QTextStream( &what ) << "Unable to find highlight style named " << iter->style().name();
       out.push_back( what );
     }
-    
+
   }
-  
+
   return out;
 
 }
-  
+
 
 //________________________________________________
 QDomElement DocumentClass::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "DocumentClass::domElement.\n" );
   QDomElement out( parent.createElement( XML::DOCUMENT_CLASS ) );
-  
+
   // dump attributes
   out.setAttribute( XML::NAME, name_ );
   if( !file_pattern_.isEmpty() ) out.setAttribute( XML::PATTERN, XmlString( file_pattern_.pattern() ).toXml() );
   if( !firstline_pattern_.isEmpty() ) out.setAttribute( XML::FIRSTLINE_PATTERN, XmlString( firstline_pattern_.pattern() ).toXml() );
-  
+
   // icon
   if( !icon().isEmpty() ) out.setAttribute( XML::ICON, icon() );
-  
+
   // options
   out.appendChild( parent.createTextNode( "\n\n" ) );
   out.appendChild( parent.createComment( "Options" ) );
   out.appendChild( XmlOption( XML::OPTION_WRAP, Option().set<bool>( wrap() ) ).domElement( parent ) );
   out.appendChild( XmlOption( XML::OPTION_EMULATE_TABS, Option().set<bool>( emulateTabs() ) ).domElement( parent ) );
   out.appendChild( XmlOption( XML::OPTION_DEFAULT, Option().set<bool>( isDefault() ) ).domElement( parent ) );
-  out.appendChild( XmlOption( XML::BASE_INDENTATION, Option().set<int>( baseIndentation() ) ).domElement( parent ) );  
-  
-  if( tabSize() > 0 ) 
+  out.appendChild( XmlOption( XML::BASE_INDENTATION, Option().set<int>( baseIndentation() ) ).domElement( parent ) );
+
+  if( tabSize() > 0 )
   { out.appendChild( XmlOption( XML::TAB_SIZE, Option().set<int>( tabSize() ) ).domElement( parent ) ); }
-  
+
   // dump highlight styles
   out.appendChild( parent.createTextNode( "\n\n" ) );
   out.appendChild( parent.createComment( "Highlight styles" ) );
@@ -278,19 +278,19 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   out.appendChild( parent.createComment( "Text macros" ) );
   for( TextMacro::List::const_iterator iter = text_macros_.begin(); iter != text_macros_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
-  
+
   return out;
 }
 
 //________________________________________________
 void DocumentClass::clear( void )
 {
-  
+
   Debug::Throw( "DocumentClass::clear.\n" );
 
   highlight_styles_.clear();
-  highlight_patterns_.clear();  
-  indent_patterns_.clear();  
+  highlight_patterns_.clear();
+  indent_patterns_.clear();
   text_parenthesis_.clear();
   text_macros_.clear();
 
@@ -299,34 +299,34 @@ void DocumentClass::clear( void )
 //________________________________________________________
 bool DocumentClass::match( const File& file ) const
 {
-  
+
   Debug::Throw( "DocumentClass::Match.\n" );
-  
+
   // check if class is default
   if( default_ ) return true;
 
   // check if file pattern match
   if( !file_pattern_.isEmpty() && file_pattern_.isValid() && file_pattern_.indexIn( file ) >= 0 ) return true;
-  
+
   // check if first line of file match firstline_pattern_
   QFile in( file );
   if( !firstline_pattern_.isEmpty() && firstline_pattern_.isValid() && in.open( QIODevice::ReadOnly ) )
   {
-    
+
     QString line;
-    static const QRegExp empty_line_regexp( "(^\\s*$)" ); 
+    static const QRegExp empty_line_regexp( "(^\\s*$)" );
     while(  in.bytesAvailable() && !(line = in.readLine(1024)).isNull() )
     {
 
       // skip empty lines
       if( line.isEmpty() || empty_line_regexp.indexIn( line ) >= 0 ) continue;
-      
+
       // check non empty lines
       return ( firstline_pattern_.indexIn( line ) >= 0 );
-      
+
     }
   }
-  
-  // no match 
+
+  // no match
   return false;
 }

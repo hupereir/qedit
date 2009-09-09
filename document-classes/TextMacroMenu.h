@@ -42,11 +42,11 @@
 //! display available document classes
 class TextMacroMenu: public QMenu, public Counter
 {
-  
+
   Q_OBJECT
-  
+
   public:
-  
+
   //! constructor
   TextMacroMenu( QWidget* );
 
@@ -56,25 +56,25 @@ class TextMacroMenu: public QMenu, public Counter
 
   //! set macro
   void setTextMacros( const TextMacro::List&, bool );
-  
+
   //! set enabled
   void setEnabled( bool );
-  
+
   signals:
-  
+
   //! emmited every time a text macro is selected
   void textMacroSelected( QString );
 
   protected slots:
-  
+
   //! emited when an action is selected
   void _processAction( QAction* action );
-  
+
   private:
-  
+
   //! map action to TextMacro
   std::map<QAction*, QString > actions_;
-  
+
 };
 
 #endif

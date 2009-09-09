@@ -56,31 +56,31 @@ DocumentClassMenu::DocumentClassMenu( QWidget* parent ):
 void DocumentClassMenu::_update( void )
 {
   Debug::Throw( "DocumentClassMenu::_update.\n" );
-  
+
   // clear menu
   clear();
   actions_.clear();
-  
+
   // retrieve current class from MainWindow
-  MainWindow& window( *static_cast<MainWindow*>( parentWidget()->window()) ); 
+  MainWindow& window( *static_cast<MainWindow*>( parentWidget()->window()) );
   const QString& class_name( window.activeDisplay().className() );
-    
+
   // retrieve classes from DocumentClass manager
   const DocumentClassManager::List& classes( Singleton::get().application<Application>()->classManager().classes() );
   for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
-  { 
+  {
     // insert actions
     QAction* action = addAction( iter->name() );
     if( !iter->icon().isEmpty() ) action->setIcon( IconEngine::get( iter->icon() ) );
-    
+
     action->setCheckable( true );
     action->setChecked( iter->name() == class_name );
     action_group_->addAction( action );
-    
-    actions_.insert( make_pair( action, iter->name() ) );    
-  
+
+    actions_.insert( make_pair( action, iter->name() ) );
+
   }
- 
+
 }
 
 //_____________________________________________
@@ -88,9 +88,9 @@ void DocumentClassMenu::_selectClassName( QAction* action )
 {
   Debug::Throw( "DocumentClassMenu::_selectClassName.\n" );
   std::map< QAction*, QString >::iterator iter = actions_.find( action );
-  if( iter != actions_.end() ) 
+  if( iter != actions_.end() )
   { emit documentClassSelected( iter->second ); }
-  
+
   return;
-  
+
 }

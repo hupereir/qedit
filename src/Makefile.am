@@ -1,9 +1,9 @@
 # $Id$
 
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = src.pro qedit.rc pixmaps.qrc 
+EXTRA_DIST = src.pro qedit.rc pixmaps.qrc
 
-if WITH_ASPELL 
+if WITH_ASPELL
 INCLUDES = \
   -I$(aspell_includes) \
   -I$(qt_includes) \
@@ -40,7 +40,7 @@ CXXFLAGS = @CXXFLAGS@
 noinst_LIBRARIES = libqedit.a
 bin_PROGRAMS = qedit editDocumentClasses
 
-if WITH_ASPELL 
+if WITH_ASPELL
 libraries = \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
   -L$(aspell_libraries) -laspell  \

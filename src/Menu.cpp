@@ -66,7 +66,7 @@ Menu::Menu( QWidget* parent ):
   // retrieve mainwindow
   Application& application( *Singleton::get().application<Application>() );
   MainWindow& mainwindow( *static_cast<MainWindow*>( window() ) );
-  
+
   menu->addAction( &mainwindow.newFileAction() );
   menu->addAction( &mainwindow.cloneAction() );
   menu->addAction( &mainwindow.detachAction() );
@@ -75,7 +75,7 @@ Menu::Menu( QWidget* parent ):
   // open previous menu
   recent_files_menu_ = new RecentFilesMenu( this, application.recentFiles() );
   menu->addMenu( recent_files_menu_ );
-  
+
   // additional actions
   menu->addSeparator();
   menu->addAction( &mainwindow.closeDisplayAction() );
@@ -111,7 +111,7 @@ Menu::Menu( QWidget* parent ):
   // tools
   tools_menu_ = addMenu( "&Tools" );
   connect( tools_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updateToolsMenu() ) );
-  
+
   // macros
   addMenu( macro_menu_ = new TextMacroMenu( this ) );
   macro_menu_->setTitle( "&Macro" );
@@ -121,7 +121,7 @@ Menu::Menu( QWidget* parent ):
   // Settings
   preference_menu_ = addMenu( "&Settings" );
   connect( preference_menu_, SIGNAL( aboutToShow() ), this, SLOT( _updatePreferenceMenu() ) );
-    
+
   // windows
   windows_action_group_ = new ActionGroup( this );
   windows_menu_ = addMenu( "&Window" );
@@ -138,7 +138,7 @@ Menu::Menu( QWidget* parent ):
     help->setFile( help_file );
     help->install( HelpText );
     help->install( BASE::HelpText, false );
-  }  
+  }
 
   // create help menu
   menu = addMenu( "&Help" );
@@ -146,7 +146,7 @@ Menu::Menu( QWidget* parent ):
   menu->addSeparator();
   menu->addAction( &application.aboutQtAction() );
   menu->addAction( &application.aboutAction() );
-  
+
   // debug menu
   #ifdef DEBUG
   menu->addSeparator();
@@ -156,13 +156,13 @@ Menu::Menu( QWidget* parent ):
   debug_menu->addAction( &application.monitoredFilesAction() );
   menu->addMenu( debug_menu );
   #endif
-  
+
 }
 
 //_______________________________________________
 Menu::~Menu( void )
 { Debug::Throw( "Menu::~Menu.\n" ); }
-  
+
 //_______________________________________________
 void Menu::_updateRecentFilesMenu( void )
 {
@@ -174,22 +174,22 @@ void Menu::_updateRecentFilesMenu( void )
 void Menu::_updateEditMenu( void )
 {
   Debug::Throw( "Menu::_updateEditMenu.\n" );
-  
+
   edit_menu_->clear();
-  
+
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
   edit_menu_->addAction( &display.undoAction() );
   edit_menu_->addAction( &display.redoAction() );
   edit_menu_->addSeparator();
-  
+
   edit_menu_->addAction( &display.cutAction() );
   edit_menu_->addAction( &display.copyAction() );
   edit_menu_->addAction( &display.pasteAction() );
   edit_menu_->addSeparator();
- 
+
   edit_menu_->addAction( &display.upperCaseAction() );
   edit_menu_->addAction( &display.lowerCaseAction() );
-  
+
 }
 
 //_______________________________________________
@@ -198,7 +198,7 @@ void Menu::_updateSearchMenu( void )
   Debug::Throw( "Menu::_updateSearchMenu.\n" );
 
   search_menu_->clear();
-  
+
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
   search_menu_->addAction( &display.findAction() );
   search_menu_->addAction( &display.findAgainAction() );
@@ -206,7 +206,7 @@ void Menu::_updateSearchMenu( void )
   search_menu_->addAction( &display.replaceAction() );
   search_menu_->addAction( &display.replaceAgainAction() );
   search_menu_->addSeparator();
-  
+
   search_menu_->addAction( &display.gotoLineAction() );
 
 }
@@ -224,7 +224,7 @@ void Menu::_updatePreferenceMenu( void )
 
   // clear menu
   preference_menu_->clear();
-  
+
   // textdisplay actions
   preference_menu_->addAction( &mainwindow.navigationFrame().visibilityAction() );
   preference_menu_->addAction( &display.showLineNumberAction() );
@@ -235,14 +235,14 @@ void Menu::_updatePreferenceMenu( void )
   preference_menu_->addAction( &display.textHighlightAction() );
   preference_menu_->addAction( &display.blockHighlightAction() );
   preference_menu_->addAction( &display.parenthesisHighlightAction() );
-  
+
   #if WITH_ASPELL
   preference_menu_->addSeparator();
   preference_menu_->addAction( &display.autoSpellAction() );
   preference_menu_->addAction( &display.dictionaryMenuAction() );
   preference_menu_->addAction( &display.filterMenuAction() );
   #endif
-  
+
   // configurations (from application)
   preference_menu_->addSeparator();
   #if WITH_ASPELL
@@ -257,13 +257,13 @@ void Menu::_updatePreferenceMenu( void )
 //_______________________________________________
 void Menu::_updateToolsMenu( void )
 {
-  
+
   Debug::Throw( "Menu::_updateToolsMenu.\n" );
 
   // retrieve mainwindow and current display
   MainWindow& mainwindow( *static_cast<MainWindow*>(window()) );
   TextDisplay& display( mainwindow.activeDisplay() );
-  
+
   // retrieve flags needed to set button state
   bool editable( !display.isReadOnly() );
   bool has_selection( display.textCursor().hasSelection() );
@@ -271,34 +271,34 @@ void Menu::_updateToolsMenu( void )
 
   // clear menu
   tools_menu_->clear();
-  
+
   // selection indentation
   tools_menu_->addAction( &display.indentSelectionAction() );
   display.indentSelectionAction().setEnabled( editable && has_selection && has_indent );
 
-  //if( display.baseIndentAction().isEnabled() ) 
+  //if( display.baseIndentAction().isEnabled() )
   { tools_menu_->addAction( &display.baseIndentAction() ); }
-  
+
   // tab replacement
   tools_menu_->addAction( &display.leadingTabsAction() );
   display.leadingTabsAction().setEnabled( display.hasLeadingTabs() );
-    
+
   // spell checker
   tools_menu_->addAction( &display.spellcheckAction() );
-    
+
   // diff files
   tools_menu_->addSeparator();
   tools_menu_->addAction( &mainwindow.diffAction() );
- 
+
   bool has_tags( display.hasTaggedBlocks() );
   bool current_block_tagged( has_tags && display.isCurrentBlockTagged() );
-  
+
   tools_menu_->addAction( &display.tagBlockAction() );
   display.tagBlockAction().setText( has_selection ? "&Tag selected blocks":"&Tag current block" );
-  
+
   tools_menu_->addAction( &display.nextTagAction() );
   display.nextTagAction().setEnabled( has_tags );
-  
+
   tools_menu_->addAction( &display.previousTagAction() );
   display.previousTagAction().setEnabled( has_tags );
 
@@ -315,19 +315,19 @@ void Menu::_updateToolsMenu( void )
     display.blockDelimiterDisplay().updateCurrentBlockActionState();
     display.blockDelimiterDisplay().addActions( *tools_menu_ );
   }
-  
+
   // rehighlight
   tools_menu_->addSeparator();
-  QAction* action = tools_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) ); 
+  QAction* action = tools_menu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) );
   bool enabled( display.textHighlightAction().isEnabled() && display.textHighlightAction().isChecked() );
-  
+
   #if WITH_ASPELL
   enabled |= ( display.autoSpellAction().isEnabled() || display.autoSpellAction().isChecked() );
   #endif
 
   action->setEnabled( enabled );
 
-    
+
 }
 
 //_______________________________________________
@@ -340,7 +340,7 @@ void Menu::_updateMacroMenu( void )
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
   bool has_selection( display.textCursor().hasSelection() );
 
-  macroMenu().setTextMacros( display.macros(), has_selection );  
+  macroMenu().setTextMacros( display.macros(), has_selection );
   return;
 }
 
@@ -354,45 +354,45 @@ void Menu::_updateWindowsMenu( void )
   // retrieve current display
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
   windows_menu_->addAction( &display.filePropertiesAction() );
-  
+
   const QString& current_file( display.file() );
-  
+
   // clear files map
   file_actions_.clear();
-      
+
   // retrieve all files
   bool first = true;
   FileRecord::List records( Singleton::get().application<Application>()->windowServer().records() );
   for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
-  { 
-    
+  {
+
     // retrieve file and check
     const File& file( iter->file() );
-    
+
     // if first valid file, add separator
-    if( first ) 
+    if( first )
     {
-      windows_menu_->addSeparator(); 
+      windows_menu_->addSeparator();
       first = false;
     }
-      
+
     // add menu item
     QAction* action = windows_menu_->addAction( file );
     action->setCheckable( true );
     action->setChecked( current_file == file );
     windows_action_group_->addAction( action );
-      
+
     // insert in map for later callback.
     file_actions_.insert( make_pair( action, file ) );
-    
+
   }
-  
-  
-  windows_menu_->addSeparator(); 
+
+
+  windows_menu_->addSeparator();
   SessionFilesFrame& session_files_frame( static_cast<MainWindow*>(window())->navigationFrame().sessionFilesFrame() );
   windows_menu_->addAction( &session_files_frame.previousFileAction() );
   windows_menu_->addAction( &session_files_frame.nextFileAction() );
-  
+
 }
 
 //_______________________________________________
@@ -407,32 +407,32 @@ void Menu::_selectMacro( QString name )
 void Menu::_selectFile( QAction* action )
 {
   Debug::Throw( "Menu::_selectFile.\n" );
-  
+
   // try retrieve id in map
   std::map<QAction*, File>::iterator iter = file_actions_.find( action );
   if( iter == file_actions_.end() ) return;
-  
+
   // retrieve all mainwindows
   BASE::KeySet<MainWindow> windows( &Singleton::get().application<Application>()->windowServer() );
-  
+
   // retrieve window matching file name
   BASE::KeySet<MainWindow>::iterator window_iter( find_if(
     windows.begin(),
     windows.end(),
     MainWindow::SameFileFTor( iter->second ) ) );
-  
+
   // check if window was found
   if( window_iter == windows.end() )
-  { 
+  {
     QString buffer;
     QTextStream( &buffer ) << "Unable to find a window containing file " << iter->second;
     InformationDialog( this, buffer ).exec();
     return;
   }
-  
+
   // select display in found window
   (*window_iter)->selectDisplay( iter->second );
   (*window_iter)->uniconify();
-  
+
   return;
 }

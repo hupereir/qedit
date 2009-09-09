@@ -61,59 +61,59 @@ class NavigationToolBar: public CustomToolBar
   //! destructor
   ~NavigationToolBar( void );
 
-  //! set target 
-  void connect( NavigationFrame& );       
-  
+  //! set target
+  void connect( NavigationFrame& );
+
   protected:
-  
+
   //! context menu
   virtual void contextMenuEvent( QContextMenuEvent* );
-  
+
   private slots:
-  
+
   //! update configuration
   void _updateConfiguration( void );
- 
+
   //! toolbar text position
   void _updateToolButtonStyle( Qt::ToolButtonStyle );
- 
+
   //! toolbar text position
   void _updateToolButtonIconSize( IconSize::Size );
-  
+
   //! make sure proper buttons are changed when navigation frame visibility is changed
   virtual void _navigationFrameVisibilityChanged( bool );
-  
+
   //! change orientation
-  virtual void _orientationChanged( Qt::Orientation );  
+  virtual void _orientationChanged( Qt::Orientation );
 
   //! display item page
   virtual void _display( QAbstractButton* );
-  
+
   private:
-  
+
   //! navigation frame
   NavigationFrame& _navigationFrame( void )
-  { 
+  {
     assert( navigation_frame_ );
     return *navigation_frame_;
   }
-  
+
   //! tool button
   CustomToolButton* _newToolButton( QWidget* parent, QIcon ) const;
-  
+
   //! map widget to action
   typedef std::map<CustomToolButton*, QWidget* > ButtonMap;
-  
+
   //! map widget to action in the toolbar
   ButtonMap buttons_;
-      
+
   //! stack widget
   NavigationFrame* navigation_frame_;
-  
+
   //! enablility
   /*! this is used to avoid circular action triggers */
   bool enabled_;
-  
+
 };
 
 #endif

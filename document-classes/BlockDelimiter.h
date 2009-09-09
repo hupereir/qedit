@@ -56,29 +56,29 @@ class BlockDelimiter: public Counter
 
   //! dom element
   QDomElement domElement( QDomDocument& parent ) const;
-     
+
   //! Id
   const unsigned int& id( void ) const
   { return id_; }
 
   //! equal to operator
   bool operator == ( const BlockDelimiter& other ) const
-  { 
-    return 
+  {
+    return
       first() == other.first() &&
       second() == other.second() &&
       regexp() == other.regexp();
   }
-  
+
   //! less than operator
   bool operator < ( const BlockDelimiter& other ) const
-  { 
+  {
     if( first() != other.first() ) return first() < other.first();
     if( second() != other.second() ) return second() < other.second();
     if( regexp().pattern() != other.regexp().pattern() ) return regexp().pattern() < other.regexp().pattern();
     return false;
   }
-  
+
   //! block start
   const QString& first() const
   { return first_; }
@@ -90,7 +90,7 @@ class BlockDelimiter: public Counter
   //! block end
   const QString& second() const
   { return second_; }
-  
+
   //! second
   void setSecond( const QString& value )
   { second_ = value; }
@@ -98,34 +98,34 @@ class BlockDelimiter: public Counter
   //! regExp that match either block start or end
   const QRegExp& regexp() const
   { return regexp_; }
-  
+
   //! regext
   void setRegexp( const QString& value )
   { regexp_.setPattern( value ); }
 
-    
+
   private:
-    
+
   //! unique id
-  unsigned int id_; 
-  
+  unsigned int id_;
+
   //! regular expression that match first character
   QString first_;
-  
+
   //! regular expression that match second character
   QString second_;
-  
+
   //! regular expression that match either of both characters
   QRegExp regexp_;
-  
+
   //! streamer
   friend QTextStream& operator << ( QTextStream& out, const BlockDelimiter& delimiter )
   {
     out << " first: " << delimiter.first()
-      << " second: " << delimiter.second() 
+      << " second: " << delimiter.second()
       << " regexp: " << delimiter.regexp().pattern();
     return out;
   }
-  
+
 };
 #endif
