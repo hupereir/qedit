@@ -135,14 +135,39 @@ class TextMacro: public Counter
   virtual void setIsSeparator( const bool& value = true )
   { is_separator_ = value; }
 
+  //! result class
+  /*! 
+  first is whether any changes where applied or not
+  second is the net increment in terms of number of characters between input and output text
+  */
+  class Result: public std::pair<bool, int>
+  {
+    
+    public:
+    
+    //! constructor
+    Result( bool changed = false, int increment = 0 ):
+      std::pair<bool,int>( changed, increment )
+      {}
+      
+    //! add-to operator
+    Result& operator += (const Result& other )
+    {
+      first |= other.first;
+      second += other.second;
+      return *this;
+    }
+    
+  };
+  
   //! modify text passed as argument. Return true if text is modified
-  bool processText( QString& text ) const
+  Result processText( QString& text ) const
   {
     if( isSeparator() ) return false;
-    bool changed( false );
+    Result out;
     for( Rule::List::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
-    { changed |= iter->processText( text ); }
-    return changed;
+    { out += iter->processText( text ); }
+    return out;
   }
 
   //! modify text passed as argument. Return true if text is modified
@@ -184,7 +209,7 @@ class TextMacro: public Counter
     if( !accelerator().isEmpty() ) out->setShortcut( QKeySequence( accelerator() ) );
     return out;
   }
-
+  
   //! used to store regular expression and corresponding replacement text
   class Rule: public Counter
   {
@@ -221,8 +246,8 @@ class TextMacro: public Counter
     bool isValid( void ) const
     { return pattern_.isValid(); }
 
-    //! modify text passed as argument. Return true if text is modified
-    bool processText( QString& text ) const;
+    //! modify text passed as argument. Return number of changed characters
+    Result processText( QString& text ) const;
 
     //! pattern
     const QRegExp& pattern( void ) const

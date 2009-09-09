@@ -227,7 +227,7 @@ void DocumentClassTextEditor::processMacro( QString name )
   }
 
   // process macro
-  if( !macro_iter->processText( text ) ) return;
+  if( !macro_iter->processText( text ).first ) return;
 
   // update selection
   cursor.setPosition( position_begin );

@@ -154,12 +154,13 @@ QDomElement TextMacro::Rule::domElement( QDomDocument& parent ) const
 }
 
 //_____________________________________________________
-bool TextMacro::Rule::processText( QString& text ) const
+TextMacro::Result TextMacro::Rule::processText( QString& text ) const
 {
   Debug::Throw( "TextMacro::Rule::ProcessText.\n" );
-
-  if( !isValid() ) return false;
-
+  
+  // check validity
+  if( !isValid() ) return TextMacro::Result();
+  
   QString copy( text );
   if( no_splitting_ )
   { text.replace( pattern_, replace_text_ ); }
@@ -179,6 +180,6 @@ bool TextMacro::Rule::processText( QString& text ) const
 
   // check if strings are different
   // and return
-  return text != copy;
+  return TextMacro::Result( text != copy, text.length() - copy.length() );
 
 }

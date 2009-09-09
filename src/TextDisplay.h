@@ -671,6 +671,9 @@ class TextDisplay: public AnimatedTextEditor
   //! empty line
   static QRegExp& _emptyLineRegExp( void );
 
+  //! clean lines macro
+  static const TextMacro& _cleanLinesMacro( void );
+  
   //! file
   File file_;
 
@@ -802,9 +805,6 @@ class TextDisplay: public AnimatedTextEditor
 
   //! block delimiter
   BlockDelimiterDisplay* block_delimiter_display_;
-
-  //! clean end of line macro
-  static TextMacro clean_lines_macro_;
 
 };
 
