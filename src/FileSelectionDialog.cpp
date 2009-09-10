@@ -56,7 +56,7 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
   selection_( selection )
 {
 
-  setWindowTitle( "file selection" );
+  setWindowTitle( "File Selection - Qedit" );
   setOptionName( "FILE_SELECTION_DIALOG" );
 
   // custom list display

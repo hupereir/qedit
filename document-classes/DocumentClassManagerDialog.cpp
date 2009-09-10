@@ -124,7 +124,7 @@ void DocumentClassManagerDialog::closeEvent( QCloseEvent* event )
 
         what << "Exit anyway ?";
 
-        if( !QuestionDialog( this, buffer ).setWindowTitle( "Save Document Classes - qedit" ).centerOnParent().exec() )
+        if( !QuestionDialog( this, buffer ).setWindowTitle( "Save Document Classes - Qedit" ).centerOnParent().exec() )
         { event->ignore(); }
 
         break;

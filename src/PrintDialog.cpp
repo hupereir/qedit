@@ -52,7 +52,7 @@ PrintDialog::PrintDialog( QWidget* parent ):
 {
 
   Debug::Throw( "PrintDialog::PrintDialog.\n" );
-  setWindowTitle( "Print Document - qedit" );
+  setWindowTitle( "Print Document - Qedit" );
 
   setOptionName( "PRINT_DIALOG" );
 

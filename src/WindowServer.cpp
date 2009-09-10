@@ -340,7 +340,7 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   ProgressDialog dialog;
   dialog.setAttribute( Qt::WA_DeleteOnClose );
   QtUtil::centerOnWidget( &dialog, qApp->activeWindow() );
-  dialog.setWindowTitle( Util::windowTitle( "Replace in Text" ) );
+  dialog.setWindowTitle( Util::windowTitle( "Replace in Text - Qedit" ) );
   dialog.show();
 
   // loop over files to get relevant displays
@@ -388,7 +388,7 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
   if( !counts ) what << "string not found.";
   else if( counts == 1 ) what << "1 replacement performed";
   else what << counts << " replacements performed";
-  InformationDialog( &_activeWindow(), buffer ).setWindowTitle( "Replace in Text" ).centerOnWidget( qApp->activeWindow() ).exec();
+  InformationDialog( &_activeWindow(), buffer ).setWindowTitle( "Replace in Text - Qedit" ).centerOnWidget( qApp->activeWindow() ).exec();
 
   return;
 }

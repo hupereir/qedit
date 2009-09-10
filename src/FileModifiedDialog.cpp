@@ -50,7 +50,7 @@ FileModifiedDialog::FileModifiedDialog( QWidget* parent, const File& file ):
 
   Debug::Throw( "FileModifiedDialog::FileModifiedDialog.\n" );
 
-  setWindowTitle( "File Modified" );
+  setWindowTitle( "File Modified - Qedit" );
 
   // create vbox layout
   QVBoxLayout* layout=new QVBoxLayout();

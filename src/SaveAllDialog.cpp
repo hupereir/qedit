@@ -44,7 +44,7 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
 {
 
   Debug::Throw( "SaveAllDialog::SaveAllDialog.\n" );
-  setWindowTitle( "Save Files - qedit" );
+  setWindowTitle( "Save Files - Qedit" );
 
   QHBoxLayout *h_layout( new QHBoxLayout() );
   h_layout->setSpacing(5);

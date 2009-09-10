@@ -49,7 +49,7 @@ HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
 {
 
   Debug::Throw( "HighlightPatternDialog::HighlightPatternDialog.\n" );
-  setWindowTitle( "Highlight Pattern settings - qedit" );
+  setWindowTitle( "Highlight Pattern Settings - Qedit" );
 
   mainLayout().setSpacing(5);
 

@@ -46,7 +46,7 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
 
   Debug::Throw( "CloseFilesDialog::CloseFilesDialog.\n" );
 
-  setWindowTitle( "Close Files - qedit" );
+  setWindowTitle( "Close Files - Qedit" );
 
   QHBoxLayout *h_layout( new QHBoxLayout() );
   h_layout->setSpacing(5);

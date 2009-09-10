@@ -47,7 +47,7 @@ TextMacroRuleDialog::TextMacroRuleDialog( QWidget* parent ):
 {
 
   Debug::Throw( "TextMacroRuleDialog::TextMacroRuleDialog.\n" );
-  setWindowTitle( "Text Macro settings - qedit" );
+  setWindowTitle( "Text Macro Settings - Qedit" );
 
   mainLayout().setSpacing(5);
 

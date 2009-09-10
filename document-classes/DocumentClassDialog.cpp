@@ -111,7 +111,7 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
 
   // set window title
   QString buffer;
-  QTextStream( &buffer ) << "Document class: " << document_class.name() << " - qedit";
+  QTextStream( &buffer ) << "Document Class: " << document_class.name() << " - Qedit";
   setWindowTitle( buffer );
 
   // configuration

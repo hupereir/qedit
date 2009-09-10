@@ -48,7 +48,7 @@ IndentPatternRuleDialog::IndentPatternRuleDialog( QWidget* parent ):
 
   Debug::Throw( "IndentPatternRuleDialog::IndentPatternRuleDialog.\n" );
 
-  setWindowTitle( "Indentation Pattern settings - qedit" );
+  setWindowTitle( "Indentation Pattern Settings - Qedit" );
 
   mainLayout().setSpacing(5);
 

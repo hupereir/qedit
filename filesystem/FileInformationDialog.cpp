@@ -57,7 +57,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
 
   // file name
   const File& file( record.file() );
-  setWindowTitle( (file.isEmpty() ? File("File Information"):file.localName() )+ " - qedit" );
+  setWindowTitle( (file.isEmpty() ? File("File Information"):file.localName() )+ " - Qedit" );
 
   tab_widget_ = new AnimatedTabWidget( this );
   mainLayout().addWidget( &tabWidget() );

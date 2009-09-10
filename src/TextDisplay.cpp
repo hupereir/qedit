@@ -632,7 +632,7 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enable_all )
   if( enable_all ) flags |=  AskForSaveDialog::YES_TO_ALL | AskForSaveDialog::NO_TO_ALL;
 
   AskForSaveDialog dialog( this, file(), flags );
-  dialog.setWindowTitle( "Save Files - qedit" );
+  dialog.setWindowTitle( "Save Files - Qedit" );
   int state( dialog.centerOnParent().exec() );
   if( state == AskForSaveDialog::YES ||  state == AskForSaveDialog::YES_TO_ALL ) save();
   else if( state == AskForSaveDialog::NO ||  state == AskForSaveDialog::NO_TO_ALL ) setModified( false );
@@ -1251,7 +1251,7 @@ void TextDisplay::processMacro( QString name )
   }
 
   // process macro
-  if( !macro_iter->processText( text ) ) return;
+  if( !macro_iter->processText( text ).first ) return;
 
   // update selection
   cursor.setPosition( position_begin );

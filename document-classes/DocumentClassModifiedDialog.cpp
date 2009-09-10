@@ -50,7 +50,7 @@ DocumentClassModifiedDialog::DocumentClassModifiedDialog( QWidget* parent ):
 
   Debug::Throw( "DocumentClassModifiedDialog::DocumentClassModifiedDialog.\n" );
 
-  setWindowTitle( "Document Classes Modified - qedit" );
+  setWindowTitle( "Document Classes Modified - Qedit" );
 
   // create vbox layout
   QVBoxLayout* layout=new QVBoxLayout();

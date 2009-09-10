@@ -47,7 +47,7 @@ TextParenthesisDialog::TextParenthesisDialog( QWidget* parent ):
 {
 
   Debug::Throw( "TextParenthesisDialog::TextParenthesisDialog.\n" );
-  setWindowTitle( "Text Parenthesis settings - qedit" );
+  setWindowTitle( "Text Parenthesis Settings - Qedit" );
 
   mainLayout().setSpacing(5);
 

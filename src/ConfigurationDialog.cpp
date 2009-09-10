@@ -62,7 +62,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     BaseConfigurationDialog( parent )
 {
   Debug::Throw( "ConfigurationDialog::ConfigurationDialog.\n" );
-  setWindowTitle( "Configuration - qedit" );
+  setWindowTitle( "Configuration - Qedit" );
 
   // base configuration
   baseConfiguration();
