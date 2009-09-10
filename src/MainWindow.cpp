@@ -434,7 +434,7 @@ void MainWindow::_revertToSave( void )
   QTextStream what( &buffer );
   if( activeDisplay().document()->isModified() ) what << "Discard changes to " << activeDisplay().file().localName() << "?";
   else what << "Reload file " << activeDisplay().file().localName() << "?";
-  if( !QuestionDialog( this, buffer ).setWindowTitle( "Reload Document - qedit" ).exec() ) return;
+  if( !QuestionDialog( this, buffer ).setWindowTitle( "Reload Document - Qedit" ).exec() ) return;
 
   activeDisplay().revertToSave();
 
@@ -498,7 +498,7 @@ void MainWindow::_print( void )
   {
     QString buffer;
     QTextStream( &buffer ) << "file \"" << fullname << "\" is a directory. <Print> canceled.";
-    InformationDialog( this, buffer ).setWindowTitle( "Print Document - qedit" ).centerOnParent().exec();
+    InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec();
     return;
   }
 
@@ -510,9 +510,9 @@ void MainWindow::_print( void )
     {
       QString buffer;
       QTextStream( &buffer ) << "file \"" << fullname << "\" is read-only. <Print> canceled.";
-      InformationDialog( this, buffer ).setWindowTitle( "Print Document - qedit" ).centerOnParent().exec();
+      InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec();
       return;
-    } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).setWindowTitle( "Print Document - qedit" ).centerOnParent().exec() )
+    } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec() )
     return;
   }
 
@@ -528,7 +528,7 @@ void MainWindow::_print( void )
     {
       QString buffer;
       QTextStream( &buffer ) << "cannot write to file \"" << fullname << "\" <Print> canceled.";
-      InformationDialog( this, buffer ).setWindowTitle( "Print Document - qedit" ).exec();
+      InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).exec();
       return;
     }
 
@@ -1041,7 +1041,7 @@ void MainWindow::_createBaseFindDialog( void )
   {
 
     find_dialog_ = new BaseFindDialog( this );
-    find_dialog_->setWindowTitle( "Find in Text - qedit" );
+    find_dialog_->setWindowTitle( "Find in Text - Qedit" );
     connect( find_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
     connect( this, SIGNAL( noMatchFound() ), find_dialog_, SLOT( noMatchFound() ) );
     connect( this, SIGNAL( matchFound() ), find_dialog_, SLOT( clearLabel() ) );
@@ -1060,7 +1060,7 @@ void MainWindow::_createReplaceDialog( void )
   {
 
     replace_dialog_ = new ReplaceDialog( this );
-    replace_dialog_->setWindowTitle( "Replace in Text - qedit" );
+    replace_dialog_->setWindowTitle( "Replace in Text - Qedit" );
     connect( replace_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
     connect( replace_dialog_, SIGNAL( replace( TextSelection ) ), SLOT( _replace( TextSelection ) ) );
     connect( replace_dialog_, SIGNAL( replaceInWindow( TextSelection ) ), SLOT( _replaceInWindow( TextSelection ) ) );

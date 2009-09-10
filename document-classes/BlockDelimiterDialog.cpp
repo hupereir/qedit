@@ -48,7 +48,7 @@ BlockDelimiterDialog::BlockDelimiterDialog( QWidget* parent ):
 
   Debug::Throw( "BlockDelimiterDialog::BlockDelimiterDialog.\n" );
 
-  setWindowTitle( "Block Delimiter settings - Qedit" );
+  setWindowTitle( "Block Delimiter Settings - Qedit" );
   mainLayout().setSpacing(5);
 
   GridLayout* grid_layout( new GridLayout() );
