@@ -337,6 +337,10 @@ class TextDisplay: public AnimatedTextEditor
   QAction& parenthesisHighlightAction( void ) const
   { return *parenthesis_highlight_action_; }
 
+  //! disable automatic macros
+  QAction& noAutomaticMacrosAction( void ) const
+  { return *no_automatic_macros_action_; }
+
   //! autospell action
   QAction& autoSpellAction( void ) const
   { return *autospell_action_; }
@@ -531,6 +535,9 @@ class TextDisplay: public AnimatedTextEditor
   void _setIgnoreWarnings( const bool& value )
   { ignore_warnings_ = value; }
 
+  //! process macro by name
+  void _processMacro( const TextMacro& );
+
   //! returns true if text contents differs from file contents
   bool _contentsChanged( void ) const;
 
@@ -592,6 +599,9 @@ class TextDisplay: public AnimatedTextEditor
 
   //! toggle block delimiters display
   void _toggleShowBlockDelimiters( bool state );
+
+  //! toggle automatic macros
+  void _toggleIgnoreAutomaticMacros( bool state );
 
   //!@name spell check
   //@{
@@ -732,6 +742,9 @@ class TextDisplay: public AnimatedTextEditor
 
   //! toggle text highlighting
   QAction* parenthesis_highlight_action_;
+
+  //! disable automatic macros
+  QAction* no_automatic_macros_action_;
 
   //! toggle autospell
   QAction* autospell_action_;

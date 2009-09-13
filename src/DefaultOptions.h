@@ -80,6 +80,7 @@ void installDefaultOptions( void )
   XmlOptions::get().set( "BACKUP", Option( "0", "make backup when saving file" ) );
   XmlOptions::get().set( "DB_SIZE", "30" );
 
+  XmlOptions::get().set( "IGNORE_AUTOMATIC_MACROS", "0" );
   XmlOptions::get().set( "SHOW_HIDDEN_FILES", "1" );
   XmlOptions::get().set( "SHOW_BLOCK_DELIMITERS", "1" );
   XmlOptions::get().set( "TEXT_INDENT", "1" );

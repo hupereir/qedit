@@ -59,7 +59,8 @@ class TextMacro: public Counter
   TextMacro( void ):
     Counter( "TextMacro" ),
     id_( 0 ),
-    is_separator_( true )
+    is_separator_( true ),
+    is_automatic_( false )
     {}
 
   //! constructor from DomElement
@@ -135,6 +136,14 @@ class TextMacro: public Counter
   virtual void setIsSeparator( const bool& value = true )
   { is_separator_ = value; }
 
+  //! automatic flag
+  const bool& isAutomatic( void ) const
+  { return is_automatic_; }
+
+  //! automatic
+  virtual void setIsAutomatic( const bool& value = true )
+  { is_automatic_ = value; }
+
   //! result class
   /*! 
   first is whether any changes where applied or not
@@ -161,14 +170,7 @@ class TextMacro: public Counter
   };
   
   //! modify text passed as argument. Return true if text is modified
-  Result processText( QString& text ) const
-  {
-    if( isSeparator() ) return false;
-    Result out;
-    for( Rule::List::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
-    { out += iter->processText( text ); }
-    return out;
-  }
+  Result processText( QString& text, int position = -1 ) const;
 
   //! modify text passed as argument. Return true if text is modified
   bool isValid( void ) const
@@ -203,12 +205,7 @@ class TextMacro: public Counter
   };
 
   //! return action
-  QAction* action( void ) const
-  {
-    QAction* out( new QAction( name(), 0 ) );
-    if( !accelerator().isEmpty() ) out->setShortcut( QKeySequence( accelerator() ) );
-    return out;
-  }
+  QAction* action( void ) const;
   
   //! used to store regular expression and corresponding replacement text
   class Rule: public Counter
@@ -247,7 +244,7 @@ class TextMacro: public Counter
     { return pattern_.isValid(); }
 
     //! modify text passed as argument. Return number of changed characters
-    Result processText( QString& text ) const;
+    Result processText( QString& text, int position ) const;
 
     //! pattern
     const QRegExp& pattern( void ) const
@@ -277,6 +274,9 @@ class TextMacro: public Counter
     {  no_splitting_ = true; }
 
     private:
+
+    //! modify text passed as argument. Return number of changed characters
+    Result _processText( QString& text, int position ) const;
 
     //!@name flags
     //@{
@@ -326,6 +326,10 @@ class TextMacro: public Counter
   //! separator flag
   bool is_separator_;
 
+  //! automatic
+  /*! if true the macro gets automatically executed before saving modifications */
+  bool is_automatic_;
+  
   //! list of replacement
   Rule::List rules_;
 

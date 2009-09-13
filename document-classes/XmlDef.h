@@ -114,6 +114,9 @@ namespace XML {
 
   //! macro is a separator to be placed in the menu
   static const QString OPTION_SEPARATOR( "separator" );
+
+  //! macro is automatic
+  static const QString OPTION_AUTOMATIC( "automatic" );
   //@}
 
   //!@name text parenthesis

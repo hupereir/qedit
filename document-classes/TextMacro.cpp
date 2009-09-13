@@ -49,7 +49,8 @@ TextMacro::TextMacro( const QDomElement& element ):
   id_( id_counter_++ ),
   name_( "generic" ),
   accelerator_( "" ),
-  is_separator_( false )
+  is_separator_( false ),
+  is_automatic_( false )
 {
   Debug::Throw( "TextMacro::TextMacro.\n" );
 
@@ -64,6 +65,7 @@ TextMacro::TextMacro( const QDomElement& element ):
     else if( attribute.name() == XML::OPTIONS )
     {
       if( attribute.value().indexOf( XML::OPTION_SEPARATOR, 0, Qt::CaseInsensitive ) >= 0 ) setIsSeparator();
+      else if( attribute.value().indexOf( XML::OPTION_AUTOMATIC, 0, Qt::CaseInsensitive ) >= 0 ) setIsAutomatic();
     } else Debug::Throw(0) << "TextMacro::TextMacro - unrecognized attribute: " << attribute.name() << endl;
   }
 
@@ -92,12 +94,44 @@ QDomElement TextMacro::domElement( QDomDocument& parent ) const
   out.setAttribute( XML::NAME, name() );
   if( !accelerator().isEmpty() ) out.setAttribute( XML::ACCELERATOR, accelerator() );
 
-  if( isSeparator() ) out.setAttribute( XML::OPTIONS, XML::OPTION_SEPARATOR );
+  QString options;
+  QTextStream what( &options );
+  if( isSeparator() ) what << XML::OPTION_SEPARATOR;
+  if( isAutomatic() ) what << XML::OPTION_AUTOMATIC;
+  if( !options.isEmpty() ) out.setAttribute( XML::OPTIONS, options );
 
   // dump children
   for( Rule::List::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
   { out.appendChild( iter->domElement( parent ) ); }
   return out;
+}
+
+//_____________________________________________________
+QAction* TextMacro::action( void ) const
+{
+
+  // create action label
+  QString label;
+  QTextStream what( &label );
+  what << name();
+  if( isAutomatic() ) what << " (automatic)";
+
+  QAction* out( new QAction( label, 0 ) );
+  if( !accelerator().isEmpty() ) out->setShortcut( QKeySequence( accelerator() ) );
+  return out;
+}
+
+
+//_____________________________________________________
+TextMacro::Result TextMacro::processText( QString& text, int position ) const
+{
+
+  if( isSeparator() ) return Result();
+  Result out;
+  for( Rule::List::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
+  { out += iter->processText( text, position >= 0 ? position+out.second : position ); }
+  return out;
+
 }
 
 //_______________________________________________________
@@ -153,33 +187,64 @@ QDomElement TextMacro::Rule::domElement( QDomDocument& parent ) const
   return out;
 }
 
-//_____________________________________________________
-TextMacro::Result TextMacro::Rule::processText( QString& text ) const
+//_________________________________________________________________________________
+TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) const
 {
   Debug::Throw( "TextMacro::Rule::ProcessText.\n" );
-  
+
   // check validity
   if( !isValid() ) return TextMacro::Result();
-  
-  QString copy( text );
-  if( no_splitting_ )
-  { text.replace( pattern_, replace_text_ ); }
+  if( no_splitting_ ) return _processText( text, position );
   else {
 
-    // split text line by line
     QStringList lines( text.split( '\n' ) );
-
-    // process each line
+    int local_position( position );
+    TextMacro::Result out;
     for( QStringList::iterator iter = lines.begin(); iter != lines.end(); iter++ )
-    { iter->replace( pattern_, replace_text_ ); }
+    {
 
-    // update output string
+      int length = iter->length() + 1;
+      out += _processText( *iter, local_position );
+      local_position = std::max( -1, local_position - length );
+
+    }
+
     text = lines.join( "\n" );
+    return out;
 
   }
 
-  // check if strings are different
-  // and return
-  return TextMacro::Result( text != copy, text.length() - copy.length() );
+}
+
+//_________________________________________________________________________________
+TextMacro::Result TextMacro::Rule::_processText( QString& text, int position ) const
+{
+  TextMacro::Result out;
+  int current_position( 0 );
+  while( ( current_position = pattern_.indexIn( text, current_position ) ) >= 0 )
+  {
+
+    Debug::Throw() << "TextMacro::Rule::_processText - position: " << current_position << " text: " << text << endl;
+
+    // replacement occured
+    out.first = true;
+
+    // replace in text
+    text.replace( current_position, pattern_.matchedLength(), replace_text_ );
+
+    // update output displacements
+    if( position >= 0 && current_position <= position + out.second )
+    { out.second += replace_text_.length() - std::min( pattern_.matchedLength(), position + out.second - current_position ); }
+
+    // update current position
+    current_position += replace_text_.length();
+
+    // end of line pattern must stop after first iteration
+    // in order not to enter infinite look
+    if( pattern_.pattern() == "$" ) break;
+
+  }
+
+  return out;
 
 }

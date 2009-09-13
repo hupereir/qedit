@@ -670,6 +670,20 @@ void TextDisplay::save( void )
       return;
     }
 
+    // process automatic macros
+    if( !noAutomaticMacrosAction().isChecked() )
+    {
+      for( TextMacro::List::const_iterator iter = macros().begin(); iter != macros().end(); iter++ )
+      {
+        if( iter->isAutomatic() )
+        {
+
+          Debug::Throw() << "TextDisplay::save - processing macro named " << iter->name() << endl;
+          _processMacro( *iter );
+        }
+      }
+    }
+
     // write file
     // make sure that last line ends with "end of line"
     QString text( toPlainText() );
@@ -1216,59 +1230,7 @@ void TextDisplay::processMacro( QString name )
     return;
   }
 
-  // check display
-  if( !isActive() ) return;
-
-  // check if readonly
-  if( isReadOnly() ) return;
-
-  // retrieve text cursor
-  QTextCursor cursor( textCursor() );
-  if( !cursor.hasSelection() ) return;
-
-  // retrieve blocks
-  int position_begin( min( cursor.position(), cursor.anchor() ) );
-  int position_end( max( cursor.position(), cursor.anchor() ) );
-  QTextBlock begin( document()->findBlock( position_begin ) );
-  QTextBlock end( document()->findBlock( position_end ) );
-
-  // enlarge selection so that it matches begin and end of blocks
-  position_begin = begin.position();
-  if( position_end == end.position() )
-  {
-    position_end--;
-    end = end.previous();
-  } else {  position_end = end.position() + end.length() - 1; }
-
-  // prepare text from selected blocks
-  QString text;
-  if( begin == end ) text = begin.text().mid( position_begin - begin.position(), position_end-position_begin );
-  else {
-    text = begin.text().mid( position_begin - begin.position() ) + "\n";
-    for( QTextBlock block = begin.next(); block.isValid() && block!= end; block = block.next() )
-    { text += block.text() + "\n"; }
-    text += end.text().left( position_end - end.position() );
-  }
-
-  // process macro
-  if( !macro_iter->processText( text ).first ) return;
-
-  // update selection
-  cursor.setPosition( position_begin );
-  cursor.setPosition( position_end, QTextCursor::KeepAnchor );
-
-  // insert new text
-  cursor.insertText( text );
-
-  // restore selection
-  cursor.setPosition( position_begin );
-  cursor.setPosition( position_begin + text.size(), QTextCursor::KeepAnchor );
-  setTextCursor( cursor );
-
-  // replace leading tabs in selection
-  if( !_hasTabEmulation() ) { _replaceLeadingTabs( false ); }
-
-  return;
+  _processMacro( *macro_iter );
 
 }
 
@@ -1552,6 +1514,12 @@ void TextDisplay::_installActions( void )
   parenthesis_highlight_action_->setChecked( parenthesisHighlight().isEnabled() );
   connect( parenthesis_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
 
+  addAction( no_automatic_macros_action_ = new QAction( "&Disable Automatic Actions", this ) );
+  no_automatic_macros_action_->setCheckable( true );
+  no_automatic_macros_action_->setChecked( false );
+  no_automatic_macros_action_->setToolTip( "Do not execute automatic actions loaded from document class when saving document" );
+  connect( no_automatic_macros_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleIgnoreAutomaticMacros( bool ) ) );
+
   addAction( show_block_delimiter_action_ =new QAction( "Show Block Delimiters", this ) );
   show_block_delimiter_action_->setToolTip( "Show/hide block delimiters" );
   show_block_delimiter_action_->setCheckable( true );
@@ -1640,6 +1608,96 @@ void TextDisplay::_installActions( void )
 //_____________________________________________________________
 FileList& TextDisplay::_recentFiles( void ) const
 { return Singleton::get().application<Application>()->recentFiles(); }
+
+//_____________________________________________
+void TextDisplay::_processMacro( const TextMacro& macro )
+{
+
+  // check display
+  if( !isActive() ) return;
+
+  // check if readonly
+  if( isReadOnly() ) return;
+
+  // retrieve text cursor
+  QTextCursor cursor( textCursor() );
+  int cursor_position( 0 );
+  int position_begin(0);
+  int position_end(0);
+  QTextBlock begin;
+  QTextBlock end;
+
+  bool has_selection( cursor.hasSelection() );
+  if( has_selection )
+  {
+
+    // retrieve blocks
+    position_begin = min( cursor.position(), cursor.anchor() );
+    position_end = max( cursor.position(), cursor.anchor() );
+    begin = document()->findBlock( position_begin );
+    end = document()->findBlock( position_end );
+
+    // enlarge selection so that it matches begin and end of blocks
+    position_begin = begin.position();
+    if( position_end == end.position() )
+    {
+      position_end--;
+      end = end.previous();
+    } else {  position_end = end.position() + end.length() - 1; }
+
+    cursor_position = position_end;
+
+  } else {
+
+    begin = document()->firstBlock();
+    position_begin = begin.position();
+
+    end = document()->lastBlock();
+    position_end = end.position() + end.length()-1;
+    cursor_position = cursor.position();
+
+  }
+
+  // prepare text from selected blocks
+  QString text;
+  if( begin == end ) text = begin.text().mid( position_begin - begin.position(), position_end-position_begin );
+  else {
+    text = begin.text().mid( position_begin - begin.position() ) + "\n";
+    for( QTextBlock block = begin.next(); block.isValid() && block!= end; block = block.next() )
+    { text += block.text() + "\n"; }
+    text += end.text().left( position_end - end.position() );
+  }
+
+  // process macro
+  TextMacro::Result result( macro.processText( text, cursor_position ) );
+  if( !result.first ) return;
+
+  Debug::Throw() << "TextDisplay::processText - increment: " << result.second << endl;
+
+  // update selection
+  cursor.setPosition( position_begin );
+  cursor.setPosition( position_end, QTextCursor::KeepAnchor );
+
+  // insert new text
+  cursor.insertText( text );
+
+  // restore selection
+  if( has_selection )
+  {
+    cursor.setPosition( position_begin );
+    cursor.setPosition( position_begin + text.size(), QTextCursor::KeepAnchor );
+  } else {
+    cursor.setPosition( cursor_position + result.second );
+  }
+
+  setTextCursor( cursor );
+
+  // replace leading tabs in selection
+  if( !_hasTabEmulation() ) { _replaceLeadingTabs( false ); }
+
+  return;
+
+}
 
 //_____________________________________________________________
 bool TextDisplay::_contentsChanged( void ) const
@@ -1797,6 +1855,7 @@ void TextDisplay::_updateConfiguration( void )
 
   // block delimiters, line numbers and margin
   showBlockDelimiterAction().setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
+  noAutomaticMacrosAction().setChecked( XmlOptions::get().get<bool>( "IGNORE_AUTOMATIC_MACROS" ) );
 
   {
     QFont font;
@@ -2028,6 +2087,16 @@ void TextDisplay::_toggleShowBlockDelimiters( bool state )
     setSynchronized( true );
 
   }
+
+  return;
+}
+
+//_______________________________________________________
+void TextDisplay::_toggleIgnoreAutomaticMacros( bool state )
+{
+
+  // update options
+  XmlOptions::get().set<bool>( "IGNORE_AUTOMATIC_MACROS", state );
 
   return;
 }

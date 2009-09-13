@@ -235,6 +235,7 @@ void Menu::_updatePreferenceMenu( void )
   preference_menu_->addAction( &display.textHighlightAction() );
   preference_menu_->addAction( &display.blockHighlightAction() );
   preference_menu_->addAction( &display.parenthesisHighlightAction() );
+  preference_menu_->addAction( &display.noAutomaticMacrosAction() );
 
   #if WITH_ASPELL
   preference_menu_->addSeparator();
@@ -340,7 +341,8 @@ void Menu::_updateMacroMenu( void )
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
   bool has_selection( display.textCursor().hasSelection() );
 
-  macroMenu().setTextMacros( display.macros(), has_selection );
+  // macroMenu().setTextMacros( display.macros(), has_selection );
+  macroMenu().setTextMacros( display.macros(), true );
   return;
 }
 
