@@ -1,5 +1,5 @@
 <patterns>
- <class pattern="((/\.(((t?c)|ba)?sh)rc)|(/\w+\.(((t?c)|ba)?sh))|(/configure(\.in)?)|.alias)$" icon="text-x-script.png" first_line_pattern="^\s*#\s*!\s*(/.*bin/)?((t?c|k|ba)?sh)" name="shell" >
+ <class pattern="((/\.(((t?c)|ba)?sh)rc)|(/\w+\.(((t?c)|ba)?sh))|(/configure(\.in)?)|\.alias|CMakeLists\.txt)$" icon="text-x-script.png" first_line_pattern="^\s*#\s*!\s*(/.*bin/)?((t?c|k|ba)?sh)" name="shell" >
 
 <!--Options-->
   <Option>
@@ -117,7 +117,7 @@
     <replacement></replacement>
    </rule>
   </macro>
-  <macro accelerator="Alt+C" name="Clean end of line" >
+  <macro accelerator="Alt+C" name="Clean end of line" options="automatic" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>

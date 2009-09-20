@@ -126,6 +126,12 @@
     <replacement></replacement>
    </rule>
   </macro>
+  <macro accelerator="Alt+C" name="Clean end of line" options="automatic" >
+   <rule>
+    <regexp>\s+$</regexp>
+    <replacement></replacement>
+   </rule>
+  </macro>
   <macro options="separator" name="generic" />
   <macro name="Add leading space characters" >
    <rule>

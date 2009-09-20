@@ -225,7 +225,7 @@
     <replacement></replacement>
    </rule>
   </macro>
-  <macro accelerator="Alt+C" name="Clean end of line" >
+  <macro accelerator="Alt+C" name="Clean end of line" options="automatic" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>
