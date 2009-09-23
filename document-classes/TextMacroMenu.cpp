@@ -57,7 +57,7 @@ void TextMacroMenu::setTextMacros( const TextMacro::List& macros, bool enabled )
 
       // create menu entry
       action = iter->action();
-      action->setEnabled( enabled );
+      action->setEnabled( enabled || iter->isAutomatic() );
       addAction( action );
 
       // insert in map

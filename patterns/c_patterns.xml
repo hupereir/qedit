@@ -343,7 +343,7 @@ and this one is an opening bracket</comments>
   </macro>
   <macro name="Remove C++ comments" >
    <rule>
-    <regexp>^// </regexp>
+    <regexp>^//(\s|$)</regexp>
     <replacement></replacement>
    </rule>
   </macro>

@@ -1147,9 +1147,8 @@ QString MainWindow::_htmlString( const int& max_line_size )
     to have correct implementation of leading space characters, tabs
     and end of line
   */
-  //QString html_string( document.toString(0) );
   QString html_string( document.toString(0) );
-  html_string = html_string.replace( "</span>\n", "</span>" );
-  html_string = html_string.replace( "<br/>", "" );
+  html_string = html_string.replace( "</span>\n", "</span>", Qt::CaseInsensitive );
+  html_string = html_string.replace( "<br/>", "", Qt::CaseInsensitive );
   return html_string;
 }

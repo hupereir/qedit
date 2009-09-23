@@ -341,8 +341,7 @@ void Menu::_updateMacroMenu( void )
   TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
   bool has_selection( display.textCursor().hasSelection() );
 
-  // macroMenu().setTextMacros( display.macros(), has_selection );
-  macroMenu().setTextMacros( display.macros(), true );
+  macroMenu().setTextMacros( display.macros(), has_selection );
   return;
 }
 
