@@ -94,7 +94,7 @@ MainWindow::MainWindow(  QWidget* parent ):
   Counter( "MainWindow" ),
   menu_( 0 ),
   statusbar_( 0 ),
-  file_editor_( 0 ),
+  fileEditor_( 0 ),
   document_class_toolbar_( 0 ),
   find_dialog_( 0 ),
   replace_dialog_( 0 ),
@@ -162,27 +162,19 @@ MainWindow::MainWindow(  QWidget* parent ):
   setStatusBar( statusbar_ = new StatusBar( this ) );
 
   // create "Hidden" line editor to display filename
-  statusbar_->addPermanentWidget( file_editor_ = new AnimatedLineEditor( statusbar_ ), 1 );
+  statusbar_->addPermanentWidget( fileEditor_ = new QLabel( statusbar_ ), 1 );
   statusbar_->addLabels( 3, 0 );
   statusbar_->label(0).setAlignment( Qt::AlignCenter );
   statusbar_->label(1).setAlignment( Qt::AlignCenter );
   statusbar_->label(2).setAlignment( Qt::AlignCenter );
   statusbar_->addClock();
 
-  // modify frame and set readOnly
-  file_editor_->setReadOnly( true );
-  file_editor_->setHasClearButton( false );
-  file_editor_->setFrame( false );
-
-  // modify color
-  QPalette palette( file_editor_->palette() );
-  palette.setColor( QPalette::Base, Qt::transparent );
-  file_editor_->setPalette( palette );
+  fileEditor_->setTextInteractionFlags( Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard );
 
   // assign non fixed font
   QFont font;
   font.fromString( XmlOptions::get().raw( "FONT_NAME" ) );
-  file_editor_->setFont( font );
+  fileEditor_->setFont( font );
 
   // toolbars
   _installToolbars();

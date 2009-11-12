@@ -47,7 +47,7 @@
 #include "Key.h"
 #include "TextView.h"
 
-class AnimatedLineEditor;
+class QLabel;
 class DocumentClassToolBar;
 class Menu;
 class NavigationFrame;
@@ -588,11 +588,11 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
   //! file editor
   bool _hasFileEditor( void ) const
-  { return bool( file_editor_ ); }
+  { return bool( fileEditor_ ); }
 
   //! file editor
-  AnimatedLineEditor& _fileEditor( void ) const
-  { return *file_editor_; }
+  QLabel& _fileEditor( void ) const
+  { return *fileEditor_; }
 
   //! make connection between this window and child text view
   void _connectView( TextView& view );
@@ -633,7 +633,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   StatusBar* statusbar_;
 
   //! file display lineEdit
-  AnimatedLineEditor* file_editor_;
+  QLabel* fileEditor_;
 
   //! document class toolbar
   DocumentClassToolBar* document_class_toolbar_;
