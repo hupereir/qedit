@@ -224,6 +224,9 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
 
   Debug::Throw( "BlockDelimiterDisplay::mousePressEvent.\n" );
 
+  // check mouse event position
+  if( event->pos().x() - _offset() > width() ) return;
+
   // get position from event
   _updateSegments();
   _updateSegmentMarkers();
