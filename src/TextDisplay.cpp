@@ -227,7 +227,6 @@ void TextDisplay::setReadOnly( const bool& value )
   if( changed && isActive() ) emit needUpdate( READ_ONLY );
 }
 
-
 //______________________________________________________________________________
 void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_actions )
 {
@@ -671,8 +670,14 @@ void TextDisplay::save( void )
     }
 
     // process automatic macros
-    if( !noAutomaticMacrosAction().isChecked() )
+    if( !noAutomaticMacrosAction().isChecked() && _hasAutomaticMacros() )
     {
+
+      // first need to expand all collapsed blocks
+      if( hasBlockDelimiterDisplay() )
+      { blockDelimiterDisplay().expandAllBlocks(); }
+
+      // process macros
       for( TextMacro::List::const_iterator iter = macros().begin(); iter != macros().end(); iter++ )
       {
         if( iter->isAutomatic() )
@@ -842,17 +847,10 @@ QString TextDisplay::toPlainText( void ) const
 
     // add current block
     out += block.text();
-    if( block.next().isValid() ) out += "\n";
+    if( block.next().isValid() || _blockIsCollapsed( block ) ) out += "\n";
 
-    // retrieve associated block format
-    QTextBlockFormat block_format( block.blockFormat() );
-    if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
-    {
-
-      CollapsedBlockData collapsed_data( block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
-      for( CollapsedBlockData::List::const_iterator iter = collapsed_data.children().begin(); iter != collapsed_data.children().end(); iter++ )
-      { out += iter->toPlainText(); }
-    }
+    // add collapsed text
+    out += _collapsedText( block );
 
   }
 
@@ -1610,6 +1608,10 @@ FileList& TextDisplay::_recentFiles( void ) const
 { return Singleton::get().application<Application>()->recentFiles(); }
 
 //_____________________________________________
+bool TextDisplay::_hasAutomaticMacros( void ) const
+{ return find_if( macros().begin(), macros().end(), TextMacro::isAutomaticFTor() ) != macros().end(); }
+
+//_____________________________________________
 void TextDisplay::_processMacro( const TextMacro& macro )
 {
 
@@ -1660,12 +1662,26 @@ void TextDisplay::_processMacro( const TextMacro& macro )
 
   // prepare text from selected blocks
   QString text;
-  if( begin == end ) text = begin.text().mid( position_begin - begin.position(), position_end-position_begin );
-  else {
-    text = begin.text().mid( position_begin - begin.position() ) + "\n";
+  if( begin == end ) {
+
+    text = begin.text().mid( position_begin - begin.position(), position_end-position_begin );
+
+  } else {
+
+    text = begin.text().mid( position_begin - begin.position() );
+    if( begin.next().isValid() || _blockIsCollapsed( begin ) ) text += "\n";
+    text += _collapsedText( begin );
+
     for( QTextBlock block = begin.next(); block.isValid() && block!= end; block = block.next() )
-    { text += block.text() + "\n"; }
+    {
+      text += block.text();
+      if( block.next().isValid() || _blockIsCollapsed( block ) ) text += "\n";
+      text += _collapsedText( block );
+    }
+
+    // last block
     text += end.text().left( position_end - end.position() );
+
   }
 
   // process macro
@@ -2744,7 +2760,8 @@ void TextDisplay::_clearTag( void )
       else break;
     }
 
-     // add previous blocks and current
+
+      // add previous blocks and current
     for( QTextBlock block( cursor.block().next() ); block.isValid(); block = block.next() )
     {
       TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
@@ -2757,6 +2774,39 @@ void TextDisplay::_clearTag( void )
   // clear background for selected blocks
   for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
   { clearTag( *iter, TextBlock::ALL_TAGS ); }
+
+}
+
+//___________________________________________________________________________
+bool TextDisplay::_blockIsCollapsed( const QTextBlock& block ) const
+{
+
+  Debug::Throw( "TextDisplay::_blockIsCollapsed.\n" );
+  QTextBlockFormat block_format( block.blockFormat() );
+  return block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData );
+
+}
+
+
+//___________________________________________________________________________
+QString TextDisplay::_collapsedText( const QTextBlock& block ) const
+{
+
+  Debug::Throw( "TextDisplay::_collapsedText.\n" );
+  QString text;
+
+  // retrieve associated block format
+  QTextBlockFormat block_format( block.blockFormat() );
+  if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
+  {
+
+    CollapsedBlockData collapsed_data( block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
+    for( CollapsedBlockData::List::const_iterator iter = collapsed_data.children().begin(); iter != collapsed_data.children().end(); iter++ )
+    { text += iter->toPlainText(); }
+
+  }
+
+  return text;
 
 }
 

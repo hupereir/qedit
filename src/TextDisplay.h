@@ -504,7 +504,7 @@ class TextDisplay: public AnimatedTextEditor
   /*! first parameter is file name, second tells if document is a new untitled document or not */
   void _updateDocumentClass( File, bool );
 
-    //! set file name
+  //! set file name
   void _setFile( const File& file );
 
   //! is new document
@@ -535,7 +535,10 @@ class TextDisplay: public AnimatedTextEditor
   void _setIgnoreWarnings( const bool& value )
   { ignore_warnings_ = value; }
 
-  //! process macro by name
+  //! true if macros list contains automatic macros
+  bool _hasAutomaticMacros( void ) const;
+
+  //! process macro
   void _processMacro( const TextMacro& );
 
   //! returns true if text contents differs from file contents
@@ -669,6 +672,12 @@ class TextDisplay: public AnimatedTextEditor
 
   //! clear current block tags
   void _clearTag( void );
+
+  //! true if a block is collapsed
+  bool _blockIsCollapsed( const QTextBlock& ) const;
+
+  //! returns collapsed text in a given block, if any
+  QString _collapsedText( const QTextBlock& ) const;
 
   //! returns true if file is on afs
   bool _fileIsAfs( void ) const;
