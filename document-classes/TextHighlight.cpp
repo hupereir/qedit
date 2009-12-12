@@ -387,10 +387,11 @@ TextBlock::Delimiter TextHighlight::_delimiter( const BlockDelimiter& delimiter,
 
   TextBlock::Delimiter out;
   int position = 0;
-  while( (position = text.indexOf( delimiter.regexp(), position ) ) >= 0 )
+  while( (position = delimiter.regexp().indexIn( text, position ) ) >= 0 )
   {
-    if( text.mid( position ).startsWith( delimiter.first() ) ) out.begin()++;
-    else if( text.mid( position ).startsWith( delimiter.second() ) )
+    QString matchedString( text.mid( position, delimiter.regexp().matchedLength() ) );
+    if( matchedString.contains( delimiter.first() ) ) out.begin()++;
+    else if( matchedString.contains( delimiter.second() ) )
     {
       if( out.begin() > 0 ) out.begin()--;
       else out.end()++;
