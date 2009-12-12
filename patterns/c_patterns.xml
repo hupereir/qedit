@@ -307,7 +307,7 @@ and this one is an opening bracket</comments>
 
 <!--Block delimiters-->
   <block_delimiter begin="{" end="}" regexp="\{|\}" />
-  <block_delimiter begin="/*" end="*/" regexp="(/\*)|(\*/)" />
+  <block_delimiter begin="/*" end="*/" regexp="(^\s*/\*)|(\*/)" />
 
 <!--Text macros-->
   <macro accelerator="Alt+T" name="Add one tab indentation" >

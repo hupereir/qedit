@@ -108,6 +108,16 @@ class TextMacro: public Counter
 
   };
 
+  //! used to check whether some automatic macros are present
+  class isAutomaticFTor
+  {
+    public:
+
+    bool operator()( const TextMacro& macro ) const
+    { return macro.isAutomatic(); }
+
+  };
+
   //! reset counter
   static void resetCounter( void )
   { id_counter_ = 0; }
@@ -145,20 +155,20 @@ class TextMacro: public Counter
   { is_automatic_ = value; }
 
   //! result class
-  /*! 
+  /*!
   first is whether any changes where applied or not
   second is the net increment in terms of number of characters between input and output text
   */
   class Result: public std::pair<bool, int>
   {
-    
+
     public:
-    
+
     //! constructor
     Result( bool changed = false, int increment = 0 ):
       std::pair<bool,int>( changed, increment )
       {}
-      
+
     //! add-to operator
     Result& operator += (const Result& other )
     {
@@ -166,9 +176,9 @@ class TextMacro: public Counter
       second += other.second;
       return *this;
     }
-    
+
   };
-  
+
   //! modify text passed as argument. Return true if text is modified
   Result processText( QString& text, int position = -1 ) const;
 
@@ -206,7 +216,7 @@ class TextMacro: public Counter
 
   //! return action
   QAction* action( void ) const;
-  
+
   //! used to store regular expression and corresponding replacement text
   class Rule: public Counter
   {
@@ -329,7 +339,7 @@ class TextMacro: public Counter
   //! automatic
   /*! if true the macro gets automatically executed before saving modifications */
   bool is_automatic_;
-  
+
   //! list of replacement
   Rule::List rules_;
 

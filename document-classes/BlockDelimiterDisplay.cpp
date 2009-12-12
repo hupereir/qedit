@@ -482,10 +482,10 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_expandAllBlocks( void )
+void BlockDelimiterDisplay::expandAllBlocks( void )
 {
 
-  Debug::Throw( "BlockDelimiterDisplay::_expandAllBlocks.\n" );
+  Debug::Throw( "BlockDelimiterDisplay::expandAllBlocks.\n" );
 
   // clear box selection
   _editor().clearBoxSelection();
@@ -550,7 +550,7 @@ void BlockDelimiterDisplay::_installActions( void )
   expand_all_action_ = new QAction( "&Expand All Blocks", this );
   expand_all_action_->setToolTip( "Expand all collapsed blocks" );
   expand_all_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Plus );
-  connect( expand_all_action_, SIGNAL( triggered() ), SLOT( _expandAllBlocks() ) );
+  connect( expand_all_action_, SIGNAL( triggered() ), SLOT( expandAllBlocks() ) );
   expand_all_action_->setEnabled( false );
 
 }
