@@ -46,7 +46,7 @@ DocumentClassToolBar::DocumentClassToolBar( QWidget* parent ):
 {
 
   Debug::Throw( "DocumentClassToolBar::DocumentClassToolBar.\n" );
-  addWidget( new QLabel( " Document class: ", this ) );
+  //addWidget( new QLabel( " Document class: ", this ) );
   addWidget( combobox_ = new QComboBox( this ) );
 
   connect( &_comboBox(), SIGNAL( currentIndexChanged( int ) ), SLOT( _currentIndexChanged( int ) ) );
