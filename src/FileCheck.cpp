@@ -99,6 +99,7 @@ void FileCheck::_fileChanged( const QString& file )
   {
 
     data.setFlag( Data::REMOVED );
+    data.setTimeStamp( TimeStamp::now() );
     removeFile( file );
 
   } else {

@@ -485,7 +485,7 @@ void TextDisplay::_setFile( const File& file )
 //___________________________________________________________________________
 FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
 {
-  Debug::Throw( "TextDisplay::checkFileRemoved.\n" );
+  Debug::Throw() << "TextDisplay::checkFileRemoved - " << file() << endl;
 
   if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::IGNORE;
 
@@ -530,7 +530,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
 //___________________________________________________________________________
 FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
 {
-  Debug::Throw( "TextDisplay::checkFileModified.\n" );
+  Debug::Throw() << "TextDisplay::checkFileModified - " << file() << endl;
 
   if( _ignoreWarnings() )
   {
@@ -1739,7 +1739,7 @@ bool TextDisplay::_contentsChanged( void ) const
 //____________________________________________
 bool TextDisplay::_fileRemoved( void ) const
 {
-  Debug::Throw( "TextDisplay::_fileRemoved.\n" );
+  Debug::Throw() << "TextDisplay::_fileRemoved - " << file() << endl;
 
   // check new document
   if( file().isEmpty() || isNewDocument() ) return false;
@@ -1752,7 +1752,7 @@ bool TextDisplay::_fileRemoved( void ) const
   */
 
   // check file flag
-  if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::REMOVED ) )
+  if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::REMOVED || fileCheckData().flag() == FileCheck::Data::MODIFIED ) )
   { return false; }
 
   // make sure file is still removed
@@ -1772,13 +1772,19 @@ bool TextDisplay::_fileRemoved( void ) const
 bool TextDisplay::_fileModified( void )
 {
 
-  Debug::Throw( "TextDisplay::_fileModified.\n" );
+  Debug::Throw() << "TextDisplay::_fileModified - " << file() << endl;
 
   // check file
   if( file().isEmpty() || isNewDocument() ) return false;
-  if( ! ( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::MODIFIED ) ) return false;
+  if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::REMOVED || fileCheckData().flag() == FileCheck::Data::MODIFIED ) )
+  { return false; }
+
   if( !lastSaved().isValid() ) return false;
 
+  // when file is on afs, or when file was removed (and recreated)
+  // one need to use the filename modification timeStampl in place of the timeStamp contained in fileCheckData
+  // because the last one was invalid
+  // const TimeStamp file_modified( ( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::REMOVED ) ? TimeStamp(file().lastModified()) : fileCheckData().timeStamp() );
   const TimeStamp file_modified( _fileIsAfs() ? TimeStamp(file().lastModified()) : fileCheckData().timeStamp() );
   if( !file_modified.isValid() ) return false;
   if( !(file_modified > last_saved_ ) ) return false;
