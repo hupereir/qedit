@@ -323,6 +323,9 @@ void TextDisplay::synchronize( TextDisplay* display )
   _setIsNewDocument( display->isNewDocument() );
   _setLastSaved( lastSaved_ );
 
+  // update class name
+  setClassName( display->className() );
+
 }
 
 //____________________________________________

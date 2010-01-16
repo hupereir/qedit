@@ -94,8 +94,8 @@ class NavigationToolBar: public CustomToolBar
   //! navigation frame
   NavigationFrame& _navigationFrame( void )
   {
-    assert( navigation_frame_ );
-    return *navigation_frame_;
+    assert( navigationFrame_ );
+    return *navigationFrame_;
   }
 
   //! tool button
@@ -108,7 +108,7 @@ class NavigationToolBar: public CustomToolBar
   ButtonMap buttons_;
 
   //! stack widget
-  NavigationFrame* navigation_frame_;
+  NavigationFrame* navigationFrame_;
 
   //! enablility
   /*! this is used to avoid circular action triggers */

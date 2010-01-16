@@ -52,7 +52,7 @@ using namespace std;
 //_______________________________________________________________
 NavigationToolBar::NavigationToolBar( QWidget* parent ):
   CustomToolBar( "Side bar", parent, "NAVIGATION_SIDEBAR" ),
-  navigation_frame_( 0 ),
+  navigationFrame_( 0 ),
   enabled_( true )
 {
   Debug::Throw( "NavigationToolBar:NavigationToolBar.\n" );
@@ -64,8 +64,8 @@ void NavigationToolBar::connect( NavigationFrame& frame )
 {
 
   Debug::Throw( "NavigationToolBar::connect.\n" );
-  assert( !navigation_frame_ );
-  navigation_frame_ = &frame;
+  assert( !navigationFrame_ );
+  navigationFrame_ = &frame;
 
   CustomToolBar::connect( &_navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _navigationFrameVisibilityChanged( bool ) ) );
 

@@ -192,7 +192,7 @@ void TextView::closeActiveDisplay( void )
 //________________________________________________________________
 void TextView::setActiveDisplay( TextDisplay& display )
 {
-  Debug::Throw(0) << "TextView::setActiveDisplay - key: " << display.key() << " - " << display.file() << endl;
+  Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << endl;
   assert( display.isAssociated( this ) );
 
   if( activeDisplay_ != &display )
@@ -212,7 +212,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
 
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     { (*iter)->setActive( false ); }
-ACTIVE_DISPLAY_CHANGED
+
     activeDisplay().setActive( true );
 
   }
