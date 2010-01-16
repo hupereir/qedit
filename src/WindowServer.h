@@ -90,7 +90,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
   //! save all
   QAction& saveAllAction( void ) const
-  { return *save_all_action_; }
+  { return *saveAllAction_; }
 
   //@}
 
@@ -118,7 +118,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
   //! default orientation
   const Qt::Orientation& defaultOrientation( const OrientationMode& mode = NORMAL )
-  { return mode == NORMAL ? default_orientation_:default_diff_orientation_; }
+  { return mode == NORMAL ? defaultOrientation_:defaultDiffOrientation_; }
 
   signals:
 
@@ -252,11 +252,11 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
   //! active window
   MainWindow& _activeWindow( void )
-  { return *active_window_; }
+  { return *activeWindow_; }
 
   //! active window
   const MainWindow& _activeWindow( void ) const
-  { return *active_window_; }
+  { return *activeWindow_; }
 
   //! default orientation for split tabs
   void _setDefaultOrientation( const OrientationMode& mode, const Qt::Orientation& value )
@@ -264,12 +264,12 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     switch( mode )
     {
       case DIFF:
-      default_diff_orientation_ = value;
+      defaultDiffOrientation_ = value;
       break;
 
       default:
       case NORMAL:
-      default_orientation_ = value;
+      defaultOrientation_ = value;
       break;
     }
 
@@ -277,11 +277,11 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
   //! default orientation for split tabs
   const Qt::Orientation _defaultdiffOrientation( void ) const
-  { return default_diff_orientation_; }
+  { return defaultDiffOrientation_; }
 
   //! default orientation for split tabs
   void _setDiffOrientation( const Qt::Orientation& value )
-  { default_diff_orientation_ = value; }
+  { defaultDiffOrientation_ = value; }
 
   //! open mode
   const OpenMode& _openMode( void ) const
@@ -293,32 +293,32 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
   //! first call
   const bool& _firstCall( void ) const
-  { return first_call_; }
+  { return firstCall_; }
 
   //! first call
   void _setFirstCall( bool value )
-  { first_call_ = value; }
+  { firstCall_ = value; }
 
   //! true at first call (via Application::realizeWidget)
-  bool first_call_;
+  bool firstCall_;
 
   //! default orientation
-  Qt::Orientation default_orientation_;
+  Qt::Orientation defaultOrientation_;
 
   //! default orientation (diff mode
-  Qt::Orientation default_diff_orientation_;
+  Qt::Orientation defaultDiffOrientation_;
 
   //! open mode
   OpenMode open_mode_;
 
   //! active window
-  MainWindow* active_window_;
+  MainWindow* activeWindow_;
 
   //!@name actions
   //@{
 
   //! save all modified files
-  QAction* save_all_action_;
+  QAction* saveAllAction_;
 
   //@}
 

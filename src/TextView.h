@@ -74,20 +74,20 @@ class TextView: public QWidget, public Counter, public BASE::Key
   //! retrieve active display
   TextDisplay& activeDisplay( void )
   {
-    assert( active_display_ );
-    return *active_display_;
+    assert( activeDisplay_ );
+    return *activeDisplay_;
   }
 
   //! retrieve active display
   const TextDisplay& activeDisplay( void ) const
-  { return *active_display_; }
+  { return *activeDisplay_; }
 
   //! select display from file
   bool selectDisplay( const File& file );
 
   //! true if display passed in argument is active
   bool isActiveDisplay( const TextDisplay& display ) const
-  { return &display == active_display_; }
+  { return &display == activeDisplay_; }
 
   //! change active display manualy
   void setActiveDisplay( TextDisplay& );
@@ -128,7 +128,7 @@ class TextView: public QWidget, public Counter, public BASE::Key
 
   //! position timer
   QTimer& positionTimer( void )
-  { return position_timer_; }
+  { return positionTimer_; }
 
   signals:
 
@@ -174,10 +174,10 @@ class TextView: public QWidget, public Counter, public BASE::Key
   TextDisplay& _newTextDisplay( QWidget* );
 
   //! text display with focus
-  TextDisplay* active_display_;
+  TextDisplay* activeDisplay_;
 
   //! position update timer
-  QTimer position_timer_;
+  QTimer positionTimer_;
 
 };
 

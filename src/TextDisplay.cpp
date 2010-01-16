@@ -103,19 +103,19 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
   // store property ids associated to property names
   // this is used to speed-up fileRecord access
-  class_name_property_id_( FileRecord::PropertyId::get( FileRecordProperties::CLASS_NAME ) ),
-  icon_property_id_( FileRecord::PropertyId::get( FileRecordProperties::ICON ) ),
-  wrap_property_id_( FileRecord::PropertyId::get( FileRecordProperties::WRAPPED ) ),
-  dictionary_property_id_( FileRecord::PropertyId::get( FileRecordProperties::DICTIONARY ) ),
-  filter_property_id_( FileRecord::PropertyId::get( FileRecordProperties::FILTER ) ),
+  classNamePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::CLASS_NAME ) ),
+  iconPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::ICON ) ),
+  wrapPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::WRAPPED ) ),
+  dictionaryPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::DICTIONARY ) ),
+  filterPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::FILTER ) ),
 
   closed_( false ),
-  is_new_document_( false ),
-  class_name_( "" ),
-  ignore_warnings_( false ),
-  show_block_delimiter_action_( 0 ),
-  text_highlight_( 0 ),
-  block_delimiter_display_( 0 )
+  isNewDocument_( false ),
+  className_( "" ),
+  ignoreWarnings_( false ),
+  showBlockDelimiterAction_( 0 ),
+  textHighlight_( 0 ),
+  blockDelimiterDisplay_( 0 )
 {
 
   Debug::Throw("TextDisplay::TextDisplay.\n" );
@@ -124,16 +124,16 @@ TextDisplay::TextDisplay( QWidget* parent ):
   setAcceptRichText( false );
 
   // text highlight
-  text_highlight_ = new TextHighlight( document() );
+  textHighlight_ = new TextHighlight( document() );
 
   // parenthesis highlight
-  parenthesis_highlight_ = new ParenthesisHighlight( this );
+  parenthesisHighlight_ = new ParenthesisHighlight( this );
 
   // text indent
   indent_ = new TextIndent( this );
 
   // block delimiter
-  block_delimiter_display_ = new BlockDelimiterDisplay( this );
+  blockDelimiterDisplay_ = new BlockDelimiterDisplay( this );
   connect( &textHighlight(), SIGNAL( needSegmentUpdate() ), &blockDelimiterDisplay(), SLOT( needUpdate() ) );
 
   // connections
@@ -145,8 +145,8 @@ TextDisplay::TextDisplay( QWidget* parent ):
   #if WITH_ASPELL
 
   // install menus
-  filter_menu_ = new SPELLCHECK::FilterMenu( this );
-  dictionary_menu_ = new SPELLCHECK::DictionaryMenu( this );
+  filterMenu_ = new SPELLCHECK::FilterMenu( this );
+  dictionaryMenu_ = new SPELLCHECK::DictionaryMenu( this );
 
   #endif
 
@@ -285,7 +285,7 @@ void TextDisplay::synchronize( TextDisplay* display )
   Debug::Throw( "TextDisplay::synchronize.\n" );
 
   // replace base class syntax highlighter prior to calling base class synchronization
-  text_highlight_ = &display->textHighlight();
+  textHighlight_ = &display->textHighlight();
 
   /* this avoids calling to invalid block of memory which the textHighlight gets deleted
   when changing the document */
@@ -321,7 +321,7 @@ void TextDisplay::synchronize( TextDisplay* display )
   // file
   _setFile( display->file() );
   _setIsNewDocument( display->isNewDocument() );
-  _setLastSaved( last_saved_ );
+  _setLastSaved( lastSaved_ );
 
 }
 
@@ -375,7 +375,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
   assert( !file.isEmpty() );
 
   // reset class name
-  QString class_name( _recentFiles().add( file ).property(class_name_property_id_) );
+  QString class_name( _recentFiles().add( file ).property(classNamePropertyId_) );
   setClassName( class_name );
 
   // expand filename
@@ -610,10 +610,10 @@ void TextDisplay::setFileCheckData( const FileCheck::Data& data )
   Debug::Throw( "TextDisplay::setFileCheckData.\n" );
 
   // check if data flag is different from stored
-  bool flags_changed( data.flag() != file_check_data_.flag() );
+  bool flags_changed( data.flag() != fileCheckData_.flag() );
 
   // update data
-  file_check_data_ = data;
+  fileCheckData_ = data;
 
   // emit file modification signal, to update session file frames
   if( flags_changed ) emit needUpdate( MODIFIED );
@@ -717,7 +717,7 @@ void TextDisplay::save( void )
 
   // add file to menu
   if( !file().isEmpty() )
-  { _recentFiles().get( file() ).addProperty( class_name_property_id_, className() ); }
+  { _recentFiles().get( file() ).addProperty( classNamePropertyId_, className() ); }
 
   return;
 
@@ -1002,15 +1002,15 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
   switch( tag )
   {
     case TextBlock::DIFF_ADDED:
-    setBackground( block, diff_added_color_ );
+    setBackground( block, diffAddedColor_ );
     break;
 
     case TextBlock::DIFF_CONFLICT:
-    setBackground( block, diff_conflict_color_ );
+    setBackground( block, diffConflictColor_ );
     break;
 
     case TextBlock::USER_TAG:
-    setBackground( block, user_tag_color_ );
+    setBackground( block, userTagColor_ );
     break;
 
     default: break;
@@ -1140,7 +1140,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   {
 
     FileRecord& record( _recentFiles().get( file ) );
-    if( record.hasProperty( wrap_property_id_ ) ) wrapModeAction().setChecked( Str( record.property( wrap_property_id_ ) ).get<bool>() );
+    if( record.hasProperty( wrapPropertyId_ ) ) wrapModeAction().setChecked( Str( record.property( wrapPropertyId_ ) ).get<bool>() );
     else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
 
   } else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
@@ -1192,9 +1192,9 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
   if( !( file.isEmpty() || new_document ) )
   {
     FileRecord& record( _recentFiles().get( file ) );
-    record.addProperty( class_name_property_id_, className() );
-    record.addProperty( wrap_property_id_, Str().assign<bool>( wrapModeAction().isChecked() ) );
-    if( !document_class.icon().isEmpty() ) record.addProperty( icon_property_id_, document_class.icon() );
+    record.addProperty( classNamePropertyId_, className() );
+    record.addProperty( wrapPropertyId_, Str().assign<bool>( wrapModeAction().isChecked() ) );
+    if( !document_class.icon().isEmpty() ) record.addProperty( iconPropertyId_, document_class.icon() );
   }
 
   // rehighlight text entirely
@@ -1285,7 +1285,7 @@ void TextDisplay::selectFilter( const QString& filter )
 
   // update file record
   if( !( file().isEmpty() || isNewDocument() ) )
-  { _recentFiles().get( file() ).addProperty( filter_property_id_, interface.filter() ); }
+  { _recentFiles().get( file() ).addProperty( filterPropertyId_, interface.filter() ); }
 
   // rehighlight if needed
   if( textHighlight().spellParser().isEnabled() ) rehighlight();
@@ -1313,7 +1313,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
 
   // update file record
   if( !( file().isEmpty() || isNewDocument() ) )
-  { _recentFiles().get( file() ).addProperty( dictionary_property_id_, interface.dictionary() ); }
+  { _recentFiles().get( file() ).addProperty( dictionaryPropertyId_, interface.dictionary() ); }
 
   // rehighlight if needed
   if( textHighlight().spellParser().isEnabled() ) rehighlight();
@@ -1495,82 +1495,82 @@ void TextDisplay::_installActions( void )
   Debug::Throw( "TextDisplay::_installActions.\n" );
 
   // actions
-  addAction( text_indent_action_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Indent Text", this ) );
-  text_indent_action_->setCheckable( true );
-  text_indent_action_->setChecked( textIndent().isEnabled() );
-  connect( text_indent_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextIndent( bool ) ) );
+  addAction( textIndentMacro_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Indent Text", this ) );
+  textIndentMacro_->setCheckable( true );
+  textIndentMacro_->setChecked( textIndent().isEnabled() );
+  connect( textIndentMacro_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextIndent( bool ) ) );
 
-  addAction( text_highlight_action_ = new QAction( "&Highlight Text", this ) );
-  text_highlight_action_->setCheckable( true );
-  text_highlight_action_->setChecked( textHighlight().isHighlightEnabled() );
-  text_highlight_action_->setShortcut( Qt::Key_F8 );
-  text_highlight_action_->setShortcutContext( Qt::WidgetShortcut );
-  connect( text_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextHighlight( bool ) ) );
+  addAction( textHighlightAction_ = new QAction( "&Highlight Text", this ) );
+  textHighlightAction_->setCheckable( true );
+  textHighlightAction_->setChecked( textHighlight().isHighlightEnabled() );
+  textHighlightAction_->setShortcut( Qt::Key_F8 );
+  textHighlightAction_->setShortcutContext( Qt::WidgetShortcut );
+  connect( textHighlightAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextHighlight( bool ) ) );
 
-  addAction( parenthesis_highlight_action_ = new QAction( "&Highlight Parenthesis", this ) );
-  parenthesis_highlight_action_->setCheckable( true );
-  parenthesis_highlight_action_->setChecked( parenthesisHighlight().isEnabled() );
-  connect( parenthesis_highlight_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
+  addAction( parenthesisHighlightAction_ = new QAction( "&Highlight Parenthesis", this ) );
+  parenthesisHighlightAction_->setCheckable( true );
+  parenthesisHighlightAction_->setChecked( parenthesisHighlight().isEnabled() );
+  connect( parenthesisHighlightAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
 
-  addAction( no_automatic_macros_action_ = new QAction( "&Disable Automatic Actions", this ) );
-  no_automatic_macros_action_->setCheckable( true );
-  no_automatic_macros_action_->setChecked( false );
-  no_automatic_macros_action_->setToolTip( "Do not execute automatic actions loaded from document class when saving document" );
-  connect( no_automatic_macros_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleIgnoreAutomaticMacros( bool ) ) );
+  addAction( noAutomaticMacrosAction_ = new QAction( "&Disable Automatic Actions", this ) );
+  noAutomaticMacrosAction_->setCheckable( true );
+  noAutomaticMacrosAction_->setChecked( false );
+  noAutomaticMacrosAction_->setToolTip( "Do not execute automatic actions loaded from document class when saving document" );
+  connect( noAutomaticMacrosAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleIgnoreAutomaticMacros( bool ) ) );
 
-  addAction( show_block_delimiter_action_ =new QAction( "Show Block Delimiters", this ) );
-  show_block_delimiter_action_->setToolTip( "Show/hide block delimiters" );
-  show_block_delimiter_action_->setCheckable( true );
-  show_block_delimiter_action_->setShortcut( Qt::Key_F9 );
-  show_block_delimiter_action_->setShortcutContext( Qt::WidgetShortcut );
-  connect( show_block_delimiter_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowBlockDelimiters( bool ) ) );
+  addAction( showBlockDelimiterAction_ =new QAction( "Show Block Delimiters", this ) );
+  showBlockDelimiterAction_->setToolTip( "Show/hide block delimiters" );
+  showBlockDelimiterAction_->setCheckable( true );
+  showBlockDelimiterAction_->setShortcut( Qt::Key_F9 );
+  showBlockDelimiterAction_->setShortcutContext( Qt::WidgetShortcut );
+  connect( showBlockDelimiterAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowBlockDelimiters( bool ) ) );
 
   // autospell
-  addAction( autospell_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Automatic Spellcheck", this ) );
-  autospell_action_->setShortcut( Qt::Key_F6 );
-  autospell_action_->setShortcutContext( Qt::WidgetShortcut );
-  autospell_action_->setCheckable( true );
+  addAction( autoSpellAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Automatic Spellcheck", this ) );
+  autoSpellAction_->setShortcut( Qt::Key_F6 );
+  autoSpellAction_->setShortcutContext( Qt::WidgetShortcut );
+  autoSpellAction_->setCheckable( true );
 
   #if WITH_ASPELL
-  autospell_action_->setChecked( textHighlight().spellParser().isEnabled() );
-  connect( autospell_action_, SIGNAL( toggled( bool ) ), SLOT( _toggleAutoSpell( bool ) ) );
+  autoSpellAction_->setChecked( textHighlight().spellParser().isEnabled() );
+  connect( autoSpellAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleAutoSpell( bool ) ) );
   #else
-  autospell_action_->setVisible( false );
+  autoSpellAction_->setVisible( false );
   #endif
 
   // spell checking
-  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spellcheck", this ) );
+  addAction( spellCheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spellcheck", this ) );
   #if WITH_ASPELL
-  connect( spellcheck_action_, SIGNAL( triggered( void ) ), SLOT( _spellcheck( void ) ) );
+  connect( spellCheckAction_, SIGNAL( triggered( void ) ), SLOT( _spellcheck( void ) ) );
   #else
-  spellcheck_action_->setVisible( false );
+  spellCheckAction_->setVisible( false );
   #endif
 
   // indent selection
-  addAction( indent_selection_action_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Indent Selection", this ) );
-  indent_selection_action_->setShortcut( Qt::CTRL + Qt::Key_I );
-  indent_selection_action_->setShortcutContext( Qt::WidgetShortcut );
-  connect( indent_selection_action_, SIGNAL( triggered( void ) ), SLOT( _indentSelection( void ) ) );
+  addAction( indentSelectionAction_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Indent Selection", this ) );
+  indentSelectionAction_->setShortcut( Qt::CTRL + Qt::Key_I );
+  indentSelectionAction_->setShortcutContext( Qt::WidgetShortcut );
+  connect( indentSelectionAction_, SIGNAL( triggered( void ) ), SLOT( _indentSelection( void ) ) );
 
   // base indentation
-  addAction( base_indent_action_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Add Base Indentation", this ) );
-  base_indent_action_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_I );
-  connect( base_indent_action_, SIGNAL( triggered( void ) ), SLOT( _addBaseIndentation( void ) ) );
+  addAction( baseIndentAction_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Add Base Indentation", this ) );
+  baseIndentAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_I );
+  connect( baseIndentAction_, SIGNAL( triggered( void ) ), SLOT( _addBaseIndentation( void ) ) );
 
   // replace leading tabs
-  addAction( leading_tabs_action_ = new QAction( "&Replace leading tabs", this ) );
-  connect( leading_tabs_action_, SIGNAL( triggered( void ) ), SLOT( _replaceLeadingTabs( void ) ) );
+  addAction( leadingTabsAction_ = new QAction( "&Replace leading tabs", this ) );
+  connect( leadingTabsAction_, SIGNAL( triggered( void ) ), SLOT( _replaceLeadingTabs( void ) ) );
 
   // file information
-  addAction( file_properties_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File Properties", this ) );
-  file_properties_action_->setShortcut( Qt::ALT + Qt::Key_Return );
-  file_properties_action_->setToolTip( "Display current file properties" );
-  connect( file_properties_action_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
+  addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "&File Properties", this ) );
+  filePropertiesAction_->setShortcut( Qt::ALT + Qt::Key_Return );
+  filePropertiesAction_->setToolTip( "Display current file properties" );
+  connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
 
   #if WITH_ASPELL
 
-  filter_menu_action_ = _filterMenu().menuAction();
-  dictionary_menu_action_ = _dictionaryMenu().menuAction();
+  filterMenuAction_ = _filterMenu().menuAction();
+  dictionaryMenuAction_ = _dictionaryMenu().menuAction();
 
   connect( &_filterMenu(), SIGNAL( selectionChanged( const QString& ) ), SLOT( selectFilter( const QString& ) ) );
   connect( &_dictionaryMenu(), SIGNAL( selectionChanged( const QString& ) ), SLOT( selectDictionary( const QString& ) ) );
@@ -1578,28 +1578,28 @@ void TextDisplay::_installActions( void )
   #endif
 
   // tag block action
-  addAction( tag_block_action_ = new QAction( IconEngine::get( ICONS::TAG ), "&Tag Selected Blocks", this ) );
-  connect( tag_block_action_, SIGNAL( triggered() ), SLOT( _tagBlock( void ) ) );
+  addAction( tagBlockAction_ = new QAction( IconEngine::get( ICONS::TAG ), "&Tag Selected Blocks", this ) );
+  connect( tagBlockAction_, SIGNAL( triggered() ), SLOT( _tagBlock( void ) ) );
 
   // clear current block tags
-  addAction( clear_tag_action_ = new QAction( "Clear Current Tag", this ) );
-  connect( clear_tag_action_, SIGNAL( triggered() ), SLOT( _clearTag( void ) ) );
+  addAction( clearTagAction_ = new QAction( "Clear Current Tag", this ) );
+  connect( clearTagAction_, SIGNAL( triggered() ), SLOT( _clearTag( void ) ) );
 
   // clear all tags
-  addAction( clear_all_tags_action_ = new QAction( "Clear All Tags", this ) );
-  connect( clear_all_tags_action_, SIGNAL( triggered() ), SLOT( clearAllTags( void ) ) );
+  addAction( clearAllTagsAction_ = new QAction( "Clear All Tags", this ) );
+  connect( clearAllTagsAction_, SIGNAL( triggered() ), SLOT( clearAllTags( void ) ) );
 
   // next tag action
-  addAction( next_tag_action_ = new QAction( IconEngine::get( ICONS::DOWN ), "Goto Next Tagged Block", this ) );
-  connect( next_tag_action_, SIGNAL( triggered() ), SLOT( _nextTag( void ) ) );
-  next_tag_action_->setShortcut( Qt::ALT + Qt::Key_Down );
-  next_tag_action_->setShortcutContext( Qt::WidgetShortcut );
+  addAction( nextTagAction_ = new QAction( IconEngine::get( ICONS::DOWN ), "Goto Next Tagged Block", this ) );
+  connect( nextTagAction_, SIGNAL( triggered() ), SLOT( _nextTag( void ) ) );
+  nextTagAction_->setShortcut( Qt::ALT + Qt::Key_Down );
+  nextTagAction_->setShortcutContext( Qt::WidgetShortcut );
 
   // previous tag action
-  addAction( previous_tag_action_ = new QAction( IconEngine::get( ICONS::UP ), "Goto Previous Tagged Block", this ) );
-  connect( previous_tag_action_, SIGNAL( triggered() ), SLOT( _previousTag( void ) ) );
-  previous_tag_action_->setShortcut( Qt::ALT + Qt::Key_Up );
-  previous_tag_action_->setShortcutContext( Qt::WidgetShortcut );
+  addAction( previousTagAction_ = new QAction( IconEngine::get( ICONS::UP ), "Goto Previous Tagged Block", this ) );
+  connect( previousTagAction_, SIGNAL( triggered() ), SLOT( _previousTag( void ) ) );
+  previousTagAction_->setShortcut( Qt::ALT + Qt::Key_Up );
+  previousTagAction_->setShortcutContext( Qt::WidgetShortcut );
 
 }
 
@@ -1787,11 +1787,11 @@ bool TextDisplay::_fileModified( void )
   // const TimeStamp file_modified( ( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::REMOVED ) ? TimeStamp(file().lastModified()) : fileCheckData().timeStamp() );
   const TimeStamp file_modified( _fileIsAfs() ? TimeStamp(file().lastModified()) : fileCheckData().timeStamp() );
   if( !file_modified.isValid() ) return false;
-  if( !(file_modified > last_saved_ ) ) return false;
+  if( !(file_modified > lastSaved_ ) ) return false;
   if( !_contentsChanged() ) return false;
 
   // update last_save to avoid chain questions
-  last_saved_ = file_modified;
+  lastSaved_ = file_modified;
   return true;
 
 }
@@ -1822,9 +1822,9 @@ void TextDisplay::_updateTaggedBlocks( void )
     TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
     if( !( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) ) continue;
 
-    if( data->hasFlag( TextBlock::DIFF_ADDED ) ) setBackground( block, diff_added_color_ );
-    if( data->hasFlag( TextBlock::DIFF_CONFLICT ) ) setBackground( block, diff_conflict_color_ );
-    if( data->hasFlag( TextBlock::USER_TAG ) ) setBackground( block, user_tag_color_ );
+    if( data->hasFlag( TextBlock::DIFF_ADDED ) ) setBackground( block, diffAddedColor_ );
+    if( data->hasFlag( TextBlock::DIFF_CONFLICT ) ) setBackground( block, diffConflictColor_ );
+    if( data->hasFlag( TextBlock::USER_TAG ) ) setBackground( block, userTagColor_ );
 
   }
 
@@ -1854,7 +1854,7 @@ bool TextDisplay::_toggleWrapMode( bool state )
   if( !AnimatedTextEditor::_toggleWrapMode( state ) ) return false;
 
   if( !( file().isEmpty() || isNewDocument() ) )
-  { _recentFiles().get( file() ).addProperty( wrap_property_id_, Str().assign<bool>(state) ); }
+  { _recentFiles().get( file() ).addProperty( wrapPropertyId_, Str().assign<bool>(state) ); }
 
   return true;
 
@@ -1888,9 +1888,9 @@ void TextDisplay::_updateConfiguration( void )
   }
 
   // retrieve diff colors
-  diff_conflict_color_ = QColor( XmlOptions::get().raw("DIFF_CONFLICT_COLOR") );
-  diff_added_color_ = QColor( XmlOptions::get().raw("DIFF_ADDED_COLOR") );
-  user_tag_color_ = QColor( XmlOptions::get().raw("TAGGED_BLOCK_COLOR") );
+  diffConflictColor_ = QColor( XmlOptions::get().raw("DIFF_CONFLICT_COLOR") );
+  diffAddedColor_ = QColor( XmlOptions::get().raw("DIFF_ADDED_COLOR") );
+  userTagColor_ = QColor( XmlOptions::get().raw("TAGGED_BLOCK_COLOR") );
 
   // update paragraph tags
   _updateTaggedBlocks();
@@ -1923,11 +1923,11 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
   if( !( file.isEmpty() || isNewDocument() ) )
   {
     FileRecord& record( _recentFiles().get( file ) );
-    if( record.hasProperty( filter_property_id_ ) && interface.hasFilter( record.property( filter_property_id_ ) ) )
-    { filter = record.property( filter_property_id_ ); }
+    if( record.hasProperty( filterPropertyId_ ) && interface.hasFilter( record.property( filterPropertyId_ ) ) )
+    { filter = record.property( filterPropertyId_ ); }
 
-    if( record.hasProperty( dictionary_property_id_ ) && interface.hasDictionary( record.property( dictionary_property_id_ ) ) )
-    { dictionary = record.property( dictionary_property_id_ ); }
+    if( record.hasProperty( dictionaryPropertyId_ ) && interface.hasDictionary( record.property( dictionaryPropertyId_ ) ) )
+    { dictionary = record.property( dictionaryPropertyId_ ); }
 
   }
 
@@ -2142,10 +2142,10 @@ void TextDisplay::_spellcheck( void )
   {
 
     FileRecord& record( _recentFiles().get( file() ) );
-    if( !( record.hasProperty( filter_property_id_ ) && dialog.setFilter( record.property( filter_property_id_ ) ) ) )
+    if( !( record.hasProperty( filterPropertyId_ ) && dialog.setFilter( record.property( filterPropertyId_ ) ) ) )
     { dialog.setFilter( default_filter ); }
 
-    if( !( record.hasProperty( dictionary_property_id_ ) && dialog.setDictionary( record.property( dictionary_property_id_ ) ) ) )
+    if( !( record.hasProperty( dictionaryPropertyId_ ) && dialog.setDictionary( record.property( dictionaryPropertyId_ ) ) ) )
     { dialog.setDictionary( default_dictionary ); }
 
   }  else {
@@ -2166,8 +2166,8 @@ void TextDisplay::_spellcheck( void )
   if( !( file().isEmpty() || isNewDocument() ) )
   {
     _recentFiles().get( file() )
-      .addProperty( filter_property_id_, dialog.filter() )
-      .addProperty( dictionary_property_id_, dialog.dictionary() );
+      .addProperty( filterPropertyId_, dialog.filter() )
+      .addProperty( dictionaryPropertyId_, dialog.dictionary() );
   }
 
   textHighlight().spellParser().interface().mergeIgnoredWords( dialog.interface().ignoredWords() );

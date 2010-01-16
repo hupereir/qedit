@@ -237,31 +237,31 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
   //! new file
   QAction& newFileAction( void ) const
-  { return *new_file_action_; }
+  { return *newFileAction_; }
 
   //! clone display
   QAction& cloneAction( void ) const
-  { return *clone_action_; }
+  { return *cloneAction_; }
 
   //! detach action
   QAction& detachAction( void ) const
-  { return *detach_action_; }
+  { return *detachAction_; }
 
   //! open file
   QAction& openAction( void ) const
-  { return *open_action_; }
+  { return *openAction_; }
 
   //! close display
   QAction& closeDisplayAction( void ) const
-  { return *close_display_action_; }
+  { return *closeDisplayAction_; }
 
   //! close display
   QAction& closeWindowAction( void ) const
-  { return *close_window_action_; }
+  { return *closeWindowAction_; }
 
   //! save
   QAction& saveAction( void ) const
-  { return *save_action_; }
+  { return *saveAction_; }
 
   //! save as
   QAction& saveAsAction( void ) const
@@ -269,35 +269,35 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
   //! revert to saved
   QAction& revertToSaveAction( void ) const
-  { return *revert_to_save_action_; }
+  { return *revertToSaveAction_; }
 
   //! undo
   QAction& undoAction( void ) const
-  { return *undo_action_; }
+  { return *undoAction_; }
 
   //! redo
   QAction& redoAction( void ) const
-  { return *redo_action_; }
+  { return *redoAction_; }
 
   //! cut
   QAction& cutAction( void ) const
-  { return *cut_action_; }
+  { return *cutAction_; }
 
   //! copy
   QAction& copyAction( void ) const
-  { return *copy_action_; }
+  { return *copyAction_; }
 
   //! paste
   QAction& pasteAction( void ) const
-  { return *paste_action_; }
+  { return *pasteAction_; }
 
   //! print
   QAction& printAction( void ) const
-  { return *print_action_; }
+  { return *printAction_; }
 
   //! file info
   QAction& filePropertiesAction( void ) const
-  { return *file_properties_action_; }
+  { return *filePropertiesAction_; }
 
   //! spellcheck
   QAction& spellcheckAction( void ) const
@@ -305,23 +305,23 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
   //! diff files action
   QAction& diffAction( void ) const
-  { return *diff_action_; }
+  { return *diffAction_; }
 
   //! split display horizontal
   QAction& splitDisplayHorizontalAction( void ) const
-  { return *split_display_horizontal_action_; }
+  { return *splitDisplayHorizontalAction_; }
 
   //! split display vertical
   QAction& splitDisplayVerticalAction( void ) const
-  { return *split_display_vertical_action_; }
+  { return *splitDisplayVerticalAction_; }
 
   //! open horizontal
   QAction& openHorizontalAction( void ) const
-  { return *open_horizontal_action_; }
+  { return *openHorizontalAction_; }
 
   //! open vertical
   QAction& openVerticalAction( void ) const
-  { return *open_vertical_action_; }
+  { return *openVerticalAction_; }
 
   //@}
 
@@ -580,11 +580,11 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
   //! document class toolbar
   bool _hasDocumentClassToolBar( void ) const
-  { return bool( document_class_toolbar_ ); }
+  { return bool( documentClassToolbar_ ); }
 
   //! document class toolbar
   DocumentClassToolBar& _documentClassToolBar( void ) const
-  { return *document_class_toolbar_; }
+  { return *documentClassToolbar_; }
 
   //! file editor
   bool _hasFileEditor( void ) const
@@ -636,7 +636,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   QLabel* fileEditor_;
 
   //! document class toolbar
-  DocumentClassToolBar* document_class_toolbar_;
+  DocumentClassToolBar* documentClassToolbar_;
 
   //@}
 
@@ -658,75 +658,75 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   //@{
 
   //! new file
-  QAction* new_file_action_;
+  QAction* newFileAction_;
 
   //! clone display
-  QAction* clone_action_;
+  QAction* cloneAction_;
 
   //! detach action
-  QAction* detach_action_;
+  QAction* detachAction_;
 
   //! open file
-  QAction* open_action_;
+  QAction* openAction_;
 
   //! open horizontal
-  QAction* open_horizontal_action_;
+  QAction* openHorizontalAction_;
 
   //! open vertical
-  QAction* open_vertical_action_;
+  QAction* openVerticalAction_;
 
   //! close display
-  QAction* close_display_action_;
+  QAction* closeDisplayAction_;
 
   //! close display
-  QAction* close_window_action_;
+  QAction* closeWindowAction_;
 
   //! save
-  QAction* save_action_;
+  QAction* saveAction_;
 
   //! save as
   QAction* save_as_action_;
 
   //! revert to saved
-  QAction* revert_to_save_action_;
+  QAction* revertToSaveAction_;
 
   //! print
-  QAction* print_action_;
+  QAction* printAction_;
 
   //! undo
-  QAction* undo_action_;
+  QAction* undoAction_;
 
   //! redo
-  QAction* redo_action_;
+  QAction* redoAction_;
 
   //! cut
-  QAction* cut_action_;
+  QAction* cutAction_;
 
   //! copy
-  QAction* copy_action_;
+  QAction* copyAction_;
 
   //! paste
-  QAction* paste_action_;
+  QAction* pasteAction_;
 
   //! file info
-  QAction* file_properties_action_;
+  QAction* filePropertiesAction_;
 
   //! spellcheck
   QAction* spellcheck_action_;
 
   //! diff files
-  QAction* diff_action_;
+  QAction* diffAction_;
 
   //! split display horizontal
-  QAction* split_display_horizontal_action_;
+  QAction* splitDisplayHorizontalAction_;
 
   //! split display vertical
-  QAction* split_display_vertical_action_;
+  QAction* splitDisplayVerticalAction_;
 
   //@}
 
   //! timer
-  QBasicTimer resize_timer_;
+  QBasicTimer resizeTimer_;
 
 };
 

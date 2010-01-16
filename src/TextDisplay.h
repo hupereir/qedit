@@ -206,7 +206,7 @@ class TextDisplay: public AnimatedTextEditor
 
   //! is new document
   const bool& isNewDocument( void ) const
-  { return is_new_document_; }
+  { return isNewDocument_; }
 
   //! new document name server
   static NewDocumentNameServer& newDocumentNameServer( void );
@@ -221,7 +221,7 @@ class TextDisplay: public AnimatedTextEditor
 
   //! last saved time stamp
   const TimeStamp& lastSaved( void ) const
-  { return last_saved_; }
+  { return lastSaved_; }
 
   //! clear file check data
   void clearFileCheckData( void );
@@ -231,7 +231,7 @@ class TextDisplay: public AnimatedTextEditor
 
   //! file check data
   const FileCheck::Data& fileCheckData( void ) const
-  { return file_check_data_; }
+  { return fileCheckData_; }
 
   //! ask for save if modified
   AskForSaveDialog::ReturnCode askForSave( const bool& enable_all = false );
@@ -261,11 +261,11 @@ class TextDisplay: public AnimatedTextEditor
 
   //! class name
   void setClassName( const QString& name )
-  { class_name_ = name; }
+  { className_ = name; }
 
   //! class name
   const QString& className( void ) const
-  { return class_name_; }
+  { return className_; }
 
   //@}
 
@@ -283,15 +283,15 @@ class TextDisplay: public AnimatedTextEditor
 
   //! text highlight
   bool hasTextHighlight( void )
-  { return text_highlight_; }
+  { return textHighlight_; }
 
   //! text highlight
   TextHighlight& textHighlight( void )
-  { return *text_highlight_; }
+  { return *textHighlight_; }
 
   //! text highlight
   const TextHighlight& textHighlight( void ) const
-  { return *text_highlight_; }
+  { return *textHighlight_; }
 
   //! text indent
   TextIndent& textIndent( void ) const
@@ -302,11 +302,11 @@ class TextDisplay: public AnimatedTextEditor
 
   //! block delimiter display
   bool hasBlockDelimiterDisplay( void ) const
-  { return block_delimiter_display_; }
+  { return blockDelimiterDisplay_; }
 
   //! block delimiter display
   BlockDelimiterDisplay& blockDelimiterDisplay( void ) const
-  { return *block_delimiter_display_; }
+  { return *blockDelimiterDisplay_; }
 
   //! returns true if current text has leading tabs of wrong type
   bool hasLeadingTabs( void ) const;
@@ -327,83 +327,83 @@ class TextDisplay: public AnimatedTextEditor
 
   //! toggle indentation
   QAction& textIndentAction( void ) const
-  { return *text_indent_action_; }
+  { return *textIndentMacro_; }
 
   //! toggle text highlighting
   QAction& textHighlightAction( void ) const
-  { return *text_highlight_action_; }
+  { return *textHighlightAction_; }
 
   //! toggle parenthesis highlighting
   QAction& parenthesisHighlightAction( void ) const
-  { return *parenthesis_highlight_action_; }
+  { return *parenthesisHighlightAction_; }
 
   //! disable automatic macros
   QAction& noAutomaticMacrosAction( void ) const
-  { return *no_automatic_macros_action_; }
+  { return *noAutomaticMacrosAction_; }
 
   //! autospell action
   QAction& autoSpellAction( void ) const
-  { return *autospell_action_; }
+  { return *autoSpellAction_; }
 
   //! show block delimiters
   bool hasBlockDelimiterAction( void ) const
-  { return show_block_delimiter_action_; }
+  { return showBlockDelimiterAction_; }
 
   //! show block delimiters
   QAction& showBlockDelimiterAction( void ) const
-  { return *show_block_delimiter_action_; }
+  { return *showBlockDelimiterAction_; }
 
   //! spellcheck action
   QAction& spellcheckAction( void ) const
-  { return *spellcheck_action_; }
+  { return *spellCheckAction_; }
 
   //! indent selection
   QAction& indentSelectionAction( void ) const
-  { return *indent_selection_action_; }
+  { return *indentSelectionAction_; }
 
   //! indent selection
   QAction& baseIndentAction( void ) const
-  { return *base_indent_action_; }
+  { return *baseIndentAction_; }
 
   //! replace leading tab actions
   QAction& leadingTabsAction( void ) const
-  { return *leading_tabs_action_; }
+  { return *leadingTabsAction_; }
 
   //! file information
   QAction& filePropertiesAction( void ) const
-  { return *file_properties_action_; }
+  { return *filePropertiesAction_; }
 
   #if WITH_ASPELL
 
   //! spellcheck dictionary selection
   QAction& dictionaryMenuAction( void ) const
-  { return *dictionary_menu_action_; }
+  { return *dictionaryMenuAction_; }
 
   //! spellcheck filter selection
   QAction& filterMenuAction( void ) const
-  { return *filter_menu_action_; }
+  { return *filterMenuAction_; }
 
   #endif
 
   //! tag block action
   QAction &tagBlockAction( void ) const
-  { return* tag_block_action_; }
+  { return* tagBlockAction_; }
 
   //! next tag action
   QAction &nextTagAction( void ) const
-  { return* next_tag_action_; }
+  { return* nextTagAction_; }
 
   //! previous tag action
   QAction &previousTagAction( void ) const
-  { return* previous_tag_action_; }
+  { return* previousTagAction_; }
 
   //! clear current block tags action
   QAction &clearTagAction( void ) const
-  { return* clear_tag_action_; }
+  { return* clearTagAction_; }
 
   //! clear all tags action
   QAction &clearAllTagsAction( void ) const
-  { return* clear_all_tags_action_; }
+  { return* clearAllTagsAction_; }
 
   //@}
 
@@ -433,7 +433,7 @@ class TextDisplay: public AnimatedTextEditor
 
   //! return parenthesis highlight object
   ParenthesisHighlight& parenthesisHighlight( void ) const
-  { return *parenthesis_highlight_; }
+  { return *parenthesisHighlight_; }
 
   signals:
 
@@ -509,7 +509,7 @@ class TextDisplay: public AnimatedTextEditor
 
   //! is new document
   void _setIsNewDocument( bool value )
-  { is_new_document_ = value; }
+  { isNewDocument_ = value; }
 
   //! clear macros
   void _clearMacros( void )
@@ -521,7 +521,7 @@ class TextDisplay: public AnimatedTextEditor
 
   //! last save time stamp
   void _setLastSaved( const TimeStamp& stamp )
-  { last_saved_ = stamp; }
+  { lastSaved_ = stamp; }
 
   //! working directory
   void _setWorkingDirectory( const File& file )
@@ -529,11 +529,11 @@ class TextDisplay: public AnimatedTextEditor
 
    //! if true file is not checked on enter event
   const bool& _ignoreWarnings() const
-  { return ignore_warnings_; }
+  { return ignoreWarnings_; }
 
   //! if true file is not checked on enter event
   void _setIgnoreWarnings( const bool& value )
-  { ignore_warnings_ = value; }
+  { ignoreWarnings_ = value; }
 
   //! true if macros list contains automatic macros
   bool _hasAutomaticMacros( void ) const;
@@ -560,11 +560,11 @@ class TextDisplay: public AnimatedTextEditor
 
   //! dictionary menu
   SPELLCHECK::DictionaryMenu& _dictionaryMenu( void )
-  { return *dictionary_menu_; }
+  { return *dictionaryMenu_; }
 
   //! filter menu
   SPELLCHECK::FilterMenu& _filterMenu( void )
-  { return *filter_menu_; }
+  { return *filterMenu_; }
 
   #endif
 
@@ -695,39 +695,39 @@ class TextDisplay: public AnimatedTextEditor
 
   //!@name property ids
   //@{
-  FileRecord::PropertyId::Id class_name_property_id_;
-  FileRecord::PropertyId::Id icon_property_id_;
-  FileRecord::PropertyId::Id wrap_property_id_;
-  FileRecord::PropertyId::Id dictionary_property_id_;
-  FileRecord::PropertyId::Id filter_property_id_;
+  FileRecord::PropertyId::Id classNamePropertyId_;
+  FileRecord::PropertyId::Id iconPropertyId_;
+  FileRecord::PropertyId::Id wrapPropertyId_;
+  FileRecord::PropertyId::Id dictionaryPropertyId_;
+  FileRecord::PropertyId::Id filterPropertyId_;
   //@}
 
   //! true if display is to be deleted
   bool closed_;
 
   //! true if display corresponds to a new document
-  bool is_new_document_;
+  bool isNewDocument_;
 
   //! associated document class name
-  QString class_name_;
+  QString className_;
 
   //! filesystem check data
-  FileCheck::Data file_check_data_;
+  FileCheck::Data fileCheckData_;
 
   //! diff conflict color
-  QColor diff_conflict_color_;
+  QColor diffConflictColor_;
 
   //! diff added color
-  QColor diff_added_color_;
+  QColor diffAddedColor_;
 
   //! diff added color
-  QColor user_tag_color_;
+  QColor userTagColor_;
 
   //! last save timeStamp
-  TimeStamp last_saved_;
+  TimeStamp lastSaved_;
 
   //! if true, _checkFile is disabled
-  bool ignore_warnings_;
+  bool ignoreWarnings_;
 
   //!@name document classes specific members
   //@{
@@ -744,83 +744,83 @@ class TextDisplay: public AnimatedTextEditor
   //@{
 
   //! toggle indentation
-  QAction* text_indent_action_;
+  QAction* textIndentMacro_;
 
   //! toggle text highlighting
-  QAction* text_highlight_action_;
+  QAction* textHighlightAction_;
 
   //! toggle text highlighting
-  QAction* parenthesis_highlight_action_;
+  QAction* parenthesisHighlightAction_;
 
   //! disable automatic macros
-  QAction* no_automatic_macros_action_;
+  QAction* noAutomaticMacrosAction_;
 
   //! toggle autospell
-  QAction* autospell_action_;
+  QAction* autoSpellAction_;
 
   //! block delimiter
-  QAction* show_block_delimiter_action_;
+  QAction* showBlockDelimiterAction_;
 
   //! run spell checker
-  QAction* spellcheck_action_;
+  QAction* spellCheckAction_;
 
   //! indent selection
-  QAction* indent_selection_action_;
+  QAction* indentSelectionAction_;
 
   //! add base indentation
-  QAction* base_indent_action_;
+  QAction* baseIndentAction_;
 
   //! replace leading tabs
-  QAction* leading_tabs_action_;
+  QAction* leadingTabsAction_;
 
   //! toggle text highlighting
-  QAction* file_properties_action_;
+  QAction* filePropertiesAction_;
 
   #if WITH_ASPELL
 
   //! spellcheck dictionary selection menu
-  QAction* dictionary_menu_action_;
+  QAction* dictionaryMenuAction_;
 
   //! spellcheck filter selection menu
-  QAction* filter_menu_action_;
+  QAction* filterMenuAction_;
 
   #endif
 
   //! tag block
-  QAction* tag_block_action_;
+  QAction* tagBlockAction_;
 
   //! goto next tag
-  QAction* next_tag_action_;
+  QAction* nextTagAction_;
 
   //! goto previous tag
-  QAction* previous_tag_action_;
+  QAction* previousTagAction_;
 
   //! clear current block tags
-  QAction* clear_tag_action_;
+  QAction* clearTagAction_;
 
   //! clear current block tags
-  QAction* clear_all_tags_action_;
+  QAction* clearAllTagsAction_;
 
   //@}
 
   #if WITH_ASPELL
 
   //! spellcheck dictionary selection menu
-  SPELLCHECK::DictionaryMenu* dictionary_menu_;
+  SPELLCHECK::DictionaryMenu* dictionaryMenu_;
 
   //! spellcheck filter selection menu
-  SPELLCHECK::FilterMenu* filter_menu_;
+  SPELLCHECK::FilterMenu* filterMenu_;
 
   #endif
 
   //! syntax highlighter
-  TextHighlight* text_highlight_;
+  TextHighlight* textHighlight_;
 
   //! parenthesis highlight object
-  ParenthesisHighlight* parenthesis_highlight_;
+  ParenthesisHighlight* parenthesisHighlight_;
 
   //! block delimiter
-  BlockDelimiterDisplay* block_delimiter_display_;
+  BlockDelimiterDisplay* blockDelimiterDisplay_;
 
 };
 

@@ -47,8 +47,8 @@ using namespace std;
 TextView::TextView( QWidget* parent ):
   QWidget( parent ),
   Counter( "TextView" ),
-  active_display_( 0 ),
-  position_timer_(this)
+  activeDisplay_( 0 ),
+  positionTimer_(this)
 {
 
   Debug::Throw( "TextView::TextView.\n" );
@@ -68,8 +68,8 @@ TextView::TextView( QWidget* parent ):
   Singleton::get().application<Application>()->fileCheck().registerDisplay( &display );
 
   // position update timer
-  position_timer_.setSingleShot( true );
-  position_timer_.setInterval( 100 );
+  positionTimer_.setSingleShot( true );
+  positionTimer_.setInterval( 100 );
 
 }
 
@@ -192,13 +192,13 @@ void TextView::closeActiveDisplay( void )
 //________________________________________________________________
 void TextView::setActiveDisplay( TextDisplay& display )
 {
-  Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << endl;
+  Debug::Throw(0) << "TextView::setActiveDisplay - key: " << display.key() << " - " << display.file() << endl;
   assert( display.isAssociated( this ) );
 
-  if( active_display_ != &display )
+  if( activeDisplay_ != &display )
   {
 
-    active_display_ = &display;
+    activeDisplay_ = &display;
     if( display.file().size() || display.isNewDocument() )
     { emit needUpdate( TextDisplay::ACTIVE_DISPLAY_CHANGED ); }
 
@@ -212,7 +212,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
 
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
     { (*iter)->setActive( false ); }
-
+ACTIVE_DISPLAY_CHANGED
     activeDisplay().setActive( true );
 
   }
@@ -322,12 +322,12 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
   Debug::Throw( "TextView::splitDisplay.\n" );
 
   // keep local pointer to current active display
-  TextDisplay& active_display_local( activeDisplay() );
+  TextDisplay& activeDisplay_local( activeDisplay() );
 
   // compute desired dimension of the new splitter
   // along its splitting direction
   int dimension(0);
-  if( clone ) dimension = (orientation == Qt::Horizontal) ? active_display_local.width():active_display_local.height();
+  if( clone ) dimension = (orientation == Qt::Horizontal) ? activeDisplay_local.width():activeDisplay_local.height();
   else dimension = (orientation == Qt::Horizontal) ? width():height();
 
   // create new splitter
@@ -337,7 +337,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
   TextDisplay& display( _newTextDisplay(0) );
 
   // insert in splitter, at correct position
-  if( clone ) splitter.insertWidget( splitter.indexOf( &active_display_local )+1, &display );
+  if( clone ) splitter.insertWidget( splitter.indexOf( &activeDisplay_local )+1, &display );
   else splitter.addWidget( &display );
 
   // recompute dimension
@@ -359,10 +359,10 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
      if there exists no clone of active display,
      backup text and register a new Sync object
     */
-    BASE::KeySet<TextDisplay> displays( &active_display_local );
+    BASE::KeySet<TextDisplay> displays( &activeDisplay_local );
 
     // clone new display
-    display.synchronize( &active_display_local );
+    display.synchronize( &activeDisplay_local );
 
     // perform associations
     // check if active displays has associates and propagate to new
@@ -370,12 +370,12 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
     { BASE::Key::associate( &display, *iter ); }
 
     // associate this display to AutoSave threads
-    BASE::KeySet<AutoSaveThread> threads( &active_display_local );
+    BASE::KeySet<AutoSaveThread> threads( &activeDisplay_local );
     for( BASE::KeySet<AutoSaveThread>::iterator iter = threads.begin(); iter != threads.end(); iter++ )
     { BASE::Key::associate( &display, *iter ); }
 
     // associate new display to active
-    BASE::Key::associate( &display, &active_display_local );
+    BASE::Key::associate( &display, &activeDisplay_local );
 
   } else {
 
@@ -552,7 +552,7 @@ void TextView::_checkDisplays( void )
   // this should not happen and will likely generate a crash later on.
   // it is meant for debugging
   if( displays.find( &activeDisplay() ) == displays.end() )
-  { active_display_ = 0; }
+  { activeDisplay_ = 0; }
 
 }
 
@@ -675,7 +675,7 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
   connect( display, SIGNAL( needUpdate( unsigned int ) ), SIGNAL( needUpdate( unsigned int ) ) );
   connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( _activeDisplayChanged( TextEditor* ) ) );
   connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( checkDisplayModifications( TextEditor* ) ) );
-  connect( display, SIGNAL( cursorPositionChanged() ), &position_timer_, SLOT( start() ) );
+  connect( display, SIGNAL( cursorPositionChanged() ), &positionTimer_, SLOT( start() ) );
   connect( display, SIGNAL( modifiersChanged( unsigned int ) ), SIGNAL( modifiersChanged( unsigned int ) ) );
 
   connect( display, SIGNAL( undoAvailable( bool ) ), SIGNAL( undoAvailable( bool ) ) );

@@ -68,18 +68,18 @@ const QString WindowServer::MULTIPLE_WINDOWS = "open in new window";
 WindowServer::WindowServer( QObject* parent ):
   QObject( parent ),
   Counter( "WindowServer" ),
-  first_call_( true ),
-  default_orientation_( Qt::Horizontal ),
-  default_diff_orientation_( Qt::Vertical ),
+  firstCall_( true ),
+  defaultOrientation_( Qt::Horizontal ),
+  defaultDiffOrientation_( Qt::Vertical ),
   open_mode_( ACTIVE_WINDOW ),
-  active_window_( 0 )
+  activeWindow_( 0 )
 {
 
   Debug::Throw( "WindowServer::WindowServer.\n" );
 
   // create actions
-  save_all_action_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save A&ll", this );
-  connect( save_all_action_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
+  saveAllAction_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save A&ll", this );
+  connect( saveAllAction_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
 
   connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
   _updateConfiguration();
@@ -683,18 +683,18 @@ void WindowServer::_detach( void )
 
   Debug::Throw( "WindowServer::_detach.\n" );
 
-  MainWindow& active_window_local( _activeWindow() );
+  MainWindow& activeWindow_local( _activeWindow() );
 
   // check number of independent displays
-  assert( active_window_local.activeView().independentDisplayCount() > 1 || BASE::KeySet<TextView>( &_activeWindow() ).size() > 1 );
+  assert( activeWindow_local.activeView().independentDisplayCount() > 1 || BASE::KeySet<TextView>( &_activeWindow() ).size() > 1 );
 
   // get current display
-  TextDisplay& active_display_local( active_window_local.activeView().activeDisplay() );
+  TextDisplay& active_display_local( activeWindow_local.activeView().activeDisplay() );
 
   // check number of displays associated to active
   if( !BASE::KeySet<TextDisplay>(active_display_local).empty() )
   {
-    InformationDialog( &active_window_local,
+    InformationDialog( &activeWindow_local,
       "Software limitation:\n"
       "Active display has clones in the current window.\n"
       "It cannot be detached." ).exec();
@@ -713,7 +713,7 @@ void WindowServer::_detach( void )
 
   // close display
   active_display_local.document()->setModified( false );
-  active_window_local.activeView().closeDisplay( active_display_local );
+  activeWindow_local.activeView().closeDisplay( active_display_local );
 
   // update modification state
   window.activeView().activeDisplay().document()->setModified( modified );
@@ -753,16 +753,16 @@ void WindowServer::_reparent( const File& first, const File& second )
 
   // create new display in text view
   view.selectDisplay( second );
-  TextDisplay& new_display = view.splitDisplay( defaultOrientation( NORMAL ), false );
-  new_display.synchronize( &first_display );
+  TextDisplay& newDisplay = view.splitDisplay( defaultOrientation( NORMAL ), false );
+  newDisplay.synchronize( &first_display );
 
   // close display
   first_display.document()->setModified( false );
   first_view.closeDisplay( first_display );
 
   // restore modification state
-  new_display.setModified( modified );
-  view.setActiveDisplay( new_display );
+  newDisplay.setModified( modified );
+  view.setActiveDisplay( newDisplay );
 
   // make view active
   BASE::KeySet<MainWindow> windows( view );
@@ -1128,7 +1128,7 @@ void WindowServer::_setActiveWindow( MainWindow& window )
 {
   Debug::Throw() << "WindowServer::setActiveWindow - key: " << window.key() << endl;
   assert( window.isAssociated( this ) );
-  active_window_ = &window;
+  activeWindow_ = &window;
 }
 
 
@@ -1137,12 +1137,12 @@ bool WindowServer::_hasActiveWindow( void ) const
 {
 
   // check if active window exists
-  if( !active_window_ ) return false;
+  if( !activeWindow_ ) return false;
 
   // check if found in list of associated windows
   BASE::KeySet<MainWindow> windows( this );
 
-  // not sure it works when the window pointed to by active_window_ has been removed
-  return windows.find( active_window_ ) != windows.end();
+  // not sure it works when the window pointed to by activeWindow_ has been removed
+  return windows.find( activeWindow_ ) != windows.end();
 
 }
