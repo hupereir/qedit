@@ -325,6 +325,7 @@ void TextDisplay::synchronize( TextDisplay* display )
 
   // update class name
   setClassName( display->className() );
+  setFileCheckData( display->fileCheckData() );
 
 }
 
