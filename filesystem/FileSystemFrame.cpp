@@ -78,6 +78,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   toolbar->addAction( &_previousDirectoryAction() );
   toolbar->addAction( &_nextDirectoryAction() );
   toolbar->addAction( &_homeDirectoryAction() );
+  toolbar->addAction( &_reloadAction() );
   layout->addWidget( toolbar );
 
   // combo box
@@ -103,6 +104,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
   _list().menu().addAction( &_nextDirectoryAction() );
   _list().menu().addAction( &_parentDirectoryAction() );
   _list().menu().addAction( &_homeDirectoryAction() );
+  _list().menu().addAction( &_reloadAction() );
 
   _list().menu().addSeparator();
   _list().menu().addAction( &_hiddenFilesAction() );
@@ -135,13 +137,13 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 }
 
 //_________________________________________________________
-void FileSystemFrame::setPath( File path )
+void FileSystemFrame::setPath( File path, bool forced )
 {
 
   Debug::Throw() << "FileSystemFrame::setPath - path: " << path << endl;
 
   // check if changed
-  if( path_ == path ) return;
+  if( !forced && path_ == path ) return;
 
   // update path
   assert( path.isDirectory() );
@@ -372,6 +374,13 @@ void FileSystemFrame::_homeDirectory( void )
   setPath( home() );
 }
 
+//______________________________________________________
+void FileSystemFrame::_reload( void )
+{
+  Debug::Throw( "FileSystemFrame::_homeDirectory.\n" );
+  setPath( path_, true );
+}
+
 //______________________________________________________________________
 void FileSystemFrame::_open( void )
 {
@@ -552,6 +561,11 @@ void FileSystemFrame::_installActions( void )
   connect( &_homeDirectoryAction(), SIGNAL( triggered() ), SLOT( _homeDirectory() ) );
   _homeDirectoryAction().setToolTip( "Change path to current file working directory" );
 
+  // home directory
+  addAction( reload_action_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
+  connect( &_reloadAction(), SIGNAL( triggered() ), SLOT( _reload() ) );
+  _reloadAction().setToolTip( "Reload current directory contents" );
+
   // open
   addAction( open_action_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open Selected Files", this ) );
   connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
@@ -559,19 +573,19 @@ void FileSystemFrame::_installActions( void )
 
   // remove
   addAction( remove_action_ = new QAction( IconEngine::get( ICONS::DELETE ), "Remo&ve", this ) );
-  connect( remove_action_, SIGNAL( triggered() ), SLOT( _remove() ) );
-  remove_action_->setShortcut( Qt::Key_Delete );
-  remove_action_->setToolTip( "Remove selected files locally" );
+  connect( &_removeAction(), SIGNAL( triggered() ), SLOT( _remove() ) );
+  _removeAction().setShortcut( Qt::Key_Delete );
+  _removeAction().setToolTip( "Remove selected files locally" );
 
   // rename
   addAction( rename_action_ = new QAction( IconEngine::get( ICONS::RENAME ), "Rename", this ) );
-  connect( rename_action_, SIGNAL( triggered() ), SLOT( _rename() ) );
-  rename_action_->setShortcut( Qt::Key_F2 );
-  rename_action_->setToolTip( "Change selected file name" );
+  connect( &_renameAction(), SIGNAL( triggered() ), SLOT( _rename() ) );
+  _renameAction().setShortcut( Qt::Key_F2 );
+  _renameAction().setToolTip( "Change selected file name" );
 
   // file properties
   addAction( file_properties_action_ = new QAction( IconEngine::get( ICONS::INFO ), "&File Properties", this ) );
-  file_properties_action_->setToolTip( "Display current file properties" );
-  connect( file_properties_action_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
+  connect( &_filePropertiesAction(), SIGNAL( triggered() ), SLOT( _fileProperties() ) );
+  _filePropertiesAction().setToolTip( "Display current file properties" );
 
 }

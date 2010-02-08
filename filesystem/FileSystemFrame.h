@@ -84,7 +84,7 @@ class FileSystemFrame: public QWidget, public Counter
   public slots:
 
   //! base directory
-  void setPath( File );
+  void setPath( File, bool forced = false );
 
   protected:
 
@@ -132,6 +132,9 @@ class FileSystemFrame: public QWidget, public Counter
   //! home directory
   void _homeDirectory( void );
 
+  //! reload
+  void _reload( void );
+  
   //! open
   void _open( void );
 
@@ -203,6 +206,10 @@ class FileSystemFrame: public QWidget, public Counter
   QAction& _homeDirectoryAction( void ) const
   { return *home_directory_action_; }
 
+  // reload action
+  QAction& _reloadAction( void ) const
+  { return *reload_action_; }
+
   //! open action
   QAction& _openAction( void ) const
   { return *open_action_; }
@@ -251,6 +258,9 @@ class FileSystemFrame: public QWidget, public Counter
   //! home directory action
   QAction* home_directory_action_;
 
+  //! reload
+  QAction* reload_action_;
+  
   //! open
   QAction* open_action_;
 

@@ -518,8 +518,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
   void _update( unsigned int );
 
   //! update modifiers
-  void _updateModifiers( void )
-  { _update( TextDisplay::MODIFIERS ); }
+  void _updateModifiers( void );
 
   //! update actions based on number of displays in active view
   void _updateDisplayCount( void )

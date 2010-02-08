@@ -789,7 +789,7 @@ void MainWindow::_update( unsigned int flags )
     redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
   }
 
-  if( _hasStatusBar() && flags & TextDisplay::MODIFIERS )
+  if( _hasStatusBar() && (flags & TextDisplay::MODIFIERS) )
   {
     Debug::Throw() << "MainWindow::_update - modifiers." << endl;
     QStringList modifiers;
@@ -798,7 +798,7 @@ void MainWindow::_update( unsigned int flags )
     if( activeDisplay().modifier( TextEditor::MODIFIER_CAPS_LOCK ) ) modifiers << "CAPS";
     if( activeDisplay().modifier( TextEditor::MODIFIER_NUM_LOCK ) ) modifiers << "NUM";
     if( !modifiers.isEmpty() ) _statusBar().label(0).setText( modifiers.join( " " ) );
-    Debug::Throw() << "MainWindow::_update - modifiers - done." << endl;
+    else  _statusBar().label(0).clear();
   }
 
   if( flags & TextDisplay::DISPLAY_COUNT )
@@ -819,6 +819,10 @@ void MainWindow::_update( unsigned int flags )
   Debug::Throw() << "MainWindow::_update - done." << endl;
 
 }
+
+//_____________________________________________
+void MainWindow::_updateModifiers( void )
+{ _update( TextDisplay::MODIFIERS ); }
 
 //_____________________________________________
 void MainWindow::_updateCursorPosition( void )
