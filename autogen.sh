@@ -7,4 +7,4 @@ libtoolize --force;
 automake --add-missing;
 autoconf)
 
-$srcdir/configure --enable-maintainer-mode "$@"
+$srcdir/configure "$@"
