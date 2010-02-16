@@ -24,11 +24,11 @@
 *******************************************************************************/
 
 /*!
-  \file ConfigurationDialog.h
-  \brief configuration dialog
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file ConfigurationDialog.h
+\brief configuration dialog
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include "BaseConfigurationDialog.h"
@@ -39,10 +39,10 @@ class OptionCheckBox;
 class ConfigurationDialog: public BaseConfigurationDialog
 {
 
-  public:
+    public:
 
-  //! creator
-  ConfigurationDialog( QWidget *parent = 0 );
+    //! creator
+    ConfigurationDialog( QWidget *parent = 0 );
 
 };
 
