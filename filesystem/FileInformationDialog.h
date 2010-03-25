@@ -24,11 +24,11 @@
 *******************************************************************************/
 
 /*!
-   \file FileInformationDialog.h
-   \brief file informations
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
+\file FileInformationDialog.h
+\brief file informations
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include "CustomDialog.h"
@@ -40,20 +40,20 @@ class AnimatedTabWidget;
 class FileInformationDialog: public CustomDialog
 {
 
-  public:
+    public:
 
-  //! constructor
-  FileInformationDialog( QWidget*, const FileRecord& );
+    //! constructor
+    FileInformationDialog( QWidget*, const FileRecord& );
 
-  //! tab widget
-  /*! needed for customization */
-  AnimatedTabWidget& tabWidget( void ) const
-  { return *tab_widget_; }
+    //! tab widget
+    /*! needed for customization */
+    AnimatedTabWidget& tabWidget( void ) const
+    { return *tab_widget_; }
 
-  private:
+    private:
 
-  //! tab widget
-  AnimatedTabWidget* tab_widget_;
+    //! tab widget
+    AnimatedTabWidget* tab_widget_;
 
 };
 
