@@ -42,63 +42,63 @@
 class SessionFilesModel: public FileRecordModel
 {
 
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! constructor
-  SessionFilesModel( QObject* parent = 0 );
+    //! constructor
+    SessionFilesModel( QObject* parent = 0 );
 
-  //! destructor
-  virtual ~SessionFilesModel( void )
-  {}
+    //! destructor
+    virtual ~SessionFilesModel( void )
+    {}
 
-  //! drag mime type
-  static const QString DRAG;
+    //! drag mime type
+    static const QString DRAG;
 
-  //!@name methods reimplemented from base class
-  //@{
+    //!@name methods reimplemented from base class
+    //@{
 
-  //! flags
-  virtual Qt::ItemFlags flags(const QModelIndex& ) const;
+    //! flags
+    virtual Qt::ItemFlags flags(const QModelIndex& ) const;
 
-  //! return data for a given index
-  virtual QVariant data(const QModelIndex &, int ) const;
+    //! return data for a given index
+    virtual QVariant data(const QModelIndex &, int ) const;
 
-  //! mime type
-  virtual QStringList mimeTypes( void ) const;
+    //! mime type
+    virtual QStringList mimeTypes( void ) const;
 
-  //! mime data
-  virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
+    //! mime data
+    virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
 
-  //! drop mine data
-  virtual bool dropMimeData(const QMimeData*, Qt::DropAction, int row, int column, const QModelIndex&);
+    //! drop mine data
+    virtual bool dropMimeData(const QMimeData*, Qt::DropAction, int row, int column, const QModelIndex&);
 
-  //@}
+    //@}
 
-  signals:
+    signals:
 
-  //! file reorganization
-  void reparentFiles( const File&, const File& );
+    //! file reorganization
+    void reparentFiles( const File&, const File& );
 
-  //! file reorganization
-  void reparentFilesToMain( const File&, const File& );
+    //! file reorganization
+    void reparentFilesToMain( const File&, const File& );
 
-  private slots:
+    private slots:
 
-  //! configuration
-  void _updateConfiguration( void );
+    //! configuration
+    void _updateConfiguration( void );
 
-  private:
+    private:
 
-  //! icon
-  static QIcon _icon( unsigned int );
+    //! icon
+    static QIcon _icon( unsigned int );
 
-  //! icon cache
-  typedef std::map<unsigned int, QIcon> IconCache;
+    //! icon cache
+    typedef std::map<unsigned int, QIcon> IconCache;
 
-  //! type icon cache
-  static IconCache& _icons( void );
+    //! type icon cache
+    static IconCache& _icons( void );
 
 };
 

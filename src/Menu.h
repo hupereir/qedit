@@ -62,22 +62,22 @@ class Menu:public QMenuBar, public Counter
   //! recent files menu
   RecentFilesMenu& recentFilesMenu( void ) const
   {
-    assert( recent_files_menu_ );
-    return *recent_files_menu_;
+    assert( recentFilesMenu_ );
+    return *recentFilesMenu_;
   }
 
   //! document class Menu
   QMenu& documentClassMenu( void ) const
   {
-    assert( document_class_menu_ );
-    return *document_class_menu_;
+    assert( documentClassMenu_ );
+    return *documentClassMenu_;
   }
 
   //! macro menu
   TextMacroMenu& macroMenu( void ) const
   {
-    assert( macro_menu_ );
-    return *macro_menu_;
+    assert( macroMenu_ );
+    return *macroMenu_;
   }
 
   private slots:
@@ -131,35 +131,35 @@ class Menu:public QMenuBar, public Counter
   //@{
 
   //! recent files menu
-  RecentFilesMenu* recent_files_menu_;
+  RecentFilesMenu* recentFilesMenu_;
 
   //! document class menu
-  QMenu* document_class_menu_;
+  QMenu* documentClassMenu_;
 
   //! edit menu
-  QMenu* edit_menu_;
+  QMenu* editMenu_;
 
   //! search menu
-  QMenu* search_menu_;
+  QMenu* searchMenu_;
 
   //! preference menu
-  QMenu* preference_menu_;
+  QMenu* preferenceMenu_;
 
   //! toold menu
-  QMenu* tools_menu_;
+  QMenu* toolsMenu_;
 
   //! macro menu
-  TextMacroMenu* macro_menu_;
+  TextMacroMenu* macroMenu_;
 
   //! windows menu
-  QMenu* windows_menu_;
+  QMenu* windowsMenu_;
 
   //@}
 
   //!@name action groups
   //@{
 
-  QActionGroup* windows_action_group_;
+  QActionGroup* windowsActionGroup_;
 
   //@}
 
@@ -168,7 +168,7 @@ class Menu:public QMenuBar, public Counter
   //@{
 
   //! map windows menu ID to file name
-  std::map< QAction*, File > file_actions_;
+  std::map< QAction*, File > fileActions_;
 
   //@}
 

@@ -53,28 +53,28 @@ const QString SessionFilesModel::DRAG = "base/sessionfilesmodel/drag";
 //__________________________________________________________________
 SessionFilesModel::IconCache& SessionFilesModel::_icons( void )
 {
-  static IconCache cache;
-  return cache;
+    static IconCache cache;
+    return cache;
 }
 
 //__________________________________________________________________
 SessionFilesModel::SessionFilesModel( QObject* parent ):
-  FileRecordModel( parent )
+    FileRecordModel( parent )
 {
-
-  Debug::Throw("SessionFilesModel::SessionFilesModel.\n" );
-  setShowIcons( false );
-  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-
+        
+    Debug::Throw("SessionFilesModel::SessionFilesModel.\n" );
+    setShowIcons( false );
+    connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+    
 }
-
+    
 //__________________________________________________________________
 Qt::ItemFlags SessionFilesModel::flags(const QModelIndex &index) const
 {
-
-  // get flags from parent class
-  Qt::ItemFlags flags( FileRecordModel::flags( index ) );
-  return flags | Qt::ItemIsDropEnabled;
+    
+    // get flags from parent class
+    Qt::ItemFlags flags( FileRecordModel::flags( index ) );
+    return flags | Qt::ItemIsDropEnabled;
 
 }
 
@@ -82,212 +82,212 @@ Qt::ItemFlags SessionFilesModel::flags(const QModelIndex &index) const
 QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
 {
 
-  // check index, role and column
-  if( !index.isValid() ) return QVariant();
+    // check index, role and column
+    if( !index.isValid() ) return QVariant();
 
-  // retrieve associated file info
-  const FileRecord& record( get(index) );
+    // retrieve associated file info
+    const FileRecord& record( get(index) );
 
-  if( role == Qt::DecorationRole && index.column() == ICON )
-  {
+    if( role == Qt::DecorationRole && index.column() == ICON )
+    {
 
-    if( record.hasFlag( FileRecordProperties::MODIFIED ) ) return _icon( FileRecordProperties::MODIFIED );
-    else if( record.hasFlag( FileRecordProperties::ALTERED ) ) return _icon( FileRecordProperties::ALTERED );
-    else return _icon( FileRecordProperties::NONE );
+        if( record.hasFlag( FileRecordProperties::MODIFIED ) ) return _icon( FileRecordProperties::MODIFIED );
+        else if( record.hasFlag( FileRecordProperties::ALTERED ) ) return _icon( FileRecordProperties::ALTERED );
+        else return _icon( FileRecordProperties::NONE );
 
-  } else if( role == Qt::ForegroundRole ) {
+    } else if( role == Qt::ForegroundRole ) {
 
-    return record.hasFlag( FileRecordProperties::ACTIVE ) ?
-      QPalette().color( QPalette::Text ):
-      QPalette().color( QPalette::Disabled, QPalette::Text );
+        return record.hasFlag( FileRecordProperties::ACTIVE ) ?
+            QPalette().color( QPalette::Text ):
+            QPalette().color( QPalette::Disabled, QPalette::Text );
 
-  } else return FileRecordModel::data( index, role );
+    } else return FileRecordModel::data( index, role );
 
-  return QVariant();
-
+    return QVariant();
+    
 }
 
 //____________________________________________________________
 void SessionFilesModel::_updateConfiguration( void )
 {
-  Debug::Throw( "SessionFilesModel::_updateConfiguration.\n" );
-  _icons().clear();
+    Debug::Throw( "SessionFilesModel::_updateConfiguration.\n" );
+    _icons().clear();
 }
 
 //________________________________________________________
 QIcon SessionFilesModel::_icon( unsigned int type )
 {
-
-  //Debug::Throw( "SessionFilesModel::_icon.\n" );
-
-  IconCache::const_iterator iter( _icons().find( type ) );
-  if( iter != _icons().end() ) return iter->second;
-
-  // pixmap size
-  unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
-  QSize size( pixmap_size, pixmap_size );
-  QSize scale(size*0.9);
-
-  QIcon icon;
-  if( type == FileRecordProperties::MODIFIED )
-  {
-
-    icon = CustomPixmap()
-      .empty( size )
-      .merge( CustomPixmap().find( ICONS::SAVE )
-      .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
-
-  } else if( type == FileRecordProperties::ALTERED ) {
-
-    icon = CustomPixmap()
-      .empty( size )
-      .merge( CustomPixmap().find( ICONS::WARNING )
-      .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
-
-  } else if( type == FileRecordProperties::NONE ) {
-
-    icon = CustomPixmap().empty( size );
-
-  } else assert( false );
-
-  // store in map and return
-  _icons().insert( make_pair( type, icon ) );
-  return icon;
-
+    
+    //Debug::Throw( "SessionFilesModel::_icon.\n" );
+    
+    IconCache::const_iterator iter( _icons().find( type ) );
+    if( iter != _icons().end() ) return iter->second;
+    
+    // pixmap size
+    unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
+    QSize size( pixmap_size, pixmap_size );
+    QSize scale(size*0.9);
+    
+    QIcon icon;
+    if( type == FileRecordProperties::MODIFIED )
+    {
+        
+        icon = CustomPixmap()
+            .empty( size )
+            .merge( CustomPixmap().find( ICONS::SAVE )
+            .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
+        
+    } else if( type == FileRecordProperties::ALTERED ) {
+        
+        icon = CustomPixmap()
+            .empty( size )
+            .merge( CustomPixmap().find( ICONS::WARNING )
+            .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
+        
+    } else if( type == FileRecordProperties::NONE ) {
+            
+        icon = CustomPixmap().empty( size );
+        
+    } else assert( false );
+    
+    // store in map and return
+    _icons().insert( make_pair( type, icon ) );
+    return icon;
+    
 }
 
 //______________________________________________________________________
 QStringList SessionFilesModel::mimeTypes( void ) const
 {
-  QStringList types;
-  types << DRAG;
-  return types;
+    QStringList types;
+    types << DRAG;
+    return types;
 }
 
 //______________________________________________________________________
 QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 {
-
-  // return FileRecordModel::mimeData( indexes );
-  std::set<QString> filenames;
-  std::set<FileRecord> records;
-  for( QModelIndexList::const_iterator iter = indexes.begin(); iter != indexes.end(); iter++ )
-  {
-
-    if( iter->isValid() )
+    
+    // return FileRecordModel::mimeData( indexes );
+    std::set<QString> filenames;
+    std::set<FileRecord> records;
+    for( QModelIndexList::const_iterator iter = indexes.begin(); iter != indexes.end(); iter++ )
     {
-      FileRecord record( get(*iter ) );
-      records.insert( record );
-      filenames.insert( record.file() );
+        
+        if( iter->isValid() )
+        {
+            FileRecord record( get(*iter ) );
+            records.insert( record );
+            filenames.insert( record.file() );
+        }
+        
     }
-
-  }
-
-  if( filenames.empty() ) return 0;
-  else {
-
-    QMimeData *mime = new QMimeData();
-
-    // fill text data
-    QString full_text;
-    QTextStream buffer( &full_text );
-    for( std::set<QString>::const_iterator iter = filenames.begin(); iter != filenames.end(); iter++ )
-    { buffer << *iter << endl; }
-    mime->setText( full_text );
-
-    // fill DRAG data. Use XML
-    QDomDocument document;
-    QDomElement top = document.appendChild( document.createElement( XmlFileRecord::XML_FILE_LIST ) ).toElement();
-    for( std::set<FileRecord>::const_iterator iter = records.begin(); iter != records.end(); iter++ )
-    {
-
-      if( iter->file().isEmpty() ) continue;
-      top.appendChild( XmlFileRecord( *iter ).domElement( document ) );
-
+    
+    if( filenames.empty() ) return 0;
+    else {
+        
+        QMimeData *mime = new QMimeData();
+        
+        // fill text data
+        QString full_text;
+        QTextStream buffer( &full_text );
+        for( std::set<QString>::const_iterator iter = filenames.begin(); iter != filenames.end(); iter++ )
+        { buffer << *iter << endl; }
+        mime->setText( full_text );
+        
+        // fill DRAG data. Use XML
+        QDomDocument document;
+        QDomElement top = document.appendChild( document.createElement( XmlFileRecord::XML_FILE_LIST ) ).toElement();
+        for( std::set<FileRecord>::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+        {
+            
+            if( iter->file().isEmpty() ) continue;
+            top.appendChild( XmlFileRecord( *iter ).domElement( document ) );
+            
+        }
+        mime->setData( DRAG, document.toByteArray() );
+        return mime;
+        
     }
-    mime->setData( DRAG, document.toByteArray() );
-    return mime;
-
-  }
-
+    
 }
 
 //__________________________________________________________________
 bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction action, int row, int column, const QModelIndex& parent)
 {
 
-  // check action
-  if( action == Qt::IgnoreAction) return true;
+    // check action
+    if( action == Qt::IgnoreAction) return true;
 
-  // Drag from Keyword model
-  if( !data->hasFormat( DRAG ) ) return false;
+    // Drag from Keyword model
+    if( !data->hasFormat( DRAG ) ) return false;
 
-  FileRecordModel::List records;
+    FileRecordModel::List records;
 
-  // get dropped file record (use XML)
-  // dom document
-  QDomDocument document;
-  if( !document.setContent( data->data( DRAG ), false ) ) return false;
+    // get dropped file record (use XML)
+    // dom document
+    QDomDocument document;
+    if( !document.setContent( data->data( DRAG ), false ) ) return false;
 
-  QDomElement doc_element = document.documentElement();
-  QDomNode node = doc_element.firstChild();
-  for(QDomNode node = doc_element.firstChild(); !node.isNull(); node = node.nextSibling() )
-  {
-    QDomElement element = node.toElement();
-    if( element.isNull() ) continue;
-
-    // special options
-    if( element.tagName() == XmlFileRecord::XML_RECORD )
+    QDomElement doc_element = document.documentElement();
+    QDomNode node = doc_element.firstChild();
+    for(QDomNode node = doc_element.firstChild(); !node.isNull(); node = node.nextSibling() )
     {
+        QDomElement element = node.toElement();
+        if( element.isNull() ) continue;
 
-      XmlFileRecord record( element );
-      if( !record.file().isEmpty() ) records.push_back( record );
-
-    }
-  }
-
-  // get current record
-  if( parent.isValid() )
-  {
-
-    FileRecord target( get( parent ) );
-
-    // loop over sources and emit proper signal
-    for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
-    { emit reparentFiles( iter->file(), target.file() ); }
-    return true;
-
-  } else {
-
-    // look for first active file in this window
-    FileRecord target;
-    QModelIndex target_index;
-    for( int row = 0; row < rowCount(); row++ )
-    {
-
-      QModelIndex index( SessionFilesModel::index( row, 0 ) );
-      if( flags( index ) & Qt::ItemIsEnabled )
-      {
-        FileRecord record( get( index ) );
-        if( record.hasFlag( FileRecordProperties::ACTIVE ) )
+        // special options
+        if( element.tagName() == XmlFileRecord::XML_RECORD )
         {
-          target_index = index;
-          target = record;
-          break;
+
+            XmlFileRecord record( element );
+            if( !record.file().isEmpty() ) records.push_back( record );
+
+        }
+    }
+
+    // get current record
+    if( parent.isValid() )
+    {
+
+        FileRecord target( get( parent ) );
+
+        // loop over sources and emit proper signal
+        for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+        { emit reparentFiles( iter->file(), target.file() ); }
+        return true;
+
+    } else {
+
+        // look for first active file in this window
+        FileRecord target;
+        QModelIndex target_index;
+        for( int row = 0; row < rowCount(); row++ )
+        {
+
+            QModelIndex index( SessionFilesModel::index( row, 0 ) );
+            if( flags( index ) & Qt::ItemIsEnabled )
+            {
+                FileRecord record( get( index ) );
+                if( record.hasFlag( FileRecordProperties::ACTIVE ) )
+                {
+                    target_index = index;
+                    target = record;
+                    break;
+                }
+
+            }
         }
 
-      }
+        // check that target_index is valid
+        if( !target_index.isValid() ) return false;
+
+        // emit relevant reparent signal
+        for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+        { emit reparentFilesToMain( iter->file(), target.file() ); }
+
+        return true;
+
     }
-
-    // check that target_index is valid
-    if( !target_index.isValid() ) return false;
-
-    // emit relevant reparent signal
-    for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
-    { emit reparentFilesToMain( iter->file(), target.file() ); }
-
-    return true;
-
-  }
 
 }
