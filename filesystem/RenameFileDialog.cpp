@@ -40,30 +40,30 @@ using namespace std;
 
 //_____________________________________________________
 RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):
-  CustomDialog( parent )
+    CustomDialog( parent )
 {
 
-  Debug::Throw( "RenameFileDialog::RenameFileDialog.\n" );
+    Debug::Throw( "RenameFileDialog::RenameFileDialog.\n" );
 
-  QString buffer;
-  QTextStream( &buffer ) << "Rename the item '" << record.file() << "' to:";
-  mainLayout().addWidget( new QLabel( buffer, this ) );
-  mainLayout().addWidget( editor_ = new AnimatedLineEditor( this ) );
+    QString buffer;
+    QTextStream( &buffer ) << "Rename the item '" << record.file() << "' to:";
+    mainLayout().addWidget( new QLabel( buffer, this ) );
+    mainLayout().addWidget( editor_ = new AnimatedLineEditor( this ) );
 
-  // set editor text
-  _editor().setText( record.file() );
-  _editor().setFocus();
+    // set editor text
+    _editor().setText( record.file() );
+    _editor().setFocus();
 
-  // get short name and select
-  File short_file( record.file().truncatedName() );
-  if( !short_file.isEmpty() ) _editor().setSelection( 0, short_file.size() );
-  else _editor().selectAll();
-  connect( &_editor(), SIGNAL( textChanged( const QString& ) ), SLOT( _updateButtons() ) );
+    // get short name and select
+    File short_file( record.file().truncatedName() );
+    if( !short_file.isEmpty() ) _editor().setSelection( 0, short_file.size() );
+    else _editor().selectAll();
+    connect( &_editor(), SIGNAL( textChanged( const QString& ) ), SLOT( _updateButtons() ) );
 
-  // rename buttons
-  okButton().setText( "&Rename" );
+    // rename buttons
+    okButton().setText( "&Rename" );
 
-  setMinimumSize( QSize( 320, 0 ) );
+    setMinimumSize( QSize( 320, 0 ) );
 
 }
 
@@ -71,8 +71,8 @@ RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):
 File RenameFileDialog::file( void ) const
 {
 
-  QString text( _editor().text() );
-  return ( text.isEmpty() || text.isNull() ) ? File():File( text );
+    QString text( _editor().text() );
+    return ( text.isEmpty() || text.isNull() ) ? File():File( text );
 
 }
 
@@ -80,7 +80,7 @@ File RenameFileDialog::file( void ) const
 void RenameFileDialog::_updateButtons( void )
 {
 
-  Debug::Throw( "RenameFileDialog::_updateButtons.\n" );
-  okButton().setEnabled( !_editor().text().isEmpty() );
+    Debug::Throw( "RenameFileDialog::_updateButtons.\n" );
+    okButton().setEnabled( !_editor().text().isEmpty() );
 
 }

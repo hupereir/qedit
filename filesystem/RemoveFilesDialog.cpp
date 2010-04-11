@@ -40,74 +40,73 @@ using namespace std;
 
 //____________________________________________________________________________
 RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::List& files ):
-  CustomDialog( parent )
+    CustomDialog( parent )
 {
 
-  Debug::Throw( "RemoveFilesDialog::RemoveFilesDialog.\n" );
-  setSizeGripEnabled( true );
+    Debug::Throw( "RemoveFilesDialog::RemoveFilesDialog.\n" );
 
-  // label
-  QLabel* text_label( new QLabel( "Remove files selected from following list ?", this ) );
+    // label
+    QLabel* text_label( new QLabel( "Remove files selected from following list ?", this ) );
 
-  //! try load Question icon
-  QPixmap question_pixmap( PixmapEngine::get( ICONS::WARNING ) );
-  QHBoxLayout *h_layout( new QHBoxLayout() );
-  h_layout->setSpacing(10);
-  h_layout->setMargin(0);
-  mainLayout().addLayout( h_layout );
-  QLabel* label = new QLabel( this );
-  label->setPixmap( question_pixmap );
-  h_layout->addWidget( label, 0, Qt::AlignHCenter );
-  h_layout->addWidget( text_label, 1, Qt::AlignLeft );
+    //! try load Question icon
+    QPixmap question_pixmap( PixmapEngine::get( ICONS::WARNING ) );
+    QHBoxLayout *h_layout( new QHBoxLayout() );
+    h_layout->setSpacing(10);
+    h_layout->setMargin(0);
+    mainLayout().addLayout( h_layout );
+    QLabel* label = new QLabel( this );
+    label->setPixmap( question_pixmap );
+    h_layout->addWidget( label, 0, Qt::AlignHCenter );
+    h_layout->addWidget( text_label, 1, Qt::AlignLeft );
 
-  // horizontal layout for list and comments
-  h_layout = new QHBoxLayout();
-  h_layout->setSpacing( 5 );
-  h_layout->setMargin( 0 );
-  mainLayout().addLayout( h_layout, 1 );
+    // horizontal layout for list and comments
+    h_layout = new QHBoxLayout();
+    h_layout->setSpacing( 5 );
+    h_layout->setMargin( 0 );
+    mainLayout().addLayout( h_layout, 1 );
 
-  // file list
-  QVBoxLayout* v_layout = new QVBoxLayout();
-  v_layout->setSpacing( 5 );
-  v_layout->setMargin( 0 );
-  h_layout->addLayout( v_layout );
+    // file list
+    QVBoxLayout* v_layout = new QVBoxLayout();
+    v_layout->setSpacing( 5 );
+    v_layout->setMargin( 0 );
+    h_layout->addLayout( v_layout );
 
-  v_layout->addWidget( list_ = new TreeView( this ), 1 );
-  _list().setSelectionMode( QAbstractItemView::MultiSelection );
+    v_layout->addWidget( list_ = new TreeView( this ), 1 );
+    _list().setSelectionMode( QAbstractItemView::MultiSelection );
 
-  model_.add( files );
-  model_.sort( FileSystemModel::FILE, Qt::AscendingOrder );
+    model_.add( files );
+    model_.sort( FileSystemModel::FILE, Qt::AscendingOrder );
 
-  _list().setModel( &model_ );
-  _list().setMask( XmlOptions::get().get<int>( "FILE_SYSTEM_LIST_MASK" ) );
-  _list().resizeColumnToContents( FileSystemModel::FILE );
-  _list().selectAll();
+    _list().setModel( &model_ );
+    _list().setMask( XmlOptions::get().get<int>( "FILE_SYSTEM_LIST_MASK" ) );
+    _list().resizeColumnToContents( FileSystemModel::FILE );
+    _list().selectAll();
 
-  // vertical layout for selection buttons and comments
-  v_layout = new QVBoxLayout();
-  v_layout->setSpacing( 5 );
-  v_layout->setMargin( 0 );
-  h_layout->addLayout( v_layout );
+    // vertical layout for selection buttons and comments
+    v_layout = new QVBoxLayout();
+    v_layout->setSpacing( 5 );
+    v_layout->setMargin( 0 );
+    h_layout->addLayout( v_layout );
 
-  // select all
-  QPushButton* button;
-  v_layout->addWidget( button = new QPushButton( "&Select All", this ) );
-  button->setToolTip( "Select all files in list" );
-  connect( button, SIGNAL( clicked() ), &_list(), SLOT( selectAll() ) );
+    // select all
+    QPushButton* button;
+    v_layout->addWidget( button = new QPushButton( "&Select All", this ) );
+    button->setToolTip( "Select all files in list" );
+    connect( button, SIGNAL( clicked() ), &_list(), SLOT( selectAll() ) );
 
-  // deselect all
-  v_layout->addWidget( clear_selection_button_ = new QPushButton( "&Clear Selection", this ) );
-  clear_selection_button_->setToolTip( "Deselect all files in list" );
-  connect( clear_selection_button_, SIGNAL( clicked() ), _list().selectionModel(), SLOT( clear() ) );
+    // deselect all
+    v_layout->addWidget( clearSelectionButton_ = new QPushButton( "&Clear Selection", this ) );
+    clearSelectionButton_->setToolTip( "Deselect all files in list" );
+    connect( clearSelectionButton_, SIGNAL( clicked() ), _list().selectionModel(), SLOT( clear() ) );
 
-  v_layout->addWidget( recursive_checkbox_ = new QCheckBox( "Remove recusively", this ) );
-  recursive_checkbox_->setToolTip( "Remove directories recursively" );
+    v_layout->addWidget( recursiveCheckBox_ = new QCheckBox( "Remove recusively", this ) );
+    recursiveCheckBox_->setToolTip( "Remove directories recursively" );
 
-  v_layout->addStretch(1);
+    v_layout->addStretch(1);
 
-  // connection
-  connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
-  _updateButtons();
+    // connection
+    connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
+    _updateButtons();
 
 }
 
@@ -118,8 +117,8 @@ FileSystemModel::List RemoveFilesDialog::selectedFiles( void ) const
 //____________________________________________________________________
 void RemoveFilesDialog::_updateButtons( void )
 {
-  Debug::Throw( "RemoveFilesDialog::_updateButtons.\n" );
-  bool has_selection( !_list().selectionModel()->selectedRows().empty() );
-  clear_selection_button_->setEnabled( has_selection );
-  okButton().setEnabled( has_selection );
+    Debug::Throw( "RemoveFilesDialog::_updateButtons.\n" );
+    bool has_selection( !_list().selectionModel()->selectedRows().empty() );
+    clearSelectionButton_->setEnabled( has_selection );
+    okButton().setEnabled( has_selection );
 }

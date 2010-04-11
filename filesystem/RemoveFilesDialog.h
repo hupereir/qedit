@@ -25,11 +25,11 @@
 *******************************************************************************/
 
 /*!
-  \file RemoveFilesDialog.h
-  \brief Generic dialog with a FileInfo list
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file RemoveFilesDialog.h
+\brief Generic dialog with a FileInfo list
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <cassert>
@@ -47,56 +47,56 @@ class TextEditor;
 class RemoveFilesDialog: public CustomDialog
 {
 
-  //! Qt meta object
-  Q_OBJECT
+    //! Qt meta object
+    Q_OBJECT
 
-  public:
+        public:
 
-  //! constructor
-  RemoveFilesDialog( QWidget*, const FileSystemModel::List& files = FileSystemModel::List() );
+        //! constructor
+        RemoveFilesDialog( QWidget*, const FileSystemModel::List& files = FileSystemModel::List() );
 
-  // return selected files
-  FileSystemModel::List selectedFiles( void ) const;
+    // return selected files
+    FileSystemModel::List selectedFiles( void ) const;
 
-  //! true if directories are to be removed recursively
-  bool recursive( void ) const
-  { return recursive_checkbox_->isChecked(); }
+    //! true if directories are to be removed recursively
+    bool recursive( void ) const
+    { return recursiveCheckBox_->isChecked(); }
 
-  protected:
+    protected:
 
-  //! list
-  TreeView& _list() const
-  {
-    assert( list_ );
-    return *list_;
-  }
+    //! list
+    TreeView& _list() const
+    {
+        assert( list_ );
+        return *list_;
+    }
 
-  //! model
-  const FileSystemModel& _model() const
-  { return model_; }
+    //! model
+    const FileSystemModel& _model() const
+    { return model_; }
 
-  //! model
-  FileSystemModel& _model()
-  { return model_; }
+    //! model
+    FileSystemModel& _model()
+    { return model_; }
 
-  protected slots:
+    protected slots:
 
-  //! update button states
-  virtual void _updateButtons( void );
+    //! update button states
+    virtual void _updateButtons( void );
 
-  private:
+    private:
 
-  //! list of files
-  TreeView* list_;
+    //! list of files
+    TreeView* list_;
 
-  //! model
-  FileSystemModel model_;
+    //! model
+    FileSystemModel model_;
 
-  //! true to remove directories recursively
-  QCheckBox* recursive_checkbox_;
+    //! true to remove directories recursively
+    QCheckBox* recursiveCheckBox_;
 
-  //! clear selection button
-  QPushButton* clear_selection_button_;
+    //! clear selection button
+    QPushButton* clearSelectionButton_;
 
 };
 
