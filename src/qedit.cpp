@@ -21,11 +21,11 @@
 *******************************************************************************/
 
 /*!
-   \file qedit.cpp
-   \brief main
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
+\file qedit.cpp
+\brief main
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 
@@ -54,50 +54,50 @@ void interrupt( int sig );
 int main (int argc, char *argv[])
 {
 
-  // Ensure proper cleaning at exit
-  signal(SIGINT,  interrupt);
-  signal(SIGTERM, interrupt);
+    // Ensure proper cleaning at exit
+    signal(SIGINT,  interrupt);
+    signal(SIGTERM, interrupt);
 
-  // install error handler
-  qInstallMsgHandler( ErrorHandler::Throw );
+    // install error handler
+    qInstallMsgHandler( ErrorHandler::Throw );
 
-  // load possible command file
-  CommandLineArguments arguments( argc, argv );
-  if( Application::commandLineParser( arguments, false ).hasFlag( "--help" ) )
-  {
-    Application::usage();
+    // load possible command file
+    CommandLineArguments arguments( argc, argv );
+    if( Application::commandLineParser( arguments, false ).hasFlag( "--help" ) )
+    {
+        Application::usage();
+        return 0;
+    }
+
+    // load default options
+    installDefaultOptions();
+    installSystemOptions();
+    XmlOptions::read( XmlOptions::get().raw( "RC_FILE" ) );
+
+    // set debug level
+    int debug_level( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );
+    Debug::setLevel( debug_level );
+    if( debug_level ) XmlOptions::get().print();
+
+    // initialize main frame and run loop
+    Q_INIT_RESOURCE( basePixmaps );
+    Q_INIT_RESOURCE( patterns );
+    Q_INIT_RESOURCE( pixmaps );
+    QApplication application( argc, argv );
+    application.setApplicationName( "qedit" );
+    Application singleton( arguments );
+    Singleton::get().setApplication( &singleton );
+    singleton.initApplicationManager();
+
+    application.exec();
+
     return 0;
-  }
-
-  // load default options
-  installDefaultOptions();
-  installSystemOptions();
-  XmlOptions::read( XmlOptions::get().raw( "RC_FILE" ) );
-
-  // set debug level
-  int debug_level( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );
-  Debug::setLevel( debug_level );
-  if( debug_level ) XmlOptions::get().print();
-
-  // initialize main frame and run loop
-  Q_INIT_RESOURCE( basePixmaps );
-  Q_INIT_RESOURCE( patterns );
-  Q_INIT_RESOURCE( pixmaps );
-  QApplication application( argc, argv );
-
-  Application singleton( arguments );
-  Singleton::get().setApplication( &singleton );
-  singleton.initApplicationManager();
-
-  application.exec();
-
-  return 0;
 
 }
 
 //_____________________________________________
 void interrupt( int sig )
 {
-  Debug::Throw() << "interrupt - Recieved signal " << sig << endl;
-  qApp->quit();
+    Debug::Throw() << "interrupt - Recieved signal " << sig << endl;
+    qApp->quit();
 }
