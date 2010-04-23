@@ -25,15 +25,15 @@
 *******************************************************************************/
 
 /*!
-  \file ParenthesisHighlight.h
-  \brief handles parenthesis matching highlighting
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file ParenthesisHighlight.h
+\brief handles parenthesis matching highlighting
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QApplication>
-#include <QTimer>
+#include <QBasicTimer>
 
 #include "Counter.h"
 #include "Debug.h"
@@ -44,58 +44,58 @@ class TextEditor;
 class ParenthesisHighlight: public QObject, public Counter
 {
 
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! constructor
-  ParenthesisHighlight( TextEditor* parent );
+    //! constructor
+    ParenthesisHighlight( TextEditor* );
 
-  //! destructor
-  virtual ~ParenthesisHighlight( void )
-  { Debug::Throw( "ParenthesisHighlight::~ParenthesisHighlight.\n" ); }
+    //! destructor
+    virtual ~ParenthesisHighlight( void )
+    { Debug::Throw( "ParenthesisHighlight::~ParenthesisHighlight.\n" ); }
 
-  //! enable/disable
-  void setEnabled( const bool& value )
-  { enabled_ = value; }
+    //! enable/disable
+    void setEnabled( const bool& value )
+    { enabled_ = value; }
 
-  //! enable/disable
-  const bool& isEnabled( void ) const
-  { return enabled_; }
+    //! enable/disable
+    const bool& isEnabled( void ) const
+    { return enabled_; }
 
-  //! synchronize
-  void synchronize( const ParenthesisHighlight& );
+    //! synchronize
+    void synchronize( const ParenthesisHighlight& );
 
-  //! clear highlighted block
-  void clear( void );
+    //! clear highlighted block
+    void clear( void );
 
-  //! highlight current (absolute) location
-  void highlight( const int& location, const int& length );
+    //! highlight current (absolute) location
+    void highlight( const int&, const int& );
 
-  private slots:
+    protected:
 
-  //! delayed highlighting
-  void _highlight( void );
+    //! highlight
+    void _highlight( void );
 
-  private:
+    private:
 
-  //! parent editor
-  TextEditor* parent_;
+    //! parent editor
+    TextEditor* parent_;
 
-  //! associated timer
-  QTimer timer_;
+    //! associated timer
+    QBasicTimer timer_;
 
-  //! true if enabled
-  bool enabled_;
+    //! true if enabled
+    bool enabled_;
 
-  //! parenthesis location
-  int location_;
+    //! parenthesis location
+    int location_;
 
-  //! length
-  int length_;
+    //! length
+    int length_;
 
-  //! true when cleared
-  bool cleared_;
+    //! true when cleared
+    bool cleared_;
 
 };
 

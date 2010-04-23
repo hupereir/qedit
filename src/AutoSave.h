@@ -25,17 +25,15 @@
 *******************************************************************************/
 
 /*!
-  \file AutoSave.h
-  \brief handles threads for file auto-save
-  \author  Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file AutoSave.h
+\brief handles threads for file auto-save
+\author  Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QObject>
-#include <QTimer>
-
-
+#include <QBasicTimer>
 #include <vector>
 
 #include "AutoSaveThread.h"
@@ -46,51 +44,53 @@ class TextDisplay;
 class AutoSave: public QObject, public Counter
 {
 
-  //! Qt meta object declaration
-  Q_OBJECT
+    //! Qt meta object declaration
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! constructor
-  AutoSave( QObject* parent = 0 );
+    //! constructor
+    AutoSave( QObject* parent = 0 );
 
-  //! destructor
-  ~AutoSave( void );
+    //! destructor
+    ~AutoSave( void );
 
-  //! register new thread
-  void newThread( TextDisplay* );
+    //! register new thread
+    void newThread( TextDisplay* );
 
-  public slots:
+    //! Save files
+    /* \param display if set to non 0, only threads that match the display are saved */
+    void saveFiles( const TextDisplay* = 0 );
 
-  //! Save files
-  /* \param display if set to non 0, only threads that match the display are saved */
-  void saveFiles( const TextDisplay* display = 0 );
+    protected:
 
-  private slots:
+    virtual void timerEvent( QTimerEvent* );
 
-  //! update configuration
-  /* update interval between threads */
-  void _updateConfiguration( void );
+    private slots:
 
-  private:
+    //! update configuration
+    /* update interval between threads */
+    void _updateConfiguration( void );
 
-  bool _enabled( void ) const
-  { return enabled_ && interval_; }
+    private:
 
-  //! true when enabled
-  bool enabled_;
+    bool _enabled( void ) const
+    { return enabled_ && interval_; }
 
-  //! interval between two save (milliseconds)
-  unsigned int interval_;
+    //! true when enabled
+    bool enabled_;
 
-  //! AutoSave timer
-  QTimer timer_;
+    //! interval between two save (milliseconds)
+    unsigned int interval_;
 
-  //! list of threads
-  typedef std::vector< AutoSaveThread* > ThreadList;
+    //! AutoSave timer
+    QBasicTimer timer_;
 
-  //! list of threads
-  ThreadList threads_;
+    //! list of threads
+    typedef std::vector< AutoSaveThread* > ThreadList;
+
+    //! list of threads
+    ThreadList threads_;
 
 };
 

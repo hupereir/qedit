@@ -22,11 +22,11 @@
 *******************************************************************************/
 
 /*!
-  \file ParenthesisHighlight.cpp
-  \brief handles multiple clicks and timeout
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file ParenthesisHighlight.cpp
+\brief handles multiple clicks and timeout
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QTextDocument>
@@ -39,97 +39,91 @@ using namespace std;
 
 //_______________________________________________________________________
 ParenthesisHighlight::ParenthesisHighlight( TextEditor* parent ):
-  QObject( parent ),
-  Counter( "ParenthesisHighlight" ),
-  parent_( parent ),
-  timer_( parent ),
-  enabled_( false ),
-  location_( -1 ),
-  length_(0),
-  cleared_( true )
-{
-  Debug::Throw( "ParenthesisHighlight::ParenthesisHighlight.\n" );
-  timer_.setSingleShot( true );
-  timer_.setInterval( 50 );
-  connect( &timer_, SIGNAL( timeout() ), SLOT( _highlight() ) );
-}
+    QObject( parent ),
+    Counter( "ParenthesisHighlight" ),
+    parent_( parent ),
+    enabled_( false ),
+    location_( -1 ),
+    length_(0),
+    cleared_( true )
+{ Debug::Throw( "ParenthesisHighlight::ParenthesisHighlight.\n" ); }
 
 //______________________________________________________________________
 void ParenthesisHighlight::clear( void )
 {
 
-  if( cleared_ ) return;
+    if( cleared_ ) return;
 
-  // loop over all blocks
-  for( QTextBlock block = parent_->document()->begin(); block.isValid(); block = block.next() )
-  {
+    // loop over all blocks
+    for( QTextBlock block = parent_->document()->begin(); block.isValid(); block = block.next() )
+    {
 
-    // retrieve block data
-    HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-    if( !( data && data->hasParenthesis() ) ) continue;
+        // retrieve block data
+        HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+        if( !( data && data->hasParenthesis() ) ) continue;
 
-    // do not clear current block if parenthesis is unchanged
-    if(
-      block.contains( location_ ) &&
-      data->hasParenthesis() &&
-      data->parenthesis() + block.position() == location_ &&
-      isEnabled() ) continue;
+        // do not clear current block if parenthesis is unchanged
+        if(
+            block.contains( location_ ) &&
+            data->hasParenthesis() &&
+            data->parenthesis() + block.position() == location_ &&
+            isEnabled() ) continue;
 
-    // clear parenthesis
-    data->clearParenthesis();
-    parent_->document()->markContentsDirty(block.position(), block.length()-1);
+        // clear parenthesis
+        data->clearParenthesis();
+        parent_->document()->markContentsDirty(block.position(), block.length()-1);
 
-  }
+    }
 
-  cleared_ = true;
+    cleared_ = true;
 
 }
 
 //______________________________________________________________________
 void ParenthesisHighlight::synchronize( const ParenthesisHighlight& highlight )
 {
-  Debug::Throw( "ParenthesisHighlight::synchronized.\n" );
-  enabled_ = highlight.enabled_;
-  cleared_ = highlight.cleared_;
-  location_ = highlight.location_;
-  length_ = highlight.length_;
+    Debug::Throw( "ParenthesisHighlight::synchronized.\n" );
+    enabled_ = highlight.enabled_;
+    cleared_ = highlight.cleared_;
+    location_ = highlight.location_;
+    length_ = highlight.length_;
 }
 
 //______________________________________________________________________
 void ParenthesisHighlight::highlight( const int& location, const int& length )
 {
 
-  if( !isEnabled() ) return;
+    if( !isEnabled() ) return;
 
-  clear();
-  location_ = location;
-  length_ = length;
-  _highlight();
+    clear();
+    location_ = location;
+    length_ = length;
+    _highlight();
 }
 
 //______________________________________________________________________
 void ParenthesisHighlight::_highlight( void )
 {
 
-  // retrieve block matching location
-  QTextBlock block( parent_->document()->findBlock( location_ ) );
-  if( !block.isValid() ) return;
+    // retrieve block matching location
+    QTextBlock block( parent_->document()->findBlock( location_ ) );
+    if( !block.isValid() ) return;
 
-  HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( block.userData() );
-  if( !data )
-  {
-    // try retrieve data from parent type
-    TextBlockData* text_data = dynamic_cast<TextBlockData*>( block.userData() );
-    data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData();
-    block.setUserData( data );
+    HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( block.userData() );
+    if( !data )
+    {
+        // try retrieve data from parent type
+        TextBlockData* text_data = dynamic_cast<TextBlockData*>( block.userData() );
+        data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData();
+        block.setUserData( data );
 
-  } else if( data->hasParenthesis() && data->parenthesis() + block.position() == location_ ) return;
+    } else if( data->hasParenthesis() && data->parenthesis() + block.position() == location_ ) return;
 
-  // update parenthesis
-  data->setParenthesis( location_ - block.position(), length_ );
-  parent_->document()->markContentsDirty( location_, length_ );
-  cleared_ = false;
+    // update parenthesis
+    data->setParenthesis( location_ - block.position(), length_ );
+    parent_->document()->markContentsDirty( location_, length_ );
+    cleared_ = false;
 
-  // reset location
-  location_ = -1;
+    // reset location
+    location_ = -1;
 }

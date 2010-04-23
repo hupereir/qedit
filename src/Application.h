@@ -4,36 +4,36 @@
 // $Id$
 
 /******************************************************************************
- *
- * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
- *
- * This is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * software; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA 02111-1307 USA
- *
- *
- *******************************************************************************/
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA 02111-1307 USA
+*
+*
+*******************************************************************************/
 
 /*!
-  \file Application.h
-  \brief Application singleton
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file Application.h
+\brief Application singleton
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <list>
-#include <QTimer>
+#include <QBasicTimer>
 
 #include "BaseApplication.h"
 #include "CommandLineArguments.h"
@@ -52,160 +52,162 @@ class Sync;
 class Application: public BaseApplication, public Counter
 {
 
-  //! Qt meta object declaration
-  Q_OBJECT
+    //! Qt meta object declaration
+    Q_OBJECT
 
-  public:
+        public:
 
-  //! command line parser
-  static CommandLineParser commandLineParser( CommandLineArguments arguments = CommandLineArguments(), bool ignore_warnings = true );
+        //! command line parser
+        static CommandLineParser commandLineParser( CommandLineArguments arguments = CommandLineArguments(), bool ignore_warnings = true );
 
-  //! command line help
-  static void usage( void );
+    //! command line help
+    static void usage( void );
 
-  //! constructor
-  Application( CommandLineArguments );
+    //! constructor
+    Application( CommandLineArguments );
 
-  //! destructor
-  ~Application( void );
+    //! destructor
+    ~Application( void );
 
-  //! initialize application manager
-  virtual void initApplicationManager( void );
+    //! initialize application manager
+    virtual void initApplicationManager( void );
 
-  //! create all widgets
-  bool realizeWidget( void );
+    //! create all widgets
+    bool realizeWidget( void );
 
-  //! file list
-  FileList& recentFiles( void ) const
-  {
-  	assert( recent_files_ );
-  	return *recent_files_;
-  }
+    //! file list
+    FileList& recentFiles( void ) const
+    {
+        assert( recentFiles_ );
+        return *recentFiles_;
+    }
 
-  //! Window server
-  WindowServer& windowServer( void ) const
-  {
-    assert( window_server_ );
-    return *window_server_;
-  }
+    //! Window server
+    WindowServer& windowServer( void ) const
+    {
+        assert( windowServer_ );
+        return *windowServer_;
+    }
 
-  //! DocumentClassManager
-  DocumentClassManager& classManager( void ) const
-  {
-    assert( class_manager_ );
-    return *class_manager_;
-  }
+    //! DocumentClassManager
+    DocumentClassManager& classManager( void ) const
+    {
+        assert( classManager_ );
+        return *classManager_;
+    }
 
-  //! retrieve AutoSave
-  AutoSave& autoSave( void ) const
-  {
-    assert( autosave_ );
-    return *autosave_;
-  }
+    //! retrieve AutoSave
+    AutoSave& autoSave( void ) const
+    {
+        assert( autosave_ );
+        return *autosave_;
+    }
 
-  //! file check
-  FileCheck& fileCheck( void ) const
-  {
-    assert( file_check_ );
-    return *file_check_;
-  }
+    //! file check
+    FileCheck& fileCheck( void ) const
+    {
+        assert( fileCheck_ );
+        return *fileCheck_;
+    }
 
-  //!@name actions
-  //@{
+    //!@name actions
+    //@{
 
-  //! configure
-  QAction& documentClassConfigurationAction( void ) const
-  { return *document_class_configuration_action_; }
+    //! configure
+    QAction& documentClassConfigurationAction( void ) const
+    { return *documentClassConfigurationAction_; }
 
-  //! configure
-  QAction& spellCheckConfigurationAction( void ) const
-  { return *spellcheck_configuration_action_; }
+    //! configure
+    QAction& spellCheckConfigurationAction( void ) const
+    { return *spellCheckConfigurationAction_; }
 
-  //! monitored files
-  QAction& monitoredFilesAction( void ) const
-  { return *monitored_files_action_; }
+    //! monitored files
+    QAction& monitoredFilesAction( void ) const
+    { return *monitoredFilesAction_; }
 
-  //@}
+    //@}
 
-  signals:
+    signals:
 
-  //! spellcheck configuration modified
-  void spellCheckConfigurationChanged( void );
+    //! spellcheck configuration modified
+    void spellCheckConfigurationChanged( void );
 
-  //! document classes have been modified
-  void documentClassesChanged( void );
+    //! document classes have been modified
+    void documentClassesChanged( void );
 
-  protected slots:
+    protected slots:
 
-  //! Update Document Classes from options
-  void _updateDocumentClasses( void );
+    //! Update Document Classes from options
+    void _updateDocumentClasses( void );
 
-  //! about
-  void _about( void )
-  { BaseApplication::_about( "qedit", VERSION, BUILD_TIMESTAMP ); }
+    //! about
+    void _about( void )
+    { BaseApplication::_about( "qedit", VERSION, BUILD_TIMESTAMP ); }
 
-  //! configuration
-  void _configuration( void );
+    //! configuration
+    void _configuration( void );
 
-  //! document class configuration
-  void _documentClassConfiguration( void );
+    //! document class configuration
+    void _documentClassConfiguration( void );
 
-  //! spellcheck configuration
-  void _spellCheckConfiguration( void );
+    //! spellcheck configuration
+    void _spellCheckConfiguration( void );
 
-  //! exit safely
-  void _exit( void );
+    //! exit safely
+    void _exit( void );
 
-  //! read file from arguments.
-  /*!
-    this is a slot because it must be called after the call
-    to "exec()" in the main routine, by means of a single shot QTimer
-  */
-  void _readFilesFromArguments( void );
+    //! process request from application manager
+    virtual bool _processCommand( SERVER::ServerCommand );
 
-  //! process request from application manager
-  virtual bool _processCommand( SERVER::ServerCommand );
+    //! monitored files
+    void _showMonitoredFiles( void );
 
-  //! monitored files
-  void _showMonitoredFiles( void );
+    protected:
 
-  private:
+    //! timer events
+    /*!
+    this allows to read files from arguments after the call
+    to "exec()" in the main routine,
+    */
+    void timerEvent( QTimerEvent* );
 
-  //! recent files list
-  FileList* recent_files_;
+    private:
 
-  //! window server
-  WindowServer* window_server_;
+    //! recent files list
+    FileList* recentFiles_;
 
-  //! document class manager singleton
-  DocumentClassManager* class_manager_;
+    //! window server
+    WindowServer* windowServer_;
 
-  //! file autoSave manager
-  AutoSave* autosave_;
+    //! document class manager singleton
+    DocumentClassManager* classManager_;
 
-  //! file check
-  FileCheck* file_check_;
+    //! file autoSave manager
+    AutoSave* autosave_;
 
-  //! startup single shot timer
-  /*!
+    //! file check
+    FileCheck* fileCheck_;
+
+    //! startup single shot timer
+    /*!
     it allows to call startup methods after the exec() function
     is called from the main routine
-  */
-  QTimer startup_timer_;
+    */
+    QBasicTimer startupTimer_;
 
-  //!@name actions
-  //@{
+    //!@name actions
+    //@{
 
-  //! configure
-  QAction* document_class_configuration_action_;
+    //! configure
+    QAction* documentClassConfigurationAction_;
 
-  //! configure
-  QAction* spellcheck_configuration_action_;
+    //! configure
+    QAction* spellCheckConfigurationAction_;
 
-  //! show monitored files
-  QAction* monitored_files_action_;
+    //! show monitored files
+    QAction* monitoredFilesAction_;
 
-  //@}
+    //@}
 
 };
 

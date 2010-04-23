@@ -25,16 +25,15 @@
 *******************************************************************************/
 
 /*!
-   \file FileSystemFrame.h
-   \brief customized ListView for file/directory navigation
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
+\file FileSystemFrame.h
+\brief customized ListView for file/directory navigation
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <map>
 #include <QIcon>
-#include <QTimer>
 #include <QWidget>
 #include <QFileSystemWatcher>
 
@@ -50,242 +49,242 @@ class AnimatedTreeView;
 class FileSystemFrame: public QWidget, public Counter
 {
 
-  //! Qt meta object declaration
-  Q_OBJECT
+    //! Qt meta object declaration
+    Q_OBJECT
 
-  public:
+        public:
 
-  //! constructor
-  FileSystemFrame( QWidget* parent );
+        //! constructor
+        FileSystemFrame( QWidget* parent );
 
-  //! destructor
-  ~FileSystemFrame( void )
-  { Debug::Throw( "FileSystemFrame::~FileSystemFrame.\n" ); }
+    //! destructor
+    ~FileSystemFrame( void )
+    { Debug::Throw( "FileSystemFrame::~FileSystemFrame.\n" ); }
 
-  //! base directory
-  const File& path( void ) const
-  { return path_; }
+    //! base directory
+    const File& path( void ) const
+    { return path_; }
 
-  //! home path
-  const File& home( void ) const
-  { return home_path_; }
+    //! home path
+    const File& home( void ) const
+    { return homePath_; }
 
-  //! home path
-  void setHome( const File& path );
+    //! home path
+    void setHome( const File& path );
 
-  //! clear list, add navigator button
-  void clear();
+    //! clear list, add navigator button
+    void clear();
 
-  signals:
+    signals:
 
-  //! file selected
-  void fileActivated( FileRecord );
+    //! file selected
+    void fileActivated( FileRecord );
 
-  public slots:
+    public slots:
 
-  //! base directory
-  void setPath( File, bool forced = false );
+    //! base directory
+    void setPath( File, bool forced = false );
 
-  protected:
+    protected:
 
-  //! custom event, used to retrieve file validity check event
-  void customEvent( QEvent* );
+    //! custom event, used to retrieve file validity check event
+    void customEvent( QEvent* );
 
-  private slots:
+    private slots:
 
-  //! item activated
-  void _itemActivated( const QModelIndex& );
+    //! item activated
+    void _itemActivated( const QModelIndex& );
 
-  //! show hidden files
-  void _toggleShowHiddenFiles( bool state );
+    //! show hidden files
+    void _toggleShowHiddenFiles( bool state );
 
-  //! update configuration
-  void _updateConfiguration( void );
+    //! update configuration
+    void _updateConfiguration( void );
 
-  //! update navigation actions based on current location and history
-  void _updateNavigationActions( void );
+    //! update navigation actions based on current location and history
+    void _updateNavigationActions( void );
 
-  //! update path
-  void _updatePath( void );
+    //! update path
+    void _updatePath( void );
 
-  //! update path
-  void _updatePath( const QString& );
+    //! update path
+    void _updatePath( const QString& );
 
-  //! update directory
-  void _update( const QString& );
+    //! update directory
+    void _update( const QString& );
 
-  //! update directory
-  void _update( void );
+    //! update directory
+    void _update( void );
 
-  //! update actions
-  void _updateActions( void );
+    //! update actions
+    void _updateActions( void );
 
-  //! previous directory
-  void _previousDirectory( void );
+    //! previous directory
+    void _previousDirectory( void );
 
-  //! next directory
-  void _nextDirectory( void );
+    //! next directory
+    void _nextDirectory( void );
 
-  //! parent directory
-  void _parentDirectory( void );
+    //! parent directory
+    void _parentDirectory( void );
 
-  //! home directory
-  void _homeDirectory( void );
+    //! home directory
+    void _homeDirectory( void );
 
-  //! reload
-  void _reload( void );
-  
-  //! open
-  void _open( void );
+    //! reload
+    void _reload( void );
 
-  //! remove (from dialog)
-  void _remove( void );
+    //! open
+    void _open( void );
 
-  //! remove (from dialog)
-  void _rename( void );
+    //! remove (from dialog)
+    void _remove( void );
 
-  //! file properties
-  void _fileProperties( void );
+    //! remove (from dialog)
+    void _rename( void );
 
-  //! store selected jobs in model
-  void _storeSelection( void );
+    //! file properties
+    void _fileProperties( void );
 
-  //! restore selected jobs from model
-  void _restoreSelection( void );
+    //! store selected jobs in model
+    void _storeSelection( void );
 
-  //! animation finished
-  void _animationFinished( void );
+    //! restore selected jobs from model
+    void _restoreSelection( void );
 
-  private:
+    //! animation finished
+    void _animationFinished( void );
 
-  //! path comboBox
-  CustomComboBox& _comboBox( void ) const
-  {
-    assert( path_combobox_ );
-    return *path_combobox_;
-  }
+    private:
 
-  //! model
-  FileSystemModel& _model( void )
-  { return model_; }
+    //! path comboBox
+    CustomComboBox& _comboBox( void ) const
+    {
+        assert( pathComboBox_ );
+        return *pathComboBox_;
+    }
 
-  //! list
-  AnimatedTreeView& _list( void ) const
-  {
-    assert( list_ );
-    return *list_;
-  }
+    //! model
+    FileSystemModel& _model( void )
+    { return model_; }
 
-  //! install actions
-  void _installActions( void );
+    //! list
+    AnimatedTreeView& _list( void ) const
+    {
+        assert( list_ );
+        return *list_;
+    }
 
-  //! file system watcher
-  QFileSystemWatcher& _fileSystemWatcher( void )
-  { return file_system_watcher_; }
+    //! install actions
+    void _installActions( void );
 
-  //!@name actions
-  //@{
+    //! file system watcher
+    QFileSystemWatcher& _fileSystemWatcher( void )
+    { return fileSystemWatcher_; }
 
-  //! hidden files
-  QAction& _hiddenFilesAction( void ) const
-  { return *hidden_files_action_; }
+    //!@name actions
+    //@{
 
-  //! previous directory
-  QAction& _previousDirectoryAction( void ) const
-  { return *previous_directory_action_; }
+    //! hidden files
+    QAction& _hiddenFilesAction( void ) const
+    { return *hiddenFilesAction_; }
 
-  //! next directory
-  QAction& _nextDirectoryAction( void ) const
-  { return *next_directory_action_; }
+    //! previous directory
+    QAction& _previousDirectoryAction( void ) const
+    { return *previousDirectoryAction_; }
 
-  // directory above
-  QAction& _parentDirectoryAction( void ) const
-  { return *parent_directory_action_; }
+    //! next directory
+    QAction& _nextDirectoryAction( void ) const
+    { return *nextDirectoryAction_; }
 
-  // home directory
-  QAction& _homeDirectoryAction( void ) const
-  { return *home_directory_action_; }
+    // directory above
+    QAction& _parentDirectoryAction( void ) const
+    { return *parentDirectoryAction_; }
 
-  // reload action
-  QAction& _reloadAction( void ) const
-  { return *reload_action_; }
+    // home directory
+    QAction& _homeDirectoryAction( void ) const
+    { return *homeDirectoryAction_; }
 
-  //! open action
-  QAction& _openAction( void ) const
-  { return *open_action_; }
+    // reload action
+    QAction& _reloadAction( void ) const
+    { return *reloadAction_; }
 
-  //! remove action
-  QAction& _removeAction( void ) const
-  { return *remove_action_; }
+    //! open action
+    QAction& _openAction( void ) const
+    { return *openAction_; }
 
-  //! rename action
-  QAction& _renameAction( void ) const
-  { return *rename_action_; }
+    //! remove action
+    QAction& _removeAction( void ) const
+    { return *removeAction_; }
 
-  //! file properties action
-  QAction& _filePropertiesAction( void ) const
-  { return *file_properties_action_; }
+    //! rename action
+    QAction& _renameAction( void ) const
+    { return *renameAction_; }
 
-  //@}
+    //! file properties action
+    QAction& _filePropertiesAction( void ) const
+    { return *filePropertiesAction_; }
 
-  //! path comboBox
-  CustomComboBox* path_combobox_;
+    //@}
 
-  //! model
-  FileSystemModel model_;
+    //! path comboBox
+    CustomComboBox* pathComboBox_;
 
-  //! list of files
-  AnimatedTreeView* list_;
+    //! model
+    FileSystemModel model_;
 
-  //! current path
-  File path_;
+    //! list of files
+    AnimatedTreeView* list_;
 
-  //!@name actions
-  //@{
+    //! current path
+    File path_;
 
-  //! show/hide hidden files
-  QAction* hidden_files_action_;
+    //!@name actions
+    //@{
 
-  //! previous directory action
-  QAction* previous_directory_action_;
+    //! show/hide hidden files
+    QAction* hiddenFilesAction_;
 
-  //! next directory action
-  QAction* next_directory_action_;
+    //! previous directory action
+    QAction* previousDirectoryAction_;
 
-  //! parent directory action
-  QAction* parent_directory_action_;
+    //! next directory action
+    QAction* nextDirectoryAction_;
 
-  //! home directory action
-  QAction* home_directory_action_;
+    //! parent directory action
+    QAction* parentDirectoryAction_;
 
-  //! reload
-  QAction* reload_action_;
-  
-  //! open
-  QAction* open_action_;
+    //! home directory action
+    QAction* homeDirectoryAction_;
 
-  //! remove
-  QAction* remove_action_;
+    //! reload
+    QAction* reloadAction_;
 
-  //! rename
-  QAction* rename_action_;
+    //! open
+    QAction* openAction_;
 
-  //! properties
-  QAction* file_properties_action_;
+    //! remove
+    QAction* removeAction_;
 
-  //@}
+    //! rename
+    QAction* renameAction_;
 
-  //! home directory
-  File home_path_;
+    //! properties
+    QAction* filePropertiesAction_;
 
-  //! path naviagtion history
-  FileSystemHistory history_;
+    //@}
 
-  //! file system watcher
-  QFileSystemWatcher file_system_watcher_;
+    //! home directory
+    File homePath_;
 
-  //! thread to list files
-  FileSystemThread thread_;
+    //! path naviagtion history
+    FileSystemHistory history_;
+
+    //! file system watcher
+    QFileSystemWatcher fileSystemWatcher_;
+
+    //! thread to list files
+    FileSystemThread thread_;
 
 };
 

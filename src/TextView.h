@@ -25,11 +25,11 @@
 *******************************************************************************/
 
 /*!
-  \file TextView.h
-  \brief handle multiple text views
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file TextView.h
+\brief handle multiple text views
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <algorithm>
@@ -46,138 +46,138 @@
 class TextView: public QWidget, public Counter, public BASE::Key
 {
 
-  //! Qt meta object declaration
-  Q_OBJECT
+    //! Qt meta object declaration
+    Q_OBJECT
 
-  public:
+        public:
 
-  //! constructor
-  TextView( QWidget* parent );
+        //! constructor
+        TextView( QWidget* parent );
 
-  //! destructor
-  virtual ~TextView( void );
+    //! destructor
+    virtual ~TextView( void );
 
-  //!@name display management
-  //@{
+    //!@name display management
+    //@{
 
-  //! return number of independant displays
-  unsigned int independentDisplayCount( void );
+    //! return number of independant displays
+    unsigned int independentDisplayCount( void );
 
-  //! return number of independent modified displays
-  unsigned int modifiedDisplayCount( void );
+    //! return number of independent modified displays
+    unsigned int modifiedDisplayCount( void );
 
-  //@}
+    //@}
 
-  //!@name display management
-  //@{
+    //!@name display management
+    //@{
 
-  //! retrieve active display
-  TextDisplay& activeDisplay( void )
-  {
-    assert( activeDisplay_ );
-    return *activeDisplay_;
-  }
+    //! retrieve active display
+    TextDisplay& activeDisplay( void )
+    {
+        assert( activeDisplay_ );
+        return *activeDisplay_;
+    }
 
-  //! retrieve active display
-  const TextDisplay& activeDisplay( void ) const
-  { return *activeDisplay_; }
+    //! retrieve active display
+    const TextDisplay& activeDisplay( void ) const
+    { return *activeDisplay_; }
 
-  //! select display from file
-  bool selectDisplay( const File& file );
+    //! select display from file
+    bool selectDisplay( const File& file );
 
-  //! true if display passed in argument is active
-  bool isActiveDisplay( const TextDisplay& display ) const
-  { return &display == activeDisplay_; }
+    //! true if display passed in argument is active
+    bool isActiveDisplay( const TextDisplay& display ) const
+    { return &display == activeDisplay_; }
 
-  //! change active display manualy
-  void setActiveDisplay( TextDisplay& );
+    //! change active display manualy
+    void setActiveDisplay( TextDisplay& );
 
-  //! close display
-  void closeActiveDisplay( void );
+    //! close display
+    void closeActiveDisplay( void );
 
-  //! close display
-  /*! Ask for save if display is modified */
-  void closeDisplay( TextDisplay& );
+    //! close display
+    /*! Ask for save if display is modified */
+    void closeDisplay( TextDisplay& );
 
-  //@}
+    //@}
 
-  //! set new document
-  void setIsNewDocument( void );
+    //! set new document
+    void setIsNewDocument( void );
 
-  //! set file and read
-  void setFile( File file );
+    //! set file and read
+    void setFile( File file );
 
-  //! split display
-  TextDisplay& splitDisplay( const Qt::Orientation&, const bool& clone );
+    //! split display
+    TextDisplay& splitDisplay( const Qt::Orientation&, const bool& clone );
 
-  //! save all displays
-  void saveAll( void );
+    //! save all displays
+    void saveAll( void );
 
-  //! ignore all display modifications
-  void ignoreAll( void );
+    //! ignore all display modifications
+    void ignoreAll( void );
 
-  //! select class name
-  void selectClassName( QString value )
-  { activeDisplay().selectClassName( value ); }
+    //! select class name
+    void selectClassName( QString value )
+    { activeDisplay().selectClassName( value ); }
 
-  //! rehighlight all displays
-  void rehighlight( void );
+    //! rehighlight all displays
+    void rehighlight( void );
 
-  //! diff files
-  void diff( void );
+    //! diff files
+    void diff( void );
 
-  //! position timer
-  QTimer& positionTimer( void )
-  { return positionTimer_; }
+    //! position timer
+    QTimer& positionTimer( void )
+    { return positionTimer_; }
 
-  signals:
+    signals:
 
-  //! emitted when parent window must be update
-  void needUpdate( unsigned int );
+    //! emitted when parent window must be update
+    void needUpdate( unsigned int );
 
-  //! current display overwrite mode changed
-  void modifiersChanged( unsigned int );
+    //! current display overwrite mode changed
+    void modifiersChanged( unsigned int );
 
-  //! independent display count changed
-  void displayCountChanged( void );
+    //! independent display count changed
+    void displayCountChanged( void );
 
-  //! current display undo is available
-  void undoAvailable( bool );
+    //! current display undo is available
+    void undoAvailable( bool );
 
-  //! current display redo is available
-  void redoAvailable( bool );
+    //! current display redo is available
+    void redoAvailable( bool );
 
-  public slots:
+    public slots:
 
-  //! check modified displays
-  void checkDisplayModifications( TextEditor* );
+    //! check modified displays
+    void checkDisplayModifications( TextEditor* );
 
-  private slots:
+    private slots:
 
-  //! check number of displays
-  /*!
-  this is triggered by TextDisplay::destroyed()
-  when no display is found the entire window is closed
-  the active display is updated otherwise
-  */
-  void _checkDisplays( void );
+    //! check number of displays
+    /*!
+    this is triggered by TextDisplay::destroyed()
+    when no display is found the entire window is closed
+    the active display is updated otherwise
+    */
+    void _checkDisplays( void );
 
-  //! display focus changed
-  void _activeDisplayChanged( TextEditor* );
+    //! display focus changed
+    void _activeDisplayChanged( TextEditor* );
 
-  private:
+    private:
 
-  //! create new splitter
-  QSplitter& _newSplitter( const Qt::Orientation&, const bool&  );
+    //! create new splitter
+    QSplitter& _newSplitter( const Qt::Orientation&, const bool&  );
 
-  //! create new TextDisplay
-  TextDisplay& _newTextDisplay( QWidget* );
+    //! create new TextDisplay
+    TextDisplay& _newTextDisplay( QWidget* );
 
-  //! text display with focus
-  TextDisplay* activeDisplay_;
+    //! text display with focus
+    TextDisplay* activeDisplay_;
 
-  //! position update timer
-  QTimer positionTimer_;
+    //! position update timer
+    QTimer positionTimer_;
 
 };
 
@@ -186,13 +186,13 @@ class TextView: public QWidget, public Counter, public BASE::Key
 class LocalSplitter: public QSplitter, public Counter
 {
 
-  public:
+    public:
 
-  //! constructor
-  LocalSplitter( QWidget* );
+    //! constructor
+    LocalSplitter( QWidget* );
 
-  //! destructor
-  virtual ~LocalSplitter( void );
+    //! destructor
+    virtual ~LocalSplitter( void );
 
 };
 

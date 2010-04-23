@@ -22,11 +22,11 @@
 *******************************************************************************/
 
 /*!
-  \file AutoSave.cpp
-  \brief handles threads for file auto-save
-  \author  Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file AutoSave.cpp
+\brief handles threads for file auto-save
+\author  Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include "AutoSave.h"
@@ -40,36 +40,31 @@ using namespace std;
 
 //______________________________________________________
 AutoSave::AutoSave( QObject* parent ):
-  QObject( parent ),
-  Counter( "AutoSave" ),
-  enabled_( false ),
-  interval_( 0 ),
-  timer_( this )
+    QObject( parent ),
+    Counter( "AutoSave" ),
+    enabled_( false ),
+    interval_( 0 )
 {
-
-  Debug::Throw( "AutoSave::AutoSave.\n" );
-  timer_.setSingleShot( true );
-  connect( &timer_, SIGNAL( timeout() ), this, SLOT( saveFiles() ) );
-  connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-
+    Debug::Throw( "AutoSave::AutoSave.\n" );
+    connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 }
 
 //______________________________________________________
 AutoSave::~AutoSave( void )
 {
 
-  Debug::Throw( "AutoSave::~AutoSave.\n" );
+    Debug::Throw( "AutoSave::~AutoSave.\n" );
 
-  // loop over threads
-  for( ThreadList::iterator iter = threads_.begin(); iter != threads_.end(); iter++ )
-  {
+    // loop over threads
+    for( ThreadList::iterator iter = threads_.begin(); iter != threads_.end(); iter++ )
+    {
 
-    // remove file
-    File autosaved( (*iter)->file() );
-    if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
-    delete *iter;
+        // remove file
+        File autosaved( (*iter)->file() );
+        if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
+        delete *iter;
 
-  }
+    }
 
 }
 
@@ -77,19 +72,19 @@ AutoSave::~AutoSave( void )
 void AutoSave::newThread( TextDisplay* display )
 {
 
-  Debug::Throw( "AutoSave::newThread.\n" );
+    Debug::Throw( "AutoSave::newThread.\n" );
 
-  // create new Thread
-  AutoSaveThread *thread = new AutoSaveThread( this );
+    // create new Thread
+    AutoSaveThread *thread = new AutoSaveThread( this );
 
-  // associate to MainWindow
-  BASE::Key::associate( display, thread );
+    // associate to MainWindow
+    BASE::Key::associate( display, thread );
 
-  // add to list
-  threads_.push_back( thread );
+    // add to list
+    threads_.push_back( thread );
 
-  // save file immediatly
-  if( _enabled() ) saveFiles( display );
+    // save file immediatly
+    if( _enabled() ) saveFiles( display );
 
 }
 
@@ -97,66 +92,77 @@ void AutoSave::newThread( TextDisplay* display )
 void AutoSave::saveFiles( const TextDisplay* display )
 {
 
-  Debug::Throw( "AutoSave::saveFiles.\n" );
+    Debug::Throw( "AutoSave::saveFiles.\n" );
 
-  // do nothing if interval is 0
-  if( !( _enabled() ) || threads_.empty() ) return;
+    // do nothing if interval is 0
+    if( !( _enabled() ) || threads_.empty() ) return;
 
-  // needed to see if display was found.
-  bool found( false );
+    // needed to see if display was found.
+    bool found( false );
 
-  // loop over threads and restart
-  for( ThreadList::iterator iter = threads_.begin(); iter != threads_.end(); iter++ )
-  {
-
-    // check if argument display, if valid, is associated to this thread
-    if( display && !(*iter)->isAssociated( display ) ) continue;
-    found = true;
-
-    // if thread is running, skipp
-    if( (*iter)->isRunning() ) continue;
-
-    // retrieve associated displays
-    BASE::KeySet<TextDisplay> displays( *iter );
-
-    // remove thread if none is found
-    if( displays.empty() )
+    // loop over threads and restart
+    for( ThreadList::iterator iter = threads_.begin(); iter != threads_.end(); iter++ )
     {
 
-      // remove file
-      File autosaved( (*iter)->file() );
-      if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
+        // check if argument display, if valid, is associated to this thread
+        if( display && !(*iter)->isAssociated( display ) ) continue;
+        found = true;
 
-      // delete thread
-      delete *iter;
+        // if thread is running, skipp
+        if( (*iter)->isRunning() ) continue;
 
-      // remove from list
-      // advance iterator and check for end of list
-      iter = threads_.erase( iter );
+        // retrieve associated displays
+        BASE::KeySet<TextDisplay> displays( *iter );
 
-      // check if at end
-      if( iter == threads_.end() ) break;
-      else continue;
+        // remove thread if none is found
+        if( displays.empty() )
+        {
+
+            // remove file
+            File autosaved( (*iter)->file() );
+            if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
+
+            // delete thread
+            delete *iter;
+
+            // remove from list
+            // advance iterator and check for end of list
+            iter = threads_.erase( iter );
+
+            // check if at end
+            if( iter == threads_.end() ) break;
+            else continue;
+
+        }
+
+        // update file and content
+        TextDisplay& display( **displays.begin() );
+        if( !( display.file().isEmpty() || display.isNewDocument() ) )
+        {
+            (*iter)->setFile( display.file() );
+            (*iter)->setContents( display.toPlainText() );
+            (*iter)->start();
+        }
 
     }
 
-    // update file and content
-    TextDisplay& display( **displays.begin() );
-    if( !( display.file().isEmpty() || display.isNewDocument() ) )
+    // check if thread matching display was found
+    assert( found || !display );
+
+    // restart timer
+    if( !threads_.empty() )  timer_.start( interval_, this );
+    Debug::Throw( "AutoSave::saveFiles - done. \n" );
+
+}
+
+//______________________________________________________
+void AutoSave::timerEvent( QTimerEvent* event )
+{
+    if( event->timerId() == timer_.timerId() )
     {
-      (*iter)->setFile( display.file() );
-      (*iter)->setContents( display.toPlainText() );
-      (*iter)->start();
-    }
-
-  }
-
-  // check if thread matching display was found
-  assert( found || !display );
-
-  // restart timer
-  if( !threads_.empty() )  timer_.start();
-  Debug::Throw( "AutoSave::saveFiles - done. \n" );
+        timer_.stop();
+        saveFiles();
+    } else return QObject::timerEvent( event );
 
 }
 
@@ -164,14 +170,13 @@ void AutoSave::saveFiles( const TextDisplay* display )
 void AutoSave::_updateConfiguration( void )
 {
 
-  Debug::Throw( "AutoSave::_updateConfiguration.\n" );
+    Debug::Throw( "AutoSave::_updateConfiguration.\n" );
 
-  // save AutoSave interval and start timer
-  enabled_ = XmlOptions::get().get<bool>( "AUTOSAVE" );
-  interval_ = 1000*XmlOptions::get().get<unsigned int>("AUTOSAVE_INTERVAL");
-  if( interval_ > 0 ) {
-    timer_.setInterval( interval_ );
-    timer_.start();
-  } else timer_.stop();
+    // save AutoSave interval and start timer
+    enabled_ = XmlOptions::get().get<bool>( "AUTOSAVE" );
+    interval_ = 1000*XmlOptions::get().get<unsigned int>("AUTOSAVE_INTERVAL");
+
+    if( interval_ > 0 ) timer_.start( interval_, this );
+    else timer_.stop();
 
 }

@@ -244,7 +244,7 @@ void NavigationToolBar::contextMenuEvent( QContextMenuEvent* event )
 {
   Debug::Throw( "NavigationToolBar::contextMenuEvent.\n" );
 
-  MainWindow* mainwindow( dynamic_cast<MainWindow*>( window() ) );
+  MainWindow* mainwindow( qobject_cast<MainWindow*>( window() ) );
   if( !mainwindow ) return;
   ToolBarMenu& menu( mainwindow->toolBarMenu( this ) );
 
