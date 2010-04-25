@@ -275,8 +275,8 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
 void TextDisplay::paintMargin( QPainter& painter )
 {
     AnimatedTextEditor::paintMargin( painter );
-    bool has_block_delimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
-    if( has_block_delimiters ) blockDelimiterDisplay().paint( painter );
+    bool hasBlockDelimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
+    if( hasBlockDelimiters ) blockDelimiterDisplay().paint( painter );
 }
 
 //___________________________________________________________________________
@@ -1353,14 +1353,19 @@ void TextDisplay::selectClassName( QString name )
 bool TextDisplay::event( QEvent* event )
 {
 
-    bool has_block_delimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
+    bool hasBlockDelimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
 
     // check that all needed widgets/actions are valid and checked.
     switch (event->type())
     {
 
         case QEvent::MouseButtonPress:
-        if( has_block_delimiters ) blockDelimiterDisplay().mousePressEvent( static_cast<QMouseEvent*>( event ) );
+        if( hasBlockDelimiters )
+        {
+            blockDelimiterDisplay().mousePressEvent( static_cast<QMouseEvent*>( event ) );
+            event->accept();
+            return true;
+        }
         break;
 
         default: break;

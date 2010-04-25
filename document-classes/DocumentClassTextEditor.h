@@ -24,11 +24,11 @@
 *******************************************************************************/
 
 /*!
-  \file DocumentClassTextEditor.h
-  \brief text display window
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file DocumentClassTextEditor.h
+\brief text display window
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 
@@ -60,166 +60,166 @@ class TextHighlight;
 class DocumentClassTextEditor: public AnimatedTextEditor
 {
 
-  //! Qt meta object declaration
-  Q_OBJECT
+    //! Qt meta object declaration
+    Q_OBJECT
 
-  public:
+        public:
 
-  //! constructor
-  DocumentClassTextEditor( QWidget* parent );
+        //! constructor
+        DocumentClassTextEditor( QWidget* parent );
 
-  //! destructor
-  virtual ~DocumentClassTextEditor();
+    //! destructor
+    virtual ~DocumentClassTextEditor();
 
-  //! number of block associated to argument
-  /*! reimplemented from base class to account for collapsed blocks */
-  virtual int blockCount( const QTextBlock& ) const;
+    //! number of block associated to argument
+    /*! reimplemented from base class to account for collapsed blocks */
+    virtual int blockCount( const QTextBlock& ) const;
 
-  //! draw margins
-  virtual void paintMargin( QPainter& );
+    //! draw margins
+    virtual void paintMargin( QPainter& );
 
-  //! document class
-  void setDocumentClass( const DocumentClass& );
+    //! document class
+    void setDocumentClass( const DocumentClass& );
 
-  //!@name macro
-  //@{
+    //!@name macro
+    //@{
 
-  //! list of macros
-  const TextMacro::List& macros( void ) const
-  { return macros_; }
+    //! list of macros
+    const TextMacro::List& macros( void ) const
+    { return macros_; }
 
-  //@}
+    //@}
 
-  //! returns true if paragraph is to be ignored when identing/parsing parenthesis
-  bool ignoreParagraph( const QTextBlock& paragraph );
+    //! returns true if paragraph is to be ignored when identing/parsing parenthesis
+    bool ignoreParagraph( const QTextBlock& paragraph );
 
-  //! text highlight
-  bool hasTextHighlight( void )
-  { return text_highlight_; }
+    //! text highlight
+    bool hasTextHighlight( void )
+    { return textHighlight_; }
 
-  //! text highlight
-  TextHighlight& textHighlight( void )
-  { return *text_highlight_; }
+    //! text highlight
+    TextHighlight& textHighlight( void )
+    { return *textHighlight_; }
 
-  //! text highlight
-  const TextHighlight& textHighlight( void ) const
-  { return *text_highlight_; }
+    //! text highlight
+    const TextHighlight& textHighlight( void ) const
+    { return *textHighlight_; }
 
-  //! text indent
-  TextIndent& textIndent( void ) const
-  {
-    assert( indent_ );
-    return *indent_;
-  }
+    //! text indent
+    TextIndent& textIndent( void ) const
+    {
+        assert( indent_ );
+        return *indent_;
+    }
 
-  //! block delimiter display
-  bool hasBlockDelimiterDisplay( void ) const
-  { return block_delimiter_display_; }
+    //! block delimiter display
+    bool hasBlockDelimiterDisplay( void ) const
+    { return blockDelimitorDisplay_; }
 
-  //! block delimiter display
-  BlockDelimiterDisplay& blockDelimiterDisplay( void ) const
-  { return *block_delimiter_display_; }
+    //! block delimiter display
+    BlockDelimiterDisplay& blockDelimiterDisplay( void ) const
+    { return *blockDelimitorDisplay_; }
 
-  //!@name block interface
-  //@{
+    //!@name block interface
+    //@{
 
-  // return true if block is an empty line
-  virtual bool isEmptyBlock( const QTextBlock& block ) const
-  { return _emptyLineRegExp().indexIn( block.text() ) >= 0; }
+    // return true if block is an empty line
+    virtual bool isEmptyBlock( const QTextBlock& block ) const
+    { return _emptyLineRegExp().indexIn( block.text() ) >= 0; }
 
-  //! return true is block is to be ignored from indentation scheme
-  virtual bool ignoreBlock( const QTextBlock& block ) const;
+    //! return true is block is to be ignored from indentation scheme
+    virtual bool ignoreBlock( const QTextBlock& block ) const;
 
-  //@}
+    //@}
 
-  //! return parenthesis highlight object
-  ParenthesisHighlight& parenthesisHighlight( void ) const
-  { return *parenthesis_highlight_; }
+    //! return parenthesis highlight object
+    ParenthesisHighlight& parenthesisHighlight( void ) const
+    { return *parenthesisHighlight_; }
 
-  signals:
+    signals:
 
-  //! emmited when indentation several blocks is required
-  void indent( QTextBlock, QTextBlock );
+    //! emmited when indentation several blocks is required
+    void indent( QTextBlock, QTextBlock );
 
-  //! emmited when indentation of one block is required
-  void indent( QTextBlock, bool  );
+    //! emmited when indentation of one block is required
+    void indent( QTextBlock, bool  );
 
-  public slots:
+    public slots:
 
-  //! process macro by name
-  void processMacro( QString );
+    //! process macro by name
+    void processMacro( QString );
 
-  //! rehighlight
-  void rehighlight( void );
+    //! rehighlight
+    void rehighlight( void );
 
-  protected:
+    protected:
 
-  //!@name event handlers
-  //@{
+    //!@name event handlers
+    //@{
 
-  //! generic event
-  virtual bool event( QEvent* );
+    //! generic event
+    virtual bool event( QEvent* );
 
-  //! keypress event [overloaded]
-  virtual void keyPressEvent( QKeyEvent* );
+    //! keypress event [overloaded]
+    virtual void keyPressEvent( QKeyEvent* );
 
-  //! paint event
-  virtual void paintEvent( QPaintEvent* );
+    //! paint event
+    virtual void paintEvent( QPaintEvent* );
 
-  //@}
+    //@}
 
-  //! clear macros
-  void _clearMacros( void )
-  { macros_.clear(); }
+    //! clear macros
+    void _clearMacros( void )
+    { macros_.clear(); }
 
-  //! macros
-  void _setMacros( const TextMacro::List& macros)
-  { macros_ = macros; }
+    //! macros
+    void _setMacros( const TextMacro::List& macros)
+    { macros_ = macros; }
 
-  //! track text modifications for syntax highlighting
-  void _setBlockModified( const QTextBlock& );
+    //! track text modifications for syntax highlighting
+    void _setBlockModified( const QTextBlock& );
 
-  //! update margins
-  virtual bool _updateMargin( void );
+    //! update margins
+    virtual bool _updateMargin( void );
 
-  private slots:
+    private slots:
 
-  //! update configuration
-  void _updateConfiguration( void );
+    //! update configuration
+    void _updateConfiguration( void );
 
-  //! indent paragraph (when return or tab is pressed)
-  void _indentCurrentParagraph( void );
+    //! indent paragraph (when return or tab is pressed)
+    void _indentCurrentParagraph( void );
 
-  //! track text modifications for syntax highlighting
-  void _setBlockModified( int, int, int );
+    //! track text modifications for syntax highlighting
+    void _setBlockModified( int, int, int );
 
-  //! highlight parenthesis
-  void _highlightParenthesis( void );
+    //! highlight parenthesis
+    void _highlightParenthesis( void );
 
-  private:
+    private:
 
-  //! empty line
-  static QRegExp& _emptyLineRegExp( void );
+    //! empty line
+    static QRegExp& _emptyLineRegExp( void );
 
-  //!@name document classes specific members
-  //@{
+    //!@name document classes specific members
+    //@{
 
-  //! text indent
-  TextIndent* indent_;
+    //! text indent
+    TextIndent* indent_;
 
-  //! text macro
-  TextMacro::List macros_;
+    //! text macro
+    TextMacro::List macros_;
 
-  //@}
+    //@}
 
-  //! syntax highlighter
-  TextHighlight* text_highlight_;
+    //! syntax highlighter
+    TextHighlight* textHighlight_;
 
-  //! parenthesis highlight object
-  ParenthesisHighlight* parenthesis_highlight_;
+    //! parenthesis highlight object
+    ParenthesisHighlight* parenthesisHighlight_;
 
-  //! block delimiter
-  BlockDelimiterDisplay* block_delimiter_display_;
+    //! block delimiter
+    BlockDelimiterDisplay* blockDelimitorDisplay_;
 
 };
 

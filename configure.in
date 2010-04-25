@@ -1,5 +1,5 @@
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(qedit, qt4_2.3.12)
+AM_INIT_AUTOMAKE(qedit, qt4_2.3.13)
 AC_PROG_CXX
 AC_PROG_LIBTOOL
 CXXFLAGS="-Wall -Werror -Wno-non-virtual-dtor -O2"
