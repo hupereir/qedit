@@ -2557,7 +2557,6 @@ void TextDisplay::_highlightParenthesis( void )
         parenthesis.begin(), parenthesis.end(),
         TextParenthesis::FirstElementFTor( text.left( position ) ) ) );
 
-
     if( iter != parenthesis.end() )
     {
         int increment( 0 );
