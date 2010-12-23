@@ -22,11 +22,11 @@
 ****************************************************************************/
 
 /*!
-  \file MainWindow.cpp
-  \brief editor main window
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file MainWindow.cpp
+\brief editor main window
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QApplication>
@@ -90,133 +90,133 @@ const QString MainWindow::TOP_BOTTOM = "Top/bottom";
 
 //_____________________________________________________
 MainWindow::MainWindow(  QWidget* parent ):
-  BaseMainWindow( parent ),
-  Counter( "MainWindow" ),
-  menu_( 0 ),
-  statusbar_( 0 ),
-  fileEditor_( 0 ),
-  documentClassToolbar_( 0 ),
-  find_dialog_( 0 ),
-  replace_dialog_( 0 ),
-  select_line_dialog_( 0 )
+    BaseMainWindow( parent ),
+    Counter( "MainWindow" ),
+    menu_( 0 ),
+    statusbar_( 0 ),
+    fileEditor_( 0 ),
+    documentClassToolbar_( 0 ),
+    find_dialog_( 0 ),
+    replace_dialog_( 0 ),
+    select_line_dialog_( 0 )
 {
 
-  Debug::Throw( "MainWindow::MainWindow.\n" );
-  setOptionName( "WINDOW" );
+    Debug::Throw( "MainWindow::MainWindow.\n" );
+    setOptionName( "WINDOW" );
 
-  // tell window to delete on exit
-  setAttribute( Qt::WA_DeleteOnClose );
+    // tell window to delete on exit
+    setAttribute( Qt::WA_DeleteOnClose );
 
-  // install actions
-  _installActions();
+    // install actions
+    _installActions();
 
-  // additional actions from Application
-  // they need to be added so that short cuts still work even when menu bar is hidden)
-  Application& application( *Singleton::get().application<Application>() );
-  addAction( &application.closeAction() );
+    // additional actions from Application
+    // they need to be added so that short cuts still work even when menu bar is hidden)
+    Application& application( *Singleton::get().application<Application>() );
+    addAction( &application.closeAction() );
 
-  // menu
-  setMenuBar( menu_ = new Menu( this ) );
-  connect( &menu().documentClassMenu(), SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
+    // menu
+    setMenuBar( menu_ = new Menu( this ) );
+    connect( &menu().documentClassMenu(), SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
 
-  // main widget is a splitter to store navigation window and active view
-  QSplitter* splitter = new QSplitter( this );
-  splitter->setOrientation( Qt::Horizontal );
-  setCentralWidget( splitter );
+    // main widget is a splitter to store navigation window and active view
+    QSplitter* splitter = new QSplitter( this );
+    splitter->setOrientation( Qt::Horizontal );
+    setCentralWidget( splitter );
 
-  // insert navigationFrame
-  navigation_frame_ = new NavigationFrame(0, application.recentFiles() );
-  navigationFrame().setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
-  splitter->addWidget( &navigationFrame() );
+    // insert navigationFrame
+    navigation_frame_ = new NavigationFrame(0, application.recentFiles() );
+    navigationFrame().setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
+    splitter->addWidget( &navigationFrame() );
 
-  connect( &navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleNavigationFrame( bool ) ) );
+    connect( &navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleNavigationFrame( bool ) ) );
 
-  // need to add navigationFrame visibility action to this list
-  // to enable shortcut event if the frame is hidden
-  addAction( &navigationFrame().visibilityAction() );
-  connect( &navigationFrame().sessionFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
-  connect( &navigationFrame().recentFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
+    // need to add navigationFrame visibility action to this list
+    // to enable shortcut event if the frame is hidden
+    addAction( &navigationFrame().visibilityAction() );
+    connect( &navigationFrame().sessionFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
+    connect( &navigationFrame().recentFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
 
-  addAction( &navigationFrame().sessionFilesFrame().nextFileAction() );
-  addAction( &navigationFrame().sessionFilesFrame().previousFileAction() );
+    addAction( &navigationFrame().sessionFilesFrame().nextFileAction() );
+    addAction( &navigationFrame().sessionFilesFrame().previousFileAction() );
 
-  // insert stack widget
-  splitter->addWidget( stack_ = new QStackedWidget(0) );
-  _stack().layout()->setMargin(2);
+    // insert stack widget
+    splitter->addWidget( stack_ = new QStackedWidget(0) );
+    _stack().layout()->setMargin(2);
 
-  connect( &_stack(), SIGNAL( widgetRemoved( int ) ), SLOT( _activeViewChanged() ) );
+    connect( &_stack(), SIGNAL( widgetRemoved( int ) ), SLOT( _activeViewChanged() ) );
 
-  // transition widget
-  _replaceTransitionWidget();
+    // transition widget
+    _replaceTransitionWidget();
 
-  // create first text view
-  newTextView();
+    // create first text view
+    newTextView();
 
-  // assign stretch factors
-  splitter->setStretchFactor( 0, 0 );
-  splitter->setStretchFactor( 1, 1 );
+    // assign stretch factors
+    splitter->setStretchFactor( 0, 0 );
+    splitter->setStretchFactor( 1, 1 );
 
-  connect( splitter, SIGNAL( splitterMoved( int, int ) ), SLOT( _splitterMoved( void ) ) );
+    connect( splitter, SIGNAL( splitterMoved( int, int ) ), SLOT( _splitterMoved( void ) ) );
 
-  // state frame
-  setStatusBar( statusbar_ = new StatusBar( this ) );
+    // state frame
+    setStatusBar( statusbar_ = new StatusBar( this ) );
 
-  // create "Hidden" line editor to display filename
-  statusbar_->addPermanentWidget( fileEditor_ = new QLabel( statusbar_ ), 1 );
-  statusbar_->addLabels( 3, 0 );
-  statusbar_->label(0).setAlignment( Qt::AlignCenter );
-  statusbar_->label(1).setAlignment( Qt::AlignCenter );
-  statusbar_->label(2).setAlignment( Qt::AlignCenter );
-  statusbar_->addClock();
+    // create "Hidden" line editor to display filename
+    statusbar_->addPermanentWidget( fileEditor_ = new QLabel( statusbar_ ), 1 );
+    statusbar_->addLabels( 3, 0 );
+    statusbar_->label(0).setAlignment( Qt::AlignCenter );
+    statusbar_->label(1).setAlignment( Qt::AlignCenter );
+    statusbar_->label(2).setAlignment( Qt::AlignCenter );
+    statusbar_->addClock();
 
-  fileEditor_->setTextInteractionFlags( Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard );
+    fileEditor_->setTextInteractionFlags( Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard );
 
-  // assign non fixed font
-  QFont font;
-  font.fromString( XmlOptions::get().raw( "FONT_NAME" ) );
-  fileEditor_->setFont( font );
+    // assign non fixed font
+    QFont font;
+    font.fromString( XmlOptions::get().raw( "FONT_NAME" ) );
+    fileEditor_->setFont( font );
 
-  // toolbars
-  _installToolbars();
+    // toolbars
+    _installToolbars();
 
-  //! configuration
-  connect( &application, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-  connect( &application, SIGNAL( saveConfiguration() ), SLOT( _saveConfiguration() ) );
-  connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
-  _updateConfiguration();
+    //! configuration
+    connect( &application, SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+    connect( &application, SIGNAL( saveConfiguration() ), SLOT( _saveConfiguration() ) );
+    connect( qApp, SIGNAL( aboutToQuit() ), SLOT( _saveConfiguration() ) );
+    _updateConfiguration();
 
-  // update buttons
-  Debug::Throw( "MainWindow::MainWindow - done.\n" );
+    // update buttons
+    Debug::Throw( "MainWindow::MainWindow - done.\n" );
 
 }
 
 //___________________________________________________________
 MainWindow::~MainWindow( void )
 {
-  Debug::Throw( "MainWindow::~MainWindow.\n" );
-  disconnect( &_transitionWidget(), SIGNAL( destroyed() ) );
+    Debug::Throw( "MainWindow::~MainWindow.\n" );
+    disconnect( &_transitionWidget(), SIGNAL( destroyed() ) );
 }
 
 //___________________________________________________________
 TextView& MainWindow::newTextView( FileRecord record )
 {
-  Debug::Throw( "MainWindow::newTextView.\n" );
+    Debug::Throw( "MainWindow::newTextView.\n" );
 
-  // create new view and add to this file
-  TextView* view = new TextView( this );
-  BASE::Key::associate( this, view );
+    // create new view and add to this file
+    TextView* view = new TextView( this );
+    BASE::Key::associate( this, view );
 
-  // connections
-  _connectView( *view );
+    // connections
+    _connectView( *view );
 
-  // open file if valid
-  if( record.file().exists() ) view->setFile( record.file() );
+    // open file if valid
+    if( record.file().exists() ) view->setFile( record.file() );
 
-  // add to stack and set active
-  _stack().addWidget( view );
-  setActiveView( *view );
+    // add to stack and set active
+    _stack().addWidget( view );
+    setActiveView( *view );
 
-  return *view;
+    return *view;
 
 }
 
@@ -224,35 +224,35 @@ TextView& MainWindow::newTextView( FileRecord record )
 void MainWindow::setActiveView( TextView& view )
 {
 
-  Debug::Throw() << "MainWindow::setActiveView - key: " << view.key() << endl;
+    Debug::Throw() << "MainWindow::setActiveView - key: " << view.key() << endl;
 
-  // do nothing if active view did not change
-  if( active_view_ == &view ) return;
+    // do nothing if active view did not change
+    if( active_view_ == &view ) return;
 
-  // this check is needed because the active view passed as argument
-  // might be closing and have no associated display
-  if( BASE::KeySet<TextDisplay>( &view ).empty() ) return;
+    // this check is needed because the active view passed as argument
+    // might be closing and have no associated display
+    if( BASE::KeySet<TextDisplay>( &view ).empty() ) return;
 
-  // store active view
-  active_view_ = &view;
-  activeView().activeDisplay().setFocus();
+    // store active view
+    active_view_ = &view;
+    activeView().activeDisplay().setFocus();
 
-  // update stack if needed
-  if( _stack().currentWidget() !=  &activeView() )
-  {
-
-    if( _transitionWidget().isEnabled() && isVisible() )
+    // update stack if needed
+    if( _stack().currentWidget() !=  &activeView() )
     {
-      _transitionWidget().setParent( &activeView() );
-      _transitionWidget().initialize( &_stack() );
-    }
 
-    _stack().setCurrentWidget( &activeView() );
+        if( _transitionWidget().isEnabled() && isVisible() )
+        {
+            _transitionWidget().setParent( &activeView() );
+            _transitionWidget().initialize( &_stack() );
+        }
 
-    if( _transitionWidget().isEnabled() && isVisible() ) _transitionWidget().start();
-    else _animationFinished();
+        _stack().setCurrentWidget( &activeView() );
 
-  } else _animationFinished();
+        if( _transitionWidget().isEnabled() && isVisible() ) _transitionWidget().start();
+        else _animationFinished();
+
+    } else _animationFinished();
 
 }
 
@@ -260,15 +260,15 @@ void MainWindow::setActiveView( TextView& view )
 //_____________________________________________________________________
 BASE::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
 {
-  BASE::KeySet<TextDisplay> displays;
-  BASE::KeySet<TextView> views( this );
-  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
-  {
-    BASE::KeySet<TextDisplay> view_displays(*iter);
-    displays.insert( view_displays.begin(), view_displays.end() );
-  }
+    BASE::KeySet<TextDisplay> displays;
+    BASE::KeySet<TextView> views( this );
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+    {
+        BASE::KeySet<TextDisplay> view_displays(*iter);
+        displays.insert( view_displays.begin(), view_displays.end() );
+    }
 
-  return displays;
+    return displays;
 
 }
 
@@ -276,135 +276,135 @@ BASE::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
 bool MainWindow::selectDisplay( const File& file )
 {
 
-  Debug::Throw() << "MainWindow::selectDisplay - file: " << file << endl;
+    Debug::Throw() << "MainWindow::selectDisplay - file: " << file << endl;
 
-  // do nothing if already selected
-  if( activeView().activeDisplay().file() == file ) return true;
+    // do nothing if already selected
+    if( activeView().activeDisplay().file() == file ) return true;
 
-  BASE::KeySet<TextView> views( this );
-  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
-  {
-
-    if( (*iter)->selectDisplay( file ) )
+    BASE::KeySet<TextView> views( this );
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
     {
-      // make sure selected view is visible
-      if( _stack().currentWidget() != *iter )
-      { setActiveView( **iter ); }
-      return true;
+
+        if( (*iter)->selectDisplay( file ) )
+        {
+            // make sure selected view is visible
+            if( _stack().currentWidget() != *iter )
+            { setActiveView( **iter ); }
+            return true;
+        }
+
     }
 
-  }
-
-  return false;
+    return false;
 }
 
 //_____________________________________________________________________
 void MainWindow::saveAll( void )
 {
-  Debug::Throw( "MainWindow::saveAll.\n" );
-  BASE::KeySet<TextView> views( this );
-  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
-  { (*iter)->saveAll(); }
+    Debug::Throw( "MainWindow::saveAll.\n" );
+    BASE::KeySet<TextView> views( this );
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+    { (*iter)->saveAll(); }
 }
 
 //_____________________________________________________________________
 void MainWindow::ignoreAll( void )
 {
-  Debug::Throw( "MainWindow::ignoreAll.\n" );
-  BASE::KeySet<TextView> views( this );
-  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
-  { (*iter)->ignoreAll(); }
+    Debug::Throw( "MainWindow::ignoreAll.\n" );
+    BASE::KeySet<TextView> views( this );
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+    { (*iter)->ignoreAll(); }
 }
 
 //_____________________________________________________________________
 void MainWindow::findFromDialog( void )
 {
-  Debug::Throw( "MainWindow::findFromDialog.\n" );
+    Debug::Throw( "MainWindow::findFromDialog.\n" );
 
-  // set default text
-  // update find text
-  QString text( activeDisplay().selection().text() );
-  if( !text.isEmpty() )
-  {
-    const int max_length( 1024 );
-    text = text.left( max_length );
-  }
+    // set default text
+    // update find text
+    QString text( activeDisplay().selection().text() );
+    if( !text.isEmpty() )
+    {
+        const int max_length( 1024 );
+        text = text.left( max_length );
+    }
 
-  /*
+    /*
     setting the default text values
     must be done after the dialog is shown
     otherwise it may be automatically resized
     to very large sizes due to the input text
-  */
+    */
 
-  // set default string to find
-  if( !find_dialog_ ) _createBaseFindDialog();
-  _findDialog().enableRegExp( true );
-  _findDialog().centerOnParent().show();
-  _findDialog().synchronize();
-  _findDialog().clearLabel();
-  _findDialog().setText( text );
+    // set default string to find
+    if( !find_dialog_ ) _createBaseFindDialog();
+    _findDialog().enableRegExp( true );
+    _findDialog().centerOnParent().show();
+    _findDialog().synchronize();
+    _findDialog().clearLabel();
+    _findDialog().setText( text );
 
-  // changes focus
-  _findDialog().activateWindow();
-  _findDialog().editor().setFocus();
+    // changes focus
+    _findDialog().activateWindow();
+    _findDialog().editor().setFocus();
 
-  return;
+    return;
 }
 
 //_____________________________________________________________________
 void MainWindow::replaceFromDialog( void )
 {
-  Debug::Throw( "MainWindow::replaceFromDialog.\n" );
+    Debug::Throw( "MainWindow::replaceFromDialog.\n" );
 
-  // create
-  if( !replace_dialog_ ) _createReplaceDialog();
+    // create
+    if( !replace_dialog_ ) _createReplaceDialog();
 
-  // raise dialog
-  _replaceDialog().centerOnParent().show();
+    // raise dialog
+    _replaceDialog().centerOnParent().show();
 
-  /*
+    /*
     setting the default text values
     must be done after the dialog is shown
     otherwise it may be automatically resized
     to very large sizes due to the input text
-  */
+    */
 
-  // synchronize combo-boxes
-  _replaceDialog().synchronize();
-  _replaceDialog().clearLabel();
+    // synchronize combo-boxes
+    _replaceDialog().synchronize();
+    _replaceDialog().clearLabel();
 
-  // update find text
-  QString text;
-  if( !( text = qApp->clipboard()->text( QClipboard::Selection) ).isEmpty() ) _replaceDialog().setText( text );
-  else if( activeDisplay().textCursor().hasSelection() ) _replaceDialog().setText( activeDisplay().textCursor().selectedText() );
-  else if( !( text = TextDisplay::lastSelection().text() ).isEmpty() ) _replaceDialog().setText( text );
+    // update find text
+    QString text;
+    if( !( text = qApp->clipboard()->text( QClipboard::Selection) ).isEmpty() ) _replaceDialog().setText( text );
+    else if( activeDisplay().textCursor().hasSelection() ) _replaceDialog().setText( activeDisplay().textCursor().selectedText() );
+    else if( !( text = TextDisplay::lastSelection().text() ).isEmpty() ) _replaceDialog().setText( text );
 
-  // update replace text
-  if( !TextDisplay::lastSelection().replaceText().isEmpty() ) _replaceDialog().setReplaceText( TextDisplay::lastSelection().replaceText() );
+    // update replace text
+    if( !TextDisplay::lastSelection().replaceText().isEmpty() ) _replaceDialog().setReplaceText( TextDisplay::lastSelection().replaceText() );
 
-  // changes focus
-  _replaceDialog().activateWindow();
-  _replaceDialog().editor().setFocus();
+    // changes focus
+    _replaceDialog().activateWindow();
+    _replaceDialog().editor().setFocus();
 
-  return;
+    return;
 }
 
 //________________________________________________
 void MainWindow::selectLineFromDialog( void )
 {
 
-  Debug::Throw( "TextEditor::selectLineFromDialog.\n" );
-  if( !select_line_dialog_ )
-  {
-    select_line_dialog_ = new SelectLineDialog( this );
-    connect( select_line_dialog_, SIGNAL( lineSelected( int ) ), SLOT( _selectLine( int ) ) );
-  }
+    Debug::Throw( "TextEditor::selectLineFromDialog.\n" );
+    if( !select_line_dialog_ )
+    {
+        select_line_dialog_ = new SelectLineDialog( this );
+        connect( select_line_dialog_, SIGNAL( lineSelected( int ) ), SLOT( _selectLine( int ) ) );
+    }
 
-  select_line_dialog_->editor().clear();
-  select_line_dialog_->centerOnParent().show();
-  select_line_dialog_->activateWindow();
-  select_line_dialog_->editor().setFocus();
+    select_line_dialog_->editor().clear();
+    select_line_dialog_->centerOnParent().show();
+    select_line_dialog_->activateWindow();
+    select_line_dialog_->editor().setFocus();
 
 }
 
@@ -412,143 +412,145 @@ void MainWindow::selectLineFromDialog( void )
 void MainWindow::_revertToSave( void )
 {
 
-  Debug::Throw( "MainWindow::_revertToSave.\n" );
+    Debug::Throw( "MainWindow::_revertToSave.\n" );
 
-  // check filename
-  if( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() )
-  {
-    InformationDialog( this, "No filename given. <Reload> canceled." ).setWindowTitle( "Reload Document - Qedit" ).exec();
-    return;
-  }
+    // check filename
+    if( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() )
+    {
+        InformationDialog( this, "No filename given. <Reload> canceled." ).setWindowTitle( "Reload Document - Qedit" ).exec();
+        return;
+    }
 
-  // ask for confirmation
-  QString buffer;
-  QTextStream what( &buffer );
-  if( activeDisplay().document()->isModified() ) what << "Discard changes to " << activeDisplay().file().localName() << "?";
-  else what << "Reload file " << activeDisplay().file().localName() << "?";
-  if( !QuestionDialog( this, buffer ).setWindowTitle( "Reload Document - Qedit" ).exec() ) return;
+    // ask for confirmation
+    QString buffer;
+    QTextStream what( &buffer );
+    if( activeDisplay().document()->isModified() ) what << "Discard changes to " << activeDisplay().file().localName() << "?";
+    else what << "Reload file " << activeDisplay().file().localName() << "?";
+    if( !QuestionDialog( this, buffer ).setWindowTitle( "Reload Document - Qedit" ).exec() ) return;
 
-  activeDisplay().revertToSave();
+    activeDisplay().revertToSave();
 
 }
 
 //___________________________________________________________
 void MainWindow::_print( void )
 {
-  Debug::Throw( "MainWindow::_print.\n" );
+    Debug::Throw( "MainWindow::_print.\n" );
 
-  // retrieve activeDisplay file
-  const File& file( activeDisplay().file() );
+    // retrieve activeDisplay file
+    const File& file( activeDisplay().file() );
 
-  // check if file is modified
-  if( activeDisplay().document()->isModified() && activeDisplay().askForSave() == AskForSaveDialog::CANCEL ) return;
+    // check if file is modified
+    if( activeDisplay().document()->isModified() && activeDisplay().askForSave() == AskForSaveDialog::CANCEL ) return;
 
-  // check if file is valid and exists
-  if( file.isEmpty() || !file.exists() )
-  {
-    InformationDialog( this, "File is not valid for printing. <print> canceled." ).exec();
-    return;
-  }
-
-  // create dialog
-  PrintDialog dialog( this );
-  dialog.setFile( file );
-  dialog.setMode( XmlOptions::get().raw("PRINT_MODE") == "PDF" ? PrintDialog::PDF : PrintDialog::HTML );
-  dialog.setMaximumLineSize( XmlOptions::get().get<int>( "PRINT_LINE_SIZE" ) );
-  dialog.setUseCommand( XmlOptions::get().get<bool>( "USE_PRINT_COMMAND" ) );
-
-  // add commands
-  /* command list contains the HTML editor, PDF editor and any additional user specified command */
-  Options::List commands( XmlOptions::get().specialOptions( "PRINT_COMMAND" ) );
-  commands.push_back( XmlOptions::get().option( "PDF_EDITOR" ) );
-  commands.push_back( XmlOptions::get().option( "HTML_EDITOR" ) );
-  for( Options::List::iterator iter = commands.begin(); iter != commands.end(); iter++ )
-  { dialog.addCommand( iter->raw() ); }
-
-  // set command manually that match the selection mode
-  dialog.setCommand( XmlOptions::get().raw( ( dialog.mode() == PrintDialog::PDF ? "PDF_EDITOR":"HTML_EDITOR" ) ) );
-
-  // exec
-  if( !dialog.centerOnParent().exec() ) return;
-
-  // store options
-  XmlOptions::get().set( "PRINT_MODE", dialog.mode() == PrintDialog::PDF ? "PDF":"HTML" );
-  XmlOptions::get().set<int>( "PRINT_LINE_SIZE", dialog.maximumLineSize() );
-  XmlOptions::get().set<bool>( "USE_PRINT_COMMAND", dialog.useCommand() );
-
-  // check print mode and store options
-  PrintDialog::Mode mode( dialog.mode() );
-  QString command( dialog.command() );
-  XmlOptions::get().add( "PRINT_COMMAND", Option( command, Option::RECORDABLE|Option::CURRENT ) );
-  XmlOptions::get().set( mode == PrintDialog::HTML ? "HTML_EDITOR" : "PDF_EDITOR", Option( command, Option::RECORDABLE|Option::CURRENT ) );
-
-  // try open output file
-  File fullname = File( dialog.destinationFile() ).expand();
-
-  // check if file is directory
-  if( fullname.isDirectory() )
-  {
-    QString buffer;
-    QTextStream( &buffer ) << "file \"" << fullname << "\" is a directory. <Print> canceled.";
-    InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec();
-    return;
-  }
-
-
-  // check if file exists
-  if( fullname.exists() )
-  {
-    if( !fullname.isWritable() )
+    // check if file is valid and exists
+    if( file.isEmpty() || !file.exists() )
     {
-      QString buffer;
-      QTextStream( &buffer ) << "file \"" << fullname << "\" is read-only. <Print> canceled.";
-      InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec();
-      return;
-    } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec() )
-    return;
-  }
-
-  // retrieve HTML string from current display
-  QString html_string( _htmlString( dialog.maximumLineSize() ) );
-  Debug::Throw( "MainWindow::_print - retrieved html string.\n" );
-
-  if( mode == PrintDialog::HTML )
-  {
-    // open stream
-    QFile out( fullname );
-    if( !out.open( QIODevice::WriteOnly ) )
-    {
-      QString buffer;
-      QTextStream( &buffer ) << "cannot write to file \"" << fullname << "\" <Print> canceled.";
-      InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).exec();
-      return;
+        InformationDialog( this, "File is not valid for printing. <print> canceled." ).exec();
+        return;
     }
 
-    out.write( html_string.toAscii() );
-    out.close();
-    Debug::Throw( "MainWindow::_print - html file saved.\n" );
+    // create dialog
+    PrintDialog dialog( this );
+    dialog.setFile( file );
+    dialog.setMode( XmlOptions::get().raw("PRINT_MODE") == "PDF" ? PrintDialog::PDF : PrintDialog::HTML );
+    dialog.setMaximumLineSize( XmlOptions::get().get<int>( "PRINT_LINE_SIZE" ) );
+    dialog.setUseCommand( XmlOptions::get().get<bool>( "USE_PRINT_COMMAND" ) );
 
-  } else if( mode == PrintDialog::PDF ) {
+    // add commands
+    /* command list contains the HTML editor, PDF editor and any additional user specified command */
+    Options::List commands( XmlOptions::get().specialOptions( "PRINT_COMMAND" ) );
+    commands.push_back( XmlOptions::get().option( "PDF_EDITOR" ) );
+    commands.push_back( XmlOptions::get().option( "HTML_EDITOR" ) );
+    for( Options::List::iterator iter = commands.begin(); iter != commands.end(); iter++ )
+    { dialog.addCommand( iter->raw() ); }
 
-    QTextEdit local(0);
-    local.setLineWrapMode( QTextEdit::WidgetWidth );
-    local.setHtml( html_string );
+    // set command manually that match the selection mode
+    dialog.setCommand( XmlOptions::get().raw( ( dialog.mode() == PrintDialog::PDF ? "PDF_EDITOR":"HTML_EDITOR" ) ) );
 
-    QPrinter printer(QPrinter::HighResolution);
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOutputFileName(fullname);
+    // exec
+    if( !dialog.centerOnParent().exec() ) return;
 
-    local.document()->print(&printer);
-    Debug::Throw( "MainWindow::_print - pdf file saved.\n" );
+    // store options
+    XmlOptions::get().set( "PRINT_MODE", dialog.mode() == PrintDialog::PDF ? "PDF":"HTML" );
+    XmlOptions::get().set<int>( "PRINT_LINE_SIZE", dialog.maximumLineSize() );
+    XmlOptions::get().set<bool>( "USE_PRINT_COMMAND", dialog.useCommand() );
 
-  } else return;
+    // check print mode and store options
+    PrintDialog::Mode mode( dialog.mode() );
+    QString command( dialog.command() );
+    XmlOptions::get().add( "PRINT_COMMAND", Option( command, Option::RECORDABLE|Option::CURRENT ) );
+    XmlOptions::get().set( mode == PrintDialog::HTML ? "HTML_EDITOR" : "PDF_EDITOR", Option( command, Option::RECORDABLE|Option::CURRENT ) );
 
-  // try open
-  if( dialog.useCommand() )
-  { (Command( dialog.command() ) << fullname ).run(); }
+    // try open output file
+    File fullname = File( dialog.destinationFile() ).expand();
 
-  Debug::Throw( "MainWindow::_print - done.\n" );
-  return;
+    // check if file is directory
+    if( fullname.isDirectory() )
+    {
+        QString buffer;
+        QTextStream( &buffer ) << "file \"" << fullname << "\" is a directory. <Print> canceled.";
+        InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec();
+        return;
+    }
+
+
+    // check if file exists
+    if( fullname.exists() )
+    {
+        if( !fullname.isWritable() )
+        {
+            QString buffer;
+            QTextStream( &buffer ) << "file \"" << fullname << "\" is read-only. <Print> canceled.";
+            InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec();
+            return;
+        } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec() ) {
+            return;
+        }
+
+    }
+
+    // retrieve HTML string from current display
+    QString html_string( _htmlString( dialog.maximumLineSize() ) );
+    Debug::Throw( "MainWindow::_print - retrieved html string.\n" );
+
+    if( mode == PrintDialog::HTML )
+    {
+        // open stream
+        QFile out( fullname );
+        if( !out.open( QIODevice::WriteOnly ) )
+        {
+            QString buffer;
+            QTextStream( &buffer ) << "cannot write to file \"" << fullname << "\" <Print> canceled.";
+            InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).exec();
+            return;
+        }
+
+        out.write( html_string.toAscii() );
+        out.close();
+        Debug::Throw( "MainWindow::_print - html file saved.\n" );
+
+    } else if( mode == PrintDialog::PDF ) {
+
+        QTextEdit local(0);
+        local.setLineWrapMode( QTextEdit::WidgetWidth );
+        local.setHtml( html_string );
+
+        QPrinter printer(QPrinter::HighResolution);
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        printer.setOutputFileName(fullname);
+
+        local.document()->print(&printer);
+        Debug::Throw( "MainWindow::_print - pdf file saved.\n" );
+
+    } else return;
+
+    // try open
+    if( dialog.useCommand() )
+    { (Command( dialog.command() ) << fullname ).run(); }
+
+    Debug::Throw( "MainWindow::_print - done.\n" );
+    return;
 
 }
 
@@ -556,91 +558,91 @@ void MainWindow::_print( void )
 bool MainWindow::event( QEvent* event )
 {
 
-  // check that all needed widgets/actions are valid and checked.
-  switch (event->type())
-  {
+    // check that all needed widgets/actions are valid and checked.
+    switch (event->type())
+    {
 
-    case QEvent::WindowActivate:
-    emit activated( this );
-    break;
+        case QEvent::WindowActivate:
+        emit activated( this );
+        break;
 
-    default: break;
-  }
+        default: break;
+    }
 
-  return BaseMainWindow::event( event );
+    return BaseMainWindow::event( event );
 
 }
 
 //____________________________________________
 void MainWindow::closeEvent( QCloseEvent* event )
 {
-  Debug::Throw( "MainWindow::closeEvent.\n" );
+    Debug::Throw( "MainWindow::closeEvent.\n" );
 
-  // accept event
-  event->accept();
+    // accept event
+    event->accept();
 
-  // look over TextDisplays
-  if( !isModified() ) return;
+    // look over TextDisplays
+    if( !isModified() ) return;
 
-  // loop over TextViews
-  unsigned int modified_displays(0);
-  BASE::KeySet<TextDisplay> displays;
-  BASE::KeySet<TextView> views( this );
-  for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
-  {
+    // loop over TextViews
+    unsigned int modified_displays(0);
+    BASE::KeySet<TextDisplay> displays;
+    BASE::KeySet<TextView> views( this );
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+    {
 
-    // update the number of modified displays
-    modified_displays += (*iter)->modifiedDisplayCount();
+        // update the number of modified displays
+        modified_displays += (*iter)->modifiedDisplayCount();
 
-    // store associated textDisplays in main set
-    BASE::KeySet<TextDisplay> view_displays( *iter );
-    displays.insert( view_displays.begin(), view_displays.end() );
-
-  }
-
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
-  {
-
-    // get local reference to display
-    TextDisplay& display( **iter );
-
-    // check if this display is modified
-    if( !display.document()->isModified() ) continue;
-
-    // this trick allow to run  only once per set of associated displays
-    if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( &display ) ) != iter ) continue;
-
-    // ask for save
-    int state( display.askForSave( modified_displays > 1 ) );
-    if( state == AskForSaveDialog::YES_TO_ALL ) saveAll();
-    else if( state == AskForSaveDialog::NO_TO_ALL ) ignoreAll();
-    else if( state == AskForSaveDialog::CANCEL ) {
-
-      event->ignore();
-      return;
+        // store associated textDisplays in main set
+        BASE::KeySet<TextDisplay> view_displays( *iter );
+        displays.insert( view_displays.begin(), view_displays.end() );
 
     }
 
-  }
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    {
 
-  return;
+        // get local reference to display
+        TextDisplay& display( **iter );
+
+        // check if this display is modified
+        if( !display.document()->isModified() ) continue;
+
+        // this trick allow to run  only once per set of associated displays
+        if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( &display ) ) != iter ) continue;
+
+        // ask for save
+        int state( display.askForSave( modified_displays > 1 ) );
+        if( state == AskForSaveDialog::YES_TO_ALL ) saveAll();
+        else if( state == AskForSaveDialog::NO_TO_ALL ) ignoreAll();
+        else if( state == AskForSaveDialog::CANCEL ) {
+
+            event->ignore();
+            return;
+
+        }
+
+    }
+
+    return;
 }
 
 //_______________________________________________________
 void MainWindow::timerEvent( QTimerEvent* event )
 {
 
-  if( event->timerId() == resizeTimer_.timerId() )
-  {
+    if( event->timerId() == resizeTimer_.timerId() )
+    {
 
-    // stop timer
-    resizeTimer_.stop();
+        // stop timer
+        resizeTimer_.stop();
 
-    // save size
-    if( navigationFrame().visibilityAction().isChecked() )
-    { XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", navigationFrame().width() ); }
+        // save size
+        if( navigationFrame().visibilityAction().isChecked() )
+        { XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", navigationFrame().width() ); }
 
-  } else return BaseMainWindow::timerEvent( event );
+    } else return BaseMainWindow::timerEvent( event );
 
 }
 
@@ -648,29 +650,29 @@ void MainWindow::timerEvent( QTimerEvent* event )
 void MainWindow::_updateConfiguration( void )
 {
 
-  Debug::Throw( "MainWindow::_updateConfiguration.\n" );
+    Debug::Throw( "MainWindow::_updateConfiguration.\n" );
 
-  resize( sizeHint() );
+    resize( sizeHint() );
 
-  // navigation frame visibility
-  navigationFrame().visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_NAVIGATION_FRAME") );
+    // navigation frame visibility
+    navigationFrame().visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_NAVIGATION_FRAME") );
 
-  // assign icons to file in open previous menu based on class manager
-  FileList& recent_files( Singleton::get().application<Application>()->recentFiles() );
-  DocumentClassManager& class_manager(Singleton::get().application<Application>()->classManager());
-  FileRecord::List records( recent_files.records() );
-  for( FileRecord::List::iterator iter = records.begin(); iter != records.end(); iter++ )
-  {
+    // assign icons to file in open previous menu based on class manager
+    FileList& recent_files( Singleton::get().application<Application>()->recentFiles() );
+    DocumentClassManager& class_manager(Singleton::get().application<Application>()->classManager());
+    FileRecord::List records( recent_files.records() );
+    for( FileRecord::List::iterator iter = records.begin(); iter != records.end(); iter++ )
+    {
 
-    FileRecord& record( *iter );
-    if( !record.hasProperty( FileRecordProperties::CLASS_NAME ) ) continue;
-    DocumentClass document_class( class_manager.get( record.property( FileRecordProperties::CLASS_NAME ) ) );
-    if( document_class.icon().isEmpty() ) continue;
+        FileRecord& record( *iter );
+        if( !record.hasProperty( FileRecordProperties::CLASS_NAME ) ) continue;
+        DocumentClass document_class( class_manager.get( record.property( FileRecordProperties::CLASS_NAME ) ) );
+        if( document_class.icon().isEmpty() ) continue;
 
-    // set icon property and store in recent_files list
-    recent_files.get( record.file() ).addProperty( FileRecordProperties::ICON, document_class.icon() );
+        // set icon property and store in recent_files list
+        recent_files.get( record.file() ).addProperty( FileRecordProperties::ICON, document_class.icon() );
 
-  }
+    }
 
 }
 
@@ -681,26 +683,26 @@ void MainWindow::_saveConfiguration( void )
 //________________________________________________________
 void MainWindow::_toggleNavigationFrame( bool state )
 {
-  Debug::Throw( "MainWindow::_toggleNavigationFrame.\n" );
-  XmlOptions::get().set<bool>( "SHOW_NAVIGATION_FRAME", state );
+    Debug::Throw( "MainWindow::_toggleNavigationFrame.\n" );
+    XmlOptions::get().set<bool>( "SHOW_NAVIGATION_FRAME", state );
 }
 
 //________________________________________________________
 void MainWindow::_splitterMoved( void )
 {
-  Debug::Throw( "MainWindow::_splitterMoved.\n" );
-  resizeTimer_.start( 200, this );
+    Debug::Throw( "MainWindow::_splitterMoved.\n" );
+    resizeTimer_.start( 200, this );
 }
 
 //________________________________________________________
 void MainWindow::_activeViewChanged( void )
 {
 
-  Debug::Throw() << "MainWindow::_activeViewChanged" << endl;
+    Debug::Throw() << "MainWindow::_activeViewChanged" << endl;
 
-  QWidget *widget( _stack().currentWidget() );
-  if( !widget ) close();
-  else setActiveView( *static_cast<TextView*>( widget ) );
+    QWidget *widget( _stack().currentWidget() );
+    if( !widget ) close();
+    else setActiveView( *static_cast<TextView*>( widget ) );
 
 }
 
@@ -711,112 +713,112 @@ void MainWindow::_splitDisplay( void )
 //_______________________________________________________
 void MainWindow::_multipleFileReplace( void )
 {
-  Debug::Throw( "MainWindow::_multipleFileReplace.\n" );
-  TextSelection selection( _replaceDialog().selection( false ) );
+    Debug::Throw( "MainWindow::_multipleFileReplace.\n" );
+    TextSelection selection( _replaceDialog().selection( false ) );
 
-  // show dialog and check answer
-  FileSelectionDialog dialog( this, selection );
-  QtUtil::centerOnParent( &dialog );
-  if( !dialog.centerOnWidget( qApp->activeWindow() ).exec() ) return;
+    // show dialog and check answer
+    FileSelectionDialog dialog( this, selection );
+    QtUtil::centerOnParent( &dialog );
+    if( !dialog.centerOnWidget( qApp->activeWindow() ).exec() ) return;
 
-  // replace all in selected files
-  Singleton::get().application<Application>()->windowServer().multipleFileReplace( dialog.selectedFiles(), selection );
+    // replace all in selected files
+    Singleton::get().application<Application>()->windowServer().multipleFileReplace( dialog.selectedFiles(), selection );
 
-  return;
+    return;
 }
 
 //_______________________________________________________
 void MainWindow::_update( unsigned int flags )
 {
 
-  Debug::Throw() << "MainWindow::_update - flags: " << flags << endl;
+    Debug::Throw() << "MainWindow::_update - flags: " << flags << endl;
 
-  if( flags & ( TextDisplay::FILE_NAME | TextDisplay::READ_ONLY | TextDisplay::MODIFIED ) )
-  {
-
-    _updateWindowTitle();
-    saveAction().setEnabled( !activeDisplay().isReadOnly() && activeDisplay().document()->isModified() );
-
-  }
-  Debug::Throw() << "MainWindow::_update - window title done. "<< endl;
-
-  if( flags & TextDisplay::MODIFIED )
-  { emit modificationChanged(); }
-
-  if( flags & TextDisplay::FILE_NAME )
-  {
-
-    // update file editor
-    if( _hasFileEditor() )
+    if( flags & ( TextDisplay::FILE_NAME | TextDisplay::READ_ONLY | TextDisplay::MODIFIED ) )
     {
-      _fileEditor().setText( activeDisplay().file() );
-      filePropertiesAction().setEnabled( !( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() ) );
+
+        _updateWindowTitle();
+        saveAction().setEnabled( !activeDisplay().isReadOnly() && activeDisplay().document()->isModified() );
+
+    }
+    Debug::Throw() << "MainWindow::_update - window title done. "<< endl;
+
+    if( flags & TextDisplay::MODIFIED )
+    { emit modificationChanged(); }
+
+    if( flags & TextDisplay::FILE_NAME )
+    {
+
+        // update file editor
+        if( _hasFileEditor() )
+        {
+            _fileEditor().setText( activeDisplay().file() );
+            filePropertiesAction().setEnabled( !( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() ) );
+        }
+
+        Debug::Throw() << "MainWindow::_update - file editor done. "<< endl;
+
+        // update session file frame
+        if( _hasNavigationFrame() )
+        {
+            navigationFrame().sessionFilesFrame().select( activeDisplay().file() );
+            navigationFrame().recentFilesFrame().select( activeDisplay().file() );
+            navigationFrame().fileSystemFrame().setHome( activeDisplay().workingDirectory() );
+        }
+
+        Debug::Throw() << "MainWindow::_update - navigation frame done. "<< endl;
+
+        // cursor position
+        if( _hasStatusBar() ) _updateCursorPosition();
+        Debug::Throw() << "MainWindow::_update - statusbar done. "<< endl;
+
     }
 
-    Debug::Throw() << "MainWindow::_update - file editor done. "<< endl;
+    if( flags & (TextDisplay::DOCUMENT_CLASS ) && _hasDocumentClassToolBar() )
+    { _documentClassToolBar().update( activeDisplay().className() ); }
 
-    // update session file frame
-    if( _hasNavigationFrame() )
+    if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
+    { cutAction().setEnabled( activeDisplay().cutAction().isEnabled() ); }
+
+    if( flags & TextDisplay::COPY )
+    { copyAction().setEnabled( activeDisplay().copyAction().isEnabled() ); }
+
+    if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
+    { pasteAction().setEnabled( activeDisplay().pasteAction().isEnabled() ); }
+
+    if( flags & (TextDisplay::UNDO_REDO|TextDisplay::READ_ONLY) )
     {
-      navigationFrame().sessionFilesFrame().select( activeDisplay().file() );
-      navigationFrame().recentFilesFrame().select( activeDisplay().file() );
-      navigationFrame().fileSystemFrame().setHome( activeDisplay().workingDirectory() );
+        undoAction().setEnabled( activeDisplay().undoAction().isEnabled() );
+        redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
     }
 
-    Debug::Throw() << "MainWindow::_update - navigation frame done. "<< endl;
+    if( _hasStatusBar() && (flags & TextDisplay::MODIFIERS) )
+    {
+        Debug::Throw() << "MainWindow::_update - modifiers." << endl;
+        QStringList modifiers;
+        if( activeDisplay().modifier( TextEditor::MODIFIER_WRAP ) ) modifiers << "WRAP";
+        if( activeDisplay().modifier( TextEditor::MODIFIER_INSERT ) ) modifiers << "INS";
+        if( activeDisplay().modifier( TextEditor::MODIFIER_CAPS_LOCK ) ) modifiers << "CAPS";
+        if( activeDisplay().modifier( TextEditor::MODIFIER_NUM_LOCK ) ) modifiers << "NUM";
+        if( !modifiers.isEmpty() ) _statusBar().label(0).setText( modifiers.join( " " ) );
+        else  _statusBar().label(0).clear();
+    }
 
-    // cursor position
-    if( _hasStatusBar() ) _updateCursorPosition();
-    Debug::Throw() << "MainWindow::_update - statusbar done. "<< endl;
+    if( flags & TextDisplay::DISPLAY_COUNT )
+    {
+        Debug::Throw() << "MainWindow::_update - display count." << endl;
+        int display_count = activeView().independentDisplayCount();
+        int view_count = BASE::KeySet<TextView>( this ).size();
 
-  }
+        // update detach action
+        detachAction().setEnabled( display_count > 1 || view_count > 1 );
 
-  if( flags & (TextDisplay::DOCUMENT_CLASS ) && _hasDocumentClassToolBar() )
-  { _documentClassToolBar().update( activeDisplay().className() ); }
+        // update diff action
+        diffAction().setEnabled( display_count == 2 );
+        Debug::Throw() << "MainWindow::_update - display count - done." << endl;
 
-  if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
-  { cutAction().setEnabled( activeDisplay().cutAction().isEnabled() ); }
+    }
 
-  if( flags & TextDisplay::COPY )
-  { copyAction().setEnabled( activeDisplay().copyAction().isEnabled() ); }
-
-  if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
-  { pasteAction().setEnabled( activeDisplay().pasteAction().isEnabled() ); }
-
-  if( flags & (TextDisplay::UNDO_REDO|TextDisplay::READ_ONLY) )
-  {
-    undoAction().setEnabled( activeDisplay().undoAction().isEnabled() );
-    redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
-  }
-
-  if( _hasStatusBar() && (flags & TextDisplay::MODIFIERS) )
-  {
-    Debug::Throw() << "MainWindow::_update - modifiers." << endl;
-    QStringList modifiers;
-    if( activeDisplay().modifier( TextEditor::MODIFIER_WRAP ) ) modifiers << "WRAP";
-    if( activeDisplay().modifier( TextEditor::MODIFIER_INSERT ) ) modifiers << "INS";
-    if( activeDisplay().modifier( TextEditor::MODIFIER_CAPS_LOCK ) ) modifiers << "CAPS";
-    if( activeDisplay().modifier( TextEditor::MODIFIER_NUM_LOCK ) ) modifiers << "NUM";
-    if( !modifiers.isEmpty() ) _statusBar().label(0).setText( modifiers.join( " " ) );
-    else  _statusBar().label(0).clear();
-  }
-
-  if( flags & TextDisplay::DISPLAY_COUNT )
-  {
-    Debug::Throw() << "MainWindow::_update - display count." << endl;
-    int display_count = activeView().independentDisplayCount();
-    int view_count = BASE::KeySet<TextView>( this ).size();
-
-    // update detach action
-    detachAction().setEnabled( display_count > 1 || view_count > 1 );
-
-    // update diff action
-    diffAction().setEnabled( display_count == 2 );
-    Debug::Throw() << "MainWindow::_update - display count - done." << endl;
-
-  }
-
-  Debug::Throw() << "MainWindow::_update - done." << endl;
+    Debug::Throw() << "MainWindow::_update - done." << endl;
 
 }
 
@@ -828,49 +830,49 @@ void MainWindow::_updateModifiers( void )
 void MainWindow::_updateCursorPosition( void )
 {
 
-  // retrieve position in text
-  TextPosition position( activeDisplay().textPosition() );
+    // retrieve position in text
+    TextPosition position( activeDisplay().textPosition() );
 
-  /*
-  if block delimiters are shown,
-  need to count how many blocks are collapsed prior to current
-  and increment paragraph consequently
-  */
-  if( activeDisplay().hasBlockDelimiterDisplay() ) position.paragraph() += activeDisplay().blockDelimiterDisplay().collapsedBlockCount( position.paragraph() );
+    /*
+    if block delimiters are shown,
+    need to count how many blocks are collapsed prior to current
+    and increment paragraph consequently
+    */
+    if( activeDisplay().hasBlockDelimiterDisplay() ) position.paragraph() += activeDisplay().blockDelimiterDisplay().collapsedBlockCount( position.paragraph() );
 
-  // update labels
-  statusbar_->label(1).setText( QString( "Line: " ) + QString().setNum( position.paragraph()+1 ) , false );
-  statusbar_->label(2).setText( QString( "Column: " ) + QString().setNum( position.index()+1 ) , false );
+    // update labels
+    statusbar_->label(1).setText( QString( "Line: " ) + QString().setNum( position.paragraph()+1 ) , false );
+    statusbar_->label(2).setText( QString( "Column: " ) + QString().setNum( position.index()+1 ) , false );
 
-  return;
+    return;
 }
 
 //_____________________________________________
 void MainWindow::_replaceTransitionWidget( void )
 {
 
-  Debug::Throw( "MainWindow::_replaceTransitionWidget.\n" );
+    Debug::Throw( "MainWindow::_replaceTransitionWidget.\n" );
 
-  transition_widget_ = new TransitionWidget( this );
-  _transitionWidget().setFlag( TransitionWidget::FROM_PARENT, false );
-  _transitionWidget().hide();
-  connect( &_transitionWidget(), SIGNAL( destroyed() ), SLOT( _replaceTransitionWidget() ) );
-  connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
+    transition_widget_ = new TransitionWidget( this );
+    _transitionWidget().setFlag( TransitionWidget::FROM_PARENT, false );
+    _transitionWidget().hide();
+    connect( &_transitionWidget(), SIGNAL( destroyed() ), SLOT( _replaceTransitionWidget() ) );
+    connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
 
 }
 
 //_____________________________________________
 void MainWindow::_animationFinished( void )
 {
-  Debug::Throw( "MainWindow::_animationFinished.\n" );
-  _transitionWidget().setParent( this );
-  _transitionWidget().hide();
+    Debug::Throw( "MainWindow::_animationFinished.\n" );
+    _transitionWidget().setParent( this );
+    _transitionWidget().hide();
 
-  // update displays, actions, etc.
-  if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
-  { _update( TextDisplay::ACTIVE_VIEW_CHANGED ); }
+    // update displays, actions, etc.
+    if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
+    { _update( TextDisplay::ACTIVE_VIEW_CHANGED ); }
 
-  Debug::Throw( "MainWindow::_animationFinished - done.\n" );
+    Debug::Throw( "MainWindow::_animationFinished - done.\n" );
 
 }
 
@@ -878,110 +880,110 @@ void MainWindow::_animationFinished( void )
 void MainWindow::_installActions( void )
 {
 
-  Debug::Throw( "MainWindow::_installActions.\n" );
+    Debug::Throw( "MainWindow::_installActions.\n" );
 
-  addAction( newFileAction_ = new QAction( IconEngine::get( ICONS::NEW ), "&New", this ) );
-  newFileAction_->setShortcut( Qt::CTRL+Qt::Key_N );
-  newFileAction_->setToolTip( "Create a new empty file" );
+    addAction( newFileAction_ = new QAction( IconEngine::get( ICONS::NEW ), "&New", this ) );
+    newFileAction_->setShortcut( Qt::CTRL+Qt::Key_N );
+    newFileAction_->setToolTip( "Create a new empty file" );
 
-  addAction( cloneAction_ = new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "&Clone", this ) );
-  cloneAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_N );
-  cloneAction_->setToolTip( "Clone current display" );
-  connect( cloneAction_, SIGNAL( triggered() ), SLOT( _splitDisplay() ) );
+    addAction( cloneAction_ = new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "&Clone", this ) );
+    cloneAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_N );
+    cloneAction_->setToolTip( "Clone current display" );
+    connect( cloneAction_, SIGNAL( triggered() ), SLOT( _splitDisplay() ) );
 
-  addAction( detachAction_ = new QAction( IconEngine::get( ICONS::VIEW_DETACH ), "&Detach", this ) );
-  detachAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_O );
-  detachAction_->setToolTip( "Detach current display" );
-  detachAction_->setEnabled( false );
+    addAction( detachAction_ = new QAction( IconEngine::get( ICONS::VIEW_DETACH ), "&Detach", this ) );
+    detachAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_O );
+    detachAction_->setToolTip( "Detach current display" );
+    detachAction_->setEnabled( false );
 
-  addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this ) );
-  openAction_->setShortcut( Qt::CTRL+Qt::Key_O );
-  openAction_->setToolTip( "Open an existing file" );
+    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this ) );
+    openAction_->setShortcut( Qt::CTRL+Qt::Key_O );
+    openAction_->setToolTip( "Open an existing file" );
 
-  addAction( openHorizontalAction_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Clone Display Top/Bottom", this ) );
-  openHorizontalAction_->setToolTip( "Open a new display vertically" );
+    addAction( openHorizontalAction_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Clone Display Top/Bottom", this ) );
+    openHorizontalAction_->setToolTip( "Open a new display vertically" );
 
-  addAction( openVerticalAction_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open Display Left/Right", this ) );
-  openVerticalAction_->setToolTip( "Open a new display horizontally" );
+    addAction( openVerticalAction_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open Display Left/Right", this ) );
+    openVerticalAction_->setToolTip( "Open a new display horizontally" );
 
-  addAction( closeDisplayAction_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "&Close Display", this ) );
-  closeDisplayAction_->setShortcut( Qt::CTRL+Qt::Key_W );
-  closeDisplayAction_->setToolTip( "Close current display" );
-  connect( closeDisplayAction_, SIGNAL( triggered() ), SLOT( _closeDisplay() ) );
+    addAction( closeDisplayAction_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "&Close Display", this ) );
+    closeDisplayAction_->setShortcut( Qt::CTRL+Qt::Key_W );
+    closeDisplayAction_->setToolTip( "Close current display" );
+    connect( closeDisplayAction_, SIGNAL( triggered() ), SLOT( _closeDisplay() ) );
 
-  addAction( closeWindowAction_ = new QAction( IconEngine::get( ICONS::CLOSE ), "&Close Window", this ) );
-  closeWindowAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_W );
-  closeWindowAction_->setToolTip( "Close current display" );
-  connect( closeWindowAction_, SIGNAL( triggered() ), SLOT( _closeWindow() ) );
+    addAction( closeWindowAction_ = new QAction( IconEngine::get( ICONS::CLOSE ), "&Close Window", this ) );
+    closeWindowAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_W );
+    closeWindowAction_->setToolTip( "Close current display" );
+    connect( closeWindowAction_, SIGNAL( triggered() ), SLOT( _closeWindow() ) );
 
-  addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "&Save", this ) );
-  saveAction_->setShortcut( Qt::CTRL+Qt::Key_S );
-  saveAction_->setToolTip( "Save current file" );
-  connect( saveAction_, SIGNAL( triggered() ), SLOT( _save() ) );
+    addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "&Save", this ) );
+    saveAction_->setShortcut( Qt::CTRL+Qt::Key_S );
+    saveAction_->setToolTip( "Save current file" );
+    connect( saveAction_, SIGNAL( triggered() ), SLOT( _save() ) );
 
-  addAction( save_as_action_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this ) );
-  save_as_action_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_S );
-  save_as_action_->setToolTip( "Save current file with a different name" );
-  connect( save_as_action_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
+    addAction( save_as_action_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this ) );
+    save_as_action_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_S );
+    save_as_action_->setToolTip( "Save current file with a different name" );
+    connect( save_as_action_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
 
-  addAction( revertToSaveAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
-  revertToSaveAction_->setShortcut( Qt::Key_F5 );
-  revertToSaveAction_->setToolTip( "Reload saved version of current file" );
-  connect( revertToSaveAction_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
+    addAction( revertToSaveAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
+    revertToSaveAction_->setShortcut( Qt::Key_F5 );
+    revertToSaveAction_->setToolTip( "Reload saved version of current file" );
+    connect( revertToSaveAction_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
 
-  addAction( printAction_ = new QAction( IconEngine::get( ICONS::PRINT ), "&Print", this ) );
-  printAction_->setToolTip( "Print current file" );
-  printAction_->setShortcut( Qt::CTRL + Qt::Key_P );
-  connect( printAction_, SIGNAL( triggered() ), SLOT( _print() ) );
+    addAction( printAction_ = new QAction( IconEngine::get( ICONS::PRINT ), "&Print", this ) );
+    printAction_->setToolTip( "Print current file" );
+    printAction_->setShortcut( Qt::CTRL + Qt::Key_P );
+    connect( printAction_, SIGNAL( triggered() ), SLOT( _print() ) );
 
-  addAction( undoAction_ = new QAction( IconEngine::get( ICONS::UNDO ), "&Undo", this ) );
-  undoAction_->setToolTip( "Undo last action" );
-  undoAction_->setEnabled( false );
-  connect( undoAction_, SIGNAL( triggered() ), SLOT( _undo() ) );
+    addAction( undoAction_ = new QAction( IconEngine::get( ICONS::UNDO ), "&Undo", this ) );
+    undoAction_->setToolTip( "Undo last action" );
+    undoAction_->setEnabled( false );
+    connect( undoAction_, SIGNAL( triggered() ), SLOT( _undo() ) );
 
-  addAction( redoAction_ = new QAction( IconEngine::get( ICONS::REDO ), "&Redo", this ) );
-  redoAction_->setToolTip( "Redo last un-done action" );
-  redoAction_->setEnabled( false );
-  connect( redoAction_, SIGNAL( triggered() ), SLOT( _redo() ) );
+    addAction( redoAction_ = new QAction( IconEngine::get( ICONS::REDO ), "&Redo", this ) );
+    redoAction_->setToolTip( "Redo last un-done action" );
+    redoAction_->setEnabled( false );
+    connect( redoAction_, SIGNAL( triggered() ), SLOT( _redo() ) );
 
-  addAction( cutAction_ = new QAction( IconEngine::get( ICONS::CUT ), "&Cut", this ) );
-  cutAction_->setToolTip( "Cut current selection and copy to clipboard" );
-  cutAction_->setEnabled( false );
-  connect( cutAction_, SIGNAL( triggered() ), SLOT( _cut() ) );
+    addAction( cutAction_ = new QAction( IconEngine::get( ICONS::CUT ), "&Cut", this ) );
+    cutAction_->setToolTip( "Cut current selection and copy to clipboard" );
+    cutAction_->setEnabled( false );
+    connect( cutAction_, SIGNAL( triggered() ), SLOT( _cut() ) );
 
-  addAction( copyAction_ = new QAction( IconEngine::get( ICONS::COPY ), "&Copy", this ) );
-  copyAction_->setToolTip( "Copy current selection to clipboard" );
-  copyAction_->setEnabled( false );
-  connect( copyAction_, SIGNAL( triggered() ), SLOT( _copy() ) );
+    addAction( copyAction_ = new QAction( IconEngine::get( ICONS::COPY ), "&Copy", this ) );
+    copyAction_->setToolTip( "Copy current selection to clipboard" );
+    copyAction_->setEnabled( false );
+    connect( copyAction_, SIGNAL( triggered() ), SLOT( _copy() ) );
 
-  addAction( pasteAction_ = new QAction( IconEngine::get( ICONS::PASTE ), "&Paste", this ) );
-  pasteAction_->setToolTip( "Paste clipboard to text" );
-  pasteAction_->setEnabled( !qApp->clipboard()->text().isEmpty() );
-  connect( pasteAction_, SIGNAL( triggered() ), SLOT( _paste() ) );
+    addAction( pasteAction_ = new QAction( IconEngine::get( ICONS::PASTE ), "&Paste", this ) );
+    pasteAction_->setToolTip( "Paste clipboard to text" );
+    pasteAction_->setEnabled( !qApp->clipboard()->text().isEmpty() );
+    connect( pasteAction_, SIGNAL( triggered() ), SLOT( _paste() ) );
 
-  addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "&File Information", this ) );
-  filePropertiesAction_->setToolTip( "Display file informations" );
-  filePropertiesAction_->setEnabled( false );
-  connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "&File Information", this ) );
+    filePropertiesAction_->setToolTip( "Display file informations" );
+    filePropertiesAction_->setEnabled( false );
+    connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
 
-  addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spell Check", this ) );
-  #if WITH_ASPELL
-  connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
-  #else
-  spellcheck_action_->setVisible( false );
-  #endif
+    addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spell Check", this ) );
+    #if WITH_ASPELL
+    connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
+    #else
+    spellcheck_action_->setVisible( false );
+    #endif
 
-  addAction( diffAction_ = new QAction( "&Diff Files", this ) );
-  connect( diffAction_, SIGNAL( triggered() ), SLOT( _diff() ) );
-  diffAction_->setEnabled( false );
+    addAction( diffAction_ = new QAction( "&Diff Files", this ) );
+    connect( diffAction_, SIGNAL( triggered() ), SLOT( _diff() ) );
+    diffAction_->setEnabled( false );
 
-  addAction( splitDisplayHorizontalAction_ =new QAction( IconEngine::get( ICONS::VIEW_TOPBOTTOM ), "Clone Display Top/Bottom", this ) );
-  splitDisplayHorizontalAction_->setToolTip( "Clone current display vertically" );
-  connect( splitDisplayHorizontalAction_, SIGNAL( triggered() ), SLOT( _splitDisplayVertical() ) );
+    addAction( splitDisplayHorizontalAction_ =new QAction( IconEngine::get( ICONS::VIEW_TOPBOTTOM ), "Clone Display Top/Bottom", this ) );
+    splitDisplayHorizontalAction_->setToolTip( "Clone current display vertically" );
+    connect( splitDisplayHorizontalAction_, SIGNAL( triggered() ), SLOT( _splitDisplayVertical() ) );
 
-  addAction( splitDisplayVerticalAction_ =new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "Clone Display Left/Right", this ) );
-  splitDisplayVerticalAction_->setToolTip( "Clone current display horizontally" );
-  connect( splitDisplayVerticalAction_, SIGNAL( triggered() ), SLOT( _splitDisplayHorizontal() ) );
+    addAction( splitDisplayVerticalAction_ =new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "Clone Display Left/Right", this ) );
+    splitDisplayVerticalAction_->setToolTip( "Clone current display horizontally" );
+    connect( splitDisplayVerticalAction_, SIGNAL( triggered() ), SLOT( _splitDisplayHorizontal() ) );
 
 }
 
@@ -989,41 +991,41 @@ void MainWindow::_installActions( void )
 void MainWindow::_installToolbars( void )
 {
 
-  // file toolbar
-  CustomToolBar* toolbar = new CustomToolBar( "Main", this, "FILE_TOOLBAR" );
-  toolbar->addAction( &newFileAction() );
-  toolbar->addAction( &openAction() );
-  toolbar->addAction( &saveAction() );
+    // file toolbar
+    CustomToolBar* toolbar = new CustomToolBar( "Main", this, "FILE_TOOLBAR" );
+    toolbar->addAction( &newFileAction() );
+    toolbar->addAction( &openAction() );
+    toolbar->addAction( &saveAction() );
 
-  // edition toolbar
-  toolbar = new CustomToolBar( "Edition", this, "EDITION_TOOLBAR" );
-  toolbar->addAction( &undoAction() );
-  toolbar->addAction( &redoAction() );
-  toolbar->addAction( &cutAction() );
-  toolbar->addAction( &copyAction() );
-  toolbar->addAction( &pasteAction() );
+    // edition toolbar
+    toolbar = new CustomToolBar( "Edition", this, "EDITION_TOOLBAR" );
+    toolbar->addAction( &undoAction() );
+    toolbar->addAction( &redoAction() );
+    toolbar->addAction( &cutAction() );
+    toolbar->addAction( &copyAction() );
+    toolbar->addAction( &pasteAction() );
 
-  // extra toolbar
-  toolbar = new CustomToolBar( "Tools", this, "EXTRA_TOOLBAR" );
-  toolbar->addAction( &filePropertiesAction() );
-  toolbar->addAction( &spellcheckAction() );
+    // extra toolbar
+    toolbar = new CustomToolBar( "Tools", this, "EXTRA_TOOLBAR" );
+    toolbar->addAction( &filePropertiesAction() );
+    toolbar->addAction( &spellcheckAction() );
 
-  // splitting toolbar
-  toolbar = new CustomToolBar( "Multiple Displays", this, "SPLIT_TOOLBAR" );
-  toolbar->addAction( &splitDisplayHorizontalAction() );
-  toolbar->addAction( &splitDisplayVerticalAction() );
-  toolbar->addAction( &openHorizontalAction() );
-  toolbar->addAction( &openVerticalAction() );
-  toolbar->addAction( &closeDisplayAction() );
-  toolbar->addAction( &detachAction() );
+    // splitting toolbar
+    toolbar = new CustomToolBar( "Multiple Displays", this, "SPLIT_TOOLBAR" );
+    toolbar->addAction( &splitDisplayHorizontalAction() );
+    toolbar->addAction( &splitDisplayVerticalAction() );
+    toolbar->addAction( &openHorizontalAction() );
+    toolbar->addAction( &openVerticalAction() );
+    toolbar->addAction( &closeDisplayAction() );
+    toolbar->addAction( &detachAction() );
 
-  // document class toolbar
-  documentClassToolbar_ = new DocumentClassToolBar( this );
-  connect( documentClassToolbar_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
+    // document class toolbar
+    documentClassToolbar_ = new DocumentClassToolBar( this );
+    connect( documentClassToolbar_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
 
-  // navigation toolbar
-  NavigationToolBar* navigation_toolbar = new NavigationToolBar( this );
-  navigation_toolbar->connect( navigationFrame() );
+    // navigation toolbar
+    NavigationToolBar* navigation_toolbar = new NavigationToolBar( this );
+    navigation_toolbar->connect( navigationFrame() );
 
 
 }
@@ -1032,119 +1034,119 @@ void MainWindow::_installToolbars( void )
 void MainWindow::_createBaseFindDialog( void )
 {
 
-  Debug::Throw( "MainWindow::_createBaseFindDialog.\n" );
-  if( !find_dialog_ )
-  {
+    Debug::Throw( "MainWindow::_createBaseFindDialog.\n" );
+    if( !find_dialog_ )
+    {
 
-    find_dialog_ = new BaseFindDialog( this );
-    find_dialog_->setWindowTitle( "Find in Text - Qedit" );
-    connect( find_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
-    connect( this, SIGNAL( noMatchFound() ), find_dialog_, SLOT( noMatchFound() ) );
-    connect( this, SIGNAL( matchFound() ), find_dialog_, SLOT( clearLabel() ) );
+        find_dialog_ = new BaseFindDialog( this );
+        find_dialog_->setWindowTitle( "Find in Text - Qedit" );
+        connect( find_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
+        connect( this, SIGNAL( noMatchFound() ), find_dialog_, SLOT( noMatchFound() ) );
+        connect( this, SIGNAL( matchFound() ), find_dialog_, SLOT( clearLabel() ) );
 
-  }
+    }
 
-  return;
+    return;
 
 }
 
 //_____________________________________________________________________
 void MainWindow::_createReplaceDialog( void )
 {
-  Debug::Throw( "MainWindow::_CreateReplaceDialog.\n" );
-  if( !replace_dialog_ )
-  {
+    Debug::Throw( "MainWindow::_CreateReplaceDialog.\n" );
+    if( !replace_dialog_ )
+    {
 
-    replace_dialog_ = new ReplaceDialog( this );
-    replace_dialog_->setWindowTitle( "Replace in Text - Qedit" );
-    connect( replace_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
-    connect( replace_dialog_, SIGNAL( replace( TextSelection ) ), SLOT( _replace( TextSelection ) ) );
-    connect( replace_dialog_, SIGNAL( replaceInWindow( TextSelection ) ), SLOT( _replaceInWindow( TextSelection ) ) );
-    connect( replace_dialog_, SIGNAL( replaceInSelection( TextSelection ) ), SLOT( _replaceInSelection( TextSelection ) ) );
-    connect( replace_dialog_, SIGNAL( replaceInFiles( void ) ), SLOT( _multipleFileReplace( void ) ) );
+        replace_dialog_ = new ReplaceDialog( this );
+        replace_dialog_->setWindowTitle( "Replace in Text - Qedit" );
+        connect( replace_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
+        connect( replace_dialog_, SIGNAL( replace( TextSelection ) ), SLOT( _replace( TextSelection ) ) );
+        connect( replace_dialog_, SIGNAL( replaceInWindow( TextSelection ) ), SLOT( _replaceInWindow( TextSelection ) ) );
+        connect( replace_dialog_, SIGNAL( replaceInSelection( TextSelection ) ), SLOT( _replaceInSelection( TextSelection ) ) );
+        connect( replace_dialog_, SIGNAL( replaceInFiles( void ) ), SLOT( _multipleFileReplace( void ) ) );
 
-    connect( this, SIGNAL( noMatchFound( void ) ), replace_dialog_, SLOT( noMatchFound( void ) ) );
-    connect( this, SIGNAL( matchFound( void ) ), replace_dialog_, SLOT( clearLabel( void ) ) );
+        connect( this, SIGNAL( noMatchFound( void ) ), replace_dialog_, SLOT( noMatchFound( void ) ) );
+        connect( this, SIGNAL( matchFound( void ) ), replace_dialog_, SLOT( clearLabel( void ) ) );
 
-  }
+    }
 
 }
 
 //_________________________________________________________________
 void MainWindow::_connectView( TextView& view )
 {
-  Debug::Throw( "MainWindow::_connectView.\n" );
-  connect( &view, SIGNAL( modifiersChanged( unsigned int ) ), SLOT( _updateModifiers( void ) ) );
-  connect( &view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
-  connect( &view, SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
-  connect( &view, SIGNAL( displayCountChanged( void ) ), &Singleton::get().application<Application>()->windowServer(), SIGNAL( sessionFilesChanged( void ) ) );
-  connect( &view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
-  connect( &view, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );
-  connect( &view.positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );
+    Debug::Throw( "MainWindow::_connectView.\n" );
+    connect( &view, SIGNAL( modifiersChanged( unsigned int ) ), SLOT( _updateModifiers( void ) ) );
+    connect( &view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
+    connect( &view, SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
+    connect( &view, SIGNAL( displayCountChanged( void ) ), &Singleton::get().application<Application>()->windowServer(), SIGNAL( sessionFilesChanged( void ) ) );
+    connect( &view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
+    connect( &view, SIGNAL( redoAvailable( bool ) ), &redoAction(), SLOT( setEnabled( bool ) ) );
+    connect( &view.positionTimer(), SIGNAL( timeout() ), SLOT( _updateCursorPosition() ) );
 
 }
 
 //___________________________________________________________
 void MainWindow::_updateWindowTitle()
 {
-  Debug::Throw( "MainWindow::_updateWindowTitle.\n" );
+    Debug::Throw( "MainWindow::_updateWindowTitle.\n" );
 
-  {
-    bool readonly( activeDisplay().isReadOnly() );
-    bool modified( activeDisplay().document()->isModified() );
-    Debug::Throw() << "MainWindow::_updateWindowTitle -"
-      << " file: " << activeDisplay().file()
-      << " readonly: " << readonly
-      << " modified: " << modified
-      << endl;
-  }
+    {
+        bool readonly( activeDisplay().isReadOnly() );
+        bool modified( activeDisplay().document()->isModified() );
+        Debug::Throw() << "MainWindow::_updateWindowTitle -"
+            << " file: " << activeDisplay().file()
+            << " readonly: " << readonly
+            << " modified: " << modified
+            << endl;
+    }
 
-  setWindowTitle( WindowTitle( activeDisplay().file() )
-    .setReadOnly( activeDisplay().isReadOnly() )
-    .setModified( activeDisplay().document()->isModified() )
-    );
+    setWindowTitle( WindowTitle( activeDisplay().file() )
+        .setReadOnly( activeDisplay().isReadOnly() )
+        .setModified( activeDisplay().document()->isModified() )
+        );
 
-  Debug::Throw( "MainWindow::_updateWindowTitle. Done.\n" );
+    Debug::Throw( "MainWindow::_updateWindowTitle. Done.\n" );
 }
 
 //_____________________________________________________________________
 QString MainWindow::_htmlString( const int& max_line_size )
 {
 
-  QDomDocument document( "Html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\"" );
+    QDomDocument document( "Html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\"" );
 
-  // html
-  QDomElement html = document.appendChild( document.createElement( "Html" ) ).toElement();
-  html.setAttribute( "xmlns", "Http://www.w3.org/1999/xhtml" );
+    // html
+    QDomElement html = document.appendChild( document.createElement( "Html" ) ).toElement();
+    html.setAttribute( "xmlns", "Http://www.w3.org/1999/xhtml" );
 
-  // head
-  QDomElement head = html.appendChild( document.createElement( "Head" ) ).toElement();
-  QDomElement meta;
+    // head
+    QDomElement head = html.appendChild( document.createElement( "Head" ) ).toElement();
+    QDomElement meta;
 
-  // meta information
-  meta = head.appendChild( document.createElement( "meta" ) ).toElement();
-  meta.setAttribute( "content", "Text/html; charset=iso-8859-1" );
-  meta.setAttribute( "Http-equiv", "Content-Type" );
-  meta = head.appendChild( document.createElement( "meta" ) ).toElement();
-  meta.setAttribute( "content", "QEdit" );
-  meta.setAttribute( "name", "Generator" );
+    // meta information
+    meta = head.appendChild( document.createElement( "meta" ) ).toElement();
+    meta.setAttribute( "content", "Text/html; charset=iso-8859-1" );
+    meta.setAttribute( "Http-equiv", "Content-Type" );
+    meta = head.appendChild( document.createElement( "meta" ) ).toElement();
+    meta.setAttribute( "content", "QEdit" );
+    meta.setAttribute( "name", "Generator" );
 
-  // title
-  QDomElement title = head.appendChild( document.createElement( "Title" ) ).toElement();
-  title.appendChild( document.createTextNode( activeDisplay().file() ) );
+    // title
+    QDomElement title = head.appendChild( document.createElement( "Title" ) ).toElement();
+    title.appendChild( document.createTextNode( activeDisplay().file() ) );
 
-  // body
-  html.
-    appendChild( document.createElement( "Body" ) ).
-    appendChild( activeDisplay().htmlNode( document, max_line_size ) );
+    // body
+    html.
+        appendChild( document.createElement( "Body" ) ).
+        appendChild( activeDisplay().htmlNode( document, max_line_size ) );
 
-  /*
+    /*
     the following replacements are needed
     to have correct implementation of leading space characters, tabs
     and end of line
-  */
-  QString html_string( document.toString(0) );
-  html_string = html_string.replace( "</span>\n", "</span>", Qt::CaseInsensitive );
-  html_string = html_string.replace( "<br/>", "", Qt::CaseInsensitive );
-  return html_string;
+    */
+    QString html_string( document.toString(0) );
+    html_string = html_string.replace( "</span>\n", "</span>", Qt::CaseInsensitive );
+    html_string = html_string.replace( "<br/>", "", Qt::CaseInsensitive );
+    return html_string;
 }
