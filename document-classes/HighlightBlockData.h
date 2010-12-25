@@ -25,11 +25,11 @@
 *******************************************************************************/
 
 /*!
-  \file HighlightBlockData.h
-  \brief TextBlock data for syntax highlighting
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file HighlightBlockData.h
+\brief TextBlock data for syntax highlighting
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <map>
@@ -49,125 +49,125 @@
 class HighlightBlockData: public TextBlockData
 {
 
-  public:
+    public:
 
-  //! constructor
-  HighlightBlockData();
+    //! constructor
+    HighlightBlockData();
 
-  //! constructor
-  HighlightBlockData( const TextBlockData& reference ):
-    TextBlockData( reference ),
-    parenthesis_( -1 ),
-    parenthesis_length_(0)
-  {}
+    //! constructor
+    HighlightBlockData( const TextBlockData& reference ):
+        TextBlockData( reference ),
+        parenthesis_( -1 ),
+        parenthesisLength_(0)
+    {}
 
-  //! constructor
-  HighlightBlockData( const TextBlockData* pointer ):
-    TextBlockData( *pointer ),
-    parenthesis_( -1 ),
-    parenthesis_length_(0)
-  {}
+    //! constructor
+    HighlightBlockData( const TextBlockData* pointer ):
+        TextBlockData( *pointer ),
+        parenthesis_( -1 ),
+        parenthesisLength_(0)
+    {}
 
-  //! destructor
-  virtual ~HighlightBlockData( void )
-  {}
+    //! destructor
+    virtual ~HighlightBlockData( void )
+    {}
 
-  //! syntax highlighting pattern locations
-  const PatternLocationSet& locations( void ) const
-  { return locations_; }
+    //! syntax highlighting pattern locations
+    const PatternLocationSet& locations( void ) const
+    { return locations_; }
 
-  //! syntax highlighting pattern locations
-  void setLocations( const PatternLocationSet& locations )
-  { locations_ = locations; }
+    //! syntax highlighting pattern locations
+    void setLocations( const PatternLocationSet& locations )
+    { locations_ = locations; }
 
-  //! return true if locations correspond to a commented block
-  bool ignoreBlock( void ) const
-  { return (!locations().empty()) && locations().begin()->flag( HighlightPattern::NO_INDENT ); }
+    //! return true if locations correspond to a commented block
+    bool ignoreBlock( void ) const
+    { return (!locations().empty()) && locations().begin()->flag( HighlightPattern::NO_INDENT ); }
 
 
-  //!@name parenthesis
-  //@{
+    //!@name parenthesis
+    //@{
 
-  bool hasParenthesis( void ) const
-  { return parenthesis_ != -1; }
+    bool hasParenthesis( void ) const
+    { return parenthesis_ != -1; }
 
-  //! highlighted parenthesis
-  const int& parenthesis( void ) const
-  { return parenthesis_; }
+    //! highlighted parenthesis
+    const int& parenthesis( void ) const
+    { return parenthesis_; }
 
-  //! highlighted parenthesis
-  const int& parenthesisLength( void ) const
-  { return parenthesis_length_; }
+    //! highlighted parenthesis
+    const int& parenthesisLength( void ) const
+    { return parenthesisLength_; }
 
-  //! set parenthesis
-  void setParenthesis( const int& value, const int& length )
-  {
-    parenthesis_ = value;
-    parenthesis_length_ = length;
-  }
+    //! set parenthesis
+    void setParenthesis( const int& value, const int& length )
+    {
+        parenthesis_ = value;
+        parenthesisLength_ = length;
+    }
 
-  //! clear parenthesis
-  void clearParenthesis( void )
-  {
-    parenthesis_ = -1;
-    parenthesis_length_= 0;
-  }
+    //! clear parenthesis
+    void clearParenthesis( void )
+    {
+        parenthesis_ = -1;
+        parenthesisLength_= 0;
+    }
 
-  //@}
+    //@}
 
-  //!@name block limits
-  //@{
+    //!@name block limits
+    //@{
 
-  //! delimiters
-  const TextBlock::Delimiter::List& delimiters( void ) const
-  { return delimiters_; }
+    //! delimiters
+    const TextBlock::Delimiter::List& delimiters( void ) const
+    { return delimiters_; }
 
-  //! delimiters
-  TextBlock::Delimiter::List& delimiters( void )
-  { return delimiters_; }
+    //! delimiters
+    TextBlock::Delimiter::List& delimiters( void )
+    { return delimiters_; }
 
-  //@}
+    //@}
 
-  #if WITH_ASPELL
-  //!@name spelling
-  //@{
-  //! set of misspelled words
-  const SPELLCHECK::Word::Set& misspelledWords( void ) const
-  { return words_; }
+    #if WITH_ASPELL
+    //!@name spelling
+    //@{
+    //! set of misspelled words
+    const SPELLCHECK::Word::Set& misspelledWords( void ) const
+    { return words_; }
 
-  //! set of misspelled words
-  void setMisspelledWords( const SPELLCHECK::Word::Set& words )
-  { words_ = words; }
+    //! set of misspelled words
+    void setMisspelledWords( const SPELLCHECK::Word::Set& words )
+    { words_ = words; }
 
-  //! return misspelled word matching position, if any
-  SPELLCHECK::Word misspelledWord( const int& position ) const;
-  //@}
-  #endif
+    //! return misspelled word matching position, if any
+    SPELLCHECK::Word misspelledWord( const int& position ) const;
+    //@}
+    #endif
 
-  private:
+    private:
 
-  //! locations and ids of matching syntax highlighting patterns
-  PatternLocationSet locations_;
+    //! locations and ids of matching syntax highlighting patterns
+    PatternLocationSet locations_;
 
-  //! highlighted parenthesis location
-  /*! local with respect to the block */
-  int parenthesis_;
+    //! highlighted parenthesis location
+    /*! local with respect to the block */
+    int parenthesis_;
 
-  //! parenthesis length
-  int parenthesis_length_;
+    //! parenthesis length
+    int parenthesisLength_;
 
-  //!@name block delimiters
-  //@{
+    //!@name block delimiters
+    //@{
 
-  //! delimiter
-  TextBlock::Delimiter::List delimiters_;
+    //! delimiter
+    TextBlock::Delimiter::List delimiters_;
 
-  //@}
+    //@}
 
-  #if WITH_ASPELL
-  //! set of misspelled words and position in associated block
-  SPELLCHECK::Word::Set words_;
-  #endif
+    #if WITH_ASPELL
+    //! set of misspelled words and position in associated block
+    SPELLCHECK::Word::Set words_;
+    #endif
 
 };
 

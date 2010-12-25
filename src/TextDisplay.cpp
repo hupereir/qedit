@@ -2532,7 +2532,11 @@ void TextDisplay::_highlightParenthesis( void )
     if( !( hasTextHighlight() && textHighlight().isParenthesisEnabled() ) ) return;
 
     // clear previous parenthesis
-    parenthesisHighlight().clear();
+    {
+        QList<QTextBlock> dirty( parenthesisHighlight().clear() );
+        foreach( const QTextBlock& block, dirty )
+        { textHighlight().rehighlightBlock( block ); }
+    }
 
     // retrieve TextCursor
     QTextCursor cursor( textCursor() );
@@ -2628,7 +2632,11 @@ void TextDisplay::_highlightParenthesis( void )
         }
     }
 
-    if( found ) parenthesisHighlight().highlight( position + block.position(), iter->regexp().matchedLength() );
+    if( found )
+    {
+        parenthesisHighlight().highlight( position + block.position(), iter->regexp().matchedLength() );
+        textHighlight().rehighlightBlock( block );
+    }
 
     return;
 

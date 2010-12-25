@@ -34,6 +34,7 @@
 
 #include <QApplication>
 #include <QBasicTimer>
+#include <QTextBlock>
 
 #include "Counter.h"
 #include "Debug.h"
@@ -67,7 +68,8 @@ class ParenthesisHighlight: public QObject, public Counter
     void synchronize( const ParenthesisHighlight& );
 
     //! clear highlighted block
-    void clear( void );
+    //void clear( void );
+    QList<QTextBlock> clear( void );
 
     //! highlight current (absolute) location
     void highlight( const int&, const int& );

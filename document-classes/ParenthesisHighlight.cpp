@@ -49,10 +49,11 @@ ParenthesisHighlight::ParenthesisHighlight( TextEditor* parent ):
 { Debug::Throw( "ParenthesisHighlight::ParenthesisHighlight.\n" ); }
 
 //______________________________________________________________________
-void ParenthesisHighlight::clear( void )
+QList<QTextBlock> ParenthesisHighlight::clear( void )
 {
 
-    if( cleared_ ) return;
+    QList<QTextBlock> dirty;
+    if( cleared_ ) return dirty;
 
     // loop over all blocks
     for( QTextBlock block = parent_->document()->begin(); block.isValid(); block = block.next() )
@@ -72,10 +73,11 @@ void ParenthesisHighlight::clear( void )
         // clear parenthesis
         data->clearParenthesis();
         parent_->document()->markContentsDirty(block.position(), block.length()-1);
-
+        dirty.push_back( block );
     }
 
     cleared_ = true;
+    return dirty;
 
 }
 
