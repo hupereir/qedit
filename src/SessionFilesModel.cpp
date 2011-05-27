@@ -61,17 +61,17 @@ SessionFilesModel::IconCache& SessionFilesModel::_icons( void )
 SessionFilesModel::SessionFilesModel( QObject* parent ):
     FileRecordModel( parent )
 {
-        
+
     Debug::Throw("SessionFilesModel::SessionFilesModel.\n" );
     setShowIcons( false );
     connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-    
+
 }
-    
+
 //__________________________________________________________________
 Qt::ItemFlags SessionFilesModel::flags(const QModelIndex &index) const
 {
-    
+
     // get flags from parent class
     Qt::ItemFlags flags( FileRecordModel::flags( index ) );
     return flags | Qt::ItemIsDropEnabled;
@@ -104,7 +104,7 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
     } else return FileRecordModel::data( index, role );
 
     return QVariant();
-    
+
 }
 
 //____________________________________________________________
@@ -117,43 +117,43 @@ void SessionFilesModel::_updateConfiguration( void )
 //________________________________________________________
 QIcon SessionFilesModel::_icon( unsigned int type )
 {
-    
+
     //Debug::Throw( "SessionFilesModel::_icon.\n" );
-    
+
     IconCache::const_iterator iter( _icons().find( type ) );
     if( iter != _icons().end() ) return iter->second;
-    
+
     // pixmap size
     unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
     QSize size( pixmap_size, pixmap_size );
     QSize scale(size*0.9);
-    
+
     QIcon icon;
     if( type == FileRecordProperties::MODIFIED )
     {
-        
+
         icon = CustomPixmap()
             .empty( size )
             .merge( CustomPixmap().find( ICONS::SAVE )
             .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
-        
+
     } else if( type == FileRecordProperties::ALTERED ) {
-        
+
         icon = CustomPixmap()
             .empty( size )
             .merge( CustomPixmap().find( ICONS::WARNING )
             .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
-        
+
     } else if( type == FileRecordProperties::NONE ) {
-            
+
         icon = CustomPixmap().empty( size );
-        
+
     } else assert( false );
-    
+
     // store in map and return
     _icons().insert( make_pair( type, icon ) );
     return icon;
-    
+
 }
 
 //______________________________________________________________________
@@ -167,49 +167,49 @@ QStringList SessionFilesModel::mimeTypes( void ) const
 //______________________________________________________________________
 QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 {
-    
+
     // return FileRecordModel::mimeData( indexes );
     std::set<QString> filenames;
     std::set<FileRecord> records;
     for( QModelIndexList::const_iterator iter = indexes.begin(); iter != indexes.end(); iter++ )
     {
-        
+
         if( iter->isValid() )
         {
             FileRecord record( get(*iter ) );
             records.insert( record );
             filenames.insert( record.file() );
         }
-        
+
     }
-    
+
     if( filenames.empty() ) return 0;
     else {
-        
+
         QMimeData *mime = new QMimeData();
-        
+
         // fill text data
         QString full_text;
         QTextStream buffer( &full_text );
         for( std::set<QString>::const_iterator iter = filenames.begin(); iter != filenames.end(); iter++ )
         { buffer << *iter << endl; }
         mime->setText( full_text );
-        
+
         // fill DRAG data. Use XML
         QDomDocument document;
         QDomElement top = document.appendChild( document.createElement( XmlFileRecord::XML_FILE_LIST ) ).toElement();
         for( std::set<FileRecord>::const_iterator iter = records.begin(); iter != records.end(); iter++ )
         {
-            
+
             if( iter->file().isEmpty() ) continue;
             top.appendChild( XmlFileRecord( *iter ).domElement( document ) );
-            
+
         }
         mime->setData( DRAG, document.toByteArray() );
         return mime;
-        
+
     }
-    
+
 }
 
 //__________________________________________________________________
