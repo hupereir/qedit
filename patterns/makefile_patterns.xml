@@ -1,5 +1,5 @@
 <patterns>
- <class pattern="((/|\b)(m|M)akefile.*$)|(.pro$)" icon="text-x-makefile.png" name="makefiles" >
+ <class pattern="((/|\b)(m|M)akefile.*$)|(.pro$)|(.pkg$)" icon="text-x-makefile.png" name="makefiles" >
 
 <!--Options-->
   <Option>

@@ -1,6 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = \
+  alice_patterns.xml \
   c_patterns.xml \
   default_patterns.xml \
   diff_patterns.xml \
