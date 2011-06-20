@@ -59,6 +59,7 @@ void installDefaultOptions( void )
   // keep the full list
   XmlOptions::get().keep( "PATTERN_FILENAME" );
   XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/c_patterns.xml" , "default patterns for c/c++ files") );
+  XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/alice_patterns.xml" , "Alice patterns for c/c++ files") );
   XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/default_patterns.xml" , "default patterns") );
   XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/diff_patterns.xml" , "default patterns for diff files") );
   XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/fortran_patterns.xml" , "default patterns for fortran files") );
