@@ -24,11 +24,11 @@
 *******************************************************************************/
 
 /*!
-  \file DocumentClassManagerDialog.h
-  \brief list document classes
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file DocumentClassManagerDialog.h
+\brief list document classes
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <cassert>
@@ -45,140 +45,140 @@ class TreeView;
 class DocumentClassManagerDialog: public BaseMainWindow, public Counter
 {
 
-  //! Qt meta object declaration
-  Q_OBJECT;
+    //! Qt meta object declaration
+    Q_OBJECT;
 
-  public:
+    public:
 
-  //! constructor
-  DocumentClassManagerDialog( QWidget*, const DocumentClassManager& );
+    //! constructor
+    DocumentClassManagerDialog( QWidget*, const DocumentClassManager& );
 
-  protected:
+    protected:
 
-  //! close event
-  virtual void closeEvent( QCloseEvent* );
+    //! close event
+    virtual void closeEvent( QCloseEvent* );
 
-  //!@name actions
-  //@{
+    //!@name actions
+    //@{
 
-  QAction& _closeAction( void ) const
-  { return *close_action_; }
+    QAction& _closeAction( void ) const
+    { return *closeAction_; }
 
-  QAction& _newAction( void ) const
-  { return *new_action_; }
+    QAction& _newAction( void ) const
+    { return *newAction_; }
 
-  QAction& _openAction( void ) const
-  { return *open_action_; }
+    QAction& _openAction( void ) const
+    { return *openAction_; }
 
-  QAction& _saveAction( void ) const
-  { return *save_action_; }
+    QAction& _saveAction( void ) const
+    { return *saveAction_; }
 
-  QAction& _editAction( void ) const
-  { return *edit_action_; }
+    QAction& _editAction( void ) const
+    { return *editAction_; }
 
-  QAction& _reloadAction( void ) const
-  { return *reload_action_; }
+    QAction& _reloadAction( void ) const
+    { return *reloadAction_; }
 
-  QAction& _removeAction( void ) const
-  { return *remove_action_; }
+    QAction& _removeAction( void ) const
+    { return *removeAction_; }
 
-  //@}
+    //@}
 
-  private slots:
+    private slots:
 
-  //! update button enability
-  void _updateActions( void );
+    //! update button enability
+    void _updateActions( void );
 
-  //! add new document class
-  void _add( void );
+    //! add new document class
+    void _add( void );
 
-  //! edit file associated to class
-  void _edit( void );
+    //! edit file associated to class
+    void _edit( void );
 
-  //! remove a class from the list
-  void _remove( void );
+    //! remove a class from the list
+    void _remove( void );
 
-  //! load classes from a file
-  void _loadFile( void );
+    //! load classes from a file
+    void _loadFile( void );
 
-  //! save all classes to given path
-  void _save( void );
+    //! save all classes to given path
+    void _save( void );
 
-  //! reload document classes
-  void _reload( void );
+    //! reload document classes
+    void _reload( void );
 
-  private:
+    private:
 
-  //! actions
-  void _installActions( void );
+    //! actions
+    void _installActions( void );
 
-  //! toolbars
-  void _installToolBars( void );
+    //! toolbars
+    void _installToolBars( void );
 
-  //! menus
-  void _installMenuBar( void );
+    //! menus
+    void _installMenuBar( void );
 
-  //! display all classes to listview
-  void _loadClasses( const DocumentClassManager& );
+    //! display all classes to listview
+    void _loadClasses( const DocumentClassManager& );
 
-  //! modification state
-  bool _modified( void ) const
-  { return modified_; }
+    //! modification state
+    bool _modified( void ) const
+    { return modified_; }
 
-  //! check modification state
-  void _checkModified( void );
+    //! check modification state
+    void _checkModified( void );
 
-  //! set modification state
-  void _setModified( bool value );
+    //! set modification state
+    void _setModified( bool value );
 
-  //! window title
-  void _updateWindowTitle( void );
+    //! window title
+    void _updateWindowTitle( void );
 
-  //! save document classes, return possible warnings
-  QStringList _saveDocumentClasses( void );
+    //! save document classes, return possible warnings
+    QStringList _saveDocumentClasses( void );
 
-  //! model
-  const DocumentClassModel& _model( void ) const
-  { return model_; }
+    //! model
+    const DocumentClassModel& _model( void ) const
+    { return model_; }
 
-  //! model
-  DocumentClassModel& _model( void )
-  { return model_; }
+    //! model
+    DocumentClassModel& _model( void )
+    { return model_; }
 
-  //! list
-  TreeView& _list( void ) const
-  { return *list_; }
+    //! list
+    TreeView& _list( void ) const
+    { return *list_; }
 
-  //! document class manager backup
-  DocumentClassManager backup_;
+    //! document class manager backup
+    DocumentClassManager backup_;
 
-  //! model
-  DocumentClassModel model_;
+    //! model
+    DocumentClassModel model_;
 
-  //! document classes list
-  TreeView* list_;
+    //! document classes list
+    TreeView* list_;
 
-  //! check if modified
-  bool modified_;
+    //! check if modified
+    bool modified_;
 
-  //!@name actions
-  //#{
+    //!@name actions
+    //#{
 
-  QAction *close_action_;
+    QAction *closeAction_;
 
-  QAction *new_action_;
+    QAction *newAction_;
 
-  QAction *open_action_;
+    QAction *openAction_;
 
-  QAction *save_action_;
+    QAction *saveAction_;
 
-  QAction *edit_action_;
+    QAction *editAction_;
 
-  QAction *reload_action_;
+    QAction *reloadAction_;
 
-  QAction *remove_action_;
+    QAction *removeAction_;
 
-  //@}
+    //@}
 
 };
 

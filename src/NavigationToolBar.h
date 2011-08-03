@@ -24,11 +24,11 @@
 ****************************************************************************/
 
 /*!
-   \file NavigationToolBar.h
-   \brief editor windows navigator
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
+\file NavigationToolBar.h
+\brief editor windows navigator
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <cassert>
@@ -44,75 +44,75 @@ class NavigationFrame;
 
 //! editor windows navigator
 /*!
-  displays an up-to-date list of recent files
-  as well as files opened in current session
+displays an up-to-date list of recent files
+as well as files opened in current session
 */
 class NavigationToolBar: public CustomToolBar
 {
 
-  //! Qt meta object declaration
-  Q_OBJECT
+    //! Qt meta object declaration
+    Q_OBJECT
 
-  public:
+        public:
 
-  //! creator
-  NavigationToolBar( QWidget* parent );
+        //! creator
+        NavigationToolBar( QWidget* parent );
 
-  //! destructor
-  ~NavigationToolBar( void );
+    //! destructor
+    ~NavigationToolBar( void );
 
-  //! set target
-  void connect( NavigationFrame& );
+    //! set target
+    void connect( NavigationFrame& );
 
-  protected:
+    protected:
 
-  //! context menu
-  virtual void contextMenuEvent( QContextMenuEvent* );
+    //! context menu
+    virtual void contextMenuEvent( QContextMenuEvent* );
 
-  private slots:
+    private slots:
 
-  //! update configuration
-  void _updateConfiguration( void );
+    //! update configuration
+    void _updateConfiguration( void );
 
-  //! toolbar text position
-  void _updateToolButtonStyle( Qt::ToolButtonStyle );
+    //! toolbar text position
+    void _updateToolButtonStyle( Qt::ToolButtonStyle );
 
-  //! toolbar text position
-  void _updateToolButtonIconSize( IconSize::Size );
+    //! toolbar text position
+    void _updateToolButtonIconSize( IconSize::Size );
 
-  //! make sure proper buttons are changed when navigation frame visibility is changed
-  virtual void _navigationFrameVisibilityChanged( bool );
+    //! make sure proper buttons are changed when navigation frame visibility is changed
+    virtual void _navigationFrameVisibilityChanged( bool );
 
-  //! change orientation
-  virtual void _orientationChanged( Qt::Orientation );
+    //! change orientation
+    virtual void _orientationChanged( Qt::Orientation );
 
-  //! display item page
-  virtual void _display( QAbstractButton* );
+    //! display item page
+    virtual void _display( QAbstractButton* );
 
-  private:
+    private:
 
-  //! navigation frame
-  NavigationFrame& _navigationFrame( void )
-  {
-    assert( navigationFrame_ );
-    return *navigationFrame_;
-  }
+    //! navigation frame
+    NavigationFrame& _navigationFrame( void )
+    {
+        assert( navigationFrame_ );
+        return *navigationFrame_;
+    }
 
-  //! tool button
-  CustomToolButton* _newToolButton( QWidget* parent, QIcon ) const;
+    //! tool button
+    CustomToolButton* _newToolButton( QWidget* parent, QIcon ) const;
 
-  //! map widget to action
-  typedef std::map<CustomToolButton*, QWidget* > ButtonMap;
+    //! map widget to action
+    typedef std::map<CustomToolButton*, QWidget* > ButtonMap;
 
-  //! map widget to action in the toolbar
-  ButtonMap buttons_;
+    //! map widget to action in the toolbar
+    ButtonMap buttons_;
 
-  //! stack widget
-  NavigationFrame* navigationFrame_;
+    //! stack widget
+    NavigationFrame* navigationFrame_;
 
-  //! enablility
-  /*! this is used to avoid circular action triggers */
-  bool enabled_;
+    //! enablility
+    /*! this is used to avoid circular action triggers */
+    bool enabled_;
 
 };
 

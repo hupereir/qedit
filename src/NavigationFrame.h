@@ -24,11 +24,11 @@
 ****************************************************************************/
 
 /*!
-   \file NavigationFrame.h
-   \brief editor windows navigator
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
+\file NavigationFrame.h
+\brief editor windows navigator
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <cassert>
@@ -47,94 +47,95 @@ class FileSystemFrame;
 
 //! editor windows navigator
 /*!
-  displays an up-to-date list of recent files
-  as well as files opened in current session
+displays an up-to-date list of recent files
+as well as files opened in current session
 */
 class NavigationFrame: public AnimatedStackedWidget
 {
 
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+        public:
 
-  //! creator
-  NavigationFrame( QWidget* parent, FileList&  );
+        //! creator
+        NavigationFrame( QWidget* parent, FileList&  );
 
-  //! destructor
-  virtual ~NavigationFrame( void )
-  {}
+    //! destructor
+    virtual ~NavigationFrame( void )
+    {}
 
-  //! default size
-  void setDefaultWidth( const int& );
+    //! default size
+    void setDefaultWidth( const int& );
 
-  //! default width
-  const int& defaultWidth( void ) const
-  { return default_width_; }
+    //! default width
+    const int& defaultWidth( void ) const
+    { return defaultWidth_; }
 
-  //! size
-  QSize sizeHint( void ) const;
+    //! size
+    QSize sizeHint( void ) const;
 
-  //! session files
-  SessionFilesFrame& sessionFilesFrame( void ) const
-  {
-    assert( session_files_frame_ );
-    return *session_files_frame_;
-  }
+    //! session files
+    SessionFilesFrame& sessionFilesFrame( void ) const
+    {
+        assert( sessionFilesFrame_ );
+        return *sessionFilesFrame_;
+    }
 
-  //! recent files
-  RecentFilesFrame& recentFilesFrame( void ) const
-  {
-    assert( recent_files_frame_ );
-    return *recent_files_frame_;
-  }
+    //! recent files
+    RecentFilesFrame& recentFilesFrame( void ) const
+    {
+        assert( recentFilesFrame_ );
+        return *recentFilesFrame_;
+    }
 
-  //! file system
-  FileSystemFrame& fileSystemFrame( void ) const
-  {
-    assert( file_system_frame_ );
-    return *file_system_frame_;
-  }
+    //! file system
+    FileSystemFrame& fileSystemFrame( void ) const
+    {
+        assert( fileSystemFrame_ );
+        return *fileSystemFrame_;
+    }
 
-  //!@name actions
-  //@{
+    //!@name actions
+    //@{
 
-  //! visibility
-  QAction& visibilityAction( void ) const
-  { return *visibility_action_; }
+    //! visibility
+    QAction& visibilityAction( void ) const
+    { return *visibilityAction_; }
 
-  //@}
+    //@}
 
-  private slots:
+    private slots:
 
-  //! update current widget
-  void _updateCurrentWidget( void );
+    //! update current widget
+    void _updateCurrentWidget( void );
 
-  private:
+    private:
 
-  //! install actions
-  void _installActions( void );
+    //! install actions
+    void _installActions( void );
 
-  //! default width;
-  int default_width_;
+    //! default width;
+    int defaultWidth_;
 
-  //! session files
-  SessionFilesFrame *session_files_frame_;
+    //! session files
+    SessionFilesFrame *sessionFilesFrame_;
 
-  //! recent files
-  RecentFilesFrame *recent_files_frame_;
+    //! recent files
+    RecentFilesFrame *recentFilesFrame_;
 
-  //! file system
-  FileSystemFrame* file_system_frame_;
+    //! file system
+    FileSystemFrame* fileSystemFrame_;
 
-  //@}
+    //@}
 
-  //!@name actions
-  //@{
+    //!@name actions
+    //@{
 
-  //! visibility
-  QAction* visibility_action_;
+    //! visibility
+    QAction* visibilityAction_
+        ;
 
-  //@}
+    //@}
 
 };
 

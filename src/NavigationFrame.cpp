@@ -20,11 +20,11 @@
 ****************************************************************************/
 
 /*!
-   \file NavigationFrame.cpp
-   \brief editor windows navigator
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
+\file NavigationFrame.cpp
+\brief editor windows navigator
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QHeaderView>
@@ -41,50 +41,50 @@ using namespace std;
 
 //_______________________________________________________________
 NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
-  AnimatedStackedWidget( parent ),
-  default_width_( -1 )
+    AnimatedStackedWidget( parent ),
+    defaultWidth_( -1 )
 {
 
-  Debug::Throw( "NavigationFrame:NavigationFrame.\n" );
-  layout()->setMargin(2);
-  layout()->setSpacing(2);
+    Debug::Throw( "NavigationFrame:NavigationFrame.\n" );
+    layout()->setMargin(2);
+    layout()->setSpacing(2);
 
-  // fading mode
-  // transitionWidget().setMode( TransitionWidget::FADE_SECOND );
+    // fading mode
+    // transitionWidget().setMode( TransitionWidget::FADE_SECOND );
 
-  // stack widget
-  addWidget( session_files_frame_ = new SessionFilesFrame(0) );
-  addWidget( recent_files_frame_ = new RecentFilesFrame(0, files) );
-  addWidget( file_system_frame_ = new FileSystemFrame(0) );
+    // stack widget
+    addWidget( sessionFilesFrame_ = new SessionFilesFrame(0) );
+    addWidget( recentFilesFrame_ = new RecentFilesFrame(0, files) );
+    addWidget( fileSystemFrame_ = new FileSystemFrame(0) );
 
-  // current widget
-  setCurrentWidget( &sessionFilesFrame() );
+    // current widget
+    setCurrentWidget( &sessionFilesFrame() );
 
-  // connections
-  connect( this, SIGNAL( currentChanged( int ) ), SLOT( _updateCurrentWidget() ) );
+    // connections
+    connect( this, SIGNAL( currentChanged( int ) ), SLOT( _updateCurrentWidget() ) );
 
-  // actions
-  _installActions();
+    // actions
+    _installActions();
 
 }
 
 //______________________________________________________________________
 void NavigationFrame::setDefaultWidth( const int& value )
-{ default_width_ = value; }
+{ defaultWidth_ = value; }
 
 //____________________________________________
 QSize NavigationFrame::sizeHint( void ) const
-{ return (default_width_ ) >= 0 ? QSize( default_width_, 0 ):QWidget::sizeHint(); }
+{ return (defaultWidth_ ) >= 0 ? QSize( defaultWidth_, 0 ):QWidget::sizeHint(); }
 
 //______________________________________________________________________
 void NavigationFrame::_installActions( void )
 {
 
-  Debug::Throw( "NavigationFrame::_installActions.\n" );
-  addAction( visibility_action_ = new QAction( "Show &Navigation Panel", this ) );
-  visibility_action_->setCheckable( true );
-  visibility_action_->setChecked( true );
-  connect( visibility_action_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );
+    Debug::Throw( "NavigationFrame::_installActions.\n" );
+    addAction( visibilityAction_ = new QAction( "Show &Navigation Panel", this ) );
+    visibilityAction_->setCheckable( true );
+    visibilityAction_->setChecked( true );
+    connect( visibilityAction_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );
 
 }
 
@@ -92,11 +92,11 @@ void NavigationFrame::_installActions( void )
 void NavigationFrame::_updateCurrentWidget( void )
 {
 
-  Debug::Throw( "NavigationFrame::_updateCurrentWidget.\n" );
-  if( !currentWidget() ) return;
+    Debug::Throw( "NavigationFrame::_updateCurrentWidget.\n" );
+    if( !currentWidget() ) return;
 
-  if( currentWidget() == &sessionFilesFrame() ) { sessionFilesFrame().update(); }
-  else if( currentWidget() == &recentFilesFrame() ) { recentFilesFrame().update(); }
-  else if( currentWidget() == &fileSystemFrame() ) { fileSystemFrame().update(); }
+    if( currentWidget() == &sessionFilesFrame() ) { sessionFilesFrame().update(); }
+    else if( currentWidget() == &recentFilesFrame() ) { recentFilesFrame().update(); }
+    else if( currentWidget() == &fileSystemFrame() ) { fileSystemFrame().update(); }
 
 }

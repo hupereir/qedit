@@ -96,9 +96,9 @@ MainWindow::MainWindow(  QWidget* parent ):
     statusbar_( 0 ),
     fileEditor_( 0 ),
     documentClassToolbar_( 0 ),
-    find_dialog_( 0 ),
-    replace_dialog_( 0 ),
-    select_line_dialog_( 0 )
+    findDialog_( 0 ),
+    replaceDialog_( 0 ),
+    selectLineDialog_( 0 )
 {
 
     Debug::Throw( "MainWindow::MainWindow.\n" );
@@ -125,7 +125,7 @@ MainWindow::MainWindow(  QWidget* parent ):
     setCentralWidget( splitter );
 
     // insert navigationFrame
-    navigation_frame_ = new NavigationFrame(0, application.recentFiles() );
+    navigationFrame_ = new NavigationFrame(0, application.recentFiles() );
     navigationFrame().setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
     splitter->addWidget( &navigationFrame() );
 
@@ -227,14 +227,14 @@ void MainWindow::setActiveView( TextView& view )
     Debug::Throw() << "MainWindow::setActiveView - key: " << view.key() << endl;
 
     // do nothing if active view did not change
-    if( active_view_ == &view ) return;
+    if( activeView_ == &view ) return;
 
     // this check is needed because the active view passed as argument
     // might be closing and have no associated display
     if( BASE::KeySet<TextDisplay>( &view ).empty() ) return;
 
     // store active view
-    active_view_ = &view;
+    activeView_ = &view;
     activeView().activeDisplay().setFocus();
 
     // update stack if needed
@@ -338,7 +338,7 @@ void MainWindow::findFromDialog( void )
     */
 
     // set default string to find
-    if( !find_dialog_ ) _createBaseFindDialog();
+    if( !findDialog_ ) _createBaseFindDialog();
     _findDialog().enableRegExp( true );
     _findDialog().centerOnParent().show();
     _findDialog().synchronize();
@@ -358,7 +358,7 @@ void MainWindow::replaceFromDialog( void )
     Debug::Throw( "MainWindow::replaceFromDialog.\n" );
 
     // create
-    if( !replace_dialog_ ) _createReplaceDialog();
+    if( !replaceDialog_ ) _createReplaceDialog();
 
     // raise dialog
     _replaceDialog().centerOnParent().show();
@@ -395,16 +395,16 @@ void MainWindow::selectLineFromDialog( void )
 {
 
     Debug::Throw( "TextEditor::selectLineFromDialog.\n" );
-    if( !select_line_dialog_ )
+    if( !selectLineDialog_ )
     {
-        select_line_dialog_ = new SelectLineDialog( this );
-        connect( select_line_dialog_, SIGNAL( lineSelected( int ) ), SLOT( _selectLine( int ) ) );
+        selectLineDialog_ = new SelectLineDialog( this );
+        connect( selectLineDialog_, SIGNAL( lineSelected( int ) ), SLOT( _selectLine( int ) ) );
     }
 
-    select_line_dialog_->editor().clear();
-    select_line_dialog_->centerOnParent().show();
-    select_line_dialog_->activateWindow();
-    select_line_dialog_->editor().setFocus();
+    selectLineDialog_->editor().clear();
+    selectLineDialog_->centerOnParent().show();
+    selectLineDialog_->activateWindow();
+    selectLineDialog_->editor().setFocus();
 
 }
 
@@ -853,7 +853,7 @@ void MainWindow::_replaceTransitionWidget( void )
 
     Debug::Throw( "MainWindow::_replaceTransitionWidget.\n" );
 
-    transition_widget_ = new TransitionWidget( this );
+    transitionWidget_ = new TransitionWidget( this );
     _transitionWidget().setFlag( TransitionWidget::FROM_PARENT, false );
     _transitionWidget().hide();
     connect( &_transitionWidget(), SIGNAL( destroyed() ), SLOT( _replaceTransitionWidget() ) );
@@ -921,10 +921,10 @@ void MainWindow::_installActions( void )
     saveAction_->setToolTip( "Save current file" );
     connect( saveAction_, SIGNAL( triggered() ), SLOT( _save() ) );
 
-    addAction( save_as_action_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this ) );
-    save_as_action_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_S );
-    save_as_action_->setToolTip( "Save current file with a different name" );
-    connect( save_as_action_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
+    addAction( saveAsAction_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this ) );
+    saveAsAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_S );
+    saveAsAction_->setToolTip( "Save current file with a different name" );
+    connect( saveAsAction_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
 
     addAction( revertToSaveAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
     revertToSaveAction_->setShortcut( Qt::Key_F5 );
@@ -966,11 +966,11 @@ void MainWindow::_installActions( void )
     filePropertiesAction_->setEnabled( false );
     connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
 
-    addAction( spellcheck_action_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spell Check", this ) );
+    addAction( spellcheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spell Check", this ) );
     #if WITH_ASPELL
-    connect( spellcheck_action_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
+    connect( spellcheckAction_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
     #else
-    spellcheck_action_->setVisible( false );
+    spellcheckAction_->setVisible( false );
     #endif
 
     addAction( diffAction_ = new QAction( "&Diff Files", this ) );
@@ -1035,14 +1035,14 @@ void MainWindow::_createBaseFindDialog( void )
 {
 
     Debug::Throw( "MainWindow::_createBaseFindDialog.\n" );
-    if( !find_dialog_ )
+    if( !findDialog_ )
     {
 
-        find_dialog_ = new BaseFindDialog( this );
-        find_dialog_->setWindowTitle( "Find in Text - Qedit" );
-        connect( find_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
-        connect( this, SIGNAL( noMatchFound() ), find_dialog_, SLOT( noMatchFound() ) );
-        connect( this, SIGNAL( matchFound() ), find_dialog_, SLOT( clearLabel() ) );
+        findDialog_ = new BaseFindDialog( this );
+        findDialog_->setWindowTitle( "Find in Text - Qedit" );
+        connect( findDialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
+        connect( this, SIGNAL( noMatchFound() ), findDialog_, SLOT( noMatchFound() ) );
+        connect( this, SIGNAL( matchFound() ), findDialog_, SLOT( clearLabel() ) );
 
     }
 
@@ -1054,19 +1054,19 @@ void MainWindow::_createBaseFindDialog( void )
 void MainWindow::_createReplaceDialog( void )
 {
     Debug::Throw( "MainWindow::_CreateReplaceDialog.\n" );
-    if( !replace_dialog_ )
+    if( !replaceDialog_ )
     {
 
-        replace_dialog_ = new ReplaceDialog( this );
-        replace_dialog_->setWindowTitle( "Replace in Text - Qedit" );
-        connect( replace_dialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
-        connect( replace_dialog_, SIGNAL( replace( TextSelection ) ), SLOT( _replace( TextSelection ) ) );
-        connect( replace_dialog_, SIGNAL( replaceInWindow( TextSelection ) ), SLOT( _replaceInWindow( TextSelection ) ) );
-        connect( replace_dialog_, SIGNAL( replaceInSelection( TextSelection ) ), SLOT( _replaceInSelection( TextSelection ) ) );
-        connect( replace_dialog_, SIGNAL( replaceInFiles( void ) ), SLOT( _multipleFileReplace( void ) ) );
+        replaceDialog_ = new ReplaceDialog( this );
+        replaceDialog_->setWindowTitle( "Replace in Text - Qedit" );
+        connect( replaceDialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
+        connect( replaceDialog_, SIGNAL( replace( TextSelection ) ), SLOT( _replace( TextSelection ) ) );
+        connect( replaceDialog_, SIGNAL( replaceInWindow( TextSelection ) ), SLOT( _replaceInWindow( TextSelection ) ) );
+        connect( replaceDialog_, SIGNAL( replaceInSelection( TextSelection ) ), SLOT( _replaceInSelection( TextSelection ) ) );
+        connect( replaceDialog_, SIGNAL( replaceInFiles( void ) ), SLOT( _multipleFileReplace( void ) ) );
 
-        connect( this, SIGNAL( noMatchFound( void ) ), replace_dialog_, SLOT( noMatchFound( void ) ) );
-        connect( this, SIGNAL( matchFound( void ) ), replace_dialog_, SLOT( clearLabel( void ) ) );
+        connect( this, SIGNAL( noMatchFound( void ) ), replaceDialog_, SLOT( noMatchFound( void ) ) );
+        connect( this, SIGNAL( matchFound( void ) ), replaceDialog_, SLOT( clearLabel( void ) ) );
 
     }
 

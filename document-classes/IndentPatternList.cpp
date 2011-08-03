@@ -127,11 +127,11 @@ IndentPattern::List IndentPatternList::patterns( void )
 void IndentPatternList::_updateButtons( void )
 {
   Debug::Throw( "IndentPatternList::_updateButtons.\n" );
-  bool has_selection( !list_->selectionModel()->selectedRows().empty() );
-  edit_button_->setEnabled( has_selection );
-  remove_button_->setEnabled( has_selection );
-  move_up_button_->setEnabled( has_selection );
-  move_down_button_->setEnabled( has_selection );
+  bool hasSelection( !list_->selectionModel()->selectedRows().empty() );
+  edit_button_->setEnabled( hasSelection );
+  remove_button_->setEnabled( hasSelection );
+  move_up_button_->setEnabled( hasSelection );
+  move_down_button_->setEnabled( hasSelection );
 }
 
 //____________________________________________________

@@ -1,5 +1,5 @@
 <patterns>
- <class pattern="\.(c|cc|C|cpp|c\+\+|cxx|h|hh|hpp|H|css|js|php)(\.in)?$" icon="text-x-csrc.png" name="Alice - c++" >
+ <class pattern="\.(c|cc|C|cpp|c\+\+|cxx|h|hh|hpp|H|css|js|php)(\.in)?$" icon="text-x-csrc.png" name="c++ - Alice" >
 
 <!--Options-->
   <Option>

@@ -62,7 +62,6 @@ class TransitionWidget;
 class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 {
 
-    //! Qt meta object declaration
     Q_OBJECT
 
     public:
@@ -71,8 +70,8 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     static const QString LEFT_RIGHT;
     static const QString TOP_BOTTOM;
 
-    //! creator
-    MainWindow( QWidget* parent = 0 );
+    //! constructor
+    MainWindow( QWidget* = 0 );
 
     //! destructor
     ~MainWindow( void );
@@ -169,8 +168,8 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     //! navigation window
     NavigationFrame& navigationFrame( void ) const
     {
-        assert( navigation_frame_ );
-        return *navigation_frame_;
+        assert( navigationFrame_ );
+        return *navigationFrame_;
     }
 
     //!@name active view/display managment
@@ -182,15 +181,15 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     //! active view
     TextView& activeView( void )
     {
-        assert( active_view_ );
-        return *active_view_;
+        assert( activeView_ );
+        return *activeView_;
     }
 
     //! active view
     const TextView& activeView( void ) const
     {
-        assert( active_view_ );
-        return *active_view_;
+        assert( activeView_ );
+        return *activeView_;
     }
 
     //! change active display manualy
@@ -265,7 +264,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
     //! save as
     QAction& saveAsAction( void ) const
-    { return *save_as_action_; }
+    { return *saveAsAction_; }
 
     //! revert to saved
     QAction& revertToSaveAction( void ) const
@@ -301,7 +300,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
     //! spellcheck
     QAction& spellcheckAction( void ) const
-    { return *spellcheck_action_; }
+    { return *spellcheckAction_; }
 
     //! diff files action
     QAction& diffAction( void ) const
@@ -551,24 +550,24 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     //! find dialog
     virtual BaseFindDialog& _findDialog( void )
     {
-        assert( find_dialog_ );
-        return *find_dialog_;
+        assert( findDialog_ );
+        return *findDialog_;
     }
 
     //! replace dialog
     virtual ReplaceDialog& _replaceDialog( void )
     {
-        assert( replace_dialog_ );
-        return *replace_dialog_;
+        assert( replaceDialog_ );
+        return *replaceDialog_;
     }
 
     //! replace dialog
     bool _hasReplaceDialog( void ) const
-    { return bool( replace_dialog_ ); }
+    { return bool( replaceDialog_ ); }
 
     //! navigation frame
     bool _hasNavigationFrame( void ) const
-    { return bool( navigation_frame_ ); }
+    { return bool( navigationFrame_ ); }
 
     //! status bar
     bool _hasStatusBar( void ) const
@@ -608,7 +607,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
     //! transition widget
     TransitionWidget& _transitionWidget( void ) const
-    { return *transition_widget_; }
+    { return *transitionWidget_; }
 
     //!@name child widgets
     //@{
@@ -620,13 +619,13 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     QStackedWidget* stack_;
 
     //! transition widget
-    TransitionWidget* transition_widget_;
+    TransitionWidget* transitionWidget_;
 
     //! navigation window
-    NavigationFrame* navigation_frame_;
+    NavigationFrame* navigationFrame_;
 
     //! main display widget
-    TextView* active_view_;
+    TextView* activeView_;
 
     //! state window
     StatusBar* statusbar_;
@@ -643,13 +642,13 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     //@{
 
     //! find dialog
-    BaseFindDialog* find_dialog_;
+    BaseFindDialog* findDialog_;
 
     //! find dialog
-    ReplaceDialog* replace_dialog_;
+    ReplaceDialog* replaceDialog_;
 
     //! line number dialog
-    SelectLineDialog* select_line_dialog_;
+    SelectLineDialog* selectLineDialog_;
 
     //@}
 
@@ -684,7 +683,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     QAction* saveAction_;
 
     //! save as
-    QAction* save_as_action_;
+    QAction* saveAsAction_;
 
     //! revert to saved
     QAction* revertToSaveAction_;
@@ -711,7 +710,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     QAction* filePropertiesAction_;
 
     //! spellcheck
-    QAction* spellcheck_action_;
+    QAction* spellcheckAction_;
 
     //! diff files
     QAction* diffAction_;
