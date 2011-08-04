@@ -22,11 +22,11 @@
 *******************************************************************************/
 
 /*!
-  \file TextMacroList.h
-  \brief List box for TextMacros
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file TextMacroList.h
+\brief List box for TextMacros
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QHeaderView>
@@ -44,65 +44,65 @@ using namespace std;
 
 //____________________________________________________
 TextMacroList::TextMacroList( QWidget* parent ):
-  QGroupBox( "Macros", parent ),
-  Counter( "TextMacroList" ),
-  modified_( false )
+    QGroupBox( "Macros", parent ),
+    Counter( "TextMacroList" ),
+    modified_( false )
 {
-  Debug::Throw( "TextMacroList::TextMacroList.\n" );
+    Debug::Throw( "TextMacroList::TextMacroList.\n" );
 
-  QHBoxLayout* h_layout;
-  h_layout = new QHBoxLayout();
-  h_layout->setSpacing(5);
-  h_layout->setMargin(5);
-  setLayout( h_layout );
+    QHBoxLayout* h_layout;
+    h_layout = new QHBoxLayout();
+    h_layout->setSpacing(5);
+    h_layout->setMargin(5);
+    setLayout( h_layout );
 
 
-  h_layout->addWidget( list_ = new TreeView( this ), 1 );
-  list_->setModel( &model_ );
-  list_->setSortingEnabled( false );
-  list_->setAllColumnsShowFocus( true );
+    h_layout->addWidget( list_ = new TreeView( this ), 1 );
+    list_->setModel( &model_ );
+    list_->setSortingEnabled( false );
+    list_->setAllColumnsShowFocus( true );
 
-  connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
-  connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _edit() ) );
+    connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
+    connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _edit() ) );
 
-  connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
-  connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
+    connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
+    connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
 
-  QVBoxLayout* v_layout = new QVBoxLayout();
-  v_layout->setSpacing(5);
-  v_layout->setMargin(0);
-  h_layout->addLayout( v_layout );
+    QVBoxLayout* v_layout = new QVBoxLayout();
+    v_layout->setSpacing(5);
+    v_layout->setMargin(0);
+    h_layout->addLayout( v_layout );
 
-  QPushButton* button;
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
-  button->setToolTip( "Add a new macro to the list" );
-  connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
+    QPushButton* button;
+    v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
+    button->setToolTip( "Add a new macro to the list" );
+    connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
 
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add Separator", this ) );
-  button->setToolTip( "Add separator to the list" );
-  connect( button, SIGNAL( clicked() ), SLOT( _addSeparator() ) );
+    v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add Separator", this ) );
+    button->setToolTip( "Add separator to the list" );
+    connect( button, SIGNAL( clicked() ), SLOT( _addSeparator() ) );
 
-  v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
-  remove_button_->setShortcut( Qt::Key_Delete );
-  remove_button_->setToolTip( "Remove selected macro" );
-  connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
+    v_layout->addWidget( removeButton_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
+    removeButton_->setShortcut( Qt::Key_Delete );
+    removeButton_->setToolTip( "Remove selected macro" );
+    connect( removeButton_, SIGNAL( clicked() ), SLOT( _remove() ) );
 
-  v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
-  edit_button_->setToolTip( "Edit selected macro" );
-  connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
+    v_layout->addWidget( editButton_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
+    editButton_->setToolTip( "Edit selected macro" );
+    connect( editButton_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move &Up", this ) );
-  connect( button, SIGNAL( clicked() ), SLOT( _up() ) );
-  button->setToolTip( "Move up selected items" );
-  move_up_button_ = button;
+    v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move &Up", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( _up() ) );
+    button->setToolTip( "Move up selected items" );
+    moveUpButton_ = button;
 
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move &Down", this ) );
-  connect( button, SIGNAL( clicked() ), SLOT( _down() ) );
-  button->setToolTip( "Move down selected items" );
-  move_down_button_ = button;
-  v_layout->addStretch();
+    v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move &Down", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( _down() ) );
+    button->setToolTip( "Move down selected items" );
+    moveDownButton_ = button;
+    v_layout->addStretch();
 
-  _updateButtons();
+    _updateButtons();
 
 }
 
@@ -110,10 +110,10 @@ TextMacroList::TextMacroList( QWidget* parent ):
 void TextMacroList::setMacros( const TextMacro::List& macros )
 {
 
-  Debug::Throw( "TextMacroList::setMacros.\n" );
-  model_.set( macros );
-  list_->resizeColumns();
-  modified_ = false;
+    Debug::Throw( "TextMacroList::setMacros.\n" );
+    model_.set( macros );
+    list_->resizeColumns();
+    modified_ = false;
 
 }
 
@@ -121,116 +121,116 @@ void TextMacroList::setMacros( const TextMacro::List& macros )
 TextMacro::List TextMacroList::macros( void )
 {
 
-  Debug::Throw( "TextMacroList::macros.\n" );
-  return model_.get();
+    Debug::Throw( "TextMacroList::macros.\n" );
+    return model_.get();
 
 }
 
 //____________________________________________________
 void TextMacroList::_updateButtons( void )
 {
-  Debug::Throw( "TextMacroList::_updateButtons.\n" );
-  bool has_selection( !list_->selectionModel()->selectedRows().empty() );
-  edit_button_->setEnabled( has_selection );
-  remove_button_->setEnabled( has_selection );
-  move_up_button_->setEnabled( has_selection );
-  move_down_button_->setEnabled( has_selection );
+    Debug::Throw( "TextMacroList::_updateButtons.\n" );
+    bool has_selection( !list_->selectionModel()->selectedRows().empty() );
+    editButton_->setEnabled( has_selection );
+    removeButton_->setEnabled( has_selection );
+    moveUpButton_->setEnabled( has_selection );
+    moveDownButton_->setEnabled( has_selection );
 }
 
 //____________________________________________________
 void TextMacroList::_add( void )
 {
-  Debug::Throw( "TextMacroList::_add.\n" );
+    Debug::Throw( "TextMacroList::_add.\n" );
 
-  TextMacroDialog dialog( this );
-  if( dialog.exec() == QDialog::Rejected ) return;
-  model_.add( dialog.macro() );
+    TextMacroDialog dialog( this );
+    if( dialog.exec() == QDialog::Rejected ) return;
+    model_.add( dialog.macro() );
 
 }
 
 //____________________________________________________
 void TextMacroList::_addSeparator( void )
 {
-  Debug::Throw( "TextMacroList::_addSeparator.\n" );
+    Debug::Throw( "TextMacroList::_addSeparator.\n" );
 
-  TextMacro macro;
-  macro.setIsSeparator();
-  model_.add( macro );
+    TextMacro macro;
+    macro.setIsSeparator();
+    model_.add( macro );
 
 }
 
 //____________________________________________________
 void TextMacroList::_edit( void )
 {
-  Debug::Throw( "TextMacroList::_edit.\n" );
+    Debug::Throw( "TextMacroList::_edit.\n" );
 
-  // retrieve selected items
-  QModelIndexList selection( list_->selectionModel()->selectedRows() );
-  if( selection.empty() ) {
-    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
-    return;
-  }
+    // retrieve selected items
+    QModelIndexList selection( list_->selectionModel()->selectedRows() );
+    if( selection.empty() ) {
+        InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
+        return;
+    }
 
-  TextMacroModel::List macro( model_.get() );
-  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
-  {
+    TextMacroModel::List macro( model_.get() );
+    for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
+    {
 
-    TextMacro old_macro( model_.get( *iter ) );
+        TextMacro old_macro( model_.get( *iter ) );
 
-    TextMacroDialog dialog( this );
-    dialog.setMacro( old_macro );
-    if( dialog.exec() == QDialog::Rejected ) continue;
+        TextMacroDialog dialog( this );
+        dialog.setMacro( old_macro );
+        if( dialog.exec() == QDialog::Rejected ) continue;
 
-    TextMacro macro( dialog.macro() );
-    if( macro == old_macro ) continue;
+        TextMacro macro( dialog.macro() );
+        if( macro == old_macro ) continue;
 
-    model_.replace( *iter, macro );
-    modified_ = true;
+        model_.replace( *iter, macro );
+        modified_ = true;
 
-  }
+    }
 
 }
 
 //____________________________________________________
 void TextMacroList::_remove( void )
 {
-  Debug::Throw( "TextMacroList::_remove.\n" );
+    Debug::Throw( "TextMacroList::_remove.\n" );
 
-  // retrieve selected items; make sure they do not include the navigator
-  TextMacroModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
-  if( selection.empty() ) {
-    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
-    return;
-  }
+    // retrieve selected items; make sure they do not include the navigator
+    TextMacroModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    if( selection.empty() ) {
+        InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
+        return;
+    }
 
-  // ask for confirmation
-  QString buffer;
-  QTextStream what( &buffer );
-  what << "Remove selected item";
-  if( selection.size()>1 ) what << "S";
-  what << " ?";
-  if( !QuestionDialog( this, buffer ).exec() ) return;
+    // ask for confirmation
+    QString buffer;
+    QTextStream what( &buffer );
+    what << "Remove selected item";
+    if( selection.size()>1 ) what << "S";
+    what << " ?";
+    if( !QuestionDialog( this, buffer ).exec() ) return;
 
-  // remove items
-  model_.remove( selection );
-  modified_ = true;
+    // remove items
+    model_.remove( selection );
+    modified_ = true;
 
 }
 
 //________________________________________
 void TextMacroList::_storeSelection( void )
 {
-  // clear
-  model_.clearSelectedIndexes();
+    // clear
+    model_.clearSelectedIndexes();
 
-  // retrieve selected indexes in list
-  QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
-  {
-    // check column
-    if( !iter->column() == 0 ) continue;
-    model_.setIndexSelected( *iter, true );
-  }
+    // retrieve selected indexes in list
+    QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
+    for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+    {
+        // check column
+        if( !iter->column() == 0 ) continue;
+        model_.setIndexSelected( *iter, true );
+    }
 
 }
 
@@ -238,66 +238,66 @@ void TextMacroList::_storeSelection( void )
 void TextMacroList::_restoreSelection( void )
 {
 
-  // retrieve indexes
-  QModelIndexList selected_indexes( model_.selectedIndexes() );
-  if( selected_indexes.empty() ) list_->selectionModel()->clear();
-  else {
+    // retrieve indexes
+    QModelIndexList selected_indexes( model_.selectedIndexes() );
+    if( selected_indexes.empty() ) list_->selectionModel()->clear();
+    else {
 
-    list_->selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
-    { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+        list_->selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+        for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+        { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
-  }
+    }
 
-  return;
+    return;
 }
 
 //_________________________________________________________
 void TextMacroList::_up( void )
 {
 
-  Debug::Throw( "TextMacroList::_up.\n" );
-  TextMacro::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
-  if( selection.empty() )
-  {
-    InformationDialog( this, "no item selected. <Move up> canceled" ).exec();
-    return;
-  }
-
-  // retrieve selected indexes in list and store in model
-  QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-  TextMacro::List selected_attributes( model_.get( selected_indexes ) );
-
-  TextMacro::List current_attributes( macros() );
-  TextMacro::List new_attributes;
-
-  for( TextMacro::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); iter++ )
-  {
-
-    // check if new list is not empty, current index is selected and last index is not.
-    // if yes, move.
-    if(
-      !( new_attributes.empty() ||
-      selected_indexes.indexOf( model_.index( *iter ) ) == -1 ||
-      selected_indexes.indexOf( model_.index( new_attributes.back() ) ) != -1
-      ) )
+    Debug::Throw( "TextMacroList::_up.\n" );
+    TextMacro::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    if( selection.empty() )
     {
-      TextMacro last( new_attributes.back() );
-      new_attributes.pop_back();
-      new_attributes.push_back( *iter );
-      new_attributes.push_back( last );
-    } else new_attributes.push_back( *iter );
+        InformationDialog( this, "no item selected. <Move up> canceled" ).exec();
+        return;
+    }
 
-  }
+    // retrieve selected indexes in list and store in model
+    QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
+    TextMacro::List selected_attributes( model_.get( selected_indexes ) );
 
-  model_.set( new_attributes );
+    TextMacro::List current_attributes( macros() );
+    TextMacro::List new_attributes;
 
-  // restore selection
-  list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  for( TextMacro::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
-  { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+    for( TextMacro::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); iter++ )
+    {
 
-  return;
+        // check if new list is not empty, current index is selected and last index is not.
+        // if yes, move.
+        if(
+            !( new_attributes.empty() ||
+            selected_indexes.indexOf( model_.index( *iter ) ) == -1 ||
+            selected_indexes.indexOf( model_.index( new_attributes.back() ) ) != -1
+            ) )
+        {
+            TextMacro last( new_attributes.back() );
+            new_attributes.pop_back();
+            new_attributes.push_back( *iter );
+            new_attributes.push_back( last );
+        } else new_attributes.push_back( *iter );
+
+    }
+
+    model_.set( new_attributes );
+
+    // restore selection
+    list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+    for( TextMacro::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
+    { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+
+    return;
 
 }
 
@@ -305,48 +305,48 @@ void TextMacroList::_up( void )
 void TextMacroList::_down( void )
 {
 
-  Debug::Throw( "TextMacroList::_down.\n" );
-  TextMacro::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
-  if( selection.empty() )
-  {
-    InformationDialog( this, "no item selected. <Move down> canceled" ).exec();
-    return;
-  }
+    Debug::Throw( "TextMacroList::_down.\n" );
+    TextMacro::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    if( selection.empty() )
+    {
+        InformationDialog( this, "no item selected. <Move down> canceled" ).exec();
+        return;
+    }
 
-  // retrieve selected indexes in list and store in model
-  QModelIndexList selected_indexes( list_->selectionModel()->selectedIndexes() );
-  TextMacro::List selected_attributes( model_.get( selected_indexes ) );
+    // retrieve selected indexes in list and store in model
+    QModelIndexList selected_indexes( list_->selectionModel()->selectedIndexes() );
+    TextMacro::List selected_attributes( model_.get( selected_indexes ) );
 
-  TextMacro::List current_attributes( macros() );
-  TextMacro::List new_attributes;
+    TextMacro::List current_attributes( macros() );
+    TextMacro::List new_attributes;
 
-  for( TextMacro::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); iter++ )
-  {
-
-    // check if new list is not empty, current index is selected and last index is not.
-    // if yes, move.
-    if(
-      !( new_attributes.empty() ||
-      selected_indexes.indexOf( model_.index( *iter ) ) == -1 ||
-      selected_indexes.indexOf( model_.index( new_attributes.back() ) ) != -1
-      ) )
+    for( TextMacro::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); iter++ )
     {
 
-      TextMacro last( new_attributes.back() );
-      new_attributes.pop_back();
-      new_attributes.push_back( *iter );
-      new_attributes.push_back( last );
+        // check if new list is not empty, current index is selected and last index is not.
+        // if yes, move.
+        if(
+            !( new_attributes.empty() ||
+            selected_indexes.indexOf( model_.index( *iter ) ) == -1 ||
+            selected_indexes.indexOf( model_.index( new_attributes.back() ) ) != -1
+            ) )
+        {
 
-    } else new_attributes.push_back( *iter );
-  }
+            TextMacro last( new_attributes.back() );
+            new_attributes.pop_back();
+            new_attributes.push_back( *iter );
+            new_attributes.push_back( last );
 
-  model_.set( TextMacroModel::List( new_attributes.rbegin(), new_attributes.rend() ) );
+        } else new_attributes.push_back( *iter );
+    }
 
-  // restore selection
-  list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  for( TextMacro::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
-  { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+    model_.set( TextMacroModel::List( new_attributes.rbegin(), new_attributes.rend() ) );
 
-  return;
+    // restore selection
+    list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+    for( TextMacro::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
+    { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+
+    return;
 
 }

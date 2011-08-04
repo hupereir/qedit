@@ -24,11 +24,11 @@
 *******************************************************************************/
 
 /*!
-  \file TextMacroList.h
-  \brief List box for TextMacros
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file TextMacroList.h
+\brief List box for TextMacros
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QPushButton>
@@ -43,76 +43,76 @@ class TreeView;
 //! List box for TextMacros
 class TextMacroList: public QGroupBox, public Counter
 {
-
-  Q_OBJECT
-
-  public:
-
-  //! constructor
-  TextMacroList( QWidget* parent = 0 );
-
-  //! macro
-  void setMacros( const TextMacro::List& );
-
-  //! Macro
-  TextMacro::List macros( void );
-
-  //! true when Macro are modified
-  bool modified( void ) const
-  { return modified_; }
-
-  private slots:
-
-  //! update buttons enability
-  void _updateButtons( void );
-
-  //! edit selected Pattern
-  void _edit( void );
-
-  //! remove selected Pattern
-  void _remove( void );
-
-  //! add new Pattern
-  void _add( void );
-
-  //! add new Pattern
-  void _addSeparator( void );
-
-  //! store selection
-  void _storeSelection( void );
-
-  //! restore selection
-  void _restoreSelection( void );
-
-  //! move up selected task
-  void _up( void );
-
-  //! move down selected task
-  void _down( void );
-
-  private:
-
-  //! list
-  TreeView* list_;
-
-  //! model
-  TextMacroModel model_;
-
-  //! buttons
-  QPushButton* edit_button_;
-
-  //! buttons
-  QPushButton* remove_button_;
-
-  //! buttons
-  QPushButton* move_up_button_;
-
-  //! buttons
-  QPushButton* move_down_button_;
-
-  //! modification state
-  bool modified_;
-
+    
+    Q_OBJECT
+        
+        public:
+        
+        //! constructor
+        TextMacroList( QWidget* parent = 0 );
+    
+    //! macro
+    void setMacros( const TextMacro::List& );
+    
+    //! Macro
+    TextMacro::List macros( void );
+    
+    //! true when Macro are modified
+    bool modified( void ) const
+    { return modified_; }
+    
+    private slots:
+    
+    //! update buttons enability
+    void _updateButtons( void );
+    
+    //! edit selected Pattern
+    void _edit( void );
+    
+    //! remove selected Pattern
+    void _remove( void );
+    
+    //! add new Pattern
+    void _add( void );
+    
+    //! add new Pattern
+    void _addSeparator( void );
+    
+    //! store selection
+    void _storeSelection( void );
+    
+    //! restore selection
+    void _restoreSelection( void );
+    
+    //! move up selected task
+    void _up( void );
+    
+    //! move down selected task
+    void _down( void );
+    
+    private:
+    
+    //! list
+    TreeView* list_;
+    
+    //! model
+    TextMacroModel model_;
+    
+    //! buttons
+    QPushButton* editButton_;
+    
+    //! buttons
+    QPushButton* removeButton_;
+    
+    //! buttons
+    QPushButton* moveUpButton_;
+    
+    //! buttons
+    QPushButton* moveDownButton_;
+    
+    //! modification state
+    bool modified_;
+    
 };
 
 #endif
