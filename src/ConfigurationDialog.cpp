@@ -29,16 +29,14 @@
 \date $Date$
 */
 
-#include <QLabel>
-#include <QGroupBox>
+#include "ConfigurationDialog.h"
 
 #include "Application.h"
 #include "Config.h"
-#include "ConfigurationDialog.h"
 #include "FileList.h"
-#include "GridLayout.h"
 #include "CustomToolBar.h"
 #include "Debug.h"
+#include "GridLayout.h"
 #include "MainWindow.h"
 #include "OptionListBox.h"
 #include "OptionBrowsedLineEditor.h"
@@ -55,7 +53,8 @@
 #include "TreeViewConfiguration.h"
 #include "WindowServer.h"
 
-using namespace std;
+#include <QtGui/QLabel>
+#include <QtGui/QGroupBox>
 
 //_________________________________________________________
 ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
@@ -71,7 +70,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     QGroupBox *box;
     OptionCheckBox* checkbox;
     OptionSpinBox* spinbox;
-    OptionColorDisplay* color_display;
+    OptionColorDisplay* colorDisplay;
 
     // document classes
     QWidget* page = &addPage( "Document classes", "Document classes definitions and flags" );
@@ -204,30 +203,30 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     // additional colors
     page->layout()->addWidget( box = new QGroupBox( "Colors", page ) );
 
-    GridLayout* grid_layout = new GridLayout();
-    grid_layout->setMaxCount(2);
-    grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-    box->setLayout( grid_layout );
+    GridLayout* gridLayout = new GridLayout();
+    gridLayout->setMaxCount(2);
+    gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+    box->setLayout( gridLayout );
 
-    grid_layout->addWidget( new QLabel( "Parenthesis matching: ", box ) );
-    grid_layout->addWidget( color_display = new OptionColorDisplay( box, "PARENTHESIS_COLOR" ) );
-    addOptionWidget( color_display );
+    gridLayout->addWidget( new QLabel( "Parenthesis matching: ", box ) );
+    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "PARENTHESIS_COLOR" ) );
+    addOptionWidget( colorDisplay );
     checkbox->setToolTip( "Color for matching parenthesis: " );
 
-    grid_layout->addWidget( new QLabel( "Tagged paragraphs: ", box ) );
-    grid_layout->addWidget( color_display = new OptionColorDisplay( box, "TAGGED_BLOCK_COLOR" ) );
-    addOptionWidget( color_display );
+    gridLayout->addWidget( new QLabel( "Tagged paragraphs: ", box ) );
+    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "TAGGED_BLOCK_COLOR" ) );
+    addOptionWidget( colorDisplay );
     checkbox->setToolTip( "Color for tagged paragraphs" );
 
-    grid_layout->addWidget( new QLabel( "Conflicting paragraphs: ", box ) );
-    grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_CONFLICT_COLOR" ) );
-    addOptionWidget( color_display );
-    color_display->setToolTip( "Highlight color for diff conflict paragraphs" );
+    gridLayout->addWidget( new QLabel( "Conflicting paragraphs: ", box ) );
+    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "DIFF_CONFLICT_COLOR" ) );
+    addOptionWidget( colorDisplay );
+    colorDisplay->setToolTip( "Highlight color for diff conflict paragraphs" );
 
-    grid_layout->addWidget( new QLabel( "Added paragraphs: ", box ) );
-    grid_layout->addWidget( color_display = new OptionColorDisplay( box, "DIFF_ADDED_COLOR" ) );
-    addOptionWidget( color_display );
-    color_display->setToolTip( "Highlight color for diff added paragraphs" );
+    gridLayout->addWidget( new QLabel( "Added paragraphs: ", box ) );
+    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "DIFF_ADDED_COLOR" ) );
+    addOptionWidget( colorDisplay );
+    colorDisplay->setToolTip( "Highlight color for diff added paragraphs" );
 
     // multiple views
     page = &addPage( "Navigation", "Visible columns in navigation tabs" );
@@ -259,16 +258,16 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     page = &addPage( "Multiple views", "Multiple views configuration" );
     page->layout()->addWidget( box = new QGroupBox( page ) );
 
-    grid_layout = new GridLayout();
-    grid_layout->setMaxCount(2);
-    grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-    box->setLayout( grid_layout );
+    gridLayout = new GridLayout();
+    gridLayout->setMaxCount(2);
+    gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+    box->setLayout( gridLayout );
 
     OptionComboBox *combobox;
 
     // opening
-    grid_layout->addWidget( new QLabel( "Default open mode: ", box ) );
-    grid_layout->addWidget( combobox = new OptionComboBox( box, "OPEN_MODE" ) );
+    gridLayout->addWidget( new QLabel( "Default open mode: ", box ) );
+    gridLayout->addWidget( combobox = new OptionComboBox( box, "OPEN_MODE" ) );
     combobox->addItem( WindowServer::MULTIPLE_WINDOWS );
     combobox->addItem( WindowServer::SINGLE_WINDOW );
 
@@ -276,8 +275,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     combobox->setToolTip( "Configure how new files are oppened." );
 
     // splitting
-    grid_layout->addWidget( new QLabel( "Default view orientation: ", box ) );
-    grid_layout->addWidget( combobox = new OptionComboBox( box, "ORIENTATION" ) );
+    gridLayout->addWidget( new QLabel( "Default view orientation: ", box ) );
+    gridLayout->addWidget( combobox = new OptionComboBox( box, "ORIENTATION" ) );
     combobox->addItem( MainWindow::TOP_BOTTOM );
     combobox->addItem( MainWindow::LEFT_RIGHT );
 
@@ -285,29 +284,29 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     combobox->setToolTip( "Configure how new views are organized." );
 
     // splitting
-    grid_layout->addWidget( new QLabel( "Default view orientation (diff mode): ", box ) );
-    grid_layout->addWidget( combobox = new OptionComboBox( box, "DIFF_ORIENTATION" ) );
+    gridLayout->addWidget( new QLabel( "Default view orientation (diff mode): ", box ) );
+    gridLayout->addWidget( combobox = new OptionComboBox( box, "DIFF_ORIENTATION" ) );
     combobox->addItem( MainWindow::TOP_BOTTOM );
     combobox->addItem( MainWindow::LEFT_RIGHT );
 
     addOptionWidget( combobox );
     combobox->setToolTip( "Configure how new views are organized in <i>diff</i> mode." );
 
-    grid_layout->setColumnStretch( 1, 1 );
+    gridLayout->setColumnStretch( 1, 1 );
 
     // toolbars
     page = &addPage( "Toolbars", "Toolbars visibility and location" );
     page->layout()->addWidget( box = new QGroupBox( "Toolbars", page ) );
 
-    grid_layout = new GridLayout();
-    grid_layout->setMaxCount(2);
-    box->setLayout( grid_layout );
+    gridLayout = new GridLayout();
+    gridLayout->setMaxCount(2);
+    box->setLayout( gridLayout );
 
-    grid_layout->addWidget( new QLabel( "Visibility", box ) );
-    grid_layout->addWidget( new QLabel( "Location", box ) );
+    gridLayout->addWidget( new QLabel( "Visibility", box ) );
+    gridLayout->addWidget( new QLabel( "Location", box ) );
 
-    grid_layout->addWidget( checkbox = new OptionCheckBox( "Main Toolbar", box, "FILE_TOOLBAR" ) );
-    grid_layout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "FILE_TOOLBAR_LOCATION" ) );
+    gridLayout->addWidget( checkbox = new OptionCheckBox( "Main Toolbar", box, "FILE_TOOLBAR" ) );
+    gridLayout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "FILE_TOOLBAR_LOCATION" ) );
     addOptionWidget( checkbox );
     addOptionWidget( combobox );
 
@@ -315,8 +314,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     combobox->setEnabled( false );
     connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
 
-    grid_layout->addWidget( checkbox = new OptionCheckBox( "Edition Toolbar", box, "EDITION_TOOLBAR" ));
-    grid_layout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "EDITION_TOOLBAR_LOCATION" ));
+    gridLayout->addWidget( checkbox = new OptionCheckBox( "Edition Toolbar", box, "EDITION_TOOLBAR" ));
+    gridLayout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "EDITION_TOOLBAR_LOCATION" ));
     addOptionWidget( checkbox );
     addOptionWidget( combobox );
 
@@ -324,8 +323,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     combobox->setEnabled( false );
     connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
 
-    grid_layout->addWidget( checkbox = new OptionCheckBox( "Tools", box, "EXTRA_TOOLBAR" ));
-    grid_layout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "EXTRA_TOOLBAR_LOCATION" ));
+    gridLayout->addWidget( checkbox = new OptionCheckBox( "Tools", box, "EXTRA_TOOLBAR" ));
+    gridLayout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "EXTRA_TOOLBAR_LOCATION" ));
     addOptionWidget( checkbox );
     addOptionWidget( combobox );
 
@@ -333,8 +332,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     combobox->setEnabled( false );
     connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
 
-    grid_layout->addWidget( checkbox = new OptionCheckBox( "Multiple views Toolbar", box, "SPLIT_TOOLBAR" ));
-    grid_layout->addWidget( new CustomToolBar::LocationComboBox( box, "SPLIT_TOOLBAR_LOCATION" ));
+    gridLayout->addWidget( checkbox = new OptionCheckBox( "Multiple views Toolbar", box, "SPLIT_TOOLBAR" ));
+    gridLayout->addWidget( new CustomToolBar::LocationComboBox( box, "SPLIT_TOOLBAR_LOCATION" ));
     addOptionWidget( checkbox );
     addOptionWidget( combobox );
 
@@ -382,22 +381,22 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         "specified directory to allow crash recovery." );
     addOptionWidget( checkbox );
 
-    grid_layout = new GridLayout();
-    grid_layout->setMargin(0);
-    grid_layout->setMaxCount(2);
-    grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-    box->layout()->addItem( grid_layout );
+    gridLayout = new GridLayout();
+    gridLayout->setMargin(0);
+    gridLayout->setMaxCount(2);
+    gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+    box->layout()->addItem( gridLayout );
 
-    grid_layout->addWidget( new QLabel( "Autosave interval (seconds): ", box ) );
-    grid_layout->addWidget( spinbox = new OptionSpinBox( box, "AUTOSAVE_INTERVAL" ) );
+    gridLayout->addWidget( new QLabel( "Autosave interval (seconds): ", box ) );
+    gridLayout->addWidget( spinbox = new OptionSpinBox( box, "AUTOSAVE_INTERVAL" ) );
     spinbox->setMinimum( 1 );
     spinbox->setMaximum( 300 );
     spinbox->setToolTip( "Interval (seconds) between two autosave." );
     addOptionWidget( spinbox );
 
     OptionBrowsedLineEditor *edit;
-    grid_layout->addWidget( new QLabel( "Autosave path: ", box ) );
-    grid_layout->addWidget( edit = new OptionBrowsedLineEditor( box, "AUTOSAVE_PATH" ) );
+    gridLayout->addWidget( new QLabel( "Autosave path: ", box ) );
+    gridLayout->addWidget( edit = new OptionBrowsedLineEditor( box, "AUTOSAVE_PATH" ) );
     edit->setToolTip( "Directory where autosaved files are stored" );
     addOptionWidget( edit );
 

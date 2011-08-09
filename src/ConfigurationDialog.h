@@ -33,8 +33,6 @@
 
 #include "BaseConfigurationDialog.h"
 
-class OptionCheckBox;
-
 //! xMaze configuration dialog
 class ConfigurationDialog: public BaseConfigurationDialog
 {

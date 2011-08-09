@@ -29,9 +29,6 @@
 \date $Date$
 */
 
-#include <QMessageBox>
-#include <QEventLoop>
-
 #include "Application.h"
 #include "AutoSave.h"
 #include "Config.h"
@@ -55,9 +52,7 @@
 #include "AutoSpellConfiguration.h"
 #endif
 
-using namespace std;
-using namespace Qt;
-
+#include <QtGui/QMessageBox>
 
 //____________________________________________
 CommandLineParser Application::commandLineParser( CommandLineArguments arguments, bool ignore_warnings )
