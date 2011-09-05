@@ -378,7 +378,7 @@ void DocumentClassTextEditor::_updateConfiguration( void )
     Debug::Throw( "DocumentClassTextEditor::_updateConfiguration.\n" );
 
     // parenthesis highlight
-    textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().raw( "PARENTHESIS_COLOR" ) ) );
+    textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().get<QString>( "PARENTHESIS_COLOR" ) ) );
 
     {
         QFont font;

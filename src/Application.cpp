@@ -201,7 +201,7 @@ void Application::_updateDocumentClasses( void )
     Options::List files( XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) );
     for( Options::List::const_iterator iter = files.begin(); iter != files.end(); iter++ )
     {
-        classManager_->read( iter->raw() );
+        classManager_->read( QString( iter->raw() ) );
         what << classManager_->readError();
     }
 

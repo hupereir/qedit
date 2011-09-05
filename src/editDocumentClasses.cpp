@@ -102,7 +102,7 @@ int main (int argc, char *argv[])
     DocumentClassManager manager;
     Options::List files( XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) );
     for( Options::List::const_iterator iter = files.begin(); iter != files.end(); iter++ )
-    { manager.read( iter->raw() ); }
+    { manager.read( QString( iter->raw() ) ); }
 
     // prepare dialog
     DocumentClassManagerDialog dialog(0, manager);
