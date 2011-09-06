@@ -16,12 +16,12 @@ win32 {
   exists( \"$$DESTDIR\\upx.exe\" ) {
 
      # if available, use upx to compress the file
-     version.commands = "\"$$DESTDIR\\upx.exe\" -9 -f -o \"$$DESTDIR\\$$TARGET_"$$VERSION".exe\""  "\"$$DESTDIR\\"$$TARGET".exe\"
+     version.commands = "\"$$DESTDIR\\upx.exe\" -9 -f -o \"$$DESTDIR\\release\\$$TARGET_"$$VERSION".exe\""  "\"$$DESTDIR\\"$$TARGET".exe\"
 
   } else {
 
      # simple copy
-     version.commands = @copy "\"$$DESTDIR\\"$$TARGET".exe\" \"$$DESTDIR\\$$TARGET_"$$VERSION".exe\""
+     version.commands = @copy "\"$$DESTDIR\\"$$TARGET".exe\" \"$$DESTDIR\\release\\$$TARGET_"$$VERSION".exe\""
 
   }
 
