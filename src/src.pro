@@ -9,6 +9,7 @@ DEFINES += VERSION=\\\"$$VERSION\\\"
 
 win32 {
 
+  QMAKE_LFLAGS += -static-libgcc -static-libstdc++
   DEFINES += QT_STATIC
   DESTDIR = "C:\Program Files"
 
