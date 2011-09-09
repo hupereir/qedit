@@ -245,11 +245,11 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     addOptionWidget( listview_config );
 
     FileList tmp(0);
-    RecentFilesFrame recent_frame(0, tmp );
+    RecentFilesFrame recentFrame(0, tmp );
     listview_config = new TreeViewConfiguration(
         page,
-        &recent_frame.list(),
-        recent_frame.list().maskOptionName() );
+        &recentFrame.list(),
+        recentFrame.list().maskOptionName() );
     listview_config->setTitle( "Recent files" );
     h_layout->addWidget( listview_config );
     addOptionWidget( listview_config );
@@ -355,9 +355,9 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     // recent files
     page = &addPage( "Recent files", "Recent files list settings", true );
-    RecentFilesConfiguration* recent_files_configuration = new RecentFilesConfiguration( page, Singleton::get().application<Application>()->recentFiles() );
-    page->layout()->addWidget( recent_files_configuration );
-    addOptionWidget( recent_files_configuration );
+    RecentFilesConfiguration* recentFiles_configuration = new RecentFilesConfiguration( page, Singleton::get().application<Application>()->recentFiles() );
+    page->layout()->addWidget( recentFiles_configuration );
+    addOptionWidget( recentFiles_configuration );
 
     // misc
     page = &addPage( "Misc", "Additional unsorted settings" );

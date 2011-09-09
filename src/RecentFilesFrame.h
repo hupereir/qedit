@@ -24,11 +24,11 @@
 ****************************************************************************/
 
 /*!
-   \file RecentFilesFrame.h
-   \brief editor windows navigator
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
+\file RecentFilesFrame.h
+\brief editor windows navigator
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <cassert>
@@ -44,121 +44,121 @@ class TreeView;
 
 //! editor windows navigator
 /*!
-  displays an up-to-date list of recent files
-  as well as files opened in current session
+displays an up-to-date list of recent files
+as well as files opened in current session
 */
 class RecentFilesFrame: public QWidget, public Counter
 {
 
-  //! Qt meta object declaration
-  Q_OBJECT
+    //! Qt meta object declaration
+    Q_OBJECT
 
-  public:
+        public:
 
-  //! creator
-  RecentFilesFrame( QWidget* parent, FileList&  );
+        //! creator
+        RecentFilesFrame( QWidget* parent, FileList&  );
 
-  //! destructor
-  ~RecentFilesFrame( void );
+    //! destructor
+    ~RecentFilesFrame( void );
 
-  //! list
-  TreeView& list( void ) const
-  {
-    assert( list_ );
-    return *list_;
-  }
+    //! list
+    TreeView& list( void ) const
+    {
+        assert( list_ );
+        return *list_;
+    }
 
-  //! select file in list
-  void select( const File& );
+    //! select file in list
+    void select( const File& );
 
-  public slots:
+    public slots:
 
-  //! update
-  void update( void );
+    //! update
+    void update( void );
 
-  signals:
+    signals:
 
-  //! signal emitted when a file is selected
-  void fileSelected( FileRecord );
+    //! signal emitted when a file is selected
+    void fileSelected( FileRecord );
 
-  //! signal emited when a file is selected
-  void fileActivated( FileRecord );
+    //! signal emited when a file is selected
+    void fileActivated( FileRecord );
 
-  protected:
+    protected:
 
-  //! enter event
-  void enterEvent( QEvent* );
+    //! enter event
+    void enterEvent( QEvent* );
 
-  //! recent files
-  FileList& _recentFiles( void ) const
-  {
-    assert( recent_files_ );
-    return *recent_files_;
-  }
+    //! recent files
+    FileList& _recentFiles( void ) const
+    {
+        assert( recentFiles_ );
+        return *recentFiles_;
+    }
 
-  //! model
-  FileRecordModel& _model( void )
-  { return model_; }
+    //! model
+    FileRecordModel& _model( void )
+    { return model_; }
 
-  private slots:
+    private slots:
 
-  //! update action
-  void _updateActions( void );
+    //! update action
+    void _updateActions( void );
 
-  //! clean
-  void _clean( void );
+    //! clean
+    void _clean( void );
 
-  //! open
-  void _open( void );
+    //! open
+    void _open( void );
 
-  //! sessionFilesItem selected
-  void _itemSelected( const QModelIndex& index );
+    //! sessionFilesItem selected
+    void _itemSelected( const QModelIndex& index );
 
-  //! sessionFilesItem selected
-  void _itemActivated( const QModelIndex& index );
+    //! sessionFilesItem selected
+    void _itemActivated( const QModelIndex& index );
 
-  private:
+    private:
 
-  //!@name actions
-  //@{
+    //!@name actions
+    //@{
 
-  //! install actions
-  void _installActions( void );
+    //! install actions
+    void _installActions( void );
 
-  //! clean action
-  QAction& _cleanAction( void ) const
-  { return *clean_action_; }
+    //! clean action
+    QAction& _cleanAction( void ) const
+    { return *cleanAction_; }
 
-  //! open action
-  QAction& _openAction( void ) const
-  { return *open_action_; }
+    //! open action
+    QAction& _openAction( void ) const
+    { return *openAction_; }
 
-  //@}
+    //@}
 
-  //! recent files
-  FileList* recent_files_;
+    //! recent files
+    FileList* recentFiles_;
 
-  //! model
-  FileRecordModel model_;
+    //! model
+    FileRecordModel model_;
 
-  //! list
-  TreeView* list_;
+    //! list
+    TreeView* list_;
 
-  //@}
+    //@}
 
-  //!@name actions
-  //@{
+    //!@name actions
+    //@{
 
-  //! update
-  QAction* update_action_;
+    //! update
+    QAction* updateAction_;
 
-  //! clean action
-  QAction* clean_action_;
+    //! clean action
+    QAction* cleanAction_;
 
-  //! open action
-  QAction* open_action_;
+    //! open action
+    QAction* openAction_;
 
-  //@}
+    //@}
 
 };
 
