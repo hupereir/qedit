@@ -190,7 +190,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     grid_layout->addWidget( checkboxes[QFile::ExeOwner  ]  = new QCheckBox( box ), Qt::AlignHCenter );
 
     // on unix, right now, Qt does not return the current user permissions. Disable them from the dialog
-    #ifndef Q_WS_X11
+    #if !defined(Q_WS_X11)
     grid_layout->addWidget( new QLabel( "User: ", box ) );
     grid_layout->addWidget( checkboxes[QFile::ReadUser ]  = new QCheckBox( box ), Qt::AlignHCenter );
     grid_layout->addWidget( checkboxes[QFile::WriteUser]  = new QCheckBox( box ), Qt::AlignHCenter );
