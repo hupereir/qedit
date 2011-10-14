@@ -163,6 +163,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     // create "Hidden" line editor to display filename
     statusbar_->addPermanentWidget( fileEditor_ = new QLabel( statusbar_ ), 1 );
+    statusbar_->addPermanentWidget( new QWidget(), 1 );
     statusbar_->addLabels( 3, 0 );
     statusbar_->label(0).setAlignment( Qt::AlignCenter );
     statusbar_->label(1).setAlignment( Qt::AlignCenter );
