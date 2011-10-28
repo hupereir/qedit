@@ -39,7 +39,7 @@
 <!--Highlight patterns-->
   <range_pattern options="no_indent " style="Comment" parent="" name="Comment" >
    <comments></comments>
-   <begin>#</begin>
+   <begin>^\s*#</begin>
    <end>$</end>
   </range_pattern>
   <range_pattern options="span " style="Command" parent="" name="Command" >
