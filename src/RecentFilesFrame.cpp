@@ -174,11 +174,11 @@ void RecentFilesFrame::_open( void )
     Debug::Throw( "RecentFilesFrame:_open.\n" );
     FileRecordModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
     FileRecordModel::List valid_selection;
-    for( FileRecordModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
+    for( FileRecordModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
     { if( iter->isValid() ) valid_selection.push_back( *iter ); }
 
     // one should check the number of files to be edited
-    for( FileRecordModel::List::const_iterator iter = valid_selection.begin(); iter != valid_selection.end(); iter++ )
+    for( FileRecordModel::List::const_iterator iter = valid_selection.begin(); iter != valid_selection.end(); ++iter )
     { emit fileActivated( *iter ); }
 
 }

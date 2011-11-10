@@ -171,7 +171,7 @@ void IndentPatternList::_edit( void )
     }
 
     IndentPatternModel::List patterns( model_.get() );
-    for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
+    for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); ++iter )
     {
 
         IndentPattern old_pattern( model_.get( *iter ) );
@@ -225,7 +225,7 @@ void IndentPatternList::_storeSelection( void )
 
     // retrieve selected indexes in list
     QModelIndexList selectedIndexes( list_->selectionModel()->selectedRows() );
-    for( QModelIndexList::iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); iter++ )
+    for( QModelIndexList::iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); ++iter )
     {
         // check column
         if( !iter->column() == 0 ) continue;
@@ -244,7 +244,7 @@ void IndentPatternList::_restoreSelection( void )
     else {
 
         list_->selectionModel()->select( selectedIndexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-        for( QModelIndexList::const_iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); iter++ )
+        for( QModelIndexList::const_iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); ++iter )
         { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     }
@@ -272,7 +272,7 @@ void IndentPatternList::_up( void )
     IndentPattern::List current_attributes( patterns() );
     IndentPattern::List new_attributes;
 
-    for( IndentPattern::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); iter++ )
+    for( IndentPattern::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); ++iter )
     {
 
         // check if new list is not empty, current index is selected and last index is not.
@@ -295,7 +295,7 @@ void IndentPatternList::_up( void )
 
     // restore selection
     list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( IndentPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
+    for( IndentPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); ++iter )
     { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     return;
@@ -320,7 +320,7 @@ void IndentPatternList::_down( void )
     IndentPattern::List current_attributes( patterns() );
     IndentPattern::List new_attributes;
 
-    for( IndentPattern::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); iter++ )
+    for( IndentPattern::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); ++iter )
     {
 
         // check if new list is not empty, current index is selected and last index is not.
@@ -344,7 +344,7 @@ void IndentPatternList::_down( void )
 
     // restore selection
     list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( IndentPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
+    for( IndentPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); ++iter )
     { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     return;

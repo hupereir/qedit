@@ -101,7 +101,7 @@ QDomElement TextMacro::domElement( QDomDocument& parent ) const
   if( !options.isEmpty() ) out.setAttribute( XML::OPTIONS, options );
 
   // dump children
-  for( Rule::List::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
+  for( Rule::List::const_iterator iter = rules_.begin(); iter != rules_.end(); ++iter )
   { out.appendChild( iter->domElement( parent ) ); }
   return out;
 }
@@ -128,7 +128,7 @@ TextMacro::Result TextMacro::processText( QString& text, int position ) const
 
   if( isSeparator() ) return Result();
   Result out;
-  for( Rule::List::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
+  for( Rule::List::const_iterator iter = rules_.begin(); iter != rules_.end(); ++iter )
   { out += iter->processText( text, position >= 0 ? position+out.second : position ); }
   return out;
 
@@ -200,7 +200,7 @@ TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) co
     QStringList lines( text.split( '\n' ) );
     int local_position( position );
     TextMacro::Result out;
-    for( QStringList::iterator iter = lines.begin(); iter != lines.end(); iter++ )
+    for( QStringList::iterator iter = lines.begin(); iter != lines.end(); ++iter )
     {
 
       int length = iter->length() + 1;

@@ -364,7 +364,7 @@ void Menu::_updateWindowsMenu( void )
     // retrieve all files
     bool first = true;
     FileRecord::List records( Singleton::get().application<Application>()->windowServer().records() );
-    for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+    for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); ++iter )
     {
 
         // retrieve file and check

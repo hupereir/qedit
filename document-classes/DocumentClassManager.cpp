@@ -167,7 +167,7 @@ bool DocumentClassManager::write( const File& path ) const
   }
 
 
-  for( List::const_iterator iter = document_classes_.begin(); iter != document_classes_.end(); iter++ )
+  for( List::const_iterator iter = document_classes_.begin(); iter != document_classes_.end(); ++iter )
   {
     File filename( iter->file().localName().addPath( path ) );
     Debug::Throw(0) << "DocumentClassManager::write - writing class " << iter->name() << " to file " << filename << endl;

@@ -108,7 +108,7 @@ QDomElement IndentPattern::domElement( QDomDocument& parent ) const
   if( !name().isEmpty() ) out.setAttribute( XML::NAME, name() );
   if( scale() > 1 ) out.setAttribute( XML::SCALE, Str().assign<unsigned int>( scale() ) );
 
-  for( Rule::List::const_iterator iter = rules().begin(); iter != rules().end(); iter++ )
+  for( Rule::List::const_iterator iter = rules().begin(); iter != rules().end(); ++iter )
   { out.appendChild( iter->domElement( parent ) ); }
 
   if( !comments().isEmpty() )

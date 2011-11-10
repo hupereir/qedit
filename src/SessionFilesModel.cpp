@@ -171,7 +171,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
     // return FileRecordModel::mimeData( indexes );
     std::set<QString> filenames;
     std::set<FileRecord> records;
-    for( QModelIndexList::const_iterator iter = indexes.begin(); iter != indexes.end(); iter++ )
+    for( QModelIndexList::const_iterator iter = indexes.begin(); iter != indexes.end(); ++iter )
     {
 
         if( iter->isValid() )
@@ -191,14 +191,14 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
         // fill text data
         QString full_text;
         QTextStream buffer( &full_text );
-        for( std::set<QString>::const_iterator iter = filenames.begin(); iter != filenames.end(); iter++ )
+        for( std::set<QString>::const_iterator iter = filenames.begin(); iter != filenames.end(); ++iter )
         { buffer << *iter << endl; }
         mime->setText( full_text );
 
         // fill DRAG data. Use XML
         QDomDocument document;
         QDomElement top = document.appendChild( document.createElement( XmlFileRecord::XML_FILE_LIST ) ).toElement();
-        for( std::set<FileRecord>::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+        for( std::set<FileRecord>::const_iterator iter = records.begin(); iter != records.end(); ++iter )
         {
 
             if( iter->file().isEmpty() ) continue;
@@ -253,7 +253,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         FileRecord target( get( parent ) );
 
         // loop over sources and emit proper signal
-        for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+        for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); ++iter )
         { emit reparentFiles( iter->file(), target.file() ); }
         return true;
 
@@ -283,7 +283,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         if( !target_index.isValid() ) return false;
 
         // emit relevant reparent signal
-        for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); iter++ )
+        for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); ++iter )
         { emit reparentFilesToMain( iter->file(), target.file() ); }
 
         return true;

@@ -314,7 +314,7 @@ void FileSystemFrame::_updateActions( void )
 
     bool has_editable_selection( false );
     bool has_removable_selection( false );
-    for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
+    for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
     {
         if( !iter->hasFlag( FileSystemModel::NAVIGATOR ) ) has_removable_selection = true;
         if( iter->hasFlag( FileSystemModel::DOCUMENT ) )
@@ -388,14 +388,14 @@ void FileSystemFrame::_open( void )
     Debug::Throw( "FileSystemFrame:_open.\n" );
     FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
     FileSystemModel::List valid_selection;
-    for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
+    for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
     {
         if( iter->hasFlag( FileSystemModel::DOCUMENT ) )
         { valid_selection.push_back( *iter ); }
     }
 
     // one should check the number of files to be edited
-    for( FileSystemModel::List::iterator iter = valid_selection.begin(); iter != valid_selection.end(); iter++ )
+    for( FileSystemModel::List::iterator iter = valid_selection.begin(); iter != valid_selection.end(); ++iter )
     { emit fileActivated( iter->setFile( iter->file().addPath( path() ) ) ); }
 
 }
@@ -409,7 +409,7 @@ void FileSystemFrame::_remove( void )
     // get selection
     FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
     FileSystemModel::List valid_selection;
-    for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
+    for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
     {
         if( !iter->hasFlag( FileSystemModel::NAVIGATOR ) )
         { valid_selection.push_back( *iter ); }
@@ -424,7 +424,7 @@ void FileSystemFrame::_remove( void )
 
     // loop over selected files and remove
     // retrieve selected items and remove corresponding files
-    for( FileSystemModel::List::iterator iter = selection.begin(); iter != selection.end(); iter++ )
+    for( FileSystemModel::List::iterator iter = selection.begin(); iter != selection.end(); ++iter )
     {
         File file( iter->file().addPath( path() ) );
         if( !file.exists() ) continue;
@@ -479,7 +479,7 @@ void FileSystemFrame::_storeSelection( void )
 
     // retrieve selected indexes in list
     QModelIndexList selected_indexes( _list().selectionModel()->selectedRows() );
-    for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+    for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
     {
         // check column
         if( !iter->column() == 0 ) continue;
@@ -500,7 +500,7 @@ void FileSystemFrame::_restoreSelection( void )
     else {
 
         _list().selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-        for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+        for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
         { _list().selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     }

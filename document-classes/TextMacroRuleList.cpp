@@ -158,7 +158,7 @@ void TextMacroRuleList::_edit( void )
   }
 
   TextMacroRuleModel::List rule( model_.get() );
-  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); ++iter )
   {
 
     TextMacro::Rule old_rule( model_.get( *iter ) );
@@ -211,7 +211,7 @@ void TextMacroRuleList::_storeSelection( void )
 
   // retrieve selected indexes in list
   QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
   {
     // check column
     if( !iter->column() == 0 ) continue;
@@ -230,7 +230,7 @@ void TextMacroRuleList::_restoreSelection( void )
   else {
 
     list_->selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
     { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
   }
@@ -258,7 +258,7 @@ void TextMacroRuleList::_up( void )
   TextMacro::Rule::List current_attributes( rules() );
   TextMacro::Rule::List new_attributes;
 
-  for( TextMacro::Rule::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); iter++ )
+  for( TextMacro::Rule::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); ++iter )
   {
 
     // check if new list is not empty, current index is selected and last index is not.
@@ -281,7 +281,7 @@ void TextMacroRuleList::_up( void )
 
   // restore selection
   list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  for( TextMacro::Rule::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
+  for( TextMacro::Rule::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); ++iter )
   { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
   return;
@@ -307,7 +307,7 @@ void TextMacroRuleList::_down( void )
   TextMacro::Rule::List current_attributes( rules() );
   TextMacro::Rule::List new_attributes;
 
-  for( TextMacro::Rule::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); iter++ )
+  for( TextMacro::Rule::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); ++iter )
   {
 
     // check if new list is not empty, current index is selected and last index is not.
@@ -331,7 +331,7 @@ void TextMacroRuleList::_down( void )
 
   // restore selection
   list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  for( TextMacro::Rule::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
+  for( TextMacro::Rule::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); ++iter )
   { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
   return;

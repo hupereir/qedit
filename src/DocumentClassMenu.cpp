@@ -67,7 +67,7 @@ void DocumentClassMenu::_update( void )
 
   // retrieve classes from DocumentClass manager
   const DocumentClassManager::List& classes( Singleton::get().application<Application>()->classManager().classes() );
-  for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
+  for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); ++iter )
   {
     // insert actions
     QAction* action = addAction( iter->name() );

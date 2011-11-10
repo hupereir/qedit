@@ -106,7 +106,7 @@ void HighlightPatternDialog::setPatterns( const HighlightPattern::List& patterns
   // update parent_combobox
   parent_combobox_->clear();
   parent_combobox_->addItem( HighlightPattern::no_parent_pattern_ );
-  for( HighlightPattern::List::const_iterator iter = patterns.begin(); iter != patterns.end(); iter++ )
+  for( HighlightPattern::List::const_iterator iter = patterns.begin(); iter != patterns.end(); ++iter )
   { parent_combobox_->addItem( iter->name() ); }
 
   //! select default parent pattern
@@ -122,7 +122,7 @@ void HighlightPatternDialog::setStyles( const HighlightStyle::Set& styles )
 
   // update style_combobox
   style_combobox_->clear();
-  for( HighlightStyle::Set::const_iterator iter = styles_.begin(); iter != styles_.end(); iter++ )
+  for( HighlightStyle::Set::const_iterator iter = styles_.begin(); iter != styles_.end(); ++iter )
   { style_combobox_->addItem( iter->name() ); }
 
   return;

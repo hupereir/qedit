@@ -66,7 +66,7 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
   what << "Editing: ";
 
   unsigned int index = 0;
-  for( FileRecord::List::const_iterator iter = files.begin(); iter != files.end(); iter++, index++ )
+  for( FileRecord::List::const_iterator iter = files.begin(); iter != files.end(); ++iter, index++ )
   {
     what << iter->file().localName();
     if( iter->hasFlag( FileRecordProperties::MODIFIED ) ) what << "*";

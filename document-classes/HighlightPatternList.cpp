@@ -170,7 +170,7 @@ void HighlightPatternList::_edit( void )
   }
 
   HighlightPatternModel::List patterns( model_.get() );
-  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); ++iter )
   {
 
     HighlightPattern old_pattern( model_.get( *iter ) );
@@ -226,7 +226,7 @@ void HighlightPatternList::_storeSelection( void )
 
   // retrieve selected indexes in list
   QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
   {
     // check column
     if( !iter->column() == 0 ) continue;
@@ -245,7 +245,7 @@ void HighlightPatternList::_restoreSelection( void )
   else {
 
     list_->selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
     { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
   }
@@ -272,7 +272,7 @@ void HighlightPatternList::_up( void )
   HighlightPattern::List current_attributes( patterns() );
   HighlightPattern::List new_attributes;
 
-  for( HighlightPattern::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); iter++ )
+  for( HighlightPattern::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); ++iter )
   {
 
     // check if new list is not empty, current index is selected and last index is not.
@@ -295,7 +295,7 @@ void HighlightPatternList::_up( void )
 
   // restore selection
   list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  for( HighlightPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
+  for( HighlightPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); ++iter )
   { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
   return;
@@ -321,7 +321,7 @@ void HighlightPatternList::_down( void )
   HighlightPattern::List current_attributes( patterns() );
   HighlightPattern::List new_attributes;
 
-  for( HighlightPattern::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); iter++ )
+  for( HighlightPattern::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); ++iter )
   {
 
     // check if new list is not empty, current index is selected and last index is not.
@@ -345,7 +345,7 @@ void HighlightPatternList::_down( void )
 
   // restore selection
   list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  for( HighlightPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); iter++ )
+  for( HighlightPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); ++iter )
   { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
   return;

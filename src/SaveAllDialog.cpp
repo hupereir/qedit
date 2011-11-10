@@ -64,7 +64,7 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
   what << "Modified: ";
 
   unsigned int index = 0;
-  for( FileRecord::List::const_iterator iter = files.begin(); iter != files.end(); iter++, index++ )
+  for( FileRecord::List::const_iterator iter = files.begin(); iter != files.end(); ++iter, index++ )
   {
     what << iter->file().localName();
     if( index < files.size()-2 ) what << ", ";

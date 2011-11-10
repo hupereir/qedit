@@ -135,7 +135,7 @@ FileSelectionDialog::FileList FileSelectionDialog::selectedFiles( void ) const
   // retrieve selection from the list
   FileRecordModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
   FileList files;
-  for( FileRecordModel::List::iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  for( FileRecordModel::List::iterator iter = selection.begin(); iter != selection.end(); ++iter )
   { files.push_back( iter->file() ); }
 
   return files;

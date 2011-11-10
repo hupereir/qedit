@@ -79,7 +79,7 @@ void FileSystemThread::run( void )
   new_files.push_back( record );
 
   // loop over entries and add
-  for( QFileInfoList::iterator iter = entries.begin(); iter != entries.end(); iter++ )
+  for( QFileInfoList::iterator iter = entries.begin(); iter != entries.end(); ++iter )
   {
 
     if( iter->fileName() == ".." || iter->fileName() == "." ) continue;

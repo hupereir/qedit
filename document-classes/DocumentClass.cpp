@@ -141,7 +141,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 
   // associate elements
   QStringList warnings = associatePatterns();
-  for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); iter++ )
+  for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); ++iter )
   { Debug::Throw(0) << "DocumentClass::read - " << *iter << endl; }
 
 }
@@ -181,11 +181,11 @@ QStringList DocumentClass::associatePatterns( void )
   // warning: the passed Id is converted internaly into a single bit of a bitset
   // to facilitate patterns bitMask
   unsigned int id(0);
-  for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++, id++ )
+  for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); ++iter, id++ )
   { iter->setId( id ); }
 
   // create parent/children hierarchy between highlight patterns
-  for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
+  for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); ++iter )
   if( iter->parent().size() )
   {
     HighlightPattern::List::iterator parent_iter( find_if( highlight_patterns_.begin(), highlight_patterns_.end(), HighlightPattern::SameNameFTor( iter->parent() ) ) );
@@ -201,7 +201,7 @@ QStringList DocumentClass::associatePatterns( void )
   }
 
   // assign styles to patterns
-  for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
+  for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); ++iter )
   {
     set<HighlightStyle>::iterator style_iter ( highlight_styles_.find( iter->style() ) );
     if( style_iter != highlight_styles_.end() ) iter->setStyle( *style_iter );
@@ -246,37 +246,37 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   // dump highlight styles
   out.appendChild( parent.createTextNode( "\n\n" ) );
   out.appendChild( parent.createComment( "Highlight styles" ) );
-  for( set<HighlightStyle>::const_iterator iter = highlight_styles_.begin(); iter != highlight_styles_.end(); iter++ )
+  for( set<HighlightStyle>::const_iterator iter = highlight_styles_.begin(); iter != highlight_styles_.end(); ++iter )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump highlight patterns
   out.appendChild( parent.createTextNode( "\n\n" ) );
   out.appendChild( parent.createComment( "Highlight patterns" ) );
-  for( HighlightPattern::List::const_iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); iter++ )
+  for( HighlightPattern::List::const_iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); ++iter )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump indent patterns
   out.appendChild( parent.createTextNode( "\n\n" ) );
   out.appendChild( parent.createComment( "Indentation patterns" ) );
-  for( IndentPattern::List::const_iterator iter = indent_patterns_.begin(); iter != indent_patterns_.end(); iter++ )
+  for( IndentPattern::List::const_iterator iter = indent_patterns_.begin(); iter != indent_patterns_.end(); ++iter )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump parenthesis
   out.appendChild( parent.createTextNode( "\n\n" ) );
   out.appendChild( parent.createComment( "Parenthesis" ) );
-  for( TextParenthesis::List::const_iterator iter = text_parenthesis_.begin(); iter != text_parenthesis_.end(); iter++ )
+  for( TextParenthesis::List::const_iterator iter = text_parenthesis_.begin(); iter != text_parenthesis_.end(); ++iter )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump block delimiters
   out.appendChild( parent.createTextNode( "\n\n" ) );
   out.appendChild( parent.createComment( "Block delimiters" ) );
-  for( BlockDelimiter::List::const_iterator iter = block_delimiters_.begin(); iter != block_delimiters_.end(); iter++ )
+  for( BlockDelimiter::List::const_iterator iter = block_delimiters_.begin(); iter != block_delimiters_.end(); ++iter )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump text macros
   out.appendChild( parent.createTextNode( "\n\n" ) );
   out.appendChild( parent.createComment( "Text macros" ) );
-  for( TextMacro::List::const_iterator iter = text_macros_.begin(); iter != text_macros_.end(); iter++ )
+  for( TextMacro::List::const_iterator iter = text_macros_.begin(); iter != text_macros_.end(); ++iter )
   { out.appendChild( iter->domElement( parent ) ); }
 
   return out;

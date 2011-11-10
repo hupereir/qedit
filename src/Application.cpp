@@ -113,7 +113,7 @@ void Application::initApplicationManager( void )
     // retrieve files from arguments and expand if needed
     CommandLineParser parser( commandLineParser( _arguments() ) );
     QStringList& orphans( parser.orphans() );
-    for( QStringList::iterator iter = orphans.begin(); iter != orphans.end(); iter++ )
+    for( QStringList::iterator iter = orphans.begin(); iter != orphans.end(); ++iter )
     { if( !iter->isEmpty() ) (*iter) = File( *iter ).expand(); }
 
     // replace arguments
@@ -199,7 +199,7 @@ void Application::_updateDocumentClasses( void )
     QString buffer;
     QTextStream what( &buffer );
     Options::List files( XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) );
-    for( Options::List::const_iterator iter = files.begin(); iter != files.end(); iter++ )
+    for( Options::List::const_iterator iter = files.begin(); iter != files.end(); ++iter )
     {
         classManager_->read( QString( iter->raw() ) );
         what << classManager_->readError();
@@ -209,7 +209,7 @@ void Application::_updateDocumentClasses( void )
 
     // load document classes icons into iconEngine cache, if any
     const DocumentClassManager::List& classes( classManager_->classes() );
-    for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
+    for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); ++iter )
     { if( !iter->icon().isEmpty() ) { IconEngine::get( iter->icon() ); } }
 
     // emit configuration changed to force displays to be updated

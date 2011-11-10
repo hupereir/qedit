@@ -233,7 +233,7 @@ void SessionFilesFrame::_open( void )
   Debug::Throw( "SessionFilesFrame:_open.\n" );
   SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
 
-  for( SessionFilesModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  for( SessionFilesModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
   { emit fileActivated( *iter ); }
 
 }
@@ -246,7 +246,7 @@ void SessionFilesFrame::_save( void )
   SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
 
   SessionFilesModel::List modified_records;
-  for( SessionFilesModel::List::const_iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  for( SessionFilesModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
   { if( iter->hasFlag( FileRecordProperties::MODIFIED ) ) modified_records.push_back( *iter ); }
 
   if( !modified_records.empty() ) emit filesSaved( modified_records );

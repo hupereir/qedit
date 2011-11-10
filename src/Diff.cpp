@@ -69,7 +69,7 @@ bool Diff::run( void )
   error_ = "";
 
   // check files
-  for( vector<FileInformation>::const_iterator iter = files_.begin(); iter != files_.end(); iter++ )
+  for( vector<FileInformation>::const_iterator iter = files_.begin(); iter != files_.end(); ++iter )
   {
 
     // check if filename is empty
@@ -115,7 +115,7 @@ void Diff::_clear( void )
 {
 
   Debug::Throw( "Diff::_Clear.\n" );
-  for( vector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); iter++ )
+  for( vector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); ++iter )
   { iter->clear(); }
   return;
 }
@@ -138,7 +138,7 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
   QByteArray out( process_.readAllStandardOutput() );
   QStringList in( QString( out ).split( "\n" ) );
   int index(0);
-  for( QStringList::const_iterator iter = in.begin(); iter != in.end(); iter++ )
+  for( QStringList::const_iterator iter = in.begin(); iter != in.end(); ++iter )
   {
 
     QString buffer = *iter;
@@ -152,7 +152,7 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
   }
 
   // highlight displays
-  for( vector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); iter++ )
+  for( vector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); ++iter )
   { iter->highlightDisplay(); }
 
   // delete this object
@@ -321,7 +321,7 @@ void Diff::FileInformation::highlightDisplay( void )
   // this is needed due to the setUpdatesEnabled above
   BASE::KeySet<TextDisplay> displays( &_display() );
   displays.insert( &_display() );
-  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+  for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
   { (*iter)->viewport()->update(); }
 
   return;

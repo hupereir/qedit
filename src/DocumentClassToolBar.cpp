@@ -85,7 +85,7 @@ void DocumentClassToolBar::_update( void )
   // add all document classes
   const DocumentClassManager &manager( Singleton::get().application<Application>()->classManager() );
   const DocumentClassManager::List& classes( manager.classes() );
-  for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); iter++ )
+  for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); ++iter )
   { _comboBox().addItem( iter->name() ); }
 
   // try select old class if possible

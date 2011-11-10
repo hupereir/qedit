@@ -29,8 +29,6 @@
 \date $Date$
 */
 
-#include <QLayout>
-
 #include "Application.h"
 #include "AutoSave.h"
 #include "Debug.h"
@@ -41,7 +39,7 @@
 #include "Singleton.h"
 #include "TextView.h"
 
-using namespace std;
+#include <QtGui/QLayout>
 
 //___________________________________________________________________
 TextView::TextView( QWidget* parent ):
@@ -132,7 +130,7 @@ unsigned int TextView::independentDisplayCount( void )
 {
     unsigned int out( 0 );
     BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
         // increment if no associated display is found in the already processed displays
         if( find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++;
@@ -147,7 +145,7 @@ unsigned int TextView::modifiedDisplayCount( void )
 
     unsigned int out( 0 );
     BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
         // increment if no associated display is found in the already processed displays
         // and if current is modified
@@ -210,7 +208,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
         BASE::KeySet<TextDisplay> displays( this );
         displays.erase( &activeDisplay() );
 
-        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
         { (*iter)->setActive( false ); }
 
         activeDisplay().setActive( true );
@@ -301,7 +299,7 @@ void TextView::closeDisplay( TextDisplay& display )
     // if no associated displays, retrieve all, set the first as active
     Debug::Throw( "TextView::closeDisplay - changing focus.\n" );
     if( displays.empty() ) displays = BASE::KeySet<TextDisplay>( this );
-    for( BASE::KeySet<TextDisplay>::reverse_iterator iter = displays.rbegin(); iter != displays.rend(); iter++ )
+    for( BASE::KeySet<TextDisplay>::reverse_iterator iter = displays.rbegin(); iter != displays.rend(); ++iter )
     {
         if( (*iter) != &display && !(*iter)->isClosed() )
         {
@@ -343,7 +341,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
     // recompute dimension
     // take the max of active display and splitter,
     // in case no new splitter was created.
-    dimension = max( dimension, (orientation == Qt::Horizontal) ? splitter.width():splitter.height() );
+    dimension = std::max( dimension, (orientation == Qt::Horizontal) ? splitter.width():splitter.height() );
 
     // assign equal size to all splitter children
     QList<int> sizes;
@@ -366,12 +364,12 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
 
         // perform associations
         // check if active displays has associates and propagate to new
-        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
         { BASE::Key::associate( &display, *iter ); }
 
         // associate this display to AutoSave threads
         BASE::KeySet<AutoSaveThread> threads( &activeDisplay_local );
-        for( BASE::KeySet<AutoSaveThread>::iterator iter = threads.begin(); iter != threads.end(); iter++ )
+        for( BASE::KeySet<AutoSaveThread>::iterator iter = threads.begin(); iter != threads.end(); ++iter )
         { BASE::Key::associate( &display, *iter ); }
 
         // associate new display to active
@@ -396,7 +394,7 @@ void TextView::saveAll( void )
 
     // retrieve all displays
     BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     { if( (*iter)->document()->isModified() ) (*iter)->save(); }
 
     return;
@@ -411,7 +409,7 @@ void TextView::ignoreAll( void )
 
     // retrieve all displays
     BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     { (*iter)->setModified( false ); }
 
     return;
@@ -425,7 +423,7 @@ void TextView::rehighlight( void )
 
     // retrieve associated TextDisplay
     BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
         // this trick allow to run the rehighlight only once per set of associated displays
         if( find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) (*iter)->rehighlight();
@@ -451,8 +449,8 @@ void TextView::checkDisplayModifications( TextEditor* editor )
 
         // register displays as dead
         BASE::KeySet<TextDisplay> associated_displays( &display );
-        for( BASE::KeySet<TextDisplay>::iterator display_iter = associated_displays.begin(); display_iter != associated_displays.end(); display_iter++ )
-        { dead_displays.insert( *display_iter ); }
+        for( BASE::KeySet<TextDisplay>::iterator displayIter = associated_displays.begin(); displayIter != associated_displays.end(); ++displayIter )
+        { dead_displays.insert( *displayIter ); }
         display.document()->setModified( false );
         dead_displays.insert( &display );
 
@@ -471,7 +469,7 @@ void TextView::checkDisplayModifications( TextEditor* editor )
     {
 
         Debug::Throw() << "TextView::checkDisplayModifications - dead displays: " << dead_displays.size() << endl;
-        for( BASE::KeySet<TextDisplay>::iterator iter = dead_displays.begin(); iter != dead_displays.end(); iter++ )
+        for( BASE::KeySet<TextDisplay>::iterator iter = dead_displays.begin(); iter != dead_displays.end(); ++iter )
         { closeDisplay( **iter ); }
 
     }
@@ -510,7 +508,7 @@ void TextView::diff( void )
     // look for the first one that is not associated to the active display
     BASE::KeySet<TextDisplay> displays( this );
     BASE::KeySet<TextDisplay>::iterator iter = displays.begin();
-    for(; iter != displays.end(); iter++ )
+    for(; iter != displays.end(); ++iter )
     {
         if( !( *iter == &first || (*iter)->isAssociated( &first ) ) )
         {
@@ -637,7 +635,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, const boo
 
         // retrieve children and loop
         const QObjectList& children( TextView::children() );
-        for( QObjectList::const_iterator iter = children.begin(); iter != children.end() && !child; iter++ )
+        for( QObjectList::const_iterator iter = children.begin(); iter != children.end() && !child; ++iter )
         { child = qobject_cast<QWidget*>( *iter ); }
 
         // check child could be retrieved

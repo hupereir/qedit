@@ -49,7 +49,7 @@ void TextMacroMenu::setTextMacros( const TextMacro::List& macros, bool enabled )
   actions_.clear();
   QAction* action;
 
-  for( TextMacro::List::const_iterator iter = macros.begin(); iter != macros.end(); iter++ )
+  for( TextMacro::List::const_iterator iter = macros.begin(); iter != macros.end(); ++iter )
   {
 
     if( iter->isSeparator() ) addSeparator();
@@ -71,7 +71,7 @@ void TextMacroMenu::setTextMacros( const TextMacro::List& macros, bool enabled )
 //___________________________________________________________
 void TextMacroMenu::setEnabled( bool enabled )
 {
-  for( std::map< QAction*, QString >::iterator iter = actions_.begin(); iter != actions_.end(); iter++ )
+  for( std::map< QAction*, QString >::iterator iter = actions_.begin(); iter != actions_.end(); ++iter )
   { iter->first->setEnabled( enabled ); }
 }
 

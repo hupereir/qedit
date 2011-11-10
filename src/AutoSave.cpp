@@ -56,7 +56,7 @@ AutoSave::~AutoSave( void )
     Debug::Throw( "AutoSave::~AutoSave.\n" );
 
     // loop over threads
-    for( ThreadList::iterator iter = threads_.begin(); iter != threads_.end(); iter++ )
+    for( ThreadList::iterator iter = threads_.begin(); iter != threads_.end(); ++iter )
     {
 
         // remove file
@@ -101,7 +101,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
     bool found( false );
 
     // loop over threads and restart
-    for( ThreadList::iterator iter = threads_.begin(); iter != threads_.end(); iter++ )
+    for( ThreadList::iterator iter = threads_.begin(); iter != threads_.end(); ++iter )
     {
 
         // check if argument display, if valid, is associated to this thread

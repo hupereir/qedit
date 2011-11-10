@@ -119,7 +119,7 @@ void DocumentClassManagerDialog::closeEvent( QCloseEvent* event )
                 if( warnings.size() > 1 ) what << "The following errors have been encountered while saving: " << endl;
                 else what << "The following error has been encountered while saving: " << endl;
 
-                for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); iter++ )
+                for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); ++iter )
                 { what << *iter << endl; }
 
                 what << "Exit anyway ?";
@@ -268,7 +268,7 @@ void DocumentClassManagerDialog::_save( void )
         if( warnings.size() > 1 ) what << "The following errors have been encountered while saving: " << endl;
         else what << "The following error has been encountered while saving: " << endl;
 
-        for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); iter++ )
+        for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); ++iter )
         { what << *iter << endl; }
 
         InformationDialog( this, buffer ).setWindowTitle( "Save Document Classes - qedit" ).centerOnParent().exec();
@@ -432,7 +432,7 @@ QStringList DocumentClassManagerDialog::_saveDocumentClasses( void )
     // write all classes to disc
     QStringList warnings;
     DocumentClassModel::List classes( _model().get() );
-    for( DocumentClassModel::List::iterator iter = classes.begin(); iter != classes.end(); iter++ )
+    for( DocumentClassModel::List::iterator iter = classes.begin(); iter != classes.end(); ++iter )
     {
 
         DocumentClass& document_class( *iter );
@@ -464,7 +464,7 @@ QStringList DocumentClassManagerDialog::_saveDocumentClasses( void )
 
     // write fileNames to options
     XmlOptions::get().clearSpecialOptions( "PATTERN_FILENAME" );
-    for( DocumentClassModel::List::iterator iter = classes.begin(); iter != classes.end(); iter++ )
+    for( DocumentClassModel::List::iterator iter = classes.begin(); iter != classes.end(); ++iter )
     { XmlOptions::get().add( "PATTERN_FILENAME", iter->file() ); }
 
     // check modifications

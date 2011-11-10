@@ -241,7 +241,7 @@ void FileSystemModel::_installIcons( void ) const
   // load link pixmap
   CustomPixmap link = CustomPixmap().find( ICONS::LINK );
 
-  for( IconNames::iterator iter = type_names.begin(); iter != type_names.end(); iter++ )
+  for( IconNames::iterator iter = type_names.begin(); iter != type_names.end(); ++iter )
   {
 
     _icons()[iter->first] = CustomPixmap()

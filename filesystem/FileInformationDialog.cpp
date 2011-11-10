@@ -208,7 +208,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     grid_layout->addWidget( checkboxes[QFile::ExeOther   ] = new QCheckBox( box ), Qt::AlignHCenter );
 
     QFile::Permissions permissions( file.permissions() );
-    for( CheckBoxMap::iterator iter = checkboxes.begin(); iter != checkboxes.end(); iter++ )
+    for( CheckBoxMap::iterator iter = checkboxes.begin(); iter != checkboxes.end(); ++iter )
     {
         iter->second->setChecked( permissions & iter->first );
         iter->second->setEnabled( false );

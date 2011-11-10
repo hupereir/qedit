@@ -158,7 +158,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
 
     // optimize drawing by not drawing overlapping segments
     BlockDelimiterSegment::List::reverse_iterator previous( segments_.rend() );
-    for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
+    for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); ++iter )
     {
 
         // skip segment if outside of visible limits
@@ -184,7 +184,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     }
 
     // end tick
-    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
     {
 
         if( iter->end().isValid() && iter->end().cursor() < last_index && iter->end().cursor() >= first_index && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
@@ -193,7 +193,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     }
 
     // begin tick
-    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
     {
 
         // check validity
@@ -210,7 +210,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     painter.setPen( pen );
     painter.setRenderHints( QPainter::Antialiasing );
 
-    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
     {
         if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
         { _drawDelimiter( painter, iter->activeRect(), iter->flag( BlockDelimiterSegment::COLLAPSED ) ); }
@@ -421,7 +421,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
 
     // loop over segments in reverse order
     BlockDelimiterSegment::List::reverse_iterator previous(segments_.rend() );
-    for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); iter++ )
+    for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); ++iter )
     {
 
         // skip this segment if included in previous
@@ -469,7 +469,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
     }
 
     // now remove all text stored in cursor list
-    for( CursorList::const_iterator iter = cursors.begin(); iter != cursors.end(); iter++ )
+    for( CursorList::const_iterator iter = cursors.begin(); iter != cursors.end(); ++iter )
     {
         cursor.setPosition( iter->anchor() );
         cursor.setPosition( iter->position(), QTextCursor::KeepAnchor );
@@ -599,7 +599,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
 
     // loop over delimiter types
     bool first( true );
-    for( BlockDelimiter::List::const_iterator iter = delimiters_.begin(); iter != delimiters_.end(); iter++ )
+    for( BlockDelimiter::List::const_iterator iter = delimiters_.begin(); iter != delimiters_.end(); ++iter )
     {
 
         // keep track of all starting points
@@ -690,7 +690,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
 
         // insert the remaining points as empty segments (that will extend to the end of the document)
         /* they are inserted in reverse order to optimize segment drawing in paintEvent */
-        for( BlockDelimiterSegment::List::reverse_iterator iter = start_points.rbegin(); iter != start_points.rend(); iter++ )
+        for( BlockDelimiterSegment::List::reverse_iterator iter = start_points.rbegin(); iter != start_points.rend(); ++iter )
         { segments_.push_back( *iter ); }
 
         // insert total number of collapsed block as last element
@@ -718,7 +718,7 @@ void BlockDelimiterDisplay::_updateSegmentMarkers( void )
 
     QTextBlock block( _editor().document()->begin() );
     unsigned int id = 0;
-    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); iter++ )
+    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
     {
         _updateMarker( block, id, iter->begin(), BEGIN );
         _updateMarker( block, id, iter->end(), END );
@@ -794,7 +794,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
         {
 
             const TextBlock::Delimiter::List& delimiters( second_data->delimiters() );
-            for( TextBlock::Delimiter::List::const_iterator iter = delimiters.begin(); iter != delimiters.end(); iter++ )
+            for( TextBlock::Delimiter::List::const_iterator iter = delimiters.begin(); iter != delimiters.end(); ++iter )
             {
                 if( !iter->begin() ) continue;
                 block = block.previous();
@@ -859,7 +859,7 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
     block_format.setProperty( TextBlock::Collapsed, false );
     cursor.setBlockFormat( block_format );
 
-    for( CollapsedBlockData::List::const_iterator iter = collapsed_data.children().begin(); iter != collapsed_data.children().end(); iter++ )
+    for( CollapsedBlockData::List::const_iterator iter = collapsed_data.children().begin(); iter != collapsed_data.children().end(); ++iter )
     {
 
         cursor.insertBlock();

@@ -125,7 +125,7 @@ void NavigationToolBar::_updateConfiguration( void )
     setToolButtonStyle( style );
 
     // also update buttons independently
-    for( ButtonMap::const_iterator iter = buttons_.begin(); iter != buttons_.end(); iter++ )
+    for( ButtonMap::const_iterator iter = buttons_.begin(); iter != buttons_.end(); ++iter )
     {
         iter->first->setToolButtonStyle( style );
         iter->first->setIconSize( icon_size );
@@ -164,7 +164,7 @@ void NavigationToolBar::_navigationFrameVisibilityChanged( bool state )
     {
 
         // make sure no button is checked
-        for( ButtonMap::const_iterator iter = buttons_.begin(); iter != buttons_.end(); iter++ )
+        for( ButtonMap::const_iterator iter = buttons_.begin(); iter != buttons_.end(); ++iter )
         { iter->first->setChecked( false ); }
 
     }
@@ -172,7 +172,7 @@ void NavigationToolBar::_navigationFrameVisibilityChanged( bool state )
 
         // make sure that one button is checked
         bool found( false );
-        for( ButtonMap::iterator iter = buttons_.begin(); iter != buttons_.end() && !found; iter++ )
+        for( ButtonMap::iterator iter = buttons_.begin(); iter != buttons_.end() && !found; ++iter )
         {
             if( iter->second == _navigationFrame().currentWidget() )
             {
@@ -193,7 +193,7 @@ void NavigationToolBar::_orientationChanged( Qt::Orientation orientation )
 
     Debug::Throw() << "NavigationToolBar::_orientationChanged - orientation: " << orientation << endl;
 
-    for( ButtonMap::iterator iter = buttons_.begin(); iter != buttons_.end(); iter++ )
+    for( ButtonMap::iterator iter = buttons_.begin(); iter != buttons_.end(); ++iter )
     { iter->first->rotate( orientation == Qt::Horizontal ? CustomToolButton::NONE : CustomToolButton::COUNTERCLOCKWISE ); }
 
     adjustSize();
@@ -212,7 +212,7 @@ void NavigationToolBar::_display( QAbstractButton* button )
     // retrieve widget in map
     bool state( button->isChecked() );
     QWidget* widget (0);
-    for( ButtonMap::iterator iter = buttons_.begin(); iter != buttons_.end(); iter++ )
+    for( ButtonMap::iterator iter = buttons_.begin(); iter != buttons_.end(); ++iter )
     {
         if( iter->first == button ) widget = iter->second;
         else iter->first->setChecked( false );

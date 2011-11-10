@@ -21,16 +21,12 @@
 *******************************************************************************/
 
 /*!
-  \file FileCheck.cpp
-  \brief keep track of external file modifications
-  \author  Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file FileCheck.cpp
+\brief keep track of external file modifications
+\author  Hugo Pereira
+\version $Revision$
+\date $Date$
 */
-
-#include <algorithm>
-#include <cassert>
-#include <QApplication>
 
 #include "Debug.h"
 #include "File.h"
@@ -38,15 +34,17 @@
 #include "TextDisplay.h"
 #include "TextView.h"
 
-using namespace std;
+#include <QtGui/QApplication>
+#include <algorithm>
+#include <cassert>
 
 //____________________________________________________
 FileCheck::FileCheck( QObject* parent ):
-  QObject( parent ),
-  Counter( "FileCheck" )
+    QObject( parent ),
+    Counter( "FileCheck" )
 {
-  Debug::Throw( "FileCheck::FileCheck.\n" );
-  connect( &_fileSystemWatcher(), SIGNAL( fileChanged( const QString& ) ), SLOT( _fileChanged( const QString& ) ) );
+    Debug::Throw( "FileCheck::FileCheck.\n" );
+    connect( &_fileSystemWatcher(), SIGNAL( fileChanged( const QString& ) ), SLOT( _fileChanged( const QString& ) ) );
 }
 
 //______________________________________________________
@@ -56,20 +54,20 @@ FileCheck::~FileCheck( void )
 //______________________________________________________
 void FileCheck::registerDisplay( TextDisplay* display )
 {
-  Debug::Throw( "FileCheck::registerDisplay.\n" );
-  if( !isAssociated( display ) ) { BASE::Key::associate( this, display ); }
+    Debug::Throw( "FileCheck::registerDisplay.\n" );
+    if( !isAssociated( display ) ) { BASE::Key::associate( this, display ); }
 }
 
 //______________________________________________________
 void FileCheck::addFile( const QString& file )
 {
 
-  Debug::Throw() << "FileCheck::addFile: " << file << endl;
-  if( files_.find( file ) == files_.end() )
-  {
-    files_.insert( file );
-    _fileSystemWatcher().addPath( file );
-  }
+    Debug::Throw() << "FileCheck::addFile: " << file << endl;
+    if( files_.find( file ) == files_.end() )
+    {
+        files_.insert( file );
+        _fileSystemWatcher().addPath( file );
+    }
 
 }
 
@@ -77,11 +75,11 @@ void FileCheck::addFile( const QString& file )
 void FileCheck::removeFile( const QString& file )
 {
 
-  Debug::Throw() << "FileCheck::removeFile: " << file << endl;
-  files_.erase( file );
-  _fileSystemWatcher().removePath( file );
+    Debug::Throw() << "FileCheck::removeFile: " << file << endl;
+    files_.erase( file );
+    _fileSystemWatcher().removePath( file );
 
-  return;
+    return;
 
 }
 
@@ -89,82 +87,82 @@ void FileCheck::removeFile( const QString& file )
 void FileCheck::_fileChanged( const QString& file )
 {
 
-  Debug::Throw() << "FileCheck::_fileChanged: " << file << endl;
+    Debug::Throw() << "FileCheck::_fileChanged: " << file << endl;
 
-  // filecheck data
-  Data data( file );
-  File local( file );
+    // filecheck data
+    Data data( file );
+    File local( file );
 
-  if( !local.exists() )
-  {
+    if( !local.exists() )
+    {
 
-    data.setFlag( Data::REMOVED );
-    data.setTimeStamp( TimeStamp::now() );
-    removeFile( file );
+        data.setFlag( Data::REMOVED );
+        data.setTimeStamp( TimeStamp::now() );
+        removeFile( file );
 
-  } else {
+    } else {
 
-    data.setFlag( Data::MODIFIED );
-    data.setTimeStamp( local.lastModified() );
+        data.setFlag( Data::MODIFIED );
+        data.setTimeStamp( local.lastModified() );
 
-  }
+    }
 
-  data_.insert( data );
-  timer_.start( 200, this );
+    data_.insert( data );
+    timer_.start( 200, this );
 
 }
 
 //______________________________________________________
 void FileCheck::timerEvent( QTimerEvent* event )
 {
-  if( event->timerId() == timer_.timerId() )
-  {
-
-    // stop timer
-    timer_.stop();
-    if( data_.empty() ) return;
-
-    BASE::KeySet<TextDisplay> displays( this );
-    for( DataSet::const_iterator iter = data_.begin(); iter != data_.end(); iter++ )
+    if( event->timerId() == timer_.timerId() )
     {
 
-      BASE::KeySet<TextDisplay>::iterator display_iter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( iter->file() ) ) );
-      if( display_iter != displays.end() )
-      {
+        // stop timer
+        timer_.stop();
+        if( data_.empty() ) return;
 
-        // assign to this display and others
-        BASE::KeySet<TextDisplay> associates( *display_iter );
-        associates.insert( *display_iter );
-        for( BASE::KeySet<TextDisplay>::iterator display_iter = associates.begin(); display_iter != associates.end(); display_iter++ )
+        BASE::KeySet<TextDisplay> displays( this );
+        for( DataSet::const_iterator iter = data_.begin(); iter != data_.end(); ++iter )
         {
 
-          // check whether data are still relevant for this display
-          if( !( iter->flag() == Data::REMOVED || ((*display_iter)->lastSaved().isValid() && (*display_iter)->lastSaved() < iter->timeStamp()) ) )
-          { continue; }
+            BASE::KeySet<TextDisplay>::iterator displayIter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( iter->file() ) ) );
+            if( displayIter != displays.end() )
+            {
 
-          (*display_iter)->setFileCheckData( *iter );
-          if( !( (*display_iter)->isActive() && (*display_iter)->QTextEdit::hasFocus() ) )
-          { continue; }
+                // assign to this display and others
+                BASE::KeySet<TextDisplay> associates( *displayIter );
+                associates.insert( *displayIter );
+                for( BASE::KeySet<TextDisplay>::iterator displayIter = associates.begin(); displayIter != associates.end(); ++displayIter )
+                {
 
-          // retrieve associated TextView
-          BASE::KeySet<TextView> views( *display_iter );
-          if( !views.empty() ) (*views.begin())->checkDisplayModifications( *display_iter );
+                    // check whether data are still relevant for this display
+                    if( !( iter->flag() == Data::REMOVED || ((*displayIter)->lastSaved().isValid() && (*displayIter)->lastSaved() < iter->timeStamp()) ) )
+                    { continue; }
+
+                    (*displayIter)->setFileCheckData( *iter );
+                    if( !( (*displayIter)->isActive() && (*displayIter)->QTextEdit::hasFocus() ) )
+                    { continue; }
+
+                    // retrieve associated TextView
+                    BASE::KeySet<TextView> views( *displayIter );
+                    if( !views.empty() ) (*views.begin())->checkDisplayModifications( *displayIter );
+
+                }
+
+            } else {
+
+                // permanently remove file from list
+                removeFile( iter->file() );
+
+            }
 
         }
 
-      } else {
+        // clear
+        data_.clear();
 
-        // permanently remove file from list
-        removeFile( iter->file() );
-
-      }
-
-    }
-
-    // clear
-    data_.clear();
-
-  } else return QObject::timerEvent( event );
+    } else return QObject::timerEvent( event );
 
 
 }

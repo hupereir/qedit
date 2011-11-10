@@ -146,7 +146,7 @@ void IndentPatternRuleList::_edit( void )
   }
 
   IndentPatternRuleModel::List rule( model_.get() );
-  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); iter++ )
+  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); ++iter )
   {
 
     IndentPattern::Rule old_rule( model_.get( *iter ) );
@@ -199,7 +199,7 @@ void IndentPatternRuleList::_storeSelection( void )
 
   // retrieve selected indexes in list
   QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
   {
     // check column
     if( !iter->column() == 0 ) continue;
@@ -218,7 +218,7 @@ void IndentPatternRuleList::_restoreSelection( void )
   else {
 
     list_->selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); iter++ )
+    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
     { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
   }

@@ -53,7 +53,7 @@ CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
 unsigned int CollapsedBlockData::blockCount( void ) const
 {
   unsigned int out(1);
-  for( List::const_iterator iter = children().begin(); iter != children().end(); iter++ )
+  for( List::const_iterator iter = children().begin(); iter != children().end(); ++iter )
   { out += iter->blockCount(); }
 
   return out;
@@ -64,7 +64,7 @@ QString CollapsedBlockData::toPlainText( void ) const
 {
 
   QString out( text() + "\n" );
-  for( List::const_iterator iter = children().begin(); iter != children().end(); iter++ )
+  for( List::const_iterator iter = children().begin(); iter != children().end(); ++iter )
   { out += iter->toPlainText(); }
 
   return out;

@@ -263,7 +263,7 @@ BASE::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
 {
     BASE::KeySet<TextDisplay> displays;
     BASE::KeySet<TextView> views( this );
-    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); ++iter )
     {
         BASE::KeySet<TextDisplay> view_displays(*iter);
         displays.insert( view_displays.begin(), view_displays.end() );
@@ -283,7 +283,7 @@ bool MainWindow::selectDisplay( const File& file )
     if( activeView().activeDisplay().file() == file ) return true;
 
     BASE::KeySet<TextView> views( this );
-    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); ++iter )
     {
 
         if( (*iter)->selectDisplay( file ) )
@@ -304,7 +304,7 @@ void MainWindow::saveAll( void )
 {
     Debug::Throw( "MainWindow::saveAll.\n" );
     BASE::KeySet<TextView> views( this );
-    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); ++iter )
     { (*iter)->saveAll(); }
 }
 
@@ -313,7 +313,7 @@ void MainWindow::ignoreAll( void )
 {
     Debug::Throw( "MainWindow::ignoreAll.\n" );
     BASE::KeySet<TextView> views( this );
-    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); ++iter )
     { (*iter)->ignoreAll(); }
 }
 
@@ -463,7 +463,7 @@ void MainWindow::_print( void )
     Options::List commands( XmlOptions::get().specialOptions( "PRINT_COMMAND" ) );
     commands.push_back( XmlOptions::get().option( "PDF_EDITOR" ) );
     commands.push_back( XmlOptions::get().option( "HTML_EDITOR" ) );
-    for( Options::List::iterator iter = commands.begin(); iter != commands.end(); iter++ )
+    for( Options::List::iterator iter = commands.begin(); iter != commands.end(); ++iter )
     { dialog.addCommand( iter->raw() ); }
 
     // set command manually that match the selection mode
@@ -589,7 +589,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
     unsigned int modified_displays(0);
     BASE::KeySet<TextDisplay> displays;
     BASE::KeySet<TextView> views( this );
-    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); iter++ )
+    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); ++iter )
     {
 
         // update the number of modified displays
@@ -601,7 +601,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
 
     }
 
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
 
         // get local reference to display
@@ -662,7 +662,7 @@ void MainWindow::_updateConfiguration( void )
     FileList& recent_files( Singleton::get().application<Application>()->recentFiles() );
     DocumentClassManager& class_manager(Singleton::get().application<Application>()->classManager());
     FileRecord::List records( recent_files.records() );
-    for( FileRecord::List::iterator iter = records.begin(); iter != records.end(); iter++ )
+    for( FileRecord::List::iterator iter = records.begin(); iter != records.end(); ++iter )
     {
 
         FileRecord& record( *iter );

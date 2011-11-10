@@ -350,7 +350,7 @@ void TextDisplay::setIsNewDocument( void )
     // retrieve display and associated
     BASE::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
 
         (*iter)->_setIsNewDocument( true );
@@ -418,7 +418,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
     // this is needed to avoid highlight glitch when oppening file
     BASE::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
 
         (*iter)->setClassName( className() );
@@ -443,7 +443,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
 
     // finally set file. This is needed to be done _after_ the text is loaded in the display
     // in order to minimize the amount of slots that are sent
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
         (*iter)->_setIsNewDocument( false );
         (*iter)->_setFile( file );
@@ -515,7 +515,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
         {
             BASE::KeySet<TextDisplay> displays( this );
             displays.insert( this );
-            for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+            for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
             {
                 (*iter)->_setIgnoreWarnings( true );
                 (*iter)->setModified( false );
@@ -574,7 +574,7 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
         {
             BASE::KeySet<TextDisplay> displays( this );
             displays.insert( this );
-            for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+            for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
             { (*iter)->_setIgnoreWarnings( true ); }
         }
         break;
@@ -604,7 +604,7 @@ void TextDisplay::clearFileCheckData( void )
     // clear file check data
     BASE::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     { (*iter)->setFileCheckData( FileCheck::Data() ); }
 
 }
@@ -683,7 +683,7 @@ void TextDisplay::save( void )
             { blockDelimiterDisplay().expandAllBlocks(); }
 
             // process macros
-            for( TextMacro::List::const_iterator iter = macros().begin(); iter != macros().end(); iter++ )
+            for( TextMacro::List::const_iterator iter = macros().begin(); iter != macros().end(); ++iter )
             {
                 if( iter->isAutomatic() )
                 {
@@ -717,7 +717,7 @@ void TextDisplay::save( void )
 
     // retrieve associated displays, update saved time
     BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     { (*iter)->_setLastSaved( file().lastModified() ); }
 
     // add file to menu
@@ -766,7 +766,7 @@ void TextDisplay::saveAs( void )
 
     BASE::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
 
         // update file
@@ -957,7 +957,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
 
                 // look for next separator in string
                 int next( -1 );
-                for( TextSeparator::SeparatorSet::const_iterator iter = TextSeparator::get().all().begin(); iter != TextSeparator::get().all().end(); iter++ )
+                for( TextSeparator::SeparatorSet::const_iterator iter = TextSeparator::get().all().begin(); iter != TextSeparator::get().all().end(); ++iter )
                 {
                     int position( text.indexOf( *iter, index+1 ) );
                     if( position >= 0 && ( next < 0 || position < next ) ) next = position;
@@ -1075,7 +1075,7 @@ bool TextDisplay::isCurrentBlockTagged( void )
 
     } else blocks.push_back( cursor.block() );
 
-    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     {
         TextBlockData *data( static_cast<TextBlockData*>( iter->userData() ) );
         if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
@@ -1267,7 +1267,7 @@ void TextDisplay::clearAllTags( const int& flags )
     // this is needed due to the setUpdatesEnabled above
     BASE::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     { (*iter)->viewport()->update(); }
 
 }
@@ -1338,7 +1338,7 @@ void TextDisplay::selectClassName( QString name )
     // and update class name
     BASE::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
         (*iter)->setClassName( name );
         (*iter)->updateDocumentClass();
@@ -1987,7 +1987,7 @@ void TextDisplay::_toggleTextIndent( bool state )
         setSynchronized( false );
 
         BASE::KeySet<TextDisplay> displays( this );
-        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
         { if( (*iter)->isSynchronized() ) (*iter)->textIndentAction().setChecked( state ); }
         setSynchronized( true );
 
@@ -2012,7 +2012,7 @@ void TextDisplay::_toggleTextHighlight( bool state )
         setSynchronized( false );
 
         BASE::KeySet<TextDisplay> displays( this );
-        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
         { if( (*iter)->isSynchronized() ) (*iter)->textHighlightAction().setChecked( state ); }
 
         setSynchronized( true );
@@ -2050,7 +2050,7 @@ void TextDisplay::_toggleParenthesisHighlight( bool state )
         setSynchronized( false );
 
         BASE::KeySet<TextDisplay> displays( this );
-        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
 
         { if( (*iter)->isSynchronized() ) (*iter)->parenthesisHighlightAction().setChecked( state ); }
         setSynchronized( true );
@@ -2082,7 +2082,7 @@ void TextDisplay::_toggleAutoSpell( bool state )
         setSynchronized( false );
 
         BASE::KeySet<TextDisplay> displays( this );
-        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
         { if( (*iter)->isSynchronized() ) (*iter)->autoSpellAction().setChecked( state ); }
         setSynchronized( true );
 
@@ -2114,7 +2114,7 @@ void TextDisplay::_toggleShowBlockDelimiters( bool state )
         setSynchronized( false );
 
         BASE::KeySet<TextDisplay> displays( this );
-        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); iter++ )
+        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
         { if( (*iter)->isSynchronized() ) (*iter)->showBlockDelimiterAction().setChecked( state ); }
         setSynchronized( true );
 
@@ -2249,7 +2249,7 @@ void TextDisplay::_addBaseIndentation( void )
     blocks.push_back( end );
 
     // loop over blocks
-    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     {
         // check block
         if( !iter->isValid() ) continue;
@@ -2331,7 +2331,7 @@ void TextDisplay::_replaceLeadingTabs( const bool& confirm )
     blocks.push_back( end );
 
     // loop over blocks
-    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     {
         // check block
         if( !iter->isValid() ) continue;
@@ -2661,7 +2661,7 @@ void TextDisplay::_tagBlock( void )
     } else blocks.push_back( cursor.block() );
 
     // clear background for selected blocks
-    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     { if( iter->isValid() ) tagBlock( *iter, TextBlock::USER_TAG ); }
 
 }
@@ -2775,7 +2775,7 @@ void TextDisplay::_clearTag( void )
     }
 
     // clear background for selected blocks
-    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); iter++ )
+    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     { clearTag( *iter, TextBlock::ALL_TAGS ); }
 
 }
@@ -2804,7 +2804,7 @@ QString TextDisplay::_collapsedText( const QTextBlock& block ) const
     {
 
         CollapsedBlockData collapsed_data( block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
-        for( CollapsedBlockData::List::const_iterator iter = collapsed_data.children().begin(); iter != collapsed_data.children().end(); iter++ )
+        for( CollapsedBlockData::List::const_iterator iter = collapsed_data.children().begin(); iter != collapsed_data.children().end(); ++iter )
         { text += iter->toPlainText(); }
 
     }

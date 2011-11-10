@@ -164,7 +164,7 @@ DocumentClass DocumentClassDialog::documentClass( void )
     if( warnings.size() > 1 ) what << "s";
     what << ": " << endl;
 
-    for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); iter++ )
+    for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); ++iter )
     { what << "  " << *iter << endl; }
 
     InformationDialog( this, message ).centerOnParent().exec();
