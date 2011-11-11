@@ -36,7 +36,7 @@
 #include "ReplaceDialog.h"
 #include "QtUtil.h"
 
-using namespace std;
+
 
 //________________________________________________________________________
 ReplaceDialog::ReplaceDialog( QWidget* parent, Qt::WFlags flags ):

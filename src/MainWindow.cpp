@@ -82,7 +82,7 @@
 #include "WindowTitle.h"
 #include "XmlOptions.h"
 
-using namespace std;
+
 
 //_____________________________________________________
 const QString MainWindow::LEFT_RIGHT = "Left/right";

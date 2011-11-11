@@ -29,13 +29,6 @@
   \date $Date$
 */
 
-#include <algorithm>
-#include <cassert>
-#include <QIcon>
-#include <QMimeData>
-#include <QPalette>
-#include <QSet>
-
 #include "Icons.h"
 #include "CustomPixmap.h"
 #include "FileRecordProperties.h"
@@ -45,7 +38,12 @@
 #include "XmlFileRecord.h"
 #include "XmlOptions.h"
 
-using namespace std;
+#include <QtCore/QMimeData>
+#include <QtCore/QSet>
+#include <QtGui/QIcon>
+#include <QtGui/QPalette>
+#include <algorithm>
+#include <cassert>
 
 //______________________________________________________________
 const QString SessionFilesModel::DRAG = "base/sessionfilesmodel/drag";
@@ -151,7 +149,7 @@ QIcon SessionFilesModel::_icon( unsigned int type )
     } else assert( false );
 
     // store in map and return
-    _icons().insert( make_pair( type, icon ) );
+    _icons().insert( std::make_pair( type, icon ) );
     return icon;
 
 }

@@ -38,7 +38,7 @@
 #include "NewFileDialog.h"
 #include "QtUtil.h"
 
-using namespace std;
+
 
 //________________________________________________________
 NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned int& buttons ):

@@ -38,7 +38,7 @@
 #include "DocumentClassToolBar.h"
 #include "Singleton.h"
 
-using namespace std;
+
 
 //________________________________________________________________
 DocumentClassToolBar::DocumentClassToolBar( QWidget* parent ):

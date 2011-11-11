@@ -24,56 +24,56 @@
 ****************************************************************************/
 
 /*!
-   \file DocumentClassMenu.h
-   \brief display available document classes
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
+\file DocumentClassMenu.h
+\brief display available document classes
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
-#include <QMenu>
-#include <QAction>
-#include <QActionGroup>
+#include "Counter.h"
+
+#include <QtGui/QMenu>
+#include <QtGui/QAction>
+#include <QtGui/QActionGroup>
 
 #include <map>
-
-#include "Counter.h"
 
 //! display available document classes
 class DocumentClassMenu: public QMenu, public Counter
 {
 
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! constructor
-  DocumentClassMenu( QWidget* );
+    //! constructor
+    DocumentClassMenu( QWidget* );
 
-  //! destructor
-  virtual ~DocumentClassMenu( void )
-  {}
+    //! destructor
+    virtual ~DocumentClassMenu( void )
+    {}
 
-  signals:
+    signals:
 
-  //! emmited every time a document class is selected
-  void documentClassSelected( QString );
+    //! emmited every time a document class is selected
+    void documentClassSelected( QString );
 
-  protected slots:
+    protected slots:
 
-  //! update
-  void _update( void );
+    //! update
+    void _update( void );
 
-  //! select document class from menu
-  void _selectClassName( QAction* );
+    //! select document class from menu
+    void _selectClassName( QAction* );
 
-  private:
+    private:
 
-  //! actions
-  QActionGroup* action_group_;
+    //! actions
+    QActionGroup* actionGroup_;
 
-  //! map document class to macro names
-  std::map< QAction*, QString > actions_;
+    //! map document class to macro names
+    std::map< QAction*, QString > actions_;
 
 };
 

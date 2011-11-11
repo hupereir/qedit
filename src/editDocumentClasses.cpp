@@ -45,7 +45,7 @@
 #include "ErrorHandler.h"
 #include "XmlOptions.h"
 
-using namespace std;
+
 
 //_______________________________
 //! handles keyboard interruptions

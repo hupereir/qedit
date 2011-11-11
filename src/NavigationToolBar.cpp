@@ -28,8 +28,6 @@
 \date $Date$
 */
 
-#include <QButtonGroup>
-
 #include "CustomPixmap.h"
 #include "CustomToolButton.h"
 #include "Debug.h"
@@ -46,8 +44,7 @@
 #include "ToolBarMenu.h"
 #include "ToolButtonStyleMenu.h"
 
-
-using namespace std;
+#include <QtGui/QButtonGroup>
 
 //_______________________________________________________________
 NavigationToolBar::NavigationToolBar( QWidget* parent ):
@@ -84,7 +81,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
     button->setChecked( true );
 
     button_group->addButton( button );
-    buttons_.insert( make_pair( button, &_navigationFrame().sessionFilesFrame() ) );
+    buttons_.insert( std::make_pair( button, &_navigationFrame().sessionFilesFrame() ) );
 
     // recent files
     addWidget( button = _newToolButton( this, IconEngine::get( ICONS::HISTORY ) ) );
@@ -92,7 +89,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
     button->setToolTip( "Files recently opened" );
 
     button_group->addButton( button );
-    buttons_.insert( make_pair( button, &_navigationFrame().recentFilesFrame() ) );
+    buttons_.insert( std::make_pair( button, &_navigationFrame().recentFilesFrame() ) );
 
     // file system
     addWidget( button = _newToolButton( this, IconEngine::get( ICONS::FILESYSTEM ) ) );
@@ -100,7 +97,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
     button->setToolTip( "File system browser" );
 
     button_group->addButton( button );
-    buttons_.insert( make_pair( button, &_navigationFrame().fileSystemFrame() ) );
+    buttons_.insert( std::make_pair( button, &_navigationFrame().fileSystemFrame() ) );
 
     _updateConfiguration();
 

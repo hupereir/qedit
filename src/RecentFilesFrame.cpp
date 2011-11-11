@@ -45,7 +45,7 @@
 #include "Util.h"
 #include "XmlOptions.h"
 
-using namespace std;
+
 
 //_______________________________________________________________
 RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):

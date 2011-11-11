@@ -27,16 +27,6 @@
 \date $Date$
 */
 
-#include <QApplication>
-#include <QAbstractTextDocumentLayout>
-#include <QCheckBox>
-#include <QLabel>
-#include <QPainter>
-#include <QPushButton>
-#include <QMenu>
-#include <QScrollBar>
-#include <QTextLayout>
-
 #include "AnimatedTabWidget.h"
 #include "AnimatedLineEditor.h"
 #include "Application.h"
@@ -80,7 +70,15 @@
 #include "SuggestionMenu.h"
 #endif
 
-using namespace std;
+#include <QtGui/QApplication>
+#include <QtGui/QAbstractTextDocumentLayout>
+#include <QtGui/QCheckBox>
+#include <QtGui/QLabel>
+#include <QtGui/QPainter>
+#include <QtGui/QPushButton>
+#include <QtGui/QMenu>
+#include <QtGui/QScrollBar>
+#include <QtGui/QTextLayout>
 
 //___________________________________________________
 NewDocumentNameServer& TextDisplay::newDocumentNameServer( void )
@@ -810,7 +808,7 @@ void TextDisplay::revertToSave( void )
     verticalScrollBar()->setValue( y );
 
     // adjust cursor postion
-    position = min( position, toPlainText().size() );
+    position = std::min( position, toPlainText().size() );
 
     // restore cursor
     QTextCursor cursor( textCursor() );
@@ -1062,20 +1060,20 @@ bool TextDisplay::isCurrentBlockTagged( void )
 
     Debug::Throw( "TextDisplay::isCurrentBlockTagged.\n" );
 
-    vector<QTextBlock> blocks;
+    std::vector<QTextBlock> blocks;
     QTextCursor cursor( textCursor() );
     if( cursor.hasSelection() )
     {
 
-        QTextBlock first( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
-        QTextBlock last( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
+        QTextBlock first( document()->findBlock( std::min( cursor.position(), cursor.anchor() ) ) );
+        QTextBlock last( document()->findBlock( std::max( cursor.position(), cursor.anchor() ) ) );
         for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
         { blocks.push_back( block ); }
         if( last.isValid() ) blocks.push_back( last );
 
     } else blocks.push_back( cursor.block() );
 
-    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( std::vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     {
         TextBlockData *data( static_cast<TextBlockData*>( iter->userData() ) );
         if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
@@ -1644,8 +1642,8 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     {
 
         // retrieve blocks
-        position_begin = min( cursor.position(), cursor.anchor() );
-        position_end = max( cursor.position(), cursor.anchor() );
+        position_begin = std::min( cursor.position(), cursor.anchor() );
+        position_end = std::max( cursor.position(), cursor.anchor() );
         begin = document()->findBlock( position_begin );
         end = document()->findBlock( position_end );
 
@@ -2199,8 +2197,8 @@ void TextDisplay::_indentSelection( void )
     if( !cursor.hasSelection() ) return;
 
     // retrieve blocks
-    QTextBlock begin( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
-    QTextBlock end( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
+    QTextBlock begin( document()->findBlock( std::min( cursor.position(), cursor.anchor() ) ) );
+    QTextBlock end( document()->findBlock( std::max( cursor.position(), cursor.anchor() ) ) );
 
     // need to remove selection otherwise the first adding of a tab
     // will remove the entire selection.
@@ -2237,19 +2235,19 @@ void TextDisplay::_addBaseIndentation( void )
     QTextCursor cursor( textCursor() );
     if( !cursor.hasSelection() ) return;
 
-    int position_begin( min( cursor.position(), cursor.anchor() ) );
-    int position_end( max( cursor.position(), cursor.anchor() ) );
+    int position_begin( std::min( cursor.position(), cursor.anchor() ) );
+    int position_end( std::max( cursor.position(), cursor.anchor() ) );
     begin = document()->findBlock( position_begin );
     end = document()->findBlock( position_end );
 
     // store blocks
-    vector<QTextBlock> blocks;
+    std::vector<QTextBlock> blocks;
     for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
     { blocks.push_back( block ); }
     blocks.push_back( end );
 
     // loop over blocks
-    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( std::vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     {
         // check block
         if( !iter->isValid() ) continue;
@@ -2312,8 +2310,8 @@ void TextDisplay::_replaceLeadingTabs( const bool& confirm )
     if( cursor.hasSelection() )
     {
 
-        int position_begin( min( cursor.position(), cursor.anchor() ) );
-        int position_end( max( cursor.position(), cursor.anchor() ) );
+        int position_begin( std::min( cursor.position(), cursor.anchor() ) );
+        int position_end( std::max( cursor.position(), cursor.anchor() ) );
         begin = document()->findBlock( position_begin );
         end = document()->findBlock( position_end );
 
@@ -2325,13 +2323,13 @@ void TextDisplay::_replaceLeadingTabs( const bool& confirm )
     }
 
     // store blocks
-    vector<QTextBlock> blocks;
+    std::vector<QTextBlock> blocks;
     for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
     { blocks.push_back( block ); }
     blocks.push_back( end );
 
     // loop over blocks
-    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( std::vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     {
         // check block
         if( !iter->isValid() ) continue;
@@ -2647,13 +2645,13 @@ void TextDisplay::_tagBlock( void )
 {
 
     Debug::Throw( "TextDisplay::_tagBlock.\n" );
-    vector<QTextBlock> blocks;
+    std::vector<QTextBlock> blocks;
     QTextCursor cursor( textCursor() );
     if( cursor.hasSelection() )
     {
 
-        QTextBlock first( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
-        QTextBlock last( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
+        QTextBlock first( document()->findBlock( std::min( cursor.position(), cursor.anchor() ) ) );
+        QTextBlock last( document()->findBlock( std::max( cursor.position(), cursor.anchor() ) ) );
         for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
         { blocks.push_back( block ); }
         if( last.isValid() ) blocks.push_back( last );
@@ -2661,7 +2659,7 @@ void TextDisplay::_tagBlock( void )
     } else blocks.push_back( cursor.block() );
 
     // clear background for selected blocks
-    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( std::vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     { if( iter->isValid() ) tagBlock( *iter, TextBlock::USER_TAG ); }
 
 }
@@ -2742,13 +2740,13 @@ void TextDisplay::_clearTag( void )
 
     Debug::Throw( "AnimatedTextEditor::_clearTag.\n" );
 
-    vector<QTextBlock> blocks;
+    std::vector<QTextBlock> blocks;
     QTextCursor cursor( textCursor() );
     if( cursor.hasSelection() )
     {
 
-        QTextBlock first( document()->findBlock( min( cursor.position(), cursor.anchor() ) ) );
-        QTextBlock last( document()->findBlock( max( cursor.position(), cursor.anchor() ) ) );
+        QTextBlock first( document()->findBlock( std::min( cursor.position(), cursor.anchor() ) ) );
+        QTextBlock last( document()->findBlock( std::max( cursor.position(), cursor.anchor() ) ) );
         for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
         { blocks.push_back( block ); }
         if( last.isValid() ) blocks.push_back( last );
@@ -2775,7 +2773,7 @@ void TextDisplay::_clearTag( void )
     }
 
     // clear background for selected blocks
-    for( vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( std::vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     { clearTag( *iter, TextBlock::ALL_TAGS ); }
 
 }

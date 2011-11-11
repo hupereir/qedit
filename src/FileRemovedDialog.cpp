@@ -40,7 +40,7 @@
 #include "IconEngine.h"
 #include "QtUtil.h"
 
-using namespace std;
+
 
 //________________________________________________________
 FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):

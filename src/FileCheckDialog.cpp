@@ -38,7 +38,7 @@
 #include "Singleton.h"
 #include "TreeView.h"
 
-using namespace std;
+
 
 //________________________________________________________
 FileCheckDialog::FileCheckDialog( QWidget* parent ):

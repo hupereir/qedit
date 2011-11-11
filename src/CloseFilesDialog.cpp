@@ -37,7 +37,7 @@
 #include "Debug.h"
 #include "CloseFilesDialog.h"
 
-using namespace std;
+
 
 //__________________________________________________
 CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):

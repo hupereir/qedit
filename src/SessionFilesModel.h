@@ -32,9 +32,6 @@
   \date $Date$
 */
 
-#include <string.h>
-
-
 #include "FileRecordModel.h"
 #include "Debug.h"
 

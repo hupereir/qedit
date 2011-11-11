@@ -48,7 +48,7 @@
 #include "WindowServer.h"
 #include "XmlOptions.h"
 
-using namespace std;
+
 
 //________________________________________________________
 FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& selection ):

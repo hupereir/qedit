@@ -31,10 +31,6 @@
 \date $Date$
 */
 
-
-#include <QRegExp>
-#include <QAction>
-
 #include "AnimatedTextEditor.h"
 #include "AskForSaveDialog.h"
 #include "BlockDelimiter.h"
@@ -58,6 +54,9 @@
 #include "FilterMenu.h"
 #endif
 
+#include <QtCore/QRegExp>
+#include <QtGui/QAction>
+
 // forward declaration
 class BlockDelimiterDisplay;
 class DocumentClass;
@@ -67,48 +66,48 @@ class TextHighlight;
 //! text display window
 class TextDisplay: public AnimatedTextEditor
 {
-    
+
     //! Qt meta object declaration
     Q_OBJECT
-        
-        public:
-        
-        //! constructor
-        TextDisplay( QWidget* parent );
-    
+
+    public:
+
+    //! constructor
+    TextDisplay( QWidget* parent );
+
     //! destructor
     virtual ~TextDisplay();
-    
+
     //! used to select editor with matching filename
     class SameFileFTor
     {
         public:
-        
+
         //! constructor
         SameFileFTor( const File& file )
         {
-            
+
             if( file.isAbsolute() ) file_ = file.expand();
             else file_ = file;
-            
+
         }
-        
+
         //! predicate
         bool operator() ( const TextDisplay* display ) const
         { return display->file() == file_; }
-        
+
         private:
-        
+
         //! predicted file
         File file_;
-        
+
     };
-    
+
     //! used to select editor with empty, unmodified file
     class EmptyFileFTor
     {
         public:
-        
+
         //! predicate
         bool operator() ( const TextDisplay* display ) const
         {
@@ -116,35 +115,35 @@ class TextDisplay: public AnimatedTextEditor
                 display->file().isEmpty() ||
                 (display->isNewDocument() && !display->document()->isModified() );
         }
-            
+
     };
-        
+
     //! number of block associated to argument
     /*! reimplemented from base class to account for collapsed blocks */
     virtual int blockCount( const QTextBlock& ) const;
-    
+
     //! clone display configuration and document
     virtual void synchronize( TextDisplay* display );
-    
+
     //! check if current entry has been modified or not
     void setModified( const bool& value = true );
-    
+
     //! read-only
     virtual void setReadOnly( const bool& value );
-    
+
     //! retrieve context menu. Create it on first call
     virtual void installContextMenuActions( QMenu& menu, const bool& all_actions = true );
-    
+
     //! draw margins
     virtual void paintMargin( QPainter& );
-    
+
     //! update flags (to be passed to TextEditor to change button status)
     enum UpdateFlags
     {
-        
+
         //! file name (in bottom status bar and navigation frame)
         FILE_NAME = 1<<0,
-            
+
         //! document class
         DOCUMENT_CLASS = 1<<1,
 

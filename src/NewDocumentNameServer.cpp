@@ -34,7 +34,7 @@
 
 #include "NewDocumentNameServer.h"
 
-using namespace std;
+
 
 //_____________________________________
 const QString NewDocumentNameServer::default_name_ = "new document";

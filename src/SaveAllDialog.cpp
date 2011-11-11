@@ -36,7 +36,7 @@
 #include "Debug.h"
 #include "SaveAllDialog.h"
 
-using namespace std;
+
 
 //__________________________________________________
 SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):

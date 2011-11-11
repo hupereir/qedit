@@ -36,7 +36,7 @@
 #include "Singleton.h"
 #include "TextDisplay.h"
 
-using namespace std;
+
 
 //______________________________________________________
 AutoSave::AutoSave( QObject* parent ):

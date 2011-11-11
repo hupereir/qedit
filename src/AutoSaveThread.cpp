@@ -42,7 +42,7 @@
 #include "Str.h"
 #include "Util.h"
 
-using namespace std;
+
 
 //________________________________________________________________
 File AutoSaveThread::autoSaveName( const File& file )

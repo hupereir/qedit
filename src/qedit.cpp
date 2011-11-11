@@ -43,7 +43,7 @@
 
 #include "Application.h"
 
-using namespace std;
+
 
 //_______________________________
 //! handles keyboard interruptions

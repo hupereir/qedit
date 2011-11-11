@@ -37,7 +37,7 @@
 #include "RecentFilesFrame.h"
 #include "SessionFilesFrame.h"
 
-using namespace std;
+
 
 //_______________________________________________________________
 NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):

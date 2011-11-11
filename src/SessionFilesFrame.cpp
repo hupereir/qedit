@@ -46,7 +46,7 @@
 #include "WindowServer.h"
 #include "XmlOptions.h"
 
-using namespace std;
+
 
 //_______________________________________________________________
 SessionFilesFrame::SessionFilesFrame( QWidget* parent ):

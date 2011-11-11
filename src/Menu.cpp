@@ -50,9 +50,6 @@
 #include "WindowServer.h"
 #include "XmlOptions.h"
 
-using namespace std;
-using namespace Qt;
-
 //_______________________________________________
 Menu::Menu( QWidget* parent ):
     QMenuBar( parent ),
@@ -384,7 +381,7 @@ void Menu::_updateWindowsMenu( void )
         windowsActionGroup_->addAction( action );
 
         // insert in map for later callback.
-        fileActions_.insert( make_pair( action, file ) );
+        fileActions_.insert( std::make_pair( action, file ) );
 
     }
 

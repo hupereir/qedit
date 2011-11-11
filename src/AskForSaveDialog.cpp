@@ -40,7 +40,7 @@
 #include "IconEngine.h"
 #include "QtUtil.h"
 
-using namespace std;
+
 
 //________________________________________________________
 AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const unsigned int& buttons ):

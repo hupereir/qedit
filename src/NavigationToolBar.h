@@ -31,14 +31,14 @@
 \date $Date$
 */
 
-#include <cassert>
-#include <QAbstractButton>
-#include <QContextMenuEvent>
-#include <map>
-
 #include "IconSize.h"
 #include "CustomToolBar.h"
 #include "CustomToolButton.h"
+
+#include <QtGui/QAbstractButton>
+#include <QtGui/QContextMenuEvent>
+#include <cassert>
+#include <map>
 
 class NavigationFrame;
 
@@ -53,10 +53,10 @@ class NavigationToolBar: public CustomToolBar
     //! Qt meta object declaration
     Q_OBJECT
 
-        public:
+    public:
 
-        //! creator
-        NavigationToolBar( QWidget* parent );
+    //! creator
+    NavigationToolBar( QWidget* parent );
 
     //! destructor
     ~NavigationToolBar( void );
