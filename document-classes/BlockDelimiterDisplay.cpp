@@ -206,7 +206,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     // draw delimiters
     painter.setBrush( foreground_ );
     QPen pen( foreground_ );
-    pen.setWidthF( 1.5 );
+    pen.setWidthF( 1.0 );
     painter.setPen( pen );
     painter.setRenderHints( QPainter::Antialiasing );
 
@@ -973,7 +973,7 @@ void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect
 {
 
     QRectF local( rect );
-    local.adjust( 1.5, 1.5, -1.5, -1.5 );
+    //local.adjust( 0.5, 0.5, -0.5, -0.5 );
     if( collapsed )
     {
 
