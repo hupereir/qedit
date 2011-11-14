@@ -973,29 +973,30 @@ void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect
 {
 
     QRectF local( rect );
-    //local.adjust( 0.5, 0.5, -0.5, -0.5 );
     if( collapsed )
     {
 
-        double offset( local.height()/6 );
-        const QPointF points[3] =
+        QPointF points[3] =
         {
-            QPointF(local.topLeft()) + QPointF( offset, 0 ),
-            QPointF(local.bottomLeft()) + QPointF( offset, 0 ),
-            local.topLeft() + QPointF( local.width()*2/3, local.height()/2 ) + QPointF( offset, 0 )
+            QPointF(local.topLeft()) + QPointF( local.width()*1/6, 0 ),
+            QPointF(local.bottomLeft()) + QPointF( local.width()*1/6, 0 ),
+            local.topLeft() + QPointF( local.width()*5/6, local.height()/2 )
         };
+
+        for( int i=0; i<3; i++ ) { points[i].setX( 0.5 + int(points[i].x() ) ); }
 
         painter.drawConvexPolygon(points, 3);
 
     } else {
 
-        double offset( local.width()/6 );
-        const QPointF points[3] =
+        QPointF points[3] =
         {
-            QPointF(local.topLeft()) + QPointF( 0, offset ),
-            QPointF(local.topRight()) + QPointF( 0, offset ),
-            local.topLeft() + QPointF( local.width()/2, local.height()*2/3 ) + QPointF( 0, offset )
+            QPointF(local.topLeft()) + QPointF( 0, local.height()*1/6 ),
+            QPointF(local.topRight()) + QPointF( 0, local.height()*1/6 ),
+            local.topLeft() + QPointF( local.width()/2, local.height()*5/6 )
         };
+
+        for( int i=0; i<3; i++ ) { points[i].setY( 0.5 + int(points[i].y() ) ); }
 
         painter.drawConvexPolygon(points, 3);
     }
