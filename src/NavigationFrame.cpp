@@ -27,9 +27,6 @@
 \date $Date$
 */
 
-#include <QHeaderView>
-#include <QLayout>
-
 #include "Application.h"
 #include "Debug.h"
 #include "FileSystemFrame.h"
@@ -37,7 +34,8 @@
 #include "RecentFilesFrame.h"
 #include "SessionFilesFrame.h"
 
-
+#include <QtGui/QHeaderView>
+#include <QtGui/QLayout>
 
 //_______________________________________________________________
 NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
@@ -48,9 +46,6 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
     Debug::Throw( "NavigationFrame:NavigationFrame.\n" );
     layout()->setMargin(2);
     layout()->setSpacing(2);
-
-    // fading mode
-    // transitionWidget().setMode( TransitionWidget::FADE_SECOND );
 
     // stack widget
     addWidget( sessionFilesFrame_ = new SessionFilesFrame(0) );

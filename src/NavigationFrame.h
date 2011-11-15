@@ -31,15 +31,15 @@
 \date $Date$
 */
 
-#include <cassert>
-#include <map>
-#include <QAction>
-#include <QShowEvent>
-#include <QToolButton>
-
 #include "AnimatedStackedWidget.h"
 #include "FileList.h"
 #include "FileRecord.h"
+
+#include <QtGui/QAction>
+#include <QtGui/QShowEvent>
+#include <QtGui/QToolButton>
+#include <cassert>
+#include <map>
 
 class SessionFilesFrame;
 class RecentFilesFrame;
@@ -55,10 +55,10 @@ class NavigationFrame: public AnimatedStackedWidget
 
     Q_OBJECT
 
-        public:
+    public:
 
-        //! creator
-        NavigationFrame( QWidget* parent, FileList&  );
+    //! creator
+    NavigationFrame( QWidget* parent, FileList&  );
 
     //! destructor
     virtual ~NavigationFrame( void )

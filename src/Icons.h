@@ -45,7 +45,7 @@ namespace ICONS
 
     static const QString DOCUMENTS = "document-multiple.png";
     static const QString HISTORY = "view-history.png";
-    static const QString FILESYSTEM = "user-home.png";
+    static const QString FILESYSTEM = "folder.png";
 
     static const QString HTML="html.png";
     static const QString PDF = "pdf.png";
