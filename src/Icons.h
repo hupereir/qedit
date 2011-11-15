@@ -41,24 +41,24 @@
 namespace ICONS
 {
 
-    static const QString CLOSE = "fileclose.png";
+    static const QString CLOSE = "document-close.png";
 
-    static const QString DOCUMENTS = "documents.png";
-    static const QString HISTORY = "history.png";
+    static const QString DOCUMENTS = "document-multiple.png";
+    static const QString HISTORY = "view-history.png";
     static const QString FILESYSTEM = "user-home.png";
 
     static const QString HTML="html.png";
     static const QString PDF = "pdf.png";
-    static const QString INDENT="indent.png";
-    static const QString SPELLCHECK = "fonts.png";
-    static const QString VIEW_LEFTRIGHT = "view_left_right.png";
-    static const QString VIEW_TOPBOTTOM = "view_top_bottom.png";
-    static const QString VIEW_RIGHT = "view_right.png";
-    static const QString VIEW_BOTTOM = "view_bottom.png";
-    static const QString VIEW_REMOVE = "view_remove.png";
-    static const QString VIEW_DETACH = "window_fullscreen.png";
+    static const QString INDENT="format-indent-more.png";
+    static const QString SPELLCHECK = "tools-check-spelling.png";
+    static const QString VIEW_LEFTRIGHT = "view-split-left-right.png";
+    static const QString VIEW_TOPBOTTOM = "view-split-top-bottom.png";
+    static const QString VIEW_RIGHT = "view-right-new.png";
+    static const QString VIEW_BOTTOM = "view-bottom-new.png";
+    static const QString VIEW_REMOVE = "view-close.png";
+    static const QString VIEW_DETACH = "view-fullscreen.png";
 
-    static const QString TAG = "bookmark.png";
+    static const QString TAG = "bookmarks.png";
 
 }
 

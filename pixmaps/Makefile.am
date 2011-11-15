@@ -1,31 +1,30 @@
 AUTOMAKE_OPTIONS = foreign
 
 EXTRA_DIST = \
-  back.png \
-  bookmark.png \
-  document.png \
-  documents.png \
-  down.png \
-  editcut.png \
-  fileclose.png \
-  filenew.png \
-  filesaveas.png \
-  filesave.png \
-  folder.png \
-  fonts.png \
-  forward.png \
-  gohome.png \
-  history.png \
-  indent.png \
-  info.png \
-  link_overlay.png \
-  parent_directory.png \
-  save_all.png \
-  up.png \
-  user-home.png \
-  view_bottom.png \
-  view_left_right.png \
-  view_remove.png \
-  view_right.png \
-  view_top_bottom.png \
-  window_fullscreen.png
+arrow-down.png \
+arrow-up.png \
+bookmarks.png \
+document-close.png \
+document-multiple.png \
+document-new.png \
+document.png \
+document-save-all.png \
+document-save-as.png \
+document-save.png \
+emblem-symbolic-link.png \
+folder.png \
+format-indent-more.png \
+go-home.png \
+go-next.png \
+go-previous.png \
+go-up.png \
+info.png \
+tools-check-spelling.png \
+user-home.png \
+view-bottom-new.png \
+view-fullscreen.png \
+view-history.png \
+view-close.png \
+view-right-new.png \
+view-split-left-right.png \
+view-split-top-bottom.png

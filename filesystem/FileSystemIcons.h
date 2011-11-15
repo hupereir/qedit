@@ -43,12 +43,12 @@ namespace ICONS
 
   static const QString DOCUMENT = "document.png";
   static const QString FOLDER = "folder.png";
-  static const QString LINK = "link_overlay.png";
+  static const QString LINK = "emblem-symbolic-link.png";
 
-  static const QString PARENT_DIRECTORY = "parent_directory.png";
-  static const QString PREVIOUS_DIRECTORY = "back.png";
-  static const QString NEXT_DIRECTORY = "forward.png";
-  static const QString HOME_DIRECTORY = "gohome.png";
+  static const QString PARENT_DIRECTORY = "go-up.png";
+  static const QString PREVIOUS_DIRECTORY = "go-previous.png";
+  static const QString NEXT_DIRECTORY = "go-next.png";
+  static const QString HOME_DIRECTORY = "go-home.png";
 
 };
 
