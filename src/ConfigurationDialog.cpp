@@ -96,7 +96,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     addOptionWidget( checkbox );
 
     // edition
-    page = &addPage( "Text Edition" );
+    page = &addPage( "Text Edition", "Settings for text edition" );
 
     // tab emulation
     // needs customization with respect to BaseConfigurationDialog in order
