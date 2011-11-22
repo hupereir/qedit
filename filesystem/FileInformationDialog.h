@@ -48,12 +48,12 @@ class FileInformationDialog: public CustomDialog
     //! tab widget
     /*! needed for customization */
     AnimatedTabWidget& tabWidget( void ) const
-    { return *tab_widget_; }
+    { return *tabWidget_; }
 
     private:
 
     //! tab widget
-    AnimatedTabWidget* tab_widget_;
+    AnimatedTabWidget* tabWidget_;
 
 };
 
