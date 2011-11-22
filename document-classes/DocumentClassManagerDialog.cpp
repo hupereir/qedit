@@ -351,7 +351,7 @@ void DocumentClassManagerDialog::_installMenuBar( void )
     Debug::Throw( "DocumentClassManagerDialog::_installMenuBar.\n" );
     QMenuBar* menubar = new QMenuBar( this );
 
-    QMenu* menu = menubar->addMenu( "&File" );
+    QMenu* menu = menubar->addMenu( "File" );
     menu->addAction( &_closeAction() );
 
     setMenuBar( menubar );

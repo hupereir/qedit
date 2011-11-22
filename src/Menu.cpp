@@ -58,7 +58,7 @@ Menu::Menu( QWidget* parent ):
     Debug::Throw( "Menu::Menu.\n" );
 
     // file menu
-    QMenu* menu = addMenu( "&File" );
+    QMenu* menu = addMenu( "File" );
 
     // retrieve mainwindow
     Application& application( *Singleton::get().application<Application>() );
@@ -106,7 +106,7 @@ Menu::Menu( QWidget* parent ):
     connect( searchMenu_, SIGNAL( aboutToShow() ), SLOT( _updateSearchMenu() ) );
 
     // tools
-    toolsMenu_ = addMenu( "&Tools" );
+    toolsMenu_ = addMenu( "Tools" );
     connect( toolsMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updateToolsMenu() ) );
 
     // macros
@@ -116,7 +116,7 @@ Menu::Menu( QWidget* parent ):
     connect( macroMenu_, SIGNAL( textMacroSelected( QString ) ), SLOT( _selectMacro( QString ) ) );
 
     // Settings
-    preferenceMenu_ = addMenu( "&Settings" );
+    preferenceMenu_ = addMenu( "Settings" );
     connect( preferenceMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updatePreferenceMenu() ) );
 
     // windows
@@ -138,7 +138,7 @@ Menu::Menu( QWidget* parent ):
     }
 
     // create help menu
-    menu = addMenu( "&Help" );
+    menu = addMenu( "Help" );
     menu->addAction( &help->displayAction() );
     menu->addSeparator();
     menu->addAction( &application.aboutQtAction() );
@@ -148,7 +148,7 @@ Menu::Menu( QWidget* parent ):
     //#ifdef DEBUG
     menu->addSeparator();
     DebugMenu *debug_menu( new DebugMenu( this ) );
-    debug_menu->setTitle( "&Debug" );
+    debug_menu->setTitle( "Debug" );
     debug_menu->addAction( &help->dumpAction() );
     debug_menu->addAction( &application.monitoredFilesAction() );
     menu->addMenu( debug_menu );

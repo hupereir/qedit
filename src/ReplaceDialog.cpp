@@ -45,7 +45,7 @@ ReplaceDialog::ReplaceDialog( QWidget* parent, Qt::WFlags flags ):
   Debug::Throw( "ReplaceDialog::ReplaceDialog.\n" );
 
   // insert multiple file buttons
-  QPushButton* button = new QPushButton( "&Files", this );
+  QPushButton* button = new QPushButton( "Files", this );
   connect( button, SIGNAL( clicked() ), SIGNAL( replaceInFiles() ) );
   button->setToolTip( "Replace all occurence of the search string in the selected files" );
   _addDisabledButton( button );

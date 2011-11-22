@@ -59,6 +59,11 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     setWindowTitle( (file.isEmpty() ? File("File Information"):file.localName() )+ " - Qedit" );
     setOptionName( "FILE_INFORMATION_DIALOG" );
 
+    // customize layout
+    layout()->setMargin(0);
+    layout()->setSpacing(0);
+    buttonLayout().setMargin(5);
+
     tabWidget_ = new AnimatedTabWidget( this );
     mainLayout().addWidget( &tabWidget() );
 
@@ -157,7 +162,6 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     }
 
     gridLayout->setColumnStretch( 1, 1 );
-
     layout->addStretch( 1 );
 
     // permissions tab
