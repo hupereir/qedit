@@ -21,13 +21,7 @@
 *
 *******************************************************************************/
 
-/*!
-\file Menu.cpp
-\brief main menu
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
+#include "Menu.h"
 
 #include "Application.h"
 #include "BlockDelimiterDisplay.h"
@@ -38,7 +32,6 @@
 #include "HelpManager.h"
 #include "HelpText.h"
 #include "MainWindow.h"
-#include "Menu.h"
 #include "NavigationFrame.h"
 #include "RecentFilesMenu.h"
 #include "SessionFilesFrame.h"
@@ -105,25 +98,25 @@ Menu::Menu( QWidget* parent ):
     searchMenu_ = addMenu( "&Search" );
     connect( searchMenu_, SIGNAL( aboutToShow() ), SLOT( _updateSearchMenu() ) );
 
+    // windows
+    windowsActionGroup_ = new ActionGroup( this );
+    windowsMenu_ = addMenu( "Session" );
+    connect( windowsMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updateWindowsMenu() ) );
+    connect( windowsMenu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectFile( QAction* ) ) );
+
     // tools
     toolsMenu_ = addMenu( "Tools" );
     connect( toolsMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updateToolsMenu() ) );
 
     // macros
     addMenu( macroMenu_ = new TextMacroMenu( this ) );
-    macroMenu_->setTitle( "&Macro" );
+    macroMenu_->setTitle( "Macro" );
     connect( macroMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updateMacroMenu() ) );
     connect( macroMenu_, SIGNAL( textMacroSelected( QString ) ), SLOT( _selectMacro( QString ) ) );
 
     // Settings
     preferenceMenu_ = addMenu( "Settings" );
     connect( preferenceMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updatePreferenceMenu() ) );
-
-    // windows
-    windowsActionGroup_ = new ActionGroup( this );
-    windowsMenu_ = addMenu( "&Window" );
-    connect( windowsMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updateWindowsMenu() ) );
-    connect( windowsMenu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectFile( QAction* ) ) );
 
     // help manager
     BASE::HelpManager* help( new BASE::HelpManager( this ) );
@@ -270,6 +263,9 @@ void Menu::_updateToolsMenu( void )
     // clear menu
     toolsMenu_->clear();
 
+    toolsMenu_->addAction( &display.filePropertiesAction() );
+    toolsMenu_->addSeparator();
+
     // selection indentation
     toolsMenu_->addAction( &display.indentSelectionAction() );
     display.indentSelectionAction().setEnabled( editable && has_selection && has_indent );
@@ -351,15 +347,12 @@ void Menu::_updateWindowsMenu( void )
 
     // retrieve current display
     TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
-    windowsMenu_->addAction( &display.filePropertiesAction() );
-
-    const QString& current_file( display.file() );
+    const QString& currentFile( display.file() );
 
     // clear files map
     fileActions_.clear();
 
     // retrieve all files
-    bool first = true;
     FileRecord::List records( Singleton::get().application<Application>()->windowServer().records() );
     for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); ++iter )
     {
@@ -367,17 +360,10 @@ void Menu::_updateWindowsMenu( void )
         // retrieve file and check
         const File& file( iter->file() );
 
-        // if first valid file, add separator
-        if( first )
-        {
-            windowsMenu_->addSeparator();
-            first = false;
-        }
-
         // add menu item
         QAction* action = windowsMenu_->addAction( file );
         action->setCheckable( true );
-        action->setChecked( current_file == file );
+        action->setChecked( currentFile == file );
         windowsActionGroup_->addAction( action );
 
         // insert in map for later callback.
@@ -385,11 +371,10 @@ void Menu::_updateWindowsMenu( void )
 
     }
 
-
     windowsMenu_->addSeparator();
-    SessionFilesFrame& session_files_frame( static_cast<MainWindow*>(window())->navigationFrame().sessionFilesFrame() );
-    windowsMenu_->addAction( &session_files_frame.previousFileAction() );
-    windowsMenu_->addAction( &session_files_frame.nextFileAction() );
+    SessionFilesFrame& sessionFilesFrame( static_cast<MainWindow*>(window())->navigationFrame().sessionFilesFrame() );
+    windowsMenu_->addAction( &sessionFilesFrame.previousFileAction() );
+    windowsMenu_->addAction( &sessionFilesFrame.nextFileAction() );
 
 }
 

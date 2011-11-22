@@ -1,3 +1,6 @@
+#ifndef Menu_h
+#define Menu_h
+
 // $Id$
 
 /******************************************************************************
@@ -20,17 +23,6 @@
 *
 *
 *******************************************************************************/
-
-#ifndef Menu_h
-#define Menu_h
-
-/*!
-\file Menu.h
-\brief menu
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
 
 #include "Debug.h"
 #include "Counter.h"
