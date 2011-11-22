@@ -39,7 +39,7 @@
 #include "GridLayout.h"
 #include "FontInfo.h"
 
-using namespace std;
+
 
 //________________________________________________________________________
 HighlightStyleDialog::HighlightStyleDialog( QWidget* parent ):

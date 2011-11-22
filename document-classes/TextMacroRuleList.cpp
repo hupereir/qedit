@@ -40,7 +40,7 @@
 #include "TextMacroRuleList.h"
 #include "TreeView.h"
 
-using namespace std;
+
 
 //____________________________________________________
 TextMacroRuleList::TextMacroRuleList( QWidget* parent ):

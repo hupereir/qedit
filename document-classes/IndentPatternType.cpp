@@ -37,7 +37,7 @@
 
 #include "IndentPatternType.h"
 
-using namespace std;
+
 
 //___________________________________________________
 IndentPatternType::IndentPatternType( QWidget* parent ):

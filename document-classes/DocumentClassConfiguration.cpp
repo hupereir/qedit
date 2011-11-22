@@ -39,7 +39,7 @@
 #include "GridLayout.h"
 #include "DocumentClassConfiguration.h"
 
-using namespace std;
+
 
 //____________________________________________________
 DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):

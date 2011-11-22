@@ -40,7 +40,7 @@
 #include "TextParenthesisList.h"
 #include "TreeView.h"
 
-using namespace std;
+
 
 //____________________________________________________
 TextParenthesisList::TextParenthesisList( QWidget* parent ):

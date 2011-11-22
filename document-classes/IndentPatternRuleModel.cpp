@@ -30,7 +30,7 @@
 */
 
 #include "IndentPatternRuleModel.h"
-using namespace std;
+
 
 //__________________________________________________________________
 const QString IndentPatternRuleModel::column_titles_[IndentPatternRuleModel::n_columns] =

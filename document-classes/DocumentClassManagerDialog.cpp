@@ -49,7 +49,7 @@
 #include "StatusBar.h"
 #include "TreeView.h"
 
-using namespace std;
+
 
 //______________________________________________________________
 DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, const DocumentClassManager& manager ):

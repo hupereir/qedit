@@ -39,7 +39,7 @@
 #include "XmlOption.h"
 #include "XmlString.h"
 
-using namespace std;
+
 
 //________________________________________________________
 DocumentClass::DocumentClass( void ):
@@ -203,7 +203,7 @@ QStringList DocumentClass::associatePatterns( void )
   // assign styles to patterns
   for( HighlightPattern::List::iterator iter = highlight_patterns_.begin(); iter != highlight_patterns_.end(); ++iter )
   {
-    set<HighlightStyle>::iterator style_iter ( highlight_styles_.find( iter->style() ) );
+    std::set<HighlightStyle>::iterator style_iter ( highlight_styles_.find( iter->style() ) );
     if( style_iter != highlight_styles_.end() ) iter->setStyle( *style_iter );
     else {
       QString what;
@@ -246,7 +246,7 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
   // dump highlight styles
   out.appendChild( parent.createTextNode( "\n\n" ) );
   out.appendChild( parent.createComment( "Highlight styles" ) );
-  for( set<HighlightStyle>::const_iterator iter = highlight_styles_.begin(); iter != highlight_styles_.end(); ++iter )
+  for( std::set<HighlightStyle>::const_iterator iter = highlight_styles_.begin(); iter != highlight_styles_.end(); ++iter )
   { out.appendChild( iter->domElement( parent ) ); }
 
   // dump highlight patterns

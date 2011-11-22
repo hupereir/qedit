@@ -36,7 +36,7 @@
 #include "XmlDef.h"
 #include "XmlString.h"
 
-using namespace std;
+
 
 //___________________________________________________________________________
 unsigned int& IndentPattern::_counter( void )

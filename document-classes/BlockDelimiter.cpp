@@ -36,7 +36,7 @@
 #include "XmlDef.h"
 #include "XmlString.h"
 
-using namespace std;
+
 
 //_________________________________________________________
 BlockDelimiter::BlockDelimiter( const QDomElement& element, const unsigned int& id ):

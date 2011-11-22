@@ -36,7 +36,7 @@
 #include "TreeView.h"
 #include "XmlOptions.h"
 
-using namespace std;
+
 
 //____________________________________________________________________________
 RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::List& files ):

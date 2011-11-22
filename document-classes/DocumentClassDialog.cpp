@@ -47,7 +47,7 @@
 #include "TextParenthesisList.h"
 #include "TreeView.h"
 
-using namespace std;
+
 
 //__________________________________________________________
 DocumentClassDialog::DocumentClassDialog( QWidget* parent ):

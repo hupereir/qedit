@@ -41,7 +41,7 @@
 #include "IndentPatternType.h"
 #include "QtUtil.h"
 
-using namespace std;
+
 
 //________________________________________________________________________
 IndentPatternDialog::IndentPatternDialog( QWidget* parent ):

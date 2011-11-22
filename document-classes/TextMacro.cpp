@@ -38,7 +38,7 @@
 #include "XmlDef.h"
 #include "XmlString.h"
 
-using namespace std;
+
 
 //___________________________________________________________________________
 unsigned int TextMacro::id_counter_ = 0;

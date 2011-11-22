@@ -36,7 +36,7 @@
 
 #include "XmlOptions.h"
 
-using namespace std;
+
 
 //__________________________________________________________________
 DocumentClassModel::IconCache& DocumentClassModel::_icons( void )
@@ -159,7 +159,7 @@ QIcon DocumentClassModel::_icon( const QString& name )
   { icon = CustomPixmap().empty( size ).merge( base.scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER ); }
 
   // insert in map
-  _icons().insert( make_pair( name, icon ) );
+  _icons().insert( std::make_pair( name, icon ) );
 
   return icon;
 

@@ -39,7 +39,7 @@
 
 /* One should add validity checking */
 
-using namespace std;
+
 
 //________________________________________________________________________
 BlockDelimiterDialog::BlockDelimiterDialog( QWidget* parent ):

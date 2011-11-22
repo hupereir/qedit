@@ -33,7 +33,7 @@
 #include "Str.h"
 #include "XmlDef.h"
 
-using namespace std;
+
 
 //_____________________________________________________
 HighlightStyle::HighlightStyle( const QDomElement& element ):

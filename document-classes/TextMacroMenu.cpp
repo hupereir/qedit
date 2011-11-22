@@ -21,66 +21,64 @@
 ****************************************************************************/
 
 /*!
-   \file TextMacroMenu.cpp
-   \brief display available text macros
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
+\file TextMacroMenu.cpp
+\brief display available text macros
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include "TextMacroMenu.h"
 
-using namespace std;
-
 //___________________________________________________________
 TextMacroMenu::TextMacroMenu( QWidget* parent ):
-  QMenu( parent ),
-  Counter( "TextMacroMenu" )
+QMenu( parent ),
+Counter( "TextMacroMenu" )
 {
-  Debug::Throw( "TextMacroMenu::TextMacroMenu.\n" );
-  connect( this, SIGNAL( triggered( QAction* ) ), SLOT( _processAction( QAction* ) ) );
+    Debug::Throw( "TextMacroMenu::TextMacroMenu.\n" );
+    connect( this, SIGNAL( triggered( QAction* ) ), SLOT( _processAction( QAction* ) ) );
 }
 
 //___________________________________________________________
 void TextMacroMenu::setTextMacros( const TextMacro::List& macros, bool enabled )
 {
-  Debug::Throw( "TextMacroMenu::setTextMacros.\n" );
-  clear();
-  actions_.clear();
-  QAction* action;
+    Debug::Throw( "TextMacroMenu::setTextMacros.\n" );
+    clear();
+    actions_.clear();
+    QAction* action;
 
-  for( TextMacro::List::const_iterator iter = macros.begin(); iter != macros.end(); ++iter )
-  {
+    for( TextMacro::List::const_iterator iter = macros.begin(); iter != macros.end(); ++iter )
+    {
 
-    if( iter->isSeparator() ) addSeparator();
-    else {
+        if( iter->isSeparator() ) addSeparator();
+        else {
 
-      // create menu entry
-      action = iter->action();
-      action->setEnabled( enabled || iter->isAutomatic() );
-      addAction( action );
+            // create menu entry
+            action = iter->action();
+            action->setEnabled( enabled || iter->isAutomatic() );
+            addAction( action );
 
-      // insert in map
-      actions_.insert( make_pair( action, iter->name() ) );
+            // insert in map
+            actions_.insert( std::make_pair( action, iter->name() ) );
 
+        }
     }
-  }
 
 }
 
 //___________________________________________________________
 void TextMacroMenu::setEnabled( bool enabled )
 {
-  for( std::map< QAction*, QString >::iterator iter = actions_.begin(); iter != actions_.end(); ++iter )
-  { iter->first->setEnabled( enabled ); }
+    for( std::map< QAction*, QString >::iterator iter = actions_.begin(); iter != actions_.end(); ++iter )
+    { iter->first->setEnabled( enabled ); }
 }
 
 //___________________________________________________________
 void TextMacroMenu::_processAction( QAction* action )
 {
 
-  // try retrieve id in map
-  std::map< QAction*, QString >::iterator iter = actions_.find( action );
-  if( iter != actions_.end() ) emit textMacroSelected( iter->second );
+    // try retrieve id in map
+    std::map< QAction*, QString >::iterator iter = actions_.find( action );
+    if( iter != actions_.end() ) emit textMacroSelected( iter->second );
 
 }

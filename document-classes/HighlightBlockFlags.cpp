@@ -32,60 +32,62 @@
 #include "Debug.h"
 #include "HighlightBlockFlags.h"
 
-using namespace std;
-using namespace TextBlock;
-
-//_______________________________________________
-Delimiter Delimiter::operator + (const Delimiter& delimiter ) const
+namespace TextBlock
 {
-  Debug::Throw( "Delimiter::operator +=\n" );
-  Delimiter out = *this;
 
-  for( int i=0; i < delimiter.end(); i++ )
-  {
-    if( out.begin_ > 0 ) out.begin_--;
-    else out.end_++;
-  }
+    //_______________________________________________
+    Delimiter Delimiter::operator + (const Delimiter& delimiter ) const
+    {
+        Debug::Throw( "Delimiter::operator +=\n" );
+        Delimiter out = *this;
 
-  out.begin_ += delimiter.begin();
-  return out;
+        for( int i=0; i < delimiter.end(); i++ )
+        {
+            if( out.begin_ > 0 ) out.begin_--;
+            else out.end_++;
+        }
 
-}
+        out.begin_ += delimiter.begin();
+        return out;
 
-//_______________________________________________
-Delimiter::List Delimiter::List::operator + (const Delimiter::List& list ) const
-{
-  Debug::Throw( "Delimiter::List::operator +=\n" );
-  Delimiter::List out( *this );
-  Delimiter::List::iterator first = out.begin();
-  Delimiter::List::const_iterator second = list.begin();
-  for(; first != out.end(); first++ )
-  {
-    if( second != list.end() ) {
-      *first += *second;
-      second ++;
     }
-  }
 
-  for(; second != list.end(); second++ )
-  { out.push_back( *second ); }
+    //_______________________________________________
+    Delimiter::List Delimiter::List::operator + (const Delimiter::List& list ) const
+    {
+        Debug::Throw( "Delimiter::List::operator +=\n" );
+        Delimiter::List out( *this );
+        Delimiter::List::iterator first = out.begin();
+        Delimiter::List::const_iterator second = list.begin();
+        for(; first != out.end(); first++ )
+        {
+            if( second != list.end() ) {
+                *first += *second;
+                second ++;
+            }
+        }
 
-  return out;
+        for(; second != list.end(); second++ )
+        { out.push_back( *second ); }
 
-}
+        return out;
 
-//_______________________________________________
-bool Delimiter::List::set( const unsigned int& i, const Delimiter& delimiter )
-{
-  if( size() > i && (*this)[i] == delimiter ) return false;
-  if( size() <= i ) { resize( i+1 ); }
-  (*this)[i] = delimiter;
-  return true;
-}
+    }
 
-//_______________________________________________
-Delimiter Delimiter::List::get( const unsigned int& i ) const
-{
-  if( size() <= i ) return TextBlock::Delimiter();
-  return (*this)[i];
+    //_______________________________________________
+    bool Delimiter::List::set( const unsigned int& i, const Delimiter& delimiter )
+    {
+        if( size() > i && (*this)[i] == delimiter ) return false;
+        if( size() <= i ) { resize( i+1 ); }
+        (*this)[i] = delimiter;
+        return true;
+    }
+
+    //_______________________________________________
+    Delimiter Delimiter::List::get( const unsigned int& i ) const
+    {
+        if( size() <= i ) return TextBlock::Delimiter();
+        return (*this)[i];
+    }
+
 }

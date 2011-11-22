@@ -40,7 +40,7 @@
 
 /* One should add validity checking */
 
-using namespace std;
+
 
 //________________________________________________________________________
 TextMacroDialog::TextMacroDialog( QWidget* parent ):

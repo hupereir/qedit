@@ -37,7 +37,7 @@
 #include "XmlDef.h"
 #include "XmlString.h"
 
-using namespace std;
+
 
 //___________________________________________________________________________
 QString HighlightPattern::no_parent_pattern_( "None" );

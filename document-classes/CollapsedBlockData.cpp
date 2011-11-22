@@ -31,7 +31,7 @@
 
 #include "CollapsedBlockData.h"
 #include "HighlightBlockData.h"
-using namespace std;
+
 
 //_____________________________________________________________
 CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):

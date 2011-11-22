@@ -49,7 +49,7 @@
 #include "Util.h"
 #include "XmlOptions.h"
 
-using namespace std;
+
 
 //___________________________________________________
 QRegExp& DocumentClassTextEditor::_emptyLineRegExp( void )
@@ -203,8 +203,8 @@ void DocumentClassTextEditor::processMacro( QString name )
     if( !cursor.hasSelection() ) return;
 
     // retrieve blocks
-    int position_begin( min( cursor.position(), cursor.anchor() ) );
-    int position_end( max( cursor.position(), cursor.anchor() ) );
+    int position_begin( std::min( cursor.position(), cursor.anchor() ) );
+    int position_end( std::max( cursor.position(), cursor.anchor() ) );
     QTextBlock begin( document()->findBlock( position_begin ) );
     QTextBlock end( document()->findBlock( position_end ) );
 

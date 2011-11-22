@@ -37,7 +37,7 @@
 
 #include "HighlightPatternType.h"
 
-using namespace std;
+
 
 //___________________________________________________
 HighlightPatternType::HighlightPatternType( QWidget* parent ):

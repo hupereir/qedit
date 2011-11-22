@@ -36,7 +36,7 @@
 #include "AnimatedLineEditor.h"
 #include "RenameFileDialog.h"
 
-using namespace std;
+
 
 //_____________________________________________________
 RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):

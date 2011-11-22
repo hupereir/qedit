@@ -30,7 +30,7 @@
 */
 
 #include "TextParenthesisModel.h"
-using namespace std;
+
 
 //__________________________________________________________________
 const QString TextParenthesisModel::column_titles_[TextParenthesisModel::n_columns] =

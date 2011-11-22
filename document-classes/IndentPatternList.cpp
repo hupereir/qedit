@@ -40,7 +40,7 @@
 #include "QuestionDialog.h"
 #include "TreeView.h"
 
-using namespace std;
+
 
 //____________________________________________________
 IndentPatternList::IndentPatternList( QWidget* parent ):

@@ -30,7 +30,7 @@
 */
 
 #include "BlockDelimiterModel.h"
-using namespace std;
+
 
 //__________________________________________________________________
 const QString BlockDelimiterModel::column_titles_[BlockDelimiterModel::n_columns] =

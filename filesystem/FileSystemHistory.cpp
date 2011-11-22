@@ -32,7 +32,7 @@
 #include "Debug.h"
 #include "FileSystemHistory.h"
 
-using namespace std;
+
 
 //__________________________________________________________________
 void FileSystemHistory::add( File path )

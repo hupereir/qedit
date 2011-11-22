@@ -40,7 +40,7 @@
 #include "XmlDef.h"
 #include "XmlError.h"
 
-using namespace std;
+
 
 //________________________________________________________
 DocumentClassManager::DocumentClassManager( void ):

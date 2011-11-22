@@ -49,7 +49,7 @@
 #include "HighlightBlockData.h"
 #include "XmlOptions.h"
 
-using namespace std;
+
 
 //____________________________________________________________________________
 BlockDelimiterDisplay::BlockDelimiterDisplay(TextEditor* editor ):
@@ -672,7 +672,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
                     // store number of collapsed blocks for the current one
                     if( first )
                     {
-                        collapsedBlocks_.insert( make_pair( block_count, collapsed_block_count ) );
+                        collapsedBlocks_.insert( std::make_pair( block_count, collapsed_block_count ) );
 
                         // assert( block_format.hasProperty( TextBlock::CollapsedData ) );
                         collapsed_block_count += block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount() - 1;
@@ -697,7 +697,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
         // this is done only for the first block delimiter pair
         if( first )
         {
-            collapsedBlocks_.insert( make_pair( block_count, collapsed_block_count ) );
+            collapsedBlocks_.insert( std::make_pair( block_count, collapsed_block_count ) );
             first = false;
         }
 

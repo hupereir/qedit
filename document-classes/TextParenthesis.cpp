@@ -36,7 +36,7 @@
 #include "XmlDef.h"
 #include "XmlString.h"
 
-using namespace std;
+
 
 //_________________________________________________________
 TextParenthesis::TextParenthesis( const QDomElement& element ):

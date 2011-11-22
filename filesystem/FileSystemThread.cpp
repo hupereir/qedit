@@ -37,7 +37,7 @@
 #include "FileSystemThread.h"
 #include "FileRecordProperties.h"
 
-using namespace std;
+
 
 //______________________________________________________
 QEvent::Type FileSystemEvent::eventType( void )

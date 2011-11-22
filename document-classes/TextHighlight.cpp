@@ -37,7 +37,7 @@
 #include "TextParenthesis.h"
 #include "TextHighlight.h"
 
-using namespace std;
+
 
 //_________________________________________________________
 TextHighlight::TextHighlight( QTextDocument* document ):

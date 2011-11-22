@@ -51,7 +51,7 @@
 #include "Util.h"
 #include "XmlOptions.h"
 
-using namespace std;
+
 
 //_____________________________________________
 FileSystemFrame::FileSystemFrame( QWidget *parent ):

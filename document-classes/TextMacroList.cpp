@@ -40,7 +40,7 @@
 #include "TextMacroList.h"
 #include "TreeView.h"
 
-using namespace std;
+
 
 //____________________________________________________
 TextMacroList::TextMacroList( QWidget* parent ):

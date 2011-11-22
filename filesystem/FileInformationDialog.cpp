@@ -48,11 +48,11 @@
 #include "QtUtil.h"
 #include "TimeStamp.h"
 
-using namespace std;
+
 
 //_________________________________________________________
 FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord& record ):
-    CustomDialog( parent, OkButton )
+    CustomDialog( parent, CloseButton )
 {
     Debug::Throw( "FileInformationDialog::FileInformationDialog.\n" );
 

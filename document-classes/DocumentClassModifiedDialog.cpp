@@ -40,7 +40,7 @@
 #include "IconEngine.h"
 #include "QtUtil.h"
 
-using namespace std;
+
 
 //________________________________________________________
 DocumentClassModifiedDialog::DocumentClassModifiedDialog( QWidget* parent ):

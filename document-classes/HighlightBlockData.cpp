@@ -33,7 +33,7 @@
 #include <algorithm>
 #include "HighlightBlockData.h"
 
-using namespace std;
+
 
 //____________________________________________________________
 HighlightBlockData::HighlightBlockData( void ):

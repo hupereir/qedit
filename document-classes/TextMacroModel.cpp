@@ -30,7 +30,7 @@
 */
 
 #include "TextMacroModel.h"
-using namespace std;
+
 
 //__________________________________________________________________
 const QString TextMacroModel::column_titles_[TextMacroModel::n_columns] =

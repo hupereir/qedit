@@ -35,7 +35,7 @@
 #include "TextEditor.h"
 #include "HighlightBlockData.h"
 
-using namespace std;
+
 
 //_______________________________________________________________________
 ParenthesisHighlight::ParenthesisHighlight( TextEditor* parent ):

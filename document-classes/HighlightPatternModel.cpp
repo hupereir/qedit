@@ -30,7 +30,7 @@
 */
 
 #include "HighlightPatternModel.h"
-using namespace std;
+
 
 //__________________________________________________________________
 const QString HighlightPatternModel::column_titles_[HighlightPatternModel::n_columns] =

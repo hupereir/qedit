@@ -41,7 +41,7 @@
 #include "HighlightPatternType.h"
 #include "InformationDialog.h"
 
-using namespace std;
+
 
 //________________________________________________________________________
 HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
@@ -173,7 +173,7 @@ HighlightPattern HighlightPatternDialog::pattern( void )
   pattern_.setParent( parent == HighlightPattern::no_parent_pattern_ ? "":parent );
 
   // style
-  set<HighlightStyle>::iterator style_iter ( styles_.find( HighlightStyle( style_combobox_->itemText( style_combobox_->currentIndex() ) ) ) );
+  std::set<HighlightStyle>::iterator style_iter ( styles_.find( HighlightStyle( style_combobox_->itemText( style_combobox_->currentIndex() ) ) ) );
   if( style_iter != styles_.end() ) pattern_.setStyle( *style_iter );
   else InformationDialog( this, "invalid style name" ).exec();
 
