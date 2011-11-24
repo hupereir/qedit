@@ -32,19 +32,20 @@
 \date $Date$
 */
 
-#include <list>
-#include <QBasicTimer>
-
 #include "BaseApplication.h"
 #include "CommandLineArguments.h"
 #include "CommandLineParser.h"
 #include "Config.h"
 #include "Counter.h"
 
+#include <QtCore/QBasicTimer>
+#include <list>
+
 class AutoSave;
 class DocumentClassManager;
 class FileCheck;
 class FileList;
+class ScratchFileMonitor;
 class WindowServer;
 class Sync;
 
@@ -55,10 +56,10 @@ class Application: public BaseApplication, public Counter
     //! Qt meta object declaration
     Q_OBJECT
 
-        public:
+    public:
 
-        //! command line parser
-        static CommandLineParser commandLineParser( CommandLineArguments arguments = CommandLineArguments(), bool ignore_warnings = true );
+    //! command line parser
+    static CommandLineParser commandLineParser( CommandLineArguments arguments = CommandLineArguments(), bool ignore_warnings = true );
 
     //! command line help
     static void usage( void );
@@ -77,38 +78,28 @@ class Application: public BaseApplication, public Counter
 
     //! file list
     FileList& recentFiles( void ) const
-    {
-        assert( recentFiles_ );
-        return *recentFiles_;
-    }
+    { return *recentFiles_; }
 
     //! Window server
     WindowServer& windowServer( void ) const
-    {
-        assert( windowServer_ );
-        return *windowServer_;
-    }
+    { return *windowServer_; }
 
     //! DocumentClassManager
     DocumentClassManager& classManager( void ) const
-    {
-        assert( classManager_ );
-        return *classManager_;
-    }
+    { return *classManager_; }
 
     //! retrieve AutoSave
     AutoSave& autoSave( void ) const
-    {
-        assert( autosave_ );
-        return *autosave_;
-    }
+    { return *autosave_; }
 
     //! file check
     FileCheck& fileCheck( void ) const
-    {
-        assert( fileCheck_ );
-        return *fileCheck_;
-    }
+    { return *fileCheck_; }
+
+    //! scratch files
+    ScratchFileMonitor& scratchFileMonitor( void ) const
+    { return *scratchFileMonitor_; }
+
 
     //!@name actions
     //@{
@@ -187,6 +178,9 @@ class Application: public BaseApplication, public Counter
 
     //! file check
     FileCheck* fileCheck_;
+
+    //! scratch files
+    ScratchFileMonitor* scratchFileMonitor_;
 
     //! startup single shot timer
     /*!

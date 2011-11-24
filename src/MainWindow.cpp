@@ -21,6 +21,8 @@
 *
 ****************************************************************************/
 
+#include "MainWindow.h"
+
 #include "AnimatedLineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
@@ -45,7 +47,6 @@
 #include "IconEngine.h"
 #include "Icons.h"
 #include "InformationDialog.h"
-#include "MainWindow.h"
 #include "Menu.h"
 #include "NavigationFrame.h"
 #include "NavigationToolBar.h"
@@ -56,6 +57,7 @@
 #include "QuestionDialog.h"
 #include "RecentFilesFrame.h"
 #include "ReplaceDialog.h"
+#include "ScratchFileMonitor.h"
 #include "SelectLineDialog.h"
 #include "SessionFilesFrame.h"
 #include "Singleton.h"
@@ -501,8 +503,11 @@ void MainWindow::_print( void )
 
     }
 
+    // add to scratch files
+    Singleton::get().application<Application>()->scratchFileMonitor().add( fullname );
+
     // retrieve HTML string from current display
-    QString html_string( _htmlString( dialog.maximumLineSize() ) );
+    QString htmlString( _htmlString( dialog.maximumLineSize() ) );
     Debug::Throw( "MainWindow::_print - retrieved html string.\n" );
 
     if( mode == PrintDialog::HTML )
@@ -517,7 +522,7 @@ void MainWindow::_print( void )
             return;
         }
 
-        out.write( html_string.toAscii() );
+        out.write( htmlString.toAscii() );
         out.close();
         Debug::Throw( "MainWindow::_print - html file saved.\n" );
 
@@ -525,7 +530,7 @@ void MainWindow::_print( void )
 
         QTextEdit local(0);
         local.setLineWrapMode( QTextEdit::WidgetWidth );
-        local.setHtml( html_string );
+        local.setHtml( htmlString );
 
         QPrinter printer(QPrinter::HighResolution);
         printer.setOutputFormat(QPrinter::PdfFormat);
@@ -1136,8 +1141,8 @@ QString MainWindow::_htmlString( const int& max_line_size )
     to have correct implementation of leading space characters, tabs
     and end of line
     */
-    QString html_string( document.toString(0) );
-    html_string = html_string.replace( "</span>\n", "</span>", Qt::CaseInsensitive );
-    html_string = html_string.replace( "<br/>", "", Qt::CaseInsensitive );
-    return html_string;
+    QString htmlString( document.toString(0) );
+    htmlString = htmlString.replace( "</span>\n", "</span>", Qt::CaseInsensitive );
+    htmlString = htmlString.replace( "<br/>", "", Qt::CaseInsensitive );
+    return htmlString;
 }
