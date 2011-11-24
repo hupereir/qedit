@@ -29,6 +29,8 @@
 \date $Date$
 */
 
+#include "WindowServer.h"
+
 #include "Application.h"
 #include "FileDialog.h"
 #include "Debug.h"
@@ -52,7 +54,6 @@
 #include "SessionFilesFrame.h"
 #include "Singleton.h"
 #include "Util.h"
-#include "WindowServer.h"
 
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
@@ -379,7 +380,6 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
     }
 
     // close progress dialog
-    // dialog.close();
     dialog.close();
 
     // popup dialog

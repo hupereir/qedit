@@ -21,38 +21,28 @@
 *
 *******************************************************************************/
 
-/*!
-  \file ReplaceDialog.cpp
-  \brief replace_text dialog for text editor widgets
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QLabel>
-#include <QPushButton>
-
-#include "Debug.h"
 #include "ReplaceDialog.h"
+#include "Debug.h"
 #include "QtUtil.h"
 
-
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 
 //________________________________________________________________________
 ReplaceDialog::ReplaceDialog( QWidget* parent, Qt::WFlags flags ):
-    BaseReplaceDialog( parent, flags )
+BaseReplaceDialog( parent, flags )
 {
-  Debug::Throw( "ReplaceDialog::ReplaceDialog.\n" );
+    Debug::Throw( "ReplaceDialog::ReplaceDialog.\n" );
 
-  // insert multiple file buttons
-  QPushButton* button = new QPushButton( "Files", this );
-  connect( button, SIGNAL( clicked() ), SIGNAL( replaceInFiles() ) );
-  button->setToolTip( "Replace all occurence of the search string in the selected files" );
-  _addDisabledButton( button );
-  _locationLayout().addWidget( button );
-  button->setAutoDefault( false );
+    // insert multiple file buttons
+    QPushButton* button = new QPushButton( "Files", this );
+    connect( button, SIGNAL( clicked() ), SIGNAL( replaceInFiles() ) );
+    button->setToolTip( "Replace all occurence of the search string in the selected files" );
+    _addDisabledButton( button );
+    _locationLayout().addWidget( button );
+    button->setAutoDefault( false );
 
-  // tab order
-  setTabOrder( &_replaceWindowButton(), button );
+    // tab order
+    setTabOrder( &_replaceWindowButton(), button );
 
 }

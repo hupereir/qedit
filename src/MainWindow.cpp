@@ -21,20 +21,6 @@
 *
 ****************************************************************************/
 
-/*!
-\file MainWindow.cpp
-\brief editor main window
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QApplication>
-#include <QDomElement>
-#include <QDomDocument>
-#include <QObjectList>
-#include <QPrinter>
-
 #include "AnimatedLineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
@@ -82,7 +68,11 @@
 #include "WindowTitle.h"
 #include "XmlOptions.h"
 
-
+#include <QtCore/QObjectList>
+#include <QtGui/QApplication>
+#include <QtGui/QPrinter>
+#include <QtXml/QDomElement>
+#include <QtXml/QDomDocument>
 
 //_____________________________________________________
 const QString MainWindow::LEFT_RIGHT = "Left/right";

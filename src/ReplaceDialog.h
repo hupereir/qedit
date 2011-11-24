@@ -24,34 +24,26 @@
 *
 *******************************************************************************/
 
-/*!
-  \file ReplaceDialog.h
-  \brief replace_text dialog for text editor widgets
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
+#include "BaseReplaceDialog.h"
 
 #include <cassert>
-
-#include "BaseReplaceDialog.h"
 
 //! replace_text dialog for text editor widgets
 class ReplaceDialog: public BaseReplaceDialog
 {
 
-  //! Qt meta object declaration
-  Q_OBJECT
+    //! Qt meta object declaration
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! constructor
-  ReplaceDialog( QWidget* parent = 0, Qt::WFlags flags = 0 );
+    //! constructor
+    ReplaceDialog( QWidget* = 0, Qt::WFlags = 0 );
 
-  signals:
+    signals:
 
-  //! emmited when Replace is pressed
-  void replaceInFiles();
+    //! emmited when Replace is pressed
+    void replaceInFiles();
 
 };
 #endif
