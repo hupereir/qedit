@@ -1,6 +1,6 @@
-// $Id$
 #ifndef _FileSelectionDialog_h_
 #define _FileSelectionDialog_h_
+// $Id$
 
 /******************************************************************************
 *
@@ -23,19 +23,11 @@
 *
 *******************************************************************************/
 
-/*!
-  \file FileSelectionDialog.h
-  \brief QDialog used to select opened files
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <list>
-
 #include "CustomDialog.h"
 #include "FileRecordModel.h"
 #include "TextSelection.h"
+
+#include <list>
 
 class TreeView;
 
@@ -43,48 +35,48 @@ class TreeView;
 class FileSelectionDialog: public CustomDialog
 {
 
-  //! Qt macro
-  Q_OBJECT
+    //! Qt macro
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! constructor
-  FileSelectionDialog( QWidget* parent, const TextSelection& );
+    //! constructor
+    FileSelectionDialog( QWidget* parent, const TextSelection& );
 
-  //! selected files
-  typedef std::list<File> FileList;
+    //! selected files
+    typedef std::list<File> FileList;
 
-  //! selected files
-  FileList selectedFiles( void ) const;
+    //! selected files
+    FileList selectedFiles( void ) const;
 
-  private slots:
+    private slots:
 
-  //! update buttons
-  void _updateButtons( void );
+    //! update buttons
+    void _updateButtons( void );
 
-  private:
+    private:
 
-  //! list
-  TreeView& _list( void ) const
-  { return *list_; }
+    //! list
+    TreeView& _list( void ) const
+    { return *list_; }
 
-  //! model
-  FileRecordModel model_;
+    //! model
+    FileRecordModel model_;
 
-  //! list of files
-  TreeView* list_;
+    //! list of files
+    TreeView* list_;
 
-  //! text selection
-  TextSelection selection_;
+    //! text selection
+    TextSelection selection_;
 
-  //!@name buttons
-  //@{
+    //!@name buttons
+    //@{
 
-  QPushButton* select_all_button_;
-  QPushButton* clear_selection_button_;
-  QPushButton* replace_button_;
+    QPushButton* selectAllButton_;
+    QPushButton* clearSelectionButton_;
+    QPushButton* replaceButton_;
 
-  //@}
+    //@}
 
 };
 

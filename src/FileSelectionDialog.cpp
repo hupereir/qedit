@@ -21,20 +21,6 @@
 *
 *******************************************************************************/
 
-/*!
-  \file FileSelectionDialog.cpp
-  \brief QDialog used to select opened files
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <algorithm>
-#include <QHeaderView>
-#include <QLabel>
-#include <QLayout>
-#include <QPushButton>
-
 #include "Application.h"
 #include "Debug.h"
 #include "MainWindow.h"
@@ -48,69 +34,74 @@
 #include "WindowServer.h"
 #include "XmlOptions.h"
 
+#include <QtGui/QHeaderView>
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QPushButton>
 
+#include <algorithm>
 
 //________________________________________________________
 FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& selection ):
-  CustomDialog( parent ),
-  selection_( selection )
+CustomDialog( parent ),
+selection_( selection )
 {
 
-  setWindowTitle( "File Selection - Qedit" );
-  setOptionName( "FILE_SELECTION_DIALOG" );
+    setWindowTitle( "File Selection - Qedit" );
+    setOptionName( "FILE_SELECTION_DIALOG" );
 
-  // custom list display
-  list_ = new TreeView( this );
-  _list().setModel( &model_ );
-  _list().setSelectionMode( QAbstractItemView::MultiSelection );
-  connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
+    // custom list display
+    list_ = new TreeView( this );
+    _list().setModel( &model_ );
+    _list().setSelectionMode( QAbstractItemView::MultiSelection );
+    connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
 
-  // retrieve file records
-  model_.set( Singleton::get().application<Application>()->windowServer().records() );
+    // retrieve file records
+    model_.set( Singleton::get().application<Application>()->windowServer().records() );
 
-  // mask
-  unsigned int mask(
-    (1<<FileRecordModel::ICON)|
-    (1<<FileRecordModel::FILE)|
-    (1<<FileRecordModel::PATH ));
-  int class_column( model_.findColumn( "class_name" ) );
-  if( class_column >= 0 ) mask |= (1<<class_column);
-  _list().setMask( mask );
-  _list().resizeColumns();
-  mainLayout().addWidget( list_ );
+    // mask
+    unsigned int mask(
+        (1<<FileRecordModel::ICON)|
+        (1<<FileRecordModel::FILE)|
+        (1<<FileRecordModel::PATH ));
+    int class_column( model_.findColumn( "class_name" ) );
+    if( class_column >= 0 ) mask |= (1<<class_column);
+    _list().setMask( mask );
+    _list().resizeColumns();
+    mainLayout().addWidget( list_ );
 
-  // generic button
-  QPushButton* button;
+    // generic button
+    QPushButton* button;
 
-  // deselect all
-  buttonLayout().insertWidget( 0, button = new QPushButton( "&Clear Selection", this ) );
-  button->setToolTip( "Deselect all files in list" );
-  connect( button, SIGNAL( clicked() ), list_, SLOT( clearSelection() ) );
-  clear_selection_button_ = button;
+    // deselect all
+    buttonLayout().insertWidget( 0, button = new QPushButton( "&Clear Selection", this ) );
+    button->setToolTip( "Deselect all files in list" );
+    connect( button, SIGNAL( clicked() ), list_, SLOT( clearSelection() ) );
+    clearSelectionButton_ = button;
 
-  // select all
-  buttonLayout().insertWidget( 0, button = new QPushButton( "&Select All", this ) );
-  button->setToolTip( "Select all files in list" );
-  connect( button, SIGNAL( clicked() ), list_, SLOT( selectAll() ) );
-  select_all_button_ = button;
+    // select all
+    buttonLayout().insertWidget( 0, button = new QPushButton( "&Select All", this ) );
+    button->setToolTip( "Select all files in list" );
+    connect( button, SIGNAL( clicked() ), list_, SLOT( selectAll() ) );
+    selectAllButton_ = button;
 
-  // replace
-  okButton().setToolTip( "Replace in all selected files" );
-  okButton().setText( "&Replace" );
-  _updateButtons();
+    // replace
+    okButton().setToolTip( "Replace in all selected files" );
+    okButton().setText( "&Replace" );
+    _updateButtons();
 
-  // sort list and select all items
-  if( XmlOptions::get().find( "SESSION_FILES_SORT_COLUMN" ) && XmlOptions::get().find( "SESSION_FILES_SORT_ORDER" ) )
-  {
-    _list().sortByColumn(
-      XmlOptions::get().get<int>( "SESSION_FILES_SORT_COLUMN" ),
-      (Qt::SortOrder)(XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ) );
-  }
+    // sort list and select all items
+    if( XmlOptions::get().find( "SESSION_FILES_SORT_COLUMN" ) && XmlOptions::get().find( "SESSION_FILES_SORT_ORDER" ) )
+    {
+        _list().sortByColumn(
+            XmlOptions::get().get<int>( "SESSION_FILES_SORT_COLUMN" ),
+            (Qt::SortOrder)(XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ) );
+    }
 
-  _list().selectAll();
+    _list().selectAll();
 
 
-  adjustSize();
+    adjustSize();
 
 }
 
@@ -118,11 +109,11 @@ FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& 
 void FileSelectionDialog::_updateButtons( void )
 {
 
-  Debug::Throw( "FileSelectionDialog::_updateButtons.\n" );
-  QList<QModelIndex> selection( _list().selectionModel()->selectedRows() );
+    Debug::Throw( "FileSelectionDialog::_updateButtons.\n" );
+    QList<QModelIndex> selection( _list().selectionModel()->selectedRows() );
 
-  clear_selection_button_->setEnabled( !selection.empty() );
-  okButton().setEnabled( !selection.empty() );
+    clearSelectionButton_->setEnabled( !selection.empty() );
+    okButton().setEnabled( !selection.empty() );
 
 }
 
@@ -130,13 +121,13 @@ void FileSelectionDialog::_updateButtons( void )
 FileSelectionDialog::FileList FileSelectionDialog::selectedFiles( void ) const
 {
 
-  Debug::Throw( "FileSelectionDialog::_replace.\n" );
+    Debug::Throw( "FileSelectionDialog::_replace.\n" );
 
-  // retrieve selection from the list
-  FileRecordModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
-  FileList files;
-  for( FileRecordModel::List::iterator iter = selection.begin(); iter != selection.end(); ++iter )
-  { files.push_back( iter->file() ); }
+    // retrieve selection from the list
+    FileRecordModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+    FileList files;
+    for( FileRecordModel::List::iterator iter = selection.begin(); iter != selection.end(); ++iter )
+    { files.push_back( iter->file() ); }
 
-  return files;
+    return files;
 }

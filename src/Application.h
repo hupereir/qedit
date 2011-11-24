@@ -24,14 +24,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file Application.h
-\brief Application singleton
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "BaseApplication.h"
 #include "CommandLineArguments.h"
 #include "CommandLineParser.h"
@@ -99,7 +91,6 @@ class Application: public BaseApplication, public Counter
     //! scratch files
     ScratchFileMonitor& scratchFileMonitor( void ) const
     { return *scratchFileMonitor_; }
-
 
     //!@name actions
     //@{
