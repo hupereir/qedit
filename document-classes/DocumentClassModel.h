@@ -92,7 +92,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     private:
 
     //! list column names
-    static const QString column_titles_[nColumns];
+    static const QString columnTitles_[nColumns];
 
     //! used to sort IconCaches
     class SortFTor: public ItemModel::SortFTor

@@ -59,7 +59,7 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
   };
 
   //! number of columns
-  enum { n_columns = 3 };
+  enum { nColumns = 3 };
 
   //! column type enumeration
   enum ColumnType {
@@ -85,7 +85,7 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
 
   //! number of columns for a given index
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const
-  { return column_titles_.size(); }
+  { return columnTitles_.size(); }
 
   //@}
 
@@ -119,7 +119,7 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
     FileRecord::PropertyId::Id size_property_id_;
 
     //! column titles
-    std::vector<QString> column_titles_;
+    std::vector<QString> columnTitles_;
 
   };
 
@@ -133,7 +133,7 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
   static IconCache& _icons( void );
 
   //! column titles
-  std::vector<QString> column_titles_;
+  std::vector<QString> columnTitles_;
 
   //! size property id
   FileRecord::PropertyId::Id size_property_id_;

@@ -56,9 +56,9 @@ FileSystemModel::FileSystemModel( QObject* parent ):
 {
     Debug::Throw("FileSystemModel::FileSystemModel.\n" );
 
-    column_titles_.push_back( "File" );
-    column_titles_.push_back( "Size" );
-    column_titles_.push_back( "Time" );
+    columnTitles_.push_back( "File" );
+    columnTitles_.push_back( "Size" );
+    columnTitles_.push_back( "Time" );
 
     connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
@@ -142,7 +142,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
 
     }
 
-    return ListModel<FileRecord>::data( index, role );
+    return QVariant();
 
 }
 
@@ -154,8 +154,8 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation, i
         orientation == Qt::Horizontal &&
         role == Qt::DisplayRole &&
         section >= 0 &&
-        section < (int) column_titles_.size() )
-    { return column_titles_[section]; }
+        section < (int) columnTitles_.size() )
+    { return columnTitles_[section]; }
 
     // return empty
     return QVariant();
@@ -178,13 +178,13 @@ void FileSystemModel::_updateConfiguration( void )
 
 //____________________________________________________________
 void FileSystemModel::_sort( int column, Qt::SortOrder order )
-{ std::sort( _get().begin(), _get().end(), SortFTor( column, order, column_titles_ ) ); }
+{ std::sort( _get().begin(), _get().end(), SortFTor( column, order, columnTitles_ ) ); }
 
 //________________________________________________________
 FileSystemModel::SortFTor::SortFTor( const int& type, Qt::SortOrder order, const std::vector<QString>& column_titles ):
     ItemModel::SortFTor( type, order ),
     size_property_id_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) ),
-    column_titles_( column_titles )
+    columnTitles_( column_titles )
 {}
 
 //________________________________________________________

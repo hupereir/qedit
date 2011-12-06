@@ -46,7 +46,7 @@ DocumentClassModel::IconCache& DocumentClassModel::_icons( void )
 }
 
 //__________________________________________________________________
-const QString DocumentClassModel::column_titles_[DocumentClassModel::nColumns] =
+const QString DocumentClassModel::columnTitles_[DocumentClassModel::nColumns] =
 {
     "",
     "Name",
@@ -64,57 +64,57 @@ DocumentClassModel::DocumentClassModel( QObject* parent ):
 //__________________________________________________________________
 QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
 {
-    
+
     Debug::Throw( "DocumentClassModel::data.\n" );
-    
+
     // check index, role and column
     if( !index.isValid() ) return QVariant();
-    
+
     // retrieve associated file info
     const DocumentClass& documentClass( get()[index.row()] );
-    
+
     // return text associated to file and column
-    
+
     if( role == Qt::DecorationRole && index.column() == ICON )
     {
-        
+
         return _icon( documentClass.icon() );
-        
+
     } else if( role == Qt::DisplayRole ) {
-        
+
         if( index.column() == NAME ) return documentClass.name();
         if( index.column() == FILE ) return documentClass.file();
-        
+
     }
-    
-    return ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>::data( index, role );
-    
+
+    return QVariant();
+
 }
 
 //__________________________________________________________________
 QVariant DocumentClassModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    
+
     if(
         orientation == Qt::Horizontal &&
         role == Qt::DisplayRole &&
         section >= 0 &&
         section < nColumns )
-    { return column_titles_[section]; }
-    
+    { return columnTitles_[section]; }
+
     // return empty
     return QVariant();
-    
+
 }
 
 
 //____________________________________________________________
 void DocumentClassModel::_sort( int column, Qt::SortOrder order )
 {
-    
+
     Debug::Throw() << "DocumentClassModel::sort - column: " << column << " order: " << order << endl;
     std::sort( _get().begin(), _get().end(), SortFTor( (ColumnType) column, order ) );
-    
+
 }
 
 //____________________________________________________________
@@ -127,40 +127,40 @@ void DocumentClassModel::_updateConfiguration( void )
 //________________________________________________________
 bool DocumentClassModel::SortFTor::operator () ( const DocumentClass& first, const DocumentClass& second ) const
 {
-    
+
     switch( type_ )
     {
-        
+
         case NAME: return ( order_ == Qt::AscendingOrder ) ? second.name() < first.name() : first.name() < second.name();
         case FILE: return ( order_ == Qt::AscendingOrder ) ? second.file() < first.file() : first.file() < second.file();
         default: return true;
     }
-    
+
 }
 
 //________________________________________________________
 QIcon DocumentClassModel::_icon( const QString& name )
 {
-    
+
     Debug::Throw( "DocumentClassModel::_icon.\n" );
-    
+
     IconCache::const_iterator iter( _icons().find( name ) );
     if( iter != _icons().end() ) return iter->second;
-    
+
     // pixmap size
     unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
     QSize size( pixmap_size, pixmap_size );
     QSize scale(size*0.9);
-    
+
     CustomPixmap base( CustomPixmap().find( name )  );
-    
+
     QIcon icon;
     if( !base.isNull() )
     { icon = CustomPixmap().empty( size ).merge( base.scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER ); }
-    
+
     // insert in map
     _icons().insert( std::make_pair( name, icon ) );
-    
+
     return icon;
-    
+
 }
