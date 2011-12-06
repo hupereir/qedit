@@ -172,15 +172,22 @@ AC_SUBST(timestamp)
 echo ""
 echo "timestamp = " $timestamp
 
+dnl **************************
+dnl output files
 echo ""
-AC_OUTPUT( Makefile \
-  qedit.spec \
+if test no = $enable_shared_libs; then
+AC_OUTPUT( \
   base/Makefile \
-  base-pixmaps/Makefile \
   base-qt/Makefile \
   base-help/Makefile \
   base-server/Makefile \
   base-spellcheck/Makefile \
+  base-pixmaps/Makefile \
+)
+fi
+
+AC_OUTPUT( Makefile \
+  qedit.spec \
   document-classes/Makefile \
   document-classes/Config.h \
   extra-includes/Makefile \
