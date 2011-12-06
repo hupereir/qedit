@@ -142,7 +142,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
 
     }
 
-    return ListModel<FileSystem>::data( index, role );
+    return ListModel<FileRecord>::data( index, role );
 
 }
 
