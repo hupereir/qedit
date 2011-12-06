@@ -40,6 +40,30 @@ CXXFLAGS = @CXXFLAGS@
 noinst_LIBRARIES = libqedit.a
 bin_PROGRAMS = qedit editDocumentClasses
 
+##################
+# shared libraries
+if ENABLE_SHARED
+if WITH_ASPELL
+libraries = \
+  -L$(libdir) -lbase-spellcheck -lbase-server -lbase-help \
+  libqedit.a \
+  ../filesystem/libfilesystem.a \
+  ../document-classes/libdocument-classes.a
+
+else
+
+libraries =  \
+  -L$(libdir) -lbase-server -lbase-help \
+  libqedit.a \
+  ../filesystem/libfilesystem.a \
+  ../document-classes/libdocument-classes.a
+
+endif
+
+else
+
+##################
+# static libraries
 if WITH_ASPELL
 libraries = \
   -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
@@ -66,10 +90,10 @@ libraries =  \
   ../base/libbase.a
 
 endif
+endif
 
-qedit_LDADD =  $(libraries)
-editDocumentClasses_LDADD =  $(libraries)
-
+#################
+# headers
 noinst_HEADERS = \
   Application.h \
   AskForSaveDialog.h \
@@ -106,6 +130,8 @@ noinst_HEADERS = \
   WindowServer.h \
   WindowTitle.h
 
+#####################
+# qedit library sources
 libqedit_a_SOURCES = \
   Application.cpp \
   AskForSaveDialog.cpp \
@@ -164,9 +190,17 @@ nodist_libqedit_a_SOURCES = \
   moc_TextView.cpp \
   moc_WindowServer.cpp
 
+#######################
+# qedit
+qedit_LDADD =  $(libraries)
 qedit_SOURCES = qedit.cpp
+
+#######################
+# editDocumentClasses
+editDocumentClasses_LDADD =  $(libraries)
 editDocumentClasses_SOURCES = editDocumentClasses.cpp
 
+# clean
 clean-local:
 	rm -f moc_*.cpp
 	rm -f qrc_*.cpp

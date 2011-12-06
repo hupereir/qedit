@@ -150,15 +150,29 @@ echo "qt_dir       = " $qt_dir
 echo "qt_libraries = " $qt_libraries
 echo "qt_includes  = " $qt_includes
 echo "qt_bin       = " $qt_bin
-echo ""
 
+dnl **************************
+dnl Shared vs static
+
+AC_ARG_ENABLE(shared-libs, [AS_HELP_STRING([--enable-shared], [enable shared libraries for program dependencies])],, [enable_shared_libs=no])
+if test no != $enable_shared_libs; then
+  echo ""
+	echo "using shared libraries for program dependencies"
+else
+  echo ""
+	echo "using static libraries for program dependencies"
+fi
+
+AM_CONDITIONAL(ENABLE_SHARED, [test no != $enable_shared_libs])
 
 dnl **************************
 dnl retrieve current timestamp
 timestamp=`date +"%G/%m/%d"`
 AC_SUBST(timestamp)
+echo ""
 echo "timestamp = " $timestamp
 
+echo ""
 AC_OUTPUT( Makefile \
   qedit.spec \
   base/Makefile \
