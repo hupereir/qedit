@@ -64,10 +64,11 @@ selection_( selection )
         (1<<FileRecordModel::ICON)|
         (1<<FileRecordModel::FILE)|
         (1<<FileRecordModel::PATH ));
-    int class_column( model_.findColumn( "class_name" ) );
-    if( class_column >= 0 ) mask |= (1<<class_column);
+    int classColumn( model_.findColumn( "class_name" ) );
+    if( classColumn >= 0 ) mask |= (1<<classColumn);
     _list().setMask( mask );
     _list().resizeColumns();
+    _list().setOptionName( "FILE_SELECTION_LIST" );
     mainLayout().addWidget( list_ );
 
     // generic button
@@ -91,10 +92,10 @@ selection_( selection )
     _updateButtons();
 
     // sort list and select all items
-    if( XmlOptions::get().find( "SESSION_FILES_SORT_COLUMN" ) && XmlOptions::get().find( "SESSION_FILES_SORT_ORDER" ) )
+    if( XmlOptions::get().find( "SESSION_FILES_SORTColumn" ) && XmlOptions::get().find( "SESSION_FILES_SORT_ORDER" ) )
     {
         _list().sortByColumn(
-            XmlOptions::get().get<int>( "SESSION_FILES_SORT_COLUMN" ),
+            XmlOptions::get().get<int>( "SESSION_FILES_SORTColumn" ),
             (Qt::SortOrder)(XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ) );
     }
 
