@@ -24,144 +24,132 @@
 *
 *******************************************************************************/
 
-/*!
-  \file PrintDialog.h
-  \brief print document
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QRadioButton>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QString>
-
 #include "BrowsedLineEditor.h"
 #include "CustomDialog.h"
 #include "CustomComboBox.h"
 #include "LineEditor.h"
 #include "File.h"
 
+#include <QtGui/QRadioButton>
+#include <QtGui/QCheckBox>
+#include <QtGui/QSpinBox>
+#include <QtCore/QString>
+
 //! print document
 class PrintDialog: public CustomDialog
 {
 
-  //! Qt meta object declaration
-  Q_OBJECT;
+    //! Qt meta object declaration
+    Q_OBJECT;
 
-  public:
+    public:
 
-  //! constructor
-  PrintDialog( QWidget* parent );
+    //! constructor
+    PrintDialog( QWidget* parent );
 
-  //! file
-  void setFile( const File& file );
+    //! file
+    void setFile( const File& file );
 
-  //! max line size
-  void setMaximumLineSize( const int& value )
-  {
-    if( value <= 0 ) wrap_checkbox_->setChecked( false );
-    else {
-      wrap_checkbox_->setChecked( true );
-      maximum_line_size_->setValue( value );
+    //! max line size
+    void setMaximumLineSize( const int& value )
+    {
+        if( value <= 0 ) wrapCheckBox_->setChecked( false );
+        else {
+            wrapCheckBox_->setChecked( true );
+            maximumLineSize_->setValue( value );
+        }
+
     }
 
-  }
+    //! maximum line size
+    int maximumLineSize( void ) const
+    { return wrapCheckBox_->isChecked() ? maximumLineSize_->value():0; }
 
-  //! maximum line size
-  int maximumLineSize( void ) const
-  { return wrap_checkbox_->isChecked() ? maximum_line_size_->value():0; }
+    //! print mode
+    enum Mode
+    {
+        PDF,
+        HTML
+    };
 
-  //! print mode
-  enum Mode
-  {
-    //! to PDF
-    PDF,
+    //! mode
+    void setMode( const Mode& mode )
+    {
+        if( mode == PDF ) pdfCheckBox_->setChecked( true );
+        else htmlCheckBox_->setChecked( true );
+    }
 
-    //! to HTML
-    HTML
+    //! mode
+    Mode mode( void ) const
+    { return pdfCheckBox_->isChecked() ? PDF:HTML; }
 
-  };
+    //! file
+    QString destinationFile( void ) const
+    { return destinationEditor_->editor().text(); }
 
-  //! mode
-  void setMode( const Mode& mode )
-  {
-    if( mode == PDF ) pdf_checkbox_->setChecked( true );
-    else html_checkbox_->setChecked( true );
-  }
+    //! use command
+    void setUseCommand( const bool& value )
+    { commandCheckBox_->setChecked( value ); }
 
-  //! mode
-  Mode mode( void ) const
-  { return pdf_checkbox_->isChecked() ? PDF:HTML; }
+    //! use command
+    bool useCommand( void ) const
+    { return commandCheckBox_->isChecked(); }
 
-  //! file
-  QString destinationFile( void ) const
-  { return _destinationEditor().editor().text(); }
+    //! command
+    QString command( void ) const
+    { return commandEditor_->currentText(); }
 
-  //! use command
-  void setUseCommand( const bool& value )
-  { command_checkbox_->setChecked( value ); }
+    //! set command manually
+    void setCommand( QString command )
+    { commandEditor_->setEditText( command ); }
 
-  //! use command
-  bool useCommand( void ) const
-  { return command_checkbox_->isChecked(); }
+    //! add commands to the combo-box list
+    void addCommand( QString command )
+    { commandEditor_->addItem( command ); }
 
-  //! command
-  QString command( void ) const
-  { return _commandEditor().currentText(); }
+    private slots:
 
-  //! set command manually
-  void setCommand( QString command )
-  { _commandEditor().setEditText( command ); }
+    //! update checkboxes
+    void _updateCheckBoxes( void );
 
-  //! add commands to the combo-box list
-  void addCommand( QString command )
-  { _commandEditor().addItem( command ); }
+    //! update print command
+    void _updateFile( void );
 
-  private slots:
+    //! browse print command
+    void _browseCommand( void );
 
-  //! update checkboxes
-  void _updateCheckBoxes( void );
+    protected:
 
-  //! update print command
-  void _updateFile( void );
+    //! destination
+    BrowsedLineEditor& _destinationEditor( void ) const
+    { return *destinationEditor_; }
 
-  //! browse print command
-  void _browseCommand( void );
+    //! command editor
+    CustomComboBox& _commandEditor( void ) const
+    { return *commandEditor_; }
 
-  protected:
+    private:
 
-  //! destination
-  BrowsedLineEditor& _destinationEditor( void ) const
-  { return *destination_editor_; }
+    //! a2ps checkbox
+    QRadioButton* htmlCheckBox_;
 
-  //! command editor
-  CustomComboBox& _commandEditor( void ) const
-  { return *command_editor_; }
+    //! a2ps checkbox
+    QRadioButton* pdfCheckBox_;
 
-  private:
+    //! postscript file
+    BrowsedLineEditor* destinationEditor_;
 
-  //! a2ps checkbox
-  QRadioButton* html_checkbox_;
+    //! wrap lines
+    QCheckBox* wrapCheckBox_;
 
-  //! a2ps checkbox
-  QRadioButton* pdf_checkbox_;
+    //! max line size
+    QSpinBox* maximumLineSize_;
 
-  //! postscript file
-  BrowsedLineEditor* destination_editor_;
+    //! command check box
+    QCheckBox* commandCheckBox_;
 
-  //! wrap lines
-  QCheckBox* wrap_checkbox_;
-
-  //! max line size
-  QSpinBox* maximum_line_size_;
-
-  //! command check box
-  QCheckBox* command_checkbox_;
-
-  //! print command
-  CustomComboBox* command_editor_;
+    //! print command
+    CustomComboBox* commandEditor_;
 
 };
 #endif

@@ -21,21 +21,6 @@
 *
 *******************************************************************************/
 
-/*!
-  \file PrintDialog.cpp
-  \brief print document
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QFrame>
-#include <QLayout>
-#include <QToolButton>
-#include <QButtonGroup>
-#include <QGroupBox>
-#include <QLabel>
-
 #include "Debug.h"
 #include "Icons.h"
 #include "IconEngine.h"
@@ -44,105 +29,119 @@
 #include "PrintDialog.h"
 #include "QtUtil.h"
 
-
+#include <QtGui/QFrame>
+#include <QtGui/QLayout>
+#include <QtGui/QToolButton>
+#include <QtGui/QButtonGroup>
+#include <QtGui/QGroupBox>
+#include <QtGui/QLabel>
 
 //__________________________________________________
 PrintDialog::PrintDialog( QWidget* parent ):
-  CustomDialog( parent, OkButton | CancelButton )
+CustomDialog( parent, OkButton | CancelButton )
 {
 
-  Debug::Throw( "PrintDialog::PrintDialog.\n" );
-  setWindowTitle( "Print Document - Qedit" );
+    Debug::Throw( "PrintDialog::PrintDialog.\n" );
+    setWindowTitle( "Print Document - Qedit" );
 
-  setOptionName( "PRINT_DIALOG" );
+    setOptionName( "PRINT_DIALOG" );
 
-  QButtonGroup* group = new QButtonGroup( this );
-  group->setExclusive( true );
+    QButtonGroup* group = new QButtonGroup( this );
+    group->setExclusive( true );
 
-  // destination
-  QGroupBox *box;
-  box = new QGroupBox( "destination", this );
-  box->setLayout( new QVBoxLayout() );
-  box->layout()->setMargin(10);
-  box->layout()->setMargin(5);
-  mainLayout().addWidget( box );
+    // destination
+    QGroupBox *box;
+    box = new QGroupBox( "Destination", this );
+    mainLayout().addWidget( box );
 
-  box->layout()->addWidget( pdf_checkbox_ = new QRadioButton( "Print to PDF file", box ) );
-  group->addButton( pdf_checkbox_ );
-  pdf_checkbox_->setChecked( true );
+    GridLayout* gridLayout = new GridLayout();
+    gridLayout->setMaxCount( 3 );
+    box->setLayout( gridLayout );
 
-  box->layout()->addWidget( html_checkbox_ = new QRadioButton( "Print to HTML file", box ) );
-  group->addButton( html_checkbox_ );
-  html_checkbox_->setChecked( false );
+    // file
+    QLabel* label;
+    gridLayout->addWidget( label = new QLabel( "File: ", box ), 0, 0, 1, 1 );
+    label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
 
-  box->layout()->addWidget( new QLabel( "Destination file: ", box ) );
-  box->layout()->addWidget( destination_editor_ = new BrowsedLineEditor( box ) );
-  _destinationEditor().setMinimumSize( QSize( 150, 0 ) );
+    gridLayout->addWidget( destinationEditor_ = new BrowsedLineEditor( box ), 0, 1, 1, 2 );
+    destinationEditor_->setMinimumSize( QSize( 150, 0 ) );
 
-  // options
-  box = new QGroupBox( "options", this );
-  GridLayout* grid_layout = new GridLayout();
-  grid_layout->setSpacing(5);
-  grid_layout->setMargin(10);
-  grid_layout->setMaxCount(2);
-  box->setLayout( grid_layout );
-  mainLayout().addWidget( box );
+    // format
+    gridLayout->addWidget( label = new QLabel( "Output format: ", box ), 1, 0, 1, 1 );
+    label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
 
-  grid_layout->addWidget( wrap_checkbox_ = new QCheckBox( "Wrap lines to maximum size:", box ) );
-  wrap_checkbox_->setChecked( true );
+    gridLayout->addWidget( pdfCheckBox_ = new QRadioButton( "PDF", box ), 1, 1, 1, 1 );
+    group->addButton( pdfCheckBox_ );
+    pdfCheckBox_->setChecked( true );
 
-  grid_layout->addWidget( maximum_line_size_ = new QSpinBox( box ) );
-  maximum_line_size_->setMaximum( 1024) ;
+    gridLayout->addWidget( htmlCheckBox_ = new QRadioButton( "HTML", box ), 1, 2, 1, 1 );
+    group->addButton( htmlCheckBox_ );
+    htmlCheckBox_->setChecked( false );
 
-  grid_layout->addWidget( command_checkbox_ = new QCheckBox( "Open/print with: ", box ) );
-  command_checkbox_->setChecked( true );
+    gridLayout->setColumnStretch( 2, 1 );
 
-  QHBoxLayout *h_layout = new QHBoxLayout();
-  h_layout->setSpacing(2);
-  h_layout->setMargin(0);
-  grid_layout->addLayout( h_layout );
+    // options
+    box = new QGroupBox( "Options", this );
+    gridLayout = new GridLayout();
+    gridLayout->setMaxCount(2);
+    box->setLayout( gridLayout );
+    mainLayout().addWidget( box );
 
-  h_layout->addWidget( command_editor_ = new CustomComboBox( box ) );
-  _commandEditor().setEditable( true );
-  _commandEditor().setAutoCompletion( true, Qt::CaseSensitive  );
-  _commandEditor().setMinimumSize( QSize( 150, 0 ) );
+    gridLayout->addWidget( wrapCheckBox_ = new QCheckBox( "Wrap lines to maximum size:", box ) );
+    wrapCheckBox_->setChecked( true );
 
-  // browse command button associated to the CustomComboBox
-  QToolButton* button = new QToolButton( box );
-  button->setIcon( IconEngine::get( ICONS::OPEN ) );
-  button->setAutoRaise( false );
-  h_layout->addWidget( button );
-  connect( button, SIGNAL( clicked() ), SLOT( _browseCommand() ) );
+    gridLayout->addWidget( maximumLineSize_ = new QSpinBox( box ) );
+    maximumLineSize_->setMaximum( 1024) ;
 
-  // connections
-  connect( pdf_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateFile() ) );
-  connect( html_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateFile() ) );
-  connect( wrap_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) );
-  connect( command_checkbox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) );
+    gridLayout->addWidget( commandCheckBox_ = new QCheckBox( "Open/print with: ", box ) );
+    commandCheckBox_->setChecked( true );
 
-  _updateFile();
-  _updateCheckBoxes();
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->setSpacing(2);
+    hLayout->setMargin(0);
+    gridLayout->addLayout( hLayout );
 
-  // change button text
-  okButton().setText( "&Print" );
-  okButton().setIcon( IconEngine::get( ICONS::PRINT ));
+    hLayout->addWidget( commandEditor_ = new CustomComboBox( box ) );
+    commandEditor_->setEditable( true );
+    commandEditor_->setAutoCompletion( true, Qt::CaseSensitive  );
+    commandEditor_->setMinimumSize( QSize( 150, 0 ) );
+
+    // browse command button associated to the CustomComboBox
+    QToolButton* button = new QToolButton( box );
+    button->setIcon( IconEngine::get( ICONS::OPEN ) );
+    button->setAutoRaise( false );
+    hLayout->addWidget( button );
+    connect( button, SIGNAL( clicked() ), SLOT( _browseCommand() ) );
+
+    // connections
+    connect( pdfCheckBox_, SIGNAL( toggled( bool ) ), SLOT( _updateFile() ) );
+    connect( htmlCheckBox_, SIGNAL( toggled( bool ) ), SLOT( _updateFile() ) );
+    connect( wrapCheckBox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) );
+    connect( commandCheckBox_, SIGNAL( toggled( bool ) ), SLOT( _updateCheckBoxes() ) );
+
+    _updateFile();
+    _updateCheckBoxes();
+
+    // change button text
+    okButton().setText( "&Print" );
+    okButton().setIcon( IconEngine::get( ICONS::PRINT ));
 }
 
 //__________________________________________________
 void PrintDialog::setFile( const File& file )
 {
-  Debug::Throw( "PrintDialog::setFile.\n" );
-  _destinationEditor().editor().setText( file );
-  _updateFile();
+    Debug::Throw( "PrintDialog::setFile.\n" );
+    destinationEditor_->editor().setText( file );
+    _updateFile();
 }
 
 //__________________________________________________
 void PrintDialog::_updateCheckBoxes( void )
 {
 
-  Debug::Throw( "PrintDialog::_updateCheckBoxes.\n" );
-  maximum_line_size_->setEnabled( wrap_checkbox_->isChecked() );
-  _commandEditor().setEnabled( command_checkbox_->isChecked() );
+    Debug::Throw( "PrintDialog::_updateCheckBoxes.\n" );
+    maximumLineSize_->setEnabled( wrapCheckBox_->isChecked() );
+    commandEditor_->setEnabled( commandCheckBox_->isChecked() );
 
 }
 
@@ -150,14 +149,14 @@ void PrintDialog::_updateCheckBoxes( void )
 void PrintDialog::_updateFile( void )
 {
 
-  Debug::Throw( "PrintDialog::_updateFile.\n" );
+    Debug::Throw( "PrintDialog::_updateFile.\n" );
 
-  File file( _destinationEditor().editor().text() );
-  file = file.isEmpty() ? File("document"):file.truncatedName();
-  if( pdf_checkbox_->isChecked() ) file += ".pdf";
-  else if( html_checkbox_->isChecked() ) file += ".html";
+    File file( destinationEditor_->editor().text() );
+    file = file.isEmpty() ? File("document"):file.truncatedName();
+    if( pdfCheckBox_->isChecked() ) file += ".pdf";
+    else if( htmlCheckBox_->isChecked() ) file += ".html";
 
-  _destinationEditor().editor().setText( file );
+    destinationEditor_->editor().setText( file );
 
 }
 
@@ -165,15 +164,15 @@ void PrintDialog::_updateFile( void )
 void PrintDialog::_browseCommand( void )
 {
 
-  Debug::Throw( "PrintDialog::_browseCommand.\n" );
+    Debug::Throw( "PrintDialog::_browseCommand.\n" );
 
-  // open FileDialog
-  QString file( FileDialog(this).getFile() );
-  if( !file.isNull() ) {
-    _commandEditor().setEditText( file );
-    _commandEditor().addItem( file );
-  }
+    // open FileDialog
+    QString file( FileDialog(this).getFile() );
+    if( !file.isNull() ) {
+        commandEditor_->setEditText( file );
+        commandEditor_->addItem( file );
+    }
 
-  return;
+    return;
 
 }
