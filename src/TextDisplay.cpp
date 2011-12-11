@@ -44,9 +44,9 @@
 #include "FileRecordProperties.h"
 #include "FileRemovedDialog.h"
 #include "GridLayout.h"
-#include "HtmlTextNode.h"
 #include "HighlightBlockData.h"
 #include "HighlightBlockFlags.h"
+#include "HtmlTextNode.h"
 #include "IconEngine.h"
 #include "Icons.h"
 #include "InformationDialog.h"
@@ -862,13 +862,13 @@ QString TextDisplay::toPlainText( void ) const
 }
 
 //_______________________________________________________
-QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_size )
+QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& maxLineSize )
 {
 
     // clear highlight locations and rehighlight
     QDomElement out = document.createElement( "Pre" );
 
-    int active_id( 0 );
+    int activeId( 0 );
 
     // loop over text blocks
     for( QTextBlock block = TextDisplay::document()->begin(); block.isValid(); block = block.next() )
@@ -879,8 +879,8 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
         PatternLocationSet locations;
         if( textHighlight().isHighlightEnabled() )
         {
-            locations = textHighlight().locationSet( block.text(), active_id );
-            active_id = locations.activeId().second;
+            locations = textHighlight().locationSet( block.text(), activeId );
+            activeId = locations.activeId().second;
         }
 
         // retrieve text
@@ -950,7 +950,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
             buffer += text[index];
 
             // check for line-break
-            if( max_line_size > 0  && TextSeparator::get().all().find( text[index] ) != TextSeparator::get().all().end() )
+            if( maxLineSize > 0  && TextSeparator::get().all().find( text[index] ) != TextSeparator::get().all().end() )
             {
 
                 // look for next separator in string
@@ -961,7 +961,7 @@ QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& max_line_s
                     if( position >= 0 && ( next < 0 || position < next ) ) next = position;
                 }
 
-                if( line_index + next - index > max_line_size ) line_break = true;
+                if( line_index + next - index > maxLineSize ) line_break = true;
             }
 
         }

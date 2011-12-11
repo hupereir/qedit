@@ -51,10 +51,6 @@ void installDefaultOptions( void )
 
     XmlOptions::get().set( "FIXED_FONT_NAME", Option( "fixed" , "fixed font"  ) );
 
-    XmlOptions::get().set( "USE_PRINT_COMMAND", Option( "0", "use print/edit command" ) );
-    XmlOptions::get().set( "PRINT_MODE", Option( "PDF" , "print mode. Can be either PDF/HTML") );
-    XmlOptions::get().set( "PRINT_LINE_SIZE", Option( "0" , "Maximum line width. 0 means any.") );
-
     // input document_class pattern filenames options are special.
     // keep the full list
     XmlOptions::get().keep( "PATTERN_FILENAME" );

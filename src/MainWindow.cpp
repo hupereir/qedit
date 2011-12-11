@@ -52,7 +52,6 @@
 #include "NavigationToolBar.h"
 #include "NewFileDialog.h"
 #include "PixmapEngine.h"
-#include "PrintDialog.h"
 #include "QtUtil.h"
 #include "QuestionDialog.h"
 #include "RecentFilesFrame.h"
@@ -72,6 +71,7 @@
 
 #include <QtCore/QObjectList>
 #include <QtGui/QApplication>
+#include <QtGui/QPrintDialog>
 #include <QtGui/QPrinter>
 #include <QtXml/QDomElement>
 #include <QtXml/QDomDocument>
@@ -443,109 +443,24 @@ void MainWindow::_print( void )
         return;
     }
 
-    // create dialog
-    PrintDialog dialog( this );
-    dialog.setFile( file );
-    dialog.setMode( XmlOptions::get().raw("PRINT_MODE") == "PDF" ? PrintDialog::PDF : PrintDialog::HTML );
-    dialog.setMaximumLineSize( XmlOptions::get().get<int>( "PRINT_LINE_SIZE" ) );
-    dialog.setUseCommand( XmlOptions::get().get<bool>( "USE_PRINT_COMMAND" ) );
+    // create printer
+    QPrinter printer( QPrinter::HighResolution );
 
-    // add commands
-    /* command list contains the HTML editor, PDF editor and any additional user specified command */
-    Options::List commands( XmlOptions::get().specialOptions( "PRINT_COMMAND" ) );
-    commands.push_back( XmlOptions::get().option( "PDF_EDITOR" ) );
-    commands.push_back( XmlOptions::get().option( "HTML_EDITOR" ) );
-    for( Options::List::iterator iter = commands.begin(); iter != commands.end(); ++iter )
-    { dialog.addCommand( iter->raw() ); }
+    // create prind dialog and run.
+    QPrintDialog dialog( &printer, this );
+    dialog.setWindowTitle( "Print Document - qedit" );
+    if( dialog.exec() == QDialog::Rejected ) return;
 
-    // set command manually that match the selection mode
-    dialog.setCommand( XmlOptions::get().raw( ( dialog.mode() == PrintDialog::PDF ? "PDF_EDITOR":"HTML_EDITOR" ) ) );
+    // add output file to scratch files, if any
+    if( !printer.outputFileName().isEmpty() )
+    { Singleton::get().application<Application>()->scratchFileMonitor().add( printer.outputFileName() ); }
 
-    // exec
-    if( !dialog.centerOnParent().exec() ) return;
+    QTextEdit local(0);
+    //local.setHtml( _htmlString() );
+    local.setPlainText( activeDisplay().toPlainText() );
+    local.document()->setPageSize( printer.pageRect().size() );
+    local.document()->print(&printer);
 
-    // store options
-    XmlOptions::get().set( "PRINT_MODE", dialog.mode() == PrintDialog::PDF ? "PDF":"HTML" );
-    XmlOptions::get().set<int>( "PRINT_LINE_SIZE", dialog.maximumLineSize() );
-    XmlOptions::get().set<bool>( "USE_PRINT_COMMAND", dialog.useCommand() );
-
-    // check print mode and store options
-    PrintDialog::Mode mode( dialog.mode() );
-    QString command( dialog.command() );
-    XmlOptions::get().add( "PRINT_COMMAND", Option( command, Option::RECORDABLE|Option::CURRENT ) );
-    XmlOptions::get().set( mode == PrintDialog::HTML ? "HTML_EDITOR" : "PDF_EDITOR", Option( command, Option::RECORDABLE|Option::CURRENT ) );
-
-    // try open output file
-    File fullname = File( dialog.destinationFile() ).expand();
-
-    // check if file is directory
-    if( fullname.isDirectory() )
-    {
-        QString buffer;
-        QTextStream( &buffer ) << "file \"" << fullname << "\" is a directory. <Print> canceled.";
-        InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec();
-        return;
-    }
-
-
-    // check if file exists
-    if( fullname.exists() )
-    {
-        if( !fullname.isWritable() )
-        {
-            QString buffer;
-            QTextStream( &buffer ) << "file \"" << fullname << "\" is read-only. <Print> canceled.";
-            InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec();
-            return;
-        } else if( !QuestionDialog( this, "Selected file already exists. Overwrite ?" ).setWindowTitle( "Print Document - Qedit" ).centerOnParent().exec() ) {
-            return;
-        }
-
-    }
-
-    // add to scratch files
-    Singleton::get().application<Application>()->scratchFileMonitor().add( fullname );
-
-    // retrieve HTML string from current display
-    QString htmlString( _htmlString( dialog.maximumLineSize() ) );
-    Debug::Throw( "MainWindow::_print - retrieved html string.\n" );
-
-    if( mode == PrintDialog::HTML )
-    {
-        // open stream
-        QFile out( fullname );
-        if( !out.open( QIODevice::WriteOnly ) )
-        {
-            QString buffer;
-            QTextStream( &buffer ) << "cannot write to file \"" << fullname << "\" <Print> canceled.";
-            InformationDialog( this, buffer ).setWindowTitle( "Print Document - Qedit" ).exec();
-            return;
-        }
-
-        out.write( htmlString.toAscii() );
-        out.close();
-        Debug::Throw( "MainWindow::_print - html file saved.\n" );
-
-    } else if( mode == PrintDialog::PDF ) {
-
-        QTextEdit local(0);
-        local.setLineWrapMode( QTextEdit::WidgetWidth );
-        local.setHtml( htmlString );
-
-        QPrinter printer(QPrinter::HighResolution);
-        printer.setOutputFormat(QPrinter::PdfFormat);
-        printer.setOutputFileName(fullname);
-
-        local.document()->print(&printer);
-        Debug::Throw( "MainWindow::_print - pdf file saved.\n" );
-
-    } else return;
-
-    // try open
-    if( dialog.useCommand() )
-    { (Command( dialog.command() ) << fullname ).run(); }
-
-    Debug::Throw( "MainWindow::_print - done.\n" );
     return;
 
 }
@@ -1106,7 +1021,7 @@ void MainWindow::_updateWindowTitle()
 }
 
 //_____________________________________________________________________
-QString MainWindow::_htmlString( const int& max_line_size )
+QString MainWindow::_htmlString( const int& maxLineSize )
 {
 
     QDomDocument document( "Html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\"" );
@@ -1134,7 +1049,7 @@ QString MainWindow::_htmlString( const int& max_line_size )
     // body
     html.
         appendChild( document.createElement( "Body" ) ).
-        appendChild( activeDisplay().htmlNode( document, max_line_size ) );
+        appendChild( activeDisplay().htmlNode( document, maxLineSize ) );
 
     /*
     the following replacements are needed

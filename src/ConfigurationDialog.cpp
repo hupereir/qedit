@@ -341,18 +341,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     combobox->setEnabled( false );
     connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
 
-    // printing
-    page = &addPage( "Printing", "Commands used for printing" );
-    page->layout()->addWidget( box = new QGroupBox( page ) );
-
-    box->setLayout( new QVBoxLayout() );
-
-    OptionListBox* listbox = new OptionListBox( box, "PRINT_COMMAND" );
-    listbox->setBrowsable( true );
-    addOptionWidget( listbox );
-    listbox->setToolTip( "Available command for printing/editing converted files" );
-    box->layout()->addWidget( listbox );
-
     // recent files
     page = &addPage( "Recent files", "Recent files list settings", true );
     RecentFilesConfiguration* recentFiles_configuration = new RecentFilesConfiguration( page, Singleton::get().application<Application>()->recentFiles() );
