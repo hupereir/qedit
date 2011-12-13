@@ -72,6 +72,7 @@
 #include <QtCore/QObjectList>
 #include <QtGui/QApplication>
 #include <QtGui/QPrintDialog>
+#include <QtGui/QPrintPreviewDialog>
 #include <QtGui/QPrinter>
 #include <QtXml/QDomElement>
 #include <QtXml/QDomDocument>
@@ -430,19 +431,6 @@ void MainWindow::_print( void )
 {
     Debug::Throw( "MainWindow::_print.\n" );
 
-    // retrieve activeDisplay file
-    const File& file( activeDisplay().file() );
-
-    // check if file is modified
-    if( activeDisplay().document()->isModified() && activeDisplay().askForSave() == AskForSaveDialog::CANCEL ) return;
-
-    // check if file is valid and exists
-    if( file.isEmpty() || !file.exists() )
-    {
-        InformationDialog( this, "File is not valid for printing. <print> canceled." ).exec();
-        return;
-    }
-
     // create printer
     QPrinter printer( QPrinter::HighResolution );
 
@@ -456,10 +444,21 @@ void MainWindow::_print( void )
     { Singleton::get().application<Application>()->scratchFileMonitor().add( printer.outputFileName() ); }
 
     // print
-    activeDisplay().print( printer );
+    activeDisplay().print( &printer );
 
     return;
 
+}
+
+//___________________________________________________________
+void MainWindow::_printPreview( void )
+{
+    Debug::Throw( "MainWindow::_printPreview.\n" );
+
+    // create dialog
+    QPrintPreviewDialog dialog( this );
+    connect( &dialog, SIGNAL( paintRequested( QPrinter* ) ), &activeDisplay(), SLOT( print( QPrinter* ) ) );
+    dialog.exec();
 }
 
 //_______________________________________________________
@@ -790,21 +789,21 @@ void MainWindow::_installActions( void )
 
     Debug::Throw( "MainWindow::_installActions.\n" );
 
-    addAction( newFileAction_ = new QAction( IconEngine::get( ICONS::NEW ), "&New", this ) );
+    addAction( newFileAction_ = new QAction( IconEngine::get( ICONS::NEW ), "New", this ) );
     newFileAction_->setShortcut( Qt::CTRL+Qt::Key_N );
     newFileAction_->setToolTip( "Create a new empty file" );
 
-    addAction( cloneAction_ = new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "&Clone", this ) );
+    addAction( cloneAction_ = new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "Clone", this ) );
     cloneAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_N );
     cloneAction_->setToolTip( "Clone current display" );
     connect( cloneAction_, SIGNAL( triggered() ), SLOT( _splitDisplay() ) );
 
-    addAction( detachAction_ = new QAction( IconEngine::get( ICONS::VIEW_DETACH ), "&Detach", this ) );
+    addAction( detachAction_ = new QAction( IconEngine::get( ICONS::VIEW_DETACH ), "Detach", this ) );
     detachAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_O );
     detachAction_->setToolTip( "Detach current display" );
     detachAction_->setEnabled( false );
 
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this ) );
+    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open", this ) );
     openAction_->setShortcut( Qt::CTRL+Qt::Key_O );
     openAction_->setToolTip( "Open an existing file" );
 
@@ -814,74 +813,77 @@ void MainWindow::_installActions( void )
     addAction( openVerticalAction_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open Display Left/Right", this ) );
     openVerticalAction_->setToolTip( "Open a new display horizontally" );
 
-    addAction( closeDisplayAction_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "&Close Display", this ) );
+    addAction( closeDisplayAction_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "Close Display", this ) );
     closeDisplayAction_->setShortcut( Qt::CTRL+Qt::Key_W );
     closeDisplayAction_->setToolTip( "Close current display" );
     connect( closeDisplayAction_, SIGNAL( triggered() ), SLOT( _closeDisplay() ) );
 
-    addAction( closeWindowAction_ = new QAction( IconEngine::get( ICONS::CLOSE ), "&Close Window", this ) );
+    addAction( closeWindowAction_ = new QAction( IconEngine::get( ICONS::CLOSE ), "Close Window", this ) );
     closeWindowAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_W );
     closeWindowAction_->setToolTip( "Close current display" );
     connect( closeWindowAction_, SIGNAL( triggered() ), SLOT( _closeWindow() ) );
 
-    addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "&Save", this ) );
+    addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "Save", this ) );
     saveAction_->setShortcut( Qt::CTRL+Qt::Key_S );
     saveAction_->setToolTip( "Save current file" );
     connect( saveAction_, SIGNAL( triggered() ), SLOT( _save() ) );
 
-    addAction( saveAsAction_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save &As", this ) );
+    addAction( saveAsAction_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save As", this ) );
     saveAsAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_S );
     saveAsAction_->setToolTip( "Save current file with a different name" );
     connect( saveAsAction_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
 
-    addAction( revertToSaveAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
+    addAction( revertToSaveAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Reload", this ) );
     revertToSaveAction_->setShortcut( Qt::Key_F5 );
     revertToSaveAction_->setToolTip( "Reload saved version of current file" );
     connect( revertToSaveAction_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
 
-    addAction( printAction_ = new QAction( IconEngine::get( ICONS::PRINT ), "&Print", this ) );
+    addAction( printAction_ = new QAction( IconEngine::get( ICONS::PRINT ), "Print", this ) );
     printAction_->setToolTip( "Print current file" );
     printAction_->setShortcut( Qt::CTRL + Qt::Key_P );
     connect( printAction_, SIGNAL( triggered() ), SLOT( _print() ) );
 
-    addAction( undoAction_ = new QAction( IconEngine::get( ICONS::UNDO ), "&Undo", this ) );
+    addAction( printPreviewAction_ = new QAction( IconEngine::get( ICONS::PRINT_PREVIEW ), "Print Preview", this ) );
+    connect( printPreviewAction_, SIGNAL( triggered() ), SLOT( _printPreview() ) );
+
+    addAction( undoAction_ = new QAction( IconEngine::get( ICONS::UNDO ), "Undo", this ) );
     undoAction_->setToolTip( "Undo last action" );
     undoAction_->setEnabled( false );
     connect( undoAction_, SIGNAL( triggered() ), SLOT( _undo() ) );
 
-    addAction( redoAction_ = new QAction( IconEngine::get( ICONS::REDO ), "&Redo", this ) );
+    addAction( redoAction_ = new QAction( IconEngine::get( ICONS::REDO ), "Redo", this ) );
     redoAction_->setToolTip( "Redo last un-done action" );
     redoAction_->setEnabled( false );
     connect( redoAction_, SIGNAL( triggered() ), SLOT( _redo() ) );
 
-    addAction( cutAction_ = new QAction( IconEngine::get( ICONS::CUT ), "&Cut", this ) );
+    addAction( cutAction_ = new QAction( IconEngine::get( ICONS::CUT ), "Cut", this ) );
     cutAction_->setToolTip( "Cut current selection and copy to clipboard" );
     cutAction_->setEnabled( false );
     connect( cutAction_, SIGNAL( triggered() ), SLOT( _cut() ) );
 
-    addAction( copyAction_ = new QAction( IconEngine::get( ICONS::COPY ), "&Copy", this ) );
+    addAction( copyAction_ = new QAction( IconEngine::get( ICONS::COPY ), "Copy", this ) );
     copyAction_->setToolTip( "Copy current selection to clipboard" );
     copyAction_->setEnabled( false );
     connect( copyAction_, SIGNAL( triggered() ), SLOT( _copy() ) );
 
-    addAction( pasteAction_ = new QAction( IconEngine::get( ICONS::PASTE ), "&Paste", this ) );
+    addAction( pasteAction_ = new QAction( IconEngine::get( ICONS::PASTE ), "Paste", this ) );
     pasteAction_->setToolTip( "Paste clipboard to text" );
     pasteAction_->setEnabled( !qApp->clipboard()->text().isEmpty() );
     connect( pasteAction_, SIGNAL( triggered() ), SLOT( _paste() ) );
 
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "&File Information", this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "File Information", this ) );
     filePropertiesAction_->setToolTip( "Display file informations" );
     filePropertiesAction_->setEnabled( false );
     connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
 
-    addAction( spellcheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spell Check", this ) );
+    addAction( spellcheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Spell Check", this ) );
     #if WITH_ASPELL
     connect( spellcheckAction_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
     #else
     spellcheckAction_->setVisible( false );
     #endif
 
-    addAction( diffAction_ = new QAction( "&Diff Files", this ) );
+    addAction( diffAction_ = new QAction( "Diff Files", this ) );
     connect( diffAction_, SIGNAL( triggered() ), SLOT( _diff() ) );
     diffAction_->setEnabled( false );
 

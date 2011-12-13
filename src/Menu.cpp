@@ -82,6 +82,7 @@ Menu::Menu( QWidget* parent ):
 
     // print and close
     menu->addAction( &mainwindow.printAction() );
+    menu->addAction( &mainwindow.printPreviewAction() );
 
     menu->addSeparator();
     menu->addAction( &application.closeAction() );

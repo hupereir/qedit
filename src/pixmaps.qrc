@@ -8,6 +8,7 @@
 	    <file alias="pixmaps/document-close.png">../pixmaps/document-close.png</file>        
 	    <file alias="pixmaps/document-multiple.png">../pixmaps/document-multiple.png</file>     
 	    <file alias="pixmaps/document-new.png">../pixmaps/document-new.png</file>          
+	    <file alias="pixmaps/document-print-preview.png">../pixmaps/document-print-preview.png</file> 
 	    <file alias="pixmaps/document.png">../pixmaps/document.png</file>              
 	    <file alias="pixmaps/document-save-all.png">../pixmaps/document-save-all.png</file>     
 	    <file alias="pixmaps/document-save-as.png">../pixmaps/document-save-as.png</file>      

@@ -138,9 +138,6 @@ class TextDisplay: public AnimatedTextEditor
     //! draw margins
     virtual void paintMargin( QPainter& );
 
-    //! print document to a given printer
-    virtual void print( QPrinter& ) const;
-
     //! update flags (to be passed to TextEditor to change button status)
     enum UpdateFlags
     {
@@ -470,6 +467,9 @@ class TextDisplay: public AnimatedTextEditor
 
     //! select class name
     void selectClassName( QString );
+
+    //! print document to a given printer
+    virtual void print( QPrinter* );
 
     protected:
 

@@ -46,7 +46,6 @@
 #include "GridLayout.h"
 #include "HighlightBlockData.h"
 #include "HighlightBlockFlags.h"
-#include "HtmlTextNode.h"
 #include "IconEngine.h"
 #include "Icons.h"
 #include "InformationDialog.h"
@@ -275,84 +274,6 @@ void TextDisplay::paintMargin( QPainter& painter )
     AnimatedTextEditor::paintMargin( painter );
     bool hasBlockDelimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
     if( hasBlockDelimiters ) blockDelimiterDisplay().paint( painter );
-}
-
-
-//__________________________________________________________
-void TextDisplay::print( QPrinter& printer ) const
-{
-
-    // create painter on printer
-    QPainter painter;
-    painter.begin(&printer);
-
-    const int lineWidth = printer.pageRect().width();
-    const int leading = QFontMetrics( font(), &printer ).leading();
-
-    // get list of blocks from document
-    QPointF position( 0, 0 );
-    for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
-    {
-
-        // construct text layout
-        QTextLayout textLayout( block.text(), font(), &printer );
-
-        // layout text
-        textLayout.beginLayout();
-        qreal height = 0;
-        while (1)
-        {
-            QTextLine line = textLayout.createLine();
-            if (!line.isValid()) break;
-
-            line.setLineWidth( lineWidth );
-            height += leading;
-            line.setPosition(QPointF(0, height));
-            height += line.height();
-        }
-
-        // create ranges
-        QList<QTextLayout::FormatRange> formatRanges;
-
-        // get highlight block data associated to this block
-        HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-        if( data )
-        {
-            PatternLocationSet patterns( data->locations() );
-            for( PatternLocationSet::const_iterator iter = patterns.begin(); iter != patterns.end(); iter++ )
-            {
-                QTextLayout::FormatRange formatRange;
-                formatRange.start = iter->position();
-                formatRange.length = iter->length();
-                formatRange.format = iter->format();
-                formatRanges.push_back( formatRange );
-            }
-
-            // save formats
-            textLayout.setAdditionalFormats( formatRanges );
-
-        }
-
-        textLayout.endLayout();
-
-        // increase page
-        int textLayoutHeight( textLayout.boundingRect().height() );
-        if( (position.y() + textLayoutHeight ) > printer.pageRect().height() )
-        {
-            position.setY(0);
-            printer.newPage();
-        }
-
-        // render
-        textLayout.draw( &painter, position );
-
-        // update position
-        position.setY( position.y() + textLayoutHeight );
-
-    }
-
-    painter.end();
-
 }
 
 //___________________________________________________________________________
@@ -1304,6 +1225,83 @@ void TextDisplay::selectClassName( QString name )
 
     // rehighlight
     rehighlight();
+
+}
+
+//__________________________________________________________
+void TextDisplay::print( QPrinter* printer )
+{
+
+    // create painter on printer
+    QPainter painter;
+    painter.begin(printer);
+
+    const int lineWidth = printer->pageRect().width();
+    const int leading = QFontMetrics( font(), printer ).leading();
+
+    // get list of blocks from document
+    QPointF position( 0, 0 );
+    for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
+    {
+
+        // construct text layout
+        QTextLayout textLayout( block.text(), font(), printer );
+
+        // layout text
+        textLayout.beginLayout();
+        qreal height = 0;
+        while (1)
+        {
+            QTextLine line = textLayout.createLine();
+            if (!line.isValid()) break;
+
+            line.setLineWidth( lineWidth );
+            height += leading;
+            line.setPosition(QPointF(0, height));
+            height += line.height();
+        }
+
+        // create ranges
+        QList<QTextLayout::FormatRange> formatRanges;
+
+        // get highlight block data associated to this block
+        HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+        if( data )
+        {
+            PatternLocationSet patterns( data->locations() );
+            for( PatternLocationSet::const_iterator iter = patterns.begin(); iter != patterns.end(); iter++ )
+            {
+                QTextLayout::FormatRange formatRange;
+                formatRange.start = iter->position();
+                formatRange.length = iter->length();
+                formatRange.format = iter->format();
+                formatRanges.push_back( formatRange );
+            }
+
+            // save formats
+            textLayout.setAdditionalFormats( formatRanges );
+
+        }
+
+        textLayout.endLayout();
+
+        // increase page
+        int textLayoutHeight( textLayout.boundingRect().height() );
+        if( (position.y() + textLayoutHeight ) > printer->pageRect().height() )
+        {
+            position.setY(0);
+            printer->newPage();
+        }
+
+        // render
+        textLayout.draw( &painter, position );
+
+        // update position
+        position.setY( position.y() + textLayoutHeight );
+
+    }
+
+    painter.end();
 
 }
 

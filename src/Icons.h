@@ -57,6 +57,7 @@ namespace ICONS
     static const QString VIEW_BOTTOM = "view-bottom-new.png";
     static const QString VIEW_REMOVE = "view-close.png";
     static const QString VIEW_DETACH = "view-fullscreen.png";
+    static const QString PRINT_PREVIEW = "document-print-preview.png";
 
     static const QString TAG = "bookmarks.png";
 
