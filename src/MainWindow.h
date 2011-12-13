@@ -598,9 +598,6 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     //! Update window title
     void _updateWindowTitle();
 
-    /*! it is used to print formatted text to both HTML and PDF */
-    QString _htmlString( const int& = 0 );
-
     //! stack windget
     QStackedWidget& _stack( void ) const
     { return *stack_; }

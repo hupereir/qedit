@@ -56,6 +56,7 @@
 
 #include <QtCore/QRegExp>
 #include <QtGui/QAction>
+#include <QtGui/QPrinter>
 
 // forward declaration
 class BlockDelimiterDisplay;
@@ -136,6 +137,9 @@ class TextDisplay: public AnimatedTextEditor
 
     //! draw margins
     virtual void paintMargin( QPainter& );
+
+    //! print document to a given printer
+    virtual void print( QPrinter& ) const;
 
     //! update flags (to be passed to TextEditor to change button status)
     enum UpdateFlags
@@ -317,9 +321,6 @@ class TextDisplay: public AnimatedTextEditor
     however, it is never called via a pointer to the base class, so that it should be fine.
     */
     QString toPlainText( void ) const;
-
-    //! Get HTML formated text
-    QDomElement htmlNode( QDomDocument& document, const int& max_line_size = 0 );
 
     //!@name actions
     //@{

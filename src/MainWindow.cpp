@@ -455,11 +455,8 @@ void MainWindow::_print( void )
     if( !printer.outputFileName().isEmpty() )
     { Singleton::get().application<Application>()->scratchFileMonitor().add( printer.outputFileName() ); }
 
-    QTextEdit local(0);
-    //local.setHtml( _htmlString() );
-    local.setPlainText( activeDisplay().toPlainText() );
-    local.document()->setPageSize( printer.pageRect().size() );
-    local.document()->print(&printer);
+    // print
+    activeDisplay().print( printer );
 
     return;
 
@@ -1018,46 +1015,4 @@ void MainWindow::_updateWindowTitle()
         );
 
     Debug::Throw( "MainWindow::_updateWindowTitle. Done.\n" );
-}
-
-//_____________________________________________________________________
-QString MainWindow::_htmlString( const int& maxLineSize )
-{
-
-    QDomDocument document( "Html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\"" );
-
-    // html
-    QDomElement html = document.appendChild( document.createElement( "Html" ) ).toElement();
-    html.setAttribute( "xmlns", "Http://www.w3.org/1999/xhtml" );
-
-    // head
-    QDomElement head = html.appendChild( document.createElement( "Head" ) ).toElement();
-    QDomElement meta;
-
-    // meta information
-    meta = head.appendChild( document.createElement( "meta" ) ).toElement();
-    meta.setAttribute( "content", "Text/html; charset=iso-8859-1" );
-    meta.setAttribute( "Http-equiv", "Content-Type" );
-    meta = head.appendChild( document.createElement( "meta" ) ).toElement();
-    meta.setAttribute( "content", "QEdit" );
-    meta.setAttribute( "name", "Generator" );
-
-    // title
-    QDomElement title = head.appendChild( document.createElement( "Title" ) ).toElement();
-    title.appendChild( document.createTextNode( activeDisplay().file() ) );
-
-    // body
-    html.
-        appendChild( document.createElement( "Body" ) ).
-        appendChild( activeDisplay().htmlNode( document, maxLineSize ) );
-
-    /*
-    the following replacements are needed
-    to have correct implementation of leading space characters, tabs
-    and end of line
-    */
-    QString htmlString( document.toString(0) );
-    htmlString = htmlString.replace( "</span>\n", "</span>", Qt::CaseInsensitive );
-    htmlString = htmlString.replace( "<br/>", "", Qt::CaseInsensitive );
-    return htmlString;
 }

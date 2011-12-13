@@ -277,6 +277,84 @@ void TextDisplay::paintMargin( QPainter& painter )
     if( hasBlockDelimiters ) blockDelimiterDisplay().paint( painter );
 }
 
+
+//__________________________________________________________
+void TextDisplay::print( QPrinter& printer ) const
+{
+
+    // create painter on printer
+    QPainter painter;
+    painter.begin(&printer);
+
+    const int lineWidth = printer.pageRect().width();
+    const int leading = QFontMetrics( font(), &printer ).leading();
+
+    // get list of blocks from document
+    QPointF position( 0, 0 );
+    for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
+    {
+
+        // construct text layout
+        QTextLayout textLayout( block.text(), font(), &printer );
+
+        // layout text
+        textLayout.beginLayout();
+        qreal height = 0;
+        while (1)
+        {
+            QTextLine line = textLayout.createLine();
+            if (!line.isValid()) break;
+
+            line.setLineWidth( lineWidth );
+            height += leading;
+            line.setPosition(QPointF(0, height));
+            height += line.height();
+        }
+
+        // create ranges
+        QList<QTextLayout::FormatRange> formatRanges;
+
+        // get highlight block data associated to this block
+        HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+        if( data )
+        {
+            PatternLocationSet patterns( data->locations() );
+            for( PatternLocationSet::const_iterator iter = patterns.begin(); iter != patterns.end(); iter++ )
+            {
+                QTextLayout::FormatRange formatRange;
+                formatRange.start = iter->position();
+                formatRange.length = iter->length();
+                formatRange.format = iter->format();
+                formatRanges.push_back( formatRange );
+            }
+
+            // save formats
+            textLayout.setAdditionalFormats( formatRanges );
+
+        }
+
+        textLayout.endLayout();
+
+        // increase page
+        int textLayoutHeight( textLayout.boundingRect().height() );
+        if( (position.y() + textLayoutHeight ) > printer.pageRect().height() )
+        {
+            position.setY(0);
+            printer.newPage();
+        }
+
+        // render
+        textLayout.draw( &painter, position );
+
+        // update position
+        position.setY( position.y() + textLayoutHeight );
+
+    }
+
+    painter.end();
+
+}
+
 //___________________________________________________________________________
 void TextDisplay::synchronize( TextDisplay* display )
 {
@@ -859,124 +937,6 @@ QString TextDisplay::toPlainText( void ) const
 
     return out;
 
-}
-
-//_______________________________________________________
-QDomElement TextDisplay::htmlNode( QDomDocument& document, const int& maxLineSize )
-{
-
-    // clear highlight locations and rehighlight
-    QDomElement out = document.createElement( "Pre" );
-
-    int activeId( 0 );
-
-    // loop over text blocks
-    for( QTextBlock block = TextDisplay::document()->begin(); block.isValid(); block = block.next() )
-    {
-
-        // need to redo highlighting rather that us HighlightBlockData
-        // because the latter do not store autospell patterns.
-        PatternLocationSet locations;
-        if( textHighlight().isHighlightEnabled() )
-        {
-            locations = textHighlight().locationSet( block.text(), activeId );
-            activeId = locations.activeId().second;
-        }
-
-        // retrieve text
-        QString text( block.text() );
-
-        // current pattern
-        QDomElement span;
-        int current_pattern_id = -1;
-        bool line_break( false );
-        int line_index( 0 );
-
-        // parse text
-        QString buffer("");
-        for( int index = 0; index < text.size(); index++, line_index++ )
-        {
-
-            // parse locations
-            PatternLocationSet::reverse_iterator location_iter = find_if(
-                locations.rbegin(),
-                locations.rend(),
-                PatternLocation::ContainsFTor( index ) );
-
-            int pattern_id( ( location_iter == locations.rend() ) ? -1:location_iter->id() );
-            if( pattern_id != current_pattern_id || index == 0 || line_break )
-            {
-
-                // append text to current element and reset stream
-                if( !buffer.isEmpty() )
-                {
-                    if( span.isNull() ) span  = out.appendChild( document.createElement( "Span" ) ).toElement();
-                    HtmlTextNode( buffer, span, document );
-                    if( line_break )
-                    {
-                        out.appendChild( document.createElement( "Br" ) );
-                        line_break = false;
-                        line_index = 0;
-                    }
-                    buffer = "";
-                }
-
-                // update pattern
-                current_pattern_id = pattern_id;
-
-                // update current element
-                span = out.appendChild( document.createElement( "Span" ) ).toElement();
-                if( location_iter !=  locations.rend() )
-                {
-
-                    // retrieve font format
-                    const unsigned int& format( location_iter->fontFormat() );
-                    QString buffer;
-                    QTextStream format_stream( &buffer );
-                    if( format & FORMAT::UNDERLINE ) format_stream << "Text-decoration: underline; ";
-                    if( format & FORMAT::ITALIC ) format_stream << "font-style: italic; ";
-                    if( format & FORMAT::BOLD ) format_stream << "font-weight: bold; ";
-                    if( format & FORMAT::STRIKE ) format_stream << "Text-decoration: line-through; ";
-
-                    // retrieve color
-                    const QColor& color = location_iter->color();
-                    if( color.isValid() ) format_stream << "color: " << color.name() << "; ";
-
-                    span.setAttribute( "Style", buffer );
-
-                }
-            }
-
-            buffer += text[index];
-
-            // check for line-break
-            if( maxLineSize > 0  && TextSeparator::get().all().find( text[index] ) != TextSeparator::get().all().end() )
-            {
-
-                // look for next separator in string
-                int next( -1 );
-                for( TextSeparator::SeparatorSet::const_iterator iter = TextSeparator::get().all().begin(); iter != TextSeparator::get().all().end(); ++iter )
-                {
-                    int position( text.indexOf( *iter, index+1 ) );
-                    if( position >= 0 && ( next < 0 || position < next ) ) next = position;
-                }
-
-                if( line_index + next - index > maxLineSize ) line_break = true;
-            }
-
-        }
-
-        if( !buffer.isEmpty() )
-        {
-            if( span.isNull() ) span  = out.appendChild( document.createElement( "Span" ) ).toElement();
-            span.appendChild( document.createTextNode( buffer ) );
-        }
-
-        out.appendChild( document.createElement( "Br" ) );
-
-    }
-
-    return out;
 }
 
 //___________________________________________________________________________

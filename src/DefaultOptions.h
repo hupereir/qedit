@@ -48,7 +48,6 @@ void installDefaultOptions( void )
     XmlOptions::get().add( "PIXMAP_PATH", "/usr/share/icons/crystalsvg/32x32/mimetypes");
 
     XmlOptions::get().set( "ICON_PIXMAP", Option( ":/icon.png" , "application icon") );
-
     XmlOptions::get().set( "FIXED_FONT_NAME", Option( "fixed" , "fixed font"  ) );
 
     // input document_class pattern filenames options are special.
