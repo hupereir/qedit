@@ -682,6 +682,9 @@ class TextDisplay: public AnimatedTextEditor
     //! returns true if file is on afs
     bool _fileIsAfs( void ) const;
 
+    //! print page footer to a given printer
+    void _printFooter( QPainter*, const QRect&, int ) const;
+
     private:
 
     //! empty line

@@ -76,13 +76,14 @@ Menu::Menu( QWidget* parent ):
     menu->addAction( &mainwindow.revertToSaveAction() );
     menu->addSeparator();
 
-    // document class
-    menu->addMenu( documentClassMenu_ = new DocumentClassMenu( this ) );
-    documentClassMenu_->setTitle( "Set &document class" );
-
     // print and close
     menu->addAction( &mainwindow.printAction() );
     menu->addAction( &mainwindow.printPreviewAction() );
+
+    // document class
+    menu->addAction( &mainwindow.filePropertiesAction() );
+    menu->addMenu( documentClassMenu_ = new DocumentClassMenu( this ) );
+    documentClassMenu_->setTitle( "Set &document class" );
 
     menu->addSeparator();
     menu->addAction( &application.closeAction() );

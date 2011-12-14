@@ -1236,8 +1236,13 @@ void TextDisplay::print( QPrinter* printer )
     QPainter painter;
     painter.begin(printer);
 
+    const QFontMetrics metrics( font(), printer );
     const int lineWidth = printer->pageRect().width();
-    const int leading = QFontMetrics( font(), printer ).leading();
+    const int footerHeight( metrics.height() + metrics.leading() );
+    const int pageHeight = printer->pageRect().height() - footerHeight;
+    const int leading = metrics.leading();
+    const QRect footerRect( 0, pageHeight, printer->pageRect().width(), footerHeight );
+    int pageNumber(1);
 
     // get list of blocks from document
     QPointF position( 0, 0 );
@@ -1287,10 +1292,17 @@ void TextDisplay::print( QPrinter* printer )
 
         // increase page
         int textLayoutHeight( textLayout.boundingRect().height() );
-        if( (position.y() + textLayoutHeight ) > printer->pageRect().height() )
+        if( (position.y() + textLayoutHeight ) > pageHeight )
         {
+
+            _printFooter( &painter, footerRect, pageNumber );
+
             position.setY(0);
             printer->newPage();
+
+            // increment page number
+            pageNumber++;
+
         }
 
         // render
@@ -1300,6 +1312,9 @@ void TextDisplay::print( QPrinter* printer )
         position.setY( position.y() + textLayoutHeight );
 
     }
+
+    // print last page number
+    _printFooter( &painter, footerRect, pageNumber );
 
     painter.end();
 
@@ -2772,3 +2787,24 @@ QString TextDisplay::_collapsedText( const QTextBlock& block ) const
 //___________________________________________________________________________
 bool TextDisplay::_fileIsAfs( void ) const
 { return file().indexOf( "/afs" ) == 0; }
+
+//___________________________________________________________________________
+void TextDisplay::_printFooter( QPainter* painter, const QRect& rect, int pageNumber ) const
+{
+
+    Debug::Throw( "TextDisplay::_printFooter.\n" );
+
+    // render page number
+    painter->save();
+    painter->setPen( QColor( "#888888" ) );
+    painter->drawLine( rect.topLeft(), rect.topRight() );
+
+    // draw file name on the left
+    if( !( file().isEmpty() || isNewDocument() ) )
+    { painter->drawText( rect, Qt::AlignVCenter|Qt::AlignLeft, file() ); }
+
+    // draw page number on the right
+    painter->drawText( rect, Qt::AlignVCenter|Qt::AlignRight, QString().setNum( pageNumber ) );
+    painter->restore();
+
+}
