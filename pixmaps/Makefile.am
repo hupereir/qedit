@@ -7,6 +7,7 @@ bookmarks.png \
 document-close.png \
 document-multiple.png \
 document-new.png \
+document-print-preview.png \
 document.png \
 document-save-all.png \
 document-save-as.png \
