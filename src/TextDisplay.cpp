@@ -1237,15 +1237,22 @@ void TextDisplay::print( QPrinter* printer )
     painter.begin(printer);
 
     const QFontMetrics metrics( font(), printer );
-    const int lineWidth = printer->pageRect().width();
-    const int footerHeight( metrics.height() + metrics.leading() );
-    const int pageHeight = printer->pageRect().height() - footerHeight;
-    const int leading = metrics.leading();
-    const QRect footerRect( 0, pageHeight, printer->pageRect().width(), footerHeight );
+    const int leading( metrics.leading() );
+    const int headerHeight( ( metrics.height() + leading ) * 1.5 );
+    const int footerHeight( ( metrics.height() + leading ) * 1.5 );
+    const QRect headerRect( 0, 0, printer->pageRect().width(), headerHeight );
+    const QRect footerRect( 0, printer->pageRect().height() - footerHeight, printer->pageRect().width(), footerHeight );
+
+    QRect pageRect( headerRect.bottomLeft(), footerRect.topRight() );
+    pageRect.adjust( 0, headerRect.height()/2, 0, -footerRect.height()/2 );
+
     int pageNumber(1);
 
+    // draw first header
+    _printHeader( &painter, headerRect, pageNumber );
+
     // get list of blocks from document
-    QPointF position( 0, 0 );
+    QPointF position( pageRect.topLeft() );
     for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
     {
 
@@ -1260,7 +1267,7 @@ void TextDisplay::print( QPrinter* printer )
             QTextLine line = textLayout.createLine();
             if (!line.isValid()) break;
 
-            line.setLineWidth( lineWidth );
+            line.setLineWidth( pageRect.width() );
             height += leading;
             line.setPosition(QPointF(0, height));
             height += line.height();
@@ -1292,16 +1299,17 @@ void TextDisplay::print( QPrinter* printer )
 
         // increase page
         int textLayoutHeight( textLayout.boundingRect().height() );
-        if( (position.y() + textLayoutHeight ) > pageHeight )
+        if( (position.y() + textLayoutHeight ) > pageRect.bottom() )
         {
 
             _printFooter( &painter, footerRect, pageNumber );
 
-            position.setY(0);
+            position = pageRect.topLeft();
             printer->newPage();
 
             // increment page number
             pageNumber++;
+            _printHeader( &painter, headerRect, pageNumber );
 
         }
 
@@ -2789,6 +2797,30 @@ bool TextDisplay::_fileIsAfs( void ) const
 { return file().indexOf( "/afs" ) == 0; }
 
 //___________________________________________________________________________
+void TextDisplay::_printHeader( QPainter* painter, const QRect& rect, int pageNumber ) const
+{
+
+    Debug::Throw( "TextDisplay::_printHeader.\n" );
+
+    // render page number
+    painter->save();
+    painter->setPen( QColor( "#888888" ) );
+    painter->drawLine( rect.bottomLeft()+QPoint(0,1), rect.bottomRight()+QPoint(0,1) );
+
+    // date
+    painter->drawText( rect, Qt::AlignVCenter|Qt::AlignLeft, TimeStamp::now().toString( TimeStamp::DATE ) );
+
+    // draw file name on the center
+    if( !( file().isEmpty() || isNewDocument() ) )
+    { painter->drawText( rect, Qt::AlignCenter, file().localName() ); }
+
+    // draw page number on the right
+    painter->drawText( rect, Qt::AlignVCenter|Qt::AlignRight, QString().setNum( pageNumber ) );
+    painter->restore();
+
+}
+
+//___________________________________________________________________________
 void TextDisplay::_printFooter( QPainter* painter, const QRect& rect, int pageNumber ) const
 {
 
@@ -2797,7 +2829,7 @@ void TextDisplay::_printFooter( QPainter* painter, const QRect& rect, int pageNu
     // render page number
     painter->save();
     painter->setPen( QColor( "#888888" ) );
-    painter->drawLine( rect.topLeft(), rect.topRight() );
+    painter->drawLine( rect.topLeft()-QPoint(0,1), rect.topRight()-QPoint(0,1) );
 
     // draw file name on the left
     if( !( file().isEmpty() || isNewDocument() ) )
