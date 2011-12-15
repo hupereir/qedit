@@ -52,6 +52,7 @@
 #include "NavigationToolBar.h"
 #include "NewFileDialog.h"
 #include "PixmapEngine.h"
+#include "PrintHelper.h"
 #include "QtUtil.h"
 #include "QuestionDialog.h"
 #include "RecentFilesFrame.h"
@@ -444,7 +445,7 @@ void MainWindow::_print( void )
     { Singleton::get().application<Application>()->scratchFileMonitor().add( printer.outputFileName() ); }
 
     // print
-    activeDisplay().print( &printer );
+    PrintHelper( this, &activeDisplay() ).print( &printer );
 
     return;
 
@@ -455,9 +456,12 @@ void MainWindow::_printPreview( void )
 {
     Debug::Throw( "MainWindow::_printPreview.\n" );
 
-    // create dialog
+    // create helper
+    PrintHelper helper( this, &activeDisplay() );
+
+    // create dialog, connect and execute
     QPrintPreviewDialog dialog( this );
-    connect( &dialog, SIGNAL( paintRequested( QPrinter* ) ), &activeDisplay(), SLOT( print( QPrinter* ) ) );
+    connect( &dialog, SIGNAL( paintRequested( QPrinter* ) ), &helper, SLOT( print( QPrinter* ) ) );
     dialog.exec();
 }
 

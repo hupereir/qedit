@@ -118,6 +118,7 @@ noinst_HEADERS = \
   NavigationToolBar.h \
   NewDocumentNameServer.h \
   NewFileDialog.h \
+  PrintHelper.h \
   ProgressDialog.h \
   RecentFilesFrame.h \
   ReplaceDialog.h \
@@ -152,6 +153,7 @@ libqedit_a_SOURCES = \
   NavigationToolBar.cpp \
   NewDocumentNameServer.cpp \
   NewFileDialog.cpp \
+  PrintHelper.cpp \
   ReplaceDialog.cpp \
   RecentFilesFrame.cpp \
   SaveAllDialog.cpp \
@@ -178,6 +180,7 @@ nodist_libqedit_a_SOURCES = \
   moc_NavigationFrame.cpp \
   moc_NavigationToolBar.cpp \
   moc_NewFileDialog.cpp \
+  moc_PrintHelper.cpp \
   moc_ProgressDialog.cpp \
   moc_RecentFilesFrame.cpp \
   moc_ReplaceDialog.cpp \

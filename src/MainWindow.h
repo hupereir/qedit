@@ -23,29 +23,22 @@
 *
 ****************************************************************************/
 
-/*!
-\file MainWindow.h
-\brief editor main window
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QAction>
-#include <QBasicTimer>
-#include <QCloseEvent>
-#include <QSplitter>
-#include <QStackedWidget>
-#include <QTimerEvent>
-#include <list>
-
-
 #include "BaseMainWindow.h"
 #include "Config.h"
 #include "Counter.h"
 #include "FileRecord.h"
 #include "Key.h"
 #include "TextView.h"
+
+#include <QtCore/QBasicTimer>
+#include <QtCore/QTimerEvent>
+
+#include <QtGui/QAction>
+#include <QtGui/QCloseEvent>
+#include <QtGui/QSplitter>
+#include <QtGui/QStackedWidget>
+
+#include <list>
 
 class QLabel;
 class DocumentClassToolBar;

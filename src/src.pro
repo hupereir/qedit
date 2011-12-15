@@ -79,6 +79,7 @@ HEADERS = \
   NavigationToolBar.h \
   NewDocumentNameServer.h \
   NewFileDialog.h \
+  PrintHelper.h \
   ProgressDialog.h \
   RecentFilesFrame.h \
   ReplaceDialog.h \
@@ -111,6 +112,7 @@ SOURCES = \
   NavigationToolBar.cpp \
   NewDocumentNameServer.cpp \
   NewFileDialog.cpp \
+  PrintHelper.cpp \
   ReplaceDialog.cpp \
   RecentFilesFrame.cpp \
   SaveAllDialog.cpp \

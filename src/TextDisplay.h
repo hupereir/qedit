@@ -56,7 +56,6 @@
 
 #include <QtCore/QRegExp>
 #include <QtGui/QAction>
-#include <QtGui/QPrinter>
 
 // forward declaration
 class BlockDelimiterDisplay;
@@ -468,9 +467,6 @@ class TextDisplay: public AnimatedTextEditor
     //! select class name
     void selectClassName( QString );
 
-    //! print document to a given printer
-    virtual void print( QPrinter* );
-
     protected:
 
     //!@name event handlers
@@ -681,12 +677,6 @@ class TextDisplay: public AnimatedTextEditor
 
     //! returns true if file is on afs
     bool _fileIsAfs( void ) const;
-
-    //! print page footer to a given printer
-    void _printHeader( QPainter*, const QRect&, int ) const;
-
-    //! print page footer to a given printer
-    void _printFooter( QPainter*, const QRect&, int ) const;
 
     private:
 
