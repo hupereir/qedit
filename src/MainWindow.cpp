@@ -53,6 +53,7 @@
 #include "NewFileDialog.h"
 #include "PixmapEngine.h"
 #include "PrintHelper.h"
+#include "PrintPreviewDialog.h"
 #include "QtUtil.h"
 #include "QuestionDialog.h"
 #include "RecentFilesFrame.h"
@@ -73,7 +74,6 @@
 #include <QtCore/QObjectList>
 #include <QtGui/QApplication>
 #include <QtGui/QPrintDialog>
-#include <QtGui/QPrintPreviewDialog>
 #include <QtGui/QPrinter>
 #include <QtXml/QDomElement>
 #include <QtXml/QDomDocument>
@@ -460,8 +460,8 @@ void MainWindow::_printPreview( void )
     PrintHelper helper( this, &activeDisplay() );
 
     // create dialog, connect and execute
-    QPrintPreviewDialog dialog( this );
-    connect( &dialog, SIGNAL( paintRequested( QPrinter* ) ), &helper, SLOT( print( QPrinter* ) ) );
+    PrintPreviewDialog dialog( this );
+    connect( dialog.previewWidget(), SIGNAL( paintRequested( QPrinter* ) ), &helper, SLOT( print( QPrinter* ) ) );
     dialog.exec();
 }
 
