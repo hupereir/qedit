@@ -119,7 +119,6 @@ noinst_HEADERS = \
   NewDocumentNameServer.h \
   NewFileDialog.h \
   PrintHelper.h \
-  PrintPreviewDialog.h \
   ProgressDialog.h \
   RecentFilesFrame.h \
   ReplaceDialog.h \
@@ -155,7 +154,6 @@ libqedit_a_SOURCES = \
   NewDocumentNameServer.cpp \
   NewFileDialog.cpp \
   PrintHelper.cpp \
-  PrintPreviewDialog.cpp \
   ReplaceDialog.cpp \
   RecentFilesFrame.cpp \
   SaveAllDialog.cpp \

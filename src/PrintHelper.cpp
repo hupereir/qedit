@@ -63,8 +63,8 @@ void PrintHelper::print( QPrinter* printer )
 
         // layout text
         textLayout.beginLayout();
-        qreal height = 0;
-        while (1)
+        qreal height(0);
+        while( true )
         {
             QTextLine line = textLayout.createLine();
             if (!line.isValid()) break;

@@ -80,7 +80,6 @@ HEADERS = \
   NewDocumentNameServer.h \
   NewFileDialog.h \
   PrintHelper.h \
-  PrintPreviewDialog.h \
   ProgressDialog.h \
   RecentFilesFrame.h \
   ReplaceDialog.h \
@@ -114,7 +113,6 @@ SOURCES = \
   NewDocumentNameServer.cpp \
   NewFileDialog.cpp \
   PrintHelper.cpp \
-  PrintPreviewDialog.cpp \
   ReplaceDialog.cpp \
   RecentFilesFrame.cpp \
   SaveAllDialog.cpp \
