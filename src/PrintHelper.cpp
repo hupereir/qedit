@@ -52,6 +52,7 @@ void PrintHelper::print( QPrinter* printer )
 
     // draw first header
     _printHeader( &painter, headerRect, pageNumber );
+    _printFooter( &painter, footerRect, pageNumber );
 
     // get list of blocks from document
     QPointF position( pageRect.topLeft() );
@@ -104,14 +105,13 @@ void PrintHelper::print( QPrinter* printer )
         if( (position.y() + textLayoutHeight ) > pageRect.bottom() )
         {
 
-            _printFooter( &painter, footerRect, pageNumber );
-
             position = pageRect.topLeft();
             printer->newPage();
 
             // increment page number
             pageNumber++;
             _printHeader( &painter, headerRect, pageNumber );
+            _printFooter( &painter, footerRect, pageNumber );
 
         }
 
@@ -122,9 +122,6 @@ void PrintHelper::print( QPrinter* printer )
         position.setY( position.y() + textLayoutHeight );
 
     }
-
-    // print last page number
-    _printFooter( &painter, footerRect, pageNumber );
 
     painter.end();
 
