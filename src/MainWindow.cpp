@@ -434,6 +434,7 @@ void MainWindow::_print( void )
 
     // create printer
     QPrinter printer( QPrinter::HighResolution );
+    printer.setDocName( activeDisplay().file().localName() );
 
     // create prind dialog and run.
     QPrintDialog dialog( &printer, this );
@@ -461,7 +462,8 @@ void MainWindow::_printPreview( void )
 
     // create dialog, connect and execute
     PrintPreviewDialog dialog( this );
-    connect( dialog.previewWidget(), SIGNAL( paintRequested( QPrinter* ) ), &helper, SLOT( print( QPrinter* ) ) );
+    dialog.setWindowTitle( "Print Preview - qedit" );
+    dialog.setHelper( helper );
     dialog.exec();
 }
 

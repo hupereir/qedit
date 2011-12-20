@@ -24,6 +24,7 @@
 ****************************************************************************/
 
 #include "Counter.h"
+#include "BasePrintHelper.h"
 #include "Debug.h"
 
 #include <QtCore/QObject>
@@ -33,7 +34,7 @@
 class TextDisplay;
 
 //! printing utility
-class PrintHelper: public QObject, public Counter
+class PrintHelper: public BasePrintHelper, public Counter
 {
 
     Q_OBJECT
@@ -42,7 +43,7 @@ class PrintHelper: public QObject, public Counter
 
     //! constructor
     PrintHelper( QObject* parent, TextDisplay* editor ):
-        QObject( parent ),
+        BasePrintHelper( parent ),
         Counter( "PrintHelper" ),
         editor_( editor )
     { Debug::Throw( "PrintHelper::PrintHelper.\n" ); }
@@ -55,14 +56,6 @@ class PrintHelper: public QObject, public Counter
 
     //! print
     void print( QPrinter* );
-
-    protected:
-
-    //! print page header to a given printer
-    void _printHeader( QPainter*, const QRect&, int ) const;
-
-    //! print page footer to a given printer
-    void _printFooter( QPainter*, const QRect&, int ) const;
 
     private:
 

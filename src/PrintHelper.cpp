@@ -33,26 +33,24 @@ void PrintHelper::print( QPrinter* printer )
 {
     Debug::Throw( "PrintHelper::print.\n" );
 
+    // check editor
+    assert( editor_ );
+
+    // setup
+    setupPage( printer );
+    setFile( editor_->file() );
+
     // create painter on printer
     QPainter painter;
     painter.begin(printer);
 
+    // first page
+    _newPage( printer, &painter );
+
     const QFont font( editor_->font() );
     const QFontMetrics metrics( font, printer );
     const int leading( metrics.leading() );
-    const int headerHeight( ( metrics.height() + leading ) * 1.5 );
-    const int footerHeight( ( metrics.height() + leading ) * 1.5 );
-    const QRect headerRect( 0, 0, printer->pageRect().width(), headerHeight );
-    const QRect footerRect( 0, printer->pageRect().height() - footerHeight, printer->pageRect().width(), footerHeight );
-
-    QRect pageRect( headerRect.bottomLeft(), footerRect.topRight() );
-    pageRect.adjust( 0, headerRect.height()/2, 0, -footerRect.height()/2 );
-
-    int pageNumber(1);
-
-    // draw first header
-    _printHeader( &painter, headerRect, pageNumber );
-    _printFooter( &painter, footerRect, pageNumber );
+    const QRect pageRect( _pageRect() );
 
     // get list of blocks from document
     QPointF position( pageRect.topLeft() );
@@ -104,15 +102,8 @@ void PrintHelper::print( QPrinter* printer )
         int textLayoutHeight( textLayout.boundingRect().height() );
         if( (position.y() + textLayoutHeight ) > pageRect.bottom() )
         {
-
+            _newPage( printer, &painter );
             position = pageRect.topLeft();
-            printer->newPage();
-
-            // increment page number
-            pageNumber++;
-            _printHeader( &painter, headerRect, pageNumber );
-            _printFooter( &painter, footerRect, pageNumber );
-
         }
 
         // render
@@ -124,50 +115,5 @@ void PrintHelper::print( QPrinter* printer )
     }
 
     painter.end();
-
-}
-
-//___________________________________________________________________________
-void PrintHelper::_printHeader( QPainter* painter, const QRect& rect, int pageNumber ) const
-{
-
-    Debug::Throw( "TextDisplay::_printHeader.\n" );
-
-    // render page number
-    painter->save();
-    painter->setPen( QColor( "#888888" ) );
-    painter->drawLine( rect.bottomLeft()+QPoint(0,1), rect.bottomRight()+QPoint(0,1) );
-
-    // date
-    painter->drawText( rect, Qt::AlignVCenter|Qt::AlignLeft, TimeStamp::now().toString( TimeStamp::DATE ) );
-
-    // draw file name on the center
-    if( !( editor_->file().isEmpty() || editor_->isNewDocument() ) )
-    { painter->drawText( rect, Qt::AlignCenter, editor_->file().localName() ); }
-
-    // draw page number on the right
-    painter->drawText( rect, Qt::AlignVCenter|Qt::AlignRight, QString().setNum( pageNumber ) );
-    painter->restore();
-
-}
-
-//___________________________________________________________________________
-void PrintHelper::_printFooter( QPainter* painter, const QRect& rect, int pageNumber ) const
-{
-
-    Debug::Throw( "TextDisplay::_printFooter.\n" );
-
-    // render page number
-    painter->save();
-    painter->setPen( QColor( "#888888" ) );
-    painter->drawLine( rect.topLeft()-QPoint(0,1), rect.topRight()-QPoint(0,1) );
-
-    // draw file name on the left
-    if( !( editor_->file().isEmpty() || editor_->isNewDocument() ) )
-    { painter->drawText( rect, Qt::AlignVCenter|Qt::AlignLeft, editor_->file() ); }
-
-    // draw page number on the right
-    painter->drawText( rect, Qt::AlignVCenter|Qt::AlignRight, QString().setNum( pageNumber ) );
-    painter->restore();
 
 }

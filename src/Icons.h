@@ -47,7 +47,6 @@ namespace ICONS
     static const QString HISTORY = "view-history.png";
     static const QString FILESYSTEM = "folder.png";
 
-    static const QString HTML="html.png";
     static const QString PDF = "pdf.png";
     static const QString INDENT="format-indent-more.png";
     static const QString SPELLCHECK = "tools-check-spelling.png";
