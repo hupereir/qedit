@@ -79,6 +79,7 @@ Menu::Menu( QWidget* parent ):
     // print and close
     menu->addAction( &mainwindow.printAction() );
     menu->addAction( &mainwindow.printPreviewAction() );
+    menu->addAction( &mainwindow.htmlAction() );
 
     // document class
     menu->addAction( &mainwindow.filePropertiesAction() );

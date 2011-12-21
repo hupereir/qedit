@@ -1383,24 +1383,24 @@ void TextDisplay::_installActions( void )
     Debug::Throw( "TextDisplay::_installActions.\n" );
 
     // actions
-    addAction( textIndentMacro_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Indent Text", this ) );
+    addAction( textIndentMacro_ = new QAction( IconEngine::get( ICONS::INDENT ), "Indent Text", this ) );
     textIndentMacro_->setCheckable( true );
     textIndentMacro_->setChecked( textIndent().isEnabled() );
     connect( textIndentMacro_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextIndent( bool ) ) );
 
-    addAction( textHighlightAction_ = new QAction( "&Highlight Text", this ) );
+    addAction( textHighlightAction_ = new QAction( "Highlight Text", this ) );
     textHighlightAction_->setCheckable( true );
     textHighlightAction_->setChecked( textHighlight().isHighlightEnabled() );
     textHighlightAction_->setShortcut( Qt::Key_F8 );
     textHighlightAction_->setShortcutContext( Qt::WidgetShortcut );
     connect( textHighlightAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextHighlight( bool ) ) );
 
-    addAction( parenthesisHighlightAction_ = new QAction( "&Highlight Parenthesis", this ) );
+    addAction( parenthesisHighlightAction_ = new QAction( "Highlight Parenthesis", this ) );
     parenthesisHighlightAction_->setCheckable( true );
     parenthesisHighlightAction_->setChecked( parenthesisHighlight().isEnabled() );
     connect( parenthesisHighlightAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
 
-    addAction( noAutomaticMacrosAction_ = new QAction( "&Disable Automatic Actions", this ) );
+    addAction( noAutomaticMacrosAction_ = new QAction( "Disable Automatic Actions", this ) );
     noAutomaticMacrosAction_->setCheckable( true );
     noAutomaticMacrosAction_->setChecked( false );
     noAutomaticMacrosAction_->setToolTip( "Do not execute automatic actions loaded from document class when saving document" );
@@ -1414,7 +1414,7 @@ void TextDisplay::_installActions( void )
     connect( showBlockDelimiterAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowBlockDelimiters( bool ) ) );
 
     // autospell
-    addAction( autoSpellAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Automatic Spellcheck", this ) );
+    addAction( autoSpellAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Automatic Spellcheck", this ) );
     autoSpellAction_->setShortcut( Qt::Key_F6 );
     autoSpellAction_->setShortcutContext( Qt::WidgetShortcut );
     autoSpellAction_->setCheckable( true );
@@ -1427,7 +1427,7 @@ void TextDisplay::_installActions( void )
     #endif
 
     // spell checking
-    addAction( spellCheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "&Spellcheck", this ) );
+    addAction( spellCheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Spellcheck ...", this ) );
     #if WITH_ASPELL
     connect( spellCheckAction_, SIGNAL( triggered( void ) ), SLOT( _spellcheck( void ) ) );
     #else
@@ -1435,22 +1435,22 @@ void TextDisplay::_installActions( void )
     #endif
 
     // indent selection
-    addAction( indentSelectionAction_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Indent Selection", this ) );
+    addAction( indentSelectionAction_ = new QAction( IconEngine::get( ICONS::INDENT ), "Indent Selection", this ) );
     indentSelectionAction_->setShortcut( Qt::CTRL + Qt::Key_I );
     indentSelectionAction_->setShortcutContext( Qt::WidgetShortcut );
     connect( indentSelectionAction_, SIGNAL( triggered( void ) ), SLOT( _indentSelection( void ) ) );
 
     // base indentation
-    addAction( baseIndentAction_ = new QAction( IconEngine::get( ICONS::INDENT ), "&Add Base Indentation", this ) );
+    addAction( baseIndentAction_ = new QAction( IconEngine::get( ICONS::INDENT ), "Add Base Indentation", this ) );
     baseIndentAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_I );
     connect( baseIndentAction_, SIGNAL( triggered( void ) ), SLOT( _addBaseIndentation( void ) ) );
 
     // replace leading tabs
-    addAction( leadingTabsAction_ = new QAction( "&Replace leading tabs", this ) );
+    addAction( leadingTabsAction_ = new QAction( "Replace leading tabs", this ) );
     connect( leadingTabsAction_, SIGNAL( triggered( void ) ), SLOT( _replaceLeadingTabs( void ) ) );
 
     // file information
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "&File Properties", this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "File Properties ...", this ) );
     filePropertiesAction_->setShortcut( Qt::ALT + Qt::Key_Return );
     filePropertiesAction_->setToolTip( "Display current file properties" );
     connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );

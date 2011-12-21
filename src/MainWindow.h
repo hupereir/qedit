@@ -291,6 +291,10 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     QAction& printPreviewAction( void ) const
     { return *printPreviewAction_; }
 
+    //! export
+    QAction& htmlAction( void ) const
+    { return *htmlAction_; }
+
     //! file info
     QAction& filePropertiesAction( void ) const
     { return *filePropertiesAction_; }
@@ -451,6 +455,9 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
     //! Print preview current document
     void _printPreview( void );
+
+    //! export to html
+    void _toHtml( void );
 
     //!@name forwarded slots
     //@{
@@ -690,6 +697,9 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
     //! print preview
     QAction* printPreviewAction_;
+
+    //! html action
+    QAction* htmlAction_;
 
     //! undo
     QAction* undoAction_;

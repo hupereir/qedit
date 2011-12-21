@@ -44,6 +44,8 @@
 #include "FileSystemFrame.h"
 #include "BaseFindDialog.h"
 #include "HighlightBlockFlags.h"
+#include "HtmlDialog.h"
+#include "HtmlHelper.h"
 #include "IconEngine.h"
 #include "Icons.h"
 #include "InformationDialog.h"
@@ -467,6 +469,51 @@ void MainWindow::_printPreview( void )
     dialog.exec();
 }
 
+//___________________________________________________________
+void MainWindow::_toHtml( void )
+{
+    Debug::Throw( "MainWindow::_toHtml.\n" );
+
+    // create dialog, connect and execute
+    HtmlDialog dialog( this );
+    dialog.setWindowTitle( "Export to HTML - qedit" );
+    dialog.setFile( activeDisplay().file().truncatedName() + ".html" );
+    if( !dialog.exec() ) return;
+
+    // retrieve/check file
+    File file( dialog.file() );
+    if( file.isEmpty() ) {
+        InformationDialog(this, "No output file specified. <Export to HTML> canceled." ).exec();
+        return;
+    }
+
+    QFile out( file );
+    if( !out.open( QIODevice::WriteOnly ) )
+    {
+        QString buffer;
+        QTextStream( &buffer ) << "Cannot write to file \"" << file << "\". <Export to HTML> canceled.";
+        InformationDialog( this, buffer ).exec();
+        return;
+    }
+
+    // add as scratch file
+    Singleton::get().application<Application>()->scratchFileMonitor().add( file );
+
+    // create helper and print
+    HtmlHelper( this, &activeDisplay() ).print( &out );
+
+    // close
+    out.close();
+
+    // retrieve command and execute
+    const QString command( dialog.command() );
+    if( !command.isEmpty() )
+    { ( Command( command ) << file ).run(); }
+
+    return;
+
+}
+
 //_______________________________________________________
 bool MainWindow::event( QEvent* event )
 {
@@ -809,14 +856,14 @@ void MainWindow::_installActions( void )
     detachAction_->setToolTip( "Detach current display" );
     detachAction_->setEnabled( false );
 
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open", this ) );
+    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open ...", this ) );
     openAction_->setShortcut( Qt::CTRL+Qt::Key_O );
     openAction_->setToolTip( "Open an existing file" );
 
-    addAction( openHorizontalAction_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Clone Display Top/Bottom", this ) );
+    addAction( openHorizontalAction_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Open Display Top/Bottom ...", this ) );
     openHorizontalAction_->setToolTip( "Open a new display vertically" );
 
-    addAction( openVerticalAction_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open Display Left/Right", this ) );
+    addAction( openVerticalAction_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open Display Left/Right ...", this ) );
     openVerticalAction_->setToolTip( "Open a new display horizontally" );
 
     addAction( closeDisplayAction_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "Close Display", this ) );
@@ -834,7 +881,7 @@ void MainWindow::_installActions( void )
     saveAction_->setToolTip( "Save current file" );
     connect( saveAction_, SIGNAL( triggered() ), SLOT( _save() ) );
 
-    addAction( saveAsAction_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save As", this ) );
+    addAction( saveAsAction_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save As ...", this ) );
     saveAsAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_S );
     saveAsAction_->setToolTip( "Save current file with a different name" );
     connect( saveAsAction_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
@@ -844,14 +891,17 @@ void MainWindow::_installActions( void )
     revertToSaveAction_->setToolTip( "Reload saved version of current file" );
     connect( revertToSaveAction_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
 
-    addAction( printAction_ = new QAction( IconEngine::get( ICONS::PRINT ), "Print", this ) );
+    addAction( printAction_ = new QAction( IconEngine::get( ICONS::PRINT ), "Print ...", this ) );
     printAction_->setToolTip( "Print current file" );
     printAction_->setShortcut( Qt::CTRL + Qt::Key_P );
     connect( printAction_, SIGNAL( triggered() ), SLOT( _print() ) );
 
-    addAction( printPreviewAction_ = new QAction( IconEngine::get( ICONS::PRINT_PREVIEW ), "Print Preview", this ) );
+    addAction( printPreviewAction_ = new QAction( IconEngine::get( ICONS::PRINT_PREVIEW ), "Print Preview ...", this ) );
     printPreviewAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_P );
     connect( printPreviewAction_, SIGNAL( triggered() ), SLOT( _printPreview() ) );
+
+    addAction( htmlAction_ = new QAction( IconEngine::get( ICONS::HTML ), "Export to HTML ...", this ) );
+    connect( htmlAction_, SIGNAL( triggered() ), SLOT( _toHtml() ) );
 
     addAction( undoAction_ = new QAction( IconEngine::get( ICONS::UNDO ), "Undo", this ) );
     undoAction_->setToolTip( "Undo last action" );
@@ -878,12 +928,12 @@ void MainWindow::_installActions( void )
     pasteAction_->setEnabled( !qApp->clipboard()->text().isEmpty() );
     connect( pasteAction_, SIGNAL( triggered() ), SLOT( _paste() ) );
 
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "File Information", this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "File Information ...", this ) );
     filePropertiesAction_->setToolTip( "Display file informations" );
     filePropertiesAction_->setEnabled( false );
     connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
 
-    addAction( spellcheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Spell Check", this ) );
+    addAction( spellcheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Spell Check ...", this ) );
     #if WITH_ASPELL
     connect( spellcheckAction_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
     #else
