@@ -111,6 +111,7 @@ noinst_HEADERS = \
   FileRemovedDialog.h \
   FileSelectionDialog.h \
   HelpText.h \
+  HtmlHelper.h \
   Icons.h \
   MainWindow.h \
   Menu.h \
@@ -147,6 +148,7 @@ libqedit_a_SOURCES = \
   FileModifiedDialog.cpp \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \
+  HtmlHelper.cpp \
   MainWindow.cpp \
   Menu.cpp \
   NavigationFrame.cpp \
@@ -175,6 +177,7 @@ nodist_libqedit_a_SOURCES = \
   moc_FileModifiedDialog.cpp \
   moc_FileRemovedDialog.cpp \
   moc_FileSelectionDialog.cpp \
+  moc_HtmlHelper.cpp \
   moc_MainWindow.cpp \
   moc_Menu.cpp \
   moc_NavigationFrame.cpp \

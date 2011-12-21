@@ -72,6 +72,7 @@ HEADERS = \
   FileRemovedDialog.h \
   FileSelectionDialog.h \
   HelpText.h \
+  HtmlHelper.h \
   Icons.h \
   MainWindow.h \
   Menu.h \
@@ -106,6 +107,7 @@ SOURCES = \
   FileModifiedDialog.cpp \
   FileRemovedDialog.cpp \
   FileSelectionDialog.cpp \
+  HtmlHelper.cpp \
   MainWindow.cpp \
   Menu.cpp \
   NavigationFrame.cpp \

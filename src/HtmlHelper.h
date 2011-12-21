@@ -1,5 +1,5 @@
 #ifndef PrintHelper_h
-#define PrintHelper_h
+#define HtmlHelper_h
 
 // $Id$
 /******************************************************************************
@@ -24,15 +24,18 @@
 ****************************************************************************/
 
 #include "Counter.h"
-#include "BasePrintHelper.h"
 #include "Debug.h"
 
-#include <QtGui/QPrinter>
+#include <QtCore/QObject>
+#include <QtCore/QIODevice>
+
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
 
 class TextDisplay;
 
 //! printing utility
-class PrintHelper: public BasePrintHelper, public Counter
+class HtmlHelper: public QObject, public Counter
 {
 
     Q_OBJECT
@@ -40,20 +43,28 @@ class PrintHelper: public BasePrintHelper, public Counter
     public:
 
     //! constructor
-    PrintHelper( QObject* parent, TextDisplay* editor ):
-        BasePrintHelper( parent ),
-        Counter( "PrintHelper" ),
+    HtmlHelper( QObject* parent, TextDisplay* editor ):
+        QObject( parent ),
+        Counter( "HtmlHelper" ),
         editor_( editor )
-    { Debug::Throw( "PrintHelper::PrintHelper.\n" ); }
+    { Debug::Throw( "HtmlHelper::HtmlHelper.\n" ); }
 
     //! destructor
-    virtual ~PrintHelper( void )
+    virtual ~HtmlHelper( void )
     {}
 
     public slots:
 
     //! print
-    void print( QPrinter* );
+    void print( QIODevice* );
+
+    protected:
+
+    //! get full html string
+    QString _htmlString( void );
+
+    //! get documents (editor) Html node
+    QDomElement _htmlNode( QDomDocument& );
 
     private:
 

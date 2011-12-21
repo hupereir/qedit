@@ -22,8 +22,9 @@
 
 #include "PrintHelper.h"
 
-#include "HighlightBlockData.h"
+#include "PatternLocation.h"
 #include "TextDisplay.h"
+#include "TextHighlight.h"
 
 #include <QtGui/QTextLayout>
 #include <QtGui/QTextLine>
@@ -52,6 +53,8 @@ void PrintHelper::print( QPrinter* printer )
     const int leading( metrics.leading() );
     const QRect pageRect( _pageRect() );
 
+    int activeId( 0 );
+
     // get list of blocks from document
     QPointF position( pageRect.topLeft() );
     for( QTextBlock block( editor_->document()->begin() ); block.isValid(); block = block.next() )
@@ -77,25 +80,27 @@ void PrintHelper::print( QPrinter* printer )
         // create ranges
         QList<QTextLayout::FormatRange> formatRanges;
 
-        // get highlight block data associated to this block
-        HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-        if( data )
+        // need to redo highlighting rather that us HighlightBlockData
+        // because the latter do not store autospell patterns.
+        PatternLocationSet patterns;
+        if( editor_->textHighlight().isHighlightEnabled() )
         {
-            PatternLocationSet patterns( data->locations() );
-            for( PatternLocationSet::const_iterator iter = patterns.begin(); iter != patterns.end(); iter++ )
-            {
-                QTextLayout::FormatRange formatRange;
-                formatRange.start = iter->position();
-                formatRange.length = iter->length();
-                formatRange.format = iter->format();
-                formatRanges.push_back( formatRange );
-            }
-
-            // save formats
-            textLayout.setAdditionalFormats( formatRanges );
-
+            patterns = editor_->textHighlight().locationSet( block.text(), activeId );
+            activeId = patterns.activeId().second;
         }
 
+        // get highlight block data associated to this block
+        for( PatternLocationSet::const_iterator iter = patterns.begin(); iter != patterns.end(); iter++ )
+        {
+            QTextLayout::FormatRange formatRange;
+            formatRange.start = iter->position();
+            formatRange.length = iter->length();
+            formatRange.format = iter->format();
+            formatRanges.push_back( formatRange );
+        }
+
+        // save formats
+        textLayout.setAdditionalFormats( formatRanges );
         textLayout.endLayout();
 
         // increase page
