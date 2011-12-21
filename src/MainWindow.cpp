@@ -897,7 +897,7 @@ void MainWindow::_installActions( void )
     connect( printAction_, SIGNAL( triggered() ), SLOT( _print() ) );
 
     addAction( printPreviewAction_ = new QAction( IconEngine::get( ICONS::PRINT_PREVIEW ), "Print Preview ...", this ) );
-    printPreviewAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_P );
+    // printPreviewAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_P );
     connect( printPreviewAction_, SIGNAL( triggered() ), SLOT( _printPreview() ) );
 
     addAction( htmlAction_ = new QAction( IconEngine::get( ICONS::HTML ), "Export to HTML ...", this ) );
