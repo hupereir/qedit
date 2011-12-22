@@ -1450,7 +1450,7 @@ void TextDisplay::_installActions( void )
     connect( leadingTabsAction_, SIGNAL( triggered( void ) ), SLOT( _replaceLeadingTabs( void ) ) );
 
     // file information
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "File Properties ...", this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "Properties ...", this ) );
     filePropertiesAction_->setShortcut( Qt::ALT + Qt::Key_Return );
     filePropertiesAction_->setToolTip( "Display current file properties" );
     connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
@@ -2346,7 +2346,7 @@ void TextDisplay::_fileProperties( void )
 
     layout->addStretch();
 
-    dialog.tabWidget().addTab( box, "&Miscellaneous" );
+    dialog.tabWidget().addTab( box, "Information" );
 
     // execute dialog
     dialog.centerOnWidget( window() ).exec();

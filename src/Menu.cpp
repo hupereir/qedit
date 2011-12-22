@@ -80,11 +80,12 @@ Menu::Menu( QWidget* parent ):
     menu->addAction( &mainwindow.printAction() );
     menu->addAction( &mainwindow.printPreviewAction() );
     menu->addAction( &mainwindow.htmlAction() );
+    menu->addSeparator();
 
     // document class
     menu->addAction( &mainwindow.filePropertiesAction() );
     menu->addMenu( documentClassMenu_ = new DocumentClassMenu( this ) );
-    documentClassMenu_->setTitle( "Set &document class" );
+    documentClassMenu_->setTitle( "Document Class" );
 
     menu->addSeparator();
     menu->addAction( &application.closeAction() );
@@ -265,9 +266,6 @@ void Menu::_updateToolsMenu( void )
 
     // clear menu
     toolsMenu_->clear();
-
-    toolsMenu_->addAction( &display.filePropertiesAction() );
-    toolsMenu_->addSeparator();
 
     // selection indentation
     toolsMenu_->addAction( &display.indentSelectionAction() );

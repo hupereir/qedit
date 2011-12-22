@@ -928,7 +928,7 @@ void MainWindow::_installActions( void )
     pasteAction_->setEnabled( !qApp->clipboard()->text().isEmpty() );
     connect( pasteAction_, SIGNAL( triggered() ), SLOT( _paste() ) );
 
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "File Information ...", this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "Properties ...", this ) );
     filePropertiesAction_->setToolTip( "Display file informations" );
     filePropertiesAction_->setEnabled( false );
     connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
