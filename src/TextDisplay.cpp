@@ -1451,7 +1451,7 @@ void TextDisplay::_installActions( void )
 
     // file information
     addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "Properties ...", this ) );
-    filePropertiesAction_->setShortcut( Qt::ALT + Qt::Key_Return );
+    //filePropertiesAction_->setShortcut( Qt::ALT + Qt::Key_Return );
     filePropertiesAction_->setToolTip( "Display current file properties" );
     connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
 

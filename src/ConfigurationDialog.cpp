@@ -21,14 +21,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file ConfigurationDialog.cpp
-\brief xMaze configuration dialog
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "ConfigurationDialog.h"
 
 #include "Application.h"
@@ -132,17 +124,17 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         addOptionWidget( checkbox );
 
         // tab size
-        QHBoxLayout* h_layout = new QHBoxLayout();
-        h_layout->setMargin(0);
-        layout->addLayout( h_layout );
+        QHBoxLayout* hLayout = new QHBoxLayout();
+        hLayout->setMargin(0);
+        layout->addLayout( hLayout );
 
-        h_layout->addWidget(new QLabel( "Tab size: ", box ) );
+        hLayout->addWidget(new QLabel( "Tab size: ", box ) );
         OptionSpinBox* spinbox = new OptionSpinBox( box, "TAB_SIZE" );
         spinbox->setMinimum( 2 );
         spinbox->setMaximum( 20 );
         spinbox->setToolTip( "Tab size (in unit of space characters)." );
-        h_layout->addWidget( spinbox );
-        h_layout->addStretch( 1 );
+        hLayout->addWidget( spinbox );
+        hLayout->addStretch( 1 );
         addOptionWidget( spinbox );
 
     }
@@ -183,10 +175,9 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         hLayout->addWidget( checkbox = new OptionCheckBox( "Auto-hide mouse cursor after ", box, "AUTOHIDE_CURSOR" ) );
         addOptionWidget( checkbox );
 
-        QLabel* label;
         OptionSpinBox* spinbox;
         hLayout->addWidget( spinbox = new OptionSpinBox( box, "AUTOHIDE_CURSOR_DELAY" ) );
-        hLayout->addWidget( label = new QLabel( " seconds", box ) );
+        spinbox->setUnit( "seconds" );
         addOptionWidget( spinbox );
 
         spinbox->setMinimum( 0 );
@@ -231,16 +222,16 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     // multiple views
     page = &addPage( "Navigation", "Visible columns in navigation tabs" );
 
-    QHBoxLayout *h_layout = new QHBoxLayout();
-    h_layout->setMargin(0);
-    page->layout()->addItem( h_layout );
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->setMargin(0);
+    page->layout()->addItem( hLayout );
 
     SessionFilesFrame session_frame(0);
     TreeViewConfiguration *listview_config = new TreeViewConfiguration(
         page,
         &session_frame.list(),
         session_frame.list().maskOptionName() );
-    h_layout->addWidget( listview_config );
+    hLayout->addWidget( listview_config );
     listview_config->setTitle( "Session files" );
     addOptionWidget( listview_config );
 
@@ -251,7 +242,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         &recentFrame.list(),
         recentFrame.list().maskOptionName() );
     listview_config->setTitle( "Recent files" );
-    h_layout->addWidget( listview_config );
+    hLayout->addWidget( listview_config );
     addOptionWidget( listview_config );
 
     // multiple views
@@ -399,13 +390,13 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     box->setLayout( new QVBoxLayout() );
 
-    h_layout = new QHBoxLayout();
-    h_layout->setMargin(0);
-    box->layout()->addItem( h_layout );
+    hLayout = new QHBoxLayout();
+    hLayout->setMargin(0);
+    box->layout()->addItem( hLayout );
 
     QLabel* label;
-    h_layout->addWidget( label = new QLabel( "Diff command: ", box ) );
-    h_layout->addWidget( edit = new OptionBrowsedLineEditor( box, "DIFF_COMMAND" ) );
+    hLayout->addWidget( label = new QLabel( "Diff command: ", box ) );
+    hLayout->addWidget( edit = new OptionBrowsedLineEditor( box, "DIFF_COMMAND" ) );
     edit->setToolTip( "Command used to diff files" );
     addOptionWidget( edit );
     label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
