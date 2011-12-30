@@ -29,6 +29,8 @@
 #include "CustomToolBar.h"
 #include "Debug.h"
 #include "GridLayout.h"
+#include "IconEngine.h"
+#include "Icons.h"
 #include "MainWindow.h"
 #include "OptionListBox.h"
 #include "OptionBrowsedLineEditor.h"
@@ -65,7 +67,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     OptionColorDisplay* colorDisplay;
 
     // document classes
-    QWidget* page = &addPage( "Document classes", "Document classes definitions and flags" );
+    QWidget* page = &addPage( IconEngine::get( ICONS::PREFERENCE_FILE_TYPES ), "Document classes", "Document classes definitions and flags" );
 
     // edition flags
     page->layout()->addWidget( box = new QGroupBox( "Options", page ) );
@@ -148,7 +150,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     // from document class or not.
     {
 
-        // misc
         QGroupBox* box;
         page->layout()->addWidget( box = new QGroupBox( "Flags", page ) );
         QVBoxLayout* layout = new QVBoxLayout();
@@ -189,7 +190,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     }
 
     // display
-    page = &addPage( "Colors", "Text edition color settings" );
+    page = &addPage( IconEngine::get( ICONS::PREFERENCE_COLORS ), "Colors", "Text edition color settings" );
 
     // additional colors
     page->layout()->addWidget( box = new QGroupBox( "Colors", page ) );
@@ -219,8 +220,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     addOptionWidget( colorDisplay );
     colorDisplay->setToolTip( "Highlight color for diff added paragraphs" );
 
-    // multiple views
-    page = &addPage( "Navigation", "Visible columns in navigation tabs" );
+    // navigation
+    page = &addPage( IconEngine::get( ICONS::PREFERENCE_NAVIGATION ), "Navigation", "Visible columns in navigation tabs" );
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->setMargin(0);
@@ -246,7 +247,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     addOptionWidget( listview_config );
 
     // multiple views
-    page = &addPage( "Multiple views", "Multiple views configuration" );
+    page = &addPage( IconEngine::get( ICONS::PREFERENCE_MULTIPLE_VIEWS ), "Multiple views", "Multiple views configuration" );
     page->layout()->addWidget( box = new QGroupBox( page ) );
 
     gridLayout = new GridLayout();
@@ -285,55 +286,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     gridLayout->setColumnStretch( 1, 1 );
 
-    // toolbars
-    page = &addPage( "Toolbars", "Toolbars visibility and location" );
-    page->layout()->addWidget( box = new QGroupBox( "Toolbars", page ) );
-
-    gridLayout = new GridLayout();
-    gridLayout->setMaxCount(2);
-    box->setLayout( gridLayout );
-
-    gridLayout->addWidget( new QLabel( "Visibility", box ) );
-    gridLayout->addWidget( new QLabel( "Location", box ) );
-
-    gridLayout->addWidget( checkbox = new OptionCheckBox( "Main Toolbar", box, "FILE_TOOLBAR" ) );
-    gridLayout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "FILE_TOOLBAR_LOCATION" ) );
-    addOptionWidget( checkbox );
-    addOptionWidget( combobox );
-
-    checkbox->setChecked( false );
-    combobox->setEnabled( false );
-    connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
-
-    gridLayout->addWidget( checkbox = new OptionCheckBox( "Edition Toolbar", box, "EDITION_TOOLBAR" ));
-    gridLayout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "EDITION_TOOLBAR_LOCATION" ));
-    addOptionWidget( checkbox );
-    addOptionWidget( combobox );
-
-    checkbox->setChecked( false );
-    combobox->setEnabled( false );
-    connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
-
-    gridLayout->addWidget( checkbox = new OptionCheckBox( "Tools", box, "EXTRA_TOOLBAR" ));
-    gridLayout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "EXTRA_TOOLBAR_LOCATION" ));
-    addOptionWidget( checkbox );
-    addOptionWidget( combobox );
-
-    checkbox->setChecked( false );
-    combobox->setEnabled( false );
-    connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
-
-    gridLayout->addWidget( checkbox = new OptionCheckBox( "Multiple views Toolbar", box, "SPLIT_TOOLBAR" ));
-    gridLayout->addWidget( new CustomToolBar::LocationComboBox( box, "SPLIT_TOOLBAR_LOCATION" ));
-    addOptionWidget( checkbox );
-    addOptionWidget( combobox );
-
-    checkbox->setChecked( false );
-    combobox->setEnabled( false );
-    connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
-
     // recent files
-    page = &addPage( "Recent files", "Recent files list settings", true );
+    page = &addPage( IconEngine::get( ICONS::PREFERENCE_RECENT_FILES ), "Recent files", "Recent files list settings", true );
     RecentFilesConfiguration* recentFiles_configuration = new RecentFilesConfiguration( page, Singleton::get().application<Application>()->recentFiles() );
     page->layout()->addWidget( recentFiles_configuration );
     addOptionWidget( recentFiles_configuration );
