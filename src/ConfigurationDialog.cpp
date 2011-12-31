@@ -90,7 +90,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     addOptionWidget( checkbox );
 
     // edition
-    page = &addPage( "Text Edition", "Settings for text edition" );
+    page = &addPage( IconEngine::get( ICONS::PREFERENCE_EDITION ), "Text Edition", "Settings for text edition" );
 
     // tab emulation
     // needs customization with respect to BaseConfigurationDialog in order
@@ -354,7 +354,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     }
 
     // misc
-    page = &addPage( "Unsorted", "Additional unsorted settings" );
+    page = &addPage( IconEngine::get( ICONS::PREFERENCE_UNSORTED ), "Unsorted", "Additional unsorted settings" );
 
     // server
     SERVER::ServerConfiguration* server_configuration;
