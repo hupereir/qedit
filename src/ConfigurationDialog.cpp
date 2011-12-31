@@ -67,7 +67,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     OptionColorDisplay* colorDisplay;
 
     // document classes
-    QWidget* page = &addPage( IconEngine::get( ICONS::PREFERENCE_FILE_TYPES ), "Document classes", "Document classes definitions and flags" );
+    QWidget* page = &addPage( IconEngine::get( ICONS::PREFERENCE_FILE_TYPES ), "Document Classes", "Document classes definitions and flags" );
 
     // edition flags
     page->layout()->addWidget( box = new QGroupBox( "Options", page ) );
@@ -252,7 +252,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     }
 
     // multiple views
-    page = &addPage( IconEngine::get( ICONS::PREFERENCE_MULTIPLE_VIEWS ), "Multiple views", "Multiple views configuration" );
+    page = &addPage( IconEngine::get( ICONS::PREFERENCE_MULTIPLE_VIEWS ), "Multiple Views", "Multiple views configuration" );
     page->layout()->addWidget( box = new QGroupBox( page ) );
 
     gridLayout = new GridLayout();
@@ -346,7 +346,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     if( true )
     {
 
-        page = &addPage( IconEngine::get( ICONS::PREFERENCE_RECENT_FILES ), "Recent files", "Recent files list settings", true );
+        page = &addPage( IconEngine::get( ICONS::PREFERENCE_RECENT_FILES ), "Recent Files", "Recent files list settings", true );
         RecentFilesConfiguration* recentFiles_configuration = new RecentFilesConfiguration( page, Singleton::get().application<Application>()->recentFiles() );
         page->layout()->addWidget( recentFiles_configuration );
         addOptionWidget( recentFiles_configuration );

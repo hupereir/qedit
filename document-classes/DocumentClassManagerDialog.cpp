@@ -381,7 +381,7 @@ void DocumentClassManagerDialog::_loadClasses( const DocumentClassManager& manag
 
     // retrieve classes from DocumentClass manager
     const DocumentClassManager::List& classes( manager.classes() );
-    Debug::Throw(0) << "DocumentClassManagerDialog::_loadClasses - lists: " << classes.size() << endl;
+    Debug::Throw() << "DocumentClassManagerDialog::_loadClasses - lists: " << classes.size() << endl;
 
     // add to list
     _model().add( DocumentClassModel::List( classes.begin(), classes.end() ) );
