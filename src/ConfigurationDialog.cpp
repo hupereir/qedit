@@ -221,30 +221,35 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     colorDisplay->setToolTip( "Highlight color for diff added paragraphs" );
 
     // navigation
-    page = &addPage( IconEngine::get( ICONS::PREFERENCE_NAVIGATION ), "Navigation", "Visible columns in navigation tabs" );
+    QHBoxLayout *hLayout;
+    if( false )
+    {
+        page = &addPage( IconEngine::get( ICONS::PREFERENCE_NAVIGATION ), "Navigation", "Visible columns in navigation tabs" );
 
-    QHBoxLayout *hLayout = new QHBoxLayout();
-    hLayout->setMargin(0);
-    page->layout()->addItem( hLayout );
+        hLayout = new QHBoxLayout();
+        hLayout->setMargin(0);
+        page->layout()->addItem( hLayout );
 
-    SessionFilesFrame session_frame(0);
-    TreeViewConfiguration *listview_config = new TreeViewConfiguration(
-        page,
-        &session_frame.list(),
-        session_frame.list().maskOptionName() );
-    hLayout->addWidget( listview_config );
-    listview_config->setTitle( "Session files" );
-    addOptionWidget( listview_config );
+        SessionFilesFrame session_frame(0);
+        TreeViewConfiguration *listview_config = new TreeViewConfiguration(
+            page,
+            &session_frame.list(),
+            session_frame.list().maskOptionName() );
+        hLayout->addWidget( listview_config );
+        listview_config->setTitle( "Session files" );
+        addOptionWidget( listview_config );
 
-    FileList tmp(0);
-    RecentFilesFrame recentFrame(0, tmp );
-    listview_config = new TreeViewConfiguration(
-        page,
-        &recentFrame.list(),
-        recentFrame.list().maskOptionName() );
-    listview_config->setTitle( "Recent files" );
-    hLayout->addWidget( listview_config );
-    addOptionWidget( listview_config );
+        FileList tmp(0);
+        RecentFilesFrame recentFrame(0, tmp );
+        listview_config = new TreeViewConfiguration(
+            page,
+            &recentFrame.list(),
+            recentFrame.list().maskOptionName() );
+        listview_config->setTitle( "Recent files" );
+        hLayout->addWidget( listview_config );
+        addOptionWidget( listview_config );
+
+    }
 
     // multiple views
     page = &addPage( IconEngine::get( ICONS::PREFERENCE_MULTIPLE_VIEWS ), "Multiple views", "Multiple views configuration" );
@@ -338,7 +343,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     }
 
     // recent files
-    if( false )
+    if( true )
     {
 
         page = &addPage( IconEngine::get( ICONS::PREFERENCE_RECENT_FILES ), "Recent files", "Recent files list settings", true );
