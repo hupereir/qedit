@@ -286,14 +286,70 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     gridLayout->setColumnStretch( 1, 1 );
 
+    // toolbars
+    if( false )
+    {
+        page = &addPage( IconEngine::get( ICONS::PREFERENCE_TOOLBARS ), "Toolbars", "Toolbars visibility and location" );
+        page->layout()->addWidget( box = new QGroupBox( "Toolbars", page ) );
+
+        gridLayout = new GridLayout();
+        gridLayout->setMaxCount(2);
+        box->setLayout( gridLayout );
+
+        gridLayout->addWidget( new QLabel( "Visibility", box ) );
+        gridLayout->addWidget( new QLabel( "Location", box ) );
+
+        gridLayout->addWidget( checkbox = new OptionCheckBox( "Main Toolbar", box, "FILE_TOOLBAR" ) );
+        gridLayout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "FILE_TOOLBAR_LOCATION" ) );
+        addOptionWidget( checkbox );
+        addOptionWidget( combobox );
+
+        checkbox->setChecked( false );
+        combobox->setEnabled( false );
+        connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
+
+        gridLayout->addWidget( checkbox = new OptionCheckBox( "Edition Toolbar", box, "EDITION_TOOLBAR" ));
+        gridLayout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "EDITION_TOOLBAR_LOCATION" ));
+        addOptionWidget( checkbox );
+        addOptionWidget( combobox );
+
+        checkbox->setChecked( false );
+        combobox->setEnabled( false );
+        connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
+
+        gridLayout->addWidget( checkbox = new OptionCheckBox( "Tools", box, "EXTRA_TOOLBAR" ));
+        gridLayout->addWidget( combobox = new CustomToolBar::LocationComboBox( box, "EXTRA_TOOLBAR_LOCATION" ));
+        addOptionWidget( checkbox );
+        addOptionWidget( combobox );
+
+        checkbox->setChecked( false );
+        combobox->setEnabled( false );
+        connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
+
+        gridLayout->addWidget( checkbox = new OptionCheckBox( "Multiple views Toolbar", box, "SPLIT_TOOLBAR" ));
+        gridLayout->addWidget( new CustomToolBar::LocationComboBox( box, "SPLIT_TOOLBAR_LOCATION" ));
+        addOptionWidget( checkbox );
+        addOptionWidget( combobox );
+
+        checkbox->setChecked( false );
+        combobox->setEnabled( false );
+        connect( checkbox, SIGNAL( toggled( bool ) ), combobox, SLOT( setEnabled( bool ) ) );
+
+    }
+
     // recent files
-    page = &addPage( IconEngine::get( ICONS::PREFERENCE_RECENT_FILES ), "Recent files", "Recent files list settings", true );
-    RecentFilesConfiguration* recentFiles_configuration = new RecentFilesConfiguration( page, Singleton::get().application<Application>()->recentFiles() );
-    page->layout()->addWidget( recentFiles_configuration );
-    addOptionWidget( recentFiles_configuration );
+    if( false )
+    {
+
+        page = &addPage( IconEngine::get( ICONS::PREFERENCE_RECENT_FILES ), "Recent files", "Recent files list settings", true );
+        RecentFilesConfiguration* recentFiles_configuration = new RecentFilesConfiguration( page, Singleton::get().application<Application>()->recentFiles() );
+        page->layout()->addWidget( recentFiles_configuration );
+        addOptionWidget( recentFiles_configuration );
+
+    }
 
     // misc
-    page = &addPage( "Misc", "Additional unsorted settings" );
+    page = &addPage( "Unsorted", "Additional unsorted settings" );
 
     // server
     SERVER::ServerConfiguration* server_configuration;
