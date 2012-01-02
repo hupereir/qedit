@@ -151,7 +151,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     {
 
         QGroupBox* box;
-        page->layout()->addWidget( box = new QGroupBox( "Flags", page ) );
+        page->layout()->addWidget( box = new QGroupBox( "Options", page ) );
         QVBoxLayout* layout = new QVBoxLayout();
         box->setLayout( layout );
 
