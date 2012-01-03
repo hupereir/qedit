@@ -4,7 +4,7 @@ TARGET = qedit
 CONFIG += qt release
 QT += xml network
 
-VERSION = 2.4.0
+VERSION = 2.4.1
 DEFINES += VERSION=\\\"$$VERSION\\\"
 
 win32 {
