@@ -2259,87 +2259,87 @@ void TextDisplay::_fileProperties( void )
     box->setLayout( layout );
     Debug::Throw( "TextDisplay::_fileProperties - Miscellaneous tab booked.\n" );
 
-    GridLayout* grid_layout = new GridLayout();
-    grid_layout->setMargin(0);
-    grid_layout->setSpacing( 5 );
-    grid_layout->setMaxCount( 2 );
-    grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-    layout->addLayout( grid_layout );
+    GridLayout* gridLayout = new GridLayout();
+    gridLayout->setMargin(0);
+    gridLayout->setSpacing( 5 );
+    gridLayout->setMaxCount( 2 );
+    gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+    layout->addLayout( gridLayout );
 
     // number of characters
-    grid_layout->addWidget( new QLabel( "Number of characters: ", box ) );
-    grid_layout->addWidget( new QLabel( QString().setNum(toPlainText().size()), box ) );
+    gridLayout->addWidget( new QLabel( "Number of characters: ", box ) );
+    gridLayout->addWidget( new QLabel( QString().setNum(toPlainText().size()), box ) );
 
     // number of lines
-    grid_layout->addWidget( new QLabel( "Number of lines: ", box ) );
-    grid_layout->addWidget( new QLabel( QString().setNum( AnimatedTextEditor::blockCount()), box ) );
+    gridLayout->addWidget( new QLabel( "Number of lines: ", box ) );
+    gridLayout->addWidget( new QLabel( QString().setNum( AnimatedTextEditor::blockCount()), box ) );
 
-    grid_layout->addWidget( new QLabel( "Text highlighting: ", box ) );
+    gridLayout->addWidget( new QLabel( "Text highlighting: ", box ) );
     {
         QCheckBox* checkbox( new QCheckBox( box ) );
         checkbox->setChecked( textHighlight().isHighlightEnabled() );
         checkbox->setEnabled( false );
-        grid_layout->addWidget( checkbox );
+        gridLayout->addWidget( checkbox );
     }
 
-    grid_layout->addWidget( new QLabel( "Paragraph highlighting: ", box ) );
+    gridLayout->addWidget( new QLabel( "Paragraph highlighting: ", box ) );
     {
         QCheckBox* checkbox( new QCheckBox( box ) );
         checkbox->setChecked( blockHighlightAction().isChecked() );
         checkbox->setEnabled( false );
-        grid_layout->addWidget( checkbox );
+        gridLayout->addWidget( checkbox );
     }
 
-    grid_layout->addWidget( new QLabel( "Parenthesis highlighting: ", box ) );
+    gridLayout->addWidget( new QLabel( "Parenthesis highlighting: ", box ) );
     {
         QCheckBox* checkbox( new QCheckBox( box ) );
         checkbox->setChecked( textHighlight().isParenthesisEnabled() );
         checkbox->setEnabled( false );
-        grid_layout->addWidget( checkbox );
+        gridLayout->addWidget( checkbox );
     }
 
-    grid_layout->addWidget( new QLabel( "Text indentation: ", box ) );
+    gridLayout->addWidget( new QLabel( "Text indentation: ", box ) );
     {
         QCheckBox* checkbox( new QCheckBox( box ) );
         checkbox->setChecked(  textIndent().isEnabled() );
         checkbox->setEnabled( false );
-        grid_layout->addWidget( checkbox );
+        gridLayout->addWidget( checkbox );
     }
 
-    grid_layout->addWidget( new QLabel( "Text wrapping: ", box ) );
+    gridLayout->addWidget( new QLabel( "Text wrapping: ", box ) );
     {
         QCheckBox* checkbox( new QCheckBox( box ) );
         checkbox->setChecked( wrapModeAction().isChecked() );
         checkbox->setEnabled( false );
-        grid_layout->addWidget( checkbox );
+        gridLayout->addWidget( checkbox );
     }
 
-    grid_layout->addWidget( new QLabel( "Tab emulation: ", box ) );
+    gridLayout->addWidget( new QLabel( "Tab emulation: ", box ) );
     {
         QCheckBox* checkbox( new QCheckBox( box ) );
         checkbox->setChecked( tabEmulationAction().isChecked() );
         checkbox->setEnabled( false );
-        grid_layout->addWidget( checkbox );
+        gridLayout->addWidget( checkbox );
     }
 
     {
-        grid_layout->addWidget( new QLabel( "Document class file name: ", box ) );
-        grid_layout->setColumnStretch( 1, 1 );
+        gridLayout->addWidget( new QLabel( "Document class file name: ", box ) );
+        gridLayout->setColumnStretch( 1, 1 );
 
         // document class file
         ElidedLabel* label = new ElidedLabel( Singleton::get().application<Application>()->classManager().get( className() ).file() );
-        grid_layout->addWidget( label );
+        gridLayout->addWidget( label );
     }
 
     {
 
-        grid_layout->addWidget( new QLabel( "Auto-save file name: ", box ) );
-        grid_layout->setColumnStretch( 1, 1 );
+        gridLayout->addWidget( new QLabel( "Auto-save file name: ", box ) );
+        gridLayout->setColumnStretch( 1, 1 );
 
         // auto save
         ElidedLabel* label = new ElidedLabel( AutoSaveThread::autoSaveName( file() ), box );
         label->setTextInteractionFlags( Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard );
-        grid_layout->addWidget( label );
+        gridLayout->addWidget( label );
 
     }
 
