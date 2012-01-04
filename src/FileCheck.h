@@ -24,23 +24,14 @@
 *
 *******************************************************************************/
 
-/*!
-  \file FileCheck.h
-  \brief keep track of external file modifications
-  \author  Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QBasicTimer>
-#include <QFileSystemWatcher>
-#include <QObject>
-#include <QTimerEvent>
-
-#include <set>
-
 #include "Key.h"
 #include "TimeStamp.h"
+
+#include <QtCore/QBasicTimer>
+#include <QtCore/QFileSystemWatcher>
+#include <QtCore/QObject>
+#include <QtCore/QTimerEvent>
+#include <set>
 
 class TextDisplay;
 
@@ -48,128 +39,124 @@ class TextDisplay;
 class FileCheck: public QObject, public BASE::Key, public Counter
 {
 
-  //! Qt meta object declaration
-  Q_OBJECT
+    //! Qt meta object declaration
+    Q_OBJECT
 
-  public:
-
-  //! constructor
-  FileCheck( QObject* parent = 0 );
-
-  //! destructor
-  ~FileCheck( void );
-
-  //! register new dispay
-  void registerDisplay( TextDisplay* );
-
-  //! add file
-  void addFile( const QString& );
-
-  //! remove file
-  void removeFile( const QString& );
-
-  //! used to monitor file changes
-  class Data
-  {
     public:
 
-    //! flag
-    enum Flag
+    //! constructor
+    FileCheck( QObject* parent = 0 );
+
+    //! destructor
+    ~FileCheck( void );
+
+    //! register new dispay
+    void registerDisplay( TextDisplay* );
+
+    //! add file
+    void addFile( const QString& );
+
+    //! remove file
+    void removeFile( const QString& );
+
+    //! used to monitor file changes
+    class Data
     {
-      NONE,
-      REMOVED,
-      MODIFIED
+        public:
+
+        //! flag
+        enum Flag
+        {
+            NONE,
+            REMOVED,
+            MODIFIED
+        };
+
+        //! constructor
+        Data( QString file = QString(), Flag flag = NONE, TimeStamp stamp = TimeStamp() ):
+            file_( file ),
+            flag_( flag ),
+            timeStamp_( stamp )
+        {}
+
+        //! equal to operator
+        bool operator == ( const Data& data ) const
+        { return file() == data.file(); }
+
+        //! less than operator
+        bool operator < ( const Data& data ) const
+        { return file() < data.file(); }
+
+        //! file
+        void setFile( const QString& file )
+        { file_ = file; }
+
+        //! file
+        const QString& file( void ) const
+        { return file_; }
+
+        //! flag
+        void setFlag( const Flag& flag )
+        { flag_ = flag; }
+
+        //! flag
+        const Flag& flag( void ) const
+        { return flag_; }
+
+        //! timestamp
+        void setTimeStamp( const TimeStamp& stamp )
+        { timeStamp_ = stamp; }
+
+        //! timestamp
+        const TimeStamp& timeStamp( void ) const
+        { return timeStamp_; }
+
+        private:
+
+        //! file
+        QString file_;
+
+        //! flag
+        Flag flag_;
+
+        //! timestamp
+        TimeStamp timeStamp_;
+
     };
 
-    //! constructor
-    Data( QString file = QString(), Flag flag = NONE, TimeStamp stamp = TimeStamp() ):
-      file_( file ),
-      flag_( flag ),
-      time_stamp_( stamp )
-    {}
+    //! map data to file
+    typedef std::set<Data> DataSet;
 
-    //! equal to operator
-    bool operator == ( const Data& data ) const
-    { return file() == data.file(); }
 
-    //! less than operator
-    bool operator < ( const Data& data ) const
-    { return file() < data.file(); }
+    //! file system watcher
+    const QFileSystemWatcher& fileSystemWatcher( void ) const
+    { return fileSystemWatcher_; }
 
-    //! file
-    void setFile( const QString& file )
-    { file_ = file; }
+    protected:
 
-    //! file
-    const QString& file( void ) const
-    { return file_; }
+    //! timer event, to handle multiple file modification at once
+    virtual void timerEvent( QTimerEvent* event );
 
-    //! flag
-    void setFlag( const Flag& flag )
-    { flag_ = flag; }
+    private slots:
 
-    //! flag
-    const Flag& flag( void ) const
-    { return flag_; }
-
-    //! timestamp
-    void setTimeStamp( const TimeStamp& stamp )
-    { time_stamp_ = stamp; }
-
-    //! timestamp
-    const TimeStamp& timeStamp( void ) const
-    { return time_stamp_; }
+    void _fileChanged( const QString& );
 
     private:
 
-    //! file
-    QString file_;
+    //! file system watcher
+    QFileSystemWatcher fileSystemWatcher_;
 
-    //! flag
-    Flag flag_;
+    //! file set
+    typedef std::set<QString> FileSet;
 
-    //! timestamp
-    TimeStamp time_stamp_;
+    //! file set
+    FileSet files_;
 
-  };
+    //! map files and modification data
+    DataSet data_;
 
-  //! map data to file
-  typedef std::set<Data> DataSet;
-
-
-  //! file system watcher
-  const QFileSystemWatcher& fileSystemWatcher( void ) const
-  { return file_system_watcher_; }
-
-  protected:
-
-  //! timer event, to handle multiple file modification at once
-  virtual void timerEvent( QTimerEvent* event );
-
-  private slots:
-
-  void _fileChanged( const QString& );
-
-  private:
-
-  //! file system watcher
-  QFileSystemWatcher& _fileSystemWatcher( void )
-  { return file_system_watcher_; }
-
-  //! file system watcher
-  QFileSystemWatcher file_system_watcher_;
-
-  //! file set
-  typedef std::set<QString> FileSet;
-
-  //! file set
-  FileSet files_;
-
-  //! map files and modification data
-  DataSet data_;
-
-  //! resize timer
-  QBasicTimer timer_;
+    //! resize timer
+    QBasicTimer timer_;
 
 };
 

@@ -97,7 +97,7 @@ QRegExp& TextDisplay::_emptyLineRegExp( void )
 TextDisplay::TextDisplay( QWidget* parent ):
     AnimatedTextEditor( parent ),
     file_( "" ),
-    working_directory_( Util::workingDirectory() ),
+    workingDirectory_( Util::workingDirectory() ),
 
     // store property ids associated to property names
     // this is used to speed-up fileRecord access
@@ -612,13 +612,13 @@ void TextDisplay::setFileCheckData( const FileCheck::Data& data )
     Debug::Throw( "TextDisplay::setFileCheckData.\n" );
 
     // check if data flag is different from stored
-    bool flags_changed( data.flag() != fileCheckData_.flag() );
+    bool flagsChanged( data.flag() != fileCheckData_.flag() );
 
     // update data
     fileCheckData_ = data;
 
     // emit file modification signal, to update session file frames
-    if( flags_changed ) emit needUpdate( MODIFIED );
+    if( flagsChanged ) emit needUpdate( MODIFIED );
 
 }
 
@@ -1672,14 +1672,13 @@ bool TextDisplay::_fileModified( void )
     // when file is on afs, or when file was removed (and recreated)
     // one need to use the filename modification timeStampl in place of the timeStamp contained in fileCheckData
     // because the last one was invalid
-    // const TimeStamp file_modified( ( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::REMOVED ) ? TimeStamp(file().lastModified()) : fileCheckData().timeStamp() );
-    const TimeStamp file_modified( _fileIsAfs() ? TimeStamp(file().lastModified()) : fileCheckData().timeStamp() );
-    if( !file_modified.isValid() ) return false;
-    if( !(file_modified > lastSaved_ ) ) return false;
+    const TimeStamp fileModified( _fileIsAfs() ? TimeStamp(file().lastModified()) : fileCheckData().timeStamp() );
+    if( !fileModified.isValid() ) return false;
+    if( !(fileModified > lastSaved_ ) ) return false;
     if( !_contentsChanged() ) return false;
 
     // update last_save to avoid chain questions
-    lastSaved_ = file_modified;
+    lastSaved_ = fileModified;
     return true;
 
 }

@@ -216,7 +216,7 @@ class TextDisplay: public AnimatedTextEditor
 
     //! working directory
     const File& workingDirectory() const
-    { return working_directory_; }
+    { return workingDirectory_; }
 
     //! last saved time stamp
     const TimeStamp& lastSaved( void ) const
@@ -521,7 +521,7 @@ class TextDisplay: public AnimatedTextEditor
 
     //! working directory
     void _setWorkingDirectory( const File& file )
-    { working_directory_ = file; }
+    { workingDirectory_ = file; }
 
     //! if true file is not checked on enter event
     const bool& _ignoreWarnings() const
@@ -687,7 +687,7 @@ class TextDisplay: public AnimatedTextEditor
     File file_;
 
     //! working directory
-    File working_directory_;
+    File workingDirectory_;
 
     //!@name property ids
     //@{

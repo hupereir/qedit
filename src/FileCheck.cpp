@@ -20,14 +20,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file FileCheck.cpp
-\brief keep track of external file modifications
-\author  Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "Debug.h"
 #include "File.h"
 #include "FileCheck.h"
@@ -44,7 +36,7 @@ FileCheck::FileCheck( QObject* parent ):
     Counter( "FileCheck" )
 {
     Debug::Throw( "FileCheck::FileCheck.\n" );
-    connect( &_fileSystemWatcher(), SIGNAL( fileChanged( const QString& ) ), SLOT( _fileChanged( const QString& ) ) );
+    connect( &fileSystemWatcher_, SIGNAL( fileChanged( const QString& ) ), SLOT( _fileChanged( const QString& ) ) );
 }
 
 //______________________________________________________
@@ -66,7 +58,7 @@ void FileCheck::addFile( const QString& file )
     if( files_.find( file ) == files_.end() )
     {
         files_.insert( file );
-        _fileSystemWatcher().addPath( file );
+        fileSystemWatcher_.addPath( file );
     }
 
 }
@@ -77,7 +69,7 @@ void FileCheck::removeFile( const QString& file )
 
     Debug::Throw() << "FileCheck::removeFile: " << file << endl;
     files_.erase( file );
-    _fileSystemWatcher().removePath( file );
+    fileSystemWatcher_.removePath( file );
 
     return;
 
