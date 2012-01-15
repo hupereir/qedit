@@ -70,7 +70,7 @@ WindowServer::WindowServer( QObject* parent ):
     firstCall_( true ),
     defaultOrientation_( Qt::Horizontal ),
     defaultDiffOrientation_( Qt::Vertical ),
-    open_mode_( ACTIVE_WINDOW ),
+    openMode_( ACTIVE_WINDOW ),
     activeWindow_( 0 )
 {
 

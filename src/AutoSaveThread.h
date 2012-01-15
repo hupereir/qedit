@@ -25,11 +25,11 @@
 *******************************************************************************/
 
 /*!
-  \file AutoSaveThread.h
-  \brief independent thread used to make regular automatic saves of files
-  \author  Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file AutoSaveThread.h
+\brief independent thread used to make regular automatic saves of files
+\author  Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 
@@ -44,48 +44,48 @@
 class AutoSaveThread: public QThread, public BASE::Key, public Counter
 {
 
-  public:
+    public:
 
-  //! constructor
-  AutoSaveThread( QObject* reciever ):
-    Counter( "AutoSaveThread" ),
-    file_changed_( true ),
-    contents_changed_( true )
-  { Debug::Throw( "AutoSaveThread::AutoSaveThread.\n" ); }
+    //! constructor
+    AutoSaveThread( QObject* reciever ):
+        Counter( "AutoSaveThread" ),
+        fileChanged_( true ),
+        contentsChanged_( true )
+    { Debug::Throw( "AutoSaveThread::AutoSaveThread.\n" ); }
 
-  //! destructor
-  virtual ~AutoSaveThread( void )
-  { Debug::Throw( "AutoSaveThread::~AutoSaveThread.\n" ); }
+    //! destructor
+    virtual ~AutoSaveThread( void )
+    { Debug::Throw( "AutoSaveThread::~AutoSaveThread.\n" ); }
 
-  //! file
-  void setFile( const File& file );
+    //! file
+    void setFile( const File& file );
 
-  //! file
-  const File& file( void ) const
-  { return file_; }
+    //! file
+    const File& file( void ) const
+    { return file_; }
 
-  //! set content
-  void setContents( const QString& contents );
+    //! set content
+    void setContents( const QString& contents );
 
-  //! generate a new grid. Post a AutoSaveEvent when finished
-  void run( void );
+    //! generate a new grid. Post a AutoSaveEvent when finished
+    void run( void );
 
-  //! create backup file name from file
-  static File autoSaveName( const File& file );
+    //! create backup file name from file
+    static File autoSaveName( const File& file );
 
-  private:
+    private:
 
-  //! filename where data is to be saved
-  File file_;
+    //! filename where data is to be saved
+    File file_;
 
-  //! content to be saved
-  QString contents_;
+    //! content to be saved
+    QString contents_;
 
-  //! modification flag
-  bool file_changed_;
+    //! modification flag
+    bool fileChanged_;
 
-  //! modification flag
-  bool contents_changed_;
+    //! modification flag
+    bool contentsChanged_;
 
 };
 

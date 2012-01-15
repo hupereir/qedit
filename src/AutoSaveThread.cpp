@@ -23,11 +23,11 @@
 *******************************************************************************/
 
 /*!
-  \file AutoSaveThread.cpp
-  \brief independent thread used to make regular backups of files
-  \author  Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file AutoSaveThread.cpp
+\brief independent thread used to make regular backups of files
+\author  Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 
@@ -48,31 +48,31 @@
 File AutoSaveThread::autoSaveName( const File& file )
 {
 
-  // get full path of current file, relative to root.
-  // replace special characters by "_"
-  QString relative_name = QDir::root().relativeFilePath( file ).replace( "/", "_" ).replace(":","_");
+    // get full path of current file, relative to root.
+    // replace special characters by "_"
+    QString relativeName = QDir::root().relativeFilePath( file ).replace( "/", "_" ).replace(":","_");
 
-  // get qedit default autosave path
-  QString autosave_path;
-  QTextStream( &autosave_path )
-    << XmlOptions::get().raw( "AUTOSAVE_PATH" )
-    << "/qedit";
+    // get qedit default autosave path
+    QString autoSavePath;
+    QTextStream( &autoSavePath )
+        << XmlOptions::get().raw( "AUTOSAVE_PATH" )
+        << "/qedit";
 
-  // generate autosave name
-  File tmp_file = File( relative_name ).addPath( QDir( autosave_path ).absolutePath() );
-  return tmp_file;
+    // generate autosave name
+    File tmpFile = File( relativeName ).addPath( QDir( autoSavePath ).absolutePath() );
+    return tmpFile;
 
 }
 
 //_______________________________________________________________
 void AutoSaveThread::setFile( const File& file )
 {
-  File tmp( autoSaveName( file ) );
-  if( tmp != file_ )
-  {
-    file_changed_ = true;
-    file_ = tmp;
-  } else file_changed_ = false;
+    File tmp( autoSaveName( file ) );
+    if( tmp != file_ )
+    {
+        fileChanged_ = true;
+        file_ = tmp;
+    } else fileChanged_ = false;
 }
 
 
@@ -80,32 +80,31 @@ void AutoSaveThread::setFile( const File& file )
 void AutoSaveThread::setContents( const QString& contents )
 {
 
-  if( contents_ != contents )
-  {
-    contents_changed_ = true;
-    contents_ = contents;
-  } else contents_changed_ = false;
+    if( contents_ != contents )
+    {
+        contentsChanged_ = true;
+        contents_ = contents;
+    } else contentsChanged_ = false;
 
 }
-
 
 //_______________________________________________________________
 void AutoSaveThread::run( void )
 {
 
-  if( contents_changed_ || file_changed_ )
-  {
+    if( contentsChanged_ || fileChanged_ )
+    {
 
-    // make sure path exists
-    QDir path( file().path() );
-    if( !( path.exists() || path.mkpath( "." ) ) ) return;
+        // make sure path exists
+        QDir path( file().path() );
+        if( !( path.exists() || path.mkpath( "." ) ) ) return;
 
-    // write to file
-    QFile out( file() );
-    if( !out.open( QIODevice::WriteOnly ) ) return;
-    out.write( contents_.toAscii() );
-    out.close();
+        // write to file
+        QFile out( file() );
+        if( !out.open( QIODevice::WriteOnly ) ) return;
+        out.write( contents_.toAscii() );
+        out.close();
 
-  }
+    }
 
 }

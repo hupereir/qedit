@@ -731,14 +731,14 @@ void TextDisplay::saveAs( void )
     Debug::Throw( "TextDisplay::saveAs.\n" );
 
     // define default file
-    File default_file( file() );
-    if( default_file.isEmpty() || isNewDocument() ) default_file = File( "Document" ).addPath( workingDirectory() );
+    File defaultFile( file() );
+    if( defaultFile.isEmpty() || isNewDocument() ) defaultFile = File( "Document" ).addPath( workingDirectory() );
 
     // create file dialog
     FileDialog dialog( this );
     dialog.setFileMode( QFileDialog::AnyFile );
     dialog.setAcceptMode( QFileDialog::AcceptSave );
-    dialog.selectFile( default_file );
+    dialog.selectFile( defaultFile );
     File file( dialog.getFile() );
     if( file.isNull() ) return;
     else file = file.expand();

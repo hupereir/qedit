@@ -42,62 +42,62 @@ class TextView;
 
 class WindowServer: public QObject, public Counter, public BASE::Key
 {
-    
+
     //! Qt meta object declaration
     Q_OBJECT
-        
+
     public:
-        
+
     //!@name Open mode string
     //@{
-        
+
     static const QString SINGLE_WINDOW;
-    
+
     static const QString MULTIPLE_WINDOWS;
-    
+
     //@}
-    
+
     //! constructor
     WindowServer( QObject* parent = 0 );
-    
+
     //! destructor
     virtual ~WindowServer( void );
-    
+
     //! create new empty main window
     MainWindow& newMainWindow( void );
-    
+
     //! returns list of opened files
     /*! the active_window parameter is used to possibly tag files that belong to it */
     FileRecord::List records( bool modified_only = false, QWidget* active_window = 0 ) const;
-    
+
     //! close all windows gracefully
     /*! returns false if the opperation was cancelled. */
     bool closeAll( void );
-    
+
     //! read file from arguments and open relevant windows
     void readFilesFromArguments( CommandLineArguments );
-    
+
     //!@name actions
     //@{
-    
+
     //! save all
     QAction& saveAllAction( void ) const
     { return *saveAllAction_; }
-    
+
     //@}
-    
+
     //! open mode
     enum OpenMode
     {
-        
+
         ACTIVE_WINDOW,
         NEW_WINDOW
-            
+
     };
-        
+
     //! multiple files replace
     void multipleFileReplace( std::list<File>, TextSelection );
-    
+
     //! orientation
     enum OrientationMode
     {
@@ -274,11 +274,11 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
     //! open mode
     const OpenMode& _openMode( void ) const
-    { return open_mode_; }
+    { return openMode_; }
 
     //! open mode
     void _setOpenMode( const OpenMode& mode )
-    { open_mode_ = mode; }
+    { openMode_ = mode; }
 
     //! first call
     const bool& _firstCall( void ) const
@@ -298,7 +298,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     Qt::Orientation defaultDiffOrientation_;
 
     //! open mode
-    OpenMode open_mode_;
+    OpenMode openMode_;
 
     //! active window
     MainWindow* activeWindow_;
