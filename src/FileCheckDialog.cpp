@@ -21,16 +21,6 @@
 *
 *******************************************************************************/
 
-/*!
-  \file FileCheckDialog.cpp
-  \brief QDialog used to select opened files
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QHeaderView>
-
 #include "Application.h"
 #include "Debug.h"
 #include "FileCheckDialog.h"
@@ -38,23 +28,26 @@
 #include "Singleton.h"
 #include "TreeView.h"
 
-
+#include <QtGui/QHeaderView>
 
 //________________________________________________________
 FileCheckDialog::FileCheckDialog( QWidget* parent ):
-  CustomDialog( parent, CloseButton )
+CustomDialog( parent, CloseButton )
 {
-  Debug::Throw( "FileCheckDialog::FileCheckDialog.\n" );
-  setWindowTitle( "Monitored Files" );
-  setOptionName( "FILE_CHECK_DIALOG" );
+    Debug::Throw( "FileCheckDialog::FileCheckDialog.\n" );
+    setWindowTitle( "Monitored Files" );
+    setOptionName( "FILE_CHECK_DIALOG" );
 
-  // custom list display
-  mainLayout().addWidget( list_ = new TreeView( this ) );
-  _list().setModel( &model_ );
-  _list().setSelectionMode( QAbstractItemView::NoSelection );
+    layout()->setMargin(0);
+    buttonLayout().setMargin(5);
 
-  // add options
-  _list().setOptionName( "FILE_CHECK_LIST" );
+    // custom list display
+    mainLayout().addWidget( list_ = new TreeView( this ) );
+    _list().setModel( &model_ );
+    _list().setSelectionMode( QAbstractItemView::NoSelection );
+
+    // add options
+    _list().setOptionName( "FILE_CHECK_LIST" );
 
 }
 
@@ -62,13 +55,13 @@ FileCheckDialog::FileCheckDialog( QWidget* parent ):
 void FileCheckDialog::setFiles( const QStringList& files )
 {
 
-  Debug::Throw( "FileCheckDialog::setFiles.\n" );
-  FileRecordModel::List records;
-  for( QStringList::const_iterator iter = files.begin(); iter != files.end(); ++iter )
-  { records.push_back( Singleton::get().application<Application>()->recentFiles().get( *iter ) ); }
-  model_.set( records );
+    Debug::Throw( "FileCheckDialog::setFiles.\n" );
+    FileRecordModel::List records;
+    for( QStringList::const_iterator iter = files.begin(); iter != files.end(); ++iter )
+    { records.push_back( Singleton::get().application<Application>()->recentFiles().get( *iter ) ); }
+    model_.set( records );
 
-  _list().updateMask();
-  _list().resizeColumns();
+    _list().updateMask();
+    _list().resizeColumns();
 
 }

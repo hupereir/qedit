@@ -23,18 +23,10 @@
 *
 *******************************************************************************/
 
-/*!
-  \file FileCheckDialog.h
-  \brief QDialog used to select opened files
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QStringList>
-
 #include "CustomDialog.h"
 #include "FileRecordModel.h"
+
+#include <QtCore/QStringList>
 
 class TreeView;
 
@@ -42,25 +34,25 @@ class TreeView;
 class FileCheckDialog: public CustomDialog
 {
 
-  public:
+    public:
 
-  //! constructor
-  FileCheckDialog( QWidget* parent );
+    //! constructor
+    FileCheckDialog( QWidget* parent );
 
-  //! set files
-  void setFiles( const QStringList& );
+    //! set files
+    void setFiles( const QStringList& );
 
-  private:
+    private:
 
-  //! list
-  TreeView& _list( void ) const
-  { return *list_; }
+    //! list
+    TreeView& _list( void ) const
+    { return *list_; }
 
-  //! model
-  FileRecordModel model_;
+    //! model
+    FileRecordModel model_;
 
-  //! list of files
-  TreeView* list_;
+    //! list of files
+    TreeView* list_;
 
 };
 
