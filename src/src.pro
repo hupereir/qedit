@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = qedit
 
 CONFIG += qt release
-QT += xml network
+QT += xml network dbus
 
 VERSION = 2.4.1
 DEFINES += VERSION=\\\"$$VERSION\\\"
