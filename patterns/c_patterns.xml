@@ -328,20 +328,20 @@ and this one is an opening bracket</comments>
     <replacement></replacement>
    </rule>
   </macro>
-  <macro accelerator="Alt+C" name="Clean end of line" options="automatic" >
+  <macro name="Clean end of line" options="automatic" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>
    </rule>
   </macro>
   <macro options="separator" name="generic" />
-  <macro name="Add C++ comments" >
+  <macro accelerator="Alt+C" name="Add C++ comments" >
    <rule>
     <regexp>^</regexp>
     <replacement>// </replacement>
    </rule>
   </macro>
-  <macro name="Remove C++ comments" >
+  <macro accelerator="Shift+Alt+C" name="Remove C++ comments" >
    <rule>
     <regexp>^//(\s|$)</regexp>
     <replacement></replacement>
