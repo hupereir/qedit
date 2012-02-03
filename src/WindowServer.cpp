@@ -354,7 +354,7 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
         File& file( *iter );
 
         // find matching window
-        BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
+        BASE::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
         assert( iter != windows.end() );
 
         // loop over views
@@ -431,13 +431,13 @@ void WindowServer::_newFile( WindowServer::OpenMode mode )
 
     // try find empty editor
     TextView* view(0);
-    BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
+    BASE::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
     if( iter != windows.end() )
     {
 
         // select the view that contains the empty display
         BASE::KeySet<TextView> views( *iter );
-        BASE::KeySet<TextView>::iterator viewIter( find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
+        BASE::KeySet<TextView>::iterator viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
         assert( viewIter != views.end() );
         (*iter)->setActiveView( **viewIter );
         view = *viewIter;
@@ -486,7 +486,7 @@ void WindowServer::_newFile( Qt::Orientation orientation )
     // look for an empty display
     // create a new display if none is found
     BASE::KeySet<TextDisplay> displays( active_view );
-    BASE::KeySet<TextDisplay>::iterator iter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
+    BASE::KeySet<TextDisplay>::iterator iter( std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
     if( iter == displays.end() ) active_view.splitDisplay( orientation, false );
 
     active_view.setIsNewDocument();
@@ -518,7 +518,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     BASE::KeySet<MainWindow> windows( this );
 
     // try find editor with matching name
-    BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
+    BASE::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
     if( iter != windows.end() )
     {
 
@@ -535,13 +535,13 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
 
     // try find empty editor
     TextView* view(0);
-    iter = find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
+    iter = std::find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
     if( iter != windows.end() )
     {
 
         // select the view that contains the empty display
         BASE::KeySet<TextView> views( *iter );
-        BASE::KeySet<TextView>::iterator viewIter( find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
+        BASE::KeySet<TextView>::iterator viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
         assert( viewIter != views.end() );
         (*viewIter)->setFile( record.file() );
         (*iter)->setActiveView( **viewIter );
@@ -601,13 +601,13 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
 
     // retrieve all windows and find one matching
     BASE::KeySet<MainWindow> windows( this );
-    BASE::KeySet<MainWindow>::iterator iter = find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
+    BASE::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
     if( iter != windows.end() )
     {
 
         // find matching view
         BASE::KeySet<TextView> views( *iter );
-        BASE::KeySet<TextView>::iterator viewIter = find_if( views.begin(), views.end(), MainWindow::SameFileFTor( record.file() ) );
+        BASE::KeySet<TextView>::iterator viewIter = std::find_if( views.begin(), views.end(), MainWindow::SameFileFTor( record.file() ) );
         assert( viewIter != views.end() );
 
         // check if the found view is the current
@@ -634,7 +634,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         // look for an empty display
         // create a new display if none is found
         BASE::KeySet<TextDisplay> displays( &active_view );
-        BASE::KeySet<TextDisplay>::iterator displayIter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
+        BASE::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
         TextDisplay& display( displayIter == displays.end() ? active_view.splitDisplay( orientation, false ):**displayIter );
 
         // retrieve active display from previous window
@@ -665,7 +665,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         // look for an empty display
         // create a new display if none is found
         BASE::KeySet<TextDisplay> displays( active_view );
-        BASE::KeySet<TextDisplay>::iterator displayIter( find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
+        BASE::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
         if( displayIter == displays.end() ) active_view.splitDisplay( orientation, false );
 
         // open file in this window

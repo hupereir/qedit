@@ -84,7 +84,7 @@ void TextView::setIsNewDocument( void )
 
     // look for first empty display
     BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator iter = find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
+    BASE::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
     assert( iter != displays.end() );
     TextDisplay &display( **iter );
 
@@ -110,7 +110,7 @@ void TextView::setFile( File file )
 
     // look for first empty display
     BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator iter = find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
+    BASE::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
     assert( iter != displays.end() );
     TextDisplay &display( **iter );
 
@@ -133,7 +133,7 @@ unsigned int TextView::independentDisplayCount( void )
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
         // increment if no associated display is found in the already processed displays
-        if( find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++;
+        if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++;
     }
 
     return out;
@@ -150,7 +150,7 @@ unsigned int TextView::modifiedDisplayCount( void )
         // increment if no associated display is found in the already processed displays
         // and if current is modified
         if(
-            find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter &&
+            std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter &&
             (*iter)->document()->isModified() )
         { out++; }
     }
@@ -169,7 +169,7 @@ bool TextView::selectDisplay( const File& file )
     if( TextDisplay::SameFileFTor( file )( &activeDisplay() ) ) return true;
 
     BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator iter( find_if(
+    BASE::KeySet<TextDisplay>::iterator iter( std::find_if(
         displays.begin(),
         displays.end(),
         TextDisplay::SameFileFTor( file ) ) );
@@ -206,7 +206,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
     {
 
         BASE::KeySet<TextDisplay> displays( this );
-        displays.erase( &activeDisplay() );
+        displays.remove( &activeDisplay() );
 
         for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
         { (*iter)->setActive( false ); }
@@ -299,11 +299,14 @@ void TextView::closeDisplay( TextDisplay& display )
     // if no associated displays, retrieve all, set the first as active
     Debug::Throw( "TextView::closeDisplay - changing focus.\n" );
     if( displays.empty() ) displays = BASE::KeySet<TextDisplay>( this );
-    for( BASE::KeySet<TextDisplay>::reverse_iterator iter = displays.rbegin(); iter != displays.rend(); ++iter )
+    BASE::KeySetIterator<TextDisplay> iterator( displays );
+    iterator.toBack();
+    while( iterator.hasPrevious() )
     {
-        if( (*iter) != &display && !(*iter)->isClosed() )
+        TextDisplay* current( iterator.previous() );
+        if( current != &display && !current->isClosed() )
         {
-            setActiveDisplay( **iter );
+            setActiveDisplay( *current );
             activeDisplay().setFocus();
             break;
         }
@@ -426,7 +429,7 @@ void TextView::rehighlight( void )
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
         // this trick allow to run the rehighlight only once per set of associated displays
-        if( find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) (*iter)->rehighlight();
+        if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) (*iter)->rehighlight();
     }
 
     return;

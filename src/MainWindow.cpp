@@ -260,10 +260,7 @@ BASE::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
     BASE::KeySet<TextDisplay> displays;
     BASE::KeySet<TextView> views( this );
     for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); ++iter )
-    {
-        BASE::KeySet<TextDisplay> view_displays(*iter);
-        displays.insert( view_displays.begin(), view_displays.end() );
-    }
+    { displays.unite( BASE::KeySet<TextDisplay>(*iter) ); }
 
     return displays;
 
@@ -555,8 +552,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
         modified_displays += (*iter)->modifiedDisplayCount();
 
         // store associated textDisplays in main set
-        BASE::KeySet<TextDisplay> view_displays( *iter );
-        displays.insert( view_displays.begin(), view_displays.end() );
+        displays.unite( BASE::KeySet<TextDisplay>( *iter ) );
 
     }
 
