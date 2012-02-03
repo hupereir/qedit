@@ -20,14 +20,6 @@
 *
 ****************************************************************************/
 
-/*!
-\file TextMacroMenu.cpp
-\brief display available text macros
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "TextMacroMenu.h"
 
 //___________________________________________________________
@@ -59,7 +51,7 @@ void TextMacroMenu::setTextMacros( const TextMacro::List& macros, bool enabled )
             addAction( action );
 
             // insert in map
-            actions_.insert( std::make_pair( action, iter->name() ) );
+            actions_.insert( action, iter->name() );
 
         }
     }
@@ -69,8 +61,8 @@ void TextMacroMenu::setTextMacros( const TextMacro::List& macros, bool enabled )
 //___________________________________________________________
 void TextMacroMenu::setEnabled( bool enabled )
 {
-    for( std::map< QAction*, QString >::iterator iter = actions_.begin(); iter != actions_.end(); ++iter )
-    { iter->first->setEnabled( enabled ); }
+    for( QMap< QAction*, QString >::iterator iter = actions_.begin(); iter != actions_.end(); ++iter )
+    { iter.key()->setEnabled( enabled ); }
 }
 
 //___________________________________________________________
@@ -78,7 +70,7 @@ void TextMacroMenu::_processAction( QAction* action )
 {
 
     // try retrieve id in map
-    std::map< QAction*, QString >::iterator iter = actions_.find( action );
-    if( iter != actions_.end() ) emit textMacroSelected( iter->second );
+    QMap< QAction*, QString >::iterator iter = actions_.find( action );
+    if( iter != actions_.end() ) emit textMacroSelected( iter.value() );
 
 }

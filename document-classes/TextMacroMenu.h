@@ -23,57 +23,49 @@
 *
 ****************************************************************************/
 
-/*!
-   \file TextMacroMenu.h
-   \brief display available text macros
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
-*/
-
-#include <QMenu>
-#include <QAction>
-#include <QActionGroup>
-#include <map>
-
 #include "Counter.h"
 #include "TextMacro.h"
+
+#include <QtGui/QMenu>
+#include <QtGui/QAction>
+#include <QtGui/QActionGroup>
+#include <QtCore/QMap>
 
 //! display available document classes
 class TextMacroMenu: public QMenu, public Counter
 {
 
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! constructor
-  TextMacroMenu( QWidget* );
+    //! constructor
+    TextMacroMenu( QWidget* );
 
-  //! destructor
-  virtual ~TextMacroMenu( void )
-  {}
+    //! destructor
+    virtual ~TextMacroMenu( void )
+    {}
 
-  //! set macro
-  void setTextMacros( const TextMacro::List&, bool );
+    //! set macro
+    void setTextMacros( const TextMacro::List&, bool );
 
-  //! set enabled
-  void setEnabled( bool );
+    //! set enabled
+    void setEnabled( bool );
 
-  signals:
+    signals:
 
-  //! emmited every time a text macro is selected
-  void textMacroSelected( QString );
+    //! emmited every time a text macro is selected
+    void textMacroSelected( QString );
 
-  protected slots:
+    protected slots:
 
-  //! emited when an action is selected
-  void _processAction( QAction* action );
+    //! emited when an action is selected
+    void _processAction( QAction* action );
 
-  private:
+    private:
 
-  //! map action to TextMacro
-  std::map<QAction*, QString > actions_;
+    //! map action to TextMacro
+    QMap<QAction*, QString > actions_;
 
 };
 

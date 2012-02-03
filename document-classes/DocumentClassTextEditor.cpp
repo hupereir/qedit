@@ -19,18 +19,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file DocumentClassTextEditor.cpp
-\brief text display window
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QAbstractTextDocumentLayout>
-#include <QPainter>
-#include <QTextLayout>
-
 #include "BlockDelimiterDisplay.h"
 #include "CustomTextDocument.h"
 #include "DocumentClass.h"
@@ -49,7 +37,11 @@
 #include "Util.h"
 #include "XmlOptions.h"
 
+#include <QtGui/QAbstractTextDocumentLayout>
+#include <QtGui/QPainter>
+#include <QtGui/QTextLayout>
 
+#include <algorithm>
 
 //___________________________________________________
 QRegExp& DocumentClassTextEditor::_emptyLineRegExp( void )
@@ -189,7 +181,7 @@ void DocumentClassTextEditor::processMacro( QString name )
     Debug::Throw() << "DocumentClassTextEditor::processMacro - " << name << endl;
 
     // retrieve macro that match argument name
-    TextMacro::List::const_iterator macro_iter = find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
+    TextMacro::List::const_iterator macro_iter = std::find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
     if( macro_iter == macros_.end() )
     {
         QString buffer;
