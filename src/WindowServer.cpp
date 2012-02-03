@@ -181,8 +181,8 @@ FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) co
 
     }
 
-    sort( records.begin(), records.end(), FileRecord::FileFTor() );
-    records.erase( unique( records.begin(), records.end(), FileRecord::SameFileFTor() ), records.end() );
+    std::sort( records.begin(), records.end(), FileRecord::FileFTor() );
+    records.erase( std::unique( records.begin(), records.end(), FileRecord::SameFileFTor() ), records.end() );
     Debug::Throw( "WindowServer::records - done.\n" );
     return records;
 
@@ -854,7 +854,7 @@ void WindowServer::_save( FileRecord::List records )
         {
             TextDisplay& display( **displayIter );
             if( !display.document()->isModified() ) continue;
-            if( find_if( records.begin(), records.end(), FileRecord::SameFileFTor( display.file() ) ) == records.end() ) continue;
+            if( std::find_if( records.begin(), records.end(), FileRecord::SameFileFTor( display.file() ) ) == records.end() ) continue;
             display.save();
         }
 

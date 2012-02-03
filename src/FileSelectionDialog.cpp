@@ -57,7 +57,10 @@ selection_( selection )
     connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
 
     // retrieve file records
-    model_.set( Singleton::get().application<Application>()->windowServer().records() );
+    FileRecordModel::List records;
+    foreach( const FileRecord& record, Singleton::get().application<Application>()->windowServer().records() )
+    { records.push_back( record ); }
+    model_.set( records );
 
     // mask
     unsigned int mask(

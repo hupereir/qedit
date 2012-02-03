@@ -61,7 +61,7 @@ CustomDialog( parent, OkButton | CancelButton| Separator )
     QTextStream what( &buffer );
     what << "Modified: ";
 
-    unsigned int index = 0;
+    int index(0);
     for( FileRecord::List::const_iterator iter = files.begin(); iter != files.end(); ++iter, index++ )
     {
         what << iter->file().localName();

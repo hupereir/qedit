@@ -129,13 +129,17 @@ void SessionFilesFrame::update( void )
 
     // store in model
     FileRecord::List records( Singleton::get().application<Application>()->windowServer().records( false, window() ) );
-    _model().update( records );
+
+    FileRecordModel::List listRecords;
+    foreach( const FileRecord& record, records )
+    { listRecords.push_back( record ); }
+    _model().update( listRecords );
 
     list().updateMask();
     list().resizeColumns();
 
     // make sure selected record appear selected in list
-    FileRecord::List::const_iterator iter = find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::SELECTED ) );
+    FileRecord::List::const_iterator iter = std::find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::SELECTED ) );
     if( iter != records.end() ) select( iter->file() );
 
     Debug::Throw( "SessionFilesFrame:update - done.\n" );
@@ -244,7 +248,7 @@ void SessionFilesFrame::_save( void )
     Debug::Throw( "SessionFilesFrame:_save.\n" );
     SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
 
-    SessionFilesModel::List modified_records;
+    FileRecord::List modified_records;
     for( SessionFilesModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
     { if( iter->hasFlag( FileRecordProperties::MODIFIED ) ) modified_records.push_back( *iter ); }
 
@@ -259,8 +263,13 @@ void SessionFilesFrame::_close( void )
 
     Debug::Throw( "SessionFilesFrame:_close.\n" );
     SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
-    if( !selection.empty() ) emit filesClosed( selection );
-
+    if( !selection.empty() ) 
+    {
+      FileRecord::List records;
+      foreach( const FileRecord& record, selection )
+      { records.push_back( record ); }
+      emit filesClosed( records );
+    }
 }
 
 //______________________________________________________________________

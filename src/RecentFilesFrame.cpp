@@ -122,7 +122,11 @@ void RecentFilesFrame::update( void )
     Debug::Throw( "RecentFilesFrame:update.\n" );
 
     // update records
-    _model().update( _recentFiles().records() );
+    FileRecordModel::List records;
+    foreach( const FileRecord& record, _recentFiles().records() )
+    { records.push_back( record ); }
+    _model().update( records );
+
     list().updateMask();
     list().resizeColumns();
     list().update();
