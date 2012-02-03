@@ -400,7 +400,7 @@ void Menu::_selectFile( QAction* action )
     BASE::KeySet<MainWindow> windows( &Singleton::get().application<Application>()->windowServer() );
 
     // retrieve window matching file name
-    BASE::KeySet<MainWindow>::iterator window_iter( find_if(
+    BASE::KeySet<MainWindow>::iterator window_iter( std::find_if(
         windows.begin(),
         windows.end(),
         MainWindow::SameFileFTor( iter->second ) ) );

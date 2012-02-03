@@ -118,7 +118,7 @@ void FileCheck::timerEvent( QTimerEvent* event )
         for( DataSet::const_iterator iter = data_.begin(); iter != data_.end(); ++iter )
         {
 
-            BASE::KeySet<TextDisplay>::iterator displayIter( find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( iter->file() ) ) );
+	  BASE::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( iter->file() ) ) );
             if( displayIter != displays.end() )
             {
 
