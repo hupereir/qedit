@@ -46,10 +46,10 @@ class IndentPatternList: public QGroupBox, public Counter
 
     Q_OBJECT
 
-        public:
+    public:
 
-        //! constructor
-        IndentPatternList( QWidget* parent = 0 );
+    //! constructor
+    IndentPatternList( QWidget* parent = 0 );
 
     //! patterns
     void setPatterns( const IndentPattern::List& );

@@ -224,8 +224,8 @@ void TextMacroList::_storeSelection( void )
     model_.clearSelectedIndexes();
 
     // retrieve selected indexes in list
-    QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-    for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
+    QModelIndexList selectedIndexes( list_->selectionModel()->selectedRows() );
+    for( QModelIndexList::iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); ++iter )
     {
         // check column
         if( !iter->column() == 0 ) continue;
@@ -239,12 +239,12 @@ void TextMacroList::_restoreSelection( void )
 {
 
     // retrieve indexes
-    QModelIndexList selected_indexes( model_.selectedIndexes() );
-    if( selected_indexes.empty() ) list_->selectionModel()->clear();
+    QModelIndexList selectedIndexes( model_.selectedIndexes() );
+    if( selectedIndexes.empty() ) list_->selectionModel()->clear();
     else {
 
-        list_->selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-        for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
+        list_->selectionModel()->select( selectedIndexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+        for( QModelIndexList::const_iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); ++iter )
         { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     }
@@ -265,8 +265,8 @@ void TextMacroList::_up( void )
     }
 
     // retrieve selected indexes in list and store in model
-    QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-    TextMacro::List selectedAttributes( model_.get( selected_indexes ) );
+    QModelIndexList selectedIndexes( list_->selectionModel()->selectedRows() );
+    TextMacro::List selectedAttributes( model_.get( selectedIndexes ) );
 
     TextMacro::List currentAttributes( macros() );
     TextMacro::List newAttributes;
@@ -278,8 +278,8 @@ void TextMacroList::_up( void )
         // if yes, move.
         if(
             !( newAttributes.empty() ||
-            selected_indexes.indexOf( model_.index( *iter ) ) == -1 ||
-            selected_indexes.indexOf( model_.index( newAttributes.back() ) ) != -1
+            selectedIndexes.indexOf( model_.index( *iter ) ) == -1 ||
+            selectedIndexes.indexOf( model_.index( newAttributes.back() ) ) != -1
             ) )
         {
             TextMacro last( newAttributes.back() );
@@ -314,8 +314,8 @@ void TextMacroList::_down( void )
     }
 
     // retrieve selected indexes in list and store in model
-    QModelIndexList selected_indexes( list_->selectionModel()->selectedIndexes() );
-    TextMacro::List selectedAttributes( model_.get( selected_indexes ) );
+    QModelIndexList selectedIndexes( list_->selectionModel()->selectedIndexes() );
+    TextMacro::List selectedAttributes( model_.get( selectedIndexes ) );
 
     TextMacro::List currentAttributes( macros() );
     TextMacro::List newAttributes;
@@ -327,15 +327,15 @@ void TextMacroList::_down( void )
         const TextMacro& current( iter.previous() );
         if(
             !( newAttributes.empty() ||
-            selected_indexes.indexOf( model_.index( current ) ) == -1 ||
-            selected_indexes.indexOf( model_.index( newAttributes.front() ) ) != -1
+            selectedIndexes.indexOf( model_.index( current ) ) == -1 ||
+            selectedIndexes.indexOf( model_.index( newAttributes.front() ) ) != -1
             ) )
         {
 
-            TextMacro last( newAttributes.front() );
-            newAttributes.pop_back();
+            TextMacro first( newAttributes.front() );
+            newAttributes.pop_front();
             newAttributes.push_front( current );
-            newAttributes.push_front( last );
+            newAttributes.push_front( first );
 
         } else newAttributes.push_front( current );
     }

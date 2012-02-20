@@ -332,14 +332,14 @@ void IndentPatternList::_down( void )
         if(
             !( newAttributes.empty() ||
             selectedIndexes.indexOf( model_.index( current ) ) == -1 ||
-            selectedIndexes.indexOf( model_.index( newAttributes.back() ) ) != -1
+            selectedIndexes.indexOf( model_.index( newAttributes.front() ) ) != -1
             ) )
         {
 
-            IndentPattern last( newAttributes.back() );
-            newAttributes.pop_back();
+            IndentPattern first( newAttributes.front() );
+            newAttributes.pop_front();
             newAttributes.push_front( current );
-            newAttributes.push_front( last );
+            newAttributes.push_front( first );
 
         } else newAttributes.push_front( current );
     }

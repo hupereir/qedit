@@ -210,8 +210,8 @@ void TextMacroRuleList::_storeSelection( void )
     model_.clearSelectedIndexes();
 
     // retrieve selected indexes in list
-    QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-    for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
+    QModelIndexList selectedIndexes( list_->selectionModel()->selectedRows() );
+    for( QModelIndexList::iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); ++iter )
     {
         // check column
         if( !iter->column() == 0 ) continue;
@@ -225,12 +225,12 @@ void TextMacroRuleList::_restoreSelection( void )
 {
 
     // retrieve indexes
-    QModelIndexList selected_indexes( model_.selectedIndexes() );
-    if( selected_indexes.empty() ) list_->selectionModel()->clear();
+    QModelIndexList selectedIndexes( model_.selectedIndexes() );
+    if( selectedIndexes.empty() ) list_->selectionModel()->clear();
     else {
 
-        list_->selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-        for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
+        list_->selectionModel()->select( selectedIndexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+        for( QModelIndexList::const_iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); ++iter )
         { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     }
@@ -252,8 +252,8 @@ void TextMacroRuleList::_up( void )
     }
 
     // retrieve selected indexes in list and store in model
-    QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-    TextMacro::Rule::List selectedAttributes( model_.get( selected_indexes ) );
+    QModelIndexList selectedIndexes( list_->selectionModel()->selectedRows() );
+    TextMacro::Rule::List selectedAttributes( model_.get( selectedIndexes ) );
 
     TextMacro::Rule::List currentAttributes( rules() );
     TextMacro::Rule::List newAttributes;
@@ -265,8 +265,8 @@ void TextMacroRuleList::_up( void )
         // if yes, move.
         if(
             !( newAttributes.empty() ||
-            selected_indexes.indexOf( model_.index( *iter ) ) == -1 ||
-            selected_indexes.indexOf( model_.index( newAttributes.back() ) ) != -1
+            selectedIndexes.indexOf( model_.index( *iter ) ) == -1 ||
+            selectedIndexes.indexOf( model_.index( newAttributes.back() ) ) != -1
             ) )
         {
             TextMacro::Rule last( newAttributes.back() );
@@ -301,8 +301,8 @@ void TextMacroRuleList::_down( void )
     }
 
     // retrieve selected indexes in list and store in model
-    QModelIndexList selected_indexes( list_->selectionModel()->selectedIndexes() );
-    TextMacro::Rule::List selectedAttributes( model_.get( selected_indexes ) );
+    QModelIndexList selectedIndexes( list_->selectionModel()->selectedIndexes() );
+    TextMacro::Rule::List selectedAttributes( model_.get( selectedIndexes ) );
 
     TextMacro::Rule::List currentAttributes( rules() );
     TextMacro::Rule::List newAttributes;
@@ -316,8 +316,8 @@ void TextMacroRuleList::_down( void )
         // if yes, move.
         if(
             !( newAttributes.empty() ||
-            selected_indexes.indexOf( model_.index( current ) ) == -1 ||
-            selected_indexes.indexOf( model_.index( newAttributes.front() ) ) != -1
+            selectedIndexes.indexOf( model_.index( current ) ) == -1 ||
+            selectedIndexes.indexOf( model_.index( newAttributes.front() ) ) != -1
             ) )
         {
 
