@@ -183,7 +183,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     gridLayout->addWidget( new QLabel( "Write", box ), Qt::AlignHCenter );
     gridLayout->addWidget( new QLabel( "Execute", box ), Qt::AlignHCenter );
 
-    typedef std::map< QFile::Permission, QCheckBox* > CheckBoxMap;
+    typedef QHash< QFile::Permission, QCheckBox* > CheckBoxMap;
     CheckBoxMap checkboxes;
 
     gridLayout->addWidget( new QLabel( "Owner: ", box ) );
@@ -212,8 +212,8 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     QFile::Permissions permissions( file.permissions() );
     for( CheckBoxMap::iterator iter = checkboxes.begin(); iter != checkboxes.end(); ++iter )
     {
-        iter->second->setChecked( permissions & iter->first );
-        iter->second->setEnabled( false );
+        iter.value()->setChecked( permissions & iter.key() );
+        iter.value()->setEnabled( false );
     }
 
     // group and user id
