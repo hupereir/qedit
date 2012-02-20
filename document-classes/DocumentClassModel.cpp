@@ -145,7 +145,7 @@ QIcon DocumentClassModel::_icon( const QString& name )
     Debug::Throw( "DocumentClassModel::_icon.\n" );
 
     IconCache::const_iterator iter( _icons().find( name ) );
-    if( iter != _icons().end() ) return iter->second;
+    if( iter != _icons().end() ) return iter.value();
 
     // pixmap size
     unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
@@ -159,7 +159,7 @@ QIcon DocumentClassModel::_icon( const QString& name )
     { icon = CustomPixmap().empty( size ).merge( base.scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER ); }
 
     // insert in map
-    _icons().insert( std::make_pair( name, icon ) );
+    _icons().insert( name, icon );
 
     return icon;
 

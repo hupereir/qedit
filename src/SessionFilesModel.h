@@ -24,16 +24,10 @@
 *
 *******************************************************************************/
 
-/*!
-  \file SessionFilesModel.h
-  \brief model for object counters
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
 #include "FileRecordModel.h"
 #include "Debug.h"
+
+#include <QtCore/QHash>
 
 //! qlistview for object counters
 class SessionFilesModel: public FileRecordModel
@@ -92,7 +86,7 @@ class SessionFilesModel: public FileRecordModel
     static QIcon _icon( unsigned int );
 
     //! icon cache
-    typedef std::map<unsigned int, QIcon> IconCache;
+    typedef QHash<unsigned int, QIcon> IconCache;
 
     //! type icon cache
     static IconCache& _icons( void );

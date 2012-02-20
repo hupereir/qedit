@@ -368,7 +368,7 @@ void Menu::_updateWindowsMenu( void )
         windowsActionGroup_->addAction( action );
 
         // insert in map for later callback.
-        fileActions_.insert( std::make_pair( action, file ) );
+        fileActions_.insert( action, file );
 
     }
 
@@ -393,7 +393,7 @@ void Menu::_selectFile( QAction* action )
     Debug::Throw( "Menu::_selectFile.\n" );
 
     // try retrieve id in map
-    std::map<QAction*, File>::iterator iter = fileActions_.find( action );
+    ActionMap::iterator iter = fileActions_.find( action );
     if( iter == fileActions_.end() ) return;
 
     // retrieve all mainwindows
@@ -403,19 +403,19 @@ void Menu::_selectFile( QAction* action )
     BASE::KeySet<MainWindow>::iterator window_iter( std::find_if(
         windows.begin(),
         windows.end(),
-        MainWindow::SameFileFTor( iter->second ) ) );
+        MainWindow::SameFileFTor( iter.value() ) ) );
 
     // check if window was found
     if( window_iter == windows.end() )
     {
         QString buffer;
-        QTextStream( &buffer ) << "Unable to find a window containing file " << iter->second;
+        QTextStream( &buffer ) << "Unable to find a window containing file " << iter.value();
         InformationDialog( this, buffer ).exec();
         return;
     }
 
     // select display in found window
-    (*window_iter)->selectDisplay( iter->second );
+    (*window_iter)->selectDisplay( iter.value() );
     (*window_iter)->uniconify();
 
     return;

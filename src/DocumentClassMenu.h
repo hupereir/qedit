@@ -37,7 +37,7 @@
 #include <QtGui/QAction>
 #include <QtGui/QActionGroup>
 
-#include <map>
+#include <QtCore/QHash>
 
 //! display available document classes
 class DocumentClassMenu: public QMenu, public Counter
@@ -73,7 +73,8 @@ class DocumentClassMenu: public QMenu, public Counter
     QActionGroup* actionGroup_;
 
     //! map document class to macro names
-    std::map< QAction*, QString > actions_;
+    typedef QHash< QAction*, QString > ActionMap;
+    ActionMap actions_;
 
 };
 

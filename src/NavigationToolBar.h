@@ -37,8 +37,8 @@
 
 #include <QtGui/QAbstractButton>
 #include <QtGui/QContextMenuEvent>
+#include <QtCore/QHash>
 #include <cassert>
-#include <map>
 
 class NavigationFrame;
 
@@ -102,7 +102,7 @@ class NavigationToolBar: public CustomToolBar
     CustomToolButton* _newToolButton( QWidget* parent, QIcon ) const;
 
     //! map widget to action
-    typedef std::map<CustomToolButton*, QWidget* > ButtonMap;
+    typedef QHash<CustomToolButton*, QWidget* > ButtonMap;
 
     //! map widget to action in the toolbar
     ButtonMap buttons_;

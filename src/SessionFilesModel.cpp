@@ -119,7 +119,7 @@ QIcon SessionFilesModel::_icon( unsigned int type )
     //Debug::Throw( "SessionFilesModel::_icon.\n" );
 
     IconCache::const_iterator iter( _icons().find( type ) );
-    if( iter != _icons().end() ) return iter->second;
+    if( iter != _icons().end() ) return iter.value();
 
     // pixmap size
     unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
@@ -149,7 +149,7 @@ QIcon SessionFilesModel::_icon( unsigned int type )
     } else assert( false );
 
     // store in map and return
-    _icons().insert( std::make_pair( type, icon ) );
+    _icons().insert( type, icon );
     return icon;
 
 }

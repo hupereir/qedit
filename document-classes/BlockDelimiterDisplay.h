@@ -24,25 +24,20 @@
 *
 *******************************************************************************/
 
-/*!
-\file BlockDelimiterDisplay.h
-\brief display block delimiters
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QAction>
-#include <QColor>
-#include <QFont>
-#include <QTextBlock>
-#include <QTextCursor>
-#include <QObject>
-
 #include "BlockDelimiter.h"
 #include "BlockDelimiterSegment.h"
 #include "CollapsedBlockData.h"
 #include "Counter.h"
+
+#include <QtCore/QObject>
+#include <QtCore/QPair>
+#include <QtCore/QMap>
+
+#include <QtGui/QAction>
+#include <QtGui/QColor>
+#include <QtGui/QFont>
+#include <QtGui/QTextBlock>
+#include <QtGui/QTextCursor>
 
 class HighlightBlockData;
 class TextEditor;
@@ -54,10 +49,10 @@ class BlockDelimiterDisplay: public QObject, public Counter
     //! Qt meta object
     Q_OBJECT
 
-        public:
+    public:
 
-        //! constructor
-        BlockDelimiterDisplay(TextEditor*);
+    //! constructor
+    BlockDelimiterDisplay(TextEditor*);
 
     //! destructor
     virtual ~BlockDelimiterDisplay();
@@ -78,8 +73,15 @@ class BlockDelimiterDisplay: public QObject, public Counter
     void synchronize( const BlockDelimiterDisplay* );
 
     //! number of collapsed block until given block ID
-    unsigned int collapsedBlockCount( const int& block ) const
-    { return ( collapsedBlocks_.empty() ) ? 0 : collapsedBlocks_.lower_bound( block )->second; }
+    int collapsedBlockCount( const int& block ) const
+    {
+        int out( 0 );
+        for( CollapsedBlockMap::const_iterator iter = collapsedBlocks_.begin(); iter != collapsedBlocks_.end() && iter.key() <= block ; ++iter, ++out )
+        {}
+
+        return out;
+    }
+
 
     //! set width
     void setWidth( const int& );
@@ -178,7 +180,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
     void _updateMarker( QTextBlock&, unsigned int&, BlockMarker&, const BlockMarkerType& flag ) const;
 
     //! block pair
-    typedef std::pair<QTextBlock, QTextBlock> TextBlockPair;
+    typedef QPair<QTextBlock, QTextBlock> TextBlockPair;
 
     //! find blocks that match a given segment
     TextBlockPair _findBlocks( const BlockDelimiterSegment&, HighlightBlockData*& ) const;
@@ -234,7 +236,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
     BlockDelimiterSegment selectedSegment_;
 
     //! map block id and number of collapsed blocks
-    typedef std::map<int, int> CollapsedBlockMap;
+    typedef QMap<int, int> CollapsedBlockMap;
 
     //! map block id and number of collapsed blocks
     CollapsedBlockMap collapsedBlocks_;

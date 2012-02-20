@@ -81,7 +81,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
     button->setChecked( true );
 
     button_group->addButton( button );
-    buttons_.insert( std::make_pair( button, &_navigationFrame().sessionFilesFrame() ) );
+    buttons_.insert( button, &_navigationFrame().sessionFilesFrame() );
 
     // recent files
     addWidget( button = _newToolButton( this, IconEngine::get( ICONS::HISTORY ) ) );
@@ -89,7 +89,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
     button->setToolTip( "Files recently opened" );
 
     button_group->addButton( button );
-    buttons_.insert( std::make_pair( button, &_navigationFrame().recentFilesFrame() ) );
+    buttons_.insert( button, &_navigationFrame().recentFilesFrame() );
 
     // file system
     addWidget( button = _newToolButton( this, IconEngine::get( ICONS::FILESYSTEM ) ) );
@@ -97,7 +97,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
     button->setToolTip( "File system browser" );
 
     button_group->addButton( button );
-    buttons_.insert( std::make_pair( button, &_navigationFrame().fileSystemFrame() ) );
+    buttons_.insert( button, &_navigationFrame().fileSystemFrame() );
 
     _updateConfiguration();
 
@@ -124,8 +124,8 @@ void NavigationToolBar::_updateConfiguration( void )
     // also update buttons independently
     for( ButtonMap::const_iterator iter = buttons_.begin(); iter != buttons_.end(); ++iter )
     {
-        iter->first->setToolButtonStyle( style );
-        iter->first->setIconSize( icon_size );
+        iter.key()->setToolButtonStyle( style );
+        iter.key()->setIconSize( icon_size );
     }
 
     adjustSize();
@@ -162,7 +162,7 @@ void NavigationToolBar::_navigationFrameVisibilityChanged( bool state )
 
         // make sure no button is checked
         for( ButtonMap::const_iterator iter = buttons_.begin(); iter != buttons_.end(); ++iter )
-        { iter->first->setChecked( false ); }
+        { iter.key()->setChecked( false ); }
 
     }
     else {
@@ -171,9 +171,9 @@ void NavigationToolBar::_navigationFrameVisibilityChanged( bool state )
         bool found( false );
         for( ButtonMap::iterator iter = buttons_.begin(); iter != buttons_.end() && !found; ++iter )
         {
-            if( iter->second == _navigationFrame().currentWidget() )
+            if( iter.value() == _navigationFrame().currentWidget() )
             {
-                iter->first->setChecked( true );
+                iter.key()->setChecked( true );
                 found = true;
                 break;
             }
@@ -191,7 +191,7 @@ void NavigationToolBar::_orientationChanged( Qt::Orientation orientation )
     Debug::Throw() << "NavigationToolBar::_orientationChanged - orientation: " << orientation << endl;
 
     for( ButtonMap::iterator iter = buttons_.begin(); iter != buttons_.end(); ++iter )
-    { iter->first->rotate( orientation == Qt::Horizontal ? CustomToolButton::NONE : CustomToolButton::COUNTERCLOCKWISE ); }
+    { iter.key()->rotate( orientation == Qt::Horizontal ? CustomToolButton::NONE : CustomToolButton::COUNTERCLOCKWISE ); }
 
     adjustSize();
 
@@ -211,8 +211,8 @@ void NavigationToolBar::_display( QAbstractButton* button )
     QWidget* widget (0);
     for( ButtonMap::iterator iter = buttons_.begin(); iter != buttons_.end(); ++iter )
     {
-        if( iter->first == button ) widget = iter->second;
-        else iter->first->setChecked( false );
+        if( iter.key() == button ) widget = iter.value();
+        else iter.key()->setChecked( false );
     }
 
     assert( widget );

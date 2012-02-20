@@ -24,19 +24,12 @@
 *
 *******************************************************************************/
 
-/*!
-\file    DocumentClassModel.h
-\brief   Stores file information for display in lists
-\author  Hugo Pereira
-\version $Revision$
-\date    $Date$
-*/
-
-#include <QIcon>
-
 #include "Counter.h"
 #include "ListModel.h"
 #include "DocumentClass.h"
+
+#include <QtGui/QIcon>
+#include <QtCore/QHash>
 
 //! DocumentClass model. Stores file information for display in lists
 class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>, public Counter
@@ -58,7 +51,8 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     enum { nColumns = 3 };
 
     //! column type enumeration
-    enum ColumnType {
+    enum ColumnType
+    {
         ICON,
         NAME,
         FILE,
@@ -114,7 +108,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     static QIcon _icon( const QString& );
 
     //! icon cache
-    typedef std::map<QString, QIcon> IconCache;
+    typedef QHash<QString, QIcon> IconCache;
 
     //! type icon cache
     static IconCache& _icons( void );

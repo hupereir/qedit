@@ -25,15 +25,16 @@
 *******************************************************************************/
 
 /*!
-  \file FileSystemModel.h
-  \brief model for object counters
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file FileSystemModel.h
+\brief model for object counters
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
-#include <string.h>
-
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QHash>
 
 #include "Counter.h"
 #include "Debug.h"
@@ -44,99 +45,99 @@
 class FileSystemModel: public ListModel<FileRecord>, public Counter
 {
 
-  Q_OBJECT
-
-  public:
-
-  //! file types
-  enum FileType
-  {
-    DOCUMENT = 1<<0,
-    FOLDER = 1<<1,
-    LINK = 1<<2,
-    NAVIGATOR = 1<<3,
-    ANY = DOCUMENT | FOLDER | LINK | NAVIGATOR
-  };
-
-  //! number of columns
-  enum { nColumns = 3 };
-
-  //! column type enumeration
-  enum ColumnType {
-    FILE,
-    SIZE,
-    TIME
-  };
-
-  //! constructor
-  FileSystemModel( QObject* parent = 0 );
-
-  //!@name methods reimplemented from base class
-  //@{
-
-  //! flags
-  virtual Qt::ItemFlags flags(const QModelIndex &index) const;
-
-  // return data for a given index
-  virtual QVariant data(const QModelIndex &, int ) const;
-
-  //! header data
-  virtual QVariant headerData(int, Qt::Orientation, int role = Qt::DisplayRole) const;
-
-  //! number of columns for a given index
-  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const
-  { return columnTitles_.size(); }
-
-  //@}
-
-  protected:
-
-  //! sort
-  virtual void _sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
-
-  private slots:
-
-  //! configuration
-  void _updateConfiguration( void );
-
-  private:
-
-  //! used to sort Counters
-  class SortFTor: public ItemModel::SortFTor
-  {
+    Q_OBJECT
 
     public:
 
-    //! constructor
-    SortFTor( const int&, Qt::SortOrder, const std::vector<QString>& );
+    //! file types
+    enum FileType
+    {
+        DOCUMENT = 1<<0,
+        FOLDER = 1<<1,
+        LINK = 1<<2,
+        NAVIGATOR = 1<<3,
+        ANY = DOCUMENT | FOLDER | LINK | NAVIGATOR
+    };
 
-    //! prediction
-    bool operator() ( FileRecord, FileRecord ) const;
+    //! number of columns
+    enum { nColumns = 3 };
+
+    //! column type enumeration
+    enum ColumnType {
+        FILE,
+        SIZE,
+        TIME
+    };
+
+    //! constructor
+    FileSystemModel( QObject* parent = 0 );
+
+    //!@name methods reimplemented from base class
+    //@{
+
+    //! flags
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+
+    // return data for a given index
+    virtual QVariant data(const QModelIndex &, int ) const;
+
+    //! header data
+    virtual QVariant headerData(int, Qt::Orientation, int role = Qt::DisplayRole) const;
+
+    //! number of columns for a given index
+    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const
+    { return columnTitles_.size(); }
+
+    //@}
+
+    protected:
+
+    //! sort
+    virtual void _sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+
+    private slots:
+
+    //! configuration
+    void _updateConfiguration( void );
 
     private:
 
-    //! size property id
-    FileRecord::PropertyId::Id size_property_id_;
+    //! used to sort Counters
+    class SortFTor: public ItemModel::SortFTor
+    {
+
+        public:
+
+        //! constructor
+        SortFTor( const int&, Qt::SortOrder, const QStringList& );
+
+        //! prediction
+        bool operator() ( FileRecord, FileRecord ) const;
+
+        private:
+
+        //! size property id
+        FileRecord::PropertyId::Id sizePropertyId_;
+
+        //! column titles
+        QStringList columnTitles_;
+
+    };
+
+    //! install pixmaps
+    void _installIcons( void ) const;
+
+    //! icon cache
+    typedef QHash<unsigned int, QIcon> IconCache;
+
+    //! type icon cache
+    static IconCache& _icons( void );
 
     //! column titles
-    std::vector<QString> columnTitles_;
+    QStringList columnTitles_;
 
-  };
-
-  //! install pixmaps
-  void _installIcons( void ) const;
-
-  //! icon cache
-  typedef std::map<unsigned int, QIcon> IconCache;
-
-  //! type icon cache
-  static IconCache& _icons( void );
-
-  //! column titles
-  std::vector<QString> columnTitles_;
-
-  //! size property id
-  FileRecord::PropertyId::Id size_property_id_;
+    //! size property id
+    FileRecord::PropertyId::Id sizePropertyId_;
 
 };
 

@@ -30,8 +30,8 @@
 
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
+#include <QtCore/QHash>
 #include <cassert>
-#include <map>
 
 class RecentFilesMenu;
 class TextMacroMenu;
@@ -160,7 +160,8 @@ class Menu:public QMenuBar, public Counter
     //@{
 
     //! map windows menu ID to file name
-    std::map< QAction*, File > fileActions_;
+    typedef QHash< QAction*, File > ActionMap;
+    ActionMap fileActions_;
 
     //@}
 

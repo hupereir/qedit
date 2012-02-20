@@ -75,7 +75,7 @@ void DocumentClassMenu::_update( void )
         action->setChecked( iter->name() == class_name );
         actionGroup_->addAction( action );
 
-        actions_.insert( std::make_pair( action, iter->name() ) );
+        actions_.insert( action, iter->name() );
 
     }
 
@@ -85,9 +85,9 @@ void DocumentClassMenu::_update( void )
 void DocumentClassMenu::_selectClassName( QAction* action )
 {
     Debug::Throw( "DocumentClassMenu::_selectClassName.\n" );
-    std::map< QAction*, QString >::iterator iter = actions_.find( action );
+    ActionMap::iterator iter = actions_.find( action );
     if( iter != actions_.end() )
-    { emit documentClassSelected( iter->second ); }
+    { emit documentClassSelected( iter.value() ); }
 
     return;
 

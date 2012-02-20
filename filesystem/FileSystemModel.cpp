@@ -52,13 +52,14 @@ FileSystemModel::IconCache& FileSystemModel::_icons( void )
 FileSystemModel::FileSystemModel( QObject* parent ):
     ListModel<FileRecord>( parent ),
     Counter( "FileSystemModel" ),
-    size_property_id_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) )
+    sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) )
 {
     Debug::Throw("FileSystemModel::FileSystemModel.\n" );
 
-    columnTitles_.push_back( "File" );
-    columnTitles_.push_back( "Size" );
-    columnTitles_.push_back( "Time" );
+    columnTitles_
+        << "File"
+        << "Size"
+        << "Time";
 
     connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
 
@@ -121,7 +122,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
 
             case SIZE:
             {
-                if( record.hasFlag( DOCUMENT ) ) return QString( record.property( size_property_id_ ) );
+                if( record.hasFlag( DOCUMENT ) ) return QString( record.property( sizePropertyId_ ) );
                 else return QVariant();
             }
 
@@ -181,9 +182,9 @@ void FileSystemModel::_sort( int column, Qt::SortOrder order )
 { std::sort( _get().begin(), _get().end(), SortFTor( column, order, columnTitles_ ) ); }
 
 //________________________________________________________
-FileSystemModel::SortFTor::SortFTor( const int& type, Qt::SortOrder order, const std::vector<QString>& column_titles ):
+FileSystemModel::SortFTor::SortFTor( const int& type, Qt::SortOrder order, const QStringList& column_titles ):
     ItemModel::SortFTor( type, order ),
-    size_property_id_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) ),
+    sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) ),
     columnTitles_( column_titles )
 {}
 
@@ -205,8 +206,8 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
         case TIME: return (first.time() != second.time() ) ? first.time() < second.time() : first.file().localName() < second.file().localName();
         case SIZE:
         {
-            long first_size( first.property( size_property_id_ ).toInt() );
-            long second_size( second.property( size_property_id_ ).toInt() );
+            long first_size( first.property( sizePropertyId_ ).toInt() );
+            long second_size( second.property( sizePropertyId_ ).toInt() );
             return (first_size != second_size ) ? first_size < second_size : first.file().localName() < second.file().localName();
         }
 
@@ -230,7 +231,7 @@ void FileSystemModel::_installIcons( void ) const
     QSize scale(size*0.9);
 
     // type icons
-    typedef std::map< int, QString > IconNames;
+    typedef QHash< int, QString > IconNames;
     IconNames type_names;
     type_names[DOCUMENT] = ICONS::DOCUMENT;
     type_names[FOLDER] = ICONS::FOLDER;
@@ -242,14 +243,14 @@ void FileSystemModel::_installIcons( void ) const
     for( IconNames::iterator iter = type_names.begin(); iter != type_names.end(); ++iter )
     {
 
-        _icons()[iter->first] = CustomPixmap()
+        _icons()[iter.key()] = CustomPixmap()
             .empty( size )
-            .merge( CustomPixmap().find( iter->second )
+            .merge( CustomPixmap().find( iter.value() )
             .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
 
-        _icons()[iter->first | LINK] = CustomPixmap()
+        _icons()[iter.key() | LINK] = CustomPixmap()
             .empty( size )
-            .merge( CustomPixmap().find( iter->second )
+            .merge( CustomPixmap().find( iter.value() )
             .merge( link, CustomPixmap::BOTTOM_LEFT )
             .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
 

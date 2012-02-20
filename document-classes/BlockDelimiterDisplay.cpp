@@ -157,28 +157,31 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     unsigned int id( 0 );
 
     // optimize drawing by not drawing overlapping segments
-    BlockDelimiterSegment::List::reverse_iterator previous( segments_.rend() );
-    for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); ++iter )
+    BlockDelimiterSegment previous;
+    BlockDelimiterSegment::MutableListIterator iter( segments_ );
+    iter.toBack();
+    while( iter.hasPrevious() )
     {
+        BlockDelimiterSegment& current( iter.previous() );
 
         // skip segment if outside of visible limits
-        if( iter->begin().cursor() > last_index+1 || iter->end().cursor() < first_index ) continue;
+        if( current.begin().cursor() > last_index+1 || current.end().cursor() < first_index ) continue;
 
         // try update segments
-        if( iter->begin().cursor() >= first_index && iter->begin().cursor() <= last_index )
-        { _updateMarker( block, id, iter->begin(), BEGIN ); }
+        if( current.begin().cursor() >= first_index && current.begin().cursor() <= last_index )
+        { _updateMarker( block, id, current.begin(), BEGIN ); }
 
         // try update segments
-        if( iter->end().cursor() >= first_index && iter->end().cursor() <= last_index )
-        {  _updateMarker( block, id, iter->end(), END ); }
+        if( current.end().cursor() >= first_index && current.end().cursor() <= last_index )
+        {  _updateMarker( block, id, current.end(), END ); }
 
         // skip this segment if included in previous
-        if( previous != segments_.rend() && !( iter->begin() < previous->begin() || previous->end() < iter->end() ) ) continue;
-        else previous = iter;
+        if( previous.isValid() && !( current.begin() < previous.begin() || previous.end() < current.end() ) ) continue;
+        else previous=current;
 
         // draw
-        int begin( iter->begin().isValid() ? iter->begin().position()+top_ : 0 );
-        int end( ( (!iter->empty()) && iter->end().isValid() && iter->end().position() < height ) ? iter->end().position():height );
+        int begin( current.begin().isValid() ? current.begin().position()+top_ : 0 );
+        int end( ( (!current.empty()) && current.end().isValid() && current.end().position() < height ) ? current.end().position():height );
         painter.drawLine( halfWidth_, begin + halfWidth_, halfWidth_, end );
 
     }
@@ -254,8 +257,8 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
             TextBlockPair blocks( _findBlocks( _selectedSegment(), data ) );
 
             // check if block is collapsed
-            QTextBlockFormat block_format( blocks.first.blockFormat() );
-            if( block_format.boolProperty( TextBlock::Collapsed ) )
+            QTextBlockFormat blockFormat( blocks.first.blockFormat() );
+            if( blockFormat.boolProperty( TextBlock::Collapsed ) )
             {
 
                 bool cursor_visible( _editor().isCursorVisible() );
@@ -408,7 +411,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
     _updateSegmentMarkers();
 
     // list of QTextCursor needed to remove blocks
-    typedef std::vector<QTextCursor> CursorList;
+    typedef QList<QTextCursor> CursorList;
     CursorList cursors;
 
     // get first block
@@ -420,33 +423,35 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
     cursor.beginEditBlock();
 
     // loop over segments in reverse order
-    BlockDelimiterSegment::List::reverse_iterator previous(segments_.rend() );
-    for( BlockDelimiterSegment::List::reverse_iterator iter = segments_.rbegin(); iter != segments_.rend(); ++iter )
+    BlockDelimiterSegment previous;
+    BlockDelimiterSegment::MutableListIterator iter( segments_ );
+    iter.toBack();
+    while( iter.hasPrevious() )
     {
 
-        // skip this segment if included in previous
-        if( previous != segments_.rend() && !( iter->begin() < previous->begin() || previous->end() < iter->end() ) )
+        BlockDelimiterSegment& current( iter.previous() );
+        if( previous.isValid() && !(current.begin() < previous.begin() || previous.end() < current.end() ) )
         { continue; }
 
         // update "Previous" segment
-        previous = iter;
+        previous = current;
 
         // get matching blocks
         HighlightBlockData *data(0);
-        TextBlockPair blocks( _findBlocks( block, id, *iter, data ) );
+        TextBlockPair blocks( _findBlocks( block, id, current, data ) );
 
         // do nothing if block is already collapsed
         cursor.setPosition( blocks.first.position(), QTextCursor::MoveAnchor );
-        QTextBlockFormat block_format( cursor.blockFormat() );
-        if( block_format.boolProperty( TextBlock::Collapsed ) )
+        QTextBlockFormat blockFormat( cursor.blockFormat() );
+        if( blockFormat.boolProperty( TextBlock::Collapsed ) )
         { continue; }
 
         // update block format
-        block_format.setProperty( TextBlock::Collapsed, true );
+        blockFormat.setProperty( TextBlock::Collapsed, true );
         QVariant variant;
         variant.setValue( _collapsedData( blocks.first, blocks.second ) );
-        block_format.setProperty( TextBlock::CollapsedData, variant );
-        cursor.setBlockFormat( block_format );
+        blockFormat.setProperty( TextBlock::CollapsedData, variant );
+        cursor.setBlockFormat( blockFormat );
 
         // mark contents dirty to force update of current block
         data->setFlag( TextBlock::MODIFIED, true );
@@ -569,8 +574,8 @@ void BlockDelimiterDisplay::_synchronizeBlockData( void ) const
         if( !data ) continue;
 
         // store collapse state
-        QTextBlockFormat block_format( block.blockFormat() );
-        bool collapsed( block_format.boolProperty( TextBlock::Collapsed ) );
+        QTextBlockFormat blockFormat( block.blockFormat() );
+        bool collapsed( blockFormat.boolProperty( TextBlock::Collapsed ) );
         if( data->hasFlag( TextBlock::COLLAPSED ) != collapsed )
         {
             data->setFlag( TextBlock::COLLAPSED, collapsed );
@@ -594,7 +599,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
     // keep track of collapsed blocks
     bool has_collapsed_blocks( false );
     bool has_expanded_blocks( false );
-    unsigned int collapsed_block_count(0);
+    unsigned int collapsedBlockCount(0);
     collapsedBlocks_.clear();
 
     // loop over delimiter types
@@ -604,9 +609,9 @@ void BlockDelimiterDisplay::_updateSegments( void )
 
         // keep track of all starting points
         BlockDelimiterSegment::List start_points;
-        int block_count(0);
+        int blockCount(0);
         QTextDocument &document( *_editor().document() );
-        for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), block_count++ )
+        for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), blockCount++ )
         {
 
             // retrieve data and check this block delimiter
@@ -614,15 +619,15 @@ void BlockDelimiterDisplay::_updateSegments( void )
             if( !data ) continue;
 
             // store collapse state
-            QTextBlockFormat block_format( block.blockFormat() );
-            bool collapsed( block_format.boolProperty( TextBlock::Collapsed ) );
+            QTextBlockFormat blockFormat( block.blockFormat() );
+            bool collapsed( blockFormat.boolProperty( TextBlock::Collapsed ) );
 
             // get delimiter data
             TextBlock::Delimiter delimiter( data->delimiters().get( iter->id() ) );
             if( collapsed )
             {
-                assert( block_format.hasProperty( TextBlock::CollapsedData ) );
-                CollapsedBlockData block_collapsed_data( block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
+                assert( blockFormat.hasProperty( TextBlock::CollapsedData ) );
+                CollapsedBlockData block_collapsed_data( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
                 delimiter += block_collapsed_data.delimiters().get( iter->id() );
             }
 
@@ -630,8 +635,8 @@ void BlockDelimiterDisplay::_updateSegments( void )
             if( !( collapsed || delimiter.begin() || delimiter.end() ) ) continue;
 
             // get block limits
-            BlockMarker block_begin( block_count, block.position() );
-            BlockMarker block_end( block_count, block.position()+block.length() - 1 );
+            BlockMarker block_begin( blockCount, block.position() );
+            BlockMarker block_end( blockCount, block.position()+block.length() - 1 );
 
             // store "Ignore" state
             bool ignored = data->ignoreBlock();
@@ -672,10 +677,10 @@ void BlockDelimiterDisplay::_updateSegments( void )
                     // store number of collapsed blocks for the current one
                     if( first )
                     {
-                        collapsedBlocks_.insert( std::make_pair( block_count, collapsed_block_count ) );
+                        collapsedBlocks_.insert( blockCount, collapsedBlockCount );
 
-                        // assert( block_format.hasProperty( TextBlock::CollapsedData ) );
-                        collapsed_block_count += block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount() - 1;
+                        // assert( blockFormat.hasProperty( TextBlock::CollapsedData ) );
+                        collapsedBlockCount += blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount() - 1;
                     }
 
                     // add one self contained segment
@@ -690,14 +695,15 @@ void BlockDelimiterDisplay::_updateSegments( void )
 
         // insert the remaining points as empty segments (that will extend to the end of the document)
         /* they are inserted in reverse order to optimize segment drawing in paintEvent */
-        for( BlockDelimiterSegment::List::reverse_iterator iter = start_points.rbegin(); iter != start_points.rend(); ++iter )
-        { segments_.push_back( *iter ); }
+        BlockDelimiterSegment::ListIterator iter( segments_ );
+        iter.toBack();
+        while( iter.hasPrevious() ) segments_.push_back( iter.previous() );
 
         // insert total number of collapsed block as last element
         // this is done only for the first block delimiter pair
         if( first )
         {
-            collapsedBlocks_.insert( std::make_pair( block_count, collapsed_block_count ) );
+            collapsedBlocks_.insert( blockCount, collapsedBlockCount );
             first = false;
         }
 
@@ -827,7 +833,7 @@ void BlockDelimiterDisplay::_selectSegmentFromCursor( const int& cursor )
 void BlockDelimiterDisplay::_selectSegmentFromPosition( const QPoint& position )
 {
     Debug::Throw( "BlockDelimiterDisplay::_selectSegmentFromPosition.\n" );
-    BlockDelimiterSegment::List::const_iterator iter = find_if(
+    BlockDelimiterSegment::List::const_iterator iter = std::find_if(
         segments_.begin(), segments_.end(),
         BlockDelimiterSegment::ActiveFTor( position ) );
     _setSelectedSegment( iter == segments_.end() ? BlockDelimiterSegment():*iter );
@@ -838,11 +844,11 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
 {
 
     // retrieve block format
-    QTextBlockFormat block_format( block.blockFormat() );
+    QTextBlockFormat blockFormat( block.blockFormat() );
 
     // retrieve collapsed block data
-    assert( block_format.hasProperty( TextBlock::CollapsedData ) );
-    CollapsedBlockData collapsed_data( block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
+    assert( blockFormat.hasProperty( TextBlock::CollapsedData ) );
+    CollapsedBlockData collapsed_data( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
 
     // mark contents dirty to force update of current block
     data->setFlag( TextBlock::MODIFIED, true );
@@ -856,8 +862,8 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
     cursor.setPosition( block.position() + block.length() - 1, QTextCursor::MoveAnchor );
 
     // update collapsed flag associated to data
-    block_format.setProperty( TextBlock::Collapsed, false );
-    cursor.setBlockFormat( block_format );
+    blockFormat.setProperty( TextBlock::Collapsed, false );
+    cursor.setBlockFormat( blockFormat );
 
     for( CollapsedBlockData::List::const_iterator iter = collapsed_data.children().begin(); iter != collapsed_data.children().end(); ++iter )
     {
@@ -866,16 +872,16 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
         cursor.insertText( iter->text() );
 
         // update text block format
-        QTextBlockFormat block_format( cursor.blockFormat() );
-        block_format.setProperty( TextBlock::Collapsed, iter->collapsed() );
+        QTextBlockFormat blockFormat( cursor.blockFormat() );
+        blockFormat.setProperty( TextBlock::Collapsed, iter->collapsed() );
 
         if( iter->collapsed() ) {
             QVariant variant;
             variant.setValue( *iter );
-            block_format.setProperty( TextBlock::CollapsedData, variant );
+            blockFormat.setProperty( TextBlock::CollapsedData, variant );
         }
 
-        cursor.setBlockFormat( block_format );
+        cursor.setBlockFormat( blockFormat );
 
         // also expands block if collapsed and recursive is set to true
         if( iter->collapsed() && recursive )
@@ -901,16 +907,16 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& first_block, const QTex
     QTextCursor cursor( first_block );
 
     // update block format
-    QTextBlockFormat block_format( cursor.blockFormat() );
-    block_format.setProperty( TextBlock::Collapsed, true );
+    QTextBlockFormat blockFormat( cursor.blockFormat() );
+    blockFormat.setProperty( TextBlock::Collapsed, true );
 
     QVariant variant;
     variant.setValue( _collapsedData( first_block, second_block ) );
-    block_format.setProperty( TextBlock::CollapsedData, variant );
+    blockFormat.setProperty( TextBlock::CollapsedData, variant );
 
     // start edition
     cursor.beginEditBlock();
-    cursor.setBlockFormat( block_format );
+    cursor.setBlockFormat( blockFormat );
 
     cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );
     if( second_block.isValid() ) {
