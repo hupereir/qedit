@@ -36,6 +36,7 @@
 
 #include "Counter.h"
 #include "HighlightPattern.h"
+#include "QOrderedSet.h"
 
 //! encapsulate highlight location, pattern and style
 class PatternLocation: public Counter
@@ -43,7 +44,7 @@ class PatternLocation: public Counter
     public:
 
 
-    typedef QSetIterator<PatternLocation> SetIterator;
+    typedef QOrderedSetIterator<PatternLocation> SetIterator;
 
     //! construtor
     PatternLocation( void ):
@@ -222,7 +223,7 @@ class PatternLocation: public Counter
 
 
 //! set of locations.
-class PatternLocationSet: public QSet<PatternLocation>
+class PatternLocationSet: public QOrderedSet<PatternLocation>
 {
 
     public:
@@ -255,8 +256,5 @@ class PatternLocationSet: public QSet<PatternLocation>
     }
 
 };
-
-inline unsigned int qHash( const PatternLocation& location )
-{ return location.position()<<4 | location.parentId(); }
 
 #endif
