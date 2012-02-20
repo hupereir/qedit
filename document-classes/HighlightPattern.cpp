@@ -40,7 +40,7 @@
 
 
 //___________________________________________________________________________
-QString HighlightPattern::no_parent_pattern_( "None" );
+QString HighlightPattern::noParentPattern_( "None" );
 
 
 //___________________________________________________________________________

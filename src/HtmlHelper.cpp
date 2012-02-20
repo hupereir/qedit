@@ -111,8 +111,8 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
 
         // current pattern
         QDomElement span;
-        int current_patternId = -1;
-        bool line_break( false );
+        int currentPatternId = -1;
+        bool lineBreak( false );
         int line_index( 0 );
 
         // parse text
@@ -121,13 +121,22 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
         {
 
             // parse locations
-            PatternLocationSet::reverse_iterator locationIter = find_if(
-                locations.rbegin(),
-                locations.rend(),
-                PatternLocation::ContainsFTor( index ) );
+            PatternLocation location;
+            PatternLocation::SetIterator iter( locations );
+            iter.toBack();
+            const PatternLocation::ContainsFTor ftor( index );
+            while( iter.hasPrevious() )
+            {
+                const PatternLocation& current( iter.previous() );
+                if( ftor( current ) )
+                {
+                    location = current;
+                    break;
+                }
+            }
 
-            int patternId( ( locationIter == locations.rend() ) ? -1:locationIter->id() );
-            if( patternId != current_patternId || index == 0 || line_break )
+            int patternId( location.id() );
+            if( patternId != currentPatternId || index == 0 || lineBreak )
             {
 
                 // append text to current element and reset stream
@@ -135,25 +144,25 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
                 {
                     if( span.isNull() ) span  = out.appendChild( document.createElement( "Span" ) ).toElement();
                     HtmlTextNode( buffer, span, document );
-                    if( line_break )
+                    if( lineBreak )
                     {
                         out.appendChild( document.createElement( "Br" ) );
-                        line_break = false;
+                        lineBreak = false;
                         line_index = 0;
                     }
                     buffer = "";
                 }
 
                 // update pattern
-                current_patternId = patternId;
+                currentPatternId = patternId;
 
                 // update current element
                 span = out.appendChild( document.createElement( "Span" ) ).toElement();
-                if( locationIter !=  locations.rend() )
+                if( location.isValid() )
                 {
 
                     // retrieve font format
-                    const unsigned int& format( locationIter->fontFormat() );
+                    const unsigned int& format( location.fontFormat() );
                     QString buffer;
                     QTextStream formatStream( &buffer );
                     if( format & FORMAT::UNDERLINE ) formatStream << "Text-decoration: underline; ";
@@ -162,7 +171,7 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
                     if( format & FORMAT::STRIKE ) formatStream << "Text-decoration: line-through; ";
 
                     // retrieve color
-                    const QColor& color = locationIter->color();
+                    const QColor& color = location.color();
                     if( color.isValid() ) formatStream << "color: " << color.name() << "; ";
 
                     span.setAttribute( "Style", buffer );

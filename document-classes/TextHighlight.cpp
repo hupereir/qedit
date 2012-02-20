@@ -178,10 +178,10 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, co
     {
 
         // look for matching pattern in list
-        HighlightPattern::List::const_iterator pattern_iter = find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( active_id ) );
-        assert( pattern_iter != patterns_.end() );
+        HighlightPattern::List::const_iterator patternIter = std::find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( active_id ) );
+        assert( patternIter != patterns_.end() );
 
-        const HighlightPattern &pattern( *pattern_iter );
+        const HighlightPattern &pattern( *patternIter );
         bool active=true;
         pattern.processText( locations, text, active );
 

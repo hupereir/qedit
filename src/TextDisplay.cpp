@@ -232,9 +232,9 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
     Debug::Throw( "TextDisplay::installContextMenuActions.\n" );
 
     // see if tagged blocks are present
-    bool has_tags( hasTaggedBlocks() );
-    bool has_selection( textCursor().hasSelection() );
-    bool current_block_tagged( has_tags && isCurrentBlockTagged() );
+    bool hasTags( hasTaggedBlocks() );
+    bool hasSelection( textCursor().hasSelection() );
+    bool current_block_tagged( hasTags && isCurrentBlockTagged() );
 
     // retrieve default context menu
     // second argument is to remove un-necessary actions
@@ -253,11 +253,11 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
     submenu->addAction( &clearTagAction() );
     submenu->addAction( &clearAllTagsAction() );
 
-    tagBlockAction().setText( has_selection ? "&Tag selected blocks":"&Tag current block" );
-    nextTagAction().setEnabled( has_tags );
-    previousTagAction().setEnabled( has_tags );
+    tagBlockAction().setText( hasSelection ? "&Tag selected blocks":"&Tag current block" );
+    nextTagAction().setEnabled( hasTags );
+    previousTagAction().setEnabled( hasTags );
     clearTagAction().setEnabled( current_block_tagged );
-    clearAllTagsAction().setEnabled( has_tags );
+    clearAllTagsAction().setEnabled( hasTags );
 
     // document class menu
     submenu = new DocumentClassMenu( this );
@@ -1103,7 +1103,7 @@ void TextDisplay::processMacro( QString name )
     Debug::Throw() << "TextDisplay::processMacro - " << name << endl;
 
     // retrieve macro that match argument name
-    TextMacro::List::const_iterator macro_iter = find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
+    TextMacro::List::const_iterator macro_iter = std::find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
     if( macro_iter == macros_.end() )
     {
         QString buffer;
@@ -1497,7 +1497,7 @@ FileList& TextDisplay::_recentFiles( void ) const
 
 //_____________________________________________
 bool TextDisplay::_hasAutomaticMacros( void ) const
-{ return find_if( macros().begin(), macros().end(), TextMacro::isAutomaticFTor() ) != macros().end(); }
+{ return std::find_if( macros().begin(), macros().end(), TextMacro::isAutomaticFTor() ) != macros().end(); }
 
 //_____________________________________________
 void TextDisplay::_processMacro( const TextMacro& macro )
@@ -1517,8 +1517,8 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     QTextBlock begin;
     QTextBlock end;
 
-    bool has_selection( cursor.hasSelection() );
-    if( has_selection )
+    bool hasSelection( cursor.hasSelection() );
+    if( hasSelection )
     {
 
         // retrieve blocks
@@ -1586,7 +1586,7 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     cursor.insertText( text );
 
     // restore selection
-    if( has_selection )
+    if( hasSelection )
     {
         cursor.setPosition( position_begin );
         cursor.setPosition( position_begin + text.size(), QTextCursor::KeepAnchor );
@@ -2434,7 +2434,7 @@ void TextDisplay::_highlightParenthesis( void )
 
     // check against opening parenthesis
     bool found( false );
-    TextParenthesis::List::const_iterator iter( find_if(
+    TextParenthesis::List::const_iterator iter( std::find_if(
         parenthesis.begin(), parenthesis.end(),
         TextParenthesis::FirstElementFTor( text.left( position ) ) ) );
 
@@ -2473,7 +2473,7 @@ void TextDisplay::_highlightParenthesis( void )
 
     // if not found, check against closing parenthesis
     if( !( found || (iter =
-        find_if(
+        std::find_if(
         parenthesis.begin(), parenthesis.end(),
         TextParenthesis::SecondElementFTor( text.left( position ) ) )) == parenthesis.end()  ) )
     {

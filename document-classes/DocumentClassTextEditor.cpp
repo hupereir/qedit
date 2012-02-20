@@ -431,7 +431,7 @@ void DocumentClassTextEditor::_highlightParenthesis( void )
 
     // check against opening parenthesis
     bool found( false );
-    TextParenthesis::List::const_iterator iter( find_if(
+    TextParenthesis::List::const_iterator iter( std::find_if(
         parenthesis.begin(), parenthesis.end(),
         TextParenthesis::FirstElementFTor( text.left( position ) ) ) );
 
@@ -471,7 +471,7 @@ void DocumentClassTextEditor::_highlightParenthesis( void )
 
     // if not found, check against closing parenthesis
     if( !( found || (iter =
-        find_if(
+        std::find_if(
         parenthesis.begin(), parenthesis.end(),
         TextParenthesis::SecondElementFTor( text.left( position ) ) )) == parenthesis.end()  ) )
     {

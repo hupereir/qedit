@@ -47,22 +47,22 @@ TextParenthesisDialog::TextParenthesisDialog( QWidget* parent ):
 
     mainLayout().setSpacing(5);
 
-    GridLayout* grid_layout( new GridLayout() );
-    grid_layout->setSpacing( 5 );
-    grid_layout->setMargin( 0 );
-    grid_layout->setMaxCount( 2 );
-    grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-    mainLayout().addLayout( grid_layout );
+    GridLayout* gridLayout( new GridLayout() );
+    gridLayout->setSpacing( 5 );
+    gridLayout->setMargin( 0 );
+    gridLayout->setMaxCount( 2 );
+    gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+    mainLayout().addLayout( gridLayout );
 
     //
-    grid_layout->addWidget( new QLabel( "First parenthesis string: ", this ) );
-    grid_layout->addWidget( first_editor_ = new AnimatedLineEditor( this ) );
+    gridLayout->addWidget( new QLabel( "First parenthesis string: ", this ) );
+    gridLayout->addWidget( first_editor_ = new AnimatedLineEditor( this ) );
 
-    grid_layout->addWidget( new QLabel( "Second parenthesis string: ", this ) );
-    grid_layout->addWidget( second_editor_ = new AnimatedLineEditor( this ) );
+    gridLayout->addWidget( new QLabel( "Second parenthesis string: ", this ) );
+    gridLayout->addWidget( second_editor_ = new AnimatedLineEditor( this ) );
 
-    grid_layout->addWidget( new QLabel( "Regular expression to match both parenthesis: ", this ) );
-    grid_layout->addWidget( regexp_editor_ = new AnimatedLineEditor( this ) );
+    gridLayout->addWidget( new QLabel( "Regular expression to match both parenthesis: ", this ) );
+    gridLayout->addWidget( regexp_editor_ = new AnimatedLineEditor( this ) );
 
 }
 

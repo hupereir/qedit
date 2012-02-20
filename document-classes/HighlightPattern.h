@@ -24,25 +24,15 @@
  *
  *******************************************************************************/
 
-/*!
-  \file HighlightPattern.h
-  \brief Base class for syntax highlighting
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QDomElement>
-#include <QDomDocument>
-#include <QRegExp>
-#include <QString>
-
-#include <set>
-#include <vector>
-
 #include "HighlightStyle.h"
 #include "Counter.h"
 #include "Debug.h"
+
+#include <QtXml/QDomElement>
+#include <QtXml/QDomDocument>
+#include <QtCore/QRegExp>
+#include <QtCore/QString>
+#include <QtCore/QList>
 
 class PatternLocationSet;
 
@@ -50,334 +40,335 @@ class PatternLocationSet;
 class HighlightPattern: public Counter
 {
 
-  public:
-
-  //! pattern flags
-  enum Flag
-  {
-
-    //! no flag
-    NONE = 0,
-
-    //! pattern spans over several blocks
-    SPAN = 1<<0,
-
-    //! pattern exclude line from indentations
-    /*! this is typically the case for comments */
-    NO_INDENT = 1<<1,
-
-    //! pattern matching should not be case sensitive
-    CASE_INSENSITIVE = 1<<2
-
-  };
-
-  //! typedef for list of patterns
-  typedef std::vector< HighlightPattern > List;
-
-  //! no parent pattern
-  static QString no_parent_pattern_;
-
-  //! constructor from DomElement
-  HighlightPattern( const QDomElement& element = QDomElement() );
-
-  //! dom element
-  QDomElement domElement( QDomDocument& parent ) const;
-
-  //! set id
-  /*!
-  The unique ID has a single bit set to 1, to use
-  faster active pattern masks, with no shift operators
-  */
-  void setId( const int& id )
-  { id_ = (1<<id); }
-
-  //! unique id
-  const int& id( void ) const
-  { return id_; }
-
-  //! equal to operator
-  bool operator == (const HighlightPattern& other ) const;
-
-  //! equal to ftor
-  class WeakEqualFTor: public std::binary_function< HighlightPattern, HighlightPattern, bool>
-  {
     public:
 
-    bool operator()( const HighlightPattern& first, const HighlightPattern& second ) const
-    { return first.id() == second.id(); }
-
-  };
-
-  //! less than ftor
-  class WeakLessThanFTor: public std::binary_function< HighlightPattern, HighlightPattern, bool>
-  {
-    public:
-
-    bool operator()( const HighlightPattern& first, const HighlightPattern& second ) const
-    { return first.id() < second.id(); }
-
-  };
-
-  //! name
-  const QString& name( void ) const
-  { return name_; }
-
-  //! name
-  void setName( const QString& name )
-  { name_ = name; }
-
-  //! pattern type
-  enum Type
-  {
-    //! undefined
-    UNDEFINED,
-
-    //! single keyword
-    KEYWORD_PATTERN,
-
-    //! range pattern
-    RANGE_PATTERN
-
-  };
-
-  //!type
-  const Type& type( void ) const
-  { return type_; }
-
-  //!type
-  void setType( const Type& type )
-  { type_ = type; }
-
-  //! type
-  QString typeName( void ) const
-  { return typeName( type() ); }
-
-  //! type
-  static QString typeName( const Type& type );
-
-  //! parent name
-  const QString& parent( void ) const
-  { return parent_; }
-
-  //! parent name
-  void setParent( const QString& parent )
-  { parent_ = parent; }
-
-  //! parent id
-  const int& parentId( void ) const
-  { return parent_id_; }
-
-  //! parent id
-  void setParentId( const int& id )
-  { parent_id_ = id; }
-
-  //! text style
-  const HighlightStyle& style( void ) const
-  { return style_; }
-
-  //! text style
-  void setStyle( const HighlightStyle& style )
-  { style_ = style; }
-
-  //! child patterns
-  const List& children( void ) const
-  { return children_; }
-
-  //! add child
-  void addChild( HighlightPattern child )
-  { children_.push_back( child ); }
-
-  //! clear children
-  void clearChildren( void )
-  { children_.clear(); }
-
-  //! keyword regexp
-  const QRegExp& keyword( void ) const
-  { return keyword_; }
-
-  //! keyword
-  virtual void setKeyword( const QString& keyword )
-  { keyword_.setPattern( keyword ); }
-
-  //! begin regexp
-  const QRegExp& begin( void ) const
-  { return keyword(); }
-
-  //! keyword
-  virtual void setBegin( const QString& keyword )
-  { setKeyword( keyword ); }
-
-  //! end regexp
-  const QRegExp& end( void ) const
-  { return end_; }
-
-  //! range end pattern
-  virtual void setEnd( const QString& keyword )
-  { end_.setPattern( keyword ); }
-
-  //! comments
-  const QString& comments( void ) const
-  { return comments_; }
-
-  //! comments
-  void setComments( const QString& comments )
-  { comments_ = comments; }
-
-  //!@name flags
-  //@{
-
-  //! flags
-  const unsigned int& flags( void ) const
-  { return flags_; }
-
-  //! flags
-  void setFlags( const unsigned int& flags )
-  { flags_ = flags; }
-
-  //! flags
-  bool flag( const Flag& flag ) const
-  { return flags_ & flag; }
-
-  //! flags
-  void setFlag( const Flag& flag, const bool& value )
-  {
-    if( value ) flags_ |= flag;
-    else flags_ &= (~flag);
-  }
-
-  //@}
-
-  //! validity
-  bool isValid( void ) const
-  {
-    switch( type() )
+    //! pattern flags
+    enum Flag
     {
-      case KEYWORD_PATTERN: return keyword_.isValid();
-      case RANGE_PATTERN: return keyword_.isValid() && end_.isValid();
-      default: return false;
-    }
-  }
 
-  //! process text and update the matching locations.
-  /*!
-  Returns true if at least one match is found.
-  Locations and active parameters are changed
-  */
-  bool processText( PatternLocationSet& locations, const QString& text, bool& active ) const
-  {
-    switch( type() )
-    {
-      case KEYWORD_PATTERN: return _findKeyword( locations, text, active );
-      case RANGE_PATTERN: return _findRange( locations, text, active );
-      default: return false;
-    }
-  }
+        //! no flag
+        NONE = 0,
 
-  //! used to get patterns by name
-  class SameNameFTor
-  {
+        //! pattern spans over several blocks
+        SPAN = 1<<0,
 
-    public:
+        //! pattern exclude line from indentations
+        /*! this is typically the case for comments */
+        NO_INDENT = 1<<1,
 
-    //! constructor
-    SameNameFTor( const QString& name ):
-      name_( name )
-    {}
+        //! pattern matching should not be case sensitive
+        CASE_INSENSITIVE = 1<<2
 
-    //! predicate
-    bool operator() (const HighlightPattern& pattern ) const
-    { return pattern.name() == name_; }
+    };
 
-    private:
+    //! typedef for list of patterns
+    typedef QList< HighlightPattern > List;
+    typedef QListIterator< HighlightPattern > ListIterator;
 
-    //! predicate
-    const QString name_;
+    //! no parent pattern
+    static QString noParentPattern_;
 
-  };
+    //! constructor from DomElement
+    HighlightPattern( const QDomElement& element = QDomElement() );
 
-  //! used to pattern by id
-  class SameIdFTor
-  {
+    //! dom element
+    QDomElement domElement( QDomDocument& parent ) const;
 
-    public:
-
-    //! constructor
-    SameIdFTor( const int& id ):
-      id_( id )
-    {}
-
-    //! predicate
-    bool operator() ( const HighlightPattern& pattern ) const
-    { return pattern.id() == id_; }
-
-    private:
-
-    //! predicted id
-    int id_;
-
-  };
-
-  protected:
-
-  //! find keyword pattern
-  bool _findKeyword( PatternLocationSet&, const QString&, bool& ) const;
-
-  //! find range pattern
-  bool _findRange( PatternLocationSet&, const QString&, bool& ) const;
-
-  private:
-
-  //! unique id
-  /*!
+    //! set id
+    /*!
     The unique ID has a single bit set to 1, to use
     faster active pattern masks, with no shift operators
-  */
-  int id_;
+    */
+    void setId( const int& id )
+    { id_ = (1<<id); }
 
-  //! type
-  Type type_;
+    //! unique id
+    const int& id( void ) const
+    { return id_; }
 
-  //! pattern name
-  QString name_;
+    //! equal to operator
+    bool operator == (const HighlightPattern& other ) const;
 
-  //! parent pattern name
-  QString parent_;
+    //! equal to ftor
+    class WeakEqualFTor: public std::binary_function< HighlightPattern, HighlightPattern, bool>
+    {
+        public:
 
-  //! parent pattern id
-  int parent_id_;
+        bool operator()( const HighlightPattern& first, const HighlightPattern& second ) const
+        { return first.id() == second.id(); }
 
-  //! style
-  HighlightStyle style_;
+    };
 
-  //! child patterns
-  List children_;
+    //! less than ftor
+    class WeakLessThanFTor: public std::binary_function< HighlightPattern, HighlightPattern, bool>
+    {
+        public:
 
-  //! comments
-  QString comments_;
+        bool operator()( const HighlightPattern& first, const HighlightPattern& second ) const
+        { return first.id() < second.id(); }
 
-  //! flags
-  unsigned int flags_;
+    };
 
-  //!@name patterns
-  //@{
+    //! name
+    const QString& name( void ) const
+    { return name_; }
 
-  //! keyword regexp (or begin in case of range pattern)
-  QRegExp keyword_;
+    //! name
+    void setName( const QString& name )
+    { name_ = name; }
 
-  //! range end regexp
-  QRegExp end_;
+    //! pattern type
+    enum Type
+    {
+        //! undefined
+        UNDEFINED,
 
-  //@}
+        //! single keyword
+        KEYWORD_PATTERN,
 
-  //!@name dumpers
-  //@{
-  //! dump
-  friend QTextStream& operator << ( QTextStream& out, const HighlightPattern& pattern )
-  {
-    out << "id: " << pattern.id() << " name: " << pattern.name() << " parent name:" << pattern.parent();
-    return out;
-  }
+        //! range pattern
+        RANGE_PATTERN
 
-  //@}
+    };
+
+    //!type
+    const Type& type( void ) const
+    { return type_; }
+
+    //!type
+    void setType( const Type& type )
+    { type_ = type; }
+
+    //! type
+    QString typeName( void ) const
+    { return typeName( type() ); }
+
+    //! type
+    static QString typeName( const Type& type );
+
+    //! parent name
+    const QString& parent( void ) const
+    { return parent_; }
+
+    //! parent name
+    void setParent( const QString& parent )
+    { parent_ = parent; }
+
+    //! parent id
+    const int& parentId( void ) const
+    { return parent_id_; }
+
+    //! parent id
+    void setParentId( const int& id )
+    { parent_id_ = id; }
+
+    //! text style
+    const HighlightStyle& style( void ) const
+    { return style_; }
+
+    //! text style
+    void setStyle( const HighlightStyle& style )
+    { style_ = style; }
+
+    //! child patterns
+    const List& children( void ) const
+    { return children_; }
+
+    //! add child
+    void addChild( HighlightPattern child )
+    { children_.push_back( child ); }
+
+    //! clear children
+    void clearChildren( void )
+    { children_.clear(); }
+
+    //! keyword regexp
+    const QRegExp& keyword( void ) const
+    { return keyword_; }
+
+    //! keyword
+    virtual void setKeyword( const QString& keyword )
+    { keyword_.setPattern( keyword ); }
+
+    //! begin regexp
+    const QRegExp& begin( void ) const
+    { return keyword(); }
+
+    //! keyword
+    virtual void setBegin( const QString& keyword )
+    { setKeyword( keyword ); }
+
+    //! end regexp
+    const QRegExp& end( void ) const
+    { return end_; }
+
+    //! range end pattern
+    virtual void setEnd( const QString& keyword )
+    { end_.setPattern( keyword ); }
+
+    //! comments
+    const QString& comments( void ) const
+    { return comments_; }
+
+    //! comments
+    void setComments( const QString& comments )
+    { comments_ = comments; }
+
+    //!@name flags
+    //@{
+
+    //! flags
+    const unsigned int& flags( void ) const
+    { return flags_; }
+
+    //! flags
+    void setFlags( const unsigned int& flags )
+    { flags_ = flags; }
+
+    //! flags
+    bool flag( const Flag& flag ) const
+    { return flags_ & flag; }
+
+    //! flags
+    void setFlag( const Flag& flag, const bool& value )
+    {
+        if( value ) flags_ |= flag;
+        else flags_ &= (~flag);
+    }
+
+    //@}
+
+    //! validity
+    bool isValid( void ) const
+    {
+        switch( type() )
+        {
+            case KEYWORD_PATTERN: return keyword_.isValid();
+            case RANGE_PATTERN: return keyword_.isValid() && end_.isValid();
+            default: return false;
+        }
+    }
+
+    //! process text and update the matching locations.
+    /*!
+    Returns true if at least one match is found.
+    Locations and active parameters are changed
+    */
+    bool processText( PatternLocationSet& locations, const QString& text, bool& active ) const
+    {
+        switch( type() )
+        {
+            case KEYWORD_PATTERN: return _findKeyword( locations, text, active );
+            case RANGE_PATTERN: return _findRange( locations, text, active );
+            default: return false;
+        }
+    }
+
+    //! used to get patterns by name
+    class SameNameFTor
+    {
+
+        public:
+
+        //! constructor
+        SameNameFTor( const QString& name ):
+            name_( name )
+            {}
+
+        //! predicate
+        bool operator() (const HighlightPattern& pattern ) const
+        { return pattern.name() == name_; }
+
+        private:
+
+        //! predicate
+        const QString name_;
+
+    };
+
+    //! used to pattern by id
+    class SameIdFTor
+    {
+
+        public:
+
+        //! constructor
+        SameIdFTor( const int& id ):
+            id_( id )
+            {}
+
+        //! predicate
+        bool operator() ( const HighlightPattern& pattern ) const
+        { return pattern.id() == id_; }
+
+        private:
+
+        //! predicted id
+        int id_;
+
+    };
+
+    protected:
+
+    //! find keyword pattern
+    bool _findKeyword( PatternLocationSet&, const QString&, bool& ) const;
+
+    //! find range pattern
+    bool _findRange( PatternLocationSet&, const QString&, bool& ) const;
+
+    private:
+
+    //! unique id
+    /*!
+    The unique ID has a single bit set to 1, to use
+    faster active pattern masks, with no shift operators
+    */
+    int id_;
+
+    //! type
+    Type type_;
+
+    //! pattern name
+    QString name_;
+
+    //! parent pattern name
+    QString parent_;
+
+    //! parent pattern id
+    int parent_id_;
+
+    //! style
+    HighlightStyle style_;
+
+    //! child patterns
+    List children_;
+
+    //! comments
+    QString comments_;
+
+    //! flags
+    unsigned int flags_;
+
+    //!@name patterns
+    //@{
+
+    //! keyword regexp (or begin in case of range pattern)
+    QRegExp keyword_;
+
+    //! range end regexp
+    QRegExp end_;
+
+    //@}
+
+    //!@name dumpers
+    //@{
+    //! dump
+    friend QTextStream& operator << ( QTextStream& out, const HighlightPattern& pattern )
+    {
+        out << "id: " << pattern.id() << " name: " << pattern.name() << " parent name:" << pattern.parent();
+        return out;
+    }
+
+    //@}
 };
 #endif

@@ -32,6 +32,7 @@
 #include <QtXml/QDomDocument>
 #include <QtGui/QAction>
 #include <QtCore/QRegExp>
+#include <QtCore/QList>
 
 //! Text modification macro
 class TextMacro: public Counter
@@ -40,7 +41,8 @@ class TextMacro: public Counter
     public:
 
     //! list
-    typedef std::vector< TextMacro > List;
+    typedef QList< TextMacro > List;
+    typedef QListIterator< TextMacro > ListIterator;
 
     //! constructor
     TextMacro( void ):
@@ -210,7 +212,8 @@ class TextMacro: public Counter
 
         public:
 
-        typedef std::vector<Rule> List;
+        typedef QList<Rule> List;
+        typedef QListIterator<Rule> ListIterator;
 
         //! constructor
         Rule( const QDomElement& = QDomElement() );

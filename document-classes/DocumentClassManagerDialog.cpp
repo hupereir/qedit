@@ -288,7 +288,7 @@ void DocumentClassManagerDialog::_reload( void )
     // check modifications
     if( _modified() && !QuestionDialog( this, "Discard changes to document classses ?" ).setWindowTitle( "Reload Document Classes - qedit" ).exec() ) return;
 
-    _model().update( DocumentClassModel::List( backup_.classes().begin(), backup_.classes().end() ) );
+    _model().update( backup_.classes() );
     _setModified( false );
 
 }
@@ -378,13 +378,7 @@ void DocumentClassManagerDialog::_loadClasses( const DocumentClassManager& manag
 {
 
     Debug::Throw( "DocumentClassManagerDialog::_loadClasses.\n" );
-
-    // retrieve classes from DocumentClass manager
-    const DocumentClassManager::List& classes( manager.classes() );
-    Debug::Throw() << "DocumentClassManagerDialog::_loadClasses - lists: " << classes.size() << endl;
-
-    // add to list
-    _model().add( DocumentClassModel::List( classes.begin(), classes.end() ) );
+    _model().add( manager.classes() );
     _list().resizeColumns();
 
 }
@@ -395,8 +389,8 @@ void DocumentClassManagerDialog::_checkModified( void )
 
     const DocumentClassModel::List& classes( _model().get() );
     _setModified( !(
-        find_if( classes.begin(), classes.end(), DocumentClass::ModifiedFTor() ) == classes.end() &&
-        DocumentClassManager::List( classes.begin(), classes.end() ) == backup_.classes() ) );
+        std::find_if( classes.begin(), classes.end(), DocumentClass::ModifiedFTor() ) == classes.end() &&
+        classes == backup_.classes() ) );
 
 }
 
@@ -460,7 +454,7 @@ QStringList DocumentClassManagerDialog::_saveDocumentClasses( void )
     }
 
     // update DocumentClassManager
-    backup_.setClasses( DocumentClassManager::List( classes.begin(), classes.end() ) );
+    backup_.setClasses( classes );
 
     // write fileNames to options
     XmlOptions::get().clearSpecialOptions( "PATTERN_FILENAME" );

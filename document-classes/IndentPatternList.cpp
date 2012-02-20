@@ -50,14 +50,14 @@ IndentPatternList::IndentPatternList( QWidget* parent ):
 {
     Debug::Throw( "IndentPatternList::IndentPatternList.\n" );
 
-    QHBoxLayout* h_layout;
-    h_layout = new QHBoxLayout();
-    h_layout->setSpacing(5);
-    h_layout->setMargin(5);
-    setLayout( h_layout );
+    QHBoxLayout* hLayout;
+    hLayout = new QHBoxLayout();
+    hLayout->setSpacing(5);
+    hLayout->setMargin(5);
+    setLayout( hLayout );
 
 
-    h_layout->addWidget( list_ = new TreeView( this ), 1 );
+    hLayout->addWidget( list_ = new TreeView( this ), 1 );
     list_->setModel( &model_ );
     list_->setSortingEnabled( false );
     list_->setAllColumnsShowFocus( true );
@@ -68,36 +68,36 @@ IndentPatternList::IndentPatternList( QWidget* parent ):
     connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
     connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
 
-    QVBoxLayout* v_layout = new QVBoxLayout();
-    v_layout->setSpacing(5);
-    v_layout->setMargin(0);
-    h_layout->addLayout( v_layout );
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    vLayout->setSpacing(5);
+    vLayout->setMargin(0);
+    hLayout->addLayout( vLayout );
 
     QPushButton* button;
-    v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
     button->setToolTip( "Add a new Indent pattern to the list" );
     connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
 
-    v_layout->addWidget( removeButton_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
+    vLayout->addWidget( removeButton_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
     removeButton_->setToolTip( "Remove selected Indent pattern" );
     removeButton_->setShortcut( Qt::Key_Delete );
     connect( removeButton_, SIGNAL( clicked() ), SLOT( _remove() ) );
 
-    v_layout->addWidget( editButton_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
+    vLayout->addWidget( editButton_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
     editButton_->setToolTip( "Edit selected Indent pattern" );
     connect( editButton_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
-    v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move &Up", this ) );
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move &Up", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _up() ) );
     button->setToolTip( "Move up selected items" );
     moveUpButton_ = button;
 
-    v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move &Down", this ) );
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move &Down", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _down() ) );
     button->setToolTip( "Move down selected items" );
     moveDownButton_ = button;
 
-    v_layout->addStretch();
+    vLayout->addStretch();
 
     _updateButtons();
 
@@ -267,35 +267,35 @@ void IndentPatternList::_up( void )
         return;
     }
 
-    IndentPattern::List selected_attributes( model_.get( selectedIndexes ) );
+    IndentPattern::List selectedAttributes( model_.get( selectedIndexes ) );
 
-    IndentPattern::List current_attributes( patterns() );
-    IndentPattern::List new_attributes;
+    IndentPattern::List currentAttributes( patterns() );
+    IndentPattern::List newAttributes;
 
-    for( IndentPattern::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); ++iter )
+    for( IndentPattern::List::const_iterator iter = currentAttributes.begin(); iter != currentAttributes.end(); ++iter )
     {
 
         // check if new list is not empty, current index is selected and last index is not.
         // if yes, move.
         if(
-            !( new_attributes.empty() ||
+            !( newAttributes.empty() ||
             selectedIndexes.indexOf( model_.index( *iter ) ) == -1 ||
-            selectedIndexes.indexOf( model_.index( new_attributes.back() ) ) != -1
+            selectedIndexes.indexOf( model_.index( newAttributes.back() ) ) != -1
             ) )
         {
-            IndentPattern last( new_attributes.back() );
-            new_attributes.pop_back();
-            new_attributes.push_back( *iter );
-            new_attributes.push_back( last );
-        } else new_attributes.push_back( *iter );
+            IndentPattern last( newAttributes.back() );
+            newAttributes.pop_back();
+            newAttributes.push_back( *iter );
+            newAttributes.push_back( last );
+        } else newAttributes.push_back( *iter );
 
     }
 
-    model_.set( new_attributes );
+    model_.set( newAttributes );
 
     // restore selection
-    list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( IndentPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); ++iter )
+    list_->selectionModel()->select( model_.index( selectedAttributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+    for( IndentPattern::List::const_iterator iter = selectedAttributes.begin(); iter != selectedAttributes.end(); ++iter )
     { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     return;
@@ -315,36 +315,40 @@ void IndentPatternList::_down( void )
         InformationDialog( this, "no item selected. <Move up> canceled" ).exec();
         return;
     }
-    IndentPattern::List selected_attributes( model_.get( selectedIndexes ) );
+    IndentPattern::List selectedAttributes( model_.get( selectedIndexes ) );
 
-    IndentPattern::List current_attributes( patterns() );
-    IndentPattern::List new_attributes;
+    IndentPattern::List currentAttributes( patterns() );
+    IndentPattern::List newAttributes;
 
-    for( IndentPattern::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); ++iter )
+    IndentPattern::ListIterator iter( currentAttributes );
+    iter.toBack();
+    while( iter.hasPrevious() )
     {
+
+        const IndentPattern& current( iter.previous() );
 
         // check if new list is not empty, current index is selected and last index is not.
         // if yes, move.
         if(
-            !( new_attributes.empty() ||
-            selectedIndexes.indexOf( model_.index( *iter ) ) == -1 ||
-            selectedIndexes.indexOf( model_.index( new_attributes.back() ) ) != -1
+            !( newAttributes.empty() ||
+            selectedIndexes.indexOf( model_.index( current ) ) == -1 ||
+            selectedIndexes.indexOf( model_.index( newAttributes.back() ) ) != -1
             ) )
         {
 
-            IndentPattern last( new_attributes.back() );
-            new_attributes.pop_back();
-            new_attributes.push_back( *iter );
-            new_attributes.push_back( last );
+            IndentPattern last( newAttributes.back() );
+            newAttributes.pop_back();
+            newAttributes.push_front( current );
+            newAttributes.push_front( last );
 
-        } else new_attributes.push_back( *iter );
+        } else newAttributes.push_front( current );
     }
 
-    model_.set( IndentPatternModel::List( new_attributes.rbegin(), new_attributes.rend() ) );
+    model_.set( newAttributes );
 
     // restore selection
-    list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( IndentPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); ++iter )
+    list_->selectionModel()->select( model_.index( selectedAttributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+    for( IndentPattern::List::const_iterator iter = selectedAttributes.begin(); iter != selectedAttributes.end(); ++iter )
     { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     return;

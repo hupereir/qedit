@@ -50,14 +50,14 @@ TextParenthesisList::TextParenthesisList( QWidget* parent ):
 {
   Debug::Throw( "TextParenthesisList::TextParenthesisList.\n" );
 
-  QHBoxLayout* h_layout;
-  h_layout = new QHBoxLayout();
-  h_layout->setSpacing(5);
-  h_layout->setMargin(5);
-  setLayout( h_layout );
+  QHBoxLayout* hLayout;
+  hLayout = new QHBoxLayout();
+  hLayout->setSpacing(5);
+  hLayout->setMargin(5);
+  setLayout( hLayout );
 
 
-  h_layout->addWidget( list_ = new TreeView( this ), 1 );
+  hLayout->addWidget( list_ = new TreeView( this ), 1 );
   list_->setModel( &model_ );
   list_->setSortingEnabled( false );
   list_->setAllColumnsShowFocus( true );
@@ -68,26 +68,26 @@ TextParenthesisList::TextParenthesisList( QWidget* parent ):
   connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
   connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
 
-  QVBoxLayout* v_layout = new QVBoxLayout();
-  v_layout->setSpacing(5);
-  v_layout->setMargin(0);
-  h_layout->addLayout( v_layout );
+  QVBoxLayout* vLayout = new QVBoxLayout();
+  vLayout->setSpacing(5);
+  vLayout->setMargin(0);
+  hLayout->addLayout( vLayout );
 
   QPushButton* button;
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
+  vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
   button->setToolTip( "Add a new parenthesis to the list" );
   connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
 
-  v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
+  vLayout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
   remove_button_->setToolTip( "Remove selected parenthesis" );
   remove_button_->setShortcut( Qt::Key_Delete );
   connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
 
-  v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
+  vLayout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
   edit_button_->setToolTip( "Edit selected parenthesis" );
   connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
-  v_layout->addStretch();
+  vLayout->addStretch();
 
   _updateButtons();
 

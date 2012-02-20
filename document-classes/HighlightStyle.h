@@ -4,41 +4,41 @@
 // $Id$
 
 /******************************************************************************
- *
- * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
- *
- * This is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * software; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *
- *******************************************************************************/
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA  02111-1307 USA
+*
+*
+*******************************************************************************/
 
 /*!
-  \file HighlightStyle.h
-  \brief Base class for syntax highlighting style
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file HighlightStyle.h
+\brief Base class for syntax highlighting style
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
-#include <QColor>
-#include <QFont>
-#include <QDomDocument>
-#include <QDomElement>
-
-#include <set>
-#include <QString>
+#include <QtGui/QColor>
+#include <QtGui/QFont>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
+#include <QtCore/QString>
+#include <QtCore/QSet>
+#include <QtCore/QList>
 
 #include "Counter.h"
 #include "TextFormat.h"
@@ -47,87 +47,114 @@
 class HighlightStyle: public Counter
 {
 
-  public:
-
-  //! constructor
-  HighlightStyle(
-    const QString& name = "default",
-    const unsigned int& format = FORMAT::DEFAULT,
-    const QColor& color = Qt::black
-  ):
-    Counter( "HighlightStyle" ),
-    name_( name ),
-    format_( format ),
-    color_( color )
-  {}
-
-  //! constructor from DomElement
-  HighlightStyle( const QDomElement& element );
-
-  //! write to DomElement
-  QDomElement domElement( QDomDocument& parent ) const;
-
-  //! name
-  virtual const QString& name( void ) const
-  { return name_; }
-
-  //! equal to ftor
-  class WeakEqualFTor: public std::binary_function< HighlightStyle, HighlightStyle, bool>
-  {
     public:
 
-    bool operator()( const HighlightStyle& first, const HighlightStyle& second ) const
-    { return first.name() == second.name(); }
+    //! constructor
+    HighlightStyle(
+        const QString& name = "default",
+        const unsigned int& format = FORMAT::DEFAULT,
+        const QColor& color = Qt::black
+        ):
+        Counter( "HighlightStyle" ),
+        name_( name ),
+        format_( format ),
+        color_( color )
+    {}
 
-  };
+    //! constructor from DomElement
+    HighlightStyle( const QDomElement& element );
 
-  //! less than ftor
-  class WeakLessThanFTor: public std::binary_function< HighlightStyle, HighlightStyle, bool>
-  {
-    public:
+    //! write to DomElement
+    QDomElement domElement( QDomDocument& parent ) const;
 
-    bool operator()( const HighlightStyle& first, const HighlightStyle& second ) const
-    { return first.name() < second.name(); }
+    //! name
+    virtual const QString& name( void ) const
+    { return name_; }
 
-  };
+    //! same name ftor
+    class SameNameFTor
+    {
+        public:
 
-  //! typedef for list of patterns
-  typedef std::set< HighlightStyle, HighlightStyle::WeakLessThanFTor > Set;
+        //! constructor
+        SameNameFTor( const HighlightStyle& style ):
+            name_( style.name() )
+            {}
 
-  //! true if any attributes is different from argument
-  /*! this is a stricter comparison than the != operator */
-  bool operator == ( const HighlightStyle& style ) const;
+        //! predicate
+        bool operator() (const HighlightStyle& other ) const
+        { return other.name() == name_; }
 
-  //! name
-  virtual void setName( const QString& name )
-  { name_ = name; }
+        private:
 
-  //! format
-  virtual const unsigned int& fontFormat( void ) const
-  { return format_; }
+        QString name_;
 
-  //! format
-  virtual void setFontFormat( const unsigned int format )
-  { format_ = format; }
+    };
 
-  //! color
-  virtual const QColor& color( void ) const
-  { return color_; }
+    //! equal to ftor
+    class WeakEqualFTor: public std::binary_function< HighlightStyle, HighlightStyle, bool>
+    {
+        public:
 
-  //! color
-  virtual void setColor( const QColor& color )
-  { color_ = color; }
+        bool operator()( const HighlightStyle& first, const HighlightStyle& second ) const
+        { return first.name() == second.name(); }
 
-  private:
+    };
 
-  //! pattern name
-  QString name_;
+    //! less than ftor
+    class WeakLessThanFTor: public std::binary_function< HighlightStyle, HighlightStyle, bool>
+    {
+        public:
 
-  //! format (bitwise or of TextFormatInfo)
-  unsigned int format_;
+        bool operator()( const HighlightStyle& first, const HighlightStyle& second ) const
+        { return first.name() < second.name(); }
 
-  //! color
-  QColor color_;
+    };
+
+    //! typedef for list of patterns
+    typedef QSet<HighlightStyle> Set;
+
+    //! typedef for list of patterns
+    typedef QList<HighlightStyle> List;
+
+    //! true if any attributes is different from argument
+    /*! this is a stricter comparison than the != operator */
+    bool operator == ( const HighlightStyle& style ) const;
+
+    //! name
+    virtual void setName( const QString& name )
+    { name_ = name; }
+
+    //! format
+    virtual const unsigned int& fontFormat( void ) const
+    { return format_; }
+
+    //! format
+    virtual void setFontFormat( const unsigned int format )
+    { format_ = format; }
+
+    //! color
+    virtual const QColor& color( void ) const
+    { return color_; }
+
+    //! color
+    virtual void setColor( const QColor& color )
+    { color_ = color; }
+
+    private:
+
+    //! pattern name
+    QString name_;
+
+    //! format (bitwise or of TextFormatInfo)
+    unsigned int format_;
+
+    //! color
+    QColor color_;
 
 };
+
+inline unsigned int qHash( const HighlightStyle& style )
+{ return qHash( style.name() ); }
+
 #endif

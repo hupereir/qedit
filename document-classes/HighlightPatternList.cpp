@@ -22,11 +22,11 @@
 *******************************************************************************/
 
 /*!
-  \file HighlightPatternList.h
-  \brief List box for HighlightPatterns
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file HighlightPatternList.h
+\brief List box for HighlightPatterns
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QHeaderView>
@@ -44,194 +44,194 @@
 
 //____________________________________________________
 HighlightPatternList::HighlightPatternList( QWidget* parent ):
-  QGroupBox( "Highlight patterns", parent ),
-  Counter( "HighlightPatternList" )
+QGroupBox( "Highlight patterns", parent ),
+Counter( "HighlightPatternList" )
 {
-  Debug::Throw( "HighlightPatternList::HighlightPatternList.\n" );
+    Debug::Throw( "HighlightPatternList::HighlightPatternList.\n" );
 
-  QHBoxLayout* h_layout;
-  h_layout = new QHBoxLayout();
-  h_layout->setSpacing(5);
-  h_layout->setMargin(5);
-  setLayout( h_layout );
+    QHBoxLayout* hLayout;
+    hLayout = new QHBoxLayout();
+    hLayout->setSpacing(5);
+    hLayout->setMargin(5);
+    setLayout( hLayout );
 
 
-  h_layout->addWidget( list_ = new TreeView( this ), 1 );
-  list_->setModel( &model_ );
-  list_->setSortingEnabled( false );
-  list_->setAllColumnsShowFocus( true );
+    hLayout->addWidget( list_ = new TreeView( this ), 1 );
+    list_->setModel( &model_ );
+    list_->setSortingEnabled( false );
+    list_->setAllColumnsShowFocus( true );
 
-  connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
-  connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _edit() ) );
+    connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
+    connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _edit() ) );
 
-  connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
-  connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
+    connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
+    connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
 
-  QVBoxLayout* v_layout = new QVBoxLayout();
-  v_layout->setSpacing(5);
-  v_layout->setMargin(0);
-  h_layout->addLayout( v_layout );
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    vLayout->setSpacing(5);
+    vLayout->setMargin(0);
+    hLayout->addLayout( vLayout );
 
-  QPushButton* button;
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
-  button->setToolTip( "Add a new highlight pattern to the list" );
-  connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
+    QPushButton* button;
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
+    button->setToolTip( "Add a new highlight pattern to the list" );
+    connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
 
-  v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
-  remove_button_->setShortcut( Qt::Key_Delete );
-  remove_button_->setToolTip( "Remove selected highlight pattern" );
-  connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
+    vLayout->addWidget( removeButton_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
+    removeButton_->setShortcut( Qt::Key_Delete );
+    removeButton_->setToolTip( "Remove selected highlight pattern" );
+    connect( removeButton_, SIGNAL( clicked() ), SLOT( _remove() ) );
 
-  v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
-  edit_button_->setToolTip( "Edit selected highlight pattern" );
-  connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
+    vLayout->addWidget( editButton_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
+    editButton_->setToolTip( "Edit selected highlight pattern" );
+    connect( editButton_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move &Up", this ) );
-  connect( button, SIGNAL( clicked() ), SLOT( _up() ) );
-  button->setToolTip( "Move up selected items" );
-  move_up_button_ = button;
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move &Up", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( _up() ) );
+    button->setToolTip( "Move up selected items" );
+    moveUpButton_ = button;
 
-  v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move &Down", this ) );
-  connect( button, SIGNAL( clicked() ), SLOT( _down() ) );
-  button->setToolTip( "Move down selected items" );
-  move_down_button_ = button;
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move &Down", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( _down() ) );
+    button->setToolTip( "Move down selected items" );
+    moveDownButton_ = button;
 
-  v_layout->addStretch();
+    vLayout->addStretch();
 
-  _updateButtons();
+    _updateButtons();
 
 }
 
 //____________________________________________________
 void HighlightPatternList::setPatterns( const HighlightPattern::List& patterns )
 {
-  Debug::Throw( "HighlightPatternList::setPatterns.\n" );
-  model_.set( patterns );
-  list_->resizeColumns();
+    Debug::Throw( "HighlightPatternList::setPatterns.\n" );
+    model_.set( patterns );
+    list_->resizeColumns();
 }
 
 //____________________________________________________
 HighlightPattern::List HighlightPatternList::patterns( void )
 {
 
-  Debug::Throw( "HighlightPatternList::patterns.\n" );
-  return model_.get();
+    Debug::Throw( "HighlightPatternList::patterns.\n" );
+    return model_.get();
 
 }
 
 //____________________________________________________
 void HighlightPatternList::_updateButtons( void )
 {
-  Debug::Throw( "HighlightPatternList::_updateButtons.\n" );
-  bool has_selection( !list_->selectionModel()->selectedRows().empty() );
-  edit_button_->setEnabled( has_selection );
-  remove_button_->setEnabled( has_selection );
-  move_up_button_->setEnabled( has_selection );
-  move_down_button_->setEnabled( has_selection );
+    Debug::Throw( "HighlightPatternList::_updateButtons.\n" );
+    bool has_selection( !list_->selectionModel()->selectedRows().empty() );
+    editButton_->setEnabled( has_selection );
+    removeButton_->setEnabled( has_selection );
+    moveUpButton_->setEnabled( has_selection );
+    moveDownButton_->setEnabled( has_selection );
 }
 
 //____________________________________________________
 void HighlightPatternList::_add( void )
 {
-  Debug::Throw( "HighlightPatternList::_add.\n" );
+    Debug::Throw( "HighlightPatternList::_add.\n" );
 
-  // get set of highlight patterns to ensure name unicity
-  HighlightPatternModel::List patterns( model_.get() );
+    // get set of highlight patterns to ensure name unicity
+    HighlightPatternModel::List patterns( model_.get() );
 
-  HighlightPatternDialog dialog( this );
-  dialog.setStyles( styles_ );
-  dialog.setPatterns( patterns );
-  while( 1 )
-  {
-    if( dialog.exec() == QDialog::Rejected ) return;
-    HighlightPattern pattern( dialog.pattern() );
-    if( pattern.name().isEmpty() || std::find( patterns.begin(), patterns.end(), pattern ) != patterns.end() )
+    HighlightPatternDialog dialog( this );
+    dialog.setStyles( styles_ );
+    dialog.setPatterns( patterns );
+    while( 1 )
     {
-      InformationDialog( this, "Invalid pattern name" ).exec();
-    } else {
-      model_.add( pattern );
-      emit modified();
-      break;
+        if( dialog.exec() == QDialog::Rejected ) return;
+        HighlightPattern pattern( dialog.pattern() );
+        if( pattern.name().isEmpty() || std::find( patterns.begin(), patterns.end(), pattern ) != patterns.end() )
+        {
+            InformationDialog( this, "Invalid pattern name" ).exec();
+        } else {
+            model_.add( pattern );
+            emit modified();
+            break;
+        }
     }
-  }
 
 }
 
 //____________________________________________________
 void HighlightPatternList::_edit( void )
 {
-  Debug::Throw( "HighlightPatternList::_edit.\n" );
+    Debug::Throw( "HighlightPatternList::_edit.\n" );
 
-  // retrieve selected items
-  QModelIndexList selection( list_->selectionModel()->selectedRows() );
-  if( selection.empty() ) {
-    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
-    return;
-  }
-
-  HighlightPatternModel::List patterns( model_.get() );
-  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); ++iter )
-  {
-
-    HighlightPattern old_pattern( model_.get( *iter ) );
-
-    HighlightPatternDialog dialog( this );
-    dialog.setStyles( styles_ );
-    dialog.setPatterns( patterns );
-    dialog.setPattern( old_pattern );
-    if( dialog.exec() == QDialog::Rejected ) continue;
-
-    HighlightPattern pattern( dialog.pattern() );
-    if( !( pattern == old_pattern ) )
-    {
-      model_.replace( *iter, pattern );
-      emit modified();
+    // retrieve selected items
+    QModelIndexList selection( list_->selectionModel()->selectedRows() );
+    if( selection.empty() ) {
+        InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
+        return;
     }
 
-  }
+    HighlightPatternModel::List patterns( model_.get() );
+    for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); ++iter )
+    {
+
+        HighlightPattern old_pattern( model_.get( *iter ) );
+
+        HighlightPatternDialog dialog( this );
+        dialog.setStyles( styles_ );
+        dialog.setPatterns( patterns );
+        dialog.setPattern( old_pattern );
+        if( dialog.exec() == QDialog::Rejected ) continue;
+
+        HighlightPattern pattern( dialog.pattern() );
+        if( !( pattern == old_pattern ) )
+        {
+            model_.replace( *iter, pattern );
+            emit modified();
+        }
+
+    }
 
 }
 
 //____________________________________________________
 void HighlightPatternList::_remove( void )
 {
-  Debug::Throw( "HighlightPatternList::_remove.\n" );
+    Debug::Throw( "HighlightPatternList::_remove.\n" );
 
-  // retrieve selected items; make sure they do not include the navigator
-  HighlightPatternModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
-  if( selection.empty() ) {
-    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
-    return;
-  }
+    // retrieve selected items; make sure they do not include the navigator
+    HighlightPatternModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    if( selection.empty() ) {
+        InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
+        return;
+    }
 
-  // ask for confirmation
-  QString buffer;
-  QTextStream what( &buffer );
-  what << "Remove selected item";
-  if( selection.size()>1 ) what << "S";
-  what << " ?";
-  if( !QuestionDialog( this, buffer ).exec() ) return;
+    // ask for confirmation
+    QString buffer;
+    QTextStream what( &buffer );
+    what << "Remove selected item";
+    if( selection.size()>1 ) what << "S";
+    what << " ?";
+    if( !QuestionDialog( this, buffer ).exec() ) return;
 
-  // remove items
-  model_.remove( selection );
-  emit modified();
+    // remove items
+    model_.remove( selection );
+    emit modified();
 
 }
 
 //________________________________________
 void HighlightPatternList::_storeSelection( void )
 {
-  // clear
-  model_.clearSelectedIndexes();
+    // clear
+    model_.clearSelectedIndexes();
 
-  // retrieve selected indexes in list
-  QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
-  {
-    // check column
-    if( !iter->column() == 0 ) continue;
-    model_.setIndexSelected( *iter, true );
-  }
+    // retrieve selected indexes in list
+    QModelIndexList selectedIndexes( list_->selectionModel()->selectedRows() );
+    for( QModelIndexList::iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); ++iter )
+    {
+        // check column
+        if( !iter->column() == 0 ) continue;
+        model_.setIndexSelected( *iter, true );
+    }
 
 }
 
@@ -239,66 +239,66 @@ void HighlightPatternList::_storeSelection( void )
 void HighlightPatternList::_restoreSelection( void )
 {
 
-  // retrieve indexes
-  QModelIndexList selected_indexes( model_.selectedIndexes() );
-  if( selected_indexes.empty() ) list_->selectionModel()->clear();
-  else {
+    // retrieve indexes
+    QModelIndexList selectedIndexes( model_.selectedIndexes() );
+    if( selectedIndexes.empty() ) list_->selectionModel()->clear();
+    else {
 
-    list_->selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
-    { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+        list_->selectionModel()->select( selectedIndexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+        for( QModelIndexList::const_iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); ++iter )
+        { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
-  }
+    }
 
-  return;
+    return;
 }
 
 //_________________________________________________________
 void HighlightPatternList::_up( void )
 {
 
-  Debug::Throw( "HighlightPatternList::_up.\n" );
-  HighlightPattern::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
-  if( selection.empty() )
-  {
-    InformationDialog( this, "no item selected. <Move up> canceled" ).exec();
-    return;
-  }
-
-  // retrieve selected indexes in list and store in model
-  QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-  HighlightPattern::List selected_attributes( model_.get( selected_indexes ) );
-
-  HighlightPattern::List current_attributes( patterns() );
-  HighlightPattern::List new_attributes;
-
-  for( HighlightPattern::List::const_iterator iter = current_attributes.begin(); iter != current_attributes.end(); ++iter )
-  {
-
-    // check if new list is not empty, current index is selected and last index is not.
-    // if yes, move.
-    if(
-      !( new_attributes.empty() ||
-      selected_indexes.indexOf( model_.index( *iter ) ) == -1 ||
-      selected_indexes.indexOf( model_.index( new_attributes.back() ) ) != -1
-      ) )
+    Debug::Throw( "HighlightPatternList::_up.\n" );
+    HighlightPattern::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    if( selection.empty() )
     {
-      HighlightPattern last( new_attributes.back() );
-      new_attributes.pop_back();
-      new_attributes.push_back( *iter );
-      new_attributes.push_back( last );
-    } else new_attributes.push_back( *iter );
+        InformationDialog( this, "no item selected. <Move up> canceled" ).exec();
+        return;
+    }
 
-  }
+    // retrieve selected indexes in list and store in model
+    QModelIndexList selectedIndexes( list_->selectionModel()->selectedRows() );
+    HighlightPattern::List selectedAttributes( model_.get( selectedIndexes ) );
 
-  model_.set( new_attributes );
+    HighlightPattern::List currentAttributes( patterns() );
+    HighlightPattern::List newAttributes;
 
-  // restore selection
-  list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  for( HighlightPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); ++iter )
-  { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+    for( HighlightPattern::List::const_iterator iter = currentAttributes.begin(); iter != currentAttributes.end(); ++iter )
+    {
 
-  return;
+        // check if new list is not empty, current index is selected and last index is not.
+        // if yes, move.
+        if(
+            !( newAttributes.empty() ||
+            selectedIndexes.indexOf( model_.index( *iter ) ) == -1 ||
+            selectedIndexes.indexOf( model_.index( newAttributes.back() ) ) != -1
+            ) )
+        {
+            HighlightPattern last( newAttributes.back() );
+            newAttributes.pop_back();
+            newAttributes.push_back( *iter );
+            newAttributes.push_back( last );
+        } else newAttributes.push_back( *iter );
+
+    }
+
+    model_.set( newAttributes );
+
+    // restore selection
+    list_->selectionModel()->select( model_.index( selectedAttributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+    for( HighlightPattern::List::const_iterator iter = selectedAttributes.begin(); iter != selectedAttributes.end(); ++iter )
+    { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+
+    return;
 
 }
 
@@ -306,48 +306,50 @@ void HighlightPatternList::_up( void )
 void HighlightPatternList::_down( void )
 {
 
-  Debug::Throw( "HighlightPatternList::_down.\n" );
-  HighlightPattern::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
-  if( selection.empty() )
-  {
-    InformationDialog( this, "no item selected. <Move down> canceled" ).exec();
-    return;
-  }
-
-  // retrieve selected indexes in list and store in model
-  QModelIndexList selected_indexes( list_->selectionModel()->selectedIndexes() );
-  HighlightPattern::List selected_attributes( model_.get( selected_indexes ) );
-
-  HighlightPattern::List current_attributes( patterns() );
-  HighlightPattern::List new_attributes;
-
-  for( HighlightPattern::List::reverse_iterator iter = current_attributes.rbegin(); iter != current_attributes.rend(); ++iter )
-  {
-
-    // check if new list is not empty, current index is selected and last index is not.
-    // if yes, move.
-    if(
-      !( new_attributes.empty() ||
-      selected_indexes.indexOf( model_.index( *iter ) ) == -1 ||
-      selected_indexes.indexOf( model_.index( new_attributes.back() ) ) != -1
-      ) )
+    Debug::Throw( "HighlightPatternList::_down.\n" );
+    HighlightPattern::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    if( selection.empty() )
     {
+        InformationDialog( this, "no item selected. <Move down> canceled" ).exec();
+        return;
+    }
 
-      HighlightPattern last( new_attributes.back() );
-      new_attributes.pop_back();
-      new_attributes.push_back( *iter );
-      new_attributes.push_back( last );
+    // retrieve selected indexes in list and store in model
+    QModelIndexList selectedIndexes( list_->selectionModel()->selectedIndexes() );
+    HighlightPattern::List selectedAttributes( model_.get( selectedIndexes ) );
 
-    } else new_attributes.push_back( *iter );
-  }
+    HighlightPattern::List currentAttributes( patterns() );
+    HighlightPattern::List newAttributes;
+    HighlightPattern::ListIterator iter( currentAttributes );
+    iter.toBack();
+    while( iter.hasPrevious() )
+    {
+        const HighlightPattern& current( iter.previous() );
 
-  model_.set( HighlightPatternModel::List( new_attributes.rbegin(), new_attributes.rend() ) );
+        // check if new list is not empty, current index is selected and last index is not.
+        // if yes, move.
+        if(
+            !( newAttributes.empty() ||
+            selectedIndexes.indexOf( model_.index( current ) ) == -1 ||
+            selectedIndexes.indexOf( model_.index( newAttributes.back() ) ) != -1
+            ) )
+        {
 
-  // restore selection
-  list_->selectionModel()->select( model_.index( selected_attributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-  for( HighlightPattern::List::const_iterator iter = selected_attributes.begin(); iter != selected_attributes.end(); ++iter )
-  { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+            HighlightPattern last( newAttributes.back() );
+            newAttributes.pop_back();
+            newAttributes.push_front( current );
+            newAttributes.push_front( last );
 
-  return;
+        } else newAttributes.push_front( current );
+    }
+
+    model_.set( newAttributes );
+
+    // restore selection
+    list_->selectionModel()->select( model_.index( selectedAttributes.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+    for( HighlightPattern::List::const_iterator iter = selectedAttributes.begin(); iter != selectedAttributes.end(); ++iter )
+    { list_->selectionModel()->select( model_.index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+
+    return;
 
 }

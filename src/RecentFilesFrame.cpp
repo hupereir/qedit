@@ -155,7 +155,7 @@ void RecentFilesFrame::_updateActions( void )
     Debug::Throw( "RecentFilesFrame:_updateActions.\n" );
     FileRecordModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
 
-    bool has_valid_selection( find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
+    bool has_valid_selection( std::find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
     _openAction().setEnabled( has_valid_selection );
 
 }

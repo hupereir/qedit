@@ -157,14 +157,14 @@ void SessionFilesFrame::_updateActions( void )
 
     // get selected files
     SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
-    bool has_selection( !selection.empty() );
+    bool hasSelection( !selection.empty() );
 
-    _openAction().setEnabled( has_selection );
-    _closeAction().setEnabled( has_selection );
-    _saveAction().setEnabled( find_if( selection.begin(), selection.end(), FileRecord::HasFlagFTor( FileRecordProperties::MODIFIED ) ) != selection.end() );
+    _openAction().setEnabled( hasSelection );
+    _closeAction().setEnabled( hasSelection );
+    _saveAction().setEnabled( std::find_if( selection.begin(), selection.end(), FileRecord::HasFlagFTor( FileRecordProperties::MODIFIED ) ) != selection.end() );
 
-    previousFileAction().setEnabled( counts >= 2 && has_selection );
-    nextFileAction().setEnabled( counts >= 2 && has_selection );
+    previousFileAction().setEnabled( counts >= 2 && hasSelection );
+    nextFileAction().setEnabled( counts >= 2 && hasSelection );
 
 }
 
@@ -263,7 +263,7 @@ void SessionFilesFrame::_close( void )
 
     Debug::Throw( "SessionFilesFrame:_close.\n" );
     SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
-    if( !selection.empty() ) 
+    if( !selection.empty() )
     {
       FileRecord::List records;
       foreach( const FileRecord& record, selection )

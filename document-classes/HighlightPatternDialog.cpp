@@ -54,37 +54,37 @@ HighlightPatternDialog::HighlightPatternDialog( QWidget* parent ):
   mainLayout().setSpacing(5);
 
   // name
-  GridLayout* grid_layout( new GridLayout() );
-  grid_layout->setSpacing( 5 );
-  grid_layout->setMargin( 0 );
-  grid_layout->setMaxCount( 2 );
-  grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-  mainLayout().addLayout( grid_layout );
+  GridLayout* gridLayout( new GridLayout() );
+  gridLayout->setSpacing( 5 );
+  gridLayout->setMargin( 0 );
+  gridLayout->setMaxCount( 2 );
+  gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+  mainLayout().addLayout( gridLayout );
 
-  grid_layout->addWidget( new QLabel( "Name: ", this ) );
-  grid_layout->addWidget( name_editor_ = new AnimatedLineEditor( this ) );
+  gridLayout->addWidget( new QLabel( "Name: ", this ) );
+  gridLayout->addWidget( name_editor_ = new AnimatedLineEditor( this ) );
 
   // parent
-  grid_layout->addWidget( new QLabel( "Parent pattern: ", this ) );
-  grid_layout->addWidget( parent_combobox_ = new QComboBox( this ) );
+  gridLayout->addWidget( new QLabel( "Parent pattern: ", this ) );
+  gridLayout->addWidget( parent_combobox_ = new QComboBox( this ) );
   parent_combobox_->setEditable( false );
-  parent_combobox_->addItem( HighlightPattern::no_parent_pattern_ );
+  parent_combobox_->addItem( HighlightPattern::noParentPattern_ );
 
   // styles
-  grid_layout->addWidget( new QLabel( "Highlight style: ", this ) );
-  grid_layout->addWidget( style_combobox_ = new QComboBox( this ) );
+  gridLayout->addWidget( new QLabel( "Highlight style: ", this ) );
+  gridLayout->addWidget( style_combobox_ = new QComboBox( this ) );
   style_combobox_->setEditable( false );
 
   // type
-  grid_layout->addWidget( new QLabel( "Type: ", this ) );
-  grid_layout->addWidget( pattern_type_ = new HighlightPatternType( this ) );
+  gridLayout->addWidget( new QLabel( "Type: ", this ) );
+  gridLayout->addWidget( pattern_type_ = new HighlightPatternType( this ) );
 
   // regular expressions
-  grid_layout->addWidget( new QLabel( "Regular expression to match: ", this ) );
-  grid_layout->addWidget( keyword_regexp_editor_ = new AnimatedLineEditor( this ) );
+  gridLayout->addWidget( new QLabel( "Regular expression to match: ", this ) );
+  gridLayout->addWidget( keyword_regexp_editor_ = new AnimatedLineEditor( this ) );
 
-  grid_layout->addWidget( end_regexp_label_ = new QLabel( "Ending regular expression: ", this ) );
-  grid_layout->addWidget( end_regexp_editor_ = new AnimatedLineEditor( this ) );
+  gridLayout->addWidget( end_regexp_label_ = new QLabel( "Ending regular expression: ", this ) );
+  gridLayout->addWidget( end_regexp_editor_ = new AnimatedLineEditor( this ) );
 
   // options
   mainLayout().addWidget( pattern_options_ = new HighlightPatternOptions( this ) );
@@ -105,12 +105,12 @@ void HighlightPatternDialog::setPatterns( const HighlightPattern::List& patterns
 
   // update parent_combobox
   parent_combobox_->clear();
-  parent_combobox_->addItem( HighlightPattern::no_parent_pattern_ );
+  parent_combobox_->addItem( HighlightPattern::noParentPattern_ );
   for( HighlightPattern::List::const_iterator iter = patterns.begin(); iter != patterns.end(); ++iter )
   { parent_combobox_->addItem( iter->name() ); }
 
   //! select default parent pattern
-  parent_combobox_->setCurrentIndex( parent_combobox_->findText( HighlightPattern::no_parent_pattern_ ) );
+  parent_combobox_->setCurrentIndex( parent_combobox_->findText( HighlightPattern::noParentPattern_ ) );
 }
 
 //________________________________________________________________________
@@ -150,7 +150,7 @@ void HighlightPatternDialog::setPattern( const HighlightPattern& pattern )
   style_combobox_->setCurrentIndex( style_combobox_->findText( pattern_.style().name() ) );
 
   // parent
-  if( pattern.parent().isEmpty() ) { parent_combobox_->setCurrentIndex( parent_combobox_->findText( HighlightPattern::no_parent_pattern_ ) ); }
+  if( pattern.parent().isEmpty() ) { parent_combobox_->setCurrentIndex( parent_combobox_->findText( HighlightPattern::noParentPattern_ ) ); }
   else { parent_combobox_->setCurrentIndex( parent_combobox_->findText( pattern_.parent() ) ); }
 
   // comments
@@ -170,11 +170,11 @@ HighlightPattern HighlightPatternDialog::pattern( void )
   pattern_.setName( name_editor_->text() );
 
   QString parent( parent_combobox_->itemText( parent_combobox_->currentIndex() ) );
-  pattern_.setParent( parent == HighlightPattern::no_parent_pattern_ ? "":parent );
+  pattern_.setParent( parent == HighlightPattern::noParentPattern_ ? "":parent );
 
   // style
-  std::set<HighlightStyle>::iterator style_iter ( styles_.find( HighlightStyle( style_combobox_->itemText( style_combobox_->currentIndex() ) ) ) );
-  if( style_iter != styles_.end() ) pattern_.setStyle( *style_iter );
+  HighlightStyle::Set::iterator styleIter ( styles_.find( HighlightStyle( style_combobox_->itemText( style_combobox_->currentIndex() ) ) ) );
+  if( styleIter != styles_.end() ) pattern_.setStyle( *styleIter );
   else InformationDialog( this, "invalid style name" ).exec();
 
   pattern_.setFlags( pattern_options_->options() );

@@ -66,7 +66,7 @@ else
 # static libraries
 if WITH_ASPELL
 libraries = \
-  -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
+  -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork -lQtDBus\
   -L$(aspell_libraries) -laspell  \
   libqedit.a \
   ../filesystem/libfilesystem.a \
@@ -80,7 +80,7 @@ libraries = \
 else
 
 libraries =  \
-  -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork\
+  -L$(qt_libraries) -l$(qt_lib) -lQtGui -lQtXml -lQtNetwork -lQtDBus\
   libqedit.a \
   ../filesystem/libfilesystem.a \
   ../document-classes/libdocument-classes.a \

@@ -24,11 +24,11 @@
 *******************************************************************************/
 
 /*!
-  \file BlockDelimiterList.h
-  \brief List box for BlockDelimiters
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file BlockDelimiterList.h
+\brief List box for BlockDelimiters
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QPushButton>
@@ -44,59 +44,59 @@ class TreeView;
 class BlockDelimiterList: public QGroupBox, public Counter
 {
 
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+        public:
 
-  //! constructor
-  BlockDelimiterList( QWidget* parent = 0 );
+        //! constructor
+        BlockDelimiterList( QWidget* parent = 0 );
 
-  //! delimiter
-  void setDelimiters( const BlockDelimiter::List& );
+    //! delimiter
+    void setDelimiters( const BlockDelimiter::List& );
 
-  //! Delimiter
-  BlockDelimiter::List delimiters( void );
+    //! Delimiter
+    BlockDelimiter::List delimiters( void );
 
-  //! true when Delimiter are modified
-  bool modified( void ) const
-  { return modified_; }
+    //! true when Delimiter are modified
+    bool modified( void ) const
+    { return modified_; }
 
-  private slots:
+    private slots:
 
-  //! update buttons enability
-  void _updateButtons( void );
+    //! update buttons enability
+    void _updateButtons( void );
 
-  //! edit selected Pattern
-  void _edit( void );
+    //! edit selected Pattern
+    void _edit( void );
 
-  //! remove selected Pattern
-  void _remove( void );
+    //! remove selected Pattern
+    void _remove( void );
 
-  //! add new Pattern
-  void _add( void );
+    //! add new Pattern
+    void _add( void );
 
-  //! store selection
-  void _storeSelection( void );
+    //! store selection
+    void _storeSelection( void );
 
-  //! restore selection
-  void _restoreSelection( void );
+    //! restore selection
+    void _restoreSelection( void );
 
-  private:
+    private:
 
-  //! list
-  TreeView* list_;
+    //! list
+    TreeView* list_;
 
-  //! model
-  BlockDelimiterModel model_;
+    //! model
+    BlockDelimiterModel model_;
 
-  //! buttons
-  QPushButton* edit_button_;
+    //! buttons
+    QPushButton* edit_button_;
 
-  //! buttons
-  QPushButton* remove_button_;
+    //! buttons
+    QPushButton* remove_button_;
 
-  //! modification state
-  bool modified_;
+    //! modification state
+    bool modified_;
 
 };
 

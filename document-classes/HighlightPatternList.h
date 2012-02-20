@@ -24,11 +24,11 @@
 *******************************************************************************/
 
 /*!
-  \file HighlightPatternList.h
-  \brief List box for HighlightPatterns
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file HighlightPatternList.h
+\brief List box for HighlightPatterns
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QPushButton>
@@ -44,79 +44,79 @@ class TreeView;
 class HighlightPatternList: public QGroupBox, public Counter
 {
 
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+        public:
 
-  //! constructor
-  HighlightPatternList( QWidget* parent = 0 );
+        //! constructor
+        HighlightPatternList( QWidget* parent = 0 );
 
-  //! patterns
-  void setPatterns( const HighlightPattern::List& );
+    //! patterns
+    void setPatterns( const HighlightPattern::List& );
 
-  //! styles
-  void setStyles( const HighlightStyle::Set& styles )
-  {
-    Debug::Throw( "HighlightPatternList::setStyles.\n" );
-    styles_ = styles;
-  }
+    //! styles
+    void setStyles( const HighlightStyle::Set& styles )
+    {
+        Debug::Throw( "HighlightPatternList::setStyles.\n" );
+        styles_ = styles;
+    }
 
-  //! Patterns
-  HighlightPattern::List patterns( void );
+    //! Patterns
+    HighlightPattern::List patterns( void );
 
-  signals:
+    signals:
 
-  //! emmitted when modified
-  void modified( void );
+    //! emmitted when modified
+    void modified( void );
 
-  private slots:
+    private slots:
 
-  //! update buttons enability
-  void _updateButtons( void );
+    //! update buttons enability
+    void _updateButtons( void );
 
-  //! edit selected Pattern
-  void _edit( void );
+    //! edit selected Pattern
+    void _edit( void );
 
-  //! remove selected Pattern
-  void _remove( void );
+    //! remove selected Pattern
+    void _remove( void );
 
-  //! add new Pattern
-  void _add( void );
+    //! add new Pattern
+    void _add( void );
 
-  //! store selection
-  void _storeSelection( void );
+    //! store selection
+    void _storeSelection( void );
 
-  //! restore selection
-  void _restoreSelection( void );
+    //! restore selection
+    void _restoreSelection( void );
 
-  //! move up selected task
-  void _up( void );
+    //! move up selected task
+    void _up( void );
 
-  //! move down selected task
-  void _down( void );
+    //! move down selected task
+    void _down( void );
 
-  private:
+    private:
 
-  //! style set
-  HighlightStyle::Set styles_;
+    //! style set
+    HighlightStyle::Set styles_;
 
-  //! list
-  TreeView* list_;
+    //! list
+    TreeView* list_;
 
-  //! model
-  HighlightPatternModel model_;
+    //! model
+    HighlightPatternModel model_;
 
-  //! buttons
-  QPushButton* edit_button_;
+    //! buttons
+    QPushButton* editButton_;
 
-  //! buttons
-  QPushButton* remove_button_;
+    //! buttons
+    QPushButton* removeButton_;
 
-  //! buttons
-  QPushButton* move_up_button_;
+    //! buttons
+    QPushButton* moveUpButton_;
 
-  //! buttons
-  QPushButton* move_down_button_;
+    //! buttons
+    QPushButton* moveDownButton_;
 
 };
 
