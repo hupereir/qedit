@@ -44,7 +44,7 @@ class FileSelectionDialog: public CustomDialog
     FileSelectionDialog( QWidget* parent, const TextSelection& );
 
     //! selected files
-    typedef std::list<File> FileList;
+    typedef QList<File> FileList;
 
     //! selected files
     FileList selectedFiles( void ) const;

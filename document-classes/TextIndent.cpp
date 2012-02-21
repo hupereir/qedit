@@ -52,7 +52,7 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
     if( !isEnabled() || patterns_.empty() ) return;
 
     // store all blocks prior to starting modifications
-    std::vector<QTextBlock> blocks;
+    QList<QTextBlock> blocks;
     for( QTextBlock block( first ); block.isValid() && block != last; block = block.next() )
     { blocks.push_back( block ); }
     blocks.push_back( last );
@@ -71,7 +71,7 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
     // get tabs in previous block
     int previous_tabs( previous_block.isValid() ? _tabCount( previous_block ):0 );
     int i(0);
-    for( std::vector<QTextBlock>::iterator blockIter = blocks.begin(); blockIter != blocks.end(); ++blockIter, i++ )
+    for( QList<QTextBlock>::iterator blockIter = blocks.begin(); blockIter != blocks.end(); ++blockIter, i++ )
     {
 
         // update progress

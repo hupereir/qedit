@@ -31,7 +31,7 @@
 #include <QtCore/QFileSystemWatcher>
 #include <QtCore/QObject>
 #include <QtCore/QTimerEvent>
-#include <set>
+#include <QtCore/QSet>
 
 class TextDisplay;
 
@@ -125,7 +125,7 @@ class FileCheck: public QObject, public BASE::Key, public Counter
     };
 
     //! map data to file
-    typedef std::set<Data> DataSet;
+    typedef QSet<Data> DataSet;
 
 
     //! file system watcher
@@ -147,7 +147,7 @@ class FileCheck: public QObject, public BASE::Key, public Counter
     QFileSystemWatcher fileSystemWatcher_;
 
     //! file set
-    typedef std::set<QString> FileSet;
+    typedef QSet<QString> FileSet;
 
     //! file set
     FileSet files_;
@@ -159,5 +159,8 @@ class FileCheck: public QObject, public BASE::Key, public Counter
     QBasicTimer timer_;
 
 };
+
+inline unsigned int qHash( const FileCheck::Data& data )
+{ return qHash( data.file() ); }
 
 #endif

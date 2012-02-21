@@ -941,7 +941,7 @@ bool TextDisplay::isCurrentBlockTagged( void )
 
     Debug::Throw( "TextDisplay::isCurrentBlockTagged.\n" );
 
-    std::vector<QTextBlock> blocks;
+    QList<QTextBlock> blocks;
     QTextCursor cursor( textCursor() );
     if( cursor.hasSelection() )
     {
@@ -954,7 +954,7 @@ bool TextDisplay::isCurrentBlockTagged( void )
 
     } else blocks.push_back( cursor.block() );
 
-    for( std::vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( QList<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     {
         TextBlockData *data( static_cast<TextBlockData*>( iter->userData() ) );
         if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
@@ -2120,13 +2120,13 @@ void TextDisplay::_addBaseIndentation( void )
     end = document()->findBlock( position_end );
 
     // store blocks
-    std::vector<QTextBlock> blocks;
+    QList<QTextBlock> blocks;
     for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
     { blocks.push_back( block ); }
     blocks.push_back( end );
 
     // loop over blocks
-    for( std::vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( QList<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     {
         // check block
         if( !iter->isValid() ) continue;
@@ -2202,13 +2202,13 @@ void TextDisplay::_replaceLeadingTabs( const bool& confirm )
     }
 
     // store blocks
-    std::vector<QTextBlock> blocks;
+    QList<QTextBlock> blocks;
     for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
     { blocks.push_back( block ); }
     blocks.push_back( end );
 
     // loop over blocks
-    for( std::vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( QList<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     {
         // check block
         if( !iter->isValid() ) continue;
@@ -2524,7 +2524,7 @@ void TextDisplay::_tagBlock( void )
 {
 
     Debug::Throw( "TextDisplay::_tagBlock.\n" );
-    std::vector<QTextBlock> blocks;
+    QList<QTextBlock> blocks;
     QTextCursor cursor( textCursor() );
     if( cursor.hasSelection() )
     {
@@ -2538,7 +2538,7 @@ void TextDisplay::_tagBlock( void )
     } else blocks.push_back( cursor.block() );
 
     // clear background for selected blocks
-    for( std::vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( QList<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     { if( iter->isValid() ) tagBlock( *iter, TextBlock::USER_TAG ); }
 
 }
@@ -2619,7 +2619,7 @@ void TextDisplay::_clearTag( void )
 
     Debug::Throw( "AnimatedTextEditor::_clearTag.\n" );
 
-    std::vector<QTextBlock> blocks;
+    QList<QTextBlock> blocks;
     QTextCursor cursor( textCursor() );
     if( cursor.hasSelection() )
     {
@@ -2652,7 +2652,7 @@ void TextDisplay::_clearTag( void )
     }
 
     // clear background for selected blocks
-    for( std::vector<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( QList<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
     { clearTag( *iter, TextBlock::ALL_TAGS ); }
 
 }

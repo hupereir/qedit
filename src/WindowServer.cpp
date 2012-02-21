@@ -205,7 +205,7 @@ bool WindowServer::closeAll( void )
         if( !dialog.exec() ) return false;
     }
 
-    std::list<QString> files;
+    QStringList files;
     for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); ++iter )
     { files.push_back( iter->file() ); }
 
@@ -330,7 +330,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
 }
 
 //___________________________________________________________
-void WindowServer::multipleFileReplace( std::list<File> files, TextSelection selection )
+void WindowServer::multipleFileReplace( QList<File> files, TextSelection selection )
 {
     Debug::Throw( "WindowServer::multipleFileReplace.\n" );
 
@@ -348,7 +348,7 @@ void WindowServer::multipleFileReplace( std::list<File> files, TextSelection sel
     int maximum(0);
     BASE::KeySet<TextDisplay> displays;
     BASE::KeySet<MainWindow> windows( this );
-    for( std::list<File>::iterator iter = files.begin(); iter != files.end(); ++iter )
+    for( QList<File>::iterator iter = files.begin(); iter != files.end(); ++iter )
     {
 
         File& file( *iter );
@@ -862,21 +862,8 @@ void WindowServer::_save( FileRecord::List records )
 
 }
 
-
 //_______________________________________________
-void WindowServer::_close( QStringList filenames )
-{
-
-    FileRecord::List records;
-    for( QStringList::const_iterator iter = filenames.begin(); iter != filenames.end(); ++iter )
-    { records.push_back( FileRecord( *iter ) ); }
-
-    _close( records );
-
-}
-
-//_______________________________________________
-void WindowServer::_close( FileRecord::List records )
+bool WindowServer::_close( FileRecord::List records )
 {
     Debug::Throw( "WindowServer::_close.\n" );
 
@@ -884,24 +871,24 @@ void WindowServer::_close( FileRecord::List records )
     assert( !records.empty() );
 
     // ask for confirmation
-    if( records.size() > 1 && !CloseFilesDialog( &_activeWindow(), records ).exec() ) return;
+    if( records.size() > 1 && !CloseFilesDialog( &_activeWindow(), records ).exec() ) return true;
 
-    std::list<QString> files;
+    QStringList files;
     for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); ++iter )
     { files.push_back( iter->file() ); }
 
-    _close( files );
+    return _close( files );
 
 }
 
 //________________________________________________________________
-bool WindowServer::_close( const std::list<QString>& files )
+bool WindowServer::_close( QStringList files )
 {
 
     int state( AskForSaveDialog::UNKNOWN );
 
     // need a first loop over associated windows to store modified files
-    std::set<QString> modifiedFiles;
+    QSet<QString> modifiedFiles;
     BASE::KeySet<MainWindow> windows( this );
     for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); ++iter )
     {
@@ -911,7 +898,7 @@ bool WindowServer::_close( const std::list<QString>& files )
 
             // see if file is in list
             TextDisplay& display( **displayIter );
-            if( find( files.begin(), files.end(), display.file() ) == files.end() ) continue;
+            if( std::find( files.begin(), files.end(), display.file() ) == files.end() ) continue;
             if( display.document()->isModified() ) modifiedFiles.insert( display.file() );
 
         }
@@ -934,7 +921,7 @@ bool WindowServer::_close( const std::list<QString>& files )
                 TextDisplay& display( **displayIter );
 
                 // see if file is in list
-                if( find( files.begin(), files.end(), display.file() ) == files.end() ) continue;
+                if( std::find( files.begin(), files.end(), display.file() ) == files.end() ) continue;
 
                 Debug::Throw() << "WindowServer::_close - file: " << display.file() << endl;
 
@@ -949,7 +936,7 @@ bool WindowServer::_close( const std::list<QString>& files )
                         if( state == AskForSaveDialog::YES_TO_ALL || state == AskForSaveDialog::YES ) display.save();
                         else if( state == AskForSaveDialog::NO_TO_ALL  || state == AskForSaveDialog::YES ) display.document()->setModified( false );
                         else if( state == AskForSaveDialog::CANCEL ) return false;
-                        modifiedFiles.erase( display.file() );
+                        modifiedFiles.remove( display.file() );
                         view.closeDisplay( display );
                     }
 

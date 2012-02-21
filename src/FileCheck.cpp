@@ -68,7 +68,7 @@ void FileCheck::removeFile( const QString& file )
 {
 
     Debug::Throw() << "FileCheck::removeFile: " << file << endl;
-    files_.erase( file );
+    files_.remove( file );
     fileSystemWatcher_.removePath( file );
 
     return;

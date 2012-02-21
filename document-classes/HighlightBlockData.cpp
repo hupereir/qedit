@@ -22,18 +22,9 @@
 *
 *******************************************************************************/
 
-/*!
-\file HighlightBlockData.cpp
-\brief TextBlock data for syntax highlighting
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <algorithm>
 #include "HighlightBlockData.h"
 
-
+#include <algorithm>
 
 //____________________________________________________________
 HighlightBlockData::HighlightBlockData( void ):
@@ -49,7 +40,7 @@ SPELLCHECK::Word HighlightBlockData::misspelledWord( const int& position ) const
 {
 
     Debug::Throw( "HighlightBlockData::misspelledWord.\n" );
-    SPELLCHECK::Word::Set::const_iterator iter = find_if( words_.begin(), words_.end(), SPELLCHECK::Word::AtPositionFTor( position ) );
+    SPELLCHECK::Word::Set::const_iterator iter = std::find_if( words_.begin(), words_.end(), SPELLCHECK::Word::AtPositionFTor( position ) );
     return (iter == words_.end()) ? SPELLCHECK::Word():*iter;
 
 }

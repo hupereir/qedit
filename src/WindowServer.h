@@ -33,8 +33,6 @@
 
 #include <QtGui/QAction>
 #include <QtCore/QObject>
-#include <list>
-#include <map>
 
 class MainWindow;
 class TextDisplay;
@@ -96,7 +94,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     };
 
     //! multiple files replace
-    void multipleFileReplace( std::list<File>, TextSelection );
+    void multipleFileReplace( QList<File>, TextSelection );
 
     //! orientation
     enum OrientationMode
@@ -195,10 +193,10 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     void _save( FileRecord::List );
 
     //! close selected files
-    void _close( QStringList );
+    bool _close( const QStringList );
 
     //! close selected files
-    void _close( FileRecord::List );
+    bool _close( FileRecord::List );
 
     private:
 
@@ -210,9 +208,6 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
     //! open file
     bool _open( FileRecord, Qt::Orientation );
-
-    //! close files
-    bool _close( const std::list<QString>& );
 
     //! find mainwindow matching given file
     MainWindow& _findWindow( const File& );

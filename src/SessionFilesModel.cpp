@@ -37,6 +37,7 @@
 #include "XmlFileList.h"
 #include "XmlFileRecord.h"
 #include "XmlOptions.h"
+#include "QOrderedSet.h"
 
 #include <QtCore/QMimeData>
 #include <QtCore/QSet>
@@ -167,8 +168,8 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 {
 
     // return FileRecordModel::mimeData( indexes );
-    std::set<QString> filenames;
-    std::set<FileRecord> records;
+    QOrderedSet<QString> filenames;
+    QOrderedSet<FileRecord> records;
     for( QModelIndexList::const_iterator iter = indexes.begin(); iter != indexes.end(); ++iter )
     {
 
@@ -189,14 +190,14 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
         // fill text data
         QString full_text;
         QTextStream buffer( &full_text );
-        for( std::set<QString>::const_iterator iter = filenames.begin(); iter != filenames.end(); ++iter )
+        for( QOrderedSet<QString>::const_iterator iter = filenames.begin(); iter != filenames.end(); ++iter )
         { buffer << *iter << endl; }
         mime->setText( full_text );
 
         // fill DRAG data. Use XML
         QDomDocument document;
         QDomElement top = document.appendChild( document.createElement( XmlFileRecord::XML_FILE_LIST ) ).toElement();
-        for( std::set<FileRecord>::const_iterator iter = records.begin(); iter != records.end(); ++iter )
+        for( QOrderedSet<FileRecord>::const_iterator iter = records.begin(); iter != records.end(); ++iter )
         {
 
             if( iter->file().isEmpty() ) continue;
