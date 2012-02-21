@@ -66,7 +66,7 @@ bool Diff::run( void )
     error_ = "";
 
     // check files
-    for( std::vector<FileInformation>::const_iterator iter = files_.begin(); iter != files_.end(); ++iter )
+    for( QVector<FileInformation>::const_iterator iter = files_.begin(); iter != files_.end(); ++iter )
     {
 
         // check if filename is empty
@@ -112,7 +112,7 @@ void Diff::_clear( void )
 {
 
     Debug::Throw( "Diff::_Clear.\n" );
-    for( std::vector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); ++iter )
+    for( QVector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); ++iter )
     { iter->clear(); }
     return;
 }
@@ -149,7 +149,7 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
     }
 
     // highlight displays
-    for( std::vector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); ++iter )
+    for( QVector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); ++iter )
     { iter->highlightDisplay(); }
 
     // delete this object
@@ -168,7 +168,7 @@ void Diff::_parseLine( const QString& line )
     int position( line.indexOf( "c" ) );
     if( position >= 0 )
     {
-        std::vector<Range> ranges(2);
+        QVector<Range> ranges(2);
         ranges[0] = _parseRange(line.left( position ));
         ranges[1] = _parseRange(line.mid( position+1 ));
 

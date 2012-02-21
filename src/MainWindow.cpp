@@ -214,7 +214,6 @@ TextView& MainWindow::newTextView( FileRecord record )
     setActiveView( *view );
 
     return *view;
-
 }
 
 //_____________________________________________________________________
@@ -263,7 +262,6 @@ BASE::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
     { displays.unite( BASE::KeySet<TextDisplay>(*iter) ); }
 
     return displays;
-
 }
 
 //_____________________________________________________________________

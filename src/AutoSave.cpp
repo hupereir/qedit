@@ -21,22 +21,12 @@
 *
 *******************************************************************************/
 
-/*!
-\file AutoSave.cpp
-\brief handles threads for file auto-save
-\author  Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "AutoSave.h"
 #include "Debug.h"
 #include "MainWindow.h"
 #include "Options.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
-
-
 
 //______________________________________________________
 AutoSave::AutoSave( QObject* parent ):

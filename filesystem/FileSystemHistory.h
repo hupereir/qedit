@@ -24,69 +24,62 @@
 *
 *******************************************************************************/
 
-/*!
-   \file    FileSystemHistory.h
-   \brief   Handles directory navigation history
-   \author  Hugo Pereira
-   \version $Revision$
-   \date    $Date$
-*/
-
-#include <cassert>
-#include <vector>
 
 #include "Counter.h"
 #include "File.h"
 
+#include <QtCore/QList>
+#include <cassert>
+
 class FileSystemHistory: public Counter
 {
-  public:
+    public:
 
-  //! constructor
-  FileSystemHistory( void ):
-    Counter( "FileSystemHistory" ),
-    index_(0)
-  {}
+    //! constructor
+    FileSystemHistory( void ):
+        Counter( "FileSystemHistory" ),
+        index_(0)
+    {}
 
-  //! true if next path in history is valid
-  bool nextAvailable( void ) const
-  { return index_ + 1 < path_list_.size(); }
+    //! true if next path in history is valid
+    bool nextAvailable( void ) const
+    { return index_ + 1 < pathList_.size(); }
 
-  //! retrieve next path in history
-  File next( void )
-  {
-    assert( nextAvailable() );
-    index_++;
-    return path_list_[index_];
-  }
+    //! retrieve next path in history
+    File next( void )
+    {
+        assert( nextAvailable() );
+        index_++;
+        return pathList_[index_];
+    }
 
-  //! true if previous path in history is valid
-  bool previousAvailable( void ) const
-  { return index_ > 0; }
+    //! true if previous path in history is valid
+    bool previousAvailable( void ) const
+    { return index_ > 0; }
 
-  //! retrieve previous path in history
-  File previous( void )
-  {
-    assert( previousAvailable() );
-    index_--;
-    return path_list_[index_];
-  }
+    //! retrieve previous path in history
+    File previous( void )
+    {
+        assert( previousAvailable() );
+        index_--;
+        return pathList_[index_];
+    }
 
-  //! add path to history
-  /*!
+    //! add path to history
+    /*!
     Everything that is originally after the current index_ is removed;
     New path is then added after the current index.
     And the current index is moved to it.
-  */
-  void add( File );
+    */
+    void add( File );
 
-  private:
+    private:
 
-  //! path list
-  std::vector<File> path_list_;
+    //! path list
+    QList<File> pathList_;
 
-  //! current index in list
-  unsigned int index_;
+    //! current index in list
+    int index_;
 
 };
 

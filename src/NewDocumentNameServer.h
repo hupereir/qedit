@@ -24,68 +24,60 @@
 *
 *******************************************************************************/
 
-/*!
-  \file NewDocumentNameServer.h
-  \brief keep track of new document names (prior to being first saved)
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <vector>
-#include <QString>
+#include <QtCore/QString>
+#include <QtCore/QList>
 
 class NewDocumentNameServer
 {
 
-  public:
-
-  //! constructor
-  NewDocumentNameServer( void )
-  {}
-
-  //! destructor
-  virtual ~NewDocumentNameServer( void )
-  {}
-
-
-  //! get name
-  QString get( void );
-
-  //! remove (this is used to avoid that version number is incremented too quickly)
-  void remove( QString );
-
-  private:
-
-  //! generate file name matching a given version
-  static QString _get( const unsigned int& version );
-
-  class SameVersionFTor
-  {
     public:
 
     //! constructor
-    SameVersionFTor( const QString& name ):
-      name_( name )
-      {}
+    NewDocumentNameServer( void )
+    {}
 
-    //! predicate
-    bool operator() (const unsigned int& version ) const
-    { return NewDocumentNameServer::_get( version ) == name_; }
+    //! destructor
+    virtual ~NewDocumentNameServer( void )
+    {}
+
+
+    //! get name
+    QString get( void );
+
+    //! remove (this is used to avoid that version number is incremented too quickly)
+    void remove( QString );
 
     private:
 
-    //! prediction
-    QString name_;
+    //! generate file name matching a given version
+    static QString _get( const unsigned int& version );
 
-  };
+    class SameVersionFTor
+    {
+        public:
 
-  //! default name
-  static const QString default_name_;
+        //! constructor
+        SameVersionFTor( const QString& name ):
+            name_( name )
+         {}
 
-  // version (appended)
-  std::vector<unsigned int> versions_;
+        //! predicate
+        bool operator() (const unsigned int& version ) const
+        { return NewDocumentNameServer::_get( version ) == name_; }
+
+        private:
+
+        //! prediction
+        QString name_;
+
+    };
+
+    //! default name
+    static const QString defaultName_;
+
+    // version (appended)
+    QList<unsigned int> versions_;
 
 };
 
-#endif
+    #endif

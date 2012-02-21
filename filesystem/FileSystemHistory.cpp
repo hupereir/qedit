@@ -22,11 +22,11 @@
 *******************************************************************************/
 
 /*!
-   \file    FileSystemHistory.cpp
-   \brief   Handles directory navigation history
-   \author  Hugo Pereira
-   \version $Revision$
-   \date    $Date$
+\file    FileSystemHistory.cpp
+\brief   Handles directory navigation history
+\author  Hugo Pereira
+\version $Revision$
+\date    $Date$
 */
 
 #include "Debug.h"
@@ -38,17 +38,17 @@
 void FileSystemHistory::add( File path )
 {
 
-  Debug::Throw( "FileSystemHistory::add.\n" );
+    Debug::Throw( "FileSystemHistory::add.\n" );
 
-  // make sure path is different from current
-  if( !path_list_.empty() && path_list_[index_] == path ) return;
+    // make sure path is different from current
+    if( !pathList_.empty() && pathList_[index_] == path ) return;
 
-  // remove everything that is after index_ from path_list_
-  while( path_list_.size() > index_+1 ) path_list_.pop_back();
+    // remove everything that is after index_ from pathList_
+    while( pathList_.size() > index_+1 ) pathList_.pop_back();
 
-  // insert new path if different from current
-  path_list_.push_back( path );
-  index_ = path_list_.size()-1;
-  return;
+    // insert new path if different from current
+    pathList_.push_back( path );
+    index_ = pathList_.size()-1;
+    return;
 
 }

@@ -24,19 +24,11 @@
 *
 *******************************************************************************/
 
-/*!
-\file AutoSave.h
-\brief handles threads for file auto-save
-\author  Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QObject>
-#include <QBasicTimer>
-#include <vector>
-
 #include "AutoSaveThread.h"
+
+#include <QtCore/QObject>
+#include <QtCore/QBasicTimer>
+#include <QtCore/QList>
 
 class TextDisplay;
 
@@ -87,7 +79,7 @@ class AutoSave: public QObject, public Counter
     QBasicTimer timer_;
 
     //! list of threads
-    typedef std::vector< AutoSaveThread* > ThreadList;
+    typedef QList< AutoSaveThread* > ThreadList;
 
     //! list of threads
     ThreadList threads_;

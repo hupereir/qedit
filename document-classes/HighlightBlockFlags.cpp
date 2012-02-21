@@ -75,7 +75,7 @@ namespace TextBlock
     }
 
     //_______________________________________________
-    bool Delimiter::List::set( const unsigned int& i, const Delimiter& delimiter )
+    bool Delimiter::List::set( int i, const Delimiter& delimiter )
     {
         if( size() > i && (*this)[i] == delimiter ) return false;
         if( size() <= i ) { resize( i+1 ); }
@@ -84,7 +84,7 @@ namespace TextBlock
     }
 
     //_______________________________________________
-    Delimiter Delimiter::List::get( const unsigned int& i ) const
+    Delimiter Delimiter::List::get( int i ) const
     {
         if( size() <= i ) return TextBlock::Delimiter();
         return (*this)[i];

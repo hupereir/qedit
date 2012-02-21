@@ -37,10 +37,11 @@
 #include "Debug.h"
 #include "File.h"
 
+#include <QtCore/QVector>
+#include <QtCore/QPair>
+#include <QtCore/QSet>
+
 #include <cassert>
-#include <map>
-#include <set>
-#include <vector>
 
 class TextDisplay;
 
@@ -72,10 +73,10 @@ class Diff: public QObject, public Counter
     { return error_; }
 
     //! paragraph range
-    typedef std::pair< unsigned int, unsigned int > Range;
+    typedef QPair< unsigned int, unsigned int > Range;
 
     //! range list
-    typedef std::set< unsigned int > BlockSet;
+    typedef QSet< unsigned int > BlockSet;
 
     private slots:
 
@@ -168,7 +169,7 @@ class Diff: public QObject, public Counter
     };
 
     //! file specific diff information
-    std::vector< FileInformation > files_;
+    QVector< FileInformation > files_;
 
     //! process
     CustomProcess process_;

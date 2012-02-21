@@ -21,47 +21,36 @@
 *
 *******************************************************************************/
 
-/*!
-  \file NewDocumentNameServer.cpp
-  \brief keep track of new document names (prior to being first saved)
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <algorithm>
-#include <QTextStream>
-
 #include "NewDocumentNameServer.h"
-
-
+#include <QtCore/QTextStream>
+#include <algorithm>
 
 //_____________________________________
-const QString NewDocumentNameServer::default_name_ = "new document";
+const QString NewDocumentNameServer::defaultName_ = "new document";
 
 //______________________________________
 QString NewDocumentNameServer::get( void )
 {
 
-  unsigned int version( versions_.empty() ? 0: versions_.back()+1 );
-  QString out( _get( version ) );
-  versions_.push_back( version );
-  return out;
+    unsigned int version( versions_.empty() ? 0: versions_.back()+1 );
+    QString out( _get( version ) );
+    versions_.push_back( version );
+    return out;
 
 }
 
 //______________________________________
 void NewDocumentNameServer::remove( QString name )
-{ versions_.erase( remove_if( versions_.begin(), versions_.end(), SameVersionFTor( name ) ), versions_.end() ); }
+{ versions_.erase( std::remove_if( versions_.begin(), versions_.end(), SameVersionFTor( name ) ), versions_.end() ); }
 
 //______________________________________
 QString NewDocumentNameServer::_get( const unsigned int& version )
 {
 
-  QString buffer;
-  QTextStream what ( &buffer );
-  what << default_name_;
-  if( version > 0 ) { what << " (" << version+1 << ")"; }
-  return buffer;
+    QString buffer;
+    QTextStream what ( &buffer );
+    what << defaultName_;
+    if( version > 0 ) { what << " (" << version+1 << ")"; }
+    return buffer;
 
 }
