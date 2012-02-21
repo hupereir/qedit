@@ -27,8 +27,6 @@
 #include "FileRecordModel.h"
 #include "TextSelection.h"
 
-#include <list>
-
 class TreeView;
 
 //! QDialog used to select opened files

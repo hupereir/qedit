@@ -38,8 +38,6 @@
 #include <QtGui/QSplitter>
 #include <QtGui/QStackedWidget>
 
-#include <list>
-
 class QLabel;
 class DocumentClassToolBar;
 class Menu;

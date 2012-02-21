@@ -24,20 +24,11 @@
 *
 *******************************************************************************/
 
-/*!
-  \file CollapsedBlockData.h
-  \brief stores collapsed block informations
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QString>
-#include <QTextBlock>
-#include <QList>
-#include <vector>
-
 #include "HighlightBlockFlags.h"
+
+#include <QtGui/QTextBlock>
+#include <QtCore/QString>
+#include <QtCore/QList>
 
 //! store collapsed block text and state
 class CollapsedBlockData

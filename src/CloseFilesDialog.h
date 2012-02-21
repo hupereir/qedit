@@ -23,16 +23,6 @@
 *
 *******************************************************************************/
 
-/*!
-  \file CloseFilesDialog.h
-  \brief QDialog used to exit application
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <map>
-
 #include "CustomDialog.h"
 #include "Counter.h"
 #include "File.h"

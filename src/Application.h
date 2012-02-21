@@ -31,7 +31,6 @@
 #include "Counter.h"
 
 #include <QtCore/QBasicTimer>
-#include <list>
 
 class AutoSave;
 class DocumentClassManager;

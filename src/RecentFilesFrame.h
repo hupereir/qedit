@@ -23,21 +23,12 @@
 *
 ****************************************************************************/
 
-/*!
-\file RecentFilesFrame.h
-\brief editor windows navigator
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <cassert>
-#include <map>
-#include <QAction>
-#include <QPaintEvent>
-
 #include "Counter.h"
 #include "FileRecordModel.h"
+
+#include <QtGui/QAction>
+#include <QtGui/QPaintEvent>
+#include <cassert>
 
 class FileList;
 class TreeView;

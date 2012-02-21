@@ -21,26 +21,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file BlockDelimiterDisplay.h
-\brief display block delimiters
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QApplication>
-#include <QAbstractTextDocumentLayout>
-#include <QMenu>
-#include <QPainter>
-#include <QScrollBar>
-#include <QTextDocument>
-#include <QTextBlock>
-#include <QTextLayout>
-#include <QTreeView>
-
-#include <vector>
-
 #include "BlockHighlight.h"
 #include "TextEditor.h"
 #include "TextHighlight.h"
@@ -49,7 +29,16 @@
 #include "HighlightBlockData.h"
 #include "XmlOptions.h"
 
+#include <QtGui/QAbstractTextDocumentLayout>
+#include <QtGui/QTextDocument>
+#include <QtGui/QTextBlock>
+#include <QtGui/QTextLayout>
 
+#include <QtGui/QApplication>
+#include <QtGui/QMenu>
+#include <QtGui/QPainter>
+#include <QtGui/QScrollBar>
+#include <QtGui/QTreeView>
 
 //____________________________________________________________________________
 BlockDelimiterDisplay::BlockDelimiterDisplay(TextEditor* editor ):

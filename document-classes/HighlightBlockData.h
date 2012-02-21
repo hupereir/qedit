@@ -24,16 +24,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file HighlightBlockData.h
-\brief TextBlock data for syntax highlighting
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <map>
-
 #include "CollapsedBlockData.h"
 #include "HighlightBlockFlags.h"
 #include "TextBlockData.h"

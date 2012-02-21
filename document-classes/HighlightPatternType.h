@@ -24,21 +24,11 @@
 *
 *******************************************************************************/
 
-
-/*!
-   \file HighlightPatternType.h
-   \brief highlight pattern type selection
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
-*/
-
-#include <QComboBox>
-#include <QWidget>
-#include <map>
-
 #include "Counter.h"
 #include "HighlightPattern.h"
+
+#include <QtGui/QComboBox>
+#include <QtGui/QWidget>
 
 //! highlight pattern type selection
 class HighlightPatternType: public QComboBox, public Counter

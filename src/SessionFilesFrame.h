@@ -23,24 +23,15 @@
 *
 ****************************************************************************/
 
-/*!
-   \file SessionFilesFrame.h
-   \brief editor windows navigator
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
-*/
-
-#include <cassert>
-#include <map>
-#include <QAction>
-#include <QBasicTimer>
-#include <QPaintEvent>
-#include <QTimerEvent>
-
 #include "Counter.h"
 #include "SessionFilesModel.h"
 #include "TreeView.h"
+
+#include <QtGui/QPaintEvent>
+#include <QtGui/QAction>
+#include <QtCore/QBasicTimer>
+#include <QtCore/QTimerEvent>
+#include <cassert>
 
 //! editor windows navigator
 /*!

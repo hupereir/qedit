@@ -24,21 +24,11 @@
 *
 *******************************************************************************/
 
-
-/*!
-   \file IndentPatternType.h
-   \brief highlight pattern type selection
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
-*/
-
-#include <QComboBox>
-#include <QWidget>
-#include <map>
-
 #include "Counter.h"
 #include "IndentPattern.h"
+
+#include <QtGui/QComboBox>
+#include <QtGui/QWidget>
 
 //! highlight pattern type selection
 class IndentPatternType: public QComboBox, public Counter

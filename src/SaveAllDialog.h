@@ -23,16 +23,6 @@
 *
 *******************************************************************************/
 
-/*!
-  \file SaveAllDialog.h
-  \brief QDialog used to save all modified files
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <map>
-
 #include "CustomDialog.h"
 #include "Counter.h"
 #include "File.h"

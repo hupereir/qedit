@@ -23,14 +23,6 @@
 *
 ****************************************************************************/
 
-/*!
-\file NavigationFrame.h
-\brief editor windows navigator
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "AnimatedStackedWidget.h"
 #include "FileList.h"
 #include "FileRecord.h"
@@ -39,7 +31,6 @@
 #include <QtGui/QShowEvent>
 #include <QtGui/QToolButton>
 #include <cassert>
-#include <map>
 
 class SessionFilesFrame;
 class RecentFilesFrame;

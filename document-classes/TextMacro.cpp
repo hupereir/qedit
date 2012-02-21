@@ -27,7 +27,6 @@
 #include "XmlString.h"
 
 #include <QtCore/QStringList>
-#include <vector>
 #include <cassert>
 
 //___________________________________________________________________________

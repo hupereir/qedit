@@ -24,17 +24,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file TextHighlight.h
-\brief syntax highlighting based on text patterns
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <list>
-#include <QSyntaxHighlighter>
-
 #include "BlockDelimiter.h"
 #include "Config.h"
 #include "Counter.h"
@@ -47,6 +36,8 @@
 #if WITH_ASPELL
 #include "SpellParser.h"
 #endif
+
+#include <QtGui/QSyntaxHighlighter>
 
 class HighlightPattern;
 class HighlightBlockData;

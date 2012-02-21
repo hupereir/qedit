@@ -24,23 +24,14 @@
 *
 *******************************************************************************/
 
-/*!
-\file FileSystemFrame.h
-\brief customized ListView for file/directory navigation
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <map>
-#include <QIcon>
-#include <QWidget>
-#include <QFileSystemWatcher>
-
 #include "File.h"
 #include "FileSystemModel.h"
 #include "FileSystemHistory.h"
 #include "FileSystemThread.h"
+
+#include <QtGui/QIcon>
+#include <QtGui/QWidget>
+#include <QtCore/QFileSystemWatcher>
 
 class CustomComboBox;
 class AnimatedTreeView;
