@@ -44,6 +44,7 @@ bin_PROGRAMS = qedit editDocumentClasses
 # shared libraries
 if ENABLE_SHARED
 if WITH_ASPELL
+
 libraries = \
   -L$(libdir) -lbase-spellcheck -lbase-server -lbase-help \
   libqedit.a \

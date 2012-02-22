@@ -34,7 +34,7 @@ fi
 
 dnl ************************
 dnl set aspell library directory
-AC_ARG_WITH(qt-libraries,
+AC_ARG_WITH(aspell-libraries,
   [ --with-aspell-libraries=path    Path to aspell libraries directory /usr/lib ],
   aspell_libraries=$withval, aspell_libraries=)
 
@@ -62,23 +62,23 @@ AC_CHECK_FILE($aspell_libraries/libaspell.so, aspell_lib=aspell, [aspell=0] )
 
 
 if test $aspell = 1; then
-	AC_SUBST(aspell_dir)
-	AC_SUBST(aspell_libraries)
-	AC_SUBST(aspell_includes)
+  AC_SUBST(aspell_dir)
+  AC_SUBST(aspell_libraries)
+  AC_SUBST(aspell_includes)
 
-	echo ""
-	echo "aspell configuration:"
-	echo "aspell_lib       = " $aspell_lib
-	echo "aspell_dir       = " $aspell_dir
-	echo "aspell_libraries = " $aspell_libraries
-	echo "aspell_includes  = " $aspell_includes
-	echo ""
+  echo ""
+  echo "aspell configuration:"
+  echo "aspell_lib       = " $aspell_lib
+  echo "aspell_dir       = " $aspell_dir
+  echo "aspell_libraries = " $aspell_libraries
+  echo "aspell_includes  = " $aspell_includes
+  echo ""
 else
-	echo ""
-	echo "aspell configuration:"
-	echo "invalid aspell configuration"
-	echo "spell-check disabled"
-	echo ""
+  echo ""
+  echo "aspell configuration:"
+  echo "invalid aspell configuration"
+  echo "spell-check disabled"
+  echo ""
 fi
 
 AM_CONDITIONAL(WITH_ASPELL, [test $aspell = 1])
