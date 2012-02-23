@@ -29,6 +29,7 @@
 #include "XmlError.h"
 
 #include <QtCore/QFile>
+#include <algorithm>
 
 //________________________________________________________
 DocumentClassManager::DocumentClassManager( void ):
