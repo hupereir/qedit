@@ -28,10 +28,6 @@
 \date $Date$
 */
 
-
-#include <unistd.h>
-#include <signal.h>
-
 #include "Debug.h"
 #include "DefaultOptions.h"
 #include "DocumentClass.h"
@@ -43,7 +39,9 @@
 
 #include "Application.h"
 
-
+#include <QtCore/QSettings>
+#include <unistd.h>
+#include <signal.h>
 
 //_______________________________
 //! handles keyboard interruptions
@@ -88,6 +86,9 @@ int main (int argc, char *argv[])
     Application singleton( arguments );
     Singleton::get().setApplication( &singleton );
     singleton.initApplicationManager();
+
+    // settings
+    QSettings settings( "/home/hpereira/.kde4/share/config/kdeglobals", QSettings::NativeFormat );
 
     application.exec();
 
