@@ -39,7 +39,6 @@
 
 #include "Application.h"
 
-#include <QtCore/QSettings>
 #include <unistd.h>
 #include <signal.h>
 
@@ -86,9 +85,6 @@ int main (int argc, char *argv[])
     Application singleton( arguments );
     Singleton::get().setApplication( &singleton );
     singleton.initApplicationManager();
-
-    // settings
-    QSettings settings( "/home/hpereira/.kde4/share/config/kdeglobals", QSettings::NativeFormat );
 
     application.exec();
 
