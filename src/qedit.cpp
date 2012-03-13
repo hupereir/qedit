@@ -83,6 +83,7 @@ int main (int argc, char *argv[])
     QApplication application( argc, argv );
     application.setApplicationName( "qedit" );
     Application singleton( arguments );
+    singleton.setUseFixedFonts( true );
     Singleton::get().setApplication( &singleton );
     singleton.initApplicationManager();
 
