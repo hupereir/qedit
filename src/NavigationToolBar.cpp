@@ -20,14 +20,6 @@
 *
 ****************************************************************************/
 
-/*!
-\file NavigationToolBar.cpp
-\brief editor windows navigator
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "CustomPixmap.h"
 #include "CustomToolButton.h"
 #include "Debug.h"
@@ -133,7 +125,7 @@ void NavigationToolBar::_updateConfiguration( void )
 }
 
 //____________________________________________________________
-void NavigationToolBar::_updateToolButtonStyle( Qt::ToolButtonStyle style )
+void NavigationToolBar::_updateToolButtonStyle( int style )
 {
 
     Debug::Throw( "NavigationToolBar::_updateToolButtonStyle.\n" );
@@ -248,7 +240,7 @@ void NavigationToolBar::contextMenuEvent( QContextMenuEvent* event )
     menu.toolButtonStyleMenu().select( (Qt::ToolButtonStyle) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION" ) );
     menu.iconSizeMenu().select( (IconSize::Size) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) );
 
-    CustomToolBar::connect( &menu.toolButtonStyleMenu(), SIGNAL( styleSelected( Qt::ToolButtonStyle ) ), SLOT( _updateToolButtonStyle( Qt::ToolButtonStyle ) ) );
+    CustomToolBar::connect( &menu.toolButtonStyleMenu(), SIGNAL( styleSelected( int ) ), SLOT( _updateToolButtonStyle( int ) ) );
     CustomToolBar::connect( &menu.iconSizeMenu(), SIGNAL( iconSizeSelected( IconSize::Size ) ), SLOT( _updateToolButtonIconSize( IconSize::Size ) ) );
 
     // move and show menu

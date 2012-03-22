@@ -21,18 +21,7 @@
 *
 *******************************************************************************/
 
-/*!
-\file FileSystemFrame.cpp
-\brief customized ListView for file/directory navigation
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QApplication>
-#include <QHeaderView>
-#include <QLayout>
-#include <QDir>
+#include "FileSystemFrame.h"
 
 #include "AnimatedTreeView.h"
 #include "FileSystemIcons.h"
@@ -41,7 +30,6 @@
 #include "CustomComboBox.h"
 #include "CustomToolBar.h"
 #include "FileInformationDialog.h"
-#include "FileSystemFrame.h"
 #include "IconEngine.h"
 #include "QtUtil.h"
 #include "RemoveFilesDialog.h"
@@ -52,6 +40,10 @@
 #include "XmlOptions.h"
 
 
+#include <QtGui/QApplication>
+#include <QtGui/QHeaderView>
+#include <QtGui/QLayout>
+#include <QtCore/QDir>
 
 //_____________________________________________
 FileSystemFrame::FileSystemFrame( QWidget *parent ):
@@ -74,6 +66,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
     // toolbar
     CustomToolBar* toolbar = new CustomToolBar( "Navigation Toolbar", this, "NAVIGATION_TOOLBAR" );
+    // QToolBar* toolbar = new QToolBar( this );
     toolbar->addAction( &_parentDirectoryAction() );
     toolbar->addAction( &_previousDirectoryAction() );
     toolbar->addAction( &_nextDirectoryAction() );

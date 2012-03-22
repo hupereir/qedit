@@ -23,14 +23,6 @@
 *
 ****************************************************************************/
 
-/*!
-\file NavigationToolBar.h
-\brief editor windows navigator
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "IconSize.h"
 #include "CustomToolBar.h"
 #include "CustomToolButton.h"
@@ -75,7 +67,7 @@ class NavigationToolBar: public CustomToolBar
     void _updateConfiguration( void );
 
     //! toolbar text position
-    void _updateToolButtonStyle( Qt::ToolButtonStyle );
+    void _updateToolButtonStyle( int );
 
     //! toolbar text position
     void _updateToolButtonIconSize( IconSize::Size );
