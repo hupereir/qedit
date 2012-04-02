@@ -1,35 +1,25 @@
 // $Id$
 
 /******************************************************************************
- *
- * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
- *
- * This is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * software; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *
- *******************************************************************************/
-
-/*!
-  \file DocumentClassDialog.h
-  \brief Syntax highlighting style editing dialog
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QPushButton>
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA  02111-1307 USA
+*
+*
+*******************************************************************************/
 
 #include "BlockDelimiterList.h"
 #include "DocumentClassConfiguration.h"
@@ -47,59 +37,59 @@
 #include "TextParenthesisList.h"
 #include "TreeView.h"
 
-
+#include <QtGui/QPushButton>
 
 //__________________________________________________________
 DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
-  TabbedDialog( parent )
+TabbedDialog( parent )
 {
 
-  Debug::Throw( "DocumentClassDialog::DocumentClassDialog.\n" );
-  setOptionName( "DOCUMENT_CLASS_WINDOW" );
+    Debug::Throw( "DocumentClassDialog::DocumentClassDialog.\n" );
+    setOptionName( "DOCUMENT_CLASS_WINDOW" );
 
-  _list().setMaximumWidth( 120 );
+    _list().setMaximumWidth( 120 );
 
-  // general
-  QWidget* page = &addPage( "General", "Document class general settings" );
-  page->layout()->addWidget( document_class_configuration_ = new DocumentClassConfiguration( page ) );
+    // general
+    QWidget* page = &addPage( "General", "Document class general settings" );
+    page->layout()->addWidget( documentClassConfiguration_ = new DocumentClassConfiguration( page ) );
 
-  // highlight styles
-  page = &addPage( "Highlight", "Syntax highlighting styles and patterns", true );
+    // highlight styles
+    page = &addPage( "Highlight", "Syntax highlighting styles and patterns", true );
 
-  page->layout()->addWidget( highlight_style_list_ = new HighlightStyleList(page) );
-  page->layout()->addWidget( highlight_pattern_list_ = new HighlightPatternList(page) );
+    page->layout()->addWidget( highlightStyleList_ = new HighlightStyleList(page) );
+    page->layout()->addWidget( highlightPatternList_ = new HighlightPatternList(page) );
 
-  // delimiters
-  page = &addPage( "Delimiters", "Parenthesis and block delimiters", true );
-  page->layout()->addWidget( text_parenthesis_list_ = new TextParenthesisList( page ) );
-  page->layout()->addWidget( block_delimiter_list_ = new BlockDelimiterList( page ) );
+    // delimiters
+    page = &addPage( "Delimiters", "Parenthesis and block delimiters", true );
+    page->layout()->addWidget( textParenthesisList_ = new TextParenthesisList( page ) );
+    page->layout()->addWidget( blockDelimiterList_ = new BlockDelimiterList( page ) );
 
-  // indentation
-  page = &addPage( "Indentation", "Indentation rules", true );
-  page->layout()->addWidget( indent_pattern_list_ = new IndentPatternList( page ) );
+    // indentation
+    page = &addPage( "Indentation", "Indentation rules", true );
+    page->layout()->addWidget( indentPatternList_ = new IndentPatternList( page ) );
 
-  // macro
-  page = &addPage( "Macros", "Text processing macros", true );
-  page->layout()->addWidget( text_macro_list_ = new TextMacroList() );
+    // macro
+    page = &addPage( "Macros", "Text processing macros", true );
+    page->layout()->addWidget( textMacroList_ = new TextMacroList() );
 
-  // preview
-  page = &addPage( "Preview", "Document class preview and testing", true );
-  page->layout()->addWidget( preview_ = new DocumentClassPreview() );
-  connect( &_preview().reloadButton(), SIGNAL( clicked( void ) ), SLOT( _updatePreview( void ) ) );
+    // preview
+    page = &addPage( "Preview", "Document class preview and testing", true );
+    page->layout()->addWidget( preview_ = new DocumentClassPreview() );
+    connect( &_preview().reloadButton(), SIGNAL( clicked( void ) ), SLOT( _updatePreview( void ) ) );
 
-  // buttons
-  _buttonLayout().addStretch( 1 );
+    // buttons
+    _buttonLayout().addStretch( 1 );
 
-  QPushButton* button;
-  _buttonLayout().addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&OK", this ) );
-  connect( button, SIGNAL( clicked() ), SLOT( accept() ) );
+    QPushButton* button;
+    _buttonLayout().addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&OK", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( accept() ) );
 
-  _buttonLayout().addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Cancel", this ) );
-  connect( button, SIGNAL( clicked() ), SLOT( reject() ) );
+    _buttonLayout().addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Cancel", this ) );
+    connect( button, SIGNAL( clicked() ), SLOT( reject() ) );
 
-  // connections
-  connect( &_highlightStyleList(), SIGNAL( modified( void ) ), SLOT( _updateStyles( void ) ) );
-  adjustSize();
+    // connections
+    connect( &_highlightStyleList(), SIGNAL( modified( void ) ), SLOT( _updateStyles( void ) ) );
+    adjustSize();
 
 }
 
@@ -107,37 +97,37 @@ DocumentClassDialog::DocumentClassDialog( QWidget* parent ):
 void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class )
 {
 
-  Debug::Throw( "DocumentClassDialog::setDocumentClass.\n" );
+    Debug::Throw( "DocumentClassDialog::setDocumentClass.\n" );
 
-  // set window title
-  QString buffer;
-  QTextStream( &buffer ) << "Document Class: " << document_class.name() << " - Qedit";
-  setWindowTitle( buffer );
+    // set window title
+    QString buffer;
+    QTextStream( &buffer ) << "Document Class: " << document_class.name() << " - Qedit";
+    setWindowTitle( buffer );
 
-  // configuration
-  document_class_configuration_->setDocumentClass( document_class );
+    // configuration
+    documentClassConfiguration_->setDocumentClass( document_class );
 
-  // highlight styles
-  highlight_style_list_->setStyles( document_class.highlightStyles() );
+    // highlight styles
+    highlightStyleList_->setStyles( document_class.highlightStyles() );
 
-  // highlight patterns
-  highlight_pattern_list_->setStyles( document_class.highlightStyles() );
-  highlight_pattern_list_->setPatterns( document_class.highlightPatterns() );
+    // highlight patterns
+    highlightPatternList_->setStyles( document_class.highlightStyles() );
+    highlightPatternList_->setPatterns( document_class.highlightPatterns() );
 
-  // parenthesis
-  text_parenthesis_list_->setParenthesis( document_class.parenthesis() );
+    // parenthesis
+    textParenthesisList_->setParenthesis( document_class.parenthesis() );
 
-  // delimiters
-  block_delimiter_list_->setDelimiters( document_class.blockDelimiters() );
+    // delimiters
+    blockDelimiterList_->setDelimiters( document_class.blockDelimiters() );
 
-  //! indentation
-  indent_pattern_list_->setPatterns( document_class.indentPatterns() );
+    //! indentation
+    indentPatternList_->setPatterns( document_class.indentPatterns() );
 
-  // text macros
-  text_macro_list_->setMacros( document_class.textMacros() );
+    // text macros
+    textMacroList_->setMacros( document_class.textMacros() );
 
-  // update preview
-  _updatePreview();
+    // update preview
+    _updatePreview();
 
 }
 
@@ -145,54 +135,54 @@ void DocumentClassDialog::setDocumentClass( const DocumentClass& document_class 
 DocumentClass DocumentClassDialog::documentClass( void )
 {
 
-  Debug::Throw( "DocumentClassDialog::documentClass.\n" );
-  DocumentClass out( _documentClassConfiguration().documentClass() );
-  out.setHighlightStyles( _highlightStyleList().styles() );
-  out.setHighlightPatterns( _highlightPatternList().patterns() );
-  QStringList warnings = out.associatePatterns();
+    Debug::Throw( "DocumentClassDialog::documentClass.\n" );
+    DocumentClass out( _documentClassConfiguration().documentClass() );
+    out.setHighlightStyles( _highlightStyleList().styles() );
+    out.setHighlightPatterns( _highlightPatternList().patterns() );
+    QStringList warnings = out.associatePatterns();
 
-  out.setIndentPatterns( _indentPatternList().patterns() );
-  out.setParenthesis( _textParenthesisList().parenthesis() );
-  out.setBlockDelimiters( _blockDelimiterList().delimiters() );
-  out.setTextMacros( _textMacroList().macros() );
+    out.setIndentPatterns( _indentPatternList().patterns() );
+    out.setParenthesis( _textParenthesisList().parenthesis() );
+    out.setBlockDelimiters( _blockDelimiterList().delimiters() );
+    out.setTextMacros( _textMacroList().macros() );
 
-  if( !warnings.empty() )
-  {
-    QString message;
-    QTextStream what( &message );
-    what << "Document class named " << out.name() << " contains the following error";
-    if( warnings.size() > 1 ) what << "s";
-    what << ": " << endl;
+    if( !warnings.empty() )
+    {
+        QString message;
+        QTextStream what( &message );
+        what << "Document class named " << out.name() << " contains the following error";
+        if( warnings.size() > 1 ) what << "s";
+        what << ": " << endl;
 
-    for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); ++iter )
-    { what << "  " << *iter << endl; }
+        for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); ++iter )
+        { what << "  " << *iter << endl; }
 
-    InformationDialog( this, message ).centerOnParent().exec();
-  }
+        InformationDialog( this, message ).centerOnParent().exec();
+    }
 
-  return out;
+    return out;
 }
 
 //___________________________________________________________________________________
 void DocumentClassDialog::_updateStyles( void )
 {
 
-  Debug::Throw( "DocumentClassDialog::_updateStyles.\n" );
+    Debug::Throw( "DocumentClassDialog::_updateStyles.\n" );
 
-  // update styles associated to patterns
-  HighlightStyle::Set styles(  _highlightStyleList().styles() );
-  _highlightPatternList().setStyles( styles );
+    // update styles associated to patterns
+    HighlightStyle::Set styles(  _highlightStyleList().styles() );
+    _highlightPatternList().setStyles( styles );
 
 }
 
 //___________________________________________________________________________________
 void DocumentClassDialog::_updatePreview( void )
 {
-  Debug::Throw( "DocumentClassDialog::_updatePreview.\n" );
+    Debug::Throw( "DocumentClassDialog::_updatePreview.\n" );
 
-  // get document class
-  DocumentClass document_class( documentClass() );
-  _preview().macroMenu().setTextMacros( document_class.textMacros(), _preview().editor().textCursor().hasSelection() );
-  _preview().editor().setDocumentClass( document_class );
-  _preview().editor().rehighlight();
+    // get document class
+    DocumentClass document_class( documentClass() );
+    _preview().macroMenu().setTextMacros( document_class.textMacros(), _preview().editor().textCursor().hasSelection() );
+    _preview().editor().setDocumentClass( document_class );
+    _preview().editor().rehighlight();
 }

@@ -23,20 +23,12 @@
 *
 *******************************************************************************/
 
-/*!
-  \file DocumentClassConfiguration.h
-  \brief document class configuration
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QWidget>
-
 #include "Counter.h"
 #include "DocumentClass.h"
+
+#include <QtGui/QCheckBox>
+#include <QtGui/QSpinBox>
+#include <QtGui/QWidget>
 
 class AnimatedLineEditor;
 class BrowsedLineEditor;
@@ -45,51 +37,51 @@ class BrowsedLineEditor;
 class DocumentClassConfiguration: public QWidget, public Counter
 {
 
-  public:
+    public:
 
-  //! constructor
-  DocumentClassConfiguration( QWidget* parent = 0 );
+    //! constructor
+    DocumentClassConfiguration( QWidget* parent = 0 );
 
-  //! set document class
-  void setDocumentClass( const DocumentClass& document_class );
+    //! set document class
+    void setDocumentClass( const DocumentClass& document_class );
 
-  //! update document class
-  DocumentClass documentClass( void );
+    //! update document class
+    DocumentClass documentClass( void );
 
-  private:
+    private:
 
-  //! document class
-  DocumentClass document_class_;
+    //! document class
+    DocumentClass documentClass_;
 
-  //! name editor
-  AnimatedLineEditor* name_editor_;
+    //! name editor
+    AnimatedLineEditor* nameEditor_;
 
-  //! icon
-  AnimatedLineEditor* icon_editor_;
+    //! icon
+    AnimatedLineEditor* iconEditor_;
 
-  //! name editor
-  BrowsedLineEditor* file_editor_;
+    //! name editor
+    BrowsedLineEditor* fileEditor_;
 
-  //! file pattern editor
-  AnimatedLineEditor* file_pattern_editor_;
+    //! file pattern editor
+    AnimatedLineEditor* filePatternEditor_;
 
-  //! first line pattern editor
-  AnimatedLineEditor* first_line_pattern_editor_;
+    //! first line pattern editor
+    AnimatedLineEditor* firstLinePatternEditor_;
 
-  //! base indentation
-  QSpinBox* base_indentation_spinbox_;
+    //! base indentation
+    QSpinBox* baseIndentationSpinBox_;
 
-  //! default
-  QCheckBox* default_checkbox_;
+    //! default
+    QCheckBox* defaultCheckBox_;
 
-  //! wrap
-  QCheckBox* wrap_checkbox_;
+    //! wrap
+    QCheckBox* wrapCheckBox_;
 
-  //! wrap
-  QCheckBox* tab_emulation_checkbox_;
+    //! wrap
+    QCheckBox* tabEmulationCheckbox_;
 
-  //! tab size
-  QSpinBox* tab_size_spinbox_;
+    //! tab size
+    QSpinBox* tabSizeSpinBox_;
 
 };
 

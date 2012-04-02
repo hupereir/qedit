@@ -21,130 +21,120 @@
 *
 *******************************************************************************/
 
-/*!
-  \file DocumentClassConfiguration.cpp
-  \brief document class configuration
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QGroupBox>
-#include <QHeaderView>
-#include <QLabel>
-#include <QLayout>
-
 #include "AnimatedLineEditor.h"
 #include "BrowsedLineEditor.h"
 #include "GridLayout.h"
 #include "DocumentClassConfiguration.h"
 
-
+#include <QtGui/QGroupBox>
+#include <QtGui/QHeaderView>
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
 
 //____________________________________________________
 DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
-  QWidget( parent ),
-  Counter( "DocumentClassConfiguration" )
+QWidget( parent ),
+Counter( "DocumentClassConfiguration" )
 {
-  Debug::Throw( "DocumentClassConfiguration::DocumentClassConfiguration.\n" );
+    Debug::Throw( "DocumentClassConfiguration::DocumentClassConfiguration.\n" );
 
-  setLayout( new QVBoxLayout() );
-  layout()->setSpacing(5);
-  layout()->setMargin(5);
+    setLayout( new QVBoxLayout() );
+    layout()->setSpacing(5);
+    layout()->setMargin(5);
 
-  // flags
-  QGroupBox* box;
-  layout()->addWidget( box = new QGroupBox( "Class definition", this ) );
+    // flags
+    QGroupBox* box;
+    layout()->addWidget( box = new QGroupBox( "Class definition", this ) );
 
-  GridLayout* grid_layout = new GridLayout();
-  grid_layout->setSpacing(5);
-  grid_layout->setMargin(5);
-  grid_layout->setMaxCount(2);
-  grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-  box->setLayout( grid_layout );
+    GridLayout* grid_layout = new GridLayout();
+    grid_layout->setSpacing(5);
+    grid_layout->setMargin(5);
+    grid_layout->setMaxCount(2);
+    grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+    box->setLayout( grid_layout );
 
-  // file editor
-  grid_layout->addWidget( new QLabel( "File: ", this ) );
-  grid_layout->addWidget( file_editor_ = new BrowsedLineEditor( this ) );
-  file_editor_->setAcceptMode( QFileDialog::AcceptSave );
-  file_editor_->setFileMode( QFileDialog::AnyFile );
+    // file editor
+    grid_layout->addWidget( new QLabel( "File: ", this ) );
+    grid_layout->addWidget( fileEditor_ = new BrowsedLineEditor( this ) );
+    fileEditor_->setAcceptMode( QFileDialog::AcceptSave );
+    fileEditor_->setFileMode( QFileDialog::AnyFile );
 
-  // name editor
-  grid_layout->addWidget( new QLabel( "Name: ", this ) );
-  grid_layout->addWidget( name_editor_ = new AnimatedLineEditor( this ) );
+    // name editor
+    grid_layout->addWidget( new QLabel( "Name: ", this ) );
+    grid_layout->addWidget( nameEditor_ = new AnimatedLineEditor( this ) );
 
-  // icon editor
-  grid_layout->addWidget( new QLabel( "Icon: ", this ) );
-  grid_layout->addWidget( icon_editor_ = new AnimatedLineEditor( this ) );
+    // icon editor
+    grid_layout->addWidget( new QLabel( "Icon: ", this ) );
+    grid_layout->addWidget( iconEditor_ = new AnimatedLineEditor( this ) );
 
-  // patterns
-  layout()->addWidget( box = new QGroupBox( "Matching patterns", this ) );
+    // patterns
+    layout()->addWidget( box = new QGroupBox( "Matching patterns", this ) );
 
-  grid_layout = new GridLayout();
-  grid_layout->setSpacing(5);
-  grid_layout->setMargin(5);
-  grid_layout->setMaxCount(2);
-  grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-  box->setLayout( grid_layout );
+    grid_layout = new GridLayout();
+    grid_layout->setSpacing(5);
+    grid_layout->setMargin(5);
+    grid_layout->setMaxCount(2);
+    grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+    box->setLayout( grid_layout );
 
-  grid_layout->addWidget( new QLabel( "File name pattern: ", this ) );
-  grid_layout->addWidget( file_pattern_editor_ = new AnimatedLineEditor( this ) );
-  file_pattern_editor_->setToolTip( "Regular expression used to determine document class from file name." );
+    grid_layout->addWidget( new QLabel( "File name pattern: ", this ) );
+    grid_layout->addWidget( filePatternEditor_ = new AnimatedLineEditor( this ) );
+    filePatternEditor_->setToolTip( "Regular expression used to determine document class from file name." );
 
-  grid_layout->addWidget( new QLabel( "First line pattern: ", this ) );
-  grid_layout->addWidget( first_line_pattern_editor_ = new AnimatedLineEditor( this ) );
-  first_line_pattern_editor_->setToolTip( "Regular expression used to determine document class from the first line of the file." );
+    grid_layout->addWidget( new QLabel( "First line pattern: ", this ) );
+    grid_layout->addWidget( firstLinePatternEditor_ = new AnimatedLineEditor( this ) );
+    firstLinePatternEditor_->setToolTip( "Regular expression used to determine document class from the first line of the file." );
 
-  // options
-  layout()->addWidget( box = new QGroupBox( "Options", this ) );
+    // options
+    layout()->addWidget( box = new QGroupBox( "Options", this ) );
 
-  box->setLayout( new QVBoxLayout() );
-  box->layout()->setMargin(5);
-  box->layout()->setSpacing(5);
+    box->setLayout( new QVBoxLayout() );
+    box->layout()->setMargin(5);
+    box->layout()->setSpacing(5);
 
-  // default
-  box->layout()->addWidget( default_checkbox_ = new QCheckBox( "Default", box ) );
-  default_checkbox_->setToolTip( "Use this document class when no other is found that match a given file" );
-  default_checkbox_->setChecked( false );
+    // default
+    box->layout()->addWidget( defaultCheckBox_ = new QCheckBox( "Default", box ) );
+    defaultCheckBox_->setToolTip( "Use this document class when no other is found that match a given file" );
+    defaultCheckBox_->setChecked( false );
 
-  // wrap mode
-  box->layout()->addWidget( wrap_checkbox_ = new QCheckBox( "Wrap", box ) );
-  wrap_checkbox_->setChecked( false );
+    // wrap mode
+    box->layout()->addWidget( wrapCheckBox_ = new QCheckBox( "Wrap", box ) );
+    wrapCheckBox_->setChecked( false );
 
-  // tab emulation
-  box->layout()->addWidget( tab_emulation_checkbox_ = new QCheckBox( "Emulate tabs", box ) );
-  tab_emulation_checkbox_->setChecked( false );
+    // tab emulation
+    box->layout()->addWidget( tabEmulationCheckbox_ = new QCheckBox( "Emulate tabs", box ) );
+    tabEmulationCheckbox_->setChecked( false );
 
-  QHBoxLayout *layout = new QHBoxLayout();
-  layout->setMargin(0);
-  layout->setSpacing(5);
-  box->layout()->addItem( layout );
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setMargin(0);
+    layout->setSpacing(5);
+    box->layout()->addItem( layout );
 
-  grid_layout = new GridLayout();
-  grid_layout->setSpacing(5);
-  grid_layout->setMargin(0);
-  grid_layout->setMaxCount(2);
-  grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-  layout->addLayout( grid_layout );
-  layout->addStretch(1);
+    grid_layout = new GridLayout();
+    grid_layout->setSpacing(5);
+    grid_layout->setMargin(0);
+    grid_layout->setMaxCount(2);
+    grid_layout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+    layout->addLayout( grid_layout );
+    layout->addStretch(1);
 
-  QLabel* label = new QLabel( "Tab size: ", box );
-  grid_layout->addWidget( label );
+    QLabel* label = new QLabel( "Tab size: ", box );
+    grid_layout->addWidget( label );
 
-  tab_size_spinbox_ = new QSpinBox( box );
-  tab_size_spinbox_->setMinimum( 0 );
-  tab_size_spinbox_->setMaximum( 20 );
-  tab_size_spinbox_->setToolTip(
-    "Tab size (in unit of space characters).\n "
-    "When zero value is specified, the default qedit tab size is used." );
-  label->setBuddy( tab_size_spinbox_ );
-  grid_layout->addWidget( tab_size_spinbox_ );
+    tabSizeSpinBox_ = new QSpinBox( box );
+    tabSizeSpinBox_->setMinimum( 0 );
+    tabSizeSpinBox_->setMaximum( 20 );
+    tabSizeSpinBox_->setToolTip(
+        "Tab size (in unit of space characters).\n "
+        "When zero value is specified, the default qedit tab size is used." );
+    label->setBuddy( tabSizeSpinBox_ );
+    grid_layout->addWidget( tabSizeSpinBox_ );
 
-  // base indentation
-  grid_layout->addWidget( new QLabel( "Base indentation: ", box ) );
-  grid_layout->addWidget( base_indentation_spinbox_ = new QSpinBox( box ) );
-  base_indentation_spinbox_->setMinimum(0);
-  base_indentation_spinbox_->setValue(0);
+    // base indentation
+    grid_layout->addWidget( new QLabel( "Base indentation: ", box ) );
+    grid_layout->addWidget( baseIndentationSpinBox_ = new QSpinBox( box ) );
+    baseIndentationSpinBox_->setMinimum(0);
+    baseIndentationSpinBox_->setValue(0);
 
 }
 
@@ -152,45 +142,45 @@ DocumentClassConfiguration::DocumentClassConfiguration( QWidget* parent ):
 void DocumentClassConfiguration::setDocumentClass( const DocumentClass& document_class )
 {
 
-  // name
-  name_editor_->setText( document_class.name() );
+    // name
+    nameEditor_->setText( document_class.name() );
 
-  // icon
-  icon_editor_->setText( document_class.icon() );
+    // icon
+    iconEditor_->setText( document_class.icon() );
 
-  // file editor
-  file_editor_->editor().setText( document_class.file() );
+    // file editor
+    fileEditor_->editor().setText( document_class.file() );
 
-  // file name matching pattern
-  file_pattern_editor_->setText( document_class.fileMatchingPattern().pattern() );
+    // file name matching pattern
+    filePatternEditor_->setText( document_class.fileMatchingPattern().pattern() );
 
-  // first line matching pattern
-  first_line_pattern_editor_->setText( document_class.firstLineMatchingPattern().pattern() );
+    // first line matching pattern
+    firstLinePatternEditor_->setText( document_class.firstLineMatchingPattern().pattern() );
 
-  // base indentation
-  base_indentation_spinbox_->setValue( document_class.baseIndentation() );
+    // base indentation
+    baseIndentationSpinBox_->setValue( document_class.baseIndentation() );
 
-  // flags
-  default_checkbox_->setChecked( document_class.isDefault() );
-  wrap_checkbox_->setChecked( document_class.wrap() );
-  tab_emulation_checkbox_->setChecked( document_class.emulateTabs() );
-  tab_size_spinbox_->setValue( document_class.tabSize() );
+    // flags
+    defaultCheckBox_->setChecked( document_class.isDefault() );
+    wrapCheckBox_->setChecked( document_class.wrap() );
+    tabEmulationCheckbox_->setChecked( document_class.emulateTabs() );
+    tabSizeSpinBox_->setValue( document_class.tabSize() );
 
 }
 
 //_________________________________________________________________________
 DocumentClass DocumentClassConfiguration::documentClass( void )
 {
-  DocumentClass out;
-  out.setName( name_editor_->text() );
-  out.setIcon( icon_editor_->text() );
-  out.setFile( file_editor_->editor().text() );
-  out.setFileMatchingPattern( file_pattern_editor_->text() );
-  out.setFirstLineMatchingPattern( first_line_pattern_editor_->text() );
-  out.setBaseIndentation( base_indentation_spinbox_->value() );
-  out.setWrap( wrap_checkbox_->isChecked() );
-  out.setEmulateTabs( tab_emulation_checkbox_->isChecked() );
-  out.setTabSize( tab_size_spinbox_->value() );
-  out.setIsDefault( default_checkbox_->isChecked() );
-  return out;
+    DocumentClass out;
+    out.setName( nameEditor_->text() );
+    out.setIcon( iconEditor_->text() );
+    out.setFile( fileEditor_->editor().text() );
+    out.setFileMatchingPattern( filePatternEditor_->text() );
+    out.setFirstLineMatchingPattern( firstLinePatternEditor_->text() );
+    out.setBaseIndentation( baseIndentationSpinBox_->value() );
+    out.setWrap( wrapCheckBox_->isChecked() );
+    out.setEmulateTabs( tabEmulationCheckbox_->isChecked() );
+    out.setTabSize( tabSizeSpinBox_->value() );
+    out.setIsDefault( defaultCheckBox_->isChecked() );
+    return out;
 }

@@ -167,11 +167,11 @@ class DocumentClass: public Counter
 
     //! tab size
     int tabSize( void ) const
-    { return tabSizes_; }
+    { return tabSize_; }
 
     //! tab size
     void setTabSize( int value )
-    { tabSizes_ = value; }
+    { tabSize_ = value; }
 
     //! hightlight styles
     const HighlightStyle::Set& highlightStyles() const
@@ -331,7 +331,7 @@ class DocumentClass: public Counter
     bool emulateTabs_;
 
     //! tab size
-    int tabSizes_;
+    int tabSize_;
 
     //! icon name
     QString icon_;

@@ -43,13 +43,13 @@
 
 //________________________________________________________
 DocumentClass::DocumentClass( void ):
-Counter( "DocumentClass" ),
-default_( false ),
-wrap_( false ),
-emulateTabs_( false ),
-tabSizes_( 0 ),
-baseIndentation_( 0 ),
-modified_( false )
+    Counter( "DocumentClass" ),
+    default_( false ),
+    wrap_( false ),
+    emulateTabs_( false ),
+    tabSize_( 2 ),
+    baseIndentation_( 0 ),
+    modified_( false )
 { Debug::Throw( "DocumentClass::DocumentClass.\n" ); }
 
 //________________________________________________________
@@ -58,6 +58,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     default_( false ),
     wrap_( false ),
     emulateTabs_( false ),
+    tabSize_( 2 ),
     baseIndentation_( 0 ),
     modified_( false )
 {
