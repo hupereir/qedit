@@ -265,18 +265,18 @@ void Application::_spellCheckConfiguration( void )
     // create dialog
     CustomDialog dialog( qApp->activeWindow() );
 
-    SpellCheckConfiguration* spell_config = new SpellCheckConfiguration( &dialog );
-    dialog.mainLayout().addWidget( spell_config );
-    spell_config->read();
+    SPELLCHECK::SpellCheckConfiguration* spellConfig = new SPELLCHECK::SpellCheckConfiguration( &dialog );
+    dialog.mainLayout().addWidget( spellConfig );
+    spellConfig->read();
 
-    AutoSpellConfiguration* autospell_config = new AutoSpellConfiguration( &dialog );
-    dialog.mainLayout().addWidget( autospell_config );
-    autospell_config->read();
+    SPELLCHECK::AutoSpellConfiguration* autospellConfig = new SPELLCHECK::AutoSpellConfiguration( &dialog );
+    dialog.mainLayout().addWidget( autospellConfig );
+    autospellConfig->read();
     dialog.centerOnWidget( qApp->activeWindow() );
 
     if( dialog.exec() == QDialog::Rejected ) return;
-    spell_config->write();
-    autospell_config->write();
+    spellConfig->write();
+    autospellConfig->write();
     XmlOptions::write();
 
     emit spellCheckConfigurationChanged();
