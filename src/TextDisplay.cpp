@@ -1798,6 +1798,10 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
     textHighlight().updateSpellPattern();
     autoSpellAction().setEnabled( textHighlight().spellParser().color().isValid() );
 
+    // reset filter and dictionaries menu
+    _dictionaryMenu().reset();
+    _filterMenu().reset();
+
     // store local reference to spell interface
     SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
 

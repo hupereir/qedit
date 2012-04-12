@@ -95,7 +95,7 @@ selection_( selection )
     _updateButtons();
 
     // sort list and select all items
-    if( XmlOptions::get().find( "SESSION_FILES_SORTColumn" ) && XmlOptions::get().find( "SESSION_FILES_SORT_ORDER" ) )
+    if( XmlOptions::get().contains( "SESSION_FILES_SORTColumn" ) && XmlOptions::get().contains( "SESSION_FILES_SORT_ORDER" ) )
     {
         _list().sortByColumn(
             XmlOptions::get().get<int>( "SESSION_FILES_SORTColumn" ),
