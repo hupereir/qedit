@@ -267,11 +267,9 @@ void Application::_spellCheckConfiguration( void )
 
     SPELLCHECK::SpellCheckConfiguration* spellConfig = new SPELLCHECK::SpellCheckConfiguration( &dialog );
     dialog.mainLayout().addWidget( spellConfig );
-    spellConfig->read();
 
     SPELLCHECK::AutoSpellConfiguration* autospellConfig = new SPELLCHECK::AutoSpellConfiguration( &dialog );
     dialog.mainLayout().addWidget( autospellConfig );
-    autospellConfig->read();
     dialog.centerOnWidget( qApp->activeWindow() );
 
     if( dialog.exec() == QDialog::Rejected ) return;

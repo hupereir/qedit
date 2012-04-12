@@ -329,6 +329,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
 
     // load initial configuration
-    _read();
+    read();
 
 }
