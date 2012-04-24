@@ -46,9 +46,6 @@ class TextMacroMenu: public QMenu, public Counter
     virtual ~TextMacroMenu( void )
     {}
 
-    //! set macro
-    void setTextMacros( const TextMacro::List&, bool );
-
     //! set enabled
     void setEnabled( bool );
 
@@ -57,6 +54,14 @@ class TextMacroMenu: public QMenu, public Counter
     //! emmited every time a text macro is selected
     void textMacroSelected( QString );
 
+    public slots:
+
+    //! update macros
+    void update( const TextMacro::List& );
+
+    //! update state
+    void updateState( bool );
+
     protected slots:
 
     //! emited when an action is selected
@@ -64,8 +69,35 @@ class TextMacroMenu: public QMenu, public Counter
 
     private:
 
+    //! container for macros
+    class MacroContainer
+    {
+        public:
+
+        //! constructor from text macro
+        MacroContainer( const TextMacro& macro ):
+            name_( macro.name() ),
+            automatic_( macro.isAutomatic() )
+        {}
+
+        //! name
+        const QString& name( void ) const
+        { return name_; }
+
+        //! automatic
+        bool isAutomatic( void ) const
+        { return automatic_; }
+
+        private:
+
+        QString name_;
+        bool automatic_;
+
+    };
+
     //! map action to TextMacro
-    QMap<QAction*, QString > actions_;
+    typedef QMap<QAction*, MacroContainer > ActionMap;
+    ActionMap actions_;
 
 };
 

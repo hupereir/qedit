@@ -107,7 +107,11 @@ QAction* TextMacro::action( void ) const
 
     QAction* out( new QAction( label, 0 ) );
     if( !accelerator().isEmpty() )
-    { out->setShortcut( QKeySequence( accelerator() ) ); }
+    {
+        out->setShortcut( QKeySequence( accelerator() ) );
+        out->setShortcutContext( Qt::ApplicationShortcut );
+
+    }
 
     return out;
 }

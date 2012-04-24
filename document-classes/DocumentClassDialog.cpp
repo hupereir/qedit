@@ -182,7 +182,8 @@ void DocumentClassDialog::_updatePreview( void )
 
     // get document class
     DocumentClass document_class( documentClass() );
-    _preview().macroMenu().setTextMacros( document_class.textMacros(), _preview().editor().textCursor().hasSelection() );
+    _preview().macroMenu().update( document_class.textMacros() );
+    _preview().macroMenu().updateState( _preview().editor().textCursor().hasSelection() );
     _preview().editor().setDocumentClass( document_class );
     _preview().editor().rehighlight();
 }

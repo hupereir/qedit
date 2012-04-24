@@ -72,6 +72,11 @@ class Menu:public QMenuBar, public Counter
         return *macroMenu_;
     }
 
+    public slots:
+
+    //! update macro menu
+    void updateMacroMenu( void );
+
     private slots:
 
     //! update recent files menu
@@ -89,9 +94,6 @@ class Menu:public QMenuBar, public Counter
 
     //! update tools menu
     void _updateToolsMenu( void );
-
-    //! update macro menu
-    void _updateMacroMenu( void );
 
     //! update windows menu
     void _updateWindowsMenu( void );

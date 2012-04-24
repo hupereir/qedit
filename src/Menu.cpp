@@ -115,7 +115,7 @@ Menu::Menu( QWidget* parent ):
     // macros
     addMenu( macroMenu_ = new TextMacroMenu( this ) );
     macroMenu_->setTitle( "Macro" );
-    connect( macroMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updateMacroMenu() ) );
+    connect( macroMenu_, SIGNAL( aboutToShow() ), this, SLOT( updateMacroMenu() ) );
     connect( macroMenu_, SIGNAL( textMacroSelected( QString ) ), SLOT( _selectMacro( QString ) ) );
 
     // Settings
@@ -156,6 +156,21 @@ Menu::Menu( QWidget* parent ):
 //_______________________________________________
 Menu::~Menu( void )
 { Debug::Throw( "Menu::~Menu.\n" ); }
+
+//_______________________________________________
+void Menu::updateMacroMenu( void )
+{
+
+    // retrieve current display
+    TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
+    bool hasSelection( display.textCursor().hasSelection() );
+    const TextMacro::List& macros( display.macros() );
+
+    macroMenu().update( macros );
+    macroMenu().updateState( hasSelection );
+
+    return;
+}
 
 //_______________________________________________
 void Menu::_updateRecentFilesMenu( void )
@@ -261,7 +276,7 @@ void Menu::_updateToolsMenu( void )
 
     // retrieve flags needed to set button state
     bool editable( !display.isReadOnly() );
-    bool has_selection( display.textCursor().hasSelection() );
+    bool hasSelection( display.textCursor().hasSelection() );
     bool has_indent( display.textIndentAction().isEnabled() );
 
     // clear menu
@@ -269,7 +284,7 @@ void Menu::_updateToolsMenu( void )
 
     // selection indentation
     toolsMenu_->addAction( &display.indentSelectionAction() );
-    display.indentSelectionAction().setEnabled( editable && has_selection && has_indent );
+    display.indentSelectionAction().setEnabled( editable && hasSelection && has_indent );
 
     //if( display.baseIndentAction().isEnabled() )
     { toolsMenu_->addAction( &display.baseIndentAction() ); }
@@ -289,7 +304,7 @@ void Menu::_updateToolsMenu( void )
     bool current_block_tagged( has_tags && display.isCurrentBlockTagged() );
 
     toolsMenu_->addAction( &display.tagBlockAction() );
-    display.tagBlockAction().setText( has_selection ? "&Tag selected blocks":"&Tag current block" );
+    display.tagBlockAction().setText( hasSelection ? "&Tag selected blocks":"&Tag current block" );
 
     toolsMenu_->addAction( &display.nextTagAction() );
     display.nextTagAction().setEnabled( has_tags );
@@ -323,20 +338,6 @@ void Menu::_updateToolsMenu( void )
     action->setEnabled( enabled );
 
 
-}
-
-//_______________________________________________
-void Menu::_updateMacroMenu( void )
-{
-
-    Debug::Throw( "Menu::_updateMacroMenu.\n" );
-
-    // retrieve current display
-    TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
-    bool has_selection( display.textCursor().hasSelection() );
-
-    macroMenu().setTextMacros( display.macros(), has_selection );
-    return;
 }
 
 //_______________________________________________

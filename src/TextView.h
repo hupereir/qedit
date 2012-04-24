@@ -49,10 +49,10 @@ class TextView: public QWidget, public Counter, public BASE::Key
     //! Qt meta object declaration
     Q_OBJECT
 
-        public:
+    public:
 
-        //! constructor
-        TextView( QWidget* parent );
+    //! constructor
+    TextView( QWidget* parent );
 
     //! destructor
     virtual ~TextView( void );

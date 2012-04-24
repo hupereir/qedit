@@ -68,6 +68,7 @@
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
+#include "TextMacroMenu.h"
 #include "TransitionWidget.h"
 #include "WindowServer.h"
 #include "WindowTitle.h"
@@ -727,7 +728,7 @@ void MainWindow::_update( unsigned int flags )
 
     }
 
-    if( flags & (TextDisplay::DOCUMENT_CLASS ) && _hasDocumentClassToolBar() )
+    if( flags & TextDisplay::DOCUMENT_CLASS && _hasDocumentClassToolBar() )
     { _documentClassToolBar().update( activeDisplay().className() ); }
 
     if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
@@ -771,6 +772,13 @@ void MainWindow::_update( unsigned int flags )
         Debug::Throw() << "MainWindow::_update - display count - done." << endl;
 
     }
+
+    // macros
+    if( flags & TextDisplay::DOCUMENT_CLASS )
+    { menu().updateMacroMenu(); }
+
+    if( flags & (TextDisplay::CUT|TextDisplay::COPY) )
+    { menu().macroMenu().updateState( activeDisplay().textCursor().hasSelection() ); }
 
     Debug::Throw() << "MainWindow::_update - done." << endl;
 

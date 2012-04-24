@@ -32,26 +32,24 @@ Counter( "TextMacroMenu" )
 }
 
 //___________________________________________________________
-void TextMacroMenu::setTextMacros( const TextMacro::List& macros, bool enabled )
+void TextMacroMenu::update( const TextMacro::List& macros )
 {
-    Debug::Throw( "TextMacroMenu::setTextMacros.\n" );
+    Debug::Throw( "TextMacroMenu::update.\n" );
     clear();
     actions_.clear();
-    QAction* action;
 
-    for( TextMacro::List::const_iterator iter = macros.begin(); iter != macros.end(); ++iter )
+    foreach( const TextMacro& macro, macros )
     {
 
-        if( iter->isSeparator() ) addSeparator();
+        if( macro.isSeparator() ) addSeparator();
         else {
 
             // create menu entry
-            action = iter->action();
-            action->setEnabled( enabled || iter->isAutomatic() );
+            QAction* action = macro.action();
             addAction( action );
 
             // insert in map
-            actions_.insert( action, iter->name() );
+            actions_.insert( action, macro );
 
         }
     }
@@ -59,9 +57,17 @@ void TextMacroMenu::setTextMacros( const TextMacro::List& macros, bool enabled )
 }
 
 //___________________________________________________________
+void TextMacroMenu::updateState( bool value )
+{
+    Debug::Throw( "TextMacroMenu::updateState.\n" );
+    for( ActionMap::const_iterator iter = actions_.begin(); iter != actions_.end(); iter++ )
+    { iter.key()->setEnabled( value || iter.value().isAutomatic() ); }
+}
+
+//___________________________________________________________
 void TextMacroMenu::setEnabled( bool enabled )
 {
-    for( QMap< QAction*, QString >::iterator iter = actions_.begin(); iter != actions_.end(); ++iter )
+    for( ActionMap::iterator iter = actions_.begin(); iter != actions_.end(); ++iter )
     { iter.key()->setEnabled( enabled ); }
 }
 
@@ -70,7 +76,7 @@ void TextMacroMenu::_processAction( QAction* action )
 {
 
     // try retrieve id in map
-    QMap< QAction*, QString >::iterator iter = actions_.find( action );
-    if( iter != actions_.end() ) emit textMacroSelected( iter.value() );
+    ActionMap::iterator iter = actions_.find( action );
+    if( iter != actions_.end() ) emit textMacroSelected( iter.value().name() );
 
 }
