@@ -75,7 +75,7 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
     _list().setSelectionMode( QAbstractItemView::MultiSelection );
 
     model_.add( files );
-    model_.sort( FileSystemModel::FILE, Qt::AscendingOrder );
+    model_.sort( FileSystemModel::FILE, Qt::DescendingOrder );
 
     _list().setModel( &model_ );
     _list().setMask( XmlOptions::get().get<int>( "FILE_SYSTEM_LIST_MASK" ) );

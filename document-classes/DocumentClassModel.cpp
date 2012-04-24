@@ -131,8 +131,8 @@ bool DocumentClassModel::SortFTor::operator () ( const DocumentClass& first, con
     switch( type_ )
     {
 
-        case NAME: return ( order_ == Qt::AscendingOrder ) ? second.name() < first.name() : first.name() < second.name();
-        case FILE: return ( order_ == Qt::AscendingOrder ) ? second.file() < first.file() : first.file() < second.file();
+        case NAME: return ( order_ == Qt::DescendingOrder ) ? second.name() < first.name() : first.name() < second.name();
+        case FILE: return ( order_ == Qt::DescendingOrder ) ? second.file() < first.file() : first.file() < second.file();
         default: return true;
     }
 
