@@ -65,7 +65,7 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     layout()->addWidget( list_ = new TreeView( this ) );
     list().setModel( &_model() );
     list().setSelectionMode( QAbstractItemView::ContiguousSelection );
-    list().setOptionName( "RECENT_FILES" );
+    list().setOptionName( "RECENT_FILES_LIST" );
     list().header()->hide();
 
     // actions
