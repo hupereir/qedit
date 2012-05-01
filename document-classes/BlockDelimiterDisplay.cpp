@@ -198,7 +198,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     // draw delimiters
     painter.setBrush( foreground_ );
     QPen pen( foreground_ );
-    pen.setWidthF( 1.0 );
+    pen.setWidthF( 0.5 );
     painter.setPen( pen );
     painter.setRenderHints( QPainter::Antialiasing );
 
