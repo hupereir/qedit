@@ -23,59 +23,52 @@
 *
 ****************************************************************************/
 
-/*!
-\file DocumentClassToolBar.h
-\bried display available document classes
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-#include <QComboBox>
-
 #include "CustomToolBar.h"
+
+#include <QtGui/QComboBox>
 
 //! display available document classes
 class DocumentClassToolBar: public CustomToolBar
 {
 
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+        public:
 
-  //! constructor
-  DocumentClassToolBar( QWidget* parent );
+        //! constructor
+        DocumentClassToolBar( QWidget* parent );
 
-  //! destructor
-  virtual ~DocumentClassToolBar( void )
-  {}
+    //! destructor
+    virtual ~DocumentClassToolBar( void )
+    {}
 
-  //! update selection
-  void update( QString );
+    //! update selection
+    void update( QString );
 
-  signals:
+    signals:
 
-  //! emmited every time a document class is selected
-  void documentClassSelected( QString );
+    //! emmited every time a document class is selected
+    void documentClassSelected( QString );
 
-  private slots:
+    private slots:
 
-  //! update list
-  void _update( void );
+    //! update list
+    void _update( void );
 
-  //! current index changed
-  void _currentIndexChanged( int );
+    //! current index changed
+    void _currentIndexChanged( int );
 
-  private:
+    private:
 
-  //! document class selection combo box
-  QComboBox& _comboBox( void ) const
-  { return *combobox_; }
+    //! document class selection combo box
+    QComboBox& _comboBox( void ) const
+    { return *combobox_; }
 
-  //! document class selection combo box
-  QComboBox* combobox_;
+    //! document class selection combo box
+    QComboBox* combobox_;
 
-  //! current class
-  QString current_class_;
+    //! current class
+    QString currentClass_;
 
 };
 

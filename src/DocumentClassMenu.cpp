@@ -21,14 +21,6 @@
 *
 ****************************************************************************/
 
-/*!
-\file DocumentClassMenu.cpp
-\brief display available document classes
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "Application.h"
 #include "Debug.h"
 #include "DocumentClass.h"
@@ -61,21 +53,21 @@ void DocumentClassMenu::_update( void )
 
     // retrieve current class from MainWindow
     MainWindow& window( *static_cast<MainWindow*>( parentWidget()->window()) );
-    const QString& class_name( window.activeDisplay().className() );
+    const QString& className( window.activeDisplay().className() );
 
     // retrieve classes from DocumentClass manager
     const DocumentClassManager::List& classes( Singleton::get().application<Application>()->classManager().classes() );
-    for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); ++iter )
+    foreach( const DocumentClass& documentClass, classes )
     {
         // insert actions
-        QAction* action = addAction( iter->name() );
-        if( !iter->icon().isEmpty() ) action->setIcon( IconEngine::get( iter->icon() ) );
+        QAction* action = addAction( documentClass.name() );
+        if( !documentClass.icon().isEmpty() ) action->setIcon( IconEngine::get( documentClass.icon() ) );
 
         action->setCheckable( true );
-        action->setChecked( iter->name() == class_name );
+        action->setChecked( documentClass.name() == className );
         actionGroup_->addAction( action );
 
-        actions_.insert( action, iter->name() );
+        actions_.insert( action, documentClass.name() );
 
     }
 

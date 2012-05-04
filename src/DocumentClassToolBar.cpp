@@ -21,16 +21,6 @@
 *
 ****************************************************************************/
 
-/*!
-   \file DocumentClassToolBar.h
-   \brief editor main window
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
-*/
-
-#include <QLabel>
-
 #include "Application.h"
 #include "Debug.h"
 #include "DocumentClass.h"
@@ -38,57 +28,60 @@
 #include "DocumentClassToolBar.h"
 #include "Singleton.h"
 
-
+#include <QtGui/QLabel>
 
 //________________________________________________________________
 DocumentClassToolBar::DocumentClassToolBar( QWidget* parent ):
-  CustomToolBar( "Document Class", parent, "DOCUMENT_CLASS_TOOLBAR" )
+CustomToolBar( "Document Class", parent, "DOCUMENT_CLASS_TOOLBAR" )
 {
 
-  Debug::Throw( "DocumentClassToolBar::DocumentClassToolBar.\n" );
-  addWidget( combobox_ = new QComboBox( this ) );
+    Debug::Throw( "DocumentClassToolBar::DocumentClassToolBar.\n" );
+    addWidget( combobox_ = new QComboBox( this ) );
 
-  connect( &_comboBox(), SIGNAL( currentIndexChanged( int ) ), SLOT( _currentIndexChanged( int ) ) );
-  connect( Singleton::get().application(), SIGNAL( documentClassesChanged() ), SLOT( _update() ) );
+    connect( &_comboBox(), SIGNAL( currentIndexChanged( int ) ), SLOT( _currentIndexChanged( int ) ) );
+    connect( Singleton::get().application(), SIGNAL( documentClassesChanged() ), SLOT( _update() ) );
 
 }
 
 //________________________________________________________________
-void DocumentClassToolBar::update( QString class_name )
+void DocumentClassToolBar::update( QString className )
 {
-  Debug::Throw( "DocumentClassToolBar::update.\n" );
-  current_class_ = class_name;
-  _comboBox().setCurrentIndex( _comboBox().findText( class_name ) );
+    Debug::Throw( "DocumentClassToolBar::update.\n" );
+    currentClass_ = className;
+    _comboBox().setCurrentIndex( _comboBox().findText( className ) );
 }
 
 //________________________________________________________________
 void DocumentClassToolBar::_currentIndexChanged( int index )
 {
-  Debug::Throw( "DocumentClassToolBar::_currentIndexChanged.\n" );
-  QString class_name( _comboBox().itemText( index ) );
-  if( class_name == current_class_ ) return;
-  current_class_ = class_name;
-  emit documentClassSelected( class_name );
+    Debug::Throw( "DocumentClassToolBar::_currentIndexChanged.\n" );
+    QString className( _comboBox().itemText( index ) );
+    if( className == currentClass_ ) return;
+    currentClass_ = className;
+    emit documentClassSelected( className );
 }
 
 //________________________________________________________________
 void DocumentClassToolBar::_update( void )
 {
-  Debug::Throw( "DocumentClassToolBar::update.\n" );
+    Debug::Throw( "DocumentClassToolBar::update.\n" );
 
-  // store current item
-  QString current_class( _comboBox().currentText() );
+    // store current item
+    QString current_class( _comboBox().currentText() );
 
-  // clear box
-  _comboBox().clear();
+    // clear box
+    _comboBox().clear();
 
-  // add all document classes
-  const DocumentClassManager &manager( Singleton::get().application<Application>()->classManager() );
-  const DocumentClassManager::List& classes( manager.classes() );
-  for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); ++iter )
-  { _comboBox().addItem( iter->name() ); }
+    // add all document classes
+    const DocumentClassManager &manager( Singleton::get().application<Application>()->classManager() );
+    const DocumentClassManager::List& classes( manager.classes() );
+    foreach( const DocumentClass& documentClass, classes )
+    { _comboBox().addItem( documentClass.name() ); }
 
-  // try select old class if possible
-  _comboBox().setCurrentIndex( _comboBox().findText( current_class ) );
+    // try select old class if possible
+    if( classes.size() > _comboBox().maxVisibleItems() )
+    { _comboBox().setMaxVisibleItems( classes.size() ); }
+
+    _comboBox().setCurrentIndex( _comboBox().findText( current_class ) );
 
 }

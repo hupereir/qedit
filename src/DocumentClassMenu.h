@@ -23,14 +23,6 @@
 *
 ****************************************************************************/
 
-/*!
-\file DocumentClassMenu.h
-\brief display available document classes
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "Counter.h"
 
 #include <QtGui/QMenu>
