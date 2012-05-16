@@ -490,9 +490,6 @@ class TextDisplay: public AnimatedTextEditor
 
     //@}
 
-    //! actions
-    void _installActions( void );
-
     //! recent files
     FileList& _recentFiles( void ) const;
 
@@ -679,6 +676,9 @@ class TextDisplay: public AnimatedTextEditor
     bool _fileIsAfs( void ) const;
 
     private:
+
+    //! actions
+    void _installActions( void );
 
     //! empty line
     static QRegExp& _emptyLineRegExp( void );
