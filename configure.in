@@ -3,7 +3,7 @@ AM_INIT_AUTOMAKE(qedit, 2.4.2)
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CXX
 AC_PROG_LIBTOOL
-CXXFLAGS="-Wall -Werror -Wno-non-virtual-dtor -O2"
+CXXFLAGS="-g -O2 -Wall -Werror -Wno-non-virtual-dtor"
 
 dnl *********************************************
 dnl external programs
