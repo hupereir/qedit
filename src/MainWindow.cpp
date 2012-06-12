@@ -169,11 +169,6 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     fileEditor_->setTextInteractionFlags( Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard );
 
-    // assign non fixed font
-    QFont font;
-    font.fromString( XmlOptions::get().raw( "FONT_NAME" ) );
-    fileEditor_->setFont( font );
-
     // toolbars
     _installToolbars();
 
