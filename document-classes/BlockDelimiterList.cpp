@@ -64,16 +64,16 @@ modified_( false )
     h_layout->addLayout( v_layout );
 
     QPushButton* button;
-    v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
+    v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
     button->setToolTip( "Add a new delimiter to the list" );
     connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
 
-    v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
+    v_layout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
     remove_button_->setToolTip( "Remove selected delimiter" );
-    remove_button_->setShortcut( Qt::Key_Delete );
+    remove_button_->setShortcut( QKeySequence::Delete );
     connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
 
-    v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
+    v_layout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "Edit", this ) );
     edit_button_->setToolTip( "Edit selected delimiter" );
     connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 

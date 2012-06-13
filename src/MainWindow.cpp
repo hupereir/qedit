@@ -840,7 +840,7 @@ void MainWindow::_installActions( void )
     Debug::Throw( "MainWindow::_installActions.\n" );
 
     addAction( newFileAction_ = new QAction( IconEngine::get( ICONS::NEW ), "New", this ) );
-    newFileAction_->setShortcut( Qt::CTRL+Qt::Key_N );
+    newFileAction_->setShortcut( QKeySequence::New );
     newFileAction_->setToolTip( "Create a new empty file" );
 
     addAction( cloneAction_ = new QAction( IconEngine::get( ICONS::VIEW_LEFTRIGHT ), "Clone", this ) );
@@ -854,7 +854,7 @@ void MainWindow::_installActions( void )
     detachAction_->setEnabled( false );
 
     addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open ...", this ) );
-    openAction_->setShortcut( Qt::CTRL+Qt::Key_O );
+    openAction_->setShortcut( QKeySequence::Open );
     openAction_->setToolTip( "Open an existing file" );
 
     addAction( openHorizontalAction_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Open Display Top/Bottom ...", this ) );
@@ -864,7 +864,7 @@ void MainWindow::_installActions( void )
     openVerticalAction_->setToolTip( "Open a new display horizontally" );
 
     addAction( closeDisplayAction_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "Close Display", this ) );
-    closeDisplayAction_->setShortcut( Qt::CTRL+Qt::Key_W );
+    closeDisplayAction_->setShortcut( QKeySequence::Close );
     closeDisplayAction_->setToolTip( "Close current display" );
     connect( closeDisplayAction_, SIGNAL( triggered() ), SLOT( _closeDisplay() ) );
 
@@ -874,27 +874,26 @@ void MainWindow::_installActions( void )
     connect( closeWindowAction_, SIGNAL( triggered() ), SLOT( _closeWindow() ) );
 
     addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "Save", this ) );
-    saveAction_->setShortcut( Qt::CTRL+Qt::Key_S );
+    saveAction_->setShortcut( QKeySequence::Save );
     saveAction_->setToolTip( "Save current file" );
     connect( saveAction_, SIGNAL( triggered() ), SLOT( _save() ) );
 
     addAction( saveAsAction_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save As ...", this ) );
-    saveAsAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_S );
+    saveAsAction_->setShortcut( QKeySequence::SaveAs );
     saveAsAction_->setToolTip( "Save current file with a different name" );
     connect( saveAsAction_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
 
     addAction( revertToSaveAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Reload", this ) );
-    revertToSaveAction_->setShortcut( Qt::Key_F5 );
+    revertToSaveAction_->setShortcut( QKeySequence::Refresh );
     revertToSaveAction_->setToolTip( "Reload saved version of current file" );
     connect( revertToSaveAction_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
 
     addAction( printAction_ = new QAction( IconEngine::get( ICONS::PRINT ), "Print ...", this ) );
     printAction_->setToolTip( "Print current file" );
-    printAction_->setShortcut( Qt::CTRL + Qt::Key_P );
+    printAction_->setShortcut( QKeySequence::Print );
     connect( printAction_, SIGNAL( triggered() ), SLOT( _print() ) );
 
     addAction( printPreviewAction_ = new QAction( IconEngine::get( ICONS::PRINT_PREVIEW ), "Print Preview ...", this ) );
-    // printPreviewAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_P );
     connect( printPreviewAction_, SIGNAL( triggered() ), SLOT( _printPreview() ) );
 
     addAction( htmlAction_ = new QAction( IconEngine::get( ICONS::HTML ), "Export to HTML ...", this ) );

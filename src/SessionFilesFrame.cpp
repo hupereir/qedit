@@ -318,10 +318,10 @@ void SessionFilesFrame::_installActions( void )
     connect( &_saveAction(), SIGNAL( triggered() ), SLOT( _save() ) );
     _saveAction().setToolTip( "Save selected files" );
 
-    // save
+    // close
     addAction( closeAction_ = new QAction( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Close", this ) );
     connect( &_closeAction(), SIGNAL( triggered() ), SLOT( _close() ) );
-    _closeAction().setShortcut( Qt::Key_Delete );
+    _closeAction().setShortcut( QKeySequence::Delete );
     _closeAction().setToolTip( "Close selected files" );
 
 }

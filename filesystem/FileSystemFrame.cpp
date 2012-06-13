@@ -535,39 +535,39 @@ void FileSystemFrame::_installActions( void )
     connect( &_hiddenFilesAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleShowHiddenFiles( bool ) ) );
 
     // previous directory
-    addAction( previousDirectoryAction_ = new QAction( IconEngine::get( ICONS::PREVIOUS_DIRECTORY ), "&Previous", this ) );
+    addAction( previousDirectoryAction_ = new QAction( IconEngine::get( ICONS::PREVIOUS_DIRECTORY ), "Previous", this ) );
     connect( &_previousDirectoryAction(), SIGNAL( triggered() ), SLOT( _previousDirectory() ) );
     _previousDirectoryAction().setToolTip( "Change path to previous directory (from history)" );
 
     // next directory (from history)
-    addAction( nextDirectoryAction_ = new QAction( IconEngine::get( ICONS::NEXT_DIRECTORY ), "&Next", this ) );
+    addAction( nextDirectoryAction_ = new QAction( IconEngine::get( ICONS::NEXT_DIRECTORY ), "Next", this ) );
     connect( &_nextDirectoryAction(), SIGNAL( triggered() ), SLOT( _nextDirectory() ) );
     _nextDirectoryAction().setToolTip( "Change path to next directory (from history)" );
 
     // parent directory in tree
-    addAction( parentDirectoryAction_ = new QAction( IconEngine::get( ICONS::PARENT_DIRECTORY ), "&Parent Directory", this ) );
+    addAction( parentDirectoryAction_ = new QAction( IconEngine::get( ICONS::PARENT_DIRECTORY ), "Parent Directory", this ) );
     connect( &_parentDirectoryAction(), SIGNAL( triggered() ), SLOT( _parentDirectory() ) );
     _parentDirectoryAction().setToolTip( "Change path to parent directory" );
 
     // home directory
-    addAction( homeDirectoryAction_ = new QAction( IconEngine::get( ICONS::HOME_DIRECTORY ), "&Home", this ) );
+    addAction( homeDirectoryAction_ = new QAction( IconEngine::get( ICONS::HOME_DIRECTORY ), "Home", this ) );
     connect( &_homeDirectoryAction(), SIGNAL( triggered() ), SLOT( _homeDirectory() ) );
     _homeDirectoryAction().setToolTip( "Change path to current file working directory" );
 
     // home directory
-    addAction( reloadAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
+    addAction( reloadAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Reload", this ) );
     connect( &_reloadAction(), SIGNAL( triggered() ), SLOT( _reload() ) );
     _reloadAction().setToolTip( "Reload current directory contents" );
 
     // open
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open Selected Files", this ) );
+    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open Selected Files", this ) );
     connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
     _openAction().setToolTip( "Edit selected files" );
 
     // remove
-    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::DELETE ), "Remo&ve", this ) );
+    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::DELETE ), "Remove", this ) );
     connect( &_removeAction(), SIGNAL( triggered() ), SLOT( _remove() ) );
-    _removeAction().setShortcut( Qt::Key_Delete );
+    _removeAction().setShortcut( QKeySequence::Delete );
     _removeAction().setToolTip( "Remove selected files locally" );
 
     // rename
@@ -577,7 +577,7 @@ void FileSystemFrame::_installActions( void )
     _renameAction().setToolTip( "Change selected file name" );
 
     // file properties
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "&File Properties", this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "File Properties", this ) );
     connect( &_filePropertiesAction(), SIGNAL( triggered() ), SLOT( _fileProperties() ) );
     _filePropertiesAction().setToolTip( "Display current file properties" );
 

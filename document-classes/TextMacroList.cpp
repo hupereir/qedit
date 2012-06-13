@@ -83,7 +83,7 @@ TextMacroList::TextMacroList( QWidget* parent ):
     connect( button, SIGNAL( clicked() ), SLOT( _addSeparator() ) );
 
     vLayout->addWidget( removeButton_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
-    removeButton_->setShortcut( Qt::Key_Delete );
+    removeButton_->setShortcut( QKeySequence::Delete );
     removeButton_->setToolTip( "Remove selected macro" );
     connect( removeButton_, SIGNAL( clicked() ), SLOT( _remove() ) );
 

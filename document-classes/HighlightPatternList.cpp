@@ -73,25 +73,25 @@ Counter( "HighlightPatternList" )
     hLayout->addLayout( vLayout );
 
     QPushButton* button;
-    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
     button->setToolTip( "Add a new highlight pattern to the list" );
     connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
 
-    vLayout->addWidget( removeButton_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
-    removeButton_->setShortcut( Qt::Key_Delete );
+    vLayout->addWidget( removeButton_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
+    removeButton_->setShortcut( QKeySequence::Delete );
     removeButton_->setToolTip( "Remove selected highlight pattern" );
     connect( removeButton_, SIGNAL( clicked() ), SLOT( _remove() ) );
 
-    vLayout->addWidget( editButton_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
+    vLayout->addWidget( editButton_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "Edit", this ) );
     editButton_->setToolTip( "Edit selected highlight pattern" );
     connect( editButton_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
-    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move &Up", this ) );
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move Up", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _up() ) );
     button->setToolTip( "Move up selected items" );
     moveUpButton_ = button;
 
-    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move &Down", this ) );
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move Down", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _down() ) );
     button->setToolTip( "Move down selected items" );
     moveDownButton_ = button;

@@ -300,45 +300,45 @@ void DocumentClassManagerDialog::_installActions( void )
     Debug::Throw( "DocumentClassManagerDialog::_installActions" );
 
     // clos action
-    addAction( closeAction_ = new QAction( IconEngine::get( ICONS::EXIT ), "&Exit", this  ) );
+    addAction( closeAction_ = new QAction( IconEngine::get( ICONS::EXIT ), "Exit", this  ) );
     connect( closeAction_, SIGNAL( triggered() ), SLOT( close() ) );
     closeAction_->setToolTip( "Exit document class edition" );
-    closeAction_->setShortcut( Qt::CTRL + Qt::Key_Q );
+    closeAction_->setShortcut( QKeySequence::Quit );
 
     // new document class
-    addAction( newAction_ = new QAction( IconEngine::get( ICONS::NEW ), "&New", this  ) );
+    addAction( newAction_ = new QAction( IconEngine::get( ICONS::NEW ), "New", this  ) );
     connect( newAction_, SIGNAL( triggered() ), SLOT( _add() ) );
     newAction_->setToolTip( "Create new document class" );
-    newAction_->setShortcut( Qt::CTRL + Qt::Key_N );
+    newAction_->setShortcut( QKeySequence::New );
 
     // open
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this  ) );
+    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open ...", this  ) );
     connect( openAction_, SIGNAL( triggered() ), SLOT( _loadFile() ) );
     openAction_->setToolTip( "Load additional classes from file" );
-    openAction_->setShortcut( Qt::CTRL + Qt::Key_O );
+    openAction_->setShortcut( QKeySequence::Open );
 
     // save
     addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "Save", this  ) );
     connect( saveAction_, SIGNAL( triggered() ), SLOT( _save() ) );
     saveAction_->setToolTip( "Save document classes modifications" );
-    saveAction_->setShortcut( Qt::CTRL + Qt::Key_S );
+    saveAction_->setShortcut( QKeySequence::Save );
     saveAction_->setEnabled( false );
 
     // edit
-    addAction( editAction_ = new QAction( IconEngine::get( ICONS::EDIT ), "&Edit", this  ) );
+    addAction( editAction_ = new QAction( IconEngine::get( ICONS::EDIT ), "Edit", this  ) );
     connect( editAction_, SIGNAL( triggered() ), SLOT( _edit() ) );
     editAction_->setToolTip( "Edit file from which selected document class is read" );
 
     // remove
-    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::REMOVE ), "&Remove", this  ) );
+    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::REMOVE ), "Remove", this  ) );
     connect( removeAction_, SIGNAL( triggered() ), SLOT( _remove() ) );
     removeAction_->setToolTip( "Remove selected document class from list" );
 
     // reload
-    addAction( reloadAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Rel&oad", this  ) );
+    addAction( reloadAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Reload", this  ) );
     connect( reloadAction_, SIGNAL( triggered() ), SLOT( _reload() ) );
     reloadAction_->setToolTip( "Reload all classes" );
-    reloadAction_->setShortcut( Qt::Key_F5 );
+    reloadAction_->setShortcut( QKeySequence::Refresh );
     reloadAction_->setEnabled( false );
 
 
