@@ -74,25 +74,25 @@ modified_( false )
     hLayout->addLayout( vLayout );
 
     QPushButton* button;
-    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
     button->setToolTip( "Add a new rule to the list" );
     connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
 
-    vLayout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
+    vLayout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
     remove_button_->setShortcut( QKeySequence::Delete );
     remove_button_->setToolTip( "Remove selected rule" );
     connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
 
-    vLayout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ),  "&Edit", this ) );
+    vLayout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ),  "Edit", this ) );
     edit_button_->setToolTip( "Edit selected rule" );
     connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
-    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move &Up", this ) );
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::UP ), "Move Up", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _up() ) );
     button->setToolTip( "Move up selected items" );
     move_up_button_ = button;
 
-    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move &Down", this ) );
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DOWN ), "Move Down", this ) );
     connect( button, SIGNAL( clicked() ), SLOT( _down() ) );
     button->setToolTip( "Move down selected items" );
     move_down_button_ = button;

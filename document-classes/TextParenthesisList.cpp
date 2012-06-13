@@ -74,16 +74,16 @@ TextParenthesisList::TextParenthesisList( QWidget* parent ):
   hLayout->addLayout( vLayout );
 
   QPushButton* button;
-  vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "&Add", this ) );
+  vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
   button->setToolTip( "Add a new parenthesis to the list" );
   connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
 
-  vLayout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "&Remove", this ) );
+  vLayout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
   remove_button_->setToolTip( "Remove selected parenthesis" );
   remove_button_->setShortcut( QKeySequence::Delete );
   connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
 
-  vLayout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "&Edit", this ) );
+  vLayout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "Edit", this ) );
   edit_button_->setToolTip( "Edit selected parenthesis" );
   connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 

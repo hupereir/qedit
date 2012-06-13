@@ -299,27 +299,27 @@ void SessionFilesFrame::_installActions( void )
     Debug::Throw( "SessionFilesFrame::_installActions.\n" );
 
     // next file
-    addAction( nextFileAction_ = new QAction( IconEngine::get(  ICONS::DOWN ), "Select &next File", this ) );
+    addAction( nextFileAction_ = new QAction( IconEngine::get(  ICONS::DOWN ), "Select next File", this ) );
     connect( &nextFileAction(), SIGNAL( triggered() ), SLOT( _selectNextFile() ) );
     nextFileAction().setShortcut( Qt::CTRL + Qt::Key_Tab );
 
     // previous file
-    addAction( previousFileAction_ = new QAction( IconEngine::get(  ICONS::UP ), "Select &Previous File", this ) );
+    addAction( previousFileAction_ = new QAction( IconEngine::get(  ICONS::UP ), "Select Previous File", this ) );
     connect( &previousFileAction(), SIGNAL( triggered() ), SLOT( _selectPreviousFile() ) );
     previousFileAction().setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Tab );
 
     // open
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open", this ) );
+    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open", this ) );
     connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
     _openAction().setToolTip( "Open selected files" );
 
     // save
-    addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "&Save", this ) );
+    addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "Save", this ) );
     connect( &_saveAction(), SIGNAL( triggered() ), SLOT( _save() ) );
     _saveAction().setToolTip( "Save selected files" );
 
     // close
-    addAction( closeAction_ = new QAction( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Close", this ) );
+    addAction( closeAction_ = new QAction( IconEngine::get( ICONS::DIALOG_CLOSE ), "Close", this ) );
     connect( &_closeAction(), SIGNAL( triggered() ), SLOT( _close() ) );
     _closeAction().setShortcut( QKeySequence::Delete );
     _closeAction().setToolTip( "Close selected files" );

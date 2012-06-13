@@ -245,7 +245,7 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
     menu.addSeparator();
 
     // tags submenu
-    QMenu* submenu = menu.addMenu( "&Tags" );
+    QMenu* submenu = menu.addMenu( "Tags" );
 
     submenu->addAction( &tagBlockAction() );
     submenu->addAction( &nextTagAction() );
@@ -253,7 +253,7 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
     submenu->addAction( &clearTagAction() );
     submenu->addAction( &clearAllTagsAction() );
 
-    tagBlockAction().setText( hasSelection ? "&Tag selected blocks":"&Tag current block" );
+    tagBlockAction().setText( hasSelection ? "Tag selected blocks":"Tag current block" );
     nextTagAction().setEnabled( hasTags );
     previousTagAction().setEnabled( hasTags );
     clearTagAction().setEnabled( current_block_tagged );
@@ -261,7 +261,7 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_action
 
     // document class menu
     submenu = new DocumentClassMenu( this );
-    submenu->setTitle( "&Select document class" );
+    submenu->setTitle( "Select document class" );
     connect( submenu, SIGNAL( documentClassSelected( QString ) ), SLOT( selectClassName( QString ) ) );
     menu.addMenu( submenu );
 
@@ -1451,7 +1451,6 @@ void TextDisplay::_installActions( void )
 
     // file information
     addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "Properties ...", this ) );
-    //filePropertiesAction_->setShortcut( Qt::ALT + Qt::Key_Return );
     filePropertiesAction_->setToolTip( "Display current file properties" );
     connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
 
@@ -1466,7 +1465,7 @@ void TextDisplay::_installActions( void )
     #endif
 
     // tag block action
-    addAction( tagBlockAction_ = new QAction( IconEngine::get( ICONS::TAG ), "&Tag Selected Blocks", this ) );
+    addAction( tagBlockAction_ = new QAction( IconEngine::get( ICONS::TAG ), "Tag Selected Blocks", this ) );
     connect( tagBlockAction_, SIGNAL( triggered() ), SLOT( _tagBlock( void ) ) );
 
     // clear current block tags

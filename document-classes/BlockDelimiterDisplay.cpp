@@ -524,25 +524,25 @@ void BlockDelimiterDisplay::_installActions( void )
 
     Debug::Throw( "BlockDelimiterDisplay::_installActions.\n" );
 
-    collapse_currentAction_ = new QAction( "&Collapse Current Block", this );
+    collapse_currentAction_ = new QAction( "Collapse Current Block", this );
     collapse_currentAction_->setToolTip( "Collapse current collapsed block" );
     collapse_currentAction_->setShortcut( Qt::CTRL + Qt::Key_Minus );
     connect( collapse_currentAction_, SIGNAL( triggered() ), SLOT( _collapseCurrentBlock() ) );
     collapse_currentAction_->setEnabled( false );
 
-    expand_currentAction_ = new QAction( "&Expand Current Block", this );
+    expand_currentAction_ = new QAction( "Expand Current Block", this );
     expand_currentAction_->setToolTip( "Expand current collapsed block" );
     expand_currentAction_->setShortcut( Qt::CTRL + Qt::Key_Plus );
     connect( expand_currentAction_, SIGNAL( triggered() ), SLOT( _expandCurrentBlock() ) );
     expand_currentAction_->setEnabled( false );
 
-    collapseAction_ = new QAction( "&Collapse Top-Level Blocks", this );
+    collapseAction_ = new QAction( "Collapse Top-Level Blocks", this );
     collapseAction_->setToolTip( "Collapse all top level blocks" );
     collapseAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Minus );
     connect( collapseAction_, SIGNAL( triggered() ), SLOT( _collapseTopLevelBlocks() ) );
     collapseAction_->setEnabled( true );
 
-    expandAllAction_ = new QAction( "&Expand All Blocks", this );
+    expandAllAction_ = new QAction( "Expand All Blocks", this );
     expandAllAction_->setToolTip( "Expand all collapsed blocks" );
     expandAllAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Plus );
     connect( expandAllAction_, SIGNAL( triggered() ), SLOT( expandAllBlocks() ) );

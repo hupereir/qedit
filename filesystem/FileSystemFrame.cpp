@@ -529,7 +529,7 @@ void FileSystemFrame::_installActions( void )
     Debug::Throw( "FileSystemFrame::_installActions.\n" );
 
     // hidden files
-    addAction( hiddenFilesAction_ = new QAction( "&Show Hidden Files", this ) );
+    addAction( hiddenFilesAction_ = new QAction( "Show Hidden Files", this ) );
     _hiddenFilesAction().setCheckable( true );
     connect( &_hiddenFilesAction(), SIGNAL( toggled( bool ) ), SLOT( _update() ) );
     connect( &_hiddenFilesAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleShowHiddenFiles( bool ) ) );
