@@ -312,7 +312,7 @@ void DocumentClassManagerDialog::_installActions( void )
     newAction_->setShortcut( QKeySequence::New );
 
     // open
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open ...", this  ) );
+    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open...", this  ) );
     connect( openAction_, SIGNAL( triggered() ), SLOT( _loadFile() ) );
     openAction_->setToolTip( "Load additional classes from file" );
     openAction_->setShortcut( QKeySequence::Open );

@@ -853,14 +853,14 @@ void MainWindow::_installActions( void )
     detachAction_->setToolTip( "Detach current display" );
     detachAction_->setEnabled( false );
 
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open ...", this ) );
+    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open...", this ) );
     openAction_->setShortcut( QKeySequence::Open );
     openAction_->setToolTip( "Open an existing file" );
 
-    addAction( openHorizontalAction_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Open Display Top/Bottom ...", this ) );
+    addAction( openHorizontalAction_ =new QAction( IconEngine::get( ICONS::VIEW_BOTTOM ), "Open Display Top/Bottom...", this ) );
     openHorizontalAction_->setToolTip( "Open a new display vertically" );
 
-    addAction( openVerticalAction_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open Display Left/Right ...", this ) );
+    addAction( openVerticalAction_ =new QAction( IconEngine::get( ICONS::VIEW_RIGHT ), "Open Display Left/Right...", this ) );
     openVerticalAction_->setToolTip( "Open a new display horizontally" );
 
     addAction( closeDisplayAction_ = new QAction( IconEngine::get( ICONS::VIEW_REMOVE ), "Close Display", this ) );
@@ -878,7 +878,7 @@ void MainWindow::_installActions( void )
     saveAction_->setToolTip( "Save current file" );
     connect( saveAction_, SIGNAL( triggered() ), SLOT( _save() ) );
 
-    addAction( saveAsAction_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save As ...", this ) );
+    addAction( saveAsAction_ = new QAction( IconEngine::get( ICONS::SAVE_AS ), "Save As...", this ) );
     saveAsAction_->setShortcut( QKeySequence::SaveAs );
     saveAsAction_->setToolTip( "Save current file with a different name" );
     connect( saveAsAction_, SIGNAL( triggered() ), SLOT( _saveAs() ) );
@@ -888,15 +888,15 @@ void MainWindow::_installActions( void )
     revertToSaveAction_->setToolTip( "Reload saved version of current file" );
     connect( revertToSaveAction_, SIGNAL( triggered() ), SLOT( _revertToSave() ) );
 
-    addAction( printAction_ = new QAction( IconEngine::get( ICONS::PRINT ), "Print ...", this ) );
+    addAction( printAction_ = new QAction( IconEngine::get( ICONS::PRINT ), "Print...", this ) );
     printAction_->setToolTip( "Print current file" );
     printAction_->setShortcut( QKeySequence::Print );
     connect( printAction_, SIGNAL( triggered() ), SLOT( _print() ) );
 
-    addAction( printPreviewAction_ = new QAction( IconEngine::get( ICONS::PRINT_PREVIEW ), "Print Preview ...", this ) );
+    addAction( printPreviewAction_ = new QAction( IconEngine::get( ICONS::PRINT_PREVIEW ), "Print Preview...", this ) );
     connect( printPreviewAction_, SIGNAL( triggered() ), SLOT( _printPreview() ) );
 
-    addAction( htmlAction_ = new QAction( IconEngine::get( ICONS::HTML ), "Export to HTML ...", this ) );
+    addAction( htmlAction_ = new QAction( IconEngine::get( ICONS::HTML ), "Export to HTML...", this ) );
     connect( htmlAction_, SIGNAL( triggered() ), SLOT( _toHtml() ) );
 
     addAction( undoAction_ = new QAction( IconEngine::get( ICONS::UNDO ), "Undo", this ) );
@@ -924,13 +924,13 @@ void MainWindow::_installActions( void )
     pasteAction_->setEnabled( !qApp->clipboard()->text().isEmpty() );
     connect( pasteAction_, SIGNAL( triggered() ), SLOT( _paste() ) );
 
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "Properties ...", this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "Properties...", this ) );
     filePropertiesAction_->setShortcut( Qt::ALT + Qt::Key_Return );
     filePropertiesAction_->setToolTip( "Display file informations" );
     filePropertiesAction_->setEnabled( false );
     connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileInfo() ) );
 
-    addAction( spellcheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Spell Check ...", this ) );
+    addAction( spellcheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Spell Check...", this ) );
     #if WITH_ASPELL
     connect( spellcheckAction_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
     #else
