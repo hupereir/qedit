@@ -80,7 +80,7 @@ void PrintHelper::print( QPrinter* printer )
         // create ranges
         QList<QTextLayout::FormatRange> formatRanges;
 
-        // need to redo highlighting rather that us HighlightBlockData
+        // need to redo highlighting rather that use HighlightBlockData
         // because the latter do not store autospell patterns.
         PatternLocationSet patterns;
         if( editor_->textHighlight().isHighlightEnabled() )

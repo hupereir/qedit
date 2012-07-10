@@ -429,17 +429,24 @@ void MainWindow::_print( void )
     QPrinter printer( QPrinter::HighResolution );
     printer.setDocName( activeDisplay().file().localName() );
 
+    // create options widget
+    PRINT::PrinterOptionWidget* optionWidget( new PRINT::PrinterOptionWidget() );
+
+    // print
+    PrintHelper helper( this, &activeDisplay() );
+    connect( optionWidget, SIGNAL( orientationChanged( QPrinter::Orientation ) ), &helper, SLOT( setOrientation( QPrinter::Orientation ) ) );
+    connect( optionWidget, SIGNAL( pageModeChanged( BasePrintHelper::PageMode ) ), &helper, SLOT( setPageMode( BasePrintHelper::PageMode ) ) );
+
     // create prind dialog and run.
     QPrintDialog dialog( &printer, this );
     dialog.setWindowTitle( "Print Document - qedit" );
+    dialog.setOptionTabs( QList<QWidget *>() << optionWidget );
     if( dialog.exec() == QDialog::Rejected ) return;
 
     // add output file to scratch files, if any
     if( !printer.outputFileName().isEmpty() )
     { Singleton::get().application<Application>()->scratchFileMonitor().add( printer.outputFileName() ); }
-
-    // print
-    PrintHelper( this, &activeDisplay() ).print( &printer );
+    helper.print( &printer );
 
     return;
 
