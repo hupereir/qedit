@@ -54,6 +54,7 @@
 #include "NavigationToolBar.h"
 #include "NewFileDialog.h"
 #include "PixmapEngine.h"
+#include "PrinterOptionWidget.h"
 #include "PrintHelper.h"
 #include "PrintPreviewDialog.h"
 #include "QtUtil.h"
@@ -433,7 +434,8 @@ void MainWindow::_print( void )
     PrintHelper helper( this, &activeDisplay() );
 
     // create options widget
-    PRINT::PrinterOptionWidget* optionWidget( new PRINT::PrinterOptionWidget() );
+    PrinterOptionWidget* optionWidget( new PrinterOptionWidget() );
+    optionWidget->setHelper( &helper );
     connect( optionWidget, SIGNAL( orientationChanged( QPrinter::Orientation ) ), &helper, SLOT( setOrientation( QPrinter::Orientation ) ) );
     connect( optionWidget, SIGNAL( pageModeChanged( BasePrintHelper::PageMode ) ), &helper, SLOT( setPageMode( BasePrintHelper::PageMode ) ) );
 
@@ -463,7 +465,7 @@ void MainWindow::_printPreview( void )
     // create dialog, connect and execute
     PrintPreviewDialog dialog( this );
     dialog.setWindowTitle( "Print Preview - qedit" );
-    dialog.setHelper( helper );
+    dialog.setHelper( &helper );
     dialog.exec();
 }
 
