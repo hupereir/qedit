@@ -429,11 +429,11 @@ void MainWindow::_print( void )
     QPrinter printer( QPrinter::HighResolution );
     printer.setDocName( activeDisplay().file().localName() );
 
+    // create helper
+    PrintHelper helper( this, &activeDisplay() );
+
     // create options widget
     PRINT::PrinterOptionWidget* optionWidget( new PRINT::PrinterOptionWidget() );
-
-    // print
-    PrintHelper helper( this, &activeDisplay() );
     connect( optionWidget, SIGNAL( orientationChanged( QPrinter::Orientation ) ), &helper, SLOT( setOrientation( QPrinter::Orientation ) ) );
     connect( optionWidget, SIGNAL( pageModeChanged( BasePrintHelper::PageMode ) ), &helper, SLOT( setPageMode( BasePrintHelper::PageMode ) ) );
 
