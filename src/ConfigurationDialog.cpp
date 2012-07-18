@@ -179,7 +179,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
         OptionSpinBox* spinbox;
         hLayout->addWidget( spinbox = new OptionSpinBox( box, "AUTOHIDE_CURSOR_DELAY" ) );
-        spinbox->setUnit( "seconds" );
+        spinbox->setSuffix( "s" );
         addOptionWidget( spinbox );
 
         spinbox->setMinimum( 0 );
@@ -295,9 +295,10 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     gridLayout->addWidget( new QLabel( "Autosave interval (seconds): ", box ) );
     gridLayout->addWidget( spinbox = new OptionSpinBox( box, "AUTOSAVE_INTERVAL" ) );
+    spinbox->setSuffix( "s" );
     spinbox->setMinimum( 1 );
     spinbox->setMaximum( 300 );
-    spinbox->setToolTip( "Interval (seconds) between two autosave." );
+    spinbox->setToolTip( "Interval between two autosave." );
     addOptionWidget( spinbox );
 
     OptionBrowsedLineEditor *edit;
