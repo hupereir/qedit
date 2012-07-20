@@ -115,29 +115,29 @@ void FileCheck::timerEvent( QTimerEvent* event )
         if( data_.empty() ) return;
 
         BASE::KeySet<TextDisplay> displays( this );
-        for( DataSet::const_iterator iter = data_.begin(); iter != data_.end(); ++iter )
+        foreach( const Data& data, data_ )
         {
 
-	  BASE::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( iter->file() ) ) );
+            BASE::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( data.file() ) ) );
             if( displayIter != displays.end() )
             {
 
                 // assign to this display and others
-                BASE::KeySet<TextDisplay> associates( *displayIter );
-                associates.insert( *displayIter );
-                for( BASE::KeySet<TextDisplay>::iterator displayIter = associates.begin(); displayIter != associates.end(); ++displayIter )
+                BASE::KeySet<TextDisplay> associatedDisplays( *displayIter );
+                associatedDisplays.insert( *displayIter );
+                foreach( TextDisplay* display, associatedDisplays )
                 {
 
                     // check whether data are still relevant for this display
-                    if( !( iter->flag() == Data::REMOVED || ((*displayIter)->lastSaved().isValid() && (*displayIter)->lastSaved() < iter->timeStamp()) ) )
+                    if( !( data.flag() == Data::REMOVED || (display->lastSaved().isValid() && (*displayIter)->lastSaved() < data.timeStamp()) ) )
                     { continue; }
 
-                    (*displayIter)->setFileCheckData( *iter );
-                    if( !( (*displayIter)->isActive() && (*displayIter)->QTextEdit::hasFocus() ) )
+                    (*displayIter)->setFileCheckData( data );
+                    if( !( display->isActive() && display->QTextEdit::hasFocus() ) )
                     { continue; }
 
                     // retrieve associated TextView
-                    BASE::KeySet<TextView> views( *displayIter );
+                    BASE::KeySet<TextView> views( display );
                     if( !views.empty() ) (*views.begin())->checkDisplayModifications( *displayIter );
 
                 }
@@ -145,7 +145,7 @@ void FileCheck::timerEvent( QTimerEvent* event )
             } else {
 
                 // permanently remove file from list
-                removeFile( iter->file() );
+                removeFile( data.file() );
 
             }
 

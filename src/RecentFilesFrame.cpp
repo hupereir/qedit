@@ -155,8 +155,8 @@ void RecentFilesFrame::_updateActions( void )
     Debug::Throw( "RecentFilesFrame:_updateActions.\n" );
     FileRecordModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
 
-    bool has_valid_selection( std::find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
-    _openAction().setEnabled( has_valid_selection );
+    bool has_validSelection( std::find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
+    _openAction().setEnabled( has_validSelection );
 
 }
 
@@ -176,14 +176,14 @@ void RecentFilesFrame::_open( void )
 {
 
     Debug::Throw( "RecentFilesFrame:_open.\n" );
-    FileRecordModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
-    FileRecordModel::List valid_selection;
-    for( FileRecordModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
-    { if( iter->isValid() ) valid_selection.push_back( *iter ); }
+    FileRecordModel::List validSelection;
+
+    foreach( const FileRecord& record, _model().get( list().selectionModel()->selectedRows() ) )
+    { if( record.isValid() ) validSelection << record; }
 
     // one should check the number of files to be edited
-    for( FileRecordModel::List::const_iterator iter = valid_selection.begin(); iter != valid_selection.end(); ++iter )
-    { emit fileActivated( *iter ); }
+    foreach( const FileRecord& record, validSelection )
+    { emit fileActivated( record ); }
 
 }
 

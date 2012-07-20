@@ -21,73 +21,64 @@
 *
 *******************************************************************************/
 
-/*!
-  \file CloseFilesDialog.cpp
-  \brief used to exit the application
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QLabel>
+#include "CloseFilesDialog.h"
 
 #include "FileRecordProperties.h"
 #include "Icons.h"
 #include "PixmapEngine.h"
 #include "Debug.h"
-#include "CloseFilesDialog.h"
 
-
+#include <QtGui/QLabel>
 
 //__________________________________________________
 CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
-  CustomDialog( parent, OkButton | CancelButton| Separator )
+CustomDialog( parent, OkButton | CancelButton| Separator )
 {
 
-  Debug::Throw( "CloseFilesDialog::CloseFilesDialog.\n" );
+    Debug::Throw( "CloseFilesDialog::CloseFilesDialog.\n" );
 
-  setWindowTitle( "Close Files - Qedit" );
+    setWindowTitle( "Close Files - Qedit" );
 
-  QHBoxLayout *h_layout( new QHBoxLayout() );
-  h_layout->setSpacing(5);
-  h_layout->setMargin( 0 );
-  mainLayout().addLayout( h_layout );
+    QHBoxLayout *hLayout( new QHBoxLayout() );
+    hLayout->setSpacing(5);
+    hLayout->setMargin( 0 );
+    mainLayout().addLayout( hLayout );
 
-  // add icon
-  QLabel *label( new QLabel( this ) );
-  label->setPixmap( PixmapEngine::get( ICONS::WARNING ) );
-  h_layout->addWidget( label, 0, Qt::AlignHCenter );
+    // add icon
+    QLabel *label( new QLabel( this ) );
+    label->setPixmap( PixmapEngine::get( ICONS::WARNING ) );
+    hLayout->addWidget( label, 0, Qt::AlignHCenter );
 
-  // create label text
-  static const unsigned int max_line_size( 50 );
-  unsigned int current_line( 0 );
-  QString buffer;
-  QTextStream what( &buffer );
-  what << "Editing: ";
+    // create label text
+    static const unsigned int max_line_size( 50 );
+    unsigned int currentLine( 0 );
+    QString buffer;
+    QTextStream what( &buffer );
+    what << "Editing: ";
 
-  int index(0);
-  for( FileRecord::List::const_iterator iter = files.begin(); iter != files.end(); ++iter, index++ )
-  {
-    what << iter->file().localName();
-    if( iter->hasFlag( FileRecordProperties::MODIFIED ) ) what << "*";
-    if( index < files.size()-2 ) what << ", ";
-    else if( index == files.size()-2 ) what << " and ";
-    else what << ".";
-
-    if( buffer.size() >= int((current_line+1)*max_line_size) )
+    int index(0);
+    foreach( const FileRecord& record, files )
     {
-      what << endl;
-      current_line++;
+        what << record.file().localName();
+        if( record.hasFlag( FileRecordProperties::MODIFIED ) ) what << "*";
+        if( index < files.size()-2 ) what << ", ";
+        else if( index == files.size()-2 ) what << " and ";
+        else what << ".";
+
+        if( buffer.size() >= int((currentLine+1)*max_line_size) )
+        {
+            what << endl;
+            currentLine++;
+        }
+
     }
 
-  }
+    what << endl << "Close ?";
+    hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
-  what << endl << "Close ?";
-  h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
-
-  // rename buttons
-  okButton().setText( "&Yes" );
-  cancelButton().setText( "&No" );
-  adjustSize();
+    // rename buttons
+    okButton().setText( "&Yes" );
+    cancelButton().setText( "&No" );
+    adjustSize();
 }
 

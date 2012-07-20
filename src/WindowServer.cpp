@@ -140,38 +140,35 @@ FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) co
 
     // get associated main windows
     Application& application( *Singleton::get().application<Application>() );
-    BASE::KeySet<MainWindow> windows( this );
-    for( BASE::KeySet<MainWindow>::iterator windowIter = windows.begin(); windowIter != windows.end(); ++windowIter )
+    foreach( MainWindow* windowIter, BASE::KeySet<MainWindow>( this ) )
     {
-
         // check if current window match the one passed in argument
-        bool is_active_window( *windowIter == window );
+        bool isActiveWindow( windowIter == window );
 
         // retrieve associated TextDisplays
-        BASE::KeySet<TextDisplay> displays( (*windowIter)->associatedDisplays() );
-        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
+        foreach( TextDisplay* display,  BASE::KeySet<TextDisplay>( windowIter->associatedDisplays() ) )
         {
 
             // check modification status
-            if( modified_only && !(*iter)->document()->isModified() ) continue;
+            if( modified_only && !display->document()->isModified() ) continue;
 
             // retrieve file
             // store in map if not empty
-            const File& file( (*iter)->file() );
+            const File& file( display->file() );
             if( file.isEmpty() ) continue;
 
             // insert in map (together with modification status)
-            FileRecord record = (*iter)->isNewDocument() ? FileRecord( file ):application.recentFiles().get(file);
+            FileRecord record = display->isNewDocument() ? FileRecord( file ):application.recentFiles().get(file);
 
             // set flags
             unsigned int flags( FileRecordProperties::NONE );
-            if( (*iter)->document()->isModified() ) flags |= FileRecordProperties::MODIFIED;
-            if( (*iter)->fileCheckData().flag() != FileCheck::Data::NONE ) flags |= FileRecordProperties::ALTERED;
+            if( display->document()->isModified() ) flags |= FileRecordProperties::MODIFIED;
+            if( display->fileCheckData().flag() != FileCheck::Data::NONE ) flags |= FileRecordProperties::ALTERED;
 
-            if( is_active_window )
+            if( isActiveWindow )
             {
                 flags |= FileRecordProperties::ACTIVE;
-                if( (*windowIter)->isActiveDisplay( **iter ) ) flags |= FileRecordProperties::SELECTED;
+                if( windowIter->isActiveDisplay( *display ) ) flags |= FileRecordProperties::SELECTED;
             }
 
             // assign flags and store
@@ -206,8 +203,8 @@ bool WindowServer::closeAll( void )
     }
 
     QStringList files;
-    for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); ++iter )
-    { files.push_back( iter->file() ); }
+    foreach( const FileRecord& record, records )
+    { files << record.file(); }
 
     return _close( files );
 
@@ -245,7 +242,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
     }
 
     // check if at least one file is opened
-    bool file_opened( false );
+    bool fileOpened( false );
 
     // tabbed | diff mode
     bool tabbed( parser.hasFlag( "--tabbed" ) );
@@ -261,13 +258,13 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
         }
 
         bool first( true );
-        for( QStringList::const_iterator iter = filenames.begin(); iter != filenames.end(); ++iter )
+        foreach( const QString& filename, filenames )
         {
 
             if( first )
             {
 
-                if( file_opened |= _open( File( *iter ).expand() ) )
+                if( fileOpened |= _open( File( filename ).expand() ) )
                 {
                     _applyArguments( _activeWindow().activeDisplay(), arguments );
                     first = false;
@@ -275,7 +272,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
 
             } else {
 
-                if( file_opened |= _open( File( *iter ).expand(), orientation ) )
+                if( fileOpened |= _open( File( filename ).expand(), orientation ) )
                 { _applyArguments( _activeWindow().activeDisplay(), arguments ); }
 
             }
@@ -291,22 +288,22 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
     } else {
 
         // default mode
-        for( QStringList::const_iterator iter = filenames.begin(); iter != filenames.end(); ++iter )
+        foreach( const QString& filename, filenames )
         {
 
             OpenMode mode( _openMode() );
             if( parser.hasFlag( "--same-window" ) ) mode = ACTIVE_WINDOW;
             else if( parser.hasFlag( "--new-window" ) ) mode = NEW_WINDOW;
 
-            bool opened = _open( File( *iter ).expand(), mode );
+            bool opened = _open( File( filename ).expand(), mode );
             if( opened ) { _applyArguments( _activeWindow().activeDisplay(), arguments ); }
-            file_opened |= opened;
+            fileOpened |= opened;
 
         }
 
     }
 
-    if( !file_opened )
+    if( !fileOpened )
     {
         if( _firstCall() ) {
 
@@ -348,10 +345,8 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
     int maximum(0);
     BASE::KeySet<TextDisplay> displays;
     BASE::KeySet<MainWindow> windows( this );
-    for( QList<File>::iterator iter = files.begin(); iter != files.end(); ++iter )
+    foreach( const File& file, files )
     {
-
-        File& file( *iter );
 
         // find matching window
         BASE::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
@@ -359,10 +354,10 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
 
         // loop over views
         BASE::KeySet<TextView> views( *iter );
-        for( BASE::KeySet<TextView>::iterator viewIter = views.begin(); viewIter != views.end(); ++viewIter )
+        foreach( TextView* view, views )
         {
-            if( !(*viewIter)->selectDisplay( file ) ) continue;
-            TextDisplay* display( &(*viewIter)->activeDisplay() );
+            if( !view->selectDisplay( file ) ) continue;
+            TextDisplay* display( &view->activeDisplay() );
             connect( display, SIGNAL( progressAvailable( int ) ), &dialog, SLOT( setValue( int ) ) );
             maximum += display->toPlainText().size();
             displays.insert( display );
@@ -373,9 +368,9 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
     dialog.setMaximum( maximum );
 
     // loop over displays and perform replacement
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
+    foreach( TextDisplay* display, displays )
     {
-        counts += (*iter)->replaceInWindow( selection, false );
+        counts += display->replaceInWindow( selection, false );
         dialog.setOffset( dialog.value() );
     }
 
@@ -652,8 +647,8 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         // close display
         displays = BASE::KeySet<TextDisplay>( &previous_display );
         displays.insert( &previous_display );
-        for( BASE::KeySet<TextDisplay>::iterator displayIter = displays.begin(); displayIter != displays.end(); ++displayIter )
-        { (*viewIter)->closeDisplay( **displayIter ); }
+        foreach( TextDisplay* display, displays )
+        { (*viewIter)->closeDisplay( *display ); }
 
         // restore modification state and make new display active
         display.setModified( modified );
@@ -844,18 +839,15 @@ void WindowServer::_save( FileRecord::List records )
     if( records.size() > 1 && !SaveAllDialog( &_activeWindow(), records ).exec() ) return;
 
     // retrieve windows
-    BASE::KeySet<MainWindow> windows( this );
-    for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); ++iter )
+    foreach( MainWindow* window, BASE::KeySet<MainWindow>( this ) )
     {
 
         // retrieve displays
-        BASE::KeySet<TextDisplay> displays( (*iter)->associatedDisplays() );
-        for( BASE::KeySet<TextDisplay>::iterator displayIter = displays.begin(); displayIter != displays.end(); ++displayIter )
+        foreach( TextDisplay* display,  window->associatedDisplays() )
         {
-            TextDisplay& display( **displayIter );
-            if( !display.document()->isModified() ) continue;
-            if( std::find_if( records.begin(), records.end(), FileRecord::SameFileFTor( display.file() ) ) == records.end() ) continue;
-            display.save();
+            if( !display->document()->isModified() ) continue;
+            if( std::find_if( records.begin(), records.end(), FileRecord::SameFileFTor( display->file() ) ) == records.end() ) continue;
+            display->save();
         }
 
     }
@@ -874,8 +866,8 @@ bool WindowServer::_close( FileRecord::List records )
     if( records.size() > 1 && !CloseFilesDialog( &_activeWindow(), records ).exec() ) return true;
 
     QStringList files;
-    for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); ++iter )
-    { files.push_back( iter->file() ); }
+    foreach( const FileRecord& record, records )
+    { files << record.file(); }
 
     return _close( files );
 
@@ -890,59 +882,54 @@ bool WindowServer::_close( QStringList files )
     // need a first loop over associated windows to store modified files
     QSet<QString> modifiedFiles;
     BASE::KeySet<MainWindow> windows( this );
-    for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); ++iter )
+    foreach( MainWindow* window, windows )
     {
-        BASE::KeySet<TextDisplay> displays( (*iter)->associatedDisplays() );
-        for( BASE::KeySet<TextDisplay>::iterator displayIter = displays.begin(); displayIter != displays.end(); ++displayIter )
+        foreach( TextDisplay* display, window->associatedDisplays() )
         {
 
             // see if file is in list
-            TextDisplay& display( **displayIter );
-            if( std::find( files.begin(), files.end(), display.file() ) == files.end() ) continue;
-            if( display.document()->isModified() ) modifiedFiles.insert( display.file() );
+            if( std::find( files.begin(), files.end(), display->file() ) == files.end() ) continue;
+            if( display->document()->isModified() ) modifiedFiles.insert( display->file() );
 
         }
 
     }
 
     // retrieve windows
-    for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); ++iter )
+    foreach( MainWindow* window, windows )
     {
 
         // retrieve views
-        BASE::KeySet<TextView> views( *iter );
-        for( BASE::KeySet<TextView>::iterator viewIter = views.begin(); viewIter != views.end(); ++viewIter )
+        BASE::KeySet<TextView> views( window );
+        foreach( TextView* view, views )
         {
 
-            TextView& view( **viewIter );
-            BASE::KeySet<TextDisplay> displays( &view );
-            for( BASE::KeySet<TextDisplay>::iterator displayIter = displays.begin(); displayIter != displays.end(); ++displayIter )
+            BASE::KeySet<TextDisplay> displays( view );
+            foreach( TextDisplay* display, displays )
             {
-                TextDisplay& display( **displayIter );
 
                 // see if file is in list
-                if( std::find( files.begin(), files.end(), display.file() ) == files.end() ) continue;
+                if( std::find( files.begin(), files.end(), display->file() ) == files.end() ) continue;
 
-                Debug::Throw() << "WindowServer::_close - file: " << display.file() << endl;
+                Debug::Throw() << "WindowServer::_close - file: " << display->file() << endl;
 
-                if( display.document()->isModified() )
+                if( display->document()->isModified() )
                 {
 
-                    if( state == AskForSaveDialog::YES_TO_ALL ) display.save();
-                    else if( state == AskForSaveDialog::NO_TO_ALL ) display.document()->setModified( false );
+                    if( state == AskForSaveDialog::YES_TO_ALL ) display->save();
+                    else if( state == AskForSaveDialog::NO_TO_ALL ) display->document()->setModified( false );
                     else
                     {
-                        state = display.askForSave( modifiedFiles.size() > 1 );
-                        if( state == AskForSaveDialog::YES_TO_ALL || state == AskForSaveDialog::YES ) display.save();
-                        else if( state == AskForSaveDialog::NO_TO_ALL  || state == AskForSaveDialog::YES ) display.document()->setModified( false );
+                        state = display->askForSave( modifiedFiles.size() > 1 );
+                        if( state == AskForSaveDialog::YES_TO_ALL || state == AskForSaveDialog::YES ) display->save();
+                        else if( state == AskForSaveDialog::NO_TO_ALL  || state == AskForSaveDialog::YES ) display->document()->setModified( false );
                         else if( state == AskForSaveDialog::CANCEL ) return false;
-                        modifiedFiles.remove( display.file() );
-                        view.closeDisplay( display );
+                        modifiedFiles.remove( display->file() );
                     }
 
                 }
 
-                view.closeDisplay( display );
+                view->closeDisplay( *display );
 
             }
         }
@@ -957,17 +944,15 @@ MainWindow& WindowServer::_findWindow( const File& file )
     MainWindow* out( 0 );
 
     // retrieve windows
-    BASE::KeySet<MainWindow> windows( this );
-    for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); ++iter )
+    foreach( MainWindow* window, BASE::KeySet<MainWindow>( this ) )
     {
 
         // retrieve displays
-        BASE::KeySet<TextDisplay> displays( (*iter)->associatedDisplays() );
-        for( BASE::KeySet<TextDisplay>::iterator displayIter = displays.begin(); displayIter != displays.end(); ++displayIter )
+        foreach( TextDisplay* display, window->associatedDisplays() )
         {
-            if( (*displayIter)->file() == file )
+            if( display->file() == file )
             {
-                out = *iter;
+                out = window;
                 break;
             }
         }
@@ -995,17 +980,15 @@ TextDisplay& WindowServer::_findDisplay( const File& file )
     TextDisplay* out( 0 );
 
     // retrieve windows
-    BASE::KeySet<MainWindow> windows( this );
-    for( BASE::KeySet<MainWindow>::iterator iter = windows.begin(); iter != windows.end(); ++iter )
+    foreach( MainWindow* window, BASE::KeySet<MainWindow>( this ) )
     {
 
         // retrieve displays
-        BASE::KeySet<TextDisplay> displays( (*iter)->associatedDisplays() );
-        for( BASE::KeySet<TextDisplay>::iterator displayIter = displays.begin(); displayIter != displays.end(); ++displayIter )
+        foreach( TextDisplay* display, window->associatedDisplays() )
         {
-            if( (*displayIter)->file() == file )
+            if( display->file() == file )
             {
-                out = *displayIter;
+                out = display;
                 break;
             }
         }

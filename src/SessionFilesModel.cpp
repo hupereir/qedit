@@ -170,15 +170,13 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
     // return FileRecordModel::mimeData( indexes );
     QOrderedSet<QString> filenames;
     QOrderedSet<FileRecord> records;
-    for( QModelIndexList::const_iterator iter = indexes.begin(); iter != indexes.end(); ++iter )
+    foreach( const QModelIndex& index, indexes )
     {
 
-        if( iter->isValid() )
-        {
-            FileRecord record( get(*iter ) );
-            records.insert( record );
-            filenames.insert( record.file() );
-        }
+        if( !index.isValid() ) continue;
+        FileRecord record( get(index) );
+        records.insert( record );
+        filenames.insert( record.file() );
 
     }
 
@@ -190,18 +188,20 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
         // fill text data
         QString full_text;
         QTextStream buffer( &full_text );
-        for( QOrderedSet<QString>::const_iterator iter = filenames.begin(); iter != filenames.end(); ++iter )
-        { buffer << *iter << endl; }
+        foreach( const QString& filename, filenames )
+        { buffer << filename << endl; }
+
         mime->setText( full_text );
 
         // fill DRAG data. Use XML
         QDomDocument document;
         QDomElement top = document.appendChild( document.createElement( XmlFileRecord::XML_FILE_LIST ) ).toElement();
-        for( QOrderedSet<FileRecord>::const_iterator iter = records.begin(); iter != records.end(); ++iter )
+
+        foreach( const FileRecord& record, records )
         {
 
-            if( iter->file().isEmpty() ) continue;
-            top.appendChild( XmlFileRecord( *iter ).domElement( document ) );
+            if( record.file().isEmpty() ) continue;
+            top.appendChild( XmlFileRecord( record ).domElement( document ) );
 
         }
         mime->setData( DRAG, document.toByteArray() );
@@ -252,8 +252,9 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         FileRecord target( get( parent ) );
 
         // loop over sources and emit proper signal
-        for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); ++iter )
-        { emit reparentFiles( iter->file(), target.file() ); }
+        foreach( const FileRecord& record, records )
+        { emit reparentFiles( record.file(), target.file() ); }
+
         return true;
 
     } else {
@@ -282,8 +283,8 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         if( !target_index.isValid() ) return false;
 
         // emit relevant reparent signal
-        for( FileRecordModel::List::const_iterator iter = records.begin(); iter != records.end(); ++iter )
-        { emit reparentFilesToMain( iter->file(), target.file() ); }
+        foreach( const FileRecord& record, records )
+        { emit reparentFilesToMain( record.file(), target.file() ); }
 
         return true;
 

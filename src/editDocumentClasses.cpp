@@ -100,9 +100,8 @@ int main (int argc, char *argv[])
 
     // read document classes
     DocumentClassManager manager;
-    Options::List files( XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) );
-    for( Options::List::const_iterator iter = files.begin(); iter != files.end(); ++iter )
-    { manager.read( QString( iter->raw() ) ); }
+    foreach( const Option& option, XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
+    { manager.read( QString( option.raw() ) ); }
 
     // prepare dialog
     DocumentClassManagerDialog dialog(0, manager);

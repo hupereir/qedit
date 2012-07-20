@@ -254,9 +254,8 @@ void MainWindow::setActiveView( TextView& view )
 BASE::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
 {
     BASE::KeySet<TextDisplay> displays;
-    BASE::KeySet<TextView> views( this );
-    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); ++iter )
-    { displays.unite( BASE::KeySet<TextDisplay>(*iter) ); }
+    foreach( TextView* view, BASE::KeySet<TextView>( this ) )
+    { displays.unite( BASE::KeySet<TextDisplay>(view) ); }
 
     return displays;
 }
@@ -270,15 +269,14 @@ bool MainWindow::selectDisplay( const File& file )
     // do nothing if already selected
     if( activeView().activeDisplay().file() == file ) return true;
 
-    BASE::KeySet<TextView> views( this );
-    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); ++iter )
+    foreach( TextView* view, BASE::KeySet<TextView>( this ) )
     {
 
-        if( (*iter)->selectDisplay( file ) )
+        if( view->selectDisplay( file ) )
         {
             // make sure selected view is visible
-            if( _stack().currentWidget() != *iter )
-            { setActiveView( **iter ); }
+            if( _stack().currentWidget() != view )
+            { setActiveView( *view ); }
             return true;
         }
 
@@ -291,18 +289,16 @@ bool MainWindow::selectDisplay( const File& file )
 void MainWindow::saveAll( void )
 {
     Debug::Throw( "MainWindow::saveAll.\n" );
-    BASE::KeySet<TextView> views( this );
-    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); ++iter )
-    { (*iter)->saveAll(); }
+    foreach( TextView* view, BASE::KeySet<TextView>( this ) )
+    { view->saveAll(); }
 }
 
 //_____________________________________________________________________
 void MainWindow::ignoreAll( void )
 {
     Debug::Throw( "MainWindow::ignoreAll.\n" );
-    BASE::KeySet<TextView> views( this );
-    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); ++iter )
-    { (*iter)->ignoreAll(); }
+    foreach( TextView* view, BASE::KeySet<TextView>( this ) )
+    { view->ignoreAll(); }
 }
 
 //_____________________________________________________________________
@@ -545,17 +541,16 @@ void MainWindow::closeEvent( QCloseEvent* event )
     if( !isModified() ) return;
 
     // loop over TextViews
-    unsigned int modified_displays(0);
+    unsigned int modifiedDisplays(0);
     BASE::KeySet<TextDisplay> displays;
-    BASE::KeySet<TextView> views( this );
-    for( BASE::KeySet<TextView>::iterator iter = views.begin(); iter != views.end(); ++iter )
+    foreach( TextView* view, BASE::KeySet<TextView>( this ) )
     {
 
         // update the number of modified displays
-        modified_displays += (*iter)->modifiedDisplayCount();
+        modifiedDisplays += view->modifiedDisplayCount();
 
         // store associated textDisplays in main set
-        displays.unite( BASE::KeySet<TextDisplay>( *iter ) );
+        displays.unite( BASE::KeySet<TextDisplay>( view ) );
 
     }
 
@@ -572,7 +567,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
         if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( &display ) ) != iter ) continue;
 
         // ask for save
-        int state( display.askForSave( modified_displays > 1 ) );
+        int state( display.askForSave( modifiedDisplays > 1 ) );
         if( state == AskForSaveDialog::YES_TO_ALL ) saveAll();
         else if( state == AskForSaveDialog::NO_TO_ALL ) ignoreAll();
         else if( state == AskForSaveDialog::CANCEL ) {
@@ -617,19 +612,18 @@ void MainWindow::_updateConfiguration( void )
     navigationFrame().visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_NAVIGATION_FRAME") );
 
     // assign icons to file in open previous menu based on class manager
-    FileList& recent_files( Singleton::get().application<Application>()->recentFiles() );
-    DocumentClassManager& class_manager(Singleton::get().application<Application>()->classManager());
-    FileRecord::List records( recent_files.records() );
-    for( FileRecord::List::iterator iter = records.begin(); iter != records.end(); ++iter )
+    FileList& recentFiles( Singleton::get().application<Application>()->recentFiles() );
+    DocumentClassManager& classManager(Singleton::get().application<Application>()->classManager());
+    foreach( const FileRecord& record, recentFiles.records() )
     {
 
-        FileRecord& record( *iter );
+        // FileRecord& record( *iter );
         if( !record.hasProperty( FileRecordProperties::CLASS_NAME ) ) continue;
-        DocumentClass document_class( class_manager.get( record.property( FileRecordProperties::CLASS_NAME ) ) );
-        if( document_class.icon().isEmpty() ) continue;
+        DocumentClass documentClass( classManager.get( record.property( FileRecordProperties::CLASS_NAME ) ) );
+        if( documentClass.icon().isEmpty() ) continue;
 
-        // set icon property and store in recent_files list
-        recent_files.get( record.file() ).addProperty( FileRecordProperties::ICON, document_class.icon() );
+        // set icon property and store in recentFiles list
+        recentFiles.get( record.file() ).addProperty( FileRecordProperties::ICON, documentClass.icon() );
 
     }
 
@@ -765,14 +759,14 @@ void MainWindow::_update( unsigned int flags )
     if( flags & TextDisplay::DISPLAY_COUNT )
     {
         Debug::Throw() << "MainWindow::_update - display count." << endl;
-        int display_count = activeView().independentDisplayCount();
-        int view_count = BASE::KeySet<TextView>( this ).size();
+        int displayCount = activeView().independentDisplayCount();
+        int viewCount = BASE::KeySet<TextView>( this ).size();
 
         // update detach action
-        detachAction().setEnabled( display_count > 1 || view_count > 1 );
+        detachAction().setEnabled( displayCount > 1 || viewCount > 1 );
 
         // update diff action
-        diffAction().setEnabled( display_count == 2 );
+        diffAction().setEnabled( displayCount == 2 );
         Debug::Throw() << "MainWindow::_update - display count - done." << endl;
 
     }

@@ -90,12 +90,12 @@ void PrintHelper::print( QPrinter* printer )
         }
 
         // get highlight block data associated to this block
-        for( PatternLocationSet::const_iterator iter = patterns.begin(); iter != patterns.end(); iter++ )
+        foreach( const PatternLocation& pattern, patterns )
         {
             QTextLayout::FormatRange formatRange;
-            formatRange.start = iter->position();
-            formatRange.length = iter->length();
-            formatRange.format = iter->format();
+            formatRange.start = pattern.position();
+            formatRange.length = pattern.length();
+            formatRange.format = pattern.format();
             formatRanges.push_back( formatRange );
         }
 

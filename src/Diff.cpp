@@ -66,26 +66,26 @@ bool Diff::run( void )
     error_ = "";
 
     // check files
-    for( QVector<FileInformation>::const_iterator iter = files_.begin(); iter != files_.end(); ++iter )
+    foreach( const FileInformation& fileInformation, files_ )
     {
 
         // check if filename is empty
-        if( iter->file().isEmpty() )
+        if( fileInformation.file().isEmpty() )
         {
             error_ = "invalid file name.";
             return false;
         }
 
         // check if file exists
-        if( !iter->file().exists() ) {
-            error_ = QString( "file " ) + iter->file() + " does not exists.";
+        if( !fileInformation.file().exists() ) {
+            error_ = QString( "file " ) + fileInformation.file() + " does not exists.";
             return false;
         }
 
         // check if file is a directory
-        if( iter->file().isDirectory() )
+        if( fileInformation.file().isDirectory() )
         {
-            error_ = QString( "file " ) + iter->file() + " is a directory.";
+            error_ = QString( "file " ) + fileInformation.file() + " is a directory.";
             return false;
         }
 
@@ -135,14 +135,14 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
     QByteArray out( process_.readAllStandardOutput() );
     QStringList in( QString( out ).split( "\n" ) );
     int index(0);
-    for( QStringList::const_iterator iter = in.begin(); iter != in.end(); ++iter )
+
+    foreach( QString buffer, in )
     {
 
-        QString buffer = *iter;
         index++;
 
-        static const QString removed_lines( "<>-" );
-        if( removed_lines.indexOf( buffer[0] ) >= 0 ) continue;
+        static const QString removedLines( "<>-" );
+        if( removedLines.indexOf( buffer[0] ) >= 0 ) continue;
 
         // parse remaining lines
         _parseLine( buffer );
@@ -318,8 +318,8 @@ void Diff::FileInformation::highlightDisplay( void )
     // this is needed due to the setUpdatesEnabled above
     BASE::KeySet<TextDisplay> displays( &_display() );
     displays.insert( &_display() );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
-    { (*iter)->viewport()->update(); }
+    foreach( TextDisplay* display, displays )
+    { display->viewport()->update(); }
 
     return;
 };

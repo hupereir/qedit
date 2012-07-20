@@ -32,10 +32,10 @@
 class CloseFilesDialog: public CustomDialog
 {
 
-  public:
+    public:
 
-  //! constructor
-  CloseFilesDialog( QWidget*, FileRecord::List );
+    //! constructor
+    CloseFilesDialog( QWidget*, FileRecord::List );
 
 };
 

@@ -44,41 +44,41 @@ CustomDialog( parent, OkButton | CancelButton| Separator )
     Debug::Throw( "SaveAllDialog::SaveAllDialog.\n" );
     setWindowTitle( "Save Files - Qedit" );
 
-    QHBoxLayout *h_layout( new QHBoxLayout() );
-    h_layout->setSpacing(5);
-    h_layout->setMargin( 0 );
-    mainLayout().addLayout( h_layout );
+    QHBoxLayout *hLayout( new QHBoxLayout() );
+    hLayout->setSpacing(5);
+    hLayout->setMargin( 0 );
+    mainLayout().addLayout( hLayout );
 
     // add icon
     QLabel *label( new QLabel( this ) );
     label->setPixmap( PixmapEngine::get( ICONS::WARNING ) );
-    h_layout->addWidget( label, 0, Qt::AlignHCenter );
+    hLayout->addWidget( label, 0, Qt::AlignHCenter );
 
     // create label text
     static const int max_line_size( 50 );
-    int current_line( 0 );
+    int currentLine( 0 );
     QString buffer;
     QTextStream what( &buffer );
     what << "Modified: ";
 
     int index(0);
-    for( FileRecord::List::const_iterator iter = files.begin(); iter != files.end(); ++iter, index++ )
+    foreach( const FileRecord record, files )
     {
-        what << iter->file().localName();
+        what << record.file().localName();
         if( index < files.size()-2 ) what << ", ";
         else if( index == files.size()-2 ) what << " and ";
         else what << ".";
 
-        if( buffer.size() >= (current_line+1)*max_line_size )
+        if( buffer.size() >= (currentLine+1)*max_line_size )
         {
             what << endl;
-            current_line++;
+            currentLine++;
         }
 
     }
 
     what << endl << "Save ?";
-    h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
+    hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
     // rename buttons
     okButton().setText( "&Yes" );

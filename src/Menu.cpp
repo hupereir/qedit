@@ -355,12 +355,11 @@ void Menu::_updateWindowsMenu( void )
     fileActions_.clear();
 
     // retrieve all files
-    FileRecord::List records( Singleton::get().application<Application>()->windowServer().records() );
-    for( FileRecord::List::const_iterator iter = records.begin(); iter != records.end(); ++iter )
+    foreach( const FileRecord& record,  Singleton::get().application<Application>()->windowServer().records() )
     {
 
         // retrieve file and check
-        const File& file( iter->file() );
+        const File& file( record.file() );
 
         // add menu item
         QAction* action = windowsMenu_->addAction( file );

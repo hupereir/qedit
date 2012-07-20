@@ -203,19 +203,17 @@ void Application::_updateDocumentClasses( void )
     // load files from options
     QString buffer;
     QTextStream what( &buffer );
-    Options::List files( XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) );
-    for( Options::List::const_iterator iter = files.begin(); iter != files.end(); ++iter )
+    foreach( const Option& option, XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
     {
-        classManager_->read( QString( iter->raw() ) );
+        classManager_->read( QString( option.raw() ) );
         what << classManager_->readError();
     }
 
     if( !buffer.isEmpty() ) InformationDialog( 0, buffer ).exec();
 
     // load document classes icons into iconEngine cache, if any
-    const DocumentClassManager::List& classes( classManager_->classes() );
-    for( DocumentClassManager::List::const_iterator iter = classes.begin(); iter != classes.end(); ++iter )
-    { if( !iter->icon().isEmpty() ) { IconEngine::get( iter->icon() ); } }
+    foreach( const DocumentClass& documentClass, classManager_->classes() )
+    { if( !documentClass.icon().isEmpty() ) { IconEngine::get( documentClass.icon() ); } }
 
     // emit configuration changed to force displays to be updated
     emit documentClassesChanged();

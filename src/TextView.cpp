@@ -131,10 +131,7 @@ unsigned int TextView::independentDisplayCount( void )
     unsigned int out( 0 );
     BASE::KeySet<TextDisplay> displays( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
-    {
-        // increment if no associated display is found in the already processed displays
-        if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++;
-    }
+    { if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++; }
 
     return out;
 }
@@ -207,9 +204,8 @@ void TextView::setActiveDisplay( TextDisplay& display )
 
         BASE::KeySet<TextDisplay> displays( this );
         displays.remove( &activeDisplay() );
-
-        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
-        { (*iter)->setActive( false ); }
+        foreach( TextDisplay* display, displays )
+        { display->setActive( false ); }
 
         activeDisplay().setActive( true );
 
@@ -323,12 +319,12 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
     Debug::Throw( "TextView::splitDisplay.\n" );
 
     // keep local pointer to current active display
-    TextDisplay& activeDisplay_local( activeDisplay() );
+    TextDisplay& activeDisplayLocal( activeDisplay() );
 
     // compute desired dimension of the new splitter
     // along its splitting direction
     int dimension(0);
-    if( clone ) dimension = (orientation == Qt::Horizontal) ? activeDisplay_local.width():activeDisplay_local.height();
+    if( clone ) dimension = (orientation == Qt::Horizontal) ? activeDisplayLocal.width():activeDisplayLocal.height();
     else dimension = (orientation == Qt::Horizontal) ? width():height();
 
     // create new splitter
@@ -338,7 +334,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
     TextDisplay& display( _newTextDisplay(0) );
 
     // insert in splitter, at correct position
-    if( clone ) splitter.insertWidget( splitter.indexOf( &activeDisplay_local )+1, &display );
+    if( clone ) splitter.insertWidget( splitter.indexOf( &activeDisplayLocal )+1, &display );
     else splitter.addWidget( &display );
 
     // recompute dimension
@@ -360,23 +356,23 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
         if there exists no clone of active display,
         backup text and register a new Sync object
         */
-        BASE::KeySet<TextDisplay> displays( &activeDisplay_local );
+        BASE::KeySet<TextDisplay> displays( &activeDisplayLocal );
 
         // clone new display
-        display.synchronize( &activeDisplay_local );
+        display.synchronize( &activeDisplayLocal );
 
         // perform associations
         // check if active displays has associates and propagate to new
-        for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
-        { BASE::Key::associate( &display, *iter ); }
+        foreach( TextDisplay* iter, displays )
+        { BASE::Key::associate( &display, iter ); }
 
         // associate this display to AutoSave threads
-        BASE::KeySet<AutoSaveThread> threads( &activeDisplay_local );
-        for( BASE::KeySet<AutoSaveThread>::iterator iter = threads.begin(); iter != threads.end(); ++iter )
-        { BASE::Key::associate( &display, *iter ); }
+        BASE::KeySet<AutoSaveThread> threads( &activeDisplayLocal );
+        foreach( AutoSaveThread* thread, threads )
+        { BASE::Key::associate( &display, thread ); }
 
         // associate new display to active
-        BASE::Key::associate( &display, &activeDisplay_local );
+        BASE::Key::associate( &display, &activeDisplayLocal );
 
     } else {
 
@@ -396,9 +392,8 @@ void TextView::saveAll( void )
     Debug::Throw( "TextView::saveAll.\n" );
 
     // retrieve all displays
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
-    { if( (*iter)->document()->isModified() ) (*iter)->save(); }
+    foreach( TextDisplay* display, BASE::KeySet<TextDisplay>( this ) )
+    { if( display->document()->isModified() ) display->save(); }
 
     return;
 
@@ -411,9 +406,8 @@ void TextView::ignoreAll( void )
     Debug::Throw( "TextView::ignoreAll.\n" );
 
     // retrieve all displays
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
-    { (*iter)->setModified( false ); }
+    foreach( TextDisplay* display, BASE::KeySet<TextDisplay>( this ) )
+    { display->setModified( false ); }
 
     return;
 
@@ -444,18 +438,19 @@ void TextView::checkDisplayModifications( TextEditor* editor )
     // convert to TextDisplay
     TextDisplay& display( *static_cast<TextDisplay*>( editor ) );
 
-    BASE::KeySet<TextDisplay>  dead_displays;
+    BASE::KeySet<TextDisplay>  deadDisplays;
 
     // check file
     if( display.checkFileRemoved() == FileRemovedDialog::CLOSE )
     {
 
         // register displays as dead
-        BASE::KeySet<TextDisplay> associated_displays( &display );
-        for( BASE::KeySet<TextDisplay>::iterator displayIter = associated_displays.begin(); displayIter != associated_displays.end(); ++displayIter )
-        { dead_displays.insert( *displayIter ); }
+        BASE::KeySet<TextDisplay> associatedDisplays( &display );
+        foreach( TextDisplay* displayIter, associatedDisplays )
+        { deadDisplays.insert( displayIter ); }
+
         display.document()->setModified( false );
-        dead_displays.insert( &display );
+        deadDisplays.insert( &display );
 
     } else {
 
@@ -468,12 +463,12 @@ void TextView::checkDisplayModifications( TextEditor* editor )
     display.clearFileCheckData();
 
     // delete dead displays
-    if( !dead_displays.empty() )
+    if( !deadDisplays.empty() )
     {
 
-        Debug::Throw() << "TextView::checkDisplayModifications - dead displays: " << dead_displays.size() << endl;
-        for( BASE::KeySet<TextDisplay>::iterator iter = dead_displays.begin(); iter != dead_displays.end(); ++iter )
-        { closeDisplay( **iter ); }
+        Debug::Throw() << "TextView::checkDisplayModifications - dead displays: " << deadDisplays.size() << endl;
+        foreach( TextDisplay* display, deadDisplays )
+        { closeDisplay( *display ); }
 
     }
 
@@ -637,9 +632,14 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, const boo
         QWidget *child(0);
 
         // retrieve children and loop
-        const QObjectList& children( TextView::children() );
-        for( QObjectList::const_iterator iter = children.begin(); iter != children.end() && !child; ++iter )
-        { child = qobject_cast<QWidget*>( *iter ); }
+        foreach( QObject* object, TextView::children() )
+        {
+            if( !child )
+            {
+                child = qobject_cast<QWidget*>( object );
+                break;
+            }
+        }
 
         // check child could be retrieved
         assert( child );
