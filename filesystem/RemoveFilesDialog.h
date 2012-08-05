@@ -39,9 +39,6 @@ class TextEditor;
 class RemoveFilesDialog: public CustomDialog
 {
 
-    //! Qt meta object
-    Q_OBJECT
-
     public:
 
     //! constructor

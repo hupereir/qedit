@@ -38,7 +38,6 @@ RenameFileDialog.cpp
 nodist_libfilesystem_a_SOURCES = \
 moc_FileSystemFrame.cpp \
 moc_FileSystemModel.cpp \
-moc_RemoveFilesDialog.cpp \
 moc_RenameFileDialog.cpp
 
 
