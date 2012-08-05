@@ -21,18 +21,12 @@
 *
 *******************************************************************************/
 
-/*!
-\file SaveAllDialog.cpp
-\brief QDialog used to save all modified files
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
+#include "SaveAllDialog.h"
 
 #include "Icons.h"
 #include "PixmapEngine.h"
 #include "Debug.h"
-#include "SaveAllDialog.h"
+#include "IconEngine.h"
 
 #include <QtGui/QLabel>
 
@@ -81,8 +75,8 @@ CustomDialog( parent, OkButton | CancelButton| Separator )
     hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
     // rename buttons
-    okButton().setText( "&Yes" );
-    cancelButton().setText( "&No" );
+    okButton().setText( "Save" );
+    okButton().setIcon( IconEngine::get( ICONS::SAVE ) );
     adjustSize();
 }
 

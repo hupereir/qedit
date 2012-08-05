@@ -25,6 +25,7 @@
 
 #include "FileRecordProperties.h"
 #include "Icons.h"
+#include "IconEngine.h"
 #include "PixmapEngine.h"
 #include "Debug.h"
 
@@ -77,8 +78,8 @@ CustomDialog( parent, OkButton | CancelButton| Separator )
     hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
     // rename buttons
-    okButton().setText( "&Yes" );
-    cancelButton().setText( "&No" );
+    okButton().setText( "Close" );
+    okButton().setIcon( IconEngine::get( ICONS::DIALOG_CLOSE ) );
     adjustSize();
 }
 

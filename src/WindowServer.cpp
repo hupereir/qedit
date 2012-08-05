@@ -833,7 +833,7 @@ void WindowServer::_save( FileRecord::List records )
     Debug::Throw( "WindowServer::_save.\n" );
 
     // check how many records are modified
-    assert( !records.empty() );
+    if( records.empty() ) return;
 
     // ask for confirmation
     if( records.size() > 1 && !SaveAllDialog( &_activeWindow(), records ).exec() ) return;

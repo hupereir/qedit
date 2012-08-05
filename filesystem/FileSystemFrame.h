@@ -43,10 +43,10 @@ class FileSystemFrame: public QWidget, public Counter
     //! Qt meta object declaration
     Q_OBJECT
 
-        public:
+    public:
 
-        //! constructor
-        FileSystemFrame( QWidget* parent );
+    //! constructor
+    FileSystemFrame( QWidget* parent );
 
     //! destructor
     ~FileSystemFrame( void )

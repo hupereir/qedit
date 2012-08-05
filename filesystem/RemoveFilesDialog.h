@@ -24,21 +24,13 @@
 *
 *******************************************************************************/
 
-/*!
-\file RemoveFilesDialog.h
-\brief Generic dialog with a FileInfo list
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <cassert>
-#include <QList>
-#include <QPushButton>
-#include <QCheckBox>
-
 #include "CustomDialog.h"
 #include "FileSystemModel.h"
+
+#include <QtCore/QList>
+#include <QtGui/QPushButton>
+
+#include <cassert>
 
 class TreeView;
 class TextEditor;
@@ -50,17 +42,10 @@ class RemoveFilesDialog: public CustomDialog
     //! Qt meta object
     Q_OBJECT
 
-        public:
+    public:
 
-        //! constructor
-        RemoveFilesDialog( QWidget*, const FileSystemModel::List& files = FileSystemModel::List() );
-
-    // return selected files
-    FileSystemModel::List selectedFiles( void ) const;
-
-    //! true if directories are to be removed recursively
-    bool recursive( void ) const
-    { return recursiveCheckBox_->isChecked(); }
+    //! constructor
+    RemoveFilesDialog( QWidget*, const FileSystemModel::List& files = FileSystemModel::List() );
 
     protected:
 
@@ -79,11 +64,6 @@ class RemoveFilesDialog: public CustomDialog
     FileSystemModel& _model()
     { return model_; }
 
-    protected slots:
-
-    //! update button states
-    virtual void _updateButtons( void );
-
     private:
 
     //! list of files
@@ -91,12 +71,6 @@ class RemoveFilesDialog: public CustomDialog
 
     //! model
     FileSystemModel model_;
-
-    //! true to remove directories recursively
-    QCheckBox* recursiveCheckBox_;
-
-    //! clear selection button
-    QPushButton* clearSelectionButton_;
 
 };
 

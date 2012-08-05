@@ -380,16 +380,12 @@ void FileSystemFrame::_open( void )
 
     Debug::Throw( "FileSystemFrame:_open.\n" );
     FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
-    FileSystemModel::List valid_selection;
-    for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
+    FileSystemModel::List validSelection;
+    foreach( FileRecord record, selection )
     {
-        if( iter->hasFlag( FileSystemModel::DOCUMENT ) )
-        { valid_selection.push_back( *iter ); }
+        if( record.hasFlag( FileSystemModel::DOCUMENT ) )
+        { emit fileActivated( record.setFile( record.file().addPath( path() ) ) ); }
     }
-
-    // one should check the number of files to be edited
-    for( FileSystemModel::List::iterator iter = valid_selection.begin(); iter != valid_selection.end(); ++iter )
-    { emit fileActivated( iter->setFile( iter->file().addPath( path() ) ) ); }
 
 }
 
@@ -401,27 +397,23 @@ void FileSystemFrame::_remove( void )
 
     // get selection
     FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
-    FileSystemModel::List valid_selection;
-    for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
+    FileSystemModel::List validSelection;
+    foreach( const FileRecord& record, selection )
     {
-        if( !iter->hasFlag( FileSystemModel::NAVIGATOR ) )
-        { valid_selection.push_back( *iter ); }
+        if( !record.hasFlag( FileSystemModel::NAVIGATOR ) )
+        { validSelection << record; }
     }
 
-    if( valid_selection.empty() ) return;
-
-    RemoveFilesDialog dialog( this, valid_selection );
+    if( validSelection.empty() ) return;
+    RemoveFilesDialog dialog( this, validSelection );
     if( !dialog.exec() ) return;
-
-    valid_selection = dialog.selectedFiles();
 
     // loop over selected files and remove
     // retrieve selected items and remove corresponding files
-    for( FileSystemModel::List::iterator iter = selection.begin(); iter != selection.end(); ++iter )
+    foreach( const FileRecord& record, validSelection )
     {
-        File file( iter->file().addPath( path() ) );
+        File file( record.file().addPath( path() ) );
         if( !file.exists() ) continue;
-        if( file.isDirectory() && !dialog.recursive() ) continue;
         file.removeRecursive();
     }
 
@@ -471,13 +463,8 @@ void FileSystemFrame::_storeSelection( void )
     _model().clearSelectedIndexes();
 
     // retrieve selected indexes in list
-    QModelIndexList selected_indexes( _list().selectionModel()->selectedRows() );
-    for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
-    {
-        // check column
-        if( !iter->column() == 0 ) continue;
-        _model().setIndexSelected( *iter, true );
-    }
+    foreach( const QModelIndex& index, _list().selectionModel()->selectedRows() )
+    { if( index.column() == 0 ) _model().setIndexSelected( index, true ); }
 
     return;
 
@@ -488,13 +475,13 @@ void FileSystemFrame::_restoreSelection( void )
 {
 
     // retrieve indexes
-    QModelIndexList selected_indexes( _model().selectedIndexes() );
-    if( selected_indexes.empty() ) _list().selectionModel()->clear();
+    QModelIndexList selectedIndexes( _model().selectedIndexes() );
+    if( selectedIndexes.empty() ) _list().selectionModel()->clear();
     else {
 
-        _list().selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-        for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
-        { _list().selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+        _list().selectionModel()->select( selectedIndexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
+        foreach( const QModelIndex& index, selectedIndexes )
+        { _list().selectionModel()->select( index, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     }
 
