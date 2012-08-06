@@ -36,7 +36,6 @@ class AutoSave;
 class DocumentClassManager;
 class FileCheck;
 class FileList;
-class ScratchFileMonitor;
 class WindowServer;
 class Sync;
 
@@ -86,10 +85,6 @@ class Application: public BaseApplication, public Counter
     //! file check
     FileCheck& fileCheck( void ) const
     { return *fileCheck_; }
-
-    //! scratch files
-    ScratchFileMonitor& scratchFileMonitor( void ) const
-    { return *scratchFileMonitor_; }
 
     //!@name actions
     //@{
@@ -168,9 +163,6 @@ class Application: public BaseApplication, public Counter
 
     //! file check
     FileCheck* fileCheck_;
-
-    //! scratch files
-    ScratchFileMonitor* scratchFileMonitor_;
 
     //! startup single shot timer
     /*!

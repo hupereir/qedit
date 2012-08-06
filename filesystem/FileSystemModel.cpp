@@ -52,6 +52,8 @@ FileSystemModel::IconCache& FileSystemModel::_icons( void )
 FileSystemModel::FileSystemModel( QObject* parent ):
     ListModel<FileRecord>( parent ),
     Counter( "FileSystemModel" ),
+    useLocalNames_( true ),
+    showIcons_( true ),
     sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) )
 {
     Debug::Throw("FileSystemModel::FileSystemModel.\n" );
@@ -103,19 +105,22 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
             case FILE:
             {
                 // store local nmae
-                QString local_name( record.file().localName() );
+                const QString localName( useLocalNames_ ? record.file().localName(): record.file() );
 
                 // loop over previous rows to find a match and increment version number
                 unsigned int version( 0 );
                 for( int row = 0; row < index.row(); row++ )
                 {
-                    if( get( FileSystemModel::index( row, FILE ) ).file().localName() == local_name ) version++;
+                    const QString rowName( useLocalNames_ ?
+                        get( this->index( row, FILE ) ).file().localName() :
+                        get( this->index( row, FILE ) ).file() );
+                    if( localName == rowName ) version++;
                 }
 
                 // form output string.
                 QString buffer;
                 QTextStream what( &buffer );
-                what << local_name;
+                what << localName;
                 if( version ) what << " (" << version+1 << ")";
                 return buffer;
             }
@@ -137,7 +142,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
 
         }
 
-    } else if( role == Qt::DecorationRole && index.column() == FILE ) {
+    } else if( showIcons_ && role == Qt::DecorationRole && index.column() == FILE ) {
 
         return _icons()[record.flags()&ANY];
 

@@ -41,7 +41,6 @@
 #include "Icons.h"
 #include "InformationDialog.h"
 #include "MainWindow.h"
-#include "ScratchFileMonitor.h"
 #include "Util.h"
 #include "WindowServer.h"
 #include "XmlFileList.h"
@@ -168,10 +167,6 @@ bool Application::realizeWidget( void )
 
     // file check
     fileCheck_ = new FileCheck();
-
-    // scratch files
-    scratchFileMonitor_ = new ScratchFileMonitor( this );
-    connect( qApp, SIGNAL( aboutToQuit( void ) ), scratchFileMonitor_, SLOT( deleteScratchFiles( void ) ) );
 
     // window server
     windowServer_ = new WindowServer();

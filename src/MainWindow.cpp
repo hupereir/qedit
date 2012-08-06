@@ -61,7 +61,6 @@
 #include "QuestionDialog.h"
 #include "RecentFilesFrame.h"
 #include "ReplaceDialog.h"
-#include "ScratchFileMonitor.h"
 #include "SelectLineDialog.h"
 #include "SessionFilesFrame.h"
 #include "Singleton.h"
@@ -443,7 +442,8 @@ void MainWindow::_print( void )
 
     // add output file to scratch files, if any
     if( !printer.outputFileName().isEmpty() )
-    { Singleton::get().application<Application>()->scratchFileMonitor().add( printer.outputFileName() ); }
+    { emit scratchFileCreated( printer.outputFileName() ); }
+
     helper.print( &printer );
 
     return;
@@ -493,7 +493,7 @@ void MainWindow::_toHtml( void )
     }
 
     // add as scratch file
-    Singleton::get().application<Application>()->scratchFileMonitor().add( file );
+    emit scratchFileCreated( file );
 
     // create helper and print
     HtmlHelper( this, &activeDisplay() ).print( &out );

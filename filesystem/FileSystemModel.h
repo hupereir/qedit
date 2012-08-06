@@ -72,6 +72,18 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
     //! constructor
     FileSystemModel( QObject* parent = 0 );
 
+    //! destructor
+    virtual ~FileSystemModel( void )
+    {}
+
+    //! show icons
+    void setShowIcons( const bool& value )
+    { showIcons_ = value; }
+
+    //! use local names
+    void setUseLocalNames( const bool& value )
+    { useLocalNames_ = value; }
+
     //!@name methods reimplemented from base class
     //@{
 
@@ -132,6 +144,12 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
 
     //! type icon cache
     static IconCache& _icons( void );
+
+    //! local names
+    bool useLocalNames_;
+
+    //! true if icons are to be shown
+    bool showIcons_;
 
     //! column titles
     QStringList columnTitles_;

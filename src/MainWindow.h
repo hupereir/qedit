@@ -349,6 +349,9 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     //! idle
     void idle( void );
 
+    //! scratch files
+    void scratchFileCreated( const File& );
+
     //@}
 
 

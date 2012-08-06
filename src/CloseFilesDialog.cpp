@@ -51,7 +51,7 @@ CustomDialog( parent, OkButton | CancelButton| Separator )
     hLayout->addWidget( label, 0, Qt::AlignHCenter );
 
     // create label text
-    static const unsigned int max_line_size( 50 );
+    static const unsigned int maxLineSize( 50 );
     unsigned int currentLine( 0 );
     QString buffer;
     QTextStream what( &buffer );
@@ -66,11 +66,13 @@ CustomDialog( parent, OkButton | CancelButton| Separator )
         else if( index == files.size()-2 ) what << " and ";
         else what << ".";
 
-        if( buffer.size() >= int((currentLine+1)*max_line_size) )
+        if( buffer.size() >= int((currentLine+1)*maxLineSize) )
         {
             what << endl;
             currentLine++;
         }
+
+        ++index;
 
     }
 

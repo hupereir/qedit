@@ -19,15 +19,17 @@
 *
 *******************************************************************************/
 
+#include "RemoveFilesDialog.h"
+
 #include "BaseIcons.h"
 #include "IconEngine.h"
-#include "RemoveFilesDialog.h"
 #include "TreeView.h"
 #include "XmlOptions.h"
 
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QLayout>
+#include <cassert>
 
 //____________________________________________________________________________
 RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::List& files ):
@@ -35,13 +37,22 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
 {
 
     Debug::Throw( "RemoveFilesDialog::RemoveFilesDialog.\n" );
+    assert( !files.empty() );
+
+    // options
+    setOptionName( "REMOVE_FILES_DIALOG" );
 
     // customize buttons
     okButton().setText( "Remove" );
     okButton().setIcon( IconEngine::get( ICONS::DELETE ) );
 
     // label
-    QLabel* textLabel( new QLabel( "Permanently remove following files ?", this ) );
+    QString buffer;
+    QTextStream what( &buffer );
+    what << "Permanently remove ";
+    if( files.size() == 1 ) what << "this item ?";
+    else what << "these " << files.size() << " items ?";
+    QLabel* textLabel( new QLabel( buffer, this ) );
 
     //! try load Question icon
     QPixmap questionPixmap( PixmapEngine::get( ICONS::WARNING ) );
@@ -58,6 +69,8 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
     mainLayout().addWidget( list_ = new TreeView( this ), 1 );
     _list().setSelectionMode( QAbstractItemView::NoSelection );
 
+    model_.setShowIcons( false );
+    model_.setUseLocalNames( false );
     model_.add( files );
     model_.sort( FileSystemModel::FILE, Qt::DescendingOrder );
 

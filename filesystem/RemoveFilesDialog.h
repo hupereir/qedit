@@ -30,8 +30,6 @@
 #include <QtCore/QList>
 #include <QtGui/QPushButton>
 
-#include <cassert>
-
 class TreeView;
 class TextEditor;
 
@@ -48,10 +46,7 @@ class RemoveFilesDialog: public CustomDialog
 
     //! list
     TreeView& _list() const
-    {
-        assert( list_ );
-        return *list_;
-    }
+    { return *list_; }
 
     //! model
     const FileSystemModel& _model() const

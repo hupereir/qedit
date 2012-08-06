@@ -400,22 +400,23 @@ void FileSystemFrame::_remove( void )
     FileSystemModel::List validSelection;
     foreach( const FileRecord& record, selection )
     {
-        if( !record.hasFlag( FileSystemModel::NAVIGATOR ) )
-        { validSelection << record; }
+        if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) continue;
+        FileRecord copy( record );
+        copy.setFile( record.file().addPath( path() ) );
+        validSelection << copy;
+
     }
 
     if( validSelection.empty() ) return;
     RemoveFilesDialog dialog( this, validSelection );
+    dialog.setWindowTitle( "Remove files - Qedit" );
     if( !dialog.exec() ) return;
 
     // loop over selected files and remove
     // retrieve selected items and remove corresponding files
     foreach( const FileRecord& record, validSelection )
-    {
-        File file( record.file().addPath( path() ) );
-        if( !file.exists() ) continue;
-        file.removeRecursive();
-    }
+    { if( record.file().exists() ) record.file().removeRecursive(); }
+
 
 }
 

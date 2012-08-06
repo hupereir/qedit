@@ -35,6 +35,7 @@
 #include <QtCore/QObject>
 
 class MainWindow;
+class ScratchFileMonitor;
 class TextDisplay;
 class TextView;
 
@@ -305,6 +306,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     QAction* saveAllAction_;
 
     //@}
+
+    //! scratch files
+    ScratchFileMonitor* scratchFileMonitor_;
 
 };
 

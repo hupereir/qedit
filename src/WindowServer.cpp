@@ -51,6 +51,7 @@
 #include "RecentFilesFrame.h"
 #include "RecentFilesMenu.h"
 #include "SaveAllDialog.h"
+#include "ScratchFileMonitor.h"
 #include "SessionFilesFrame.h"
 #include "Singleton.h"
 #include "Util.h"
@@ -80,6 +81,11 @@ WindowServer::WindowServer( QObject* parent ):
     saveAllAction_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save A&ll", this );
     connect( saveAllAction_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
 
+    // scratch files
+    scratchFileMonitor_ = new ScratchFileMonitor( this );
+    connect( qApp, SIGNAL( aboutToQuit( void ) ), scratchFileMonitor_, SLOT( deleteScratchFiles( void ) ) );
+
+    // configuration
     connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
     _updateConfiguration();
 
@@ -102,6 +108,7 @@ MainWindow& WindowServer::newMainWindow( void )
     connect( window, SIGNAL( destroyed() ), SIGNAL( sessionFilesChanged() ) );
     connect( window, SIGNAL( modificationChanged() ), SIGNAL( sessionFilesChanged() ) );
     connect( window, SIGNAL( modificationChanged() ), SLOT( _updateActions() ) );
+    connect( window, SIGNAL( scratchFileCreated( const File& ) ), scratchFileMonitor_, SLOT( add( const File& ) ) );
     connect( this, SIGNAL( sessionFilesChanged() ), &window->navigationFrame().sessionFilesFrame(), SLOT( update() ) );
 
     connect( window, SIGNAL( activated( MainWindow* ) ), SLOT( _activeWindowChanged( MainWindow* ) ) );

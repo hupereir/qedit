@@ -55,8 +55,8 @@ RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):
     _editor().setFocus();
 
     // get short name and select
-    File short_file( record.file().truncatedName() );
-    if( !short_file.isEmpty() ) _editor().setSelection( 0, short_file.size() );
+    File shortFile( record.file().truncatedName() );
+    if( !shortFile.isEmpty() ) _editor().setSelection( 0, shortFile.size() );
     else _editor().selectAll();
     connect( &_editor(), SIGNAL( textChanged( const QString& ) ), SLOT( _updateButtons() ) );
 
