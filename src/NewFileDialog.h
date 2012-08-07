@@ -24,11 +24,11 @@
 *******************************************************************************/
 
 /*!
-  \file NewFileDialog.h
-  \brief QDialog used to ask if a new file should be created
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file NewFileDialog.h
+\brief QDialog used to ask if a new file should be created
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include "BaseDialog.h"
@@ -39,42 +39,41 @@
 class NewFileDialog: public BaseDialog, public Counter
 {
 
-  //! Qt macro
-  Q_OBJECT
+    //! Qt macro
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! return codes
-  /*! also used to decide which buttons are to be drawn */
-  enum {
+    //! return codes
+    /*! also used to decide which buttons are to be drawn */
+    enum {
 
-    //! file is to be saved
-    CREATE = 1<<0,
+        CREATE = 1<<0,
+        CANCEL = 1<<1,
+        EXIT = 1<<2
 
-    //! file is not to be saved
-    CANCEL = 1<<1,
+    };
+
+    //! constructor
+    NewFileDialog( QWidget* parent, const File& file, const unsigned int& buttons = CREATE|CANCEL|EXIT );
+
+    //! destructor
+    virtual ~NewFileDialog( void )
+    {}
+
+    private slots:
+
+    //! create new file
+    void _create( void )
+    { done( CREATE ); }
+
+    //! cancel creation/exit editor
+    void _cancel( void )
+    { done( CANCEL ); }
 
     //! exit application
-    EXIT = 1<<2
-
-  };
-
-  //! constructor
-  NewFileDialog( QWidget* parent, const File& file, const unsigned int& buttons = CREATE|CANCEL|EXIT );
-
-  private slots:
-
-  //! create new file
-  void _create( void )
-  { done( CREATE ); }
-
-  //! cancel creation/exit editor
-  void _cancel( void )
-  { done( CANCEL ); }
-
-  //! exit application
-  void _exit( void )
-  { done( EXIT ); }
+    void _exit( void )
+    { done( EXIT ); }
 
 };
 

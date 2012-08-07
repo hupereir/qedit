@@ -4,33 +4,25 @@
 // $Id$
 
 /******************************************************************************
- *
- * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
- *
- * This is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * software; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *
- *******************************************************************************/
-
-/*!
-  \file TextParenthesisDialog.h
-  \brief Syntax highlighting parenthesis editing dialog
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA  02111-1307 USA
+*
+*
+*******************************************************************************/
 
 #include "CustomDialog.h"
 #include "TextParenthesis.h"
@@ -41,27 +33,31 @@ class AnimatedLineEditor;
 class TextParenthesisDialog: public CustomDialog
 {
 
-  public:
+    public:
 
-  //! constructor
-  TextParenthesisDialog( QWidget* parent );
+    //! constructor
+    TextParenthesisDialog( QWidget* parent );
 
-  //! parenthesis
-  void setParenthesis( const TextParenthesis& parenthesis );
+    //! destructor
+    virtual ~TextParenthesisDialog( void )
+    {}
 
-  //! parenthesis
-  TextParenthesis parenthesis( void );
+    //! parenthesis
+    void setParenthesis( const TextParenthesis& parenthesis );
 
-  private:
+    //! parenthesis
+    TextParenthesis parenthesis( void );
 
-  //! fist parenthesis editor
-  AnimatedLineEditor* first_editor_;
+    private:
 
-  //! end editor
-  AnimatedLineEditor* second_editor_;
+    //! fist parenthesis editor
+    AnimatedLineEditor* firstEditor_;
 
-  //! rexexp editor
-  AnimatedLineEditor* regexp_editor_;
+    //! end editor
+    AnimatedLineEditor* secondEditor_;
+
+    //! rexexp editor
+    AnimatedLineEditor* regexpEditor_;
 
 };
 

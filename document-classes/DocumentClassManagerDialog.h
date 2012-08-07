@@ -23,21 +23,12 @@
 *
 *******************************************************************************/
 
-/*!
-\file DocumentClassManagerDialog.h
-\brief list document classes
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <cassert>
-#include <QAction>
-#include <QPushButton>
-
 #include "BaseMainWindow.h"
 #include "DocumentClassModel.h"
 #include "DocumentClassManager.h"
+
+#include <QtGui/QAction>
+#include <QtGui/QPushButton>
 
 class TreeView;
 
@@ -52,6 +43,10 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
 
     //! constructor
     DocumentClassManagerDialog( QWidget*, const DocumentClassManager& );
+
+    //! destructor
+    virtual ~DocumentClassManagerDialog( void )
+    {}
 
     protected:
 
@@ -165,17 +160,11 @@ class DocumentClassManagerDialog: public BaseMainWindow, public Counter
     //#{
 
     QAction *closeAction_;
-
     QAction *newAction_;
-
     QAction *openAction_;
-
     QAction *saveAction_;
-
     QAction *editAction_;
-
     QAction *reloadAction_;
-
     QAction *removeAction_;
 
     //@}

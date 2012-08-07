@@ -4,79 +4,74 @@
 // $Id$
 
 /******************************************************************************
- *
- * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
- *
- * This is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * software; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *
- *******************************************************************************/
-
-/*!
-  \file IndentPatternDialog.h
-  \brief Syntax highlighting pattern editing dialog
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QSpinBox>
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA  02111-1307 USA
+*
+*
+*******************************************************************************/
 
 #include "CustomDialog.h"
 #include "IndentPattern.h"
+
+#include <QtGui/QSpinBox>
 
 class AnimatedLineEditor;
 class IndentPatternType;
 class IndentPatternRuleList;
 class TextEditor;
 
-//! Syntax highlighting pattern editing dialog
+//! indentation pattern editing dialog
 class IndentPatternDialog: public CustomDialog
 {
 
-  public:
+    public:
 
-  //! constructor
-  IndentPatternDialog( QWidget* parent );
+    //! constructor
+    IndentPatternDialog( QWidget* parent );
 
-  //! pattern
-  void setPattern( const IndentPattern& pattern );
+    //! destructor
+    virtual ~IndentPatternDialog( void )
+    {}
 
-  //! pattern
-  IndentPattern pattern( void );
+    //! pattern
+    void setPattern( const IndentPattern& pattern );
 
-  private:
+    //! pattern
+    IndentPattern pattern( void );
 
-  //! initial pattern (to avoid duplication of ids)
-  IndentPattern pattern_;
+    private:
 
-  //! name editor
-  AnimatedLineEditor* name_editor_;
+    //! initial pattern (to avoid duplication of ids)
+    IndentPattern pattern_;
 
-  //! type
-  IndentPatternType* pattern_type_;
+    //! name editor
+    AnimatedLineEditor* nameEditor_;
 
-  //! scale
-  QSpinBox* scale_spinbox_;
+    //! type
+    IndentPatternType* patternType_;
 
-  //! comments
-  TextEditor* comments_;
+    //! scale
+    QSpinBox* scaleSpinBox_;
 
-  //! rules
-  IndentPatternRuleList* list_;
+    //! comments
+    TextEditor* comments_;
 
+    //! rules
+    IndentPatternRuleList* list_;
 
 };
 

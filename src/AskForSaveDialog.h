@@ -23,14 +23,6 @@
 *
 *******************************************************************************/
 
-/*!
-  \file AskForSaveDialog.h
-  \brief QDialog used to ask if modifications of a file should be saved
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
 #include "BaseDialog.h"
 #include "Counter.h"
 #include "File.h"
@@ -39,60 +31,53 @@
 class AskForSaveDialog: public BaseDialog, public Counter
 {
 
-  //! Qt macro
-  Q_OBJECT
+    //! Qt macro
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! return codes
-  /*! it is also used to decide which buttons are to be shown */
-  enum ReturnCode
-  {
+    //! return codes
+    /*! it is also used to decide which buttons are to be shown */
+    enum ReturnCode
+    {
 
-    //! unknown
-    UNKNOWN = 0,
+        UNKNOWN = 0,
+        YES = 1<<0,
+        NO = 1<<1,
+        YES_TO_ALL = 1<<2,
+        NO_TO_ALL = 1<<3,
+        CANCEL = 1<<4
 
-    //! file is to be saved
-    YES = 1<<0,
+    };
 
-    //! file is not to be saved
-    NO = 1<<1,
+    //! constructor
+    AskForSaveDialog( QWidget* parent, const File& file, const unsigned int &buttons = YES|NO|CANCEL );
 
-    //! all modified files are to be saved
-    YES_TO_ALL = 1<<2,
+    //! destructor
+    virtual ~AskForSaveDialog( void )
+    {}
 
-    //! all modified files are to be saved
-    NO_TO_ALL = 1<<3,
+    private slots:
 
-    //! action is canceled
-    CANCEL = 1<<4
+    //! save changes
+    void _yes( void )
+    { done( YES ); }
 
-  };
+    //! discard changes
+    void _no( void )
+    { done( NO ); }
 
-  //! constructor
-  AskForSaveDialog( QWidget* parent, const File& file, const unsigned int &buttons = YES|NO|CANCEL );
+    //! discard changes
+    void _yesToAll( void )
+    { done( YES_TO_ALL ); }
 
-  private slots:
+    //! discard changes
+    void _noToAll( void )
+    { done( NO_TO_ALL ); }
 
-  //! save changes
-  void _yes( void )
-  { done( YES ); }
-
-  //! discard changes
-  void _no( void )
-  { done( NO ); }
-
-  //! discard changes
-  void _yesToAll( void )
-  { done( YES_TO_ALL ); }
-
-  //! discard changes
-  void _noToAll( void )
-  { done( NO_TO_ALL ); }
-
-  //! cancel action
-  void _cancel( void )
-  { done( CANCEL ); }
+    //! cancel action
+    void _cancel( void )
+    { done( CANCEL ); }
 
 };
 

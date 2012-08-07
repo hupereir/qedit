@@ -23,14 +23,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file FileInformationDialog.h
-\brief file informations
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "CustomDialog.h"
 #include "FileRecord.h"
 
@@ -44,6 +36,10 @@ class FileInformationDialog: public CustomDialog
 
     //! constructor
     FileInformationDialog( QWidget*, const FileRecord& );
+
+    //! destructor
+    virtual ~FileInformationDialog( void )
+    {}
 
     //! tab widget
     /*! needed for customization */

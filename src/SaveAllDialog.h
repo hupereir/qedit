@@ -32,10 +32,14 @@
 class SaveAllDialog: public CustomDialog
 {
 
-  public:
+    public:
 
-  //! constructor
-  SaveAllDialog( QWidget*, FileRecord::List );
+    //! constructor
+    SaveAllDialog( QWidget*, FileRecord::List );
+
+    //! destructor
+    virtual ~SaveAllDialog( void )
+    {}
 
 };
 

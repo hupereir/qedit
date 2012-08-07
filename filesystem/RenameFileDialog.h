@@ -24,16 +24,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file RenameFileDialog.h
-\brief Edit/create keyword popup dialog
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-
-
 #include "CustomDialog.h"
 #include "FileRecord.h"
 
@@ -45,10 +35,10 @@ class RenameFileDialog: public CustomDialog
 
     Q_OBJECT
 
-        public:
+    public:
 
-        //! constructor
-        RenameFileDialog( QWidget* parent, FileRecord );
+    //! constructor
+    RenameFileDialog( QWidget* parent, FileRecord );
 
     //! destructor
     virtual ~RenameFileDialog( void )

@@ -4,40 +4,32 @@
 // $Id$
 
 /******************************************************************************
- *
- * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
- *
- * This is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * software; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *
- *******************************************************************************/
-
-/*!
-  \file HighlightPatternDialog.h
-  \brief Syntax highlighting pattern editing dialog
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QComboBox>
-#include <QLabel>
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA  02111-1307 USA
+*
+*
+*******************************************************************************/
 
 #include "CustomDialog.h"
 #include "HighlightPattern.h"
 #include "HighlightStyle.h"
+
+#include <QtGui/QComboBox>
+#include <QtGui/QLabel>
 
 class AnimatedLineEditor;
 class TextEditor;
@@ -48,65 +40,69 @@ class HighlightPatternType;
 class HighlightPatternDialog: public CustomDialog
 {
 
-  //! qt object
-  Q_OBJECT
+    //! qt object
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! constructor
-  HighlightPatternDialog( QWidget* parent );
+    //! constructor
+    HighlightPatternDialog( QWidget* parent );
 
-  //! patterns
-  void setPatterns( const HighlightPattern::List& );
+    //! destructor
+    virtual ~HighlightPatternDialog( void )
+    {}
 
-  //! styles
-  void setStyles( const HighlightStyle::Set& );
+    //! patterns
+    void setPatterns( const HighlightPattern::List& );
 
-  //! pattern
-  void setPattern( const HighlightPattern& pattern );
+    //! styles
+    void setStyles( const HighlightStyle::Set& );
 
-  //! pattern
-  HighlightPattern pattern( void );
+    //! pattern
+    void setPattern( const HighlightPattern& pattern );
 
-  private slots:
+    //! pattern
+    HighlightPattern pattern( void );
 
-  //! update editors depending on type
-  void _updateEditors( HighlightPattern::Type );
+    private slots:
 
-  private:
+    //! update editors depending on type
+    void _updateEditors( HighlightPattern::Type );
 
-  //! highlight styles
-  HighlightStyle::Set styles_;
+    private:
 
-  //! initial pattern (to avoid duplication of ids)
-  HighlightPattern pattern_;
+    //! highlight styles
+    HighlightStyle::Set styles_;
 
-  //! name editor
-  AnimatedLineEditor* name_editor_;
+    //! initial pattern (to avoid duplication of ids)
+    HighlightPattern pattern_;
 
-  //! keyword regexp editor
-  AnimatedLineEditor* keyword_regexp_editor_;
+    //! name editor
+    AnimatedLineEditor* nameEditor_;
 
-  //! end regexp label
-  QLabel* end_regexp_label_;
+    //! keyword regexp editor
+    AnimatedLineEditor* keywordRegexpEditor_;
 
-  //! end regexp edit
-  AnimatedLineEditor* end_regexp_editor_;
+    //! end regexp label
+    QLabel* endRegexpLabel_;
 
-  //! options
-  HighlightPatternOptions* pattern_options_;
+    //! end regexp edit
+    AnimatedLineEditor* endRegexpEditor_;
 
-  //! type
-  HighlightPatternType* pattern_type_;
+    //! options
+    HighlightPatternOptions* patternOptions_;
 
-  //! parent highlight pattern
-  QComboBox* parent_combobox_;
+    //! type
+    HighlightPatternType* patternType_;
 
-  //! highlight style combobox
-  QComboBox* style_combobox_;
+    //! parent highlight pattern
+    QComboBox* parentComboBox_;
 
-  //! comments editor
-  TextEditor* comments_editor_;
+    //! highlight style combobox
+    QComboBox* styleComboBox_;
+
+    //! comments editor
+    TextEditor* commentsEditor_;
 
 };
 

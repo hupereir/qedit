@@ -23,14 +23,6 @@
 *
 *******************************************************************************/
 
-/*!
-  \file FileRemovedDialog.h
-  \brief QDialog used when a file has been removed from disk
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
 #include "BaseDialog.h"
 #include "Counter.h"
 #include "File.h"
@@ -39,53 +31,46 @@
 class FileRemovedDialog: public BaseDialog, public Counter
 {
 
-  //! Qt macro
-  Q_OBJECT
+    //! Qt macro
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! return codes
-  enum ReturnCode
-  {
+    //! return codes
+    enum ReturnCode
+    {
+
+        RESAVE,
+        SAVE_AS,
+        CLOSE,
+        IGNORE
+
+    };
+
+    //! constructor
+    FileRemovedDialog( QWidget* parent, const File& file );
+
+    //! destructor
+    virtual ~FileRemovedDialog( void )
+    {}
+
+    private slots:
 
     //! re-saved removed file
-    RESAVE = 0,
+    void _reSave( void )
+    { done( RESAVE ); }
 
     //! save file with new name
-    SAVE_AS = 1,
+    void _saveAs( void )
+    { done( SAVE_AS ); }
 
-    //! close window
-    CLOSE = 2,
+    //! close current editor
+    void _close( void )
+    { done( CLOSE ); }
 
     //! ignore warning
-    IGNORE = 3
-
-  };
-
-  //! constructor
-  FileRemovedDialog( QWidget* parent, const File& file );
-
-  //! destructor
-  virtual ~FileRemovedDialog( void )
-  {}
-
-  private slots:
-
-  //! re-saved removed file
-  void _reSave( void )
-  { done( RESAVE ); }
-
-  //! save file with new name
-  void _saveAs( void )
-  { done( SAVE_AS ); }
-
-  //! close current editor
-  void _close( void )
-  { done( CLOSE ); }
-
-  //! ignore warning
-  void _ignore( void )
-  { done( IGNORE ); }
+    void _ignore( void )
+    { done( IGNORE ); }
 
 };
 

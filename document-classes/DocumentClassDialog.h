@@ -24,14 +24,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file DocumentClassDialog.h
-\brief Syntax highlighting style editing dialog
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "TabbedDialog.h"
 #include "DocumentClass.h"
 
@@ -54,6 +46,10 @@ class DocumentClassDialog: public TabbedDialog
 
     //! constructor
     DocumentClassDialog( QWidget* parent );
+
+    //! destructor
+    virtual ~DocumentClassDialog( void )
+    {}
 
     //! style
     void setDocumentClass( const DocumentClass& );

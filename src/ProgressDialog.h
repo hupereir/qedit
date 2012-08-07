@@ -24,51 +24,48 @@
 *
 *******************************************************************************/
 
-/*!
-  \file ProgressDialog.h
-  \brief display command progress and remaining time
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QApplication>
-#include <QProgressDialog>
 #include "Counter.h"
+
+#include <QtGui/QApplication>
+#include <QtGui/QProgressDialog>
 
 //! command progress
 class ProgressDialog:public QProgressDialog, public Counter
 {
 
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! constructor
-  ProgressDialog( QWidget* parent = 0 ):
-    QProgressDialog( parent ),
-    Counter( "ProgressDialog" ),
-    offset_( 0 )
-  {}
+    //! constructor
+    ProgressDialog( QWidget* parent = 0 ):
+        QProgressDialog( parent ),
+        Counter( "ProgressDialog" ),
+        offset_( 0 )
+    {}
 
-  //! offset
-  void setOffset( int value )
-  { offset_ = value; }
+    //! destructor
+    virtual ~ProgressDialog( void )
+    {}
 
-  public slots:
+    //! offset
+    void setOffset( int value )
+    { offset_ = value; }
 
-  //! value
-  void setValue( int value )
-  { QProgressDialog::setValue( _offset()+value ); }
+    public slots:
 
-  private:
+    //! value
+    void setValue( int value )
+    { QProgressDialog::setValue( _offset()+value ); }
 
-  //! offset
-  int _offset( void ) const
-  { return offset_; }
+    private:
 
-  //! offset
-  int offset_;
+    //! offset
+    int _offset( void ) const
+    { return offset_; }
+
+    //! offset
+    int offset_;
 
 };
 

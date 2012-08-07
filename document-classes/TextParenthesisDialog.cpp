@@ -22,14 +22,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file TextParenthesisDialog.cpp
-\brief Syntax highlighting parenthesis editing dialog
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "GridLayout.h"
 #include "AnimatedLineEditor.h"
 #include "TextParenthesisDialog.h"
@@ -56,13 +48,13 @@ TextParenthesisDialog::TextParenthesisDialog( QWidget* parent ):
 
     //
     gridLayout->addWidget( new QLabel( "First parenthesis string: ", this ) );
-    gridLayout->addWidget( first_editor_ = new AnimatedLineEditor( this ) );
+    gridLayout->addWidget( firstEditor_ = new AnimatedLineEditor( this ) );
 
     gridLayout->addWidget( new QLabel( "Second parenthesis string: ", this ) );
-    gridLayout->addWidget( second_editor_ = new AnimatedLineEditor( this ) );
+    gridLayout->addWidget( secondEditor_ = new AnimatedLineEditor( this ) );
 
     gridLayout->addWidget( new QLabel( "Regular expression to match both parenthesis: ", this ) );
-    gridLayout->addWidget( regexp_editor_ = new AnimatedLineEditor( this ) );
+    gridLayout->addWidget( regexpEditor_ = new AnimatedLineEditor( this ) );
 
 }
 
@@ -71,9 +63,9 @@ void TextParenthesisDialog::setParenthesis( const TextParenthesis& parenthesis )
 {
     Debug::Throw( "TextParenthesisDialog::setParenthesis.\n" );
 
-    first_editor_->setText( parenthesis.first() );
-    second_editor_->setText( parenthesis.second() );
-    regexp_editor_->setText( parenthesis.regexp().pattern() );
+    firstEditor_->setText( parenthesis.first() );
+    secondEditor_->setText( parenthesis.second() );
+    regexpEditor_->setText( parenthesis.regexp().pattern() );
     return;
 }
 
@@ -83,9 +75,9 @@ TextParenthesis TextParenthesisDialog::parenthesis( void )
 
     Debug::Throw( "TextParenthesisDialog::parenthesis.\n" );
     TextParenthesis out;
-    out.setFirst( first_editor_->text() );
-    out.setSecond( second_editor_->text() );
-    out.setRegexp( regexp_editor_->text() );
+    out.setFirst( firstEditor_->text() );
+    out.setSecond( secondEditor_->text() );
+    out.setRegexp( regexpEditor_->text() );
 
     return out;
 

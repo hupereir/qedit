@@ -24,11 +24,11 @@
 #include "BaseIcons.h"
 #include "IconEngine.h"
 #include "TreeView.h"
-#include "XmlOptions.h"
 
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QLayout>
+#include <QtGui/QScrollBar>
 #include <cassert>
 
 //____________________________________________________________________________
@@ -72,14 +72,23 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
     model_.setShowIcons( false );
     model_.setUseLocalNames( false );
     model_.add( files );
-    model_.sort( FileSystemModel::FILE, Qt::DescendingOrder );
+    model_.sort( FileSystemModel::FILE, Qt::AscendingOrder );
 
+    // setup list
     _list().setModel( &model_ );
     _list().toggleShowHeader( false );
-    _list().setMask( XmlOptions::get().get<int>( "FILE_SYSTEM_LIST_MASK" ) );
-    _list().header()->setSortIndicator(
-        XmlOptions::get().get<int>( "FILE_SYSTEM_LIST_SORT_COLUMN" ),
-        (Qt::SortOrder) XmlOptions::get().get<int>( "FILE_SYSTEM_LIST_SORT_ORDER" ) );
-    _list().resizeColumnToContents( FileSystemModel::FILE );
+    _list().setMask( 1<<FileSystemModel::FILE );
+    _list().header()->setSortIndicator( FileSystemModel::FILE, Qt::DescendingOrder );
+
+    // resize list to accomodate longest item
+    int maxWidth( 0 );
+    foreach( const FileRecord& record, files )
+    { maxWidth = qMax( maxWidth, _list().fontMetrics().width( record.file() ) ); }
+
+    _list().verticalScrollBar()->adjustSize();
+    _list().setMinimumSize( QSize(
+        maxWidth + _list().verticalScrollBar()->width() + 10,
+        _list().fontMetrics().height() + 10 ) );
+
 
 }

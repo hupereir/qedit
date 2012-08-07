@@ -23,17 +23,9 @@
 *
 *******************************************************************************/
 
-/*!
-\file ConfigurationDialog.h
-\brief configuration dialog
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "BaseConfigurationDialog.h"
 
-//! xMaze configuration dialog
+//! configuration dialog
 class ConfigurationDialog: public BaseConfigurationDialog
 {
 
@@ -41,6 +33,10 @@ class ConfigurationDialog: public BaseConfigurationDialog
 
     //! creator
     ConfigurationDialog( QWidget *parent = 0 );
+
+    //! destructor
+    virtual ~ConfigurationDialog( void )
+    {}
 
 };
 

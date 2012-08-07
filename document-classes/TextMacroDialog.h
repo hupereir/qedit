@@ -4,33 +4,25 @@
 // $Id$
 
 /******************************************************************************
- *
- * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
- *
- * This is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * software; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA  02111-1307 USA
- *
- *
- *******************************************************************************/
-
-/*!
-  \file TextMacroDialog.h
-  \brief Syntax highlighting macro editing dialog
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
+*
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
+*
+* This is free software; you can redistribute it and/or modify it under the
+* terms of the GNU General Public License as published by the Free Software
+* Foundation; either version 2 of the License, or (at your option) any later
+* version.
+*
+* This software is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* software; if not, write to the Free Software Foundation, Inc., 59 Temple
+* Place, Suite 330, Boston, MA  02111-1307 USA
+*
+*
+*******************************************************************************/
 
 #include "CustomDialog.h"
 #include "TextMacro.h"
@@ -42,29 +34,33 @@ class TextMacroRuleList;
 class TextMacroDialog: public CustomDialog
 {
 
-  public:
+    public:
 
-  //! constructor
-  TextMacroDialog( QWidget* parent );
+    //! constructor
+    TextMacroDialog( QWidget* parent );
 
-  //! macro
-  void setMacro( const TextMacro& macro );
+    //! destructor
+    virtual ~TextMacroDialog( void )
+    {}
 
-  //! macro
-  TextMacro macro( void );
+    //! macro
+    void setMacro( const TextMacro& macro );
 
-  private:
+    //! macro
+    TextMacro macro( void );
 
-  TextMacro macro_;
+    private:
 
-  //! name
-  AnimatedLineEditor* name_editor_;
+    TextMacro macro_;
 
-  //! accelerator
-  AnimatedLineEditor* accelerator_editor_;
+    //! name
+    AnimatedLineEditor* nameEditor_;
 
-  //! rules
-  TextMacroRuleList* rule_list_;
+    //! accelerator
+    AnimatedLineEditor* acceleratorEditor_;
+
+    //! rules
+    TextMacroRuleList* ruleList_;
 
 };
 

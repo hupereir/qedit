@@ -64,7 +64,7 @@ HighlightStyleDialog::HighlightStyleDialog( QWidget* parent ):
   grid_layout->addWidget( color_ = new ColorDisplay( this ) );
 
   grid_layout->addWidget( new QLabel( "Font style: ", this ) );
-  grid_layout->addWidget( font_info_ = new FontInfo( this ) );
+  grid_layout->addWidget( fontInfo_ = new FontInfo( this ) );
 }
 
 //________________________________________________________________________
@@ -74,7 +74,7 @@ void HighlightStyleDialog::setStyle( const HighlightStyle& style )
   Debug::Throw( "HighlightStyleDialog::setStyle\n" );
   editor_->setText( style.name() );
   color_->setColor( style.color().name() );
-  font_info_->setFormat( style.fontFormat() );
+  fontInfo_->setFormat( style.fontFormat() );
   return;
 
 }
@@ -84,6 +84,6 @@ void HighlightStyleDialog::setStyle( const HighlightStyle& style )
 HighlightStyle HighlightStyleDialog::style( void ) const
 {
   Debug::Throw( "HighlightStyleDialog::style\n" );
-  return HighlightStyle( editor_->text(), font_info_->format(), QColor( color_->colorName() ) );
+  return HighlightStyle( editor_->text(), fontInfo_->format(), QColor( color_->colorName() ) );
 }
 

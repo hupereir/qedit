@@ -23,70 +23,54 @@
 *
 *******************************************************************************/
 
-/*!
-  \file FileModifiedDialog.h
-  \brief QDialog used when a file has been modified on disk
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
 #include "BaseDialog.h"
-
 #include "Counter.h"
 #include "File.h"
 
 //! QDialog used to ask if a new file should be created
 class FileModifiedDialog: public BaseDialog, public Counter
 {
+    
+    //! Qt macro
+    Q_OBJECT
+        
+    public:
+        
+    //! return codes
+    enum ReturnCode
+    {
+        
+        RESAVE,
+        SAVE_AS,
+        RELOAD,
+        IGNORE
+        
+    };
+        
+    //! constructor
+    FileModifiedDialog( QWidget* parent, const File& file );
+        
+    //! destructor
+    virtual ~FileModifiedDialog( void )
+    {}
 
-  //! Qt macro
-  Q_OBJECT
-
-  public:
-
-  //! return codes
-  enum ReturnCode
-  {
+    private slots:
 
     //! re-saved removed file
-    RESAVE = 0,
+    void _reLoad( void )
+    { done( RELOAD ); }
+
+    //! re-saved removed file
+    void _reSave( void )
+    { done( RESAVE ); }
 
     //! save file with new name
-    SAVE_AS = 1,
+    void _saveAs( void )
+    { done( SAVE_AS ); }
 
-    //! re-load modified file
-    RELOAD = 2,
-
-    //! ignore warning
-    IGNORE = 3
-
-  };
-
-  //! constructor
-  FileModifiedDialog( QWidget* parent, const File& file );
-
-  //! destructor
-  virtual ~FileModifiedDialog( void )
-  {}
-
-  private slots:
-
-  //! re-saved removed file
-  void _reLoad( void )
-  { done( RELOAD ); }
-
-  //! re-saved removed file
-  void _reSave( void )
-  { done( RESAVE ); }
-
-  //! save file with new name
-  void _saveAs( void )
-  { done( SAVE_AS ); }
-
-  //! save file with new name
-  void _ignore( void )
-  { done( IGNORE ); }
+    //! save file with new name
+    void _ignore( void )
+    { done( IGNORE ); }
 
 };
 

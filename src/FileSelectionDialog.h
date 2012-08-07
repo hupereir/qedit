@@ -41,6 +41,10 @@ class FileSelectionDialog: public CustomDialog
     //! constructor
     FileSelectionDialog( QWidget* parent, const TextSelection& );
 
+    //! destructor
+    virtual ~FileSelectionDialog( void )
+    {}
+
     //! selected files
     typedef QList<File> FileList;
 

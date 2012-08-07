@@ -26,8 +26,6 @@
 
 #include "BaseReplaceDialog.h"
 
-#include <cassert>
-
 //! replace_text dialog for text editor widgets
 class ReplaceDialog: public BaseReplaceDialog
 {
@@ -39,6 +37,10 @@ class ReplaceDialog: public BaseReplaceDialog
 
     //! constructor
     ReplaceDialog( QWidget* = 0, Qt::WFlags = 0 );
+
+    //! destructor
+    virtual ~ReplaceDialog( void )
+    {}
 
     signals:
 

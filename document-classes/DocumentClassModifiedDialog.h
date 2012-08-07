@@ -23,14 +23,6 @@
 *
 *******************************************************************************/
 
-/*!
-  \file DocumentClassModifiedDialog.h
-  \brief QDialog used when a file has been removed from disk
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
 #include "BaseDialog.h"
 #include "Counter.h"
 #include "File.h"
@@ -39,42 +31,41 @@
 class DocumentClassModifiedDialog: public BaseDialog, public Counter
 {
 
-  //! Qt macro
-  Q_OBJECT
+    //! Qt macro
+    Q_OBJECT
 
-  public:
+    public:
 
-  //! return codes
-  enum ReturnCode
-  {
+    //! return codes
+    enum ReturnCode
+    {
 
-    //! re-saved removed file
-    YES = 0,
+        YES = 0,
+        NO = 1,
+        CANCEL = 2
 
-    //! save file with new name
-    NO = 1,
+    };
 
-    //! close window
-    CANCEL = 2
+    //! constructor
+    DocumentClassModifiedDialog( QWidget* parent );
 
-  };
+    //! destructor
+    virtual ~DocumentClassModifiedDialog( void )
+    {}
 
-  //! constructor
-  DocumentClassModifiedDialog( QWidget* parent );
+    private slots:
 
-  private slots:
+    //! save modifications
+    void _yes( void )
+    { done( YES ); }
 
-  //! save modifications
-  void _yes( void )
-  { done( YES ); }
+    //! ignore modifications
+    void _no( void )
+    { done( NO ); }
 
-  //! ignore modifications
-  void _no( void )
-  { done( NO ); }
-
-  //! cancel event
-  void _cancel( void )
-  { done( CANCEL ); }
+    //! cancel event
+    void _cancel( void )
+    { done( CANCEL ); }
 
 };
 

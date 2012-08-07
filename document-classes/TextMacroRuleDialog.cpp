@@ -60,13 +60,13 @@ TextMacroRuleDialog::TextMacroRuleDialog( QWidget* parent ):
 
   //
   grid_layout->addWidget( new QLabel( "Regular expression to match: ", this ) );
-  grid_layout->addWidget( regexp_editor_ = new AnimatedLineEditor( this ) );
+  grid_layout->addWidget( regexpEditor_ = new AnimatedLineEditor( this ) );
 
   grid_layout->addWidget( new QLabel( "Replacement text: ", this ) );
-  grid_layout->addWidget( text_editor_ = new AnimatedLineEditor( this ) );
+  grid_layout->addWidget( textEditor_ = new AnimatedLineEditor( this ) );
 
-  mainLayout().addWidget( split_checkbox_ = new QCheckBox( "Perform replacement line by line", this ) );
-  split_checkbox_->setChecked( true );
+  mainLayout().addWidget( splitCheckBox_ = new QCheckBox( "Perform replacement line by line", this ) );
+  splitCheckBox_->setChecked( true );
 
 }
 
@@ -75,9 +75,9 @@ void TextMacroRuleDialog::setRule( const TextMacro::Rule& rule )
 {
   Debug::Throw( "TextMacroRuleDialog::setRule.\n" );
 
-  regexp_editor_->setText( rule.pattern().pattern() );
-  text_editor_->setText( rule.replaceText() );
-  split_checkbox_->setChecked( rule.split() );
+  regexpEditor_->setText( rule.pattern().pattern() );
+  textEditor_->setText( rule.replaceText() );
+  splitCheckBox_->setChecked( rule.split() );
   return;
 }
 
@@ -87,9 +87,9 @@ TextMacro::Rule TextMacroRuleDialog::rule( void )
 
   Debug::Throw( "TextMacroRuleDialog::rule.\n" );
   TextMacro::Rule out;
-  out.setPattern( regexp_editor_->text() );
-  out.setReplaceText( text_editor_->text() );
-  if( !split_checkbox_->isChecked() ) out.setNoSplitting( );
+  out.setPattern( regexpEditor_->text() );
+  out.setReplaceText( textEditor_->text() );
+  if( !splitCheckBox_->isChecked() ) out.setNoSplitting( );
 
   return out;
 
