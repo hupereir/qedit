@@ -565,7 +565,7 @@ void FileSystemFrame::_installActions( void )
     _renameAction().setToolTip( "Change selected file name" );
 
     // file properties
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "File Properties", this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "Properties...", this ) );
     connect( &_filePropertiesAction(), SIGNAL( triggered() ), SLOT( _fileProperties() ) );
     _filePropertiesAction().setToolTip( "Display current file properties" );
 

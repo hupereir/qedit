@@ -29,24 +29,21 @@
 \date $Date$
 */
 
+#include "FileInformationDialog.h"
+
 #include "AnimatedTabWidget.h"
 #include "BaseIcons.h"
 #include "CustomPixmap.h"
-#include "GridLayout.h"
 #include "Debug.h"
 #include "ElidedLabel.h"
-#include "FileList.h"
-#include "FileRecord.h"
-#include "IconEngine.h"
-#include "FileInformationDialog.h"
+#include "FilePermissionsWidget.h"
 #include "FileRecordProperties.h"
 #include "FileSystemModel.h"
-#include "QtUtil.h"
+#include "GridLayout.h"
+#include "IconEngine.h"
 #include "TimeStamp.h"
 
 #include <QtGui/QLabel>
-#include <QtGui/QCheckBox>
-#include <QtGui/QPushButton>
 
 //_________________________________________________________
 FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord& record ):
@@ -78,12 +75,9 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
 
     // try load Question icon
     CustomPixmap pixmap = CustomPixmap().find( ICONS::INFORMATION );
-    if( !pixmap.isNull() )
-    {
-        QLabel* label = new QLabel(box);
-        label->setPixmap( pixmap );
-        hLayout->addWidget( label, 0, Qt::AlignTop );
-    }
+    QLabel* label = new QLabel(box);
+    label->setPixmap( pixmap );
+    hLayout->addWidget( label, 0, Qt::AlignTop );
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setMargin(0);
@@ -96,7 +90,6 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
     layout->addLayout( gridLayout );
 
-    QLabel* label;
     gridLayout->addWidget( label = new QLabel( "File name:", box ) );
     gridLayout->addWidget( label = new ElidedLabel( file.isEmpty() ? File("Untitled"):file.localName(), box ) );
     QFont font( label->font() );
@@ -170,50 +163,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     layout->setSpacing( 5 );
     box->setLayout( layout );
 
-    gridLayout = new GridLayout();
-    gridLayout->setMargin(0);
-    gridLayout->setSpacing( 5 );
-    gridLayout->setMaxCount( 4 );
-    gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-    layout->addItem( gridLayout );
-
-    gridLayout->addWidget( new QLabel( "<b>Permissions: </b>", box ) );
-    gridLayout->addWidget( new QLabel( "Read", box ), Qt::AlignHCenter );
-    gridLayout->addWidget( new QLabel( "Write", box ), Qt::AlignHCenter );
-    gridLayout->addWidget( new QLabel( "Execute", box ), Qt::AlignHCenter );
-
-    typedef QHash< QFile::Permission, QCheckBox* > CheckBoxMap;
-    CheckBoxMap checkboxes;
-
-    gridLayout->addWidget( new QLabel( "Owner:", box ) );
-    gridLayout->addWidget( checkboxes[QFile::ReadOwner ]  = new QCheckBox( box ), Qt::AlignHCenter );
-    gridLayout->addWidget( checkboxes[QFile::WriteOwner ]  = new QCheckBox( box ), Qt::AlignHCenter );
-    gridLayout->addWidget( checkboxes[QFile::ExeOwner  ]  = new QCheckBox( box ), Qt::AlignHCenter );
-
-    // on unix, right now, Qt does not return the current user permissions. Disable them from the dialog
-    #if !defined(Q_WS_X11)
-    gridLayout->addWidget( new QLabel( "User:", box ) );
-    gridLayout->addWidget( checkboxes[QFile::ReadUser ]  = new QCheckBox( box ), Qt::AlignHCenter );
-    gridLayout->addWidget( checkboxes[QFile::WriteUser]  = new QCheckBox( box ), Qt::AlignHCenter );
-    gridLayout->addWidget( checkboxes[QFile::ExeUser  ]  = new QCheckBox( box ), Qt::AlignHCenter );
-    #endif
-
-    gridLayout->addWidget( new QLabel( "Group:", box ) );
-    gridLayout->addWidget( checkboxes[QFile::ReadGroup  ] = new QCheckBox( box ), Qt::AlignHCenter );
-    gridLayout->addWidget( checkboxes[QFile::WriteGroup ] = new QCheckBox( box ), Qt::AlignHCenter );
-    gridLayout->addWidget( checkboxes[QFile::ExeGroup   ] = new QCheckBox( box ), Qt::AlignHCenter );
-
-    gridLayout->addWidget( new QLabel( "Others:", box ) );
-    gridLayout->addWidget( checkboxes[QFile::ReadOther  ] = new QCheckBox( box ), Qt::AlignHCenter );
-    gridLayout->addWidget( checkboxes[QFile::WriteOther ] = new QCheckBox( box ), Qt::AlignHCenter );
-    gridLayout->addWidget( checkboxes[QFile::ExeOther   ] = new QCheckBox( box ), Qt::AlignHCenter );
-
-    QFile::Permissions permissions( file.permissions() );
-    for( CheckBoxMap::iterator iter = checkboxes.begin(); iter != checkboxes.end(); ++iter )
-    {
-        iter.value()->setChecked( permissions & iter.key() );
-        iter.value()->setEnabled( false );
-    }
+    layout->addWidget( new FilePermissionsWidget( box, file.permissions() ) );
 
     // group and user id
     if( file.exists() )
