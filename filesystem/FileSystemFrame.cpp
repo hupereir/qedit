@@ -27,6 +27,7 @@
 #include "FileSystemIcons.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
+#include "ContextMenu.h"
 #include "CustomComboBox.h"
 #include "CustomToolBar.h"
 #include "FileInformationDialog.h"
@@ -66,7 +67,6 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
     // toolbar
     CustomToolBar* toolbar = new CustomToolBar( "Navigation Toolbar", this, "NAVIGATION_TOOLBAR" );
-    // QToolBar* toolbar = new QToolBar( this );
     toolbar->addAction( &_parentDirectoryAction() );
     toolbar->addAction( &_previousDirectoryAction() );
     toolbar->addAction( &_nextDirectoryAction() );
@@ -90,24 +90,25 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     _list().header()->hide();
 
     // list menu
-    _list().menu().addMenu( new ColumnSortingMenu( &_list().menu(), &_list() ) );
-    _list().menu().addMenu( new ColumnSelectionMenu( &_list().menu(), &_list() ) );
-    _list().menu().addSeparator();
-    _list().menu().addAction( &_previousDirectoryAction() );
-    _list().menu().addAction( &_nextDirectoryAction() );
-    _list().menu().addAction( &_parentDirectoryAction() );
-    _list().menu().addAction( &_homeDirectoryAction() );
-    _list().menu().addAction( &_reloadAction() );
+    QMenu* menu( new ContextMenu( &_list() ) );
+    menu->addMenu( new ColumnSortingMenu( menu, &_list() ) );
+    menu->addMenu( new ColumnSelectionMenu( menu, &_list() ) );
+    menu->addSeparator();
+    menu->addAction( &_previousDirectoryAction() );
+    menu->addAction( &_nextDirectoryAction() );
+    menu->addAction( &_parentDirectoryAction() );
+    menu->addAction( &_homeDirectoryAction() );
+    menu->addAction( &_reloadAction() );
 
-    _list().menu().addSeparator();
-    _list().menu().addAction( &_hiddenFilesAction() );
-    _list().menu().addSeparator();
-    _list().menu().addAction( &_openAction() );
-    _list().menu().addAction( &_renameAction() );
-    _list().menu().addAction( &_removeAction() );
+    menu->addSeparator();
+    menu->addAction( &_hiddenFilesAction() );
+    menu->addSeparator();
+    menu->addAction( &_openAction() );
+    menu->addAction( &_renameAction() );
+    menu->addAction( &_removeAction() );
 
-    _list().menu().addSeparator();
-    _list().menu().addAction( &_filePropertiesAction() );
+    menu->addSeparator();
+    menu->addAction( &_filePropertiesAction() );
 
     connect( &_list().transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
 

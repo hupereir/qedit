@@ -20,19 +20,12 @@
 *
 ****************************************************************************/
 
-/*!
-\file SessionFilesFrame.cpp
-\brief editor windows navigator
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "SessionFilesFrame.h"
 
 #include "Application.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
+#include "ContextMenu.h"
 #include "Debug.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
@@ -77,16 +70,17 @@ Counter( "SessionFilesFrame" )
     _installActions();
 
     // add actions to menu
-    list().menu().addMenu( new ColumnSortingMenu( &list().menu(), &list() ) );
-    list().menu().addMenu( new ColumnSelectionMenu( &list().menu(), &list() ) );
-    list().menu().addSeparator();
-    list().menu().addAction( &_openAction() );
-    list().menu().addAction( &_saveAction() );
-    list().menu().addAction( &Singleton::get().application<Application>()->windowServer().saveAllAction() );
-    list().menu().addAction( &_closeAction() );
-    list().menu().addSeparator();
-    list().menu().addAction( &previousFileAction() );
-    list().menu().addAction( &nextFileAction() );
+    ContextMenu* menu( new ContextMenu( &list() ) );
+    menu->addMenu( new ColumnSortingMenu( menu, &list() ) );
+    menu->addMenu( new ColumnSelectionMenu( menu, &list() ) );
+    menu->addSeparator();
+    menu->addAction( &_openAction() );
+    menu->addAction( &_saveAction() );
+    menu->addAction( &Singleton::get().application<Application>()->windowServer().saveAllAction() );
+    menu->addAction( &_closeAction() );
+    menu->addSeparator();
+    menu->addAction( &previousFileAction() );
+    menu->addAction( &nextFileAction() );
 
     // connections
     connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );

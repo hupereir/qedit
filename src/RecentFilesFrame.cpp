@@ -20,32 +20,24 @@
 *
 ****************************************************************************/
 
-/*!
-\file RecentFilesFrame.cpp
-\brief editor windows navigator
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QButtonGroup>
-#include <QHeaderView>
-#include <QLayout>
+#include "RecentFilesFrame.h"
 
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
+#include "ContextMenu.h"
 #include "Debug.h"
 #include "Icons.h"
 #include "IconEngine.h"
 #include "FileList.h"
 #include "QuestionDialog.h"
 #include "QtUtil.h"
-#include "RecentFilesFrame.h"
 #include "TreeView.h"
 #include "Util.h"
 #include "XmlOptions.h"
 
-
+#include <QtGui/QButtonGroup>
+#include <QtGui/QHeaderView>
+#include <QtGui/QLayout>
 
 //_______________________________________________________________
 RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
@@ -72,11 +64,12 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     _installActions();
 
     // add actions to list
-    list().menu().addMenu( new ColumnSortingMenu( &list().menu(), &list() ) );
-    list().menu().addMenu( new ColumnSelectionMenu( &list().menu(), &list() ) );
-    list().menu().addAction( &_openAction() );
-    list().menu().addSeparator();
-    list().menu().addAction( &_cleanAction() );
+    QMenu* menu( new ContextMenu( &list() ) );
+    menu->addMenu( new ColumnSortingMenu( menu, &list() ) );
+    menu->addMenu( new ColumnSelectionMenu( menu, &list() ) );
+    menu->addAction( &_openAction() );
+    menu->addSeparator();
+    menu->addAction( &_cleanAction() );
 
     // connections
     connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
