@@ -63,8 +63,7 @@ Menu::Menu( QWidget* parent ):
     menu->addAction( &mainwindow.openAction() );
 
     // open previous menu
-    recentFilesMenu_ = new RecentFilesMenu( this, application.recentFiles() );
-    menu->addMenu( recentFilesMenu_ );
+    menu->addMenu( recentFilesMenu_ = new RecentFilesMenu( this, application.recentFiles() ) );
 
     // additional actions
     menu->addSeparator();

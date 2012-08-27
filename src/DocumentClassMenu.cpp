@@ -21,11 +21,12 @@
 *
 ****************************************************************************/
 
+#include "DocumentClassMenu.h"
+
 #include "Application.h"
 #include "Debug.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
-#include "DocumentClassMenu.h"
 #include "IconEngine.h"
 #include "MainWindow.h"
 #include "Singleton.h"
