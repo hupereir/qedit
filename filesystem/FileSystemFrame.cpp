@@ -504,7 +504,7 @@ void FileSystemFrame::_animationFinished( void )
     _comboBox().setEditText( path() );
 
     // reset file system watcher
-    QStringList directories( _fileSystemWatcher().directories() );
+    const QStringList directories( _fileSystemWatcher().directories() );
     if( !directories.isEmpty() ) _fileSystemWatcher().removePaths( directories );
 
     _fileSystemWatcher().addPath( path() );
