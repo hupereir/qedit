@@ -41,12 +41,12 @@
 
 //__________________________________________________________________
 Diff::Diff( QObject* parent ):
-QObject( parent ),
-Counter( "Diff" ),
-process_( this )
+    QObject( parent ),
+    Counter( "Diff" ),
+    files_( 2 ),
+    process_( this )
 {
     Debug::Throw( "Diff::Diff\n" );
-    files_.reserve( 2 );
     connect( &process_, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( _parseOutput( int, QProcess::ExitStatus ) ) );
 }
 

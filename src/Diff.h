@@ -37,9 +37,9 @@
 #include "Debug.h"
 #include "File.h"
 
-#include <QtCore/QList>
 #include <QtCore/QPair>
 #include <QtCore/QSet>
+#include <QtCore/QVector>
 
 #include <cassert>
 
@@ -139,7 +139,7 @@ class Diff: public QObject, public Counter
         void highlightDisplay( void );
 
         //! list
-        typedef QList<FileInformation> List;
+        typedef QVector<FileInformation> List;
 
         private:
 
