@@ -306,20 +306,20 @@ void FileSystemFrame::_updateActions( void )
     Debug::Throw( "FileSystemFrame:_updateActions.\n" );
     FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
 
-    bool has_editable_selection( false );
-    bool has_removable_selection( false );
+    bool hasEditableSelection( false );
+    bool hasRemovableSelection( false );
     for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
     {
-        if( !iter->hasFlag( FileSystemModel::NAVIGATOR ) ) has_removable_selection = true;
+        if( !iter->hasFlag( FileSystemModel::NAVIGATOR ) ) hasRemovableSelection = true;
         if( iter->hasFlag( FileSystemModel::DOCUMENT ) )
         {
-            has_editable_selection = true;
+            hasEditableSelection = true;
             break;
         }
     }
 
-    _openAction().setEnabled( has_editable_selection );
-    _removeAction().setEnabled( has_removable_selection );
+    _openAction().setEnabled( hasEditableSelection );
+    _removeAction().setEnabled( hasRemovableSelection );
 
     QModelIndex index( _list().selectionModel()->currentIndex() );
     bool has_valid_file( index.isValid() && !_model().get( index ).hasFlag( FileSystemModel::NAVIGATOR ) );

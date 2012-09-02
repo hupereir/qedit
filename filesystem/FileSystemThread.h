@@ -24,57 +24,49 @@
 *
 *******************************************************************************/
 
-/*!
-  \file FileSystemThread.h
-  \brief check validity of a set of files
-  \author  Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QThread>
-#include <QEvent>
-
 #include "Counter.h"
 #include "Debug.h"
 #include "FileSystemModel.h"
+
+#include <QtCore/QThread>
+#include <QtCore/QEvent>
 
 //! used to post a new grid when ready
 class FileSystemEvent: public QEvent, public Counter
 {
 
-  public:
+    public:
 
-  //! constructor
-  FileSystemEvent( File path, FileSystemModel::List files ):
-    QEvent( eventType() ),
-    Counter( "FileSystemEvent" ),
-    path_( path ),
-    files_( files )
-  {}
+    //! constructor
+    FileSystemEvent( File path, FileSystemModel::List files ):
+        QEvent( eventType() ),
+        Counter( "FileSystemEvent" ),
+        path_( path ),
+        files_( files )
+    {}
 
-  //! destructor
-  ~FileSystemEvent( void )
-  {}
+    //! destructor
+    ~FileSystemEvent( void )
+    {}
 
-  //! static event type
-  static QEvent::Type eventType( void );
+    //! static event type
+    static QEvent::Type eventType( void );
 
-  //! path
-  const File& path( void )
-  { return path_; }
+    //! path
+    const File& path( void )
+    { return path_; }
 
-  //! files
-  const FileSystemModel::List& files()
-  { return files_; }
+    //! files
+    const FileSystemModel::List& files()
+    { return files_; }
 
-  private:
+    private:
 
-  //! path
-  File path_;
+    //! path
+    File path_;
 
-  //! ValidFile success flag
-  FileSystemModel::List files_;
+    //! ValidFile success flag
+    FileSystemModel::List files_;
 
 };
 
@@ -82,35 +74,35 @@ class FileSystemEvent: public QEvent, public Counter
 class FileSystemThread: public QThread, public Counter
 {
 
-  public:
+    public:
 
-  //! constructor
-  FileSystemThread( QObject* );
+    //! constructor
+    FileSystemThread( QObject* );
 
 
-  //! set file
-  void setPath( const File& path, const bool& show_hidden_files )
-  {
-    path_ = path;
-    show_hidden_files_ = show_hidden_files;
-  }
+    //! set file
+    void setPath( const File& path, const bool& show_hidden_files )
+    {
+        path_ = path;
+        showHiddenFiles_ = show_hidden_files;
+    }
 
-  //! Check files validity. Post a FileSystemEvent when finished
-  void run( void );
+    //! Check files validity. Post a FileSystemEvent when finished
+    void run( void );
 
-  private:
+    private:
 
-  //! reciever object for posted events
-  QObject* reciever_;
+    //! reciever object for posted events
+    QObject* reciever_;
 
-  //! size property id
-  FileRecord::PropertyId::Id size_property_id_;
+    //! size property id
+    FileRecord::PropertyId::Id sizePropertyId_;
 
-  //! filename where data is to be saved
-  File path_;
+    //! filename where data is to be saved
+    File path_;
 
-  //! true if hidden files are to be listed
-  bool show_hidden_files_;
+    //! true if hidden files are to be listed
+    bool showHiddenFiles_;
 
 };
 #endif

@@ -21,86 +21,74 @@
 *
 *******************************************************************************/
 
-/*!
-  \file FileSystemThread.cpp
-  \brief check validity of a set of files
-  \author  Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QApplication>
-#include <QDateTime>
-#include <QDir>
-
 #include "Debug.h"
 #include "FileSystemThread.h"
 #include "FileRecordProperties.h"
 
-
+#include <QtCore/QDateTime>
+#include <QtCore/QDir>
+#include <QtGui/QApplication>
 
 //______________________________________________________
 QEvent::Type FileSystemEvent::eventType( void )
 {
 
-  #if QT_VERSION >= 0x040400
-  static QEvent::Type event_type = (QEvent::Type) QEvent::registerEventType();
-  #else
-  static QEvent::Type event_type = QEvent::User;
-  #endif
+    #if QT_VERSION >= 0x040400
+    static QEvent::Type event_type = (QEvent::Type) QEvent::registerEventType();
+    #else
+    static QEvent::Type event_type = QEvent::User;
+    #endif
 
-  return event_type;
+    return event_type;
 
 }
 
 //______________________________________________________
 FileSystemThread::FileSystemThread( QObject* reciever ):
-  Counter( "FileSystemThread" ),
-  reciever_( reciever ),
-  size_property_id_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) ),
-  show_hidden_files_( false )
+    Counter( "FileSystemThread" ),
+    reciever_( reciever ),
+    sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) ),
+    showHiddenFiles_( false )
 {}
 
 //______________________________________________________
 void FileSystemThread::run( void )
 {
 
-  // loop over directory contents
-  QDir dir( path_ );
-  QDir::Filters filter = QDir::AllEntries | QDir::NoDotAndDotDot;
-  if( show_hidden_files_ ) filter |= QDir::Hidden;
-  dir.setFilter( filter );
-  QFileInfoList entries( dir.entryInfoList() );
-  FileSystemModel::List new_files;
+    // loop over directory contents
+    FileSystemModel::List newFiles;
 
-  // add navigator
-  FileRecord record( File("..") );
-  record.setFlags( FileSystemModel::NAVIGATOR );
-  new_files.push_back( record );
+    // add navigator
+    FileRecord record( File("..") );
+    record.setFlags( FileSystemModel::NAVIGATOR );
+    newFiles.push_back( record );
 
-  // loop over entries and add
-  for( QFileInfoList::iterator iter = entries.begin(); iter != entries.end(); ++iter )
-  {
+    // loop over entries and add
+    unsigned int flags = File::NONE;
+    if( showHiddenFiles_ ) flags |= File::SHOW_HIDDEN;
+    foreach( const File& file, path_.listFiles( flags ) )
+    {
 
-    if( iter->fileName() == ".." || iter->fileName() == "." ) continue;
+        // check if hidden
+        if( showHiddenFiles_ && file.isHidden() ) continue;
 
-    // create file record
-    FileRecord record( iter->fileName(), TimeStamp( iter->lastModified().toTime_t() ) );
+        // create file record
+        FileRecord record( file, file.lastModified() );
 
-    // assign size
-    record.addProperty( size_property_id_, QString().setNum(iter->size()) );
+        // assign size
+        record.addProperty( sizePropertyId_, QString().setNum(file.fileSize()) );
 
-    // assign type
-    record.setFlag( iter->isDir() ? FileSystemModel::FOLDER : FileSystemModel::DOCUMENT );
-    if( iter->isSymLink() ) record.setFlag( FileSystemModel::LINK );
+        // assign type
+        record.setFlag( file.isDirectory() ? FileSystemModel::FOLDER : FileSystemModel::DOCUMENT );
+        if( file.isLink() ) record.setFlag( FileSystemModel::LINK );
 
-    // add to model
-    new_files.push_back( record );
+        // add to model
+        newFiles << record;
 
-  }
+    }
 
-  qApp->postEvent( reciever_, new FileSystemEvent( path_, new_files ) );
+    qApp->postEvent( reciever_, new FileSystemEvent( path_, newFiles ) );
 
-  return;
+    return;
 
 }
