@@ -37,7 +37,7 @@
 #include "Debug.h"
 #include "File.h"
 
-#include <QtCore/QVector>
+#include <QtCore/QList>
 #include <QtCore/QPair>
 #include <QtCore/QSet>
 
@@ -138,6 +138,9 @@ class Diff: public QObject, public Counter
         //! highlight text display based on conflicts and added paragraphs
         void highlightDisplay( void );
 
+        //! list
+        typedef QList<FileInformation> List;
+
         private:
 
         //! text display
@@ -169,7 +172,7 @@ class Diff: public QObject, public Counter
     };
 
     //! file specific diff information
-    QVector< FileInformation > files_;
+    FileInformation::List files_;
 
     //! process
     CustomProcess process_;

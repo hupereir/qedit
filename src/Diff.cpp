@@ -43,10 +43,10 @@
 Diff::Diff( QObject* parent ):
 QObject( parent ),
 Counter( "Diff" ),
-files_(2),
 process_( this )
 {
     Debug::Throw( "Diff::Diff\n" );
+    files_.reserve( 2 );
     connect( &process_, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( _parseOutput( int, QProcess::ExitStatus ) ) );
 }
 
@@ -112,7 +112,7 @@ void Diff::_clear( void )
 {
 
     Debug::Throw( "Diff::_Clear.\n" );
-    for( QVector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); ++iter )
+    for( FileInformation::List::iterator iter = files_.begin(); iter != files_.end(); ++iter )
     { iter->clear(); }
     return;
 }
@@ -149,7 +149,7 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
     }
 
     // highlight displays
-    for( QVector<FileInformation>::iterator iter = files_.begin(); iter != files_.end(); ++iter )
+    for( FileInformation::List::iterator iter = files_.begin(); iter != files_.end(); ++iter )
     { iter->highlightDisplay(); }
 
     // delete this object
