@@ -50,7 +50,7 @@ FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):
 
   Debug::Throw( "FileRemovedDialog::FileRemovedDialog.\n" );
 
-  setWindowTitle( "File Removed" );
+  setWindowTitle( "File Removed - Qedit" );
 
   // create vbox layout
   QVBoxLayout* layout=new QVBoxLayout();

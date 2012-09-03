@@ -153,7 +153,7 @@ bool Application::realizeWidget( void )
     monitoredFilesAction_->setToolTip( "Show monitored files" );
     connect( monitoredFilesAction_, SIGNAL( triggered() ), SLOT( _showMonitoredFiles() ) );
 
-    configurationAction().setText( "Configure qedit..." );
+    configurationAction().setText( "Configure Qedit..." );
 
     // file list
     recentFiles_ = new XmlFileList();
