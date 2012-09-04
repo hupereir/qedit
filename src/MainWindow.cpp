@@ -123,7 +123,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     // insert navigationFrame
     navigationFrame_ = new NavigationFrame(0, application.recentFiles() );
-    navigationFrame().setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
+    navigationFrame_->setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
     splitter->addWidget( &navigationFrame() );
 
     connect( &navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleNavigationFrame( bool ) ) );
@@ -152,7 +152,6 @@ MainWindow::MainWindow(  QWidget* parent ):
     // assign stretch factors
     splitter->setStretchFactor( 0, 0 );
     splitter->setStretchFactor( 1, 1 );
-
     connect( splitter, SIGNAL( splitterMoved( int, int ) ), SLOT( _splitterMoved( void ) ) );
 
     // state frame

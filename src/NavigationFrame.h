@@ -30,17 +30,12 @@
 #include <QtGui/QAction>
 #include <QtGui/QShowEvent>
 #include <QtGui/QToolButton>
-#include <cassert>
 
 class SessionFilesFrame;
 class RecentFilesFrame;
 class FileSystemFrame;
 
 //! editor windows navigator
-/*!
-displays an up-to-date list of recent files
-as well as files opened in current session
-*/
 class NavigationFrame: public AnimatedStackedWidget
 {
 
@@ -56,35 +51,28 @@ class NavigationFrame: public AnimatedStackedWidget
     {}
 
     //! default size
-    void setDefaultWidth( const int& );
+    void setDefaultWidth( const int& value )
+    { defaultWidth_ = value; }
 
     //! default width
     const int& defaultWidth( void ) const
     { return defaultWidth_; }
 
     //! size
-    QSize sizeHint( void ) const;
+    QSize sizeHint( void ) const
+    { return (defaultWidth_ ) >= 0 ? QSize( defaultWidth_, 0 ):QWidget::sizeHint(); }
 
     //! session files
     SessionFilesFrame& sessionFilesFrame( void ) const
-    {
-        assert( sessionFilesFrame_ );
-        return *sessionFilesFrame_;
-    }
+    { return *sessionFilesFrame_; }
 
     //! recent files
     RecentFilesFrame& recentFilesFrame( void ) const
-    {
-        assert( recentFilesFrame_ );
-        return *recentFilesFrame_;
-    }
+    { return *recentFilesFrame_; }
 
     //! file system
     FileSystemFrame& fileSystemFrame( void ) const
-    {
-        assert( fileSystemFrame_ );
-        return *fileSystemFrame_;
-    }
+    { return *fileSystemFrame_; }
 
     //!@name actions
     //@{
@@ -119,14 +107,8 @@ class NavigationFrame: public AnimatedStackedWidget
 
     //@}
 
-    //!@name actions
-    //@{
-
-    //! visibility
-    QAction* visibilityAction_
-        ;
-
-    //@}
+    //! visibility action
+    QAction* visibilityAction_;
 
 };
 

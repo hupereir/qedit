@@ -64,14 +64,6 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
 }
 
 //______________________________________________________________________
-void NavigationFrame::setDefaultWidth( const int& value )
-{ defaultWidth_ = value; }
-
-//____________________________________________
-QSize NavigationFrame::sizeHint( void ) const
-{ return (defaultWidth_ ) >= 0 ? QSize( defaultWidth_, 0 ):QWidget::sizeHint(); }
-
-//______________________________________________________________________
 void NavigationFrame::_installActions( void )
 {
 
