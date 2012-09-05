@@ -165,7 +165,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
 
     layout->addWidget( new FilePermissionsWidget( box, file.permissions() ) );
 
-    // group and user id
+    // group and user
     if( file.exists() )
     {
 
@@ -179,7 +179,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
         layout->addItem( gridLayout );
 
         // user id
-        gridLayout->addWidget( label = new QLabel( "User:", box ) );
+        gridLayout->addWidget( label = new QLabel( "Owner:", box ) );
         gridLayout->addWidget( label = new QLabel( file.userName(), box ) );
 
         // group id
