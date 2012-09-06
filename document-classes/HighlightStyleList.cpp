@@ -22,11 +22,11 @@
 *******************************************************************************/
 
 /*!
-  \file HighlightStyleList.h
-  \brief List box for HighlightStyles
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file HighlightStyleList.h
+\brief List box for HighlightStyles
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QHeaderView>
@@ -44,51 +44,51 @@
 
 //____________________________________________________
 HighlightStyleList::HighlightStyleList( QWidget* parent ):
-  QGroupBox( "Highlight styles", parent ),
-  Counter( "HighlightStyleList" )
+QGroupBox( "Highlight styles", parent ),
+Counter( "HighlightStyleList" )
 {
-  Debug::Throw( "HighlightStyleList::HighlightStyleList.\n" );
+    Debug::Throw( "HighlightStyleList::HighlightStyleList.\n" );
 
-  QHBoxLayout* hLayout;
-  hLayout = new QHBoxLayout();
-  hLayout->setSpacing(5);
-  hLayout->setMargin(5);
-  setLayout( hLayout );
+    QHBoxLayout* hLayout;
+    hLayout = new QHBoxLayout();
+    hLayout->setSpacing(5);
+    hLayout->setMargin(5);
+    setLayout( hLayout );
 
 
-  hLayout->addWidget( list_ = new TreeView( this ), 1 );
-  list_->setModel( &model_ );
-  list_->setSortingEnabled( true );
-  list_->setAllColumnsShowFocus( true );
+    hLayout->addWidget( list_ = new TreeView( this ), 1 );
+    list_->setModel( &model_ );
+    list_->setSortingEnabled( true );
+    list_->setAllColumnsShowFocus( true );
 
-  connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
-  connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _edit() ) );
+    connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
+    connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _edit() ) );
 
-  connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
-  connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
+    connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
+    connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
 
-  QVBoxLayout* vLayout = new QVBoxLayout();
-  vLayout->setSpacing(5);
-  vLayout->setMargin(0);
-  hLayout->addLayout( vLayout );
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    vLayout->setSpacing(5);
+    vLayout->setMargin(0);
+    hLayout->addLayout( vLayout );
 
-  QPushButton* button;
-  vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
-  button->setToolTip( "Add a new highlight style to the list" );
-  connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
+    QPushButton* button;
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
+    button->setToolTip( "Add a new highlight style to the list" );
+    connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
 
-  vLayout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
-  remove_button_->setToolTip( "Remove selected highlight style" );
-  remove_button_->setShortcut( QKeySequence::Delete );
-  connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
+    vLayout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
+    remove_button_->setToolTip( "Remove selected highlight style" );
+    remove_button_->setShortcut( QKeySequence::Delete );
+    connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
 
-  vLayout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "Edit", this ) );
-  edit_button_->setToolTip( "Edit selected highlight style" );
-  connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
+    vLayout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "Edit", this ) );
+    edit_button_->setToolTip( "Edit selected highlight style" );
+    connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
-  vLayout->addStretch();
+    vLayout->addStretch();
 
-  _updateButtons();
+    _updateButtons();
 
 }
 
@@ -103,109 +103,105 @@ HighlightStyle::Set HighlightStyleList::styles( void )
 //____________________________________________________
 void HighlightStyleList::_updateButtons( void )
 {
-  Debug::Throw( "HighlightStyleList::_updateButtons.\n" );
-  bool has_selection( !list_->selectionModel()->selectedRows().empty() );
-  edit_button_->setEnabled( has_selection );
-  remove_button_->setEnabled( has_selection );
+    Debug::Throw( "HighlightStyleList::_updateButtons.\n" );
+    bool hasSelection( !list_->selectionModel()->selectedRows().empty() );
+    edit_button_->setEnabled( hasSelection );
+    remove_button_->setEnabled( hasSelection );
 }
 
 //____________________________________________________
 void HighlightStyleList::_add( void )
 {
-  Debug::Throw( "HighlightStyleList::_add.\n" );
+    Debug::Throw( "HighlightStyleList::_add.\n" );
 
-  // get set of highlight styles to ensure name unicity
-  HighlightStyleModel::List styles( model_.get() );
+    // get set of highlight styles to ensure name unicity
+    HighlightStyleModel::List styles( model_.get() );
 
-  HighlightStyleDialog dialog( this );
-  while( 1 )
-  {
-    if( dialog.exec() == QDialog::Rejected ) return;
-    HighlightStyle style( dialog.style() );
-    if( style.name().isEmpty() || std::find( styles.begin(), styles.end(), style ) != styles.end() )
+    HighlightStyleDialog dialog( this );
+    while( 1 )
     {
-      InformationDialog( this, "Invalid pattern name" ).exec();
-    } else {
-      model_.add( style );
-      emit modified();
-      break;
+        if( dialog.exec() == QDialog::Rejected ) return;
+        HighlightStyle style( dialog.style() );
+        if( style.name().isEmpty() || std::find( styles.begin(), styles.end(), style ) != styles.end() )
+        {
+            InformationDialog( this, "Invalid pattern name" ).exec();
+        } else {
+            model_.add( style );
+            emit modified();
+            break;
+        }
     }
-  }
 
 }
 
 //____________________________________________________
 void HighlightStyleList::_edit( void )
 {
-  Debug::Throw( "HighlightStyleList::_edit.\n" );
+    Debug::Throw( "HighlightStyleList::_edit.\n" );
 
-  // retrieve selected items;
-  QModelIndexList selection( list_->selectionModel()->selectedRows() );
-  if( selection.empty() ) {
-    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
-    return;
-  }
-
-  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); ++iter )
-  {
-
-    HighlightStyle old_style( model_.get( *iter ) );
-
-    HighlightStyleDialog dialog( this );
-    dialog.setStyle( old_style );
-    if( dialog.exec() == QDialog::Rejected ) continue;
-
-    HighlightStyle style( dialog.style() );
-    if( !( style == old_style ) )
-    {
-      model_.replace( *iter, style );
-      emit modified();
+    // retrieve selected items;
+    QModelIndexList selection( list_->selectionModel()->selectedRows() );
+    if( selection.empty() ) {
+        InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
+        return;
     }
 
-  }
+    for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); ++iter )
+    {
+
+        HighlightStyle old_style( model_.get( *iter ) );
+
+        HighlightStyleDialog dialog( this );
+        dialog.setStyle( old_style );
+        if( dialog.exec() == QDialog::Rejected ) continue;
+
+        HighlightStyle style( dialog.style() );
+        if( !( style == old_style ) )
+        {
+            model_.replace( *iter, style );
+            emit modified();
+        }
+
+    }
 
 }
 
 //____________________________________________________
 void HighlightStyleList::_remove( void )
 {
-  Debug::Throw( "HighlightStyleList::_remove.\n" );
+    Debug::Throw( "HighlightStyleList::_remove.\n" );
 
-  // retrieve selected items; make sure they do not include the navigator
-  HighlightStyleModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
-  if( selection.empty() ) {
-    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
-    return;
-  }
+    // retrieve selected items; make sure they do not include the navigator
+    HighlightStyleModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    if( selection.empty() ) {
+        InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
+        return;
+    }
 
-  // ask for confirmation
-  QString buffer;
-  QTextStream what( &buffer );
-  what << "Remove selected item";
-  if( selection.size()>1 ) what << "S";
-  what << " ?";
-  if( !QuestionDialog( this, buffer ).exec() ) return;
+    // ask for confirmation
+    QString buffer;
+    QTextStream what( &buffer );
+    what << "Remove selected item";
+    if( selection.size()>1 ) what << "S";
+    what << " ?";
+    if( !QuestionDialog( this, buffer ).exec() ) return;
 
-  // remove items
-  model_.remove( selection );
-  emit modified();
+    // remove items
+    model_.remove( selection );
+    emit modified();
 
 }
 
 //________________________________________
 void HighlightStyleList::_storeSelection( void )
 {
-  // clear
-  model_.clearSelectedIndexes();
 
-  // retrieve selected indexes in list
-  QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
-  {
-    // check column
-    if( !iter->column() == 0 ) continue;
-    model_.setIndexSelected( *iter, true );
-  }
+    // clear
+    model_.clearSelectedIndexes();
+
+    // retrieve selected indexes in list
+    foreach( const QModelIndex& index, list_->selectionModel()->selectedRows() )
+    { model_.setIndexSelected( index, true ); }
 
 }
 
@@ -213,16 +209,11 @@ void HighlightStyleList::_storeSelection( void )
 void HighlightStyleList::_restoreSelection( void )
 {
 
-  // retrieve indexes
-  QModelIndexList selected_indexes( model_.selectedIndexes() );
-  if( selected_indexes.empty() ) list_->selectionModel()->clear();
-  else {
+    QModelIndexList selection( model_.selectedIndexes() );
+    list_->selectionModel()->clearSelection();
 
-    list_->selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
-    { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+    foreach( const QModelIndex& index, selection )
+    { list_->selectionModel()->select( index, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
-  }
-
-  return;
+    return;
 }

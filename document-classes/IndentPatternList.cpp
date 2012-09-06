@@ -220,17 +220,13 @@ void IndentPatternList::_remove( void )
 //________________________________________
 void IndentPatternList::_storeSelection( void )
 {
+
     // clear
     model_.clearSelectedIndexes();
 
     // retrieve selected indexes in list
-    QModelIndexList selectedIndexes( list_->selectionModel()->selectedRows() );
-    for( QModelIndexList::iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); ++iter )
-    {
-        // check column
-        if( !iter->column() == 0 ) continue;
-        model_.setIndexSelected( *iter, true );
-    }
+    foreach( const QModelIndex& index, list_->selectionModel()->selectedRows() )
+    { model_.setIndexSelected( index, true ); }
 
 }
 
@@ -238,18 +234,12 @@ void IndentPatternList::_storeSelection( void )
 void IndentPatternList::_restoreSelection( void )
 {
 
-    // retrieve indexes
-    QModelIndexList selectedIndexes( model_.selectedIndexes() );
-    if( selectedIndexes.empty() ) list_->selectionModel()->clear();
-    else {
+    QModelIndexList selection( model_.selectedIndexes() );
+    list_->selectionModel()->clearSelection();
 
-        list_->selectionModel()->select( selectedIndexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-        for( QModelIndexList::const_iterator iter = selectedIndexes.begin(); iter != selectedIndexes.end(); ++iter )
-        { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+    foreach( const QModelIndex& index, selection )
+    { list_->selectionModel()->select( index, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
-    }
-
-    return;
 }
 
 

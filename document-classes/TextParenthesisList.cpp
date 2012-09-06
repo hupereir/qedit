@@ -22,11 +22,11 @@
 *******************************************************************************/
 
 /*!
-  \file TextParenthesisList.h
-  \brief List box for TextParenthesiss
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
+\file TextParenthesisList.h
+\brief List box for TextParenthesiss
+\author Hugo Pereira
+\version $Revision$
+\date $Date$
 */
 
 #include <QHeaderView>
@@ -44,52 +44,52 @@
 
 //____________________________________________________
 TextParenthesisList::TextParenthesisList( QWidget* parent ):
-  QGroupBox( "Parenthesis", parent ),
-  Counter( "TextParenthesisList" ),
-  modified_( false )
+QGroupBox( "Parenthesis", parent ),
+Counter( "TextParenthesisList" ),
+modified_( false )
 {
-  Debug::Throw( "TextParenthesisList::TextParenthesisList.\n" );
+    Debug::Throw( "TextParenthesisList::TextParenthesisList.\n" );
 
-  QHBoxLayout* hLayout;
-  hLayout = new QHBoxLayout();
-  hLayout->setSpacing(5);
-  hLayout->setMargin(5);
-  setLayout( hLayout );
+    QHBoxLayout* hLayout;
+    hLayout = new QHBoxLayout();
+    hLayout->setSpacing(5);
+    hLayout->setMargin(5);
+    setLayout( hLayout );
 
 
-  hLayout->addWidget( list_ = new TreeView( this ), 1 );
-  list_->setModel( &model_ );
-  list_->setSortingEnabled( false );
-  list_->setAllColumnsShowFocus( true );
+    hLayout->addWidget( list_ = new TreeView( this ), 1 );
+    list_->setModel( &model_ );
+    list_->setSortingEnabled( false );
+    list_->setAllColumnsShowFocus( true );
 
-  connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
-  connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _edit() ) );
+    connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
+    connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _edit() ) );
 
-  connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
-  connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
+    connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
+    connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
 
-  QVBoxLayout* vLayout = new QVBoxLayout();
-  vLayout->setSpacing(5);
-  vLayout->setMargin(0);
-  hLayout->addLayout( vLayout );
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    vLayout->setSpacing(5);
+    vLayout->setMargin(0);
+    hLayout->addLayout( vLayout );
 
-  QPushButton* button;
-  vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
-  button->setToolTip( "Add a new parenthesis to the list" );
-  connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
+    QPushButton* button;
+    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
+    button->setToolTip( "Add a new parenthesis to the list" );
+    connect( button, SIGNAL( clicked() ), SLOT( _add() ) );
 
-  vLayout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
-  remove_button_->setToolTip( "Remove selected parenthesis" );
-  remove_button_->setShortcut( QKeySequence::Delete );
-  connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
+    vLayout->addWidget( remove_button_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
+    remove_button_->setToolTip( "Remove selected parenthesis" );
+    remove_button_->setShortcut( QKeySequence::Delete );
+    connect( remove_button_, SIGNAL( clicked() ), SLOT( _remove() ) );
 
-  vLayout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "Edit", this ) );
-  edit_button_->setToolTip( "Edit selected parenthesis" );
-  connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
+    vLayout->addWidget( edit_button_ = new QPushButton( IconEngine::get( ICONS::EDIT ), "Edit", this ) );
+    edit_button_->setToolTip( "Edit selected parenthesis" );
+    connect( edit_button_, SIGNAL( clicked() ), SLOT( _edit() ) );
 
-  vLayout->addStretch();
+    vLayout->addStretch();
 
-  _updateButtons();
+    _updateButtons();
 
 }
 
@@ -97,10 +97,10 @@ TextParenthesisList::TextParenthesisList( QWidget* parent ):
 void TextParenthesisList::setParenthesis( const TextParenthesis::List& parenthesis )
 {
 
-  Debug::Throw( "TextParenthesisList::setParenthesis.\n" );
-  model_.set( parenthesis );
-  list_->resizeColumns();
-  modified_ = false;
+    Debug::Throw( "TextParenthesisList::setParenthesis.\n" );
+    model_.set( parenthesis );
+    list_->resizeColumns();
+    modified_ = false;
 
 }
 
@@ -108,103 +108,99 @@ void TextParenthesisList::setParenthesis( const TextParenthesis::List& parenthes
 TextParenthesis::List TextParenthesisList::parenthesis( void )
 {
 
-  Debug::Throw( "TextParenthesisList::parenthesis.\n" );
-  return model_.get();
+    Debug::Throw( "TextParenthesisList::parenthesis.\n" );
+    return model_.get();
 
 }
 
 //____________________________________________________
 void TextParenthesisList::_updateButtons( void )
 {
-  Debug::Throw( "TextParenthesisList::_updateButtons.\n" );
-  bool has_selection( !list_->selectionModel()->selectedRows().empty() );
-  edit_button_->setEnabled( has_selection );
-  remove_button_->setEnabled( has_selection );
+    Debug::Throw( "TextParenthesisList::_updateButtons.\n" );
+    bool hasSelection( !list_->selectionModel()->selectedRows().empty() );
+    edit_button_->setEnabled( hasSelection );
+    remove_button_->setEnabled( hasSelection );
 }
 
 //____________________________________________________
 void TextParenthesisList::_add( void )
 {
-  Debug::Throw( "TextParenthesisList::_add.\n" );
+    Debug::Throw( "TextParenthesisList::_add.\n" );
 
-  TextParenthesisDialog dialog( this );
-  if( dialog.exec() == QDialog::Rejected ) return;
-  model_.add( dialog.parenthesis() );
+    TextParenthesisDialog dialog( this );
+    if( dialog.exec() == QDialog::Rejected ) return;
+    model_.add( dialog.parenthesis() );
 
 }
 
 //____________________________________________________
 void TextParenthesisList::_edit( void )
 {
-  Debug::Throw( "TextParenthesisList::_edit.\n" );
+    Debug::Throw( "TextParenthesisList::_edit.\n" );
 
-  // retrieve selected items
-  QModelIndexList selection( list_->selectionModel()->selectedRows() );
-  if( selection.empty() ) {
-    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
-    return;
-  }
+    // retrieve selected items
+    QModelIndexList selection( list_->selectionModel()->selectedRows() );
+    if( selection.empty() ) {
+        InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
+        return;
+    }
 
-  TextParenthesisModel::List parenthesis( model_.get() );
-  for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); ++iter )
-  {
+    TextParenthesisModel::List parenthesis( model_.get() );
+    for( QModelIndexList::iterator iter = selection.begin(); iter != selection.end(); ++iter )
+    {
 
-    TextParenthesis old_parenthesis( model_.get( *iter ) );
+        TextParenthesis old_parenthesis( model_.get( *iter ) );
 
-    TextParenthesisDialog dialog( this );
-    dialog.setParenthesis( old_parenthesis );
-    if( dialog.exec() == QDialog::Rejected ) continue;
+        TextParenthesisDialog dialog( this );
+        dialog.setParenthesis( old_parenthesis );
+        if( dialog.exec() == QDialog::Rejected ) continue;
 
-    TextParenthesis parenthesis( dialog.parenthesis() );
-    if( parenthesis == old_parenthesis ) continue;
+        TextParenthesis parenthesis( dialog.parenthesis() );
+        if( parenthesis == old_parenthesis ) continue;
 
-    model_.replace( *iter, parenthesis );
-    modified_ = true;
+        model_.replace( *iter, parenthesis );
+        modified_ = true;
 
-  }
+    }
 
 }
 
 //____________________________________________________
 void TextParenthesisList::_remove( void )
 {
-  Debug::Throw( "TextParenthesisList::_remove.\n" );
+    Debug::Throw( "TextParenthesisList::_remove.\n" );
 
-  // retrieve selected items; make sure they do not include the navigator
-  TextParenthesisModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
-  if( selection.empty() ) {
-    InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
-    return;
-  }
+    // retrieve selected items; make sure they do not include the navigator
+    TextParenthesisModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    if( selection.empty() ) {
+        InformationDialog( this, "No item selected. <Remove> canceled." ).exec();
+        return;
+    }
 
-  // ask for confirmation
-  QString buffer;
-  QTextStream what( &buffer );
-  what << "Remove selected item";
-  if( selection.size()>1 ) what << "S";
-  what << " ?";
-  if( !QuestionDialog( this, buffer ).exec() ) return;
+    // ask for confirmation
+    QString buffer;
+    QTextStream what( &buffer );
+    what << "Remove selected item";
+    if( selection.size()>1 ) what << "S";
+    what << " ?";
+    if( !QuestionDialog( this, buffer ).exec() ) return;
 
-  // remove items
-  model_.remove( selection );
-  modified_ = true;
+    // remove items
+    model_.remove( selection );
+    modified_ = true;
 
 }
 
 //________________________________________
 void TextParenthesisList::_storeSelection( void )
 {
-  // clear
-  model_.clearSelectedIndexes();
 
-  // retrieve selected indexes in list
-  QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-  for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
-  {
-    // check column
-    if( !iter->column() == 0 ) continue;
-    model_.setIndexSelected( *iter, true );
-  }
+    // clear
+    model_.clearSelectedIndexes();
+
+    // retrieve selected indexes in list
+    foreach( const QModelIndex& index, list_->selectionModel()->selectedRows() )
+    { model_.setIndexSelected( index, true ); }
 
 }
 
@@ -212,16 +208,11 @@ void TextParenthesisList::_storeSelection( void )
 void TextParenthesisList::_restoreSelection( void )
 {
 
-  // retrieve indexes
-  QModelIndexList selected_indexes( model_.selectedIndexes() );
-  if( selected_indexes.empty() ) list_->selectionModel()->clear();
-  else {
+    QModelIndexList selection( model_.selectedIndexes() );
+    list_->selectionModel()->clearSelection();
 
-    list_->selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-    for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
-    { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+    foreach( const QModelIndex& index, selection )
+    { list_->selectionModel()->select( index, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
-  }
-
-  return;
+    return;
 }

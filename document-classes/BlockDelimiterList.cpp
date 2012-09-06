@@ -40,14 +40,14 @@ modified_( false )
 {
     Debug::Throw( "BlockDelimiterList::BlockDelimiterList.\n" );
 
-    QHBoxLayout* h_layout;
-    h_layout = new QHBoxLayout();
-    h_layout->setSpacing(5);
-    h_layout->setMargin(5);
-    setLayout( h_layout );
+    QHBoxLayout* hLayout;
+    hLayout = new QHBoxLayout();
+    hLayout->setSpacing(5);
+    hLayout->setMargin(5);
+    setLayout( hLayout );
 
 
-    h_layout->addWidget( list_ = new TreeView( this ), 1 );
+    hLayout->addWidget( list_ = new TreeView( this ), 1 );
     list_->setModel( &model_ );
     list_->setSortingEnabled( false );
     list_->setAllColumnsShowFocus( true );
@@ -61,7 +61,7 @@ modified_( false )
     QVBoxLayout* v_layout = new QVBoxLayout();
     v_layout->setSpacing(5);
     v_layout->setMargin(0);
-    h_layout->addLayout( v_layout );
+    hLayout->addLayout( v_layout );
 
     QPushButton* button;
     v_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
@@ -107,9 +107,9 @@ BlockDelimiter::List BlockDelimiterList::delimiters( void )
 void BlockDelimiterList::_updateButtons( void )
 {
     Debug::Throw( "BlockDelimiterList::_updateButtons.\n" );
-    bool has_selection( !list_->selectionModel()->selectedRows().empty() );
-    edit_button_->setEnabled( has_selection );
-    remove_button_->setEnabled( has_selection );
+    bool hasSelection( !list_->selectionModel()->selectedRows().empty() );
+    edit_button_->setEnabled( hasSelection );
+    remove_button_->setEnabled( hasSelection );
 }
 
 //____________________________________________________
@@ -184,17 +184,13 @@ void BlockDelimiterList::_remove( void )
 //________________________________________
 void BlockDelimiterList::_storeSelection( void )
 {
+
     // clear
     model_.clearSelectedIndexes();
 
     // retrieve selected indexes in list
-    QModelIndexList selected_indexes( list_->selectionModel()->selectedRows() );
-    for( QModelIndexList::iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
-    {
-        // check column
-        if( !iter->column() == 0 ) continue;
-        model_.setIndexSelected( *iter, true );
-    }
+    foreach( const QModelIndex& index, list_->selectionModel()->selectedRows() )
+    { model_.setIndexSelected( index, true ); }
 
 }
 
@@ -202,16 +198,11 @@ void BlockDelimiterList::_storeSelection( void )
 void BlockDelimiterList::_restoreSelection( void )
 {
 
-    // retrieve indexes
-    QModelIndexList selected_indexes( model_.selectedIndexes() );
-    if( selected_indexes.empty() ) list_->selectionModel()->clear();
-    else {
+    QModelIndexList selection( model_.selectedIndexes() );
+    list_->selectionModel()->clearSelection();
 
-        list_->selectionModel()->select( selected_indexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-        for( QModelIndexList::const_iterator iter = selected_indexes.begin(); iter != selected_indexes.end(); ++iter )
-        { list_->selectionModel()->select( *iter, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
-
-    }
+    foreach( const QModelIndex& index, selection )
+    { list_->selectionModel()->select( index, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     return;
 }

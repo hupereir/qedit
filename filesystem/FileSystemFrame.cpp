@@ -84,10 +84,10 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
     // file list
     layout->addWidget( list_ = new AnimatedTreeView( this ), 1);
-    _list().setModel( &_model() );
-    _list().setSelectionMode( QAbstractItemView::ContiguousSelection );
-    _list().setOptionName( "FILE_SYSTEM_LIST" );
-    _list().header()->hide();
+    list_->setModel( &model_ );
+    list_->setSelectionMode( QAbstractItemView::ContiguousSelection );
+    list_->setOptionName( "FILE_SYSTEM_LIST" );
+    list_->header()->hide();
 
     // list menu
     QMenu* menu( new ContextMenu( &_list() ) );
@@ -110,18 +110,18 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     menu->addSeparator();
     menu->addAction( &_filePropertiesAction() );
 
-    connect( &_list().transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
+    connect( &list_->transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
 
     // connections
-    connect( &_model(), SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
-    connect( _list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _updateActions() ) );
-    connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateActions() ) );
+    connect( &model_, SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
+    connect( list_->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _updateActions() ) );
+    connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateActions() ) );
     connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
 
     _updateNavigationActions();
 
-    connect( &_model(), SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
-    connect( &_model(), SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
+    connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
+    connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
 
     connect( &_fileSystemWatcher(), SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
     connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
@@ -144,11 +144,11 @@ void FileSystemFrame::setPath( File path, bool forced )
     path_ = path;
     history_.add( path );
 
-    if( _list().initializeAnimation() )
+    if( list_->initializeAnimation() )
     {
 
         _update();
-        _list().startAnimation();
+        list_->startAnimation();
 
     } else {
 
@@ -172,7 +172,7 @@ void FileSystemFrame::clear()
 {
 
     Debug::Throw( "FileSystemFrame::Clear.\n" );
-    _model().clear();
+    model_.clear();
 
 }
 
@@ -193,9 +193,9 @@ void FileSystemFrame::customEvent( QEvent* event )
     }
 
     // update model and list
-    _model().update( file_system_event->files() );
-    _list().updateMask();
-    _list().resizeColumnToContents( FileSystemModel::FILE );
+    model_.update( file_system_event->files() );
+    list_->updateMask();
+    list_->resizeColumnToContents( FileSystemModel::FILE );
 
     unsetCursor();
 
@@ -304,7 +304,7 @@ void FileSystemFrame::_update( void )
 void FileSystemFrame::_updateActions( void )
 {
     Debug::Throw( "FileSystemFrame:_updateActions.\n" );
-    FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+    FileSystemModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
 
     bool hasEditableSelection( false );
     bool hasRemovableSelection( false );
@@ -321,8 +321,8 @@ void FileSystemFrame::_updateActions( void )
     _openAction().setEnabled( hasEditableSelection );
     _removeAction().setEnabled( hasRemovableSelection );
 
-    QModelIndex index( _list().selectionModel()->currentIndex() );
-    bool has_valid_file( index.isValid() && !_model().get( index ).hasFlag( FileSystemModel::NAVIGATOR ) );
+    QModelIndex index( list_->selectionModel()->currentIndex() );
+    bool has_valid_file( index.isValid() && !model_.get( index ).hasFlag( FileSystemModel::NAVIGATOR ) );
     _filePropertiesAction().setEnabled( has_valid_file );
     _renameAction().setEnabled( has_valid_file );
 }
@@ -380,7 +380,7 @@ void FileSystemFrame::_open( void )
 {
 
     Debug::Throw( "FileSystemFrame:_open.\n" );
-    FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+    FileSystemModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     FileSystemModel::List validSelection;
     foreach( FileRecord record, selection )
     {
@@ -397,7 +397,7 @@ void FileSystemFrame::_remove( void )
     Debug::Throw( "FileSystemFrame::_remove.\n" );
 
     // get selection
-    FileSystemModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+    FileSystemModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     FileSystemModel::List validSelection;
     foreach( const FileRecord& record, selection )
     {
@@ -426,10 +426,10 @@ void FileSystemFrame::_rename( void )
 {
 
     Debug::Throw( "FileSystemFrame::_rename.\n" );
-    QModelIndex index( _list().selectionModel()->currentIndex() );
+    QModelIndex index( list_->selectionModel()->currentIndex() );
     if( !index.isValid() ) return;
 
-    FileRecord record( _model().get( index ) );
+    FileRecord record( model_.get( index ) );
     if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) return;
     RenameFileDialog dialog( this, record );
     if( !dialog.centerOnWidget( window() ).exec() ) return;
@@ -447,10 +447,10 @@ void FileSystemFrame::_fileProperties( void )
 {
 
     Debug::Throw( "FileSystemFrame::_fileProperties.\n" );
-    QModelIndex index( _list().selectionModel()->currentIndex() );
+    QModelIndex index( list_->selectionModel()->currentIndex() );
     if( !index.isValid() ) return;
 
-    FileRecord record( _model().get( index ) );
+    FileRecord record( model_.get( index ) );
     if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) return;
     if( !record.file().isAbsolute() ) { record.setFile( record.file().addPath( path() ) ); }
 
@@ -461,14 +461,13 @@ void FileSystemFrame::_fileProperties( void )
 //________________________________________
 void FileSystemFrame::_storeSelection( void )
 {
+
     // clear
-    _model().clearSelectedIndexes();
+    model_.clearSelectedIndexes();
 
     // retrieve selected indexes in list
-    foreach( const QModelIndex& index, _list().selectionModel()->selectedRows() )
-    { if( index.column() == 0 ) _model().setIndexSelected( index, true ); }
-
-    return;
+    foreach( const QModelIndex& index, list_->selectionModel()->selectedRows() )
+    { model_.setIndexSelected( index, true ); }
 
 }
 
@@ -476,16 +475,11 @@ void FileSystemFrame::_storeSelection( void )
 void FileSystemFrame::_restoreSelection( void )
 {
 
-    // retrieve indexes
-    QModelIndexList selectedIndexes( _model().selectedIndexes() );
-    if( selectedIndexes.empty() ) _list().selectionModel()->clear();
-    else {
+    QModelIndexList selection( model_.selectedIndexes() );
+    list_->selectionModel()->clearSelection();
 
-        _list().selectionModel()->select( selectedIndexes.front(),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
-        foreach( const QModelIndex& index, selectedIndexes )
-        { _list().selectionModel()->select( index, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
-
-    }
+    foreach( const QModelIndex& index, selection )
+    { list_->selectionModel()->select( index, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     return;
 }
