@@ -81,7 +81,7 @@ int main (int argc, char *argv[])
     Q_INIT_RESOURCE( patterns );
     Q_INIT_RESOURCE( pixmaps );
     QApplication application( argc, argv );
-    application.setApplicationName( "qedit" );
+    application.setApplicationName( "Qedit" );
     Application singleton( arguments );
     singleton.setUseFixedFonts( true );
     Singleton::get().setApplication( &singleton );

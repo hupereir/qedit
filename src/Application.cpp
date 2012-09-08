@@ -137,7 +137,7 @@ bool Application::realizeWidget( void )
     qApp->setQuitOnLastWindowClosed( false );
 
     // rename about action
-    aboutAction().setText( "About &qedit" );
+    aboutAction().setText( "About Qedit" );
 
     // need to modify closeAction signal for proper exit
     closeAction().disconnect();

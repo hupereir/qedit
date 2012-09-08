@@ -93,7 +93,7 @@ int main (int argc, char *argv[])
     application.setFont( font, "QLineEdit" );
     application.setFont( font, "QTextEdit" );
     application.setWindowIcon( QPixmap( XmlOptions::get().raw( "ICON_PIXMAP" ) ) );
-    application.setApplicationName( "qedit-edit-document-classes" );
+    application.setApplicationName( "Document Classes Editor - Qedit" );
 
     // dummy singleton object
     Singleton::get().setApplication( new QObject() );
