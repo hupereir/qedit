@@ -207,7 +207,16 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
     switch( type_ )
     {
 
-        case FILE: return first.file().localName() < second.file().localName();
+        case FILE:
+        {
+            if( first.hasFlag( NAVIGATOR ) ) return true;
+            if( second.hasFlag( NAVIGATOR ) ) return false;
+            if( first.hasFlag( FOLDER ) && second.hasFlag( DOCUMENT ) ) return true;
+            if( second.hasFlag( FOLDER ) && first.hasFlag( DOCUMENT ) ) return false;
+            return first.file().localName().compare( second.file().localName(), Qt::CaseInsensitive ) < 0;
+
+        }
+
         case TIME: return (first.time() != second.time() ) ? first.time() < second.time() : first.file().localName() < second.file().localName();
         case SIZE:
         {

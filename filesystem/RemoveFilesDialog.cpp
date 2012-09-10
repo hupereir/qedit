@@ -43,13 +43,13 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
     setOptionName( "REMOVE_FILES_DIALOG" );
 
     // customize buttons
-    okButton().setText( "Remove" );
+    okButton().setText( "Delete" );
     okButton().setIcon( IconEngine::get( ICONS::DELETE ) );
 
     // label
     QString buffer;
     QTextStream what( &buffer );
-    what << "Permanently remove ";
+    what << "Permanently delete ";
     if( files.size() == 1 ) what << "this item ?";
     else what << "these " << files.size() << " items ?";
     QLabel* textLabel( new QLabel( buffer, this ) );
@@ -72,13 +72,13 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
     model_.setShowIcons( false );
     model_.setUseLocalNames( false );
     model_.add( files );
-    model_.sort( FileSystemModel::FILE, Qt::AscendingOrder );
 
     // setup list
     _list().setModel( &model_ );
     _list().toggleShowHeader( false );
     _list().setMask( 1<<FileSystemModel::FILE );
-    _list().header()->setSortIndicator( FileSystemModel::FILE, Qt::DescendingOrder );
+    _list().setSortingEnabled( true );
+    _list().header()->setSortIndicator( FileSystemModel::FILE, Qt::AscendingOrder );
 
     // resize list to accomodate longest item
     int maxWidth( 0 );

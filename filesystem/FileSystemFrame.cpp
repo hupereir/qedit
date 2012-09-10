@@ -90,16 +90,11 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     list_->header()->hide();
 
     // list menu
+    // should move to proper _updateMenu method, and only show relevant actions
+    // also, should use baseFileInfo model
     QMenu* menu( new ContextMenu( &_list() ) );
     menu->addMenu( new ColumnSortingMenu( menu, &_list() ) );
     menu->addMenu( new ColumnSelectionMenu( menu, &_list() ) );
-    menu->addSeparator();
-    menu->addAction( &_previousDirectoryAction() );
-    menu->addAction( &_nextDirectoryAction() );
-    menu->addAction( &_parentDirectoryAction() );
-    menu->addAction( &_homeDirectoryAction() );
-    menu->addAction( &_reloadAction() );
-
     menu->addSeparator();
     menu->addAction( &_hiddenFilesAction() );
     menu->addSeparator();
@@ -304,14 +299,14 @@ void FileSystemFrame::_update( void )
 void FileSystemFrame::_updateActions( void )
 {
     Debug::Throw( "FileSystemFrame:_updateActions.\n" );
-    FileSystemModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    FileRecord::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
 
     bool hasEditableSelection( false );
     bool hasRemovableSelection( false );
-    for( FileSystemModel::List::const_iterator iter = selection.begin(); iter != selection.end(); ++iter )
+    foreach( const FileRecord& record, selection )
     {
-        if( !iter->hasFlag( FileSystemModel::NAVIGATOR ) ) hasRemovableSelection = true;
-        if( iter->hasFlag( FileSystemModel::DOCUMENT ) )
+        if( !record.hasFlag( FileSystemModel::NAVIGATOR ) ) hasRemovableSelection = true;
+        if( record.hasFlag( FileSystemModel::DOCUMENT ) )
         {
             hasEditableSelection = true;
             break;
@@ -322,9 +317,9 @@ void FileSystemFrame::_updateActions( void )
     _removeAction().setEnabled( hasRemovableSelection );
 
     QModelIndex index( list_->selectionModel()->currentIndex() );
-    bool has_valid_file( index.isValid() && !model_.get( index ).hasFlag( FileSystemModel::NAVIGATOR ) );
-    _filePropertiesAction().setEnabled( has_valid_file );
-    _renameAction().setEnabled( has_valid_file );
+    bool hasValidFile( selection.size() == 1 && index.isValid() && !model_.get( index ).hasFlag( FileSystemModel::NAVIGATOR ) );
+    _filePropertiesAction().setEnabled( hasValidFile );
+    _renameAction().setEnabled( hasValidFile );
 }
 
 //______________________________________________________
@@ -382,10 +377,15 @@ void FileSystemFrame::_open( void )
     Debug::Throw( "FileSystemFrame:_open.\n" );
     FileSystemModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     FileSystemModel::List validSelection;
-    foreach( FileRecord record, selection )
+    foreach( const FileRecord& record, selection )
     {
         if( record.hasFlag( FileSystemModel::DOCUMENT ) )
-        { emit fileActivated( record.setFile( record.file().addPath( path() ) ) ); }
+        {
+            FileRecord copy( record );
+            copy.setFile( record.file().addPath( path() ) );
+            emit fileActivated( copy );
+        }
+
     }
 
 }
@@ -410,7 +410,7 @@ void FileSystemFrame::_remove( void )
 
     if( validSelection.empty() ) return;
     RemoveFilesDialog dialog( this, validSelection );
-    dialog.setWindowTitle( "Remove files - Qedit" );
+    dialog.setWindowTitle( "Delete Files - Qedit" );
     if( !dialog.exec() ) return;
 
     // loop over selected files and remove
@@ -432,6 +432,7 @@ void FileSystemFrame::_rename( void )
     FileRecord record( model_.get( index ) );
     if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) return;
     RenameFileDialog dialog( this, record );
+    dialog.setWindowTitle( "Rename Item - Qedit" );
     if( !dialog.centerOnWidget( window() ).exec() ) return;
 
     File new_file( dialog.file() );
@@ -548,10 +549,9 @@ void FileSystemFrame::_installActions( void )
     _openAction().setToolTip( "Edit selected files" );
 
     // remove
-    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::DELETE ), "Remove", this ) );
+    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::DELETE ), "Delete", this ) );
     connect( &_removeAction(), SIGNAL( triggered() ), SLOT( _remove() ) );
     _removeAction().setShortcut( QKeySequence::Delete );
-    _removeAction().setToolTip( "Remove selected files locally" );
 
     // rename
     addAction( renameAction_ = new QAction( IconEngine::get( ICONS::RENAME ), "Rename", this ) );
