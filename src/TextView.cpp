@@ -256,7 +256,6 @@ void TextView::closeDisplay( TextDisplay& display )
             }
         }
         assert( child );
-        Debug::Throw( "TextView::closeDisplay - found child.\n" );
 
         // retrieve splitter parent
         QWidget* grand_parent( parentSplitter->parentWidget() );
@@ -293,7 +292,6 @@ void TextView::closeDisplay( TextDisplay& display )
     }
 
     // if no associated displays, retrieve all, set the first as active
-    Debug::Throw( "TextView::closeDisplay - changing focus.\n" );
     if( displays.empty() ) displays = BASE::KeySet<TextDisplay>( this );
     BASE::KeySetIterator<TextDisplay> iterator( displays );
     iterator.toBack();
@@ -308,7 +306,6 @@ void TextView::closeDisplay( TextDisplay& display )
         }
     }
 
-    Debug::Throw( "TextView::closeDisplay - done.\n" );
 
 }
 

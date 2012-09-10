@@ -94,12 +94,6 @@ class SessionFilesFrame: public QWidget, public Counter
     //! signal emitted when file is asked to be saved
     void filesSaved( FileRecord::List );
 
-    protected:
-
-    //! model
-    SessionFilesModel& _model( void )
-    { return model_; }
-
     private slots:
 
     //! previous file

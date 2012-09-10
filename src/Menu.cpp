@@ -399,13 +399,13 @@ void Menu::_selectFile( QAction* action )
     BASE::KeySet<MainWindow> windows( &Singleton::get().application<Application>()->windowServer() );
 
     // retrieve window matching file name
-    BASE::KeySet<MainWindow>::iterator window_iter( std::find_if(
+    BASE::KeySet<MainWindow>::iterator windowIter( std::find_if(
         windows.begin(),
         windows.end(),
         MainWindow::SameFileFTor( iter.value() ) ) );
 
     // check if window was found
-    if( window_iter == windows.end() )
+    if( windowIter == windows.end() )
     {
         QString buffer;
         QTextStream( &buffer ) << "Unable to find a window containing file " << iter.value();
@@ -414,8 +414,8 @@ void Menu::_selectFile( QAction* action )
     }
 
     // select display in found window
-    (*window_iter)->selectDisplay( iter.value() );
-    (*window_iter)->uniconify();
+    (*windowIter)->selectDisplay( iter.value() );
+    (*windowIter)->uniconify();
 
     return;
 }

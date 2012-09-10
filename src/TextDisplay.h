@@ -55,6 +55,7 @@
 #endif
 
 #include <QtCore/QRegExp>
+#include <QtCore/QTimer>
 #include <QtGui/QAction>
 
 // forward declaration
@@ -466,6 +467,10 @@ class TextDisplay: public AnimatedTextEditor
 
     //! select class name
     void selectClassName( QString );
+
+    //! set focus, delayed
+    void setFocusDelayed( void )
+    { QTimer::singleShot( 0, this, SLOT( setFocus( void ) ) ); }
 
     protected:
 

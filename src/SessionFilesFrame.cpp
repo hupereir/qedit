@@ -54,9 +54,9 @@ Counter( "SessionFilesFrame" )
     layout()->setSpacing(2);
 
     // list
-    _model().setDragEnabled( true );
+    model_.setDragEnabled( true );
     layout()->addWidget( list_ = new TreeView( this ) );
-    list().setModel( &_model() );
+    list().setModel( &model_ );
     list().setOptionName( "SESSION_FILES" );
     list().header()->hide();
     list().setDragEnabled( true );
@@ -83,7 +83,7 @@ Counter( "SessionFilesFrame" )
     menu->addAction( &nextFileAction() );
 
     // connections
-    connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
+    connect( &model_, SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
     connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions() ) );
     connect( list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
     connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
@@ -101,7 +101,7 @@ void SessionFilesFrame::select( const File& file )
     Debug::Throw() << "SessionFilesFrame::select - file: " << file << ".\n";
 
     // find model index that match the file
-    QModelIndex index( _model().index( FileRecord( file ) ) );
+    QModelIndex index( model_.index( FileRecord( file ) ) );
 
     // check if index is valid and not selected
     if( !index.isValid() ) return;
@@ -122,12 +122,8 @@ void SessionFilesFrame::update( void )
     Debug::Throw( "SessionFilesFrame:update.\n" );
 
     // store in model
-    FileRecord::List records( Singleton::get().application<Application>()->windowServer().records( false, window() ) );
-
-    FileRecordModel::List listRecords;
-    foreach( const FileRecord& record, records )
-    { listRecords.push_back( record ); }
-    _model().update( listRecords );
+    const FileRecord::List records( Singleton::get().application<Application>()->windowServer().records( false, window() ) );
+    model_.update( records );
 
     list().updateMask();
     list().resizeColumns();
@@ -147,10 +143,10 @@ void SessionFilesFrame::_updateActions( void )
     Debug::Throw( "SessionFilesFrame:_updateActions.\n" );
 
     // get number of entries in model
-    int counts( _model().rowCount() );
+    int counts( model_.rowCount() );
 
     // get selected files
-    SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
+    SessionFilesModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
     bool hasSelection( !selection.empty() );
 
     _openAction().setEnabled( hasSelection );
@@ -169,7 +165,7 @@ void SessionFilesFrame::_selectPreviousFile( void )
     Debug::Throw( "SessionFilesFrame:_selectPreviousFile.\n" );
 
     // check counts
-    int counts( _model().rowCount() );
+    int counts( model_.rowCount() );
     if( counts < 2 ) return;
 
     // get current index
@@ -178,13 +174,13 @@ void SessionFilesFrame::_selectPreviousFile( void )
 
     // get previous
     QModelIndex index( current_index );
-    while( (index = _model().index( index.row()-1, current_index.column())).isValid() )
+    while( (index = model_.index( index.row()-1, current_index.column())).isValid() )
     {
-        FileRecord record( _model().get( index ) );
+        FileRecord record( model_.get( index ) );
         if( record.hasFlag( FileRecordProperties::ACTIVE ) ) break;
     }
 
-    if( !index.isValid() ) index = _model().index( counts-1, current_index.column() );
+    if( !index.isValid() ) index = model_.index( counts-1, current_index.column() );
     if( (!index.isValid()) || index == current_index ) return;
 
     // select new index
@@ -200,7 +196,7 @@ void SessionFilesFrame::_selectNextFile( void )
     Debug::Throw( "SessionFilesFrame:_selectNextFile.\n" );
 
     // check counts
-    int counts( _model().rowCount() );
+    int counts( model_.rowCount() );
     if( counts < 2 ) return;
 
     // get current index
@@ -209,13 +205,13 @@ void SessionFilesFrame::_selectNextFile( void )
 
     // get previous
     QModelIndex index( current_index );
-    while( (index = _model().index( index.row()+1, current_index.column())).isValid() )
+    while( (index = model_.index( index.row()+1, current_index.column())).isValid() )
     {
-        FileRecord record( _model().get( index ) );
+        FileRecord record( model_.get( index ) );
         if( record.hasFlag( FileRecordProperties::ACTIVE ) ) break;
     }
 
-    if( !index.isValid() ) index = _model().index( 0, current_index.column() );
+    if( !index.isValid() ) index = model_.index( 0, current_index.column() );
     if( (!index.isValid()) || index == current_index ) return;
 
     // select new index
@@ -228,7 +224,7 @@ void SessionFilesFrame::_open( void )
 {
 
     Debug::Throw( "SessionFilesFrame:_open.\n" );
-    foreach( const FileRecord& record, _model().get( list().selectionModel()->selectedRows() ) )
+    foreach( const FileRecord& record, model_.get( list().selectionModel()->selectedRows() ) )
     { emit fileActivated( record ); }
 
 }
@@ -240,7 +236,7 @@ void SessionFilesFrame::_save( void )
     Debug::Throw( "SessionFilesFrame:_save.\n" );
 
     FileRecord::List modifiedRecords;
-    foreach( const FileRecord& record, _model().get( list().selectionModel()->selectedRows() ) )
+    foreach( const FileRecord& record, model_.get( list().selectionModel()->selectedRows() ) )
     { if( record.hasFlag( FileRecordProperties::MODIFIED ) ) modifiedRecords << record; }
 
     if( !modifiedRecords.empty() ) emit filesSaved( modifiedRecords );
@@ -253,7 +249,7 @@ void SessionFilesFrame::_close( void )
 {
 
     Debug::Throw( "SessionFilesFrame:_close.\n" );
-    SessionFilesModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
+    SessionFilesModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
     if( !selection.empty() )
     {
       FileRecord::List records;
@@ -265,13 +261,7 @@ void SessionFilesFrame::_close( void )
 
 //______________________________________________________________________
 void SessionFilesFrame::_itemSelected( const QModelIndex& index )
-{
-
-    Debug::Throw( "SessionFilesFrame::_itemSelected.\n" );
-    if( !( index.isValid() ) ) return;
-    emit fileSelected( _model().get( index ) );
-
-}
+{ if( index.isValid() ) emit fileSelected( model_.get( index ) ); }
 
 //______________________________________________________________________
 void SessionFilesFrame::_itemActivated( const QModelIndex& index )
@@ -279,7 +269,7 @@ void SessionFilesFrame::_itemActivated( const QModelIndex& index )
 
     Debug::Throw( "SessionFilesFrame::_itemActivated.\n" );
     if( !index.isValid() ) return;
-    emit fileActivated( _model().get( index ) );
+    emit fileActivated( model_.get( index ) );
 
 }
 

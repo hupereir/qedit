@@ -226,7 +226,7 @@ void MainWindow::setActiveView( TextView& view )
 
     // store active view
     activeView_ = &view;
-    activeView().activeDisplay().setFocus();
+    activeView().activeDisplay().setFocusDelayed();
 
     // update stack if needed
     if( _stack().currentWidget() !=  &activeView() )
