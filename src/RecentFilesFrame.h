@@ -44,10 +44,10 @@ class RecentFilesFrame: public QWidget, public Counter
     //! Qt meta object declaration
     Q_OBJECT
 
-        public:
+    public:
 
-        //! creator
-        RecentFilesFrame( QWidget* parent, FileList&  );
+    //! creator
+    RecentFilesFrame( QWidget* parent, FileList&  );
 
     //! destructor
     ~RecentFilesFrame( void );
