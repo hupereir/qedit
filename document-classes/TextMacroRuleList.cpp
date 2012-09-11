@@ -205,16 +205,7 @@ void TextMacroRuleList::_remove( void )
 
 //________________________________________
 void TextMacroRuleList::_storeSelection( void )
-{
-
-    // clear
-    model_.clearSelectedIndexes();
-
-    // retrieve selected indexes in list
-    foreach( const QModelIndex& index, list_->selectionModel()->selectedRows() )
-    { model_.setIndexSelected( index, true ); }
-
-}
+{ model_.setSelectedIndexes( list_->selectionModel()->selectedRows() ); }
 
 //________________________________________
 void TextMacroRuleList::_restoreSelection( void )

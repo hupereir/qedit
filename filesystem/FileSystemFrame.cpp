@@ -461,22 +461,14 @@ void FileSystemFrame::_fileProperties( void )
 
 //________________________________________
 void FileSystemFrame::_storeSelection( void )
-{
+{ model_.setSelectedIndexes( list_->selectionModel()->selectedRows() ); }
 
-    // clear
-    model_.clearSelectedIndexes();
-
-    // retrieve selected indexes in list
-    foreach( const QModelIndex& index, list_->selectionModel()->selectedRows() )
-    { model_.setIndexSelected( index, true ); }
-
-}
 
 //________________________________________
 void FileSystemFrame::_restoreSelection( void )
 {
 
-    QModelIndexList selection( model_.selectedIndexes() );
+    const QModelIndexList selection( model_.selectedIndexes() );
     list_->selectionModel()->clearSelection();
 
     foreach( const QModelIndex& index, selection )

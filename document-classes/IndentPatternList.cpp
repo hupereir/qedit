@@ -219,22 +219,13 @@ void IndentPatternList::_remove( void )
 
 //________________________________________
 void IndentPatternList::_storeSelection( void )
-{
-
-    // clear
-    model_.clearSelectedIndexes();
-
-    // retrieve selected indexes in list
-    foreach( const QModelIndex& index, list_->selectionModel()->selectedRows() )
-    { model_.setIndexSelected( index, true ); }
-
-}
+{ model_.setSelectedIndexes( list_->selectionModel()->selectedRows() ); }
 
 //________________________________________
 void IndentPatternList::_restoreSelection( void )
 {
 
-    QModelIndexList selection( model_.selectedIndexes() );
+    const QModelIndexList selection( model_.selectedIndexes() );
     list_->selectionModel()->clearSelection();
 
     foreach( const QModelIndex& index, selection )
