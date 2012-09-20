@@ -20,32 +20,20 @@
 *
 *******************************************************************************/
 
-/*!
-\file qedit.cpp
-\brief main
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QApplication>
-#include <QPixmap>
-
-#include <unistd.h>
-#include <signal.h>
-
-
 #include "Debug.h"
 #include "DefaultOptions.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassManagerDialog.h"
-#include "FlatStyle.h"
+#include "ErrorHandler.h"
 #include "Singleton.h"
 #include "SystemOptions.h"
-#include "ErrorHandler.h"
 #include "XmlOptions.h"
 
+#include <QtGui/QApplication>
+#include <QtGui/QPixmap>
 
+#include <unistd.h>
+#include <signal.h>
 
 //_______________________________
 //! handles keyboard interruptions
@@ -80,9 +68,6 @@ int main (int argc, char *argv[])
     Q_INIT_RESOURCE( patterns );
     Q_INIT_RESOURCE( pixmaps );
     QApplication application( argc, argv );
-
-    // options
-    if( XmlOptions::get().get<bool>( "USE_FLAT_THEME" ) ) application.setStyle( new FlatStyle() );
 
     // set fonts
     QFont font;

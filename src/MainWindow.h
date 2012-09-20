@@ -35,14 +35,14 @@
 
 #include <QtGui/QAction>
 #include <QtGui/QCloseEvent>
+#include <QtGui/QLabel>
 #include <QtGui/QSplitter>
 #include <QtGui/QStackedWidget>
 
-class QLabel;
+class BaseStatusBar;
 class DocumentClassToolBar;
 class Menu;
 class NavigationFrame;
-class StatusBar;
 
 class BaseFindDialog;
 class ReplaceDialog;
@@ -581,7 +581,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     bool _hasStatusBar( void ) const
     { return bool( statusbar_ ); }
 
-    StatusBar& _statusBar( void ) const
+    BaseStatusBar& _statusBar( void ) const
     { return *statusbar_; }
 
     //! document class toolbar
@@ -633,7 +633,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     TextView* activeView_;
 
     //! state window
-    StatusBar* statusbar_;
+    BaseStatusBar* statusbar_;
 
     //! file display lineEdit
     QLabel* fileEditor_;

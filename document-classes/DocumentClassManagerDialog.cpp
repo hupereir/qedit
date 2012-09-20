@@ -20,24 +20,13 @@
 *
 *******************************************************************************/
 
-/*!
-\file DocumentClassManagerDialog.cpp
-\brief list document classes
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
+#include "DocumentClassManagerDialog.h"
 
-#include <QLabel>
-#include <QLayout>
-#include <QMenuBar>
-#include <QMenu>
-
+#include "BaseStatusBar.h"
 #include "CustomToolBar.h"
 #include "Debug.h"
 #include "DocumentClass.h"
 #include "DocumentClassIcons.h"
-#include "DocumentClassManagerDialog.h"
 #include "DocumentClassModifiedDialog.h"
 #include "DocumentClassDialog.h"
 #include "FileDialog.h"
@@ -46,10 +35,12 @@
 #include "Options.h"
 #include "PixmapEngine.h"
 #include "QuestionDialog.h"
-#include "StatusBar.h"
 #include "TreeView.h"
 
-
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QMenuBar>
+#include <QtGui/QMenu>
 
 //______________________________________________________________
 DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, const DocumentClassManager& manager ):
@@ -71,7 +62,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent, const D
     // menu
     _installMenuBar();
 
-    StatusBar *statusbar = new StatusBar( this );
+    BaseStatusBar *statusbar = new BaseStatusBar( this );
     setStatusBar( statusbar );
     statusbar->addLabel(1);
     statusbar->addClock();

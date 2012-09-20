@@ -26,6 +26,7 @@
 #include "AnimatedLineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
+#include "BaseStatusBar.h"
 #include "BlockDelimiterDisplay.h"
 #include "ClockLabel.h"
 #include "Config.h"
@@ -64,7 +65,6 @@
 #include "SelectLineDialog.h"
 #include "SessionFilesFrame.h"
 #include "Singleton.h"
-#include "StatusBar.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
@@ -155,7 +155,7 @@ MainWindow::MainWindow(  QWidget* parent ):
     connect( splitter, SIGNAL( splitterMoved( int, int ) ), SLOT( _splitterMoved( void ) ) );
 
     // state frame
-    setStatusBar( statusbar_ = new StatusBar( this ) );
+    setStatusBar( statusbar_ = new BaseStatusBar( this ) );
 
     // create "Hidden" line editor to display filename
     statusbar_->addPermanentWidget( fileEditor_ = new QLabel( statusbar_ ), 1 );
