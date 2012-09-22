@@ -52,11 +52,11 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
     //! file types
     enum FileType
     {
-        DOCUMENT = 1<<0,
-        FOLDER = 1<<1,
+        Document = 1<<0,
+        Folder = 1<<1,
         LINK = 1<<2,
-        NAVIGATOR = 1<<3,
-        ANY = DOCUMENT | FOLDER | LINK | NAVIGATOR
+        Navigator = 1<<3,
+        ANY = Document | Folder | LINK | Navigator
     };
 
     //! number of columns

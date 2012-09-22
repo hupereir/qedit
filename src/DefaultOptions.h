@@ -138,11 +138,11 @@ void installDefaultOptions( void )
     // default value for autosave directory
     XmlOptions::get().setRaw( "AUTOSAVE_PATH", Util::tmp() );
 
-    XmlOptions::get().set( "USER_NAME", Option( Util::user(), Option::NONE ) );
-    XmlOptions::get().set( "APP_NAME", Option( "QEDIT", Option::NONE ) );
-    XmlOptions::get().set( "HELP_FILE", Option( File( ".qedit_help").addPath(Util::home()), Option::NONE ) );
-    XmlOptions::get().set( "DB_FILE", Option( File(".qedit_db").addPath(Util::home()), Option::NONE ) );
-    XmlOptions::get().set( "RC_FILE", Option(  File(".qeditrc").addPath(Util::home()), Option::NONE ) );
+    XmlOptions::get().set( "USER_NAME", Option( Util::user(), Option::None ) );
+    XmlOptions::get().set( "APP_NAME", Option( "QEDIT", Option::None ) );
+    XmlOptions::get().set( "HELP_FILE", Option( File( ".qedit_help").addPath(Util::home()), Option::None ) );
+    XmlOptions::get().set( "DB_FILE", Option( File(".qedit_db").addPath(Util::home()), Option::None ) );
+    XmlOptions::get().set( "RC_FILE", Option(  File(".qeditrc").addPath(Util::home()), Option::None ) );
     XmlOptions::get().setAutoDefault( false );
 
 };

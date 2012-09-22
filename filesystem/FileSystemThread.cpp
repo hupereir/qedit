@@ -60,12 +60,12 @@ void FileSystemThread::run( void )
 
     // add navigator
     FileRecord record( File("..") );
-    record.setFlags( FileSystemModel::NAVIGATOR );
+    record.setFlags( FileSystemModel::Navigator );
     newFiles.push_back( record );
 
     // loop over entries and add
-    unsigned int flags = File::NONE;
-    if( showHiddenFiles_ ) flags |= File::SHOW_HIDDEN;
+    unsigned int flags = File::None;
+    if( showHiddenFiles_ ) flags |= File::ShowHiddenFiles;
     foreach( const File& file, path_.listFiles( flags ) )
     {
 
@@ -79,7 +79,7 @@ void FileSystemThread::run( void )
         record.addProperty( sizePropertyId_, QString().setNum(file.fileSize()) );
 
         // assign type
-        record.setFlag( file.isDirectory() ? FileSystemModel::FOLDER : FileSystemModel::DOCUMENT );
+        record.setFlag( file.isDirectory() ? FileSystemModel::Folder : FileSystemModel::Document );
         if( file.isLink() ) record.setFlag( FileSystemModel::LINK );
 
         // add to model

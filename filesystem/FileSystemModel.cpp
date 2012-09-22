@@ -127,13 +127,13 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
 
             case SIZE:
             {
-                if( record.hasFlag( DOCUMENT ) ) return QString( record.property( sizePropertyId_ ) );
+                if( record.hasFlag( Document ) ) return QString( record.property( sizePropertyId_ ) );
                 else return QVariant();
             }
 
             case TIME:
             {
-                if( record.hasFlag( DOCUMENT ) ) return QString( TimeStamp( record.time() ).toString() );
+                if( record.hasFlag( Document ) ) return QString( TimeStamp( record.time() ).toString() );
                 else return QVariant();
             }
 
@@ -199,20 +199,20 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
 
     if( order_ == Qt::DescendingOrder ) std::swap( first, second );
 
-    if( first.hasFlag( NAVIGATOR ) ) return true;
-    if( second.hasFlag( NAVIGATOR ) ) return false;
-    if( first.hasFlag( FOLDER ) && second.hasFlag( DOCUMENT ) ) return true;
-    if( second.hasFlag( FOLDER ) && first.hasFlag( DOCUMENT ) ) return false;
+    if( first.hasFlag( Navigator ) ) return true;
+    if( second.hasFlag( Navigator ) ) return false;
+    if( first.hasFlag( Folder ) && second.hasFlag( Document ) ) return true;
+    if( second.hasFlag( Folder ) && first.hasFlag( Document ) ) return false;
 
     switch( type_ )
     {
 
         case FILE:
         {
-            if( first.hasFlag( NAVIGATOR ) ) return true;
-            if( second.hasFlag( NAVIGATOR ) ) return false;
-            if( first.hasFlag( FOLDER ) && second.hasFlag( DOCUMENT ) ) return true;
-            if( second.hasFlag( FOLDER ) && first.hasFlag( DOCUMENT ) ) return false;
+            if( first.hasFlag( Navigator ) ) return true;
+            if( second.hasFlag( Navigator ) ) return false;
+            if( first.hasFlag( Folder ) && second.hasFlag( Document ) ) return true;
+            if( second.hasFlag( Folder ) && first.hasFlag( Document ) ) return false;
             return first.file().localName().compare( second.file().localName(), Qt::CaseInsensitive ) < 0;
 
         }
@@ -247,9 +247,9 @@ void FileSystemModel::_installIcons( void ) const
     // type icons
     typedef QHash< int, QString > IconNames;
     IconNames type_names;
-    type_names[DOCUMENT] = ICONS::DOCUMENT;
-    type_names[FOLDER] = ICONS::FOLDER;
-    type_names[NAVIGATOR] = ICONS::PARENT_DIRECTORY;
+    type_names[Document] = ICONS::Document;
+    type_names[Folder] = ICONS::Folder;
+    type_names[Navigator] = ICONS::PARENT_DIRECTORY;
 
     // load link pixmap
     CustomPixmap link = CustomPixmap().find( ICONS::LINK );

@@ -205,7 +205,7 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
 
     // retrieve file
     FileRecord record( model_.get( index ) );
-    if( record.hasFlag( FileSystemModel::FOLDER ) )
+    if( record.hasFlag( FileSystemModel::Folder ) )
     {
 
         // make full name
@@ -213,7 +213,7 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
         path = path.addPath( FileSystemFrame::path() );
         setPath( path );
 
-    } else if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) {
+    } else if( record.hasFlag( FileSystemModel::Navigator ) ) {
 
         _parentDirectoryAction().trigger();
 
@@ -305,8 +305,8 @@ void FileSystemFrame::_updateActions( void )
     bool hasRemovableSelection( false );
     foreach( const FileRecord& record, selection )
     {
-        if( !record.hasFlag( FileSystemModel::NAVIGATOR ) ) hasRemovableSelection = true;
-        if( record.hasFlag( FileSystemModel::DOCUMENT ) )
+        if( !record.hasFlag( FileSystemModel::Navigator ) ) hasRemovableSelection = true;
+        if( record.hasFlag( FileSystemModel::Document ) )
         {
             hasEditableSelection = true;
             break;
@@ -317,7 +317,7 @@ void FileSystemFrame::_updateActions( void )
     _removeAction().setEnabled( hasRemovableSelection );
 
     QModelIndex index( list_->selectionModel()->currentIndex() );
-    bool hasValidFile( selection.size() == 1 && index.isValid() && !model_.get( index ).hasFlag( FileSystemModel::NAVIGATOR ) );
+    bool hasValidFile( selection.size() == 1 && index.isValid() && !model_.get( index ).hasFlag( FileSystemModel::Navigator ) );
     _filePropertiesAction().setEnabled( hasValidFile );
     _renameAction().setEnabled( hasValidFile );
 }
@@ -379,7 +379,7 @@ void FileSystemFrame::_open( void )
     FileSystemModel::List validSelection;
     foreach( const FileRecord& record, selection )
     {
-        if( record.hasFlag( FileSystemModel::DOCUMENT ) )
+        if( record.hasFlag( FileSystemModel::Document ) )
         {
             FileRecord copy( record );
             copy.setFile( record.file().addPath( path() ) );
@@ -401,7 +401,7 @@ void FileSystemFrame::_remove( void )
     FileSystemModel::List validSelection;
     foreach( const FileRecord& record, selection )
     {
-        if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) continue;
+        if( record.hasFlag( FileSystemModel::Navigator ) ) continue;
         FileRecord copy( record );
         copy.setFile( record.file().addPath( path() ) );
         validSelection << copy;
@@ -430,7 +430,7 @@ void FileSystemFrame::_rename( void )
     if( !index.isValid() ) return;
 
     FileRecord record( model_.get( index ) );
-    if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) return;
+    if( record.hasFlag( FileSystemModel::Navigator ) ) return;
     RenameFileDialog dialog( this, record );
     dialog.setWindowTitle( "Rename Item - Qedit" );
     if( !dialog.centerOnWidget( window() ).exec() ) return;
@@ -452,7 +452,7 @@ void FileSystemFrame::_fileProperties( void )
     if( !index.isValid() ) return;
 
     FileRecord record( model_.get( index ) );
-    if( record.hasFlag( FileSystemModel::NAVIGATOR ) ) return;
+    if( record.hasFlag( FileSystemModel::Navigator ) ) return;
     if( !record.file().isAbsolute() ) { record.setFile( record.file().addPath( path() ) ); }
 
     FileInformationDialog( this, record ).centerOnWidget( window() ).exec();
