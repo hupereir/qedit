@@ -9,7 +9,11 @@ QT += xml network
 VERSION = 2.4.4
 DEFINES += VERSION=\\\"$$VERSION\\\"
 
-unix {
+mac {
+	DEFINES += QT_NO_DBUS
+}
+
+unix:!mac {
 	QT += dbus
 	LIBS += -lX11
 }
