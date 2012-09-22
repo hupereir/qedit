@@ -6,7 +6,7 @@ TARGET = qedit
 CONFIG += qt release
 QT += xml network
 
-VERSION = 2.4.4
+VERSION = 2.4.5
 DEFINES += VERSION=\\\"$$VERSION\\\"
 
 mac {

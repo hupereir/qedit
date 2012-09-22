@@ -1,7 +1,7 @@
 dnl $Id$
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(qedit, 2.4.4)
+AM_INIT_AUTOMAKE(qedit, 2.4.5)
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CXX
 AC_PROG_LIBTOOL
