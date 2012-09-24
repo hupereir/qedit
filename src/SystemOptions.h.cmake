@@ -1,3 +1,5 @@
+#ifndef SystemOptions_h
+#define SystemOptions_h
 // $Id$
 
 /******************************************************************************
@@ -21,14 +23,6 @@
 *
 *******************************************************************************/
 
-/*!
-  \file SystemOptions.h
-  \brief default options
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
 #include "Config.h"
 #include "XmlOptions.h"
 
@@ -47,3 +41,5 @@ void installSystemOptions( void )
   XmlOptions::get().setAutoDefault( false );
 
 };
+
+#endif

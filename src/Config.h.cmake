@@ -23,14 +23,8 @@
 *
 *******************************************************************************/
 
-/*!
-  \file Config.h
-  \brief used to handle defines based on configure script
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
+#define VERSION "@QEDIT_VERSION@"
+#define WITH_ASPELL @ASPELL_FOUND@
+#define BUILD_TIMESTAMP "@TIMESTAMP@"
 
-#define WITH_ASPELL @aspell@
-#define BUILD_TIMESTAMP "@timestamp@"
 #endif

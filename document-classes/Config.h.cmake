@@ -23,14 +23,6 @@
 *
 *******************************************************************************/
 
-/*!
-  \file Config.h
-  \brief used to handle defines based on configure script
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#define WITH_ASPELL @aspell@
-#define BUILD_TIMESTAMP "@timestamp@"
+#define WITH_ASPELL @ASPELL_FOUND@
+#define BUILD_TIMESTAMP "@TIMESTAMP@"
 #endif
