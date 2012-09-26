@@ -6,6 +6,21 @@ set(QEDIT_VERSION_MINOR 4)
 set(QEDIT_VERSION_PATCH 5)
 set(QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION_PATCH} )
 
+###########################
+# Define package generation
+###########################
+
+SET( CPACK_PACKAGE_NAME "qedit" )
+SET( CPACK_SOURCE_PACKAGE_NAME "qedit" )
+SET( CPACK_SOURCE_GENERATOR TGZ )
+SET( CPACK_PACKAGE_VENDOR "hugo@oxygen-icons.org" )
+SET( CPACK_SOURCE_PACKAGE_FILE_NAME "qedit-${QEDIT_VERSION}" )
+INCLUDE( CPack )
+
+# set( CPACK_PACKAGE_VERSION_MAJOR "1" )
+# set( CPACK_PACKAGE_VERSION_MINOR "3" )
+# set( CPACK_PACKAGE_VERSION_PATCH "50" )
+
 ########### external applications ###############
 FIND_PROGRAM( ASPELL aspell )
 FIND_PROGRAM( DIFF diff )
