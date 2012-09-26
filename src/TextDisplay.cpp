@@ -226,7 +226,7 @@ void TextDisplay::setReadOnly( const bool& value )
 }
 
 //______________________________________________________________________________
-void TextDisplay::installContextMenuActions( QMenu& menu, const bool& all_actions )
+void TextDisplay::installContextMenuActions( QMenu& menu, const bool& )
 {
 
     Debug::Throw( "TextDisplay::installContextMenuActions.\n" );
@@ -1156,7 +1156,6 @@ void TextDisplay::selectFilter( const QString& filter )
     Debug::Throw( "TextDisplay::selectFilter.\n" );
 
     #if WITH_ASPELL
-
     // local reference to interface
     SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
 
@@ -1172,7 +1171,8 @@ void TextDisplay::selectFilter( const QString& filter )
 
     // rehighlight if needed
     if( textHighlight().spellParser().isEnabled() ) rehighlight();
-
+    #else
+    Q_UNUSED( filter )
     #endif
 
     return;
@@ -1200,6 +1200,8 @@ void TextDisplay::selectDictionary( const QString& dictionary )
 
     // rehighlight if needed
     if( textHighlight().spellParser().isEnabled() ) rehighlight();
+    #else
+    Q_UNUSED( dictionary )
     #endif
 
     return;
@@ -1369,7 +1371,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
     return true;
 
     #else
-
+    Q_UNUSED( event )
     return false;
     #endif
 
@@ -1837,6 +1839,8 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
     if( changed && autoSpellAction().isChecked() && autoSpellAction().isEnabled() )
     { rehighlight(); }
 
+    #else
+    Q_UNUSED( file )
     #endif
 
 }
@@ -1963,6 +1967,8 @@ void TextDisplay::_toggleAutoSpell( bool state )
     }
 
     return;
+    #else
+    Q_UNUSED( state )
     #endif
 }
 
@@ -2393,6 +2399,8 @@ void TextDisplay::_replaceMisspelledSelection( QString word )
     Debug::Throw() << "TextDisplay::_replaceMisspelledSelection - word: " << word << endl;
     QTextCursor cursor( textCursor() );
     cursor.insertText( word );
+    #else
+    Q_UNUSED( word )
     #endif
     return;
 

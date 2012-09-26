@@ -3,23 +3,19 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 
 set(QEDIT_VERSION_MAJOR 2)
 set(QEDIT_VERSION_MINOR 4)
-set(QEDIT_VERSION_PATCH 5)
+SET( QEDIT_VERSION_PATCH 6 )
 set(QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION_PATCH} )
 
-###########################
-# Define package generation
-###########################
-
+########### packages ###############
 SET( CPACK_PACKAGE_NAME "qedit" )
-SET( CPACK_SOURCE_PACKAGE_NAME "qedit" )
+SET( CPACK_PACKAGE_VENDOR "hugo.pereira@free.fr" )
+SET( CPACK_PACKAGE_VERSION "${QEDIT_VERSION}" )
 SET( CPACK_SOURCE_GENERATOR TGZ )
-SET( CPACK_PACKAGE_VENDOR "hugo@oxygen-icons.org" )
-SET( CPACK_SOURCE_PACKAGE_FILE_NAME "qedit-${QEDIT_VERSION}" )
+SET( CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}" )
 INCLUDE( CPack )
 
-# set( CPACK_PACKAGE_VERSION_MAJOR "1" )
-# set( CPACK_PACKAGE_VERSION_MINOR "3" )
-# set( CPACK_PACKAGE_VERSION_PATCH "50" )
+########### configuration files ###############
+CONFIGURE_FILE( qedit.spec.cmake ${CMAKE_SOURCE_DIR}/qedit.spec )
 
 ########### external applications ###############
 FIND_PROGRAM( ASPELL aspell )

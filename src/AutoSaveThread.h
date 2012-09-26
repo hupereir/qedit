@@ -47,7 +47,8 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
     public:
 
     //! constructor
-    AutoSaveThread( QObject* reciever ):
+    AutoSaveThread( QObject* parent ):
+        QThread( parent ),
         Counter( "AutoSaveThread" ),
         fileChanged_( true ),
         contentsChanged_( true )

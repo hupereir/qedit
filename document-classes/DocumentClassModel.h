@@ -62,13 +62,13 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     //@{
 
     // return data for a given index
-    virtual QVariant data(const QModelIndex &index, int role) const;
+    virtual QVariant data( const QModelIndex&, int ) const;
 
     //! header data
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    virtual QVariant headerData( int, Qt::Orientation, int = Qt::DisplayRole) const;
 
     //! number of columns for a given index
-    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const
+    virtual int columnCount(const QModelIndex& = QModelIndex() ) const
     { return nColumns; }
 
     //@}
@@ -76,7 +76,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     protected:
 
     //! sort
-    virtual void _sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+    virtual void _sort( int, Qt::SortOrder = Qt::AscendingOrder );
 
     private slots:
 

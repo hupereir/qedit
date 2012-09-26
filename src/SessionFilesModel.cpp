@@ -212,7 +212,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 }
 
 //__________________________________________________________________
-bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction action, int row, int column, const QModelIndex& parent)
+bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction action, int, int, const QModelIndex& parent)
 {
 
     // check action

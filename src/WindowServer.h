@@ -261,7 +261,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     }
 
     //! default orientation for split tabs
-    const Qt::Orientation _defaultdiffOrientation( void ) const
+    Qt::Orientation _defaultdiffOrientation( void ) const
     { return defaultDiffOrientation_; }
 
     //! default orientation for split tabs

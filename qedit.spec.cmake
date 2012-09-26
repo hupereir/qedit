@@ -1,4 +1,4 @@
-%define ver      @VERSION@
+%define ver      @QEDIT_VERSION@
 %define rel      0
 %define prefix   /usr
 
@@ -22,11 +22,12 @@ automatic spell-checking.
 %setup -q -n %{name}-%{ver} %{rel}
 
 %build
-./autogen.sh --prefix=%{prefix}
-make  CFLAGS="$RPM_OPT_FLAGS"
+cmake -DCMAKE_INSTALL_PREFIX=%{prefix} .
+make
 
 %install
-make prefix=$RPM_BUILD_ROOT%{prefix} install-strip
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -35,5 +36,5 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc COPYING INSTALL
 %{prefix}/bin/qedit
-%{prefix}/bin/editDocumentClasses
+%{prefix}/bin/edit-document-classes
 %changelog
