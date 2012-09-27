@@ -23,7 +23,7 @@ automatic spell-checking.
 
 %build
 cmake -DCMAKE_INSTALL_PREFIX=%{prefix} .
-make
+make -j4
 
 %install
 rm -rf $RPM_BUILD_ROOT
