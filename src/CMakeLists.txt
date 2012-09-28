@@ -7,7 +7,6 @@ SET( QT_USE_QTXML TRUE )
 INCLUDE( ${QT_USE_FILE} )
 ADD_DEFINITIONS( ${QT_DEFINITIONS} )
 
-
 ########### X11 #########
 IF( NOT Q_WS_WIN )
 
@@ -112,6 +111,11 @@ IF( Q_WS_WIN )
 
   SET( qedit_RC qedit.rc )
   ADD_EXECUTABLE( qedit WIN32 ${qedit_SOURCES} ${qedit_RESOURCES_RCC} ${qedit_RC} )
+
+  FIND_PROGRAM( UPX upx )
+  IF( UPX )
+
+  ENDIF()
 
 ELSE()
 
