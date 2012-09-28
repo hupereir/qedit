@@ -1,5 +1,4 @@
-PROJECT( QEDIT_SRC )
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
+# $Id$
 
 ########### Qt4 configuration #########
 FIND_PACKAGE( Qt4 REQUIRED )
