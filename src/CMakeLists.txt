@@ -109,17 +109,19 @@ QT4_ADD_RESOURCES( qedit_RESOURCES_RCC ${qedit_RESOURCES})
 
 IF( Q_WS_WIN )
 
-  SET( qedit_RC qedit.rc )
-  ADD_EXECUTABLE( qedit WIN32 ${qedit_SOURCES} ${qedit_RESOURCES_RCC} ${qedit_RC} )
-
-  FIND_PROGRAM( UPX upx )
-  IF( UPX )
-
-  ENDIF()
+  ADD_EXECUTABLE( qedit WIN32
+    ${qedit_SOURCES}
+    ${qedit_RESOURCES_RCC}
+    qedit_win32.rc
+  )
 
 ELSE()
 
-  ADD_EXECUTABLE( qedit ${qedit_SOURCES} ${qedit_RESOURCES_RCC} )
+  ADD_EXECUTABLE( qedit
+    ${qedit_SOURCES}
+    ${qedit_RESOURCES_RCC}
+  )
+
   TARGET_LINK_LIBRARIES( qedit ${X11_X11_LIB} )
 
 ENDIF()
