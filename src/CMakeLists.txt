@@ -115,6 +115,26 @@ IF( Q_WS_WIN )
     qedit_win32.rc
   )
 
+  ### Compress target
+  FIND_PROGRAM( UPX upx )
+  IF( UPX )
+
+    GET_TARGET_PROPERTY( TARGET_PATH qedit LOCATION )
+    ADD_CUSTOM_COMMAND( TARGET qedit POST_BUILD COMMAND upx ${TARGET_PATH} )
+
+  ENDIF()
+
+  ### copy to version release
+  SET( qedit_RELEASE qedit-${QEDIT_VERSION} )
+  ADD_CUSTOM_COMMAND(
+    TARGET qedit POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${TARGET_PATH} ${CMAKE_CURRENT_BINARY_DIR}/${qedit_RELEASE}.exe
+  )
+
+  INSTALL(
+    PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${qedit_RELEASE}.exe
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/release )
+
 ELSE()
 
   ADD_EXECUTABLE( qedit
