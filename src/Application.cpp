@@ -33,8 +33,8 @@
 #include "AutoSave.h"
 #include "Config.h"
 #include "ConfigurationDialog.h"
+#include "DocumentClass.h"
 #include "DocumentClassManager.h"
-#include "DocumentClassManagerDialog.h"
 #include "FileCheck.h"
 #include "FileCheckDialog.h"
 #include "IconEngine.h"
@@ -143,9 +143,6 @@ bool Application::realizeWidget( void )
     closeAction().disconnect();
     connect( &closeAction(), SIGNAL( triggered() ), SLOT( _exit() ) );
 
-    documentClassConfigurationAction_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Document Classes...", this );
-    connect( documentClassConfigurationAction_, SIGNAL( triggered() ), SLOT( _documentClassConfiguration() ) );
-
     spellCheckConfigurationAction_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Spell Checking...", this );
     connect( spellCheckConfigurationAction_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
 
@@ -225,26 +222,6 @@ void Application::_configuration( void )
     connect( &dialog, SIGNAL( configurationChanged() ), SIGNAL( configurationChanged() ) );
     dialog.centerOnWidget( qApp->activeWindow() );
     dialog.exec();
-}
-
-//___________________________________________________________
-void Application::_documentClassConfiguration( void )
-{
-    Debug::Throw( "Application::_documentClassConfiguration.\n" );
-    DocumentClassManagerDialog* dialog = new DocumentClassManagerDialog( qApp->activeWindow(), classManager() );
-    dialog->setWindowModality( Qt::ApplicationModal );
-    dialog->setAttribute( Qt::WA_DeleteOnClose );
-    dialog->setWindowTitle( "Document Classes - Qedit" );
-    dialog->show();
-
-    // this allows to have the dialog effictively modal.
-    QEventLoop loop;
-    connect( dialog, SIGNAL( destroyed() ), &loop, SLOT( quit() ) );
-    loop.exec();
-
-    // update document classes
-    _updateDocumentClasses();
-
 }
 
 //_______________________________________________

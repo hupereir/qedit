@@ -257,7 +257,6 @@ void Menu::_updatePreferenceMenu( void )
     #if WITH_ASPELL
     preferenceMenu_->addAction( &application.spellCheckConfigurationAction() );
     #endif
-    preferenceMenu_->addAction( &application.documentClassConfigurationAction() );
     preferenceMenu_->addAction( &application.configurationAction() );
 
     return;

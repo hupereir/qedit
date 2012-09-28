@@ -90,10 +90,6 @@ class Application: public BaseApplication, public Counter
     //@{
 
     //! configure
-    QAction& documentClassConfigurationAction( void ) const
-    { return *documentClassConfigurationAction_; }
-
-    //! configure
     QAction& spellCheckConfigurationAction( void ) const
     { return *spellCheckConfigurationAction_; }
 
@@ -122,9 +118,6 @@ class Application: public BaseApplication, public Counter
 
     //! configuration
     void _configuration( void );
-
-    //! document class configuration
-    void _documentClassConfiguration( void );
 
     //! spellcheck configuration
     void _spellCheckConfiguration( void );
@@ -173,9 +166,6 @@ class Application: public BaseApplication, public Counter
 
     //!@name actions
     //@{
-
-    //! configure
-    QAction* documentClassConfigurationAction_;
 
     //! configure
     QAction* spellCheckConfigurationAction_;
