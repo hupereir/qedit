@@ -104,10 +104,16 @@ SET( qedit_SOURCES qedit.cpp )
 SET( qedit_RESOURCES pixmaps.qrc)
 QT4_ADD_RESOURCES( qedit_RESOURCES_RCC ${qedit_RESOURCES})
 
-ADD_EXECUTABLE( qedit
-  ${qedit_SOURCES}
-  ${qedit_RESOURCES_RCC}
-)
+IF( Q_WS_WIN )
+
+  SET( qedit_RC qedit.rc );
+  ADD_EXECUTABLE( qedit WIN32 ${qedit_SOURCES} ${qedit_RESOURCES_RCC} ${qedit_RC} )
+
+ELSE()
+
+  ADD_EXECUTABLE( qedit ${qedit_SOURCES} ${qedit_RESOURCES_RCC} )
+
+ENDIF()
 
 TARGET_LINK_LIBRARIES( qedit ${X11_X11_LIB} )
 TARGET_LINK_LIBRARIES( qedit ${QT_LIBRARIES} )
@@ -125,7 +131,9 @@ TARGET_LINK_LIBRARIES( qedit
 )
 
 IF( ASPELL_FOUND )
+
   TARGET_LINK_LIBRARIES( qedit base-spellcheck )
+
 ENDIF()
 
 INSTALL( TARGETS qedit DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
@@ -135,10 +143,16 @@ SET( edit_document_classes_SOURCES edit-document-classes.cpp )
 SET( edit_document_classes_RESOURCES pixmaps.qrc)
 QT4_ADD_RESOURCES( edit_document_classes_RESOURCES_RCC ${edit_document_classes_RESOURCES})
 
-ADD_EXECUTABLE( edit-document-classes
-  ${edit_document_classes_SOURCES}
-  ${edit_document_classes_RESOURCES_RCC}
-)
+IF( Q_WS_WIN )
+
+  SET( edit_document_classes_RC qedit.rc );
+  ADD_EXECUTABLE( edit_document_classes WIN32 ${edit_document_classes_SOURCES} ${edit_document_classes_RESOURCES_RCC} ${edit_document_classes_RC} )
+
+ELSE()
+
+  ADD_EXECUTABLE( edit-document-classes ${edit_document_classes_SOURCES} ${edit_document_classes_RESOURCES_RCC} )
+
+ENDIF()
 
 TARGET_LINK_LIBRARIES( edit-document-classes ${X11_X11_LIB} )
 TARGET_LINK_LIBRARIES( edit-document-classes ${QT_LIBRARIES} )
@@ -156,7 +170,9 @@ TARGET_LINK_LIBRARIES( edit-document-classes
 )
 
 IF( ASPELL_FOUND )
+
   TARGET_LINK_LIBRARIES( edit-document-classes base-spellcheck )
+
 ENDIF()
 
 INSTALL( TARGETS edit-document-classes DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
