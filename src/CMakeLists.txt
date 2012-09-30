@@ -1,19 +1,19 @@
 # $Id$
 
+########### X11 #########
+IF( UNIX )
+
+  FIND_PACKAGE( X11 REQUIRED )
+  INCLUDE_DIRECTORIES( ${X11_X11_INCLUDE_PATH} )
+
+ENDIF()
+
 ########### Qt4 configuration #########
 FIND_PACKAGE( Qt4 REQUIRED )
 SET( QT_USE_QTXML TRUE )
 
 INCLUDE( ${QT_USE_FILE} )
 ADD_DEFINITIONS( ${QT_DEFINITIONS} )
-
-########### X11 #########
-IF( NOT Q_WS_WIN )
-
-  FIND_PACKAGE( X11 REQUIRED )
-  INCLUDE_DIRECTORIES( ${X11_X11_INCLUDE_PATH} )
-
-ENDIF()
 
 ########### includes #########
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
@@ -107,7 +107,7 @@ SET( qedit_SOURCES qedit.cpp )
 SET( qedit_RESOURCES pixmaps.qrc)
 QT4_ADD_RESOURCES( qedit_RESOURCES_RCC ${qedit_RESOURCES})
 
-IF( Q_WS_WIN )
+IF( WIN32 )
 
   INCLUDE("${CMAKE_SOURCE_DIR}/base-cmake/Win32Macros.cmake")
   ADD_WIN32_EXECUTABLE( qedit
