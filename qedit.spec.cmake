@@ -36,5 +36,4 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc COPYING INSTALL
 %{prefix}/bin/qedit
-%{prefix}/bin/edit-document-classes
 %changelog
