@@ -1,7 +1,5 @@
 # $Id$
-
 PROJECT( FILESYSTEM )
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 
 ########### Qt4 configuration #########
 FIND_PACKAGE( Qt4 REQUIRED )
