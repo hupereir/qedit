@@ -10,6 +10,14 @@ SET( QEDIT_VERSION_MINOR 5 )
 SET( QEDIT_VERSION_PATCH 1 )
 SET( QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION_PATCH} )
 
+########### modules #################
+SET( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/base-cmake" )
+INCLUDE( Macros )
+INCLUDE( Win32Macros )
+
+########### timestamp #########
+GET_BUILD_TIMESTAMP( TIMESTAMP )
+
 ########### packages ###############
 SET( CPACK_PACKAGE_NAME "qedit" )
 SET( CPACK_PACKAGE_VENDOR "hugo.pereira@free.fr" )
