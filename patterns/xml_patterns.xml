@@ -140,7 +140,7 @@
     <replacement></replacement>
    </rule>
   </macro>
-  <macro accelerator="Alt+C" name="Clean end of line" >
+  <macro name="Clean end of line" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>
@@ -167,7 +167,7 @@
     <replacement></replacement>
    </rule>
   </macro>
-  <macro name="Add bar comments" >
+  <macro accelerator="Alt+C" name="Add bar comments" >
    <rule>
     <regexp>^</regexp>
     <replacement>XML_TAB</replacement>
@@ -181,7 +181,7 @@
     <replacement>XML_ENDL--XML_GT</replacement>
    </rule>
   </macro>
-  <macro name="Remove bar comments" >
+  <macro accelerator="Shift+Alt+C" name="Remove bar comments" >
    <rule options="no_split" >
     <regexp>^\s*XML_LT\!--\n?</regexp>
     <replacement></replacement>
