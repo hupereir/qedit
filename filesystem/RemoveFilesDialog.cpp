@@ -23,6 +23,7 @@
 
 #include "BaseIcons.h"
 #include "IconEngine.h"
+#include "PixmapEngine.h"
 #include "TreeView.h"
 
 #include <QtGui/QHeaderView>

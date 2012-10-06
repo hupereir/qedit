@@ -115,9 +115,6 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
     _updateNavigationActions();
 
-    connect( &model_, SIGNAL( layoutAboutToBeChanged() ), SLOT( _storeSelection() ) );
-    connect( &model_, SIGNAL( layoutChanged() ), SLOT( _restoreSelection() ) );
-
     connect( &_fileSystemWatcher(), SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
     connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
     _updateConfiguration();
@@ -457,24 +454,6 @@ void FileSystemFrame::_fileProperties( void )
 
     FileInformationDialog( this, record ).centerOnWidget( window() ).exec();
 
-}
-
-//________________________________________
-void FileSystemFrame::_storeSelection( void )
-{ model_.setSelectedIndexes( list_->selectionModel()->selectedRows() ); }
-
-
-//________________________________________
-void FileSystemFrame::_restoreSelection( void )
-{
-
-    const QModelIndexList selection( model_.selectedIndexes() );
-    list_->selectionModel()->clearSelection();
-
-    foreach( const QModelIndex& index, selection )
-    { list_->selectionModel()->select( index, QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
-
-    return;
 }
 
 //_____________________________________________

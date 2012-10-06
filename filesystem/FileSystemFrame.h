@@ -137,12 +137,6 @@ class FileSystemFrame: public QWidget, public Counter
     //! file properties
     void _fileProperties( void );
 
-    //! store selected jobs in model
-    void _storeSelection( void );
-
-    //! restore selected jobs from model
-    void _restoreSelection( void );
-
     //! animation finished
     void _animationFinished( void );
 
