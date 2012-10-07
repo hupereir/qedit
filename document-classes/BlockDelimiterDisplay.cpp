@@ -684,9 +684,9 @@ void BlockDelimiterDisplay::_updateSegments( void )
 
         // insert the remaining points as empty segments (that will extend to the end of the document)
         /* they are inserted in reverse order to optimize segment drawing in paintEvent */
-        BlockDelimiterSegment::ListIterator iter( segments_ );
-        iter.toBack();
-        while( iter.hasPrevious() ) segments_.push_back( iter.previous() );
+        BlockDelimiterSegment::ListIterator segmentIter( segments_ );
+        segmentIter.toBack();
+        while( segmentIter.hasPrevious() ) segments_ << segmentIter.previous();
 
         // insert total number of collapsed block as last element
         // this is done only for the first block delimiter pair
