@@ -13,7 +13,6 @@ SET( QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION
 ########### modules #################
 SET( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/base-cmake" )
 INCLUDE( Macros )
-INCLUDE( Win32Macros )
 
 ########### timestamp #########
 GET_BUILD_TIMESTAMP( TIMESTAMP )
@@ -36,12 +35,13 @@ FIND_PROGRAM( DIFF diff )
 ########### aspell ###############
 FIND_PACKAGE( ASPELL )
 
-########### links #########
-SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-LINK_DIRECTORIES( ${CMAKE_INSTALL_PREFIX}/lib )
-
 ########### subdirectories ###############
-IF( NOT ENABLE_SHARED )
+IF( ENABLE_SHARED )
+
+  SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+  LINK_DIRECTORIES( ${CMAKE_INSTALL_PREFIX}/lib )
+
+ELSE()
 
   ADD_SUBDIRECTORY( base )
   ADD_SUBDIRECTORY( base-qt )
@@ -54,7 +54,7 @@ IF( NOT ENABLE_SHARED )
 
   ENDIF( ASPELL_FOUND )
 
-ENDIF( NOT ENABLE_SHARED )
+ENDIF()
 
 ADD_SUBDIRECTORY( document-classes )
 ADD_SUBDIRECTORY( filesystem )
