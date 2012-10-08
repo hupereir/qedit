@@ -21,19 +21,11 @@
 *
 *******************************************************************************/
 
-/*!
-\file    DocumentClassModel.h
-\brief   Job model. Stores job information for display in lists
-\author  Hugo Pereira
-\version $Revision$
-\date    $Date$
-*/
-
-#include "CustomPixmap.h"
-#include "DocumentClassIcons.h"
 #include "DocumentClassModel.h"
-#include "Singleton.h"
 
+#include "DocumentClassIcons.h"
+#include "IconEngine.h"
+#include "Singleton.h"
 #include "XmlOptions.h"
 
 
@@ -139,28 +131,13 @@ bool DocumentClassModel::SortFTor::operator () ( const DocumentClass& first, con
 }
 
 //________________________________________________________
-QIcon DocumentClassModel::_icon( const QString& name )
+const QIcon& DocumentClassModel::_icon( const QString& name )
 {
 
     Debug::Throw( "DocumentClassModel::_icon.\n" );
 
     IconCache::const_iterator iter( _icons().find( name ) );
     if( iter != _icons().end() ) return iter.value();
-
-    // pixmap size
-    unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
-    QSize size( pixmap_size, pixmap_size );
-    QSize scale(size*0.9);
-
-    CustomPixmap base( CustomPixmap().find( name )  );
-
-    QIcon icon;
-    if( !base.isNull() )
-    { icon = CustomPixmap().empty( size ).merge( base.scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER ); }
-
-    // insert in map
-    _icons().insert( name, icon );
-
-    return icon;
+    else return _icons().insert( name, IconEngine::get( name ) ).value();
 
 }

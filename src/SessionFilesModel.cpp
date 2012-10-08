@@ -21,18 +21,12 @@
 *
 *******************************************************************************/
 
-/*!
-  \file SessionFilesModel.cpp
-  \brief model for object records
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
+#include "SessionFilesModel.h"
 
-#include "Icons.h"
 #include "CustomPixmap.h"
 #include "FileRecordProperties.h"
-#include "SessionFilesModel.h"
+#include "Icons.h"
+#include "IconEngine.h"
 #include "Singleton.h"
 #include "XmlFileList.h"
 #include "XmlFileRecord.h"
@@ -41,7 +35,6 @@
 
 #include <QtCore/QMimeData>
 #include <QtCore/QSet>
-#include <QtGui/QIcon>
 #include <QtGui/QPalette>
 #include <algorithm>
 #include <cassert>
@@ -114,44 +107,24 @@ void SessionFilesModel::_updateConfiguration( void )
 }
 
 //________________________________________________________
-QIcon SessionFilesModel::_icon( unsigned int type )
+const QIcon& SessionFilesModel::_icon( unsigned int type )
 {
-
-    //Debug::Throw( "SessionFilesModel::_icon.\n" );
 
     IconCache::const_iterator iter( _icons().find( type ) );
     if( iter != _icons().end() ) return iter.value();
 
-    // pixmap size
-    unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
-    QSize size( pixmap_size, pixmap_size );
-    QSize scale(size*0.9);
-
     QIcon icon;
-    if( type == FileRecordProperties::MODIFIED )
+    if( type == FileRecordProperties::MODIFIED ) icon = IconEngine::get( ICONS::SAVE );
+    else if( type == FileRecordProperties::ALTERED ) icon = IconEngine::get( ICONS::WARNING );
+    else if( type == FileRecordProperties::NONE )
     {
-
-        icon = CustomPixmap()
-            .empty( size )
-            .merge( CustomPixmap().find( ICONS::SAVE )
-            .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
-
-    } else if( type == FileRecordProperties::ALTERED ) {
-
-        icon = CustomPixmap()
-            .empty( size )
-            .merge( CustomPixmap().find( ICONS::WARNING )
-            .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
-
-    } else if( type == FileRecordProperties::NONE ) {
-
+        const int iconSize( XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" ) );
+        const QSize size( iconSize, iconSize );
         icon = CustomPixmap().empty( size );
-
-    } else assert( false );
+    }
 
     // store in map and return
-    _icons().insert( type, icon );
-    return icon;
+    return _icons().insert( type, icon ).value();
 
 }
 
@@ -261,7 +234,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
 
         // look for first active file in this window
         FileRecord target;
-        QModelIndex target_index;
+        QModelIndex targetIndex;
         for( int row = 0; row < rowCount(); row++ )
         {
 
@@ -271,7 +244,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
                 FileRecord record( get( index ) );
                 if( record.hasFlag( FileRecordProperties::ACTIVE ) )
                 {
-                    target_index = index;
+                    targetIndex = index;
                     target = record;
                     break;
                 }
@@ -279,8 +252,8 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
             }
         }
 
-        // check that target_index is valid
-        if( !target_index.isValid() ) return false;
+        // check that targetIndex is valid
+        if( !targetIndex.isValid() ) return false;
 
         // emit relevant reparent signal
         foreach( const FileRecord& record, records )
