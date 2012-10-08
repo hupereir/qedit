@@ -148,14 +148,14 @@ class TextMacro: public Counter
     first is whether any changes where applied or not
     second is the net increment in terms of number of characters between input and output text
     */
-    class Result: public std::pair<bool, int>
+    class Result: public QPair<bool, int>
     {
 
         public:
 
         //! constructor
         Result( bool changed = false, int increment = 0 ):
-            std::pair<bool,int>( changed, increment )
+            QPair<bool,int>( changed, increment )
         {}
 
         //! add-to operator
@@ -176,8 +176,8 @@ class TextMacro: public Counter
     {
         if( isSeparator() ) return true;
         if( rules_.empty() ) return false;
-        for( Rule::List::const_iterator iter = rules_.begin(); iter != rules_.end(); iter++ )
-        { if( !iter->isValid() ) return false; }
+        foreach( const Rule& rule, rules_ )
+        { if( !rule.isValid() ) return false; }
         return true;
     }
 
@@ -307,7 +307,7 @@ class TextMacro: public Counter
 
     //! add a rule
     void addRule( const Rule& rule )
-    { rules_.push_back( rule ); }
+    { rules_ << rule; }
 
     private:
 

@@ -196,7 +196,7 @@ TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) co
 
             int length = iter->length() + 1;
             out += _processText( *iter, local_position );
-            local_position = std::max( -1, local_position - length );
+            local_position = qMax( -1, local_position - length );
 
         }
 
@@ -225,7 +225,7 @@ TextMacro::Result TextMacro::Rule::_processText( QString& text, int position ) c
 
         // update output displacements
         if( position >= 0 && current_position <= position + out.second )
-        { out.second += replace_text_.length() - std::min( pattern_.matchedLength(), position + out.second - current_position ); }
+        { out.second += replace_text_.length() - qMin( pattern_.matchedLength(), position + out.second - current_position ); }
 
         // update current position
         current_position += replace_text_.length();

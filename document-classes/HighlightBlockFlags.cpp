@@ -68,7 +68,7 @@ namespace TextBlock
         }
 
         for(; second != list.end(); second++ )
-        { out.push_back( *second ); }
+        { out << *second; }
 
         return out;
 

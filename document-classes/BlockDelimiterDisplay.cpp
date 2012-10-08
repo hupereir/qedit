@@ -458,7 +458,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
         }
 
         // store cursor in list for removal of the edited text at the end of the loop
-        cursors.push_back( cursor );
+        cursors << cursor;
 
     }
 
@@ -638,12 +638,12 @@ void BlockDelimiterDisplay::_updateSegments( void )
                     if( delimiter.begin() ) start_points.back().setFlag( BlockDelimiterSegment::BEGIN_ONLY, true );
 
                     // store new segment
-                    segments_.push_back( start_points.back().setEnd( block_end ) );
+                    segments_ << start_points.back().setEnd( block_end );
                 }
 
                 // pop
                 for( int i = 0; i < delimiter.end() && !start_points.empty() && ignored == start_points.back().flag( BlockDelimiterSegment::IGNORED ); i++ )
-                { start_points.pop_back(); }
+                { start_points.removeLast(); }
 
             }
 
@@ -659,7 +659,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
                 // if block is collapsed, skip one start point (which is self contained)
                 //for( int i = (collapsed ? 1:0); i < delimiter.begin(); i++ )
                 for( int i = 0; i < delimiter.begin(); i++ )
-                { start_points.push_back( BlockDelimiterSegment( block_begin, block_end, flags ) ); }
+                { start_points << BlockDelimiterSegment( block_begin, block_end, flags ); }
 
                 if( collapsed ) {
 
@@ -674,7 +674,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
 
                     // add one self contained segment
                     has_collapsed_blocks = true;
-                    segments_.push_back( BlockDelimiterSegment( block_begin, block_end, flags ) );
+                    segments_ << BlockDelimiterSegment( block_begin, block_end, flags );
 
                 } else has_expanded_blocks = true;
 
@@ -950,7 +950,7 @@ CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& firs
             collapsed_delimiters += current_collapsed_data.delimiters();
 
             // append collapsed data
-            collapsed_data.children().push_back( current_collapsed_data );
+            collapsed_data.children() << current_collapsed_data;
 
             if( current == second_block ) break;
 

@@ -71,7 +71,7 @@ void AutoSave::newThread( TextDisplay* display )
     BASE::Key::associate( display, thread );
 
     // add to list
-    threads_.push_back( thread );
+    threads_ << thread;
 
     // save file immediatly
     if( _enabled() ) saveFiles( display );

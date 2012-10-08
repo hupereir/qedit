@@ -73,7 +73,7 @@ QList<QTextBlock> ParenthesisHighlight::clear( void )
         // clear parenthesis
         data->clearParenthesis();
         parent_->document()->markContentsDirty(block.position(), block.length()-1);
-        dirty.push_back( block );
+        dirty << block;
     }
 
     cleared_ = true;

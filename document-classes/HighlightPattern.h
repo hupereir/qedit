@@ -176,7 +176,7 @@ class HighlightPattern: public Counter
 
     //! add child
     void addChild( HighlightPattern child )
-    { children_.push_back( child ); }
+    { children_ << child; }
 
     //! clear children
     void clearChildren( void )

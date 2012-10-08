@@ -337,12 +337,12 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
     // recompute dimension
     // take the max of active display and splitter,
     // in case no new splitter was created.
-    dimension = std::max( dimension, (orientation == Qt::Horizontal) ? splitter.width():splitter.height() );
+    dimension = qMax( dimension, (orientation == Qt::Horizontal) ? splitter.width():splitter.height() );
 
     // assign equal size to all splitter children
     QList<int> sizes;
     for( int i=0; i<splitter.count(); i++ )
-    { sizes.push_back( dimension/splitter.count() ); }
+    { sizes << dimension/splitter.count(); }
     splitter.setSizes( sizes );
 
     // synchronize both displays, if cloned
@@ -611,7 +611,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, const boo
 
                 QList<int> sizes;
                 for( int i=0; i<parentSplitter->count(); i++ )
-                { sizes.push_back( dimension/parentSplitter->count() ); }
+                { sizes << dimension/parentSplitter->count(); }
                 parentSplitter->setSizes( sizes );
 
             }

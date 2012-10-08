@@ -135,8 +135,8 @@ namespace TextBlock
             //! streamer
             friend QTextStream& operator << ( QTextStream& out, const List& list )
             {
-                for( List::const_iterator iter = list.begin(); iter != list.end(); iter++ )
-                { out << " " << *iter; }
+                foreach( const Delimiter& delimiter, list )
+                { out << " " << delimiter; }
                 return out;
             }
 

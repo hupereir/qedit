@@ -54,8 +54,8 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
     // store all blocks prior to starting modifications
     QList<QTextBlock> blocks;
     for( QTextBlock block( first ); block.isValid() && block != last; block = block.next() )
-    { blocks.push_back( block ); }
-    blocks.push_back( last );
+    { blocks << block; }
+    blocks << last;
 
     QProgressDialog progress("Indenting selected paragraphs...", "Abort", 0, blocks.size(), editor_);
     progress.show();
@@ -97,7 +97,7 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
             }
 
             // make sure new_tabs is not negative
-            new_tabs = std::max( new_tabs, 0 );
+            new_tabs = qMax( new_tabs, 0 );
             _decrement( *blockIter );
             _increment( *blockIter, new_tabs );
 
@@ -158,7 +158,7 @@ void TextIndent::indent( QTextBlock block, bool new_line )
         }
 
         // make sure new_tabs is not negative
-        new_tabs = std::max( new_tabs, 0 );
+        new_tabs = qMax( new_tabs, 0 );
 
         // remove all leading tabs
         _decrement( block );
@@ -311,8 +311,8 @@ void TextIndent::_decrement( QTextBlock block )
         cursor.removeSelectedText();
         if( current_cursor_.block() == block && current_cursor_.position() - block.position() > baseIndentation() )
         {
-            current_cursor_.setPosition( std::max( 0, anchor - length ), QTextCursor::MoveAnchor );
-            current_cursor_.setPosition( std::max( 0, position - length ), QTextCursor::KeepAnchor );
+            current_cursor_.setPosition( qMax( 0, anchor - length ), QTextCursor::MoveAnchor );
+            current_cursor_.setPosition( qMax( 0, position - length ), QTextCursor::KeepAnchor );
         }
     } else { Debug::Throw() << "TextIndent::_decrement - no match" << endl; }
 }

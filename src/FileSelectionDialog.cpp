@@ -59,7 +59,7 @@ selection_( selection )
     // retrieve file records
     FileRecordModel::List records;
     foreach( const FileRecord& record, Singleton::get().application<Application>()->windowServer().records() )
-    { records.push_back( record ); }
+    { records << record; }
     model_.set( records );
 
     // mask
@@ -131,7 +131,7 @@ FileSelectionDialog::FileList FileSelectionDialog::selectedFiles( void ) const
     FileRecordModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
     FileList files;
     for( FileRecordModel::List::iterator iter = selection.begin(); iter != selection.end(); ++iter )
-    { files.push_back( iter->file() ); }
+    { files << iter->file(); }
 
     return files;
 }

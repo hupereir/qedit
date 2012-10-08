@@ -251,7 +251,7 @@ class IndentPattern: public Counter
 
     //! add rule
     void addRule( const Rule& rule )
-    { rules_.push_back( rule ); }
+    { rules_ << rule; }
 
     //! rules
     void setRules( const Rule::List& rules )
@@ -260,8 +260,8 @@ class IndentPattern: public Counter
     //! validity
     bool isValid( void ) const
     {
-        for( Rule::List::const_iterator iter =  rules_.begin(); iter != rules_.end(); iter++ )
-            if( !iter->isValid() ) return false;
+        foreach( const Rule& rule, rules_ )
+        { if( !rule.isValid() ) return false; }
         return true;
     }
 
@@ -297,8 +297,8 @@ class IndentPattern: public Counter
     friend QTextStream& operator << ( QTextStream& out, const IndentPattern& pattern )
     {
         out << "IndentPattern - name: " << pattern.name() << " type: " << pattern.type_ << endl;
-        for( Rule::List::const_iterator iter =  pattern.rules_.begin(); iter != pattern.rules_.end(); iter++ )
-            out << "  " << *iter << endl;
+        foreach( const Rule& rule, pattern.rules_ )
+        { out << "  " << rule << endl; }
         return out;
     }
 

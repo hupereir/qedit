@@ -96,7 +96,7 @@ void PrintHelper::print( QPrinter* printer )
             formatRange.start = pattern.position();
             formatRange.length = pattern.length();
             formatRange.format = pattern.format();
-            formatRanges.push_back( formatRange );
+            formatRanges << formatRange;
         }
 
         // save formats

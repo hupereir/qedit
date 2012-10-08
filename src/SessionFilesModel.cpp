@@ -240,7 +240,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         {
 
             XmlFileRecord record( element );
-            if( !record.file().isEmpty() ) records.push_back( record );
+            if( !record.file().isEmpty() ) records << record;
 
         }
     }

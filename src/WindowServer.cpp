@@ -179,7 +179,7 @@ FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) co
             }
 
             // assign flags and store
-            records.push_back( record.setFlags( flags ) );
+            records << record.setFlags( flags );
 
         }
 

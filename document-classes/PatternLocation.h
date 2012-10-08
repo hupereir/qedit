@@ -250,8 +250,8 @@ class PatternLocationSet: public QOrderedSet<PatternLocation>
     friend QTextStream& operator << (QTextStream& out, const PatternLocationSet& locations )
     {
         out << "[" << locations.activeId().first << "," << locations.activeId().second << "] ";
-        for( PatternLocationSet::const_iterator iter = locations.begin(); iter != locations.end(); iter++ )
-        { out << *iter << endl; }
+        foreach( const PatternLocation& location, locations )
+        { out << location << endl; }
         return out;
     }
 

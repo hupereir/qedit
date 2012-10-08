@@ -76,18 +76,18 @@ bool DocumentClassManager::read( const File& filename )
         if( element.isNull() ) continue;
         if( element.tagName() == XML::DOCUMENT_CLASS )
         {
-            DocumentClass document_class( element );
+            DocumentClass documentClass( element );
 
             // look for document classes with same name
             List::iterator iter = std::find_if(
                 documentClasses_.begin(),
                 documentClasses_.end(),
-                DocumentClass::SameNameFTor( document_class.name() ) );
+                DocumentClass::SameNameFTor( documentClass.name() ) );
             if( iter != documentClasses_.end() ) documentClasses_.erase( iter );
 
             // add new document class
-            document_class.setFile( filename );
-            documentClasses_.push_back( document_class );
+            documentClass.setFile( filename );
+            documentClasses_ << documentClass;
 
             // reset IndentPattern counter (for debugging)
             IndentPattern::resetCounter();
@@ -117,7 +117,7 @@ bool DocumentClassManager::write( const QString& class_name, const File& filenam
 }
 
 //________________________________________________________
-bool DocumentClassManager::write( const DocumentClass& document_class, const File& filename ) const
+bool DocumentClassManager::write( const DocumentClass& documentClass, const File& filename ) const
 {
 
     // try open file
@@ -129,7 +129,7 @@ bool DocumentClassManager::write( const DocumentClass& document_class, const Fil
 
     // create main element
     QDomElement top = document.appendChild( document.createElement( XML::PATTERNS ) ).toElement();
-    top.appendChild( document_class.domElement( document ) );
+    top.appendChild( documentClass.domElement( document ) );
 
     out.write( document.toByteArray() );
     out.close();

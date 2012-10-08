@@ -105,28 +105,28 @@ DocumentClass::DocumentClass( const QDomElement& element ):
         } else if( childElement.tagName() == XML::KEYWORD_PATTERN || childElement.tagName() == XML::RANGE_PATTERN ) {
 
             HighlightPattern pattern( childElement );
-            if( pattern.isValid() ) highlightPatterns_.push_back( pattern );
+            if( pattern.isValid() ) highlightPatterns_ << pattern;
 
         } else if( childElement.tagName() == XML::INDENT_PATTERN ) {
 
             IndentPattern pattern( childElement );
-            if( pattern.isValid() ) indentPatterns_.push_back( pattern );
+            if( pattern.isValid() ) indentPatterns_ << pattern;
 
         } else if( childElement.tagName() == XML::PARENTHESIS ) {
 
             // parenthesis
-            textParenthesis_.push_back( TextParenthesis( childElement ) );
+            textParenthesis_ << TextParenthesis( childElement );
 
         } else if( childElement.tagName() == XML::BLOCK_DELIMITER ) {
 
             // block delimiters
-            blockDelimiters_.push_back( BlockDelimiter( childElement, blockDelimiters_.size() ) );
+            blockDelimiters_ << BlockDelimiter( childElement, blockDelimiters_.size() );
 
         } else if( childElement.tagName() == XML::MACRO ) {
 
             // text macrox
             TextMacro macro( childElement );
-            if( macro.isValid() ) textMacros_.push_back( macro );
+            if( macro.isValid() ) textMacros_ << macro;
 
         } else if( childElement.tagName() == OPTIONS::OPTION ) {
 
@@ -201,7 +201,7 @@ QStringList DocumentClass::associatePatterns( void )
         } else {
             QString what;
             QTextStream( &what ) << "Unable to find highlight pattern named " << iter->parent();
-            out.push_back( what );
+            out << what;
         }
     }
 
@@ -213,7 +213,7 @@ QStringList DocumentClass::associatePatterns( void )
         else {
             QString what;
             QTextStream( &what ) << "Unable to find highlight style named " << iter->style().name();
-            out.push_back( what );
+            out << what;
         }
 
     }

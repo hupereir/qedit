@@ -254,7 +254,7 @@ void SessionFilesFrame::_close( void )
     {
       FileRecord::List records;
       foreach( const FileRecord& record, selection )
-      { records.push_back( record ); }
+      { records << record; }
       emit filesClosed( records );
     }
 }

@@ -117,7 +117,7 @@ void RecentFilesFrame::update( void )
     // update records
     FileRecordModel::List records;
     foreach( const FileRecord& record, _recentFiles().records() )
-    { records.push_back( record ); }
+    { records << record; }
     _model().update( records );
 
     list().updateMask();

@@ -34,7 +34,7 @@ QString NewDocumentNameServer::get( void )
 
     unsigned int version( versions_.empty() ? 0: versions_.back()+1 );
     QString out( _get( version ) );
-    versions_.push_back( version );
+    versions_ << version;
     return out;
 
 }
