@@ -111,7 +111,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
         gridLayout->addWidget( label = new QLabel( "Type:", box ) );
         QString buffer;
         QTextStream what( &buffer );
-        if( record.hasFlag( FileSystemModel::LINK ) ) what << "Link";
+        if( record.hasFlag( FileSystemModel::Link ) ) what << "Link";
         if( record.hasFlag( FileSystemModel::Folder ) ) what << "Folder";
         if( record.hasFlag( FileSystemModel::Document ) ) what << "Document";
         gridLayout->addWidget( label = new QLabel( buffer, box ) );

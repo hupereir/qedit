@@ -61,7 +61,7 @@ void FileSystemThread::run( void )
     // add navigator
     FileRecord record( File("..") );
     record.setFlags( FileSystemModel::Navigator );
-    newFiles.push_back( record );
+    newFiles << record;
 
     // loop over entries and add
     unsigned int flags = File::None;
@@ -80,7 +80,7 @@ void FileSystemThread::run( void )
 
         // assign type
         record.setFlag( file.isDirectory() ? FileSystemModel::Folder : FileSystemModel::Document );
-        if( file.isLink() ) record.setFlag( FileSystemModel::LINK );
+        if( file.isLink() ) record.setFlag( FileSystemModel::Link );
 
         // add to model
         newFiles << record;

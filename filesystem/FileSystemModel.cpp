@@ -22,18 +22,11 @@
 *
 *******************************************************************************/
 
-/*!
-\file FileSystemModel.cpp
-\brief model for object records
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
+#include "FileSystemModel.h"
 
 #include "CustomPixmap.h"
 #include "FileSystemIcons.h"
 #include "FileRecordProperties.h"
-#include "FileSystemModel.h"
 #include "IconEngine.h"
 #include "Singleton.h"
 #include "XmlOptions.h"
@@ -239,36 +232,43 @@ void FileSystemModel::_installIcons( void ) const
 
     if( !_icons().empty() ) return;
 
-    // pixmap size
-    unsigned int pixmap_size = XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" );
-    QSize size( pixmap_size, pixmap_size );
-    QSize scale(size*0.9);
-
     // type icons
     typedef QHash< int, QString > IconNames;
-    IconNames type_names;
-    type_names[Document] = ICONS::Document;
-    type_names[Folder] = ICONS::Folder;
-    type_names[Navigator] = ICONS::PARENT_DIRECTORY;
+    IconNames typeNames;
+    typeNames[Document] = ICONS::DOCUMENT;
+    typeNames[Folder] = ICONS::FOLDER;
+    typeNames[Navigator] = ICONS::PARENT_DIRECTORY;
 
-    // load link pixmap
-    CustomPixmap link = CustomPixmap().find( ICONS::LINK );
+    // standard icons
+    for( IconNames::iterator iter = typeNames.begin(); iter != typeNames.end(); ++iter )
+    { _icons().insert( iter.key(), IconEngine::get( iter.value() ) ); }
 
-    for( IconNames::iterator iter = type_names.begin(); iter != type_names.end(); ++iter )
+    // link icons
+    QIcon linkOverlay = IconEngine::get( ICONS::LINK );
+    IconCache linkIcons;
+    for( IconCache::const_iterator iter = _icons().constBegin(); iter != _icons().end(); ++iter )
     {
 
-        _icons()[iter.key()] = CustomPixmap()
-            .empty( size )
-            .merge( CustomPixmap().find( iter.value() )
-            .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
+        QIcon icon;
+        const QIcon& base( iter.value() );
+        foreach( const QSize& size, base.availableSizes() )
+        {
 
-        _icons()[iter.key() | LINK] = CustomPixmap()
-            .empty( size )
-            .merge( CustomPixmap().find( iter.value() )
-            .merge( link, CustomPixmap::BOTTOM_LEFT )
-            .scaled( scale, Qt::KeepAspectRatio, Qt::SmoothTransformation ), CustomPixmap::CENTER );
+            QSize overlaySize;
+            if( size.width() <= 16 ) overlaySize = QSize( 8, 8 );
+            else if( size.width() <= 22 ) overlaySize = QSize( 8, 8 );
+            else if( size.width() <= 32 ) overlaySize = QSize( 12, 12 );
+            else if( size.width() <= 48 ) overlaySize = QSize( 16, 16 );
+            else if( size.width() <= 64 ) overlaySize = QSize( 22, 22 );
+            else if( size.width() <= 128 ) overlaySize = QSize( 48, 48 );
+            else overlaySize = QSize( 64, 64 );
 
+            icon.addPixmap( CustomPixmap( base.pixmap( size ) ).merge( linkOverlay.pixmap( overlaySize ), CustomPixmap::BOTTOM_RIGHT ) );
+        }
+
+        linkIcons.insert( iter.key() | Link, icon );
     }
 
-    return;
+    _icons().unite( linkIcons );
+
 }
