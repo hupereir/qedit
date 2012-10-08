@@ -197,12 +197,12 @@ FileSystemModel::SortFTor::SortFTor( const int& type, Qt::SortOrder order, const
 bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord second ) const
 {
 
-    if( order_ == Qt::DescendingOrder ) std::swap( first, second );
-
     if( first.hasFlag( Navigator ) ) return true;
     if( second.hasFlag( Navigator ) ) return false;
     if( first.hasFlag( Folder ) && second.hasFlag( Document ) ) return true;
     if( second.hasFlag( Folder ) && first.hasFlag( Document ) ) return false;
+
+    if( order_ == Qt::DescendingOrder ) std::swap( first, second );
 
     switch( type_ )
     {

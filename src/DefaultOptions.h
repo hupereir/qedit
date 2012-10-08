@@ -1,3 +1,6 @@
+#ifndef DefaultOptions_h
+#define DefaultOptions_h
+
 // $Id$
 
 /******************************************************************************
@@ -21,16 +24,9 @@
 *
 *******************************************************************************/
 
-/*!
-\file DefaultOptions.h
-\brief default options
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "Config.h"
 #include "FileRecordModel.h"
+#include "FileSystemModel.h"
 #include "MainWindow.h"
 #include "Util.h"
 #include "WindowServer.h"
@@ -90,8 +86,13 @@ void installDefaultOptions( void )
 
     // splitters
     XmlOptions::get().set( "NAVIGATION_FRAME_WIDTH", Option( "200" , "navigation frame width" ) );
+
+    // file lists mask and sorting
     XmlOptions::get().set<unsigned int>( "SESSION_FILES_MASK", (1<<FileRecordModel::ICON)|(1<<FileRecordModel::FILE) );
     XmlOptions::get().set<unsigned int>( "RECENT_FILES_MASK", (1<<FileRecordModel::ICON)|(1<<FileRecordModel::FILE) );
+
+    XmlOptions::get().set<unsigned int>( "FILE_SYSTEM_LIST_MASK", 1<<FileSystemModel::FILE );
+    XmlOptions::get().set<unsigned int>( "FILE_SYSTEM_LIST_SORT_COLUMN", FileSystemModel::TIME );
 
     // toolbars
     XmlOptions::get().set( "DOCUMENT_CLASS_MANAGER_TOOLBAR", Option( "1" , "toolbar visibility" ) );
@@ -145,3 +146,5 @@ void installDefaultOptions( void )
     XmlOptions::get().setAutoDefault( false );
 
 };
+
+#endif
