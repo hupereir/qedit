@@ -8,12 +8,9 @@
 	    <file alias="pixmaps/document-close.png">../pixmaps/document-close.png</file>        
 	    <file alias="pixmaps/document-multiple.png">../pixmaps/document-multiple.png</file>     
 	    <file alias="pixmaps/document-new.png">../pixmaps/document-new.png</file>          
-	    <file alias="pixmaps/document.png">../pixmaps/document.png</file>              
 	    <file alias="pixmaps/document-save-all.png">../pixmaps/document-save-all.png</file>     
 	    <file alias="pixmaps/document-save-as.png">../pixmaps/document-save-as.png</file>      
 	    <file alias="pixmaps/document-save.png">../pixmaps/document-save.png</file>         
-	    <file alias="pixmaps/emblem-symbolic-link.png">../pixmaps/emblem-symbolic-link.png</file>  
-	    <file alias="pixmaps/folder.png">../pixmaps/folder.png</file>                
 	    <file alias="pixmaps/format-indent-more.png">../pixmaps/format-indent-more.png</file>    
 	    <file alias="pixmaps/go-home.png">../pixmaps/go-home.png</file>               
 	    <file alias="pixmaps/go-next.png">../pixmaps/go-next.png</file>               
@@ -29,6 +26,10 @@
 	    <file alias="pixmaps/view-right-new.png">../pixmaps/view-right-new.png</file>        
 	    <file alias="pixmaps/view-split-left-right.png">../pixmaps/view-split-left-right.png</file> 
 	    <file alias="pixmaps/view-split-top-bottom.png">../pixmaps/view-split-top-bottom.png</file> 
--->
+	 
+	    <file alias="pixmaps/folder.png">../pixmaps/folder.png</file>                
+     <file alias="pixmaps/application-x-zerosize.png">../pixmaps/application-x-zerosize.png</file>              
+	    <file alias="pixmaps/emblem-symbolic-link.png">../pixmaps/emblem-symbolic-link.png</file>  
+
   </qresource>
 </RCC>
