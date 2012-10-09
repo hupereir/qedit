@@ -45,20 +45,22 @@ void installDefaultOptions( void )
     XmlOptions::get().set( "ICON_PIXMAP", Option( ":/icon.png" , "application icon") );
     XmlOptions::get().set( "FIXED_FONT_NAME", Option( "fixed" , "fixed font"  ) );
 
-    // input document_class pattern filenames options are special.
-    // keep the full list
+    // user specified document classes
     XmlOptions::get().keep( "PATTERN_FILENAME" );
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/c_patterns.xml" , "default patterns for c/c++ files") );
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/alice_patterns.xml" , "Alice patterns for c/c++ files") );
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/default_patterns.xml" , "default patterns") );
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/diff_patterns.xml" , "default patterns for diff files") );
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/fortran_patterns.xml" , "default patterns for fortran files") );
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/html_patterns.xml" , "default patterns for html files") );
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/latex_patterns.xml", "default patterns for latex files") );
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/makefile_patterns.xml", "default patterns for makefile files") );
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/perl_patterns.xml", "default patterns for perl files") );
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/shell_patterns.xml", "default patterns for shell files") );
-    XmlOptions::get().add( "PATTERN_FILENAME", Option( ":/patterns/xml_patterns.xml", "default patterns for xml files") );
+
+    // built-in document classes
+    XmlOptions::get().keep( "DEFAULT_PATTERN_FILENAME" );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/c_patterns.xml" , "default patterns for c/c++ files", Option::None ) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/alice_patterns.xml" , "Alice patterns for c/c++ files", Option::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/default_patterns.xml" , "default patterns", Option::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/diff_patterns.xml" , "default patterns for diff files", Option::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/fortran_patterns.xml" , "default patterns for fortran files", Option::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/html_patterns.xml" , "default patterns for html files", Option::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/latex_patterns.xml", "default patterns for latex files", Option::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/makefile_patterns.xml", "default patterns for makefile files", Option::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/perl_patterns.xml", "default patterns for perl files", Option::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/shell_patterns.xml", "default patterns for shell files", Option::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/xml_patterns.xml", "default patterns for xml files", Option::None) );
 
     XmlOptions::get().set( "CUSTOM_BLOCK_DELIMITERS", Option( "1", "use custom symbols for block delimiters") );
 

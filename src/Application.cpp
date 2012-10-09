@@ -195,7 +195,16 @@ void Application::_updateDocumentClasses( void )
     // load files from options
     QString buffer;
     QTextStream what( &buffer );
+
+    // read user specific patterns
     foreach( const Option& option, XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
+    {
+        classManager_->read( QString( option.raw() ) );
+        what << classManager_->readError();
+    }
+
+    // read build-in patterns
+    foreach( const Option& option, XmlOptions::get().specialOptions( "DEFAULT_PATTERN_FILENAME" ) )
     {
         classManager_->read( QString( option.raw() ) );
         what << classManager_->readError();
