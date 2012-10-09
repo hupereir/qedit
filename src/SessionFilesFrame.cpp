@@ -56,23 +56,24 @@ Counter( "SessionFilesFrame" )
     // list
     model_.setDragEnabled( true );
     layout()->addWidget( list_ = new TreeView( this ) );
-    list().setModel( &model_ );
-    list().setOptionName( "SESSION_FILES" );
-    list().header()->hide();
-    list().setDragEnabled( true );
-    list().setAcceptDrops( true );
-    list().setDropIndicatorShown(true);
+    list_->setModel( &model_ );
+    list_->setItemMargin( 2 );
+    list_->setOptionName( "SESSION_FILES" );
+    list_->header()->hide();
+    list_->setDragEnabled( true );
+    list_->setAcceptDrops( true );
+    list_->setDropIndicatorShown(true);
 
     // selection mode
-    list().setSelectionMode( QAbstractItemView::ContiguousSelection );
+    list_->setSelectionMode( QAbstractItemView::ContiguousSelection );
 
     // actions
     _installActions();
 
     // add actions to menu
-    ContextMenu* menu( new ContextMenu( &list() ) );
-    menu->addMenu( new ColumnSortingMenu( menu, &list() ) );
-    menu->addMenu( new ColumnSelectionMenu( menu, &list() ) );
+    ContextMenu* menu( new ContextMenu( list_ ) );
+    menu->addMenu( new ColumnSortingMenu( menu, list_ ) );
+    menu->addMenu( new ColumnSelectionMenu( menu, list_ ) );
     menu->addSeparator();
     menu->addAction( &_openAction() );
     menu->addAction( &_saveAction() );
@@ -83,10 +84,10 @@ Counter( "SessionFilesFrame" )
     menu->addAction( &nextFileAction() );
 
     // connections
-    connect( &model_, SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
-    connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions() ) );
-    connect( list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
-    connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
+    connect( &model_, SIGNAL( layoutChanged() ), list_, SLOT( updateMask() ) );
+    connect( list_, SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions() ) );
+    connect( list_->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
+    connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
 
 }
 
@@ -107,12 +108,12 @@ void SessionFilesFrame::select( const File& file )
     if( !index.isValid() ) return;
 
     // ensure index is selected
-    if( !list().selectionModel()->isSelected( index ) )
-    { list().selectionModel()->select( index, QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+    if( !list_->selectionModel()->isSelected( index ) )
+    { list_->selectionModel()->select( index, QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     // ensure index is current
-    if( index != list().selectionModel()->currentIndex() )
-    { list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows ); }
+    if( index != list_->selectionModel()->currentIndex() )
+    { list_->selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows ); }
 
 }
 
@@ -125,8 +126,8 @@ void SessionFilesFrame::update( void )
     const FileRecord::List records( Singleton::get().application<Application>()->windowServer().records( false, window() ) );
     model_.update( records );
 
-    list().updateMask();
-    list().resizeColumns();
+    list_->updateMask();
+    list_->resizeColumns();
 
     // make sure selected record appear selected in list
     FileRecord::List::const_iterator iter = std::find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::SELECTED ) );
@@ -146,7 +147,7 @@ void SessionFilesFrame::_updateActions( void )
     int counts( model_.rowCount() );
 
     // get selected files
-    SessionFilesModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
+    SessionFilesModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     bool hasSelection( !selection.empty() );
 
     _openAction().setEnabled( hasSelection );
@@ -169,7 +170,7 @@ void SessionFilesFrame::_selectPreviousFile( void )
     if( counts < 2 ) return;
 
     // get current index
-    QModelIndex current_index( list().selectionModel()->currentIndex() );
+    QModelIndex current_index( list_->selectionModel()->currentIndex() );
     if( !current_index.isValid() ) return;
 
     // get previous
@@ -184,7 +185,7 @@ void SessionFilesFrame::_selectPreviousFile( void )
     if( (!index.isValid()) || index == current_index ) return;
 
     // select new index
-    list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
+    list_->selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
 
 }
 
@@ -200,7 +201,7 @@ void SessionFilesFrame::_selectNextFile( void )
     if( counts < 2 ) return;
 
     // get current index
-    QModelIndex current_index( list().selectionModel()->currentIndex() );
+    QModelIndex current_index( list_->selectionModel()->currentIndex() );
     if( !current_index.isValid() ) return;
 
     // get previous
@@ -215,7 +216,7 @@ void SessionFilesFrame::_selectNextFile( void )
     if( (!index.isValid()) || index == current_index ) return;
 
     // select new index
-    list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
+    list_->selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
 
 }
 
@@ -224,7 +225,7 @@ void SessionFilesFrame::_open( void )
 {
 
     Debug::Throw( "SessionFilesFrame:_open.\n" );
-    foreach( const FileRecord& record, model_.get( list().selectionModel()->selectedRows() ) )
+    foreach( const FileRecord& record, model_.get( list_->selectionModel()->selectedRows() ) )
     { emit fileActivated( record ); }
 
 }
@@ -236,7 +237,7 @@ void SessionFilesFrame::_save( void )
     Debug::Throw( "SessionFilesFrame:_save.\n" );
 
     FileRecord::List modifiedRecords;
-    foreach( const FileRecord& record, model_.get( list().selectionModel()->selectedRows() ) )
+    foreach( const FileRecord& record, model_.get( list_->selectionModel()->selectedRows() ) )
     { if( record.hasFlag( FileRecordProperties::MODIFIED ) ) modifiedRecords << record; }
 
     if( !modifiedRecords.empty() ) emit filesSaved( modifiedRecords );
@@ -249,7 +250,7 @@ void SessionFilesFrame::_close( void )
 {
 
     Debug::Throw( "SessionFilesFrame:_close.\n" );
-    SessionFilesModel::List selection( model_.get( list().selectionModel()->selectedRows() ) );
+    SessionFilesModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     if( !selection.empty() )
     {
       FileRecord::List records;

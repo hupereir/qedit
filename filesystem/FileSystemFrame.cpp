@@ -76,15 +76,16 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
     // combo box
     layout->addWidget( pathComboBox_ = new CustomComboBox( this ) );
-    _comboBox().setEditable( true );
+    pathComboBox_->setEditable( true );
 
-    connect( &_comboBox(), SIGNAL( currentIndexChanged( const QString& ) ), SLOT( _updatePath( const QString& ) ) );
-    connect( &_comboBox(), SIGNAL( currentIndexChanged( const QString& ) ), SLOT( _updatePath( const QString& ) ) );
-    connect( _comboBox().lineEdit(), SIGNAL(returnPressed()), SLOT( _updatePath( void ) ) );
+    connect( pathComboBox_, SIGNAL( currentIndexChanged( const QString& ) ), SLOT( _updatePath( const QString& ) ) );
+    connect( pathComboBox_, SIGNAL( currentIndexChanged( const QString& ) ), SLOT( _updatePath( const QString& ) ) );
+    connect( pathComboBox_->lineEdit(), SIGNAL(returnPressed()), SLOT( _updatePath( void ) ) );
 
     // file list
     layout->addWidget( list_ = new AnimatedTreeView( this ), 1);
     list_->setModel( &model_ );
+    list_->setItemMargin( 2 );
     list_->setSelectionMode( QAbstractItemView::ContiguousSelection );
     list_->setOptionName( "FILE_SYSTEM_LIST" );
     list_->header()->hide();
@@ -92,9 +93,9 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     // list menu
     // should move to proper _updateMenu method, and only show relevant actions
     // also, should use baseFileInfo model
-    QMenu* menu( new ContextMenu( &_list() ) );
-    menu->addMenu( new ColumnSortingMenu( menu, &_list() ) );
-    menu->addMenu( new ColumnSelectionMenu( menu, &_list() ) );
+    QMenu* menu( new ContextMenu( list_ ) );
+    menu->addMenu( new ColumnSortingMenu( menu, list_ ) );
+    menu->addMenu( new ColumnSelectionMenu( menu, list_ ) );
     menu->addSeparator();
     menu->addAction( &_hiddenFilesAction() );
     menu->addSeparator();
@@ -108,14 +109,14 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     connect( &list_->transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
 
     // connections
-    connect( &model_, SIGNAL( layoutChanged() ), &_list(), SLOT( updateMask() ) );
+    connect( &model_, SIGNAL( layoutChanged() ), list_, SLOT( updateMask() ) );
     connect( list_->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _updateActions() ) );
     connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateActions() ) );
-    connect( &_list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
+    connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
 
     _updateNavigationActions();
 
-    connect( &_fileSystemWatcher(), SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
+    connect( &fileSystemWatcher_, SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
     connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
     _updateConfiguration();
     _updateActions();
@@ -243,7 +244,7 @@ void FileSystemFrame::_updateNavigationActions( void )
 void FileSystemFrame::_updatePath( void )
 {
     Debug::Throw( "FileSystemFrame::_updatePath.\n" );
-    _updatePath( _comboBox().lineEdit()->text() );
+    _updatePath( pathComboBox_->lineEdit()->text() );
 }
 
 //______________________________________________________
@@ -464,16 +465,16 @@ void FileSystemFrame::_animationFinished( void )
     _updateNavigationActions();
 
     // update combobox
-    if( _comboBox().findText( path() ) < 0 )
-    { _comboBox().addItem( path() ); }
+    if( pathComboBox_->findText( path() ) < 0 )
+    { pathComboBox_->addItem( path() ); }
 
-    _comboBox().setEditText( path() );
+    pathComboBox_->setEditText( path() );
 
     // reset file system watcher
-    const QStringList directories( _fileSystemWatcher().directories() );
-    if( !directories.isEmpty() ) _fileSystemWatcher().removePaths( directories );
+    const QStringList directories( fileSystemWatcher_.directories() );
+    if( !directories.isEmpty() ) fileSystemWatcher_.removePaths( directories );
 
-    _fileSystemWatcher().addPath( path() );
+    fileSystemWatcher_.addPath( path() );
 
 }
 

@@ -142,30 +142,8 @@ class FileSystemFrame: public QWidget, public Counter
 
     private:
 
-    //! path comboBox
-    CustomComboBox& _comboBox( void ) const
-    {
-        assert( pathComboBox_ );
-        return *pathComboBox_;
-    }
-
-    //! model
-    FileSystemModel& _model( void )
-    { return model_; }
-
-    //! list
-    AnimatedTreeView& _list( void ) const
-    {
-        assert( list_ );
-        return *list_;
-    }
-
     //! install actions
     void _installActions( void );
-
-    //! file system watcher
-    QFileSystemWatcher& _fileSystemWatcher( void )
-    { return fileSystemWatcher_; }
 
     //!@name actions
     //@{

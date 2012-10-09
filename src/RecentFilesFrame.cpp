@@ -55,27 +55,28 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
 
     // list
     layout()->addWidget( list_ = new TreeView( this ) );
-    list().setModel( &_model() );
-    list().setSelectionMode( QAbstractItemView::ContiguousSelection );
-    list().setOptionName( "RECENT_FILES_LIST" );
-    list().header()->hide();
+    list_->setModel( &_model() );
+    list_->setItemMargin( 2 );
+    list_->setSelectionMode( QAbstractItemView::ContiguousSelection );
+    list_->setOptionName( "RECENT_FILES_LIST" );
+    list_->header()->hide();
 
     // actions
     _installActions();
 
     // add actions to list
-    QMenu* menu( new ContextMenu( &list() ) );
-    menu->addMenu( new ColumnSortingMenu( menu, &list() ) );
-    menu->addMenu( new ColumnSelectionMenu( menu, &list() ) );
+    QMenu* menu( new ContextMenu( list_ ) );
+    menu->addMenu( new ColumnSortingMenu( menu, list_ ) );
+    menu->addMenu( new ColumnSelectionMenu( menu, list_ ) );
     menu->addAction( &_openAction() );
     menu->addSeparator();
     menu->addAction( &_cleanAction() );
 
     // connections
-    connect( &_model(), SIGNAL( layoutChanged() ), &list(), SLOT( updateMask() ) );
-    connect( &list(), SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions( void ) ) );
-    connect( list().selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
-    connect( &list(), SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
+    connect( &_model(), SIGNAL( layoutChanged() ), list_, SLOT( updateMask() ) );
+    connect( list_, SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions( void ) ) );
+    connect( list_->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
+    connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
 
     connect( &_recentFiles(), SIGNAL( validFilesChecked( void ) ), SLOT( update( void ) ) );
     connect( &_recentFiles(), SIGNAL( contentsChanged( void ) ), SLOT( update( void ) ) );
@@ -99,12 +100,12 @@ void RecentFilesFrame::select( const File& file )
     if( !index.isValid() ) return;
 
     // ensure index is selected
-    if( !list().selectionModel()->isSelected( index ) )
-    { list().selectionModel()->select( index, QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
+    if( !list_->selectionModel()->isSelected( index ) )
+    { list_->selectionModel()->select( index, QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
     // ensure index is current
-    if( index != list().selectionModel()->currentIndex() )
-    { list().selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows ); }
+    if( index != list_->selectionModel()->currentIndex() )
+    { list_->selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows ); }
 
 }
 
@@ -120,9 +121,9 @@ void RecentFilesFrame::update( void )
     { records << record; }
     _model().update( records );
 
-    list().updateMask();
-    list().resizeColumns();
-    list().update();
+    list_->updateMask();
+    list_->resizeColumns();
+    list_->update();
 
     // clean action enability
     _cleanAction().setEnabled( _recentFiles().cleanEnabled() );
@@ -146,7 +147,7 @@ void RecentFilesFrame::enterEvent( QEvent* e )
 void RecentFilesFrame::_updateActions( void )
 {
     Debug::Throw( "RecentFilesFrame:_updateActions.\n" );
-    FileRecordModel::List selection( _model().get( list().selectionModel()->selectedRows() ) );
+    FileRecordModel::List selection( _model().get( list_->selectionModel()->selectedRows() ) );
 
     bool has_validSelection( std::find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
     _openAction().setEnabled( has_validSelection );
@@ -171,7 +172,7 @@ void RecentFilesFrame::_open( void )
     Debug::Throw( "RecentFilesFrame:_open.\n" );
     FileRecordModel::List validSelection;
 
-    foreach( const FileRecord& record, _model().get( list().selectionModel()->selectedRows() ) )
+    foreach( const FileRecord& record, _model().get( list_->selectionModel()->selectedRows() ) )
     { if( record.isValid() ) validSelection << record; }
 
     // one should check the number of files to be edited
