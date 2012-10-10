@@ -19,100 +19,80 @@
 *
 *******************************************************************************/
 
-/*!
-  \file NewFileDialog.cpp
-  \brief QDialog used to ask if a new file should be created
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
+#include "NewFileDialog.h"
 
-
-#include <QLabel>
-#include <QLayout>
-#include <QPushButton>
-
-#include "PixmapEngine.h"
 #include "IconEngine.h"
 #include "Icons.h"
-#include "NewFileDialog.h"
 #include "QtUtil.h"
 
-
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QPushButton>
 
 //________________________________________________________
 NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned int& buttons ):
-  BaseDialog( parent ),
-  Counter( "NewFileDialog" )
+BaseDialog( parent ),
+Counter( "NewFileDialog" )
 {
 
-  Debug::Throw( "NewFileDialog::NewFileDialog.\n" );
+    Debug::Throw( "NewFileDialog::NewFileDialog.\n" );
 
-  setWindowTitle( "File Not Found - Qedit" );
+    setWindowTitle( "File Not Found - Qedit" );
 
-  // create vbox layout
-  QVBoxLayout* layout=new QVBoxLayout();
-  layout->setSpacing(5);
-  layout->setMargin(10);
-  setLayout( layout );
+    // create vbox layout
+    QVBoxLayout* layout=new QVBoxLayout();
+    layout->setSpacing(5);
+    layout->setMargin(10);
+    setLayout( layout );
 
-  // create message
-  QString buffer;
-  QTextStream( &buffer )
-    << "Can't open " << file << "." << endl
-    << "No such file or directory";
+    // create message
+    QString buffer;
+    QTextStream( &buffer )
+        << "Can't open " << file << "." << endl
+        << "No such file or directory";
 
-  //! try load Question icon
-  QPixmap question_pixmap( PixmapEngine::get( ICONS::WARNING ) );
-  if( question_pixmap.isNull() )
-  { layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter ); }
-  else
-  {
-
-    QHBoxLayout *h_layout( new QHBoxLayout() );
-    layout->addLayout( h_layout, 1 );
+    QHBoxLayout *hLayout( new QHBoxLayout() );
+    layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
-    label->setPixmap( question_pixmap );
-    h_layout->addWidget( label, 0, Qt::AlignHCenter );
-    h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
+    label->setPixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
+    hLayout->addWidget( label, 0, Qt::AlignHCenter );
+    hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
-  }
+    // horizontal separator
+    QFrame* frame( new QFrame( this ) );
+    frame->setFrameStyle( QFrame::HLine | QFrame::Sunken );
+    layout->addWidget( frame );
 
-  // horizontal separator
-  QFrame* frame( new QFrame( this ) );
-  frame->setFrameStyle( QFrame::HLine | QFrame::Sunken );
-  layout->addWidget( frame );
+    // button layout
+    QHBoxLayout *button_layout = new QHBoxLayout();
+    button_layout->setSpacing(5);
+    button_layout->setMargin(0);
+    layout->addLayout( button_layout );
 
-  // button layout
-  QHBoxLayout *button_layout = new QHBoxLayout();
-  button_layout->setSpacing(5);
-  button_layout->setMargin(0);
-  layout->addLayout( button_layout );
+    button_layout->addStretch(1);
 
-  button_layout->addStretch(1);
+    // yes button
+    QPushButton* button;
+    if( buttons & CREATE )
+    {
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&Create", this ) );
+        connect( button, SIGNAL( clicked() ), SLOT( _create() ) );
+    }
 
-  // yes button
-  QPushButton* button;
-  if( buttons & CREATE )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&Create", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _create() ) );
-  }
+    // cancel button.
+    if( buttons & CANCEL )
+    {
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
+        connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
+    }
 
-  // cancel button.
-  if( buttons & CANCEL )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
-  }
+    // cancel button.
+    if( buttons & EXIT )
+    {
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Exit", this ) );
+        connect( button, SIGNAL( clicked() ), SLOT( _exit() ) );
+    }
 
-  // cancel button.
-  if( buttons & EXIT )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Exit", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _exit() ) );
-  }
-
-  adjustSize();
+    adjustSize();
 
 }

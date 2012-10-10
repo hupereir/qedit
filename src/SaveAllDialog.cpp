@@ -24,9 +24,8 @@
 #include "SaveAllDialog.h"
 
 #include "Icons.h"
-#include "PixmapEngine.h"
-#include "Debug.h"
 #include "IconEngine.h"
+#include "Debug.h"
 
 #include <QtGui/QLabel>
 
@@ -45,11 +44,11 @@ CustomDialog( parent, OkButton | CancelButton| Separator )
 
     // add icon
     QLabel *label( new QLabel( this ) );
-    label->setPixmap( PixmapEngine::get( ICONS::WARNING ) );
+    label->setPixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
     hLayout->addWidget( label, 0, Qt::AlignHCenter );
 
     // create label text
-    static const int max_line_size( 50 );
+    static const int maxLineSize( 50 );
     int currentLine( 0 );
     QString buffer;
     QTextStream what( &buffer );
@@ -63,7 +62,7 @@ CustomDialog( parent, OkButton | CancelButton| Separator )
         else if( index == files.size()-2 ) what << " and ";
         else what << ".";
 
-        if( buffer.size() >= (currentLine+1)*max_line_size )
+        if( buffer.size() >= (currentLine+1)*maxLineSize )
         {
             what << endl;
             currentLine++;

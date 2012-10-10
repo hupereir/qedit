@@ -1451,7 +1451,7 @@ void TextDisplay::_installActions( void )
     connect( leadingTabsAction_, SIGNAL( triggered( void ) ), SLOT( _replaceLeadingTabs( void ) ) );
 
     // file information
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFO ), "Properties...", this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFORMATION ), "Properties...", this ) );
     filePropertiesAction_->setToolTip( "Display current file properties" );
     connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
 

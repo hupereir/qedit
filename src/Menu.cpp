@@ -141,6 +141,7 @@ Menu::Menu( QWidget* parent ):
     menu->addAction( &application.aboutAction() );
 
     // debug menu
+    #define DEBUG
     #ifdef DEBUG
     menu->addSeparator();
     DebugMenu *debug_menu( new DebugMenu( this ) );

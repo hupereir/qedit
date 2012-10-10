@@ -21,19 +21,10 @@
 *
 *******************************************************************************/
 
-/*!
-\file FileInformationDialog.cpp
-\brief  file informations
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "FileInformationDialog.h"
 
 #include "AnimatedTabWidget.h"
 #include "BaseIcons.h"
-#include "CustomPixmap.h"
 #include "Debug.h"
 #include "ElidedLabel.h"
 #include "FilePermissionsWidget.h"
@@ -74,9 +65,8 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     box->setLayout( hLayout );
 
     // try load Question icon
-    CustomPixmap pixmap = CustomPixmap().find( ICONS::INFORMATION );
     QLabel* label = new QLabel(box);
-    label->setPixmap( pixmap );
+    label->setPixmap( IconEngine::get( ICONS::INFORMATION ).pixmap( iconSize() ) );
     hLayout->addWidget( label, 0, Qt::AlignTop );
 
     QVBoxLayout* layout = new QVBoxLayout();

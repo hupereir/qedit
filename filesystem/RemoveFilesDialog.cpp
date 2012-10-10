@@ -23,7 +23,6 @@
 
 #include "BaseIcons.h"
 #include "IconEngine.h"
-#include "PixmapEngine.h"
 #include "TreeView.h"
 
 #include <QtGui/QHeaderView>
@@ -56,13 +55,12 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
     QLabel* textLabel( new QLabel( buffer, this ) );
 
     //! try load Question icon
-    QPixmap questionPixmap( PixmapEngine::get( ICONS::WARNING ) );
     QHBoxLayout *hLayout( new QHBoxLayout() );
     hLayout->setSpacing(10);
     hLayout->setMargin(0);
     mainLayout().addLayout( hLayout );
     QLabel* label = new QLabel( this );
-    label->setPixmap( questionPixmap );
+    label->setPixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
     hLayout->addWidget( label, 0, Qt::AlignHCenter );
     hLayout->addWidget( textLabel, 1, Qt::AlignLeft );
 

@@ -39,8 +39,6 @@
 namespace ICONS
 {
 
-  static const QString INFO = "info.png";
-
   static const QString DOCUMENT = "application-x-zerosize.png";
   static const QString FOLDER = "folder.png";
   static const QString LINK = "emblem-symbolic-link.png";

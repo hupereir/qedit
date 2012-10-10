@@ -20,120 +20,102 @@
 *
 *******************************************************************************/
 
-/*!
-  \file AskForSaveDialog.cpp
-  \brief QDialog used to ask if modifications of a file should be saved
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <QFrame>
-#include <QLabel>
-#include <QLayout>
-#include <QPushButton>
-
 #include "AskForSaveDialog.h"
 #include "BaseIcons.h"
 #include "GridLayout.h"
-#include "CustomPixmap.h"
 #include "IconEngine.h"
 #include "QtUtil.h"
 
-
+#include <QtGui/QFrame>
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QPushButton>
 
 //________________________________________________________
 AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, const unsigned int& buttons ):
-  BaseDialog( parent ),
-  Counter( "AskForSaveDialog" )
+BaseDialog( parent ),
+Counter( "AskForSaveDialog" )
 {
 
-  Debug::Throw( "AskForSaveDialog::AskForSaveDialog.\n" );
+    Debug::Throw( "AskForSaveDialog::AskForSaveDialog.\n" );
 
-  // create vbox layout
-  QVBoxLayout* layout=new QVBoxLayout();
-  layout->setSpacing(5);
-  layout->setMargin(10);
-  setLayout( layout );
+    // create vbox layout
+    QVBoxLayout* layout=new QVBoxLayout();
+    layout->setSpacing(5);
+    layout->setMargin(10);
+    setLayout( layout );
 
-  // create message
-  QString buffer;
-  QTextStream what( &buffer );
-  what << "File ";
-  if( file.size() ) what << "\"" << file.localName() << "\" ";
-  what << "has been modified." << endl << "Save ?";
+    // create message
+    QString buffer;
+    QTextStream what( &buffer );
+    what << "File ";
+    if( file.size() ) what << "\"" << file.localName() << "\" ";
+    what << "has been modified." << endl << "Save ?";
 
-  //! try load Question icon
-  CustomPixmap question_pixmap = CustomPixmap().find( ICONS::WARNING );
+    //! try load Question icon
+    const QPixmap pixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
 
-  // insert main vertical box
-  if( question_pixmap.isNull() )
-  { layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter ); }
-  else
-  {
-
-    QHBoxLayout *h_layout( new QHBoxLayout() );
-    layout->addLayout( h_layout, 1 );
+    // insert main vertical box
+    QHBoxLayout *hLayout( new QHBoxLayout() );
+    layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
-    label->setPixmap( question_pixmap );
-    h_layout->addWidget( label, 0, Qt::AlignHCenter );
-    h_layout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
+    label->setPixmap( pixmap );
+    hLayout->addWidget( label, 0, Qt::AlignHCenter );
+    hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
-  }
+    QFrame* frame( new QFrame( this ) );
+    frame->setFrameStyle( QFrame::HLine | QFrame::Sunken );
+    layout->addWidget( frame );
 
-  QFrame* frame( new QFrame( this ) );
-  frame->setFrameStyle( QFrame::HLine | QFrame::Sunken );
-  layout->addWidget( frame );
+    // button layout
+    QHBoxLayout *button_layout = new QHBoxLayout();
+    button_layout->setSpacing(5);
+    button_layout->setMargin(0);
+    layout->addLayout( button_layout );
 
-  // button layout
-  QHBoxLayout *button_layout = new QHBoxLayout();
-  button_layout->setSpacing(5);
-  button_layout->setMargin(0);
-  layout->addLayout( button_layout );
+    button_layout->addStretch( 1 );
 
-  button_layout->addStretch( 1 );
+    // yes button
+    QPushButton* button;
+    if( buttons & YES )
+    {
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK ), "&Yes", this ) );
+        connect( button, SIGNAL( clicked() ), SLOT( _yes() ) );
+        button->setToolTip( "Save modified file to disk" );
+    }
 
-  // yes button
-  QPushButton* button;
-  if( buttons & YES )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK ), "&Yes", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _yes() ) );
-    button->setToolTip( "Save modified file to disk" );
-  }
+    // yes to all button
+    if( buttons & YES_TO_ALL )
+    {
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK_APPLY ), "Yes to &All", this ) );
+        connect( button, SIGNAL( clicked() ), SLOT( _yesToAll() ) );
+        button->setToolTip( "Save all modified files to disk" );
+    }
 
-  // yes to all button
-  if( buttons & YES_TO_ALL )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_OK_APPLY ), "Yes to &All", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _yesToAll() ) );
-    button->setToolTip( "Save all modified files to disk" );
-  }
+    // no button
+    if( buttons & NO )
+    {
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&No", this ) );
+        connect( button, SIGNAL( clicked() ), SLOT( _no() ) );
+        button->setToolTip( "Ignore file modifications" );
+    }
 
-  // no button
-  if( buttons & NO )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&No", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _no() ) );
-    button->setToolTip( "Ignore file modifications" );
-  }
+    // no button
+    if( buttons & NO_TO_ALL )
+    {
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "No to A&ll", this ) );
+        connect( button, SIGNAL( clicked() ), SLOT( _noToAll() ) );
+        button->setToolTip( "Ignore all files modifications" );
+    }
 
-  // no button
-  if( buttons & NO_TO_ALL )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "No to A&ll", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _noToAll() ) );
-    button->setToolTip( "Ignore all files modifications" );
-  }
+    // cancel button
+    if( buttons & CANCEL )
+    {
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
+        connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
+        button->setToolTip( "Cancel current action" );
+    }
 
-  // cancel button
-  if( buttons & CANCEL )
-  {
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
-    button->setToolTip( "Cancel current action" );
-  }
-
-  adjustSize();
+    adjustSize();
 
 }

@@ -23,11 +23,10 @@
 
 #include "CloseFilesDialog.h"
 
+#include "Debug.h"
 #include "FileRecordProperties.h"
 #include "Icons.h"
 #include "IconEngine.h"
-#include "PixmapEngine.h"
-#include "Debug.h"
 
 #include <QtGui/QLabel>
 
@@ -47,7 +46,7 @@ CustomDialog( parent, OkButton | CancelButton| Separator )
 
     // add icon
     QLabel *label( new QLabel( this ) );
-    label->setPixmap( PixmapEngine::get( ICONS::WARNING ) );
+    label->setPixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
     hLayout->addWidget( label, 0, Qt::AlignHCenter );
 
     // create label text
