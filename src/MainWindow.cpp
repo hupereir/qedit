@@ -1072,5 +1072,4 @@ void MainWindow::_updateWindowTitle()
         .setModified( activeDisplay().document()->isModified() )
         );
 
-    Debug::Throw( "MainWindow::_updateWindowTitle. Done.\n" );
 }
