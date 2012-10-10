@@ -137,7 +137,8 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
 
     } else if( showIcons_ && role == Qt::DecorationRole && index.column() == FILE ) {
 
-        return _icons()[record.flags()&ANY];
+        if( record.flags()&Navigator ) return _icons()[Navigator];
+        else return _icons()[record.flags()&Any];
 
     }
 
@@ -237,7 +238,7 @@ void FileSystemModel::_installIcons( void ) const
     IconNames typeNames;
     typeNames[Document] = ICONS::DOCUMENT;
     typeNames[Folder] = ICONS::FOLDER;
-    typeNames[Navigator] = ICONS::PARENT_DIRECTORY;
+    typeNames[Navigator] = ICONS::PARENT;
 
     // standard icons
     for( IconNames::iterator iter = typeNames.begin(); iter != typeNames.end(); ++iter )

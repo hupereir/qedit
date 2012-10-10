@@ -501,12 +501,12 @@ void FileSystemFrame::_installActions( void )
     _nextDirectoryAction().setToolTip( "Change path to next directory (from history)" );
 
     // parent directory in tree
-    addAction( parentDirectoryAction_ = new QAction( IconEngine::get( ICONS::PARENT_DIRECTORY ), "Parent Directory", this ) );
+    addAction( parentDirectoryAction_ = new QAction( IconEngine::get( ICONS::PARENT ), "Parent Directory", this ) );
     connect( &_parentDirectoryAction(), SIGNAL( triggered() ), SLOT( _parentDirectory() ) );
     _parentDirectoryAction().setToolTip( "Change path to parent directory" );
 
     // home directory
-    addAction( homeDirectoryAction_ = new QAction( IconEngine::get( ICONS::HOME_DIRECTORY ), "Home", this ) );
+    addAction( homeDirectoryAction_ = new QAction( IconEngine::get( ICONS::HOME ), "Home", this ) );
     connect( &_homeDirectoryAction(), SIGNAL( triggered() ), SLOT( _homeDirectory() ) );
     _homeDirectoryAction().setToolTip( "Change path to current file working directory" );
 

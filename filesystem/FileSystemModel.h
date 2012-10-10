@@ -56,7 +56,7 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
         Folder = 1<<1,
         Link = 1<<2,
         Navigator = 1<<3,
-        ANY = Document | Folder | Link | Navigator
+        Any = Document | Folder | Link | Navigator
     };
 
     //! number of columns
