@@ -52,14 +52,11 @@ Counter( "AskForSaveDialog" )
     if( file.size() ) what << "\"" << file.localName() << "\" ";
     what << "has been modified." << endl << "Save ?";
 
-    //! try load Question icon
-    const QPixmap pixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
-
     // insert main vertical box
     QHBoxLayout *hLayout( new QHBoxLayout() );
     layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
-    label->setPixmap( pixmap );
+    label->setPixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
     hLayout->addWidget( label, 0, Qt::AlignHCenter );
     hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
