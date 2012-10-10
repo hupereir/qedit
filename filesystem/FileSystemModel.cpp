@@ -25,21 +25,14 @@
 #include "FileSystemModel.h"
 
 #include "CustomPixmap.h"
+#include "FileIconProvider.h"
 #include "FileSystemIcons.h"
 #include "FileRecordProperties.h"
 #include "IconEngine.h"
-#include "Singleton.h"
 #include "XmlOptions.h"
 
 #include <algorithm>
 #include <cassert>
-
-//_______________________________________________
-FileSystemModel::IconCache& FileSystemModel::_icons( void )
-{
-    static IconCache cache;
-    return cache;
-}
 
 //__________________________________________________________________
 FileSystemModel::FileSystemModel( QObject* parent ):
@@ -50,13 +43,8 @@ FileSystemModel::FileSystemModel( QObject* parent ):
     sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) )
 {
     Debug::Throw("FileSystemModel::FileSystemModel.\n" );
-
-    columnTitles_
-        << "File"
-        << "Size"
-        << "Time";
-
-    connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+    columnTitles_ << "File" << "Size" << "Time";
+    iconProvider_ = new FileIconProvider( this );
 
 }
 
@@ -86,9 +74,6 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
     // check index, role and column
     if( !index.isValid() ) return QVariant();
 
-    // retrieve associated file info
-    const FileRecord& record( get(index) );
-
     // return text associated to file and column
     if( role == Qt::DisplayRole ) {
 
@@ -98,34 +83,20 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
             case FILE:
             {
                 // store local nmae
-                const QString localName( useLocalNames_ ? record.file().localName(): record.file() );
-
-                // loop over previous rows to find a match and increment version number
-                unsigned int version( 0 );
-                for( int row = 0; row < index.row(); row++ )
-                {
-                    const QString rowName( useLocalNames_ ?
-                        get( this->index( row, FILE ) ).file().localName() :
-                        get( this->index( row, FILE ) ).file() );
-                    if( localName == rowName ) version++;
-                }
-
-                // form output string.
-                QString buffer;
-                QTextStream what( &buffer );
-                what << localName;
-                if( version ) what << " (" << version+1 << ")";
-                return buffer;
+                const FileRecord& record( get(index) );
+                return useLocalNames_ ? record.file().localName(): record.file();
             }
 
             case SIZE:
             {
+                const FileRecord& record( get(index) );
                 if( record.hasFlag( Document ) ) return QString( record.property( sizePropertyId_ ) );
                 else return QVariant();
             }
 
             case TIME:
             {
+                const FileRecord& record( get(index) );
                 if( record.hasFlag( Document ) ) return QString( TimeStamp( record.time() ).toString() );
                 else return QVariant();
             }
@@ -137,8 +108,8 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
 
     } else if( showIcons_ && role == Qt::DecorationRole && index.column() == FILE ) {
 
-        if( record.flags()&Navigator ) return _icons()[Navigator];
-        else return _icons()[record.flags()&Any];
+        const FileRecord& record( get(index) );
+        return iconProvider_->icon( record );
 
     }
 
@@ -159,20 +130,6 @@ QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation, i
 
     // return empty
     return QVariant();
-
-}
-
-
-//_________________________________________________________
-void FileSystemModel::_updateConfiguration( void )
-{
-
-    Debug::Throw( "FileSystemModel::_updateConfiguration.\n" );
-
-    // install pixmaps
-    _icons().clear();
-    _installIcons();
-    reset();
 
 }
 
@@ -222,54 +179,5 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
         default: return true;
 
     }
-
-}
-
-//_____________________________________________________________________
-void FileSystemModel::_installIcons( void ) const
-{
-
-    Debug::Throw( "FileSystemModel::_installIcons.\n" );
-
-    if( !_icons().empty() ) return;
-
-    // type icons
-    typedef QHash< int, QString > IconNames;
-    IconNames typeNames;
-    typeNames[Document] = ICONS::DOCUMENT;
-    typeNames[Folder] = ICONS::FOLDER;
-    typeNames[Navigator] = ICONS::PARENT;
-
-    // standard icons
-    for( IconNames::iterator iter = typeNames.begin(); iter != typeNames.end(); ++iter )
-    { _icons().insert( iter.key(), IconEngine::get( iter.value() ) ); }
-
-    // link icons
-    QIcon linkOverlay = IconEngine::get( ICONS::LINK );
-    IconCache linkIcons;
-    for( IconCache::const_iterator iter = _icons().constBegin(); iter != _icons().end(); ++iter )
-    {
-
-        QIcon icon;
-        const QIcon& base( iter.value() );
-        foreach( const QSize& size, base.availableSizes() )
-        {
-
-            QSize overlaySize;
-            if( size.width() <= 16 ) overlaySize = QSize( 8, 8 );
-            else if( size.width() <= 22 ) overlaySize = QSize( 8, 8 );
-            else if( size.width() <= 32 ) overlaySize = QSize( 12, 12 );
-            else if( size.width() <= 48 ) overlaySize = QSize( 16, 16 );
-            else if( size.width() <= 64 ) overlaySize = QSize( 22, 22 );
-            else if( size.width() <= 128 ) overlaySize = QSize( 48, 48 );
-            else overlaySize = QSize( 64, 64 );
-
-            icon.addPixmap( CustomPixmap( base.pixmap( size ) ).merge( linkOverlay.pixmap( overlaySize ), CustomPixmap::BOTTOM_RIGHT ) );
-        }
-
-        linkIcons.insert( iter.key() | Link, icon );
-    }
-
-    _icons().unite( linkIcons );
 
 }

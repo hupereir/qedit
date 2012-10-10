@@ -24,28 +24,20 @@
 *
 *******************************************************************************/
 
-/*!
-\file FileSystemModel.h
-\brief model for object counters
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QHash>
-
 #include "Counter.h"
 #include "Debug.h"
 #include "FileRecord.h"
 #include "ListModel.h"
 
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QHash>
+
+class FileIconProvider;
+
 //! qlistview for object counters
 class FileSystemModel: public ListModel<FileRecord>, public Counter
 {
-
-    Q_OBJECT
 
     public:
 
@@ -114,6 +106,9 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
 
     private:
 
+    //! icon provider
+    FileIconProvider* iconProvider_;
+
     //! used to sort Counters
     class SortFTor: public ItemModel::SortFTor
     {
@@ -135,15 +130,6 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
         QStringList columnTitles_;
 
     };
-
-    //! install pixmaps
-    void _installIcons( void ) const;
-
-    //! icon cache
-    typedef QHash<unsigned int, QIcon> IconCache;
-
-    //! type icon cache
-    static IconCache& _icons( void );
 
     //! local names
     bool useLocalNames_;
