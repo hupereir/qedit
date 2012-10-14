@@ -202,6 +202,9 @@ class FileSystemFrame: public QWidget, public Counter
     //! current path
     File path_;
 
+    //! true to show navigator in list
+    bool showNavigator_;
+
     //!@name actions
     //@{
 

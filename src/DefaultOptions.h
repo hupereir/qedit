@@ -62,15 +62,15 @@ void installDefaultOptions( void )
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/shell_patterns.xml", "default patterns for shell files", Option::None) );
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/xml_patterns.xml", "default patterns for xml files", Option::None) );
 
-    XmlOptions::get().set( "CUSTOM_BLOCK_DELIMITERS", Option( "1", "use custom symbols for block delimiters") );
+    XmlOptions::get().set( "CUSTOM_BLOCK_DELIMITERS", "1" );
 
     // diff configuration
     XmlOptions::get().set( "DIFF_ADDED_COLOR", "#d0eaff" );
     XmlOptions::get().set( "DIFF_CONFLICT_COLOR", "#ecffec" );
 
-    XmlOptions::get().set( "PARENTHESIS_COLOR", Option( "red", "color when highlighting matching parenthesis" ) );
-    XmlOptions::get().set( "TAGGED_BLOCK_COLOR", Option( "#fffdd4", "color for tagged paragraphs" ) );
-    XmlOptions::get().set( "BACKUP", Option( "0", "make backup when saving file" ) );
+    XmlOptions::get().set( "PARENTHESIS_COLOR", "red" );
+    XmlOptions::get().set( "TAGGED_BLOCK_COLOR", "#fffdd4" );
+    XmlOptions::get().set( "BACKUP", "0" );
     XmlOptions::get().set( "DB_SIZE", "30" );
 
     XmlOptions::get().set( "IGNORE_AUTOMATIC_MACROS", "0" );
@@ -79,15 +79,16 @@ void installDefaultOptions( void )
     XmlOptions::get().set( "TEXT_INDENT", "1" );
     XmlOptions::get().set( "TEXT_HIGHLIGHT", "1" );
     XmlOptions::get().set( "TEXT_PARENTHESIS", "1" );
-    XmlOptions::get().set( "WRAP_FROM_CLASS", Option( "1", "set to 1 if you wand DocumentClass to enable/disable wrapping" ) );
-    XmlOptions::get().set( "EMULATE_TABS_FROM_CLASS", Option( "1", "set to 1 if you wand DocumentClass to enable/disable tab emulation" ) );
+    XmlOptions::get().set( "WRAP_FROM_CLASS", "1" );
+    XmlOptions::get().set( "EMULATE_TABS_FROM_CLASS", "1" );
     XmlOptions::get().set( "WINDOW_HEIGHT", "500" );
     XmlOptions::get().set( "WINDOW_WIDTH", "700" );
-    XmlOptions::get().set( "SERVER_TIMEOUT_DELAY", Option( "3000" , "timeout delay to wait for existing server to answer" ) );
-    XmlOptions::get().set( "SHOW_NAVIGATION_FRAME", Option( "1", "show/hide navigation window" ) );
+    XmlOptions::get().set( "SERVER_TIMEOUT_DELAY", "3000" );
+    XmlOptions::get().set( "SHOW_NAVIGATION_FRAME", "1" );
+    XmlOptions::get().set( "SHOW_NAVIGATOR", "0" );
 
     // splitters
-    XmlOptions::get().set( "NAVIGATION_FRAME_WIDTH", Option( "200" , "navigation frame width" ) );
+    XmlOptions::get().set( "NAVIGATION_FRAME_WIDTH", "200" );
 
     // file lists mask and sorting
     XmlOptions::get().set<unsigned int>( "SESSION_FILES_MASK", (1<<FileRecordModel::ICON)|(1<<FileRecordModel::FILE) );
@@ -97,44 +98,38 @@ void installDefaultOptions( void )
     XmlOptions::get().set<unsigned int>( "FILE_SYSTEM_LIST_SORT_COLUMN", FileSystemModel::TIME );
 
     // toolbars
-    XmlOptions::get().set( "DOCUMENT_CLASS_MANAGER_TOOLBAR", Option( "1" , "toolbar visibility" ) );
-    XmlOptions::get().set( "EDITION_TOOLBAR", Option( "1" , "toolbar visibility" ) );
-    XmlOptions::get().set( "EXTRA_TOOLBAR", Option( "1" , "toolbar visibility" ) );
-    XmlOptions::get().set( "FILE_TOOLBAR", Option( "1" , "toolbar visibility" ) );
-    XmlOptions::get().set( "NAVIGATION_TOOLBAR", Option( "1" , "toolbar visibility" ) );
-    XmlOptions::get().set( "SPLIT_TOOLBAR", Option( "1" , "toolbar visibility" ) );
-
-    XmlOptions::get().set( "DOCUMENT_CLASS_MANAGER_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
-    XmlOptions::get().set( "EDITION_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
-    XmlOptions::get().set( "EXTRA_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
-    XmlOptions::get().set( "FILE_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
-    XmlOptions::get().set( "SPLIT_TOOLBAR_LOCATION", Option( "top" , "toolbar location" ) );
+    XmlOptions::get().set( "DOCUMENT_CLASS_MANAGER_TOOLBAR", "1" );
+    XmlOptions::get().set( "EDITION_TOOLBAR", "1" );
+    XmlOptions::get().set( "EXTRA_TOOLBAR", "1" );
+    XmlOptions::get().set( "FILE_TOOLBAR", "1" );
+    XmlOptions::get().set( "NAVIGATION_TOOLBAR", "1" );
+    XmlOptions::get().set( "SPLIT_TOOLBAR", "1" );
 
     XmlOptions::get().set( "AUTOSAVE", "1" );
-    XmlOptions::get().set( "AUTOSAVE_INTERVAL", Option( "20", "time interval between two automatic save of the file" ) );
+    XmlOptions::get().set( "AUTOSAVE_INTERVAL", "20" );
 
-    XmlOptions::get().set( "HIGHLIGHT_PARAGRAPH", Option( "1", "active paragraph highlighting" ) );
-    XmlOptions::get().set( "HIGHLIGHT_COLOR", Option( "#FFFDD4", "paragraph highlight color" ) );
+    XmlOptions::get().set( "HIGHLIGHT_PARAGRAPH", "1" );
+    XmlOptions::get().set( "HIGHLIGHT_COLOR", "#FFFDD4" );
 
     /* multiple views */
-    XmlOptions::get().set( "OPEN_MODE", Option( WindowServer::SINGLE_WINDOW ) );
-    XmlOptions::get().set( "ORIENTATION", Option( MainWindow::TOP_BOTTOM ) );
-    XmlOptions::get().set( "DIFF_ORIENTATION", Option( MainWindow::LEFT_RIGHT ) );
+    XmlOptions::get().set( "OPEN_MODE", WindowServer::SINGLE_WINDOW );
+    XmlOptions::get().set( "ORIENTATION", MainWindow::TOP_BOTTOM );
+    XmlOptions::get().set( "DIFF_ORIENTATION", MainWindow::LEFT_RIGHT );
 
     #ifdef WITH_ASPELL
-    XmlOptions::get().set( "DICTIONARY", Option( "en" , "default dictionary"  ) );
-    XmlOptions::get().set( "DICTIONARY_FILTER", Option( "none" , "default filter"  ) );
-    XmlOptions::get().set( "AUTOSPELL_COLOR", Option( "red", "highlight color for autospell" ) );
-    XmlOptions::get().set( "AUTOSPELL_FONT_FORMAT", Option( "0", "highlight font format for autospell" ) );
-    XmlOptions::get().set( "MAX_SUGGESTIONS", Option( "0", "maximum number of suggestions. 0 means all." ) );
+    XmlOptions::get().set( "DICTIONARY", "en" );
+    XmlOptions::get().set( "DICTIONARY_FILTER", "none" );
+    XmlOptions::get().set( "AUTOSPELL_COLOR", "red" );
+    XmlOptions::get().set( "AUTOSPELL_FONT_FORMAT", "0" );
+    XmlOptions::get().set( "MAX_SUGGESTIONS", "0" );
     #endif
 
     XmlOptions::get().set( "NAVIGATION_SIDEBAR", "1" );
     XmlOptions::get().set( "NAVIGATION_SIDEBAR_LOCATION", "left" );
 
     // toolbars default configuration
-    XmlOptions::get().set( "NAVIGATION_SIDEBAR_ICON_SIZE", "16" , "text label in tool buttons" );
-    XmlOptions::get().set( "NAVIGATION_SIDEBAR_TEXT_POSITION", "2" , "text label in tool buttons" );
+    XmlOptions::get().set( "NAVIGATION_SIDEBAR_ICON_SIZE", "16" );
+    XmlOptions::get().set( "NAVIGATION_SIDEBAR_TEXT_POSITION", "2" );
 
     // run-time non recordable options
     // default value for autosave directory
@@ -144,7 +139,7 @@ void installDefaultOptions( void )
     XmlOptions::get().set( "APP_NAME", Option( "QEDIT", Option::None ) );
     XmlOptions::get().set( "HELP_FILE", Option( File( ".qedit_help").addPath(Util::home()), Option::None ) );
     XmlOptions::get().set( "DB_FILE", Option( File(".qedit_db").addPath(Util::home()), Option::None ) );
-    XmlOptions::get().set( "RC_FILE", Option(  File(".qeditrc").addPath(Util::home()), Option::None ) );
+    XmlOptions::get().set( "RC_FILE", Option( File(".qeditrc").addPath(Util::home()), Option::None ) );
     XmlOptions::get().setAutoDefault( false );
 
 };

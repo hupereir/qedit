@@ -58,11 +58,6 @@ void FileSystemThread::run( void )
     // loop over directory contents
     FileSystemModel::List newFiles;
 
-    // add navigator
-    FileRecord record( File("..") );
-    record.setFlags( FileSystemModel::Navigator );
-    newFiles << record;
-
     // loop over entries and add
     unsigned int flags = File::None;
     if( showHiddenFiles_ ) flags |= File::ShowHiddenFiles;

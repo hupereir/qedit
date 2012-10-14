@@ -50,6 +50,7 @@
 FileSystemFrame::FileSystemFrame( QWidget *parent ):
     QWidget( parent ),
     Counter( "FileSystemFrame" ),
+    showNavigator_( false ),
     homePath_( Util::home() ),
     fileSystemWatcher_( this ),
     thread_( this )
@@ -175,18 +176,27 @@ void FileSystemFrame::customEvent( QEvent* event )
 
     if( event->type() != FileSystemEvent::eventType() ) return;
 
-    FileSystemEvent* file_system_event( static_cast<FileSystemEvent*>(event) );
-    if( !file_system_event ) return;
+    FileSystemEvent* fileSystemEvent( static_cast<FileSystemEvent*>(event) );
+    if( !fileSystemEvent ) return;
 
     // check path
-    if( file_system_event->path() != path() )
+    if( fileSystemEvent->path() != path() )
     {
         _update();
         return;
     }
 
-    // update model and list
-    model_.update( file_system_event->files() );
+    // add navigator if needed and update model
+    if( showNavigator_ )
+    {
+        FileSystemModel::List records( fileSystemEvent->files() );
+        FileRecord record( File("..") );
+        record.setFlags( FileSystemModel::Navigator );
+        records << record;
+        model_.update( records );
+    } else model_.update( fileSystemEvent->files() );
+
+    // update list
     list_->updateMask();
     list_->resizeColumnToContents( FileSystemModel::FILE );
 
@@ -228,6 +238,10 @@ void FileSystemFrame::_updateConfiguration( void )
 {
     Debug::Throw( "FileSystemFrame::_updateConfiguration.\n" );
     _hiddenFilesAction().setChecked( XmlOptions::get().get<bool>( "SHOW_HIDDEN_FILES" ) );
+
+    // show navigator in list
+    showNavigator_ = XmlOptions::get().get<bool>( "SHOW_NAVIGATOR" );
+
 }
 
 //______________________________________________________
@@ -433,11 +447,11 @@ void FileSystemFrame::_rename( void )
     dialog.setWindowTitle( "Rename Item - Qedit" );
     if( !dialog.centerOnWidget( window() ).exec() ) return;
 
-    File new_file( dialog.file() );
-    if( new_file == record.file() ) return;
+    File newFile( dialog.file() );
+    if( newFile == record.file() ) return;
 
     // rename
-    record.file().addPath( path() ).rename( new_file.addPath( path() ) );
+    record.file().addPath( path() ).rename( newFile.addPath( path() ) );
 
 }
 

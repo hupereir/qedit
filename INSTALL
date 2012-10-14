@@ -52,17 +52,7 @@ Alternatively a different installation path can be set at configuration time usi
 
 cmake -DCMAKE_INSTALL_PREFIX=$HOME .
 
-Binaries will be created in $HOME/bin.
-
-IV. qmake
----------
-
-Alternatively (and notably on non linux platforms), Qt build system might be used to configure the code:
-
-cd qedit-xyz/
-qmake .
-make
-make install
+Program files will be installed in $HOME/bin.
 
 Questions, comments:
 hugo.pereira@free.fr
