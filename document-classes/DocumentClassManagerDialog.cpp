@@ -23,10 +23,12 @@
 #include "DocumentClassManagerDialog.h"
 
 #include "BaseIcons.h"
+#include "ContextMenu.h"
 #include "DocumentClassManager.h"
 #include "DocumentClass.h"
 #include "FileDialog.h"
 #include "IconEngine.h"
+#include "QuestionDialog.h"
 #include "TreeView.h"
 #include "XmlOptions.h"
 
@@ -54,6 +56,8 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     hLayout->addWidget( list_ = new TreeView( this ) );
     list_->setItemMargin( 2 );
     list_->setModel( &model_ );
+    list_->setSortingEnabled( false );
+    list_->header()->hide();
     list_->setOptionName( "DOCUMENT_CLASS_MANAGER_LIST" );
 
     // buttons
@@ -62,19 +66,58 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     vLayout->setMargin(0);
     hLayout->addLayout( vLayout );
 
-    QPushButton* button;
-    vLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
-    connect( button, SIGNAL( clicked( void ) ), SLOT( _add( void ) ) );
+    vLayout->addWidget( addButton_ = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
+    connect( addButton_, SIGNAL( clicked( void ) ), SLOT( _add( void ) ) );
+
+    vLayout->addWidget( removeButton_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
+    connect( removeButton_, SIGNAL( clicked( void ) ), SLOT( _remove( void ) ) );
+
+    vLayout->addWidget( reloadButton_ = new QPushButton( IconEngine::get( ICONS::RELOAD ), "Reload", this ) );
+    connect( reloadButton_, SIGNAL( clicked( void ) ), SLOT( _reload( void ) ) );
 
     vLayout->addStretch( 1 );
 
-    _read();
+    // actions
+    QMenu* menu( new ContextMenu( list_ ) );
+    addAction( addAction_ = new QAction( IconEngine::get( ICONS::ADD ), "Add", this ) );
+    connect( addAction_, SIGNAL( triggered( void ) ), SLOT( _add( void ) ) );
+    addAction_->setShortcut( QKeySequence::New );
+    menu->addAction( addAction_ );
+
+    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
+    connect( removeAction_, SIGNAL( triggered( void ) ), SLOT( _remove( void ) ) );
+    removeAction_->setShortcut( QKeySequence::Delete );
+    menu->addAction( removeAction_ );
+
+    addAction( reloadAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Reload", this ) );
+    connect( reloadAction_, SIGNAL( triggered( void ) ), SLOT( _reload( void ) ) );
+    reloadAction_->setShortcut( QKeySequence::Refresh );
+    menu->addAction( reloadAction_ );
+
+    // updates
+    connect( list_->selectionModel(), SIGNAL( selectionChanged( const QItemSelection& , const QItemSelection& ) ), SLOT( _updateButtons() ) );
+    connect( list_->selectionModel(), SIGNAL( currentChanged( const QModelIndex& , const QModelIndex& ) ), SLOT( _updateButtons() ) );
+
+    _reload();
+    _updateButtons();
 
 }
 
 //______________________________________________________________________
-void DocumentClassManagerDialog::_read( void )
+File::List DocumentClassManagerDialog::userFiles( void ) const
 {
+    File::List files;
+    foreach( const DocumentClass& documentClass, model_.get() )
+    { if( !documentClass.isBuildIn() ) files << documentClass.file(); }
+
+    return files;
+}
+
+//______________________________________________________________________
+void DocumentClassManagerDialog::_reload( void )
+{
+
+    Debug::Throw( "DocumentClassManager::Dialog::_reload.\n" );
 
     DocumentClassManager classManager;
     foreach( const Option& option, XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
@@ -105,4 +148,48 @@ void DocumentClassManagerDialog::_add( void )
     classManager.read( file );
     model_.add( classManager.classes() );
 
+}
+
+//______________________________________________________________________
+void DocumentClassManagerDialog::_remove( void )
+{
+    Debug::Throw( "DocumentClassManagerDialog::_remove.\n" );
+
+    // loop over selected items
+    QSet<File> removedFiles;
+    foreach( const DocumentClass& documentClass, model_.get( list_->selectionModel()->selectedRows() ) )
+    { if( !documentClass.isBuildIn() ) removedFiles << documentClass.file(); }
+
+    if( removedFiles.empty() ) return;
+
+    // ask confirmation
+    QString buffer;
+    QTextStream what( &buffer );
+    what << "Remove all items from the following " << (removedFiles.size() == 1 ? "file":"files") << " ?" << endl;
+    foreach( const File& file, removedFiles )
+    { what << "    " << file << endl; }
+
+    if( !QuestionDialog( this, buffer ).exec() ) return;
+
+    DocumentClassManager::List removedItems;
+    foreach( const DocumentClass& documentClass, model_.get() )
+    { if( removedFiles.contains( documentClass.file() ) ) removedItems << documentClass; }
+
+    // remove
+    model_.remove( removedItems );
+
+    return;
+
+}
+
+//______________________________________________________________________
+void DocumentClassManagerDialog::_updateButtons( void )
+{
+    // loop over selected items
+    bool removeEnabled( false );
+    foreach( const DocumentClass& documentClass, model_.get( list_->selectionModel()->selectedRows() ) )
+    { if( !documentClass.isBuildIn() ) { removeEnabled = true; break; } }
+
+    removeAction_->setEnabled( removeEnabled );
+    removeButton_->setEnabled( removeEnabled );
 }

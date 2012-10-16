@@ -46,8 +46,19 @@ const QString DocumentClassModel::columnTitles_[DocumentClassModel::nColumns] =
 DocumentClassModel::DocumentClassModel( QObject* parent ):
     ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>(parent),
     Counter( "DocumentClassModel" )
+{ connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) ); }
+
+//__________________________________________________________________
+Qt::ItemFlags DocumentClassModel::flags( const QModelIndex& index ) const
 {
-    connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+
+    // default flags
+    if( !( index.isValid() && contains( index ) ) ) return Qt::ItemFlags();
+
+    // check associated record validity
+    const DocumentClass& documentClass( get(index) );
+    return documentClass.isBuildIn() ? Qt::ItemFlags() : Qt::ItemIsEnabled |  Qt::ItemIsSelectable;
+
 }
 
 //__________________________________________________________________
@@ -122,14 +133,16 @@ void DocumentClassModel::_updateConfiguration( void )
 }
 
 //________________________________________________________
-bool DocumentClassModel::SortFTor::operator () ( const DocumentClass& first, const DocumentClass& second ) const
+bool DocumentClassModel::SortFTor::operator () ( const DocumentClass& constFirst, const DocumentClass& constSecond ) const
 {
 
+    DocumentClass first( constFirst );
+    DocumentClass second( constSecond );
+    if( order_ == Qt::DescendingOrder ) std::swap( first, second );
     switch( type_ )
     {
-
-        case NAME: return ( order_ == Qt::DescendingOrder ) ? second.name() < first.name() : first.name() < second.name();
-        case FILE: return ( order_ == Qt::DescendingOrder ) ? second.file() < first.file() : first.file() < second.file();
+        case NAME: return DocumentClass::WeakLessThanFTor()( first, second );
+        case FILE: return first.file() < second.file();
         default: return true;
     }
 

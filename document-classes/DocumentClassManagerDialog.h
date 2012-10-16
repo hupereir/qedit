@@ -26,6 +26,9 @@
 #include "CustomDialog.h"
 #include "DocumentClassModel.h"
 
+#include <QtGui/QAction>
+#include <QtGui/QPushButton>
+
 class TreeView;
 
 //! handles list of connection attributes
@@ -43,15 +46,22 @@ class DocumentClassManagerDialog: public CustomDialog
     virtual ~DocumentClassManagerDialog( void )
     {}
 
-    protected:
-
-    //! read
-    virtual void _read( void );
+    //! list of user files
+    File::List userFiles( void ) const;
 
     protected slots:
 
+    //! read
+    virtual void _reload( void );
+
     //! add document class
     virtual void _add( void );
+
+    //! remove document classes
+    virtual void _remove( void );
+
+    //! update buttons
+    virtual void _updateButtons( void );
 
     private:
 
@@ -60,6 +70,24 @@ class DocumentClassManagerDialog: public CustomDialog
 
     //! model
     DocumentClassModel model_;
+
+    //! add button
+    QPushButton* addButton_;
+
+    //! remove button
+    QPushButton* removeButton_;
+
+    //! reload button
+    QPushButton* reloadButton_;
+
+    //! add action
+    QAction* addAction_;
+
+    //! remove action
+    QAction* removeAction_;
+
+    //! remove action
+    QAction* reloadAction_;
 
 };
 

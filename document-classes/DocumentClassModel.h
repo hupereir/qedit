@@ -60,6 +60,9 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     //!@name methods reimplemented from base class
     //@{
 
+    //! flags
+    virtual Qt::ItemFlags flags( const QModelIndex& ) const;
+
     // return data for a given index
     virtual QVariant data( const QModelIndex&, int ) const;
 

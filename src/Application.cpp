@@ -266,7 +266,14 @@ void Application::_documentClassesConfiguration( void )
     Debug::Throw( "Application::_documentClassesConfiguration.\n" );
     DocumentClassManagerDialog dialog;
     dialog.setWindowTitle( "Document Types Configuration - Qedit" );
-    dialog.exec();
+    if( !dialog.exec() ) return;
+
+    XmlOptions::get().clearSpecialOptions( "PATTERN_FILENAME" );
+    foreach( const File& file, dialog.userFiles() )
+    { XmlOptions::get().add( "PATTERN_FILENAME", file ); }
+
+    _updateDocumentClasses();
+
 }
 
 //_______________________________________________

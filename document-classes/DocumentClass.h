@@ -180,8 +180,8 @@ class DocumentClass: public Counter
 
         bool operator()( const DocumentClass& first, const DocumentClass& second ) const
         {
-            if( first.isDefault() )  return true;
-            else if( second.isDefault() ) return false;
+            if( first.isDefault() )  return false;
+            else if( second.isDefault() ) return true;
             else if( first.isBuildIn() && !second.isBuildIn() ) return false;
             else if( !first.isBuildIn() && second.isBuildIn() ) return true;
             return first.name() < second.name();
