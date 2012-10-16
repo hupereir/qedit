@@ -1,5 +1,6 @@
 <patterns>
- <class pattern="\.(f|F|(inc))(\.in)?$" icon="text-x-fortransrc.png" name="fortran" >
+<!-- <class pattern="\.(f|F|(inc))(\.in)?$" icon="text-x-fortransrc.png" name="fortran" > -->
+ <class pattern="\.(f|F|(inc))(\.in)?$" icon="text-x-generic.png" name="fortran" >
 
 <!--Options-->
   <Option>

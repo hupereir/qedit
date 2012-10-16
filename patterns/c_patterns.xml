@@ -1,5 +1,5 @@
 <patterns>
-  <class pattern="\.(c|cc|C|cpp|c\+\+|cxx|h|hh|hpp|H|css|js|php)((\.cmake)|(\.in))?$" icon="text-x-csrc.png" name="c++" >
+  <class pattern="\.(c|cc|C|cpp|c\+\+|cxx|h|hh|hpp|H|css|js|php)((\.cmake)|(\.in))?$" icon="text-x-c++src.png" name="c++" >
 
 <!--Options-->
   <Option>
