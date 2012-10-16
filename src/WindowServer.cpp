@@ -271,7 +271,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
             if( first )
             {
 
-                if( fileOpened |= _open( File( filename ).expand() ) )
+                if( (fileOpened |= _open( File( filename ).expand()) ) )
                 {
                     _applyArguments( _activeWindow().activeDisplay(), arguments );
                     first = false;
@@ -279,7 +279,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
 
             } else {
 
-                if( fileOpened |= _open( File( filename ).expand(), orientation ) )
+                if( (fileOpened |= _open( File( filename ).expand(), orientation )) )
                 { _applyArguments( _activeWindow().activeDisplay(), arguments ); }
 
             }
