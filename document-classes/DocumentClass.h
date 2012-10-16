@@ -52,16 +52,116 @@ class DocumentClass: public Counter
 
     //! destructor
     ~DocumentClass( void )
-    {
-        Debug::Throw( "DocumentClass::~DocumentClass.\n" );
-        clear();
-    }
+    {}
 
     //! write to DomElement
     QDomElement domElement( QDomDocument& parent ) const;
 
     //! strict equal to operator
     bool operator == (const DocumentClass& documentClass ) const;
+
+    //!@name accessors
+    //@{
+
+    //! name
+    const QString& name( void ) const
+    { return name_; }
+
+    //! file
+    const File& file( void ) const
+    { return file_; }
+
+    //! icon name
+    const QString& icon( void ) const
+    { return icon_; }
+
+    //! default
+    bool isDefault( void ) const
+    { return default_; }
+
+    //! build in
+    bool isBuildIn( void ) const
+    { return buildIn_; }
+
+    //! filename matching pattern
+    const QRegExp& fileMatchingPattern( void ) const
+    { return filePattern_; }
+
+    //! first line matching pattern
+    const QRegExp& firstLineMatchingPattern( void ) const
+    { return firstlinePattern_; }
+
+    //! return true if document class match filename
+    bool match( const File& file ) const;
+
+    //! returns true if document class enables wrapping by default
+    const bool& wrap( void ) const
+    { return wrap_; }
+
+    //! returns true if document class enables tab emulation by default
+    bool emulateTabs( void ) const
+    { return emulateTabs_; }
+
+    //! tab size
+    int tabSize( void ) const
+    { return tabSize_; }
+
+    //! hightlight styles
+    const HighlightStyle::Set& highlightStyles() const
+    { return highlightStyles_; }
+
+    //! highligh patterns
+    const HighlightPattern::List& highlightPatterns() const
+    { return highlightPatterns_; }
+
+    //! list of indentation patterns
+    const IndentPattern::List& indentPatterns() const
+    { return indentPatterns_; }
+
+    //! base indentation
+    /*!
+    it is used which classes for which
+    a certain amount of leading space character are
+    not to be considered when indenting. This is the case
+    for the first 6 space characters in fortran files
+    */
+    const int& baseIndentation( void ) const
+    { return baseIndentation_; }
+
+    //! text parenthesis
+    const TextParenthesis::List& parenthesis() const
+    { return textParenthesis_; }
+
+    //! block delimiters
+    const BlockDelimiter::List& blockDelimiters() const
+    { return blockDelimiters_; }
+
+    //! text macros
+    const TextMacro::List& textMacros() const
+    { return textMacros_; }
+
+    //@}
+
+    //!@name modifiers
+    //@{
+
+    //! name
+    void setName( const QString& name )
+    { name_ = name; }
+
+    //! set file
+    void setFile( const File& file )
+    { file_ = file; }
+
+    //! default
+    void setIsDefault( bool value )
+    { default_ = value; }
+
+    //! buid-in
+    void setIsBuildIn( bool value )
+    { buildIn_ = value; }
+
+    //@}
 
     //! equal to ftor
     class WeakEqualFTor: public std::binary_function< DocumentClass, DocumentClass, bool>
@@ -81,162 +181,13 @@ class DocumentClass: public Counter
         bool operator()( const DocumentClass& first, const DocumentClass& second ) const
         {
             if( first.isDefault() )  return true;
-            if( second.isDefault() ) return false;
+            else if( second.isDefault() ) return false;
+            else if( first.isBuildIn() && !second.isBuildIn() ) return false;
+            else if( !first.isBuildIn() && second.isBuildIn() ) return true;
             return first.name() < second.name();
         }
 
     };
-
-    //! clear patterns and styles
-    void clear( void );
-
-    //! true when document class needs saving
-    bool modified( void ) const
-    { return modified_; }
-
-    //! true when document class needs saving
-    void setModified( bool value )
-    { modified_ = value; }
-
-    //! name
-    const QString& name( void ) const
-    { return name_; }
-
-    //! name
-    void setName( const QString& name )
-    { name_ = name; }
-
-    //! file
-    const File& file( void ) const
-    { return file_; }
-
-    //! set file
-    void setFile( const File& file )
-    { file_ = file; }
-
-    //! default
-    const bool& isDefault( void ) const
-    { return default_; }
-
-    //! default
-    void setIsDefault( const bool& value )
-    { default_ = value; }
-
-    //! filename matching pattern
-    const QRegExp& fileMatchingPattern( void ) const
-    { return filePattern_; }
-
-    //! filename matching pattern
-    void setFileMatchingPattern( const QString& value )
-    { filePattern_.setPattern( value ); }
-
-    //! first line matching pattern
-    const QRegExp& firstLineMatchingPattern( void ) const
-    { return firstlinePattern_; }
-
-    //! first line matching pattern
-    void setFirstLineMatchingPattern( const QString& value )
-    { firstlinePattern_.setPattern( value ); }
-
-    //! icon name
-    const QString& icon( void ) const
-    { return icon_; }
-
-    //! icon name
-    void setIcon( const QString& value )
-    { icon_ = value; }
-
-    //! return true if document class match filename
-    bool match( const File& file ) const;
-
-    //! returns true if document class enables wrapping by default
-    const bool& wrap( void ) const
-    { return wrap_; }
-
-    //! returns true if document class enables wrapping by default
-    void setWrap( const bool& value )
-    { wrap_ = value; }
-
-    //! returns true if document class enables tab emulation by default
-    bool emulateTabs( void ) const
-    { return emulateTabs_; }
-
-    //! returns true if document class enables tab emulation by default
-    void setEmulateTabs( bool value )
-    { emulateTabs_ = value; }
-
-    //! tab size
-    int tabSize( void ) const
-    { return tabSize_; }
-
-    //! tab size
-    void setTabSize( int value )
-    { tabSize_ = value; }
-
-    //! hightlight styles
-    const HighlightStyle::Set& highlightStyles() const
-    { return highlightStyles_; }
-
-    //! highlight styles
-    void setHighlightStyles( const HighlightStyle::Set& styles )
-    { highlightStyles_ = styles; }
-
-    //! highligh patterns
-    const HighlightPattern::List& highlightPatterns() const
-    { return highlightPatterns_; }
-
-    //! highlight styles
-    void setHighlightPatterns( const HighlightPattern::List& patterns )
-    { highlightPatterns_ = patterns; }
-
-    //! list of indentation patterns
-    const IndentPattern::List& indentPatterns() const
-    { return indentPatterns_; }
-
-    //! indentation patterns
-    void setIndentPatterns( const IndentPattern::List& patterns )
-    { indentPatterns_ = patterns; }
-
-    //! base indentation
-    /*!
-    it is used which classes for which
-    a certain amount of leading space character are
-    not to be considered when indenting. This is the case
-    for the first 6 space characters in fortran files
-    */
-    const int& baseIndentation( void ) const
-    { return baseIndentation_; }
-
-    void setBaseIndentation( const int& value )
-    { baseIndentation_ = value; }
-
-    //! text parenthesis
-    const TextParenthesis::List& parenthesis() const
-    { return textParenthesis_; }
-
-    //! text parenthesis
-    void setParenthesis( const TextParenthesis::List& parenthesis )
-    { textParenthesis_ = parenthesis; }
-
-    //! block delimiters
-    const BlockDelimiter::List& blockDelimiters() const
-    { return blockDelimiters_; }
-
-    //! block delimiters
-    void setBlockDelimiters( const BlockDelimiter::List& delimiters )
-    { blockDelimiters_ = delimiters; }
-
-    //! text macros
-    const TextMacro::List& textMacros() const
-    { return textMacros_; }
-
-    //! text macros
-    void setTextMacros( const TextMacro::List& macros )
-    { textMacros_ = macros; }
-
-    //! perform associations between highlight patterns and highlight styles
-    /*! returns list of warnings if any */
-    QStringList associatePatterns( void );
 
     //! used to match pointers to DocumentClass with same name
     class SameNameFTor
@@ -290,23 +241,13 @@ class DocumentClass: public Counter
 
     };
 
-    //! modified
-    class ModifiedFTor
-    {
+    protected:
 
-        public:
-
-        //! predicate
-        bool operator() (const DocumentClass& documentClass ) const
-        { return documentClass.modified(); }
-
-    };
+    //! perform associations between highlight patterns and highlight styles
+    /*! returns list of warnings if any */
+    QStringList _associatePatterns( void );
 
     private:
-
-    //! base indentation
-    void _setBaseIndentation( const int& value )
-    { baseIndentation_ = value; }
 
     //! name
     QString name_;
@@ -323,6 +264,9 @@ class DocumentClass: public Counter
 
     //! is class default
     bool default_;
+
+    //! is class build-in
+    bool buildIn_;
 
     //! wrap flag
     bool wrap_;
@@ -359,9 +303,6 @@ class DocumentClass: public Counter
     this is the number of space characters to add prior to any text indentation
     */
     int baseIndentation_;
-
-    //! true when document class needs to be saved
-    bool modified_;
 
 };
 

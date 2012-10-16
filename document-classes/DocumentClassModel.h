@@ -48,12 +48,11 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     {}
 
     //! number of columns
-    enum { nColumns = 3 };
+    enum { nColumns = 2 };
 
     //! column type enumeration
     enum ColumnType
     {
-        ICON,
         NAME,
         FILE,
     };

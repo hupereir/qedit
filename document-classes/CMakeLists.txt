@@ -27,6 +27,7 @@ SET( document_classes_SOURCES
   CollapsedBlockData.cpp
   DocumentClass.cpp
   DocumentClassManager.cpp
+  DocumentClassManagerDialog.cpp
   DocumentClassModel.cpp
   HighlightBlockData.cpp
   HighlightBlockFlags.cpp
@@ -44,6 +45,7 @@ SET( document_classes_SOURCES
 SET( document_classes_HEADERS
   BlockDelimiterDisplay.h
   DocumentClassModel.h
+  DocumentClassManagerDialog.h
   ParenthesisHighlight.h
   TextHighlight.h
   TextIndent.h

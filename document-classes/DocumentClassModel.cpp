@@ -23,12 +23,10 @@
 
 #include "DocumentClassModel.h"
 
-#include "DocumentClassIcons.h"
+#include "CustomPixmap.h"
 #include "IconEngine.h"
 #include "Singleton.h"
 #include "XmlOptions.h"
-
-
 
 //__________________________________________________________________
 DocumentClassModel::IconCache& DocumentClassModel::_icons( void )
@@ -40,7 +38,6 @@ DocumentClassModel::IconCache& DocumentClassModel::_icons( void )
 //__________________________________________________________________
 const QString DocumentClassModel::columnTitles_[DocumentClassModel::nColumns] =
 {
-    "",
     "Name",
     "File",
 };
@@ -67,16 +64,24 @@ QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
 
     // return text associated to file and column
 
-    if( role == Qt::DecorationRole && index.column() == ICON )
+    if( role == Qt::DecorationRole && index.column() == NAME )
     {
 
         return _icon( documentClass.icon() );
 
     } else if( role == Qt::DisplayRole ) {
 
-        if( index.column() == NAME ) return documentClass.name();
-        if( index.column() == FILE ) return documentClass.file();
+        switch( index.column() )
+        {
+            case NAME: return documentClass.name();
+            case FILE:
+            {
+                if( documentClass.isBuildIn() ) return "Internal";
+                else return documentClass.file();
+            }
 
+            default: break;
+        }
     }
 
     return QVariant();
@@ -134,10 +139,19 @@ bool DocumentClassModel::SortFTor::operator () ( const DocumentClass& first, con
 const QIcon& DocumentClassModel::_icon( const QString& name )
 {
 
-    Debug::Throw( "DocumentClassModel::_icon.\n" );
+    Debug::Throw() << "DocumentClassModel::_icon - name: " << name << endl;
 
     IconCache::const_iterator iter( _icons().find( name ) );
     if( iter != _icons().end() ) return iter.value();
-    else return _icons().insert( name, IconEngine::get( name ) ).value();
+
+    QIcon icon( IconEngine::get( name ) );
+    if( icon.isNull() )
+    {
+        const int iconSize( XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" ) );
+        const QSize size( iconSize, iconSize );
+        icon = CustomPixmap().empty( size );
+    }
+
+    return _icons().insert( name, icon ).value();
 
 }

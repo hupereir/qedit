@@ -21,17 +21,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file DocumentClass.cpp
-\brief Highlight and indentation patterns for a given document class
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QDomComment>
-
-#include <algorithm>
 #include "DocumentClass.h"
 #include "HighlightPattern.h"
 #include "Str.h"
@@ -39,17 +28,17 @@
 #include "XmlOption.h"
 #include "XmlString.h"
 
-
+#include <algorithm>
 
 //________________________________________________________
 DocumentClass::DocumentClass( void ):
     Counter( "DocumentClass" ),
     default_( false ),
+    buildIn_( false ),
     wrap_( false ),
     emulateTabs_( false ),
     tabSize_( 2 ),
-    baseIndentation_( 0 ),
-    modified_( false )
+    baseIndentation_( 0 )
 { Debug::Throw( "DocumentClass::DocumentClass.\n" ); }
 
 //________________________________________________________
@@ -59,8 +48,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     wrap_( false ),
     emulateTabs_( false ),
     tabSize_( 2 ),
-    baseIndentation_( 0 ),
-    modified_( false )
+    baseIndentation_( 0 )
 {
     Debug::Throw( "DocumentClass::DocumentClass.\n" );
 
@@ -80,11 +68,11 @@ DocumentClass::DocumentClass( const QDomElement& element ):
         else if( attribute.name() == XML::OPTIONS )
         {
 
-            if( attribute.value().indexOf( XML::OPTION_WRAP, 0, Qt::CaseInsensitive ) >= 0 ) setWrap( true );
+            if( attribute.value().indexOf( XML::OPTION_WRAP, 0, Qt::CaseInsensitive ) >= 0 ) wrap_ = true;
             if( attribute.value().indexOf( XML::OPTION_EMULATE_TABS, 0, Qt::CaseInsensitive ) >= 0 ) emulateTabs_ = true;
             if( attribute.value().indexOf( XML::OPTION_DEFAULT, 0, Qt::CaseInsensitive ) >= 0 ) default_ = true;
 
-        } else if( attribute.name() == XML::BASE_INDENTATION ) _setBaseIndentation( attribute.value().toInt() );
+        } else if( attribute.name() == XML::BASE_INDENTATION ) baseIndentation_ = attribute.value().toInt();
 
         else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized attribute: " << attribute.name() << endl;
 
@@ -131,11 +119,11 @@ DocumentClass::DocumentClass( const QDomElement& element ):
         } else if( childElement.tagName() == OPTIONS::OPTION ) {
 
             XmlOption option( childElement );
-            if( option.name() == XML::OPTION_WRAP ) setWrap( option.get<bool>() );
-            else if( option.name() == XML::OPTION_EMULATE_TABS ) setEmulateTabs( option.get<bool>() );
-            else if( option.name() == XML::OPTION_DEFAULT ) setIsDefault( option.get<bool>() );
-            else if( option.name() == XML::BASE_INDENTATION ) _setBaseIndentation( option.get<int>() );
-            else if( option.name() == XML::TAB_SIZE ) setTabSize( option.get<int>() );
+            if( option.name() == XML::OPTION_WRAP ) wrap_ = option.get<bool>();
+            else if( option.name() == XML::OPTION_EMULATE_TABS ) emulateTabs_ = option.get<bool>();
+            else if( option.name() == XML::OPTION_DEFAULT ) default_ = option.get<bool>();
+            else if( option.name() == XML::BASE_INDENTATION ) baseIndentation_ = option.get<int>();
+            else if( option.name() == XML::TAB_SIZE ) tabSize_ = option.get<int>();
             else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized option " << option.name() << endl;
 
         } else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized child " << childElement.tagName() << ".\n";
@@ -145,7 +133,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     }
 
     // associate elements
-    QStringList warnings = associatePatterns();
+    QStringList warnings = _associatePatterns();
     for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); ++iter )
     { Debug::Throw(0) << "DocumentClass::DocumentClass - " << *iter << endl; }
 
@@ -176,10 +164,10 @@ bool DocumentClass::operator == ( const DocumentClass& other ) const
 }
 
 //______________________________________________________
-QStringList DocumentClass::associatePatterns( void )
+QStringList DocumentClass::_associatePatterns( void )
 {
 
-    Debug::Throw( "DocumentClass::associatePatterns.\n" );
+    Debug::Throw( "DocumentClass::_associatePatterns.\n" );
     QStringList out;
 
     // assign pattern ids
@@ -285,20 +273,6 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
     { out.appendChild( iter->domElement( parent ) ); }
 
     return out;
-}
-
-//________________________________________________
-void DocumentClass::clear( void )
-{
-
-    Debug::Throw( "DocumentClass::clear.\n" );
-
-    highlightStyles_.clear();
-    highlightPatterns_.clear();
-    indentPatterns_.clear();
-    textParenthesis_.clear();
-    textMacros_.clear();
-
 }
 
 //________________________________________________________

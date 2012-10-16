@@ -69,8 +69,8 @@ bool DocumentClassManager::read( const File& filename )
         return false;
     }
 
-    QDomElement doc_element = document.documentElement();
-    for(QDomNode node = doc_element.firstChild(); !node.isNull(); node = node.nextSibling() )
+    QDomElement docElement = document.documentElement();
+    for(QDomNode node = docElement.firstChild(); !node.isNull(); node = node.nextSibling() )
     {
         QDomElement element = node.toElement();
         if( element.isNull() ) continue;
@@ -87,6 +87,7 @@ bool DocumentClassManager::read( const File& filename )
 
             // add new document class
             documentClass.setFile( filename );
+            documentClass.setIsBuildIn( filename.startsWith( ':' ) );
             documentClasses_ << documentClass;
 
             // reset IndentPattern counter (for debugging)
