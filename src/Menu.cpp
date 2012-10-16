@@ -84,7 +84,7 @@ Menu::Menu( QWidget* parent ):
     // document class
     menu->addAction( &mainwindow.filePropertiesAction() );
     menu->addMenu( documentClassMenu_ = new DocumentClassMenu( this ) );
-    documentClassMenu_->setTitle( "Document Class" );
+    documentClassMenu_->setTitle( "Document Type" );
 
     menu->addSeparator();
     menu->addAction( &application.closeAction() );
@@ -258,6 +258,7 @@ void Menu::_updatePreferenceMenu( void )
     #if WITH_ASPELL
     preferenceMenu_->addAction( &application.spellCheckConfigurationAction() );
     #endif
+    preferenceMenu_->addAction( &application.documentClassesConfigurationAction() );
     preferenceMenu_->addAction( &application.configurationAction() );
 
     return;

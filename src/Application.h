@@ -89,9 +89,13 @@ class Application: public BaseApplication, public Counter
     //!@name actions
     //@{
 
-    //! configure
+    //! spellcheck configuration
     QAction& spellCheckConfigurationAction( void ) const
     { return *spellCheckConfigurationAction_; }
+
+    //! document classes configuration
+    QAction& documentClassesConfigurationAction( void ) const
+    { return *documentClassesConfigurationAction_; }
 
     //! monitored files
     QAction& monitoredFilesAction( void ) const
@@ -121,6 +125,9 @@ class Application: public BaseApplication, public Counter
 
     //! spellcheck configuration
     void _spellCheckConfiguration( void );
+
+    //! document classes configuration
+    void _documentClassesConfiguration( void );
 
     //! exit safely
     void _exit( void );
@@ -167,8 +174,11 @@ class Application: public BaseApplication, public Counter
     //!@name actions
     //@{
 
-    //! configure
+    //! spellcheck configuration
     QAction* spellCheckConfigurationAction_;
+
+    //! document classes
+    QAction* documentClassesConfigurationAction_;
 
     //! show monitored files
     QAction* monitoredFilesAction_;

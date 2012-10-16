@@ -24,24 +24,24 @@
  *
  *******************************************************************************/
 
-/*!
-  \file    Icons.h
-  \brief   Icon filenames
-  \author  Hugo Pereira
-  \version $Revision$
-  \date    $Date$
-*/
-
-#include <QString>
-#include "BaseIcons.h"
-#include "DocumentClassIcons.h"
 #include "FileSystemIcons.h"
+#include "BaseIcons.h"
+
+#include <QtCore/QString>
 
 //! namespace for icon static name wrappers
 namespace ICONS
 {
 
     static const QString CLOSE = "document-close.png";
+
+    static const QString SAVE = "document-save.png";
+    static const QString SAVE_AS = "document-save-as.png";
+    static const QString SAVE_ALL = "document-save-all.png";
+    static const QString NEW = "document-new.png";
+
+    static const QString UP = "arrow-up.png";
+    static const QString DOWN = "arrow-down.png";
 
     static const QString DOCUMENTS = "document-multiple.png";
     static const QString HISTORY = "view-history.png";

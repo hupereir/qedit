@@ -21,20 +21,13 @@
 *
 *******************************************************************************/
 
-/*!
-\file Application.cpp
-\brief application singleton object
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "Application.h"
 #include "AutoSave.h"
 #include "Config.h"
 #include "ConfigurationDialog.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
+#include "DocumentClassManagerDialog.h"
 #include "FileCheck.h"
 #include "FileCheckDialog.h"
 #include "IconEngine.h"
@@ -146,6 +139,10 @@ bool Application::realizeWidget( void )
     spellCheckConfigurationAction_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Spell Checking...", this );
     connect( spellCheckConfigurationAction_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
 
+    documentClassesConfigurationAction_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Document Types...", this );
+    connect( documentClassesConfigurationAction_, SIGNAL( triggered() ), SLOT( _documentClassesConfiguration() ) );
+
+
     monitoredFilesAction_ = new QAction( "Show Monitored Files", this );
     monitoredFilesAction_->setToolTip( "Show monitored files" );
     connect( monitoredFilesAction_, SIGNAL( triggered() ), SLOT( _showMonitoredFiles() ) );
@@ -242,7 +239,8 @@ void Application::_spellCheckConfiguration( void )
     Debug::Throw( "Application::_spellCheckConfiguration.\n" );
 
     // create dialog
-    CustomDialog dialog( qApp->activeWindow() );
+    CustomDialog dialog;
+    dialog.setWindowTitle( "Spell Check Configuration - Qedit" );
 
     SPELLCHECK::SpellCheckConfiguration* spellConfig = new SPELLCHECK::SpellCheckConfiguration( &dialog );
     dialog.mainLayout().addWidget( spellConfig );
@@ -260,6 +258,15 @@ void Application::_spellCheckConfiguration( void )
 
     #endif
 
+}
+
+//_______________________________________________
+void Application::_documentClassesConfiguration( void )
+{
+    Debug::Throw( "Application::_documentClassesConfiguration.\n" );
+    DocumentClassManagerDialog dialog;
+    dialog.setWindowTitle( "Document Types Configuration - Qedit" );
+    dialog.exec();
 }
 
 //_______________________________________________
