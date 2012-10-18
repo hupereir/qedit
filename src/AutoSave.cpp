@@ -148,10 +148,13 @@ void AutoSave::saveFiles( const TextDisplay* display )
 //______________________________________________________
 void AutoSave::timerEvent( QTimerEvent* event )
 {
+
     if( event->timerId() == timer_.timerId() )
     {
+
         timer_.stop();
         saveFiles();
+
     } else return QObject::timerEvent( event );
 
 }
