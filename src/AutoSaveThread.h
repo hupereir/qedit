@@ -24,15 +24,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file AutoSaveThread.h
-\brief independent thread used to make regular automatic saves of files
-\author  Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-
 #include <QThread>
 
 #include "Counter.h"

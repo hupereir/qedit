@@ -22,15 +22,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file AutoSaveThread.cpp
-\brief independent thread used to make regular backups of files
-\author  Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-
 #include <QApplication>
 #include <QDir>
 #include <QFile>
@@ -41,8 +32,6 @@
 #include "XmlOptions.h"
 #include "Str.h"
 #include "Util.h"
-
-
 
 //________________________________________________________________
 File AutoSaveThread::autoSaveName( const File& file )

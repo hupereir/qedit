@@ -27,6 +27,7 @@ SET( filesystem_SOURCES
 
 SET( filesystem_HEADERS
   FileSystemFrame.h
+  FileSystemThread.h
   RenameFileDialog.h
 )
 

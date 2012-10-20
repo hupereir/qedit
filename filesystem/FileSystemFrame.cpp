@@ -122,6 +122,9 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     _updateConfiguration();
     _updateActions();
 
+    // connect thread
+    connect( &thread_, SIGNAL( filesAvailable( const File&, const FileRecord::List& ) ), SLOT( _processFiles( const File&, const FileRecord::List& ) ) );
+
 }
 
 //_________________________________________________________
@@ -171,16 +174,11 @@ void FileSystemFrame::clear()
 }
 
 //______________________________________________________
-void FileSystemFrame::customEvent( QEvent* event )
+void FileSystemFrame::_processFiles( const File& path, const FileRecord::List& constRecords )
 {
 
-    if( event->type() != FileSystemEvent::eventType() ) return;
-
-    FileSystemEvent* fileSystemEvent( static_cast<FileSystemEvent*>(event) );
-    if( !fileSystemEvent ) return;
-
     // check path
-    if( fileSystemEvent->path() != path() )
+    if( path != this->path() )
     {
         _update();
         return;
@@ -189,12 +187,14 @@ void FileSystemFrame::customEvent( QEvent* event )
     // add navigator if needed and update model
     if( showNavigator_ )
     {
-        FileSystemModel::List records( fileSystemEvent->files() );
+
+        FileRecord::List records( constRecords );
         FileRecord record( File("..") );
         record.setFlags( FileSystemModel::Navigator );
         records << record;
         model_.update( records );
-    } else model_.update( fileSystemEvent->files() );
+
+    } else model_.update( constRecords );
 
     // update list
     list_->updateMask();

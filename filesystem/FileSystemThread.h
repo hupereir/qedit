@@ -28,61 +28,25 @@
 #include "Debug.h"
 #include "FileSystemModel.h"
 
+#include <QtCore/QMutex>
+#include <QtCore/QMutexLocker>
 #include <QtCore/QThread>
-#include <QtCore/QEvent>
-
-//! used to post a new grid when ready
-class FileSystemEvent: public QEvent, public Counter
-{
-
-    public:
-
-    //! constructor
-    FileSystemEvent( File path, FileSystemModel::List files ):
-        QEvent( eventType() ),
-        Counter( "FileSystemEvent" ),
-        path_( path ),
-        files_( files )
-    {}
-
-    //! destructor
-    ~FileSystemEvent( void )
-    {}
-
-    //! static event type
-    static QEvent::Type eventType( void );
-
-    //! path
-    const File& path( void )
-    { return path_; }
-
-    //! files
-    const FileSystemModel::List& files()
-    { return files_; }
-
-    private:
-
-    //! path
-    File path_;
-
-    //! ValidFile success flag
-    FileSystemModel::List files_;
-
-};
 
 //! independent thread used to automatically save file
 class FileSystemThread: public QThread, public Counter
 {
+
+    Q_OBJECT
 
     public:
 
     //! constructor
     FileSystemThread( QObject* );
 
-
     //! set file
     void setPath( const File& path, const bool& show_hidden_files )
     {
+        QMutexLocker lock( &mutex_ );
         path_ = path;
         showHiddenFiles_ = show_hidden_files;
     }
@@ -90,16 +54,24 @@ class FileSystemThread: public QThread, public Counter
     //! Check files validity. Post a FileSystemEvent when finished
     void run( void );
 
+    signals:
+
+    //! files available
+    void filesAvailable( const File&, const FileRecord::List& );
+
     private:
 
-    //! reciever object for posted events
-    QObject* reciever_;
+    //! mutex
+    QMutex mutex_;
 
     //! size property id
     FileRecord::PropertyId::Id sizePropertyId_;
 
     //! filename where data is to be saved
     File path_;
+
+    //! file list
+    FileRecord::List records_;
 
     //! true if hidden files are to be listed
     bool showHiddenFiles_;

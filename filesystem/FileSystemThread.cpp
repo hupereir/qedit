@@ -27,36 +27,24 @@
 
 #include <QtCore/QDateTime>
 #include <QtCore/QDir>
-#include <QtGui/QApplication>
 
 //______________________________________________________
-QEvent::Type FileSystemEvent::eventType( void )
-{
-
-    #if QT_VERSION >= 0x040400
-    static QEvent::Type event_type = (QEvent::Type) QEvent::registerEventType();
-    #else
-    static QEvent::Type event_type = QEvent::User;
-    #endif
-
-    return event_type;
-
-}
-
-//______________________________________________________
-FileSystemThread::FileSystemThread( QObject* reciever ):
+FileSystemThread::FileSystemThread( QObject* parent ):
+    QThread( parent ),
     Counter( "FileSystemThread" ),
-    reciever_( reciever ),
     sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) ),
     showHiddenFiles_( false )
-{}
+{
+    qRegisterMetaType<File>( "File" );
+    qRegisterMetaType<File::List>( "FileRecord::List" );
+}
 
 //______________________________________________________
 void FileSystemThread::run( void )
 {
 
-    // loop over directory contents
-    FileSystemModel::List newFiles;
+    // clear files
+    records_.clear();
 
     // loop over entries and add
     unsigned int flags = File::None;
@@ -78,12 +66,11 @@ void FileSystemThread::run( void )
         if( file.isLink() ) record.setFlag( FileSystemModel::Link );
 
         // add to model
-        newFiles << record;
+        records_ << record;
 
     }
 
-    qApp->postEvent( reciever_, new FileSystemEvent( path_, newFiles ) );
-
+    emit filesAvailable( path_, records_ );
     return;
 
 }

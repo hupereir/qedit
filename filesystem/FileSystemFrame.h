@@ -76,10 +76,10 @@ class FileSystemFrame: public QWidget, public Counter
     //! base directory
     void setPath( File, bool forced = false );
 
-    protected:
+    protected slots:
 
     //! custom event, used to retrieve file validity check event
-    void customEvent( QEvent* );
+    void _processFiles( const File&, const FileRecord::List& );
 
     private slots:
 
