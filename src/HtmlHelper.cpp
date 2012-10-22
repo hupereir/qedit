@@ -162,13 +162,13 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
                 {
 
                     // retrieve font format
-                    const unsigned int& format( location.fontFormat() );
+                    FORMAT::TextFormatFlags format( location.fontFormat() );
                     QString buffer;
                     QTextStream formatStream( &buffer );
-                    if( format & FORMAT::UNDERLINE ) formatStream << "Text-decoration: underline; ";
-                    if( format & FORMAT::ITALIC ) formatStream << "font-style: italic; ";
-                    if( format & FORMAT::BOLD ) formatStream << "font-weight: bold; ";
-                    if( format & FORMAT::STRIKE ) formatStream << "Text-decoration: line-through; ";
+                    if( format & FORMAT::Underline ) formatStream << "Text-decoration: underline; ";
+                    if( format & FORMAT::Italic ) formatStream << "font-style: italic; ";
+                    if( format & FORMAT::Bold ) formatStream << "font-weight: bold; ";
+                    if( format & FORMAT::Strike ) formatStream << "Text-decoration: line-through; ";
 
                     // retrieve color
                     const QColor& color = location.color();

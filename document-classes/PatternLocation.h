@@ -24,19 +24,12 @@
 *
 *******************************************************************************/
 
-/*!
-\file PatternLocation.h
-\brief encapsulate highlight location, pattern and style
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QTextCharFormat>
-
 #include "Counter.h"
 #include "HighlightPattern.h"
 #include "QOrderedSet.h"
+#include "TextFormat.h"
+
+#include <QtGui/QTextCharFormat>
 
 //! encapsulate highlight location, pattern and style
 class PatternLocation: public Counter
@@ -164,7 +157,7 @@ class PatternLocation: public Counter
     //@{
 
     //! format
-    unsigned int fontFormat( void ) const
+    FORMAT::TextFormatFlags fontFormat( void ) const
     { return format_; }
 
     //! color
@@ -177,11 +170,11 @@ class PatternLocation: public Counter
 
         QTextCharFormat out;
 
-        out.setFontWeight( (format_&FORMAT::BOLD) ? QFont::Bold : QFont::Normal );
-        out.setFontItalic( format_&FORMAT::ITALIC );
-        out.setFontUnderline( format_&FORMAT::UNDERLINE );
-        out.setFontOverline( format_&FORMAT::OVERLINE );
-        out.setFontStrikeOut( format_&FORMAT::STRIKE );
+        out.setFontWeight( (format_&FORMAT::Bold) ? QFont::Bold : QFont::Normal );
+        out.setFontItalic( format_&FORMAT::Italic );
+        out.setFontUnderline( format_&FORMAT::Underline );
+        out.setFontOverline( format_&FORMAT::Overline );
+        out.setFontStrikeOut( format_&FORMAT::Strike );
         if( color_.isValid() ) out.setForeground( color_ );
 
         return out;
@@ -201,7 +194,7 @@ class PatternLocation: public Counter
     unsigned int flags_;
 
     //! style font format
-    unsigned int format_;
+    FORMAT::TextFormatFlags format_;
 
     //! style color
     QColor color_;

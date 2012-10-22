@@ -24,13 +24,8 @@
 *
 *******************************************************************************/
 
-/*!
-\file HighlightStyle.h
-\brief Base class for syntax highlighting style
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
+#include "Counter.h"
+#include "TextFormat.h"
 
 #include <QtGui/QColor>
 #include <QtGui/QFont>
@@ -39,9 +34,6 @@
 #include <QtCore/QString>
 #include <QtCore/QSet>
 #include <QtCore/QList>
-
-#include "Counter.h"
-#include "TextFormat.h"
 
 //! Base class for syntax highlighting
 class HighlightStyle: public Counter
@@ -52,9 +44,8 @@ class HighlightStyle: public Counter
     //! constructor
     HighlightStyle(
         const QString& name = "default",
-        const unsigned int& format = FORMAT::DEFAULT,
-        const QColor& color = Qt::black
-        ):
+        FORMAT::TextFormatFlags format = FORMAT::Default,
+        const QColor& color = Qt::black ):
         Counter( "HighlightStyle" ),
         name_( name ),
         format_( format ),
@@ -92,7 +83,7 @@ class HighlightStyle: public Counter
     };
 
     //! equal to ftor
-    class WeakEqualFTor: public std::binary_function< HighlightStyle, HighlightStyle, bool>
+    class WeakEqualFTor
     {
         public:
 
@@ -102,7 +93,7 @@ class HighlightStyle: public Counter
     };
 
     //! less than ftor
-    class WeakLessThanFTor: public std::binary_function< HighlightStyle, HighlightStyle, bool>
+    class WeakLessThanFTor
     {
         public:
 
@@ -126,11 +117,11 @@ class HighlightStyle: public Counter
     { name_ = name; }
 
     //! format
-    virtual const unsigned int& fontFormat( void ) const
+    virtual FORMAT::TextFormatFlags fontFormat( void ) const
     { return format_; }
 
     //! format
-    virtual void setFontFormat( const unsigned int format )
+    virtual void setFontFormat( FORMAT::TextFormatFlags format )
     { format_ = format; }
 
     //! color
@@ -147,7 +138,7 @@ class HighlightStyle: public Counter
     QString name_;
 
     //! format (bitwise or of TextFormatInfo)
-    unsigned int format_;
+    FORMAT::TextFormatFlags format_;
 
     //! color
     QColor color_;

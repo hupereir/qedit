@@ -38,7 +38,7 @@
 //_____________________________________________________
 HighlightStyle::HighlightStyle( const QDomElement& element ):
       Counter( "HighlightStyle" ),
-      format_( FORMAT::DEFAULT ),
+      format_( FORMAT::Default ),
       color_( Qt::black )
 {
   Debug::Throw( "HighlightStyle::HighlightStyle.\n" );
@@ -51,7 +51,7 @@ HighlightStyle::HighlightStyle( const QDomElement& element ):
     if( attribute.isNull() ) continue;
 
     if( attribute.name() == XML::NAME ) setName( attribute.value() );
-    else if( attribute.name() == XML::FORMAT ) setFontFormat( attribute.value().toInt() );
+    else if( attribute.name() == XML::FORMAT ) setFontFormat( (FORMAT::TextFormatFlags) attribute.value().toInt() );
     else if( attribute.name() == XML::COLOR ) setColor( QColor( attribute.value() ) );
     else Debug::Throw(0) << "Option::Option - unrecognized attribute " << attribute.name() << ".\n";
 

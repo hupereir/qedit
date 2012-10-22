@@ -1794,7 +1794,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
     // spellcheck configuration
     bool changed( false );
     changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<QString>("AUTOSPELL_COLOR") ) );
-    changed |= textHighlight().spellParser().setFontFormat( XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
+    changed |= textHighlight().spellParser().setFontFormat( (FORMAT::TextFormatFlags) XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
     textHighlight().updateSpellPattern();
     autoSpellAction().setEnabled( textHighlight().spellParser().color().isValid() );
 
