@@ -23,14 +23,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file TextDisplay.h
-\brief text display window
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "AnimatedTextEditor.h"
 #include "AskForSaveDialog.h"
 #include "BlockDelimiter.h"
@@ -139,7 +131,7 @@ class TextDisplay: public AnimatedTextEditor
     virtual void paintMargin( QPainter& );
 
     //! update flags (to be passed to TextEditor to change button status)
-    enum UpdateFlags
+    enum UpdateFlag
     {
 
         //! file name (in bottom status bar and navigation frame)
@@ -186,6 +178,8 @@ class TextDisplay: public AnimatedTextEditor
 
     };
 
+
+    Q_DECLARE_FLAGS( UpdateFlags, UpdateFlag )
 
     // true if widget is to be deleted
     bool isClosed( void ) const
@@ -442,7 +436,7 @@ class TextDisplay: public AnimatedTextEditor
 
     //! emmited whenever mainwindow toolbar, window title or file name editor needs update
     /* \param flags, bitwise or of UpdateFlags */
-    void needUpdate( unsigned int flags );
+    void needUpdate( TextDisplay::UpdateFlags );
 
     public slots:
 
@@ -587,7 +581,7 @@ class TextDisplay: public AnimatedTextEditor
 
     //! selection changed
     void _selectionChanged( void )
-    { if( isActive() ) emit needUpdate( CUT|COPY ); }
+    { if( isActive() ) emit needUpdate( UpdateFlags(CUT|COPY) ); }
 
     //! toggle text indentation
     void _toggleTextIndent( bool state );
@@ -634,7 +628,7 @@ class TextDisplay: public AnimatedTextEditor
     virtual void _updateSelectionActions( bool state )
     {
         AnimatedTextEditor::_updateSelectionActions( state );
-        emit needUpdate( CUT|COPY );
+        emit needUpdate( UpdateFlags( CUT|COPY ) );
     }
 
     //! update paste action
@@ -824,5 +818,7 @@ class TextDisplay: public AnimatedTextEditor
     BlockDelimiterDisplay* blockDelimiterDisplay_;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( TextDisplay::UpdateFlags )
 
 #endif

@@ -24,23 +24,14 @@
 *
 *******************************************************************************/
 
-/*!
-\file TextView.h
-\brief handle multiple text views
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <algorithm>
-#include <QSplitter>
-#include <QTimer>
-#include <QWidget>
-
 #include "Counter.h"
 #include "FileRecord.h"
 #include "Key.h"
 #include "TextDisplay.h"
+
+#include <QtGui/QSplitter>
+#include <QtGui/QWidget>
+#include <QtCore/QTimer>
 
 //! handles multiple views
 class TextView: public QWidget, public Counter, public BASE::Key
@@ -52,7 +43,7 @@ class TextView: public QWidget, public Counter, public BASE::Key
     public:
 
     //! constructor
-    TextView( QWidget* parent );
+    TextView( QWidget* );
 
     //! destructor
     virtual ~TextView( void );
@@ -133,7 +124,7 @@ class TextView: public QWidget, public Counter, public BASE::Key
     signals:
 
     //! emitted when parent window must be update
-    void needUpdate( unsigned int );
+    void needUpdate( TextDisplay::UpdateFlags );
 
     //! current display overwrite mode changed
     void modifiersChanged( TextEditor::Modifiers );

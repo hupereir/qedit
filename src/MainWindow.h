@@ -522,7 +522,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
     //! update window title, cut, copy, paste buttons, and filename line editor
     /*! \param flags are bitwise or of TextDisplay::UpdateFlags */
-    void _update( unsigned int );
+    void _update( TextDisplay::UpdateFlags );
 
     //! update modifiers
     void _updateModifiers( void );

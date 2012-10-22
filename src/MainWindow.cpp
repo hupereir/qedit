@@ -680,7 +680,7 @@ void MainWindow::_multipleFileReplace( void )
 }
 
 //_______________________________________________________
-void MainWindow::_update( unsigned int flags )
+void MainWindow::_update( TextDisplay::UpdateFlags flags )
 {
 
     Debug::Throw() << "MainWindow::_update - flags: " << flags << endl;
@@ -1043,7 +1043,7 @@ void MainWindow::_connectView( TextView& view )
 {
     Debug::Throw( "MainWindow::_connectView.\n" );
     connect( &view, SIGNAL( modifiersChanged( TextEditor::Modifiers ) ), SLOT( _updateModifiers( void ) ) );
-    connect( &view, SIGNAL( needUpdate( unsigned int ) ), SLOT( _update( unsigned int ) ) );
+    connect( &view, SIGNAL( needUpdate( TextDisplay::UpdateFlags ) ), SLOT( _update( TextDisplay::UpdateFlags ) ) );
     connect( &view, SIGNAL( displayCountChanged( void ) ), SLOT( _updateDisplayCount( void ) ) );
     connect( &view, SIGNAL( displayCountChanged( void ) ), &Singleton::get().application<Application>()->windowServer(), SIGNAL( sessionFilesChanged( void ) ) );
     connect( &view, SIGNAL( undoAvailable( bool ) ), &undoAction(), SLOT( setEnabled( bool ) ) );
