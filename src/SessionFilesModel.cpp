@@ -118,9 +118,17 @@ const QIcon& SessionFilesModel::_icon( unsigned int type )
     else if( type == FileRecordProperties::ALTERED ) icon = IconEngine::get( ICONS::WARNING );
     else if( type == FileRecordProperties::NONE )
     {
+
         const int iconSize( XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" ) );
-        const QSize size( iconSize, iconSize );
+        QSize size( iconSize, iconSize );
+
+        // update size to match real icon
+        QIcon prototype( IconEngine::get( ICONS::SAVE ) );
+        if( !prototype.isNull() ) size = prototype.actualSize( size );
+
+        // create empty pixmap
         icon = CustomPixmap().empty( size );
+
     }
 
     // store in map and return
