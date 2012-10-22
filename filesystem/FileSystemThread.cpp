@@ -47,7 +47,7 @@ void FileSystemThread::run( void )
     records_.clear();
 
     // loop over entries and add
-    unsigned int flags = File::None;
+    File::ListFlags flags( File::None );
     if( showHiddenFiles_ ) flags |= File::ShowHiddenFiles;
     foreach( const File& file, path_.listFiles( flags ) )
     {
