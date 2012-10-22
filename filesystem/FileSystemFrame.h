@@ -27,7 +27,7 @@
 #include "File.h"
 #include "FileSystemModel.h"
 #include "FileSystemHistory.h"
-#include "FileSystemThread.h"
+#include "FileThread.h"
 
 #include <QtGui/QIcon>
 #include <QtGui/QWidget>
@@ -79,9 +79,7 @@ class FileSystemFrame: public QWidget, public Counter
     protected slots:
 
     //! custom event, used to retrieve file validity check event
-    void _processFiles( const File&, const FileRecord::List& );
-
-    private slots:
+    void _processFiles( const File::List& );
 
     //! item activated
     void _itemActivated( const QModelIndex& );
@@ -199,6 +197,9 @@ class FileSystemFrame: public QWidget, public Counter
     //! list of files
     AnimatedTreeView* list_;
 
+    //! size property id
+    FileRecord::PropertyId::Id sizePropertyId_;
+
     //! current path
     File path_;
 
@@ -250,7 +251,7 @@ class FileSystemFrame: public QWidget, public Counter
     QFileSystemWatcher fileSystemWatcher_;
 
     //! thread to list files
-    FileSystemThread thread_;
+    FileThread thread_;
 
 };
 

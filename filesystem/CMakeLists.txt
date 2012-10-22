@@ -20,14 +20,12 @@ SET( filesystem_SOURCES
   FileSystemFrame.cpp
   FileSystemHistory.cpp
   FileSystemModel.cpp
-  FileSystemThread.cpp
   RemoveFilesDialog.cpp
   RenameFileDialog.cpp
 )
 
 SET( filesystem_HEADERS
   FileSystemFrame.h
-  FileSystemThread.h
   RenameFileDialog.h
 )
 

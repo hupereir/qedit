@@ -24,6 +24,7 @@
 #include "FileSystemFrame.h"
 
 #include "AnimatedTreeView.h"
+#include "FileRecordProperties.h"
 #include "FileSystemIcons.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
@@ -50,6 +51,7 @@
 FileSystemFrame::FileSystemFrame( QWidget *parent ):
     QWidget( parent ),
     Counter( "FileSystemFrame" ),
+    sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) ),
     showNavigator_( false ),
     homePath_( Util::home() ),
     fileSystemWatcher_( this ),
@@ -115,15 +117,16 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateActions() ) );
     connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
 
-    _updateNavigationActions();
-
+    // connect filesystem watcher
     connect( &fileSystemWatcher_, SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
-    connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-    _updateConfiguration();
-    _updateActions();
 
     // connect thread
-    connect( &thread_, SIGNAL( filesAvailable( const File&, const FileRecord::List& ) ), SLOT( _processFiles( const File&, const FileRecord::List& ) ) );
+    connect( &thread_, SIGNAL( filesAvailable( const File::List& ) ), SLOT( _processFiles( const File::List& ) ) );
+
+    connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+    _updateConfiguration();
+    _updateNavigationActions();
+    _updateActions();
 
 }
 
@@ -174,27 +177,50 @@ void FileSystemFrame::clear()
 }
 
 //______________________________________________________
-void FileSystemFrame::_processFiles( const File& path, const FileRecord::List& constRecords )
+void FileSystemFrame::_processFiles( const File::List& files )
 {
 
     // check path
-    if( path != this->path() )
+    if( thread_.file() != path() )
     {
         _update();
         return;
     }
 
+    // build records
+    FileRecord::List records;
+
     // add navigator if needed and update model
     if( showNavigator_ )
     {
-
-        FileRecord::List records( constRecords );
         FileRecord record( File("..") );
         record.setFlags( FileSystemModel::Navigator );
         records << record;
-        model_.update( records );
+    }
 
-    } else model_.update( constRecords );
+    // add files
+    foreach( const File& file, files )
+    {
+        // skip hidden files
+        if( file.isHidden() && !_hiddenFilesAction().isChecked() ) continue;
+
+        // create file record
+        FileRecord record( file, file.lastModified() );
+
+        // assign size
+        record.addProperty( sizePropertyId_, QString().setNum(file.fileSize()) );
+
+        // assign type
+        record.setFlag( file.isDirectory() ? FileSystemModel::Folder : FileSystemModel::Document );
+        if( file.isLink() ) record.setFlag( FileSystemModel::Link );
+
+        // add to model
+        records << record;
+
+    }
+
+    // update model
+    model_.update( records );
 
     // update list
     list_->updateMask();
@@ -301,9 +327,14 @@ void FileSystemFrame::_update( void )
 
     if( path().isEmpty() || !( path().exists() && path().isDirectory() ) ) return;
     if( thread_.isRunning() ) return;
-    thread_.setPath( path(), _hiddenFilesAction().isChecked() );
-    thread_.start();
+
+    // setup thread
+    thread_.setFile( path() );
+    thread_.setCommand( FileThread::List );
+    thread_.setFlags(  _hiddenFilesAction().isChecked() ? File::ShowHiddenFiles : File::None );
     setCursor( Qt::WaitCursor );
+
+    thread_.start();
 
 }
 
