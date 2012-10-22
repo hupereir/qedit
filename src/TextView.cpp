@@ -672,7 +672,7 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( _activeDisplayChanged( TextEditor* ) ) );
     connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( checkDisplayModifications( TextEditor* ) ) );
     connect( display, SIGNAL( cursorPositionChanged() ), &positionTimer_, SLOT( start() ) );
-    connect( display, SIGNAL( modifiersChanged( unsigned int ) ), SIGNAL( modifiersChanged( unsigned int ) ) );
+    connect( display, SIGNAL( modifiersChanged( TextEditor::Modifiers ) ), SIGNAL( modifiersChanged( TextEditor::Modifiers ) ) );
 
     connect( display, SIGNAL( undoAvailable( bool ) ), SIGNAL( undoAvailable( bool ) ) );
     connect( display, SIGNAL( redoAvailable( bool ) ), SIGNAL( redoAvailable( bool ) ) );
