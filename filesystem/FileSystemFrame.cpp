@@ -141,6 +141,8 @@ void FileSystemFrame::setPath( File path, bool forced )
     {
         pathEditor_->setPath( path );
         _update();
+        _update();
+        _updateNavigationActions();
 
         // reset file system watcher
         const QStringList directories( fileSystemWatcher_.directories() );
