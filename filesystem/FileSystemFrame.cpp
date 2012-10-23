@@ -29,18 +29,16 @@
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
 #include "ContextMenu.h"
-#include "CustomComboBox.h"
 #include "CustomToolBar.h"
 #include "FileInformationDialog.h"
 #include "IconEngine.h"
-#include "QtUtil.h"
+#include "PathEditor.h"
 #include "RemoveFilesDialog.h"
 #include "RenameFileDialog.h"
 #include "Singleton.h"
 #include "TransitionWidget.h"
 #include "Util.h"
 #include "XmlOptions.h"
-
 
 #include <QtGui/QApplication>
 #include <QtGui/QHeaderView>
@@ -65,25 +63,30 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     layout->setMargin(0);
     setLayout( layout );
 
-    // install actions
-    _installActions();
-
     // toolbar
     CustomToolBar* toolbar = new CustomToolBar( "Navigation Toolbar", this, "NAVIGATION_TOOLBAR" );
+    layout->addWidget( toolbar );
+
+    // path editor
+    layout->addWidget( pathEditor_ = new PathEditor( this ) );
+    pathEditor_->setHomePath( Util::home() );
+
+    // initialize local root path list
+    File::List rootPathList;
+    foreach( const QFileInfo& fileInfo, QDir::drives() )
+    { rootPathList << fileInfo.path(); }
+    pathEditor_->setRootPathList( rootPathList );
+
+    connect( pathEditor_, SIGNAL( pathChanged( const File& ) ), SLOT( _update( void ) ) );
+    connect( pathEditor_, SIGNAL( pathChanged( const File& ) ), SLOT( _updateNavigationActions( void ) ) );
+
+    // install actions
+    _installActions();
     toolbar->addAction( &_parentDirectoryAction() );
     toolbar->addAction( &_previousDirectoryAction() );
     toolbar->addAction( &_nextDirectoryAction() );
     toolbar->addAction( &_homeDirectoryAction() );
     toolbar->addAction( &_reloadAction() );
-    layout->addWidget( toolbar );
-
-    // combo box
-    layout->addWidget( pathComboBox_ = new CustomComboBox( this ) );
-    pathComboBox_->setEditable( true );
-
-    connect( pathComboBox_, SIGNAL( currentIndexChanged( const QString& ) ), SLOT( _updatePath( const QString& ) ) );
-    connect( pathComboBox_, SIGNAL( currentIndexChanged( const QString& ) ), SLOT( _updatePath( const QString& ) ) );
-    connect( pathComboBox_->lineEdit(), SIGNAL(returnPressed()), SLOT( _updatePath( void ) ) );
 
     // file list
     layout->addWidget( list_ = new AnimatedTreeView( this ), 1);
@@ -105,11 +108,8 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     menu->addAction( &_openAction() );
     menu->addAction( &_renameAction() );
     menu->addAction( &_removeAction() );
-
     menu->addSeparator();
     menu->addAction( &_filePropertiesAction() );
-
-    connect( &list_->transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
 
     // connections
     connect( &model_, SIGNAL( layoutChanged() ), list_, SLOT( updateMask() ) );
@@ -137,24 +137,16 @@ void FileSystemFrame::setPath( File path, bool forced )
     Debug::Throw() << "FileSystemFrame::setPath - path: " << path << endl;
 
     // check if changed
-    if( !forced && path_ == path ) return;
-
-    // update path
-    assert( path.isDirectory() );
-    path_ = path;
-    history_.add( path );
-
-    if( list_->initializeAnimation() )
+    if( forced || pathEditor_->path() != path )
     {
-
+        pathEditor_->setPath( path );
         _update();
-        list_->startAnimation();
 
-    } else {
+        // reset file system watcher
+        const QStringList directories( fileSystemWatcher_.directories() );
+        if( !directories.isEmpty() ) fileSystemWatcher_.removePaths( directories );
 
-        _update();
-        _animationFinished();
-
+        fileSystemWatcher_.addPath( path );
     }
 
 }
@@ -164,7 +156,7 @@ void FileSystemFrame::setHome( const File& path )
 {
     Debug::Throw( "FileSystemFrame::setHome.\n" );
     homePath_ = path;
-    if( FileSystemFrame::path().isEmpty() ) setPath( path );
+    if( pathEditor_->path().isEmpty() ) setPath( path );
 }
 
 //_________________________________________________________
@@ -181,7 +173,7 @@ void FileSystemFrame::_processFiles( const File::List& files )
 {
 
     // check path
-    if( thread_.file() != path() )
+    if( thread_.file() != pathEditor_->path() )
     {
         _update();
         return;
@@ -242,10 +234,7 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
     if( record.hasFlag( FileSystemModel::Folder ) )
     {
 
-        // make full name
-        File path( record.file() );
-        path = path.addPath( FileSystemFrame::path() );
-        setPath( path );
+        setPath( record.file().addPath( pathEditor_->path() ) );
 
     } else if( record.hasFlag( FileSystemModel::Navigator ) ) {
 
@@ -253,7 +242,7 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
 
     } else {
 
-        emit fileActivated( record.setFile( record.file().addPath( path() ) ) );
+        emit fileActivated( record.setFile( record.file().addPath( pathEditor_->path() ) ) );
 
     }
 
@@ -274,62 +263,26 @@ void FileSystemFrame::_updateConfiguration( void )
 void FileSystemFrame::_updateNavigationActions( void )
 {
     Debug::Throw( "FileSystemFrame::_updateNavigationActions.\n" );
-    _previousDirectoryAction().setEnabled( history_.previousAvailable() );
-    _nextDirectoryAction().setEnabled( history_.nextAvailable() );
-    _parentDirectoryAction().setEnabled( !QDir( path() ).isRoot() );
+    _previousDirectoryAction().setEnabled( pathEditor_->hasPrevious() );
+    _nextDirectoryAction().setEnabled( pathEditor_->hasNext() );
+    _parentDirectoryAction().setEnabled( pathEditor_->hasParent() );
     return;
 }
 
 //______________________________________________________
-void FileSystemFrame::_updatePath( void )
-{
-    Debug::Throw( "FileSystemFrame::_updatePath.\n" );
-    _updatePath( pathComboBox_->lineEdit()->text() );
-}
-
-//______________________________________________________
-void FileSystemFrame::_updatePath( const QString& value )
-{
-    Debug::Throw() << "FileSystemFrame::_updatePath - value: " << value << endl;
-
-    // check if path has changed
-    if( value == path() ) return;
-
-    // if path is empty set path to home directory
-    if( value.isEmpty() )
-    {
-        _homeDirectoryAction().trigger();
-        return;
-    }
-
-    // check if path exists and is a directory
-    File path( value );
-    if( !( path.exists() && path.isDirectory() ) ) { setPath( path_ ); }
-    else setPath( path );
-
-    Debug::Throw() << "FileSystemFrame::_updatePath - done." << endl;
-
-}
-
-//______________________________________________________
 void FileSystemFrame::_update( const QString& value )
-{
-    if( !isVisible() ) return;
-    if( value != path() ) return;
-    _update();
-
-}
+{ if( isVisible() && value == pathEditor_->path() ) _update(); }
 
 //______________________________________________________
 void FileSystemFrame::_update( void )
 {
-    Debug::Throw( "FileSystemFrame::_update.\n" );
 
-    if( path().isEmpty() || !( path().exists() && path().isDirectory() ) ) return;
+    const File path( pathEditor_->path() );
+    if( path.isEmpty() || !( path.exists() && path.isDirectory() ) ) return;
     if( thread_.isRunning() ) return;
 
     // setup thread
-    thread_.setFile( path() );
+    thread_.setFile( path );
     thread_.setCommand( FileThread::List );
     thread_.setFlags(  _hiddenFilesAction().isChecked() ? File::ShowHiddenFiles : File::None );
     setCursor( Qt::WaitCursor );
@@ -373,44 +326,10 @@ void FileSystemFrame::_toggleShowHiddenFiles( bool state )
 }
 
 //______________________________________________________
-void FileSystemFrame::_previousDirectory( void )
-{
-    Debug::Throw( "FileSystemFrame::_previousDirectory.\n" );
-    if( !history_.previousAvailable() ) return;
-    setPath( history_.previous() );
-}
-
-//______________________________________________________
-void FileSystemFrame::_nextDirectory( void )
-{
-    Debug::Throw( "FileSystemFrame::_nextDirectory.\n" );
-    if( !history_.nextAvailable() ) return;
-    setPath( history_.next() );
-}
-
-//______________________________________________________
-void FileSystemFrame::_parentDirectory( void )
-{
-
-    Debug::Throw( "FileSystemFrame::_parentDirectory.\n" );
-    QDir dir( path() );
-    dir.cdUp();
-    setPath( dir.absolutePath() );
-
-}
-
-//______________________________________________________
-void FileSystemFrame::_homeDirectory( void )
-{
-    Debug::Throw( "FileSystemFrame::_homeDirectory.\n" );
-    setPath( home() );
-}
-
-//______________________________________________________
 void FileSystemFrame::_reload( void )
 {
     Debug::Throw( "FileSystemFrame::_homeDirectory.\n" );
-    setPath( path_, true );
+    setPath( pathEditor_->path(), true );
 }
 
 //______________________________________________________________________
@@ -425,7 +344,7 @@ void FileSystemFrame::_open( void )
         if( record.hasFlag( FileSystemModel::Document ) )
         {
             FileRecord copy( record );
-            copy.setFile( record.file().addPath( path() ) );
+            copy.setFile( record.file().addPath( pathEditor_->path() ) );
             emit fileActivated( copy );
         }
 
@@ -446,7 +365,7 @@ void FileSystemFrame::_remove( void )
     {
         if( record.hasFlag( FileSystemModel::Navigator ) ) continue;
         FileRecord copy( record );
-        copy.setFile( record.file().addPath( path() ) );
+        copy.setFile( record.file().addPath( pathEditor_->path() ) );
         validSelection << copy;
 
     }
@@ -482,7 +401,7 @@ void FileSystemFrame::_rename( void )
     if( newFile == record.file() ) return;
 
     // rename
-    record.file().addPath( path() ).rename( newFile.addPath( path() ) );
+    record.file().addPath( pathEditor_->path() ).rename( newFile.addPath( pathEditor_->path() ) );
 
 }
 
@@ -496,30 +415,9 @@ void FileSystemFrame::_fileProperties( void )
 
     FileRecord record( model_.get( index ) );
     if( record.hasFlag( FileSystemModel::Navigator ) ) return;
-    if( !record.file().isAbsolute() ) { record.setFile( record.file().addPath( path() ) ); }
+    if( !record.file().isAbsolute() ) { record.setFile( record.file().addPath( pathEditor_->path() ) ); }
 
     FileInformationDialog( this, record ).centerOnWidget( window() ).exec();
-
-}
-
-//_____________________________________________
-void FileSystemFrame::_animationFinished( void )
-{
-
-    Debug::Throw( "FileSystemFrame::_animationFinished.\n" );
-    _updateNavigationActions();
-
-    // update combobox
-    if( pathComboBox_->findText( path() ) < 0 )
-    { pathComboBox_->addItem( path() ); }
-
-    pathComboBox_->setEditText( path() );
-
-    // reset file system watcher
-    const QStringList directories( fileSystemWatcher_.directories() );
-    if( !directories.isEmpty() ) fileSystemWatcher_.removePaths( directories );
-
-    fileSystemWatcher_.addPath( path() );
 
 }
 
@@ -535,19 +433,17 @@ void FileSystemFrame::_installActions( void )
     connect( &_hiddenFilesAction(), SIGNAL( toggled( bool ) ), SLOT( _update() ) );
     connect( &_hiddenFilesAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleShowHiddenFiles( bool ) ) );
 
-    // previous directory
+    // previous directory (from history)
     addAction( previousDirectoryAction_ = new QAction( IconEngine::get( ICONS::PREVIOUS_DIRECTORY ), "Previous", this ) );
-    connect( &_previousDirectoryAction(), SIGNAL( triggered() ), SLOT( _previousDirectory() ) );
-    _previousDirectoryAction().setToolTip( "Change path to previous directory (from history)" );
+    connect( previousDirectoryAction_, SIGNAL( triggered( void ) ), pathEditor_, SLOT( selectPrevious( void ) ) );
 
     // next directory (from history)
     addAction( nextDirectoryAction_ = new QAction( IconEngine::get( ICONS::NEXT_DIRECTORY ), "Next", this ) );
-    connect( &_nextDirectoryAction(), SIGNAL( triggered() ), SLOT( _nextDirectory() ) );
-    _nextDirectoryAction().setToolTip( "Change path to next directory (from history)" );
+    connect( nextDirectoryAction_, SIGNAL( triggered( void ) ), pathEditor_, SLOT( selectNext( void ) ) );
 
     // parent directory in tree
     addAction( parentDirectoryAction_ = new QAction( IconEngine::get( ICONS::PARENT ), "Parent Directory", this ) );
-    connect( &_parentDirectoryAction(), SIGNAL( triggered() ), SLOT( _parentDirectory() ) );
+    connect( parentDirectoryAction_, SIGNAL( triggered( void ) ), pathEditor_, SLOT( selectParent( void ) ) );
     _parentDirectoryAction().setToolTip( "Change path to parent directory" );
 
     // home directory

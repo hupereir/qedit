@@ -26,15 +26,14 @@
 
 #include "File.h"
 #include "FileSystemModel.h"
-#include "FileSystemHistory.h"
 #include "FileThread.h"
 
 #include <QtGui/QIcon>
 #include <QtGui/QWidget>
 #include <QtCore/QFileSystemWatcher>
 
-class CustomComboBox;
 class AnimatedTreeView;
+class PathEditor;
 
 //! customized ListView for file/directory navigation
 class FileSystemFrame: public QWidget, public Counter
@@ -51,14 +50,10 @@ class FileSystemFrame: public QWidget, public Counter
     //! destructor
     ~FileSystemFrame( void )
     { Debug::Throw( "FileSystemFrame::~FileSystemFrame.\n" ); }
-
-    //! base directory
-    const File& path( void ) const
-    { return path_; }
-
-    //! home path
-    const File& home( void ) const
-    { return homePath_; }
+//
+//     //! home path
+//     const File& home( void ) const
+//     { return homePath_; }
 
     //! home path
     void setHome( const File& path );
@@ -93,12 +88,6 @@ class FileSystemFrame: public QWidget, public Counter
     //! update navigation actions based on current location and history
     void _updateNavigationActions( void );
 
-    //! update path
-    void _updatePath( void );
-
-    //! update path
-    void _updatePath( const QString& );
-
     //! update directory
     void _update( const QString& );
 
@@ -108,17 +97,9 @@ class FileSystemFrame: public QWidget, public Counter
     //! update actions
     void _updateActions( void );
 
-    //! previous directory
-    void _previousDirectory( void );
-
-    //! next directory
-    void _nextDirectory( void );
-
-    //! parent directory
-    void _parentDirectory( void );
-
     //! home directory
-    void _homeDirectory( void );
+    void _homeDirectory( void )
+    { setPath( homePath_ ); }
 
     //! reload
     void _reload( void );
@@ -134,9 +115,6 @@ class FileSystemFrame: public QWidget, public Counter
 
     //! file properties
     void _fileProperties( void );
-
-    //! animation finished
-    void _animationFinished( void );
 
     private:
 
@@ -188,8 +166,8 @@ class FileSystemFrame: public QWidget, public Counter
 
     //@}
 
-    //! path comboBox
-    CustomComboBox* pathComboBox_;
+    //! path editor
+    PathEditor* pathEditor_;
 
     //! model
     FileSystemModel model_;
@@ -199,9 +177,6 @@ class FileSystemFrame: public QWidget, public Counter
 
     //! size property id
     FileRecord::PropertyId::Id sizePropertyId_;
-
-    //! current path
-    File path_;
 
     //! true to show navigator in list
     bool showNavigator_;
@@ -243,9 +218,6 @@ class FileSystemFrame: public QWidget, public Counter
 
     //! home directory
     File homePath_;
-
-    //! path naviagtion history
-    FileSystemHistory history_;
 
     //! file system watcher
     QFileSystemWatcher fileSystemWatcher_;

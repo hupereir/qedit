@@ -18,7 +18,6 @@ SET( filesystem_SOURCES
   FileIconProvider.cpp
   FileInformationDialog.cpp
   FileSystemFrame.cpp
-  FileSystemHistory.cpp
   FileSystemModel.cpp
   RemoveFilesDialog.cpp
   RenameFileDialog.cpp
