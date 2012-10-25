@@ -22,166 +22,57 @@
 *******************************************************************************/
 
 #include "FileInformationDialog.h"
-
-#include "AnimatedTabWidget.h"
-#include "BaseIcons.h"
-#include "Debug.h"
-#include "ElidedLabel.h"
-#include "FilePermissionsWidget.h"
 #include "FileRecordProperties.h"
 #include "FileSystemModel.h"
-#include "GridLayout.h"
-#include "IconEngine.h"
-#include "TimeStamp.h"
 
-#include <QtGui/QLabel>
 
 //_________________________________________________________
 FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord& record ):
-    CustomDialog( parent, CloseButton )
+    BaseFileInformationDialog( parent )
 {
     Debug::Throw( "FileInformationDialog::FileInformationDialog.\n" );
 
     // file name
     const File& file( record.file() );
     setWindowTitle( (file.isEmpty() ? File("File Information"):file.localName() )+ " - Qedit" );
-    setOptionName( "FILE_INFORMATION_DIALOG" );
 
-    // customize layout
-    layout()->setMargin(0);
-    layout()->setSpacing(0);
-    buttonLayout().setMargin(5);
-
-    tabWidget_ = new AnimatedTabWidget( this );
-    mainLayout().addWidget( &tabWidget() );
-
-    // general information
-    QWidget *box;
-    tabWidget().addTab( box = new QWidget(), "General" );
-
-    QHBoxLayout* hLayout = new QHBoxLayout();
-    hLayout->setMargin(5);
-    hLayout->setSpacing(5);
-    box->setLayout( hLayout );
-
-    // try load Question icon
-    QLabel* label = new QLabel(box);
-    label->setPixmap( IconEngine::get( ICONS::INFORMATION ).pixmap( iconSize() ) );
-    hLayout->addWidget( label, 0, Qt::AlignTop );
-
-    QVBoxLayout* layout = new QVBoxLayout();
-    layout->setMargin(0);
-    layout->setSpacing( 5 );
-    hLayout->addLayout( layout, 1 );
-
-    GridLayout* gridLayout = new GridLayout();
-    gridLayout->setSpacing( 5 );
-    gridLayout->setMaxCount( 2 );
-    gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-    layout->addLayout( gridLayout );
-
-    gridLayout->addWidget( label = new QLabel( "File name:", box ) );
-    gridLayout->addWidget( label = new ElidedLabel( file.isEmpty() ? File("Untitled"):file.localName(), box ) );
-    QFont font( label->font() );
-    font.setWeight( QFont::Bold );
-    label->setFont( font );
-    label->setTextInteractionFlags( Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard );
-
-    // path
+    // file name
     if( !file.isEmpty() )
     {
-        gridLayout->addWidget( label = new QLabel( "Path:", box ) );
-        gridLayout->addWidget( label = new ElidedLabel( file.path(), box ) );
-        label->setTextInteractionFlags( Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard );
+        setFile( file.localName() );
+        setPath( file.path() );
     }
 
     // type
     if( record.hasFlag( FileSystemModel::Folder | FileSystemModel::Document ) )
     {
-        gridLayout->addWidget( label = new QLabel( "Type:", box ) );
-        QString buffer;
-        QTextStream what( &buffer );
-        if( record.hasFlag( FileSystemModel::Link ) ) what << "Link";
-        if( record.hasFlag( FileSystemModel::Folder ) ) what << "Folder";
-        if( record.hasFlag( FileSystemModel::Document ) ) what << "Document";
-        gridLayout->addWidget( label = new QLabel( buffer, box ) );
-
+        if( record.hasFlag( FileSystemModel::Link ) ) setType( "Link" );
+        else if( record.hasFlag( FileSystemModel::Folder ) ) setType( "Folder" );
+        else if( record.hasFlag( FileSystemModel::Document ) ) setType( "Document" );
     }
 
     // size
-    gridLayout->addWidget( label = new QLabel( "Size:", box ) );
-    gridLayout->addWidget( label = new QLabel( file.exists() ? file.sizeString():"0", box ) );
-
-    //  created
-    gridLayout->addWidget( label = new QLabel( "Created:", box ) );
-    gridLayout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.created() ).toString():"unknown", box ) );
-
-    // last accessed
-    gridLayout->addWidget( label = new QLabel( "Accessed:", box ) );
-    gridLayout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.lastAccessed() ).toString():"never", box ) );
-
-    // last modification
-    gridLayout->addWidget( label = new QLabel( "Modified:", box ) );
-    gridLayout->addWidget( label = new QLabel( file.exists() ? TimeStamp( file.lastModified() ).toString():"never", box ) );
+    if( file.exists() )
+    {
+        setSize( file.fileSize() );
+        setCreated( file.created() );
+        setAccessed( file.lastAccessed() );
+        setModified( file.lastModified() );
+        setPermissions( file.permissions() );
+        setUser( file.userName() );
+        setGroup( file.groupName() );
+    }
 
     // document class
     if( record.hasProperty( FileRecordProperties::CLASS_NAME ) )
-    {
-        gridLayout->addWidget( label = new QLabel( "Class:", box ) );
-        gridLayout->addWidget( label = new QLabel( record.property( FileRecordProperties::CLASS_NAME ), box ) );
-    }
+    { addRow( "Class:", record.property( FileRecordProperties::CLASS_NAME ) ); }
 
     if( record.hasProperty( FileRecordProperties::DICTIONARY ) )
-    {
-        gridLayout->addWidget( label = new QLabel( "Spell-check dictionary:", box ) );
-        gridLayout->addWidget( label = new QLabel( record.property( FileRecordProperties::DICTIONARY ), box ) );
-    }
+    { addRow( "Spell-check dictionary:", record.property( FileRecordProperties::DICTIONARY ) ); }
 
     if( record.hasProperty( FileRecordProperties::FILTER ) )
-    {
-        gridLayout->addWidget( label = new QLabel( "Spell-check filter:", box ) );
-        gridLayout->addWidget( label = new QLabel( record.property( FileRecordProperties::FILTER ), box ) );
-    }
+    { addRow( "Spell-check filter:", record.property( FileRecordProperties::FILTER ) ); }
 
-    gridLayout->setColumnStretch( 1, 1 );
-    layout->addStretch( 1 );
-
-    // permissions tab
-    tabWidget().addTab( box = new QWidget(), "Permissions" );
-    layout = new QVBoxLayout();
-    layout->setMargin(5);
-    layout->setSpacing( 5 );
-    box->setLayout( layout );
-
-    layout->addWidget( new FilePermissionsWidget( box, file.permissions() ) );
-
-    // group and user
-    if( file.exists() )
-    {
-
-        layout->addWidget( new QLabel( "<b>Ownership: </b>", box ) );
-
-        gridLayout = new GridLayout();
-        gridLayout->setMargin(0);
-        gridLayout->setSpacing( 5 );
-        gridLayout->setMaxCount( 2 );
-        gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
-        layout->addItem( gridLayout );
-
-        // user id
-        gridLayout->addWidget( label = new QLabel( "Owner:", box ) );
-        gridLayout->addWidget( label = new QLabel( file.userName(), box ) );
-
-        // group id
-        gridLayout->addWidget( label = new QLabel( "Group:", box ) );
-        gridLayout->addWidget( label = new QLabel( file.groupName(), box ) );
-        gridLayout->setColumnStretch( 1, 1 );
-
-    }
-
-    layout->addStretch(1);
-
-    Debug::Throw( "FileInformationDialog::FileInformationDialog - Permissions tab filled.\n" );
     adjustSize();
 
 }

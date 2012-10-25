@@ -23,13 +23,11 @@
 *
 *******************************************************************************/
 
-#include "CustomDialog.h"
+#include "BaseFileInformationDialog.h"
 #include "FileRecord.h"
 
-class AnimatedTabWidget;
-
 //! file informations
-class FileInformationDialog: public CustomDialog
+class FileInformationDialog: public BaseFileInformationDialog
 {
 
     public:
@@ -40,16 +38,6 @@ class FileInformationDialog: public CustomDialog
     //! destructor
     virtual ~FileInformationDialog( void )
     {}
-
-    //! tab widget
-    /*! needed for customization */
-    AnimatedTabWidget& tabWidget( void ) const
-    { return *tabWidget_; }
-
-    private:
-
-    //! tab widget
-    AnimatedTabWidget* tabWidget_;
 
 };
 

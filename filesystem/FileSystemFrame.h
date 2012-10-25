@@ -50,10 +50,6 @@ class FileSystemFrame: public QWidget, public Counter
     //! destructor
     ~FileSystemFrame( void )
     { Debug::Throw( "FileSystemFrame::~FileSystemFrame.\n" ); }
-//
-//     //! home path
-//     const File& home( void ) const
-//     { return homePath_; }
 
     //! home path
     void setHome( const File& path );
@@ -121,52 +117,7 @@ class FileSystemFrame: public QWidget, public Counter
     //! install actions
     void _installActions( void );
 
-    //!@name actions
-    //@{
-
-    //! hidden files
-    QAction& _hiddenFilesAction( void ) const
-    { return *hiddenFilesAction_; }
-
-    //! previous directory
-    QAction& _previousDirectoryAction( void ) const
-    { return *previousDirectoryAction_; }
-
-    //! next directory
-    QAction& _nextDirectoryAction( void ) const
-    { return *nextDirectoryAction_; }
-
-    // directory above
-    QAction& _parentDirectoryAction( void ) const
-    { return *parentDirectoryAction_; }
-
-    // home directory
-    QAction& _homeDirectoryAction( void ) const
-    { return *homeDirectoryAction_; }
-
-    // reload action
-    QAction& _reloadAction( void ) const
-    { return *reloadAction_; }
-
-    //! open action
-    QAction& _openAction( void ) const
-    { return *openAction_; }
-
-    //! remove action
-    QAction& _removeAction( void ) const
-    { return *removeAction_; }
-
-    //! rename action
-    QAction& _renameAction( void ) const
-    { return *renameAction_; }
-
-    //! file properties action
-    QAction& _filePropertiesAction( void ) const
-    { return *filePropertiesAction_; }
-
-    //@}
-
-    //! path editor
+     //! path editor
     PathEditor* pathEditor_;
 
     //! model
