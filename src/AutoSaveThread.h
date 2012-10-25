@@ -24,12 +24,14 @@
 *
 *******************************************************************************/
 
-#include <QThread>
-
 #include "Counter.h"
 #include "Debug.h"
 #include "File.h"
 #include "Key.h"
+
+#include <QtCore/QMutex>
+#include <QtCore/QMutexLocker>
+#include <QtCore/QThread>
 
 //! independent thread used to automatically save file
 class AutoSaveThread: public QThread, public BASE::Key, public Counter
@@ -50,22 +52,27 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
     { Debug::Throw( "AutoSaveThread::~AutoSaveThread.\n" ); }
 
     //! file
-    void setFile( const File& file );
+    void setFile( const File& );
 
     //! file
     const File& file( void ) const
     { return file_; }
 
     //! set content
-    void setContents( const QString& contents );
-
-    //! generate a new grid. Post a AutoSaveEvent when finished
-    void run( void );
+    void setContents( const QString& );
 
     //! create backup file name from file
-    static File autoSaveName( const File& file );
+    static File autoSaveName( const File& );
+
+    protected:
+
+    //! generate a new grid. Post a AutoSaveEvent when finished
+    virtual void run( void );
 
     private:
+
+    //! mutex
+    QMutex mutex_;
 
     //! filename where data is to be saved
     File file_;

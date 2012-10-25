@@ -33,6 +33,31 @@
 #include "Str.h"
 #include "Util.h"
 
+//_______________________________________________________________
+void AutoSaveThread::setFile( const File& file )
+{
+    QMutexLocker locker( &mutex_ );
+    File tmp( autoSaveName( file ) );
+    if( tmp != file_ )
+    {
+        fileChanged_ = true;
+        file_ = tmp;
+    } else fileChanged_ = false;
+}
+
+
+//_______________________________________________________________
+void AutoSaveThread::setContents( const QString& contents )
+{
+    QMutexLocker locker( &mutex_ );
+    if( contents_ != contents )
+    {
+        contentsChanged_ = true;
+        contents_ = contents;
+    } else contentsChanged_ = false;
+
+}
+
 //________________________________________________________________
 File AutoSaveThread::autoSaveName( const File& file )
 {
@@ -50,30 +75,6 @@ File AutoSaveThread::autoSaveName( const File& file )
     // generate autosave name
     File tmpFile = File( relativeName ).addPath( QDir( autoSavePath ).absolutePath() );
     return tmpFile;
-
-}
-
-//_______________________________________________________________
-void AutoSaveThread::setFile( const File& file )
-{
-    File tmp( autoSaveName( file ) );
-    if( tmp != file_ )
-    {
-        fileChanged_ = true;
-        file_ = tmp;
-    } else fileChanged_ = false;
-}
-
-
-//_______________________________________________________________
-void AutoSaveThread::setContents( const QString& contents )
-{
-
-    if( contents_ != contents )
-    {
-        contentsChanged_ = true;
-        contents_ = contents;
-    } else contentsChanged_ = false;
 
 }
 

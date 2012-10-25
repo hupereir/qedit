@@ -281,7 +281,7 @@ void FileSystemFrame::_update( void )
 
     const File path( pathEditor_->path() );
     if( path.isEmpty() || !( path.exists() && path.isDirectory() ) ) return;
-    if( thread_.isRunning() ) return;
+    if( thread_.isRunning() ) thread_.wait();
 
     // setup thread
     thread_.setFile( path );
