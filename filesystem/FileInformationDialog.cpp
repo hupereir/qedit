@@ -46,7 +46,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     // type
     if( record.hasFlag( FileSystemModel::Folder | FileSystemModel::Document ) )
     {
-        if( record.hasFlag( FileSystemModel::Link ) ) setType( "Link" );
+        if( record.hasFlag( FileSystemModel::Link ) ) setType( "Symbolic link" );
         else if( record.hasFlag( FileSystemModel::Folder ) ) setType( "Folder" );
         else if( record.hasFlag( FileSystemModel::Document ) ) setType( "Document" );
     }

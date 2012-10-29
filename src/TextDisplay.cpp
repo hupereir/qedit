@@ -2272,12 +2272,12 @@ void TextDisplay::_fileProperties( void )
     FileInformationDialog::Item* item;
     item = new FileInformationDialog::Item( box, gridLayout );
     item->setKey( "Number of characters:" );
-    item->setText( QString().setNum(toPlainText().size()) );
+    item->setValue( QString().setNum(toPlainText().size()) );
 
     // number of lines
     item = new FileInformationDialog::Item( box, gridLayout );
     item->setKey( "Number of lines:" );
-    item->setText( QString().setNum( AnimatedTextEditor::blockCount()) );
+    item->setValue( QString().setNum( AnimatedTextEditor::blockCount()) );
 
     gridLayout->addWidget( new QLabel( "Text highlighting:", box ) );
     {
@@ -2331,7 +2331,7 @@ void TextDisplay::_fileProperties( void )
     item = new FileInformationDialog::Item( box, gridLayout, FileInformationDialog::Elide );
     item->setKey( "Document class file name:" );
     const DocumentClass& documentClass( Singleton::get().application<Application>()->classManager().get( className() ) );
-    item->setText( documentClass.file() );
+    item->setValue( documentClass.file() );
 
     // also assign icon to dialog
     dialog.setIcon( IconEngine::get( documentClass.icon() ) );
@@ -2339,7 +2339,7 @@ void TextDisplay::_fileProperties( void )
     // autosave
     item = new FileInformationDialog::Item( box, gridLayout, FileInformationDialog::Elide|FileInformationDialog::Selectable );
     item->setKey( "Auto-save file name:" );
-    item->setText( AutoSaveThread::autoSaveName( file() ) );
+    item->setValue( AutoSaveThread::autoSaveName( file() ) );
 
     layout->addStretch();
 
