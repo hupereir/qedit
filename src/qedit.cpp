@@ -20,18 +20,11 @@
 *
 *******************************************************************************/
 
-/*!
-\file qedit.cpp
-\brief main
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "Debug.h"
 #include "DefaultOptions.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
+#include "File.h"
 #include "SystemOptions.h"
 #include "ErrorHandler.h"
 #include "Singleton.h"
