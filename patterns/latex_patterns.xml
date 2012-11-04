@@ -90,20 +90,20 @@
     <replacement></replacement>
    </rule>
   </macro>
-  <macro accelerator="Alt+C" name="Clean end of line" >
+  <macro name="Clean end of line" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>
    </rule>
   </macro>
   <macro options="separator" name="generic" />
-  <macro name="Add comments" >
+  <macro accelerator="Alt+C" name="Add comments" >
    <rule>
     <regexp>^</regexp>
     <replacement>% </replacement>
    </rule>
   </macro>
-  <macro name="Remove comments" >
+  <macro accelerator="Shift+Alt+C" name="Remove comments" >
    <rule>
     <regexp>^% </regexp>
     <replacement></replacement>
