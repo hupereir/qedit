@@ -127,12 +127,12 @@
   <macro accelerator="Alt+C" name="Add comments" >
    <rule>
     <regexp>^</regexp>
-    <replacement>\# </replacement>
+    <replacement># </replacement>
    </rule>
   </macro>
   <macro accelerator="Shift+Alt+C" name="Remove comments" >
    <rule>
-    <regexp>^\# </regexp>
+    <regexp>^# </regexp>
     <replacement></replacement>
    </rule>
   </macro>
