@@ -64,7 +64,6 @@ selection_( selection )
 
     // mask
     unsigned int mask(
-        (1<<FileRecordModel::ICON)|
         (1<<FileRecordModel::FILE)|
         (1<<FileRecordModel::PATH ));
     int classColumn( model_.findColumn( "class_name" ) );
