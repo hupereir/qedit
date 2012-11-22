@@ -31,7 +31,6 @@
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
 #include <QtCore/QHash>
-#include <cassert>
 
 class RecentFilesMenu;
 class TextMacroMenu;
@@ -53,24 +52,15 @@ class Menu:public QMenuBar, public Counter
 
     //! recent files menu
     RecentFilesMenu& recentFilesMenu( void ) const
-    {
-        assert( recentFilesMenu_ );
-        return *recentFilesMenu_;
-    }
+    { return *recentFilesMenu_; }
 
     //! document class Menu
     QMenu& documentClassMenu( void ) const
-    {
-        assert( documentClassMenu_ );
-        return *documentClassMenu_;
-    }
+    { return *documentClassMenu_; }
 
     //! macro menu
     TextMacroMenu& macroMenu( void ) const
-    {
-        assert( macroMenu_ );
-        return *macroMenu_;
-    }
+    { return *macroMenu_; }
 
     public slots:
 

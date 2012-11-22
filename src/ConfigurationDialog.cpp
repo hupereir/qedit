@@ -24,6 +24,7 @@
 #include "ConfigurationDialog.h"
 
 #include "Application.h"
+#include "BaseFileInfoConfigurationWidget.h"
 #include "Config.h"
 #include "FileList.h"
 #include "CustomToolBar.h"
@@ -328,6 +329,13 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     edit->setToolTip( "Command used to diff files" );
     addOptionWidget( edit );
     label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
+
+    // tooltips
+    page->layout()->addWidget( box = new QGroupBox( "Tooltips", page ) );
+    box->setLayout( new QVBoxLayout() );
+    BaseFileInfoConfigurationWidget* configurationWidget;
+    box->layout()->addWidget( configurationWidget = new BaseFileInfoConfigurationWidget( box ) );
+    addOptionWidget( configurationWidget );
 
     // load initial configuration
     read();

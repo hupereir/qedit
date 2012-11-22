@@ -65,7 +65,7 @@ class TextView: public QWidget, public Counter, public BASE::Key
     //! retrieve active display
     TextDisplay& activeDisplay( void )
     {
-        assert( activeDisplay_ );
+        Q_ASSERT( activeDisplay_ );
         return *activeDisplay_;
     }
 

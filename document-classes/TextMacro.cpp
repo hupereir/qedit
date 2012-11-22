@@ -27,7 +27,6 @@
 #include "XmlString.h"
 
 #include <QtCore/QStringList>
-#include <cassert>
 
 //___________________________________________________________________________
 unsigned int TextMacro::idCounter_ = 0;
@@ -69,7 +68,7 @@ TextMacro::TextMacro( const QDomElement& element ):
         else Debug::Throw(0) << "TextMacro::TextMacro - unrecognized child: " << child_element.tagName() << endl;
     }
 
-    assert( isSeparator() || !rules_.empty() );
+    Q_ASSERT( isSeparator() || !rules_.empty() );
 
 }
 

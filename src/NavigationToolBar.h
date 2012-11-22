@@ -30,7 +30,6 @@
 #include <QtGui/QAbstractButton>
 #include <QtGui/QContextMenuEvent>
 #include <QtCore/QHash>
-#include <cassert>
 
 class NavigationFrame;
 
@@ -85,10 +84,7 @@ class NavigationToolBar: public CustomToolBar
 
     //! navigation frame
     NavigationFrame& _navigationFrame( void )
-    {
-        assert( navigationFrame_ );
-        return *navigationFrame_;
-    }
+    { return *navigationFrame_; }
 
     //! tool button
     CustomToolButton* _newToolButton( QWidget* parent, QIcon ) const;

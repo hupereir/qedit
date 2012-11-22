@@ -21,13 +21,10 @@
 *
 *******************************************************************************/
 
-
 #include "IndentPattern.h"
 #include "Str.h"
 #include "XmlDef.h"
 #include "XmlString.h"
-
-#include <cassert>
 
 //___________________________________________________________________________
 unsigned int& IndentPattern::_counter( void )
@@ -44,7 +41,6 @@ IndentPattern::IndentPattern( void ):
     type_( NOTHING ),
     scale_( 1 )
 {}
-//{ assert( false ); }
 
 //_____________________________________________________
 IndentPattern::IndentPattern( const QDomElement& element ):
@@ -86,7 +82,7 @@ IndentPattern::IndentPattern( const QDomElement& element ):
         } else Debug::Throw(0) << "IndentPattern::IndentPattern - unrecognized child: " << child_element.tagName() << endl;
     }
 
-    assert( !rules().empty() );
+    Q_ASSERT( !rules().empty() );
 
 }
 
@@ -128,11 +124,11 @@ QString IndentPattern::typeName( const Type& type )
 {
     switch( type )
     {
+        default:
         case NOTHING: return XML::INDENT_NOTHING;
         case INCREMENT: return XML::INDENT_INCREMENT;
         case DECREMENT: return XML::INDENT_DECREMENT;
         case DECREMENT_ALL: return XML::INDENT_DECREMENT_ALL;
-        default: assert(0);
     }
 }
 

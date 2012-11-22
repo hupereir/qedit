@@ -28,7 +28,6 @@
 
 #include <QtGui/QApplication>
 #include <algorithm>
-#include <cassert>
 
 //____________________________________________________
 FileCheck::FileCheck( QObject* parent ):

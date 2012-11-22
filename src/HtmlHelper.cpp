@@ -33,7 +33,7 @@ void HtmlHelper::print( QIODevice* device )
     Debug::Throw( "HtmlHelper::print.\n" );
 
     // check editor
-    assert( editor_ );
+    Q_CHECK_PTR( editor_ );
 
     // retrieve HTML string from current display
     QString htmlString( _htmlString() );

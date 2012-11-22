@@ -85,7 +85,7 @@ void TextView::setIsNewDocument( void )
     // look for first empty display
     BASE::KeySet<TextDisplay> displays( this );
     BASE::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
-    assert( iter != displays.end() );
+    Q_ASSERT( iter != displays.end() );
     TextDisplay &display( **iter );
 
     // set display as new document
@@ -106,12 +106,12 @@ void TextView::setFile( File file )
 {
 
     Debug::Throw() << "TextView::setFile - " << file << endl;
-    assert( !file.isEmpty() );
+    Q_ASSERT( !file.isEmpty() );
 
     // look for first empty display
     BASE::KeySet<TextDisplay> displays( this );
     BASE::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
-    assert( iter != displays.end() );
+    Q_ASSERT( iter != displays.end() );
     TextDisplay &display( **iter );
 
     // open file in active display
@@ -188,7 +188,7 @@ void TextView::closeActiveDisplay( void )
 void TextView::setActiveDisplay( TextDisplay& display )
 {
     Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << endl;
-    assert( display.isAssociated( this ) );
+    Q_ASSERT( display.isAssociated( this ) );
 
     if( activeDisplay_ != &display )
     {
@@ -255,7 +255,7 @@ void TextView::closeDisplay( TextDisplay& display )
                 break;
             }
         }
-        assert( child );
+        Q_CHECK_PTR( child );
 
         // retrieve splitter parent
         QWidget* grand_parent( parentSplitter->parentWidget() );
@@ -513,7 +513,7 @@ void TextView::diff( void )
     }
 
     // check that one display was found
-    assert( iter != displays.end() );
+    Q_ASSERT( iter != displays.end() );
 
     // try run
     if( !diff->run() )
@@ -637,7 +637,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, const boo
         }
 
         // check child could be retrieved
-        assert( child );
+        Q_CHECK_PTR( child );
 
         // try cast child to splitter
         // if exists and have same orientation, do not create a new one

@@ -32,7 +32,6 @@
 #include <QtGui/QAction>
 #include <QtCore/QBasicTimer>
 #include <QtCore/QTimerEvent>
-#include <cassert>
 
 class FileRecordToolTipWidget;
 
@@ -53,10 +52,7 @@ class SessionFilesFrame: public QWidget, public Counter
 
     //! list
     TreeView& list( void ) const
-    {
-        assert( list_ );
-        return *list_;
-    }
+    { return *list_; }
 
     //! select file in list
     void select( const File& );

@@ -289,10 +289,7 @@ class TextDisplay: public AnimatedTextEditor
 
     //! text indent
     TextIndent& textIndent( void ) const
-    {
-        assert( indent_ );
-        return *indent_;
-    }
+    { return *indent_; }
 
     //! block delimiter display
     bool hasBlockDelimiterDisplay( void ) const

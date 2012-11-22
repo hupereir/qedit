@@ -29,7 +29,6 @@
 #include <QtGui/QLabel>
 #include <QtGui/QLayout>
 #include <QtGui/QScrollBar>
-#include <cassert>
 
 //____________________________________________________________________________
 RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::List& files ):
@@ -37,7 +36,7 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
 {
 
     Debug::Throw( "RemoveFilesDialog::RemoveFilesDialog.\n" );
-    assert( !files.empty() );
+    Q_ASSERT( !files.empty() );
 
     // options
     setOptionName( "REMOVE_FILES_DIALOG" );

@@ -615,7 +615,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
             TextBlock::Delimiter delimiter( data->delimiters().get( iter->id() ) );
             if( collapsed )
             {
-                assert( blockFormat.hasProperty( TextBlock::CollapsedData ) );
+                Q_ASSERT( blockFormat.hasProperty( TextBlock::CollapsedData ) );
                 CollapsedBlockData block_collapsed_data( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
                 delimiter += block_collapsed_data.delimiters().get( iter->id() );
             }
@@ -667,8 +667,6 @@ void BlockDelimiterDisplay::_updateSegments( void )
                     if( first )
                     {
                         collapsedBlocks_.insert( blockCount, collapsedBlockCount );
-
-                        // assert( blockFormat.hasProperty( TextBlock::CollapsedData ) );
                         collapsedBlockCount += blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount() - 1;
                     }
 
@@ -728,7 +726,7 @@ void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, unsigned int& id, 
     // find block matching marker id
     if( marker.id() < id ) { for( ; marker.id() < id && block.isValid(); block = block.previous(), id-- ) {} }
     else if( marker.id() > id ) { for( ; marker.id() > id && block.isValid(); block = block.next(), id++ ) {} }
-    assert( block.isValid() );
+    Q_ASSERT( block.isValid() );
 
     QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
     if( flag == BEGIN ) { marker.setPosition( (int) block.layout()->position().y() ); }
@@ -760,15 +758,15 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
     TextBlockPair out;
 
     // look for first block
-    assert( id <= segment.begin().id() );
+    Q_ASSERT( id <= segment.begin().id() );
     for( ; block.isValid() && id < segment.begin().id(); block = block.next(), id++ )
     {}
 
-    assert( block.isValid() );
+    Q_ASSERT( block.isValid() );
 
     // get data and check
     data = dynamic_cast<HighlightBlockData*>( block.userData() );
-    assert( data );
+    Q_CHECK_PTR( data );
 
     // store
     out.first = block;
@@ -836,7 +834,7 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
     QTextBlockFormat blockFormat( block.blockFormat() );
 
     // retrieve collapsed block data
-    assert( blockFormat.hasProperty( TextBlock::CollapsedData ) );
+    Q_ASSERT( blockFormat.hasProperty( TextBlock::CollapsedData ) );
     CollapsedBlockData collapsed_data( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
 
     // mark contents dirty to force update of current block

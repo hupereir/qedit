@@ -21,23 +21,11 @@
  *
  *******************************************************************************/
 
-/*!
-  \file HighlightPattern.cpp
-  \brief Base class for syntax highlighting
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
-#include <cassert>
-
 #include "HighlightPattern.h"
 #include "PatternLocation.h"
 #include "Str.h"
 #include "XmlDef.h"
 #include "XmlString.h"
-
-
 
 //___________________________________________________________________________
 QString HighlightPattern::noParentPattern_( "None" );
@@ -152,9 +140,9 @@ QString HighlightPattern::typeName( const Type& type )
 {
   switch( type )
   {
+    default:
     case KEYWORD_PATTERN: return XML::KEYWORD_PATTERN;
     case RANGE_PATTERN: return XML::RANGE_PATTERN;
-    default: assert(0);
   }
 }
 

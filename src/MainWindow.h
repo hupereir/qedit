@@ -151,17 +151,11 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
     //! menu
     Menu& menu( void ) const
-    {
-        assert( menu_ );
-        return *menu_;
-    }
+    { return *menu_; }
 
     //! navigation window
     NavigationFrame& navigationFrame( void ) const
-    {
-        assert( navigationFrame_ );
-        return *navigationFrame_;
-    }
+    { return *navigationFrame_; }
 
     //!@name active view/display managment
     //@{
@@ -171,17 +165,11 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
     //! active view
     TextView& activeView( void )
-    {
-        assert( activeView_ );
-        return *activeView_;
-    }
+    { return *activeView_; }
 
     //! active view
     const TextView& activeView( void ) const
-    {
-        assert( activeView_ );
-        return *activeView_;
-    }
+    { return *activeView_; }
 
     //! change active display manualy
     void setActiveView( TextView& view );
@@ -557,17 +545,11 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
     //! find dialog
     virtual BaseFindDialog& _findDialog( void )
-    {
-        assert( findDialog_ );
-        return *findDialog_;
-    }
+    { return *findDialog_; }
 
     //! replace dialog
     virtual ReplaceDialog& _replaceDialog( void )
-    {
-        assert( replaceDialog_ );
-        return *replaceDialog_;
-    }
+    { return *replaceDialog_; }
 
     //! replace dialog
     bool _hasReplaceDialog( void ) const

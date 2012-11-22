@@ -37,7 +37,6 @@
 #include <QtCore/QSet>
 #include <QtGui/QPalette>
 #include <algorithm>
-#include <cassert>
 
 //______________________________________________________________
 const QString SessionFilesModel::DRAG = "base/sessionfilesmodel/drag";

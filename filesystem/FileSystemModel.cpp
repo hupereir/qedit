@@ -32,7 +32,6 @@
 #include "XmlOptions.h"
 
 #include <algorithm>
-#include <cassert>
 
 //__________________________________________________________________
 FileSystemModel::FileSystemModel( QObject* parent ):

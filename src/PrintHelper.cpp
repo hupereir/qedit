@@ -35,7 +35,7 @@ void PrintHelper::print( QPrinter* printer )
     Debug::Throw( "PrintHelper::print.\n" );
 
     // check editor
-    assert( editor_ );
+    Q_CHECK_PTR( editor_ );
 
     // setup
     setupPage( printer );

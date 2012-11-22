@@ -266,7 +266,7 @@ int TextIndent::_tabCount( const QTextBlock& block )
 void TextIndent::_addBaseIndentation( QTextBlock block )
 {
 
-    assert( baseIndentation() );
+    Q_ASSERT( baseIndentation() );
 
     // set a cursor at beginning of block
     QTextCursor cursor( block );

@@ -24,14 +24,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file Diff.h
-\brief make diff between two files, stores conflict and added lines for both
-\author  Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "CustomProcess.h"
 #include "Counter.h"
 #include "Debug.h"
@@ -40,8 +32,6 @@
 #include <QtCore/QPair>
 #include <QtCore/QSet>
 #include <QtCore/QVector>
-
-#include <cassert>
 
 class TextDisplay;
 
@@ -145,10 +135,7 @@ class Diff: public QObject, public Counter
 
         //! text display
         TextDisplay& _display( void )
-        {
-            assert( display_  );
-            return *display_;
-        }
+        { return *display_; }
 
 
         //! text display

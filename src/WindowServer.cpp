@@ -21,14 +21,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file WindowServer.cpp
-\brief handles opened edition windows
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "WindowServer.h"
 
 #include "Application.h"
@@ -357,7 +349,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
 
         // find matching window
         BASE::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
-        assert( iter != windows.end() );
+        Q_ASSERT( iter != windows.end() );
 
         // loop over views
         BASE::KeySet<TextView> views( *iter );
@@ -440,7 +432,7 @@ void WindowServer::_newFile( WindowServer::OpenMode mode )
         // select the view that contains the empty display
         BASE::KeySet<TextView> views( *iter );
         BASE::KeySet<TextView>::iterator viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
-        assert( viewIter != views.end() );
+        Q_ASSERT( viewIter != views.end() );
         (*iter)->setActiveView( **viewIter );
         view = *viewIter;
 
@@ -544,7 +536,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
         // select the view that contains the empty display
         BASE::KeySet<TextView> views( *iter );
         BASE::KeySet<TextView>::iterator viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
-        assert( viewIter != views.end() );
+        Q_ASSERT( viewIter != views.end() );
         (*viewIter)->setFile( record.file() );
         (*iter)->setActiveView( **viewIter );
         view = *viewIter;
@@ -610,7 +602,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         // find matching view
         BASE::KeySet<TextView> views( *iter );
         BASE::KeySet<TextView>::iterator viewIter = std::find_if( views.begin(), views.end(), MainWindow::SameFileFTor( record.file() ) );
-        assert( viewIter != views.end() );
+        Q_ASSERT( viewIter != views.end() );
 
         // check if the found view is the current
         if( *viewIter == &activeView )
@@ -688,7 +680,7 @@ void WindowServer::_detach( void )
     MainWindow& activeWindow_local( _activeWindow() );
 
     // check number of independent displays
-    assert( activeWindow_local.activeView().independentDisplayCount() > 1 || BASE::KeySet<TextView>( &_activeWindow() ).size() > 1 );
+    Q_ASSERT( activeWindow_local.activeView().independentDisplayCount() > 1 || BASE::KeySet<TextView>( &_activeWindow() ).size() > 1 );
 
     // get current display
     TextDisplay& active_display_local( activeWindow_local.activeView().activeDisplay() );
@@ -768,7 +760,7 @@ void WindowServer::_reparent( const File& first, const File& second )
 
     // make view active
     BASE::KeySet<MainWindow> windows( view );
-    assert( windows.size() == 1 );
+    Q_ASSERT( windows.size() == 1 );
     MainWindow& window( **windows.begin() );
     window.setActiveView( view );
     window.raise();
@@ -867,7 +859,7 @@ bool WindowServer::_close( FileRecord::List records )
     Debug::Throw( "WindowServer::_close.\n" );
 
     // check how many records are modified
-    assert( !records.empty() );
+    Q_ASSERT( !records.empty() );
 
     // ask for confirmation
     if( records.size() > 1 && !CloseFilesDialog( &_activeWindow(), records ).exec() ) return true;
@@ -966,7 +958,7 @@ MainWindow& WindowServer::_findWindow( const File& file )
 
     }
 
-    assert( out );
+    Q_CHECK_PTR( out );
     return *out;
 
 }
@@ -977,7 +969,7 @@ TextView& WindowServer::_findView( const File& file )
 
     TextDisplay& display = _findDisplay( file );
     BASE::KeySet<TextView> views( display );
-    assert( views.size() == 1 );
+    Q_ASSERT( views.size() == 1 );
     return **views.begin();
 }
 
@@ -1002,7 +994,7 @@ TextDisplay& WindowServer::_findDisplay( const File& file )
 
     }
 
-    assert( out );
+    Q_CHECK_PTR( out );
     return *out;
 
 }
@@ -1062,12 +1054,9 @@ bool WindowServer::_createNewFile( const FileRecord& record )
 
         break;
 
-        case NewFileDialog::EXIT: qApp->quit();
-
-        case NewFileDialog::CANCEL: return false;
-
         default:
-        assert(0);
+        case NewFileDialog::EXIT: qApp->quit();
+        case NewFileDialog::CANCEL: return false;
         break;
 
     }
@@ -1105,7 +1094,7 @@ void WindowServer::_applyArguments( TextDisplay& display, CommandLineArguments a
 void WindowServer::_setActiveWindow( MainWindow& window )
 {
     Debug::Throw() << "WindowServer::setActiveWindow - key: " << window.key() << endl;
-    assert( window.isAssociated( this ) );
+    Q_ASSERT( window.isAssociated( this ) );
     activeWindow_ = &window;
 }
 

@@ -29,7 +29,6 @@
 
 #include <QtGui/QAction>
 #include <QtGui/QPaintEvent>
-#include <cassert>
 
 class FileList;
 class TreeView;
@@ -56,10 +55,7 @@ class RecentFilesFrame: public QWidget, public Counter
 
     //! list
     TreeView& list( void ) const
-    {
-        assert( list_ );
-        return *list_;
-    }
+    { return *list_; }
 
     //! select file in list
     void select( const File& );
@@ -84,10 +80,7 @@ class RecentFilesFrame: public QWidget, public Counter
 
     //! recent files
     FileList& _recentFiles( void ) const
-    {
-        assert( recentFiles_ );
-        return *recentFiles_;
-    }
+    { return *recentFiles_; }
 
     //! model
     FileRecordModel& _model( void )

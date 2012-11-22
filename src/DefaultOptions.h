@@ -140,6 +140,7 @@ void installDefaultOptions( void )
     XmlOptions::get().set( "HELP_FILE", Option( File( ".qedit_help").addPath(Util::home()), Option::None ) );
     XmlOptions::get().set( "DB_FILE", Option( File(".qedit_db").addPath(Util::home()), Option::None ) );
     XmlOptions::get().set( "RC_FILE", Option( File(".qeditrc").addPath(Util::home()), Option::None ) );
+
     XmlOptions::get().setAutoDefault( false );
 
 };

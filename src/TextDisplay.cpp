@@ -374,7 +374,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
 {
 
     Debug::Throw() << "TextDisplay::setFile " << file << endl;
-    assert( !file.isEmpty() );
+    Q_ASSERT( !file.isEmpty() );
 
     // reset class name
     QString class_name( _recentFiles().add( file ).property(classNamePropertyId_) );

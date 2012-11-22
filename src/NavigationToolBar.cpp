@@ -53,7 +53,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
 {
 
     Debug::Throw( "NavigationToolBar::connect.\n" );
-    assert( !navigationFrame_ );
+    Q_ASSERT( !navigationFrame_ );
     navigationFrame_ = &frame;
 
     CustomToolBar::connect( &_navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _navigationFrameVisibilityChanged( bool ) ) );
@@ -207,7 +207,7 @@ void NavigationToolBar::_display( QAbstractButton* button )
         else iter.key()->setChecked( false );
     }
 
-    assert( widget );
+    Q_CHECK_PTR( widget );
 
     if( state )
     {
