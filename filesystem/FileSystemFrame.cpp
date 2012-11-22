@@ -25,6 +25,7 @@
 
 #include "AnimatedTreeView.h"
 #include "FileRecordProperties.h"
+#include "FileRecordToolTipWidget.h"
 #include "FileSystemIcons.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
@@ -71,6 +72,9 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     layout->addWidget( pathEditor_ = new PathEditor( this ) );
     pathEditor_->setHomePath( Util::home() );
 
+    // tooltip widget
+    toolTipWidget_ = new FileRecordToolTipWidget( this );
+
     // initialize local root path list
     File::List rootPathList;
     foreach( const QFileInfo& fileInfo, QDir::drives() )
@@ -90,6 +94,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
     // file list
     layout->addWidget( list_ = new AnimatedTreeView( this ), 1);
+    list_->setMouseTracking( true );
     list_->setModel( &model_ );
     list_->setItemMargin( 2 );
     list_->setSelectionMode( QAbstractItemView::ContiguousSelection );
@@ -116,6 +121,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     connect( list_->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _updateActions() ) );
     connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateActions() ) );
     connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
+    connect( list_, SIGNAL( hovered( const QModelIndex& ) ), SLOT( _showToolTip( const QModelIndex& ) ) );
 
     // connect filesystem watcher
     connect( &fileSystemWatcher_, SIGNAL( directoryChanged( const QString& ) ), SLOT( _update( const QString& ) ) );
@@ -318,6 +324,36 @@ void FileSystemFrame::_updateActions( void )
     bool hasValidFile( selection.size() == 1 && index.isValid() && !model_.get( index ).hasFlag( FileSystemModel::Navigator ) );
     filePropertiesAction_->setEnabled( hasValidFile );
     renameAction_->setEnabled( hasValidFile );
+}
+
+//______________________________________________________
+void FileSystemFrame::_showToolTip( const QModelIndex& index )
+{
+
+    if( !index.isValid() ) toolTipWidget_->hide();
+    else {
+
+        // fileInfo
+        const FileRecord record( model_.get( index ) );
+
+        // icon
+        QIcon icon;
+        QVariant iconVariant( model_.data( index, Qt::DecorationRole ) );
+        if( iconVariant.canConvert( QVariant::Icon ) ) icon = iconVariant.value<QIcon>();
+
+        // rect
+        QRect rect( list_->visualRect( index ) );
+        rect.translate( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) );
+        toolTipWidget_->setIndexRect( rect );
+
+        // assign to tooltip widget
+        toolTipWidget_->setRecord( record, icon );
+
+        // show
+        toolTipWidget_->showDelayed();
+
+    }
+
 }
 
 //______________________________________________________

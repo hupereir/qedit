@@ -1,6 +1,7 @@
-// $Id$
 #ifndef SessionFilesFrame_h
 #define SessionFilesFrame_h
+
+// $Id$
 
 /******************************************************************************
 *
@@ -32,6 +33,8 @@
 #include <QtCore/QBasicTimer>
 #include <QtCore/QTimerEvent>
 #include <cassert>
+
+class FileRecordToolTipWidget;
 
 //! editor windows navigator
 class SessionFilesFrame: public QWidget, public Counter
@@ -94,7 +97,7 @@ class SessionFilesFrame: public QWidget, public Counter
     //! signal emitted when file is asked to be saved
     void filesSaved( FileRecord::List );
 
-    private slots:
+    protected slots:
 
     //! previous file
     void _selectPreviousFile( void );
@@ -104,6 +107,9 @@ class SessionFilesFrame: public QWidget, public Counter
 
     //! update session files
     void _updateActions( void );
+
+    //! show tooltip
+    void _showToolTip( const QModelIndex& );
 
     //! open
     void _open( void );
@@ -141,6 +147,9 @@ class SessionFilesFrame: public QWidget, public Counter
     { return *closeAction_; }
 
     //@}
+
+    //! tooltip widget
+    FileRecordToolTipWidget* toolTipWidget_;
 
     //! model
     SessionFilesModel model_;

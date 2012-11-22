@@ -1,6 +1,7 @@
-// $Id$
 #ifndef RecentFilesFrame_h
 #define RecentFilesFrame_h
+
+// $Id$
 
 /******************************************************************************
 *
@@ -32,6 +33,7 @@
 
 class FileList;
 class TreeView;
+class FileRecordToolTipWidget;
 
 //! editor windows navigator
 /*!
@@ -96,6 +98,9 @@ class RecentFilesFrame: public QWidget, public Counter
     //! update action
     void _updateActions( void );
 
+    //! show tooltip
+    void _showToolTip( const QModelIndex& );
+
     //! clean
     void _clean( void );
 
@@ -128,6 +133,9 @@ class RecentFilesFrame: public QWidget, public Counter
 
     //! recent files
     FileList* recentFiles_;
+
+    //! tooltip widget
+    FileRecordToolTipWidget* toolTipWidget_;
 
     //! model
     FileRecordModel model_;

@@ -34,6 +34,7 @@
 
 class AnimatedTreeView;
 class PathEditor;
+class FileRecordToolTipWidget;
 
 //! customized ListView for file/directory navigation
 class FileSystemFrame: public QWidget, public Counter
@@ -84,6 +85,9 @@ class FileSystemFrame: public QWidget, public Counter
     //! update navigation actions based on current location and history
     void _updateNavigationActions( void );
 
+    //! show tooltip
+    void _showToolTip( const QModelIndex& );
+
     //! update directory
     void _update( const QString& );
 
@@ -119,6 +123,9 @@ class FileSystemFrame: public QWidget, public Counter
 
      //! path editor
     PathEditor* pathEditor_;
+
+    //! tooltip widget
+    FileRecordToolTipWidget* toolTipWidget_;
 
     //! model
     FileSystemModel model_;

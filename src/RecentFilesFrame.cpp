@@ -22,6 +22,7 @@
 
 #include "RecentFilesFrame.h"
 
+#include "AnimatedTreeView.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
 #include "ContextMenu.h"
@@ -29,9 +30,9 @@
 #include "Icons.h"
 #include "IconEngine.h"
 #include "FileList.h"
+#include "FileRecordToolTipWidget.h"
 #include "QuestionDialog.h"
 #include "QtUtil.h"
-#include "TreeView.h"
 #include "Util.h"
 #include "XmlOptions.h"
 
@@ -53,8 +54,12 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     layout()->setMargin(0);
     layout()->setSpacing(2);
 
+    // tooltip widget
+    toolTipWidget_ = new FileRecordToolTipWidget( this );
+
     // list
-    layout()->addWidget( list_ = new TreeView( this ) );
+    layout()->addWidget( list_ = new AnimatedTreeView( this ) );
+    list_->setMouseTracking( true );
     list_->setModel( &_model() );
     list_->setItemMargin( 2 );
     list_->setSelectionMode( QAbstractItemView::ContiguousSelection );
@@ -77,6 +82,7 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     connect( list_, SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions( void ) ) );
     connect( list_->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
     connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
+    connect( list_, SIGNAL( hovered( const QModelIndex& ) ), SLOT( _showToolTip( const QModelIndex& ) ) );
 
     connect( &_recentFiles(), SIGNAL( validFilesChecked( void ) ), SLOT( update( void ) ) );
     connect( &_recentFiles(), SIGNAL( contentsChanged( void ) ), SLOT( update( void ) ) );
@@ -151,6 +157,36 @@ void RecentFilesFrame::_updateActions( void )
 
     bool has_validSelection( std::find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
     _openAction().setEnabled( has_validSelection );
+
+}
+
+//______________________________________________________
+void RecentFilesFrame::_showToolTip( const QModelIndex& index )
+{
+
+    if( !index.isValid() ) toolTipWidget_->hide();
+    else {
+
+        // fileInfo
+        const FileRecord record( model_.get( index ) );
+
+        // icon
+        QIcon icon;
+        QVariant iconVariant( model_.data( index, Qt::DecorationRole ) );
+        if( iconVariant.canConvert( QVariant::Icon ) ) icon = iconVariant.value<QIcon>();
+
+        // rect
+        QRect rect( list_->visualRect( index ) );
+        rect.translate( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) );
+        toolTipWidget_->setIndexRect( rect );
+
+        // assign to tooltip widget
+        toolTipWidget_->setRecord( record, icon );
+
+        // show
+        toolTipWidget_->showDelayed();
+
+    }
 
 }
 

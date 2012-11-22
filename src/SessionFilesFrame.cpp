@@ -23,12 +23,14 @@
 #include "SessionFilesFrame.h"
 
 #include "Application.h"
+#include "AnimatedTreeView.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
 #include "ContextMenu.h"
 #include "Debug.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
+#include "FileRecordToolTipWidget.h"
 #include "Icons.h"
 #include "IconEngine.h"
 #include "Singleton.h"
@@ -53,9 +55,13 @@ Counter( "SessionFilesFrame" )
     layout()->setMargin(0);
     layout()->setSpacing(2);
 
+    // tooltip widget
+    toolTipWidget_ = new FileRecordToolTipWidget( this );
+
     // list
     model_.setDragEnabled( true );
-    layout()->addWidget( list_ = new TreeView( this ) );
+    layout()->addWidget( list_ = new AnimatedTreeView( this ) );
+    list_->setMouseTracking( true );
     list_->setModel( &model_ );
     list_->setItemMargin( 2 );
     list_->setOptionName( "SESSION_FILES" );
@@ -88,6 +94,7 @@ Counter( "SessionFilesFrame" )
     connect( list_, SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions() ) );
     connect( list_->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
     connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
+    connect( list_, SIGNAL( hovered( const QModelIndex& ) ), SLOT( _showToolTip( const QModelIndex& ) ) );
 
 }
 
@@ -156,6 +163,39 @@ void SessionFilesFrame::_updateActions( void )
 
     previousFileAction().setEnabled( counts >= 2 && hasSelection );
     nextFileAction().setEnabled( counts >= 2 && hasSelection );
+
+}
+
+//______________________________________________________
+void SessionFilesFrame::_showToolTip( const QModelIndex& index )
+{
+
+    if( !index.isValid() ) toolTipWidget_->hide();
+    else {
+
+        // fileInfo
+        const FileRecord record( model_.get( index ) );
+
+        // icon
+        QIcon icon;
+        // QVariant iconVariant( model_.data( index, Qt::DecorationRole ) );
+        // if( iconVariant.canConvert( QVariant::Icon ) ) icon = iconVariant.value<QIcon>();
+        const int iconProperty = FileRecord::PropertyId::get( FileRecordProperties::ICON );
+        if( record.hasProperty( iconProperty ) )
+        { icon = IconEngine::get( record.property( iconProperty ) ); }
+
+        // rect
+        QRect rect( list_->visualRect( index ) );
+        rect.translate( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) );
+        toolTipWidget_->setIndexRect( rect );
+
+        // assign to tooltip widget
+        toolTipWidget_->setRecord( record, icon );
+
+        // show
+        toolTipWidget_->showDelayed();
+
+    }
 
 }
 
