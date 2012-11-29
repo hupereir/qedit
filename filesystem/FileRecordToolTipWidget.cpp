@@ -199,31 +199,6 @@ void FileRecordToolTipWidget::setRecord( const FileRecord& record, const QIcon& 
 }
 
 //_______________________________________________________
-void FileRecordToolTipWidget::_adjustPosition( void )
-{
-
-    // get tooltip size
-    const QSize size( sizeHint() );
-
-    // desktop size
-    QDesktopWidget* desktop( qApp->desktop() );
-    QRect desktopGeometry( desktop->screenGeometry( desktop->screenNumber( parentWidget() ) ) );
-
-    // set geometry
-    int left = QCursor::pos().x();
-    left = qMax( left, desktopGeometry.left() );
-    left = qMin( left, desktopGeometry.right() - size.width() );
-
-    // first try placing widget below item
-    const int margin = 5;
-    int top = rect_.bottom() + margin;
-    if( top > desktopGeometry.bottom() - size.height() ) top = rect_.top() - margin - size.height();
-
-    move( QPoint( left, top ) );
-
-}
-
-//_______________________________________________________
 bool FileRecordToolTipWidget::eventFilter( QObject* object, QEvent* event )
 {
 
@@ -239,6 +214,35 @@ bool FileRecordToolTipWidget::eventFilter( QObject* object, QEvent* event )
     }
 
     return QWidget::eventFilter( object, event );
+}
+
+//_______________________________________________________
+void FileRecordToolTipWidget::hide( void )
+{
+    timer_.stop();
+    QWidget::hide();
+}
+
+//_______________________________________________________
+void FileRecordToolTipWidget::showDelayed( int delay )
+{
+    if( !enabled_ ) return;
+    if( isVisible() ) hide();
+    timer_.start( delay, this );
+}
+
+//_______________________________________________________
+void FileRecordToolTipWidget::show( void )
+{
+    // stop timer
+    timer_.stop();
+
+    // check mouse is still in relevant rect
+    if( !_checkMousePosition() ) return;
+
+    // adjust position and show
+    _adjustPosition();
+    QWidget::show();
 }
 
 //_______________________________________________________
@@ -273,6 +277,35 @@ void FileRecordToolTipWidget::timerEvent( QTimerEvent* event )
         return;
 
     } else return QWidget::timerEvent( event );
+}
+
+//_______________________________________________________
+bool FileRecordToolTipWidget::_checkMousePosition( void ) const
+{ return rect_.contains( QCursor::pos() ); }
+
+//_______________________________________________________
+void FileRecordToolTipWidget::_adjustPosition( void )
+{
+
+    // get tooltip size
+    const QSize size( sizeHint() );
+
+    // desktop size
+    QDesktopWidget* desktop( qApp->desktop() );
+    QRect desktopGeometry( desktop->screenGeometry( desktop->screenNumber( parentWidget() ) ) );
+
+    // set geometry
+    int left = QCursor::pos().x();
+    left = qMax( left, desktopGeometry.left() );
+    left = qMin( left, desktopGeometry.right() - size.width() );
+
+    // first try placing widget below item
+    const int margin = 5;
+    int top = rect_.bottom() + margin;
+    if( top > desktopGeometry.bottom() - size.height() ) top = rect_.top() - margin - size.height();
+
+    move( QPoint( left, top ) );
+
 }
 
 //_____________________________________________

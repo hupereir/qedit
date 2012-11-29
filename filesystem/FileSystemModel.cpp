@@ -42,7 +42,7 @@ FileSystemModel::FileSystemModel( QObject* parent ):
     sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) )
 {
     Debug::Throw("FileSystemModel::FileSystemModel.\n" );
-    columnTitles_ << "File" << "Size" << "Time";
+    columnTitles_ << "File" << "Size" << "Last Accessed";
     iconProvider_ = new FileIconProvider( this );
 
 }
