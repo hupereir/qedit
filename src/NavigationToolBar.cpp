@@ -45,6 +45,7 @@ NavigationToolBar::NavigationToolBar( QWidget* parent ):
     enabled_( true )
 {
     Debug::Throw( "NavigationToolBar:NavigationToolBar.\n" );
+    setTransparent( true );
     CustomToolBar::connect( this, SIGNAL( orientationChanged( Qt::Orientation ) ), SLOT( _orientationChanged( Qt::Orientation ) ) );
 }
 
