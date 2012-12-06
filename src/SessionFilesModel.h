@@ -44,9 +44,6 @@ class SessionFilesModel: public FileRecordModel
     virtual ~SessionFilesModel( void )
     {}
 
-    //! drag mime type
-    static const QString DRAG;
-
     //!@name methods reimplemented from base class
     //@{
 

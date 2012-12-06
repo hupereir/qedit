@@ -38,9 +38,6 @@
 #include <QtGui/QPalette>
 #include <algorithm>
 
-//______________________________________________________________
-const QString SessionFilesModel::DRAG = "base/sessionfilesmodel/drag";
-
 //__________________________________________________________________
 SessionFilesModel::IconCache& SessionFilesModel::_icons( void )
 {
@@ -139,7 +136,7 @@ const QIcon& SessionFilesModel::_icon( unsigned int type )
 QStringList SessionFilesModel::mimeTypes( void ) const
 {
     QStringList types;
-    types << DRAG;
+    types << FileRecord::MimeType;
     return types;
 }
 
@@ -173,7 +170,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 
         mime->setText( full_text );
 
-        // fill DRAG data. Use XML
+        // fill drag data. Use XML
         QDomDocument document;
         QDomElement top = document.appendChild( document.createElement( XmlFileRecord::XML_FILE_LIST ) ).toElement();
 
@@ -184,7 +181,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
             top.appendChild( XmlFileRecord( record ).domElement( document ) );
 
         }
-        mime->setData( DRAG, document.toByteArray() );
+        mime->setData( FileRecord::MimeType, document.toByteArray() );
         return mime;
 
     }
@@ -198,15 +195,14 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
     // check action
     if( action == Qt::IgnoreAction) return true;
 
-    // Drag from Keyword model
-    if( !data->hasFormat( DRAG ) ) return false;
+    if( !data->hasFormat( FileRecord::MimeType ) ) return false;
 
     FileRecordModel::List records;
 
     // get dropped file record (use XML)
     // dom document
     QDomDocument document;
-    if( !document.setContent( data->data( DRAG ), false ) ) return false;
+    if( !document.setContent( data->data( FileRecord::MimeType ), false ) ) return false;
 
     QDomElement doc_element = document.documentElement();
     QDomNode node = doc_element.firstChild();
