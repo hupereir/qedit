@@ -116,7 +116,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
             TextMacro macro( childElement );
             if( macro.isValid() ) textMacros_ << macro;
 
-        } else if( childElement.tagName() == OPTIONS::OPTION ) {
+        } else if( childElement.tagName() == BASE::XML::OPTION ) {
 
             XmlOption option( childElement );
             if( option.name() == XML::OPTION_WRAP ) wrap_ = option.get<bool>();
