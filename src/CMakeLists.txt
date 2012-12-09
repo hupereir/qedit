@@ -103,7 +103,7 @@ ADD_LIBRARY( qedit_lib STATIC
 )
 
 ########### next target ###############
-SET( qedit_SOURCES qedit.cpp )
+SET( qedit_SOURCES main.cpp )
 SET( qedit_RESOURCES pixmaps.qrc)
 QT4_ADD_RESOURCES( qedit_RESOURCES_RCC ${qedit_RESOURCES})
 

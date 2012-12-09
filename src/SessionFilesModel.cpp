@@ -172,7 +172,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 
         // fill drag data. Use XML
         QDomDocument document;
-        QDomElement top = document.appendChild( document.createElement( BASE::XML::FILE_LIST ) ).toElement();
+        QDomElement top = document.appendChild( document.createElement( FILERECORD::XML::FILE_LIST ) ).toElement();
 
         foreach( const FileRecord& record, records )
         {
@@ -212,7 +212,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         if( element.isNull() ) continue;
 
         // special options
-        if( element.tagName() == BASE::XML::RECORD )
+        if( element.tagName() == FILERECORD::XML::RECORD )
         {
 
             XmlFileRecord record( element );

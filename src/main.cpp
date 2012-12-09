@@ -20,6 +20,7 @@
 *
 *******************************************************************************/
 
+#include "Application.h"
 #include "Debug.h"
 #include "DefaultOptions.h"
 #include "DocumentClass.h"
@@ -28,12 +29,13 @@
 #include "SystemOptions.h"
 #include "ErrorHandler.h"
 #include "Singleton.h"
+#include "XmlFileRecord.h"
+#include "XmlMigration.h"
 #include "XmlOptions.h"
 
-#include "Application.h"
-
-#include <unistd.h>
+#include <QtGui/QApplication>
 #include <signal.h>
+#include <unistd.h>
 
 //_______________________________
 //! handles keyboard interruptions
@@ -68,6 +70,8 @@ int main (int argc, char *argv[])
     int debug_level( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );
     Debug::setLevel( debug_level );
     if( debug_level ) XmlOptions::get().print();
+
+    XmlMigration( File(".qedit_db").addPath(Util::home() ), "DB_FILE", FILERECORD::XML::FILE_LIST ).run();
 
     // initialize main frame and run loop
     Q_INIT_RESOURCE( basePixmaps );
