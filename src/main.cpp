@@ -35,7 +35,6 @@
 
 #include <QtGui/QApplication>
 #include <signal.h>
-#include <unistd.h>
 
 //_______________________________
 //! handles keyboard interruptions
