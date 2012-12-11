@@ -53,6 +53,7 @@ selection_( selection )
     // custom list display
     list_ = new TreeView( this );
     _list().setModel( &model_ );
+    _list().setItemMargin( 2 );
     _list().setSelectionMode( QAbstractItemView::MultiSelection );
     connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
 
