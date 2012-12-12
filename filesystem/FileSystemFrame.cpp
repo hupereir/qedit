@@ -213,6 +213,7 @@ void FileSystemFrame::_processFiles( const File::List& files )
         // assign type
         record.setFlag( file.isDirectory() ? FileSystemModel::Folder : FileSystemModel::Document );
         if( file.isLink() ) record.setFlag( FileSystemModel::Link );
+        if( file.isHidden() ) record.setFlag( FileSystemModel::Hidden );
 
         // add to model
         records << record;

@@ -81,6 +81,16 @@ const QIcon& FileIconProvider::icon( const FileRecord& fileRecord )
         }
     }
 
+    // hidden file
+    if( type & FileSystemModel::Hidden )
+    {
+        QIcon copy( base );
+        base = QIcon();
+        foreach( const QSize& size, copy.availableSizes() )
+        { base.addPixmap( CustomPixmap( copy.pixmap( size ) ).transparent( 0.6 ) ); }
+
+    }
+
     // insert in map and return
     return icons_.insert( key, base ).value();
 
