@@ -124,14 +124,8 @@ Menu::Menu( QWidget* parent ):
     // help manager
     BASE::HelpManager* help( new BASE::HelpManager( this ) );
     help->setWindowTitle( "Qedit Handbook" );
-    File help_file( XmlOptions::get().raw( "HELP_FILE" ) );
-    if( help_file.exists() ) help->install( help_file );
-    else
-    {
-        help->setFile( help_file );
-        help->install( helpText );
-        help->install( BASE::helpText, false );
-    }
+    help->install( helpText );
+    help->install( BASE::helpText, false );
 
     // create help menu
     menu = addMenu( "Help" );
@@ -141,12 +135,10 @@ Menu::Menu( QWidget* parent ):
     menu->addAction( &application.aboutAction() );
 
     // debug menu
-    #define DEBUG
     #ifdef DEBUG
     menu->addSeparator();
     DebugMenu *debug_menu( new DebugMenu( this ) );
     debug_menu->setTitle( "Debug" );
-    debug_menu->addAction( &help->dumpAction() );
     debug_menu->addAction( &application.monitoredFilesAction() );
     menu->addMenu( debug_menu );
     #endif
