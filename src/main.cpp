@@ -68,7 +68,7 @@ int main (int argc, char *argv[])
 
     // debug level
     Debug::setLevel( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );
-    if( Debug::level() ) XmlOptions::get().print();
+    if( Debug::level() ) Debug::Throw() << XmlOptions::get() << endl;
 
     // migration
     XmlMigration( File(".qedit_db").addPath(Util::home() ), "DB_FILE", FILERECORD::XML::FILE_LIST ).run();

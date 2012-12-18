@@ -41,7 +41,6 @@
 #include "OptionSpinBox.h"
 #include "RecentFilesConfiguration.h"
 #include "RecentFilesFrame.h"
-#include "ServerConfiguration.h"
 #include "SessionFilesFrame.h"
 #include "Singleton.h"
 #include "TreeView.h"
