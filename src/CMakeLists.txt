@@ -34,7 +34,7 @@ CONFIGURE_FILE( Config.h.cmake Config.h )
 CONFIGURE_FILE( SystemOptions.h.cmake SystemOptions.h )
 
 ########### next target ###############
-SET( qedit_lib_SOURCES
+SET( qedit_SOURCES
   Application.cpp
   AskForSaveDialog.cpp
   AutoSave.cpp
@@ -65,9 +65,10 @@ SET( qedit_lib_SOURCES
   TextDisplay.cpp
   TextView.cpp
   WindowServer.cpp
+  main.cpp
 )
 
-SET( qedit_lib_HEADERS
+SET( qedit_HEADERS
   Application.h
   AskForSaveDialog.h
   AutoSave.h
@@ -95,31 +96,20 @@ SET( qedit_lib_HEADERS
   WindowServer.h
 )
 
-QT4_WRAP_CPP( qedit_lib_HEADERS_MOC ${qedit_lib_HEADERS} )
-
-ADD_LIBRARY( qedit_lib STATIC
-  ${qedit_lib_SOURCES}
-  ${qedit_lib_HEADERS_MOC}
-)
-
-########### next target ###############
-SET( qedit_SOURCES main.cpp )
 SET( qedit_RESOURCES pixmaps.qrc)
+
+QT4_WRAP_CPP( qedit_HEADERS_MOC ${qedit_HEADERS} )
 QT4_ADD_RESOURCES( qedit_RESOURCES_RCC ${qedit_RESOURCES})
 
 ADD_PLATFORM_EXECUTABLE( qedit
   ${QEDIT_VERSION}
   ${qedit_SOURCES}
+  ${qedit_HEADERS_MOC}
   ${qedit_RESOURCES_RCC}
 )
 
 TARGET_LINK_LIBRARIES( qedit ${QT_LIBRARIES} )
-TARGET_LINK_LIBRARIES( qedit
-  qedit_lib
-  document-classes
-  filesystem
-)
-
+TARGET_LINK_LIBRARIES( qedit document-classes filesystem )
 TARGET_LINK_LIBRARIES( qedit
   base
   base-qt

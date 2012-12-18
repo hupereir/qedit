@@ -52,7 +52,7 @@ int main (int argc, char *argv[])
     // install error handler
     qInstallMsgHandler( ErrorHandler::Throw );
 
-    // load possible command file
+    // usage
     CommandLineArguments arguments( argc, argv );
     if( Application::commandLineParser( arguments, false ).hasFlag( "--help" ) )
     {
@@ -60,22 +60,25 @@ int main (int argc, char *argv[])
         return 0;
     }
 
-    // load default options
+    // options
     installDefaultOptions();
     installSystemOptions();
-    XmlOptions::read( XmlOptions::get().raw( "RC_FILE" ) );
+    XmlOptions::setFile( XmlOptions::get().raw( "RC_FILE" ) );
+    XmlOptions::read();
 
-    // set debug level
-    int debug_level( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );
-    Debug::setLevel( debug_level );
-    if( debug_level ) XmlOptions::get().print();
+    // debug level
+    Debug::setLevel( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );
+    if( Debug::level() ) XmlOptions::get().print();
 
+    // migration
     XmlMigration( File(".qedit_db").addPath(Util::home() ), "DB_FILE", FILERECORD::XML::FILE_LIST ).run();
 
-    // initialize main frame and run loop
+    // resources
     Q_INIT_RESOURCE( basePixmaps );
     Q_INIT_RESOURCE( patterns );
     Q_INIT_RESOURCE( pixmaps );
+
+    // application
     QApplication application( argc, argv );
     application.setApplicationName( "Qedit" );
     Application singleton( arguments );
