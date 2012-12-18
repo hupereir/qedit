@@ -139,6 +139,10 @@ void installDefaultOptions( void )
     XmlOptions::get().set( "APP_NAME", Option( "QEDIT", Option::None ) );
     XmlOptions::get().set( "RC_FILE", Option( File(".qeditrc").addPath(Util::home()), Option::None ) );
 
+    // lists
+    XmlOptions::get().set<int>( "FILE_SELECTION_LIST_MASK", (1<<FileRecordModel::FILE)|(1<<FileRecordModel::TIME) );
+    XmlOptions::get().set<int>( "CLOSE_FILES_LIST_MASK", (1<<FileRecordModel::FILE)|(1<<FileRecordModel::TIME) );
+
     XmlOptions::get().setAutoDefault( false );
 
 };

@@ -52,10 +52,10 @@ selection_( selection )
 
     // custom list display
     list_ = new TreeView( this );
-    _list().setModel( &model_ );
-    _list().setItemMargin( 2 );
-    _list().setSelectionMode( QAbstractItemView::MultiSelection );
-    connect( _list().selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
+    list_->setModel( &model_ );
+    list_->setItemMargin( 2 );
+    list_->setSelectionMode( QAbstractItemView::MultiSelection );
+    connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
 
     // retrieve file records
     FileRecordModel::List records;
@@ -69,9 +69,9 @@ selection_( selection )
         (1<<FileRecordModel::PATH ));
     int classColumn( model_.findColumn( "class_name" ) );
     if( classColumn >= 0 ) mask |= (1<<classColumn);
-    _list().setMask( mask );
-    _list().resizeColumns();
-    _list().setOptionName( "FILE_SELECTION_LIST" );
+    list_->setMask( mask );
+    list_->resizeColumns();
+    list_->setOptionName( "FILE_SELECTION_LIST" );
     mainLayout().addWidget( list_ );
 
     // generic button
@@ -95,14 +95,14 @@ selection_( selection )
     _updateButtons();
 
     // sort list and select all items
-    if( XmlOptions::get().contains( "SESSION_FILES_SORTColumn" ) && XmlOptions::get().contains( "SESSION_FILES_SORT_ORDER" ) )
+    if( XmlOptions::get().contains( "SESSION_FILES_SORT_COLUMN" ) && XmlOptions::get().contains( "SESSION_FILES_SORT_ORDER" ) )
     {
-        _list().sortByColumn(
-            XmlOptions::get().get<int>( "SESSION_FILES_SORTColumn" ),
+        list_->sortByColumn(
+            XmlOptions::get().get<int>( "SESSION_FILES_SORT_COLUMN" ),
             (Qt::SortOrder)(XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ) );
     }
 
-    _list().selectAll();
+    list_->selectAll();
 
 
     adjustSize();
@@ -114,7 +114,7 @@ void FileSelectionDialog::_updateButtons( void )
 {
 
     Debug::Throw( "FileSelectionDialog::_updateButtons.\n" );
-    QList<QModelIndex> selection( _list().selectionModel()->selectedRows() );
+    QList<QModelIndex> selection( list_->selectionModel()->selectedRows() );
 
     clearSelectionButton_->setEnabled( !selection.empty() );
     okButton().setEnabled( !selection.empty() );
@@ -128,7 +128,7 @@ FileSelectionDialog::FileList FileSelectionDialog::selectedFiles( void ) const
     Debug::Throw( "FileSelectionDialog::_replace.\n" );
 
     // retrieve selection from the list
-    FileRecordModel::List selection( model_.get( _list().selectionModel()->selectedRows() ) );
+    FileRecordModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     FileList files;
     for( FileRecordModel::List::iterator iter = selection.begin(); iter != selection.end(); ++iter )
     { files << iter->file(); }

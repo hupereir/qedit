@@ -23,13 +23,13 @@
 *
 *******************************************************************************/
 
-#include "CustomDialog.h"
 #include "Counter.h"
-#include "File.h"
+#include "QuestionDialog.h"
 #include "FileRecord.h"
+#include "FileRecordModel.h"
 
-//! QDialog used to ask if a new file should be created
-class CloseFilesDialog: public CustomDialog
+//! close files
+class CloseFilesDialog: public QuestionDialog
 {
 
     public:
@@ -40,6 +40,11 @@ class CloseFilesDialog: public CustomDialog
     //! destructor
     virtual ~CloseFilesDialog( void )
     {}
+
+    private:
+
+    //! model
+    FileRecordModel model_;
 
 };
 

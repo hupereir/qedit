@@ -23,60 +23,62 @@
 
 #include "CloseFilesDialog.h"
 
+#include "AnimatedTreeView.h"
 #include "Debug.h"
-#include "FileRecordProperties.h"
 #include "Icons.h"
 #include "IconEngine.h"
+#include "XmlOptions.h"
 
-#include <QtGui/QLabel>
+#include <QtCore/QTextStream>
 
 //__________________________________________________
 CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
-CustomDialog( parent, OkButton | CancelButton| Separator )
+    QuestionDialog( parent )
 {
 
     Debug::Throw( "CloseFilesDialog::CloseFilesDialog.\n" );
-
     setWindowTitle( "Close Files - Qedit" );
 
-    QHBoxLayout *hLayout( new QHBoxLayout() );
-    hLayout->setSpacing(5);
-    hLayout->setMargin( 0 );
-    mainLayout().addLayout( hLayout );
+    Q_ASSERT( !files.empty() );
 
-    // add icon
-    QLabel *label( new QLabel( this ) );
-    label->setPixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
-    hLayout->addWidget( label, 0, Qt::AlignHCenter );
-
-    // create label text
-    static const unsigned int maxLineSize( 50 );
-    unsigned int currentLine( 0 );
-    QString buffer;
-    QTextStream what( &buffer );
-    what << "Editing: ";
-
-    int index(0);
-    foreach( const FileRecord& record, files )
+    if( files.size() == 1 )
     {
-        what << record.file().localName();
-        if( record.hasFlag( FileRecordProperties::MODIFIED ) ) what << "*";
-        if( index < files.size()-2 ) what << ", ";
-        else if( index == files.size()-2 ) what << " and ";
-        else what << ".";
 
-        if( buffer.size() >= int((currentLine+1)*maxLineSize) )
+        QString buffer;
+        QTextStream( &buffer ) << "Editing " << files.front().file() << ". Closing ?";
+        setText( buffer );
+
+    } else {
+
+        QString buffer;
+        QTextStream( &buffer ) << "Editing " << files.size() << " files. Closing ?";
+        setText( buffer );
+
+        AnimatedTreeView* treeView = new AnimatedTreeView( this );
+        setDetails( treeView );
+        treeView->setModel( &model_ );
+        model_.set( files );
+
+        // mask
+        unsigned int mask(
+            (1<<FileRecordModel::FILE)|
+            (1<<FileRecordModel::PATH ));
+        int classColumn( model_.findColumn( "class_name" ) );
+        if( classColumn >= 0 ) mask |= (1<<classColumn);
+        treeView->setMask( mask );
+        treeView->resizeColumns();
+
+        treeView->setOptionName( "CLOSE_FILES_LIST" );
+
+        // sort list and select all items
+        if( XmlOptions::get().contains( "SESSION_FILES_SORT_COLUMN" ) && XmlOptions::get().contains( "SESSION_FILES_SORT_ORDER" ) )
         {
-            what << endl;
-            currentLine++;
+            treeView->sortByColumn(
+                XmlOptions::get().get<int>( "SESSION_FILES_SORT_COLUMN" ),
+                (Qt::SortOrder)(XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ) );
         }
 
-        ++index;
-
     }
-
-    what << endl << "Close ?";
-    hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
     // rename buttons
     okButton().setText( "Close" );
