@@ -18,7 +18,6 @@
 * software; if not, write to the Free Software Foundation, Inc., 59 Temple
 * Place, Suite 330, Boston, MA  02111-1307 USA
 *
-*
 *******************************************************************************/
 
 #include "DocumentClass.h"
@@ -26,7 +25,7 @@
 #include "IndentPattern.h"
 #include "QtUtil.h"
 #include "XmlDef.h"
-#include "XmlError.h"
+#include "XmlDocument.h"
 
 #include <QtCore/QFile>
 #include <algorithm>
@@ -57,14 +56,13 @@ bool DocumentClassManager::read( const File& filename )
     if ( !file.open( QIODevice::ReadOnly ) ) return false;
 
     // parse file
-    XmlError error( filename );
-    QDomDocument document;
-    if ( !document.setContent( &file, &error.error(), &error.line(), &error.column() ) ) {
-        file.close();
+    XmlDocument document;
+    if( !document.setContent( &file ) )
+    {
         readError_.clear();
         QTextStream( &readError_ )
             << "An error occured while parsing document classes." << endl
-            << error
+            << document.error()
             << endl;
         return false;
     }
@@ -126,7 +124,7 @@ bool DocumentClassManager::write( const DocumentClass& documentClass, const File
     if( !out.open( QIODevice::WriteOnly ) ) return false;
 
     // create document
-    QDomDocument document;
+    XmlDocument document;
 
     // create main element
     QDomElement top = document.appendChild( document.createElement( XML::PATTERNS ) ).toElement();
