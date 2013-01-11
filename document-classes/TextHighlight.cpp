@@ -21,23 +21,13 @@
 *
 *******************************************************************************/
 
-/*!
-\file TextHighlight.cpp
-\brief syntax highlighting based on text patterns
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QTextDocument>
-
 #include "Debug.h"
 #include "HighlightPattern.h"
 #include "HighlightBlockData.h"
 #include "TextParenthesis.h"
 #include "TextHighlight.h"
 
-
+#include <QtGui/QTextDocument>
 
 //_________________________________________________________
 TextHighlight::TextHighlight( QTextDocument* document ):

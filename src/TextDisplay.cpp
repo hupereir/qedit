@@ -377,8 +377,8 @@ void TextDisplay::setFile( File file, bool check_autosave )
     Q_ASSERT( !file.isEmpty() );
 
     // reset class name
-    QString class_name( _recentFiles().add( file ).property(classNamePropertyId_) );
-    setClassName( class_name );
+    QString className( _recentFiles().add( file ).property(classNamePropertyId_) );
+    setClassName( className );
 
     // expand filename
     file = file.expand();
@@ -386,7 +386,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
     // check is there is an "AutoSave" file matching with more recent modification time
     // here, when the diff is working, I could offer the possibility to show a diff between
     // the saved file and the backup
-    bool restore_autosave( false );
+    bool restoreAutoSave( false );
     File tmp( file );
 
     File autosaved( AutoSaveThread::autoSaveName( tmp ) );
@@ -403,7 +403,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
         what << "Use autosaved version ?";
         if( QuestionDialog( this, buffer ).exec() )
         {
-            restore_autosave = true;
+            restoreAutoSave = true;
             tmp = autosaved;
         }
     }
@@ -418,7 +418,9 @@ void TextDisplay::setFile( File file, bool check_autosave )
     foreach( TextDisplay* display, displays )
     {
 
-        display->setClassName( className() );
+        display->_setIsNewDocument( false );
+
+        display->setClassName( this->className() );
         display->_updateDocumentClass( file, false );
         display->_updateSpellCheckConfiguration( file );
 
@@ -442,13 +444,12 @@ void TextDisplay::setFile( File file, bool check_autosave )
     // in order to minimize the amount of slots that are sent
     foreach( TextDisplay* display, displays )
     {
-        display->_setIsNewDocument( false );
         display->_setFile( file );
         display->filePropertiesAction().setEnabled( true );
     }
 
     // save file if restored from autosaved.
-    if( restore_autosave && !isReadOnly() ) save();
+    if( restoreAutoSave && !isReadOnly() ) save();
 
     // perform first autosave
     Application& application( *Singleton::get().application<Application>() );
@@ -994,7 +995,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
     DocumentClass document_class;
     Application& application( *Singleton::get().application<Application>() );
 
-    // try load document class from class_name
+    // try load document class from className
     if( !className().isEmpty() )
     {
         Debug::Throw( "TextDisplay::updateDocumentClass - try use className().\n" );
@@ -1787,7 +1788,8 @@ void TextDisplay::_updateConfiguration( void )
 //___________________________________________________________________________
 void TextDisplay::_updateSpellCheckConfiguration( File file )
 {
-    Debug::Throw( "TextDisplay::_updateSpellCheckConfiguration.\n" );
+
+    Debug::Throw() << "TextDisplay::_updateSpellCheckConfiguration - file: " << file << " new document:" << isNewDocument() << endl;
 
     #if WITH_ASPELL
 
@@ -1815,10 +1817,16 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
     {
         FileRecord& record( _recentFiles().get( file ) );
         if( record.hasProperty( filterPropertyId_ ) && interface.hasFilter( record.property( filterPropertyId_ ) ) )
-        { filter = record.property( filterPropertyId_ ); }
+        {
+            filter = record.property( filterPropertyId_ );
+            Debug::Throw() << "TextDisplay::_updateSpellCheckConfiguration - filter: " << filter << endl;
+        }
 
         if( record.hasProperty( dictionaryPropertyId_ ) && interface.hasDictionary( record.property( dictionaryPropertyId_ ) ) )
-        { dictionary = record.property( dictionaryPropertyId_ ); }
+        {
+            dictionary = record.property( dictionaryPropertyId_ );
+            Debug::Throw() << "TextDisplay::_updateSpellCheckConfiguration - dictionary: " << dictionary << endl;
+        }
 
     }
 
@@ -2023,8 +2031,8 @@ void TextDisplay::_spellcheck( void )
     dialog.interface().setIgnoredWords( textHighlight().spellParser().interface().ignoredWords() );
 
     // default dictionary from XmlOptions
-    QString default_filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
-    QString default_dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
+    QString defaultFilter( XmlOptions::get().raw("DICTIONARY_FILTER") );
+    QString defaultDictionary( XmlOptions::get().raw( "DICTIONARY" ) );
 
     // try overwrite with file record
     if( !( file().isEmpty()  || isNewDocument() ) )
@@ -2032,15 +2040,15 @@ void TextDisplay::_spellcheck( void )
 
         FileRecord& record( _recentFiles().get( file() ) );
         if( !( record.hasProperty( filterPropertyId_ ) && dialog.setFilter( record.property( filterPropertyId_ ) ) ) )
-        { dialog.setFilter( default_filter ); }
+        { dialog.setFilter( defaultFilter ); }
 
         if( !( record.hasProperty( dictionaryPropertyId_ ) && dialog.setDictionary( record.property( dictionaryPropertyId_ ) ) ) )
-        { dialog.setDictionary( default_dictionary ); }
+        { dialog.setDictionary( defaultDictionary ); }
 
     }  else {
 
-        dialog.setFilter( default_filter );
-        dialog.setDictionary( default_dictionary );
+        dialog.setFilter( defaultFilter );
+        dialog.setDictionary( defaultDictionary );
 
     }
 
