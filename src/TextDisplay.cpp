@@ -417,8 +417,9 @@ void TextDisplay::setFile( File file, bool check_autosave )
     displays.insert( this );
     foreach( TextDisplay* display, displays )
     {
-
+        display->_setFile( file );
         display->_setIsNewDocument( false );
+        display->filePropertiesAction().setEnabled( true );
 
         display->setClassName( this->className() );
         display->_updateDocumentClass( file, false );
@@ -438,14 +439,6 @@ void TextDisplay::setFile( File file, bool check_autosave )
         setModified( false );
         _setIgnoreWarnings( false );
 
-    }
-
-    // finally set file. This is needed to be done _after_ the text is loaded in the display
-    // in order to minimize the amount of slots that are sent
-    foreach( TextDisplay* display, displays )
-    {
-        display->_setFile( file );
-        display->filePropertiesAction().setEnabled( true );
     }
 
     // save file if restored from autosaved.
