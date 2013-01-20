@@ -32,16 +32,8 @@ CONFIGURE_FILE( qedit.spec.cmake ${CMAKE_SOURCE_DIR}/qedit.spec )
 FIND_PROGRAM( DIFF diff )
 
 ########### aspell ###############
-IF( DISABLE_ASPELL )
-
-  SET( ASPELL_FOUND 0 )
-
-ELSE()
-
-  FIND_PROGRAM( ASPELL aspell )
-  FIND_PACKAGE( ASPELL )
-
-ENDIF()
+FIND_PROGRAM( ASPELL aspell )
+FIND_PACKAGE( ASPELL )
 
 ########### subdirectories ###############
 IF( ENABLE_SHARED )
