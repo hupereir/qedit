@@ -247,11 +247,11 @@ void Menu::_updatePreferenceMenu( void )
 
     // configurations (from application)
     preferenceMenu_->addSeparator();
+    preferenceMenu_->addAction( &application.configurationAction() );
+    preferenceMenu_->addAction( &application.documentClassesConfigurationAction() );
     #if WITH_ASPELL
     preferenceMenu_->addAction( &application.spellCheckConfigurationAction() );
     #endif
-    preferenceMenu_->addAction( &application.documentClassesConfigurationAction() );
-    preferenceMenu_->addAction( &application.configurationAction() );
 
     return;
 }
