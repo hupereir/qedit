@@ -45,13 +45,13 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
     {
 
         QString buffer;
-        QTextStream( &buffer ) << "Editing " << files.front().file() << ". Closing ?";
+        QTextStream( &buffer ) << "Editing " << files.front().file() << ". Close ?";
         setText( buffer );
 
     } else {
 
         QString buffer;
-        QTextStream( &buffer ) << "Editing " << files.size() << " files. Closing ?";
+        QTextStream( &buffer ) << "Editing " << files.size() << " files. Close ?";
         setText( buffer );
 
         AnimatedTreeView* treeView = new AnimatedTreeView( this );
@@ -84,5 +84,6 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
     okButton().setText( "Close" );
     okButton().setIcon( IconEngine::get( ICONS::DIALOG_CLOSE ) );
     adjustSize();
+
 }
 

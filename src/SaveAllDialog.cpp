@@ -23,59 +23,68 @@
 
 #include "SaveAllDialog.h"
 
+#include "AnimatedTreeView.h"
+#include "Debug.h"
 #include "Icons.h"
 #include "IconEngine.h"
-#include "Debug.h"
+#include "XmlOptions.h"
 
-#include <QtGui/QLabel>
+#include <QtCore/QTextStream>
 
 //__________________________________________________
 SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
-CustomDialog( parent, OkButton | CancelButton| Separator )
+    QuestionDialog( parent )
 {
 
     Debug::Throw( "SaveAllDialog::SaveAllDialog.\n" );
     setWindowTitle( "Save Files - Qedit" );
 
-    QHBoxLayout *hLayout( new QHBoxLayout() );
-    hLayout->setSpacing(5);
-    hLayout->setMargin( 0 );
-    mainLayout().addLayout( hLayout );
+    Q_ASSERT( !files.empty() );
 
-    // add icon
-    QLabel *label( new QLabel( this ) );
-    label->setPixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
-    hLayout->addWidget( label, 0, Qt::AlignHCenter );
 
-    // create label text
-    static const int maxLineSize( 50 );
-    int currentLine( 0 );
-    QString buffer;
-    QTextStream what( &buffer );
-    what << "Modified: ";
-
-    int index(0);
-    foreach( const FileRecord record, files )
+    if( files.size() == 1 )
     {
-        what << record.file().localName();
-        if( index < files.size()-2 ) what << ", ";
-        else if( index == files.size()-2 ) what << " and ";
-        else what << ".";
 
-        if( buffer.size() >= (currentLine+1)*maxLineSize )
+        QString buffer;
+        QTextStream( &buffer ) << "File " << files.front().file() << " is modified. Save ?";
+        setText( buffer );
+
+    } else {
+
+        QString buffer;
+        QTextStream( &buffer ) << files.size() << " files are modified. Save ?";
+        setText( buffer );
+
+        AnimatedTreeView* treeView = new AnimatedTreeView( this );
+        setDetails( treeView );
+        treeView->setModel( &model_ );
+        model_.set( files );
+
+        // mask
+        unsigned int mask(
+            (1<<FileRecordModel::FILE)|
+            (1<<FileRecordModel::PATH ));
+        int classColumn( model_.findColumn( "class_name" ) );
+        if( classColumn >= 0 ) mask |= (1<<classColumn);
+        treeView->setMask( mask );
+        treeView->resizeColumns();
+
+        treeView->setOptionName( "SAVE_FILES_LIST" );
+
+        // sort list and select all items
+        if( XmlOptions::get().contains( "SESSION_FILES_SORT_COLUMN" ) && XmlOptions::get().contains( "SESSION_FILES_SORT_ORDER" ) )
         {
-            what << endl;
-            currentLine++;
+            treeView->sortByColumn(
+                XmlOptions::get().get<int>( "SESSION_FILES_SORT_COLUMN" ),
+                (Qt::SortOrder)(XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ) );
         }
 
     }
-
-    what << endl << "Save ?";
-    hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
     // rename buttons
     okButton().setText( "Save" );
     okButton().setIcon( IconEngine::get( ICONS::SAVE ) );
     adjustSize();
+
 }
 
