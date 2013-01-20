@@ -29,11 +29,19 @@ INCLUDE( CPack )
 CONFIGURE_FILE( qedit.spec.cmake ${CMAKE_SOURCE_DIR}/qedit.spec )
 
 ########### external applications ###############
-FIND_PROGRAM( ASPELL aspell )
 FIND_PROGRAM( DIFF diff )
 
 ########### aspell ###############
-FIND_PACKAGE( ASPELL )
+IF( DISABLE_ASPELL )
+
+  SET( ASPELL_FOUND 0 )
+
+ELSE()
+
+  FIND_PROGRAM( ASPELL aspell )
+  FIND_PACKAGE( ASPELL )
+
+ENDIF()
 
 ########### subdirectories ###############
 IF( ENABLE_SHARED )
