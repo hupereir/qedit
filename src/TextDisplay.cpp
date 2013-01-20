@@ -483,11 +483,19 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
 {
     Debug::Throw() << "TextDisplay::checkFileRemoved - " << file() << endl;
 
+    // check if warnings are enabled and file is removed. Do nothing otherwise
     if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::IGNORE;
 
-    // disable check
-    FileRemovedDialog dialog( this, file() );
-    int state( dialog.centerOnWidget( window() ).exec() );
+    // disable check. This prevents recursion in macOS
+    _setIgnoreWarnings( true );
+
+    // ask action from dialog
+    const int state( FileRemovedDialog( this, file() ).centerOnWidget( window() ).exec() );
+
+    // restore check
+    _setIgnoreWarnings( false );
+
+    // process dialog action
     switch( state )
     {
 
@@ -528,22 +536,19 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
 {
     Debug::Throw() << "TextDisplay::checkFileModified - " << file() << endl;
 
-    if( _ignoreWarnings() )
-    {
-        Debug::Throw( "TextDisplay::checkFileModified - warnings ignored.\n" );
-        return FileModifiedDialog::IGNORE;
-    }
+    // check if warnings are enabled and file is modified. Do nothing otherwise
+    if( _ignoreWarnings() || !_fileModified() ) return FileModifiedDialog::IGNORE;
 
-    // check if file is really modified
-    if( !_fileModified() )
-    {
-        Debug::Throw( "TextDisplay::checkFileModified - file not changed.\n" );
-        return FileModifiedDialog::IGNORE;
-    }
+    // disable check. This prevents recursion in macOS
+    _setIgnoreWarnings( true );
 
-    // create dialog
-    FileModifiedDialog dialog( this, file() );
-    int state( dialog.centerOnWidget( window() ).exec() );
+    // ask action from dialog
+    const int state( FileModifiedDialog( this, file() ).centerOnWidget( window() ).exec() );
+
+    // restore check
+    _setIgnoreWarnings( false );
+
+    // perform dialog action
     switch( state )
     {
 
