@@ -935,6 +935,9 @@ void MainWindow::_installActions( void )
     addAction( spellcheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Spell Check...", this ) );
     #if WITH_ASPELL
     connect( spellcheckAction_, SIGNAL( triggered() ), SLOT( _spellcheck( void ) ) );
+
+    // disable action if there is no dictionary
+    spellcheckAction_->setEnabled( !SPELLCHECK::SpellInterface().dictionaries().empty() );
     #else
     spellcheckAction_->setVisible( false );
     #endif

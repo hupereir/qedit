@@ -343,7 +343,7 @@ class TextDisplay: public AnimatedTextEditor
 
     //! spellcheck action
     QAction& spellcheckAction( void ) const
-    { return *spellCheckAction_; }
+    { return *spellcheckAction_; }
 
     //! indent selection
     QAction& indentSelectionAction( void ) const
@@ -754,7 +754,7 @@ class TextDisplay: public AnimatedTextEditor
     QAction* showBlockDelimiterAction_;
 
     //! run spell checker
-    QAction* spellCheckAction_;
+    QAction* spellcheckAction_;
 
     //! indent selection
     QAction* indentSelectionAction_;

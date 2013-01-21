@@ -38,6 +38,7 @@
 #include "InformationDialog.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
+#include "TextHighlight.h"
 #include "TextMacroMenu.h"
 #include "Util.h"
 #include "WindowServer.h"
@@ -243,6 +244,11 @@ void Menu::_updatePreferenceMenu( void )
     preferenceMenu_->addAction( &display.autoSpellAction() );
     preferenceMenu_->addAction( &display.dictionaryMenuAction() );
     preferenceMenu_->addAction( &display.filterMenuAction() );
+
+    // disable autospell action if dictionaries are empty
+    const bool hasDictionaries( !display.textHighlight().spellParser().interface().dictionaries().empty() );
+    display.autoSpellAction().setEnabled( hasDictionaries );
+    display.dictionaryMenuAction().setEnabled( hasDictionaries );
     #endif
 
     // configurations (from application)
@@ -269,14 +275,14 @@ void Menu::_updateToolsMenu( void )
     // retrieve flags needed to set button state
     bool editable( !display.isReadOnly() );
     bool hasSelection( display.textCursor().hasSelection() );
-    bool has_indent( display.textIndentAction().isEnabled() );
+    bool hasIndent( display.textIndentAction().isEnabled() );
 
     // clear menu
     toolsMenu_->clear();
 
     // selection indentation
     toolsMenu_->addAction( &display.indentSelectionAction() );
-    display.indentSelectionAction().setEnabled( editable && hasSelection && has_indent );
+    display.indentSelectionAction().setEnabled( editable && hasSelection && hasIndent );
 
     //if( display.baseIndentAction().isEnabled() )
     { toolsMenu_->addAction( &display.baseIndentAction() ); }
@@ -285,30 +291,36 @@ void Menu::_updateToolsMenu( void )
     toolsMenu_->addAction( &display.leadingTabsAction() );
     display.leadingTabsAction().setEnabled( display.hasLeadingTabs() );
 
+    #if WITH_ASPELL
     // spell checker
     toolsMenu_->addAction( &display.spellcheckAction() );
+
+    // disable autospell action if dictionaries are empty
+    const bool hasDictionaries( !display.textHighlight().spellParser().interface().dictionaries().empty() );
+    display.spellcheckAction().setEnabled( hasDictionaries );
+    #endif
 
     // diff files
     toolsMenu_->addSeparator();
     toolsMenu_->addAction( &mainwindow.diffAction() );
 
-    bool has_tags( display.hasTaggedBlocks() );
-    bool current_block_tagged( has_tags && display.isCurrentBlockTagged() );
+    bool hasTags( display.hasTaggedBlocks() );
+    bool currentBlockTagged( hasTags && display.isCurrentBlockTagged() );
 
     toolsMenu_->addAction( &display.tagBlockAction() );
     display.tagBlockAction().setText( hasSelection ? "&Tag selected blocks":"&Tag current block" );
 
     toolsMenu_->addAction( &display.nextTagAction() );
-    display.nextTagAction().setEnabled( has_tags );
+    display.nextTagAction().setEnabled( hasTags );
 
     toolsMenu_->addAction( &display.previousTagAction() );
-    display.previousTagAction().setEnabled( has_tags );
+    display.previousTagAction().setEnabled( hasTags );
 
     toolsMenu_->addAction( &display.clearTagAction() );
-    display.clearTagAction().setEnabled( current_block_tagged );
+    display.clearTagAction().setEnabled( currentBlockTagged );
 
     toolsMenu_->addAction( &display.clearAllTagsAction() );
-    display.clearAllTagsAction().setEnabled( has_tags );
+    display.clearAllTagsAction().setEnabled( hasTags );
 
     // blocks delimiters
     if( display.showBlockDelimiterAction().isEnabled() && display.showBlockDelimiterAction().isChecked() )

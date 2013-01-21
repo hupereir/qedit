@@ -1427,11 +1427,11 @@ void TextDisplay::_installActions( void )
     #endif
 
     // spell checking
-    addAction( spellCheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Spellcheck...", this ) );
+    addAction( spellcheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Spellcheck...", this ) );
     #if WITH_ASPELL
-    connect( spellCheckAction_, SIGNAL( triggered( void ) ), SLOT( _spellcheck( void ) ) );
+    connect( spellcheckAction_, SIGNAL( triggered( void ) ), SLOT( _spellcheck( void ) ) );
     #else
-    spellCheckAction_->setVisible( false );
+    spellcheckAction_->setVisible( false );
     #endif
 
     // indent selection
