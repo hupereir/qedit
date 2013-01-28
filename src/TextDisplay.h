@@ -52,6 +52,7 @@
 
 // forward declaration
 class BlockDelimiterDisplay;
+class BaseContextMenu;
 class DocumentClass;
 class HighlightBlockData;
 class TextHighlight;
@@ -124,8 +125,8 @@ class TextDisplay: public AnimatedTextEditor
     //! read-only
     virtual void setReadOnly( const bool& value );
 
-    //! retrieve context menu. Create it on first call
-    virtual void installContextMenuActions( QMenu& menu, const bool& all_actions = true );
+    //! install actions in context menu
+    virtual void installContextMenuActions( BaseContextMenu* menu, const bool& = true );
 
     //! draw margins
     virtual void paintMargin( QPainter& );

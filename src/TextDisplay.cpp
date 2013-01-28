@@ -19,19 +19,14 @@
 *
 *******************************************************************************/
 
-/*!
-\file TextDisplay.cpp
-\brief text display window
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
+#include "TextDisplay.h"
 
 #include "AnimatedTabWidget.h"
 #include "AnimatedLineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
+#include "BaseContextMenu.h"
 #include "BlockDelimiterDisplay.h"
 #include "FileDialog.h"
 #include "CustomTextDocument.h"
@@ -54,7 +49,6 @@
 #include "QtUtil.h"
 #include "Singleton.h"
 #include "TextEditorMarginWidget.h"
-#include "TextDisplay.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
@@ -226,7 +220,7 @@ void TextDisplay::setReadOnly( const bool& value )
 }
 
 //______________________________________________________________________________
-void TextDisplay::installContextMenuActions( QMenu& menu, const bool& )
+void TextDisplay::installContextMenuActions( BaseContextMenu* menu, const bool& )
 {
 
     Debug::Throw( "TextDisplay::installContextMenuActions.\n" );
@@ -234,36 +228,39 @@ void TextDisplay::installContextMenuActions( QMenu& menu, const bool& )
     // see if tagged blocks are present
     bool hasTags( hasTaggedBlocks() );
     bool hasSelection( textCursor().hasSelection() );
-    bool current_block_tagged( hasTags && isCurrentBlockTagged() );
+    bool currentBlockTagged( hasTags && isCurrentBlockTagged() );
 
     // retrieve default context menu
     // second argument is to remove un-necessary actions
     AnimatedTextEditor::installContextMenuActions( menu, false );
 
     // add specific actions
-    menu.insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
-    menu.addSeparator();
+    menu->insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
+    menu->addSeparator();
 
     // tags submenu
-    QMenu* submenu = menu.addMenu( "Tags" );
+    tagBlockAction_->setText( hasSelection ? "Tag selected blocks":"Tag current block" );
+    nextTagAction_->setEnabled( hasTags );
+    previousTagAction_->setEnabled( hasTags );
+    clearTagAction_->setEnabled( currentBlockTagged );
+    clearAllTagsAction_->setEnabled( hasTags );
 
-    submenu->addAction( &tagBlockAction() );
-    submenu->addAction( &nextTagAction() );
-    submenu->addAction( &previousTagAction() );
-    submenu->addAction( &clearTagAction() );
-    submenu->addAction( &clearAllTagsAction() );
+    BaseContextMenu* tagMenu = new BaseContextMenu( menu );
+    tagMenu->setHideDisabledActions( true );
+    tagMenu->setTitle( "Tags" );
 
-    tagBlockAction().setText( hasSelection ? "Tag selected blocks":"Tag current block" );
-    nextTagAction().setEnabled( hasTags );
-    previousTagAction().setEnabled( hasTags );
-    clearTagAction().setEnabled( current_block_tagged );
-    clearAllTagsAction().setEnabled( hasTags );
+    menu->addMenu( tagMenu );
+    tagMenu->addAction( tagBlockAction_ );
+    tagMenu->addAction( nextTagAction_ );
+    tagMenu->addAction( previousTagAction_ );
+    tagMenu->addAction( clearTagAction_ );
+    tagMenu->addAction( clearAllTagsAction_ );
 
     // document class menu
-    submenu = new DocumentClassMenu( this );
-    submenu->setTitle( "Select document class" );
-    connect( submenu, SIGNAL( documentClassSelected( QString ) ), SLOT( selectClassName( QString ) ) );
-    menu.addMenu( submenu );
+    QMenu* documentClassMenu = new DocumentClassMenu( this );
+    documentClassMenu->setTitle( "Select document class" );
+    connect( documentClassMenu, SIGNAL( documentClassSelected( QString ) ), SLOT( selectClassName( QString ) ) );
+    menu->addMenu( documentClassMenu );
 
     return;
 }
