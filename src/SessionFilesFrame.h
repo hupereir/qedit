@@ -127,23 +127,6 @@ class SessionFilesFrame: public QWidget, public Counter
     //! install actions
     void _installActions( void );
 
-    //!@name actions
-    //@{
-
-    //! open action
-    QAction& _openAction( void ) const
-    { return *openAction_; }
-
-    //! save action
-    QAction& _saveAction( void ) const
-    { return *saveAction_; }
-
-    //! close action
-    QAction& _closeAction( void ) const
-    { return *closeAction_; }
-
-    //@}
-
     //! tooltip widget
     FileRecordToolTipWidget* toolTipWidget_;
 

@@ -81,13 +81,13 @@ Counter( "SessionFilesFrame" )
     menu->addMenu( new ColumnSortingMenu( menu, list_ ) );
     menu->addMenu( new ColumnSelectionMenu( menu, list_ ) );
     menu->addSeparator();
-    menu->addAction( &_openAction() );
-    menu->addAction( &_saveAction() );
+    menu->addAction( openAction_ );
+    menu->addAction( saveAction_ );
     menu->addAction( &Singleton::get().application<Application>()->windowServer().saveAllAction() );
-    menu->addAction( &_closeAction() );
+    menu->addAction( closeAction_ );
     menu->addSeparator();
-    menu->addAction( &previousFileAction() );
-    menu->addAction( &nextFileAction() );
+    menu->addAction( previousFileAction_ );
+    menu->addAction( nextFileAction_ );
 
     // connections
     connect( &model_, SIGNAL( layoutChanged() ), list_, SLOT( updateMask() ) );
@@ -157,12 +157,12 @@ void SessionFilesFrame::_updateActions( void )
     SessionFilesModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     bool hasSelection( !selection.empty() );
 
-    _openAction().setEnabled( hasSelection );
-    _closeAction().setEnabled( hasSelection );
-    _saveAction().setEnabled( std::find_if( selection.begin(), selection.end(), FileRecord::HasFlagFTor( FileRecordProperties::MODIFIED ) ) != selection.end() );
+    openAction_->setEnabled( hasSelection );
+    closeAction_->setEnabled( hasSelection );
+    saveAction_->setEnabled( std::find_if( selection.begin(), selection.end(), FileRecord::HasFlagFTor( FileRecordProperties::MODIFIED ) ) != selection.end() );
 
-    previousFileAction().setEnabled( counts >= 2 && hasSelection );
-    nextFileAction().setEnabled( counts >= 2 && hasSelection );
+    previousFileAction_->setEnabled( counts >= 2 && hasSelection );
+    nextFileAction_->setEnabled( counts >= 2 && hasSelection );
 
 }
 
@@ -322,28 +322,28 @@ void SessionFilesFrame::_installActions( void )
 
     // next file
     addAction( nextFileAction_ = new QAction( IconEngine::get(  ICONS::DOWN ), "Select next File", this ) );
-    connect( &nextFileAction(), SIGNAL( triggered() ), SLOT( _selectNextFile() ) );
-    nextFileAction().setShortcut( Qt::CTRL + Qt::Key_Tab );
+    connect( nextFileAction_, SIGNAL( triggered() ), SLOT( _selectNextFile() ) );
+    nextFileAction_->setShortcut( Qt::CTRL + Qt::Key_Tab );
 
     // previous file
     addAction( previousFileAction_ = new QAction( IconEngine::get(  ICONS::UP ), "Select Previous File", this ) );
-    connect( &previousFileAction(), SIGNAL( triggered() ), SLOT( _selectPreviousFile() ) );
-    previousFileAction().setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Tab );
+    connect( previousFileAction_, SIGNAL( triggered() ), SLOT( _selectPreviousFile() ) );
+    previousFileAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Tab );
 
     // open
     addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open", this ) );
-    connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
-    _openAction().setToolTip( "Open selected files" );
+    connect( openAction_, SIGNAL( triggered() ), SLOT( _open() ) );
+    openAction_->setToolTip( "Open selected files" );
 
     // save
     addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "Save", this ) );
-    connect( &_saveAction(), SIGNAL( triggered() ), SLOT( _save() ) );
-    _saveAction().setToolTip( "Save selected files" );
+    connect( saveAction_, SIGNAL( triggered() ), SLOT( _save() ) );
+    saveAction_->setToolTip( "Save selected files" );
 
     // close
     addAction( closeAction_ = new QAction( IconEngine::get( ICONS::DIALOG_CLOSE ), "Close", this ) );
-    connect( &_closeAction(), SIGNAL( triggered() ), SLOT( _close() ) );
-    _closeAction().setShortcut( QKeySequence::Delete );
-    _closeAction().setToolTip( "Close selected files" );
+    connect( closeAction_, SIGNAL( triggered() ), SLOT( _close() ) );
+    closeAction_->setShortcut( QKeySequence::Delete );
+    closeAction_->setToolTip( "Close selected files" );
 
 }
