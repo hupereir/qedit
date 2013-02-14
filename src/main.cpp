@@ -50,7 +50,7 @@ int main (int argc, char *argv[])
     signal(SIGTERM, interrupt);
 
     // install error handler
-    qInstallMsgHandler( ErrorHandler::Throw );
+    ErrorHandler::initialize();
 
     // usage
     CommandLineArguments arguments( argc, argv );

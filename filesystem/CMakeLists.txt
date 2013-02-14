@@ -2,11 +2,18 @@
 PROJECT( FILESYSTEM )
 
 ########### Qt4 configuration #########
-FIND_PACKAGE( Qt4 REQUIRED )
-SET( QT_USE_QTXML TRUE )
+IF( USE_QT5 )
 
-INCLUDE( ${QT_USE_FILE} )
-ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+  FIND_PACKAGE( Qt5Widgets )
+
+ELSE()
+
+  FIND_PACKAGE( Qt4 REQUIRED )
+  SET( QT_USE_QTXML TRUE )
+  INCLUDE( ${QT_USE_FILE} )
+  ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+
+ENDIF()
 
 ########### includes ###############
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
@@ -30,7 +37,15 @@ SET( filesystem_HEADERS
   RenameFileDialog.h
 )
 
-QT4_WRAP_CPP( filesystem_HEADERS_MOC ${filesystem_HEADERS} )
+IF( USE_QT5 )
+
+  QT5_WRAP_CPP( filesystem_HEADERS_MOC ${filesystem_HEADERS} )
+
+ELSE()
+
+  QT4_WRAP_CPP( filesystem_HEADERS_MOC ${filesystem_HEADERS} )
+
+ENDIF()
 
 ADD_LIBRARY( filesystem STATIC
   ${filesystem_SOURCES}
@@ -38,3 +53,9 @@ ADD_LIBRARY( filesystem STATIC
 )
 
 TARGET_LINK_LIBRARIES( filesystem ${QT_LIBRARIES} )
+
+IF( USE_QT5 )
+
+  QT5_USE_MODULES( filesystem Widgets Network Xml )
+
+ENDIF()
