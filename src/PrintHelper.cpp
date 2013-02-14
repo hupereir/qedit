@@ -26,8 +26,8 @@
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 
-#include <QtGui/QTextLayout>
-#include <QtGui/QTextLine>
+#include <QTextLayout>
+#include <QTextLine>
 
 //__________________________________________________________________________
 void PrintHelper::print( QPrinter* printer )

@@ -39,7 +39,7 @@
 #include "Singleton.h"
 #include "TextView.h"
 
-#include <QtGui/QLayout>
+#include <QLayout>
 
 //___________________________________________________________________
 TextView::TextView( QWidget* parent ):

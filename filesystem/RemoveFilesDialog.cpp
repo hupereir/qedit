@@ -25,10 +25,10 @@
 #include "IconEngine.h"
 #include "TreeView.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QScrollBar>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLayout>
+#include <QScrollBar>
 
 //____________________________________________________________________________
 RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::List& files ):

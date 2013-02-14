@@ -46,9 +46,9 @@
 #include "FilterMenu.h"
 #endif
 
-#include <QtCore/QRegExp>
-#include <QtCore/QTimer>
-#include <QtGui/QAction>
+#include <QRegExp>
+#include <QTimer>
+#include <QAction>
 
 // forward declaration
 class BlockDelimiterDisplay;

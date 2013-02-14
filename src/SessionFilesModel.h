@@ -27,7 +27,7 @@
 #include "FileRecordModel.h"
 #include "Debug.h"
 
-#include <QtCore/QHash>
+#include <QHash>
 
 //! qlistview for object counters
 class SessionFilesModel: public FileRecordModel

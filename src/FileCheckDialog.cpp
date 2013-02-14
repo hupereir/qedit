@@ -28,7 +28,7 @@
 #include "Singleton.h"
 #include "TreeView.h"
 
-#include <QtGui/QHeaderView>
+#include <QHeaderView>
 
 //________________________________________________________
 FileCheckDialog::FileCheckDialog( QWidget* parent ):

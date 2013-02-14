@@ -26,11 +26,11 @@
 #include "Counter.h"
 #include "Debug.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QIODevice>
+#include <QObject>
+#include <QIODevice>
 
-#include <QtXml/QDomDocument>
-#include <QtXml/QDomElement>
+#include <QDomDocument>
+#include <QDomElement>
 
 class TextDisplay;
 

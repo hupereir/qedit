@@ -26,9 +26,9 @@
 
 #include "AutoSaveThread.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QBasicTimer>
-#include <QtCore/QList>
+#include <QObject>
+#include <QBasicTimer>
+#include <QList>
 
 class TextDisplay;
 

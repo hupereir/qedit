@@ -30,7 +30,7 @@
 #include "Config.h"
 #include "Counter.h"
 
-#include <QtCore/QBasicTimer>
+#include <QBasicTimer>
 
 class AutoSave;
 class DocumentClassManager;

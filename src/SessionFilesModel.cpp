@@ -33,9 +33,9 @@
 #include "XmlOptions.h"
 #include "QOrderedSet.h"
 
-#include <QtCore/QMimeData>
-#include <QtCore/QSet>
-#include <QtGui/QPalette>
+#include <QMimeData>
+#include <QSet>
+#include <QPalette>
 #include <algorithm>
 
 //__________________________________________________________________

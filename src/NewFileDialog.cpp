@@ -25,9 +25,9 @@
 #include "Icons.h"
 #include "QtUtil.h"
 
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QPushButton>
+#include <QLabel>
+#include <QLayout>
+#include <QPushButton>
 
 //________________________________________________________
 NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned int& buttons ):

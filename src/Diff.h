@@ -29,9 +29,9 @@
 #include "Debug.h"
 #include "File.h"
 
-#include <QtCore/QPair>
-#include <QtCore/QSet>
-#include <QtCore/QVector>
+#include <QPair>
+#include <QSet>
+#include <QVector>
 
 class TextDisplay;
 

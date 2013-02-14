@@ -26,7 +26,7 @@
 #include "CustomDialog.h"
 #include "FileRecordModel.h"
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
 class TreeView;
 

@@ -27,8 +27,8 @@
 #include "Counter.h"
 #include "FileRecordModel.h"
 
-#include <QtGui/QAction>
-#include <QtGui/QPaintEvent>
+#include <QAction>
+#include <QPaintEvent>
 
 class FileList;
 class TreeView;

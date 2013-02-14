@@ -26,7 +26,7 @@
 #include "XmlDef.h"
 #include "XmlString.h"
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
 //___________________________________________________________________________
 unsigned int TextMacro::idCounter_ = 0;

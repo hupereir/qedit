@@ -28,11 +28,11 @@
 #include "Debug.h"
 #include "Str.h"
 
-#include <QtXml/QDomElement>
-#include <QtXml/QDomDocument>
-#include <QtGui/QAction>
-#include <QtCore/QRegExp>
-#include <QtCore/QList>
+#include <QDomElement>
+#include <QDomDocument>
+#include <QAction>
+#include <QRegExp>
+#include <QList>
 
 //! Text modification macro
 class TextMacro: public Counter

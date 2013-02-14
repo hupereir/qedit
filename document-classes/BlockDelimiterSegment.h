@@ -25,10 +25,10 @@
 *******************************************************************************/
 
 #include "BlockMarker.h"
-#include <QtCore/QList>
-#include <QtCore/QPair>
-#include <QtCore/QPoint>
-#include <QtCore/QRect>
+#include <QList>
+#include <QPair>
+#include <QPoint>
+#include <QRect>
 
 // used to draw block segment
 class BlockDelimiterSegment: public Counter

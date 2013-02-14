@@ -26,9 +26,9 @@
 
 #include "HighlightBlockFlags.h"
 
-#include <QtGui/QTextBlock>
-#include <QtCore/QString>
-#include <QtCore/QList>
+#include <QTextBlock>
+#include <QString>
+#include <QList>
 
 //! store collapsed block text and state
 class CollapsedBlockData

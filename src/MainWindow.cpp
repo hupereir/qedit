@@ -74,12 +74,12 @@
 #include "WindowTitle.h"
 #include "XmlOptions.h"
 
-#include <QtCore/QObjectList>
-#include <QtGui/QApplication>
-#include <QtGui/QPrintDialog>
-#include <QtGui/QPrinter>
-#include <QtXml/QDomElement>
-#include <QtXml/QDomDocument>
+#include <QObjectList>
+#include <QApplication>
+#include <QPrintDialog>
+#include <QPrinter>
+#include <QDomElement>
+#include <QDomDocument>
 
 //_____________________________________________________
 const QString MainWindow::LEFT_RIGHT = "Left/right";

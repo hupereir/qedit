@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 #include "NewDocumentNameServer.h"
-#include <QtCore/QTextStream>
+#include <QTextStream>
 #include <algorithm>
 
 //_____________________________________

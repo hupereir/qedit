@@ -26,8 +26,8 @@
 
 #include "Counter.h"
 
-#include <QtGui/QApplication>
-#include <QtGui/QProgressDialog>
+#include <QApplication>
+#include <QProgressDialog>
 
 //! command progress
 class ProgressDialog:public QProgressDialog, public Counter

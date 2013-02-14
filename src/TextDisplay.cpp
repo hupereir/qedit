@@ -63,15 +63,15 @@
 #include "SuggestionMenu.h"
 #endif
 
-#include <QtGui/QApplication>
-#include <QtGui/QAbstractTextDocumentLayout>
-#include <QtGui/QCheckBox>
-#include <QtGui/QLabel>
-#include <QtGui/QPainter>
-#include <QtGui/QPushButton>
-#include <QtGui/QMenu>
-#include <QtGui/QScrollBar>
-#include <QtGui/QTextLayout>
+#include <QApplication>
+#include <QAbstractTextDocumentLayout>
+#include <QCheckBox>
+#include <QLabel>
+#include <QPainter>
+#include <QPushButton>
+#include <QMenu>
+#include <QScrollBar>
+#include <QTextLayout>
 
 //___________________________________________________
 NewDocumentNameServer& TextDisplay::newDocumentNameServer( void )

@@ -45,7 +45,7 @@
 #include "AutoSpellConfiguration.h"
 #endif
 
-#include <QtGui/QMessageBox>
+#include <QMessageBox>
 
 //____________________________________________
 CommandLineParser Application::commandLineParser( CommandLineArguments arguments, bool ignore_warnings )

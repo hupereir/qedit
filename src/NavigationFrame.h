@@ -27,9 +27,9 @@
 #include "FileList.h"
 #include "FileRecord.h"
 
-#include <QtGui/QAction>
-#include <QtGui/QShowEvent>
-#include <QtGui/QToolButton>
+#include <QAction>
+#include <QShowEvent>
+#include <QToolButton>
 
 class SessionFilesFrame;
 class RecentFilesFrame;

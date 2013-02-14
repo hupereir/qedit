@@ -37,7 +37,7 @@
 #include "SpellParser.h"
 #endif
 
-#include <QtGui/QSyntaxHighlighter>
+#include <QSyntaxHighlighter>
 
 class HighlightPattern;
 class HighlightBlockData;

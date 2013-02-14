@@ -25,8 +25,8 @@
 #include "Debug.h"
 #include "QtUtil.h"
 
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
+#include <QLabel>
+#include <QPushButton>
 
 //________________________________________________________________________
 ReplaceDialog::ReplaceDialog( QWidget* parent, Qt::WFlags flags ):

@@ -28,7 +28,7 @@
 #include "DocumentClassToolBar.h"
 #include "Singleton.h"
 
-#include <QtGui/QLabel>
+#include <QLabel>
 
 //________________________________________________________________
 DocumentClassToolBar::DocumentClassToolBar( QWidget* parent ):

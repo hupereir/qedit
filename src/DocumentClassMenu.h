@@ -25,11 +25,11 @@
 
 #include "Counter.h"
 
-#include <QtGui/QMenu>
-#include <QtGui/QAction>
-#include <QtGui/QActionGroup>
+#include <QMenu>
+#include <QAction>
+#include <QActionGroup>
 
-#include <QtCore/QHash>
+#include <QHash>
 
 //! display available document classes
 class DocumentClassMenu: public QMenu, public Counter

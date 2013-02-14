@@ -28,10 +28,10 @@
 #include "Debug.h"
 #include "Str.h"
 
-#include <QtXml/QDomElement>
-#include <QtXml/QDomDocument>
-#include <QtCore/QRegExp>
-#include <QtCore/QList>
+#include <QDomElement>
+#include <QDomDocument>
+#include <QRegExp>
+#include <QList>
 
 //! text parenthesis (for highlighting)
 class TextParenthesis: public Counter

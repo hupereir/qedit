@@ -26,10 +26,10 @@
 #include "Counter.h"
 #include "TextMacro.h"
 
-#include <QtGui/QMenu>
-#include <QtGui/QAction>
-#include <QtGui/QActionGroup>
-#include <QtCore/QMap>
+#include <QMenu>
+#include <QAction>
+#include <QActionGroup>
+#include <QMap>
 
 //! display available document classes
 class TextMacroMenu: public QMenu, public Counter

@@ -162,4 +162,3 @@ class HighlightBlockData: public TextBlockData
 };
 
 #endif
-

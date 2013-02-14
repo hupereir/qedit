@@ -29,15 +29,15 @@
 #include "CollapsedBlockData.h"
 #include "Counter.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QPair>
-#include <QtCore/QMap>
+#include <QObject>
+#include <QPair>
+#include <QMap>
 
-#include <QtGui/QAction>
-#include <QtGui/QColor>
-#include <QtGui/QFont>
-#include <QtGui/QTextBlock>
-#include <QtGui/QTextCursor>
+#include <QAction>
+#include <QColor>
+#include <QFont>
+#include <QTextBlock>
+#include <QTextCursor>
 
 class HighlightBlockData;
 class TextEditor;

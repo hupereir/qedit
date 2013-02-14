@@ -47,8 +47,8 @@
 #include "TreeViewConfiguration.h"
 #include "WindowServer.h"
 
-#include <QtGui/QLabel>
-#include <QtGui/QGroupBox>
+#include <QLabel>
+#include <QGroupBox>
 
 //_________________________________________________________
 ConfigurationDialog::ConfigurationDialog( QWidget* parent ):

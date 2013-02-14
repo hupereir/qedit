@@ -34,8 +34,8 @@
 #include "RecentFilesFrame.h"
 #include "SessionFilesFrame.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QLayout>
+#include <QHeaderView>
+#include <QLayout>
 
 //_______________________________________________________________
 NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):

@@ -27,8 +27,8 @@
 #include "CustomDialog.h"
 #include "FileSystemModel.h"
 
-#include <QtCore/QList>
-#include <QtGui/QPushButton>
+#include <QList>
+#include <QPushButton>
 
 class TreeView;
 class TextEditor;

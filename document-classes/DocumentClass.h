@@ -34,9 +34,9 @@
 #include "HighlightPattern.h"
 #include "HighlightStyle.h"
 
-#include <QtXml/QDomDocument>
-#include <QtXml/QDomElement>
-#include <QtCore/QRegExp>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QRegExp>
 
 //! Highlight and indentation patterns for a given document class
 class DocumentClass: public Counter

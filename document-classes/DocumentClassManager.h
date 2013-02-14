@@ -28,8 +28,8 @@
 #include "Debug.h"
 #include "File.h"
 
-#include <QtCore/QString>
-#include <QtCore/QList>
+#include <QString>
+#include <QList>
 
 class DocumentClass;
 

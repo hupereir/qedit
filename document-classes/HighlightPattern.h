@@ -28,11 +28,11 @@
 #include "Counter.h"
 #include "Debug.h"
 
-#include <QtXml/QDomElement>
-#include <QtXml/QDomDocument>
-#include <QtCore/QRegExp>
-#include <QtCore/QString>
-#include <QtCore/QList>
+#include <QDomElement>
+#include <QDomDocument>
+#include <QRegExp>
+#include <QString>
+#include <QList>
 
 class PatternLocationSet;
 

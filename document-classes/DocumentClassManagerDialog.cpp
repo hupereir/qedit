@@ -32,8 +32,8 @@
 #include "TreeView.h"
 #include "XmlOptions.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QLayout>
+#include <QHeaderView>
+#include <QLayout>
 
 //______________________________________________________________________
 DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):

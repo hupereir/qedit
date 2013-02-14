@@ -29,9 +29,9 @@
 #include "File.h"
 #include "Key.h"
 
-#include <QtCore/QMutex>
-#include <QtCore/QMutexLocker>
-#include <QtCore/QThread>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QThread>
 
 //! independent thread used to automatically save file
 class AutoSaveThread: public QThread, public BASE::Key, public Counter

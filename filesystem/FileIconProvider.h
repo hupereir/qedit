@@ -28,9 +28,9 @@
 #include "FileRecord.h"
 #include "MimeTypeIconProvider.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QHash>
-#include <QtGui/QIcon>
+#include <QObject>
+#include <QHash>
+#include <QIcon>
 
 //! icon provider for file records
 class FileIconProvider : public QObject, public Counter

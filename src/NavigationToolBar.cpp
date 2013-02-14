@@ -36,7 +36,7 @@
 #include "ToolBarMenu.h"
 #include "ToolButtonStyleMenu.h"
 
-#include <QtGui/QButtonGroup>
+#include <QButtonGroup>
 
 //_______________________________________________________________
 NavigationToolBar::NavigationToolBar( QWidget* parent ):

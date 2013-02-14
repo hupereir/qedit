@@ -27,7 +27,7 @@
 #include "TextParenthesis.h"
 #include "TextHighlight.h"
 
-#include <QtGui/QTextDocument>
+#include <QTextDocument>
 
 //_________________________________________________________
 TextHighlight::TextHighlight( QTextDocument* document ):

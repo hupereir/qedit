@@ -26,10 +26,10 @@
 #include "IconEngine.h"
 #include "QtUtil.h"
 
-#include <QtGui/QFrame>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QPushButton>
+#include <QFrame>
+#include <QLabel>
+#include <QLayout>
+#include <QPushButton>
 
 //________________________________________________________
 FileModifiedDialog::FileModifiedDialog( QWidget* parent, const File& file ):

@@ -41,10 +41,10 @@
 #include "Util.h"
 #include "XmlOptions.h"
 
-#include <QtGui/QApplication>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLayout>
-#include <QtCore/QDir>
+#include <QApplication>
+#include <QHeaderView>
+#include <QLayout>
+#include <QDir>
 
 //_____________________________________________
 FileSystemFrame::FileSystemFrame( QWidget *parent ):

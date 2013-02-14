@@ -28,9 +28,9 @@
 #include "Counter.h"
 #include "File.h"
 
-#include <QtGui/QMenu>
-#include <QtGui/QMenuBar>
-#include <QtCore/QHash>
+#include <QMenu>
+#include <QMenuBar>
+#include <QHash>
 
 class RecentFilesMenu;
 class TextMacroMenu;

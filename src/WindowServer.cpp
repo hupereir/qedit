@@ -48,9 +48,9 @@
 #include "Singleton.h"
 #include "Util.h"
 
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtCore/QTextStream>
+#include <QAction>
+#include <QApplication>
+#include <QTextStream>
 
 //________________________________________________________________
 const QString WindowServer::SINGLE_WINDOW = "open in current window";

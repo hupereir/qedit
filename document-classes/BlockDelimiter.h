@@ -29,10 +29,10 @@
 #include "Debug.h"
 #include "Str.h"
 
-#include <QtXml/QDomElement>
-#include <QtXml/QDomDocument>
-#include <QtCore/QRegExp>
-#include <QtCore/QList>
+#include <QDomElement>
+#include <QDomDocument>
+#include <QRegExp>
+#include <QList>
 
 //! text delimiter (for highlighting)
 class BlockDelimiter: public Counter

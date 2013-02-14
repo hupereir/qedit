@@ -29,9 +29,9 @@
 #include "FileRecord.h"
 #include "ListModel.h"
 
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QHash>
+#include <QString>
+#include <QStringList>
+#include <QHash>
 
 class FileIconProvider;
 

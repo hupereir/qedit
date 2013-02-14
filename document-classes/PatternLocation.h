@@ -29,7 +29,7 @@
 #include "QOrderedSet.h"
 #include "TextFormat.h"
 
-#include <QtGui/QTextCharFormat>
+#include <QTextCharFormat>
 
 //! encapsulate highlight location, pattern and style
 class PatternLocation: public Counter

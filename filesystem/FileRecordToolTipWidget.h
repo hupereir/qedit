@@ -26,14 +26,14 @@
 #include "FileRecord.h"
 #include "Counter.h"
 
-#include <QtCore/QBasicTimer>
-#include <QtCore/QTimerEvent>
+#include <QBasicTimer>
+#include <QTimerEvent>
 
-#include <QtGui/QIcon>
-#include <QtGui/QFrame>
-#include <QtGui/QLabel>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QWidget>
+#include <QIcon>
+#include <QFrame>
+#include <QLabel>
+#include <QPaintEvent>
+#include <QWidget>
 
 class ToolTipWidgetItem;
 

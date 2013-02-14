@@ -33,7 +33,7 @@
 #include "XmlMigration.h"
 #include "XmlOptions.h"
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <signal.h>
 
 //_______________________________

@@ -25,7 +25,7 @@
 
 #include "CustomToolBar.h"
 
-#include <QtGui/QComboBox>
+#include <QComboBox>
 
 //! display available document classes
 class DocumentClassToolBar: public CustomToolBar

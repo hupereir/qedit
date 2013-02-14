@@ -36,9 +36,9 @@
 #include "Util.h"
 #include "XmlOptions.h"
 
-#include <QtGui/QButtonGroup>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLayout>
+#include <QButtonGroup>
+#include <QHeaderView>
+#include <QLayout>
 
 //_______________________________________________________________
 RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):

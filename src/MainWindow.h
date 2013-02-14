@@ -30,14 +30,14 @@
 #include "Key.h"
 #include "TextView.h"
 
-#include <QtCore/QBasicTimer>
-#include <QtCore/QTimerEvent>
+#include <QBasicTimer>
+#include <QTimerEvent>
 
-#include <QtGui/QAction>
-#include <QtGui/QCloseEvent>
-#include <QtGui/QLabel>
-#include <QtGui/QSplitter>
-#include <QtGui/QStackedWidget>
+#include <QAction>
+#include <QCloseEvent>
+#include <QLabel>
+#include <QSplitter>
+#include <QStackedWidget>
 
 class BaseStatusBar;
 class DocumentClassToolBar;

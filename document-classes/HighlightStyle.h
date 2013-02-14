@@ -27,13 +27,13 @@
 #include "Counter.h"
 #include "TextFormat.h"
 
-#include <QtGui/QColor>
-#include <QtGui/QFont>
-#include <QtXml/QDomDocument>
-#include <QtXml/QDomElement>
-#include <QtCore/QString>
-#include <QtCore/QSet>
-#include <QtCore/QList>
+#include <QColor>
+#include <QFont>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QString>
+#include <QSet>
+#include <QList>
 
 //! Base class for syntax highlighting
 class HighlightStyle: public Counter

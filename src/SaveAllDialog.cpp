@@ -29,7 +29,7 @@
 #include "IconEngine.h"
 #include "XmlOptions.h"
 
-#include <QtCore/QTextStream>
+#include <QTextStream>
 
 //__________________________________________________
 SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
@@ -87,4 +87,3 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
     adjustSize();
 
 }
-

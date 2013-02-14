@@ -28,14 +28,14 @@
 #include "ToolTipWidgetItem.h"
 #include "XmlOptions.h"
 
-#include <QtGui/QApplication>
-#include <QtGui/QDesktopWidget>
-#include <QtGui/QFrame>
-#include <QtGui/QLayout>
-#include <QtGui/QPainter>
-#include <QtGui/QStyle>
-#include <QtGui/QStyleOptionFrame>
-#include <QtGui/QToolTip>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QFrame>
+#include <QLayout>
+#include <QPainter>
+#include <QStyle>
+#include <QStyleOptionFrame>
+#include <QToolTip>
 
 //_______________________________________________________
 FileRecordToolTipWidget::FileRecordToolTipWidget( QWidget* parent ):

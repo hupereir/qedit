@@ -26,7 +26,7 @@
 #include "TextDisplay.h"
 #include "TextView.h"
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <algorithm>
 
 //____________________________________________________

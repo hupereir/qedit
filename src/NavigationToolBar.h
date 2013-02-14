@@ -27,9 +27,9 @@
 #include "CustomToolBar.h"
 #include "CustomToolButton.h"
 
-#include <QtGui/QAbstractButton>
-#include <QtGui/QContextMenuEvent>
-#include <QtCore/QHash>
+#include <QAbstractButton>
+#include <QContextMenuEvent>
+#include <QHash>
 
 class NavigationFrame;
 

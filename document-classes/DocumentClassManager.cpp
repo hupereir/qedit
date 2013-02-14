@@ -27,7 +27,7 @@
 #include "XmlDef.h"
 #include "XmlDocument.h"
 
-#include <QtCore/QFile>
+#include <QFile>
 #include <algorithm>
 
 //________________________________________________________

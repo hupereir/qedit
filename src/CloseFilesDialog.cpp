@@ -29,7 +29,7 @@
 #include "IconEngine.h"
 #include "XmlOptions.h"
 
-#include <QtCore/QTextStream>
+#include <QTextStream>
 
 //__________________________________________________
 CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
@@ -86,4 +86,3 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
     adjustSize();
 
 }
-

@@ -31,8 +31,8 @@
 #include "Key.h"
 #include "TextSelection.h"
 
-#include <QtGui/QAction>
-#include <QtCore/QObject>
+#include <QAction>
+#include <QObject>
 
 class MainWindow;
 class ScratchFileMonitor;

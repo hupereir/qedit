@@ -32,8 +32,8 @@
 #include "TextEditor.h"
 #include "TextIndent.h"
 
-#include <QtCore/QRegExp>
-#include <QtGui/QProgressDialog>
+#include <QRegExp>
+#include <QProgressDialog>
 
 //______________________________________________
 TextIndent::TextIndent( TextEditor* editor ):

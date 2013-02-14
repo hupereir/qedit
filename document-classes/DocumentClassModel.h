@@ -28,8 +28,8 @@
 #include "ListModel.h"
 #include "DocumentClass.h"
 
-#include <QtGui/QIcon>
-#include <QtCore/QHash>
+#include <QIcon>
+#include <QHash>
 
 //! DocumentClass model. Stores file information for display in lists
 class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>, public Counter

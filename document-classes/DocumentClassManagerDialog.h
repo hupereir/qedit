@@ -26,8 +26,8 @@
 #include "CustomDialog.h"
 #include "DocumentClassModel.h"
 
-#include <QtGui/QAction>
-#include <QtGui/QPushButton>
+#include <QAction>
+#include <QPushButton>
 
 class TreeView;
 

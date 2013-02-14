@@ -28,10 +28,10 @@
 #include "SessionFilesModel.h"
 #include "TreeView.h"
 
-#include <QtGui/QPaintEvent>
-#include <QtGui/QAction>
-#include <QtCore/QBasicTimer>
-#include <QtCore/QTimerEvent>
+#include <QPaintEvent>
+#include <QAction>
+#include <QBasicTimer>
+#include <QTimerEvent>
 
 class FileRecordToolTipWidget;
 

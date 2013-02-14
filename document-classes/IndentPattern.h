@@ -26,9 +26,9 @@
 #include "Counter.h"
 #include "Debug.h"
 
-#include <QtXml/QDomElement>
-#include <QtXml/QDomDocument>
-#include <QtCore/QRegExp>
+#include <QDomElement>
+#include <QDomDocument>
+#include <QRegExp>
 
 //! Base class for syntax highlighting
 class IndentPattern: public Counter

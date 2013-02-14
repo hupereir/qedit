@@ -27,7 +27,7 @@
 #include "BasePrintHelper.h"
 #include "Debug.h"
 
-#include <QtGui/QPrinter>
+#include <QPrinter>
 
 class TextDisplay;
 

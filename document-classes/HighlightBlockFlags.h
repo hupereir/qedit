@@ -26,10 +26,10 @@
 
 #include "TextBlockFlags.h"
 
-#include <QtCore/QVector>
+#include <QVector>
 
-#include <QtGui/QTextFormat>
-#include <QtCore/QTextStream>
+#include <QTextFormat>
+#include <QTextStream>
 
 namespace TextBlock
 {

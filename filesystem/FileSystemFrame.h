@@ -28,9 +28,9 @@
 #include "FileSystemModel.h"
 #include "FileThread.h"
 
-#include <QtGui/QIcon>
-#include <QtGui/QWidget>
-#include <QtCore/QFileSystemWatcher>
+#include <QIcon>
+#include <QWidget>
+#include <QFileSystemWatcher>
 
 class AnimatedTreeView;
 class PathEditor;

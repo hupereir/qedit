@@ -37,7 +37,7 @@
 #include "InformationDialog.h"
 #include "Util.h"
 
-#include <QtCore/QFile>
+#include <QFile>
 
 //__________________________________________________________________
 Diff::Diff( QObject* parent ):

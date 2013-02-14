@@ -29,9 +29,9 @@
 #include "Key.h"
 #include "TextDisplay.h"
 
-#include <QtGui/QSplitter>
-#include <QtGui/QWidget>
-#include <QtCore/QTimer>
+#include <QSplitter>
+#include <QWidget>
+#include <QTimer>
 
 //! handles multiple views
 class TextView: public QWidget, public Counter, public BASE::Key

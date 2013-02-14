@@ -34,10 +34,10 @@
 #include "WindowServer.h"
 #include "XmlOptions.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QPushButton>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLayout>
+#include <QPushButton>
 
 #include <algorithm>
 
