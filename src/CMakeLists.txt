@@ -11,7 +11,7 @@ ENDIF()
 ########### Qt4 configuration #########
 IF( USE_QT5 )
 
-  FIND_PACKAGE( Qt5Widgets )
+  FIND_PACKAGE( Qt5Widgets REQUIRED )
 
 ELSE()
 
