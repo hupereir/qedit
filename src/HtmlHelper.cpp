@@ -37,7 +37,7 @@ void HtmlHelper::print( QIODevice* device )
 
     // retrieve HTML string from current display
     QString htmlString( _htmlString() );
-    device->write( _htmlString().toAscii() );
+    device->write( _htmlString().toLatin1() );
 
 }
 

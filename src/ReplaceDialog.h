@@ -36,7 +36,7 @@ class ReplaceDialog: public BaseReplaceDialog
     public:
 
     //! constructor
-    ReplaceDialog( QWidget* = 0, Qt::WFlags = 0 );
+    ReplaceDialog( QWidget* = 0, Qt::WindowFlags = 0 );
 
     //! destructor
     virtual ~ReplaceDialog( void )

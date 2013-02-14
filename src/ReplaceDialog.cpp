@@ -29,7 +29,7 @@
 #include <QPushButton>
 
 //________________________________________________________________________
-ReplaceDialog::ReplaceDialog( QWidget* parent, Qt::WFlags flags ):
+ReplaceDialog::ReplaceDialog( QWidget* parent, Qt::WindowFlags flags ):
 BaseReplaceDialog( parent, flags )
 {
     Debug::Throw( "ReplaceDialog::ReplaceDialog.\n" );

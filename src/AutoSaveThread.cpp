@@ -92,7 +92,7 @@ void AutoSaveThread::run( void )
         // write to file
         QFile out( file() );
         if( !out.open( QIODevice::WriteOnly ) ) return;
-        out.write( contents_.toAscii() );
+        out.write( contents_.toLatin1() );
         out.close();
 
     }

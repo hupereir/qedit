@@ -265,7 +265,7 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
         }
 
         // dump text
-        out.write( _display().toPlainText().toAscii() );
+        out.write( _display().toPlainText().toLatin1() );
         out.close();
 
         // keep file as temporary, so that

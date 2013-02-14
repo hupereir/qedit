@@ -690,7 +690,7 @@ void TextDisplay::save( void )
         // write file
         // make sure that last line ends with "end of line"
         QString text( toPlainText() );
-        out.write( text.toAscii() );
+        out.write( text.toLatin1() );
         if( !text.isEmpty() && text[text.size()-1] != '\n' ) out.write( "\n" );
 
         // close
