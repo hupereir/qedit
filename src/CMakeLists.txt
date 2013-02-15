@@ -146,6 +146,6 @@ INSTALL( TARGETS qedit DESTINATION ${BIN_INSTALL_DIR} )
 
 IF( USE_QT5 )
 
-  QT5_USE_MODULES( qedit Widgets Network PrintSupport Xml )
+  QT5_USE_MODULES( qedit Network PrintSupport Widgets Xml )
 
 ENDIF()
