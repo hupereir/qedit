@@ -677,18 +677,18 @@ void WindowServer::_detach( void )
 
     Debug::Throw( "WindowServer::_detach.\n" );
 
-    MainWindow& activeWindow_local( _activeWindow() );
+    MainWindow& activeWindowLocal( _activeWindow() );
 
     // check number of independent displays
-    Q_ASSERT( activeWindow_local.activeView().independentDisplayCount() > 1 || BASE::KeySet<TextView>( &_activeWindow() ).size() > 1 );
+    Q_ASSERT( activeWindowLocal.activeView().independentDisplayCount() > 1 || BASE::KeySet<TextView>( &_activeWindow() ).size() > 1 );
 
     // get current display
-    TextDisplay& active_display_local( activeWindow_local.activeView().activeDisplay() );
+    TextDisplay& activeDisplayLocal( activeWindowLocal.activeView().activeDisplay() );
 
     // check number of displays associated to active
-    if( !BASE::KeySet<TextDisplay>(active_display_local).empty() )
+    if( !BASE::KeySet<TextDisplay>(activeDisplayLocal).empty() )
     {
-        InformationDialog( &activeWindow_local,
+        InformationDialog( &activeWindowLocal,
             "Software limitation:\n"
             "Active display has clones in the current window.\n"
             "It cannot be detached." ).exec();
@@ -696,18 +696,18 @@ void WindowServer::_detach( void )
     }
 
     // save modification state
-    bool modified( active_display_local.document()->isModified() );
+    bool modified( activeDisplayLocal.document()->isModified() );
 
     // create MainWindow
     MainWindow& window( newMainWindow() );
     window.show();
 
     // clone its display from the current
-    window.activeView().activeDisplay().synchronize( &active_display_local );
+    window.activeView().activeDisplay().synchronize( &activeDisplayLocal );
 
     // close display
-    active_display_local.document()->setModified( false );
-    activeWindow_local.activeView().closeDisplay( active_display_local );
+    activeDisplayLocal.document()->setModified( false );
+    activeWindowLocal.activeView().closeDisplay( activeDisplayLocal );
 
     // update modification state
     window.activeView().activeDisplay().document()->setModified( modified );

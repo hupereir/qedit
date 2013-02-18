@@ -92,7 +92,7 @@ MainWindow::MainWindow(  QWidget* parent ):
     menu_( 0 ),
     statusbar_( 0 ),
     fileEditor_( 0 ),
-    documentClassToolbar_( 0 ),
+    documentClassToolBar_( 0 ),
     findDialog_( 0 ),
     replaceDialog_( 0 ),
     selectLineDialog_( 0 )
@@ -689,7 +689,7 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
     {
 
         _updateWindowTitle();
-        saveAction().setEnabled( !activeDisplay().isReadOnly() && activeDisplay().document()->isModified() );
+        saveAction_->setEnabled( !activeDisplay().isReadOnly() && activeDisplay().document()->isModified() );
 
     }
     Debug::Throw() << "MainWindow::_update - window title done. "<< endl;
@@ -704,7 +704,7 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
         if( _hasFileEditor() )
         {
             _fileEditor().setText( activeDisplay().file() );
-            filePropertiesAction().setEnabled( !( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() ) );
+            filePropertiesAction_->setEnabled( !( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() ) );
         }
 
         Debug::Throw() << "MainWindow::_update - file editor done. "<< endl;
@@ -726,21 +726,21 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
     }
 
     if( flags & TextDisplay::DOCUMENT_CLASS && _hasDocumentClassToolBar() )
-    { _documentClassToolBar().update( activeDisplay().className() ); }
+    { documentClassToolBar_->update( activeDisplay().className() ); }
 
     if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
-    { cutAction().setEnabled( activeDisplay().cutAction().isEnabled() ); }
+    { cutAction_->setEnabled( activeDisplay().cutAction().isEnabled() ); }
 
     if( flags & TextDisplay::COPY )
-    { copyAction().setEnabled( activeDisplay().copyAction().isEnabled() ); }
+    { copyAction_->setEnabled( activeDisplay().copyAction().isEnabled() ); }
 
     if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
-    { pasteAction().setEnabled( activeDisplay().pasteAction().isEnabled() ); }
+    { pasteAction_->setEnabled( activeDisplay().pasteAction().isEnabled() ); }
 
     if( flags & (TextDisplay::UNDO_REDO|TextDisplay::READ_ONLY) )
     {
-        undoAction().setEnabled( activeDisplay().undoAction().isEnabled() );
-        redoAction().setEnabled( activeDisplay().redoAction().isEnabled() );
+        undoAction_->setEnabled( activeDisplay().undoAction().isEnabled() );
+        redoAction_->setEnabled( activeDisplay().redoAction().isEnabled() );
     }
 
     if( _hasStatusBar() && (flags & TextDisplay::MODIFIERS) )
@@ -762,10 +762,10 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
         int viewCount = BASE::KeySet<TextView>( this ).size();
 
         // update detach action
-        detachAction().setEnabled( displayCount > 1 || viewCount > 1 );
+        detachAction_->setEnabled( displayCount > 1 || viewCount > 1 );
 
         // update diff action
-        diffAction().setEnabled( displayCount == 2 );
+        diffAction_->setEnabled( displayCount == 2 );
         Debug::Throw() << "MainWindow::_update - display count - done." << endl;
 
     }
@@ -962,35 +962,35 @@ void MainWindow::_installToolbars( void )
 
     // file toolbar
     CustomToolBar* toolbar = new CustomToolBar( "Main", this, "FILE_TOOLBAR" );
-    toolbar->addAction( &newFileAction() );
-    toolbar->addAction( &openAction() );
-    toolbar->addAction( &saveAction() );
+    toolbar->addAction( newFileAction_ );
+    toolbar->addAction( openAction_ );
+    toolbar->addAction( saveAction_ );
 
     // edition toolbar
     toolbar = new CustomToolBar( "Edition", this, "EDITION_TOOLBAR" );
-    toolbar->addAction( &undoAction() );
-    toolbar->addAction( &redoAction() );
-    toolbar->addAction( &cutAction() );
-    toolbar->addAction( &copyAction() );
-    toolbar->addAction( &pasteAction() );
+    toolbar->addAction( undoAction_ );
+    toolbar->addAction( redoAction_ );
+    toolbar->addAction( cutAction_ );
+    toolbar->addAction( copyAction_ );
+    toolbar->addAction( pasteAction_ );
 
     // extra toolbar
     toolbar = new CustomToolBar( "Tools", this, "EXTRA_TOOLBAR" );
-    toolbar->addAction( &filePropertiesAction() );
-    toolbar->addAction( &spellcheckAction() );
+    toolbar->addAction( filePropertiesAction_ );
+    toolbar->addAction( spellcheckAction_ );
 
     // splitting toolbar
     toolbar = new CustomToolBar( "Multiple Displays", this, "SPLIT_TOOLBAR" );
-    toolbar->addAction( &splitDisplayHorizontalAction() );
-    toolbar->addAction( &splitDisplayVerticalAction() );
-    toolbar->addAction( &openHorizontalAction() );
-    toolbar->addAction( &openVerticalAction() );
-    toolbar->addAction( &closeDisplayAction() );
-    toolbar->addAction( &detachAction() );
+    toolbar->addAction( splitDisplayHorizontalAction_ );
+    toolbar->addAction( splitDisplayVerticalAction_ );
+    toolbar->addAction( openHorizontalAction_ );
+    toolbar->addAction( openVerticalAction_ );
+    toolbar->addAction( closeDisplayAction_ );
+    toolbar->addAction( detachAction_ );
 
     // document class toolbar
-    documentClassToolbar_ = new DocumentClassToolBar( this );
-    connect( documentClassToolbar_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
+    documentClassToolBar_ = new DocumentClassToolBar( this );
+    connect( documentClassToolBar_, SIGNAL( documentClassSelected( QString ) ), this, SLOT( selectClassName( QString ) ) );
 
     // navigation toolbar
     NavigationToolBar* navigation_toolbar = new NavigationToolBar( this );

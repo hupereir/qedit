@@ -568,11 +568,11 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
     //! document class toolbar
     bool _hasDocumentClassToolBar( void ) const
-    { return bool( documentClassToolbar_ ); }
+    { return bool( documentClassToolBar_ ); }
 
     //! document class toolbar
     DocumentClassToolBar& _documentClassToolBar( void ) const
-    { return *documentClassToolbar_; }
+    { return *documentClassToolBar_; }
 
     //! file editor
     bool _hasFileEditor( void ) const
@@ -621,7 +621,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     QLabel* fileEditor_;
 
     //! document class toolbar
-    DocumentClassToolBar* documentClassToolbar_;
+    DocumentClassToolBar* documentClassToolBar_;
 
     //@}
 

@@ -33,10 +33,10 @@ class DocumentClassToolBar: public CustomToolBar
 
     Q_OBJECT
 
-        public:
+    public:
 
-        //! constructor
-        DocumentClassToolBar( QWidget* parent );
+    //! constructor
+    DocumentClassToolBar( QWidget* parent );
 
     //! destructor
     virtual ~DocumentClassToolBar( void )

@@ -40,7 +40,7 @@ CustomToolBar( "Document Class", parent, "DOCUMENT_CLASS_TOOLBAR" )
 
     connect( &_comboBox(), SIGNAL( currentIndexChanged( int ) ), SLOT( _currentIndexChanged( int ) ) );
     connect( Singleton::get().application(), SIGNAL( documentClassesChanged() ), SLOT( _update() ) );
-
+    _update();
 }
 
 //________________________________________________________________
@@ -67,7 +67,7 @@ void DocumentClassToolBar::_update( void )
     Debug::Throw( "DocumentClassToolBar::update.\n" );
 
     // store current item
-    QString current_class( _comboBox().currentText() );
+    QString currentClass( _comboBox().currentText() );
 
     // clear box
     _comboBox().clear();
@@ -82,6 +82,6 @@ void DocumentClassToolBar::_update( void )
     if( classes.size() > _comboBox().maxVisibleItems() )
     { _comboBox().setMaxVisibleItems( classes.size() ); }
 
-    _comboBox().setCurrentIndex( _comboBox().findText( current_class ) );
+    _comboBox().setCurrentIndex( _comboBox().findText( currentClass ) );
 
 }

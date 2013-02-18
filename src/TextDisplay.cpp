@@ -322,6 +322,8 @@ void TextDisplay::synchronize( TextDisplay* display )
     setClassName( display->className() );
     setFileCheckData( display->fileCheckData() );
 
+    emit needUpdate( ACTIVE_DISPLAY_CHANGED );
+
 }
 
 //____________________________________________
