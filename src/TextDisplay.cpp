@@ -274,19 +274,19 @@ void TextDisplay::paintMargin( QPainter& painter )
 }
 
 //___________________________________________________________________________
-void TextDisplay::synchronize( TextDisplay* display )
+void TextDisplay::synchronize( TextDisplay* other )
 {
 
     Debug::Throw( "TextDisplay::synchronize.\n" );
 
     // replace base class syntax highlighter prior to calling base class synchronization
-    textHighlight_ = &display->textHighlight();
+    textHighlight_ = &other->textHighlight();
 
     /* this avoids calling to invalid block of memory which the textHighlight gets deleted
     when changing the document */
 
     // base class synchronization
-    AnimatedTextEditor::synchronize( display );
+    AnimatedTextEditor::synchronize( other );
 
     // restore connection with document
     // track contents changed for syntax highlighting
@@ -294,35 +294,36 @@ void TextDisplay::synchronize( TextDisplay* display )
     connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
 
     // indentation
-    textIndent().setPatterns( display->textIndent().patterns() );
-    textIndent().setBaseIndentation( display->textIndent().baseIndentation() );
+    textIndent().setPatterns( other->textIndent().patterns() );
+    textIndent().setBaseIndentation( other->textIndent().baseIndentation() );
 
     // parenthesis
-    parenthesisHighlight().synchronize( display->parenthesisHighlight() );
+    parenthesisHighlight().synchronize( other->parenthesisHighlight() );
 
     // block delimiters and line numbers
-    blockDelimiterDisplay().synchronize( &display->blockDelimiterDisplay() );
+    blockDelimiterDisplay().synchronize( &other->blockDelimiterDisplay() );
 
     // actions
-    textIndentAction().setChecked( display->textIndentAction().isChecked() );
-    textHighlightAction().setChecked( display->textHighlightAction().isChecked() );
-    parenthesisHighlightAction().setChecked( display->parenthesisHighlightAction().isChecked() );
-    showLineNumberAction().setChecked( display->showLineNumberAction().isChecked() );
-    showBlockDelimiterAction().setChecked( display->showBlockDelimiterAction().isChecked() );
+    textIndentAction().setChecked( other->textIndentAction().isChecked() );
+    textHighlightAction().setChecked( other->textHighlightAction().isChecked() );
+    parenthesisHighlightAction().setChecked( other->parenthesisHighlightAction().isChecked() );
+    showLineNumberAction().setChecked( other->showLineNumberAction().isChecked() );
+    showBlockDelimiterAction().setChecked( other->showBlockDelimiterAction().isChecked() );
 
     // macros
-    _setMacros( display->macros() );
+    _setMacros( other->macros() );
 
     // file
-    _setFile( display->file() );
-    _setIsNewDocument( display->isNewDocument() );
+    _setFile( other->file() );
+    _setIsNewDocument( other->isNewDocument() );
     _setLastSaved( lastSaved_ );
 
     // update class name
-    setClassName( display->className() );
-    setFileCheckData( display->fileCheckData() );
+    setClassName( other->className() );
+    setFileCheckData( other->fileCheckData() );
 
-    emit needUpdate( ACTIVE_DISPLAY_CHANGED );
+    if( parentWidget() != other->parentWidget() )
+    { emit needUpdate( ACTIVE_DISPLAY_CHANGED ); }
 
 }
 
