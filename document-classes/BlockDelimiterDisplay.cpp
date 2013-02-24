@@ -129,16 +129,16 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     _updateSegments();
 
     // calculate dimensions
-    int y_offset = _editor().verticalScrollBar()->value() - _editor().frameWidth();
+    int yOffset = _editor().verticalScrollBar()->value() - _editor().frameWidth();
     int height( _editor().contentsRect().height() );
 
     // get begin and end cursor positions
-    int first_index = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
-    int last_index = _editor().cursorForPosition( QPoint( 0,  height ) ).position() + 1;
+    int firstIndex = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
+    int lastIndex = _editor().cursorForPosition( QPoint( 0,  height ) ).position() + 1;
 
     // add horizontal offset
     painter.translate( _offset(), 0 );
-    height += y_offset;
+    height += yOffset;
 
     // retrieve matching segments
     QTextDocument &document( *_editor().document() );
@@ -154,14 +154,14 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
         BlockDelimiterSegment& current( iter.previous() );
 
         // skip segment if outside of visible limits
-        if( current.begin().cursor() > last_index+1 || current.end().cursor() < first_index ) continue;
+        if( current.begin().cursor() > lastIndex+1 || current.end().cursor() < firstIndex ) continue;
 
         // try update segments
-        if( current.begin().cursor() >= first_index && current.begin().cursor() <= last_index )
+        if( current.begin().cursor() >= firstIndex && current.begin().cursor() <= lastIndex )
         { _updateMarker( block, id, current.begin(), BEGIN ); }
 
         // try update segments
-        if( current.end().cursor() >= first_index && current.end().cursor() <= last_index )
+        if( current.end().cursor() >= firstIndex && current.end().cursor() <= lastIndex )
         {  _updateMarker( block, id, current.end(), END ); }
 
         // skip this segment if included in previous
@@ -179,7 +179,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
     {
 
-        if( iter->end().isValid() && iter->end().cursor() < last_index && iter->end().cursor() >= first_index && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
+        if( iter->end().isValid() && iter->end().cursor() < lastIndex && iter->end().cursor() >= firstIndex && !( iter->flag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
         { painter.drawLine( halfWidth_, iter->end().position(), width_, iter->end().position() ); }
 
     }
@@ -190,7 +190,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
 
         // check validity
         // update active rect
-        if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
+        if( iter->begin().isValid() && iter->begin().cursor() < lastIndex && iter->begin().cursor() >= firstIndex )
         { iter->setActiveRect( QRect( rectTopLeft_, iter->begin().position() + rectTopLeft_, rectWidth_, rectWidth_ ) ); }
 
     }
@@ -204,7 +204,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
 
     for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
     {
-        if( iter->begin().isValid() && iter->begin().cursor() < last_index && iter->begin().cursor() >= first_index )
+        if( iter->begin().isValid() && iter->begin().cursor() < lastIndex && iter->begin().cursor() >= firstIndex )
         { _drawDelimiter( painter, iter->activeRect(), iter->flag( BlockDelimiterSegment::COLLAPSED ) ); }
     }
 
