@@ -39,23 +39,12 @@
 
 //_______________________________________________________
 FileRecordToolTipWidget::FileRecordToolTipWidget( QWidget* parent ):
-    QWidget( parent, Qt::ToolTip | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint ),
-    Counter( "FileRecordToolTipWidget" ),
-    enabled_( true ),
+    BaseToolTipWidget( parent ),
     pixmapSize_( 96 ),
     mask_( Default )
 {
 
     Debug::Throw( "FileRecordToolTipWidget::FileRecordToolTipWidget.\n" );
-    setAttribute( Qt::WA_TranslucentBackground, true );
-
-    // event filter on parent
-    if( parent ) parent->installEventFilter( this );
-
-    // change palete
-    setPalette( QToolTip::palette() );
-    setBackgroundRole( QPalette::ToolTipBase );
-    setForegroundRole( QPalette::ToolTipText );
 
     // layout
     QHBoxLayout* hLayout = new QHBoxLayout();
@@ -106,20 +95,6 @@ FileRecordToolTipWidget::FileRecordToolTipWidget( QWidget* parent ):
     // configuration
     connect( Singleton::get().application(), SIGNAL( configurationChanged( void ) ), SLOT( _updateConfiguration( void ) ) );
     _updateConfiguration();
-
-}
-
-//_____________________________________________
-void FileRecordToolTipWidget::setEnabled( bool value )
-{
-    Debug::Throw( "FileRecordToolTipWidget::setEnabled.\n" );
-    if( enabled_ == value ) return;
-    enabled_ = value;
-    if( !enabled_ )
-    {
-        if( isVisible() ) hide();
-        timer_.stop();
-    }
 
 }
 
@@ -198,121 +173,10 @@ void FileRecordToolTipWidget::setRecord( const FileRecord& record, const QIcon& 
 
 }
 
-//_______________________________________________________
-bool FileRecordToolTipWidget::eventFilter( QObject* object, QEvent* event )
-{
-
-    if( object != parent() ) return QWidget::eventFilter( object, event );
-    switch( event->type() )
-    {
-        case QEvent::Leave:
-        case QEvent::HoverLeave:
-        hide();
-        break;
-
-        default: break;
-    }
-
-    return QWidget::eventFilter( object, event );
-}
-
-//_______________________________________________________
-void FileRecordToolTipWidget::hide( void )
-{
-    timer_.stop();
-    QWidget::hide();
-}
-
-//_______________________________________________________
-void FileRecordToolTipWidget::showDelayed( int delay )
-{
-    if( !enabled_ ) return;
-    if( isVisible() ) hide();
-    timer_.start( delay, this );
-}
-
-//_______________________________________________________
-void FileRecordToolTipWidget::show( void )
-{
-    // stop timer
-    timer_.stop();
-
-    // check mouse is still in relevant rect
-    if( !_checkMousePosition() ) return;
-
-    // adjust position and show
-    _adjustPosition();
-    QWidget::show();
-}
-
-//_______________________________________________________
-void FileRecordToolTipWidget::paintEvent( QPaintEvent* event )
-{
-    QPainter painter( this );
-    painter.setClipRegion( event->region() );
-
-    QStyleOptionFrame opt;
-    opt.init(this);
-    style()->drawPrimitive(QStyle::PE_PanelTipLabel, &opt, &painter, this );
-    return QWidget::paintEvent( event );
-}
-
-//_______________________________________________________
-void FileRecordToolTipWidget::mousePressEvent( QMouseEvent* event )
-{
-
-    hide();
-    return QWidget::mousePressEvent( event );
-
-}
-
-//_____________________________________________
-void FileRecordToolTipWidget::timerEvent( QTimerEvent* event )
-{
-    if( event->timerId() == timer_.timerId() )
-    {
-
-        timer_.stop();
-        show();
-        return;
-
-    } else return QWidget::timerEvent( event );
-}
-
-//_______________________________________________________
-bool FileRecordToolTipWidget::_checkMousePosition( void ) const
-{ return rect_.contains( QCursor::pos() ); }
-
-//_______________________________________________________
-void FileRecordToolTipWidget::_adjustPosition( void )
-{
-
-    // get tooltip size
-    const QSize size( sizeHint() );
-
-    // desktop size
-    QDesktopWidget* desktop( qApp->desktop() );
-    QRect desktopGeometry( desktop->screenGeometry( desktop->screenNumber( parentWidget() ) ) );
-
-    // set geometry
-    int left = QCursor::pos().x();
-    left = qMax( left, desktopGeometry.left() );
-    left = qMin( left, desktopGeometry.right() - size.width() );
-
-    // first try placing widget below item
-    const int margin = 5;
-    int top = rect_.bottom() + margin;
-    if( top > desktopGeometry.bottom() - size.height() ) top = rect_.top() - margin - size.height();
-
-    move( QPoint( left, top ) );
-
-}
-
 //_____________________________________________
 void FileRecordToolTipWidget::_updateConfiguration( void )
 {
     Debug::Throw( "FileRecordToolTipWidget::_updateConfiguration.\n" );
-    if( XmlOptions::get().contains( "SHOW_TOOLTIPS" ) ) setEnabled( XmlOptions::get().get<bool>( "SHOW_TOOLTIPS" ) );
     if( XmlOptions::get().contains( "TOOLTIPS_PIXMAP_SIZE" ) ) setPixmapSize( XmlOptions::get().get<unsigned int>( "TOOLTIPS_PIXMAP_SIZE" ) );
     if( XmlOptions::get().contains( "TOOLTIPS_MASK" ) ) setMask( XmlOptions::get().get<unsigned int>( "TOOLTIPS_MASK" ) );
 }

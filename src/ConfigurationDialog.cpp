@@ -271,6 +271,23 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     page->layout()->addWidget( recentFiles_configuration );
     addOptionWidget( recentFiles_configuration );
 
+    // tooltips
+    page = &addPage( IconEngine::get( ICONS::PREFERENCE_APPEARANCE), "Tooltips", "Tooltips appearance" );
+    page->layout()->addWidget( checkbox = new OptionCheckBox( "Show tooltips", page, "SHOW_TOOLTIPS" ) );
+    addOptionWidget( checkbox );
+
+    hLayout = new QHBoxLayout();
+    hLayout->setMargin(5);
+    hLayout->setSpacing(5);
+    page->layout()->addItem( hLayout );
+
+    BaseFileInfoConfigurationWidget* configurationWidget;
+    hLayout->addSpacing( 20 );
+    hLayout->addWidget( configurationWidget = new BaseFileInfoConfigurationWidget( page ) );
+    configurationWidget->setEnabled( false );
+    connect( checkbox, SIGNAL( toggled( bool ) ), configurationWidget, SLOT( setEnabled( bool ) ) );
+    addOptionWidget( configurationWidget );
+
     // misc
     page = &addPage( IconEngine::get( ICONS::PREFERENCE_UNSORTED ), "Unsorted", "Additional unsorted settings" );
     page->layout()->addWidget( box = new QGroupBox( "Backup and Autosave", page ) );
@@ -328,13 +345,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     edit->setToolTip( "Command used to diff files" );
     addOptionWidget( edit );
     label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
-
-    // tooltips
-    page->layout()->addWidget( box = new QGroupBox( "Tooltips", page ) );
-    box->setLayout( new QVBoxLayout() );
-    BaseFileInfoConfigurationWidget* configurationWidget;
-    box->layout()->addWidget( configurationWidget = new BaseFileInfoConfigurationWidget( box ) );
-    addOptionWidget( configurationWidget );
 
     // load initial configuration
     read();

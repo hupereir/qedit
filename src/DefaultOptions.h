@@ -87,6 +87,8 @@ void installDefaultOptions( void )
     XmlOptions::get().set( "SHOW_NAVIGATION_FRAME", "1" );
     XmlOptions::get().set( "SHOW_NAVIGATOR", "0" );
 
+    XmlOptions::get().set( "SHOW_TOOLTIPS", "1" );
+
     // splitters
     XmlOptions::get().set( "NAVIGATION_FRAME_WIDTH", "200" );
 
