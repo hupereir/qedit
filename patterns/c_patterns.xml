@@ -117,11 +117,11 @@
   </keyword_pattern>
   <keyword_pattern style="Storage Type" parent="" name="Stl Storage Type" >
    <comments>storage type (STL)</comments>
-   <keyword>(\b(std::)?((string(::npos)?)|set|map|pair|list|((i|i?o)(f|string)?stream)|vector)\b)|(::(const_)?(reverse_)?iterator\b)</keyword>
+   <keyword>(\b(std::)((string(::npos)?)|set|map|pair|list|((i|i?o)(f|string)?stream)|vector)\b)|(std::(const_)?(reverse_)?iterator\b)</keyword>
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Math" >
    <comments>storage type (STL)</comments>
-   <keyword>(\b(std::)?((a?(cos|sin|tan))|log|exp|sqrt|pow|(f?abs)|min|max)\b)</keyword>
+   <keyword>(\b(std::)((a?(cos|sin|tan))|log|exp|sqrt|pow|(f?abs)|min|max)\b)</keyword>
   </keyword_pattern>
   <keyword_pattern style="Numeric Constants" parent="" name="Numeric Constants" >
    <comments>numeric constants</comments>
