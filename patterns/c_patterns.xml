@@ -105,7 +105,7 @@
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Stl Keyword" >
    <comments>keywords</comments>
-   <keyword>\b(std::)?((abs|swap|make_pair|(count|find)_if|endl|c(out|err|log)))\b</keyword>
+   <keyword>\b(std::)((abs|swap|make_pair|(count|find)_if|endl|c(out|err|log)))\b</keyword>
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Braces" >
    <comments>parenthesis</comments>
