@@ -46,16 +46,19 @@ class NewFileDialog: public BaseDialog, public Counter
 
     //! return codes
     /*! also used to decide which buttons are to be drawn */
-    enum {
+    enum ReturnCode {
 
-        CREATE = 1<<0,
-        CANCEL = 1<<1,
-        EXIT = 1<<2
-
+        Unknown = 0,
+        Create = 1<<0,
+        Cancel = 1<<1,
+        Exit = 1<<2,
+        Default = Create|Cancel|Exit
     };
 
+    Q_DECLARE_FLAGS( ReturnCodes, ReturnCode );
+
     //! constructor
-    NewFileDialog( QWidget* parent, const File& file, const unsigned int& buttons = CREATE|CANCEL|EXIT );
+    NewFileDialog( QWidget*, const File&, ReturnCodes = Default );
 
     //! destructor
     virtual ~NewFileDialog( void )
@@ -65,16 +68,18 @@ class NewFileDialog: public BaseDialog, public Counter
 
     //! create new file
     void _create( void )
-    { done( CREATE ); }
+    { done( Create ); }
 
     //! cancel creation/exit editor
     void _cancel( void )
-    { done( CANCEL ); }
+    { done( Cancel ); }
 
     //! exit application
     void _exit( void )
-    { done( EXIT ); }
+    { done( Exit ); }
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( NewFileDialog::ReturnCodes );
 
 #endif

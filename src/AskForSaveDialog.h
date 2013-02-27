@@ -41,17 +41,20 @@ class AskForSaveDialog: public BaseDialog, public Counter
     enum ReturnCode
     {
 
-        UNKNOWN = 0,
-        YES = 1<<0,
-        NO = 1<<1,
-        YES_TO_ALL = 1<<2,
-        NO_TO_ALL = 1<<3,
-        CANCEL = 1<<4
-
+        Unknown = 0,
+        Yes = 1<<0,
+        No = 1<<1,
+        YesToAll = 1<<2,
+        NoToAll = 1<<3,
+        Cancel = 1<<4,
+        Default = Yes|No|Cancel
     };
 
+    Q_DECLARE_FLAGS( ReturnCodes, ReturnCode );
+
+
     //! constructor
-    AskForSaveDialog( QWidget* parent, const File& file, const unsigned int &buttons = YES|NO|CANCEL );
+    AskForSaveDialog( QWidget*, const File&, ReturnCodes = Default );
 
     //! destructor
     virtual ~AskForSaveDialog( void )
@@ -61,24 +64,26 @@ class AskForSaveDialog: public BaseDialog, public Counter
 
     //! save changes
     void _yes( void )
-    { done( YES ); }
+    { done( Yes ); }
 
     //! discard changes
     void _no( void )
-    { done( NO ); }
+    { done( No ); }
 
     //! discard changes
     void _yesToAll( void )
-    { done( YES_TO_ALL ); }
+    { done( YesToAll ); }
 
     //! discard changes
     void _noToAll( void )
-    { done( NO_TO_ALL ); }
+    { done( NoToAll ); }
 
     //! cancel action
     void _cancel( void )
-    { done( CANCEL ); }
+    { done( Cancel ); }
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( AskForSaveDialog::ReturnCodes );
 
 #endif

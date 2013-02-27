@@ -226,7 +226,7 @@ void TextView::closeDisplay( TextDisplay& display )
     if(
         display.document()->isModified() &&
         BASE::KeySet<TextDisplay>( &display ).empty() &&
-        display.askForSave() ==  AskForSaveDialog::CANCEL ) return;
+        display.askForSave() ==  AskForSaveDialog::Cancel ) return;
 
     // retrieve parent and grandparent of current display
     QWidget* parent( display.parentWidget() );
@@ -262,13 +262,13 @@ void TextView::closeDisplay( TextDisplay& display )
         QWidget* grand_parent( parentSplitter->parentWidget() );
 
         // try cast to a splitter
-        QSplitter* grand_parentSplitter( qobject_cast<QSplitter*>( grand_parent ) );
+        QSplitter* grandParentSplitter( qobject_cast<QSplitter*>( grand_parent ) );
 
-        // move child to grand_parentSplitter if any
-        if( grand_parentSplitter )
+        // move child to grandParentSplitter if any
+        if( grandParentSplitter )
         {
 
-            grand_parentSplitter->insertWidget( grand_parentSplitter->indexOf( parentSplitter ), child );
+            grandParentSplitter->insertWidget( grandParentSplitter->indexOf( parentSplitter ), child );
 
         } else {
 

@@ -103,7 +103,7 @@ void SessionFilesModel::_updateConfiguration( void )
 }
 
 //________________________________________________________
-const QIcon& SessionFilesModel::_icon( unsigned int type )
+const QIcon& SessionFilesModel::_icon( int type )
 {
 
     IconCache::const_iterator iter( _icons().find( type ) );

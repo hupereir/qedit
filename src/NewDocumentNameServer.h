@@ -50,7 +50,7 @@ class NewDocumentNameServer
     private:
 
     //! generate file name matching a given version
-    static QString _get( const unsigned int& version );
+    static QString _get( int );
 
     class SameVersionFTor
     {
@@ -62,7 +62,7 @@ class NewDocumentNameServer
          {}
 
         //! predicate
-        bool operator() (const unsigned int& version ) const
+        bool operator() (const int& version ) const
         { return NewDocumentNameServer::_get( version ) == name_; }
 
         private:
@@ -76,7 +76,7 @@ class NewDocumentNameServer
     static const QString defaultName_;
 
     // version (appended)
-    QList<unsigned int> versions_;
+    QList<int> versions_;
 
 };
 

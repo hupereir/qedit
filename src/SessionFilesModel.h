@@ -80,7 +80,7 @@ class SessionFilesModel: public FileRecordModel
     private:
 
     //! icon
-    static const QIcon& _icon( unsigned int );
+    static const QIcon& _icon( int );
 
     //! icon cache
     typedef QHash<unsigned int, QIcon> IconCache;

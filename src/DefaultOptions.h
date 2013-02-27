@@ -93,11 +93,11 @@ void installDefaultOptions( void )
     XmlOptions::get().set( "NAVIGATION_FRAME_WIDTH", "200" );
 
     // file lists mask and sorting
-    XmlOptions::get().set<unsigned int>( "SESSION_FILES_MASK", 1<<FileRecordModel::FILE );
-    XmlOptions::get().set<unsigned int>( "RECENT_FILES_MASK", 1<<FileRecordModel::FILE );
+    XmlOptions::get().set<int>( "SESSION_FILES_MASK", 1<<FileRecordModel::FILE );
+    XmlOptions::get().set<int>( "RECENT_FILES_MASK", 1<<FileRecordModel::FILE );
 
-    XmlOptions::get().set<unsigned int>( "FILE_SYSTEM_LIST_MASK", 1<<FileSystemModel::FILE );
-    XmlOptions::get().set<unsigned int>( "FILE_SYSTEM_LIST_SORT_COLUMN", FileSystemModel::TIME );
+    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_MASK", 1<<FileSystemModel::FILE );
+    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_SORT_COLUMN", FileSystemModel::TIME );
 
     // toolbars
     XmlOptions::get().set( "DOCUMENT_CLASS_MANAGER_TOOLBAR", "1" );

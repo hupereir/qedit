@@ -32,7 +32,7 @@ const QString NewDocumentNameServer::defaultName_ = "new document";
 QString NewDocumentNameServer::get( void )
 {
 
-    unsigned int version( versions_.empty() ? 0: versions_.back()+1 );
+    int version( versions_.empty() ? 0: versions_.back()+1 );
     QString out( _get( version ) );
     versions_ << version;
     return out;
@@ -44,7 +44,7 @@ void NewDocumentNameServer::remove( QString name )
 { versions_.erase( std::remove_if( versions_.begin(), versions_.end(), SameVersionFTor( name ) ), versions_.end() ); }
 
 //______________________________________
-QString NewDocumentNameServer::_get( const unsigned int& version )
+QString NewDocumentNameServer::_get( int version )
 {
 
     QString buffer;

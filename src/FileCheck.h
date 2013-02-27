@@ -160,7 +160,7 @@ class FileCheck: public QObject, public BASE::Key, public Counter
 
 };
 
-inline unsigned int qHash( const FileCheck::Data& data )
+inline uint qHash( const FileCheck::Data& data )
 { return qHash( data.file() ); }
 
 #endif

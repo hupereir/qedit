@@ -167,7 +167,7 @@ void AutoSave::_updateConfiguration( void )
 
     // save AutoSave interval and start timer
     enabled_ = XmlOptions::get().get<bool>( "AUTOSAVE" );
-    interval_ = 1000*XmlOptions::get().get<unsigned int>("AUTOSAVE_INTERVAL");
+    interval_ = 1000*XmlOptions::get().get<int>("AUTOSAVE_INTERVAL");
 
     if( interval_ > 0 ) timer_.start( interval_, this );
     else timer_.stop();

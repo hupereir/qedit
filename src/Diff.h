@@ -42,10 +42,10 @@ class Diff: public QObject, public Counter
     //! Qt meta object declaration
     Q_OBJECT
 
-        public:
+    public:
 
-        //! constructor
-        Diff( QObject* parent );
+    //! constructor
+    Diff( QObject* parent );
 
     //! store files from text Displays
     void setTextDisplays( TextDisplay& first, TextDisplay& second )
@@ -63,10 +63,10 @@ class Diff: public QObject, public Counter
     { return error_; }
 
     //! paragraph range
-    typedef QPair< unsigned int, unsigned int > Range;
+    typedef QPair< int, int > Range;
 
     //! range list
-    typedef QSet< unsigned int > BlockSet;
+    typedef QSet< int > BlockSet;
 
     private slots:
 
@@ -106,14 +106,14 @@ class Diff: public QObject, public Counter
         //! add added range
         void insertAddedRange( const Range& range )
         {
-            for( unsigned int index = range.first; index <= range.second; index++ )
+            for( int index = range.first; index <= range.second; ++index )
             { added_.insert( index ); }
         }
 
         //! add conflict range
         void insertConflictRange( const Range& range )
         {
-            for( unsigned int index = range.first; index <= range.second; index++ )
+            for( int index = range.first; index <= range.second; ++index )
             { conflicts_.insert( index ); }
         }
 

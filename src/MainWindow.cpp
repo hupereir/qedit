@@ -571,9 +571,9 @@ void MainWindow::closeEvent( QCloseEvent* event )
 
         // ask for save
         int state( display.askForSave( modifiedDisplays > 1 ) );
-        if( state == AskForSaveDialog::YES_TO_ALL ) saveAll();
-        else if( state == AskForSaveDialog::NO_TO_ALL ) ignoreAll();
-        else if( state == AskForSaveDialog::CANCEL ) {
+        if( state == AskForSaveDialog::YesToAll ) saveAll();
+        else if( state == AskForSaveDialog::NoToAll ) ignoreAll();
+        else if( state == AskForSaveDialog::Cancel ) {
 
             event->ignore();
             return;

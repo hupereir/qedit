@@ -876,7 +876,7 @@ bool WindowServer::_close( FileRecord::List records )
 bool WindowServer::_close( QStringList files )
 {
 
-    int state( AskForSaveDialog::UNKNOWN );
+    int state( AskForSaveDialog::Unknown );
 
     // need a first loop over associated windows to store modified files
     QSet<QString> modifiedFiles;
@@ -915,14 +915,14 @@ bool WindowServer::_close( QStringList files )
                 if( display->document()->isModified() )
                 {
 
-                    if( state == AskForSaveDialog::YES_TO_ALL ) display->save();
-                    else if( state == AskForSaveDialog::NO_TO_ALL ) display->document()->setModified( false );
+                    if( state == AskForSaveDialog::YesToAll ) display->save();
+                    else if( state == AskForSaveDialog::NoToAll ) display->document()->setModified( false );
                     else
                     {
                         state = display->askForSave( modifiedFiles.size() > 1 );
-                        if( state == AskForSaveDialog::YES_TO_ALL || state == AskForSaveDialog::YES ) display->save();
-                        else if( state == AskForSaveDialog::NO_TO_ALL  || state == AskForSaveDialog::YES ) display->document()->setModified( false );
-                        else if( state == AskForSaveDialog::CANCEL ) return false;
+                        if( state == AskForSaveDialog::YesToAll || state == AskForSaveDialog::Yes ) display->save();
+                        else if( state == AskForSaveDialog::NoToAll  || state == AskForSaveDialog::No ) display->document()->setModified( false );
+                        else if( state == AskForSaveDialog::Cancel ) return false;
                         modifiedFiles.remove( display->file() );
                     }
 
@@ -1026,8 +1026,8 @@ bool WindowServer::_createNewFile( const FileRecord& record )
     if( record.file().isEmpty() ) return false;
 
     // create NewFileDialog
-    int buttons( NewFileDialog::CREATE | NewFileDialog::CANCEL );
-    if( records().empty() ) buttons |= NewFileDialog::EXIT;
+    NewFileDialog::ReturnCodes buttons( NewFileDialog::Create | NewFileDialog::Cancel );
+    if( records().empty() ) buttons |= NewFileDialog::Exit;
 
     NewFileDialog dialog( &_activeWindow(), record.file(), buttons );
     dialog.centerOnParent();
@@ -1037,7 +1037,7 @@ bool WindowServer::_createNewFile( const FileRecord& record )
     switch( state )
     {
 
-        case NewFileDialog::CREATE:
+        case NewFileDialog::Create:
         {
             File fullname( record.file().expand() );
             if( !fullname.create() )
@@ -1055,8 +1055,8 @@ bool WindowServer::_createNewFile( const FileRecord& record )
         break;
 
         default:
-        case NewFileDialog::EXIT: qApp->quit();
-        case NewFileDialog::CANCEL: return false;
+        case NewFileDialog::Exit: qApp->quit();
+        case NewFileDialog::Cancel: return false;
         break;
 
     }

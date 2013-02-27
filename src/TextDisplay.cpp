@@ -622,20 +622,20 @@ void TextDisplay::setFileCheckData( const FileCheck::Data& data )
 }
 
 //___________________________________________________________________________
-AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enable_all )
+AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enableAll )
 {
     Debug::Throw( "TextDisplay::askForSave.\n" );
 
-    if( !( document()->isModified() && _contentsChanged() ) ) return AskForSaveDialog::YES;
+    if( !( document()->isModified() && _contentsChanged() ) ) return AskForSaveDialog::Yes;
 
-    int flags( AskForSaveDialog::YES | AskForSaveDialog::NO | AskForSaveDialog::CANCEL );
-    if( enable_all ) flags |=  AskForSaveDialog::YES_TO_ALL | AskForSaveDialog::NO_TO_ALL;
+    AskForSaveDialog::ReturnCodes flags( AskForSaveDialog::Yes | AskForSaveDialog::No | AskForSaveDialog::Cancel );
+    if( enableAll ) flags |=  AskForSaveDialog::YesToAll | AskForSaveDialog::NoToAll;
 
     AskForSaveDialog dialog( this, file(), flags );
     dialog.setWindowTitle( "Save Files - Qedit" );
     int state( dialog.centerOnParent().exec() );
-    if( state == AskForSaveDialog::YES ||  state == AskForSaveDialog::YES_TO_ALL ) save();
-    else if( state == AskForSaveDialog::NO ||  state == AskForSaveDialog::NO_TO_ALL ) setModified( false );
+    if( state == AskForSaveDialog::Yes ||  state == AskForSaveDialog::YesToAll ) save();
+    else if( state == AskForSaveDialog::No ||  state == AskForSaveDialog::NoToAll ) setModified( false );
 
     return AskForSaveDialog::ReturnCode(state);
 

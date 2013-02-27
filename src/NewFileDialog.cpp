@@ -30,9 +30,9 @@
 #include <QPushButton>
 
 //________________________________________________________
-NewFileDialog::NewFileDialog( QWidget* parent, const File& file, const unsigned int& buttons ):
-BaseDialog( parent ),
-Counter( "NewFileDialog" )
+NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes buttons ):
+    BaseDialog( parent ),
+    Counter( "NewFileDialog" )
 {
 
     Debug::Throw( "NewFileDialog::NewFileDialog.\n" );
@@ -73,23 +73,23 @@ Counter( "NewFileDialog" )
 
     // yes button
     QPushButton* button;
-    if( buttons & CREATE )
+    if( buttons & Create )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "&Create", this ) );
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "Create", this ) );
         connect( button, SIGNAL( clicked() ), SLOT( _create() ) );
     }
 
     // cancel button.
-    if( buttons & CANCEL )
+    if( buttons & Cancel )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "&Cancel", this ) );
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "Cancel", this ) );
         connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
     }
 
     // cancel button.
-    if( buttons & EXIT )
+    if( buttons & Exit )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "&Exit", this ) );
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "Exit", this ) );
         connect( button, SIGNAL( clicked() ), SLOT( _exit() ) );
     }
 
