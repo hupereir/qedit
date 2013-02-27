@@ -222,7 +222,7 @@ void MainWindow::setActiveView( TextView& view )
 
     // this check is needed because the active view passed as argument
     // might be closing and have no associated display
-    if( BASE::KeySet<TextDisplay>( &view ).empty() ) return;
+    if( view.isClosed() ) return;
 
     // store active view
     activeView_ = &view;
@@ -264,13 +264,17 @@ bool MainWindow::selectDisplay( const File& file )
 
     Debug::Throw() << "MainWindow::selectDisplay - file: " << file << endl;
 
+    Debug::Throw() << "MainWindow::selectDisplay - active view: " << activeView().key() << endl;
+    Debug::Throw() << "MainWindow::selectDisplay - active view displays: " << BASE::KeySet<TextDisplay>( &activeView() ).count() << endl;
+
+
     // do nothing if already selected
-    if( activeView().activeDisplay().file() == file ) return true;
+    if( !activeView().isClosed() && activeView().activeDisplay().file() == file ) return true;
 
     foreach( TextView* view, BASE::KeySet<TextView>( this ) )
     {
 
-        if( view->selectDisplay( file ) )
+        if( !view->isClosed() && view->selectDisplay( file ) )
         {
             // make sure selected view is visible
             if( _stack().currentWidget() != view )

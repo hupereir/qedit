@@ -723,13 +723,13 @@ void WindowServer::_reparent( const File& first, const File& second )
     Debug::Throw( "WindowServer::_reparent.\n" );
 
     // retrieve windows
-    TextDisplay& first_display( _findDisplay( first ) );
+    TextDisplay& firstDisplay( _findDisplay( first ) );
     TextView& first_view( _findView( first ) );
 
     // check for first display clones
-    if( !BASE::KeySet<TextDisplay>(first_display).empty() )
+    if( !BASE::KeySet<TextDisplay>(firstDisplay).empty() )
     {
-        InformationDialog( &first_display,
+        InformationDialog( &firstDisplay,
             "Software limitation:\n"
             "Dropped display has clones in the current window.\n"
             "It cannot be reparented.\n" ).exec();
@@ -737,7 +737,7 @@ void WindowServer::_reparent( const File& first, const File& second )
     }
 
     // save modification state
-    bool modified( first_display.document()->isModified() );
+    bool modified( firstDisplay.document()->isModified() );
 
     // retrieve second display and corresponding view
     TextView& view = _findView( second );
@@ -748,11 +748,11 @@ void WindowServer::_reparent( const File& first, const File& second )
     // create new display in text view
     view.selectDisplay( second );
     TextDisplay& newDisplay = view.splitDisplay( defaultOrientation( NORMAL ), false );
-    newDisplay.synchronize( &first_display );
+    newDisplay.synchronize( &firstDisplay );
 
     // close display
-    first_display.document()->setModified( false );
-    first_view.closeDisplay( first_display );
+    firstDisplay.document()->setModified( false );
+    first_view.closeDisplay( firstDisplay );
 
     // restore modification state
     newDisplay.setModified( modified );
@@ -776,7 +776,7 @@ void WindowServer::_reparentToMain( const File& first, const File& second )
     Debug::Throw( "WindowServer::_reparentToMain.\n" );
 
     // retrieve windows
-    TextDisplay& first_display( _findDisplay( first ) );
+    TextDisplay& firstDisplay( _findDisplay( first ) );
     TextView& first_view( _findView( first ) );
     MainWindow& first_window( _findWindow( first ) );
 
@@ -787,9 +787,9 @@ void WindowServer::_reparentToMain( const File& first, const File& second )
     if( (&first_window == &window ) && first_view.independentDisplayCount() < 2 ) return;
 
     // check for first display clones
-    if( !BASE::KeySet<TextDisplay>(first_display).empty() )
+    if( !BASE::KeySet<TextDisplay>(firstDisplay).empty() )
     {
-        InformationDialog( &first_display,
+        InformationDialog( &firstDisplay,
             "Software limitation:\n"
             "Dropped display has clones in the current window.\n"
             "It cannot be reparented.\n" ).exec();
@@ -797,15 +797,15 @@ void WindowServer::_reparentToMain( const File& first, const File& second )
     }
 
     // save modification state
-    bool modified( first_display.document()->isModified() );
+    bool modified( firstDisplay.document()->isModified() );
 
     // create new text view in window
     TextView& view( window.newTextView() );
-    view.activeDisplay().synchronize( &first_display );
+    view.activeDisplay().synchronize( &firstDisplay );
 
     // close display
-    first_display.document()->setModified( false );
-    first_view.closeDisplay( first_display );
+    firstDisplay.document()->setModified( false );
+    first_view.closeDisplay( firstDisplay );
 
     // restore modification state
     view.activeDisplay().setModified( modified );

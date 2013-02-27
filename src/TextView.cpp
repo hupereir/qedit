@@ -45,6 +45,7 @@
 TextView::TextView( QWidget* parent ):
     QWidget( parent ),
     Counter( "TextView" ),
+    closed_( false ),
     activeDisplay_( 0 ),
     positionTimer_(this)
 {
@@ -126,9 +127,9 @@ void TextView::setFile( File file )
 }
 
 //________________________________________________________________
-unsigned int TextView::independentDisplayCount( void )
+int TextView::independentDisplayCount( void ) const
 {
-    unsigned int out( 0 );
+    int out( 0 );
     BASE::KeySet<TextDisplay> displays( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     { if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++; }
@@ -137,10 +138,10 @@ unsigned int TextView::independentDisplayCount( void )
 }
 
 //________________________________________________________________
-unsigned int TextView::modifiedDisplayCount( void )
+int TextView::modifiedDisplayCount( void ) const
 {
 
-    unsigned int out( 0 );
+    int out( 0 );
     BASE::KeySet<TextDisplay> displays( this );
     for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
@@ -536,6 +537,7 @@ void TextView::_checkDisplays( void )
     if( displays.empty() )
     {
         Debug::Throw() << "TextView::_checkDisplays - closing" << endl;
+        setIsClosed( true );
         close();
         return;
     }

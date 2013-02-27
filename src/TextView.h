@@ -48,14 +48,30 @@ class TextView: public QWidget, public Counter, public BASE::Key
     //! destructor
     virtual ~TextView( void );
 
+    // true if widget is being deleted
+    bool isClosed( void ) const
+    { return closed_; }
+
+    // set to true if widget is to be deleted
+    void setIsClosed( bool value )
+    { closed_ = value; }
+
     //!@name display management
     //@{
 
+    //! true if has associated displays
+    bool hasDisplays( void ) const
+    { return !BASE::KeySet<TextDisplay>( this ).isEmpty(); }
+
+    //! return number of displays
+    int displayCount( void ) const
+    { return BASE::KeySet<TextDisplay>( this ).count(); }
+
     //! return number of independant displays
-    unsigned int independentDisplayCount( void );
+    int independentDisplayCount( void ) const;
 
     //! return number of independent modified displays
-    unsigned int modifiedDisplayCount( void );
+    int modifiedDisplayCount( void ) const;
 
     //@}
 
@@ -163,6 +179,9 @@ class TextView: public QWidget, public Counter, public BASE::Key
 
     //! create new TextDisplay
     TextDisplay& _newTextDisplay( QWidget* );
+
+    //! closed
+    bool closed_;
 
     //! text display with focus
     TextDisplay* activeDisplay_;
