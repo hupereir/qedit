@@ -57,6 +57,16 @@ const QIcon& FileIconProvider::icon( const FileRecord& fileRecord )
 
     }
 
+    {
+        // normal icon. Only copy relevant pixmaps
+        QIcon copy( base );
+        base = QIcon();
+        QIcon linkOverlay( IconEngine::get( ICONS::LINK ) );
+        foreach( const QSize& size, copy.availableSizes() )
+        { base.addPixmap( copy.pixmap( size ) ); }
+
+    }
+
     // add link overlay
     if( type & FileSystemModel::Link )
     {
