@@ -29,6 +29,7 @@
 #include "BaseContextMenu.h"
 #include "BlockDelimiterDisplay.h"
 #include "FileDialog.h"
+#include "Color.h"
 #include "CustomTextDocument.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
@@ -1758,7 +1759,7 @@ void TextDisplay::_updateConfiguration( void )
     textHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
 
     // parenthesis highlight
-    textHighlight().setParenthesisHighlightColor( QColor( XmlOptions::get().get<QString>( "PARENTHESIS_COLOR" ) ) );
+    textHighlight().setParenthesisHighlightColor( XmlOptions::get().get<BASE::Color>( "PARENTHESIS_COLOR" ) );
     parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
 
     // block delimiters, line numbers and margin
@@ -1774,9 +1775,9 @@ void TextDisplay::_updateConfiguration( void )
     }
 
     // retrieve diff colors
-    diffConflictColor_ = QColor( XmlOptions::get().get<QString>("DIFF_CONFLICT_COLOR") );
-    diffAddedColor_ = QColor( XmlOptions::get().get<QString>("DIFF_ADDED_COLOR") );
-    userTagColor_ = QColor( XmlOptions::get().get<QString>("TAGGED_BLOCK_COLOR") );
+    diffConflictColor_ = XmlOptions::get().get<BASE::Color>( "DIFF_CONFLICT_COLOR" );
+    diffAddedColor_ = XmlOptions::get().get<BASE::Color>( "DIFF_ADDED_COLOR" );
+    userTagColor_ = XmlOptions::get().get<BASE::Color>( "TAGGED_BLOCK_COLOR" );
 
     // update paragraph tags
     _updateTaggedBlocks();
@@ -1793,7 +1794,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
 
     // spellcheck configuration
     bool changed( false );
-    changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<QString>("AUTOSPELL_COLOR") ) );
+    changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<BASE::Color>("AUTOSPELL_COLOR") ) );
     changed |= textHighlight().spellParser().setFontFormat( (FORMAT::TextFormatFlags) XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
     textHighlight().updateSpellPattern();
     autoSpellAction().setEnabled( textHighlight().spellParser().color().isValid() );
