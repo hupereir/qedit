@@ -138,10 +138,10 @@ Menu::Menu( QWidget* parent ):
     // debug menu
     #ifdef DEBUG
     menu->addSeparator();
-    DebugMenu *debug_menu( new DebugMenu( this ) );
-    debug_menu->setTitle( "Debug" );
-    debug_menu->addAction( &application.monitoredFilesAction() );
-    menu->addMenu( debug_menu );
+    DebugMenu *debugMenu( new DebugMenu( this ) );
+    debugMenu->setTitle( "Debug" );
+    debugMenu->addAction( &application.monitoredFilesAction() );
+    menu->addMenu( debugMenu );
     #endif
 
 }
