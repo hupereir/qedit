@@ -65,7 +65,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     setLayout( layout );
 
     // toolbar
-    CustomToolBar* toolbar = new CustomToolBar( "Navigation Toolbar", this, "NAVIGATION_TOOLBAR" );
+    CustomToolBar* toolbar = new CustomToolBar( tr( "Navigation Toolbar" ), this, "NAVIGATION_TOOLBAR" );
     layout->addWidget( toolbar );
 
     // path editor
@@ -411,7 +411,7 @@ void FileSystemFrame::_remove( void )
 
     if( validSelection.empty() ) return;
     RemoveFilesDialog dialog( this, validSelection );
-    dialog.setWindowTitle( "Delete Files - Qedit" );
+    dialog.setWindowTitle( tr( "Delete Files - Qedit" ) );
     if( !dialog.exec() ) return;
 
     // loop over selected files and remove
@@ -433,7 +433,7 @@ void FileSystemFrame::_rename( void )
     FileRecord record( model_.get( index ) );
     if( record.hasFlag( FileSystemModel::Navigator ) ) return;
     RenameFileDialog dialog( this, record );
-    dialog.setWindowTitle( "Rename Item - Qedit" );
+    dialog.setWindowTitle( tr( "Rename Item - Qedit" ) );
     if( !dialog.centerOnWidget( window() ).exec() ) return;
 
     File newFile( dialog.file() );
@@ -474,53 +474,53 @@ void FileSystemFrame::_installActions( void )
     Debug::Throw( "FileSystemFrame::_installActions.\n" );
 
     // hidden files
-    addAction( hiddenFilesAction_ = new QAction( "Show Hidden Files", this ) );
+    addAction( hiddenFilesAction_ = new QAction( tr( "Show Hidden Files" ), this ) );
     hiddenFilesAction_->setCheckable( true );
     connect( hiddenFilesAction_, SIGNAL( toggled( bool ) ), SLOT( _update() ) );
     connect( hiddenFilesAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowHiddenFiles( bool ) ) );
 
     // previous directory (from history)
-    addAction( previousDirectoryAction_ = new QAction( IconEngine::get( ICONS::PREVIOUS_DIRECTORY ), "Previous", this ) );
+    addAction( previousDirectoryAction_ = new QAction( IconEngine::get( ICONS::PREVIOUS_DIRECTORY ), tr( "Previous" ), this ) );
     connect( previousDirectoryAction_, SIGNAL( triggered( void ) ), pathEditor_, SLOT( selectPrevious( void ) ) );
 
     // next directory (from history)
-    addAction( nextDirectoryAction_ = new QAction( IconEngine::get( ICONS::NEXT_DIRECTORY ), "Next", this ) );
+    addAction( nextDirectoryAction_ = new QAction( IconEngine::get( ICONS::NEXT_DIRECTORY ), tr( "Next" ), this ) );
     connect( nextDirectoryAction_, SIGNAL( triggered( void ) ), pathEditor_, SLOT( selectNext( void ) ) );
 
     // parent directory in tree
-    addAction( parentDirectoryAction_ = new QAction( IconEngine::get( ICONS::PARENT ), "Parent Directory", this ) );
+    addAction( parentDirectoryAction_ = new QAction( IconEngine::get( ICONS::PARENT ), tr( "Parent Directory" ), this ) );
     connect( parentDirectoryAction_, SIGNAL( triggered( void ) ), pathEditor_, SLOT( selectParent( void ) ) );
-    parentDirectoryAction_->setToolTip( "Change path to parent directory" );
+    parentDirectoryAction_->setToolTip( tr( "Change path to parent directory" ) );
 
     // home directory
-    addAction( homeDirectoryAction_ = new QAction( IconEngine::get( ICONS::HOME ), "Home", this ) );
+    addAction( homeDirectoryAction_ = new QAction( IconEngine::get( ICONS::HOME ), tr( "Home" ), this ) );
     connect( homeDirectoryAction_, SIGNAL( triggered() ), SLOT( _homeDirectory() ) );
-    homeDirectoryAction_->setToolTip( "Change path to current file working directory" );
+    homeDirectoryAction_->setToolTip( tr( "Change path to current file working directory" ) );
 
     // home directory
-    addAction( reloadAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Reload", this ) );
+    addAction( reloadAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), tr( "Reload" ), this ) );
     connect( reloadAction_, SIGNAL( triggered() ), SLOT( _reload() ) );
-    reloadAction_->setToolTip( "Reload current directory contents" );
+    reloadAction_->setToolTip( tr( "Reload current directory contents" ) );
 
     // open
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open Selected Files", this ) );
+    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), tr( "Open Selected Files" ), this ) );
     connect( openAction_, SIGNAL( triggered() ), SLOT( _open() ) );
-    openAction_->setToolTip( "Edit selected files" );
+    openAction_->setToolTip( tr( "Edit selected files" ) );
 
     // remove
-    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::DELETE ), "Delete", this ) );
+    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::DELETE ), tr( "Delete" ), this ) );
     connect( removeAction_, SIGNAL( triggered() ), SLOT( _remove() ) );
     removeAction_->setShortcut( QKeySequence::Delete );
 
     // rename
-    addAction( renameAction_ = new QAction( IconEngine::get( ICONS::RENAME ), "Rename", this ) );
+    addAction( renameAction_ = new QAction( IconEngine::get( ICONS::RENAME ), tr( "Rename" ), this ) );
     connect( renameAction_, SIGNAL( triggered() ), SLOT( _rename() ) );
     renameAction_->setShortcut( Qt::Key_F2 );
-    renameAction_->setToolTip( "Change selected file name" );
+    renameAction_->setToolTip( tr( "Change selected file name" ) );
 
     // file properties
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFORMATION ), "Properties...", this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFORMATION ), tr( "Properties..." ), this ) );
     connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
-    filePropertiesAction_->setToolTip( "Display current file properties" );
+    filePropertiesAction_->setToolTip( tr( "Display current file properties" ) );
 
 }

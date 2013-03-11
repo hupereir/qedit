@@ -240,7 +240,7 @@ void TextDisplay::installContextMenuActions( BaseContextMenu* menu, const bool& 
     menu->addSeparator();
 
     // tags submenu
-    tagBlockAction_->setText( hasSelection ? "Tag selected blocks":"Tag current block" );
+    tagBlockAction_->setText( hasSelection ? tr( "Tag Selected Blocks" ) : tr( "Tag Current Block" ) );
     nextTagAction_->setEnabled( hasTags );
     previousTagAction_->setEnabled( hasTags );
     clearTagAction_->setEnabled( currentBlockTagged );
@@ -248,7 +248,7 @@ void TextDisplay::installContextMenuActions( BaseContextMenu* menu, const bool& 
 
     BaseContextMenu* tagMenu = new BaseContextMenu( menu );
     tagMenu->setHideDisabledActions( true );
-    tagMenu->setTitle( "Tags" );
+    tagMenu->setTitle( tr( "Tags" ) );
 
     menu->addMenu( tagMenu );
     tagMenu->addAction( tagBlockAction_ );
@@ -259,7 +259,7 @@ void TextDisplay::installContextMenuActions( BaseContextMenu* menu, const bool& 
 
     // document class menu
     QMenu* documentClassMenu = new DocumentClassMenu( this );
-    documentClassMenu->setTitle( "Select document class" );
+    documentClassMenu->setTitle( tr( "Select Document Class" ) );
     connect( documentClassMenu, SIGNAL( documentClassSelected( QString ) ), SLOT( selectClassName( QString ) ) );
     menu->addMenu( documentClassMenu );
 
@@ -395,13 +395,13 @@ void TextDisplay::setFile( File file, bool check_autosave )
         ( !tmp.exists() ||
         ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
     {
-        QString buffer;
-        QTextStream what( &buffer );
-        what << "A more recent version of file " << file << endl;
-        what << "was found at " << autosaved << "." << endl;
-        what << "This probably means that the application crashed the last time ";
-        what << "The file was edited." << endl;
-        what << "Use autosaved version ?";
+        QString buffer = QString(
+            tr( "A more recent version of file '%1'\n"
+            "was found at %2.\n"
+            "This probably means that the application crashed the last time "
+            "The file was edited.\n"
+            "Use autosaved version ?" ) ).arg( file ).arg( autosaved );
+
         if( QuestionDialog( this, buffer ).exec() )
         {
             restoreAutoSave = true;
@@ -633,7 +633,7 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enableAll )
     if( enableAll ) flags |=  AskForSaveDialog::YesToAll | AskForSaveDialog::NoToAll;
 
     AskForSaveDialog dialog( this, file(), flags );
-    dialog.setWindowTitle( "Save Files - Qedit" );
+    dialog.setWindowTitle( tr( "Save Files - Qedit" ) );
     int state( dialog.centerOnParent().exec() );
     if( state == AskForSaveDialog::Yes ||  state == AskForSaveDialog::YesToAll ) save();
     else if( state == AskForSaveDialog::No ||  state == AskForSaveDialog::NoToAll ) setModified( false );
@@ -665,9 +665,7 @@ void TextDisplay::save( void )
         QFile out( file() );
         if( !out.open( QIODevice::WriteOnly ) )
         {
-            QString buffer;
-            QTextStream( &buffer ) << "Cannot write to file \"" << file() << "\". <Save> canceled.";
-            InformationDialog( this, buffer ).exec();
+            InformationDialog( this, QString( tr( "Cannot write to file '%1'. <Save> canceled" ) ).arg( file() ) ).exec();
             return;
         }
 

@@ -34,7 +34,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
 
     // file name
     const File& file( record.file() );
-    setWindowTitle( (file.isEmpty() ? File("File Information"):file.localName() )+ " - Qedit" );
+    setWindowTitle( QString( "%1 - Qedit" ).arg( file.isEmpty() ? tr( "File Information" ) : file.localName() ) );
 
     // file name
     if( !file.isEmpty() )
@@ -46,9 +46,9 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     // type
     if( record.hasFlag( FileSystemModel::Folder | FileSystemModel::Document ) )
     {
-        if( record.hasFlag( FileSystemModel::Link ) ) setType( "Symbolic link" );
-        else if( record.hasFlag( FileSystemModel::Folder ) ) setType( "Folder" );
-        else if( record.hasFlag( FileSystemModel::Document ) ) setType( "Document" );
+        if( record.hasFlag( FileSystemModel::Link ) ) setType( tr( "Symbolic link" ) );
+        else if( record.hasFlag( FileSystemModel::Folder ) ) setType( tr( "Folder" ) );
+        else if( record.hasFlag( FileSystemModel::Document ) ) setType( tr( "Document" ) );
     }
 
     // size
@@ -65,13 +65,13 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
 
     // document class
     if( record.hasProperty( FileRecordProperties::CLASS_NAME ) )
-    { addRow( "Class:", record.property( FileRecordProperties::CLASS_NAME ) ); }
+    { addRow( tr( "Class:" ), record.property( FileRecordProperties::CLASS_NAME ) ); }
 
     if( record.hasProperty( FileRecordProperties::DICTIONARY ) )
-    { addRow( "Spell-check dictionary:", record.property( FileRecordProperties::DICTIONARY ) ); }
+    { addRow( tr( "Spell-check dictionary:" ), record.property( FileRecordProperties::DICTIONARY ) ); }
 
     if( record.hasProperty( FileRecordProperties::FILTER ) )
-    { addRow( "Spell-check filter:", record.property( FileRecordProperties::FILTER ) ); }
+    { addRow( tr( "Spell-check filter:" ), record.property( FileRecordProperties::FILTER ) ); }
 
     adjustSize();
 

@@ -75,12 +75,12 @@ FileRecordToolTipWidget::FileRecordToolTipWidget( QWidget* parent ):
     vLayout->addLayout( gridLayout );
 
     // items
-    ( pathItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( "Path:" );
-    ( sizeItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( "Size:" );
-    ( lastModifiedItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( "Modified:" );
-    ( userItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( "Owner:" );
-    ( groupItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( "Group:" );
-    ( permissionsItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( "Permissions:" );
+    ( pathItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Path:" ) );
+    ( sizeItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Size:" ) );
+    ( lastModifiedItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Modified:" ) );
+    ( userItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Owner:" ) );
+    ( groupItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Group:" ) );
+    ( permissionsItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Permissions:" ) );
 
     // add stretch
     vLayout->addStretch( 1 );

@@ -57,7 +57,7 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
     { blocks << block; }
     blocks << last;
 
-    QProgressDialog progress("Indenting selected paragraphs...", "Abort", 0, blocks.size(), editor_);
+    QProgressDialog progress( tr( "Indenting selected paragraphs..." ), tr( "Abort" ), 0, blocks.size(), editor_);
     progress.show();
 
     // retrieve current cursor

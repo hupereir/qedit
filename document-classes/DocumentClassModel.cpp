@@ -38,8 +38,8 @@ DocumentClassModel::IconCache& DocumentClassModel::_icons( void )
 //__________________________________________________________________
 const QString DocumentClassModel::columnTitles_[DocumentClassModel::nColumns] =
 {
-    "Name",
-    "File",
+    tr( "Name" ),
+    tr( "File" )
 };
 
 //__________________________________________________________________
@@ -87,7 +87,7 @@ QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
             case NAME: return documentClass.name();
             case FILE:
             {
-                if( documentClass.isBuildIn() ) return "Internal";
+                if( documentClass.isBuildIn() ) return tr( "Internal" );
                 else return documentClass.file();
             }
 

@@ -32,7 +32,7 @@
 
 //________________________________________________________
 DocumentClassManager::DocumentClassManager( void ):
-Counter( "DocumentClassManager" )
+    Counter( "DocumentClassManager" )
 { Debug::Throw( "DocumentclassManager::DocumentClassManager.\n" ); }
 
 //________________________________________________________
@@ -40,7 +40,7 @@ void DocumentClassManager::clear( void )
 {
     Debug::Throw( "DocumentClassManager::Clear.\n" );
     documentClasses_.clear();
-    readError_ = "";
+    readError_.clear();
 }
 
 //________________________________________________________
@@ -59,11 +59,7 @@ bool DocumentClassManager::read( const File& filename )
     XmlDocument document;
     if( !document.setContent( &file ) )
     {
-        readError_.clear();
-        QTextStream( &readError_ )
-            << "An error occured while parsing document classes." << endl
-            << document.error()
-            << endl;
+        readError_ = QString( QObject::tr( "An error occured while parsing document classes.\n %1" ) ).arg( document.error() );
         return false;
     }
 
@@ -105,12 +101,12 @@ bool DocumentClassManager::read( const File& filename )
 }
 
 //________________________________________________________
-bool DocumentClassManager::write( const QString& class_name, const File& filename ) const
+bool DocumentClassManager::write( const QString& className, const File& filename ) const
 {
-    Debug::Throw() << "DocumentClassManager::write - class: " << class_name << " file: " << filename << endl;
+    Debug::Throw() << "DocumentClassManager::write - class: " << className << " file: " << filename << endl;
 
     // try retrieve DocumentClass
-    List::const_iterator iter = std::find_if( documentClasses_.begin(), documentClasses_.end(), DocumentClass::SameNameFTor( class_name ) );
+    List::const_iterator iter = std::find_if( documentClasses_.begin(), documentClasses_.end(), DocumentClass::SameNameFTor( className ) );
     return ( iter == documentClasses_.end() ) ? false : write( *iter,  filename );
 
 }

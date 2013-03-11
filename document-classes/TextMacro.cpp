@@ -100,9 +100,8 @@ QAction* TextMacro::action( void ) const
 
     // create action label
     QString label;
-    QTextStream what( &label );
-    what << name();
-    if( isAutomatic() ) what << " (automatic)";
+    if( isAutomatic() ) label = QString( QObject::tr( "%1 (automatic)" ) ).arg( name() );
+    else label = name();
 
     QAction* out( new QAction( label, 0 ) );
     if( !accelerator().isEmpty() )

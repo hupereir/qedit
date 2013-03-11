@@ -66,30 +66,30 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     vLayout->setMargin(0);
     hLayout->addLayout( vLayout );
 
-    vLayout->addWidget( addButton_ = new QPushButton( IconEngine::get( ICONS::ADD ), "Add", this ) );
+    vLayout->addWidget( addButton_ = new QPushButton( IconEngine::get( ICONS::ADD ), tr( "Add" ), this ) );
     connect( addButton_, SIGNAL( clicked( void ) ), SLOT( _add( void ) ) );
 
-    vLayout->addWidget( removeButton_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
+    vLayout->addWidget( removeButton_ = new QPushButton( IconEngine::get( ICONS::REMOVE ), tr( "Remove" ), this ) );
     connect( removeButton_, SIGNAL( clicked( void ) ), SLOT( _remove( void ) ) );
 
-    vLayout->addWidget( reloadButton_ = new QPushButton( IconEngine::get( ICONS::RELOAD ), "Reload", this ) );
+    vLayout->addWidget( reloadButton_ = new QPushButton( IconEngine::get( ICONS::RELOAD ), tr( "Reload" ), this ) );
     connect( reloadButton_, SIGNAL( clicked( void ) ), SLOT( _reload( void ) ) );
 
     vLayout->addStretch( 1 );
 
     // actions
     QMenu* menu( new ContextMenu( list_ ) );
-    addAction( addAction_ = new QAction( IconEngine::get( ICONS::ADD ), "Add", this ) );
+    addAction( addAction_ = new QAction( IconEngine::get( ICONS::ADD ), tr( "Add" ), this ) );
     connect( addAction_, SIGNAL( triggered( void ) ), SLOT( _add( void ) ) );
     addAction_->setShortcut( QKeySequence::New );
     menu->addAction( addAction_ );
 
-    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::REMOVE ), "Remove", this ) );
+    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::REMOVE ), tr( "Remove" ), this ) );
     connect( removeAction_, SIGNAL( triggered( void ) ), SLOT( _remove( void ) ) );
     removeAction_->setShortcut( QKeySequence::Delete );
     menu->addAction( removeAction_ );
 
-    addAction( reloadAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), "Reload", this ) );
+    addAction( reloadAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), tr( "Reload" ), this ) );
     connect( reloadAction_, SIGNAL( triggered( void ) ), SLOT( _reload( void ) ) );
     reloadAction_->setShortcut( QKeySequence::Refresh );
     menu->addAction( reloadAction_ );
@@ -163,12 +163,9 @@ void DocumentClassManagerDialog::_remove( void )
     if( removedFiles.empty() ) return;
 
     // ask confirmation
-    QString buffer;
-    QTextStream what( &buffer );
-    what << "Remove all items from the following " << (removedFiles.size() == 1 ? "file":"files") << " ?" << endl;
-    foreach( const File& file, removedFiles )
-    { what << "    " << file << endl; }
-
+    QString buffer = (removedFiles.size() == 1 ) ?
+        tr( "Remove all items from the following file ?" ):
+        QString( tr( "Remove all items from the following %1 files ?" ) ).arg( removedFiles.size() );
     if( !QuestionDialog( this, buffer ).exec() ) return;
 
     DocumentClassManager::List removedItems;

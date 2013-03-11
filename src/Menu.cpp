@@ -85,7 +85,7 @@ Menu::Menu( QWidget* parent ):
     // document class
     menu->addAction( &mainwindow.filePropertiesAction() );
     menu->addMenu( documentClassMenu_ = new DocumentClassMenu( this ) );
-    documentClassMenu_->setTitle( "Document Type" );
+    documentClassMenu_->setTitle( tr( "Document Type" ) );
 
     menu->addSeparator();
     menu->addAction( &application.closeAction() );
@@ -95,41 +95,41 @@ Menu::Menu( QWidget* parent ):
     connect( menu, SIGNAL( aboutToShow() ), SLOT( _updateRecentFilesMenu() ) );
 
     // Edit menu
-    editMenu_ = addMenu( "&Edit" );
+    editMenu_ = addMenu( tr( "Edit" ) );
     connect( editMenu_, SIGNAL( aboutToShow() ), SLOT( _updateEditMenu() ) );
 
     // Search menu
-    searchMenu_ = addMenu( "&Search" );
+    searchMenu_ = addMenu( tr( "Search" ) );
     connect( searchMenu_, SIGNAL( aboutToShow() ), SLOT( _updateSearchMenu() ) );
 
     // windows
     windowsActionGroup_ = new ActionGroup( this );
-    windowsMenu_ = addMenu( "Session" );
+    windowsMenu_ = addMenu( tr( "Session" ) );
     connect( windowsMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updateWindowsMenu() ) );
     connect( windowsMenu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectFile( QAction* ) ) );
 
     // tools
-    toolsMenu_ = addMenu( "Tools" );
+    toolsMenu_ = addMenu( tr( "Tools" ) );
     connect( toolsMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updateToolsMenu() ) );
 
     // macros
     addMenu( macroMenu_ = new TextMacroMenu( this ) );
-    macroMenu_->setTitle( "Macro" );
+    macroMenu_->setTitle( tr( "Macros" ) );
     connect( macroMenu_, SIGNAL( aboutToShow() ), this, SLOT( updateMacroMenu() ) );
     connect( macroMenu_, SIGNAL( textMacroSelected( QString ) ), SLOT( _selectMacro( QString ) ) );
 
     // Settings
-    preferenceMenu_ = addMenu( "Settings" );
+    preferenceMenu_ = addMenu( tr( "Settings" ) );
     connect( preferenceMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updatePreferenceMenu() ) );
 
     // help manager
     BASE::HelpManager* help( new BASE::HelpManager( this ) );
-    help->setWindowTitle( "Qedit Handbook" );
+    help->setWindowTitle( tr( "Qedit Handbook" ) );
     help->install( helpText );
     help->install( BASE::helpText, false );
 
     // create help menu
-    menu = addMenu( "Help" );
+    menu = addMenu( tr( "Help" ) );
     menu->addAction( &help->displayAction() );
     menu->addSeparator();
     menu->addAction( &application.aboutQtAction() );
@@ -305,7 +305,7 @@ void Menu::_updateToolsMenu( void )
     bool currentBlockTagged( hasTags && display.isCurrentBlockTagged() );
 
     toolsMenu_->addAction( &display.tagBlockAction() );
-    display.tagBlockAction().setText( hasSelection ? "&Tag selected blocks":"&Tag current block" );
+    display.tagBlockAction().setText( hasSelection ? tr( "Tag Selected Blocks" ) : tr( "Tag current block" ) );
 
     toolsMenu_->addAction( &display.nextTagAction() );
     display.nextTagAction().setEnabled( hasTags );
@@ -329,7 +329,7 @@ void Menu::_updateToolsMenu( void )
 
     // rehighlight
     toolsMenu_->addSeparator();
-    QAction* action = toolsMenu_->addAction( "&Rehighlight", window(), SLOT( rehighlight() ) );
+    QAction* action = toolsMenu_->addAction( tr( "Rehighlight" ), window(), SLOT( rehighlight() ) );
     bool enabled( display.textHighlightAction().isEnabled() && display.textHighlightAction().isChecked() );
 
     #if WITH_ASPELL
@@ -409,9 +409,7 @@ void Menu::_selectFile( QAction* action )
     // check if window was found
     if( windowIter == windows.end() )
     {
-        QString buffer;
-        QTextStream( &buffer ) << "Unable to find a window containing file " << iter.value();
-        InformationDialog( this, buffer ).exec();
+        InformationDialog( this, QString( tr( "Unable to find a window containing file '%1'" ) ).arg( iter.value() ) ).exec();
         return;
     }
 

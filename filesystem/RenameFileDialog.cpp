@@ -45,8 +45,7 @@ RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):
 
     Debug::Throw( "RenameFileDialog::RenameFileDialog.\n" );
 
-    QString buffer;
-    QTextStream( &buffer ) << "Rename the item '" << record.file() << "' to:";
+    QString buffer = QString( tr( "Rename the item '%1' to:" ) ).arg( record.file() );
     mainLayout().addWidget( new QLabel( buffer, this ) );
     mainLayout().addWidget( editor_ = new AnimatedLineEditor( this ) );
 
@@ -61,7 +60,7 @@ RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):
     connect( &_editor(), SIGNAL( textChanged( const QString& ) ), SLOT( _updateButtons() ) );
 
     // rename buttons
-    okButton().setText( "&Rename" );
+    okButton().setText( tr( "Rename" ) );
 
     setMinimumSize( QSize( 320, 0 ) );
 

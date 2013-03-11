@@ -21,17 +21,8 @@
 *
 *******************************************************************************/
 
-/*!
-  \file CollapsedBlockData.cpp
-  \brief stores collapsed block informations
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
 #include "CollapsedBlockData.h"
 #include "HighlightBlockData.h"
-
 
 //_____________________________________________________________
 CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
