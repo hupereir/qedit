@@ -39,7 +39,7 @@ Counter( "FileModifiedDialog" )
 
     Debug::Throw( "FileModifiedDialog::FileModifiedDialog.\n" );
 
-    setWindowTitle( "File Modified - Qedit" );
+    setWindowTitle( tr( "File Modified - Qedit" ) );
 
     // create vbox layout
     QVBoxLayout* layout=new QVBoxLayout();

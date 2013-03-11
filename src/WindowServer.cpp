@@ -53,10 +53,6 @@
 #include <QTextStream>
 
 //________________________________________________________________
-const QString WindowServer::SINGLE_WINDOW = "open in current window";
-const QString WindowServer::MULTIPLE_WINDOWS = "open in new window";
-
-//________________________________________________________________
 WindowServer::WindowServer( QObject* parent ):
     QObject( parent ),
     Counter( "WindowServer" ),
@@ -70,7 +66,7 @@ WindowServer::WindowServer( QObject* parent ):
     Debug::Throw( "WindowServer::WindowServer.\n" );
 
     // create actions
-    saveAllAction_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), "Save A&ll", this );
+    saveAllAction_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), tr( "Save All" ), this );
     connect( saveAllAction_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
 
     // scratch files
@@ -179,7 +175,6 @@ FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) co
 
     std::sort( records.begin(), records.end(), FileRecord::FileFTor() );
     records.erase( std::unique( records.begin(), records.end(), FileRecord::SameFileFTor() ), records.end() );
-    Debug::Throw( "WindowServer::records - done.\n" );
     return records;
 
 }
@@ -230,13 +225,11 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
     // check number of files
     if( filenames.size() > 10 )
     {
-        QString buffer;
-        QTextStream what( &buffer );
-        what << "Do you really want to open " << filenames.size() << " files at the same time ?" << endl;
-        what << "This might be very resource intensive and can overload your computer." << endl;
-        what << "If you choose No, only the first file will be opened.";
-        if( !QuestionDialog( &_activeWindow(), buffer ).exec() )
-        { filenames = filenames.mid(0,1); }
+        QString buffer =
+            QString( tr( "Do you really want to open %1 files at the same time ?\n"
+            "This might be very resource intensive and can overload your computer.\n"
+            "If you choose No, only the first file will be opened." ) ).arg( filenames.size() );
+        if( !QuestionDialog( &_activeWindow(), buffer ).exec() ) filenames = filenames.mid(0,1);
 
     }
 
@@ -281,7 +274,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
         if( diff )
         {
             if( !first && _activeWindow().activeView().independentDisplayCount() == 2 ) _activeWindow().diffAction().trigger();
-            else InformationDialog( &_activeWindow(), "invalid number of files selected. <Diff> canceled." ).exec();
+            else InformationDialog( &_activeWindow(), tr( "invalid number of files selected. <Diff> canceled." ) ).exec();
         }
 
     } else {
@@ -392,9 +385,9 @@ void WindowServer::_updateConfiguration( void )
 {
 
     Debug::Throw( "WindowServer::_updateConfiguration.\n" );
-    _setOpenMode( XmlOptions::get().raw( "OPEN_MODE" ) == MULTIPLE_WINDOWS ? NEW_WINDOW:ACTIVE_WINDOW );
-    _setDefaultOrientation( NORMAL, XmlOptions::get().raw( "ORIENTATION" ) == MainWindow::LEFT_RIGHT ? Qt::Horizontal : Qt::Vertical );
-    _setDefaultOrientation( DIFF, XmlOptions::get().raw( "DIFF_ORIENTATION" ) == MainWindow::LEFT_RIGHT ? Qt::Horizontal : Qt::Vertical );
+    _setOpenMode( (OpenMode) XmlOptions::get().get<int>( "OPEN_MODE" ) );
+    _setDefaultOrientation( NORMAL, (Qt::Orientation) XmlOptions::get().get<int>( "ORIENTATION" ) );
+    _setDefaultOrientation( DIFF, (Qt::Orientation) XmlOptions::get().get<int>( "DIFF_ORIENTATION" ) );
 
 }
 

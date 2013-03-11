@@ -58,7 +58,7 @@ bool Diff::run( void )
     // see if process is not already running
     if( process_.state() != QProcess::NotRunning )
     {
-        error_ = "diff command already running.";
+        error_ = tr( "diff command already running." );
         return false;
     }
 
@@ -72,20 +72,21 @@ bool Diff::run( void )
         // check if filename is empty
         if( fileInformation.file().isEmpty() )
         {
-            error_ = "invalid file name.";
+            error_ = tr( "invalid file name." );
             return false;
         }
 
         // check if file exists
-        if( !fileInformation.file().exists() ) {
-            error_ = QString( "file " ) + fileInformation.file() + " does not exists.";
+        if( !fileInformation.file().exists() )
+        {
+            error_ = QString( tr( "file '%1' does not exist." ) ).arg( fileInformation.file() );
             return false;
         }
 
         // check if file is a directory
         if( fileInformation.file().isDirectory() )
         {
-            error_ = QString( "file " ) + fileInformation.file() + " is a directory.";
+            error_ = QString( tr( "file '%1' is a directory." ) ).arg( fileInformation.file() );
             return false;
         }
 
@@ -125,9 +126,7 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
     // check exit code
     if( status != QProcess::NormalExit )
     {
-        QString buffer;
-        QTextStream( &buffer ) << "diff excited with code " << code;
-        InformationDialog( 0, buffer ).exec();
+        InformationDialog( 0, QString( tr( "diff excited with code %1" ) ).arg( code ) ).exec();
         return;
     }
 

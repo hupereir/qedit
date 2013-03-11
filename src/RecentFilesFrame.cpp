@@ -195,7 +195,7 @@ void RecentFilesFrame::_clean( void )
 {
 
     Debug::Throw( "RecentFilesFrame:_clean.\n" );
-    if( !QuestionDialog( window(),"Remove invalid or duplicated files from list ?" ).exec() ) return;
+    if( !QuestionDialog( window(), tr( "Remove invalid or duplicated files from list ?" ) ).exec() ) return;
     _recentFiles().clean();
     update();
 
@@ -243,14 +243,14 @@ void RecentFilesFrame::_installActions( void )
     Debug::Throw( "RecentFilesFrame::_installActions.\n" );
 
     // clean
-    addAction( cleanAction_ = new QAction( IconEngine::get( ICONS::DELETE ), "&Clean", this ) );
+    addAction( cleanAction_ = new QAction( IconEngine::get( ICONS::DELETE ), tr( "Clean" ), this ) );
     connect( &_cleanAction(), SIGNAL( triggered() ), SLOT( _clean() ) );
     _cleanAction().setEnabled( false );
-    _cleanAction().setToolTip( "Clean invalid files" );
+    _cleanAction().setToolTip( tr( "Clean invalid files" ) );
 
     // open
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "&Open Selected Files", this ) );
+    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), tr( "Open Selected Files" ), this ) );
     connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
-    _openAction().setToolTip( "Show selected files" );
+    _openAction().setToolTip( tr( "Show selected files" ) );
 
 }

@@ -82,10 +82,6 @@
 #include <QDomDocument>
 
 //_____________________________________________________
-const QString MainWindow::LEFT_RIGHT = "Left/right";
-const QString MainWindow::TOP_BOTTOM = "Top/bottom";
-
-//_____________________________________________________
 MainWindow::MainWindow(  QWidget* parent ):
     BaseMainWindow( parent ),
     Counter( "MainWindow" ),

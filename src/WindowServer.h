@@ -47,15 +47,6 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
     public:
 
-    //!@name Open mode string
-    //@{
-
-    static const QString SINGLE_WINDOW;
-
-    static const QString MULTIPLE_WINDOWS;
-
-    //@}
-
     //! constructor
     WindowServer( QObject* parent = 0 );
 

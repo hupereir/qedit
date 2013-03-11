@@ -100,12 +100,12 @@ void installDefaultOptions( void )
     XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_SORT_COLUMN", FileSystemModel::TIME );
 
     // toolbars
-    XmlOptions::get().set( "DOCUMENT_CLASS_MANAGER_TOOLBAR", "1" );
-    XmlOptions::get().set( "EDITION_TOOLBAR", "1" );
-    XmlOptions::get().set( "EXTRA_TOOLBAR", "1" );
-    XmlOptions::get().set( "FILE_TOOLBAR", "1" );
-    XmlOptions::get().set( "NAVIGATION_TOOLBAR", "1" );
-    XmlOptions::get().set( "SPLIT_TOOLBAR", "1" );
+    XmlOptions::get().set<bool>( "DOCUMENT_CLASS_MANAGER_TOOLBAR", true );
+    XmlOptions::get().set<bool>( "EDITION_TOOLBAR", true );
+    XmlOptions::get().set<bool>( "EXTRA_TOOLBAR", true );
+    XmlOptions::get().set<bool>( "FILE_TOOLBAR", true );
+    XmlOptions::get().set<bool>( "NAVIGATION_TOOLBAR", true );
+    XmlOptions::get().set<bool>( "SPLIT_TOOLBAR", true );
 
     XmlOptions::get().set( "AUTOSAVE", "1" );
     XmlOptions::get().set( "AUTOSAVE_INTERVAL", "20" );
@@ -114,9 +114,9 @@ void installDefaultOptions( void )
     XmlOptions::get().set( "HIGHLIGHT_COLOR", "#FFFDD4" );
 
     /* multiple views */
-    XmlOptions::get().set( "OPEN_MODE", WindowServer::SINGLE_WINDOW );
-    XmlOptions::get().set( "ORIENTATION", MainWindow::TOP_BOTTOM );
-    XmlOptions::get().set( "DIFF_ORIENTATION", MainWindow::LEFT_RIGHT );
+    XmlOptions::get().set<int>( "OPEN_MODE", WindowServer::ACTIVE_WINDOW );
+    XmlOptions::get().set<int>( "ORIENTATION", Qt::Horizontal );
+    XmlOptions::get().set<int>( "DIFF_ORIENTATION", Qt::Horizontal );
 
     #ifdef WITH_ASPELL
     XmlOptions::get().set( "DICTIONARY", "en" );

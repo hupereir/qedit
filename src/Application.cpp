@@ -53,15 +53,15 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
     Debug::Throw( "Application::commandLineParser.\n" );
     CommandLineParser out( SERVER::ApplicationManager::commandLineParser() );
 
-    out.registerFlag( "--tabbed", "opens files in same window");
-    out.registerFlag( "--same-window", "open files in same window");
-    out.registerFlag( "--new-window", "open files in a new window");
-    out.registerFlag( "--diff", "opens files in same window and perform diff");
-    out.registerFlag( "--autospell", "switch autospell on for all files");
-    out.registerFlag( "--close", "close displays matching file names and exit");
-    out.registerOption( "--filter", "string", "select filter for autospell");
-    out.registerOption( "--dictionary", "string", "select dictionary for autospell");
-    out.registerOption( "--orientation", "string", "select view orientation for tabbed edition (vertical|horizontal)");
+    out.registerFlag( "--tabbed", tr( "opens files in same window") );
+    out.registerFlag( "--same-window", tr( "open files in same window") );
+    out.registerFlag( "--new-window", tr( "open files in a new window") );
+    out.registerFlag( "--diff", tr( "open files in same window and perform diff") );
+    out.registerFlag( "--autospell", tr( "switch autospell on for all files") );
+    out.registerFlag( "--close", tr( "close displays matching file names and exit") );
+    out.registerOption( "--filter", tr( "string" ), tr( "select filter for autospell") );
+    out.registerOption( "--dictionary", tr( "string" ), tr( "select dictionary for autospell") );
+    out.registerOption( "--orientation", tr( "string" ), tr( "select view orientation for tabbed edition (vertical|horizontal)") );
     if( !arguments.isEmpty() ) out.parse( arguments, ignore_warnings );
     return out;
 

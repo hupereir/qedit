@@ -321,29 +321,29 @@ void SessionFilesFrame::_installActions( void )
     Debug::Throw( "SessionFilesFrame::_installActions.\n" );
 
     // next file
-    addAction( nextFileAction_ = new QAction( IconEngine::get(  ICONS::DOWN ), "Select next File", this ) );
+    addAction( nextFileAction_ = new QAction( IconEngine::get(  ICONS::DOWN ), tr( "Select next File" ), this ) );
     connect( nextFileAction_, SIGNAL( triggered() ), SLOT( _selectNextFile() ) );
     nextFileAction_->setShortcut( Qt::CTRL + Qt::Key_Tab );
 
     // previous file
-    addAction( previousFileAction_ = new QAction( IconEngine::get(  ICONS::UP ), "Select Previous File", this ) );
+    addAction( previousFileAction_ = new QAction( IconEngine::get(  ICONS::UP ), tr( "Select Previous File" ), this ) );
     connect( previousFileAction_, SIGNAL( triggered() ), SLOT( _selectPreviousFile() ) );
     previousFileAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Tab );
 
     // open
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Open", this ) );
+    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), tr( "Open" ), this ) );
     connect( openAction_, SIGNAL( triggered() ), SLOT( _open() ) );
-    openAction_->setToolTip( "Open selected files" );
+    openAction_->setToolTip( tr( "Open selected files" ) );
 
     // save
-    addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "Save", this ) );
+    addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), tr( "Save" ), this ) );
     connect( saveAction_, SIGNAL( triggered() ), SLOT( _save() ) );
-    saveAction_->setToolTip( "Save selected files" );
+    saveAction_->setToolTip( tr( "Save selected files" ) );
 
     // close
-    addAction( closeAction_ = new QAction( IconEngine::get( ICONS::DIALOG_CLOSE ), "Close", this ) );
+    addAction( closeAction_ = new QAction( IconEngine::get( ICONS::DIALOG_CLOSE ), tr( "Close" ), this ) );
     connect( closeAction_, SIGNAL( triggered() ), SLOT( _close() ) );
     closeAction_->setShortcut( QKeySequence::Delete );
-    closeAction_->setToolTip( "Close selected files" );
+    closeAction_->setToolTip( tr( "Close selected files" ) );
 
 }
