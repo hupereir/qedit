@@ -26,7 +26,7 @@
 #include <algorithm>
 
 //_____________________________________
-const QString NewDocumentNameServer::defaultName_ = tr( "New Document" );
+const QString NewDocumentNameServer::defaultName_ = QObject::tr( "New Document" );
 
 //______________________________________
 QString NewDocumentNameServer::get( void )

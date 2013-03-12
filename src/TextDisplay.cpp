@@ -665,7 +665,7 @@ void TextDisplay::save( void )
         QFile out( file() );
         if( !out.open( QIODevice::WriteOnly ) )
         {
-            InformationDialog( this, QString( tr( "Cannot write to file '%1'. <Save> canceled" ) ).arg( file() ) ).exec();
+            InformationDialog( this, QString( tr( "Cannot write to file '%1'. <Save> canceled." ) ).arg( file() ) ).exec();
             return;
         }
 
@@ -743,8 +743,7 @@ void TextDisplay::saveAs( void )
     // check if file is directory
     if( file.isDirectory() )
     {
-        QString buffer;
-        QTextStream( &buffer ) << "File \"" << file << "\" is a directory. <Save> canceled.";
+        const QString buffer = QString( tr( "File '%1' is a directory. <Save> canceled." ) ).arg( file );
         InformationDialog( this, buffer ).exec();
         return;
     }

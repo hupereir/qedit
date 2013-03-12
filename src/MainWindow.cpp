@@ -397,7 +397,7 @@ void MainWindow::_revertToSave( void )
     // check filename
     if( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() )
     {
-        InformationDialog( this, "No filename given. <Reload> canceled." ).setWindowTitle( "Reload Document - Qedit" ).exec();
+        InformationDialog( this, tr( "No filename given. <Reload> canceled." ) ).setWindowTitle( tr( "Reload Document - Qedit" ) ).exec();
         return;
     }
 
