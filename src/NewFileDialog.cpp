@@ -37,7 +37,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
 
     Debug::Throw( "NewFileDialog::NewFileDialog.\n" );
 
-    setWindowTitle( "File Not Found - Qedit" );
+    setWindowTitle( tr( "File Not Found - Qedit" ) );
 
     // create vbox layout
     QVBoxLayout* layout=new QVBoxLayout();
@@ -46,10 +46,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     setLayout( layout );
 
     // create message
-    QString buffer;
-    QTextStream( &buffer )
-        << "Can't open " << file << "." << endl
-        << "No such file or directory";
+    const QString buffer = QString( tr( "Cannot open file '%1'.\nNo such file or directory" ) ).arg( file );
 
     QHBoxLayout *hLayout( new QHBoxLayout() );
     layout->addLayout( hLayout, 1 );
@@ -75,21 +72,21 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     QPushButton* button;
     if( buttons & Create )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), "Create", this ) );
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), tr( "Create" ), this ) );
         connect( button, SIGNAL( clicked() ), SLOT( _create() ) );
     }
 
     // cancel button.
     if( buttons & Cancel )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), "Cancel", this ) );
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), tr( "Cancel" ), this ) );
         connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
     }
 
     // cancel button.
     if( buttons & Exit )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), "Exit", this ) );
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), tr( "Exit" ), this ) );
         connect( button, SIGNAL( clicked() ), SLOT( _exit() ) );
     }
 

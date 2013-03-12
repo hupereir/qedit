@@ -40,7 +40,7 @@
 
 //_______________________________________________________________
 NavigationToolBar::NavigationToolBar( QWidget* parent ):
-    CustomToolBar( "Side bar", parent, "NAVIGATION_SIDEBAR" ),
+    CustomToolBar( tr( "Side bar" ), parent, "NAVIGATION_SIDEBAR" ),
     navigationFrame_( 0 ),
     enabled_( true )
 {
@@ -69,8 +69,8 @@ void NavigationToolBar::connect( NavigationFrame& frame )
 
     // session files
     addWidget( button = _newToolButton( this,  IconEngine::get( ICONS::DOCUMENTS ) ) );
-    button->setText( " &Session Files" );
-    button->setToolTip( "Files currently opened" );
+    button->setText( tr( "Session Files" ) );
+    button->setToolTip( tr( "Files currently opened" ) );
     button->setChecked( true );
 
     button_group->addButton( button );
@@ -78,16 +78,16 @@ void NavigationToolBar::connect( NavigationFrame& frame )
 
     // recent files
     addWidget( button = _newToolButton( this, IconEngine::get( ICONS::HISTORY ) ) );
-    button->setText( " &Recent Files" );
-    button->setToolTip( "Files recently opened" );
+    button->setText( tr( "Recent Files" ) );
+    button->setToolTip( tr( "Files recently opened" ) );
 
     button_group->addButton( button );
     buttons_.insert( button, &_navigationFrame().recentFilesFrame() );
 
     // file system
     addWidget( button = _newToolButton( this, IconEngine::get( ICONS::FILESYSTEM ) ) );
-    button->setText( " &File System" );
-    button->setToolTip( "File system browser" );
+    button->setText( tr( "File System" ) );
+    button->setToolTip( tr( "File system browser" ) );
 
     button_group->addButton( button );
     buttons_.insert( button, &_navigationFrame().fileSystemFrame() );

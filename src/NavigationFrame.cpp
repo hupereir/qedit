@@ -19,18 +19,11 @@
 *
 ****************************************************************************/
 
-/*!
-\file NavigationFrame.cpp
-\brief editor windows navigator
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
+#include "NavigationFrame.h"
 
 #include "Application.h"
 #include "Debug.h"
 #include "FileSystemFrame.h"
-#include "NavigationFrame.h"
 #include "RecentFilesFrame.h"
 #include "SessionFilesFrame.h"
 
@@ -68,7 +61,7 @@ void NavigationFrame::_installActions( void )
 {
 
     Debug::Throw( "NavigationFrame::_installActions.\n" );
-    addAction( visibilityAction_ = new QAction( "Show &Navigation Panel", this ) );
+    addAction( visibilityAction_ = new QAction( tr( "Show &Navigation Panel" ), this ) );
     visibilityAction_->setCheckable( true );
     visibilityAction_->setChecked( true );
     connect( visibilityAction_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );

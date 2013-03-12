@@ -26,7 +26,7 @@
 #include <algorithm>
 
 //_____________________________________
-const QString NewDocumentNameServer::defaultName_ = "new document";
+const QString NewDocumentNameServer::defaultName_ = tr( "New Document" );
 
 //______________________________________
 QString NewDocumentNameServer::get( void )
@@ -45,12 +45,4 @@ void NewDocumentNameServer::remove( QString name )
 
 //______________________________________
 QString NewDocumentNameServer::_get( int version )
-{
-
-    QString buffer;
-    QTextStream what ( &buffer );
-    what << defaultName_;
-    if( version > 0 ) { what << " (" << version+1 << ")"; }
-    return buffer;
-
-}
+{ return (version > 0) ? QString( "%1 (%2)" ).arg( defaultName_ ):defaultName_; }

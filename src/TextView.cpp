@@ -21,14 +21,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file TextView.cpp
-\brief handle multiple text views
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "Application.h"
 #include "AutoSave.h"
 #include "Debug.h"
@@ -96,8 +88,6 @@ void TextView::setIsNewDocument( void )
     setActiveDisplay( display );
     display.setFocus();
     emit displayCountChanged();
-
-    Debug::Throw( "TextView::setIsNewDocument - done.\n" );
 
     return;
 }
@@ -211,8 +201,6 @@ void TextView::setActiveDisplay( TextDisplay& display )
         activeDisplay().setActive( true );
 
     }
-
-    Debug::Throw( "TextView::setActiveDisplay - done.\n" );
 
 }
 
@@ -483,13 +471,13 @@ void TextView::diff( void )
     // check number of files
     if( n_displays > 2 )
     {
-        InformationDialog( this, "Too many files opened. Diff canceled." ).exec();
+        InformationDialog( this, tr( "Too many files opened. Diff canceled." ) ).exec();
         return;
     }
 
     if( n_displays < 2 )
     {
-        InformationDialog( this, "Too few files opened. Diff canceled." ).exec();
+        InformationDialog( this, tr( "Too few files opened. Diff canceled." ) ).exec();
         return;
     }
 
@@ -704,8 +692,6 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     // update current display and focus
     setActiveDisplay( *display );
     display->setFocus();
-    Debug::Throw() << "TextView::_newTextDisplay - key: " << display->key() << endl;
-    Debug::Throw( "TextView::_newTextDisplay - done.\n" );
 
     return *display;
 

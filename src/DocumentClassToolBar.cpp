@@ -32,7 +32,7 @@
 
 //________________________________________________________________
 DocumentClassToolBar::DocumentClassToolBar( QWidget* parent ):
-CustomToolBar( "Document Class", parent, "DOCUMENT_CLASS_TOOLBAR" )
+CustomToolBar( tr( "Document Classes" ), parent, "DOCUMENT_CLASS_TOOLBAR" )
 {
 
     Debug::Throw( "DocumentClassToolBar::DocumentClassToolBar.\n" );

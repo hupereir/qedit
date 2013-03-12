@@ -47,7 +47,7 @@ CustomDialog( parent ),
 selection_( selection )
 {
 
-    setWindowTitle( "File Selection - Qedit" );
+    setWindowTitle( tr( "File Selection - Qedit" ) );
     setOptionName( "FILE_SELECTION_DIALOG" );
 
     // custom list display
@@ -78,20 +78,20 @@ selection_( selection )
     QPushButton* button;
 
     // deselect all
-    buttonLayout().insertWidget( 0, button = new QPushButton( "&Clear Selection", this ) );
-    button->setToolTip( "Deselect all files in list" );
+    buttonLayout().insertWidget( 0, button = new QPushButton( tr( "Clear Selection" ), this ) );
+    button->setToolTip( tr( "Deselect all files in list" ) );
     connect( button, SIGNAL( clicked() ), list_, SLOT( clearSelection() ) );
     clearSelectionButton_ = button;
 
     // select all
-    buttonLayout().insertWidget( 0, button = new QPushButton( "&Select All", this ) );
-    button->setToolTip( "Select all files in list" );
+    buttonLayout().insertWidget( 0, button = new QPushButton( tr( "Select All" ), this ) );
+    button->setToolTip( tr( "Select all files in list" ) );
     connect( button, SIGNAL( clicked() ), list_, SLOT( selectAll() ) );
     selectAllButton_ = button;
 
     // replace
-    okButton().setToolTip( "Replace in all selected files" );
-    okButton().setText( "&Replace" );
+    okButton().setToolTip( tr( "Replace in all selected files" ) );
+    okButton().setText( tr( "Replace" ) );
     _updateButtons();
 
     // sort list and select all items

@@ -37,7 +37,7 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
 {
 
     Debug::Throw( "SaveAllDialog::SaveAllDialog.\n" );
-    setWindowTitle( "Save Files - Qedit" );
+    setWindowTitle( tr( "Save Files - Qedit" ) );
 
     Q_ASSERT( !files.empty() );
 
@@ -45,15 +45,11 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
     if( files.size() == 1 )
     {
 
-        QString buffer;
-        QTextStream( &buffer ) << "File " << files.front().file() << " is modified. Save ?";
-        setText( buffer );
+        setText( QString( tr( "File '%1' is modified. Save ?" ) ).arg( files.front().file() ) );
 
     } else {
 
-        QString buffer;
-        QTextStream( &buffer ) << files.size() << " files are modified. Save ?";
-        setText( buffer );
+        setText( QString( tr( "%1 files are modified. Save ?" ) ).arg( files.size() ) );
 
         AnimatedTreeView* treeView = new AnimatedTreeView( this );
         setDetails( treeView );
@@ -82,7 +78,7 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
     }
 
     // rename buttons
-    okButton().setText( "Save" );
+    okButton().setText( tr( "Save" ) );
     okButton().setIcon( IconEngine::get( ICONS::SAVE ) );
     adjustSize();
 

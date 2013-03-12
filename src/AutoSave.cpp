@@ -141,7 +141,6 @@ void AutoSave::saveFiles( const TextDisplay* display )
 
     // restart timer
     if( !threads_.empty() )  timer_.start( interval_, this );
-    Debug::Throw( "AutoSave::saveFiles - done. \n" );
 
 }
 
