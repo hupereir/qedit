@@ -31,14 +31,14 @@
 void installSystemOptions( void )
 {
 
-  // print commands
-  XmlOptions::get().setAutoDefault( true );
-  XmlOptions::get().set( "DIFF_COMMAND", Option( "@DIFF@", "diff files command" ) );
+    // print commands
+    XmlOptions::get().setAutoDefault( true );
+    XmlOptions::get().set( "DIFF_COMMAND", Option( "@DIFF@", "diff files command" ) );
 
-  #ifdef WITH_ASPELL
-  XmlOptions::get().set( "ASPELL", Option( "@ASPELL@", "aspell command" ) );
-  #endif
-  XmlOptions::get().setAutoDefault( false );
+    #ifdef WITH_ASPELL
+    XmlOptions::get().set( "ASPELL", Option( "@ASPELL@", "aspell command" ) );
+    #endif
+    XmlOptions::get().setAutoDefault( false );
 
 };
 
