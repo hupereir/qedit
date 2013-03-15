@@ -37,6 +37,8 @@ class TextEditor;
 class RemoveFilesDialog: public CustomDialog
 {
 
+    Q_OBJECT
+    
     public:
 
     //! constructor

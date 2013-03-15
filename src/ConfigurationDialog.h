@@ -29,6 +29,8 @@
 class ConfigurationDialog: public BaseConfigurationDialog
 {
 
+    Q_OBJECT
+    
     public:
 
     //! creator

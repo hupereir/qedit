@@ -32,6 +32,8 @@
 class CloseFilesDialog: public QuestionDialog
 {
 
+    Q_OBJECT
+
     public:
 
     //! constructor

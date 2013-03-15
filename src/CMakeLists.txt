@@ -48,11 +48,11 @@ SET( qedit_SOURCES
   AskForSaveDialog.cpp
   AutoSave.cpp
   AutoSaveThread.cpp
+  CloseFilesDialog.cpp
   ConfigurationDialog.cpp
   Diff.cpp
   DocumentClassMenu.cpp
   DocumentClassToolBar.cpp
-  CloseFilesDialog.cpp
   FileCheck.cpp
   FileCheckDialog.cpp
   FileModifiedDialog.cpp
@@ -81,10 +81,13 @@ SET( qedit_HEADERS
   Application.h
   AskForSaveDialog.h
   AutoSave.h
+  CloseFilesDialog.h
+  ConfigurationDialog.h
   Diff.h
   DocumentClassMenu.h
   DocumentClassToolBar.h
   FileCheck.h
+  FileCheckDialog.h
   FileModifiedDialog.h
   FileRemovedDialog.h
   FileSelectionDialog.h
@@ -98,6 +101,7 @@ SET( qedit_HEADERS
   ProgressDialog.h
   RecentFilesFrame.h
   ReplaceDialog.h
+  SaveAllDialog.h
   SessionFilesFrame.h
   SessionFilesModel.h
   TextDisplay.h

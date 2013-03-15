@@ -30,6 +30,8 @@
 class FileInformationDialog: public BaseFileInformationDialog
 {
 
+    Q_OBJECT
+
     public:
 
     //! constructor

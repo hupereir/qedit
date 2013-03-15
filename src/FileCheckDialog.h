@@ -34,6 +34,8 @@ class TreeView;
 class FileCheckDialog: public CustomDialog
 {
 
+    Q_OBJECT
+
     public:
 
     //! constructor

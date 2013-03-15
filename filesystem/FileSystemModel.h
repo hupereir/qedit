@@ -39,6 +39,8 @@ class FileIconProvider;
 class FileSystemModel: public ListModel<FileRecord>, public Counter
 {
 
+    Q_OBJECT
+
     public:
 
     //! file types
@@ -101,11 +103,6 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
 
     //! sort
     virtual void _sort( int, Qt::SortOrder = Qt::AscendingOrder );
-
-    private slots:
-
-    //! configuration
-    void _updateConfiguration( void );
 
     private:
 

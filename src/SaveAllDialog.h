@@ -32,6 +32,8 @@
 class SaveAllDialog: public QuestionDialog
 {
 
+    Q_OBJECT
+
     public:
 
     //! constructor

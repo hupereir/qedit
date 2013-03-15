@@ -32,8 +32,11 @@ SET( filesystem_SOURCES
 )
 
 SET( filesystem_HEADERS
+  FileInformationDialog.h
   FileRecordToolTipWidget.h
   FileSystemFrame.h
+  FileSystemModel.h
+  RemoveFilesDialog.h
   RenameFileDialog.h
 )
 
