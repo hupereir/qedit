@@ -1,0 +1,9 @@
+[Desktop Entry]
+GenericName=Advanced Text Editor
+Name=qedit
+MimeType=text/plain;
+Exec=qedit
+Icon=qedit
+Type=Application
+Terminal=false
+Categories=Qt;Utility;TextEditor;
