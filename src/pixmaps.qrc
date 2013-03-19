@@ -1,6 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
   <qresource>
-    <file alias="icon.png">../icon.png</file>
+    <file alias="qedit.png">../qedit.png</file>
     <file alias="pixmaps/arrow-down.png">../pixmaps/arrow-down.png</file>            
 	<file alias="pixmaps/arrow-up.png">../pixmaps/arrow-up.png</file>              
 	<file alias="pixmaps/bookmarks.png">../pixmaps/bookmarks.png</file>             
