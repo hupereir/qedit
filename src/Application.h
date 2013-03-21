@@ -49,7 +49,7 @@ class Application: public BaseApplication, public Counter
     public:
 
     //! command line parser
-    static CommandLineParser commandLineParser( CommandLineArguments arguments = CommandLineArguments(), bool ignore_warnings = true );
+    static CommandLineParser commandLineParser( CommandLineArguments arguments = CommandLineArguments(), bool ignoreWarnings = true );
 
     //! command line help
     static void usage( void );
