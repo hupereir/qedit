@@ -24,14 +24,6 @@
  *
  *******************************************************************************/
 
-/*!
-  \file    Icons.h
-  \brief   Icon filenames
-  \author  Hugo Pereira
-  \version $Revision$
-  \date    $Date$
-*/
-
 #include <QString>
 #include "BaseIcons.h"
 
@@ -39,14 +31,14 @@
 namespace ICONS
 {
 
-  static const QString DOCUMENT = "application-x-zerosize.png";
-  static const QString FOLDER = "folder.png";
-  static const QString LINK = "emblem-symbolic-link.png";
+    static const QString DOCUMENT = "application-x-zerosize.png";
+    static const QString FOLDER = "folder.png";
+    static const QString LINK = "emblem-symbolic-link.png";
 
-  static const QString PARENT = "go-up.png";
-  static const QString PREVIOUS_DIRECTORY = "go-previous.png";
-  static const QString NEXT_DIRECTORY = "go-next.png";
-  static const QString HOME = "go-home.png";
+    static const QString PARENT = "go-up.png";
+    static const QString PREVIOUS_DIRECTORY = "go-previous.png";
+    static const QString NEXT_DIRECTORY = "go-next.png";
+    static const QString HOME = "go-home.png";
 
 };
 

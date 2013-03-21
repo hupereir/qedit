@@ -50,15 +50,15 @@ class IndentPattern: public Counter
     QDomElement domElement( QDomDocument& parent ) const;
 
     //! Id
-    const unsigned int& id( void ) const
+    int id( void ) const
     { return id_; }
 
     //! set id
-    void setId( const int& id )
+    void setId( int id )
     { id_ = id; }
 
     //! equal to ftor
-    class WeakEqualFTor: public std::binary_function< IndentPattern, IndentPattern, bool>
+    class WeakEqualFTor
     {
         public:
 
@@ -68,7 +68,7 @@ class IndentPattern: public Counter
     };
 
     //! less than ftor
-    class WeakLessThanFTor: public std::binary_function< IndentPattern, IndentPattern, bool>
+    class WeakLessThanFTor
     {
         public:
 
@@ -102,11 +102,11 @@ class IndentPattern: public Counter
     };
 
     //! pattern type
-    const Type& type( void ) const
+    Type type( void ) const
     { return type_; }
 
     //! type
-    void setType( const Type& type )
+    void setType( Type type )
     { type_ = type; }
 
     //! type
@@ -121,7 +121,7 @@ class IndentPattern: public Counter
     { return scale_; }
 
     //! scale
-    void setScale( const unsigned int& scale )
+    void setScale( int scale )
     { scale_ = scale; }
 
     //! comments
@@ -154,6 +154,8 @@ class IndentPattern: public Counter
 
         };
 
+        Q_DECLARE_FLAGS( Flags, Flag );
+
         //! constructor
         Rule( const QDomElement& element = QDomElement() );
 
@@ -179,11 +181,11 @@ class IndentPattern: public Counter
         }
 
         //! paragraph
-        const int& paragraph() const
+        int paragraph() const
         { return paragraph_; }
 
         //! set paragraph
-        void setParagraph( const int& par )
+        void setParagraph( int par )
         { paragraph_ = par; }
 
         //! regExp
@@ -205,11 +207,11 @@ class IndentPattern: public Counter
         //@{
 
         //! flags
-        const unsigned int& flags( void ) const
+        Flags flags( void ) const
         { return flags_; }
 
         //! flags
-        void setFlags( const unsigned int& flags )
+        void setFlags( Flags flags )
         { flags_ = flags; }
 
         //! flags
@@ -235,7 +237,7 @@ class IndentPattern: public Counter
         QRegExp regexp_;
 
         //! flags
-        unsigned int flags_;
+        Flags flags_;
 
         //! streamer
         friend QTextStream& operator << ( QTextStream& out, const Rule& rule )
@@ -271,7 +273,7 @@ class IndentPattern: public Counter
     static unsigned int& _counter( void );
 
     //! unique id
-    unsigned int id_;
+    int id_;
 
     //! pattern name
     QString name_;
@@ -303,4 +305,7 @@ class IndentPattern: public Counter
     }
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( IndentPattern::Rule::Flags );
+
 #endif

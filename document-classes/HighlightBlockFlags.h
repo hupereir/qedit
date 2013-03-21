@@ -34,7 +34,7 @@
 namespace TextBlock
 {
 
-    enum
+    enum Flag
     {
 
         //! block is modified
@@ -56,6 +56,8 @@ namespace TextBlock
         ALL_TAGS = DIFF_ADDED | DIFF_CONFLICT | USER_TAG
 
     };
+
+    Q_DECLARE_FLAGS( Flags, Flag );
 
     //! block format properties
     enum BlockFormatProperties
@@ -162,5 +164,6 @@ namespace TextBlock
 
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( TextBlock::Flags );
 
 #endif

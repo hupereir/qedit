@@ -25,6 +25,7 @@
 *******************************************************************************/
 
 #include "Config.h"
+#include "Color.h"
 #include "FileRecordModel.h"
 #include "FileSystemModel.h"
 #include "MainWindow.h"
@@ -62,35 +63,37 @@ void installDefaultOptions( void )
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/shell_patterns.xml", "default patterns for shell files", Option::None) );
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/xml_patterns.xml", "default patterns for xml files", Option::None) );
 
-    XmlOptions::get().set( "CUSTOM_BLOCK_DELIMITERS", "1" );
+    XmlOptions::get().set<bool>( "CUSTOM_BLOCK_DELIMITERS", true );
 
     // diff configuration
-    XmlOptions::get().set( "DIFF_ADDED_COLOR", "#d0eaff" );
-    XmlOptions::get().set( "DIFF_CONFLICT_COLOR", "#ecffec" );
+    XmlOptions::get().set<BASE::Color>( "DIFF_ADDED_COLOR", QColor( "#d0eaff" ) );
+    XmlOptions::get().set<BASE::Color>( "DIFF_CONFLICT_COLOR", QColor( "#ecffec" ) );
 
-    XmlOptions::get().set( "PARENTHESIS_COLOR", "red" );
-    XmlOptions::get().set( "TAGGED_BLOCK_COLOR", "#fffdd4" );
-    XmlOptions::get().set( "BACKUP", "0" );
-    XmlOptions::get().set( "DB_SIZE", "30" );
+    XmlOptions::get().set<BASE::Color>( "PARENTHESIS_COLOR", QColor( Qt::red ) );
+    XmlOptions::get().set<BASE::Color>( "TAGGED_BLOCK_COLOR", QColor( "#fffdd4" ) );
 
-    XmlOptions::get().set( "IGNORE_AUTOMATIC_MACROS", "0" );
-    XmlOptions::get().set( "SHOW_HIDDEN_FILES", "1" );
-    XmlOptions::get().set( "SHOW_BLOCK_DELIMITERS", "1" );
-    XmlOptions::get().set( "TEXT_INDENT", "1" );
-    XmlOptions::get().set( "TEXT_HIGHLIGHT", "1" );
-    XmlOptions::get().set( "TEXT_PARENTHESIS", "1" );
-    XmlOptions::get().set( "WRAP_FROM_CLASS", "1" );
-    XmlOptions::get().set( "EMULATE_TABS_FROM_CLASS", "1" );
-    XmlOptions::get().set( "WINDOW_HEIGHT", "500" );
-    XmlOptions::get().set( "WINDOW_WIDTH", "700" );
-    XmlOptions::get().set( "SERVER_TIMEOUT_DELAY", "3000" );
-    XmlOptions::get().set( "SHOW_NAVIGATION_FRAME", "1" );
-    XmlOptions::get().set( "SHOW_NAVIGATOR", "0" );
+    XmlOptions::get().set<bool>( "BACKUP", false );
+    XmlOptions::get().set<int>( "DB_SIZE", 30 );
 
-    XmlOptions::get().set( "SHOW_TOOLTIPS", "1" );
+    XmlOptions::get().set<bool>( "IGNORE_AUTOMATIC_MACROS", false );
+    XmlOptions::get().set<bool>( "SHOW_HIDDEN_FILES", true );
+    XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", true );
+    XmlOptions::get().set<bool>( "TEXT_INDENT", true );
+    XmlOptions::get().set<bool>( "TEXT_HIGHLIGHT", true );
+    XmlOptions::get().set<bool>( "TEXT_PARENTHESIS", true );
+    XmlOptions::get().set<bool>( "WRAP_FROM_CLASS", true );
+    XmlOptions::get().set<bool>( "EMULATE_TABS_FROM_CLASS", true );
+
+    XmlOptions::get().set<int>( "WINDOW_HEIGHT", 500 );
+    XmlOptions::get().set<int>( "WINDOW_WIDTH", 700 );
+    XmlOptions::get().set<int>( "SERVER_TIMEOUT_DELAY", 3000 );
+
+    XmlOptions::get().set<bool>( "SHOW_NAVIGATION_FRAME", true );
+    XmlOptions::get().set<bool>( "SHOW_NAVIGATOR", false );
+    XmlOptions::get().set<bool>( "SHOW_TOOLTIPS", true );
 
     // splitters
-    XmlOptions::get().set( "NAVIGATION_FRAME_WIDTH", "200" );
+    XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", 200 );
 
     // file lists mask and sorting
     XmlOptions::get().set<int>( "SESSION_FILES_MASK", 1<<FileRecordModel::FILE );
@@ -107,11 +110,11 @@ void installDefaultOptions( void )
     XmlOptions::get().set<bool>( "NAVIGATION_TOOLBAR", true );
     XmlOptions::get().set<bool>( "SPLIT_TOOLBAR", true );
 
-    XmlOptions::get().set( "AUTOSAVE", "1" );
-    XmlOptions::get().set( "AUTOSAVE_INTERVAL", "20" );
+    XmlOptions::get().set<bool>( "AUTOSAVE", true );
+    XmlOptions::get().set<int>( "AUTOSAVE_INTERVAL", 20 );
 
-    XmlOptions::get().set( "HIGHLIGHT_PARAGRAPH", "1" );
-    XmlOptions::get().set( "HIGHLIGHT_COLOR", "#FFFDD4" );
+    XmlOptions::get().set<int>( "HIGHLIGHT_PARAGRAPH", 1 );
+    XmlOptions::get().set<BASE::Color>( "HIGHLIGHT_COLOR", QColor( "#FFFDD4" ) );
 
     /* multiple views */
     XmlOptions::get().set<int>( "OPEN_MODE", WindowServer::ACTIVE_WINDOW );
@@ -122,16 +125,20 @@ void installDefaultOptions( void )
     XmlOptions::get().set( "DICTIONARY", "en" );
     XmlOptions::get().set( "DICTIONARY_FILTER", "none" );
     XmlOptions::get().set( "AUTOSPELL_COLOR", "red" );
-    XmlOptions::get().set( "AUTOSPELL_FONT_FORMAT", "0" );
-    XmlOptions::get().set( "MAX_SUGGESTIONS", "0" );
+    XmlOptions::get().set<int>( "AUTOSPELL_FONT_FORMAT", 0 );
+    XmlOptions::get().set<int>( "MAX_SUGGESTIONS", 0 );
     #endif
 
-    XmlOptions::get().set( "NAVIGATION_SIDEBAR", "1" );
-    XmlOptions::get().set( "NAVIGATION_SIDEBAR_LOCATION", "left" );
+    XmlOptions::get().set<bool>( "NAVIGATION_SIDEBAR", true );
+    XmlOptions::get().set<int>( "NAVIGATION_SIDEBAR_LOCATION", Qt::LeftToolBarArea );
 
     // toolbars default configuration
-    XmlOptions::get().set( "NAVIGATION_SIDEBAR_ICON_SIZE", "16" );
-    XmlOptions::get().set( "NAVIGATION_SIDEBAR_TEXT_POSITION", "2" );
+    XmlOptions::get().set<int>( "NAVIGATION_SIDEBAR_ICON_SIZE", 16 );
+    XmlOptions::get().set<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION", 2 );
+
+    // lists
+    XmlOptions::get().set<int>( "FILE_SELECTION_LIST_MASK", (1<<FileRecordModel::FILE)|(1<<FileRecordModel::TIME) );
+    XmlOptions::get().set<int>( "CLOSE_FILES_LIST_MASK", (1<<FileRecordModel::FILE)|(1<<FileRecordModel::TIME) );
 
     // run-time non recordable options
     // default value for autosave directory
@@ -140,10 +147,6 @@ void installDefaultOptions( void )
     XmlOptions::get().set( "USER_NAME", Option( Util::user(), Option::None ) );
     XmlOptions::get().set( "APP_NAME", Option( "QEDIT", Option::None ) );
     XmlOptions::get().set( "RC_FILE", Option( File(".qeditrc").addPath(Util::home()), Option::None ) );
-
-    // lists
-    XmlOptions::get().set<int>( "FILE_SELECTION_LIST_MASK", (1<<FileRecordModel::FILE)|(1<<FileRecordModel::TIME) );
-    XmlOptions::get().set<int>( "CLOSE_FILES_LIST_MASK", (1<<FileRecordModel::FILE)|(1<<FileRecordModel::TIME) );
 
     XmlOptions::get().setAutoDefault( false );
 

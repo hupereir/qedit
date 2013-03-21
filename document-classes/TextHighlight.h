@@ -1,5 +1,5 @@
-#ifndef _TextHighlight_h_
-#define _TextHighlight_h_
+#ifndef TextHighlight_h
+#define TextHighlight_h
 
 // $Id$
 
@@ -49,10 +49,10 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     //! Qt meta object
     Q_OBJECT
 
-        public:
+    public:
 
-        //! constructor
-        TextHighlight( QTextDocument* );
+    //! constructor
+    TextHighlight( QTextDocument* );
 
     //! destructor
     virtual ~TextHighlight( void )

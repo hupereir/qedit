@@ -1,3 +1,6 @@
+#ifndef XmlDef_h
+#define XmlDef_h
+
 // $Id$
 
 /******************************************************************************
@@ -21,114 +24,98 @@
 *
 *******************************************************************************/
 
-
-#ifndef XmlDef_h
-#define XmlDef_h
-/*!
-   \file    XmlDef.h
-   \brief   Some Xml definitions
-   \author  Hugo Pereira
-   \version $Revision$
-   \date    $Date$
-*/
-
 #include <QString>
 
 //! Some Xml definitions
 namespace XML {
 
-  //!@name document class
-  //@{
-  static const QString PATTERNS( "patterns" );
-  static const QString DOCUMENT_CLASS( "class" );
-  static const QString PATTERN( "pattern" );
-  static const QString FIRSTLINE_PATTERN( "first_line_pattern" );
-  static const QString ICON( "icon" );
-  static const QString OPTIONS( "options" );
-  static const QString OPTION_WRAP( "wrap" );
-  static const QString OPTION_EMULATE_TABS( "emulate_tabs" );
-  static const QString OPTION_DEFAULT( "default" );
-  static const QString TAB_SIZE( "tab_size" );
+    //!@name document class
+    //@{
+    static const QString PATTERNS( "patterns" );
+    static const QString DOCUMENT_CLASS( "class" );
+    static const QString PATTERN( "pattern" );
+    static const QString FIRSTLINE_PATTERN( "first_line_pattern" );
+    static const QString ICON( "icon" );
+    static const QString OPTIONS( "options" );
+    static const QString OPTION_WRAP( "wrap" );
+    static const QString OPTION_EMULATE_TABS( "emulate_tabs" );
+    static const QString OPTION_DEFAULT( "default" );
+    static const QString TAB_SIZE( "tab_size" );
 
-  //@}
+    //@}
 
-  //!@name highlight style
-  //@{
-  static const QString STYLE( "style" );
-  static const QString NAME( "name" );
-  static const QString FORMAT( "format" );
-  static const QString COLOR( "color" );
-  //@}
+    //!@name highlight style
+    //@{
+    static const QString STYLE( "style" );
+    static const QString NAME( "name" );
+    static const QString FORMAT( "format" );
+    static const QString COLOR( "color" );
+    //@}
 
-  //!@name highlight pattern
-  //@{
-  static const QString KEYWORD_PATTERN( "keyword_pattern" );
-  static const QString RANGE_PATTERN( "range_pattern" );
-  static const QString PARENT( "parent" );
-  static const QString KEYWORD( "keyword" );
-  static const QString BEGIN( "begin" );
-  static const QString END( "end" );
-  static const QString COMMENTS( "comments" );
+    //!@name highlight pattern
+    //@{
+    static const QString KEYWORD_PATTERN( "keyword_pattern" );
+    static const QString RANGE_PATTERN( "range_pattern" );
+    static const QString PARENT( "parent" );
+    static const QString KEYWORD( "keyword" );
+    static const QString BEGIN( "begin" );
+    static const QString END( "end" );
+    static const QString COMMENTS( "comments" );
 
-  //! used to tell that lines matching pattern are to be ignored when indenting the text
-  static const QString OPTION_NO_INDENT( "no_indent" );
+    //! used to tell that lines matching pattern are to be ignored when indenting the text
+    static const QString OPTION_NO_INDENT( "no_indent" );
 
-  //! used to tell that Range can span across paragraphs
-  static const QString OPTION_SPAN( "span" );
+    //! used to tell that Range can span across paragraphs
+    static const QString OPTION_SPAN( "span" );
 
-  //! used to tell that highlight pattern is not case sensitive
-  static const QString OPTION_NO_CASE( "no_case" );
+    //! used to tell that highlight pattern is not case sensitive
+    static const QString OPTION_NO_CASE( "no_case" );
 
-  //@}
+    //@}
 
-  //!@name indentation pattern
-  //@{
-  static const QString INDENT_PATTERN( "indent_pattern" );
+    //!@name indentation pattern
+    //@{
+    static const QString INDENT_PATTERN( "indent_pattern" );
 
-  static const QString INDENT_NOTHING( "unchanged" );
-  static const QString INDENT_INCREMENT( "increment" );
-  static const QString INDENT_DECREMENT( "decrement" );
-  static const QString INDENT_DECREMENT_ALL( "decrement all" );
+    static const QString INDENT_NOTHING( "unchanged" );
+    static const QString INDENT_INCREMENT( "increment" );
+    static const QString INDENT_DECREMENT( "decrement" );
+    static const QString INDENT_DECREMENT_ALL( "decrement all" );
 
-  //! indentation pattern rule
-  static const QString RULE( "rule" );
-  static const QString TYPE( "type" );
-  static const QString SCALE( "scale" );
-  static const QString PAR( "par" );
-  static const QString REGEXP( "regexp" );
+    //! indentation pattern rule
+    static const QString RULE( "rule" );
+    static const QString TYPE( "type" );
+    static const QString SCALE( "scale" );
+    static const QString PAR( "par" );
+    static const QString REGEXP( "regexp" );
 
-  //! base number of characters to skip before applying the pattern
-  static const QString BASE_INDENTATION( "base_indentation" );
-  static const QString VALUE( "value" );
+    //! base number of characters to skip before applying the pattern
+    static const QString BASE_INDENTATION( "base_indentation" );
+    static const QString VALUE( "value" );
 
-  //@}
+    //@}
 
-  //!@name text macro
-  //@{
-  static const QString MACRO( "macro" );
-  static const QString ACCELERATOR( "accelerator" );
-  static const QString REPLACEMENT( "replacement" );
+    //!@name text macro
+    //@{
+    static const QString MACRO( "macro" );
+    static const QString ACCELERATOR( "accelerator" );
+    static const QString REPLACEMENT( "replacement" );
 
-  //! do not split selection into single lines
-  static const QString OPTION_NO_SPLIT( "no_split" );
+    //! do not split selection into single lines
+    static const QString OPTION_NO_SPLIT( "no_split" );
 
-  //! macro is a separator to be placed in the menu
-  static const QString OPTION_SEPARATOR( "separator" );
+    //! macro is a separator to be placed in the menu
+    static const QString OPTION_SEPARATOR( "separator" );
 
-  //! macro is automatic
-  static const QString OPTION_AUTOMATIC( "automatic" );
-  //@}
+    //! macro is automatic
+    static const QString OPTION_AUTOMATIC( "automatic" );
+    //@}
 
-  //!@name text parenthesis
-  //@{
-  //! text parenthesis
-  static const QString PARENTHESIS( "parenthesis" );
-  //@}
+    //! text parenthesis
+    static const QString PARENTHESIS( "parenthesis" );
 
-  //!@name block delimiters
-  //@{
-  static const QString BLOCK_DELIMITER( "block_delimiter" );
-  //@}
+    //! block delimiters
+    static const QString BLOCK_DELIMITER( "block_delimiter" );
 
 };
 

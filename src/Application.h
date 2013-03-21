@@ -118,7 +118,7 @@ class Application: public BaseApplication, public Counter
 
     //! about
     void _about( void )
-    { BaseApplication::_about( "qedit", VERSION, BUILD_TIMESTAMP ); }
+    { BaseApplication::_about( "Qedit", VERSION, BUILD_TIMESTAMP ); }
 
     //! configuration
     void _configuration( void );

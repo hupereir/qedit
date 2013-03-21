@@ -23,77 +23,69 @@
 *
 *******************************************************************************/
 
-/*!
-   \file WindowTitle.h
-   \brief Generate window title from filename
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
-*/
-
-#include <QString>
-
 #include "Counter.h"
 #include "File.h"
+
+#include <QString>
 
 class WindowTitle: public Counter
 {
 
-  public:
+    public:
 
-  //! Flags
-  enum Flags
-  {
-    NONE,
-    MODIFIED,
-    READ_ONLY
-  };
+    //! Flags
+    enum Flags
+    {
+        NONE,
+        MODIFIED,
+        READ_ONLY
+    };
 
-  //! constructor
-  WindowTitle( const File& file = File(), const Flags& flag = NONE ):
-    Counter( "WindowTitle" ),
-    file_( file ),
-    flag_( flag )
-  {}
+    //! constructor
+    WindowTitle( const File& file = File(), const Flags& flag = NONE ):
+        Counter( "WindowTitle" ),
+        file_( file ),
+        flag_( flag )
+    {}
 
-  //! change flag
-  WindowTitle& setFlag( const Flags& flag, const bool& value = true )
-  {
-    if( value ) flag_ = flag;
-    return *this;
-  }
+    //! change flag
+    WindowTitle& setFlag( const Flags& flag, const bool& value = true )
+    {
+        if( value ) flag_ = flag;
+        return *this;
+    }
 
-  //! change flag
-  WindowTitle& setModified( const bool& value = true )
-  { return setFlag( MODIFIED, value ); }
+    //! change flag
+    WindowTitle& setModified( const bool& value = true )
+    { return setFlag( MODIFIED, value ); }
 
-  //! change flag
-  WindowTitle& setReadOnly( const bool& value = true )
-  { return setFlag( READ_ONLY, value ); }
+    //! change flag
+    WindowTitle& setReadOnly( const bool& value = true )
+    { return setFlag( READ_ONLY, value ); }
 
-  //! cast to string
-  operator const QString& (void)
-  {
-    QString out;
-    QTextStream what( &out );
-    if( file_.size() ) what << file_.localName();
-    else what << "QEdit";
-    if( flag_ == MODIFIED ) what << " (modified)";
-    if( flag_ == READ_ONLY ) what << " (read-only)";
-    if( file_.size() ) what << " - " << file_.path();
-    return title_ = out;
-  }
+    //! cast to string
+    operator const QString& (void)
+    {
+        QString out;
+        QTextStream what( &out );
+        if( file_.size() ) what << file_.localName();
+        else what << "QEdit";
+        if( flag_ == MODIFIED ) what << QObject::tr( " (modified)" );
+        if( flag_ == READ_ONLY ) what << QObject::tr( " (read-only)" );
+        if( file_.size() ) what << " - " << file_.path();
+        return title_ = out;
+    }
 
-  private:
+    private:
 
-  //! filename
-  File file_;
+    //! filename
+    File file_;
 
-  //! flags
-  Flags flag_;
+    //! flags
+    Flags flag_;
 
-  //! stored string
-  QString title_;
+    //! stored string
+    QString title_;
 
 };
 

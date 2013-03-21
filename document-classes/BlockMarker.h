@@ -24,84 +24,75 @@
 *
 *******************************************************************************/
 
-/*!
-\file BlockMarker.h
-\brief store blocks position
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-
 //! stores block position
 //! needed to handle block geometry
 class BlockMarker
 {
-  public:
+    public:
 
-  //! constructor
-  BlockMarker( const unsigned int& id = 0, const int& cursor = 0, const int& position = -1 ):
-    id_( id ),
-    cursor_( cursor ),
-    position_( position ),
-    valid_( position >= 0 )
-  {}
+    //! constructor
+    BlockMarker( int id = 0, int cursor = 0, int position = -1 ):
+        id_( id ),
+        cursor_( cursor ),
+        position_( position ),
+        valid_( position >= 0 )
+    {}
 
-  //! equal to operator
-  bool operator == ( const BlockMarker& marker ) const
-  { return cursor() == marker.cursor(); }
+    //! equal to operator
+    bool operator == ( const BlockMarker& marker ) const
+    { return cursor() == marker.cursor(); }
 
-  //! equal to operator
-  bool operator != ( const BlockMarker& marker ) const
-  { return cursor() != marker.cursor(); }
+    //! equal to operator
+    bool operator != ( const BlockMarker& marker ) const
+    { return cursor() != marker.cursor(); }
 
-  //! less than operator
-  bool operator < ( const BlockMarker& marker ) const
-  { return cursor() < marker.cursor(); }
+    //! less than operator
+    bool operator < ( const BlockMarker& marker ) const
+    { return cursor() < marker.cursor(); }
 
-  //! id
-  const unsigned int& id( void ) const
-  { return id_; }
+    //! id
+    int id( void ) const
+    { return id_; }
 
-  //! cursor
-  const int& cursor( void ) const
-  { return cursor_; }
+    //! cursor
+    int cursor( void ) const
+    { return cursor_; }
 
-  //! position
-  void setPosition( const int& position )
-  {
-    valid_ = (position >= 0);
-    position_ = position;
-  }
+    //! position
+    void setPosition( int position )
+    {
+        valid_ = (position >= 0);
+        position_ = position;
+    }
 
-  //! position
-  const int& position( void ) const
-  { return position_; }
+    //! position
+    int position( void ) const
+    { return position_; }
 
-  //! validity
-  const bool& isValid( void ) const
-  { return valid_; }
+    //! validity
+    bool isValid( void ) const
+    { return valid_; }
 
-  private:
+    private:
 
-  //! id
-  unsigned int id_;
+    //! id
+    int id_;
 
-  //! cursor position
-  int cursor_;
+    //! cursor position
+    int cursor_;
 
-  //! position
-  int position_;
+    //! position
+    int position_;
 
-  //! validity
-  bool valid_;
+    //! validity
+    bool valid_;
 
-  //! streamer
-  friend QTextStream& operator << ( QTextStream& out, const BlockMarker& marker )
-  {
-    out << "(" << marker.id() << "," << marker.cursor() << "," << marker.position() << ")";
-    return out;
-  }
+    //! streamer
+    friend QTextStream& operator << ( QTextStream& out, const BlockMarker& marker )
+    {
+        out << "(" << marker.id() << "," << marker.cursor() << "," << marker.position() << ")";
+        return out;
+    }
 
 };
 

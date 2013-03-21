@@ -37,8 +37,9 @@ namespace FileRecordProperties
     static const QString SIZE = "size";
 
     //! needed to tag session file records
-    enum State
+    enum Flag
     {
+
         NONE = 0,
 
         //! tag modified files
@@ -54,6 +55,11 @@ namespace FileRecordProperties
         ALTERED = 1<<3
 
     };
+
+    Q_DECLARE_FLAGS( Flags, Flag );
+
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( FileRecordProperties::Flags );
 
 #endif
