@@ -26,21 +26,21 @@ How to install
 
 Get a tarball of latest release and unpack:
 
-gtar -xzvf qedit-xyz.tar.gz or
+  gtar -xzvf qedit-xyz.tar.gz or
 
 I. cmake:
 ---------
 
-cd qedit-xyz/
-cmake .
+  cd qedit-xyz/
+  cmake .
 
 (see below or use cmake . --help for options)
 
 II. Make:
 ---------
 
-make
-make install
+  make
+  make install
 
 to install the code. This will install qedit in the default installation path of your system (e.g. /usr/local/bin, or /usr/bin, depending on the system).
 This usually requires root privileges at the installation stage. 
@@ -50,9 +50,21 @@ III. Local installation:
 
 Alternatively a different installation path can be set at configuration time using the CMAKE_INSTALL_PREFIX option. For a local installation use:
 
-cmake -DCMAKE_INSTALL_PREFIX=$HOME .
+  cmake -DCMAKE_INSTALL_PREFIX=$HOME .
 
 Program files will be installed in $HOME/bin.
+
+IV. Windows(tm) compilation:
+----------------------------
+
+On Windows, the code has been checked to succesfully compile using MinGW only. To achieve this, additional options must be
+passed to the cmake command:
+
+  cmake -G "MinGW Makefiles" .
+  make
+  make install
+
+As for the linux case, you can specify the destination folder using -DCMAKE_INSTALL_PREFIX
 
 Questions, comments:
 hugo.pereira@free.fr
