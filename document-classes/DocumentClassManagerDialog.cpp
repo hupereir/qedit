@@ -54,7 +54,6 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
 
     // setup list
     hLayout->addWidget( list_ = new TreeView( this ) );
-    list_->setItemMargin( 2 );
     list_->setModel( &model_ );
     list_->setSortingEnabled( false );
     list_->header()->hide();

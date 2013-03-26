@@ -63,7 +63,6 @@ Counter( "SessionFilesFrame" )
     layout()->addWidget( list_ = new AnimatedTreeView( this ) );
     list_->setMouseTracking( true );
     list_->setModel( &model_ );
-    list_->setItemMargin( 2 );
     list_->setOptionName( "SESSION_FILES" );
     list_->header()->hide();
     list_->setDragEnabled( true );
