@@ -156,6 +156,10 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     #if WITH_ASPELL
 
     //! embedded spellcheck parser
+    const SPELLCHECK::SpellParser& spellParser( void ) const
+    { return spellParser_; }
+
+    //! embedded spellcheck parser
     SPELLCHECK::SpellParser& spellParser( void )
     { return spellParser_; }
 
