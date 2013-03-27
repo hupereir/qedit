@@ -129,7 +129,7 @@ void SessionFilesFrame::update( void )
     Debug::Throw( "SessionFilesFrame:update.\n" );
 
     // store in model
-    const FileRecord::List records( Singleton::get().application<Application>()->windowServer().records( false, window() ) );
+    const FileRecord::List records( Singleton::get().application<Application>()->windowServer().records( WindowServer::None, window() ) );
     model_.update( records );
 
     list_->updateMask();

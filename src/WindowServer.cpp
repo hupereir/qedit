@@ -125,7 +125,7 @@ MainWindow& WindowServer::newMainWindow( void )
 }
 
 //______________________________________________________
-FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) const
+FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) const
 {
 
     Debug::Throw( "WindowServer::records.\n" );
@@ -145,7 +145,8 @@ FileRecord::List WindowServer::records( bool modified_only, QWidget* window ) co
         {
 
             // check modification status
-            if( modified_only && !display->document()->isModified() ) continue;
+            if( (recordFlags&ModifiedOnly) && !display->document()->isModified() ) continue;
+            if( (recordFlags&ExistingOnly ) && display->isNewDocument() ) continue;
 
             // retrieve file
             // store in map if not empty
@@ -411,7 +412,7 @@ void WindowServer::_updateActions( void )
 {
 
     Debug::Throw( "WindowServer::_updateActions.\n" );
-    saveAllAction().setEnabled( !records( true ).empty() );
+    saveAllAction().setEnabled( !records( ModifiedOnly ).empty() );
 
 }
 
@@ -822,7 +823,7 @@ void WindowServer::_reparentToMain( const File& first, const File& second )
 void WindowServer::_saveAll( void )
 {
     Debug::Throw( "WindowServer::_saveAll.\n" );
-    _save( records( true ) );
+    _save( records( ModifiedOnly ) );
     return;
 
 }

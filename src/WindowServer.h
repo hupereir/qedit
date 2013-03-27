@@ -56,9 +56,18 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     //! create new empty main window
     MainWindow& newMainWindow( void );
 
+    enum Flag
+    {
+        None = 0,
+        ModifiedOnly = 1<<0,
+        ExistingOnly = 1<<1
+    };
+
+    Q_DECLARE_FLAGS( Flags, Flag );
+
     //! returns list of opened files
     /*! the active_window parameter is used to possibly tag files that belong to it */
-    FileRecord::List records( bool modifiedOnly = false, QWidget* activeWindow = 0 ) const;
+    FileRecord::List records( Flags = None, QWidget* activeWindow = 0 ) const;
 
     //! close all windows gracefully
     /*! returns false if the opperation was cancelled. */
@@ -305,5 +314,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     ScratchFileMonitor* scratchFileMonitor_;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( WindowServer::Flags );
 
 #endif

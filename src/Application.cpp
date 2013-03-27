@@ -143,8 +143,6 @@ bool Application::realizeWidget( void )
     sessionFiles_ = new XmlFileList( this );
     static_cast<XmlFileList*>( sessionFiles_ )->setTagName( FILERECORD::XML::SESSION_FILE_LIST );
 
-    _updateSessionActions();
-
     // class manager
     classManager_ = new DocumentClassManager();
 
@@ -156,12 +154,15 @@ bool Application::realizeWidget( void )
 
     // window server
     windowServer_ = new WindowServer();
+    connect( windowServer_, SIGNAL( sessionFilesChanged( void ) ), SLOT( _updateSessionActions( void ) ) );
 
     // create first window and show
-    windowServer().newMainWindow().centerOnDesktop();
+    windowServer_->newMainWindow().centerOnDesktop();
 
     // update configuration
     emit configurationChanged();
+
+    _updateSessionActions();
     _updateDocumentClasses();
 
     // run startup timer to open files after the call to exec() is
@@ -272,7 +273,7 @@ void Application::_documentClassesConfiguration( void )
 void Application::_saveSession( void )
 {
     Debug::Throw( "Application::_saveSession.\n" );
-    sessionFiles_->set( windowServer_->records() );
+    sessionFiles_->set( windowServer_->records( WindowServer::ExistingOnly ) );
     static_cast<XmlFileList*>(sessionFiles_)->write();
     _updateSessionActions();
 }
@@ -303,6 +304,7 @@ void Application::_updateSessionActions( void )
     const bool empty( sessionFiles_->isEmpty() );
     restoreSessionAction_->setEnabled( !empty );
     discardSessionAction_->setEnabled( !empty );
+    saveSessionAction_->setEnabled( !windowServer_->records( WindowServer::ExistingOnly ).isEmpty() );
 
 }
 
@@ -322,7 +324,7 @@ void Application::_exit( void )
 {
 
     Debug::Throw( "Application::_exit.\n" );
-    if( !windowServer().closeAll() ) return;
+    if( !windowServer_->closeAll() ) return;
     qApp->quit();
 
 }
@@ -353,7 +355,7 @@ void Application::timerEvent( QTimerEvent* event )
     {
 
         startupTimer_.stop();
-        windowServer().readFilesFromArguments( _arguments() );
+        windowServer_->readFilesFromArguments( _arguments() );
         connect( qApp, SIGNAL( lastWindowClosed() ), qApp, SLOT( quit() ), Qt::UniqueConnection );
 
     } else return QObject::timerEvent( event );
