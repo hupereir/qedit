@@ -413,10 +413,10 @@ class TextDisplay: public AnimatedTextEditor
     void clearTag( QTextBlock, const int& tags );
 
     //! true if current blocks (or selection) has tag
-    bool isCurrentBlockTagged( void );
+    bool isCurrentBlockTagged( void ) const;
 
     //! true if some blocks have tags
-    bool hasTaggedBlocks( void );
+    bool hasTaggedBlocks( void ) const;
 
     //@}
 

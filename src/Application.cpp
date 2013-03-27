@@ -34,6 +34,7 @@
 #include "Icons.h"
 #include "InformationDialog.h"
 #include "MainWindow.h"
+#include "RestoreSessionDialog.h"
 #include "Util.h"
 #include "WindowServer.h"
 #include "XmlFileList.h"
@@ -130,24 +131,9 @@ bool Application::realizeWidget( void )
     // this is re-enabled manually after arguments are read
     qApp->setQuitOnLastWindowClosed( false );
 
-    // rename about action
-    aboutAction().setText( "About Qedit" );
 
-    // need to modify closeAction signal for proper exit
-    closeAction().disconnect();
-    connect( &closeAction(), SIGNAL( triggered() ), SLOT( _exit() ) );
-
-    spellCheckConfigurationAction_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Spell Checking...", this );
-    connect( spellCheckConfigurationAction_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
-
-    documentClassesConfigurationAction_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Document Types...", this );
-    connect( documentClassesConfigurationAction_, SIGNAL( triggered() ), SLOT( _documentClassesConfiguration() ) );
-
-    monitoredFilesAction_ = new QAction( "Show Monitored Files", this );
-    monitoredFilesAction_->setToolTip( "Show monitored files" );
-    connect( monitoredFilesAction_, SIGNAL( triggered() ), SLOT( _showMonitoredFiles() ) );
-
-    configurationAction().setText( "Configure Qedit..." );
+    // actions
+    _installActions();
 
     // file list
     recentFiles_ = new XmlFileList( this );
@@ -156,6 +142,8 @@ bool Application::realizeWidget( void )
     // session file list
     sessionFiles_ = new XmlFileList( this );
     static_cast<XmlFileList*>( sessionFiles_ )->setTagName( FILERECORD::XML::SESSION_FILE_LIST );
+
+    _updateSessionActions();
 
     // class manager
     classManager_ = new DocumentClassManager();
@@ -280,6 +268,55 @@ void Application::_documentClassesConfiguration( void )
 
 }
 
+//___________________________________________________________
+void Application::_saveSession( void )
+{
+    Debug::Throw( "Application::_saveSession.\n" );
+    sessionFiles_->set( windowServer_->records() );
+    static_cast<XmlFileList*>(sessionFiles_)->write();
+    _updateSessionActions();
+}
+
+//___________________________________________________________
+void Application::_restoreSession( void )
+{
+    Debug::Throw( "Application::_restoreSession.\n" );
+    const FileRecord::List records( sessionFiles_->records() );
+    if( !( records.isEmpty() || !RestoreSessionDialog( qApp->activeWindow(), records ).exec() ) )
+    { windowServer_->open( records ); }
+}
+
+//___________________________________________________________
+void Application::_discardSession( void )
+{
+    Debug::Throw( "Application::_discardSession.\n" );
+    sessionFiles_->clear();
+    static_cast<XmlFileList*>(sessionFiles_)->write();
+    _updateSessionActions();
+}
+
+//___________________________________________________________
+void Application::_updateSessionActions( void )
+{
+
+    Debug::Throw( "Application::_updateSessionActions.\n" );
+    const bool empty( sessionFiles_->isEmpty() );
+    restoreSessionAction_->setEnabled( !empty );
+    discardSessionAction_->setEnabled( !empty );
+
+}
+
+//_____________________________________________
+void Application::_showMonitoredFiles( void )
+{
+
+    Debug::Throw( "Application::_showMonitoredFiles.\n" );
+    FileCheckDialog dialog( qApp->activeWindow() );
+    dialog.setFiles( fileCheck().fileSystemWatcher().files() );
+    dialog.exec();
+
+}
+
 //_______________________________________________
 void Application::_exit( void )
 {
@@ -289,21 +326,6 @@ void Application::_exit( void )
     qApp->quit();
 
 }
-
-//___________________________________________________________
-void Application::timerEvent( QTimerEvent* event )
-{
-    Debug::Throw( "Application::timerEvent.\n" );
-    if( event->timerId() == startupTimer_.timerId() )
-    {
-
-        startupTimer_.stop();
-        windowServer().readFilesFromArguments( _arguments() );
-        connect( qApp, SIGNAL( lastWindowClosed() ), qApp, SLOT( quit() ), Qt::UniqueConnection );
-
-    } else return QObject::timerEvent( event );
-}
-
 
 //________________________________________________
 bool Application::_processCommand( SERVER::ServerCommand command )
@@ -323,13 +345,58 @@ bool Application::_processCommand( SERVER::ServerCommand command )
 
 }
 
-//_____________________________________________
-void Application::_showMonitoredFiles( void )
+//___________________________________________________________
+void Application::timerEvent( QTimerEvent* event )
+{
+    Debug::Throw( "Application::timerEvent.\n" );
+    if( event->timerId() == startupTimer_.timerId() )
+    {
+
+        startupTimer_.stop();
+        windowServer().readFilesFromArguments( _arguments() );
+        connect( qApp, SIGNAL( lastWindowClosed() ), qApp, SLOT( quit() ), Qt::UniqueConnection );
+
+    } else return QObject::timerEvent( event );
+}
+
+//___________________________________________________________
+void Application::_installActions( void )
 {
 
-    Debug::Throw( "Application::_showMonitoredFiles.\n" );
-    FileCheckDialog dialog( qApp->activeWindow() );
-    dialog.setFiles( fileCheck().fileSystemWatcher().files() );
-    dialog.exec();
+    Debug::Throw( "Application::_installActions.\n" );
+
+    // rename actions
+    aboutAction().setText( "About Qedit" );
+    configurationAction().setText( "Configure Qedit..." );
+
+    // need to modify closeAction signal for proper exit
+    closeAction().disconnect();
+    connect( &closeAction(), SIGNAL( triggered() ), SLOT( _exit() ) );
+
+    // spell check
+    spellCheckConfigurationAction_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Spell Checking...", this );
+    connect( spellCheckConfigurationAction_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
+
+    // document classes
+    documentClassesConfigurationAction_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Document Types...", this );
+    connect( documentClassesConfigurationAction_, SIGNAL( triggered() ), SLOT( _documentClassesConfiguration() ) );
+
+    // save session
+    saveSessionAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "Save Current Session", this );
+    connect( saveSessionAction_, SIGNAL( triggered( void ) ), SLOT( _saveSession( void ) ) );
+
+    // restore session
+    restoreSessionAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Restore Saved Session", this );
+    connect( restoreSessionAction_, SIGNAL( triggered( void ) ), SLOT( _restoreSession( void ) ) );
+
+    // discard session
+    discardSessionAction_ = new QAction( IconEngine::get( ICONS::DELETE ), "Discard Saved Session", this );
+    connect( discardSessionAction_, SIGNAL( triggered( void ) ), SLOT( _discardSession( void ) ) );
+
+    // monitored files
+    monitoredFilesAction_ = new QAction( "Show Monitored Files", this );
+    monitoredFilesAction_->setToolTip( "Show monitored files" );
+    connect( monitoredFilesAction_, SIGNAL( triggered() ), SLOT( _showMonitoredFiles() ) );
+
 
 }

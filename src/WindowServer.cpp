@@ -318,6 +318,14 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
 
 }
 
+//______________________________________________________
+void WindowServer::open( const FileRecord::List& records )
+{
+    foreach( const FileRecord& record, records )
+    { _open( record ); }
+
+}
+
 //___________________________________________________________
 void WindowServer::multipleFileReplace( QList<File> files, TextSelection selection )
 {

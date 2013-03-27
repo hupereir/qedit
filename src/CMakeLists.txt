@@ -66,8 +66,9 @@ SET( qedit_SOURCES
   NewDocumentNameServer.cpp
   NewFileDialog.cpp
   PrintHelper.cpp
-  ReplaceDialog.cpp
   RecentFilesFrame.cpp
+  ReplaceDialog.cpp
+  RestoreSessionDialog.cpp
   SaveAllDialog.cpp
   SessionFilesFrame.cpp
   SessionFilesModel.cpp
@@ -101,6 +102,7 @@ SET( qedit_HEADERS
   ProgressDialog.h
   RecentFilesFrame.h
   ReplaceDialog.h
+  RestoreSessionDialog.h
   SaveAllDialog.h
   SessionFilesFrame.h
   SessionFilesModel.h

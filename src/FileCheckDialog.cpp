@@ -32,7 +32,7 @@
 
 //________________________________________________________
 FileCheckDialog::FileCheckDialog( QWidget* parent ):
-CustomDialog( parent, CloseButton )
+    CustomDialog( parent, CloseButton )
 {
     Debug::Throw( "FileCheckDialog::FileCheckDialog.\n" );
     setWindowTitle( tr( "Monitored Files - Qedit" ) );

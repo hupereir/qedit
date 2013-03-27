@@ -58,7 +58,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
     //! returns list of opened files
     /*! the active_window parameter is used to possibly tag files that belong to it */
-    FileRecord::List records( bool modified_only = false, QWidget* active_window = 0 ) const;
+    FileRecord::List records( bool modifiedOnly = false, QWidget* activeWindow = 0 ) const;
 
     //! close all windows gracefully
     /*! returns false if the opperation was cancelled. */
@@ -66,6 +66,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
     //! read file from arguments and open relevant windows
     void readFilesFromArguments( CommandLineArguments );
+
+    //! open all records in list
+    void open( const FileRecord::List& );
 
     //!@name actions
     //@{

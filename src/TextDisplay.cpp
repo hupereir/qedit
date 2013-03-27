@@ -227,9 +227,9 @@ void TextDisplay::installContextMenuActions( BaseContextMenu* menu, const bool& 
     Debug::Throw( "TextDisplay::installContextMenuActions.\n" );
 
     // see if tagged blocks are present
-    bool hasTags( hasTaggedBlocks() );
-    bool hasSelection( textCursor().hasSelection() );
-    bool currentBlockTagged( hasTags && isCurrentBlockTagged() );
+    const bool hasTags( hasTaggedBlocks() );
+    const bool hasSelection( textCursor().hasSelection() );
+    const bool currentBlockTagged( hasTags && isCurrentBlockTagged() );
 
     // retrieve default context menu
     // second argument is to remove un-necessary actions
@@ -932,7 +932,7 @@ void TextDisplay::clearTag( QTextBlock block, const int& tags )
 
 
 //_____________________________________________________________
-bool TextDisplay::isCurrentBlockTagged( void )
+bool TextDisplay::isCurrentBlockTagged( void ) const
 {
 
     Debug::Throw( "TextDisplay::isCurrentBlockTagged.\n" );
@@ -961,7 +961,7 @@ bool TextDisplay::isCurrentBlockTagged( void )
 }
 
 //_____________________________________________________________
-bool TextDisplay::hasTaggedBlocks( void )
+bool TextDisplay::hasTaggedBlocks( void ) const
 {
 
     Debug::Throw( "TextDisplay::hasTaggedBlocks.\n" );

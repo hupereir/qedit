@@ -97,6 +97,18 @@ class Application: public BaseApplication, public Counter
     QAction& documentClassesConfigurationAction( void ) const
     { return *documentClassesConfigurationAction_; }
 
+    //! save session
+    QAction& saveSessionAction( void ) const
+    { return *saveSessionAction_; }
+
+    //! restore session
+    QAction& restoreSessionAction( void ) const
+    { return *restoreSessionAction_; }
+
+    //! discard session
+    QAction& discardSessionAction( void ) const
+    { return *discardSessionAction_; }
+
     //! monitored files
     QAction& monitoredFilesAction( void ) const
     { return *monitoredFilesAction_; }
@@ -129,14 +141,26 @@ class Application: public BaseApplication, public Counter
     //! document classes configuration
     void _documentClassesConfiguration( void );
 
+    //! save session
+    void _saveSession( void );
+
+    //! restore session
+    void _restoreSession( void );
+
+    //! discard
+    void _discardSession( void );
+
+    //! update session actions
+    void _updateSessionActions( void );
+
+    //! monitored files
+    void _showMonitoredFiles( void );
+
     //! exit safely
     void _exit( void );
 
     //! process request from application manager
     virtual bool _processCommand( SERVER::ServerCommand );
-
-    //! monitored files
-    void _showMonitoredFiles( void );
 
     protected:
 
@@ -148,6 +172,9 @@ class Application: public BaseApplication, public Counter
     void timerEvent( QTimerEvent* );
 
     private:
+
+    //! install actions
+    void _installActions( void );
 
     //! recent files list
     FileList* recentFiles_;
@@ -182,6 +209,15 @@ class Application: public BaseApplication, public Counter
 
     //! document classes
     QAction* documentClassesConfigurationAction_;
+
+    //! save session
+    QAction* saveSessionAction_;
+
+    //! restore session
+    QAction* restoreSessionAction_;
+
+    //! discard session
+    QAction* discardSessionAction_;
 
     //! show monitored files
     QAction* monitoredFilesAction_;
