@@ -37,6 +37,7 @@
 #include "Util.h"
 #include "WindowServer.h"
 #include "XmlFileList.h"
+#include "XmlFileRecord.h"
 #include "XmlOptions.h"
 #include "XmlDef.h"
 
@@ -79,6 +80,7 @@ Application::Application( CommandLineArguments arguments ):
     BaseApplication( 0, arguments ),
     Counter( "Application" ),
     recentFiles_( 0 ),
+    sessionFiles_( 0 ),
     windowServer_( 0 ),
     classManager_( 0 ),
     autosave_( 0 ),
@@ -94,7 +96,6 @@ Application::~Application( void )
     if( fileCheck_ ) delete fileCheck_;
     if( autosave_ ) delete autosave_;
     if( windowServer_ ) delete windowServer_;
-    if( recentFiles_ ) delete recentFiles_;
 
 }
 
@@ -142,7 +143,6 @@ bool Application::realizeWidget( void )
     documentClassesConfigurationAction_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Document Types...", this );
     connect( documentClassesConfigurationAction_, SIGNAL( triggered() ), SLOT( _documentClassesConfiguration() ) );
 
-
     monitoredFilesAction_ = new QAction( "Show Monitored Files", this );
     monitoredFilesAction_->setToolTip( "Show monitored files" );
     connect( monitoredFilesAction_, SIGNAL( triggered() ), SLOT( _showMonitoredFiles() ) );
@@ -150,8 +150,12 @@ bool Application::realizeWidget( void )
     configurationAction().setText( "Configure Qedit..." );
 
     // file list
-    recentFiles_ = new XmlFileList();
+    recentFiles_ = new XmlFileList( this );
     recentFiles_->setCheck( true );
+
+    // session file list
+    sessionFiles_ = new XmlFileList( this );
+    static_cast<XmlFileList*>( sessionFiles_ )->setTagName( FILERECORD::XML::SESSION_FILE_LIST );
 
     // class manager
     classManager_ = new DocumentClassManager();

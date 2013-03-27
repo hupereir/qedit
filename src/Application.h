@@ -152,6 +152,9 @@ class Application: public BaseApplication, public Counter
     //! recent files list
     FileList* recentFiles_;
 
+    //! session files
+    FileList* sessionFiles_;
+
     //! window server
     WindowServer* windowServer_;
 
