@@ -164,6 +164,9 @@ void FileRecordToolTipWidget::setRecord( const FileRecord& record, const QIcon& 
         permissionsItem_->hide();
     }
 
+    minimumSizeHint();
+    sizeHint();
+
 }
 
 //_____________________________________________
