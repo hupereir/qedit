@@ -107,6 +107,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     if( buttons & Cancel )
     {
         buttonLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), tr( "Cancel" ), this ) );
+        button->setShortcut( Qt::Key_Escape );
         connect( button, SIGNAL( clicked() ), SLOT( _cancel() ) );
         button->setToolTip( tr( "Cancel current action" ) );
     }
