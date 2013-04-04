@@ -34,7 +34,7 @@ TextHighlight::TextHighlight( QTextDocument* document ):
     QSyntaxHighlighter( document ),
     Counter( "TextHighlight" ),
     highlightEnabled_( false ),
-    parenthesis_enabled_( false ),
+    parenthesisEnabled_( false ),
     blockDelimitersEnabled_( true )
 { Debug::Throw( "TextHighlight::TextHighlight.\n" ); }
 
@@ -52,59 +52,60 @@ void TextHighlight::highlightBlock( const QString& text )
 {
 
     // check if syntax highlighting is enabled
-    bool highlight_enabled( isHighlightEnabled()  && !patterns_.empty() );
+    bool highlightEnabled( isHighlightEnabled()  && !patterns_.empty() );
     #if WITH_ASPELL
-    highlight_enabled |= spellParser().isEnabled();
+    highlightEnabled |= spellParser().isEnabled();
     #endif
 
-    // retrieve active_id from last block state
-    int active_id( previousBlockState() );
+    // retrieve activeId from last block state
+    int activeId( previousBlockState() );
     PatternLocationSet locations;
 
     // try retrieve HighlightBlockData
-    bool need_update( true );
+    bool needUpdate( true );
 
     // try retrieve block data
     HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( currentBlockUserData() );
 
-    if( data ) {
+    if( data )
+    {
 
         // see if block needs update
-        need_update =
+        needUpdate =
             data->hasFlag( TextBlock::MODIFIED ) ||
-            (highlight_enabled && (locations = data->locations()).activeId().first != active_id );
+            (highlightEnabled && (locations = data->locations()).activeId().first != activeId );
 
     } else {
 
         // try retrieve data from parent type
-        TextBlockData* text_data = static_cast<TextBlockData*>( currentBlockUserData() );
-        data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData();
+        TextBlockData* textData = static_cast<TextBlockData*>( currentBlockUserData() );
+        data = textData ? new HighlightBlockData( textData ) : new HighlightBlockData();
         setCurrentBlockUserData( data );
 
     }
 
     // block delimiters parsing
-    if( isBlockDelimitersEnabled() && need_update )
+    if( isBlockDelimitersEnabled() && needUpdate )
     {
-        bool segment_changed( false );
+        bool segmentChanged( false );
         for( BlockDelimiter::List::const_iterator iter = blockDelimiters_.begin(); iter != blockDelimiters_.end(); ++iter )
-        { segment_changed |= data->delimiters().set( iter->id(), _delimiter( *iter, text ) ); }
-        if( segment_changed ) emit needSegmentUpdate();
+        { segmentChanged |= data->delimiters().set( iter->id(), _delimiter( *iter, text ) ); }
+        if( segmentChanged ) emit needSegmentUpdate();
     }
 
     // highlight patterns
-    if( need_update && highlight_enabled )
+    if( needUpdate && highlightEnabled )
     {
 
         // get new set of highlight locations
-        locations = _highlightLocationSet( text, active_id );
+        locations = _highlightLocationSet( text, activeId );
 
         // update data modification state and highlight pattern locations
         data->setFlag( TextBlock::MODIFIED, false );
         data->setLocations( locations );
 
         // store active id
-        /* this is disabled when  current block is collapsed */
+        /* this is disabled when current block is collapsed */
         if( !data->hasFlag( TextBlock::COLLAPSED ) ) setCurrentBlockState( locations.activeId().second );
         else setCurrentBlockState( 0 );
 
@@ -141,7 +142,7 @@ void TextHighlight::highlightBlock( const QString& text )
 }
 
 //_________________________________________________________
-PatternLocationSet TextHighlight::locationSet( const QString& text, const int& active_id )
+PatternLocationSet TextHighlight::locationSet( const QString& text, const int& activeId )
 {
 
     #if WITH_ASPELL
@@ -149,26 +150,26 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, const int& a
     else
     #endif
 
-    if( isHighlightEnabled()  && !patterns_.empty() ) return _highlightLocationSet( text, active_id );
+    if( isHighlightEnabled()  && !patterns_.empty() ) return _highlightLocationSet( text, activeId );
     else return PatternLocationSet();
 
 }
 
 //_________________________________________________________
-PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, const int& active_id ) const
+PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, const int& activeId ) const
 {
 
     // location list
     PatternLocationSet locations;
-    locations.activeId().first = active_id;
-    locations.activeId().second = active_id;
+    locations.activeId().first = activeId;
+    locations.activeId().second = activeId;
 
-    // check if pattern active_id is still active
-    if( active_id > 0 )
+    // check if pattern activeId is still active
+    if( activeId > 0 )
     {
 
         // look for matching pattern in list
-        HighlightPattern::List::const_iterator patternIter = std::find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( active_id ) );
+        HighlightPattern::List::const_iterator patternIter = std::find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( activeId ) );
         Q_ASSERT( patternIter != patterns_.end() );
 
         const HighlightPattern &pattern( *patternIter );
@@ -228,7 +229,7 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, co
 
         // do not reprocess active pattern (if any)
         // sincee it was already done
-        if( (int)pattern.id() == active_id ) continue;
+        if( (int)pattern.id() == activeId ) continue;
 
         // process pattern, store activity
         bool active = false;
@@ -348,20 +349,20 @@ void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
 {
 
     // initialize style
-    int pattern_id(-1);
-    QTextCharFormat current_format;
-    for( PatternLocationSet::const_iterator iter = locations.begin(); iter != locations.end(); ++iter )
+    int patternId(-1);
+    QTextCharFormat currentFormat;
+    foreach( const PatternLocation& location, locations )
     {
-        if( pattern_id != iter->id() )
+        if( patternId != location.id() )
         {
-            pattern_id = iter->id();
-            current_format = iter->format();
+            patternId = location.id();
+            currentFormat = location.format();
         }
 
-        QTextCharFormat format( current_format );
-        QTextCharFormat old( TextHighlight::format( iter->position() ) );
+        QTextCharFormat format( currentFormat );
+        QTextCharFormat old( TextHighlight::format( location.position() ) );
         if( old.hasProperty( QTextFormat::BackgroundBrush ) ) format.setBackground( old.background() );
-        setFormat( iter->position(), iter->length(), format );
+        setFormat( location.position(), location.length(), format );
 
     }
 

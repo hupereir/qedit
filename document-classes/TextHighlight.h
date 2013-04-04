@@ -94,13 +94,13 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
 
     //! parenthesis enabled
     const bool& isParenthesisEnabled( void ) const
-    { return parenthesis_enabled_; }
+    { return parenthesisEnabled_; }
 
     //! parenthesis enabled
     bool setParenthesisEnabled( const bool& state )
     {
-        if( parenthesis_enabled_ == state ) return false;
-        parenthesis_enabled_ = state;
+        if( parenthesisEnabled_ == state ) return false;
+        parenthesisEnabled_ = state;
         return true;
     }
 
@@ -207,7 +207,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     //@{
 
     //! parenthesis enabled
-    bool parenthesis_enabled_;
+    bool parenthesisEnabled_;
 
     //! text parenthesis
     TextParenthesis::List parenthesis_;

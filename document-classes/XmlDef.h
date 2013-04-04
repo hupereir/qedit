@@ -71,6 +71,9 @@ namespace XML {
     //! used to tell that highlight pattern is not case sensitive
     static const QString OPTION_NO_CASE( "no_case" );
 
+    //! used to tell that highlight pattern corresponds to commented text
+    static const QString OPTION_COMMENT( "comment" );
+
     //@}
 
     //!@name indentation pattern

@@ -57,9 +57,14 @@ class HighlightPattern: public Counter
         NO_INDENT = 1<<1,
 
         //! pattern matching should not be case sensitive
-        CASE_INSENSITIVE = 1<<2
+        CASE_INSENSITIVE = 1<<2,
+
+        //! current pattern corresponds to commented text
+        COMMENT = 1<<3
 
     };
+
+    Q_DECLARE_FLAGS( Flags, Flag );
 
     //! typedef for list of patterns
     typedef QList< HighlightPattern > List;
@@ -156,11 +161,11 @@ class HighlightPattern: public Counter
 
     //! parent id
     const int& parentId( void ) const
-    { return parent_id_; }
+    { return parentId_; }
 
     //! parent id
     void setParentId( const int& id )
-    { parent_id_ = id; }
+    { parentId_ = id; }
 
     //! text style
     const HighlightStyle& style( void ) const
@@ -218,15 +223,15 @@ class HighlightPattern: public Counter
     //@{
 
     //! flags
-    const unsigned int& flags( void ) const
+    const Flags& flags( void ) const
     { return flags_; }
 
     //! flags
-    void setFlags( const unsigned int& flags )
+    void setFlags( const Flags& flags )
     { flags_ = flags; }
 
     //! flags
-    bool flag( const Flag& flag ) const
+    bool hasFlag( const Flag& flag ) const
     { return flags_ & flag; }
 
     //! flags
@@ -335,7 +340,7 @@ class HighlightPattern: public Counter
     QString parent_;
 
     //! parent pattern id
-    int parent_id_;
+    int parentId_;
 
     //! style
     HighlightStyle style_;
@@ -347,7 +352,7 @@ class HighlightPattern: public Counter
     QString comments_;
 
     //! flags
-    unsigned int flags_;
+    Flags flags_;
 
     //!@name patterns
     //@{
@@ -370,5 +375,9 @@ class HighlightPattern: public Counter
     }
 
     //@}
+
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( HighlightPattern::Flags )
+
 #endif

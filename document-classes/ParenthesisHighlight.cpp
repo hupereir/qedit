@@ -21,21 +21,11 @@
 *
 *******************************************************************************/
 
-/*!
-\file ParenthesisHighlight.cpp
-\brief handles multiple clicks and timeout
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include <QTextDocument>
-
 #include "ParenthesisHighlight.h"
 #include "TextEditor.h"
 #include "HighlightBlockData.h"
 
-
+#include <QTextDocument>
 
 //_______________________________________________________________________
 ParenthesisHighlight::ParenthesisHighlight( TextEditor* parent ):

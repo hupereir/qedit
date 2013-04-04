@@ -144,7 +144,7 @@ class PatternLocation: public Counter
     { return parentId_; }
 
     //! flags
-    unsigned int flags( void ) const
+    HighlightPattern::Flags flags( void ) const
     { return flags_; }
 
     //! flags
@@ -191,7 +191,7 @@ class PatternLocation: public Counter
     int parentId_;
 
     //! pattern flags
-    unsigned int flags_;
+    HighlightPattern::Flags flags_;
 
     //! style font format
     FORMAT::TextFormatFlags format_;
