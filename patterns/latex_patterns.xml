@@ -31,7 +31,7 @@
   <style format="0" name="Math" color="#0000ff" />
 
 <!--Highlight patterns-->
-  <range_pattern style="Comment" parent="" name="Comment" >
+  <range_pattern options="comments" style="Comment" parent="" name="Comment" >
    <comments></comments>
    <begin>%</begin>
    <end>$</end>

@@ -48,7 +48,7 @@
    <begin>^\s*(?!(\s|XML_LT))</begin>
    <end>.(?=$)</end>
   </range_pattern>
-  <range_pattern options="span " style="Comment" parent="" name="Comment" >
+  <range_pattern options="span comments" style="Comment" parent="" name="Comment" >
    <comments></comments>
    <begin>XML_LT!--</begin>
    <end>--XML_GT</end>

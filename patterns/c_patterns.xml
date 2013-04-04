@@ -64,22 +64,22 @@
    <begin>^\s*#\s*(include|define|if(n?def)?|line|error|el(se|if)|endif|undef|pragma)\b</begin>
    <end>$</end>
   </range_pattern>
-  <range_pattern options="no_indent " style="Comment" parent="" name="Comment" >
+  <range_pattern options="no_indent comments" style="Comment" parent="" name="Comment" >
    <comments>begin of line C style comments</comments>
    <begin>^\s*//</begin>
    <end>$</end>
   </range_pattern>
-  <range_pattern style="Comment" parent="" name="Comment1" >
+  <range_pattern options="comments" style="Comment" parent="" name="Comment1" >
    <comments>middle of line C style comments</comments>
    <begin>//</begin>
    <end>$</end>
   </range_pattern>
-  <range_pattern options="span no_indent " style="Comment" parent="" name="Comment2" >
+  <range_pattern options="span no_indent comments" style="Comment" parent="" name="Comment2" >
    <comments>begin of line C++ style comments</comments>
    <begin>^\s*/\*</begin>
    <end>\*/</end>
   </range_pattern>
-  <range_pattern options="span " style="Comment" parent="" name="Comment2" >
+  <range_pattern options="span comments" style="Comment" parent="" name="Comment2" >
    <comments>middle of line C++ style comments</comments>
    <begin>/\*</begin>
    <end>\*/</end>

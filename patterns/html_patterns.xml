@@ -37,7 +37,7 @@
   <style format="0" name="Tag" color="#ff0000" />
 
 <!--Highlight patterns-->
-  <range_pattern options="span no_indent " style="Comment" parent="" name="Comment" >
+  <range_pattern options="span no_indent comments" style="Comment" parent="" name="Comment" >
    <comments></comments>
    <begin>XML_LT!--</begin>
    <end>--XML_GT</end>

@@ -32,7 +32,7 @@
   <style format="0" name="String" color="#00cd00" />
 
 <!--Highlight patterns-->
-  <range_pattern options="no_indent " style="Comment" parent="" name="Comment" >
+  <range_pattern options="no_indent comments" style="Comment" parent="" name="Comment" >
    <comments></comments>
    <begin>#|(dnl\s+)</begin>
    <end>$</end>

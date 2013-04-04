@@ -93,7 +93,7 @@
    <comments></comments>
    <keyword>\b(if|foreach|use|els(e|if)|push|sub|print|my|return|chdir|chomp|next|last|redo)\b</keyword>
   </keyword_pattern>
-  <range_pattern options="no_indent " style="Comment" parent="" name="Comment" >
+  <range_pattern options="no_indent comments" style="Comment" parent="" name="Comment" >
    <comments></comments>
    <begin>#</begin>
    <end>$</end>

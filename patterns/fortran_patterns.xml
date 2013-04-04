@@ -57,12 +57,12 @@
    <begin>^\s*(include)\b</begin>
    <end>$</end>
   </range_pattern>
-  <range_pattern options="no_indent no_case " style="Comment" parent="" name="Comment" >
+  <range_pattern options="no_indent no_case comments" style="Comment" parent="" name="Comment" >
    <comments></comments>
    <begin>^(c|C|\*)</begin>
    <end>$</end>
   </range_pattern>
-  <range_pattern style="Comment" parent="" name="Comment1" >
+  <range_pattern options="comments" style="Comment" parent="" name="Comment1" >
    <comments>middle of line fortran comments</comments>
    <begin>!</begin>
    <end>$</end>
