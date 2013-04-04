@@ -61,15 +61,15 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
     progress.show();
 
     // retrieve current cursor
-    current_cursor_ = _editor().textCursor();
+    current_cursor_ = editor_->textCursor();
 
     // retrieve the first valid block prior to the first
-    QTextBlock previous_block( blocks.front().previous() );
-    while( previous_block.isValid() &&  _editor().ignoreBlock( previous_block ) )
-    { previous_block = previous_block.previous(); }
+    QTextBlock previousBlock( blocks.front().previous() );
+    while( previousBlock.isValid() &&  editor_->ignoreBlock( previousBlock ) )
+    { previousBlock = previousBlock.previous(); }
 
     // get tabs in previous block
-    int previous_tabs( previous_block.isValid() ? _tabCount( previous_block ):0 );
+    int previous_tabs( previousBlock.isValid() ? _tabCount( previousBlock ):0 );
     int i(0);
     for( QList<QTextBlock>::iterator blockIter = blocks.begin(); blockIter != blocks.end(); ++blockIter, i++ )
     {
@@ -80,7 +80,7 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
         if (progress.wasCanceled()) break;
 
         int new_tabs( previous_tabs );
-        if( !previous_block.isValid() ) _decrement( *blockIter );
+        if( !previousBlock.isValid() ) _decrement( *blockIter );
         else {
 
             for( IndentPattern::List::iterator iter = patterns_.begin(); iter != patterns_.end(); ++iter )
@@ -103,15 +103,15 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
 
         }
 
-        if( !_editor().ignoreBlock( *blockIter ) )
+        if( !editor_->ignoreBlock( *blockIter ) )
         {
-            previous_block = *blockIter;
+            previousBlock = *blockIter;
             previous_tabs = new_tabs;
         }
 
     }
 
-    _editor().setTextCursor( current_cursor_ );
+    editor_->setTextCursor( current_cursor_ );
     return;
 
 }
@@ -123,26 +123,26 @@ void TextIndent::indent( QTextBlock block, bool new_line )
     if( !isEnabled() || patterns_.empty() ) return;
 
     // ignore "empty" blocks
-    // if( _editor().isEmptyBlock( block ) ) return;
+    // if( editor_->isEmptyBlock( block ) ) return;
 
     // store block and cursor
-    current_cursor_ = _editor().textCursor();
+    current_cursor_ = editor_->textCursor();
 
     // retrieve previous valid block to
     // determine the base indentation
-    QTextBlock previous_block( block.previous() );
-    while( previous_block.isValid() &&  _editor().ignoreBlock( previous_block ) )
-    { previous_block = previous_block.previous(); }
+    QTextBlock previousBlock( block.previous() );
+    while( previousBlock.isValid() &&  editor_->ignoreBlock( previousBlock ) )
+    { previousBlock = previousBlock.previous(); }
 
     // add base indentation if needed
     if( new_line && baseIndentation() ) _addBaseIndentation( block );
 
     // _decrement if first paragraph of text
-    if( !previous_block.isValid() ) _decrement( block );
+    if( !previousBlock.isValid() ) _decrement( block );
     else {
 
         // get previous paragraph tabs
-        int previous_tabs( _tabCount( previous_block ) );
+        int previous_tabs( _tabCount( previousBlock ) );
         int new_tabs = previous_tabs;
         for( IndentPattern::List::iterator iter = patterns_.begin(); iter != patterns_.end(); ++iter )
         {
@@ -169,7 +169,7 @@ void TextIndent::indent( QTextBlock block, bool new_line )
     }
 
     // restore cursor
-    _editor().setTextCursor( current_cursor_ );
+    editor_->setTextCursor( current_cursor_ );
     return;
 
 }
@@ -206,7 +206,7 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
                 local = local.previous();
                 decrement--;
                 true_decrement--;
-                while( local.isValid() && _editor().ignoreBlock( local ) )
+                while( local.isValid() && editor_->ignoreBlock( local ) )
                 {
                     local = local.previous();
                     true_decrement--;
@@ -250,11 +250,11 @@ int TextIndent::_tabCount( const QTextBlock& block )
     // both normal and emulated tabs are counted
     while( index < text.size() )
     {
-        if( text.mid( index, _editor().normalTabCharacter().size() ) == _editor().normalTabCharacter() )
-        { index += _editor().normalTabCharacter().size(); count++; }
+        if( text.mid( index, editor_->normalTabCharacter().size() ) == editor_->normalTabCharacter() )
+        { index += editor_->normalTabCharacter().size(); count++; }
 
-        else if( text.mid( index, _editor().emulatedTabCharacter().size() ) == _editor().emulatedTabCharacter() )
-        { index += _editor().emulatedTabCharacter().size(); count++; }
+        else if( text.mid( index, editor_->emulatedTabCharacter().size() ) == editor_->emulatedTabCharacter() )
+        { index += editor_->emulatedTabCharacter().size(); count++; }
 
         else break;
     }
@@ -327,7 +327,7 @@ void TextIndent::_increment( QTextBlock block, const unsigned int& count )
     QTextCursor cursor( block );
     cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
 
-    if( baseIndentation() && _editor().isEmptyBlock( block ) )
+    if( baseIndentation() && editor_->isEmptyBlock( block ) )
     {
         int position( current_cursor_.position() );
         int anchor( current_cursor_.anchor() );
@@ -350,11 +350,11 @@ void TextIndent::_increment( QTextBlock block, const unsigned int& count )
         int anchor( current_cursor_.anchor() );
 
         // insert tab characters
-        cursor.insertText( _editor().tabCharacter() );
+        cursor.insertText( editor_->tabCharacter() );
         if( block == current_cursor_.block() )
         {
-            current_cursor_.setPosition( anchor + _editor().tabCharacter().size(), QTextCursor::MoveAnchor );
-            current_cursor_.setPosition( position + _editor().tabCharacter().size(), QTextCursor::KeepAnchor );
+            current_cursor_.setPosition( anchor + editor_->tabCharacter().size(), QTextCursor::MoveAnchor );
+            current_cursor_.setPosition( position + editor_->tabCharacter().size(), QTextCursor::KeepAnchor );
         }
 
     }

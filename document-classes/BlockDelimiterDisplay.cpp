@@ -586,8 +586,8 @@ void BlockDelimiterDisplay::_updateSegments( void )
     segments_.clear();
 
     // keep track of collapsed blocks
-    bool has_collapsed_blocks( false );
-    bool has_expanded_blocks( false );
+    bool hasCollapsedBlocks( false );
+    bool hasExpandedBlocks( false );
     unsigned int collapsedBlockCount(0);
     collapsedBlocks_.clear();
 
@@ -597,7 +597,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
     {
 
         // keep track of all starting points
-        BlockDelimiterSegment::List start_points;
+        BlockDelimiterSegment::List startPoints;
         int blockCount(0);
         QTextDocument &document( *_editor().document() );
         for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), blockCount++ )
@@ -624,26 +624,26 @@ void BlockDelimiterDisplay::_updateSegments( void )
             if( !( collapsed || delimiter.begin() || delimiter.end() ) ) continue;
 
             // get block limits
-            BlockMarker block_begin( blockCount, block.position() );
-            BlockMarker block_end( blockCount, block.position()+block.length() - 1 );
+            BlockMarker blockBegin( blockCount, block.position() );
+            BlockMarker blockEnd( blockCount, block.position()+block.length() - 1 );
 
             // store "Ignore" state
             bool ignored = data->ignoreBlock();
             if( delimiter.end() )
             {
 
-                if( !(start_points.empty() ) && ignored == start_points.back().flag( BlockDelimiterSegment::IGNORED ) )
+                if( !(startPoints.empty() ) && ignored == startPoints.back().flag( BlockDelimiterSegment::IGNORED ) )
                 {
                     // if block is both begin and end, only the begin flag is to be drawn.
-                    if( delimiter.begin() ) start_points.back().setFlag( BlockDelimiterSegment::BEGIN_ONLY, true );
+                    if( delimiter.begin() ) startPoints.back().setFlag( BlockDelimiterSegment::BEGIN_ONLY, true );
 
                     // store new segment
-                    segments_ << start_points.back().setEnd( block_end );
+                    segments_ << startPoints.back().setEnd( blockEnd );
                 }
 
                 // pop
-                for( int i = 0; i < delimiter.end() && !start_points.empty() && ignored == start_points.back().flag( BlockDelimiterSegment::IGNORED ); i++ )
-                { start_points.removeLast(); }
+                for( int i = 0; i < delimiter.end() && !startPoints.empty() && ignored == startPoints.back().flag( BlockDelimiterSegment::IGNORED ); i++ )
+                { startPoints.removeLast(); }
 
             }
 
@@ -659,7 +659,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
                 // if block is collapsed, skip one start point (which is self contained)
                 //for( int i = (collapsed ? 1:0); i < delimiter.begin(); i++ )
                 for( int i = 0; i < delimiter.begin(); i++ )
-                { start_points << BlockDelimiterSegment( block_begin, block_end, flags ); }
+                { startPoints << BlockDelimiterSegment( blockBegin, blockEnd, flags ); }
 
                 if( collapsed ) {
 
@@ -671,10 +671,10 @@ void BlockDelimiterDisplay::_updateSegments( void )
                     }
 
                     // add one self contained segment
-                    has_collapsed_blocks = true;
-                    segments_ << BlockDelimiterSegment( block_begin, block_end, flags );
+                    hasCollapsedBlocks = true;
+                    segments_ << BlockDelimiterSegment( blockBegin, blockEnd, flags );
 
-                } else has_expanded_blocks = true;
+                } else hasExpandedBlocks = true;
 
             }
 
@@ -700,8 +700,8 @@ void BlockDelimiterDisplay::_updateSegments( void )
     std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
 
     // update expand all action
-    expandAllAction().setEnabled( has_collapsed_blocks );
-    _collapseAction().setEnabled( has_expanded_blocks );
+    expandAllAction().setEnabled( hasCollapsedBlocks );
+    _collapseAction().setEnabled( hasExpandedBlocks );
 
 }
 

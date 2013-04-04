@@ -1,5 +1,5 @@
-#ifndef _PatternLocation_h_
-#define _PatternLocation_h_
+#ifndef PatternLocation_h
+#define PatternLocation_h
 
 // $Id$
 
@@ -40,29 +40,14 @@ class PatternLocation: public Counter
     typedef QOrderedSetIterator<PatternLocation> SetIterator;
 
     //! construtor
-    PatternLocation( void ):
-        Counter( "PatternLocation" ),
-        id_( -1 ),
-        parentId_( -1 ),
-        flags_(0),
-        position_(-1),
-        length_(-1)
-    {}
+    PatternLocation( void );
 
     //! constructor
-    PatternLocation(
-        const HighlightPattern& parent,
-        const int& position,
-        const unsigned int& length ):
-        Counter( "PatternLocation" ),
-        id_( parent.id() ),
-        parentId_( parent.parentId() ),
-        flags_( parent.flags() ),
-        format_( parent.style().fontFormat() ),
-        color_( parent.style().color() ),
-        position_( position ),
-        length_( length )
-    { }
+    PatternLocation( const HighlightPattern&, int, int );
+
+    //! destructor
+    virtual ~PatternLocation( void )
+    {}
 
     //! less than operator
     bool operator < (const PatternLocation& location ) const
@@ -84,11 +69,11 @@ class PatternLocation: public Counter
     //@{
 
     //! position
-    const int& position( void ) const
+    int position( void ) const
     { return position_; }
 
     //! length
-    const unsigned int& length( void ) const
+    int length( void ) const
     { return length_; }
 
 
@@ -148,7 +133,7 @@ class PatternLocation: public Counter
     { return flags_; }
 
     //! flags
-    bool flag( const HighlightPattern::Flag& flag ) const
+    bool hasFlag( const HighlightPattern::Flag& flag ) const
     { return flags() & flag; }
 
     //@}
@@ -165,20 +150,7 @@ class PatternLocation: public Counter
     { return color_; }
 
     //! formated font
-    virtual QTextCharFormat format() const
-    {
-
-        QTextCharFormat out;
-
-        out.setFontWeight( (format_&FORMAT::Bold) ? QFont::Bold : QFont::Normal );
-        out.setFontItalic( format_&FORMAT::Italic );
-        out.setFontUnderline( format_&FORMAT::Underline );
-        out.setFontOverline( format_&FORMAT::Overline );
-        out.setFontStrikeOut( format_&FORMAT::Strike );
-        if( color_.isValid() ) out.setForeground( color_ );
-
-        return out;
-    }
+    virtual QTextCharFormat format() const;
 
     //}
 
@@ -209,42 +181,6 @@ class PatternLocation: public Counter
     friend QTextStream& operator << (QTextStream& out, const PatternLocation& location )
     {
         out << "id: " << location.id() << " parent id:" << location.parentId() << " position: " << location.position() << " length: " << location.length() ;
-        return out;
-    }
-
-};
-
-
-//! set of locations.
-class PatternLocationSet: public QOrderedSet<PatternLocation>
-{
-
-    public:
-
-    //! default constructor
-    PatternLocationSet():
-        activeId_( std::make_pair( 0, 0 ) )
-    {}
-
-    //! active id
-    const std::pair<int,int>& activeId( void ) const
-    { return activeId_; }
-
-    //! active id
-    std::pair<int,int>& activeId( void )
-    { return activeId_; }
-
-    private:
-
-    //! active patterns from previous and this paragraph
-    std::pair<int, int> activeId_;
-
-    //! dump
-    friend QTextStream& operator << (QTextStream& out, const PatternLocationSet& locations )
-    {
-        out << "[" << locations.activeId().first << "," << locations.activeId().second << "] ";
-        foreach( const PatternLocation& location, locations )
-        { out << location << endl; }
         return out;
     }
 

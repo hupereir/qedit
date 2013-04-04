@@ -118,10 +118,6 @@ class TextIndent: public QObject, public Counter
   //! increment paragraph with n tabs
   void _increment( QTextBlock block, const unsigned int& count = 1 );
 
-  //! editor
-  TextEditor& _editor( void ) const
-  { return *editor_; }
-
   //! enabled
   bool enabled_;
 

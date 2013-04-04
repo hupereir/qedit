@@ -2460,7 +2460,7 @@ void TextDisplay::_highlightParenthesis( void )
             {
 
                 // make sure comment status matches
-                if( isComment == locations.isCommented( position - iter->first().size() ) )
+                if( isComment == locations.isCommented( position ) )
                 {
                     if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->second() ) increment--;
                     else if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment++;
@@ -2497,7 +2497,7 @@ void TextDisplay::_highlightParenthesis( void )
     {
 
         // store commented state
-        const bool isComment( locations.isCommented( position - iter->first().size() ) );
+        const bool isComment( locations.isCommented( position - iter->second().size() ) );
 
         int increment( 0 );
         position -= (iter->second().size() );
@@ -2510,7 +2510,7 @@ void TextDisplay::_highlightParenthesis( void )
             while( position >= 0 && (position = iter->regexp().lastIndexIn( text.left(position) ) ) >= 0 )
             {
 
-                if( isComment == locations.isCommented( position - iter->first().size() ) )
+                if( isComment == locations.isCommented( position ) )
                 {
 
                     if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment--;

@@ -43,6 +43,8 @@ SET( document_classes_SOURCES
   HighlightStyle.cpp
   IndentPattern.cpp
   ParenthesisHighlight.cpp
+  PatternLocation.cpp
+  PatternLocationSet.cpp
   TextHighlight.cpp
   TextIndent.cpp
   TextMacro.cpp
