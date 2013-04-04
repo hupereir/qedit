@@ -2429,9 +2429,10 @@ void TextDisplay::_highlightParenthesis( void )
     // store local position in block
     int position(cursor.position()-block.position());
 
-    // retrieve text block data
-    HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-    if( !data ) return;
+    // get current PatternLocation set
+    PatternLocationSet locations;
+    if( HighlightBlockData *data = dynamic_cast<HighlightBlockData*>( block.userData() ) )
+    { locations = data->locations(); }
 
     QString text( block.text() );
     const TextParenthesis::List& parenthesis( textHighlight().parenthesis() );
@@ -2444,6 +2445,10 @@ void TextDisplay::_highlightParenthesis( void )
 
     if( iter != parenthesis.end() )
     {
+
+        // store commented state
+        const bool isComment( locations.isCommented( position - iter->first().size() ) );
+
         int increment( 0 );
         while( block.isValid() && !found )
         {
@@ -2454,13 +2459,18 @@ void TextDisplay::_highlightParenthesis( void )
             while( (position = iter->regexp().indexIn( text, position ) ) >= 0 )
             {
 
-                if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->second() ) increment--;
-                else if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment++;
-
-                if( increment < 0 )
+                // make sure comment status matches
+                if( isComment == locations.isCommented( position - iter->first().size() ) )
                 {
-                    found = true;
-                    break;
+                    if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->second() ) increment--;
+                    else if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment++;
+
+                    if( increment < 0 )
+                    {
+                        found = true;
+                        break;
+                    }
+
                 }
 
                 position += iter->regexp().matchedLength();
@@ -2469,7 +2479,11 @@ void TextDisplay::_highlightParenthesis( void )
 
             if( !found )
             {
+                // goto next block and update location set
                 block = block.next();
+                if( HighlightBlockData *data = dynamic_cast<HighlightBlockData*>( block.userData() ) ) locations = data->locations();
+                else locations.clear();
+
                 position = 0;
             }
         }
@@ -2482,6 +2496,9 @@ void TextDisplay::_highlightParenthesis( void )
         TextParenthesis::SecondElementFTor( text.left( position ) ) )) == parenthesis.end()  ) )
     {
 
+        // store commented state
+        const bool isComment( locations.isCommented( position - iter->first().size() ) );
+
         int increment( 0 );
         position -= (iter->second().size() );
         while( block.isValid() && !found )
@@ -2493,20 +2510,28 @@ void TextDisplay::_highlightParenthesis( void )
             while( position >= 0 && (position = iter->regexp().lastIndexIn( text.left(position) ) ) >= 0 )
             {
 
-                if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment--;
-                else if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->second() ) increment++;
-
-                if( increment < 0 )
+                if( isComment == locations.isCommented( position - iter->first().size() ) )
                 {
-                    found = true;
-                    break;
+
+                    if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment--;
+                    else if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->second() ) increment++;
+
+                    if( increment < 0 )
+                    {
+                        found = true;
+                        break;
+                    }
+
                 }
 
             }
 
             if( !found )
             {
+                // goto previous block and update locationSet
                 block = block.previous();
+                if( HighlightBlockData *data = dynamic_cast<HighlightBlockData*>( block.userData() ) ) locations = data->locations();
+                else locations.clear();
                 if( block.isValid() ) position = block.text().length() ;
             }
 

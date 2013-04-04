@@ -23,7 +23,7 @@
 #include "HtmlHelper.h"
 
 #include "HtmlTextNode.h"
-#include "PatternLocation.h"
+#include "PatternLocationSet.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 

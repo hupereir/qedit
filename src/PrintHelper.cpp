@@ -22,7 +22,7 @@
 
 #include "PrintHelper.h"
 
-#include "PatternLocation.h"
+#include "PatternLocationSet.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 
