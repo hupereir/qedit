@@ -65,7 +65,7 @@ class BlockDelimiterSegment: public Counter
     };
 
     //! flags
-    bool flag( const Flag& flag ) const
+    bool hasFlag( const Flag& flag ) const
     { return flags_ & flag; }
 
     //! flags
@@ -80,7 +80,7 @@ class BlockDelimiterSegment: public Counter
 
     //! validity
     bool isValid( void ) const
-    { return ( begin().isValid() && ( flag( BEGIN_ONLY ) || end().isValid() ) ); }
+    { return ( begin().isValid() && ( hasFlag( BEGIN_ONLY ) || end().isValid() ) ); }
 
     //!@name geometry
     //@{
@@ -178,7 +178,7 @@ class BlockDelimiterSegment: public Counter
         public:
 
         bool operator() ( const BlockDelimiterSegment& segment ) const
-        { return segment.flag( COLLAPSED ); }
+        { return segment.hasFlag( COLLAPSED ); }
 
     };
 

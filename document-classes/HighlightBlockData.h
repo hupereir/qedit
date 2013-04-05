@@ -112,8 +112,8 @@ class HighlightBlockData: public TextBlockData
     { return delimiters_; }
 
     //! delimiters
-    TextBlock::Delimiter::List& delimiters( void )
-    { return delimiters_; }
+    bool setDelimiter( int id, TextBlock::Delimiter delimiter )
+    { return delimiters_.set( id, delimiter ); }
 
     //@}
 
@@ -145,10 +145,7 @@ class HighlightBlockData: public TextBlockData
     //! parenthesis length
     int parenthesisLength_;
 
-    //!@name block delimiters
-    //@{
-
-    //! delimiter
+    //! block delimiters
     TextBlock::Delimiter::List delimiters_;
 
     //@}

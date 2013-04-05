@@ -74,7 +74,7 @@ namespace TextBlock
         public:
 
         //! constructor
-        Delimiter( const int& begin = 0, const int& end = 0 ):
+        Delimiter( int begin = 0, int end = 0 ):
             begin_( begin ),
             end_( end )
         {}

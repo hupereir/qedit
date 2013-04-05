@@ -62,7 +62,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     virtual void highlightBlock( const QString& text );
 
     //! retrieve highlight location for given text
-    PatternLocationSet locationSet( const QString& text, const int& active_id );
+    PatternLocationSet locationSet( const QString& text, int active_id );
 
     //!@name highlight patterns
     //@{
@@ -184,7 +184,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     //@{
 
     //! retrieve highlight location for given text
-    PatternLocationSet _highlightLocationSet( const QString& text, const int& active_id ) const;
+    PatternLocationSet _highlightLocationSet( const QString&, int active_id ) const;
 
     //! retrieve highlight location for given text
     PatternLocationSet _spellCheckLocationSet( const QString& text, HighlightBlockData* data = 0 );
@@ -193,7 +193,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     void _applyPatterns( const PatternLocationSet& locations );
 
     //! calculate delimiter object
-    TextBlock::Delimiter _delimiter( const BlockDelimiter&, const QString& text ) const;
+    TextBlock::Delimiter _delimiter( HighlightBlockData*, const BlockDelimiter&, const QString& text ) const;
 
     //! true if highlight is enabled
     bool highlightEnabled_;

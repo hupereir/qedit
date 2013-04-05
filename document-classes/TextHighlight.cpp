@@ -84,15 +84,6 @@ void TextHighlight::highlightBlock( const QString& text )
 
     }
 
-    // block delimiters parsing
-    if( isBlockDelimitersEnabled() && needUpdate )
-    {
-        bool segmentChanged( false );
-        for( BlockDelimiter::List::const_iterator iter = blockDelimiters_.begin(); iter != blockDelimiters_.end(); ++iter )
-        { segmentChanged |= data->delimiters().set( iter->id(), _delimiter( *iter, text ) ); }
-        if( segmentChanged ) emit needSegmentUpdate();
-    }
-
     // highlight patterns
     if( needUpdate && highlightEnabled )
     {
@@ -109,6 +100,15 @@ void TextHighlight::highlightBlock( const QString& text )
         if( !data->hasFlag( TextBlock::COLLAPSED ) ) setCurrentBlockState( locations.activeId().second );
         else setCurrentBlockState( 0 );
 
+    }
+
+    // block delimiters parsing
+    if( isBlockDelimitersEnabled() && needUpdate )
+    {
+        bool segmentChanged( false );
+        for( BlockDelimiter::List::const_iterator iter = blockDelimiters_.begin(); iter != blockDelimiters_.end(); ++iter )
+        { segmentChanged |= data->setDelimiter( iter->id(), _delimiter( data, *iter, text ) ); }
+        if( segmentChanged ) emit needSegmentUpdate();
     }
 
     // before try applying the found locations see if automatic spellcheck is on
@@ -142,7 +142,7 @@ void TextHighlight::highlightBlock( const QString& text )
 }
 
 //_________________________________________________________
-PatternLocationSet TextHighlight::locationSet( const QString& text, const int& activeId )
+PatternLocationSet TextHighlight::locationSet( const QString& text, int activeId )
 {
 
     #if WITH_ASPELL
@@ -156,7 +156,7 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, const int& a
 }
 
 //_________________________________________________________
-PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, const int& activeId ) const
+PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, int activeId ) const
 {
 
     // location list
@@ -370,22 +370,28 @@ void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
 }
 
 //_________________________________________________________
-TextBlock::Delimiter TextHighlight::_delimiter( const BlockDelimiter& delimiter, const QString& text ) const
+TextBlock::Delimiter TextHighlight::_delimiter( HighlightBlockData* data, const BlockDelimiter& delimiter, const QString& text ) const
 {
 
     TextBlock::Delimiter out;
     int position = 0;
     while( (position = delimiter.regexp().indexIn( text, position ) ) >= 0 )
     {
-        QString matchedString( text.mid( position, delimiter.regexp().matchedLength() ) );
-        if( matchedString.contains( delimiter.first() ) ) out.begin()++;
-        else if( matchedString.contains( delimiter.second() ) )
+
+        if( !data->locations().isCommented( position ) )
         {
-            if( out.begin() > 0 ) out.begin()--;
-            else out.end()++;
+            QString matchedString( text.mid( position, delimiter.regexp().matchedLength() ) );
+            if( matchedString.contains( delimiter.first() ) ) out.begin()++;
+            else if( matchedString.contains( delimiter.second() ) )
+            {
+                if( out.begin() > 0 ) out.begin()--;
+                else out.end()++;
+            }
+
         }
 
         position++;
+
     }
 
     return out;
