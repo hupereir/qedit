@@ -28,18 +28,28 @@ namespace TextBlock
 {
 
     //_______________________________________________
-    Delimiter Delimiter::operator + (const Delimiter& delimiter ) const
+    Delimiter Delimiter::operator + (const Delimiter& other ) const
     {
         Debug::Throw( "Delimiter::operator +=\n" );
         Delimiter out = *this;
+        out.pair_ = out.pair_ + other.pair_;
+        out.commentedPair_ = out.commentedPair_ + other.commentedPair_;
+        return out;
+    }
 
-        for( int i=0; i < delimiter.end(); i++ )
+    //_______________________________________________
+    Delimiter::Pair Delimiter::Pair::operator + (const Delimiter::Pair& other ) const
+    {
+        Debug::Throw( "Delimiter::operator +=\n" );
+        Delimiter::Pair out = *this;
+
+        for( int i=0; i < other.end_; i++ )
         {
             if( out.begin_ > 0 ) out.begin_--;
             else out.end_++;
         }
 
-        out.begin_ += delimiter.begin();
+        out.begin_ += other.begin_;
         return out;
 
     }

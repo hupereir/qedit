@@ -39,15 +39,12 @@ namespace TextBlock
 
         //! constructor
         Delimiter( void ):
-            Counter( "TextBlock::Delimiter" ),
-            begin_( 0 ),
-            end_( 0 )
+            Counter( "TextBlock::Delimiter" )
         {}
-
 
         //! equal to operator
         bool operator == (const Delimiter& other ) const
-        { return begin_ == other.begin_ && end_ == other.end_; }
+        { return pair_ == other.pair_ && commentedPair_ == other.commentedPair_; }
 
         //! different operator
         bool operator != (const Delimiter& other ) const
@@ -57,12 +54,12 @@ namespace TextBlock
         //@{
 
         //! number of times the block is of type "begin"
-        const int& begin( void ) const
-        { return begin_; }
+        int begin( bool isCommented = false ) const
+        { return (isCommented ? commentedPair_:pair_).begin_; }
 
         //! number of times the block is of type "end"
-        const int& end( void ) const
-        { return end_; }
+        int end( bool isCommented = false ) const
+        { return (isCommented ? commentedPair_:pair_).end_; }
 
         //@}
 
@@ -77,15 +74,12 @@ namespace TextBlock
         { return *this = *this + delimiter; }
 
         //! increment
-        void increment( void )
-        { begin_++; }
+        void increment( bool isCommented )
+        { (isCommented ? commentedPair_:pair_).increment(); }
 
         //! decrement
-        void decrement( void )
-        {
-            if( begin_ > 0 ) begin_--;
-            else end_++;
-        }
+        void decrement( bool isCommented )
+        { (isCommented ? commentedPair_:pair_).decrement(); }
 
         //@}
 
@@ -128,16 +122,57 @@ namespace TextBlock
 
         private:
 
-        //! number of times the block is of type "begin"
-        int begin_;
+        class Pair
+        {
 
-        //! number of times the block is of type "end"
-        int end_;
+            public:
+
+            //! constructor
+            Pair( void ):
+                begin_( 0 ),
+                end_( 0 )
+            {}
+
+            //! equal to
+            bool operator == (const Pair& other ) const
+            { return begin_ == other.begin_ && end_ == other.end_; }
+
+            //! sum operator (warning: this is not a reflexive operator)
+            Pair operator + ( const Pair& ) const;
+
+            //! increment
+            void increment( void )
+            { begin_++; }
+
+            //! decrement
+            void decrement( void )
+            {
+                if( begin_ > 0 ) begin_--;
+                else end_++;
+            }
+
+            //! number of times the block is of type "begin"
+            int begin_;
+
+            //! number of times the block is of type "end"
+            int end_;
+
+        };
+
+        Pair pair_;
+        Pair commentedPair_;
+
+        //! streamer
+        friend QTextStream& operator << ( QTextStream& out, const Delimiter::Pair pair )
+        {
+            out << "(" << pair.begin_ << "," << pair.end_ << ")";
+            return out;
+        }
 
         //! streamer
         friend QTextStream& operator << ( QTextStream& out, const Delimiter& delimiter )
         {
-            out << "(" << delimiter.begin_ << "," << delimiter.end_ << ")";
+            out << delimiter.pair_ << " " << delimiter.commentedPair_;
             return out;
         }
 
