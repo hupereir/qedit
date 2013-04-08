@@ -63,7 +63,8 @@ namespace TextBlock
         Delimiter::List::const_iterator second = list.begin();
         for(; first != out.end(); first++ )
         {
-            if( second != list.end() ) {
+            if( second != list.end() )
+            {
                 *first += *second;
                 second ++;
             }

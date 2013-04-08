@@ -56,7 +56,6 @@ class BlockDelimiterDisplay: public QObject, public Counter
 
     //! destructor
     virtual ~BlockDelimiterDisplay();
-
     //! block delimiters
     bool setBlockDelimiters( const BlockDelimiter::List& delimiters )
     {
@@ -145,6 +144,9 @@ class BlockDelimiterDisplay: public QObject, public Counter
 
     //! update segments
     void _updateSegments( void );
+
+    //! update segments
+    void _updateSegments( bool );
 
     //! offest
     const int& _offset( void ) const

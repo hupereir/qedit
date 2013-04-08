@@ -584,6 +584,17 @@ void BlockDelimiterDisplay::_updateSegments( void )
     needUpdate_ = false;
     segments_.clear();
 
+    _updateSegments( false );
+
+    // for now only update non commented blocks.
+    // _updateSegments( true );
+
+}
+
+//________________________________________________________
+void BlockDelimiterDisplay::_updateSegments( bool isCommented )
+{
+
     // keep track of collapsed blocks
     bool hasCollapsedBlocks( false );
     bool hasExpandedBlocks( false );
@@ -620,7 +631,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
             }
 
             // check if something is to be done
-            if( !( collapsed || delimiter.begin() || delimiter.end() ) ) continue;
+            if( !( collapsed || delimiter.begin( isCommented ) || delimiter.end( isCommented ) ) ) continue;
 
             // get block limits
             BlockMarker blockBegin( blockCount, block.position() );
@@ -628,26 +639,26 @@ void BlockDelimiterDisplay::_updateSegments( void )
 
             // store "Ignore" state
             bool ignored = data->ignoreBlock();
-            if( delimiter.end() )
+            if( delimiter.end( isCommented ) )
             {
 
                 if( !(startPoints.empty() ) && ignored == startPoints.back().hasFlag( BlockDelimiterSegment::IGNORED ) )
                 {
                     // if block is both begin and end, only the begin flag is to be drawn.
-                    if( delimiter.begin() ) startPoints.back().setFlag( BlockDelimiterSegment::BEGIN_ONLY, true );
+                    if( delimiter.begin( isCommented ) ) startPoints.back().setFlag( BlockDelimiterSegment::BEGIN_ONLY, true );
 
                     // store new segment
                     segments_ << startPoints.back().setEnd( blockEnd );
                 }
 
                 // pop
-                for( int i = 0; i < delimiter.end() && !startPoints.empty() && ignored == startPoints.back().hasFlag( BlockDelimiterSegment::IGNORED ); i++ )
+                for( int i = 0; i < delimiter.end( isCommented ) && !startPoints.empty() && ignored == startPoints.back().hasFlag( BlockDelimiterSegment::IGNORED ); i++ )
                 { startPoints.removeLast(); }
 
             }
 
             // add segment
-            if( collapsed || delimiter.begin() )
+            if( collapsed || delimiter.begin( isCommented ) )
             {
 
                 // prepare segment flags
@@ -656,7 +667,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
                 if( collapsed ) flags |= BlockDelimiterSegment::COLLAPSED;
 
                 // if block is collapsed, skip one start point (which is self contained)
-                for( int i = 0; i < delimiter.begin(); i++ )
+                for( int i = 0; i < delimiter.begin( isCommented ); i++ )
                 { startPoints << BlockDelimiterSegment( blockBegin, blockEnd, flags ); }
 
                 if( collapsed )
@@ -779,6 +790,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
     {}
 
     // check if second block is also of "Begin" type
+    // NOTE: I am not completely sure about what this is for
     if( block != out.first )
     {
         HighlightBlockData *secondData( dynamic_cast<HighlightBlockData*>( block.userData() ) );
