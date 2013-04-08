@@ -193,7 +193,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     void _applyPatterns( const PatternLocationSet& locations );
 
     //! calculate delimiter object
-    TextBlock::Delimiter _delimiter( HighlightBlockData*, const BlockDelimiter&, const QString& text ) const;
+    bool _updateDelimiter( HighlightBlockData*, const BlockDelimiter&, const QString& ) const;
 
     //! true if highlight is enabled
     bool highlightEnabled_;

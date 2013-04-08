@@ -112,7 +112,7 @@ class HighlightBlockData: public TextBlockData
     { return delimiters_; }
 
     //! delimiters
-    bool setDelimiter( int id, TextBlock::Delimiter delimiter )
+    bool setDelimiters( int id, const TextBlock::Delimiter& delimiter )
     { return delimiters_.set( id, delimiter ); }
 
     //@}

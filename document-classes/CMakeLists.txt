@@ -38,13 +38,13 @@ SET( document_classes_SOURCES
   DocumentClassManagerDialog.cpp
   DocumentClassModel.cpp
   HighlightBlockData.cpp
-  HighlightBlockFlags.cpp
   HighlightPattern.cpp
   HighlightStyle.cpp
   IndentPattern.cpp
   ParenthesisHighlight.cpp
   PatternLocation.cpp
   PatternLocationSet.cpp
+  TextBlockDelimiter.cpp
   TextHighlight.cpp
   TextIndent.cpp
   TextMacro.cpp

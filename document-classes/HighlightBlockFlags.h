@@ -26,10 +26,7 @@
 
 #include "TextBlockFlags.h"
 
-#include <QVector>
-
 #include <QTextFormat>
-#include <QTextStream>
 
 namespace TextBlock
 {
@@ -65,100 +62,6 @@ namespace TextBlock
 
         Collapsed = QTextFormat::UserProperty | (1<<0),
         CollapsedData = QTextFormat::UserProperty | (1<<1)
-
-    };
-
-    //! counts how many times a block appears as a begin and a end block
-    class Delimiter
-    {
-        public:
-
-        //! constructor
-        Delimiter( int begin = 0, int end = 0 ):
-            begin_( begin ),
-            end_( end )
-        {}
-
-        //! different operator
-        bool operator != (const Delimiter& delimiter ) const
-        { return begin_ != delimiter.begin_ || end_ != delimiter.end_; }
-
-        //! equal to operator
-        bool operator == (const Delimiter& delimiter ) const
-        { return begin_ == delimiter.begin_ && end_ == delimiter.end_; }
-
-        //! sum operator (warning: this is not a reflexive operator)
-        Delimiter operator + ( const Delimiter& ) const;
-
-        //! sum operator (warning: this is not a reflexive operator)
-        Delimiter& operator += ( const Delimiter& delimiter )
-        {
-            *this = *this + delimiter;
-            return *this;
-        }
-
-        //! number of times the block is of type "begin"
-        const int& begin( void ) const
-        { return begin_; }
-
-        //! number of times the block is of type "begin"
-        int& begin( void )
-        { return begin_; }
-
-        //! number of times the block is of type "end"
-        const int& end( void ) const
-        { return end_; }
-
-        //! number of times the block is of type "end"
-        int& end( void )
-        { return end_; }
-
-        //! delimiter list
-        class List: public QVector<Delimiter>
-        {
-            public:
-
-            //! sum operator (warning: this is not a reflexive operator)
-            List operator + (const List& list ) const;
-
-            //! sum operator (warning: this is not a reflexive operator)
-            List& operator += (const List& list )
-            {
-                *this = *this + list;
-                return *this;
-            }
-
-            //! set value at index i. Resize if needed
-            bool set( int, const TextBlock::Delimiter& );
-
-            //! get value at index i
-            TextBlock::Delimiter get( int ) const;
-
-            //! streamer
-            friend QTextStream& operator << ( QTextStream& out, const List& list )
-            {
-                foreach( const Delimiter& delimiter, list )
-                { out << " " << delimiter; }
-                return out;
-            }
-
-        };
-
-
-        private:
-
-        //! number of times the block is of type "begin"
-        int begin_;
-
-        //! number of times the block is of type "end"
-        int end_;
-
-        //! streamer
-        friend QTextStream& operator << ( QTextStream& out, const Delimiter& delimiter )
-        {
-            out << "(" << delimiter.begin_ << "," << delimiter.end_ << ")";
-            return out;
-        }
 
     };
 

@@ -21,16 +21,8 @@
 *
 *******************************************************************************/
 
-/*!
-  \file HighlightBlockFlags.cpp
-  \brief handles block tags
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
+#include "TextBlockDelimiter.h"
 #include "Debug.h"
-#include "HighlightBlockFlags.h"
 
 namespace TextBlock
 {

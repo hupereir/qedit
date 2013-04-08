@@ -107,13 +107,13 @@ void TextHighlight::highlightBlock( const QString& text )
     {
         bool segmentChanged( false );
         for( BlockDelimiter::List::const_iterator iter = blockDelimiters_.begin(); iter != blockDelimiters_.end(); ++iter )
-        { segmentChanged |= data->setDelimiter( iter->id(), _delimiter( data, *iter, text ) ); }
+        { segmentChanged |= _updateDelimiter( data, *iter, text ); }
+
         if( segmentChanged ) emit needSegmentUpdate();
     }
 
     // before try applying the found locations see if automatic spellcheck is on
     #if WITH_ASPELL
-
     if( spellParser().isEnabled() )
     {
 
@@ -123,7 +123,6 @@ void TextHighlight::highlightBlock( const QString& text )
         setCurrentBlockState( -1 );
 
     }
-
     #endif
 
     // apply new location set
@@ -370,23 +369,20 @@ void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
 }
 
 //_________________________________________________________
-TextBlock::Delimiter TextHighlight::_delimiter( HighlightBlockData* data, const BlockDelimiter& delimiter, const QString& text ) const
+bool TextHighlight::_updateDelimiter( HighlightBlockData* data, const BlockDelimiter& delimiter, const QString& text ) const
 {
 
-    TextBlock::Delimiter out;
+    TextBlock::Delimiter counter;
     int position = 0;
     while( (position = delimiter.regexp().indexIn( text, position ) ) >= 0 )
     {
 
         if( !data->locations().isCommented( position ) )
         {
+
             QString matchedString( text.mid( position, delimiter.regexp().matchedLength() ) );
-            if( matchedString.contains( delimiter.first() ) ) out.begin()++;
-            else if( matchedString.contains( delimiter.second() ) )
-            {
-                if( out.begin() > 0 ) out.begin()--;
-                else out.end()++;
-            }
+            if( matchedString.contains( delimiter.first() ) ) counter.increment();
+            else if( matchedString.contains( delimiter.second() ) ) counter.decrement();
 
         }
 
@@ -394,6 +390,5 @@ TextBlock::Delimiter TextHighlight::_delimiter( HighlightBlockData* data, const 
 
     }
 
-    return out;
-
+    return data->setDelimiters( delimiter.id(), counter );
 }

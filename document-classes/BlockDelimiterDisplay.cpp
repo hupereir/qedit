@@ -176,11 +176,11 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     }
 
     // end tick
-    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
+    foreach( const BlockDelimiterSegment& segment, segments_ )
     {
 
-        if( iter->end().isValid() && iter->end().cursor() < lastIndex && iter->end().cursor() >= firstIndex && !( iter->hasFlag( BlockDelimiterSegment::BEGIN_ONLY ) || iter->empty() ) )
-        { painter.drawLine( halfWidth_, iter->end().position(), width_, iter->end().position() ); }
+        if( segment.end().isValid() && segment.end().cursor() < lastIndex && segment.end().cursor() >= firstIndex && !( segment.hasFlag( BlockDelimiterSegment::BEGIN_ONLY ) || segment.empty() ) )
+        { painter.drawLine( halfWidth_, segment.end().position(), width_, segment.end().position() ); }
 
     }
 
@@ -463,17 +463,17 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
     }
 
     // now remove all text stored in cursor list
-    for( CursorList::const_iterator iter = cursors.begin(); iter != cursors.end(); ++iter )
+    foreach( const QTextCursor& savedCursor, cursors )
     {
-        cursor.setPosition( iter->anchor() );
-        cursor.setPosition( iter->position(), QTextCursor::KeepAnchor );
+        cursor.setPosition( savedCursor.anchor() );
+        cursor.setPosition( savedCursor.position(), QTextCursor::KeepAnchor );
         cursor.removeSelectedText();
     }
 
     cursor.endEditBlock();
 
     return;
-
+    //}
 }
 
 //________________________________________________________
@@ -582,7 +582,6 @@ void BlockDelimiterDisplay::_updateSegments( void )
 
     if( !needUpdate_ ) return;
     needUpdate_ = false;
-
     segments_.clear();
 
     // keep track of collapsed blocks
@@ -711,7 +710,6 @@ void BlockDelimiterDisplay::_updateSegmentMarkers( void )
 
     QTextBlock block( _editor().document()->begin() );
     unsigned int id = 0;
-    foreach( const BlockDelimiterSegment& segment, segments_ )
     for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
     {
         _updateMarker( block, id, iter->begin(), BEGIN );
@@ -783,14 +781,13 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
     // check if second block is also of "Begin" type
     if( block != out.first )
     {
-        HighlightBlockData *second_data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-        if( second_data )
+        HighlightBlockData *secondData( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+        if( secondData )
         {
 
-            const TextBlock::Delimiter::List& delimiters( second_data->delimiters() );
-            for( TextBlock::Delimiter::List::const_iterator iter = delimiters.begin(); iter != delimiters.end(); ++iter )
+            foreach( const TextBlock::Delimiter counter, secondData->delimiters() )
             {
-                if( !iter->begin() ) continue;
+                if( !counter.begin() ) continue;
                 block = block.previous();
                 id--;
                 break;
@@ -836,7 +833,7 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
 
     // retrieve collapsed block data
     Q_ASSERT( blockFormat.hasProperty( TextBlock::CollapsedData ) );
-    CollapsedBlockData collapsed_data( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
+    CollapsedBlockData collapsedData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
 
     // mark contents dirty to force update of current block
     data->setFlag( TextBlock::MODIFIED, true );
@@ -853,30 +850,30 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
     blockFormat.setProperty( TextBlock::Collapsed, false );
     cursor.setBlockFormat( blockFormat );
 
-    for( CollapsedBlockData::List::const_iterator iter = collapsed_data.children().begin(); iter != collapsed_data.children().end(); ++iter )
+    foreach( const CollapsedBlockData& data, collapsedData.children() )
     {
 
         cursor.insertBlock();
-        cursor.insertText( iter->text() );
+        cursor.insertText( data.text() );
 
         // update text block format
         QTextBlockFormat blockFormat( cursor.blockFormat() );
-        blockFormat.setProperty( TextBlock::Collapsed, iter->collapsed() );
+        blockFormat.setProperty( TextBlock::Collapsed, data.collapsed() );
 
-        if( iter->collapsed() ) {
+        if( data.collapsed() ) {
             QVariant variant;
-            variant.setValue( *iter );
+            variant.setValue( data );
             blockFormat.setProperty( TextBlock::CollapsedData, variant );
         }
 
         cursor.setBlockFormat( blockFormat );
 
         // also expands block if collapsed and recursive is set to true
-        if( iter->collapsed() && recursive )
+        if( data.collapsed() && recursive )
         {
-            HighlightBlockData *current_data =  new HighlightBlockData();
-            cursor.block().setUserData( current_data );
-            _expand( cursor.block(), current_data, true );
+            HighlightBlockData *curentData =  new HighlightBlockData();
+            cursor.block().setUserData( curentData );
+            _expand( cursor.block(), curentData, true );
         }
 
     }
@@ -886,7 +883,7 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
 }
 
 //________________________________________________________________________________________
-void BlockDelimiterDisplay::_collapse( const QTextBlock& first_block, const QTextBlock& second_block, HighlightBlockData* data ) const
+void BlockDelimiterDisplay::_collapse( const QTextBlock& first_block, const QTextBlock& secondBlock, HighlightBlockData* data ) const
 {
 
     Debug::Throw( "BlockDelimiterDisplay::_collapse.\n" );
@@ -899,7 +896,7 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& first_block, const QTex
     blockFormat.setProperty( TextBlock::Collapsed, true );
 
     QVariant variant;
-    variant.setValue( _collapsedData( first_block, second_block ) );
+    variant.setValue( _collapsedData( first_block, secondBlock ) );
     blockFormat.setProperty( TextBlock::CollapsedData, variant );
 
     // start edition
@@ -907,12 +904,17 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& first_block, const QTex
     cursor.setBlockFormat( blockFormat );
 
     cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );
-    if( second_block.isValid() ) {
+    if( secondBlock.isValid() )
+    {
 
-        if( second_block.next().isValid() ) cursor.setPosition( second_block.position() + second_block.length(), QTextCursor::KeepAnchor );
-        else cursor.setPosition( second_block.position() + second_block.length() - 1, QTextCursor::KeepAnchor );
+        if( secondBlock.next().isValid() ) cursor.setPosition( secondBlock.position() + secondBlock.length(), QTextCursor::KeepAnchor );
+        else cursor.setPosition( secondBlock.position() + secondBlock.length() - 1, QTextCursor::KeepAnchor );
 
-    } else { cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor ); }
+    } else {
+
+        cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor );
+
+    }
 
     cursor.removeSelectedText();
     cursor.endEditBlock();
@@ -927,39 +929,39 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& first_block, const QTex
 }
 
 //________________________________________________________________________________________
-CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& first_block, const QTextBlock& second_block ) const
+CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& first_block, const QTextBlock& secondBlock ) const
 {
 
-    CollapsedBlockData collapsed_data;
-    TextBlock::Delimiter::List collapsed_delimiters;
-    if( second_block != first_block )
+    CollapsedBlockData collapsedData;
+    TextBlock::Delimiter::List collapsedDelimiters;
+    if( secondBlock != first_block )
     {
         for( QTextBlock current = first_block.next(); current.isValid(); current = current.next() )
         {
 
             // create collapse block data
-            CollapsedBlockData current_collapsed_data( current );
+            CollapsedBlockData currentCollapsedData( current );
 
             // update collapsed delimiters
             // retrieve the TextBlockData associated to this block
-            HighlightBlockData* current_data( dynamic_cast<HighlightBlockData*>( current.userData() ) );
-            if( current_data ) { collapsed_delimiters += current_data->delimiters(); }
+            HighlightBlockData* curentData( dynamic_cast<HighlightBlockData*>( current.userData() ) );
+            if( curentData ) { collapsedDelimiters += curentData->delimiters(); }
 
             // also append possible collapsed delimiters
-            collapsed_delimiters += current_collapsed_data.delimiters();
+            collapsedDelimiters += currentCollapsedData.delimiters();
 
             // append collapsed data
-            collapsed_data.children() << current_collapsed_data;
+            collapsedData.children() << currentCollapsedData;
 
-            if( current == second_block ) break;
+            if( current == secondBlock ) break;
 
         }
 
     }
 
     // store collapsed delimiters in collapsed data
-    collapsed_data.delimiters() = collapsed_delimiters;
-    return collapsed_data;
+    collapsedData.setDelimiters( collapsedDelimiters );
+    return collapsedData;
 }
 
 //_________________________________________________________________________
