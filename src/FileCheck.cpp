@@ -132,7 +132,7 @@ void FileCheck::timerEvent( QTimerEvent* event )
                     { continue; }
 
                     (*displayIter)->setFileCheckData( data );
-                    if( !( display->isActive() && display->QTextEdit::hasFocus() ) )
+                    if( !( display->isActive() && display->BaseEditor::hasFocus() ) )
                     { continue; }
 
                     // retrieve associated TextView

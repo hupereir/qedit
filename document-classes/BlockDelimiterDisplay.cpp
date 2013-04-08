@@ -312,7 +312,7 @@ void BlockDelimiterDisplay::_contentsChanged( void )
 
     // if text is wrapped, line number data needs update at next update
     /* note: this could be further optimized if one retrieve the position at which the contents changed occured */
-    if( _editor().lineWrapMode() != QTextEdit::NoWrap )
+    if( _editor().lineWrapMode() != TextEditor::NoWrap )
     {
         needUpdate_ = true;
         _synchronizeBlockData();
@@ -326,7 +326,7 @@ void BlockDelimiterDisplay::_blockCountChanged( void )
 
     // nothing to be done if wrap mode is not NoWrap, because
     // it is handled in the _contentsChanged slot.
-    if( _editor().lineWrapMode() == QTextEdit::NoWrap )
+    if( _editor().lineWrapMode() == TextEditor::NoWrap )
     {
         needUpdate_ = true;
         _synchronizeBlockData();
@@ -895,27 +895,27 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
 }
 
 //________________________________________________________________________________________
-void BlockDelimiterDisplay::_collapse( const QTextBlock& first_block, const QTextBlock& secondBlock, HighlightBlockData* data ) const
+void BlockDelimiterDisplay::_collapse( const QTextBlock& firstBlock, const QTextBlock& secondBlock, HighlightBlockData* data ) const
 {
 
     Debug::Throw( "BlockDelimiterDisplay::_collapse.\n" );
 
     // create cursor and move at end of block
-    QTextCursor cursor( first_block );
+    QTextCursor cursor( firstBlock );
 
     // update block format
     QTextBlockFormat blockFormat( cursor.blockFormat() );
     blockFormat.setProperty( TextBlock::Collapsed, true );
 
     QVariant variant;
-    variant.setValue( _collapsedData( first_block, secondBlock ) );
+    variant.setValue( _collapsedData( firstBlock, secondBlock ) );
     blockFormat.setProperty( TextBlock::CollapsedData, variant );
 
     // start edition
     cursor.beginEditBlock();
     cursor.setBlockFormat( blockFormat );
 
-    cursor.setPosition( first_block.position() + first_block.length(), QTextCursor::MoveAnchor );
+    cursor.setPosition( firstBlock.position() + firstBlock.length(), QTextCursor::MoveAnchor );
     if( secondBlock.isValid() )
     {
 
@@ -936,19 +936,19 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& first_block, const QTex
     data->setFlag( TextBlock::COLLAPSED, true );
 
     // mark contents dirty to force update
-    _editor().document()->markContentsDirty(first_block.position(), first_block.length()-1);
+    _editor().document()->markContentsDirty(firstBlock.position(), firstBlock.length()-1);
 
 }
 
 //________________________________________________________________________________________
-CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& first_block, const QTextBlock& secondBlock ) const
+CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& firstBlock, const QTextBlock& secondBlock ) const
 {
 
     CollapsedBlockData collapsedData;
     TextBlock::Delimiter::List collapsedDelimiters;
-    if( secondBlock != first_block )
+    if( secondBlock != firstBlock )
     {
-        for( QTextBlock current = first_block.next(); current.isValid(); current = current.next() )
+        for( QTextBlock current = firstBlock.next(); current.isValid(); current = current.next() )
         {
 
             // create collapse block data

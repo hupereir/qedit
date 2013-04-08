@@ -114,7 +114,9 @@ TextDisplay::TextDisplay( QWidget* parent ):
     Debug::Throw("TextDisplay::TextDisplay.\n" );
 
     // disable rich text
+    #ifndef QT_USE_PLAIN_TEXT_EDIT
     setAcceptRichText( false );
+    #endif
 
     // text highlight
     textHighlight_ = new TextHighlight( document() );
