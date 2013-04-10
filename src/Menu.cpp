@@ -132,8 +132,8 @@ Menu::Menu( QWidget* parent ):
     menu = addMenu( tr( "Help" ) );
     menu->addAction( &help->displayAction() );
     menu->addSeparator();
-    menu->addAction( &application.aboutQtAction() );
     menu->addAction( &application.aboutAction() );
+    menu->addAction( &application.aboutQtAction() );
 
     // debug menu
     menu->addSeparator();
