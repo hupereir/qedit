@@ -24,24 +24,23 @@
 *
 *******************************************************************************/
 
+#include "BaseFileIconProvider.h"
 #include "Counter.h"
 #include "FileRecord.h"
 #include "MimeTypeIconProvider.h"
 
-#include <QObject>
 #include <QHash>
 #include <QIcon>
 
 //! icon provider for file records
-class FileIconProvider : public QObject, public Counter
+class FileIconProvider : public BaseFileIconProvider
 {
 
     public:
 
     //! constructor
     FileIconProvider( QObject* parent = 0x0 ):
-        QObject( parent ),
-        Counter( "FileIconProvider" )
+        BaseFileIconProvider( parent )
     {}
 
     //! destructor

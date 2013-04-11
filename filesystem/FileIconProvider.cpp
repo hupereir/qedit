@@ -34,6 +34,20 @@ const QIcon& FileIconProvider::icon( const FileRecord& fileRecord )
 
     // get relevant file info type
     int type( fileRecord.flags() );
+    if( type & FileSystemModel::Folder )
+    {
+
+        // copy to file info and get base class icon
+        BaseFileInfo fileInfo( fileRecord.file() );
+        fileInfo.setIsFolder();
+        if( type & FileSystemModel::Link ) fileInfo.setIsLink();
+
+        // try from base class
+        const QIcon& icon( BaseFileIconProvider::icon( fileInfo ) );
+        if( !icon.isNull() ) return icon;
+
+    }
+
     if( type & FileSystemModel::Navigator ) type = FileSystemModel::Navigator;
     else type &= FileSystemModel::Any;
 

@@ -31,7 +31,9 @@
 #include "IconEngine.h"
 #include "XmlOptions.h"
 
-#include <algorithm>
+#include <QApplication>
+#include <QFont>
+#include <QPalette>
 
 //__________________________________________________________________
 FileSystemModel::FileSystemModel( QObject* parent ):
@@ -74,41 +76,79 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
     if( !index.isValid() ) return QVariant();
 
     // return text associated to file and column
-    if( role == Qt::DisplayRole ) {
+    switch( role )
+    {
 
-        switch( index.column() )
+        case Qt::DisplayRole:
         {
 
-            case FILE:
+            switch( index.column() )
             {
-                // store local nmae
-                const FileRecord& record( get(index) );
-                return useLocalNames_ ? record.file().localName(): record.file();
+
+                case FILE:
+                {
+                    // store local nmae
+                    const FileRecord& record( get(index) );
+                    return useLocalNames_ ? record.file().localName(): record.file();
+                }
+
+                case SIZE:
+                {
+                    const FileRecord& record( get(index) );
+                    if( record.hasFlag( Document ) ) return QString( record.property( sizePropertyId_ ) );
+                    else return QVariant();
+                }
+
+                case TIME:
+                {
+                    const FileRecord& record( get(index) );
+                    if( record.hasFlag( Document ) ) return QString( TimeStamp( record.time() ).toString() );
+                    else return QVariant();
+                }
+
+                default:
+                return QVariant();
+
             }
 
-            case SIZE:
-            {
-                const FileRecord& record( get(index) );
-                if( record.hasFlag( Document ) ) return QString( record.property( sizePropertyId_ ) );
-                else return QVariant();
-            }
-
-            case TIME:
-            {
-                const FileRecord& record( get(index) );
-                if( record.hasFlag( Document ) ) return QString( TimeStamp( record.time() ).toString() );
-                else return QVariant();
-            }
-
-            default:
-            return QVariant();
-
+            break;
         }
 
-    } else if( showIcons_ && role == Qt::DecorationRole && index.column() == FILE ) {
+        case Qt::DecorationRole:
+        if( showIcons_ && index.column() == FILE )
+        {
 
-        const FileRecord& record( get(index) );
-        return iconProvider_->icon( record );
+            const FileRecord& record( get(index) );
+            return iconProvider_->icon( record );
+        } else break;
+
+        case Qt::ForegroundRole:
+        {
+            const FileRecord& record( get(index) );
+            if( record.hasFlag( Hidden ) && ( this->flags( index )&Qt::ItemIsEnabled ) )
+            {
+                QColor color( QPalette().color( QPalette::Text ) );
+                color.setAlphaF( 0.7 );
+                return color;
+            }
+
+            break;
+        }
+
+        case Qt::FontRole:
+        {
+            const FileRecord& record( get(index) );
+            if( record.hasFlag( Link ) )
+            {
+                QFont font( QApplication::font() );
+                font.setItalic( true );
+                return font;
+            }
+
+            break;
+        }
+
+        default: break;
 
     }
 
