@@ -51,15 +51,25 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
     virtual ~AutoSaveThread( void )
     { Debug::Throw( "AutoSaveThread::~AutoSaveThread.\n" ); }
 
-    //! file
-    void setFile( const File& );
+    //!@name accessors
+    //@{
 
     //! file
     const File& file( void ) const
     { return file_; }
 
+    //@}
+
+    //!@name modifiers
+    //@{
+
+    //! file
+    void setFile( const File& );
+
     //! set content
     void setContents( const QString& );
+
+    //@}
 
     //! create backup file name from file
     static File autoSaveName( const File& );

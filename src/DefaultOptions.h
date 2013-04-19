@@ -110,9 +110,6 @@ void installDefaultOptions( void )
     XmlOptions::get().set<bool>( "NAVIGATION_TOOLBAR", true );
     XmlOptions::get().set<bool>( "SPLIT_TOOLBAR", true );
 
-    XmlOptions::get().set<bool>( "AUTOSAVE", true );
-    XmlOptions::get().set<int>( "AUTOSAVE_INTERVAL", 20 );
-
     XmlOptions::get().set<int>( "HIGHLIGHT_PARAGRAPH", 1 );
     XmlOptions::get().set<BASE::Color>( "HIGHLIGHT_COLOR", QColor( "#FFFDD4" ) );
 
@@ -140,10 +137,12 @@ void installDefaultOptions( void )
     XmlOptions::get().set<int>( "FILE_SELECTION_LIST_MASK", (1<<FileRecordModel::FILE)|(1<<FileRecordModel::TIME) );
     XmlOptions::get().set<int>( "CLOSE_FILES_LIST_MASK", (1<<FileRecordModel::FILE)|(1<<FileRecordModel::TIME) );
 
-    // run-time non recordable options
-    // default value for autosave directory
+    // autosave
     XmlOptions::get().setRaw( "AUTOSAVE_PATH", Util::tmp() );
+    XmlOptions::get().set<bool>( "AUTOSAVE", true );
+    XmlOptions::get().set<int>( "AUTOSAVE_INTERVAL", 20 );
 
+    // run-time non recordable options
     XmlOptions::get().set( "USER_NAME", Option( Util::user(), Option::None ) );
     XmlOptions::get().set( "APP_NAME", Option( "QEDIT", Option::None ) );
     XmlOptions::get().set( "RC_FILE", Option( File(".qeditrc").addPath(Util::home()), Option::None ) );

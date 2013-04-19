@@ -22,16 +22,16 @@
 *
 *******************************************************************************/
 
+#include "AutoSaveThread.h"
+#include "XmlOptions.h"
+#include "Str.h"
+#include "Util.h"
+
 #include <QApplication>
 #include <QDir>
 #include <QFile>
 #include <QLabel>
 #include <QTextStream>
-
-#include "AutoSaveThread.h"
-#include "XmlOptions.h"
-#include "Str.h"
-#include "Util.h"
 
 //_______________________________________________________________
 void AutoSaveThread::setFile( const File& file )
