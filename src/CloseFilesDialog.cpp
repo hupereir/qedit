@@ -38,6 +38,7 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
 
     Debug::Throw( "CloseFilesDialog::CloseFilesDialog.\n" );
     setWindowTitle( tr( "Close Files - Qedit" ) );
+    setOptionName( "CLOSE_FILES_DIALOG" );
 
     Q_ASSERT( !files.empty() );
 
