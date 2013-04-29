@@ -78,14 +78,6 @@ class RecentFilesFrame: public QWidget, public Counter
     //! enter event
     void enterEvent( QEvent* );
 
-    //! recent files
-    FileList& _recentFiles( void ) const
-    { return *recentFiles_; }
-
-    //! model
-    FileRecordModel& _model( void )
-    { return model_; }
-
     private slots:
 
     //! update action
@@ -123,6 +115,9 @@ class RecentFilesFrame: public QWidget, public Counter
     { return *openAction_; }
 
     //@}
+
+    //! true if actions are locked (to disable signal emission during update)
+    bool actionsLocked_;
 
     //! recent files
     FileList* recentFiles_;
