@@ -90,7 +90,7 @@ Menu::Menu( QWidget* parent ):
     menu->addSeparator();
     menu->addAction( &application.closeAction() );
 
-    // recent files menu current-file needs to be updated prior to the menu to be shown
+    // recent files menu current file needs to be updated prior to the menu to be shown
     // this is performed every time the "file menu" is shown.
     connect( menu, SIGNAL( aboutToShow() ), SLOT( _updateRecentFilesMenu() ) );
 
@@ -166,7 +166,8 @@ void Menu::updateMacroMenu( void )
 void Menu::_updateRecentFilesMenu( void )
 {
     Debug::Throw( "Menu::_updateRecentFilesMenu.\n" );
-    recentFilesMenu_->setCurrentFile( static_cast<MainWindow*>( Menu::window() )->activeDisplay().file() );
+    const TextDisplay& display( static_cast<MainWindow*>( window() )->activeDisplay() );
+    if( !display.isNewDocument() ) recentFilesMenu_->setCurrentFile( display.file() );
 }
 
 //_______________________________________________
@@ -188,7 +189,6 @@ void Menu::_updateEditMenu( void )
 
     editMenu_->addAction( &display.upperCaseAction() );
     editMenu_->addAction( &display.lowerCaseAction() );
-
 }
 
 //_______________________________________________
