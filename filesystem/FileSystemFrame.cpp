@@ -88,6 +88,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     toolbar->addAction( previousDirectoryAction_ );
     toolbar->addAction( nextDirectoryAction_ );
     toolbar->addAction( homeDirectoryAction_ );
+    toolbar->addAction( workingDirectoryAction_ );
     toolbar->addAction( reloadAction_ );
 
     // file list
@@ -157,10 +158,10 @@ void FileSystemFrame::setPath( File path, bool forced )
 }
 
 //_________________________________________________________
-void FileSystemFrame::setHome( const File& path )
+void FileSystemFrame::setWorkingPath( const File& path )
 {
     Debug::Throw( "FileSystemFrame::setHome.\n" );
-    homePath_ = path;
+    workingPath_ = path;
     if( pathEditor_->path().isEmpty() ) setPath( path );
 }
 
@@ -364,7 +365,7 @@ void FileSystemFrame::_toggleShowHiddenFiles( bool state )
 //______________________________________________________
 void FileSystemFrame::_reload( void )
 {
-    Debug::Throw( "FileSystemFrame::_homeDirectory.\n" );
+    Debug::Throw( "FileSystemFrame::_reload.\n" );
     setPath( pathEditor_->path(), true );
 }
 
@@ -492,9 +493,14 @@ void FileSystemFrame::_installActions( void )
     // home directory
     addAction( homeDirectoryAction_ = new QAction( IconEngine::get( ICONS::HOME ), tr( "Home" ), this ) );
     connect( homeDirectoryAction_, SIGNAL( triggered() ), SLOT( _homeDirectory() ) );
-    homeDirectoryAction_->setToolTip( tr( "Change path to current file working directory" ) );
+    homeDirectoryAction_->setToolTip( tr( "Change path to current user home directory" ) );
 
-    // home directory
+    // working directory
+    addAction( workingDirectoryAction_ = new QAction( IconEngine::get( ICONS::FIND ), tr( "Working Directory" ), this ) );
+    connect( workingDirectoryAction_, SIGNAL( triggered() ), SLOT( _workingDirectory() ) );
+    workingDirectoryAction_->setToolTip( tr( "Change path to current file working directory" ) );
+
+    // reload
     addAction( reloadAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), tr( "Reload" ), this ) );
     connect( reloadAction_, SIGNAL( triggered() ), SLOT( _reload() ) );
     reloadAction_->setToolTip( tr( "Reload current directory contents" ) );

@@ -706,7 +706,7 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
         {
             navigationFrame().sessionFilesFrame().select( activeDisplay().file() );
             navigationFrame().recentFilesFrame().select( activeDisplay().file() );
-            navigationFrame().fileSystemFrame().setHome( activeDisplay().workingDirectory() );
+            navigationFrame().fileSystemFrame().setWorkingPath( activeDisplay().workingDirectory() );
         }
 
         Debug::Throw() << "MainWindow::_update - navigation frame done. "<< endl;

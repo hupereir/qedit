@@ -50,8 +50,8 @@ class FileSystemFrame: public QWidget, public Counter
     ~FileSystemFrame( void )
     { Debug::Throw( "FileSystemFrame::~FileSystemFrame.\n" ); }
 
-    //! home path
-    void setHome( const File& path );
+    //! working path
+    void setWorkingPath( const File& );
 
     //! clear list, add navigator button
     void clear();
@@ -95,6 +95,10 @@ class FileSystemFrame: public QWidget, public Counter
     //! update actions
     void _updateActions( void );
 
+    //! working directory
+    void _workingDirectory( void )
+    { setPath( workingPath_ ); }
+    
     //! home directory
     void _homeDirectory( void )
     { setPath( homePath_ ); }
@@ -155,6 +159,9 @@ class FileSystemFrame: public QWidget, public Counter
     //! home directory action
     QAction* homeDirectoryAction_;
 
+    //! working directory action
+    QAction* workingDirectoryAction_;
+    
     //! reload
     QAction* reloadAction_;
 
@@ -175,6 +182,9 @@ class FileSystemFrame: public QWidget, public Counter
     //! home directory
     File homePath_;
 
+    //! working directory
+    File workingPath_;
+    
     //! file system watcher
     QFileSystemWatcher fileSystemWatcher_;
 
