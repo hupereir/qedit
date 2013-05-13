@@ -244,13 +244,13 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
             TextBlockPair blocks( _findBlocks( _selectedSegment(), data ) );
 
             // check if block is collapsed
-            QTextBlockFormat blockFormat( blocks.first.blockFormat() );
+            const QTextBlockFormat blockFormat( blocks.first.blockFormat() );
             if( blockFormat.boolProperty( TextBlock::Collapsed ) )
             {
 
-                bool cursor_visible( _editor().isCursorVisible() );
+                bool cursorVisible( _editor().isCursorVisible() );
                 _expand( blocks.first, data );
-                if( cursor_visible ) _editor().ensureCursorVisible();
+                if( cursorVisible ) _editor().ensureCursorVisible();
 
             } else {
 
@@ -377,10 +377,10 @@ void BlockDelimiterDisplay::_expandCurrentBlock( void )
         TextBlockPair blocks( _findBlocks( _selectedSegment(), data ) );
 
         // collapse
-        bool cursor_visible( _editor().isCursorVisible() );
+        bool cursorVisible( _editor().isCursorVisible() );
         _editor().clearBoxSelection();
         _expand( blocks.first, data );
-        if( cursor_visible ) _editor().ensureCursorVisible();
+        if( cursorVisible ) _editor().ensureCursorVisible();
 
     }
 
@@ -486,7 +486,7 @@ void BlockDelimiterDisplay::expandAllBlocks( void )
     _updateSegments();
     _updateSegmentMarkers();
 
-    bool cursor_visible( _editor().isCursorVisible() );
+    bool cursorVisible( _editor().isCursorVisible() );
     QTextDocument &document( *_editor().document() );
     QTextCursor cursor( document.begin() );
     cursor.beginEditBlock();
@@ -505,7 +505,7 @@ void BlockDelimiterDisplay::expandAllBlocks( void )
     cursor.endEditBlock();
 
     // set cursor position
-    if( cursor_visible ) _editor().ensureCursorVisible();
+    if( cursorVisible ) _editor().ensureCursorVisible();
 
     return;
 
