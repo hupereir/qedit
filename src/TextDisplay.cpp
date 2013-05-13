@@ -2431,8 +2431,8 @@ void TextDisplay::_highlightParenthesis( void )
 
     // get current PatternLocation set
     PatternLocationSet locations;
-    if( HighlightBlockData *data = dynamic_cast<HighlightBlockData*>( block.userData() ) )
-    { locations = data->locations(); }
+    HighlightBlockData *data = dynamic_cast<HighlightBlockData*>( block.userData() );
+    if( data ) locations = data->locations();
 
     QString text( block.text() );
     const TextParenthesis::List& parenthesis( textHighlight().parenthesis() );
@@ -2454,6 +2454,17 @@ void TextDisplay::_highlightParenthesis( void )
         {
             // retrieve block text
             QString text( block.text() );
+
+            // append collapsed data if any
+            if( data && data->hasFlag( TextBlock::COLLAPSED ) )
+            {
+
+                QTextBlockFormat blockFormat( block.blockFormat() );
+                Q_ASSERT( blockFormat.hasProperty( TextBlock::CollapsedData ) );
+                CollapsedBlockData collapsedBlockData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
+                text += collapsedBlockData.toPlainText();
+
+            }
 
             // parse text
             while( (position = iter->regexp().indexIn( text, position ) ) >= 0 )
@@ -2481,7 +2492,8 @@ void TextDisplay::_highlightParenthesis( void )
             {
                 // goto next block and update location set
                 block = block.next();
-                if( HighlightBlockData *data = dynamic_cast<HighlightBlockData*>( block.userData() ) ) locations = data->locations();
+                data = dynamic_cast<HighlightBlockData*>( block.userData() );
+                if( data ) locations = data->locations();
                 else locations.clear();
 
                 position = 0;
@@ -2505,6 +2517,19 @@ void TextDisplay::_highlightParenthesis( void )
         {
             // retrieve block text
             QString text( block.text() );
+
+            // append collapsed data if any
+            if( data && data->hasFlag( TextBlock::COLLAPSED ) )
+            {
+
+                QTextBlockFormat blockFormat( block.blockFormat() );
+                Q_ASSERT( blockFormat.hasProperty( TextBlock::CollapsedData ) );
+                CollapsedBlockData collapsedBlockData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
+                text += collapsedBlockData.toPlainText();
+
+            }
+
+            if( position < 0 ) position = text.length();
 
             // parse text
             while( position >= 0 && (position = iter->regexp().lastIndexIn( text.left(position) ) ) >= 0 )
@@ -2530,15 +2555,17 @@ void TextDisplay::_highlightParenthesis( void )
             {
                 // goto previous block and update locationSet
                 block = block.previous();
-                if( HighlightBlockData *data = dynamic_cast<HighlightBlockData*>( block.userData() ) ) locations = data->locations();
+                data = dynamic_cast<HighlightBlockData*>( block.userData() );
+                if( data ) locations = data->locations();
                 else locations.clear();
-                if( block.isValid() ) position = block.text().length() ;
+                if( block.isValid() ) position = -1 ;
             }
 
         }
     }
 
-    if( found )
+    // highlight
+    if( found && position < block.length() )
     {
         parenthesisHighlight().highlight( position + block.position(), iter->regexp().matchedLength() );
         textHighlight().rehighlightBlock( block );
