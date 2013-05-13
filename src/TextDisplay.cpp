@@ -176,9 +176,9 @@ TextDisplay::~TextDisplay( void )
 int TextDisplay::blockCount( const QTextBlock& block ) const
 {
 
-    QTextBlockFormat block_format( block.blockFormat() );
-    if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
-    {  return block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount(); }
+    QTextBlockFormat blockFormat( block.blockFormat() );
+    if( blockFormat.boolProperty( TextBlock::Collapsed ) && blockFormat.hasProperty( TextBlock::CollapsedData ) )
+    {  return blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount(); }
     else return AnimatedTextEditor::blockCount( block );
 
 }
@@ -2615,7 +2615,7 @@ void TextDisplay::_previousTag( void )
     QTextBlock block( cursor.block() );
     TextBlockData* data;
 
-    // first skipp blocks that have tags if the first one has
+    // first skip blocks that have tags if the first one has
     while(
         block.isValid() &&
         (data = static_cast<TextBlockData*>( block.userData() ) ) &&
@@ -2691,8 +2691,8 @@ bool TextDisplay::_blockIsCollapsed( const QTextBlock& block ) const
 {
 
     Debug::Throw( "TextDisplay::_blockIsCollapsed.\n" );
-    QTextBlockFormat block_format( block.blockFormat() );
-    return block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData );
+    QTextBlockFormat blockFormat( block.blockFormat() );
+    return blockFormat.boolProperty( TextBlock::Collapsed ) && blockFormat.hasProperty( TextBlock::CollapsedData );
 
 }
 
@@ -2705,11 +2705,11 @@ QString TextDisplay::_collapsedText( const QTextBlock& block ) const
     QString text;
 
     // retrieve associated block format
-    QTextBlockFormat block_format( block.blockFormat() );
-    if( block_format.boolProperty( TextBlock::Collapsed ) && block_format.hasProperty( TextBlock::CollapsedData ) )
+    QTextBlockFormat blockFormat( block.blockFormat() );
+    if( blockFormat.boolProperty( TextBlock::Collapsed ) && blockFormat.hasProperty( TextBlock::CollapsedData ) )
     {
 
-        CollapsedBlockData collapsedData( block_format.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
+        CollapsedBlockData collapsedData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
         foreach( const CollapsedBlockData& child, collapsedData.children() )
         { text += child.toPlainText(); }
 
