@@ -68,19 +68,19 @@ BlockDelimiterDisplay::~BlockDelimiterDisplay()
 { Debug::Throw( "BlockDelimiterDisplay::~BlockDelimiterDisplay.\n" ); }
 
 //__________________________________________
-void BlockDelimiterDisplay::synchronize( const BlockDelimiterDisplay* display )
+void BlockDelimiterDisplay::synchronize( const BlockDelimiterDisplay* other )
 {
     Debug::Throw( "BlockDelimiterDisplay::synchronize.\n" );
 
     // copy members
-    delimiters_ = display->delimiters_;
-    segments_ = display->segments_;
-    collapsedBlocks_ = display->collapsedBlocks_;
-    needUpdate_ = display->needUpdate_;
-    offset_ = display->offset_;
+    delimiters_ = other->delimiters_;
+    segments_ = other->segments_;
+    collapsedBlocks_ = other->collapsedBlocks_;
+    needUpdate_ = other->needUpdate_;
+    offset_ = other->offset_;
 
     // geometry
-    setWidth( display->width() );
+    setWidth( other->width() );
 
     // re-initialize connections
     connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
@@ -430,8 +430,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
         // do nothing if block is already collapsed
         cursor.setPosition( blocks.first.position(), QTextCursor::MoveAnchor );
         QTextBlockFormat blockFormat( cursor.blockFormat() );
-        if( blockFormat.boolProperty( TextBlock::Collapsed ) )
-        { continue; }
+        if( blockFormat.boolProperty( TextBlock::Collapsed ) ) continue;
 
         // update block format
         blockFormat.setProperty( TextBlock::Collapsed, true );
@@ -522,17 +521,17 @@ void BlockDelimiterDisplay::_installActions( void )
 
     Debug::Throw( "BlockDelimiterDisplay::_installActions.\n" );
 
-    collapse_currentAction_ = new QAction( tr( "Collapse Current Block" ), this );
-    collapse_currentAction_->setToolTip( tr( "Collapse current collapsed block" ) );
-    collapse_currentAction_->setShortcut( Qt::CTRL + Qt::Key_Minus );
-    connect( collapse_currentAction_, SIGNAL( triggered() ), SLOT( _collapseCurrentBlock() ) );
-    collapse_currentAction_->setEnabled( false );
+    collapseCurrentAction_ = new QAction( tr( "Collapse Current Block" ), this );
+    collapseCurrentAction_->setToolTip( tr( "Collapse current collapsed block" ) );
+    collapseCurrentAction_->setShortcut( Qt::CTRL + Qt::Key_Minus );
+    connect( collapseCurrentAction_, SIGNAL( triggered() ), SLOT( _collapseCurrentBlock() ) );
+    collapseCurrentAction_->setEnabled( false );
 
-    expand_currentAction_ = new QAction( tr( "Expand Current Block" ), this );
-    expand_currentAction_->setToolTip( tr( "Expand current collapsed block" ) );
-    expand_currentAction_->setShortcut( Qt::CTRL + Qt::Key_Plus );
-    connect( expand_currentAction_, SIGNAL( triggered() ), SLOT( _expandCurrentBlock() ) );
-    expand_currentAction_->setEnabled( false );
+    expandCurrentAction_ = new QAction( tr( "Expand Current Block" ), this );
+    expandCurrentAction_->setToolTip( tr( "Expand current collapsed block" ) );
+    expandCurrentAction_->setShortcut( Qt::CTRL + Qt::Key_Plus );
+    connect( expandCurrentAction_, SIGNAL( triggered() ), SLOT( _expandCurrentBlock() ) );
+    expandCurrentAction_->setEnabled( false );
 
     collapseAction_ = new QAction( tr( "Collapse Top-Level Blocks" ), this );
     collapseAction_->setToolTip( tr( "Collapse all top level blocks" ) );
@@ -583,9 +582,7 @@ void BlockDelimiterDisplay::_updateSegments( void )
     segments_.clear();
 
     _updateSegments( false );
-
-    // for now only update non commented blocks.
-    // _updateSegments( true );
+    _updateSegments( true );
 
 }
 
@@ -909,6 +906,10 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& firstBlock, const QText
     variant.setValue( _collapsedData( firstBlock, secondBlock ) );
     blockFormat.setProperty( TextBlock::CollapsedData, variant );
 
+    // mark contents dirty to force update of current block
+    data->setFlag( TextBlock::MODIFIED, true );
+    data->setFlag( TextBlock::COLLAPSED, true );
+
     // start edition
     cursor.beginEditBlock();
     cursor.setBlockFormat( blockFormat );
@@ -928,10 +929,6 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& firstBlock, const QText
 
     cursor.removeSelectedText();
     cursor.endEditBlock();
-
-    // mark contents dirty to force update of current block
-    data->setFlag( TextBlock::MODIFIED, true );
-    data->setFlag( TextBlock::COLLAPSED, true );
 
     // mark contents dirty to force update
     _editor().document()->markContentsDirty(firstBlock.position(), firstBlock.length()-1);

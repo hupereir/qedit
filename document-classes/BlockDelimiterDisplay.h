@@ -155,11 +155,11 @@ class BlockDelimiterDisplay: public QObject, public Counter
 
     //! expand current block
     QAction& _collapseCurrentAction( void ) const
-    { return *collapse_currentAction_; }
+    { return *collapseCurrentAction_; }
 
     //! expand current block
     QAction& _expandCurrentAction( void ) const
-    { return *expand_currentAction_; }
+    { return *expandCurrentAction_; }
 
     //! collapse top level block
     QAction& _collapseAction( void ) const
@@ -266,10 +266,10 @@ class BlockDelimiterDisplay: public QObject, public Counter
     //@{
 
     //! collapse current block
-    QAction* collapse_currentAction_;
+    QAction* collapseCurrentAction_;
 
     //! expand current block
-    QAction* expand_currentAction_;
+    QAction* expandCurrentAction_;
 
     //! collapse top level blocks
     QAction* collapseAction_;
