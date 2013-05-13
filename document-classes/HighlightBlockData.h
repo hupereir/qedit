@@ -22,9 +22,9 @@
 *
 *******************************************************************************/
 
-#include "CollapsedBlockData.h"
 #include "HighlightBlockFlags.h"
 #include "TextBlockData.h"
+#include "TextBlockDelimiter.h"
 #include "PatternLocationSet.h"
 
 #include "Config.h"
