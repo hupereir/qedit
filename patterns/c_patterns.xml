@@ -276,7 +276,7 @@ and this one is an opening bracket</comments>
    <rule par="-2" >
     <regexp>((\{|\})\s*($|//))|(;\s*($|//))</regexp>
    </rule>
-   <comments>pattern 8: keep unchanged if previous line is terminated and previous is
+   <comments>keep unchanged if previous line is terminated and previous is
  	- terminated
 	- a bracket</comments>
   </indent_pattern>
