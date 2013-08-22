@@ -315,8 +315,8 @@ void TextDisplay::synchronize( TextDisplay* other )
     _setMacros( other->macros() );
 
     // file
-    _setFile( other->file() );
     _setIsNewDocument( other->isNewDocument() );
+    _setFile( other->file() );
     _setLastSaved( lastSaved_ );
 
     // update class name
@@ -371,7 +371,7 @@ void TextDisplay::setIsNewDocument( void )
 }
 
 //____________________________________________
-void TextDisplay::setFile( File file, bool check_autosave )
+void TextDisplay::setFile( File file, bool checkAutoSave )
 {
 
     Debug::Throw() << "TextDisplay::setFile " << file << endl;
@@ -391,7 +391,7 @@ void TextDisplay::setFile( File file, bool check_autosave )
     File tmp( file );
 
     File autosaved( AutoSaveThread::autoSaveName( tmp ) );
-    if( check_autosave && autosaved.exists() &&
+    if( checkAutoSave && autosaved.exists() &&
         ( !tmp.exists() ||
         ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
     {
@@ -418,8 +418,8 @@ void TextDisplay::setFile( File file, bool check_autosave )
     displays.insert( this );
     foreach( TextDisplay* display, displays )
     {
-        display->_setFile( file );
         display->_setIsNewDocument( false );
+        display->_setFile( file );
         display->filePropertiesAction().setEnabled( true );
 
         display->setClassName( this->className() );

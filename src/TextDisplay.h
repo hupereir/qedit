@@ -192,7 +192,7 @@ class TextDisplay: public AnimatedTextEditor
     //@{
 
     //! file
-    void setFile( File file, bool check_autosave = true );
+    void setFile( File file, bool checkAutoSave = true );
 
     //! define as new document
     void setIsNewDocument( void );
