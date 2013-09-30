@@ -45,5 +45,18 @@ class ReplaceDialog: public BaseReplaceDialog
     //! emmited when Replace is pressed
     void replaceInFiles();
 
+    public slots:
+
+    //! take action when at least one match is found
+    virtual void matchFound( void );
+
+    //! take action when no match is found
+    virtual void noMatchFound( void );
+
+    private:
+
+    //! replace button
+    QPushButton* replaceInFilesButton_;
+
 };
 #endif

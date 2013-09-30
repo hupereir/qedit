@@ -39,8 +39,23 @@ BaseReplaceDialog( parent, flags )
     _addDisabledButton( button );
     _locationLayout().addWidget( button );
     button->setAutoDefault( false );
+    replaceInFilesButton_ = button;
 
     // tab order
     setTabOrder( &_replaceWindowButton(), button );
 
+}
+
+//________________________________________________________________________
+void ReplaceDialog::matchFound( void )
+{
+    BaseReplaceDialog::matchFound();
+    replaceInFilesButton_->setEnabled( true );
+}
+
+//________________________________________________________________________
+void ReplaceDialog::noMatchFound( void )
+{
+    BaseReplaceDialog::noMatchFound();
+    replaceInFilesButton_->setEnabled( false );
 }

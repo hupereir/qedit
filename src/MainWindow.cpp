@@ -320,7 +320,7 @@ void MainWindow::findFromDialog( void )
     _findDialog().enableRegExp( true );
     _findDialog().centerOnParent().show();
     _findDialog().synchronize();
-    _findDialog().clearLabel();
+    _findDialog().matchFound();
     _findDialog().setText( text );
 
     // changes focus
@@ -350,7 +350,7 @@ void MainWindow::replaceFromDialog( void )
 
     // synchronize combo-boxes
     _replaceDialog().synchronize();
-    _replaceDialog().clearLabel();
+    _replaceDialog().matchFound();
 
     // update find text
     QString text;
@@ -1002,8 +1002,8 @@ void MainWindow::_createBaseFindDialog( void )
         findDialog_ = new BaseFindDialog( this );
         findDialog_->setWindowTitle( tr( "Find in Text - Qedit" ) );
         connect( findDialog_, SIGNAL( find( TextSelection ) ), SLOT( _find( TextSelection ) ) );
+        connect( this, SIGNAL( matchFound() ), findDialog_, SLOT( matchFound() ) );
         connect( this, SIGNAL( noMatchFound() ), findDialog_, SLOT( noMatchFound() ) );
-        connect( this, SIGNAL( matchFound() ), findDialog_, SLOT( clearLabel() ) );
 
     }
 
@@ -1026,8 +1026,8 @@ void MainWindow::_createReplaceDialog( void )
         connect( replaceDialog_, SIGNAL( replaceInSelection( TextSelection ) ), SLOT( _replaceInSelection( TextSelection ) ) );
         connect( replaceDialog_, SIGNAL( replaceInFiles( void ) ), SLOT( _multipleFileReplace( void ) ) );
 
+        connect( this, SIGNAL( matchFound( void ) ), replaceDialog_, SLOT( matchFound( void ) ) );
         connect( this, SIGNAL( noMatchFound( void ) ), replaceDialog_, SLOT( noMatchFound( void ) ) );
-        connect( this, SIGNAL( matchFound( void ) ), replaceDialog_, SLOT( clearLabel( void ) ) );
 
     }
 
