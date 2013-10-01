@@ -120,22 +120,22 @@ MainWindow::MainWindow(  QWidget* parent ):
     navigationFrame_->setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
     splitter->addWidget( &navigationFrame() );
 
-    connect( &navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleNavigationFrame( bool ) ) );
+    connect( &navigationFrame_->visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _toggleNavigationFrame( bool ) ) );
 
     // need to add navigationFrame visibility action to this list
     // to enable shortcut event if the frame is hidden
-    addAction( &navigationFrame().visibilityAction() );
-    connect( &navigationFrame().sessionFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
-    connect( &navigationFrame().recentFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
+    addAction( &navigationFrame_->visibilityAction() );
+    connect( &navigationFrame_->sessionFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
+    connect( &navigationFrame_->recentFilesFrame(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _selectDisplay( FileRecord ) ) );
 
-    addAction( &navigationFrame().sessionFilesFrame().nextFileAction() );
-    addAction( &navigationFrame().sessionFilesFrame().previousFileAction() );
+    addAction( &navigationFrame_->sessionFilesFrame().nextFileAction() );
+    addAction( &navigationFrame_->sessionFilesFrame().previousFileAction() );
 
     // insert stack widget
     splitter->addWidget( stack_ = new QStackedWidget(0) );
-    _stack().layout()->setMargin(2);
+    stack_->layout()->setMargin(2);
 
-    connect( &_stack(), SIGNAL( widgetRemoved( int ) ), SLOT( _activeViewChanged() ) );
+    connect( stack_, SIGNAL( widgetRemoved( int ) ), SLOT( _activeViewChanged() ) );
 
     // transition widget
     _replaceTransitionWidget();
@@ -177,7 +177,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 MainWindow::~MainWindow( void )
 {
     Debug::Throw( "MainWindow::~MainWindow.\n" );
-    disconnect( &_transitionWidget(), SIGNAL( destroyed() ) );
+    disconnect( transitionWidget_, SIGNAL( destroyed() ) );
 }
 
 //___________________________________________________________
@@ -196,7 +196,7 @@ TextView& MainWindow::newTextView( FileRecord record )
     if( record.file().exists() ) view->setFile( record.file() );
 
     // add to stack and set active
-    _stack().addWidget( view );
+    stack_->addWidget( view );
     setActiveView( *view );
 
     return *view;
@@ -220,18 +220,18 @@ void MainWindow::setActiveView( TextView& view )
     activeView().activeDisplay().setFocusDelayed();
 
     // update stack if needed
-    if( _stack().currentWidget() !=  &activeView() )
+    if( stack_->currentWidget() !=  &activeView() )
     {
 
-        if( _transitionWidget().isEnabled() && isVisible() )
+        if( transitionWidget_->isEnabled() && isVisible() )
         {
-            _transitionWidget().setParent( &activeView() );
-            _transitionWidget().initialize( &_stack() );
+            transitionWidget_->setParent( &activeView() );
+            transitionWidget_->initialize( stack_ );
         }
 
-        _stack().setCurrentWidget( &activeView() );
+        stack_->setCurrentWidget( &activeView() );
 
-        if( _transitionWidget().isEnabled() && isVisible() ) _transitionWidget().start();
+        if( transitionWidget_->isEnabled() && isVisible() ) transitionWidget_->start();
         else _animationFinished();
 
     } else _animationFinished();
@@ -268,7 +268,7 @@ bool MainWindow::selectDisplay( const File& file )
         if( !view->isClosed() && view->selectDisplay( file ) )
         {
             // make sure selected view is visible
-            if( _stack().currentWidget() != view )
+            if( stack_->currentWidget() != view )
             { setActiveView( *view ); }
             return true;
         }
@@ -317,15 +317,15 @@ void MainWindow::findFromDialog( void )
 
     // set default string to find
     if( !findDialog_ ) _createBaseFindDialog();
-    _findDialog().enableRegExp( true );
-    _findDialog().centerOnParent().show();
-    _findDialog().synchronize();
-    _findDialog().matchFound();
-    _findDialog().setText( text );
+    findDialog_->enableRegExp( true );
+    findDialog_->centerOnParent().show();
+    findDialog_->synchronize();
+    findDialog_->matchFound();
+    findDialog_->setText( text );
 
     // changes focus
-    _findDialog().activateWindow();
-    _findDialog().editor().setFocus();
+    findDialog_->activateWindow();
+    findDialog_->editor().setFocus();
 
     return;
 }
@@ -339,7 +339,7 @@ void MainWindow::replaceFromDialog( void )
     if( !replaceDialog_ ) _createReplaceDialog();
 
     // raise dialog
-    _replaceDialog().centerOnParent().show();
+    replaceDialog_->centerOnParent().show();
 
     /*
     setting the default text values
@@ -349,21 +349,21 @@ void MainWindow::replaceFromDialog( void )
     */
 
     // synchronize combo-boxes
-    _replaceDialog().synchronize();
-    _replaceDialog().matchFound();
+    replaceDialog_->synchronize();
+    replaceDialog_->matchFound();
 
     // update find text
     QString text;
-    if( !( text = qApp->clipboard()->text( QClipboard::Selection) ).isEmpty() ) _replaceDialog().setText( text );
-    else if( activeDisplay().textCursor().hasSelection() ) _replaceDialog().setText( activeDisplay().textCursor().selectedText() );
-    else if( !( text = TextDisplay::lastSelection().text() ).isEmpty() ) _replaceDialog().setText( text );
+    if( !( text = qApp->clipboard()->text( QClipboard::Selection) ).isEmpty() ) replaceDialog_->setText( text );
+    else if( activeDisplay().textCursor().hasSelection() ) replaceDialog_->setText( activeDisplay().textCursor().selectedText() );
+    else if( !( text = TextDisplay::lastSelection().text() ).isEmpty() ) replaceDialog_->setText( text );
 
     // update replace text
-    if( !TextDisplay::lastSelection().replaceText().isEmpty() ) _replaceDialog().setReplaceText( TextDisplay::lastSelection().replaceText() );
+    if( !TextDisplay::lastSelection().replaceText().isEmpty() ) replaceDialog_->setReplaceText( TextDisplay::lastSelection().replaceText() );
 
     // changes focus
-    _replaceDialog().activateWindow();
-    _replaceDialog().editor().setFocus();
+    replaceDialog_->activateWindow();
+    replaceDialog_->editor().setFocus();
 
     return;
 }
@@ -584,8 +584,8 @@ void MainWindow::timerEvent( QTimerEvent* event )
         resizeTimer_.stop();
 
         // save size
-        if( navigationFrame().visibilityAction().isChecked() )
-        { XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", navigationFrame().width() ); }
+        if( navigationFrame_->visibilityAction().isChecked() )
+        { XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", navigationFrame_->width() ); }
 
     } else return BaseMainWindow::timerEvent( event );
 
@@ -600,7 +600,7 @@ void MainWindow::_updateConfiguration( void )
     resize( sizeHint() );
 
     // navigation frame visibility
-    navigationFrame().visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_NAVIGATION_FRAME") );
+    navigationFrame_->visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_NAVIGATION_FRAME") );
 
     // assign icons to file in open previous menu based on class manager
     FileList& recentFiles( Singleton::get().application<Application>()->recentFiles() );
@@ -644,7 +644,7 @@ void MainWindow::_activeViewChanged( void )
 
     Debug::Throw() << "MainWindow::_activeViewChanged" << endl;
 
-    QWidget *widget( _stack().currentWidget() );
+    QWidget *widget( stack_->currentWidget() );
     if( !widget ) close();
     else setActiveView( *static_cast<TextView*>( widget ) );
 
@@ -658,7 +658,7 @@ void MainWindow::_splitDisplay( void )
 void MainWindow::_multipleFileReplace( void )
 {
     Debug::Throw( "MainWindow::_multipleFileReplace.\n" );
-    TextSelection selection( _replaceDialog().selection( false ) );
+    TextSelection selection( replaceDialog_->selection( false ) );
 
     // show dialog and check answer
     FileSelectionDialog dialog( this, selection );
@@ -693,31 +693,31 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
     {
 
         // update file editor
-        if( _hasFileEditor() )
+        if( fileEditor_ )
         {
-            _fileEditor().setText( activeDisplay().file() );
+            fileEditor_->setText( activeDisplay().file() );
             filePropertiesAction_->setEnabled( !( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() ) );
         }
 
         Debug::Throw() << "MainWindow::_update - file editor done. "<< endl;
 
         // update session file frame
-        if( _hasNavigationFrame() )
+        if( navigationFrame_ )
         {
-            navigationFrame().sessionFilesFrame().select( activeDisplay().file() );
-            navigationFrame().recentFilesFrame().select( activeDisplay().file() );
-            navigationFrame().fileSystemFrame().setWorkingPath( activeDisplay().workingDirectory() );
+            navigationFrame_->sessionFilesFrame().select( activeDisplay().file() );
+            navigationFrame_->recentFilesFrame().select( activeDisplay().file() );
+            navigationFrame_->fileSystemFrame().setWorkingPath( activeDisplay().workingDirectory() );
         }
 
         Debug::Throw() << "MainWindow::_update - navigation frame done. "<< endl;
 
         // cursor position
-        if( _hasStatusBar() ) _updateCursorPosition();
+        _updateCursorPosition();
         Debug::Throw() << "MainWindow::_update - statusbar done. "<< endl;
 
     }
 
-    if( flags & TextDisplay::DOCUMENT_CLASS && _hasDocumentClassToolBar() )
+    if( flags & TextDisplay::DOCUMENT_CLASS && documentClassToolBar_ )
     { documentClassToolBar_->update( activeDisplay().className() ); }
 
     if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
@@ -743,8 +743,8 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
         if( activeDisplay().modifier( TextEditor::ModifierInsert ) ) modifiers << "INS";
         if( activeDisplay().modifier( TextEditor::ModifierCapsLock ) ) modifiers << "CAPS";
         if( activeDisplay().modifier( TextEditor::ModifierNumLock ) ) modifiers << "NUM";
-        if( !modifiers.isEmpty() ) _statusBar().label(0).setText( modifiers.join( " " ) );
-        else  _statusBar().label(0).clear();
+        if( !modifiers.isEmpty() ) statusbar_->label(0).setText( modifiers.join( " " ) );
+        else  statusbar_->label(0).clear();
     }
 
     if( flags & TextDisplay::DISPLAY_COUNT )
@@ -781,6 +781,8 @@ void MainWindow::_updateModifiers( void )
 void MainWindow::_updateCursorPosition( void )
 {
 
+    if( !statusbar_ ) return;
+
     // retrieve position in text
     TextPosition position( activeDisplay().textPosition() );
 
@@ -805,10 +807,10 @@ void MainWindow::_replaceTransitionWidget( void )
     Debug::Throw( "MainWindow::_replaceTransitionWidget.\n" );
 
     transitionWidget_ = new TransitionWidget( this );
-    _transitionWidget().setFlag( TransitionWidget::FROM_PARENT, false );
-    _transitionWidget().hide();
-    connect( &_transitionWidget(), SIGNAL( destroyed() ), SLOT( _replaceTransitionWidget() ) );
-    connect( &_transitionWidget().timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
+    transitionWidget_->setFlag( TransitionWidget::FROM_PARENT, false );
+    transitionWidget_->hide();
+    connect( transitionWidget_, SIGNAL( destroyed() ), SLOT( _replaceTransitionWidget() ) );
+    connect( &transitionWidget_->timeLine(), SIGNAL( finished() ), SLOT( _animationFinished() ) );
 
 }
 
@@ -816,8 +818,8 @@ void MainWindow::_replaceTransitionWidget( void )
 void MainWindow::_animationFinished( void )
 {
     Debug::Throw( "MainWindow::_animationFinished.\n" );
-    _transitionWidget().setParent( this );
-    _transitionWidget().hide();
+    transitionWidget_->setParent( this );
+    transitionWidget_->hide();
 
     // update displays, actions, etc.
     if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )

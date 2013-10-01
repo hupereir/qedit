@@ -176,6 +176,7 @@ void TextView::closeActiveDisplay( void )
 //________________________________________________________________
 void TextView::setActiveDisplay( TextDisplay& display )
 {
+
     Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << endl;
     Q_ASSERT( display.isAssociated( this ) );
 

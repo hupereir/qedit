@@ -537,58 +537,12 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     //! create replace dialog
     void _createReplaceDialog( void );
 
-    //! find dialog
-    virtual BaseFindDialog& _findDialog( void )
-    { return *findDialog_; }
-
-    //! replace dialog
-    virtual ReplaceDialog& _replaceDialog( void )
-    { return *replaceDialog_; }
-
-    //! replace dialog
-    bool _hasReplaceDialog( void ) const
-    { return bool( replaceDialog_ ); }
-
-    //! navigation frame
-    bool _hasNavigationFrame( void ) const
-    { return bool( navigationFrame_ ); }
-
-    //! status bar
-    bool _hasStatusBar( void ) const
-    { return bool( statusbar_ ); }
-
-    BaseStatusBar& _statusBar( void ) const
-    { return *statusbar_; }
-
-    //! document class toolbar
-    bool _hasDocumentClassToolBar( void ) const
-    { return bool( documentClassToolBar_ ); }
-
-    //! document class toolbar
-    DocumentClassToolBar& _documentClassToolBar( void ) const
-    { return *documentClassToolBar_; }
-
-    //! file editor
-    bool _hasFileEditor( void ) const
-    { return bool( fileEditor_ ); }
-
-    //! file editor
-    QLabel& _fileEditor( void ) const
-    { return *fileEditor_; }
-
     //! make connection between this window and child text view
     void _connectView( TextView& view );
 
     //! Update window title
     void _updateWindowTitle();
 
-    //! stack windget
-    QStackedWidget& _stack( void ) const
-    { return *stack_; }
-
-    //! transition widget
-    TransitionWidget& _transitionWidget( void ) const
-    { return *transitionWidget_; }
 
     //!@name child widgets
     //@{
