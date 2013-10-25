@@ -25,7 +25,6 @@
 *******************************************************************************/
 
 #define VERSION "@QEDIT_VERSION@"
-#define WITH_ASPELL @ASPELL_FOUND@
 #define BUILD_TIMESTAMP "@TIMESTAMP@"
 
 #endif

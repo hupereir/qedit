@@ -23,7 +23,6 @@
 
 #include "Application.h"
 #include "BaseFileInfoConfigurationWidget.h"
-#include "Config.h"
 #include "FileList.h"
 #include "CustomToolBar.h"
 #include "Debug.h"

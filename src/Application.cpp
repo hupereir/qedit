@@ -21,7 +21,6 @@
 
 #include "Application.h"
 #include "AutoSave.h"
-#include "Config.h"
 #include "ConfigurationDialog.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"

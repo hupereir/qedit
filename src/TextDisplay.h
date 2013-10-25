@@ -27,7 +27,6 @@
 #include "FileList.h"
 #include "FileModifiedDialog.h"
 #include "FileRemovedDialog.h"
-#include "Config.h"
 #include "Debug.h"
 #include "FileCheck.h"
 #include "FileRecord.h"

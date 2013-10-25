@@ -57,8 +57,6 @@
 #include "Util.h"
 #include "XmlOptions.h"
 
-#include "Config.h"
-
 #if WITH_ASPELL
 #include "SpellDialog.h"
 #include "SuggestionMenu.h"

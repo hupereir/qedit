@@ -22,7 +22,6 @@
 *
 *******************************************************************************/
 
-#include "Config.h"
 #include "Color.h"
 #include "FileRecordModel.h"
 #include "FileSystemModel.h"

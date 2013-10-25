@@ -34,6 +34,7 @@ FIND_PROGRAM( DIFF diff )
 ########### aspell ###############
 FIND_PROGRAM( ASPELL aspell )
 FIND_PACKAGE( ASPELL )
+ADD_DEFINITIONS( -DWITH_ASPELL=${ASPELL_FOUND} )
 
 ########### subdirectories ###############
 IF( ENABLE_SHARED )

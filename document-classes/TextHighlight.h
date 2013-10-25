@@ -23,7 +23,6 @@
 *******************************************************************************/
 
 #include "BlockDelimiter.h"
-#include "Config.h"
 #include "Counter.h"
 #include "Debug.h"
 #include "HighlightPattern.h"

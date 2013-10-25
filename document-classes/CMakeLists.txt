@@ -25,9 +25,6 @@ IF( ASPELL_FOUND )
   INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/base-spellcheck)
 ENDIF()
 
-########### configuration files ###############
-CONFIGURE_FILE( Config.h.cmake Config.h )
-
 ########### next target ###############
 SET( document_classes_SOURCES
   BlockDelimiter.cpp

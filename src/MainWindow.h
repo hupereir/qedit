@@ -22,7 +22,6 @@
 *******************************************************************************/
 
 #include "BaseMainWindow.h"
-#include "Config.h"
 #include "Counter.h"
 #include "FileRecord.h"
 #include "Key.h"

@@ -27,7 +27,6 @@
 #include "BaseStatusBar.h"
 #include "BlockDelimiterDisplay.h"
 #include "ClockLabel.h"
-#include "Config.h"
 #include "CustomToolButton.h"
 #include "Command.h"
 #include "CustomToolBar.h"

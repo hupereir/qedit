@@ -27,8 +27,6 @@
 #include "TextBlockDelimiter.h"
 #include "PatternLocationSet.h"
 
-#include "Config.h"
-
 #if WITH_ASPELL
 #include "Word.h"
 #endif

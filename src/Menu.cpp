@@ -23,7 +23,6 @@
 
 #include "Application.h"
 #include "BlockDelimiterDisplay.h"
-#include "Config.h"
 #include "DebugMenu.h"
 #include "DefaultHelpText.h"
 #include "DocumentClassMenu.h"
