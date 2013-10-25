@@ -81,7 +81,7 @@ class NavigationFrame: public AnimatedStackedWidget
 
     //@}
 
-    private slots:
+    private Q_SLOTS:
 
     //! update current widget
     void _updateCurrentWidget( void );

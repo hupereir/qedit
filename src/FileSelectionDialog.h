@@ -49,7 +49,7 @@ class FileSelectionDialog: public CustomDialog
     //! selected files
     FileList selectedFiles( void ) const;
 
-    private slots:
+    private Q_SLOTS:
 
     //! update buttons
     void _updateButtons( void );

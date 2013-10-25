@@ -62,7 +62,7 @@ class NewFileDialog: public BaseDialog, public Counter
     virtual ~NewFileDialog( void )
     {}
 
-    private slots:
+    private Q_SLOTS:
 
     //! create new file
     void _create( void )

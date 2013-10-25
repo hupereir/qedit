@@ -422,7 +422,7 @@ class TextDisplay: public AnimatedTextEditor
     ParenthesisHighlight& parenthesisHighlight( void ) const
     { return *parenthesisHighlight_; }
 
-    signals:
+    Q_SIGNALS:
 
     //! emmited when indentation several blocks is required
     void indent( QTextBlock, QTextBlock );
@@ -434,7 +434,7 @@ class TextDisplay: public AnimatedTextEditor
     /* \param flags, bitwise or of UpdateFlags */
     void needUpdate( TextDisplay::UpdateFlags );
 
-    public slots:
+    public Q_SLOTS:
 
     //! set document class
     void updateDocumentClass( void )
@@ -559,12 +559,12 @@ class TextDisplay: public AnimatedTextEditor
     //! update margins
     virtual bool _updateMargin( void );
 
-    protected slots:
+    protected Q_SLOTS:
 
     /*! returns true if changed */
     virtual bool _toggleWrapMode( bool );
 
-    private slots:
+    private Q_SLOTS:
 
     //! update configuration
     void _updateConfiguration( void );

@@ -48,7 +48,7 @@ class PrintHelper: public BasePrintHelper, public Counter
     virtual ~PrintHelper( void )
     {}
 
-    public slots:
+    public Q_SLOTS:
 
     //! print
     void print( QPrinter* );

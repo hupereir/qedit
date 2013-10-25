@@ -62,7 +62,7 @@ class SessionFilesModel: public FileRecordModel
 
     //@}
 
-    signals:
+    Q_SIGNALS:
 
     //! file reorganization
     void reparentFiles( const File&, const File& );
@@ -70,7 +70,7 @@ class SessionFilesModel: public FileRecordModel
     //! file reorganization
     void reparentFilesToMain( const File&, const File& );
 
-    private slots:
+    private Q_SLOTS:
 
     //! configuration
     void _updateConfiguration( void );

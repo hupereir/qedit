@@ -58,12 +58,12 @@ class RecentFilesFrame: public QWidget, public Counter
     //! select file in list
     void select( const File& );
 
-    public slots:
+    public Q_SLOTS:
 
     //! update
     void update( void );
 
-    signals:
+    Q_SIGNALS:
 
     //! signal emitted when a file is selected
     void fileSelected( FileRecord );
@@ -76,7 +76,7 @@ class RecentFilesFrame: public QWidget, public Counter
     //! enter event
     void enterEvent( QEvent* );
 
-    private slots:
+    private Q_SLOTS:
 
     //! update action
     void _updateActions( void );

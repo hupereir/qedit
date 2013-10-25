@@ -84,7 +84,7 @@ class FileRecordToolTipWidget: public BaseToolTipWidget
     virtual void _reload( void )
     { setRecord( record_, icon_ ); }
 
-    private slots:
+    private Q_SLOTS:
 
     //! update configuration
     void _updateConfiguration( void );

@@ -305,7 +305,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
 
     //@}
 
-    signals:
+    Q_SIGNALS:
 
     //! emmited when window is activated
     void activated( MainWindow* );
@@ -337,7 +337,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     //@}
 
 
-    public slots:
+    public Q_SLOTS:
 
     //! select class name
     void selectClassName( QString value )
@@ -372,7 +372,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     //! timer event
     virtual void timerEvent( QTimerEvent* );
 
-    private slots:
+    private Q_SLOTS:
 
     //! update configuration
     void _updateConfiguration( void );

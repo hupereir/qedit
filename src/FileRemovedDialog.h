@@ -52,7 +52,7 @@ class FileRemovedDialog: public BaseDialog, public Counter
     virtual ~FileRemovedDialog( void )
     {}
 
-    private slots:
+    private Q_SLOTS:
 
     //! re-saved removed file
     void _reSave( void )

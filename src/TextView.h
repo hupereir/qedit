@@ -135,7 +135,7 @@ class TextView: public QWidget, public Counter, public BASE::Key
     QTimer& positionTimer( void )
     { return positionTimer_; }
 
-    signals:
+    Q_SIGNALS:
 
     //! emitted when parent window must be update
     void needUpdate( TextDisplay::UpdateFlags );
@@ -152,12 +152,12 @@ class TextView: public QWidget, public Counter, public BASE::Key
     //! current display redo is available
     void redoAvailable( bool );
 
-    public slots:
+    public Q_SLOTS:
 
     //! check modified displays
     void checkDisplayModifications( TextEditor* );
 
-    private slots:
+    private Q_SLOTS:
 
     //! check number of displays
     /*!

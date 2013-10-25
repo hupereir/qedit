@@ -58,7 +58,7 @@ class NavigationToolBar: public CustomToolBar
     //! context menu
     virtual void contextMenuEvent( QContextMenuEvent* );
 
-    private slots:
+    private Q_SLOTS:
 
     //! update configuration
     void _updateConfiguration( void );

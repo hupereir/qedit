@@ -60,12 +60,12 @@ class Menu:public QMenuBar, public Counter
     TextMacroMenu& macroMenu( void ) const
     { return *macroMenu_; }
 
-    public slots:
+    public Q_SLOTS:
 
     //! update macro menu
     void updateMacroMenu( void );
 
-    private slots:
+    private Q_SLOTS:
 
     //! update recent files menu
     /*! this is needed so that the current file appears checked in the menu */

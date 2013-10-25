@@ -107,7 +107,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
     //! update expand/collapse current block action state
     void updateCurrentBlockActionState( void );
 
-    public slots:
+    public Q_SLOTS:
 
     //! need update
     void needUpdate( void );
@@ -115,7 +115,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
     //! expand all blocks
     void expandAllBlocks( void );
 
-    private slots:
+    private Q_SLOTS:
 
     //! collapse current block
     void _collapseCurrentBlock( void );

@@ -44,12 +44,12 @@ class DocumentClassMenu: public QMenu, public Counter
     virtual ~DocumentClassMenu( void )
     {}
 
-    signals:
+    Q_SIGNALS:
 
     //! emmited every time a document class is selected
     void documentClassSelected( QString );
 
-    protected slots:
+    protected Q_SLOTS:
 
     //! update
     void _update( void );

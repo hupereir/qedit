@@ -86,7 +86,7 @@
   </range_pattern>
   <range_pattern options="no_indent " style="Scope" parent="" name="Scope" >
    <comments></comments>
-   <begin>\b(public|private|protected|signals|slots)\b</begin>
+   <begin>\b(public|private|protected|signals|slots|Q_SIGNALS|Q_SLOTS)\b</begin>
    <end>(:\s*$)|([^,\s*].$)</end>
   </range_pattern>
   <range_pattern style="Keyword" parent="" name="Class Name" >

@@ -40,7 +40,7 @@ class ReplaceDialog: public BaseReplaceDialog
     virtual ~ReplaceDialog( void )
     {}
 
-    signals:
+    Q_SIGNALS:
 
     //! emmited when Replace is pressed
     void replaceInFiles();

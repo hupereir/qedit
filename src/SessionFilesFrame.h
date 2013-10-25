@@ -72,12 +72,12 @@ class SessionFilesFrame: public QWidget, public Counter
     const SessionFilesModel& model( void ) const
     { return model_; }
 
-    public slots:
+    public Q_SLOTS:
 
     //! update session files
     void update( void );
 
-    signals:
+    Q_SIGNALS:
 
     //! signal emitted when a file is selected
     void fileSelected( FileRecord );
@@ -91,7 +91,7 @@ class SessionFilesFrame: public QWidget, public Counter
     //! signal emitted when file is asked to be saved
     void filesSaved( FileRecord::List );
 
-    protected slots:
+    protected Q_SLOTS:
 
     //! previous file
     void _selectPreviousFile( void );

@@ -52,7 +52,7 @@ class FileModifiedDialog: public BaseDialog, public Counter
     virtual ~FileModifiedDialog( void )
     {}
 
-    private slots:
+    private Q_SLOTS:
 
     //! re-saved removed file
     void _reLoad( void )

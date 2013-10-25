@@ -56,7 +56,7 @@ class AutoSave: public QObject, public Counter
 
     virtual void timerEvent( QTimerEvent* );
 
-    private slots:
+    private Q_SLOTS:
 
     //! update configuration
     /* update interval between threads */

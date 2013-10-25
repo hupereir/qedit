@@ -135,7 +135,7 @@ class FileCheck: public QObject, public BASE::Key, public Counter
     //! timer event, to handle multiple file modification at once
     virtual void timerEvent( QTimerEvent* event );
 
-    private slots:
+    private Q_SLOTS:
 
     void _fileChanged( const QString& );
 

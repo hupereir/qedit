@@ -43,12 +43,12 @@ class DocumentClassToolBar: public CustomToolBar
     //! update selection
     void update( QString );
 
-    signals:
+    Q_SIGNALS:
 
     //! emmited every time a document class is selected
     void documentClassSelected( QString );
 
-    private slots:
+    private Q_SLOTS:
 
     //! update list
     void _update( void );

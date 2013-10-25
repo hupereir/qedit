@@ -50,7 +50,7 @@ class ProgressDialog:public QProgressDialog, public Counter
     void setOffset( int value )
     { offset_ = value; }
 
-    public slots:
+    public Q_SLOTS:
 
     //! value
     void setValue( int value )

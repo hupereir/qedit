@@ -47,12 +47,12 @@ class TextMacroMenu: public QMenu, public Counter
     //! set enabled
     void setEnabled( bool );
 
-    signals:
+    Q_SIGNALS:
 
     //! emmited every time a text macro is selected
     void textMacroSelected( QString );
 
-    public slots:
+    public Q_SLOTS:
 
     //! update macros
     void update( const TextMacro::List& );
@@ -60,7 +60,7 @@ class TextMacroMenu: public QMenu, public Counter
     //! update state
     void updateState( bool );
 
-    protected slots:
+    protected Q_SLOTS:
 
     //! emited when an action is selected
     void _processAction( QAction* action );

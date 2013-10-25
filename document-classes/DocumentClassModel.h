@@ -78,7 +78,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     //! sort
     virtual void _sort( int, Qt::SortOrder = Qt::AscendingOrder );
 
-    private slots:
+    private Q_SLOTS:
 
     //! configuration
     void _updateConfiguration( void );

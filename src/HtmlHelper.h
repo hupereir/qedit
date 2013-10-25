@@ -51,7 +51,7 @@ class HtmlHelper: public QObject, public Counter
     virtual ~HtmlHelper( void )
     {}
 
-    public slots:
+    public Q_SLOTS:
 
     //! print
     void print( QIODevice* );

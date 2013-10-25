@@ -45,7 +45,7 @@ class RenameFileDialog: public CustomDialog
     //! new file name
     File file( void ) const;
 
-    private slots:
+    private Q_SLOTS:
 
     //! button update
     void _updateButtons( void );

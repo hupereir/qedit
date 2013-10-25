@@ -56,17 +56,17 @@ class FileSystemFrame: public QWidget, public Counter
     //! clear list, add navigator button
     void clear();
 
-    signals:
+    Q_SIGNALS:
 
     //! file selected
     void fileActivated( FileRecord );
 
-    public slots:
+    public Q_SLOTS:
 
     //! base directory
     void setPath( File, bool forced = false );
 
-    protected slots:
+    protected Q_SLOTS:
 
     //! custom event, used to retrieve file validity check event
     void _processFiles( const File::List& );

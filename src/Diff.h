@@ -66,7 +66,7 @@ class Diff: public QObject, public Counter
     //! range list
     typedef QSet< int > BlockSet;
 
-    private slots:
+    private Q_SLOTS:
 
     //! parse the diff output
     void _parseOutput( int, QProcess::ExitStatus );

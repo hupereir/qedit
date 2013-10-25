@@ -171,7 +171,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
 
     #endif
 
-    signals:
+    Q_SIGNALS:
 
     //! emmited when block delimiters have changed
     void needSegmentUpdate( void );

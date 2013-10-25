@@ -48,7 +48,7 @@ class DocumentClassManagerDialog: public CustomDialog
     //! list of user files
     File::List userFiles( void ) const;
 
-    protected slots:
+    protected Q_SLOTS:
 
     //! read
     virtual void _reload( void );

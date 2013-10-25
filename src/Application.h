@@ -113,7 +113,7 @@ class Application: public BaseApplication, public Counter
 
     //@}
 
-    signals:
+    Q_SIGNALS:
 
     //! spellcheck configuration modified
     void spellCheckConfigurationChanged( void );
@@ -121,7 +121,7 @@ class Application: public BaseApplication, public Counter
     //! document classes have been modified
     void documentClassesChanged( void );
 
-    protected slots:
+    protected Q_SLOTS:
 
     //! Update Document Classes from options
     void _updateDocumentClasses( void );

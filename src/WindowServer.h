@@ -109,12 +109,12 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     const Qt::Orientation& defaultOrientation( const OrientationMode& mode = NORMAL )
     { return mode == NORMAL ? defaultOrientation_:defaultDiffOrientation_; }
 
-    signals:
+    Q_SIGNALS:
 
     //! emmited whenever the session file list is modified
     void sessionFilesChanged( void );
 
-    private slots:
+    private Q_SLOTS:
 
     //! update configuration
     void _updateConfiguration( void );

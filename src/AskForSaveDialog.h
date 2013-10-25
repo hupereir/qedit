@@ -58,7 +58,7 @@ class AskForSaveDialog: public BaseDialog, public Counter
     virtual ~AskForSaveDialog( void )
     {}
 
-    private slots:
+    private Q_SLOTS:
 
     //! save changes
     void _yes( void )
