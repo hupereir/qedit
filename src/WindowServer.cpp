@@ -185,7 +185,7 @@ bool WindowServer::closeAll( void )
     Debug::Throw( "WindowServer::closeAll.\n" );
 
     // retrieve opened files
-    FileRecord::List records( WindowServer::records() );
+    const FileRecord::List records( WindowServer::records() );
 
     // ask for confirmation if more than one file is opened.
     if( records.size() > 1 )
@@ -210,7 +210,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
     Debug::Throw() << "WindowServer::readFilesFromArguments." << endl;
 
     // retrieve files from arguments
-    CommandLineParser parser( Application::commandLineParser( arguments ) );
+    const CommandLineParser parser( Application::commandLineParser( arguments ) );
     QStringList filenames( parser.orphans() );
 
     // close mode
@@ -236,7 +236,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
     bool fileOpened( false );
 
     // tabbed | diff mode
-    bool tabbed( parser.hasFlag( "--tabbed" ) );
+    const bool tabbed( parser.hasFlag( "--tabbed" ) );
     bool diff( parser.hasFlag( "--diff" ) );
     if( ( tabbed || diff ) && filenames.size() > 1 )
     {
@@ -1105,7 +1105,7 @@ void WindowServer::_applyArguments( TextDisplay& display, CommandLineArguments a
 {
     Debug::Throw( "WindowServer::_applyArguments.\n" );
 
-    CommandLineParser parser( Application::commandLineParser( arguments ) );
+    const CommandLineParser parser( Application::commandLineParser( arguments ) );
 
     //! see if autospell action is required
     bool autospell( parser.hasFlag( "--autospell" ) );

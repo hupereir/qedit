@@ -47,7 +47,7 @@
 #include <QMessageBox>
 
 //____________________________________________
-CommandLineParser Application::commandLineParser( CommandLineArguments arguments, bool ignore_warnings )
+CommandLineParser Application::commandLineParser( CommandLineArguments arguments, bool ignoreWarnings )
 {
     Debug::Throw( "Application::commandLineParser.\n" );
     CommandLineParser out( SERVER::ApplicationManager::commandLineParser() );
@@ -61,7 +61,7 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
     out.registerOption( "--filter", tr( "string" ), tr( "select filter for autospell") );
     out.registerOption( "--dictionary", tr( "string" ), tr( "select dictionary for autospell") );
     out.registerOption( "--orientation", tr( "string" ), tr( "select view orientation for tabbed edition (vertical|horizontal)") );
-    if( !arguments.isEmpty() ) out.parse( arguments, ignore_warnings );
+    if( !arguments.isEmpty() ) out.parse( arguments, ignoreWarnings );
     return out;
 
 }
