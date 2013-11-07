@@ -373,7 +373,11 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
 {
 
     Debug::Throw() << "TextDisplay::setFile " << file << endl;
-    Q_ASSERT( !file.isEmpty() );
+    if( file.isEmpty() )
+    {
+        Debug::Throw(0) << "TextDisplay::setFile - invalid file:" << file << endl;
+        return;
+    }
 
     // reset class name
     QString className( _recentFiles().add( file ).property(classNamePropertyId_) );
@@ -2458,7 +2462,12 @@ void TextDisplay::_highlightParenthesis( void )
             {
 
                 QTextBlockFormat blockFormat( block.blockFormat() );
-                Q_ASSERT( blockFormat.hasProperty( TextBlock::CollapsedData ) );
+                if( !blockFormat.hasProperty( TextBlock::CollapsedData ) )
+                {
+                    Debug::Throw(0) << "TextDisplay::_highlightParenthesis - missing CollapsedData property" << endl;
+                    continue;
+                }
+
                 CollapsedBlockData collapsedBlockData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
                 text += collapsedBlockData.toPlainText();
 
@@ -2521,7 +2530,11 @@ void TextDisplay::_highlightParenthesis( void )
             {
 
                 QTextBlockFormat blockFormat( block.blockFormat() );
-                Q_ASSERT( blockFormat.hasProperty( TextBlock::CollapsedData ) );
+                if( !blockFormat.hasProperty( TextBlock::CollapsedData ) )
+                {
+                    Debug::Throw(0) << "TextDisplay::_highlightParenthesis - missing CollapsedData property" << endl;
+                    continue;
+                }
                 CollapsedBlockData collapsedBlockData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
                 text += collapsedBlockData.toPlainText();
 

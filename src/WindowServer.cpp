@@ -349,7 +349,11 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
 
         // find matching window
         BASE::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
-        Q_ASSERT( iter != windows.end() );
+        if( iter == windows.end() )
+        {
+            Debug::Throw(0) << "WindowServer::multipleFileReplace - no window found" << endl;
+            continue;
+        }
 
         // loop over views
         BASE::KeySet<TextView> views( *iter );
@@ -432,7 +436,13 @@ void WindowServer::_newFile( WindowServer::OpenMode mode )
         // select the view that contains the empty display
         BASE::KeySet<TextView> views( *iter );
         BASE::KeySet<TextView>::iterator viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
-        Q_ASSERT( viewIter != views.end() );
+        if( viewIter == views.end() )
+        {
+
+            Debug::Throw(0) << "WindowServer::_newFile - invalid view" << endl;
+            return;
+        }
+
         (*iter)->setActiveView( **viewIter );
         view = *viewIter;
 
@@ -536,7 +546,13 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
         // select the view that contains the empty display
         BASE::KeySet<TextView> views( *iter );
         BASE::KeySet<TextView>::iterator viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
-        Q_ASSERT( viewIter != views.end() );
+        if( viewIter == views.end() )
+        {
+
+            Debug::Throw(0) << "WindowServer::_open - invalid view" << endl;
+            return false;
+        }
+
         (*viewIter)->setFile( record.file() );
         (*iter)->setActiveView( **viewIter );
         view = *viewIter;
@@ -602,7 +618,12 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         // find matching view
         BASE::KeySet<TextView> views( *iter );
         BASE::KeySet<TextView>::iterator viewIter = std::find_if( views.begin(), views.end(), MainWindow::SameFileFTor( record.file() ) );
-        Q_ASSERT( viewIter != views.end() );
+        if( viewIter == views.end() )
+        {
+
+            Debug::Throw(0) << "WindowServer::_open - invalid view" << endl;
+            return false;
+        }
 
         // check if the found view is the current
         if( *viewIter == &activeView )
@@ -680,7 +701,11 @@ void WindowServer::_detach( void )
     MainWindow& activeWindowLocal( _activeWindow() );
 
     // check number of independent displays
-    Q_ASSERT( activeWindowLocal.activeView().independentDisplayCount() > 1 || BASE::KeySet<TextView>( &_activeWindow() ).size() > 1 );
+    if( activeWindowLocal.activeView().independentDisplayCount() <= 1 && BASE::KeySet<TextView>( &_activeWindow() ).size() <= 1 )
+    {
+        Debug::Throw(0) << "WindowServer::_detach - invalid display count" << endl;
+        return;
+    }
 
     // get current display
     TextDisplay& activeDisplayLocal( activeWindowLocal.activeView().activeDisplay() );
@@ -760,7 +785,12 @@ void WindowServer::_reparent( const File& first, const File& second )
 
     // make view active
     BASE::KeySet<MainWindow> windows( view );
-    Q_ASSERT( windows.size() == 1 );
+    if( windows.size() != 1 )
+    {
+        Debug::Throw(0) << "WindowServer::_reparent - invalid number of windows" << endl;
+        return;
+    }
+
     MainWindow& window( **windows.begin() );
     window.setActiveView( view );
     window.raise();
@@ -859,7 +889,7 @@ bool WindowServer::_close( FileRecord::List records )
     Debug::Throw( "WindowServer::_close.\n" );
 
     // check how many records are modified
-    Q_ASSERT( !records.empty() );
+    if( records.isEmpty() ) return false;
 
     // ask for confirmation
     if( records.size() > 1 && !CloseFilesDialog( &_activeWindow(), records ).exec() ) return true;
@@ -969,7 +999,12 @@ TextView& WindowServer::_findView( const File& file )
 
     TextDisplay& display = _findDisplay( file );
     BASE::KeySet<TextView> views( display );
-    Q_ASSERT( views.size() == 1 );
+    if( views.size() != 1 )
+    {
+        Debug::Throw(0) << "WindowServer::_findView - no view found" << endl;
+        abort();
+    }
+
     return **views.begin();
 }
 
@@ -1094,7 +1129,12 @@ void WindowServer::_applyArguments( TextDisplay& display, CommandLineArguments a
 void WindowServer::_setActiveWindow( MainWindow& window )
 {
     Debug::Throw() << "WindowServer::setActiveWindow - key: " << window.key() << endl;
-    Q_ASSERT( window.isAssociated( this ) );
+    if( !window.isAssociated( this ) )
+    {
+        Debug::Throw(0) << "WindowServer::_setActiveWindow - invalid window" << endl;
+        return;
+    }
+
     activeWindow_ = &window;
 }
 

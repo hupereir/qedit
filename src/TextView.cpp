@@ -76,7 +76,12 @@ void TextView::setIsNewDocument( void )
     // look for first empty display
     BASE::KeySet<TextDisplay> displays( this );
     BASE::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
-    Q_ASSERT( iter != displays.end() );
+    if( iter == displays.end() )
+    {
+        Debug::Throw(0) << "TextView::setIsNewDocument - invalid display" << endl;
+        return;
+    }
+
     TextDisplay &display( **iter );
 
     // set display as new document
@@ -95,12 +100,21 @@ void TextView::setFile( File file )
 {
 
     Debug::Throw() << "TextView::setFile - " << file << endl;
-    Q_ASSERT( !file.isEmpty() );
+    if( file.isEmpty() )
+    {
+        Debug::Throw(0) << "TextView::setFile - invalid file name" << file << endl;
+        return;
+    }
 
     // look for first empty display
     BASE::KeySet<TextDisplay> displays( this );
     BASE::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
-    Q_ASSERT( iter != displays.end() );
+    if( iter == displays.end() )
+    {
+        Debug::Throw(0) << "TextView::setFile - invalid display" << endl;
+        return;
+    }
+
     TextDisplay &display( **iter );
 
     // open file in active display
@@ -178,7 +192,11 @@ void TextView::setActiveDisplay( TextDisplay& display )
 {
 
     Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << endl;
-    Q_ASSERT( display.isAssociated( this ) );
+    if( !display.isAssociated( this ) )
+    {
+        Debug::Throw(0) << "TextView::setActiveDisplay - invalid display" << endl;
+        return;
+    }
 
     if( activeDisplay_ != &display )
     {
@@ -501,7 +519,11 @@ void TextView::diff( void )
     }
 
     // check that one display was found
-    Q_ASSERT( iter != displays.end() );
+    if( iter != displays.end() )
+    {
+        Debug::Throw(0) << "TextView::diff - display not found" << endl;
+        return;
+    }
 
     // try run
     if( !diff->run() )
