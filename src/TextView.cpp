@@ -519,7 +519,7 @@ void TextView::diff( void )
     }
 
     // check that one display was found
-    if( iter != displays.end() )
+    if( iter == displays.end() )
     {
         Debug::Throw(0) << "TextView::diff - display not found" << endl;
         return;

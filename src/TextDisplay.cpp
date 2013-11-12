@@ -435,7 +435,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
     if( in.open( QIODevice::ReadOnly ) )
     {
 
-        setPlainText( in.readAll() );
+        setPlainText( QString::fromLatin1(in.readAll()) );
         in.close();
 
         // update flags
