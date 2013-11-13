@@ -261,6 +261,9 @@ class TextDisplay: public AnimatedTextEditor
 
     //@}
 
+    //! set text encoding
+    virtual void setTextEncoding( const QString& );
+
     //!@name macro
     //@{
 
@@ -269,9 +272,6 @@ class TextDisplay: public AnimatedTextEditor
     { return macros_; }
 
     //@}
-
-    //! returns true if paragraph is to be ignored when identing/parsing parenthesis
-    bool ignoreParagraph( const QTextBlock& paragraph );
 
     //! text highlight
     bool hasTextHighlight( void )
@@ -691,6 +691,9 @@ class TextDisplay: public AnimatedTextEditor
     FileRecord::PropertyId::Id dictionaryPropertyId_;
     FileRecord::PropertyId::Id filterPropertyId_;
     //@}
+
+    //! text encoding (needed for conversions
+    QString textEncoding_;
 
     //! true if display is to be deleted
     bool closed_;

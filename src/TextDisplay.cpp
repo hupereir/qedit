@@ -449,6 +449,8 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
         setModified( false );
         _setIgnoreWarnings( false );
 
+        textEncoding_ = codecName;
+
     }
 
     // save file if restored from autosaved.
@@ -824,6 +826,25 @@ void TextDisplay::revertToSave( void )
     cursor.setPosition( position );
     setTextCursor( cursor );
 
+}
+
+//______________________________________________________________________________
+void TextDisplay::setTextEncoding( const QString& textEncoding )
+{
+    Debug::Throw(0) << "TextEditor::setTextEncoding - old: " << textEncoding_ << " new: " << textEncoding << endl;
+
+    if( textEncoding == textEncoding_ ) return;
+
+    // get codec
+    QTextCodec* oldCodec( QTextCodec::codecForName( qPrintable( textEncoding_ ) ) );
+    QTextCodec* newCodec( QTextCodec::codecForName( qPrintable( textEncoding ) ) );
+    if( oldCodec && newCodec )
+    {
+
+        setPlainText( newCodec->toUnicode( oldCodec->fromUnicode( qPrintable( toPlainText() ) ) ) );
+        textEncoding_ = textEncoding;
+
+    }
 }
 
 //_______________________________________________________

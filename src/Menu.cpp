@@ -250,7 +250,7 @@ void Menu::_updatePreferenceMenu( void )
     preferenceMenu_->addSeparator();
     preferenceMenu_->addAction( &application.configurationAction() );
     preferenceMenu_->addAction( &application.documentClassesConfigurationAction() );
-    preferenceMenu_->addAction( &application.textEncodingAction() );
+    // preferenceMenu_->addAction( &application.textEncodingAction() );
     #if WITH_ASPELL
     preferenceMenu_->addAction( &application.spellCheckConfigurationAction() );
     #endif

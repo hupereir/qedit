@@ -227,8 +227,7 @@ void Application::_configureTextEncoding( void )
     if( !dialog.exec() ) return;
 
     // update current text encoding if needed
-    if( textEncodingWidget->currentTextEncoding() != defaultEncoding )
-    { windowServer_->updateCurrentTextEncoding( textEncodingWidget->currentTextEncoding() ); }
+    windowServer_->updateCurrentTextEncoding( textEncodingWidget->currentTextEncoding() );
 
     // trigger configuration changed if default encoding is changed
     if( textEncodingWidget->defaultTextEncoding() != defaultEncoding )
