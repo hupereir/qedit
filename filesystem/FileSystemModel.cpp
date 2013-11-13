@@ -21,6 +21,7 @@
 *******************************************************************************/
 
 #include "FileSystemModel.h"
+#include "FileSystemModel.moc"
 
 #include "CustomPixmap.h"
 #include "FileIconProvider.h"

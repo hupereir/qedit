@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "Debug.h"
 #include "FileCheckDialog.h"
+#include "FileCheckDialog.moc"
 #include "FileList.h"
 #include "Singleton.h"
 #include "TreeView.h"

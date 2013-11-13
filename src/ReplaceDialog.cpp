@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "ReplaceDialog.h"
+#include "ReplaceDialog.moc"
 #include "Debug.h"
 #include "QtUtil.h"
 

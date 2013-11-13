@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "DocumentClassManagerDialog.h"
+#include "DocumentClassManagerDialog.moc"
 
 #include "BaseIcons.h"
 #include "ContextMenu.h"

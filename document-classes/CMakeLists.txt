@@ -49,35 +49,23 @@ SET( document_classes_SOURCES
   TextParenthesis.cpp
 )
 
-SET( document_classes_HEADERS
-  BlockDelimiterDisplay.h
-  DocumentClassModel.h
-  DocumentClassManagerDialog.h
-  ParenthesisHighlight.h
-  TextHighlight.h
-  TextIndent.h
-  TextMacroMenu.h
-)
-
 SET( document_classes_RESOURCES patterns.qrc)
 
 IF( USE_QT5 )
 
-  QT5_WRAP_CPP( document_classes_HEADERS_MOC ${document_classes_HEADERS} )
   QT5_ADD_RESOURCES( document_classes_RESOURCES_RCC ${document_classes_RESOURCES})
 
 ELSE()
 
-  QT4_WRAP_CPP( document_classes_HEADERS_MOC ${document_classes_HEADERS} )
   QT4_ADD_RESOURCES( document_classes_RESOURCES_RCC ${document_classes_RESOURCES})
 
 ENDIF()
 
 ADD_LIBRARY( document-classes STATIC
   ${document_classes_SOURCES}
-  ${document_classes_HEADERS_MOC}
   ${document_classes_RESOURCES_RCC}
 )
+
 TARGET_LINK_LIBRARIES( document-classes ${QT_LIBRARIES} )
 
 IF( USE_QT5 )

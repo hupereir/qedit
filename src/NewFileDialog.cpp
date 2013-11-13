@@ -18,6 +18,7 @@
 *******************************************************************************/
 
 #include "NewFileDialog.h"
+#include "NewFileDialog.moc"
 
 #include "IconEngine.h"
 #include "Icons.h"

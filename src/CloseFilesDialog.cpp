@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "CloseFilesDialog.h"
+#include "CloseFilesDialog.moc"
 
 #include "AnimatedTreeView.h"
 #include "Debug.h"

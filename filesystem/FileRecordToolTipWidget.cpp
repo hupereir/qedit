@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "FileRecordToolTipWidget.h"
+#include "FileRecordToolTipWidget.moc"
 #include "Debug.h"
 #include "GridLayout.h"
 #include "Singleton.h"

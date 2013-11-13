@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "TextDisplay.h"
+#include "TextDisplay.moc"
 
 #include "AnimatedTabWidget.h"
 #include "AnimatedLineEditor.h"

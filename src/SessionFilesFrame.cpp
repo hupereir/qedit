@@ -19,6 +19,7 @@
 *******************************************************************************/
 
 #include "SessionFilesFrame.h"
+#include "SessionFilesFrame.moc"
 
 #include "Application.h"
 #include "AnimatedTreeView.h"

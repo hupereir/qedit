@@ -19,6 +19,7 @@
 *******************************************************************************/
 
 #include "DocumentClassMenu.h"
+#include "DocumentClassMenu.moc"
 
 #include "Application.h"
 #include "Debug.h"

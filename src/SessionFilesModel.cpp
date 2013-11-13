@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "SessionFilesModel.h"
+#include "SessionFilesModel.moc"
 
 #include "CustomPixmap.h"
 #include "FileRecordProperties.h"

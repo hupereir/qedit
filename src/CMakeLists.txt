@@ -66,6 +66,7 @@ SET( qedit_SOURCES
   NewDocumentNameServer.cpp
   NewFileDialog.cpp
   PrintHelper.cpp
+  ProgressDialog.cpp
   RecentFilesFrame.cpp
   ReplaceDialog.cpp
   RestoreSessionDialog.cpp
@@ -78,49 +79,14 @@ SET( qedit_SOURCES
   main.cpp
 )
 
-SET( qedit_HEADERS
-  Application.h
-  AskForSaveDialog.h
-  AutoSave.h
-  CloseFilesDialog.h
-  ConfigurationDialog.h
-  Diff.h
-  DocumentClassMenu.h
-  DocumentClassToolBar.h
-  FileCheck.h
-  FileCheckDialog.h
-  FileModifiedDialog.h
-  FileRemovedDialog.h
-  FileSelectionDialog.h
-  HtmlHelper.h
-  MainWindow.h
-  Menu.h
-  NavigationFrame.h
-  NavigationToolBar.h
-  NewFileDialog.h
-  PrintHelper.h
-  ProgressDialog.h
-  RecentFilesFrame.h
-  ReplaceDialog.h
-  RestoreSessionDialog.h
-  SaveAllDialog.h
-  SessionFilesFrame.h
-  SessionFilesModel.h
-  TextDisplay.h
-  TextView.h
-  WindowServer.h
-)
-
 SET( qedit_RESOURCES pixmaps.qrc)
 
 IF( USE_QT5 )
 
-  QT5_WRAP_CPP( qedit_HEADERS_MOC ${qedit_HEADERS} )
   QT5_ADD_RESOURCES( qedit_RESOURCES_RCC ${qedit_RESOURCES})
 
 ELSE()
 
-  QT4_WRAP_CPP( qedit_HEADERS_MOC ${qedit_HEADERS} )
   QT4_ADD_RESOURCES( qedit_RESOURCES_RCC ${qedit_RESOURCES})
 
 ENDIF()
@@ -130,7 +96,6 @@ ADD_DESKTOP_FILE( ${CMAKE_SOURCE_DIR}/qedit )
 ADD_PLATFORM_EXECUTABLE( qedit
   ${QEDIT_VERSION}
   ${qedit_SOURCES}
-  ${qedit_HEADERS_MOC}
   ${qedit_RESOURCES_RCC}
 )
 

@@ -28,6 +28,7 @@
 #include "NewFileDialog.h"
 #include "Singleton.h"
 #include "TextView.h"
+#include "TextView.moc"
 
 #include <QLayout>
 

@@ -24,6 +24,7 @@
 #include "TextHighlight.h"
 #include "Debug.h"
 #include "BlockDelimiterDisplay.h"
+#include "BlockDelimiterDisplay.moc"
 #include "HighlightBlockData.h"
 #include "XmlOptions.h"
 

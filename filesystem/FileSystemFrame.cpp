@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "FileSystemFrame.h"
+#include "FileSystemFrame.moc"
 
 #include "AnimatedTreeView.h"
 #include "FileRecordProperties.h"

@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "SaveAllDialog.h"
+#include "SaveAllDialog.moc"
 
 #include "AnimatedTreeView.h"
 #include "Debug.h"

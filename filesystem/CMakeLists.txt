@@ -31,30 +31,7 @@ SET( filesystem_SOURCES
   RenameFileDialog.cpp
 )
 
-SET( filesystem_HEADERS
-  FileInformationDialog.h
-  FileRecordToolTipWidget.h
-  FileSystemFrame.h
-  FileSystemModel.h
-  RemoveFilesDialog.h
-  RenameFileDialog.h
-)
-
-IF( USE_QT5 )
-
-  QT5_WRAP_CPP( filesystem_HEADERS_MOC ${filesystem_HEADERS} )
-
-ELSE()
-
-  QT4_WRAP_CPP( filesystem_HEADERS_MOC ${filesystem_HEADERS} )
-
-ENDIF()
-
-ADD_LIBRARY( filesystem STATIC
-  ${filesystem_SOURCES}
-  ${filesystem_HEADERS_MOC}
-)
-
+ADD_LIBRARY( filesystem STATIC ${filesystem_SOURCES} )
 TARGET_LINK_LIBRARIES( filesystem ${QT_LIBRARIES} )
 
 IF( USE_QT5 )

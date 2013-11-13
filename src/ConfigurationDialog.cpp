@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "ConfigurationDialog.h"
+#include "ConfigurationDialog.moc"
 
 #include "Application.h"
 #include "BaseFileInfoConfigurationWidget.h"

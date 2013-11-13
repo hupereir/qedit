@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "Application.h"
+#include "Application.moc"
 #include "AutoSave.h"
 #include "ConfigurationDialog.h"
 #include "DocumentClass.h"

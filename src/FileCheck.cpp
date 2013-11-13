@@ -22,6 +22,7 @@
 #include "Debug.h"
 #include "File.h"
 #include "FileCheck.h"
+#include "FileCheck.moc"
 #include "TextDisplay.h"
 #include "TextView.h"
 

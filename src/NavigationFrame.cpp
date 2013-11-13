@@ -18,6 +18,7 @@
 *******************************************************************************/
 
 #include "NavigationFrame.h"
+#include "NavigationFrame.moc"
 
 #include "Application.h"
 #include "Debug.h"

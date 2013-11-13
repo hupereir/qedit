@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "Menu.h"
+#include "Menu.moc"
 
 #include "Application.h"
 #include "BlockDelimiterDisplay.h"

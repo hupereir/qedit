@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "MainWindow.h"
+#include "MainWindow.moc"
 
 #include "AnimatedLineEditor.h"
 #include "Application.h"

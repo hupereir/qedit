@@ -24,6 +24,7 @@
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassToolBar.h"
+#include "DocumentClassToolBar.moc"
 #include "Singleton.h"
 
 #include <QLabel>

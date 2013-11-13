@@ -20,6 +20,7 @@
 *******************************************************************************/
 
 #include "FileRemovedDialog.h"
+#include "FileRemovedDialog.moc"
 #include "Icons.h"
 #include "IconEngine.h"
 #include "QtUtil.h"
