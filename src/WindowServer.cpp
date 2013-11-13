@@ -392,6 +392,13 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
     return;
 }
 
+//___________________________________________________________
+void WindowServer::updateCurrentTextEncoding( const QString& textEncoding )
+{
+    Debug::Throw( "WindowServer::updateCurrentTextEncoding" );
+    _activeWindow().activeDisplay().setTextEncoding( textEncoding );
+}
+
 //____________________________________________
 void WindowServer::_updateConfiguration( void )
 {

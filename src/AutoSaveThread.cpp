@@ -30,6 +30,7 @@
 #include <QFile>
 #include <QLabel>
 #include <QTextStream>
+#include <QTextCodec>
 
 //_______________________________________________________________
 void AutoSaveThread::setFile( const File& file )
@@ -38,9 +39,9 @@ void AutoSaveThread::setFile( const File& file )
     File tmp( autoSaveName( file ) );
     if( tmp != file_ )
     {
-        fileChanged_ = true;
+        flags_ &= FileChanged;
         file_ = tmp;
-    } else fileChanged_ = false;
+    } else flags_ |= Flags( ~FileChanged );
 }
 
 
@@ -50,10 +51,21 @@ void AutoSaveThread::setContents( const QString& contents )
     QMutexLocker locker( &mutex_ );
     if( contents_ != contents )
     {
-        contentsChanged_ = true;
+        flags_ &= ContentChanged;
         contents_ = contents;
-    } else contentsChanged_ = false;
+    } else flags_ |= Flags( ~ContentChanged );
 
+}
+
+//________________________________________________________________
+void AutoSaveThread::setTextEncoding( const QString& encoding )
+{
+    QMutexLocker locker( &mutex_ );
+    if( encoding != textEncoding_ )
+    {
+        flags_ &= TextEncodingChanged;
+        textEncoding_ = encoding;
+    } else flags_ |= Flags( ~TextEncodingChanged );
 }
 
 //________________________________________________________________
@@ -80,18 +92,24 @@ File AutoSaveThread::autoSaveName( const File& file )
 void AutoSaveThread::run( void )
 {
 
-    if( contentsChanged_ || fileChanged_ )
+    if( flags_ )
     {
 
         // make sure path exists
         QDir path( file().path() );
         if( !( path.exists() || path.mkpath( "." ) ) ) return;
 
+        // get encoding
+        QTextCodec* codec( QTextCodec::codecForName( qPrintable( textEncoding_ ) ) );
+        Q_ASSERT( codec );
+
         // write to file
         QFile out( file() );
         if( !out.open( QIODevice::WriteOnly ) ) return;
-        out.write( contents_.toLatin1() );
+        out.write( codec->fromUnicode( contents_ ) );
         out.close();
+
+        flags_ = None;
 
     }
 

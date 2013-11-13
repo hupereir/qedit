@@ -71,6 +71,7 @@
 #include <QPushButton>
 #include <QMenu>
 #include <QScrollBar>
+#include <QTextCodec>
 #include <QTextLayout>
 
 //___________________________________________________
@@ -436,7 +437,12 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
     if( in.open( QIODevice::ReadOnly ) )
     {
 
-        setPlainText( QString::fromLatin1(in.readAll()) );
+        // get encoding
+        QByteArray codecName( XmlOptions::get().raw( "TEXT_ENCODING" ) );
+        QTextCodec* codec( QTextCodec::codecForName( codecName ) );
+        Q_ASSERT( codec );
+
+        setPlainText( codec->toUnicode(in.readAll()) );
         in.close();
 
         // update flags
@@ -692,10 +698,15 @@ void TextDisplay::save( void )
             }
         }
 
+        // get encoding
+        QByteArray codecName( XmlOptions::get().raw( "TEXT_ENCODING" ) );
+        QTextCodec* codec( QTextCodec::codecForName( codecName ) );
+        Q_ASSERT( codec );
+
         // write file
         // make sure that last line ends with "end of line"
         QString text( toPlainText() );
-        out.write( text.toLatin1() );
+        out.write( codec->fromUnicode( text ) );
         if( !text.isEmpty() && text[text.size()-1] != '\n' ) out.write( "\n" );
 
         // close

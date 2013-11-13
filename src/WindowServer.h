@@ -109,6 +109,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     const Qt::Orientation& defaultOrientation( const OrientationMode& mode = NORMAL )
     { return mode == NORMAL ? defaultOrientation_:defaultDiffOrientation_; }
 
+    //! update text encoding
+    void updateCurrentTextEncoding( const QString& );
+
     Q_SIGNALS:
 
     //! emmited whenever the session file list is modified

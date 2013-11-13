@@ -41,8 +41,7 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
     AutoSaveThread( QObject* parent ):
         QThread( parent ),
         Counter( "AutoSaveThread" ),
-        fileChanged_( true ),
-        contentsChanged_( true )
+        flags_( None )
     { Debug::Throw( "AutoSaveThread::AutoSaveThread.\n" ); }
 
     //! destructor
@@ -67,10 +66,24 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
     //! set content
     void setContents( const QString& );
 
+    //! set encoding
+    void setTextEncoding( const QString& );
+
     //@}
 
     //! create backup file name from file
     static File autoSaveName( const File& );
+
+    //! state flags
+    enum Flag
+    {
+        None = 0,
+        FileChanged = 1<<0,
+        ContentChanged = 1<<1,
+        TextEncodingChanged = 1<<2
+    };
+
+    Q_DECLARE_FLAGS( Flags, Flag )
 
     protected:
 
@@ -88,12 +101,14 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
     //! content to be saved
     QString contents_;
 
-    //! modification flag
-    bool fileChanged_;
+    //! text encoding
+    QString textEncoding_;
 
-    //! modification flag
-    bool contentsChanged_;
+    Flags flags_;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( AutoSaveThread::Flags );
+
 
 #endif
