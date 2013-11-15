@@ -86,7 +86,7 @@ FileRecordToolTipWidget::FileRecordToolTipWidget( QWidget* parent ):
     vLayout->addStretch( 1 );
 
     // configuration
-    connect( Singleton::get().application(), SIGNAL( configurationChanged( void ) ), SLOT( _updateConfiguration( void ) ) );
+    connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
     _updateConfiguration();
 
 }

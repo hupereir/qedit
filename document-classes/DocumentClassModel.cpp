@@ -45,7 +45,7 @@ const QString DocumentClassModel::columnTitles_[DocumentClassModel::nColumns] =
 DocumentClassModel::DocumentClassModel( QObject* parent ):
     ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>(parent),
     Counter( "DocumentClassModel" )
-{ connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) ); }
+{ connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) ); }
 
 //__________________________________________________________________
 Qt::ItemFlags DocumentClassModel::flags( const QModelIndex& index ) const

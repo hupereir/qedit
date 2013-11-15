@@ -54,9 +54,9 @@ BlockDelimiterDisplay::BlockDelimiterDisplay(TextEditor* editor ):
     _installActions();
 
     // connections
-    connect( &_editor().wrapModeAction(), SIGNAL( toggled( bool ) ), SLOT( needUpdate() ) );
-    connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
-    connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
+    connect( &_editor().wrapModeAction(), SIGNAL(toggled(bool)), SLOT(needUpdate()) );
+    connect( _editor().document(), SIGNAL(blockCountChanged(int)), SLOT(_blockCountChanged()) );
+    connect( _editor().document(), SIGNAL(contentsChanged()), SLOT(_contentsChanged()) );
 
     // initialize width
     // the value is meaningless but needed to avoid early non-initialize variables
@@ -84,8 +84,8 @@ void BlockDelimiterDisplay::synchronize( const BlockDelimiterDisplay* other )
     setWidth( other->width() );
 
     // re-initialize connections
-    connect( _editor().document(), SIGNAL( blockCountChanged( int ) ), SLOT( _blockCountChanged() ) );
-    connect( _editor().document(), SIGNAL( contentsChanged() ), SLOT( _contentsChanged() ) );
+    connect( _editor().document(), SIGNAL(blockCountChanged(int)), SLOT(_blockCountChanged()) );
+    connect( _editor().document(), SIGNAL(contentsChanged()), SLOT(_contentsChanged()) );
 
 }
 
@@ -525,25 +525,25 @@ void BlockDelimiterDisplay::_installActions( void )
     collapseCurrentAction_ = new QAction( tr( "Collapse Current Block" ), this );
     collapseCurrentAction_->setToolTip( tr( "Collapse current collapsed block" ) );
     collapseCurrentAction_->setShortcut( Qt::CTRL + Qt::Key_Minus );
-    connect( collapseCurrentAction_, SIGNAL( triggered() ), SLOT( _collapseCurrentBlock() ) );
+    connect( collapseCurrentAction_, SIGNAL(triggered()), SLOT(_collapseCurrentBlock()) );
     collapseCurrentAction_->setEnabled( false );
 
     expandCurrentAction_ = new QAction( tr( "Expand Current Block" ), this );
     expandCurrentAction_->setToolTip( tr( "Expand current collapsed block" ) );
     expandCurrentAction_->setShortcut( Qt::CTRL + Qt::Key_Plus );
-    connect( expandCurrentAction_, SIGNAL( triggered() ), SLOT( _expandCurrentBlock() ) );
+    connect( expandCurrentAction_, SIGNAL(triggered()), SLOT(_expandCurrentBlock()) );
     expandCurrentAction_->setEnabled( false );
 
     collapseAction_ = new QAction( tr( "Collapse Top-Level Blocks" ), this );
     collapseAction_->setToolTip( tr( "Collapse all top level blocks" ) );
     collapseAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Minus );
-    connect( collapseAction_, SIGNAL( triggered() ), SLOT( _collapseTopLevelBlocks() ) );
+    connect( collapseAction_, SIGNAL(triggered()), SLOT(_collapseTopLevelBlocks()) );
     collapseAction_->setEnabled( true );
 
     expandAllAction_ = new QAction( tr( "Expand All Blocks" ), this );
     expandAllAction_->setToolTip( tr( "Expand all collapsed blocks" ) );
     expandAllAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Plus );
-    connect( expandAllAction_, SIGNAL( triggered() ), SLOT( expandAllBlocks() ) );
+    connect( expandAllAction_, SIGNAL(triggered()), SLOT(expandAllBlocks()) );
     expandAllAction_->setEnabled( false );
 
 }

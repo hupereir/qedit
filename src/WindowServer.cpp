@@ -66,14 +66,14 @@ WindowServer::WindowServer( QObject* parent ):
 
     // create actions
     saveAllAction_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), tr( "Save All" ), this );
-    connect( saveAllAction_, SIGNAL( triggered() ), SLOT( _saveAll() ) );
+    connect( saveAllAction_, SIGNAL(triggered()), SLOT(_saveAll()) );
 
     // scratch files
     scratchFileMonitor_ = new ScratchFileMonitor( this );
-    connect( qApp, SIGNAL( aboutToQuit( void ) ), scratchFileMonitor_, SLOT( deleteScratchFiles( void ) ) );
+    connect( qApp, SIGNAL(aboutToQuit()), scratchFileMonitor_, SLOT(deleteScratchFiles()) );
 
     // configuration
-    connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+    connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
     _updateConfiguration();
 
 }
@@ -92,33 +92,33 @@ MainWindow& WindowServer::newMainWindow( void )
     _setActiveWindow( *window );
 
     // these connections are needed to make sure all windows recieve modifications of session files
-    connect( window, SIGNAL( destroyed() ), SIGNAL( sessionFilesChanged() ) );
-    connect( window, SIGNAL( modificationChanged() ), SIGNAL( sessionFilesChanged() ) );
-    connect( window, SIGNAL( modificationChanged() ), SLOT( _updateActions() ) );
-    connect( window, SIGNAL( scratchFileCreated( const File& ) ), scratchFileMonitor_, SLOT( add( const File& ) ) );
-    connect( this, SIGNAL( sessionFilesChanged() ), &window->navigationFrame().sessionFilesFrame(), SLOT( update() ) );
+    connect( window, SIGNAL(destroyed()), SIGNAL(sessionFilesChanged()) );
+    connect( window, SIGNAL(modificationChanged()), SIGNAL(sessionFilesChanged()) );
+    connect( window, SIGNAL(modificationChanged()), SLOT(_updateActions()) );
+    connect( window, SIGNAL(scratchFileCreated(File)), scratchFileMonitor_, SLOT(add(File)) );
+    connect( this, SIGNAL(sessionFilesChanged()), &window->navigationFrame().sessionFilesFrame(), SLOT(update()) );
 
-    connect( window, SIGNAL( activated( MainWindow* ) ), SLOT( _activeWindowChanged( MainWindow* ) ) );
-    connect( &window->newFileAction(), SIGNAL( triggered() ), SLOT( _newFile() ) );
-
-    // open actions
-    connect( &window->openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
-    connect( &window->openHorizontalAction(), SIGNAL( triggered() ), SLOT( _openHorizontal() ) );
-    connect( &window->openVerticalAction(), SIGNAL( triggered() ), SLOT( _openVertical() ) );
-    connect( &window->detachAction(), SIGNAL( triggered() ), SLOT( _detach() ) );
-
-    connect( &window->navigationFrame().sessionFilesFrame().model(), SIGNAL( reparentFiles( const File&, const File& ) ), SLOT( _reparent( const File&, const File& ) ) );
-    connect( &window->navigationFrame().sessionFilesFrame().model(), SIGNAL( reparentFilesToMain( const File&, const File& ) ), SLOT( _reparentToMain( const File&, const File& ) ) );
+    connect( window, SIGNAL(activated(MainWindow*)), SLOT(_activeWindowChanged(MainWindow*)) );
+    connect( &window->newFileAction(), SIGNAL(triggered()), SLOT(_newFile()) );
 
     // open actions
-    connect( &window->menu().recentFilesMenu(), SIGNAL( fileSelected( FileRecord ) ), SLOT( _open( FileRecord ) ) );
-    connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
-    connect( &window->navigationFrame().recentFilesFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
-    connect( &window->navigationFrame().fileSystemFrame(), SIGNAL( fileActivated( FileRecord ) ), SLOT( _open( FileRecord ) ) );
+    connect( &window->openAction(), SIGNAL(triggered()), SLOT(_open()) );
+    connect( &window->openHorizontalAction(), SIGNAL(triggered()), SLOT(_openHorizontal()) );
+    connect( &window->openVerticalAction(), SIGNAL(triggered()), SLOT(_openVertical()) );
+    connect( &window->detachAction(), SIGNAL(triggered()), SLOT(_detach()) );
+
+    connect( &window->navigationFrame().sessionFilesFrame().model(), SIGNAL(reparentFiles(File,File)), SLOT(_reparent(File,File)) );
+    connect( &window->navigationFrame().sessionFilesFrame().model(), SIGNAL(reparentFilesToMain(File,File)), SLOT(_reparentToMain(File,File)) );
+
+    // open actions
+    connect( &window->menu().recentFilesMenu(), SIGNAL(fileSelected(FileRecord)), SLOT(_open(FileRecord)) );
+    connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
+    connect( &window->navigationFrame().recentFilesFrame(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
+    connect( &window->navigationFrame().fileSystemFrame(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
 
     // other actions
-    connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( filesSaved( FileRecord::List ) ), SLOT( _save( FileRecord::List ) ) );
-    connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL( filesClosed( FileRecord::List ) ), SLOT( _close( FileRecord::List ) ) );
+    connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL(filesSaved(FileRecord::List)), SLOT(_save(FileRecord::List)) );
+    connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL(filesClosed(FileRecord::List)), SLOT(_close(FileRecord::List)) );
 
     return *window;
 }
@@ -362,7 +362,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
         {
             if( !view->selectDisplay( file ) ) continue;
             TextDisplay* display( &view->activeDisplay() );
-            connect( display, SIGNAL( progressAvailable( int ) ), &dialog, SLOT( setValue( int ) ) );
+            connect( display, SIGNAL(progressAvailable(int)), &dialog, SLOT(setValue(int)) );
             maximum += display->toPlainText().size();
             displays.insert( display );
         }

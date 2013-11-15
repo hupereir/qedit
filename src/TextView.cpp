@@ -680,17 +680,17 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     TextDisplay* display = new TextDisplay( parent );
 
     // connections
-    connect( display, SIGNAL( needUpdate( TextDisplay::UpdateFlags ) ), SIGNAL( needUpdate( TextDisplay::UpdateFlags ) ) );
-    connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( _activeDisplayChanged( TextEditor* ) ) );
-    connect( display, SIGNAL( hasFocus( TextEditor* ) ), SLOT( checkDisplayModifications( TextEditor* ) ) );
-    connect( display, SIGNAL( cursorPositionChanged() ), &positionTimer_, SLOT( start() ) );
-    connect( display, SIGNAL( modifiersChanged( TextEditor::Modifiers ) ), SIGNAL( modifiersChanged( TextEditor::Modifiers ) ) );
+    connect( display, SIGNAL(needUpdate(TextDisplay::UpdateFlags)), SIGNAL(needUpdate(TextDisplay::UpdateFlags)) );
+    connect( display, SIGNAL(hasFocus(TextEditor*)), SLOT(_activeDisplayChanged(TextEditor*)) );
+    connect( display, SIGNAL(hasFocus(TextEditor*)), SLOT(checkDisplayModifications(TextEditor*)) );
+    connect( display, SIGNAL(cursorPositionChanged()), &positionTimer_, SLOT(start()) );
+    connect( display, SIGNAL(modifiersChanged(TextEditor::Modifiers)), SIGNAL(modifiersChanged(TextEditor::Modifiers)) );
 
-    connect( display, SIGNAL( undoAvailable( bool ) ), SIGNAL( undoAvailable( bool ) ) );
-    connect( display, SIGNAL( redoAvailable( bool ) ), SIGNAL( redoAvailable( bool ) ) );
+    connect( display, SIGNAL(undoAvailable(bool)), SIGNAL(undoAvailable(bool)) );
+    connect( display, SIGNAL(redoAvailable(bool)), SIGNAL(redoAvailable(bool)) );
 
-    connect( display, SIGNAL( destroyed( void ) ), SLOT( _checkDisplays( void ) ) );
-    connect( display, SIGNAL( destroyed( void ) ), SIGNAL( displayCountChanged( void ) ) );
+    connect( display, SIGNAL(destroyed()), SLOT(_checkDisplays()) );
+    connect( display, SIGNAL(destroyed()), SIGNAL(displayCountChanged()) );
 
     // retrieve parent main window
     MainWindow &window = *static_cast<MainWindow*>( TextView::window() );
@@ -698,15 +698,15 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     // customize display actions
     /* this is needed to be able to handle a single dialog for stacked windows */
     display->gotoLineAction().disconnect();
-    connect( &display->gotoLineAction(), SIGNAL( triggered() ), &window, SLOT( selectLineFromDialog() ) );
+    connect( &display->gotoLineAction(), SIGNAL(triggered()), &window, SLOT(selectLineFromDialog()) );
 
     display->findAction().disconnect();
-    connect( &display->findAction(), SIGNAL( triggered() ), &window, SLOT( findFromDialog() ) );
-    connect( display, SIGNAL( noMatchFound() ), &window, SIGNAL( noMatchFound() ) );
-    connect( display, SIGNAL( matchFound() ), &window, SIGNAL( matchFound() ) );
+    connect( &display->findAction(), SIGNAL(triggered()), &window, SLOT(findFromDialog()) );
+    connect( display, SIGNAL(noMatchFound()), &window, SIGNAL(noMatchFound()) );
+    connect( display, SIGNAL(matchFound()), &window, SIGNAL(matchFound()) );
 
     display->replaceAction().disconnect();
-    connect( &display->replaceAction(), SIGNAL( triggered() ), &window, SLOT( replaceFromDialog() ) );
+    connect( &display->replaceAction(), SIGNAL(triggered()), &window, SLOT(replaceFromDialog()) );
 
     // associate display to this editFrame
     BASE::Key::associate( this, display );

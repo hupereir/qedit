@@ -45,7 +45,7 @@ NavigationToolBar::NavigationToolBar( QWidget* parent ):
 {
     Debug::Throw( "NavigationToolBar:NavigationToolBar.\n" );
     setTransparent( true );
-    CustomToolBar::connect( this, SIGNAL( orientationChanged( Qt::Orientation ) ), SLOT( _orientationChanged( Qt::Orientation ) ) );
+    CustomToolBar::connect( this, SIGNAL(orientationChanged(Qt::Orientation)), SLOT(_orientationChanged(Qt::Orientation)) );
 }
 
 //_______________________________________________________________
@@ -56,11 +56,11 @@ void NavigationToolBar::connect( NavigationFrame& frame )
     Q_ASSERT( !navigationFrame_ );
     navigationFrame_ = &frame;
 
-    CustomToolBar::connect( &_navigationFrame().visibilityAction(), SIGNAL( toggled( bool ) ), SLOT( _navigationFrameVisibilityChanged( bool ) ) );
+    CustomToolBar::connect( &_navigationFrame().visibilityAction(), SIGNAL(toggled(bool)), SLOT(_navigationFrameVisibilityChanged(bool)) );
 
     // button group
     QButtonGroup* button_group = new QButtonGroup( this );
-    CustomToolBar::connect( button_group, SIGNAL( buttonClicked( QAbstractButton* ) ), SLOT( _display( QAbstractButton* ) ) );
+    CustomToolBar::connect( button_group, SIGNAL(buttonClicked(QAbstractButton*)), SLOT(_display(QAbstractButton*)) );
     button_group->setExclusive( false );
 
     // matching buttons
@@ -240,8 +240,8 @@ void NavigationToolBar::contextMenuEvent( QContextMenuEvent* event )
     menu.toolButtonStyleMenu().select( (Qt::ToolButtonStyle) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION" ) );
     menu.iconSizeMenu().select( (IconSize::Size) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) );
 
-    CustomToolBar::connect( &menu.toolButtonStyleMenu(), SIGNAL( styleSelected( int ) ), SLOT( _updateToolButtonStyle( int ) ) );
-    CustomToolBar::connect( &menu.iconSizeMenu(), SIGNAL( iconSizeSelected( IconSize::Size ) ), SLOT( _updateToolButtonIconSize( IconSize::Size ) ) );
+    CustomToolBar::connect( &menu.toolButtonStyleMenu(), SIGNAL(styleSelected(int)), SLOT(_updateToolButtonStyle(int)) );
+    CustomToolBar::connect( &menu.iconSizeMenu(), SIGNAL(iconSizeSelected(IconSize::Size)), SLOT(_updateToolButtonIconSize(IconSize::Size)) );
 
     // move and show menu
     menu.adjustSize();

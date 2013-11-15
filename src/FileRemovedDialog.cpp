@@ -70,22 +70,22 @@ Counter( "FileRemovedDialog" )
     // resave button
     QPushButton* button;
     buttonLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE ), tr( "Save Again" ), this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _reSave() ) );
+    connect( button, SIGNAL(clicked()), SLOT(_reSave()) );
     button->setToolTip( tr( "Save file again. Disc modifications will be lost" ) );
 
     // save as button
     buttonLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE_AS ), tr( "Save As" ), this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _saveAs() ) );
+    connect( button, SIGNAL(clicked()), SLOT(_saveAs()) );
     button->setToolTip( tr( "Save file with a different name" ) );
 
     // close button.
     buttonLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), tr( "Close" ), this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _close() ) );
+    connect( button, SIGNAL(clicked()), SLOT(_close()) );
     button->setToolTip( tr( "Close window" ) );
 
     // ignore button.
     buttonLayout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), tr( "Ignore" ), this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _ignore() ) );
+    connect( button, SIGNAL(clicked()), SLOT(_ignore()) );
     button->setToolTip( tr( "Ignore warning" ) );
 
     adjustSize();

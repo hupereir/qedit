@@ -53,7 +53,7 @@ selection_( selection )
     list_ = new TreeView( this );
     list_->setModel( &model_ );
     list_->setSelectionMode( QAbstractItemView::MultiSelection );
-    connect( list_->selectionModel(), SIGNAL( selectionChanged(const QItemSelection &, const QItemSelection &) ), SLOT( _updateButtons() ) );
+    connect( list_->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(_updateButtons()) );
 
     // retrieve file records
     FileRecordModel::List records;
@@ -78,13 +78,13 @@ selection_( selection )
     // deselect all
     buttonLayout().insertWidget( 0, button = new QPushButton( tr( "Clear Selection" ), this ) );
     button->setToolTip( tr( "Deselect all files in list" ) );
-    connect( button, SIGNAL( clicked() ), list_, SLOT( clearSelection() ) );
+    connect( button, SIGNAL(clicked()), list_, SLOT(clearSelection()) );
     clearSelectionButton_ = button;
 
     // select all
     buttonLayout().insertWidget( 0, button = new QPushButton( tr( "Select All" ), this ) );
     button->setToolTip( tr( "Select all files in list" ) );
-    connect( button, SIGNAL( clicked() ), list_, SLOT( selectAll() ) );
+    connect( button, SIGNAL(clicked()), list_, SLOT(selectAll()) );
     selectAllButton_ = button;
 
     // replace

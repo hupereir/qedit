@@ -90,35 +90,35 @@ Menu::Menu( QWidget* parent ):
 
     // recent files menu current file needs to be updated prior to the menu to be shown
     // this is performed every time the "file menu" is shown.
-    connect( menu, SIGNAL( aboutToShow() ), SLOT( _updateRecentFilesMenu() ) );
+    connect( menu, SIGNAL(aboutToShow()), SLOT(_updateRecentFilesMenu()) );
 
     // Edit menu
     editMenu_ = addMenu( tr( "Edit" ) );
-    connect( editMenu_, SIGNAL( aboutToShow() ), SLOT( _updateEditMenu() ) );
+    connect( editMenu_, SIGNAL(aboutToShow()), SLOT(_updateEditMenu()) );
 
     // Search menu
     searchMenu_ = addMenu( tr( "Search" ) );
-    connect( searchMenu_, SIGNAL( aboutToShow() ), SLOT( _updateSearchMenu() ) );
+    connect( searchMenu_, SIGNAL(aboutToShow()), SLOT(_updateSearchMenu()) );
 
     // windows
     windowsActionGroup_ = new ActionGroup( this );
     windowsMenu_ = addMenu( tr( "Session" ) );
-    connect( windowsMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updateWindowsMenu() ) );
-    connect( windowsMenu_, SIGNAL( triggered( QAction* ) ), SLOT( _selectFile( QAction* ) ) );
+    connect( windowsMenu_, SIGNAL(aboutToShow()), this, SLOT(_updateWindowsMenu()) );
+    connect( windowsMenu_, SIGNAL(triggered(QAction*)), SLOT(_selectFile(QAction*)) );
 
     // tools
     toolsMenu_ = addMenu( tr( "Tools" ) );
-    connect( toolsMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updateToolsMenu() ) );
+    connect( toolsMenu_, SIGNAL(aboutToShow()), this, SLOT(_updateToolsMenu()) );
 
     // macros
     addMenu( macroMenu_ = new TextMacroMenu( this ) );
     macroMenu_->setTitle( tr( "Macros" ) );
-    connect( macroMenu_, SIGNAL( aboutToShow() ), this, SLOT( updateMacroMenu() ) );
-    connect( macroMenu_, SIGNAL( textMacroSelected( QString ) ), SLOT( _selectMacro( QString ) ) );
+    connect( macroMenu_, SIGNAL(aboutToShow()), this, SLOT(updateMacroMenu()) );
+    connect( macroMenu_, SIGNAL(textMacroSelected(QString)), SLOT(_selectMacro(QString)) );
 
     // Settings
     preferenceMenu_ = addMenu( tr( "Settings" ) );
-    connect( preferenceMenu_, SIGNAL( aboutToShow() ), this, SLOT( _updatePreferenceMenu() ) );
+    connect( preferenceMenu_, SIGNAL(aboutToShow()), this, SLOT(_updatePreferenceMenu()) );
 
     // help manager
     BASE::HelpManager* help( new BASE::HelpManager( this ) );
@@ -328,7 +328,7 @@ void Menu::_updateToolsMenu( void )
 
     // rehighlight
     toolsMenu_->addSeparator();
-    QAction* action = toolsMenu_->addAction( tr( "Rehighlight" ), window(), SLOT( rehighlight() ) );
+    QAction* action = toolsMenu_->addAction( tr( "Rehighlight" ), window(), SLOT(rehighlight()) );
     bool enabled( display.textHighlightAction().isEnabled() && display.textHighlightAction().isChecked() );
 
     #if WITH_ASPELL

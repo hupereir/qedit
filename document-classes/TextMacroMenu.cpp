@@ -27,7 +27,7 @@ QMenu( parent ),
 Counter( "TextMacroMenu" )
 {
     Debug::Throw( "TextMacroMenu::TextMacroMenu.\n" );
-    connect( this, SIGNAL( triggered( QAction* ) ), SLOT( _processAction( QAction* ) ) );
+    connect( this, SIGNAL(triggered(QAction*)), SLOT(_processAction(QAction*)) );
 }
 
 //___________________________________________________________

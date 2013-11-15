@@ -51,7 +51,7 @@ SessionFilesModel::SessionFilesModel( QObject* parent ):
 
     Debug::Throw("SessionFilesModel::SessionFilesModel.\n" );
     setShowIcons( false );
-    connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+    connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
 
 }
 

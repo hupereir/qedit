@@ -48,7 +48,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
     setCurrentWidget( &sessionFilesFrame() );
 
     // connections
-    connect( this, SIGNAL( currentChanged( int ) ), SLOT( _updateCurrentWidget() ) );
+    connect( this, SIGNAL(currentChanged(int)), SLOT(_updateCurrentWidget()) );
 
     // actions
     _installActions();
@@ -63,7 +63,7 @@ void NavigationFrame::_installActions( void )
     addAction( visibilityAction_ = new QAction( tr( "Show &Navigation Panel" ), this ) );
     visibilityAction_->setCheckable( true );
     visibilityAction_->setChecked( true );
-    connect( visibilityAction_, SIGNAL( toggled( bool ) ), SLOT( setVisible( bool ) ) );
+    connect( visibilityAction_, SIGNAL(toggled(bool)), SLOT(setVisible(bool)) );
 
 }
 

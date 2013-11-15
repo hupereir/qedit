@@ -35,7 +35,7 @@ AutoSave::AutoSave( QObject* parent ):
     interval_( 0 )
 {
     Debug::Throw( "AutoSave::AutoSave.\n" );
-    connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
+    connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
 }
 
 //______________________________________________________

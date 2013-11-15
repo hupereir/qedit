@@ -37,8 +37,8 @@ Counter( "DocumentClassMenu" )
 {
     Debug::Throw( "DocumentClassMenu::DocumentClassMenu.\n" );
     actionGroup_ = new QActionGroup( this );
-    connect( this, SIGNAL( aboutToShow() ), SLOT( _update() ) );
-    connect( this, SIGNAL( triggered( QAction* ) ), SLOT( _selectClassName( QAction* ) ) );
+    connect( this, SIGNAL(aboutToShow()), SLOT(_update()) );
+    connect( this, SIGNAL(triggered(QAction*)), SLOT(_selectClassName(QAction*)) );
 }
 
 //_____________________________________________

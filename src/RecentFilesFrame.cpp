@@ -77,14 +77,14 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     menu->addAction( &_cleanAction() );
 
     // connections
-    connect( &model_, SIGNAL( layoutChanged() ), list_, SLOT( updateMask() ) );
-    connect( list_, SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions( void ) ) );
-    connect( list_->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
-    connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
-    connect( list_, SIGNAL( hovered( const QModelIndex& ) ), SLOT( _showToolTip( const QModelIndex& ) ) );
+    connect( &model_, SIGNAL(layoutChanged()), list_, SLOT(updateMask()) );
+    connect( list_, SIGNAL(customContextMenuRequested(QPoint)), SLOT(_updateActions()) );
+    connect( list_->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), SLOT(_itemSelected(QModelIndex)) );
+    connect( list_, SIGNAL(activated(QModelIndex)), SLOT(_itemActivated(QModelIndex)) );
+    connect( list_, SIGNAL(hovered(QModelIndex)), SLOT(_showToolTip(QModelIndex)) );
 
-    connect( recentFiles_, SIGNAL( validFilesChecked( void ) ), SLOT( update( void ) ) );
-    connect( recentFiles_, SIGNAL( contentsChanged( void ) ), SLOT( update( void ) ) );
+    connect( recentFiles_, SIGNAL(validFilesChecked()), SLOT(update()) );
+    connect( recentFiles_, SIGNAL(contentsChanged()), SLOT(update()) );
 
 }
 
@@ -240,12 +240,12 @@ void RecentFilesFrame::_installActions( void )
 
     // clean
     addAction( cleanAction_ = new QAction( IconEngine::get( ICONS::DELETE ), tr( "Clean" ), this ) );
-    connect( &_cleanAction(), SIGNAL( triggered() ), SLOT( _clean() ) );
+    connect( &_cleanAction(), SIGNAL(triggered()), SLOT(_clean()) );
     _cleanAction().setEnabled( false );
     _cleanAction().setToolTip( tr( "Clean invalid files" ) );
 
     // open
     addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), tr( "Open Selected Files" ), this ) );
-    connect( &_openAction(), SIGNAL( triggered() ), SLOT( _open() ) );
+    connect( &_openAction(), SIGNAL(triggered()), SLOT(_open()) );
 
 }

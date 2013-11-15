@@ -88,11 +88,11 @@ Counter( "SessionFilesFrame" )
     menu->addAction( nextFileAction_ );
 
     // connections
-    connect( &model_, SIGNAL( layoutChanged() ), list_, SLOT( updateMask() ) );
-    connect( list_, SIGNAL( customContextMenuRequested( const QPoint& ) ), SLOT( _updateActions() ) );
-    connect( list_->selectionModel(), SIGNAL( currentRowChanged( const QModelIndex&, const QModelIndex& ) ), SLOT( _itemSelected( const QModelIndex& ) ) );
-    connect( list_, SIGNAL( activated( const QModelIndex& ) ), SLOT( _itemActivated( const QModelIndex& ) ) );
-    connect( list_, SIGNAL( hovered( const QModelIndex& ) ), SLOT( _showToolTip( const QModelIndex& ) ) );
+    connect( &model_, SIGNAL(layoutChanged()), list_, SLOT(updateMask()) );
+    connect( list_, SIGNAL(customContextMenuRequested(QPoint)), SLOT(_updateActions()) );
+    connect( list_->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), SLOT(_itemSelected(QModelIndex)) );
+    connect( list_, SIGNAL(activated(QModelIndex)), SLOT(_itemActivated(QModelIndex)) );
+    connect( list_, SIGNAL(hovered(QModelIndex)), SLOT(_showToolTip(QModelIndex)) );
 
 }
 
@@ -320,27 +320,27 @@ void SessionFilesFrame::_installActions( void )
 
     // next file
     addAction( nextFileAction_ = new QAction( IconEngine::get(  ICONS::DOWN ), tr( "Select next File" ), this ) );
-    connect( nextFileAction_, SIGNAL( triggered() ), SLOT( _selectNextFile() ) );
+    connect( nextFileAction_, SIGNAL(triggered()), SLOT(_selectNextFile()) );
     nextFileAction_->setShortcut( Qt::CTRL + Qt::Key_Tab );
 
     // previous file
     addAction( previousFileAction_ = new QAction( IconEngine::get(  ICONS::UP ), tr( "Select Previous File" ), this ) );
-    connect( previousFileAction_, SIGNAL( triggered() ), SLOT( _selectPreviousFile() ) );
+    connect( previousFileAction_, SIGNAL(triggered()), SLOT(_selectPreviousFile()) );
     previousFileAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Tab );
 
     // open
     addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), tr( "Open" ), this ) );
-    connect( openAction_, SIGNAL( triggered() ), SLOT( _open() ) );
+    connect( openAction_, SIGNAL(triggered()), SLOT(_open()) );
     openAction_->setToolTip( tr( "Open selected files" ) );
 
     // save
     addAction( saveAction_ = new QAction( IconEngine::get( ICONS::SAVE ), tr( "Save" ), this ) );
-    connect( saveAction_, SIGNAL( triggered() ), SLOT( _save() ) );
+    connect( saveAction_, SIGNAL(triggered()), SLOT(_save()) );
     saveAction_->setToolTip( tr( "Save selected files" ) );
 
     // close
     addAction( closeAction_ = new QAction( IconEngine::get( ICONS::DIALOG_CLOSE ), tr( "Close" ), this ) );
-    connect( closeAction_, SIGNAL( triggered() ), SLOT( _close() ) );
+    connect( closeAction_, SIGNAL(triggered()), SLOT(_close()) );
     closeAction_->setShortcut( QKeySequence::Delete );
     closeAction_->setToolTip( tr( "Close selected files" ) );
 

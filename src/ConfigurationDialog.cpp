@@ -116,7 +116,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         layout->setMargin(0);
 
         // enable/disabled widget based on checkbox state
-        connect( checkbox, SIGNAL( toggled( bool ) ), widget, SLOT( setDisabled( bool ) ) );
+        connect( checkbox, SIGNAL(toggled(bool)), widget, SLOT(setDisabled(bool)) );
 
         // tab emulation
         checkbox = new OptionCheckBox( tr( "Emulate tabs" ), box, "TAB_EMULATION" );
@@ -163,7 +163,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         layout->addWidget( wrap_checkbox );
         addOptionWidget( wrap_checkbox );
 
-        connect( checkbox, SIGNAL( toggled( bool ) ), wrap_checkbox, SLOT( setDisabled( bool ) ) );
+        connect( checkbox, SIGNAL(toggled(bool)), wrap_checkbox, SLOT(setDisabled(bool)) );
 
         layout->addWidget( checkbox = new OptionCheckBox( tr( "Show line numbers" ), box, "SHOW_LINE_NUMBERS" ) );
         checkbox->setToolTip( tr( "Turn on/off line numbers" ) );
@@ -184,7 +184,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         spinbox->setMaximum( 10 );
 
         spinbox->setEnabled( false );
-        connect( checkbox, SIGNAL( toggled( bool ) ), spinbox, SLOT( setEnabled( bool ) ) );
+        connect( checkbox, SIGNAL(toggled(bool)), spinbox, SLOT(setEnabled(bool)) );
 
     }
 
@@ -286,7 +286,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     hLayout->addSpacing( 20 );
     hLayout->addWidget( configurationWidget = new BaseFileInfoConfigurationWidget( page ) );
     configurationWidget->setEnabled( false );
-    connect( checkbox, SIGNAL( toggled( bool ) ), configurationWidget, SLOT( setEnabled( bool ) ) );
+    connect( checkbox, SIGNAL(toggled(bool)), configurationWidget, SLOT(setEnabled(bool)) );
     addOptionWidget( configurationWidget );
 
     // misc
@@ -328,8 +328,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     checkbox->setChecked( false );
     spinbox->setEnabled( false );
     edit->setEnabled( false );
-    connect( checkbox, SIGNAL( toggled( bool ) ), spinbox, SLOT( setEnabled( bool ) ) );
-    connect( checkbox, SIGNAL( toggled( bool ) ), edit, SLOT( setEnabled( bool ) ) );
+    connect( checkbox, SIGNAL(toggled(bool)), spinbox, SLOT(setEnabled(bool)) );
+    connect( checkbox, SIGNAL(toggled(bool)), edit, SLOT(setEnabled(bool)) );
 
     // misc
     page->layout()->addWidget( box = new QGroupBox( tr( "Third-Party Applications" ), page ) );

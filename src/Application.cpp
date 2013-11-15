@@ -153,7 +153,7 @@ bool Application::realizeWidget( void )
 
     // window server
     windowServer_ = new WindowServer();
-    connect( windowServer_, SIGNAL( sessionFilesChanged( void ) ), SLOT( _updateSessionActions( void ) ) );
+    connect( windowServer_, SIGNAL(sessionFilesChanged()), SLOT(_updateSessionActions()) );
 
     // create first window and show
     windowServer_->newMainWindow().centerOnDesktop();
@@ -241,7 +241,7 @@ void Application::_configuration( void )
     Debug::Throw( "Application::_configuration.\n" );
     emit saveConfiguration();
     ConfigurationDialog dialog;
-    connect( &dialog, SIGNAL( configurationChanged() ), SIGNAL( configurationChanged() ) );
+    connect( &dialog, SIGNAL(configurationChanged()), SIGNAL(configurationChanged()) );
     dialog.centerOnWidget( qApp->activeWindow() );
     dialog.exec();
 }
@@ -379,7 +379,7 @@ void Application::timerEvent( QTimerEvent* event )
 
         startupTimer_.stop();
         windowServer_->readFilesFromArguments( _arguments() );
-        connect( qApp, SIGNAL( lastWindowClosed() ), qApp, SLOT( quit() ), Qt::UniqueConnection );
+        connect( qApp, SIGNAL(lastWindowClosed()), qApp, SLOT(quit()), Qt::UniqueConnection );
 
     } else return QObject::timerEvent( event );
 }
@@ -396,36 +396,36 @@ void Application::_installActions( void )
 
     // need to modify closeAction signal for proper exit
     closeAction().disconnect();
-    connect( &closeAction(), SIGNAL( triggered() ), SLOT( _exit() ) );
+    connect( &closeAction(), SIGNAL(triggered()), SLOT(_exit()) );
 
     // spell check
     spellCheckConfigurationAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Configure Spell Checking...", this );
-    connect( spellCheckConfigurationAction_, SIGNAL( triggered() ), SLOT( _spellCheckConfiguration() ) );
+    connect( spellCheckConfigurationAction_, SIGNAL(triggered()), SLOT(_spellCheckConfiguration()) );
 
     // document classes
     documentClassesConfigurationAction_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Document Types...", this );
-    connect( documentClassesConfigurationAction_, SIGNAL( triggered() ), SLOT( _documentClassesConfiguration() ) );
+    connect( documentClassesConfigurationAction_, SIGNAL(triggered()), SLOT(_documentClassesConfiguration()) );
 
     // save session
     saveSessionAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "Save Current Session", this );
-    connect( saveSessionAction_, SIGNAL( triggered( void ) ), SLOT( _saveSession( void ) ) );
+    connect( saveSessionAction_, SIGNAL(triggered()), SLOT(_saveSession()) );
 
     // restore session
     restoreSessionAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Restore Saved Session", this );
-    connect( restoreSessionAction_, SIGNAL( triggered( void ) ), SLOT( _restoreSession( void ) ) );
+    connect( restoreSessionAction_, SIGNAL(triggered()), SLOT(_restoreSession()) );
 
     // discard session
     discardSessionAction_ = new QAction( IconEngine::get( ICONS::DELETE ), "Discard Saved Session", this );
-    connect( discardSessionAction_, SIGNAL( triggered( void ) ), SLOT( _discardSession( void ) ) );
+    connect( discardSessionAction_, SIGNAL(triggered()), SLOT(_discardSession()) );
 
     // monitored files
     monitoredFilesAction_ = new QAction( "Show Monitored Files", this );
     monitoredFilesAction_->setToolTip( "Show monitored files" );
-    connect( monitoredFilesAction_, SIGNAL( triggered() ), SLOT( _showMonitoredFiles() ) );
+    connect( monitoredFilesAction_, SIGNAL(triggered()), SLOT(_showMonitoredFiles()) );
 
     // text encoding
     textEncodingAction_ =new QAction( IconEngine::get( ICONS::FONT ), tr( "Configure Text Encoding..." ), this );
-    connect( textEncodingAction_, SIGNAL( triggered() ), SLOT( _configureTextEncoding() ) );
+    connect( textEncodingAction_, SIGNAL(triggered()), SLOT(_configureTextEncoding()) );
 
 
 }

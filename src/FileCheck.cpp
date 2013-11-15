@@ -35,7 +35,7 @@ FileCheck::FileCheck( QObject* parent ):
     Counter( "FileCheck" )
 {
     Debug::Throw( "FileCheck::FileCheck.\n" );
-    connect( &fileSystemWatcher_, SIGNAL( fileChanged( const QString& ) ), SLOT( _fileChanged( const QString& ) ) );
+    connect( &fileSystemWatcher_, SIGNAL(fileChanged(QString)), SLOT(_fileChanged(QString)) );
 }
 
 //______________________________________________________

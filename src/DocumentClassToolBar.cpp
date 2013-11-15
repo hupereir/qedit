@@ -37,8 +37,8 @@ CustomToolBar( tr( "Document Classes" ), parent, "DOCUMENT_CLASS_TOOLBAR" )
     Debug::Throw( "DocumentClassToolBar::DocumentClassToolBar.\n" );
     addWidget( combobox_ = new QComboBox( this ) );
 
-    connect( &_comboBox(), SIGNAL( currentIndexChanged( int ) ), SLOT( _currentIndexChanged( int ) ) );
-    connect( Singleton::get().application(), SIGNAL( documentClassesChanged() ), SLOT( _update() ) );
+    connect( &_comboBox(), SIGNAL(currentIndexChanged(int)), SLOT(_currentIndexChanged(int)) );
+    connect( Singleton::get().application(), SIGNAL(documentClassesChanged()), SLOT(_update()) );
     _update();
 }
 

@@ -127,13 +127,13 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
     // block delimiter
     blockDelimiterDisplay_ = new BlockDelimiterDisplay( this );
-    connect( &textHighlight(), SIGNAL( needSegmentUpdate() ), &blockDelimiterDisplay(), SLOT( needUpdate() ) );
+    connect( &textHighlight(), SIGNAL(needSegmentUpdate()), &blockDelimiterDisplay(), SLOT(needUpdate()) );
 
     // connections
-    connect( this, SIGNAL( selectionChanged() ), SLOT( _selectionChanged() ) );
-    connect( this, SIGNAL( cursorPositionChanged() ), SLOT( _highlightParenthesis() ) );
-    connect( this, SIGNAL( indent( QTextBlock, bool ) ), indent_, SLOT( indent( QTextBlock, bool ) ) );
-    connect( this, SIGNAL( indent( QTextBlock, QTextBlock ) ), indent_, SLOT( indent( QTextBlock, QTextBlock ) ) );
+    connect( this, SIGNAL(selectionChanged()), SLOT(_selectionChanged()) );
+    connect( this, SIGNAL(cursorPositionChanged()), SLOT(_highlightParenthesis()) );
+    connect( this, SIGNAL(indent(QTextBlock,bool)), indent_, SLOT(indent(QTextBlock,bool)) );
+    connect( this, SIGNAL(indent(QTextBlock,QTextBlock)), indent_, SLOT(indent(QTextBlock,QTextBlock)) );
 
     #if WITH_ASPELL
 
@@ -148,13 +148,13 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
     // connections
     // track contents changed for syntax highlighting
-    connect( TextDisplay::document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int, int, int ) ) );
-    connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
+    connect( TextDisplay::document(), SIGNAL(contentsChange(int,int,int)), SLOT(_setBlockModified(int,int,int)) );
+    connect( TextDisplay::document(), SIGNAL(modificationChanged(bool)), SLOT(_textModified()) );
 
     // track configuration modifications
-    connect( Singleton::get().application(), SIGNAL( configurationChanged() ), SLOT( _updateConfiguration() ) );
-    connect( Singleton::get().application(), SIGNAL( spellCheckConfigurationChanged() ), SLOT( _updateSpellCheckConfiguration() ) );
-    connect( Singleton::get().application(), SIGNAL( documentClassesChanged() ), SLOT( updateDocumentClass() ) );
+    connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
+    connect( Singleton::get().application(), SIGNAL(spellCheckConfigurationChanged()), SLOT(_updateSpellCheckConfiguration()) );
+    connect( Singleton::get().application(), SIGNAL(documentClassesChanged()), SLOT(updateDocumentClass()) );
     _updateConfiguration();
     _updateSpellCheckConfiguration();
 
@@ -260,7 +260,7 @@ void TextDisplay::installContextMenuActions( BaseContextMenu* menu, const bool& 
     // document class menu
     QMenu* documentClassMenu = new DocumentClassMenu( this );
     documentClassMenu->setTitle( tr( "Select Document Class" ) );
-    connect( documentClassMenu, SIGNAL( documentClassSelected( QString ) ), SLOT( selectClassName( QString ) ) );
+    connect( documentClassMenu, SIGNAL(documentClassSelected(QString)), SLOT(selectClassName(QString)) );
     menu->addMenu( documentClassMenu );
 
     return;
@@ -291,8 +291,8 @@ void TextDisplay::synchronize( TextDisplay* other )
 
     // restore connection with document
     // track contents changed for syntax highlighting
-    connect( TextDisplay::document(), SIGNAL( contentsChange( int, int, int ) ), SLOT( _setBlockModified( int, int, int ) ) );
-    connect( TextDisplay::document(), SIGNAL( modificationChanged( bool ) ), SLOT( _textModified( void ) ) );
+    connect( TextDisplay::document(), SIGNAL(contentsChange(int,int,int)), SLOT(_setBlockModified(int,int,int)) );
+    connect( TextDisplay::document(), SIGNAL(modificationChanged(bool)), SLOT(_textModified()) );
 
     // indentation
     textIndent().setPatterns( other->textIndent().patterns() );
@@ -1395,8 +1395,8 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
     menu.interface().setDictionary( textHighlight().spellParser().interface().dictionary() );
 
     // set connections
-    connect( &menu, SIGNAL( ignoreWord( QString ) ), SLOT( _ignoreMisspelledWord( QString ) ) );
-    connect( &menu, SIGNAL( suggestionSelected( QString ) ), SLOT( _replaceMisspelledSelection( QString ) ) );
+    connect( &menu, SIGNAL(ignoreWord(QString)), SLOT(_ignoreMisspelledWord(QString)) );
+    connect( &menu, SIGNAL(suggestionSelected(QString)), SLOT(_replaceMisspelledSelection(QString)) );
 
     // execute
     menu.exec( event->globalPos() );
@@ -1419,32 +1419,32 @@ void TextDisplay::_installActions( void )
     addAction( textIndentMacro_ = new QAction( IconEngine::get( ICONS::INDENT ), "Indent Text", this ) );
     textIndentMacro_->setCheckable( true );
     textIndentMacro_->setChecked( textIndent().isEnabled() );
-    connect( textIndentMacro_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextIndent( bool ) ) );
+    connect( textIndentMacro_, SIGNAL(toggled(bool)), SLOT(_toggleTextIndent(bool)) );
 
     addAction( textHighlightAction_ = new QAction( "Highlight Text", this ) );
     textHighlightAction_->setCheckable( true );
     textHighlightAction_->setChecked( textHighlight().isHighlightEnabled() );
     textHighlightAction_->setShortcut( Qt::Key_F8 );
     textHighlightAction_->setShortcutContext( Qt::WidgetShortcut );
-    connect( textHighlightAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleTextHighlight( bool ) ) );
+    connect( textHighlightAction_, SIGNAL(toggled(bool)), SLOT(_toggleTextHighlight(bool)) );
 
     addAction( parenthesisHighlightAction_ = new QAction( "Highlight Parenthesis", this ) );
     parenthesisHighlightAction_->setCheckable( true );
     parenthesisHighlightAction_->setChecked( parenthesisHighlight().isEnabled() );
-    connect( parenthesisHighlightAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleParenthesisHighlight( bool ) ) );
+    connect( parenthesisHighlightAction_, SIGNAL(toggled(bool)), SLOT(_toggleParenthesisHighlight(bool)) );
 
     addAction( noAutomaticMacrosAction_ = new QAction( "Disable Automatic Actions", this ) );
     noAutomaticMacrosAction_->setCheckable( true );
     noAutomaticMacrosAction_->setChecked( false );
     noAutomaticMacrosAction_->setToolTip( "Do not execute automatic actions loaded from document class when saving document" );
-    connect( noAutomaticMacrosAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleIgnoreAutomaticMacros( bool ) ) );
+    connect( noAutomaticMacrosAction_, SIGNAL(toggled(bool)), SLOT(_toggleIgnoreAutomaticMacros(bool)) );
 
     addAction( showBlockDelimiterAction_ =new QAction( "Show Block Delimiters", this ) );
     showBlockDelimiterAction_->setToolTip( "Show/hide block delimiters" );
     showBlockDelimiterAction_->setCheckable( true );
     showBlockDelimiterAction_->setShortcut( Qt::Key_F9 );
     showBlockDelimiterAction_->setShortcutContext( Qt::WidgetShortcut );
-    connect( showBlockDelimiterAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleShowBlockDelimiters( bool ) ) );
+    connect( showBlockDelimiterAction_, SIGNAL(toggled(bool)), SLOT(_toggleShowBlockDelimiters(bool)) );
 
     // autospell
     addAction( autoSpellAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Automatic Spellcheck", this ) );
@@ -1454,7 +1454,7 @@ void TextDisplay::_installActions( void )
 
     #if WITH_ASPELL
     autoSpellAction_->setChecked( textHighlight().spellParser().isEnabled() );
-    connect( autoSpellAction_, SIGNAL( toggled( bool ) ), SLOT( _toggleAutoSpell( bool ) ) );
+    connect( autoSpellAction_, SIGNAL(toggled(bool)), SLOT(_toggleAutoSpell(bool)) );
     #else
     autoSpellAction_->setVisible( false );
     #endif
@@ -1462,7 +1462,7 @@ void TextDisplay::_installActions( void )
     // spell checking
     addAction( spellcheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Spellcheck...", this ) );
     #if WITH_ASPELL
-    connect( spellcheckAction_, SIGNAL( triggered( void ) ), SLOT( _spellcheck( void ) ) );
+    connect( spellcheckAction_, SIGNAL(triggered()), SLOT(_spellcheck()) );
     #else
     spellcheckAction_->setVisible( false );
     #endif
@@ -1471,53 +1471,53 @@ void TextDisplay::_installActions( void )
     addAction( indentSelectionAction_ = new QAction( IconEngine::get( ICONS::INDENT ), "Indent Selection", this ) );
     indentSelectionAction_->setShortcut( Qt::CTRL + Qt::Key_I );
     indentSelectionAction_->setShortcutContext( Qt::WidgetShortcut );
-    connect( indentSelectionAction_, SIGNAL( triggered( void ) ), SLOT( _indentSelection( void ) ) );
+    connect( indentSelectionAction_, SIGNAL(triggered()), SLOT(_indentSelection()) );
 
     // base indentation
     addAction( baseIndentAction_ = new QAction( IconEngine::get( ICONS::INDENT ), "Add Base Indentation", this ) );
     baseIndentAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_I );
-    connect( baseIndentAction_, SIGNAL( triggered( void ) ), SLOT( _addBaseIndentation( void ) ) );
+    connect( baseIndentAction_, SIGNAL(triggered()), SLOT(_addBaseIndentation()) );
 
     // replace leading tabs
     addAction( leadingTabsAction_ = new QAction( "Replace leading tabs", this ) );
-    connect( leadingTabsAction_, SIGNAL( triggered( void ) ), SLOT( _replaceLeadingTabs( void ) ) );
+    connect( leadingTabsAction_, SIGNAL(triggered()), SLOT(_replaceLeadingTabs()) );
 
     // file information
     addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFORMATION ), "Properties...", this ) );
     filePropertiesAction_->setToolTip( "Display current file properties" );
-    connect( filePropertiesAction_, SIGNAL( triggered() ), SLOT( _fileProperties() ) );
+    connect( filePropertiesAction_, SIGNAL(triggered()), SLOT(_fileProperties()) );
 
     #if WITH_ASPELL
 
     filterMenuAction_ = _filterMenu().menuAction();
     dictionaryMenuAction_ = _dictionaryMenu().menuAction();
 
-    connect( &_filterMenu(), SIGNAL( selectionChanged( const QString& ) ), SLOT( selectFilter( const QString& ) ) );
-    connect( &_dictionaryMenu(), SIGNAL( selectionChanged( const QString& ) ), SLOT( selectDictionary( const QString& ) ) );
+    connect( &_filterMenu(), SIGNAL(selectionChanged(QString)), SLOT(selectFilter(QString)) );
+    connect( &_dictionaryMenu(), SIGNAL(selectionChanged(QString)), SLOT(selectDictionary(QString)) );
 
     #endif
 
     // tag block action
     addAction( tagBlockAction_ = new QAction( IconEngine::get( ICONS::TAG ), "Tag Selected Blocks", this ) );
-    connect( tagBlockAction_, SIGNAL( triggered() ), SLOT( _tagBlock( void ) ) );
+    connect( tagBlockAction_, SIGNAL(triggered()), SLOT(_tagBlock()) );
 
     // clear current block tags
     addAction( clearTagAction_ = new QAction( "Clear Current Tag", this ) );
-    connect( clearTagAction_, SIGNAL( triggered() ), SLOT( _clearTag( void ) ) );
+    connect( clearTagAction_, SIGNAL(triggered()), SLOT(_clearTag()) );
 
     // clear all tags
     addAction( clearAllTagsAction_ = new QAction( "Clear All Tags", this ) );
-    connect( clearAllTagsAction_, SIGNAL( triggered() ), SLOT( clearAllTags( void ) ) );
+    connect( clearAllTagsAction_, SIGNAL(triggered()), SLOT(clearAllTags()) );
 
     // next tag action
     addAction( nextTagAction_ = new QAction( IconEngine::get( ICONS::DOWN ), "Goto Next Tagged Block", this ) );
-    connect( nextTagAction_, SIGNAL( triggered() ), SLOT( _nextTag( void ) ) );
+    connect( nextTagAction_, SIGNAL(triggered()), SLOT(_nextTag()) );
     nextTagAction_->setShortcut( Qt::ALT + Qt::Key_Down );
     nextTagAction_->setShortcutContext( Qt::WidgetShortcut );
 
     // previous tag action
     addAction( previousTagAction_ = new QAction( IconEngine::get( ICONS::UP ), "Goto Previous Tagged Block", this ) );
-    connect( previousTagAction_, SIGNAL( triggered() ), SLOT( _previousTag( void ) ) );
+    connect( previousTagAction_, SIGNAL(triggered()), SLOT(_previousTag()) );
     previousTagAction_->setShortcut( Qt::ALT + Qt::Key_Up );
     previousTagAction_->setShortcutContext( Qt::WidgetShortcut );
 
@@ -2084,8 +2084,8 @@ void TextDisplay::_spellcheck( void )
     }
 
     // connections
-    connect( &dialog, SIGNAL( filterChanged( const QString& ) ), SLOT( selectFilter( const QString& ) ) );
-    connect( &dialog, SIGNAL( dictionaryChanged( const QString& ) ), SLOT( selectDictionary( const QString& ) ) );
+    connect( &dialog, SIGNAL(filterChanged(QString)), SLOT(selectFilter(QString)) );
+    connect( &dialog, SIGNAL(dictionaryChanged(QString)), SLOT(selectDictionary(QString)) );
 
     dialog.nextWord();
     dialog.exec();

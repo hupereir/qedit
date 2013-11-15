@@ -73,22 +73,22 @@ Counter( "FileModifiedDialog" )
     // reload button.
     QPushButton* button;
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _reLoad() ) );
+    connect( button, SIGNAL(clicked()), SLOT(_reLoad()) );
     button->setToolTip( "Reload file from disc. Modifications will be lost" );
 
     // resave button
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE ), "&Save Again", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _reSave() ) );
+    connect( button, SIGNAL(clicked()), SLOT(_reSave()) );
     button->setToolTip( "Save file again. Disc modifications will be lost" );
 
     // save as button
     button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE_AS ), "&Save As", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _saveAs() ) );
+    connect( button, SIGNAL(clicked()), SLOT(_saveAs()) );
     button->setToolTip( "Save file with a different name" );
 
     // ignore button.
     button_layout->addWidget( button = new QPushButton(  IconEngine::get( ICONS::DIALOG_CANCEL ), "&Ignore", this ) );
-    connect( button, SIGNAL( clicked() ), SLOT( _ignore() ) );
+    connect( button, SIGNAL(clicked()), SLOT(_ignore()) );
     button->setToolTip( "Ignore warning" );
 
     adjustSize();
