@@ -110,6 +110,9 @@ MainWindow& WindowServer::newMainWindow( void )
     connect( &window->navigationFrame().sessionFilesFrame().model(), SIGNAL(reparentFiles(File,File)), SLOT(_reparent(File,File)) );
     connect( &window->navigationFrame().sessionFilesFrame().model(), SIGNAL(reparentFilesToMain(File,File)), SLOT(_reparentToMain(File,File)) );
 
+    connect( &window->navigationFrame().sessionFilesFrame().list(), SIGNAL(reparentFilesToMain(File,File)), SLOT(_reparentToMain(File,File)) );
+    connect( &window->navigationFrame().sessionFilesFrame().list(), SIGNAL(detach(File)), SLOT(_detach(File)) );
+
     // open actions
     connect( &window->menu().recentFilesMenu(), SIGNAL(fileSelected(FileRecord)), SLOT(_open(FileRecord)) );
     connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
@@ -706,19 +709,42 @@ void WindowServer::_detach( void )
 
     Debug::Throw( "WindowServer::_detach.\n" );
 
-    MainWindow& activeWindowLocal( _activeWindow() );
-
     // check number of independent displays
+    MainWindow& activeWindowLocal( _activeWindow() );
     if( activeWindowLocal.activeView().independentDisplayCount() <= 1 && BASE::KeySet<TextView>( &_activeWindow() ).size() <= 1 )
     {
         Debug::Throw(0) << "WindowServer::_detach - invalid display count" << endl;
         return;
     }
 
-    // get current display
-    TextDisplay& activeDisplayLocal( activeWindowLocal.activeView().activeDisplay() );
+    // detach active display
+    _detach( activeWindowLocal.activeView().activeDisplay() );
+
+}
+
+//_______________________________________________
+void WindowServer::_detach( const File& file )
+{
+
+    Debug::Throw() << "WindowServer::_detach - file: " << file << endl;
+
+    // check number of independent displays
+    MainWindow& activeWindowLocal( _activeWindow() );
+    if( activeWindowLocal.activeView().independentDisplayCount() <= 1 && BASE::KeySet<TextView>( &_activeWindow() ).size() <= 1 )
+    {
+        Debug::Throw(0) << "WindowServer::_detach - invalid display count" << endl;
+        return;
+    }
+
+    _detach( _findDisplay( file ) );
+}
+
+//_______________________________________________
+void WindowServer::_detach( TextDisplay& activeDisplayLocal )
+{
 
     // check number of displays associated to active
+    MainWindow& activeWindowLocal( _activeWindow() );
     if( !BASE::KeySet<TextDisplay>(activeDisplayLocal).empty() )
     {
         InformationDialog( &activeWindowLocal,
@@ -757,7 +783,7 @@ void WindowServer::_reparent( const File& first, const File& second )
 
     // retrieve windows
     TextDisplay& firstDisplay( _findDisplay( first ) );
-    TextView& first_view( _findView( first ) );
+    TextView& firstView( _findView( first ) );
 
     // check for first display clones
     if( !BASE::KeySet<TextDisplay>(firstDisplay).empty() )
@@ -776,7 +802,7 @@ void WindowServer::_reparent( const File& first, const File& second )
     TextView& view = _findView( second );
 
     // do nothing if first and second display already belong to the same view
-    if( &view == &first_view ) return;
+    if( &view == &firstView ) return;
 
     // create new display in text view
     view.selectDisplay( second );
@@ -785,7 +811,7 @@ void WindowServer::_reparent( const File& first, const File& second )
 
     // close display
     firstDisplay.document()->setModified( false );
-    first_view.closeDisplay( firstDisplay );
+    firstView.closeDisplay( firstDisplay );
 
     // restore modification state
     newDisplay.setModified( modified );
@@ -811,18 +837,18 @@ void WindowServer::_reparent( const File& first, const File& second )
 void WindowServer::_reparentToMain( const File& first, const File& second )
 {
 
-    Debug::Throw( "WindowServer::_reparentToMain.\n" );
+    Debug::Throw() << "WindowServer::_reparentToMain - first: " << first << " second: " << second << endl;
 
     // retrieve windows
     TextDisplay& firstDisplay( _findDisplay( first ) );
-    TextView& first_view( _findView( first ) );
-    MainWindow& first_window( _findWindow( first ) );
+    TextView& firstView( _findView( first ) );
+    MainWindow& firstWindow( _findWindow( first ) );
 
     // retrieve main window associated to second file
     MainWindow& window( _findWindow( second ) );
 
     // make sure first view has multiple files
-    if( (&first_window == &window ) && first_view.independentDisplayCount() < 2 ) return;
+    if( (&firstWindow == &window ) && firstView.independentDisplayCount() < 2 ) return;
 
     // check for first display clones
     if( !BASE::KeySet<TextDisplay>(firstDisplay).empty() )
@@ -843,7 +869,7 @@ void WindowServer::_reparentToMain( const File& first, const File& second )
 
     // close display
     firstDisplay.document()->setModified( false );
-    first_view.closeDisplay( firstDisplay );
+    firstView.closeDisplay( firstDisplay );
 
     // restore modification state
     view.activeDisplay().setModified( modified );

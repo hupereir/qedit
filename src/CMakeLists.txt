@@ -73,6 +73,7 @@ SET( qedit_SOURCES
   SaveAllDialog.cpp
   SessionFilesFrame.cpp
   SessionFilesModel.cpp
+  SessionFilesView.cpp
   TextDisplay.cpp
   TextView.cpp
   WindowServer.cpp

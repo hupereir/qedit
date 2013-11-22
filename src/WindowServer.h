@@ -177,6 +177,10 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     /*! this closes the active view and opens it in a separate window */
     void _detach( void );
 
+    //! detach
+    /*! this closes the active view and opens it in a separate window */
+    void _detach( const File& );
+
     //! reparent
     /*!
     close display containing first file,
@@ -229,6 +233,9 @@ class WindowServer: public QObject, public Counter, public BASE::Key
 
     //! returns true if new file should be created
     bool _createNewFile( const FileRecord& );
+
+    //! detach display
+    void _detach( TextDisplay& );
 
     //! apply command-line arguments to currant display
     void _applyArguments( TextDisplay&, CommandLineArguments );

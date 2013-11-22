@@ -196,29 +196,11 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
 
     if( !data->hasFormat( FileRecord::MimeType ) ) return false;
 
-    FileRecordModel::List records;
-
     // get dropped file record (use XML)
     // dom document
     QDomDocument document;
     if( !document.setContent( data->data( FileRecord::MimeType ), false ) ) return false;
-
-    QDomElement docElement = document.documentElement();
-    QDomNode node = docElement.firstChild();
-    for(QDomNode node = docElement.firstChild(); !node.isNull(); node = node.nextSibling() )
-    {
-        QDomElement element = node.toElement();
-        if( element.isNull() ) continue;
-
-        // special options
-        if( element.tagName() == FILERECORD::XML::RECORD )
-        {
-
-            XmlFileRecord record( element );
-            if( !record.file().isEmpty() ) records << record;
-
-        }
-    }
+    const XmlFileRecord::List records( document.documentElement() );
 
     // get current record
     if( parent.isValid() )
@@ -227,7 +209,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         FileRecord target( get( parent ) );
 
         // loop over sources and emit proper signal
-        foreach( const FileRecord& record, records )
+        foreach( const XmlFileRecord& record, records )
         { emit reparentFiles( record.file(), target.file() ); }
 
         return true;

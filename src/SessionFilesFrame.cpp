@@ -32,6 +32,7 @@
 #include "FileRecordToolTipWidget.h"
 #include "Icons.h"
 #include "IconEngine.h"
+#include "SessionFilesView.h"
 #include "Singleton.h"
 #include "Util.h"
 #include "WindowServer.h"
@@ -59,7 +60,8 @@ Counter( "SessionFilesFrame" )
 
     // list
     model_.setDragEnabled( true );
-    layout()->addWidget( list_ = new AnimatedTreeView( this ) );
+    // layout()->addWidget( list_ = new AnimatedTreeView( this ) );
+    layout()->addWidget( list_ = new SessionFilesView( this ) );
     list_->setMouseTracking( true );
     list_->setModel( &model_ );
     list_->setOptionName( "SESSION_FILES" );
