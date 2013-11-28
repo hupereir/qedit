@@ -143,15 +143,14 @@ QStringList SessionFilesModel::mimeTypes( void ) const
 QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 {
 
-    // return FileRecordModel::mimeData( indexes );
     QOrderedSet<QString> filenames;
-    QOrderedSet<FileRecord> records;
+    XmlFileRecord::List records;
     foreach( const QModelIndex& index, indexes )
     {
 
         if( !index.isValid() ) continue;
-        FileRecord record( get(index) );
-        records.insert( record );
+        const FileRecord record( get(index) );
+        records.append( record );
         filenames.insert( record.file() );
 
     }
@@ -171,15 +170,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 
         // fill drag data. Use XML
         QDomDocument document;
-        QDomElement top = document.appendChild( document.createElement( FILERECORD::XML::FILE_LIST ) ).toElement();
-
-        foreach( const FileRecord& record, records )
-        {
-
-            if( record.file().isEmpty() ) continue;
-            top.appendChild( XmlFileRecord( record ).domElement( document ) );
-
-        }
+        records.domElement( document );
         mime->setData( FileRecord::MimeType, document.toByteArray() );
         return mime;
 
