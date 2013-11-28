@@ -34,7 +34,8 @@ class SessionFilesView: public AnimatedTreeView
 
     //! constructor
     SessionFilesView( QWidget* parent = 0 ):
-        AnimatedTreeView( parent )
+        AnimatedTreeView( parent ),
+        locked_( false )
         {}
 
     //! destructor
@@ -53,6 +54,13 @@ class SessionFilesView: public AnimatedTreeView
 
     //! start drag
     virtual void startDrag( Qt::DropActions );
+
+    //! render to pixmap
+    QPixmap _renderToPixmap( const QModelIndexList&, QRect& ) const;
+
+    private:
+
+    bool locked_;
 
 };
 

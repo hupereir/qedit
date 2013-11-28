@@ -26,12 +26,20 @@
 #include <QDomDocument>
 #include <QDrag>
 #include <QMimeData>
+#include <QPainter>
 
 //____________________________________________________________________
 void SessionFilesView::startDrag( Qt::DropActions supportedActions )
 {
 
     Debug::Throw( "SessionFilesView::startDrag.\n" );
+
+    // check lock to prevent recursive calls
+    if( locked_ )
+    {
+        locked_ = false;
+        return;
+    } else { locked_ = true; }
 
     // get list of dragable indexes
     QModelIndexList indexes;
@@ -44,8 +52,13 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
     if( !data ) return;
 
     // create drag
-    QDrag *drag = new QDrag(this);
+    QDrag* drag = new QDrag(this);
     drag->setMimeData(data);
+
+    // generate pixmap
+    QRect boundingRect;
+    drag->setPixmap( _renderToPixmap( indexes, boundingRect ) );
+
     if( !drag->exec( supportedActions, defaultDropAction() ) )
     {
 
@@ -60,6 +73,7 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
         bool first( true );
         foreach( const XmlFileRecord& record, records )
         {
+
             if( first )
             {
                 first = false;
@@ -69,4 +83,39 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
 
     }
 
+    // unlock
+    locked_ = false;
+
+}
+
+//____________________________________________________________________
+QPixmap SessionFilesView::_renderToPixmap( const QModelIndexList& indexes, QRect& rect ) const
+{
+
+    // generate pixmap
+    rect = QRect();
+    foreach( const QModelIndex& index, indexes )
+    { rect |= visualRect( index ); }
+
+    QPixmap pixmap( rect.size() );
+    pixmap.fill( Qt::transparent );
+    QPainter painter( &pixmap );
+    foreach( const QModelIndex& index, indexes )
+    {
+        QStyleOptionViewItemV4 option;
+
+        // set option state
+        option.showDecorationSelected = true;
+        option.state = QStyle::State_Selected | QStyle::State_Active;
+        const Qt::ItemFlags flags( model()->flags( index ) );
+        if( flags & Qt::ItemIsEnabled ) option.state |= QStyle::State_Enabled;
+
+        option.rect  = visualRect( index ).translated( -rect.topLeft() );
+        option.displayAlignment = Qt::AlignCenter;
+
+        itemDelegate()->paint( &painter, option, index );
+
+    }
+
+    return pixmap;
 }
