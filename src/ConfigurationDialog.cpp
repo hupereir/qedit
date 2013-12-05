@@ -47,6 +47,7 @@
 
 #include <QLabel>
 #include <QGroupBox>
+#include <QTextCodec>
 
 //_________________________________________________________
 ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
@@ -185,6 +186,18 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
         spinbox->setEnabled( false );
         connect( checkbox, SIGNAL(toggled(bool)), spinbox, SLOT(setEnabled(bool)) );
+
+        // text encoding
+        OptionComboBox* combobox;
+        QLabel* label;
+        hLayout = new QHBoxLayout();
+        layout->addLayout( hLayout );
+        hLayout->setMargin(0);
+        hLayout->addWidget( label = new QLabel( tr( "Default font encoding" ), box ) );
+        hLayout->addWidget( combobox = new OptionComboBox( box, "TEXT_ENCODING" ) );
+        QList<QByteArray> codecs( QTextCodec::availableCodecs() );
+        foreach( const QByteArray& value, codecs ) { combobox->addItem( value ); }
+        addOptionWidget( combobox );
 
     }
 

@@ -33,7 +33,6 @@
 #include "InformationDialog.h"
 #include "MainWindow.h"
 #include "RestoreSessionDialog.h"
-#include "TextEncodingWidget.h"
 #include "Util.h"
 #include "WindowServer.h"
 #include "XmlFileList.h"
@@ -209,30 +208,6 @@ void Application::_updateDocumentClasses( void )
     emit documentClassesChanged();
 
     return;
-}
-
-//___________________________________________________________
-void Application::_configureTextEncoding( void )
-{
-    Debug::Throw( "MainWindow::_configureTextEncoding.\n" );
-
-    // store default text encoding
-    const QString defaultEncoding( XmlOptions::get().raw( "TEXT_ENCODING" ) );
-
-    CustomDialog dialog( 0, CustomDialog::OkButton | CustomDialog::CancelButton | CustomDialog::Separator );
-    dialog.setOptionName( "TEXT_ENCODING_DIALOG" );
-    dialog.setWindowTitle( tr( "Text Encoding Configuration - Qedit" ) );
-    TextEncodingWidget* textEncodingWidget = new TextEncodingWidget( &dialog );
-    dialog.mainLayout().addWidget( textEncodingWidget );
-    if( !dialog.exec() ) return;
-
-    // update current text encoding if needed
-    windowServer_->updateCurrentTextEncoding( textEncodingWidget->currentTextEncoding() );
-
-    // trigger configuration changed if default encoding is changed
-    if( textEncodingWidget->defaultTextEncoding() != defaultEncoding )
-    { emit configurationChanged(); }
-
 }
 
 //___________________________________________________________
@@ -422,10 +397,5 @@ void Application::_installActions( void )
     monitoredFilesAction_ = new QAction( "Show Monitored Files", this );
     monitoredFilesAction_->setToolTip( "Show monitored files" );
     connect( monitoredFilesAction_, SIGNAL(triggered()), SLOT(_showMonitoredFiles()) );
-
-    // text encoding
-    textEncodingAction_ =new QAction( IconEngine::get( ICONS::FONT ), tr( "Configure Text Encoding..." ), this );
-    connect( textEncodingAction_, SIGNAL(triggered()), SLOT(_configureTextEncoding()) );
-
 
 }

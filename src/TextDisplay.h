@@ -52,6 +52,7 @@ class BlockDelimiterDisplay;
 class BaseContextMenu;
 class DocumentClass;
 class HighlightBlockData;
+class TextEncodingMenu;
 class TextHighlight;
 
 //! text display window
@@ -261,8 +262,9 @@ class TextDisplay: public AnimatedTextEditor
 
     //@}
 
-    //! set text encoding
-    virtual void setTextEncoding( const QString& );
+    //! text encoding
+    const QByteArray& textEncoding( void ) const
+    { return textEncoding_; }
 
     //!@name macro
     //@{
@@ -371,25 +373,29 @@ class TextDisplay: public AnimatedTextEditor
 
     #endif
 
+    //! text encoding menu action
+    QAction &textEncodingMenuAction( void ) const
+    { return *textEncodingMenuAction_; }
+
     //! tag block action
     QAction &tagBlockAction( void ) const
-    { return* tagBlockAction_; }
+    { return *tagBlockAction_; }
 
     //! next tag action
     QAction &nextTagAction( void ) const
-    { return* nextTagAction_; }
+    { return *nextTagAction_; }
 
     //! previous tag action
     QAction &previousTagAction( void ) const
-    { return* previousTagAction_; }
+    { return *previousTagAction_; }
 
     //! clear current block tags action
     QAction &clearTagAction( void ) const
-    { return* clearTagAction_; }
+    { return *clearTagAction_; }
 
     //! clear all tags action
     QAction &clearAllTagsAction( void ) const
-    { return* clearAllTagsAction_; }
+    { return *clearAllTagsAction_; }
 
     //@}
 
@@ -437,7 +443,7 @@ class TextDisplay: public AnimatedTextEditor
 
     //! set document class
     void updateDocumentClass( void )
-    { _updateDocumentClass( file(), isNewDocument() ); }
+    { _updateDocumentClass( file_, isNewDocument_ ); }
 
     //! process macro by name
     void processMacro( QString );
@@ -543,18 +549,6 @@ class TextDisplay: public AnimatedTextEditor
     //! update tagged block colors
     void _updateTaggedBlocks( void );
 
-    #if WITH_ASPELL
-
-    //! dictionary menu
-    SPELLCHECK::DictionaryMenu& _dictionaryMenu( void )
-    { return *dictionaryMenu_; }
-
-    //! filter menu
-    SPELLCHECK::FilterMenu& _filterMenu( void )
-    { return *filterMenu_; }
-
-    #endif
-
     //! update margins
     virtual bool _updateMargin( void );
 
@@ -603,6 +597,9 @@ class TextDisplay: public AnimatedTextEditor
     void _spellcheck( void );
 
     //@}
+
+    //! set text encoding
+    void _setTextEncoding( const QByteArray& );
 
     //! indent selection
     void _indentSelection( void );
@@ -693,7 +690,7 @@ class TextDisplay: public AnimatedTextEditor
     //@}
 
     //! text encoding (needed for conversions
-    QString textEncoding_;
+    QByteArray textEncoding_;
 
     //! true if display is to be deleted
     bool closed_;
@@ -779,6 +776,9 @@ class TextDisplay: public AnimatedTextEditor
 
     #endif
 
+    //! text encoding menu action
+    QAction* textEncodingMenuAction_;
+
     //! tag block
     QAction* tagBlockAction_;
 
@@ -805,6 +805,9 @@ class TextDisplay: public AnimatedTextEditor
     SPELLCHECK::FilterMenu* filterMenu_;
 
     #endif
+
+    //! text encoding menu
+    TextEncodingMenu* textEncodingMenu_;
 
     //! syntax highlighter
     TextHighlight* textHighlight_;

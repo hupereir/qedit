@@ -67,7 +67,7 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
     void setContents( const QString& );
 
     //! set encoding
-    void setTextEncoding( const QString& );
+    void setTextEncoding( const QByteArray& );
 
     //@}
 
@@ -79,8 +79,7 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
     {
         None = 0,
         FileChanged = 1<<0,
-        ContentChanged = 1<<1,
-        TextEncodingChanged = 1<<2
+        ContentChanged = 1<<1
     };
 
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -102,7 +101,7 @@ class AutoSaveThread: public QThread, public BASE::Key, public Counter
     QString contents_;
 
     //! text encoding
-    QString textEncoding_;
+    QByteArray textEncoding_;
 
     Flags flags_;
 

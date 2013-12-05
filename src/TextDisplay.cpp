@@ -51,6 +51,7 @@
 #include "QtUtil.h"
 #include "Singleton.h"
 #include "TextEditorMarginWidget.h"
+#include "TextEncodingMenu.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
@@ -102,6 +103,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
     dictionaryPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::DICTIONARY ) ),
     filterPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::FILTER ) ),
 
+    textEncoding_( "ISO-8859-1" ),
     closed_( false ),
     isNewDocument_( false ),
     className_( "" ),
@@ -142,6 +144,9 @@ TextDisplay::TextDisplay( QWidget* parent ):
     dictionaryMenu_ = new SPELLCHECK::DictionaryMenu( this );
 
     #endif
+
+    textEncodingMenu_ = new TextEncodingMenu( this );
+    connect( textEncodingMenu_, SIGNAL(encodingChanged(QByteArray)), SLOT(_setTextEncoding(QByteArray)) );
 
     // actions
     _installActions();
@@ -438,8 +443,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
     {
 
         // get encoding
-        QByteArray codecName( XmlOptions::get().raw( "TEXT_ENCODING" ) );
-        QTextCodec* codec( QTextCodec::codecForName( codecName ) );
+        QTextCodec* codec( QTextCodec::codecForName( textEncoding_ ) );
         Q_ASSERT( codec );
 
         setPlainText( codec->toUnicode(in.readAll()) );
@@ -448,8 +452,6 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
         // update flags
         setModified( false );
         _setIgnoreWarnings( false );
-
-        textEncoding_ = codecName;
 
     }
 
@@ -701,8 +703,7 @@ void TextDisplay::save( void )
         }
 
         // get encoding
-        QByteArray codecName( XmlOptions::get().raw( "TEXT_ENCODING" ) );
-        QTextCodec* codec( QTextCodec::codecForName( codecName ) );
+        QTextCodec* codec( QTextCodec::codecForName( textEncoding_ ) );
         Q_ASSERT( codec );
 
         // write file
@@ -829,22 +830,51 @@ void TextDisplay::revertToSave( void )
 }
 
 //______________________________________________________________________________
-void TextDisplay::setTextEncoding( const QString& textEncoding )
+void TextDisplay::_setTextEncoding( const QByteArray& value )
 {
-    Debug::Throw(0) << "TextEditor::setTextEncoding - old: " << textEncoding_ << " new: " << textEncoding << endl;
 
-    if( textEncoding == textEncoding_ ) return;
+    // make sure that modified
+    if( value == textEncoding_ ) return;
 
-    // get codec
-    QTextCodec* oldCodec( QTextCodec::codecForName( qPrintable( textEncoding_ ) ) );
-    QTextCodec* newCodec( QTextCodec::codecForName( qPrintable( textEncoding ) ) );
-    if( oldCodec && newCodec )
+    // check validity
+    QTextCodec* codec( QTextCodec::codecForName( value ) );
+    if( !codec ) return;
+
+    QTextCodec* oldCodec( QTextCodec::codecForName( textEncoding_ ) );
+    if( !oldCodec ) return;
+
+    Debug::Throw() << "TextDisplay::_setTextEncoding - old codec: " << textEncoding_ << endl;
+    Debug::Throw() << "TextDisplay::_setTextEncoding - new codec: " << value << endl;
+    if( file_.isEmpty() || isNewDocument_ )
     {
 
-        setPlainText( newCodec->toUnicode( oldCodec->fromUnicode( qPrintable( toPlainText() ) ) ) );
-        textEncoding_ = textEncoding;
+        textEncoding_ = value;
+        return;
+
+    } else {
+
+        // save if modified
+        QString buffer;
+        if( document()->isModified() )
+        {
+
+            buffer = QString( tr(
+                "Changing text encoding requires that the current document is reloaded.\n"
+                "Discard changes to file '%1' ?" ) ).arg( file_.localName() );
+            if( !QuestionDialog( this, buffer ).setWindowTitle( tr( "Reload Document - Qedit" ) ).exec() ) return;
+
+        }
+
+        // update
+        textEncoding_ = value;
+
+        // need to revert to save with new codec
+        revertToSave();
 
     }
+
+    return;
+
 }
 
 //_______________________________________________________
@@ -1195,7 +1225,7 @@ void TextDisplay::selectFilter( const QString& filter )
 
     // update interface
     interface.setFilter( filter );
-    _filterMenu().select( filter );
+    filterMenu_->select( filter );
 
     // update file record
     if( !( file().isEmpty() || isNewDocument() ) )
@@ -1224,7 +1254,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
 
     // update interface
     interface.setDictionary( dictionary );
-    _dictionaryMenu().select( dictionary );
+    dictionaryMenu_->select( dictionary );
 
     // update file record
     if( !( file().isEmpty() || isNewDocument() ) )
@@ -1489,13 +1519,15 @@ void TextDisplay::_installActions( void )
 
     #if WITH_ASPELL
 
-    filterMenuAction_ = _filterMenu().menuAction();
-    dictionaryMenuAction_ = _dictionaryMenu().menuAction();
+    filterMenuAction_ = filterMenu_->menuAction();
+    dictionaryMenuAction_ = dictionaryMenu_->menuAction();
 
-    connect( &_filterMenu(), SIGNAL(selectionChanged(QString)), SLOT(selectFilter(QString)) );
-    connect( &_dictionaryMenu(), SIGNAL(selectionChanged(QString)), SLOT(selectDictionary(QString)) );
+    connect( filterMenu_, SIGNAL(selectionChanged(QString)), SLOT(selectFilter(QString)) );
+    connect( dictionaryMenu_, SIGNAL(selectionChanged(QString)), SLOT(selectDictionary(QString)) );
 
     #endif
+
+    textEncodingMenuAction_ = textEncodingMenu_->menuAction();
 
     // tag block action
     addAction( tagBlockAction_ = new QAction( IconEngine::get( ICONS::TAG ), "Tag Selected Blocks", this ) );
@@ -1799,12 +1831,18 @@ void TextDisplay::_updateConfiguration( void )
     noAutomaticMacrosAction().setChecked( XmlOptions::get().get<bool>( "IGNORE_AUTOMATIC_MACROS" ) );
 
     {
+        // font
         QFont font;
         font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ) );
         int line_spacing = QFontMetrics( font ).lineSpacing() + 1;
         blockDelimiterDisplay().setWidth( line_spacing );
         _updateMargin();
     }
+
+    // encoding
+    // todo: condition that on whether was modified by menu or not
+    _setTextEncoding( XmlOptions::get().raw( "TEXT_ENCODING" ) );
+    textEncodingMenu_->select( textEncoding_ );
 
     // retrieve diff colors
     diffConflictColor_ = XmlOptions::get().get<BASE::Color>( "DIFF_CONFLICT_COLOR" );
@@ -1832,8 +1870,8 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
     autoSpellAction().setEnabled( textHighlight().spellParser().color().isValid() );
 
     // reset filter and dictionaries menu
-    _dictionaryMenu().reset();
-    _filterMenu().reset();
+    dictionaryMenu_->reset();
+    filterMenu_->reset();
 
     // store local reference to spell interface
     SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
@@ -1864,13 +1902,13 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
     // see if one should/can change the dictionary and filter
     if( filter == interface.filter() || interface.setFilter( filter ) )
     {
-        _filterMenu().select( filter );
+        filterMenu_->select( filter );
         changed = true;
     }
 
     if( dictionary == interface.dictionary() || interface.setDictionary( dictionary ) )
     {
-        _dictionaryMenu().select( dictionary );
+        dictionaryMenu_->select( dictionary );
         changed = true;
     }
 

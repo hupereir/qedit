@@ -73,9 +73,6 @@ class AutoSave: public QObject, public Counter
     //! interval between two save (milliseconds)
     int interval_;
 
-    //! text encoding
-    QString textEncoding_;
-
     //! AutoSave timer
     QBasicTimer timer_;
 

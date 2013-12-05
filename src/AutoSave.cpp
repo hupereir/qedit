@@ -65,13 +65,12 @@ void AutoSave::newThread( TextDisplay* display )
 
     // create new Thread
     AutoSaveThread *thread = new AutoSaveThread( this );
-    thread->setTextEncoding( textEncoding_ );
 
     // associate to MainWindow
     BASE::Key::associate( display, thread );
 
     // add to list
-    threads_ << thread;
+    threads_.append( thread );
 
     // save file immediatly
     if( _enabled() ) saveFiles( display );
@@ -131,6 +130,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
         {
             (*iter)->setFile( display.file() );
             (*iter)->setContents( display.toPlainText() );
+            (*iter)->setTextEncoding( display.textEncoding() );
             (*iter)->start();
         }
 
@@ -167,14 +167,6 @@ void AutoSave::_updateConfiguration( void )
     // save AutoSave interval and start timer
     enabled_ = XmlOptions::get().get<bool>( "AUTOSAVE" );
     interval_ = 1000*XmlOptions::get().get<int>("AUTOSAVE_INTERVAL");
-
-    const QString textEncoding( XmlOptions::get().raw( "TEXT_ENCODING" ) );
-    if( textEncoding != textEncoding_ )
-    {
-        textEncoding_ = textEncoding;
-        foreach( AutoSaveThread* thread, threads_ )
-        { thread->setTextEncoding( textEncoding_ ); }
-    }
 
     if( interval_ > 0 ) timer_.start( interval_, this );
     else timer_.stop();

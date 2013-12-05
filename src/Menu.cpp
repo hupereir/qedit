@@ -154,8 +154,10 @@ void Menu::updateMacroMenu( void )
     bool hasSelection( display.textCursor().hasSelection() );
     const TextMacro::List& macros( display.macros() );
 
-    macroMenu().update( macros );
-    macroMenu().updateState( hasSelection );
+    macroMenu_->update( macros );
+    macroMenu_->updateState( hasSelection );
+    macroMenu_->addSeparator();
+    macroMenu_->addAction( &display.noAutomaticMacrosAction() );
 
     return;
 }
@@ -232,10 +234,9 @@ void Menu::_updatePreferenceMenu( void )
     preferenceMenu_->addAction( &display.textHighlightAction() );
     preferenceMenu_->addAction( &display.blockHighlightAction() );
     preferenceMenu_->addAction( &display.parenthesisHighlightAction() );
-    preferenceMenu_->addAction( &display.noAutomaticMacrosAction() );
 
-    #if WITH_ASPELL
     preferenceMenu_->addSeparator();
+    #if WITH_ASPELL
     preferenceMenu_->addAction( &display.autoSpellAction() );
     preferenceMenu_->addAction( &display.dictionaryMenuAction() );
     preferenceMenu_->addAction( &display.filterMenuAction() );
@@ -246,11 +247,12 @@ void Menu::_updatePreferenceMenu( void )
     display.dictionaryMenuAction().setEnabled( hasDictionaries );
     #endif
 
+    preferenceMenu_->addAction( &display.textEncodingMenuAction() );
+
     // configurations (from application)
     preferenceMenu_->addSeparator();
     preferenceMenu_->addAction( &application.configurationAction() );
     preferenceMenu_->addAction( &application.documentClassesConfigurationAction() );
-    // preferenceMenu_->addAction( &application.textEncodingAction() );
     #if WITH_ASPELL
     preferenceMenu_->addAction( &application.spellCheckConfigurationAction() );
     #endif

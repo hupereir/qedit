@@ -58,14 +58,10 @@ void AutoSaveThread::setContents( const QString& contents )
 }
 
 //________________________________________________________________
-void AutoSaveThread::setTextEncoding( const QString& encoding )
+void AutoSaveThread::setTextEncoding( const QByteArray& encoding )
 {
     QMutexLocker locker( &mutex_ );
-    if( encoding != textEncoding_ )
-    {
-        flags_ &= TextEncodingChanged;
-        textEncoding_ = encoding;
-    } else flags_ |= Flags( ~TextEncodingChanged );
+    textEncoding_ = encoding;
 }
 
 //________________________________________________________________
@@ -99,8 +95,10 @@ void AutoSaveThread::run( void )
         QDir path( file().path() );
         if( !( path.exists() || path.mkpath( "." ) ) ) return;
 
+        Debug::Throw() << "AutoSaveThread::run - encoding: " << textEncoding_ << endl;
+
         // get encoding
-        QTextCodec* codec( QTextCodec::codecForName( qPrintable( textEncoding_ ) ) );
+        QTextCodec* codec( QTextCodec::codecForName( textEncoding_ ) );
         Q_ASSERT( codec );
 
         // write to file

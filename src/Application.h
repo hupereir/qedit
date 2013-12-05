@@ -111,10 +111,6 @@ class Application: public BaseApplication, public Counter
     QAction& monitoredFilesAction( void ) const
     { return *monitoredFilesAction_; }
 
-    //! text encoding
-    QAction& textEncodingAction( void ) const
-    { return *textEncodingAction_; }
-
 
     //@}
 
@@ -130,9 +126,6 @@ class Application: public BaseApplication, public Counter
 
     //! Update Document Classes from options
     void _updateDocumentClasses( void );
-
-    //! configure text encoding
-    void _configureTextEncoding( void );
 
     //! about
     void _about( void )
@@ -227,9 +220,6 @@ class Application: public BaseApplication, public Counter
 
     //! show monitored files
     QAction* monitoredFilesAction_;
-
-    //! text encoding action
-    QAction* textEncodingAction_;
 
     //@}
 
