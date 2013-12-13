@@ -108,7 +108,6 @@ void installDefaultOptions( void )
     XmlOptions::get().set<bool>( "SPLIT_TOOLBAR", true );
 
     XmlOptions::get().set<int>( "HIGHLIGHT_PARAGRAPH", 1 );
-    XmlOptions::get().set<BASE::Color>( "HIGHLIGHT_COLOR", QColor( "#FFFDD4" ) );
 
     /* multiple views */
     XmlOptions::get().set<int>( "OPEN_MODE", WindowServer::ACTIVE_WINDOW );
