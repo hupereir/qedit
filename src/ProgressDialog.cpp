@@ -1,7 +1,7 @@
 // : TreeViewItemDelegate.h,v 1.4 2013/04/29 07:18:58 hupereir Exp n
 /******************************************************************************
 *
-* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira.fr>
+* Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
 *
 * This is free software; you can redistribute it and/or modify it under the
 * terms of the GNU General Public License as published by the Free Software
