@@ -241,8 +241,8 @@ void Application::_spellCheckConfiguration( void )
     dialog.centerOnWidget( qApp->activeWindow() );
 
     if( dialog.exec() == QDialog::Rejected ) return;
-    spellConfig->write();
-    autospellConfig->write();
+    spellConfig->write( XmlOptions::get() );
+    autospellConfig->write( XmlOptions::get() );
     XmlOptions::write();
 
     emit spellCheckConfigurationChanged();
