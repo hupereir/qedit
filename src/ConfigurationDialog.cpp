@@ -281,9 +281,14 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     // recent files
     page = &addPage( IconEngine::get( ICONS::PREFERENCE_RECENT_FILES ), tr( "Recent Files" ), tr( "Recent files list settings" ), true );
-    RecentFilesConfiguration* recentFiles_configuration = new RecentFilesConfiguration( page, Singleton::get().application<Application>()->recentFiles() );
-    page->layout()->addWidget( recentFiles_configuration );
-    addOptionWidget( recentFiles_configuration );
+    RecentFilesConfiguration* recentFilesConfiguration = new RecentFilesConfiguration( page, Singleton::get().application<Application>()->recentFiles() );
+    page->layout()->addWidget( recentFilesConfiguration );
+    addOptionWidget( recentFilesConfiguration );
+
+    recentFilesConfiguration->read();
+    connect( this, SIGNAL(ok()), recentFilesConfiguration, SLOT(write()) );
+    connect( this, SIGNAL(apply()), recentFilesConfiguration, SLOT(write()) );
+    connect( this, SIGNAL(reset()), recentFilesConfiguration, SLOT(reload()) );
 
     // tooltips
     page = &addPage( IconEngine::get( ICONS::PREFERENCE_APPEARANCE), tr( "Tooltips" ), tr( "Tooltips appearance" ) );
