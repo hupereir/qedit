@@ -114,6 +114,27 @@ class Application: public BaseApplication, public Counter
 
     //@}
 
+    //!@name application information
+    //@{
+
+    //! application name
+    virtual QString applicationName( void ) const
+    { return "Qedit"; }
+
+    // application icon
+    virtual QIcon applicationIcon( void ) const
+    { return QIcon( ":/qedit.png" ); }
+
+    // application version
+    virtual QString applicationVersion( void ) const
+    { return VERSION; }
+
+    // build time stamp
+    virtual QString buildTimeStamp( void ) const
+    { return BUILD_TIMESTAMP; }
+
+    //@}
+
     Q_SIGNALS:
 
     //! spellcheck configuration modified
@@ -126,10 +147,6 @@ class Application: public BaseApplication, public Counter
 
     //! Update Document Classes from options
     void _updateDocumentClasses( void );
-
-    //! about
-    void _about( void )
-    { BaseApplication::_about( "Qedit", VERSION, BUILD_TIMESTAMP ); }
 
     //! configuration
     void _configuration( void );

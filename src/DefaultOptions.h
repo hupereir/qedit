@@ -40,7 +40,7 @@ void installDefaultOptions( void )
     XmlOptions::get().keep( "PIXMAP_PATH" );
     XmlOptions::get().add( "PIXMAP_PATH", "/usr/share/icons/oxygen/32x32/mimetypes");
 
-    XmlOptions::get().set( "ICON_PIXMAP", Option( ":/qedit.png" , "application icon") );
+    // font
     XmlOptions::get().set( "FIXED_FONT_NAME", Option( "fixed" , "fixed font"  ) );
 
     // user specified document classes

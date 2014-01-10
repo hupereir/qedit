@@ -106,18 +106,18 @@ void NavigationToolBar::_updateConfiguration( void )
     Debug::Throw( "NavigationToolBar::_updateConfiguration.\n" );
 
     // icon size
-    IconSize icon_size( IconSize( this, (IconSize::Size)XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) ) );
-    setIconSize( icon_size );
+    const IconSize iconSize( (IconSize::Size)XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) );
+    setIconSize( iconSize );
 
     // text label for toolbars
-    Qt::ToolButtonStyle style( (Qt::ToolButtonStyle) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION" ) );
+    const Qt::ToolButtonStyle style( (Qt::ToolButtonStyle) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION" ) );
     setToolButtonStyle( style );
 
     // also update buttons independently
     for( ButtonMap::const_iterator iter = buttons_.begin(); iter != buttons_.end(); ++iter )
     {
         iter.key()->setToolButtonStyle( style );
-        iter.key()->setIconSize( icon_size );
+        iter.key()->setIconSize( iconSize );
     }
 
     adjustSize();
