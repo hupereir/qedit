@@ -24,13 +24,11 @@
 
 #include "Application.h"
 #include "BaseFileInfoConfigurationWidget.h"
-#include "FileList.h"
-#include "CustomToolBar.h"
 #include "Debug.h"
 #include "GridLayout.h"
 #include "IconEngine.h"
 #include "Icons.h"
-#include "MainWindow.h"
+#include "OptionComboBox.h"
 #include "OptionListBox.h"
 #include "OptionBrowsedLineEditor.h"
 #include "OptionCheckBox.h"
@@ -38,12 +36,7 @@
 #include "OptionFontInfo.h"
 #include "OptionSpinBox.h"
 #include "RecentFilesConfiguration.h"
-#include "RecentFilesFrame.h"
-#include "SessionFilesFrame.h"
 #include "Singleton.h"
-#include "TreeView.h"
-#include "TreeViewConfiguration.h"
-#include "WindowServer.h"
 
 #include <QLabel>
 #include <QGroupBox>
@@ -142,7 +135,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     }
 
     // default text-edition configuration
-    textEditConfiguration( page, ALL_TEXT_EDITION & ~(TAB_EMULATION|TEXT_EDITION_FLAGS) );
+    textEditConfiguration( page, (ConfigurationFlags)(AllTextEdition& ~(TabEmulation|TextEditionFlags)) );
 
     // wrap mode
     // needs customization with respect to BaseConfigurationDialog in order
