@@ -143,6 +143,7 @@ void installDefaultOptions( void )
     // run-time non recordable options
     XmlOptions::get().set( "USER_NAME", Option( Util::user(), Option::None ) );
     XmlOptions::get().set( "APP_NAME", Option( "Qedit", Option::None ) );
+    XmlOptions::get().set( "ICON_PIXMAP", Option( ":/qedit.png", Option::None ) );
     XmlOptions::get().set( "RC_FILE", Option( File(".qeditrc").addPath(Util::home()), Option::None ) );
 
     XmlOptions::get().setAutoDefault( false );

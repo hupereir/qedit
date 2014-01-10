@@ -121,10 +121,6 @@ class Application: public BaseApplication, public Counter
     virtual QString applicationName( void ) const
     { return "Qedit"; }
 
-    // application icon
-    virtual QIcon applicationIcon( void ) const
-    { return QIcon( ":/qedit.png" ); }
-
     // application version
     virtual QString applicationVersion( void ) const
     { return VERSION; }
