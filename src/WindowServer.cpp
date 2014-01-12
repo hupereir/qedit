@@ -208,13 +208,14 @@ bool WindowServer::closeAll( void )
 }
 
 //______________________________________________________
-void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
+// void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
+void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
 {
 
     Debug::Throw() << "WindowServer::readFilesFromArguments." << endl;
 
     // retrieve files from arguments
-    const CommandLineParser parser( Application::commandLineParser( arguments ) );
+    // const CommandLineParser parser( Application::commandLineParser( arguments ) );
     QStringList filenames( parser.orphans() );
 
     // close mode
@@ -261,14 +262,14 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
 
                 if( (fileOpened |= _open( File( filename ).expand()) ) )
                 {
-                    _applyArguments( _activeWindow().activeDisplay(), arguments );
+                    _applyCommandLineArguments( _activeWindow().activeDisplay(), parser );
                     first = false;
                 }
 
             } else {
 
                 if( (fileOpened |= _open( File( filename ).expand(), orientation )) )
-                { _applyArguments( _activeWindow().activeDisplay(), arguments ); }
+                { _applyCommandLineArguments( _activeWindow().activeDisplay(), parser ); }
 
             }
 
@@ -291,7 +292,7 @@ void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
             else if( parser.hasFlag( "--new-window" ) ) mode = NEW_WINDOW;
 
             bool opened = _open( File( filename ).expand(), mode );
-            if( opened ) { _applyArguments( _activeWindow().activeDisplay(), arguments ); }
+            if( opened ) { _applyCommandLineArguments( _activeWindow().activeDisplay(), parser ); }
             fileOpened |= opened;
 
         }
@@ -1128,11 +1129,9 @@ bool WindowServer::_createNewFile( const FileRecord& record )
 }
 
 //________________________________________________________________
-void WindowServer::_applyArguments( TextDisplay& display, CommandLineArguments arguments )
+void WindowServer::_applyCommandLineArguments( TextDisplay& display, const CommandLineParser& parser )
 {
-    Debug::Throw( "WindowServer::_applyArguments.\n" );
-
-    const CommandLineParser parser( Application::commandLineParser( arguments ) );
+    Debug::Throw( "WindowServer::_applyCommandLineArguments.\n" );
 
     //! see if autospell action is required
     bool autospell( parser.hasFlag( "--autospell" ) );
@@ -1140,7 +1139,7 @@ void WindowServer::_applyArguments( TextDisplay& display, CommandLineArguments a
     //! see if autospell filter and dictionary are required
     QString filter = parser.hasOption( "--filter" ) ? parser.option( "--filter" ) : "";
     QString dictionary = parser.hasOption( "--dictionary" ) ? parser.option( "--dictionary" ) : "";
-    Debug::Throw() << "WindowServer::_applyArguments -"
+    Debug::Throw() << "WindowServer::_applyCommandLineArguments -"
         << " filter:" << filter
         << " dictionary: " << dictionary
         << endl;
@@ -1148,7 +1147,7 @@ void WindowServer::_applyArguments( TextDisplay& display, CommandLineArguments a
     if( autospell ) display.autoSpellAction().setChecked( true );
     if( !filter.isEmpty() ) display.selectFilter( filter );
     if( !dictionary.isEmpty() ) display.selectDictionary( dictionary );
-    Debug::Throw( "WindowServer::_applyArguments - done.\n" );
+    Debug::Throw( "WindowServer::_applyCommandLineArguments - done.\n" );
 
 }
 

@@ -27,6 +27,7 @@
 #include "CommandLineParser.h"
 #include "Config.h"
 #include "Counter.h"
+#include "IconEngine.h"
 
 #include <QBasicTimer>
 
@@ -46,12 +47,6 @@ class Application: public BaseApplication, public Counter
 
     public:
 
-    //! command line parser
-    static CommandLineParser commandLineParser( CommandLineArguments arguments = CommandLineArguments(), bool ignoreWarnings = true );
-
-    //! command line help
-    static void usage( void );
-
     //! constructor
     Application( CommandLineArguments );
 
@@ -59,7 +54,7 @@ class Application: public BaseApplication, public Counter
     ~Application( void );
 
     //! initialize application manager
-    virtual void initApplicationManager( void );
+    virtual bool initApplicationManager( void );
 
     //! create all widgets
     bool realizeWidget( void );
@@ -117,9 +112,19 @@ class Application: public BaseApplication, public Counter
     //!@name application information
     //@{
 
+    //! command line parser
+    CommandLineParser commandLineParser( CommandLineArguments = CommandLineArguments(), bool ignoreWarnings = true ) const;
+
+    //! command line help
+    void usage( void ) const;
+
     //! application name
     virtual QString applicationName( void ) const
     { return "Qedit"; }
+
+    //! application icon
+    virtual QIcon applicationIcon( void ) const
+    { return IconEngine::get( ":/qedit.png" ); }
 
     // application version
     virtual QString applicationVersion( void ) const

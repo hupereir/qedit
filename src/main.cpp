@@ -50,14 +50,6 @@ int main (int argc, char *argv[])
     // install error handler
     ErrorHandler::initialize();
 
-    // usage
-    CommandLineArguments arguments( argc, argv );
-    if( Application::commandLineParser( arguments, false ).hasFlag( "--help" ) )
-    {
-        Application::usage();
-        return 0;
-    }
-
     // options
     installDefaultOptions();
     installSystemOptions();
@@ -78,13 +70,13 @@ int main (int argc, char *argv[])
 
     // application
     QApplication application( argc, argv );
-    application.setApplicationName( "Qedit" );
-    Application singleton( arguments );
+    Application singleton( CommandLineArguments( argc, argv ) );
     singleton.setUseFixedFonts( true );
     Singleton::get().setApplication( &singleton );
-    singleton.initApplicationManager();
 
-    application.exec();
+    // initialize and run
+    if( singleton.initApplicationManager() )
+    {  application.exec(); }
 
     return 0;
 

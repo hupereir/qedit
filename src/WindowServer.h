@@ -22,7 +22,7 @@
 *
 *******************************************************************************/
 
-#include "CommandLineArguments.h"
+#include "CommandLineParser.h"
 #include "Counter.h"
 #include "File.h"
 #include "FileRecord.h"
@@ -72,7 +72,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     bool closeAll( void );
 
     //! read file from arguments and open relevant windows
-    void readFilesFromArguments( CommandLineArguments );
+    void readFilesFromArguments( const CommandLineParser& );
 
     //! open all records in list
     void open( const FileRecord::List& );
@@ -235,7 +235,7 @@ class WindowServer: public QObject, public Counter, public BASE::Key
     void _detach( TextDisplay& );
 
     //! apply command-line arguments to currant display
-    void _applyArguments( TextDisplay&, CommandLineArguments );
+    void _applyCommandLineArguments( TextDisplay&, const CommandLineParser& );
 
     //! active window
     void _setActiveWindow( MainWindow& );

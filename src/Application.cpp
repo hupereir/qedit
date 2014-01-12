@@ -48,33 +48,6 @@
 #include <QMessageBox>
 
 //____________________________________________
-CommandLineParser Application::commandLineParser( CommandLineArguments arguments, bool ignoreWarnings )
-{
-    Debug::Throw( "Application::commandLineParser.\n" );
-    CommandLineParser out( SERVER::ApplicationManager::commandLineParser() );
-
-    out.registerFlag( "--tabbed", tr( "opens files in same window") );
-    out.registerFlag( "--same-window", tr( "open files in same window") );
-    out.registerFlag( "--new-window", tr( "open files in a new window") );
-    out.registerFlag( "--diff", tr( "open files in same window and perform diff") );
-    out.registerFlag( "--autospell", tr( "switch autospell on for all files") );
-    out.registerFlag( "--close", tr( "close displays matching file names and exit") );
-    out.registerOption( "--filter", tr( "string" ), tr( "select filter for autospell") );
-    out.registerOption( "--dictionary", tr( "string" ), tr( "select dictionary for autospell") );
-    out.registerOption( "--orientation", tr( "string" ), tr( "select view orientation for tabbed edition (vertical|horizontal)") );
-    if( !arguments.isEmpty() ) out.parse( arguments, ignoreWarnings );
-    return out;
-
-}
-
-//____________________________________________
-void Application::usage( void )
-{
-    Debug::Throw(0) << "Usage : qedit [options] [files]" << endl;
-    commandLineParser().usage();
-}
-
-//____________________________________________
 Application::Application( CommandLineArguments arguments ):
     BaseApplication( 0, arguments ),
     Counter( "Application" ),
@@ -99,7 +72,7 @@ Application::~Application( void )
 }
 
 //____________________________________________
-void Application::initApplicationManager( void )
+bool Application::initApplicationManager( void )
 {
     Debug::Throw( "Application::initApplicationManager.\n" );
 
@@ -113,7 +86,7 @@ void Application::initApplicationManager( void )
     _setArguments( parser.arguments() );
 
     // base class initialization
-    BaseApplication::initApplicationManager();
+    return BaseApplication::initApplicationManager();
 
 }
 
@@ -170,6 +143,33 @@ bool Application::realizeWidget( void )
     Debug::Throw( "Application::realizeWidget - done.\n" );
     return true;
 
+}
+
+//____________________________________________
+CommandLineParser Application::commandLineParser( CommandLineArguments arguments, bool ignoreWarnings ) const
+{
+    Debug::Throw( "Application::commandLineParser.\n" );
+    CommandLineParser out( BaseApplication::commandLineParser() );
+
+    out.registerFlag( "--tabbed", tr( "opens files in same window") );
+    out.registerFlag( "--same-window", tr( "open files in same window") );
+    out.registerFlag( "--new-window", tr( "open files in a new window") );
+    out.registerFlag( "--diff", tr( "open files in same window and perform diff") );
+    out.registerFlag( "--autospell", tr( "switch autospell on for all files") );
+    out.registerFlag( "--close", tr( "close displays matching file names and exit") );
+    out.registerOption( "--filter", tr( "string" ), tr( "select filter for autospell") );
+    out.registerOption( "--dictionary", tr( "string" ), tr( "select dictionary for autospell") );
+    out.registerOption( "--orientation", tr( "string" ), tr( "select view orientation for tabbed edition (vertical|horizontal)") );
+    if( !arguments.isEmpty() ) out.parse( arguments, ignoreWarnings );
+    return out;
+
+}
+
+//____________________________________________
+void Application::usage( void ) const
+{
+    Debug::Throw(0) << "Usage: qedit [options] [files]" << endl;
+    commandLineParser().usage();
 }
 
 //____________________________________________________________
@@ -353,7 +353,7 @@ void Application::timerEvent( QTimerEvent* event )
     {
 
         startupTimer_.stop();
-        windowServer_->readFilesFromArguments( _arguments() );
+        windowServer_->readFilesFromArguments( commandLineParser( _arguments() ) );
         connect( qApp, SIGNAL(lastWindowClosed()), qApp, SLOT(quit()), Qt::UniqueConnection );
 
     } else return QObject::timerEvent( event );
