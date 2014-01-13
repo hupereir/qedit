@@ -2346,13 +2346,13 @@ void TextDisplay::_fileProperties( void )
     layout->addLayout( gridLayout );
 
     // number of characters
-    ToolTipWidgetItem* item;
-    item = new ToolTipWidgetItem( box, gridLayout );
+    GridLayoutItem* item;
+    item = new GridLayoutItem( box, gridLayout );
     item->setKey( "Number of characters:" );
     item->setText( QString().setNum(toPlainText().size()) );
 
     // number of lines
-    item = new ToolTipWidgetItem( box, gridLayout );
+    item = new GridLayoutItem( box, gridLayout );
     item->setKey( "Number of lines:" );
     item->setText( QString().setNum( AnimatedTextEditor::blockCount()) );
 
@@ -2405,7 +2405,7 @@ void TextDisplay::_fileProperties( void )
     }
 
     // document class
-    item = new ToolTipWidgetItem( box, gridLayout, ToolTipWidgetItem::Elide );
+    item = new GridLayoutItem( box, gridLayout, GridLayoutItem::Elide );
     item->setKey( "Document class file name:" );
     const DocumentClass& documentClass( Singleton::get().application<Application>()->classManager().get( className() ) );
     item->setText( documentClass.file() );
@@ -2414,7 +2414,7 @@ void TextDisplay::_fileProperties( void )
     dialog.setIcon( IconEngine::get( documentClass.icon() ) );
 
     // autosave
-    item = new ToolTipWidgetItem( box, gridLayout, ToolTipWidgetItem::Elide|ToolTipWidgetItem::Selectable );
+    item = new GridLayoutItem( box, gridLayout, GridLayoutItem::Elide|GridLayoutItem::Selectable );
     item->setKey( "Auto-save file name:" );
     item->setText( AutoSaveThread::autoSaveName( file() ) );
 

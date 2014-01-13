@@ -25,7 +25,7 @@
 #include "GridLayout.h"
 #include "Singleton.h"
 #include "TimeStamp.h"
-#include "ToolTipWidgetItem.h"
+#include "GridLayoutItem.h"
 #include "XmlOptions.h"
 
 #include <QLayout>
@@ -75,12 +75,12 @@ FileRecordToolTipWidget::FileRecordToolTipWidget( QWidget* parent ):
     vLayout->addLayout( gridLayout );
 
     // items
-    ( pathItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Path:" ) );
-    ( sizeItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Size:" ) );
-    ( lastModifiedItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Modified:" ) );
-    ( userItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Owner:" ) );
-    ( groupItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Group:" ) );
-    ( permissionsItem_ = new ToolTipWidgetItem( this, gridLayout ) )->setKey( tr( "Permissions:" ) );
+    ( pathItem_ = new GridLayoutItem( this, gridLayout ) )->setKey( tr( "Path:" ) );
+    ( sizeItem_ = new GridLayoutItem( this, gridLayout ) )->setKey( tr( "Size:" ) );
+    ( lastModifiedItem_ = new GridLayoutItem( this, gridLayout ) )->setKey( tr( "Modified:" ) );
+    ( userItem_ = new GridLayoutItem( this, gridLayout ) )->setKey( tr( "Owner:" ) );
+    ( groupItem_ = new GridLayoutItem( this, gridLayout ) )->setKey( tr( "Group:" ) );
+    ( permissionsItem_ = new GridLayoutItem( this, gridLayout ) )->setKey( tr( "Permissions:" ) );
 
     // add stretch
     vLayout->addStretch( 1 );

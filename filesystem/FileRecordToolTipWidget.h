@@ -29,7 +29,7 @@
 #include <QFrame>
 #include <QLabel>
 
-class ToolTipWidgetItem;
+class GridLayoutItem;
 
 class FileRecordToolTipWidget: public BaseToolTipWidget
 {
@@ -114,12 +114,12 @@ class FileRecordToolTipWidget: public BaseToolTipWidget
 
     //!@name items
     //@{
-    ToolTipWidgetItem* pathItem_;
-    ToolTipWidgetItem* sizeItem_;
-    ToolTipWidgetItem* lastModifiedItem_;
-    ToolTipWidgetItem* userItem_;
-    ToolTipWidgetItem* groupItem_;
-    ToolTipWidgetItem* permissionsItem_;
+    GridLayoutItem* pathItem_;
+    GridLayoutItem* sizeItem_;
+    GridLayoutItem* lastModifiedItem_;
+    GridLayoutItem* userItem_;
+    GridLayoutItem* groupItem_;
+    GridLayoutItem* permissionsItem_;
     //@}
 
 };
