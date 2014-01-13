@@ -2346,15 +2346,15 @@ void TextDisplay::_fileProperties( void )
     layout->addLayout( gridLayout );
 
     // number of characters
-    FileInformationDialog::Item* item;
-    item = new FileInformationDialog::Item( box, gridLayout );
+    ToolTipWidgetItem* item;
+    item = new ToolTipWidgetItem( box, gridLayout );
     item->setKey( "Number of characters:" );
-    item->setValue( QString().setNum(toPlainText().size()) );
+    item->setText( QString().setNum(toPlainText().size()) );
 
     // number of lines
-    item = new FileInformationDialog::Item( box, gridLayout );
+    item = new ToolTipWidgetItem( box, gridLayout );
     item->setKey( "Number of lines:" );
-    item->setValue( QString().setNum( AnimatedTextEditor::blockCount()) );
+    item->setText( QString().setNum( AnimatedTextEditor::blockCount()) );
 
     gridLayout->addWidget( new QLabel( "Text highlighting:", box ) );
     {
@@ -2405,18 +2405,18 @@ void TextDisplay::_fileProperties( void )
     }
 
     // document class
-    item = new FileInformationDialog::Item( box, gridLayout, FileInformationDialog::Elide );
+    item = new ToolTipWidgetItem( box, gridLayout, ToolTipWidgetItem::Elide );
     item->setKey( "Document class file name:" );
     const DocumentClass& documentClass( Singleton::get().application<Application>()->classManager().get( className() ) );
-    item->setValue( documentClass.file() );
+    item->setText( documentClass.file() );
 
     // also assign icon to dialog
     dialog.setIcon( IconEngine::get( documentClass.icon() ) );
 
     // autosave
-    item = new FileInformationDialog::Item( box, gridLayout, FileInformationDialog::Elide|FileInformationDialog::Selectable );
+    item = new ToolTipWidgetItem( box, gridLayout, ToolTipWidgetItem::Elide|ToolTipWidgetItem::Selectable );
     item->setKey( "Auto-save file name:" );
-    item->setValue( AutoSaveThread::autoSaveName( file() ) );
+    item->setText( AutoSaveThread::autoSaveName( file() ) );
 
     layout->addStretch();
 

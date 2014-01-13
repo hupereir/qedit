@@ -365,10 +365,6 @@ void Application::_installActions( void )
 
     Debug::Throw( "Application::_installActions.\n" );
 
-    // rename actions
-    aboutAction().setText( "About Qedit" );
-    configurationAction().setText( "Configure Qedit..." );
-
     // need to modify closeAction signal for proper exit
     closeAction().disconnect();
     connect( &closeAction(), SIGNAL(triggered()), SLOT(_exit()) );
