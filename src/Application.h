@@ -30,6 +30,7 @@
 #include "IconEngine.h"
 
 #include <QBasicTimer>
+#include <QTimerEvent>
 
 class AutoSave;
 class DocumentClassManager;

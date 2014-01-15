@@ -140,7 +140,6 @@ bool Application::realizeWidget( void )
     // performed in the main routine
     startupTimer_.start( 0, this );
 
-    Debug::Throw( "Application::realizeWidget - done.\n" );
     return true;
 
 }
@@ -151,6 +150,7 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
     Debug::Throw( "Application::commandLineParser.\n" );
     CommandLineParser out( BaseApplication::commandLineParser() );
 
+    out.setGroup( CommandLineParser::applicationGroupName );
     out.registerFlag( "--tabbed", tr( "opens files in same window") );
     out.registerFlag( "--same-window", tr( "open files in same window") );
     out.registerFlag( "--new-window", tr( "open files in a new window") );
@@ -168,7 +168,7 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
 //____________________________________________
 void Application::usage( void ) const
 {
-    Debug::Throw(0) << "Usage: qedit [options] [files]" << endl;
+    _usage( "qedit", tr("[options] [files]") );
     commandLineParser().usage();
 }
 
