@@ -310,7 +310,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     checkbox->setToolTip( tr( "Make backup of the file prior to saving modifications" ) );
     addOptionWidget( checkbox );
 
-    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Save files automatically for crash recovery" ), box, "AUTOSAVE" ) );
+    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Save files regularly in a temporary directory" ), box, "AUTOSAVE" ) );
     checkbox->setToolTip(
         tr( "Make automatic copies of edited files in\n"
         "specified directory to allow crash recovery." ) );
