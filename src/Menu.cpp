@@ -50,7 +50,7 @@ Menu::Menu( QWidget* parent ):
     Debug::Throw( "Menu::Menu.\n" );
 
     // file menu
-    QMenu* menu = addMenu( "File" );
+    QMenu* menu = addMenu( tr( "File" ) );
 
     // retrieve mainwindow
     const Application& application( *Singleton::get().application<Application>() );
