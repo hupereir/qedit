@@ -26,7 +26,7 @@
 #include "ColumnSelectionMenu.h"
 #include "ContextMenu.h"
 #include "Debug.h"
-#include "Icons.h"
+#include "IconNames.h"
 #include "IconEngine.h"
 #include "FileList.h"
 #include "FileRecordToolTipWidget.h"
@@ -239,13 +239,13 @@ void RecentFilesFrame::_installActions( void )
     Debug::Throw( "RecentFilesFrame::_installActions.\n" );
 
     // clean
-    addAction( cleanAction_ = new QAction( IconEngine::get( ICONS::DELETE ), tr( "Clean" ), this ) );
+    addAction( cleanAction_ = new QAction( IconEngine::get( IconNames::Delete ), tr( "Clean" ), this ) );
     connect( &_cleanAction(), SIGNAL(triggered()), SLOT(_clean()) );
     _cleanAction().setEnabled( false );
     _cleanAction().setToolTip( tr( "Clean invalid files" ) );
 
     // open
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), tr( "Open Selected Files" ), this ) );
+    addAction( openAction_ = new QAction( IconEngine::get( IconNames::Open ), tr( "Open Selected Files" ), this ) );
     connect( &_openAction(), SIGNAL(triggered()), SLOT(_open()) );
 
 }

@@ -1,5 +1,5 @@
-#ifndef FileSystemIcons_h
-#define FileSystemIcons_h
+#ifndef FileSystemIconNames_h
+#define FileSystemIconNames_h
 
 // $Id$
 
@@ -22,20 +22,21 @@
 *
 *******************************************************************************/
 
+#include "BaseIconNames.h"
+
 #include <QString>
-#include "BaseIcons.h"
 
 //! namespace for icon static name wrappers
-namespace ICONS
+namespace IconNames
 {
 
-    static const QString DOCUMENT = "application-x-zerosize.png";
-    static const QString FOLDER = "folder.png";
+    static const QString Document = "application-x-zerosize.png";
+    static const QString Folder = "folder.png";
 
-    static const QString PARENT = "go-up.png";
-    static const QString PREVIOUS_DIRECTORY = "go-previous.png";
-    static const QString NEXT_DIRECTORY = "go-next.png";
-    static const QString HOME = "go-home.png";
+    static const QString Parent = "go-up.png";
+    static const QString PreviousDirectory = "go-previous.png";
+    static const QString NextDirectory = "go-next.png";
+    static const QString Home = "go-home.png";
 
 };
 

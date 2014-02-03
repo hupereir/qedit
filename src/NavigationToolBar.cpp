@@ -23,7 +23,7 @@
 #include "Debug.h"
 #include "FileSystemFrame.h"
 #include "IconEngine.h"
-#include "Icons.h"
+#include "IconNames.h"
 #include "IconSizeMenu.h"
 #include "MainWindow.h"
 #include "NavigationToolBar.h"
@@ -67,7 +67,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
     CustomToolButton* button;
 
     // session files
-    addWidget( button = _newToolButton( this,  IconEngine::get( ICONS::DOCUMENTS ) ) );
+    addWidget( button = _newToolButton( this,  IconEngine::get( IconNames::Documents ) ) );
     button->setText( tr( "Session Files" ) );
     button->setToolTip( tr( "Files currently opened" ) );
     button->setChecked( true );
@@ -76,7 +76,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
     buttons_.insert( button, &_navigationFrame().sessionFilesFrame() );
 
     // recent files
-    addWidget( button = _newToolButton( this, IconEngine::get( ICONS::HISTORY ) ) );
+    addWidget( button = _newToolButton( this, IconEngine::get( IconNames::History ) ) );
     button->setText( tr( "Recent Files" ) );
     button->setToolTip( tr( "Files recently opened" ) );
 
@@ -84,7 +84,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
     buttons_.insert( button, &_navigationFrame().recentFilesFrame() );
 
     // file system
-    addWidget( button = _newToolButton( this, IconEngine::get( ICONS::FILESYSTEM ) ) );
+    addWidget( button = _newToolButton( this, IconEngine::get( IconNames::FileSystem ) ) );
     button->setText( tr( "File System" ) );
     button->setToolTip( tr( "File system browser" ) );
 

@@ -21,7 +21,7 @@
 
 #include "FileModifiedDialog.h"
 #include "FileModifiedDialog.moc"
-#include "Icons.h"
+#include "IconNames.h"
 #include "IconEngine.h"
 #include "QtUtil.h"
 
@@ -54,7 +54,7 @@ Counter( "FileModifiedDialog" )
     QHBoxLayout *hLayout( new QHBoxLayout() );
     layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
-    label->setPixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
+    label->setPixmap( IconEngine::get( IconNames::Warning ).pixmap( iconSize() ) );
     hLayout->addWidget( label, 0, Qt::AlignHCenter );
     hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
@@ -72,22 +72,22 @@ Counter( "FileModifiedDialog" )
 
     // reload button.
     QPushButton* button;
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::RELOAD ), "&Reload", this ) );
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::Reload ), "&Reload", this ) );
     connect( button, SIGNAL(clicked()), SLOT(_reLoad()) );
     button->setToolTip( "Reload file from disc. Modifications will be lost" );
 
     // resave button
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE ), "&Save Again", this ) );
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::Save ), "&Save Again", this ) );
     connect( button, SIGNAL(clicked()), SLOT(_reSave()) );
     button->setToolTip( "Save file again. Disc modifications will be lost" );
 
     // save as button
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::SAVE_AS ), "&Save As", this ) );
+    button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::SaveAs ), "&Save As", this ) );
     connect( button, SIGNAL(clicked()), SLOT(_saveAs()) );
     button->setToolTip( "Save file with a different name" );
 
     // ignore button.
-    button_layout->addWidget( button = new QPushButton(  IconEngine::get( ICONS::DIALOG_CANCEL ), "&Ignore", this ) );
+    button_layout->addWidget( button = new QPushButton(  IconEngine::get( IconNames::DialogCancel ), "&Ignore", this ) );
     connect( button, SIGNAL(clicked()), SLOT(_ignore()) );
     button->setToolTip( "Ignore warning" );
 

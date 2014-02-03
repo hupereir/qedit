@@ -25,7 +25,7 @@
 #include "AnimatedTreeView.h"
 #include "FileRecordProperties.h"
 #include "FileRecordToolTipWidget.h"
-#include "FileSystemIcons.h"
+#include "FileSystemIconNames.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
 #include "ContextMenu.h"
@@ -479,51 +479,51 @@ void FileSystemFrame::_installActions( void )
     connect( hiddenFilesAction_, SIGNAL(toggled(bool)), SLOT(_toggleShowHiddenFiles(bool)) );
 
     // previous directory (from history)
-    addAction( previousDirectoryAction_ = new QAction( IconEngine::get( ICONS::PREVIOUS_DIRECTORY ), tr( "Previous" ), this ) );
+    addAction( previousDirectoryAction_ = new QAction( IconEngine::get( IconNames::PreviousDirectory ), tr( "Previous" ), this ) );
     connect( previousDirectoryAction_, SIGNAL(triggered()), pathEditor_, SLOT(selectPrevious()) );
 
     // next directory (from history)
-    addAction( nextDirectoryAction_ = new QAction( IconEngine::get( ICONS::NEXT_DIRECTORY ), tr( "Next" ), this ) );
+    addAction( nextDirectoryAction_ = new QAction( IconEngine::get( IconNames::NextDirectory ), tr( "Next" ), this ) );
     connect( nextDirectoryAction_, SIGNAL(triggered()), pathEditor_, SLOT(selectNext()) );
 
     // parent directory in tree
-    addAction( parentDirectoryAction_ = new QAction( IconEngine::get( ICONS::PARENT ), tr( "Parent Directory" ), this ) );
+    addAction( parentDirectoryAction_ = new QAction( IconEngine::get( IconNames::Parent ), tr( "Parent Directory" ), this ) );
     connect( parentDirectoryAction_, SIGNAL(triggered()), pathEditor_, SLOT(selectParent()) );
     parentDirectoryAction_->setToolTip( tr( "Change path to parent directory" ) );
 
     // home directory
-    addAction( homeDirectoryAction_ = new QAction( IconEngine::get( ICONS::HOME ), tr( "Home" ), this ) );
+    addAction( homeDirectoryAction_ = new QAction( IconEngine::get( IconNames::Home ), tr( "Home" ), this ) );
     connect( homeDirectoryAction_, SIGNAL(triggered()), SLOT(_homeDirectory()) );
     homeDirectoryAction_->setToolTip( tr( "Change path to current user home directory" ) );
 
     // working directory
-    addAction( workingDirectoryAction_ = new QAction( IconEngine::get( ICONS::FIND ), tr( "Working Directory" ), this ) );
+    addAction( workingDirectoryAction_ = new QAction( IconEngine::get( IconNames::Find ), tr( "Working Directory" ), this ) );
     connect( workingDirectoryAction_, SIGNAL(triggered()), SLOT(_workingDirectory()) );
     workingDirectoryAction_->setToolTip( tr( "Change path to current file working directory" ) );
 
     // reload
-    addAction( reloadAction_ = new QAction( IconEngine::get( ICONS::RELOAD ), tr( "Reload" ), this ) );
+    addAction( reloadAction_ = new QAction( IconEngine::get( IconNames::Reload ), tr( "Reload" ), this ) );
     connect( reloadAction_, SIGNAL(triggered()), SLOT(_reload()) );
     reloadAction_->setToolTip( tr( "Reload current directory contents" ) );
 
     // open
-    addAction( openAction_ = new QAction( IconEngine::get( ICONS::OPEN ), tr( "Open Selected Files" ), this ) );
+    addAction( openAction_ = new QAction( IconEngine::get( IconNames::Open ), tr( "Open Selected Files" ), this ) );
     connect( openAction_, SIGNAL(triggered()), SLOT(_open()) );
     openAction_->setToolTip( tr( "Edit selected files" ) );
 
     // remove
-    addAction( removeAction_ = new QAction( IconEngine::get( ICONS::DELETE ), tr( "Delete" ), this ) );
+    addAction( removeAction_ = new QAction( IconEngine::get( IconNames::Delete ), tr( "Delete" ), this ) );
     connect( removeAction_, SIGNAL(triggered()), SLOT(_remove()) );
     removeAction_->setShortcut( QKeySequence::Delete );
 
     // rename
-    addAction( renameAction_ = new QAction( IconEngine::get( ICONS::RENAME ), tr( "Rename" ), this ) );
+    addAction( renameAction_ = new QAction( IconEngine::get( IconNames::Rename ), tr( "Rename" ), this ) );
     connect( renameAction_, SIGNAL(triggered()), SLOT(_rename()) );
     renameAction_->setShortcut( Qt::Key_F2 );
     renameAction_->setToolTip( tr( "Change selected file name" ) );
 
     // file properties
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFORMATION ), tr( "Properties..." ), this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( IconNames::Information ), tr( "Properties..." ), this ) );
     connect( filePropertiesAction_, SIGNAL(triggered()), SLOT(_fileProperties()) );
     filePropertiesAction_->setToolTip( tr( "Display current file properties" ) );
 

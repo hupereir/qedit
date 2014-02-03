@@ -24,7 +24,7 @@
 
 #include "AnimatedTreeView.h"
 #include "Debug.h"
-#include "Icons.h"
+#include "IconNames.h"
 #include "IconEngine.h"
 #include "XmlOptions.h"
 
@@ -78,7 +78,7 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
 
     // rename buttons
     okButton().setText( tr( "Close" ) );
-    okButton().setIcon( IconEngine::get( ICONS::DIALOG_CLOSE ) );
+    okButton().setIcon( IconEngine::get( IconNames::DialogClose ) );
     adjustSize();
 
 }

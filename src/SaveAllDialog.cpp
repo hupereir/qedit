@@ -24,7 +24,7 @@
 
 #include "AnimatedTreeView.h"
 #include "Debug.h"
-#include "Icons.h"
+#include "IconNames.h"
 #include "IconEngine.h"
 #include "XmlOptions.h"
 
@@ -78,7 +78,7 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
 
     // rename buttons
     okButton().setText( tr( "Save" ) );
-    okButton().setIcon( IconEngine::get( ICONS::SAVE ) );
+    okButton().setIcon( IconEngine::get( IconNames::Save ) );
     adjustSize();
 
 }

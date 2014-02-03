@@ -20,7 +20,7 @@
 #include "RemoveFilesDialog.h"
 #include "RemoveFilesDialog.moc"
 
-#include "BaseIcons.h"
+#include "BaseIconNames.h"
 #include "IconEngine.h"
 #include "TreeView.h"
 
@@ -42,7 +42,7 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
 
     // customize buttons
     okButton().setText( "Delete" );
-    okButton().setIcon( IconEngine::get( ICONS::DELETE ) );
+    okButton().setIcon( IconEngine::get( IconNames::Delete ) );
 
     // label
     QString buffer = (files.size() == 1) ?
@@ -56,7 +56,7 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
     hLayout->setMargin(0);
     mainLayout().addLayout( hLayout );
     QLabel* label = new QLabel( this );
-    label->setPixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
+    label->setPixmap( IconEngine::get( IconNames::Warning ).pixmap( iconSize() ) );
     hLayout->addWidget( label, 0, Qt::AlignHCenter );
     hLayout->addWidget( textLabel, 1, Qt::AlignLeft );
 

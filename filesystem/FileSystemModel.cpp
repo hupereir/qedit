@@ -25,7 +25,7 @@
 
 #include "CustomPixmap.h"
 #include "FileIconProvider.h"
-#include "FileSystemIcons.h"
+#include "FileSystemIconNames.h"
 #include "FileRecordProperties.h"
 #include "IconEngine.h"
 #include "XmlOptions.h"

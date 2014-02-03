@@ -23,7 +23,7 @@
 #include "FileSystemModel.h"
 
 #include "CustomPixmap.h"
-#include "FileSystemIcons.h"
+#include "FileSystemIconNames.h"
 #include "IconEngine.h"
 
 //__________________________________________________________________
@@ -58,14 +58,14 @@ const QIcon& FileIconProvider::icon( const FileRecord& fileRecord )
 
     // create
     QIcon out;
-    if( type & FileSystemModel::Navigator ) out = IconEngine::get( ICONS::PARENT );
-    else if( type & FileSystemModel::Folder ) out = IconEngine::get( ICONS::FOLDER );
+    if( type & FileSystemModel::Navigator ) out = IconEngine::get( IconNames::Parent );
+    else if( type & FileSystemModel::Folder ) out = IconEngine::get( IconNames::Folder );
     else if( type & FileSystemModel::Document )
     {
 
         // try get icon from mimetypes
         out = mimeTypeIconProvider_.icon( fileRecord.file().extension() );
-        if( out.isNull() ) out = IconEngine::get( ICONS::DOCUMENT );
+        if( out.isNull() ) out = IconEngine::get( IconNames::Document );
 
     }
 

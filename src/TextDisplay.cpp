@@ -44,7 +44,7 @@
 #include "HighlightBlockData.h"
 #include "HighlightBlockFlags.h"
 #include "IconEngine.h"
-#include "Icons.h"
+#include "IconNames.h"
 #include "InformationDialog.h"
 #include "LineNumberDisplay.h"
 #include "QuestionDialog.h"
@@ -1446,7 +1446,7 @@ void TextDisplay::_installActions( void )
     Debug::Throw( "TextDisplay::_installActions.\n" );
 
     // actions
-    addAction( textIndentMacro_ = new QAction( IconEngine::get( ICONS::INDENT ), "Indent Text", this ) );
+    addAction( textIndentMacro_ = new QAction( IconEngine::get( IconNames::Indent ), "Indent Text", this ) );
     textIndentMacro_->setCheckable( true );
     textIndentMacro_->setChecked( textIndent().isEnabled() );
     connect( textIndentMacro_, SIGNAL(toggled(bool)), SLOT(_toggleTextIndent(bool)) );
@@ -1477,7 +1477,7 @@ void TextDisplay::_installActions( void )
     connect( showBlockDelimiterAction_, SIGNAL(toggled(bool)), SLOT(_toggleShowBlockDelimiters(bool)) );
 
     // autospell
-    addAction( autoSpellAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Automatic Spellcheck", this ) );
+    addAction( autoSpellAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), "Automatic Spellcheck", this ) );
     autoSpellAction_->setShortcut( Qt::Key_F6 );
     autoSpellAction_->setShortcutContext( Qt::WidgetShortcut );
     autoSpellAction_->setCheckable( true );
@@ -1490,7 +1490,7 @@ void TextDisplay::_installActions( void )
     #endif
 
     // spell checking
-    addAction( spellcheckAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Spellcheck...", this ) );
+    addAction( spellcheckAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), "Spellcheck...", this ) );
     #if WITH_ASPELL
     connect( spellcheckAction_, SIGNAL(triggered()), SLOT(_spellcheck()) );
     #else
@@ -1498,13 +1498,13 @@ void TextDisplay::_installActions( void )
     #endif
 
     // indent selection
-    addAction( indentSelectionAction_ = new QAction( IconEngine::get( ICONS::INDENT ), "Indent Selection", this ) );
+    addAction( indentSelectionAction_ = new QAction( IconEngine::get( IconNames::Indent ), "Indent Selection", this ) );
     indentSelectionAction_->setShortcut( Qt::CTRL + Qt::Key_I );
     indentSelectionAction_->setShortcutContext( Qt::WidgetShortcut );
     connect( indentSelectionAction_, SIGNAL(triggered()), SLOT(_indentSelection()) );
 
     // base indentation
-    addAction( baseIndentAction_ = new QAction( IconEngine::get( ICONS::INDENT ), "Add Base Indentation", this ) );
+    addAction( baseIndentAction_ = new QAction( IconEngine::get( IconNames::Indent ), "Add Base Indentation", this ) );
     baseIndentAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_I );
     connect( baseIndentAction_, SIGNAL(triggered()), SLOT(_addBaseIndentation()) );
 
@@ -1513,7 +1513,7 @@ void TextDisplay::_installActions( void )
     connect( leadingTabsAction_, SIGNAL(triggered()), SLOT(_replaceLeadingTabs()) );
 
     // file information
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( ICONS::INFORMATION ), "Properties...", this ) );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( IconNames::Information ), "Properties...", this ) );
     filePropertiesAction_->setToolTip( "Display current file properties" );
     connect( filePropertiesAction_, SIGNAL(triggered()), SLOT(_fileProperties()) );
 
@@ -1530,7 +1530,7 @@ void TextDisplay::_installActions( void )
     textEncodingMenuAction_ = textEncodingMenu_->menuAction();
 
     // tag block action
-    addAction( tagBlockAction_ = new QAction( IconEngine::get( ICONS::TAG ), "Tag Selected Blocks", this ) );
+    addAction( tagBlockAction_ = new QAction( IconEngine::get( IconNames::Tag ), "Tag Selected Blocks", this ) );
     connect( tagBlockAction_, SIGNAL(triggered()), SLOT(_tagBlock()) );
 
     // clear current block tags
@@ -1542,13 +1542,13 @@ void TextDisplay::_installActions( void )
     connect( clearAllTagsAction_, SIGNAL(triggered()), SLOT(clearAllTags()) );
 
     // next tag action
-    addAction( nextTagAction_ = new QAction( IconEngine::get( ICONS::DOWN ), "Goto Next Tagged Block", this ) );
+    addAction( nextTagAction_ = new QAction( IconEngine::get( IconNames::Down ), "Goto Next Tagged Block", this ) );
     connect( nextTagAction_, SIGNAL(triggered()), SLOT(_nextTag()) );
     nextTagAction_->setShortcut( Qt::ALT + Qt::Key_Down );
     nextTagAction_->setShortcutContext( Qt::WidgetShortcut );
 
     // previous tag action
-    addAction( previousTagAction_ = new QAction( IconEngine::get( ICONS::UP ), "Goto Previous Tagged Block", this ) );
+    addAction( previousTagAction_ = new QAction( IconEngine::get( IconNames::Up ), "Goto Previous Tagged Block", this ) );
     connect( previousTagAction_, SIGNAL(triggered()), SLOT(_previousTag()) );
     previousTagAction_->setShortcut( Qt::ALT + Qt::Key_Up );
     previousTagAction_->setShortcutContext( Qt::WidgetShortcut );

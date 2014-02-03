@@ -24,7 +24,7 @@
 
 #include "CustomPixmap.h"
 #include "FileRecordProperties.h"
-#include "Icons.h"
+#include "IconNames.h"
 #include "IconEngine.h"
 #include "Singleton.h"
 #include "XmlFileList.h"
@@ -109,8 +109,8 @@ const QIcon& SessionFilesModel::_icon( int type )
     if( iter != _icons().end() ) return iter.value();
 
     QIcon icon;
-    if( type == FileRecordProperties::MODIFIED ) icon = IconEngine::get( ICONS::SAVE );
-    else if( type == FileRecordProperties::ALTERED ) icon = IconEngine::get( ICONS::WARNING );
+    if( type == FileRecordProperties::MODIFIED ) icon = IconEngine::get( IconNames::Save );
+    else if( type == FileRecordProperties::ALTERED ) icon = IconEngine::get( IconNames::Warning );
     else if( type == FileRecordProperties::NONE )
     {
 
@@ -118,7 +118,7 @@ const QIcon& SessionFilesModel::_icon( int type )
         QSize size( iconSize, iconSize );
 
         // update size to match real icon
-        QIcon prototype( IconEngine::get( ICONS::SAVE ) );
+        QIcon prototype( IconEngine::get( IconNames::Save ) );
         if( !prototype.isNull() ) size = prototype.actualSize( size );
 
         // create empty pixmap

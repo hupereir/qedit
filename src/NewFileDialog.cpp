@@ -21,7 +21,7 @@
 #include "NewFileDialog.moc"
 
 #include "IconEngine.h"
-#include "Icons.h"
+#include "IconNames.h"
 #include "QtUtil.h"
 
 #include <QLabel>
@@ -50,7 +50,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     QHBoxLayout *hLayout( new QHBoxLayout() );
     layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
-    label->setPixmap( IconEngine::get( ICONS::WARNING ).pixmap( iconSize() ) );
+    label->setPixmap( IconEngine::get( IconNames::Warning ).pixmap( iconSize() ) );
     hLayout->addWidget( label, 0, Qt::AlignHCenter );
     hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
@@ -71,14 +71,14 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     QPushButton* button;
     if( buttons & Create )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_ACCEPT ), tr( "Create" ), this ) );
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogAccept ), tr( "Create" ), this ) );
         connect( button, SIGNAL(clicked()), SLOT(_create()) );
     }
 
     // cancel button.
     if( buttons & Cancel )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CANCEL ), tr( "Cancel" ), this ) );
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogCancel ), tr( "Cancel" ), this ) );
         button->setShortcut( Qt::Key_Escape );
         connect( button, SIGNAL(clicked()), SLOT(_cancel()) );
     }
@@ -86,7 +86,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     // cancel button.
     if( buttons & Exit )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( ICONS::DIALOG_CLOSE ), tr( "Exit" ), this ) );
+        button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogClose ), tr( "Exit" ), this ) );
         connect( button, SIGNAL(clicked()), SLOT(_exit()) );
     }
 

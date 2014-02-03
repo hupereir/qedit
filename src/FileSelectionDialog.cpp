@@ -25,8 +25,6 @@
 #include "RecentFilesMenu.h"
 #include "FileSelectionDialog.h"
 #include "FileSelectionDialog.moc"
-#include "Icons.h"
-#include "IconEngine.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
 #include "TreeView.h"

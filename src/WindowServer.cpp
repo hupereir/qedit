@@ -29,7 +29,7 @@
 #include "FileList.h"
 #include "FileRecordProperties.h"
 #include "FileSystemFrame.h"
-#include "Icons.h"
+#include "IconNames.h"
 #include "IconEngine.h"
 #include "MainWindow.h"
 #include "Menu.h"
@@ -65,7 +65,7 @@ WindowServer::WindowServer( QObject* parent ):
     Debug::Throw( "WindowServer::WindowServer.\n" );
 
     // create actions
-    saveAllAction_ = new QAction( IconEngine::get( ICONS::SAVE_ALL ), tr( "Save All" ), this );
+    saveAllAction_ = new QAction( IconEngine::get( IconNames::SaveAll ), tr( "Save All" ), this );
     connect( saveAllAction_, SIGNAL(triggered()), SLOT(_saveAll()) );
 
     // scratch files

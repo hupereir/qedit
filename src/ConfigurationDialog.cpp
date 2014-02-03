@@ -27,7 +27,7 @@
 #include "Debug.h"
 #include "GridLayout.h"
 #include "IconEngine.h"
-#include "Icons.h"
+#include "IconNames.h"
 #include "OptionComboBox.h"
 #include "OptionListBox.h"
 #include "OptionBrowsedLineEditor.h"
@@ -59,7 +59,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     OptionColorDisplay* colorDisplay;
 
     // document classes
-    QWidget* page = &addPage( IconEngine::get( ICONS::PREFERENCE_FILE_TYPES ), tr( "Document Classes" ), tr( "Document classes options" ) );
+    QWidget* page = &addPage( IconEngine::get( IconNames::PreferencesFileAssociations ), tr( "Document Classes" ), tr( "Document classes options" ) );
 
     // edition flags
     page->layout()->addWidget( box = new QWidget( page ) );
@@ -83,7 +83,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     addOptionWidget( checkbox );
 
     // edition
-    page = &addPage( IconEngine::get( ICONS::PREFERENCE_EDITION ), tr( "Text Edition" ), tr( "Settings for text edition" ) );
+    page = &addPage( IconEngine::get( IconNames::PreferencesEdition ), tr( "Text Edition" ), tr( "Settings for text edition" ) );
 
     // tab emulation
     // needs customization with respect to BaseConfigurationDialog in order
@@ -195,7 +195,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     }
 
     // display
-    page = &addPage( IconEngine::get( ICONS::PREFERENCE_COLORS ), tr( "Colors" ), tr( "Text edition color settings" ) );
+    page = &addPage( IconEngine::get( IconNames::PreferencesColors ), tr( "Colors" ), tr( "Text edition color settings" ) );
 
     // additional colors
     page->layout()->addWidget( box = new QWidget( page ) );
@@ -230,7 +230,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     QHBoxLayout *hLayout;
 
     // multiple views
-    page = &addPage( IconEngine::get( ICONS::PREFERENCE_MULTIPLE_VIEWS ), tr( "Multiple Views" ), tr( "Multiple views configuration" ) );
+    page = &addPage( IconEngine::get( IconNames::PreferencesMultipleViews ), tr( "Multiple Views" ), tr( "Multiple views configuration" ) );
     page->layout()->addWidget( box = new QWidget( page ) );
 
     gridLayout = new GridLayout();
@@ -273,7 +273,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     gridLayout->setColumnStretch( 1, 1 );
 
     // recent files
-    page = &addPage( IconEngine::get( ICONS::PREFERENCE_RECENT_FILES ), tr( "Recent Files" ), tr( "Recent files list settings" ), true );
+    page = &addPage( IconEngine::get( IconNames::PreferencesRecentFiles ), tr( "Recent Files" ), tr( "Recent files list settings" ), true );
     RecentFilesConfiguration* recentFilesConfiguration = new RecentFilesConfiguration( page, Singleton::get().application<Application>()->recentFiles() );
     page->layout()->addWidget( recentFilesConfiguration );
     addOptionWidget( recentFilesConfiguration );
@@ -284,7 +284,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     connect( this, SIGNAL(reset()), recentFilesConfiguration, SLOT(reload()) );
 
     // tooltips
-    page = &addPage( IconEngine::get( ICONS::PREFERENCE_APPEARANCE), tr( "Tooltips" ), tr( "Tooltips appearance" ) );
+    page = &addPage( IconEngine::get( IconNames::PreferencesAppearance), tr( "Tooltips" ), tr( "Tooltips appearance" ) );
     page->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Show tooltips" ), page, "SHOW_TOOLTIPS" ) );
     addOptionWidget( checkbox );
 
@@ -301,7 +301,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     addOptionWidget( configurationWidget );
 
     // misc
-    page = &addPage( IconEngine::get( ICONS::PREFERENCE_UNSORTED ), tr( "Unsorted" ), tr( "Additional unsorted settings" ) );
+    page = &addPage( IconEngine::get( IconNames::PreferencesUnsorted ), tr( "Unsorted" ), tr( "Additional unsorted settings" ) );
     page->layout()->addWidget( box = new QGroupBox( tr( "Backup and Autosave" ), page ) );
 
     box->setLayout( new QVBoxLayout() );

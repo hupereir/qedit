@@ -24,7 +24,7 @@
 
 #include "AnimatedTreeView.h"
 #include "Debug.h"
-#include "Icons.h"
+#include "IconNames.h"
 #include "IconEngine.h"
 #include "XmlOptions.h"
 
@@ -78,7 +78,7 @@ RestoreSessionDialog::RestoreSessionDialog( QWidget* parent, FileRecord::List fi
 
     // rename buttons
     okButton().setText( tr( "Restore" ) );
-    okButton().setIcon( IconEngine::get( ICONS::OPEN ) );
+    okButton().setIcon( IconEngine::get( IconNames::Open ) );
     adjustSize();
 
 }

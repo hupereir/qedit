@@ -29,7 +29,7 @@
 #include "FileCheck.h"
 #include "FileCheckDialog.h"
 #include "IconEngine.h"
-#include "Icons.h"
+#include "IconNames.h"
 #include "InformationDialog.h"
 #include "MainWindow.h"
 #include "RestoreSessionDialog.h"
@@ -370,23 +370,23 @@ void Application::_installActions( void )
     connect( &closeAction(), SIGNAL(triggered()), SLOT(_exit()) );
 
     // spell check
-    spellCheckConfigurationAction_ = new QAction( IconEngine::get( ICONS::SPELLCHECK ), "Configure Spell Checking...", this );
+    spellCheckConfigurationAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), "Configure Spell Checking...", this );
     connect( spellCheckConfigurationAction_, SIGNAL(triggered()), SLOT(_spellCheckConfiguration()) );
 
     // document classes
-    documentClassesConfigurationAction_ = new QAction( IconEngine::get( ICONS::CONFIGURE ), "Configure Document Types...", this );
+    documentClassesConfigurationAction_ = new QAction( IconEngine::get( IconNames::Configure ), "Configure Document Types...", this );
     connect( documentClassesConfigurationAction_, SIGNAL(triggered()), SLOT(_documentClassesConfiguration()) );
 
     // save session
-    saveSessionAction_ = new QAction( IconEngine::get( ICONS::SAVE ), "Save Current Session", this );
+    saveSessionAction_ = new QAction( IconEngine::get( IconNames::Save ), "Save Current Session", this );
     connect( saveSessionAction_, SIGNAL(triggered()), SLOT(_saveSession()) );
 
     // restore session
-    restoreSessionAction_ = new QAction( IconEngine::get( ICONS::OPEN ), "Restore Saved Session", this );
+    restoreSessionAction_ = new QAction( IconEngine::get( IconNames::Open ), "Restore Saved Session", this );
     connect( restoreSessionAction_, SIGNAL(triggered()), SLOT(_restoreSession()) );
 
     // discard session
-    discardSessionAction_ = new QAction( IconEngine::get( ICONS::DELETE ), "Discard Saved Session", this );
+    discardSessionAction_ = new QAction( IconEngine::get( IconNames::Delete ), "Discard Saved Session", this );
     connect( discardSessionAction_, SIGNAL(triggered()), SLOT(_discardSession()) );
 
     // monitored files
