@@ -753,6 +753,7 @@ void WindowServer::_detach( TextDisplay& activeDisplayLocal )
 
     // create MainWindow
     MainWindow& window( newMainWindow() );
+    window.move( QCursor::pos() - QPoint( window.width()/2, 0 ) );
     window.show();
 
     // clone its display from the current
