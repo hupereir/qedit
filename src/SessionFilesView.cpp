@@ -79,6 +79,7 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
                 first = false;
                 emit detach( record.file() );
             } else emit reparentFilesToMain( record.file(), target );
+        
         }
 
     }
