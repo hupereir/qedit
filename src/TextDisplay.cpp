@@ -2349,12 +2349,12 @@ void TextDisplay::_fileProperties( void )
     GridLayoutItem* item;
     item = new GridLayoutItem( box, gridLayout );
     item->setKey( "Number of characters:" );
-    item->setText( QString().setNum(toPlainText().size()) );
+    item->setText( QString::number(toPlainText().size()) );
 
     // number of lines
     item = new GridLayoutItem( box, gridLayout );
     item->setKey( "Number of lines:" );
-    item->setText( QString().setNum( AnimatedTextEditor::blockCount()) );
+    item->setText( QString::number( AnimatedTextEditor::blockCount()) );
 
     gridLayout->addWidget( new QLabel( "Text highlighting:", box ) );
     {

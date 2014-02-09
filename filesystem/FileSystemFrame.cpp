@@ -207,7 +207,7 @@ void FileSystemFrame::_processFiles( const File::List& files )
         FileRecord record( file, file.lastModified() );
 
         // assign size
-        record.addProperty( sizePropertyId_, QString().setNum(file.fileSize()) );
+        record.addProperty( sizePropertyId_, QString::number(file.fileSize()) );
 
         // assign type
         record.setFlag( file.isDirectory() ? FileSystemModel::Folder : FileSystemModel::Document );
