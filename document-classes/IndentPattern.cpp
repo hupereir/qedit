@@ -20,7 +20,6 @@
 *******************************************************************************/
 
 #include "IndentPattern.h"
-#include "Str.h"
 #include "XmlDef.h"
 #include "XmlString.h"
 
@@ -89,9 +88,9 @@ QDomElement IndentPattern::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "IndentPattern::domElement.\n" );
     QDomElement out( parent.createElement( Xml::IndentPattern ) );
-    out.setAttribute( Xml::Type, Str().assign<unsigned int>( type() ) );
+    out.setAttribute( Xml::Type, QString::number( type() ) );
     if( !name().isEmpty() ) out.setAttribute( Xml::Name, name() );
-    if( scale() > 1 ) out.setAttribute( Xml::Scale, Str().assign<unsigned int>( scale() ) );
+    if( scale() > 1 ) out.setAttribute( Xml::Scale, QString::number( scale() ) );
 
     for( Rule::List::const_iterator iter = rules().begin(); iter != rules().end(); ++iter )
     { out.appendChild( iter->domElement( parent ) ); }
@@ -169,7 +168,7 @@ QDomElement IndentPattern::Rule::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "IndentPattern::Rule::DomElement.\n" );
     QDomElement out( parent.createElement( Xml::Rule ) );
-    out.setAttribute( Xml::Par, Str().assign<int>( paragraph() ) );
+    out.setAttribute( Xml::Par, QString::number( paragraph() ) );
     if( flag( CaseInsensitive ) )  out.setAttribute( Xml::Options, Xml::OptionNoCase );
 
     out.

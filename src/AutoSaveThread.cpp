@@ -22,7 +22,6 @@
 
 #include "AutoSaveThread.h"
 #include "XmlOptions.h"
-#include "Str.h"
 #include "Util.h"
 
 #include <QApplication>

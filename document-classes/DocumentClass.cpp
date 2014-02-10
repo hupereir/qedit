@@ -21,7 +21,6 @@
 
 #include "DocumentClass.h"
 #include "HighlightPattern.h"
-#include "Str.h"
 #include "XmlDef.h"
 #include "XmlOption.h"
 #include "XmlString.h"

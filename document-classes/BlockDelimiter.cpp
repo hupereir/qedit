@@ -19,18 +19,16 @@
 *
 *******************************************************************************/
 
-#include "Debug.h"
-#include "Str.h"
 #include "BlockDelimiter.h"
+
+#include "Debug.h"
 #include "XmlDef.h"
 #include "XmlString.h"
 
-
-
 //_________________________________________________________
 BlockDelimiter::BlockDelimiter( const QDomElement& element, const unsigned int& id ):
-Counter( "BlockDelimiter" ),
-id_( id )
+    Counter( "BlockDelimiter" ),
+    id_( id )
 {
 
     // parse attributes

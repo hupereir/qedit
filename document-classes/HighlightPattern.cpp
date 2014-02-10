@@ -20,8 +20,8 @@
 *******************************************************************************/
 
 #include "HighlightPattern.h"
+
 #include "PatternLocationSet.h"
-#include "Str.h"
 #include "XmlDef.h"
 #include "XmlString.h"
 

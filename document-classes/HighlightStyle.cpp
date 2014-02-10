@@ -19,19 +19,10 @@
 *
 *******************************************************************************/
 
-/*!
-  \file HighlightStyle.cpp
-  \brief Base class for syntax highlighting style
-  \author Hugo Pereira
-  \version $Revision$
-  \date $Date$
-*/
-
 #include "HighlightStyle.h"
-#include "Str.h"
+
+#include "Debug.h"
 #include "XmlDef.h"
-
-
 
 //_____________________________________________________
 HighlightStyle::HighlightStyle( const QDomElement& element ):
@@ -62,7 +53,7 @@ QDomElement HighlightStyle::domElement( QDomDocument& parent ) const
   Debug::Throw( "HighlighStyle::DomElement.\n" );
   QDomElement out = parent.createElement( Xml::Style );
   out.setAttribute( Xml::Name, name() );
-  out.setAttribute( Xml::Format, Str().assign<unsigned int>(fontFormat()) );
+  out.setAttribute( Xml::Format, QString::number(fontFormat()) );
   out.setAttribute( Xml::Color, color().name() );
   return out;
 }

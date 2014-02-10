@@ -19,22 +19,11 @@
 *
 *******************************************************************************/
 
-
-/*!
-\file TextParenthesis.cpp
-\brief Text parenthesis (for highlighting)
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
+#include "TextParenthesis.h"
 
 #include "Debug.h"
-#include "Str.h"
-#include "TextParenthesis.h"
 #include "XmlDef.h"
 #include "XmlString.h"
-
-
 
 //_________________________________________________________
 TextParenthesis::TextParenthesis( const QDomElement& element ):

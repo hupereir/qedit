@@ -1085,7 +1085,7 @@ void TextDisplay::_updateDocumentClass( File file, bool newDocument )
     {
 
         FileRecord& record( _recentFiles().get( file ) );
-        if( record.hasProperty( wrapPropertyId_ ) ) wrapModeAction().setChecked( Str( record.property( wrapPropertyId_ ) ).get<bool>() );
+        if( record.hasProperty( wrapPropertyId_ ) ) wrapModeAction().setChecked( record.property( wrapPropertyId_ ).toInt() );
         else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( documentClass.wrap() );
 
     } else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( documentClass.wrap() );
@@ -1138,7 +1138,7 @@ void TextDisplay::_updateDocumentClass( File file, bool newDocument )
     {
         FileRecord& record( _recentFiles().get( file ) );
         record.addProperty( classNamePropertyId_, className() );
-        record.addProperty( wrapPropertyId_, Str().assign<bool>( wrapModeAction().isChecked() ) );
+        record.addProperty( wrapPropertyId_, QString::number( wrapModeAction().isChecked() ) );
         if( !documentClass.icon().isEmpty() ) record.addProperty( iconPropertyId_, documentClass.icon() );
     }
 
@@ -1805,7 +1805,7 @@ bool TextDisplay::_toggleWrapMode( bool state )
     if( !AnimatedTextEditor::_toggleWrapMode( state ) ) return false;
 
     if( !( file().isEmpty() || isNewDocument() ) )
-    { _recentFiles().get( file() ).addProperty( wrapPropertyId_, Str().assign<bool>(state) ); }
+    { _recentFiles().get( file() ).addProperty( wrapPropertyId_, QString::number(state) ); }
 
     return true;
 

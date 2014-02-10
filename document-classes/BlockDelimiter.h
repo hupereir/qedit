@@ -25,7 +25,6 @@
 
 #include "Counter.h"
 #include "Debug.h"
-#include "Str.h"
 
 #include <QDomElement>
 #include <QDomDocument>

@@ -19,7 +19,6 @@
 *
 *******************************************************************************/
 
-#include "Str.h"
 #include "TextMacro.h"
 #include "XmlDef.h"
 #include "XmlString.h"
