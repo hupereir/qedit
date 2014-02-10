@@ -88,9 +88,9 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
                 if( _acceptPattern( *blockIter, *iter ) )
                 {
                     Debug::Throw() << "TextIndent::indent - accepted pattern: " << iter->name() << endl;
-                    if( iter->type() == IndentPattern::INCREMENT ) new_tabs += iter->scale();
-                    else if( iter->type() == IndentPattern::DECREMENT ) new_tabs -= iter->scale();
-                    else if( iter->type() == IndentPattern::DECREMENT_ALL ) new_tabs = 0;
+                    if( iter->type() == IndentPattern::Increment ) new_tabs += iter->scale();
+                    else if( iter->type() == IndentPattern::Decrement ) new_tabs -= iter->scale();
+                    else if( iter->type() == IndentPattern::DecrementAll ) new_tabs = 0;
                     break;
                 }
             }
@@ -149,9 +149,9 @@ void TextIndent::indent( QTextBlock block, bool new_line )
             {
 
                 Debug::Throw() << "TextIndent::indent - accepted pattern: " << iter->name() << endl;
-                if( iter->type() == IndentPattern::INCREMENT ) new_tabs += iter->scale();
-                else if( iter->type() == IndentPattern::DECREMENT ) new_tabs -= iter->scale();
-                else if( iter->type() == IndentPattern::DECREMENT_ALL ) new_tabs = 0;
+                if( iter->type() == IndentPattern::Increment ) new_tabs += iter->scale();
+                else if( iter->type() == IndentPattern::Decrement ) new_tabs -= iter->scale();
+                else if( iter->type() == IndentPattern::DecrementAll ) new_tabs = 0;
                 break;
             }
         }

@@ -112,7 +112,7 @@ bool Application::realizeWidget( void )
 
     // session file list
     sessionFiles_ = new XmlFileList( this );
-    static_cast<XmlFileList*>( sessionFiles_ )->setTagName( Base::Xml::SESSION_FILE_LIST );
+    static_cast<XmlFileList*>( sessionFiles_ )->setTagName( Base::Xml::SessionFileList );
 
     // class manager
     classManager_ = new DocumentClassManager();

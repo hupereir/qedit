@@ -93,10 +93,10 @@ class IndentPattern: public Counter
     //! pattern type enumeration
     enum Type
     {
-        NOTHING,
-        INCREMENT,
-        DECREMENT,
-        DECREMENT_ALL
+        Nothing,
+        Increment,
+        Decrement,
+        DecrementAll
     };
 
     //! pattern type
@@ -145,10 +145,10 @@ class IndentPattern: public Counter
         {
 
             //! no flag
-            NONE = 0,
+            None = 0,
 
             //! pattern matching should not be case sensitive
-            CASE_INSENSITIVE = 1<<2
+            CaseInsensitive = 1<<2
 
         };
 

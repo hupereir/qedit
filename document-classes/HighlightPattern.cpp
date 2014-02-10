@@ -49,16 +49,16 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
         QDomAttr attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
 
-        if( attribute.name() == Xml::NAME ) setName( attribute.value() );
-        else if( attribute.name() == Xml::PARENT ) setParent( attribute.value() );
-        else if( attribute.name() == Xml::STYLE ) setStyle( HighlightStyle( attribute.value() ) );
+        if( attribute.name() == Xml::Name ) setName( attribute.value() );
+        else if( attribute.name() == Xml::Parent ) setParent( attribute.value() );
+        else if( attribute.name() == Xml::Style ) setStyle( HighlightStyle( attribute.value() ) );
 
-        else if( attribute.name() == Xml::OPTIONS )
+        else if( attribute.name() == Xml::Options )
         {
-            if( attribute.value().indexOf( Xml::OPTION_SPAN, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( Span, true );
-            if( attribute.value().indexOf( Xml::OPTION_NO_INDENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( NoIndent, true );
-            if( attribute.value().indexOf( Xml::OPTION_NO_CASE, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CaseInsensitive, true );
-            if( attribute.value().indexOf( Xml::OPTION_COMMENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( Comment, true );
+            if( attribute.value().indexOf( Xml::OptionSpan, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( Span, true );
+            if( attribute.value().indexOf( Xml::OptionNoIndent, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( NoIndent, true );
+            if( attribute.value().indexOf( Xml::OptionNoCase, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CaseInsensitive, true );
+            if( attribute.value().indexOf( Xml::OptionComment, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( Comment, true );
 
         }
 
@@ -69,10 +69,10 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     {
         QDomElement child_element = child_node.toElement();
         if( child_element.isNull() ) continue;
-        if( child_element.tagName() == Xml::COMMENTS ) setComments( XmlString( child_element.text() ).toText() );
-        else if( child_element.tagName() == Xml::KEYWORD ) setKeyword( XmlString( child_element.text() ).toText() );
-        else if( child_element.tagName() == Xml::BEGIN ) setBegin( XmlString( child_element.text() ).toText() );
-        else if( child_element.tagName() == Xml::END ) setEnd( XmlString( child_element.text() ).toText() );
+        if( child_element.tagName() == Xml::Comments ) setComments( XmlString( child_element.text() ).toText() );
+        else if( child_element.tagName() == Xml::Keyword ) setKeyword( XmlString( child_element.text() ).toText() );
+        else if( child_element.tagName() == Xml::Begin ) setBegin( XmlString( child_element.text() ).toText() );
+        else if( child_element.tagName() == Xml::End ) setEnd( XmlString( child_element.text() ).toText() );
     }
 
 }
@@ -83,38 +83,38 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
     Debug::Throw( "HighlightPattern::domElement.\n" );
 
     QDomElement out( parent.createElement( typeName() ) );
-    out.setAttribute( Xml::NAME, name() );
-    out.setAttribute( Xml::PARENT, HighlightPattern::parent() );
-    out.setAttribute( Xml::STYLE, style().name() );
+    out.setAttribute( Xml::Name, name() );
+    out.setAttribute( Xml::Parent, HighlightPattern::parent() );
+    out.setAttribute( Xml::Style, style().name() );
 
     // options:
     QString options;
-    if( hasFlag( Span ) ) options += Xml::OPTION_SPAN + " ";
-    if( hasFlag( NoIndent ) ) options += Xml::OPTION_NO_INDENT + " ";
-    if( hasFlag( CaseInsensitive ) ) options += Xml::OPTION_NO_CASE + " ";
-    if( hasFlag( Comment ) ) options += Xml::OPTION_COMMENT + " ";
-    if( !options.isEmpty() ) out.setAttribute( Xml::OPTIONS, options );
+    if( hasFlag( Span ) ) options += Xml::OptionSpan + " ";
+    if( hasFlag( NoIndent ) ) options += Xml::OptionNoIndent + " ";
+    if( hasFlag( CaseInsensitive ) ) options += Xml::OptionNoCase + " ";
+    if( hasFlag( Comment ) ) options += Xml::OptionComment + " ";
+    if( !options.isEmpty() ) out.setAttribute( Xml::Options, options );
 
     // comments
     out.
-        appendChild( parent.createElement( Xml::COMMENTS ) ).
+        appendChild( parent.createElement( Xml::Comments ) ).
         appendChild( parent.createTextNode( XmlString( comments() ).toXml() ) );
 
     // regexps
     if( type() == KeywordPattern )
     {
         out.
-            appendChild( parent.createElement( Xml::KEYWORD ) ).
+            appendChild( parent.createElement( Xml::Keyword ) ).
             appendChild( parent.createTextNode( XmlString( keyword().pattern() ).toXml() ) );
     }
 
     if( type() == RangePattern )
     {
         out.
-            appendChild( parent.createElement( Xml::BEGIN ) ).
+            appendChild( parent.createElement( Xml::Begin ) ).
             appendChild( parent.createTextNode( XmlString( begin().pattern() ).toXml() ) );
         out.
-            appendChild( parent.createElement( Xml::END ) ).
+            appendChild( parent.createElement( Xml::End ) ).
             appendChild( parent.createTextNode( XmlString( end().pattern() ).toXml() ) );
     }
 
