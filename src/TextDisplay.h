@@ -134,46 +134,46 @@ class TextDisplay: public AnimatedTextEditor
     {
 
         //! file name (in bottom status bar and navigation frame)
-        FILE_NAME = 1<<0,
+        FileName = 1<<0,
 
         //! document class
-        DOCUMENT_CLASS = 1<<1,
+        DocumentClassFlag = 1<<1,
 
         //! read only
-        READ_ONLY = 1<<2,
+        ReadOnly = 1<<2,
 
         //! modified
-        MODIFIED = 1<<3,
+        Modified = 1<<3,
 
         //! cut availability
-        CUT = 1<<4,
+        Cut = 1<<4,
 
         //! copy availability
-        COPY = 1<<5,
+        Copy = 1<<5,
 
         //! paster availability
-        PASTE = 1<<6,
+        Paste = 1<<6,
 
         //! undo/redo availability
-        UNDO_REDO = 1<<7,
+        UndoRedo = 1<<7,
 
         //! overwrite mode
-        SPELLCHECK = 1<<8,
+        SpellCheck = 1<<8,
 
         //! keyword modifiers
-        MODIFIERS = 1<<9,
+        Modifiers = 1<<9,
 
         //! display count
-        DISPLAY_COUNT = 1<<10,
+        DisplayCount = 1<<10,
 
         //! active file changed
-        ACTIVE_DISPLAY_CHANGED = FILE_NAME|DOCUMENT_CLASS|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SPELLCHECK|MODIFIERS,
+        ActiveDisplayChanged = FileName|DocumentClassFlag|ReadOnly|Cut|Copy|Paste|UndoRedo|SpellCheck|Modifiers,
 
         //! active file changed
-        ACTIVE_VIEW_CHANGED = FILE_NAME|DOCUMENT_CLASS|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SPELLCHECK|MODIFIERS|DISPLAY_COUNT,
+        ActiveViewChanged = FileName|DocumentClassFlag|ReadOnly|Cut|Copy|Paste|UndoRedo|SpellCheck|Modifiers|DisplayCount,
 
         //! all the above
-        ALL = FILE_NAME|MODIFIED|READ_ONLY|CUT|COPY|PASTE|UNDO_REDO|SPELLCHECK|MODIFIERS|DISPLAY_COUNT
+        All = FileName|Modified|ReadOnly|Cut|Copy|Paste|UndoRedo|SpellCheck|Modifiers|DisplayCount
 
     };
 
@@ -452,7 +452,7 @@ class TextDisplay: public AnimatedTextEditor
     void rehighlight( void );
 
     //! clear all blocks if match argument
-    void clearAllTags( const int& tags = TextBlock::ALL_TAGS );
+    void clearAllTags( const int& tags = TextBlock::All );
 
     //! change autospell filter
     void selectFilter( const QString& );
@@ -570,7 +570,7 @@ class TextDisplay: public AnimatedTextEditor
 
     //! selection changed
     void _selectionChanged( void )
-    { if( isActive() ) emit needUpdate( UpdateFlags(CUT|COPY) ); }
+    { if( isActive() ) emit needUpdate( UpdateFlags(Cut|Copy) ); }
 
     //! toggle text indentation
     void _toggleTextIndent( bool state );
@@ -620,7 +620,7 @@ class TextDisplay: public AnimatedTextEditor
     virtual void _updateSelectionActions( bool state )
     {
         AnimatedTextEditor::_updateSelectionActions( state );
-        emit needUpdate( UpdateFlags( CUT|COPY ) );
+        emit needUpdate( UpdateFlags( Cut|Copy ) );
     }
 
     //! update paste action
@@ -628,7 +628,7 @@ class TextDisplay: public AnimatedTextEditor
     virtual void _updatePasteAction( void )
     {
         AnimatedTextEditor::_updatePasteAction();
-        emit needUpdate( PASTE );
+        emit needUpdate( Paste );
     }
 
     //! text changed

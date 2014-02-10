@@ -65,13 +65,13 @@ class FileCheck: public QObject, public Base::Key, public Counter
         //! flag
         enum Flag
         {
-            NONE,
-            REMOVED,
-            MODIFIED
+            None,
+            Removed,
+            Modified
         };
 
         //! constructor
-        Data( QString file = QString(), Flag flag = NONE, TimeStamp stamp = TimeStamp() ):
+        Data( QString file = QString(), Flag flag = None, TimeStamp stamp = TimeStamp() ):
             file_( file ),
             flag_( flag ),
             timeStamp_( stamp )

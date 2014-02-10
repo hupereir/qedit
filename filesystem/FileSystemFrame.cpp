@@ -49,7 +49,7 @@
 FileSystemFrame::FileSystemFrame( QWidget *parent ):
     QWidget( parent ),
     Counter( "FileSystemFrame" ),
-    sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) ),
+    sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Size ) ),
     showNavigator_( false ),
     homePath_( Util::home() ),
     fileSystemWatcher_( this ),

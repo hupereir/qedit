@@ -441,8 +441,8 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
         cursor.setBlockFormat( blockFormat );
 
         // mark contents dirty to force update of current block
-        data->setFlag( TextBlock::MODIFIED, true );
-        data->setFlag( TextBlock::Collapsed, true );
+        data->setFlag( TextBlock::BlockModified, true );
+        data->setFlag( TextBlock::BlockCollapsed, true );
         _editor().document()->markContentsDirty(blocks.first.position(), blocks.first.length()-1);
 
         cursor.setPosition( blocks.first.position() + blocks.first.length(), QTextCursor::MoveAnchor );
@@ -563,10 +563,10 @@ void BlockDelimiterDisplay::_synchronizeBlockData( void ) const
         // store collapse state
         QTextBlockFormat blockFormat( block.blockFormat() );
         bool collapsed( blockFormat.boolProperty( TextBlock::Collapsed ) );
-        if( data->hasFlag( TextBlock::Collapsed ) != collapsed )
+        if( data->hasFlag( TextBlock::BlockCollapsed ) != collapsed )
         {
-            data->setFlag( TextBlock::Collapsed, collapsed );
-            data->setFlag( TextBlock::MODIFIED, true );
+            data->setFlag( TextBlock::BlockCollapsed, collapsed );
+            data->setFlag( TextBlock::BlockModified, true );
             document.markContentsDirty(block.position(), block.length()-1);
         }
 
@@ -844,8 +844,8 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
     CollapsedBlockData collapsedData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
 
     // mark contents dirty to force update of current block
-    data->setFlag( TextBlock::MODIFIED, true );
-    data->setFlag( TextBlock::Collapsed, false );
+    data->setFlag( TextBlock::BlockModified, true );
+    data->setFlag( TextBlock::BlockCollapsed, false );
 
     _editor().document()->markContentsDirty(block.position(), block.length()-1);
 
@@ -908,8 +908,8 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& firstBlock, const QText
     blockFormat.setProperty( TextBlock::CollapsedData, variant );
 
     // mark contents dirty to force update of current block
-    data->setFlag( TextBlock::MODIFIED, true );
-    data->setFlag( TextBlock::Collapsed, true );
+    data->setFlag( TextBlock::BlockModified, true );
+    data->setFlag( TextBlock::BlockCollapsed, true );
 
     // start edition
     cursor.beginEditBlock();

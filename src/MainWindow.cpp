@@ -609,12 +609,12 @@ void MainWindow::_updateConfiguration( void )
     {
 
         // FileRecord& record( *iter );
-        if( !record.hasProperty( FileRecordProperties::CLASS_NAME ) ) continue;
-        DocumentClass documentClass( classManager.get( record.property( FileRecordProperties::CLASS_NAME ) ) );
+        if( !record.hasProperty( FileRecordProperties::ClassName ) ) continue;
+        DocumentClass documentClass( classManager.get( record.property( FileRecordProperties::ClassName ) ) );
         if( documentClass.icon().isEmpty() ) continue;
 
         // set icon property and store in recentFiles list
-        recentFiles.get( record.file() ).addProperty( FileRecordProperties::ICON, documentClass.icon() );
+        recentFiles.get( record.file() ).addProperty( FileRecordProperties::Icon, documentClass.icon() );
 
     }
 
@@ -677,7 +677,7 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
 
     Debug::Throw() << "MainWindow::_update - flags: " << flags << endl;
 
-    if( flags & ( TextDisplay::FILE_NAME | TextDisplay::READ_ONLY | TextDisplay::MODIFIED ) )
+    if( flags & ( TextDisplay::FileName | TextDisplay::ReadOnly | TextDisplay::Modified ) )
     {
 
         _updateWindowTitle();
@@ -686,10 +686,10 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
     }
     Debug::Throw() << "MainWindow::_update - window title done. "<< endl;
 
-    if( flags & TextDisplay::MODIFIED )
+    if( flags & TextDisplay::Modified )
     { emit modificationChanged(); }
 
-    if( flags & TextDisplay::FILE_NAME )
+    if( flags & TextDisplay::FileName )
     {
 
         // update file editor
@@ -717,25 +717,25 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
 
     }
 
-    if( flags & TextDisplay::DOCUMENT_CLASS && documentClassToolBar_ )
+    if( flags & TextDisplay::DocumentClassFlag && documentClassToolBar_ )
     { documentClassToolBar_->update( activeDisplay().className() ); }
 
-    if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
+    if( flags & (TextDisplay::Cut|TextDisplay::ReadOnly) )
     { cutAction_->setEnabled( activeDisplay().cutAction().isEnabled() ); }
 
-    if( flags & TextDisplay::COPY )
+    if( flags & TextDisplay::Copy )
     { copyAction_->setEnabled( activeDisplay().copyAction().isEnabled() ); }
 
-    if( flags & (TextDisplay::CUT|TextDisplay::READ_ONLY) )
+    if( flags & (TextDisplay::Cut|TextDisplay::ReadOnly) )
     { pasteAction_->setEnabled( activeDisplay().pasteAction().isEnabled() ); }
 
-    if( flags & (TextDisplay::UNDO_REDO|TextDisplay::READ_ONLY) )
+    if( flags & (TextDisplay::UndoRedo|TextDisplay::ReadOnly) )
     {
         undoAction_->setEnabled( activeDisplay().undoAction().isEnabled() );
         redoAction_->setEnabled( activeDisplay().redoAction().isEnabled() );
     }
 
-    if( _hasStatusBar() && (flags & TextDisplay::MODIFIERS) )
+    if( _hasStatusBar() && (flags & TextDisplay::Modifiers) )
     {
         Debug::Throw() << "MainWindow::_update - modifiers." << endl;
         QStringList modifiers;
@@ -747,7 +747,7 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
         else  statusbar_->label(0).clear();
     }
 
-    if( flags & TextDisplay::DISPLAY_COUNT )
+    if( flags & TextDisplay::DisplayCount )
     {
         Debug::Throw() << "MainWindow::_update - display count." << endl;
         int displayCount = activeView().independentDisplayCount();
@@ -763,10 +763,10 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
     }
 
     // macros
-    if( flags & TextDisplay::DOCUMENT_CLASS )
+    if( flags & TextDisplay::DocumentClassFlag )
     { menu().updateMacroMenu(); }
 
-    if( flags & (TextDisplay::CUT|TextDisplay::COPY) )
+    if( flags & (TextDisplay::Cut|TextDisplay::Copy) )
     { menu().macroMenu().updateState( activeDisplay().textCursor().hasSelection() ); }
 
     Debug::Throw() << "MainWindow::_update - done." << endl;
@@ -775,7 +775,7 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
 
 //_____________________________________________
 void MainWindow::_updateModifiers( void )
-{ _update( TextDisplay::MODIFIERS ); }
+{ _update( TextDisplay::Modifiers ); }
 
 //_____________________________________________
 void MainWindow::_updateCursorPosition( void )
@@ -823,7 +823,7 @@ void MainWindow::_animationFinished( void )
 
     // update displays, actions, etc.
     if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
-    { _update( TextDisplay::ACTIVE_VIEW_CHANGED ); }
+    { _update( TextDisplay::ActiveViewChanged ); }
 
     Debug::Throw( "MainWindow::_animationFinished - done.\n" );
 

@@ -19,14 +19,6 @@
 *
 *******************************************************************************/
 
-/*!
-\file Diff.cpp
-\brief make diff between two files, stores conflict and added lines for both
-\author  Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
 #include "Diff.h"
 #include "Diff.moc"
 #include "HighlightBlockFlags.h"
@@ -300,13 +292,13 @@ void Diff::FileInformation::highlightDisplay( void )
         if( conflicts_.find( id ) != conflicts_.end() )
         {
 
-            _display().tagBlock( block, TextBlock::DIFF_CONFLICT );
+            _display().tagBlock( block, TextBlock::DiffConflict );
 
         } else if( added_.find( id ) != added_.end() ) {
 
-            _display().tagBlock( block, TextBlock::DIFF_ADDED );
+            _display().tagBlock( block, TextBlock::DiffAdded );
 
-        } else _display().clearTag( block, TextBlock::DIFF_CONFLICT | TextBlock::DIFF_ADDED );
+        } else _display().clearTag( block, TextBlock::DiffConflict | TextBlock::DiffAdded );
 
     }
 

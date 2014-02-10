@@ -510,7 +510,7 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     //! update actions based on number of displays in active view
     void _updateDisplayCount( void )
-    { _update( TextDisplay::DISPLAY_COUNT ); }
+    { _update( TextDisplay::DisplayCount ); }
 
     //! display cursor position in state window
     void _updateCursorPosition( void );

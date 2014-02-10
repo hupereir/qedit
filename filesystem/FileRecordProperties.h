@@ -28,29 +28,29 @@
 namespace FileRecordProperties
 {
 
-    static const QString CLASS_NAME = "class_name";
-    static const QString WRAPPED = "wrap";
-    static const QString DICTIONARY = "dictionary";
-    static const QString FILTER = "filter";
-    static const QString SIZE = "size";
+    static const QString ClassName = "class_name";
+    static const QString Wrapped = "wrap";
+    static const QString Dictionary = "dictionary";
+    static const QString Filter = "filter";
+    static const QString Size = "size";
 
     //! needed to tag session file records
     enum Flag
     {
 
-        NONE = 0,
+        None = 0,
 
         //! tag modified files
-        MODIFIED = 1<<0,
+        Modified = 1<<0,
 
         //! tag files that belong to current window
-        ACTIVE = 1<<1,
+        Active = 1<<1,
 
         //! tag current file
-        SELECTED = 1<<2,
+        Selected = 1<<2,
 
         //! file has been altered (modified/removed) by external application
-        ALTERED = 1<<3
+        Altered = 1<<3
 
     };
 

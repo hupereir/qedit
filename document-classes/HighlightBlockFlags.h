@@ -32,23 +32,12 @@ namespace TextBlock
     enum Flag
     {
 
-        //! block is modified
-        MODIFIED = 1<<2,
-
-        //! block is collapsed
-        COLLAPSED = 1<<3,
-
-        //! block is a diff-wise added block
-        DIFF_ADDED = 1<<4,
-
-        //! block is a diff-wise conflict block
-        DIFF_CONFLICT = 1<<5,
-
-        //! user tagged blocks
-        USER_TAG = 1<<6,
-
-        //! all tags
-        ALL_TAGS = DIFF_ADDED | DIFF_CONFLICT | USER_TAG
+        BlockModified = 1<<2,
+        BlockCollapsed = 1<<3,
+        DiffAdded = 1<<4,
+        DiffConflict = 1<<5,
+        User = 1<<6,
+        All = DiffAdded | DiffConflict | User
 
     };
 

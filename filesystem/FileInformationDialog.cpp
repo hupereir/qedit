@@ -63,14 +63,14 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     }
 
     // document class
-    if( record.hasProperty( FileRecordProperties::CLASS_NAME ) )
-    { addRow( tr( "Class:" ), record.property( FileRecordProperties::CLASS_NAME ) ); }
+    if( record.hasProperty( FileRecordProperties::ClassName ) )
+    { addRow( tr( "Class:" ), record.property( FileRecordProperties::ClassName ) ); }
 
-    if( record.hasProperty( FileRecordProperties::DICTIONARY ) )
-    { addRow( tr( "Spell-check dictionary:" ), record.property( FileRecordProperties::DICTIONARY ) ); }
+    if( record.hasProperty( FileRecordProperties::Dictionary ) )
+    { addRow( tr( "Spell-check dictionary:" ), record.property( FileRecordProperties::Dictionary ) ); }
 
-    if( record.hasProperty( FileRecordProperties::FILTER ) )
-    { addRow( tr( "Spell-check filter:" ), record.property( FileRecordProperties::FILTER ) ); }
+    if( record.hasProperty( FileRecordProperties::Filter ) )
+    { addRow( tr( "Spell-check filter:" ), record.property( FileRecordProperties::Filter ) ); }
 
     adjustSize();
 

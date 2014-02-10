@@ -40,7 +40,7 @@ FileSystemModel::FileSystemModel( QObject* parent ):
     Counter( "FileSystemModel" ),
     useLocalNames_( true ),
     showIcons_( true ),
-    sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) )
+    sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Size ) )
 {
     Debug::Throw("FileSystemModel::FileSystemModel.\n" );
     columnTitles_ <<  tr( "File" ) << tr( "Size" ) << tr( "Last Accessed" );
@@ -178,7 +178,7 @@ void FileSystemModel::_sort( int column, Qt::SortOrder order )
 //________________________________________________________
 FileSystemModel::SortFTor::SortFTor( const int& type, Qt::SortOrder order, const QStringList& column_titles ):
     ItemModel::SortFTor( type, order ),
-    sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::SIZE ) ),
+    sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Size ) ),
     columnTitles_( column_titles )
 {}
 

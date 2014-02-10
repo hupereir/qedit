@@ -87,13 +87,13 @@ void FileCheck::_fileChanged( const QString& file )
     if( !local.exists() )
     {
 
-        data.setFlag( Data::REMOVED );
+        data.setFlag( Data::Removed );
         data.setTimeStamp( TimeStamp::now() );
         removeFile( file );
 
     } else {
 
-        data.setFlag( Data::MODIFIED );
+        data.setFlag( Data::Modified );
         data.setTimeStamp( local.lastModified() );
 
     }
@@ -128,7 +128,7 @@ void FileCheck::timerEvent( QTimerEvent* event )
                 {
 
                     // check whether data are still relevant for this display
-                    if( !( data.flag() == Data::REMOVED || (display->lastSaved().isValid() && (*displayIter)->lastSaved() < data.timeStamp()) ) )
+                    if( !( data.flag() == Data::Removed || (display->lastSaved().isValid() && (*displayIter)->lastSaved() < data.timeStamp()) ) )
                     { continue; }
 
                     (*displayIter)->setFileCheckData( data );

@@ -71,7 +71,7 @@ void TextHighlight::highlightBlock( const QString& text )
 
         // see if block needs update
         needUpdate =
-            data->hasFlag( TextBlock::MODIFIED ) ||
+            data->hasFlag( TextBlock::BlockModified ) ||
             (highlightEnabled && (locations = data->locations()).activeId().first != activeId );
 
     } else {
@@ -91,12 +91,12 @@ void TextHighlight::highlightBlock( const QString& text )
         locations = _highlightLocationSet( text, activeId );
 
         // update data modification state and highlight pattern locations
-        data->setFlag( TextBlock::MODIFIED, false );
+        data->setFlag( TextBlock::BlockModified, false );
         data->setLocations( locations );
 
         // store active id
         /* this is disabled when current block is collapsed */
-        if( !data->hasFlag( TextBlock::Collapsed ) ) setCurrentBlockState( locations.activeId().second );
+        if( !data->hasFlag( TextBlock::BlockCollapsed ) ) setCurrentBlockState( locations.activeId().second );
         else setCurrentBlockState( 0 );
 
     }

@@ -137,7 +137,7 @@ void SessionFilesFrame::update( void )
     list_->resizeColumns();
 
     // make sure selected record appear selected in list
-    FileRecord::List::const_iterator iter = std::find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::SELECTED ) );
+    FileRecord::List::const_iterator iter = std::find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::Selected ) );
     if( iter != records.end() ) select( iter->file() );
 
     Debug::Throw( "SessionFilesFrame:update - done.\n" );
@@ -159,7 +159,7 @@ void SessionFilesFrame::_updateActions( void )
 
     openAction_->setEnabled( hasSelection );
     closeAction_->setEnabled( hasSelection );
-    saveAction_->setEnabled( std::find_if( selection.begin(), selection.end(), FileRecord::HasFlagFTor( FileRecordProperties::MODIFIED ) ) != selection.end() );
+    saveAction_->setEnabled( std::find_if( selection.begin(), selection.end(), FileRecord::HasFlagFTor( FileRecordProperties::Modified ) ) != selection.end() );
 
     previousFileAction_->setEnabled( counts >= 2 && hasSelection );
     nextFileAction_->setEnabled( counts >= 2 && hasSelection );
@@ -180,7 +180,7 @@ void SessionFilesFrame::_showToolTip( const QModelIndex& index )
         QIcon icon;
         // QVariant iconVariant( model_.data( index, Qt::DecorationRole ) );
         // if( iconVariant.canConvert( QVariant::Icon ) ) icon = iconVariant.value<QIcon>();
-        const int iconProperty = FileRecord::PropertyId::get( FileRecordProperties::ICON );
+        const int iconProperty = FileRecord::PropertyId::get( FileRecordProperties::Icon );
         if( record.hasProperty( iconProperty ) )
         { icon = IconEngine::get( record.property( iconProperty ) ); }
 
@@ -218,7 +218,7 @@ void SessionFilesFrame::_selectPreviousFile( void )
     while( (index = model_.index( index.row()-1, current_index.column())).isValid() )
     {
         FileRecord record( model_.get( index ) );
-        if( record.hasFlag( FileRecordProperties::ACTIVE ) ) break;
+        if( record.hasFlag( FileRecordProperties::Active ) ) break;
     }
 
     if( !index.isValid() ) index = model_.index( counts-1, current_index.column() );
@@ -249,7 +249,7 @@ void SessionFilesFrame::_selectNextFile( void )
     while( (index = model_.index( index.row()+1, current_index.column())).isValid() )
     {
         FileRecord record( model_.get( index ) );
-        if( record.hasFlag( FileRecordProperties::ACTIVE ) ) break;
+        if( record.hasFlag( FileRecordProperties::Active ) ) break;
     }
 
     if( !index.isValid() ) index = model_.index( 0, current_index.column() );
@@ -278,7 +278,7 @@ void SessionFilesFrame::_save( void )
 
     FileRecord::List modifiedRecords;
     foreach( const FileRecord& record, model_.get( list_->selectionModel()->selectedRows() ) )
-    { if( record.hasFlag( FileRecordProperties::MODIFIED ) ) modifiedRecords << record; }
+    { if( record.hasFlag( FileRecordProperties::Modified ) ) modifiedRecords << record; }
 
     if( !modifiedRecords.empty() ) emit filesSaved( modifiedRecords );
 

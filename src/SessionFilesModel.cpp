@@ -78,13 +78,13 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
     if( role == Qt::DecorationRole && index.column() == FILE )
     {
 
-        if( record.hasFlag( FileRecordProperties::MODIFIED ) ) return _icon( FileRecordProperties::MODIFIED );
-        else if( record.hasFlag( FileRecordProperties::ALTERED ) ) return _icon( FileRecordProperties::ALTERED );
-        else return _icon( FileRecordProperties::NONE );
+        if( record.hasFlag( FileRecordProperties::Modified ) ) return _icon( FileRecordProperties::Modified );
+        else if( record.hasFlag( FileRecordProperties::Altered ) ) return _icon( FileRecordProperties::Altered );
+        else return _icon( FileRecordProperties::None );
 
     } else if( role == Qt::ForegroundRole ) {
 
-        return record.hasFlag( FileRecordProperties::ACTIVE ) ?
+        return record.hasFlag( FileRecordProperties::Active ) ?
             QPalette().color( QPalette::Text ):
             QPalette().color( QPalette::Disabled, QPalette::Text );
 
@@ -109,9 +109,9 @@ const QIcon& SessionFilesModel::_icon( int type )
     if( iter != _icons().end() ) return iter.value();
 
     QIcon icon;
-    if( type == FileRecordProperties::MODIFIED ) icon = IconEngine::get( IconNames::Save );
-    else if( type == FileRecordProperties::ALTERED ) icon = IconEngine::get( IconNames::Warning );
-    else if( type == FileRecordProperties::NONE )
+    if( type == FileRecordProperties::Modified ) icon = IconEngine::get( IconNames::Save );
+    else if( type == FileRecordProperties::Altered ) icon = IconEngine::get( IconNames::Warning );
+    else if( type == FileRecordProperties::None )
     {
 
         const int iconSize( XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" ) );
@@ -217,7 +217,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
             if( flags( index ) & Qt::ItemIsEnabled )
             {
                 FileRecord record( get( index ) );
-                if( record.hasFlag( FileRecordProperties::ACTIVE ) )
+                if( record.hasFlag( FileRecordProperties::Active ) )
                 {
                     targetIndex = index;
                     target = record;

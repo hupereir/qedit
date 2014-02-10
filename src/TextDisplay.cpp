@@ -97,11 +97,11 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
     // store property ids associated to property names
     // this is used to speed-up fileRecord access
-    classNamePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::CLASS_NAME ) ),
-    iconPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::ICON ) ),
-    wrapPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::WRAPPED ) ),
-    dictionaryPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::DICTIONARY ) ),
-    filterPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::FILTER ) ),
+    classNamePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::ClassName ) ),
+    iconPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Icon ) ),
+    wrapPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Wrapped ) ),
+    dictionaryPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Dictionary ) ),
+    filterPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Filter ) ),
 
     textEncoding_( "ISO-8859-1" ),
     closed_( false ),
@@ -210,7 +210,7 @@ void TextDisplay::setModified( const bool& value )
     document()->setModified( value );
 
     // ask for update in the parent frame
-    if( isActive() && ( file().size() || isNewDocument() ) ) emit needUpdate( MODIFIED );
+    if( isActive() && ( file().size() || isNewDocument() ) ) emit needUpdate( Modified );
 
 }
 
@@ -222,7 +222,7 @@ void TextDisplay::setReadOnly( const bool& value )
     bool changed = (value != isReadOnly() );
     AnimatedTextEditor::setReadOnly( value );
 
-    if( changed && isActive() ) emit needUpdate( READ_ONLY );
+    if( changed && isActive() ) emit needUpdate( ReadOnly );
 }
 
 //______________________________________________________________________________
@@ -329,7 +329,7 @@ void TextDisplay::synchronize( TextDisplay* other )
     setFileCheckData( other->fileCheckData() );
 
     if( parentWidget() != other->parentWidget() )
-    { emit needUpdate( ACTIVE_DISPLAY_CHANGED ); }
+    { emit needUpdate( ActiveDisplayChanged ); }
 
 }
 
@@ -487,7 +487,7 @@ void TextDisplay::_setFile( const File& file )
     // check if file is read-only
     checkFileReadOnly();
 
-    if( isActive() ) emit needUpdate( FILE_NAME );
+    if( isActive() ) emit needUpdate( FileName );
     Debug::Throw( "TextDisplay::_setFile - done.\n" );
 
 }
@@ -609,7 +609,7 @@ void TextDisplay::clearFileCheckData( void )
 
     Debug::Throw( "TextDisplay::clearFileCheckData.\n" );
 
-    if( fileCheckData().flag() == FileCheck::Data::NONE ) return;
+    if( fileCheckData().flag() == FileCheck::Data::None ) return;
 
     // clear file check data
     Base::KeySet<TextDisplay> displays( this );
@@ -631,7 +631,7 @@ void TextDisplay::setFileCheckData( const FileCheck::Data& data )
     fileCheckData_ = data;
 
     // emit file modification signal, to update session file frames
-    if( flagsChanged ) emit needUpdate( MODIFIED );
+    if( flagsChanged ) emit needUpdate( Modified );
 
 }
 
@@ -946,15 +946,15 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
 
     switch( tag )
     {
-        case TextBlock::DIFF_ADDED:
+        case TextBlock::DiffAdded:
         setBackground( block, diffAddedColor_ );
         break;
 
-        case TextBlock::DIFF_CONFLICT:
+        case TextBlock::DiffConflict:
         setBackground( block, diffConflictColor_ );
         break;
 
-        case TextBlock::USER_TAG:
+        case TextBlock::User:
         setBackground( block, userTagColor_ );
         break;
 
@@ -973,21 +973,21 @@ void TextDisplay::clearTag( QTextBlock block, const int& tags )
     TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
     if( !data ) return;
 
-    if( tags & TextBlock::DIFF_ADDED && data->hasFlag( TextBlock::DIFF_ADDED ) )
+    if( tags & TextBlock::DiffAdded && data->hasFlag( TextBlock::DiffAdded ) )
     {
-        data->setFlag( TextBlock::DIFF_ADDED, false );
+        data->setFlag( TextBlock::DiffAdded, false );
         clearBackground( block );
     }
 
-    if( tags & TextBlock::DIFF_CONFLICT && data->hasFlag( TextBlock::DIFF_CONFLICT ) )
+    if( tags & TextBlock::DiffConflict && data->hasFlag( TextBlock::DiffConflict ) )
     {
-        data->setFlag( TextBlock::DIFF_CONFLICT, false );
+        data->setFlag( TextBlock::DiffConflict, false );
         clearBackground( block );
     }
 
-    if( tags & TextBlock::USER_TAG && data->hasFlag( TextBlock::USER_TAG ) )
+    if( tags & TextBlock::User && data->hasFlag( TextBlock::User ) )
     {
-        data->setFlag( TextBlock::USER_TAG, false );
+        data->setFlag( TextBlock::User, false );
         clearBackground( block );
     }
 
@@ -1018,7 +1018,7 @@ bool TextDisplay::isCurrentBlockTagged( void ) const
     foreach( const QTextBlock& block, blocks )
     {
         TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-        if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
+        if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) ) return true;
     }
 
     return false;
@@ -1035,14 +1035,14 @@ bool TextDisplay::hasTaggedBlocks( void ) const
     for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
     {
         TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-        if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) return true;
+        if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) ) return true;
     }
 
     return false;
 }
 
 //___________________________________________________________________________
-void TextDisplay::_updateDocumentClass( File file, bool new_document )
+void TextDisplay::_updateDocumentClass( File file, bool newDocument )
 {
 
     Debug::Throw( "TextDisplay::_updateDocumentClass\n" );
@@ -1053,42 +1053,42 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
     _clearMacros();
 
     // default document class is empty
-    DocumentClass document_class;
+    DocumentClass documentClass;
     Application& application( *Singleton::get().application<Application>() );
 
     // try load document class from className
     if( !className().isEmpty() )
     {
         Debug::Throw( "TextDisplay::updateDocumentClass - try use className().\n" );
-        document_class = application.classManager().get( className() );
+        documentClass = application.classManager().get( className() );
     }
 
     // try load from file
-    if( document_class.name().isEmpty() && !( file.isEmpty() || new_document ) )
+    if( documentClass.name().isEmpty() && !( file.isEmpty() || newDocument ) )
     {
         Debug::Throw( "TextDisplay::updateDocumentClass - try use filename.\n" );
-        document_class = application.classManager().find( file );
+        documentClass = application.classManager().find( file );
     }
 
     // use default
-    if( document_class.name().isEmpty() )
+    if( documentClass.name().isEmpty() )
     {
         Debug::Throw( "TextDisplay::updateDocumentClass - using default.\n" );
-        document_class = application.classManager().defaultClass();
+        documentClass = application.classManager().defaultClass();
     }
 
     // update class name
-    setClassName( document_class.name() );
+    setClassName( documentClass.name() );
 
     // wrap mode
-    if( !( file.isEmpty() || new_document ) )
+    if( !( file.isEmpty() || newDocument ) )
     {
 
         FileRecord& record( _recentFiles().get( file ) );
         if( record.hasProperty( wrapPropertyId_ ) ) wrapModeAction().setChecked( Str( record.property( wrapPropertyId_ ) ).get<bool>() );
-        else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
+        else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( documentClass.wrap() );
 
-    } else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( document_class.wrap() );
+    } else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( documentClass.wrap() );
 
     // need to update tab size here because at the time it was set in _updateConfiguration,
     // the font might not have been right
@@ -1097,29 +1097,29 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
     // tab emulation
     if( XmlOptions::get().get<bool>( "EMULATE_TABS_FROM_CLASS" ) )
     {
-        tabEmulationAction().setChecked( document_class.emulateTabs() );
-        if( document_class.tabSize() > 0 ) _setTabSize( document_class.tabSize() );
+        tabEmulationAction().setChecked( documentClass.emulateTabs() );
+        if( documentClass.tabSize() > 0 ) _setTabSize( documentClass.tabSize() );
     }
 
     // enable actions consequently
-    parenthesisHighlightAction().setVisible( !document_class.parenthesis().empty() );
-    textHighlightAction().setVisible( !document_class.highlightPatterns().empty() );
-    textIndentAction().setVisible( !document_class.indentPatterns().empty() );
-    baseIndentAction().setVisible( document_class.baseIndentation() );
+    parenthesisHighlightAction().setVisible( !documentClass.parenthesis().empty() );
+    textHighlightAction().setVisible( !documentClass.highlightPatterns().empty() );
+    textIndentAction().setVisible( !documentClass.indentPatterns().empty() );
+    baseIndentAction().setVisible( documentClass.baseIndentation() );
 
     // store into class members
-    textHighlight().setPatterns( document_class.highlightPatterns() );
-    textHighlight().setParenthesis( document_class.parenthesis() );
-    textHighlight().setBlockDelimiters( document_class.blockDelimiters() );
+    textHighlight().setPatterns( documentClass.highlightPatterns() );
+    textHighlight().setParenthesis( documentClass.parenthesis() );
+    textHighlight().setBlockDelimiters( documentClass.blockDelimiters() );
 
-    textIndent().setPatterns( document_class.indentPatterns() );
-    textIndent().setBaseIndentation( document_class.baseIndentation() );
-    _setMacros( document_class.textMacros() );
+    textIndent().setPatterns( documentClass.indentPatterns() );
+    textIndent().setBaseIndentation( documentClass.baseIndentation() );
+    _setMacros( documentClass.textMacros() );
 
     // update block delimiters
     if( blockDelimiterDisplay().expandAllAction().isEnabled() ) blockDelimiterDisplay().expandAllAction().trigger();
-    if( blockDelimiterDisplay().setBlockDelimiters( document_class.blockDelimiters() ) ) update();
-    showBlockDelimiterAction().setVisible( !document_class.blockDelimiters().empty() );
+    if( blockDelimiterDisplay().setBlockDelimiters( documentClass.blockDelimiters() ) ) update();
+    showBlockDelimiterAction().setVisible( !documentClass.blockDelimiters().empty() );
     _updateMargin();
 
     // update enability for parenthesis matching
@@ -1134,12 +1134,12 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
         !textHighlight().parenthesis().empty() );
 
     // add information to Menu
-    if( !( file.isEmpty() || new_document ) )
+    if( !( file.isEmpty() || newDocument ) )
     {
         FileRecord& record( _recentFiles().get( file ) );
         record.addProperty( classNamePropertyId_, className() );
         record.addProperty( wrapPropertyId_, Str().assign<bool>( wrapModeAction().isChecked() ) );
-        if( !document_class.icon().isEmpty() ) record.addProperty( iconPropertyId_, document_class.icon() );
+        if( !documentClass.icon().isEmpty() ) record.addProperty( iconPropertyId_, documentClass.icon() );
     }
 
     // rehighlight text entirely
@@ -1151,7 +1151,7 @@ void TextDisplay::_updateDocumentClass( File file, bool new_document )
     #endif
 
     // propagate
-    emit needUpdate( DOCUMENT_CLASS );
+    emit needUpdate( DocumentClassFlag );
 
     return;
 
@@ -1704,7 +1704,7 @@ bool TextDisplay::_fileRemoved( void ) const
     */
 
     // check file flag
-    if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::REMOVED || fileCheckData().flag() == FileCheck::Data::MODIFIED ) )
+    if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::Removed || fileCheckData().flag() == FileCheck::Data::Modified ) )
     { return false; }
 
     // make sure file is still removed
@@ -1728,7 +1728,7 @@ bool TextDisplay::_fileModified( void )
 
     // check file
     if( file().isEmpty() || isNewDocument() ) return false;
-    if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::REMOVED || fileCheckData().flag() == FileCheck::Data::MODIFIED ) )
+    if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::Removed || fileCheckData().flag() == FileCheck::Data::Modified ) )
     { return false; }
 
     if( !lastSaved().isValid() ) return false;
@@ -1756,7 +1756,7 @@ void TextDisplay::_setBlockModified( const QTextBlock& block )
     // retrieve associated block data if any
     // set block as modified so that its highlight content gets reprocessed.
     TextBlockData* data( static_cast<TextBlockData*>( block.userData() ) );
-    if( data ) data->setFlag( TextBlock::MODIFIED, true );
+    if( data ) data->setFlag( TextBlock::BlockModified, true );
 
 }
 
@@ -1771,11 +1771,11 @@ void TextDisplay::_updateTaggedBlocks( void )
     {
 
         TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-        if( !( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) ) continue;
+        if( !( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) ) ) continue;
 
-        if( data->hasFlag( TextBlock::DIFF_ADDED ) ) setBackground( block, diffAddedColor_ );
-        if( data->hasFlag( TextBlock::DIFF_CONFLICT ) ) setBackground( block, diffConflictColor_ );
-        if( data->hasFlag( TextBlock::USER_TAG ) ) setBackground( block, userTagColor_ );
+        if( data->hasFlag( TextBlock::DiffAdded ) ) setBackground( block, diffAddedColor_ );
+        if( data->hasFlag( TextBlock::DiffConflict ) ) setBackground( block, diffConflictColor_ );
+        if( data->hasFlag( TextBlock::User ) ) setBackground( block, userTagColor_ );
 
     }
 
@@ -2448,7 +2448,7 @@ void TextDisplay::_textModified( void )
     // document should never appear modified
     // for readonly displays
     if( document()->isModified() && isReadOnly() ) document()->setModified( false );
-    if( isActive() && ( file().size() || isNewDocument() ) ) emit needUpdate( MODIFIED );
+    if( isActive() && ( file().size() || isNewDocument() ) ) emit needUpdate( Modified );
 
 }
 
@@ -2529,13 +2529,14 @@ void TextDisplay::_highlightParenthesis( void )
             QString text( block.text() );
 
             // append collapsed data if any
-            if( data && data->hasFlag( TextBlock::Collapsed ) )
+            if( data && data->hasFlag( TextBlock::BlockCollapsed ) )
             {
 
                 QTextBlockFormat blockFormat( block.blockFormat() );
                 if( !blockFormat.hasProperty( TextBlock::CollapsedData ) )
                 {
                     Debug::Throw(0) << "TextDisplay::_highlightParenthesis - missing CollapsedData property" << endl;
+                    block = block.next();
                     continue;
                 }
 
@@ -2597,13 +2598,14 @@ void TextDisplay::_highlightParenthesis( void )
             QString text( block.text() );
 
             // append collapsed data if any
-            if( data && data->hasFlag( TextBlock::Collapsed ) )
+            if( data && data->hasFlag( TextBlock::BlockCollapsed ) )
             {
 
                 QTextBlockFormat blockFormat( block.blockFormat() );
                 if( !blockFormat.hasProperty( TextBlock::CollapsedData ) )
                 {
                     Debug::Throw(0) << "TextDisplay::_highlightParenthesis - missing CollapsedData property" << endl;
+                    block = block.next();
                     continue;
                 }
                 CollapsedBlockData collapsedBlockData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
@@ -2677,7 +2679,7 @@ void TextDisplay::_tagBlock( void )
 
     // clear background for selected blocks
     for( QList<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
-    { if( iter->isValid() ) tagBlock( *iter, TextBlock::USER_TAG ); }
+    { if( iter->isValid() ) tagBlock( *iter, TextBlock::User ); }
 
 }
 
@@ -2693,14 +2695,14 @@ void TextDisplay::_nextTag( void )
     while(
         block.isValid() &&
         (data = static_cast<TextBlockData*>( block.userData() ) ) &&
-        data->hasFlag( TextBlock::ALL_TAGS ) )
+        data->hasFlag( TextBlock::All ) )
     { block = block.next(); }
 
     // skip blocks with no tag
     while(
         block.isValid() &&
         !((data = static_cast<TextBlockData*>( block.userData() ) ) &&
-        data->hasFlag( TextBlock::ALL_TAGS ) ) )
+        data->hasFlag( TextBlock::All ) ) )
     { block = block.next(); }
 
     if( !block.isValid() )
@@ -2728,14 +2730,14 @@ void TextDisplay::_previousTag( void )
     while(
         block.isValid() &&
         (data = static_cast<TextBlockData*>( block.userData() ) ) &&
-        data->hasFlag( TextBlock::ALL_TAGS ) )
+        data->hasFlag( TextBlock::All ) )
     { block = block.previous(); }
 
     // skip blocks with no tag
     while(
         block.isValid() &&
         !((data = static_cast<TextBlockData*>( block.userData() ) ) &&
-        data->hasFlag( TextBlock::ALL_TAGS ) ) )
+        data->hasFlag( TextBlock::All ) ) )
     { block = block.previous(); }
 
     if( !block.isValid() )
@@ -2774,7 +2776,7 @@ void TextDisplay::_clearTag( void )
         for( QTextBlock block( cursor.block() ); block.isValid(); block = block.previous() )
         {
             TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-            if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks << block;
+            if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) ) blocks << block;
             else break;
         }
 
@@ -2783,7 +2785,7 @@ void TextDisplay::_clearTag( void )
         for( QTextBlock block( cursor.block().next() ); block.isValid(); block = block.next() )
         {
             TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-            if( data && data->hasFlag( TextBlock::DIFF_ADDED | TextBlock::DIFF_CONFLICT | TextBlock::USER_TAG ) ) blocks << block;
+            if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) ) blocks << block;
             else break;
         }
 
@@ -2791,7 +2793,7 @@ void TextDisplay::_clearTag( void )
 
     // clear background for selected blocks
     for( QList<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
-    { clearTag( *iter, TextBlock::ALL_TAGS ); }
+    { clearTag( *iter, TextBlock::All ); }
 
 }
 

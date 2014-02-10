@@ -159,14 +159,14 @@ FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) con
             FileRecord record = display->isNewDocument() ? FileRecord( file ):application.recentFiles().get(file);
 
             // set flags
-            unsigned int flags( FileRecordProperties::NONE );
-            if( display->document()->isModified() ) flags |= FileRecordProperties::MODIFIED;
-            if( display->fileCheckData().flag() != FileCheck::Data::NONE ) flags |= FileRecordProperties::ALTERED;
+            unsigned int flags( FileRecordProperties::None );
+            if( display->document()->isModified() ) flags |= FileRecordProperties::Modified;
+            if( display->fileCheckData().flag() != FileCheck::Data::None ) flags |= FileRecordProperties::Altered;
 
             if( isActiveWindow )
             {
-                flags |= FileRecordProperties::ACTIVE;
-                if( windowIter->isActiveDisplay( *display ) ) flags |= FileRecordProperties::SELECTED;
+                flags |= FileRecordProperties::Active;
+                if( windowIter->isActiveDisplay( *display ) ) flags |= FileRecordProperties::Selected;
             }
 
             // assign flags and store

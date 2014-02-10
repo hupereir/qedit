@@ -204,7 +204,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
 
         activeDisplay_ = &display;
         if( display.file().size() || display.isNewDocument() )
-        { emit needUpdate( TextDisplay::ACTIVE_DISPLAY_CHANGED ); }
+        { emit needUpdate( TextDisplay::ActiveDisplayChanged ); }
 
     }
 
