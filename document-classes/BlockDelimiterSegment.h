@@ -39,11 +39,22 @@ class BlockDelimiterSegment: public Counter
     typedef QListIterator<BlockDelimiterSegment> ListIterator;
     typedef QMutableListIterator<BlockDelimiterSegment> MutableListIterator;
 
+    //! flags
+    enum Flag
+    {
+        None = 0,
+        Collapsed = 1<<0,
+        Ignored = 1<<2,
+        BeginOnly = 1<<3
+    };
+
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     //! constructor
     BlockDelimiterSegment(
         const BlockMarker& begin = BlockMarker(),
         const BlockMarker& end = BlockMarker(),
-        const unsigned int& flags = NONE ):
+        Flags flags = None ):
         Counter( "BlockDelimiterSegment" ),
         begin_( begin ),
         end_( end ),
@@ -52,15 +63,6 @@ class BlockDelimiterSegment: public Counter
 
     //!@name flags
     //@{
-
-    //! flags
-    enum Flag
-    {
-        NONE = 0,
-        COLLAPSED = 1<<0,
-        IGNORED = 1<<2,
-        BEGIN_ONLY = 1<<3
-    };
 
     //! flags
     bool hasFlag( const Flag& flag ) const
@@ -78,7 +80,7 @@ class BlockDelimiterSegment: public Counter
 
     //! validity
     bool isValid( void ) const
-    { return ( begin().isValid() && ( hasFlag( BEGIN_ONLY ) || end().isValid() ) ); }
+    { return ( begin().isValid() && ( hasFlag( BeginOnly ) || end().isValid() ) ); }
 
     //!@name geometry
     //@{
@@ -176,7 +178,7 @@ class BlockDelimiterSegment: public Counter
         public:
 
         bool operator() ( const BlockDelimiterSegment& segment ) const
-        { return segment.hasFlag( COLLAPSED ); }
+        { return segment.hasFlag( Collapsed ); }
 
     };
 
@@ -205,7 +207,7 @@ class BlockDelimiterSegment: public Counter
     QRect active_;
 
     //! flags
-    unsigned int flags_;
+    Flags flags_;
 
     //! streamer
     friend QTextStream& operator << ( QTextStream& out, const BlockDelimiterSegment& segment )
@@ -223,5 +225,7 @@ class BlockDelimiterSegment: public Counter
     }
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( BlockDelimiterSegment::Flags )
 
 #endif

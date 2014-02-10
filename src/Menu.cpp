@@ -121,10 +121,10 @@ Menu::Menu( QWidget* parent ):
     connect( preferenceMenu_, SIGNAL(aboutToShow()), this, SLOT(_updatePreferenceMenu()) );
 
     // help manager
-    BASE::HelpManager* help( new BASE::HelpManager( this ) );
+    Base::HelpManager* help( new Base::HelpManager( this ) );
     help->setWindowTitle( tr( "Qedit Handbook" ) );
     help->install( helpText );
-    help->install( BASE::helpText, false );
+    help->install( Base::helpText, false );
 
     // create help menu
     menu = addMenu( tr( "Help" ) );
@@ -406,10 +406,10 @@ void Menu::_selectFile( QAction* action )
     if( iter == fileActions_.end() ) return;
 
     // retrieve all mainwindows
-    BASE::KeySet<MainWindow> windows( &Singleton::get().application<Application>()->windowServer() );
+    Base::KeySet<MainWindow> windows( &Singleton::get().application<Application>()->windowServer() );
 
     // retrieve window matching file name
-    BASE::KeySet<MainWindow>::iterator windowIter( std::find_if(
+    Base::KeySet<MainWindow>::iterator windowIter( std::find_if(
         windows.begin(),
         windows.end(),
         MainWindow::SameFileFTor( iter.value() ) ) );

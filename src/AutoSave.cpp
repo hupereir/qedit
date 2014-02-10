@@ -67,7 +67,7 @@ void AutoSave::newThread( TextDisplay* display )
     AutoSaveThread *thread = new AutoSaveThread( this );
 
     // associate to MainWindow
-    BASE::Key::associate( display, thread );
+    Base::Key::associate( display, thread );
 
     // add to list
     threads_.append( thread );
@@ -101,7 +101,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
         if( (*iter)->isRunning() ) continue;
 
         // retrieve associated displays
-        BASE::KeySet<TextDisplay> displays( *iter );
+        Base::KeySet<TextDisplay> displays( *iter );
 
         // remove thread if none is found
         if( displays.empty() )

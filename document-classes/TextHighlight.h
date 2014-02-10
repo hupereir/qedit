@@ -153,11 +153,11 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     #if WITH_ASPELL
 
     //! embedded spellcheck parser
-    const SPELLCHECK::SpellParser& spellParser( void ) const
+    const SpellCheck::SpellParser& spellParser( void ) const
     { return spellParser_; }
 
     //! embedded spellcheck parser
-    SPELLCHECK::SpellParser& spellParser( void )
+    SpellCheck::SpellParser& spellParser( void )
     { return spellParser_; }
 
     //! highlight pattern associated to auto-spell
@@ -231,7 +231,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     #if WITH_ASPELL
 
     //! spell check parser
-    SPELLCHECK::SpellParser spellParser_;
+    SpellCheck::SpellParser spellParser_;
 
     //! spellcheck highlight pattern
     HighlightPattern spellPattern_;

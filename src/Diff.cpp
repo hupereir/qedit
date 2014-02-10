@@ -314,7 +314,7 @@ void Diff::FileInformation::highlightDisplay( void )
 
     // get associated displays and update all
     // this is needed due to the setUpdatesEnabled above
-    BASE::KeySet<TextDisplay> displays( &_display() );
+    Base::KeySet<TextDisplay> displays( &_display() );
     displays.insert( &_display() );
     foreach( TextDisplay* display, displays )
     { display->viewport()->update(); }

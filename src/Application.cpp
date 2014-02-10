@@ -233,10 +233,10 @@ void Application::_spellCheckConfiguration( void )
     CustomDialog dialog;
     dialog.setWindowTitle( "Spell Check Configuration - Qedit" );
 
-    SPELLCHECK::SpellCheckConfiguration* spellConfig = new SPELLCHECK::SpellCheckConfiguration( &dialog );
+    SpellCheck::SpellCheckConfiguration* spellConfig = new SpellCheck::SpellCheckConfiguration( &dialog );
     dialog.mainLayout().addWidget( spellConfig );
 
-    SPELLCHECK::AutoSpellConfiguration* autospellConfig = new SPELLCHECK::AutoSpellConfiguration( &dialog );
+    SpellCheck::AutoSpellConfiguration* autospellConfig = new SpellCheck::AutoSpellConfiguration( &dialog );
     dialog.mainLayout().addWidget( autospellConfig );
     dialog.centerOnWidget( qApp->activeWindow() );
 
@@ -328,11 +328,11 @@ void Application::_exit( void )
 }
 
 //________________________________________________
-bool Application::_processCommand( SERVER::ServerCommand command )
+bool Application::_processCommand( Server::ServerCommand command )
 {
 
     if( BaseApplication::_processCommand( command ) ) return true;
-    if( command.command() == SERVER::ServerCommand::Raise )
+    if( command.command() == Server::ServerCommand::Raise )
     {
 
         // copy arguments and try open

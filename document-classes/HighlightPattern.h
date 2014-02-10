@@ -45,20 +45,20 @@ class HighlightPattern: public Counter
     {
 
         //! no flag
-        NONE = 0,
+        None = 0,
 
         //! pattern spans over several blocks
-        SPAN = 1<<0,
+        Span = 1<<0,
 
         //! pattern exclude line from indentations
         /*! this is typically the case for comments */
-        NO_INDENT = 1<<1,
+        NoIndent = 1<<1,
 
         //! pattern matching should not be case sensitive
-        CASE_INSENSITIVE = 1<<2,
+        CaseInsensitive = 1<<2,
 
         //! current pattern corresponds to commented text
-        COMMENT = 1<<3
+        Comment = 1<<3
 
     };
 
@@ -124,13 +124,13 @@ class HighlightPattern: public Counter
     enum Type
     {
         //! undefined
-        UNDEFINED,
+        Undefined,
 
         //! single keyword
-        KEYWORD_PATTERN,
+        KeywordPattern,
 
         //! range pattern
-        RANGE_PATTERN
+        RangePattern
 
     };
 
@@ -246,8 +246,8 @@ class HighlightPattern: public Counter
     {
         switch( type() )
         {
-            case KEYWORD_PATTERN: return keyword_.isValid();
-            case RANGE_PATTERN: return keyword_.isValid() && end_.isValid();
+            case KeywordPattern: return keyword_.isValid();
+            case RangePattern: return keyword_.isValid() && end_.isValid();
             default: return false;
         }
     }
@@ -261,8 +261,8 @@ class HighlightPattern: public Counter
     {
         switch( type() )
         {
-            case KEYWORD_PATTERN: return _findKeyword( locations, text, active );
-            case RANGE_PATTERN: return _findRange( locations, text, active );
+            case KeywordPattern: return _findKeyword( locations, text, active );
+            case RangePattern: return _findRange( locations, text, active );
             default: return false;
         }
     }

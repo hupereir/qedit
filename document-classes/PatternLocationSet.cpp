@@ -26,5 +26,5 @@ bool PatternLocationSet::isCommented( int position ) const
 {
     const const_iterator iter( std::find_if( constBegin(), constEnd(), PatternLocation::ContainsFTor( position ) ) );
     if( iter == constEnd() ) return false;
-    else return iter->hasFlag( HighlightPattern::COMMENT );
+    else return iter->hasFlag( HighlightPattern::Comment );
 }

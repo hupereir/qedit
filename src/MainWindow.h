@@ -47,7 +47,7 @@ class SelectLineDialog;
 class TransitionWidget;
 
 //! editor main window
-class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
+class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 {
 
     Q_OBJECT
@@ -77,14 +77,14 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
         //! predicate
         bool operator() ( const MainWindow* window ) const
         {
-            BASE::KeySet<TextView> views( window );
+            Base::KeySet<TextView> views( window );
             return std::find_if( views.begin(), views.end(), *this ) != views.end();
         }
 
         //! predicate
         bool operator() ( const TextView* view ) const
         {
-            BASE::KeySet<TextDisplay> displays( view );
+            Base::KeySet<TextDisplay> displays( view );
             return std::find_if( displays.begin(), displays.end(), (TextDisplay::SameFileFTor)*this ) != displays.end();
         }
 
@@ -98,14 +98,14 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
         //! predicate
         bool operator() ( const MainWindow* window ) const
         {
-            BASE::KeySet<TextView> views( window );
+            Base::KeySet<TextView> views( window );
             return std::find_if( views.begin(), views.end(), *this ) != views.end();
         }
 
         //! predicate
         bool operator() ( const TextView* view ) const
         {
-            BASE::KeySet<TextDisplay> displays( view );
+            Base::KeySet<TextDisplay> displays( view );
             return std::find_if( displays.begin(), displays.end(), (TextDisplay::EmptyFileFTor)*this ) != displays.end();
         }
 
@@ -119,14 +119,14 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
         //! predicate
         bool operator() ( const MainWindow* window ) const
         {
-            BASE::KeySet<TextView> views( window );
+            Base::KeySet<TextView> views( window );
             return std::find_if( views.begin(), views.end(), *this ) != views.end();
         }
 
         //! predicate
         bool operator() ( const TextView* view ) const
         {
-            BASE::KeySet<TextDisplay> displays( view );
+            Base::KeySet<TextDisplay> displays( view );
             return std::find_if( displays.begin(), displays.end(), *this ) != displays.end();
         }
 
@@ -185,7 +185,7 @@ class MainWindow: public BaseMainWindow, public Counter, public BASE::Key
     this is a convenient function that loops over all associated views
     and merge their associated displays into a single list
     */
-    BASE::KeySet<TextDisplay> associatedDisplays( void ) const;
+    Base::KeySet<TextDisplay> associatedDisplays( void ) const;
 
     //! select display from file
     bool selectDisplay( const File& );

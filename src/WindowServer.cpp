@@ -88,7 +88,7 @@ MainWindow& WindowServer::newMainWindow( void )
     Debug::Throw( "WindowServer::newMainWindow.\n" );
     MainWindow* window = new MainWindow();
 
-    BASE::Key::associate( this, window );
+    Base::Key::associate( this, window );
     _setActiveWindow( *window );
 
     // these connections are needed to make sure all windows recieve modifications of session files
@@ -137,13 +137,13 @@ FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) con
 
     // get associated main windows
     Application& application( *Singleton::get().application<Application>() );
-    foreach( MainWindow* windowIter, BASE::KeySet<MainWindow>( this ) )
+    foreach( MainWindow* windowIter, Base::KeySet<MainWindow>( this ) )
     {
         // check if current window match the one passed in argument
         bool isActiveWindow( windowIter == window );
 
         // retrieve associated TextDisplays
-        foreach( TextDisplay* display,  BASE::KeySet<TextDisplay>( windowIter->associatedDisplays() ) )
+        foreach( TextDisplay* display,  Base::KeySet<TextDisplay>( windowIter->associatedDisplays() ) )
         {
 
             // check modification status
@@ -347,13 +347,13 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
 
     // loop over files to get relevant displays
     int maximum(0);
-    BASE::KeySet<TextDisplay> displays;
-    BASE::KeySet<MainWindow> windows( this );
+    Base::KeySet<TextDisplay> displays;
+    Base::KeySet<MainWindow> windows( this );
     foreach( const File& file, files )
     {
 
         // find matching window
-        BASE::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
+        Base::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
         if( iter == windows.end() )
         {
             Debug::Throw(0) << "WindowServer::multipleFileReplace - no window found" << endl;
@@ -361,7 +361,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
         }
 
         // loop over views
-        BASE::KeySet<TextView> views( *iter );
+        Base::KeySet<TextView> views( *iter );
         foreach( TextView* view, views )
         {
             if( !view->selectDisplay( file ) ) continue;
@@ -430,17 +430,17 @@ void WindowServer::_newFile( WindowServer::OpenMode mode )
     Debug::Throw( "WindowServer::_newFile.\n" );
 
     // retrieve all MainWindows
-    BASE::KeySet<MainWindow> windows( this );
+    Base::KeySet<MainWindow> windows( this );
 
     // try find empty editor
     TextView* view(0);
-    BASE::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
+    Base::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
     if( iter != windows.end() )
     {
 
         // select the view that contains the empty display
-        BASE::KeySet<TextView> views( *iter );
-        BASE::KeySet<TextView>::iterator viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
+        Base::KeySet<TextView> views( *iter );
+        Base::KeySet<TextView>::iterator viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
         if( viewIter == views.end() )
         {
 
@@ -494,8 +494,8 @@ void WindowServer::_newFile( Qt::Orientation orientation )
 
     // look for an empty display
     // create a new display if none is found
-    BASE::KeySet<TextDisplay> displays( activeView );
-    BASE::KeySet<TextDisplay>::iterator iter( std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
+    Base::KeySet<TextDisplay> displays( activeView );
+    Base::KeySet<TextDisplay>::iterator iter( std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
     if( iter == displays.end() ) activeView.splitDisplay( orientation, false );
 
     activeView.setIsNewDocument();
@@ -524,10 +524,10 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     }
 
     // retrieve all MainWindows
-    BASE::KeySet<MainWindow> windows( this );
+    Base::KeySet<MainWindow> windows( this );
 
     // try find editor with matching name
-    BASE::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
+    Base::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
     if( iter != windows.end() )
     {
 
@@ -549,8 +549,8 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     {
 
         // select the view that contains the empty display
-        BASE::KeySet<TextView> views( *iter );
-        BASE::KeySet<TextView>::iterator viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
+        Base::KeySet<TextView> views( *iter );
+        Base::KeySet<TextView>::iterator viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
         if( viewIter == views.end() )
         {
 
@@ -615,14 +615,14 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
     TextView& activeView( _activeWindow().activeView() );
 
     // retrieve all windows and find one matching
-    BASE::KeySet<MainWindow> windows( this );
-    BASE::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
+    Base::KeySet<MainWindow> windows( this );
+    Base::KeySet<MainWindow>::iterator iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
     if( iter != windows.end() )
     {
 
         // find matching view
-        BASE::KeySet<TextView> views( *iter );
-        BASE::KeySet<TextView>::iterator viewIter = std::find_if( views.begin(), views.end(), MainWindow::SameFileFTor( record.file() ) );
+        Base::KeySet<TextView> views( *iter );
+        Base::KeySet<TextView>::iterator viewIter = std::find_if( views.begin(), views.end(), MainWindow::SameFileFTor( record.file() ) );
         if( viewIter == views.end() )
         {
 
@@ -653,8 +653,8 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
 
         // look for an empty display
         // create a new display if none is found
-        BASE::KeySet<TextDisplay> displays( &activeView );
-        BASE::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
+        Base::KeySet<TextDisplay> displays( &activeView );
+        Base::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
         TextDisplay& display( displayIter == displays.end() ? activeView.splitDisplay( orientation, false ):**displayIter );
 
         // retrieve active display from previous window
@@ -670,7 +670,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         previous_display.document()->setModified( false );
 
         // close display
-        displays = BASE::KeySet<TextDisplay>( &previous_display );
+        displays = Base::KeySet<TextDisplay>( &previous_display );
         displays.insert( &previous_display );
         foreach( TextDisplay* display, displays )
         { (*viewIter)->closeDisplay( *display ); }
@@ -684,8 +684,8 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
 
         // look for an empty display
         // create a new display if none is found
-        BASE::KeySet<TextDisplay> displays( activeView );
-        BASE::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
+        Base::KeySet<TextDisplay> displays( activeView );
+        Base::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
         if( displayIter == displays.end() ) activeView.splitDisplay( orientation, false );
 
         // open file in this window
@@ -705,7 +705,7 @@ void WindowServer::_detach( void )
 
     // check number of independent displays
     MainWindow& activeWindowLocal( _activeWindow() );
-    if( activeWindowLocal.activeView().independentDisplayCount() <= 1 && BASE::KeySet<TextView>( &_activeWindow() ).size() <= 1 )
+    if( activeWindowLocal.activeView().independentDisplayCount() <= 1 && Base::KeySet<TextView>( &_activeWindow() ).size() <= 1 )
     {
         Debug::Throw(0) << "WindowServer::_detach - invalid display count" << endl;
         return;
@@ -724,7 +724,7 @@ void WindowServer::_detach( const File& file )
 
     // check number of independent displays
     MainWindow& activeWindowLocal( _activeWindow() );
-    if( activeWindowLocal.activeView().independentDisplayCount() <= 1 && BASE::KeySet<TextView>( &_activeWindow() ).size() <= 1 )
+    if( activeWindowLocal.activeView().independentDisplayCount() <= 1 && Base::KeySet<TextView>( &_activeWindow() ).size() <= 1 )
     {
         Debug::Throw(0) << "WindowServer::_detach - invalid display count" << endl;
         return;
@@ -739,7 +739,7 @@ void WindowServer::_detach( TextDisplay& activeDisplayLocal )
 
     // check number of displays associated to active
     MainWindow& activeWindowLocal( _activeWindow() );
-    if( !BASE::KeySet<TextDisplay>(activeDisplayLocal).empty() )
+    if( !Base::KeySet<TextDisplay>(activeDisplayLocal).empty() )
     {
         InformationDialog( &activeWindowLocal,
             "Software limitation:\n"
@@ -781,7 +781,7 @@ void WindowServer::_reparent( const File& first, const File& second )
     TextView& firstView( _findView( first ) );
 
     // check for first display clones
-    if( !BASE::KeySet<TextDisplay>(firstDisplay).empty() )
+    if( !Base::KeySet<TextDisplay>(firstDisplay).empty() )
     {
         InformationDialog( &firstDisplay,
             "Software limitation:\n"
@@ -813,7 +813,7 @@ void WindowServer::_reparent( const File& first, const File& second )
     view.setActiveDisplay( newDisplay );
 
     // make view active
-    BASE::KeySet<MainWindow> windows( view );
+    Base::KeySet<MainWindow> windows( view );
     if( windows.size() != 1 )
     {
         Debug::Throw(0) << "WindowServer::_reparent - invalid number of windows" << endl;
@@ -846,7 +846,7 @@ void WindowServer::_reparentToMain( const File& first, const File& second )
     if( (&firstWindow == &window ) && firstView.independentDisplayCount() < 2 ) return;
 
     // check for first display clones
-    if( !BASE::KeySet<TextDisplay>(firstDisplay).empty() )
+    if( !Base::KeySet<TextDisplay>(firstDisplay).empty() )
     {
         InformationDialog( &firstDisplay,
             "Software limitation:\n"
@@ -897,7 +897,7 @@ void WindowServer::_save( FileRecord::List records )
     if( records.size() > 1 && !SaveAllDialog( &_activeWindow(), records ).exec() ) return;
 
     // retrieve windows
-    foreach( MainWindow* window, BASE::KeySet<MainWindow>( this ) )
+    foreach( MainWindow* window, Base::KeySet<MainWindow>( this ) )
     {
 
         // retrieve displays
@@ -939,7 +939,7 @@ bool WindowServer::_close( QStringList files )
 
     // need a first loop over associated windows to store modified files
     QSet<QString> modifiedFiles;
-    BASE::KeySet<MainWindow> windows( this );
+    Base::KeySet<MainWindow> windows( this );
     foreach( MainWindow* window, windows )
     {
         foreach( TextDisplay* display, window->associatedDisplays() )
@@ -958,11 +958,11 @@ bool WindowServer::_close( QStringList files )
     {
 
         // retrieve views
-        BASE::KeySet<TextView> views( window );
+        Base::KeySet<TextView> views( window );
         foreach( TextView* view, views )
         {
 
-            BASE::KeySet<TextDisplay> displays( view );
+            Base::KeySet<TextDisplay> displays( view );
             foreach( TextDisplay* display, displays )
             {
 
@@ -1002,7 +1002,7 @@ MainWindow& WindowServer::_findWindow( const File& file )
     MainWindow* out( 0 );
 
     // retrieve windows
-    foreach( MainWindow* window, BASE::KeySet<MainWindow>( this ) )
+    foreach( MainWindow* window, Base::KeySet<MainWindow>( this ) )
     {
 
         // retrieve displays
@@ -1027,7 +1027,7 @@ TextView& WindowServer::_findView( const File& file )
 {
 
     TextDisplay& display = _findDisplay( file );
-    BASE::KeySet<TextView> views( display );
+    Base::KeySet<TextView> views( display );
     if( views.size() != 1 )
     {
         Debug::Throw(0) << "WindowServer::_findView - no view found" << endl;
@@ -1043,7 +1043,7 @@ TextDisplay& WindowServer::_findDisplay( const File& file )
     TextDisplay* out( 0 );
 
     // retrieve windows
-    foreach( MainWindow* window, BASE::KeySet<MainWindow>( this ) )
+    foreach( MainWindow* window, Base::KeySet<MainWindow>( this ) )
     {
 
         // retrieve displays
@@ -1174,7 +1174,7 @@ bool WindowServer::_hasActiveWindow( void ) const
     if( !activeWindow_ ) return false;
 
     // check if found in list of associated windows
-    BASE::KeySet<MainWindow> windows( this );
+    Base::KeySet<MainWindow> windows( this );
 
     // not sure it works when the window pointed to by activeWindow_ has been removed
     return windows.find( activeWindow_ ) != windows.end();

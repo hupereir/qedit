@@ -68,7 +68,7 @@ class HighlightBlockData: public TextBlockData
 
     //! return true if locations correspond to a commented block
     bool ignoreBlock( void ) const
-    { return (!locations().empty()) && locations().begin()->hasFlag( HighlightPattern::NO_INDENT ); }
+    { return (!locations().empty()) && locations().begin()->hasFlag( HighlightPattern::NoIndent ); }
 
     //!@name parenthesis
     //@{
@@ -117,15 +117,15 @@ class HighlightBlockData: public TextBlockData
     //!@name spelling
     //@{
     //! set of misspelled words
-    const SPELLCHECK::Word::Set& misspelledWords( void ) const
+    const SpellCheck::Word::Set& misspelledWords( void ) const
     { return words_; }
 
     //! set of misspelled words
-    void setMisspelledWords( const SPELLCHECK::Word::Set& words )
+    void setMisspelledWords( const SpellCheck::Word::Set& words )
     { words_ = words; }
 
     //! return misspelled word matching position, if any
-    SPELLCHECK::Word misspelledWord( const int& position ) const;
+    SpellCheck::Word misspelledWord( const int& position ) const;
     //@}
     #endif
 
@@ -148,7 +148,7 @@ class HighlightBlockData: public TextBlockData
 
     #if WITH_ASPELL
     //! set of misspelled words and position in associated block
-    SPELLCHECK::Word::Set words_;
+    SpellCheck::Word::Set words_;
     #endif
 
 };

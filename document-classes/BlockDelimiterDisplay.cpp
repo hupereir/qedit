@@ -108,8 +108,8 @@ void BlockDelimiterDisplay::updateCurrentBlockActionState( void )
     _updateSegments();
     _selectSegmentFromCursor(  _editor().textCursor().position() );
 
-    _collapseCurrentAction().setEnabled( _selectedSegment().isValid() && !_selectedSegment().hasFlag( BlockDelimiterSegment::COLLAPSED ) );
-    _expandCurrentAction().setEnabled( _selectedSegment().isValid() && _selectedSegment().hasFlag( BlockDelimiterSegment::COLLAPSED ) );
+    _collapseCurrentAction().setEnabled( _selectedSegment().isValid() && !_selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) );
+    _expandCurrentAction().setEnabled( _selectedSegment().isValid() && _selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) );
 
 }
 
@@ -178,7 +178,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     foreach( const BlockDelimiterSegment& segment, segments_ )
     {
 
-        if( segment.end().isValid() && segment.end().cursor() < lastIndex && segment.end().cursor() >= firstIndex && !( segment.hasFlag( BlockDelimiterSegment::BEGIN_ONLY ) || segment.empty() ) )
+        if( segment.end().isValid() && segment.end().cursor() < lastIndex && segment.end().cursor() >= firstIndex && !( segment.hasFlag( BlockDelimiterSegment::BeginOnly ) || segment.empty() ) )
         { painter.drawLine( halfWidth_, segment.end().position(), width_, segment.end().position() ); }
 
     }
@@ -204,7 +204,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
     {
         if( iter->begin().isValid() && iter->begin().cursor() < lastIndex && iter->begin().cursor() >= firstIndex )
-        { _drawDelimiter( painter, iter->activeRect(), iter->hasFlag( BlockDelimiterSegment::COLLAPSED ) ); }
+        { _drawDelimiter( painter, iter->activeRect(), iter->hasFlag( BlockDelimiterSegment::Collapsed ) ); }
     }
 
 }
@@ -270,8 +270,8 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
         {
 
             // update collapse and expand current action state
-            _expandCurrentAction().setEnabled( _selectedSegment().isValid() && _selectedSegment().hasFlag( BlockDelimiterSegment::COLLAPSED ) );
-            _collapseCurrentAction().setEnabled( _selectedSegment().isValid() && !_selectedSegment().hasFlag( BlockDelimiterSegment::COLLAPSED ) );
+            _expandCurrentAction().setEnabled( _selectedSegment().isValid() && _selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) );
+            _collapseCurrentAction().setEnabled( _selectedSegment().isValid() && !_selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) );
             QMenu menu( &_editor() );
             addActions( menu );
             menu.exec( event->globalPos() );
@@ -342,7 +342,7 @@ void BlockDelimiterDisplay::_collapseCurrentBlock( void )
     _updateSegments();
     _updateSegmentMarkers();
 
-    if( _selectedSegment().isValid() && !_selectedSegment().hasFlag( BlockDelimiterSegment::COLLAPSED ) )
+    if( _selectedSegment().isValid() && !_selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) )
     {
 
         // clear box selection
@@ -370,7 +370,7 @@ void BlockDelimiterDisplay::_expandCurrentBlock( void )
     _updateSegments();
     _updateSegmentMarkers();
 
-    if( _selectedSegment().isValid() && _selectedSegment().hasFlag( BlockDelimiterSegment::COLLAPSED ) )
+    if( _selectedSegment().isValid() && _selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) )
     {
 
         // find matching blocks
@@ -442,7 +442,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
 
         // mark contents dirty to force update of current block
         data->setFlag( TextBlock::MODIFIED, true );
-        data->setFlag( TextBlock::COLLAPSED, true );
+        data->setFlag( TextBlock::Collapsed, true );
         _editor().document()->markContentsDirty(blocks.first.position(), blocks.first.length()-1);
 
         cursor.setPosition( blocks.first.position() + blocks.first.length(), QTextCursor::MoveAnchor );
@@ -563,9 +563,9 @@ void BlockDelimiterDisplay::_synchronizeBlockData( void ) const
         // store collapse state
         QTextBlockFormat blockFormat( block.blockFormat() );
         bool collapsed( blockFormat.boolProperty( TextBlock::Collapsed ) );
-        if( data->hasFlag( TextBlock::COLLAPSED ) != collapsed )
+        if( data->hasFlag( TextBlock::Collapsed ) != collapsed )
         {
-            data->setFlag( TextBlock::COLLAPSED, collapsed );
+            data->setFlag( TextBlock::Collapsed, collapsed );
             data->setFlag( TextBlock::MODIFIED, true );
             document.markContentsDirty(block.position(), block.length()-1);
         }
@@ -638,17 +638,17 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
             if( delimiter.end( isCommented ) )
             {
 
-                if( !(startPoints.empty() ) && ignored == startPoints.back().hasFlag( BlockDelimiterSegment::IGNORED ) )
+                if( !(startPoints.empty() ) && ignored == startPoints.back().hasFlag( BlockDelimiterSegment::Ignored ) )
                 {
                     // if block is both begin and end, only the begin flag is to be drawn.
-                    if( delimiter.begin( isCommented ) ) startPoints.back().setFlag( BlockDelimiterSegment::BEGIN_ONLY, true );
+                    if( delimiter.begin( isCommented ) ) startPoints.back().setFlag( BlockDelimiterSegment::BeginOnly, true );
 
                     // store new segment
                     segments_ << startPoints.back().setEnd( blockEnd );
                 }
 
                 // pop
-                for( int i = 0; i < delimiter.end( isCommented ) && !startPoints.empty() && ignored == startPoints.back().hasFlag( BlockDelimiterSegment::IGNORED ); i++ )
+                for( int i = 0; i < delimiter.end( isCommented ) && !startPoints.empty() && ignored == startPoints.back().hasFlag( BlockDelimiterSegment::Ignored ); i++ )
                 { startPoints.removeLast(); }
 
             }
@@ -658,9 +658,9 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
             {
 
                 // prepare segment flags
-                unsigned int flags( BlockDelimiterSegment::NONE );
-                if( ignored ) flags |= BlockDelimiterSegment::IGNORED;
-                if( collapsed ) flags |= BlockDelimiterSegment::COLLAPSED;
+                BlockDelimiterSegment::Flags flags( BlockDelimiterSegment::None );
+                if( ignored ) flags |= BlockDelimiterSegment::Ignored;
+                if( collapsed ) flags |= BlockDelimiterSegment::Collapsed;
 
                 // if block is collapsed, skip one start point (which is self contained)
                 for( int i = 0; i < delimiter.begin( isCommented ); i++ )
@@ -845,7 +845,7 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
 
     // mark contents dirty to force update of current block
     data->setFlag( TextBlock::MODIFIED, true );
-    data->setFlag( TextBlock::COLLAPSED, false );
+    data->setFlag( TextBlock::Collapsed, false );
 
     _editor().document()->markContentsDirty(block.position(), block.length()-1);
 
@@ -909,7 +909,7 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& firstBlock, const QText
 
     // mark contents dirty to force update of current block
     data->setFlag( TextBlock::MODIFIED, true );
-    data->setFlag( TextBlock::COLLAPSED, true );
+    data->setFlag( TextBlock::Collapsed, true );
 
     // start edition
     cursor.beginEditBlock();

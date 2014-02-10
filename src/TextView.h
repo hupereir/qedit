@@ -32,7 +32,7 @@
 #include <QTimer>
 
 //! handles multiple views
-class TextView: public QWidget, public Counter, public BASE::Key
+class TextView: public QWidget, public Counter, public Base::Key
 {
 
     //! Qt meta object declaration
@@ -59,11 +59,11 @@ class TextView: public QWidget, public Counter, public BASE::Key
 
     //! true if has associated displays
     bool hasDisplays( void ) const
-    { return !BASE::KeySet<TextDisplay>( this ).isEmpty(); }
+    { return !Base::KeySet<TextDisplay>( this ).isEmpty(); }
 
     //! return number of displays
     int displayCount( void ) const
-    { return BASE::KeySet<TextDisplay>( this ).count(); }
+    { return Base::KeySet<TextDisplay>( this ).count(); }
 
     //! return number of independant displays
     int independentDisplayCount( void ) const;

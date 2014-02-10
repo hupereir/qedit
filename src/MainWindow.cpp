@@ -187,7 +187,7 @@ TextView& MainWindow::newTextView( FileRecord record )
 
     // create new view and add to this file
     TextView* view = new TextView( this );
-    BASE::Key::associate( this, view );
+    Base::Key::associate( this, view );
 
     // connections
     _connectView( *view );
@@ -240,11 +240,11 @@ void MainWindow::setActiveView( TextView& view )
 
 
 //_____________________________________________________________________
-BASE::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
+Base::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
 {
-    BASE::KeySet<TextDisplay> displays;
-    foreach( TextView* view, BASE::KeySet<TextView>( this ) )
-    { displays.unite( BASE::KeySet<TextDisplay>(view) ); }
+    Base::KeySet<TextDisplay> displays;
+    foreach( TextView* view, Base::KeySet<TextView>( this ) )
+    { displays.unite( Base::KeySet<TextDisplay>(view) ); }
 
     return displays;
 }
@@ -256,13 +256,13 @@ bool MainWindow::selectDisplay( const File& file )
     Debug::Throw() << "MainWindow::selectDisplay - file: " << file << endl;
 
     Debug::Throw() << "MainWindow::selectDisplay - active view: " << activeView().key() << endl;
-    Debug::Throw() << "MainWindow::selectDisplay - active view displays: " << BASE::KeySet<TextDisplay>( &activeView() ).count() << endl;
+    Debug::Throw() << "MainWindow::selectDisplay - active view displays: " << Base::KeySet<TextDisplay>( &activeView() ).count() << endl;
 
 
     // do nothing if already selected
     if( !activeView().isClosed() && activeView().activeDisplay().file() == file ) return true;
 
-    foreach( TextView* view, BASE::KeySet<TextView>( this ) )
+    foreach( TextView* view, Base::KeySet<TextView>( this ) )
     {
 
         if( !view->isClosed() && view->selectDisplay( file ) )
@@ -282,7 +282,7 @@ bool MainWindow::selectDisplay( const File& file )
 void MainWindow::saveAll( void )
 {
     Debug::Throw( "MainWindow::saveAll.\n" );
-    foreach( TextView* view, BASE::KeySet<TextView>( this ) )
+    foreach( TextView* view, Base::KeySet<TextView>( this ) )
     { view->saveAll(); }
 }
 
@@ -290,7 +290,7 @@ void MainWindow::saveAll( void )
 void MainWindow::ignoreAll( void )
 {
     Debug::Throw( "MainWindow::ignoreAll.\n" );
-    foreach( TextView* view, BASE::KeySet<TextView>( this ) )
+    foreach( TextView* view, Base::KeySet<TextView>( this ) )
     { view->ignoreAll(); }
 }
 
@@ -533,19 +533,19 @@ void MainWindow::closeEvent( QCloseEvent* event )
 
     // loop over TextViews
     unsigned int modifiedDisplays(0);
-    BASE::KeySet<TextDisplay> displays;
-    foreach( TextView* view, BASE::KeySet<TextView>( this ) )
+    Base::KeySet<TextDisplay> displays;
+    foreach( TextView* view, Base::KeySet<TextView>( this ) )
     {
 
         // update the number of modified displays
         modifiedDisplays += view->modifiedDisplayCount();
 
         // store associated textDisplays in main set
-        displays.unite( BASE::KeySet<TextDisplay>( view ) );
+        displays.unite( Base::KeySet<TextDisplay>( view ) );
 
     }
 
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
+    for( Base::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
 
         // get local reference to display
@@ -555,7 +555,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
         if( !display.document()->isModified() ) continue;
 
         // this trick allow to run  only once per set of associated displays
-        if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( &display ) ) != iter ) continue;
+        if( std::find_if( displays.begin(), iter, Base::Key::IsAssociatedFTor( &display ) ) != iter ) continue;
 
         // ask for save
         int state( display.askForSave( modifiedDisplays > 1 ) );
@@ -751,7 +751,7 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
     {
         Debug::Throw() << "MainWindow::_update - display count." << endl;
         int displayCount = activeView().independentDisplayCount();
-        int viewCount = BASE::KeySet<TextView>( this ).size();
+        int viewCount = Base::KeySet<TextView>( this ).size();
 
         // update detach action
         detachAction_->setEnabled( displayCount > 1 || viewCount > 1 );
@@ -807,7 +807,7 @@ void MainWindow::_replaceTransitionWidget( void )
     Debug::Throw( "MainWindow::_replaceTransitionWidget.\n" );
 
     transitionWidget_ = new TransitionWidget( this );
-    transitionWidget_->setFlag( TransitionWidget::FROM_PARENT, false );
+    transitionWidget_->setFlag( TransitionWidget::FromParent, false );
     transitionWidget_->hide();
     connect( transitionWidget_, SIGNAL(destroyed()), SLOT(_replaceTransitionWidget()) );
     connect( &transitionWidget_->timeLine(), SIGNAL(finished()), SLOT(_animationFinished()) );
@@ -931,7 +931,7 @@ void MainWindow::_installActions( void )
     connect( spellcheckAction_, SIGNAL(triggered()), SLOT(_spellcheck()) );
 
     // disable action if there is no dictionary
-    spellcheckAction_->setEnabled( !SPELLCHECK::SpellInterface().dictionaries().empty() );
+    spellcheckAction_->setEnabled( !SpellCheck::SpellInterface().dictionaries().empty() );
     #else
     spellcheckAction_->setVisible( false );
     #endif

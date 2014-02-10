@@ -799,10 +799,10 @@ class TextDisplay: public AnimatedTextEditor
     #if WITH_ASPELL
 
     //! spellcheck dictionary selection menu
-    SPELLCHECK::DictionaryMenu* dictionaryMenu_;
+    SpellCheck::DictionaryMenu* dictionaryMenu_;
 
     //! spellcheck filter selection menu
-    SPELLCHECK::FilterMenu* filterMenu_;
+    SpellCheck::FilterMenu* filterMenu_;
 
     #endif
 

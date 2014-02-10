@@ -32,16 +32,16 @@ QString HighlightPattern::noParentPattern_( "None" );
 HighlightPattern::HighlightPattern( const QDomElement& element ):
     Counter( "HighlightPattern" ),
     id_( 0 ),
-    type_( UNDEFINED ),
+    type_( Undefined ),
     name_( "default" ),
     parent_( "" ),
     parentId_( 0 ),
     style_( HighlightStyle() ),
-    flags_( NONE )
+    flags_( None )
 {
     Debug::Throw( "HighlightPattern::HighlightPattern.\n" );
-    if( element.tagName() == XML::KEYWORD_PATTERN ) setType( KEYWORD_PATTERN );
-    if( element.tagName() == XML::RANGE_PATTERN ) setType( RANGE_PATTERN );
+    if( element.tagName() == XML::KeywordPattern ) setType( KeywordPattern );
+    if( element.tagName() == XML::RangePattern ) setType( RangePattern );
 
     QDomNamedNodeMap attributes( element.attributes() );
     for( unsigned int i=0; i<attributes.length(); i++ )
@@ -55,10 +55,10 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
 
         else if( attribute.name() == XML::OPTIONS )
         {
-            if( attribute.value().indexOf( XML::OPTION_SPAN, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( SPAN, true );
-            if( attribute.value().indexOf( XML::OPTION_NO_INDENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( NO_INDENT, true );
-            if( attribute.value().indexOf( XML::OPTION_NO_CASE, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CASE_INSENSITIVE, true );
-            if( attribute.value().indexOf( XML::OPTION_COMMENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( COMMENT, true );
+            if( attribute.value().indexOf( XML::OPTION_SPAN, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( Span, true );
+            if( attribute.value().indexOf( XML::OPTION_NO_INDENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( NoIndent, true );
+            if( attribute.value().indexOf( XML::OPTION_NO_CASE, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CaseInsensitive, true );
+            if( attribute.value().indexOf( XML::OPTION_COMMENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( Comment, true );
 
         }
 
@@ -89,10 +89,10 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
 
     // options:
     QString options;
-    if( hasFlag( SPAN ) ) options += XML::OPTION_SPAN + " ";
-    if( hasFlag( NO_INDENT ) ) options += XML::OPTION_NO_INDENT + " ";
-    if( hasFlag( CASE_INSENSITIVE ) ) options += XML::OPTION_NO_CASE + " ";
-    if( hasFlag( COMMENT ) ) options += XML::OPTION_COMMENT + " ";
+    if( hasFlag( Span ) ) options += XML::OPTION_SPAN + " ";
+    if( hasFlag( NoIndent ) ) options += XML::OPTION_NO_INDENT + " ";
+    if( hasFlag( CaseInsensitive ) ) options += XML::OPTION_NO_CASE + " ";
+    if( hasFlag( Comment ) ) options += XML::OPTION_COMMENT + " ";
     if( !options.isEmpty() ) out.setAttribute( XML::OPTIONS, options );
 
     // comments
@@ -101,14 +101,14 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
         appendChild( parent.createTextNode( XmlString( comments() ).toXml() ) );
 
     // regexps
-    if( type() == KEYWORD_PATTERN )
+    if( type() == KeywordPattern )
     {
         out.
             appendChild( parent.createElement( XML::KEYWORD ) ).
             appendChild( parent.createTextNode( XmlString( keyword().pattern() ).toXml() ) );
     }
 
-    if( type() == RANGE_PATTERN )
+    if( type() == RangePattern )
     {
         out.
             appendChild( parent.createElement( XML::BEGIN ) ).
@@ -131,7 +131,7 @@ bool HighlightPattern::operator ==( const HighlightPattern& other ) const
         parent() == other.parent() &&
         style() == other.style() &&
         keyword() == other.keyword() &&
-        ( type() != RANGE_PATTERN || end() == other.end() );
+        ( type() != RangePattern || end() == other.end() );
 }
 
 //____________________________________________________________
@@ -140,8 +140,8 @@ QString HighlightPattern::typeName( const Type& type )
     switch( type )
     {
         default:
-        case KEYWORD_PATTERN: return XML::KEYWORD_PATTERN;
-        case RANGE_PATTERN: return XML::RANGE_PATTERN;
+        case KeywordPattern: return XML::KeywordPattern;
+        case RangePattern: return XML::RangePattern;
     }
 }
 
@@ -187,7 +187,7 @@ bool HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
 
     // check if pattern spans over paragraphs
     // and was active in previous paragraph
-    if( hasFlag( SPAN ) && active )
+    if( hasFlag( Span ) && active )
     {
 
         // if active, look for end match
@@ -238,7 +238,7 @@ bool HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
 
         if( end < 0 )
         {
-            if( hasFlag( SPAN ) )
+            if( hasFlag( Span ) )
             {
                 // no end found.
                 // Pattern will still be active in next paragraph

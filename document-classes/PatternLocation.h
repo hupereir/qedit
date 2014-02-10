@@ -140,7 +140,7 @@ class PatternLocation: public Counter
     //@{
 
     //! format
-    FORMAT::TextFormatFlags fontFormat( void ) const
+    Format::TextFormatFlags fontFormat( void ) const
     { return format_; }
 
     //! color
@@ -164,7 +164,7 @@ class PatternLocation: public Counter
     HighlightPattern::Flags flags_;
 
     //! style font format
-    FORMAT::TextFormatFlags format_;
+    Format::TextFormatFlags format_;
 
     //! style color
     QColor color_;

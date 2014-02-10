@@ -75,8 +75,8 @@ void TextView::setIsNewDocument( void )
     Debug::Throw( "TextView::setIsNewDocument.\n" );
 
     // look for first empty display
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
+    Base::KeySet<TextDisplay> displays( this );
+    Base::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
     if( iter == displays.end() )
     {
         Debug::Throw(0) << "TextView::setIsNewDocument - invalid display" << endl;
@@ -108,8 +108,8 @@ void TextView::setFile( File file )
     }
 
     // look for first empty display
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
+    Base::KeySet<TextDisplay> displays( this );
+    Base::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
     if( iter == displays.end() )
     {
         Debug::Throw(0) << "TextView::setFile - invalid display" << endl;
@@ -133,9 +133,9 @@ void TextView::setFile( File file )
 int TextView::independentDisplayCount( void ) const
 {
     int out( 0 );
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
-    { if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) out++; }
+    Base::KeySet<TextDisplay> displays( this );
+    for( Base::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
+    { if( std::find_if( displays.begin(), iter, Base::Key::IsAssociatedFTor( *iter ) ) == iter ) out++; }
 
     return out;
 }
@@ -145,13 +145,13 @@ int TextView::modifiedDisplayCount( void ) const
 {
 
     int out( 0 );
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
+    Base::KeySet<TextDisplay> displays( this );
+    for( Base::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
         // increment if no associated display is found in the already processed displays
         // and if current is modified
         if(
-            std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter &&
+            std::find_if( displays.begin(), iter, Base::Key::IsAssociatedFTor( *iter ) ) == iter &&
             (*iter)->document()->isModified() )
         { out++; }
     }
@@ -169,8 +169,8 @@ bool TextView::selectDisplay( const File& file )
     // check if active display match.
     if( TextDisplay::SameFileFTor( file )( &activeDisplay() ) ) return true;
 
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator iter( std::find_if(
+    Base::KeySet<TextDisplay> displays( this );
+    Base::KeySet<TextDisplay>::iterator iter( std::find_if(
         displays.begin(),
         displays.end(),
         TextDisplay::SameFileFTor( file ) ) );
@@ -211,7 +211,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
     if( !activeDisplay().isActive() )
     {
 
-        BASE::KeySet<TextDisplay> displays( this );
+        Base::KeySet<TextDisplay> displays( this );
         displays.remove( &activeDisplay() );
         foreach( TextDisplay* display, displays )
         { display->setActive( false ); }
@@ -231,7 +231,7 @@ void TextView::closeDisplay( TextDisplay& display )
     // check if display is modified and has no associates in window
     if(
         display.document()->isModified() &&
-        BASE::KeySet<TextDisplay>( &display ).empty() &&
+        Base::KeySet<TextDisplay>( &display ).empty() &&
         display.askForSave() ==  AskForSaveDialog::Cancel ) return;
 
     // retrieve parent and grandparent of current display
@@ -239,7 +239,7 @@ void TextView::closeDisplay( TextDisplay& display )
     QSplitter* parentSplitter( qobject_cast<QSplitter*>( parent ) );
 
     // retrieve displays associated to current
-    BASE::KeySet<TextDisplay> displays( &display );
+    Base::KeySet<TextDisplay> displays( &display );
 
     // check if display is a new document
     // remove its filename from server if needed
@@ -299,8 +299,8 @@ void TextView::closeDisplay( TextDisplay& display )
     }
 
     // if no associated displays, retrieve all, set the first as active
-    if( displays.empty() ) displays = BASE::KeySet<TextDisplay>( this );
-    BASE::KeySetIterator<TextDisplay> iterator( displays );
+    if( displays.empty() ) displays = Base::KeySet<TextDisplay>( this );
+    Base::KeySetIterator<TextDisplay> iterator( displays );
     iterator.toBack();
     while( iterator.hasPrevious() )
     {
@@ -360,7 +360,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
         if there exists no clone of active display,
         backup text and register a new Sync object
         */
-        BASE::KeySet<TextDisplay> displays( &activeDisplayLocal );
+        Base::KeySet<TextDisplay> displays( &activeDisplayLocal );
 
         // clone new display
         display.synchronize( &activeDisplayLocal );
@@ -368,15 +368,15 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const b
         // perform associations
         // check if active displays has associates and propagate to new
         foreach( TextDisplay* iter, displays )
-        { BASE::Key::associate( &display, iter ); }
+        { Base::Key::associate( &display, iter ); }
 
         // associate this display to AutoSave threads
-        BASE::KeySet<AutoSaveThread> threads( &activeDisplayLocal );
+        Base::KeySet<AutoSaveThread> threads( &activeDisplayLocal );
         foreach( AutoSaveThread* thread, threads )
-        { BASE::Key::associate( &display, thread ); }
+        { Base::Key::associate( &display, thread ); }
 
         // associate new display to active
-        BASE::Key::associate( &display, &activeDisplayLocal );
+        Base::Key::associate( &display, &activeDisplayLocal );
 
     } else {
 
@@ -396,7 +396,7 @@ void TextView::saveAll( void )
     Debug::Throw( "TextView::saveAll.\n" );
 
     // retrieve all displays
-    foreach( TextDisplay* display, BASE::KeySet<TextDisplay>( this ) )
+    foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
     { if( display->document()->isModified() ) display->save(); }
 
     return;
@@ -410,7 +410,7 @@ void TextView::ignoreAll( void )
     Debug::Throw( "TextView::ignoreAll.\n" );
 
     // retrieve all displays
-    foreach( TextDisplay* display, BASE::KeySet<TextDisplay>( this ) )
+    foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
     { display->setModified( false ); }
 
     return;
@@ -423,11 +423,11 @@ void TextView::rehighlight( void )
     Debug::Throw( "TextView::rehighlight.\n" );
 
     // retrieve associated TextDisplay
-    BASE::KeySet<TextDisplay> displays( this );
-    for( BASE::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
+    Base::KeySet<TextDisplay> displays( this );
+    for( Base::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
     {
         // this trick allow to run the rehighlight only once per set of associated displays
-        if( std::find_if( displays.begin(), iter, BASE::Key::IsAssociatedFTor( *iter ) ) == iter ) (*iter)->rehighlight();
+        if( std::find_if( displays.begin(), iter, Base::Key::IsAssociatedFTor( *iter ) ) == iter ) (*iter)->rehighlight();
     }
 
     return;
@@ -442,14 +442,14 @@ void TextView::checkDisplayModifications( TextEditor* editor )
     // convert to TextDisplay
     TextDisplay& display( *static_cast<TextDisplay*>( editor ) );
 
-    BASE::KeySet<TextDisplay>  deadDisplays;
+    Base::KeySet<TextDisplay>  deadDisplays;
 
     // check file
     if( display.checkFileRemoved() == FileRemovedDialog::CLOSE )
     {
 
         // register displays as dead
-        BASE::KeySet<TextDisplay> associatedDisplays( &display );
+        Base::KeySet<TextDisplay> associatedDisplays( &display );
         foreach( TextDisplay* displayIter, associatedDisplays )
         { deadDisplays.insert( displayIter ); }
 
@@ -508,8 +508,8 @@ void TextView::diff( void )
 
     // retrieve displays associated to window
     // look for the first one that is not associated to the active display
-    BASE::KeySet<TextDisplay> displays( this );
-    BASE::KeySet<TextDisplay>::iterator iter = displays.begin();
+    Base::KeySet<TextDisplay> displays( this );
+    Base::KeySet<TextDisplay>::iterator iter = displays.begin();
     for(; iter != displays.end(); ++iter )
     {
         if( !( *iter == &first || (*iter)->isAssociated( &first ) ) )
@@ -543,7 +543,7 @@ void TextView::_checkDisplays( void )
 {
 
     Debug::Throw() << "TextView::_checkDisplays - key: " << key() << endl;
-    BASE::KeySet<TextDisplay> displays( this );
+    Base::KeySet<TextDisplay> displays( this );
     if( displays.empty() )
     {
         Debug::Throw() << "TextView::_checkDisplays - closing" << endl;
@@ -709,7 +709,7 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     connect( &display->replaceAction(), SIGNAL(triggered()), &window, SLOT(replaceFromDialog()) );
 
     // associate display to this editFrame
-    BASE::Key::associate( this, display );
+    Base::Key::associate( this, display );
 
     // update current display and focus
     setActiveDisplay( *display );

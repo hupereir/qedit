@@ -140,8 +140,8 @@ TextDisplay::TextDisplay( QWidget* parent ):
     #if WITH_ASPELL
 
     // install menus
-    filterMenu_ = new SPELLCHECK::FilterMenu( this );
-    dictionaryMenu_ = new SPELLCHECK::DictionaryMenu( this );
+    filterMenu_ = new SpellCheck::FilterMenu( this );
+    dictionaryMenu_ = new SpellCheck::DictionaryMenu( this );
 
     #endif
 
@@ -172,7 +172,7 @@ TextDisplay::~TextDisplay( void )
 {
 
     Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl;
-    if( !( isNewDocument() || file().isEmpty() ) && BASE::KeySet<TextDisplay>( this ).empty() )
+    if( !( isNewDocument() || file().isEmpty() ) && Base::KeySet<TextDisplay>( this ).empty() )
     { Singleton::get().application<Application>()->fileCheck().removeFile( file() ); }
 
 }
@@ -351,7 +351,7 @@ void TextDisplay::setIsNewDocument( void )
     Debug::Throw() << "TextDisplay::setIsNewDocument - file: " << file << endl;
 
     // retrieve display and associated
-    BASE::KeySet<TextDisplay> displays( this );
+    Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
     foreach( TextDisplay* display, displays )
     {
@@ -423,7 +423,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
 
     // retrieve display and associated, update document class
     // this is needed to avoid highlight glitch when oppening file
-    BASE::KeySet<TextDisplay> displays( this );
+    Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
     foreach( TextDisplay* display, displays )
     {
@@ -526,7 +526,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
         case FileRemovedDialog::IGNORE:
         case FileRemovedDialog::CLOSE:
         {
-            BASE::KeySet<TextDisplay> displays( this );
+            Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );
             foreach( TextDisplay* display, displays )
             {
@@ -582,7 +582,7 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
 
         case FileModifiedDialog::IGNORE:
         {
-            BASE::KeySet<TextDisplay> displays( this );
+            Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );
             foreach( TextDisplay* display, displays )
             { display->_setIgnoreWarnings( true ); }
@@ -612,7 +612,7 @@ void TextDisplay::clearFileCheckData( void )
     if( fileCheckData().flag() == FileCheck::Data::NONE ) return;
 
     // clear file check data
-    BASE::KeySet<TextDisplay> displays( this );
+    Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
     foreach( TextDisplay* display, displays )
     { display->setFileCheckData( FileCheck::Data() ); }
@@ -728,7 +728,7 @@ void TextDisplay::save( void )
 
 
     // retrieve associated displays, update saved time
-    foreach( TextDisplay* display, BASE::KeySet<TextDisplay>( this ) )
+    foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
     { display->_setLastSaved( file().lastModified() ); }
 
     // add file to menu
@@ -774,7 +774,7 @@ void TextDisplay::saveAs( void )
     // matching the new filename to get loaded
     setClassName( "" );
 
-    BASE::KeySet<TextDisplay> displays( this );
+    Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
     foreach( TextDisplay* display, displays )
     {
@@ -1205,7 +1205,7 @@ void TextDisplay::clearAllTags( const int& flags )
 
     // get associated displays and update all
     // this is needed due to the setUpdatesEnabled above
-    BASE::KeySet<TextDisplay> displays( this );
+    Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
     foreach( TextDisplay* display, displays )
     { display->viewport()->update(); }
@@ -1219,7 +1219,7 @@ void TextDisplay::selectFilter( const QString& filter )
 
     #if WITH_ASPELL
     // local reference to interface
-    SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
+    SpellCheck::SpellInterface& interface( textHighlight().spellParser().interface() );
 
     if( filter == interface.filter() || !interface.hasFilter( filter ) ) return;
 
@@ -1248,7 +1248,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
 
     #if WITH_ASPELL
     // local reference to interface
-    SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
+    SpellCheck::SpellInterface& interface( textHighlight().spellParser().interface() );
 
     if( dictionary == interface.dictionary() || !interface.hasDictionary( dictionary ) ) return;
 
@@ -1278,7 +1278,7 @@ void TextDisplay::selectClassName( QString name )
 
     // retrieve all displays matching active
     // and update class name
-    BASE::KeySet<TextDisplay> displays( this );
+    Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
     foreach( TextDisplay* display, displays )
     {
@@ -1410,7 +1410,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
     if( !data ) return false;
 
     // try retrieve misspelled word
-    SPELLCHECK::Word word( data->misspelledWord( cursor.position() - block.position() ) );
+    SpellCheck::Word word( data->misspelledWord( cursor.position() - block.position() ) );
     if( word.isEmpty() || textHighlight().spellParser().interface().isWordIgnored( word ) )
     { return false; }
 
@@ -1420,7 +1420,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
     setTextCursor( cursor );
 
     // create suggestion menu
-    SPELLCHECK::SuggestionMenu menu( this, word, isReadOnly() );
+    SpellCheck::SuggestionMenu menu( this, word, isReadOnly() );
     menu.interface().setFilter( textHighlight().spellParser().interface().filter() );
     menu.interface().setDictionary( textHighlight().spellParser().interface().dictionary() );
 
@@ -1823,7 +1823,7 @@ void TextDisplay::_updateConfiguration( void )
     textHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
 
     // parenthesis highlight
-    textHighlight().setParenthesisHighlightColor( XmlOptions::get().get<BASE::Color>( "PARENTHESIS_COLOR" ) );
+    textHighlight().setParenthesisHighlightColor( XmlOptions::get().get<Base::Color>( "PARENTHESIS_COLOR" ) );
     parenthesisHighlightAction().setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
 
     // block delimiters, line numbers and margin
@@ -1845,9 +1845,9 @@ void TextDisplay::_updateConfiguration( void )
     textEncodingMenu_->select( textEncoding_ );
 
     // retrieve diff colors
-    diffConflictColor_ = XmlOptions::get().get<BASE::Color>( "DIFF_CONFLICT_COLOR" );
-    diffAddedColor_ = XmlOptions::get().get<BASE::Color>( "DIFF_ADDED_COLOR" );
-    userTagColor_ = XmlOptions::get().get<BASE::Color>( "TAGGED_BLOCK_COLOR" );
+    diffConflictColor_ = XmlOptions::get().get<Base::Color>( "DIFF_CONFLICT_COLOR" );
+    diffAddedColor_ = XmlOptions::get().get<Base::Color>( "DIFF_ADDED_COLOR" );
+    userTagColor_ = XmlOptions::get().get<Base::Color>( "TAGGED_BLOCK_COLOR" );
 
     // update paragraph tags
     _updateTaggedBlocks();
@@ -1864,8 +1864,8 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
 
     // spellcheck configuration
     bool changed( false );
-    changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<BASE::Color>("AUTOSPELL_COLOR") ) );
-    changed |= textHighlight().spellParser().setFontFormat( (FORMAT::TextFormatFlags) XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
+    changed |= textHighlight().spellParser().setColor( QColor( XmlOptions::get().get<Base::Color>("AUTOSPELL_COLOR") ) );
+    changed |= textHighlight().spellParser().setFontFormat( (Format::TextFormatFlags) XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
     textHighlight().updateSpellPattern();
     autoSpellAction().setEnabled( textHighlight().spellParser().color().isValid() );
 
@@ -1874,7 +1874,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
     filterMenu_->reset();
 
     // store local reference to spell interface
-    SPELLCHECK::SpellInterface& interface( textHighlight().spellParser().interface() );
+    SpellCheck::SpellInterface& interface( textHighlight().spellParser().interface() );
 
     // load default filter and dictionaries
     QString filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
@@ -1946,7 +1946,7 @@ void TextDisplay::_toggleTextIndent( bool state )
         // to avoid infinite loop
         setSynchronized( false );
 
-        foreach( TextDisplay* display, BASE::KeySet<TextDisplay>( this ) )
+        foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
         { if( display->isSynchronized() ) display->textIndentAction().setChecked( state ); }
         setSynchronized( true );
 
@@ -1970,7 +1970,7 @@ void TextDisplay::_toggleTextHighlight( bool state )
         // to avoid infinite loop
         setSynchronized( false );
 
-        foreach( TextDisplay* display, BASE::KeySet<TextDisplay>( this ) )
+        foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
         { if( display->isSynchronized() ) display->textHighlightAction().setChecked( state ); }
 
         setSynchronized( true );
@@ -2007,7 +2007,7 @@ void TextDisplay::_toggleParenthesisHighlight( bool state )
         // to avoid infinite loop
         setSynchronized( false );
 
-        foreach( TextDisplay* display, BASE::KeySet<TextDisplay>( this ) )
+        foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
         { if( display->isSynchronized() ) display->parenthesisHighlightAction().setChecked( state ); }
         setSynchronized( true );
 
@@ -2037,7 +2037,7 @@ void TextDisplay::_toggleAutoSpell( bool state )
         // to avoid infinite loop
         setSynchronized( false );
 
-        foreach( TextDisplay* display, BASE::KeySet<TextDisplay>( this ) )
+        foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
         { if( display->isSynchronized() ) display->autoSpellAction().setChecked( state ); }
         setSynchronized( true );
 
@@ -2070,7 +2070,7 @@ void TextDisplay::_toggleShowBlockDelimiters( bool state )
         // to avoid infinite loop
         setSynchronized( false );
 
-        foreach( TextDisplay* display, BASE::KeySet<TextDisplay>( this ) )
+        foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
         { if( display->isSynchronized() ) display->showBlockDelimiterAction().setChecked( state ); }
         setSynchronized( true );
 
@@ -2096,7 +2096,7 @@ void TextDisplay::_spellcheck( void )
 
     #if WITH_ASPELL
     // create dialog
-    SPELLCHECK::SpellDialog dialog( this );
+    SpellCheck::SpellDialog dialog( this );
     dialog.interface().setIgnoredWords( textHighlight().spellParser().interface().ignoredWords() );
 
     // default dictionary from XmlOptions
@@ -2529,7 +2529,7 @@ void TextDisplay::_highlightParenthesis( void )
             QString text( block.text() );
 
             // append collapsed data if any
-            if( data && data->hasFlag( TextBlock::COLLAPSED ) )
+            if( data && data->hasFlag( TextBlock::Collapsed ) )
             {
 
                 QTextBlockFormat blockFormat( block.blockFormat() );
@@ -2597,7 +2597,7 @@ void TextDisplay::_highlightParenthesis( void )
             QString text( block.text() );
 
             // append collapsed data if any
-            if( data && data->hasFlag( TextBlock::COLLAPSED ) )
+            if( data && data->hasFlag( TextBlock::Collapsed ) )
             {
 
                 QTextBlockFormat blockFormat( block.blockFormat() );

@@ -88,7 +88,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
             const HighlightStyle highlightStyle( childElement );
             highlightStyles_.insert( highlightStyle );
 
-        } else if( childElement.tagName() == XML::KEYWORD_PATTERN || childElement.tagName() == XML::RANGE_PATTERN ) {
+        } else if( childElement.tagName() == XML::KeywordPattern || childElement.tagName() == XML::RangePattern ) {
 
             HighlightPattern pattern( childElement );
             if( pattern.isValid() ) highlightPatterns_ << pattern;
@@ -114,7 +114,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
             TextMacro macro( childElement );
             if( macro.isValid() ) textMacros_ << macro;
 
-        } else if( childElement.tagName() == BASE::XML::OPTION ) {
+        } else if( childElement.tagName() == Base::XML::OPTION ) {
 
             XmlOption option( childElement );
             if( option.name() == XML::OPTION_WRAP ) wrap_ = option.get<bool>();

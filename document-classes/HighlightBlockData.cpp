@@ -34,12 +34,12 @@ HighlightBlockData::HighlightBlockData( void ):
 #if WITH_ASPELL
 
 //____________________________________________________________
-SPELLCHECK::Word HighlightBlockData::misspelledWord( const int& position ) const
+SpellCheck::Word HighlightBlockData::misspelledWord( const int& position ) const
 {
 
     Debug::Throw( "HighlightBlockData::misspelledWord.\n" );
-    SPELLCHECK::Word::Set::const_iterator iter = std::find_if( words_.begin(), words_.end(), SPELLCHECK::Word::AtPositionFTor( position ) );
-    return (iter == words_.end()) ? SPELLCHECK::Word():*iter;
+    SpellCheck::Word::Set::const_iterator iter = std::find_if( words_.begin(), words_.end(), SpellCheck::Word::AtPositionFTor( position ) );
+    return (iter == words_.end()) ? SpellCheck::Word():*iter;
 
 }
 

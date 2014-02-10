@@ -96,7 +96,7 @@ void TextHighlight::highlightBlock( const QString& text )
 
         // store active id
         /* this is disabled when current block is collapsed */
-        if( !data->hasFlag( TextBlock::COLLAPSED ) ) setCurrentBlockState( locations.activeId().second );
+        if( !data->hasFlag( TextBlock::Collapsed ) ) setCurrentBlockState( locations.activeId().second );
         else setCurrentBlockState( 0 );
 
     }
@@ -329,8 +329,8 @@ PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, H
     #if WITH_ASPELL
 
     // insert highlight
-    const SPELLCHECK::Word::Set& words( spellParser().parse( text ) );
-    for( SPELLCHECK::Word::Set::const_iterator iter = words.begin(); iter != words.end(); ++iter )
+    const SpellCheck::Word::Set& words( spellParser().parse( text ) );
+    for( SpellCheck::Word::Set::const_iterator iter = words.begin(); iter != words.end(); ++iter )
     { locations.insert( PatternLocation( spellPattern(), iter->position(), iter->size() ) ); }
 
     // store misspelled words

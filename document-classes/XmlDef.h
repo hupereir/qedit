@@ -52,8 +52,8 @@ namespace XML {
 
     //!@name highlight pattern
     //@{
-    static const QString KEYWORD_PATTERN( "keyword_pattern" );
-    static const QString RANGE_PATTERN( "range_pattern" );
+    static const QString KeywordPattern( "keyword_pattern" );
+    static const QString RangePattern( "range_pattern" );
     static const QString PARENT( "parent" );
     static const QString KEYWORD( "keyword" );
     static const QString BEGIN( "begin" );

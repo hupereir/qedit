@@ -46,7 +46,7 @@ FileCheck::~FileCheck( void )
 void FileCheck::registerDisplay( TextDisplay* display )
 {
     Debug::Throw( "FileCheck::registerDisplay.\n" );
-    if( !isAssociated( display ) ) { BASE::Key::associate( this, display ); }
+    if( !isAssociated( display ) ) { Base::Key::associate( this, display ); }
 }
 
 //______________________________________________________
@@ -113,16 +113,16 @@ void FileCheck::timerEvent( QTimerEvent* event )
         timer_.stop();
         if( data_.empty() ) return;
 
-        BASE::KeySet<TextDisplay> displays( this );
+        Base::KeySet<TextDisplay> displays( this );
         foreach( const Data& data, data_ )
         {
 
-            BASE::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( data.file() ) ) );
+            Base::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( data.file() ) ) );
             if( displayIter != displays.end() )
             {
 
                 // assign to this display and others
-                BASE::KeySet<TextDisplay> associatedDisplays( *displayIter );
+                Base::KeySet<TextDisplay> associatedDisplays( *displayIter );
                 associatedDisplays.insert( *displayIter );
                 foreach( TextDisplay* display, associatedDisplays )
                 {
@@ -136,7 +136,7 @@ void FileCheck::timerEvent( QTimerEvent* event )
                     { continue; }
 
                     // retrieve associated TextView
-                    BASE::KeySet<TextView> views( display );
+                    Base::KeySet<TextView> views( display );
                     if( !views.empty() ) (*views.begin())->checkDisplayModifications( *displayIter );
 
                 }

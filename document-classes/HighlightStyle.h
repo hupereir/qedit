@@ -42,7 +42,7 @@ class HighlightStyle: public Counter
     //! constructor
     HighlightStyle(
         const QString& name = "default",
-        FORMAT::TextFormatFlags format = FORMAT::Default,
+        Format::TextFormatFlags format = Format::Default,
         const QColor& color = Qt::black ):
         Counter( "HighlightStyle" ),
         name_( name ),
@@ -115,11 +115,11 @@ class HighlightStyle: public Counter
     { name_ = name; }
 
     //! format
-    virtual FORMAT::TextFormatFlags fontFormat( void ) const
+    virtual Format::TextFormatFlags fontFormat( void ) const
     { return format_; }
 
     //! format
-    virtual void setFontFormat( FORMAT::TextFormatFlags format )
+    virtual void setFontFormat( Format::TextFormatFlags format )
     { format_ = format; }
 
     //! color
@@ -136,7 +136,7 @@ class HighlightStyle: public Counter
     QString name_;
 
     //! format (bitwise or of TextFormatInfo)
-    FORMAT::TextFormatFlags format_;
+    Format::TextFormatFlags format_;
 
     //! color
     QColor color_;
