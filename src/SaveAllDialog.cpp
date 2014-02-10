@@ -57,8 +57,8 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
 
         // mask
         unsigned int mask(
-            (1<<FileRecordModel::FILE)|
-            (1<<FileRecordModel::PATH ));
+            (1<<FileRecordModel::Filename)|
+            (1<<FileRecordModel::Path ));
         int classColumn( model_.findColumn( "class_name" ) );
         if( classColumn >= 0 ) mask |= (1<<classColumn);
         treeView->setMask( mask );

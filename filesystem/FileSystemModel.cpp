@@ -84,21 +84,21 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
             switch( index.column() )
             {
 
-                case FILE:
+                case Filename:
                 {
                     // store local nmae
                     const FileRecord& record( get(index) );
                     return useLocalNames_ ? record.file().localName(): record.file();
                 }
 
-                case SIZE:
+                case Size:
                 {
                     const FileRecord& record( get(index) );
                     if( record.hasFlag( Document ) ) return QString( record.property( sizePropertyId_ ) );
                     else return QVariant();
                 }
 
-                case TIME:
+                case Time:
                 {
                     const FileRecord& record( get(index) );
                     if( record.hasFlag( Document ) ) return QString( TimeStamp( record.time() ).toString() );
@@ -114,7 +114,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
         }
 
         case Qt::DecorationRole:
-        if( showIcons_ && index.column() == FILE )
+        if( showIcons_ && index.column() == Filename )
         {
 
             const FileRecord& record( get(index) );
@@ -196,7 +196,7 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
     switch( type_ )
     {
 
-        case FILE:
+        case Filename:
         {
             if( first.hasFlag( Navigator ) ) return true;
             if( second.hasFlag( Navigator ) ) return false;
@@ -206,8 +206,8 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
 
         }
 
-        case TIME: return (first.time() != second.time() ) ? first.time() < second.time() : first.file().localName() < second.file().localName();
-        case SIZE:
+        case Time: return (first.time() != second.time() ) ? first.time() < second.time() : first.file().localName() < second.file().localName();
+        case Size:
         {
             long first_size( first.property( sizePropertyId_ ).toInt() );
             long second_size( second.property( sizePropertyId_ ).toInt() );

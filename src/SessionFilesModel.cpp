@@ -75,7 +75,7 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
     // retrieve associated file info
     const FileRecord& record( get(index) );
 
-    if( role == Qt::DecorationRole && index.column() == FILE )
+    if( role == Qt::DecorationRole && index.column() == Filename )
     {
 
         if( record.hasFlag( FileRecordProperties::Modified ) ) return _icon( FileRecordProperties::Modified );

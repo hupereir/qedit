@@ -90,8 +90,8 @@ class WindowServer: public QObject, public Counter, public Base::Key
     enum OpenMode
     {
 
-        ACTIVE_WINDOW,
-        NEW_WINDOW
+        ActiveWindow,
+        NewWindow
 
     };
 
@@ -101,13 +101,13 @@ class WindowServer: public QObject, public Counter, public Base::Key
     //! orientation
     enum OrientationMode
     {
-        NORMAL,
-        DIFF
+        Normal,
+        Diff
     };
 
     //! default orientation
-    const Qt::Orientation& defaultOrientation( const OrientationMode& mode = NORMAL )
-    { return mode == NORMAL ? defaultOrientation_:defaultDiffOrientation_; }
+    const Qt::Orientation& defaultOrientation( const OrientationMode& mode = Normal )
+    { return mode == Normal ? defaultOrientation_:defaultDiffOrientation_; }
 
     Q_SIGNALS:
 
@@ -150,15 +150,15 @@ class WindowServer: public QObject, public Counter, public Base::Key
 
     //! open in new window
     bool _openInNewWindow( FileRecord record )
-    { return _open( record, NEW_WINDOW ); }
+    { return _open( record, NewWindow ); }
 
     //! open in active window
     bool _openInActiveWindow( FileRecord record )
-    { return _open( record, ACTIVE_WINDOW ); }
+    { return _open( record, ActiveWindow ); }
 
     //! open in current tab
     bool _openInActiveView( FileRecord record )
-    { return _open( record, defaultOrientation( NORMAL ) ); }
+    { return _open( record, defaultOrientation( Normal ) ); }
 
     //! open in active view
     bool _openHorizontal( void )
@@ -256,12 +256,12 @@ class WindowServer: public QObject, public Counter, public Base::Key
     {
         switch( mode )
         {
-            case DIFF:
+            case Diff:
             defaultDiffOrientation_ = value;
             break;
 
             default:
-            case NORMAL:
+            case Normal:
             defaultOrientation_ = value;
             break;
         }

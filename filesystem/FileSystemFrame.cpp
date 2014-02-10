@@ -224,7 +224,7 @@ void FileSystemFrame::_processFiles( const File::List& files )
 
     // update list
     list_->updateMask();
-    list_->resizeColumnToContents( FileSystemModel::FILE );
+    list_->resizeColumnToContents( FileSystemModel::Filename );
 
     unsetCursor();
 

@@ -58,7 +58,7 @@ WindowServer::WindowServer( QObject* parent ):
     firstCall_( true ),
     defaultOrientation_( Qt::Horizontal ),
     defaultDiffOrientation_( Qt::Vertical ),
-    openMode_( ACTIVE_WINDOW ),
+    openMode_( ActiveWindow ),
     activeWindow_( 0 )
 {
 
@@ -245,7 +245,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
     bool diff( parser.hasFlag( "--diff" ) );
     if( ( tabbed || diff ) && filenames.size() > 1 )
     {
-        Qt::Orientation orientation( defaultOrientation( diff ? DIFF:NORMAL ) );
+        Qt::Orientation orientation( defaultOrientation( diff ? Diff:Normal ) );
         if( parser.hasOption( "--orientation" ) )
         {
             QString value( parser.option( "--orientation" ) );
@@ -288,8 +288,8 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
         {
 
             OpenMode mode( _openMode() );
-            if( parser.hasFlag( "--same-window" ) ) mode = ACTIVE_WINDOW;
-            else if( parser.hasFlag( "--new-window" ) ) mode = NEW_WINDOW;
+            if( parser.hasFlag( "--same-window" ) ) mode = ActiveWindow;
+            else if( parser.hasFlag( "--new-window" ) ) mode = NewWindow;
 
             bool opened = _open( File( filename ).expand(), mode );
             if( opened ) { _applyCommandLineArguments( _activeWindow().activeDisplay(), parser ); }
@@ -402,8 +402,8 @@ void WindowServer::_updateConfiguration( void )
 
     Debug::Throw( "WindowServer::_updateConfiguration.\n" );
     _setOpenMode( (OpenMode) XmlOptions::get().get<int>( "OPEN_MODE" ) );
-    _setDefaultOrientation( NORMAL, (Qt::Orientation) XmlOptions::get().get<int>( "ORIENTATION" ) );
-    _setDefaultOrientation( DIFF, (Qt::Orientation) XmlOptions::get().get<int>( "DIFF_ORIENTATION" ) );
+    _setDefaultOrientation( Normal, (Qt::Orientation) XmlOptions::get().get<int>( "ORIENTATION" ) );
+    _setDefaultOrientation( Diff, (Qt::Orientation) XmlOptions::get().get<int>( "DIFF_ORIENTATION" ) );
 
 }
 
@@ -459,7 +459,7 @@ void WindowServer::_newFile( WindowServer::OpenMode mode )
     // if no window found, create a new one
     if( !view ) {
 
-        if( mode == NEW_WINDOW )
+        if( mode == NewWindow )
         {
 
             MainWindow &window( newMainWindow() );
@@ -570,7 +570,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     // if no window found, create a new one
     if( !view ) {
 
-        if( mode == NEW_WINDOW )
+        if( mode == NewWindow )
         {
 
             MainWindow &window( newMainWindow() );
@@ -801,7 +801,7 @@ void WindowServer::_reparent( const File& first, const File& second )
 
     // create new display in text view
     view.selectDisplay( second );
-    TextDisplay& newDisplay = view.splitDisplay( defaultOrientation( NORMAL ), false );
+    TextDisplay& newDisplay = view.splitDisplay( defaultOrientation( Normal ), false );
     newDisplay.synchronize( &firstDisplay );
 
     // close display

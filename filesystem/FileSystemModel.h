@@ -59,9 +59,9 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
 
     //! column type enumeration
     enum ColumnType {
-        FILE,
-        SIZE,
-        TIME
+        Filename,
+        Size,
+        Time
     };
 
     //! constructor

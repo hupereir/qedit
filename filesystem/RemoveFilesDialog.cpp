@@ -71,9 +71,9 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
     // setup list
     _list().setModel( &model_ );
     _list().toggleShowHeader( false );
-    _list().setMask( 1<<FileSystemModel::FILE );
+    _list().setMask( 1<<FileSystemModel::Filename );
     _list().setSortingEnabled( true );
-    _list().header()->setSortIndicator( FileSystemModel::FILE, Qt::AscendingOrder );
+    _list().header()->setSortIndicator( FileSystemModel::Filename, Qt::AscendingOrder );
 
     // resize list to accomodate longest item
     int maxWidth( 0 );

@@ -93,11 +93,11 @@ void installDefaultOptions( void )
     XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", 200 );
 
     // file lists mask and sorting
-    XmlOptions::get().set<int>( "SESSION_FILES_MASK", 1<<FileRecordModel::FILE );
-    XmlOptions::get().set<int>( "RECENT_FILES_MASK", 1<<FileRecordModel::FILE );
+    XmlOptions::get().set<int>( "SESSION_FILES_MASK", 1<<FileRecordModel::Filename );
+    XmlOptions::get().set<int>( "RECENT_FILES_MASK", 1<<FileRecordModel::Filename );
 
-    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_MASK", 1<<FileSystemModel::FILE );
-    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_SORT_COLUMN", FileSystemModel::TIME );
+    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_MASK", 1<<FileSystemModel::Filename );
+    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_SORT_COLUMN", FileSystemModel::Time );
 
     // toolbars
     XmlOptions::get().set<bool>( "DOCUMENT_CLASS_MANAGER_TOOLBAR", true );
@@ -110,7 +110,7 @@ void installDefaultOptions( void )
     XmlOptions::get().set<int>( "HIGHLIGHT_PARAGRAPH", 1 );
 
     /* multiple views */
-    XmlOptions::get().set<int>( "OPEN_MODE", WindowServer::ACTIVE_WINDOW );
+    XmlOptions::get().set<int>( "OPEN_MODE", WindowServer::ActiveWindow );
     XmlOptions::get().set<int>( "ORIENTATION", Qt::Horizontal );
     XmlOptions::get().set<int>( "DIFF_ORIENTATION", Qt::Horizontal );
 
@@ -132,8 +132,8 @@ void installDefaultOptions( void )
     XmlOptions::get().set<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION", 2 );
 
     // lists
-    XmlOptions::get().set<int>( "FILE_SELECTION_LIST_MASK", (1<<FileRecordModel::FILE)|(1<<FileRecordModel::TIME) );
-    XmlOptions::get().set<int>( "CLOSE_FILES_LIST_MASK", (1<<FileRecordModel::FILE)|(1<<FileRecordModel::TIME) );
+    XmlOptions::get().set<int>( "FILE_SELECTION_LIST_MASK", (1<<FileRecordModel::Filename)|(1<<FileRecordModel::Time) );
+    XmlOptions::get().set<int>( "CLOSE_FILES_LIST_MASK", (1<<FileRecordModel::Filename)|(1<<FileRecordModel::Time) );
 
     // autosave
     XmlOptions::get().setRaw( "AUTOSAVE_PATH", Util::tmp() );
