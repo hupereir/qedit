@@ -61,7 +61,7 @@ int main (int argc, char *argv[])
     if( Debug::level() ) Debug::Throw() << XmlOptions::get() << endl;
 
     // migration
-    XmlMigration( File(".qedit_db").addPath(Util::home() ), "DB_FILE", FILERECORD::XML::FILE_LIST ).run();
+    XmlMigration( File(".qedit_db").addPath(Util::home() ), "DB_FILE", FILERECORD::Xml::FILE_LIST ).run();
 
     // resources
     Q_INIT_RESOURCE( basePixmaps );

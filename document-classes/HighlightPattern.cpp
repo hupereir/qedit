@@ -40,8 +40,8 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     flags_( None )
 {
     Debug::Throw( "HighlightPattern::HighlightPattern.\n" );
-    if( element.tagName() == XML::KeywordPattern ) setType( KeywordPattern );
-    if( element.tagName() == XML::RangePattern ) setType( RangePattern );
+    if( element.tagName() == Xml::KeywordPattern ) setType( KeywordPattern );
+    if( element.tagName() == Xml::RangePattern ) setType( RangePattern );
 
     QDomNamedNodeMap attributes( element.attributes() );
     for( unsigned int i=0; i<attributes.length(); i++ )
@@ -49,16 +49,16 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
         QDomAttr attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
 
-        if( attribute.name() == XML::NAME ) setName( attribute.value() );
-        else if( attribute.name() == XML::PARENT ) setParent( attribute.value() );
-        else if( attribute.name() == XML::STYLE ) setStyle( HighlightStyle( attribute.value() ) );
+        if( attribute.name() == Xml::NAME ) setName( attribute.value() );
+        else if( attribute.name() == Xml::PARENT ) setParent( attribute.value() );
+        else if( attribute.name() == Xml::STYLE ) setStyle( HighlightStyle( attribute.value() ) );
 
-        else if( attribute.name() == XML::OPTIONS )
+        else if( attribute.name() == Xml::OPTIONS )
         {
-            if( attribute.value().indexOf( XML::OPTION_SPAN, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( Span, true );
-            if( attribute.value().indexOf( XML::OPTION_NO_INDENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( NoIndent, true );
-            if( attribute.value().indexOf( XML::OPTION_NO_CASE, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CaseInsensitive, true );
-            if( attribute.value().indexOf( XML::OPTION_COMMENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( Comment, true );
+            if( attribute.value().indexOf( Xml::OPTION_SPAN, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( Span, true );
+            if( attribute.value().indexOf( Xml::OPTION_NO_INDENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( NoIndent, true );
+            if( attribute.value().indexOf( Xml::OPTION_NO_CASE, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CaseInsensitive, true );
+            if( attribute.value().indexOf( Xml::OPTION_COMMENT, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( Comment, true );
 
         }
 
@@ -69,10 +69,10 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     {
         QDomElement child_element = child_node.toElement();
         if( child_element.isNull() ) continue;
-        if( child_element.tagName() == XML::COMMENTS ) setComments( XmlString( child_element.text() ).toText() );
-        else if( child_element.tagName() == XML::KEYWORD ) setKeyword( XmlString( child_element.text() ).toText() );
-        else if( child_element.tagName() == XML::BEGIN ) setBegin( XmlString( child_element.text() ).toText() );
-        else if( child_element.tagName() == XML::END ) setEnd( XmlString( child_element.text() ).toText() );
+        if( child_element.tagName() == Xml::COMMENTS ) setComments( XmlString( child_element.text() ).toText() );
+        else if( child_element.tagName() == Xml::KEYWORD ) setKeyword( XmlString( child_element.text() ).toText() );
+        else if( child_element.tagName() == Xml::BEGIN ) setBegin( XmlString( child_element.text() ).toText() );
+        else if( child_element.tagName() == Xml::END ) setEnd( XmlString( child_element.text() ).toText() );
     }
 
 }
@@ -83,38 +83,38 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
     Debug::Throw( "HighlightPattern::domElement.\n" );
 
     QDomElement out( parent.createElement( typeName() ) );
-    out.setAttribute( XML::NAME, name() );
-    out.setAttribute( XML::PARENT, HighlightPattern::parent() );
-    out.setAttribute( XML::STYLE, style().name() );
+    out.setAttribute( Xml::NAME, name() );
+    out.setAttribute( Xml::PARENT, HighlightPattern::parent() );
+    out.setAttribute( Xml::STYLE, style().name() );
 
     // options:
     QString options;
-    if( hasFlag( Span ) ) options += XML::OPTION_SPAN + " ";
-    if( hasFlag( NoIndent ) ) options += XML::OPTION_NO_INDENT + " ";
-    if( hasFlag( CaseInsensitive ) ) options += XML::OPTION_NO_CASE + " ";
-    if( hasFlag( Comment ) ) options += XML::OPTION_COMMENT + " ";
-    if( !options.isEmpty() ) out.setAttribute( XML::OPTIONS, options );
+    if( hasFlag( Span ) ) options += Xml::OPTION_SPAN + " ";
+    if( hasFlag( NoIndent ) ) options += Xml::OPTION_NO_INDENT + " ";
+    if( hasFlag( CaseInsensitive ) ) options += Xml::OPTION_NO_CASE + " ";
+    if( hasFlag( Comment ) ) options += Xml::OPTION_COMMENT + " ";
+    if( !options.isEmpty() ) out.setAttribute( Xml::OPTIONS, options );
 
     // comments
     out.
-        appendChild( parent.createElement( XML::COMMENTS ) ).
+        appendChild( parent.createElement( Xml::COMMENTS ) ).
         appendChild( parent.createTextNode( XmlString( comments() ).toXml() ) );
 
     // regexps
     if( type() == KeywordPattern )
     {
         out.
-            appendChild( parent.createElement( XML::KEYWORD ) ).
+            appendChild( parent.createElement( Xml::KEYWORD ) ).
             appendChild( parent.createTextNode( XmlString( keyword().pattern() ).toXml() ) );
     }
 
     if( type() == RangePattern )
     {
         out.
-            appendChild( parent.createElement( XML::BEGIN ) ).
+            appendChild( parent.createElement( Xml::BEGIN ) ).
             appendChild( parent.createTextNode( XmlString( begin().pattern() ).toXml() ) );
         out.
-            appendChild( parent.createElement( XML::END ) ).
+            appendChild( parent.createElement( Xml::END ) ).
             appendChild( parent.createTextNode( XmlString( end().pattern() ).toXml() ) );
     }
 
@@ -140,8 +140,8 @@ QString HighlightPattern::typeName( const Type& type )
     switch( type )
     {
         default:
-        case KeywordPattern: return XML::KeywordPattern;
-        case RangePattern: return XML::RangePattern;
+        case KeywordPattern: return Xml::KeywordPattern;
+        case RangePattern: return Xml::RangePattern;
     }
 }
 

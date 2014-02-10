@@ -39,9 +39,9 @@ id_( id )
     {
         QDomAttr attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
-        if( attribute.name() == XML::BEGIN ) first_ = XmlString( attribute.value() ).toText();
-        else if( attribute.name() == XML::END ) second_ = XmlString( attribute.value() ).toText();
-        else if( attribute.name() == XML::REGEXP ) regexp_.setPattern( XmlString( attribute.value() ).toText() );
+        if( attribute.name() == Xml::BEGIN ) first_ = XmlString( attribute.value() ).toText();
+        else if( attribute.name() == Xml::END ) second_ = XmlString( attribute.value() ).toText();
+        else if( attribute.name() == Xml::REGEXP ) regexp_.setPattern( XmlString( attribute.value() ).toText() );
         else Debug::Throw(0) << "BlockDelimiter::BlockDelimiter - unrecognized attribute: " << attribute.name() << endl;
     }
 
@@ -59,11 +59,11 @@ id_( id )
 QDomElement BlockDelimiter::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "BlockDelimiter::DomElement.\n" );
-    QDomElement out( parent.createElement( XML::BLOCK_DELIMITER ) );
+    QDomElement out( parent.createElement( Xml::BLOCK_DELIMITER ) );
 
     // dump attributes
-    out.setAttribute( XML::BEGIN, XmlString( first() ).toXml() );
-    out.setAttribute( XML::END, XmlString( second() ).toXml() );
-    out.setAttribute( XML::REGEXP, XmlString( regexp().pattern() ).toXml() );
+    out.setAttribute( Xml::BEGIN, XmlString( first() ).toXml() );
+    out.setAttribute( Xml::END, XmlString( second() ).toXml() );
+    out.setAttribute( Xml::REGEXP, XmlString( regexp().pattern() ).toXml() );
     return out;
 }

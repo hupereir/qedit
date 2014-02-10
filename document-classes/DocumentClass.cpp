@@ -57,20 +57,20 @@ DocumentClass::DocumentClass( const QDomElement& element ):
         QDomAttr attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
 
-        if( attribute.name() == XML::NAME ) name_ = attribute.value() ;
-        else if( attribute.name() == XML::PATTERN ) filePattern_.setPattern( XmlString( attribute.value() ).toText() );
-        else if( attribute.name() == XML::FIRSTLINE_PATTERN ) firstlinePattern_.setPattern( XmlString( attribute.value() ).toText() );
-        else if( attribute.name() == XML::ICON ) icon_ = XmlString( attribute.value() ).toText();
+        if( attribute.name() == Xml::NAME ) name_ = attribute.value() ;
+        else if( attribute.name() == Xml::PATTERN ) filePattern_.setPattern( XmlString( attribute.value() ).toText() );
+        else if( attribute.name() == Xml::FIRSTLINE_PATTERN ) firstlinePattern_.setPattern( XmlString( attribute.value() ).toText() );
+        else if( attribute.name() == Xml::ICON ) icon_ = XmlString( attribute.value() ).toText();
 
         // these are kept for backward compatibility
-        else if( attribute.name() == XML::OPTIONS )
+        else if( attribute.name() == Xml::OPTIONS )
         {
 
-            if( attribute.value().indexOf( XML::OPTION_WRAP, 0, Qt::CaseInsensitive ) >= 0 ) wrap_ = true;
-            if( attribute.value().indexOf( XML::OPTION_EMULATE_TABS, 0, Qt::CaseInsensitive ) >= 0 ) emulateTabs_ = true;
-            if( attribute.value().indexOf( XML::OPTION_DEFAULT, 0, Qt::CaseInsensitive ) >= 0 ) default_ = true;
+            if( attribute.value().indexOf( Xml::OPTION_WRAP, 0, Qt::CaseInsensitive ) >= 0 ) wrap_ = true;
+            if( attribute.value().indexOf( Xml::OPTION_EMULATE_TABS, 0, Qt::CaseInsensitive ) >= 0 ) emulateTabs_ = true;
+            if( attribute.value().indexOf( Xml::OPTION_DEFAULT, 0, Qt::CaseInsensitive ) >= 0 ) default_ = true;
 
-        } else if( attribute.name() == XML::BASE_INDENTATION ) baseIndentation_ = attribute.value().toInt();
+        } else if( attribute.name() == Xml::BASE_INDENTATION ) baseIndentation_ = attribute.value().toInt();
 
         else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized attribute: " << attribute.name() << endl;
 
@@ -82,46 +82,46 @@ DocumentClass::DocumentClass( const QDomElement& element ):
         QDomElement childElement = child_node.toElement();
         if( childElement.isNull() ) continue;
 
-        if( childElement.tagName() == XML::STYLE )
+        if( childElement.tagName() == Xml::STYLE )
         {
 
             const HighlightStyle highlightStyle( childElement );
             highlightStyles_.insert( highlightStyle );
 
-        } else if( childElement.tagName() == XML::KeywordPattern || childElement.tagName() == XML::RangePattern ) {
+        } else if( childElement.tagName() == Xml::KeywordPattern || childElement.tagName() == Xml::RangePattern ) {
 
             HighlightPattern pattern( childElement );
             if( pattern.isValid() ) highlightPatterns_ << pattern;
 
-        } else if( childElement.tagName() == XML::INDENT_PATTERN ) {
+        } else if( childElement.tagName() == Xml::INDENT_PATTERN ) {
 
             IndentPattern pattern( childElement );
             if( pattern.isValid() ) indentPatterns_ << pattern;
 
-        } else if( childElement.tagName() == XML::PARENTHESIS ) {
+        } else if( childElement.tagName() == Xml::PARENTHESIS ) {
 
             // parenthesis
             textParenthesis_ << TextParenthesis( childElement );
 
-        } else if( childElement.tagName() == XML::BLOCK_DELIMITER ) {
+        } else if( childElement.tagName() == Xml::BLOCK_DELIMITER ) {
 
             // block delimiters
             blockDelimiters_ << BlockDelimiter( childElement, blockDelimiters_.size() );
 
-        } else if( childElement.tagName() == XML::MACRO ) {
+        } else if( childElement.tagName() == Xml::MACRO ) {
 
             // text macrox
             TextMacro macro( childElement );
             if( macro.isValid() ) textMacros_ << macro;
 
-        } else if( childElement.tagName() == Base::XML::OPTION ) {
+        } else if( childElement.tagName() == Base::Xml::OPTION ) {
 
             XmlOption option( childElement );
-            if( option.name() == XML::OPTION_WRAP ) wrap_ = option.get<bool>();
-            else if( option.name() == XML::OPTION_EMULATE_TABS ) emulateTabs_ = option.get<bool>();
-            else if( option.name() == XML::OPTION_DEFAULT ) default_ = option.get<bool>();
-            else if( option.name() == XML::BASE_INDENTATION ) baseIndentation_ = option.get<int>();
-            else if( option.name() == XML::TAB_SIZE ) tabSize_ = option.get<int>();
+            if( option.name() == Xml::OPTION_WRAP ) wrap_ = option.get<bool>();
+            else if( option.name() == Xml::OPTION_EMULATE_TABS ) emulateTabs_ = option.get<bool>();
+            else if( option.name() == Xml::OPTION_DEFAULT ) default_ = option.get<bool>();
+            else if( option.name() == Xml::BASE_INDENTATION ) baseIndentation_ = option.get<int>();
+            else if( option.name() == Xml::TAB_SIZE ) tabSize_ = option.get<int>();
             else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized option " << option.name() << endl;
 
         } else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized child " << childElement.tagName() << ".\n";
@@ -209,26 +209,26 @@ QStringList DocumentClass::_associatePatterns( void )
 QDomElement DocumentClass::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "DocumentClass::domElement.\n" );
-    QDomElement out( parent.createElement( XML::DOCUMENT_CLASS ) );
+    QDomElement out( parent.createElement( Xml::DOCUMENT_CLASS ) );
 
     // dump attributes
-    out.setAttribute( XML::NAME, name_ );
-    if( !filePattern_.isEmpty() ) out.setAttribute( XML::PATTERN, XmlString( filePattern_.pattern() ).toXml() );
-    if( !firstlinePattern_.isEmpty() ) out.setAttribute( XML::FIRSTLINE_PATTERN, XmlString( firstlinePattern_.pattern() ).toXml() );
+    out.setAttribute( Xml::NAME, name_ );
+    if( !filePattern_.isEmpty() ) out.setAttribute( Xml::PATTERN, XmlString( filePattern_.pattern() ).toXml() );
+    if( !firstlinePattern_.isEmpty() ) out.setAttribute( Xml::FIRSTLINE_PATTERN, XmlString( firstlinePattern_.pattern() ).toXml() );
 
     // icon
-    if( !icon().isEmpty() ) out.setAttribute( XML::ICON, icon() );
+    if( !icon().isEmpty() ) out.setAttribute( Xml::ICON, icon() );
 
     // options
     out.appendChild( parent.createTextNode( "\n\n" ) );
     out.appendChild( parent.createComment( QObject::tr( "Options" ) ) );
-    out.appendChild( XmlOption( XML::OPTION_WRAP, Option().set<bool>( wrap() ) ).domElement( parent ) );
-    out.appendChild( XmlOption( XML::OPTION_EMULATE_TABS, Option().set<bool>( emulateTabs() ) ).domElement( parent ) );
-    out.appendChild( XmlOption( XML::OPTION_DEFAULT, Option().set<bool>( isDefault() ) ).domElement( parent ) );
-    out.appendChild( XmlOption( XML::BASE_INDENTATION, Option().set<int>( baseIndentation() ) ).domElement( parent ) );
+    out.appendChild( XmlOption( Xml::OPTION_WRAP, Option().set<bool>( wrap() ) ).domElement( parent ) );
+    out.appendChild( XmlOption( Xml::OPTION_EMULATE_TABS, Option().set<bool>( emulateTabs() ) ).domElement( parent ) );
+    out.appendChild( XmlOption( Xml::OPTION_DEFAULT, Option().set<bool>( isDefault() ) ).domElement( parent ) );
+    out.appendChild( XmlOption( Xml::BASE_INDENTATION, Option().set<int>( baseIndentation() ) ).domElement( parent ) );
 
     if( tabSize() > 0 )
-    { out.appendChild( XmlOption( XML::TAB_SIZE, Option().set<int>( tabSize() ) ).domElement( parent ) ); }
+    { out.appendChild( XmlOption( Xml::TAB_SIZE, Option().set<int>( tabSize() ) ).domElement( parent ) ); }
 
     // dump highlight styles
     out.appendChild( parent.createTextNode( "\n\n" ) );

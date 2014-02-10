@@ -48,9 +48,9 @@ HighlightStyle::HighlightStyle( const QDomElement& element ):
     QDomAttr attribute( attributes.item( i ).toAttr() );
     if( attribute.isNull() ) continue;
 
-    if( attribute.name() == XML::NAME ) setName( attribute.value() );
-    else if( attribute.name() == XML::FORMAT ) setFontFormat( (Format::TextFormatFlags) attribute.value().toInt() );
-    else if( attribute.name() == XML::COLOR ) setColor( QColor( attribute.value() ) );
+    if( attribute.name() == Xml::NAME ) setName( attribute.value() );
+    else if( attribute.name() == Xml::FORMAT ) setFontFormat( (Format::TextFormatFlags) attribute.value().toInt() );
+    else if( attribute.name() == Xml::COLOR ) setColor( QColor( attribute.value() ) );
     else Debug::Throw(0) << "Option::Option - unrecognized attribute " << attribute.name() << ".\n";
 
   }
@@ -60,10 +60,10 @@ HighlightStyle::HighlightStyle( const QDomElement& element ):
 QDomElement HighlightStyle::domElement( QDomDocument& parent ) const
 {
   Debug::Throw( "HighlighStyle::DomElement.\n" );
-  QDomElement out = parent.createElement( XML::STYLE );
-  out.setAttribute( XML::NAME, name() );
-  out.setAttribute( XML::FORMAT, Str().assign<unsigned int>(fontFormat()) );
-  out.setAttribute( XML::COLOR, color().name() );
+  QDomElement out = parent.createElement( Xml::STYLE );
+  out.setAttribute( Xml::NAME, name() );
+  out.setAttribute( Xml::FORMAT, Str().assign<unsigned int>(fontFormat()) );
+  out.setAttribute( Xml::COLOR, color().name() );
   return out;
 }
 

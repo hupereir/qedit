@@ -67,7 +67,7 @@ bool DocumentClassManager::read( const File& filename )
     {
         QDomElement element = node.toElement();
         if( element.isNull() ) continue;
-        if( element.tagName() == XML::DOCUMENT_CLASS )
+        if( element.tagName() == Xml::DOCUMENT_CLASS )
         {
             DocumentClass documentClass( element );
 
@@ -122,7 +122,7 @@ bool DocumentClassManager::write( const DocumentClass& documentClass, const File
     XmlDocument document;
 
     // create main element
-    QDomElement top = document.appendChild( document.createElement( XML::PATTERNS ) ).toElement();
+    QDomElement top = document.appendChild( document.createElement( Xml::PATTERNS ) ).toElement();
     top.appendChild( documentClass.domElement( document ) );
 
     out.write( document.toByteArray() );
@@ -163,7 +163,7 @@ bool DocumentClassManager::write( const File& path ) const
         QDomDocument document;
 
         // create main element
-        QDomElement top = document.appendChild( document.createElement( XML::PATTERNS ) ).toElement();
+        QDomElement top = document.appendChild( document.createElement( Xml::PATTERNS ) ).toElement();
         top.appendChild( iter->domElement( document ) );
 
         out.write( document.toByteArray() );

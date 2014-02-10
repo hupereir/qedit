@@ -25,7 +25,8 @@
 #include <QString>
 
 //! Some Xml definitions
-namespace XML {
+namespace Xml
+{
 
     //!@name document class
     //@{
