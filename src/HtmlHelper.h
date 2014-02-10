@@ -1,4 +1,4 @@
-#ifndef PrintHelper_h
+#ifndef HtmlHelper_h
 #define HtmlHelper_h
 
 // $Id$

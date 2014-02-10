@@ -1,5 +1,5 @@
-#ifndef _SessionFilesModel_h_
-#define _SessionFilesModel_h_
+#ifndef SessionFilesModel_h
+#define SessionFilesModel_h
 
 // $Id$
 

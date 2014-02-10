@@ -1,6 +1,6 @@
 // $Id$
-#ifndef _RestoreSessionDialog_h_
-#define _RestoreSessionDialog_h_
+#ifndef RestoreSessionDialog_h
+#define RestoreSessionDialog_h
 
 /******************************************************************************
 *

@@ -1,5 +1,5 @@
-#ifndef _FileSystemModel_h_
-#define _FileSystemModel_h_
+#ifndef FileSystemModel_h
+#define FileSystemModel_h
 
 // $Id$
 

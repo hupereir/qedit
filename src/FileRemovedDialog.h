@@ -1,6 +1,6 @@
 // $Id$
-#ifndef _FileRemovedDialog_h_
-#define _FileRemovedDialog_h_
+#ifndef FileRemovedDialog_h
+#define FileRemovedDialog_h
 
 /******************************************************************************
 *

@@ -1,5 +1,5 @@
-#ifndef _BlockDelimiter_h_
-#define _BlockDelimiter_h_
+#ifndef BlockDelimiter_h
+#define BlockDelimiter_h
 
 // $Id$
 

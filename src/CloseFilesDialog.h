@@ -1,6 +1,6 @@
 // $Id$
-#ifndef _CloseFilesDialog_h_
-#define _CloseFilesDialog_h_
+#ifndef CloseFilesDialog_h
+#define CloseFilesDialog_h
 
 /******************************************************************************
 *

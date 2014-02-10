@@ -1,5 +1,5 @@
-#ifndef _TextParenthesis_h_
-#define _TextParenthesis_h_
+#ifndef TextParenthesis_h
+#define TextParenthesis_h
 
 // $Id$
 

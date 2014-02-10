@@ -1,6 +1,6 @@
 // $Id$
-#ifndef _FileCheckDialog_h_
-#define _FileCheckDialog_h_
+#ifndef FileCheckDialog_h
+#define FileCheckDialog_h
 
 /******************************************************************************
 *

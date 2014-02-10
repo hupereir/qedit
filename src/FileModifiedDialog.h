@@ -1,6 +1,6 @@
 // $Id$
-#ifndef _FileModifiedDialog_h_
-#define _FileModifiedDialog_h_
+#ifndef FileModifiedDialog_h
+#define FileModifiedDialog_h
 
 /******************************************************************************
 *

@@ -1,5 +1,5 @@
-#ifndef _IndentPattern_h_
-#define _IndentPattern_h_
+#ifndef IndentPattern_h
+#define IndentPattern_h
 // $Id$
 
 /******************************************************************************

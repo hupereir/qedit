@@ -1,5 +1,5 @@
-#ifndef _WindowTitle_h_
-#define _WindowTitle_h_
+#ifndef WindowTitle_h
+#define WindowTitle_h
 // $Id$
 
 /******************************************************************************

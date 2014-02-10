@@ -1,6 +1,6 @@
 // $Id$
-#ifndef _AskForSaveDialog_h_
-#define _AskForSaveDialog_h_
+#ifndef AskForSaveDialog_h
+#define AskForSaveDialog_h
 
 /******************************************************************************
 *

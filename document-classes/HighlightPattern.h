@@ -1,5 +1,5 @@
-#ifndef _HighlightPattern_h_
-#define _HighlightPattern_h_
+#ifndef HighlightPattern_h
+#define HighlightPattern_h
 
 // $Id$
 

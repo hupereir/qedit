@@ -1,5 +1,5 @@
-#ifndef _RemoveFilesDialog_h_
-#define _RemoveFilesDialog_h_
+#ifndef RemoveFilesDialog_h
+#define RemoveFilesDialog_h
 
 // $Id$
 

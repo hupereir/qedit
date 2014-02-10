@@ -1,5 +1,5 @@
-#ifndef _TextMacro_h_
-#define _TextMacro_h_
+#ifndef TextMacro_h
+#define TextMacro_h
 
 // $Id$
 

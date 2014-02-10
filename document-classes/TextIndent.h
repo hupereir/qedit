@@ -1,5 +1,5 @@
-#ifndef _TextIndent_h_
-#define _TextIndent_h_
+#ifndef TextIndent_h
+#define TextIndent_h
 
 // $Id$
 

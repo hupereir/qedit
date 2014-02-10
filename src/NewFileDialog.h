@@ -1,6 +1,6 @@
 // $Id$
-#ifndef _NewFileDialog_h_
-#define _NewFileDialog_h_
+#ifndef NewFileDialog_h
+#define NewFileDialog_h
 
 /******************************************************************************
 *

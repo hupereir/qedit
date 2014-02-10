@@ -1,5 +1,5 @@
-#ifndef _ConfigurationDialog_h_
-#define _ConfigurationDialog_h_
+#ifndef ConfigurationDialog_h
+#define ConfigurationDialog_h
 
 // $Id$
 /******************************************************************************
