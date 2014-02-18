@@ -43,23 +43,11 @@ class HighlightPattern: public Counter
     //! pattern flags
     enum Flag
     {
-
-        //! no flag
         None = 0,
-
-        //! pattern spans over several blocks
         Span = 1<<0,
-
-        //! pattern exclude line from indentations
-        /*! this is typically the case for comments */
         NoIndent = 1<<1,
-
-        //! pattern matching should not be case sensitive
         CaseInsensitive = 1<<2,
-
-        //! current pattern corresponds to commented text
         Comment = 1<<3
-
     };
 
     Q_DECLARE_FLAGS( Flags, Flag );
@@ -123,15 +111,9 @@ class HighlightPattern: public Counter
     //! pattern type
     enum Type
     {
-        //! undefined
         Undefined,
-
-        //! single keyword
         KeywordPattern,
-
-        //! range pattern
         RangePattern
-
     };
 
     //!type

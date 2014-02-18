@@ -54,14 +54,13 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
 
     Q_DECLARE_FLAGS( FileTypes, FileType );
 
-    //! number of columns
-    enum { nColumns = 3 };
-
     //! column type enumeration
-    enum ColumnType {
+    enum ColumnType 
+    {
         Filename,
         Size,
-        Time
+        Time,
+        nColumns
     };
 
     //! constructor

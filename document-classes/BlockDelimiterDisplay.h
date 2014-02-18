@@ -168,9 +168,10 @@ class BlockDelimiterDisplay: public QObject, public Counter
     //@}
 
     //! block marker type
-    enum BlockMarkerType {
-        BEGIN,
-        END
+    enum BlockMarkerType
+    {
+        BlockBegin,
+        BlockEnd
     };
 
     //! update segment markers

@@ -34,13 +34,13 @@ class WindowTitle: public Counter
     //! Flags
     enum Flags
     {
-        NONE,
-        MODIFIED,
-        READ_ONLY
+        None,
+        Modified,
+        ReadOnly
     };
 
     //! constructor
-    WindowTitle( const File& file = File(), const Flags& flag = NONE ):
+    WindowTitle( const File& file = File(), const Flags& flag = None ):
         Counter( "WindowTitle" ),
         file_( file ),
         flag_( flag )
@@ -55,11 +55,11 @@ class WindowTitle: public Counter
 
     //! change flag
     WindowTitle& setModified( const bool& value = true )
-    { return setFlag( MODIFIED, value ); }
+    { return setFlag( Modified, value ); }
 
     //! change flag
     WindowTitle& setReadOnly( const bool& value = true )
-    { return setFlag( READ_ONLY, value ); }
+    { return setFlag( ReadOnly, value ); }
 
     //! cast to string
     operator const QString& (void)
@@ -68,8 +68,8 @@ class WindowTitle: public Counter
         QTextStream what( &out );
         if( file_.size() ) what << file_.localName();
         else what << "QEdit";
-        if( flag_ == MODIFIED ) what << QObject::tr( " (modified)" );
-        if( flag_ == READ_ONLY ) what << QObject::tr( " (read-only)" );
+        if( flag_ == Modified ) what << QObject::tr( " (modified)" );
+        if( flag_ == ReadOnly ) what << QObject::tr( " (read-only)" );
         if( file_.size() ) what << " - " << file_.path();
         return title_ = out;
     }

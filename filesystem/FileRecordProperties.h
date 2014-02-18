@@ -37,21 +37,11 @@ namespace FileRecordProperties
     //! needed to tag session file records
     enum Flag
     {
-
         None = 0,
-
-        //! tag modified files
         Modified = 1<<0,
-
-        //! tag files that belong to current window
         Active = 1<<1,
-
-        //! tag current file
         Selected = 1<<2,
-
-        //! file has been altered (modified/removed) by external application
         Altered = 1<<3
-
     };
 
     Q_DECLARE_FLAGS( Flags, Flag );

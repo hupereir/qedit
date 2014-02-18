@@ -89,10 +89,8 @@ class WindowServer: public QObject, public Counter, public Base::Key
     //! open mode
     enum OpenMode
     {
-
         ActiveWindow,
         NewWindow
-
     };
 
     //! multiple files replace

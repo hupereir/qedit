@@ -28,26 +28,26 @@
 //! QDialog used to ask if a new file should be created
 class FileModifiedDialog: public BaseDialog, public Counter
 {
-    
+
     //! Qt macro
     Q_OBJECT
-        
+
     public:
-        
+
     //! return codes
     enum ReturnCode
     {
-        
-        RESAVE,
-        SAVE_AS,
-        RELOAD,
-        IGNORE
-        
+
+        SaveAgain,
+        SaveAs,
+        Reload,
+        Ignore
+
     };
-        
+
     //! constructor
     FileModifiedDialog( QWidget* parent, const File& file );
-        
+
     //! destructor
     virtual ~FileModifiedDialog( void )
     {}
@@ -56,19 +56,19 @@ class FileModifiedDialog: public BaseDialog, public Counter
 
     //! re-saved removed file
     void _reLoad( void )
-    { done( RELOAD ); }
+    { done( Reload ); }
 
     //! re-saved removed file
     void _reSave( void )
-    { done( RESAVE ); }
+    { done( SaveAgain ); }
 
     //! save file with new name
     void _saveAs( void )
-    { done( SAVE_AS ); }
+    { done( SaveAs ); }
 
     //! save file with new name
     void _ignore( void )
-    { done( IGNORE ); }
+    { done( Ignore ); }
 
 };
 

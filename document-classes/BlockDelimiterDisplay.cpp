@@ -157,11 +157,11 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
 
         // try update segments
         if( current.begin().cursor() >= firstIndex && current.begin().cursor() <= lastIndex )
-        { _updateMarker( block, id, current.begin(), BEGIN ); }
+        { _updateMarker( block, id, current.begin(), BlockBegin ); }
 
         // try update segments
         if( current.end().cursor() >= firstIndex && current.end().cursor() <= lastIndex )
-        {  _updateMarker( block, id, current.end(), END ); }
+        {  _updateMarker( block, id, current.end(), BlockEnd ); }
 
         // skip this segment if included in previous
         if( previous.isValid() && !( current.begin() < previous.begin() || previous.end() < current.end() ) ) continue;
@@ -719,8 +719,8 @@ void BlockDelimiterDisplay::_updateSegmentMarkers( void )
     unsigned int id = 0;
     for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
     {
-        _updateMarker( block, id, iter->begin(), BEGIN );
-        _updateMarker( block, id, iter->end(), END );
+        _updateMarker( block, id, iter->begin(), BlockBegin );
+        _updateMarker( block, id, iter->end(), BlockEnd );
     }
 
 }
@@ -735,7 +735,7 @@ void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, unsigned int& id, 
     Q_ASSERT( block.isValid() );
 
     QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
-    if( flag == BEGIN ) { marker.setPosition( (int) block.layout()->position().y() ); }
+    if( flag == BlockBegin ) { marker.setPosition( (int) block.layout()->position().y() ); }
     else { marker.setPosition( (int) (block.layout()->position().y() + rect.height()) ); }
 
     return;

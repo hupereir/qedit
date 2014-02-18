@@ -445,7 +445,7 @@ void TextView::checkDisplayModifications( TextEditor* editor )
     Base::KeySet<TextDisplay>  deadDisplays;
 
     // check file
-    if( display.checkFileRemoved() == FileRemovedDialog::CLOSE )
+    if( display.checkFileRemoved() == FileRemovedDialog::Close )
     {
 
         // register displays as dead

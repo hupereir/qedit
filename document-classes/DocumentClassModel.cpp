@@ -74,7 +74,7 @@ QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
 
     // return text associated to file and column
 
-    if( role == Qt::DecorationRole && index.column() == NAME )
+    if( role == Qt::DecorationRole && index.column() == Name )
     {
 
         return _icon( documentClass.icon() );
@@ -83,8 +83,8 @@ QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
 
         switch( index.column() )
         {
-            case NAME: return documentClass.name();
-            case FILE:
+            case Name: return documentClass.name();
+            case Filename:
             {
                 if( documentClass.isBuildIn() ) return tr( "Internal" );
                 else return documentClass.file();
@@ -140,8 +140,8 @@ bool DocumentClassModel::SortFTor::operator () ( const DocumentClass& constFirst
     if( order_ == Qt::DescendingOrder ) std::swap( first, second );
     switch( type_ )
     {
-        case NAME: return DocumentClass::WeakLessThanFTor()( first, second );
-        case FILE: return first.file() < second.file();
+        case Name: return DocumentClass::WeakLessThanFTor()( first, second );
+        case Filename: return first.file() < second.file();
         default: return true;
     }
 

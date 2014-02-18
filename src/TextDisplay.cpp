@@ -498,7 +498,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
     Debug::Throw() << "TextDisplay::checkFileRemoved - " << file() << endl;
 
     // check if warnings are enabled and file is removed. Do nothing otherwise
-    if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::IGNORE;
+    if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::Ignore;
 
     // disable check. This prevents recursion in macOS
     _setIgnoreWarnings( true );
@@ -513,18 +513,18 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
     switch( state )
     {
 
-        case FileRemovedDialog::RESAVE:
+        case FileRemovedDialog::SaveAgain:
         // set document as modified (to force the file to be saved) and save
         setModified( true );
         save();
         break;
 
-        case FileRemovedDialog::SAVE_AS:
+        case FileRemovedDialog::SaveAs:
         saveAs();
         break;
 
-        case FileRemovedDialog::IGNORE:
-        case FileRemovedDialog::CLOSE:
+        case FileRemovedDialog::Ignore:
+        case FileRemovedDialog::Close:
         {
             Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );
@@ -551,7 +551,7 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
     Debug::Throw() << "TextDisplay::checkFileModified - " << file() << endl;
 
     // check if warnings are enabled and file is modified. Do nothing otherwise
-    if( _ignoreWarnings() || !_fileModified() ) return FileModifiedDialog::IGNORE;
+    if( _ignoreWarnings() || !_fileModified() ) return FileModifiedDialog::Ignore;
 
     // disable check. This prevents recursion in macOS
     _setIgnoreWarnings( true );
@@ -566,21 +566,21 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
     switch( state )
     {
 
-        case FileModifiedDialog::RESAVE:
+        case FileModifiedDialog::SaveAgain:
         document()->setModified( true );
         save();
         break;
 
-        case FileModifiedDialog::SAVE_AS:
+        case FileModifiedDialog::SaveAs:
         saveAs();
         break;
 
-        case FileModifiedDialog::RELOAD:
+        case FileModifiedDialog::Reload:
         setModified( false );
         revertToSave();
         break;
 
-        case FileModifiedDialog::IGNORE:
+        case FileModifiedDialog::Ignore:
         {
             Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );
@@ -1324,7 +1324,7 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
     if(
         event->key() == Qt::Key_Tab &&
         indent_->isEnabled() &&
-        !( textCursor().hasSelection() || _boxSelection().state() == BoxSelection::FINISHED ) )
+        !( textCursor().hasSelection() || _boxSelection().state() == BoxSelection::SelectionFinished ) )
     { emit indent( textCursor().block(), false ); }
     else
     {

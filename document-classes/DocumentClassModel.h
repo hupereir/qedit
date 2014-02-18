@@ -45,14 +45,12 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     virtual ~DocumentClassModel()
     {}
 
-    //! number of columns
-    enum { nColumns = 2 };
-
     //! column type enumeration
     enum ColumnType
     {
-        NAME,
-        FILE,
+        Name,
+        Filename,
+        nColumns
     };
 
     //!@name methods reimplemented from base class

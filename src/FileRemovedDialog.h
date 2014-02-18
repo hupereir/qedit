@@ -38,10 +38,10 @@ class FileRemovedDialog: public BaseDialog, public Counter
     enum ReturnCode
     {
 
-        RESAVE,
-        SAVE_AS,
-        CLOSE,
-        IGNORE
+        SaveAgain,
+        SaveAs,
+        Close,
+        Ignore
 
     };
 
@@ -56,19 +56,19 @@ class FileRemovedDialog: public BaseDialog, public Counter
 
     //! re-saved removed file
     void _reSave( void )
-    { done( RESAVE ); }
+    { done( SaveAgain ); }
 
     //! save file with new name
     void _saveAs( void )
-    { done( SAVE_AS ); }
+    { done( SaveAs ); }
 
     //! close current editor
     void _close( void )
-    { done( CLOSE ); }
+    { done( Close ); }
 
     //! ignore warning
     void _ignore( void )
-    { done( IGNORE ); }
+    { done( Ignore ); }
 
 };
 

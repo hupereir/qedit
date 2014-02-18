@@ -144,10 +144,7 @@ class IndentPattern: public Counter
         enum Flag
         {
 
-            //! no flag
             None = 0,
-
-            //! pattern matching should not be case sensitive
             CaseInsensitive = 1<<2
 
         };
