@@ -955,7 +955,7 @@ void MainWindow::_installToolbars( void )
 {
 
     // file toolbar
-    CustomToolBar* toolbar = new CustomToolBar( tr( "Main" ), this, "FILE_TOOLBAR" );
+    CustomToolBar* toolbar = new CustomToolBar( tr( "Main Toolbar" ), this, "FILE_TOOLBAR" );
     toolbar->addAction( newFileAction_ );
     toolbar->addAction( openAction_ );
     toolbar->addAction( saveAction_ );
