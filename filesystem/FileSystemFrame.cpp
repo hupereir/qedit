@@ -479,15 +479,16 @@ void FileSystemFrame::_installActions( void )
     connect( hiddenFilesAction_, SIGNAL(toggled(bool)), SLOT(_toggleShowHiddenFiles(bool)) );
 
     // previous directory (from history)
-    addAction( previousDirectoryAction_ = new QAction( IconEngine::get( IconNames::PreviousDirectory ), tr( "Previous" ), this ) );
+    addAction( previousDirectoryAction_ = new QAction( IconEngine::get( IconNames::PreviousDirectory ), tr( "Back" ), this ) );
     connect( previousDirectoryAction_, SIGNAL(triggered()), pathEditor_, SLOT(selectPrevious()) );
 
     // next directory (from history)
-    addAction( nextDirectoryAction_ = new QAction( IconEngine::get( IconNames::NextDirectory ), tr( "Next" ), this ) );
+    addAction( nextDirectoryAction_ = new QAction( IconEngine::get( IconNames::NextDirectory ), tr( "Forward" ), this ) );
     connect( nextDirectoryAction_, SIGNAL(triggered()), pathEditor_, SLOT(selectNext()) );
 
     // parent directory in tree
     addAction( parentDirectoryAction_ = new QAction( IconEngine::get( IconNames::Parent ), tr( "Parent Directory" ), this ) );
+    parentDirectoryAction_->setIconText( tr( "Up" ) );
     connect( parentDirectoryAction_, SIGNAL(triggered()), pathEditor_, SLOT(selectParent()) );
     parentDirectoryAction_->setToolTip( tr( "Change path to parent directory" ) );
 
