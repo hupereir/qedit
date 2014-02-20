@@ -419,7 +419,7 @@ void WindowServer::_updateActions( void )
 {
 
     Debug::Throw( "WindowServer::_updateActions.\n" );
-    saveAllAction().setEnabled( !records( ModifiedOnly ).empty() );
+    saveAllAction_->setEnabled( !records( ModifiedOnly ).empty() );
 
 }
 
