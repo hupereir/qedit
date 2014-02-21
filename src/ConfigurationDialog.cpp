@@ -186,7 +186,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         hLayout = new QHBoxLayout();
         layout->addLayout( hLayout );
         hLayout->setMargin(0);
-        hLayout->addWidget( label = new QLabel( tr( "Default font encoding" ), box ) );
+        hLayout->addWidget( label = new QLabel( tr( "Default font encoding:" ), box ) );
         hLayout->addWidget( combobox = new OptionComboBox( box, "TEXT_ENCODING" ) );
         QList<QByteArray> codecs( QTextCodec::availableCodecs() );
         foreach( const QByteArray& value, codecs ) { combobox->addItem( value ); }
