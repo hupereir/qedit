@@ -1477,7 +1477,7 @@ void TextDisplay::_installActions( void )
     connect( showBlockDelimiterAction_, SIGNAL(toggled(bool)), SLOT(_toggleShowBlockDelimiters(bool)) );
 
     // autospell
-    addAction( autoSpellAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), "Automatic Spellcheck", this ) );
+    addAction( autoSpellAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), "Automatic Spell Checking", this ) );
     autoSpellAction_->setShortcut( Qt::Key_F6 );
     autoSpellAction_->setShortcutContext( Qt::WidgetShortcut );
     autoSpellAction_->setCheckable( true );
@@ -1490,7 +1490,7 @@ void TextDisplay::_installActions( void )
     #endif
 
     // spell checking
-    addAction( spellcheckAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), "Spellcheck...", this ) );
+    addAction( spellcheckAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), "Check Spelling...", this ) );
     #if WITH_ASPELL
     connect( spellcheckAction_, SIGNAL(triggered()), SLOT(_spellcheck()) );
     #else

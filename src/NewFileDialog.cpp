@@ -60,25 +60,25 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     layout->addWidget( frame );
 
     // button layout
-    QHBoxLayout *button_layout = new QHBoxLayout();
-    button_layout->setSpacing(5);
-    button_layout->setMargin(0);
-    layout->addLayout( button_layout );
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    buttonLayout->setSpacing(5);
+    buttonLayout->setMargin(0);
+    layout->addLayout( buttonLayout );
 
-    button_layout->addStretch(1);
+    buttonLayout->addStretch(1);
 
     // yes button
     QPushButton* button;
     if( buttons & Create )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogAccept ), tr( "Create" ), this ) );
+        buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogAccept ), tr( "Create" ), this ) );
         connect( button, SIGNAL(clicked()), SLOT(_create()) );
     }
 
     // cancel button.
     if( buttons & Cancel )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogCancel ), tr( "Cancel" ), this ) );
+        buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogCancel ), tr( "Cancel" ), this ) );
         button->setShortcut( Qt::Key_Escape );
         connect( button, SIGNAL(clicked()), SLOT(_cancel()) );
     }
@@ -86,7 +86,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     // cancel button.
     if( buttons & Exit )
     {
-        button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogClose ), tr( "Exit" ), this ) );
+        buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogClose ), tr( "Exit" ), this ) );
         connect( button, SIGNAL(clicked()), SLOT(_exit()) );
     }
 
