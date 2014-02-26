@@ -464,8 +464,7 @@ class TextDisplay: public AnimatedTextEditor
     void selectClassName( QString );
 
     //! set focus, delayed
-    void setFocusDelayed( void )
-    { QTimer::singleShot( 0, this, SLOT( setFocus( void ) ) ); }
+    void setFocusDelayed( void );
 
     protected:
 
