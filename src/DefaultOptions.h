@@ -63,8 +63,8 @@ void installDefaultOptions( void )
     XmlOptions::get().set<bool>( "CUSTOM_BLOCK_DELIMITERS", true );
 
     // diff configuration
-    XmlOptions::get().set<Base::Color>( "DIFF_ADDED_COLOR", QColor( "#d0eaff" ) );
-    XmlOptions::get().set<Base::Color>( "DIFF_CONFLICT_COLOR", QColor( "#ecffec" ) );
+    XmlOptions::get().set<Base::Color>( "DIFF_ADDED_COLOR", QColor( "#acdde5" ) );
+    XmlOptions::get().set<Base::Color>( "DIFF_CONFLICT_COLOR", QColor( "#9addaa" ) );
 
     XmlOptions::get().set<Base::Color>( "PARENTHESIS_COLOR", QColor( Qt::red ) );
     XmlOptions::get().set<Base::Color>( "TAGGED_BLOCK_COLOR", QColor( "#fffdd4" ) );
