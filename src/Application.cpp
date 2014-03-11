@@ -151,15 +151,15 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
     CommandLineParser out( BaseApplication::commandLineParser() );
 
     out.setGroup( CommandLineParser::applicationGroupName );
-    out.registerFlag( "--tabbed", tr( "opens files in same window") );
+    out.registerFlag( CommandLineParser::Tag( "--tabbed", "-t" ), tr( "opens files in same window") );
     out.registerFlag( "--same-window", tr( "open files in same window") );
     out.registerFlag( "--new-window", tr( "open files in a new window") );
-    out.registerFlag( "--diff", tr( "open files in same window and perform diff") );
+    out.registerFlag( CommandLineParser::Tag( "--diff", "-d" ), tr( "open files in same window and perform diff") );
     out.registerFlag( "--autospell", tr( "switch autospell on for all files") );
     out.registerFlag( "--close", tr( "close displays matching file names and exit") );
     out.registerOption( "--filter", tr( "string" ), tr( "select filter for autospell") );
     out.registerOption( "--dictionary", tr( "string" ), tr( "select dictionary for autospell") );
-    out.registerOption( "--orientation", tr( "string" ), tr( "select view orientation for tabbed edition (vertical|horizontal)") );
+    out.registerOption( CommandLineParser::Tag( "--orientation", "-o" ), tr( "string" ), tr( "select view orientation for tabbed edition (vertical|horizontal)") );
     if( !arguments.isEmpty() ) out.parse( arguments, ignoreWarnings );
     return out;
 
