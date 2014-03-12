@@ -41,8 +41,9 @@
 #include "XmlDef.h"
 
 #if WITH_ASPELL
-#include "SpellCheckConfiguration.h"
 #include "AutoSpellConfiguration.h"
+#include "SpellCheckConfiguration.h"
+#include "SpellInterface.h"
 #endif
 
 #include <QMessageBox>
@@ -86,7 +87,30 @@ bool Application::initApplicationManager( void )
     _setArguments( parser.arguments() );
 
     // base class initialization
-    return BaseApplication::initApplicationManager();
+    if( !BaseApplication::initApplicationManager() ) return false;
+    else {
+
+        #if WITH_ASPELL
+        bool accepted( true );
+        if( parser.hasFlag( "--list-dictionaries" ) )
+        {
+            SpellCheck::SpellInterface().listDictionaries();
+            accepted = false;
+        }
+
+        if( parser.hasFlag( "--list-filters" ) )
+        {
+            SpellCheck::SpellInterface().listFilters();
+            accepted = false;
+        }
+
+        return accepted;
+
+        #else
+        return true;
+        #endif
+
+    }
 
 }
 
@@ -101,7 +125,6 @@ bool Application::realizeWidget( void )
     // disable exit on last window
     // this is re-enabled manually after arguments are read
     qApp->setQuitOnLastWindowClosed( false );
-
 
     // actions
     _installActions();
@@ -155,15 +178,18 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
     out.registerFlag( "--same-window", tr( "open files in same window") );
     out.registerFlag( CommandLineParser::Tag( "--new-window", "-n" ), tr( "open files in a new window") );
     out.registerFlag( CommandLineParser::Tag( "--diff", "-d" ), tr( "open files in same window and perform diff") );
+    // out.registerFlag( CommandLineParser::Tag( "--list", "-l" ), tr( "list all opened files" ) );
     out.registerFlag( "--close", tr( "close displays matching file names and exit") );
+    out.registerOption( CommandLineParser::Tag( "--orientation", "-o" ), tr( "string" ), tr( "select view orientation for tabbed edition (vertical|horizontal)") );
 
     #if WITH_ASPELL
     out.registerFlag( "--autospell", tr( "switch autospell on for all files") );
-    out.registerOption( "--filter", tr( "string" ), tr( "select filter for autospell") );
-    out.registerOption( "--dictionary", tr( "string" ), tr( "select dictionary for autospell") );
+    out.registerOption( "--filter", tr( "string" ), tr( "select  for spell checking") );
+    out.registerOption( "--dictionary", tr( "string" ), tr( "select dictionary for spell checking") );
+    out.registerFlag( "--list-filters", tr( "list all filters available to spell checking") );
+    out.registerFlag( "--list-dictionaries", tr( "list all dictionaries available to spell checking") );
     #endif
 
-    out.registerOption( CommandLineParser::Tag( "--orientation", "-o" ), tr( "string" ), tr( "select view orientation for tabbed edition (vertical|horizontal)") );
     if( !arguments.isEmpty() ) out.parse( arguments, ignoreWarnings );
     return out;
 
