@@ -128,7 +128,7 @@ class WindowServer: public QObject, public Counter, public Base::Key
 
     //! new file
     void _newFile( void )
-    { _newFile( _openMode() ); }
+    { _newFile( openMode_ ); }
 
     //! new file
     void _newFile( Qt::Orientation );
@@ -144,7 +144,7 @@ class WindowServer: public QObject, public Counter, public Base::Key
 
     //! open file
     bool _open( FileRecord record )
-    { return _open( record, _openMode() ); }
+    { return _open( record, openMode_ ); }
 
     //! open in new window
     bool _openInNewWindow( FileRecord record )
@@ -265,30 +265,6 @@ class WindowServer: public QObject, public Counter, public Base::Key
         }
 
     }
-
-    //! default orientation for split tabs
-    Qt::Orientation _defaultdiffOrientation( void ) const
-    { return defaultDiffOrientation_; }
-
-    //! default orientation for split tabs
-    void _setDiffOrientation( const Qt::Orientation& value )
-    { defaultDiffOrientation_ = value; }
-
-    //! open mode
-    const OpenMode& _openMode( void ) const
-    { return openMode_; }
-
-    //! open mode
-    void _setOpenMode( const OpenMode& mode )
-    { openMode_ = mode; }
-
-    //! first call
-    const bool& _firstCall( void ) const
-    { return firstCall_; }
-
-    //! first call
-    void _setFirstCall( bool value )
-    { firstCall_ = value; }
 
     //! true at first call (via Application::realizeWidget)
     bool firstCall_;

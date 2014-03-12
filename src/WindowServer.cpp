@@ -222,7 +222,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
     if( parser.hasFlag( "--close" ) )
     {
         _close( filenames );
-        _setFirstCall( false );
+        firstCall_ = false;
         return;
     }
 
@@ -287,7 +287,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
         foreach( const QString& filename, filenames )
         {
 
-            OpenMode mode( _openMode() );
+            OpenMode mode( openMode_ );
             if( parser.hasFlag( "--same-window" ) ) mode = ActiveWindow;
             else if( parser.hasFlag( "--new-window" ) ) mode = NewWindow;
 
@@ -301,7 +301,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
 
     if( !fileOpened )
     {
-        if( _firstCall() ) {
+        if( firstCall_ ) {
 
             // at first call and if no file was oppened,
             // set the current display as a new document.
@@ -315,7 +315,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
         _activeWindow().uniconify();
 
     }
-    _setFirstCall( false );
+    firstCall_ = false;
 
     Debug::Throw() << "WindowServer::readFilesFromArguments - done." << endl;
     return;
@@ -401,7 +401,7 @@ void WindowServer::_updateConfiguration( void )
 {
 
     Debug::Throw( "WindowServer::_updateConfiguration.\n" );
-    _setOpenMode( (OpenMode) XmlOptions::get().get<int>( "OPEN_MODE" ) );
+    openMode_ = (OpenMode) XmlOptions::get().get<int>( "OPEN_MODE" );
     _setDefaultOrientation( Normal, (Qt::Orientation) XmlOptions::get().get<int>( "ORIENTATION" ) );
     _setDefaultOrientation( Diff, (Qt::Orientation) XmlOptions::get().get<int>( "DIFF_ORIENTATION" ) );
 
@@ -1137,6 +1137,7 @@ void WindowServer::_applyCommandLineArguments( TextDisplay& display, const Comma
     //! see if autospell action is required
     bool autospell( parser.hasFlag( "--autospell" ) );
 
+    #if WITH_ASPELL
     //! see if autospell filter and dictionary are required
     QString filter = parser.hasOption( "--filter" ) ? parser.option( "--filter" ) : "";
     QString dictionary = parser.hasOption( "--dictionary" ) ? parser.option( "--dictionary" ) : "";
@@ -1145,9 +1146,11 @@ void WindowServer::_applyCommandLineArguments( TextDisplay& display, const Comma
         << " dictionary: " << dictionary
         << endl;
 
-    if( autospell ) display.autoSpellAction().setChecked( true );
     if( !filter.isEmpty() ) display.selectFilter( filter );
     if( !dictionary.isEmpty() ) display.selectDictionary( dictionary );
+    #endif
+
+    if( autospell ) display.autoSpellAction().setChecked( true );
     Debug::Throw( "WindowServer::_applyCommandLineArguments - done.\n" );
 
 }
