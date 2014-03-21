@@ -289,12 +289,12 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     addOptionWidget( checkbox );
 
     hLayout = new QHBoxLayout();
-    hLayout->setMargin(5);
+    hLayout->setMargin(0);
     hLayout->setSpacing(5);
     page->layout()->addItem( hLayout );
 
     BaseFileInfoConfigurationWidget* configurationWidget;
-    hLayout->addSpacing( 20 );
+    hLayout->addSpacing( _checkBoxSpacing() );
     hLayout->addWidget( configurationWidget = new BaseFileInfoConfigurationWidget( page ) );
     configurationWidget->setEnabled( false );
     connect( checkbox, SIGNAL(toggled(bool)), configurationWidget, SLOT(setEnabled(bool)) );
