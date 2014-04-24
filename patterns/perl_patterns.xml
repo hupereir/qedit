@@ -91,7 +91,7 @@
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Keyword" >
    <comments></comments>
-   <keyword>\b(if|foreach|use|els(e|if)|push|sub|print|my|return|chdir|chomp|next|last|redo)\b</keyword>
+   <keyword>\b(if|foreach|use|els(e|if)|push|sub|print|my|return|chdir|chomp|next|last|redo|exit)\b</keyword>
   </keyword_pattern>
   <range_pattern options="no_indent comments" style="Comment" parent="" name="Comment" >
    <comments></comments>
