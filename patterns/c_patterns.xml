@@ -119,6 +119,12 @@
    <comments>storage type (STL)</comments>
    <keyword>(\b(std::)((string(::npos)?)|set|map|pair|list|((i|i?o)(f|string)?stream)|vector)\b)|(std::(const_)?(reverse_)?iterator\b)</keyword>
   </keyword_pattern>
+  
+  <keyword_pattern style="Storage Type" parent="" name="t Storage Type" >
+   <comments>storage type (STL)</comments>
+   <keyword>(\b(u)?(int)(8|(16)|(32))_t\b)</keyword>
+  </keyword_pattern>
+
   <keyword_pattern style="Keyword" parent="" name="Math" >
    <comments>storage type (STL)</comments>
    <keyword>(\b(std::)((a?(cos|sin|tan))|log|exp|sqrt|pow|(f?abs)|min|max)\b)</keyword>
