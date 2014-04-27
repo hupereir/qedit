@@ -1,14 +1,6 @@
 # $Id$
 
-########### X11 #########
-IF( UNIX )
-
-  FIND_PACKAGE( X11 REQUIRED )
-  INCLUDE_DIRECTORIES( ${X11_X11_INCLUDE_PATH} )
-
-ENDIF()
-
-########### Qt4 configuration #########
+########### Qt configuration #########
 IF( USE_QT5 )
 
   FIND_PACKAGE( Qt5Widgets REQUIRED )
