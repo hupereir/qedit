@@ -142,7 +142,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     // retrieve matching segments
     QTextDocument &document( *_editor().document() );
     QTextBlock block( document.begin() );
-    unsigned int id( 0 );
+    int id( 0 );
 
     // optimize drawing by not drawing overlapping segments
     BlockDelimiterSegment previous;
@@ -404,7 +404,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
 
     // get first block
     QTextBlock block( _editor().document()->begin() );
-    unsigned int id(0);
+    int id(0);
 
     // create Text cursor
     QTextCursor cursor( block );
@@ -594,7 +594,7 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
     // keep track of collapsed blocks
     bool hasCollapsedBlocks( false );
     bool hasExpandedBlocks( false );
-    unsigned int collapsedBlockCount(0);
+    int collapsedBlockCount(0);
     collapsedBlocks_.clear();
 
     // loop over delimiter types
@@ -716,7 +716,7 @@ void BlockDelimiterDisplay::_updateSegmentMarkers( void )
 {
 
     QTextBlock block( _editor().document()->begin() );
-    unsigned int id = 0;
+    int id = 0;
     for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
     {
         _updateMarker( block, id, iter->begin(), BlockBegin );
@@ -726,7 +726,7 @@ void BlockDelimiterDisplay::_updateSegmentMarkers( void )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, unsigned int& id, BlockMarker& marker, const BlockMarkerType& flag ) const
+void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, int& id, BlockMarker& marker, const BlockMarkerType& flag ) const
 {
 
     // find block matching marker id
@@ -748,14 +748,14 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
     HighlightBlockData*& data ) const
 {
     QTextBlock block( _editor().document()->begin() );
-    unsigned int id( 0 );
+    int id( 0 );
     return _findBlocks( block, id, segment, data );
 }
 
 //_____________________________________________________________________________________
 BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
     QTextBlock& block,
-    unsigned int& id,
+    int& id,
     const BlockDelimiterSegment& segment,
     HighlightBlockData*& data ) const
 {

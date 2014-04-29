@@ -137,6 +137,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
     }
 
     // check if thread matching display was found
+    Q_UNUSED( found );
     Q_ASSERT( found || !display );
 
     // restart timer

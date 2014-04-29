@@ -178,7 +178,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
     void _updateSegmentMarkers( void );
 
     //! update segment markers
-    void _updateMarker( QTextBlock&, unsigned int&, BlockMarker&, const BlockMarkerType& flag ) const;
+    void _updateMarker( QTextBlock&, int&, BlockMarker&, const BlockMarkerType& flag ) const;
 
     //! block pair
     typedef QPair<QTextBlock, QTextBlock> TextBlockPair;
@@ -192,7 +192,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
     \param segment the segment to be found
     \param data the user data associated to the output segment
     */
-    TextBlockPair _findBlocks( QTextBlock&, unsigned int&, const BlockDelimiterSegment&, HighlightBlockData*& ) const;
+    TextBlockPair _findBlocks( QTextBlock&, int&, const BlockDelimiterSegment&, HighlightBlockData*& ) const;
 
     //! select segment from cursor
     void _selectSegmentFromCursor( const int& );
