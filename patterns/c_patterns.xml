@@ -103,6 +103,14 @@
    <comments>keywords</comments>
    <keyword>\b(break|case|catch|continue|default|delete|do|(dynamic|static|const|reinterpret)_cast|else|emit|fabs|false|for|goto|if|new|return|sizeof|switch|this|throw|true|try|while)\b</keyword>
   </keyword_pattern>
+  <keyword_pattern style="Keyword" parent="" name="Root Keyword" >
+   <comments>root keywords</comments>
+   <keyword>\b(kTRUE|kFALSE)\b</keyword>
+  </keyword_pattern>
+  <keyword_pattern style="Storage Type" parent="" name="Root Storage Type" >
+   <comments>storage type</comments>
+   <keyword>\b(Bool_t|(U?Int_t)|Double_t|Float_t|Char_tTString|(T(H|F)\d(F|I)?)|TString|(TGraph(Errors)?))\b</keyword>
+  </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Stl Keyword" >
    <comments>keywords</comments>
    <keyword>\b(std::)((abs|swap|make_pair|(count|find)_if|endl|c(out|err|log)))\b</keyword>
@@ -119,12 +127,10 @@
    <comments>storage type (STL)</comments>
    <keyword>(\b(std::)((string(::npos)?)|set|map|pair|list|((i|i?o)(f|string)?stream)|vector)\b)|(std::(const_)?(reverse_)?iterator\b)</keyword>
   </keyword_pattern>
-  
   <keyword_pattern style="Storage Type" parent="" name="t Storage Type" >
    <comments>storage type (STL)</comments>
    <keyword>(\b(u)?(int)(8|(16)|(32))_t\b)</keyword>
   </keyword_pattern>
-
   <keyword_pattern style="Keyword" parent="" name="Math" >
    <comments>storage type (STL)</comments>
    <keyword>(\b(std::)((a?(cos|sin|tan))|log|exp|sqrt|pow|(f?abs)|min|max)\b)</keyword>
