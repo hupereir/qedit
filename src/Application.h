@@ -95,6 +95,10 @@ class Application: public BaseApplication, public Counter
     QAction& saveSessionAction( void ) const
     { return *saveSessionAction_; }
 
+    //! print session
+    QAction& printSessionAction( void ) const
+    { return *printSessionAction_; }
+
     //! restore session
     QAction& restoreSessionAction( void ) const
     { return *restoreSessionAction_; }
@@ -161,6 +165,9 @@ class Application: public BaseApplication, public Counter
 
     //! save session
     void _saveSession( void );
+
+    //! save session
+    void _printSession( void );
 
     //! restore session
     void _restoreSession( void );
@@ -230,6 +237,9 @@ class Application: public BaseApplication, public Counter
 
     //! save session
     QAction* saveSessionAction_;
+
+    //! print session
+    QAction* printSessionAction_;
 
     //! restore session
     QAction* restoreSessionAction_;

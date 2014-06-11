@@ -31,6 +31,7 @@
 #include "IconEngine.h"
 #include "IconNames.h"
 #include "InformationDialog.h"
+#include "LogWidget.h"
 #include "MainWindow.h"
 #include "RestoreSessionDialog.h"
 #include "Util.h"
@@ -307,6 +308,30 @@ void Application::_saveSession( void )
 }
 
 //___________________________________________________________
+void Application::_printSession( void )
+{
+    Debug::Throw( "Application::_printSession.\n" );
+
+    // get session records
+    const FileRecord::List records( windowServer_->records( WindowServer::ExistingOnly ) );
+    if( records.empty() ) return;
+
+    // create dialog
+    CustomDialog dialog( 0, CustomDialog::CloseButton );
+    dialog.setOptionName( "PRINT_SESSION_DIALOG" );
+    dialog.setWindowTitle( "Session files - Qedit" );
+    LogWidget* logWidget = new LogWidget( &dialog );
+    dialog.mainLayout().addWidget( logWidget );
+
+    // populate log widget
+    foreach( const FileRecord& record, records )
+    { logWidget->append( record.file() + "\n" ); }
+
+    dialog.exec();
+
+}
+
+//___________________________________________________________
 void Application::_restoreSession( void )
 {
     Debug::Throw( "Application::_restoreSession.\n" );
@@ -410,6 +435,10 @@ void Application::_installActions( void )
     // save session
     saveSessionAction_ = new QAction( IconEngine::get( IconNames::Save ), "Save Current Session", this );
     connect( saveSessionAction_, SIGNAL(triggered()), SLOT(_saveSession()) );
+
+    // print session
+    printSessionAction_ = new QAction( IconEngine::get( IconNames::Print ), "Print Current Session", this );
+    connect( printSessionAction_, SIGNAL(triggered()), SLOT(_printSession()) );
 
     // restore session
     restoreSessionAction_ = new QAction( IconEngine::get( IconNames::Open ), "Restore Saved Session", this );

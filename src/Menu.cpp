@@ -351,6 +351,7 @@ void Menu::_updateWindowsMenu( void )
 
     // add session handling
     const Application& application( *Singleton::get().application<Application>() );
+    windowsMenu_->addAction( &application.printSessionAction() );
     windowsMenu_->addAction( &application.saveSessionAction() );
     windowsMenu_->addAction( &application.restoreSessionAction() );
     windowsMenu_->addAction( &application.discardSessionAction() );
