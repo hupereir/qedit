@@ -929,11 +929,7 @@ void MainWindow::_installActions( void )
     addAction( spellcheckAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), tr( "Spell Check..." ), this ) );
     #if WITH_ASPELL
     connect( spellcheckAction_, SIGNAL(triggered()), SLOT(_spellcheck()) );
-
-    // disable action if there is no dictionary
     spellcheckAction_->setEnabled( !SpellCheck::SpellInterface().dictionaries().empty() );
-    #else
-    spellcheckAction_->setVisible( false );
     #endif
 
     addAction( diffAction_ = new QAction( "Diff Files", this ) );
@@ -971,7 +967,10 @@ void MainWindow::_installToolbars( void )
     // extra toolbar
     toolbar = new CustomToolBar( tr( "Tools" ), this, "EXTRA_TOOLBAR" );
     toolbar->addAction( filePropertiesAction_ );
+
+    #if WITH_ASPELL
     toolbar->addAction( spellcheckAction_ );
+    #endif
 
     // splitting toolbar
     toolbar = new CustomToolBar( tr( "Multiple Displays" ), this, "SPLIT_TOOLBAR" );
