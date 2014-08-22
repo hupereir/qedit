@@ -34,7 +34,7 @@ void installSystemOptions( void )
     XmlOptions::get().setAutoDefault( true );
     XmlOptions::get().set( "DIFF_COMMAND", Option( "@DIFF@", "diff files command" ) );
 
-    #ifdef WITH_ASPELL
+    #ifdef USE_ASPELL
     XmlOptions::get().set( "ASPELL", Option( "@ASPELL@", "aspell command" ) );
     #endif
     XmlOptions::get().setAutoDefault( false );

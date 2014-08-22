@@ -1137,7 +1137,7 @@ void WindowServer::_applyCommandLineArguments( TextDisplay& display, const Comma
     //! see if autospell action is required
     bool autospell( parser.hasFlag( "--autospell" ) );
 
-    #if WITH_ASPELL
+    #if USE_ASPELL
     //! see if autospell filter and dictionary are required
     QString filter = parser.hasOption( "--filter" ) ? parser.option( "--filter" ) : "";
     QString dictionary = parser.hasOption( "--dictionary" ) ? parser.option( "--dictionary" ) : "";

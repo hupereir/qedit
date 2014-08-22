@@ -31,7 +31,7 @@ HighlightBlockData::HighlightBlockData( void ):
     parenthesisLength_(0)
 {}
 
-#if WITH_ASPELL
+#if USE_ASPELL
 
 //____________________________________________________________
 SpellCheck::Word HighlightBlockData::misspelledWord( const int& position ) const

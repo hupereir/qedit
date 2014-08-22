@@ -114,7 +114,7 @@ void installDefaultOptions( void )
     XmlOptions::get().set<int>( "ORIENTATION", Qt::Horizontal );
     XmlOptions::get().set<int>( "DIFF_ORIENTATION", Qt::Horizontal );
 
-    #ifdef WITH_ASPELL
+    #ifdef USE_ASPELL
     XmlOptions::get().set( "DICTIONARY", "en" );
     XmlOptions::get().set( "DICTIONARY_FILTER", "none" );
     XmlOptions::get().set( "AUTOSPELL_COLOR", "red" );

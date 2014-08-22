@@ -236,7 +236,7 @@ void Menu::_updatePreferenceMenu( void )
     preferenceMenu_->addAction( &display.parenthesisHighlightAction() );
 
     preferenceMenu_->addSeparator();
-    #if WITH_ASPELL
+    #if USE_ASPELL
     preferenceMenu_->addAction( &display.autoSpellAction() );
     preferenceMenu_->addAction( &display.dictionaryMenuAction() );
     preferenceMenu_->addAction( &display.filterMenuAction() );
@@ -253,7 +253,7 @@ void Menu::_updatePreferenceMenu( void )
     preferenceMenu_->addSeparator();
     preferenceMenu_->addAction( &application.configurationAction() );
     preferenceMenu_->addAction( &application.documentClassesConfigurationAction() );
-    #if WITH_ASPELL
+    #if USE_ASPELL
     preferenceMenu_->addAction( &application.spellCheckConfigurationAction() );
     #endif
 
@@ -289,7 +289,7 @@ void Menu::_updateToolsMenu( void )
     toolsMenu_->addAction( &display.leadingTabsAction() );
     display.leadingTabsAction().setEnabled( display.hasLeadingTabs() );
 
-    #if WITH_ASPELL
+    #if USE_ASPELL
     // spell checker
     toolsMenu_->addAction( &display.spellcheckAction() );
 
@@ -333,7 +333,7 @@ void Menu::_updateToolsMenu( void )
     QAction* action = toolsMenu_->addAction( tr( "Rehighlight" ), window(), SLOT(rehighlight()) );
     bool enabled( display.textHighlightAction().isEnabled() && display.textHighlightAction().isChecked() );
 
-    #if WITH_ASPELL
+    #if USE_ASPELL
     enabled |= ( display.autoSpellAction().isEnabled() || display.autoSpellAction().isChecked() );
     #endif
 
