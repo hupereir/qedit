@@ -46,7 +46,7 @@ endif()
 if( ENABLE_SHARED )
 
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-  link_directories( ${CMAKE_install_PREFIX}/lib )
+  link_directories( ${CMAKE_INSTALL_PREFIX}/lib )
 
 else()
 
