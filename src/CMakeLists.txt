@@ -1,41 +1,41 @@
 # $Id$
 
 ########### Qt configuration #########
-IF( USE_QT5 )
+if( USE_QT5 )
 
-  FIND_PACKAGE( Qt5Widgets REQUIRED )
+  find_package( Qt5Widgets REQUIRED )
 
-ELSE()
+else()
 
-  FIND_PACKAGE( Qt4 REQUIRED )
-  SET( QT_USE_QTXML TRUE )
-  SET( QT_USE_QTNETWORK TRUE )
-  INCLUDE( ${QT_USE_FILE} )
-  ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+  find_package( Qt4 REQUIRED )
+  set( QT_USE_QTXML TRUE )
+  set( QT_USE_QTNETWORK TRUE )
+  include( ${QT_USE_FILE} )
+  add_definitions( ${QT_DEFINITIONS} )
 
-ENDIF()
+endif()
 
 ########### includes #########
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/base)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/base-qt)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/base-server)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/base-help)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/base)
+include_directories(${CMAKE_SOURCE_DIR}/base-qt)
+include_directories(${CMAKE_SOURCE_DIR}/base-server)
+include_directories(${CMAKE_SOURCE_DIR}/base-help)
 
-IF( ASPELL_FOUND )
-  INCLUDE_DIRECTORIES(${ASPELL_INCLUDE_DIR})
-  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/base-spellcheck)
-ENDIF()
+if( ASPELL_FOUND )
+  include_directories(${ASPELL_INCLUDE_DIR})
+  include_directories(${CMAKE_SOURCE_DIR}/base-spellcheck)
+endif()
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/document-classes)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/filesystem)
+include_directories(${CMAKE_SOURCE_DIR}/document-classes)
+include_directories(${CMAKE_SOURCE_DIR}/filesystem)
 
 ########### configuration files ###############
-CONFIGURE_FILE( Config.h.cmake Config.h )
-CONFIGURE_FILE( SystemOptions.h.cmake SystemOptions.h )
+configure_file( Config.h.cmake Config.h )
+configure_file( SystemOptions.h.cmake SystemOptions.h )
 
 ########### next target ###############
-SET( qedit_SOURCES
+set( qedit_SOURCES
   Application.cpp
   AskForSaveDialog.cpp
   AutoSave.cpp
@@ -72,45 +72,45 @@ SET( qedit_SOURCES
   main.cpp
 )
 
-SET( qedit_RESOURCES pixmaps.qrc)
+set( qedit_RESOURCES pixmaps.qrc)
 
-IF( USE_QT5 )
+if( USE_QT5 )
 
-  QT5_ADD_RESOURCES( qedit_RESOURCES_RCC ${qedit_RESOURCES})
+  qt5_add_resources( qedit_RESOURCES_RCC ${qedit_RESOURCES})
 
-ELSE()
+else()
 
-  QT4_ADD_RESOURCES( qedit_RESOURCES_RCC ${qedit_RESOURCES})
+  qt4_add_resources( qedit_RESOURCES_RCC ${qedit_RESOURCES})
 
-ENDIF()
+endif()
 
-ADD_APPLICATION_ICON( qedit_SOURCES ${CMAKE_SOURCE_DIR}/qedit )
-ADD_DESKTOP_FILE( ${CMAKE_SOURCE_DIR}/qedit )
-ADD_PLATFORM_EXECUTABLE( qedit
+add_application_icon( qedit_SOURCES ${CMAKE_SOURCE_DIR}/qedit )
+add_desktop_file( ${CMAKE_SOURCE_DIR}/qedit )
+add_platform_executable( qedit
   ${QEDIT_VERSION}
   ${qedit_SOURCES}
   ${qedit_RESOURCES_RCC}
 )
 
-TARGET_LINK_LIBRARIES( qedit ${QT_LIBRARIES} )
-TARGET_LINK_LIBRARIES( qedit document-classes filesystem )
-TARGET_LINK_LIBRARIES( qedit
+target_link_libraries( qedit ${QT_LIBRARIES} )
+target_link_libraries( qedit document-classes filesystem )
+target_link_libraries( qedit
   base
   base-qt
   base-server
   base-help
 )
 
-IF( ASPELL_FOUND )
+if( ASPELL_FOUND )
 
-  TARGET_LINK_LIBRARIES( qedit base-spellcheck )
+  target_link_libraries( qedit base-spellcheck )
 
-ENDIF()
+endif()
 
-INSTALL( TARGETS qedit DESTINATION ${BIN_INSTALL_DIR} )
+install( TARGETS qedit DESTINATION ${BIN_INSTALL_DIR} )
 
-IF( USE_QT5 )
+if( USE_QT5 )
 
-  QT5_USE_MODULES( qedit Network PrintSupport Widgets Xml )
+  qt5_use_modules( qedit Network PrintSupport Widgets Xml )
 
-ENDIF()
+endif()

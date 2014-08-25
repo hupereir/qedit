@@ -1,68 +1,68 @@
 # $Id$
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.6)
-IF( COMMAND CMAKE_POLICY )
-  CMAKE_POLICY( SET CMP0003 NEW )
-ENDIF()
+if( COMMAND CMAKE_POLICY )
+  cmake_policy( SET CMP0003 NEW )
+endif()
 
-SET(CMAKE_AUTOMOC TRUE)
+set(CMAKE_AUTOMOC TRUE)
 
-PROJECT( qedit )
-SET( QEDIT_VERSION_MAJOR 2)
-SET( QEDIT_VERSION_MINOR 6 )
-SET( QEDIT_VERSION_PATCH 8 )
-SET( QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION_PATCH} )
+project( qedit )
+set( QEDIT_VERSION_MAJOR 2)
+set( QEDIT_VERSION_MINOR 6 )
+set( QEDIT_VERSION_PATCH 8 )
+set( QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION_PATCH} )
 
 ########### modules #################
-SET( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/base-cmake" )
-INCLUDE( Macros )
+set( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/base-cmake" )
+include( Macros )
 
 ########### timestamp #########
-GET_BUILD_TIMESTAMP( TIMESTAMP )
+get_build_timestamp( TIMESTAMP )
 
 ########### packages ###############
-SET( CPACK_PACKAGE_NAME "qedit" )
-SET( CPACK_PACKAGE_VENDOR "hugo.pereira@free.fr" )
-SET( CPACK_PACKAGE_VERSION "${QEDIT_VERSION}" )
-SET( CPACK_SOURCE_GENERATOR TGZ )
-SET( CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}" )
-INCLUDE( CPack )
+set( CPACK_PACKAGE_NAME "qedit" )
+set( CPACK_PACKAGE_VENDOR "hugo.pereira@free.fr" )
+set( CPACK_PACKAGE_VERSION "${QEDIT_VERSION}" )
+set( CPACK_SOURCE_GENERATOR TGZ )
+set( CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}" )
+include( CPack )
 
 ########### configuration files ###############
-CONFIGURE_FILE( qedit.spec.cmake ${CMAKE_SOURCE_DIR}/qedit.spec )
+configure_file( qedit.spec.cmake ${CMAKE_SOURCE_DIR}/qedit.spec )
 
 ########### external applications ###############
-FIND_PROGRAM( DIFF diff )
+find_program( DIFF diff )
 
 ########### aspell ###############
-FIND_PROGRAM( ASPELL aspell )
-FIND_PACKAGE( ASPELL )
+find_program( ASPELL aspell )
+find_package( ASPELL )
 if( ASPELL_FOUND )
-  ADD_DEFINITIONS( -DUSE_ASPELL=1 )
+  add_definitions( -DUSE_ASPELL=1 )
 else()
-  ADD_DEFINITIONS( -DUSE_ASPELL=0 )
+  add_definitions( -DUSE_ASPELL=0 )
 endif()
 
 ########### subdirectories ###############
-IF( ENABLE_SHARED )
+if( ENABLE_SHARED )
 
-  SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-  LINK_DIRECTORIES( ${CMAKE_INSTALL_PREFIX}/lib )
+  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+  link_directories( ${CMAKE_install_PREFIX}/lib )
 
-ELSE()
+else()
 
-  ADD_SUBDIRECTORY( base )
-  ADD_SUBDIRECTORY( base-qt )
-  ADD_SUBDIRECTORY( base-server )
-  ADD_SUBDIRECTORY( base-help )
+  add_subdirectory( base )
+  add_subdirectory( base-qt )
+  add_subdirectory( base-server )
+  add_subdirectory( base-help )
 
-  IF( ASPELL_FOUND )
+  if( ASPELL_FOUND )
 
-    ADD_SUBDIRECTORY( base-spellcheck )
+    add_subdirectory( base-spellcheck )
 
-  ENDIF( ASPELL_FOUND )
+  endif( ASPELL_FOUND )
 
-ENDIF()
+endif()
 
-ADD_SUBDIRECTORY( document-classes )
-ADD_SUBDIRECTORY( filesystem )
-ADD_SUBDIRECTORY( src )
+add_subdirectory( document-classes )
+add_subdirectory( filesystem )
+add_subdirectory( src )

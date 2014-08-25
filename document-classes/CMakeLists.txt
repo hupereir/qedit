@@ -1,32 +1,32 @@
 # $Id$
-PROJECT( DOCUMENT_CLASSES )
+project( DOCUMENT_CLASSES )
 
 ########### Qt4 configuration #########
-IF( USE_QT5 )
+if( USE_QT5 )
 
-  FIND_PACKAGE( Qt5Widgets REQUIRED )
+  find_package( Qt5Widgets REQUIRED )
 
-ELSE()
+else()
 
-  FIND_PACKAGE( Qt4 REQUIRED )
-  SET( QT_USE_QTXML TRUE )
-  INCLUDE( ${QT_USE_FILE} )
-  ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+  find_package( Qt4 REQUIRED )
+  set( QT_USE_QTXML TRUE )
+  include( ${QT_USE_FILE} )
+  add_definitions( ${QT_DEFINITIONS} )
 
-ENDIF()
+endif()
 
 ########### includes ###############
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/base)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/base-qt)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/base)
+include_directories(${CMAKE_SOURCE_DIR}/base-qt)
 
-IF( ASPELL_FOUND )
-  INCLUDE_DIRECTORIES(${ASPELL_INCLUDE_DIR})
-  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/base-spellcheck)
-ENDIF()
+if( ASPELL_FOUND )
+  include_directories(${ASPELL_INCLUDE_DIR})
+  include_directories(${CMAKE_SOURCE_DIR}/base-spellcheck)
+endif()
 
 ########### next target ###############
-SET( document_classes_SOURCES
+set( document_classes_SOURCES
   BlockDelimiter.cpp
   BlockDelimiterDisplay.cpp
   CollapsedBlockData.cpp
@@ -49,27 +49,27 @@ SET( document_classes_SOURCES
   TextParenthesis.cpp
 )
 
-SET( document_classes_RESOURCES patterns.qrc)
+set( document_classes_RESOURCES patterns.qrc)
 
-IF( USE_QT5 )
+if( USE_QT5 )
 
-  QT5_ADD_RESOURCES( document_classes_RESOURCES_RCC ${document_classes_RESOURCES})
+  qt5_add_resources( document_classes_RESOURCES_RCC ${document_classes_RESOURCES})
 
-ELSE()
+else()
 
-  QT4_ADD_RESOURCES( document_classes_RESOURCES_RCC ${document_classes_RESOURCES})
+  qt4_add_resources( document_classes_RESOURCES_RCC ${document_classes_RESOURCES})
 
-ENDIF()
+endif()
 
-ADD_LIBRARY( document-classes STATIC
+add_library( document-classes STATIC
   ${document_classes_SOURCES}
   ${document_classes_RESOURCES_RCC}
 )
 
-TARGET_LINK_LIBRARIES( document-classes ${QT_LIBRARIES} )
+target_link_libraries( document-classes ${QT_LIBRARIES} )
 
-IF( USE_QT5 )
+if( USE_QT5 )
 
-  QT5_USE_MODULES( document-classes Widgets Xml )
+  qt5_use_modules( document-classes Widgets Xml )
 
-ENDIF()
+endif()

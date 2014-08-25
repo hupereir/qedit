@@ -1,27 +1,27 @@
 # $Id$
-PROJECT( FILESYSTEM )
+project( FILESYSTEM )
 
 ########### Qt4 configuration #########
-IF( USE_QT5 )
+if( USE_QT5 )
 
-  FIND_PACKAGE( Qt5Widgets REQUIRED )
+  find_package( Qt5Widgets REQUIRED )
 
-ELSE()
+else()
 
-  FIND_PACKAGE( Qt4 REQUIRED )
-  SET( QT_USE_QTXML TRUE )
-  INCLUDE( ${QT_USE_FILE} )
-  ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+  find_package( Qt4 REQUIRED )
+  set( QT_USE_QTXML TRUE )
+  include( ${QT_USE_FILE} )
+  add_definitions( ${QT_DEFINITIONS} )
 
-ENDIF()
+endif()
 
 ########### includes ###############
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/base)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/base-qt)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/base)
+include_directories(${CMAKE_SOURCE_DIR}/base-qt)
 
 ########### next target ###############
-SET( filesystem_SOURCES
+set( filesystem_SOURCES
   FileIconProvider.cpp
   FileInformationDialog.cpp
   FileRecordToolTipWidget.cpp
@@ -31,11 +31,11 @@ SET( filesystem_SOURCES
   RenameFileDialog.cpp
 )
 
-ADD_LIBRARY( filesystem STATIC ${filesystem_SOURCES} )
-TARGET_LINK_LIBRARIES( filesystem ${QT_LIBRARIES} )
+add_library( filesystem STATIC ${filesystem_SOURCES} )
+target_link_libraries( filesystem ${QT_LIBRARIES} )
 
-IF( USE_QT5 )
+if( USE_QT5 )
 
-  QT5_USE_MODULES( filesystem Widgets Network Xml )
+  qt5_use_modules( filesystem Widgets Network Xml )
 
-ENDIF()
+endif()
