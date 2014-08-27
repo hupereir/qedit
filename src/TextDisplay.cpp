@@ -51,6 +51,8 @@
 #include "QtUtil.h"
 #include "Singleton.h"
 #include "TextEditorMarginWidget.h"
+#include "TextEncodingDialog.h"
+#include "TextEncodingWidget.h"
 #include "TextEncodingMenu.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
@@ -830,6 +832,16 @@ void TextDisplay::revertToSave( void )
 }
 
 //______________________________________________________________________________
+void TextDisplay::_textEncoding( void )
+{
+    TextEncodingDialog dialog( this );
+    dialog.setWindowTitle( tr( "TextEncoding - Qedit" ) );
+    dialog.encodingWidget().setEncoding( textEncoding_ );
+    if( dialog.exec() ) _setTextEncoding( dialog.encodingWidget().encoding() );
+    return;
+}
+
+//______________________________________________________________________________
 void TextDisplay::_setTextEncoding( const QByteArray& value )
 {
 
@@ -1530,6 +1542,9 @@ void TextDisplay::_installActions( void )
     connect( dictionaryMenu_, SIGNAL(selectionChanged(QString)), SLOT(selectDictionary(QString)) );
 
     #endif
+
+    addAction( textEncodingAction_ = new QAction( "Text Encoding...", this ) );
+    connect( textEncodingAction_, SIGNAL(triggered()), SLOT(_textEncoding()) );
 
     textEncodingMenuAction_ = textEncodingMenu_->menuAction();
 

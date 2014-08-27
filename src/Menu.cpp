@@ -248,6 +248,7 @@ void Menu::_updatePreferenceMenu( void )
     #endif
 
     preferenceMenu_->addAction( &display.textEncodingMenuAction() );
+    // preferenceMenu_->addAction( &display.textEncodingAction() );
 
     // configurations (from application)
     preferenceMenu_->addSeparator();

@@ -373,6 +373,10 @@ class TextDisplay: public AnimatedTextEditor
 
     #endif
 
+    //! text encoding action
+    QAction &textEncodingAction( void ) const
+    { return *textEncodingAction_; }
+
     //! text encoding menu action
     QAction &textEncodingMenuAction( void ) const
     { return *textEncodingMenuAction_; }
@@ -597,6 +601,9 @@ class TextDisplay: public AnimatedTextEditor
 
     //@}
 
+    //! change text encoding
+    void _textEncoding( void );
+
     //! set text encoding
     void _setTextEncoding( const QByteArray& );
 
@@ -774,6 +781,9 @@ class TextDisplay: public AnimatedTextEditor
     QAction* filterMenuAction_;
 
     #endif
+
+    //! text encoding action
+    QAction* textEncodingAction_;
 
     //! text encoding menu action
     QAction* textEncodingMenuAction_;
