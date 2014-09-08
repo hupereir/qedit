@@ -36,12 +36,12 @@
 #include <QSplitter>
 #include <QStackedWidget>
 
+class BaseFindDialog;
 class BaseStatusBar;
 class DocumentClassToolBar;
+class ElidedLabel;
 class Menu;
 class NavigationFrame;
-
-class BaseFindDialog;
 class ReplaceDialog;
 class SelectLineDialog;
 class TransitionWidget;
@@ -565,7 +565,7 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     BaseStatusBar* statusbar_;
 
     //! file display lineEdit
-    QLabel* fileEditor_;
+    ElidedLabel* fileEditor_;
 
     //! document class toolbar
     DocumentClassToolBar* documentClassToolBar_;

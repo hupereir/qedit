@@ -36,6 +36,7 @@
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassToolBar.h"
+#include "ElidedLabel.h"
 #include "FileCheckDialog.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
@@ -151,9 +152,12 @@ MainWindow::MainWindow(  QWidget* parent ):
     // state frame
     setStatusBar( statusbar_ = new BaseStatusBar( this ) );
 
-    // create "Hidden" line editor to display filename
-    statusbar_->addPermanentWidget( fileEditor_ = new QLabel( statusbar_ ), 1 );
-    statusbar_->addPermanentWidget( new QWidget(), 1 );
+    // file editor
+    statusbar_->addPermanentWidget( fileEditor_ = new ElidedLabel( statusbar_ ), 1 );
+    // statusbar_->addPermanentWidget( fileEditor_ = new QLabel( statusbar_ ), 1 );
+    // statusbar_->addPermanentWidget( new QWidget(), 1 );
+
+    // other labels
     statusbar_->addLabels( 3, 0 );
     statusbar_->label(0).setAlignment( Qt::AlignCenter );
     statusbar_->label(1).setAlignment( Qt::AlignCenter );
