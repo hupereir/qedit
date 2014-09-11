@@ -127,7 +127,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         OptionSpinBox* spinbox = new OptionSpinBox( box, "TAB_SIZE" );
         spinbox->setMinimum( 2 );
         spinbox->setMaximum( 20 );
-        spinbox->setToolTip( tr( "Tab size (in unit of space characters)." ) );
+        spinbox->setToolTip( tr( "Tab size (in unit of space characters)" ) );
         hLayout->addWidget( spinbox );
         hLayout->addStretch( 1 );
         addOptionWidget( spinbox );
@@ -149,7 +149,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         box->setLayout( layout );
 
         box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Use document class wrap mode" ), box, "WRAP_FROM_CLASS" ) );
-        checkbox->setToolTip( tr( "Use wrap mode read from document class in place of the one specified in the default configuration." ) );
+        checkbox->setToolTip( tr( "Use wrap mode read from document class in place of the one specified in the default configuration" ) );
         addOptionWidget( checkbox );
 
         OptionCheckBox* wrap_checkbox = new OptionCheckBox( tr( "Wrap text" ), box, "WRAP_TEXT" );
@@ -249,7 +249,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     combobox->addItem( tr( "Open in New Window" ) );
 
     addOptionWidget( combobox );
-    combobox->setToolTip( tr( "Configure how new files are oppened." ) );
+    combobox->setToolTip( tr( "Configure how new files are oppened" ) );
 
     // splitting
     gridLayout->addWidget( new QLabel( tr( "Default view orientation:" ), box ) );
@@ -313,7 +313,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Save files regularly in a temporary directory" ), box, "AUTOSAVE" ) );
     checkbox->setToolTip(
         tr( "Make automatic copies of edited files in\n"
-        "specified directory to allow crash recovery." ) );
+        "specified directory to allow crash recovery" ) );
     addOptionWidget( checkbox );
 
     gridLayout = new GridLayout();
