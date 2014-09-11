@@ -1,10 +1,5 @@
 # $Id$
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.6)
-if(COMMAND CMAKE_POLICY)
-  cmake_policy(SET CMP0003 NEW)
-endif()
-
-set(CMAKE_AUTOMOC TRUE)
+cmake_minimum_required(VERSION 2.8.12)
 
 project(qedit)
 set(QEDIT_VERSION_MAJOR 2)
@@ -15,6 +10,8 @@ set(QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION_
 ########### modules #################
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/base-cmake")
 include(Macros)
+setup_cmake_settings()
+setup_compiler_flags()
 
 ########### timestamp #########
 get_build_timestamp(TIMESTAMP)
