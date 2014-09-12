@@ -38,7 +38,7 @@ class BlockDelimiter: public Counter
     public:
 
     //! typedef for list of patterns
-    typedef QList< BlockDelimiter > List;
+    using List = QList< BlockDelimiter >;
 
     //! constructor from DomElement
     BlockDelimiter( const QDomElement& element = QDomElement(), const unsigned int& id = 0 );

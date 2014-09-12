@@ -79,7 +79,7 @@ class DocumentClassManager: public Counter
     bool remove( const QString& name );
 
     //! shortcut to list of document classes
-    typedef QList<DocumentClass> List;
+    using List = QList<DocumentClass>;
 
     //! get all classes
     const List& classes( void ) const

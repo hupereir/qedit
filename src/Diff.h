@@ -61,10 +61,10 @@ class Diff: public QObject, public Counter
     { return error_; }
 
     //! paragraph range
-    typedef QPair< int, int > Range;
+    using Range = QPair< int, int >;
 
     //! range list
-    typedef QSet< int > BlockSet;
+    using BlockSet = QSet< int >;
 
     private Q_SLOTS:
 
@@ -127,7 +127,7 @@ class Diff: public QObject, public Counter
         void highlightDisplay( void );
 
         //! list
-        typedef QVector<FileInformation> List;
+        using List = QVector<FileInformation>;
 
         private:
 

@@ -63,7 +63,7 @@ class DocumentClassMenu: public QMenu, public Counter
     QActionGroup* actionGroup_;
 
     //! map document class to macro names
-    typedef QHash< QAction*, QString > ActionMap;
+    using ActionMap = QHash< QAction*, QString >;
     ActionMap actions_;
 
 };

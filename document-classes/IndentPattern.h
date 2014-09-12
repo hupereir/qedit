@@ -35,8 +35,8 @@ class IndentPattern: public Counter
     public:
 
     //! typedef for list of patterns
-    typedef QList< IndentPattern > List;
-    typedef QListIterator< IndentPattern > ListIterator;
+    using List = QList< IndentPattern >;
+    using ListIterator = QListIterator< IndentPattern >;
 
     //! constructor
     IndentPattern( void );
@@ -137,8 +137,8 @@ class IndentPattern: public Counter
         public:
 
         //! shortcut to Rules
-        typedef QList< Rule > List;
-        typedef QListIterator< Rule > ListIterator;
+        using List = QList< Rule >;
+        using ListIterator = QListIterator< Rule >;
 
         //! pattern flags
         enum Flag

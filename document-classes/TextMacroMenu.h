@@ -94,7 +94,7 @@ class TextMacroMenu: public QMenu, public Counter
     };
 
     //! map action to TextMacro
-    typedef QMap<QAction*, MacroContainer > ActionMap;
+    using ActionMap = QMap<QAction*, MacroContainer >;
     ActionMap actions_;
 
 };

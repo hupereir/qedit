@@ -38,8 +38,8 @@ class TextMacro: public Counter
     public:
 
     //! list
-    typedef QList< TextMacro > List;
-    typedef QListIterator< TextMacro > ListIterator;
+    using List = QList< TextMacro >;
+    using ListIterator = QListIterator< TextMacro >;
 
     //! constructor
     TextMacro( void ):
@@ -209,8 +209,8 @@ class TextMacro: public Counter
 
         public:
 
-        typedef QList<Rule> List;
-        typedef QListIterator<Rule> ListIterator;
+        using List = QList<Rule>;
+        using ListIterator = QListIterator<Rule>;
 
         //! constructor
         Rule( const QDomElement& = QDomElement() );

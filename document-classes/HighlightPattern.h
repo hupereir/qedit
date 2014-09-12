@@ -53,8 +53,8 @@ class HighlightPattern: public Counter
     Q_DECLARE_FLAGS( Flags, Flag );
 
     //! typedef for list of patterns
-    typedef QList< HighlightPattern > List;
-    typedef QListIterator< HighlightPattern > ListIterator;
+    using List = QList< HighlightPattern >;
+    using ListIterator = QListIterator< HighlightPattern >;
 
     //! no parent pattern
     static QString noParentPattern_;

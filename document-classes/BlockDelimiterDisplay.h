@@ -181,7 +181,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
     void _updateMarker( QTextBlock&, int&, BlockMarker&, const BlockMarkerType& flag ) const;
 
     //! block pair
-    typedef QPair<QTextBlock, QTextBlock> TextBlockPair;
+    using TextBlockPair = QPair<QTextBlock, QTextBlock>;
 
     //! find blocks that match a given segment
     TextBlockPair _findBlocks( const BlockDelimiterSegment&, HighlightBlockData*& ) const;
@@ -237,7 +237,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
     BlockDelimiterSegment selectedSegment_;
 
     //! map block id and number of collapsed blocks
-    typedef QMap<int, int> CollapsedBlockMap;
+    using CollapsedBlockMap = QMap<int, int>;
 
     //! map block id and number of collapsed blocks
     CollapsedBlockMap collapsedBlocks_;

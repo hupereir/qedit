@@ -37,7 +37,7 @@ class TextParenthesis: public Counter
     public:
 
     //! typedef for list of patterns
-    typedef QList< TextParenthesis > List;
+    using List = QList< TextParenthesis >;
 
     //! constructor from DomElement
     TextParenthesis( const QDomElement& element = QDomElement() );

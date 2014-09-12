@@ -35,9 +35,9 @@ class BlockDelimiterSegment: public Counter
     public:
 
     //! list
-    typedef QList<BlockDelimiterSegment> List;
-    typedef QListIterator<BlockDelimiterSegment> ListIterator;
-    typedef QMutableListIterator<BlockDelimiterSegment> MutableListIterator;
+    using List = QList<BlockDelimiterSegment>;
+    using ListIterator = QListIterator<BlockDelimiterSegment>;
+    using MutableListIterator = QMutableListIterator<BlockDelimiterSegment>;
 
     //! flags
     enum Flag

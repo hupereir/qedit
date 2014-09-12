@@ -35,7 +35,7 @@ class PatternLocation: public Counter
     public:
 
 
-    typedef QOrderedSetIterator<PatternLocation> SetIterator;
+    using SetIterator = QOrderedSetIterator<PatternLocation>;
 
     //! construtor
     PatternLocation( void );

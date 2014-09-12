@@ -88,7 +88,7 @@ class NavigationToolBar: public CustomToolBar
     CustomToolButton* _newToolButton( QWidget* parent, QIcon ) const;
 
     //! map widget to action
-    typedef QHash<CustomToolButton*, QWidget* > ButtonMap;
+    using ButtonMap = QHash<CustomToolButton*, QWidget* >;
 
     //! map widget to action in the toolbar
     ButtonMap buttons_;

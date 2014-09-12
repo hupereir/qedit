@@ -44,7 +44,7 @@ class FileSelectionDialog: public CustomDialog
     {}
 
     //! selected files
-    typedef QList<File> FileList;
+    using FileList = QList<File>;
 
     //! selected files
     FileList selectedFiles( void ) const;

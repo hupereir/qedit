@@ -35,7 +35,7 @@ class CollapsedBlockData
     public:
 
     //! list
-    typedef QList<CollapsedBlockData> List;
+    using List = QList<CollapsedBlockData>;
 
     //! constructor
     CollapsedBlockData( void ):

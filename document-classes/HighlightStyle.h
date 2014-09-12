@@ -101,10 +101,10 @@ class HighlightStyle: public Counter
     };
 
     //! typedef for list of patterns
-    typedef QSet<HighlightStyle> Set;
+    using Set = QSet<HighlightStyle>;
 
     //! typedef for list of patterns
-    typedef QList<HighlightStyle> List;
+    using List = QList<HighlightStyle>;
 
     //! true if any attributes is different from argument
     /*! this is a stricter comparison than the != operator */

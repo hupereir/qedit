@@ -150,7 +150,7 @@ class Menu:public QMenuBar, public Counter
     //@{
 
     //! map windows menu ID to file name
-    typedef QHash< QAction*, File > ActionMap;
+    using ActionMap = QHash< QAction*, File >;
     ActionMap fileActions_;
 
     //@}

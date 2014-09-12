@@ -33,7 +33,6 @@
 #include "OptionBrowsedLineEditor.h"
 #include "OptionCheckBox.h"
 #include "OptionColorDisplay.h"
-#include "OptionFontInfo.h"
 #include "OptionSpinBox.h"
 #include "RecentFilesConfiguration.h"
 #include "Singleton.h"

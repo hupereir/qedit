@@ -28,6 +28,13 @@
 #include <QMimeData>
 #include <QPainter>
 
+
+//____________________________________________________________________
+SessionFilesView::SessionFilesView( QWidget* parent ):
+    AnimatedTreeView( parent ),
+    locked_( false )
+{}
+
 //____________________________________________________________________
 void SessionFilesView::startDrag( Qt::DropActions supportedActions )
 {
@@ -79,7 +86,7 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
                 first = false;
                 emit detach( record.file() );
             } else emit reparentFilesToMain( record.file(), target );
-        
+
         }
 
     }

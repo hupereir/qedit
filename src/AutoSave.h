@@ -77,7 +77,7 @@ class AutoSave: public QObject, public Counter
     QBasicTimer timer_;
 
     //! list of threads
-    typedef QList< AutoSaveThread* > ThreadList;
+    using ThreadList = QList< AutoSaveThread* >;
 
     //! list of threads
     ThreadList threads_;

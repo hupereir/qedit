@@ -90,7 +90,7 @@ class FileIconProvider : public BaseFileIconProvider
     MimeTypeIconProvider mimeTypeIconProvider_;
 
     //! icon cache
-    typedef QHash<Key, QIcon> IconCache;
+    using IconCache = QHash<Key, QIcon>;
 
     //! icon cache
     IconCache icons_;

@@ -33,10 +33,7 @@ class SessionFilesView: public AnimatedTreeView
     public:
 
     //! constructor
-    SessionFilesView( QWidget* parent = 0 ):
-        AnimatedTreeView( parent ),
-        locked_( false )
-        {}
+    SessionFilesView( QWidget* = 0 );
 
     //! destructor
     virtual ~SessionFilesView( void )

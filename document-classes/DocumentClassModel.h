@@ -106,7 +106,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     static const QIcon& _icon( const QString& );
 
     //! icon cache
-    typedef QHash<QString, QIcon> IconCache;
+    using IconCache = QHash<QString, QIcon>;
 
     //! type icon cache
     static IconCache& _icons( void );
