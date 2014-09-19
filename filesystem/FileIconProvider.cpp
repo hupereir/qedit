@@ -69,7 +69,7 @@ const QIcon& FileIconProvider::icon( const FileRecord& fileRecord )
 
     }
 
-    out = _copy( out );
+    out = IconEngine::copy( out );
     if( type & FileSystemModel::Link ) out = _linked( out );
     if( type & FileSystemModel::Hidden ) out = _hidden( out );
 

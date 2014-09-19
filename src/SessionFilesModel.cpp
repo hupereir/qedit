@@ -126,6 +126,8 @@ const QIcon& SessionFilesModel::_icon( int type )
 
     }
 
+    icon = IconEngine::copy( icon );
+
     // store in map and return
     return _icons().insert( type, icon ).value();
 

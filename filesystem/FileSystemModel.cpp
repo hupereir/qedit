@@ -119,6 +119,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
 
             const FileRecord& record( get(index) );
             return iconProvider_->icon( record );
+
         } else break;
 
         case Qt::ForegroundRole:
