@@ -42,7 +42,6 @@ Counter( "FileRemovedDialog" )
 
     // create vbox layout
     QVBoxLayout* layout=new QVBoxLayout();
-    layout->setSpacing(5);
     layout->setMargin(10);
     setLayout( layout );
 
@@ -63,7 +62,6 @@ Counter( "FileRemovedDialog" )
 
     // button layout
     QHBoxLayout *buttonLayout = new QHBoxLayout();
-    buttonLayout->setSpacing( 5 );
     layout->addLayout( buttonLayout );
     buttonLayout->addStretch(1);
 

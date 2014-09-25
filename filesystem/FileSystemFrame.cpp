@@ -59,7 +59,6 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     Debug::Throw( "FileSystemFrame::FileSystemFrame.\n" );
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->setSpacing(2);
     layout->setMargin(0);
     setLayout( layout );
 

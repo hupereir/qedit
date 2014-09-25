@@ -2353,13 +2353,11 @@ void TextDisplay::_fileProperties( void )
     QWidget* box( new QWidget() );
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setMargin(5);
-    layout->setSpacing( 5 );
     box->setLayout( layout );
     Debug::Throw( "TextDisplay::_fileProperties - Miscellaneous tab booked.\n" );
 
     GridLayout* gridLayout = new GridLayout();
     gridLayout->setMargin(0);
-    gridLayout->setSpacing( 5 );
     gridLayout->setMaxCount( 2 );
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
     layout->addLayout( gridLayout );

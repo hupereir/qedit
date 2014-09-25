@@ -52,7 +52,6 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     // layout
     setLayout( new QVBoxLayout() );
     layout()->setMargin(0);
-    layout()->setSpacing(2);
 
     // tooltip widget
     toolTipWidget_ = new FileRecordToolTipWidget( this );
