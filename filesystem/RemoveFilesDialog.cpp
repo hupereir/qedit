@@ -52,6 +52,7 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
 
     //! try load Question icon
     QHBoxLayout *hLayout( new QHBoxLayout() );
+    hLayout->setSpacing(10);
     hLayout->setMargin(0);
     mainLayout().addLayout( hLayout );
     QLabel* label = new QLabel( this );

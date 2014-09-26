@@ -289,6 +289,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     hLayout = new QHBoxLayout();
     hLayout->setMargin(0);
+    hLayout->setSpacing(5);
     page->layout()->addItem( hLayout );
 
     BaseFileInfoConfigurationWidget* configurationWidget;

@@ -134,6 +134,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     // insert stack widget
     splitter->addWidget( stack_ = new QStackedWidget(0) );
+    stack_->layout()->setMargin(2);
 
     connect( stack_, SIGNAL(widgetRemoved(int)), SLOT(_activeViewChanged()) );
 

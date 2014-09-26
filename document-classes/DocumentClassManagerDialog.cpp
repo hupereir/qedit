@@ -45,8 +45,10 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
 
     // customize layout
     layout()->setMargin(0);
+    buttonLayout().setMargin(5);
 
     QHBoxLayout* hLayout( new QHBoxLayout() );
+    hLayout->setSpacing(5);
     hLayout->setMargin(0);
     mainLayout().addLayout( hLayout );
 
@@ -59,6 +61,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
 
     // buttons
     QVBoxLayout* vLayout = new QVBoxLayout();
+    vLayout->setSpacing(5);
     vLayout->setMargin(0);
     hLayout->addLayout( vLayout );
 

@@ -36,6 +36,8 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
 {
 
     Debug::Throw( "NavigationFrame:NavigationFrame.\n" );
+    layout()->setMargin(2);
+    layout()->setSpacing(2);
 
     // stack widget
     addWidget( sessionFilesFrame_ = new SessionFilesFrame(0) );
