@@ -2352,7 +2352,6 @@ void TextDisplay::_fileProperties( void )
     // add additional informations frame
     QWidget* box( new QWidget() );
     QVBoxLayout* layout = new QVBoxLayout();
-    layout->setMargin(5);
     box->setLayout( layout );
     Debug::Throw( "TextDisplay::_fileProperties - Miscellaneous tab booked.\n" );
 

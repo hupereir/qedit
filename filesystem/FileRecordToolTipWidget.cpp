@@ -41,7 +41,6 @@ FileRecordToolTipWidget::FileRecordToolTipWidget( QWidget* parent ):
 
     // layout
     QHBoxLayout* hLayout = new QHBoxLayout();
-    hLayout->setMargin( 10 );
     setLayout( hLayout );
 
     hLayout->addWidget( iconLabel_ = new QLabel( this ) );
@@ -57,7 +56,6 @@ FileRecordToolTipWidget::FileRecordToolTipWidget( QWidget* parent ):
     QFont font( fileLabel_->font() );
     font.setBold( true );
     fileLabel_->setFont( font );
-    fileLabel_->setMargin( 1 );
 
     // separator
     vLayout->addWidget( separator_ = new QFrame( this ) );

@@ -45,7 +45,6 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
 
     // customize layout
     layout()->setMargin(0);
-    buttonLayout().setMargin(5);
 
     QHBoxLayout* hLayout( new QHBoxLayout() );
     hLayout->setMargin(0);
