@@ -42,6 +42,7 @@ class DocumentClassToolBar;
 class ElidedLabel;
 class Menu;
 class NavigationFrame;
+class PrintHelper;
 class ReplaceDialog;
 class SelectLineDialog;
 class TransitionWidget;
@@ -434,6 +435,9 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     //! Print current document
     void _print( void );
+
+    //! Print current document
+    void _print( PrintHelper& );
 
     //! Print preview current document
     void _printPreview( void );

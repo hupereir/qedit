@@ -169,7 +169,7 @@ MainWindow::MainWindow(  QWidget* parent ):
     // toolbars
     _installToolbars();
 
-    //! configuration
+    //* configuration
     connect( &application, SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
     connect( &application, SIGNAL(saveConfiguration()), SLOT(_saveConfiguration()) );
     connect( qApp, SIGNAL(aboutToQuit()), SLOT(_saveConfiguration()) );
@@ -417,13 +417,19 @@ void MainWindow::_revertToSave( void )
 void MainWindow::_print( void )
 {
     Debug::Throw( "MainWindow::_print.\n" );
+    PrintHelper helper( this, &activeDisplay() );
+    _print( helper );
+
+}
+
+//___________________________________________________________
+void MainWindow::_print( PrintHelper& helper )
+{
 
     // create printer
     QPrinter printer( QPrinter::HighResolution );
     printer.setDocName( activeDisplay().file().localName() );
 
-    // create helper
-    PrintHelper helper( this, &activeDisplay() );
 
     // create options widget
     PrinterOptionWidget* optionWidget( new PrinterOptionWidget() );
@@ -456,10 +462,12 @@ void MainWindow::_printPreview( void )
     PrintHelper helper( this, &activeDisplay() );
 
     // create dialog, connect and execute
-    PrintPreviewDialog dialog( this );
+    PrintPreviewDialog dialog( this, CustomDialog::OkButton|CustomDialog::CancelButton );
     dialog.setWindowTitle( tr( "Print Preview - qedit" ) );
     dialog.setHelper( &helper );
-    dialog.exec();
+    if( !dialog.exec() ) return;
+    _print( helper );
+
 }
 
 //___________________________________________________________
