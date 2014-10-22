@@ -4,6 +4,9 @@
 if(USE_QT5)
 
   find_package(Qt5Widgets REQUIRED)
+  find_package(Qt5Network REQUIRED)
+  find_package(Qt5Xml REQUIRED)
+  find_package(Qt5PrintSupport REQUIRED)
 
 else()
 
