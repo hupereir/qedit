@@ -399,7 +399,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
     _updateSegmentMarkers();
 
     // list of QTextCursor needed to remove blocks
-    typedef QList<QTextCursor> CursorList;
+    using CursorList=QList<QTextCursor>;
     CursorList cursors;
 
     // get first block
