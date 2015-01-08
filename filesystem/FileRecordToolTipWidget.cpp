@@ -23,9 +23,10 @@
 #include "FileRecordToolTipWidget.moc"
 #include "Debug.h"
 #include "GridLayout.h"
+#include "GridLayoutItem.h"
+#include "QtUtil.h"
 #include "Singleton.h"
 #include "TimeStamp.h"
-#include "GridLayoutItem.h"
 #include "XmlOptions.h"
 
 #include <QLayout>
@@ -56,9 +57,7 @@ FileRecordToolTipWidget::FileRecordToolTipWidget( QWidget* parent ):
     // file
     vLayout->addWidget( fileLabel_ = new QLabel( this ) );
     fileLabel_->setAlignment( Qt::AlignCenter );
-    QFont font( fileLabel_->font() );
-    font.setBold( true );
-    fileLabel_->setFont( font );
+    fileLabel_->setFont( QtUtil::titleFont( fileLabel_->font() ) );
     fileLabel_->setMargin( 1 );
 
     // separator
