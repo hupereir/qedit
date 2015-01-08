@@ -358,6 +358,7 @@ void Application::_updateSessionActions( void )
     restoreSessionAction_->setEnabled( !empty );
     discardSessionAction_->setEnabled( !empty );
     saveSessionAction_->setEnabled( !windowServer_->records( WindowServer::ExistingOnly ).isEmpty() );
+    printSessionAction_->setEnabled( !windowServer_->records( WindowServer::ExistingOnly ).isEmpty() );
 
 }
 
