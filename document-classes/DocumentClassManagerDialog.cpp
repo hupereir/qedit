@@ -43,10 +43,6 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     Debug::Throw( "DocumentClassManagerDialog::DocumentClassManagerDialog.\n" );
     setOptionName( "DOCUMENT_CLASS_MANAGER_DIALOG" );
 
-    // customize layout
-    layout()->setMargin(0);
-    buttonLayout().setMargin(5);
-
     QHBoxLayout* hLayout( new QHBoxLayout() );
     hLayout->setSpacing(5);
     hLayout->setMargin(0);
