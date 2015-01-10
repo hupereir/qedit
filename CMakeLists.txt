@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project(qedit)
 set(QEDIT_VERSION_MAJOR 2)
 set(QEDIT_VERSION_MINOR 6)
-set(QEDIT_VERSION_PATCH 8)
+SET(QEDIT_VERSION_PATCH 9)
 set(QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION_PATCH})
 
 ########### modules #################
