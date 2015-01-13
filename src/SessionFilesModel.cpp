@@ -110,7 +110,7 @@ const QIcon& SessionFilesModel::_icon( int type )
 
     QIcon icon;
     if( type == FileRecordProperties::Modified ) icon = IconEngine::get( IconNames::Save );
-    else if( type == FileRecordProperties::Altered ) icon = IconEngine::get( IconNames::Warning );
+    else if( type == FileRecordProperties::Altered ) icon = IconEngine::get( IconNames::DialogWarning );
     else if( type == FileRecordProperties::None )
     {
 

@@ -50,7 +50,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     QHBoxLayout *hLayout( new QHBoxLayout() );
     layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
-    label->setPixmap( IconEngine::get( IconNames::Warning ).pixmap( iconSize() ) );
+    label->setPixmap( IconEngine::get( IconNames::DialogWarning ).pixmap( iconSize() ) );
     hLayout->addWidget( label, 0, Qt::AlignHCenter );
     hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
 
