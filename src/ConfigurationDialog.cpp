@@ -55,6 +55,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     OptionCheckBox* checkbox;
     OptionSpinBox* spinbox;
     OptionColorDisplay* colorDisplay;
+    QLabel* label;
 
     // document classes
     QWidget* page = &addPage( IconEngine::get( IconNames::PreferencesFileAssociations ), tr( "Document Classes" ), tr( "Document classes options" ) );
@@ -121,13 +122,14 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         hLayout->setMargin(0);
         layout->addLayout( hLayout );
 
-        hLayout->addWidget(new QLabel( tr( "Tab size: " ), box ) );
+        hLayout->addWidget( label = new QLabel( tr( "Tab size: " ), box ) );
         OptionSpinBox* spinbox = new OptionSpinBox( box, "TAB_SIZE" );
         spinbox->setMinimum( 2 );
         spinbox->setMaximum( 20 );
         spinbox->setToolTip( tr( "Tab size (in unit of space characters)" ) );
         hLayout->addWidget( spinbox );
         hLayout->addStretch( 1 );
+        label->setBuddy( spinbox );
         addOptionWidget( spinbox );
 
     }
@@ -180,7 +182,6 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
         // text encoding
         OptionComboBox* combobox;
-        QLabel* label;
         hLayout = new QHBoxLayout();
         layout->addLayout( hLayout );
         hLayout->setMargin(0);
@@ -188,6 +189,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         hLayout->addWidget( combobox = new OptionComboBox( box, "TEXT_ENCODING" ) );
         QList<QByteArray> codecs( QTextCodec::availableCodecs() );
         foreach( const QByteArray& value, codecs ) { combobox->addItem( value ); }
+        label->setBuddy( combobox );
         addOptionWidget( combobox );
 
     }
@@ -204,23 +206,27 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
     box->setLayout( gridLayout );
 
-    gridLayout->addWidget( new QLabel( tr( "Parenthesis matching:" ), box ) );
+    gridLayout->addWidget( label = new QLabel( tr( "Parenthesis matching:" ), box ) );
     gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "PARENTHESIS_COLOR" ) );
+    label->setBuddy( colorDisplay );
     addOptionWidget( colorDisplay );
     checkbox->setToolTip( tr( "Color for matching parenthesis" ) );
 
-    gridLayout->addWidget( new QLabel( tr( "Tagged paragraphs:" ), box ) );
+    gridLayout->addWidget( label = new QLabel( tr( "Tagged paragraphs:" ), box ) );
     gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "TAGGED_BLOCK_COLOR" ) );
+    label->setBuddy( colorDisplay );
     addOptionWidget( colorDisplay );
     checkbox->setToolTip( tr( "Color for tagged paragraphs" ) );
 
-    gridLayout->addWidget( new QLabel( tr( "Conflicting paragraphs:" ), box ) );
+    gridLayout->addWidget( label = new QLabel( tr( "Conflicting paragraphs:" ), box ) );
     gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "DIFF_CONFLICT_COLOR" ) );
+    label->setBuddy( colorDisplay );
     addOptionWidget( colorDisplay );
     colorDisplay->setToolTip( tr( "Highlight color for diff conflict paragraphs" ) );
 
-    gridLayout->addWidget( new QLabel( tr( "Added paragraphs:" ), box ) );
+    gridLayout->addWidget( label = new QLabel( tr( "Added paragraphs:" ), box ) );
     gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "DIFF_ADDED_COLOR" ) );
+    label->setBuddy( colorDisplay );
     addOptionWidget( colorDisplay );
     colorDisplay->setToolTip( tr( "Highlight color for diff added paragraphs" ) );
 
@@ -240,32 +246,35 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     OptionComboBox *combobox;
 
     // opening
-    gridLayout->addWidget( new QLabel( tr( "Default open mode:" ), box ) );
+    gridLayout->addWidget( label = new QLabel( tr( "Default open mode:" ), box ) );
     gridLayout->addWidget( combobox = new OptionComboBox( box, tr( "OPEN_MODE" ) ) );
     combobox->setUseValue( false );
     combobox->addItem( tr( "Open in Current Windoow" ) );
     combobox->addItem( tr( "Open in New Window" ) );
 
+    label->setBuddy( combobox );
     addOptionWidget( combobox );
     combobox->setToolTip( tr( "Configure how new files are oppened" ) );
 
     // splitting
-    gridLayout->addWidget( new QLabel( tr( "Default view orientation:" ), box ) );
+    gridLayout->addWidget( label = new QLabel( tr( "Default view orientation:" ), box ) );
     gridLayout->addWidget( combobox = new OptionComboBox( box, "ORIENTATION" ) );
     combobox->setUseValue( false );
     combobox->addItem( tr( "Top to Bottom" ) );
     combobox->addItem( tr( "Left to Right" ) );
 
+    label->setBuddy( combobox );
     addOptionWidget( combobox );
     combobox->setToolTip( tr( "Configure how new views are organized" ) );
 
     // splitting
-    gridLayout->addWidget( new QLabel( tr( "Default view orientation (diff mode):" ), box ) );
+    gridLayout->addWidget( label = new QLabel( tr( "Default view orientation (diff mode):" ), box ) );
     gridLayout->addWidget( combobox = new OptionComboBox( box, "DIFF_ORIENTATION" ) );
     combobox->setUseValue( false );
     combobox->addItem( tr( "Top to Bottom" ) );
     combobox->addItem( tr( "Left to Right" ) );
 
+    label->setBuddy( combobox );
     addOptionWidget( combobox );
     combobox->setToolTip( tr( "Configure how new views are organized in <i>diff</i> mode" ) );
     gridLayout->setColumnStretch( 1, 1 );
@@ -320,18 +329,20 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
     box->layout()->addItem( gridLayout );
 
-    gridLayout->addWidget( new QLabel( tr( "Autosave interval:" ), box ) );
+    gridLayout->addWidget( label = new QLabel( tr( "Autosave interval:" ), box ) );
     gridLayout->addWidget( spinbox = new OptionSpinBox( box, "AUTOSAVE_INTERVAL" ) );
     spinbox->setSuffix( "s" );
     spinbox->setMinimum( 1 );
     spinbox->setMaximum( 300 );
     spinbox->setToolTip( tr( "Interval between two autosave" ) );
+    label->setBuddy( spinbox );
     addOptionWidget( spinbox );
 
     OptionBrowsedLineEditor *edit;
-    gridLayout->addWidget( new QLabel( tr( "Autosave path:" ), box ) );
+    gridLayout->addWidget( label = new QLabel( tr( "Autosave path:" ), box ) );
     gridLayout->addWidget( edit = new OptionBrowsedLineEditor( box, "AUTOSAVE_PATH" ) );
     edit->setToolTip( tr( "Directory where autosaved files are stored" ) );
+    label->setBuddy( edit );
     addOptionWidget( edit );
 
     checkbox->setChecked( false );
@@ -349,10 +360,10 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     hLayout->setMargin(0);
     box->layout()->addItem( hLayout );
 
-    QLabel* label;
     hLayout->addWidget( label = new QLabel( tr( "Diff command:" ), box ) );
     hLayout->addWidget( edit = new OptionBrowsedLineEditor( box, "DIFF_COMMAND" ) );
     edit->setToolTip( tr( "Command used to diff files" ) );
+    label->setBuddy( edit );
     addOptionWidget( edit );
     label->setAlignment( Qt::AlignRight|Qt::AlignVCenter );
 
