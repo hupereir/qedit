@@ -20,7 +20,6 @@
 *******************************************************************************/
 
 #include "ParenthesisHighlight.h"
-#include "ParenthesisHighlight.moc"
 #include "TextEditor.h"
 #include "HighlightBlockData.h"
 

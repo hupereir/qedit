@@ -19,7 +19,6 @@
 *******************************************************************************/
 
 #include "PrintHelper.h"
-#include "PrintHelper.moc"
 
 #include "PatternLocationSet.h"
 #include "TextDisplay.h"

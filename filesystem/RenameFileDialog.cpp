@@ -33,7 +33,6 @@
 #include "Debug.h"
 #include "AnimatedLineEditor.h"
 #include "RenameFileDialog.h"
-#include "RenameFileDialog.moc"
 
 
 

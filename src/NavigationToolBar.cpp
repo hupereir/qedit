@@ -27,7 +27,6 @@
 #include "IconSizeMenu.h"
 #include "MainWindow.h"
 #include "NavigationToolBar.h"
-#include "NavigationToolBar.moc"
 #include "NavigationFrame.h"
 #include "QtUtil.h"
 #include "RecentFilesFrame.h"

@@ -19,7 +19,6 @@
 *******************************************************************************/
 
 #include "AskForSaveDialog.h"
-#include "AskForSaveDialog.moc"
 #include "BaseIconNames.h"
 #include "GridLayout.h"
 #include "IconEngine.h"

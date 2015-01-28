@@ -19,4 +19,3 @@
 *******************************************************************************/
 
 #include "ProgressDialog.h"
-#include "ProgressDialog.moc"

@@ -20,7 +20,6 @@
 *******************************************************************************/
 
 #include "Diff.h"
-#include "Diff.moc"
 #include "HighlightBlockFlags.h"
 #include "XmlOptions.h"
 #include "TextDisplay.h"

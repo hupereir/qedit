@@ -20,7 +20,6 @@
 *******************************************************************************/
 
 #include "WindowServer.h"
-#include "WindowServer.moc"
 
 #include "Application.h"
 #include "FileDialog.h"

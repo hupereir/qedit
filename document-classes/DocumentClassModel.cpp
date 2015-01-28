@@ -20,7 +20,6 @@
 *******************************************************************************/
 
 #include "DocumentClassModel.h"
-#include "DocumentClassModel.moc"
 
 #include "CustomPixmap.h"
 #include "IconEngine.h"

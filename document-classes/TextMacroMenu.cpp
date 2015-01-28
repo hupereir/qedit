@@ -19,7 +19,6 @@
 *******************************************************************************/
 
 #include "TextMacroMenu.h"
-#include "TextMacroMenu.moc"
 
 //___________________________________________________________
 TextMacroMenu::TextMacroMenu( QWidget* parent ):

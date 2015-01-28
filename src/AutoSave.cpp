@@ -20,7 +20,6 @@
 *******************************************************************************/
 
 #include "AutoSave.h"
-#include "AutoSave.moc"
 #include "Debug.h"
 #include "MainWindow.h"
 #include "Options.h"

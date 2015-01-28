@@ -20,7 +20,6 @@
 *******************************************************************************/
 
 #include "FileInformationDialog.h"
-#include "FileInformationDialog.moc"
 #include "FileRecordProperties.h"
 #include "FileSystemModel.h"
 

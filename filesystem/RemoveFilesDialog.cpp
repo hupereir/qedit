@@ -18,7 +18,6 @@
 *******************************************************************************/
 
 #include "RemoveFilesDialog.h"
-#include "RemoveFilesDialog.moc"
 
 #include "BaseIconNames.h"
 #include "IconEngine.h"

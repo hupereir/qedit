@@ -20,7 +20,6 @@
 *******************************************************************************/
 
 #include "FileModifiedDialog.h"
-#include "FileModifiedDialog.moc"
 #include "IconNames.h"
 #include "IconEngine.h"
 #include "QtUtil.h"

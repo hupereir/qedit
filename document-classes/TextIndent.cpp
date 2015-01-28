@@ -29,7 +29,6 @@
 
 #include "TextEditor.h"
 #include "TextIndent.h"
-#include "TextIndent.moc"
 
 #include <QRegExp>
 #include <QProgressDialog>

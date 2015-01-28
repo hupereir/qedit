@@ -19,7 +19,6 @@
 *******************************************************************************/
 
 #include "HtmlHelper.h"
-#include "HtmlHelper.moc"
 
 #include "HtmlTextNode.h"
 #include "PatternLocationSet.h"

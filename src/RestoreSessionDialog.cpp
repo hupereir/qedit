@@ -20,7 +20,6 @@
 *******************************************************************************/
 
 #include "RestoreSessionDialog.h"
-#include "RestoreSessionDialog.moc"
 
 #include "AnimatedTreeView.h"
 #include "Debug.h"

@@ -24,7 +24,6 @@
 #include "HighlightBlockData.h"
 #include "TextParenthesis.h"
 #include "TextHighlight.h"
-#include "TextHighlight.moc"
 
 #include <QTextDocument>
 

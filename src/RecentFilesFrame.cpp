@@ -19,7 +19,6 @@
 *******************************************************************************/
 
 #include "RecentFilesFrame.h"
-#include "RecentFilesFrame.moc"
 
 #include "AnimatedTreeView.h"
 #include "ColumnSortingMenu.h"
