@@ -32,27 +32,27 @@ class SessionFilesView: public AnimatedTreeView
 
     public:
 
-    //! constructor
+    //* constructor
     SessionFilesView( QWidget* = 0 );
 
-    //! destructor
+    //* destructor
     virtual ~SessionFilesView( void )
     {}
 
     Q_SIGNALS:
 
-    //! detach
+    //* detach
     void detach( const File& );
 
-    //! file reorganization
+    //* file reorganization
     void reparentFilesToMain( const File&, const File& );
 
     protected:
 
-    //! start drag
+    //* start drag
     virtual void startDrag( Qt::DropActions );
 
-    //! render to pixmap
+    //* render to pixmap
     QPixmap _renderToPixmap( const QModelIndexList&, QRect& ) const;
 
     private:

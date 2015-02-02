@@ -38,17 +38,17 @@ class FileRecordToolTipWidget: public BaseToolTipWidget
 
     public:
 
-    //! constructor
+    //* constructor
     FileRecordToolTipWidget( QWidget* );
 
-    //! destructo
+    //* destructo
     virtual ~FileRecordToolTipWidget( void )
     {}
 
-    //! set data
+    //* set data
     void setRecord( const FileRecord&, const QIcon& = QIcon() );
 
-    //! mask
+    //* mask
     void setPixmapSize( int value )
     {
         if( pixmapSize_ == value ) return;
@@ -56,7 +56,7 @@ class FileRecordToolTipWidget: public BaseToolTipWidget
         _reload();
     }
 
-    //! information mask
+    //* information mask
     enum Type
     {
         None = 0,
@@ -70,7 +70,7 @@ class FileRecordToolTipWidget: public BaseToolTipWidget
 
     Q_DECLARE_FLAGS(Types, Type)
 
-    //! mask
+    //* mask
     void setMask( unsigned int value )
     {
         if( mask_ == value ) return;
@@ -80,46 +80,46 @@ class FileRecordToolTipWidget: public BaseToolTipWidget
 
     protected:
 
-    //! reload
+    //* reload
     virtual void _reload( void )
     { setRecord( record_, icon_ ); }
 
     private Q_SLOTS:
 
-    //! update configuration
+    //* update configuration
     void _updateConfiguration( void );
 
     private:
 
-    //! pixmap size
+    //* pixmap size
     int pixmapSize_;
 
-    //! information mask
+    //* information mask
     unsigned int mask_;
 
-    //! local icon copy
+    //* local icon copy
     QIcon icon_;
 
-    //! local fileInfo copy
+    //* local fileInfo copy
     FileRecord record_;
 
-    //! icon label
-    QLabel* iconLabel_;
+    //* icon label
+    QLabel* iconLabel_ = nullptr;
 
-    //! file name label
-    QLabel* fileLabel_;
+    //* file name label
+    QLabel* fileLabel_ = nullptr;
 
-    //! separator
-    QFrame* separator_;
+    //* separator
+    QFrame* separator_ = nullptr;
 
-    //!@name items
+    //*@name items
     //@{
-    GridLayoutItem* pathItem_;
-    GridLayoutItem* sizeItem_;
-    GridLayoutItem* lastModifiedItem_;
-    GridLayoutItem* userItem_;
-    GridLayoutItem* groupItem_;
-    GridLayoutItem* permissionsItem_;
+    GridLayoutItem* pathItem_ = nullptr;
+    GridLayoutItem* sizeItem_ = nullptr;
+    GridLayoutItem* lastModifiedItem_ = nullptr;
+    GridLayoutItem* userItem_ = nullptr;
+    GridLayoutItem* groupItem_ = nullptr;
+    GridLayoutItem* permissionsItem_ = nullptr;
     //@}
 
 };

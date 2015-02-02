@@ -177,8 +177,6 @@ void SessionFilesFrame::_showToolTip( const QModelIndex& index )
 
         // icon
         QIcon icon;
-        // QVariant iconVariant( model_.data( index, Qt::DecorationRole ) );
-        // if( iconVariant.canConvert( QVariant::Icon ) ) icon = iconVariant.value<QIcon>();
         const int iconProperty = FileRecord::PropertyId::get( FileRecordProperties::Icon );
         if( record.hasProperty( iconProperty ) )
         { icon = IconEngine::get( record.property( iconProperty ) ); }

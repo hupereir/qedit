@@ -33,123 +33,123 @@
 
 class FileRecordToolTipWidget;
 
-//! editor windows navigator
+//* editor windows navigator
 class SessionFilesFrame: public QWidget, public Counter
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! creator
+    //* creator
     SessionFilesFrame( QWidget* parent );
 
-    //! destructor
+    //* destructor
     ~SessionFilesFrame( void );
 
-    //! list
+    //* list
     TreeView& list( void ) const
     { return *list_; }
 
-    //! select file in list
+    //* select file in list
     void select( const File& );
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! previous file
+    //* previous file
     QAction& previousFileAction( void ) const
     { return *previousFileAction_; }
 
-    //! previous file
+    //* previous file
     QAction& nextFileAction( void ) const
     { return *nextFileAction_; }
 
     //@}
 
-    //! model
+    //* model
     const SessionFilesModel& model( void ) const
     { return model_; }
 
     public Q_SLOTS:
 
-    //! update session files
+    //* update session files
     void update( void );
 
     Q_SIGNALS:
 
-    //! signal emitted when a file is selected
+    //* signal emitted when a file is selected
     void fileSelected( FileRecord );
 
-    //! signal emitted when a file is selected
+    //* signal emitted when a file is selected
     void fileActivated( FileRecord );
 
-    //! signal emitted when file is asked to be closed
+    //* signal emitted when file is asked to be closed
     void filesClosed( FileRecord::List );
 
-    //! signal emitted when file is asked to be saved
+    //* signal emitted when file is asked to be saved
     void filesSaved( FileRecord::List );
 
     protected Q_SLOTS:
 
-    //! previous file
+    //* previous file
     void _selectPreviousFile( void );
 
-    //! next file
+    //* next file
     void _selectNextFile( void );
 
-    //! update session files
+    //* update session files
     void _updateActions( void );
 
-    //! show tooltip
+    //* show tooltip
     void _showToolTip( const QModelIndex& );
 
-    //! open
+    //* open
     void _open( void );
 
-    //! save
+    //* save
     void _save( void );
 
-    //! close
+    //* close
     void _close( void );
 
-    //! sessionFilesItem selected
+    //* sessionFilesItem selected
     void _itemSelected( const QModelIndex& index );
 
-    //! sessionFilesItem selected
+    //* sessionFilesItem selected
     void _itemActivated( const QModelIndex& index );
 
     private:
 
-    //! install actions
+    //* install actions
     void _installActions( void );
 
-    //! tooltip widget
-    FileRecordToolTipWidget* toolTipWidget_;
+    //* tooltip widget
+    FileRecordToolTipWidget* toolTipWidget_ = nullptr;
 
-    //! model
+    //* model
     SessionFilesModel model_;
 
-    //! list
+    //* list
     TreeView* list_;
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! previous file
+    //* previous file
     QAction* previousFileAction_;
 
-    //! next file
+    //* next file
     QAction* nextFileAction_;
 
-    //! open action
+    //* open action
     QAction* openAction_;
 
-    //! save action
+    //* save action
     QAction* saveAction_;
 
-    //! close action
+    //* close action
     QAction *closeAction_;
 
     //@}

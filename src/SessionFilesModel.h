@@ -27,7 +27,7 @@
 
 #include <QHash>
 
-//! qlistview for object counters
+//* qlistview for object counters
 class SessionFilesModel: public FileRecordModel
 {
 
@@ -35,55 +35,55 @@ class SessionFilesModel: public FileRecordModel
 
     public:
 
-    //! constructor
+    //* constructor
     SessionFilesModel( QObject* parent = 0 );
 
-    //! destructor
+    //* destructor
     virtual ~SessionFilesModel( void )
     {}
 
-    //!@name methods reimplemented from base class
+    //*@name methods reimplemented from base class
     //@{
 
-    //! flags
+    //* flags
     virtual Qt::ItemFlags flags(const QModelIndex& ) const;
 
-    //! return data for a given index
+    //* return data for a given index
     virtual QVariant data(const QModelIndex &, int ) const;
 
-    //! mime type
+    //* mime type
     virtual QStringList mimeTypes( void ) const;
 
-    //! mime data
+    //* mime data
     virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
 
-    //! drop mine data
+    //* drop mine data
     virtual bool dropMimeData(const QMimeData*, Qt::DropAction, int row, int column, const QModelIndex&);
 
     //@}
 
     Q_SIGNALS:
 
-    //! file reorganization
+    //* file reorganization
     void reparentFiles( const File&, const File& );
 
-    //! file reorganization
+    //* file reorganization
     void reparentFilesToMain( const File&, const File& );
 
     private Q_SLOTS:
 
-    //! configuration
+    //* configuration
     void _updateConfiguration( void );
 
     private:
 
-    //! icon
+    //* icon
     static const QIcon& _icon( int );
 
-    //! icon cache
+    //* icon cache
     using IconCache = QHash<unsigned int, QIcon>;
 
-    //! type icon cache
+    //* type icon cache
     static IconCache& _icons( void );
 
 };
