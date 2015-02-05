@@ -25,16 +25,16 @@
 #include "Counter.h"
 #include "File.h"
 
-//! QDialog used to ask if a new file should be created
+//* QDialog used to ask if a new file should be created
 class FileModifiedDialog: public BaseDialog, public Counter
 {
 
-    //! Qt macro
+    //* Qt macro
     Q_OBJECT
 
     public:
 
-    //! return codes
+    //* return codes
     enum ReturnCode
     {
 
@@ -45,28 +45,28 @@ class FileModifiedDialog: public BaseDialog, public Counter
 
     };
 
-    //! constructor
+    //* constructor
     FileModifiedDialog( QWidget* parent, const File& file );
 
-    //! destructor
+    //* destructor
     virtual ~FileModifiedDialog( void )
     {}
 
     private Q_SLOTS:
 
-    //! re-saved removed file
+    //* re-saved removed file
     void _reLoad( void )
     { done( Reload ); }
 
-    //! re-saved removed file
+    //* re-saved removed file
     void _reSave( void )
     { done( SaveAgain ); }
 
-    //! save file with new name
+    //* save file with new name
     void _saveAs( void )
     { done( SaveAs ); }
 
-    //! save file with new name
+    //* save file with new name
     void _ignore( void )
     { done( Ignore ); }
 

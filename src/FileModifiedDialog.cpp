@@ -49,7 +49,7 @@ Counter( "FileModifiedDialog" )
     QString buffer;
     QTextStream( &buffer ) << file.localName() << " has been modified by another application." << endl;
 
-    //! try load Question icon
+    //* try load Question icon
     QHBoxLayout *hLayout( new QHBoxLayout() );
     layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
@@ -63,30 +63,30 @@ Counter( "FileModifiedDialog" )
     layout->addWidget( frame );
 
     // button layout
-    QHBoxLayout *button_layout = new QHBoxLayout();
-    button_layout->setMargin(0);
-    button_layout->setSpacing( 5 );
-    layout->addLayout( button_layout );
-    button_layout->addStretch( 1 );
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    buttonLayout->setMargin(0);
+    buttonLayout->setSpacing( 5 );
+    layout->addLayout( buttonLayout );
+    buttonLayout->addStretch( 1 );
 
     // reload button.
     QPushButton* button;
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::Reload ), "&Reload", this ) );
+    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::Reload ), "&Reload", this ) );
     connect( button, SIGNAL(clicked()), SLOT(_reLoad()) );
     button->setToolTip( "Reload file from disc. Modifications will be lost" );
 
     // resave button
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::Save ), "&Save Again", this ) );
+    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::Save ), "&Save Again", this ) );
     connect( button, SIGNAL(clicked()), SLOT(_reSave()) );
     button->setToolTip( "Save file again. Disc modifications will be lost" );
 
     // save as button
-    button_layout->addWidget( button = new QPushButton( IconEngine::get( IconNames::SaveAs ), "&Save As", this ) );
+    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::SaveAs ), "&Save As", this ) );
     connect( button, SIGNAL(clicked()), SLOT(_saveAs()) );
     button->setToolTip( "Save file with a different name" );
 
     // ignore button.
-    button_layout->addWidget( button = new QPushButton(  IconEngine::get( IconNames::DialogCancel ), "&Ignore", this ) );
+    buttonLayout->addWidget( button = new QPushButton(  IconEngine::get( IconNames::DialogCancel ), "&Ignore", this ) );
     connect( button, SIGNAL(clicked()), SLOT(_ignore()) );
     button->setToolTip( "Ignore warning" );
 
