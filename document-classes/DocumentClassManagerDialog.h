@@ -30,7 +30,7 @@
 
 class TreeView;
 
-//! handles list of connection attributes
+//* handles list of connection attributes
 class DocumentClassManagerDialog: public CustomDialog
 {
 
@@ -38,55 +38,55 @@ class DocumentClassManagerDialog: public CustomDialog
 
     public:
 
-    //! constructor
+    //* constructor
     DocumentClassManagerDialog( QWidget* = 0x0 );
 
-    //! destructor
+    //* destructor
     virtual ~DocumentClassManagerDialog( void )
     {}
 
-    //! list of user files
+    //* list of user files
     File::List userFiles( void ) const;
 
     protected Q_SLOTS:
 
-    //! read
+    //* read
     virtual void _reload( void );
 
-    //! add document class
+    //* add document class
     virtual void _add( void );
 
-    //! remove document classes
+    //* remove document classes
     virtual void _remove( void );
 
-    //! update buttons
+    //* update buttons
     virtual void _updateButtons( void );
 
     private:
 
-    //! user treeview
-    TreeView* list_;
+    //* user treeview
+    TreeView* list_ = nullptr;
 
-    //! model
+    //* model
     DocumentClassModel model_;
 
-    //! add button
-    QPushButton* addButton_;
+    //* add button
+    QPushButton* addButton_ = nullptr;
 
-    //! remove button
-    QPushButton* removeButton_;
+    //* remove button
+    QPushButton* removeButton_ = nullptr;
 
-    //! reload button
-    QPushButton* reloadButton_;
+    //* reload button
+    QPushButton* reloadButton_ = nullptr;
 
-    //! add action
-    QAction* addAction_;
+    //* add action
+    QAction* addAction_ = nullptr;
 
-    //! remove action
-    QAction* removeAction_;
+    //* remove action
+    QAction* removeAction_ = nullptr;
 
-    //! remove action
-    QAction* reloadAction_;
+    //* remove action
+    QAction* reloadAction_ = nullptr;
 
 };
 
