@@ -63,7 +63,7 @@ set(qedit_SOURCES
   PrintHelper.cpp
   ProgressDialog.cpp
   RecentFilesFrame.cpp
-  ReplaceDialog.cpp
+  ReplaceWidget.cpp
   RestoreSessionDialog.cpp
   SaveAllDialog.cpp
   SessionFilesFrame.cpp

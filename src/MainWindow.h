@@ -37,17 +37,18 @@
 #include <QStackedWidget>
 
 class BaseFindDialog;
+class BaseReplaceDialog;
 class BaseStatusBar;
 class DocumentClassToolBar;
 class ElidedLabel;
 class Menu;
 class NavigationFrame;
 class PrintHelper;
-class ReplaceDialog;
+class ReplaceWidget;
 class SelectLineDialog;
 class TransitionWidget;
 
-//! editor main window
+//* editor main window
 class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 {
 
@@ -55,34 +56,34 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     public:
 
-    //! constructor
+    //* constructor
     MainWindow( QWidget* = 0 );
 
-    //! destructor
+    //* destructor
     ~MainWindow( void );
 
-    //!@name file management
+    //*@name file management
     //@{
 
-    //! used to select editor with matching filename
+    //* used to select editor with matching filename
     class SameFileFTor: public TextDisplay::SameFileFTor
     {
 
         public:
 
-        //! constructor
+        //* constructor
         SameFileFTor( const File& file ):
             TextDisplay::SameFileFTor( file )
         {}
 
-        //! predicate
+        //* predicate
         bool operator() ( const MainWindow* window ) const
         {
             Base::KeySet<TextView> views( window );
             return std::find_if( views.begin(), views.end(), *this ) != views.end();
         }
 
-        //! predicate
+        //* predicate
         bool operator() ( const TextView* view ) const
         {
             Base::KeySet<TextDisplay> displays( view );
@@ -91,19 +92,19 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     };
 
-    //! used to select editor with empty, unmodified file
+    //* used to select editor with empty, unmodified file
     class EmptyFileFTor: public TextDisplay::EmptyFileFTor
     {
         public:
 
-        //! predicate
+        //* predicate
         bool operator() ( const MainWindow* window ) const
         {
             Base::KeySet<TextView> views( window );
             return std::find_if( views.begin(), views.end(), *this ) != views.end();
         }
 
-        //! predicate
+        //* predicate
         bool operator() ( const TextView* view ) const
         {
             Base::KeySet<TextDisplay> displays( view );
@@ -112,194 +113,194 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     };
 
-    //! used to select editor with empty, unmodified file
+    //* used to select editor with empty, unmodified file
     class IsModifiedFTor
     {
         public:
 
-        //! predicate
+        //* predicate
         bool operator() ( const MainWindow* window ) const
         {
             Base::KeySet<TextView> views( window );
             return std::find_if( views.begin(), views.end(), *this ) != views.end();
         }
 
-        //! predicate
+        //* predicate
         bool operator() ( const TextView* view ) const
         {
             Base::KeySet<TextDisplay> displays( view );
             return std::find_if( displays.begin(), displays.end(), *this ) != displays.end();
         }
 
-        //! predicate
+        //* predicate
         bool operator() ( const TextDisplay* display ) const
         { return display->document()->isModified(); }
 
     };
 
-    //! returns true if there is at least one display modified in this window
+    //* returns true if there is at least one display modified in this window
     bool isModified( void ) const
     { return IsModifiedFTor()(this); }
 
     //@}
 
-    //! menu
+    //* menu
     Menu& menu( void ) const
     { return *menu_; }
 
-    //! navigation window
+    //* navigation window
     NavigationFrame& navigationFrame( void ) const
     { return *navigationFrame_; }
 
-    //!@name active view/display managment
+    //*@name active view/display managment
     //@{
 
-    //! create new TextView
+    //* create new TextView
     TextView& newTextView( FileRecord record = FileRecord() );
 
-    //! active view
+    //* active view
     TextView& activeView( void )
     { return *activeView_; }
 
-    //! active view
+    //* active view
     const TextView& activeView( void ) const
     { return *activeView_; }
 
-    //! change active display manualy
+    //* change active display manualy
     void setActiveView( TextView& view );
 
 
-    //! active display
+    //* active display
     const TextDisplay& activeDisplay( void ) const
     { return activeView().activeDisplay(); }
 
-    //! active display
+    //* active display
     bool isActiveDisplay( const TextDisplay& display ) const
     { return activeView().isActiveDisplay( display ); }
 
-    //! active display
+    //* active display
     TextDisplay& activeDisplay( void )
     { return activeView().activeDisplay(); }
 
-    //! get set of all displays associated to this window
+    //* get set of all displays associated to this window
     /*!
     this is a convenient function that loops over all associated views
     and merge their associated displays into a single list
     */
     Base::KeySet<TextDisplay> associatedDisplays( void ) const;
 
-    //! select display from file
+    //* select display from file
     bool selectDisplay( const File& );
 
-    //! save all modified text displays
+    //* save all modified text displays
     void saveAll( void );
 
-    //! ignore all text display modifications
+    //* ignore all text display modifications
     void ignoreAll( void );
 
     //@}
 
-    //!@name configuration
+    //*@name configuration
     //@{
 
     //@}
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! new file
+    //* new file
     QAction& newFileAction( void ) const
     { return *newFileAction_; }
 
-    //! clone display
+    //* clone display
     QAction& cloneAction( void ) const
     { return *cloneAction_; }
 
-    //! detach action
+    //* detach action
     QAction& detachAction( void ) const
     { return *detachAction_; }
 
-    //! open file
+    //* open file
     QAction& openAction( void ) const
     { return *openAction_; }
 
-    //! close display
+    //* close display
     QAction& closeDisplayAction( void ) const
     { return *closeDisplayAction_; }
 
-    //! close display
+    //* close display
     QAction& closeWindowAction( void ) const
     { return *closeWindowAction_; }
 
-    //! save
+    //* save
     QAction& saveAction( void ) const
     { return *saveAction_; }
 
-    //! save as
+    //* save as
     QAction& saveAsAction( void ) const
     { return *saveAsAction_; }
 
-    //! revert to saved
+    //* revert to saved
     QAction& revertToSaveAction( void ) const
     { return *revertToSaveAction_; }
 
-    //! undo
+    //* undo
     QAction& undoAction( void ) const
     { return *undoAction_; }
 
-    //! redo
+    //* redo
     QAction& redoAction( void ) const
     { return *redoAction_; }
 
-    //! cut
+    //* cut
     QAction& cutAction( void ) const
     { return *cutAction_; }
 
-    //! copy
+    //* copy
     QAction& copyAction( void ) const
     { return *copyAction_; }
 
-    //! paste
+    //* paste
     QAction& pasteAction( void ) const
     { return *pasteAction_; }
 
-    //! print
+    //* print
     QAction& printAction( void ) const
     { return *printAction_; }
 
-    //! print
+    //* print
     QAction& printPreviewAction( void ) const
     { return *printPreviewAction_; }
 
-    //! export
+    //* export
     QAction& htmlAction( void ) const
     { return *htmlAction_; }
 
-    //! file info
+    //* file info
     QAction& filePropertiesAction( void ) const
     { return *filePropertiesAction_; }
 
-    //! spellcheck
+    //* spellcheck
     QAction& spellcheckAction( void ) const
     { return *spellcheckAction_; }
 
-    //! diff files action
+    //* diff files action
     QAction& diffAction( void ) const
     { return *diffAction_; }
 
-    //! split display horizontal
+    //* split display horizontal
     QAction& splitDisplayHorizontalAction( void ) const
     { return *splitDisplayHorizontalAction_; }
 
-    //! split display vertical
+    //* split display vertical
     QAction& splitDisplayVerticalAction( void ) const
     { return *splitDisplayVerticalAction_; }
 
-    //! open horizontal
+    //* open horizontal
     QAction& openHorizontalAction( void ) const
     { return *openHorizontalAction_; }
 
-    //! open vertical
+    //* open vertical
     QAction& openVerticalAction( void ) const
     { return *openVerticalAction_; }
 
@@ -307,31 +308,31 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     Q_SIGNALS:
 
-    //! emmited when window is activated
+    //* emmited when window is activated
     void activated( MainWindow* );
 
-    //! emmited when the document modification state of an editor is changed
+    //* emmited when the document modification state of an editor is changed
     void modificationChanged( void );
 
-    //!@name re-implemented from text editor
+    //*@name re-implemented from text editor
     //@{
 
-    //! emmited from TextDisplay when no match is found for find/replace request
+    //* emmited from TextDisplay when no match is found for find/replace request
     void noMatchFound( void );
 
-    //! emmited from TextDisplay when no match is found for find/replace request
+    //* emmited from TextDisplay when no match is found for find/replace request
     void matchFound( void );
 
-    //! busy
+    //* busy
     void busy( int );
 
-    //! progressAvailable
+    //* progressAvailable
     void progressAvailable( int );
 
-    //! idle
+    //* idle
     void idle( void );
 
-    //! scratch files
+    //* scratch files
     void scratchFileCreated( const File& );
 
     //@}
@@ -339,60 +340,60 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     public Q_SLOTS:
 
-    //! select class name
+    //* select class name
     void selectClassName( QString value )
     { activeView().selectClassName( value ); }
 
-    //! rehighlight all text displays
+    //* rehighlight all text displays
     void rehighlight( void )
     { activeView().rehighlight(); }
 
-    //!@name reimplemented from TextEditor
+    //*@name reimplemented from TextEditor
     //@{
 
-    //! find text from dialog
+    //* find text from dialog
     virtual void findFromDialog( void );
 
-    //! replace text from dialog
+    //* replace text from dialog
     virtual void replaceFromDialog( void );
 
-    //! select line from dialog
+    //* select line from dialog
     virtual void selectLineFromDialog( void );
 
     //@}
 
     protected:
 
-    //! generic event
+    //* generic event
     virtual bool event( QEvent* );
 
-    //! close event
+    //* close event
     virtual void closeEvent( QCloseEvent* );
 
-    //! timer event
+    //* timer event
     virtual void timerEvent( QTimerEvent* );
 
     private Q_SLOTS:
 
-    //! update configuration
+    //* update configuration
     void _updateConfiguration( void );
 
-    //! update configuration
+    //* update configuration
     void _saveConfiguration( void );
 
-    //! toggle navigation frame visibility
+    //* toggle navigation frame visibility
     void _toggleNavigationFrame( bool );
 
-    //! splitter moved
+    //* splitter moved
     void _splitterMoved( void );
 
-    //! active view changed
+    //* active view changed
     /*!
     this is triggered by StackedWidget::currentWidgetChanged
     */
     void _activeViewChanged( void );
 
-    //! select display from file
+    //* select display from file
     /*!
     this is triggered by changing the selection in the sessionFilesFrame
     of the navigation window. This ensures that the selected display
@@ -401,273 +402,276 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     void _selectDisplay( FileRecord record )
     { selectDisplay( record.file() ); }
 
-    //! clone current file
+    //* clone current file
     void _splitDisplay( void );
 
-    //! clone current file horizontal
+    //* clone current file horizontal
     void _splitDisplayHorizontal( void )
     { activeView().splitDisplay( Qt::Horizontal, true ); }
 
-    //! clone current file horizontal
+    //* clone current file horizontal
     void _splitDisplayVertical( void )
     { activeView().splitDisplay( Qt::Vertical, true ); }
 
-    //! close
+    //* close
     /*! close window */
     void _closeWindow( void )
     { close(); }
 
-    //! close
+    //* close
     /*! close current display if more than two display are open, */
     void _closeDisplay( void )
     { activeView().closeActiveDisplay(); }
 
-    //! save
+    //* save
     void _save( void )
     { activeDisplay().save(); }
 
-    //! Save As
+    //* Save As
     void _saveAs( void )
     { activeDisplay().saveAs(); }
 
-    //! Revert to save
+    //* Revert to save
     void _revertToSave( void );
 
-    //! Print current document
+    //* Print current document
     void _print( void );
 
-    //! Print current document
+    //* Print current document
     void _print( PrintHelper& );
 
-    //! Print preview current document
+    //* Print preview current document
     void _printPreview( void );
 
-    //! export to html
+    //* export to html
     void _toHtml( void );
 
-    //!@name forwarded slots
+    //*@name forwarded slots
     //@{
 
-    //! undo
+    //* undo
     void _undo( void )
     { activeDisplay().undoAction().trigger(); }
 
-    //! redo
+    //* redo
     void _redo( void )
     { activeDisplay().redoAction().trigger(); }
 
-    //! cut
+    //* cut
     void _cut( void )
     { activeDisplay().cutAction().trigger(); }
 
-    //! copy
+    //* copy
     void _copy( void )
     { activeDisplay().copyAction().trigger(); }
 
-    //! paste
+    //* paste
     void _paste( void )
     { activeDisplay().pasteAction().trigger(); }
 
-    //! file information
+    //* file information
     void _fileInfo( void )
     { activeDisplay().filePropertiesAction().trigger(); }
 
-    //! spellcheck
+    //* spellcheck
     void _spellcheck( void )
     { activeDisplay().spellcheckAction().trigger(); }
 
-    //! diff files
+    //* diff files
     void _diff( void )
     { activeView().diff(); }
 
-    //! find
+    //* find
     void _find( TextSelection selection )
     { activeDisplay().find( selection ); }
 
-    //! find
+    //* find
     void _replace( TextSelection selection )
     { activeDisplay().replace( selection ); }
 
-    //! find
+    //* find
     void _replaceInSelection( TextSelection selection )
     { activeDisplay().replaceInSelection( selection ); }
 
-    //! find
+    //* find
     void _replaceInWindow( TextSelection selection )
     { activeDisplay().replaceInWindow( selection ); }
 
-    //! select line
+    //* select line
     void _selectLine( int value )
     { activeDisplay().selectLine( value ); }
 
-    //! replace selection in multiple files
+    //* replace selection in multiple files
     void _multipleFileReplace( void );
 
     //@}
 
-    //! update window title, cut, copy, paste buttons, and filename line editor
+    //* update window title, cut, copy, paste buttons, and filename line editor
     /*! \param flags are bitwise or of TextDisplay::UpdateFlags */
     void _update( TextDisplay::UpdateFlags );
 
-    //! update modifiers
+    //* update modifiers
     void _updateModifiers( void );
 
-    //! update actions based on number of displays in active view
+    //* update actions based on number of displays in active view
     void _updateDisplayCount( void )
     { _update( TextDisplay::DisplayCount ); }
 
-    //! display cursor position in state window
+    //* display cursor position in state window
     void _updateCursorPosition( void );
 
-    //! replace transition widget
+    //* replace transition widget
     /*! this is needed when transition widget gets deleted via its parent Display, during animation */
     void _replaceTransitionWidget( void );
 
-    //! animations
+    //* animations
     void _animationFinished( void );
 
     private:
 
-    //! install actions
+    //* install actions
     void _installActions( void );
 
-    //! install toolbars
+    //* install toolbars
     void _installToolbars( void );
 
-    //! create find dialog
+    //* create find dialog
     void _createBaseFindDialog( void );
 
-    //! create replace dialog
-    void _createReplaceDialog( void );
+    //* create replace dialog
+    void _createReplaceWidget( void );
 
-    //! make connection between this window and child text view
+    //* make connection between this window and child text view
     void _connectView( TextView& view );
 
-    //! Update window title
+    //* Update window title
     void _updateWindowTitle();
 
 
-    //!@name child widgets
+    //*@name child widgets
     //@{
 
-    //! menu
-    Menu* menu_;
+    //* menu
+    Menu* menu_ = nullptr;
 
-    //! stack widget
-    QStackedWidget* stack_;
+    //* stack widget
+    QStackedWidget* stack_ = nullptr;
 
-    //! transition widget
-    TransitionWidget* transitionWidget_;
+    //* transition widget
+    TransitionWidget* transitionWidget_ = nullptr;
 
-    //! navigation window
-    NavigationFrame* navigationFrame_;
+    //* navigation window
+    NavigationFrame* navigationFrame_ = nullptr;
 
-    //! main display widget
-    TextView* activeView_;
+    //* main display widget
+    TextView* activeView_ = nullptr;
 
-    //! state window
-    BaseStatusBar* statusbar_;
+    //* state window
+    BaseStatusBar* statusbar_ = nullptr;
 
-    //! file display lineEdit
-    ElidedLabel* fileEditor_;
+    //* file display lineEdit
+    ElidedLabel* fileEditor_ = nullptr;
 
-    //! document class toolbar
-    DocumentClassToolBar* documentClassToolBar_;
+    //* document class toolbar
+    DocumentClassToolBar* documentClassToolBar_ = nullptr;
 
     //@}
 
-    //!@name dialogs (re-implemented from TextEditor)
+    //*@name dialogs (re-implemented from TextEditor)
     //@{
 
-    //! find dialog
-    BaseFindDialog* findDialog_;
+    //* find dialog
+    BaseFindDialog* findDialog_ = nullptr;
 
-    //! find dialog
-    ReplaceDialog* replaceDialog_;
+    //* replace dialog
+    BaseReplaceDialog* replaceDialog_ = nullptr;
 
-    //! line number dialog
-    SelectLineDialog* selectLineDialog_;
+    //* replace widget
+    ReplaceWidget* replaceWidget_ = nullptr;
+
+    //* line number dialog
+    SelectLineDialog* selectLineDialog_ = nullptr;
 
     //@}
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! new file
-    QAction* newFileAction_;
+    //* new file
+    QAction* newFileAction_ = nullptr;
 
-    //! clone display
-    QAction* cloneAction_;
+    //* clone display
+    QAction* cloneAction_ = nullptr;
 
-    //! detach action
-    QAction* detachAction_;
+    //* detach action
+    QAction* detachAction_ = nullptr;
 
-    //! open file
-    QAction* openAction_;
+    //* open file
+    QAction* openAction_ = nullptr;
 
-    //! open horizontal
-    QAction* openHorizontalAction_;
+    //* open horizontal
+    QAction* openHorizontalAction_ = nullptr;
 
-    //! open vertical
-    QAction* openVerticalAction_;
+    //* open vertical
+    QAction* openVerticalAction_ = nullptr;
 
-    //! close display
-    QAction* closeDisplayAction_;
+    //* close display
+    QAction* closeDisplayAction_ = nullptr;
 
-    //! close display
-    QAction* closeWindowAction_;
+    //* close display
+    QAction* closeWindowAction_ = nullptr;
 
-    //! save
-    QAction* saveAction_;
+    //* save
+    QAction* saveAction_ = nullptr;
 
-    //! save as
-    QAction* saveAsAction_;
+    //* save as
+    QAction* saveAsAction_ = nullptr;
 
-    //! revert to saved
-    QAction* revertToSaveAction_;
+    //* revert to saved
+    QAction* revertToSaveAction_ = nullptr;
 
-    //! print
-    QAction* printAction_;
+    //* print
+    QAction* printAction_ = nullptr;
 
-    //! print preview
-    QAction* printPreviewAction_;
+    //* print preview
+    QAction* printPreviewAction_ = nullptr;
 
-    //! html action
-    QAction* htmlAction_;
+    //* html action
+    QAction* htmlAction_ = nullptr;
 
-    //! undo
-    QAction* undoAction_;
+    //* undo
+    QAction* undoAction_ = nullptr;
 
-    //! redo
-    QAction* redoAction_;
+    //* redo
+    QAction* redoAction_ = nullptr;
 
-    //! cut
-    QAction* cutAction_;
+    //* cut
+    QAction* cutAction_ = nullptr;
 
-    //! copy
-    QAction* copyAction_;
+    //* copy
+    QAction* copyAction_ = nullptr;
 
-    //! paste
-    QAction* pasteAction_;
+    //* paste
+    QAction* pasteAction_ = nullptr;
 
-    //! file info
-    QAction* filePropertiesAction_;
+    //* file info
+    QAction* filePropertiesAction_ = nullptr;
 
-    //! spellcheck
-    QAction* spellcheckAction_;
+    //* spellcheck
+    QAction* spellcheckAction_ = nullptr;
 
-    //! diff files
-    QAction* diffAction_;
+    //* diff files
+    QAction* diffAction_ = nullptr;
 
-    //! split display horizontal
-    QAction* splitDisplayHorizontalAction_;
+    //* split display horizontal
+    QAction* splitDisplayHorizontalAction_ = nullptr;
 
-    //! split display vertical
-    QAction* splitDisplayVerticalAction_;
+    //* split display vertical
+    QAction* splitDisplayVerticalAction_ = nullptr;
 
     //@}
 
-    //! timer
+    //* timer
     QBasicTimer resizeTimer_;
 
 };

@@ -24,6 +24,8 @@
 #include "AnimatedLineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
+#include "BaseFindDialog.h"
+#include "BaseReplaceDialog.h"
 #include "BaseStatusBar.h"
 #include "BlockDelimiterDisplay.h"
 #include "ClockLabel.h"
@@ -41,7 +43,6 @@
 #include "FileRecordProperties.h"
 #include "FileSelectionDialog.h"
 #include "FileSystemFrame.h"
-#include "BaseFindDialog.h"
 #include "HighlightBlockFlags.h"
 #include "HtmlDialog.h"
 #include "HtmlHelper.h"
@@ -59,7 +60,7 @@
 #include "QtUtil.h"
 #include "QuestionDialog.h"
 #include "RecentFilesFrame.h"
-#include "ReplaceDialog.h"
+#include "ReplaceWidget.h"
 #include "SelectLineDialog.h"
 #include "SessionFilesFrame.h"
 #include "Singleton.h"
@@ -82,14 +83,7 @@
 //_____________________________________________________
 MainWindow::MainWindow(  QWidget* parent ):
     BaseMainWindow( parent ),
-    Counter( "MainWindow" ),
-    menu_( 0 ),
-    statusbar_( 0 ),
-    fileEditor_( 0 ),
-    documentClassToolBar_( 0 ),
-    findDialog_( 0 ),
-    replaceDialog_( 0 ),
-    selectLineDialog_( 0 )
+    Counter( "MainWindow" )
 {
 
     Debug::Throw( "MainWindow::MainWindow.\n" );
@@ -153,8 +147,6 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     // file editor
     statusbar_->addPermanentWidget( fileEditor_ = new ElidedLabel( statusbar_ ), 1 );
-    // statusbar_->addPermanentWidget( fileEditor_ = new QLabel( statusbar_ ), 1 );
-    // statusbar_->addPermanentWidget( new QWidget(), 1 );
 
     // other labels
     statusbar_->addLabels( 3, 0 );
@@ -339,7 +331,7 @@ void MainWindow::replaceFromDialog( void )
     Debug::Throw( "MainWindow::replaceFromDialog.\n" );
 
     // create
-    if( !replaceDialog_ ) _createReplaceDialog();
+    if( !replaceDialog_ ) _createReplaceWidget();
 
     // raise dialog
     replaceDialog_->centerOnParent().show();
@@ -1024,23 +1016,27 @@ void MainWindow::_createBaseFindDialog( void )
 }
 
 //_____________________________________________________________________
-void MainWindow::_createReplaceDialog( void )
+void MainWindow::_createReplaceWidget( void )
 {
     Debug::Throw( "MainWindow::_CreateReplaceDialog.\n" );
-    if( !replaceDialog_ )
+    if( !( replaceDialog_ && replaceWidget_ ) )
     {
 
-        replaceDialog_ = new ReplaceDialog( this );
-        Debug::Throw( "MainWindow::_CreateReplaceDialog - created.\n" );
-        replaceDialog_->setWindowTitle( tr( "Replace in Text - Qedit" ) );
-        connect( replaceDialog_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
-        connect( replaceDialog_, SIGNAL(replace(TextSelection)), SLOT(_replace(TextSelection)) );
-        connect( replaceDialog_, SIGNAL(replaceInWindow(TextSelection)), SLOT(_replaceInWindow(TextSelection)) );
-        connect( replaceDialog_, SIGNAL(replaceInSelection(TextSelection)), SLOT(_replaceInSelection(TextSelection)) );
-        connect( replaceDialog_, SIGNAL(replaceInFiles()), SLOT(_multipleFileReplace()) );
+        replaceWidget_ = new ReplaceWidget( this );
+        Debug::Throw( "MainWindow::_CreateReplaceWidget - created.\n" );
+        connect( replaceWidget_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
+        connect( replaceWidget_, SIGNAL(replace(TextSelection)), SLOT(_replace(TextSelection)) );
+        connect( replaceWidget_, SIGNAL(replaceInWindow(TextSelection)), SLOT(_replaceInWindow(TextSelection)) );
+        connect( replaceWidget_, SIGNAL(replaceInSelection(TextSelection)), SLOT(_replaceInSelection(TextSelection)) );
+        connect( replaceWidget_, SIGNAL(replaceInFiles()), SLOT(_multipleFileReplace()) );
 
-        connect( this, SIGNAL(matchFound()), replaceDialog_, SLOT(matchFound()) );
-        connect( this, SIGNAL(noMatchFound()), replaceDialog_, SLOT(noMatchFound()) );
+        connect( this, SIGNAL(matchFound()), replaceWidget_, SLOT(matchFound()) );
+        connect( this, SIGNAL(noMatchFound()), replaceWidget_, SLOT(noMatchFound()) );
+
+        // create replace dialog and assign widget
+        replaceDialog_ = new BaseReplaceDialog( this );
+        replaceDialog_->setWindowTitle( tr( "Replace in Text - Qedit" ) );
+        replaceDialog_->setBaseFindWidget( replaceWidget_ );
 
     }
 

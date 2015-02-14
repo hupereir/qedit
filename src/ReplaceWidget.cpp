@@ -19,29 +19,28 @@
 *
 *******************************************************************************/
 
-#include "ReplaceDialog.h"
+#include "ReplaceWidget.h"
 #include "Debug.h"
-#include "QtUtil.h"
 
 #include <QLabel>
 #include <QPushButton>
 
 //________________________________________________________________________
-ReplaceDialog::ReplaceDialog( QWidget* parent, Qt::WindowFlags flags ):
-BaseReplaceDialog( parent, flags )
+ReplaceWidget::ReplaceWidget( QWidget* parent ):
+    BaseReplaceWidget( parent )
 {
-    Debug::Throw( "ReplaceDialog::ReplaceDialog.\n" );
+    Debug::Throw( "ReplaceWidget::ReplaceWidget.\n" );
 
     // insert multiple file buttons
-    QPushButton* button = new QPushButton( tr( "Files" ), &baseFindWidget() );
+    QPushButton* button = new QPushButton( tr( "Files" ), this );
     connect( button, SIGNAL(clicked()), SIGNAL(replaceInFiles()) );
     button->setToolTip( tr( "Replace all occurence of the search string in the selected files" ) );
-    baseFindWidget().addDisabledButton( button );
-    baseFindWidget().locationLayout().addWidget( button );
+    addDisabledButton( button );
+    locationLayout().addWidget( button );
     button->setAutoDefault( false );
     replaceInFilesButton_ = button;
 
     // tab order
-    setTabOrder( &static_cast<BaseReplaceWidget*>(&baseFindWidget())->replaceWindowButton(), button );
+    setTabOrder( &replaceWindowButton(), button );
 
 }

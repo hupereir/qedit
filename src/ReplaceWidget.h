@@ -1,5 +1,5 @@
-#ifndef ReplaceDialog_h
-#define ReplaceDialog_h
+#ifndef ReplaceWidget_h
+#define ReplaceWidget_h
 
 // $Id$
 
@@ -22,10 +22,10 @@
 *
 *******************************************************************************/
 
-#include "BaseReplaceDialog.h"
+#include "BaseReplaceWidget.h"
 
 //! replace_text dialog for text editor widgets
-class ReplaceDialog: public BaseReplaceDialog
+class ReplaceWidget: public BaseReplaceWidget
 {
 
     //! Qt meta object declaration
@@ -34,10 +34,10 @@ class ReplaceDialog: public BaseReplaceDialog
     public:
 
     //! constructor
-    ReplaceDialog( QWidget* = 0, Qt::WindowFlags = 0 );
+    ReplaceWidget( QWidget* = nullptr );
 
     //! destructor
-    virtual ~ReplaceDialog( void )
+    virtual ~ReplaceWidget( void )
     {}
 
     Q_SIGNALS:
@@ -48,7 +48,7 @@ class ReplaceDialog: public BaseReplaceDialog
     private:
 
     //! replace button
-    QPushButton* replaceInFilesButton_;
+    QAbstractButton* replaceInFilesButton_ = nullptr;
 
 };
 #endif
