@@ -311,16 +311,17 @@ void MainWindow::findFromDialog( void )
     */
 
     // set default string to find
-    if( !findDialog_ ) _createBaseFindDialog();
-    findDialog_->enableRegExp( true );
+    if( !findWidget_ ) _createFindWidget();
+    findWidget_->enableRegExp( true );
+    findWidget_->synchronize();
+    findWidget_->matchFound();
+    findWidget_->setText( text );
+
     findDialog_->centerOnParent().show();
-    findDialog_->synchronize();
-    findDialog_->matchFound();
-    findDialog_->setText( text );
 
     // changes focus
     findDialog_->activateWindow();
-    findDialog_->editor().setFocus();
+    findWidget_->editor().setFocus();
 
     return;
 }
@@ -331,7 +332,7 @@ void MainWindow::replaceFromDialog( void )
     Debug::Throw( "MainWindow::replaceFromDialog.\n" );
 
     // create
-    if( !replaceDialog_ ) _createReplaceWidget();
+    if( !replaceWidget_ ) _createReplaceWidget();
 
     // raise dialog
     replaceDialog_->centerOnParent().show();
@@ -344,21 +345,21 @@ void MainWindow::replaceFromDialog( void )
     */
 
     // synchronize combo-boxes
-    replaceDialog_->synchronize();
-    replaceDialog_->matchFound();
+    replaceWidget_->synchronize();
+    replaceWidget_->matchFound();
 
     // update find text
     QString text;
-    if( !( text = qApp->clipboard()->text( QClipboard::Selection) ).isEmpty() ) replaceDialog_->setText( text );
-    else if( activeDisplay().textCursor().hasSelection() ) replaceDialog_->setText( activeDisplay().textCursor().selectedText() );
-    else if( !( text = TextDisplay::lastSelection().text() ).isEmpty() ) replaceDialog_->setText( text );
+    if( !( text = qApp->clipboard()->text( QClipboard::Selection) ).isEmpty() ) replaceWidget_->setText( text );
+    else if( activeDisplay().textCursor().hasSelection() ) replaceWidget_->setText( activeDisplay().textCursor().selectedText() );
+    else if( !( text = TextDisplay::lastSelection().text() ).isEmpty() ) replaceWidget_->setText( text );
 
     // update replace text
-    if( !TextDisplay::lastSelection().replaceText().isEmpty() ) replaceDialog_->setReplaceText( TextDisplay::lastSelection().replaceText() );
+    if( !TextDisplay::lastSelection().replaceText().isEmpty() ) replaceWidget_->setReplaceText( TextDisplay::lastSelection().replaceText() );
 
     // changes focus
     replaceDialog_->activateWindow();
-    replaceDialog_->editor().setFocus();
+    replaceWidget_->editor().setFocus();
 
     return;
 }
@@ -996,18 +997,21 @@ void MainWindow::_installToolbars( void )
 }
 
 //______________________________________________________________________
-void MainWindow::_createBaseFindDialog( void )
+void MainWindow::_createFindWidget( void )
 {
 
-    Debug::Throw( "MainWindow::_createBaseFindDialog.\n" );
-    if( !findDialog_ )
+    Debug::Throw( "MainWindow::_createFindWidget.\n" );
+    if( !(findWidget_ && findDialog_ ) )
     {
 
+        findWidget_ = new BaseFindWidget( this );
+        connect( findWidget_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
+        connect( this, SIGNAL(matchFound()), findWidget_, SLOT(matchFound()) );
+        connect( this, SIGNAL(noMatchFound()), findWidget_, SLOT(noMatchFound()) );
+
         findDialog_ = new BaseFindDialog( this );
+        findDialog_->setBaseFindWidget( findWidget_ );
         findDialog_->setWindowTitle( tr( "Find in Text - Qedit" ) );
-        connect( findDialog_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
-        connect( this, SIGNAL(matchFound()), findDialog_, SLOT(matchFound()) );
-        connect( this, SIGNAL(noMatchFound()), findDialog_, SLOT(noMatchFound()) );
 
     }
 

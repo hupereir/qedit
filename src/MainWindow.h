@@ -536,7 +536,7 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     void _installToolbars( void );
 
     //* create find dialog
-    void _createBaseFindDialog( void );
+    void _createFindWidget( void );
 
     //* create replace dialog
     void _createReplaceWidget( void );
@@ -585,6 +585,9 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     //* replace dialog
     BaseReplaceDialog* replaceDialog_ = nullptr;
+
+    //* find widget
+    BaseFindWidget* findWidget_ = nullptr;
 
     //* replace widget
     ReplaceWidget* replaceWidget_ = nullptr;
