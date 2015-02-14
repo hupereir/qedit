@@ -1031,6 +1031,7 @@ void MainWindow::_createReplaceDialog( void )
     {
 
         replaceDialog_ = new ReplaceDialog( this );
+        Debug::Throw( "MainWindow::_CreateReplaceDialog - created.\n" );
         replaceDialog_->setWindowTitle( tr( "Replace in Text - Qedit" ) );
         connect( replaceDialog_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
         connect( replaceDialog_, SIGNAL(replace(TextSelection)), SLOT(_replace(TextSelection)) );

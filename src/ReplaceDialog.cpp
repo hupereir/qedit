@@ -42,6 +42,6 @@ BaseReplaceDialog( parent, flags )
     replaceInFilesButton_ = button;
 
     // tab order
-    setTabOrder( &_replaceWindowButton(), button );
+    setTabOrder( &static_cast<BaseReplaceWidget*>(&baseFindWidget())->replaceWindowButton(), button );
 
 }
