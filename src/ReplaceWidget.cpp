@@ -35,12 +35,12 @@ ReplaceWidget::ReplaceWidget( QWidget* parent ):
     QPushButton* button = new QPushButton( tr( "Files" ), this );
     connect( button, SIGNAL(clicked()), SIGNAL(replaceInFiles()) );
     button->setToolTip( tr( "Replace all occurence of the search string in the selected files" ) );
-    addDisabledButton( button );
-    locationLayout().addWidget( button );
+    _addDisabledButton( button );
+    _locationLayout().addWidget( button );
     button->setAutoDefault( false );
     replaceInFilesButton_ = button;
 
     // tab order
-    setTabOrder( &replaceWindowButton(), button );
+    setTabOrder( &_replaceWindowButton(), button );
 
 }
