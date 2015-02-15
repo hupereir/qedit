@@ -304,18 +304,7 @@ void MainWindow::findFromDialog( void )
 {
     Debug::Throw( "MainWindow::findFromDialog.\n" );
 
-    // set default string to find
-    if( findWidget_ && findWidget_->isVisible() )
-    {
-
-        findWidget_->hide();
-        return;
-
-    } else if( !findWidget_ ) {
-
-        _createFindWidget();
-
-    }
+    if( !findWidget_ ) _createFindWidget();
 
     // set default text
     // update find text
@@ -353,17 +342,7 @@ void MainWindow::replaceFromDialog( void )
 {
     Debug::Throw( "MainWindow::replaceFromDialog.\n" );
 
-    // create
-    if( replaceWidget_ && replaceWidget_->isVisible() )
-    {
-        replaceWidget_->hide();
-        return;
-
-    } else if( !replaceWidget_ ) {
-
-        _createReplaceWidget();
-
-    }
+    if( !replaceWidget_ ) _createReplaceWidget();
 
     // hide replace widget
     if( findWidget_ && findWidget_->isVisible() ) findWidget_->hide();

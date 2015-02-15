@@ -32,15 +32,8 @@ ReplaceWidget::ReplaceWidget( QWidget* parent ):
     Debug::Throw( "ReplaceWidget::ReplaceWidget.\n" );
 
     // insert multiple file buttons
-    QPushButton* button = new QPushButton( tr( "Files" ), this );
-    connect( button, SIGNAL(clicked()), SIGNAL(replaceInFiles()) );
-    button->setToolTip( tr( "Replace all occurence of the search string in the selected files" ) );
-    _addDisabledButton( button );
-    _locationLayout().addWidget( button );
-    button->setAutoDefault( false );
-    replaceInFilesButton_ = button;
-
-    // tab order
-    setTabOrder( &_replaceWindowButton(), button );
+    QAction* action;
+    _replaceAllMenu().addAction( action = new QAction( tr( "Files" ), this ) );
+    connect( action, SIGNAL(triggered()), SIGNAL(replaceInFiles()) );
 
 }

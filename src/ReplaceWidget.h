@@ -45,10 +45,5 @@ class ReplaceWidget: public BaseReplaceWidget
     //! emmited when Replace is pressed
     void replaceInFiles();
 
-    private:
-
-    //! replace button
-    QAbstractButton* replaceInFilesButton_ = nullptr;
-
 };
 #endif
