@@ -36,8 +36,6 @@
 #include <QSplitter>
 #include <QStackedWidget>
 
-class BaseFindDialog;
-class BaseReplaceDialog;
 class BaseStatusBar;
 class DocumentClassToolBar;
 class ElidedLabel;
@@ -554,6 +552,9 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     //* menu
     Menu* menu_ = nullptr;
 
+    //* right container
+    QWidget* rightContainer_ = nullptr;
+
     //* stack widget
     QStackedWidget* stack_ = nullptr;
 
@@ -579,12 +580,6 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     //*@name dialogs (re-implemented from TextEditor)
     //@{
-
-    //* find dialog
-    BaseFindDialog* findDialog_ = nullptr;
-
-    //* replace dialog
-    BaseReplaceDialog* replaceDialog_ = nullptr;
 
     //* find widget
     BaseFindWidget* findWidget_ = nullptr;

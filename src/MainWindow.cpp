@@ -24,8 +24,6 @@
 #include "AnimatedLineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
-#include "BaseFindDialog.h"
-#include "BaseReplaceDialog.h"
 #include "BaseStatusBar.h"
 #include "BlockDelimiterDisplay.h"
 #include "ClockLabel.h"
@@ -126,10 +124,22 @@ MainWindow::MainWindow(  QWidget* parent ):
     addAction( &navigationFrame_->sessionFilesFrame().previousFileAction() );
 
     // insert stack widget
-    splitter->addWidget( stack_ = new QStackedWidget(0) );
-    stack_->layout()->setMargin(2);
+    // right container
+    rightContainer_ = new QWidget( nullptr );
+    rightContainer_->setLayout( new QVBoxLayout() );
+    rightContainer_->layout()->setMargin(0);
+    rightContainer_->layout()->setSpacing(0);
+    splitter->addWidget( rightContainer_ );
 
+    // stack
+    stack_ = new QStackedWidget( rightContainer_ );
+    rightContainer_->layout()->addWidget( stack_ );
+    stack_->layout()->setMargin(2);
     connect( stack_, SIGNAL(widgetRemoved(int)), SLOT(_activeViewChanged()) );
+
+    // find and replace widgets
+    _createFindWidget();
+    _createReplaceWidget();
 
     // transition widget
     _replaceTransitionWidget();
@@ -294,6 +304,19 @@ void MainWindow::findFromDialog( void )
 {
     Debug::Throw( "MainWindow::findFromDialog.\n" );
 
+    // set default string to find
+    if( findWidget_ && findWidget_->isVisible() )
+    {
+
+        findWidget_->hide();
+        return;
+
+    } else if( !findWidget_ ) {
+
+        _createFindWidget();
+
+    }
+
     // set default text
     // update find text
     QString text( activeDisplay().selection().text() );
@@ -303,6 +326,11 @@ void MainWindow::findFromDialog( void )
         text = text.left( max_length );
     }
 
+    // show find widget and set focus
+    findWidget_->show();
+    findWidget_->editor().setFocus();
+    activeDisplay().ensureCursorVisible();
+
     /*
     setting the default text values
     must be done after the dialog is shown
@@ -310,19 +338,13 @@ void MainWindow::findFromDialog( void )
     to very large sizes due to the input text
     */
 
-    // set default string to find
-    if( !findWidget_ ) _createFindWidget();
     findWidget_->enableRegExp( true );
     findWidget_->synchronize();
     findWidget_->matchFound();
     findWidget_->setText( text );
 
-    findDialog_->centerOnParent().show();
-
-    // changes focus
-    findDialog_->activateWindow();
-    findWidget_->editor().setFocus();
-
+    // hide replace widget
+    if( replaceWidget_ && replaceWidget_->isVisible() ) replaceWidget_->hide();
     return;
 }
 
@@ -332,10 +354,24 @@ void MainWindow::replaceFromDialog( void )
     Debug::Throw( "MainWindow::replaceFromDialog.\n" );
 
     // create
-    if( !replaceWidget_ ) _createReplaceWidget();
+    if( replaceWidget_ && replaceWidget_->isVisible() )
+    {
+        replaceWidget_->hide();
+        return;
 
-    // raise dialog
-    replaceDialog_->centerOnParent().show();
+    } else if( !replaceWidget_ ) {
+
+        _createReplaceWidget();
+
+    }
+
+    // hide replace widget
+    if( findWidget_ && findWidget_->isVisible() ) findWidget_->hide();
+
+    // show replace widget and set focus
+    replaceWidget_->show();
+    replaceWidget_->editor().setFocus();
+    activeDisplay().ensureCursorVisible();
 
     /*
     setting the default text values
@@ -356,10 +392,6 @@ void MainWindow::replaceFromDialog( void )
 
     // update replace text
     if( !TextDisplay::lastSelection().replaceText().isEmpty() ) replaceWidget_->setReplaceText( TextDisplay::lastSelection().replaceText() );
-
-    // changes focus
-    replaceDialog_->activateWindow();
-    replaceWidget_->editor().setFocus();
 
     return;
 }
@@ -662,7 +694,7 @@ void MainWindow::_splitDisplay( void )
 void MainWindow::_multipleFileReplace( void )
 {
     Debug::Throw( "MainWindow::_multipleFileReplace.\n" );
-    TextSelection selection( replaceDialog_->selection( false ) );
+    TextSelection selection( replaceWidget_->selection( false ) );
 
     // show dialog and check answer
     FileSelectionDialog dialog( this, selection );
@@ -1001,17 +1033,17 @@ void MainWindow::_createFindWidget( void )
 {
 
     Debug::Throw( "MainWindow::_createFindWidget.\n" );
-    if( !(findWidget_ && findDialog_ ) )
+    if( !findWidget_ )
     {
 
-        findWidget_ = new BaseFindWidget( this );
+        findWidget_ = new BaseFindWidget( rightContainer_ );
+        rightContainer_->layout()->addWidget( findWidget_ );
         connect( findWidget_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
         connect( this, SIGNAL(matchFound()), findWidget_, SLOT(matchFound()) );
         connect( this, SIGNAL(noMatchFound()), findWidget_, SLOT(noMatchFound()) );
 
-        findDialog_ = new BaseFindDialog( this );
-        findDialog_->setBaseFindWidget( findWidget_ );
-        findDialog_->setWindowTitle( tr( "Find in Text - Qedit" ) );
+        connect( &findWidget_->closeButton(), SIGNAL(clicked()), findWidget_, SLOT(hide()) );
+        findWidget_->hide();
 
     }
 
@@ -1023,24 +1055,22 @@ void MainWindow::_createFindWidget( void )
 void MainWindow::_createReplaceWidget( void )
 {
     Debug::Throw( "MainWindow::_CreateReplaceDialog.\n" );
-    if( !( replaceDialog_ && replaceWidget_ ) )
+    if( !( replaceWidget_ ) )
     {
 
-        replaceWidget_ = new ReplaceWidget( this );
-        Debug::Throw( "MainWindow::_CreateReplaceWidget - created.\n" );
+        replaceWidget_ = new ReplaceWidget( rightContainer_ );
+        rightContainer_->layout()->addWidget( replaceWidget_ );
         connect( replaceWidget_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
         connect( replaceWidget_, SIGNAL(replace(TextSelection)), SLOT(_replace(TextSelection)) );
         connect( replaceWidget_, SIGNAL(replaceInWindow(TextSelection)), SLOT(_replaceInWindow(TextSelection)) );
         connect( replaceWidget_, SIGNAL(replaceInSelection(TextSelection)), SLOT(_replaceInSelection(TextSelection)) );
         connect( replaceWidget_, SIGNAL(replaceInFiles()), SLOT(_multipleFileReplace()) );
 
+        connect( &replaceWidget_->closeButton(), SIGNAL(clicked()), replaceWidget_, SLOT(hide()) );
+        replaceWidget_->hide();
+
         connect( this, SIGNAL(matchFound()), replaceWidget_, SLOT(matchFound()) );
         connect( this, SIGNAL(noMatchFound()), replaceWidget_, SLOT(noMatchFound()) );
-
-        // create replace dialog and assign widget
-        replaceDialog_ = new BaseReplaceDialog( this );
-        replaceDialog_->setWindowTitle( tr( "Replace in Text - Qedit" ) );
-        replaceDialog_->setBaseFindWidget( replaceWidget_ );
 
     }
 
