@@ -1020,8 +1020,6 @@ void MainWindow::_createFindWidget( void )
         connect( findWidget_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
         connect( this, SIGNAL(matchFound()), findWidget_, SLOT(matchFound()) );
         connect( this, SIGNAL(noMatchFound()), findWidget_, SLOT(noMatchFound()) );
-
-        connect( &findWidget_->closeButton(), SIGNAL(clicked()), findWidget_, SLOT(hide()) );
         findWidget_->hide();
 
     }
