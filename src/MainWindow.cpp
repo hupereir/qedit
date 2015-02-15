@@ -59,7 +59,7 @@
 #include "QuestionDialog.h"
 #include "RecentFilesFrame.h"
 #include "ReplaceWidget.h"
-#include "SelectLineDialog.h"
+#include "SelectLineWidget.h"
 #include "SessionFilesFrame.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
@@ -137,9 +137,10 @@ MainWindow::MainWindow(  QWidget* parent ):
     stack_->layout()->setMargin(2);
     connect( stack_, SIGNAL(widgetRemoved(int)), SLOT(_activeViewChanged()) );
 
-    // find and replace widgets
+    // embedded widgets
     _createFindWidget();
     _createReplaceWidget();
+    _createSelectLineWidget();
 
     // transition widget
     _replaceTransitionWidget();
@@ -304,6 +305,11 @@ void MainWindow::findFromDialog( void )
 {
     Debug::Throw( "MainWindow::findFromDialog.\n" );
 
+    // hide other widgets
+    if( replaceWidget_ && replaceWidget_->isVisible() ) replaceWidget_->hide();
+    if( selectLineWidget_ && selectLineWidget_->isVisible() ) selectLineWidget_->hide();
+
+    // create find widget
     if( !findWidget_ ) _createFindWidget();
 
     // set default text
@@ -332,8 +338,6 @@ void MainWindow::findFromDialog( void )
     findWidget_->matchFound();
     findWidget_->setText( text );
 
-    // hide replace widget
-    if( replaceWidget_ && replaceWidget_->isVisible() ) replaceWidget_->hide();
     return;
 }
 
@@ -342,10 +346,12 @@ void MainWindow::replaceFromDialog( void )
 {
     Debug::Throw( "MainWindow::replaceFromDialog.\n" );
 
-    if( !replaceWidget_ ) _createReplaceWidget();
-
-    // hide replace widget
+    // hide other widgets
     if( findWidget_ && findWidget_->isVisible() ) findWidget_->hide();
+    if( selectLineWidget_ && selectLineWidget_->isVisible() ) selectLineWidget_->hide();
+
+    // create replace widget
+    if( !replaceWidget_ ) _createReplaceWidget();
 
     // show replace widget and set focus
     replaceWidget_->show();
@@ -380,16 +386,17 @@ void MainWindow::selectLineFromDialog( void )
 {
 
     Debug::Throw( "TextEditor::selectLineFromDialog.\n" );
-    if( !selectLineDialog_ )
-    {
-        selectLineDialog_ = new SelectLineDialog( this );
-        connect( selectLineDialog_, SIGNAL(lineSelected(int)), SLOT(_selectLine(int)) );
-    }
 
-    selectLineDialog_->editor().clear();
-    selectLineDialog_->centerOnParent().show();
-    selectLineDialog_->activateWindow();
-    selectLineDialog_->editor().setFocus();
+    // hide other widgets
+    if( findWidget_ && findWidget_->isVisible() ) findWidget_->hide();
+    if( replaceWidget_ && replaceWidget_->isVisible() ) replaceWidget_->hide();
+
+    // create select line widget
+    if( !selectLineWidget_ ) _createSelectLineWidget();
+
+    selectLineWidget_->show();
+    selectLineWidget_->editor().clear();
+    selectLineWidget_->editor().setFocus();
 
 }
 
@@ -1051,6 +1058,18 @@ void MainWindow::_createReplaceWidget( void )
 
     }
 
+}
+
+//_________________________________________________________________
+void MainWindow::_createSelectLineWidget( void )
+{
+    if( !selectLineWidget_ )
+    {
+        selectLineWidget_ = new SelectLineWidget( this, true );
+        rightContainer_->layout()->addWidget( selectLineWidget_ );
+        connect( selectLineWidget_, SIGNAL(lineSelected(int)), SLOT(_selectLine(int)) );
+        selectLineWidget_->hide();
+    }
 }
 
 //_________________________________________________________________

@@ -43,7 +43,7 @@ class Menu;
 class NavigationFrame;
 class PrintHelper;
 class ReplaceWidget;
-class SelectLineDialog;
+class SelectLineWidget;
 class TransitionWidget;
 
 //* editor main window
@@ -539,6 +539,9 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     //* create replace dialog
     void _createReplaceWidget( void );
 
+    //* create select line widget
+    void _createSelectLineWidget( void );
+
     //* make connection between this window and child text view
     void _connectView( TextView& view );
 
@@ -588,7 +591,7 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     ReplaceWidget* replaceWidget_ = nullptr;
 
     //* line number dialog
-    SelectLineDialog* selectLineDialog_ = nullptr;
+    SelectLineWidget* selectLineWidget_ = nullptr;
 
     //@}
 
