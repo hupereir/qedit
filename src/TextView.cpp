@@ -703,6 +703,8 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     connect( &display->findAction(), SIGNAL(triggered()), &window, SLOT(findFromDialog()) );
     connect( display, SIGNAL(noMatchFound()), &window, SIGNAL(noMatchFound()) );
     connect( display, SIGNAL(matchFound()), &window, SIGNAL(matchFound()) );
+    connect( display, SIGNAL(lineNotFound()), &window, SIGNAL(lineNotFound()) );
+    connect( display, SIGNAL(lineFound()), &window, SIGNAL(lineFound()) );
 
     display->replaceAction().disconnect();
     connect( &display->replaceAction(), SIGNAL(triggered()), &window, SLOT(replaceFromDialog()) );

@@ -321,6 +321,12 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     //* emmited from TextDisplay when no match is found for find/replace request
     void matchFound( void );
 
+    //* emmited when selected line is not found
+    void lineNotFound( void );
+
+    //* emmited when selected line is found
+    void lineFound( void );
+
     //* busy
     void busy( int );
 
@@ -501,6 +507,10 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     //* replace selection in multiple files
     void _multipleFileReplace( void );
+
+    //* restore focus on active display, when closing embedded dialog
+    void _restoreFocus( void )
+    { activeDisplay().setFocus(); }
 
     //@}
 

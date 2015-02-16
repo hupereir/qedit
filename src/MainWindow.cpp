@@ -395,6 +395,7 @@ void MainWindow::selectLineFromDialog( void )
     if( !selectLineWidget_ ) _createSelectLineWidget();
 
     selectLineWidget_->show();
+    selectLineWidget_->matchFound();
     selectLineWidget_->editor().clear();
     selectLineWidget_->editor().setFocus();
 
@@ -1027,6 +1028,7 @@ void MainWindow::_createFindWidget( void )
         connect( findWidget_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
         connect( this, SIGNAL(matchFound()), findWidget_, SLOT(matchFound()) );
         connect( this, SIGNAL(noMatchFound()), findWidget_, SLOT(noMatchFound()) );
+        connect( &findWidget_->closeButton(), SIGNAL(clicked()), this, SLOT(_restoreFocus()) );
         findWidget_->hide();
 
     }
@@ -1049,8 +1051,7 @@ void MainWindow::_createReplaceWidget( void )
         connect( replaceWidget_, SIGNAL(replaceInWindow(TextSelection)), SLOT(_replaceInWindow(TextSelection)) );
         connect( replaceWidget_, SIGNAL(replaceInSelection(TextSelection)), SLOT(_replaceInSelection(TextSelection)) );
         connect( replaceWidget_, SIGNAL(replaceInFiles()), SLOT(_multipleFileReplace()) );
-
-        connect( &replaceWidget_->closeButton(), SIGNAL(clicked()), replaceWidget_, SLOT(hide()) );
+        connect( &replaceWidget_->closeButton(), SIGNAL(clicked()), this, SLOT(_restoreFocus()) );
         replaceWidget_->hide();
 
         connect( this, SIGNAL(matchFound()), replaceWidget_, SLOT(matchFound()) );
@@ -1068,6 +1069,9 @@ void MainWindow::_createSelectLineWidget( void )
         selectLineWidget_ = new SelectLineWidget( this, true );
         rightContainer_->layout()->addWidget( selectLineWidget_ );
         connect( selectLineWidget_, SIGNAL(lineSelected(int)), SLOT(_selectLine(int)) );
+        connect( this, SIGNAL(lineFound()), selectLineWidget_, SLOT(matchFound()) );
+        connect( this, SIGNAL(lineNotFound()), selectLineWidget_, SLOT(noMatchFound()) );
+        connect( &selectLineWidget_->closeButton(), SIGNAL(clicked()), this, SLOT(_restoreFocus()) );
         selectLineWidget_->hide();
     }
 }
