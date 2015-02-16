@@ -47,18 +47,18 @@ class WindowTitle: public Counter
     {}
 
     //! change flag
-    WindowTitle& setFlag( const Flags& flag, const bool& value = true )
+    WindowTitle& setFlag( const Flags& flag, bool value = true )
     {
         if( value ) flag_ = flag;
         return *this;
     }
 
     //! change flag
-    WindowTitle& setModified( const bool& value = true )
+    WindowTitle& setModified( bool value = true )
     { return setFlag( Modified, value ); }
 
     //! change flag
-    WindowTitle& setReadOnly( const bool& value = true )
+    WindowTitle& setReadOnly( bool value = true )
     { return setFlag( ReadOnly, value ); }
 
     //! cast to string

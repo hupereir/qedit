@@ -55,7 +55,7 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
     Q_DECLARE_FLAGS( FileTypes, FileType );
 
     //! column type enumeration
-    enum ColumnType 
+    enum ColumnType
     {
         Filename,
         Size,
@@ -71,11 +71,11 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
     {}
 
     //! show icons
-    void setShowIcons( const bool& value )
+    void setShowIcons( bool value )
     { showIcons_ = value; }
 
     //! use local names
-    void setUseLocalNames( const bool& value )
+    void setUseLocalNames( bool value )
     { useLocalNames_ = value; }
 
     //!@name methods reimplemented from base class

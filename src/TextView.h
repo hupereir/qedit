@@ -113,7 +113,7 @@ class TextView: public QWidget, public Counter, public Base::Key
     void setFile( File file );
 
     //! split display
-    TextDisplay& splitDisplay( const Qt::Orientation&, const bool& clone );
+    TextDisplay& splitDisplay( const Qt::Orientation&, bool clone );
 
     //! save all displays
     void saveAll( void );
@@ -173,7 +173,7 @@ class TextView: public QWidget, public Counter, public Base::Key
     private:
 
     //! create new splitter
-    QSplitter& _newSplitter( const Qt::Orientation&, const bool&  );
+    QSplitter& _newSplitter( const Qt::Orientation&, bool  );
 
     //! create new TextDisplay
     TextDisplay& _newTextDisplay( QWidget* );

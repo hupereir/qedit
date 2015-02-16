@@ -55,11 +55,11 @@ class ParenthesisHighlight: public QObject, public Counter
     { Debug::Throw( "ParenthesisHighlight::~ParenthesisHighlight.\n" ); }
 
     //! enable/disable
-    void setEnabled( const bool& value )
+    void setEnabled( bool value )
     { enabled_ = value; }
 
     //! enable/disable
-    const bool& isEnabled( void ) const
+    bool isEnabled( void ) const
     { return enabled_; }
 
     //! synchronize

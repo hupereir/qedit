@@ -69,7 +69,7 @@ class BlockDelimiterSegment: public Counter
     { return flags_ & flag; }
 
     //! flags
-    BlockDelimiterSegment& setFlag( const Flag& flag, const bool& value )
+    BlockDelimiterSegment& setFlag( const Flag& flag, bool value )
     {
         if( value ) flags_ |= flag;
         else flags_ &= (~flag);

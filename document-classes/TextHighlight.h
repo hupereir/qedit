@@ -65,7 +65,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     //@{
 
     //! enable highlight. Returns true if changed
-    bool setHighlightEnabled( const bool& state )
+    bool setHighlightEnabled( bool state )
     {
         if( highlightEnabled_ == state ) return false;
         highlightEnabled_ = state;
@@ -73,7 +73,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     }
 
     //! true if enabled
-    const bool& isHighlightEnabled( void ) const
+    bool isHighlightEnabled( void ) const
     { return highlightEnabled_; }
 
     //! patterns
@@ -90,11 +90,11 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     //@{
 
     //! parenthesis enabled
-    const bool& isParenthesisEnabled( void ) const
+    bool isParenthesisEnabled( void ) const
     { return parenthesisEnabled_; }
 
     //! parenthesis enabled
-    bool setParenthesisEnabled( const bool& state )
+    bool setParenthesisEnabled( bool state )
     {
         if( parenthesisEnabled_ == state ) return false;
         parenthesisEnabled_ = state;
@@ -122,11 +122,11 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     //@{
 
     //! block delimiters enabled
-    const bool& isBlockDelimitersEnabled( void ) const
+    bool isBlockDelimitersEnabled( void ) const
     { return blockDelimitersEnabled_; }
 
     //! block delimiters enabled
-    bool setBlockDelimitersEnabled( const bool& state )
+    bool setBlockDelimitersEnabled( bool state )
     {
         if( blockDelimitersEnabled_ == state ) return false;
         blockDelimitersEnabled_ = state;

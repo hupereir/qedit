@@ -832,7 +832,7 @@ void BlockDelimiterDisplay::_selectSegmentFromPosition( const QPoint& position )
 }
 
 //________________________________________________________________________________________
-void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData* data, const bool& recursive ) const
+void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData* data, bool recursive ) const
 {
 
     // retrieve block format
@@ -972,7 +972,7 @@ CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& firs
 }
 
 //_________________________________________________________________________
-void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect, const bool& collapsed ) const
+void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect, bool collapsed ) const
 {
 
     QRectF local( rect );

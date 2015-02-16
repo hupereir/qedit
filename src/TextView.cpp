@@ -316,7 +316,7 @@ void TextView::closeDisplay( TextDisplay& display )
 }
 
 //___________________________________________________________
-TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, const bool& clone )
+TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, bool clone )
 {
 
     Debug::Throw( "TextView::splitDisplay.\n" );
@@ -568,7 +568,7 @@ void TextView::_activeDisplayChanged( TextEditor* editor )
 }
 
 //____________________________________________________________
-QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, const bool& clone )
+QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clone )
 {
 
     Debug::Throw( "TextView::_newSplitter.\n" );

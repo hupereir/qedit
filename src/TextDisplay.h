@@ -118,13 +118,13 @@ class TextDisplay: public AnimatedTextEditor
     virtual void synchronize( TextDisplay* display );
 
     //! check if current entry has been modified or not
-    void setModified( const bool& value = true );
+    void setModified( bool value = true );
 
     //! read-only
-    virtual void setReadOnly( const bool& value );
+    virtual void setReadOnly( bool value );
 
     //! install actions in context menu
-    virtual void installContextMenuActions( BaseContextMenu* menu, const bool& = true );
+    virtual void installContextMenuActions( BaseContextMenu* menu, bool = true );
 
     //! draw margins
     virtual void paintMargin( QPainter& );
@@ -198,7 +198,7 @@ class TextDisplay: public AnimatedTextEditor
     void setIsNewDocument( void );
 
     //! is new document
-    const bool& isNewDocument( void ) const
+    bool isNewDocument( void ) const
     { return isNewDocument_; }
 
     //! new document name server
@@ -227,7 +227,7 @@ class TextDisplay: public AnimatedTextEditor
     { return fileCheckData_; }
 
     //! ask for save if modified
-    AskForSaveDialog::ReturnCode askForSave( const bool& enable_all = false );
+    AskForSaveDialog::ReturnCode askForSave( bool enable_all = false );
 
     //! check if file has been removed externally
     FileRemovedDialog::ReturnCode checkFileRemoved( void );
@@ -524,11 +524,11 @@ class TextDisplay: public AnimatedTextEditor
     { workingDirectory_ = file; }
 
     //! if true file is not checked on enter event
-    const bool& _ignoreWarnings() const
+    bool _ignoreWarnings() const
     { return ignoreWarnings_; }
 
     //! if true file is not checked on enter event
-    void _setIgnoreWarnings( const bool& value )
+    void _setIgnoreWarnings( bool value )
     { ignoreWarnings_ = value; }
 
     //! true if macros list contains automatic macros
@@ -614,7 +614,7 @@ class TextDisplay: public AnimatedTextEditor
     void _addBaseIndentation( void );
 
     //! replace all leading tabs in text when tab emulation is active
-    void _replaceLeadingTabs( const bool& confirm = true );
+    void _replaceLeadingTabs( bool confirm = true );
 
     //! show file info
     void _fileProperties( void );

@@ -209,7 +209,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
     { return selectedSegment_; }
 
     //! expand current block
-    void _expand( const QTextBlock&, HighlightBlockData*, const bool& recursive = false ) const;
+    void _expand( const QTextBlock&, HighlightBlockData*, bool recursive = false ) const;
 
     //! collapse blocks
     void _collapse( const QTextBlock&, const QTextBlock&, HighlightBlockData* ) const;
@@ -222,7 +222,7 @@ class BlockDelimiterDisplay: public QObject, public Counter
     { return *editor_; }
 
     //! draw delimiter
-    void _drawDelimiter( QPainter& painter, const QRect& rect, const bool& collapsed ) const;
+    void _drawDelimiter( QPainter& painter, const QRect& rect, bool collapsed ) const;
 
     //! associated editor
     TextEditor* editor_;

@@ -190,7 +190,7 @@ int TextDisplay::blockCount( const QTextBlock& block ) const
 }
 
 //_____________________________________________________
-void TextDisplay::setModified( const bool& value )
+void TextDisplay::setModified( bool value )
 {
 
     Debug::Throw() << "TextDisplay::setModified - value: " << value << endl;
@@ -216,7 +216,7 @@ void TextDisplay::setModified( const bool& value )
 }
 
 //_____________________________________________________
-void TextDisplay::setReadOnly( const bool& value )
+void TextDisplay::setReadOnly( bool value )
 {
     Debug::Throw() << "TextDisplay::setReadOnly - value: " << value << endl;
 
@@ -227,7 +227,7 @@ void TextDisplay::setReadOnly( const bool& value )
 }
 
 //______________________________________________________________________________
-void TextDisplay::installContextMenuActions( BaseContextMenu* menu, const bool& )
+void TextDisplay::installContextMenuActions( BaseContextMenu* menu, bool )
 {
 
     Debug::Throw( "TextDisplay::installContextMenuActions.\n" );
@@ -637,7 +637,7 @@ void TextDisplay::setFileCheckData( const FileCheck::Data& data )
 }
 
 //___________________________________________________________________________
-AskForSaveDialog::ReturnCode TextDisplay::askForSave( const bool& enableAll )
+AskForSaveDialog::ReturnCode TextDisplay::askForSave( bool enableAll )
 {
     Debug::Throw( "TextDisplay::askForSave.\n" );
 
@@ -2254,7 +2254,7 @@ void TextDisplay::_addBaseIndentation( void )
 }
 
 //_______________________________________________________
-void TextDisplay::_replaceLeadingTabs( const bool& confirm )
+void TextDisplay::_replaceLeadingTabs( bool confirm )
 {
     Debug::Throw( "TextDisplay::_replaceLeadingTabs.\n" );
 

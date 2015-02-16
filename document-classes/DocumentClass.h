@@ -93,7 +93,7 @@ class DocumentClass: public Counter
     bool match( const File& file ) const;
 
     //! returns true if document class enables wrapping by default
-    const bool& wrap( void ) const
+    bool wrap( void ) const
     { return wrap_; }
 
     //! returns true if document class enables tab emulation by default

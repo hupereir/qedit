@@ -125,19 +125,19 @@ class TextMacro: public Counter
     { accelerator_ = value; }
 
     //! separator flag
-    const bool& isSeparator( void ) const
+    bool isSeparator( void ) const
     { return isSeparator_; }
 
     //! separator
-    virtual void setIsSeparator( const bool& value = true )
+    virtual void setIsSeparator( bool value = true )
     { isSeparator_ = value; }
 
     //! automatic flag
-    const bool& isAutomatic( void ) const
+    bool isAutomatic( void ) const
     { return isAutomatic_; }
 
     //! automatic
-    virtual void setIsAutomatic( const bool& value = true )
+    virtual void setIsAutomatic( bool value = true )
     { isAutomatic_ = value; }
 
     //! result class

@@ -50,7 +50,7 @@ class CollapsedBlockData
     { return text_; }
 
     //! collapsed
-    const bool& collapsed( void ) const
+    bool collapsed( void ) const
     { return collapsed_; }
 
     //! number of blocks stored by this data object
