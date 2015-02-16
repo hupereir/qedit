@@ -305,23 +305,8 @@ void MainWindow::findFromDialog( void )
 {
     Debug::Throw( "MainWindow::findFromDialog.\n" );
 
-    // hide other widgets
-    if( replaceWidget_ && replaceWidget_->isVisible() ) replaceWidget_->hide();
-    if( selectLineWidget_ && selectLineWidget_->isVisible() ) selectLineWidget_->hide();
-
     // create find widget
     if( !findWidget_ ) _createFindWidget();
-
-    // set default text
-    // update find text
-    QString text( activeDisplay().selection().text() );
-    if( !text.isEmpty() )
-    {
-        const int max_length( 1024 );
-        text = text.left( max_length );
-    }
-
-    // show find widget and set focus
     findWidget_->show();
     findWidget_->editor().setFocus();
     activeDisplay().ensureCursorVisible();
@@ -332,6 +317,12 @@ void MainWindow::findFromDialog( void )
     otherwise it may be automatically resized
     to very large sizes due to the input text
     */
+    QString text( activeDisplay().selection().text() );
+    if( !text.isEmpty() )
+    {
+        const int max_length( 1024 );
+        text = text.left( max_length );
+    }
 
     findWidget_->enableRegExp( true );
     findWidget_->synchronize();
@@ -345,10 +336,6 @@ void MainWindow::findFromDialog( void )
 void MainWindow::replaceFromDialog( void )
 {
     Debug::Throw( "MainWindow::replaceFromDialog.\n" );
-
-    // hide other widgets
-    if( findWidget_ && findWidget_->isVisible() ) findWidget_->hide();
-    if( selectLineWidget_ && selectLineWidget_->isVisible() ) selectLineWidget_->hide();
 
     // create replace widget
     if( !replaceWidget_ ) _createReplaceWidget();
@@ -386,10 +373,6 @@ void MainWindow::selectLineFromDialog( void )
 {
 
     Debug::Throw( "TextEditor::selectLineFromDialog.\n" );
-
-    // hide other widgets
-    if( findWidget_ && findWidget_->isVisible() ) findWidget_->hide();
-    if( replaceWidget_ && replaceWidget_->isVisible() ) replaceWidget_->hide();
 
     // create select line widget
     if( !selectLineWidget_ ) _createSelectLineWidget();
