@@ -22,8 +22,8 @@
 #include "BaseIconNames.h"
 #include "GridLayout.h"
 #include "IconEngine.h"
-#include "QtUtil.h"
 
+#include <QDialogButtonBox>
 #include <QFrame>
 #include <QLabel>
 #include <QLayout>
@@ -60,19 +60,15 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     frame->setFrameStyle( QFrame::HLine | QFrame::Sunken );
     layout->addWidget( frame );
 
-    // button layout
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    buttonLayout->setSpacing(5);
-    buttonLayout->setMargin(0);
-    layout->addLayout( buttonLayout );
-
-    buttonLayout->addStretch( 1 );
+    // button box
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( this );
+    layout->addWidget( buttonBox );
 
     // yes button
-    QPushButton* button;
+    QPushButton* button = nullptr;
     if( buttons & Yes )
     {
-        buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogOk ), tr( "Yes" ), this ) );
+        button = buttonBox->addButton( QDialogButtonBox::Yes );
         connect( button, SIGNAL(clicked()), SLOT(_yes()) );
         button->setToolTip( tr( "Save modified file to disk" ) );
     }
@@ -80,31 +76,34 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     // yes to all button
     if( buttons & YesToAll )
     {
-        buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogAccept ), tr( "Yes to All" ), this ) );
+        button = buttonBox->addButton( QDialogButtonBox::YesToAll );
         connect( button, SIGNAL(clicked()), SLOT(_yesToAll()) );
+        button->setIcon( IconEngine::get( IconNames::DialogAccept ) );
         button->setToolTip( tr( "Save all modified files to disk" ) );
     }
 
     // no button
     if( buttons & No )
     {
-        buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogClose ), tr( "No" ), this ) );
+        button = buttonBox->addButton( QDialogButtonBox::No );
         connect( button, SIGNAL(clicked()), SLOT(_no()) );
+        button->setIcon( IconEngine::get( IconNames::DialogClose ) );
         button->setToolTip( tr( "Ignore file modifications" ) );
     }
 
     // no button
     if( buttons & NoToAll )
     {
-        buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogClose ), tr( "No to All" ), this ) );
+        button = buttonBox->addButton( QDialogButtonBox::NoToAll );
         connect( button, SIGNAL(clicked()), SLOT(_noToAll()) );
+        button->setIcon( IconEngine::get( IconNames::DialogClose ) );
         button->setToolTip( tr( "Ignore all files modifications" ) );
     }
 
     // cancel button
     if( buttons & Cancel )
     {
-        buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogCancel ), tr( "Cancel" ), this ) );
+        button = buttonBox->addButton( QDialogButtonBox::Cancel );
         button->setShortcut( Qt::Key_Escape );
         connect( button, SIGNAL(clicked()), SLOT(_cancel()) );
         button->setToolTip( tr( "Cancel current action" ) );
