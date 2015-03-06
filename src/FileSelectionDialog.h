@@ -1,6 +1,5 @@
 #ifndef FileSelectionDialog_h
 #define FileSelectionDialog_h
-// $Id$
 
 /******************************************************************************
 *

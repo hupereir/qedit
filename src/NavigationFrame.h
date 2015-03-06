@@ -1,4 +1,3 @@
-// $Id$
 #ifndef NavigationFrame_h
 #define NavigationFrame_h
 

@@ -1,8 +1,6 @@
 #ifndef RemoveFilesDialog_h
 #define RemoveFilesDialog_h
 
-// $Id$
-
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>

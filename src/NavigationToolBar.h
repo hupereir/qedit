@@ -1,4 +1,3 @@
-// $Id$
 #ifndef NavigationToolBar_h
 #define NavigationToolBar_h
 

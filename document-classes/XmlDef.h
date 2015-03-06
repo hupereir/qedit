@@ -1,8 +1,6 @@
 #ifndef XmlDef_h
 #define XmlDef_h
 
-// $Id$
-
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>

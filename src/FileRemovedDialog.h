@@ -1,4 +1,3 @@
-// $Id$
 #ifndef FileRemovedDialog_h
 #define FileRemovedDialog_h
 

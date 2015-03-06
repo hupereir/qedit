@@ -1,4 +1,3 @@
-// $Id$
 #ifndef FileCheckDialog_h
 #define FileCheckDialog_h
 

@@ -1,8 +1,6 @@
 #ifndef DocumentClassModel_h
 #define DocumentClassModel_h
 
-// $Id$
-
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>

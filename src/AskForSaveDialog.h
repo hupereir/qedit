@@ -1,4 +1,3 @@
-// $Id$
 #ifndef AskForSaveDialog_h
 #define AskForSaveDialog_h
 

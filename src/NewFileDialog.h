@@ -1,4 +1,3 @@
-// $Id$
 #ifndef NewFileDialog_h
 #define NewFileDialog_h
 

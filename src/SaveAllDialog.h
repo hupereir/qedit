@@ -1,4 +1,3 @@
-// $Id$
 #ifndef SaveAllDialog_h
 #define SaveAllDialog_h
 

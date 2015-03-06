@@ -1,7 +1,5 @@
 #ifndef DocumentClassToolBar_h
 #define DocumentClassToolBar_h
-
-// $Id$
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>

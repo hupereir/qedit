@@ -1,4 +1,3 @@
-// $Id$
 #ifndef RestoreSessionDialog_h
 #define RestoreSessionDialog_h
 

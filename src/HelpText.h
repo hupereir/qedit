@@ -1,8 +1,6 @@
 #ifndef HelpText_h
 #define HelpText_h
 
-// $Id$
-
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>

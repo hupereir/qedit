@@ -1,7 +1,5 @@
 #ifndef HtmlHelper_h
 #define HtmlHelper_h
-
-// $Id$
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>

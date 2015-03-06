@@ -1,8 +1,6 @@
 #ifndef ReplaceWidget_h
 #define ReplaceWidget_h
 
-// $Id$
-
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>

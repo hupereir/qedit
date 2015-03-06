@@ -1,4 +1,3 @@
-// $Id$
 #ifndef CloseFilesDialog_h
 #define CloseFilesDialog_h
 

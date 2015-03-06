@@ -1,4 +1,3 @@
-// $Id$
 #ifndef TextDisplay_h
 #define TextDisplay_h
 

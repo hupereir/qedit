@@ -1,8 +1,6 @@
 #ifndef DocumentClassManager_h
 #define DocumentClassManager_h
 
-// $Id$
-
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>

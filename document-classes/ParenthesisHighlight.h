@@ -1,8 +1,6 @@
 #ifndef ParenthesisHighlight_h
 #define ParenthesisHighlight_h
 
-// $Id$
-
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>

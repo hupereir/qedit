@@ -1,8 +1,6 @@
 #ifndef FileSystemFrame_h
 #define FileSystemFrame_h
 
-// $Id$
-
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
