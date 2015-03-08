@@ -69,6 +69,9 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     {
         button = buttonBox->addButton( QDialogButtonBox::Yes );
         connect( button, SIGNAL(clicked()), SLOT(_yes()) );
+        #if defined( Q_OS_WIN )
+        button->setIcon( IconEngine::get( IconNames::DialogOk ) );
+        #endif
         button->setToolTip( tr( "Save modified file to disk" ) );
     }
 
