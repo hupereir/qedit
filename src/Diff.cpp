@@ -252,7 +252,7 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
         }
 
         // dump text
-        out.write( _display().toPlainText().toLatin1() );
+        out.write( qPrintable( _display().toPlainText() ) );
         out.close();
 
         // keep file as temporary, so that
