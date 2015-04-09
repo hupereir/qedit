@@ -42,7 +42,6 @@ class NavigationFrame;
 class PrintHelper;
 class ReplaceWidget;
 class SelectLineWidget;
-class TransitionWidget;
 
 //* editor main window
 class MainWindow: public BaseMainWindow, public Counter, public Base::Key
@@ -53,10 +52,10 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     public:
 
     //* constructor
-    MainWindow( QWidget* = 0 );
+    MainWindow( QWidget* = nullptr );
 
     //* destructor
-    ~MainWindow( void );
+    ~MainWindow( void ) = default;
 
     //*@name file management
     //@{
@@ -526,13 +525,6 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     //* display cursor position in state window
     void _updateCursorPosition( void );
 
-    //* replace transition widget
-    /*! this is needed when transition widget gets deleted via its parent Display, during animation */
-    void _replaceTransitionWidget( void );
-
-    //* animations
-    void _animationFinished( void );
-
     private:
 
     //* install actions
@@ -568,9 +560,6 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     //* stack widget
     QStackedWidget* stack_ = nullptr;
-
-    //* transition widget
-    TransitionWidget* transitionWidget_ = nullptr;
 
     //* navigation window
     NavigationFrame* navigationFrame_ = nullptr;

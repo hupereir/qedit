@@ -19,7 +19,6 @@
 
 #include "FileSystemFrame.h"
 
-#include "AnimatedTreeView.h"
 #include "FileRecordProperties.h"
 #include "FileRecordToolTipWidget.h"
 #include "FileSystemIconNames.h"
@@ -33,7 +32,7 @@
 #include "RemoveFilesDialog.h"
 #include "RenameFileDialog.h"
 #include "Singleton.h"
-#include "TransitionWidget.h"
+#include "TreeView.h"
 #include "Util.h"
 #include "XmlOptions.h"
 
@@ -90,7 +89,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     toolbar->addAction( reloadAction_ );
 
     // file list
-    layout->addWidget( list_ = new AnimatedTreeView( this ), 1);
+    layout->addWidget( list_ = new TreeView( this ), 1);
     list_->setMouseTracking( true );
     list_->setModel( &model_ );
     list_->setSelectionMode( QAbstractItemView::ContiguousSelection );

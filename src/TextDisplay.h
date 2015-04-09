@@ -20,7 +20,6 @@
 *
 *******************************************************************************/
 
-#include "AnimatedTextEditor.h"
 #include "AskForSaveDialog.h"
 #include "BlockDelimiter.h"
 #include "FileList.h"
@@ -33,6 +32,7 @@
 #include "HighlightPattern.h"
 #include "NewDocumentNameServer.h"
 #include "ParenthesisHighlight.h"
+#include "TextEditor.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
 #include "TimeStamp.h"
@@ -54,27 +54,27 @@ class HighlightBlockData;
 class TextEncodingMenu;
 class TextHighlight;
 
-//! text display window
-class TextDisplay: public AnimatedTextEditor
+//* text display window
+class TextDisplay: public TextEditor
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! constructor
+    //* constructor
     TextDisplay( QWidget* parent );
 
-    //! destructor
+    //* destructor
     virtual ~TextDisplay();
 
-    //! used to select editor with matching filename
+    //* used to select editor with matching filename
     class SameFileFTor
     {
         public:
 
-        //! constructor
+        //* constructor
         SameFileFTor( const File& file )
         {
 
@@ -83,23 +83,23 @@ class TextDisplay: public AnimatedTextEditor
 
         }
 
-        //! predicate
+        //* predicate
         bool operator() ( const TextDisplay* display ) const
         { return display->file() == file_; }
 
         private:
 
-        //! predicted file
+        //* predicted file
         File file_;
 
     };
 
-    //! used to select editor with empty, unmodified file
+    //* used to select editor with empty, unmodified file
     class EmptyFileFTor
     {
         public:
 
-        //! predicate
+        //* predicate
         bool operator() ( const TextDisplay* display ) const
         {
             return
@@ -109,69 +109,69 @@ class TextDisplay: public AnimatedTextEditor
 
     };
 
-    //! number of block associated to argument
+    //* number of block associated to argument
     /*! reimplemented from base class to account for collapsed blocks */
     virtual int blockCount( const QTextBlock& ) const;
 
-    //! clone display configuration and document
+    //* clone display configuration and document
     virtual void synchronize( TextDisplay* display );
 
-    //! check if current entry has been modified or not
+    //* check if current entry has been modified or not
     void setModified( bool value = true );
 
-    //! read-only
+    //* read-only
     virtual void setReadOnly( bool value );
 
-    //! install actions in context menu
+    //* install actions in context menu
     virtual void installContextMenuActions( BaseContextMenu* menu, bool = true );
 
-    //! draw margins
+    //* draw margins
     virtual void paintMargin( QPainter& );
 
-    //! update flags (to be passed to TextEditor to change button status)
+    //* update flags (to be passed to TextEditor to change button status)
     enum UpdateFlag
     {
 
-        //! file name (in bottom status bar and navigation frame)
+        //* file name (in bottom status bar and navigation frame)
         FileName = 1<<0,
 
-        //! document class
+        //* document class
         DocumentClassFlag = 1<<1,
 
-        //! read only
+        //* read only
         ReadOnly = 1<<2,
 
-        //! modified
+        //* modified
         Modified = 1<<3,
 
-        //! cut availability
+        //* cut availability
         Cut = 1<<4,
 
-        //! copy availability
+        //* copy availability
         Copy = 1<<5,
 
-        //! paster availability
+        //* paster availability
         Paste = 1<<6,
 
-        //! undo/redo availability
+        //* undo/redo availability
         UndoRedo = 1<<7,
 
-        //! overwrite mode
+        //* overwrite mode
         SpellCheck = 1<<8,
 
-        //! keyword modifiers
+        //* keyword modifiers
         Modifiers = 1<<9,
 
-        //! display count
+        //* display count
         DisplayCount = 1<<10,
 
-        //! active file changed
+        //* active file changed
         ActiveDisplayChanged = FileName|DocumentClassFlag|ReadOnly|Cut|Copy|Paste|UndoRedo|SpellCheck|Modifiers,
 
-        //! active file changed
+        //* active file changed
         ActiveViewChanged = FileName|DocumentClassFlag|ReadOnly|Cut|Copy|Paste|UndoRedo|SpellCheck|Modifiers|DisplayCount,
 
-        //! all the above
+        //* all the above
         All = FileName|Modified|ReadOnly|Cut|Copy|Paste|UndoRedo|SpellCheck|Modifiers|DisplayCount
 
     };
@@ -187,121 +187,121 @@ class TextDisplay: public AnimatedTextEditor
     void setIsClosed( bool value )
     { closed_ = value; }
 
-    //!@ name file management
+    //*@ name file management
     //@{
 
-    //! file
+    //* file
     void setFile( File file, bool checkAutoSave = true );
 
-    //! define as new document
+    //* define as new document
     void setIsNewDocument( void );
 
-    //! is new document
+    //* is new document
     bool isNewDocument( void ) const
     { return isNewDocument_; }
 
-    //! new document name server
+    //* new document name server
     static NewDocumentNameServer& newDocumentNameServer( void );
 
-    //! file
+    //* file
     const File& file( void ) const
     { return file_; }
 
-    //! working directory
+    //* working directory
     const File& workingDirectory() const
     { return workingDirectory_; }
 
-    //! last saved time stamp
+    //* last saved time stamp
     const TimeStamp& lastSaved( void ) const
     { return lastSaved_; }
 
-    //! clear file check data
+    //* clear file check data
     void clearFileCheckData( void );
 
-    //! file check data
+    //* file check data
     void setFileCheckData( const FileCheck::Data& data );
 
-    //! file check data
+    //* file check data
     const FileCheck::Data& fileCheckData( void ) const
     { return fileCheckData_; }
 
-    //! ask for save if modified
+    //* ask for save if modified
     AskForSaveDialog::ReturnCode askForSave( bool enable_all = false );
 
-    //! check if file has been removed externally
+    //* check if file has been removed externally
     FileRemovedDialog::ReturnCode checkFileRemoved( void );
 
-    //! check if file has been modified externally
+    //* check if file has been modified externally
     FileModifiedDialog::ReturnCode checkFileModified( void );
 
-    //! check if file read-only state has changed
+    //* check if file read-only state has changed
     void checkFileReadOnly( void );
 
-    //! Save file
+    //* Save file
     void save( void );
 
-    //! Save file with new name
+    //* Save file with new name
     void saveAs( void );
 
-    //! Revert to save
+    //* Revert to save
     void revertToSave( void );
 
     //@}
 
-    //!@name document class
+    //*@name document class
     //@{
 
-    //! class name
+    //* class name
     void setClassName( const QString& name )
     { className_ = name; }
 
-    //! class name
+    //* class name
     const QString& className( void ) const
     { return className_; }
 
     //@}
 
-    //! text encoding
+    //* text encoding
     const QByteArray& textEncoding( void ) const
     { return textEncoding_; }
 
-    //!@name macro
+    //*@name macro
     //@{
 
-    //! list of macros
+    //* list of macros
     const TextMacro::List& macros( void ) const
     { return macros_; }
 
     //@}
 
-    //! text highlight
+    //* text highlight
     bool hasTextHighlight( void )
     { return textHighlight_; }
 
-    //! text highlight
+    //* text highlight
     TextHighlight& textHighlight( void )
     { return *textHighlight_; }
 
-    //! text highlight
+    //* text highlight
     const TextHighlight& textHighlight( void ) const
     { return *textHighlight_; }
 
-    //! text indent
+    //* text indent
     TextIndent& textIndent( void ) const
     { return *indent_; }
 
-    //! block delimiter display
+    //* block delimiter display
     bool hasBlockDelimiterDisplay( void ) const
     { return blockDelimiterDisplay_; }
 
-    //! block delimiter display
+    //* block delimiter display
     BlockDelimiterDisplay& blockDelimiterDisplay( void ) const
     { return *blockDelimiterDisplay_; }
 
-    //! returns true if current text has leading tabs of wrong type
+    //* returns true if current text has leading tabs of wrong type
     bool hasLeadingTabs( void ) const;
 
-    //! convert to plain text
+    //* convert to plain text
     /*!
     This method makes sure that full text is obtained even when some blocks are collapsed.
     this should be an overloaded function, but the base class method is not virtual
@@ -309,249 +309,249 @@ class TextDisplay: public AnimatedTextEditor
     */
     QString toPlainText( void ) const;
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! toggle indentation
+    //* toggle indentation
     QAction& textIndentAction( void ) const
     { return *textIndentMacro_; }
 
-    //! toggle text highlighting
+    //* toggle text highlighting
     QAction& textHighlightAction( void ) const
     { return *textHighlightAction_; }
 
-    //! toggle parenthesis highlighting
+    //* toggle parenthesis highlighting
     QAction& parenthesisHighlightAction( void ) const
     { return *parenthesisHighlightAction_; }
 
-    //! disable automatic macros
+    //* disable automatic macros
     QAction& noAutomaticMacrosAction( void ) const
     { return *noAutomaticMacrosAction_; }
 
-    //! autospell action
+    //* autospell action
     QAction& autoSpellAction( void ) const
     { return *autoSpellAction_; }
 
-    //! show block delimiters
+    //* show block delimiters
     bool hasBlockDelimiterAction( void ) const
     { return showBlockDelimiterAction_; }
 
-    //! show block delimiters
+    //* show block delimiters
     QAction& showBlockDelimiterAction( void ) const
     { return *showBlockDelimiterAction_; }
 
-    //! spellcheck action
+    //* spellcheck action
     QAction& spellcheckAction( void ) const
     { return *spellcheckAction_; }
 
-    //! indent selection
+    //* indent selection
     QAction& indentSelectionAction( void ) const
     { return *indentSelectionAction_; }
 
-    //! indent selection
+    //* indent selection
     QAction& baseIndentAction( void ) const
     { return *baseIndentAction_; }
 
-    //! replace leading tab actions
+    //* replace leading tab actions
     QAction& leadingTabsAction( void ) const
     { return *leadingTabsAction_; }
 
-    //! file information
+    //* file information
     QAction& filePropertiesAction( void ) const
     { return *filePropertiesAction_; }
 
     #if USE_ASPELL
 
-    //! spellcheck dictionary selection
+    //* spellcheck dictionary selection
     QAction& dictionaryMenuAction( void ) const
     { return *dictionaryMenuAction_; }
 
-    //! spellcheck filter selection
+    //* spellcheck filter selection
     QAction& filterMenuAction( void ) const
     { return *filterMenuAction_; }
 
     #endif
 
-    //! text encoding action
+    //* text encoding action
     QAction &textEncodingAction( void ) const
     { return *textEncodingAction_; }
 
-    //! text encoding menu action
+    //* text encoding menu action
     QAction &textEncodingMenuAction( void ) const
     { return *textEncodingMenuAction_; }
 
-    //! tag block action
+    //* tag block action
     QAction &tagBlockAction( void ) const
     { return *tagBlockAction_; }
 
-    //! next tag action
+    //* next tag action
     QAction &nextTagAction( void ) const
     { return *nextTagAction_; }
 
-    //! previous tag action
+    //* previous tag action
     QAction &previousTagAction( void ) const
     { return *previousTagAction_; }
 
-    //! clear current block tags action
+    //* clear current block tags action
     QAction &clearTagAction( void ) const
     { return *clearTagAction_; }
 
-    //! clear all tags action
+    //* clear all tags action
     QAction &clearAllTagsAction( void ) const
     { return *clearAllTagsAction_; }
 
     //@}
 
-    //!@name block interface
+    //*@name block interface
     //@{
 
     // return true if block is an empty line
     virtual bool isEmptyBlock( const QTextBlock& block ) const
     { return _emptyLineRegExp().indexIn( block.text() ) >= 0; }
 
-    //! return true is block is to be ignored from indentation scheme
+    //* return true is block is to be ignored from indentation scheme
     virtual bool ignoreBlock( const QTextBlock& block ) const;
 
-    //! tag block (with diff flag)
+    //* tag block (with diff flag)
     void tagBlock( QTextBlock, const unsigned int& tag );
 
-    //! clear block tags if match argument
+    //* clear block tags if match argument
     void clearTag( QTextBlock, const int& tags );
 
-    //! true if current blocks (or selection) has tag
+    //* true if current blocks (or selection) has tag
     bool isCurrentBlockTagged( void ) const;
 
-    //! true if some blocks have tags
+    //* true if some blocks have tags
     bool hasTaggedBlocks( void ) const;
 
     //@}
 
-    //! return parenthesis highlight object
+    //* return parenthesis highlight object
     ParenthesisHighlight& parenthesisHighlight( void ) const
     { return *parenthesisHighlight_; }
 
     Q_SIGNALS:
 
-    //! emmited when indentation several blocks is required
+    //* emmited when indentation several blocks is required
     void indent( QTextBlock, QTextBlock );
 
-    //! emmited when indentation of one block is required
+    //* emmited when indentation of one block is required
     void indent( QTextBlock, bool  );
 
-    //! emmited whenever mainwindow toolbar, window title or file name editor needs update
+    //* emmited whenever mainwindow toolbar, window title or file name editor needs update
     /* \param flags, bitwise or of UpdateFlags */
     void needUpdate( TextDisplay::UpdateFlags );
 
     public Q_SLOTS:
 
-    //! set document class
+    //* set document class
     void updateDocumentClass( void )
     { _updateDocumentClass( file_, isNewDocument_ ); }
 
-    //! process macro by name
+    //* process macro by name
     void processMacro( QString );
 
-    //! rehighlight
+    //* rehighlight
     void rehighlight( void );
 
-    //! clear all blocks if match argument
+    //* clear all blocks if match argument
     void clearAllTags( const int& tags = TextBlock::All );
 
-    //! change autospell filter
+    //* change autospell filter
     void selectFilter( const QString& );
 
-    //! change autospell dictionary
+    //* change autospell dictionary
     void selectDictionary( const QString& );
 
-    //! select class name
+    //* select class name
     void selectClassName( QString );
 
-    //! set focus, delayed
+    //* set focus, delayed
     void setFocusDelayed( void );
 
     protected:
 
-    //!@name event handlers
+    //*@name event handlers
     //@{
 
-    //! generic event
+    //* generic event
     virtual bool event( QEvent* );
 
-    //! keypress event [overloaded]
+    //* keypress event [overloaded]
     virtual void keyPressEvent( QKeyEvent* );
 
-    //! context menu event [overloaded]
+    //* context menu event [overloaded]
     virtual void contextMenuEvent( QContextMenuEvent* );
 
-    //! paint event
+    //* paint event
     virtual void paintEvent( QPaintEvent* );
 
-    //! raise autospell context menu
+    //* raise autospell context menu
     /*! returns true if autospell context menu is used */
     virtual bool _autoSpellContextEvent( QContextMenuEvent* );
 
     //@}
 
-    //! recent files
+    //* recent files
     FileList& _recentFiles( void ) const;
 
-    //! update document class
+    //* update document class
     /*! first parameter is file name, second tells if document is a new untitled document or not */
     void _updateDocumentClass( File, bool );
 
-    //! set file name
+    //* set file name
     void _setFile( const File& file );
 
-    //! is new document
+    //* is new document
     void _setIsNewDocument( bool value )
     { isNewDocument_ = value; }
 
-    //! clear macros
+    //* clear macros
     void _clearMacros( void )
     { macros_.clear(); }
 
-    //! macros
+    //* macros
     void _setMacros( const TextMacro::List& macros)
     { macros_ = macros; }
 
-    //! last save time stamp
+    //* last save time stamp
     void _setLastSaved( const TimeStamp& stamp )
     { lastSaved_ = stamp; }
 
-    //! working directory
+    //* working directory
     void _setWorkingDirectory( const File& file )
     { workingDirectory_ = file; }
 
-    //! if true file is not checked on enter event
+    //* if true file is not checked on enter event
     bool _ignoreWarnings() const
     { return ignoreWarnings_; }
 
-    //! if true file is not checked on enter event
+    //* if true file is not checked on enter event
     void _setIgnoreWarnings( bool value )
     { ignoreWarnings_ = value; }
 
-    //! true if macros list contains automatic macros
+    //* true if macros list contains automatic macros
     bool _hasAutomaticMacros( void ) const;
 
-    //! process macro
+    //* process macro
     void _processMacro( const TextMacro& );
 
-    //! returns true if text contents differs from file contents
+    //* returns true if text contents differs from file contents
     bool _contentsChanged( void ) const;
 
-    //! returns true if file was removed
+    //* returns true if file was removed
     bool _fileRemoved( void ) const;
 
-    //! returns true if file was modified by external application
+    //* returns true if file was modified by external application
     bool _fileModified( void );
 
-    //! track text modifications for syntax highlighting
+    //* track text modifications for syntax highlighting
     void _setBlockModified( const QTextBlock& );
 
-    //! update tagged block colors
+    //* update tagged block colors
     void _updateTaggedBlocks( void );
 
-    //! update margins
+    //* update margins
     virtual bool _updateMargin( void );
 
     protected Q_SLOTS:
@@ -561,131 +561,131 @@ class TextDisplay: public AnimatedTextEditor
 
     private Q_SLOTS:
 
-    //! update configuration
+    //* update configuration
     void _updateConfiguration( void );
 
-    //! spellcheck configuration
+    //* spellcheck configuration
     void _updateSpellCheckConfiguration( File file = File() );
 
-    //! indent paragraph (when return or tab is pressed)
+    //* indent paragraph (when return or tab is pressed)
     void _indentCurrentParagraph( void );
 
-    //! selection changed
+    //* selection changed
     void _selectionChanged( void )
     { if( isActive() ) emit needUpdate( UpdateFlags(Cut|Copy) ); }
 
-    //! toggle text indentation
+    //* toggle text indentation
     void _toggleTextIndent( bool state );
 
-    //! toggle text highlight
+    //* toggle text highlight
     void _toggleTextHighlight( bool state );
 
-    //! toggle parenthesis
+    //* toggle parenthesis
     void _toggleParenthesisHighlight( bool state );
 
-    //! toggle block delimiters display
+    //* toggle block delimiters display
     void _toggleShowBlockDelimiters( bool state );
 
-    //! toggle automatic macros
+    //* toggle automatic macros
     void _toggleIgnoreAutomaticMacros( bool state );
 
-    //!@name spell check
+    //*@name spell check
     //@{
 
-    //! autospell
+    //* autospell
     void _toggleAutoSpell( bool state );
 
-    //! run spellcheck
+    //* run spellcheck
     void _spellcheck( void );
 
     //@}
 
-    //! change text encoding
+    //* change text encoding
     void _textEncoding( void );
 
-    //! set text encoding
+    //* set text encoding
     void _setTextEncoding( const QByteArray& );
 
-    //! indent selection
+    //* indent selection
     void _indentSelection( void );
 
-    //! add base indentation
+    //* add base indentation
     void _addBaseIndentation( void );
 
-    //! replace all leading tabs in text when tab emulation is active
+    //* replace all leading tabs in text when tab emulation is active
     void _replaceLeadingTabs( bool confirm = true );
 
-    //! show file info
+    //* show file info
     void _fileProperties( void );
 
-    //! track text modifications for syntax highlighting
+    //* track text modifications for syntax highlighting
     void _setBlockModified( int, int, int );
 
-    //! update action status
+    //* update action status
     virtual void _updateSelectionActions( bool state )
     {
-        AnimatedTextEditor::_updateSelectionActions( state );
+        TextEditor::_updateSelectionActions( state );
         emit needUpdate( UpdateFlags( Cut|Copy ) );
     }
 
-    //! update paste action
+    //* update paste action
     /*! depends on clipboard status and editability */
     virtual void _updatePasteAction( void )
     {
-        AnimatedTextEditor::_updatePasteAction();
+        TextEditor::_updatePasteAction();
         emit needUpdate( Paste );
     }
 
-    //! text changed
+    //* text changed
     virtual void _textModified( void );
 
-    //! ignore current misspelled word
+    //* ignore current misspelled word
     /*! this method does nothing if not compiled against aspell */
     void _ignoreMisspelledWord( QString );
 
-    //! replace current selection with spell-checked suggestion
+    //* replace current selection with spell-checked suggestion
     /*! this method does nothing if not compiled against aspell */
     void _replaceMisspelledSelection( QString );
 
-    //! highlight parenthesis
+    //* highlight parenthesis
     void _highlightParenthesis( void );
 
-    //! tag current block
+    //* tag current block
     void _tagBlock( void );
 
-    //! find next tagged block, starting from current
+    //* find next tagged block, starting from current
     void _nextTag( void );
 
-    //! find previous tagged block, starting from current
+    //* find previous tagged block, starting from current
     void _previousTag( void );
 
-    //! clear current block tags
+    //* clear current block tags
     void _clearTag( void );
 
-    //! true if a block is collapsed
+    //* true if a block is collapsed
     bool _blockIsCollapsed( const QTextBlock& ) const;
 
-    //! returns collapsed text in a given block, if any
+    //* returns collapsed text in a given block, if any
     QString _collapsedText( const QTextBlock& ) const;
 
-    //! returns true if file is on afs
+    //* returns true if file is on afs
     bool _fileIsAfs( void ) const;
 
     private:
 
-    //! actions
+    //* actions
     void _installActions( void );
 
-    //! empty line
+    //* empty line
     static QRegExp& _emptyLineRegExp( void );
 
-    //! file
+    //* file
     File file_;
 
-    //! working directory
+    //* working directory
     File workingDirectory_;
 
-    //!@name property ids
+    //*@name property ids
     //@{
     FileRecord::PropertyId::Id classNamePropertyId_;
     FileRecord::PropertyId::Id iconPropertyId_;
@@ -694,136 +694,136 @@ class TextDisplay: public AnimatedTextEditor
     FileRecord::PropertyId::Id filterPropertyId_;
     //@}
 
-    //! text encoding (needed for conversions
+    //* text encoding (needed for conversions
     QByteArray textEncoding_;
 
-    //! true if display is to be deleted
+    //* true if display is to be deleted
     bool closed_;
 
-    //! true if display corresponds to a new document
+    //* true if display corresponds to a new document
     bool isNewDocument_;
 
-    //! associated document class name
+    //* associated document class name
     QString className_;
 
-    //! filesystem check data
+    //* filesystem check data
     FileCheck::Data fileCheckData_;
 
-    //! diff conflict color
+    //* diff conflict color
     QColor diffConflictColor_;
 
-    //! diff added color
+    //* diff added color
     QColor diffAddedColor_;
 
-    //! diff added color
+    //* diff added color
     QColor userTagColor_;
 
-    //! last save timeStamp
+    //* last save timeStamp
     TimeStamp lastSaved_;
 
-    //! if true, _checkFile is disabled
+    //* if true, _checkFile is disabled
     bool ignoreWarnings_;
 
-    //!@name document classes specific members
+    //*@name document classes specific members
     //@{
 
-    //! text indent
+    //* text indent
     TextIndent* indent_;
 
-    //! text macro
+    //* text macro
     TextMacro::List macros_;
 
     //@}
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! toggle indentation
+    //* toggle indentation
     QAction* textIndentMacro_;
 
-    //! toggle text highlighting
+    //* toggle text highlighting
     QAction* textHighlightAction_;
 
-    //! toggle text highlighting
+    //* toggle text highlighting
     QAction* parenthesisHighlightAction_;
 
-    //! disable automatic macros
+    //* disable automatic macros
     QAction* noAutomaticMacrosAction_;
 
-    //! toggle autospell
+    //* toggle autospell
     QAction* autoSpellAction_;
 
-    //! block delimiter
+    //* block delimiter
     QAction* showBlockDelimiterAction_;
 
-    //! run spell checker
+    //* run spell checker
     QAction* spellcheckAction_;
 
-    //! indent selection
+    //* indent selection
     QAction* indentSelectionAction_;
 
-    //! add base indentation
+    //* add base indentation
     QAction* baseIndentAction_;
 
-    //! replace leading tabs
+    //* replace leading tabs
     QAction* leadingTabsAction_;
 
-    //! toggle text highlighting
+    //* toggle text highlighting
     QAction* filePropertiesAction_;
 
     #if USE_ASPELL
 
-    //! spellcheck dictionary selection menu
+    //* spellcheck dictionary selection menu
     QAction* dictionaryMenuAction_;
 
-    //! spellcheck filter selection menu
+    //* spellcheck filter selection menu
     QAction* filterMenuAction_;
 
     #endif
 
-    //! text encoding action
+    //* text encoding action
     QAction* textEncodingAction_;
 
-    //! text encoding menu action
+    //* text encoding menu action
     QAction* textEncodingMenuAction_;
 
-    //! tag block
+    //* tag block
     QAction* tagBlockAction_;
 
-    //! goto next tag
+    //* goto next tag
     QAction* nextTagAction_;
 
-    //! goto previous tag
+    //* goto previous tag
     QAction* previousTagAction_;
 
-    //! clear current block tags
+    //* clear current block tags
     QAction* clearTagAction_;
 
-    //! clear current block tags
+    //* clear current block tags
     QAction* clearAllTagsAction_;
 
     //@}
 
     #if USE_ASPELL
 
-    //! spellcheck dictionary selection menu
+    //* spellcheck dictionary selection menu
     SpellCheck::DictionaryMenu* dictionaryMenu_;
 
-    //! spellcheck filter selection menu
+    //* spellcheck filter selection menu
     SpellCheck::FilterMenu* filterMenu_;
 
     #endif
 
-    //! text encoding menu
+    //* text encoding menu
     TextEncodingMenu* textEncodingMenu_;
 
-    //! syntax highlighter
+    //* syntax highlighter
     TextHighlight* textHighlight_;
 
-    //! parenthesis highlight object
+    //* parenthesis highlight object
     ParenthesisHighlight* parenthesisHighlight_;
 
-    //! block delimiter
+    //* block delimiter
     BlockDelimiterDisplay* blockDelimiterDisplay_;
 
 };

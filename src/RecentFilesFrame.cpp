@@ -19,7 +19,6 @@
 
 #include "RecentFilesFrame.h"
 
-#include "AnimatedTreeView.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
 #include "ContextMenu.h"
@@ -30,6 +29,7 @@
 #include "FileRecordToolTipWidget.h"
 #include "QuestionDialog.h"
 #include "QtUtil.h"
+#include "TreeView.h"
 #include "Util.h"
 #include "XmlOptions.h"
 
@@ -56,7 +56,7 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     toolTipWidget_ = new FileRecordToolTipWidget( this );
 
     // list
-    layout()->addWidget( list_ = new AnimatedTreeView( this ) );
+    layout()->addWidget( list_ = new TreeView( this ) );
     list_->setMouseTracking( true );
     list_->setModel( &model_ );
     list_->setSelectionMode( QAbstractItemView::ContiguousSelection );

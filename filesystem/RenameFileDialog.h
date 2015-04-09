@@ -23,9 +23,9 @@
 #include "CustomDialog.h"
 #include "FileRecord.h"
 
-class AnimatedLineEditor;
+class LineEditor;
 
-//! Edit/create keyword popup dialog
+//* Edit/create keyword popup dialog
 class RenameFileDialog: public CustomDialog
 {
 
@@ -33,29 +33,29 @@ class RenameFileDialog: public CustomDialog
 
     public:
 
-    //! constructor
+    //* constructor
     RenameFileDialog( QWidget* parent, FileRecord );
 
-    //! destructor
+    //* destructor
     virtual ~RenameFileDialog( void )
     {}
 
-    //! new file name
+    //* new file name
     File file( void ) const;
 
     private Q_SLOTS:
 
-    //! button update
+    //* button update
     void _updateButtons( void );
 
     private:
 
-    //! line editor
-    AnimatedLineEditor& _editor( void ) const
+    //* line editor
+    LineEditor& _editor( void ) const
     { return *editor_; }
 
-    //! editor
-    AnimatedLineEditor *editor_;
+    //* editor
+    LineEditor *editor_;
 
 };
 

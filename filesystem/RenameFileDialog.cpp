@@ -17,21 +17,11 @@
 *
 *******************************************************************************/
 
-/*!
-   \file RenameFileDialog.cpp
-   \brief Edit/create keyword popup dialog
-   \author Hugo Pereira
-   \version $Revision$
-   \date $Date$
-*/
-
-#include <QLabel>
-
 #include "Debug.h"
-#include "AnimatedLineEditor.h"
+#include "LineEditor.h"
 #include "RenameFileDialog.h"
 
-
+#include <QLabel>
 
 //_____________________________________________________
 RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):
@@ -42,7 +32,7 @@ RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):
 
     QString buffer = QString( tr( "Rename the item '%1' to:" ) ).arg( record.file() );
     mainLayout().addWidget( new QLabel( buffer, this ) );
-    mainLayout().addWidget( editor_ = new AnimatedLineEditor( this ) );
+    mainLayout().addWidget( editor_ = new LineEditor( this ) );
 
     // set editor text
     _editor().setText( record.file() );

@@ -19,7 +19,6 @@
 
 #include "MainWindow.h"
 
-#include "AnimatedLineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
 #include "BaseStatusBar.h"
@@ -45,6 +44,7 @@
 #include "IconEngine.h"
 #include "IconNames.h"
 #include "InformationDialog.h"
+#include "LineEditor.h"
 #include "Menu.h"
 #include "NavigationFrame.h"
 #include "NavigationToolBar.h"
@@ -64,7 +64,6 @@
 #include "TextHighlight.h"
 #include "TextIndent.h"
 #include "TextMacroMenu.h"
-#include "TransitionWidget.h"
 #include "WindowServer.h"
 #include "WindowTitle.h"
 #include "XmlOptions.h"
@@ -140,9 +139,6 @@ MainWindow::MainWindow(  QWidget* parent ):
     _createReplaceWidget();
     _createSelectLineWidget();
 
-    // transition widget
-    _replaceTransitionWidget();
-
     // create first text view
     newTextView();
 
@@ -175,13 +171,6 @@ MainWindow::MainWindow(  QWidget* parent ):
     connect( qApp, SIGNAL(aboutToQuit()), SLOT(_saveConfiguration()) );
     _updateConfiguration();
 
-}
-
-//___________________________________________________________
-MainWindow::~MainWindow( void )
-{
-    Debug::Throw( "MainWindow::~MainWindow.\n" );
-    disconnect( transitionWidget_, SIGNAL(destroyed()) );
 }
 
 //___________________________________________________________
@@ -224,21 +213,11 @@ void MainWindow::setActiveView( TextView& view )
     activeView().activeDisplay().setFocusDelayed();
 
     // update stack if needed
-    if( stack_->currentWidget() !=  &activeView() )
-    {
+    if( stack_->currentWidget() !=  &activeView() ) stack_->setCurrentWidget( &activeView() );
 
-        if( transitionWidget_->isEnabled() && isVisible() )
-        {
-            transitionWidget_->setParent( &activeView() );
-            transitionWidget_->initialize( stack_ );
-        }
-
-        stack_->setCurrentWidget( &activeView() );
-
-        if( transitionWidget_->isEnabled() && isVisible() ) transitionWidget_->start();
-        else _animationFinished();
-
-    } else _animationFinished();
+    // update displays, actions, etc.
+    if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
+    { _update( TextDisplay::ActiveViewChanged ); }
 
 }
 
@@ -802,35 +781,6 @@ void MainWindow::_updateCursorPosition( void )
     statusbar_->label(2).setText( QString( tr( "Column: %1" ) ).arg( position.index()+1 ) , false );
 
     return;
-}
-
-//_____________________________________________
-void MainWindow::_replaceTransitionWidget( void )
-{
-
-    Debug::Throw( "MainWindow::_replaceTransitionWidget.\n" );
-
-    transitionWidget_ = new TransitionWidget( this );
-    transitionWidget_->setFlag( TransitionWidget::FromParent, false );
-    transitionWidget_->hide();
-    connect( transitionWidget_, SIGNAL(destroyed()), SLOT(_replaceTransitionWidget()) );
-    connect( &transitionWidget_->timeLine(), SIGNAL(finished()), SLOT(_animationFinished()) );
-
-}
-
-//_____________________________________________
-void MainWindow::_animationFinished( void )
-{
-    Debug::Throw( "MainWindow::_animationFinished.\n" );
-    transitionWidget_->setParent( this );
-    transitionWidget_->hide();
-
-    // update displays, actions, etc.
-    if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
-    { _update( TextDisplay::ActiveViewChanged ); }
-
-    Debug::Throw( "MainWindow::_animationFinished - done.\n" );
-
 }
 
 //___________________________________________________________

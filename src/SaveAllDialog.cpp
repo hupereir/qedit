@@ -19,10 +19,10 @@
 
 #include "SaveAllDialog.h"
 
-#include "AnimatedTreeView.h"
 #include "Debug.h"
 #include "IconNames.h"
 #include "IconEngine.h"
+#include "TreeView.h"
 #include "XmlOptions.h"
 
 #include <QTextStream>
@@ -47,7 +47,7 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
 
         setText( QString( tr( "%1 files are modified. Save ?" ) ).arg( files.size() ) );
 
-        AnimatedTreeView* treeView = new AnimatedTreeView( this );
+        TreeView* treeView = new TreeView( this );
         setDetails( treeView );
         treeView->setModel( &model_ );
         model_.set( files );

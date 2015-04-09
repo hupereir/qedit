@@ -19,8 +19,7 @@
 
 #include "TextDisplay.h"
 
-#include "AnimatedTabWidget.h"
-#include "AnimatedLineEditor.h"
+#include "LineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
@@ -90,7 +89,7 @@ QRegExp& TextDisplay::_emptyLineRegExp( void )
 
 //___________________________________________________
 TextDisplay::TextDisplay( QWidget* parent ):
-    AnimatedTextEditor( parent ),
+    TextEditor( parent ),
     file_( "" ),
     workingDirectory_( Util::workingDirectory() ),
 
@@ -183,7 +182,7 @@ int TextDisplay::blockCount( const QTextBlock& block ) const
     QTextBlockFormat blockFormat( block.blockFormat() );
     if( blockFormat.boolProperty( TextBlock::Collapsed ) && blockFormat.hasProperty( TextBlock::CollapsedData ) )
     {  return blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount(); }
-    else return AnimatedTextEditor::blockCount( block );
+    else return TextEditor::blockCount( block );
 
 }
 
@@ -219,7 +218,7 @@ void TextDisplay::setReadOnly( bool value )
     Debug::Throw() << "TextDisplay::setReadOnly - value: " << value << endl;
 
     bool changed = (value != isReadOnly() );
-    AnimatedTextEditor::setReadOnly( value );
+    TextEditor::setReadOnly( value );
 
     if( changed && isActive() ) emit needUpdate( ReadOnly );
 }
@@ -237,7 +236,7 @@ void TextDisplay::installContextMenuActions( BaseContextMenu* menu, bool )
 
     // retrieve default context menu
     // second argument is to remove un-necessary actions
-    AnimatedTextEditor::installContextMenuActions( menu, false );
+    TextEditor::installContextMenuActions( menu, false );
 
     // add specific actions
     menu->insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
@@ -273,7 +272,7 @@ void TextDisplay::installContextMenuActions( BaseContextMenu* menu, bool )
 //__________________________________________________________
 void TextDisplay::paintMargin( QPainter& painter )
 {
-    AnimatedTextEditor::paintMargin( painter );
+    TextEditor::paintMargin( painter );
     bool hasBlockDelimiters( hasBlockDelimiterDisplay() && hasBlockDelimiterAction() && showBlockDelimiterAction().isVisible() && showBlockDelimiterAction().isChecked() );
     if( hasBlockDelimiters ) blockDelimiterDisplay().paint( painter );
 }
@@ -291,7 +290,7 @@ void TextDisplay::synchronize( TextDisplay* other )
     when changing the document */
 
     // base class synchronization
-    AnimatedTextEditor::synchronize( other );
+    TextEditor::synchronize( other );
 
     // restore connection with document
     // track contents changed for syntax highlighting
@@ -908,7 +907,7 @@ QString TextDisplay::toPlainText( void ) const
 
     // check blockDelimiterAction
     if( !( showBlockDelimiterAction().isEnabled() && showBlockDelimiterAction().isChecked() ) )
-    { return AnimatedTextEditor::toPlainText(); }
+    { return TextEditor::toPlainText(); }
 
     // output string
     QString out;
@@ -1205,7 +1204,7 @@ void TextDisplay::rehighlight( void )
 void TextDisplay::clearAllTags( const int& flags )
 {
 
-    Debug::Throw( "AnimatedTextEditor::clearAllTags.\n" );
+    Debug::Throw( "TextDisplay::clearAllTags.\n" );
 
     setUpdatesEnabled( false );
     for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
@@ -1325,7 +1324,7 @@ bool TextDisplay::event( QEvent* event )
         default: break;
     }
 
-    return AnimatedTextEditor::event( event );
+    return TextEditor::event( event );
 
 }
 
@@ -1343,7 +1342,7 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
     {
 
         // process key
-        AnimatedTextEditor::keyPressEvent( event );
+        TextEditor::keyPressEvent( event );
 
         // indent current paragraph when return is pressed
         if( indent_->isEnabled() && event->key() == Qt::Key_Return && !textCursor().hasSelection() )
@@ -1363,12 +1362,12 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
 void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 {
 
-    Debug::Throw( "AnimatedTextEditor::contextMenuEvent.\n" );
+    Debug::Throw( "TextEditor::contextMenuEvent.\n" );
 
     if( _autoSpellContextEvent( event ) ) return;
     else {
 
-        AnimatedTextEditor::contextMenuEvent( event );
+        TextEditor::contextMenuEvent( event );
         return;
 
     }
@@ -1378,7 +1377,7 @@ void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 //________________________________________________
 void TextDisplay::paintEvent( QPaintEvent* event )
 {
-    AnimatedTextEditor::paintEvent( event );
+    TextEditor::paintEvent( event );
 
     // handle block background
     QTextBlock first( cursorForPosition( event->rect().topLeft() ).block() );
@@ -1802,7 +1801,7 @@ bool TextDisplay::_updateMargin( void )
 {
     Debug::Throw( "TextDisplay::_updateMargin.\n" );
 
-    AnimatedTextEditor::_updateMargin();
+    TextEditor::_updateMargin();
     int left_margin( _leftMargin() );
 
     blockDelimiterDisplay().setOffset( left_margin );
@@ -1818,7 +1817,7 @@ bool TextDisplay::_toggleWrapMode( bool state )
 {
 
     Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "True":"False") << endl;
-    if( !AnimatedTextEditor::_toggleWrapMode( state ) ) return false;
+    if( !TextEditor::_toggleWrapMode( state ) ) return false;
 
     if( !( file().isEmpty() || isNewDocument() ) )
     { _recentFiles().get( file() ).addProperty( wrapPropertyId_, QString::number(state) ); }
@@ -2370,7 +2369,7 @@ void TextDisplay::_fileProperties( void )
     // number of lines
     item = new GridLayoutItem( box, gridLayout );
     item->setKey( "Number of lines:" );
-    item->setText( QString::number( AnimatedTextEditor::blockCount()) );
+    item->setText( QString::number( TextEditor::blockCount()) );
 
     gridLayout->addWidget( new QLabel( "Text highlighting:", box ) );
     {
@@ -2773,7 +2772,7 @@ void TextDisplay::_previousTag( void )
 void TextDisplay::_clearTag( void )
 {
 
-    Debug::Throw( "AnimatedTextEditor::_clearTag.\n" );
+    Debug::Throw( "TextEditor::_clearTag.\n" );
 
     QList<QTextBlock> blocks;
     QTextCursor cursor( textCursor() );

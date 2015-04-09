@@ -20,10 +20,10 @@
 *
 *******************************************************************************/
 
-#include "AnimatedTreeView.h"
+#include "TreeView.h"
 #include "File.h"
 
-class SessionFilesView: public AnimatedTreeView
+class SessionFilesView: public TreeView
 {
 
     Q_OBJECT

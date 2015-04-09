@@ -20,7 +20,6 @@
 #include "SessionFilesFrame.h"
 
 #include "Application.h"
-#include "AnimatedTreeView.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
 #include "ContextMenu.h"
@@ -58,7 +57,6 @@ Counter( "SessionFilesFrame" )
 
     // list
     model_.setDragEnabled( true );
-    // layout()->addWidget( list_ = new AnimatedTreeView( this ) );
     layout()->addWidget( list_ = new SessionFilesView( this ) );
     list_->setMouseTracking( true );
     list_->setModel( &model_ );

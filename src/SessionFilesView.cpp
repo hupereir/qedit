@@ -29,7 +29,7 @@
 
 //____________________________________________________________________
 SessionFilesView::SessionFilesView( QWidget* parent ):
-    AnimatedTreeView( parent ),
+    TreeView( parent ),
     locked_( false )
 {}
 

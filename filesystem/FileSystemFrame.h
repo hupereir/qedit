@@ -28,165 +28,165 @@
 #include <QWidget>
 #include <QFileSystemWatcher>
 
-class AnimatedTreeView;
+class TreeView;
 class PathEditor;
 class FileRecordToolTipWidget;
 
-//! customized ListView for file/directory navigation
+//* customized ListView for file/directory navigation
 class FileSystemFrame: public QWidget, public Counter
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! constructor
+    //* constructor
     FileSystemFrame( QWidget* parent );
 
-    //! destructor
+    //* destructor
     ~FileSystemFrame( void )
     { Debug::Throw( "FileSystemFrame::~FileSystemFrame.\n" ); }
 
-    //! working path
+    //* working path
     void setWorkingPath( const File& );
 
-    //! clear list, add navigator button
+    //* clear list, add navigator button
     void clear();
 
     Q_SIGNALS:
 
-    //! file selected
+    //* file selected
     void fileActivated( FileRecord );
 
     public Q_SLOTS:
 
-    //! base directory
+    //* base directory
     void setPath( File, bool forced = false );
 
     protected Q_SLOTS:
 
-    //! custom event, used to retrieve file validity check event
+    //* custom event, used to retrieve file validity check event
     void _processFiles( const File::List& );
 
-    //! item activated
+    //* item activated
     void _itemActivated( const QModelIndex& );
 
-    //! show hidden files
+    //* show hidden files
     void _toggleShowHiddenFiles( bool state );
 
-    //! update configuration
+    //* update configuration
     void _updateConfiguration( void );
 
-    //! update navigation actions based on current location and history
+    //* update navigation actions based on current location and history
     void _updateNavigationActions( void );
 
-    //! show tooltip
+    //* show tooltip
     void _showToolTip( const QModelIndex& );
 
-    //! update directory
+    //* update directory
     void _update( const QString& );
 
-    //! update directory
+    //* update directory
     void _update( void );
 
-    //! update actions
+    //* update actions
     void _updateActions( void );
 
-    //! working directory
+    //* working directory
     void _workingDirectory( void )
     { setPath( workingPath_ ); }
-    
-    //! home directory
+
+    //* home directory
     void _homeDirectory( void )
     { setPath( homePath_ ); }
 
-    //! reload
+    //* reload
     void _reload( void );
 
-    //! open
+    //* open
     void _open( void );
 
-    //! remove (from dialog)
+    //* remove (from dialog)
     void _remove( void );
 
-    //! remove (from dialog)
+    //* remove (from dialog)
     void _rename( void );
 
-    //! file properties
+    //* file properties
     void _fileProperties( void );
 
     private:
 
-    //! install actions
+    //* install actions
     void _installActions( void );
 
-     //! path editor
-    PathEditor* pathEditor_;
+     //* path editor
+    PathEditor* pathEditor_ = nullptr;
 
-    //! tooltip widget
-    FileRecordToolTipWidget* toolTipWidget_;
+    //* tooltip widget
+    FileRecordToolTipWidget* toolTipWidget_ = nullptr;
 
-    //! model
+    //* model
     FileSystemModel model_;
 
-    //! list of files
-    AnimatedTreeView* list_;
+    //* list of files
+    TreeView* list_ = nullptr;
 
-    //! size property id
-    FileRecord::PropertyId::Id sizePropertyId_;
+    //* size property id
+    FileRecord::PropertyId::Id sizePropertyId_ = 0;
 
-    //! true to show navigator in list
-    bool showNavigator_;
+    //* true to show navigator in list
+    bool showNavigator_ = false;
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! show/hide hidden files
-    QAction* hiddenFilesAction_;
+    //* show/hide hidden files
+    QAction* hiddenFilesAction_ = nullptr;
 
-    //! previous directory action
-    QAction* previousDirectoryAction_;
+    //* previous directory action
+    QAction* previousDirectoryAction_ = nullptr;
 
-    //! next directory action
-    QAction* nextDirectoryAction_;
+    //* next directory action
+    QAction* nextDirectoryAction_ = nullptr;
 
-    //! parent directory action
-    QAction* parentDirectoryAction_;
+    //* parent directory action
+    QAction* parentDirectoryAction_ = nullptr;
 
-    //! home directory action
-    QAction* homeDirectoryAction_;
+    //* home directory action
+    QAction* homeDirectoryAction_ = nullptr;
 
-    //! working directory action
-    QAction* workingDirectoryAction_;
-    
-    //! reload
-    QAction* reloadAction_;
+    //* working directory action
+    QAction* workingDirectoryAction_ = nullptr;
 
-    //! open
-    QAction* openAction_;
+    //* reload
+    QAction* reloadAction_ = nullptr;
 
-    //! remove
-    QAction* removeAction_;
+    //* open
+    QAction* openAction_ = nullptr;
 
-    //! rename
-    QAction* renameAction_;
+    //* remove
+    QAction* removeAction_ = nullptr;
 
-    //! properties
-    QAction* filePropertiesAction_;
+    //* rename
+    QAction* renameAction_ = nullptr;
+
+    //* properties
+    QAction* filePropertiesAction_ = nullptr;
 
     //@}
 
-    //! home directory
+    //* home directory
     File homePath_;
 
-    //! working directory
+    //* working directory
     File workingPath_;
-    
-    //! file system watcher
+
+    //* file system watcher
     QFileSystemWatcher fileSystemWatcher_;
 
-    //! thread to list files
+    //* thread to list files
     FileThread thread_;
 
 };

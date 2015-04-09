@@ -20,61 +20,61 @@
 *
 *******************************************************************************/
 
-#include "AnimatedStackedWidget.h"
 #include "FileList.h"
 #include "FileRecord.h"
 
 #include <QAction>
 #include <QShowEvent>
+#include <QStackedWidget>
 #include <QToolButton>
 
 class SessionFilesFrame;
 class RecentFilesFrame;
 class FileSystemFrame;
 
-//! editor windows navigator
-class NavigationFrame: public AnimatedStackedWidget
+//* editor windows navigator
+class NavigationFrame: public QStackedWidget
 {
 
     Q_OBJECT
 
     public:
 
-    //! creator
+    //* creator
     NavigationFrame( QWidget* parent, FileList&  );
 
-    //! destructor
+    //* destructor
     virtual ~NavigationFrame( void )
     {}
 
-    //! default size
+    //* default size
     void setDefaultWidth( const int& value )
     { defaultWidth_ = value; }
 
-    //! default width
+    //* default width
     const int& defaultWidth( void ) const
     { return defaultWidth_; }
 
-    //! size
+    //* size
     QSize sizeHint( void ) const
     { return (defaultWidth_ ) >= 0 ? QSize( defaultWidth_, 0 ):QWidget::sizeHint(); }
 
-    //! session files
+    //* session files
     SessionFilesFrame& sessionFilesFrame( void ) const
     { return *sessionFilesFrame_; }
 
-    //! recent files
+    //* recent files
     RecentFilesFrame& recentFilesFrame( void ) const
     { return *recentFilesFrame_; }
 
-    //! file system
+    //* file system
     FileSystemFrame& fileSystemFrame( void ) const
     { return *fileSystemFrame_; }
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! visibility
+    //* visibility
     QAction& visibilityAction( void ) const
     { return *visibilityAction_; }
 
@@ -82,29 +82,29 @@ class NavigationFrame: public AnimatedStackedWidget
 
     private Q_SLOTS:
 
-    //! update current widget
+    //* update current widget
     void _updateCurrentWidget( void );
 
     private:
 
-    //! install actions
+    //* install actions
     void _installActions( void );
 
-    //! default width;
+    //* default width;
     int defaultWidth_;
 
-    //! session files
+    //* session files
     SessionFilesFrame *sessionFilesFrame_;
 
-    //! recent files
+    //* recent files
     RecentFilesFrame *recentFilesFrame_;
 
-    //! file system
+    //* file system
     FileSystemFrame* fileSystemFrame_;
 
     //@}
 
-    //! visibility action
+    //* visibility action
     QAction* visibilityAction_;
 
 };

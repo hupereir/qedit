@@ -19,7 +19,7 @@
 
 #include "CloseFilesDialog.h"
 
-#include "AnimatedTreeView.h"
+#include "TreeView.h"
 #include "Debug.h"
 #include "IconNames.h"
 #include "IconEngine.h"
@@ -47,7 +47,7 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
 
         setText( QString( tr( "Editing %1 files. Close ?" ) ).arg( files.size() ) );
 
-        AnimatedTreeView* treeView = new AnimatedTreeView( this );
+        TreeView* treeView = new TreeView( this );
         setDetails( treeView );
         treeView->setModel( &model_ );
         model_.set( files );

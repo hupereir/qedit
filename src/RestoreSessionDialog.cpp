@@ -19,10 +19,10 @@
 
 #include "RestoreSessionDialog.h"
 
-#include "AnimatedTreeView.h"
 #include "Debug.h"
 #include "IconNames.h"
 #include "IconEngine.h"
+#include "TreeView.h"
 #include "XmlOptions.h"
 
 #include <QTextStream>
@@ -47,7 +47,7 @@ RestoreSessionDialog::RestoreSessionDialog( QWidget* parent, FileRecord::List fi
 
         setText( QString( tr( "Restore %1 files from saved session ?" ) ).arg( files.size() ) );
 
-        AnimatedTreeView* treeView = new AnimatedTreeView( this );
+        TreeView* treeView = new TreeView( this );
         setDetails( treeView );
         treeView->setModel( &model_ );
         model_.set( files );
