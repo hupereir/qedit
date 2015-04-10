@@ -161,22 +161,17 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         checkbox->setToolTip( tr( "Turn on/off line numbers" ) );
         addOptionWidget( checkbox );
 
+        QLabel* label;
         QHBoxLayout* hLayout = new QHBoxLayout();
         layout->addLayout( hLayout );
         hLayout->setMargin(0);
-        hLayout->addWidget( checkbox = new OptionCheckBox( tr( "Auto-hide mouse cursor after " ), box, "AUTOHIDE_CURSOR" ) );
+        hLayout->addWidget( label = new QLabel( tr( "Hide mouse cursor after " ), box ) );
         addOptionWidget( checkbox );
 
         OptionSpinBox* spinbox;
         hLayout->addWidget( spinbox = new OptionSpinBox( box, "AUTOHIDE_CURSOR_DELAY" ) );
-        spinbox->setSuffix( "s" );
+        spinbox->setSuffix( tr( "s" ) );
         addOptionWidget( spinbox );
-
-        spinbox->setMinimum( 0 );
-        spinbox->setMaximum( 10 );
-
-        spinbox->setEnabled( false );
-        connect( checkbox, SIGNAL(toggled(bool)), spinbox, SLOT(setEnabled(bool)) );
 
         // text encoding
         OptionComboBox* combobox;
