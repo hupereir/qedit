@@ -161,25 +161,24 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         checkbox->setToolTip( tr( "Turn on/off line numbers" ) );
         addOptionWidget( checkbox );
 
+        // auto hide cursor
         QLabel* label;
-        QHBoxLayout* hLayout = new QHBoxLayout();
-        layout->addLayout( hLayout );
-        hLayout->setMargin(0);
-        hLayout->addWidget( label = new QLabel( tr( "Hide mouse cursor after " ), box ) );
-        addOptionWidget( checkbox );
+        GridLayout* gridLayout = new GridLayout();
+        gridLayout->setMargin(0);
+        gridLayout->setMaxCount(2);
+        gridLayout->setColumnAlignment( 0, Qt::AlignVCenter|Qt::AlignRight );
+        layout->addLayout( gridLayout );
 
         OptionSpinBox* spinbox;
-        hLayout->addWidget( spinbox = new OptionSpinBox( box, "AUTOHIDE_CURSOR_DELAY" ) );
+        gridLayout->addWidget( label = new QLabel( tr( "Automatically hide mouse cursor after: " ), box ) );
+        gridLayout->addWidget( spinbox = new OptionSpinBox( box, "AUTOHIDE_CURSOR_DELAY" ) );
         spinbox->setSuffix( tr( "s" ) );
         addOptionWidget( spinbox );
 
         // text encoding
         OptionComboBox* combobox;
-        hLayout = new QHBoxLayout();
-        layout->addLayout( hLayout );
-        hLayout->setMargin(0);
-        hLayout->addWidget( label = new QLabel( tr( "Default font encoding:" ), box ) );
-        hLayout->addWidget( combobox = new OptionComboBox( box, "TEXT_ENCODING" ) );
+        gridLayout->addWidget( label = new QLabel( tr( "Default font encoding:" ), box ) );
+        gridLayout->addWidget( combobox = new OptionComboBox( box, "TEXT_ENCODING" ) );
         QList<QByteArray> codecs( QTextCodec::availableCodecs() );
         foreach( const QByteArray& value, codecs ) { combobox->addItem( value ); }
         label->setBuddy( combobox );
