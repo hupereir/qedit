@@ -96,24 +96,24 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
     // comments
     out.
         appendChild( parent.createElement( Xml::Comments ) ).
-        appendChild( parent.createTextNode( XmlString( comments() ).toXml() ) );
+        appendChild( parent.createTextNode( comments() ) );
 
     // regexps
     if( type() == KeywordPattern )
     {
         out.
             appendChild( parent.createElement( Xml::Keyword ) ).
-            appendChild( parent.createTextNode( XmlString( keyword().pattern() ).toXml() ) );
+            appendChild( parent.createTextNode( keyword().pattern() ) );
     }
 
     if( type() == RangePattern )
     {
         out.
             appendChild( parent.createElement( Xml::Begin ) ).
-            appendChild( parent.createTextNode( XmlString( begin().pattern() ).toXml() ) );
+            appendChild( parent.createTextNode( begin().pattern() ) );
         out.
             appendChild( parent.createElement( Xml::End ) ).
-            appendChild( parent.createTextNode( XmlString( end().pattern() ).toXml() ) );
+            appendChild( parent.createTextNode( end().pattern() ) );
     }
 
     return out;

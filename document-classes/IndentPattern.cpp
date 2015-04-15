@@ -97,7 +97,7 @@ QDomElement IndentPattern::domElement( QDomDocument& parent ) const
     {
         out.
             appendChild( parent.createElement( Xml::Comments ) ).
-            appendChild( parent.createTextNode( XmlString( comments() ).toXml() ) );
+            appendChild( parent.createTextNode( comments() ) );
     }
 
     return out;
@@ -171,7 +171,7 @@ QDomElement IndentPattern::Rule::domElement( QDomDocument& parent ) const
 
     out.
         appendChild( parent.createElement( Xml::RegExp ) ).
-        appendChild( parent.createTextNode( XmlString( pattern().pattern() ).toXml() ) );
+        appendChild( parent.createTextNode( pattern().pattern() ) );
 
     return out;
 }

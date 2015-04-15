@@ -210,8 +210,8 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
 
     // dump attributes
     out.setAttribute( Xml::Name, name_ );
-    if( !filePattern_.isEmpty() ) out.setAttribute( Xml::Pattern, XmlString( filePattern_.pattern() ).toXml() );
-    if( !firstlinePattern_.isEmpty() ) out.setAttribute( Xml::FirstLinePattern, XmlString( firstlinePattern_.pattern() ).toXml() );
+    if( !filePattern_.isEmpty() ) out.setAttribute( Xml::Pattern, filePattern_.pattern() );
+    if( !firstlinePattern_.isEmpty() ) out.setAttribute( Xml::FirstLinePattern, firstlinePattern_.pattern() );
 
     // icon
     if( !icon().isEmpty() ) out.setAttribute( Xml::Icon, icon() );

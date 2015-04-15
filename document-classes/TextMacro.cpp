@@ -163,11 +163,11 @@ QDomElement TextMacro::Rule::domElement( QDomDocument& parent ) const
     // child
     out.
         appendChild( parent.createElement( Xml::RegExp ) ).
-        appendChild( parent.createTextNode( XmlString( pattern().pattern() ).toXml() ) );
+        appendChild( parent.createTextNode( pattern().pattern() ) );
 
     out.
         appendChild( parent.createElement( Xml::Replacement ) ).
-        appendChild( parent.createTextNode( XmlString( replaceText() ).toXml() ) );
+        appendChild( parent.createTextNode( replaceText() ) );
     return out;
 }
 

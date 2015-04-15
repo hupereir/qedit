@@ -60,8 +60,8 @@ QDomElement TextParenthesis::domElement( QDomDocument& parent ) const
     QDomElement out( parent.createElement( Xml::Parenthesis ) );
 
     // dump attributes
-    out.setAttribute( Xml::Begin, XmlString( first() ).toXml() );
-    out.setAttribute( Xml::End, XmlString( second() ).toXml() );
-    out.setAttribute( Xml::RegExp, XmlString( regexp().pattern() ).toXml() );
+    out.setAttribute( Xml::Begin, first() );
+    out.setAttribute( Xml::End, second() );
+    out.setAttribute( Xml::RegExp, regexp().pattern() );
     return out;
 }
