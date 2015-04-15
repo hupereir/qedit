@@ -55,9 +55,9 @@ DocumentClass::DocumentClass( const QDomElement& element ):
         if( attribute.isNull() ) continue;
 
         if( attribute.name() == Xml::Name ) name_ = attribute.value() ;
-        else if( attribute.name() == Xml::Pattern ) filePattern_.setPattern( XmlString( attribute.value() ).toText() );
-        else if( attribute.name() == Xml::FirstLinePattern ) firstlinePattern_.setPattern( XmlString( attribute.value() ).toText() );
-        else if( attribute.name() == Xml::Icon ) icon_ = XmlString( attribute.value() ).toText();
+        else if( attribute.name() == Xml::Pattern ) filePattern_.setPattern( XmlString( attribute.value() ) );
+        else if( attribute.name() == Xml::FirstLinePattern ) firstlinePattern_.setPattern( XmlString( attribute.value() ) );
+        else if( attribute.name() == Xml::Icon ) icon_ = XmlString( attribute.value() );
 
         // these are kept for backward compatibility
         else if( attribute.name() == Xml::Options )

@@ -36,9 +36,9 @@ Counter( "TextParenthesis" )
     {
         QDomAttr attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
-        if( attribute.name() == Xml::Begin ) first_ = XmlString( attribute.value() ).toText();
-        else if( attribute.name() == Xml::End ) second_ = XmlString( attribute.value() ).toText();
-        else if( attribute.name() == Xml::RegExp ) regexp_.setPattern( XmlString( attribute.value() ).toText() );
+        if( attribute.name() == Xml::Begin ) first_ = XmlString( attribute.value() );
+        else if( attribute.name() == Xml::End ) second_ = XmlString( attribute.value() );
+        else if( attribute.name() == Xml::RegExp ) regexp_.setPattern( XmlString( attribute.value() ) );
         else Debug::Throw(0) << "TextParenthesis::TextParenthesis - unrecognized attribute: " << attribute.name() << endl;
     }
 

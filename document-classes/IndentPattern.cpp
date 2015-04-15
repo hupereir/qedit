@@ -72,7 +72,7 @@ IndentPattern::IndentPattern( const QDomElement& element ):
             if( rule.isValid() ) addRule( rule );
         } else if( child_element.tagName() == Xml::Comments ) {
 
-            setComments( XmlString( child_element.text() ).toText() );
+            setComments( XmlString( child_element.text() ) );
 
         } else Debug::Throw(0) << "IndentPattern::IndentPattern - unrecognized child: " << child_element.tagName() << endl;
     }
@@ -153,7 +153,7 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
     for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() )
     {
         QDomElement child_element = child_node.toElement();
-        if( child_element.tagName() == Xml::RegExp ) setPattern( XmlString( child_element.text() ).toText() );
+        if( child_element.tagName() == Xml::RegExp ) setPattern( XmlString( child_element.text() ) );
         else Debug::Throw(0) << "Rule::Rule - unrecognized child: " << child_element.tagName() << endl;
     }
 

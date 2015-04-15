@@ -143,8 +143,8 @@ TextMacro::Rule::Rule( const QDomElement& element ):
     {
         QDomElement child_element = child_node.toElement();
         if( child_element.isNull() ) continue;
-        if( child_element.tagName() == Xml::RegExp ) setPattern( XmlString( child_element.text() ).toText() );
-        else if( child_element.tagName() == Xml::Replacement ) setReplaceText( XmlString( child_element.text() ).toText() );
+        if( child_element.tagName() == Xml::RegExp ) setPattern( XmlString( child_element.text() ) );
+        else if( child_element.tagName() == Xml::Replacement ) setReplaceText( XmlString( child_element.text() ) );
         else Debug::Throw(0) << "TextMacro::Rule::Rule - unrecognized child: " << child_element.tagName() << endl;
     }
 

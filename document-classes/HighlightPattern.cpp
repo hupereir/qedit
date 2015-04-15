@@ -67,10 +67,10 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     {
         QDomElement child_element = child_node.toElement();
         if( child_element.isNull() ) continue;
-        if( child_element.tagName() == Xml::Comments ) setComments( XmlString( child_element.text() ).toText() );
-        else if( child_element.tagName() == Xml::Keyword ) setKeyword( XmlString( child_element.text() ).toText() );
-        else if( child_element.tagName() == Xml::Begin ) setBegin( XmlString( child_element.text() ).toText() );
-        else if( child_element.tagName() == Xml::End ) setEnd( XmlString( child_element.text() ).toText() );
+        if( child_element.tagName() == Xml::Comments ) setComments( XmlString( child_element.text() ) );
+        else if( child_element.tagName() == Xml::Keyword ) setKeyword( XmlString( child_element.text() ) );
+        else if( child_element.tagName() == Xml::Begin ) setBegin( XmlString( child_element.text() ) );
+        else if( child_element.tagName() == Xml::End ) setEnd( XmlString( child_element.text() ) );
     }
 
 }
