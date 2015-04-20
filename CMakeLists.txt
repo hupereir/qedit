@@ -13,9 +13,6 @@ include(Macros)
 setup_cmake_settings()
 setup_compiler_flags()
 
-########### timestamp #########
-get_build_timestamp(TIMESTAMP)
-
 ########### packages ###############
 set(CPACK_PACKAGE_NAME "qedit")
 set(CPACK_PACKAGE_VENDOR "hugo.pereira@free.fr")
