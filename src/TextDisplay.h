@@ -288,7 +288,7 @@ class TextDisplay: public TextEditor
 
     //* text indent
     TextIndent& textIndent( void ) const
-    { return *indent_; }
+    { return *textIndent_; }
 
     //* block delimiter display
     bool hasBlockDelimiterDisplay( void ) const
@@ -314,7 +314,7 @@ class TextDisplay: public TextEditor
 
     //* toggle indentation
     QAction& textIndentAction( void ) const
-    { return *textIndentMacro_; }
+    { return *textIndentAction_; }
 
     //* toggle text highlighting
     QAction& textHighlightAction( void ) const
@@ -698,10 +698,10 @@ class TextDisplay: public TextEditor
     QByteArray textEncoding_;
 
     //* true if display is to be deleted
-    bool closed_;
+    bool closed_ = false;
 
     //* true if display corresponds to a new document
-    bool isNewDocument_;
+    bool isNewDocument_ = false;
 
     //* associated document class name
     QString className_;
@@ -722,13 +722,13 @@ class TextDisplay: public TextEditor
     TimeStamp lastSaved_;
 
     //* if true, _checkFile is disabled
-    bool ignoreWarnings_;
+    bool ignoreWarnings_ = false;
 
     //*@name document classes specific members
     //@{
 
     //* text indent
-    TextIndent* indent_;
+    TextIndent* textIndent_ = nullptr;
 
     //* text macro
     TextMacro::List macros_;
@@ -739,37 +739,37 @@ class TextDisplay: public TextEditor
     //@{
 
     //* toggle indentation
-    QAction* textIndentMacro_;
+    QAction* textIndentAction_ = nullptr;
 
     //* toggle text highlighting
-    QAction* textHighlightAction_;
+    QAction* textHighlightAction_ = nullptr;
 
     //* toggle text highlighting
-    QAction* parenthesisHighlightAction_;
+    QAction* parenthesisHighlightAction_ = nullptr;
 
     //* disable automatic macros
-    QAction* noAutomaticMacrosAction_;
+    QAction* noAutomaticMacrosAction_ = nullptr;
 
     //* toggle autospell
-    QAction* autoSpellAction_;
+    QAction* autoSpellAction_ = nullptr;
 
     //* block delimiter
-    QAction* showBlockDelimiterAction_;
+    QAction* showBlockDelimiterAction_ = nullptr;
 
     //* run spell checker
-    QAction* spellcheckAction_;
+    QAction* spellcheckAction_ = nullptr;
 
     //* indent selection
-    QAction* indentSelectionAction_;
+    QAction* indentSelectionAction_ = nullptr;
 
     //* add base indentation
-    QAction* baseIndentAction_;
+    QAction* baseIndentAction_ = nullptr;
 
     //* replace leading tabs
-    QAction* leadingTabsAction_;
+    QAction* leadingTabsAction_ = nullptr;
 
     //* toggle text highlighting
-    QAction* filePropertiesAction_;
+    QAction* filePropertiesAction_ = nullptr;
 
     #if USE_ASPELL
 
@@ -782,49 +782,49 @@ class TextDisplay: public TextEditor
     #endif
 
     //* text encoding action
-    QAction* textEncodingAction_;
+    QAction* textEncodingAction_ = nullptr;
 
     //* text encoding menu action
-    QAction* textEncodingMenuAction_;
+    QAction* textEncodingMenuAction_ = nullptr;
 
     //* tag block
-    QAction* tagBlockAction_;
+    QAction* tagBlockAction_ = nullptr;
 
     //* goto next tag
-    QAction* nextTagAction_;
+    QAction* nextTagAction_ = nullptr;
 
     //* goto previous tag
-    QAction* previousTagAction_;
+    QAction* previousTagAction_ = nullptr;
 
     //* clear current block tags
-    QAction* clearTagAction_;
+    QAction* clearTagAction_ = nullptr;
 
     //* clear current block tags
-    QAction* clearAllTagsAction_;
+    QAction* clearAllTagsAction_ = nullptr;
 
     //@}
 
     #if USE_ASPELL
 
     //* spellcheck dictionary selection menu
-    SpellCheck::DictionaryMenu* dictionaryMenu_;
+    SpellCheck::DictionaryMenu* dictionaryMenu_ = nullptr;
 
     //* spellcheck filter selection menu
-    SpellCheck::FilterMenu* filterMenu_;
+    SpellCheck::FilterMenu* filterMenu_ = nullptr;
 
     #endif
 
     //* text encoding menu
-    TextEncodingMenu* textEncodingMenu_;
+    TextEncodingMenu* textEncodingMenu_ = nullptr;
 
     //* syntax highlighter
-    TextHighlight* textHighlight_;
+    TextHighlight* textHighlight_ = nullptr;
 
     //* parenthesis highlight object
-    ParenthesisHighlight* parenthesisHighlight_;
+    ParenthesisHighlight* parenthesisHighlight_ = nullptr;
 
     //* block delimiter
-    BlockDelimiterDisplay* blockDelimiterDisplay_;
+    BlockDelimiterDisplay* blockDelimiterDisplay_ = nullptr;
 
 };
 
