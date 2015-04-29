@@ -37,95 +37,95 @@ class FileList;
 class WindowServer;
 class Sync;
 
-//! Application singleton
+//* Application singleton
 class Application: public BaseApplication, public Counter
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! constructor
+    //* constructor
     Application( CommandLineArguments );
 
-    //! destructor
+    //* destructor
     ~Application( void );
 
-    //! initialize application manager
+    //* initialize application manager
     virtual bool initApplicationManager( void );
 
-    //! create all widgets
+    //* create all widgets
     bool realizeWidget( void );
 
-    //! file list
+    //* file list
     FileList& recentFiles( void ) const
     { return *recentFiles_; }
 
-    //! Window server
+    //* Window server
     WindowServer& windowServer( void ) const
     { return *windowServer_; }
 
-    //! DocumentClassManager
+    //* DocumentClassManager
     DocumentClassManager& classManager( void ) const
     { return *classManager_; }
 
-    //! retrieve AutoSave
+    //* retrieve AutoSave
     AutoSave& autoSave( void ) const
     { return *autosave_; }
 
-    //! file check
+    //* file check
     FileCheck& fileCheck( void ) const
     { return *fileCheck_; }
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! spellcheck configuration
+    //* spellcheck configuration
     QAction& spellCheckConfigurationAction( void ) const
     { return *spellCheckConfigurationAction_; }
 
-    //! document classes configuration
+    //* document classes configuration
     QAction& documentClassesConfigurationAction( void ) const
     { return *documentClassesConfigurationAction_; }
 
-    //! save session
+    //* save session
     QAction& saveSessionAction( void ) const
     { return *saveSessionAction_; }
 
-    //! print session
+    //* print session
     QAction& printSessionAction( void ) const
     { return *printSessionAction_; }
 
-    //! restore session
+    //* restore session
     QAction& restoreSessionAction( void ) const
     { return *restoreSessionAction_; }
 
-    //! discard session
+    //* discard session
     QAction& discardSessionAction( void ) const
     { return *discardSessionAction_; }
 
-    //! monitored files
+    //* monitored files
     QAction& monitoredFilesAction( void ) const
     { return *monitoredFilesAction_; }
 
 
     //@}
 
-    //!@name application information
+    //*@name application information
     //@{
 
-    //! command line parser
+    //* command line parser
     CommandLineParser commandLineParser( CommandLineArguments = CommandLineArguments(), bool ignoreWarnings = true ) const;
 
-    //! command line help
+    //* command line help
     void usage( void ) const;
 
-    //! application name
+    //* application name
     virtual QString applicationName( void ) const
     { return "Qedit"; }
 
-    //! application icon
+    //* application icon
     virtual QIcon applicationIcon( void ) const
     { return IconEngine::get( ":/qedit.png" ); }
 
@@ -137,53 +137,53 @@ class Application: public BaseApplication, public Counter
 
     Q_SIGNALS:
 
-    //! spellcheck configuration modified
+    //* spellcheck configuration modified
     void spellCheckConfigurationChanged( void );
 
-    //! document classes have been modified
+    //* document classes have been modified
     void documentClassesChanged( void );
 
     protected Q_SLOTS:
 
-    //! Update Document Classes from options
+    //* Update Document Classes from options
     void _updateDocumentClasses( void );
 
-    //! configuration
+    //* configuration
     void _configuration( void );
 
-    //! spellcheck configuration
+    //* spellcheck configuration
     void _spellCheckConfiguration( void );
 
-    //! document classes configuration
+    //* document classes configuration
     void _documentClassesConfiguration( void );
 
-    //! save session
+    //* save session
     void _saveSession( void );
 
-    //! save session
+    //* save session
     void _printSession( void );
 
-    //! restore session
+    //* restore session
     void _restoreSession( void );
 
-    //! discard
+    //* discard
     void _discardSession( void );
 
-    //! update session actions
+    //* update session actions
     void _updateSessionActions( void );
 
-    //! monitored files
+    //* monitored files
     void _showMonitoredFiles( void );
 
-    //! exit safely
+    //* exit safely
     void _exit( void );
 
-    //! process request from application manager
+    //* process request from application manager
     virtual bool _processCommand( Server::ServerCommand );
 
     protected:
 
-    //! timer events
+    //* timer events
     /*!
     this allows to read files from arguments after the call
     to "exec()" in the main routine,
@@ -192,57 +192,57 @@ class Application: public BaseApplication, public Counter
 
     private:
 
-    //! install actions
+    //* install actions
     void _installActions( void );
 
-    //! recent files list
-    FileList* recentFiles_;
+    //* recent files list
+    FileList* recentFiles_ = nullptr;
 
-    //! session files
-    FileList* sessionFiles_;
+    //* session files
+    FileList* sessionFiles_ = nullptr;
 
-    //! window server
-    WindowServer* windowServer_;
+    //* window server
+    WindowServer* windowServer_ = nullptr;
 
-    //! document class manager singleton
-    DocumentClassManager* classManager_;
+    //* document class manager singleton
+    DocumentClassManager* classManager_ = nullptr;
 
-    //! file autoSave manager
-    AutoSave* autosave_;
+    //* file autoSave manager
+    AutoSave* autosave_ = nullptr;
 
-    //! file check
-    FileCheck* fileCheck_;
+    //* file check
+    FileCheck* fileCheck_ = nullptr;
 
-    //! startup single shot timer
+    //* startup single shot timer
     /*!
     it allows to call startup methods after the exec() function
     is called from the main routine
     */
     QBasicTimer startupTimer_;
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! spellcheck configuration
-    QAction* spellCheckConfigurationAction_;
+    //* spellcheck configuration
+    QAction* spellCheckConfigurationAction_ = nullptr;
 
-    //! document classes
-    QAction* documentClassesConfigurationAction_;
+    //* document classes
+    QAction* documentClassesConfigurationAction_ = nullptr;
 
-    //! save session
-    QAction* saveSessionAction_;
+    //* save session
+    QAction* saveSessionAction_ = nullptr;
 
-    //! print session
-    QAction* printSessionAction_;
+    //* print session
+    QAction* printSessionAction_ = nullptr;
 
-    //! restore session
-    QAction* restoreSessionAction_;
+    //* restore session
+    QAction* restoreSessionAction_ = nullptr;
 
-    //! discard session
-    QAction* discardSessionAction_;
+    //* discard session
+    QAction* discardSessionAction_ = nullptr;
 
-    //! show monitored files
-    QAction* monitoredFilesAction_;
+    //* show monitored files
+    QAction* monitoredFilesAction_ = nullptr;
 
     //@}
 

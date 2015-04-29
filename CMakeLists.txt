@@ -53,7 +53,7 @@ else()
 
     add_subdirectory(base-spellcheck)
 
-  endif(ASPELL_FOUND)
+  endif()
 
 endif()
 

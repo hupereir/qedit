@@ -32,13 +32,13 @@
 
 class PatternLocationSet;
 
-//! Base class for syntax highlighting
+//* Base class for syntax highlighting
 class HighlightPattern: public Counter
 {
 
     public:
 
-    //! pattern flags
+    //* pattern flags
     enum Flag
     {
         None = 0,
@@ -50,20 +50,20 @@ class HighlightPattern: public Counter
 
     Q_DECLARE_FLAGS( Flags, Flag );
 
-    //! typedef for list of patterns
+    //* typedef for list of patterns
     using List = QList< HighlightPattern >;
     using ListIterator = QListIterator< HighlightPattern >;
 
-    //! no parent pattern
+    //* no parent pattern
     static QString noParentPattern_;
 
-    //! constructor from DomElement
+    //* constructor from DomElement
     HighlightPattern( const QDomElement& element = QDomElement() );
 
-    //! dom element
+    //* dom element
     QDomElement domElement( QDomDocument& parent ) const;
 
-    //! set id
+    //* set id
     /*!
     The unique ID has a single bit set to 1, to use
     faster active pattern masks, with no shift operators
@@ -71,14 +71,14 @@ class HighlightPattern: public Counter
     void setId( const int& id )
     { id_ = (1<<id); }
 
-    //! unique id
+    //* unique id
     const int& id( void ) const
     { return id_; }
 
-    //! equal to operator
+    //* equal to operator
     bool operator == (const HighlightPattern& other ) const;
 
-    //! equal to ftor
+    //* equal to ftor
     class WeakEqualFTor: public std::binary_function< HighlightPattern, HighlightPattern, bool>
     {
         public:
@@ -88,7 +88,7 @@ class HighlightPattern: public Counter
 
     };
 
-    //! less than ftor
+    //* less than ftor
     class WeakLessThanFTor: public std::binary_function< HighlightPattern, HighlightPattern, bool>
     {
         public:
@@ -98,15 +98,15 @@ class HighlightPattern: public Counter
 
     };
 
-    //! name
+    //* name
     const QString& name( void ) const
     { return name_; }
 
-    //! name
+    //* name
     void setName( const QString& name )
     { name_ = name; }
 
-    //! pattern type
+    //* pattern type
     enum Type
     {
         Undefined,
@@ -114,105 +114,105 @@ class HighlightPattern: public Counter
         RangePattern
     };
 
-    //!type
+    //*type
     const Type& type( void ) const
     { return type_; }
 
-    //!type
+    //*type
     void setType( const Type& type )
     { type_ = type; }
 
-    //! type
+    //* type
     QString typeName( void ) const
     { return typeName( type() ); }
 
-    //! type
+    //* type
     static QString typeName( const Type& type );
 
-    //! parent name
+    //* parent name
     const QString& parent( void ) const
     { return parent_; }
 
-    //! parent name
+    //* parent name
     void setParent( const QString& parent )
     { parent_ = parent; }
 
-    //! parent id
+    //* parent id
     const int& parentId( void ) const
     { return parentId_; }
 
-    //! parent id
+    //* parent id
     void setParentId( const int& id )
     { parentId_ = id; }
 
-    //! text style
+    //* text style
     const HighlightStyle& style( void ) const
     { return style_; }
 
-    //! text style
+    //* text style
     void setStyle( const HighlightStyle& style )
     { style_ = style; }
 
-    //! child patterns
+    //* child patterns
     const List& children( void ) const
     { return children_; }
 
-    //! add child
+    //* add child
     void addChild( HighlightPattern child )
     { children_ << child; }
 
-    //! clear children
+    //* clear children
     void clearChildren( void )
     { children_.clear(); }
 
-    //! keyword regexp
+    //* keyword regexp
     const QRegExp& keyword( void ) const
     { return keyword_; }
 
-    //! keyword
+    //* keyword
     virtual void setKeyword( const QString& keyword )
     { keyword_.setPattern( keyword ); }
 
-    //! begin regexp
+    //* begin regexp
     const QRegExp& begin( void ) const
     { return keyword(); }
 
-    //! keyword
+    //* keyword
     virtual void setBegin( const QString& keyword )
     { setKeyword( keyword ); }
 
-    //! end regexp
+    //* end regexp
     const QRegExp& end( void ) const
     { return end_; }
 
-    //! range end pattern
+    //* range end pattern
     virtual void setEnd( const QString& keyword )
     { end_.setPattern( keyword ); }
 
-    //! comments
+    //* comments
     const QString& comments( void ) const
     { return comments_; }
 
-    //! comments
+    //* comments
     void setComments( const QString& comments )
     { comments_ = comments; }
 
-    //!@name flags
+    //*@name flags
     //@{
 
-    //! flags
+    //* flags
     const Flags& flags( void ) const
     { return flags_; }
 
-    //! flags
+    //* flags
     void setFlags( const Flags& flags )
     { flags_ = flags; }
 
-    //! flags
+    //* flags
     bool hasFlag( const Flag& flag ) const
     { return flags_ & flag; }
 
-    //! flags
+    //* flags
     void setFlag( const Flag& flag, bool value )
     {
         if( value ) flags_ |= flag;
@@ -221,7 +221,7 @@ class HighlightPattern: public Counter
 
     //@}
 
-    //! validity
+    //* validity
     bool isValid( void ) const
     {
         switch( type() )
@@ -232,7 +232,7 @@ class HighlightPattern: public Counter
         }
     }
 
-    //! process text and update the matching locations.
+    //* process text and update the matching locations.
     /*!
     Returns true if at least one match is found.
     Locations and active parameters are changed
@@ -247,105 +247,105 @@ class HighlightPattern: public Counter
         }
     }
 
-    //! used to get patterns by name
+    //* used to get patterns by name
     class SameNameFTor
     {
 
         public:
 
-        //! constructor
+        //* constructor
         SameNameFTor( const QString& name ):
             name_( name )
             {}
 
-        //! predicate
+        //* predicate
         bool operator() (const HighlightPattern& pattern ) const
         { return pattern.name() == name_; }
 
         private:
 
-        //! predicate
+        //* predicate
         const QString name_;
 
     };
 
-    //! used to pattern by id
+    //* used to pattern by id
     class SameIdFTor
     {
 
         public:
 
-        //! constructor
+        //* constructor
         SameIdFTor( const int& id ):
             id_( id )
             {}
 
-        //! predicate
+        //* predicate
         bool operator() ( const HighlightPattern& pattern ) const
         { return pattern.id() == id_; }
 
         private:
 
-        //! predicted id
+        //* predicted id
         int id_;
 
     };
 
     protected:
 
-    //! find keyword pattern
+    //* find keyword pattern
     bool _findKeyword( PatternLocationSet&, const QString&, bool& ) const;
 
-    //! find range pattern
+    //* find range pattern
     bool _findRange( PatternLocationSet&, const QString&, bool& ) const;
 
     private:
 
-    //! unique id
+    //* unique id
     /*!
     The unique ID has a single bit set to 1, to use
     faster active pattern masks, with no shift operators
     */
     int id_;
 
-    //! type
+    //* type
     Type type_;
 
-    //! pattern name
+    //* pattern name
     QString name_;
 
-    //! parent pattern name
+    //* parent pattern name
     QString parent_;
 
-    //! parent pattern id
+    //* parent pattern id
     int parentId_;
 
-    //! style
+    //* style
     HighlightStyle style_;
 
-    //! child patterns
+    //* child patterns
     List children_;
 
-    //! comments
+    //* comments
     QString comments_;
 
-    //! flags
+    //* flags
     Flags flags_;
 
-    //!@name patterns
+    //*@name patterns
     //@{
 
-    //! keyword regexp (or begin in case of range pattern)
+    //* keyword regexp (or begin in case of range pattern)
     QRegExp keyword_;
 
-    //! range end regexp
+    //* range end regexp
     QRegExp end_;
 
     //@}
 
-    //!@name dumpers
+    //*@name dumpers
     //@{
-    //! dump
+    //* dump
     friend QTextStream& operator << ( QTextStream& out, const HighlightPattern& pattern )
     {
         out << "id: " << pattern.id() << " name: " << pattern.name() << " parent name:" << pattern.parent();

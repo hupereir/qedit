@@ -182,7 +182,7 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
 
     #if USE_ASPELL
     out.registerFlag( "--autospell", tr( "switch autospell on for all files") );
-    out.registerOption( "--filter", tr( "string" ), tr( "select  for spell checking") );
+    out.registerOption( "--filter", tr( "string" ), tr( "select filter for spell checking") );
     out.registerOption( "--dictionary", tr( "string" ), tr( "select dictionary for spell checking") );
     out.registerFlag( "--list-filters", tr( "list all filters available to spell checking") );
     out.registerFlag( "--list-dictionaries", tr( "list all dictionaries available to spell checking") );

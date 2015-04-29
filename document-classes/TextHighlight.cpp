@@ -50,7 +50,7 @@ void TextHighlight::highlightBlock( const QString& text )
     // check if syntax highlighting is enabled
     bool highlightEnabled( isHighlightEnabled()  && !patterns_.empty() );
     #if USE_ASPELL
-    highlightEnabled |= spellParser().isEnabled();
+    highlightEnabled |= spellParser_.isEnabled();
     #endif
 
     // retrieve activeId from last block state
@@ -110,7 +110,7 @@ void TextHighlight::highlightBlock( const QString& text )
 
     // before try applying the found locations see if automatic spellcheck is on
     #if USE_ASPELL
-    if( spellParser().isEnabled() )
+    if( spellParser_.isEnabled() )
     {
 
         // clear locations
@@ -141,7 +141,7 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, int activeId
 {
 
     #if USE_ASPELL
-    if( spellParser().isEnabled() ) return _spellCheckLocationSet( text );
+    if( spellParser_.isEnabled() ) return _spellCheckLocationSet( text );
     else
     #endif
 
@@ -326,9 +326,9 @@ PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, H
     #if USE_ASPELL
 
     // insert highlight
-    const SpellCheck::Word::Set& words( spellParser().parse( text ) );
-    for( SpellCheck::Word::Set::const_iterator iter = words.begin(); iter != words.end(); ++iter )
-    { locations.insert( PatternLocation( spellPattern(), iter->position(), iter->size() ) ); }
+    const SpellCheck::Word::Set& words( spellParser_.parse( text ) );
+    foreach( const SpellCheck::Word& word, words )
+    { locations.insert( PatternLocation( spellPattern_, word.position(), word.size() ) ); }
 
     // store misspelled words
     if( data ) data->setMisspelledWords( words );

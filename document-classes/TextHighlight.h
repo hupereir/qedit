@@ -37,32 +37,32 @@
 class HighlightPattern;
 class HighlightBlockData;
 
-//! syntax highlighting based on text patterns
+//* syntax highlighting based on text patterns
 class TextHighlight: public QSyntaxHighlighter, public Counter
 {
 
-    //! Qt meta object
+    //* Qt meta object
     Q_OBJECT
 
     public:
 
-    //! constructor
+    //* constructor
     TextHighlight( QTextDocument* );
 
-    //! destructor
+    //* destructor
     virtual ~TextHighlight( void )
     {}
 
-    //! highlight paragraph
+    //* highlight paragraph
     virtual void highlightBlock( const QString& text );
 
-    //! retrieve highlight location for given text
+    //* retrieve highlight location for given text
     PatternLocationSet locationSet( const QString& text, int active_id );
 
-    //!@name highlight patterns
+    //*@name highlight patterns
     //@{
 
-    //! enable highlight. Returns true if changed
+    //* enable highlight. Returns true if changed
     bool setHighlightEnabled( bool state )
     {
         if( highlightEnabled_ == state ) return false;
@@ -70,28 +70,28 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
         return true;
     }
 
-    //! true if enabled
+    //* true if enabled
     bool isHighlightEnabled( void ) const
     { return highlightEnabled_; }
 
-    //! patterns
+    //* patterns
     const HighlightPattern::List& patterns( void ) const
     { return patterns_; }
 
-    //! patterns
+    //* patterns
     void setPatterns( const HighlightPattern::List& patterns )
     { patterns_ = patterns; }
 
     //@}
 
-    //!@name parenthesis
+    //*@name parenthesis
     //@{
 
-    //! parenthesis enabled
+    //* parenthesis enabled
     bool isParenthesisEnabled( void ) const
     { return parenthesisEnabled_; }
 
-    //! parenthesis enabled
+    //* parenthesis enabled
     bool setParenthesisEnabled( bool state )
     {
         if( parenthesisEnabled_ == state ) return false;
@@ -99,31 +99,31 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
         return true;
     }
 
-    //! parenthesis highlight color
+    //* parenthesis highlight color
     void setParenthesisHighlightColor( const QColor& color )
     { parenthesisHighlightFormat_.setBackground(color); }
 
-    //! parenthesis highlight color
+    //* parenthesis highlight color
     QColor parenthesisHighlightColor( void )
     { return parenthesisHighlightFormat_.background().color(); }
 
-    //! parenthesis
+    //* parenthesis
     const TextParenthesis::List& parenthesis( void ) const
     { return parenthesis_; }
 
-    //! set parenthesis
+    //* set parenthesis
     void setParenthesis( const TextParenthesis::List& );
 
     //@}
 
-    //!@name block delimiters
+    //*@name block delimiters
     //@{
 
-    //! block delimiters enabled
+    //* block delimiters enabled
     bool isBlockDelimitersEnabled( void ) const
     { return blockDelimitersEnabled_; }
 
-    //! block delimiters enabled
+    //* block delimiters enabled
     bool setBlockDelimitersEnabled( bool state )
     {
         if( blockDelimitersEnabled_ == state ) return false;
@@ -131,17 +131,17 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
         return true;
     }
 
-    //! block delimiters
+    //* block delimiters
     void setBlockDelimiters( const BlockDelimiter::List& delimiters )
     { blockDelimiters_ = delimiters; }
 
-    //! block delimiters
+    //* block delimiters
     const BlockDelimiter::List& blockDelimiters( void ) const
     { return blockDelimiters_; }
 
     //@}
 
-    //! patterns
+    //* patterns
     void clear( void )
     {
         Debug::Throw( "TextHighlight.clear.\n" );
@@ -150,19 +150,19 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
 
     #if USE_ASPELL
 
-    //! embedded spellcheck parser
+    //* embedded spellcheck parser
     const SpellCheck::SpellParser& spellParser( void ) const
     { return spellParser_; }
 
-    //! embedded spellcheck parser
+    //* embedded spellcheck parser
     SpellCheck::SpellParser& spellParser( void )
     { return spellParser_; }
 
-    //! highlight pattern associated to auto-spell
+    //* highlight pattern associated to auto-spell
     const HighlightPattern& spellPattern( void ) const
     { return spellPattern_; }
 
-    //! update highlight pattern associated to auto-spell
+    //* update highlight pattern associated to auto-spell
     void updateSpellPattern( void )
     { spellPattern_.setStyle( HighlightStyle( "spellcheck_style", spellParser().fontFormat(), spellParser().color() ) ); }
 
@@ -170,68 +170,68 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
 
     Q_SIGNALS:
 
-    //! emmited when block delimiters have changed
+    //* emmited when block delimiters have changed
     void needSegmentUpdate( void );
 
     private:
 
-    //!@name syntax highlighting
+    //*@name syntax highlighting
     //@{
 
-    //! retrieve highlight location for given text
+    //* retrieve highlight location for given text
     PatternLocationSet _highlightLocationSet( const QString&, int active_id ) const;
 
-    //! retrieve highlight location for given text
+    //* retrieve highlight location for given text
     PatternLocationSet _spellCheckLocationSet( const QString& text, HighlightBlockData* data = 0 );
 
-    //! apply locations to current block
+    //* apply locations to current block
     void _applyPatterns( const PatternLocationSet& locations );
 
-    //! calculate delimiter object
+    //* calculate delimiter object
     bool _updateDelimiter( HighlightBlockData*, const BlockDelimiter&, const QString& ) const;
 
-    //! true if highlight is enabled
+    //* true if highlight is enabled
     bool highlightEnabled_;
 
-    //! list of highlight patterns
+    //* list of highlight patterns
     HighlightPattern::List patterns_;
 
     //@}
 
-    //!@name text parenthesis
+    //*@name text parenthesis
     //@{
 
-    //! parenthesis enabled
+    //* parenthesis enabled
     bool parenthesisEnabled_;
 
-    //! text parenthesis
+    //* text parenthesis
     TextParenthesis::List parenthesis_;
 
-    //! parenthesis highlight format
+    //* parenthesis highlight format
     QTextCharFormat parenthesisHighlightFormat_;
 
     //@}
 
-    //!@name block delimiters
+    //*@name block delimiters
     //@{
 
-    //! enabled
+    //* enabled
     bool blockDelimitersEnabled_;
 
-    //! block delimiters
+    //* block delimiters
     BlockDelimiter::List blockDelimiters_;
 
     //@}
 
-    //!@name spell checking
+    //*@name spell checking
     //@{
 
     #if USE_ASPELL
 
-    //! spell check parser
+    //* spell check parser
     SpellCheck::SpellParser spellParser_;
 
-    //! spellcheck highlight pattern
+    //* spellcheck highlight pattern
     HighlightPattern spellPattern_;
 
     #endif
