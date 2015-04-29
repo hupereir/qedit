@@ -118,7 +118,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
     // block delimiter
     blockDelimiterDisplay_ = new BlockDelimiterDisplay( this );
-    connect( &textHighlight(), SIGNAL(needSegmentUpdate()), blockDelimiterDisplay_->, SLOT(needUpdate()) );
+    connect( &textHighlight(), SIGNAL(needSegmentUpdate()), blockDelimiterDisplay_, SLOT(needUpdate()) );
 
     // connections
     connect( this, SIGNAL(selectionChanged()), SLOT(_selectionChanged()) );
