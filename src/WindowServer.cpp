@@ -638,10 +638,10 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         // select found display in TextView
         (*viewIter)->selectDisplay( record.file() );
 
-        QString buffer;
-        QTextStream( &buffer )
-            << "The file " << record.file() << " is already opened in another window.\n"
-            << "Do you want to close the other display and open the file here ?";
+        QString buffer( tr(
+            "The file %1 is already opened in another window.\n"
+            "Do you want to close the other display and open the file here ?" ).arg( record.file() ) );
+
         if( !QuestionDialog( &_activeWindow(), buffer ).exec() )
         {
             (*iter)->uniconify();
@@ -655,20 +655,20 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         TextDisplay& display( displayIter == displays.end() ? activeView.splitDisplay( orientation, false ):**displayIter );
 
         // retrieve active display from previous window
-        TextDisplay& previous_display( (*viewIter)->activeDisplay() );
+        TextDisplay& previousDisplay( (*viewIter)->activeDisplay() );
 
         // store modification state
-        bool modified( previous_display.document()->isModified() );
+        bool modified( previousDisplay.document()->isModified() );
 
         // clone
-        display.synchronize( &previous_display );
+        display.synchronize( &previousDisplay );
 
         // set previous display as unmdified
-        previous_display.document()->setModified( false );
+        previousDisplay.document()->setModified( false );
 
         // close display
-        displays = Base::KeySet<TextDisplay>( &previous_display );
-        displays.insert( &previous_display );
+        displays = Base::KeySet<TextDisplay>( &previousDisplay );
+        displays.insert( &previousDisplay );
         foreach( TextDisplay* display, displays )
         { (*viewIter)->closeDisplay( *display ); }
 
@@ -739,9 +739,9 @@ void WindowServer::_detach( TextDisplay& activeDisplayLocal )
     if( !Base::KeySet<TextDisplay>(activeDisplayLocal).empty() )
     {
         InformationDialog( &activeWindowLocal,
-            "Software limitation:\n"
+            tr( "Software limitation:\n"
             "Active display has clones in the current window.\n"
-            "It cannot be detached." ).exec();
+            "It cannot be detached.") ).exec();
         return;
     }
 
@@ -781,9 +781,9 @@ void WindowServer::_reparent( const File& first, const File& second )
     if( !Base::KeySet<TextDisplay>(firstDisplay).empty() )
     {
         InformationDialog( &firstDisplay,
-            "Software limitation:\n"
+            tr( "Software limitation:\n"
             "Dropped display has clones in the current window.\n"
-            "It cannot be reparented.\n" ).exec();
+            "It cannot be reparented.") ).exec();
         return;
     }
 
@@ -846,9 +846,9 @@ void WindowServer::_reparentToMain( const File& first, const File& second )
     if( !Base::KeySet<TextDisplay>(firstDisplay).empty() )
     {
         InformationDialog( &firstDisplay,
-            "Software limitation:\n"
+            tr( "Software limitation:\n"
             "Dropped display has clones in the current window.\n"
-            "It cannot be reparented.\n" ).exec();
+            "It cannot be reparented.") ).exec();
         return;
     }
 
