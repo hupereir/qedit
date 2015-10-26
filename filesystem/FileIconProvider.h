@@ -28,25 +28,25 @@
 #include <QHash>
 #include <QIcon>
 
-//! icon provider for file records
+//* icon provider for file records
 class FileIconProvider : public BaseFileIconProvider
 {
 
     public:
 
-    //! constructor
-    FileIconProvider( QObject* parent = 0x0 ):
+    //* constructor
+    FileIconProvider( QObject* parent = nullptr ):
         BaseFileIconProvider( parent )
     {}
 
-    //! destructor
+    //* destructor
     virtual ~FileIconProvider()
     {}
 
-    //! icon matching given model index
+    //* icon matching given model index
     virtual const QIcon& icon( const FileRecord& );
 
-    //! clear
+    //* clear
     virtual void clear( void )
     { icons_.clear(); }
 
@@ -54,48 +54,48 @@ class FileIconProvider : public BaseFileIconProvider
     {
         public:
 
-        //! constructor
+        //* constructor
         Key( const QString& extension = QString(), int type = 0 ):
             extension_( extension ),
             type_( type )
         {}
 
-        //! equal to operator
+        //* equal to operator
         bool operator == (const Key& other ) const
         { return type_ == other.type_ && extension_ == other.extension_; }
 
-        //! extension
+        //* extension
         const QString& extension( void ) const
         { return extension_; }
 
-        //! type
+        //* type
         int type( void ) const
         { return type_; }
 
         private:
 
-        //! extension
+        //* extension
         QString extension_;
 
-        //! type
+        //* type
         int type_;
 
     };
 
     private:
 
-    //! mime type icon provider
+    //* mime type icon provider
     MimeTypeIconProvider mimeTypeIconProvider_;
 
-    //! icon cache
+    //* icon cache
     using IconCache = QHash<Key, QIcon>;
 
-    //! icon cache
+    //* icon cache
     IconCache icons_;
 
 };
 
-//! hash
+//* hash
 inline unsigned int qHash( const FileIconProvider::Key& key )
 { return key.type() | (qHash( key.extension() ) << 4 ); }
 

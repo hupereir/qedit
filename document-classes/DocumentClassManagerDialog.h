@@ -37,11 +37,10 @@ class DocumentClassManagerDialog: public CustomDialog
     public:
 
     //* constructor
-    DocumentClassManagerDialog( QWidget* = 0x0 );
+    DocumentClassManagerDialog( QWidget* = nullptr );
 
     //* destructor
-    virtual ~DocumentClassManagerDialog( void )
-    {}
+    virtual ~DocumentClassManagerDialog( void ) = default;
 
     //* list of user files
     File::List userFiles( void ) const;
