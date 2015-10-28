@@ -27,7 +27,7 @@
 
 #include <QHash>
 
-//! display available document classes
+//* display available document classes
 class DocumentClassMenu: public QMenu, public Counter
 {
 
@@ -35,32 +35,31 @@ class DocumentClassMenu: public QMenu, public Counter
 
     public:
 
-    //! constructor
+    //* constructor
     DocumentClassMenu( QWidget* );
 
-    //! destructor
-    virtual ~DocumentClassMenu( void )
-    {}
+    //* destructor
+    virtual ~DocumentClassMenu( void ) = default;
 
     Q_SIGNALS:
 
-    //! emmited every time a document class is selected
+    //* emmited every time a document class is selected
     void documentClassSelected( QString );
 
     protected Q_SLOTS:
 
-    //! update
+    //* update
     void _update( void );
 
-    //! select document class from menu
+    //* select document class from menu
     void _selectClassName( QAction* );
 
     private:
 
-    //! actions
-    QActionGroup* actionGroup_;
+    //* actions
+    QActionGroup* actionGroup_ = nullptr;
 
-    //! map document class to macro names
+    //* map document class to macro names
     using ActionMap = QHash< QAction*, QString >;
     ActionMap actions_;
 

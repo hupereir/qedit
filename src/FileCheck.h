@@ -31,36 +31,36 @@
 
 class TextDisplay;
 
-//! handles threads for file auto-save
+//* handles threads for file auto-save
 class FileCheck: public QObject, public Base::Key, public Counter
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! constructor
-    FileCheck( QObject* parent = 0 );
+    //* constructor
+    FileCheck( QObject* = nullptr );
 
-    //! destructor
+    //* destructor
     ~FileCheck( void );
 
-    //! register new dispay
+    //* register new dispay
     void registerDisplay( TextDisplay* );
 
-    //! add file
+    //* add file
     void addFile( const QString& );
 
-    //! remove file
+    //* remove file
     void removeFile( const QString& );
 
-    //! used to monitor file changes
+    //* used to monitor file changes
     class Data
     {
         public:
 
-        //! flag
+        //* flag
         enum Flag
         {
             None,
@@ -68,69 +68,69 @@ class FileCheck: public QObject, public Base::Key, public Counter
             Modified
         };
 
-        //! constructor
+        //* constructor
         Data( QString file = QString(), Flag flag = None, TimeStamp stamp = TimeStamp() ):
             file_( file ),
             flag_( flag ),
             timeStamp_( stamp )
         {}
 
-        //! equal to operator
+        //* equal to operator
         bool operator == ( const Data& data ) const
         { return file() == data.file(); }
 
-        //! less than operator
+        //* less than operator
         bool operator < ( const Data& data ) const
         { return file() < data.file(); }
 
-        //! file
+        //* file
         void setFile( const QString& file )
         { file_ = file; }
 
-        //! file
+        //* file
         const QString& file( void ) const
         { return file_; }
 
-        //! flag
+        //* flag
         void setFlag( const Flag& flag )
         { flag_ = flag; }
 
-        //! flag
+        //* flag
         const Flag& flag( void ) const
         { return flag_; }
 
-        //! timestamp
+        //* timestamp
         void setTimeStamp( const TimeStamp& stamp )
         { timeStamp_ = stamp; }
 
-        //! timestamp
+        //* timestamp
         const TimeStamp& timeStamp( void ) const
         { return timeStamp_; }
 
         private:
 
-        //! file
+        //* file
         QString file_;
 
-        //! flag
+        //* flag
         Flag flag_;
 
-        //! timestamp
+        //* timestamp
         TimeStamp timeStamp_;
 
     };
 
-    //! map data to file
+    //* map data to file
     using DataSet = QSet<Data>;
 
 
-    //! file system watcher
+    //* file system watcher
     const QFileSystemWatcher& fileSystemWatcher( void ) const
     { return fileSystemWatcher_; }
 
     protected:
 
-    //! timer event, to handle multiple file modification at once
+    //* timer event, to handle multiple file modification at once
     virtual void timerEvent( QTimerEvent* event );
 
     private Q_SLOTS:
@@ -139,19 +139,19 @@ class FileCheck: public QObject, public Base::Key, public Counter
 
     private:
 
-    //! file system watcher
+    //* file system watcher
     QFileSystemWatcher fileSystemWatcher_;
 
-    //! file set
+    //* file set
     using FileSet = QSet<QString>;
 
-    //! file set
+    //* file set
     FileSet files_;
 
-    //! map files and modification data
+    //* map files and modification data
     DataSet data_;
 
-    //! resize timer
+    //* resize timer
     QBasicTimer timer_;
 
 };

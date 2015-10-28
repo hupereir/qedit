@@ -29,67 +29,62 @@
 #include "Word.h"
 #endif
 
-//! TextBlock data for syntax highlighting
+//* TextBlock data for syntax highlighting
 class HighlightBlockData: public TextBlockData
 {
 
     public:
 
-    //! constructor
+    //* constructor
     HighlightBlockData();
 
-    //! constructor
+    //* constructor
     HighlightBlockData( const TextBlockData& reference ):
-        TextBlockData( reference ),
-        parenthesis_( -1 ),
-        parenthesisLength_(0)
+        TextBlockData( reference )
     {}
 
-    //! constructor
+    //* constructor
     HighlightBlockData( const TextBlockData* pointer ):
-        TextBlockData( *pointer ),
-        parenthesis_( -1 ),
-        parenthesisLength_(0)
+        TextBlockData( *pointer )
     {}
 
-    //! destructor
-    virtual ~HighlightBlockData( void )
-    {}
+    //* destructor
+    virtual ~HighlightBlockData( void ) = default;
 
-    //! syntax highlighting pattern locations
+    //* syntax highlighting pattern locations
     const PatternLocationSet& locations( void ) const
     { return locations_; }
 
-    //! syntax highlighting pattern locations
+    //* syntax highlighting pattern locations
     void setLocations( const PatternLocationSet& locations )
     { locations_ = locations; }
 
-    //! return true if locations correspond to a commented block
+    //* return true if locations correspond to a commented block
     bool ignoreBlock( void ) const
     { return (!locations().empty()) && locations().begin()->hasFlag( HighlightPattern::NoIndent ); }
 
-    //!@name parenthesis
+    //*@name parenthesis
     //@{
 
     bool hasParenthesis( void ) const
     { return parenthesis_ != -1; }
 
-    //! highlighted parenthesis
-    const int& parenthesis( void ) const
+    //* highlighted parenthesis
+    int parenthesis( void ) const
     { return parenthesis_; }
 
-    //! highlighted parenthesis
-    const int& parenthesisLength( void ) const
+    //* highlighted parenthesis
+    int parenthesisLength( void ) const
     { return parenthesisLength_; }
 
-    //! set parenthesis
-    void setParenthesis( const int& value, const int& length )
+    //* set parenthesis
+    void setParenthesis( int value, int length )
     {
         parenthesis_ = value;
         parenthesisLength_ = length;
     }
 
-    //! clear parenthesis
+    //* clear parenthesis
     void clearParenthesis( void )
     {
         parenthesis_ = -1;
@@ -98,54 +93,54 @@ class HighlightBlockData: public TextBlockData
 
     //@}
 
-    //!@name block limits
+    //*@name block limits
     //@{
 
-    //! delimiters
+    //* delimiters
     const TextBlock::Delimiter::List& delimiters( void ) const
     { return delimiters_; }
 
-    //! delimiters
+    //* delimiters
     bool setDelimiters( int id, const TextBlock::Delimiter& delimiter )
     { return delimiters_.set( id, delimiter ); }
 
     //@}
 
     #if USE_ASPELL
-    //!@name spelling
+    //*@name spelling
     //@{
-    //! set of misspelled words
+    //* set of misspelled words
     const SpellCheck::Word::Set& misspelledWords( void ) const
     { return words_; }
 
-    //! set of misspelled words
+    //* set of misspelled words
     void setMisspelledWords( const SpellCheck::Word::Set& words )
     { words_ = words; }
 
-    //! return misspelled word matching position, if any
-    SpellCheck::Word misspelledWord( const int& position ) const;
+    //* return misspelled word matching position, if any
+    SpellCheck::Word misspelledWord( int ) const;
     //@}
     #endif
 
     private:
 
-    //! locations and ids of matching syntax highlighting patterns
+    //* locations and ids of matching syntax highlighting patterns
     PatternLocationSet locations_;
 
-    //! highlighted parenthesis location
-    /*! local with respect to the block */
-    int parenthesis_;
+    //* highlighted parenthesis location
+    /** local with respect to the block */
+    int parenthesis_ = -1;
 
-    //! parenthesis length
-    int parenthesisLength_;
+    //* parenthesis length
+    int parenthesisLength_ = 0;
 
-    //! block delimiters
+    //* block delimiters
     TextBlock::Delimiter::List delimiters_;
 
     //@}
 
     #if USE_ASPELL
-    //! set of misspelled words and position in associated block
+    //* set of misspelled words and position in associated block
     SpellCheck::Word::Set words_;
     #endif
 

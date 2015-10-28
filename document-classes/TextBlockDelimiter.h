@@ -28,84 +28,84 @@
 namespace TextBlock
 {
 
-    //! counts how many times a block appears as a begin and a end block
+    //* counts how many times a block appears as a begin and a end block
     class Delimiter: public Counter
     {
         public:
 
-        //! constructor
+        //* constructor
         Delimiter( void ):
             Counter( "TextBlock::Delimiter" )
         {}
 
-        //! equal to operator
+        //* equal to operator
         bool operator == (const Delimiter& other ) const
         { return pair_ == other.pair_ && commentedPair_ == other.commentedPair_; }
 
-        //! different operator
+        //* different operator
         bool operator != (const Delimiter& other ) const
         { return !( *this == other ); }
 
-        //!@name accessors
+        //*@name accessors
         //@{
 
-        //! number of times the block is of type "begin"
+        //* number of times the block is of type "begin"
         int begin( bool isCommented = false ) const
         { return (isCommented ? commentedPair_:pair_).begin_; }
 
-        //! number of times the block is of type "end"
+        //* number of times the block is of type "end"
         int end( bool isCommented = false ) const
         { return (isCommented ? commentedPair_:pair_).end_; }
 
         //@}
 
-        //!@name modifiers
+        //*@name modifiers
         //@{
 
-        //! sum operator (warning: this is not a reflexive operator)
+        //* sum operator (warning: this is not a reflexive operator)
         Delimiter operator + ( const Delimiter& ) const;
 
-        //! sum operator (warning: this is not a reflexive operator)
+        //* sum operator (warning: this is not a reflexive operator)
         Delimiter& operator += ( const Delimiter& delimiter )
         { return *this = *this + delimiter; }
 
-        //! increment
+        //* increment
         void increment( bool isCommented )
         { (isCommented ? commentedPair_:pair_).increment(); }
 
-        //! decrement
+        //* decrement
         void decrement( bool isCommented )
         { (isCommented ? commentedPair_:pair_).decrement(); }
 
         //@}
 
-        //! delimiter list
+        //* delimiter list
         class List: public QVector<Delimiter>, public Counter
         {
             public:
 
-            //! constructor
+            //* constructor
             List( void ):
                 Counter( "TextBlock::Delimiter::List" )
                 {}
 
-            //! sum operator (warning: this is not a reflexive operator)
+            //* sum operator (warning: this is not a reflexive operator)
             List operator + (const List& list ) const;
 
-            //! sum operator (warning: this is not a reflexive operator)
+            //* sum operator (warning: this is not a reflexive operator)
             List& operator += (const List& list )
             {
                 *this = *this + list;
                 return *this;
             }
 
-            //! set value at index i. Resize if needed
+            //* set value at index i. Resize if needed
             bool set( int, const TextBlock::Delimiter& );
 
-            //! get value at index i
+            //* get value at index i
             TextBlock::Delimiter get( int ) const;
 
-            //! streamer
+            //* streamer
             friend QTextStream& operator << ( QTextStream& out, const List& list )
             {
                 foreach( const Delimiter& delimiter, list )
@@ -123,49 +123,47 @@ namespace TextBlock
 
             public:
 
-            //! constructor
-            Pair( void ):
-                begin_( 0 ),
-                end_( 0 )
+            //* constructor
+            Pair( void )
             {}
 
-            //! equal to
+            //* equal to
             bool operator == (const Pair& other ) const
             { return begin_ == other.begin_ && end_ == other.end_; }
 
-            //! sum operator (warning: this is not a reflexive operator)
+            //* sum operator (warning: this is not a reflexive operator)
             Pair operator + ( const Pair& ) const;
 
-            //! increment
+            //* increment
             void increment( void )
             { begin_++; }
 
-            //! decrement
+            //* decrement
             void decrement( void )
             {
                 if( begin_ > 0 ) begin_--;
                 else end_++;
             }
 
-            //! number of times the block is of type "begin"
-            int begin_;
+            //* number of times the block is of type "begin"
+            int begin_ = 0;
 
-            //! number of times the block is of type "end"
-            int end_;
+            //* number of times the block is of type "end"
+            int end_ = 0;
 
         };
 
         Pair pair_;
         Pair commentedPair_;
 
-        //! streamer
+        //* streamer
         friend QTextStream& operator << ( QTextStream& out, const Delimiter::Pair pair )
         {
             out << "(" << pair.begin_ << "," << pair.end_ << ")";
             return out;
         }
 
-        //! streamer
+        //* streamer
         friend QTextStream& operator << ( QTextStream& out, const Delimiter& delimiter )
         {
             out << delimiter.pair_ << " " << delimiter.commentedPair_;

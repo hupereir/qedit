@@ -23,7 +23,7 @@
 #include "BaseFileInformationDialog.h"
 #include "FileRecord.h"
 
-//! file informations
+//* file informations
 class FileInformationDialog: public BaseFileInformationDialog
 {
 
@@ -31,12 +31,11 @@ class FileInformationDialog: public BaseFileInformationDialog
 
     public:
 
-    //! constructor
+    //* constructor
     FileInformationDialog( QWidget*, const FileRecord& );
 
-    //! destructor
-    virtual ~FileInformationDialog( void )
-    {}
+    //* destructor
+    virtual ~FileInformationDialog( void ) = default;
 
 };
 

@@ -31,13 +31,13 @@
 #include <QSet>
 #include <QList>
 
-//! Base class for syntax highlighting
+//* Base class for syntax highlighting
 class HighlightStyle: public Counter
 {
 
     public:
 
-    //! constructor
+    //* constructor
     HighlightStyle(
         const QString& name = "default",
         Format::TextFormatFlags format = Format::Default,
@@ -48,27 +48,27 @@ class HighlightStyle: public Counter
         color_( color )
     {}
 
-    //! constructor from DomElement
+    //* constructor from DomElement
     HighlightStyle( const QDomElement& element );
 
-    //! write to DomElement
+    //* write to DomElement
     QDomElement domElement( QDomDocument& parent ) const;
 
-    //! name
+    //* name
     virtual const QString& name( void ) const
     { return name_; }
 
-    //! same name ftor
+    //* same name ftor
     class SameNameFTor
     {
         public:
 
-        //! constructor
+        //* constructor
         SameNameFTor( const HighlightStyle& style ):
             name_( style.name() )
             {}
 
-        //! predicate
+        //* predicate
         bool operator() (const HighlightStyle& other ) const
         { return other.name() == name_; }
 
@@ -78,7 +78,7 @@ class HighlightStyle: public Counter
 
     };
 
-    //! equal to ftor
+    //* equal to ftor
     class WeakEqualFTor
     {
         public:
@@ -88,7 +88,7 @@ class HighlightStyle: public Counter
 
     };
 
-    //! less than ftor
+    //* less than ftor
     class WeakLessThanFTor
     {
         public:
@@ -98,45 +98,45 @@ class HighlightStyle: public Counter
 
     };
 
-    //! typedef for list of patterns
+    //* typedef for list of patterns
     using Set = QSet<HighlightStyle>;
 
-    //! typedef for list of patterns
+    //* typedef for list of patterns
     using List = QList<HighlightStyle>;
 
-    //! true if any attributes is different from argument
-    /*! this is a stricter comparison than the != operator */
+    //* true if any attributes is different from argument
+    /** this is a stricter comparison than the != operator */
     bool operator == ( const HighlightStyle& style ) const;
 
-    //! name
+    //* name
     virtual void setName( const QString& name )
     { name_ = name; }
 
-    //! format
+    //* format
     virtual Format::TextFormatFlags fontFormat( void ) const
     { return format_; }
 
-    //! format
+    //* format
     virtual void setFontFormat( Format::TextFormatFlags format )
     { format_ = format; }
 
-    //! color
+    //* color
     virtual const QColor& color( void ) const
     { return color_; }
 
-    //! color
+    //* color
     virtual void setColor( const QColor& color )
     { color_ = color; }
 
     private:
 
-    //! pattern name
+    //* pattern name
     QString name_;
 
-    //! format (bitwise or of TextFormatInfo)
+    //* format (bitwise or of TextFormatInfo)
     Format::TextFormatFlags format_;
 
-    //! color
+    //* color
     QColor color_;
 
 };

@@ -29,19 +29,19 @@
 #include <QWidget>
 #include <QTimer>
 
-//! handles multiple views
+//* handles multiple views
 class TextView: public QWidget, public Counter, public Base::Key
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! constructor
+    //* constructor
     TextView( QWidget* );
 
-    //! destructor
+    //* destructor
     virtual ~TextView( void );
 
     // true if widget is being deleted
@@ -52,152 +52,152 @@ class TextView: public QWidget, public Counter, public Base::Key
     void setIsClosed( bool value )
     { closed_ = value; }
 
-    //!@name display management
+    //*@name display management
     //@{
 
-    //! true if has associated displays
+    //* true if has associated displays
     bool hasDisplays( void ) const
     { return !Base::KeySet<TextDisplay>( this ).isEmpty(); }
 
-    //! return number of displays
+    //* return number of displays
     int displayCount( void ) const
     { return Base::KeySet<TextDisplay>( this ).count(); }
 
-    //! return number of independant displays
+    //* return number of independant displays
     int independentDisplayCount( void ) const;
 
-    //! return number of independent modified displays
+    //* return number of independent modified displays
     int modifiedDisplayCount( void ) const;
 
     //@}
 
-    //!@name display management
+    //*@name display management
     //@{
 
-    //! retrieve active display
+    //* retrieve active display
     TextDisplay& activeDisplay( void )
     {
         Q_CHECK_PTR( activeDisplay_ );
         return *activeDisplay_;
     }
 
-    //! retrieve active display
+    //* retrieve active display
     const TextDisplay& activeDisplay( void ) const
     { return *activeDisplay_; }
 
-    //! select display from file
+    //* select display from file
     bool selectDisplay( const File& file );
 
-    //! true if display passed in argument is active
+    //* true if display passed in argument is active
     bool isActiveDisplay( const TextDisplay& display ) const
     { return &display == activeDisplay_; }
 
-    //! change active display manualy
+    //* change active display manualy
     void setActiveDisplay( TextDisplay& );
 
-    //! close display
+    //* close display
     void closeActiveDisplay( void );
 
-    //! close display
-    /*! Ask for save if display is modified */
+    //* close display
+    /** Ask for save if display is modified */
     void closeDisplay( TextDisplay& );
 
     //@}
 
-    //! set new document
+    //* set new document
     void setIsNewDocument( void );
 
-    //! set file and read
+    //* set file and read
     void setFile( File file );
 
-    //! split display
+    //* split display
     TextDisplay& splitDisplay( const Qt::Orientation&, bool clone );
 
-    //! save all displays
+    //* save all displays
     void saveAll( void );
 
-    //! ignore all display modifications
+    //* ignore all display modifications
     void ignoreAll( void );
 
-    //! select class name
+    //* select class name
     void selectClassName( QString value )
     { activeDisplay().selectClassName( value ); }
 
-    //! rehighlight all displays
+    //* rehighlight all displays
     void rehighlight( void );
 
-    //! diff files
+    //* diff files
     void diff( void );
 
-    //! position timer
+    //* position timer
     QTimer& positionTimer( void )
     { return positionTimer_; }
 
     Q_SIGNALS:
 
-    //! emitted when parent window must be update
+    //* emitted when parent window must be update
     void needUpdate( TextDisplay::UpdateFlags );
 
-    //! current display overwrite mode changed
+    //* current display overwrite mode changed
     void modifiersChanged( TextEditor::Modifiers );
 
-    //! independent display count changed
+    //* independent display count changed
     void displayCountChanged( void );
 
-    //! current display undo is available
+    //* current display undo is available
     void undoAvailable( bool );
 
-    //! current display redo is available
+    //* current display redo is available
     void redoAvailable( bool );
 
     public Q_SLOTS:
 
-    //! check modified displays
+    //* check modified displays
     void checkDisplayModifications( TextEditor* );
 
     private Q_SLOTS:
 
-    //! check number of displays
-    /*!
+    //* check number of displays
+    /**
     this is triggered by TextDisplay::destroyed()
     when no display is found the entire window is closed
     the active display is updated otherwise
     */
     void _checkDisplays( void );
 
-    //! display focus changed
+    //* display focus changed
     void _activeDisplayChanged( TextEditor* );
 
     private:
 
-    //! create new splitter
+    //* create new splitter
     QSplitter& _newSplitter( const Qt::Orientation&, bool  );
 
-    //! create new TextDisplay
+    //* create new TextDisplay
     TextDisplay& _newTextDisplay( QWidget* );
 
-    //! closed
-    bool closed_;
+    //* closed
+    bool closed_ = false;
 
-    //! text display with focus
-    TextDisplay* activeDisplay_;
+    //* text display with focus
+    TextDisplay* activeDisplay_ = nullptr;
 
-    //! position update timer
+    //* position update timer
     QTimer positionTimer_;
 
 };
 
-//! local QSplitter object, derived from Counter
-/*! helps keeping track of how many splitters are created/deleted */
+//* local QSplitter object, derived from Counter
+/** helps keeping track of how many splitters are created/deleted */
 class LocalSplitter: public QSplitter, public Counter
 {
 
     public:
 
-    //! constructor
+    //* constructor
     LocalSplitter( QWidget* );
 
-    //! destructor
+    //* destructor
     virtual ~LocalSplitter( void );
 
 };

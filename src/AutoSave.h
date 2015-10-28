@@ -28,25 +28,25 @@
 
 class TextDisplay;
 
-//! handles threads for file auto-save
+//* handles threads for file auto-save
 class AutoSave: public QObject, public Counter
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! constructor
-    AutoSave( QObject* parent = 0 );
+    //* constructor
+    AutoSave( QObject* = nullptr );
 
-    //! destructor
+    //* destructor
     ~AutoSave( void );
 
-    //! register new thread
+    //* register new thread
     void newThread( TextDisplay* );
 
-    //! Save files
+    //* Save files
     /* \param display if set to non 0, only threads that match the display are saved */
     void saveFiles( const TextDisplay* = 0 );
 
@@ -56,7 +56,7 @@ class AutoSave: public QObject, public Counter
 
     private Q_SLOTS:
 
-    //! update configuration
+    //* update configuration
     /* update interval between threads */
     void _updateConfiguration( void );
 
@@ -65,19 +65,19 @@ class AutoSave: public QObject, public Counter
     bool _enabled( void ) const
     { return enabled_ && interval_ > 0; }
 
-    //! true when enabled
-    bool enabled_;
+    //* true when enabled
+    bool enabled_ = true;
 
-    //! interval between two save (milliseconds)
-    int interval_;
+    //* interval between two save (milliseconds)
+    int interval_ = 0;
 
-    //! AutoSave timer
+    //* AutoSave timer
     QBasicTimer timer_;
 
-    //! list of threads
+    //* list of threads
     using ThreadList = QList< AutoSaveThread* >;
 
-    //! list of threads
+    //* list of threads
     ThreadList threads_;
 
 };

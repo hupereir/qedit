@@ -29,26 +29,26 @@
 #include <QRegExp>
 #include <QList>
 
-//! text delimiter (for highlighting)
+//* text delimiter (for highlighting)
 class BlockDelimiter: public Counter
 {
 
     public:
 
-    //! typedef for list of patterns
+    //* typedef for list of patterns
     using List = QList< BlockDelimiter >;
 
-    //! constructor from DomElement
+    //* constructor from DomElement
     BlockDelimiter( const QDomElement& element = QDomElement(), const unsigned int& id = 0 );
 
-    //! dom element
+    //* dom element
     QDomElement domElement( QDomDocument& parent ) const;
 
-    //! Id
+    //* Id
     const unsigned int& id( void ) const
     { return id_; }
 
-    //! equal to operator
+    //* equal to operator
     bool operator == ( const BlockDelimiter& other ) const
     {
         return
@@ -57,7 +57,7 @@ class BlockDelimiter: public Counter
             regexp() == other.regexp();
     }
 
-    //! less than operator
+    //* less than operator
     bool operator < ( const BlockDelimiter& other ) const
     {
         if( first() != other.first() ) return first() < other.first();
@@ -66,46 +66,46 @@ class BlockDelimiter: public Counter
         return false;
     }
 
-    //! block start
+    //* block start
     const QString& first() const
     { return first_; }
 
-    //! first
+    //* first
     void setFirst( const QString& value )
     { first_ = value; }
 
-    //! block end
+    //* block end
     const QString& second() const
     { return second_; }
 
-    //! second
+    //* second
     void setSecond( const QString& value )
     { second_ = value; }
 
-    //! regExp that match either block start or end
+    //* regExp that match either block start or end
     const QRegExp& regexp() const
     { return regexp_; }
 
-    //! regext
+    //* regext
     void setRegexp( const QString& value )
     { regexp_.setPattern( value ); }
 
 
     private:
 
-    //! unique id
-    unsigned int id_;
+    //* unique id
+    unsigned int id_ = 0;
 
-    //! regular expression that match first character
+    //* regular expression that match first character
     QString first_;
 
-    //! regular expression that match second character
+    //* regular expression that match second character
     QString second_;
 
-    //! regular expression that match either of both characters
+    //* regular expression that match either of both characters
     QRegExp regexp_;
 
-    //! streamer
+    //* streamer
     friend QTextStream& operator << ( QTextStream& out, const BlockDelimiter& delimiter )
     {
         out << " first: " << delimiter.first()

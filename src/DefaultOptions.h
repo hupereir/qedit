@@ -29,7 +29,7 @@
 #include "XmlOptions.h"
 
 //_____________________________________________________
-//! default options installer
+//* default options installer
 void installDefaultOptions( void )
 {
 

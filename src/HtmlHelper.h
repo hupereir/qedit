@@ -30,7 +30,7 @@
 
 class TextDisplay;
 
-//! printing utility
+//* printing utility
 class HtmlHelper: public QObject, public Counter
 {
 
@@ -38,34 +38,33 @@ class HtmlHelper: public QObject, public Counter
 
     public:
 
-    //! constructor
+    //* constructor
     HtmlHelper( QObject* parent, TextDisplay* editor ):
         QObject( parent ),
         Counter( "HtmlHelper" ),
         editor_( editor )
     { Debug::Throw( "HtmlHelper::HtmlHelper.\n" ); }
 
-    //! destructor
-    virtual ~HtmlHelper( void )
-    {}
+    //* destructor
+    virtual ~HtmlHelper( void ) = default;
 
     public Q_SLOTS:
 
-    //! print
+    //* print
     void print( QIODevice* );
 
     protected:
 
-    //! get full html string
+    //* get full html string
     QString _htmlString( void );
 
-    //! get documents (editor) Html node
+    //* get documents (editor) Html node
     QDomElement _htmlNode( QDomDocument& );
 
     private:
 
-    //! editor
-    TextDisplay* editor_;
+    //* editor
+    TextDisplay* editor_ = nullptr;
 
 };
 

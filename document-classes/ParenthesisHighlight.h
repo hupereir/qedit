@@ -20,7 +20,7 @@
 *
 *******************************************************************************/
 
-/*!
+/**
 \file ParenthesisHighlight.h
 \brief handles parenthesis matching highlighting
 \author Hugo Pereira
@@ -37,7 +37,7 @@
 
 class TextEditor;
 
-//! handles parenthesis matching highlighting
+//* handles parenthesis matching highlighting
 class ParenthesisHighlight: public QObject, public Counter
 {
 
@@ -45,55 +45,54 @@ class ParenthesisHighlight: public QObject, public Counter
 
     public:
 
-    //! constructor
+    //* constructor
     ParenthesisHighlight( TextEditor* );
 
-    //! destructor
-    virtual ~ParenthesisHighlight( void )
-    { Debug::Throw( "ParenthesisHighlight::~ParenthesisHighlight.\n" ); }
+    //* destructor
+    virtual ~ParenthesisHighlight( void ) = default;
 
-    //! enable/disable
+    //* enable/disable
     void setEnabled( bool value )
     { enabled_ = value; }
 
-    //! enable/disable
+    //* enable/disable
     bool isEnabled( void ) const
     { return enabled_; }
 
-    //! synchronize
+    //* synchronize
     void synchronize( const ParenthesisHighlight& );
 
-    //! clear highlighted block
+    //* clear highlighted block
     //void clear( void );
     QList<QTextBlock> clear( void );
 
-    //! highlight current (absolute) location
-    void highlight( const int&, const int& );
+    //* highlight current (absolute) location
+    void highlight( int, int );
 
     protected:
 
-    //! highlight
+    //* highlight
     void _highlight( void );
 
     private:
 
-    //! parent editor
-    TextEditor* parent_;
+    //* parent editor
+    TextEditor* parent_ = nullptr;
 
-    //! associated timer
+    //* associated timer
     QBasicTimer timer_;
 
-    //! true if enabled
-    bool enabled_;
+    //* true if enabled
+    bool enabled_ = false;
 
-    //! parenthesis location
-    int location_;
+    //* parenthesis location
+    int location_ = -1;
 
-    //! length
-    int length_;
+    //* length
+    int length_ = 0;
 
-    //! true when cleared
-    bool cleared_;
+    //* true when cleared
+    bool cleared_ = true;
 
 };
 

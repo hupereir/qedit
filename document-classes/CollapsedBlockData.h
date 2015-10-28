@@ -26,61 +26,61 @@
 #include <QString>
 #include <QList>
 
-//! store collapsed block text and state
+//* store collapsed block text and state
 class CollapsedBlockData
 {
 
     public:
 
-    //! list
+    //* list
     using List = QList<CollapsedBlockData>;
 
-    //! constructor
+    //* constructor
     CollapsedBlockData( void ):
         collapsed_( false )
     {}
 
-    //! constructor
+    //* constructor
     CollapsedBlockData( const QTextBlock& block );
 
-    //! text
+    //* text
     const QString& text( void ) const
     { return text_; }
 
-    //! collapsed
+    //* collapsed
     bool collapsed( void ) const
     { return collapsed_; }
 
-    //! number of blocks stored by this data object
+    //* number of blocks stored by this data object
     unsigned int blockCount( void ) const;
 
-    //!@name block limits
+    //*@name block limits
     //@{
 
-    //! delimiters
+    //* delimiters
     const TextBlock::Delimiter::List& delimiters( void ) const
     { return delimiters_; }
 
-    //! delimiters
+    //* delimiters
     void setDelimiters( const TextBlock::Delimiter::List& delimiters )
     { delimiters_ = delimiters; }
 
     //@}
 
-    //! children
+    //* children
     const List& children( void ) const
     { return children_; }
 
-    //! children
+    //* children
     List& children( void )
     { return children_; }
 
-    //! children
+    //* children
     void setChildren( const List& children )
     { children_ = children; }
 
-    //! returns all text contained in collapsed data
-    /*!
+    //* returns all text contained in collapsed data
+    /**
     this is equivalent to expanding the entire block.
     The method is recursive
     */
@@ -88,16 +88,16 @@ class CollapsedBlockData
 
     private:
 
-    //! text
+    //* text
     QString text_;
 
-    //! collapsed flag
-    bool collapsed_;
+    //* collapsed flag
+    bool collapsed_ = false;
 
-    //! collapsed delimiters
+    //* collapsed delimiters
     TextBlock::Delimiter::List delimiters_;
 
-    //! children
+    //* children
     List children_;
 
 };

@@ -29,70 +29,67 @@
 
 class DocumentClass;
 
-//! Store list of Document Class
+//* Store list of Document Class
 class DocumentClassManager: public Counter
 {
 
     public:
 
-    //! constructor
+    //* constructor
     DocumentClassManager( void );
 
-    //! destructor
-    ~DocumentClassManager( void )
-    {
-        Debug::Throw( "DocumentclassManager::~DocumentClassManager.\n" );
-        clear();
-    }
+    //* destructor
+    virtual ~DocumentClassManager( void )
+    { clear(); }
 
-    //! clear document classes
+    //* clear document classes
     void clear( void );
 
-    //! read classes from file
+    //* read classes from file
     bool read( const File& file );
 
-    //! read errors
+    //* read errors
     const QString& readError( void ) const
     { return readError_; }
 
-    //! write all classes to file
+    //* write all classes to file
     bool write( const File& path ) const;
 
-    //! write classe to file
+    //* write classe to file
     bool write( const QString&, const File& ) const;
 
-    //! write classe to file
+    //* write classe to file
     bool write( const DocumentClass&, const File& ) const;
 
-    //! get default document class
+    //* get default document class
     DocumentClass defaultClass( void ) const;
 
-    //! get class matching filename. Return 0 if not found
+    //* get class matching filename. Return 0 if not found
     DocumentClass find( const File& file ) const;
 
-    //! get class matching name. Return 0 if none found
+    //* get class matching name. Return 0 if none found
     DocumentClass get( const QString& name ) const;
 
-    //! remove a class matching name.
+    //* remove a class matching name.
     bool remove( const QString& name );
 
-    //! shortcut to list of document classes
+    //* shortcut to list of document classes
     using List = QList<DocumentClass>;
 
-    //! get all classes
+    //* get all classes
     const List& classes( void ) const
     { return documentClasses_; }
 
-    //! set all classes
+    //* set all classes
     void setClasses( const List& classes )
     { documentClasses_ = classes; }
 
     private:
 
-    //! list of document classes
+    //* list of document classes
     List documentClasses_;
 
-    //! read error
+    //* read error
     QString readError_;
 };
 

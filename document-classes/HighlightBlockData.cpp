@@ -31,7 +31,7 @@ HighlightBlockData::HighlightBlockData( void ):
 #if USE_ASPELL
 
 //____________________________________________________________
-SpellCheck::Word HighlightBlockData::misspelledWord( const int& position ) const
+SpellCheck::Word HighlightBlockData::misspelledWord( int position ) const
 {
 
     Debug::Throw( "HighlightBlockData::misspelledWord.\n" );

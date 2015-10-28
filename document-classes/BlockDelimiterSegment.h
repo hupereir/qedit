@@ -32,12 +32,12 @@ class BlockDelimiterSegment: public Counter
 
     public:
 
-    //! list
+    //* list
     using List = QList<BlockDelimiterSegment>;
     using ListIterator = QListIterator<BlockDelimiterSegment>;
     using MutableListIterator = QMutableListIterator<BlockDelimiterSegment>;
 
-    //! flags
+    //* flags
     enum Flag
     {
         None = 0,
@@ -48,7 +48,7 @@ class BlockDelimiterSegment: public Counter
 
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    //! constructor
+    //* constructor
     BlockDelimiterSegment(
         const BlockMarker& begin = BlockMarker(),
         const BlockMarker& end = BlockMarker(),
@@ -59,14 +59,14 @@ class BlockDelimiterSegment: public Counter
         flags_( flags )
     {}
 
-    //!@name flags
+    //*@name flags
     //@{
 
-    //! flags
+    //* flags
     bool hasFlag( const Flag& flag ) const
     { return flags_ & flag; }
 
-    //! flags
+    //* flags
     BlockDelimiterSegment& setFlag( const Flag& flag, bool value )
     {
         if( value ) flags_ |= flag;
@@ -76,101 +76,101 @@ class BlockDelimiterSegment: public Counter
 
     //@}
 
-    //! validity
+    //* validity
     bool isValid( void ) const
     { return ( begin().isValid() && ( hasFlag( BeginOnly ) || end().isValid() ) ); }
 
-    //!@name geometry
+    //*@name geometry
     //@{
 
-    //! begin point
+    //* begin point
     const BlockMarker& begin( void ) const
     { return begin_; }
 
-    //! begin point
+    //* begin point
     BlockMarker& begin( void )
     { return begin_; }
 
-    //! begin point
+    //* begin point
     BlockDelimiterSegment& setBegin( const BlockMarker& begin )
     {
         begin_ = begin;
         return *this;
     }
 
-    //! end point
+    //* end point
     const BlockMarker& end( void ) const
     { return end_; }
 
-    //! end point
+    //* end point
     BlockMarker& end( void )
     { return end_; }
 
-    //! end point
+    //* end point
     BlockDelimiterSegment& setEnd( const BlockMarker& end )
     {
         end_ = end;
         return *this;
     }
 
-    //! empty segment
+    //* empty segment
     bool empty( void ) const
     { return begin().cursor() == end().cursor(); }
 
-    //! active rect
+    //* active rect
     const QRect& activeRect( void ) const
     { return active_; }
 
-    //! active rect
+    //* active rect
     void setActiveRect( const QRect& rect )
     { active_ = rect; }
 
     //@}
 
-    //! used to find segment for which the active rect match a point
+    //* used to find segment for which the active rect match a point
     class ActiveFTor
     {
 
         public:
 
-        //! creator
+        //* creator
         ActiveFTor( const QPoint& point ):
             point_( point )
         {}
 
-        //! prediction
+        //* prediction
         bool operator() (const BlockDelimiterSegment& segment ) const
         { return segment.activeRect().contains( point_ ); }
 
         private:
 
-        //! position
+        //* position
         QPoint point_;
 
     };
 
-    //! used to find segment that match the cursor location and collapse state
+    //* used to find segment that match the cursor location and collapse state
     class ContainsFTor
     {
         public:
 
-        //! constructor
-        ContainsFTor( const int& cursor ):
+        //* constructor
+        ContainsFTor( int cursor ):
             cursor_( cursor )
             {}
 
-        //! prediction
+        //* prediction
         bool operator() (const BlockDelimiterSegment& segment ) const
         { return cursor_ >= segment.begin().cursor() && ( segment.empty() || cursor_ <= segment.end().cursor() ); }
 
         private:
 
-        //! position
+        //* position
         int cursor_;
 
     };
 
-    //! used to cound collapsed segments
+    //* used to cound collapsed segments
     class CollapsedFTor
     {
         public:
@@ -180,8 +180,8 @@ class BlockDelimiterSegment: public Counter
 
     };
 
-    //! used to sort segments according to starting or ending points
-    /*! top level segments should comme last */
+    //* used to sort segments according to starting or ending points
+    /** top level segments should comme last */
     class SortFTor
     {
 
@@ -194,27 +194,27 @@ class BlockDelimiterSegment: public Counter
 
     private:
 
-    //! first position
+    //* first position
     BlockMarker begin_;
 
-    //! end position
+    //* end position
     BlockMarker end_;
 
-    //! active area (for mouse pointing)
-    /*! it is set if drawFirstDelimiter() is called */
+    //* active area (for mouse pointing)
+    /** it is set if drawFirstDelimiter() is called */
     QRect active_;
 
-    //! flags
-    Flags flags_;
+    //* flags
+    Flags flags_ = 0;
 
-    //! streamer
+    //* streamer
     friend QTextStream& operator << ( QTextStream& out, const BlockDelimiterSegment& segment )
     {
         out << "begin: " << segment.begin() << " end: " << segment.end() << " flags: " << segment.flags_;
         return out;
     }
 
-    //! streamer
+    //* streamer
     friend QTextStream& operator << ( QTextStream& out, const BlockDelimiterSegment::List& segments )
     {
         foreach( const BlockDelimiterSegment& segment, segments )

@@ -27,7 +27,7 @@
 #include <QActionGroup>
 #include <QMap>
 
-//! display available document classes
+//* display available document classes
 class TextMacroMenu: public QMenu, public Counter
 {
 
@@ -35,52 +35,51 @@ class TextMacroMenu: public QMenu, public Counter
 
     public:
 
-    //! constructor
+    //* constructor
     TextMacroMenu( QWidget* );
 
-    //! destructor
-    virtual ~TextMacroMenu( void )
-    {}
+    //* destructor
+    virtual ~TextMacroMenu( void ) = default;
 
-    //! set enabled
+    //* set enabled
     void setEnabled( bool );
 
     Q_SIGNALS:
 
-    //! emmited every time a text macro is selected
+    //* emmited every time a text macro is selected
     void textMacroSelected( QString );
 
     public Q_SLOTS:
 
-    //! update macros
+    //* update macros
     void update( const TextMacro::List& );
 
-    //! update state
+    //* update state
     void updateState( bool );
 
     protected Q_SLOTS:
 
-    //! emited when an action is selected
+    //* emited when an action is selected
     void _processAction( QAction* action );
 
     private:
 
-    //! container for macros
+    //* container for macros
     class MacroContainer
     {
         public:
 
-        //! constructor from text macro
+        //* constructor from text macro
         MacroContainer( const TextMacro& macro ):
             name_( macro.name() ),
             automatic_( macro.isAutomatic() )
         {}
 
-        //! name
+        //* name
         const QString& name( void ) const
         { return name_; }
 
-        //! automatic
+        //* automatic
         bool isAutomatic( void ) const
         { return automatic_; }
 
@@ -91,7 +90,7 @@ class TextMacroMenu: public QMenu, public Counter
 
     };
 
-    //! map action to TextMacro
+    //* map action to TextMacro
     using ActionMap = QMap<QAction*, MacroContainer >;
     ActionMap actions_;
 

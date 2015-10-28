@@ -22,25 +22,24 @@
 
 #include "BaseReplaceWidget.h"
 
-//! replace_text dialog for text editor widgets
+//* replace_text dialog for text editor widgets
 class ReplaceWidget: public BaseReplaceWidget
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! constructor
+    //* constructor
     ReplaceWidget( QWidget* = nullptr );
 
-    //! destructor
-    virtual ~ReplaceWidget( void )
-    {}
+    //* destructor
+    virtual ~ReplaceWidget( void ) = default;
 
     Q_SIGNALS:
 
-    //! emmited when Replace is pressed
+    //* emmited when Replace is pressed
     void replaceInFiles();
 
 };

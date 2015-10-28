@@ -24,16 +24,16 @@
 #include "Counter.h"
 #include "File.h"
 
-//! QDialog used when a file has been removed from disk
+//* QDialog used when a file has been removed from disk
 class FileRemovedDialog: public BaseDialog, public Counter
 {
 
-    //! Qt macro
+    //* Qt macro
     Q_OBJECT
 
     public:
 
-    //! return codes
+    //* return codes
     enum ReturnCode
     {
 
@@ -44,28 +44,27 @@ class FileRemovedDialog: public BaseDialog, public Counter
 
     };
 
-    //! constructor
+    //* constructor
     FileRemovedDialog( QWidget* parent, const File& file );
 
-    //! destructor
-    virtual ~FileRemovedDialog( void )
-    {}
+    //* destructor
+    virtual ~FileRemovedDialog( void ) = default;
 
     private Q_SLOTS:
 
-    //! re-saved removed file
+    //* re-saved removed file
     void _reSave( void )
     { done( SaveAgain ); }
 
-    //! save file with new name
+    //* save file with new name
     void _saveAs( void )
     { done( SaveAs ); }
 
-    //! close current editor
+    //* close current editor
     void _close( void )
     { done( Close ); }
 
-    //! ignore warning
+    //* ignore warning
     void _ignore( void )
     { done( Ignore ); }
 

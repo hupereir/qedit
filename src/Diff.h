@@ -31,82 +31,82 @@
 
 class TextDisplay;
 
-//! make diff between two files, stores conflict and added lines for both
+//* make diff between two files, stores conflict and added lines for both
 class Diff: public QObject, public Counter
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! constructor
-    Diff( QObject* parent );
+    //* constructor
+    Diff( QObject* );
 
-    //! store files from text Displays
+    //* store files from text Displays
     void setTextDisplays( TextDisplay& first, TextDisplay& second )
     {
         files_[0].setDisplay( first );
         files_[1].setDisplay( second );
     }
 
-    //! run process
-    /*! returns true if command could run succesfully */
+    //* run process
+    /** returns true if command could run succesfully */
     bool run( void );
 
-    //! error message
+    //* error message
     const QString& error( void ) const
     { return error_; }
 
-    //! paragraph range
+    //* paragraph range
     using Range = QPair< int, int >;
 
-    //! range list
+    //* range list
     using BlockSet = QSet< int >;
 
     private Q_SLOTS:
 
-    //! parse the diff output
+    //* parse the diff output
     void _parseOutput( int, QProcess::ExitStatus );
 
     private:
 
-    //! clear ranges
+    //* clear ranges
     void _clear( void );
 
-    //! parse a diff line
+    //* parse a diff line
     void _parseLine( const QString& line );
 
-    //! parse a diff line
+    //* parse a diff line
     static Range _parseRange( const QString& range );
 
-    //! file specific diff informations
+    //* file specific diff informations
     class FileInformation
     {
 
         public:
 
-        //! default constructor
+        //* default constructor
         FileInformation( void );
 
-        //! destructor
+        //* destructor
         ~FileInformation( void );
 
-        //! set display
+        //* set display
         void setDisplay( TextDisplay& display );
 
-        //! file
+        //* file
         const File& file( void ) const
         { return file_; }
 
-        //! add added range
+        //* add added range
         void insertAddedRange( const Range& range )
         {
             for( int index = range.first; index <= range.second; ++index )
             { added_.insert( index ); }
         }
 
-        //! add conflict range
+        //* add conflict range
         void insertConflictRange( const Range& range )
         {
             for( int index = range.first; index <= range.second; ++index )
@@ -114,53 +114,48 @@ class Diff: public QObject, public Counter
         }
 
 
-        //! clear
+        //* clear
         void clear( void )
         {
             added_.clear();
             conflicts_.clear();
         }
 
-        //! highlight text display based on conflicts and added paragraphs
+        //* highlight text display based on conflicts and added paragraphs
         void highlightDisplay( void );
 
-        //! list
+        //* list
         using List = QVector<FileInformation>;
 
         private:
 
-        //! text display
-        TextDisplay& _display( void )
-        { return *display_; }
+        //* text display
+        TextDisplay* display_ = nullptr;
 
-
-        //! text display
-        TextDisplay* display_;
-
-        //! file
+        //* file
         File file_;
 
-        /*!
+        /**
         \brief true when file is a temporary and should be deleted
         at destruction
         */
-        bool isTemporary_;
+        bool isTemporary_ = false;
 
-        //! added paragraphs
+        //* added paragraphs
         BlockSet added_;
 
-        //! conflict paragraphs
+        //* conflict paragraphs
         BlockSet conflicts_;
 
     };
 
-    //! file specific diff information
+    //* file specific diff information
     FileInformation::List files_;
 
-    //! process
+    //* process
     CustomProcess process_;
 
-    //! possible error string
+    //* possible error string
     QString error_;
 
 };

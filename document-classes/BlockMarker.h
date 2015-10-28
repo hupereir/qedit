@@ -20,13 +20,13 @@
 *
 *******************************************************************************/
 
-//! stores block position
-//! needed to handle block geometry
+//* stores block position
+//* needed to handle block geometry
 class BlockMarker
 {
     public:
 
-    //! constructor
+    //* constructor
     BlockMarker( int id = 0, int cursor = 0, int position = -1 ):
         id_( id ),
         cursor_( cursor ),
@@ -34,56 +34,56 @@ class BlockMarker
         valid_( position >= 0 )
     {}
 
-    //! equal to operator
+    //* equal to operator
     bool operator == ( const BlockMarker& marker ) const
     { return cursor() == marker.cursor(); }
 
-    //! equal to operator
+    //* equal to operator
     bool operator != ( const BlockMarker& marker ) const
     { return cursor() != marker.cursor(); }
 
-    //! less than operator
+    //* less than operator
     bool operator < ( const BlockMarker& marker ) const
     { return cursor() < marker.cursor(); }
 
-    //! id
+    //* id
     int id( void ) const
     { return id_; }
 
-    //! cursor
+    //* cursor
     int cursor( void ) const
     { return cursor_; }
 
-    //! position
+    //* position
     void setPosition( int position )
     {
         valid_ = (position >= 0);
         position_ = position;
     }
 
-    //! position
+    //* position
     int position( void ) const
     { return position_; }
 
-    //! validity
+    //* validity
     bool isValid( void ) const
     { return valid_; }
 
     private:
 
-    //! id
-    int id_;
+    //* id
+    int id_ = 0;
 
-    //! cursor position
-    int cursor_;
+    //* cursor position
+    int cursor_ = 0;
 
-    //! position
-    int position_;
+    //* position
+    int position_ = 0;
 
-    //! validity
-    bool valid_;
+    //* validity
+    bool valid_  = false;
 
-    //! streamer
+    //* streamer
     friend QTextStream& operator << ( QTextStream& out, const BlockMarker& marker )
     {
         out << "(" << marker.id() << "," << marker.cursor() << "," << marker.position() << ")";

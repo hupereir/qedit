@@ -32,7 +32,7 @@ namespace FileRecordProperties
     static const QString Filter = "filter";
     static const QString Size = "size";
 
-    //! needed to tag session file records
+    //* needed to tag session file records
     enum Flag
     {
         None = 0,

@@ -27,7 +27,7 @@
 
 class TextDisplay;
 
-//! printing utility
+//* printing utility
 class PrintHelper: public BasePrintHelper, public Counter
 {
 
@@ -35,26 +35,25 @@ class PrintHelper: public BasePrintHelper, public Counter
 
     public:
 
-    //! constructor
+    //* constructor
     PrintHelper( QObject* parent, TextDisplay* editor ):
         BasePrintHelper( parent ),
         Counter( "PrintHelper" ),
         editor_( editor )
     { Debug::Throw( "PrintHelper::PrintHelper.\n" ); }
 
-    //! destructor
-    virtual ~PrintHelper( void )
-    {}
+    //* destructor
+    virtual ~PrintHelper( void ) = default;
 
     public Q_SLOTS:
 
-    //! print
+    //* print
     void print( QPrinter* );
 
     private:
 
-    //! editor
-    TextDisplay* editor_;
+    //* editor
+    TextDisplay* editor_ = nullptr;
 
 };
 

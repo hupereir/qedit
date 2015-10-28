@@ -25,7 +25,7 @@
 #include "FileRecord.h"
 #include "FileRecordModel.h"
 
-//! save all modified files
+//* save all modified files
 class SaveAllDialog: public QuestionDialog
 {
 
@@ -33,16 +33,15 @@ class SaveAllDialog: public QuestionDialog
 
     public:
 
-    //! constructor
+    //* constructor
     SaveAllDialog( QWidget*, FileRecord::List );
 
-    //! destructor
-    virtual ~SaveAllDialog( void )
-    {}
+    //* destructor
+    virtual ~SaveAllDialog( void ) = default;
 
     private:
 
-    //! model
+    //* model
     FileRecordModel model_;
 
 };

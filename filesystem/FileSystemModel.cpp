@@ -34,8 +34,6 @@
 FileSystemModel::FileSystemModel( QObject* parent ):
     ListModel<FileRecord>( parent ),
     Counter( "FileSystemModel" ),
-    useLocalNames_( true ),
-    showIcons_( true ),
     sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Size ) )
 {
     Debug::Throw("FileSystemModel::FileSystemModel.\n" );
@@ -153,7 +151,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
 }
 
 //__________________________________________________________________
-QVariant FileSystemModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant FileSystemModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
 
     if(
@@ -173,10 +171,10 @@ void FileSystemModel::_sort( int column, Qt::SortOrder order )
 { std::sort( _get().begin(), _get().end(), SortFTor( column, order, columnTitles_ ) ); }
 
 //________________________________________________________
-FileSystemModel::SortFTor::SortFTor( const int& type, Qt::SortOrder order, const QStringList& column_titles ):
+FileSystemModel::SortFTor::SortFTor( int type, Qt::SortOrder order, const QStringList& columnTitles ):
     ItemModel::SortFTor( type, order ),
     sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Size ) ),
-    columnTitles_( column_titles )
+    columnTitles_( columnTitles )
 {}
 
 //________________________________________________________

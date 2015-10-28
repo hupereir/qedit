@@ -25,7 +25,7 @@
 #include "FileRecord.h"
 #include "FileRecordModel.h"
 
-//! close files
+//* close files
 class CloseFilesDialog: public QuestionDialog
 {
 
@@ -33,16 +33,15 @@ class CloseFilesDialog: public QuestionDialog
 
     public:
 
-    //! constructor
+    //* constructor
     CloseFilesDialog( QWidget*, FileRecord::List );
 
-    //! destructor
-    virtual ~CloseFilesDialog( void )
-    {}
+    //* destructor
+    virtual ~CloseFilesDialog( void ) = default;
 
     private:
 
-    //! model
+    //* model
     FileRecordModel model_;
 
 };

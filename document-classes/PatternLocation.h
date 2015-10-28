@@ -27,7 +27,7 @@
 
 #include <QTextCharFormat>
 
-//! encapsulate highlight location, pattern and style
+//* encapsulate highlight location, pattern and style
 class PatternLocation: public Counter
 {
     public:
@@ -35,17 +35,16 @@ class PatternLocation: public Counter
 
     using SetIterator = QOrderedSetIterator<PatternLocation>;
 
-    //! construtor
+    //* construtor
     PatternLocation( void );
 
-    //! constructor
+    //* constructor
     PatternLocation( const HighlightPattern&, int, int );
 
-    //! destructor
-    virtual ~PatternLocation( void )
-    {}
+    //* destructor
+    virtual ~PatternLocation( void ) = default;
 
-    //! less than operator
+    //* less than operator
     bool operator < (const PatternLocation& location ) const
     {
         return
@@ -53,38 +52,38 @@ class PatternLocation: public Counter
             (position() == location.position() && parentId() < location.parentId() ) ;
     }
 
-    //! equal to operator
+    //* equal to operator
     bool operator == (const PatternLocation& location ) const
     { return position() == location.position() && parentId() == location.parentId(); }
 
-    //! valid
+    //* valid
     bool isValid( void ) const
     { return id_ >= 0 && position_ >= 0 && length_ > 0; }
 
-    //!@name location
+    //*@name location
     //@{
 
-    //! position
+    //* position
     int position( void ) const
     { return position_; }
 
-    //! length
+    //* length
     int length( void ) const
     { return length_; }
 
 
-    //! used to find a location matching index
+    //* used to find a location matching index
     class ContainsFTor
     {
 
         public:
 
-        //! constructor
-        ContainsFTor( const int& index ):
+        //* constructor
+        ContainsFTor( int index ):
             index_( index )
         {}
 
-        //! prediction
+        //* prediction
         bool operator() (const PatternLocation& location ) const
         {
             return
@@ -94,7 +93,7 @@ class PatternLocation: public Counter
 
         private:
 
-        //! predicted index
+        //* predicted index
         int index_;
 
     };
@@ -105,7 +104,7 @@ class PatternLocation: public Counter
 
         public:
 
-        //! predicate
+        //* predicate
         bool operator() (const PatternLocation& first, const PatternLocation& second )
         { return second.position() < first.position() + (int)first.length(); }
 
@@ -113,67 +112,67 @@ class PatternLocation: public Counter
 
     //@}
 
-    //!@name highlight pattern
+    //*@name highlight pattern
     //@{
 
-    //! pattern id
+    //* pattern id
     int id( void ) const
     { return id_; }
 
-    //! parent pattern id
+    //* parent pattern id
     int parentId( void ) const
     { return parentId_; }
 
-    //! flags
+    //* flags
     HighlightPattern::Flags flags( void ) const
     { return flags_; }
 
-    //! flags
+    //* flags
     bool hasFlag( const HighlightPattern::Flag& flag ) const
     { return flags() & flag; }
 
     //@}
 
-    //!@name highlight style
+    //*@name highlight style
     //@{
 
-    //! format
+    //* format
     Format::TextFormatFlags fontFormat( void ) const
     { return format_; }
 
-    //! color
+    //* color
     virtual QColor color( void ) const
     { return color_; }
 
-    //! formated font
+    //* formated font
     virtual QTextCharFormat format() const;
 
     //}
 
     private:
 
-    //! pattern id
-    int id_;
+    //* pattern id
+    int id_ = 0;
 
-    //! pattern parent id
-    int parentId_;
+    //* pattern parent id
+    int parentId_ = 0;
 
-    //! pattern flags
-    HighlightPattern::Flags flags_;
+    //* pattern flags
+    HighlightPattern::Flags flags_ = 0;
 
-    //! style font format
-    Format::TextFormatFlags format_;
+    //* style font format
+    Format::TextFormatFlags format_ = 0;
 
-    //! style color
+    //* style color
     QColor color_;
 
-    //! position in text
-    int position_;
+    //* position in text
+    int position_ = 0;
 
-    //! length of the pattern
-    unsigned int length_;
+    //* length of the pattern
+    unsigned int length_ = 0;
 
-    //! dump
+    //* dump
     friend QTextStream& operator << (QTextStream& out, const PatternLocation& location )
     {
         out << "id: " << location.id() << " parent id:" << location.parentId() << " position: " << location.position() << " length: " << location.length() ;

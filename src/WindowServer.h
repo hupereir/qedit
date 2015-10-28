@@ -38,18 +38,18 @@ class TextView;
 class WindowServer: public QObject, public Counter, public Base::Key
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! constructor
-    WindowServer( QObject* parent = 0 );
+    //* constructor
+    WindowServer( QObject* = nullptr );
 
-    //! destructor
+    //* destructor
     virtual ~WindowServer( void );
 
-    //! create new empty main window
+    //* create new empty main window
     MainWindow& newMainWindow( void );
 
     enum Flag
@@ -61,193 +61,193 @@ class WindowServer: public QObject, public Counter, public Base::Key
 
     Q_DECLARE_FLAGS( Flags, Flag );
 
-    //! returns list of opened files
-    /*! the active_window parameter is used to possibly tag files that belong to it */
+    //* returns list of opened files
+    /** the active_window parameter is used to possibly tag files that belong to it */
     FileRecord::List records( Flags = None, QWidget* activeWindow = 0 ) const;
 
-    //! close all windows gracefully
-    /*! returns false if the opperation was cancelled. */
+    //* close all windows gracefully
+    /** returns false if the opperation was cancelled. */
     bool closeAll( void );
 
-    //! read file from arguments and open relevant windows
+    //* read file from arguments and open relevant windows
     void readFilesFromArguments( const CommandLineParser& );
 
-    //! open all records in list
+    //* open all records in list
     void open( const FileRecord::List& );
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! save all
+    //* save all
     QAction& saveAllAction( void ) const
     { return *saveAllAction_; }
 
     //@}
 
-    //! open mode
+    //* open mode
     enum OpenMode
     {
         ActiveWindow,
         NewWindow
     };
 
-    //! multiple files replace
+    //* multiple files replace
     void multipleFileReplace( QList<File>, TextSelection );
 
-    //! orientation
+    //* orientation
     enum OrientationMode
     {
         Normal,
         Diff
     };
 
-    //! default orientation
+    //* default orientation
     const Qt::Orientation& defaultOrientation( const OrientationMode& mode = Normal )
     { return mode == Normal ? defaultOrientation_:defaultDiffOrientation_; }
 
     Q_SIGNALS:
 
-    //! emmited whenever the session file list is modified
+    //* emmited whenever the session file list is modified
     void sessionFilesChanged( void );
 
     private Q_SLOTS:
 
-    //! update configuration
+    //* update configuration
     void _updateConfiguration( void );
 
-    //! active window changed
+    //* active window changed
     void _activeWindowChanged( MainWindow* );
 
-    //! update actions
+    //* update actions
     void _updateActions( void );
 
-    //!@ new file methods
+    //*@ new file methods
     //@{
 
-    //! new file
+    //* new file
     void _newFile( void )
     { _newFile( openMode_ ); }
 
-    //! new file
+    //* new file
     void _newFile( Qt::Orientation );
 
     //@}
 
-    //!@ open methods
+    //*@ open methods
     //@{
 
-    //! from dialog
+    //* from dialog
     bool _open( void )
     { return _open( _selectFileFromDialog() ); }
 
-    //! open file
+    //* open file
     bool _open( FileRecord record )
     { return _open( record, openMode_ ); }
 
-    //! open in new window
+    //* open in new window
     bool _openInNewWindow( FileRecord record )
     { return _open( record, NewWindow ); }
 
-    //! open in active window
+    //* open in active window
     bool _openInActiveWindow( FileRecord record )
     { return _open( record, ActiveWindow ); }
 
-    //! open in current tab
+    //* open in current tab
     bool _openInActiveView( FileRecord record )
     { return _open( record, defaultOrientation( Normal ) ); }
 
-    //! open in active view
+    //* open in active view
     bool _openHorizontal( void )
     { return _open( _selectFileFromDialog(), Qt::Vertical ); }
 
-    //! open in active view
+    //* open in active view
     bool _openVertical( void )
     { return _open( _selectFileFromDialog(), Qt::Horizontal ); }
 
     //@}
 
-    //! detach
-    /*! this closes the active view and opens it in a separate window */
+    //* detach
+    /** this closes the active view and opens it in a separate window */
     void _detach( void );
 
-    //! detach
-    /*! this closes the active view and opens it in a separate window */
+    //* detach
+    /** this closes the active view and opens it in a separate window */
     void _detach( const File& );
 
-    //! reparent
-    /*!
+    //* reparent
+    /**
     close display containing first file,
     create matching one in Window that contains second
     */
     void _reparent( const File&, const File& );
 
-    //! reparent
-    /*!
+    //* reparent
+    /**
     close display containing first file,
     create matching one in Window that contains second
     */
     void _reparentToMain( const File&, const File& );
 
-    //! save all edited files
+    //* save all edited files
     void _saveAll( void );
 
-    //! save selected file
+    //* save selected file
     void _save( FileRecord::List );
 
-    //! close selected files
+    //* close selected files
     bool _close( const QStringList );
 
-    //! close selected files
+    //* close selected files
     bool _close( FileRecord::List );
 
     private:
 
-    //! new file
+    //* new file
     void _newFile( OpenMode );
 
-    //! open file
+    //* open file
     bool _open( FileRecord, OpenMode );
 
-    //! open file
+    //* open file
     bool _open( FileRecord, Qt::Orientation );
 
-    //! find mainwindow matching given file
+    //* find mainwindow matching given file
     MainWindow& _findWindow( const File& );
 
-    //! find text view matching given file
+    //* find text view matching given file
     TextView& _findView( const File& );
 
-    //! find display matching given file
+    //* find display matching given file
     TextDisplay& _findDisplay( const File& );
 
-    //! select file record from dialog
-    /*! return empty record if no file is opened or file is directory */
+    //* select file record from dialog
+    /** return empty record if no file is opened or file is directory */
     FileRecord _selectFileFromDialog( void );
 
-    //! returns true if new file should be created
+    //* returns true if new file should be created
     bool _createNewFile( const FileRecord& );
 
-    //! detach display
+    //* detach display
     void _detach( TextDisplay& );
 
-    //! apply command-line arguments to currant display
+    //* apply command-line arguments to currant display
     void _applyCommandLineArguments( TextDisplay&, const CommandLineParser& );
 
-    //! active window
+    //* active window
     void _setActiveWindow( MainWindow& );
 
-    //! true when active window is valid
+    //* true when active window is valid
     bool _hasActiveWindow( void ) const;
 
-    //! active window
+    //* active window
     MainWindow& _activeWindow( void )
     { return *activeWindow_; }
 
-    //! active window
+    //* active window
     const MainWindow& _activeWindow( void ) const
     { return *activeWindow_; }
 
-    //! default orientation for split tabs
+    //* default orientation for split tabs
     void _setDefaultOrientation( const OrientationMode& mode, const Qt::Orientation& value )
     {
         switch( mode )
@@ -264,31 +264,31 @@ class WindowServer: public QObject, public Counter, public Base::Key
 
     }
 
-    //! true at first call (via Application::realizeWidget)
-    bool firstCall_;
+    //* true at first call (via Application::realizeWidget)
+    bool firstCall_ = true;
 
-    //! default orientation
-    Qt::Orientation defaultOrientation_;
+    //* default orientation
+    Qt::Orientation defaultOrientation_ = Qt::Horizontal;
 
-    //! default orientation (diff mode
-    Qt::Orientation defaultDiffOrientation_;
+    //* default orientation (diff mode
+    Qt::Orientation defaultDiffOrientation_ = Qt::Horizontal;
 
-    //! open mode
-    OpenMode openMode_;
+    //* open mode
+    OpenMode openMode_ = ActiveWindow;
 
-    //! active window
-    MainWindow* activeWindow_;
+    //* active window
+    MainWindow* activeWindow_ = nullptr;
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! save all modified files
-    QAction* saveAllAction_;
+    //* save all modified files
+    QAction* saveAllAction_ = nullptr;
 
     //@}
 
-    //! scratch files
-    ScratchFileMonitor* scratchFileMonitor_;
+    //* scratch files
+    ScratchFileMonitor* scratchFileMonitor_ = nullptr;
 
 };
 

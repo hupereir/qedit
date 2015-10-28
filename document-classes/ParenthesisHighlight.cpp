@@ -27,11 +27,7 @@
 ParenthesisHighlight::ParenthesisHighlight( TextEditor* parent ):
     QObject( parent ),
     Counter( "ParenthesisHighlight" ),
-    parent_( parent ),
-    enabled_( false ),
-    location_( -1 ),
-    length_(0),
-    cleared_( true )
+    parent_( parent )
 { Debug::Throw( "ParenthesisHighlight::ParenthesisHighlight.\n" ); }
 
 //______________________________________________________________________
@@ -78,7 +74,7 @@ void ParenthesisHighlight::synchronize( const ParenthesisHighlight& highlight )
 }
 
 //______________________________________________________________________
-void ParenthesisHighlight::highlight( const int& location, const int& length )
+void ParenthesisHighlight::highlight( int location, int length )
 {
 
     if( !isEnabled() ) return;

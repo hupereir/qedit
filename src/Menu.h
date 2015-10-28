@@ -31,75 +31,75 @@
 class RecentFilesMenu;
 class TextMacroMenu;
 
-//! menu
+//* menu
 class Menu:public QMenuBar, public Counter
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! creator
+    //* creator
     Menu( QWidget* parent );
 
-    //! destructor
+    //* destructor
     ~Menu( void );
 
-    //! recent files menu
+    //* recent files menu
     RecentFilesMenu& recentFilesMenu( void ) const
     { return *recentFilesMenu_; }
 
-    //! document class Menu
+    //* document class Menu
     QMenu& documentClassMenu( void ) const
     { return *documentClassMenu_; }
 
-    //! macro menu
+    //* macro menu
     TextMacroMenu& macroMenu( void ) const
     { return *macroMenu_; }
 
     public Q_SLOTS:
 
-    //! update macro menu
+    //* update macro menu
     void updateMacroMenu( void );
 
     private Q_SLOTS:
 
-    //! update recent files menu
-    /*! this is needed so that the current file appears checked in the menu */
+    //* update recent files menu
+    /** this is needed so that the current file appears checked in the menu */
     void _updateRecentFilesMenu( void );
 
-    //! update edit menu
+    //* update edit menu
     void _updateEditMenu( void );
 
-    //! update search menu
+    //* update search menu
     void _updateSearchMenu( void );
 
-    //! update preference menu
+    //* update preference menu
     void _updatePreferenceMenu( void );
 
-    //! update tools menu
+    //* update tools menu
     void _updateToolsMenu( void );
 
-    //! update windows menu
+    //* update windows menu
     void _updateWindowsMenu( void );
 
-    //! select macro from menu
+    //* select macro from menu
     void _selectMacro( QString );
 
-    //! select file from windows menu
+    //* select file from windows menu
     void _selectFile( QAction* );
 
     private:
 
-    //! local action group
-    /*! used to track memory leaks */
+    //* local action group
+    /** used to track memory leaks */
     class ActionGroup: public QActionGroup, public Counter
     {
 
         public:
 
-        //! constructor
+        //* constructor
         ActionGroup( QObject* parent ):
             QActionGroup( parent ),
             Counter( "Menu::ActionGroup" )
@@ -107,47 +107,47 @@ class Menu:public QMenuBar, public Counter
 
     };
 
-    //!@name children
+    //*@name children
     //@{
 
-    //! recent files menu
-    RecentFilesMenu* recentFilesMenu_;
+    //* recent files menu
+    RecentFilesMenu* recentFilesMenu_ = nullptr;
 
-    //! document class menu
-    QMenu* documentClassMenu_;
+    //* document class menu
+    QMenu* documentClassMenu_ = nullptr;
 
-    //! edit menu
-    QMenu* editMenu_;
+    //* edit menu
+    QMenu* editMenu_ = nullptr;
 
-    //! search menu
-    QMenu* searchMenu_;
+    //* search menu
+    QMenu* searchMenu_ = nullptr;
 
-    //! preference menu
-    QMenu* preferenceMenu_;
+    //* preference menu
+    QMenu* preferenceMenu_ = nullptr;
 
-    //! toold menu
-    QMenu* toolsMenu_;
+    //* toold menu
+    QMenu* toolsMenu_ = nullptr;
 
-    //! macro menu
-    TextMacroMenu* macroMenu_;
+    //* macro menu
+    TextMacroMenu* macroMenu_ = nullptr;
 
-    //! windows menu
-    QMenu* windowsMenu_;
+    //* windows menu
+    QMenu* windowsMenu_ = nullptr;
 
     //@}
 
-    //!@name action groups
+    //*@name action groups
     //@{
 
-    QActionGroup* windowsActionGroup_;
+    QActionGroup* windowsActionGroup_ = nullptr;
 
     //@}
 
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! map windows menu ID to file name
+    //* map windows menu ID to file name
     using ActionMap = QHash< QAction*, File >;
     ActionMap fileActions_;
 

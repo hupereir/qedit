@@ -29,17 +29,17 @@
 #include <QRegExp>
 #include <QList>
 
-//! Text modification macro
+//* Text modification macro
 class TextMacro: public Counter
 {
 
     public:
 
-    //! list
+    //* list
     using List = QList< TextMacro >;
     using ListIterator = QListIterator< TextMacro >;
 
-    //! constructor
+    //* constructor
     TextMacro( void ):
         Counter( "TextMacro" ),
         id_( 0 ),
@@ -47,21 +47,21 @@ class TextMacro: public Counter
         isAutomatic_( false )
     {}
 
-    //! constructor from DomElement
+    //* constructor from DomElement
     TextMacro( const QDomElement& );
 
-    //! dom element
+    //* dom element
     QDomElement domElement( QDomDocument& parent ) const;
 
-    //! Id
+    //* Id
     const unsigned int& id( void ) const
     { return id_; }
 
-    //! set id
-    void setId( const int& id )
+    //* set id
+    void setId( int id )
     { id_ = id; }
 
-    //! equal to operator
+    //* equal to operator
     bool operator == ( const TextMacro& other ) const
     {
         return
@@ -72,7 +72,7 @@ class TextMacro: public Counter
 
     }
 
-    //! equal to ftor
+    //* equal to ftor
     class WeakEqualFTor: public std::binary_function< TextMacro, TextMacro, bool>
     {
         public:
@@ -82,7 +82,7 @@ class TextMacro: public Counter
 
     };
 
-    //! less than ftor
+    //* less than ftor
     class WeakLessThanFTor: public std::binary_function< TextMacro, TextMacro, bool>
     {
         public:
@@ -92,7 +92,7 @@ class TextMacro: public Counter
 
     };
 
-    //! used to check whether some automatic macros are present
+    //* used to check whether some automatic macros are present
     class isAutomaticFTor
     {
         public:
@@ -102,44 +102,44 @@ class TextMacro: public Counter
 
     };
 
-    //! reset counter
+    //* reset counter
     static void resetCounter( void )
     { idCounter_ = 0; }
 
-    //! name
+    //* name
     virtual const QString& name( void ) const
     { return name_; }
 
-    //! name
+    //* name
     virtual void setName( const QString& name )
     { name_ = name; }
 
-    //! accelerator
+    //* accelerator
     virtual const QString& accelerator( void ) const
     { return accelerator_; }
 
-    //! accelerator
+    //* accelerator
     virtual void setAccelerator( const QString& value )
     { accelerator_ = value; }
 
-    //! separator flag
+    //* separator flag
     bool isSeparator( void ) const
     { return isSeparator_; }
 
-    //! separator
+    //* separator
     virtual void setIsSeparator( bool value = true )
     { isSeparator_ = value; }
 
-    //! automatic flag
+    //* automatic flag
     bool isAutomatic( void ) const
     { return isAutomatic_; }
 
-    //! automatic
+    //* automatic
     virtual void setIsAutomatic( bool value = true )
     { isAutomatic_ = value; }
 
-    //! result class
-    /*!
+    //* result class
+    /**
     first is whether any changes where applied or not
     second is the net increment in terms of number of characters between input and output text
     */
@@ -148,12 +148,12 @@ class TextMacro: public Counter
 
         public:
 
-        //! constructor
+        //* constructor
         Result( bool changed = false, int increment = 0 ):
             QPair<bool,int>( changed, increment )
         {}
 
-        //! add-to operator
+        //* add-to operator
         Result& operator += (const Result& other )
         {
             first |= other.first;
@@ -163,10 +163,10 @@ class TextMacro: public Counter
 
     };
 
-    //! modify text passed as argument. Return true if text is modified
+    //* modify text passed as argument. Return true if text is modified
     Result processText( QString& text, int position = -1 ) const;
 
-    //! modify text passed as argument. Return true if text is modified
+    //* modify text passed as argument. Return true if text is modified
     bool isValid( void ) const
     {
         if( isSeparator() ) return true;
@@ -176,32 +176,32 @@ class TextMacro: public Counter
         return true;
     }
 
-    //! used to get macro by name
+    //* used to get macro by name
     class SameNameFTor
     {
 
         public:
 
-        //! constructor
+        //* constructor
         SameNameFTor( const QString& name ):
             name_( name )
         {}
 
-        //! predicate
+        //* predicate
         bool operator() (const TextMacro& pattern ) const
         { return (pattern.name() == name_); }
 
         private:
 
-        //! predicate
+        //* predicate
         const QString name_;
 
     };
 
-    //! return action
+    //* return action
     QAction* action( void ) const;
 
-    //! used to store regular expression and corresponding replacement text
+    //* used to store regular expression and corresponding replacement text
     class Rule: public Counter
     {
 
@@ -210,13 +210,13 @@ class TextMacro: public Counter
         using List = QList<Rule>;
         using ListIterator = QListIterator<Rule>;
 
-        //! constructor
+        //* constructor
         Rule( const QDomElement& = QDomElement() );
 
-        //! dom element
+        //* dom element
         QDomElement domElement( QDomDocument& parent ) const;
 
-        //! equal to operator
+        //* equal to operator
         bool operator == ( const Rule& rule ) const
         {
             return
@@ -225,7 +225,7 @@ class TextMacro: public Counter
                 split() == rule.split();
         }
 
-        //! less than operator
+        //* less than operator
         bool operator < ( const Rule& rule ) const
         {
             if( pattern().pattern() != rule.pattern().pattern() ) return pattern().pattern() < rule.pattern().pattern();
@@ -234,34 +234,34 @@ class TextMacro: public Counter
             return false;
         }
 
-        //! validity
+        //* validity
         bool isValid( void ) const
         { return pattern_.isValid(); }
 
-        //! modify text passed as argument. Return number of changed characters
+        //* modify text passed as argument. Return number of changed characters
         Result processText( QString& text, int position ) const;
 
-        //! pattern
+        //* pattern
         const QRegExp& pattern( void ) const
         { return pattern_; }
 
-        //! parent name
+        //* parent name
         virtual void setPattern( const QString& pattern )
         { pattern_.setPattern( pattern ); }
 
-        //! replacemenet text
+        //* replacemenet text
         virtual const QString& replaceText( void ) const
         { return replace_text_; }
 
-        //! set replacement text
+        //* set replacement text
         virtual void setReplaceText( const QString& text )
         { replace_text_ = text; }
 
         bool split() const
         {  return !no_splitting_; }
 
-        //! splitting flag
-        /*!
+        //* splitting flag
+        /**
         it is used to decide if the text should be splitted
         line by line and the rule applied independently on each line
         */
@@ -270,62 +270,62 @@ class TextMacro: public Counter
 
         private:
 
-        //! modify text passed as argument. Return number of changed characters
+        //* modify text passed as argument. Return number of changed characters
         Result _processText( QString& text, int position ) const;
 
-        //!@name flags
+        //*@name flags
         //@{
 
-        //! splitting flag
-        /*!
+        //* splitting flag
+        /**
         it is used to decide if the text should be splitted
         line by line and the rule applied independently on each line
         */
         bool no_splitting_;
 
         //@}
-        //! match pattern
+        //* match pattern
         QRegExp pattern_;
 
-        //! replacement text
+        //* replacement text
         QString replace_text_;
 
     };
 
-    //! rules
+    //* rules
     const Rule::List& rules( void ) const
     { return rules_; }
 
-    //! rules
+    //* rules
     void setRules( const Rule::List& rules )
     { rules_ = rules; }
 
-    //! add a rule
+    //* add a rule
     void addRule( const Rule& rule )
     { rules_ << rule; }
 
     private:
 
-    //! unique id counter
+    //* unique id counter
     static unsigned int idCounter_;
 
-    //! unique id
-    unsigned int id_;
+    //* unique id
+    unsigned int id_ = 0;
 
-    //! macro name
+    //* macro name
     QString name_;
 
-    //! accelerator
+    //* accelerator
     QString accelerator_;
 
-    //! separator flag
-    bool isSeparator_;
+    //* separator flag
+    bool isSeparator_ = false;
 
-    //! automatic
-    /*! if true the macro gets automatically executed before saving modifications */
-    bool isAutomatic_;
+    //* automatic
+    /** if true the macro gets automatically executed before saving modifications */
+    bool isAutomatic_ = false;
 
-    //! list of replacement
+    //* list of replacement
     Rule::List rules_;
 
 };

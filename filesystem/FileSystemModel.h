@@ -31,7 +31,7 @@
 
 class FileIconProvider;
 
-//! qlistview for object counters
+//* qlistview for object counters
 class FileSystemModel: public ListModel<FileRecord>, public Counter
 {
 
@@ -39,7 +39,7 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
 
     public:
 
-    //! file types
+    //* file types
     enum FileType
     {
         Document = 1<<0,
@@ -52,7 +52,7 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
 
     Q_DECLARE_FLAGS( FileTypes, FileType );
 
-    //! column type enumeration
+    //* column type enumeration
     enum ColumnType
     {
         Filename,
@@ -61,34 +61,33 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
         nColumns
     };
 
-    //! constructor
-    FileSystemModel( QObject* parent = 0 );
+    //* constructor
+    FileSystemModel( QObject* = nullptr );
 
-    //! destructor
-    virtual ~FileSystemModel( void )
-    {}
+    //* destructor
+    virtual ~FileSystemModel( void ) = default;
 
-    //! show icons
+    //* show icons
     void setShowIcons( bool value )
     { showIcons_ = value; }
 
-    //! use local names
+    //* use local names
     void setUseLocalNames( bool value )
     { useLocalNames_ = value; }
 
-    //!@name methods reimplemented from base class
+    //*@name methods reimplemented from base class
     //@{
 
-    //! flags
+    //* flags
     virtual Qt::ItemFlags flags( const QModelIndex& ) const;
 
     // return data for a given index
     virtual QVariant data( const QModelIndex&, int ) const;
 
-    //! header data
+    //* header data
     virtual QVariant headerData( int, Qt::Orientation, int = Qt::DisplayRole ) const;
 
-    //! number of columns for a given index
+    //* number of columns for a given index
     virtual int columnCount( const QModelIndex& = QModelIndex() ) const
     { return columnTitles_.size(); }
 
@@ -96,47 +95,47 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
 
     protected:
 
-    //! sort
+    //* sort
     virtual void _sort( int, Qt::SortOrder = Qt::AscendingOrder );
 
     private:
 
-    //! icon provider
-    FileIconProvider* iconProvider_;
+    //* icon provider
+    FileIconProvider* iconProvider_ = nullptr;
 
-    //! used to sort Counters
+    //* used to sort Counters
     class SortFTor: public ItemModel::SortFTor
     {
 
         public:
 
-        //! constructor
-        SortFTor( const int&, Qt::SortOrder, const QStringList& );
+        //* constructor
+        SortFTor( int, Qt::SortOrder, const QStringList& );
 
-        //! prediction
+        //* prediction
         bool operator() ( FileRecord, FileRecord ) const;
 
         private:
 
-        //! size property id
+        //* size property id
         FileRecord::PropertyId::Id sizePropertyId_;
 
-        //! column titles
+        //* column titles
         QStringList columnTitles_;
 
     };
 
-    //! local names
-    bool useLocalNames_;
+    //* local names
+    bool useLocalNames_ = true;
 
-    //! true if icons are to be shown
-    bool showIcons_;
+    //* true if icons are to be shown
+    bool showIcons_ = true;
 
-    //! column titles
+    //* column titles
     QStringList columnTitles_;
 
-    //! size property id
-    FileRecord::PropertyId::Id sizePropertyId_;
+    //* size property id
+    FileRecord::PropertyId::Id sizePropertyId_ = 0;
 
 };
 

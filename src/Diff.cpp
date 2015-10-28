@@ -207,9 +207,7 @@ Diff::Range Diff::_parseRange( const QString& range )
 }
 
 //___________________________________________________________________
-Diff::FileInformation::FileInformation( void ):
-    display_( 0 ),
-    isTemporary_( false )
+Diff::FileInformation::FileInformation( void )
 { Debug::Throw( "Diff::FileInformation::FileInformation.\n" ); }
 
 //___________________________________________________________________
@@ -224,14 +222,14 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
     // try use provided filename
     // if exists and if display is not modified
     if( !(
-        _display().document()->isModified() ||
-        _display().file().isEmpty() ||
-        _display().isNewDocument() ||
-        !_display().file().exists() ) )
+        display_->document()->isModified() ||
+        display_->file().isEmpty() ||
+        display_->isNewDocument() ||
+        !display_->file().exists() ) )
     {
 
         // use provided file. Set as non-temporary
-        file_ = _display().file().expand();
+        file_ = display_->file().expand();
         isTemporary_ = false;
 
     } else {
@@ -252,7 +250,7 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
         }
 
         // dump text
-        out.write( qPrintable( _display().toPlainText() ) );
+        out.write( qPrintable( display_->toPlainText() ) );
         out.close();
 
         // keep file as temporary, so that
@@ -281,30 +279,30 @@ void Diff::FileInformation::highlightDisplay( void )
 
     // loop over display blocks
     unsigned int id(1);
-    _display().setUpdatesEnabled( false );
-    for( QTextBlock block( _display().document()->begin() ); block.isValid(); block = block.next(), id++ )
+    display_->setUpdatesEnabled( false );
+    for( QTextBlock block( display_->document()->begin() ); block.isValid(); block = block.next(), id++ )
     {
 
         // see if block is a conflict
         if( conflicts_.find( id ) != conflicts_.end() )
         {
 
-            _display().tagBlock( block, TextBlock::DiffConflict );
+            display_->tagBlock( block, TextBlock::DiffConflict );
 
         } else if( added_.find( id ) != added_.end() ) {
 
-            _display().tagBlock( block, TextBlock::DiffAdded );
+            display_->tagBlock( block, TextBlock::DiffAdded );
 
-        } else _display().clearTag( block, TextBlock::DiffConflict | TextBlock::DiffAdded );
+        } else display_->clearTag( block, TextBlock::DiffConflict | TextBlock::DiffAdded );
 
     }
 
-    _display().setUpdatesEnabled( true );
+    display_->setUpdatesEnabled( true );
 
     // get associated displays and update all
     // this is needed due to the setUpdatesEnabled above
-    Base::KeySet<TextDisplay> displays( &_display() );
-    displays.insert( &_display() );
+    Base::KeySet<TextDisplay> displays( display_ );
+    displays.insert( display_ );
     foreach( TextDisplay* display, displays )
     { display->viewport()->update(); }
 

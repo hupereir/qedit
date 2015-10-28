@@ -41,7 +41,7 @@ namespace TextBlock
 
     Q_DECLARE_FLAGS( Flags, Flag );
 
-    //! block format properties
+    //* block format properties
     enum BlockFormatProperties
     {
 

@@ -28,47 +28,46 @@ class NewDocumentNameServer
 
     public:
 
-    //! constructor
+    //* constructor
     NewDocumentNameServer( void )
     {}
 
-    //! destructor
-    virtual ~NewDocumentNameServer( void )
-    {}
+    //* destructor
+    virtual ~NewDocumentNameServer( void ) = default;
 
 
-    //! get name
+    //* get name
     QString get( void );
 
-    //! remove (this is used to avoid that version number is incremented too quickly)
+    //* remove (this is used to avoid that version number is incremented too quickly)
     void remove( QString );
 
     private:
 
-    //! generate file name matching a given version
+    //* generate file name matching a given version
     static QString _get( int );
 
     class SameVersionFTor
     {
         public:
 
-        //! constructor
+        //* constructor
         SameVersionFTor( const QString& name ):
             name_( name )
          {}
 
-        //! predicate
-        bool operator() (const int& version ) const
+        //* predicate
+        bool operator() (int version ) const
         { return NewDocumentNameServer::_get( version ) == name_; }
 
         private:
 
-        //! prediction
+        //* prediction
         QString name_;
 
     };
 
-    //! default name
+    //* default name
     static const QString defaultName_;
 
     // version (appended)

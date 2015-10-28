@@ -23,7 +23,7 @@
 
 #include <QComboBox>
 
-//! display available document classes
+//* display available document classes
 class DocumentClassToolBar: public CustomToolBar
 {
 
@@ -31,40 +31,39 @@ class DocumentClassToolBar: public CustomToolBar
 
     public:
 
-    //! constructor
-    DocumentClassToolBar( QWidget* parent );
+    //* constructor
+    DocumentClassToolBar( QWidget* );
 
-    //! destructor
-    virtual ~DocumentClassToolBar( void )
-    {}
+    //* destructor
+    virtual ~DocumentClassToolBar( void ) = default;
 
-    //! update selection
+    //* update selection
     void update( QString );
 
     Q_SIGNALS:
 
-    //! emmited every time a document class is selected
+    //* emmited every time a document class is selected
     void documentClassSelected( QString );
 
     private Q_SLOTS:
 
-    //! update list
+    //* update list
     void _update( void );
 
-    //! current index changed
+    //* current index changed
     void _currentIndexChanged( int );
 
     private:
 
-    //! document class selection combo box
+    //* document class selection combo box
     QComboBox& _comboBox( void ) const
     { return *combobox_; }
 
-    //! document class selection combo box
-    QComboBox* combobox_;
+    //* document class selection combo box
+    QComboBox* combobox_ = nullptr;
 
-    //! current class
-    QString currentClass_;
+    //* current class
+    QString currentClass_ = nullptr;
 
 };
 

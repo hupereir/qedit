@@ -39,11 +39,11 @@ FileCheckDialog::FileCheckDialog( QWidget* parent ):
 
     // custom list display
     mainLayout().addWidget( list_ = new TreeView( this ) );
-    _list().setModel( &model_ );
-    _list().setSelectionMode( QAbstractItemView::NoSelection );
+    list_->setModel( &model_ );
+    list_->setSelectionMode( QAbstractItemView::NoSelection );
 
     // add options
-    _list().setOptionName( "FILE_CHECK_LIST" );
+    list_->setOptionName( "FILE_CHECK_LIST" );
 
 }
 
@@ -58,7 +58,7 @@ void FileCheckDialog::setFiles( const QStringList& files )
 
     model_.set( records );
 
-    _list().updateMask();
-    _list().resizeColumns();
+    list_->updateMask();
+    list_->resizeColumns();
 
 }

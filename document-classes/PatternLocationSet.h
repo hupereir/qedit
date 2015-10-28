@@ -24,22 +24,22 @@
 
 #include "QOrderedSet.h"
 
-//! set of pattern locations
+//* set of pattern locations
 class PatternLocationSet: public QOrderedSet<PatternLocation>
 {
 
     public:
 
-    //! default constructor
+    //* default constructor
     PatternLocationSet():
         activeId_( std::make_pair( 0, 0 ) )
     {}
 
-    //! active id
+    //* active id
     const std::pair<int,int>& activeId( void ) const
     { return activeId_; }
 
-    //! active id
+    //* active id
     std::pair<int,int>& activeId( void )
     { return activeId_; }
 
@@ -48,10 +48,10 @@ class PatternLocationSet: public QOrderedSet<PatternLocation>
 
     private:
 
-    //! active patterns from previous and this paragraph
+    //* active patterns from previous and this paragraph
     std::pair<int, int> activeId_;
 
-    //! dump
+    //* dump
     friend QTextStream& operator << (QTextStream& out, const PatternLocationSet& locations )
     {
         out << "[" << locations.activeId().first << "," << locations.activeId().second << "] ";

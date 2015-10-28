@@ -25,7 +25,7 @@
 #include "FileRecord.h"
 #include "FileRecordModel.h"
 
-//! save all modified files
+//* save all modified files
 class RestoreSessionDialog: public QuestionDialog
 {
 
@@ -33,16 +33,15 @@ class RestoreSessionDialog: public QuestionDialog
 
     public:
 
-    //! constructor
+    //* constructor
     RestoreSessionDialog( QWidget*, FileRecord::List );
 
-    //! destructor
-    virtual ~RestoreSessionDialog( void )
-    {}
+    //* destructor
+    virtual ~RestoreSessionDialog( void ) = default;
 
     private:
 
-    //! model
+    //* model
     FileRecordModel model_;
 
 };

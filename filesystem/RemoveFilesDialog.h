@@ -29,41 +29,26 @@
 class TreeView;
 class TextEditor;
 
-//! QDialog used to commit selected files
+//* QDialog used to commit selected files
 class RemoveFilesDialog: public CustomDialog
 {
 
     Q_OBJECT
-    
+
     public:
 
-    //! constructor
+    //* constructor
     RemoveFilesDialog( QWidget*, const FileSystemModel::List& files = FileSystemModel::List() );
 
-    //! destructor
-    virtual ~RemoveFilesDialog( void )
-    {}
-
-    protected:
-
-    //! list
-    TreeView& _list() const
-    { return *list_; }
-
-    //! model
-    const FileSystemModel& _model() const
-    { return model_; }
-
-    //! model
-    FileSystemModel& _model()
-    { return model_; }
+    //* destructor
+    virtual ~RemoveFilesDialog( void ) = default;
 
     private:
 
-    //! list of files
-    TreeView* list_;
+    //* list of files
+    TreeView* list_ = nullptr;
 
-    //! model
+    //* model
     FileSystemModel model_;
 
 };

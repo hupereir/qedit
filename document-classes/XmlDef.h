@@ -22,11 +22,11 @@
 
 #include <QString>
 
-//! Some Xml definitions
+//* Some Xml definitions
 namespace Xml
 {
 
-    //!@name document class
+    //*@name document class
     //@{
     static const QString Patterns( "patterns" );
     static const QString DocumentClass( "class" );
@@ -41,7 +41,7 @@ namespace Xml
 
     //@}
 
-    //!@name highlight style
+    //*@name highlight style
     //@{
     static const QString Style( "style" );
     static const QString Name( "name" );
@@ -49,7 +49,7 @@ namespace Xml
     static const QString Color( "color" );
     //@}
 
-    //!@name highlight pattern
+    //*@name highlight pattern
     //@{
     static const QString KeywordPattern( "keyword_pattern" );
     static const QString RangePattern( "range_pattern" );
@@ -59,21 +59,21 @@ namespace Xml
     static const QString End( "end" );
     static const QString Comments( "comments" );
 
-    //! used to tell that lines matching pattern are to be ignored when indenting the text
+    //* used to tell that lines matching pattern are to be ignored when indenting the text
     static const QString OptionNoIndent( "no_indent" );
 
-    //! used to tell that Range can span across paragraphs
+    //* used to tell that Range can span across paragraphs
     static const QString OptionSpan( "span" );
 
-    //! used to tell that highlight pattern is not case sensitive
+    //* used to tell that highlight pattern is not case sensitive
     static const QString OptionNoCase( "no_case" );
 
-    //! used to tell that highlight pattern corresponds to commented text
+    //* used to tell that highlight pattern corresponds to commented text
     static const QString OptionComment( "comment" );
 
     //@}
 
-    //!@name indentation pattern
+    //*@name indentation pattern
     //@{
     static const QString IndentPattern( "indent_pattern" );
 
@@ -82,39 +82,39 @@ namespace Xml
     static const QString IndentDecrement( "decrement" );
     static const QString IndentDecrementAll( "decrement all" );
 
-    //! indentation pattern rule
+    //* indentation pattern rule
     static const QString Rule( "rule" );
     static const QString Type( "type" );
     static const QString Scale( "scale" );
     static const QString Par( "par" );
     static const QString RegExp( "regexp" );
 
-    //! base number of characters to skip before applying the pattern
+    //* base number of characters to skip before applying the pattern
     static const QString BaseIndentation( "base_indentation" );
     static const QString Value( "value" );
 
     //@}
 
-    //!@name text macro
+    //*@name text macro
     //@{
     static const QString Macro( "macro" );
     static const QString Accelerator( "accelerator" );
     static const QString Replacement( "replacement" );
 
-    //! do not split selection into single lines
+    //* do not split selection into single lines
     static const QString OptionNoSplit( "no_split" );
 
-    //! macro is a separator to be placed in the menu
+    //* macro is a separator to be placed in the menu
     static const QString OptionSeparator( "separator" );
 
-    //! macro is automatic
+    //* macro is automatic
     static const QString OptionAutomatic( "automatic" );
     //@}
 
-    //! text parenthesis
+    //* text parenthesis
     static const QString Parenthesis( "parenthesis" );
 
-    //! block delimiters
+    //* block delimiters
     static const QString BlockDelimiter( "block_delimiter" );
 
 };

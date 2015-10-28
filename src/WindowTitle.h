@@ -30,7 +30,7 @@ class WindowTitle: public Counter
 
     public:
 
-    //! Flags
+    //* Flags
     enum Flags
     {
         None,
@@ -38,29 +38,29 @@ class WindowTitle: public Counter
         ReadOnly
     };
 
-    //! constructor
+    //* constructor
     WindowTitle( const File& file = File(), const Flags& flag = None ):
         Counter( "WindowTitle" ),
         file_( file ),
         flag_( flag )
     {}
 
-    //! change flag
+    //* change flag
     WindowTitle& setFlag( const Flags& flag, bool value = true )
     {
         if( value ) flag_ = flag;
         return *this;
     }
 
-    //! change flag
+    //* change flag
     WindowTitle& setModified( bool value = true )
     { return setFlag( Modified, value ); }
 
-    //! change flag
+    //* change flag
     WindowTitle& setReadOnly( bool value = true )
     { return setFlag( ReadOnly, value ); }
 
-    //! cast to string
+    //* cast to string
     operator const QString& (void)
     {
         QString out;
@@ -75,13 +75,13 @@ class WindowTitle: public Counter
 
     private:
 
-    //! filename
+    //* filename
     File file_;
 
-    //! flags
+    //* flags
     Flags flag_;
 
-    //! stored string
+    //* stored string
     QString title_;
 
 };

@@ -20,7 +20,7 @@
 *
 *******************************************************************************/
 
-/*!
+/**
   \file TextIndent.h
   \brief text indentation
   \author Hugo Pereira
@@ -38,46 +38,46 @@
 
 class TextEditor;
 
-//! syntax highlighting based on text patterns
+//* syntax highlighting based on text patterns
 class TextIndent: public QObject, public Counter
 {
 
-  //! Qt meta object declaration
+  //* Qt meta object declaration
   Q_OBJECT
 
   public:
 
-  //! constructor
-  TextIndent( TextEditor* editor );
+  //* constructor
+  TextIndent( TextEditor* );
 
-  //! enabled
+  //* enabled
   void setEnabled( bool state )
   { enabled_ = state; }
 
-  //! enabled
+  //* enabled
   bool isEnabled( void ) const
   { return enabled_ && !patterns_.empty(); }
 
-  //! base indentation
-  const int& baseIndentation( void ) const
-  { return base_indentation_; }
+  //* base indentation
+  int baseIndentation( void ) const
+  { return baseIndentation_; }
 
-  //! base indentation
-  void setBaseIndentation( const int& value )
-  { base_indentation_ = value; }
+  //* base indentation
+  void setBaseIndentation( int value )
+  { baseIndentation_ = value; }
 
-  //! patterns
+  //* patterns
   const IndentPattern::List& patterns( void ) const
   { return patterns_; }
 
-  //! patterns
+  //* patterns
   void setPatterns( const IndentPattern::List& patterns )
   {
     Debug::Throw( "TextIndent::SetPatterns.\n" );
     patterns_ = patterns;
   }
 
-  //! patterns
+  //* patterns
   void clear( void )
   {
     Debug::Throw( "TextIndent::clear.\n" );
@@ -86,48 +86,48 @@ class TextIndent: public QObject, public Counter
 
   public Q_SLOTS:
 
-  //! highlight blocks
+  //* highlight blocks
   virtual void indent( QTextBlock first, QTextBlock last );
 
-  //! highlight block
-  /*!
-  new_line argument is used in case there is a default base indentation,
+  //* highlight block
+  /**
+  newLine argument is used in case there is a default base indentation,
   to properly indent paragraphs when return key is pressed
   */
-  virtual void indent( QTextBlock block, bool new_line = false );
+  virtual void indent( QTextBlock block, bool newLine = false );
 
   private:
 
-  //! returns true if pattern match current paragraph
+  //* returns true if pattern match current paragraph
   bool _acceptPattern( QTextBlock block, const IndentPattern& pattern ) const;
 
-  //! return number of tabs in given paragraph
+  //* return number of tabs in given paragraph
   int _tabCount( const QTextBlock& block );
 
-  //! add base indentation
+  //* add base indentation
   void _addBaseIndentation( QTextBlock block );
 
-  //! decrement paragraph
-  //! \brief try remove leading tabs up to n
+  //* decrement paragraph
+  //* \brief try remove leading tabs up to n
   void _decrement( QTextBlock block );
 
-  //! increment paragraph with n tabs
-  void _increment( QTextBlock block, const unsigned int& count = 1 );
+  //* increment paragraph with n tabs
+  void _increment( QTextBlock block, int count = 1 );
 
-  //! enabled
-  bool enabled_;
+  //* enabled
+  bool enabled_ = false;
 
-  //! destination editor
-  TextEditor* editor_;
+  //* destination editor
+  TextEditor* editor_ = nullptr;
 
-  //! current cursor
-  QTextCursor current_cursor_;
+  //* current cursor
+  QTextCursor currentCursor_;
 
-  //! base indentation
-  /*! this is the number of space characters to add prior to any text indentation */
-  int base_indentation_;
+  //* base indentation
+  /** this is the number of space characters to add prior to any text indentation */
+  int baseIndentation_ = 0;
 
-  //! list of highlight patterns
+  //* list of highlight patterns
   IndentPattern::List patterns_;
 
 };

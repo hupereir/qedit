@@ -26,50 +26,49 @@
 
 class TreeView;
 
-//! QDialog used to select opened files
+//* QDialog used to select opened files
 class FileSelectionDialog: public CustomDialog
 {
 
-    //! Qt macro
+    //* Qt macro
     Q_OBJECT
 
     public:
 
-    //! constructor
+    //* constructor
     FileSelectionDialog( QWidget* parent, const TextSelection& );
 
-    //! destructor
-    virtual ~FileSelectionDialog( void )
-    {}
+    //* destructor
+    virtual ~FileSelectionDialog( void ) = default;
 
-    //! selected files
+    //* selected files
     using FileList = QList<File>;
 
-    //! selected files
+    //* selected files
     FileList selectedFiles( void ) const;
 
     private Q_SLOTS:
 
-    //! update buttons
+    //* update buttons
     void _updateButtons( void );
 
     private:
 
-    //! model
+    //* model
     FileRecordModel model_;
 
-    //! list of files
+    //* list of files
     TreeView* list_;
 
-    //! text selection
+    //* text selection
     TextSelection selection_;
 
-    //!@name buttons
+    //*@name buttons
     //@{
 
-    QPushButton* selectAllButton_;
-    QPushButton* clearSelectionButton_;
-    QPushButton* replaceButton_;
+    QPushButton* selectAllButton_ = nullptr;
+    QPushButton* clearSelectionButton_ = nullptr;
+    QPushButton* replaceButton_ = nullptr;
 
     //@}
 

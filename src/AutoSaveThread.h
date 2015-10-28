@@ -29,50 +29,49 @@
 #include <QMutexLocker>
 #include <QThread>
 
-//! independent thread used to automatically save file
+//* independent thread used to automatically save file
 class AutoSaveThread: public QThread, public Base::Key, public Counter
 {
 
     public:
 
-    //! constructor
+    //* constructor
     AutoSaveThread( QObject* parent ):
         QThread( parent ),
         Counter( "AutoSaveThread" ),
         flags_( None )
     { Debug::Throw( "AutoSaveThread::AutoSaveThread.\n" ); }
 
-    //! destructor
-    virtual ~AutoSaveThread( void )
-    { Debug::Throw( "AutoSaveThread::~AutoSaveThread.\n" ); }
+    //* destructor
+    virtual ~AutoSaveThread( void ) = default;
 
-    //!@name accessors
+    //*@name accessors
     //@{
 
-    //! file
+    //* file
     const File& file( void ) const
     { return file_; }
 
     //@}
 
-    //!@name modifiers
+    //*@name modifiers
     //@{
 
-    //! file
+    //* file
     void setFile( const File& );
 
-    //! set content
+    //* set content
     void setContents( const QString& );
 
-    //! set encoding
+    //* set encoding
     void setTextEncoding( const QByteArray& );
 
     //@}
 
-    //! create backup file name from file
+    //* create backup file name from file
     static File autoSaveName( const File& );
 
-    //! state flags
+    //* state flags
     enum Flag
     {
         None = 0,
@@ -84,24 +83,24 @@ class AutoSaveThread: public QThread, public Base::Key, public Counter
 
     protected:
 
-    //! generate a new grid. Post a AutoSaveEvent when finished
+    //* generate a new grid. Post a AutoSaveEvent when finished
     virtual void run( void );
 
     private:
 
-    //! mutex
+    //* mutex
     QMutex mutex_;
 
-    //! filename where data is to be saved
+    //* filename where data is to be saved
     File file_;
 
-    //! content to be saved
+    //* content to be saved
     QString contents_;
 
-    //! text encoding
+    //* text encoding
     QByteArray textEncoding_;
 
-    Flags flags_;
+    Flags flags_ = 0;
 
 };
 

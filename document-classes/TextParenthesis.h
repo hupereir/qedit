@@ -28,22 +28,22 @@
 #include <QRegExp>
 #include <QList>
 
-//! text parenthesis (for highlighting)
+//* text parenthesis (for highlighting)
 class TextParenthesis: public Counter
 {
 
     public:
 
-    //! typedef for list of patterns
-    using List = QList< TextParenthesis >;
+    //* typedef for list of patterns
+    using List = QList<TextParenthesis>;
 
-    //! constructor from DomElement
+    //* constructor from DomElement
     TextParenthesis( const QDomElement& element = QDomElement() );
 
-    //! dom element
+    //* dom element
     QDomElement domElement( QDomDocument& parent ) const;
 
-    //! equal to operator
+    //* equal to operator
     bool operator == ( const TextParenthesis& parenthesis ) const
     {
         return
@@ -52,7 +52,7 @@ class TextParenthesis: public Counter
             regexp() == parenthesis.regexp();
     }
 
-    //! less than operator
+    //* less than operator
     bool operator < ( const TextParenthesis& parenthesis ) const
     {
         if( first() != parenthesis.first() ) return first() < parenthesis.first();
@@ -61,41 +61,41 @@ class TextParenthesis: public Counter
         return false;
     }
 
-    //! block start
+    //* block start
     const QString& first() const
     { return first_; }
 
-    //! first
+    //* first
     void setFirst( const QString& value )
     { first_ = value; }
 
-    //! block end
+    //* block end
     const QString& second() const
     { return second_; }
 
-    //! second
+    //* second
     void setSecond( const QString& value )
     { second_ = value; }
 
-    //! regExp that match either block start or end
+    //* regExp that match either block start or end
     const QRegExp& regexp() const
     { return regexp_; }
 
-    //! regext
+    //* regext
     void setRegexp( const QString& value )
     { regexp_.setPattern( value ); }
 
-    //! used to find parenthesis for which first character match
+    //* used to find parenthesis for which first character match
     class MatchFTor
     {
         public:
 
-        //! constructor
+        //* constructor
         MatchFTor( const QString& text ):
             text_( text )
         {}
 
-        //! predicate
+        //* predicate
         bool operator() ( const TextParenthesis& parenthesis ) const
         {
             return
@@ -105,65 +105,65 @@ class TextParenthesis: public Counter
 
         private:
 
-        //! predicted character
+        //* predicted character
         const QString& text_;
 
     };
 
-    //! used to find parenthesis for which first character match
+    //* used to find parenthesis for which first character match
     class FirstElementFTor
     {
         public:
 
-        //! constructor
+        //* constructor
         FirstElementFTor( const QString& text ):
             text_( text )
         {}
 
-        //! predicate
+        //* predicate
         bool operator() ( const TextParenthesis& parenthesis ) const
         { return text_.right( parenthesis.first().size() ) == parenthesis.first(); }
 
         private:
 
-        //! predicted character
+        //* predicted character
         const QString& text_;
 
     };
 
-    //! used to find parenthesis for which first character match
+    //* used to find parenthesis for which first character match
     class SecondElementFTor
     {
         public:
 
-        //! constructor
+        //* constructor
         SecondElementFTor( const QString& text ):
             text_( text )
         {}
 
-        //! predicate
+        //* predicate
         bool operator() ( const TextParenthesis& parenthesis ) const
         { return text_.right( parenthesis.second().size() ) == parenthesis.second(); }
 
         private:
 
-        //! predicted character
+        //* predicted character
         const QString& text_;
 
     };
 
     private:
 
-    //! regular expression that match first character
+    //* regular expression that match first character
     QString first_;
 
-    //! regular expression that match second character
+    //* regular expression that match second character
     QString second_;
 
-    //! regular expression that match either of both characters
+    //* regular expression that match either of both characters
     QRegExp regexp_;
 
-    //! streamer
+    //* streamer
     friend QTextStream& operator << ( QTextStream& out, const TextParenthesis& parenthesis )
     {
         out << " first: " << parenthesis.first()

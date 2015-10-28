@@ -25,7 +25,7 @@
 #include <QApplication>
 #include <QProgressDialog>
 
-//! command progress
+//* command progress
 class ProgressDialog:public QProgressDialog, public Counter
 {
 
@@ -33,35 +33,33 @@ class ProgressDialog:public QProgressDialog, public Counter
 
     public:
 
-    //! constructor
-    ProgressDialog( QWidget* parent = 0 ):
+    //* constructor
+    ProgressDialog( QWidget* parent = nullptr ):
         QProgressDialog( parent ),
-        Counter( "ProgressDialog" ),
-        offset_( 0 )
+        Counter( "ProgressDialog" )
     {}
 
-    //! destructor
-    virtual ~ProgressDialog( void )
-    {}
+    //* destructor
+    virtual ~ProgressDialog( void ) = default;
 
-    //! offset
+    //* offset
     void setOffset( int value )
     { offset_ = value; }
 
     public Q_SLOTS:
 
-    //! value
+    //* value
     void setValue( int value )
     { QProgressDialog::setValue( _offset()+value ); }
 
     private:
 
-    //! offset
+    //* offset
     int _offset( void ) const
     { return offset_; }
 
-    //! offset
-    int offset_;
+    //* offset
+    int offset_ = 0;
 
 };
 

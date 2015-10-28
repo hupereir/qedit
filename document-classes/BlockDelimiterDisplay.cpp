@@ -51,9 +51,9 @@ BlockDelimiterDisplay::BlockDelimiterDisplay(TextEditor* editor ):
     _installActions();
 
     // connections
-    connect( &_editor().wrapModeAction(), SIGNAL(toggled(bool)), SLOT(needUpdate()) );
-    connect( _editor().document(), SIGNAL(blockCountChanged(int)), SLOT(_blockCountChanged()) );
-    connect( _editor().document(), SIGNAL(contentsChanged()), SLOT(_contentsChanged()) );
+    connect( &editor_->wrapModeAction(), SIGNAL(toggled(bool)), SLOT(needUpdate()) );
+    connect( editor_->document(), SIGNAL(blockCountChanged(int)), SLOT(_blockCountChanged()) );
+    connect( editor_->document(), SIGNAL(contentsChanged()), SLOT(_contentsChanged()) );
 
     // initialize width
     // the value is meaningless but needed to avoid early non-initialize variables
@@ -81,8 +81,8 @@ void BlockDelimiterDisplay::synchronize( const BlockDelimiterDisplay* other )
     setWidth( other->width() );
 
     // re-initialize connections
-    connect( _editor().document(), SIGNAL(blockCountChanged(int)), SLOT(_blockCountChanged()) );
-    connect( _editor().document(), SIGNAL(contentsChanged()), SLOT(_contentsChanged()) );
+    connect( editor_->document(), SIGNAL(blockCountChanged(int)), SLOT(_blockCountChanged()) );
+    connect( editor_->document(), SIGNAL(contentsChanged()), SLOT(_contentsChanged()) );
 
 }
 
@@ -103,10 +103,10 @@ void BlockDelimiterDisplay::updateCurrentBlockActionState( void )
 
     // update segments if needed
     _updateSegments();
-    _selectSegmentFromCursor(  _editor().textCursor().position() );
+    _selectSegmentFromCursor(  editor_->textCursor().position() );
 
-    _collapseCurrentAction().setEnabled( _selectedSegment().isValid() && !_selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) );
-    _expandCurrentAction().setEnabled( _selectedSegment().isValid() && _selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) );
+    _collapseCurrentAction().setEnabled( selectedSegment_.isValid() && !selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
+    _expandCurrentAction().setEnabled( selectedSegment_.isValid() && selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
 
 }
 
@@ -125,19 +125,19 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     _updateSegments();
 
     // calculate dimensions
-    int yOffset = _editor().verticalScrollBar()->value() - _editor().frameWidth();
-    int height( _editor().contentsRect().height() );
+    int yOffset = editor_->verticalScrollBar()->value() - editor_->frameWidth();
+    int height( editor_->contentsRect().height() );
 
     // get begin and end cursor positions
-    int firstIndex = _editor().cursorForPosition( QPoint( 0, 0 ) ).position();
-    int lastIndex = _editor().cursorForPosition( QPoint( 0,  height ) ).position() + 1;
+    int firstIndex = editor_->cursorForPosition( QPoint( 0, 0 ) ).position();
+    int lastIndex = editor_->cursorForPosition( QPoint( 0,  height ) ).position() + 1;
 
     // add horizontal offset
     painter.translate( _offset(), 0 );
     height += yOffset;
 
     // retrieve matching segments
-    QTextDocument &document( *_editor().document() );
+    QTextDocument &document( *editor_->document() );
     QTextBlock block( document.begin() );
     int id( 0 );
 
@@ -219,7 +219,7 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
     // get position from event
     _updateSegments();
     _updateSegmentMarkers();
-    _selectSegmentFromPosition( event->pos()+QPoint( -_offset(), _editor().verticalScrollBar()->value() ) );
+    _selectSegmentFromPosition( event->pos()+QPoint( -_offset(), editor_->verticalScrollBar()->value() ) );
 
     // check button
     switch( event->button() )
@@ -227,7 +227,7 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
 
         // left mouse button collape/expand current block
         case Qt::LeftButton:
-        if( _selectedSegment().isValid() )
+        if( selectedSegment_.isValid() )
         {
 
 
@@ -235,20 +235,20 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
             clear box selection
             because it gets corrupted by the collapsed/expand process
             */
-            _editor().clearBoxSelection();
+            editor_->clearBoxSelection();
 
             // retrieve matching segments
             HighlightBlockData* data(0);
-            TextBlockPair blocks( _findBlocks( _selectedSegment(), data ) );
+            TextBlockPair blocks( _findBlocks( selectedSegment_, data ) );
 
             // check if block is collapsed
             const QTextBlockFormat blockFormat( blocks.first.blockFormat() );
             if( blockFormat.boolProperty( TextBlock::Collapsed ) )
             {
 
-                bool cursorVisible( _editor().isCursorVisible() );
+                bool cursorVisible( editor_->isCursorVisible() );
                 _expand( blocks.first, data );
-                if( cursorVisible ) _editor().ensureCursorVisible();
+                if( cursorVisible ) editor_->ensureCursorVisible();
 
             } else {
 
@@ -267,9 +267,9 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
         {
 
             // update collapse and expand current action state
-            _expandCurrentAction().setEnabled( _selectedSegment().isValid() && _selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) );
-            _collapseCurrentAction().setEnabled( _selectedSegment().isValid() && !_selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) );
-            QMenu menu( &_editor() );
+            _expandCurrentAction().setEnabled( selectedSegment_.isValid() && selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
+            _collapseCurrentAction().setEnabled( selectedSegment_.isValid() && !selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
+            QMenu menu( editor_ );
             addActions( menu );
             menu.exec( event->globalPos() );
 
@@ -285,7 +285,7 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::setWidth( const int& width )
+void BlockDelimiterDisplay::setWidth( int width )
 {
 
     Debug::Throw( "BlockDelimiterDisplay::setWidth.\n" );
@@ -308,7 +308,7 @@ void BlockDelimiterDisplay::_contentsChanged( void )
 
     // if text is wrapped, line number data needs update at next update
     /* note: this could be further optimized if one retrieve the position at which the contents changed occured */
-    if( _editor().lineWrapMode() != TextEditor::NoWrap )
+    if( editor_->lineWrapMode() != TextEditor::NoWrap )
     {
         needUpdate_ = true;
         _synchronizeBlockData();
@@ -322,7 +322,7 @@ void BlockDelimiterDisplay::_blockCountChanged( void )
 
     // nothing to be done if wrap mode is not NoWrap, because
     // it is handled in the _contentsChanged slot.
-    if( _editor().lineWrapMode() == TextEditor::NoWrap )
+    if( editor_->lineWrapMode() == TextEditor::NoWrap )
     {
         needUpdate_ = true;
         _synchronizeBlockData();
@@ -339,15 +339,15 @@ void BlockDelimiterDisplay::_collapseCurrentBlock( void )
     _updateSegments();
     _updateSegmentMarkers();
 
-    if( _selectedSegment().isValid() && !_selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) )
+    if( selectedSegment_.isValid() && !selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) )
     {
 
         // clear box selection
-        _editor().clearBoxSelection();
+        editor_->clearBoxSelection();
 
         // find matching blocks
         HighlightBlockData *data(0);
-        TextBlockPair blocks( _findBlocks( _selectedSegment(), data ) );
+        TextBlockPair blocks( _findBlocks( selectedSegment_, data ) );
 
         // collapse
         _collapse( blocks.first, blocks.second, data );
@@ -367,18 +367,18 @@ void BlockDelimiterDisplay::_expandCurrentBlock( void )
     _updateSegments();
     _updateSegmentMarkers();
 
-    if( _selectedSegment().isValid() && _selectedSegment().hasFlag( BlockDelimiterSegment::Collapsed ) )
+    if( selectedSegment_.isValid() && selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) )
     {
 
         // find matching blocks
         HighlightBlockData *data(0);
-        TextBlockPair blocks( _findBlocks( _selectedSegment(), data ) );
+        TextBlockPair blocks( _findBlocks( selectedSegment_, data ) );
 
         // collapse
-        bool cursorVisible( _editor().isCursorVisible() );
-        _editor().clearBoxSelection();
+        bool cursorVisible( editor_->isCursorVisible() );
+        editor_->clearBoxSelection();
         _expand( blocks.first, data );
-        if( cursorVisible ) _editor().ensureCursorVisible();
+        if( cursorVisible ) editor_->ensureCursorVisible();
 
     }
 
@@ -400,7 +400,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
     CursorList cursors;
 
     // get first block
-    QTextBlock block( _editor().document()->begin() );
+    QTextBlock block( editor_->document()->begin() );
     int id(0);
 
     // create Text cursor
@@ -440,7 +440,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
         // mark contents dirty to force update of current block
         data->setFlag( TextBlock::BlockModified, true );
         data->setFlag( TextBlock::BlockCollapsed, true );
-        _editor().document()->markContentsDirty(blocks.first.position(), blocks.first.length()-1);
+        editor_->document()->markContentsDirty(blocks.first.position(), blocks.first.length()-1);
 
         cursor.setPosition( blocks.first.position() + blocks.first.length(), QTextCursor::MoveAnchor );
         if( blocks.second.isValid() ) {
@@ -478,14 +478,14 @@ void BlockDelimiterDisplay::expandAllBlocks( void )
     Debug::Throw( "BlockDelimiterDisplay::expandAllBlocks.\n" );
 
     // clear box selection
-    _editor().clearBoxSelection();
+    editor_->clearBoxSelection();
 
     /* update segments if needed */
     _updateSegments();
     _updateSegmentMarkers();
 
-    bool cursorVisible( _editor().isCursorVisible() );
-    QTextDocument &document( *_editor().document() );
+    bool cursorVisible( editor_->isCursorVisible() );
+    QTextDocument &document( *editor_->document() );
     QTextCursor cursor( document.begin() );
     cursor.beginEditBlock();
 
@@ -503,7 +503,7 @@ void BlockDelimiterDisplay::expandAllBlocks( void )
     cursor.endEditBlock();
 
     // set cursor position
-    if( cursorVisible ) _editor().ensureCursorVisible();
+    if( cursorVisible ) editor_->ensureCursorVisible();
 
     return;
 
@@ -549,7 +549,7 @@ void BlockDelimiterDisplay::_installActions( void )
 void BlockDelimiterDisplay::_synchronizeBlockData( void ) const
 {
 
-    QTextDocument &document( *_editor().document() );
+    QTextDocument &document( *editor_->document() );
     for( QTextBlock block = document.begin(); block.isValid(); block = block.next() )
     {
 
@@ -602,7 +602,7 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
         // keep track of all starting points
         BlockDelimiterSegment::List startPoints;
         int blockCount(0);
-        QTextDocument &document( *_editor().document() );
+        QTextDocument &document( *editor_->document() );
         for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), blockCount++ )
         {
 
@@ -712,7 +712,7 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
 void BlockDelimiterDisplay::_updateSegmentMarkers( void )
 {
 
-    QTextBlock block( _editor().document()->begin() );
+    QTextBlock block( editor_->document()->begin() );
     int id = 0;
     for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
     {
@@ -731,7 +731,7 @@ void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, int& id, BlockMark
     else if( marker.id() > id ) { for( ; marker.id() > id && block.isValid(); block = block.next(), id++ ) {} }
     Q_ASSERT( block.isValid() );
 
-    QRectF rect( _editor().document()->documentLayout()->blockBoundingRect( block ) );
+    QRectF rect( editor_->document()->documentLayout()->blockBoundingRect( block ) );
     if( flag == BlockBegin ) { marker.setPosition( (int) block.layout()->position().y() ); }
     else { marker.setPosition( (int) (block.layout()->position().y() + rect.height()) ); }
 
@@ -744,7 +744,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
     const BlockDelimiterSegment& segment,
     HighlightBlockData*& data ) const
 {
-    QTextBlock block( _editor().document()->begin() );
+    QTextBlock block( editor_->document()->begin() );
     int id( 0 );
     return _findBlocks( block, id, segment, data );
 }
@@ -808,7 +808,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_selectSegmentFromCursor( const int& cursor )
+void BlockDelimiterDisplay::_selectSegmentFromCursor( int cursor )
 {
     Debug::Throw( "BlockDelimiterDisplay::_selectSegmentFromCursor.\n" );
     BlockDelimiterSegment::List::iterator iter = std::find_if(
@@ -844,7 +844,7 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
     data->setFlag( TextBlock::BlockModified, true );
     data->setFlag( TextBlock::BlockCollapsed, false );
 
-    _editor().document()->markContentsDirty(block.position(), block.length()-1);
+    editor_->document()->markContentsDirty(block.position(), block.length()-1);
 
     // create cursor
     QTextCursor cursor( block );
@@ -929,7 +929,7 @@ void BlockDelimiterDisplay::_collapse( const QTextBlock& firstBlock, const QText
     cursor.endEditBlock();
 
     // mark contents dirty to force update
-    _editor().document()->markContentsDirty(firstBlock.position(), firstBlock.length()-1);
+    editor_->document()->markContentsDirty(firstBlock.position(), firstBlock.length()-1);
 
 }
 

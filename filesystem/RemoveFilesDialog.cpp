@@ -61,28 +61,28 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
 
     // file list
     mainLayout().addWidget( list_ = new TreeView( this ), 1 );
-    _list().setSelectionMode( QAbstractItemView::NoSelection );
+    list_->setSelectionMode( QAbstractItemView::NoSelection );
 
     model_.setShowIcons( false );
     model_.setUseLocalNames( false );
     model_.add( files );
 
     // setup list
-    _list().setModel( &model_ );
-    _list().toggleShowHeader( false );
-    _list().setMask( 1<<FileSystemModel::Filename );
-    _list().setSortingEnabled( true );
-    _list().header()->setSortIndicator( FileSystemModel::Filename, Qt::AscendingOrder );
+    list_->setModel( &model_ );
+    list_->toggleShowHeader( false );
+    list_->setMask( 1<<FileSystemModel::Filename );
+    list_->setSortingEnabled( true );
+    list_->header()->setSortIndicator( FileSystemModel::Filename, Qt::AscendingOrder );
 
     // resize list to accomodate longest item
     int maxWidth( 0 );
     foreach( const FileRecord& record, files )
-    { maxWidth = qMax( maxWidth, _list().fontMetrics().width( record.file() ) ); }
+    { maxWidth = qMax( maxWidth, list_->fontMetrics().width( record.file() ) ); }
 
-    _list().verticalScrollBar()->adjustSize();
-    _list().setMinimumSize( QSize(
-        maxWidth + _list().verticalScrollBar()->width() + 10,
-        _list().fontMetrics().height() + 10 ) );
+    list_->verticalScrollBar()->adjustSize();
+    list_->setMinimumSize( QSize(
+        maxWidth + list_->verticalScrollBar()->width() + 10,
+        list_->fontMetrics().height() + 10 ) );
 
 
 }

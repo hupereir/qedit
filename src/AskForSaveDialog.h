@@ -24,17 +24,17 @@
 #include "Counter.h"
 #include "File.h"
 
-//! QDialog used to ask if modifications of a file should be saved
+//* QDialog used to ask if modifications of a file should be saved
 class AskForSaveDialog: public BaseDialog, public Counter
 {
 
-    //! Qt macro
+    //* Qt macro
     Q_OBJECT
 
     public:
 
-    //! return codes
-    /*! it is also used to decide which buttons are to be shown */
+    //* return codes
+    /** it is also used to decide which buttons are to be shown */
     enum ReturnCode
     {
 
@@ -50,32 +50,31 @@ class AskForSaveDialog: public BaseDialog, public Counter
     Q_DECLARE_FLAGS( ReturnCodes, ReturnCode );
 
 
-    //! constructor
+    //* constructor
     AskForSaveDialog( QWidget*, const File&, ReturnCodes = Default );
 
-    //! destructor
-    virtual ~AskForSaveDialog( void )
-    {}
+    //* destructor
+    virtual ~AskForSaveDialog( void ) = default;
 
     private Q_SLOTS:
 
-    //! save changes
+    //* save changes
     void _yes( void )
     { done( Yes ); }
 
-    //! discard changes
+    //* discard changes
     void _no( void )
     { done( No ); }
 
-    //! discard changes
+    //* discard changes
     void _yesToAll( void )
     { done( YesToAll ); }
 
-    //! discard changes
+    //* discard changes
     void _noToAll( void )
     { done( NoToAll ); }
 
-    //! cancel action
+    //* cancel action
     void _cancel( void )
     { done( Cancel ); }
 

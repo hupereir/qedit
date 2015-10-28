@@ -24,18 +24,19 @@
 #include "Counter.h"
 #include "File.h"
 
-//! QDialog used to ask if a new file should be created
+//* QDialog used to ask if a new file should be created
 class NewFileDialog: public BaseDialog, public Counter
 {
 
-    //! Qt macro
+    //* Qt macro
     Q_OBJECT
 
     public:
 
-    //! return codes
-    /*! also used to decide which buttons are to be drawn */
-    enum ReturnCode {
+    //* return codes
+    /** also used to decide which buttons are to be drawn */
+    enum ReturnCode
+    {
 
         Unknown = 0,
         Create = 1<<0,
@@ -46,24 +47,23 @@ class NewFileDialog: public BaseDialog, public Counter
 
     Q_DECLARE_FLAGS( ReturnCodes, ReturnCode );
 
-    //! constructor
+    //* constructor
     NewFileDialog( QWidget*, const File&, ReturnCodes = Default );
 
-    //! destructor
-    virtual ~NewFileDialog( void )
-    {}
+    //* destructor
+    virtual ~NewFileDialog( void ) = default;
 
     private Q_SLOTS:
 
-    //! create new file
+    //* create new file
     void _create( void )
     { done( Create ); }
 
-    //! cancel creation/exit editor
+    //* cancel creation/exit editor
     void _cancel( void )
     { done( Cancel ); }
 
-    //! exit application
+    //* exit application
     void _exit( void )
     { done( Exit ); }
 

@@ -34,132 +34,131 @@
 #include <QDomElement>
 #include <QRegExp>
 
-//! Highlight and indentation patterns for a given document class
+//* Highlight and indentation patterns for a given document class
 class DocumentClass: public Counter
 {
 
     public:
 
-    //! constructor
+    //* constructor
     DocumentClass( void );
 
-    //! constructor
+    //* constructor
     DocumentClass( const QDomElement& );
 
-    //! destructor
-    ~DocumentClass( void )
-    {}
+    //* destructor
+    ~DocumentClass( void ) = default;
 
-    //! write to DomElement
+    //* write to DomElement
     QDomElement domElement( QDomDocument& parent ) const;
 
-    //! strict equal to operator
+    //* strict equal to operator
     bool operator == (const DocumentClass& documentClass ) const;
 
-    //!@name accessors
+    //*@name accessors
     //@{
 
-    //! name
+    //* name
     const QString& name( void ) const
     { return name_; }
 
-    //! file
+    //* file
     const File& file( void ) const
     { return file_; }
 
-    //! icon name
+    //* icon name
     const QString& icon( void ) const
     { return icon_; }
 
-    //! default
+    //* default
     bool isDefault( void ) const
     { return default_; }
 
-    //! build in
+    //* build in
     bool isBuildIn( void ) const
     { return buildIn_; }
 
-    //! filename matching pattern
+    //* filename matching pattern
     const QRegExp& fileMatchingPattern( void ) const
     { return filePattern_; }
 
-    //! first line matching pattern
+    //* first line matching pattern
     const QRegExp& firstLineMatchingPattern( void ) const
     { return firstlinePattern_; }
 
-    //! return true if document class match filename
+    //* return true if document class match filename
     bool match( const File& file ) const;
 
-    //! returns true if document class enables wrapping by default
+    //* returns true if document class enables wrapping by default
     bool wrap( void ) const
     { return wrap_; }
 
-    //! returns true if document class enables tab emulation by default
+    //* returns true if document class enables tab emulation by default
     bool emulateTabs( void ) const
     { return emulateTabs_; }
 
-    //! tab size
+    //* tab size
     int tabSize( void ) const
     { return tabSize_; }
 
-    //! hightlight styles
+    //* hightlight styles
     const HighlightStyle::Set& highlightStyles() const
     { return highlightStyles_; }
 
-    //! highligh patterns
+    //* highligh patterns
     const HighlightPattern::List& highlightPatterns() const
     { return highlightPatterns_; }
 
-    //! list of indentation patterns
+    //* list of indentation patterns
     const IndentPattern::List& indentPatterns() const
     { return indentPatterns_; }
 
-    //! base indentation
-    /*!
+    //* base indentation
+    /**
     it is used which classes for which
     a certain amount of leading space character are
     not to be considered when indenting. This is the case
     for the first 6 space characters in fortran files
     */
-    const int& baseIndentation( void ) const
+    int baseIndentation( void ) const
     { return baseIndentation_; }
 
-    //! text parenthesis
+    //* text parenthesis
     const TextParenthesis::List& parenthesis() const
     { return textParenthesis_; }
 
-    //! block delimiters
+    //* block delimiters
     const BlockDelimiter::List& blockDelimiters() const
     { return blockDelimiters_; }
 
-    //! text macros
+    //* text macros
     const TextMacro::List& textMacros() const
     { return textMacros_; }
 
     //@}
 
-    //!@name modifiers
+    //*@name modifiers
     //@{
 
-    //! name
+    //* name
     void setName( const QString& name )
     { name_ = name; }
 
-    //! set file
+    //* set file
     void setFile( const File& file )
     { file_ = file; }
 
-    //! default
+    //* default
     void setIsDefault( bool value )
     { default_ = value; }
 
-    //! buid-in
+    //* buid-in
     void setIsBuildIn( bool value )
     { buildIn_ = value; }
 
     //@}
 
-    //! equal to ftor
+    //* equal to ftor
     class WeakEqualFTor: public std::binary_function< DocumentClass, DocumentClass, bool>
     {
         public:
@@ -169,7 +168,7 @@ class DocumentClass: public Counter
 
     };
 
-    //! less than ftor
+    //* less than ftor
     class WeakLessThanFTor: public std::binary_function< DocumentClass, DocumentClass, bool>
     {
         public:
@@ -185,53 +184,53 @@ class DocumentClass: public Counter
 
     };
 
-    //! used to match pointers to DocumentClass with same name
+    //* used to match pointers to DocumentClass with same name
     class SameNameFTor
     {
         public:
 
-        //! constructor
+        //* constructor
         SameNameFTor( const QString& name ):
             name_( name )
             {}
 
-        //! predicate
+        //* predicate
         bool operator() (const DocumentClass& documentClass ) const
         { return documentClass.name() == name_; }
 
         private:
 
-        //! predicted name
+        //* predicted name
         QString name_;
     };
 
-    //! used to get non default document class matching a file
+    //* used to get non default document class matching a file
     class MatchFileFTor
     {
         public:
 
-        //! constructor
+        //* constructor
         MatchFileFTor( const File& file ):
             file_( file )
             {}
 
-        //! predicate
+        //* predicate
         bool operator () (const DocumentClass& documentClass ) const
         { return documentClass.match( file_ ) && !documentClass.isDefault(); }
 
         private:
 
-        //! predicted file
+        //* predicted file
         const File file_;
 
     };
 
-    //! used to counts number of default patterns registered
+    //* used to counts number of default patterns registered
     class IsDefaultFTor
     {
         public:
 
-        //! predicate
+        //* predicate
         bool operator() (const DocumentClass& documentClass ) const
         { return documentClass.isDefault(); }
 
@@ -239,66 +238,66 @@ class DocumentClass: public Counter
 
     protected:
 
-    //! perform associations between highlight patterns and highlight styles
-    /*! returns list of warnings if any */
+    //* perform associations between highlight patterns and highlight styles
+    /** returns list of warnings if any */
     QStringList _associatePatterns( void );
 
     private:
 
-    //! name
+    //* name
     QString name_;
 
-    //! parent file
+    //* parent file
     File file_;
 
-    //! file pattern
+    //* file pattern
     QRegExp filePattern_;
 
-    //! first line pattern
-    /*! it is used to see if a file match based on its first line rather than its extension */
+    //* first line pattern
+    /** it is used to see if a file match based on its first line rather than its extension */
     QRegExp firstlinePattern_;
 
-    //! is class default
-    bool default_;
+    //* is class default
+    bool default_ = false;
 
-    //! is class build-in
-    bool buildIn_;
+    //* is class build-in
+    bool buildIn_ = false;
 
-    //! wrap flag
-    bool wrap_;
+    //* wrap flag
+    bool wrap_ = false;
 
-    //! tab emulation
-    bool emulateTabs_;
+    //* tab emulation
+    bool emulateTabs_ = false;
 
-    //! tab size
-    int tabSize_;
+    //* tab size
+    int tabSize_ = 2;
 
-    //! icon name
+    //* icon name
     QString icon_;
 
-    //! set of highlight styles
+    //* set of highlight styles
     HighlightStyle::Set highlightStyles_;
 
-    //! list of highlight patterns
+    //* list of highlight patterns
     HighlightPattern::List highlightPatterns_;
 
-    //! list of indentation patterns
+    //* list of indentation patterns
     IndentPattern::List indentPatterns_;
 
-    //! list of text parenthesis
+    //* list of text parenthesis
     TextParenthesis::List textParenthesis_;
 
-    //! block delimiter
+    //* block delimiter
     BlockDelimiter::List blockDelimiters_;
 
-    //! list of text parenthesis
+    //* list of text parenthesis
     TextMacro::List textMacros_;
 
-    //! base indentation
-    /*!
+    //* base indentation
+    /**
     this is the number of space characters to add prior to any text indentation
     */
-    int baseIndentation_;
+    int baseIndentation_ = 0;
 
 };
 

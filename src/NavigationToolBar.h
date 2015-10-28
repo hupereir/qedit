@@ -30,74 +30,74 @@
 
 class NavigationFrame;
 
-//! editor windows navigator
-/*!
+//* editor windows navigator
+/**
 displays an up-to-date list of recent files
 as well as files opened in current session
 */
 class NavigationToolBar: public CustomToolBar
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! creator
+    //* creator
     NavigationToolBar( QWidget* parent );
 
-    //! destructor
+    //* destructor
     ~NavigationToolBar( void );
 
-    //! set target
+    //* set target
     void connect( NavigationFrame& );
 
     protected:
 
-    //! context menu
+    //* context menu
     virtual void contextMenuEvent( QContextMenuEvent* );
 
     private Q_SLOTS:
 
-    //! update configuration
+    //* update configuration
     void _updateConfiguration( void );
 
-    //! toolbar text position
+    //* toolbar text position
     void _updateToolButtonStyle( int );
 
-    //! toolbar text position
+    //* toolbar text position
     void _updateToolButtonIconSize( IconSize::Size );
 
-    //! make sure proper buttons are changed when navigation frame visibility is changed
+    //* make sure proper buttons are changed when navigation frame visibility is changed
     virtual void _navigationFrameVisibilityChanged( bool );
 
-    //! change orientation
+    //* change orientation
     virtual void _orientationChanged( Qt::Orientation );
 
-    //! display item page
+    //* display item page
     virtual void _display( QAbstractButton* );
 
     private:
 
-    //! navigation frame
+    //* navigation frame
     NavigationFrame& _navigationFrame( void )
     { return *navigationFrame_; }
 
-    //! tool button
+    //* tool button
     CustomToolButton* _newToolButton( QWidget* parent, QIcon ) const;
 
-    //! map widget to action
+    //* map widget to action
     using ButtonMap = QHash<CustomToolButton*, QWidget* >;
 
-    //! map widget to action in the toolbar
+    //* map widget to action in the toolbar
     ButtonMap buttons_;
 
-    //! stack widget
-    NavigationFrame* navigationFrame_;
+    //* stack widget
+    NavigationFrame* navigationFrame_ = nullptr;
 
-    //! enablility
-    /*! this is used to avoid circular action triggers */
-    bool enabled_;
+    //* enablility
+    /** this is used to avoid circular action triggers */
+    bool enabled_ = true;
 
 };
 

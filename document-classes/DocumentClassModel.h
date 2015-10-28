@@ -27,23 +27,22 @@
 #include <QIcon>
 #include <QHash>
 
-//! DocumentClass model. Stores file information for display in lists
+//* DocumentClass model. Stores file information for display in lists
 class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>, public Counter
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT;
 
     public:
 
-    //! constructor
-    DocumentClassModel(QObject *parent = 0);
+    //* constructor
+    DocumentClassModel(QObject* = nullptr);
 
-    //! destructor
-    virtual ~DocumentClassModel()
-    {}
+    //* destructor
+    virtual ~DocumentClassModel() = default;
 
-    //! column type enumeration
+    //* column type enumeration
     enum ColumnType
     {
         Name,
@@ -51,19 +50,19 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
         nColumns
     };
 
-    //!@name methods reimplemented from base class
+    //*@name methods reimplemented from base class
     //@{
 
-    //! flags
+    //* flags
     virtual Qt::ItemFlags flags( const QModelIndex& ) const;
 
     // return data for a given index
     virtual QVariant data( const QModelIndex&, int ) const;
 
-    //! header data
+    //* header data
     virtual QVariant headerData( int, Qt::Orientation, int = Qt::DisplayRole) const;
 
-    //! number of columns for a given index
+    //* number of columns for a given index
     virtual int columnCount(const QModelIndex& = QModelIndex() ) const
     { return nColumns; }
 
@@ -71,42 +70,42 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
 
     protected:
 
-    //! sort
+    //* sort
     virtual void _sort( int, Qt::SortOrder = Qt::AscendingOrder );
 
     private Q_SLOTS:
 
-    //! configuration
+    //* configuration
     void _updateConfiguration( void );
 
     private:
 
-    //! list column names
+    //* list column names
     static const QString columnTitles_[nColumns];
 
-    //! used to sort IconCaches
+    //* used to sort IconCaches
     class SortFTor: public ItemModel::SortFTor
     {
 
         public:
 
-        //! constructor
-        SortFTor( const int& type, Qt::SortOrder order = Qt::AscendingOrder ):
+        //* constructor
+        SortFTor( int type, Qt::SortOrder order = Qt::AscendingOrder ):
             ItemModel::SortFTor( type, order )
         {}
 
-        //! prediction
+        //* prediction
         bool operator() ( const DocumentClass&, const DocumentClass& ) const;
 
     };
 
-    //! icon
+    //* icon
     static const QIcon& _icon( const QString& );
 
-    //! icon cache
+    //* icon cache
     using IconCache = QHash<QString, QIcon>;
 
-    //! type icon cache
+    //* type icon cache
     static IconCache& _icons( void );
 
 };

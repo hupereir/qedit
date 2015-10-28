@@ -30,116 +30,116 @@ class FileList;
 class TreeView;
 class FileRecordToolTipWidget;
 
-//! editor windows navigator
-/*!
+//* editor windows navigator
+/**
 displays an up-to-date list of recent files
 as well as files opened in current session
 */
 class RecentFilesFrame: public QWidget, public Counter
 {
 
-    //! Qt meta object declaration
+    //* Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //! creator
+    //* creator
     RecentFilesFrame( QWidget* parent, FileList&  );
 
-    //! destructor
+    //* destructor
     ~RecentFilesFrame( void );
 
-    //! list
+    //* list
     TreeView& list( void ) const
     { return *list_; }
 
-    //! select file in list
+    //* select file in list
     void select( const File& );
 
     public Q_SLOTS:
 
-    //! update
+    //* update
     void update( void );
 
     Q_SIGNALS:
 
-    //! signal emitted when a file is selected
+    //* signal emitted when a file is selected
     void fileSelected( FileRecord );
 
-    //! signal emited when a file is selected
+    //* signal emited when a file is selected
     void fileActivated( FileRecord );
 
     protected:
 
-    //! enter event
+    //* enter event
     void enterEvent( QEvent* );
 
     private Q_SLOTS:
 
-    //! update action
+    //* update action
     void _updateActions( void );
 
-    //! show tooltip
+    //* show tooltip
     void _showToolTip( const QModelIndex& );
 
-    //! clean
+    //* clean
     void _clean( void );
 
-    //! open
+    //* open
     void _open( void );
 
-    //! sessionFilesItem selected
+    //* sessionFilesItem selected
     void _itemSelected( const QModelIndex& index );
 
-    //! sessionFilesItem selected
+    //* sessionFilesItem selected
     void _itemActivated( const QModelIndex& index );
 
     private:
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! install actions
+    //* install actions
     void _installActions( void );
 
-    //! clean action
+    //* clean action
     QAction& _cleanAction( void ) const
     { return *cleanAction_; }
 
-    //! open action
+    //* open action
     QAction& _openAction( void ) const
     { return *openAction_; }
 
     //@}
 
-    //! true if actions are locked (to disable signal emission during update)
-    bool actionsLocked_;
+    //* true if actions are locked (to disable signal emission during update)
+    bool actionsLocked_ = false;
 
-    //! recent files
-    FileList* recentFiles_;
+    //* recent files
+    FileList* recentFiles_ = nullptr;
 
-    //! tooltip widget
-    FileRecordToolTipWidget* toolTipWidget_;
+    //* tooltip widget
+    FileRecordToolTipWidget* toolTipWidget_ = nullptr;
 
-    //! model
+    //* model
     FileRecordModel model_;
 
-    //! list
-    TreeView* list_;
+    //* list
+    TreeView* list_ = nullptr;
 
     //@}
 
-    //!@name actions
+    //*@name actions
     //@{
 
-    //! update
-    QAction* updateAction_;
+    //* update
+    QAction* updateAction_ = nullptr;
 
-    //! clean action
-    QAction* cleanAction_;
+    //* clean action
+    QAction* cleanAction_ = nullptr;
 
-    //! open action
-    QAction* openAction_;
+    //* open action
+    QAction* openAction_ = nullptr;
 
     //@}
 
