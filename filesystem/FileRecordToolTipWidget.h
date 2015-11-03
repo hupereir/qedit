@@ -39,10 +39,6 @@ class FileRecordToolTipWidget: public BaseToolTipWidget
     //* constructor
     FileRecordToolTipWidget( QWidget* );
 
-    //* destructo
-    virtual ~FileRecordToolTipWidget( void )
-    {}
-
     //* set data
     void setRecord( const FileRecord&, const QIcon& = QIcon() );
 

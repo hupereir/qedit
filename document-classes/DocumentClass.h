@@ -46,9 +46,6 @@ class DocumentClass: public Counter
     //* constructor
     DocumentClass( const QDomElement& );
 
-    //* destructor
-    ~DocumentClass( void ) = default;
-
     //* write to DomElement
     QDomElement domElement( QDomDocument& parent ) const;
 

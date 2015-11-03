@@ -45,9 +45,6 @@ class HtmlHelper: public QObject, public Counter
         editor_( editor )
     { Debug::Throw( "HtmlHelper::HtmlHelper.\n" ); }
 
-    //* destructor
-    virtual ~HtmlHelper( void ) = default;
-
     public Q_SLOTS:
 
     //* print

@@ -34,9 +34,6 @@ class FileInformationDialog: public BaseFileInformationDialog
     //* constructor
     FileInformationDialog( QWidget*, const FileRecord& );
 
-    //* destructor
-    virtual ~FileInformationDialog( void ) = default;
-
 };
 
 #endif

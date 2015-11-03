@@ -42,9 +42,6 @@ class AutoSaveThread: public QThread, public Base::Key, public Counter
         flags_( None )
     { Debug::Throw( "AutoSaveThread::AutoSaveThread.\n" ); }
 
-    //* destructor
-    virtual ~AutoSaveThread( void ) = default;
-
     //*@name accessors
     //@{
 

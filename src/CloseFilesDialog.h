@@ -36,9 +36,6 @@ class CloseFilesDialog: public QuestionDialog
     //* constructor
     CloseFilesDialog( QWidget*, FileRecord::List );
 
-    //* destructor
-    virtual ~CloseFilesDialog( void ) = default;
-
     private:
 
     //* model

@@ -49,10 +49,6 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     //* constructor
     TextHighlight( QTextDocument* );
 
-    //* destructor
-    virtual ~TextHighlight( void )
-    {}
-
     //* highlight paragraph
     virtual void highlightBlock( const QString& text );
 
@@ -191,7 +187,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     bool _updateDelimiter( HighlightBlockData*, const BlockDelimiter&, const QString& ) const;
 
     //* true if highlight is enabled
-    bool highlightEnabled_;
+    bool highlightEnabled_ = false;
 
     //* list of highlight patterns
     HighlightPattern::List patterns_;
@@ -202,7 +198,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     //@{
 
     //* parenthesis enabled
-    bool parenthesisEnabled_;
+    bool parenthesisEnabled_ = false;
 
     //* text parenthesis
     TextParenthesis::List parenthesis_;
@@ -216,7 +212,7 @@ class TextHighlight: public QSyntaxHighlighter, public Counter
     //@{
 
     //* enabled
-    bool blockDelimitersEnabled_;
+    bool blockDelimitersEnabled_ = true;
 
     //* block delimiters
     BlockDelimiter::List blockDelimiters_;

@@ -36,10 +36,6 @@ class RenameFileDialog: public CustomDialog
     //* constructor
     RenameFileDialog( QWidget* parent, FileRecord );
 
-    //* destructor
-    virtual ~RenameFileDialog( void )
-    {}
-
     //* new file name
     File file( void ) const;
 
@@ -55,7 +51,7 @@ class RenameFileDialog: public CustomDialog
     { return *editor_; }
 
     //* editor
-    LineEditor *editor_;
+    LineEditor *editor_ = nullptr;
 
 };
 

@@ -34,9 +34,6 @@ class ReplaceWidget: public BaseReplaceWidget
     //* constructor
     ReplaceWidget( QWidget* = nullptr );
 
-    //* destructor
-    virtual ~ReplaceWidget( void ) = default;
-
     Q_SIGNALS:
 
     //* emmited when Replace is pressed

@@ -38,9 +38,6 @@ class DocumentClassMenu: public QMenu, public Counter
     //* constructor
     DocumentClassMenu( QWidget* );
 
-    //* destructor
-    virtual ~DocumentClassMenu( void ) = default;
-
     Q_SIGNALS:
 
     //* emmited every time a document class is selected

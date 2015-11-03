@@ -32,10 +32,6 @@ class NewDocumentNameServer
     NewDocumentNameServer( void )
     {}
 
-    //* destructor
-    virtual ~NewDocumentNameServer( void ) = default;
-
-
     //* get name
     QString get( void );
 
@@ -75,4 +71,4 @@ class NewDocumentNameServer
 
 };
 
-    #endif
+#endif

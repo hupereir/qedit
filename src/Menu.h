@@ -43,9 +43,6 @@ class Menu:public QMenuBar, public Counter
     //* creator
     Menu( QWidget* parent );
 
-    //* destructor
-    ~Menu( void );
-
     //* recent files menu
     RecentFilesMenu& recentFilesMenu( void ) const
     { return *recentFilesMenu_; }

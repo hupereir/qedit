@@ -39,9 +39,6 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     //* constructor
     DocumentClassModel(QObject* = nullptr);
 
-    //* destructor
-    virtual ~DocumentClassModel() = default;
-
     //* column type enumeration
     enum ColumnType
     {

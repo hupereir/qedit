@@ -139,10 +139,6 @@ Menu::Menu( QWidget* parent ):
 }
 
 //_______________________________________________
-Menu::~Menu( void )
-{ Debug::Throw( "Menu::~Menu.\n" ); }
-
-//_______________________________________________
 void Menu::updateMacroMenu( void )
 {
 

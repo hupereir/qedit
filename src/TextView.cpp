@@ -33,8 +33,6 @@
 TextView::TextView( QWidget* parent ):
     QWidget( parent ),
     Counter( "TextView" ),
-    closed_( false ),
-    activeDisplay_( 0 ),
     positionTimer_(this)
 {
 
@@ -58,12 +56,6 @@ TextView::TextView( QWidget* parent ):
     positionTimer_.setSingleShot( true );
     positionTimer_.setInterval( 100 );
 
-}
-
-//___________________________________________________________________
-TextView::~TextView()
-{
-    Debug::Throw() << "TextView::~TextView - " << key() << endl;
 }
 
 //____________________________________________

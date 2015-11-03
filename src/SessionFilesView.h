@@ -31,11 +31,7 @@ class SessionFilesView: public TreeView
     public:
 
     //* constructor
-    SessionFilesView( QWidget* = 0 );
-
-    //* destructor
-    virtual ~SessionFilesView( void )
-    {}
+    SessionFilesView( QWidget* = nullptr );
 
     Q_SIGNALS:
 
@@ -55,7 +51,7 @@ class SessionFilesView: public TreeView
 
     private:
 
-    bool locked_;
+    bool locked_ = false;
 
 };
 

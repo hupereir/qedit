@@ -42,9 +42,6 @@ class PrintHelper: public BasePrintHelper, public Counter
         editor_( editor )
     { Debug::Throw( "PrintHelper::PrintHelper.\n" ); }
 
-    //* destructor
-    virtual ~PrintHelper( void ) = default;
-
     public Q_SLOTS:
 
     //* print

@@ -39,10 +39,6 @@ class FileIconProvider : public BaseFileIconProvider
         BaseFileIconProvider( parent )
     {}
 
-    //* destructor
-    virtual ~FileIconProvider()
-    {}
-
     //* icon matching given model index
     virtual const QIcon& icon( const FileRecord& );
 

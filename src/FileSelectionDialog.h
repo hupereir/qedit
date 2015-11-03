@@ -38,9 +38,6 @@ class FileSelectionDialog: public CustomDialog
     //* constructor
     FileSelectionDialog( QWidget* parent, const TextSelection& );
 
-    //* destructor
-    virtual ~FileSelectionDialog( void ) = default;
-
     //* selected files
     using FileList = QList<File>;
 
@@ -58,7 +55,7 @@ class FileSelectionDialog: public CustomDialog
     FileRecordModel model_;
 
     //* list of files
-    TreeView* list_;
+    TreeView* list_ = nullptr;
 
     //* text selection
     TextSelection selection_;

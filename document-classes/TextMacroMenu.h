@@ -38,9 +38,6 @@ class TextMacroMenu: public QMenu, public Counter
     //* constructor
     TextMacroMenu( QWidget* );
 
-    //* destructor
-    virtual ~TextMacroMenu( void ) = default;
-
     //* set enabled
     void setEnabled( bool );
 
@@ -85,8 +82,11 @@ class TextMacroMenu: public QMenu, public Counter
 
         private:
 
+        // name
         QString name_;
-        bool automatic_;
+
+        //* automatic
+        bool automatic_ = false;
 
     };
 

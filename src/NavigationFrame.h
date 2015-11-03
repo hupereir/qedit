@@ -43,10 +43,6 @@ class NavigationFrame: public QStackedWidget
     //* creator
     NavigationFrame( QWidget* parent, FileList&  );
 
-    //* destructor
-    virtual ~NavigationFrame( void )
-    {}
-
     //* default size
     void setDefaultWidth( const int& value )
     { defaultWidth_ = value; }
@@ -91,7 +87,7 @@ class NavigationFrame: public QStackedWidget
     void _installActions( void );
 
     //* default width;
-    int defaultWidth_;
+    int defaultWidth_ = -1;
 
     //* session files
     SessionFilesFrame *sessionFilesFrame_;
@@ -105,7 +101,7 @@ class NavigationFrame: public QStackedWidget
     //@}
 
     //* visibility action
-    QAction* visibilityAction_;
+    QAction* visibilityAction_ = nullptr;
 
 };
 

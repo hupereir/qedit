@@ -48,9 +48,6 @@ class HighlightBlockData: public TextBlockData
         TextBlockData( *pointer )
     {}
 
-    //* destructor
-    virtual ~HighlightBlockData( void ) = default;
-
     //* syntax highlighting pattern locations
     const PatternLocationSet& locations( void ) const
     { return locations_; }

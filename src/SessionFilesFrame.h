@@ -41,10 +41,7 @@ class SessionFilesFrame: public QWidget, public Counter
     public:
 
     //* creator
-    SessionFilesFrame( QWidget* parent );
-
-    //* destructor
-    ~SessionFilesFrame( void );
+    SessionFilesFrame( QWidget* );
 
     //* list
     TreeView& list( void ) const

@@ -28,11 +28,8 @@
 //_________________________________________________________
 TextHighlight::TextHighlight( QTextDocument* document ):
     QSyntaxHighlighter( document ),
-    Counter( "TextHighlight" ),
-    highlightEnabled_( false ),
-    parenthesisEnabled_( false ),
-    blockDelimitersEnabled_( true )
-{ Debug::Throw( "TextHighlight::TextHighlight.\n" ); }
+    Counter( "TextHighlight" )
+{}
 
 //_______________________________________________________
 void TextHighlight::setParenthesis( const TextParenthesis::List& parenthesis )

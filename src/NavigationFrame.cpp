@@ -30,8 +30,7 @@
 
 //_______________________________________________________________
 NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
-    QStackedWidget( parent ),
-    defaultWidth_( -1 )
+    QStackedWidget( parent )
 {
 
     Debug::Throw( "NavigationFrame:NavigationFrame.\n" );

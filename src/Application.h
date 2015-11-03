@@ -184,7 +184,7 @@ class Application: public BaseApplication, public Counter
     protected:
 
     //* timer events
-    /*!
+    /**
     this allows to read files from arguments after the call
     to "exec()" in the main routine,
     */
@@ -214,7 +214,7 @@ class Application: public BaseApplication, public Counter
     FileCheck* fileCheck_ = nullptr;
 
     //* startup single shot timer
-    /*!
+    /**
     it allows to call startup methods after the exec() function
     is called from the main routine
     */

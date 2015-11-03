@@ -36,9 +36,6 @@ class RestoreSessionDialog: public QuestionDialog
     //* constructor
     RestoreSessionDialog( QWidget*, FileRecord::List );
 
-    //* destructor
-    virtual ~RestoreSessionDialog( void ) = default;
-
     private:
 
     //* model

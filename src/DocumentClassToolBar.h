@@ -34,9 +34,6 @@ class DocumentClassToolBar: public CustomToolBar
     //* constructor
     DocumentClassToolBar( QWidget* );
 
-    //* destructor
-    virtual ~DocumentClassToolBar( void ) = default;
-
     //* update selection
     void update( QString );
 

@@ -41,14 +41,11 @@ class TextView: public QWidget, public Counter, public Base::Key
     //* constructor
     TextView( QWidget* );
 
-    //* destructor
-    virtual ~TextView( void );
-
-    // true if widget is being deleted
+    //* true if widget is being deleted
     bool isClosed( void ) const
     { return closed_; }
 
-    // set to true if widget is to be deleted
+    //* set to true if widget is to be deleted
     void setIsClosed( bool value )
     { closed_ = value; }
 

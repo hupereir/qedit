@@ -75,10 +75,6 @@ WindowServer::WindowServer( QObject* parent ):
 
 }
 
-//________________________________________________________________
-WindowServer::~WindowServer( void )
-{ Debug::Throw( "WindowServer::~WindowServer.\n" ); }
-
 //_____________________________________
 MainWindow& WindowServer::newMainWindow( void )
 {

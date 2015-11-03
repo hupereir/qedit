@@ -134,7 +134,7 @@ class HighlightStyle: public Counter
     QString name_;
 
     //* format (bitwise or of TextFormatInfo)
-    Format::TextFormatFlags format_;
+    Format::TextFormatFlags format_ = Format::Default;
 
     //* color
     QColor color_;

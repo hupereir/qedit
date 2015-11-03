@@ -46,9 +46,6 @@ class RecentFilesFrame: public QWidget, public Counter
     //* creator
     RecentFilesFrame( QWidget* parent, FileList&  );
 
-    //* destructor
-    ~RecentFilesFrame( void );
-
     //* list
     TreeView& list( void ) const
     { return *list_; }

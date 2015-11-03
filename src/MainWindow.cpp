@@ -297,8 +297,8 @@ void MainWindow::findFromDialog( void )
     QString text( activeDisplay().selection().text() );
     if( !text.isEmpty() )
     {
-        const int max_length( 1024 );
-        text = text.left( max_length );
+        const int maxLength( 1024 );
+        text = text.left( maxLength );
     }
 
     findWidget_->enableRegExp( true );

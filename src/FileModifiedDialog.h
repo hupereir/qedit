@@ -47,10 +47,6 @@ class FileModifiedDialog: public BaseDialog, public Counter
     //* constructor
     FileModifiedDialog( QWidget* parent, const File& file );
 
-    //* destructor
-    virtual ~FileModifiedDialog( void )
-    {}
-
     private Q_SLOTS:
 
     //* re-saved removed file

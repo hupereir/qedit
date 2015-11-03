@@ -64,7 +64,7 @@ class HighlightPattern: public Counter
     QDomElement domElement( QDomDocument& parent ) const;
 
     //* set id
-    /*!
+    /**
     The unique ID has a single bit set to 1, to use
     faster active pattern masks, with no shift operators
     */
@@ -233,7 +233,7 @@ class HighlightPattern: public Counter
     }
 
     //* process text and update the matching locations.
-    /*!
+    /**
     Returns true if at least one match is found.
     Locations and active parameters are changed
     */
@@ -302,14 +302,14 @@ class HighlightPattern: public Counter
     private:
 
     //* unique id
-    /*!
+    /**
     The unique ID has a single bit set to 1, to use
     faster active pattern masks, with no shift operators
     */
-    int id_;
+    int id_ = 0;
 
     //* type
-    Type type_;
+    Type type_ = Undefined;
 
     //* pattern name
     QString name_;
@@ -318,7 +318,7 @@ class HighlightPattern: public Counter
     QString parent_;
 
     //* parent pattern id
-    int parentId_;
+    int parentId_ = 0;
 
     //* style
     HighlightStyle style_;
@@ -330,7 +330,7 @@ class HighlightPattern: public Counter
     QString comments_;
 
     //* flags
-    Flags flags_;
+    Flags flags_ = None;
 
     //*@name patterns
     //@{

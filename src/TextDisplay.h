@@ -110,7 +110,7 @@ class TextDisplay: public TextEditor
     };
 
     //* number of block associated to argument
-    /*! reimplemented from base class to account for collapsed blocks */
+    /** reimplemented from base class to account for collapsed blocks */
     virtual int blockCount( const QTextBlock& ) const;
 
     //* clone display configuration and document
@@ -302,7 +302,7 @@ class TextDisplay: public TextEditor
     bool hasLeadingTabs( void ) const;
 
     //* convert to plain text
-    /*!
+    /**
     This method makes sure that full text is obtained even when some blocks are collapsed.
     this should be an overloaded function, but the base class method is not virtual
     however, it is never called via a pointer to the base class, so that it should be fine.
@@ -487,7 +487,7 @@ class TextDisplay: public TextEditor
     virtual void paintEvent( QPaintEvent* );
 
     //* raise autospell context menu
-    /*! returns true if autospell context menu is used */
+    /** returns true if autospell context menu is used */
     virtual bool _autoSpellContextEvent( QContextMenuEvent* );
 
     //@}
@@ -496,7 +496,7 @@ class TextDisplay: public TextEditor
     FileList& _recentFiles( void ) const;
 
     //* update document class
-    /*! first parameter is file name, second tells if document is a new untitled document or not */
+    /** first parameter is file name, second tells if document is a new untitled document or not */
     void _updateDocumentClass( File, bool );
 
     //* set file name
@@ -556,7 +556,7 @@ class TextDisplay: public TextEditor
 
     protected Q_SLOTS:
 
-    /*! returns true if changed */
+    /** returns true if changed */
     virtual bool _toggleWrapMode( bool );
 
     private Q_SLOTS:
@@ -629,7 +629,7 @@ class TextDisplay: public TextEditor
     }
 
     //* update paste action
-    /*! depends on clipboard status and editability */
+    /** depends on clipboard status and editability */
     virtual void _updatePasteAction( void )
     {
         TextEditor::_updatePasteAction();
@@ -640,11 +640,11 @@ class TextDisplay: public TextEditor
     virtual void _textModified( void );
 
     //* ignore current misspelled word
-    /*! this method does nothing if not compiled against aspell */
+    /** this method does nothing if not compiled against aspell */
     void _ignoreMisspelledWord( QString );
 
     //* replace current selection with spell-checked suggestion
-    /*! this method does nothing if not compiled against aspell */
+    /** this method does nothing if not compiled against aspell */
     void _replaceMisspelledSelection( QString );
 
     //* highlight parenthesis

@@ -32,9 +32,6 @@ class ConfigurationDialog: public BaseConfigurationDialog
     //* creator
     ConfigurationDialog( QWidget* = nullptr );
 
-    //* destructor
-    virtual ~ConfigurationDialog( void ) = default;
-
 };
 
 #endif

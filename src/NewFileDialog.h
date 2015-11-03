@@ -50,9 +50,6 @@ class NewFileDialog: public BaseDialog, public Counter
     //* constructor
     NewFileDialog( QWidget*, const File&, ReturnCodes = Default );
 
-    //* destructor
-    virtual ~NewFileDialog( void ) = default;
-
     private Q_SLOTS:
 
     //* create new file

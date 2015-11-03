@@ -34,11 +34,7 @@ class SessionFilesModel: public FileRecordModel
     public:
 
     //* constructor
-    SessionFilesModel( QObject* parent = 0 );
-
-    //* destructor
-    virtual ~SessionFilesModel( void )
-    {}
+    SessionFilesModel( QObject* parent = nullptr );
 
     //*@name methods reimplemented from base class
     //@{

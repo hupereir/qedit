@@ -44,10 +44,6 @@ class FileSystemFrame: public QWidget, public Counter
     //* constructor
     FileSystemFrame( QWidget* parent );
 
-    //* destructor
-    ~FileSystemFrame( void )
-    { Debug::Throw( "FileSystemFrame::~FileSystemFrame.\n" ); }
-
     //* working path
     void setWorkingPath( const File& );
 

@@ -48,14 +48,8 @@
 
 //____________________________________________
 Application::Application( CommandLineArguments arguments ):
-    BaseApplication( 0, arguments ),
-    Counter( "Application" ),
-    recentFiles_( 0 ),
-    sessionFiles_( 0 ),
-    windowServer_( 0 ),
-    classManager_( 0 ),
-    autosave_( 0 ),
-    fileCheck_( 0 )
+    BaseApplication( nullptr, arguments ),
+    Counter( "Application" )
 {}
 
 //____________________________________________

@@ -41,7 +41,6 @@
 RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     QWidget( parent ),
     Counter( "RecentFilesFrame" ),
-    actionsLocked_( false ),
     recentFiles_( &files )
 {
 
@@ -85,10 +84,6 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     connect( recentFiles_, SIGNAL(contentsChanged()), SLOT(update()) );
 
 }
-
-//______________________________________________________________________
-RecentFilesFrame::~RecentFilesFrame( void )
-{ Debug::Throw( "RecentFilesFrame::~RecentFilesFrame.\n" ); }
 
 //____________________________________________
 void RecentFilesFrame::select( const File& file )

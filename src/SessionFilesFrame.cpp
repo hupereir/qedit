@@ -94,10 +94,6 @@ Counter( "SessionFilesFrame" )
 
 }
 
-//______________________________________________________________________
-SessionFilesFrame::~SessionFilesFrame( void )
-{ Debug::Throw( "SessionFilesFrame::~SessionFilesFrame.\n" ); }
-
 //____________________________________________
 void SessionFilesFrame::select( const File& file )
 {

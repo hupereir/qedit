@@ -36,10 +36,6 @@ FileCheck::FileCheck( QObject* parent ):
 }
 
 //______________________________________________________
-FileCheck::~FileCheck( void )
-{ Debug::Throw( "FileCheck::~FileCheck.\n" ); }
-
-//______________________________________________________
 void FileCheck::registerDisplay( TextDisplay* display )
 {
     Debug::Throw( "FileCheck::registerDisplay.\n" );

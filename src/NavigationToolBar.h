@@ -44,10 +44,7 @@ class NavigationToolBar: public CustomToolBar
     public:
 
     //* creator
-    NavigationToolBar( QWidget* parent );
-
-    //* destructor
-    ~NavigationToolBar( void );
+    NavigationToolBar( QWidget* );
 
     //* set target
     void connect( NavigationFrame& );

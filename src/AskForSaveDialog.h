@@ -53,9 +53,6 @@ class AskForSaveDialog: public BaseDialog, public Counter
     //* constructor
     AskForSaveDialog( QWidget*, const File&, ReturnCodes = Default );
 
-    //* destructor
-    virtual ~AskForSaveDialog( void ) = default;
-
     private Q_SLOTS:
 
     //* save changes

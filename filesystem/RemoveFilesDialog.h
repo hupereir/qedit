@@ -40,9 +40,6 @@ class RemoveFilesDialog: public CustomDialog
     //* constructor
     RemoveFilesDialog( QWidget*, const FileSystemModel::List& files = FileSystemModel::List() );
 
-    //* destructor
-    virtual ~RemoveFilesDialog( void ) = default;
-
     private:
 
     //* list of files

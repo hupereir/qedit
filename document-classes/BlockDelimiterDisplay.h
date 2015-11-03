@@ -50,9 +50,6 @@ class BlockDelimiterDisplay: public QObject, public Counter
     //* constructor
     BlockDelimiterDisplay(TextEditor*);
 
-    //* destructor
-    virtual ~BlockDelimiterDisplay();
-
     //* block delimiters
     bool setBlockDelimiters( const BlockDelimiter::List& delimiters )
     {
@@ -258,16 +255,16 @@ class BlockDelimiterDisplay: public QObject, public Counter
     //@{
 
     //* collapse current block
-    QAction* collapseCurrentAction_;
+    QAction* collapseCurrentAction_ = nullptr;
 
     //* expand current block
-    QAction* expandCurrentAction_;
+    QAction* expandCurrentAction_ = nullptr;
 
     //* collapse top level blocks
-    QAction* collapseAction_;
+    QAction* collapseAction_ = nullptr;
 
     //* expand all
-    QAction* expandAllAction_;
+    QAction* expandAllAction_ = nullptr;
 
     //@}
 

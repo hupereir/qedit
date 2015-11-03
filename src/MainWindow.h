@@ -54,9 +54,6 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     //* constructor
     MainWindow( QWidget* = nullptr );
 
-    //* destructor
-    ~MainWindow( void ) = default;
-
     //*@name file management
     //@{
 
@@ -178,7 +175,7 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     { return activeView().activeDisplay(); }
 
     //* get set of all displays associated to this window
-    /*!
+    /**
     this is a convenient function that loops over all associated views
     and merge their associated displays into a single list
     */
@@ -389,13 +386,13 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     void _splitterMoved( void );
 
     //* active view changed
-    /*!
+    /**
     this is triggered by StackedWidget::currentWidgetChanged
     */
     void _activeViewChanged( void );
 
     //* select display from file
-    /*!
+    /**
     this is triggered by changing the selection in the sessionFilesFrame
     of the navigation window. This ensures that the selected display
     is always the active one, as long as it belongs to this window
@@ -415,12 +412,12 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     { activeView().splitDisplay( Qt::Vertical, true ); }
 
     //* close
-    /*! close window */
+    /** close window */
     void _closeWindow( void )
     { close(); }
 
     //* close
-    /*! close current display if more than two display are open, */
+    /** close current display if more than two display are open, */
     void _closeDisplay( void )
     { activeView().closeActiveDisplay(); }
 
@@ -512,7 +509,7 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     //@}
 
     //* update window title, cut, copy, paste buttons, and filename line editor
-    /*! \param flags are bitwise or of TextDisplay::UpdateFlags */
+    /** \param flags are bitwise or of TextDisplay::UpdateFlags */
     void _update( TextDisplay::UpdateFlags );
 
     //* update modifiers

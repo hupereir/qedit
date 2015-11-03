@@ -40,9 +40,7 @@
 BlockDelimiterDisplay::BlockDelimiterDisplay(TextEditor* editor ):
     QObject( editor ),
     Counter( "BlockDelimiterDisplay" ),
-    editor_( editor ),
-    needUpdate_( true ),
-    offset_(0)
+    editor_( editor )
 {
 
     Debug::Throw( "BlockDelimiterDisplay::BlockDelimiterDisplay.\n" );
@@ -60,10 +58,6 @@ BlockDelimiterDisplay::BlockDelimiterDisplay(TextEditor* editor ):
     setWidth(0);
 
 }
-
-//__________________________________________
-BlockDelimiterDisplay::~BlockDelimiterDisplay()
-{ Debug::Throw( "BlockDelimiterDisplay::~BlockDelimiterDisplay.\n" ); }
 
 //__________________________________________
 void BlockDelimiterDisplay::synchronize( const BlockDelimiterDisplay* other )

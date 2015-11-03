@@ -48,9 +48,6 @@ class ParenthesisHighlight: public QObject, public Counter
     //* constructor
     ParenthesisHighlight( TextEditor* );
 
-    //* destructor
-    virtual ~ParenthesisHighlight( void ) = default;
-
     //* enable/disable
     void setEnabled( bool value )
     { enabled_ = value; }

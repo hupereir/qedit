@@ -64,9 +64,6 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
     //* constructor
     FileSystemModel( QObject* = nullptr );
 
-    //* destructor
-    virtual ~FileSystemModel( void ) = default;
-
     //* show icons
     void setShowIcons( bool value )
     { showIcons_ = value; }

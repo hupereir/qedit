@@ -41,9 +41,6 @@ class PatternLocation: public Counter
     //* constructor
     PatternLocation( const HighlightPattern&, int, int );
 
-    //* destructor
-    virtual ~PatternLocation( void ) = default;
-
     //* less than operator
     bool operator < (const PatternLocation& location ) const
     {

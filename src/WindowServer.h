@@ -46,9 +46,6 @@ class WindowServer: public QObject, public Counter, public Base::Key
     //* constructor
     WindowServer( QObject* = nullptr );
 
-    //* destructor
-    virtual ~WindowServer( void );
-
     //* create new empty main window
     MainWindow& newMainWindow( void );
 

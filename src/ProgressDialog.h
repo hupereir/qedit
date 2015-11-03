@@ -39,9 +39,6 @@ class ProgressDialog:public QProgressDialog, public Counter
         Counter( "ProgressDialog" )
     {}
 
-    //* destructor
-    virtual ~ProgressDialog( void ) = default;
-
     //* offset
     void setOffset( int value )
     { offset_ = value; }

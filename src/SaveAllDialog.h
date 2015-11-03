@@ -36,9 +36,6 @@ class SaveAllDialog: public QuestionDialog
     //* constructor
     SaveAllDialog( QWidget*, FileRecord::List );
 
-    //* destructor
-    virtual ~SaveAllDialog( void ) = default;
-
     private:
 
     //* model
