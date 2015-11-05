@@ -57,6 +57,7 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     // list
     layout()->addWidget( list_ = new TreeView( this ) );
     list_->setMouseTracking( true );
+    list_->setDragEnabled( true );
     list_->setModel( &model_ );
     list_->setSelectionMode( QAbstractItemView::ContiguousSelection );
     list_->setOptionName( "RECENT_FILES_LIST" );

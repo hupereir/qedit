@@ -29,6 +29,7 @@
 #include <QApplication>
 #include <QFont>
 #include <QPalette>
+#include <QUrl>
 
 //__________________________________________________________________
 FileSystemModel::FileSystemModel( QObject* parent ):
@@ -51,9 +52,9 @@ Qt::ItemFlags FileSystemModel::flags(const QModelIndex &index) const
     if( index.isValid() )
     {
 
-        // check associated record validity
         const FileRecord& record( get(index) );
         if( record.isValid() ) flags |=  Qt::ItemIsEnabled |  Qt::ItemIsSelectable;
+        if( record.isValid() && index.column() == Filename ) flags |= Qt::ItemIsDragEnabled;
 
     }
 
@@ -163,6 +164,49 @@ QVariant FileSystemModel::headerData( int section, Qt::Orientation orientation, 
 
     // return empty
     return QVariant();
+
+}
+
+//______________________________________________________________________
+QMimeData* FileSystemModel::mimeData(const QModelIndexList &indexes) const
+{
+
+    // get selected filenames
+    QOrderedSet<QString> filenames;
+    foreach( const QModelIndex& index, indexes )
+    {
+
+        if( !index.isValid() ) continue;
+        const FileRecord record( get(index) );
+        filenames.insert( record.file() );
+
+    }
+
+    if( filenames.empty() ) return nullptr;
+    else {
+
+        QMimeData* mimeData = new QMimeData();
+
+        // fill text data
+        {
+            QString fullText;
+            QTextStream buffer( &fullText );
+            foreach( const QString& filename, filenames )
+            { buffer << QString( "file://%1" ).arg(filename) << endl; }
+            mimeData->setText( fullText );
+        }
+
+        // fill url list
+        {
+            QList<QUrl> urlList;
+            foreach( const QString& filename, filenames )
+            { urlList.append( QUrl( QString( "file://%1" ).arg(filename) ) ); }
+            mimeData->setUrls( urlList );
+        }
+
+        return mimeData;
+
+    }
 
 }
 

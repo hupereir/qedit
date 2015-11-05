@@ -25,9 +25,9 @@
 #include "FileRecord.h"
 #include "ListModel.h"
 
-#include <QString>
-#include <QStringList>
 #include <QHash>
+#include <QMimeData>
+#include <QStringList>
 
 class FileIconProvider;
 
@@ -64,15 +64,7 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
     //* constructor
     FileSystemModel( QObject* = nullptr );
 
-    //* show icons
-    void setShowIcons( bool value )
-    { showIcons_ = value; }
-
-    //* use local names
-    void setUseLocalNames( bool value )
-    { useLocalNames_ = value; }
-
-    //*@name methods reimplemented from base class
+    //*@name accessors
     //@{
 
     //* flags
@@ -87,6 +79,22 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
     //* number of columns for a given index
     virtual int columnCount( const QModelIndex& = QModelIndex() ) const
     { return columnTitles_.size(); }
+
+    //* mime data
+    virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
+
+    //@}
+
+    //*@name modifiers
+    //@{
+
+    //* show icons
+    void setShowIcons( bool value )
+    { showIcons_ = value; }
+
+    //* use local names
+    void setUseLocalNames( bool value )
+    { useLocalNames_ = value; }
 
     //@}
 

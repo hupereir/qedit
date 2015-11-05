@@ -30,9 +30,9 @@
 #include "QOrderedSet.h"
 
 #include <QMimeData>
-#include <QSet>
 #include <QPalette>
-#include <algorithm>
+#include <QSet>
+#include <QUrl>
 
 //__________________________________________________________________
 SessionFilesModel::IconCache& SessionFilesModel::_icons( void )
@@ -142,6 +142,10 @@ QStringList SessionFilesModel::mimeTypes( void ) const
 QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 {
 
+    // base class
+    QMimeData* mimeData = FileRecordModel::mimeData( indexes );
+
+    // get selected filenames
     QOrderedSet<QString> filenames;
     XmlFileRecord::List records;
     foreach( const QModelIndex& index, indexes )
@@ -154,24 +158,33 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 
     }
 
-    if( filenames.empty() ) return 0;
+    if( filenames.empty() ) return mimeData;
     else {
 
-        QMimeData *mime = new QMimeData();
+        if( !mimeData ) mimeData = new QMimeData();
 
         // fill text data
-        QString full_text;
-        QTextStream buffer( &full_text );
-        foreach( const QString& filename, filenames )
-        { buffer << filename << endl; }
+        {
+            QString fullText;
+            QTextStream buffer( &fullText );
+            foreach( const QString& filename, filenames )
+            { buffer << QString( "file://%1" ).arg(filename) << endl; }
+            mimeData->setText( fullText );
+        }
 
-        mime->setText( full_text );
+        // fill url list
+        {
+            QList<QUrl> urlList;
+            foreach( const QString& filename, filenames )
+            { urlList.append( QUrl( QString( "file://%1" ).arg(filename) ) ); }
+            mimeData->setUrls( urlList );
+        }
 
         // fill drag data. Use XML
         QDomDocument document;
         records.domElement( document );
-        mime->setData( FileRecord::MimeType, document.toByteArray() );
-        return mime;
+        mimeData->setData( FileRecord::MimeType, document.toByteArray() );
+        return mimeData;
 
     }
 

@@ -56,7 +56,6 @@ Counter( "SessionFilesFrame" )
     toolTipWidget_ = new FileRecordToolTipWidget( this );
 
     // list
-    model_.setDragEnabled( true );
     layout()->addWidget( list_ = new SessionFilesView( this ) );
     list_->setMouseTracking( true );
     list_->setModel( &model_ );

@@ -36,7 +36,7 @@ class SessionFilesModel: public FileRecordModel
     //* constructor
     SessionFilesModel( QObject* parent = nullptr );
 
-    //*@name methods reimplemented from base class
+    //*@name accessors
     //@{
 
     //* flags
