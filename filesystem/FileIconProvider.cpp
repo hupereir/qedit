@@ -51,8 +51,8 @@ const QIcon& FileIconProvider::icon( const FileRecord& fileRecord )
     Key key( fileRecord.file().extension(), type );
 
     // check if already created
-    IconCache::const_iterator iter( icons_.find( key) );
-    if( iter != icons_.end() ) return iter.value();
+    IconCache::const_iterator iter( _icons().find( key) );
+    if( iter != _icons().end() ) return iter.value();
 
     // create
     QIcon out;
@@ -72,6 +72,6 @@ const QIcon& FileIconProvider::icon( const FileRecord& fileRecord )
     if( type & FileSystemModel::Hidden ) out = _hidden( out );
 
     // insert in map and return
-    return icons_.insert( key, out ).value();
+    return _icons().insert( key, out ).value();
 
 }

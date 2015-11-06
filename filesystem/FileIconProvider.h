@@ -42,57 +42,11 @@ class FileIconProvider : public BaseFileIconProvider
     //* icon matching given model index
     virtual const QIcon& icon( const FileRecord& );
 
-    //* clear
-    virtual void clear( void )
-    { icons_.clear(); }
-
-    class Key
-    {
-        public:
-
-        //* constructor
-        Key( const QString& extension = QString(), int type = 0 ):
-            extension_( extension ),
-            type_( type )
-        {}
-
-        //* equal to operator
-        bool operator == (const Key& other ) const
-        { return type_ == other.type_ && extension_ == other.extension_; }
-
-        //* extension
-        const QString& extension( void ) const
-        { return extension_; }
-
-        //* type
-        int type( void ) const
-        { return type_; }
-
-        private:
-
-        //* extension
-        QString extension_;
-
-        //* type
-        int type_;
-
-    };
-
     private:
 
     //* mime type icon provider
     MimeTypeIconProvider mimeTypeIconProvider_;
 
-    //* icon cache
-    using IconCache = QHash<Key, QIcon>;
-
-    //* icon cache
-    IconCache icons_;
-
 };
-
-//* hash
-inline uint qHash( const FileIconProvider::Key& key )
-{ return key.type() | (qHash( key.extension() ) << 4 ); }
 
 #endif
