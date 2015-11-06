@@ -92,7 +92,7 @@ class FileIconProvider : public BaseFileIconProvider
 };
 
 //* hash
-inline unsigned int qHash( const FileIconProvider::Key& key )
+inline uint qHash( const FileIconProvider::Key& key )
 { return key.type() | (qHash( key.extension() ) << 4 ); }
 
 #endif

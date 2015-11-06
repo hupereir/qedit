@@ -141,7 +141,7 @@ class HighlightStyle: public Counter
 
 };
 
-inline unsigned int qHash( const HighlightStyle& style )
+inline uint qHash( const HighlightStyle& style )
 { return qHash( style.name() ); }
 
 #endif
