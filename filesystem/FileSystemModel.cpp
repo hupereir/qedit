@@ -19,6 +19,8 @@
 
 #include "FileSystemModel.h"
 
+#include "BaseFileInfo.h"
+#include "BaseFileInfoModel.h"
 #include "CustomPixmap.h"
 #include "FileIconProvider.h"
 #include "FileSystemIconNames.h"
@@ -89,14 +91,14 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
                 case Size:
                 {
                     const FileRecord& record( get(index) );
-                    if( record.hasFlag( Document ) ) return QString( record.property( sizePropertyId_ ) );
+                    if( record.hasFlag( BaseFileInfo::Document ) ) return QString( record.property( sizePropertyId_ ) );
                     else return QVariant();
                 }
 
                 case Time:
                 {
                     const FileRecord& record( get(index) );
-                    if( record.hasFlag( Document ) ) return QString( TimeStamp( record.time() ).toString() );
+                    if( record.hasFlag( BaseFileInfo::Document ) ) return QString( TimeStamp( record.time() ).toString() );
                     else return QVariant();
                 }
 
@@ -120,7 +122,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
         case Qt::ForegroundRole:
         {
             const FileRecord& record( get(index) );
-            if( record.hasFlag( Hidden ) && ( this->flags( index )&Qt::ItemIsEnabled ) )
+            if( record.hasFlag( BaseFileInfo::Hidden ) && ( this->flags( index )&Qt::ItemIsEnabled ) )
             {
                 QColor color( QPalette().color( QPalette::Text ) );
                 color.setAlphaF( 0.7 );
@@ -133,7 +135,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
         case Qt::FontRole:
         {
             const FileRecord& record( get(index) );
-            if( record.hasFlag( Link ) )
+            if( record.hasFlag( BaseFileInfo::Link ) )
             {
                 QFont font( QApplication::font() );
                 font.setItalic( true );
@@ -141,6 +143,12 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
             }
 
             break;
+        }
+
+        case Base::FileTypeRole:
+        {
+            const FileRecord& record( get(index) );
+            return record.flags();
         }
 
         default: break;
@@ -225,10 +233,10 @@ FileSystemModel::SortFTor::SortFTor( int type, Qt::SortOrder order, const QStrin
 bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord second ) const
 {
 
-    if( first.hasFlag( Navigator ) ) return true;
-    if( second.hasFlag( Navigator ) ) return false;
-    if( first.hasFlag( Folder ) && second.hasFlag( Document ) ) return true;
-    if( second.hasFlag( Folder ) && first.hasFlag( Document ) ) return false;
+    if( first.hasFlag( BaseFileInfo::Navigator ) ) return true;
+    if( second.hasFlag( BaseFileInfo::Navigator ) ) return false;
+    if( first.hasFlag( BaseFileInfo::Folder ) && second.hasFlag( BaseFileInfo::Document ) ) return true;
+    if( second.hasFlag( BaseFileInfo::Folder ) && first.hasFlag( BaseFileInfo::Document ) ) return false;
 
     if( order_ == Qt::DescendingOrder ) std::swap( first, second );
 
@@ -237,10 +245,10 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
 
         case Filename:
         {
-            if( first.hasFlag( Navigator ) ) return true;
-            if( second.hasFlag( Navigator ) ) return false;
-            if( first.hasFlag( Folder ) && second.hasFlag( Document ) ) return true;
-            if( second.hasFlag( Folder ) && first.hasFlag( Document ) ) return false;
+            if( first.hasFlag( BaseFileInfo::Navigator ) ) return true;
+            if( second.hasFlag( BaseFileInfo::Navigator ) ) return false;
+            if( first.hasFlag( BaseFileInfo::Folder ) && second.hasFlag( BaseFileInfo::Document ) ) return true;
+            if( second.hasFlag( BaseFileInfo::Folder ) && first.hasFlag( BaseFileInfo::Document ) ) return false;
             return first.file().localName().compare( second.file().localName(), Qt::CaseInsensitive ) < 0;
 
         }

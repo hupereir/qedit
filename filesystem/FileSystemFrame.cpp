@@ -19,14 +19,16 @@
 
 #include "FileSystemFrame.h"
 
-#include "FileRecordProperties.h"
-#include "FileRecordToolTipWidget.h"
-#include "FileSystemIconNames.h"
+#include "BaseFileInfo.h"
+#include "BaseFileInfoItemDelegate.h"
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
 #include "ContextMenu.h"
 #include "CustomToolBar.h"
 #include "FileInformationDialog.h"
+#include "FileRecordProperties.h"
+#include "FileRecordToolTipWidget.h"
+#include "FileSystemIconNames.h"
 #include "IconEngine.h"
 #include "PathEditor.h"
 #include "RemoveFilesDialog.h"
@@ -90,6 +92,9 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
     // file list
     layout->addWidget( list_ = new TreeView( this ), 1);
+    if( list_->itemDelegateForColumn(0) ) list_->itemDelegateForColumn(0)->deleteLater();
+    list_->setItemDelegateForColumn(0, new BaseFileInfoItemDelegate( list_ ) );
+
     list_->setMouseTracking( true );
     list_->setDragEnabled( true );
     list_->setModel( &model_ );
@@ -190,7 +195,7 @@ void FileSystemFrame::_processFiles( const File::List& files )
     if( showNavigator_ )
     {
         FileRecord record( File("..") );
-        record.setFlags( FileSystemModel::Navigator );
+        record.setFlags( BaseFileInfo::Navigator );
         records << record;
     }
 
@@ -207,9 +212,9 @@ void FileSystemFrame::_processFiles( const File::List& files )
         record.addProperty( sizePropertyId_, QString::number(file.fileSize()) );
 
         // assign type
-        record.setFlag( file.isDirectory() ? FileSystemModel::Folder : FileSystemModel::Document );
-        if( file.isLink() ) record.setFlag( FileSystemModel::Link );
-        if( file.isHidden() ) record.setFlag( FileSystemModel::Hidden );
+        record.setFlag( file.isDirectory() ? BaseFileInfo::Folder : BaseFileInfo::Document );
+        if( file.isLink() ) record.setFlag( BaseFileInfo::Link );
+        if( file.isHidden() ) record.setFlag( BaseFileInfo::Hidden );
 
         // add to model
         records << record;
@@ -236,12 +241,12 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
 
     // retrieve file
     FileRecord record( model_.get( index ) );
-    if( record.hasFlag( FileSystemModel::Folder ) )
+    if( record.hasFlag( BaseFileInfo::Folder ) )
     {
 
         setPath( record.file().addPath( pathEditor_->path() ) );
 
-    } else if( record.hasFlag( FileSystemModel::Navigator ) ) {
+    } else if( record.hasFlag( BaseFileInfo::Navigator ) ) {
 
         pathEditor_->selectParent();
 
@@ -306,8 +311,8 @@ void FileSystemFrame::_updateActions( void )
     bool hasRemovableSelection( false );
     foreach( const FileRecord& record, selection )
     {
-        if( !record.hasFlag( FileSystemModel::Navigator ) ) hasRemovableSelection = true;
-        if( record.hasFlag( FileSystemModel::Document ) )
+        if( !record.hasFlag( BaseFileInfo::Navigator ) ) hasRemovableSelection = true;
+        if( record.hasFlag( BaseFileInfo::Document ) )
         {
             hasEditableSelection = true;
             break;
@@ -318,7 +323,7 @@ void FileSystemFrame::_updateActions( void )
     removeAction_->setEnabled( hasRemovableSelection );
 
     QModelIndex index( list_->selectionModel()->currentIndex() );
-    bool hasValidFile( selection.size() == 1 && index.isValid() && !model_.get( index ).hasFlag( FileSystemModel::Navigator ) );
+    bool hasValidFile( selection.size() == 1 && index.isValid() && !model_.get( index ).hasFlag( BaseFileInfo::Navigator ) );
     filePropertiesAction_->setEnabled( hasValidFile );
     renameAction_->setEnabled( hasValidFile );
 }
@@ -376,7 +381,7 @@ void FileSystemFrame::_open( void )
     FileSystemModel::List validSelection;
     foreach( const FileRecord& record, selection )
     {
-        if( record.hasFlag( FileSystemModel::Document ) )
+        if( record.hasFlag( BaseFileInfo::Document ) )
         {
             FileRecord copy( record );
             copy.setFile( record.file().addPath( pathEditor_->path() ) );
@@ -398,7 +403,7 @@ void FileSystemFrame::_remove( void )
     FileSystemModel::List validSelection;
     foreach( const FileRecord& record, selection )
     {
-        if( record.hasFlag( FileSystemModel::Navigator ) ) continue;
+        if( record.hasFlag( BaseFileInfo::Navigator ) ) continue;
         FileRecord copy( record );
         copy.setFile( record.file().addPath( pathEditor_->path() ) );
         validSelection << copy;
@@ -427,7 +432,7 @@ void FileSystemFrame::_rename( void )
     if( !index.isValid() ) return;
 
     FileRecord record( model_.get( index ) );
-    if( record.hasFlag( FileSystemModel::Navigator ) ) return;
+    if( record.hasFlag( BaseFileInfo::Navigator ) ) return;
     RenameFileDialog dialog( this, record );
     dialog.setWindowTitle( tr( "Rename Item - Qedit" ) );
     if( !dialog.centerOnWidget( window() ).exec() ) return;
@@ -449,7 +454,7 @@ void FileSystemFrame::_fileProperties( void )
     if( !index.isValid() ) return;
 
     FileRecord record( model_.get( index ) );
-    if( record.hasFlag( FileSystemModel::Navigator ) ) return;
+    if( record.hasFlag( BaseFileInfo::Navigator ) ) return;
     if( !record.file().isAbsolute() ) { record.setFile( record.file().addPath( pathEditor_->path() ) ); }
 
     // icon

@@ -18,6 +18,9 @@
 *******************************************************************************/
 
 #include "FileRecordToolTipWidget.h"
+
+#include "BaseFileInfo.h"
+#include "BaseFileIconProvider.h"
 #include "Debug.h"
 #include "GridLayout.h"
 #include "GridLayoutItem.h"
@@ -100,7 +103,15 @@ void FileRecordToolTipWidget::setRecord( const FileRecord& record, const QIcon& 
     if( !icon.isNull() )
     {
 
-        iconLabel_->setPixmap( icon.pixmap( QSize( pixmapSize_, pixmapSize_ ) ) );
+        // get pixmap
+        QPixmap pixmap( icon.pixmap( QSize( pixmapSize_, pixmapSize_ ) ) );
+
+        // add effects
+        const int type( record.flags() );
+        if( type & BaseFileInfo::Link ) pixmap = BaseFileIconProvider::linked( pixmap );
+        if( type & BaseFileInfo::Hidden ) pixmap = BaseFileIconProvider::hidden( pixmap );
+
+        iconLabel_->setPixmap( pixmap );
         iconLabel_->show();
 
     } else iconLabel_->hide();

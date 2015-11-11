@@ -20,6 +20,7 @@
 #include "FileIconProvider.h"
 #include "FileSystemModel.h"
 
+#include "BaseFileInfo.h"
 #include "CustomPixmap.h"
 #include "FileSystemIconNames.h"
 #include "IconEngine.h"
@@ -30,13 +31,13 @@ const QIcon& FileIconProvider::icon( const FileRecord& fileRecord )
 
     // get relevant file info type
     int type( fileRecord.flags() );
-    if( type & FileSystemModel::Folder )
+    if( type & BaseFileInfo::Folder )
     {
 
         // copy to file info and get base class icon
         BaseFileInfo fileInfo( fileRecord.file() );
         fileInfo.setIsFolder();
-        if( type & FileSystemModel::Link ) fileInfo.setIsLink();
+        if( type & BaseFileInfo::Link ) fileInfo.setIsLink();
 
         // try from base class
         const QIcon& icon( BaseFileIconProvider::icon( fileInfo ) );
@@ -44,8 +45,8 @@ const QIcon& FileIconProvider::icon( const FileRecord& fileRecord )
 
     }
 
-    if( type & FileSystemModel::Navigator ) type = FileSystemModel::Navigator;
-    else type &= FileSystemModel::Any;
+    if( type & BaseFileInfo::Navigator ) type = BaseFileInfo::Navigator;
+    else type &= (BaseFileInfo::Last-1);
 
     // build key
     Key key( fileRecord.file().extension(), type );
@@ -56,9 +57,9 @@ const QIcon& FileIconProvider::icon( const FileRecord& fileRecord )
 
     // create
     QIcon out;
-    if( type & FileSystemModel::Navigator ) out = IconEngine::get( IconNames::Parent );
-    else if( type & FileSystemModel::Folder ) out = IconEngine::get( IconNames::Folder );
-    else if( type & FileSystemModel::Document )
+    if( type & BaseFileInfo::Navigator ) out = IconEngine::get( IconNames::Parent );
+    else if( type & BaseFileInfo::Folder ) out = IconEngine::get( IconNames::Folder );
+    else if( type & BaseFileInfo::Document )
     {
 
         // try get icon from mimetypes
@@ -66,10 +67,6 @@ const QIcon& FileIconProvider::icon( const FileRecord& fileRecord )
         if( out.isNull() ) out = IconEngine::get( IconNames::Document );
 
     }
-
-    out = IconEngine::copy( out );
-    if( type & FileSystemModel::Link ) out = _linked( out );
-    if( type & FileSystemModel::Hidden ) out = _hidden( out );
 
     // insert in map and return
     return _icons().insert( key, out ).value();

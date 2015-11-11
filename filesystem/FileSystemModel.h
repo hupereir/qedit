@@ -39,19 +39,6 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
 
     public:
 
-    //* file types
-    enum FileType
-    {
-        Document = 1<<0,
-        Folder = 1<<1,
-        Link = 1<<2,
-        Navigator = 1<<3,
-        Hidden = 1<<4,
-        Any = Document | Folder | Link | Navigator | Hidden
-    };
-
-    Q_DECLARE_FLAGS( FileTypes, FileType );
-
     //* column type enumeration
     enum ColumnType
     {
@@ -143,7 +130,5 @@ class FileSystemModel: public ListModel<FileRecord>, public Counter
     FileRecord::PropertyId::Id sizePropertyId_ = 0;
 
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( FileSystemModel::FileTypes );
 
 #endif

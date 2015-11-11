@@ -18,6 +18,8 @@
 *******************************************************************************/
 
 #include "FileInformationDialog.h"
+
+#include "BaseFileInfo.h"
 #include "FileRecordProperties.h"
 #include "FileSystemModel.h"
 
@@ -40,11 +42,11 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
     }
 
     // type
-    if( record.hasFlag( FileSystemModel::Folder | FileSystemModel::Document ) )
+    if( record.hasFlag( BaseFileInfo::Folder | BaseFileInfo::Document ) )
     {
-        if( record.hasFlag( FileSystemModel::Link ) ) setType( tr( "Symbolic link" ) );
-        else if( record.hasFlag( FileSystemModel::Folder ) ) setType( tr( "Folder" ) );
-        else if( record.hasFlag( FileSystemModel::Document ) ) setType( tr( "Document" ) );
+        if( record.hasFlag( BaseFileInfo::Link ) ) setType( tr( "Symbolic link" ) );
+        else if( record.hasFlag( BaseFileInfo::Folder ) ) setType( tr( "Folder" ) );
+        else if( record.hasFlag( BaseFileInfo::Document ) ) setType( tr( "Document" ) );
     }
 
     // size
