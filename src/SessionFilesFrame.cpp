@@ -29,6 +29,7 @@
 #include "FileRecordToolTipWidget.h"
 #include "IconNames.h"
 #include "IconEngine.h"
+#include "MimeTypeIconProvider.h"
 #include "SessionFilesView.h"
 #include "Singleton.h"
 #include "Util.h"
@@ -52,8 +53,9 @@ Counter( "SessionFilesFrame" )
     layout()->setMargin(0);
     layout()->setSpacing(2);
 
-    // tooltip widget
+    // tooltip widget and icon provider
     toolTipWidget_ = new FileRecordToolTipWidget( this );
+    mimeTypeIconProvider_ = new MimeTypeIconProvider( this );
 
     // list
     layout()->addWidget( list_ = new SessionFilesView( this ) );
@@ -168,10 +170,13 @@ void SessionFilesFrame::_showToolTip( const QModelIndex& index )
         const FileRecord record( model_.get( index ) );
 
         // icon
-        QIcon icon;
-        const int iconProperty = FileRecord::PropertyId::get( FileRecordProperties::Icon );
-        if( record.hasProperty( iconProperty ) )
-        { icon = IconEngine::get( record.property( iconProperty ) ); }
+        QIcon icon = mimeTypeIconProvider_->icon( record.file().extension() );
+        if( icon.isNull() )
+        {
+            const int iconProperty = FileRecord::PropertyId::get( FileRecordProperties::Icon );
+            if( record.hasProperty( iconProperty ) )
+            { icon = IconEngine::get( record.property( iconProperty ) ); }
+        }
 
         // rect
         QRect rect( list_->visualRect( index ) );

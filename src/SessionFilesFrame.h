@@ -30,6 +30,7 @@
 #include <QTimerEvent>
 
 class FileRecordToolTipWidget;
+class MimeTypeIconProvider;
 
 //* editor windows navigator
 class SessionFilesFrame: public QWidget, public Counter
@@ -122,6 +123,9 @@ class SessionFilesFrame: public QWidget, public Counter
 
     //* tooltip widget
     FileRecordToolTipWidget* toolTipWidget_ = nullptr;
+
+    //* mime type icon provider
+    MimeTypeIconProvider* mimeTypeIconProvider_ = nullptr;
 
     //* model
     SessionFilesModel model_;
