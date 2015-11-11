@@ -21,7 +21,7 @@
 *******************************************************************************/
 
 #include "Counter.h"
-#include "FileRecordModel.h"
+#include "RecentFilesModel.h"
 
 #include <QAction>
 #include <QPaintEvent>
@@ -119,7 +119,7 @@ class RecentFilesFrame: public QWidget, public Counter
     FileRecordToolTipWidget* toolTipWidget_ = nullptr;
 
     //* model
-    FileRecordModel model_;
+    RecentFilesModel model_;
 
     //* list
     TreeView* list_ = nullptr;
