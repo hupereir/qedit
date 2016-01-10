@@ -29,31 +29,31 @@
 namespace IconNames
 {
 
-    static const QString Close = "document-close.png";
+    static const QString Close = "document-close";
 
-    static const QString Save = "document-save.png";
-    static const QString SaveAs = "document-save-as.png";
-    static const QString SaveAll = "document-save-all.png";
-    static const QString New = "document-new.png";
+    static const QString Save = "document-save";
+    static const QString SaveAs = "document-save-as";
+    static const QString SaveAll = "document-save-all";
+    static const QString New = "document-new";
 
-    static const QString Up = "arrow-up.png";
-    static const QString Down = "arrow-down.png";
+    static const QString Up = "arrow-up";
+    static const QString Down = "arrow-down";
 
-    static const QString Documents = "document-multiple.png";
-    static const QString History = "view-history.png";
-    static const QString FileSystem = "folder.png";
+    static const QString Documents = "document-multiple";
+    static const QString History = "view-history";
+    static const QString FileSystem = "folder";
 
-    static const QString Pdf = "pdf.png";
-    static const QString Indent = "format-indent-more.png";
-    static const QString SpellCheck = "tools-check-spelling.png";
-    static const QString ViewLeftRight = "view-split-left-right.png";
-    static const QString ViewTopBottom = "view-split-top-bottom.png";
-    static const QString ViewRight = "view-right-new.png";
-    static const QString ViewBottom = "view-bottom-new.png";
-    static const QString ViewRemove = "view-close.png";
-    static const QString ViewDetach = "view-fullscreen.png";
+    static const QString Pdf = "pdf";
+    static const QString Indent = "format-indent-more";
+    static const QString SpellCheck = "tools-check-spelling";
+    static const QString ViewLeftRight = "view-split-left-right";
+    static const QString ViewTopBottom = "view-split-top-bottom";
+    static const QString ViewRight = "view-right-new";
+    static const QString ViewBottom = "view-bottom-new";
+    static const QString ViewRemove = "view-close";
+    static const QString ViewDetach = "view-fullscreen";
 
-    static const QString Tag = "bookmarks.png";
+    static const QString Tag = "bookmarks";
 
 }
 
