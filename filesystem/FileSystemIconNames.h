@@ -28,13 +28,13 @@
 namespace IconNames
 {
 
-    static const QString Document = "application-x-zerosize.png";
-    static const QString Folder = "folder.png";
+    static const QString Document = "application-x-zerosize";
+    static const QString Folder = "folder";
 
-    static const QString Parent = "go-up.png";
-    static const QString PreviousDirectory = "go-previous.png";
-    static const QString NextDirectory = "go-next.png";
-    static const QString Home = "go-home.png";
+    static const QString Parent = "go-up";
+    static const QString PreviousDirectory = "go-previous";
+    static const QString NextDirectory = "go-next";
+    static const QString Home = "go-home";
 
 };
 
