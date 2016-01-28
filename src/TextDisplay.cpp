@@ -1580,9 +1580,9 @@ void TextDisplay::_processMacro( const TextMacro& macro )
 
     // retrieve text cursor
     QTextCursor cursor( textCursor() );
-    int cursor_position( 0 );
-    int position_begin(0);
-    int position_end(0);
+    int cursorPosition(0);
+    int positionBegin(0);
+    int positionEnd(0);
     QTextBlock begin;
     QTextBlock end;
 
@@ -1591,29 +1591,29 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     {
 
         // retrieve blocks
-        position_begin = qMin( cursor.position(), cursor.anchor() );
-        position_end = qMax( cursor.position(), cursor.anchor() );
-        begin = document()->findBlock( position_begin );
-        end = document()->findBlock( position_end );
+        positionBegin = qMin( cursor.position(), cursor.anchor() );
+        positionEnd = qMax( cursor.position(), cursor.anchor() );
+        begin = document()->findBlock( positionBegin );
+        end = document()->findBlock( positionEnd );
 
         // enlarge selection so that it matches begin and end of blocks
-        position_begin = begin.position();
-        if( position_end == end.position() )
+        positionBegin = begin.position();
+        if( positionEnd == end.position() )
         {
-            position_end--;
+            positionEnd--;
             end = end.previous();
-        } else {  position_end = end.position() + end.length() - 1; }
+        } else {  positionEnd = end.position() + end.length() - 1; }
 
-        cursor_position = position_end;
+        cursorPosition = positionEnd;
 
     } else {
 
         begin = document()->firstBlock();
-        position_begin = begin.position();
+        positionBegin = begin.position();
 
         end = document()->lastBlock();
-        position_end = end.position() + end.length()-1;
-        cursor_position = cursor.position();
+        positionEnd = end.position() + end.length()-1;
+        cursorPosition = cursor.position();
 
     }
 
@@ -1621,11 +1621,11 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     QString text;
     if( begin == end ) {
 
-        text = begin.text().mid( position_begin - begin.position(), position_end-position_begin );
+        text = begin.text().mid( positionBegin - begin.position(), positionEnd-positionBegin );
 
     } else {
 
-        text = begin.text().mid( position_begin - begin.position() );
+        text = begin.text().mid( positionBegin - begin.position() );
         if( begin.next().isValid() || _blockIsCollapsed( begin ) ) text += "\n";
         text += _collapsedText( begin );
 
@@ -1637,19 +1637,19 @@ void TextDisplay::_processMacro( const TextMacro& macro )
         }
 
         // last block
-        text += end.text().left( position_end - end.position() );
+        text += end.text().left( positionEnd - end.position() );
 
     }
 
     // process macro
-    TextMacro::Result result( macro.processText( text, cursor_position ) );
+    TextMacro::Result result( macro.processText( text, cursorPosition ) );
     if( !result.first ) return;
 
     Debug::Throw() << "TextDisplay::processText - increment: " << result.second << endl;
 
     // update selection
-    cursor.setPosition( position_begin );
-    cursor.setPosition( position_end, QTextCursor::KeepAnchor );
+    cursor.setPosition( positionBegin );
+    cursor.setPosition( positionEnd, QTextCursor::KeepAnchor );
 
     // insert new text
     cursor.insertText( text );
@@ -1657,10 +1657,10 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     // restore selection
     if( hasSelection )
     {
-        cursor.setPosition( position_begin );
-        cursor.setPosition( position_begin + text.size(), QTextCursor::KeepAnchor );
+        cursor.setPosition( positionBegin );
+        cursor.setPosition( positionBegin + text.size(), QTextCursor::KeepAnchor );
     } else {
-        cursor.setPosition( cursor_position + result.second );
+        cursor.setPosition( cursorPosition + result.second );
     }
 
     setTextCursor( cursor );
@@ -2194,10 +2194,10 @@ void TextDisplay::_addBaseIndentation( void )
     QTextCursor cursor( textCursor() );
     if( !cursor.hasSelection() ) return;
 
-    int position_begin( qMin( cursor.position(), cursor.anchor() ) );
-    int position_end( qMax( cursor.position(), cursor.anchor() ) );
-    begin = document()->findBlock( position_begin );
-    end = document()->findBlock( position_end );
+    int positionBegin( qMin( cursor.position(), cursor.anchor() ) );
+    int positionEnd( qMax( cursor.position(), cursor.anchor() ) );
+    begin = document()->findBlock( positionBegin );
+    end = document()->findBlock( positionEnd );
 
     // store blocks
     QList<QTextBlock> blocks;
@@ -2269,10 +2269,10 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
     if( cursor.hasSelection() )
     {
 
-        int position_begin( qMin( cursor.position(), cursor.anchor() ) );
-        int position_end( qMax( cursor.position(), cursor.anchor() ) );
-        begin = document()->findBlock( position_begin );
-        end = document()->findBlock( position_end );
+        int positionBegin( qMin( cursor.position(), cursor.anchor() ) );
+        int positionEnd( qMax( cursor.position(), cursor.anchor() ) );
+        begin = document()->findBlock( positionBegin );
+        end = document()->findBlock( positionEnd );
 
     } else {
 
