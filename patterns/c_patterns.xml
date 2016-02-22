@@ -114,7 +114,7 @@
   </keyword_pattern>
   <keyword_pattern style="Storage Type" parent="" name="Root Storage Type" >
    <comments>storage type</comments>
-   <keyword>\b(Bool_t|(U?Int_t)|Double_t|Float_t|(U?Long(64)?_t)|Char_t|TString|(T(H|F)\d(F|I)?)|TString|(TGraph(Errors)?))\b</keyword>
+   <keyword>\b(Bool_t|(U?Short_t)|(U?Int_t)|Double_t|Float_t|(U?Long(64)?_t)|Char_t|TString|(T(H|F)\d(F|I)?)|TString|(TGraph(Errors)?))\b</keyword>
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Stl Keyword" >
    <comments>keywords</comments>
