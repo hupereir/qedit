@@ -39,7 +39,7 @@ class DocumentClassToolBar: public CustomToolBar
 
     Q_SIGNALS:
 
-    //* emmited every time a document class is selected
+    //* emitted every time a document class is selected
     void documentClassSelected( QString );
 
     private Q_SLOTS:

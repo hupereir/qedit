@@ -40,7 +40,7 @@ class DocumentClassMenu: public QMenu, public Counter
 
     Q_SIGNALS:
 
-    //* emmited every time a document class is selected
+    //* emitted every time a document class is selected
     void documentClassSelected( QString );
 
     protected Q_SLOTS:

@@ -104,7 +104,7 @@ class WindowServer: public QObject, public Counter, public Base::Key
 
     Q_SIGNALS:
 
-    //* emmited whenever the session file list is modified
+    //* emitted whenever the session file list is modified
     void sessionFilesChanged( void );
 
     private Q_SLOTS:

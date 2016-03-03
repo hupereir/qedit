@@ -300,25 +300,25 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     Q_SIGNALS:
 
-    //* emmited when window is activated
+    //* emitted when window is activated
     void activated( MainWindow* );
 
-    //* emmited when the document modification state of an editor is changed
+    //* emitted when the document modification state of an editor is changed
     void modificationChanged( void );
 
     //*@name re-implemented from text editor
     //@{
 
-    //* emmited from TextDisplay when no match is found for find/replace request
+    //* emitted from TextDisplay when no match is found for find/replace request
     void noMatchFound( void );
 
-    //* emmited from TextDisplay when no match is found for find/replace request
+    //* emitted from TextDisplay when no match is found for find/replace request
     void matchFound( void );
 
-    //* emmited when selected line is not found
+    //* emitted when selected line is not found
     void lineNotFound( void );
 
-    //* emmited when selected line is found
+    //* emitted when selected line is found
     void lineFound( void );
 
     //* busy

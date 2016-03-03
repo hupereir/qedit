@@ -43,7 +43,7 @@ class TextMacroMenu: public QMenu, public Counter
 
     Q_SIGNALS:
 
-    //* emmited every time a text macro is selected
+    //* emitted every time a text macro is selected
     void textMacroSelected( QString );
 
     public Q_SLOTS:

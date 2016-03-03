@@ -36,7 +36,7 @@ class ReplaceWidget: public BaseReplaceWidget
 
     Q_SIGNALS:
 
-    //* emmited when Replace is pressed
+    //* emitted when Replace is pressed
     void replaceInFiles();
 
 };
