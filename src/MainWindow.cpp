@@ -92,8 +92,8 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     // additional actions from Application
     // they need to be added so that short cuts still work even when menu bar is hidden)
-    Application& application( *Singleton::get().application<Application>() );
-    addAction( &application.closeAction() );
+    auto application( Singleton::get().application<Application>() );
+    addAction( &application->closeAction() );
 
     // menu
     setMenuBar( menu_ = new Menu( this ) );
@@ -105,7 +105,7 @@ MainWindow::MainWindow(  QWidget* parent ):
     setCentralWidget( splitter );
 
     // insert navigationFrame
-    navigationFrame_ = new NavigationFrame(0, application.recentFiles() );
+    navigationFrame_ = new NavigationFrame(0, application->recentFiles() );
     navigationFrame_->setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
     splitter->addWidget( &navigationFrame() );
 
@@ -166,8 +166,8 @@ MainWindow::MainWindow(  QWidget* parent ):
     _installToolbars();
 
     //* configuration
-    connect( &application, SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
-    connect( &application, SIGNAL(saveConfiguration()), SLOT(_saveConfiguration()) );
+    connect( application, SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
+    connect( application, SIGNAL(saveConfiguration()), SLOT(_saveConfiguration()) );
     connect( qApp, SIGNAL(aboutToQuit()), SLOT(_saveConfiguration()) );
     _updateConfiguration();
 

@@ -358,8 +358,8 @@ void TextDisplay::setIsNewDocument( void )
     Debug::Throw( "TextDisplay::setIsNewDocument - filename set.\n" );
 
     // perform first autosave
-    Application& application( *Singleton::get().application<Application>() );
-    application.autoSave().saveFiles( this );
+    auto application( Singleton::get().application<Application>() );
+    application->autoSave().saveFiles( this );
     Debug::Throw( "TextDisplay::setIsNewDocument - done.\n" );
 
 }
@@ -448,8 +448,8 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
     if( restoreAutoSave && !isReadOnly() ) save();
 
     // perform first autosave
-    Application& application( *Singleton::get().application<Application>() );
-    application.autoSave().saveFiles( this );
+    auto application( Singleton::get().application<Application>() );
+    application->autoSave().saveFiles( this );
     Debug::Throw( "TextDisplay::setFile - done.\n" );
 
 }
@@ -1053,27 +1053,27 @@ void TextDisplay::_updateDocumentClass( File file, bool newDocument )
 
     // default document class is empty
     DocumentClass documentClass;
-    Application& application( *Singleton::get().application<Application>() );
+    auto application( Singleton::get().application<Application>() );
 
     // try load document class from className
     if( !className().isEmpty() )
     {
         Debug::Throw( "TextDisplay::updateDocumentClass - try use className().\n" );
-        documentClass = application.classManager().get( className() );
+        documentClass = application->classManager().get( className() );
     }
 
     // try load from file
     if( documentClass.name().isEmpty() && !( file.isEmpty() || newDocument ) )
     {
         Debug::Throw( "TextDisplay::updateDocumentClass - try use filename.\n" );
-        documentClass = application.classManager().find( file );
+        documentClass = application->classManager().find( file );
     }
 
     // use default
     if( documentClass.name().isEmpty() )
     {
         Debug::Throw( "TextDisplay::updateDocumentClass - using default.\n" );
-        documentClass = application.classManager().defaultClass();
+        documentClass = application->classManager().defaultClass();
     }
 
     // update class name

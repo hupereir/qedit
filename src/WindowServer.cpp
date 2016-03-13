@@ -129,8 +129,8 @@ FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) con
     FileRecord::List records;
 
     // get associated main windows
-    Application& application( *Singleton::get().application<Application>() );
-    foreach( MainWindow* windowIter, Base::KeySet<MainWindow>( this ) )
+    auto application( Singleton::get().application<Application>() );
+    foreach( auto windowIter, Base::KeySet<MainWindow>( this ) )
     {
         // check if current window match the one passed in argument
         bool isActiveWindow( windowIter == window );
@@ -149,7 +149,7 @@ FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) con
             if( file.isEmpty() ) continue;
 
             // insert in map (together with modification status)
-            FileRecord record = display->isNewDocument() ? FileRecord( file ):application.recentFiles().get(file);
+            FileRecord record = display->isNewDocument() ? FileRecord( file ):application->recentFiles().get(file);
 
             // set flags
             unsigned int flags( FileRecordProperties::None );

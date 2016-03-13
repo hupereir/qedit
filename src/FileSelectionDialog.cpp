@@ -52,7 +52,7 @@ selection_( selection )
 
     // retrieve file records
     FileRecordModel::List records;
-    foreach( const FileRecord& record, Singleton::get().application<Application>()->windowServer().records() )
+    foreach( auto record, Singleton::get().application<Application>()->windowServer().records() )
     { records << record; }
     model_.set( records );
 

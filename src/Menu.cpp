@@ -49,41 +49,41 @@ Menu::Menu( QWidget* parent ):
     // file menu
     QMenu* menu = addMenu( tr( "File" ) );
 
-    // retrieve mainwindow
-    const Application& application( *Singleton::get().application<Application>() );
-    const MainWindow& mainwindow( *static_cast<MainWindow*>( window() ) );
+    // retrieve mainWindow
+    auto application( Singleton::get().application<Application>() );
+    auto mainWindow( static_cast<MainWindow*>( window() ) );
 
-    menu->addAction( &mainwindow.newFileAction() );
-    menu->addAction( &mainwindow.cloneAction() );
-    menu->addAction( &mainwindow.detachAction() );
-    menu->addAction( &mainwindow.openAction() );
+    menu->addAction( &mainWindow->newFileAction() );
+    menu->addAction( &mainWindow->cloneAction() );
+    menu->addAction( &mainWindow->detachAction() );
+    menu->addAction( &mainWindow->openAction() );
 
     // open previous menu
-    menu->addMenu( recentFilesMenu_ = new RecentFilesMenu( this, application.recentFiles() ) );
+    menu->addMenu( recentFilesMenu_ = new RecentFilesMenu( this, application->recentFiles() ) );
 
     // additional actions
     menu->addSeparator();
-    menu->addAction( &mainwindow.closeDisplayAction() );
-    menu->addAction( &mainwindow.closeWindowAction() );
-    menu->addAction( &mainwindow.saveAction() );
-    menu->addAction( &mainwindow.saveAsAction() );
-    menu->addAction( &application.windowServer().saveAllAction() );
-    menu->addAction( &mainwindow.revertToSaveAction() );
+    menu->addAction( &mainWindow->closeDisplayAction() );
+    menu->addAction( &mainWindow->closeWindowAction() );
+    menu->addAction( &mainWindow->saveAction() );
+    menu->addAction( &mainWindow->saveAsAction() );
+    menu->addAction( &application->windowServer().saveAllAction() );
+    menu->addAction( &mainWindow->revertToSaveAction() );
     menu->addSeparator();
 
     // print and close
-    menu->addAction( &mainwindow.printAction() );
-    menu->addAction( &mainwindow.printPreviewAction() );
-    menu->addAction( &mainwindow.htmlAction() );
+    menu->addAction( &mainWindow->printAction() );
+    menu->addAction( &mainWindow->printPreviewAction() );
+    menu->addAction( &mainWindow->htmlAction() );
     menu->addSeparator();
 
     // document class
-    menu->addAction( &mainwindow.filePropertiesAction() );
+    menu->addAction( &mainWindow->filePropertiesAction() );
     menu->addMenu( documentClassMenu_ = new DocumentClassMenu( this ) );
     documentClassMenu_->setTitle( tr( "Document Type" ) );
 
     menu->addSeparator();
-    menu->addAction( &application.closeAction() );
+    menu->addAction( &application->closeAction() );
 
     // recent files menu current file needs to be updated prior to the menu to be shown
     // this is performed every time the "file menu" is shown.
@@ -127,8 +127,8 @@ Menu::Menu( QWidget* parent ):
     menu = addMenu( tr( "Help" ) );
     menu->addAction( &help->displayAction() );
     menu->addSeparator();
-    menu->addAction( &application.aboutAction() );
-    menu->addAction( &application.aboutQtAction() );
+    menu->addAction( &application->aboutAction() );
+    menu->addAction( &application->aboutQtAction() );
 
     // debug menu
     menu->addSeparator();
@@ -143,14 +143,14 @@ void Menu::updateMacroMenu( void )
 {
 
     // retrieve current display
-    const TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
-    bool hasSelection( display.textCursor().hasSelection() );
-    const TextMacro::List& macros( display.macros() );
+    auto display( &static_cast<MainWindow*>(window())->activeDisplay() );
+    bool hasSelection( display->textCursor().hasSelection() );
+    const TextMacro::List& macros( display->macros() );
 
     macroMenu_->update( macros );
     macroMenu_->updateState( hasSelection );
     macroMenu_->addSeparator();
-    macroMenu_->addAction( &display.noAutomaticMacrosAction() );
+    macroMenu_->addAction( &display->noAutomaticMacrosAction() );
 
     return;
 }
@@ -159,8 +159,8 @@ void Menu::updateMacroMenu( void )
 void Menu::_updateRecentFilesMenu( void )
 {
     Debug::Throw( "Menu::_updateRecentFilesMenu.\n" );
-    const TextDisplay& display( static_cast<MainWindow*>( window() )->activeDisplay() );
-    if( !display.isNewDocument() ) recentFilesMenu_->setCurrentFile( display.file() );
+    auto display( &static_cast<MainWindow*>( window() )->activeDisplay() );
+    if( !display->isNewDocument() ) recentFilesMenu_->setCurrentFile( display->file() );
 }
 
 //_______________________________________________
@@ -170,18 +170,18 @@ void Menu::_updateEditMenu( void )
 
     editMenu_->clear();
 
-    TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
-    editMenu_->addAction( &display.undoAction() );
-    editMenu_->addAction( &display.redoAction() );
+    auto display( &static_cast<MainWindow*>(window())->activeDisplay() );
+    editMenu_->addAction( &display->undoAction() );
+    editMenu_->addAction( &display->redoAction() );
     editMenu_->addSeparator();
 
-    editMenu_->addAction( &display.cutAction() );
-    editMenu_->addAction( &display.copyAction() );
-    editMenu_->addAction( &display.pasteAction() );
+    editMenu_->addAction( &display->cutAction() );
+    editMenu_->addAction( &display->copyAction() );
+    editMenu_->addAction( &display->pasteAction() );
     editMenu_->addSeparator();
 
-    editMenu_->addAction( &display.upperCaseAction() );
-    editMenu_->addAction( &display.lowerCaseAction() );
+    editMenu_->addAction( &display->upperCaseAction() );
+    editMenu_->addAction( &display->lowerCaseAction() );
 }
 
 //_______________________________________________
@@ -191,15 +191,15 @@ void Menu::_updateSearchMenu( void )
 
     searchMenu_->clear();
 
-    const TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
-    searchMenu_->addAction( &display.findAction() );
-    searchMenu_->addAction( &display.findAgainAction() );
-    searchMenu_->addAction( &display.findSelectionAction() );
-    searchMenu_->addAction( &display.replaceAction() );
-    searchMenu_->addAction( &display.replaceAgainAction() );
+    auto display( &static_cast<MainWindow*>(window())->activeDisplay() );
+    searchMenu_->addAction( &display->findAction() );
+    searchMenu_->addAction( &display->findAgainAction() );
+    searchMenu_->addAction( &display->findSelectionAction() );
+    searchMenu_->addAction( &display->replaceAction() );
+    searchMenu_->addAction( &display->replaceAgainAction() );
     searchMenu_->addSeparator();
 
-    searchMenu_->addAction( &display.gotoLineAction() );
+    searchMenu_->addAction( &display->gotoLineAction() );
 
 }
 
@@ -210,45 +210,45 @@ void Menu::_updatePreferenceMenu( void )
     Debug::Throw( "Menu::_updatePreferenceMenu.\n" );
 
     // reference to needed objects
-    const Application& application( *Singleton::get().application<Application>() );
-    const MainWindow& mainwindow( *static_cast<MainWindow*>(window()) );
-    const TextDisplay& display( mainwindow.activeDisplay() );
+    auto application( Singleton::get().application<Application>() );
+    auto mainWindow( static_cast<MainWindow*>(window()) );
+    auto display( &mainWindow->activeDisplay() );
 
     // clear menu
     preferenceMenu_->clear();
 
     // textdisplay actions
-    preferenceMenu_->addAction( &mainwindow.navigationFrame().visibilityAction() );
-    preferenceMenu_->addAction( &display.showLineNumberAction() );
-    preferenceMenu_->addAction( &display.showBlockDelimiterAction() );
-    preferenceMenu_->addAction( &display.wrapModeAction() );
-    preferenceMenu_->addAction( &display.tabEmulationAction() );
-    preferenceMenu_->addAction( &display.textIndentAction() );
-    preferenceMenu_->addAction( &display.textHighlightAction() );
-    preferenceMenu_->addAction( &display.blockHighlightAction() );
-    preferenceMenu_->addAction( &display.parenthesisHighlightAction() );
+    preferenceMenu_->addAction( &mainWindow->navigationFrame().visibilityAction() );
+    preferenceMenu_->addAction( &display->showLineNumberAction() );
+    preferenceMenu_->addAction( &display->showBlockDelimiterAction() );
+    preferenceMenu_->addAction( &display->wrapModeAction() );
+    preferenceMenu_->addAction( &display->tabEmulationAction() );
+    preferenceMenu_->addAction( &display->textIndentAction() );
+    preferenceMenu_->addAction( &display->textHighlightAction() );
+    preferenceMenu_->addAction( &display->blockHighlightAction() );
+    preferenceMenu_->addAction( &display->parenthesisHighlightAction() );
 
     preferenceMenu_->addSeparator();
     #if USE_ASPELL
-    preferenceMenu_->addAction( &display.autoSpellAction() );
-    preferenceMenu_->addAction( &display.dictionaryMenuAction() );
-    preferenceMenu_->addAction( &display.filterMenuAction() );
+    preferenceMenu_->addAction( &display->autoSpellAction() );
+    preferenceMenu_->addAction( &display->dictionaryMenuAction() );
+    preferenceMenu_->addAction( &display->filterMenuAction() );
 
     // disable autospell action if dictionaries are empty
-    const bool hasDictionaries( !display.textHighlight().spellParser().interface().dictionaries().empty() );
-    display.autoSpellAction().setEnabled( hasDictionaries );
-    display.dictionaryMenuAction().setEnabled( hasDictionaries );
+    const bool hasDictionaries( !display->textHighlight().spellParser().interface().dictionaries().empty() );
+    display->autoSpellAction().setEnabled( hasDictionaries );
+    display->dictionaryMenuAction().setEnabled( hasDictionaries );
     #endif
 
-    preferenceMenu_->addAction( &display.textEncodingMenuAction() );
-    // preferenceMenu_->addAction( &display.textEncodingAction() );
+    preferenceMenu_->addAction( &display->textEncodingMenuAction() );
+    // preferenceMenu_->addAction( &display->textEncodingAction() );
 
     // configurations (from application)
     preferenceMenu_->addSeparator();
-    preferenceMenu_->addAction( &application.configurationAction() );
-    preferenceMenu_->addAction( &application.documentClassesConfigurationAction() );
+    preferenceMenu_->addAction( &application->configurationAction() );
+    preferenceMenu_->addAction( &application->documentClassesConfigurationAction() );
     #if USE_ASPELL
-    preferenceMenu_->addAction( &application.spellCheckConfigurationAction() );
+    preferenceMenu_->addAction( &application->spellCheckConfigurationAction() );
     #endif
 
     return;
@@ -260,75 +260,75 @@ void Menu::_updateToolsMenu( void )
 
     Debug::Throw( "Menu::_updateToolsMenu.\n" );
 
-    // retrieve mainwindow and current display
-    const MainWindow& mainwindow( *static_cast<MainWindow*>(window()) );
-    const TextDisplay& display( mainwindow.activeDisplay() );
+    // retrieve mainWindow and current display
+    auto mainWindow( static_cast<MainWindow*>(window()) );
+    auto display( &mainWindow->activeDisplay() );
 
     // retrieve flags needed to set button state
-    const bool editable( !display.isReadOnly() );
-    const bool hasSelection( display.textCursor().hasSelection() );
-    const bool hasIndent( display.textIndentAction().isEnabled() );
+    const bool editable( !display->isReadOnly() );
+    const bool hasSelection( display->textCursor().hasSelection() );
+    const bool hasIndent( display->textIndentAction().isEnabled() );
 
     // clear menu
     toolsMenu_->clear();
 
     // selection indentation
-    toolsMenu_->addAction( &display.indentSelectionAction() );
-    display.indentSelectionAction().setEnabled( editable && hasSelection && hasIndent );
+    toolsMenu_->addAction( &display->indentSelectionAction() );
+    display->indentSelectionAction().setEnabled( editable && hasSelection && hasIndent );
 
-    //if( display.baseIndentAction().isEnabled() )
-    { toolsMenu_->addAction( &display.baseIndentAction() ); }
+    //if( display->baseIndentAction().isEnabled() )
+    { toolsMenu_->addAction( &display->baseIndentAction() ); }
 
     // tab replacement
-    toolsMenu_->addAction( &display.leadingTabsAction() );
-    display.leadingTabsAction().setEnabled( display.hasLeadingTabs() );
+    toolsMenu_->addAction( &display->leadingTabsAction() );
+    display->leadingTabsAction().setEnabled( display->hasLeadingTabs() );
 
     #if USE_ASPELL
     // spell checker
-    toolsMenu_->addAction( &display.spellcheckAction() );
+    toolsMenu_->addAction( &display->spellcheckAction() );
 
     // disable autospell action if dictionaries are empty
-    const bool hasDictionaries( !display.textHighlight().spellParser().interface().dictionaries().empty() );
-    display.spellcheckAction().setEnabled( hasDictionaries );
+    const bool hasDictionaries( !display->textHighlight().spellParser().interface().dictionaries().empty() );
+    display->spellcheckAction().setEnabled( hasDictionaries );
     #endif
 
     // diff files
     toolsMenu_->addSeparator();
-    toolsMenu_->addAction( &mainwindow.diffAction() );
+    toolsMenu_->addAction( &mainWindow->diffAction() );
 
-    const bool hasTags( display.hasTaggedBlocks() );
-    const bool currentBlockTagged( hasTags && display.isCurrentBlockTagged() );
+    const bool hasTags( display->hasTaggedBlocks() );
+    const bool currentBlockTagged( hasTags && display->isCurrentBlockTagged() );
 
-    toolsMenu_->addAction( &display.tagBlockAction() );
-    display.tagBlockAction().setText( hasSelection ? tr( "Tag Selected Blocks" ) : tr( "Tag current block" ) );
+    toolsMenu_->addAction( &display->tagBlockAction() );
+    display->tagBlockAction().setText( hasSelection ? tr( "Tag Selected Blocks" ) : tr( "Tag current block" ) );
 
-    toolsMenu_->addAction( &display.nextTagAction() );
-    display.nextTagAction().setEnabled( hasTags );
+    toolsMenu_->addAction( &display->nextTagAction() );
+    display->nextTagAction().setEnabled( hasTags );
 
-    toolsMenu_->addAction( &display.previousTagAction() );
-    display.previousTagAction().setEnabled( hasTags );
+    toolsMenu_->addAction( &display->previousTagAction() );
+    display->previousTagAction().setEnabled( hasTags );
 
-    toolsMenu_->addAction( &display.clearTagAction() );
-    display.clearTagAction().setEnabled( currentBlockTagged );
+    toolsMenu_->addAction( &display->clearTagAction() );
+    display->clearTagAction().setEnabled( currentBlockTagged );
 
-    toolsMenu_->addAction( &display.clearAllTagsAction() );
-    display.clearAllTagsAction().setEnabled( hasTags );
+    toolsMenu_->addAction( &display->clearAllTagsAction() );
+    display->clearAllTagsAction().setEnabled( hasTags );
 
     // blocks delimiters
-    if( display.showBlockDelimiterAction().isEnabled() && display.showBlockDelimiterAction().isChecked() )
+    if( display->showBlockDelimiterAction().isEnabled() && display->showBlockDelimiterAction().isChecked() )
     {
         toolsMenu_->addSeparator();
-        display.blockDelimiterDisplay().updateCurrentBlockActionState();
-        display.blockDelimiterDisplay().addActions( *toolsMenu_ );
+        display->blockDelimiterDisplay().updateCurrentBlockActionState();
+        display->blockDelimiterDisplay().addActions( *toolsMenu_ );
     }
 
     // rehighlight
     toolsMenu_->addSeparator();
     QAction* action = toolsMenu_->addAction( tr( "Rehighlight" ), window(), SLOT(rehighlight()) );
-    bool enabled( display.textHighlightAction().isEnabled() && display.textHighlightAction().isChecked() );
+    bool enabled( display->textHighlightAction().isEnabled() && display->textHighlightAction().isChecked() );
 
     #if USE_ASPELL
-    enabled |= ( display.autoSpellAction().isEnabled() || display.autoSpellAction().isChecked() );
+    enabled |= ( display->autoSpellAction().isEnabled() || display->autoSpellAction().isChecked() );
     #endif
 
     action->setEnabled( enabled );
@@ -344,16 +344,16 @@ void Menu::_updateWindowsMenu( void )
     windowsMenu_->clear();
 
     // add session handling
-    const Application& application( *Singleton::get().application<Application>() );
-    windowsMenu_->addAction( &application.printSessionAction() );
-    windowsMenu_->addAction( &application.saveSessionAction() );
-    windowsMenu_->addAction( &application.restoreSessionAction() );
-    windowsMenu_->addAction( &application.discardSessionAction() );
+    auto application( Singleton::get().application<Application>() );
+    windowsMenu_->addAction( &application->printSessionAction() );
+    windowsMenu_->addAction( &application->saveSessionAction() );
+    windowsMenu_->addAction( &application->restoreSessionAction() );
+    windowsMenu_->addAction( &application->discardSessionAction() );
     windowsMenu_->addSeparator();
 
     // retrieve current display
-    const TextDisplay& display( static_cast<MainWindow*>(window())->activeDisplay() );
-    const QString& currentFile( display.file() );
+    auto display( &static_cast<MainWindow*>(window())->activeDisplay() );
+    const QString& currentFile( display->file() );
 
     // clear files map
     fileActions_.clear();
@@ -377,9 +377,9 @@ void Menu::_updateWindowsMenu( void )
     }
 
     windowsMenu_->addSeparator();
-    SessionFilesFrame& sessionFilesFrame( static_cast<MainWindow*>(window())->navigationFrame().sessionFilesFrame() );
-    windowsMenu_->addAction( &sessionFilesFrame.previousFileAction() );
-    windowsMenu_->addAction( &sessionFilesFrame.nextFileAction() );
+    auto sessionFilesFrame( &static_cast<MainWindow*>(window())->navigationFrame().sessionFilesFrame() );
+    windowsMenu_->addAction( &sessionFilesFrame->previousFileAction() );
+    windowsMenu_->addAction( &sessionFilesFrame->nextFileAction() );
 
 }
 
@@ -400,7 +400,7 @@ void Menu::_selectFile( QAction* action )
     ActionMap::iterator iter = fileActions_.find( action );
     if( iter == fileActions_.end() ) return;
 
-    // retrieve all mainwindows
+    // retrieve all mainWindows
     Base::KeySet<MainWindow> windows( &Singleton::get().application<Application>()->windowServer() );
 
     // retrieve window matching file name

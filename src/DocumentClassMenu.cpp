@@ -49,12 +49,12 @@ void DocumentClassMenu::_update( void )
     actions_.clear();
 
     // retrieve current class from MainWindow
-    MainWindow& window( *static_cast<MainWindow*>( parentWidget()->window()) );
-    const QString& className( window.activeDisplay().className() );
+    auto window( static_cast<MainWindow*>( parentWidget()->window()) );
+    auto className( window->activeDisplay().className() );
 
     // retrieve classes from DocumentClass manager
-    const DocumentClassManager::List& classes( Singleton::get().application<Application>()->classManager().classes() );
-    foreach( const DocumentClass& documentClass, classes )
+    auto classes( Singleton::get().application<Application>()->classManager().classes() );
+    foreach( auto documentClass, classes )
     {
         // insert actions
         QAction* action = addAction( documentClass.name() );
@@ -74,7 +74,7 @@ void DocumentClassMenu::_update( void )
 void DocumentClassMenu::_selectClassName( QAction* action )
 {
     Debug::Throw( "DocumentClassMenu::_selectClassName.\n" );
-    ActionMap::iterator iter = actions_.find( action );
+    auto iter = actions_.find( action );
     if( iter != actions_.end() )
     { emit documentClassSelected( iter.value() ); }
 
