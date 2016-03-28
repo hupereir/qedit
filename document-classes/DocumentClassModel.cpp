@@ -49,7 +49,7 @@ Qt::ItemFlags DocumentClassModel::flags( const QModelIndex& index ) const
 {
 
     // default flags
-    if( !( index.isValid() && contains( index ) ) ) return Qt::ItemFlags();
+    if( !contains( index ) ) return Qt::ItemFlags();
 
     // check associated record validity
     const DocumentClass& documentClass( get(index) );
@@ -61,10 +61,8 @@ Qt::ItemFlags DocumentClassModel::flags( const QModelIndex& index ) const
 QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
 {
 
-    Debug::Throw( "DocumentClassModel::data.\n" );
-
-    // check index, role and column
-    if( !index.isValid() ) return QVariant();
+    // check index
+    if( !contains( index ) ) return QVariant();
 
     // retrieve associated file info
     const DocumentClass& documentClass( get()[index.row()] );

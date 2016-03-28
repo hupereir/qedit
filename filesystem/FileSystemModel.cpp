@@ -51,7 +51,7 @@ Qt::ItemFlags FileSystemModel::flags(const QModelIndex &index) const
 
     // default flags
     Qt::ItemFlags flags;
-    if( index.isValid() )
+    if( contains( index ) )
     {
 
         const FileRecord& record( get(index) );
@@ -68,8 +68,8 @@ Qt::ItemFlags FileSystemModel::flags(const QModelIndex &index) const
 QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
 {
 
-    // check index, role and column
-    if( !index.isValid() ) return QVariant();
+    // check index
+    if( !contains( index ) ) return QVariant();
 
     // return text associated to file and column
     switch( role )
