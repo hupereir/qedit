@@ -22,6 +22,7 @@
 #include "DefaultOptions.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
+#include "ErrorHandler.h"
 #include "File.h"
 #include "SystemOptions.h"
 #include "Singleton.h"
@@ -36,6 +37,7 @@ int main (int argc, char *argv[])
 {
 
     // options
+    ErrorHandler::initialize();
     installDefaultOptions();
     installSystemOptions();
     XmlOptions::setFile( XmlOptions::get().raw( "RC_FILE" ) );
