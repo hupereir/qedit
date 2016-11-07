@@ -59,10 +59,13 @@ class SessionFilesModel: public FileRecordModel
     Q_SIGNALS:
 
     //* file reorganization
-    void reparentFiles( const File&, const File& );
+    void reparentFiles( File, File );
 
     //* file reorganization
-    void reparentFilesToMain( const File&, const File& );
+    void reparentFilesToMain( File, File );
+
+    //* file open
+    void requestOpen( FileRecord );
 
     private Q_SLOTS:
 
