@@ -88,6 +88,7 @@ Counter( "SessionFilesFrame" )
 
     // connections
     connect( &model_, SIGNAL(layoutChanged()), list_, SLOT(updateMask()) );
+    connect( &model_, SIGNAL(requestOpen(FileRecord)), SIGNAL(fileActivated(FileRecord)) );
     connect( list_, SIGNAL(customContextMenuRequested(QPoint)), SLOT(_updateActions()) );
     connect( list_->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), SLOT(_itemSelected(QModelIndex)) );
     connect( list_, SIGNAL(activated(QModelIndex)), SLOT(_itemActivated(QModelIndex)) );

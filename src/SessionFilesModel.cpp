@@ -130,11 +130,7 @@ const QIcon& SessionFilesModel::_icon( int type )
 
 //______________________________________________________________________
 QStringList SessionFilesModel::mimeTypes( void ) const
-{
-    QStringList types;
-    types << FileRecord::MimeType;
-    return types;
-}
+{ return QStringList() << FileRecord::MimeType << "text/uri-list"; }
 
 //______________________________________________________________________
 QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
@@ -195,57 +191,81 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
     // check action
     if( action == Qt::IgnoreAction) return true;
 
-    if( !data->hasFormat( FileRecord::MimeType ) ) return false;
-
-    // get dropped file record (use XML)
-    // dom document
-    QDomDocument document;
-    if( !document.setContent( data->data( FileRecord::MimeType ), false ) ) return false;
-    const XmlFileRecord::List records( document.documentElement() );
-
-    // get current record
-    if( parent.isValid() )
+    if( data->hasFormat( FileRecord::MimeType ) )
     {
 
-        FileRecord target( get( parent ) );
+        // get dropped file record (use XML)
+        // dom document
+        QDomDocument document;
+        if( !document.setContent( data->data( FileRecord::MimeType ), false ) ) return false;
+        const XmlFileRecord::List records( document.documentElement() );
 
-        // loop over sources and emit proper signal
-        foreach( const XmlFileRecord& record, records )
-        { emit reparentFiles( record.file(), target.file() ); }
-
-        return true;
-
-    } else {
-
-        // look for first active file in this window
-        FileRecord target;
-        QModelIndex targetIndex;
-        for( int row = 0; row < rowCount(); row++ )
+        // get current record
+        if( parent.isValid() )
         {
 
-            QModelIndex index( SessionFilesModel::index( row, 0 ) );
-            if( flags( index ) & Qt::ItemIsEnabled )
-            {
-                FileRecord record( get( index ) );
-                if( record.hasFlag( FileRecordProperties::Active ) )
-                {
-                    targetIndex = index;
-                    target = record;
-                    break;
-                }
+            FileRecord target( get( parent ) );
 
+            // loop over sources and emit proper signal
+            foreach( const XmlFileRecord& record, records )
+            { emit reparentFiles( record.file(), target.file() ); }
+
+            return true;
+
+        } else {
+
+            // look for first active file in this window
+            FileRecord target;
+            QModelIndex targetIndex;
+            for( int row = 0; row < rowCount(); row++ )
+            {
+
+                QModelIndex index( SessionFilesModel::index( row, 0 ) );
+                if( flags( index ) & Qt::ItemIsEnabled )
+                {
+                    FileRecord record( get( index ) );
+                    if( record.hasFlag( FileRecordProperties::Active ) )
+                    {
+                        targetIndex = index;
+                        target = record;
+                        break;
+                    }
+
+                }
             }
+
+            // check that targetIndex is valid
+            if( !targetIndex.isValid() ) return false;
+
+            // emit relevant reparent signal
+            foreach( const FileRecord& record, records )
+            { emit reparentFilesToMain( record.file(), target.file() ); }
+
+            return true;
+
         }
 
-        // check that targetIndex is valid
-        if( !targetIndex.isValid() ) return false;
+    } else if( data->hasUrls() ) {
 
-        // emit relevant reparent signal
-        foreach( const FileRecord& record, records )
-        { emit reparentFilesToMain( record.file(), target.file() ); }
+        // TODO: should check number of files
+        const auto urls( data->urls() );
+        foreach( auto url, urls )
+        {
+
+            #if QT_VERSION >= 0x040800
+            // check that local file
+            if( !url.isLocalFile() ) continue;
+            #endif
+
+            // get file and check existence
+            const File file( url.path() );
+            if( file.exists() && !file.isDirectory() )
+            { emit requestOpen( FileRecord( file ) ); }
+
+        }
 
         return true;
 
-    }
+    } else return false;
 
 }
