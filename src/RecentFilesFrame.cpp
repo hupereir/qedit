@@ -70,9 +70,9 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     QMenu* menu( new ContextMenu( list_ ) );
     menu->addMenu( new ColumnSortingMenu( menu, list_ ) );
     menu->addMenu( new ColumnSelectionMenu( menu, list_ ) );
-    menu->addAction( &_openAction() );
+    menu->addAction( openAction_ );
     menu->addSeparator();
-    menu->addAction( &_cleanAction() );
+    menu->addAction( cleanAction_ );
 
     // connections
     connect( &model_, SIGNAL(layoutChanged()), list_, SLOT(updateMask()) );
@@ -123,7 +123,7 @@ void RecentFilesFrame::update( void )
     list_->update();
 
     // clean action enability
-    _cleanAction().setEnabled( recentFiles_->cleanEnabled() );
+    cleanAction_->setEnabled( recentFiles_->cleanEnabled() );
 
     // unlock
     actionsLocked_ = false;
@@ -149,7 +149,7 @@ void RecentFilesFrame::_updateActions( void )
     FileRecordModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
 
     bool has_validSelection( std::find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
-    _openAction().setEnabled( has_validSelection );
+    openAction_->setEnabled( has_validSelection );
 
 }
 
@@ -204,7 +204,7 @@ void RecentFilesFrame::_open( void )
     foreach( const FileRecord& record, model_.get( list_->selectionModel()->selectedRows() ) )
     { if( record.isValid() ) validSelection << record; }
 
-    // one should check the number of files to be edited
+    // TODO: should check number of files
     foreach( const FileRecord& record, validSelection )
     { emit fileActivated( record ); }
 
@@ -234,12 +234,12 @@ void RecentFilesFrame::_installActions( void )
 
     // clean
     addAction( cleanAction_ = new QAction( IconEngine::get( IconNames::Delete ), tr( "Clean" ), this ) );
-    connect( &_cleanAction(), SIGNAL(triggered()), SLOT(_clean()) );
-    _cleanAction().setEnabled( false );
-    _cleanAction().setToolTip( tr( "Clean invalid files" ) );
+    connect( cleanAction_, SIGNAL(triggered()), SLOT(_clean()) );
+    cleanAction_->setEnabled( false );
+    cleanAction_->setToolTip( tr( "Clean invalid files" ) );
 
     // open
     addAction( openAction_ = new QAction( IconEngine::get( IconNames::Open ), tr( "Open Selected Files" ), this ) );
-    connect( &_openAction(), SIGNAL(triggered()), SLOT(_open()) );
+    connect( openAction_, SIGNAL(triggered()), SLOT(_open()) );
 
 }

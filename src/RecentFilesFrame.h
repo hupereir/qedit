@@ -99,14 +99,6 @@ class RecentFilesFrame: public QWidget, public Counter
     //* install actions
     void _installActions( void );
 
-    //* clean action
-    QAction& _cleanAction( void ) const
-    { return *cleanAction_; }
-
-    //* open action
-    QAction& _openAction( void ) const
-    { return *openAction_; }
-
     //@}
 
     //* true if actions are locked (to disable signal emission during update)
