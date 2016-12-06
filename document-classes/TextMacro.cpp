@@ -182,14 +182,14 @@ TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) co
     else {
 
         QStringList lines( text.split( '\n' ) );
-        int local_position( position );
+        int localPosition( position );
         TextMacro::Result out;
         for( QStringList::iterator iter = lines.begin(); iter != lines.end(); ++iter )
         {
 
             int length = iter->length() + 1;
-            out += _processText( *iter, local_position );
-            local_position = qMax( -1, local_position - length );
+            out += _processText( *iter, localPosition );
+            localPosition = qMax( -1, localPosition - length );
 
         }
 
@@ -224,7 +224,7 @@ TextMacro::Result TextMacro::Rule::_processText( QString& text, int position ) c
         current_position += replace_text_.length();
 
         // end of line pattern must stop after first iteration
-        // in order not to enter infinite look
+        // in order not to enter infinite loop
         if( pattern_.pattern() == "$" ) break;
 
     }
