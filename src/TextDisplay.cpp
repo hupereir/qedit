@@ -882,9 +882,9 @@ bool TextDisplay::hasLeadingTabs( void ) const
     Debug::Throw( "TextDisplay::hasLeadingTabs.\n" );
 
     // define regexp to perform replacement
-    QRegExp wrong_tab_regexp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
+    QRegExp wrongTabRegExp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
     for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
-    { if( wrong_tab_regexp.indexIn( block.text() ) >= 0 ) return true; }
+    { if( wrongTabRegExp.indexIn( block.text() ) >= 0 ) return true; }
 
     return false;
 
@@ -1666,7 +1666,8 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     setTextCursor( cursor );
 
     // replace leading tabs in selection
-    if( !_hasTabEmulation() ) { _replaceLeadingTabs( false ); }
+    // if( !_hasTabEmulation() ) { _replaceLeadingTabs( false ); }
+    _replaceLeadingTabs( false );
 
     return;
 
@@ -2257,8 +2258,8 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
     setUpdatesEnabled( false );
 
     // define regexp to perform replacement
-    QRegExp wrong_tab_regexp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
-    QString wrong_tab( _hasTabEmulation() ? normalTabCharacter():emulatedTabCharacter() );
+    QRegExp wrongTabRegExp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
+    QString wrongTab( _hasTabEmulation() ? normalTabCharacter():emulatedTabCharacter() );
 
     // define blocks to process
     QTextBlock begin;
@@ -2297,16 +2298,16 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
         QString text( iter->text() );
 
         // look for leading tabs
-        if( wrong_tab_regexp.indexIn( text ) < 0 ) continue;
+        if( wrongTabRegExp.indexIn( text ) < 0 ) continue;
 
         // select with cursor
         QTextCursor cursor( *iter );
         cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
-        cursor.setPosition( cursor.position() + wrong_tab_regexp.matchedLength(), QTextCursor::KeepAnchor );
+        cursor.setPosition( cursor.position() + wrongTabRegExp.matchedLength(), QTextCursor::KeepAnchor );
 
         // create replacement string and insert.
         QString buffer;
-        for( int i=0; i< int(wrong_tab_regexp.matchedLength()/wrong_tab.size()); i++ )
+        for( int i=0; i< int(wrongTabRegExp.matchedLength()/wrongTab.size()); i++ )
         { buffer += tabCharacter(); }
         cursor.insertText( buffer );
 
