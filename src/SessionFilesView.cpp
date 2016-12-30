@@ -30,13 +30,16 @@
 //____________________________________________________________________
 SessionFilesView::SessionFilesView( QWidget* parent ):
     TreeView( parent )
-{}
+    {}
 
 //____________________________________________________________________
 void SessionFilesView::startDrag( Qt::DropActions supportedActions )
 {
 
-    Debug::Throw( "SessionFilesView::startDrag.\n" );
+    Debug::Throw(0)
+        << "SessionFilesView::startDrag - supported: "
+        << supportedActions
+        << endl;
 
     // check lock to prevent recursive calls
     if( locked_ )
