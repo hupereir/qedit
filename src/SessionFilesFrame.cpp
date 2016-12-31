@@ -59,7 +59,7 @@ Counter( "SessionFilesFrame" )
 
     // list
     layout()->addWidget( list_ = new SessionFilesView( this ) );
-    list_->setMouseTracking( true );
+    list_->setMouseTracking( false );
     list_->setModel( &model_ );
     list_->setOptionName( "SESSION_FILES" );
     list_->header()->hide();
@@ -260,7 +260,7 @@ void SessionFilesFrame::_open( void )
 {
 
     Debug::Throw( "SessionFilesFrame:_open.\n" );
-    foreach( const FileRecord& record, model_.get( list_->selectionModel()->selectedRows() ) )
+    for( auto record:model_.get( list_->selectionModel()->selectedRows() ) )
     { emit fileActivated( record ); }
 
 }
@@ -272,7 +272,7 @@ void SessionFilesFrame::_save( void )
     Debug::Throw( "SessionFilesFrame:_save.\n" );
 
     FileRecord::List modifiedRecords;
-    foreach( const FileRecord& record, model_.get( list_->selectionModel()->selectedRows() ) )
+    for( auto record:model_.get( list_->selectionModel()->selectedRows() ) )
     { if( record.hasFlag( FileRecordProperties::Modified ) ) modifiedRecords << record; }
 
     if( !modifiedRecords.empty() ) emit filesSaved( modifiedRecords );
@@ -289,7 +289,7 @@ void SessionFilesFrame::_close( void )
     if( !selection.empty() )
     {
       FileRecord::List records;
-      foreach( const FileRecord& record, selection )
+      for( auto record:selection )
       { records << record; }
       emit filesClosed( records );
     }
