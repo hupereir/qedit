@@ -30,15 +30,16 @@
 //____________________________________________________________________
 SessionFilesView::SessionFilesView( QWidget* parent ):
     TreeView( parent )
-    {}
+{}
 
 //____________________________________________________________________
 void SessionFilesView::startDrag( Qt::DropActions supportedActions )
 {
 
-    Debug::Throw(0)
-        << "SessionFilesView::startDrag - supported: "
-        << supportedActions
+    Debug::Throw()
+        << "SessionFilesView::startDrag -"
+        << " state: " << state()
+        << " supported: " << supportedActions
         << endl;
 
     // check lock to prevent recursive calls
@@ -50,7 +51,7 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
 
     // get list of dragable indexes
     QModelIndexList indexes;
-    foreach( const QModelIndex& index, selectionModel()->selectedIndexes() )
+    for( auto index:selectionModel()->selectedIndexes() )
     { if( model()->flags( index ) & Qt::ItemIsDragEnabled ) indexes << index; }
     if( indexes.isEmpty() ) return;
 
@@ -78,7 +79,7 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
         if( records.empty() ) return;
         const File target( records.front().file() );
         bool first( true );
-        foreach( const XmlFileRecord& record, records )
+        for( auto record:records )
         {
 
             if( first )
@@ -102,13 +103,13 @@ QPixmap SessionFilesView::_renderToPixmap( const QModelIndexList& indexes, QRect
 
     // generate pixmap
     rect = QRect();
-    foreach( const QModelIndex& index, indexes )
+    for( auto index:indexes )
     { rect |= visualRect( index ); }
 
     QPixmap pixmap( rect.size() );
     pixmap.fill( Qt::transparent );
     QPainter painter( &pixmap );
-    foreach( const QModelIndex& index, indexes )
+    for( auto index:indexes )
     {
         QStyleOptionViewItemV4 option;
 
