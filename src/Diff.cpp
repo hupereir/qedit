@@ -54,7 +54,7 @@ bool Diff::run( void )
     error_ = "";
 
     // check files
-    foreach( const FileInformation& fileInformation, files_ )
+    for( auto fileInformation:files_ )
     {
 
         // check if filename is empty
@@ -123,7 +123,7 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
     QStringList in( QString( out ).split( "\n" ) );
     int index(0);
 
-    foreach( QString buffer, in )
+    for( auto buffer:in )
     {
 
         index++;
@@ -303,7 +303,7 @@ void Diff::FileInformation::highlightDisplay( void )
     // this is needed due to the setUpdatesEnabled above
     Base::KeySet<TextDisplay> displays( display_ );
     displays.insert( display_ );
-    foreach( TextDisplay* display, displays )
+    for( auto display:displays )
     { display->viewport()->update(); }
 
     return;

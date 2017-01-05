@@ -130,13 +130,13 @@ FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) con
 
     // get associated main windows
     auto application( Singleton::get().application<Application>() );
-    foreach( auto windowIter, Base::KeySet<MainWindow>( this ) )
+    for( auto windowIter:Base::KeySet<MainWindow>( this ) )
     {
         // check if current window match the one passed in argument
         bool isActiveWindow( windowIter == window );
 
         // retrieve associated TextDisplays
-        foreach( TextDisplay* display,  Base::KeySet<TextDisplay>( windowIter->associatedDisplays() ) )
+        for( auto display:Base::KeySet<TextDisplay>( windowIter->associatedDisplays() ) )
         {
 
             // check modification status
@@ -193,7 +193,7 @@ bool WindowServer::closeAll( void )
     }
 
     QStringList files;
-    foreach( const FileRecord& record, records )
+    for( auto record:records )
     { files << record.file(); }
 
     return _close( files );
@@ -247,7 +247,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
         }
 
         bool first( true );
-        foreach( const QString& filename, filenames )
+        for( auto filename:filenames )
         {
 
             if( first )
@@ -277,7 +277,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
     } else {
 
         // default mode
-        foreach( const QString& filename, filenames )
+        for( auto filename:filenames )
         {
 
             OpenMode mode( openMode_ );
@@ -318,7 +318,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
 //______________________________________________________
 void WindowServer::open( const FileRecord::List& records )
 {
-    foreach( const FileRecord& record, records )
+    for( auto record:records )
     { _open( record ); }
 
 }
@@ -342,7 +342,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
     int maximum(0);
     Base::KeySet<TextDisplay> displays;
     Base::KeySet<MainWindow> windows( this );
-    foreach( const File& file, files )
+    for( auto file:files )
     {
 
         // find matching window
@@ -354,8 +354,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
         }
 
         // loop over views
-        Base::KeySet<TextView> views( *iter );
-        foreach( TextView* view, views )
+        for( auto view:Base::KeySet<TextView>( *iter ) )
         {
             if( !view->selectDisplay( file ) ) continue;
             TextDisplay* display( &view->activeDisplay() );
@@ -369,7 +368,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
     dialog.setMaximum( maximum );
 
     // loop over displays and perform replacement
-    foreach( TextDisplay* display, displays )
+    for( auto display:displays )
     {
         counts += display->replaceInWindow( selection, false );
         dialog.setOffset( dialog.value() );
@@ -665,7 +664,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         // close display
         displays = Base::KeySet<TextDisplay>( &previousDisplay );
         displays.insert( &previousDisplay );
-        foreach( TextDisplay* display, displays )
+        for( auto display:displays )
         { (*viewIter)->closeDisplay( *display ); }
 
         // restore modification state and make new display active
@@ -890,11 +889,11 @@ void WindowServer::_save( FileRecord::List records )
     if( records.size() > 1 && !SaveAllDialog( &_activeWindow(), records ).exec() ) return;
 
     // retrieve windows
-    foreach( MainWindow* window, Base::KeySet<MainWindow>( this ) )
+    for( auto window:Base::KeySet<MainWindow>( this ) )
     {
 
         // retrieve displays
-        foreach( TextDisplay* display,  window->associatedDisplays() )
+        for( auto display:window->associatedDisplays() )
         {
             if( !display->document()->isModified() ) continue;
             if( std::find_if( records.begin(), records.end(), FileRecord::SameFileFTor( display->file() ) ) == records.end() ) continue;
@@ -917,7 +916,7 @@ bool WindowServer::_close( FileRecord::List records )
     if( records.size() > 1 && !CloseFilesDialog( &_activeWindow(), records ).exec() ) return true;
 
     QStringList files;
-    foreach( const FileRecord& record, records )
+    for( auto record:records )
     { files << record.file(); }
 
     return _close( files );
@@ -933,9 +932,9 @@ bool WindowServer::_close( QStringList files )
     // need a first loop over associated windows to store modified files
     QSet<QString> modifiedFiles;
     Base::KeySet<MainWindow> windows( this );
-    foreach( MainWindow* window, windows )
+    for( auto window:windows )
     {
-        foreach( TextDisplay* display, window->associatedDisplays() )
+        for( auto display:window->associatedDisplays() )
         {
 
             // see if file is in list
@@ -947,16 +946,14 @@ bool WindowServer::_close( QStringList files )
     }
 
     // retrieve windows
-    foreach( MainWindow* window, windows )
+    for( auto window:windows )
     {
 
         // retrieve views
-        Base::KeySet<TextView> views( window );
-        foreach( TextView* view, views )
+        for( auto view:Base::KeySet<TextView>( window ) )
         {
 
-            Base::KeySet<TextDisplay> displays( view );
-            foreach( TextDisplay* display, displays )
+            for( auto display:Base::KeySet<TextDisplay>( view ) )
             {
 
                 // see if file is in list
@@ -995,11 +992,11 @@ MainWindow& WindowServer::_findWindow( const File& file )
     MainWindow* out( 0 );
 
     // retrieve windows
-    foreach( MainWindow* window, Base::KeySet<MainWindow>( this ) )
+    for( auto window:Base::KeySet<MainWindow>( this ) )
     {
 
         // retrieve displays
-        foreach( TextDisplay* display, window->associatedDisplays() )
+        for( auto display:window->associatedDisplays() )
         {
             if( display->file() == file )
             {
@@ -1036,11 +1033,11 @@ TextDisplay& WindowServer::_findDisplay( const File& file )
     TextDisplay* out( 0 );
 
     // retrieve windows
-    foreach( MainWindow* window, Base::KeySet<MainWindow>( this ) )
+    for( auto window:Base::KeySet<MainWindow>( this ) )
     {
 
         // retrieve displays
-        foreach( TextDisplay* display, window->associatedDisplays() )
+        for( auto display:window->associatedDisplays() )
         {
             if( display->file() == file )
             {

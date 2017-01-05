@@ -107,7 +107,7 @@ void FileCheck::timerEvent( QTimerEvent* event )
         if( data_.empty() ) return;
 
         Base::KeySet<TextDisplay> displays( this );
-        foreach( const Data& data, data_ )
+        for( auto data:data_ )
         {
 
             Base::KeySet<TextDisplay>::iterator displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( data.file() ) ) );
@@ -117,7 +117,7 @@ void FileCheck::timerEvent( QTimerEvent* event )
                 // assign to this display and others
                 Base::KeySet<TextDisplay> associatedDisplays( *displayIter );
                 associatedDisplays.insert( *displayIter );
-                foreach( TextDisplay* display, associatedDisplays )
+                for( auto display:associatedDisplays )
                 {
 
                     // check whether data are still relevant for this display

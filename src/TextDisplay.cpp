@@ -342,7 +342,7 @@ void TextDisplay::setIsNewDocument( void )
     // retrieve display and associated
     Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    foreach( TextDisplay* display, displays )
+    for( auto display:displays )
     {
 
         display->_setIsNewDocument( true );
@@ -414,7 +414,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
     // this is needed to avoid highlight glitch when oppening file
     Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    foreach( TextDisplay* display, displays )
+    for( auto display:displays )
     {
         display->_setIsNewDocument( false );
         display->_setFile( file );
@@ -517,7 +517,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
         {
             Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );
-            foreach( TextDisplay* display, displays )
+            for( auto display:displays )
             {
                 display->_setIgnoreWarnings( true );
                 display->setModified( false );
@@ -573,7 +573,7 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
         {
             Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );
-            foreach( TextDisplay* display, displays )
+            for( auto display:displays )
             { display->_setIgnoreWarnings( true ); }
         }
         break;
@@ -603,7 +603,7 @@ void TextDisplay::clearFileCheckData( void )
     // clear file check data
     Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    foreach( TextDisplay* display, displays )
+    for( auto display:displays )
     { display->setFileCheckData( FileCheck::Data() ); }
 
 }
@@ -680,7 +680,7 @@ void TextDisplay::save( void )
             { blockDelimiterDisplay_->expandAllBlocks(); }
 
             // process macros
-            foreach( const TextMacro& macro, macros() )
+            for( auto macro:macros() )
             {
                 if( macro.isAutomatic() )
                 {
@@ -717,7 +717,7 @@ void TextDisplay::save( void )
 
 
     // retrieve associated displays, update saved time
-    foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
+    for( auto display:Base::KeySet<TextDisplay>( this ) )
     { display->_setLastSaved( file().lastModified() ); }
 
     // add file to menu
@@ -765,7 +765,7 @@ void TextDisplay::saveAs( void )
 
     Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    foreach( TextDisplay* display, displays )
+    for( auto display:displays )
     {
 
         // update file
@@ -1014,7 +1014,7 @@ bool TextDisplay::isCurrentBlockTagged( void ) const
 
     } else blocks << cursor.block();
 
-    foreach( const QTextBlock& block, blocks )
+    for( auto block:blocks )
     {
         TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
         if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) ) return true;
@@ -1206,7 +1206,7 @@ void TextDisplay::clearAllTags( const int& flags )
     // this is needed due to the setUpdatesEnabled above
     Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    foreach( TextDisplay* display, displays )
+    for( auto display:displays )
     { display->viewport()->update(); }
 
 }
@@ -1278,7 +1278,7 @@ void TextDisplay::selectClassName( QString name )
     // and update class name
     Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
-    foreach( TextDisplay* display, displays )
+    for( auto display:displays )
     {
         display->setClassName( name );
         display->updateDocumentClass();
@@ -1952,7 +1952,7 @@ void TextDisplay::_toggleTextIndent( bool state )
         // to avoid infinite loop
         setSynchronized( false );
 
-        foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
+        for( auto display:Base::KeySet<TextDisplay>( this ) )
         { if( display->isSynchronized() ) display->textIndentAction_->setChecked( state ); }
         setSynchronized( true );
 
@@ -1976,7 +1976,7 @@ void TextDisplay::_toggleTextHighlight( bool state )
         // to avoid infinite loop
         setSynchronized( false );
 
-        foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
+        for( auto display:Base::KeySet<TextDisplay>( this ) )
         { if( display->isSynchronized() ) display->textHighlightAction_->setChecked( state ); }
 
         setSynchronized( true );
@@ -2013,7 +2013,7 @@ void TextDisplay::_toggleParenthesisHighlight( bool state )
         // to avoid infinite loop
         setSynchronized( false );
 
-        foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
+        for( auto display:Base::KeySet<TextDisplay>( this ) )
         { if( display->isSynchronized() ) display->parenthesisHighlightAction_->setChecked( state ); }
         setSynchronized( true );
 
@@ -2039,7 +2039,7 @@ void TextDisplay::_toggleAutoSpell( bool state )
         // to avoid infinite loop
         setSynchronized( false );
 
-        foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
+        for( auto display:Base::KeySet<TextDisplay>( this ) )
         { if( display->isSynchronized() ) display->autoSpellAction_->setChecked( state ); }
         setSynchronized( true );
 
@@ -2072,7 +2072,7 @@ void TextDisplay::_toggleShowBlockDelimiters( bool state )
         // to avoid infinite loop
         setSynchronized( false );
 
-        foreach( TextDisplay* display, Base::KeySet<TextDisplay>( this ) )
+        for( auto display:Base::KeySet<TextDisplay>( this ) )
         { if( display->isSynchronized() ) display->showBlockDelimiterAction_->setChecked( state ); }
         setSynchronized( true );
 
@@ -2490,7 +2490,7 @@ void TextDisplay::_highlightParenthesis( void )
     // clear previous parenthesis
     {
         QList<QTextBlock> dirty( parenthesisHighlight().clear() );
-        foreach( const QTextBlock& block, dirty )
+        for( auto block:dirty )
         { textHighlight_->rehighlightBlock( block ); }
     }
 
@@ -2823,7 +2823,7 @@ QString TextDisplay::_collapsedText( const QTextBlock& block ) const
     {
 
         CollapsedBlockData collapsedData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
-        foreach( const CollapsedBlockData& child, collapsedData.children() )
+        for( auto child:collapsedData.children() )
         { text += child.toPlainText(); }
 
     }

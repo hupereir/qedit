@@ -53,8 +53,7 @@ void DocumentClassMenu::_update( void )
     auto className( window->activeDisplay().className() );
 
     // retrieve classes from DocumentClass manager
-    auto classes( Singleton::get().application<Application>()->classManager().classes() );
-    foreach( auto documentClass, classes )
+    for( auto documentClass:Singleton::get().application<Application>()->classManager().classes() )
     {
         // insert actions
         QAction* action = addAction( documentClass.name() );

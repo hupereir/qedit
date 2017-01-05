@@ -207,14 +207,14 @@ void Application::_updateDocumentClasses( void )
     QTextStream what( &buffer );
 
     // read user specific patterns
-    foreach( const Option& option, XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
+    for( auto option:XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
     {
         classManager_->read( QString( option.raw() ) );
         what << classManager_->readError();
     }
 
     // read build-in patterns
-    foreach( const Option& option, XmlOptions::get().specialOptions( "DEFAULT_PATTERN_FILENAME" ) )
+    for( auto option:XmlOptions::get().specialOptions( "DEFAULT_PATTERN_FILENAME" ) )
     {
         classManager_->read( QString( option.raw() ) );
         what << classManager_->readError();
@@ -223,7 +223,7 @@ void Application::_updateDocumentClasses( void )
     if( !buffer.isEmpty() ) InformationDialog( 0, buffer ).exec();
 
     // load document classes icons into iconEngine cache, if any
-    foreach( const DocumentClass& documentClass, classManager_->classes() )
+    for( auto documentClass:classManager_->classes() )
     { if( !documentClass.icon().isEmpty() ) { IconEngine::get( documentClass.icon() ); } }
 
     // emit configuration changed to force displays to be updated
@@ -282,7 +282,7 @@ void Application::_documentClassesConfiguration( void )
     if( !dialog.exec() ) return;
 
     XmlOptions::get().clearSpecialOptions( "PATTERN_FILENAME" );
-    foreach( const File& file, dialog.userFiles() )
+    for( auto file:dialog.userFiles() )
     { XmlOptions::get().add( "PATTERN_FILENAME", file ); }
 
     _updateDocumentClasses();
@@ -315,7 +315,7 @@ void Application::_printSession( void )
     dialog.mainLayout().addWidget( logWidget );
 
     // populate log widget
-    foreach( const FileRecord& record, records )
+    for( auto record:records )
     { logWidget->append( record.file() + "\n" ); }
 
     dialog.exec();
