@@ -91,8 +91,6 @@ void AutoSaveThread::run( void )
         QDir path( file().path() );
         if( !( path.exists() || path.mkpath( "." ) ) ) return;
 
-        Debug::Throw() << "AutoSaveThread::run - encoding: " << textEncoding_ << endl;
-
         // get encoding
         QTextCodec* codec( QTextCodec::codecForName( textEncoding_ ) );
         Q_ASSERT( codec );
