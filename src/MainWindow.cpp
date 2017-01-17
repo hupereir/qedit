@@ -712,6 +712,9 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
     if( flags & (TextDisplay::Cut|TextDisplay::ReadOnly) )
     { pasteAction_->setEnabled( activeDisplay().pasteAction().isEnabled() ); }
 
+    if( ( flags & (TextDisplay::Cut|TextDisplay::Copy ) ) && replaceWidget_ )
+    { replaceWidget_->enableReplaceInSelection( activeDisplay().hasSelection() ); }
+
     if( flags & (TextDisplay::UndoRedo|TextDisplay::ReadOnly) )
     {
         undoAction_->setEnabled( activeDisplay().undoAction().isEnabled() );
