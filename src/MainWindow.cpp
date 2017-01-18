@@ -712,9 +712,6 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
     if( flags & (TextDisplay::Cut|TextDisplay::ReadOnly) )
     { pasteAction_->setEnabled( activeDisplay().pasteAction().isEnabled() ); }
 
-    if( ( flags & (TextDisplay::Cut|TextDisplay::Copy ) ) && replaceWidget_ )
-    { replaceWidget_->enableReplaceInSelection( activeDisplay().hasSelection() ); }
-
     if( flags & (TextDisplay::UndoRedo|TextDisplay::ReadOnly) )
     {
         undoAction_->setEnabled( activeDisplay().undoAction().isEnabled() );
@@ -758,6 +755,10 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
     Debug::Throw() << "MainWindow::_update - done." << endl;
 
 }
+
+//_____________________________________________
+void MainWindow::_updateReplaceInSelection( void )
+{ if( replaceWidget_ ) replaceWidget_->enableReplaceInSelection( activeDisplay().hasSelection() ); }
 
 //_____________________________________________
 void MainWindow::_updateModifiers( void )
@@ -985,6 +986,7 @@ void MainWindow::_createReplaceWidget( void )
         connect( replaceWidget_, SIGNAL(replaceInWindow(TextSelection)), SLOT(_replaceInWindow(TextSelection)) );
         connect( replaceWidget_, SIGNAL(replaceInSelection(TextSelection)), SLOT(_replaceInSelection(TextSelection)) );
         connect( replaceWidget_, SIGNAL(replaceInFiles()), SLOT(_multipleFileReplace()) );
+        connect( replaceWidget_, SIGNAL(menuAboutToShow()), SLOT(_updateReplaceInSelection()) );
         connect( &replaceWidget_->closeButton(), SIGNAL(clicked()), this, SLOT(_restoreFocus()) );
         replaceWidget_->hide();
 

@@ -512,6 +512,9 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     /** \param flags are bitwise or of TextDisplay::UpdateFlags */
     void _update( TextDisplay::UpdateFlags );
 
+    //* update replace in selection action
+    void _updateReplaceInSelection( void );
+
     //* update modifiers
     void _updateModifiers( void );
 
@@ -575,7 +578,7 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     //@}
 
-    //*@name dialogs (re-implemented from TextEditor)
+    //*@name widgets (re-implemented from TextEditor)
     //@{
 
     //* find widget
