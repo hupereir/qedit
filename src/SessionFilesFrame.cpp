@@ -59,7 +59,7 @@ Counter( "SessionFilesFrame" )
 
     // list
     layout()->addWidget( list_ = new SessionFilesView( this ) );
-    list_->setMouseTracking( false );
+    list_->setMouseTracking( true );
     list_->setModel( &model_ );
     list_->setOptionName( "SESSION_FILES" );
     list_->header()->hide();
