@@ -121,9 +121,6 @@ class RecentFilesFrame: public QWidget, public Counter
     //*@name actions
     //@{
 
-    //* update
-    QAction* updateAction_ = nullptr;
-
     //* clean action
     QAction* cleanAction_ = nullptr;
 
