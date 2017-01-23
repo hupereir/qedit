@@ -24,7 +24,6 @@ include_directories(${CMAKE_SOURCE_DIR}/base-qt)
 set(filesystem_SOURCES
   FileIconProvider.cpp
   FileInformationDialog.cpp
-  FileRecordToolTipWidget.cpp
   FileSystemFrame.cpp
   FileSystemModel.cpp
   RemoveFilesDialog.cpp
