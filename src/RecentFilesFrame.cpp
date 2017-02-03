@@ -148,8 +148,8 @@ void RecentFilesFrame::_updateActions( void )
     Debug::Throw( "RecentFilesFrame:_updateActions.\n" );
     FileRecordModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
 
-    bool has_validSelection( std::find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
-    openAction_->setEnabled( has_validSelection );
+    bool hasValidSelection( std::find_if( selection.begin(), selection.end(), FileRecord::ValidFTor() ) != selection.end() );
+    openAction_->setEnabled( hasValidSelection );
 
 }
 
