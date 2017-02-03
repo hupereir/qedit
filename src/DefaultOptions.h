@@ -138,8 +138,9 @@ void installDefaultOptions( void )
     XmlOptions::get().set<bool>( "AUTOSAVE", true );
     XmlOptions::get().set<int>( "AUTOSAVE_INTERVAL", 20 );
 
-    // run-time non recordable options
-    XmlOptions::get().set( "RC_FILE", Option( File(".qeditrc").addPath(Util::home()), Option::None ) );
+    // resource file
+    XmlOptions::get().set( "OLD_RC_FILE", Option( File(".qeditrc").addPath(Util::home()), Option::None ) );
+    XmlOptions::get().set( "RC_FILE", Option( File("qeditrc").addPath(Util::config()), Option::None ) );
 
     XmlOptions::get().setAutoDefault( false );
 

@@ -24,12 +24,14 @@
 #include "DocumentClassManager.h"
 #include "ErrorHandler.h"
 #include "File.h"
+#include "ResourceMigration.h"
 #include "SystemOptions.h"
 #include "Singleton.h"
 #include "XmlFileRecord.h"
 #include "XmlOptions.h"
 
 #include <QApplication>
+#include <QDir>
 
 //__________________________________________
 //! main function
@@ -40,7 +42,14 @@ int main (int argc, char *argv[])
     ErrorHandler::initialize();
     installDefaultOptions();
     installSystemOptions();
-    XmlOptions::setFile( XmlOptions::get().raw( "RC_FILE" ) );
+
+    // migrate old rc files
+    File oldRCFile( XmlOptions::get().raw( "OLD_RC_FILE" ) );
+    File rcFile( XmlOptions::get().raw( "RC_FILE" ) );
+    ResourceMigration( oldRCFile ).migrate( rcFile );
+
+    // assign and read
+    XmlOptions::setFile( rcFile );
     XmlOptions::read();
 
     // debug level
