@@ -166,7 +166,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     }
 
     // end tick
-    foreach( const BlockDelimiterSegment& segment, segments_ )
+    for( auto segment:segments_ )
     {
 
         if( segment.end().isValid() && segment.end().cursor() < lastIndex && segment.end().cursor() >= firstIndex && !( segment.hasFlag( BlockDelimiterSegment::BeginOnly ) || segment.empty() ) )
@@ -452,7 +452,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
     }
 
     // now remove all text stored in cursor list
-    foreach( const QTextCursor& savedCursor, cursors )
+    for( auto savedCursor:cursors )
     {
         cursor.setPosition( savedCursor.anchor() );
         cursor.setPosition( savedCursor.position(), QTextCursor::KeepAnchor );
@@ -590,7 +590,7 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
 
     // loop over delimiter types
     bool first( true );
-    foreach( const BlockDelimiter& blockDelimiter, delimiters_ )
+    for( auto blockDelimiter:delimiters_ )
     {
 
         // keep track of all starting points
@@ -784,7 +784,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
         if( secondData )
         {
 
-            foreach( const TextBlock::Delimiter counter, secondData->delimiters() )
+            for( auto counter:secondData->delimiters() )
             {
                 if( !counter.begin() ) continue;
                 block = block.previous();
@@ -849,7 +849,7 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
     blockFormat.setProperty( TextBlock::Collapsed, false );
     cursor.setBlockFormat( blockFormat );
 
-    foreach( const CollapsedBlockData& data, collapsedData.children() )
+    for( auto data:collapsedData.children() )
     {
 
         cursor.insertBlock();
