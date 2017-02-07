@@ -74,7 +74,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
     // initialize local root path list
     File::List rootPathList;
-    foreach( const QFileInfo& fileInfo, QDir::drives() )
+    for( auto fileInfo:QDir::drives() )
     { rootPathList << fileInfo.path(); }
     pathEditor_->setRootPathList( rootPathList );
 
@@ -200,7 +200,7 @@ void FileSystemFrame::_processFiles( const File::List& files )
     }
 
     // add files
-    foreach( const File& file, files )
+    for( auto file:files )
     {
         // skip hidden files
         if( file.isHidden() && !hiddenFilesAction_->isChecked() ) continue;
@@ -309,7 +309,7 @@ void FileSystemFrame::_updateActions( void )
 
     bool hasEditableSelection( false );
     bool hasRemovableSelection( false );
-    foreach( const FileRecord& record, selection )
+    for( auto record:selection )
     {
         if( !record.hasFlag( BaseFileInfo::Navigator ) ) hasRemovableSelection = true;
         if( record.hasFlag( BaseFileInfo::Document ) )
@@ -379,7 +379,7 @@ void FileSystemFrame::_open( void )
     Debug::Throw( "FileSystemFrame:_open.\n" );
     FileSystemModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     FileSystemModel::List validSelection;
-    foreach( const FileRecord& record, selection )
+    for( auto record:selection )
     {
         if( record.hasFlag( BaseFileInfo::Document ) )
         {
@@ -401,7 +401,7 @@ void FileSystemFrame::_remove( void )
     // get selection
     FileSystemModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     FileSystemModel::List validSelection;
-    foreach( const FileRecord& record, selection )
+    for( auto record:selection )
     {
         if( record.hasFlag( BaseFileInfo::Navigator ) ) continue;
         FileRecord copy( record );
@@ -417,7 +417,7 @@ void FileSystemFrame::_remove( void )
 
     // loop over selected files and remove
     // retrieve selected items and remove corresponding files
-    foreach( const FileRecord& record, validSelection )
+    for( auto record:validSelection )
     { if( record.file().exists() ) record.file().removeRecursive(); }
 
 

@@ -181,7 +181,7 @@ QMimeData* FileSystemModel::mimeData(const QModelIndexList &indexes) const
 
     // get selected filenames
     QOrderedSet<QString> filenames;
-    foreach( const QModelIndex& index, indexes )
+    for( auto index:indexes )
     {
 
         if( !index.isValid() ) continue;
@@ -199,7 +199,7 @@ QMimeData* FileSystemModel::mimeData(const QModelIndexList &indexes) const
         {
             QString fullText;
             QTextStream buffer( &fullText );
-            foreach( const QString& filename, filenames )
+            for( auto filename:filenames )
             { buffer << QString( "file://%1" ).arg(filename) << endl; }
             mimeData->setText( fullText );
         }
@@ -207,7 +207,7 @@ QMimeData* FileSystemModel::mimeData(const QModelIndexList &indexes) const
         // fill url list
         {
             QList<QUrl> urlList;
-            foreach( const QString& filename, filenames )
+            for( auto filename:filenames )
             { urlList.append( QUrl( QString( "file://%1" ).arg(filename) ) ); }
             mimeData->setUrls( urlList );
         }

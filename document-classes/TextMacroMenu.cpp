@@ -35,7 +35,7 @@ void TextMacroMenu::update( const TextMacro::List& macros )
     clear();
     actions_.clear();
 
-    foreach( const TextMacro& macro, macros )
+    for( auto macro:macros )
     {
 
         if( macro.isSeparator() ) addSeparator();
