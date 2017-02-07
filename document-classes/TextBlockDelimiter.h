@@ -108,7 +108,7 @@ namespace TextBlock
             //* streamer
             friend QTextStream& operator << ( QTextStream& out, const List& list )
             {
-                foreach( const Delimiter& delimiter, list )
+                for( auto delimiter:list )
                 { out << " " << delimiter; }
                 return out;
             }

@@ -171,7 +171,7 @@ class TextMacro: public Counter
     {
         if( isSeparator() ) return true;
         if( rules_.empty() ) return false;
-        foreach( const Rule& rule, rules_ )
+        for( auto rule:rules_ )
         { if( !rule.isValid() ) return false; }
         return true;
     }

@@ -55,7 +55,7 @@ class PatternLocationSet: public QOrderedSet<PatternLocation>
     friend QTextStream& operator << (QTextStream& out, const PatternLocationSet& locations )
     {
         out << "[" << locations.activeId().first << "," << locations.activeId().second << "] ";
-        foreach( const PatternLocation& location, locations )
+        for( auto location:locations )
         { out << location << endl; }
         return out;
     }

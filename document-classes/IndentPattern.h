@@ -256,7 +256,7 @@ class IndentPattern: public Counter
     //* validity
     bool isValid( void ) const
     {
-        foreach( const Rule& rule, rules_ )
+        for( auto rule:rules_ )
         { if( !rule.isValid() ) return false; }
         return true;
     }
@@ -292,7 +292,7 @@ class IndentPattern: public Counter
     friend QTextStream& operator << ( QTextStream& out, const IndentPattern& pattern )
     {
         out << "IndentPattern - name: " << pattern.name() << " type: " << pattern.type_ << endl;
-        foreach( const Rule& rule, pattern.rules_ )
+        for( auto rule:pattern.rules_ )
         { out << "  " << rule << endl; }
         return out;
     }
