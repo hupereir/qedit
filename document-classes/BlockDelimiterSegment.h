@@ -217,7 +217,7 @@ class BlockDelimiterSegment: public Counter
     //* streamer
     friend QTextStream& operator << ( QTextStream& out, const BlockDelimiterSegment::List& segments )
     {
-        for( auto segment:segments )
+        for( const auto& segment:segments )
         { out << segment << endl; }
         return out;
     }

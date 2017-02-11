@@ -65,7 +65,7 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
     // get tabs in previous block
     int previous_tabs( previousBlock.isValid() ? _tabCount( previousBlock ):0 );
     int i(0);
-    for( QList<QTextBlock>::iterator blockIter = blocks.begin(); blockIter != blocks.end(); ++blockIter, i++ )
+    for( const auto& block:blocks )
     {
 
         // update progress
@@ -74,34 +74,36 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
         if (progress.wasCanceled()) break;
 
         int newTabs( previous_tabs );
-        if( !previousBlock.isValid() ) _decrement( *blockIter );
+        if( !previousBlock.isValid() ) _decrement( block );
         else {
 
-            for( IndentPattern::List::iterator iter = patterns_.begin(); iter != patterns_.end(); ++iter )
+            for( const auto& pattern:patterns_ )
             {
 
-                if( _acceptPattern( *blockIter, *iter ) )
+                if( _acceptPattern( block, pattern ) )
                 {
-                    Debug::Throw() << "TextIndent::indent - accepted pattern: " << iter->name() << endl;
-                    if( iter->type() == IndentPattern::Increment ) newTabs += iter->scale();
-                    else if( iter->type() == IndentPattern::Decrement ) newTabs -= iter->scale();
-                    else if( iter->type() == IndentPattern::DecrementAll ) newTabs = 0;
+                    Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << endl;
+                    if( pattern.type() == IndentPattern::Increment ) newTabs += pattern.scale();
+                    else if( pattern.type() == IndentPattern::Decrement ) newTabs -= pattern.scale();
+                    else if( pattern.type() == IndentPattern::DecrementAll ) newTabs = 0;
                     break;
                 }
             }
 
             // make sure newTabs is not negative
             newTabs = qMax( newTabs, 0 );
-            _decrement( *blockIter );
-            _increment( *blockIter, newTabs );
+            _decrement( block );
+            _increment( block, newTabs );
 
         }
 
-        if( !editor_->ignoreBlock( *blockIter ) )
+        if( !editor_->ignoreBlock( block ) )
         {
-            previousBlock = *blockIter;
+            previousBlock = block;
             previous_tabs = newTabs;
         }
+
+        ++i;
 
     }
 

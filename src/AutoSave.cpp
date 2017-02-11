@@ -40,13 +40,13 @@ AutoSave::~AutoSave( void )
     Debug::Throw( "AutoSave::~AutoSave.\n" );
 
     // loop over threads
-    for( ThreadList::iterator iter = threads_.begin(); iter != threads_.end(); ++iter )
+    for( auto&& thread:threads_ )
     {
 
         // remove file
-        File autosaved( (*iter)->file() );
+        File autosaved( thread->file() );
         if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
-        delete *iter;
+        delete thread;
 
     }
 
