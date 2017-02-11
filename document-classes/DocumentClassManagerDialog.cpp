@@ -99,7 +99,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
 File::List DocumentClassManagerDialog::userFiles( void ) const
 {
     File::List files;
-    for( auto documentClass:model_.get() )
+    for( const auto& documentClass:model_.get() )
     { if( !documentClass.isBuildIn() ) files << documentClass.file(); }
 
     return files;
@@ -112,11 +112,11 @@ void DocumentClassManagerDialog::_reload( void )
     Debug::Throw( "DocumentClassManager::Dialog::_reload.\n" );
 
     DocumentClassManager classManager;
-    for( auto option:XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
+    for( const auto& option:XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
     { classManager.read( QString( option.raw() ) ); }
 
     // read build-in patterns
-    for( auto option:XmlOptions::get().specialOptions( "DEFAULT_PATTERN_FILENAME" ) )
+    for( const auto& option:XmlOptions::get().specialOptions( "DEFAULT_PATTERN_FILENAME" ) )
     { classManager.read( QString( option.raw() ) ); }
 
     // update model
@@ -149,7 +149,7 @@ void DocumentClassManagerDialog::_remove( void )
 
     // loop over selected items
     QSet<File> removedFiles;
-    for( auto documentClass:model_.get( list_->selectionModel()->selectedRows() ) )
+    for( const auto& documentClass:model_.get( list_->selectionModel()->selectedRows() ) )
     { if( !documentClass.isBuildIn() ) removedFiles << documentClass.file(); }
 
     if( removedFiles.empty() ) return;
@@ -161,7 +161,7 @@ void DocumentClassManagerDialog::_remove( void )
     if( !QuestionDialog( this, buffer ).exec() ) return;
 
     DocumentClassManager::List removedItems;
-    for( auto documentClass:model_.get() )
+    for( const auto& documentClass:model_.get() )
     { if( removedFiles.contains( documentClass.file() ) ) removedItems << documentClass; }
 
     // remove
@@ -176,7 +176,7 @@ void DocumentClassManagerDialog::_updateButtons( void )
 {
     // loop over selected items
     bool removeEnabled( false );
-    for( auto documentClass:model_.get( list_->selectionModel()->selectedRows() ) )
+    for( const auto& documentClass:model_.get( list_->selectionModel()->selectedRows() ) )
     { if( !documentClass.isBuildIn() ) { removeEnabled = true; break; } }
 
     removeAction_->setEnabled( removeEnabled );

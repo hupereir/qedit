@@ -201,11 +201,11 @@ void RecentFilesFrame::_open( void )
     Debug::Throw( "RecentFilesFrame:_open.\n" );
     FileRecordModel::List validSelection;
 
-    for( auto record:model_.get( list_->selectionModel()->selectedRows() ) )
+    for( const auto& record:model_.get( list_->selectionModel()->selectedRows() ) )
     { if( record.isValid() ) validSelection << record; }
 
     // TODO: should check number of files
-    for( auto record:validSelection )
+    for( const auto& record:validSelection )
     { emit fileActivated( record ); }
 
 }

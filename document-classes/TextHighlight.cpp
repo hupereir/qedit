@@ -324,7 +324,7 @@ PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, H
 
     // insert highlight
     const SpellCheck::Word::Set& words( spellParser_.parse( text ) );
-    for( auto word:words )
+    for( const auto& word:words )
     { locations.insert( PatternLocation( spellPattern_, word.position(), word.size() ) ); }
 
     // store misspelled words
@@ -343,7 +343,7 @@ void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
     // initialize style
     int patternId(-1);
     QTextCharFormat currentFormat;
-    for( auto location:locations )
+    for( const auto& location:locations )
     {
         if( patternId != location.id() )
         {

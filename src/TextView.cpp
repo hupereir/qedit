@@ -202,7 +202,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
 
         Base::KeySet<TextDisplay> displays( this );
         displays.remove( &activeDisplay() );
-        for( auto display:displays )
+        for( const auto& display:displays )
         { display->setActive( false ); }
 
         activeDisplay().setActive( true );
@@ -356,12 +356,12 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, bool cl
 
         // perform associations
         // check if active displays has associates and propagate to new
-        for( auto iter:displays )
+        for( const auto& iter:displays )
         { Base::Key::associate( &display, iter ); }
 
         // associate this display to AutoSave threads
         Base::KeySet<AutoSaveThread> threads( &activeDisplayLocal );
-        for( auto thread:threads )
+        for( const auto& thread:threads )
         { Base::Key::associate( &display, thread ); }
 
         // associate new display to active
@@ -385,7 +385,7 @@ void TextView::saveAll( void )
     Debug::Throw( "TextView::saveAll.\n" );
 
     // retrieve all displays
-    for( auto display:Base::KeySet<TextDisplay>( this ) )
+    for( const auto& display:Base::KeySet<TextDisplay>( this ) )
     { if( display->document()->isModified() ) display->save(); }
 
     return;
@@ -399,7 +399,7 @@ void TextView::ignoreAll( void )
     Debug::Throw( "TextView::ignoreAll.\n" );
 
     // retrieve all displays
-    for( auto display:Base::KeySet<TextDisplay>( this ) )
+    for( const auto& display:Base::KeySet<TextDisplay>( this ) )
     { display->setModified( false ); }
 
     return;
@@ -439,7 +439,7 @@ void TextView::checkDisplayModifications( TextEditor* editor )
 
         // register displays as dead
         Base::KeySet<TextDisplay> associatedDisplays( &display );
-        for( auto displayIter:associatedDisplays )
+        for( const auto& displayIter:associatedDisplays )
         { deadDisplays.insert( displayIter ); }
 
         display.document()->setModified( false );
@@ -460,7 +460,7 @@ void TextView::checkDisplayModifications( TextEditor* editor )
     {
 
         Debug::Throw() << "TextView::checkDisplayModifications - dead displays: " << deadDisplays.size() << endl;
-        for( auto display:deadDisplays )
+        for( const auto& display:deadDisplays )
         { closeDisplay( *display ); }
 
     }
@@ -630,7 +630,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
         QWidget *child(0);
 
         // retrieve children and loop
-        for( auto object:TextView::children() )
+        for( const auto& object:TextView::children() )
         {
             if( ( child = qobject_cast<QWidget*>( object ) ) )
             { break; }

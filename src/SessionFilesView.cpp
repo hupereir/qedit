@@ -51,7 +51,7 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
 
     // get list of dragable indexes
     QModelIndexList indexes;
-    for( auto index:selectionModel()->selectedIndexes() )
+    for( const auto& index:selectionModel()->selectedIndexes() )
     { if( model()->flags( index ) & Qt::ItemIsDragEnabled ) indexes << index; }
     if( indexes.isEmpty() ) return;
 
@@ -79,7 +79,7 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
         if( records.empty() ) return;
         const File target( records.front().file() );
         bool first( true );
-        for( auto record:records )
+        for( const auto& record:records )
         {
 
             if( first )
@@ -103,13 +103,13 @@ QPixmap SessionFilesView::_renderToPixmap( const QModelIndexList& indexes, QRect
 
     // generate pixmap
     rect = QRect();
-    for( auto index:indexes )
+    for( const auto& index:indexes )
     { rect |= visualRect( index ); }
 
     QPixmap pixmap( rect.size() );
     pixmap.fill( Qt::transparent );
     QPainter painter( &pixmap );
-    for( auto index:indexes )
+    for( const auto& index:indexes )
     {
         QStyleOptionViewItemV4 option;
 

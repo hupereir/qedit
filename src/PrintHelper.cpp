@@ -87,7 +87,7 @@ void PrintHelper::print( QPrinter* printer )
         }
 
         // get highlight block data associated to this block
-        for( auto pattern:patterns )
+        for( const auto& pattern:patterns )
         {
             QTextLayout::FormatRange formatRange;
             formatRange.start = pattern.position();

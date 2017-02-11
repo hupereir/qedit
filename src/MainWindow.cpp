@@ -226,7 +226,7 @@ void MainWindow::setActiveView( TextView& view )
 Base::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
 {
     Base::KeySet<TextDisplay> displays;
-    for( auto view:Base::KeySet<TextView>( this ) )
+    for( const auto& view:Base::KeySet<TextView>( this ) )
     { displays.unite( Base::KeySet<TextDisplay>(view) ); }
 
     return displays;
@@ -245,7 +245,7 @@ bool MainWindow::selectDisplay( const File& file )
     // do nothing if already selected
     if( !activeView().isClosed() && activeView().activeDisplay().file() == file ) return true;
 
-    for( auto view:Base::KeySet<TextView>( this ) )
+    for( const auto& view:Base::KeySet<TextView>( this ) )
     {
 
         if( !view->isClosed() && view->selectDisplay( file ) )
@@ -265,7 +265,7 @@ bool MainWindow::selectDisplay( const File& file )
 void MainWindow::saveAll( void )
 {
     Debug::Throw( "MainWindow::saveAll.\n" );
-    for( auto view:Base::KeySet<TextView>( this ) )
+    for( const auto& view:Base::KeySet<TextView>( this ) )
     { view->saveAll(); }
 }
 
@@ -273,7 +273,7 @@ void MainWindow::saveAll( void )
 void MainWindow::ignoreAll( void )
 {
     Debug::Throw( "MainWindow::ignoreAll.\n" );
-    for( auto view:Base::KeySet<TextView>( this ) )
+    for( const auto& view:Base::KeySet<TextView>( this ) )
     { view->ignoreAll(); }
 }
 
@@ -517,7 +517,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
     // loop over TextViews
     unsigned int modifiedDisplays(0);
     Base::KeySet<TextDisplay> displays;
-    for( auto view:Base::KeySet<TextView>( this ) )
+    for( const auto& view:Base::KeySet<TextView>( this ) )
     {
 
         // update the number of modified displays
@@ -588,7 +588,7 @@ void MainWindow::_updateConfiguration( void )
     // assign icons to file in open previous menu based on class manager
     FileList& recentFiles( Singleton::get().application<Application>()->recentFiles() );
     DocumentClassManager& classManager(Singleton::get().application<Application>()->classManager());
-    for( auto record:recentFiles.records() )
+    for( const auto& record:recentFiles.records() )
     {
 
         // FileRecord& record( *iter );

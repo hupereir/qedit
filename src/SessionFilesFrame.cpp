@@ -260,7 +260,7 @@ void SessionFilesFrame::_open( void )
 {
 
     Debug::Throw( "SessionFilesFrame:_open.\n" );
-    for( auto record:model_.get( list_->selectionModel()->selectedRows() ) )
+    for( const auto& record:model_.get( list_->selectionModel()->selectedRows() ) )
     { emit fileActivated( record ); }
 
 }
@@ -272,7 +272,7 @@ void SessionFilesFrame::_save( void )
     Debug::Throw( "SessionFilesFrame:_save.\n" );
 
     FileRecord::List modifiedRecords;
-    for( auto record:model_.get( list_->selectionModel()->selectedRows() ) )
+    for( const auto& record:model_.get( list_->selectionModel()->selectedRows() ) )
     { if( record.hasFlag( FileRecordProperties::Modified ) ) modifiedRecords << record; }
 
     if( !modifiedRecords.empty() ) emit filesSaved( modifiedRecords );
@@ -289,7 +289,7 @@ void SessionFilesFrame::_close( void )
     if( !selection.empty() )
     {
       FileRecord::List records;
-      for( auto record:selection )
+      for( const auto& record:selection )
       { records << record; }
       emit filesClosed( records );
     }

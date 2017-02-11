@@ -74,7 +74,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
     // initialize local root path list
     File::List rootPathList;
-    for( auto fileInfo:QDir::drives() )
+    for( const auto& fileInfo:QDir::drives() )
     { rootPathList << fileInfo.path(); }
     pathEditor_->setRootPathList( rootPathList );
 
@@ -200,7 +200,7 @@ void FileSystemFrame::_processFiles( const File::List& files )
     }
 
     // add files
-    for( auto file:files )
+    for( const auto& file:files )
     {
         // skip hidden files
         if( file.isHidden() && !hiddenFilesAction_->isChecked() ) continue;
@@ -309,7 +309,7 @@ void FileSystemFrame::_updateActions( void )
 
     bool hasEditableSelection( false );
     bool hasRemovableSelection( false );
-    for( auto record:selection )
+    for( const auto& record:selection )
     {
         if( !record.hasFlag( BaseFileInfo::Navigator ) ) hasRemovableSelection = true;
         if( record.hasFlag( BaseFileInfo::Document ) )
@@ -379,7 +379,7 @@ void FileSystemFrame::_open( void )
     Debug::Throw( "FileSystemFrame:_open.\n" );
     FileSystemModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     FileSystemModel::List validSelection;
-    for( auto record:selection )
+    for( const auto& record:selection )
     {
         if( record.hasFlag( BaseFileInfo::Document ) )
         {
@@ -401,7 +401,7 @@ void FileSystemFrame::_remove( void )
     // get selection
     FileSystemModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     FileSystemModel::List validSelection;
-    for( auto record:selection )
+    for( const auto& record:selection )
     {
         if( record.hasFlag( BaseFileInfo::Navigator ) ) continue;
         FileRecord copy( record );
@@ -417,7 +417,7 @@ void FileSystemFrame::_remove( void )
 
     // loop over selected files and remove
     // retrieve selected items and remove corresponding files
-    for( auto record:validSelection )
+    for( const auto& record:validSelection )
     { if( record.file().exists() ) record.file().removeRecursive(); }
 
 

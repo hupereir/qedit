@@ -142,7 +142,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
     // get selected filenames
     QOrderedSet<QString> filenames;
     XmlFileRecord::List records;
-    for( auto index:indexes )
+    for( const auto& index:indexes )
     {
 
         if( !index.isValid() ) continue;
@@ -161,7 +161,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
         {
             QString fullText;
             QTextStream buffer( &fullText );
-            for( auto filename:filenames )
+            for( const auto& filename:filenames )
             { buffer << QString( "file://%1" ).arg(filename) << endl; }
             mimeData->setText( fullText );
         }
@@ -169,7 +169,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
         // fill url list
         {
             QList<QUrl> urlList;
-            for( auto filename:filenames )
+            for( const auto& filename:filenames )
             { urlList.append( QUrl( QString( "file://%1" ).arg(filename) ) ); }
             mimeData->setUrls( urlList );
         }
@@ -207,7 +207,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
             FileRecord target( get( parent ) );
 
             // loop over sources and emit proper signal
-            for( auto record:records )
+            for( const auto& record:records )
             { emit reparentFiles( record.file(), target.file() ); }
 
             return true;
@@ -238,7 +238,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
             if( !targetIndex.isValid() ) return false;
 
             // emit relevant reparent signal
-            for( auto record:records )
+            for( const auto& record:records )
             { emit reparentFilesToMain( record.file(), target.file() ); }
 
             return true;
@@ -249,7 +249,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
 
         // TODO: should check number of files
         const auto urls( data->urls() );
-        for( auto url:urls )
+        for( const auto& url:urls )
         {
 
             #if QT_VERSION >= 0x040800

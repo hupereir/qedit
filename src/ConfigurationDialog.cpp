@@ -180,7 +180,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         gridLayout->addWidget( label = new QLabel( tr( "Default font encoding:" ), box ) );
         gridLayout->addWidget( combobox = new OptionComboBox( box, "TEXT_ENCODING" ) );
         QList<QByteArray> codecs( QTextCodec::availableCodecs() );
-        for( auto value:codecs ) { combobox->addItem( value ); }
+        for( const auto& value:codecs ) { combobox->addItem( value ); }
         label->setBuddy( combobox );
         addOptionWidget( combobox );
 

@@ -359,7 +359,7 @@ void Menu::_updateWindowsMenu( void )
     fileActions_.clear();
 
     // retrieve all files
-    for( auto record:Singleton::get().application<Application>()->windowServer().records() )
+    for( const auto& record:Singleton::get().application<Application>()->windowServer().records() )
     {
 
         // retrieve file and check
