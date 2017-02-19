@@ -190,6 +190,11 @@ class Application: public BaseApplication, public Counter
     */
     void timerEvent( QTimerEvent* );
 
+    private Q_SLOTS:
+
+    //* update configuration
+    void _updateConfiguration( void );
+
     private:
 
     //* install actions

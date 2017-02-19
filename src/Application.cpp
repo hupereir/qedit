@@ -72,8 +72,8 @@ bool Application::initApplicationManager( void )
     // retrieve files from arguments and expand if needed
     CommandLineParser parser( commandLineParser( _arguments() ) );
     QStringList& orphans( parser.orphans() );
-    for( QStringList::iterator iter = orphans.begin(); iter != orphans.end(); ++iter )
-    { if( !iter->isEmpty() ) (*iter) = File( *iter ).expand(); }
+    for( auto& orphan:parser.orphans() )
+    { if( !orphan.isEmpty() ) orphan = File( orphan ).expand(); }
 
     // replace arguments
     _setArguments( parser.arguments() );
@@ -146,6 +146,7 @@ bool Application::realizeWidget( void )
     windowServer_->newMainWindow().centerOnDesktop();
 
     // update configuration
+    connect( this, SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
     emit configurationChanged();
 
     _updateSessionActions();
@@ -404,6 +405,15 @@ void Application::timerEvent( QTimerEvent* event )
         connect( qApp, SIGNAL(lastWindowClosed()), qApp, SLOT(quit()), Qt::UniqueConnection );
 
     } else return QObject::timerEvent( event );
+}
+
+//_________________________________________________
+void Application::_updateConfiguration( void )
+{
+    Debug::Throw( "Application::_updateConfiguration.\n" );
+    static_cast<XmlFileList*>(recentFiles_)->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
+    static_cast<XmlFileList*>(sessionFiles_)->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
+    recentFiles_->setMaxSize( XmlOptions::get().get<int>( "DB_SIZE" ) );
 }
 
 //___________________________________________________________
