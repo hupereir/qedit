@@ -24,7 +24,6 @@
 #include "IconNames.h"
 #include "IconEngine.h"
 #include "Singleton.h"
-#include "XmlFileList.h"
 #include "XmlFileRecord.h"
 #include "XmlOptions.h"
 #include "QOrderedSet.h"
