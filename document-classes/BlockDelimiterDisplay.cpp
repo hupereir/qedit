@@ -131,8 +131,8 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     height += yOffset;
 
     // retrieve matching segments
-    QTextDocument &document( *editor_->document() );
-    QTextBlock block( document.begin() );
+    auto&& document( *editor_->document() );
+    auto&& block( document.begin() );
     int id( 0 );
 
     // optimize drawing by not drawing overlapping segments
@@ -175,13 +175,13 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     }
 
     // begin tick
-    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
+    for( auto& segment:segments_ )
     {
 
         // check validity
         // update active rect
-        if( iter->begin().isValid() && iter->begin().cursor() < lastIndex && iter->begin().cursor() >= firstIndex )
-        { iter->setActiveRect( QRect( rectTopLeft_, iter->begin().position() + rectTopLeft_, rectWidth_, rectWidth_ ) ); }
+        if( segment.begin().isValid() && segment.begin().cursor() < lastIndex && segment.begin().cursor() >= firstIndex )
+        { segment.setActiveRect( QRect( rectTopLeft_, segment.begin().position() + rectTopLeft_, rectWidth_, rectWidth_ ) ); }
 
     }
 
@@ -192,10 +192,10 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     painter.setPen( pen );
     painter.setRenderHints( QPainter::Antialiasing );
 
-    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
+    for( const auto& segment:segments_ )
     {
-        if( iter->begin().isValid() && iter->begin().cursor() < lastIndex && iter->begin().cursor() >= firstIndex )
-        { _drawDelimiter( painter, iter->activeRect(), iter->hasFlag( BlockDelimiterSegment::Collapsed ) ); }
+        if( segment.begin().isValid() && segment.begin().cursor() < lastIndex && segment.begin().cursor() >= firstIndex )
+        { _drawDelimiter( painter, segment.activeRect(), segment.hasFlag( BlockDelimiterSegment::Collapsed ) ); }
     }
 
 }
@@ -483,7 +483,7 @@ void BlockDelimiterDisplay::expandAllBlocks( void )
     QTextCursor cursor( document.begin() );
     cursor.beginEditBlock();
 
-    for( QTextBlock block = document.begin(); block.isValid(); block = block.next() )
+    for( auto&& block = document.begin(); block.isValid(); block = block.next() )
     {
         // retrieve data and check if collapsed
         if( block.blockFormat().boolProperty( TextBlock::Collapsed ) )
@@ -544,7 +544,7 @@ void BlockDelimiterDisplay::_synchronizeBlockData( void ) const
 {
 
     QTextDocument &document( *editor_->document() );
-    for( QTextBlock block = document.begin(); block.isValid(); block = block.next() )
+    for( auto&& block = document.begin(); block.isValid(); block = block.next() )
     {
 
         // retrieve data and check this block delimiter
@@ -597,7 +597,7 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
         BlockDelimiterSegment::List startPoints;
         int blockCount(0);
         QTextDocument &document( *editor_->document() );
-        for( QTextBlock block = document.begin(); block.isValid(); block = block.next(), blockCount++ )
+        for( auto&& block = document.begin(); block.isValid(); block = block.next(), blockCount++ )
         {
 
             // retrieve data and check this block delimiter
@@ -708,10 +708,10 @@ void BlockDelimiterDisplay::_updateSegmentMarkers( void )
 
     QTextBlock block( editor_->document()->begin() );
     int id = 0;
-    for( BlockDelimiterSegment::List::iterator iter = segments_.begin(); iter != segments_.end(); ++iter )
+    for( auto& segment:segments_ )
     {
-        _updateMarker( block, id, iter->begin(), BlockBegin );
-        _updateMarker( block, id, iter->end(), BlockEnd );
+        _updateMarker( block, id, segment.begin(), BlockBegin );
+        _updateMarker( block, id, segment.end(), BlockEnd );
     }
 
 }
@@ -805,9 +805,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
 void BlockDelimiterDisplay::_selectSegmentFromCursor( int cursor )
 {
     Debug::Throw( "BlockDelimiterDisplay::_selectSegmentFromCursor.\n" );
-    BlockDelimiterSegment::List::iterator iter = std::find_if(
-        segments_.begin(), segments_.end(),
-        BlockDelimiterSegment::ContainsFTor( cursor ) );
+    auto&& iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor ) );
     _setSelectedSegment( iter == segments_.end() ? BlockDelimiterSegment():*iter );
 
 }
@@ -817,7 +815,7 @@ void BlockDelimiterDisplay::_selectSegmentFromCursor( int cursor )
 void BlockDelimiterDisplay::_selectSegmentFromPosition( const QPoint& position )
 {
     Debug::Throw( "BlockDelimiterDisplay::_selectSegmentFromPosition.\n" );
-    BlockDelimiterSegment::List::const_iterator iter = std::find_if(
+    auto&& iter = std::find_if(
         segments_.begin(), segments_.end(),
         BlockDelimiterSegment::ActiveFTor( position ) );
     _setSelectedSegment( iter == segments_.end() ? BlockDelimiterSegment():*iter );

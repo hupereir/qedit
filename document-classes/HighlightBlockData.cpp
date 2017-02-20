@@ -35,7 +35,7 @@ SpellCheck::Word HighlightBlockData::misspelledWord( int position ) const
 {
 
     Debug::Throw( "HighlightBlockData::misspelledWord.\n" );
-    SpellCheck::Word::Set::const_iterator iter = std::find_if( words_.begin(), words_.end(), SpellCheck::Word::AtPositionFTor( position ) );
+    auto&& iter = std::find_if( words_.begin(), words_.end(), SpellCheck::Word::AtPositionFTor( position ) );
     return (iter == words_.end()) ? SpellCheck::Word():*iter;
 
 }

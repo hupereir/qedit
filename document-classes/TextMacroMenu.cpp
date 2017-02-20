@@ -57,14 +57,14 @@ void TextMacroMenu::update( const TextMacro::List& macros )
 void TextMacroMenu::updateState( bool value )
 {
     Debug::Throw( "TextMacroMenu::updateState.\n" );
-    for( ActionMap::const_iterator iter = actions_.begin(); iter != actions_.end(); iter++ )
+    for( auto&& iter = actions_.begin(); iter != actions_.end(); iter++ )
     { iter.key()->setEnabled( value || iter.value().isAutomatic() ); }
 }
 
 //___________________________________________________________
 void TextMacroMenu::setEnabled( bool enabled )
 {
-    for( ActionMap::iterator iter = actions_.begin(); iter != actions_.end(); ++iter )
+    for( auto&& iter = actions_.begin(); iter != actions_.end(); ++iter )
     { iter.key()->setEnabled( enabled ); }
 }
 

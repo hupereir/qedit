@@ -99,8 +99,8 @@ void TextHighlight::highlightBlock( const QString& text )
     if( isBlockDelimitersEnabled() && needUpdate )
     {
         bool segmentChanged( false );
-        for( BlockDelimiter::List::const_iterator iter = blockDelimiters_.begin(); iter != blockDelimiters_.end(); ++iter )
-        { segmentChanged |= _updateDelimiter( data, *iter, text ); }
+        for( auto& delimiter:blockDelimiters_ )
+        { segmentChanged |= _updateDelimiter( data, delimiter, text ); }
 
         if( segmentChanged ) emit needSegmentUpdate();
     }
@@ -161,7 +161,7 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
     {
 
         // look for matching pattern in list
-        HighlightPattern::List::const_iterator patternIter = std::find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( activeId ) );
+        auto&& patternIter = std::find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( activeId ) );
         Q_ASSERT( patternIter != patterns_.end() );
 
         const HighlightPattern &pattern( *patternIter );
@@ -173,8 +173,8 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
         {
 
             // if still active. look for child patterns
-            for( HighlightPattern::List::const_iterator childIter = pattern.children().begin(); childIter != pattern.children().end(); ++childIter )
-            { childIter->processText( locations, text, active );}
+            for( const auto& childPattern:pattern.children() )
+            { childPattern.processText( locations, text, active );}
 
             // remove patterns that overlap with others
             PatternLocationSet::iterator iter = locations.begin();

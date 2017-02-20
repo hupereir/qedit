@@ -1163,7 +1163,7 @@ void TextDisplay::processMacro( QString name )
     Debug::Throw() << "TextDisplay::processMacro - " << name << endl;
 
     // retrieve macro that match argument name
-    TextMacro::List::const_iterator macroIter = std::find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
+    auto&& macroIter = std::find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
     if( macroIter == macros_.end() )
     {
         QString buffer;
@@ -2183,7 +2183,7 @@ void TextDisplay::_addBaseIndentation( void )
     if( !textIndent_->baseIndentation() ) return;
 
     // define regexp to perform replacement
-    QRegExp leading_space_regexp( "^\\s*" );
+    QRegExp leadingSpaceRegExp( "^\\s*" );
     QString replacement( textIndent_->baseIndentation(), ' ' );
 
     // define blocks to process
@@ -2207,21 +2207,21 @@ void TextDisplay::_addBaseIndentation( void )
     blocks << end;
 
     // loop over blocks
-    for( QList<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( const auto& block:blocks )
     {
         // check block
-        if( !iter->isValid() ) continue;
+        if( !block.isValid() ) continue;
 
         // retrieve text
-        QString text( iter->text() );
+        QString text( block.text() );
 
         // look for leading tabs
-        if( leading_space_regexp.indexIn( text ) < 0 ) continue;
+        if( leadingSpaceRegExp.indexIn( text ) < 0 ) continue;
 
         // select with cursor
-        QTextCursor cursor( *iter );
+        QTextCursor cursor( block );
         cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
-        cursor.setPosition( cursor.position() + leading_space_regexp.matchedLength(), QTextCursor::KeepAnchor );
+        cursor.setPosition( cursor.position() + leadingSpaceRegExp.matchedLength(), QTextCursor::KeepAnchor );
 
         cursor.insertText( replacement );
 
@@ -2284,24 +2284,24 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
 
     // store blocks
     QList<QTextBlock> blocks;
-    for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
+    for( auto&& block = begin; block.isValid() && block != end; block = block.next() )
     { blocks << block; }
     blocks << end;
 
     // loop over blocks
-    for( QList<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
+    for( const auto& block:blocks )
     {
         // check block
-        if( !iter->isValid() ) continue;
+        if( !block.isValid() ) continue;
 
         // retrieve text
-        QString text( iter->text() );
+        QString text( block.text() );
 
         // look for leading tabs
         if( wrongTabRegExp.indexIn( text ) < 0 ) continue;
 
         // select with cursor
-        QTextCursor cursor( *iter );
+        QTextCursor cursor( block );
         cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
         cursor.setPosition( cursor.position() + wrongTabRegExp.matchedLength(), QTextCursor::KeepAnchor );
 
@@ -2514,7 +2514,7 @@ void TextDisplay::_highlightParenthesis( void )
 
     // check against opening parenthesis
     bool found( false );
-    TextParenthesis::List::const_iterator iter( std::find_if(
+    auto&& iter( std::find_if(
         parenthesis.begin(), parenthesis.end(),
         TextParenthesis::FirstElementFTor( text.left( position ) ) ) );
 
@@ -2680,8 +2680,8 @@ void TextDisplay::_tagBlock( void )
     } else blocks << cursor.block();
 
     // clear background for selected blocks
-    for( QList<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
-    { if( iter->isValid() ) tagBlock( *iter, TextBlock::User ); }
+    for( const auto& block:blocks )
+    { if( block.isValid() ) tagBlock( block, TextBlock::User ); }
 
 }
 
@@ -2794,8 +2794,8 @@ void TextDisplay::_clearTag( void )
     }
 
     // clear background for selected blocks
-    for( QList<QTextBlock>::iterator iter = blocks.begin(); iter != blocks.end(); ++iter )
-    { clearTag( *iter, TextBlock::All ); }
+    for( const auto& block:blocks )
+    { clearTag( block, TextBlock::All ); }
 
 }
 

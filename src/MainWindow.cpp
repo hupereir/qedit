@@ -528,7 +528,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
 
     }
 
-    for( Base::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
+    for( auto&& iter = displays.begin(); iter != displays.end(); ++iter )
     {
 
         // get local reference to display

@@ -65,7 +65,7 @@ void TextView::setIsNewDocument( void )
 
     // look for first empty display
     Base::KeySet<TextDisplay> displays( this );
-    Base::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
+    auto&& iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
     if( iter == displays.end() )
     {
         Debug::Throw(0) << "TextView::setIsNewDocument - invalid display" << endl;
@@ -98,7 +98,7 @@ void TextView::setFile( File file )
 
     // look for first empty display
     Base::KeySet<TextDisplay> displays( this );
-    Base::KeySet<TextDisplay>::iterator iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
+    auto&& iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
     if( iter == displays.end() )
     {
         Debug::Throw(0) << "TextView::setFile - invalid display" << endl;
@@ -123,7 +123,7 @@ int TextView::independentDisplayCount( void ) const
 {
     int out( 0 );
     Base::KeySet<TextDisplay> displays( this );
-    for( Base::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
+    for( auto&& iter = displays.begin(); iter != displays.end(); ++iter )
     { if( std::find_if( displays.begin(), iter, Base::Key::IsAssociatedFTor( *iter ) ) == iter ) out++; }
 
     return out;
@@ -135,7 +135,7 @@ int TextView::modifiedDisplayCount( void ) const
 
     int out( 0 );
     Base::KeySet<TextDisplay> displays( this );
-    for( Base::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
+    for( auto&& iter = displays.begin(); iter != displays.end(); ++iter )
     {
         // increment if no associated display is found in the already processed displays
         // and if current is modified
@@ -159,7 +159,7 @@ bool TextView::selectDisplay( const File& file )
     if( TextDisplay::SameFileFTor( file )( &activeDisplay() ) ) return true;
 
     Base::KeySet<TextDisplay> displays( this );
-    Base::KeySet<TextDisplay>::iterator iter( std::find_if(
+    auto&& iter( std::find_if(
         displays.begin(),
         displays.end(),
         TextDisplay::SameFileFTor( file ) ) );
@@ -413,7 +413,7 @@ void TextView::rehighlight( void )
 
     // retrieve associated TextDisplay
     Base::KeySet<TextDisplay> displays( this );
-    for( Base::KeySet<TextDisplay>::iterator iter = displays.begin(); iter != displays.end(); ++iter )
+    for( auto&& iter = displays.begin(); iter != displays.end(); ++iter )
     {
         // this trick allow to run the rehighlight only once per set of associated displays
         if( std::find_if( displays.begin(), iter, Base::Key::IsAssociatedFTor( *iter ) ) == iter ) (*iter)->rehighlight();
@@ -498,7 +498,7 @@ void TextView::diff( void )
     // retrieve displays associated to window
     // look for the first one that is not associated to the active display
     Base::KeySet<TextDisplay> displays( this );
-    Base::KeySet<TextDisplay>::iterator iter = displays.begin();
+    auto&& iter = displays.begin();
     for(; iter != displays.end(); ++iter )
     {
         if( !( *iter == &first || (*iter)->isAssociated( &first ) ) )

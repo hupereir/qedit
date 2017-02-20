@@ -129,8 +129,8 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 
     // associate elements
     QStringList warnings = _associatePatterns();
-    for( QStringList::const_iterator iter = warnings.begin(); iter != warnings.end(); ++iter )
-    { Debug::Throw(0) << "DocumentClass::DocumentClass - " << *iter << endl; }
+    for( const auto& warning:warnings )
+    { Debug::Throw(0) << "DocumentClass::DocumentClass - " << warning << endl; }
 
 }
 
@@ -169,32 +169,32 @@ QStringList DocumentClass::_associatePatterns( void )
     // warning: the passed Id is converted internaly into a single bit of a bitset
     // to facilitate patterns bitMask
     unsigned int id(0);
-    for( HighlightPattern::List::iterator iter = highlightPatterns_.begin(); iter != highlightPatterns_.end(); ++iter, id++ )
-    { iter->setId( id ); }
+    for( auto& highlightPattern:highlightPatterns_ )
+    { highlightPattern.setId( id++ ); }
 
     // create parent/children hierarchy between highlight patterns
-    for( HighlightPattern::List::iterator iter = highlightPatterns_.begin(); iter != highlightPatterns_.end(); ++iter )
+    for( auto& highlightPattern:highlightPatterns_ )
     {
-        if( iter->parent().size() )
+        if( highlightPattern.parent().size() )
         {
 
-            HighlightPattern::List::iterator parent_iter( std::find_if( highlightPatterns_.begin(), highlightPatterns_.end(), HighlightPattern::SameNameFTor( iter->parent() ) ) );
-            if( parent_iter != highlightPatterns_.end() )
+            auto&& parentIter( std::find_if( highlightPatterns_.begin(), highlightPatterns_.end(), HighlightPattern::SameNameFTor( highlightPattern.parent() ) ) );
+            if( parentIter != highlightPatterns_.end() )
             {
-                iter->setParentId( (*parent_iter).id() );
-                (*parent_iter).addChild( *iter );
-            } else out << QString( QObject::tr( "Unable to find highlight pattern named %1" ) ).arg( iter->parent() );
+                highlightPattern.setParentId( parentIter->id() );
+                parentIter->addChild( highlightPattern );
+            } else out << QString( QObject::tr( "Unable to find highlight pattern named %1" ) ).arg( highlightPattern.parent() );
 
         }
 
     }
 
     // assign styles to patterns
-    for( HighlightPattern::List::iterator iter = highlightPatterns_.begin(); iter != highlightPatterns_.end(); ++iter )
+    for( auto& pattern:highlightPatterns_ )
     {
-        HighlightStyle::Set::const_iterator styleIter( std::find_if( highlightStyles_.begin(), highlightStyles_.end(), HighlightStyle::SameNameFTor( iter->style() ) ) );
-        if( styleIter != highlightStyles_.end() ) iter->setStyle( *styleIter );
-        else out << QString( QObject::tr( "Unable to find highlight style named %1" ) ).arg( iter->style().name() );
+        auto&& styleIter( std::find_if( highlightStyles_.begin(), highlightStyles_.end(), HighlightStyle::SameNameFTor( pattern.style() ) ) );
+        if( styleIter != highlightStyles_.end() ) pattern.setStyle( *styleIter );
+        else out << QString( QObject::tr( "Unable to find highlight style named %1" ) ).arg( pattern.style().name() );
     }
 
     return out;
@@ -230,38 +230,38 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
     // dump highlight styles
     out.appendChild( parent.createTextNode( "\n\n" ) );
     out.appendChild( parent.createComment( QObject::tr( "Highlight styles" ) ) );
-    for( HighlightStyle::Set::const_iterator iter = highlightStyles_.begin(); iter != highlightStyles_.end(); ++iter )
-    { out.appendChild( iter->domElement( parent ) ); }
+    for( const auto& style:highlightStyles_ )
+    { out.appendChild( style.domElement( parent ) ); }
 
     // dump highlight patterns
     out.appendChild( parent.createTextNode( "\n\n" ) );
     out.appendChild( parent.createComment( QObject::tr( "Highlight patterns" ) ) );
-    for( HighlightPattern::List::const_iterator iter = highlightPatterns_.begin(); iter != highlightPatterns_.end(); ++iter )
-    { out.appendChild( iter->domElement( parent ) ); }
+    for( const auto& pattern:highlightPatterns_ )
+    { out.appendChild( pattern.domElement( parent ) ); }
 
     // dump indent patterns
     out.appendChild( parent.createTextNode( "\n\n" ) );
     out.appendChild( parent.createComment( QObject::tr( "Indentation patterns" ) ) );
-    for( IndentPattern::List::const_iterator iter = indentPatterns_.begin(); iter != indentPatterns_.end(); ++iter )
-    { out.appendChild( iter->domElement( parent ) ); }
+    for( const auto& pattern:indentPatterns_ )
+    { out.appendChild( pattern.domElement( parent ) ); }
 
     // dump parenthesis
     out.appendChild( parent.createTextNode( "\n\n" ) );
     out.appendChild( parent.createComment( QObject::tr( "Parenthesis" ) ) );
-    for( TextParenthesis::List::const_iterator iter = textParenthesis_.begin(); iter != textParenthesis_.end(); ++iter )
-    { out.appendChild( iter->domElement( parent ) ); }
+    for( const auto& parenthesis:textParenthesis_ )
+    { out.appendChild( parenthesis.domElement( parent ) ); }
 
     // dump block delimiters
     out.appendChild( parent.createTextNode( "\n\n" ) );
     out.appendChild( parent.createComment( QObject::tr( "Block delimiters" ) ) );
-    for( BlockDelimiter::List::const_iterator iter = blockDelimiters_.begin(); iter != blockDelimiters_.end(); ++iter )
-    { out.appendChild( iter->domElement( parent ) ); }
+    for( const auto& delimiter:blockDelimiters_ )
+    { out.appendChild( delimiter.domElement( parent ) ); }
 
     // dump text macros
     out.appendChild( parent.createTextNode( "\n\n" ) );
     out.appendChild( parent.createComment( QObject::tr( "Text macros" ) ) );
-    for( TextMacro::List::const_iterator iter = textMacros_.begin(); iter != textMacros_.end(); ++iter )
-    { out.appendChild( iter->domElement( parent ) ); }
+    for( const auto& macro:textMacros_ )
+    { out.appendChild( macro.domElement( parent ) ); }
 
     return out;
 }

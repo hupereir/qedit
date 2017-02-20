@@ -70,7 +70,7 @@ bool DocumentClassManager::read( const File& filename )
             DocumentClass documentClass( element );
 
             // look for document classes with same name
-            List::iterator iter = std::find_if(
+            auto&& iter = std::find_if(
                 documentClasses_.begin(),
                 documentClasses_.end(),
                 DocumentClass::SameNameFTor( documentClass.name() ) );
@@ -103,7 +103,7 @@ bool DocumentClassManager::write( const QString& className, const File& filename
     Debug::Throw() << "DocumentClassManager::write - class: " << className << " file: " << filename << endl;
 
     // try retrieve DocumentClass
-    List::const_iterator iter = std::find_if( documentClasses_.begin(), documentClasses_.end(), DocumentClass::SameNameFTor( className ) );
+    auto&& iter = std::find_if( documentClasses_.begin(), documentClasses_.end(), DocumentClass::SameNameFTor( className ) );
     return ( iter == documentClasses_.end() ) ? false : write( *iter,  filename );
 
 }
@@ -148,10 +148,10 @@ bool DocumentClassManager::write( const File& path ) const
     }
 
 
-    for( List::const_iterator iter = documentClasses_.begin(); iter != documentClasses_.end(); ++iter )
+    for( const auto& documentClass:documentClasses_ )
     {
-        File filename( iter->file().localName().addPath( path ) );
-        Debug::Throw(0) << "DocumentClassManager::write - writing class " << iter->name() << " to file " << filename << endl;
+        File filename( documentClass.file().localName().addPath( path ) );
+        Debug::Throw(0) << "DocumentClassManager::write - writing class " << documentClass.name() << " to file " << filename << endl;
 
         // try open file
         QFile out( filename );
@@ -162,7 +162,7 @@ bool DocumentClassManager::write( const File& path ) const
 
         // create main element
         QDomElement top = document.appendChild( document.createElement( Xml::Patterns ) ).toElement();
-        top.appendChild( iter->domElement( document ) );
+        top.appendChild( documentClass.domElement( document ) );
 
         out.write( document.toByteArray() );
         out.close();
@@ -180,7 +180,7 @@ DocumentClass DocumentClassManager::defaultClass( void ) const
     Debug::Throw( "DocumentClassManager::defaultClass.\n" );
 
     // try load default
-    List::const_iterator iter = std::find_if(
+    auto&& iter = std::find_if(
         documentClasses_.begin(),
         documentClasses_.end(),
         DocumentClass::IsDefaultFTor() );
@@ -198,7 +198,7 @@ DocumentClass DocumentClassManager::find( const File& filename ) const
     Debug::Throw() << "DocumentClassManager::find - file: " << filename << endl;
 
     // try load class matching name
-    List::const_iterator iter = std::find_if(
+    auto&& iter = std::find_if(
         documentClasses_.begin(),
         documentClasses_.end(),
         DocumentClass::MatchFileFTor( filename ) );
@@ -214,7 +214,7 @@ DocumentClass DocumentClassManager::get( const QString& name ) const
     Debug::Throw() << "DocumentClassManager::Get - name: " << name << endl;
 
     // try load class matching name
-    List::const_iterator iter = std::find_if(
+    auto&& iter = std::find_if(
         documentClasses_.begin(),
         documentClasses_.end(),
         DocumentClass::SameNameFTor( name ) );
@@ -231,7 +231,7 @@ bool DocumentClassManager::remove( const QString& name )
     Debug::Throw() << "DocumentClassManager::Remove - name: " << name << endl;
 
     // find class list matching name
-    List::iterator iter = std::find_if(
+    auto&& iter = std::find_if(
         documentClasses_.begin(),
         documentClasses_.end(),
         DocumentClass::SameNameFTor( name ) );

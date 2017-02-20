@@ -101,8 +101,7 @@ void Diff::_clear( void )
 {
 
     Debug::Throw( "Diff::_Clear.\n" );
-    for( FileInformation::List::iterator iter = files_.begin(); iter != files_.end(); ++iter )
-    { iter->clear(); }
+    for( auto& file:files_ ) file.clear();
     return;
 }
 

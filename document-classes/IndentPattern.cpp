@@ -90,8 +90,8 @@ QDomElement IndentPattern::domElement( QDomDocument& parent ) const
     if( !name().isEmpty() ) out.setAttribute( Xml::Name, name() );
     if( scale() > 1 ) out.setAttribute( Xml::Scale, QString::number( scale() ) );
 
-    for( Rule::List::const_iterator iter = rules().begin(); iter != rules().end(); ++iter )
-    { out.appendChild( iter->domElement( parent ) ); }
+    for( const auto& rule:rules() )
+    { out.appendChild( rule.domElement( parent ) ); }
 
     if( !comments().isEmpty() )
     {

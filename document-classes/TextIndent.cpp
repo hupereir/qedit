@@ -140,15 +140,15 @@ void TextIndent::indent( QTextBlock block, bool newLine )
         // get previous paragraph tabs
         int previous_tabs( _tabCount( previousBlock ) );
         int newTabs = previous_tabs;
-        for( IndentPattern::List::iterator iter = patterns_.begin(); iter != patterns_.end(); ++iter )
+        for( const auto& pattern:patterns_ )
         {
-            if( _acceptPattern( block, *iter ) )
+            if( _acceptPattern( block, pattern ) )
             {
 
-                Debug::Throw() << "TextIndent::indent - accepted pattern: " << iter->name() << endl;
-                if( iter->type() == IndentPattern::Increment ) newTabs += iter->scale();
-                else if( iter->type() == IndentPattern::Decrement ) newTabs -= iter->scale();
-                else if( iter->type() == IndentPattern::DecrementAll ) newTabs = 0;
+                Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << endl;
+                if( pattern.type() == IndentPattern::Increment ) newTabs += pattern.scale();
+                else if( pattern.type() == IndentPattern::Decrement ) newTabs -= pattern.scale();
+                else if( pattern.type() == IndentPattern::DecrementAll ) newTabs = 0;
                 break;
             }
         }
@@ -176,20 +176,19 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
 
     // retrieve rules associated to pattern
     bool accepted( true );
-    const IndentPattern::Rule::List& rules( pattern.rules() );
-    int rule_id( 0 );
-    for( IndentPattern::Rule::List::const_iterator iter = rules.begin(); iter != rules.end() && accepted; ++iter, rule_id++ )
+    int ruleId( 0 );
+    for( const auto& rule:pattern.rules() )
     {
 
         QTextBlock local( block );
 
         // if working on current paragraph
-        if( iter->paragraph() == 0 )
+        if( rule.paragraph() == 0 )
         {
 
-            if( !iter->accept( local.text() ) )
+            if( !rule.accept( local.text() ) )
             {
-                Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << rule_id << "] rejected" << endl;
+                Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "] rejected" << endl;
                 accepted = false;
             }
 
@@ -208,9 +207,9 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
                     true_decrement--;
                 }
 
-            } while( local.isValid() && decrement > iter->paragraph() );
+            } while( local.isValid() && decrement > rule.paragraph() );
 
-            Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << rule_id << "]"
+            Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "]"
                 << " decrement: " << decrement << " true: " << true_decrement
                 << endl;
 
@@ -219,9 +218,9 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
             // to check what is to be done when there is no valid paragraph
             // matching the request. This would allow to enable some patterns
             // that cannot otherwise.
-            if( !local.isValid() || !iter->accept( local.text() ) )
+            if( !local.isValid() || !rule.accept( local.text() ) )
             {
-                Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << rule_id << "] rejected" << endl;
+                Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "] rejected" << endl;
                 accepted = false;
             }
 

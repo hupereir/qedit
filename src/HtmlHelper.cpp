@@ -90,7 +90,7 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
     int activeId( 0 );
 
     // loop over text blocks
-    for( QTextBlock block = editor_->document()->begin(); block.isValid(); block = block.next() )
+    for( auto block = editor_->document()->begin(); block.isValid(); block = block.next() )
     {
 
         // need to redo highlighting rather that us HighlightBlockData
