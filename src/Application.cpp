@@ -295,7 +295,6 @@ void Application::_saveSession( void )
 {
     Debug::Throw( "Application::_saveSession.\n" );
     sessionFiles_->set( windowServer_->records( WindowServer::ExistingOnly ) );
-    Debug::Throw(0) << "Application::_saveSession - size: " << sessionFiles_->size() << " max: " << sessionFiles_->maxSize() << endl;
     static_cast<XmlFileList*>(sessionFiles_)->write();
     _updateSessionActions();
 }
