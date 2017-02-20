@@ -71,7 +71,6 @@ bool Application::initApplicationManager( void )
 
     // retrieve files from arguments and expand if needed
     CommandLineParser parser( commandLineParser( _arguments() ) );
-    QStringList& orphans( parser.orphans() );
     for( auto& orphan:parser.orphans() )
     { if( !orphan.isEmpty() ) orphan = File( orphan ).expand(); }
 
