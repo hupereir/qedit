@@ -177,8 +177,8 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
             { childPattern.processText( locations, text, active );}
 
             // remove patterns that overlap with others
-            PatternLocationSet::iterator iter = locations.begin();
-            PatternLocationSet::iterator prev = locations.begin();
+            auto&& iter = locations.begin();
+            auto&& prev = locations.begin();
 
             // first pattern is skipped because it must be the parent
             // so that prev is incremented once and current is incremented twice
@@ -213,11 +213,9 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
 
     // no active pattern
     // normal processing
-    unsigned int active_patterns(0);
-    for( HighlightPattern::List::const_iterator iter = patterns_.begin(); iter != patterns_.end(); ++iter )
+    unsigned int activePatterns(0);
+    for( const auto& pattern:patterns_ )
     {
-
-        const HighlightPattern &pattern( *iter );
 
         // do not reprocess active pattern (if any)
         // sincee it was already done
@@ -229,7 +227,7 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
         // here one could check if the pattern appears at least once (by checking return value of processText
         // and loop over children here (in place of main loop) if yes.
         pattern.processText( locations, text, active );
-        if( active ) active_patterns |= pattern.id();
+        if( active ) activePatterns |= pattern.id();
 
     }
 
@@ -240,9 +238,9 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
     while( locations.size() && locations.begin()->parentId() ) locations.erase(locations.begin());
 
     // remove patterns that overlap with others
-    PatternLocationSet::iterator iter = locations.begin();
-    PatternLocationSet::iterator prev = locations.begin();
-    PatternLocationSet::iterator parent = locations.begin();
+    auto&& iter = locations.begin();
+    auto&& prev = locations.begin();
+    auto&& parent = locations.begin();
 
     if( iter != locations.end() ) ++iter;
     while(  iter != locations.end() )
@@ -262,11 +260,11 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
             } else {
 
                 // remove current pattern
-                PatternLocationSet::iterator current = iter;
+                auto&& current = iter;
                 ++iter;
 
                 // remove pattern from active list
-                active_patterns &= (~current->id());
+                activePatterns &= (~current->id());
                 locations.erase( current );
             }
 
@@ -279,7 +277,7 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
                 ++iter;
             } else {
 
-                PatternLocationSet::iterator current = iter;
+                auto&& current = iter;
                 ++iter;
 
                 // remove pattern from active list
@@ -301,11 +299,11 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
     // one loop over the remaining locations
     // stop at the first one that is found in the list of possibly active
     locations.activeId().second = 0;
-    for( PatternLocationSet::iterator iter = locations.begin(); iter != locations.end(); ++iter )
+    for( const auto& location:locations )
     {
-        if( active_patterns & iter->id() )
+        if( activePatterns & location.id() )
         {
-            locations.activeId().second = iter->id();
+            locations.activeId().second = location.id();
             break;
         }
     }

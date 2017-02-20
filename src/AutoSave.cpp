@@ -86,7 +86,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
 
     // loop over threads and restart
 
-    for( auto iter = threads_.begin(); iter != threads_.end(); ++iter )
+    for( auto&& iter = threads_.begin(); iter != threads_.end(); ++iter )
     {
 
         // check if argument display, if valid, is associated to this thread

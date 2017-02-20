@@ -120,8 +120,8 @@ FileSelectionDialog::FileList FileSelectionDialog::selectedFiles( void ) const
     // retrieve selection from the list
     FileRecordModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
     FileList files;
-    for( FileRecordModel::List::iterator iter = selection.begin(); iter != selection.end(); ++iter )
-    { files << iter->file(); }
+    for( const auto& record:selection )
+    { files << record.file(); }
 
     return files;
 }

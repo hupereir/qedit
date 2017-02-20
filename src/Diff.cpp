@@ -135,8 +135,8 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
     }
 
     // highlight displays
-    for( FileInformation::List::iterator iter = files_.begin(); iter != files_.end(); ++iter )
-    { iter->highlightDisplay(); }
+    for( auto& file:files_ )
+    { file.highlightDisplay(); }
 
     // delete this object
     deleteLater();
