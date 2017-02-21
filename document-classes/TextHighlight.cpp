@@ -260,7 +260,7 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
             } else {
 
                 // remove current pattern
-                auto&& current = iter;
+                auto current = iter;
                 ++iter;
 
                 // remove pattern from active list
@@ -277,7 +277,7 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
                 ++iter;
             } else {
 
-                auto&& current = iter;
+                auto current = iter;
                 ++iter;
 
                 // remove pattern from active list
