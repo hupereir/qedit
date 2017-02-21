@@ -161,7 +161,7 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
     {
 
         // look for matching pattern in list
-        auto&& patternIter = std::find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( activeId ) );
+        auto patternIter = std::find_if( patterns_.begin(), patterns_.end(), HighlightPattern::SameIdFTor( activeId ) );
         Q_ASSERT( patternIter != patterns_.end() );
 
         const HighlightPattern &pattern( *patternIter );
@@ -177,8 +177,8 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
             { childPattern.processText( locations, text, active );}
 
             // remove patterns that overlap with others
-            auto&& iter = locations.begin();
-            auto&& prev = locations.begin();
+            auto iter = locations.begin();
+            auto prev = locations.begin();
 
             // first pattern is skipped because it must be the parent
             // so that prev is incremented once and current is incremented twice
@@ -238,9 +238,9 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
     while( locations.size() && locations.begin()->parentId() ) locations.erase(locations.begin());
 
     // remove patterns that overlap with others
-    auto&& iter = locations.begin();
-    auto&& prev = locations.begin();
-    auto&& parent = locations.begin();
+    auto iter = locations.begin();
+    auto prev = locations.begin();
+    auto parent = locations.begin();
 
     if( iter != locations.end() ) ++iter;
     while(  iter != locations.end() )

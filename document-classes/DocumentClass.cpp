@@ -178,7 +178,7 @@ QStringList DocumentClass::_associatePatterns( void )
         if( highlightPattern.parent().size() )
         {
 
-            auto&& parentIter( std::find_if( highlightPatterns_.begin(), highlightPatterns_.end(), HighlightPattern::SameNameFTor( highlightPattern.parent() ) ) );
+            auto parentIter( std::find_if( highlightPatterns_.begin(), highlightPatterns_.end(), HighlightPattern::SameNameFTor( highlightPattern.parent() ) ) );
             if( parentIter != highlightPatterns_.end() )
             {
                 highlightPattern.setParentId( parentIter->id() );
@@ -192,7 +192,7 @@ QStringList DocumentClass::_associatePatterns( void )
     // assign styles to patterns
     for( auto& pattern:highlightPatterns_ )
     {
-        auto&& styleIter( std::find_if( highlightStyles_.begin(), highlightStyles_.end(), HighlightStyle::SameNameFTor( pattern.style() ) ) );
+        auto styleIter( std::find_if( highlightStyles_.begin(), highlightStyles_.end(), HighlightStyle::SameNameFTor( pattern.style() ) ) );
         if( styleIter != highlightStyles_.end() ) pattern.setStyle( *styleIter );
         else out << QString( QObject::tr( "Unable to find highlight style named %1" ) ).arg( pattern.style().name() );
     }

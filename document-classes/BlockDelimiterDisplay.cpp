@@ -131,8 +131,8 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     height += yOffset;
 
     // retrieve matching segments
-    auto&& document( *editor_->document() );
-    auto&& block( document.begin() );
+    const auto& document( *editor_->document() );
+    auto block( document.begin() );
     int id( 0 );
 
     // optimize drawing by not drawing overlapping segments
@@ -805,7 +805,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
 void BlockDelimiterDisplay::_selectSegmentFromCursor( int cursor )
 {
     Debug::Throw( "BlockDelimiterDisplay::_selectSegmentFromCursor.\n" );
-    auto&& iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor ) );
+    auto iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor ) );
     _setSelectedSegment( iter == segments_.end() ? BlockDelimiterSegment():*iter );
 
 }
@@ -815,7 +815,7 @@ void BlockDelimiterDisplay::_selectSegmentFromCursor( int cursor )
 void BlockDelimiterDisplay::_selectSegmentFromPosition( const QPoint& position )
 {
     Debug::Throw( "BlockDelimiterDisplay::_selectSegmentFromPosition.\n" );
-    auto&& iter = std::find_if(
+    auto iter = std::find_if(
         segments_.begin(), segments_.end(),
         BlockDelimiterSegment::ActiveFTor( position ) );
     _setSelectedSegment( iter == segments_.end() ? BlockDelimiterSegment():*iter );

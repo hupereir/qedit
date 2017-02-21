@@ -70,7 +70,7 @@ bool DocumentClassManager::read( const File& filename )
             DocumentClass documentClass( element );
 
             // look for document classes with same name
-            auto&& iter = std::find_if(
+            auto iter = std::find_if(
                 documentClasses_.begin(),
                 documentClasses_.end(),
                 DocumentClass::SameNameFTor( documentClass.name() ) );
@@ -103,7 +103,7 @@ bool DocumentClassManager::write( const QString& className, const File& filename
     Debug::Throw() << "DocumentClassManager::write - class: " << className << " file: " << filename << endl;
 
     // try retrieve DocumentClass
-    auto&& iter = std::find_if( documentClasses_.begin(), documentClasses_.end(), DocumentClass::SameNameFTor( className ) );
+    auto iter = std::find_if( documentClasses_.begin(), documentClasses_.end(), DocumentClass::SameNameFTor( className ) );
     return ( iter == documentClasses_.end() ) ? false : write( *iter,  filename );
 
 }
@@ -180,7 +180,7 @@ DocumentClass DocumentClassManager::defaultClass( void ) const
     Debug::Throw( "DocumentClassManager::defaultClass.\n" );
 
     // try load default
-    auto&& iter = std::find_if(
+    auto iter = std::find_if(
         documentClasses_.begin(),
         documentClasses_.end(),
         DocumentClass::IsDefaultFTor() );
@@ -198,7 +198,7 @@ DocumentClass DocumentClassManager::find( const File& filename ) const
     Debug::Throw() << "DocumentClassManager::find - file: " << filename << endl;
 
     // try load class matching name
-    auto&& iter = std::find_if(
+    auto iter = std::find_if(
         documentClasses_.begin(),
         documentClasses_.end(),
         DocumentClass::MatchFileFTor( filename ) );
@@ -214,7 +214,7 @@ DocumentClass DocumentClassManager::get( const QString& name ) const
     Debug::Throw() << "DocumentClassManager::Get - name: " << name << endl;
 
     // try load class matching name
-    auto&& iter = std::find_if(
+    auto iter = std::find_if(
         documentClasses_.begin(),
         documentClasses_.end(),
         DocumentClass::SameNameFTor( name ) );
@@ -231,7 +231,7 @@ bool DocumentClassManager::remove( const QString& name )
     Debug::Throw() << "DocumentClassManager::Remove - name: " << name << endl;
 
     // find class list matching name
-    auto&& iter = std::find_if(
+    auto iter = std::find_if(
         documentClasses_.begin(),
         documentClasses_.end(),
         DocumentClass::SameNameFTor( name ) );

@@ -55,8 +55,8 @@ namespace TextBlock
     {
         Debug::Throw( "Delimiter::List::operator +=\n" );
         Delimiter::List out( *this );
-        auto&& first = out.begin();
-        auto&& second = list.begin();
+        auto first = out.begin();
+        auto second = list.begin();
         for(; first != out.end(); first++ )
         {
             if( second != list.end() )

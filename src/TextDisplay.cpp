@@ -1163,7 +1163,7 @@ void TextDisplay::processMacro( QString name )
     Debug::Throw() << "TextDisplay::processMacro - " << name << endl;
 
     // retrieve macro that match argument name
-    auto&& macroIter = std::find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
+    auto macroIter = std::find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
     if( macroIter == macros_.end() )
     {
         QString buffer;
@@ -2514,7 +2514,7 @@ void TextDisplay::_highlightParenthesis( void )
 
     // check against opening parenthesis
     bool found( false );
-    auto&& iter( std::find_if(
+    auto iter( std::find_if(
         parenthesis.begin(), parenthesis.end(),
         TextParenthesis::FirstElementFTor( text.left( position ) ) ) );
 

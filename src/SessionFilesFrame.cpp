@@ -131,7 +131,7 @@ void SessionFilesFrame::update( void )
     list_->resizeColumns();
 
     // make sure selected record appear selected in list
-    auto&& iter = std::find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::Selected ) );
+    auto iter = std::find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::Selected ) );
     if( iter != records.end() ) select( iter->file() );
 
     Debug::Throw( "SessionFilesFrame:update - done.\n" );
