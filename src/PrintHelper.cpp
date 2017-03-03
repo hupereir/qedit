@@ -60,20 +60,7 @@ void PrintHelper::print( QPrinter* printer )
         // construct text layout
         QTextLayout textLayout( block.text(), font, printer );
 
-        // layout text
-        textLayout.beginLayout();
-        qreal height(0);
-        forever
-        {
-            QTextLine line = textLayout.createLine();
-            if (!line.isValid()) break;
-
-            line.setLineWidth( pageRect.width() );
-            height += leading;
-            line.setPosition(QPointF(0, height));
-            height += line.height();
-        }
-
+        // since QT5 extra formats need to be applied before starting the layout
         // create ranges
         QList<QTextLayout::FormatRange> formatRanges;
 
@@ -98,6 +85,21 @@ void PrintHelper::print( QPrinter* printer )
 
         // save formats
         textLayout.setAdditionalFormats( formatRanges );
+
+        // layout text
+        textLayout.beginLayout();
+        qreal height(0);
+        forever
+        {
+            QTextLine line = textLayout.createLine();
+            if (!line.isValid()) break;
+
+            line.setLineWidth( pageRect.width() );
+            height += leading;
+            line.setPosition(QPointF(0, height));
+            height += line.height();
+        }
+
         textLayout.endLayout();
 
         // increase page
