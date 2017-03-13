@@ -26,6 +26,7 @@ configure_file(qedit.spec.cmake ${CMAKE_SOURCE_DIR}/qedit.spec)
 
 ########### external applications ###############
 find_program(DIFF diff)
+find_program(XDG_OPEN xdg-open)
 
 ########### aspell ###############
 find_program(ASPELL aspell)
