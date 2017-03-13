@@ -53,7 +53,7 @@ QString HtmlHelper::_htmlString( void )
 
     // meta information
     meta = head.appendChild( document.createElement( "meta" ) ).toElement();
-    meta.setAttribute( "content", "Text/html; charset=iso-8859-1" );
+    meta.setAttribute( "content", "Text/html; charset=utf8" );
     meta.setAttribute( "Http-equiv", "Content-Type" );
     meta = head.appendChild( document.createElement( "meta" ) ).toElement();
     meta.setAttribute( "content", "QEdit" );
@@ -61,7 +61,7 @@ QString HtmlHelper::_htmlString( void )
 
     // title
     QDomElement title = head.appendChild( document.createElement( "Title" ) ).toElement();
-    title.appendChild( document.createTextNode( editor_->file() ) );
+    title.appendChild( document.createTextNode( editor_->file().toUtf8() ) );
 
     // body
     html.
@@ -109,11 +109,11 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
         QDomElement span;
         int currentPatternId = -1;
         bool lineBreak( false );
-        int line_index( 0 );
+        int lineIndex( 0 );
 
         // parse text
         QString buffer("");
-        for( int index = 0; index < text.size(); index++, line_index++ )
+        for( int index = 0; index < text.size(); index++, lineIndex++ )
         {
 
             // parse locations
@@ -144,7 +144,7 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
                     {
                         out.appendChild( document.createElement( "Br" ) );
                         lineBreak = false;
-                        line_index = 0;
+                        lineIndex = 0;
                     }
                     buffer = "";
                 }
@@ -182,7 +182,7 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
         if( !buffer.isEmpty() )
         {
             if( span.isNull() ) span  = out.appendChild( document.createElement( "Span" ) ).toElement();
-            span.appendChild( document.createTextNode( buffer ) );
+            span.appendChild( document.createTextNode( buffer.toUtf8() ) );
         }
 
         out.appendChild( document.createElement( "Br" ) );
