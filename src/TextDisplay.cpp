@@ -1377,7 +1377,7 @@ void TextDisplay::paintEvent( QPaintEvent* event )
     QPainter painter( viewport() );
     painter.setClipRect( event->rect() );
     painter.translate( -scrollbarPosition() );
-    painter.setPen( _marginWidget().palette().color( QPalette::WindowText ) );
+    painter.setPen( _marginWidget().foregroundColor() );
 
     // loop over found blocks
     for( QTextBlock block( first ); block != last.next() && block.isValid(); block = block.next() )
