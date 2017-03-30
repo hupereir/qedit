@@ -18,10 +18,7 @@
 *******************************************************************************/
 
 #include "Application.h"
-#include "AutoSave.h"
 #include "ConfigurationDialog.h"
-#include "DocumentClass.h"
-#include "DocumentClassManager.h"
 #include "DocumentClassManagerDialog.h"
 #include "FileCheck.h"
 #include "FileCheckDialog.h"
@@ -51,18 +48,6 @@ Application::Application( CommandLineArguments arguments ):
     BaseApplication( nullptr, arguments ),
     Counter( "Application" )
 {}
-
-//____________________________________________
-Application::~Application( void )
-{
-    Debug::Throw( "Application::~Application.\n" );
-
-    if( classManager_ ) delete classManager_;
-    if( fileCheck_ ) delete fileCheck_;
-    if( autosave_ ) delete autosave_;
-    if( windowServer_ ) delete windowServer_;
-
-}
 
 //____________________________________________
 bool Application::initApplicationManager( void )
@@ -121,25 +106,25 @@ bool Application::realizeWidget( void )
     _installActions();
 
     // file list
-    recentFiles_ = new XmlFileList( this );
+    recentFiles_.reset(new XmlFileList( this ));
     recentFiles_->setCheck( true );
 
     // session file list
-    sessionFiles_ = new XmlFileList( this );
-    static_cast<XmlFileList*>( sessionFiles_ )->setTagName( Base::Xml::SessionFileList );
+    sessionFiles_.reset(new XmlFileList( this ));
+    static_cast<XmlFileList*>( sessionFiles_.get() )->setTagName( Base::Xml::SessionFileList );
 
     // class manager
-    classManager_ = new DocumentClassManager();
+    classManager_.reset(new DocumentClassManager());
 
     // autosave
-    autosave_ = new AutoSave();
+    autosave_.reset( new AutoSave() );
 
     // file check
-    fileCheck_ = new FileCheck();
+    fileCheck_.reset( new FileCheck() );
 
     // window server
-    windowServer_ = new WindowServer();
-    connect( windowServer_, SIGNAL(sessionFilesChanged()), SLOT(_updateSessionActions()) );
+    windowServer_.reset( new WindowServer() );
+    connect( windowServer_.get(), SIGNAL(sessionFilesChanged()), SLOT(_updateSessionActions()) );
 
     // create first window and show
     windowServer_->newMainWindow().centerOnDesktop();
@@ -294,7 +279,7 @@ void Application::_saveSession( void )
 {
     Debug::Throw( "Application::_saveSession.\n" );
     sessionFiles_->set( windowServer_->records( WindowServer::ExistingOnly ) );
-    static_cast<XmlFileList*>(sessionFiles_)->write();
+    static_cast<XmlFileList*>(sessionFiles_.get())->write();
     _updateSessionActions();
 }
 
@@ -336,7 +321,7 @@ void Application::_discardSession( void )
 {
     Debug::Throw( "Application::_discardSession.\n" );
     sessionFiles_->clear();
-    static_cast<XmlFileList*>(sessionFiles_)->write();
+    static_cast<XmlFileList*>(sessionFiles_.get())->write();
     _updateSessionActions();
 }
 
@@ -410,8 +395,8 @@ void Application::timerEvent( QTimerEvent* event )
 void Application::_updateConfiguration( void )
 {
     Debug::Throw( "Application::_updateConfiguration.\n" );
-    static_cast<XmlFileList*>(recentFiles_)->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
-    static_cast<XmlFileList*>(sessionFiles_)->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
+    static_cast<XmlFileList*>(recentFiles_.get())->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
+    static_cast<XmlFileList*>(sessionFiles_.get())->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
     recentFiles_->setMaxSize( XmlOptions::get().get<int>( "DB_SIZE" ) );
 }
 

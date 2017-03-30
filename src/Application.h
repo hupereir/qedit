@@ -20,15 +20,20 @@
 *
 *******************************************************************************/
 
+#include "AutoSave.h"
 #include "BaseApplication.h"
 #include "CommandLineArguments.h"
 #include "CommandLineParser.h"
 #include "Config.h"
 #include "Counter.h"
+#include "DocumentClass.h"
+#include "DocumentClassManager.h"
 #include "IconEngine.h"
 
 #include <QBasicTimer>
 #include <QTimerEvent>
+
+#include <memory>
 
 class AutoSave;
 class DocumentClassManager;
@@ -48,9 +53,6 @@ class Application: public BaseApplication, public Counter
 
     //* constructor
     Application( CommandLineArguments );
-
-    //* destructor
-    ~Application( void );
 
     //* initialize application manager
     virtual bool initApplicationManager( void );
@@ -201,22 +203,22 @@ class Application: public BaseApplication, public Counter
     void _installActions( void );
 
     //* recent files list
-    FileList* recentFiles_ = nullptr;
+    std::unique_ptr<FileList> recentFiles_;
 
     //* session files
-    FileList* sessionFiles_ = nullptr;
+    std::unique_ptr<FileList> sessionFiles_;
 
     //* window server
-    WindowServer* windowServer_ = nullptr;
+    std::unique_ptr<WindowServer> windowServer_;
 
     //* document class manager singleton
-    DocumentClassManager* classManager_ = nullptr;
+    std::unique_ptr<DocumentClassManager> classManager_;
 
     //* file autoSave manager
-    AutoSave* autosave_ = nullptr;
+    std::unique_ptr<AutoSave> autosave_;
 
     //* file check
-    FileCheck* fileCheck_ = nullptr;
+    std::unique_ptr<FileCheck> fileCheck_;
 
     //* startup single shot timer
     /**
