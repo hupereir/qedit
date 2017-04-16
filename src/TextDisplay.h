@@ -114,7 +114,8 @@ class TextDisplay: public TextEditor
     virtual int blockCount( const QTextBlock& ) const;
 
     //* clone display configuration and document
-    virtual void synchronize( TextDisplay* display );
+    using TextEditor::synchronize;
+    virtual void synchronize( TextDisplay* );
 
     //* check if current entry has been modified or not
     void setModified( bool value = true );

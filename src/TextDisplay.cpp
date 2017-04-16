@@ -275,10 +275,9 @@ void TextDisplay::synchronize( TextDisplay* other )
     Debug::Throw( "TextDisplay::synchronize.\n" );
 
     // replace base class syntax highlighter prior to calling base class synchronization
-    textHighlight_ = &other->textHighlight();
-
-    /* this avoids calling to invalid block of memory which the textHighlight gets deleted
+    /* this prevents from calling to invalid block of memory which the textHighlight gets deleted
     when changing the document */
+    textHighlight_ = &other->textHighlight();
 
     // base class synchronization
     TextEditor::synchronize( other );
