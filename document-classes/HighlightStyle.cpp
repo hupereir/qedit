@@ -24,44 +24,43 @@
 
 //_____________________________________________________
 HighlightStyle::HighlightStyle( const QDomElement& element ):
-      Counter( "HighlightStyle" ),
-      format_( Format::Default ),
-      color_( Qt::black )
+Counter( "HighlightStyle" ),
+format_( Format::Default )
 {
-  Debug::Throw( "HighlightStyle::HighlightStyle.\n" );
+    Debug::Throw( "HighlightStyle::HighlightStyle.\n" );
 
-  // parse attributes
-  QDomNamedNodeMap attributes( element.attributes() );
-  for( int i=0; i<attributes.count(); i++ )
-  {
-    QDomAttr attribute( attributes.item( i ).toAttr() );
-    if( attribute.isNull() ) continue;
+    // parse attributes
+    QDomNamedNodeMap attributes( element.attributes() );
+    for( int i=0; i<attributes.count(); i++ )
+    {
+        QDomAttr attribute( attributes.item( i ).toAttr() );
+        if( attribute.isNull() ) continue;
 
-    if( attribute.name() == Xml::Name ) setName( attribute.value() );
-    else if( attribute.name() == Xml::Format ) setFontFormat( (Format::TextFormatFlags) attribute.value().toInt() );
-    else if( attribute.name() == Xml::Color ) setColor( QColor( attribute.value() ) );
-    else Debug::Throw(0) << "Option::Option - unrecognized attribute " << attribute.name() << ".\n";
+        if( attribute.name() == Xml::Name ) setName( attribute.value() );
+        else if( attribute.name() == Xml::Format ) setFontFormat( (Format::TextFormatFlags) attribute.value().toInt() );
+        else if( attribute.name() == Xml::Color ) setColor( QColor( attribute.value() ) );
+        else Debug::Throw(0) << "Option::Option - unrecognized attribute " << attribute.name() << ".\n";
 
-  }
+    }
 }
 
 //_____________________________________________________
 QDomElement HighlightStyle::domElement( QDomDocument& parent ) const
 {
-  Debug::Throw( "HighlighStyle::DomElement.\n" );
-  QDomElement out = parent.createElement( Xml::Style );
-  out.setAttribute( Xml::Name, name() );
-  out.setAttribute( Xml::Format, QString::number(fontFormat()) );
-  out.setAttribute( Xml::Color, color().name() );
-  return out;
+    Debug::Throw( "HighlighStyle::DomElement.\n" );
+    QDomElement out = parent.createElement( Xml::Style );
+    out.setAttribute( Xml::Name, name_ );
+    if( format_ != Format::Default ) out.setAttribute( Xml::Format, QString::number(format_) );
+    if( color_.isValid() ) out.setAttribute( Xml::Color, color_.name() );
+    return out;
 }
 
 
 //_____________________________________________________
 bool HighlightStyle::operator == ( const HighlightStyle& other ) const
 {
-  return
-    name() == other.name() &&
-    fontFormat() == other.fontFormat() &&
-    color() == other.color();
+    return
+        name_ == other.name_ &&
+        format_ == other.format_ &&
+        color_ == other.color_;
 }

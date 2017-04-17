@@ -41,7 +41,7 @@ class HighlightStyle: public Counter
     HighlightStyle(
         const QString& name = "default",
         Format::TextFormatFlags format = Format::Default,
-        const QColor& color = Qt::black ):
+        const QColor& color = QColor() ):
         Counter( "HighlightStyle" ),
         name_( name ),
         format_( format ),
@@ -65,12 +65,12 @@ class HighlightStyle: public Counter
 
         //* constructor
         SameNameFTor( const HighlightStyle& style ):
-            name_( style.name() )
+            name_( style.name_ )
             {}
 
         //* predicate
         bool operator() (const HighlightStyle& other ) const
-        { return other.name() == name_; }
+        { return other.name_ == name_; }
 
         private:
 
@@ -84,7 +84,7 @@ class HighlightStyle: public Counter
         public:
 
         bool operator()( const HighlightStyle& first, const HighlightStyle& second ) const
-        { return first.name() == second.name(); }
+        { return first.name_ == second.name_; }
 
     };
 
@@ -94,7 +94,7 @@ class HighlightStyle: public Counter
         public:
 
         bool operator()( const HighlightStyle& first, const HighlightStyle& second ) const
-        { return first.name() < second.name(); }
+        { return first.name_ < second.name_; }
 
     };
 
