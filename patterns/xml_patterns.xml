@@ -35,7 +35,7 @@
   <style format="0" name="Keyword" color="#0000ff" />
   <style format="0" name="String" color="#00cd00" />
   <style format="0" name="Tag" color="#a52a2a" />
-  <style format="2" name="Text" color="#000000" />
+  <style format="2" name="Text"/>
 
 <!--Highlight patterns-->
   <range_pattern style="Text" parent="" name="Text" >

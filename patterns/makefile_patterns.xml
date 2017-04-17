@@ -24,7 +24,7 @@
   </Option>
 
 <!--Highlight styles-->
-  <style format="0" name="Command" color="#000000" />
+  <style format="0" name="Command" />
   <style format="2" name="Comment" color="#ff8c00" />
   <style format="0" name="Keyword" color="#0000ff" />
   <style format="2" name="Keyword2" color="#0000ff" />
