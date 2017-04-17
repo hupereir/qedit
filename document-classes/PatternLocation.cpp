@@ -21,12 +21,7 @@
 
 //_____________________________________________________
 PatternLocation::PatternLocation( void ):
-    Counter( "PatternLocation" ),
-    id_( -1 ),
-    parentId_( -1 ),
-    flags_(0),
-    position_(-1),
-    length_(-1)
+    Counter( "PatternLocation" )
 {}
 
 //_____________________________________________________

@@ -24,8 +24,7 @@
 
 //_____________________________________________________
 HighlightStyle::HighlightStyle( const QDomElement& element ):
-Counter( "HighlightStyle" ),
-format_( Format::Default )
+    Counter( "HighlightStyle" )
 {
     Debug::Throw( "HighlightStyle::HighlightStyle.\n" );
 

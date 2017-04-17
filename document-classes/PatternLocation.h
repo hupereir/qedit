@@ -53,12 +53,12 @@ class PatternLocation: public Counter
     bool operator == (const PatternLocation& location ) const
     { return position() == location.position() && parentId() == location.parentId(); }
 
+    //*@name accessors
+    //@{
+
     //* valid
     bool isValid( void ) const
     { return id_ >= 0 && position_ >= 0 && length_ > 0; }
-
-    //*@name location
-    //@{
 
     //* position
     int position( void ) const
@@ -68,6 +68,35 @@ class PatternLocation: public Counter
     int length( void ) const
     { return length_; }
 
+
+    //* pattern id
+    int id( void ) const
+    { return id_; }
+
+    //* parent pattern id
+    int parentId( void ) const
+    { return parentId_; }
+
+    //* flags
+    HighlightPattern::Flags flags( void ) const
+    { return flags_; }
+
+    //* flags
+    bool hasFlag( const HighlightPattern::Flag& flag ) const
+    { return flags() & flag; }
+
+    //* format
+    Format::TextFormatFlags fontFormat( void ) const
+    { return format_; }
+
+    //* color
+    virtual QColor color( void ) const
+    { return color_; }
+
+    //* formated font
+    virtual QTextCharFormat format() const;
+
+    //@}
 
     //* used to find a location matching index
     class ContainsFTor
@@ -108,43 +137,6 @@ class PatternLocation: public Counter
     };
 
     //@}
-
-    //*@name highlight pattern
-    //@{
-
-    //* pattern id
-    int id( void ) const
-    { return id_; }
-
-    //* parent pattern id
-    int parentId( void ) const
-    { return parentId_; }
-
-    //* flags
-    HighlightPattern::Flags flags( void ) const
-    { return flags_; }
-
-    //* flags
-    bool hasFlag( const HighlightPattern::Flag& flag ) const
-    { return flags() & flag; }
-
-    //@}
-
-    //*@name highlight style
-    //@{
-
-    //* format
-    Format::TextFormatFlags fontFormat( void ) const
-    { return format_; }
-
-    //* color
-    virtual QColor color( void ) const
-    { return color_; }
-
-    //* formated font
-    virtual QTextCharFormat format() const;
-
-    //}
 
     private:
 

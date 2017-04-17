@@ -29,13 +29,7 @@ QString HighlightPattern::noParentPattern_( "None" );
 //___________________________________________________________________________
 HighlightPattern::HighlightPattern( const QDomElement& element ):
     Counter( "HighlightPattern" ),
-    id_( 0 ),
-    type_( Undefined ),
-    name_( "default" ),
-    parent_( "" ),
-    parentId_( 0 ),
-    style_( HighlightStyle() ),
-    flags_( None )
+    name_( "default" )
 {
     Debug::Throw( "HighlightPattern::HighlightPattern.\n" );
     if( element.tagName() == Xml::KeywordPattern ) setType( KeywordPattern );
@@ -67,7 +61,6 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     {
         QDomElement child_element = child_node.toElement();
         if( child_element.isNull() ) continue;
-        if( child_element.tagName() == Xml::Comments ) setComments( XmlString( child_element.text() ) );
         else if( child_element.tagName() == Xml::Keyword ) setKeyword( XmlString( child_element.text() ) );
         else if( child_element.tagName() == Xml::Begin ) setBegin( XmlString( child_element.text() ) );
         else if( child_element.tagName() == Xml::End ) setEnd( XmlString( child_element.text() ) );
@@ -81,9 +74,9 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
     Debug::Throw( "HighlightPattern::domElement.\n" );
 
     QDomElement out( parent.createElement( typeName() ) );
-    out.setAttribute( Xml::Name, name() );
-    out.setAttribute( Xml::Parent, HighlightPattern::parent() );
-    out.setAttribute( Xml::Style, style().name() );
+    out.setAttribute( Xml::Name, name_ );
+    out.setAttribute( Xml::Parent, HighlightPattern::parent_ );
+    out.setAttribute( Xml::Style, style_.name() );
 
     // options:
     QString options;
@@ -93,27 +86,22 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
     if( hasFlag( Comment ) ) options += Xml::OptionComment + " ";
     if( !options.isEmpty() ) out.setAttribute( Xml::Options, options );
 
-    // comments
-    out.
-        appendChild( parent.createElement( Xml::Comments ) ).
-        appendChild( parent.createTextNode( comments() ) );
-
     // regexps
-    if( type() == KeywordPattern )
+    if( type_ == KeywordPattern )
     {
         out.
             appendChild( parent.createElement( Xml::Keyword ) ).
-            appendChild( parent.createTextNode( keyword().pattern() ) );
+            appendChild( parent.createTextNode( keyword_.pattern() ) );
     }
 
-    if( type() == RangePattern )
+    if( type_ == RangePattern )
     {
         out.
             appendChild( parent.createElement( Xml::Begin ) ).
-            appendChild( parent.createTextNode( begin().pattern() ) );
+            appendChild( parent.createTextNode( keyword_.pattern() ) );
         out.
             appendChild( parent.createElement( Xml::End ) ).
-            appendChild( parent.createTextNode( end().pattern() ) );
+            appendChild( parent.createTextNode( end_.pattern() ) );
     }
 
     return out;
@@ -123,13 +111,13 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
 bool HighlightPattern::operator ==( const HighlightPattern& other ) const
 {
     return
-        name() == other.name() &&
-        flags() == other.flags() &&
-        type() == other.type() &&
-        parent() == other.parent() &&
-        style() == other.style() &&
-        keyword() == other.keyword() &&
-        ( type() != RangePattern || end() == other.end() );
+        name_ == other.name_ &&
+        flags_ == other.flags_ &&
+        type_ == other.type_ &&
+        parent_ == other.parent_ &&
+        style_ == other.style_ &&
+        keyword_ == other.keyword_ &&
+        ( type_ != RangePattern || end_ == other.end_ );
 }
 
 //____________________________________________________________
@@ -151,19 +139,19 @@ bool HighlightPattern::_findKeyword( PatternLocationSet& locations, const QStrin
     active=false;
 
     // check RegExp
-    if( keyword().isEmpty() ) return false;
+    if( keyword_.isEmpty() ) return false;
 
     // process text
     bool found( false );
     int position( 0 );
     while( position >= 0 )
     {
-        position = keyword().indexIn( text, position );
+        position = keyword_.indexIn( text, position );
         if( position >= 0 )
         {
             found = true;
-            locations.insert( PatternLocation( *this, position, keyword().matchedLength() ) );
-            position += keyword().matchedLength();
+            locations.insert( PatternLocation( *this, position, keyword_.matchedLength() ) );
+            position += keyword_.matchedLength();
         }
     }
 
