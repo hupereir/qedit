@@ -126,7 +126,7 @@
   </keyword_pattern>
   <keyword_pattern style="Storage Type" parent="" name="Storage Type" >
    <comments>storage type</comments>
-   <keyword>\b(nullptr|auto|(u?char)|const|bool|double|enum|explicit|export|extern|float|friend|inline|(u?int)|(u?long)|mutable|operator|register|(u?short)|((un)?signed)|static|struct|template|typedef|typeid|typename|union|virtual|void|volatile|final|wchar_t)\b</keyword>
+   <keyword>\b(nullptr|auto|(u?char)|const|bool|double|enum|explicit|export|extern|float|friend|inline|(u?int)|(u?long)|mutable|operator|register|(u?short)|((un)?signed)|static|struct|template|typedef|typeid|typename|union|virtual|void|volatile|final|override|wchar_t)\b</keyword>
   </keyword_pattern>
   <keyword_pattern style="Storage Type" parent="" name="Stl Storage Type" >
    <comments>storage type (STL)</comments>
