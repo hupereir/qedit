@@ -47,8 +47,8 @@ class AutoSave: public QObject, public Counter
     void newThread( TextDisplay* );
 
     //* Save files
-    /* \param display if set to non 0, only threads that match the display are saved */
-    void saveFiles( const TextDisplay* = 0 );
+    /* if set to non 0, only threads that match the display are saved */
+    void saveFiles( const TextDisplay* = nullptr );
 
     protected:
 
@@ -75,7 +75,7 @@ class AutoSave: public QObject, public Counter
     QBasicTimer timer_;
 
     //* list of threads
-    using ThreadList = QList< AutoSaveThread* >;
+    using ThreadList = QList<AutoSaveThread*>;
 
     //* list of threads
     ThreadList threads_;

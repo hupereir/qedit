@@ -59,7 +59,7 @@ void AutoSave::newThread( TextDisplay* display )
     Debug::Throw( "AutoSave::newThread.\n" );
 
     // create new Thread
-    AutoSaveThread *thread = new AutoSaveThread( this );
+    auto thread = new AutoSaveThread( this );
 
     // associate to MainWindow
     Base::Key::associate( display, thread );
@@ -81,17 +81,12 @@ void AutoSave::saveFiles( const TextDisplay* display )
     // do nothing if interval is 0
     if( !( _enabled() ) || threads_.empty() ) return;
 
-    // needed to see if display was found.
-    bool found( false );
-
     // loop over threads and restart
-
     for( auto&& iter = threads_.begin(); iter != threads_.end(); ++iter )
     {
 
         // check if argument display, if valid, is associated to this thread
         if( display && !(*iter)->isAssociated( display ) ) continue;
-        found = true;
 
         // if thread is running, skipp
         if( (*iter)->isRunning() ) continue;
@@ -121,7 +116,7 @@ void AutoSave::saveFiles( const TextDisplay* display )
         }
 
         // update file and content
-        TextDisplay& display( **displays.begin() );
+        auto&& display( **displays.begin() );
         if( !( display.file().isEmpty() || display.isNewDocument() ) )
         {
             (*iter)->setFile( display.file() );
@@ -131,10 +126,6 @@ void AutoSave::saveFiles( const TextDisplay* display )
         }
 
     }
-
-    // check if thread matching display was found
-    Q_UNUSED( found );
-    Q_ASSERT( found || !display );
 
     // restart timer
     if( !threads_.empty() )  timer_.start( interval_, this );

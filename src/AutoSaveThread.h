@@ -46,7 +46,7 @@ class AutoSaveThread: public QThread, public Base::Key, public Counter
     //@{
 
     //* file
-    const File& file( void ) const
+    File file( void ) const
     { return file_; }
 
     //@}
