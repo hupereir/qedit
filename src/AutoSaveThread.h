@@ -55,13 +55,16 @@ class AutoSaveThread: public QThread, public Base::Key, public Counter
     //@{
 
     //* file
-    void setFile( const File& );
+    void setFile( File );
 
     //* set content
-    void setContents( const QString& );
+    void setContent( const QString& );
 
     //* set encoding
-    void setTextEncoding( const QByteArray& );
+    void setTextEncoding( QByteArray );
+
+    //* set use compression
+    void setUseCompression( bool );
 
     //@}
 
@@ -73,7 +76,9 @@ class AutoSaveThread: public QThread, public Base::Key, public Counter
     {
         None = 0,
         FileChanged = 1<<0,
-        ContentChanged = 1<<1
+        ContentChanged = 1<<1,
+        EncodingChanged = 1<<2,
+        CompressionChanged = 1<<3
     };
 
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -92,11 +97,15 @@ class AutoSaveThread: public QThread, public Base::Key, public Counter
     File file_;
 
     //* content to be saved
-    QString contents_;
+    QString content_;
 
     //* text encoding
     QByteArray textEncoding_;
 
+    //* compression
+    bool useCompression_ = false;
+
+    //* modification flags
     Flags flags_ = 0;
 
 };

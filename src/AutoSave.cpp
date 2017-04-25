@@ -120,8 +120,9 @@ void AutoSave::saveFiles( const TextDisplay* display )
         if( !( display.file().isEmpty() || display.isNewDocument() ) )
         {
             (*iter)->setFile( display.file() );
-            (*iter)->setContents( display.toPlainText() );
+            (*iter)->setContent( display.toPlainText() );
             (*iter)->setTextEncoding( display.textEncoding() );
+            (*iter)->setUseCompression( display.useCompression() );
             (*iter)->start();
         }
 

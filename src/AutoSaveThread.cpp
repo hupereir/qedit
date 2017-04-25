@@ -29,35 +29,49 @@
 #include <QTextCodec>
 
 //_______________________________________________________________
-void AutoSaveThread::setFile( const File& file )
+void AutoSaveThread::setFile( File file )
 {
     QMutexLocker locker( &mutex_ );
     File tmp( autoSaveName( file ) );
     if( tmp != file_ )
     {
-        flags_ &= FileChanged;
+        flags_ |= FileChanged;
         file_ = tmp;
-    } else flags_ |= Flags( ~FileChanged );
+    }
 }
 
 
 //_______________________________________________________________
-void AutoSaveThread::setContents( const QString& contents )
+void AutoSaveThread::setContent( const QString& content )
 {
     QMutexLocker locker( &mutex_ );
-    if( contents_ != contents )
+    if( content_ != content )
     {
-        flags_ &= ContentChanged;
-        contents_ = contents;
-    } else flags_ |= Flags( ~ContentChanged );
-
+        flags_ |= ContentChanged;
+        content_ = content;
+    }
 }
 
 //________________________________________________________________
-void AutoSaveThread::setTextEncoding( const QByteArray& encoding )
+void AutoSaveThread::setTextEncoding( QByteArray encoding )
 {
     QMutexLocker locker( &mutex_ );
-    textEncoding_ = encoding;
+    if( textEncoding_ != encoding )
+    {
+        flags_ |= EncodingChanged;
+        textEncoding_ = encoding;
+    }
+}
+
+//________________________________________________________________
+void AutoSaveThread::setUseCompression( bool useCompression )
+{
+    QMutexLocker locker( &mutex_ );
+    if( useCompression_ != useCompression )
+    {
+        flags_ |= CompressionChanged;
+        useCompression_ = useCompression;
+    }
 }
 
 //________________________________________________________________
@@ -88,14 +102,18 @@ void AutoSaveThread::run( void )
         QDir path( file().path() );
         if( !( path.exists() || path.mkpath( "." ) ) ) return;
 
-        // get encoding
-        auto codec( QTextCodec::codecForName( textEncoding_ ) );
-        Q_ASSERT( codec );
-
         // write to file
         QFile out( file_ );
         if( !out.open( QIODevice::WriteOnly ) ) return;
-        out.write( codec->fromUnicode( contents_ ) );
+
+        // make sure that last line ends with "end of line"
+        auto text( content_ );
+        if( !text.isEmpty() && text[text.size()-1] != '\n' ) text += '\n';
+
+        QTextCodec* codec( QTextCodec::codecForName( textEncoding_ ) );
+        auto content( codec->fromUnicode( text ) );
+        if( useCompression_ ) content = qCompress( content );
+        out.write( content );
         out.close();
 
         flags_ = None;

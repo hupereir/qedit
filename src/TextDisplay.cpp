@@ -12,7 +12,7 @@
 * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 * for more details.
 *
-* You should have received a copy of the GNU General Public License along with
+* You should have received a copy of the GNU General Public License alog with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 *******************************************************************************/
@@ -161,8 +161,8 @@ TextDisplay::~TextDisplay( void )
 {
 
     Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl;
-    if( !( isNewDocument() || file().isEmpty() ) && Base::KeySet<TextDisplay>( this ).empty() )
-    { Singleton::get().application<Application>()->fileCheck().removeFile( file() ); }
+    if( !( isNewDocument() || file_.isEmpty() ) && Base::KeySet<TextDisplay>( this ).empty() )
+    { Singleton::get().application<Application>()->fileCheck().removeFile( file_ ); }
 
 }
 
@@ -199,7 +199,7 @@ void TextDisplay::setModified( bool value )
     document()->setModified( value );
 
     // ask for update in the parent frame
-    if( isActive() && ( file().size() || isNewDocument() ) ) emit needUpdate( Modified );
+    if( isActive() && ( file_.size() || isNewDocument() ) ) emit needUpdate( Modified );
 
 }
 
@@ -309,8 +309,9 @@ void TextDisplay::synchronize( TextDisplay* other )
 
     // file
     _setIsNewDocument( other->isNewDocument() );
-    _setFile( other->file() );
-    _setLastSaved( lastSaved_ );
+    _setFile( other->file_ );
+    _setLastSaved( other->lastSaved_ );
+    _setUseCompression( other->useCompression_ );
 
     // update class name
     setClassName( other->className() );
@@ -392,12 +393,11 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
         ( !tmp.exists() ||
         ( autosaved.lastModified() > tmp.lastModified() && tmp.diff(autosaved) ) ) )
     {
-        QString buffer = QString(
-            tr( "A more recent version of file '%1'\n"
+        auto buffer = tr( "A more recent version of file '%1'\n"
             "was found at %2.\n"
             "This probably means that the application crashed the last time "
             "The file was edited.\n"
-            "Use autosaved version ?" ) ).arg( file ).arg( autosaved );
+            "Use autosaved version ?" ).arg( file ).arg( autosaved );
 
         if( QuestionDialog( this, buffer ).exec() )
         {
@@ -407,7 +407,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
     }
 
     // remove new document version from name server
-    if( isNewDocument() ) { NewDocumentNameServer().remove( TextDisplay::file() ); }
+    if( isNewDocument() ) { NewDocumentNameServer().remove( file_ ); }
 
     // retrieve display and associated, update document class
     // this is needed to avoid highlight glitch when oppening file
@@ -427,14 +427,30 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
 
     // check file and try open.
     QFile in( tmp );
+    bool useCompression = false;
     if( in.open( QIODevice::ReadOnly ) )
     {
 
+        // read content, try uncompress
+        auto content( in.readAll() );
+        auto uncompressed( qUncompress( content ) );
+        if( !uncompressed.isEmpty() )
+        {
+            auto buffer = tr( "File '%1' is compressed.\nUncompress before opening ?" ).arg( file );
+            auto&& dialog = QuestionDialog( this, buffer );
+            dialog.setOptionName( "COMPRESSION_DIALOG" );
+            dialog.okButton().setText( tr( "Yes" ) );
+            dialog.cancelButton().setText( tr( "No" ) );
+            if( dialog.exec() )
+            {
+                useCompression = true;
+                content = uncompressed;
+            }
+        }
+
         // get encoding
         QTextCodec* codec( QTextCodec::codecForName( textEncoding_ ) );
-        Q_ASSERT( codec );
-
-        setPlainText( codec->toUnicode(in.readAll()) );
+        setPlainText( codec->toUnicode(content) );
         in.close();
 
         // update flags
@@ -442,6 +458,10 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
         _setIgnoreWarnings( false );
 
     }
+
+    // assign compression flag to all cloned displays
+    for( const auto& display:displays )
+    { display->_setUseCompression( useCompression ); }
 
     // save file if restored from autosaved.
     if( restoreAutoSave && !isReadOnly() ) save();
@@ -483,7 +503,7 @@ void TextDisplay::_setFile( const File& file )
 //___________________________________________________________________________
 FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
 {
-    Debug::Throw() << "TextDisplay::checkFileRemoved - " << file() << endl;
+    Debug::Throw() << "TextDisplay::checkFileRemoved - " << file_ << endl;
 
     // check if warnings are enabled and file is removed. Do nothing otherwise
     if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::Ignore;
@@ -492,7 +512,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    const int state( FileRemovedDialog( this, file() ).centerOnWidget( window() ).exec() );
+    const int state( FileRemovedDialog( this, file_ ).centerOnWidget( window() ).exec() );
 
     // restore check
     _setIgnoreWarnings( false );
@@ -536,7 +556,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
 //___________________________________________________________________________
 FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
 {
-    Debug::Throw() << "TextDisplay::checkFileModified - " << file() << endl;
+    Debug::Throw() << "TextDisplay::checkFileModified - " << file_ << endl;
 
     // check if warnings are enabled and file is modified. Do nothing otherwise
     if( _ignoreWarnings() || !_fileModified() ) return FileModifiedDialog::Ignore;
@@ -545,7 +565,7 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    const int state( FileModifiedDialog( this, file() ).centerOnWidget( window() ).exec() );
+    const int state( FileModifiedDialog( this, file_ ).centerOnWidget( window() ).exec() );
 
     // restore check
     _setIgnoreWarnings( false );
@@ -588,7 +608,7 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
 void TextDisplay::checkFileReadOnly( void )
 {
     Debug::Throw( "TextDisplay::checkFileReadOnly.\n" );
-    setReadOnly( file().exists() && !file().isWritable() );
+    setReadOnly( file_.exists() && !file_.isWritable() );
 }
 
 //____________________________________________
@@ -608,7 +628,7 @@ void TextDisplay::clearFileCheckData( void )
 }
 
 //___________________________________________________________________________
-void TextDisplay::setFileCheckData( const FileCheck::Data& data )
+void TextDisplay::setFileCheckData( FileCheck::Data data )
 {
     Debug::Throw( "TextDisplay::setFileCheckData.\n" );
 
@@ -633,7 +653,7 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( bool enableAll )
     AskForSaveDialog::ReturnCodes flags( AskForSaveDialog::Yes | AskForSaveDialog::No | AskForSaveDialog::Cancel );
     if( enableAll ) flags |=  AskForSaveDialog::YesToAll | AskForSaveDialog::NoToAll;
 
-    AskForSaveDialog dialog( this, file(), flags );
+    AskForSaveDialog dialog( this, file_, flags );
     dialog.setWindowTitle( tr( "Save Files - Qedit" ) );
     int state( dialog.centerOnParent().exec() );
     if( state == AskForSaveDialog::Yes ||  state == AskForSaveDialog::YesToAll ) save();
@@ -653,20 +673,20 @@ void TextDisplay::save( void )
     if( !document()->isModified() ) return;
 
     // check file name
-    if( file().isEmpty() || isNewDocument() ) return saveAs();
+    if( file_.isEmpty() || isNewDocument() ) return saveAs();
 
     // check is contents differ from saved file
     if( _contentsChanged() )
     {
 
         // make backup
-        if( XmlOptions::get().get<bool>( "BACKUP" ) && file().exists() ) file().backup();
+        if( XmlOptions::get().get<bool>( "BACKUP" ) && file_.exists() ) file_.backup();
 
         // open output file
-        QFile out( file() );
+        QFile out( file_ );
         if( !out.open( QIODevice::WriteOnly ) )
         {
-            InformationDialog( this, QString( tr( "Cannot write to file '%1'. <Save> canceled." ) ).arg( file() ) ).exec();
+            InformationDialog( this, tr( "Cannot write to file '%1'. <Save> canceled." ).arg( file_ ) ).exec();
             return;
         }
 
@@ -680,25 +700,18 @@ void TextDisplay::save( void )
 
             // process macros
             for( const auto& macro:macros() )
-            {
-                if( macro.isAutomatic() )
-                {
+            { if( macro.isAutomatic() ) _processMacro( macro ); }
 
-                    Debug::Throw() << "TextDisplay::save - processing macro named " << macro.name() << endl;
-                    _processMacro( macro );
-                }
-            }
         }
 
-        // get encoding
-        QTextCodec* codec( QTextCodec::codecForName( textEncoding_ ) );
-        Q_ASSERT( codec );
-
-        // write file
         // make sure that last line ends with "end of line"
-        QString text( toPlainText() );
-        out.write( codec->fromUnicode( text ) );
-        if( !text.isEmpty() && text[text.size()-1] != '\n' ) out.write( "\n" );
+        auto text( toPlainText() );
+        if( !text.isEmpty() && text[text.size()-1] != '\n' ) text += '\n';
+
+        QTextCodec* codec( QTextCodec::codecForName( textEncoding_ ) );
+        auto content( codec->fromUnicode( text ) );
+        if( useCompression_ ) content = qCompress( content );
+        out.write( content );
 
         // close
         out.close();
@@ -707,21 +720,21 @@ void TextDisplay::save( void )
 
     // update modification state and last_saved time stamp
     setModified( false );
-    _setLastSaved( file().lastModified() );
+    _setLastSaved( file_.lastModified() );
     _setIgnoreWarnings( false );
 
     // re-add to file checker
-    if( !file().isEmpty() )
-    { Singleton::get().application<Application>()->fileCheck().addFile( file() ); }
+    if( !file_.isEmpty() )
+    { Singleton::get().application<Application>()->fileCheck().addFile( file_ ); }
 
 
     // retrieve associated displays, update saved time
     for( const auto& display:Base::KeySet<TextDisplay>( this ) )
-    { display->_setLastSaved( file().lastModified() ); }
+    { display->_setLastSaved( file_.lastModified() ); }
 
     // add file to menu
-    if( !file().isEmpty() )
-    { _recentFiles().get( file() ).addProperty( classNamePropertyId_, className() ); }
+    if( !file_.isEmpty() )
+    { _recentFiles().get( file_ ).addProperty( classNamePropertyId_, className() ); }
 
     return;
 
@@ -733,7 +746,7 @@ void TextDisplay::saveAs( void )
     Debug::Throw( "TextDisplay::saveAs.\n" );
 
     // define default file
-    File defaultFile( file() );
+    auto defaultFile( file_ );
     if( defaultFile.isEmpty() || isNewDocument() ) defaultFile = File( "Document" ).addPath( workingDirectory() );
 
     // create file dialog
@@ -748,14 +761,14 @@ void TextDisplay::saveAs( void )
     // check if file is directory
     if( file.isDirectory() )
     {
-        const QString buffer = QString( tr( "File '%1' is a directory. <Save> canceled." ) ).arg( file );
+        auto buffer = tr( "File '%1' is a directory. <Save> canceled." ).arg( file );
         InformationDialog( this, buffer ).exec();
         return;
     }
 
     // remove new document version from name server, and FileCheck, if needed
-    if( isNewDocument() ) { NewDocumentNameServer().remove( TextDisplay::file() ); }
-    else if( !TextDisplay::file().isEmpty() ) { Singleton::get().application<Application>()->fileCheck().removeFile( TextDisplay::file() ); }
+    if( isNewDocument() ) { NewDocumentNameServer().remove( file_ ); }
+    else if( !file_.isEmpty() ) { Singleton::get().application<Application>()->fileCheck().removeFile( file_ ); }
 
     // update filename and document class for this and associates
     // the class name is reset, to allow a document class
@@ -801,7 +814,7 @@ void TextDisplay::revertToSave( void )
     int position( textCursor().position() );
 
     setModified( false );
-    setFile( file(), false );
+    setFile( file_, false );
 
     // restore
     horizontalScrollBar()->setValue( x );
@@ -852,13 +865,12 @@ void TextDisplay::_setTextEncoding( const QByteArray& value )
     } else {
 
         // save if modified
-        QString buffer;
         if( document()->isModified() )
         {
 
-            buffer = QString( tr(
+            auto buffer = tr(
                 "Changing text encoding requires that the current document is reloaded.\n"
-                "Discard changes to file '%1' ?" ) ).arg( file_.localName() );
+                "Discard changes to file '%1' ?" ).arg( file_.localName() );
             if( !QuestionDialog( this, buffer ).setWindowTitle( tr( "Reload Document - Qedit" ) ).exec() ) return;
 
         }
@@ -1226,8 +1238,8 @@ void TextDisplay::selectFilter( const QString& filter )
     filterMenu_->select( filter );
 
     // update file record
-    if( !( file().isEmpty() || isNewDocument() ) )
-    { _recentFiles().get( file() ).addProperty( filterPropertyId_, interface.filter() ); }
+    if( !( file_.isEmpty() || isNewDocument() ) )
+    { _recentFiles().get( file_ ).addProperty( filterPropertyId_, interface.filter() ); }
 
     // rehighlight if needed
     if( textHighlight_->spellParser().isEnabled() ) rehighlight();
@@ -1255,8 +1267,8 @@ void TextDisplay::selectDictionary( const QString& dictionary )
     dictionaryMenu_->select( dictionary );
 
     // update file record
-    if( !( file().isEmpty() || isNewDocument() ) )
-    { _recentFiles().get( file() ).addProperty( dictionaryPropertyId_, interface.dictionary() ); }
+    if( !( file_.isEmpty() || isNewDocument() ) )
+    { _recentFiles().get( file_ ).addProperty( dictionaryPropertyId_, interface.dictionary() ); }
 
     // rehighlight if needed
     if( textHighlight_->spellParser().isEnabled() ) rehighlight();
@@ -1679,27 +1691,32 @@ bool TextDisplay::_contentsChanged( void ) const
     Debug::Throw( "TextDisplay::_contentsChanged.\n" );
 
     // check file
-    if( file().isEmpty() || isNewDocument() ) return true;
+    if( file_.isEmpty() || isNewDocument() ) return true;
 
     // open file
-    QFile in( file() );
+    QFile in( file_ );
     if( !in.open( QIODevice::ReadOnly ) ) return true;
 
-    // dump file into character string
-    QString file_text( in.readAll() );
-    QString text( toPlainText() );
+    // read file content
+    auto fileContent( in.readAll() );
+    if( useCompression_ ) fileContent = qUncompress( fileContent );
 
-    return (text.size() != file_text.size() || text != file_text );
+    // apply codec
+    QTextCodec* codec( QTextCodec::codecForName( textEncoding_ ) );
+    auto fileText = codec->toUnicode(fileContent);
+    auto text( toPlainText() );
+
+    return (text.size() != fileText.size() || text != fileText );
 
 }
 
 //____________________________________________
 bool TextDisplay::_fileRemoved( void ) const
 {
-    Debug::Throw() << "TextDisplay::_fileRemoved - " << file() << endl;
+    Debug::Throw() << "TextDisplay::_fileRemoved - " << file_ << endl;
 
     // check new document
-    if( file().isEmpty() || isNewDocument() ) return false;
+    if( file_.isEmpty() || isNewDocument() ) return false;
     if( !lastSaved().isValid() ) return false;
 
     /*
@@ -1713,12 +1730,12 @@ bool TextDisplay::_fileRemoved( void ) const
     { return false; }
 
     // make sure file is still removed
-    if( !file().exists() ) return true;
+    if( !file_.exists() ) return true;
     else {
 
         // file has been re-created in the meantime.
         // need to re-ad it to FileChecker
-        Singleton::get().application<Application>()->fileCheck().addFile( file() );
+        Singleton::get().application<Application>()->fileCheck().addFile( file_ );
         return false;
 
     }
@@ -1729,10 +1746,10 @@ bool TextDisplay::_fileRemoved( void ) const
 bool TextDisplay::_fileModified( void )
 {
 
-    Debug::Throw() << "TextDisplay::_fileModified - " << file() << endl;
+    Debug::Throw() << "TextDisplay::_fileModified - " << file_ << endl;
 
     // check file
-    if( file().isEmpty() || isNewDocument() ) return false;
+    if( file_.isEmpty() || isNewDocument() ) return false;
     if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::Removed || fileCheckData().flag() == FileCheck::Data::Modified ) )
     { return false; }
 
@@ -1741,7 +1758,7 @@ bool TextDisplay::_fileModified( void )
     // when file is on afs, or when file was removed (and recreated)
     // one need to use the filename modification timeStampl in place of the timeStamp contained in fileCheckData
     // because the last one was invalid
-    const TimeStamp fileModified( _fileIsAfs() ? TimeStamp(file().lastModified()) : fileCheckData().timeStamp() );
+    const TimeStamp fileModified( _fileIsAfs() ? TimeStamp(file_.lastModified()) : fileCheckData().timeStamp() );
     if( !fileModified.isValid() ) return false;
     if( !(fileModified > lastSaved_ ) ) return false;
     if( !_contentsChanged() ) return false;
@@ -1809,8 +1826,8 @@ bool TextDisplay::_toggleWrapMode( bool state )
     Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "True":"False") << endl;
     if( !TextEditor::_toggleWrapMode( state ) ) return false;
 
-    if( !( file().isEmpty() || isNewDocument() ) )
-    { _recentFiles().get( file() ).addProperty( wrapPropertyId_, QString::number(state) ); }
+    if( !( file_.isEmpty() || isNewDocument() ) )
+    { _recentFiles().get( file_ ).addProperty( wrapPropertyId_, QString::number(state) ); }
 
     return true;
 
@@ -1886,7 +1903,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
     QString dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
 
     // overwrite with file record
-    if( file.isEmpty() ) file = TextDisplay::file();
+    if( file.isEmpty() ) file = file_;
     if( !( file.isEmpty() || isNewDocument() ) )
     {
         FileRecord& record( _recentFiles().get( file ) );
@@ -2105,10 +2122,10 @@ void TextDisplay::_spellcheck( void )
     QString defaultDictionary( XmlOptions::get().raw( "DICTIONARY" ) );
 
     // try overwrite with file record
-    if( !( file().isEmpty()  || isNewDocument() ) )
+    if( !( file_.isEmpty()  || isNewDocument() ) )
     {
 
-        FileRecord& record( _recentFiles().get( file() ) );
+        FileRecord& record( _recentFiles().get( file_ ) );
         if( !( record.hasProperty( filterPropertyId_ ) && dialog.setFilter( record.property( filterPropertyId_ ) ) ) )
         { dialog.setFilter( defaultFilter ); }
 
@@ -2130,9 +2147,9 @@ void TextDisplay::_spellcheck( void )
     dialog.exec();
 
     // try overwrite with file record
-    if( !( file().isEmpty() || isNewDocument() ) )
+    if( !( file_.isEmpty() || isNewDocument() ) )
     {
-        _recentFiles().get( file() )
+        _recentFiles().get( file_ )
             .addProperty( filterPropertyId_, dialog.filter() )
             .addProperty( dictionaryPropertyId_, dialog.dictionary() );
     }
@@ -2324,22 +2341,22 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
 void TextDisplay::_fileProperties( void )
 {
     Debug::Throw( "TextDisplay::_fileProperties.\n" );
-    if( file().isEmpty() || isNewDocument() ) return;
+    if( file_.isEmpty() || isNewDocument() ) return;
 
     // prior to showing the dialog
     // one should add needed tab for misc information
-    const FileRecord& record(  _recentFiles().get( file() ) );
+    auto record(  _recentFiles().get( file_ ) );
     FileInformationDialog dialog( this, record );
 
     // add additional informations frame
-    QWidget* box( new QWidget() );
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto box( new QWidget() );
+    auto layout = new QVBoxLayout();
     layout->setMargin(5);
     layout->setSpacing( 5 );
     box->setLayout( layout );
     Debug::Throw( "TextDisplay::_fileProperties - Miscellaneous tab booked.\n" );
 
-    GridLayout* gridLayout = new GridLayout();
+    auto gridLayout = new GridLayout();
     gridLayout->setMargin(0);
     gridLayout->setSpacing( 5 );
     gridLayout->setMaxCount( 2 );
@@ -2347,8 +2364,7 @@ void TextDisplay::_fileProperties( void )
     layout->addLayout( gridLayout );
 
     // number of characters
-    GridLayoutItem* item;
-    item = new GridLayoutItem( box, gridLayout );
+    auto item = new GridLayoutItem( box, gridLayout );
     item->setKey( "Number of characters:" );
     item->setText( QString::number(toPlainText().size()) );
 
@@ -2359,7 +2375,7 @@ void TextDisplay::_fileProperties( void )
 
     gridLayout->addWidget( new QLabel( "Text highlighting:", box ) );
     {
-        QCheckBox* checkbox( new QCheckBox( box ) );
+        auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked( textHighlight_->isHighlightEnabled() );
         checkbox->setEnabled( false );
         gridLayout->addWidget( checkbox );
@@ -2367,7 +2383,7 @@ void TextDisplay::_fileProperties( void )
 
     gridLayout->addWidget( new QLabel( "Paragraph highlighting:", box ) );
     {
-        QCheckBox* checkbox( new QCheckBox( box ) );
+        auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked( blockHighlightAction().isChecked() );
         checkbox->setEnabled( false );
         gridLayout->addWidget( checkbox );
@@ -2375,7 +2391,7 @@ void TextDisplay::_fileProperties( void )
 
     gridLayout->addWidget( new QLabel( "Parenthesis highlighting:", box ) );
     {
-        QCheckBox* checkbox( new QCheckBox( box ) );
+        auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked( textHighlight_->isParenthesisEnabled() );
         checkbox->setEnabled( false );
         gridLayout->addWidget( checkbox );
@@ -2383,7 +2399,7 @@ void TextDisplay::_fileProperties( void )
 
     gridLayout->addWidget( new QLabel( "Text indentation:", box ) );
     {
-        QCheckBox* checkbox( new QCheckBox( box ) );
+        auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked(  textIndent_->isEnabled() );
         checkbox->setEnabled( false );
         gridLayout->addWidget( checkbox );
@@ -2391,7 +2407,7 @@ void TextDisplay::_fileProperties( void )
 
     gridLayout->addWidget( new QLabel( "Text wrapping:", box ) );
     {
-        QCheckBox* checkbox( new QCheckBox( box ) );
+        auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked( wrapModeAction().isChecked() );
         checkbox->setEnabled( false );
         gridLayout->addWidget( checkbox );
@@ -2399,7 +2415,7 @@ void TextDisplay::_fileProperties( void )
 
     gridLayout->addWidget( new QLabel( "Tab emulation:", box ) );
     {
-        QCheckBox* checkbox( new QCheckBox( box ) );
+        auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked( tabEmulationAction().isChecked() );
         checkbox->setEnabled( false );
         gridLayout->addWidget( checkbox );
@@ -2408,7 +2424,7 @@ void TextDisplay::_fileProperties( void )
     // document class
     item = new GridLayoutItem( box, gridLayout, GridLayoutItem::Elide );
     item->setKey( "Document class file name:" );
-    const DocumentClass& documentClass( Singleton::get().application<Application>()->classManager().get( className() ) );
+    auto documentClass( Singleton::get().application<Application>()->classManager().get( className() ) );
     item->setText( documentClass.file() );
 
     // also assign icon to dialog
@@ -2417,7 +2433,7 @@ void TextDisplay::_fileProperties( void )
     // autosave
     item = new GridLayoutItem( box, gridLayout, GridLayoutItem::Elide|GridLayoutItem::Selectable );
     item->setKey( "Auto-save file name:" );
-    item->setText( AutoSaveThread::autoSaveName( file() ) );
+    item->setText( AutoSaveThread::autoSaveName( file_ ) );
 
     layout->addStretch();
 
@@ -2449,7 +2465,7 @@ void TextDisplay::_textModified( void )
     // document should never appear modified
     // for readonly displays
     if( document()->isModified() && isReadOnly() ) document()->setModified( false );
-    if( isActive() && ( file().size() || isNewDocument() ) ) emit needUpdate( Modified );
+    if( isActive() && ( file_.size() || isNewDocument() ) ) emit needUpdate( Modified );
 
 }
 
@@ -2833,4 +2849,4 @@ QString TextDisplay::_collapsedText( const QTextBlock& block ) const
 
 //___________________________________________________________________________
 bool TextDisplay::_fileIsAfs( void ) const
-{ return file().indexOf( "/afs" ) == 0; }
+{ return file_.indexOf( "/afs" ) == 0; }

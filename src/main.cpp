@@ -38,8 +38,11 @@
 int main (int argc, char *argv[])
 {
 
-    // options
+    // error handler
     ErrorHandler::initialize();
+    ErrorHandler::get().disableMessage( "qUncompress: Z_DATA_ERROR: Input data is corrupted file" );
+
+    // options
     installDefaultOptions();
     installSystemOptions();
 

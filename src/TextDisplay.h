@@ -109,9 +109,92 @@ class TextDisplay: public TextEditor
 
     };
 
+    //*@name accessors
+    //@{
+
     //* number of block associated to argument
     /** reimplemented from base class to account for collapsed blocks */
     virtual int blockCount( const QTextBlock& ) const;
+
+    // true if widget is to be deleted
+    bool isClosed( void ) const
+    { return closed_; }
+
+    //* is new document
+    bool isNewDocument( void ) const
+    { return isNewDocument_; }
+
+    //* use compression
+    bool useCompression( void ) const
+    { return useCompression_; }
+
+    //* file
+    File file( void ) const
+    { return file_; }
+
+    //* working directory
+    File workingDirectory() const
+    { return workingDirectory_; }
+
+    //* last saved time stamp
+    TimeStamp lastSaved( void ) const
+    { return lastSaved_; }
+
+    //* file check data
+    FileCheck::Data fileCheckData( void ) const
+    { return fileCheckData_; }
+
+    //* class name
+    QString className( void ) const
+    { return className_; }
+
+    QByteArray textEncoding( void ) const
+    { return textEncoding_; }
+
+    //* list of macros
+    const TextMacro::List& macros( void ) const
+    { return macros_; }
+
+    //* text highlight
+    bool hasTextHighlight( void ) const
+    { return textHighlight_; }
+
+    //* text highlight
+    const TextHighlight& textHighlight( void ) const
+    { return *textHighlight_; }
+
+    //* block delimiter display
+    bool hasBlockDelimiterDisplay( void ) const
+    { return blockDelimiterDisplay_; }
+
+    //* returns true if current text has leading tabs of wrong type
+    bool hasLeadingTabs( void ) const;
+
+    //* convert to plain text
+    /**
+    This method makes sure that full text is obtained even when some blocks are collapsed.
+    this should be an overloaded function, but the base class method is not virtual
+    however, it is never called via a pointer to the base class, so that it should be fine.
+    */
+    QString toPlainText( void ) const;
+
+    // return true if block is an empty line
+    virtual bool isEmptyBlock( const QTextBlock& block ) const
+    { return _emptyLineRegExp().indexIn( block.text() ) >= 0; }
+
+    //* return true is block is to be ignored from indentation scheme
+    virtual bool ignoreBlock( const QTextBlock& block ) const;
+
+    //* true if current blocks (or selection) has tag
+    bool isCurrentBlockTagged( void ) const;
+
+    //* true if some blocks have tags
+    bool hasTaggedBlocks( void ) const;
+
+    //@}
+
+    //*@name modifiers
+    //@{
 
     //* clone display configuration and document
     using TextEditor::synchronize;
@@ -177,19 +260,11 @@ class TextDisplay: public TextEditor
 
     };
 
-
     Q_DECLARE_FLAGS( UpdateFlags, UpdateFlag )
-
-    // true if widget is to be deleted
-    bool isClosed( void ) const
-    { return closed_; }
 
     // set to true if widget is to be deleted
     void setIsClosed( bool value )
     { closed_ = value; }
-
-    //*@ name file management
-    //@{
 
     //* file
     void setFile( File file, bool checkAutoSave = true );
@@ -197,34 +272,14 @@ class TextDisplay: public TextEditor
     //* define as new document
     void setIsNewDocument( void );
 
-    //* is new document
-    bool isNewDocument( void ) const
-    { return isNewDocument_; }
-
     //* new document name server
     static NewDocumentNameServer& newDocumentNameServer( void );
-
-    //* file
-    const File& file( void ) const
-    { return file_; }
-
-    //* working directory
-    const File& workingDirectory() const
-    { return workingDirectory_; }
-
-    //* last saved time stamp
-    const TimeStamp& lastSaved( void ) const
-    { return lastSaved_; }
 
     //* clear file check data
     void clearFileCheckData( void );
 
     //* file check data
-    void setFileCheckData( const FileCheck::Data& data );
-
-    //* file check data
-    const FileCheck::Data& fileCheckData( void ) const
-    { return fileCheckData_; }
+    void setFileCheckData( FileCheck::Data data );
 
     //* ask for save if modified
     AskForSaveDialog::ReturnCode askForSave( bool enable_all = false );
@@ -247,44 +302,12 @@ class TextDisplay: public TextEditor
     //* Revert to save
     void revertToSave( void );
 
-    //@}
-
-    //*@name document class
-    //@{
-
     //* class name
-    void setClassName( const QString& name )
+    void setClassName( QString name )
     { className_ = name; }
-
-    //* class name
-    const QString& className( void ) const
-    { return className_; }
-
-    //@}
-
-    //* text encoding
-    const QByteArray& textEncoding( void ) const
-    { return textEncoding_; }
-
-    //*@name macro
-    //@{
-
-    //* list of macros
-    const TextMacro::List& macros( void ) const
-    { return macros_; }
-
-    //@}
-
-    //* text highlight
-    bool hasTextHighlight( void )
-    { return textHighlight_; }
 
     //* text highlight
     TextHighlight& textHighlight( void )
-    { return *textHighlight_; }
-
-    //* text highlight
-    const TextHighlight& textHighlight( void ) const
     { return *textHighlight_; }
 
     //* text indent
@@ -292,23 +315,20 @@ class TextDisplay: public TextEditor
     { return *textIndent_; }
 
     //* block delimiter display
-    bool hasBlockDelimiterDisplay( void ) const
-    { return blockDelimiterDisplay_; }
-
-    //* block delimiter display
     BlockDelimiterDisplay& blockDelimiterDisplay( void ) const
     { return *blockDelimiterDisplay_; }
 
-    //* returns true if current text has leading tabs of wrong type
-    bool hasLeadingTabs( void ) const;
+    //* return parenthesis highlight object
+    ParenthesisHighlight& parenthesisHighlight( void ) const
+    { return *parenthesisHighlight_; }
 
-    //* convert to plain text
-    /**
-    This method makes sure that full text is obtained even when some blocks are collapsed.
-    this should be an overloaded function, but the base class method is not virtual
-    however, it is never called via a pointer to the base class, so that it should be fine.
-    */
-    QString toPlainText( void ) const;
+    //* tag block (with diff flag)
+    void tagBlock( QTextBlock, const unsigned int& tag );
+
+    //* clear block tags if match argument
+    void clearTag( QTextBlock, const int& tags );
+
+    //@}
 
     //*@name actions
     //@{
@@ -403,34 +423,6 @@ class TextDisplay: public TextEditor
 
     //@}
 
-    //*@name block interface
-    //@{
-
-    // return true if block is an empty line
-    virtual bool isEmptyBlock( const QTextBlock& block ) const
-    { return _emptyLineRegExp().indexIn( block.text() ) >= 0; }
-
-    //* return true is block is to be ignored from indentation scheme
-    virtual bool ignoreBlock( const QTextBlock& block ) const;
-
-    //* tag block (with diff flag)
-    void tagBlock( QTextBlock, const unsigned int& tag );
-
-    //* clear block tags if match argument
-    void clearTag( QTextBlock, const int& tags );
-
-    //* true if current blocks (or selection) has tag
-    bool isCurrentBlockTagged( void ) const;
-
-    //* true if some blocks have tags
-    bool hasTaggedBlocks( void ) const;
-
-    //@}
-
-    //* return parenthesis highlight object
-    ParenthesisHighlight& parenthesisHighlight( void ) const
-    { return *parenthesisHighlight_; }
-
     Q_SIGNALS:
 
     //* emitted when indentation several blocks is required
@@ -506,6 +498,10 @@ class TextDisplay: public TextEditor
     //* is new document
     void _setIsNewDocument( bool value )
     { isNewDocument_ = value; }
+
+    //* set use compression
+    void _setUseCompression( bool value )
+    { useCompression_ = value; }
 
     //* clear macros
     void _clearMacros( void )
@@ -685,6 +681,9 @@ class TextDisplay: public TextEditor
 
     //* working directory
     File workingDirectory_;
+
+    //* compression
+    bool useCompression_ = false;
 
     //*@name property ids
     //@{
