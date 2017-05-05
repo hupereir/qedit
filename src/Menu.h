@@ -28,6 +28,7 @@
 #include <QMenuBar>
 #include <QHash>
 
+class CustomMenu;
 class RecentFilesMenu;
 class TextMacroMenu;
 
@@ -41,7 +42,7 @@ class Menu:public QMenuBar, public Counter
     public:
 
     //* creator
-    Menu( QWidget* parent );
+    Menu( QWidget* );
 
     //* recent files menu
     RecentFilesMenu& recentFilesMenu( void ) const
@@ -129,7 +130,7 @@ class Menu:public QMenuBar, public Counter
     TextMacroMenu* macroMenu_ = nullptr;
 
     //* windows menu
-    QMenu* windowsMenu_ = nullptr;
+    CustomMenu* windowsMenu_ = nullptr;
 
     //@}
 

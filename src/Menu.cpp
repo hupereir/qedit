@@ -21,6 +21,7 @@
 
 #include "Application.h"
 #include "BlockDelimiterDisplay.h"
+#include "CustomMenu.h"
 #include "DebugMenu.h"
 #include "DefaultHelpText.h"
 #include "DocumentClassMenu.h"
@@ -47,7 +48,7 @@ Menu::Menu( QWidget* parent ):
     Debug::Throw( "Menu::Menu.\n" );
 
     // file menu
-    QMenu* menu = addMenu( tr( "File" ) );
+    auto menu = addMenu( tr( "File" ) );
 
     // retrieve mainWindow
     auto application( Singleton::get().application<Application>() );
@@ -99,7 +100,7 @@ Menu::Menu( QWidget* parent ):
 
     // windows
     windowsActionGroup_ = new ActionGroup( this );
-    windowsMenu_ = addMenu( tr( "Session" ) );
+    addMenu( windowsMenu_ = new CustomMenu( tr( "Session" ), this ) );
     connect( windowsMenu_, SIGNAL(aboutToShow()), this, SLOT(_updateWindowsMenu()) );
     connect( windowsMenu_, SIGNAL(triggered(QAction*)), SLOT(_selectFile(QAction*)) );
 
@@ -145,7 +146,7 @@ void Menu::updateMacroMenu( void )
     // retrieve current display
     auto display( &static_cast<MainWindow*>(window())->activeDisplay() );
     bool hasSelection( display->textCursor().hasSelection() );
-    const TextMacro::List& macros( display->macros() );
+    auto&& macros( display->macros() );
 
     macroMenu_->update( macros );
     macroMenu_->updateState( hasSelection );
@@ -324,7 +325,7 @@ void Menu::_updateToolsMenu( void )
 
     // rehighlight
     toolsMenu_->addSeparator();
-    QAction* action = toolsMenu_->addAction( tr( "Rehighlight" ), window(), SLOT(rehighlight()) );
+    auto action = toolsMenu_->addAction( tr( "Rehighlight" ), window(), SLOT(rehighlight()) );
     bool enabled( display->textHighlightAction().isEnabled() && display->textHighlightAction().isChecked() );
 
     #if USE_ASPELL
@@ -345,10 +346,10 @@ void Menu::_updateWindowsMenu( void )
 
     // add session handling
     auto application( Singleton::get().application<Application>() );
-    windowsMenu_->addAction( &application->printSessionAction() );
     windowsMenu_->addAction( &application->saveSessionAction() );
     windowsMenu_->addAction( &application->restoreSessionAction() );
     windowsMenu_->addAction( &application->discardSessionAction() );
+    windowsMenu_->addInvisibleAction( &application->printSessionAction() );
     windowsMenu_->addSeparator();
 
     // retrieve current display
@@ -366,7 +367,7 @@ void Menu::_updateWindowsMenu( void )
         const File& file( record.file() );
 
         // add menu item
-        QAction* action = windowsMenu_->addAction( file );
+        auto action = windowsMenu_->addAction( file );
         action->setCheckable( true );
         action->setChecked( currentFile == file );
         windowsActionGroup_->addAction( action );
