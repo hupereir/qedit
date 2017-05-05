@@ -164,15 +164,15 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     //* active display
     const TextDisplay& activeDisplay( void ) const
-    { return activeView().activeDisplay(); }
+    { return activeView_->activeDisplay(); }
 
     //* active display
     bool isActiveDisplay( const TextDisplay& display ) const
-    { return activeView().isActiveDisplay( display ); }
+    { return activeView_->isActiveDisplay( display ); }
 
     //* active display
     TextDisplay& activeDisplay( void )
-    { return activeView().activeDisplay(); }
+    { return activeView_->activeDisplay(); }
 
     //* get set of all displays associated to this window
     /**
@@ -340,11 +340,11 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     //* select class name
     void selectClassName( QString value )
-    { activeView().selectClassName( value ); }
+    { activeView_->selectClassName( value ); }
 
     //* rehighlight all text displays
     void rehighlight( void )
-    { activeView().rehighlight(); }
+    { activeView_->rehighlight(); }
 
     //*@name reimplemented from TextEditor
     //@{
@@ -405,11 +405,11 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     //* clone current file horizontal
     void _splitDisplayHorizontal( void )
-    { activeView().splitDisplay( Qt::Horizontal, true ); }
+    { activeView_->splitDisplay( Qt::Horizontal, true ); }
 
     //* clone current file horizontal
     void _splitDisplayVertical( void )
-    { activeView().splitDisplay( Qt::Vertical, true ); }
+    { activeView_->splitDisplay( Qt::Vertical, true ); }
 
     //* close
     /** close window */
@@ -419,7 +419,7 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
     //* close
     /** close current display if more than two display are open, */
     void _closeDisplay( void )
-    { activeView().closeActiveDisplay(); }
+    { activeView_->closeActiveDisplay(); }
 
     //* save
     void _save( void )
@@ -477,7 +477,7 @@ class MainWindow: public BaseMainWindow, public Counter, public Base::Key
 
     //* diff files
     void _diff( void )
-    { activeView().diff(); }
+    { activeView_->diff(); }
 
     //* find
     void _find( TextSelection selection )

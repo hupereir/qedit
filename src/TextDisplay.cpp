@@ -397,7 +397,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
             "was found at %2.\n"
             "This probably means that the application crashed the last time "
             "The file was edited.\n"
-            "Use autosaved version ?" ).arg( file ).arg( autosaved );
+            "Use autosaved version ?" ).arg( file, autosaved );
 
         if( QuestionDialog( this, buffer ).exec() )
         {

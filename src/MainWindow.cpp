@@ -92,7 +92,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     // additional actions from Application
     // they need to be added so that short cuts still work even when menu bar is hidden)
-    auto application( Singleton::get().application<Application>() );
+    auto&& application( Singleton::get().application<Application>() );
     addAction( &application->closeAction() );
 
     // menu
@@ -179,7 +179,7 @@ TextView& MainWindow::newTextView( FileRecord record )
     Debug::Throw( "MainWindow::newTextView.\n" );
 
     // create new view and add to this file
-    TextView* view = new TextView( this );
+    auto view = new TextView( this );
     Base::Key::associate( this, view );
 
     // connections
@@ -210,13 +210,13 @@ void MainWindow::setActiveView( TextView& view )
 
     // store active view
     activeView_ = &view;
-    activeView().activeDisplay().setFocusDelayed();
+    activeView_->activeDisplay().setFocusDelayed();
 
     // update stack if needed
     if( stack_->currentWidget() !=  &activeView() ) stack_->setCurrentWidget( &activeView() );
 
     // update displays, actions, etc.
-    if( activeView().activeDisplay().file().size() || activeView().activeDisplay().isNewDocument() )
+    if( activeView_->activeDisplay().file().size() || activeView_->activeDisplay().isNewDocument() )
     { _update( TextDisplay::ActiveViewChanged ); }
 
 }
@@ -238,12 +238,12 @@ bool MainWindow::selectDisplay( const File& file )
 
     Debug::Throw() << "MainWindow::selectDisplay - file: " << file << endl;
 
-    Debug::Throw() << "MainWindow::selectDisplay - active view: " << activeView().key() << endl;
+    Debug::Throw() << "MainWindow::selectDisplay - active view: " << activeView_->key() << endl;
     Debug::Throw() << "MainWindow::selectDisplay - active view displays: " << Base::KeySet<TextDisplay>( &activeView() ).count() << endl;
 
 
     // do nothing if already selected
-    if( !activeView().isClosed() && activeView().activeDisplay().file() == file ) return true;
+    if( !activeView_->isClosed() && activeView_->activeDisplay().file() == file ) return true;
 
     for( const auto& view:Base::KeySet<TextView>( this ) )
     {
@@ -390,7 +390,6 @@ void MainWindow::_print( void )
     Debug::Throw( "MainWindow::_print.\n" );
     PrintHelper helper( this, &activeDisplay() );
     _print( helper );
-
 }
 
 //___________________________________________________________
@@ -400,7 +399,6 @@ void MainWindow::_print( PrintHelper& helper )
     // create printer
     QPrinter printer( QPrinter::HighResolution );
     printer.setDocName( activeDisplay().file().localName() );
-
 
     // create options widget
     PrinterOptionWidget* optionWidget( new PrinterOptionWidget() );
@@ -586,8 +584,8 @@ void MainWindow::_updateConfiguration( void )
     navigationFrame_->visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_NAVIGATION_FRAME") );
 
     // assign icons to file in open previous menu based on class manager
-    FileList& recentFiles( Singleton::get().application<Application>()->recentFiles() );
-    DocumentClassManager& classManager(Singleton::get().application<Application>()->classManager());
+    auto&& recentFiles( Singleton::get().application<Application>()->recentFiles() );
+    auto&& classManager(Singleton::get().application<Application>()->classManager());
     for( const auto& record:recentFiles.records() )
     {
 
@@ -627,7 +625,7 @@ void MainWindow::_activeViewChanged( void )
 
     Debug::Throw() << "MainWindow::_activeViewChanged" << endl;
 
-    QWidget *widget( stack_->currentWidget() );
+    auto widget( stack_->currentWidget() );
     if( !widget ) close();
     else setActiveView( *static_cast<TextView*>( widget ) );
 
@@ -635,13 +633,13 @@ void MainWindow::_activeViewChanged( void )
 
 //_______________________________________________________
 void MainWindow::_splitDisplay( void )
-{ activeView().splitDisplay( Singleton::get().application<Application>()->windowServer().defaultOrientation(), true ); }
+{ activeView_->splitDisplay( Singleton::get().application<Application>()->windowServer().defaultOrientation(), true ); }
 
 //_______________________________________________________
 void MainWindow::_multipleFileReplace( void )
 {
     Debug::Throw( "MainWindow::_multipleFileReplace.\n" );
-    TextSelection selection( replaceWidget_->selection( false ) );
+    auto selection( replaceWidget_->selection( false ) );
 
     // show dialog and check answer
     FileSelectionDialog dialog( this, selection );
@@ -733,7 +731,7 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
     if( flags & TextDisplay::DisplayCount )
     {
         Debug::Throw() << "MainWindow::_update - display count." << endl;
-        int displayCount = activeView().independentDisplayCount();
+        int displayCount = activeView_->independentDisplayCount();
         int viewCount = Base::KeySet<TextView>( this ).size();
 
         // update detach action
@@ -771,7 +769,7 @@ void MainWindow::_updateCursorPosition( void )
     if( !statusbar_ ) return;
 
     // retrieve position in text
-    TextPosition position( activeDisplay().textPosition() );
+    auto position( activeDisplay().textPosition() );
 
     /*
     if block delimiters are shown,
@@ -909,7 +907,7 @@ void MainWindow::_installToolbars( void )
 {
 
     // file toolbar
-    CustomToolBar* toolbar = new CustomToolBar( tr( "Main Toolbar" ), this, "FILE_TOOLBAR" );
+    auto toolbar = new CustomToolBar( tr( "Main Toolbar" ), this, "FILE_TOOLBAR" );
     toolbar->addAction( newFileAction_ );
     toolbar->addAction( openAction_ );
     toolbar->addAction( saveAction_ );
@@ -944,8 +942,8 @@ void MainWindow::_installToolbars( void )
     connect( documentClassToolBar_, SIGNAL(documentClassSelected(QString)), this, SLOT(selectClassName(QString)) );
 
     // navigation toolbar
-    NavigationToolBar* navigation_toolbar = new NavigationToolBar( this );
-    navigation_toolbar->connect( navigationFrame() );
+    auto navigationToolbar = new NavigationToolBar( this );
+    navigationToolbar->connect( navigationFrame() );
 
 
 }
