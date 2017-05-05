@@ -103,6 +103,10 @@ class Application: public BaseApplication, public Counter
     QAction& restoreSessionAction( void ) const
     { return *restoreSessionAction_; }
 
+    //* restore session
+    QAction& restoreLastSessionAction( void ) const
+    { return *restoreLastSessionAction_; }
+
     //* discard session
     QAction& discardSessionAction( void ) const
     { return *discardSessionAction_; }
@@ -168,6 +172,9 @@ class Application: public BaseApplication, public Counter
     //* restore session
     void _restoreSession( void );
 
+    //* restore session
+    void _restoreLastSession( void );
+
     //* discard
     void _discardSession( void );
 
@@ -208,6 +215,9 @@ class Application: public BaseApplication, public Counter
     //* session files
     std::unique_ptr<FileList> sessionFiles_;
 
+    //* session files
+    std::unique_ptr<FileList> lastSessionFiles_;
+
     //* window server
     std::unique_ptr<WindowServer> windowServer_;
 
@@ -244,6 +254,9 @@ class Application: public BaseApplication, public Counter
 
     //* restore session
     QAction* restoreSessionAction_ = nullptr;
+
+    //* restore session
+    QAction* restoreLastSessionAction_ = nullptr;
 
     //* discard session
     QAction* discardSessionAction_ = nullptr;

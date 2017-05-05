@@ -113,6 +113,10 @@ bool Application::realizeWidget( void )
     sessionFiles_.reset(new XmlFileList( this ));
     static_cast<XmlFileList*>( sessionFiles_.get() )->setTagName( Base::Xml::SessionFileList );
 
+    // session file list
+    lastSessionFiles_.reset(new XmlFileList( this ));
+    static_cast<XmlFileList*>( lastSessionFiles_.get() )->setTagName( Base::Xml::LastSessionFileList );
+
     // class manager
     classManager_.reset(new DocumentClassManager());
 
@@ -311,7 +315,16 @@ void Application::_printSession( void )
 void Application::_restoreSession( void )
 {
     Debug::Throw( "Application::_restoreSession.\n" );
-    const FileRecord::List records( sessionFiles_->records() );
+    auto&& records( sessionFiles_->records() );
+    if( !( records.isEmpty() || !RestoreSessionDialog( qApp->activeWindow(), records ).exec() ) )
+    { windowServer_->open( records ); }
+}
+
+//___________________________________________________________
+void Application::_restoreLastSession( void )
+{
+    Debug::Throw( "Application::_restoreLastSession.\n" );
+    auto&& records( lastSessionFiles_->records() );
     if( !( records.isEmpty() || !RestoreSessionDialog( qApp->activeWindow(), records ).exec() ) )
     { windowServer_->open( records ); }
 }
@@ -330,11 +343,19 @@ void Application::_updateSessionActions( void )
 {
 
     Debug::Throw( "Application::_updateSessionActions.\n" );
-    const bool empty( sessionFiles_->isEmpty() );
-    restoreSessionAction_->setEnabled( !empty );
-    discardSessionAction_->setEnabled( !empty );
-    saveSessionAction_->setEnabled( !windowServer_->records( WindowServer::ExistingOnly ).isEmpty() );
-    printSessionAction_->setEnabled( !windowServer_->records( WindowServer::ExistingOnly ).isEmpty() );
+
+    {
+        const bool empty( sessionFiles_->isEmpty() );
+        restoreSessionAction_->setEnabled( !empty );
+        discardSessionAction_->setEnabled( !empty );
+        saveSessionAction_->setEnabled( !windowServer_->records( WindowServer::ExistingOnly ).isEmpty() );
+        printSessionAction_->setEnabled( !windowServer_->records( WindowServer::ExistingOnly ).isEmpty() );
+    }
+
+    {
+        const bool empty( lastSessionFiles_->isEmpty() );
+        restoreLastSessionAction_->setEnabled( !empty );
+    }
 
 }
 
@@ -397,6 +418,7 @@ void Application::_updateConfiguration( void )
     Debug::Throw( "Application::_updateConfiguration.\n" );
     static_cast<XmlFileList*>(recentFiles_.get())->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
     static_cast<XmlFileList*>(sessionFiles_.get())->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
+    static_cast<XmlFileList*>(lastSessionFiles_.get())->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
     recentFiles_->setMaxSize( XmlOptions::get().get<int>( "DB_SIZE" ) );
 }
 
@@ -429,6 +451,10 @@ void Application::_installActions( void )
     // restore session
     restoreSessionAction_ = new QAction( IconEngine::get( IconNames::Open ), tr( "Restore Saved Session" ), this );
     connect( restoreSessionAction_, SIGNAL(triggered()), SLOT(_restoreSession()) );
+
+    // restore session
+    restoreLastSessionAction_ = new QAction( IconEngine::get( IconNames::Open ), tr( "Restore Last Session" ), this );
+    connect( restoreLastSessionAction_, SIGNAL(triggered()), SLOT(_restoreLastSession()) );
 
     // discard session
     discardSessionAction_ = new QAction( IconEngine::get( IconNames::Delete ), tr( "Discard Saved Session" ), this );
