@@ -36,6 +36,6 @@ target_link_libraries(filesystem ${QT_LIBRARIES})
 
 if(USE_QT5)
 
-  target_link_libraries(filesystem Qt5::Widgets Qt5::Network Qt5::Xml)
+  target_link_libraries(filesystem Qt5::Widgets Qt5::Xml)
 
 endif()

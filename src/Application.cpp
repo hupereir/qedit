@@ -339,6 +339,13 @@ void Application::_discardSession( void )
 }
 
 //___________________________________________________________
+void Application::_updateLastSessionFiles( void )
+{
+    lastSessionFiles_->set( windowServer_->records( WindowServer::ExistingOnly ) );
+    static_cast<XmlFileList*>(lastSessionFiles_.get())->write();
+}
+
+//___________________________________________________________
 void Application::_updateSessionActions( void )
 {
 
@@ -346,10 +353,11 @@ void Application::_updateSessionActions( void )
 
     {
         const bool empty( sessionFiles_->isEmpty() );
+        const bool recordsEmpty( windowServer_->records( WindowServer::ExistingOnly ).isEmpty() );
         restoreSessionAction_->setEnabled( !empty );
         discardSessionAction_->setEnabled( !empty );
-        saveSessionAction_->setEnabled( !windowServer_->records( WindowServer::ExistingOnly ).isEmpty() );
-        printSessionAction_->setEnabled( !windowServer_->records( WindowServer::ExistingOnly ).isEmpty() );
+        saveSessionAction_->setEnabled( !recordsEmpty );
+        printSessionAction_->setEnabled( !recordsEmpty );
     }
 
     {
@@ -375,6 +383,7 @@ void Application::_exit( void )
 {
 
     Debug::Throw( "Application::_exit.\n" );
+    _updateLastSessionFiles();
     if( !windowServer_->closeAll() ) return;
     qApp->quit();
 

@@ -178,6 +178,9 @@ class Application: public BaseApplication, public Counter
     //* discard
     void _discardSession( void );
 
+    //* update session files
+    void _updateLastSessionFiles( void );
+
     //* update session actions
     void _updateSessionActions( void );
 

@@ -691,12 +691,9 @@ void WindowServer::_detach( void )
     Debug::Throw( "WindowServer::_detach.\n" );
 
     // check number of independent displays
-    MainWindow& activeWindowLocal( _activeWindow() );
+    auto&& activeWindowLocal( _activeWindow() );
     if( activeWindowLocal.activeView().independentDisplayCount() <= 1 && Base::KeySet<TextView>( &_activeWindow() ).size() <= 1 )
-    {
-        Debug::Throw(0) << "WindowServer::_detach - invalid display count" << endl;
-        return;
-    }
+    { return; }
 
     // detach active display
     _detach( activeWindowLocal.activeView().activeDisplay() );
@@ -710,10 +707,10 @@ void WindowServer::_detach( const File& file )
     Debug::Throw() << "WindowServer::_detach - file: " << file << endl;
 
     // check number of independent displays
-    MainWindow& activeWindowLocal( _activeWindow() );
+    auto&& activeWindowLocal( _activeWindow() );
     if( activeWindowLocal.activeView().independentDisplayCount() <= 1 && Base::KeySet<TextView>( &_activeWindow() ).size() <= 1 )
     {
-        Debug::Throw(0) << "WindowServer::_detach - invalid display count" << endl;
+        Debug::Throw() << "WindowServer::_detach - invalid display count" << endl;
         return;
     }
 
@@ -725,7 +722,7 @@ void WindowServer::_detach( TextDisplay& activeDisplayLocal )
 {
 
     // check number of displays associated to active
-    MainWindow& activeWindowLocal( _activeWindow() );
+    auto&& activeWindowLocal( _activeWindow() );
     if( !Base::KeySet<TextDisplay>(activeDisplayLocal).empty() )
     {
         InformationDialog( &activeWindowLocal,
@@ -739,7 +736,7 @@ void WindowServer::_detach( TextDisplay& activeDisplayLocal )
     bool modified( activeDisplayLocal.document()->isModified() );
 
     // create MainWindow
-    MainWindow& window( newMainWindow() );
+    auto&& window( newMainWindow() );
     window.move( QCursor::pos() - QPoint( window.width()/2, 0 ) );
     window.show();
 
@@ -807,7 +804,7 @@ void WindowServer::_reparent( const File& first, const File& second )
         return;
     }
 
-    MainWindow& window( **windows.begin() );
+    auto&& window( **windows.begin() );
     window.setActiveView( view );
     window.raise();
 
