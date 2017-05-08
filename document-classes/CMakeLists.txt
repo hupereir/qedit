@@ -5,6 +5,7 @@ project(DOCUMENT_CLASSES)
 if(USE_QT5)
 
   find_package(Qt5Widgets REQUIRED)
+  find_package(Qt5Xml REQUIRED)
 
 else()
 
@@ -70,6 +71,6 @@ target_link_libraries(document-classes ${QT_LIBRARIES})
 
 if(USE_QT5)
 
-  qt5_use_modules(document-classes Widgets Xml)
+  target_link_libraries(document-classes Qt5::Widgets Qt5::Xml)
 
 endif()

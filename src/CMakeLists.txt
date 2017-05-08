@@ -115,6 +115,6 @@ install(TARGETS qedit DESTINATION ${BIN_INSTALL_DIR})
 
 if(USE_QT5)
 
-  qt5_use_modules(qedit Network PrintSupport Widgets Xml)
+  target_link_libraries(qedit Qt5::Network Qt5::PrintSupport Qt5::Widgets Qt5::Xml)
 
 endif()

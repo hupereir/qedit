@@ -5,6 +5,7 @@ project(FILESYSTEM)
 if(USE_QT5)
 
   find_package(Qt5Widgets REQUIRED)
+  find_package(Qt5Xml REQUIRED)
 
 else()
 
@@ -35,6 +36,6 @@ target_link_libraries(filesystem ${QT_LIBRARIES})
 
 if(USE_QT5)
 
-  qt5_use_modules(filesystem Widgets Network Xml)
+  target_link_libraries(filesystem Qt5::Widgets Qt5::Network Qt5::Xml)
 
 endif()
