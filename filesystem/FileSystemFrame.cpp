@@ -293,7 +293,7 @@ void FileSystemFrame::_update( void )
 
     // setup thread
     thread_.setFile( path );
-    thread_.setCommand( FileThread::List );
+    thread_.setCommand( FileThread::Command::List );
     thread_.setFlags(  hiddenFilesAction_->isChecked() ? File::ShowHiddenFiles : File::None );
     setCursor( Qt::WaitCursor );
 
