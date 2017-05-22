@@ -156,7 +156,7 @@ const QIcon& DocumentClassModel::_icon( const QString& name )
     {
         const int iconSize( XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" ) );
         const QSize size( iconSize, iconSize );
-        icon = CustomPixmap( size, CustomPixmap::Transparent );
+        icon = CustomPixmap( size, CustomPixmap::Flag::Transparent );
     }
 
     return _icons().insert( name, icon ).value();

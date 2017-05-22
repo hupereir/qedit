@@ -1337,7 +1337,7 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
     if(
         event->key() == Qt::Key_Tab &&
         textIndent_->isEnabled() &&
-        !( textCursor().hasSelection() || _boxSelection().state() == BoxSelection::SelectionFinished ) )
+        !( textCursor().hasSelection() || _boxSelection().state() == BoxSelection::State::Finished ) )
     { emit indent( textCursor().block(), false ); }
     else
     {
@@ -2422,7 +2422,7 @@ void TextDisplay::_fileProperties( void )
     }
 
     // document class
-    item = new GridLayoutItem( box, gridLayout, GridLayoutItem::Elide );
+    item = new GridLayoutItem( box, gridLayout, GridLayoutItem::Flag::Elide );
     item->setKey( "Document class file name:" );
     auto documentClass( Singleton::get().application<Application>()->classManager().get( className() ) );
     item->setText( documentClass.file() );
@@ -2431,7 +2431,7 @@ void TextDisplay::_fileProperties( void )
     dialog.setIcon( IconEngine::get( documentClass.icon() ) );
 
     // autosave
-    item = new GridLayoutItem( box, gridLayout, GridLayoutItem::Elide|GridLayoutItem::Selectable );
+    item = new GridLayoutItem( box, gridLayout, GridLayoutItem::Flag::Elide|GridLayoutItem::Flag::Selectable );
     item->setKey( "Auto-save file name:" );
     item->setText( AutoSaveThread::autoSaveName( file_ ) );
 

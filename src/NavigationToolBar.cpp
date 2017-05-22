@@ -177,7 +177,7 @@ void NavigationToolBar::_orientationChanged( Qt::Orientation orientation )
     Debug::Throw() << "NavigationToolBar::_orientationChanged - orientation: " << orientation << endl;
 
     for( auto&& iter = buttons_.begin(); iter != buttons_.end(); ++iter )
-    { iter.key()->rotate( orientation == Qt::Horizontal ? CustomPixmap::None : CustomPixmap::CounterClockwise ); }
+    { iter.key()->rotate( orientation == Qt::Horizontal ? CustomPixmap::Rotation::None : CustomPixmap::Rotation::CounterClockwise ); }
 
     adjustSize();
 
@@ -256,7 +256,7 @@ CustomToolButton* NavigationToolBar::_newToolButton( QWidget* parent, QIcon icon
     button->setUpdateFromOptions( false );
 
     if( orientation() == Qt::Vertical )
-    { button->rotate( CustomPixmap::CounterClockwise ); }
+    { button->rotate( CustomPixmap::Rotation::CounterClockwise ); }
 
     return button;
 

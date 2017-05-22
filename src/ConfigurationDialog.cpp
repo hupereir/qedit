@@ -133,7 +133,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     }
 
     // default text-edition configuration
-    textEditConfiguration( page, (ConfigurationFlags)(AllTextEdition& ~(TabEmulation|TextEditionFlags)) );
+    textEditConfiguration( page, static_cast<Flags>(Flag::AllTextEdition) & ~static_cast<Flags>(Flag::TabEmulation|Flag::TextEditionFlags) );
 
     // wrap mode
     // needs customization with respect to BaseConfigurationDialog in order

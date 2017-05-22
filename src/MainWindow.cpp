@@ -720,10 +720,10 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
     {
         Debug::Throw() << "MainWindow::_update - modifiers." << endl;
         QStringList modifiers;
-        if( activeDisplay().modifier( TextEditor::ModifierWrap ) ) modifiers << "WRAP";
-        if( activeDisplay().modifier( TextEditor::ModifierInsert ) ) modifiers << "INS";
-        if( activeDisplay().modifier( TextEditor::ModifierCapsLock ) ) modifiers << "CAPS";
-        if( activeDisplay().modifier( TextEditor::ModifierNumLock ) ) modifiers << "NUM";
+        if( activeDisplay().modifier( TextEditor::Modifier::Wrap ) ) modifiers << "WRAP";
+        if( activeDisplay().modifier( TextEditor::Modifier::Insert ) ) modifiers << "INS";
+        if( activeDisplay().modifier( TextEditor::Modifier::CapsLock ) ) modifiers << "CAPS";
+        if( activeDisplay().modifier( TextEditor::Modifier::NumLock ) ) modifiers << "NUM";
         if( !modifiers.isEmpty() ) statusbar_->label(0).setText( modifiers.join( " " ) );
         else  statusbar_->label(0).clear();
     }

@@ -118,7 +118,7 @@ const QIcon& SessionFilesModel::_icon( int type )
         if( !prototype.isNull() ) size = prototype.actualSize( size );
 
         // create empty pixmap
-        icon = CustomPixmap( size, CustomPixmap::Transparent );
+        icon = CustomPixmap( size, CustomPixmap::Flag::Transparent );
 
     }
 

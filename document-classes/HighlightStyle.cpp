@@ -38,7 +38,6 @@ HighlightStyle::HighlightStyle( const QDomElement& element ):
         if( attribute.name() == Xml::Name ) setName( attribute.value() );
         else if( attribute.name() == Xml::Format ) setFontFormat( (Format::TextFormatFlags) attribute.value().toInt() );
         else if( attribute.name() == Xml::Color ) setColor( QColor( attribute.value() ) );
-        else Debug::Throw(0) << "Option::Option - unrecognized attribute " << attribute.name() << ".\n";
 
     }
 }

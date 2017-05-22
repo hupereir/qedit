@@ -46,17 +46,17 @@ void installDefaultOptions( void )
 
     // built-in document classes
     XmlOptions::get().keep( "DEFAULT_PATTERN_FILENAME" );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/c_patterns.xml" , Option::None ) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/alice_patterns.xml", Option::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/default_patterns.xml", Option::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/diff_patterns.xml", Option::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/fortran_patterns.xml", Option::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/html_patterns.xml", Option::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/latex_patterns.xml", Option::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/makefile_patterns.xml", Option::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/perl_patterns.xml", Option::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/shell_patterns.xml", Option::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/xml_patterns.xml", Option::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/c_patterns.xml" , Option::Flag::None ) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/alice_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/default_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/diff_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/fortran_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/html_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/latex_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/makefile_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/perl_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/shell_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/xml_patterns.xml", Option::Flag::None) );
 
     XmlOptions::get().set<bool>( "CUSTOM_BLOCK_DELIMITERS", true );
 
@@ -139,8 +139,8 @@ void installDefaultOptions( void )
     XmlOptions::get().set<int>( "AUTOSAVE_INTERVAL", 20 );
 
     // resource file
-    XmlOptions::get().set( "OLD_RC_FILE", Option( File(".qeditrc").addPath(Util::home()), Option::None ) );
-    XmlOptions::get().set( "RC_FILE", Option( File("qeditrc").addPath(Util::config()), Option::None ) );
+    XmlOptions::get().set( "OLD_RC_FILE", Option( File(".qeditrc").addPath(Util::home()), Option::Flag::None ) );
+    XmlOptions::get().set( "RC_FILE", Option( File("qeditrc").addPath(Util::config()), Option::Flag::None ) );
 
     XmlOptions::get().setAutoDefault( false );
 
