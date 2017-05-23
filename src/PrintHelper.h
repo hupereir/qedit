@@ -28,7 +28,7 @@
 class TextDisplay;
 
 //* printing utility
-class PrintHelper: public BasePrintHelper, public Counter
+class PrintHelper: public BasePrintHelper, private Base::Counter<PrintHelper>
 {
 
     Q_OBJECT

@@ -28,7 +28,7 @@
 #include <QHash>
 
 //* DocumentClass model. Stores file information for display in lists
-class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>, public Counter
+class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>, private Base::Counter<DocumentClassModel>
 {
 
     //* Qt meta object declaration

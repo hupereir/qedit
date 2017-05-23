@@ -28,7 +28,7 @@
 #include <QTextCharFormat>
 
 //* encapsulate highlight location, pattern and style
-class PatternLocation: public Counter
+class PatternLocation: private Base::Counter<PatternLocation>
 {
     public:
 

@@ -25,7 +25,7 @@
 
 #include <QString>
 
-class WindowTitle: public Counter
+class WindowTitle: private Base::Counter<WindowTitle>
 {
 
     public:

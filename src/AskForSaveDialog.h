@@ -25,7 +25,7 @@
 #include "File.h"
 
 //* QDialog used to ask if modifications of a file should be saved
-class AskForSaveDialog: public BaseDialog, public Counter
+class AskForSaveDialog: public BaseDialog, private Base::Counter<AskForSaveDialog>
 {
 
     //* Qt macro

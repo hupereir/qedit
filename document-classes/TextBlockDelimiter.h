@@ -29,7 +29,7 @@ namespace TextBlock
 {
 
     //* counts how many times a block appears as a begin and a end block
-    class Delimiter: public Counter
+    class Delimiter: private Base::Counter<Delimiter>
     {
         public:
 
@@ -80,7 +80,7 @@ namespace TextBlock
         //@}
 
         //* delimiter list
-        class List: public QVector<Delimiter>, public Counter
+        class List: public QVector<Delimiter>, private Base::Counter<List>
         {
             public:
 

@@ -28,7 +28,7 @@
 #include <QHash>
 
 //* display available document classes
-class DocumentClassMenu: public QMenu, public Counter
+class DocumentClassMenu: public QMenu, private Base::Counter<DocumentClassMenu>
 {
 
     Q_OBJECT

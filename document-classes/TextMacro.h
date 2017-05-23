@@ -30,7 +30,7 @@
 #include <QList>
 
 //* Text modification macro
-class TextMacro: public Counter
+class TextMacro: private Base::Counter<TextMacro>
 {
 
     public:
@@ -202,7 +202,7 @@ class TextMacro: public Counter
     QAction* action( void ) const;
 
     //* used to store regular expression and corresponding replacement text
-    class Rule: public Counter
+    class Rule: private Base::Counter<Rule>
     {
 
         public:

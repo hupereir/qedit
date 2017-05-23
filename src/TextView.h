@@ -30,7 +30,7 @@
 #include <QTimer>
 
 //* handles multiple views
-class TextView: public QWidget, public Counter, public Base::Key
+class TextView: public QWidget, private Base::Counter<TextView>, public Base::Key
 {
 
     //* Qt meta object declaration
@@ -186,7 +186,7 @@ class TextView: public QWidget, public Counter, public Base::Key
 
 //* local QSplitter object, derived from Counter
 /** helps keeping track of how many splitters are created/deleted */
-class LocalSplitter: public QSplitter, public Counter
+class LocalSplitter: public QSplitter, private Base::Counter<LocalSplitter>
 {
 
     public:

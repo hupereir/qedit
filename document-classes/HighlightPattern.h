@@ -33,7 +33,7 @@
 class PatternLocationSet;
 
 //* Base class for syntax highlighting
-class HighlightPattern: public Counter
+class HighlightPattern: private Base::Counter<HighlightPattern>
 {
 
     public:

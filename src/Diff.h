@@ -32,7 +32,7 @@
 class TextDisplay;
 
 //* make diff between two files, stores conflict and added lines for both
-class Diff: public QObject, public Counter
+class Diff: public QObject, private Base::Counter<Diff>
 {
 
     //* Qt meta object declaration

@@ -25,7 +25,7 @@
 #include "File.h"
 
 //* QDialog used to ask if a new file should be created
-class NewFileDialog: public BaseDialog, public Counter
+class NewFileDialog: public BaseDialog, private Base::Counter<NewFileDialog>
 {
 
     //* Qt macro

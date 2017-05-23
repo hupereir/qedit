@@ -30,7 +30,7 @@
 #include <QList>
 
 //* text delimiter (for highlighting)
-class BlockDelimiter: public Counter
+class BlockDelimiter: private Base::Counter<BlockDelimiter>
 {
 
     public:

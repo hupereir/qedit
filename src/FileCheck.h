@@ -32,7 +32,7 @@
 class TextDisplay;
 
 //* handles threads for file auto-save
-class FileCheck: public QObject, public Base::Key, public Counter
+class FileCheck: public QObject, public Base::Key, private Base::Counter<FileCheck>
 {
 
     //* Qt meta object declaration

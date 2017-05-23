@@ -39,7 +39,7 @@
 class TextEditor;
 
 //* syntax highlighting based on text patterns
-class TextIndent: public QObject, public Counter
+class TextIndent: public QObject, private Base::Counter<TextIndent>
 {
 
   //* Qt meta object declaration

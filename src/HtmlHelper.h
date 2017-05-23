@@ -31,7 +31,7 @@
 class TextDisplay;
 
 //* printing utility
-class HtmlHelper: public QObject, public Counter
+class HtmlHelper: public QObject, private Base::Counter<HtmlHelper>
 {
 
     Q_OBJECT

@@ -28,7 +28,7 @@
 #include <QRegExp>
 
 //* Base class for syntax highlighting
-class IndentPattern: public Counter
+class IndentPattern: private Base::Counter<IndentPattern>
 {
 
     public:
@@ -131,7 +131,7 @@ class IndentPattern: public Counter
 
     //* indentation rule
     /** used to check a regExp against a given paragraph */
-    class Rule: public Counter
+    class Rule: private Base::Counter<Rule>
     {
         public:
 

@@ -32,7 +32,7 @@
 class FileIconProvider;
 
 //* qlistview for object counters
-class FileSystemModel: public ListModel<FileRecord>, public Counter
+class FileSystemModel: public ListModel<FileRecord>, private Base::Counter<FileSystemModel>
 {
 
     Q_OBJECT

@@ -43,7 +43,7 @@ class WindowServer;
 class Sync;
 
 //* Application singleton
-class Application: public BaseApplication, public Counter
+class Application: public BaseApplication, private Base::Counter<Application>
 {
 
     //* Qt meta object declaration

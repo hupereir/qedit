@@ -33,7 +33,7 @@ class FileRecordToolTipWidget;
 class MimeTypeIconProvider;
 
 //* editor windows navigator
-class SessionFilesFrame: public QWidget, public Counter
+class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame>
 {
 
     //* Qt meta object declaration

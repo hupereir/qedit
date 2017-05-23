@@ -39,7 +39,7 @@ class HighlightBlockData;
 class TextEditor;
 
 //* display block delimiters
-class BlockDelimiterDisplay: public QObject, public Counter
+class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimiterDisplay>
 {
 
     //* Qt meta object

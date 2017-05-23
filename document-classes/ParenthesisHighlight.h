@@ -38,7 +38,7 @@
 class TextEditor;
 
 //* handles parenthesis matching highlighting
-class ParenthesisHighlight: public QObject, public Counter
+class ParenthesisHighlight: public QObject, private Base::Counter<ParenthesisHighlight>
 {
 
     Q_OBJECT

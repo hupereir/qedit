@@ -33,7 +33,7 @@ class RecentFilesMenu;
 class TextMacroMenu;
 
 //* menu
-class Menu:public QMenuBar, public Counter
+class Menu:public QMenuBar, private Base::Counter<Menu>
 {
 
     //* Qt meta object declaration
@@ -92,7 +92,7 @@ class Menu:public QMenuBar, public Counter
 
     //* local action group
     /** used to track memory leaks */
-    class ActionGroup: public QActionGroup, public Counter
+    class ActionGroup: public QActionGroup, private Base::Counter<ActionGroup>
     {
 
         public:

@@ -26,7 +26,7 @@
 #include <QProgressDialog>
 
 //* command progress
-class ProgressDialog:public QProgressDialog, public Counter
+class ProgressDialog:public QProgressDialog, private Base::Counter<ProgressDialog>
 {
 
     Q_OBJECT

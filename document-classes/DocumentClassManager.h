@@ -30,7 +30,7 @@
 class DocumentClass;
 
 //* Store list of Document Class
-class DocumentClassManager: public Counter
+class DocumentClassManager: private Base::Counter<DocumentClassManager>
 {
 
     public:

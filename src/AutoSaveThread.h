@@ -30,7 +30,7 @@
 #include <QThread>
 
 //* independent thread used to automatically save file
-class AutoSaveThread: public QThread, public Base::Key, public Counter
+class AutoSaveThread: public QThread, public Base::Key, private Base::Counter<AutoSaveThread>
 {
 
     public:

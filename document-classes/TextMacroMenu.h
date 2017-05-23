@@ -28,7 +28,7 @@
 #include <QMap>
 
 //* display available document classes
-class TextMacroMenu: public QMenu, public Counter
+class TextMacroMenu: public QMenu, private Base::Counter<TextMacroMenu>
 {
 
     Q_OBJECT

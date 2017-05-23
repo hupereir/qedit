@@ -35,7 +35,7 @@ class FileRecordToolTipWidget;
 displays an up-to-date list of recent files
 as well as files opened in current session
 */
-class RecentFilesFrame: public QWidget, public Counter
+class RecentFilesFrame: public QWidget, private Base::Counter<RecentFilesFrame>
 {
 
     //* Qt meta object declaration

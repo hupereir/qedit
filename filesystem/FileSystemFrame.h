@@ -33,7 +33,7 @@ class PathEditor;
 class FileRecordToolTipWidget;
 
 //* customized ListView for file/directory navigation
-class FileSystemFrame: public QWidget, public Counter
+class FileSystemFrame: public QWidget, private Base::Counter<FileSystemFrame>
 {
 
     //* Qt meta object declaration

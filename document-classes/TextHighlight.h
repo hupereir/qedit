@@ -38,7 +38,7 @@ class HighlightPattern;
 class HighlightBlockData;
 
 //* syntax highlighting based on text patterns
-class TextHighlight: public QSyntaxHighlighter, public Counter
+class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighlight>
 {
 
     //* Qt meta object

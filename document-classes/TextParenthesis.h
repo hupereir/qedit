@@ -29,7 +29,7 @@
 #include <QList>
 
 //* text parenthesis (for highlighting)
-class TextParenthesis: public Counter
+class TextParenthesis: private Base::Counter<TextParenthesis>
 {
 
     public:

@@ -27,7 +27,7 @@
 #include <QRect>
 
 // used to draw block segment
-class BlockDelimiterSegment: public Counter
+class BlockDelimiterSegment: private Base::Counter<BlockDelimiterSegment>
 {
 
     public:

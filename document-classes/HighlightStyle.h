@@ -32,7 +32,7 @@
 #include <QList>
 
 //* Base class for syntax highlighting
-class HighlightStyle: public Counter
+class HighlightStyle: private Base::Counter<HighlightStyle>
 {
 
     public:

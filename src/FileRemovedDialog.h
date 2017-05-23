@@ -25,7 +25,7 @@
 #include "File.h"
 
 //* QDialog used when a file has been removed from disk
-class FileRemovedDialog: public BaseDialog, public Counter
+class FileRemovedDialog: public BaseDialog, private Base::Counter<FileRemovedDialog>
 {
 
     //* Qt macro
