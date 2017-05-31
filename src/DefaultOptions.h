@@ -123,7 +123,7 @@ void installDefaultOptions( void )
     XmlOptions::get().set<bool>( "NAVIGATION_SIDEBAR", true );
     XmlOptions::get().set<int>( "NAVIGATION_SIDEBAR_LOCATION", Qt::LeftToolBarArea );
 
-    XmlOptions::get().setRaw( "TEXT_ENCODING", QString( "ISO-8859-1" ) );
+    XmlOptions::get().setRaw( "TEXT_ENCODING", QString( "UTF-8" ) );
 
     // toolbars default configuration
     XmlOptions::get().set<int>( "NAVIGATION_SIDEBAR_ICON_SIZE", 16 );
