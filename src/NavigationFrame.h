@@ -44,11 +44,11 @@ class NavigationFrame: public QStackedWidget
     NavigationFrame( QWidget* parent, FileList&  );
 
     //* default size
-    void setDefaultWidth( const int& value )
+    void setDefaultWidth( int value )
     { defaultWidth_ = value; }
 
     //* default width
-    const int& defaultWidth( void ) const
+    int defaultWidth( void ) const
     { return defaultWidth_; }
 
     //* size

@@ -326,7 +326,7 @@ class TextDisplay: public TextEditor
     void tagBlock( QTextBlock, const unsigned int& tag );
 
     //* clear block tags if match argument
-    void clearTag( QTextBlock, const int& tags );
+    void clearTag( QTextBlock, int tags );
 
     //@}
 
@@ -448,7 +448,7 @@ class TextDisplay: public TextEditor
     void rehighlight( void );
 
     //* clear all blocks if match argument
-    void clearAllTags( const int& tags = TextBlock::All );
+    void clearAllTags( int tags = TextBlock::All );
 
     //* change autospell filter
     void selectFilter( const QString& );

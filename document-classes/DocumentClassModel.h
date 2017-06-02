@@ -51,16 +51,16 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     //@{
 
     //* flags
-    virtual Qt::ItemFlags flags( const QModelIndex& ) const;
+    Qt::ItemFlags flags( const QModelIndex& ) const override;
 
     // return data for a given index
-    virtual QVariant data( const QModelIndex&, int ) const;
+    QVariant data( const QModelIndex&, int ) const override;
 
     //* header data
-    virtual QVariant headerData( int, Qt::Orientation, int = Qt::DisplayRole) const;
+    QVariant headerData( int, Qt::Orientation, int = Qt::DisplayRole) const override;
 
     //* number of columns for a given index
-    virtual int columnCount(const QModelIndex& = QModelIndex() ) const
+    int columnCount(const QModelIndex& = QModelIndex() ) const override
     { return nColumns; }
 
     //@}
@@ -68,7 +68,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     protected:
 
     //* sort
-    virtual void _sort( int, Qt::SortOrder = Qt::AscendingOrder );
+    void _sort( int, Qt::SortOrder ) override;
 
     private Q_SLOTS:
 
@@ -87,7 +87,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
         public:
 
         //* constructor
-        SortFTor( int type, Qt::SortOrder order = Qt::AscendingOrder ):
+        SortFTor( int type, Qt::SortOrder order ):
             ItemModel::SortFTor( type, order )
         {}
 

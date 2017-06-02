@@ -977,7 +977,7 @@ void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
 }
 
 //___________________________________________________________________________
-void TextDisplay::clearTag( QTextBlock block, const int& tags )
+void TextDisplay::clearTag( QTextBlock block, int tags )
 {
     Debug::Throw() << "TextDisplay::clearTag - key: " << key() << endl;
     TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
@@ -1203,7 +1203,7 @@ void TextDisplay::rehighlight( void )
 
 
 //___________________________________________________________________________
-void TextDisplay::clearAllTags( const int& flags )
+void TextDisplay::clearAllTags( int flags )
 {
 
     Debug::Throw( "TextDisplay::clearAllTags.\n" );

@@ -153,7 +153,7 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     The unique ID has a single bit set to 1, to use
     faster active pattern masks, with no shift operators
     */
-    void setId( const int& id )
+    void setId( int id )
     { id_ = (1<<id); }
 
     //* name
@@ -273,7 +273,7 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
         public:
 
         //* constructor
-        SameIdFTor( const int& id ):
+        SameIdFTor( int id ):
             id_( id )
             {}
 
