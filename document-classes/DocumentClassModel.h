@@ -79,10 +79,10 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
 
     //* list column names
     const std::array<QString, nColumns> columnTitles_ =
-    {
+    {{
         tr( "Name" ),
         tr( "File" )
-    };
+    }};
 
     //* used to sort IconCaches
     class SortFTor: public ItemModel::SortFTor
