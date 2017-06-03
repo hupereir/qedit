@@ -32,13 +32,6 @@ DocumentClassModel::IconCache& DocumentClassModel::_icons( void )
 }
 
 //__________________________________________________________________
-const QString DocumentClassModel::columnTitles_[DocumentClassModel::nColumns] =
-{
-    tr( "Name" ),
-    tr( "File" )
-};
-
-//__________________________________________________________________
 DocumentClassModel::DocumentClassModel( QObject* parent ):
     ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>(parent),
     Counter( "DocumentClassModel" )

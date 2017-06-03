@@ -115,7 +115,7 @@ bool IndentPattern::operator == ( const IndentPattern& other ) const
 }
 
 //____________________________________________________________
-QString IndentPattern::typeName( const Type& type )
+QString IndentPattern::typeName( Type type )
 {
     switch( type )
     {

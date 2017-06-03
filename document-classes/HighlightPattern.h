@@ -94,7 +94,7 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     { return typeName( type() ); }
 
     //* type
-    static QString typeName( const Type& type );
+    static QString typeName( Type type );
 
     //* parent name
     QString parent( void ) const

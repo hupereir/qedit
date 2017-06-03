@@ -78,7 +78,11 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     private:
 
     //* list column names
-    static const QString columnTitles_[nColumns];
+    const std::array<QString, nColumns> columnTitles_ =
+    {
+        tr( "Name" ),
+        tr( "File" )
+    };
 
     //* used to sort IconCaches
     class SortFTor: public ItemModel::SortFTor

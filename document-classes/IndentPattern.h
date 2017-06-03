@@ -111,7 +111,7 @@ class IndentPattern: private Base::Counter<IndentPattern>
     { return typeName( type() ); }
 
     //* type
-    static QString typeName( const Type& );
+    static QString typeName( Type );
 
     //* pattern scale
     int scale( void ) const

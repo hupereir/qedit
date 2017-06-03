@@ -121,7 +121,7 @@ bool HighlightPattern::operator ==( const HighlightPattern& other ) const
 }
 
 //____________________________________________________________
-QString HighlightPattern::typeName( const Type& type )
+QString HighlightPattern::typeName( Type type )
 {
     switch( type )
     {
