@@ -110,7 +110,7 @@ const QIcon& SessionFilesModel::_icon( int type )
     else if( type == FileRecordProperties::None )
     {
 
-        const int iconSize( XmlOptions::get().get<unsigned int>( "LIST_ICON_SIZE" ) );
+        const int iconSize( XmlOptions::get().get<int>( "LIST_ICON_SIZE" ) );
         QSize size( iconSize, iconSize );
 
         // update size to match real icon

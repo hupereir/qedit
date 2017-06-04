@@ -54,7 +54,7 @@ class TextMacro: private Base::Counter<TextMacro>
     QDomElement domElement( QDomDocument& parent ) const;
 
     //* Id
-    const unsigned int& id( void ) const
+    int id( void ) const
     { return id_; }
 
     //* set id
@@ -307,10 +307,10 @@ class TextMacro: private Base::Counter<TextMacro>
     private:
 
     //* unique id counter
-    static unsigned int idCounter_;
+    static int idCounter_;
 
     //* unique id
-    unsigned int id_ = 0;
+    int id_ = 0;
 
     //* macro name
     QString name_;

@@ -513,7 +513,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
     if( !isModified() ) return;
 
     // loop over TextViews
-    unsigned int modifiedDisplays(0);
+    int modifiedDisplays(0);
     Base::KeySet<TextDisplay> displays;
     for( const auto& view:Base::KeySet<TextView>( this ) )
     {

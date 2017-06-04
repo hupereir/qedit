@@ -323,7 +323,7 @@ class TextDisplay: public TextEditor
     { return *parenthesisHighlight_; }
 
     //* tag block (with diff flag)
-    void tagBlock( QTextBlock, const unsigned int& tag );
+    void tagBlock( QTextBlock, int tag );
 
     //* clear block tags if match argument
     void clearTag( QTextBlock, int tags );

@@ -37,9 +37,9 @@ text_( block.text() )
 }
 
 //_____________________________________________________________
-unsigned int CollapsedBlockData::blockCount( void ) const
+int CollapsedBlockData::blockCount( void ) const
 {
-    unsigned int out(1);
+    int out(1);
     for( const auto& child:children() )
     { out += child.blockCount(); }
 

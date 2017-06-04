@@ -24,7 +24,7 @@
 #include <QStringList>
 
 //___________________________________________________________________________
-unsigned int TextMacro::idCounter_ = 0;
+int TextMacro::idCounter_ = 0;
 
 //_____________________________________________________
 TextMacro::TextMacro( const QDomElement& element ):

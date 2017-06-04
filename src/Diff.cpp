@@ -158,7 +158,7 @@ void Diff::_parseLine( const QString& line )
         ranges[0] = _parseRange(line.left( position ));
         ranges[1] = _parseRange(line.mid( position+1 ));
 
-        for( unsigned int i = 0; i<= 1; i++ )
+        for( int i = 0; i<= 1; i++ )
         { files_[i].insertConflictRange( ranges[i] ); }
         return;
     }
@@ -277,7 +277,7 @@ void Diff::FileInformation::highlightDisplay( void )
     Debug::Throw() << "Diff::FileInformation::highlightDisplay." << endl;
 
     // loop over display blocks
-    unsigned int id(1);
+    int id(1);
     display_->setUpdatesEnabled( false );
     for( QTextBlock block( display_->document()->begin() ); block.isValid(); block = block.next(), id++ )
     {

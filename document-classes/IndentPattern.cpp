@@ -22,9 +22,9 @@
 #include "XmlString.h"
 
 //___________________________________________________________________________
-unsigned int& IndentPattern::_counter( void )
+int& IndentPattern::_counter( void )
 {
-    static unsigned int counter( 0 );
+    static int counter( 0 );
     return counter;
 }
 

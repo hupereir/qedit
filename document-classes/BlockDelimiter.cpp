@@ -24,7 +24,7 @@
 #include "XmlString.h"
 
 //_________________________________________________________
-BlockDelimiter::BlockDelimiter( const QDomElement& element, const unsigned int& id ):
+BlockDelimiter::BlockDelimiter( const QDomElement& element, int id ):
     Counter( "BlockDelimiter" ),
     id_( id )
 {

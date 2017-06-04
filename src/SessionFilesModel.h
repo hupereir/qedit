@@ -78,7 +78,7 @@ class SessionFilesModel: public FileRecordModel
     static const QIcon& _icon( int );
 
     //* icon cache
-    using IconCache = QHash<unsigned int, QIcon>;
+    using IconCache = QHash<int, QIcon>;
 
     //* type icon cache
     static IconCache& _icons( void );

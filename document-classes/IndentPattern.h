@@ -264,7 +264,7 @@ class IndentPattern: private Base::Counter<IndentPattern>
     private:
 
     //* unique id counter
-    static unsigned int& _counter( void );
+    static int& _counter( void );
 
     //* unique id
     int id_ = 0;

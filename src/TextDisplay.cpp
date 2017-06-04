@@ -945,7 +945,7 @@ bool TextDisplay::ignoreBlock( const QTextBlock& block ) const
 }
 
 //___________________________________________________________________________
-void TextDisplay::tagBlock( QTextBlock block, const unsigned int& tag )
+void TextDisplay::tagBlock( QTextBlock block, int tag )
 {
     Debug::Throw( "TextDisplay::tagBlock.\n" );
 
@@ -1887,7 +1887,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
     // spellcheck configuration
     bool changed( false );
     changed |= textHighlight_->spellParser().setColor( QColor( XmlOptions::get().get<Base::Color>("AUTOSPELL_COLOR") ) );
-    changed |= textHighlight_->spellParser().setFontFormat( (Format::TextFormatFlags) XmlOptions::get().get<unsigned int>("AUTOSPELL_FONT_FORMAT") );
+    changed |= textHighlight_->spellParser().setFontFormat( (Format::TextFormatFlags) XmlOptions::get().get<int>("AUTOSPELL_FONT_FORMAT") );
     textHighlight_->updateSpellPattern();
     autoSpellAction_->setEnabled( textHighlight_->spellParser().color().isValid() );
 

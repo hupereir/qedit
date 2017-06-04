@@ -27,7 +27,7 @@
 
 #include <QObject>
 #include <QPair>
-#include <QMap>
+#include <QHash>
 
 #include <QAction>
 #include <QColor>
@@ -225,7 +225,7 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     BlockDelimiterSegment selectedSegment_;
 
     //* map block id and number of collapsed blocks
-    using CollapsedBlockMap = QMap<int, int>;
+    using CollapsedBlockMap = QHash<int, int>;
 
     //* map block id and number of collapsed blocks
     CollapsedBlockMap collapsedBlocks_;

@@ -39,13 +39,13 @@ class BlockDelimiter: private Base::Counter<BlockDelimiter>
     using List = QList< BlockDelimiter >;
 
     //* constructor from DomElement
-    BlockDelimiter( const QDomElement& element = QDomElement(), const unsigned int& id = 0 );
+    BlockDelimiter( const QDomElement& element = QDomElement(), int id = 0 );
 
     //* dom element
     QDomElement domElement( QDomDocument& parent ) const;
 
     //* Id
-    const unsigned int& id( void ) const
+    int id( void ) const
     { return id_; }
 
     //* equal to operator
@@ -94,7 +94,7 @@ class BlockDelimiter: private Base::Counter<BlockDelimiter>
     private:
 
     //* unique id
-    unsigned int id_ = 0;
+    int id_ = 0;
 
     //* regular expression that match first character
     QString first_;

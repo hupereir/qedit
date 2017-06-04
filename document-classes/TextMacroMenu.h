@@ -25,7 +25,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QActionGroup>
-#include <QMap>
+#include <QHash>
 
 //* display available document classes
 class TextMacroMenu: public QMenu, private Base::Counter<TextMacroMenu>
@@ -91,7 +91,7 @@ class TextMacroMenu: public QMenu, private Base::Counter<TextMacroMenu>
     };
 
     //* map action to TextMacro
-    using ActionMap = QMap<QAction*, MacroContainer >;
+    using ActionMap = QHash<QAction*, MacroContainer >;
     ActionMap actions_;
 
 };

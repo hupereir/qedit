@@ -159,7 +159,7 @@ class PatternLocation: private Base::Counter<PatternLocation>
     int position_ = 0;
 
     //* length of the pattern
-    unsigned int length_ = 0;
+    int length_ = 0;
 
     //* dump
     friend QTextStream& operator << (QTextStream& out, const PatternLocation& location )

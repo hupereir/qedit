@@ -52,7 +52,7 @@ class CollapsedBlockData
     { return collapsed_; }
 
     //* number of blocks stored by this data object
-    unsigned int blockCount( void ) const;
+    int blockCount( void ) const;
 
     //*@name block limits
     //@{

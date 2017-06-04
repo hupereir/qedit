@@ -53,7 +53,7 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
         model_.set( files );
 
         // mask
-        unsigned int mask(
+        int mask(
             (1<<FileRecordModel::Filename)|
             (1<<FileRecordModel::Path ));
         int classColumn( model_.findColumn( "class_name" ) );

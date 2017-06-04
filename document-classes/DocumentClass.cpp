@@ -168,7 +168,7 @@ QStringList DocumentClass::_associatePatterns( void )
     // assign pattern ids
     // warning: the passed Id is converted internaly into a single bit of a bitset
     // to facilitate patterns bitMask
-    unsigned int id(0);
+    int id(0);
     for( auto& highlightPattern:highlightPatterns_ )
     { highlightPattern.setId( id++ ); }
 

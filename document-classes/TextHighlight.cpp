@@ -213,7 +213,7 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
 
     // no active pattern
     // normal processing
-    unsigned int activePatterns(0);
+    int activePatterns(0);
     for( const auto& pattern:patterns_ )
     {
 

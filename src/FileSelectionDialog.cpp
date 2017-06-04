@@ -54,7 +54,7 @@ selection_( selection )
     model_.set( Singleton::get().application<Application>()->windowServer().records() );
 
     // mask
-    unsigned int mask(
+    int mask(
         (1<<FileRecordModel::Filename)|
         (1<<FileRecordModel::Path ));
     int classColumn( model_.findColumn( "class_name" ) );
