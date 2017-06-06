@@ -78,7 +78,7 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     { return name_; }
 
     //* pattern type
-    enum Type
+    enum class Type
     {
         Undefined,
         KeywordPattern,
@@ -91,7 +91,7 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
 
     //* type
     QString typeName( void ) const
-    { return typeName( type() ); }
+    { return typeName( type_ ); }
 
     //* type
     static QString typeName( Type type );
@@ -137,8 +137,8 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     {
         switch( type_ )
         {
-            case KeywordPattern: return keyword_.isValid();
-            case RangePattern: return keyword_.isValid() && end_.isValid();
+            case Type::KeywordPattern: return keyword_.isValid();
+            case Type::RangePattern: return keyword_.isValid() && end_.isValid();
             default: return false;
         }
     }
@@ -214,10 +214,10 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     */
     bool processText( PatternLocationSet& locations, const QString& text, bool& active ) const
     {
-        switch( type() )
+        switch( type_ )
         {
-            case KeywordPattern: return _findKeyword( locations, text, active );
-            case RangePattern: return _findRange( locations, text, active );
+            case Type::KeywordPattern: return _findKeyword( locations, text, active );
+            case Type::RangePattern: return _findRange( locations, text, active );
             default: return false;
         }
     }
@@ -306,7 +306,7 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     int id_ = 0;
 
     //* type
-    Type type_ = Undefined;
+    Type type_ = Type::Undefined;
 
     //* pattern name
     QString name_;

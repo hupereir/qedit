@@ -63,7 +63,7 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
     { previousBlock = previousBlock.previous(); }
 
     // get tabs in previous block
-    int previous_tabs( previousBlock.isValid() ? _tabCount( previousBlock ):0 );
+    int previousTabs( previousBlock.isValid() ? _tabCount( previousBlock ):0 );
     int i(0);
     for( const auto& block:blocks )
     {
@@ -73,7 +73,7 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
         qApp->processEvents();
         if (progress.wasCanceled()) break;
 
-        int newTabs( previous_tabs );
+        int newTabs( previousTabs );
         if( !previousBlock.isValid() ) _decrement( block );
         else {
 
@@ -83,9 +83,9 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
                 if( _acceptPattern( block, pattern ) )
                 {
                     Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << endl;
-                    if( pattern.type() == IndentPattern::Increment ) newTabs += pattern.scale();
-                    else if( pattern.type() == IndentPattern::Decrement ) newTabs -= pattern.scale();
-                    else if( pattern.type() == IndentPattern::DecrementAll ) newTabs = 0;
+                    if( pattern.type() == IndentPattern::Type::Increment ) newTabs += pattern.scale();
+                    else if( pattern.type() == IndentPattern::Type::Decrement ) newTabs -= pattern.scale();
+                    else if( pattern.type() == IndentPattern::Type::DecrementAll ) newTabs = 0;
                     break;
                 }
             }
@@ -100,7 +100,7 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
         if( !editor_->ignoreBlock( block ) )
         {
             previousBlock = block;
-            previous_tabs = newTabs;
+            previousTabs = newTabs;
         }
 
         ++i;
@@ -126,7 +126,7 @@ void TextIndent::indent( QTextBlock block, bool newLine )
 
     // retrieve previous valid block to
     // determine the base indentation
-    QTextBlock previousBlock( block.previous() );
+    auto previousBlock( block.previous() );
     while( previousBlock.isValid() &&  editor_->ignoreBlock( previousBlock ) )
     { previousBlock = previousBlock.previous(); }
 
@@ -138,17 +138,17 @@ void TextIndent::indent( QTextBlock block, bool newLine )
     else {
 
         // get previous paragraph tabs
-        int previous_tabs( _tabCount( previousBlock ) );
-        int newTabs = previous_tabs;
+        int previousTabs( _tabCount( previousBlock ) );
+        int newTabs = previousTabs;
         for( const auto& pattern:patterns_ )
         {
             if( _acceptPattern( block, pattern ) )
             {
 
                 Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << endl;
-                if( pattern.type() == IndentPattern::Increment ) newTabs += pattern.scale();
-                else if( pattern.type() == IndentPattern::Decrement ) newTabs -= pattern.scale();
-                else if( pattern.type() == IndentPattern::DecrementAll ) newTabs = 0;
+                if( pattern.type() == IndentPattern::Type::Increment ) newTabs += pattern.scale();
+                else if( pattern.type() == IndentPattern::Type::Decrement ) newTabs -= pattern.scale();
+                else if( pattern.type() == IndentPattern::Type::DecrementAll ) newTabs = 0;
                 break;
             }
         }
@@ -180,13 +180,13 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
     for( const auto& rule:pattern.rules() )
     {
 
-        QTextBlock local( block );
+        auto copy( block );
 
         // if working on current paragraph
         if( rule.paragraph() == 0 )
         {
 
-            if( !rule.accept( local.text() ) )
+            if( !rule.accept( copy.text() ) )
             {
                 Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "] rejected" << endl;
                 accepted = false;
@@ -198,16 +198,16 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
             int decrement = 0;
             int true_decrement = 0;
             do {
-                local = local.previous();
+                copy = copy.previous();
                 decrement--;
                 true_decrement--;
-                while( local.isValid() && editor_->ignoreBlock( local ) )
+                while( copy.isValid() && editor_->ignoreBlock( copy ) )
                 {
-                    local = local.previous();
+                    copy = copy.previous();
                     true_decrement--;
                 }
 
-            } while( local.isValid() && decrement > rule.paragraph() );
+            } while( copy.isValid() && decrement > rule.paragraph() );
 
             Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "]"
                 << " decrement: " << decrement << " true: " << true_decrement
@@ -218,7 +218,7 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
             // to check what is to be done when there is no valid paragraph
             // matching the request. This would allow to enable some patterns
             // that cannot otherwise.
-            if( !local.isValid() || !rule.accept( local.text() ) )
+            if( !copy.isValid() || !rule.accept( copy.text() ) )
             {
                 Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "] rejected" << endl;
                 accepted = false;
@@ -235,7 +235,7 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
 int TextIndent::_tabCount( const QTextBlock& block )
 {
 
-    QString text( block.text() );
+    auto text( block.text() );
     int count = 0;
 
     // skip the characters matching baseIndentation_

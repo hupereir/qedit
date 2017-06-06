@@ -21,6 +21,7 @@
 *******************************************************************************/
 
 #include "Counter.h"
+#include "CppUtil.h"
 #include "Debug.h"
 
 #include <QDomElement>
@@ -77,58 +78,6 @@ class IndentPattern: private Base::Counter<IndentPattern>
     //* equal to operator
     bool operator == (const IndentPattern& ) const;
 
-    //* name
-    const QString& name() const
-    { return name_; }
-
-    //* name
-    void setName( const QString& name )
-    { name_ = name; }
-
-    //* reset counter
-    static void resetCounter( void )
-    { _counter() = 0; }
-
-    //* pattern type enumeration
-    enum Type
-    {
-        Nothing,
-        Increment,
-        Decrement,
-        DecrementAll
-    };
-
-    //* pattern type
-    Type type( void ) const
-    { return type_; }
-
-    //* type
-    void setType( Type type )
-    { type_ = type; }
-
-    //* type
-    QString typeName( void ) const
-    { return typeName( type() ); }
-
-    //* type
-    static QString typeName( Type );
-
-    //* pattern scale
-    int scale( void ) const
-    { return scale_; }
-
-    //* scale
-    void setScale( int scale )
-    { scale_ = scale; }
-
-    //* comments
-    const QString& comments( void ) const
-    { return comments_; }
-
-    //* comments
-    void setComments( const QString& value )
-    { comments_ = value; }
-
     //* indentation rule
     /** used to check a regExp against a given paragraph */
     class Rule: private Base::Counter<Rule>
@@ -142,10 +91,8 @@ class IndentPattern: private Base::Counter<IndentPattern>
         //* pattern flags
         enum Flag
         {
-
             None = 0,
             CaseInsensitive = 1<<2
-
         };
 
         Q_DECLARE_FLAGS( Flags, Flag );
@@ -157,34 +104,29 @@ class IndentPattern: private Base::Counter<IndentPattern>
         virtual QDomElement domElement( QDomDocument& parent ) const;
 
         //* equal to operator
-        bool operator == ( const Rule& rule ) const
+        bool operator == ( const Rule& other ) const
         {
             return
-                pattern().pattern() == rule.pattern().pattern() &&
-                paragraph() == rule.paragraph() &&
-                flags() == rule.flags();
+                regexp_.pattern() == other.regexp_.pattern() &&
+                paragraph_ == other.paragraph_ &&
+                flags_ == other.flags_;
         }
 
         //* less than operator
-        bool operator < ( const Rule& rule ) const
+        bool operator < ( const Rule& other ) const
         {
-            if( pattern().pattern() != rule.pattern().pattern() ) return pattern().pattern() < rule.pattern().pattern();
-            if( paragraph() != rule.paragraph() ) return paragraph() < rule.paragraph();
-            if( flags() != rule.flags() ) return flags() < rule.flags();
+            if( regexp_.pattern() != other.regexp_.pattern() ) return regexp_.pattern() < other.regexp_.pattern();
+            if( paragraph_ != other.paragraph_ ) return paragraph_ < other.paragraph_;
+            if( flags_ != other.flags_ ) return flags_ < other.flags_;
             return false;
         }
+
+        //*@name accessors
+        //@{
 
         //* paragraph
         int paragraph() const
         { return paragraph_; }
-
-        //* set paragraph
-        void setParagraph( int par )
-        { paragraph_ = par; }
-
-        //* regExp
-        void setPattern( const QString& regexp )
-        { regexp_.setPattern( regexp ); }
 
         //* regexp
         const QRegExp& pattern( void ) const
@@ -197,20 +139,30 @@ class IndentPattern: private Base::Counter<IndentPattern>
         //* returns true if the text match the rule
         bool accept( const QString& text ) const;
 
-        //*@name flags
-        //@{
-
         //* flags
         Flags flags( void ) const
         { return flags_; }
 
         //* flags
-        void setFlags( Flags flags )
-        { flags_ = flags; }
-
-        //* flags
         bool flag( const Flag& flag ) const
         { return flags_ & flag; }
+
+        //@}
+
+        //*@name modifiers
+        //@{
+
+        //* set paragraph
+        void setParagraph( int par )
+        { paragraph_ = par; }
+
+        //* regExp
+        void setPattern( const QString& regexp )
+        { regexp_.setPattern( regexp ); }
+
+        //* flags
+        void setFlags( Flags flags )
+        { flags_ = flags; }
 
         //* flags
         void setFlag( const Flag& flag, bool value )
@@ -241,9 +193,69 @@ class IndentPattern: private Base::Counter<IndentPattern>
         }
     };
 
+    //*@name accessors
+    //@{
+
+    //* name
+    const QString& name() const
+    { return name_; }
+
+    //* pattern type enumeration
+    enum class Type
+    {
+        Nothing,
+        Increment,
+        Decrement,
+        DecrementAll
+    };
+
+    //* pattern type
+    Type type( void ) const
+    { return type_; }
+
+    //* type
+    QString typeName( void ) const
+    { return typeName( type_ ); }
+
+    //* type
+    static QString typeName( Type );
+
+    //* pattern scale
+    int scale( void ) const
+    { return scale_; }
+
     //* retrieve rules
     const Rule::List& rules( void ) const
     { return rules_; }
+
+    //* validity
+    bool isValid( void ) const
+    {
+        for( const auto& rule:rules_ )
+        { if( !rule.isValid() ) return false; }
+        return true;
+    }
+
+    //@}
+
+    //*@name modifiers
+    //@{
+
+    //* name
+    void setName( const QString& name )
+    { name_ = name; }
+
+    //* reset counter
+    static void resetCounter( void )
+    { _counter() = 0; }
+
+    //* type
+    void setType( Type type )
+    { type_ = type; }
+
+    //* scale
+    void setScale( int scale )
+    { scale_ = scale; }
 
     //* add rule
     void addRule( const Rule& rule )
@@ -253,13 +265,7 @@ class IndentPattern: private Base::Counter<IndentPattern>
     void setRules( const Rule::List& rules )
     { rules_ = rules; }
 
-    //* validity
-    bool isValid( void ) const
-    {
-        for( const auto& rule:rules_ )
-        { if( !rule.isValid() ) return false; }
-        return true;
-    }
+    //@}
 
     private:
 
@@ -273,7 +279,7 @@ class IndentPattern: private Base::Counter<IndentPattern>
     QString name_;
 
     //* type
-    Type type_ = Nothing;
+    Type type_ = Type::Nothing;
 
     //* scale
     /**
@@ -282,16 +288,13 @@ class IndentPattern: private Base::Counter<IndentPattern>
     */
     int scale_ = 1;
 
-    //* comments
-    QString comments_;
-
     //* list of rules to match
     Rule::List rules_;
 
     //* dumper
     friend QTextStream& operator << ( QTextStream& out, const IndentPattern& pattern )
     {
-        out << "IndentPattern - name: " << pattern.name() << " type: " << pattern.type_ << endl;
+        out << "IndentPattern - name: " << pattern.name_ << " type: " << Base::toIntegralType( pattern.type_ ) << endl;
         for( const auto& rule:pattern.rules_ )
         { out << "  " << rule << endl; }
         return out;

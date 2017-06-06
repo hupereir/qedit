@@ -30,20 +30,13 @@ int& IndentPattern::_counter( void )
 
 //_____________________________________________________
 IndentPattern::IndentPattern( void ):
-    Counter( "IndentPattern" ),
-    id_(0),
-    name_( "" ),
-    type_( Nothing ),
-    scale_( 1 )
+    Counter( "IndentPattern" )
 {}
 
 //_____________________________________________________
 IndentPattern::IndentPattern( const QDomElement& element ):
     Counter( "IndentPattern" ),
-    id_( _counter()++ ),
-    name_( "" ),
-    type_( Nothing ),
-    scale_( 1 )
+    id_( _counter()++ )
 {
     Debug::Throw( "IndentPattern::IndentPattern.\n" );
 
@@ -70,10 +63,6 @@ IndentPattern::IndentPattern( const QDomElement& element ):
         {
             Rule rule( child_element );
             if( rule.isValid() ) addRule( rule );
-        } else if( child_element.tagName() == Xml::Comments ) {
-
-            setComments( XmlString( child_element.text() ) );
-
         } else Debug::Throw(0) << "IndentPattern::IndentPattern - unrecognized child: " << child_element.tagName() << endl;
     }
 
@@ -86,19 +75,12 @@ QDomElement IndentPattern::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "IndentPattern::domElement.\n" );
     QDomElement out( parent.createElement( Xml::IndentPattern ) );
-    out.setAttribute( Xml::Type, QString::number( type() ) );
-    if( !name().isEmpty() ) out.setAttribute( Xml::Name, name() );
-    if( scale() > 1 ) out.setAttribute( Xml::Scale, QString::number( scale() ) );
+    out.setAttribute( Xml::Type, QString::number( Base::toIntegralType(type_) ) );
+    if( !name_.isEmpty() ) out.setAttribute( Xml::Name, name_ );
+    if( scale_ > 1 ) out.setAttribute( Xml::Scale, QString::number( scale_ ) );
 
     for( const auto& rule:rules() )
     { out.appendChild( rule.domElement( parent ) ); }
-
-    if( !comments().isEmpty() )
-    {
-        out.
-            appendChild( parent.createElement( Xml::Comments ) ).
-            appendChild( parent.createTextNode( comments() ) );
-    }
 
     return out;
 }
@@ -107,11 +89,10 @@ QDomElement IndentPattern::domElement( QDomDocument& parent ) const
 bool IndentPattern::operator == ( const IndentPattern& other ) const
 {
     return
-        name() == other.name() &&
-        type() == other.type() &&
-        scale() == other.scale() &&
-        rules() == other.rules() &&
-        comments() == other.comments();
+        name_ == other.name_ &&
+        type_ == other.type_ &&
+        scale_ == other.scale_ &&
+        rules_ == other.rules_;
 }
 
 //____________________________________________________________
@@ -120,10 +101,10 @@ QString IndentPattern::typeName( Type type )
     switch( type )
     {
         default:
-        case Nothing: return Xml::IndentNothing;
-        case Increment: return Xml::IndentIncrement;
-        case Decrement: return Xml::IndentDecrement;
-        case DecrementAll: return Xml::IndentDecrementAll;
+        case Type::Nothing: return Xml::IndentNothing;
+        case Type::Increment: return Xml::IndentIncrement;
+        case Type::Decrement: return Xml::IndentDecrement;
+        case Type::DecrementAll: return Xml::IndentDecrementAll;
     }
 }
 

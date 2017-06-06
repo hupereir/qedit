@@ -164,7 +164,7 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     //@}
 
     //* block marker type
-    enum BlockMarkerType
+    enum class Type
     {
         BlockBegin,
         BlockEnd
@@ -174,7 +174,7 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     void _updateSegmentMarkers( void );
 
     //* update segment markers
-    void _updateMarker( QTextBlock&, int&, BlockMarker&, const BlockMarkerType& flag ) const;
+    void _updateMarker( QTextBlock&, int&, BlockMarker&, Type flag ) const;
 
     //* block pair
     using TextBlockPair = QPair<QTextBlock, QTextBlock>;

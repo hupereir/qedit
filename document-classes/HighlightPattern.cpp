@@ -32,8 +32,8 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     name_( "default" )
 {
     Debug::Throw( "HighlightPattern::HighlightPattern.\n" );
-    if( element.tagName() == Xml::KeywordPattern ) setType( KeywordPattern );
-    if( element.tagName() == Xml::RangePattern ) setType( RangePattern );
+    if( element.tagName() == Xml::KeywordPattern ) setType( Type::KeywordPattern );
+    if( element.tagName() == Xml::RangePattern ) setType( Type::RangePattern );
 
     QDomNamedNodeMap attributes( element.attributes() );
     for( int i=0; i<attributes.count(); i++ )
@@ -87,15 +87,15 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
     if( !options.isEmpty() ) out.setAttribute( Xml::Options, options );
 
     // regexps
-    if( type_ == KeywordPattern )
+    if( type_ == Type::KeywordPattern )
     {
+
         out.
             appendChild( parent.createElement( Xml::Keyword ) ).
             appendChild( parent.createTextNode( keyword_.pattern() ) );
-    }
 
-    if( type_ == RangePattern )
-    {
+    } else if( type_ == Type::RangePattern ) {
+
         out.
             appendChild( parent.createElement( Xml::Begin ) ).
             appendChild( parent.createTextNode( keyword_.pattern() ) );
@@ -117,7 +117,7 @@ bool HighlightPattern::operator ==( const HighlightPattern& other ) const
         parent_ == other.parent_ &&
         style_ == other.style_ &&
         keyword_ == other.keyword_ &&
-        ( type_ != RangePattern || end_ == other.end_ );
+        ( type_ != Type::RangePattern || end_ == other.end_ );
 }
 
 //____________________________________________________________
@@ -126,8 +126,8 @@ QString HighlightPattern::typeName( Type type )
     switch( type )
     {
         default:
-        case KeywordPattern: return Xml::KeywordPattern;
-        case RangePattern: return Xml::RangePattern;
+        case Type::KeywordPattern: return Xml::KeywordPattern;
+        case Type::RangePattern: return Xml::RangePattern;
     }
 }
 

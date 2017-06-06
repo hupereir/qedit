@@ -49,7 +49,6 @@ class AskForSaveDialog: public BaseDialog, private Base::Counter<AskForSaveDialo
 
     Q_DECLARE_FLAGS( ReturnCodes, ReturnCode );
 
-
     //* constructor
     AskForSaveDialog( QWidget*, const File&, ReturnCodes = Default );
 

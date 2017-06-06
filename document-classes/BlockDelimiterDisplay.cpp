@@ -148,11 +148,11 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
 
         // try update segments
         if( current.begin().cursor() >= firstIndex && current.begin().cursor() <= lastIndex )
-        { _updateMarker( block, id, current.begin(), BlockBegin ); }
+        { _updateMarker( block, id, current.begin(), Type::BlockBegin ); }
 
         // try update segments
         if( current.end().cursor() >= firstIndex && current.end().cursor() <= lastIndex )
-        {  _updateMarker( block, id, current.end(), BlockEnd ); }
+        {  _updateMarker( block, id, current.end(), Type::BlockEnd ); }
 
         // skip this segment if included in previous
         if( previous.isValid() && !( current.begin() < previous.begin() || previous.end() < current.end() ) ) continue;
@@ -710,14 +710,14 @@ void BlockDelimiterDisplay::_updateSegmentMarkers( void )
     int id = 0;
     for( auto& segment:segments_ )
     {
-        _updateMarker( block, id, segment.begin(), BlockBegin );
-        _updateMarker( block, id, segment.end(), BlockEnd );
+        _updateMarker( block, id, segment.begin(), Type::BlockBegin );
+        _updateMarker( block, id, segment.end(), Type::BlockEnd );
     }
 
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, int& id, BlockMarker& marker, const BlockMarkerType& flag ) const
+void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, int& id, BlockMarker& marker, Type flag ) const
 {
 
     // find block matching marker id
@@ -726,7 +726,7 @@ void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, int& id, BlockMark
     Q_ASSERT( block.isValid() );
 
     QRectF rect( editor_->document()->documentLayout()->blockBoundingRect( block ) );
-    if( flag == BlockBegin ) { marker.setPosition( (int) block.layout()->position().y() ); }
+    if( flag == Type::BlockBegin ) { marker.setPosition( (int) block.layout()->position().y() ); }
     else { marker.setPosition( (int) (block.layout()->position().y() + rect.height()) ); }
 
     return;
