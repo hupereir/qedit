@@ -50,7 +50,6 @@ IndentPattern::IndentPattern( const QDomElement& element ):
         if( attribute.name() == Xml::Type ) setType( (Type) attribute.value().toInt() );
         else if( attribute.name() == Xml::Name ) setName( attribute.value() );
         else if( attribute.name() == Xml::Scale ) setScale( attribute.value().toInt() );
-        else Debug::Throw(0) << "IndentPattern::IndentPattern - unrecognized attribute: " << attribute.name() << endl;
 
     }
 
@@ -63,7 +62,7 @@ IndentPattern::IndentPattern( const QDomElement& element ):
         {
             Rule rule( child_element );
             if( rule.isValid() ) addRule( rule );
-        } else Debug::Throw(0) << "IndentPattern::IndentPattern - unrecognized child: " << child_element.tagName() << endl;
+        }
     }
 
     Q_ASSERT( !rules().empty() );
