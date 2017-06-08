@@ -36,7 +36,7 @@ class DocumentClassMenu: public QMenu, private Base::Counter<DocumentClassMenu>
     public:
 
     //* constructor
-    DocumentClassMenu( QWidget* );
+    explicit DocumentClassMenu( QWidget* );
 
     Q_SIGNALS:
 

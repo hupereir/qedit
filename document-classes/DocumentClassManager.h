@@ -36,7 +36,7 @@ class DocumentClassManager: private Base::Counter<DocumentClassManager>
     public:
 
     //* constructor
-    DocumentClassManager( void );
+    explicit DocumentClassManager( void );
 
     //* destructor
     virtual ~DocumentClassManager( void )

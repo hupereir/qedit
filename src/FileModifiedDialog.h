@@ -45,7 +45,7 @@ class FileModifiedDialog: public BaseDialog, private Base::Counter<FileModifiedD
     };
 
     //* constructor
-    FileModifiedDialog( QWidget* parent, const File& file );
+    explicit FileModifiedDialog( QWidget* parent, const File& file );
 
     private Q_SLOTS:
 

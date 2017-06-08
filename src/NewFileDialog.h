@@ -48,7 +48,7 @@ class NewFileDialog: public BaseDialog, private Base::Counter<NewFileDialog>
     Q_DECLARE_FLAGS( ReturnCodes, ReturnCode );
 
     //* constructor
-    NewFileDialog( QWidget*, const File&, ReturnCodes = Default );
+    explicit NewFileDialog( QWidget*, const File&, ReturnCodes = Default );
 
     private Q_SLOTS:
 

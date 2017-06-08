@@ -38,7 +38,7 @@ class HighlightStyle: private Base::Counter<HighlightStyle>
     public:
 
     //* constructor
-    HighlightStyle(
+    explicit HighlightStyle(
         const QString& name = "default",
         Format::TextFormatFlags format = Format::Default,
         const QColor& color = QColor() ):
@@ -49,7 +49,7 @@ class HighlightStyle: private Base::Counter<HighlightStyle>
     {}
 
     //* constructor from DomElement
-    HighlightStyle( const QDomElement& element );
+    explicit HighlightStyle( const QDomElement& );
 
     //* write to DomElement
     QDomElement domElement( QDomDocument& parent ) const;
@@ -64,7 +64,7 @@ class HighlightStyle: private Base::Counter<HighlightStyle>
         public:
 
         //* constructor
-        SameNameFTor( const HighlightStyle& style ):
+        explicit SameNameFTor( const HighlightStyle& style ):
             name_( style.name_ )
             {}
 

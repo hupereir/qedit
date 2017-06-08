@@ -41,7 +41,7 @@ class Diff: public QObject, private Base::Counter<Diff>
     public:
 
     //* constructor
-    Diff( QObject* );
+    explicit Diff( QObject* );
 
     //* store files from text Displays
     void setTextDisplays( TextDisplay& first, TextDisplay& second )
@@ -87,7 +87,7 @@ class Diff: public QObject, private Base::Counter<Diff>
         public:
 
         //* default constructor
-        FileInformation( void );
+        explicit FileInformation( void );
 
         //* destructor
         ~FileInformation( void );

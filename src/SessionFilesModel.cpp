@@ -145,7 +145,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
     {
 
         if( !index.isValid() ) continue;
-        const FileRecord record( get(index) );
+        XmlFileRecord record( get(index) );
         records.append( record );
         filenames.insert( record.file() );
 

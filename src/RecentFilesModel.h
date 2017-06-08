@@ -33,7 +33,7 @@ class RecentFilesModel: public FileRecordModel
     public:
 
     //* constructor
-    RecentFilesModel( QObject* = nullptr );
+    explicit RecentFilesModel( QObject* = nullptr );
 
     // return data for a given index
     virtual QVariant data( const QModelIndex &, int ) const;

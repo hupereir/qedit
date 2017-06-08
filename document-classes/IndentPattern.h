@@ -39,10 +39,10 @@ class IndentPattern: private Base::Counter<IndentPattern>
     using ListIterator = QListIterator< IndentPattern >;
 
     //* constructor
-    IndentPattern( void );
+    explicit IndentPattern( void );
 
     //* constructor from DomElement
-    IndentPattern( const QDomElement& element );
+    explicit IndentPattern( const QDomElement& element );
 
     //* dom element
     QDomElement domElement( QDomDocument& parent ) const;
@@ -98,7 +98,7 @@ class IndentPattern: private Base::Counter<IndentPattern>
         Q_DECLARE_FLAGS( Flags, Flag );
 
         //* constructor
-        Rule( const QDomElement& element = QDomElement() );
+        explicit Rule( const QDomElement& element = QDomElement() );
 
         //* dom element
         virtual QDomElement domElement( QDomDocument& parent ) const;

@@ -61,11 +61,11 @@ void installDefaultOptions( void )
     XmlOptions::get().set<bool>( "CUSTOM_BLOCK_DELIMITERS", true );
 
     // diff configuration
-    XmlOptions::get().set<Base::Color>( "DIFF_ADDED_COLOR", QColor( "#acdde5" ) );
-    XmlOptions::get().set<Base::Color>( "DIFF_CONFLICT_COLOR", QColor( "#9addaa" ) );
+    XmlOptions::get().set( "DIFF_ADDED_COLOR", Base::Color( "#acdde5" ) );
+    XmlOptions::get().set( "DIFF_CONFLICT_COLOR", Base::Color( "#9addaa" ) );
 
-    XmlOptions::get().set<Base::Color>( "PARENTHESIS_COLOR", QColor( Qt::red ) );
-    XmlOptions::get().set<Base::Color>( "TAGGED_BLOCK_COLOR", QColor( "#fffdd4" ) );
+    XmlOptions::get().set( "PARENTHESIS_COLOR", Base::Color( Qt::red ) );
+    XmlOptions::get().set( "TAGGED_BLOCK_COLOR", Base::Color( "#fffdd4" ) );
 
     XmlOptions::get().set<bool>( "BACKUP", false );
     XmlOptions::get().set<int>( "DB_SIZE", 30 );

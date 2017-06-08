@@ -30,7 +30,7 @@ class ConfigurationDialog: public BaseConfigurationDialog
     public:
 
     //* creator
-    ConfigurationDialog( QWidget* = nullptr );
+    explicit ConfigurationDialog( QWidget* = nullptr );
 
 };
 

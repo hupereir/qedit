@@ -234,17 +234,13 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
     } else {
 
         // create temporary file
-        QString buffer;
-        QTextStream( &buffer ) << "/tmp/_qedit_" << Util::user() << "_" << TimeStamp::now().unixTime() << "_" << Util::pid();
-
-        // store
-        file_ = buffer;
+        file_ = File( QString( "/tmp/_qedit_%1_%2_%3" ).arg( Util::user() ).arg( TimeStamp::now().unixTime() ).arg( Util::pid() ) );
 
         // try dump text in file
-        QFile out( buffer );
+        QFile out( file_ );
         if( !out.open( QIODevice::WriteOnly ) )
         {
-            Debug::Throw() << "Diff::FileInformation::setDisplay - cannot write to file " << buffer << endl;
+            Debug::Throw() << "Diff::FileInformation::setDisplay - cannot write to file " << file_ << endl;
             return;
         }
 

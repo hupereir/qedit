@@ -29,7 +29,7 @@ class NewDocumentNameServer
     public:
 
     //* constructor
-    NewDocumentNameServer( void )
+    explicit NewDocumentNameServer( void )
     {}
 
     //* get name
@@ -48,7 +48,7 @@ class NewDocumentNameServer
         public:
 
         //* constructor
-        SameVersionFTor( const QString& name ):
+        explicit SameVersionFTor( const QString& name ):
             name_( name )
          {}
 

@@ -46,7 +46,7 @@ class ParenthesisHighlight: public QObject, private Base::Counter<ParenthesisHig
     public:
 
     //* constructor
-    ParenthesisHighlight( TextEditor* );
+    explicit ParenthesisHighlight( TextEditor* );
 
     //* enable/disable
     void setEnabled( bool value )

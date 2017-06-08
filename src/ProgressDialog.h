@@ -34,7 +34,7 @@ class ProgressDialog:public QProgressDialog, private Base::Counter<ProgressDialo
     public:
 
     //* constructor
-    ProgressDialog( QWidget* parent = nullptr ):
+    explicit ProgressDialog( QWidget* parent = nullptr ):
         QProgressDialog( parent ),
         Counter( "ProgressDialog" )
     {}

@@ -32,7 +32,7 @@ class ReplaceWidget: public BaseReplaceWidget
     public:
 
     //* constructor
-    ReplaceWidget( QWidget* = nullptr );
+    explicit ReplaceWidget( QWidget* = nullptr );
 
     Q_SIGNALS:
 

@@ -198,14 +198,14 @@ void Application::_updateDocumentClasses( void )
     // read user specific patterns
     for( const auto& option:XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
     {
-        classManager_->read( QString( option.raw() ) );
+        classManager_->read( File( option.raw() ) );
         what << classManager_->readError();
     }
 
     // read build-in patterns
     for( const auto& option:XmlOptions::get().specialOptions( "DEFAULT_PATTERN_FILENAME" ) )
     {
-        classManager_->read( QString( option.raw() ) );
+        classManager_->read( File( option.raw() ) );
         what << classManager_->readError();
     }
 
@@ -373,7 +373,7 @@ void Application::_showMonitoredFiles( void )
 
     Debug::Throw( "Application::_showMonitoredFiles.\n" );
     FileCheckDialog dialog( qApp->activeWindow() );
-    dialog.setFiles( fileCheck().fileSystemWatcher().files() );
+    dialog.setFiles( fileCheck_->fileSystemWatcher().files() );
     dialog.exec();
 
 }

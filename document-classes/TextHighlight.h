@@ -47,13 +47,13 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     public:
 
     //* constructor
-    TextHighlight( QTextDocument* );
+    explicit TextHighlight( QTextDocument* );
 
     //* highlight paragraph
     virtual void highlightBlock( const QString& text );
 
     //* retrieve highlight location for given text
-    PatternLocationSet locationSet( const QString& text, int active_id );
+    PatternLocationSet locationSet( const QString& text, int activeId );
 
     //*@name highlight patterns
     //@{
@@ -175,7 +175,7 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     //@{
 
     //* retrieve highlight location for given text
-    PatternLocationSet _highlightLocationSet( const QString&, int active_id ) const;
+    PatternLocationSet _highlightLocationSet( const QString&, int activeId ) const;
 
     //* retrieve highlight location for given text
     PatternLocationSet _spellCheckLocationSet( const QString& text, HighlightBlockData* data = 0 );

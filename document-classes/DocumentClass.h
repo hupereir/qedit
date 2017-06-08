@@ -41,10 +41,10 @@ class DocumentClass: private Base::Counter<DocumentClass>
     public:
 
     //* constructor
-    DocumentClass( void );
+    explicit DocumentClass( void );
 
     //* constructor
-    DocumentClass( const QDomElement& );
+    explicit DocumentClass( const QDomElement& );
 
     //* write to DomElement
     QDomElement domElement( QDomDocument& parent ) const;
@@ -187,7 +187,7 @@ class DocumentClass: private Base::Counter<DocumentClass>
         public:
 
         //* constructor
-        SameNameFTor( const QString& name ):
+        explicit SameNameFTor( const QString& name ):
             name_( name )
             {}
 
@@ -207,7 +207,7 @@ class DocumentClass: private Base::Counter<DocumentClass>
         public:
 
         //* constructor
-        MatchFileFTor( const File& file ):
+        explicit MatchFileFTor( const File& file ):
             file_( file )
             {}
 

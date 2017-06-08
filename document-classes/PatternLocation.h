@@ -36,10 +36,10 @@ class PatternLocation: private Base::Counter<PatternLocation>
     using SetIterator = QOrderedSetIterator<PatternLocation>;
 
     //* construtor
-    PatternLocation( void );
+    explicit PatternLocation( void );
 
     //* constructor
-    PatternLocation( const HighlightPattern&, int, int );
+    explicit PatternLocation( const HighlightPattern&, int, int );
 
     //* less than operator
     bool operator < (const PatternLocation& location ) const
@@ -105,7 +105,7 @@ class PatternLocation: private Base::Counter<PatternLocation>
         public:
 
         //* constructor
-        ContainsFTor( int index ):
+        explicit ContainsFTor( int index ):
             index_( index )
         {}
 

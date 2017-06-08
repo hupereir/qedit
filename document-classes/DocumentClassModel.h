@@ -37,7 +37,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     public:
 
     //* constructor
-    DocumentClassModel(QObject* = nullptr);
+    explicit DocumentClassModel(QObject* = nullptr);
 
     //* column type enumeration
     enum ColumnType
@@ -91,7 +91,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
         public:
 
         //* constructor
-        SortFTor( int type, Qt::SortOrder order ):
+        explicit SortFTor( int type, Qt::SortOrder order ):
             ItemModel::SortFTor( type, order )
         {}
 

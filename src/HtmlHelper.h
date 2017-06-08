@@ -39,7 +39,7 @@ class HtmlHelper: public QObject, private Base::Counter<HtmlHelper>
     public:
 
     //* constructor
-    HtmlHelper( QObject* parent, TextDisplay* editor ):
+    explicit HtmlHelper( QObject* parent, TextDisplay* editor ):
         QObject( parent ),
         Counter( "HtmlHelper" ),
         editor_( editor )

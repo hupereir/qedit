@@ -34,7 +34,7 @@ class RenameFileDialog: public CustomDialog
     public:
 
     //* constructor
-    RenameFileDialog( QWidget* parent, FileRecord );
+    explicit RenameFileDialog( QWidget* parent, FileRecord );
 
     //* new file name
     File file( void ) const;

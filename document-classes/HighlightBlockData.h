@@ -36,15 +36,15 @@ class HighlightBlockData: public TextBlockData
     public:
 
     //* constructor
-    HighlightBlockData();
+    explicit HighlightBlockData();
 
     //* constructor
-    HighlightBlockData( const TextBlockData& reference ):
+    explicit HighlightBlockData( const TextBlockData& reference ):
         TextBlockData( reference )
     {}
 
     //* constructor
-    HighlightBlockData( const TextBlockData* pointer ):
+    explicit HighlightBlockData( const TextBlockData* pointer ):
         TextBlockData( *pointer )
     {}
 

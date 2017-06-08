@@ -20,6 +20,7 @@
 *
 *******************************************************************************/
 
+#include "File.h"
 #include "Key.h"
 #include "TimeStamp.h"
 
@@ -41,7 +42,7 @@ class FileCheck: public QObject, public Base::Key, private Base::Counter<FileChe
     public:
 
     //* constructor
-    FileCheck( QObject* = nullptr );
+    explicit FileCheck( QObject* = nullptr );
 
     //* register new dispay
     void registerDisplay( TextDisplay* );
@@ -66,7 +67,7 @@ class FileCheck: public QObject, public Base::Key, private Base::Counter<FileChe
         };
 
         //* constructor
-        Data( QString file = QString(), Flag flag = None, TimeStamp stamp = TimeStamp() ):
+        explicit Data( File file = File(), Flag flag = None, TimeStamp stamp = TimeStamp() ):
             file_( file ),
             flag_( flag ),
             timeStamp_( stamp )
@@ -81,11 +82,11 @@ class FileCheck: public QObject, public Base::Key, private Base::Counter<FileChe
         { return file() < data.file(); }
 
         //* file
-        void setFile( const QString& file )
+        void setFile( const File& file )
         { file_ = file; }
 
         //* file
-        const QString& file( void ) const
+        const File& file( void ) const
         { return file_; }
 
         //* flag
@@ -107,7 +108,7 @@ class FileCheck: public QObject, public Base::Key, private Base::Counter<FileChe
         private:
 
         //* file
-        QString file_;
+        File file_;
 
         //* flag
         Flag flag_;

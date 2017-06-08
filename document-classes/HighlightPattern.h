@@ -57,8 +57,11 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     //* no parent pattern
     static QString noParentPattern_;
 
+    //* default constructor
+    explicit HighlightPattern( void );
+
     //* constructor from DomElement
-    HighlightPattern( const QDomElement& element = QDomElement() );
+    explicit HighlightPattern( const QDomElement& );
 
     //* dom element
     QDomElement domElement( QDomDocument& parent ) const;
@@ -251,7 +254,7 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
         public:
 
         //* constructor
-        SameNameFTor( const QString& name ):
+        explicit SameNameFTor( const QString& name ):
             name_( name )
             {}
 
@@ -273,7 +276,7 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
         public:
 
         //* constructor
-        SameIdFTor( int id ):
+        explicit SameIdFTor( int id ):
             id_( id )
             {}
 

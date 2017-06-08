@@ -113,11 +113,11 @@ void DocumentClassManagerDialog::_reload( void )
 
     DocumentClassManager classManager;
     for( const auto& option:XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
-    { classManager.read( QString( option.raw() ) ); }
+    { classManager.read( File( option.raw() ) ); }
 
     // read build-in patterns
     for( const auto& option:XmlOptions::get().specialOptions( "DEFAULT_PATTERN_FILENAME" ) )
-    { classManager.read( QString( option.raw() ) ); }
+    { classManager.read( File( option.raw() ) ); }
 
     // update model
     model_.set( classManager.classes() );
@@ -133,8 +133,8 @@ void DocumentClassManagerDialog::_add( void )
     dialog.setAcceptMode( QFileDialog::AcceptOpen );
     dialog.setFileMode( QFileDialog::ExistingFile );
 
-    QString file( dialog.getFile() );
-    if( file.isNull() ) return;
+    File file( dialog.getFile() );
+    if( file.isEmpty() ) return;
 
     DocumentClassManager classManager;
     classManager.read( file );

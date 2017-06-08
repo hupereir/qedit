@@ -42,7 +42,7 @@ class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame
     public:
 
     //* creator
-    SessionFilesFrame( QWidget* );
+    explicit SessionFilesFrame( QWidget* );
 
     //* list
     TreeView& list( void ) const

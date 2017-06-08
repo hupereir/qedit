@@ -74,8 +74,8 @@ void FileCheck::_fileChanged( const QString& file )
     Debug::Throw() << "FileCheck::_fileChanged: " << file << endl;
 
     // filecheck data
-    Data data( file );
     File local( file );
+    Data data( local );
 
     if( !local.exists() )
     {

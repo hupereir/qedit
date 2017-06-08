@@ -45,7 +45,7 @@ class FileRemovedDialog: public BaseDialog, private Base::Counter<FileRemovedDia
     };
 
     //* constructor
-    FileRemovedDialog( QWidget* parent, const File& file );
+    explicit FileRemovedDialog( QWidget* parent, const File& file );
 
     private Q_SLOTS:
 

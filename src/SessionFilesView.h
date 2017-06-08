@@ -31,7 +31,7 @@ class SessionFilesView: public TreeView
     public:
 
     //* constructor
-    SessionFilesView( QWidget* = nullptr );
+    explicit SessionFilesView( QWidget* = nullptr );
 
     Q_SIGNALS:
 

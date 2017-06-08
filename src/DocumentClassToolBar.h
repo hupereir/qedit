@@ -32,7 +32,7 @@ class DocumentClassToolBar: public CustomToolBar
     public:
 
     //* constructor
-    DocumentClassToolBar( QWidget* );
+    explicit DocumentClassToolBar( QWidget* );
 
     //* update selection
     void update( QString );

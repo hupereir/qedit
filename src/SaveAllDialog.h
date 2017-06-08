@@ -34,7 +34,7 @@ class SaveAllDialog: public QuestionDialog
     public:
 
     //* constructor
-    SaveAllDialog( QWidget*, FileRecord::List );
+    explicit SaveAllDialog( QWidget*, FileRecord::List );
 
     private:
 

@@ -36,7 +36,7 @@ class PrintHelper: public BasePrintHelper, private Base::Counter<PrintHelper>
     public:
 
     //* constructor
-    PrintHelper( QObject* parent, TextDisplay* editor ):
+    explicit PrintHelper( QObject* parent, TextDisplay* editor ):
         BasePrintHelper( parent ),
         Counter( "PrintHelper" ),
         editor_( editor )

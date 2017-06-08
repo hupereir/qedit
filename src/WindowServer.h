@@ -44,7 +44,7 @@ class WindowServer: public QObject, private Base::Counter<WindowServer>, public 
     public:
 
     //* constructor
-    WindowServer( QObject* = nullptr );
+    explicit WindowServer( QObject* = nullptr );
 
     //* create new empty main window
     MainWindow& newMainWindow( void );

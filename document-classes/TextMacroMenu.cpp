@@ -46,7 +46,7 @@ void TextMacroMenu::update( const TextMacro::List& macros )
             addAction( action );
 
             // insert in map
-            actions_.insert( action, macro );
+            actions_.insert( action, MacroContainer( macro ) );
 
         }
     }

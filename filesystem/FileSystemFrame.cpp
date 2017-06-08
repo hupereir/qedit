@@ -75,7 +75,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     // initialize local root path list
     File::List rootPathList;
     for( const auto& fileInfo:QDir::drives() )
-    { rootPathList << fileInfo.path(); }
+    { rootPathList << File( fileInfo.path() ); }
     pathEditor_->setRootPathList( rootPathList );
 
     connect( pathEditor_, SIGNAL(pathChanged(File)), SLOT(_update()) );

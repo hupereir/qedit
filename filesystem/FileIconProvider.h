@@ -35,7 +35,7 @@ class FileIconProvider : public BaseFileIconProvider
     public:
 
     //* constructor
-    FileIconProvider( QObject* parent = nullptr ):
+    explicit FileIconProvider( QObject* parent = nullptr ):
         BaseFileIconProvider( parent )
     {}
 

@@ -42,7 +42,7 @@ class Menu:public QMenuBar, private Base::Counter<Menu>
     public:
 
     //* creator
-    Menu( QWidget* );
+    explicit Menu( QWidget* );
 
     //* recent files menu
     RecentFilesMenu& recentFilesMenu( void ) const
@@ -98,7 +98,7 @@ class Menu:public QMenuBar, private Base::Counter<Menu>
         public:
 
         //* constructor
-        ActionGroup( QObject* parent ):
+        explicit ActionGroup( QObject* parent ):
             QActionGroup( parent ),
             Counter( "Menu::ActionGroup" )
         {}

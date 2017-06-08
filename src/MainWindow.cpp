@@ -414,7 +414,7 @@ void MainWindow::_print( PrintHelper& helper )
 
     // add output file to scratch files, if any
     if( !printer.outputFileName().isEmpty() )
-    { emit scratchFileCreated( printer.outputFileName() ); }
+    { emit scratchFileCreated( File( printer.outputFileName() ) ); }
 
     helper.print( &printer );
 
@@ -447,7 +447,7 @@ void MainWindow::_toHtml( void )
     // create dialog, connect and execute
     HtmlDialog dialog( this );
     dialog.setWindowTitle( tr( "Export to HTML - qedit" ) );
-    dialog.setFile( activeDisplay().file().truncatedName() + ".html" );
+    dialog.setFile( File( activeDisplay().file().truncatedName() + ".html" ) );
     if( !dialog.exec() ) return;
 
     // retrieve/check file

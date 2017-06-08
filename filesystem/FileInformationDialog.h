@@ -32,7 +32,7 @@ class FileInformationDialog: public BaseFileInformationDialog
     public:
 
     //* constructor
-    FileInformationDialog( QWidget*, const FileRecord& );
+    explicit FileInformationDialog( QWidget*, const FileRecord& );
 
 };
 

@@ -34,7 +34,7 @@ namespace TextBlock
         public:
 
         //* constructor
-        Delimiter( void ):
+        explicit Delimiter( void ):
             Counter( "TextBlock::Delimiter" )
         {}
 
@@ -85,7 +85,7 @@ namespace TextBlock
             public:
 
             //* constructor
-            List( void ):
+            explicit List( void ):
                 Counter( "TextBlock::Delimiter::List" )
                 {}
 
@@ -124,7 +124,7 @@ namespace TextBlock
             public:
 
             //* constructor
-            Pair( void )
+            explicit Pair( void )
             {}
 
             //* equal to

@@ -38,7 +38,7 @@ class TextParenthesis: private Base::Counter<TextParenthesis>
     using List = QList<TextParenthesis>;
 
     //* constructor from DomElement
-    TextParenthesis( const QDomElement& element = QDomElement() );
+    explicit TextParenthesis( const QDomElement& element = QDomElement() );
 
     //* dom element
     QDomElement domElement( QDomDocument& parent ) const;
@@ -91,7 +91,7 @@ class TextParenthesis: private Base::Counter<TextParenthesis>
         public:
 
         //* constructor
-        MatchFTor( const QString& text ):
+        explicit MatchFTor( const QString& text ):
             text_( text )
         {}
 
@@ -116,7 +116,7 @@ class TextParenthesis: private Base::Counter<TextParenthesis>
         public:
 
         //* constructor
-        FirstElementFTor( const QString& text ):
+        explicit FirstElementFTor( const QString& text ):
             text_( text )
         {}
 
@@ -137,7 +137,7 @@ class TextParenthesis: private Base::Counter<TextParenthesis>
         public:
 
         //* constructor
-        SecondElementFTor( const QString& text ):
+        explicit SecondElementFTor( const QString& text ):
             text_( text )
         {}
 

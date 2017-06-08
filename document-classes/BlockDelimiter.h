@@ -39,7 +39,7 @@ class BlockDelimiter: private Base::Counter<BlockDelimiter>
     using List = QList< BlockDelimiter >;
 
     //* constructor from DomElement
-    BlockDelimiter( const QDomElement& element = QDomElement(), int id = 0 );
+    explicit BlockDelimiter( const QDomElement& element = QDomElement(), int id = 0 );
 
     //* dom element
     QDomElement domElement( QDomDocument& parent ) const;

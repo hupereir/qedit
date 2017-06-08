@@ -49,7 +49,7 @@ class FileSystemModel: public ListModel<FileRecord>, private Base::Counter<FileS
     };
 
     //* constructor
-    FileSystemModel( QObject* = nullptr );
+    explicit FileSystemModel( QObject* = nullptr );
 
     //*@name accessors
     //@{
@@ -102,7 +102,7 @@ class FileSystemModel: public ListModel<FileRecord>, private Base::Counter<FileS
         public:
 
         //* constructor
-        SortFTor( int, Qt::SortOrder, const QStringList& );
+        explicit SortFTor( int, Qt::SortOrder, const QStringList& );
 
         //* prediction
         bool operator() ( FileRecord, FileRecord ) const;

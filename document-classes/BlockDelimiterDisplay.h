@@ -48,7 +48,7 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     public:
 
     //* constructor
-    BlockDelimiterDisplay(TextEditor*);
+    explicit BlockDelimiterDisplay(TextEditor*);
 
     //* block delimiters
     bool setBlockDelimiters( const BlockDelimiter::List& delimiters )

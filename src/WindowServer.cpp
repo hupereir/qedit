@@ -248,7 +248,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
             if( first )
             {
 
-                if( (fileOpened |= _open( File( filename ).expand()) ) )
+                if( (fileOpened |= _open( FileRecord( File( filename ).expand() ) ) ) )
                 {
                     _applyCommandLineArguments( _activeWindow().activeDisplay(), parser );
                     first = false;
@@ -256,7 +256,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
 
             } else {
 
-                if( (fileOpened |= _open( File( filename ).expand(), orientation )) )
+                if( (fileOpened |= _open( FileRecord( File( filename ).expand() ), orientation )) )
                 { _applyCommandLineArguments( _activeWindow().activeDisplay(), parser ); }
 
             }
@@ -279,7 +279,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
             if( parser.hasFlag( "--same-window" ) ) mode = ActiveWindow;
             else if( parser.hasFlag( "--new-window" ) ) mode = NewWindow;
 
-            bool opened = _open( File( filename ).expand(), mode );
+            bool opened = _open( FileRecord( File( filename ).expand() ), mode );
             if( opened ) { _applyCommandLineArguments( _activeWindow().activeDisplay(), parser ); }
             fileOpened |= opened;
 

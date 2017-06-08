@@ -36,12 +36,12 @@ class CollapsedBlockData
     using List = QList<CollapsedBlockData>;
 
     //* constructor
-    CollapsedBlockData( void ):
+    explicit CollapsedBlockData( void ):
         collapsed_( false )
     {}
 
     //* constructor
-    CollapsedBlockData( const QTextBlock& block );
+    explicit CollapsedBlockData( const QTextBlock& block );
 
     //* text
     const QString& text( void ) const

@@ -41,7 +41,7 @@ class NavigationFrame: public QStackedWidget
     public:
 
     //* creator
-    NavigationFrame( QWidget* parent, FileList&  );
+    explicit NavigationFrame( QWidget* parent, FileList&  );
 
     //* default size
     void setDefaultWidth( int value )

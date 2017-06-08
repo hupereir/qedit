@@ -34,7 +34,7 @@ class CloseFilesDialog: public QuestionDialog
     public:
 
     //* constructor
-    CloseFilesDialog( QWidget*, FileRecord::List );
+    explicit CloseFilesDialog( QWidget*, FileRecord::List );
 
     private:
 

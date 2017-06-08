@@ -34,7 +34,7 @@ class RestoreSessionDialog: public QuestionDialog
     public:
 
     //* constructor
-    RestoreSessionDialog( QWidget*, FileRecord::List );
+    explicit RestoreSessionDialog( QWidget*, FileRecord::List );
 
     private:
 

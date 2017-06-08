@@ -42,7 +42,7 @@ class FileSystemFrame: public QWidget, private Base::Counter<FileSystemFrame>
     public:
 
     //* constructor
-    FileSystemFrame( QWidget* parent );
+    explicit FileSystemFrame( QWidget* parent );
 
     //* working path
     void setWorkingPath( const File& );

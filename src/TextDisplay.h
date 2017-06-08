@@ -64,7 +64,7 @@ class TextDisplay: public TextEditor
     public:
 
     //* constructor
-    TextDisplay( QWidget* parent );
+    explicit TextDisplay( QWidget* parent );
 
     //* destructor
     virtual ~TextDisplay();
@@ -75,7 +75,7 @@ class TextDisplay: public TextEditor
         public:
 
         //* constructor
-        SameFileFTor( const File& file )
+        explicit SameFileFTor( const File& file )
         {
 
             if( file.isAbsolute() ) file_ = file.expand();

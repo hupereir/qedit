@@ -49,7 +49,7 @@ class BlockDelimiterSegment: private Base::Counter<BlockDelimiterSegment>
     Q_DECLARE_FLAGS( Flags, Flag )
 
     //* constructor
-    BlockDelimiterSegment(
+    explicit BlockDelimiterSegment(
         const BlockMarker& begin = BlockMarker(),
         const BlockMarker& end = BlockMarker(),
         Flags flags = None ):
@@ -134,7 +134,7 @@ class BlockDelimiterSegment: private Base::Counter<BlockDelimiterSegment>
         public:
 
         //* creator
-        ActiveFTor( const QPoint& point ):
+        explicit ActiveFTor( const QPoint& point ):
             point_( point )
         {}
 
@@ -155,7 +155,7 @@ class BlockDelimiterSegment: private Base::Counter<BlockDelimiterSegment>
         public:
 
         //* constructor
-        ContainsFTor( int cursor ):
+        explicit ContainsFTor( int cursor ):
             cursor_( cursor )
             {}
 

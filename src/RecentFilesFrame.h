@@ -44,7 +44,7 @@ class RecentFilesFrame: public QWidget, private Base::Counter<RecentFilesFrame>
     public:
 
     //* creator
-    RecentFilesFrame( QWidget* parent, FileList&  );
+    explicit RecentFilesFrame( QWidget* parent, FileList&  );
 
     //* list
     TreeView& list( void ) const

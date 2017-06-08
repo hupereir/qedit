@@ -39,7 +39,7 @@ class TextView: public QWidget, private Base::Counter<TextView>, public Base::Ke
     public:
 
     //* constructor
-    TextView( QWidget* );
+    explicit TextView( QWidget* );
 
     //* true if widget is being deleted
     bool isClosed( void ) const
@@ -192,7 +192,7 @@ class LocalSplitter: public QSplitter, private Base::Counter<LocalSplitter>
     public:
 
     //* constructor
-    LocalSplitter( QWidget* );
+    explicit LocalSplitter( QWidget* );
 
     //* destructor
     virtual ~LocalSplitter( void );

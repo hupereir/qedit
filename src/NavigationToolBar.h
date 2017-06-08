@@ -44,7 +44,7 @@ class NavigationToolBar: public CustomToolBar
     public:
 
     //* creator
-    NavigationToolBar( QWidget* );
+    explicit NavigationToolBar( QWidget* );
 
     //* set target
     void connect( NavigationFrame& );

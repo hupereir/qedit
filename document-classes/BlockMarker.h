@@ -27,7 +27,7 @@ class BlockMarker
     public:
 
     //* constructor
-    BlockMarker( int id = 0, int cursor = 0, int position = -1 ):
+    explicit BlockMarker( int id = 0, int cursor = 0, int position = -1 ):
         id_( id ),
         cursor_( cursor ),
         position_( position ),

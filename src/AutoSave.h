@@ -38,7 +38,7 @@ class AutoSave: public QObject, private Base::Counter<AutoSave>
     public:
 
     //* constructor
-    AutoSave( QObject* = nullptr );
+    explicit AutoSave( QObject* = nullptr );
 
     //* destructor
     ~AutoSave( void );

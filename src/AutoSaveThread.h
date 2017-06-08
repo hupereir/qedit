@@ -36,11 +36,11 @@ class AutoSaveThread: public QThread, public Base::Key, private Base::Counter<Au
     public:
 
     //* constructor
-    AutoSaveThread( QObject* parent ):
+    explicit AutoSaveThread( QObject* parent ):
         QThread( parent ),
         Counter( "AutoSaveThread" ),
         flags_( None )
-    { Debug::Throw( "AutoSaveThread::AutoSaveThread.\n" ); }
+    {}
 
     //*@name accessors
     //@{

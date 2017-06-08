@@ -27,6 +27,12 @@
 QString HighlightPattern::noParentPattern_( "None" );
 
 //___________________________________________________________________________
+HighlightPattern::HighlightPattern( void ):
+    Counter( "HighlightPattern" ),
+    name_( "default" )
+{}
+
+//___________________________________________________________________________
 HighlightPattern::HighlightPattern( const QDomElement& element ):
     Counter( "HighlightPattern" ),
     name_( "default" )

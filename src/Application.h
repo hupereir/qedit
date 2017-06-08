@@ -52,7 +52,7 @@ class Application: public BaseApplication, private Base::Counter<Application>
     public:
 
     //* constructor
-    Application( CommandLineArguments );
+    explicit Application( CommandLineArguments );
 
     //* initialize application manager
     virtual bool initApplicationManager( void );

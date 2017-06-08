@@ -31,7 +31,7 @@ class PatternLocationSet: public QOrderedSet<PatternLocation>
     public:
 
     //* default constructor
-    PatternLocationSet():
+    explicit PatternLocationSet():
         activeId_( std::make_pair( 0, 0 ) )
     {}
 

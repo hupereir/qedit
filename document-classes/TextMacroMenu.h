@@ -36,7 +36,7 @@ class TextMacroMenu: public QMenu, private Base::Counter<TextMacroMenu>
     public:
 
     //* constructor
-    TextMacroMenu( QWidget* );
+    explicit TextMacroMenu( QWidget* );
 
     //* set enabled
     void setEnabled( bool );
@@ -67,7 +67,7 @@ class TextMacroMenu: public QMenu, private Base::Counter<TextMacroMenu>
         public:
 
         //* constructor from text macro
-        MacroContainer( const TextMacro& macro ):
+        explicit MacroContainer( const TextMacro& macro ):
             name_( macro.name() ),
             automatic_( macro.isAutomatic() )
         {}

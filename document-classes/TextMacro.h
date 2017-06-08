@@ -40,15 +40,11 @@ class TextMacro: private Base::Counter<TextMacro>
     using ListIterator = QListIterator< TextMacro >;
 
     //* constructor
-    TextMacro( void ):
-        Counter( "TextMacro" ),
-        id_( 0 ),
-        isSeparator_( true ),
-        isAutomatic_( false )
+    explicit TextMacro( void ): Counter( "TextMacro" )
     {}
 
     //* constructor from DomElement
-    TextMacro( const QDomElement& );
+    explicit TextMacro( const QDomElement& );
 
     //* dom element
     QDomElement domElement( QDomDocument& parent ) const;
@@ -149,7 +145,7 @@ class TextMacro: private Base::Counter<TextMacro>
         public:
 
         //* constructor
-        Result( bool changed = false, int increment = 0 ):
+        explicit Result( bool changed = false, int increment = 0 ):
             QPair<bool,int>( changed, increment )
         {}
 
@@ -183,7 +179,7 @@ class TextMacro: private Base::Counter<TextMacro>
         public:
 
         //* constructor
-        SameNameFTor( const QString& name ):
+        explicit SameNameFTor( const QString& name ):
             name_( name )
         {}
 
@@ -211,7 +207,7 @@ class TextMacro: private Base::Counter<TextMacro>
         using ListIterator = QListIterator<Rule>;
 
         //* constructor
-        Rule( const QDomElement& = QDomElement() );
+        explicit Rule( const QDomElement& = QDomElement() );
 
         //* dom element
         QDomElement domElement( QDomDocument& parent ) const;

@@ -36,7 +36,7 @@ class FileSelectionDialog: public CustomDialog
     public:
 
     //* constructor
-    FileSelectionDialog( QWidget* parent, const TextSelection& );
+    explicit FileSelectionDialog( QWidget* parent, const TextSelection& );
 
     //* selected files
     using FileList = QList<File>;

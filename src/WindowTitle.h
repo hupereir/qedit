@@ -39,7 +39,7 @@ class WindowTitle: private Base::Counter<WindowTitle>
     };
 
     //* constructor
-    WindowTitle( const File& file = File(), const Flags& flag = None ):
+    explicit WindowTitle( const File& file = File(), const Flags& flag = None ):
         Counter( "WindowTitle" ),
         file_( file ),
         flag_( flag )

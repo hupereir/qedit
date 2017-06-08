@@ -52,7 +52,7 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     public:
 
     //* constructor
-    MainWindow( QWidget* = nullptr );
+    explicit MainWindow( QWidget* = nullptr );
 
     //*@name file management
     //@{
@@ -64,7 +64,7 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
         public:
 
         //* constructor
-        SameFileFTor( const File& file ):
+        explicit SameFileFTor( const File& file ):
             TextDisplay::SameFileFTor( file )
         {}
 
