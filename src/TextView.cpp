@@ -715,7 +715,3 @@ LocalSplitter::LocalSplitter( QWidget* parent ):
     QSplitter( parent ),
     Counter( "LocalSplitter" )
 { Debug::Throw( "LocalSplitter::LocalSplitter.\n" ); }
-
-//__________________________________________________
-LocalSplitter::~LocalSplitter( void )
-{ Debug::Throw( "LocalSplitter::~LocalSplitter.\n" ); }

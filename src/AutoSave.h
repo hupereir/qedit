@@ -41,7 +41,7 @@ class AutoSave: public QObject, private Base::Counter<AutoSave>
     explicit AutoSave( QObject* = nullptr );
 
     //* destructor
-    ~AutoSave( void );
+    ~AutoSave( void ) override;
 
     //* register new thread
     void newThread( TextDisplay* );

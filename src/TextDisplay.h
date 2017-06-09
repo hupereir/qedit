@@ -67,7 +67,7 @@ class TextDisplay: public TextEditor
     explicit TextDisplay( QWidget* parent );
 
     //* destructor
-    virtual ~TextDisplay();
+    ~TextDisplay() override;
 
     //* used to select editor with matching filename
     class SameFileFTor

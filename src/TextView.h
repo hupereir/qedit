@@ -194,9 +194,6 @@ class LocalSplitter: public QSplitter, private Base::Counter<LocalSplitter>
     //* constructor
     explicit LocalSplitter( QWidget* );
 
-    //* destructor
-    virtual ~LocalSplitter( void );
-
 };
 
 #endif

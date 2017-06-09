@@ -39,7 +39,7 @@ class DocumentClassManager: private Base::Counter<DocumentClassManager>
     explicit DocumentClassManager( void );
 
     //* destructor
-    virtual ~DocumentClassManager( void )
+    ~DocumentClassManager( void ) override
     { clear(); }
 
     //* clear document classes

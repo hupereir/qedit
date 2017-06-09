@@ -261,10 +261,7 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
 
 //________________________________________________________________________
 Diff::FileInformation::~FileInformation( void )
-{
-    Debug::Throw() << "Diff::FileInformation::~FileInformation" << endl;
-    if( isTemporary_ ) file_.remove();
-}
+{ if( isTemporary_ ) file_.remove(); }
 
 //________________________________________________________________________
 void Diff::FileInformation::highlightDisplay( void )
