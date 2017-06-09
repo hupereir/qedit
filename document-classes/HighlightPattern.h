@@ -227,26 +227,6 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
 
     //@}
 
-    //* equal to ftor
-    class WeakEqualFTor: public std::binary_function< HighlightPattern, HighlightPattern, bool>
-    {
-        public:
-
-        bool operator()( const HighlightPattern& first, const HighlightPattern& second ) const
-        { return first.id() == second.id(); }
-
-    };
-
-    //* less than ftor
-    class WeakLessThanFTor: public std::binary_function< HighlightPattern, HighlightPattern, bool>
-    {
-        public:
-
-        bool operator()( const HighlightPattern& first, const HighlightPattern& second ) const
-        { return first.id() < second.id(); }
-
-    };
-
     //* used to get patterns by name
     class SameNameFTor
     {

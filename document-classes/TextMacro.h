@@ -68,26 +68,6 @@ class TextMacro: private Base::Counter<TextMacro>
 
     }
 
-    //* equal to ftor
-    class WeakEqualFTor: public std::binary_function< TextMacro, TextMacro, bool>
-    {
-        public:
-
-        bool operator()( const TextMacro& first, const TextMacro& second ) const
-        { return first.id() == second.id(); }
-
-    };
-
-    //* less than ftor
-    class WeakLessThanFTor: public std::binary_function< TextMacro, TextMacro, bool>
-    {
-        public:
-
-        bool operator()( const TextMacro& first, const TextMacro& second ) const
-        { return first.id() < second.id(); }
-
-    };
-
     //* used to check whether some automatic macros are present
     class isAutomaticFTor
     {
