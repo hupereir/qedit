@@ -118,16 +118,16 @@ bool Application::realizeWidget( void )
     static_cast<XmlFileList*>( lastSessionFiles_.get() )->setTagName( Base::Xml::LastSessionFileList );
 
     // class manager
-    classManager_.reset(new DocumentClassManager());
+    classManager_.reset(new DocumentClassManager);
 
     // autosave
-    autosave_.reset( new AutoSave() );
+    autosave_.reset( new AutoSave );
 
     // file check
-    fileCheck_.reset( new FileCheck() );
+    fileCheck_.reset( new FileCheck );
 
     // window server
-    windowServer_.reset( new WindowServer() );
+    windowServer_.reset( new WindowServer );
     connect( windowServer_.get(), SIGNAL(sessionFilesChanged()), SLOT(_updateSessionActions()) );
 
     // create first window and show

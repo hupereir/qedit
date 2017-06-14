@@ -38,7 +38,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     setWindowTitle( tr( "File Not Found - Qedit" ) );
 
     // create vbox layout
-    QVBoxLayout* layout=new QVBoxLayout();
+    QVBoxLayout* layout=new QVBoxLayout;
     layout->setSpacing(5);
     layout->setMargin(10);
     setLayout( layout );
@@ -46,7 +46,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     // create message
     const QString buffer = QString( tr( "Cannot open file '%1'.\nNo such file or directory" ) ).arg( file );
 
-    QHBoxLayout *hLayout( new QHBoxLayout() );
+    QHBoxLayout *hLayout( new QHBoxLayout );
     layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
     label->setPixmap( IconEngine::get( IconNames::DialogWarning ).pixmap( iconSize() ) );
@@ -59,7 +59,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     layout->addWidget( frame );
 
     // button layout
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->setSpacing(5);
     buttonLayout->setMargin(0);
     layout->addLayout( buttonLayout );

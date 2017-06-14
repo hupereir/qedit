@@ -38,7 +38,7 @@ Counter( "FileRemovedDialog" )
     setWindowTitle( tr( "File Removed - Qedit" ) );
 
     // create vbox layout
-    QVBoxLayout* layout=new QVBoxLayout();
+    QVBoxLayout* layout=new QVBoxLayout;
     layout->setSpacing(5);
     layout->setMargin(10);
     setLayout( layout );
@@ -46,7 +46,7 @@ Counter( "FileRemovedDialog" )
     // create message
     QString buffer = QString( tr( "File '%1' has been removed" ) ).arg( file.localName() );
 
-    QHBoxLayout *hLayout( new QHBoxLayout() );
+    QHBoxLayout *hLayout( new QHBoxLayout );
     layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
     label->setPixmap( IconEngine::get( IconNames::DialogWarning ).pixmap( iconSize() ) );
@@ -59,7 +59,7 @@ Counter( "FileRemovedDialog" )
     layout->addWidget( frame );
 
     // button layout
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->setSpacing( 5 );
     layout->addLayout( buttonLayout );
     buttonLayout->addStretch(1);

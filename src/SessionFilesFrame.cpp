@@ -49,7 +49,7 @@ Counter( "SessionFilesFrame" )
     Debug::Throw( "SessionFilesFrame:SessionFilesFrame.\n" );
 
     // layout
-    setLayout( new QVBoxLayout() );
+    setLayout( new QVBoxLayout );
     layout()->setMargin(0);
     layout()->setSpacing(2);
 

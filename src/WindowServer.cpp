@@ -74,7 +74,7 @@ WindowServer::WindowServer( QObject* parent ):
 MainWindow& WindowServer::newMainWindow( void )
 {
     Debug::Throw( "WindowServer::newMainWindow.\n" );
-    auto window = new MainWindow();
+    auto window = new MainWindow;
 
     Base::Key::associate( this, window );
     _setActiveWindow( *window );

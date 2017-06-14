@@ -60,7 +60,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     // edition flags
     page->layout()->addWidget( box = new QWidget( page ) );
-    box->setLayout( new QVBoxLayout() );
+    box->setLayout( new QVBoxLayout );
     box->layout()->setMargin(0);
 
     box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Show block delimiters" ), box, "SHOW_BLOCK_DELIMITERS" ) );
@@ -89,7 +89,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     {
 
         QGroupBox* box = new QGroupBox( tr( "Tab Emulation" ), page );
-        QVBoxLayout* layout = new QVBoxLayout();
+        QVBoxLayout* layout = new QVBoxLayout;
         box->setLayout( layout );
         page->layout()->addWidget( box );
 
@@ -103,7 +103,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         // so that they can be disabled all at once
         QWidget* widget = new QWidget( box );
         layout->addWidget( widget );
-        widget->setLayout( layout = new QVBoxLayout() );
+        widget->setLayout( layout = new QVBoxLayout );
         layout->setMargin(0);
 
         // enable/disabled widget based on checkbox state
@@ -116,7 +116,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         addOptionWidget( checkbox );
 
         // tab size
-        QHBoxLayout* hLayout = new QHBoxLayout();
+        QHBoxLayout* hLayout = new QHBoxLayout;
         hLayout->setMargin(0);
         layout->addLayout( hLayout );
 
@@ -143,7 +143,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
         QGroupBox* box;
         page->layout()->addWidget( box = new QGroupBox( tr( "Options" ), page ) );
-        QVBoxLayout* layout = new QVBoxLayout();
+        QVBoxLayout* layout = new QVBoxLayout;
         box->setLayout( layout );
 
         box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Use document class wrap mode" ), box, "WRAP_FROM_CLASS" ) );
@@ -163,7 +163,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
         // auto hide cursor
         QLabel* label;
-        GridLayout* gridLayout = new GridLayout();
+        GridLayout* gridLayout = new GridLayout;
         gridLayout->setMargin(0);
         gridLayout->setMaxCount(2);
         gridLayout->setColumnAlignment( 0, Qt::AlignVCenter|Qt::AlignRight );
@@ -192,7 +192,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     // additional colors
     page->layout()->addWidget( box = new QWidget( page ) );
 
-    GridLayout* gridLayout = new GridLayout();
+    GridLayout* gridLayout = new GridLayout;
     gridLayout->setMaxCount(2);
     gridLayout->setMargin(0);
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
@@ -229,7 +229,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     page = &addPage( IconEngine::get( IconNames::PreferencesMultipleViews ), tr( "Multiple Views" ), tr( "Multiple views configuration" ) );
     page->layout()->addWidget( box = new QWidget( page ) );
 
-    gridLayout = new GridLayout();
+    gridLayout = new GridLayout;
     gridLayout->setMargin(0);
     gridLayout->setMaxCount(2);
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
@@ -287,7 +287,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     page->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Show tooltips" ), page, "SHOW_TOOLTIPS" ) );
     addOptionWidget( checkbox );
 
-    hLayout = new QHBoxLayout();
+    hLayout = new QHBoxLayout;
     hLayout->setMargin(0);
     hLayout->setSpacing(5);
     page->layout()->addItem( hLayout );
@@ -303,7 +303,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     page = &addPage( IconEngine::get( IconNames::PreferencesUnsorted ), tr( "Unsorted" ), tr( "Additional unsorted settings" ) );
     page->layout()->addWidget( box = new QGroupBox( tr( "Backup and Autosave" ), page ) );
 
-    box->setLayout( new QVBoxLayout() );
+    box->setLayout( new QVBoxLayout );
 
     box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Make backup of files when saving modifications" ), box, "BACKUP" ) );
     checkbox->setToolTip( tr( "Make backup of the file prior to saving modifications" ) );
@@ -315,7 +315,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         "specified directory to allow crash recovery" ) );
     addOptionWidget( checkbox );
 
-    gridLayout = new GridLayout();
+    gridLayout = new GridLayout;
     gridLayout->setMargin(0);
     gridLayout->setMaxCount(2);
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
@@ -346,9 +346,9 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     // misc
     page->layout()->addWidget( box = new QGroupBox( tr( "Third-Party Applications" ), page ) );
 
-    box->setLayout( new QVBoxLayout() );
+    box->setLayout( new QVBoxLayout );
 
-    hLayout = new QHBoxLayout();
+    hLayout = new QHBoxLayout;
     hLayout->setMargin(0);
     box->layout()->addItem( hLayout );
 

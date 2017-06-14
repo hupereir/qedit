@@ -193,7 +193,7 @@ QMimeData* FileSystemModel::mimeData(const QModelIndexList &indexes) const
     if( filenames.empty() ) return nullptr;
     else {
 
-        QMimeData* mimeData = new QMimeData();
+        QMimeData* mimeData = new QMimeData;
 
         // fill text data
         {

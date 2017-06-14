@@ -72,7 +72,7 @@ void TextHighlight::highlightBlock( const QString& text )
 
         // try retrieve data from parent type
         TextBlockData* textData = static_cast<TextBlockData*>( currentBlockUserData() );
-        data = textData ? new HighlightBlockData( textData ) : new HighlightBlockData();
+        data = textData ? new HighlightBlockData( textData ) : new HighlightBlockData;
         setCurrentBlockUserData( data );
 
     }

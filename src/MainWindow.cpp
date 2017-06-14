@@ -123,7 +123,7 @@ MainWindow::MainWindow(  QWidget* parent ):
     // insert stack widget
     // right container
     rightContainer_ = new QWidget( nullptr );
-    rightContainer_->setLayout( new QVBoxLayout() );
+    rightContainer_->setLayout( new QVBoxLayout );
     rightContainer_->layout()->setMargin(0);
     rightContainer_->layout()->setSpacing(0);
     splitter->addWidget( rightContainer_ );
@@ -401,7 +401,7 @@ void MainWindow::_print( PrintHelper& helper )
     printer.setDocName( activeDisplay().file().localName() );
 
     // create options widget
-    PrinterOptionWidget* optionWidget( new PrinterOptionWidget() );
+    PrinterOptionWidget* optionWidget( new PrinterOptionWidget );
     optionWidget->setHelper( &helper );
     connect( optionWidget, SIGNAL(orientationChanged(QPrinter::Orientation)), &helper, SLOT(setOrientation(QPrinter::Orientation)) );
     connect( optionWidget, SIGNAL(pageModeChanged(BasePrintHelper::PageMode)), &helper, SLOT(setPageMode(BasePrintHelper::PageMode)) );

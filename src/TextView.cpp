@@ -41,7 +41,7 @@ TextView::TextView( QWidget* parent ):
     setAttribute( Qt::WA_DeleteOnClose );
 
     // main layout
-    setLayout( new QVBoxLayout() );
+    setLayout( new QVBoxLayout );
     layout()->setMargin(0);
     layout()->setSpacing(0);
 

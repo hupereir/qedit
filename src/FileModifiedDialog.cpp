@@ -38,7 +38,7 @@ Counter( "FileModifiedDialog" )
     setWindowTitle( tr( "File Modified - Qedit" ) );
 
     // create vbox layout
-    QVBoxLayout* layout=new QVBoxLayout();
+    QVBoxLayout* layout=new QVBoxLayout;
     layout->setSpacing(5);
     layout->setMargin(10);
     setLayout( layout );
@@ -48,7 +48,7 @@ Counter( "FileModifiedDialog" )
     QTextStream( &buffer ) << file.localName() << " has been modified by another application." << endl;
 
     //* try load Question icon
-    QHBoxLayout *hLayout( new QHBoxLayout() );
+    QHBoxLayout *hLayout( new QHBoxLayout );
     layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
     label->setPixmap( IconEngine::get( IconNames::DialogWarning ).pixmap( iconSize() ) );
@@ -61,7 +61,7 @@ Counter( "FileModifiedDialog" )
     layout->addWidget( frame );
 
     // button layout
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->setMargin(0);
     buttonLayout->setSpacing( 5 );
     layout->addLayout( buttonLayout );

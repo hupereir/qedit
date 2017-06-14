@@ -40,7 +40,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     Debug::Throw( "DocumentClassManagerDialog::DocumentClassManagerDialog.\n" );
     setOptionName( "DOCUMENT_CLASS_MANAGER_DIALOG" );
 
-    QHBoxLayout* hLayout( new QHBoxLayout() );
+    QHBoxLayout* hLayout( new QHBoxLayout );
     hLayout->setSpacing(5);
     hLayout->setMargin(0);
     mainLayout().addLayout( hLayout );
@@ -53,7 +53,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     list_->setOptionName( "DOCUMENT_CLASS_MANAGER_LIST" );
 
     // buttons
-    QVBoxLayout* vLayout = new QVBoxLayout();
+    QVBoxLayout* vLayout = new QVBoxLayout;
     vLayout->setSpacing(5);
     vLayout->setMargin(0);
     hLayout->addLayout( vLayout );

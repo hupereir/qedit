@@ -154,7 +154,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
     if( filenames.empty() ) return mimeData;
     else {
 
-        if( !mimeData ) mimeData = new QMimeData();
+        if( !mimeData ) mimeData = new QMimeData;
 
         // fill text data
         {

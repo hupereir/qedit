@@ -98,7 +98,7 @@ void ParenthesisHighlight::_highlight( void )
     {
         // try retrieve data from parent type
         TextBlockData* text_data = dynamic_cast<TextBlockData*>( block.userData() );
-        data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData();
+        data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData;
         block.setUserData( data );
 
     } else if( data->hasParenthesis() && data->parenthesis() + block.position() == location_ ) return;

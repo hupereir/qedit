@@ -868,7 +868,7 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
         // also expands block if collapsed and recursive is set to true
         if( data.collapsed() && recursive )
         {
-            HighlightBlockData *curentData =  new HighlightBlockData();
+            HighlightBlockData *curentData =  new HighlightBlockData;
             cursor.block().setUserData( curentData );
             _expand( cursor.block(), curentData, true );
         }

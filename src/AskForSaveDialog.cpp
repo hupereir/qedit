@@ -39,7 +39,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     setWindowTitle( tr( "File Modified - Qedit" ) );
 
     // create vbox layout
-    QVBoxLayout* layout=new QVBoxLayout();
+    QVBoxLayout* layout=new QVBoxLayout;
     layout->setSpacing(5);
     layout->setMargin(10);
     setLayout( layout );
@@ -48,7 +48,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     QString buffer = file.QString::isEmpty() ? tr( "File has been modified.\nSave ?" ):QString( tr( "File '%1' has been modified.\nSave ?" ) ).arg( file.localName() );
 
     // insert main vertical box
-    QHBoxLayout *hLayout( new QHBoxLayout() );
+    QHBoxLayout *hLayout( new QHBoxLayout );
     layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
     label->setPixmap( IconEngine::get( IconNames::DialogWarning ).pixmap( iconSize() ) );

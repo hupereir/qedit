@@ -950,7 +950,7 @@ void TextDisplay::tagBlock( QTextBlock block, int tag )
     Debug::Throw( "TextDisplay::tagBlock.\n" );
 
     HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
-    if( !data ) block.setUserData( data = new HighlightBlockData() );
+    if( !data ) block.setUserData( data = new HighlightBlockData );
     if( data->hasFlag( tag ) ) return;
     data->setFlag( tag, true );
 
@@ -2349,14 +2349,14 @@ void TextDisplay::_fileProperties( void )
     FileInformationDialog dialog( this, record );
 
     // add additional informations frame
-    auto box( new QWidget() );
-    auto layout = new QVBoxLayout();
+    auto box( new QWidget );
+    auto layout = new QVBoxLayout;
     layout->setMargin(5);
     layout->setSpacing( 5 );
     box->setLayout( layout );
     Debug::Throw( "TextDisplay::_fileProperties - Miscellaneous tab booked.\n" );
 
-    auto gridLayout = new GridLayout();
+    auto gridLayout = new GridLayout;
     gridLayout->setMargin(0);
     gridLayout->setSpacing( 5 );
     gridLayout->setMaxCount( 2 );

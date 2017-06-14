@@ -47,7 +47,7 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     Debug::Throw( "RecentFilesFrame:RecentFilesFrame.\n" );
 
     // layout
-    setLayout( new QVBoxLayout() );
+    setLayout( new QVBoxLayout );
     layout()->setMargin(0);
     layout()->setSpacing(2);
 
