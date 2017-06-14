@@ -1,5 +1,5 @@
 <patterns>
- <class pattern="\.((xml)|(qrc)|(kcfg))$" icon="text-xml.png" name="xml" >
+ <class pattern="\.((xml)|(qrc)|(kcfg)|(svg))$" icon="text-xml.png" name="xml" >
 
 <!--Options-->
   <Option>
