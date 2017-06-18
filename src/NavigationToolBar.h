@@ -52,7 +52,7 @@ class NavigationToolBar: public CustomToolBar
     protected:
 
     //* context menu
-    virtual void contextMenuEvent( QContextMenuEvent* );
+    void contextMenuEvent( QContextMenuEvent* ) override;
 
     private Q_SLOTS:
 
@@ -66,13 +66,13 @@ class NavigationToolBar: public CustomToolBar
     void _updateToolButtonIconSize( IconSize::Size );
 
     //* make sure proper buttons are changed when navigation frame visibility is changed
-    virtual void _navigationFrameVisibilityChanged( bool );
+    void _navigationFrameVisibilityChanged( bool );
 
     //* change orientation
-    virtual void _orientationChanged( Qt::Orientation );
+    void _orientationChanged( Qt::Orientation );
 
     //* display item page
-    virtual void _display( QAbstractButton* );
+    void _display( QAbstractButton* );
 
     private:
 

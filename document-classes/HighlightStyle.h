@@ -55,7 +55,7 @@ class HighlightStyle: private Base::Counter<HighlightStyle>
     QDomElement domElement( QDomDocument& parent ) const;
 
     //* name
-    virtual const QString& name( void ) const
+    const QString& name( void ) const
     { return name_; }
 
     //* same name ftor
@@ -109,23 +109,23 @@ class HighlightStyle: private Base::Counter<HighlightStyle>
     bool operator == ( const HighlightStyle& style ) const;
 
     //* name
-    virtual void setName( const QString& name )
+    void setName( const QString& name )
     { name_ = name; }
 
     //* format
-    virtual Format::TextFormatFlags fontFormat( void ) const
+    Format::TextFormatFlags fontFormat( void ) const
     { return format_; }
 
     //* format
-    virtual void setFontFormat( Format::TextFormatFlags format )
+    void setFontFormat( Format::TextFormatFlags format )
     { format_ = format; }
 
     //* color
-    virtual const QColor& color( void ) const
+    const QColor& color( void ) const
     { return color_; }
 
     //* color
-    virtual void setColor( const QColor& color )
+    void setColor( const QColor& color )
     { color_ = color; }
 
     private:

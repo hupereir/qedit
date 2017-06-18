@@ -45,16 +45,16 @@ class DocumentClassManagerDialog: public CustomDialog
     protected Q_SLOTS:
 
     //* read
-    virtual void _reload( void );
+    void _reload( void );
 
     //* add document class
-    virtual void _add( void );
+    void _add( void );
 
     //* remove document classes
-    virtual void _remove( void );
+    void _remove( void );
 
     //* update buttons
-    virtual void _updateButtons( void );
+    void _updateButtons( void );
 
     private:
 

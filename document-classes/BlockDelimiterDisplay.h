@@ -84,10 +84,10 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     { return width_; }
 
     //* paint
-    virtual void paint( QPainter& );
+    void paint( QPainter& );
 
     //* mouse press event
-    virtual void mousePressEvent( QMouseEvent* );
+    void mousePressEvent( QMouseEvent* );
 
     //* offset
     void setOffset( int offset )

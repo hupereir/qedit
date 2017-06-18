@@ -55,10 +55,10 @@ class Application: public BaseApplication, private Base::Counter<Application>
     explicit Application( CommandLineArguments );
 
     //* initialize application manager
-    virtual bool initApplicationManager( void );
+    bool initApplicationManager( void ) override;
 
     //* create all widgets
-    bool realizeWidget( void );
+    bool realizeWidget( void ) override;
 
     //* file list
     FileList& recentFiles( void ) const
@@ -122,21 +122,21 @@ class Application: public BaseApplication, private Base::Counter<Application>
     //@{
 
     //* command line parser
-    CommandLineParser commandLineParser( CommandLineArguments = CommandLineArguments(), bool ignoreWarnings = true ) const;
+    CommandLineParser commandLineParser( CommandLineArguments = CommandLineArguments(), bool ignoreWarnings = true ) const override;
 
     //* command line help
-    void usage( void ) const;
+    void usage( void ) const override;
 
     //* application name
-    virtual QString applicationName( void ) const
+    QString applicationName( void ) const override
     { return "Qedit"; }
 
     //* application icon
-    virtual QIcon applicationIcon( void ) const
+    QIcon applicationIcon( void ) const override
     { return IconEngine::get( ":/qedit.png" ); }
 
     // application version
-    virtual QString applicationVersion( void ) const
+    QString applicationVersion( void ) const override
     { return VERSION; }
 
     //@}
@@ -191,7 +191,7 @@ class Application: public BaseApplication, private Base::Counter<Application>
     void _exit( void );
 
     //* process request from application manager
-    virtual bool _processCommand( Server::ServerCommand );
+    bool _processCommand( Server::ServerCommand ) override;
 
     protected:
 
@@ -200,7 +200,7 @@ class Application: public BaseApplication, private Base::Counter<Application>
     this allows to read files from arguments after the call
     to "exec()" in the main routine,
     */
-    void timerEvent( QTimerEvent* );
+    void timerEvent( QTimerEvent* ) override;
 
     private Q_SLOTS:
 

@@ -370,7 +370,9 @@ void MainWindow::_revertToSave( void )
     // check filename
     if( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() )
     {
-        InformationDialog( this, tr( "No filename given. <Reload> canceled." ) ).setWindowTitle( tr( "Reload Document - Qedit" ) ).exec();
+        InformationDialog dialog( this, tr( "No filename given. <Reload> canceled." ) );
+        dialog.setWindowTitle( tr( "Reload Document - Qedit" ) );
+        dialog.exec();
         return;
     }
 
@@ -378,7 +380,10 @@ void MainWindow::_revertToSave( void )
     QString buffer;
     if( activeDisplay().document()->isModified() ) buffer = QString( tr( "Discard changes to file '%1' ?" ) ).arg( activeDisplay().file().localName() );
     else buffer = QString( tr( "Reload file '%1' ?" ) ).arg( activeDisplay().file().localName() );
-    if( !QuestionDialog( this, buffer ).setWindowTitle( tr( "Reload Document - Qedit" ) ).exec() ) return;
+
+    QuestionDialog dialog( this, buffer );
+    dialog.setWindowTitle( tr( "Reload Document - Qedit" ) );
+    if( !dialog.exec() ) return;
 
     activeDisplay().revertToSave();
 
@@ -635,7 +640,6 @@ void MainWindow::_activeViewChanged( void )
 void MainWindow::_splitDisplay( void )
 { activeView_->splitDisplay( Singleton::get().application<Application>()->windowServer().defaultOrientation(), true ); }
 
-//_______________________________________________________
 void MainWindow::_multipleFileReplace( void )
 {
     Debug::Throw( "MainWindow::_multipleFileReplace.\n" );
@@ -643,8 +647,8 @@ void MainWindow::_multipleFileReplace( void )
 
     // show dialog and check answer
     FileSelectionDialog dialog( this, selection );
-    QtUtil::centerOnParent( &dialog );
-    if( !dialog.centerOnWidget( qApp->activeWindow() ).exec() ) return;
+    dialog.centerOnParent();
+    if( !dialog.exec() ) return;
 
     // replace all in selected files
     Singleton::get().application<Application>()->windowServer().multipleFileReplace( dialog.selectedFiles(), selection );

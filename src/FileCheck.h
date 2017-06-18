@@ -129,7 +129,7 @@ class FileCheck: public QObject, public Base::Key, private Base::Counter<FileChe
     protected:
 
     //* timer event, to handle multiple file modification at once
-    virtual void timerEvent( QTimerEvent* event );
+    void timerEvent( QTimerEvent* event ) override;
 
     private Q_SLOTS:
 

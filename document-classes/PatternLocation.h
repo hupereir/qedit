@@ -90,11 +90,11 @@ class PatternLocation: private Base::Counter<PatternLocation>
     { return format_; }
 
     //* color
-    virtual QColor color( void ) const
+    QColor color( void ) const
     { return color_; }
 
     //* formated font
-    virtual QTextCharFormat format() const;
+    QTextCharFormat format() const;
 
     //@}
 

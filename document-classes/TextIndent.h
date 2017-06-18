@@ -87,14 +87,14 @@ class TextIndent: public QObject, private Base::Counter<TextIndent>
     public Q_SLOTS:
 
     //* highlight blocks
-    virtual void indent( QTextBlock first, QTextBlock last );
+    void indent( QTextBlock first, QTextBlock last );
 
     //* highlight block
     /**
     newLine argument is used in case there is a default base indentation,
     to properly indent paragraphs when return key is pressed
     */
-    virtual void indent( QTextBlock block, bool newLine = false );
+    void indent( QTextBlock block, bool newLine = false );
 
     private:
 

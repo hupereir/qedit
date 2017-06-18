@@ -101,7 +101,7 @@ class IndentPattern: private Base::Counter<IndentPattern>
         explicit Rule( const QDomElement& element = QDomElement() );
 
         //* dom element
-        virtual QDomElement domElement( QDomDocument& parent ) const;
+        QDomElement domElement( QDomDocument& parent ) const;
 
         //* equal to operator
         bool operator == ( const Rule& other ) const

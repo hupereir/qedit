@@ -188,15 +188,15 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     { children_.clear(); }
 
     //* keyword
-    virtual void setKeyword( const QString& keyword )
+    void setKeyword( const QString& keyword )
     { keyword_.setPattern( keyword ); }
 
     //* keyword
-    virtual void setBegin( const QString& keyword )
+    void setBegin( const QString& keyword )
     { setKeyword( keyword ); }
 
     //* range end pattern
-    virtual void setEnd( const QString& keyword )
+    void setEnd( const QString& keyword )
     { end_.setPattern( keyword ); }
 
     //* flags

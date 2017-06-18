@@ -512,7 +512,9 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    const int state( FileRemovedDialog( this, file_ ).centerOnWidget( window() ).exec() );
+    FileRemovedDialog dialog( this, file() );
+    dialog.centerOnParent();
+    auto state( dialog.exec() );
 
     // restore check
     _setIgnoreWarnings( false );
@@ -565,7 +567,9 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    const int state( FileModifiedDialog( this, file_ ).centerOnWidget( window() ).exec() );
+    FileModifiedDialog dialog( this, file() );
+    dialog.centerOnParent();
+    auto state( dialog.exec() );
 
     // restore check
     _setIgnoreWarnings( false );
@@ -655,7 +659,8 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( bool enableAll )
 
     AskForSaveDialog dialog( this, file_, flags );
     dialog.setWindowTitle( tr( "Save Files - Qedit" ) );
-    int state( dialog.centerOnParent().exec() );
+    dialog.centerOnParent();
+    int state( dialog.exec() );
     if( state == AskForSaveDialog::Yes ||  state == AskForSaveDialog::YesToAll ) save();
     else if( state == AskForSaveDialog::No ||  state == AskForSaveDialog::NoToAll ) setModified( false );
 
@@ -871,7 +876,10 @@ void TextDisplay::_setTextEncoding( const QByteArray& value )
             auto buffer = tr(
                 "Changing text encoding requires that the current document is reloaded.\n"
                 "Discard changes to file '%1' ?" ).arg( file_.localName() );
-            if( !QuestionDialog( this, buffer ).setWindowTitle( tr( "Reload Document - Qedit" ) ).exec() ) return;
+            QuestionDialog dialog( this, buffer );
+            dialog.setWindowTitle( tr( "Reload Document - Qedit" ) );
+            dialog.centerOnParent();
+            if( !dialog.exec() ) return;
 
         }
 
@@ -2440,7 +2448,8 @@ void TextDisplay::_fileProperties( void )
     dialog.tabWidget().addTab( box, "Information" );
 
     // execute dialog
-    dialog.centerOnWidget( window() ).exec();
+    dialog.centerOnParent();
+    dialog.exec();
 
 }
 

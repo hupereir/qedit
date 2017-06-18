@@ -50,7 +50,7 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     explicit TextHighlight( QTextDocument* );
 
     //* highlight paragraph
-    virtual void highlightBlock( const QString& text );
+    void highlightBlock( const QString& ) override;
 
     //* retrieve highlight location for given text
     PatternLocationSet locationSet( const QString& text, int activeId );

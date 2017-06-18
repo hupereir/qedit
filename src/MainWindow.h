@@ -350,26 +350,26 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     //@{
 
     //* find text from dialog
-    virtual void findFromDialog( void );
+    void findFromDialog( void );
 
     //* replace text from dialog
-    virtual void replaceFromDialog( void );
+    void replaceFromDialog( void );
 
     //* select line from dialog
-    virtual void selectLineFromDialog( void );
+    void selectLineFromDialog( void );
 
     //@}
 
     protected:
 
     //* generic event
-    virtual bool event( QEvent* );
+    bool event( QEvent* ) override;
 
     //* close event
-    virtual void closeEvent( QCloseEvent* );
+    void closeEvent( QCloseEvent* ) override;
 
     //* timer event
-    virtual void timerEvent( QTimerEvent* );
+    void timerEvent( QTimerEvent* ) override;
 
     private Q_SLOTS:
 

@@ -378,7 +378,13 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
     if( !counts ) what << "string not found.";
     else if( counts == 1 ) what << "1 replacement performed";
     else what << counts << " replacements performed";
-    InformationDialog( &_activeWindow(), buffer ).setWindowTitle( "Replace in Text - Qedit" ).centerOnWidget( qApp->activeWindow() ).exec();
+
+    {
+        InformationDialog dialog( &_activeWindow(), buffer );
+        dialog.setWindowTitle( "Replace in Text - Qedit" );
+        dialog.centerOnWidget( qApp->activeWindow() );
+        dialog.exec();
+    }
 
     return;
 }

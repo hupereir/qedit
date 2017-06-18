@@ -55,7 +55,7 @@ class FileSystemModel: public ListModel<FileRecord>, private Base::Counter<FileS
     //@{
 
     //* flags
-    virtual Qt::ItemFlags flags( const QModelIndex& ) const;
+    Qt::ItemFlags flags( const QModelIndex& ) const override;
 
     // return data for a given index
     QVariant data( const QModelIndex&, int ) const override;
@@ -68,7 +68,7 @@ class FileSystemModel: public ListModel<FileRecord>, private Base::Counter<FileS
     { return columnTitles_.size(); }
 
     //* mime data
-    virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
+    QMimeData* mimeData(const QModelIndexList &indexes) const override;
 
     //@}
 

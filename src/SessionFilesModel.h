@@ -40,19 +40,19 @@ class SessionFilesModel: public FileRecordModel
     //@{
 
     //* flags
-    virtual Qt::ItemFlags flags(const QModelIndex& ) const;
+    Qt::ItemFlags flags(const QModelIndex& ) const override;
 
     //* return data for a given index
-    virtual QVariant data(const QModelIndex &, int ) const;
+    QVariant data(const QModelIndex &, int ) const override;
 
     //* mime type
-    virtual QStringList mimeTypes( void ) const;
+    QStringList mimeTypes( void ) const override;
 
     //* mime data
-    virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
+    QMimeData* mimeData(const QModelIndexList &indexes) const override;
 
     //* drop mine data
-    virtual bool dropMimeData(const QMimeData*, Qt::DropAction, int row, int column, const QModelIndex&);
+    bool dropMimeData(const QMimeData*, Qt::DropAction, int row, int column, const QModelIndex&) override;
 
     //@}
 

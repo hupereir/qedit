@@ -114,7 +114,7 @@ class TextDisplay: public TextEditor
 
     //* number of block associated to argument
     /** reimplemented from base class to account for collapsed blocks */
-    virtual int blockCount( const QTextBlock& ) const;
+    int blockCount( const QTextBlock& ) const override;
 
     // true if widget is to be deleted
     bool isClosed( void ) const
@@ -129,26 +129,26 @@ class TextDisplay: public TextEditor
     { return useCompression_; }
 
     //* file
-    File file( void ) const
+    const File& file( void ) const
     { return file_; }
 
     //* working directory
-    File workingDirectory() const
+    const File& workingDirectory() const
     { return workingDirectory_; }
 
     //* last saved time stamp
-    TimeStamp lastSaved( void ) const
+    const TimeStamp& lastSaved( void ) const
     { return lastSaved_; }
 
     //* file check data
-    FileCheck::Data fileCheckData( void ) const
+    const FileCheck::Data& fileCheckData( void ) const
     { return fileCheckData_; }
 
     //* class name
-    QString className( void ) const
+    const QString& className( void ) const
     { return className_; }
 
-    QByteArray textEncoding( void ) const
+    const QByteArray& textEncoding( void ) const
     { return textEncoding_; }
 
     //* list of macros
@@ -171,19 +171,14 @@ class TextDisplay: public TextEditor
     bool hasLeadingTabs( void ) const;
 
     //* convert to plain text
-    /**
-    This method makes sure that full text is obtained even when some blocks are collapsed.
-    this should be an overloaded function, but the base class method is not virtual
-    however, it is never called via a pointer to the base class, so that it should be fine.
-    */
     QString toPlainText( void ) const;
 
     // return true if block is an empty line
-    virtual bool isEmptyBlock( const QTextBlock& block ) const
+    bool isEmptyBlock( const QTextBlock& block ) const override
     { return _emptyLineRegExp().indexIn( block.text() ) >= 0; }
 
     //* return true is block is to be ignored from indentation scheme
-    virtual bool ignoreBlock( const QTextBlock& block ) const;
+    bool ignoreBlock( const QTextBlock& block ) const override;
 
     //* true if current blocks (or selection) has tag
     bool isCurrentBlockTagged( void ) const;
@@ -198,19 +193,19 @@ class TextDisplay: public TextEditor
 
     //* clone display configuration and document
     using TextEditor::synchronize;
-    virtual void synchronize( TextDisplay* );
+    void synchronize( TextDisplay* );
 
     //* check if current entry has been modified or not
     void setModified( bool value = true );
 
     //* read-only
-    virtual void setReadOnly( bool value );
+    void setReadOnly( bool ) override;
 
     //* install actions in context menu
-    virtual void installContextMenuActions( BaseContextMenu* menu, bool = true );
+    void installContextMenuActions( BaseContextMenu* menu, bool = true ) override;
 
     //* draw margins
-    virtual void paintMargin( QPainter& );
+    void paintMargin( QPainter& ) override;
 
     //* update flags (to be passed to TextEditor to change button status)
     enum UpdateFlag
@@ -468,20 +463,20 @@ class TextDisplay: public TextEditor
     //@{
 
     //* generic event
-    virtual bool event( QEvent* );
+    bool event( QEvent* ) override;
 
     //* keypress event [overloaded]
-    virtual void keyPressEvent( QKeyEvent* );
+    void keyPressEvent( QKeyEvent* ) override;
 
     //* context menu event [overloaded]
-    virtual void contextMenuEvent( QContextMenuEvent* );
+    void contextMenuEvent( QContextMenuEvent* ) override;
 
     //* paint event
-    virtual void paintEvent( QPaintEvent* );
+    void paintEvent( QPaintEvent* ) override;
 
     //* raise autospell context menu
     /** returns true if autospell context menu is used */
-    virtual bool _autoSpellContextEvent( QContextMenuEvent* );
+    bool _autoSpellContextEvent( QContextMenuEvent* );
 
     //@}
 
@@ -549,12 +544,12 @@ class TextDisplay: public TextEditor
     void _updateTaggedBlocks( void );
 
     //* update margins
-    virtual bool _updateMargin( void );
+    bool _updateMargin( void ) override;
 
     protected Q_SLOTS:
 
     /** returns true if changed */
-    virtual bool _toggleWrapMode( bool );
+    bool _toggleWrapMode( bool ) override;
 
     private Q_SLOTS:
 
@@ -619,7 +614,7 @@ class TextDisplay: public TextEditor
     void _setBlockModified( int, int, int );
 
     //* update action status
-    virtual void _updateSelectionActions( bool state )
+    void _updateSelectionActions( bool state ) override
     {
         TextEditor::_updateSelectionActions( state );
         emit needUpdate( UpdateFlags( Cut|Copy ) );
@@ -627,14 +622,14 @@ class TextDisplay: public TextEditor
 
     //* update paste action
     /** depends on clipboard status and editability */
-    virtual void _updatePasteAction( void )
+    void _updatePasteAction( void ) override
     {
         TextEditor::_updatePasteAction();
         emit needUpdate( Paste );
     }
 
     //* text changed
-    virtual void _textModified( void );
+    void _textModified( void );
 
     //* ignore current misspelled word
     /** this method does nothing if not compiled against aspell */

@@ -52,7 +52,7 @@ class AutoSave: public QObject, private Base::Counter<AutoSave>
 
     protected:
 
-    virtual void timerEvent( QTimerEvent* );
+    void timerEvent( QTimerEvent* ) override;
 
     private Q_SLOTS:
 

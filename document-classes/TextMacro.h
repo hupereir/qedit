@@ -83,19 +83,19 @@ class TextMacro: private Base::Counter<TextMacro>
     { idCounter_ = 0; }
 
     //* name
-    virtual const QString& name( void ) const
+    const QString& name( void ) const
     { return name_; }
 
     //* name
-    virtual void setName( const QString& name )
+    void setName( const QString& name )
     { name_ = name; }
 
     //* accelerator
-    virtual const QString& accelerator( void ) const
+    const QString& accelerator( void ) const
     { return accelerator_; }
 
     //* accelerator
-    virtual void setAccelerator( const QString& value )
+    void setAccelerator( const QString& value )
     { accelerator_ = value; }
 
     //* separator flag
@@ -103,7 +103,7 @@ class TextMacro: private Base::Counter<TextMacro>
     { return isSeparator_; }
 
     //* separator
-    virtual void setIsSeparator( bool value = true )
+    void setIsSeparator( bool value = true )
     { isSeparator_ = value; }
 
     //* automatic flag
@@ -111,7 +111,7 @@ class TextMacro: private Base::Counter<TextMacro>
     { return isAutomatic_; }
 
     //* automatic
-    virtual void setIsAutomatic( bool value = true )
+    void setIsAutomatic( bool value = true )
     { isAutomatic_ = value; }
 
     //* result class
@@ -222,15 +222,15 @@ class TextMacro: private Base::Counter<TextMacro>
         { return pattern_; }
 
         //* parent name
-        virtual void setPattern( const QString& pattern )
+        void setPattern( const QString& pattern )
         { pattern_.setPattern( pattern ); }
 
         //* replacemenet text
-        virtual const QString& replaceText( void ) const
+        const QString& replaceText( void ) const
         { return replace_text_; }
 
         //* set replacement text
-        virtual void setReplaceText( const QString& text )
+        void setReplaceText( const QString& text )
         { replace_text_ = text; }
 
         bool split() const

@@ -435,7 +435,8 @@ void FileSystemFrame::_rename( void )
     if( record.hasFlag( BaseFileInfo::Navigator ) ) return;
     RenameFileDialog dialog( this, record );
     dialog.setWindowTitle( tr( "Rename Item - Qedit" ) );
-    if( !dialog.centerOnWidget( window() ).exec() ) return;
+    dialog.centerOnWidget( window() );
+    if( !dialog.exec() ) return;
 
     File newFile( dialog.file() );
     if( newFile == record.file() ) return;
@@ -464,7 +465,8 @@ void FileSystemFrame::_fileProperties( void )
 
     FileInformationDialog dialog( this, record );
     dialog.setIcon( icon );
-    dialog.centerOnWidget( window() ).exec();
+    dialog.centerOnWidget( window() );
+    dialog.exec();
 
 }
 

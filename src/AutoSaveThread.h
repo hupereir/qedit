@@ -86,7 +86,7 @@ class AutoSaveThread: public QThread, public Base::Key, private Base::Counter<Au
     protected:
 
     //* generate a new grid. Post a AutoSaveEvent when finished
-    virtual void run( void );
+    void run( void ) override;
 
     private:
 

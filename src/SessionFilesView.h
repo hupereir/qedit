@@ -44,7 +44,7 @@ class SessionFilesView: public TreeView
     protected:
 
     //* start drag
-    virtual void startDrag( Qt::DropActions );
+    void startDrag( Qt::DropActions ) override;
 
     //* render to pixmap
     QPixmap _renderToPixmap( const QModelIndexList&, QRect& ) const;

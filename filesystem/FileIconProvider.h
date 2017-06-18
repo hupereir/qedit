@@ -41,7 +41,7 @@ class FileIconProvider : public BaseFileIconProvider
 
     //* icon matching given model index
     using BaseFileIconProvider::icon;
-    virtual const QIcon& icon( const FileRecord& );
+    const QIcon& icon( const FileRecord& );
 
     private:
 
