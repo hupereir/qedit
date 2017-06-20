@@ -101,22 +101,22 @@ Menu::Menu( QWidget* parent ):
     // windows
     windowsActionGroup_ = new ActionGroup( this );
     addMenu( windowsMenu_ = new CustomMenu( tr( "Session" ), this ) );
-    connect( windowsMenu_, SIGNAL(aboutToShow()), this, SLOT(_updateWindowsMenu()) );
+    connect( windowsMenu_, SIGNAL(aboutToShow()), SLOT(_updateWindowsMenu()) );
     connect( windowsMenu_, SIGNAL(triggered(QAction*)), SLOT(_selectFile(QAction*)) );
 
     // tools
     toolsMenu_ = addMenu( tr( "Tools" ) );
-    connect( toolsMenu_, SIGNAL(aboutToShow()), this, SLOT(_updateToolsMenu()) );
+    connect( toolsMenu_, SIGNAL(aboutToShow()), SLOT(_updateToolsMenu()) );
 
     // macros
     addMenu( macroMenu_ = new TextMacroMenu( this ) );
     macroMenu_->setTitle( tr( "Macros" ) );
-    connect( macroMenu_, SIGNAL(aboutToShow()), this, SLOT(updateMacroMenu()) );
+    connect( macroMenu_, SIGNAL(aboutToShow()), SLOT(updateMacroMenu()) );
     connect( macroMenu_, SIGNAL(textMacroSelected(QString)), SLOT(_selectMacro(QString)) );
 
     // Settings
     preferenceMenu_ = addMenu( tr( "Settings" ) );
-    connect( preferenceMenu_, SIGNAL(aboutToShow()), this, SLOT(_updatePreferenceMenu()) );
+    connect( preferenceMenu_, SIGNAL(aboutToShow()), SLOT(_updatePreferenceMenu()) );
 
     // help manager
     Base::HelpManager* help( new Base::HelpManager( this ) );

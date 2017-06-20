@@ -97,7 +97,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     // menu
     setMenuBar( menu_ = new Menu( this ) );
-    connect( &menu().documentClassMenu(), SIGNAL(documentClassSelected(QString)), this, SLOT(selectClassName(QString)) );
+    connect( &menu().documentClassMenu(), SIGNAL(documentClassSelected(QString)), SLOT(selectClassName(QString)) );
 
     // main widget is a splitter to store navigation window and active view
     QSplitter* splitter = new QSplitter( this );
@@ -943,7 +943,7 @@ void MainWindow::_installToolbars( void )
 
     // document class toolbar
     documentClassToolBar_ = new DocumentClassToolBar( this );
-    connect( documentClassToolBar_, SIGNAL(documentClassSelected(QString)), this, SLOT(selectClassName(QString)) );
+    connect( documentClassToolBar_, SIGNAL(documentClassSelected(QString)), SLOT(selectClassName(QString)) );
 
     // navigation toolbar
     auto navigationToolbar = new NavigationToolBar( this );
@@ -965,7 +965,7 @@ void MainWindow::_createFindWidget( void )
         connect( findWidget_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
         connect( this, SIGNAL(matchFound()), findWidget_, SLOT(matchFound()) );
         connect( this, SIGNAL(noMatchFound()), findWidget_, SLOT(noMatchFound()) );
-        connect( &findWidget_->closeButton(), SIGNAL(clicked()), this, SLOT(_restoreFocus()) );
+        connect( &findWidget_->closeButton(), SIGNAL(clicked()), SLOT(_restoreFocus()) );
         findWidget_->hide();
 
     }
@@ -989,7 +989,7 @@ void MainWindow::_createReplaceWidget( void )
         connect( replaceWidget_, SIGNAL(replaceInSelection(TextSelection)), SLOT(_replaceInSelection(TextSelection)) );
         connect( replaceWidget_, SIGNAL(replaceInFiles()), SLOT(_multipleFileReplace()) );
         connect( replaceWidget_, SIGNAL(menuAboutToShow()), SLOT(_updateReplaceInSelection()) );
-        connect( &replaceWidget_->closeButton(), SIGNAL(clicked()), this, SLOT(_restoreFocus()) );
+        connect( &replaceWidget_->closeButton(), SIGNAL(clicked()), SLOT(_restoreFocus()) );
         replaceWidget_->hide();
 
         connect( this, SIGNAL(matchFound()), replaceWidget_, SLOT(matchFound()) );
@@ -1009,7 +1009,7 @@ void MainWindow::_createSelectLineWidget( void )
         connect( selectLineWidget_, SIGNAL(lineSelected(int)), SLOT(_selectLine(int)) );
         connect( this, SIGNAL(lineFound()), selectLineWidget_, SLOT(matchFound()) );
         connect( this, SIGNAL(lineNotFound()), selectLineWidget_, SLOT(noMatchFound()) );
-        connect( &selectLineWidget_->closeButton(), SIGNAL(clicked()), this, SLOT(_restoreFocus()) );
+        connect( &selectLineWidget_->closeButton(), SIGNAL(clicked()), SLOT(_restoreFocus()) );
         selectLineWidget_->hide();
     }
 }

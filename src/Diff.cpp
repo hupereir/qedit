@@ -35,7 +35,7 @@ Diff::Diff( QObject* parent ):
     process_( this )
 {
     Debug::Throw( "Diff::Diff\n" );
-    connect( &process_, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(_parseOutput(int,QProcess::ExitStatus)) );
+    connect( &process_, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(_parseOutput(int,QProcess::ExitStatus)) );
 }
 
 //_________________________________________________________________
