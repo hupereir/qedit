@@ -92,7 +92,7 @@ File AutoSaveThread::autoSaveName( const File& file )
 }
 
 //_______________________________________________________________
-void AutoSaveThread::run( void )
+void AutoSaveThread::run()
 {
 
     if( flags_ )

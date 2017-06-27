@@ -25,7 +25,7 @@
 const QString NewDocumentNameServer::defaultName_ = QObject::tr( "New Document" );
 
 //______________________________________
-QString NewDocumentNameServer::get( void )
+QString NewDocumentNameServer::get()
 {
 
     int version( versions_.empty() ? 0: versions_.back()+1 );

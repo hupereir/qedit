@@ -53,15 +53,15 @@ class ParenthesisHighlight: public QObject, private Base::Counter<ParenthesisHig
     { enabled_ = value; }
 
     //* enable/disable
-    bool isEnabled( void ) const
+    bool isEnabled() const
     { return enabled_; }
 
     //* synchronize
     void synchronize( const ParenthesisHighlight& );
 
     //* clear highlighted block
-    //void clear( void );
-    QList<QTextBlock> clear( void );
+    //void clear();
+    QList<QTextBlock> clear();
 
     //* highlight current (absolute) location
     void highlight( int, int );
@@ -69,7 +69,7 @@ class ParenthesisHighlight: public QObject, private Base::Counter<ParenthesisHig
     protected:
 
     //* highlight
-    void _highlight( void );
+    void _highlight();
 
     private:
 

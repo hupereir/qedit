@@ -22,7 +22,7 @@
 #include <algorithm>
 
 //____________________________________________________________
-HighlightBlockData::HighlightBlockData( void ):
+HighlightBlockData::HighlightBlockData():
     TextBlockData(),
     parenthesis_( -1 ),
     parenthesisLength_(0)

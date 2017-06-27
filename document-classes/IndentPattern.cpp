@@ -22,14 +22,14 @@
 #include "XmlString.h"
 
 //___________________________________________________________________________
-int& IndentPattern::_counter( void )
+int& IndentPattern::_counter()
 {
     static int counter( 0 );
     return counter;
 }
 
 //_____________________________________________________
-IndentPattern::IndentPattern( void ):
+IndentPattern::IndentPattern():
     Counter( "IndentPattern" )
 {}
 

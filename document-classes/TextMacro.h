@@ -30,7 +30,7 @@
 #include <QList>
 
 //* Text modification macro
-class TextMacro: private Base::Counter<TextMacro>
+class TextMacro final: private Base::Counter<TextMacro>
 {
 
     public:
@@ -40,7 +40,7 @@ class TextMacro: private Base::Counter<TextMacro>
     using ListIterator = QListIterator< TextMacro >;
 
     //* constructor
-    explicit TextMacro( void ): Counter( "TextMacro" )
+    explicit TextMacro(): Counter( "TextMacro" )
     {}
 
     //* constructor from DomElement
@@ -50,7 +50,7 @@ class TextMacro: private Base::Counter<TextMacro>
     QDomElement domElement( QDomDocument& parent ) const;
 
     //* Id
-    int id( void ) const
+    int id() const
     { return id_; }
 
     //* set id
@@ -79,11 +79,11 @@ class TextMacro: private Base::Counter<TextMacro>
     };
 
     //* reset counter
-    static void resetCounter( void )
+    static void resetCounter()
     { idCounter_ = 0; }
 
     //* name
-    const QString& name( void ) const
+    const QString& name() const
     { return name_; }
 
     //* name
@@ -91,7 +91,7 @@ class TextMacro: private Base::Counter<TextMacro>
     { name_ = name; }
 
     //* accelerator
-    const QString& accelerator( void ) const
+    const QString& accelerator() const
     { return accelerator_; }
 
     //* accelerator
@@ -99,7 +99,7 @@ class TextMacro: private Base::Counter<TextMacro>
     { accelerator_ = value; }
 
     //* separator flag
-    bool isSeparator( void ) const
+    bool isSeparator() const
     { return isSeparator_; }
 
     //* separator
@@ -107,7 +107,7 @@ class TextMacro: private Base::Counter<TextMacro>
     { isSeparator_ = value; }
 
     //* automatic flag
-    bool isAutomatic( void ) const
+    bool isAutomatic() const
     { return isAutomatic_; }
 
     //* automatic
@@ -143,7 +143,7 @@ class TextMacro: private Base::Counter<TextMacro>
     Result processText( QString& text, int position = -1 ) const;
 
     //* modify text passed as argument. Return true if text is modified
-    bool isValid( void ) const
+    bool isValid() const
     {
         if( isSeparator() ) return true;
         if( rules_.empty() ) return false;
@@ -175,10 +175,10 @@ class TextMacro: private Base::Counter<TextMacro>
     };
 
     //* return action
-    QAction* action( void ) const;
+    QAction* action() const;
 
     //* used to store regular expression and corresponding replacement text
-    class Rule: private Base::Counter<Rule>
+    class Rule final: private Base::Counter<Rule>
     {
 
         public:
@@ -211,14 +211,14 @@ class TextMacro: private Base::Counter<TextMacro>
         }
 
         //* validity
-        bool isValid( void ) const
+        bool isValid() const
         { return pattern_.isValid(); }
 
         //* modify text passed as argument. Return number of changed characters
         Result processText( QString& text, int position ) const;
 
         //* pattern
-        const QRegExp& pattern( void ) const
+        const QRegExp& pattern() const
         { return pattern_; }
 
         //* parent name
@@ -226,7 +226,7 @@ class TextMacro: private Base::Counter<TextMacro>
         { pattern_.setPattern( pattern ); }
 
         //* replacemenet text
-        const QString& replaceText( void ) const
+        const QString& replaceText() const
         { return replace_text_; }
 
         //* set replacement text
@@ -269,7 +269,7 @@ class TextMacro: private Base::Counter<TextMacro>
     };
 
     //* rules
-    const Rule::List& rules( void ) const
+    const Rule::List& rules() const
     { return rules_; }
 
     //* rules

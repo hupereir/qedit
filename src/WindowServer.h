@@ -47,7 +47,7 @@ class WindowServer: public QObject, private Base::Counter<WindowServer>, public 
     explicit WindowServer( QObject* = nullptr );
 
     //* create new empty main window
-    MainWindow& newMainWindow( void );
+    MainWindow& newMainWindow();
 
     enum Flag
     {
@@ -64,7 +64,7 @@ class WindowServer: public QObject, private Base::Counter<WindowServer>, public 
 
     //* close all windows gracefully
     /** returns false if the opperation was cancelled. */
-    bool closeAll( void );
+    bool closeAll();
 
     //* read file from arguments and open relevant windows
     void readFilesFromArguments( const CommandLineParser& );
@@ -76,7 +76,7 @@ class WindowServer: public QObject, private Base::Counter<WindowServer>, public 
     //@{
 
     //* save all
-    QAction& saveAllAction( void ) const
+    QAction& saveAllAction() const
     { return *saveAllAction_; }
 
     //@}
@@ -105,24 +105,24 @@ class WindowServer: public QObject, private Base::Counter<WindowServer>, public 
     Q_SIGNALS:
 
     //* emitted whenever the session file list is modified
-    void sessionFilesChanged( void );
+    void sessionFilesChanged();
 
     private Q_SLOTS:
 
     //* update configuration
-    void _updateConfiguration( void );
+    void _updateConfiguration();
 
     //* active window changed
     void _activeWindowChanged( MainWindow* );
 
     //* update actions
-    void _updateActions( void );
+    void _updateActions();
 
     //*@ new file methods
     //@{
 
     //* new file
-    void _newFile( void )
+    void _newFile()
     { _newFile( openMode_ ); }
 
     //* new file
@@ -134,7 +134,7 @@ class WindowServer: public QObject, private Base::Counter<WindowServer>, public 
     //@{
 
     //* from dialog
-    bool _open( void )
+    bool _open()
     { return _open( _selectFileFromDialog() ); }
 
     //* open file
@@ -154,18 +154,18 @@ class WindowServer: public QObject, private Base::Counter<WindowServer>, public 
     { return _open( record, defaultOrientation( Normal ) ); }
 
     //* open in active view
-    bool _openHorizontal( void )
+    bool _openHorizontal()
     { return _open( _selectFileFromDialog(), Qt::Vertical ); }
 
     //* open in active view
-    bool _openVertical( void )
+    bool _openVertical()
     { return _open( _selectFileFromDialog(), Qt::Horizontal ); }
 
     //@}
 
     //* detach
     /** this closes the active view and opens it in a separate window */
-    void _detach( void );
+    void _detach();
 
     //* detach
     /** this closes the active view and opens it in a separate window */
@@ -186,7 +186,7 @@ class WindowServer: public QObject, private Base::Counter<WindowServer>, public 
     void _reparentToMain( const File&, const File& );
 
     //* save all edited files
-    void _saveAll( void );
+    void _saveAll();
 
     //* save selected file
     void _save( FileRecord::List );
@@ -219,7 +219,7 @@ class WindowServer: public QObject, private Base::Counter<WindowServer>, public 
 
     //* select file record from dialog
     /** return empty record if no file is opened or file is directory */
-    FileRecord _selectFileFromDialog( void );
+    FileRecord _selectFileFromDialog();
 
     //* returns true if new file should be created
     bool _createNewFile( const FileRecord& );
@@ -234,14 +234,14 @@ class WindowServer: public QObject, private Base::Counter<WindowServer>, public 
     void _setActiveWindow( MainWindow& );
 
     //* true when active window is valid
-    bool _hasActiveWindow( void ) const;
+    bool _hasActiveWindow() const;
 
     //* active window
-    MainWindow& _activeWindow( void )
+    MainWindow& _activeWindow()
     { return *activeWindow_; }
 
     //* active window
-    const MainWindow& _activeWindow( void ) const
+    const MainWindow& _activeWindow() const
     { return *activeWindow_; }
 
     //* default orientation for split tabs

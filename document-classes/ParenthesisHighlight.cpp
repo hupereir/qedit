@@ -31,7 +31,7 @@ ParenthesisHighlight::ParenthesisHighlight( TextEditor* parent ):
 { Debug::Throw( "ParenthesisHighlight::ParenthesisHighlight.\n" ); }
 
 //______________________________________________________________________
-QList<QTextBlock> ParenthesisHighlight::clear( void )
+QList<QTextBlock> ParenthesisHighlight::clear()
 {
 
     QList<QTextBlock> dirty;
@@ -86,7 +86,7 @@ void ParenthesisHighlight::highlight( int location, int length )
 }
 
 //______________________________________________________________________
-void ParenthesisHighlight::_highlight( void )
+void ParenthesisHighlight::_highlight()
 {
 
     // retrieve block matching location

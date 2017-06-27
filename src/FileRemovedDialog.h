@@ -50,19 +50,19 @@ class FileRemovedDialog: public BaseDialog, private Base::Counter<FileRemovedDia
     private Q_SLOTS:
 
     //* re-saved removed file
-    void _reSave( void )
+    void _reSave()
     { done( SaveAgain ); }
 
     //* save file with new name
-    void _saveAs( void )
+    void _saveAs()
     { done( SaveAs ); }
 
     //* close current editor
-    void _close( void )
+    void _close()
     { done( Close ); }
 
     //* ignore warning
-    void _ignore( void )
+    void _ignore()
     { done( Ignore ); }
 
 };

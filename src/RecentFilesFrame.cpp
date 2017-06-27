@@ -109,7 +109,7 @@ void RecentFilesFrame::select( const File& file )
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::update( void )
+void RecentFilesFrame::update()
 {
 
     Debug::Throw( "RecentFilesFrame:update.\n" );
@@ -143,7 +143,7 @@ void RecentFilesFrame::enterEvent( QEvent* e )
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_updateActions( void )
+void RecentFilesFrame::_updateActions()
 {
     Debug::Throw( "RecentFilesFrame:_updateActions.\n" );
     FileRecordModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
@@ -184,7 +184,7 @@ void RecentFilesFrame::_showToolTip( const QModelIndex& index )
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_clean( void )
+void RecentFilesFrame::_clean()
 {
 
     Debug::Throw( "RecentFilesFrame:_clean.\n" );
@@ -195,7 +195,7 @@ void RecentFilesFrame::_clean( void )
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_open( void )
+void RecentFilesFrame::_open()
 {
 
     Debug::Throw( "RecentFilesFrame:_open.\n" );
@@ -227,7 +227,7 @@ void RecentFilesFrame::_itemActivated( const QModelIndex& index )
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_installActions( void )
+void RecentFilesFrame::_installActions()
 {
 
     Debug::Throw( "RecentFilesFrame::_installActions.\n" );

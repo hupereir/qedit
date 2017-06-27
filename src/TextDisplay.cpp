@@ -74,14 +74,14 @@
 #include <QTextLayout>
 
 //___________________________________________________
-NewDocumentNameServer& TextDisplay::newDocumentNameServer( void )
+NewDocumentNameServer& TextDisplay::newDocumentNameServer()
 {
     static NewDocumentNameServer server;
     return server;
 }
 
 //___________________________________________________
-QRegExp& TextDisplay::_emptyLineRegExp( void )
+QRegExp& TextDisplay::_emptyLineRegExp()
 {
     static QRegExp regexp( "(^\\s*$)" );
     return regexp;
@@ -146,9 +146,9 @@ TextDisplay::TextDisplay( QWidget* parent ):
     connect( TextDisplay::document(), SIGNAL(modificationChanged(bool)), SLOT(_textModified()) );
 
     // track configuration modifications
-    connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
-    connect( Singleton::get().application(), SIGNAL(spellCheckConfigurationChanged()), SLOT(_updateSpellCheckConfiguration()) );
-    connect( Singleton::get().application(), SIGNAL(documentClassesChanged()), SLOT(updateDocumentClass()) );
+    connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
+    connect( Base::Singleton::get().application(), SIGNAL(spellCheckConfigurationChanged()), SLOT(_updateSpellCheckConfiguration()) );
+    connect( Base::Singleton::get().application(), SIGNAL(documentClassesChanged()), SLOT(updateDocumentClass()) );
     _updateConfiguration();
     _updateSpellCheckConfiguration();
 
@@ -157,12 +157,12 @@ TextDisplay::TextDisplay( QWidget* parent ):
 }
 
 //_____________________________________________________
-TextDisplay::~TextDisplay( void )
+TextDisplay::~TextDisplay()
 {
 
     Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl;
     if( !( isNewDocument() || file_.isEmpty() ) && Base::KeySet<TextDisplay>( this ).empty() )
-    { Singleton::get().application<Application>()->fileCheck().removeFile( file_ ); }
+    { Base::Singleton::get().application<Application>()->fileCheck().removeFile( file_ ); }
 
 }
 
@@ -323,7 +323,7 @@ void TextDisplay::synchronize( TextDisplay* other )
 }
 
 //____________________________________________
-void TextDisplay::setIsNewDocument( void )
+void TextDisplay::setIsNewDocument()
 {
 
     Debug::Throw( "TextDisplay::setIsNewDocument.\n" );
@@ -358,7 +358,7 @@ void TextDisplay::setIsNewDocument( void )
     Debug::Throw( "TextDisplay::setIsNewDocument - filename set.\n" );
 
     // perform first autosave
-    auto application( Singleton::get().application<Application>() );
+    auto application( Base::Singleton::get().application<Application>() );
     application->autoSave().saveFiles( this );
     Debug::Throw( "TextDisplay::setIsNewDocument - done.\n" );
 
@@ -467,7 +467,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
     if( restoreAutoSave && !isReadOnly() ) save();
 
     // perform first autosave
-    auto application( Singleton::get().application<Application>() );
+    auto application( Base::Singleton::get().application<Application>() );
     application->autoSave().saveFiles( this );
     Debug::Throw( "TextDisplay::setFile - done.\n" );
 
@@ -488,7 +488,7 @@ void TextDisplay::_setFile( const File& file )
         _setIgnoreWarnings( false );
 
         // add file to file check
-        Singleton::get().application<Application>()->fileCheck().addFile( file );
+        Base::Singleton::get().application<Application>()->fileCheck().addFile( file );
 
     }
 
@@ -501,7 +501,7 @@ void TextDisplay::_setFile( const File& file )
 }
 
 //___________________________________________________________________________
-FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
+FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved()
 {
     Debug::Throw() << "TextDisplay::checkFileRemoved - " << file_ << endl;
 
@@ -556,7 +556,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved( void )
 
 
 //___________________________________________________________________________
-FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
+FileModifiedDialog::ReturnCode TextDisplay::checkFileModified()
 {
     Debug::Throw() << "TextDisplay::checkFileModified - " << file_ << endl;
 
@@ -609,14 +609,14 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified( void )
 }
 
 //___________________________________________________________________________
-void TextDisplay::checkFileReadOnly( void )
+void TextDisplay::checkFileReadOnly()
 {
     Debug::Throw( "TextDisplay::checkFileReadOnly.\n" );
     setReadOnly( file_.exists() && !file_.isWritable() );
 }
 
 //____________________________________________
-void TextDisplay::clearFileCheckData( void )
+void TextDisplay::clearFileCheckData()
 {
 
     Debug::Throw( "TextDisplay::clearFileCheckData.\n" );
@@ -670,7 +670,7 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( bool enableAll )
 
 
 //___________________________________________________________________________
-void TextDisplay::save( void )
+void TextDisplay::save()
 {
     Debug::Throw( "TextDisplay::save.\n" );
 
@@ -730,7 +730,7 @@ void TextDisplay::save( void )
 
     // re-add to file checker
     if( !file_.isEmpty() )
-    { Singleton::get().application<Application>()->fileCheck().addFile( file_ ); }
+    { Base::Singleton::get().application<Application>()->fileCheck().addFile( file_ ); }
 
 
     // retrieve associated displays, update saved time
@@ -746,7 +746,7 @@ void TextDisplay::save( void )
 }
 
 //___________________________________________________________________________
-void TextDisplay::saveAs( void )
+void TextDisplay::saveAs()
 {
     Debug::Throw( "TextDisplay::saveAs.\n" );
 
@@ -773,7 +773,7 @@ void TextDisplay::saveAs( void )
 
     // remove new document version from name server, and FileCheck, if needed
     if( isNewDocument() ) { NewDocumentNameServer().remove( file_ ); }
-    else if( !file_.isEmpty() ) { Singleton::get().application<Application>()->fileCheck().removeFile( file_ ); }
+    else if( !file_.isEmpty() ) { Base::Singleton::get().application<Application>()->fileCheck().removeFile( file_ ); }
 
     // update filename and document class for this and associates
     // the class name is reset, to allow a document class
@@ -806,7 +806,7 @@ void TextDisplay::saveAs( void )
 }
 
 //___________________________________________________________
-void TextDisplay::revertToSave( void )
+void TextDisplay::revertToSave()
 {
 
     Debug::Throw( "TextDisplay::revertToSave.\n" );
@@ -836,7 +836,7 @@ void TextDisplay::revertToSave( void )
 }
 
 //______________________________________________________________________________
-void TextDisplay::_textEncoding( void )
+void TextDisplay::_textEncoding()
 {
     TextEncodingDialog dialog( this );
     dialog.setWindowTitle( tr( "TextEncoding - Qedit" ) );
@@ -896,7 +896,7 @@ void TextDisplay::_setTextEncoding( const QByteArray& value )
 }
 
 //_______________________________________________________
-bool TextDisplay::hasLeadingTabs( void ) const
+bool TextDisplay::hasLeadingTabs() const
 {
     Debug::Throw( "TextDisplay::hasLeadingTabs.\n" );
 
@@ -910,7 +910,7 @@ bool TextDisplay::hasLeadingTabs( void ) const
 }
 
 //_______________________________________________________
-QString TextDisplay::toPlainText( void ) const
+QString TextDisplay::toPlainText() const
 {
 
     Debug::Throw( "TextDisplay::toPlainText.\n" );
@@ -1015,7 +1015,7 @@ void TextDisplay::clearTag( QTextBlock block, int tags )
 
 
 //_____________________________________________________________
-bool TextDisplay::isCurrentBlockTagged( void ) const
+bool TextDisplay::isCurrentBlockTagged() const
 {
 
     Debug::Throw( "TextDisplay::isCurrentBlockTagged.\n" );
@@ -1044,7 +1044,7 @@ bool TextDisplay::isCurrentBlockTagged( void ) const
 }
 
 //_____________________________________________________________
-bool TextDisplay::hasTaggedBlocks( void ) const
+bool TextDisplay::hasTaggedBlocks() const
 {
 
     Debug::Throw( "TextDisplay::hasTaggedBlocks.\n" );
@@ -1072,7 +1072,7 @@ void TextDisplay::_updateDocumentClass( File file, bool newDocument )
 
     // default document class is empty
     DocumentClass documentClass;
-    auto application( Singleton::get().application<Application>() );
+    auto application( Base::Singleton::get().application<Application>() );
 
     // try load document class from className
     if( !className().isEmpty() )
@@ -1196,7 +1196,7 @@ void TextDisplay::processMacro( QString name )
 }
 
 //_______________________________________________________
-void TextDisplay::rehighlight( void )
+void TextDisplay::rehighlight()
 {
     Debug::Throw( "TextDisplay::rehighlight.\n" );
 
@@ -1308,7 +1308,7 @@ void TextDisplay::selectClassName( QString name )
 }
 
 //_______________________________________________________
-void TextDisplay::setFocusDelayed( void )
+void TextDisplay::setFocusDelayed()
 { QMetaObject::invokeMethod( this, "setFocus", Qt::QueuedConnection ); }
 
 //_______________________________________________________
@@ -1461,7 +1461,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 }
 
 //_____________________________________________________________________
-void TextDisplay::_installActions( void )
+void TextDisplay::_installActions()
 {
 
     Debug::Throw( "TextDisplay::_installActions.\n" );
@@ -1580,11 +1580,11 @@ void TextDisplay::_installActions( void )
 }
 
 //_____________________________________________________________
-FileList& TextDisplay::_recentFiles( void ) const
-{ return Singleton::get().application<Application>()->recentFiles(); }
+FileList& TextDisplay::_recentFiles() const
+{ return Base::Singleton::get().application<Application>()->recentFiles(); }
 
 //_____________________________________________
-bool TextDisplay::_hasAutomaticMacros( void ) const
+bool TextDisplay::_hasAutomaticMacros() const
 { return std::find_if( macros().begin(), macros().end(), TextMacro::isAutomaticFTor() ) != macros().end(); }
 
 //_____________________________________________
@@ -1693,7 +1693,7 @@ void TextDisplay::_processMacro( const TextMacro& macro )
 }
 
 //_____________________________________________________________
-bool TextDisplay::_contentsChanged( void ) const
+bool TextDisplay::_contentsChanged() const
 {
 
     Debug::Throw( "TextDisplay::_contentsChanged.\n" );
@@ -1719,7 +1719,7 @@ bool TextDisplay::_contentsChanged( void ) const
 }
 
 //____________________________________________
-bool TextDisplay::_fileRemoved( void ) const
+bool TextDisplay::_fileRemoved() const
 {
     Debug::Throw() << "TextDisplay::_fileRemoved - " << file_ << endl;
 
@@ -1743,7 +1743,7 @@ bool TextDisplay::_fileRemoved( void ) const
 
         // file has been re-created in the meantime.
         // need to re-ad it to FileChecker
-        Singleton::get().application<Application>()->fileCheck().addFile( file_ );
+        Base::Singleton::get().application<Application>()->fileCheck().addFile( file_ );
         return false;
 
     }
@@ -1751,7 +1751,7 @@ bool TextDisplay::_fileRemoved( void ) const
 }
 
 //____________________________________________
-bool TextDisplay::_fileModified( void )
+bool TextDisplay::_fileModified()
 {
 
     Debug::Throw() << "TextDisplay::_fileModified - " << file_ << endl;
@@ -1791,7 +1791,7 @@ void TextDisplay::_setBlockModified( const QTextBlock& block )
 }
 
 //_____________________________________________________________
-void TextDisplay::_updateTaggedBlocks( void )
+void TextDisplay::_updateTaggedBlocks()
 {
 
     Debug::Throw( "TextDisplay::_updateTaggedBlocks.\n" );
@@ -1812,7 +1812,7 @@ void TextDisplay::_updateTaggedBlocks( void )
 }
 
 //___________________________________________________________________________
-bool TextDisplay::_updateMargin( void )
+bool TextDisplay::_updateMargin()
 {
     Debug::Throw( "TextDisplay::_updateMargin.\n" );
 
@@ -1842,7 +1842,7 @@ bool TextDisplay::_toggleWrapMode( bool state )
 }
 
 //___________________________________________________________________________
-void TextDisplay::_updateConfiguration( void )
+void TextDisplay::_updateConfiguration()
 {
     Debug::Throw( "TextDisplay::_updateConfiguration.\n" );
 
@@ -1953,7 +1953,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
 }
 
 //_______________________________________________________
-void TextDisplay::_indentCurrentParagraph( void )
+void TextDisplay::_indentCurrentParagraph()
 {
     Debug::Throw( "TextDisplay::_indentCurrentParagraph.\n" );
     if( !textIndent_->isEnabled() ) return;
@@ -2116,7 +2116,7 @@ void TextDisplay::_toggleIgnoreAutomaticMacros( bool state )
 }
 
 //_______________________________________________________
-void TextDisplay::_spellcheck( void )
+void TextDisplay::_spellcheck()
 {
     Debug::Throw( "TextDisplay::_spellcheck.\n" );
 
@@ -2169,7 +2169,7 @@ void TextDisplay::_spellcheck( void )
 }
 
 //_______________________________________________________
-void TextDisplay::_indentSelection( void )
+void TextDisplay::_indentSelection()
 {
     Debug::Throw( "TextDisplay::_indentSelection.\n" );
 
@@ -2199,7 +2199,7 @@ void TextDisplay::_indentSelection( void )
 }
 
 //_______________________________________________________
-void TextDisplay::_addBaseIndentation( void )
+void TextDisplay::_addBaseIndentation()
 {
     Debug::Throw( "TextDisplay::_addBaseIndentation.\n" );
 
@@ -2346,7 +2346,7 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
 
 
 //_______________________________________________________
-void TextDisplay::_fileProperties( void )
+void TextDisplay::_fileProperties()
 {
     Debug::Throw( "TextDisplay::_fileProperties.\n" );
     if( file_.isEmpty() || isNewDocument() ) return;
@@ -2432,7 +2432,7 @@ void TextDisplay::_fileProperties( void )
     // document class
     item = new GridLayoutItem( box, gridLayout, GridLayoutItem::Flag::Elide );
     item->setKey( "Document class file name:" );
-    auto documentClass( Singleton::get().application<Application>()->classManager().get( className() ) );
+    auto documentClass( Base::Singleton::get().application<Application>()->classManager().get( className() ) );
     item->setText( documentClass.file() );
 
     // also assign icon to dialog
@@ -2467,7 +2467,7 @@ void TextDisplay::_setBlockModified( int position, int, int added )
 }
 
 //__________________________________________________
-void TextDisplay::_textModified( void )
+void TextDisplay::_textModified()
 {
     Debug::Throw( "TextDisplay::_textModified.\n" );
 
@@ -2506,7 +2506,7 @@ void TextDisplay::_replaceMisspelledSelection( QString word )
 }
 
 //__________________________________________________
-void TextDisplay::_highlightParenthesis( void )
+void TextDisplay::_highlightParenthesis()
 {
 
     if( !( hasTextHighlight() && textHighlight_->isParenthesisEnabled() ) ) return;
@@ -2686,7 +2686,7 @@ void TextDisplay::_highlightParenthesis( void )
 }
 
 //__________________________________________________
-void TextDisplay::_tagBlock( void )
+void TextDisplay::_tagBlock()
 {
 
     Debug::Throw( "TextDisplay::_tagBlock.\n" );
@@ -2710,7 +2710,7 @@ void TextDisplay::_tagBlock( void )
 }
 
 //__________________________________________________
-void TextDisplay::_nextTag( void )
+void TextDisplay::_nextTag()
 {
     Debug::Throw( "TextDisplay::_nextTag.\n" );
     QTextCursor cursor( textCursor() );
@@ -2745,7 +2745,7 @@ void TextDisplay::_nextTag( void )
 }
 
 //__________________________________________________
-void TextDisplay::_previousTag( void )
+void TextDisplay::_previousTag()
 {
     Debug::Throw( "TextDisplay::_previousTag.\n" );
     QTextCursor cursor( textCursor() );
@@ -2780,7 +2780,7 @@ void TextDisplay::_previousTag( void )
 }
 
 //___________________________________________________________________________
-void TextDisplay::_clearTag( void )
+void TextDisplay::_clearTag()
 {
 
     Debug::Throw( "TextEditor::_clearTag.\n" );
@@ -2857,5 +2857,5 @@ QString TextDisplay::_collapsedText( const QTextBlock& block ) const
 }
 
 //___________________________________________________________________________
-bool TextDisplay::_fileIsAfs( void ) const
+bool TextDisplay::_fileIsAfs() const
 { return file_.indexOf( "/afs" ) == 0; }

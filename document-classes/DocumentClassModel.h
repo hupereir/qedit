@@ -73,7 +73,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     private Q_SLOTS:
 
     //* configuration
-    void _updateConfiguration( void );
+    void _updateConfiguration();
 
     private:
 
@@ -107,7 +107,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     using IconCache = QHash<QString, QIcon>;
 
     //* type icon cache
-    static IconCache& _icons( void );
+    static IconCache& _icons();
 
 };
 

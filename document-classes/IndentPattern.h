@@ -29,7 +29,7 @@
 #include <QRegExp>
 
 //* Base class for syntax highlighting
-class IndentPattern: private Base::Counter<IndentPattern>
+class IndentPattern final: private Base::Counter<IndentPattern>
 {
 
     public:
@@ -39,7 +39,7 @@ class IndentPattern: private Base::Counter<IndentPattern>
     using ListIterator = QListIterator< IndentPattern >;
 
     //* constructor
-    explicit IndentPattern( void );
+    explicit IndentPattern();
 
     //* constructor from DomElement
     explicit IndentPattern( const QDomElement& element );
@@ -48,7 +48,7 @@ class IndentPattern: private Base::Counter<IndentPattern>
     QDomElement domElement( QDomDocument& parent ) const;
 
     //* Id
-    int id( void ) const
+    int id() const
     { return id_; }
 
     //* set id
@@ -129,18 +129,18 @@ class IndentPattern: private Base::Counter<IndentPattern>
         { return paragraph_; }
 
         //* regexp
-        const QRegExp& pattern( void ) const
+        const QRegExp& pattern() const
         { return regexp_; }
 
         //* true if valid
-        bool isValid( void ) const
+        bool isValid() const
         { return regexp_.isValid(); }
 
         //* returns true if the text match the rule
         bool accept( const QString& text ) const;
 
         //* flags
-        Flags flags( void ) const
+        Flags flags() const
         { return flags_; }
 
         //* flags
@@ -210,26 +210,26 @@ class IndentPattern: private Base::Counter<IndentPattern>
     };
 
     //* pattern type
-    Type type( void ) const
+    Type type() const
     { return type_; }
 
     //* type
-    QString typeName( void ) const
+    QString typeName() const
     { return typeName( type_ ); }
 
     //* type
     static QString typeName( Type );
 
     //* pattern scale
-    int scale( void ) const
+    int scale() const
     { return scale_; }
 
     //* retrieve rules
-    const Rule::List& rules( void ) const
+    const Rule::List& rules() const
     { return rules_; }
 
     //* validity
-    bool isValid( void ) const
+    bool isValid() const
     {
         for( const auto& rule:rules_ )
         { if( !rule.isValid() ) return false; }
@@ -246,7 +246,7 @@ class IndentPattern: private Base::Counter<IndentPattern>
     { name_ = name; }
 
     //* reset counter
-    static void resetCounter( void )
+    static void resetCounter()
     { _counter() = 0; }
 
     //* type
@@ -270,7 +270,7 @@ class IndentPattern: private Base::Counter<IndentPattern>
     private:
 
     //* unique id counter
-    static int& _counter( void );
+    static int& _counter();
 
     //* unique id
     int id_ = 0;

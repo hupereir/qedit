@@ -30,13 +30,13 @@
 #include <QList>
 
 //* text delimiter (for highlighting)
-class BlockDelimiter: private Base::Counter<BlockDelimiter>
+class BlockDelimiter final: private Base::Counter<BlockDelimiter>
 {
 
     public:
 
     //* typedef for list of patterns
-    using List = QList< BlockDelimiter >;
+    using List = QList<BlockDelimiter>;
 
     //* constructor from DomElement
     explicit BlockDelimiter( const QDomElement& element = QDomElement(), int id = 0 );
@@ -45,7 +45,7 @@ class BlockDelimiter: private Base::Counter<BlockDelimiter>
     QDomElement domElement( QDomDocument& parent ) const;
 
     //* Id
-    int id( void ) const
+    int id() const
     { return id_; }
 
     //* equal to operator

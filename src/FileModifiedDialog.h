@@ -50,19 +50,19 @@ class FileModifiedDialog: public BaseDialog, private Base::Counter<FileModifiedD
     private Q_SLOTS:
 
     //* re-saved removed file
-    void _reLoad( void )
+    void _reLoad()
     { done( Reload ); }
 
     //* re-saved removed file
-    void _reSave( void )
+    void _reSave()
     { done( SaveAgain ); }
 
     //* save file with new name
-    void _saveAs( void )
+    void _saveAs()
     { done( SaveAs ); }
 
     //* save file with new name
-    void _ignore( void )
+    void _ignore()
     { done( Ignore ); }
 
 };

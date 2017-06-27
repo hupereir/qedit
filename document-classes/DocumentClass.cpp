@@ -26,7 +26,7 @@
 #include <algorithm>
 
 //________________________________________________________
-DocumentClass::DocumentClass( void ):
+DocumentClass::DocumentClass():
     Counter( "DocumentClass" ),
     default_( false ),
     buildIn_( false ),
@@ -159,7 +159,7 @@ bool DocumentClass::operator == ( const DocumentClass& other ) const
 }
 
 //______________________________________________________
-QStringList DocumentClass::_associatePatterns( void )
+QStringList DocumentClass::_associatePatterns()
 {
 
     Debug::Throw( "DocumentClass::_associatePatterns.\n" );

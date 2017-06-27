@@ -73,11 +73,11 @@ class TextMacroMenu: public QMenu, private Base::Counter<TextMacroMenu>
         {}
 
         //* name
-        const QString& name( void ) const
+        const QString& name() const
         { return name_; }
 
         //* automatic
-        bool isAutomatic( void ) const
+        bool isAutomatic() const
         { return automatic_; }
 
         private:

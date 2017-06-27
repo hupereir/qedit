@@ -25,7 +25,7 @@
 
 #include <QString>
 
-class WindowTitle: private Base::Counter<WindowTitle>
+class WindowTitle final: private Base::Counter<WindowTitle>
 {
 
     public:
@@ -61,7 +61,7 @@ class WindowTitle: private Base::Counter<WindowTitle>
     { return setFlag( ReadOnly, value ); }
 
     //* cast to string
-    operator const QString& (void)
+    operator const QString& ()
     {
         QString out;
         QTextStream what( &out );

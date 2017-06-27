@@ -20,7 +20,7 @@
 #include "PatternLocation.h"
 
 //_____________________________________________________
-PatternLocation::PatternLocation( void ):
+PatternLocation::PatternLocation():
     Counter( "PatternLocation" )
 {}
 

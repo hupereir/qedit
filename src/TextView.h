@@ -42,7 +42,7 @@ class TextView: public QWidget, private Base::Counter<TextView>, public Base::Ke
     explicit TextView( QWidget* );
 
     //* true if widget is being deleted
-    bool isClosed( void ) const
+    bool isClosed() const
     { return closed_; }
 
     //* set to true if widget is to be deleted
@@ -53,18 +53,18 @@ class TextView: public QWidget, private Base::Counter<TextView>, public Base::Ke
     //@{
 
     //* true if has associated displays
-    bool hasDisplays( void ) const
+    bool hasDisplays() const
     { return !Base::KeySet<TextDisplay>( this ).isEmpty(); }
 
     //* return number of displays
-    int displayCount( void ) const
+    int displayCount() const
     { return Base::KeySet<TextDisplay>( this ).count(); }
 
     //* return number of independant displays
-    int independentDisplayCount( void ) const;
+    int independentDisplayCount() const;
 
     //* return number of independent modified displays
-    int modifiedDisplayCount( void ) const;
+    int modifiedDisplayCount() const;
 
     //@}
 
@@ -72,14 +72,14 @@ class TextView: public QWidget, private Base::Counter<TextView>, public Base::Ke
     //@{
 
     //* retrieve active display
-    TextDisplay& activeDisplay( void )
+    TextDisplay& activeDisplay()
     {
         Q_CHECK_PTR( activeDisplay_ );
         return *activeDisplay_;
     }
 
     //* retrieve active display
-    const TextDisplay& activeDisplay( void ) const
+    const TextDisplay& activeDisplay() const
     { return *activeDisplay_; }
 
     //* select display from file
@@ -93,7 +93,7 @@ class TextView: public QWidget, private Base::Counter<TextView>, public Base::Ke
     void setActiveDisplay( TextDisplay& );
 
     //* close display
-    void closeActiveDisplay( void );
+    void closeActiveDisplay();
 
     //* close display
     /** Ask for save if display is modified */
@@ -102,7 +102,7 @@ class TextView: public QWidget, private Base::Counter<TextView>, public Base::Ke
     //@}
 
     //* set new document
-    void setIsNewDocument( void );
+    void setIsNewDocument();
 
     //* set file and read
     void setFile( File file );
@@ -111,23 +111,23 @@ class TextView: public QWidget, private Base::Counter<TextView>, public Base::Ke
     TextDisplay& splitDisplay( const Qt::Orientation&, bool clone );
 
     //* save all displays
-    void saveAll( void );
+    void saveAll();
 
     //* ignore all display modifications
-    void ignoreAll( void );
+    void ignoreAll();
 
     //* select class name
     void selectClassName( QString value )
     { activeDisplay().selectClassName( value ); }
 
     //* rehighlight all displays
-    void rehighlight( void );
+    void rehighlight();
 
     //* diff files
-    void diff( void );
+    void diff();
 
     //* position timer
-    QTimer& positionTimer( void )
+    QTimer& positionTimer()
     { return positionTimer_; }
 
     Q_SIGNALS:
@@ -139,7 +139,7 @@ class TextView: public QWidget, private Base::Counter<TextView>, public Base::Ke
     void modifiersChanged( TextEditor::Modifiers );
 
     //* independent display count changed
-    void displayCountChanged( void );
+    void displayCountChanged();
 
     //* current display undo is available
     void undoAvailable( bool );
@@ -160,7 +160,7 @@ class TextView: public QWidget, private Base::Counter<TextView>, public Base::Ke
     when no display is found the entire window is closed
     the active display is updated otherwise
     */
-    void _checkDisplays( void );
+    void _checkDisplays();
 
     //* display focus changed
     void _activeDisplayChanged( TextEditor* );

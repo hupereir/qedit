@@ -40,21 +40,21 @@ class DocumentClassManagerDialog: public CustomDialog
     explicit DocumentClassManagerDialog( QWidget* = nullptr );
 
     //* list of user files
-    File::List userFiles( void ) const;
+    File::List userFiles() const;
 
     protected Q_SLOTS:
 
     //* read
-    void _reload( void );
+    void _reload();
 
     //* add document class
-    void _add( void );
+    void _add();
 
     //* remove document classes
-    void _remove( void );
+    void _remove();
 
     //* update buttons
-    void _updateButtons( void );
+    void _updateButtons();
 
     private:
 

@@ -47,11 +47,11 @@ class BlockMarker
     { return cursor() < marker.cursor(); }
 
     //* id
-    int id( void ) const
+    int id() const
     { return id_; }
 
     //* cursor
-    int cursor( void ) const
+    int cursor() const
     { return cursor_; }
 
     //* position
@@ -62,11 +62,11 @@ class BlockMarker
     }
 
     //* position
-    int position( void ) const
+    int position() const
     { return position_; }
 
     //* validity
-    bool isValid( void ) const
+    bool isValid() const
     { return valid_; }
 
     private:

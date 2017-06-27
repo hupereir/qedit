@@ -54,7 +54,7 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
 }
 
 //______________________________________________________________________
-void NavigationFrame::_installActions( void )
+void NavigationFrame::_installActions()
 {
 
     Debug::Throw( "NavigationFrame::_installActions.\n" );
@@ -66,7 +66,7 @@ void NavigationFrame::_installActions( void )
 }
 
 //______________________________________________________________________
-void NavigationFrame::_updateCurrentWidget( void )
+void NavigationFrame::_updateCurrentWidget()
 {
 
     Debug::Throw( "NavigationFrame::_updateCurrentWidget.\n" );

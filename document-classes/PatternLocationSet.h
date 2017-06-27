@@ -36,11 +36,11 @@ class PatternLocationSet: public QOrderedSet<PatternLocation>
     {}
 
     //* active id
-    const std::pair<int,int>& activeId( void ) const
+    const std::pair<int,int>& activeId() const
     { return activeId_; }
 
     //* active id
-    std::pair<int,int>& activeId( void )
+    std::pair<int,int>& activeId()
     { return activeId_; }
 
     // return true if current position corresponds to commented text

@@ -92,7 +92,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     // additional actions from Application
     // they need to be added so that short cuts still work even when menu bar is hidden)
-    auto&& application( Singleton::get().application<Application>() );
+    auto&& application( Base::Singleton::get().application<Application>() );
     addAction( &application->closeAction() );
 
     // menu
@@ -223,7 +223,7 @@ void MainWindow::setActiveView( TextView& view )
 
 
 //_____________________________________________________________________
-Base::KeySet<TextDisplay> MainWindow::associatedDisplays( void ) const
+Base::KeySet<TextDisplay> MainWindow::associatedDisplays() const
 {
     Base::KeySet<TextDisplay> displays;
     for( const auto& view:Base::KeySet<TextView>( this ) )
@@ -262,7 +262,7 @@ bool MainWindow::selectDisplay( const File& file )
 }
 
 //_____________________________________________________________________
-void MainWindow::saveAll( void )
+void MainWindow::saveAll()
 {
     Debug::Throw( "MainWindow::saveAll.\n" );
     for( const auto& view:Base::KeySet<TextView>( this ) )
@@ -270,7 +270,7 @@ void MainWindow::saveAll( void )
 }
 
 //_____________________________________________________________________
-void MainWindow::ignoreAll( void )
+void MainWindow::ignoreAll()
 {
     Debug::Throw( "MainWindow::ignoreAll.\n" );
     for( const auto& view:Base::KeySet<TextView>( this ) )
@@ -278,7 +278,7 @@ void MainWindow::ignoreAll( void )
 }
 
 //_____________________________________________________________________
-void MainWindow::findFromDialog( void )
+void MainWindow::findFromDialog()
 {
     Debug::Throw( "MainWindow::findFromDialog.\n" );
 
@@ -310,7 +310,7 @@ void MainWindow::findFromDialog( void )
 }
 
 //_____________________________________________________________________
-void MainWindow::replaceFromDialog( void )
+void MainWindow::replaceFromDialog()
 {
     Debug::Throw( "MainWindow::replaceFromDialog.\n" );
 
@@ -346,7 +346,7 @@ void MainWindow::replaceFromDialog( void )
 }
 
 //________________________________________________
-void MainWindow::selectLineFromDialog( void )
+void MainWindow::selectLineFromDialog()
 {
 
     Debug::Throw( "TextEditor::selectLineFromDialog.\n" );
@@ -362,7 +362,7 @@ void MainWindow::selectLineFromDialog( void )
 }
 
 //___________________________________________________________
-void MainWindow::_revertToSave( void )
+void MainWindow::_revertToSave()
 {
 
     Debug::Throw( "MainWindow::_revertToSave.\n" );
@@ -390,7 +390,7 @@ void MainWindow::_revertToSave( void )
 }
 
 //___________________________________________________________
-void MainWindow::_print( void )
+void MainWindow::_print()
 {
     Debug::Throw( "MainWindow::_print.\n" );
     PrintHelper helper( this, &activeDisplay() );
@@ -428,7 +428,7 @@ void MainWindow::_print( PrintHelper& helper )
 }
 
 //___________________________________________________________
-void MainWindow::_printPreview( void )
+void MainWindow::_printPreview()
 {
     Debug::Throw( "MainWindow::_printPreview.\n" );
 
@@ -445,7 +445,7 @@ void MainWindow::_printPreview( void )
 }
 
 //___________________________________________________________
-void MainWindow::_toHtml( void )
+void MainWindow::_toHtml()
 {
     Debug::Throw( "MainWindow::_toHtml.\n" );
 
@@ -578,7 +578,7 @@ void MainWindow::timerEvent( QTimerEvent* event )
 }
 
 //________________________________________________________
-void MainWindow::_updateConfiguration( void )
+void MainWindow::_updateConfiguration()
 {
 
     Debug::Throw( "MainWindow::_updateConfiguration.\n" );
@@ -589,8 +589,8 @@ void MainWindow::_updateConfiguration( void )
     navigationFrame_->visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_NAVIGATION_FRAME") );
 
     // assign icons to file in open previous menu based on class manager
-    auto&& recentFiles( Singleton::get().application<Application>()->recentFiles() );
-    auto&& classManager(Singleton::get().application<Application>()->classManager());
+    auto&& recentFiles( Base::Singleton::get().application<Application>()->recentFiles() );
+    auto&& classManager(Base::Singleton::get().application<Application>()->classManager());
     for( const auto& record:recentFiles.records() )
     {
 
@@ -607,7 +607,7 @@ void MainWindow::_updateConfiguration( void )
 }
 
 //________________________________________________________
-void MainWindow::_saveConfiguration( void )
+void MainWindow::_saveConfiguration()
 { Debug::Throw( "MainWindow::_saveConfiguration.\n" ); }
 
 //________________________________________________________
@@ -618,14 +618,14 @@ void MainWindow::_toggleNavigationFrame( bool state )
 }
 
 //________________________________________________________
-void MainWindow::_splitterMoved( void )
+void MainWindow::_splitterMoved()
 {
     Debug::Throw( "MainWindow::_splitterMoved.\n" );
     resizeTimer_.start( 200, this );
 }
 
 //________________________________________________________
-void MainWindow::_activeViewChanged( void )
+void MainWindow::_activeViewChanged()
 {
 
     Debug::Throw() << "MainWindow::_activeViewChanged" << endl;
@@ -637,10 +637,10 @@ void MainWindow::_activeViewChanged( void )
 }
 
 //_______________________________________________________
-void MainWindow::_splitDisplay( void )
-{ activeView_->splitDisplay( Singleton::get().application<Application>()->windowServer().defaultOrientation(), true ); }
+void MainWindow::_splitDisplay()
+{ activeView_->splitDisplay( Base::Singleton::get().application<Application>()->windowServer().defaultOrientation(), true ); }
 
-void MainWindow::_multipleFileReplace( void )
+void MainWindow::_multipleFileReplace()
 {
     Debug::Throw( "MainWindow::_multipleFileReplace.\n" );
     auto selection( replaceWidget_->selection( false ) );
@@ -651,7 +651,7 @@ void MainWindow::_multipleFileReplace( void )
     if( !dialog.exec() ) return;
 
     // replace all in selected files
-    Singleton::get().application<Application>()->windowServer().multipleFileReplace( dialog.selectedFiles(), selection );
+    Base::Singleton::get().application<Application>()->windowServer().multipleFileReplace( dialog.selectedFiles(), selection );
 
     return;
 }
@@ -759,15 +759,15 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
 }
 
 //_____________________________________________
-void MainWindow::_updateReplaceInSelection( void )
+void MainWindow::_updateReplaceInSelection()
 { if( replaceWidget_ ) replaceWidget_->enableReplaceInSelection( activeDisplay().hasSelection() ); }
 
 //_____________________________________________
-void MainWindow::_updateModifiers( void )
+void MainWindow::_updateModifiers()
 { _update( TextDisplay::Modifiers ); }
 
 //_____________________________________________
-void MainWindow::_updateCursorPosition( void )
+void MainWindow::_updateCursorPosition()
 {
 
     if( !statusbar_ ) return;
@@ -790,7 +790,7 @@ void MainWindow::_updateCursorPosition( void )
 }
 
 //___________________________________________________________
-void MainWindow::_installActions( void )
+void MainWindow::_installActions()
 {
 
     Debug::Throw( "MainWindow::_installActions.\n" );
@@ -907,7 +907,7 @@ void MainWindow::_installActions( void )
 }
 
 //______________________________________________________________________
-void MainWindow::_installToolbars( void )
+void MainWindow::_installToolbars()
 {
 
     // file toolbar
@@ -953,7 +953,7 @@ void MainWindow::_installToolbars( void )
 }
 
 //______________________________________________________________________
-void MainWindow::_createFindWidget( void )
+void MainWindow::_createFindWidget()
 {
 
     Debug::Throw( "MainWindow::_createFindWidget.\n" );
@@ -975,7 +975,7 @@ void MainWindow::_createFindWidget( void )
 }
 
 //_____________________________________________________________________
-void MainWindow::_createReplaceWidget( void )
+void MainWindow::_createReplaceWidget()
 {
     Debug::Throw( "MainWindow::_CreateReplaceDialog.\n" );
     if( !( replaceWidget_ ) )
@@ -1000,7 +1000,7 @@ void MainWindow::_createReplaceWidget( void )
 }
 
 //_________________________________________________________________
-void MainWindow::_createSelectLineWidget( void )
+void MainWindow::_createSelectLineWidget()
 {
     if( !selectLineWidget_ )
     {
@@ -1021,7 +1021,7 @@ void MainWindow::_connectView( TextView& view )
     connect( &view, SIGNAL(modifiersChanged(TextEditor::Modifiers)), SLOT(_updateModifiers()) );
     connect( &view, SIGNAL(needUpdate(TextDisplay::UpdateFlags)), SLOT(_update(TextDisplay::UpdateFlags)) );
     connect( &view, SIGNAL(displayCountChanged()), SLOT(_updateDisplayCount()) );
-    connect( &view, SIGNAL(displayCountChanged()), &Singleton::get().application<Application>()->windowServer(), SIGNAL(sessionFilesChanged()) );
+    connect( &view, SIGNAL(displayCountChanged()), &Base::Singleton::get().application<Application>()->windowServer(), SIGNAL(sessionFilesChanged()) );
     connect( &view, SIGNAL(undoAvailable(bool)), &undoAction(), SLOT(setEnabled(bool)) );
     connect( &view, SIGNAL(redoAvailable(bool)), &redoAction(), SLOT(setEnabled(bool)) );
     connect( &view.positionTimer(), SIGNAL(timeout()), SLOT(_updateCursorPosition()) );

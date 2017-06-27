@@ -94,7 +94,7 @@ void NavigationToolBar::connect( NavigationFrame& frame )
 }
 
 //____________________________________________________________
-void NavigationToolBar::_updateConfiguration( void )
+void NavigationToolBar::_updateConfiguration()
 {
 
     Debug::Throw( "NavigationToolBar::_updateConfiguration.\n" );

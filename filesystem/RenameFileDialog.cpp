@@ -52,7 +52,7 @@ RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):
 }
 
 //_____________________________________________________
-File RenameFileDialog::file( void ) const
+File RenameFileDialog::file() const
 {
 
     QString text( _editor().text() );
@@ -61,7 +61,7 @@ File RenameFileDialog::file( void ) const
 }
 
 //_____________________________________________________
-void RenameFileDialog::_updateButtons( void )
+void RenameFileDialog::_updateButtons()
 {
 
     Debug::Throw( "RenameFileDialog::_updateButtons.\n" );

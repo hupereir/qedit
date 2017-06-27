@@ -34,7 +34,7 @@
 #include <QUrl>
 
 //__________________________________________________________________
-SessionFilesModel::IconCache& SessionFilesModel::_icons( void )
+SessionFilesModel::IconCache& SessionFilesModel::_icons()
 {
     static IconCache cache;
     return cache;
@@ -47,7 +47,7 @@ SessionFilesModel::SessionFilesModel( QObject* parent ):
 
     Debug::Throw("SessionFilesModel::SessionFilesModel.\n" );
     setShowIcons( false );
-    connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
+    connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
 
 }
 
@@ -91,7 +91,7 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
 }
 
 //____________________________________________________________
-void SessionFilesModel::_updateConfiguration( void )
+void SessionFilesModel::_updateConfiguration()
 {
     Debug::Throw( "SessionFilesModel::_updateConfiguration.\n" );
     _icons().clear();
@@ -128,7 +128,7 @@ const QIcon& SessionFilesModel::_icon( int type )
 }
 
 //______________________________________________________________________
-QStringList SessionFilesModel::mimeTypes( void ) const
+QStringList SessionFilesModel::mimeTypes() const
 { return QStringList() << FileRecord::MimeType << "text/uri-list"; }
 
 //______________________________________________________________________

@@ -67,11 +67,11 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     }
 
     //* true if enabled
-    bool isHighlightEnabled( void ) const
+    bool isHighlightEnabled() const
     { return highlightEnabled_; }
 
     //* patterns
-    const HighlightPattern::List& patterns( void ) const
+    const HighlightPattern::List& patterns() const
     { return patterns_; }
 
     //* patterns
@@ -84,7 +84,7 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     //@{
 
     //* parenthesis enabled
-    bool isParenthesisEnabled( void ) const
+    bool isParenthesisEnabled() const
     { return parenthesisEnabled_; }
 
     //* parenthesis enabled
@@ -100,11 +100,11 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     { parenthesisHighlightFormat_.setBackground(color); }
 
     //* parenthesis highlight color
-    QColor parenthesisHighlightColor( void )
+    QColor parenthesisHighlightColor()
     { return parenthesisHighlightFormat_.background().color(); }
 
     //* parenthesis
-    const TextParenthesis::List& parenthesis( void ) const
+    const TextParenthesis::List& parenthesis() const
     { return parenthesis_; }
 
     //* set parenthesis
@@ -116,7 +116,7 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     //@{
 
     //* block delimiters enabled
-    bool isBlockDelimitersEnabled( void ) const
+    bool isBlockDelimitersEnabled() const
     { return blockDelimitersEnabled_; }
 
     //* block delimiters enabled
@@ -132,13 +132,13 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     { blockDelimiters_ = delimiters; }
 
     //* block delimiters
-    const BlockDelimiter::List& blockDelimiters( void ) const
+    const BlockDelimiter::List& blockDelimiters() const
     { return blockDelimiters_; }
 
     //@}
 
     //* patterns
-    void clear( void )
+    void clear()
     {
         Debug::Throw( "TextHighlight.clear.\n" );
         patterns_.clear();
@@ -147,19 +147,19 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     #if USE_ASPELL
 
     //* embedded spellcheck parser
-    const SpellCheck::SpellParser& spellParser( void ) const
+    const SpellCheck::SpellParser& spellParser() const
     { return spellParser_; }
 
     //* embedded spellcheck parser
-    SpellCheck::SpellParser& spellParser( void )
+    SpellCheck::SpellParser& spellParser()
     { return spellParser_; }
 
     //* highlight pattern associated to auto-spell
-    const HighlightPattern& spellPattern( void ) const
+    const HighlightPattern& spellPattern() const
     { return spellPattern_; }
 
     //* update highlight pattern associated to auto-spell
-    void updateSpellPattern( void )
+    void updateSpellPattern()
     { spellPattern_.setStyle( HighlightStyle( "spellcheck_style", spellParser().fontFormat(), spellParser().color() ) ); }
 
     #endif
@@ -167,7 +167,7 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     Q_SIGNALS:
 
     //* emitted when block delimiters have changed
-    void needSegmentUpdate( void );
+    void needSegmentUpdate();
 
     private:
 

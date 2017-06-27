@@ -45,42 +45,42 @@ class Menu:public QMenuBar, private Base::Counter<Menu>
     explicit Menu( QWidget* );
 
     //* recent files menu
-    RecentFilesMenu& recentFilesMenu( void ) const
+    RecentFilesMenu& recentFilesMenu() const
     { return *recentFilesMenu_; }
 
     //* document class Menu
-    QMenu& documentClassMenu( void ) const
+    QMenu& documentClassMenu() const
     { return *documentClassMenu_; }
 
     //* macro menu
-    TextMacroMenu& macroMenu( void ) const
+    TextMacroMenu& macroMenu() const
     { return *macroMenu_; }
 
     public Q_SLOTS:
 
     //* update macro menu
-    void updateMacroMenu( void );
+    void updateMacroMenu();
 
     private Q_SLOTS:
 
     //* update recent files menu
     /** this is needed so that the current file appears checked in the menu */
-    void _updateRecentFilesMenu( void );
+    void _updateRecentFilesMenu();
 
     //* update edit menu
-    void _updateEditMenu( void );
+    void _updateEditMenu();
 
     //* update search menu
-    void _updateSearchMenu( void );
+    void _updateSearchMenu();
 
     //* update preference menu
-    void _updatePreferenceMenu( void );
+    void _updatePreferenceMenu();
 
     //* update tools menu
-    void _updateToolsMenu( void );
+    void _updateToolsMenu();
 
     //* update windows menu
-    void _updateWindowsMenu( void );
+    void _updateWindowsMenu();
 
     //* select macro from menu
     void _selectMacro( QString );

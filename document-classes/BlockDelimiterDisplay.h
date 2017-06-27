@@ -59,7 +59,7 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     }
 
     //* block delimiters
-    const BlockDelimiter::List& blockDelimiters( void ) const
+    const BlockDelimiter::List& blockDelimiters() const
     { return delimiters_; }
 
     //* synchronization
@@ -80,7 +80,7 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     void setWidth( int );
 
     //* width
-    int width( void ) const
+    int width() const
     { return width_; }
 
     //* paint
@@ -97,68 +97,68 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     void addActions( QMenu& );
 
     //* expand all
-    QAction& expandAllAction( void ) const
+    QAction& expandAllAction() const
     { return *expandAllAction_; }
 
     //* update expand/collapse current block action state
-    void updateCurrentBlockActionState( void );
+    void updateCurrentBlockActionState();
 
     public Q_SLOTS:
 
     //* need update
-    void needUpdate( void );
+    void needUpdate();
 
     //* expand all blocks
-    void expandAllBlocks( void );
+    void expandAllBlocks();
 
     private Q_SLOTS:
 
     //* collapse current block
-    void _collapseCurrentBlock( void );
+    void _collapseCurrentBlock();
 
     //* expand current block
-    void _expandCurrentBlock( void );
+    void _expandCurrentBlock();
 
     //* collapse top level block
-    void _collapseTopLevelBlocks( void );
+    void _collapseTopLevelBlocks();
 
     //* contents changed
-    void _contentsChanged( void );
+    void _contentsChanged();
 
     //* block count changed
-    void _blockCountChanged( void );
+    void _blockCountChanged();
 
     private:
 
     //* install actions
-    void _installActions( void );
+    void _installActions();
 
     //* synchronize BlockFormats and BlockData
-    void _synchronizeBlockData( void ) const;
+    void _synchronizeBlockData() const;
 
     //* update segments
-    void _updateSegments( void );
+    void _updateSegments();
 
     //* update segments
     void _updateSegments( bool );
 
     //* offest
-    int _offset( void ) const
+    int _offset() const
     { return offset_; }
 
     //*@name actions
     //@{
 
     //* expand current block
-    QAction& _collapseCurrentAction( void ) const
+    QAction& _collapseCurrentAction() const
     { return *collapseCurrentAction_; }
 
     //* expand current block
-    QAction& _expandCurrentAction( void ) const
+    QAction& _expandCurrentAction() const
     { return *expandCurrentAction_; }
 
     //* collapse top level block
-    QAction& _collapseAction( void ) const
+    QAction& _collapseAction() const
     { return *collapseAction_; }
 
     //@}
@@ -171,7 +171,7 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     };
 
     //* update segment markers
-    void _updateSegmentMarkers( void );
+    void _updateSegmentMarkers();
 
     //* update segment markers
     void _updateMarker( QTextBlock&, int&, BlockMarker&, Type flag ) const;

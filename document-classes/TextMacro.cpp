@@ -90,7 +90,7 @@ QDomElement TextMacro::domElement( QDomDocument& parent ) const
 }
 
 //_____________________________________________________
-QAction* TextMacro::action( void ) const
+QAction* TextMacro::action() const
 {
 
     // create action label

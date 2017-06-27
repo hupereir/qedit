@@ -52,7 +52,7 @@ class ProgressDialog:public QProgressDialog, private Base::Counter<ProgressDialo
     private:
 
     //* offset
-    int _offset( void ) const
+    int _offset() const
     { return offset_; }
 
     //* offset

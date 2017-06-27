@@ -49,8 +49,8 @@ TextView::TextView( QWidget* parent ):
     TextDisplay& display = _newTextDisplay( this );
     layout()->addWidget( &display );
     display.setActive( true );
-    Singleton::get().application<Application>()->autoSave().newThread( &display );
-    Singleton::get().application<Application>()->fileCheck().registerDisplay( &display );
+    Base::Singleton::get().application<Application>()->autoSave().newThread( &display );
+    Base::Singleton::get().application<Application>()->fileCheck().registerDisplay( &display );
 
     // position update timer
     positionTimer_.setSingleShot( true );
@@ -59,7 +59,7 @@ TextView::TextView( QWidget* parent ):
 }
 
 //____________________________________________
-void TextView::setIsNewDocument( void )
+void TextView::setIsNewDocument()
 {
     Debug::Throw( "TextView::setIsNewDocument.\n" );
 
@@ -119,7 +119,7 @@ void TextView::setFile( File file )
 }
 
 //________________________________________________________________
-int TextView::independentDisplayCount( void ) const
+int TextView::independentDisplayCount() const
 {
     int out( 0 );
     Base::KeySet<TextDisplay> displays( this );
@@ -130,7 +130,7 @@ int TextView::independentDisplayCount( void ) const
 }
 
 //________________________________________________________________
-int TextView::modifiedDisplayCount( void ) const
+int TextView::modifiedDisplayCount() const
 {
 
     int out( 0 );
@@ -174,7 +174,7 @@ bool TextView::selectDisplay( const File& file )
 }
 
 //________________________________________________________________
-void TextView::closeActiveDisplay( void )
+void TextView::closeActiveDisplay()
 { closeDisplay( activeDisplay() ); }
 
 //________________________________________________________________
@@ -370,8 +370,8 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, bool cl
     } else {
 
         // register new AutoSave thread
-        Singleton::get().application<Application>()->autoSave().newThread( &display );
-        Singleton::get().application<Application>()->fileCheck().registerDisplay( &display );
+        Base::Singleton::get().application<Application>()->autoSave().newThread( &display );
+        Base::Singleton::get().application<Application>()->fileCheck().registerDisplay( &display );
 
     }
 
@@ -380,7 +380,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, bool cl
 }
 
 //____________________________________________
-void TextView::saveAll( void )
+void TextView::saveAll()
 {
     Debug::Throw( "TextView::saveAll.\n" );
 
@@ -394,7 +394,7 @@ void TextView::saveAll( void )
 
 
 //____________________________________________
-void TextView::ignoreAll( void )
+void TextView::ignoreAll()
 {
     Debug::Throw( "TextView::ignoreAll.\n" );
 
@@ -407,7 +407,7 @@ void TextView::ignoreAll( void )
 }
 
 //________________________________________________________________
-void TextView::rehighlight( void )
+void TextView::rehighlight()
 {
     Debug::Throw( "TextView::rehighlight.\n" );
 
@@ -468,7 +468,7 @@ void TextView::checkDisplayModifications( TextEditor* editor )
 }
 
 //_______________________________________________________
-void TextView::diff( void )
+void TextView::diff()
 {
     Debug::Throw( "TextView::diff.\n" );
 
@@ -528,7 +528,7 @@ void TextView::diff( void )
 }
 
 //____________________________________________
-void TextView::_checkDisplays( void )
+void TextView::_checkDisplays()
 {
 
     Debug::Throw() << "TextView::_checkDisplays - key: " << key() << endl;

@@ -51,7 +51,7 @@ Menu::Menu( QWidget* parent ):
     auto menu = addMenu( tr( "File" ) );
 
     // retrieve mainWindow
-    auto application( Singleton::get().application<Application>() );
+    auto application( Base::Singleton::get().application<Application>() );
     auto mainWindow( static_cast<MainWindow*>( window() ) );
 
     menu->addAction( &mainWindow->newFileAction() );
@@ -140,7 +140,7 @@ Menu::Menu( QWidget* parent ):
 }
 
 //_______________________________________________
-void Menu::updateMacroMenu( void )
+void Menu::updateMacroMenu()
 {
 
     // retrieve current display
@@ -157,7 +157,7 @@ void Menu::updateMacroMenu( void )
 }
 
 //_______________________________________________
-void Menu::_updateRecentFilesMenu( void )
+void Menu::_updateRecentFilesMenu()
 {
     Debug::Throw( "Menu::_updateRecentFilesMenu.\n" );
     auto display( &static_cast<MainWindow*>( window() )->activeDisplay() );
@@ -165,7 +165,7 @@ void Menu::_updateRecentFilesMenu( void )
 }
 
 //_______________________________________________
-void Menu::_updateEditMenu( void )
+void Menu::_updateEditMenu()
 {
     Debug::Throw( "Menu::_updateEditMenu.\n" );
 
@@ -186,7 +186,7 @@ void Menu::_updateEditMenu( void )
 }
 
 //_______________________________________________
-void Menu::_updateSearchMenu( void )
+void Menu::_updateSearchMenu()
 {
     Debug::Throw( "Menu::_updateSearchMenu.\n" );
 
@@ -205,13 +205,13 @@ void Menu::_updateSearchMenu( void )
 }
 
 //_______________________________________________
-void Menu::_updatePreferenceMenu( void )
+void Menu::_updatePreferenceMenu()
 {
 
     Debug::Throw( "Menu::_updatePreferenceMenu.\n" );
 
     // reference to needed objects
-    auto application( Singleton::get().application<Application>() );
+    auto application( Base::Singleton::get().application<Application>() );
     auto mainWindow( static_cast<MainWindow*>(window()) );
     auto display( &mainWindow->activeDisplay() );
 
@@ -256,7 +256,7 @@ void Menu::_updatePreferenceMenu( void )
 }
 
 //_______________________________________________
-void Menu::_updateToolsMenu( void )
+void Menu::_updateToolsMenu()
 {
 
     Debug::Throw( "Menu::_updateToolsMenu.\n" );
@@ -338,14 +338,14 @@ void Menu::_updateToolsMenu( void )
 }
 
 //_______________________________________________
-void Menu::_updateWindowsMenu( void )
+void Menu::_updateWindowsMenu()
 {
 
     Debug::Throw( "Menu::_updateWindowsMenu.\n" );
     windowsMenu_->clear();
 
     // add session handling
-    auto application( Singleton::get().application<Application>() );
+    auto application( Base::Singleton::get().application<Application>() );
     windowsMenu_->addAction( &application->restoreLastSessionAction() );
     windowsMenu_->addSeparator();
     windowsMenu_->addAction( &application->saveSessionAction() );
@@ -362,7 +362,7 @@ void Menu::_updateWindowsMenu( void )
     fileActions_.clear();
 
     // retrieve all files
-    for( const auto& record:Singleton::get().application<Application>()->windowServer().records() )
+    for( const auto& record:Base::Singleton::get().application<Application>()->windowServer().records() )
     {
 
         // retrieve file and check
@@ -404,7 +404,7 @@ void Menu::_selectFile( QAction* action )
     if( iter == fileActions_.end() ) return;
 
     // retrieve all mainWindows
-    Base::KeySet<MainWindow> windows( &Singleton::get().application<Application>()->windowServer() );
+    Base::KeySet<MainWindow> windows( &Base::Singleton::get().application<Application>()->windowServer() );
 
     // retrieve window matching file name
     Base::KeySet<MainWindow>::iterator windowIter( std::find_if(

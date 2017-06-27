@@ -27,7 +27,7 @@
 #include <QRect>
 
 // used to draw block segment
-class BlockDelimiterSegment: private Base::Counter<BlockDelimiterSegment>
+class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
 {
 
     public:
@@ -77,18 +77,18 @@ class BlockDelimiterSegment: private Base::Counter<BlockDelimiterSegment>
     //@}
 
     //* validity
-    bool isValid( void ) const
+    bool isValid() const
     { return ( begin().isValid() && ( hasFlag( BeginOnly ) || end().isValid() ) ); }
 
     //*@name geometry
     //@{
 
     //* begin point
-    const BlockMarker& begin( void ) const
+    const BlockMarker& begin() const
     { return begin_; }
 
     //* begin point
-    BlockMarker& begin( void )
+    BlockMarker& begin()
     { return begin_; }
 
     //* begin point
@@ -99,11 +99,11 @@ class BlockDelimiterSegment: private Base::Counter<BlockDelimiterSegment>
     }
 
     //* end point
-    const BlockMarker& end( void ) const
+    const BlockMarker& end() const
     { return end_; }
 
     //* end point
-    BlockMarker& end( void )
+    BlockMarker& end()
     { return end_; }
 
     //* end point
@@ -114,11 +114,11 @@ class BlockDelimiterSegment: private Base::Counter<BlockDelimiterSegment>
     }
 
     //* empty segment
-    bool empty( void ) const
+    bool empty() const
     { return begin().cursor() == end().cursor(); }
 
     //* active rect
-    const QRect& activeRect( void ) const
+    const QRect& activeRect() const
     { return active_; }
 
     //* active rect

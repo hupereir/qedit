@@ -49,7 +49,7 @@ class HighlightBlockData: public TextBlockData
     {}
 
     //* syntax highlighting pattern locations
-    const PatternLocationSet& locations( void ) const
+    const PatternLocationSet& locations() const
     { return locations_; }
 
     //* syntax highlighting pattern locations
@@ -57,21 +57,21 @@ class HighlightBlockData: public TextBlockData
     { locations_ = locations; }
 
     //* return true if locations correspond to a commented block
-    bool ignoreBlock( void ) const
+    bool ignoreBlock() const
     { return (!locations().empty()) && locations().begin()->hasFlag( HighlightPattern::NoIndent ); }
 
     //*@name parenthesis
     //@{
 
-    bool hasParenthesis( void ) const
+    bool hasParenthesis() const
     { return parenthesis_ != -1; }
 
     //* highlighted parenthesis
-    int parenthesis( void ) const
+    int parenthesis() const
     { return parenthesis_; }
 
     //* highlighted parenthesis
-    int parenthesisLength( void ) const
+    int parenthesisLength() const
     { return parenthesisLength_; }
 
     //* set parenthesis
@@ -82,7 +82,7 @@ class HighlightBlockData: public TextBlockData
     }
 
     //* clear parenthesis
-    void clearParenthesis( void )
+    void clearParenthesis()
     {
         parenthesis_ = -1;
         parenthesisLength_= 0;
@@ -94,7 +94,7 @@ class HighlightBlockData: public TextBlockData
     //@{
 
     //* delimiters
-    const TextBlock::Delimiter::List& delimiters( void ) const
+    const TextBlock::Delimiter::List& delimiters() const
     { return delimiters_; }
 
     //* delimiters
@@ -107,7 +107,7 @@ class HighlightBlockData: public TextBlockData
     //*@name spelling
     //@{
     //* set of misspelled words
-    const SpellCheck::Word::Set& misspelledWords( void ) const
+    const SpellCheck::Word::Set& misspelledWords() const
     { return words_; }
 
     //* set of misspelled words

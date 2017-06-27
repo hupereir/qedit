@@ -92,7 +92,7 @@ void BlockDelimiterDisplay::addActions( QMenu& menu )
 }
 
 //__________________________________________
-void BlockDelimiterDisplay::updateCurrentBlockActionState( void )
+void BlockDelimiterDisplay::updateCurrentBlockActionState()
 {
 
     // update segments if needed
@@ -297,7 +297,7 @@ void BlockDelimiterDisplay::setWidth( int width )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_contentsChanged( void )
+void BlockDelimiterDisplay::_contentsChanged()
 {
 
     // if text is wrapped, line number data needs update at next update
@@ -311,7 +311,7 @@ void BlockDelimiterDisplay::_contentsChanged( void )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_blockCountChanged( void )
+void BlockDelimiterDisplay::_blockCountChanged()
 {
 
     // nothing to be done if wrap mode is not NoWrap, because
@@ -325,7 +325,7 @@ void BlockDelimiterDisplay::_blockCountChanged( void )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_collapseCurrentBlock( void )
+void BlockDelimiterDisplay::_collapseCurrentBlock()
 {
     Debug::Throw(  "BlockDelimiterDisplay::_collapseCurrentBlock.\n" );
 
@@ -352,7 +352,7 @@ void BlockDelimiterDisplay::_collapseCurrentBlock( void )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_expandCurrentBlock( void )
+void BlockDelimiterDisplay::_expandCurrentBlock()
 {
 
     Debug::Throw( "BlockDelimiterDisplay::_expandCurrentBlock.\n" );
@@ -381,7 +381,7 @@ void BlockDelimiterDisplay::_expandCurrentBlock( void )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
+void BlockDelimiterDisplay::_collapseTopLevelBlocks()
 {
     Debug::Throw( "BlockDelimiterDisplay::_collapseTopLevelBlocks.\n" );
 
@@ -466,7 +466,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks( void )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::expandAllBlocks( void )
+void BlockDelimiterDisplay::expandAllBlocks()
 {
 
     Debug::Throw( "BlockDelimiterDisplay::expandAllBlocks.\n" );
@@ -504,11 +504,11 @@ void BlockDelimiterDisplay::expandAllBlocks( void )
 }
 
 //__________________________________________________________
-void BlockDelimiterDisplay::needUpdate( void )
+void BlockDelimiterDisplay::needUpdate()
 { needUpdate_ = true; }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_installActions( void )
+void BlockDelimiterDisplay::_installActions()
 {
 
     Debug::Throw( "BlockDelimiterDisplay::_installActions.\n" );
@@ -540,7 +540,7 @@ void BlockDelimiterDisplay::_installActions( void )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_synchronizeBlockData( void ) const
+void BlockDelimiterDisplay::_synchronizeBlockData() const
 {
 
     QTextDocument &document( *editor_->document() );
@@ -566,7 +566,7 @@ void BlockDelimiterDisplay::_synchronizeBlockData( void ) const
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_updateSegments( void )
+void BlockDelimiterDisplay::_updateSegments()
 {
 
     if( !needUpdate_ ) return;
@@ -703,7 +703,7 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
 }
 
 //________________________________________________________
-void BlockDelimiterDisplay::_updateSegmentMarkers( void )
+void BlockDelimiterDisplay::_updateSegmentMarkers()
 {
 
     QTextBlock block( editor_->document()->begin() );

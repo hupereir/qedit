@@ -131,17 +131,17 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     };
 
     //* returns true if there is at least one display modified in this window
-    bool isModified( void ) const
+    bool isModified() const
     { return IsModifiedFTor()(this); }
 
     //@}
 
     //* menu
-    Menu& menu( void ) const
+    Menu& menu() const
     { return *menu_; }
 
     //* navigation window
-    NavigationFrame& navigationFrame( void ) const
+    NavigationFrame& navigationFrame() const
     { return *navigationFrame_; }
 
     //*@name active view/display managment
@@ -151,11 +151,11 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     TextView& newTextView( FileRecord record = FileRecord() );
 
     //* active view
-    TextView& activeView( void )
+    TextView& activeView()
     { return *activeView_; }
 
     //* active view
-    const TextView& activeView( void ) const
+    const TextView& activeView() const
     { return *activeView_; }
 
     //* change active display manualy
@@ -163,7 +163,7 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
 
 
     //* active display
-    const TextDisplay& activeDisplay( void ) const
+    const TextDisplay& activeDisplay() const
     { return activeView_->activeDisplay(); }
 
     //* active display
@@ -171,7 +171,7 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     { return activeView_->isActiveDisplay( display ); }
 
     //* active display
-    TextDisplay& activeDisplay( void )
+    TextDisplay& activeDisplay()
     { return activeView_->activeDisplay(); }
 
     //* get set of all displays associated to this window
@@ -179,16 +179,16 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     this is a convenient function that loops over all associated views
     and merge their associated displays into a single list
     */
-    Base::KeySet<TextDisplay> associatedDisplays( void ) const;
+    Base::KeySet<TextDisplay> associatedDisplays() const;
 
     //* select display from file
     bool selectDisplay( const File& );
 
     //* save all modified text displays
-    void saveAll( void );
+    void saveAll();
 
     //* ignore all text display modifications
-    void ignoreAll( void );
+    void ignoreAll();
 
     //@}
 
@@ -201,99 +201,99 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     //@{
 
     //* new file
-    QAction& newFileAction( void ) const
+    QAction& newFileAction() const
     { return *newFileAction_; }
 
     //* clone display
-    QAction& cloneAction( void ) const
+    QAction& cloneAction() const
     { return *cloneAction_; }
 
     //* detach action
-    QAction& detachAction( void ) const
+    QAction& detachAction() const
     { return *detachAction_; }
 
     //* open file
-    QAction& openAction( void ) const
+    QAction& openAction() const
     { return *openAction_; }
 
     //* close display
-    QAction& closeDisplayAction( void ) const
+    QAction& closeDisplayAction() const
     { return *closeDisplayAction_; }
 
     //* close display
-    QAction& closeWindowAction( void ) const
+    QAction& closeWindowAction() const
     { return *closeWindowAction_; }
 
     //* save
-    QAction& saveAction( void ) const
+    QAction& saveAction() const
     { return *saveAction_; }
 
     //* save as
-    QAction& saveAsAction( void ) const
+    QAction& saveAsAction() const
     { return *saveAsAction_; }
 
     //* revert to saved
-    QAction& revertToSaveAction( void ) const
+    QAction& revertToSaveAction() const
     { return *revertToSaveAction_; }
 
     //* undo
-    QAction& undoAction( void ) const
+    QAction& undoAction() const
     { return *undoAction_; }
 
     //* redo
-    QAction& redoAction( void ) const
+    QAction& redoAction() const
     { return *redoAction_; }
 
     //* cut
-    QAction& cutAction( void ) const
+    QAction& cutAction() const
     { return *cutAction_; }
 
     //* copy
-    QAction& copyAction( void ) const
+    QAction& copyAction() const
     { return *copyAction_; }
 
     //* paste
-    QAction& pasteAction( void ) const
+    QAction& pasteAction() const
     { return *pasteAction_; }
 
     //* print
-    QAction& printAction( void ) const
+    QAction& printAction() const
     { return *printAction_; }
 
     //* print
-    QAction& printPreviewAction( void ) const
+    QAction& printPreviewAction() const
     { return *printPreviewAction_; }
 
     //* export
-    QAction& htmlAction( void ) const
+    QAction& htmlAction() const
     { return *htmlAction_; }
 
     //* file info
-    QAction& filePropertiesAction( void ) const
+    QAction& filePropertiesAction() const
     { return *filePropertiesAction_; }
 
     //* spellcheck
-    QAction& spellcheckAction( void ) const
+    QAction& spellcheckAction() const
     { return *spellcheckAction_; }
 
     //* diff files action
-    QAction& diffAction( void ) const
+    QAction& diffAction() const
     { return *diffAction_; }
 
     //* split display horizontal
-    QAction& splitDisplayHorizontalAction( void ) const
+    QAction& splitDisplayHorizontalAction() const
     { return *splitDisplayHorizontalAction_; }
 
     //* split display vertical
-    QAction& splitDisplayVerticalAction( void ) const
+    QAction& splitDisplayVerticalAction() const
     { return *splitDisplayVerticalAction_; }
 
     //* open horizontal
-    QAction& openHorizontalAction( void ) const
+    QAction& openHorizontalAction() const
     { return *openHorizontalAction_; }
 
     //* open vertical
-    QAction& openVerticalAction( void ) const
+    QAction& openVerticalAction() const
     { return *openVerticalAction_; }
 
     //@}
@@ -304,22 +304,22 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     void activated( MainWindow* );
 
     //* emitted when the document modification state of an editor is changed
-    void modificationChanged( void );
+    void modificationChanged();
 
     //*@name re-implemented from text editor
     //@{
 
     //* emitted from TextDisplay when no match is found for find/replace request
-    void noMatchFound( void );
+    void noMatchFound();
 
     //* emitted from TextDisplay when no match is found for find/replace request
-    void matchFound( void );
+    void matchFound();
 
     //* emitted when selected line is not found
-    void lineNotFound( void );
+    void lineNotFound();
 
     //* emitted when selected line is found
-    void lineFound( void );
+    void lineFound();
 
     //* busy
     void busy( int );
@@ -328,7 +328,7 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     void progressAvailable( int );
 
     //* idle
-    void idle( void );
+    void idle();
 
     //* scratch files
     void scratchFileCreated( const File& );
@@ -343,20 +343,20 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     { activeView_->selectClassName( value ); }
 
     //* rehighlight all text displays
-    void rehighlight( void )
+    void rehighlight()
     { activeView_->rehighlight(); }
 
     //*@name reimplemented from TextEditor
     //@{
 
     //* find text from dialog
-    void findFromDialog( void );
+    void findFromDialog();
 
     //* replace text from dialog
-    void replaceFromDialog( void );
+    void replaceFromDialog();
 
     //* select line from dialog
-    void selectLineFromDialog( void );
+    void selectLineFromDialog();
 
     //@}
 
@@ -374,22 +374,22 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     private Q_SLOTS:
 
     //* update configuration
-    void _updateConfiguration( void );
+    void _updateConfiguration();
 
     //* update configuration
-    void _saveConfiguration( void );
+    void _saveConfiguration();
 
     //* toggle navigation frame visibility
     void _toggleNavigationFrame( bool );
 
     //* splitter moved
-    void _splitterMoved( void );
+    void _splitterMoved();
 
     //* active view changed
     /**
     this is triggered by StackedWidget::currentWidgetChanged
     */
-    void _activeViewChanged( void );
+    void _activeViewChanged();
 
     //* select display from file
     /**
@@ -401,82 +401,82 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     { selectDisplay( record.file() ); }
 
     //* clone current file
-    void _splitDisplay( void );
+    void _splitDisplay();
 
     //* clone current file horizontal
-    void _splitDisplayHorizontal( void )
+    void _splitDisplayHorizontal()
     { activeView_->splitDisplay( Qt::Horizontal, true ); }
 
     //* clone current file horizontal
-    void _splitDisplayVertical( void )
+    void _splitDisplayVertical()
     { activeView_->splitDisplay( Qt::Vertical, true ); }
 
     //* close
     /** close window */
-    void _closeWindow( void )
+    void _closeWindow()
     { close(); }
 
     //* close
     /** close current display if more than two display are open, */
-    void _closeDisplay( void )
+    void _closeDisplay()
     { activeView_->closeActiveDisplay(); }
 
     //* save
-    void _save( void )
+    void _save()
     { activeDisplay().save(); }
 
     //* Save As
-    void _saveAs( void )
+    void _saveAs()
     { activeDisplay().saveAs(); }
 
     //* Revert to save
-    void _revertToSave( void );
+    void _revertToSave();
 
     //* Print current document
-    void _print( void );
+    void _print();
 
     //* Print current document
     void _print( PrintHelper& );
 
     //* Print preview current document
-    void _printPreview( void );
+    void _printPreview();
 
     //* export to html
-    void _toHtml( void );
+    void _toHtml();
 
     //*@name forwarded slots
     //@{
 
     //* undo
-    void _undo( void )
+    void _undo()
     { activeDisplay().undoAction().trigger(); }
 
     //* redo
-    void _redo( void )
+    void _redo()
     { activeDisplay().redoAction().trigger(); }
 
     //* cut
-    void _cut( void )
+    void _cut()
     { activeDisplay().cutAction().trigger(); }
 
     //* copy
-    void _copy( void )
+    void _copy()
     { activeDisplay().copyAction().trigger(); }
 
     //* paste
-    void _paste( void )
+    void _paste()
     { activeDisplay().pasteAction().trigger(); }
 
     //* file information
-    void _fileInfo( void )
+    void _fileInfo()
     { activeDisplay().filePropertiesAction().trigger(); }
 
     //* spellcheck
-    void _spellcheck( void )
+    void _spellcheck()
     { activeDisplay().spellcheckAction().trigger(); }
 
     //* diff files
-    void _diff( void )
+    void _diff()
     { activeView_->diff(); }
 
     //* find
@@ -500,10 +500,10 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     { activeDisplay().selectLine( value ); }
 
     //* replace selection in multiple files
-    void _multipleFileReplace( void );
+    void _multipleFileReplace();
 
     //* restore focus on active display, when closing embedded dialog
-    void _restoreFocus( void )
+    void _restoreFocus()
     { activeDisplay().setFocus(); }
 
     //@}
@@ -513,34 +513,34 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     void _update( TextDisplay::UpdateFlags );
 
     //* update replace in selection action
-    void _updateReplaceInSelection( void );
+    void _updateReplaceInSelection();
 
     //* update modifiers
-    void _updateModifiers( void );
+    void _updateModifiers();
 
     //* update actions based on number of displays in active view
-    void _updateDisplayCount( void )
+    void _updateDisplayCount()
     { _update( TextDisplay::DisplayCount ); }
 
     //* display cursor position in state window
-    void _updateCursorPosition( void );
+    void _updateCursorPosition();
 
     private:
 
     //* install actions
-    void _installActions( void );
+    void _installActions();
 
     //* install toolbars
-    void _installToolbars( void );
+    void _installToolbars();
 
     //* create find dialog
-    void _createFindWidget( void );
+    void _createFindWidget();
 
     //* create replace dialog
-    void _createReplaceWidget( void );
+    void _createReplaceWidget();
 
     //* create select line widget
-    void _createSelectLineWidget( void );
+    void _createSelectLineWidget();
 
     //* make connection between this window and child text view
     void _connectView( TextView& view );

@@ -46,7 +46,7 @@ class SessionFilesModel: public FileRecordModel
     QVariant data(const QModelIndex &, int ) const override;
 
     //* mime type
-    QStringList mimeTypes( void ) const override;
+    QStringList mimeTypes() const override;
 
     //* mime data
     QMimeData* mimeData(const QModelIndexList &indexes) const override;
@@ -70,7 +70,7 @@ class SessionFilesModel: public FileRecordModel
     private Q_SLOTS:
 
     //* configuration
-    void _updateConfiguration( void );
+    void _updateConfiguration();
 
     private:
 
@@ -81,7 +81,7 @@ class SessionFilesModel: public FileRecordModel
     using IconCache = QHash<int, QIcon>;
 
     //* type icon cache
-    static IconCache& _icons( void );
+    static IconCache& _icons();
 
 };
 

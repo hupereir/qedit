@@ -57,7 +57,7 @@ class NavigationToolBar: public CustomToolBar
     private Q_SLOTS:
 
     //* update configuration
-    void _updateConfiguration( void );
+    void _updateConfiguration();
 
     //* toolbar text position
     void _updateToolButtonStyle( int );
@@ -77,7 +77,7 @@ class NavigationToolBar: public CustomToolBar
     private:
 
     //* navigation frame
-    NavigationFrame& _navigationFrame( void )
+    NavigationFrame& _navigationFrame()
     { return *navigationFrame_; }
 
     //* tool button

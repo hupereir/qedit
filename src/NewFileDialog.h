@@ -53,15 +53,15 @@ class NewFileDialog: public BaseDialog, private Base::Counter<NewFileDialog>
     private Q_SLOTS:
 
     //* create new file
-    void _create( void )
+    void _create()
     { done( Create ); }
 
     //* cancel creation/exit editor
-    void _cancel( void )
+    void _cancel()
     { done( Cancel ); }
 
     //* exit application
-    void _exit( void )
+    void _exit()
     { done( Exit ); }
 
 };

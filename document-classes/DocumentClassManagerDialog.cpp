@@ -96,7 +96,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
 }
 
 //______________________________________________________________________
-File::List DocumentClassManagerDialog::userFiles( void ) const
+File::List DocumentClassManagerDialog::userFiles() const
 {
     File::List files;
     for( const auto& documentClass:model_.get() )
@@ -106,7 +106,7 @@ File::List DocumentClassManagerDialog::userFiles( void ) const
 }
 
 //______________________________________________________________________
-void DocumentClassManagerDialog::_reload( void )
+void DocumentClassManagerDialog::_reload()
 {
 
     Debug::Throw( "DocumentClassManager::Dialog::_reload.\n" );
@@ -125,7 +125,7 @@ void DocumentClassManagerDialog::_reload( void )
 }
 
 //______________________________________________________________________
-void DocumentClassManagerDialog::_add( void )
+void DocumentClassManagerDialog::_add()
 {
 
     Debug::Throw( "DocumentClassManagerDialog::_add.\n" );
@@ -143,7 +143,7 @@ void DocumentClassManagerDialog::_add( void )
 }
 
 //______________________________________________________________________
-void DocumentClassManagerDialog::_remove( void )
+void DocumentClassManagerDialog::_remove()
 {
     Debug::Throw( "DocumentClassManagerDialog::_remove.\n" );
 
@@ -172,7 +172,7 @@ void DocumentClassManagerDialog::_remove( void )
 }
 
 //______________________________________________________________________
-void DocumentClassManagerDialog::_updateButtons( void )
+void DocumentClassManagerDialog::_updateButtons()
 {
     // loop over selected items
     bool removeEnabled( false );

@@ -48,30 +48,30 @@ class NavigationFrame: public QStackedWidget
     { defaultWidth_ = value; }
 
     //* default width
-    int defaultWidth( void ) const
+    int defaultWidth() const
     { return defaultWidth_; }
 
     //* size
-    QSize sizeHint( void ) const
+    QSize sizeHint() const
     { return (defaultWidth_ ) >= 0 ? QSize( defaultWidth_, 0 ):QWidget::sizeHint(); }
 
     //* session files
-    SessionFilesFrame& sessionFilesFrame( void ) const
+    SessionFilesFrame& sessionFilesFrame() const
     { return *sessionFilesFrame_; }
 
     //* recent files
-    RecentFilesFrame& recentFilesFrame( void ) const
+    RecentFilesFrame& recentFilesFrame() const
     { return *recentFilesFrame_; }
 
     //* file system
-    FileSystemFrame& fileSystemFrame( void ) const
+    FileSystemFrame& fileSystemFrame() const
     { return *fileSystemFrame_; }
 
     //*@name actions
     //@{
 
     //* visibility
-    QAction& visibilityAction( void ) const
+    QAction& visibilityAction() const
     { return *visibilityAction_; }
 
     //@}
@@ -79,12 +79,12 @@ class NavigationFrame: public QStackedWidget
     private Q_SLOTS:
 
     //* update current widget
-    void _updateCurrentWidget( void );
+    void _updateCurrentWidget();
 
     private:
 
     //* install actions
-    void _installActions( void );
+    void _installActions();
 
     //* default width;
     int defaultWidth_ = -1;

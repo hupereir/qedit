@@ -29,11 +29,11 @@ class NewDocumentNameServer
     public:
 
     //* constructor
-    explicit NewDocumentNameServer( void )
+    explicit NewDocumentNameServer()
     {}
 
     //* get name
-    QString get( void );
+    QString get();
 
     //* remove (this is used to avoid that version number is incremented too quickly)
     void remove( QString );

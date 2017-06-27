@@ -29,12 +29,12 @@ namespace TextBlock
 {
 
     //* counts how many times a block appears as a begin and a end block
-    class Delimiter: private Base::Counter<Delimiter>
+    class Delimiter final: private Base::Counter<Delimiter>
     {
         public:
 
         //* constructor
-        explicit Delimiter( void ):
+        explicit Delimiter():
             Counter( "TextBlock::Delimiter" )
         {}
 
@@ -85,7 +85,7 @@ namespace TextBlock
             public:
 
             //* constructor
-            explicit List( void ):
+            explicit List():
                 Counter( "TextBlock::Delimiter::List" )
                 {}
 
@@ -124,7 +124,7 @@ namespace TextBlock
             public:
 
             //* constructor
-            explicit Pair( void )
+            explicit Pair()
             {}
 
             //* equal to
@@ -135,11 +135,11 @@ namespace TextBlock
             Pair operator + ( const Pair& ) const;
 
             //* increment
-            void increment( void )
+            void increment()
             { begin_++; }
 
             //* decrement
-            void decrement( void )
+            void decrement()
             {
                 if( begin_ > 0 ) begin_--;
                 else end_++;

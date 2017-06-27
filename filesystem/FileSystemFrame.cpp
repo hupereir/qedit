@@ -130,7 +130,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     // connect thread
     connect( &thread_, SIGNAL(filesAvailable(const File::List&)), SLOT(_processFiles(const File::List&)) );
 
-    connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
+    connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
     _updateConfiguration();
     _updateNavigationActions();
     _updateActions();
@@ -259,7 +259,7 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
 }
 
 //______________________________________________________
-void FileSystemFrame::_updateConfiguration( void )
+void FileSystemFrame::_updateConfiguration()
 {
     Debug::Throw( "FileSystemFrame::_updateConfiguration.\n" );
     hiddenFilesAction_->setChecked( XmlOptions::get().get<bool>( "SHOW_HIDDEN_FILES" ) );
@@ -270,7 +270,7 @@ void FileSystemFrame::_updateConfiguration( void )
 }
 
 //______________________________________________________
-void FileSystemFrame::_updateNavigationActions( void )
+void FileSystemFrame::_updateNavigationActions()
 {
     Debug::Throw( "FileSystemFrame::_updateNavigationActions.\n" );
     previousDirectoryAction_->setEnabled( pathEditor_->hasPrevious() );
@@ -284,7 +284,7 @@ void FileSystemFrame::_update( const QString& value )
 { if( isVisible() && value == pathEditor_->path() ) _update(); }
 
 //______________________________________________________
-void FileSystemFrame::_update( void )
+void FileSystemFrame::_update()
 {
 
     const File path( pathEditor_->path() );
@@ -302,7 +302,7 @@ void FileSystemFrame::_update( void )
 }
 
 //______________________________________________________________________
-void FileSystemFrame::_updateActions( void )
+void FileSystemFrame::_updateActions()
 {
     Debug::Throw( "FileSystemFrame:_updateActions.\n" );
     FileRecord::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
@@ -366,14 +366,14 @@ void FileSystemFrame::_toggleShowHiddenFiles( bool state )
 }
 
 //______________________________________________________
-void FileSystemFrame::_reload( void )
+void FileSystemFrame::_reload()
 {
     Debug::Throw( "FileSystemFrame::_reload.\n" );
     setPath( pathEditor_->path(), true );
 }
 
 //______________________________________________________________________
-void FileSystemFrame::_open( void )
+void FileSystemFrame::_open()
 {
 
     Debug::Throw( "FileSystemFrame:_open.\n" );
@@ -393,7 +393,7 @@ void FileSystemFrame::_open( void )
 }
 
 //______________________________________________________________________
-void FileSystemFrame::_remove( void )
+void FileSystemFrame::_remove()
 {
 
     Debug::Throw( "FileSystemFrame::_remove.\n" );
@@ -424,7 +424,7 @@ void FileSystemFrame::_remove( void )
 }
 
 //________________________________________
-void FileSystemFrame::_rename( void )
+void FileSystemFrame::_rename()
 {
 
     Debug::Throw( "FileSystemFrame::_rename.\n" );
@@ -447,7 +447,7 @@ void FileSystemFrame::_rename( void )
 }
 
 //________________________________________
-void FileSystemFrame::_fileProperties( void )
+void FileSystemFrame::_fileProperties()
 {
 
     Debug::Throw( "FileSystemFrame::_fileProperties.\n" );
@@ -471,7 +471,7 @@ void FileSystemFrame::_fileProperties( void )
 }
 
 //_____________________________________________
-void FileSystemFrame::_installActions( void )
+void FileSystemFrame::_installActions()
 {
 
     Debug::Throw( "FileSystemFrame::_installActions.\n" );

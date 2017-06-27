@@ -53,7 +53,7 @@ class HtmlHelper: public QObject, private Base::Counter<HtmlHelper>
     protected:
 
     //* get full html string
-    QString _htmlString( void );
+    QString _htmlString();
 
     //* get documents (editor) Html node
     QDomElement _htmlNode( QDomDocument& );

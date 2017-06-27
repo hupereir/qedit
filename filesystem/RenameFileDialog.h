@@ -37,17 +37,17 @@ class RenameFileDialog: public CustomDialog
     explicit RenameFileDialog( QWidget* parent, FileRecord );
 
     //* new file name
-    File file( void ) const;
+    File file() const;
 
     private Q_SLOTS:
 
     //* button update
-    void _updateButtons( void );
+    void _updateButtons();
 
     private:
 
     //* line editor
-    LineEditor& _editor( void ) const
+    LineEditor& _editor() const
     { return *editor_; }
 
     //* editor

@@ -52,10 +52,10 @@ class Diff: public QObject, private Base::Counter<Diff>
 
     //* run process
     /** returns true if command could run succesfully */
-    bool run( void );
+    bool run();
 
     //* error message
-    const QString& error( void ) const
+    const QString& error() const
     { return error_; }
 
     //* paragraph range
@@ -72,7 +72,7 @@ class Diff: public QObject, private Base::Counter<Diff>
     private:
 
     //* clear ranges
-    void _clear( void );
+    void _clear();
 
     //* parse a diff line
     void _parseLine( const QString& line );
@@ -87,16 +87,16 @@ class Diff: public QObject, private Base::Counter<Diff>
         public:
 
         //* default constructor
-        explicit FileInformation( void );
+        explicit FileInformation();
 
         //* destructor
-        ~FileInformation( void );
+        ~FileInformation();
 
         //* set display
         void setDisplay( TextDisplay& display );
 
         //* file
-        const File& file( void ) const
+        const File& file() const
         { return file_; }
 
         //* add added range
@@ -115,14 +115,14 @@ class Diff: public QObject, private Base::Counter<Diff>
 
 
         //* clear
-        void clear( void )
+        void clear()
         {
             added_.clear();
             conflicts_.clear();
         }
 
         //* highlight text display based on conflicts and added paragraphs
-        void highlightDisplay( void );
+        void highlightDisplay();
 
         //* list
         using List = QVector<FileInformation>;

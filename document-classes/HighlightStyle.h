@@ -32,7 +32,7 @@
 #include <QList>
 
 //* Base class for syntax highlighting
-class HighlightStyle: private Base::Counter<HighlightStyle>
+class HighlightStyle final: private Base::Counter<HighlightStyle>
 {
 
     public:
@@ -55,7 +55,7 @@ class HighlightStyle: private Base::Counter<HighlightStyle>
     QDomElement domElement( QDomDocument& parent ) const;
 
     //* name
-    const QString& name( void ) const
+    const QString& name() const
     { return name_; }
 
     //* same name ftor
@@ -113,7 +113,7 @@ class HighlightStyle: private Base::Counter<HighlightStyle>
     { name_ = name; }
 
     //* format
-    Format::TextFormatFlags fontFormat( void ) const
+    Format::TextFormatFlags fontFormat() const
     { return format_; }
 
     //* format
@@ -121,7 +121,7 @@ class HighlightStyle: private Base::Counter<HighlightStyle>
     { format_ = format; }
 
     //* color
-    const QColor& color( void ) const
+    const QColor& color() const
     { return color_; }
 
     //* color

@@ -30,26 +30,26 @@
 class DocumentClass;
 
 //* Store list of Document Class
-class DocumentClassManager: private Base::Counter<DocumentClassManager>
+class DocumentClassManager final: private Base::Counter<DocumentClassManager>
 {
 
     public:
 
     //* constructor
-    explicit DocumentClassManager( void );
+    explicit DocumentClassManager();
 
     //* destructor
-    ~DocumentClassManager( void ) override
+    ~DocumentClassManager()
     { clear(); }
 
     //* clear document classes
-    void clear( void );
+    void clear();
 
     //* read classes from file
     bool read( const File& file );
 
     //* read errors
-    const QString& readError( void ) const
+    const QString& readError() const
     { return readError_; }
 
     //* write all classes to file
@@ -62,7 +62,7 @@ class DocumentClassManager: private Base::Counter<DocumentClassManager>
     bool write( const DocumentClass&, const File& ) const;
 
     //* get default document class
-    DocumentClass defaultClass( void ) const;
+    DocumentClass defaultClass() const;
 
     //* get class matching filename. Return 0 if not found
     DocumentClass find( const File& file ) const;
@@ -77,7 +77,7 @@ class DocumentClassManager: private Base::Counter<DocumentClassManager>
     using List = QList<DocumentClass>;
 
     //* get all classes
-    const List& classes( void ) const
+    const List& classes() const
     { return documentClasses_; }
 
     //* set all classes

@@ -39,7 +39,7 @@ Diff::Diff( QObject* parent ):
 }
 
 //_________________________________________________________________
-bool Diff::run( void )
+bool Diff::run()
 {
     Debug::Throw( "Diff::run.\n" );
 
@@ -97,7 +97,7 @@ bool Diff::run( void )
 }
 
 //________________________________________________________________
-void Diff::_clear( void )
+void Diff::_clear()
 {
 
     Debug::Throw( "Diff::_Clear.\n" );
@@ -206,7 +206,7 @@ Diff::Range Diff::_parseRange( const QString& range )
 }
 
 //___________________________________________________________________
-Diff::FileInformation::FileInformation( void )
+Diff::FileInformation::FileInformation()
 { Debug::Throw( "Diff::FileInformation::FileInformation.\n" ); }
 
 //___________________________________________________________________
@@ -260,11 +260,11 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
 }
 
 //________________________________________________________________________
-Diff::FileInformation::~FileInformation( void )
+Diff::FileInformation::~FileInformation()
 { if( isTemporary_ ) file_.remove(); }
 
 //________________________________________________________________________
-void Diff::FileInformation::highlightDisplay( void )
+void Diff::FileInformation::highlightDisplay()
 {
 
     Debug::Throw() << "Diff::FileInformation::highlightDisplay." << endl;

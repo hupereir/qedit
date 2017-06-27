@@ -80,7 +80,7 @@ Counter( "SessionFilesFrame" )
     menu->addSeparator();
     menu->addAction( openAction_ );
     menu->addAction( saveAction_ );
-    menu->addAction( &Singleton::get().application<Application>()->windowServer().saveAllAction() );
+    menu->addAction( &Base::Singleton::get().application<Application>()->windowServer().saveAllAction() );
     menu->addAction( closeAction_ );
     menu->addSeparator();
     menu->addAction( previousFileAction_ );
@@ -119,12 +119,12 @@ void SessionFilesFrame::select( const File& file )
 }
 
 //______________________________________________________________________
-void SessionFilesFrame::update( void )
+void SessionFilesFrame::update()
 {
     Debug::Throw( "SessionFilesFrame:update.\n" );
 
     // store in model
-    auto records( Singleton::get().application<Application>()->windowServer().records( WindowServer::None, window() ) );
+    auto records( Base::Singleton::get().application<Application>()->windowServer().records( WindowServer::None, window() ) );
     model_.update( records );
 
     list_->updateMask();
@@ -139,7 +139,7 @@ void SessionFilesFrame::update( void )
 }
 
 //______________________________________________________________________
-void SessionFilesFrame::_updateActions( void )
+void SessionFilesFrame::_updateActions()
 {
 
     Debug::Throw( "SessionFilesFrame:_updateActions.\n" );
@@ -195,7 +195,7 @@ void SessionFilesFrame::_showToolTip( const QModelIndex& index )
 }
 
 //______________________________________________________________________
-void SessionFilesFrame::_selectPreviousFile( void )
+void SessionFilesFrame::_selectPreviousFile()
 {
 
     Debug::Throw( "SessionFilesFrame:_selectPreviousFile.\n" );
@@ -226,7 +226,7 @@ void SessionFilesFrame::_selectPreviousFile( void )
 
 
 //______________________________________________________________________
-void SessionFilesFrame::_selectNextFile( void )
+void SessionFilesFrame::_selectNextFile()
 {
 
     Debug::Throw( "SessionFilesFrame:_selectNextFile.\n" );
@@ -256,7 +256,7 @@ void SessionFilesFrame::_selectNextFile( void )
 }
 
 //______________________________________________________________________
-void SessionFilesFrame::_open( void )
+void SessionFilesFrame::_open()
 {
 
     Debug::Throw( "SessionFilesFrame:_open.\n" );
@@ -266,7 +266,7 @@ void SessionFilesFrame::_open( void )
 }
 
 //______________________________________________________________________
-void SessionFilesFrame::_save( void )
+void SessionFilesFrame::_save()
 {
 
     Debug::Throw( "SessionFilesFrame:_save.\n" );
@@ -281,7 +281,7 @@ void SessionFilesFrame::_save( void )
 
 
 //______________________________________________________________________
-void SessionFilesFrame::_close( void )
+void SessionFilesFrame::_close()
 {
 
     Debug::Throw( "SessionFilesFrame:_close.\n" );
@@ -310,7 +310,7 @@ void SessionFilesFrame::_itemActivated( const QModelIndex& index )
 }
 
 //______________________________________________________________________
-void SessionFilesFrame::_installActions( void )
+void SessionFilesFrame::_installActions()
 {
 
     Debug::Throw( "SessionFilesFrame::_installActions.\n" );

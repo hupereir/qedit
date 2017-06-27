@@ -28,12 +28,12 @@
 #include <algorithm>
 
 //________________________________________________________
-DocumentClassManager::DocumentClassManager( void ):
+DocumentClassManager::DocumentClassManager():
     Counter( "DocumentClassManager" )
 { Debug::Throw( "DocumentclassManager::DocumentClassManager.\n" ); }
 
 //________________________________________________________
-void DocumentClassManager::clear( void )
+void DocumentClassManager::clear()
 {
     Debug::Throw( "DocumentClassManager::Clear.\n" );
     documentClasses_.clear();
@@ -174,7 +174,7 @@ bool DocumentClassManager::write( const File& path ) const
 }
 
 //________________________________________________________
-DocumentClass DocumentClassManager::defaultClass( void ) const
+DocumentClass DocumentClassManager::defaultClass() const
 {
 
     Debug::Throw( "DocumentClassManager::defaultClass.\n" );

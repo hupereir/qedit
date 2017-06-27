@@ -35,13 +35,13 @@
 #include <QRegExp>
 
 //* Highlight and indentation patterns for a given document class
-class DocumentClass: private Base::Counter<DocumentClass>
+class DocumentClass final: private Base::Counter<DocumentClass>
 {
 
     public:
 
     //* constructor
-    explicit DocumentClass( void );
+    explicit DocumentClass();
 
     //* constructor
     explicit DocumentClass( const QDomElement& );
@@ -56,46 +56,46 @@ class DocumentClass: private Base::Counter<DocumentClass>
     //@{
 
     //* name
-    const QString& name( void ) const
+    const QString& name() const
     { return name_; }
 
     //* file
-    const File& file( void ) const
+    const File& file() const
     { return file_; }
 
     //* icon name
-    const QString& icon( void ) const
+    const QString& icon() const
     { return icon_; }
 
     //* default
-    bool isDefault( void ) const
+    bool isDefault() const
     { return default_; }
 
     //* build in
-    bool isBuildIn( void ) const
+    bool isBuildIn() const
     { return buildIn_; }
 
     //* filename matching pattern
-    const QRegExp& fileMatchingPattern( void ) const
+    const QRegExp& fileMatchingPattern() const
     { return filePattern_; }
 
     //* first line matching pattern
-    const QRegExp& firstLineMatchingPattern( void ) const
+    const QRegExp& firstLineMatchingPattern() const
     { return firstlinePattern_; }
 
     //* return true if document class match filename
     bool match( const File& file ) const;
 
     //* returns true if document class enables wrapping by default
-    bool wrap( void ) const
+    bool wrap() const
     { return wrap_; }
 
     //* returns true if document class enables tab emulation by default
-    bool emulateTabs( void ) const
+    bool emulateTabs() const
     { return emulateTabs_; }
 
     //* tab size
-    int tabSize( void ) const
+    int tabSize() const
     { return tabSize_; }
 
     //* hightlight styles
@@ -117,7 +117,7 @@ class DocumentClass: private Base::Counter<DocumentClass>
     not to be considered when indenting. This is the case
     for the first 6 space characters in fortran files
     */
-    int baseIndentation( void ) const
+    int baseIndentation() const
     { return baseIndentation_; }
 
     //* text parenthesis
@@ -237,7 +237,7 @@ class DocumentClass: private Base::Counter<DocumentClass>
 
     //* perform associations between highlight patterns and highlight styles
     /** returns list of warnings if any */
-    QStringList _associatePatterns( void );
+    QStringList _associatePatterns();
 
     private:
 

@@ -27,7 +27,7 @@
 QString HighlightPattern::noParentPattern_( "None" );
 
 //___________________________________________________________________________
-HighlightPattern::HighlightPattern( void ):
+HighlightPattern::HighlightPattern():
     Counter( "HighlightPattern" ),
     name_( "default" )
 {}

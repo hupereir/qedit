@@ -45,7 +45,7 @@ class DocumentClassToolBar: public CustomToolBar
     private Q_SLOTS:
 
     //* update list
-    void _update( void );
+    void _update();
 
     //* current index changed
     void _currentIndexChanged( int );
@@ -53,7 +53,7 @@ class DocumentClassToolBar: public CustomToolBar
     private:
 
     //* document class selection combo box
-    QComboBox& _comboBox( void ) const
+    QComboBox& _comboBox() const
     { return *combobox_; }
 
     //* document class selection combo box

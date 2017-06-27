@@ -50,7 +50,7 @@ Application::Application( CommandLineArguments arguments ):
 {}
 
 //____________________________________________
-bool Application::initApplicationManager( void )
+bool Application::initApplicationManager()
 {
     Debug::Throw( "Application::initApplicationManager.\n" );
 
@@ -91,7 +91,7 @@ bool Application::initApplicationManager( void )
 }
 
 //____________________________________________
-bool Application::realizeWidget( void )
+bool Application::realizeWidget()
 {
     Debug::Throw( "Application::realizeWidget.\n" );
 
@@ -177,14 +177,14 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
 }
 
 //____________________________________________
-void Application::usage( void ) const
+void Application::usage() const
 {
     _usage( "qedit", tr("[options] [files]") );
     commandLineParser().usage();
 }
 
 //____________________________________________________________
-void Application::_updateDocumentClasses( void )
+void Application::_updateDocumentClasses()
 {
     Debug::Throw( "Application::_updateDocumentClasses.\n" );
 
@@ -222,7 +222,7 @@ void Application::_updateDocumentClasses( void )
 }
 
 //___________________________________________________________
-void Application::_configuration( void )
+void Application::_configuration()
 {
     Debug::Throw( "Application::_configuration.\n" );
     emit saveConfiguration();
@@ -233,7 +233,7 @@ void Application::_configuration( void )
 }
 
 //_______________________________________________
-void Application::_spellCheckConfiguration( void )
+void Application::_spellCheckConfiguration()
 {
 
     #if USE_ASPELL
@@ -263,7 +263,7 @@ void Application::_spellCheckConfiguration( void )
 }
 
 //_______________________________________________
-void Application::_documentClassesConfiguration( void )
+void Application::_documentClassesConfiguration()
 {
     Debug::Throw( "Application::_documentClassesConfiguration.\n" );
     DocumentClassManagerDialog dialog;
@@ -279,7 +279,7 @@ void Application::_documentClassesConfiguration( void )
 }
 
 //___________________________________________________________
-void Application::_saveSession( void )
+void Application::_saveSession()
 {
     Debug::Throw( "Application::_saveSession.\n" );
     sessionFiles_->set( windowServer_->records( WindowServer::ExistingOnly ) );
@@ -288,7 +288,7 @@ void Application::_saveSession( void )
 }
 
 //___________________________________________________________
-void Application::_printSession( void )
+void Application::_printSession()
 {
     Debug::Throw( "Application::_printSession.\n" );
 
@@ -312,7 +312,7 @@ void Application::_printSession( void )
 }
 
 //___________________________________________________________
-void Application::_restoreSession( void )
+void Application::_restoreSession()
 {
     Debug::Throw( "Application::_restoreSession.\n" );
     auto&& records( sessionFiles_->records() );
@@ -321,7 +321,7 @@ void Application::_restoreSession( void )
 }
 
 //___________________________________________________________
-void Application::_restoreLastSession( void )
+void Application::_restoreLastSession()
 {
     Debug::Throw( "Application::_restoreLastSession.\n" );
     auto&& records( lastSessionFiles_->records() );
@@ -330,7 +330,7 @@ void Application::_restoreLastSession( void )
 }
 
 //___________________________________________________________
-void Application::_discardSession( void )
+void Application::_discardSession()
 {
     Debug::Throw( "Application::_discardSession.\n" );
     sessionFiles_->clear();
@@ -339,14 +339,14 @@ void Application::_discardSession( void )
 }
 
 //___________________________________________________________
-void Application::_updateLastSessionFiles( void )
+void Application::_updateLastSessionFiles()
 {
     lastSessionFiles_->set( windowServer_->records( WindowServer::ExistingOnly ) );
     static_cast<XmlFileList*>(lastSessionFiles_.get())->write();
 }
 
 //___________________________________________________________
-void Application::_updateSessionActions( void )
+void Application::_updateSessionActions()
 {
 
     Debug::Throw( "Application::_updateSessionActions.\n" );
@@ -368,7 +368,7 @@ void Application::_updateSessionActions( void )
 }
 
 //_____________________________________________
-void Application::_showMonitoredFiles( void )
+void Application::_showMonitoredFiles()
 {
 
     Debug::Throw( "Application::_showMonitoredFiles.\n" );
@@ -379,7 +379,7 @@ void Application::_showMonitoredFiles( void )
 }
 
 //_______________________________________________
-void Application::_exit( void )
+void Application::_exit()
 {
 
     Debug::Throw( "Application::_exit.\n" );
@@ -422,7 +422,7 @@ void Application::timerEvent( QTimerEvent* event )
 }
 
 //_________________________________________________
-void Application::_updateConfiguration( void )
+void Application::_updateConfiguration()
 {
     Debug::Throw( "Application::_updateConfiguration.\n" );
     static_cast<XmlFileList*>(recentFiles_.get())->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
@@ -432,7 +432,7 @@ void Application::_updateConfiguration( void )
 }
 
 //___________________________________________________________
-void Application::_installActions( void )
+void Application::_installActions()
 {
 
     Debug::Throw( "Application::_installActions.\n" );

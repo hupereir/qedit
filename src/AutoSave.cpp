@@ -30,11 +30,11 @@ AutoSave::AutoSave( QObject* parent ):
     Counter( "AutoSave" )
 {
     Debug::Throw( "AutoSave::AutoSave.\n" );
-    connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
+    connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
 }
 
 //______________________________________________________
-AutoSave::~AutoSave( void )
+AutoSave::~AutoSave()
 {
 
     Debug::Throw( "AutoSave::~AutoSave.\n" );
@@ -148,7 +148,7 @@ void AutoSave::timerEvent( QTimerEvent* event )
 }
 
 //______________________________________________________
-void AutoSave::_updateConfiguration( void )
+void AutoSave::_updateConfiguration()
 {
 
     Debug::Throw( "AutoSave::_updateConfiguration.\n" );

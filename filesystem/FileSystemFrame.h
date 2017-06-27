@@ -72,10 +72,10 @@ class FileSystemFrame: public QWidget, private Base::Counter<FileSystemFrame>
     void _toggleShowHiddenFiles( bool state );
 
     //* update configuration
-    void _updateConfiguration( void );
+    void _updateConfiguration();
 
     //* update navigation actions based on current location and history
-    void _updateNavigationActions( void );
+    void _updateNavigationActions();
 
     //* show tooltip
     void _showToolTip( const QModelIndex& );
@@ -84,38 +84,38 @@ class FileSystemFrame: public QWidget, private Base::Counter<FileSystemFrame>
     void _update( const QString& );
 
     //* update directory
-    void _update( void );
+    void _update();
 
     //* update actions
-    void _updateActions( void );
+    void _updateActions();
 
     //* working directory
-    void _workingDirectory( void )
+    void _workingDirectory()
     { setPath( workingPath_ ); }
 
     //* home directory
-    void _homeDirectory( void )
+    void _homeDirectory()
     { setPath( homePath_ ); }
 
     //* reload
-    void _reload( void );
+    void _reload();
 
     //* open
-    void _open( void );
+    void _open();
 
     //* remove (from dialog)
-    void _remove( void );
+    void _remove();
 
     //* remove (from dialog)
-    void _rename( void );
+    void _rename();
 
     //* file properties
-    void _fileProperties( void );
+    void _fileProperties();
 
     private:
 
     //* install actions
-    void _installActions( void );
+    void _installActions();
 
      //* path editor
     PathEditor* pathEditor_ = nullptr;

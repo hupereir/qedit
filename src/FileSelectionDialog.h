@@ -42,12 +42,12 @@ class FileSelectionDialog: public CustomDialog
     using FileList = QList<File>;
 
     //* selected files
-    FileList selectedFiles( void ) const;
+    FileList selectedFiles() const;
 
     private Q_SLOTS:
 
     //* update buttons
-    void _updateButtons( void );
+    void _updateButtons();
 
     private:
 

@@ -41,7 +41,7 @@ class AutoSave: public QObject, private Base::Counter<AutoSave>
     explicit AutoSave( QObject* = nullptr );
 
     //* destructor
-    ~AutoSave( void ) override;
+    ~AutoSave() override;
 
     //* register new thread
     void newThread( TextDisplay* );
@@ -58,11 +58,11 @@ class AutoSave: public QObject, private Base::Counter<AutoSave>
 
     //* update configuration
     /* update interval between threads */
-    void _updateConfiguration( void );
+    void _updateConfiguration();
 
     private:
 
-    bool _enabled( void ) const
+    bool _enabled() const
     { return enabled_ && interval_ > 0; }
 
     //* true when enabled

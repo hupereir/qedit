@@ -33,7 +33,7 @@
 class PatternLocationSet;
 
 //* Base class for syntax highlighting
-class HighlightPattern: private Base::Counter<HighlightPattern>
+class HighlightPattern final: private Base::Counter<HighlightPattern>
 {
 
     public:
@@ -58,7 +58,7 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     static QString noParentPattern_;
 
     //* default constructor
-    explicit HighlightPattern( void );
+    explicit HighlightPattern();
 
     //* constructor from DomElement
     explicit HighlightPattern( const QDomElement& );
@@ -73,11 +73,11 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     //@{
 
     //* unique id
-    int id( void ) const
+    int id() const
     { return id_; }
 
     //* name
-    QString name( void ) const
+    QString name() const
     { return name_; }
 
     //* pattern type
@@ -89,46 +89,46 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     };
 
     //* type
-    Type type( void ) const
+    Type type() const
     { return type_; }
 
     //* type
-    QString typeName( void ) const
+    QString typeName() const
     { return typeName( type_ ); }
 
     //* type
     static QString typeName( Type type );
 
     //* parent name
-    QString parent( void ) const
+    QString parent() const
     { return parent_; }
 
     //* parent id
-    int parentId( void ) const
+    int parentId() const
     { return parentId_; }
 
     //* text style
-    const HighlightStyle& style( void ) const
+    const HighlightStyle& style() const
     { return style_; }
 
     //* child patterns
-    const List& children( void ) const
+    const List& children() const
     { return children_; }
 
     //* keyword regexp
-    const QRegExp& keyword( void ) const
+    const QRegExp& keyword() const
     { return keyword_; }
 
     //* begin regexp
-    const QRegExp& begin( void ) const
+    const QRegExp& begin() const
     { return keyword_; }
 
     //* end regexp
-    const QRegExp& end( void ) const
+    const QRegExp& end() const
     { return end_; }
 
     //* flags
-    const Flags& flags( void ) const
+    const Flags& flags() const
     { return flags_; }
 
     //* flags
@@ -136,7 +136,7 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     { return flags_ & flag; }
 
     //* validity
-    bool isValid( void ) const
+    bool isValid() const
     {
         switch( type_ )
         {
@@ -184,7 +184,7 @@ class HighlightPattern: private Base::Counter<HighlightPattern>
     { children_ << child; }
 
     //* clear children
-    void clearChildren( void )
+    void clearChildren()
     { children_.clear(); }
 
     //* keyword

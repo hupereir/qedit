@@ -37,7 +37,7 @@ text_( block.text() )
 }
 
 //_____________________________________________________________
-int CollapsedBlockData::blockCount( void ) const
+int CollapsedBlockData::blockCount() const
 {
     int out(1);
     for( const auto& child:children() )
@@ -47,7 +47,7 @@ int CollapsedBlockData::blockCount( void ) const
 }
 
 //_____________________________________________________________
-QString CollapsedBlockData::toPlainText( void ) const
+QString CollapsedBlockData::toPlainText() const
 {
 
     QString out( text() + "\n" );

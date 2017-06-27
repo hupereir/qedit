@@ -55,64 +55,64 @@ class Application: public BaseApplication, private Base::Counter<Application>
     explicit Application( CommandLineArguments );
 
     //* initialize application manager
-    bool initApplicationManager( void ) override;
+    bool initApplicationManager() override;
 
     //* create all widgets
-    bool realizeWidget( void ) override;
+    bool realizeWidget() override;
 
     //* file list
-    FileList& recentFiles( void ) const
+    FileList& recentFiles() const
     { return *recentFiles_; }
 
     //* Window server
-    WindowServer& windowServer( void ) const
+    WindowServer& windowServer() const
     { return *windowServer_; }
 
     //* DocumentClassManager
-    DocumentClassManager& classManager( void ) const
+    DocumentClassManager& classManager() const
     { return *classManager_; }
 
     //* retrieve AutoSave
-    AutoSave& autoSave( void ) const
+    AutoSave& autoSave() const
     { return *autosave_; }
 
     //* file check
-    FileCheck& fileCheck( void ) const
+    FileCheck& fileCheck() const
     { return *fileCheck_; }
 
     //*@name actions
     //@{
 
     //* spellcheck configuration
-    QAction& spellCheckConfigurationAction( void ) const
+    QAction& spellCheckConfigurationAction() const
     { return *spellCheckConfigurationAction_; }
 
     //* document classes configuration
-    QAction& documentClassesConfigurationAction( void ) const
+    QAction& documentClassesConfigurationAction() const
     { return *documentClassesConfigurationAction_; }
 
     //* save session
-    QAction& saveSessionAction( void ) const
+    QAction& saveSessionAction() const
     { return *saveSessionAction_; }
 
     //* print session
-    QAction& printSessionAction( void ) const
+    QAction& printSessionAction() const
     { return *printSessionAction_; }
 
     //* restore session
-    QAction& restoreSessionAction( void ) const
+    QAction& restoreSessionAction() const
     { return *restoreSessionAction_; }
 
     //* restore session
-    QAction& restoreLastSessionAction( void ) const
+    QAction& restoreLastSessionAction() const
     { return *restoreLastSessionAction_; }
 
     //* discard session
-    QAction& discardSessionAction( void ) const
+    QAction& discardSessionAction() const
     { return *discardSessionAction_; }
 
     //* monitored files
-    QAction& monitoredFilesAction( void ) const
+    QAction& monitoredFilesAction() const
     { return *monitoredFilesAction_; }
 
 
@@ -125,18 +125,18 @@ class Application: public BaseApplication, private Base::Counter<Application>
     CommandLineParser commandLineParser( CommandLineArguments = CommandLineArguments(), bool ignoreWarnings = true ) const override;
 
     //* command line help
-    void usage( void ) const override;
+    void usage() const override;
 
     //* application name
-    QString applicationName( void ) const override
+    QString applicationName() const override
     { return "Qedit"; }
 
     //* application icon
-    QIcon applicationIcon( void ) const override
+    QIcon applicationIcon() const override
     { return IconEngine::get( ":/qedit.png" ); }
 
     // application version
-    QString applicationVersion( void ) const override
+    QString applicationVersion() const override
     { return VERSION; }
 
     //@}
@@ -144,51 +144,51 @@ class Application: public BaseApplication, private Base::Counter<Application>
     Q_SIGNALS:
 
     //* spellcheck configuration modified
-    void spellCheckConfigurationChanged( void );
+    void spellCheckConfigurationChanged();
 
     //* document classes have been modified
-    void documentClassesChanged( void );
+    void documentClassesChanged();
 
     protected Q_SLOTS:
 
     //* Update Document Classes from options
-    void _updateDocumentClasses( void );
+    void _updateDocumentClasses();
 
     //* configuration
-    void _configuration( void );
+    void _configuration();
 
     //* spellcheck configuration
-    void _spellCheckConfiguration( void );
+    void _spellCheckConfiguration();
 
     //* document classes configuration
-    void _documentClassesConfiguration( void );
+    void _documentClassesConfiguration();
 
     //* save session
-    void _saveSession( void );
+    void _saveSession();
 
     //* save session
-    void _printSession( void );
+    void _printSession();
 
     //* restore session
-    void _restoreSession( void );
+    void _restoreSession();
 
     //* restore session
-    void _restoreLastSession( void );
+    void _restoreLastSession();
 
     //* discard
-    void _discardSession( void );
+    void _discardSession();
 
     //* update session files
-    void _updateLastSessionFiles( void );
+    void _updateLastSessionFiles();
 
     //* update session actions
-    void _updateSessionActions( void );
+    void _updateSessionActions();
 
     //* monitored files
-    void _showMonitoredFiles( void );
+    void _showMonitoredFiles();
 
     //* exit safely
-    void _exit( void );
+    void _exit();
 
     //* process request from application manager
     bool _processCommand( Server::ServerCommand ) override;
@@ -205,12 +205,12 @@ class Application: public BaseApplication, private Base::Counter<Application>
     private Q_SLOTS:
 
     //* update configuration
-    void _updateConfiguration( void );
+    void _updateConfiguration();
 
     private:
 
     //* install actions
-    void _installActions( void );
+    void _installActions();
 
     //* recent files list
     std::unique_ptr<FileList> recentFiles_;

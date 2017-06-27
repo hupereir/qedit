@@ -25,7 +25,7 @@
 #include "XmlOptions.h"
 
 //__________________________________________________________________
-DocumentClassModel::IconCache& DocumentClassModel::_icons( void )
+DocumentClassModel::IconCache& DocumentClassModel::_icons()
 {
     static IconCache cache;
     return cache;
@@ -35,7 +35,7 @@ DocumentClassModel::IconCache& DocumentClassModel::_icons( void )
 DocumentClassModel::DocumentClassModel( QObject* parent ):
     ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>(parent),
     Counter( "DocumentClassModel" )
-{ connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) ); }
+{ connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) ); }
 
 //__________________________________________________________________
 Qt::ItemFlags DocumentClassModel::flags( const QModelIndex& index ) const
@@ -113,7 +113,7 @@ void DocumentClassModel::_sort( int column, Qt::SortOrder order )
 }
 
 //____________________________________________________________
-void DocumentClassModel::_updateConfiguration( void )
+void DocumentClassModel::_updateConfiguration()
 {
     Debug::Throw( "DocumentClassModel::_updateConfiguration.\n" );
     _icons().clear();

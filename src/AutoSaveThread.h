@@ -46,7 +46,7 @@ class AutoSaveThread: public QThread, public Base::Key, private Base::Counter<Au
     //@{
 
     //* file
-    File file( void ) const
+    File file() const
     { return file_; }
 
     //@}
@@ -86,7 +86,7 @@ class AutoSaveThread: public QThread, public Base::Key, private Base::Counter<Au
     protected:
 
     //* generate a new grid. Post a AutoSaveEvent when finished
-    void run( void ) override;
+    void run() override;
 
     private:
 

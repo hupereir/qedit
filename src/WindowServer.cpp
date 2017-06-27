@@ -65,13 +65,13 @@ WindowServer::WindowServer( QObject* parent ):
     connect( qApp, SIGNAL(aboutToQuit()), scratchFileMonitor_, SLOT(deleteScratchFiles()) );
 
     // configuration
-    connect( Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
+    connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
     _updateConfiguration();
 
 }
 
 //_____________________________________
-MainWindow& WindowServer::newMainWindow( void )
+MainWindow& WindowServer::newMainWindow()
 {
     Debug::Throw( "WindowServer::newMainWindow.\n" );
     auto window = new MainWindow;
@@ -124,7 +124,7 @@ FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) con
     FileRecord::List records;
 
     // get associated main windows
-    auto application( Singleton::get().application<Application>() );
+    auto application( Base::Singleton::get().application<Application>() );
     for( const auto& windowIter:Base::KeySet<MainWindow>( this ) )
     {
         // check if current window match the one passed in argument
@@ -171,7 +171,7 @@ FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) con
 }
 
 //______________________________________________________
-bool WindowServer::closeAll( void )
+bool WindowServer::closeAll()
 {
 
     Debug::Throw( "WindowServer::closeAll.\n" );
@@ -390,7 +390,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
 }
 
 //____________________________________________
-void WindowServer::_updateConfiguration( void )
+void WindowServer::_updateConfiguration()
 {
 
     Debug::Throw( "WindowServer::_updateConfiguration.\n" );
@@ -408,7 +408,7 @@ void WindowServer::_activeWindowChanged( MainWindow* window )
 }
 
 //_______________________________________________
-void WindowServer::_updateActions( void )
+void WindowServer::_updateActions()
 {
 
     Debug::Throw( "WindowServer::_updateActions.\n" );
@@ -691,7 +691,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
 }
 
 //_______________________________________________
-void WindowServer::_detach( void )
+void WindowServer::_detach()
 {
 
     Debug::Throw( "WindowServer::_detach.\n" );
@@ -867,7 +867,7 @@ void WindowServer::_reparentToMain( const File& first, const File& second )
 }
 
 //_______________________________________________
-void WindowServer::_saveAll( void )
+void WindowServer::_saveAll()
 {
     Debug::Throw( "WindowServer::_saveAll.\n" );
     _save( records( ModifiedOnly ) );
@@ -1051,7 +1051,7 @@ TextDisplay& WindowServer::_findDisplay( const File& file )
 
 }
 //_______________________________________________
-FileRecord WindowServer::_selectFileFromDialog( void )
+FileRecord WindowServer::_selectFileFromDialog()
 {
 
     Debug::Throw( "WindowServer::_selectFileFromDialog.\n" );
@@ -1158,7 +1158,7 @@ void WindowServer::_setActiveWindow( MainWindow& window )
 
 
 //________________________________________________________________
-bool WindowServer::_hasActiveWindow( void ) const
+bool WindowServer::_hasActiveWindow() const
 {
 
     // check if active window exists

@@ -55,11 +55,11 @@ class TextIndent: public QObject, private Base::Counter<TextIndent>
     { enabled_ = state; }
 
     //* enabled
-    bool isEnabled( void ) const
+    bool isEnabled() const
     { return enabled_ && !patterns_.empty(); }
 
     //* base indentation
-    int baseIndentation( void ) const
+    int baseIndentation() const
     { return baseIndentation_; }
 
     //* base indentation
@@ -67,7 +67,7 @@ class TextIndent: public QObject, private Base::Counter<TextIndent>
     { baseIndentation_ = value; }
 
     //* patterns
-    const IndentPattern::List& patterns( void ) const
+    const IndentPattern::List& patterns() const
     { return patterns_; }
 
     //* patterns
@@ -78,7 +78,7 @@ class TextIndent: public QObject, private Base::Counter<TextIndent>
     }
 
     //* patterns
-    void clear( void )
+    void clear()
     {
         Debug::Throw( "TextIndent::clear.\n" );
         patterns_.clear();

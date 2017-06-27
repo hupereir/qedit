@@ -46,7 +46,7 @@ class DocumentClassMenu: public QMenu, private Base::Counter<DocumentClassMenu>
     protected Q_SLOTS:
 
     //* update
-    void _update( void );
+    void _update();
 
     //* select document class from menu
     void _selectClassName( QAction* );

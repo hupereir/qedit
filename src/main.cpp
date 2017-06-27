@@ -69,7 +69,7 @@ int main (int argc, char *argv[])
     QApplication application( argc, argv );
     Application singleton( CommandLineArguments( argc, argv ) );
     singleton.setUseFixedFonts( true );
-    Singleton::get().setApplication( &singleton );
+    Base::Singleton::get().setApplication( &singleton );
 
     // initialize and run
     if( singleton.initApplicationManager() )

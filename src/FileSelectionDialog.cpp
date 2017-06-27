@@ -51,7 +51,7 @@ selection_( selection )
     connect( list_->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(_updateButtons()) );
 
     // retrieve file records
-    model_.set( Singleton::get().application<Application>()->windowServer().records() );
+    model_.set( Base::Singleton::get().application<Application>()->windowServer().records() );
 
     // mask
     int mask(
@@ -100,7 +100,7 @@ selection_( selection )
 }
 
 //________________________________________________________
-void FileSelectionDialog::_updateButtons( void )
+void FileSelectionDialog::_updateButtons()
 {
 
     Debug::Throw( "FileSelectionDialog::_updateButtons.\n" );
@@ -112,7 +112,7 @@ void FileSelectionDialog::_updateButtons( void )
 }
 
 //________________________________________________________
-FileSelectionDialog::FileList FileSelectionDialog::selectedFiles( void ) const
+FileSelectionDialog::FileList FileSelectionDialog::selectedFiles() const
 {
 
     Debug::Throw( "FileSelectionDialog::_replace.\n" );

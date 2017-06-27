@@ -40,7 +40,7 @@ Counter( "DocumentClassMenu" )
 }
 
 //_____________________________________________
-void DocumentClassMenu::_update( void )
+void DocumentClassMenu::_update()
 {
     Debug::Throw( "DocumentClassMenu::_update.\n" );
 
@@ -53,7 +53,7 @@ void DocumentClassMenu::_update( void )
     auto className( window->activeDisplay().className() );
 
     // retrieve classes from DocumentClass manager
-    for( const auto& documentClass:Singleton::get().application<Application>()->classManager().classes() )
+    for( const auto& documentClass:Base::Singleton::get().application<Application>()->classManager().classes() )
     {
         // insert actions
         QAction* action = addAction( documentClass.name() );

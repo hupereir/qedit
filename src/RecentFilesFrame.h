@@ -47,7 +47,7 @@ class RecentFilesFrame: public QWidget, private Base::Counter<RecentFilesFrame>
     explicit RecentFilesFrame( QWidget* parent, FileList&  );
 
     //* list
-    TreeView& list( void ) const
+    TreeView& list() const
     { return *list_; }
 
     //* select file in list
@@ -56,7 +56,7 @@ class RecentFilesFrame: public QWidget, private Base::Counter<RecentFilesFrame>
     public Q_SLOTS:
 
     //* update
-    void update( void );
+    void update();
 
     Q_SIGNALS:
 
@@ -74,16 +74,16 @@ class RecentFilesFrame: public QWidget, private Base::Counter<RecentFilesFrame>
     private Q_SLOTS:
 
     //* update action
-    void _updateActions( void );
+    void _updateActions();
 
     //* show tooltip
     void _showToolTip( const QModelIndex& );
 
     //* clean
-    void _clean( void );
+    void _clean();
 
     //* open
-    void _open( void );
+    void _open();
 
     //* sessionFilesItem selected
     void _itemSelected( const QModelIndex& index );
@@ -97,7 +97,7 @@ class RecentFilesFrame: public QWidget, private Base::Counter<RecentFilesFrame>
     //@{
 
     //* install actions
-    void _installActions( void );
+    void _installActions();
 
     //@}
 

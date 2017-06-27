@@ -28,7 +28,7 @@
 #include <QTextCharFormat>
 
 //* encapsulate highlight location, pattern and style
-class PatternLocation: private Base::Counter<PatternLocation>
+class PatternLocation final: private Base::Counter<PatternLocation>
 {
     public:
 
@@ -36,7 +36,7 @@ class PatternLocation: private Base::Counter<PatternLocation>
     using SetIterator = QOrderedSetIterator<PatternLocation>;
 
     //* construtor
-    explicit PatternLocation( void );
+    explicit PatternLocation();
 
     //* constructor
     explicit PatternLocation( const HighlightPattern&, int, int );
@@ -57,28 +57,28 @@ class PatternLocation: private Base::Counter<PatternLocation>
     //@{
 
     //* valid
-    bool isValid( void ) const
+    bool isValid() const
     { return id_ >= 0 && position_ >= 0 && length_ > 0; }
 
     //* position
-    int position( void ) const
+    int position() const
     { return position_; }
 
     //* length
-    int length( void ) const
+    int length() const
     { return length_; }
 
 
     //* pattern id
-    int id( void ) const
+    int id() const
     { return id_; }
 
     //* parent pattern id
-    int parentId( void ) const
+    int parentId() const
     { return parentId_; }
 
     //* flags
-    HighlightPattern::Flags flags( void ) const
+    HighlightPattern::Flags flags() const
     { return flags_; }
 
     //* flags
@@ -86,11 +86,11 @@ class PatternLocation: private Base::Counter<PatternLocation>
     { return flags() & flag; }
 
     //* format
-    Format::TextFormatFlags fontFormat( void ) const
+    Format::TextFormatFlags fontFormat() const
     { return format_; }
 
     //* color
-    QColor color( void ) const
+    QColor color() const
     { return color_; }
 
     //* formated font

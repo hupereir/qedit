@@ -45,7 +45,7 @@ class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame
     explicit SessionFilesFrame( QWidget* );
 
     //* list
-    TreeView& list( void ) const
+    TreeView& list() const
     { return *list_; }
 
     //* select file in list
@@ -55,23 +55,23 @@ class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame
     //@{
 
     //* previous file
-    QAction& previousFileAction( void ) const
+    QAction& previousFileAction() const
     { return *previousFileAction_; }
 
     //* previous file
-    QAction& nextFileAction( void ) const
+    QAction& nextFileAction() const
     { return *nextFileAction_; }
 
     //@}
 
     //* model
-    const SessionFilesModel& model( void ) const
+    const SessionFilesModel& model() const
     { return model_; }
 
     public Q_SLOTS:
 
     //* update session files
-    void update( void );
+    void update();
 
     Q_SIGNALS:
 
@@ -90,25 +90,25 @@ class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame
     protected Q_SLOTS:
 
     //* previous file
-    void _selectPreviousFile( void );
+    void _selectPreviousFile();
 
     //* next file
-    void _selectNextFile( void );
+    void _selectNextFile();
 
     //* update session files
-    void _updateActions( void );
+    void _updateActions();
 
     //* show tooltip
     void _showToolTip( const QModelIndex& );
 
     //* open
-    void _open( void );
+    void _open();
 
     //* save
-    void _save( void );
+    void _save();
 
     //* close
-    void _close( void );
+    void _close();
 
     //* sessionFilesItem selected
     void _itemSelected( const QModelIndex& index );
@@ -119,7 +119,7 @@ class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame
     private:
 
     //* install actions
-    void _installActions( void );
+    void _installActions();
 
     //* tooltip widget
     FileRecordToolTipWidget* toolTipWidget_ = nullptr;

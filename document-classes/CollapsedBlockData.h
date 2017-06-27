@@ -36,7 +36,7 @@ class CollapsedBlockData
     using List = QList<CollapsedBlockData>;
 
     //* constructor
-    explicit CollapsedBlockData( void ):
+    explicit CollapsedBlockData():
         collapsed_( false )
     {}
 
@@ -44,21 +44,21 @@ class CollapsedBlockData
     explicit CollapsedBlockData( const QTextBlock& block );
 
     //* text
-    const QString& text( void ) const
+    const QString& text() const
     { return text_; }
 
     //* collapsed
-    bool collapsed( void ) const
+    bool collapsed() const
     { return collapsed_; }
 
     //* number of blocks stored by this data object
-    int blockCount( void ) const;
+    int blockCount() const;
 
     //*@name block limits
     //@{
 
     //* delimiters
-    const TextBlock::Delimiter::List& delimiters( void ) const
+    const TextBlock::Delimiter::List& delimiters() const
     { return delimiters_; }
 
     //* delimiters
@@ -68,11 +68,11 @@ class CollapsedBlockData
     //@}
 
     //* children
-    const List& children( void ) const
+    const List& children() const
     { return children_; }
 
     //* children
-    List& children( void )
+    List& children()
     { return children_; }
 
     //* children
@@ -84,7 +84,7 @@ class CollapsedBlockData
     this is equivalent to expanding the entire block.
     The method is recursive
     */
-    QString toPlainText( void ) const;
+    QString toPlainText() const;
 
     private:
 

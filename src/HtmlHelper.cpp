@@ -38,7 +38,7 @@ void HtmlHelper::print( QIODevice* device )
 }
 
 //_____________________________________________________________________
-QString HtmlHelper::_htmlString( void )
+QString HtmlHelper::_htmlString()
 {
 
     QDomDocument document( "Html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\"" );

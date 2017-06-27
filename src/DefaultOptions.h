@@ -30,7 +30,7 @@
 
 //_____________________________________________________
 //* default options installer
-void installDefaultOptions( void )
+void installDefaultOptions()
 {
 
     // set options default values
