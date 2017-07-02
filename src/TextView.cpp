@@ -289,7 +289,7 @@ void TextView::closeDisplay( TextDisplay& display )
 
     // if no associated displays, retrieve all, set the first as active
     if( displays.empty() ) displays = Base::KeySet<TextDisplay>( this );
-    Base::KeySetIterator<TextDisplay> iterator( displays );
+    Base::KeySetIterator<TextDisplay> iterator( displays.get() );
     iterator.toBack();
     while( iterator.hasPrevious() )
     {

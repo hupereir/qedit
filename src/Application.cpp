@@ -55,7 +55,7 @@ bool Application::initApplicationManager()
     Debug::Throw( "Application::initApplicationManager.\n" );
 
     // retrieve files from arguments and expand if needed
-    CommandLineParser parser( commandLineParser( _arguments() ) );
+    auto parser = commandLineParser( _arguments() );
     for( auto& orphan:parser.orphans() )
     { if( !orphan.isEmpty() ) orphan = File( orphan ).expand(); }
 
@@ -173,7 +173,6 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
 
     if( !arguments.isEmpty() ) out.parse( arguments, ignoreWarnings );
     return out;
-
 }
 
 //____________________________________________

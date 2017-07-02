@@ -239,7 +239,7 @@ bool MainWindow::selectDisplay( const File& file )
     Debug::Throw() << "MainWindow::selectDisplay - file: " << file << endl;
 
     Debug::Throw() << "MainWindow::selectDisplay - active view: " << activeView_->key() << endl;
-    Debug::Throw() << "MainWindow::selectDisplay - active view displays: " << Base::KeySet<TextDisplay>( &activeView() ).count() << endl;
+    Debug::Throw() << "MainWindow::selectDisplay - active view displays: " << Base::KeySet<TextDisplay>( &activeView() ).size() << endl;
 
 
     // do nothing if already selected

@@ -74,7 +74,7 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
         // dom document
         QDomDocument document;
         if( !document.setContent( data->data( FileRecord::MimeType ), false ) ) return;
-        const XmlFileRecord::List records( document.documentElement() );
+        const auto records( XmlFileRecord::ListHelper::list( document.documentElement() ) );
 
         if( records.empty() ) return;
         const File target( records.front().file() );

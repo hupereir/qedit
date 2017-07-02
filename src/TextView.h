@@ -54,11 +54,11 @@ class TextView: public QWidget, private Base::Counter<TextView>, public Base::Ke
 
     //* true if has associated displays
     bool hasDisplays() const
-    { return !Base::KeySet<TextDisplay>( this ).isEmpty(); }
+    { return !Base::KeySet<TextDisplay>( this ).empty(); }
 
     //* return number of displays
     int displayCount() const
-    { return Base::KeySet<TextDisplay>( this ).count(); }
+    { return Base::KeySet<TextDisplay>( this ).size(); }
 
     //* return number of independant displays
     int independentDisplayCount() const;
