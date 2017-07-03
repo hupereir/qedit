@@ -65,11 +65,11 @@ class WindowTitle final: private Base::Counter<WindowTitle>
     {
         QString out;
         QTextStream what( &out );
-        if( file_.size() ) what << file_.localName();
+        if( !file_.isEmpty() ) what << file_.localName();
         else what << "QEdit";
         if( flag_ == Modified ) what << QObject::tr( " (modified)" );
         if( flag_ == ReadOnly ) what << QObject::tr( " (read-only)" );
-        if( file_.size() ) what << " - " << file_.path();
+        if( !file_.isEmpty() ) what << " - " << file_.path();
         return title_ = out;
     }
 

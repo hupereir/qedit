@@ -216,7 +216,7 @@ void MainWindow::setActiveView( TextView& view )
     if( stack_->currentWidget() !=  &activeView() ) stack_->setCurrentWidget( &activeView() );
 
     // update displays, actions, etc.
-    if( activeView_->activeDisplay().file().size() || activeView_->activeDisplay().isNewDocument() )
+    if( !activeView_->activeDisplay().file().isEmpty() || activeView_->activeDisplay().isNewDocument() )
     { _update( TextDisplay::ActiveViewChanged ); }
 
 }

@@ -55,19 +55,19 @@ namespace TextBlock
     {
         Debug::Throw( "Delimiter::List::operator +=\n" );
         Delimiter::List out( *this );
-        auto first = out.begin();
-        auto second = list.begin();
-        for(; first != out.end(); first++ )
+        auto first = out.delimiters_.begin();
+        auto second = list.delimiters_.begin();
+        for(; first != out.delimiters_.end(); first++ )
         {
-            if( second != list.end() )
+            if( second != list.delimiters_.end() )
             {
                 *first += *second;
                 second ++;
             }
         }
 
-        for(; second != list.end(); second++ )
-        { out << *second; }
+        for(; second != list.delimiters_.end(); second++ )
+        { out.delimiters_.append( *second ); }
 
         return out;
 
@@ -76,17 +76,17 @@ namespace TextBlock
     //_______________________________________________
     bool Delimiter::List::set( int i, const Delimiter& delimiter )
     {
-        if( size() > i && (*this)[i] == delimiter ) return false;
-        if( size() <= i ) { resize( i+1 ); }
-        (*this)[i] = delimiter;
+        if( delimiters_.size() > i && delimiters_[i] == delimiter ) return false;
+        if( delimiters_.size() <= i ) { delimiters_.resize( i+1 ); }
+        delimiters_[i] = delimiter;
         return true;
     }
 
     //_______________________________________________
     Delimiter Delimiter::List::get( int i ) const
     {
-        if( size() <= i ) return TextBlock::Delimiter();
-        return (*this)[i];
+        if( delimiters_.size() <= i ) return TextBlock::Delimiter();
+        return delimiters_[i];
     }
 
 }

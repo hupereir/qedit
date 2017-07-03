@@ -199,7 +199,7 @@ void TextDisplay::setModified( bool value )
     document()->setModified( value );
 
     // ask for update in the parent frame
-    if( isActive() && ( file_.size() || isNewDocument() ) ) emit needUpdate( Modified );
+    if( isActive() && ( !file_.isEmpty() || isNewDocument() ) ) emit needUpdate( Modified );
 
 }
 
@@ -380,7 +380,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
     setClassName( className );
 
     // expand filename
-    file = file.expand();
+    file.expand();
 
     // check is there is an "AutoSave" file matching with more recent modification time
     // here, when the diff is working, I could offer the possibility to show a diff between
@@ -760,8 +760,8 @@ void TextDisplay::saveAs()
     dialog.setAcceptMode( QFileDialog::AcceptSave );
     dialog.selectFile( defaultFile );
     File file( dialog.getFile() );
-    if( file.isNull() ) return;
-    else file = file.expand();
+    if( file.isEmpty() ) return;
+    else file.expand();
 
     // check if file is directory
     if( file.isDirectory() )
@@ -1437,7 +1437,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 
     // change selection to misspelled word
     cursor.setPosition( word.position() + block.position(), QTextCursor::MoveAnchor );
-    cursor.setPosition( word.position() + word.size() + block.position(), QTextCursor::KeepAnchor );
+    cursor.setPosition( word.position() + word.length() + block.position(), QTextCursor::KeepAnchor );
     setTextCursor( cursor );
 
     // create suggestion menu
@@ -2474,7 +2474,7 @@ void TextDisplay::_textModified()
     // document should never appear modified
     // for readonly displays
     if( document()->isModified() && isReadOnly() ) document()->setModified( false );
-    if( isActive() && ( file_.size() || isNewDocument() ) ) emit needUpdate( Modified );
+    if( isActive() && ( !file_.isEmpty() || isNewDocument() ) ) emit needUpdate( Modified );
 
 }
 
@@ -2858,4 +2858,4 @@ QString TextDisplay::_collapsedText( const QTextBlock& block ) const
 
 //___________________________________________________________________________
 bool TextDisplay::_fileIsAfs() const
-{ return file_.indexOf( "/afs" ) == 0; }
+{ return file_.get().indexOf( "/afs" ) == 0; }

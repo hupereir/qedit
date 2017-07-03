@@ -75,7 +75,7 @@ QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
             case Filename:
             {
                 if( documentClass.isBuildIn() ) return tr( "Internal" );
-                else return documentClass.file();
+                else return documentClass.file().get();
             }
 
             default: break;

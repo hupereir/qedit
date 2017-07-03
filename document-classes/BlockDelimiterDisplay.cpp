@@ -784,7 +784,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
         if( secondData )
         {
 
-            for( const auto& counter:secondData->delimiters() )
+            for( const auto& counter:secondData->delimiters().get() )
             {
                 if( !counter.begin() ) continue;
                 block = block.previous();

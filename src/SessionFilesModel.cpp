@@ -175,7 +175,7 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 
         // fill drag data. Use XML
         QDomDocument document;
-        XmlFileRecord::ListHelper::domElement( records, document );
+        XmlFileRecord::Helper::domElement( records, document );
         mimeData->setData( FileRecord::MimeType, document.toByteArray() );
         return mimeData;
 
@@ -197,7 +197,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         // dom document
         QDomDocument document;
         if( !document.setContent( data->data( FileRecord::MimeType ), false ) ) return false;
-        const XmlFileRecord::List records( XmlFileRecord::ListHelper::list( document.documentElement() ) );
+        const XmlFileRecord::List records( XmlFileRecord::Helper::list( document.documentElement() ) );
 
         // get current record
         if( parent.isValid() )

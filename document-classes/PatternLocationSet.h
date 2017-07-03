@@ -25,7 +25,7 @@
 #include "QOrderedSet.h"
 
 //* set of pattern locations
-class PatternLocationSet: public QOrderedSet<PatternLocation>
+class PatternLocationSet final
 {
 
     public:
@@ -35,18 +35,59 @@ class PatternLocationSet: public QOrderedSet<PatternLocation>
         activeId_( std::make_pair( 0, 0 ) )
     {}
 
+    //*@name accessors
+    //@{
+
+    //* set
+    const QOrderedSet<PatternLocation>& get() const { return set_; }
+
     //* active id
     const std::pair<int,int>& activeId() const
     { return activeId_; }
+
+    //* return true if current position corresponds to commented text
+    bool isCommented( int ) const;
+
+
+    using const_iterator = QOrderedSet<PatternLocation>::const_iterator;
+    const_iterator begin() const { return set_.begin(); }
+    const_iterator end() const { return set_.end(); }
+    const_iterator find( const PatternLocation& location ) const { return set_.find( location ); }
+
+    int size() const { return set_.size(); }
+    bool empty() const { return set_.empty(); }
+
+    //@}
+
+    //*@name modifiers
+    //@{
+
+    //* set
+    QOrderedSet<PatternLocation>& get() { return set_; }
 
     //* active id
     std::pair<int,int>& activeId()
     { return activeId_; }
 
-    // return true if current position corresponds to commented text
-    bool isCommented( int ) const;
+    using iterator = QOrderedSet<PatternLocation>::iterator;
+    iterator begin() { return set_.begin(); }
+    iterator end() { return set_.end(); }
+
+    const_iterator insert( const PatternLocation& location ) { return set_.insert( location ); }
+    bool remove( const PatternLocation& location ) { return set_.remove( location ); }
+
+    //* clear
+    void clear() { set_.clear(); }
+
+    //* erase
+    template<class T> iterator erase(const T& t) { return set_.erase( t ); }
+
+    //@}
 
     private:
+
+    //* set
+    QOrderedSet<PatternLocation> set_;
 
     //* active patterns from previous and this paragraph
     std::pair<int, int> activeId_;

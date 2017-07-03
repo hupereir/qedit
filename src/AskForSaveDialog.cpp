@@ -45,7 +45,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     setLayout( layout );
 
     // create message
-    QString buffer = file.QString::isEmpty() ? tr( "File has been modified.\nSave ?" ):QString( tr( "File '%1' has been modified.\nSave ?" ) ).arg( file.localName() );
+    QString buffer = file.isEmpty() ? tr( "File has been modified.\nSave ?" ):QString( tr( "File '%1' has been modified.\nSave ?" ) ).arg( file.localName() );
 
     // insert main vertical box
     QHBoxLayout *hLayout( new QHBoxLayout );

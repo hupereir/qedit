@@ -80,7 +80,8 @@ namespace TextBlock
         //@}
 
         //* delimiter list
-        class List: public QVector<Delimiter>, private Base::Counter<List>
+
+        class List: private Base::Counter<List>
         {
             public:
 
@@ -102,16 +103,16 @@ namespace TextBlock
             //* set value at index i. Resize if needed
             bool set( int, const TextBlock::Delimiter& );
 
+            //* accessors
+            const QVector<Delimiter>& get() const { return delimiters_; }
+            QVector<Delimiter>& get() { return delimiters_; }
+
             //* get value at index i
             TextBlock::Delimiter get( int ) const;
 
-            //* streamer
-            friend QTextStream& operator << ( QTextStream& out, const List& list )
-            {
-                for( const auto& delimiter:list )
-                { out << " " << delimiter; }
-                return out;
-            }
+            private:
+
+            QVector<Delimiter> delimiters_;
 
         };
 

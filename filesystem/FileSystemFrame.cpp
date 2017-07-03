@@ -244,7 +244,7 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
     if( record.hasFlag( BaseFileInfo::Folder ) )
     {
 
-        setPath( record.file().addPath( pathEditor_->path() ) );
+        setPath( File( record.file() ).addPath( pathEditor_->path() ) );
 
     } else if( record.hasFlag( BaseFileInfo::Navigator ) ) {
 
@@ -252,7 +252,7 @@ void FileSystemFrame::_itemActivated( const QModelIndex& index )
 
     } else {
 
-        emit fileActivated( record.setFile( record.file().addPath( pathEditor_->path() ) ) );
+        emit fileActivated( record.setFile( File( record.file() ).addPath( pathEditor_->path() ) ) );
 
     }
 
@@ -384,7 +384,7 @@ void FileSystemFrame::_open()
         if( record.hasFlag( BaseFileInfo::Document ) )
         {
             FileRecord copy( record );
-            copy.setFile( record.file().addPath( pathEditor_->path() ) );
+            copy.setFile( File( record.file() ).addPath( pathEditor_->path() ) );
             emit fileActivated( copy );
         }
 
@@ -405,7 +405,7 @@ void FileSystemFrame::_remove()
     {
         if( record.hasFlag( BaseFileInfo::Navigator ) ) continue;
         FileRecord copy( record );
-        copy.setFile( record.file().addPath( pathEditor_->path() ) );
+        copy.setFile( File( record.file() ).addPath( pathEditor_->path() ) );
         validSelection << copy;
 
     }
@@ -442,7 +442,7 @@ void FileSystemFrame::_rename()
     if( newFile == record.file() ) return;
 
     // rename
-    record.file().addPath( pathEditor_->path() ).rename( newFile.addPath( pathEditor_->path() ) );
+    File( record.file() ).addPath( pathEditor_->path() ).rename( newFile.addPath( pathEditor_->path() ) );
 
 }
 
@@ -456,7 +456,7 @@ void FileSystemFrame::_fileProperties()
 
     FileRecord record( model_.get( index ) );
     if( record.hasFlag( BaseFileInfo::Navigator ) ) return;
-    if( !record.file().isAbsolute() ) { record.setFile( record.file().addPath( pathEditor_->path() ) ); }
+    if( !record.file().isAbsolute() ) { record.setFile( File( record.file() ).addPath( pathEditor_->path() ) ); }
 
     // icon
     QIcon icon;

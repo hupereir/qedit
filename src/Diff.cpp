@@ -228,7 +228,7 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
     {
 
         // use provided file. Set as non-temporary
-        file_ = display_->file().expand();
+        file_ = display_->file().expanded();
         isTemporary_ = false;
 
     } else {

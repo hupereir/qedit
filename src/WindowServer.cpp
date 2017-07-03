@@ -1060,8 +1060,8 @@ FileRecord WindowServer::_selectFileFromDialog()
 
     // create file dialog
     File file( FileDialog( &_activeWindow() ).selectFile(_activeWindow().activeDisplay().workingDirectory() ).getFile() );
-    if( file.isNull() ) return record;
-    else file = file.expand();
+    if( file.isEmpty() ) return record;
+    else file.expand();
 
     // assign file to record
     record.setFile( file );
@@ -1091,7 +1091,7 @@ bool WindowServer::_createNewFile( const FileRecord& record )
 
         case NewFileDialog::Create:
         {
-            File fullname( record.file().expand() );
+            File fullname( record.file().expanded() );
             if( !fullname.create() )
             {
 

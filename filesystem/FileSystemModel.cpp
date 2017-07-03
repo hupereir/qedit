@@ -85,7 +85,7 @@ QVariant FileSystemModel::data( const QModelIndex& index, int role ) const
                 {
                     // store local nmae
                     const FileRecord& record( get(index) );
-                    return useLocalNames_ ? record.file().localName(): record.file();
+                    return useLocalNames_ ? record.file().localName().get(): record.file().get();
                 }
 
                 case Size:
@@ -249,7 +249,7 @@ bool FileSystemModel::SortFTor::operator () ( FileRecord first, FileRecord secon
             if( second.hasFlag( BaseFileInfo::Navigator ) ) return false;
             if( first.hasFlag( BaseFileInfo::Folder ) && second.hasFlag( BaseFileInfo::Document ) ) return true;
             if( second.hasFlag( BaseFileInfo::Folder ) && first.hasFlag( BaseFileInfo::Document ) ) return false;
-            return first.file().localName().compare( second.file().localName(), Qt::CaseInsensitive ) < 0;
+            return first.file().localName().get().compare( second.file().localName(), Qt::CaseInsensitive ) < 0;
 
         }
 

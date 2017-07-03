@@ -61,7 +61,7 @@ QString HtmlHelper::_htmlString()
 
     // title
     QDomElement title = head.appendChild( document.createElement( "Title" ) ).toElement();
-    title.appendChild( document.createTextNode( editor_->file().toUtf8() ) );
+    title.appendChild( document.createTextNode( editor_->file().get().toUtf8() ) );
 
     // body
     html.
@@ -118,7 +118,7 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
 
             // parse locations
             PatternLocation location;
-            PatternLocation::SetIterator iter( locations );
+            PatternLocation::SetIterator iter( locations.get() );
             iter.toBack();
             const PatternLocation::ContainsFTor ftor( index );
             while( iter.hasPrevious() )

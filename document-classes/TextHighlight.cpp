@@ -323,7 +323,7 @@ PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, H
     // insert highlight
     const SpellCheck::Word::Set& words( spellParser_.parse( text ) );
     for( const auto& word:words )
-    { locations.insert( PatternLocation( spellPattern_, word.position(), word.size() ) ); }
+    { locations.insert( PatternLocation( spellPattern_, word.position(), word.length() ) ); }
 
     // store misspelled words
     if( data ) data->setMisspelledWords( words );

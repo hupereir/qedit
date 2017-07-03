@@ -57,7 +57,7 @@ bool Application::initApplicationManager()
     // retrieve files from arguments and expand if needed
     auto parser = commandLineParser( _arguments() );
     for( auto& orphan:parser.orphans() )
-    { if( !orphan.isEmpty() ) orphan = File( orphan ).expand(); }
+    { if( !orphan.isEmpty() ) File::expand( orphan ); }
 
     // replace arguments
     _setArguments( parser.arguments() );

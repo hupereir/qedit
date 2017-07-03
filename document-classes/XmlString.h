@@ -1,3 +1,6 @@
+#ifndef XmlString_h
+#define XmlString_h
+
 /******************************************************************************
 *
 * Copyright (C) 2002 Hugo PEREIRA <mailto: hugo.pereira@free.fr>
@@ -17,12 +20,40 @@
 *
 *******************************************************************************/
 
-#include "PatternLocationSet.h"
+#include <QString>
+#include <QPair>
+#include <QList>
 
-//______________________________________________________________
-bool PatternLocationSet::isCommented( int position ) const
+//* some Xml utilities
+class XmlString final
 {
-    auto iter( std::find_if( set_.constBegin(), set_.constEnd(), PatternLocation::ContainsFTor( position ) ) );
-    if( iter == set_.constEnd() ) return false;
-    else return iter->hasFlag( HighlightPattern::Comment );
-}
+
+    public:
+
+    //* constructor
+    explicit XmlString( const QString& );
+
+    //* conversion
+    operator QString() const { return value_; }
+
+    private:
+
+    //* text to Xml conversion pair type
+    using Conversion = QPair<QString, QString>;
+
+    //* text to Xml conversion pair type
+    using ConversionList = QList< Conversion >;
+    using ConversionListIterator = QListIterator< Conversion >;
+
+    //* initialize Xml to text conversion pair list
+    void _initConversions() const;
+
+    //* text to Xml conversion pair list
+    static ConversionList& _conversions();
+
+    //* value
+    QString value_;
+
+};
+
+#endif

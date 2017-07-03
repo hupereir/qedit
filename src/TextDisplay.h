@@ -78,7 +78,7 @@ class TextDisplay: public TextEditor
         explicit SameFileFTor( const File& file )
         {
 
-            if( file.isAbsolute() ) file_ = file.expand();
+            if( file.isAbsolute() ) file_ = file.expanded();
             else file_ = file;
 
         }

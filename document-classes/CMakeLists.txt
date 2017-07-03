@@ -48,6 +48,7 @@ set(document_classes_SOURCES
   TextMacro.cpp
   TextMacroMenu.cpp
   TextParenthesis.cpp
+  XmlString.cpp
 )
 
 set(document_classes_RESOURCES patterns.qrc)
