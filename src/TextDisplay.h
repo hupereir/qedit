@@ -83,6 +83,9 @@ class TextDisplay: public TextEditor
 
         }
 
+        //* destructor
+        virtual ~SameFileFTor() = default;
+
         //* predicate
         bool operator() ( const TextDisplay* display ) const
         { return display->file() == file_; }
@@ -98,6 +101,9 @@ class TextDisplay: public TextEditor
     class EmptyFileFTor
     {
         public:
+
+        //* destructor
+        virtual ~EmptyFileFTor() = default;
 
         //* predicate
         bool operator() ( const TextDisplay* display ) const

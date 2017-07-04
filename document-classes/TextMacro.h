@@ -119,25 +119,13 @@ class TextMacro final: private Base::Counter<TextMacro>
     first is whether any changes where applied or not
     second is the net increment in terms of number of characters between input and output text
     */
-    class Result: public QPair<bool, int>
+    using Result = QPair<bool, int>;
+    static Result& addToResult( Result& first, const Result& second )
     {
-
-        public:
-
-        //* constructor
-        explicit Result( bool changed = false, int increment = 0 ):
-            QPair<bool,int>( changed, increment )
-        {}
-
-        //* add-to operator
-        Result& operator += (const Result& other )
-        {
-            first |= other.first;
-            second += other.second;
-            return *this;
-        }
-
-    };
+        first.first |= second.first;
+        first.second += second.second;
+        return first;
+    }
 
     //* modify text passed as argument. Return true if text is modified
     Result processText( QString& text, int position = -1 ) const;
@@ -305,4 +293,5 @@ class TextMacro final: private Base::Counter<TextMacro>
     Rule::List rules_;
 
 };
+
 #endif

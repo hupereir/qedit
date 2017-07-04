@@ -113,7 +113,7 @@ TextMacro::Result TextMacro::processText( QString& text, int position ) const
     if( isSeparator() ) return Result();
     Result out;
     for( const auto& rule:rules_ )
-    { out += rule.processText( text, position >= 0 ? position+out.second : position ); }
+    { addToResult( out, rule.processText( text, position >= 0 ? position+out.second : position ) ); }
     return out;
 
 }
@@ -188,7 +188,7 @@ TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) co
         {
 
             int length = line.length() + 1;
-            out += _processText( line, localPosition );
+            addToResult( out, _processText( line, localPosition ) );
             localPosition = qMax( -1, localPosition - length );
 
         }

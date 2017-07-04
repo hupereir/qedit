@@ -46,7 +46,7 @@ bool DocumentClassManager::read( const File& filename )
     Debug::Throw() << "DocumentClassManager::read - file: " << filename << endl;
 
     // reset Read error
-    readError_ = "";
+    readError_.clear();
 
     // try open file
     QFile file( filename );
@@ -60,8 +60,8 @@ bool DocumentClassManager::read( const File& filename )
         return false;
     }
 
-    QDomElement docElement = document.documentElement();
-    for(QDomNode node = docElement.firstChild(); !node.isNull(); node = node.nextSibling() )
+    auto top = document.get().documentElement();
+    for(QDomNode node = top.firstChild(); !node.isNull(); node = node.nextSibling() )
     {
         QDomElement element = node.toElement();
         if( element.isNull() ) continue;
@@ -117,7 +117,7 @@ bool DocumentClassManager::write( const DocumentClass& documentClass, const File
     if( !out.open( QIODevice::WriteOnly ) ) return false;
 
     // create document
-    XmlDocument document;
+    QDomDocument document;
 
     // create main element
     QDomElement top = document.appendChild( document.createElement( Xml::Patterns ) ).toElement();
