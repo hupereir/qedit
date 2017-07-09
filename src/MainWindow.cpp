@@ -1045,7 +1045,7 @@ void MainWindow::_updateWindowTitle()
 
     setWindowTitle( WindowTitle( activeDisplay().file() )
         .setReadOnly( activeDisplay().isReadOnly() )
-        .setModified( activeDisplay().document()->isModified() )
+        .setModified( activeDisplay().document()->isModified() ).get()
         );
 
 }

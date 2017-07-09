@@ -1432,7 +1432,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 
     // try retrieve misspelled word
     SpellCheck::Word word( data->misspelledWord( cursor.position() - block.position() ) );
-    if( word.isEmpty() || textHighlight_->spellParser().interface().isWordIgnored( word ) )
+    if( word.isEmpty() || textHighlight_->spellParser().interface().isWordIgnored( word.get() ) )
     { return false; }
 
     // change selection to misspelled word
@@ -1441,7 +1441,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
     setTextCursor( cursor );
 
     // create suggestion menu
-    SpellCheck::SuggestionMenu menu( this, word, isReadOnly() );
+    SpellCheck::SuggestionMenu menu( this, word.get(), isReadOnly() );
     menu.interface().setFilter( textHighlight_->spellParser().interface().filter() );
     menu.interface().setDictionary( textHighlight_->spellParser().interface().dictionary() );
 

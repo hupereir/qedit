@@ -61,7 +61,7 @@ class WindowTitle final: private Base::Counter<WindowTitle>
     { return setFlag( ReadOnly, value ); }
 
     //* cast to string
-    operator const QString& ()
+    QString get() const
     {
         QString out;
         QTextStream what( &out );
@@ -70,7 +70,7 @@ class WindowTitle final: private Base::Counter<WindowTitle>
         if( flag_ == Modified ) what << QObject::tr( " (modified)" );
         if( flag_ == ReadOnly ) what << QObject::tr( " (read-only)" );
         if( !file_.isEmpty() ) what << " - " << file_.path();
-        return title_ = out;
+        return out;
     }
 
     private:
@@ -80,9 +80,6 @@ class WindowTitle final: private Base::Counter<WindowTitle>
 
     //* flags
     Flags flag_;
-
-    //* stored string
-    QString title_;
 
 };
 
