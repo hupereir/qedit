@@ -38,8 +38,7 @@ class AutoSaveThread: public QThread, public Base::Key, private Base::Counter<Au
     //* constructor
     explicit AutoSaveThread( QObject* parent ):
         QThread( parent ),
-        Counter( "AutoSaveThread" ),
-        flags_( None )
+        Counter( "AutoSaveThread" )
     {}
 
     //*@name accessors
@@ -106,7 +105,7 @@ class AutoSaveThread: public QThread, public Base::Key, private Base::Counter<Au
     bool useCompression_ = false;
 
     //* modification flags
-    Flags flags_ = 0;
+    Flags flags_ = None;
 
 };
 

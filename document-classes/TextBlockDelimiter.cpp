@@ -24,52 +24,47 @@ namespace TextBlock
 {
 
     //_______________________________________________
-    Delimiter Delimiter::operator + (const Delimiter& other ) const
+    Delimiter& Delimiter::operator += (const Delimiter& other )
     {
-        Debug::Throw( "Delimiter::operator +=\n" );
-        Delimiter out = *this;
-        out.pair_ = out.pair_ + other.pair_;
-        out.commentedPair_ = out.commentedPair_ + other.commentedPair_;
-        return out;
+        pair_ += other.pair_;
+        commentedPair_ += other.commentedPair_;
+        return *this;
     }
 
     //_______________________________________________
-    Delimiter::Pair Delimiter::Pair::operator + (const Delimiter::Pair& other ) const
+    Delimiter::Pair& Delimiter::Pair::operator += (const Delimiter::Pair& other )
     {
         Debug::Throw( "Delimiter::operator +=\n" );
-        Delimiter::Pair out = *this;
 
         for( int i=0; i < other.end_; i++ )
         {
-            if( out.begin_ > 0 ) out.begin_--;
-            else out.end_++;
+            if( begin_ > 0 ) begin_--;
+            else end_++;
         }
 
-        out.begin_ += other.begin_;
-        return out;
+        begin_ += other.begin_;
+        return *this;
 
     }
 
     //_______________________________________________
-    Delimiter::List Delimiter::List::operator + (const Delimiter::List& list ) const
+    Delimiter::List& Delimiter::List::operator += (const Delimiter::List& other )
     {
-        Debug::Throw( "Delimiter::List::operator +=\n" );
-        Delimiter::List out( *this );
-        auto first = out.delimiters_.begin();
-        auto second = list.delimiters_.begin();
-        for(; first != out.delimiters_.end(); first++ )
+        auto first = delimiters_.begin();
+        auto second = other.delimiters_.begin();
+        for(; first != delimiters_.end(); first++ )
         {
-            if( second != list.delimiters_.end() )
+            if( second != other.delimiters_.end() )
             {
                 *first += *second;
                 second ++;
             }
         }
 
-        for(; second != list.delimiters_.end(); second++ )
-        { out.delimiters_.append( *second ); }
+        for(; second != other.delimiters_.end(); second++ )
+        { delimiters_.append( *second ); }
 
-        return out;
+        return *this;
 
     }
 

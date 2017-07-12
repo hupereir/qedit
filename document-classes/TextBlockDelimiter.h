@@ -63,11 +63,7 @@ namespace TextBlock
         //@{
 
         //* sum operator (warning: this is not a reflexive operator)
-        Delimiter operator + ( const Delimiter& ) const;
-
-        //* sum operator (warning: this is not a reflexive operator)
-        Delimiter& operator += ( const Delimiter& delimiter )
-        { return *this = *this + delimiter; }
+        Delimiter& operator += ( const Delimiter& );
 
         //* increment
         void increment( bool isCommented )
@@ -91,14 +87,7 @@ namespace TextBlock
                 {}
 
             //* sum operator (warning: this is not a reflexive operator)
-            List operator + (const List& list ) const;
-
-            //* sum operator (warning: this is not a reflexive operator)
-            List& operator += (const List& list )
-            {
-                *this = *this + list;
-                return *this;
-            }
+            List& operator += (const List& );
 
             //* set value at index i. Resize if needed
             bool set( int, const TextBlock::Delimiter& );
@@ -133,7 +122,7 @@ namespace TextBlock
             { return begin_ == other.begin_ && end_ == other.end_; }
 
             //* sum operator (warning: this is not a reflexive operator)
-            Pair operator + ( const Pair& ) const;
+            Pair& operator += ( const Pair& );
 
             //* increment
             void increment()
