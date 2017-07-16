@@ -34,7 +34,7 @@ class XmlString final
     explicit XmlString( const QString& );
 
     //* conversion
-    operator QString() const { return value_; }
+    operator const QString& () const { return value_; }
 
     private:
 
