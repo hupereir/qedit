@@ -55,10 +55,10 @@ QDomElement HighlightStyle::domElement( QDomDocument& parent ) const
 
 
 //_____________________________________________________
-bool HighlightStyle::operator == ( const HighlightStyle& other ) const
+bool operator == ( const HighlightStyle& first, const HighlightStyle& second)
 {
     return
-        name_ == other.name_ &&
-        format_ == other.format_ &&
-        color_ == other.color_;
+        first.name_ == second.name_ &&
+        first.format_ == second.format_ &&
+        first.color_ == second.color_;
 }

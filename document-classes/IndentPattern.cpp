@@ -85,13 +85,13 @@ QDomElement IndentPattern::domElement( QDomDocument& parent ) const
 }
 
 //____________________________________________________________
-bool IndentPattern::operator == ( const IndentPattern& other ) const
+bool operator == ( const IndentPattern& first, const IndentPattern& second )
 {
     return
-        name_ == other.name_ &&
-        type_ == other.type_ &&
-        scale_ == other.scale_ &&
-        rules_ == other.rules_;
+        first.name_ == second.name_ &&
+        first.type_ == second.type_ &&
+        first.scale_ == second.scale_ &&
+        first.rules_ == second.rules_;
 }
 
 //____________________________________________________________

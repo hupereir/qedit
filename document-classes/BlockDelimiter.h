@@ -48,24 +48,6 @@ class BlockDelimiter final: private Base::Counter<BlockDelimiter>
     int id() const
     { return id_; }
 
-    //* equal to operator
-    bool operator == ( const BlockDelimiter& other ) const
-    {
-        return
-            first() == other.first() &&
-            second() == other.second() &&
-            regexp() == other.regexp();
-    }
-
-    //* less than operator
-    bool operator < ( const BlockDelimiter& other ) const
-    {
-        if( first() != other.first() ) return first() < other.first();
-        if( second() != other.second() ) return second() < other.second();
-        if( regexp().pattern() != other.regexp().pattern() ) return regexp().pattern() < other.regexp().pattern();
-        return false;
-    }
-
     //* block start
     const QString& first() const
     { return first_; }
@@ -115,4 +97,14 @@ class BlockDelimiter final: private Base::Counter<BlockDelimiter>
     }
 
 };
+
+//* equal to operator
+inline bool operator == ( const BlockDelimiter& first, const BlockDelimiter& second )
+{
+    return
+        first.first() == second.first() &&
+        first.second() == second.second() &&
+        first.regexp() == second.regexp();
+}
+
 #endif

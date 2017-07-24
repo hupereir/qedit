@@ -49,9 +49,6 @@ class DocumentClass final: private Base::Counter<DocumentClass>
     //* write to DomElement
     QDomElement domElement( QDomDocument& parent ) const;
 
-    //* strict equal to operator
-    bool operator == (const DocumentClass& documentClass ) const;
-
     //*@name accessors
     //@{
 
@@ -298,5 +295,7 @@ class DocumentClass final: private Base::Counter<DocumentClass>
 
 };
 
+//* strict equal to operator
+bool operator == (const DocumentClass&, const DocumentClass& );
 
 #endif

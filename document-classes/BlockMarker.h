@@ -34,18 +34,6 @@ class BlockMarker
         valid_( position >= 0 )
     {}
 
-    //* equal to operator
-    bool operator == ( const BlockMarker& marker ) const
-    { return cursor() == marker.cursor(); }
-
-    //* equal to operator
-    bool operator != ( const BlockMarker& marker ) const
-    { return cursor() != marker.cursor(); }
-
-    //* less than operator
-    bool operator < ( const BlockMarker& marker ) const
-    { return cursor() < marker.cursor(); }
-
     //* id
     int id() const
     { return id_; }
@@ -92,5 +80,17 @@ class BlockMarker
 
 };
 
+
+//* equal to operator
+inline bool operator == ( const BlockMarker& first, const BlockMarker& second )
+{ return first.cursor() == second.cursor(); }
+
+//* different from operator
+inline bool operator != ( const BlockMarker& first, const BlockMarker& second )
+{ return !( first == second ); }
+
+//* less than operator
+inline bool operator < ( const BlockMarker& first, const BlockMarker& second )
+{ return first.cursor() < second.cursor(); }
 
 #endif

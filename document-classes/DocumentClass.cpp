@@ -135,26 +135,26 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 }
 
 //______________________________________________________
-bool DocumentClass::operator == ( const DocumentClass& other ) const
+bool operator == ( const DocumentClass& first, const DocumentClass& second )
 {
 
     return
-        name() == other.name() &&
-        file() == other.file() &&
-        fileMatchingPattern() == other.fileMatchingPattern() &&
-        firstLineMatchingPattern() == other.firstLineMatchingPattern() &&
-        isDefault() == other.isDefault() &&
-        wrap() == other.wrap() &&
-        emulateTabs() == other.emulateTabs() &&
-        tabSize() == other.tabSize() &&
-        icon() == other.icon() &&
-        highlightStyles() == other.highlightStyles() &&
-        highlightPatterns() == other.highlightPatterns() &&
-        indentPatterns() == other.indentPatterns() &&
-        parenthesis() == other.parenthesis() &&
-        blockDelimiters() == other.blockDelimiters() &&
-        textMacros() == other.textMacros() &&
-        baseIndentation() == other.baseIndentation();
+        first.name() == second.name() &&
+        first.file() == second.file() &&
+        first.fileMatchingPattern() == second.fileMatchingPattern() &&
+        first.firstLineMatchingPattern() == second.firstLineMatchingPattern() &&
+        first.isDefault() == second.isDefault() &&
+        first.wrap() == second.wrap() &&
+        first.emulateTabs() == second.emulateTabs() &&
+        first.tabSize() == second.tabSize() &&
+        first.icon() == second.icon() &&
+        first.highlightStyles() == second.highlightStyles() &&
+        first.highlightPatterns() == second.highlightPatterns() &&
+        first.indentPatterns() == second.indentPatterns() &&
+        first.parenthesis() == second.parenthesis() &&
+        first.blockDelimiters() == second.blockDelimiters() &&
+        first.textMacros() == second.textMacros() &&
+        first.baseIndentation() == second.baseIndentation();
 
 }
 

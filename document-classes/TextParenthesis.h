@@ -43,24 +43,6 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
     //* dom element
     QDomElement domElement( QDomDocument& parent ) const;
 
-    //* equal to operator
-    bool operator == ( const TextParenthesis& parenthesis ) const
-    {
-        return
-            first() == parenthesis.first() &&
-            second() == parenthesis.second() &&
-            regexp() == parenthesis.regexp();
-    }
-
-    //* less than operator
-    bool operator < ( const TextParenthesis& parenthesis ) const
-    {
-        if( first() != parenthesis.first() ) return first() < parenthesis.first();
-        if( second() != parenthesis.second() ) return second() < parenthesis.second();
-        if( regexp().pattern() != parenthesis.regexp().pattern() ) return regexp().pattern() < parenthesis.regexp().pattern();
-        return false;
-    }
-
     //* block start
     const QString& first() const
     { return first_; }
@@ -173,4 +155,14 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
     }
 
 };
+
+//* equal to operator
+inline bool operator == ( const TextParenthesis& first, const TextParenthesis& second )
+{
+    return
+        first.first() == second.first() &&
+        first.second() == second.second() &&
+        first.regexp() == second.regexp();
+}
+
 #endif

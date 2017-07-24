@@ -41,18 +41,6 @@ class PatternLocation final: private Base::Counter<PatternLocation>
     //* constructor
     explicit PatternLocation( const HighlightPattern&, int, int );
 
-    //* less than operator
-    bool operator < (const PatternLocation& location ) const
-    {
-        return
-            (position() < location.position()) ||
-            (position() == location.position() && parentId() < location.parentId() ) ;
-    }
-
-    //* equal to operator
-    bool operator == (const PatternLocation& location ) const
-    { return position() == location.position() && parentId() == location.parentId(); }
-
     //*@name accessors
     //@{
 
@@ -169,5 +157,17 @@ class PatternLocation final: private Base::Counter<PatternLocation>
     }
 
 };
+
+//* less than operator
+inline bool operator < (const PatternLocation& first, const PatternLocation& second)
+{
+    return
+        (first.position() < second.position()) ||
+        (first.position() == second.position() && first.parentId() < second.parentId() ) ;
+}
+
+//* equal to operator
+inline bool operator == (const PatternLocation& first, const PatternLocation& second)
+{ return first.position() == second.position() && first.parentId() == second.parentId(); }
 
 #endif

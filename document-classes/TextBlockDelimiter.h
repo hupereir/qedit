@@ -38,14 +38,6 @@ namespace TextBlock
             Counter( "TextBlock::Delimiter" )
         {}
 
-        //* equal to operator
-        bool operator == (const Delimiter& other ) const
-        { return pair_ == other.pair_ && commentedPair_ == other.commentedPair_; }
-
-        //* different operator
-        bool operator != (const Delimiter& other ) const
-        { return !( *this == other ); }
-
         //*@name accessors
         //@{
 
@@ -117,10 +109,6 @@ namespace TextBlock
             explicit Pair()
             {}
 
-            //* equal to
-            bool operator == (const Pair& other ) const
-            { return begin_ == other.begin_ && end_ == other.end_; }
-
             //* sum operator (warning: this is not a reflexive operator)
             Pair& operator += ( const Pair& );
 
@@ -141,6 +129,10 @@ namespace TextBlock
             //* number of times the block is of type "end"
             int end_ = 0;
 
+            //* equal to
+            friend bool operator == (const Pair& first, const Pair& second)
+            { return first.begin_ == second.begin_ && first.end_ == second.end_; }
+
         };
 
         Pair pair_;
@@ -160,7 +152,15 @@ namespace TextBlock
             return out;
         }
 
+        //* equal to operator
+        friend bool operator == (const Delimiter& first, const Delimiter& second )
+        { return first.pair_ == second.pair_ && first.commentedPair_ == second.commentedPair_; }
+
     };
+
+    //* different operator
+    inline bool operator != (const Delimiter& first, const Delimiter& second)
+    { return !( first == second ); }
 
 }
 

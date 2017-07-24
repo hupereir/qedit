@@ -66,9 +66,6 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     //* dom element
     QDomElement domElement( QDomDocument& parent ) const;
 
-    //* equal to operator
-    bool operator == (const HighlightPattern& other ) const;
-
     //*@name accessors
     //@{
 
@@ -330,6 +327,9 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     }
 
     //@}
+
+    //* equal to operator
+    friend bool operator == (const HighlightPattern&, const HighlightPattern& );
 
 };
 

@@ -75,9 +75,6 @@ class IndentPattern final: private Base::Counter<IndentPattern>
 
     };
 
-    //* equal to operator
-    bool operator == (const IndentPattern& ) const;
-
     //* indentation rule
     /** used to check a regExp against a given paragraph */
     class Rule: private Base::Counter<Rule>
@@ -102,24 +99,6 @@ class IndentPattern final: private Base::Counter<IndentPattern>
 
         //* dom element
         QDomElement domElement( QDomDocument& parent ) const;
-
-        //* equal to operator
-        bool operator == ( const Rule& other ) const
-        {
-            return
-                regexp_.pattern() == other.regexp_.pattern() &&
-                paragraph_ == other.paragraph_ &&
-                flags_ == other.flags_;
-        }
-
-        //* less than operator
-        bool operator < ( const Rule& other ) const
-        {
-            if( regexp_.pattern() != other.regexp_.pattern() ) return regexp_.pattern() < other.regexp_.pattern();
-            if( paragraph_ != other.paragraph_ ) return paragraph_ < other.paragraph_;
-            if( flags_ != other.flags_ ) return flags_ < other.flags_;
-            return false;
-        }
 
         //*@name accessors
         //@{
@@ -191,6 +170,25 @@ class IndentPattern final: private Base::Counter<IndentPattern>
             out << "Rule - par_id: " << rule.paragraph_ << " RegExp: \"" << rule.regexp_.pattern() << "\"";
             return out;
         }
+
+        //* equal to operator
+        friend bool operator == ( const Rule& first, const Rule& second )
+        {
+            return
+                first.regexp_.pattern() == second.regexp_.pattern() &&
+                first.paragraph_ == second.paragraph_ &&
+                first.flags_ == second.flags_;
+        }
+
+//         //* less than operator
+//         bool operator < ( const Rule& other ) const
+//         {
+//             if( regexp_.pattern() != other.regexp_.pattern() ) return regexp_.pattern() < other.regexp_.pattern();
+//             if( paragraph_ != other.paragraph_ ) return paragraph_ < other.paragraph_;
+//             if( flags_ != other.flags_ ) return flags_ < other.flags_;
+//             return false;
+//         }
+
     };
 
     //*@name accessors
@@ -299,6 +297,9 @@ class IndentPattern final: private Base::Counter<IndentPattern>
         { out << "  " << rule << endl; }
         return out;
     }
+
+    //* equal to operator
+    friend bool operator == (const IndentPattern&, const IndentPattern&);
 
 };
 

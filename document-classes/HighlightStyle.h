@@ -104,10 +104,6 @@ class HighlightStyle final: private Base::Counter<HighlightStyle>
     //* typedef for list of patterns
     using List = QList<HighlightStyle>;
 
-    //* true if any attributes is different from argument
-    /** this is a stricter comparison than the != operator */
-    bool operator == ( const HighlightStyle& style ) const;
-
     //* name
     void setName( const QString& name )
     { name_ = name; }
@@ -138,6 +134,9 @@ class HighlightStyle final: private Base::Counter<HighlightStyle>
 
     //* color
     QColor color_;
+
+    //* true if any attributes is different from argument
+    friend bool operator == ( const HighlightStyle&, const HighlightStyle& );
 
 };
 
