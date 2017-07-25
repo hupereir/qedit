@@ -18,6 +18,8 @@
 *******************************************************************************/
 
 #include "AutoSaveThread.h"
+
+#include "CppUtil.h"
 #include "XmlOptions.h"
 #include "Util.h"
 

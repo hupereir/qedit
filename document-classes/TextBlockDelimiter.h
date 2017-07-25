@@ -158,10 +158,6 @@ namespace TextBlock
 
     };
 
-    //* different operator
-    inline bool operator != (const Delimiter& first, const Delimiter& second)
-    { return !( first == second ); }
-
 }
 
 #endif

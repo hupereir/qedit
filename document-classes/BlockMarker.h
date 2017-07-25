@@ -85,10 +85,6 @@ class BlockMarker
 inline bool operator == ( const BlockMarker& first, const BlockMarker& second )
 { return first.cursor() == second.cursor(); }
 
-//* different from operator
-inline bool operator != ( const BlockMarker& first, const BlockMarker& second )
-{ return !( first == second ); }
-
 //* less than operator
 inline bool operator < ( const BlockMarker& first, const BlockMarker& second )
 { return first.cursor() < second.cursor(); }
