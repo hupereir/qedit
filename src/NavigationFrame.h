@@ -52,7 +52,7 @@ class NavigationFrame: public QStackedWidget
     { return defaultWidth_; }
 
     //* size
-    QSize sizeHint() const
+    QSize sizeHint() const override
     { return (defaultWidth_ ) >= 0 ? QSize( defaultWidth_, 0 ):QWidget::sizeHint(); }
 
     //* session files

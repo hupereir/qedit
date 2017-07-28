@@ -155,7 +155,7 @@ class Application: public BaseApplication, private Base::Counter<Application>
     void _updateDocumentClasses();
 
     //* configuration
-    void _configuration();
+    void _configuration() override;
 
     //* spellcheck configuration
     void _spellCheckConfiguration();
