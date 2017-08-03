@@ -118,10 +118,10 @@ FileSelectionDialog::FileList FileSelectionDialog::selectedFiles() const
     Debug::Throw( "FileSelectionDialog::_replace.\n" );
 
     // retrieve selection from the list
-    FileRecordModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    auto selection( model_.get( list_->selectionModel()->selectedRows() ) );
     FileList files;
     for( const auto& record:selection )
-    { files << record.file(); }
+    { files.append( record.file() ); }
 
     return files;
 }

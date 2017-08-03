@@ -74,7 +74,7 @@ Counter( "SessionFilesFrame" )
     _installActions();
 
     // add actions to menu
-    ContextMenu* menu( new ContextMenu( list_ ) );
+    auto menu = new ContextMenu( list_ );
     menu->addMenu( new ColumnSortingMenu( menu, list_ ) );
     menu->addMenu( new ColumnSelectionMenu( menu, list_ ) );
     menu->addSeparator();
@@ -103,7 +103,7 @@ void SessionFilesFrame::select( const File& file )
     Debug::Throw() << "SessionFilesFrame::select - file: " << file << ".\n";
 
     // find model index that match the file
-    QModelIndex index( model_.index( FileRecord( file ) ) );
+    auto index( model_.index( FileRecord( file ) ) );
 
     // check if index is valid and not selected
     if( !index.isValid() ) return;
@@ -148,7 +148,7 @@ void SessionFilesFrame::_updateActions()
     int counts( model_.rowCount() );
 
     // get selected files
-    SessionFilesModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    const auto selection( model_.get( list_->selectionModel()->selectedRows() ) );
     bool hasSelection( !selection.empty() );
 
     openAction_->setEnabled( hasSelection );
@@ -168,10 +168,10 @@ void SessionFilesFrame::_showToolTip( const QModelIndex& index )
     else {
 
         // fileInfo
-        const FileRecord record( model_.get( index ) );
+        const auto record( model_.get( index ) );
 
         // icon
-        QIcon icon = mimeTypeIconProvider_->icon( record.file().extension() );
+        auto icon = mimeTypeIconProvider_->icon( record.file().extension() );
         if( icon.isNull() )
         {
             const int iconProperty = FileRecord::PropertyId::get( FileRecordProperties::Icon );
@@ -180,7 +180,7 @@ void SessionFilesFrame::_showToolTip( const QModelIndex& index )
         }
 
         // rect
-        QRect rect( list_->visualRect( index ) );
+        auto rect = list_->visualRect( index );
         rect.translate( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) );
         toolTipWidget_->setIndexRect( rect );
 
@@ -205,19 +205,19 @@ void SessionFilesFrame::_selectPreviousFile()
     if( counts < 2 ) return;
 
     // get current index
-    QModelIndex current_index( list_->selectionModel()->currentIndex() );
-    if( !current_index.isValid() ) return;
+    const auto currentIndex( list_->selectionModel()->currentIndex() );
+    if( !currentIndex.isValid() ) return;
 
     // get previous
-    QModelIndex index( current_index );
-    while( (index = model_.index( index.row()-1, current_index.column())).isValid() )
+    auto index( currentIndex );
+    while( (index = model_.index( index.row()-1, currentIndex.column())).isValid() )
     {
-        FileRecord record( model_.get( index ) );
+        const auto record( model_.get( index ) );
         if( record.hasFlag( FileRecordProperties::Active ) ) break;
     }
 
-    if( !index.isValid() ) index = model_.index( counts-1, current_index.column() );
-    if( (!index.isValid()) || index == current_index ) return;
+    if( !index.isValid() ) index = model_.index( counts-1, currentIndex.column() );
+    if( (!index.isValid()) || index == currentIndex ) return;
 
     // select new index
     list_->selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
@@ -236,19 +236,19 @@ void SessionFilesFrame::_selectNextFile()
     if( counts < 2 ) return;
 
     // get current index
-    QModelIndex current_index( list_->selectionModel()->currentIndex() );
-    if( !current_index.isValid() ) return;
+    const auto currentIndex( list_->selectionModel()->currentIndex() );
+    if( !currentIndex.isValid() ) return;
 
-    // get previous
-    QModelIndex index( current_index );
-    while( (index = model_.index( index.row()+1, current_index.column())).isValid() )
+    // get next
+    auto index( currentIndex );
+    while( (index = model_.index( index.row()+1, currentIndex.column())).isValid() )
     {
-        FileRecord record( model_.get( index ) );
+        const auto record( model_.get( index ) );
         if( record.hasFlag( FileRecordProperties::Active ) ) break;
     }
 
-    if( !index.isValid() ) index = model_.index( 0, current_index.column() );
-    if( (!index.isValid()) || index == current_index ) return;
+    if( !index.isValid() ) index = model_.index( 0, currentIndex.column() );
+    if( (!index.isValid()) || index == currentIndex ) return;
 
     // select new index
     list_->selectionModel()->setCurrentIndex( index,  QItemSelectionModel::Current|QItemSelectionModel::Rows );
@@ -273,7 +273,7 @@ void SessionFilesFrame::_save()
 
     FileRecord::List modifiedRecords;
     for( const auto& record:model_.get( list_->selectionModel()->selectedRows() ) )
-    { if( record.hasFlag( FileRecordProperties::Modified ) ) modifiedRecords << record; }
+    { if( record.hasFlag( FileRecordProperties::Modified ) ) modifiedRecords.append( record ); }
 
     if( !modifiedRecords.empty() ) emit filesSaved( modifiedRecords );
 
@@ -283,16 +283,8 @@ void SessionFilesFrame::_save()
 //______________________________________________________________________
 void SessionFilesFrame::_close()
 {
-
-    Debug::Throw( "SessionFilesFrame:_close.\n" );
-    SessionFilesModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
-    if( !selection.empty() )
-    {
-      FileRecord::List records;
-      for( const auto& record:selection )
-      { records << record; }
-      emit filesClosed( records );
-    }
+    const auto selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    if( !selection.empty() ) emit filesClosed( selection );
 }
 
 //______________________________________________________________________

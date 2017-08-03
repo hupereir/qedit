@@ -292,7 +292,7 @@ void TextDisplay::synchronize( TextDisplay* other )
     textIndent_->setBaseIndentation( other->textIndent_->baseIndentation() );
 
     // parenthesis
-    parenthesisHighlight().synchronize( other->parenthesisHighlight() );
+    parenthesisHighlight_->synchronize( other->parenthesisHighlight() );
 
     // block delimiters and line numbers
     blockDelimiterDisplay_->synchronize( &other->blockDelimiterDisplay() );
@@ -315,7 +315,7 @@ void TextDisplay::synchronize( TextDisplay* other )
 
     // update class name
     setClassName( other->className() );
-    setFileCheckData( other->fileCheckData() );
+    setFileCheckData( other->fileCheckData_ );
 
     if( parentWidget() != other->parentWidget() )
     { emit needUpdate( ActiveDisplayChanged ); }
@@ -621,7 +621,7 @@ void TextDisplay::clearFileCheckData()
 
     Debug::Throw( "TextDisplay::clearFileCheckData.\n" );
 
-    if( fileCheckData().flag() == FileCheck::Data::None ) return;
+    if( fileCheckData_.flag() == FileCheck::Data::None ) return;
 
     // clear file check data
     Base::KeySet<TextDisplay> displays( this );
@@ -829,7 +829,7 @@ void TextDisplay::revertToSave()
     position = qMin( position, toPlainText().size() );
 
     // restore cursor
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     cursor.setPosition( position );
     setTextCursor( cursor );
 
@@ -853,10 +853,10 @@ void TextDisplay::_setTextEncoding( const QByteArray& value )
     if( value == textEncoding_ ) return;
 
     // check validity
-    QTextCodec* codec( QTextCodec::codecForName( value ) );
+    auto codec( QTextCodec::codecForName( value ) );
     if( !codec ) return;
 
-    QTextCodec* oldCodec( QTextCodec::codecForName( textEncoding_ ) );
+    auto oldCodec( QTextCodec::codecForName( textEncoding_ ) );
     if( !oldCodec ) return;
 
     Debug::Throw() << "TextDisplay::_setTextEncoding - old codec: " << textEncoding_ << endl;
@@ -957,7 +957,7 @@ void TextDisplay::tagBlock( QTextBlock block, int tag )
 {
     Debug::Throw( "TextDisplay::tagBlock.\n" );
 
-    HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    auto data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
     if( !data ) block.setUserData( data = new HighlightBlockData );
     if( data->hasFlag( tag ) ) return;
     data->setFlag( tag, true );
@@ -1021,17 +1021,17 @@ bool TextDisplay::isCurrentBlockTagged() const
     Debug::Throw( "TextDisplay::isCurrentBlockTagged.\n" );
 
     QList<QTextBlock> blocks;
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     if( cursor.hasSelection() )
     {
 
-        QTextBlock first( document()->findBlock( qMin( cursor.position(), cursor.anchor() ) ) );
-        QTextBlock last( document()->findBlock( qMax( cursor.position(), cursor.anchor() ) ) );
+        const auto first( document()->findBlock( qMin( cursor.position(), cursor.anchor() ) ) );
+        const auto last( document()->findBlock( qMax( cursor.position(), cursor.anchor() ) ) );
         for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
-        { blocks << block; }
-        if( last.isValid() ) blocks << last;
+        { blocks.append( block ); }
+        if( last.isValid() ) blocks.append( last );
 
-    } else blocks << cursor.block();
+    } else blocks.append( cursor.block() );
 
     for( const auto& block:blocks )
     {
@@ -1146,7 +1146,7 @@ void TextDisplay::_updateDocumentClass( File file, bool newDocument )
         textHighlight_->parenthesisHighlightColor().isValid() &&
         !textHighlight_->parenthesis().empty() );
 
-    parenthesisHighlight().setEnabled(
+    parenthesisHighlight_->setEnabled(
         textHighlightAction_->isChecked() &&
         textHighlight_->parenthesisHighlightColor().isValid() &&
         !textHighlight_->parenthesis().empty() );
@@ -1154,7 +1154,7 @@ void TextDisplay::_updateDocumentClass( File file, bool newDocument )
     // add information to Menu
     if( !( file.isEmpty() || newDocument ) )
     {
-        FileRecord& record( _recentFiles().get( file ) );
+        auto& record( _recentFiles().get( file ) );
         record.addProperty( classNamePropertyId_, className() );
         record.addProperty( wrapPropertyId_, QString::number( wrapModeAction().isChecked() ) );
         if( !documentClass.icon().isEmpty() ) record.addProperty( iconPropertyId_, documentClass.icon() );
@@ -1201,7 +1201,7 @@ void TextDisplay::rehighlight()
     Debug::Throw( "TextDisplay::rehighlight.\n" );
 
     // set all block to modified
-    for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
+    for( auto block = document()->begin(); block.isValid(); block = block.next() )
     { _setBlockModified( block ); }
 
     textHighlight_->setDocument( document() );
@@ -1481,7 +1481,7 @@ void TextDisplay::_installActions()
 
     addAction( parenthesisHighlightAction_ = new QAction( "Highlight Parenthesis", this ) );
     parenthesisHighlightAction_->setCheckable( true );
-    parenthesisHighlightAction_->setChecked( parenthesisHighlight().isEnabled() );
+    parenthesisHighlightAction_->setChecked( parenthesisHighlight_->isEnabled() );
     connect( parenthesisHighlightAction_, SIGNAL(toggled(bool)), SLOT(_toggleParenthesisHighlight(bool)) );
 
     addAction( noAutomaticMacrosAction_ = new QAction( "Disable Automatic Actions", this ) );
@@ -1598,7 +1598,7 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     if( isReadOnly() ) return;
 
     // retrieve text cursor
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     int cursorPosition(0);
     int positionBegin(0);
     int positionEnd(0);
@@ -1661,7 +1661,7 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     }
 
     // process macro
-    TextMacro::Result result( macro.processText( text, cursorPosition ) );
+    auto result( macro.processText( text, cursorPosition ) );
     if( !result.first ) return;
 
     Debug::Throw() << "TextDisplay::processText - increment: " << result.second << endl;
@@ -1676,16 +1676,19 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     // restore selection
     if( hasSelection )
     {
+
         cursor.setPosition( positionBegin );
         cursor.setPosition( positionBegin + text.size(), QTextCursor::KeepAnchor );
+
     } else {
+
         cursor.setPosition( cursorPosition + result.second );
+
     }
 
     setTextCursor( cursor );
 
     // replace leading tabs in selection
-    // if( !_hasTabEmulation() ) { _replaceLeadingTabs( false ); }
     _replaceLeadingTabs( false );
 
     return;
@@ -1734,7 +1737,7 @@ bool TextDisplay::_fileRemoved() const
     */
 
     // check file flag
-    if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::Removed || fileCheckData().flag() == FileCheck::Data::Modified ) )
+    if( !( _fileIsAfs() || fileCheckData_.flag() == FileCheck::Data::Removed || fileCheckData_.flag() == FileCheck::Data::Modified ) )
     { return false; }
 
     // make sure file is still removed
@@ -1758,7 +1761,7 @@ bool TextDisplay::_fileModified()
 
     // check file
     if( file_.isEmpty() || isNewDocument() ) return false;
-    if( !( _fileIsAfs() || fileCheckData().flag() == FileCheck::Data::Removed || fileCheckData().flag() == FileCheck::Data::Modified ) )
+    if( !( _fileIsAfs() || fileCheckData_.flag() == FileCheck::Data::Removed || fileCheckData_.flag() == FileCheck::Data::Modified ) )
     { return false; }
 
     if( !lastSaved().isValid() ) return false;
@@ -1766,7 +1769,7 @@ bool TextDisplay::_fileModified()
     // when file is on afs, or when file was removed (and recreated)
     // one need to use the filename modification timeStampl in place of the timeStamp contained in fileCheckData
     // because the last one was invalid
-    const TimeStamp fileModified( _fileIsAfs() ? TimeStamp(file_.lastModified()) : fileCheckData().timeStamp() );
+    const TimeStamp fileModified( _fileIsAfs() ? TimeStamp(file_.lastModified()) : fileCheckData_.timeStamp() );
     if( !fileModified.isValid() ) return false;
     if( !(fileModified > lastSaved_ ) ) return false;
     if( !_contentsChanged() ) return false;
@@ -2025,7 +2028,7 @@ void TextDisplay::_toggleParenthesisHighlight( bool state )
         textHighlight_->parenthesisHighlightColor().isValid() &&
         !textHighlight_->parenthesis().empty() );
 
-    parenthesisHighlight().setEnabled(
+    parenthesisHighlight_->setEnabled(
         state &&
         textHighlight_->parenthesisHighlightColor().isValid() &&
         !textHighlight_->parenthesis().empty() );
@@ -2177,7 +2180,7 @@ void TextDisplay::_indentSelection()
     if( !textIndent_->isEnabled() ) return;
 
     // retrieve text cursor
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     if( !cursor.hasSelection() ) return;
 
     // retrieve blocks
@@ -2216,7 +2219,7 @@ void TextDisplay::_addBaseIndentation()
 
     // retrieve cursor
     // retrieve text cursor
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     if( !cursor.hasSelection() ) return;
 
     int positionBegin( qMin( cursor.position(), cursor.anchor() ) );
@@ -2226,9 +2229,9 @@ void TextDisplay::_addBaseIndentation()
 
     // store blocks
     QList<QTextBlock> blocks;
-    for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
-    { blocks << block; }
-    blocks << end;
+    for( auto block = begin; block.isValid() && block != end; block = block.next() )
+    { blocks.append( block ); }
+    blocks.append( end );
 
     // loop over blocks
     for( const auto& block:blocks )
@@ -2246,9 +2249,7 @@ void TextDisplay::_addBaseIndentation()
         QTextCursor cursor( block );
         cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
         cursor.setPosition( cursor.position() + leadingSpaceRegExp.matchedLength(), QTextCursor::KeepAnchor );
-
         cursor.insertText( replacement );
-
 
     }
 
@@ -2290,7 +2291,7 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
     QTextBlock end;
 
     // retrieve cursor
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     if( cursor.hasSelection() )
     {
 
@@ -2309,8 +2310,8 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
     // store blocks
     QList<QTextBlock> blocks;
     for( auto&& block = begin; block.isValid() && block != end; block = block.next() )
-    { blocks << block; }
-    blocks << end;
+    { blocks.append( block ); }
+    blocks.append( end );
 
     // loop over blocks
     for( const auto& block:blocks )
@@ -2456,10 +2457,10 @@ void TextDisplay::_fileProperties()
 //_____________________________________________________________
 void TextDisplay::_setBlockModified( int position, int, int added )
 {
-    QTextBlock begin( document()->findBlock( position ) );
-    QTextBlock end(  document()->findBlock( position + added ) );
+    auto begin( document()->findBlock( position ) );
+    auto end(  document()->findBlock( position + added ) );
 
-    for( QTextBlock block = begin; block.isValid() && block != end; block = block.next() )
+    for( auto block = begin; block.isValid() && block != end; block = block.next() )
     { _setBlockModified( block ); }
 
     _setBlockModified( end );
@@ -2496,7 +2497,7 @@ void TextDisplay::_replaceMisspelledSelection( QString word )
 
     #if USE_ASPELL
     Debug::Throw() << "TextDisplay::_replaceMisspelledSelection - word: " << word << endl;
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     cursor.insertText( word );
     #else
     Q_UNUSED( word )
@@ -2513,28 +2514,28 @@ void TextDisplay::_highlightParenthesis()
 
     // clear previous parenthesis
     {
-        QList<QTextBlock> dirty( parenthesisHighlight().clear() );
+        QList<QTextBlock> dirty( parenthesisHighlight_->clear() );
         for( const auto& block:dirty )
         { textHighlight_->rehighlightBlock( block ); }
     }
 
     // retrieve TextCursor
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     if( cursor.atBlockStart() ) return;
 
     // retrieve block
-    QTextBlock block( cursor.block() );
+    auto block( cursor.block() );
 
     // store local position in block
     int position(cursor.position()-block.position());
 
     // get current PatternLocation set
     PatternLocationSet locations;
-    HighlightBlockData *data = dynamic_cast<HighlightBlockData*>( block.userData() );
+    auto data = dynamic_cast<HighlightBlockData*>( block.userData() );
     if( data ) locations = data->locations();
 
-    QString text( block.text() );
-    const TextParenthesis::List& parenthesis( textHighlight_->parenthesis() );
+    auto text( block.text() );
+    const auto& parenthesis( textHighlight_->parenthesis() );
 
     // check against opening parenthesis
     bool found( false );
@@ -2558,7 +2559,7 @@ void TextDisplay::_highlightParenthesis()
             if( data && data->hasFlag( TextBlock::BlockCollapsed ) )
             {
 
-                QTextBlockFormat blockFormat( block.blockFormat() );
+                const auto blockFormat( block.blockFormat() );
                 if( !blockFormat.hasProperty( TextBlock::CollapsedData ) )
                 {
                     Debug::Throw(0) << "TextDisplay::_highlightParenthesis - missing CollapsedData property" << endl;
@@ -2621,19 +2622,20 @@ void TextDisplay::_highlightParenthesis()
         while( block.isValid() && !found )
         {
             // retrieve block text
-            QString text( block.text() );
+            auto text( block.text() );
 
             // append collapsed data if any
             if( data && data->hasFlag( TextBlock::BlockCollapsed ) )
             {
 
-                QTextBlockFormat blockFormat( block.blockFormat() );
+                const auto blockFormat( block.blockFormat() );
                 if( !blockFormat.hasProperty( TextBlock::CollapsedData ) )
                 {
                     Debug::Throw(0) << "TextDisplay::_highlightParenthesis - missing CollapsedData property" << endl;
                     block = block.next();
                     continue;
                 }
+
                 CollapsedBlockData collapsedBlockData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
                 text += collapsedBlockData.toPlainText();
 
@@ -2677,7 +2679,7 @@ void TextDisplay::_highlightParenthesis()
     // highlight
     if( found && position < block.length() )
     {
-        parenthesisHighlight().highlight( position + block.position(), iter->regexp().matchedLength() );
+        parenthesisHighlight_->highlight( position + block.position(), iter->regexp().matchedLength() );
         textHighlight_->rehighlightBlock( block );
     }
 
@@ -2691,17 +2693,17 @@ void TextDisplay::_tagBlock()
 
     Debug::Throw( "TextDisplay::_tagBlock.\n" );
     QList<QTextBlock> blocks;
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     if( cursor.hasSelection() )
     {
 
-        QTextBlock first( document()->findBlock( qMin( cursor.position(), cursor.anchor() ) ) );
-        QTextBlock last( document()->findBlock( qMax( cursor.position(), cursor.anchor() ) ) );
-        for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
-        { blocks << block; }
-        if( last.isValid() ) blocks << last;
+        auto first( document()->findBlock( qMin( cursor.position(), cursor.anchor() ) ) );
+        auto last( document()->findBlock( qMax( cursor.position(), cursor.anchor() ) ) );
+        for( auto block( first ); block.isValid() && block != last;  block = block.next() )
+        { blocks.append( block ); }
+        if( last.isValid() ) blocks.append( last );
 
-    } else blocks << cursor.block();
+    } else blocks.append( cursor.block() );
 
     // clear background for selected blocks
     for( const auto& block:blocks )
@@ -2713,7 +2715,7 @@ void TextDisplay::_tagBlock()
 void TextDisplay::_nextTag()
 {
     Debug::Throw( "TextDisplay::_nextTag.\n" );
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     QTextBlock block( cursor.block() );
     TextBlockData* data;
 
@@ -2748,7 +2750,7 @@ void TextDisplay::_nextTag()
 void TextDisplay::_previousTag()
 {
     Debug::Throw( "TextDisplay::_previousTag.\n" );
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     QTextBlock block( cursor.block() );
     TextBlockData* data;
 
@@ -2786,33 +2788,41 @@ void TextDisplay::_clearTag()
     Debug::Throw( "TextEditor::_clearTag.\n" );
 
     QList<QTextBlock> blocks;
-    QTextCursor cursor( textCursor() );
+    auto cursor( textCursor() );
     if( cursor.hasSelection() )
     {
 
-        QTextBlock first( document()->findBlock( qMin( cursor.position(), cursor.anchor() ) ) );
-        QTextBlock last( document()->findBlock( qMax( cursor.position(), cursor.anchor() ) ) );
-        for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
-        { blocks << block; }
-        if( last.isValid() ) blocks << last;
+        auto first( document()->findBlock( qMin( cursor.position(), cursor.anchor() ) ) );
+        auto last( document()->findBlock( qMax( cursor.position(), cursor.anchor() ) ) );
+        for( auto block( first ); block.isValid() && block != last;  block = block.next() )
+        { blocks.append( block ); }
+        if( last.isValid() ) blocks.append( last );
 
     } else {
 
         // add previous blocks and current
-        for( QTextBlock block( cursor.block() ); block.isValid(); block = block.previous() )
+        for( auto block( cursor.block() ); block.isValid(); block = block.previous() )
         {
-            TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-            if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) ) blocks << block;
-            else break;
+            auto data( static_cast<TextBlockData*>( block.userData() ) );
+            if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) )
+            {
+
+                blocks.append( block );
+
+            } else break;
         }
 
 
         // add previous blocks and current
-        for( QTextBlock block( cursor.block().next() ); block.isValid(); block = block.next() )
+        for( auto block( cursor.block().next() ); block.isValid(); block = block.next() )
         {
-            TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-            if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) ) blocks << block;
-            else break;
+            auto data( static_cast<TextBlockData*>( block.userData() ) );
+            if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) )
+            {
+
+                blocks.append( block );
+
+            } else break;
         }
 
     }

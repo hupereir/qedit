@@ -47,7 +47,7 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
 
         setText( QString( tr( "%1 files are modified. Save ?" ) ).arg( files.size() ) );
 
-        TreeView* treeView = new TreeView( this );
+        auto treeView = new TreeView( this );
         setDetails( treeView );
         treeView->setModel( &model_ );
         model_.set( files );

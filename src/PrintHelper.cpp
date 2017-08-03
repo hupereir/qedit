@@ -45,10 +45,10 @@ void PrintHelper::print( QPrinter* printer )
     // first page
     _newPage( printer, &painter );
 
-    const QFont font( editor_->font() );
+    const auto font( editor_->font() );
     const QFontMetrics metrics( font, printer );
     const int leading( metrics.leading() );
-    const QRect pageRect( _pageRect() );
+    const auto pageRect( _pageRect() );
 
     int activeId( 0 );
 
@@ -80,7 +80,7 @@ void PrintHelper::print( QPrinter* printer )
             formatRange.start = pattern.position();
             formatRange.length = pattern.length();
             formatRange.format = pattern.format();
-            formatRanges << formatRange;
+            formatRanges.append( formatRange );
         }
 
         // save formats

@@ -49,10 +49,8 @@ TextMacro::TextMacro( const QDomElement& element ):
         {
             if( attribute.value().indexOf( Xml::OptionSeparator, 0, Qt::CaseInsensitive ) >= 0 ) setIsSeparator();
             else if( attribute.value().indexOf( Xml::OptionAutomatic, 0, Qt::CaseInsensitive ) >= 0 ) setIsAutomatic();
-        } else Debug::Throw(0) << "TextMacro::TextMacro - unrecognized attribute: " << attribute.name() << endl;
+        }
     }
-
-    Debug::Throw() << "TextMacro::TextMacro - name: " << name() << endl;
 
     // parse children
     for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() )
@@ -60,7 +58,6 @@ TextMacro::TextMacro( const QDomElement& element ):
         QDomElement child_element = child_node.toElement();
         if( child_element.isNull() ) continue;
         if( child_element.tagName() == Xml::Rule ) addRule( Rule( child_element ) );
-        else Debug::Throw(0) << "TextMacro::TextMacro - unrecognized child: " << child_element.tagName() << endl;
     }
 
     Q_ASSERT( isSeparator() || !rules_.empty() );
@@ -135,7 +132,7 @@ TextMacro::Rule::Rule( const QDomElement& element ):
         if( attribute.name() == Xml::Options )
         {
             if( attribute.value().indexOf( Xml::OptionNoSplit, 0, Qt::CaseInsensitive ) >= 0 ) setNoSplitting();
-        } else Debug::Throw(0) << "TextMacro::Rule::Rule - unrecognized attribute: " << attribute.name() << endl;
+        }
     }
 
     // parse children
@@ -145,7 +142,6 @@ TextMacro::Rule::Rule( const QDomElement& element ):
         if( child_element.isNull() ) continue;
         if( child_element.tagName() == Xml::RegExp ) setPattern( XmlString( child_element.text() ) );
         else if( child_element.tagName() == Xml::Replacement ) setReplaceText( XmlString( child_element.text() ) );
-        else Debug::Throw(0) << "TextMacro::Rule::Rule - unrecognized child: " << child_element.tagName() << endl;
     }
 
 }

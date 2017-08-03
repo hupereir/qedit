@@ -22,50 +22,43 @@
 //__________________________________
 XmlString::ConversionList& XmlString::_conversions()
 {
-    static ConversionList conversions;
+    static ConversionList conversions( {
+
+        Conversion( "<", "XML_LT" ),
+        Conversion( ">", "XML_GT" ),
+        Conversion( "&", "XML_AND" ),
+        Conversion( "\"", "XML_QUOTE" ),
+
+        Conversion( QString::fromUtf8( "à" ), "XML_AGRAVE" ),
+        Conversion( QString::fromUtf8( "â" ), "XML_AHAT" ),
+        Conversion( QString::fromUtf8( "ä" ), "XML_ATREM" ),
+        Conversion( QString::fromUtf8( "é" ), "XML_ECUTE" ),
+        Conversion( QString::fromUtf8( "è" ), "XML_EGRAVE" ),
+        Conversion( QString::fromUtf8( "ê" ), "XML_EHAT" ),
+        Conversion( QString::fromUtf8( "ë" ), "XML_EYTRM" ),
+        Conversion( QString::fromUtf8( "î" ), "XML_IHAT" ),
+        Conversion( QString::fromUtf8( "ï" ), "XML_ITREM" ),
+        Conversion( QString::fromUtf8( "ô" ), "XML_OHAT" ),
+        Conversion( QString::fromUtf8( "ö" ), "XML_OTREM" ),
+        Conversion( QString::fromUtf8( "ù" ), "XML_UGRAVE" ),
+        Conversion( QString::fromUtf8( "û" ), "XML_UHAT" ),
+        Conversion( QString::fromUtf8( "ç" ), "XML_CCED" ),
+
+        Conversion( "\t", "XML_TAB" ),
+        Conversion( "\n", "XML_ENDL" ),
+
+        // this conversion is needed for XML not to remove entries that consist of empty spaces only
+        // it is used in xmlToText but not in textToXml
+        Conversion( "", "XML_NONE" )
+    } );
+
     return conversions;
-}
-
-//__________________________________
-void XmlString::_initConversions() const
-{
-
-    _conversions() << Conversion( "<", "XML_LT" );
-    _conversions() << Conversion( ">", "XML_GT" );
-    _conversions() << Conversion( "&", "XML_AND" );
-    _conversions() << Conversion( "\"", "XML_QUOTE" );
-
-    _conversions() << Conversion( QString::fromUtf8( "à" ), "XML_AGRAVE" );
-    _conversions() << Conversion( QString::fromUtf8( "â" ), "XML_AHAT" );
-    _conversions() << Conversion( QString::fromUtf8( "ä" ), "XML_ATREM" );
-    _conversions() << Conversion( QString::fromUtf8( "é" ), "XML_ECUTE" );
-    _conversions() << Conversion( QString::fromUtf8( "è" ), "XML_EGRAVE" );
-    _conversions() << Conversion( QString::fromUtf8( "ê" ), "XML_EHAT" );
-    _conversions() << Conversion( QString::fromUtf8( "ë" ), "XML_EYTRM" );
-    _conversions() << Conversion( QString::fromUtf8( "î" ), "XML_IHAT" );
-    _conversions() << Conversion( QString::fromUtf8( "ï" ), "XML_ITREM" );
-    _conversions() << Conversion( QString::fromUtf8( "ô" ), "XML_OHAT" );
-    _conversions() << Conversion( QString::fromUtf8( "ö" ), "XML_OTREM" );
-    _conversions() << Conversion( QString::fromUtf8( "ù" ), "XML_UGRAVE" );
-    _conversions() << Conversion( QString::fromUtf8( "û" ), "XML_UHAT" );
-    _conversions() << Conversion( QString::fromUtf8( "ç" ), "XML_CCED" );
-
-    _conversions() << Conversion( "\t", "XML_TAB" );
-    _conversions() << Conversion( "\n", "XML_ENDL" );
-
-    // this conversion is needed for XML not to remove entries that consist of empty spaces only
-    // it is used in xmlToText but not in textToXml
-    _conversions() << Conversion( "", "XML_NONE" );
-
-    return;
-
 }
 
 //__________________________________
 XmlString::XmlString( const QString& other ):
     value_( other )
 {
-    if( !( _conversions().size() ) ) _initConversions();
 
     // HTML style conversions (escape characters)
     ConversionListIterator iter( _conversions() );

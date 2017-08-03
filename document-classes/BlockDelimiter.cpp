@@ -38,7 +38,6 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element, int id ):
         if( attribute.name() == Xml::Begin ) first_ = XmlString( attribute.value() );
         else if( attribute.name() == Xml::End ) second_ = XmlString( attribute.value() );
         else if( attribute.name() == Xml::RegExp ) regexp_.setPattern( XmlString( attribute.value() ) );
-        else Debug::Throw(0) << "BlockDelimiter::BlockDelimiter - unrecognized attribute: " << attribute.name() << endl;
     }
 
     // create regexp

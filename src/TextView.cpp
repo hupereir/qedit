@@ -68,7 +68,7 @@ void TextView::setIsNewDocument()
     auto iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
     if( iter == displays.end() )
     {
-        Debug::Throw(0) << "TextView::setIsNewDocument - invalid display" << endl;
+        Debug::Throw(0, "TextView::setIsNewDocument - invalid display.\n" );
         return;
     }
 
@@ -101,7 +101,7 @@ void TextView::setFile( File file )
     auto iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
     if( iter == displays.end() )
     {
-        Debug::Throw(0) << "TextView::setFile - invalid display" << endl;
+        Debug::Throw(0, "TextView::setFile - invalid display.\n" );
         return;
     }
 
@@ -184,7 +184,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
     Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << endl;
     if( !display.isAssociated( this ) )
     {
-        Debug::Throw(0) << "TextView::setActiveDisplay - invalid display" << endl;
+        Debug::Throw(0, "TextView::setActiveDisplay - invalid display.\n" );
         return;
     }
 
@@ -338,7 +338,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, bool cl
     // assign equal size to all splitter children
     QList<int> sizes;
     for( int i=0; i<splitter.count(); i++ )
-    { sizes << dimension/splitter.count(); }
+    { sizes.append( dimension/splitter.count() ); }
     splitter.setSizes( sizes );
 
     // synchronize both displays, if cloned
@@ -511,7 +511,7 @@ void TextView::diff()
     // check that one display was found
     if( iter == displays.end() )
     {
-        Debug::Throw(0) << "TextView::diff - display not found" << endl;
+        Debug::Throw(0, "TextView::diff - display not found.\n" );
         return;
     }
 
@@ -535,7 +535,7 @@ void TextView::_checkDisplays()
     Base::KeySet<TextDisplay> displays( this );
     if( displays.empty() )
     {
-        Debug::Throw() << "TextView::_checkDisplays - closing" << endl;
+        Debug::Throw( "TextView::_checkDisplays - closing.\n" );
         setIsClosed( true );
         close();
         return;
@@ -612,7 +612,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
 
                 QList<int> sizes;
                 for( int i=0; i<parentSplitter->count(); i++ )
-                { sizes << dimension/parentSplitter->count(); }
+                { sizes.append( dimension/parentSplitter->count() ); }
                 parentSplitter->setSizes( sizes );
 
             }

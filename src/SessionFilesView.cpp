@@ -52,7 +52,7 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
     // get list of dragable indexes
     QModelIndexList indexes;
     for( const auto& index:selectionModel()->selectedIndexes() )
-    { if( model()->flags( index ) & Qt::ItemIsDragEnabled ) indexes << index; }
+    { if( model()->flags( index ) & Qt::ItemIsDragEnabled ) indexes.append( index ); }
     if( indexes.isEmpty() ) return;
 
     // get mime data

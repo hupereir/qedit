@@ -37,10 +37,10 @@
 FileSystemModel::FileSystemModel( QObject* parent ):
     ListModel<FileRecord>( parent ),
     Counter( "FileSystemModel" ),
+    columnTitles_( { tr( "File" ), tr( "Size" ), tr( "Last Accessed" ) }),
     sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Size ) )
 {
     Debug::Throw("FileSystemModel::FileSystemModel.\n" );
-    columnTitles_ <<  tr( "File" ) << tr( "Size" ) << tr( "Last Accessed" );
     iconProvider_ = new FileIconProvider( this );
 
 }
@@ -185,7 +185,7 @@ QMimeData* FileSystemModel::mimeData(const QModelIndexList &indexes) const
     {
 
         if( !index.isValid() ) continue;
-        const FileRecord record( get(index) );
+        const auto record( get(index) );
         filenames.insert( record.file() );
 
     }
@@ -193,7 +193,7 @@ QMimeData* FileSystemModel::mimeData(const QModelIndexList &indexes) const
     if( filenames.empty() ) return nullptr;
     else {
 
-        QMimeData* mimeData = new QMimeData;
+        auto mimeData = new QMimeData;
 
         // fill text data
         {

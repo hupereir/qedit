@@ -45,9 +45,6 @@ class XmlString final
     using ConversionList = QList< Conversion >;
     using ConversionListIterator = QListIterator< Conversion >;
 
-    //* initialize Xml to text conversion pair list
-    void _initConversions() const;
-
     //* text to Xml conversion pair list
     static ConversionList& _conversions();
 

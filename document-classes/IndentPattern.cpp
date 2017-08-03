@@ -125,7 +125,6 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
         {
             if( attribute.value().indexOf( Xml::OptionNoCase, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CaseInsensitive, true );
         }
-        else Debug::Throw(0) << "Rule::Rule - unrecognized attribute: " << attribute.name() << endl;
     }
 
     // parse children
@@ -134,7 +133,6 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
     {
         QDomElement child_element = child_node.toElement();
         if( child_element.tagName() == Xml::RegExp ) setPattern( XmlString( child_element.text() ) );
-        else Debug::Throw(0) << "Rule::Rule - unrecognized child: " << child_element.tagName() << endl;
     }
 
     regexp_.setCaseSensitivity( flag( CaseInsensitive ) ? Qt::CaseInsensitive : Qt::CaseSensitive );

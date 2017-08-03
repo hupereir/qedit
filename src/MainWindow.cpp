@@ -237,10 +237,8 @@ bool MainWindow::selectDisplay( const File& file )
 {
 
     Debug::Throw() << "MainWindow::selectDisplay - file: " << file << endl;
-
     Debug::Throw() << "MainWindow::selectDisplay - active view: " << activeView_->key() << endl;
     Debug::Throw() << "MainWindow::selectDisplay - active view displays: " << Base::KeySet<TextDisplay>( &activeView() ).size() << endl;
-
 
     // do nothing if already selected
     if( !activeView_->isClosed() && activeView_->activeDisplay().file() == file ) return true;
@@ -414,7 +412,7 @@ void MainWindow::_print( PrintHelper& helper )
     // create prind dialog and run.
     QPrintDialog dialog( &printer, this );
     dialog.setWindowTitle( tr( "Print Document - qedit" ) );
-    dialog.setOptionTabs( QList<QWidget *>() << optionWidget );
+    dialog.setOptionTabs( { optionWidget } );
     if( dialog.exec() == QDialog::Rejected ) return;
 
     // add output file to scratch files, if any
@@ -669,7 +667,6 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
         saveAction_->setEnabled( !activeDisplay().isReadOnly() && activeDisplay().document()->isModified() );
 
     }
-    Debug::Throw() << "MainWindow::_update - window title done. "<< endl;
 
     if( flags & TextDisplay::Modified )
     { emit modificationChanged(); }
@@ -684,8 +681,6 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
             filePropertiesAction_->setEnabled( !( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() ) );
         }
 
-        Debug::Throw() << "MainWindow::_update - file editor done. "<< endl;
-
         // update session file frame
         if( navigationFrame_ )
         {
@@ -694,11 +689,8 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
             navigationFrame_->fileSystemFrame().setWorkingPath( activeDisplay().workingDirectory() );
         }
 
-        Debug::Throw() << "MainWindow::_update - navigation frame done. "<< endl;
-
         // cursor position
         _updateCursorPosition();
-        Debug::Throw() << "MainWindow::_update - statusbar done. "<< endl;
 
     }
 
@@ -722,19 +714,17 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
 
     if( _hasStatusBar() && (flags & TextDisplay::Modifiers) )
     {
-        Debug::Throw() << "MainWindow::_update - modifiers." << endl;
         QStringList modifiers;
-        if( activeDisplay().modifier( TextEditor::Modifier::Wrap ) ) modifiers << "WRAP";
-        if( activeDisplay().modifier( TextEditor::Modifier::Insert ) ) modifiers << "INS";
-        if( activeDisplay().modifier( TextEditor::Modifier::CapsLock ) ) modifiers << "CAPS";
-        if( activeDisplay().modifier( TextEditor::Modifier::NumLock ) ) modifiers << "NUM";
+        if( activeDisplay().modifier( TextEditor::Modifier::Wrap ) ) modifiers.append( "WRAP" );
+        if( activeDisplay().modifier( TextEditor::Modifier::Insert ) ) modifiers.append( "INS" );
+        if( activeDisplay().modifier( TextEditor::Modifier::CapsLock ) ) modifiers.append( "CAPS" );
+        if( activeDisplay().modifier( TextEditor::Modifier::NumLock ) ) modifiers.append( "NUM" );
         if( !modifiers.isEmpty() ) statusbar_->label(0).setText( modifiers.join( " " ) );
         else  statusbar_->label(0).clear();
     }
 
     if( flags & TextDisplay::DisplayCount )
     {
-        Debug::Throw() << "MainWindow::_update - display count." << endl;
         int displayCount = activeView_->independentDisplayCount();
         int viewCount = Base::KeySet<TextView>( this ).size();
 
@@ -743,7 +733,6 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
 
         // update diff action
         diffAction_->setEnabled( displayCount == 2 );
-        Debug::Throw() << "MainWindow::_update - display count - done." << endl;
 
     }
 
@@ -753,8 +742,6 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
 
     if( flags & (TextDisplay::Cut|TextDisplay::Copy) )
     { menu().macroMenu().updateState( activeDisplay().textCursor().hasSelection() ); }
-
-    Debug::Throw() << "MainWindow::_update - done." << endl;
 
 }
 

@@ -100,7 +100,7 @@ File::List DocumentClassManagerDialog::userFiles() const
 {
     File::List files;
     for( const auto& documentClass:model_.get() )
-    { if( !documentClass.isBuildIn() ) files << documentClass.file(); }
+    { if( !documentClass.isBuildIn() ) files.append( documentClass.file() ); }
 
     return files;
 }
@@ -150,7 +150,7 @@ void DocumentClassManagerDialog::_remove()
     // loop over selected items
     QSet<File> removedFiles;
     for( const auto& documentClass:model_.get( list_->selectionModel()->selectedRows() ) )
-    { if( !documentClass.isBuildIn() ) removedFiles << documentClass.file(); }
+    { if( !documentClass.isBuildIn() ) removedFiles.insert( documentClass.file() ); }
 
     if( removedFiles.empty() ) return;
 
@@ -162,7 +162,7 @@ void DocumentClassManagerDialog::_remove()
 
     DocumentClassManager::List removedItems;
     for( const auto& documentClass:model_.get() )
-    { if( removedFiles.contains( documentClass.file() ) ) removedItems << documentClass; }
+    { if( removedFiles.contains( documentClass.file() ) ) removedItems.append( documentClass ); }
 
     // remove
     model_.remove( removedItems );

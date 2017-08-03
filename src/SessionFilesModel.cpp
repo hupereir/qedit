@@ -129,14 +129,17 @@ const QIcon& SessionFilesModel::_icon( int type )
 
 //______________________________________________________________________
 QStringList SessionFilesModel::mimeTypes() const
-{ return QStringList() << FileRecord::MimeType << "text/uri-list"; }
+{
+    static QStringList mimeTypes( { FileRecord::MimeType, "text/uri-list" });
+    return mimeTypes;
+}
 
 //______________________________________________________________________
 QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
 {
 
     // base class
-    QMimeData* mimeData = FileRecordModel::mimeData( indexes );
+    auto mimeData = FileRecordModel::mimeData( indexes );
 
     // get selected filenames
     QOrderedSet<QString> filenames;

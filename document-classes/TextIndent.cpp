@@ -48,8 +48,8 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
     // store all blocks prior to starting modifications
     QList<QTextBlock> blocks;
     for( QTextBlock block( first ); block.isValid() && block != last; block = block.next() )
-    { blocks << block; }
-    blocks << last;
+    { blocks.append( block ); }
+    blocks.append( last );
 
     QProgressDialog progress( tr( "Indenting selected paragraphs..." ), tr( "Abort" ), 0, blocks.size(), editor_);
     progress.show();

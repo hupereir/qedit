@@ -158,7 +158,7 @@ FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) con
             }
 
             // assign flags and store
-            records << record.setFlags( flags );
+            records.append( record.setFlags( flags ) );
 
         }
 
@@ -189,18 +189,17 @@ bool WindowServer::closeAll()
 
     QStringList files;
     for( const auto& record:records )
-    { files << record.file(); }
+    { files.append( record.file() ); }
 
     return _close( files );
 
 }
 
 //______________________________________________________
-// void WindowServer::readFilesFromArguments( CommandLineArguments arguments )
 void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
 {
 
-    Debug::Throw() << "WindowServer::readFilesFromArguments." << endl;
+    Debug::Throw( "WindowServer::readFilesFromArguments.\n" );
 
     // retrieve files from arguments
     // const CommandLineParser parser( Application::commandLineParser( arguments ) );
@@ -305,7 +304,6 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
     }
     firstCall_ = false;
 
-    Debug::Throw() << "WindowServer::readFilesFromArguments - done." << endl;
     return;
 
 }
@@ -344,7 +342,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
         auto iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
         if( iter == windows.end() )
         {
-            Debug::Throw(0) << "WindowServer::multipleFileReplace - no window found" << endl;
+            Debug::Throw(0, "WindowServer::multipleFileReplace - no window found.\n" );
             continue;
         }
 
@@ -437,7 +435,7 @@ void WindowServer::_newFile( WindowServer::OpenMode mode )
         if( viewIter == views.end() )
         {
 
-            Debug::Throw(0) << "WindowServer::_newFile - invalid view" << endl;
+            Debug::Throw(0, "WindowServer::_newFile - invalid view.\n" );
             return;
         }
 
@@ -520,7 +518,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     Base::KeySet<MainWindow> windows( this );
 
     // try find editor with matching name
-    auto&& iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
+    auto iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
     if( iter != windows.end() )
     {
 
@@ -536,7 +534,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     if( !( record.file().exists() || _createNewFile( record ) ) ) return false;
 
     // try find empty editor
-    TextView* view(0);
+    TextView* view = nullptr;
     iter = std::find_if( windows.begin(), windows.end(), MainWindow::EmptyFileFTor() );
     if( iter != windows.end() )
     {
@@ -547,7 +545,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
         if( viewIter == views.end() )
         {
 
-            Debug::Throw(0) << "WindowServer::_open - invalid view" << endl;
+            Debug::Throw(0, "WindowServer::_open - invalid view.\n" );
             return false;
         }
 
@@ -574,7 +572,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
         } else {
 
             // create new view
-            view = &_activeWindow().newTextView( record );
+            _activeWindow().newTextView( record );
 
             // uniconify
             _activeWindow().uniconify();
@@ -583,8 +581,6 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
 
     }
 
-    // assign file
-    //view->setFile( record.file() );
     qApp->processEvents();
 
     Debug::Throw() << "WindowServer::_open - file: " << record.file() << " done." << endl;
@@ -619,7 +615,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         if( viewIter == views.end() )
         {
 
-            Debug::Throw(0) << "WindowServer::_open - invalid view" << endl;
+            Debug::Throw(0, "WindowServer::_open - invalid view.\n" );
             return false;
         }
 
@@ -716,7 +712,7 @@ void WindowServer::_detach( const File& file )
     auto&& activeWindowLocal( _activeWindow() );
     if( activeWindowLocal.activeView().independentDisplayCount() <= 1 && Base::KeySet<TextView>( &_activeWindow() ).size() <= 1 )
     {
-        Debug::Throw() << "WindowServer::_detach - invalid display count" << endl;
+        Debug::Throw( "WindowServer::_detach - invalid display count.\n" );
         return;
     }
 
@@ -806,7 +802,7 @@ void WindowServer::_reparent( const File& first, const File& second )
     Base::KeySet<MainWindow> windows( view );
     if( windows.size() != 1 )
     {
-        Debug::Throw(0) << "WindowServer::_reparent - invalid number of windows" << endl;
+        Debug::Throw(0, "WindowServer::_reparent - invalid number of windows.\n" );
         return;
     }
 
@@ -915,7 +911,7 @@ bool WindowServer::_close( FileRecord::List records )
 
     QStringList files;
     for( const auto& record:records )
-    { files << record.file(); }
+    { files.append( record.file() ); }
 
     return _close( files );
 
@@ -1018,7 +1014,7 @@ TextView& WindowServer::_findView( const File& file )
     Base::KeySet<TextView> views( display );
     if( views.size() != 1 )
     {
-        Debug::Throw(0) << "WindowServer::_findView - no view found" << endl;
+        Debug::Throw(0, "WindowServer::_findView - no view found.\n" );
         abort();
     }
 
@@ -1149,7 +1145,7 @@ void WindowServer::_setActiveWindow( MainWindow& window )
     Debug::Throw() << "WindowServer::setActiveWindow - key: " << window.key() << endl;
     if( !window.isAssociated( this ) )
     {
-        Debug::Throw(0) << "WindowServer::_setActiveWindow - invalid window" << endl;
+        Debug::Throw(0, "WindowServer::_setActiveWindow - invalid window.\n" );
         return;
     }
 

@@ -67,7 +67,7 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
     _installActions();
 
     // add actions to list
-    QMenu* menu( new ContextMenu( list_ ) );
+    auto menu = new ContextMenu( list_ );
     menu->addMenu( new ColumnSortingMenu( menu, list_ ) );
     menu->addMenu( new ColumnSelectionMenu( menu, list_ ) );
     menu->addAction( openAction_ );
@@ -161,7 +161,7 @@ void RecentFilesFrame::_showToolTip( const QModelIndex& index )
     else {
 
         // fileInfo
-        const FileRecord record( model_.get( index ) );
+        const auto record( model_.get( index ) );
 
         // icon
         QIcon icon;
@@ -169,8 +169,8 @@ void RecentFilesFrame::_showToolTip( const QModelIndex& index )
         if( iconVariant.canConvert( QVariant::Icon ) ) icon = iconVariant.value<QIcon>();
 
         // rect
-        QRect rect( list_->visualRect( index ) );
-        rect.translate( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) );
+        const auto rect = list_->visualRect( index )
+            .translated( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) );
         toolTipWidget_->setIndexRect( rect );
 
         // assign to tooltip widget
@@ -202,7 +202,7 @@ void RecentFilesFrame::_open()
     FileRecordModel::List validSelection;
 
     for( const auto& record:model_.get( list_->selectionModel()->selectedRows() ) )
-    { if( record.isValid() ) validSelection << record; }
+    { if( record.isValid() ) validSelection.append( record ); }
 
     // TODO: should check number of files
     for( const auto& record:validSelection )

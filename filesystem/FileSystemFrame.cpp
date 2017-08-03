@@ -75,7 +75,7 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
     // initialize local root path list
     File::List rootPathList;
     for( const auto& fileInfo:QDir::drives() )
-    { rootPathList << File( fileInfo.path() ); }
+    { rootPathList.append( File( fileInfo.path() ) ); }
     pathEditor_->setRootPathList( rootPathList );
 
     connect( pathEditor_, SIGNAL(pathChanged(File)), SLOT(_update()) );
@@ -196,7 +196,7 @@ void FileSystemFrame::_processFiles( const File::List& files )
     {
         FileRecord record( File("..") );
         record.setFlags( BaseFileInfo::Navigator );
-        records << record;
+        records.append( record );
     }
 
     // add files
@@ -217,7 +217,7 @@ void FileSystemFrame::_processFiles( const File::List& files )
         if( file.isHidden() ) record.setFlag( BaseFileInfo::Hidden );
 
         // add to model
-        records << record;
+        records.append( record );
 
     }
 
@@ -406,7 +406,7 @@ void FileSystemFrame::_remove()
         if( record.hasFlag( BaseFileInfo::Navigator ) ) continue;
         FileRecord copy( record );
         copy.setFile( File( record.file() ).addPath( pathEditor_->path() ) );
-        validSelection << copy;
+        validSelection.append( copy );
 
     }
 

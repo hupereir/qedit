@@ -69,8 +69,6 @@ DocumentClass::DocumentClass( const QDomElement& element ):
 
         } else if( attribute.name() == Xml::BaseIndentation ) baseIndentation_ = attribute.value().toInt();
 
-        else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized attribute: " << attribute.name() << endl;
-
     }
 
     // parse children
@@ -88,28 +86,28 @@ DocumentClass::DocumentClass( const QDomElement& element ):
         } else if( childElement.tagName() == Xml::KeywordPattern || childElement.tagName() == Xml::RangePattern ) {
 
             HighlightPattern pattern( childElement );
-            if( pattern.isValid() ) highlightPatterns_ << pattern;
+            if( pattern.isValid() ) highlightPatterns_.append( pattern );
 
         } else if( childElement.tagName() == Xml::IndentPattern ) {
 
             IndentPattern pattern( childElement );
-            if( pattern.isValid() ) indentPatterns_ << pattern;
+            if( pattern.isValid() ) indentPatterns_.append( pattern );
 
         } else if( childElement.tagName() == Xml::Parenthesis ) {
 
             // parenthesis
-            textParenthesis_ << TextParenthesis( childElement );
+            textParenthesis_.append( TextParenthesis( childElement ) );
 
         } else if( childElement.tagName() == Xml::BlockDelimiter ) {
 
             // block delimiters
-            blockDelimiters_ << BlockDelimiter( childElement, blockDelimiters_.size() );
+            blockDelimiters_.append( BlockDelimiter( childElement, blockDelimiters_.size() ) );
 
         } else if( childElement.tagName() == Xml::Macro ) {
 
             // text macrox
             TextMacro macro( childElement );
-            if( macro.isValid() ) textMacros_ << macro;
+            if( macro.isValid() ) textMacros_.append( macro );
 
         } else if( childElement.tagName() == Base::Xml::Option ) {
 
@@ -119,10 +117,8 @@ DocumentClass::DocumentClass( const QDomElement& element ):
             else if( option.name() == Xml::OptionDefault ) default_ = option.get<bool>();
             else if( option.name() == Xml::BaseIndentation ) baseIndentation_ = option.get<int>();
             else if( option.name() == Xml::TabSize ) tabSize_ = option.get<int>();
-            else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized option " << option.name() << endl;
 
-        } else Debug::Throw(0) << "DocumentClass::DocumentClass - unrecognized child " << childElement.tagName() << ".\n";
-
+        }
 
 
     }

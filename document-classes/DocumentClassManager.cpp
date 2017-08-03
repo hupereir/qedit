@@ -79,12 +79,12 @@ bool DocumentClassManager::read( const File& filename )
             // add new document class
             documentClass.setFile( filename );
             documentClass.setIsBuildIn( filename.startsWith( ':' ) );
-            documentClasses_ << documentClass;
+            documentClasses_.append( documentClass );
 
             // reset IndentPattern counter (for debugging)
             IndentPattern::resetCounter();
 
-        } else Debug::Throw() << "DocumentClassManager::read - unrecognized child " << element.tagName() << endl;
+        }
     }
 
     // store error

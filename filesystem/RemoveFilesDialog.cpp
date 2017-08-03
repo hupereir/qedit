@@ -47,14 +47,15 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
     QString buffer = (files.size() == 1) ?
         tr( "Permanently delete this item ?" ):
         QString( tr( "Permanently delete these %1 items ?" ) ).arg( files.size() );
-    QLabel* textLabel( new QLabel( buffer, this ) );
+    auto textLabel = new QLabel( buffer, this );
 
     //! try load Question icon
-    QHBoxLayout *hLayout( new QHBoxLayout );
+    auto hLayout = new QHBoxLayout;
     hLayout->setSpacing(10);
     hLayout->setMargin(0);
     mainLayout().addLayout( hLayout );
-    QLabel* label = new QLabel( this );
+
+    auto label = new QLabel( this );
     label->setPixmap( IconEngine::get( IconNames::DialogWarning ).pixmap( iconSize() ) );
     hLayout->addWidget( label, 0, Qt::AlignHCenter );
     hLayout->addWidget( textLabel, 1, Qt::AlignLeft );

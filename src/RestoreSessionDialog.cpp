@@ -35,9 +35,6 @@ RestoreSessionDialog::RestoreSessionDialog( QWidget* parent, FileRecord::List fi
     Debug::Throw( "RestoreSessionDialog::RestoreSessionDialog.\n" );
     setWindowTitle( tr( "Restore Saved Session - Qedit" ) );
 
-    Q_ASSERT( !files.empty() );
-
-
     if( files.size() == 1 )
     {
 
@@ -47,7 +44,7 @@ RestoreSessionDialog::RestoreSessionDialog( QWidget* parent, FileRecord::List fi
 
         setText( QString( tr( "Restore %1 files from saved session ?" ) ).arg( files.size() ) );
 
-        TreeView* treeView = new TreeView( this );
+        auto treeView = new TreeView( this );
         setDetails( treeView );
         treeView->setModel( &model_ );
         model_.set( files );

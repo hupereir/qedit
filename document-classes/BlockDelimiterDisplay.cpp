@@ -447,7 +447,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks()
         }
 
         // store cursor in list for removal of the edited text at the end of the loop
-        cursors << cursor;
+        cursors.append( cursor );
 
     }
 
@@ -635,7 +635,7 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
                     if( delimiter.begin( isCommented ) ) startPoints.back().setFlag( BlockDelimiterSegment::BeginOnly, true );
 
                     // store new segment
-                    segments_ << startPoints.back().setEnd( blockEnd );
+                    segments_.append( startPoints.back().setEnd( blockEnd ) );
                 }
 
                 // pop
@@ -655,7 +655,7 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
 
                 // if block is collapsed, skip one start point (which is self contained)
                 for( int i = 0; i < delimiter.begin( isCommented ); i++ )
-                { startPoints << BlockDelimiterSegment( blockBegin, blockEnd, flags ); }
+                { startPoints.append( BlockDelimiterSegment( blockBegin, blockEnd, flags ) ); }
 
                 if( collapsed )
                 {
@@ -669,7 +669,7 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
 
                     // add one self contained segment
                     hasCollapsedBlocks = true;
-                    segments_ << BlockDelimiterSegment( blockBegin, blockEnd, flags );
+                    segments_.append( BlockDelimiterSegment( blockBegin, blockEnd, flags ) );
 
                 } else hasExpandedBlocks = true;
 
@@ -681,7 +681,7 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
         /* they are inserted in reverse order to optimize segment drawing in paintEvent */
         BlockDelimiterSegment::ListIterator segmentIter( segments_ );
         segmentIter.toBack();
-        while( segmentIter.hasPrevious() ) segments_ << segmentIter.previous();
+        while( segmentIter.hasPrevious() ) segments_.append( segmentIter.previous() );
 
         // insert total number of collapsed block as last element
         // this is done only for the first block delimiter pair
@@ -948,7 +948,7 @@ CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const QTextBlock& firs
             collapsedDelimiters += currentCollapsedData.delimiters();
 
             // append collapsed data
-            collapsedData.children() << currentCollapsedData;
+            collapsedData.children().append( currentCollapsedData );
 
             if( current == secondBlock ) break;
 

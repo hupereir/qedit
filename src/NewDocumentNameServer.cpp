@@ -30,7 +30,7 @@ QString NewDocumentNameServer::get()
 
     int version( versions_.empty() ? 0: versions_.back()+1 );
     QString out( _get( version ) );
-    versions_ << version;
+    versions_.append( version );
     return out;
 
 }
