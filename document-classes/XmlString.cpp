@@ -19,10 +19,12 @@
 
 #include "XmlString.h"
 
+#include "CppUtil.h"
+
 //__________________________________
-XmlString::ConversionList& XmlString::_conversions()
+const XmlString::ConversionList& XmlString::_conversions()
 {
-    static ConversionList conversions( {
+    static const auto conversions = Base::makeT<ConversionList>({
 
         Conversion( "<", "XML_LT" ),
         Conversion( ">", "XML_GT" ),
@@ -50,7 +52,7 @@ XmlString::ConversionList& XmlString::_conversions()
         // this conversion is needed for XML not to remove entries that consist of empty spaces only
         // it is used in xmlToText but not in textToXml
         Conversion( "", "XML_NONE" )
-    } );
+    });
 
     return conversions;
 }
