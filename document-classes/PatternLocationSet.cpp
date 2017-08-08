@@ -19,6 +19,8 @@
 
 #include "PatternLocationSet.h"
 
+#include <algorithm>
+
 //______________________________________________________________
 bool PatternLocationSet::isCommented( int position ) const
 {
