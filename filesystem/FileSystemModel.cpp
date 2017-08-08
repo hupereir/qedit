@@ -43,7 +43,6 @@ FileSystemModel::FileSystemModel( QObject* parent ):
 {
     Debug::Throw("FileSystemModel::FileSystemModel.\n" );
     iconProvider_ = new FileIconProvider( this );
-
 }
 
 //__________________________________________________________________
