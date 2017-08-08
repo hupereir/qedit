@@ -84,7 +84,7 @@ bool Diff::run()
     _clear();
 
     // create command and pass to process
-    QStringList command({
+    const auto command = Base::makeT<QStringList>({
         XmlOptions::get().raw( "DIFF_COMMAND" ),
         files_[0].file(),
         files_[1].file()
@@ -118,8 +118,8 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
     }
 
     // retrieve all stdout and put into stream
-    QByteArray out( process_.readAllStandardOutput() );
-    QStringList in( QString( out ).split( "\n" ) );
+    const auto out( process_.readAllStandardOutput() );
+    const auto in( QString( out ).split( "\n" ) );
     int index(0);
 
     for( const auto& buffer:in )

@@ -124,7 +124,7 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     }
 
     // associate elements
-    QStringList warnings = _associatePatterns();
+    const auto warnings = _associatePatterns();
     for( const auto& warning:warnings )
     { Debug::Throw(0) << "DocumentClass::DocumentClass - " << warning << endl; }
 

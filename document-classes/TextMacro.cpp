@@ -179,7 +179,7 @@ TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) co
 
         int localPosition( position );
         TextMacro::Result out;
-        QStringList lines( text.split( '\n' ) );
+        auto lines( text.split( '\n' ) );
         for( auto& line:lines )
         {
 
