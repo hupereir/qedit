@@ -24,8 +24,9 @@
 #include "BaseStatusBar.h"
 #include "BlockDelimiterDisplay.h"
 #include "ClockLabel.h"
-#include "CustomToolButton.h"
 #include "Command.h"
+#include "CppUtil.h"
+#include "CustomToolButton.h"
 #include "CustomToolBar.h"
 #include "Debug.h"
 #include "Diff.h"
@@ -412,7 +413,9 @@ void MainWindow::_print( PrintHelper& helper )
     // create prind dialog and run.
     QPrintDialog dialog( &printer, this );
     dialog.setWindowTitle( tr( "Print Document - qedit" ) );
-    dialog.setOptionTabs( { optionWidget } );
+
+    using WidgetList = QList<QWidget*>;
+    dialog.setOptionTabs( Base::makeT<WidgetList>({ optionWidget }) );
     if( dialog.exec() == QDialog::Rejected ) return;
 
     // add output file to scratch files, if any
