@@ -19,6 +19,7 @@
 
 #include "Application.h"
 #include "AutoSave.h"
+#include "AutoSaveThread.h"
 #include "Debug.h"
 #include "Diff.h"
 #include "InformationDialog.h"
