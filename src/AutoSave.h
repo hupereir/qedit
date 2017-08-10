@@ -20,12 +20,15 @@
 *
 *******************************************************************************/
 
-#include "AutoSaveThread.h"
+#include "Counter.h"
 
 #include <QObject>
 #include <QBasicTimer>
 #include <QList>
 
+#include <memory>
+
+class AutoSaveThread;
 class TextDisplay;
 
 //* handles threads for file auto-save
@@ -39,9 +42,6 @@ class AutoSave: public QObject, private Base::Counter<AutoSave>
 
     //* constructor
     explicit AutoSave( QObject* = nullptr );
-
-    //* destructor
-    ~AutoSave() override;
 
     //* register new thread
     void newThread( TextDisplay* );
@@ -75,7 +75,8 @@ class AutoSave: public QObject, private Base::Counter<AutoSave>
     QBasicTimer timer_;
 
     //* list of threads
-    using ThreadList = QList<AutoSaveThread*>;
+    using ThreadPtr = std::shared_ptr<AutoSaveThread>;
+    using ThreadList = QList<ThreadPtr>;
 
     //* list of threads
     ThreadList threads_;

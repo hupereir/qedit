@@ -18,11 +18,15 @@
 *******************************************************************************/
 
 #include "AutoSave.h"
+#include "AutoSaveThread.h"
+
 #include "Debug.h"
 #include "MainWindow.h"
 #include "Options.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
+
+#include <algorithm>
 
 //______________________________________________________
 AutoSave::AutoSave( QObject* parent ):
@@ -34,35 +38,21 @@ AutoSave::AutoSave( QObject* parent ):
 }
 
 //______________________________________________________
-AutoSave::~AutoSave()
-{
-
-    Debug::Throw( "AutoSave::~AutoSave.\n" );
-
-    // loop over threads
-    for( auto&& thread:threads_ )
-    {
-
-        // remove file
-        File autosaved( thread->file() );
-        if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
-        delete thread;
-
-    }
-
-}
-
-//______________________________________________________
 void AutoSave::newThread( TextDisplay* display )
 {
 
     Debug::Throw( "AutoSave::newThread.\n" );
 
-    // create new Thread
-    auto thread = new AutoSaveThread( this );
+    // create thread with custom deleter
+    ThreadPtr thread( new AutoSaveThread( this ), [](AutoSaveThread* thread)
+    {
+        auto autosaved( thread->file() );
+        if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
+        delete thread;
+    });
 
     // associate to MainWindow
-    Base::Key::associate( display, thread );
+    Base::Key::associate( display, thread.get() );
 
     // add to list
     threads_.append( thread );
@@ -81,55 +71,61 @@ void AutoSave::saveFiles( const TextDisplay* display )
     // do nothing if interval is 0
     if( !( _enabled() ) || threads_.empty() ) return;
 
-    // loop over threads and restart
-    for( auto&& iter = threads_.begin(); iter != threads_.end(); ++iter )
+    // update thread from display
+    auto updateThread = [] (AutoSaveThread* thread, const TextDisplay& display)
+    {
+        thread->setFile( display.file() );
+        thread->setContent( display.toPlainText() );
+        thread->setTextEncoding( display.textEncoding() );
+        thread->setUseCompression( display.useCompression() );
+        thread->start();
+    };
+
+    if( display )
     {
 
-        // check if argument display, if valid, is associated to this thread
-        if( display && !(*iter)->isAssociated( display ) ) continue;
-
-        // if thread is running, skipp
-        if( (*iter)->isRunning() ) continue;
-
-        // retrieve associated displays
-        Base::KeySet<TextDisplay> displays( *iter );
-
-        // remove thread if none is found
-        if( displays.empty() )
+        if( !( display->file().isEmpty() || display->isNewDocument() ) )
         {
 
-            // remove file
-            File autosaved( (*iter)->file() );
-            if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
-
-            // delete thread
-            delete *iter;
-
-            // remove from list
-            // advance iterator and check for end of list
-            iter = threads_.erase( iter );
-
-            // check if at end
-            if( iter == threads_.end() ) break;
-            else continue;
+            // if a valid display is provided
+            for( auto thread:Base::KeySet<AutoSaveThread>( display ) )
+            { if( !thread->isRunning() ) updateThread( thread, *display ); }
 
         }
 
-        // update file and content
-        auto&& display( **displays.begin() );
-        if( !( display.file().isEmpty() || display.isNewDocument() ) )
+    } else {
+
+        // first remove empty threads
+        threads_.erase(
+            std::remove_if( threads_.begin(), threads_.end(),
+            [](ThreadPtr thread)
+            { return !thread->isRunning() && Base::KeySet<TextDisplay>(thread.get()).empty(); }),
+            threads_.end() );
+
+        // loop over threads and restart
+        for( auto&& iter = threads_.begin(); iter != threads_.end(); ++iter )
         {
-            (*iter)->setFile( display.file() );
-            (*iter)->setContent( display.toPlainText() );
-            (*iter)->setTextEncoding( display.textEncoding() );
-            (*iter)->setUseCompression( display.useCompression() );
-            (*iter)->start();
+
+            // check if argument display, if valid, is associated to this thread
+            if( display && !(*iter)->isAssociated( display ) ) continue;
+
+            // if thread is running, skipp
+            if( (*iter)->isRunning() ) continue;
+
+            // retrieve associated displays
+            Base::KeySet<TextDisplay> displays( iter->get() );
+
+            // update file and content
+            auto&& display( **displays.begin() );
+            if( !( display.file().isEmpty() || display.isNewDocument() ) )
+            { updateThread( iter->get(), display ); }
+
         }
 
     }
 
     // restart timer
-    if( !threads_.empty() )  timer_.start( interval_, this );
+    if( !( threads_.empty() || timer_.isActive() ) )  timer_.start( interval_, this );
 
 }
 
