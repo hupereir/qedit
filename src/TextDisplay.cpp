@@ -422,8 +422,9 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
         display->setClassName( this->className() );
         display->_updateDocumentClass( file, false );
         display->_updateSpellCheckConfiguration( file );
-
     }
+
+    Debug::Throw( "TextDisplay::setFile - updated displays.\n" );
 
     // check file and try open.
     QFile in( tmp );
@@ -448,6 +449,8 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
             }
         }
 
+        Debug::Throw( "TextDisplay::setFile - file read.\n" );
+
         // get encoding
         QTextCodec* codec( QTextCodec::codecForName( textEncoding_ ) );
         setPlainText( codec->toUnicode(content) );
@@ -456,6 +459,8 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
         // update flags
         setModified( false );
         _setIgnoreWarnings( false );
+
+        Debug::Throw( "TextDisplay::setFile - content set.\n" );
 
     }
 
