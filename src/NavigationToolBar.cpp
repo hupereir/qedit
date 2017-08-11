@@ -34,6 +34,7 @@
 #include "ToolButtonStyleMenu.h"
 
 #include <QButtonGroup>
+#include <memory>
 
 //_______________________________________________________________
 NavigationToolBar::NavigationToolBar( QWidget* parent ):
@@ -229,18 +230,17 @@ void NavigationToolBar::contextMenuEvent( QContextMenuEvent* event )
 
     MainWindow* mainwindow( qobject_cast<MainWindow*>( window() ) );
     if( !mainwindow ) return;
-    ToolBarMenu& menu( mainwindow->toolBarMenu( this ) );
+    std::unique_ptr<ToolBarMenu> menu( mainwindow->toolBarMenu( this ) );
 
-    menu.toolButtonStyleMenu().select( (Qt::ToolButtonStyle) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION" ) );
-    menu.iconSizeMenu().select( (IconSize::Size) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) );
+    menu->toolButtonStyleMenu().select( (Qt::ToolButtonStyle) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION" ) );
+    menu->iconSizeMenu().select( (IconSize::Size) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) );
 
-    CustomToolBar::connect( &menu.toolButtonStyleMenu(), SIGNAL(styleSelected(int)), SLOT(_updateToolButtonStyle(int)) );
-    CustomToolBar::connect( &menu.iconSizeMenu(), SIGNAL(iconSizeSelected(IconSize::Size)), SLOT(_updateToolButtonIconSize(IconSize::Size)) );
+    CustomToolBar::connect( &menu->toolButtonStyleMenu(), SIGNAL(styleSelected(int)), SLOT(_updateToolButtonStyle(int)) );
+    CustomToolBar::connect( &menu->iconSizeMenu(), SIGNAL(iconSizeSelected(IconSize::Size)), SLOT(_updateToolButtonIconSize(IconSize::Size)) );
 
     // move and show menu
-    menu.adjustSize();
-    menu.exec( event->globalPos() );
-    menu.deleteLater();
+    menu->adjustSize();
+    menu->exec( event->globalPos() );
 
 }
 

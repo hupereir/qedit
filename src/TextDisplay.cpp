@@ -73,6 +73,8 @@
 #include <QTextCodec>
 #include <QTextLayout>
 
+#include <new>
+
 //___________________________________________________
 NewDocumentNameServer& TextDisplay::newDocumentNameServer()
 {
@@ -434,7 +436,18 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
 
         // read content, try uncompress
         auto content( in.readAll() );
-        auto uncompressed( qUncompress( content ) );
+        QByteArray uncompressed;
+        try {
+
+            uncompressed = qUncompress( content );
+
+        } catch( std::bad_alloc& exception ) {
+
+            Debug::Throw() << "TextDisplay::setFile - caught bad_alloc exception: " << exception.what() << endl;
+            uncompressed.clear();
+
+        }
+
         if( !uncompressed.isEmpty() )
         {
             auto buffer = tr( "File '%1' is compressed.\nUncompress before opening ?" ).arg( file );
@@ -452,7 +465,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
         Debug::Throw( "TextDisplay::setFile - file read.\n" );
 
         // get encoding
-        QTextCodec* codec( QTextCodec::codecForName( textEncoding_ ) );
+        auto codec( QTextCodec::codecForName( textEncoding_ ) );
         setPlainText( codec->toUnicode(content) );
         in.close();
 
