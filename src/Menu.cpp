@@ -119,7 +119,7 @@ Menu::Menu( QWidget* parent ):
     connect( preferenceMenu_, SIGNAL(aboutToShow()), SLOT(_updatePreferenceMenu()) );
 
     // help manager
-    Base::HelpManager* help( new Base::HelpManager( this ) );
+    auto help( new Base::HelpManager( this ) );
     help->setWindowTitle( tr( "Qedit Handbook" ) );
     help->install( helpText );
     help->install( Base::helpText, false );
@@ -133,7 +133,7 @@ Menu::Menu( QWidget* parent ):
 
     // debug menu
     menu->addSeparator();
-    DebugMenu *debugMenu( new DebugMenu( menu ) );
+    auto debugMenu( new DebugMenu( menu ) );
     menu->addAction( debugMenu->menuAction() );
     debugMenu->menuAction()->setVisible( false );
 
@@ -146,7 +146,7 @@ void Menu::updateMacroMenu()
     // retrieve current display
     auto display( &static_cast<MainWindow*>(window())->activeDisplay() );
     bool hasSelection( display->textCursor().hasSelection() );
-    auto&& macros( display->macros() );
+    auto macros( display->macros() );
 
     macroMenu_->update( macros );
     macroMenu_->updateState( hasSelection );
