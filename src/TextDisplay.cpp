@@ -75,6 +75,23 @@
 
 #include <new>
 
+//________________________________________________________
+QByteArray safeUncompress( const QByteArray& content )
+{
+    try
+    {
+
+        return qUncompress( content );
+
+    } catch( std::bad_alloc& exception ) {
+
+        Debug::Throw() << "safeUncompress - caught bad_alloc exception: " << exception.what() << endl;
+        return QByteArray();
+
+    }
+
+}
+
 //___________________________________________________
 NewDocumentNameServer& TextDisplay::newDocumentNameServer()
 {
@@ -436,17 +453,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
 
         // read content, try uncompress
         auto content( in.readAll() );
-        QByteArray uncompressed;
-        try {
-
-            uncompressed = qUncompress( content );
-
-        } catch( std::bad_alloc& exception ) {
-
-            Debug::Throw() << "TextDisplay::setFile - caught bad_alloc exception: " << exception.what() << endl;
-            uncompressed.clear();
-
-        }
+        auto uncompressed = safeUncompress( content );
 
         if( !uncompressed.isEmpty() )
         {
