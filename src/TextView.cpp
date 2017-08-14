@@ -224,10 +224,6 @@ void TextView::closeDisplay( TextDisplay& display )
         Base::KeySet<TextDisplay>( &display ).empty() &&
         display.askForSave() ==  AskForSaveDialog::Cancel ) return;
 
-    // retrieve parent and grandparent of current display
-    QWidget* parent( display.parentWidget() );
-    QSplitter* parentSplitter( qobject_cast<QSplitter*>( parent ) );
-
     // retrieve displays associated to current
     Base::KeySet<TextDisplay> displays( &display );
 
@@ -236,6 +232,10 @@ void TextView::closeDisplay( TextDisplay& display )
     if( display.isNewDocument() && displays.empty() )
     { TextDisplay::newDocumentNameServer().remove( display.file() ); }
 
+    // retrieve parent and grandparent of current display
+    auto parent( display.parentWidget() );
+    auto parentSplitter( qobject_cast<QSplitter*>( parent ) );
+
     // check how many children remain in parentSplitter if any
     // take action if it is less than 2 (the current one to be deleted, and another one)
     if( parentSplitter && parentSplitter->count() == 2 )
@@ -243,7 +243,7 @@ void TextView::closeDisplay( TextDisplay& display )
 
         // retrieve child that is not the current editor
         // need to loop over existing widgets because the editor above has not been deleted yet
-        QWidget* child(0);
+        QWidget* child( nullptr );
         for( int index = 0; index < parentSplitter->count(); index++ )
         {
             if( parentSplitter->widget( index ) != &display )
@@ -252,13 +252,12 @@ void TextView::closeDisplay( TextDisplay& display )
                 break;
             }
         }
-        Q_CHECK_PTR( child );
 
         // retrieve splitter parent
-        QWidget* grand_parent( parentSplitter->parentWidget() );
+        auto grandParent( parentSplitter->parentWidget() );
 
         // try cast to a splitter
-        QSplitter* grandParentSplitter( qobject_cast<QSplitter*>( grand_parent ) );
+        QSplitter* grandParentSplitter( qobject_cast<QSplitter*>( grandParent ) );
 
         // move child to grandParentSplitter if any
         if( grandParentSplitter )
@@ -268,8 +267,8 @@ void TextView::closeDisplay( TextDisplay& display )
 
         } else {
 
-            child->setParent( grand_parent );
-            grand_parent->layout()->addWidget( child );
+            child->setParent( grandParent );
+            grandParent->layout()->addWidget( child );
 
         }
 
@@ -294,7 +293,7 @@ void TextView::closeDisplay( TextDisplay& display )
     iterator.toBack();
     while( iterator.hasPrevious() )
     {
-        TextDisplay* current( iterator.previous() );
+        auto current( iterator.previous() );
         if( current != &display && !current->isClosed() )
         {
             setActiveDisplay( *current );
@@ -313,7 +312,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, bool cl
     Debug::Throw( "TextView::splitDisplay.\n" );
 
     // keep local pointer to current active display
-    TextDisplay& activeDisplayLocal( activeDisplay() );
+    auto& activeDisplayLocal( activeDisplay() );
 
     // compute desired dimension of the new splitter
     // along its splitting direction
@@ -322,10 +321,10 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, bool cl
     else dimension = (orientation == Qt::Horizontal) ? width():height();
 
     // create new splitter
-    QSplitter& splitter( _newSplitter( orientation, clone ) );
+    auto& splitter( _newSplitter( orientation, clone ) );
 
     // create new display
-    TextDisplay& display( _newTextDisplay(0) );
+    auto& display( _newTextDisplay(nullptr) );
 
     // insert in splitter, at correct position
     if( clone ) splitter.insertWidget( splitter.indexOf( &activeDisplayLocal )+1, &display );
@@ -380,7 +379,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, bool cl
 
 }
 
-//____________________________________________
+//____________________s________________________
 void TextView::saveAll()
 {
     Debug::Throw( "TextView::saveAll.\n" );
@@ -572,11 +571,11 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
         the new (cloned) TextDisplay will appear side by side with it */
 
         // retrieve parent of current display
-        QWidget* parent( activeDisplay().parentWidget() );
+        auto parent( activeDisplay().parentWidget() );
 
         // try cast to splitter
         // do not create a new splitter if the parent has same orientation
-        QSplitter *parentSplitter( qobject_cast<QSplitter*>( parent ) );
+        auto parentSplitter( qobject_cast<QSplitter*>( parent ) );
         if( parentSplitter && parentSplitter->orientation() == orientation ) splitter = parentSplitter;
         else {
 
@@ -628,7 +627,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
         */
 
         // keep track of first (either TextDisplay or QSplitter) from this
-        QWidget *child(0);
+        QWidget *child( nullptr );
 
         // retrieve children and loop
         for( const auto& object:TextView::children() )
@@ -638,14 +637,12 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
 
         }
 
-        // check child could be retrieved
-        Q_CHECK_PTR( child );
-
         // try cast child to splitter
         // if exists and have same orientation, do not create a new one
-        QSplitter* child_splitter( qobject_cast<QSplitter*>( child ) );
-        if( child_splitter && child_splitter->orientation() == orientation ) splitter = child_splitter;
+        auto childSplitter( qobject_cast<QSplitter*>( child ) );
+        if( childSplitter && childSplitter->orientation() == orientation ) splitter = childSplitter;
         else {
+
             // create new splitter
             splitter = new LocalSplitter( this );
             splitter->setOrientation( orientation );

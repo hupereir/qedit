@@ -1,5 +1,3 @@
-# $Id$
-
 ########### Qt configuration #########
 if(USE_QT5)
 
