@@ -56,7 +56,7 @@ void DocumentClassMenu::_update()
     for( const auto& documentClass:Base::Singleton::get().application<Application>()->classManager().classes() )
     {
         // insert actions
-        QAction* action = addAction( documentClass.name() );
+        auto action = addAction( documentClass.name() );
         if( !documentClass.icon().isEmpty() ) action->setIcon( IconEngine::get( documentClass.icon() ) );
 
         action->setCheckable( true );

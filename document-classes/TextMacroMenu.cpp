@@ -42,7 +42,7 @@ void TextMacroMenu::update( const TextMacro::List& macros )
         else {
 
             // create menu entry
-            QAction* action = macro.action();
+            auto action = macro.action();
             addAction( action );
 
             // insert in map
@@ -73,7 +73,7 @@ void TextMacroMenu::_processAction( QAction* action )
 {
 
     // try retrieve id in map
-    ActionMap::iterator iter = actions_.find( action );
+    const auto iter = actions_.find( action );
     if( iter != actions_.end() ) emit textMacroSelected( iter.value().name() );
 
 }

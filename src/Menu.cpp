@@ -400,14 +400,14 @@ void Menu::_selectFile( QAction* action )
     Debug::Throw( "Menu::_selectFile.\n" );
 
     // try retrieve id in map
-    ActionMap::iterator iter = fileActions_.find( action );
+    const auto iter = fileActions_.find( action );
     if( iter == fileActions_.end() ) return;
 
     // retrieve all mainWindows
     Base::KeySet<MainWindow> windows( &Base::Singleton::get().application<Application>()->windowServer() );
 
     // retrieve window matching file name
-    Base::KeySet<MainWindow>::iterator windowIter( std::find_if(
+    const auto windowIter( std::find_if(
         windows.begin(),
         windows.end(),
         MainWindow::SameFileFTor( iter.value() ) ) );
