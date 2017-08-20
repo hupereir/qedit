@@ -21,6 +21,7 @@
 *******************************************************************************/
 
 #include "Counter.h"
+#include "Functors.h"
 #include "TextFormat.h"
 
 #include <QColor>
@@ -59,44 +60,13 @@ class HighlightStyle final: private Base::Counter<HighlightStyle>
     { return name_; }
 
     //* same name ftor
-    class SameNameFTor
-    {
-        public:
-
-        //* constructor
-        explicit SameNameFTor( const HighlightStyle& style ):
-            name_( style.name_ )
-            {}
-
-        //* predicate
-        bool operator() (const HighlightStyle& other ) const
-        { return other.name_ == name_; }
-
-        private:
-
-        QString name_;
-
-    };
+    using SameNameFTor = Base::Functor::Unary<HighlightStyle, const QString&, &HighlightStyle::name>;
 
     //* equal to ftor
-    class WeakEqualFTor
-    {
-        public:
-
-        bool operator()( const HighlightStyle& first, const HighlightStyle& second ) const
-        { return first.name_ == second.name_; }
-
-    };
+    using WeakEqualFTor = Base::Functor::BinaryEqual<HighlightStyle, const QString&, &HighlightStyle::name>;
 
     //* less than ftor
-    class WeakLessThanFTor
-    {
-        public:
-
-        bool operator()( const HighlightStyle& first, const HighlightStyle& second ) const
-        { return first.name_ < second.name_; }
-
-    };
+    using WeakLessThanFTor = Base::Functor::BinaryLess<HighlightStyle, const QString&, &HighlightStyle::name>;
 
     //* typedef for list of patterns
     using Set = QSet<HighlightStyle>;

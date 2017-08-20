@@ -27,6 +27,7 @@
 #include "TextParenthesis.h"
 #include "TextMacro.h"
 #include "File.h"
+#include "Functors.h"
 #include "HighlightPattern.h"
 #include "HighlightStyle.h"
 
@@ -153,14 +154,10 @@ class DocumentClass final: private Base::Counter<DocumentClass>
     //@}
 
     //* equal to ftor
-    class WeakEqualFTor: public std::binary_function< DocumentClass, DocumentClass, bool>
-    {
-        public:
-
-        bool operator()( const DocumentClass& first, const DocumentClass& second ) const
-        { return first.name() == second.name(); }
-
-    };
+    class WeakEqualFTor:
+        public Base::Functor::BinaryEqual<DocumentClass, const QString&, &DocumentClass::name>,
+        public std::binary_function< DocumentClass, DocumentClass, bool>
+    {};
 
     //* less than ftor
     class WeakLessThanFTor: public std::binary_function< DocumentClass, DocumentClass, bool>
@@ -179,24 +176,7 @@ class DocumentClass final: private Base::Counter<DocumentClass>
     };
 
     //* used to match pointers to DocumentClass with same name
-    class SameNameFTor
-    {
-        public:
-
-        //* constructor
-        explicit SameNameFTor( const QString& name ):
-            name_( name )
-            {}
-
-        //* predicate
-        bool operator() (const DocumentClass& documentClass ) const
-        { return documentClass.name() == name_; }
-
-        private:
-
-        //* predicted name
-        QString name_;
-    };
+    using SameNameFTor = Base::Functor::Unary<DocumentClass, const QString&, &DocumentClass::name>;
 
     //* used to get non default document class matching a file
     class MatchFileFTor
@@ -220,15 +200,7 @@ class DocumentClass final: private Base::Counter<DocumentClass>
     };
 
     //* used to counts number of default patterns registered
-    class IsDefaultFTor
-    {
-        public:
-
-        //* predicate
-        bool operator() (const DocumentClass& documentClass ) const
-        { return documentClass.isDefault(); }
-
-    };
+    using IsDefaultFTor = Base::Functor::UnaryTrue<DocumentClass, &DocumentClass::isDefault>;
 
     protected:
 

@@ -165,7 +165,7 @@ FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) con
     }
 
     std::sort( records.begin(), records.end(), FileRecord::FileFTor() );
-    records.erase( std::unique( records.begin(), records.end(), FileRecord::SameFileFTor() ), records.end() );
+    records.erase( std::unique( records.begin(), records.end(), FileRecord::SameFileFTorBinary() ), records.end() );
     return records;
 
 }
@@ -892,7 +892,7 @@ void WindowServer::_save( FileRecord::List records )
         for( const auto& display:window->associatedDisplays() )
         {
             if( !display->document()->isModified() ) continue;
-            if( std::find_if( records.begin(), records.end(), FileRecord::SameFileFTor( display->file() ) ) == records.end() ) continue;
+            if( std::find_if( records.begin(), records.end(), FileRecord::SameFileFTorUnary( display->file() ) ) == records.end() ) continue;
             display->save();
         }
 

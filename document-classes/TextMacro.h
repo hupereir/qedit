@@ -22,6 +22,7 @@
 
 #include "Counter.h"
 #include "Debug.h"
+#include "Functors.h"
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -36,8 +37,8 @@ class TextMacro final: private Base::Counter<TextMacro>
     public:
 
     //* list
-    using List = QList< TextMacro >;
-    using ListIterator = QListIterator< TextMacro >;
+    using List = QList<TextMacro>;
+    using ListIterator = QListIterator<TextMacro>;
 
     //* constructor
     explicit TextMacro(): Counter( "TextMacro" )
@@ -67,16 +68,6 @@ class TextMacro final: private Base::Counter<TextMacro>
             rules() == other.rules();
 
     }
-
-    //* used to check whether some automatic macros are present
-    class isAutomaticFTor
-    {
-        public:
-
-        bool operator()( const TextMacro& macro ) const
-        { return macro.isAutomatic(); }
-
-    };
 
     //* reset counter
     static void resetCounter()
@@ -140,27 +131,11 @@ class TextMacro final: private Base::Counter<TextMacro>
         return true;
     }
 
+    //* used to check whether some automatic macros are present
+    using isAutomaticFTor = Base::Functor::UnaryTrue<TextMacro, &TextMacro::isAutomatic>;
+
     //* used to get macro by name
-    class SameNameFTor
-    {
-
-        public:
-
-        //* constructor
-        explicit SameNameFTor( const QString& name ):
-            name_( name )
-        {}
-
-        //* predicate
-        bool operator() (const TextMacro& pattern ) const
-        { return (pattern.name() == name_); }
-
-        private:
-
-        //* predicate
-        const QString name_;
-
-    };
+    using SameNameFTor = Base::Functor::Unary<TextMacro, const QString&, &TextMacro::name>;
 
     //* return action
     QAction* action() const;

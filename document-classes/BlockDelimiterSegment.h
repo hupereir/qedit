@@ -21,6 +21,8 @@
 *******************************************************************************/
 
 #include "BlockMarker.h"
+#include "Functors.h"
+
 #include <QList>
 #include <QPair>
 #include <QPoint>
@@ -59,12 +61,39 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
         flags_( flags )
     {}
 
-    //*@name flags
+    //*@name accessors
     //@{
 
     //* flags
     bool hasFlag( const Flag& flag ) const
     { return flags_ & flag; }
+
+    //* collapsed
+    bool isCollapsed() const
+    { return flags_ & Collapsed; }
+
+    //* validity
+    bool isValid() const
+    { return ( begin().isValid() && ( hasFlag( BeginOnly ) || end().isValid() ) ); }
+
+    //* begin point
+    const BlockMarker& begin() const { return begin_; }
+
+    //* end point
+    const BlockMarker& end() const { return end_; }
+
+    //* empty segment
+    bool empty() const
+    { return begin().cursor() == end().cursor(); }
+
+    //* active rect
+    const QRect& activeRect() const
+    { return active_; }
+
+    //@}
+
+    //*@name modifiers
+    //@{
 
     //* flags
     BlockDelimiterSegment& setFlag( const Flag& flag, bool value )
@@ -74,22 +103,8 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
         return *this;
     }
 
-    //@}
-
-    //* validity
-    bool isValid() const
-    { return ( begin().isValid() && ( hasFlag( BeginOnly ) || end().isValid() ) ); }
-
-    //*@name geometry
-    //@{
-
     //* begin point
-    const BlockMarker& begin() const
-    { return begin_; }
-
-    //* begin point
-    BlockMarker& begin()
-    { return begin_; }
+    BlockMarker& begin() { return begin_; }
 
     //* begin point
     BlockDelimiterSegment& setBegin( const BlockMarker& begin )
@@ -99,12 +114,7 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
     }
 
     //* end point
-    const BlockMarker& end() const
-    { return end_; }
-
-    //* end point
-    BlockMarker& end()
-    { return end_; }
+    BlockMarker& end() { return end_; }
 
     //* end point
     BlockDelimiterSegment& setEnd( const BlockMarker& end )
@@ -112,14 +122,6 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
         end_ = end;
         return *this;
     }
-
-    //* empty segment
-    bool empty() const
-    { return begin().cursor() == end().cursor(); }
-
-    //* active rect
-    const QRect& activeRect() const
-    { return active_; }
 
     //* active rect
     void setActiveRect( const QRect& rect )
@@ -171,14 +173,7 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
     };
 
     //* used to cound collapsed segments
-    class CollapsedFTor
-    {
-        public:
-
-        bool operator() ( const BlockDelimiterSegment& segment ) const
-        { return segment.hasFlag( Collapsed ); }
-
-    };
+    using CollapsedFTor = Base::Functor::UnaryTrue<BlockDelimiterSegment, &BlockDelimiterSegment::isCollapsed>;
 
     //* used to sort segments according to starting or ending points
     /** top level segments should comme last */

@@ -23,6 +23,7 @@
 #include "Counter.h"
 #include "CppUtil.h"
 #include "Debug.h"
+#include "Functors.h"
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -56,24 +57,10 @@ class IndentPattern final: private Base::Counter<IndentPattern>
     { id_ = id; }
 
     //* equal to ftor
-    class WeakEqualFTor
-    {
-        public:
-
-        bool operator()( const IndentPattern& first, const IndentPattern& second ) const
-        { return first.id() == second.id(); }
-
-    };
+    using WeakEqualFTor = Base::Functor::BinaryEqual<IndentPattern, int, &IndentPattern::id>;
 
     //* less than ftor
-    class WeakLessThanFTor
-    {
-        public:
-
-        bool operator()( const IndentPattern& first, const IndentPattern& second ) const
-        { return first.id() < second.id(); }
-
-    };
+    using WeakLessThanFTor = Base::Functor::BinaryLess<IndentPattern, int, &IndentPattern::id>;
 
     //* indentation rule
     /** used to check a regExp against a given paragraph */

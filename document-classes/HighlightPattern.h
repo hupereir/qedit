@@ -23,6 +23,7 @@
 #include "HighlightStyle.h"
 #include "Counter.h"
 #include "Debug.h"
+#include "Functors.h"
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -63,18 +64,18 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     //* constructor from DomElement
     explicit HighlightPattern( const QDomElement& );
 
-    //* dom element
-    QDomElement domElement( QDomDocument& parent ) const;
-
     //*@name accessors
     //@{
+
+    //* dom element
+    QDomElement domElement( QDomDocument& parent ) const;
 
     //* unique id
     int id() const
     { return id_; }
 
     //* name
-    QString name() const
+    const QString& name() const
     { return name_; }
 
     //* pattern type
@@ -97,7 +98,7 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     static QString typeName( Type type );
 
     //* parent name
-    QString parent() const
+    const QString& parent() const
     { return parent_; }
 
     //* parent id
@@ -225,48 +226,10 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     //@}
 
     //* used to get patterns by name
-    class SameNameFTor
-    {
-
-        public:
-
-        //* constructor
-        explicit SameNameFTor( const QString& name ):
-            name_( name )
-            {}
-
-        //* predicate
-        bool operator() (const HighlightPattern& pattern ) const
-        { return pattern.name() == name_; }
-
-        private:
-
-        //* predicate
-        const QString name_;
-
-    };
+    using SameNameFTor = Base::Functor::Unary<HighlightPattern, const QString&, &HighlightPattern::name>;
 
     //* used to pattern by id
-    class SameIdFTor
-    {
-
-        public:
-
-        //* constructor
-        explicit SameIdFTor( int id ):
-            id_( id )
-            {}
-
-        //* predicate
-        bool operator() ( const HighlightPattern& pattern ) const
-        { return pattern.id() == id_; }
-
-        private:
-
-        //* predicted id
-        int id_;
-
-    };
+    using SameIdFTor = Base::Functor::Unary<HighlightPattern, int, &HighlightPattern::id>;
 
     protected:
 
