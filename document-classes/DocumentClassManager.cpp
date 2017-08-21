@@ -180,7 +180,7 @@ DocumentClass DocumentClassManager::defaultClass() const
     Debug::Throw( "DocumentClassManager::defaultClass.\n" );
 
     const auto iter = std::find_if( documentClasses_.begin(), documentClasses_.end(), DocumentClass::IsDefaultFTor() );
-    return ( iter == documentClasses_.end() ? DocumentClass():*iter;
+    return (iter == documentClasses_.end()) ? DocumentClass():*iter;
 
 }
 
