@@ -33,8 +33,6 @@
 #include <QLayout>
 #include <QPushButton>
 
-#include <algorithm>
-
 //________________________________________________________
 FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& selection ):
 CustomDialog( parent ),

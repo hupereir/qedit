@@ -27,12 +27,9 @@ const QString NewDocumentNameServer::defaultName_ = QObject::tr( "New Document" 
 //______________________________________
 QString NewDocumentNameServer::get()
 {
-
-    int version( versions_.empty() ? 0: versions_.back()+1 );
-    QString out( _get( version ) );
+    Version version( versions_.empty() ? 0: versions_.back().value_+1 );
     versions_.append( version );
-    return out;
-
+    return version.name();
 }
 
 //______________________________________
@@ -40,5 +37,5 @@ void NewDocumentNameServer::remove( QString name )
 { versions_.erase( std::remove_if( versions_.begin(), versions_.end(), SameVersionFTor( name ) ), versions_.end() ); }
 
 //______________________________________
-QString NewDocumentNameServer::_get( int version )
-{ return (version > 0) ? QString( "%1 (%2)" ).arg( defaultName_ ):defaultName_; }
+QString NewDocumentNameServer::Version::name() const
+{ return (value_ > 0) ? QString( "%1 (%2)" ).arg( defaultName_ ).arg( value_ ):defaultName_; }

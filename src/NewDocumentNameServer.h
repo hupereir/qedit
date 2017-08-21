@@ -20,6 +20,8 @@
 *
 *******************************************************************************/
 
+#include "Functors.h"
+
 #include <QString>
 #include <QList>
 
@@ -40,34 +42,38 @@ class NewDocumentNameServer
 
     private:
 
-    //* generate file name matching a given version
-    static QString _get( int );
-
-    class SameVersionFTor
+    //* version
+    class Version
     {
+
         public:
 
         //* constructor
-        explicit SameVersionFTor( const QString& name ):
-            name_( name )
-         {}
+        explicit Version( int value ):
+            value_( value )
+        {}
 
-        //* predicate
-        bool operator() (int version ) const
-        { return NewDocumentNameServer::_get( version ) == name_; }
+        //* get name
+        QString name() const;
 
-        private:
+        //* version number
+        int value_;
 
-        //* prediction
-        QString name_;
+        using List = QList<Version>;
 
     };
+
+    //* generate file name matching a given version
+    static QString _get( int );
+
+    //* use to remove versions matching a given name
+    using SameVersionFTor = Base::Functor::Unary<Version, QString, &Version::name>;
 
     //* default name
     static const QString defaultName_;
 
     // version (appended)
-    QList<int> versions_;
+    Version::List versions_;
 
 };
 
