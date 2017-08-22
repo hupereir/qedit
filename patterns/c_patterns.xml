@@ -118,7 +118,7 @@
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Stl Keyword" >
    <comments>keywords</comments>
-   <keyword>\bstd::(abs|swap|make_pair|(count|find)_if|endl|c(out|err|log)|(unique|shared)_ptr)\b</keyword>
+   <keyword>\bstd::(abs|swap|make_pair|(count|find|remove)(_if)?|transform|endl|c(out|err|log)|(unique|shared)_ptr|(any|none|all)_of|equal_to)\b</keyword>
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Braces" >
    <comments>parenthesis</comments>
