@@ -67,11 +67,7 @@ void TextView::setIsNewDocument()
     // look for first empty display
     Base::KeySet<TextDisplay> displays( this );
     auto iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
-    if( iter == displays.end() )
-    {
-        Debug::Throw(0, "TextView::setIsNewDocument - invalid display.\n" );
-        return;
-    }
+    if( iter == displays.end() ) return;
 
     TextDisplay &display( **iter );
 
@@ -100,11 +96,7 @@ void TextView::setFile( File file )
     // look for first empty display
     Base::KeySet<TextDisplay> displays( this );
     auto iter = std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() );
-    if( iter == displays.end() )
-    {
-        Debug::Throw(0, "TextView::setFile - invalid display.\n" );
-        return;
-    }
+    if( iter == displays.end() ) return;
 
     TextDisplay &display( **iter );
 
@@ -123,9 +115,10 @@ void TextView::setFile( File file )
 int TextView::independentDisplayCount() const
 {
     int out( 0 );
+
     Base::KeySet<TextDisplay> displays( this );
     for( auto&& iter = displays.begin(); iter != displays.end(); ++iter )
-    { if( std::find_if( displays.begin(), iter, Base::Key::IsAssociatedFTor( *iter ) ) == iter ) out++; }
+    { if( std::none_of( displays.begin(), iter, Base::Key::IsAssociatedFTor( *iter ) ) ) out++; }
 
     return out;
 }
@@ -416,7 +409,8 @@ void TextView::rehighlight()
     for( auto&& iter = displays.begin(); iter != displays.end(); ++iter )
     {
         // this trick allow to run the rehighlight only once per set of associated displays
-        if( std::find_if( displays.begin(), iter, Base::Key::IsAssociatedFTor( *iter ) ) == iter ) (*iter)->rehighlight();
+        if( std::none_of( displays.begin(), iter, Base::Key::IsAssociatedFTor( *iter ) ) )
+        { (*iter)->rehighlight(); }
     }
 
     return;

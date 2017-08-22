@@ -542,7 +542,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
         if( !display.document()->isModified() ) continue;
 
         // this trick allow to run  only once per set of associated displays
-        if( std::find_if( displays.begin(), iter, Base::Key::IsAssociatedFTor( &display ) ) != iter ) continue;
+        if( std::any_of( displays.begin(), iter, Base::Key::IsAssociatedFTor( &display ) ) ) continue;
 
         // ask for save
         int state( display.askForSave( modifiedDisplays > 1 ) );

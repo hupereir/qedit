@@ -27,13 +27,7 @@
 
 //________________________________________________________
 DocumentClass::DocumentClass():
-    Counter( "DocumentClass" ),
-    default_( false ),
-    buildIn_( false ),
-    wrap_( false ),
-    emulateTabs_( false ),
-    tabSize_( 2 ),
-    baseIndentation_( 0 )
+    Counter( "DocumentClass" )
 { Debug::Throw( "DocumentClass::DocumentClass.\n" ); }
 
 //________________________________________________________
@@ -171,7 +165,7 @@ QStringList DocumentClass::_associatePatterns()
     // create parent/children hierarchy between highlight patterns
     for( auto& highlightPattern:highlightPatterns_ )
     {
-        if( highlightPattern.parent().size() )
+        if( !highlightPattern.parent().isEmpty() )
         {
 
             auto parentIter( std::find_if( highlightPatterns_.begin(), highlightPatterns_.end(), HighlightPattern::SameNameFTor( highlightPattern.parent() ) ) );

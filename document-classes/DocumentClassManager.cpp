@@ -194,9 +194,7 @@ DocumentClass DocumentClassManager::find( const File& filename ) const
         documentClasses_.begin(),
         documentClasses_.end(),
         DocumentClass::MatchFileFTor( filename ) );
-    if( iter != documentClasses_.end() ) return *iter;
-
-    return defaultClass();
+    return iter == documentClasses_.end() ? defaultClass():*iter;
 
 }
 
@@ -210,12 +208,9 @@ DocumentClass DocumentClassManager::get( const QString& name ) const
         documentClasses_.begin(),
         documentClasses_.end(),
         DocumentClass::SameNameFTor( name ) );
-    if( iter != documentClasses_.end() ) return *iter;
+    return  iter == documentClasses_.end() ? DocumentClass():*iter;
 
-    // no match found
-    return DocumentClass();
 }
-
 
 //________________________________________________________
 bool DocumentClassManager::remove( const QString& name )
@@ -231,5 +226,4 @@ bool DocumentClassManager::remove( const QString& name )
 
     documentClasses_.erase( iter );
     return true;
-
 }

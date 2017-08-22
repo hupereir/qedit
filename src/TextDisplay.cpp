@@ -1210,9 +1210,7 @@ void TextDisplay::processMacro( QString name )
     auto macroIter = std::find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
     if( macroIter == macros_.end() )
     {
-        QString buffer;
-        QTextStream( &buffer ) << "Unable to find macro named " << name;
-        InformationDialog( this, buffer ).exec();
+        InformationDialog( this, tr( "Unable to find macro '%1'").arg( name ) ).exec();
         return;
     }
 
@@ -1610,7 +1608,7 @@ FileList& TextDisplay::_recentFiles() const
 
 //_____________________________________________
 bool TextDisplay::_hasAutomaticMacros() const
-{ return std::find_if( macros().begin(), macros().end(), TextMacro::isAutomaticFTor() ) != macros().end(); }
+{ return std::any_of( macros().begin(), macros().end(), TextMacro::isAutomaticFTor() ); }
 
 //_____________________________________________
 void TextDisplay::_processMacro( const TextMacro& macro )

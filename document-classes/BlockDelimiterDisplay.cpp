@@ -807,7 +807,6 @@ void BlockDelimiterDisplay::_selectSegmentFromCursor( int cursor )
     Debug::Throw( "BlockDelimiterDisplay::_selectSegmentFromCursor.\n" );
     auto iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor ) );
     _setSelectedSegment( iter == segments_.end() ? BlockDelimiterSegment():*iter );
-
 }
 
 

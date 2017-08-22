@@ -153,7 +153,7 @@ void SessionFilesFrame::_updateActions()
 
     openAction_->setEnabled( hasSelection );
     closeAction_->setEnabled( hasSelection );
-    saveAction_->setEnabled( std::find_if( selection.begin(), selection.end(), FileRecord::HasFlagFTor( FileRecordProperties::Modified ) ) != selection.end() );
+    saveAction_->setEnabled( std::any_of( selection.begin(), selection.end(), FileRecord::HasFlagFTor( FileRecordProperties::Modified ) ) );
 
     previousFileAction_->setEnabled( counts >= 2 && hasSelection );
     nextFileAction_->setEnabled( counts >= 2 && hasSelection );

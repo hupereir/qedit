@@ -340,11 +340,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
 
         // find matching window
         auto iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
-        if( iter == windows.end() )
-        {
-            Debug::Throw(0, "WindowServer::multipleFileReplace - no window found.\n" );
-            continue;
-        }
+        if( iter == windows.end() ) continue;
 
         // loop over views
         for( const auto& view:Base::KeySet<TextView>( *iter ) )
@@ -487,8 +483,7 @@ void WindowServer::_newFile( Qt::Orientation orientation )
     // look for an empty display
     // create a new display if none is found
     Base::KeySet<TextDisplay> displays( activeView );
-    auto iter( std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-    if( iter == displays.end() ) activeView.splitDisplay( orientation, false );
+    if( std::none_of( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) ) activeView.splitDisplay( orientation, false );
 
     activeView.setIsNewDocument();
     return;
@@ -542,13 +537,8 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
 
         // select the view that contains the empty display
         Base::KeySet<TextView> views( *iter );
-        auto&& viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
-        if( viewIter == views.end() )
-        {
-
-            Debug::Throw(0, "WindowServer::_open - invalid view.\n" );
-            return false;
-        }
+        auto viewIter( std::find_if( views.begin(), views.end(), MainWindow::EmptyFileFTor() ) );
+        if( viewIter == views.end() ) return false;
 
         (*viewIter)->setFile( record.file() );
         (*iter)->setActiveView( **viewIter );
@@ -607,7 +597,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
 
     // retrieve all windows and find one matching
     Base::KeySet<MainWindow> windows( this );
-    auto&& iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
+    auto iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
     if( iter != windows.end() )
     {
 
@@ -676,8 +666,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         // look for an empty display
         // create a new display if none is found
         Base::KeySet<TextDisplay> displays( activeView );
-        auto&& displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) );
-        if( displayIter == displays.end() ) activeView.splitDisplay( orientation, false );
+        if( std::none_of( displays.begin(), displays.end(), TextDisplay::EmptyFileFTor() ) ) activeView.splitDisplay( orientation, false );
 
         // open file in this window
         activeView.setFile( record.file() );
@@ -892,7 +881,7 @@ void WindowServer::_save( FileRecord::List records )
         for( const auto& display:window->associatedDisplays() )
         {
             if( !display->document()->isModified() ) continue;
-            if( std::find_if( records.begin(), records.end(), FileRecord::SameFileFTorUnary( display->file() ) ) == records.end() ) continue;
+            if( std::none_of( records.begin(), records.end(), FileRecord::SameFileFTorUnary( display->file() ) ) ) continue;
             display->save();
         }
 
@@ -934,7 +923,7 @@ bool WindowServer::_close( QStringList files )
         {
 
             // see if file is in list
-            if( std::find( files.begin(), files.end(), display->file() ) == files.end() ) continue;
+            if( std::none_of( files.begin(), files.end(), Base::Functor::SameFTor<QString>(display->file()) ) ) continue;
             if( display->document()->isModified() ) modifiedFiles.insert( display->file() );
 
         }
@@ -953,7 +942,7 @@ bool WindowServer::_close( QStringList files )
             {
 
                 // see if file is in list
-                if( std::find( files.begin(), files.end(), display->file() ) == files.end() ) continue;
+                if( std::none_of( files.begin(), files.end(), Base::Functor::SameFTor<QString>(display->file()) ) ) continue;
 
                 Debug::Throw() << "WindowServer::_close - file: " << display->file() << endl;
 
