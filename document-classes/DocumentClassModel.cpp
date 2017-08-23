@@ -33,7 +33,7 @@ DocumentClassModel::IconCache& DocumentClassModel::_icons()
 
 //__________________________________________________________________
 DocumentClassModel::DocumentClassModel( QObject* parent ):
-    ListModel<DocumentClass, DocumentClass::WeakEqualFTor, DocumentClass::WeakLessThanFTor>(parent),
+    ListModel(parent),
     Counter( "DocumentClassModel" )
 { connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) ); }
 
