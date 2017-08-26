@@ -18,6 +18,7 @@
 *******************************************************************************/
 
 #include "ParenthesisHighlight.h"
+#include "TextBlockRange.h"
 #include "TextEditor.h"
 #include "HighlightBlockData.h"
 
@@ -38,7 +39,7 @@ QList<QTextBlock> ParenthesisHighlight::clear()
     if( cleared_ ) return dirty;
 
     // loop over all blocks
-    for( QTextBlock block = parent_->document()->begin(); block.isValid(); block = block.next() )
+    for( const auto& block:TextBlockRange( parent_->document() ) )
     {
 
         // retrieve block data

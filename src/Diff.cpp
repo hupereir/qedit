@@ -20,6 +20,7 @@
 #include "Diff.h"
 #include "HighlightBlockFlags.h"
 #include "XmlOptions.h"
+#include "TextBlockRange.h"
 #include "TextDisplay.h"
 #include "TimeStamp.h"
 #include "InformationDialog.h"
@@ -272,7 +273,7 @@ void Diff::FileInformation::highlightDisplay()
     // loop over display blocks
     int id(1);
     display_->setUpdatesEnabled( false );
-    for( QTextBlock block( display_->document()->begin() ); block.isValid(); block = block.next(), id++ )
+    for( const auto& block:TextBlockRange( display_->document() ) )
     {
 
         // see if block is a conflict
@@ -286,6 +287,9 @@ void Diff::FileInformation::highlightDisplay()
             display_->tagBlock( block, TextBlock::DiffAdded );
 
         } else display_->clearTag( block, TextBlock::DiffConflict | TextBlock::DiffAdded );
+
+        // increment block id
+        ++id;
 
     }
 

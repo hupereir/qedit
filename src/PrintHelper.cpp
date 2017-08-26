@@ -20,6 +20,7 @@
 #include "PrintHelper.h"
 
 #include "PatternLocationSet.h"
+#include "TextBlockRange.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
 
@@ -54,7 +55,7 @@ void PrintHelper::print( QPrinter* printer )
 
     // get list of blocks from document
     QPointF position( pageRect.topLeft() );
-    for( QTextBlock block( editor_->document()->begin() ); block.isValid(); block = block.next() )
+    for( const auto& block:TextBlockRange( editor_->document() ) )
     {
 
         // construct text layout

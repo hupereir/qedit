@@ -46,6 +46,7 @@
 #include "QuestionDialog.h"
 #include "QtUtil.h"
 #include "Singleton.h"
+#include "TextBlockRange.h"
 #include "TextEditorMarginWidget.h"
 #include "TextEncodingDialog.h"
 #include "TextEncodingWidget.h"
@@ -117,8 +118,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
     iconPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Icon ) ),
     wrapPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Wrapped ) ),
     dictionaryPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Dictionary ) ),
-    filterPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Filter ) ),
-    textEncoding_( "ISO-8859-1" )
+    filterPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Filter ) )
 {
 
     Debug::Throw("TextDisplay::TextDisplay.\n" );
@@ -161,8 +161,8 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
     // connections
     // track contents changed for syntax highlighting
-    connect( TextDisplay::document(), SIGNAL(contentsChange(int,int,int)), SLOT(_setBlockModified(int,int,int)) );
-    connect( TextDisplay::document(), SIGNAL(modificationChanged(bool)), SLOT(_textModified()) );
+    connect( document(), SIGNAL(contentsChange(int,int,int)), SLOT(_setBlockModified(int,int,int)) );
+    connect( document(), SIGNAL(modificationChanged(bool)), SLOT(_textModified()) );
 
     // track configuration modifications
     connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
@@ -191,7 +191,7 @@ int TextDisplay::blockCount( const QTextBlock& block ) const
 
     QTextBlockFormat blockFormat( block.blockFormat() );
     if( blockFormat.boolProperty( TextBlock::Collapsed ) && blockFormat.hasProperty( TextBlock::CollapsedData ) )
-    {  return blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount(); }
+    { return blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>().blockCount(); }
     else return TextEditor::blockCount( block );
 
 }
@@ -851,7 +851,7 @@ void TextDisplay::revertToSave()
     verticalScrollBar()->setValue( y );
 
     // adjust cursor postion
-    position = qMin( position, toPlainText().size() );
+    position = std::min( position, toPlainText().size() );
 
     // restore cursor
     auto cursor( textCursor() );
@@ -927,10 +927,10 @@ bool TextDisplay::hasLeadingTabs() const
 
     // define regexp to perform replacement
     QRegExp wrongTabRegExp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
-    for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
-    { if( wrongTabRegExp.indexIn( block.text() ) >= 0 ) return true; }
-
-    return false;
+    const TextBlockRange range( document() );
+    return std::any_of( range.begin(), range.end(),
+        [&wrongTabRegExp](const QTextBlock& block)
+        { return wrongTabRegExp.indexIn( block.text() ) >= 0; } );
 
 }
 
@@ -945,23 +945,18 @@ QString TextDisplay::toPlainText() const
     { return TextEditor::toPlainText(); }
 
     // output string
-    QString out;
+    const TextBlockRange range( document() );
+    return std::accumulate( range.begin(), range.end(), QString(),
+        [this]( QString current, const QTextBlock& block )
+        {
+            current += block.text();
+            if( block.next().isValid() || _blockIsCollapsed( block ) ) current += "\n";
 
-    // loop over blocks
-    for( QTextBlock block = document()->begin(); block.isValid(); block = block.next() )
-    {
-
-        // add current block
-        out += block.text();
-        if( block.next().isValid() || _blockIsCollapsed( block ) ) out += "\n";
-
-        // add collapsed text
-        out += _collapsedText( block );
-
-    }
-
-    return out;
-
+            // add collapsed text
+            current += _collapsedText( block );
+            return current;
+        }
+    );
 }
 
 //___________________________________________________________________________
@@ -1045,26 +1040,20 @@ bool TextDisplay::isCurrentBlockTagged() const
 
     Debug::Throw( "TextDisplay::isCurrentBlockTagged.\n" );
 
-    QList<QTextBlock> blocks;
-    auto cursor( textCursor() );
-    if( cursor.hasSelection() )
-    {
+    const auto cursor( textCursor() );
+    const TextBlockRange range =
+        cursor.hasSelection() ?
+        TextBlockRange(
+            document()->findBlock( std::min( cursor.position(), cursor.anchor() ) ),
+            document()->findBlock( std::max( cursor.position(), cursor.anchor() ) ).next()):
+        TextBlockRange( cursor.block(), cursor.block().next() );
 
-        const auto first( document()->findBlock( qMin( cursor.position(), cursor.anchor() ) ) );
-        const auto last( document()->findBlock( qMax( cursor.position(), cursor.anchor() ) ) );
-        for( QTextBlock block( first ); block.isValid() && block != last;  block = block.next() )
-        { blocks.append( block ); }
-        if( last.isValid() ) blocks.append( last );
-
-    } else blocks.append( cursor.block() );
-
-    for( const auto& block:blocks )
-    {
-        TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-        if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) ) return true;
-    }
-
-    return false;
+    return std::any_of( range.begin(), range.end(),
+        [] (const QTextBlock& block )
+        {
+            auto data( static_cast<TextBlockData*>( block.userData() ) );
+            return data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User );
+        });
 
 }
 
@@ -1073,13 +1062,13 @@ bool TextDisplay::hasTaggedBlocks() const
 {
 
     Debug::Throw( "TextDisplay::hasTaggedBlocks.\n" );
-
-    // loop over block
-    for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
-    {
-        TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
-        if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) ) return true;
-    }
+    const TextBlockRange range( document() );
+    return std::any_of( range.begin(), range.end(),
+        []( const QTextBlock& block )
+        {
+            auto data( static_cast<TextBlockData*>( block.userData() ) );
+            return( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) );
+        } );
 
     return false;
 }
@@ -1224,7 +1213,7 @@ void TextDisplay::rehighlight()
     Debug::Throw( "TextDisplay::rehighlight.\n" );
 
     // set all block to modified
-    for( auto block = document()->begin(); block.isValid(); block = block.next() )
+    for( const auto& block:TextBlockRange( document() ) )
     { _setBlockModified( block ); }
 
     textHighlight_->setDocument( document() );
@@ -1240,8 +1229,10 @@ void TextDisplay::clearAllTags( int flags )
     Debug::Throw( "TextDisplay::clearAllTags.\n" );
 
     setUpdatesEnabled( false );
-    for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
+
+    for( const auto& block:TextBlockRange( document() ) )
     { clearTag( block, flags ); }
+
     setUpdatesEnabled( true );
 
     // get associated displays and update all
@@ -1411,10 +1402,6 @@ void TextDisplay::paintEvent( QPaintEvent* event )
 {
     TextEditor::paintEvent( event );
 
-    // handle block background
-    QTextBlock first( cursorForPosition( event->rect().topLeft() ).block() );
-    QTextBlock last( cursorForPosition( event->rect().bottomRight() ).block() );
-
     // create painter and translate from widget to viewport coordinates
     QPainter painter( viewport() );
     painter.setClipRect( event->rect() );
@@ -1422,7 +1409,11 @@ void TextDisplay::paintEvent( QPaintEvent* event )
     painter.setPen( _marginWidget().foregroundColor() );
 
     // loop over found blocks
-    for( QTextBlock block( first ); block != last.next() && block.isValid(); block = block.next() )
+    TextBlockRange range(
+        cursorForPosition( event->rect().topLeft() ).block(),
+        cursorForPosition( event->rect().bottomRight() ).block().next() );
+
+    for( const auto& block:range )
     {
         if( !block.blockFormat().boolProperty( TextBlock::Collapsed ) ) continue;
 
@@ -1431,6 +1422,7 @@ void TextDisplay::paintEvent( QPaintEvent* event )
         QLineF line( QPointF( 0, block_rect.bottomLeft().y() ), block_rect.bottomRight() );
         painter.drawLine( line );
     }
+
     painter.end();
 
 }
@@ -1633,8 +1625,8 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     {
 
         // retrieve blocks
-        positionBegin = qMin( cursor.position(), cursor.anchor() );
-        positionEnd = qMax( cursor.position(), cursor.anchor() );
+        positionBegin = std::min( cursor.position(), cursor.anchor() );
+        positionEnd = std::max( cursor.position(), cursor.anchor() );
         begin = document()->findBlock( positionBegin );
         end = document()->findBlock( positionEnd );
 
@@ -1671,12 +1663,15 @@ void TextDisplay::_processMacro( const TextMacro& macro )
         if( begin.next().isValid() || _blockIsCollapsed( begin ) ) text += "\n";
         text += _collapsedText( begin );
 
-        for( QTextBlock block = begin.next(); block.isValid() && block!= end; block = block.next() )
-        {
-            text += block.text();
-            if( block.next().isValid() || _blockIsCollapsed( block ) ) text += "\n";
-            text += _collapsedText( block );
-        }
+        const TextBlockRange range( begin.next(), end );
+        text += std::accumulate( range.begin(), range.end(), QString(),
+            [this]( QString text, const QTextBlock& block )
+            {
+                text += block.text();
+                if( block.next().isValid() || _blockIsCollapsed( block ) ) text += "\n";
+                text += _collapsedText( block );
+                return text;
+            });
 
         // last block
         text += end.text().left( positionEnd - end.position() );
@@ -1823,16 +1818,14 @@ void TextDisplay::_updateTaggedBlocks()
     Debug::Throw( "TextDisplay::_updateTaggedBlocks.\n" );
 
     // loop over block
-    for( QTextBlock block( document()->begin() ); block.isValid(); block = block.next() )
+    for( const auto& block:TextBlockRange( document() ) )
     {
-
-        TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
+        auto data( static_cast<TextBlockData*>( block.userData() ) );
         if( !( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) ) ) continue;
 
         if( data->hasFlag( TextBlock::DiffAdded ) ) setBackground( block, diffAddedColor_ );
         if( data->hasFlag( TextBlock::DiffConflict ) ) setBackground( block, diffConflictColor_ );
         if( data->hasFlag( TextBlock::User ) ) setBackground( block, userTagColor_ );
-
     }
 
 }
@@ -2207,8 +2200,8 @@ void TextDisplay::_indentSelection()
     if( !cursor.hasSelection() ) return;
 
     // retrieve blocks
-    QTextBlock begin( document()->findBlock( qMin( cursor.position(), cursor.anchor() ) ) );
-    QTextBlock end( document()->findBlock( qMax( cursor.position(), cursor.anchor() ) ) );
+    QTextBlock begin( document()->findBlock( std::min( cursor.position(), cursor.anchor() ) ) );
+    QTextBlock end( document()->findBlock( std::max( cursor.position(), cursor.anchor() ) ) );
 
     // need to remove selection otherwise the first adding of a tab
     // will remove the entire selection.
@@ -2236,28 +2229,15 @@ void TextDisplay::_addBaseIndentation()
     QRegExp leadingSpaceRegExp( "^\\s*" );
     QString replacement( textIndent_->baseIndentation(), ' ' );
 
-    // define blocks to process
-    QTextBlock begin;
-    QTextBlock end;
-
     // retrieve cursor
     // retrieve text cursor
     auto cursor( textCursor() );
     if( !cursor.hasSelection() ) return;
 
-    int positionBegin( qMin( cursor.position(), cursor.anchor() ) );
-    int positionEnd( qMax( cursor.position(), cursor.anchor() ) );
-    begin = document()->findBlock( positionBegin );
-    end = document()->findBlock( positionEnd );
-
     // store blocks
-    QList<QTextBlock> blocks;
-    for( auto block = begin; block.isValid() && block != end; block = block.next() )
-    { blocks.append( block ); }
-    blocks.append( end );
-
-    // loop over blocks
-    for( const auto& block:blocks )
+    const auto begin = document()->findBlock( std::min( cursor.position(), cursor.anchor() ) );
+    const auto end = document()->findBlock( std::max( cursor.position(), cursor.anchor() ) );
+    for( const auto& block:TextBlockRange(begin, end.next() ) )
     {
         // check block
         if( !block.isValid() ) continue;
@@ -2273,7 +2253,6 @@ void TextDisplay::_addBaseIndentation()
         cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
         cursor.setPosition( cursor.position() + leadingSpaceRegExp.matchedLength(), QTextCursor::KeepAnchor );
         cursor.insertText( replacement );
-
     }
 
     // indent
@@ -2313,31 +2292,15 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
     QTextBlock begin;
     QTextBlock end;
 
-    // retrieve cursor
     auto cursor( textCursor() );
-    if( cursor.hasSelection() )
-    {
-
-        int positionBegin( qMin( cursor.position(), cursor.anchor() ) );
-        int positionEnd( qMax( cursor.position(), cursor.anchor() ) );
-        begin = document()->findBlock( positionBegin );
-        end = document()->findBlock( positionEnd );
-
-    } else {
-
-        begin = document()->begin();
-        end = document()->end();
-
-    }
-
-    // store blocks
-    QList<QTextBlock> blocks;
-    for( auto&& block = begin; block.isValid() && block != end; block = block.next() )
-    { blocks.append( block ); }
-    blocks.append( end );
+    const TextBlockRange range = cursor.hasSelection() ?
+        TextBlockRange(
+        document()->findBlock( std::min( cursor.position(), cursor.anchor() ) ),
+        document()->findBlock( std::max( cursor.position(), cursor.anchor() ) ).next() ):
+        TextBlockRange( document() );
 
     // loop over blocks
-    for( const auto& block:blocks )
+    for( const auto& block:range )
     {
         // check block
         if( !block.isValid() ) continue;
@@ -2480,14 +2443,10 @@ void TextDisplay::_fileProperties()
 //_____________________________________________________________
 void TextDisplay::_setBlockModified( int position, int, int added )
 {
-    auto begin( document()->findBlock( position ) );
-    auto end(  document()->findBlock( position + added ) );
-
-    for( auto block = begin; block.isValid() && block != end; block = block.next() )
+    for( const auto& block:TextBlockRange(
+        document()->findBlock( position ),
+        document()->findBlock( position + added ).next() ) )
     { _setBlockModified( block ); }
-
-    _setBlockModified( end );
-
 }
 
 //__________________________________________________
@@ -2537,7 +2496,7 @@ void TextDisplay::_highlightParenthesis()
 
     // clear previous parenthesis
     {
-        QList<QTextBlock> dirty( parenthesisHighlight_->clear() );
+        auto dirty( parenthesisHighlight_->clear() );
         for( const auto& block:dirty )
         { textHighlight_->rehighlightBlock( block ); }
     }
@@ -2715,22 +2674,17 @@ void TextDisplay::_tagBlock()
 {
 
     Debug::Throw( "TextDisplay::_tagBlock.\n" );
-    QList<QTextBlock> blocks;
-    auto cursor( textCursor() );
-    if( cursor.hasSelection() )
-    {
 
-        auto first( document()->findBlock( qMin( cursor.position(), cursor.anchor() ) ) );
-        auto last( document()->findBlock( qMax( cursor.position(), cursor.anchor() ) ) );
-        for( auto block( first ); block.isValid() && block != last;  block = block.next() )
-        { blocks.append( block ); }
-        if( last.isValid() ) blocks.append( last );
-
-    } else blocks.append( cursor.block() );
+    const auto cursor( textCursor() );
+    const TextBlockRange range = cursor.hasSelection() ?
+        TextBlockRange(
+            document()->findBlock( std::min( cursor.position(), cursor.anchor() ) ),
+            document()->findBlock( std::max( cursor.position(), cursor.anchor() ) ).next() ):
+        TextBlockRange( cursor.block(), cursor.block().next() );
 
     // clear background for selected blocks
-    for( const auto& block:blocks )
-    { if( block.isValid() ) tagBlock( block, TextBlock::User ); }
+    for( const auto& block:range )
+    { tagBlock( block, TextBlock::User ); }
 
 }
 
@@ -2810,16 +2764,14 @@ void TextDisplay::_clearTag()
 
     Debug::Throw( "TextEditor::_clearTag.\n" );
 
-    QList<QTextBlock> blocks;
     auto cursor( textCursor() );
     if( cursor.hasSelection() )
     {
 
-        auto first( document()->findBlock( qMin( cursor.position(), cursor.anchor() ) ) );
-        auto last( document()->findBlock( qMax( cursor.position(), cursor.anchor() ) ) );
-        for( auto block( first ); block.isValid() && block != last;  block = block.next() )
-        { blocks.append( block ); }
-        if( last.isValid() ) blocks.append( last );
+        for( const auto& block:TextBlockRange(
+            document()->findBlock( std::min( cursor.position(), cursor.anchor() ) ),
+            document()->findBlock( std::max( cursor.position(), cursor.anchor() ) ).next() ) )
+        { clearTag( block, TextBlock::All ); }
 
     } else {
 
@@ -2830,7 +2782,7 @@ void TextDisplay::_clearTag()
             if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) )
             {
 
-                blocks.append( block );
+                clearTag( block, TextBlock::All );
 
             } else break;
         }
@@ -2843,16 +2795,12 @@ void TextDisplay::_clearTag()
             if( data && data->hasFlag( TextBlock::DiffAdded | TextBlock::DiffConflict | TextBlock::User ) )
             {
 
-                blocks.append( block );
+                clearTag( block, TextBlock::All );
 
             } else break;
         }
 
     }
-
-    // clear background for selected blocks
-    for( const auto& block:blocks )
-    { clearTag( block, TextBlock::All ); }
 
 }
 

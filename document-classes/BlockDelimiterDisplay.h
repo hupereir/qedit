@@ -204,10 +204,10 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     void _expand( const QTextBlock&, HighlightBlockData*, bool recursive = false ) const;
 
     //* collapse blocks
-    void _collapse( const QTextBlock&, const QTextBlock&, HighlightBlockData* ) const;
+    void _collapse( const TextBlockPair&, HighlightBlockData* ) const;
 
     //* get collapsed data for all blocs between first and second argument
-    CollapsedBlockData _collapsedData( const QTextBlock&, const QTextBlock& ) const;
+    CollapsedBlockData _collapsedData( const TextBlockPair& ) const;
 
     //* draw delimiter
     void _drawDelimiter( QPainter& painter, const QRect& rect, bool collapsed ) const;

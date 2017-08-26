@@ -696,7 +696,7 @@ class TextDisplay: public TextEditor
     //@}
 
     //* text encoding (needed for conversions
-    QByteArray textEncoding_;
+    QByteArray textEncoding_ = "UTF-8";
 
     //* true if display is to be deleted
     bool closed_ = false;

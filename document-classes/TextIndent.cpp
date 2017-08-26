@@ -17,16 +17,10 @@
 *
 *******************************************************************************/
 
-/*!
-\file TextIndent.cpp
-\brief text indentation
-\author Hugo Pereira
-\version $Revision$
-\date $Date$
-*/
-
-#include "TextEditor.h"
 #include "TextIndent.h"
+
+#include "TextBlockRange.h"
+#include "TextEditor.h"
 
 #include <QRegExp>
 #include <QProgressDialog>
@@ -47,9 +41,8 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
 
     // store all blocks prior to starting modifications
     QList<QTextBlock> blocks;
-    for( QTextBlock block( first ); block.isValid() && block != last; block = block.next() )
-    { blocks.append( block ); }
-    blocks.append( last );
+    const TextBlockRange range( first, last.next() );
+    std::copy( range.begin(), range.end(), std::back_inserter( blocks ) );
 
     QProgressDialog progress( tr( "Indenting selected paragraphs..." ), tr( "Abort" ), 0, blocks.size(), editor_);
     progress.show();
@@ -117,9 +110,6 @@ void TextIndent::indent( QTextBlock block, bool newLine )
 {
 
     if( !isEnabled() || patterns_.empty() ) return;
-
-    // ignore "empty" blocks
-    // if( editor_->isEmptyBlock( block ) ) return;
 
     // store block and cursor
     currentCursor_ = editor_->textCursor();
