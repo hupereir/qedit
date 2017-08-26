@@ -75,6 +75,7 @@
 #include <QTextLayout>
 
 #include <new>
+#include <numeric>
 
 //________________________________________________________
 QByteArray safeUncompress( const QByteArray& content )
