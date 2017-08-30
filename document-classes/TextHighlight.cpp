@@ -184,8 +184,8 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
             // so that prev is incremented once and current is incremented twice
             if( iter != locations.end() ) ++iter;
             if( iter != locations.end() ) ++iter;
-            if( prev != locations.end() ) prev++;
-            while(  iter != locations.end() )
+            if( prev != locations.end() ) ++prev;
+            while( iter != locations.end() )
             {
 
                 // no need to compare prev and iter parent Ids because they are known to be the
@@ -194,14 +194,12 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
                 {
 
                     // current iterator overlaps with prev
-                    PatternLocationSet::iterator current = iter;
-                    ++iter;
+                    auto current = iter++;
                     locations.erase( current );
 
                 } else {
 
-                    prev = iter;
-                    ++iter;
+                    prev = iter++;
 
                 }
             }
@@ -235,7 +233,7 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
     if( locations.empty() ) return locations;
 
     // remove locations that are front and have parents
-    while( locations.size() && locations.begin()->parentId() ) locations.erase(locations.begin());
+    while( !locations.empty() && locations.begin()->parentId() ) locations.erase(locations.begin());
 
     // remove patterns that overlap with others
     auto iter = locations.begin();
@@ -243,7 +241,7 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
     auto parent = locations.begin();
 
     if( iter != locations.end() ) ++iter;
-    while(  iter != locations.end() )
+    while( iter != locations.end() )
     {
 
         // check if patterns overlap
@@ -364,17 +362,12 @@ bool TextHighlight::_updateDelimiter( HighlightBlockData* data, const BlockDelim
 {
 
     TextBlock::Delimiter counter;
-    int position = 0;
-    while( (position = delimiter.regexp().indexIn( text, position ) ) >= 0 )
+    for( int position = 0; (position = delimiter.regexp().indexIn( text, position ) ) >= 0; position += delimiter.regexp().matchedLength() )
     {
-
         const bool isCommented( data->locations().isCommented( position ) );
         const QString matchedString( text.mid( position, delimiter.regexp().matchedLength() ) );
         if( matchedString.contains( delimiter.first() ) ) counter.increment( isCommented );
         else if( matchedString.contains( delimiter.second() ) ) counter.decrement( isCommented );
-
-        position++;
-
     }
 
     return data->setDelimiters( delimiter.id(), counter );

@@ -52,8 +52,8 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
 
     // retrieve the first valid block prior to the first
     QTextBlock previousBlock( blocks.front().previous() );
-    while( previousBlock.isValid() &&  editor_->ignoreBlock( previousBlock ) )
-    { previousBlock = previousBlock.previous(); }
+    for( ; previousBlock.isValid() &&  editor_->ignoreBlock( previousBlock ); previousBlock = previousBlock.previous() )
+    {}
 
     // get tabs in previous block
     int previousTabs( previousBlock.isValid() ? _tabCount( previousBlock ):0 );
@@ -117,8 +117,8 @@ void TextIndent::indent( QTextBlock block, bool newLine )
     // retrieve previous valid block to
     // determine the base indentation
     auto previousBlock( block.previous() );
-    while( previousBlock.isValid() &&  editor_->ignoreBlock( previousBlock ) )
-    { previousBlock = previousBlock.previous(); }
+    for(; previousBlock.isValid() &&  editor_->ignoreBlock( previousBlock ); previousBlock = previousBlock.previous() )
+    {}
 
     // add base indentation if needed
     if( newLine && baseIndentation() ) _addBaseIndentation( block );
@@ -186,21 +186,21 @@ bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern 
 
             // decrepent paragraph, skipping ignored lines
             int decrement = 0;
-            int true_decrement = 0;
+            int trueDecrement = 0;
             do {
                 copy = copy.previous();
                 decrement--;
-                true_decrement--;
+                trueDecrement--;
                 while( copy.isValid() && editor_->ignoreBlock( copy ) )
                 {
                     copy = copy.previous();
-                    true_decrement--;
+                    trueDecrement--;
                 }
 
             } while( copy.isValid() && decrement > rule.paragraph() );
 
             Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "]"
-                << " decrement: " << decrement << " true: " << true_decrement
+                << " decrement: " << decrement << " true: " << trueDecrement
                 << endl;
 
             // check paragraph and regexp

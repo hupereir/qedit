@@ -274,12 +274,12 @@ bool DocumentClass::match( const File& file ) const
     {
 
         QString line;
-        static const QRegExp empty_line_regexp( "(^\\s*$)" );
-        while(  in.bytesAvailable() && !(line = in.readLine(1024)).isNull() )
+        static const QRegExp emptyLineRegexp( "(^\\s*$)" );
+        while( in.bytesAvailable() && !(line = in.readLine(1024)).isNull() )
         {
 
             // skip empty lines
-            if( line.isEmpty() || empty_line_regexp.indexIn( line ) >= 0 ) continue;
+            if( line.isEmpty() || emptyLineRegexp.indexIn( line ) >= 0 ) continue;
 
             // check non empty lines
             return ( firstlinePattern_.indexIn( line ) >= 0 );

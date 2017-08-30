@@ -61,14 +61,6 @@ const XmlString::ConversionList& XmlString::_conversions()
 XmlString::XmlString( const QString& other ):
     value_( other )
 {
-
-    // HTML style conversions (escape characters)
-    ConversionListIterator iter( _conversions() );
-    iter.toBack();
-    while( iter.hasPrevious() )
-    {
-        const Conversion& current( iter.previous() );
-        if( !current.second.isEmpty() ) value_ = value_.replace( current.second, current.first );
-    }
-
+    for( const auto& conversion:_conversions() )
+    { if( !conversion.second.isEmpty() ) value_ = value_.replace( conversion.second, conversion.first ); }
 }

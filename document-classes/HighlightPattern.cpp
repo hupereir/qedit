@@ -149,16 +149,10 @@ bool HighlightPattern::_findKeyword( PatternLocationSet& locations, const QStrin
 
     // process text
     bool found( false );
-    int position( 0 );
-    while( position >= 0 )
+    for( int position = 0; (position = keyword_.indexIn( text, position )) >= 0; position += keyword_.matchedLength() )
     {
-        position = keyword_.indexIn( text, position );
-        if( position >= 0 )
-        {
-            found = true;
-            locations.insert( PatternLocation( *this, position, keyword_.matchedLength() ) );
-            position += keyword_.matchedLength();
-        }
+        found = true;
+        locations.insert( PatternLocation( *this, position, keyword_.matchedLength() ) );
     }
 
     return found;
@@ -207,7 +201,7 @@ bool HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
     }
 
     // look for begin and end in current paragraphs
-    while( 1 )
+    forever
     {
 
         // look for begin match

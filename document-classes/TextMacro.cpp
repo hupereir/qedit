@@ -117,8 +117,7 @@ TextMacro::Result TextMacro::processText( QString& text, int position ) const
 
 //_______________________________________________________
 TextMacro::Rule::Rule( const QDomElement& element ):
-    Counter( "TextMacro::Rule" ),
-    no_splitting_( false )
+    Counter( "TextMacro::Rule" )
 {
 
     Debug::Throw( "TextMacro::Rule::Rule.\n" );
@@ -154,7 +153,7 @@ QDomElement TextMacro::Rule::domElement( QDomDocument& parent ) const
     QDomElement out( parent.createElement( Xml::Rule ) );
 
     // options
-    if( no_splitting_ ) out.setAttribute( Xml::Options, Xml::OptionNoSplit );
+    if( noSplitting_ ) out.setAttribute( Xml::Options, Xml::OptionNoSplit );
 
     // child
     out.
@@ -174,7 +173,7 @@ TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) co
 
     // check validity
     if( !isValid() ) return TextMacro::Result();
-    if( no_splitting_ ) return _processText( text, position );
+    if( noSplitting_ ) return _processText( text, position );
     else {
 
         int localPosition( position );
@@ -200,24 +199,20 @@ TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) co
 TextMacro::Result TextMacro::Rule::_processText( QString& text, int position ) const
 {
     TextMacro::Result out;
-    int current_position( 0 );
-    while( ( current_position = pattern_.indexIn( text, current_position ) ) >= 0 )
+    for( int currentPosition = 0; ( currentPosition = pattern_.indexIn( text, currentPosition ) ) >= 0; currentPosition += replaceText_.length() )
     {
 
-        Debug::Throw() << "TextMacro::Rule::_processText - position: " << current_position << " text: " << text << endl;
+        Debug::Throw() << "TextMacro::Rule::_processText - position: " << currentPosition << " text: " << text << endl;
 
         // replacement occured
         out.first = true;
 
         // replace in text
-        text.replace( current_position, pattern_.matchedLength(), replace_text_ );
+        text.replace( currentPosition, pattern_.matchedLength(), replaceText_ );
 
         // update output displacements
-        if( position >= 0 && current_position <= position + out.second )
-        { out.second += replace_text_.length() - qMin( pattern_.matchedLength(), position + out.second - current_position ); }
-
-        // update current position
-        current_position += replace_text_.length();
+        if( position >= 0 && currentPosition <= position + out.second )
+        { out.second += replaceText_.length() - qMin( pattern_.matchedLength(), position + out.second - currentPosition ); }
 
         // end of line pattern must stop after first iteration
         // in order not to enter infinite loop

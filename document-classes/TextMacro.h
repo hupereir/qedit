@@ -190,14 +190,14 @@ class TextMacro final: private Base::Counter<TextMacro>
 
         //* replacemenet text
         const QString& replaceText() const
-        { return replace_text_; }
+        { return replaceText_; }
 
         //* set replacement text
         void setReplaceText( const QString& text )
-        { replace_text_ = text; }
+        { replaceText_ = text; }
 
         bool split() const
-        {  return !no_splitting_; }
+        {  return !noSplitting_; }
 
         //* splitting flag
         /**
@@ -205,7 +205,7 @@ class TextMacro final: private Base::Counter<TextMacro>
         line by line and the rule applied independently on each line
         */
         void setNoSplitting()
-        {  no_splitting_ = true; }
+        {  noSplitting_ = true; }
 
         private:
 
@@ -220,14 +220,14 @@ class TextMacro final: private Base::Counter<TextMacro>
         it is used to decide if the text should be splitted
         line by line and the rule applied independently on each line
         */
-        bool no_splitting_;
+        bool noSplitting_ = false;
 
         //@}
         //* match pattern
         QRegExp pattern_;
 
         //* replacement text
-        QString replace_text_;
+        QString replaceText_;
 
     };
 

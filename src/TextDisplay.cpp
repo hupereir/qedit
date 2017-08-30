@@ -2556,7 +2556,7 @@ void TextDisplay::_highlightParenthesis()
             }
 
             // parse text
-            while( (position = iter->regexp().indexIn( text, position ) ) >= 0 )
+            for( ;(position = iter->regexp().indexIn( text, position ) ) >= 0; position += iter->regexp().matchedLength() )
             {
 
                 // make sure comment status matches
@@ -2572,8 +2572,6 @@ void TextDisplay::_highlightParenthesis()
                     }
 
                 }
-
-                position += iter->regexp().matchedLength();
 
             }
 
@@ -2698,18 +2696,18 @@ void TextDisplay::_nextTag()
     TextBlockData* data;
 
     // first skipp blocks that have tags if the first one has
-    while(
+    for(;
         block.isValid() &&
         (data = static_cast<TextBlockData*>( block.userData() ) ) &&
-        data->hasFlag( TextBlock::All ) )
-    { block = block.next(); }
+        data->hasFlag( TextBlock::All ); block = block.next() )
+    {}
 
     // skip blocks with no tag
-    while(
+    for(;
         block.isValid() &&
         !((data = static_cast<TextBlockData*>( block.userData() ) ) &&
-        data->hasFlag( TextBlock::All ) ) )
-    { block = block.next(); }
+        data->hasFlag( TextBlock::All ) ); block = block.next())
+    {}
 
     if( !block.isValid() )
     {
@@ -2733,18 +2731,18 @@ void TextDisplay::_previousTag()
     TextBlockData* data;
 
     // first skip blocks that have tags if the first one has
-    while(
+    for(;
         block.isValid() &&
         (data = static_cast<TextBlockData*>( block.userData() ) ) &&
-        data->hasFlag( TextBlock::All ) )
-    { block = block.previous(); }
+        data->hasFlag( TextBlock::All ); block = block.previous() )
+    {}
 
     // skip blocks with no tag
-    while(
+    for(;
         block.isValid() &&
         !((data = static_cast<TextBlockData*>( block.userData() ) ) &&
-        data->hasFlag( TextBlock::All ) ) )
-    { block = block.previous(); }
+        data->hasFlag( TextBlock::All ) ); block = block.previous())
+    {}
 
     if( !block.isValid() )
     {

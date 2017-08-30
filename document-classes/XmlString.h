@@ -42,8 +42,7 @@ class XmlString final
     using Conversion = QPair<QString, QString>;
 
     //* text to Xml conversion pair type
-    using ConversionList = QList< Conversion >;
-    using ConversionListIterator = QListIterator< Conversion >;
+    using ConversionList = QList<Conversion>;
 
     //* text to Xml conversion pair list
     static const ConversionList& _conversions();
