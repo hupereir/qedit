@@ -43,7 +43,7 @@ QList<QTextBlock> ParenthesisHighlight::clear()
     {
 
         // retrieve block data
-        HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+        auto data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
         if( !( data && data->hasParenthesis() ) ) continue;
 
         // do not clear current block if parenthesis is unchanged
@@ -98,8 +98,8 @@ void ParenthesisHighlight::_highlight()
     if( !data )
     {
         // try retrieve data from parent type
-        TextBlockData* text_data = dynamic_cast<TextBlockData*>( block.userData() );
-        data = text_data ? new HighlightBlockData( text_data ) : new HighlightBlockData;
+        auto textData = dynamic_cast<TextBlockData*>( block.userData() );
+        data = textData ? new HighlightBlockData( textData ) : new HighlightBlockData;
         block.setUserData( data );
 
     } else if( data->hasParenthesis() && data->parenthesis() + block.position() == location_ ) return;

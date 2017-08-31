@@ -410,7 +410,7 @@ void Menu::_selectFile( QAction* action )
     const auto windowIter( std::find_if(
         windows.begin(),
         windows.end(),
-        MainWindow::SameFileFTor( iter.value() ) ) );
+        MainWindow::SameFileFTor( iter.value().expanded() ) ) );
 
     // check if window was found
     if( windowIter == windows.end() )

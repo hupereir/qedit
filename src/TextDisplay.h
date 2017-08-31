@@ -28,6 +28,7 @@
 #include "Debug.h"
 #include "FileCheck.h"
 #include "FileRecord.h"
+#include "Functors.h"
 #include "HighlightBlockFlags.h"
 #include "HighlightPattern.h"
 #include "NewDocumentNameServer.h"
@@ -68,52 +69,6 @@ class TextDisplay: public TextEditor
 
     //* destructor
     ~TextDisplay() override;
-
-    //* used to select editor with matching filename
-    class SameFileFTor
-    {
-        public:
-
-        //* constructor
-        explicit SameFileFTor( const File& file )
-        {
-
-            if( file.isAbsolute() ) file_ = file.expanded();
-            else file_ = file;
-
-        }
-
-        //* destructor
-        virtual ~SameFileFTor() = default;
-
-        //* predicate
-        bool operator() ( const TextDisplay* display ) const
-        { return display->file() == file_; }
-
-        private:
-
-        //* predicted file
-        File file_;
-
-    };
-
-    //* used to select editor with empty, unmodified file
-    class EmptyFileFTor
-    {
-        public:
-
-        //* destructor
-        virtual ~EmptyFileFTor() = default;
-
-        //* predicate
-        bool operator() ( const TextDisplay* display ) const
-        {
-            return
-                display->file().isEmpty() ||
-                (display->isNewDocument() && !display->document()->isModified() );
-        }
-
-    };
 
     //*@name accessors
     //@{
@@ -423,6 +378,28 @@ class TextDisplay: public TextEditor
     { return *clearAllTagsAction_; }
 
     //@}
+
+
+    //* used to select editor with matching filename
+    using SameFileFTor = Base::Functor::Unary<TextDisplay, const File&, &TextDisplay::file>;
+
+    //* used to select editor with empty, unmodified file
+    class EmptyFileFTor
+    {
+        public:
+
+        //* destructor
+        virtual ~EmptyFileFTor() = default;
+
+        //* predicate
+        bool operator() ( const TextDisplay* display ) const
+        {
+            return
+                display->file().isEmpty() ||
+                (display->isNewDocument() && !display->document()->isModified() );
+        }
+
+    };
 
     Q_SIGNALS:
 

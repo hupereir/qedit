@@ -244,20 +244,19 @@ bool MainWindow::selectDisplay( const File& file )
     // do nothing if already selected
     if( !activeView_->isClosed() && activeView_->activeDisplay().file() == file ) return true;
 
-    for( const auto& view:Base::KeySet<TextView>( this ) )
+    const auto views( Base::KeySet<TextView>( this ) );
+    auto iter = std::find_if( views.begin(), views.end(),
+        [&file]( TextView* view )
+        { return !view->isClosed() && view->selectDisplay( file ); } );
+
+    if( iter != views.end() )
     {
 
-        if( !view->isClosed() && view->selectDisplay( file ) )
-        {
-            // make sure selected view is visible
-            if( stack_->currentWidget() != view )
-            { setActiveView( *view ); }
-            return true;
-        }
+        setActiveView( **iter );
+        return true;
 
-    }
+    } else return false;
 
-    return false;
 }
 
 //_____________________________________________________________________

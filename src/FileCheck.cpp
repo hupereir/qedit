@@ -110,7 +110,7 @@ void FileCheck::timerEvent( QTimerEvent* event )
         for( const auto& data:data_ )
         {
 
-            const auto displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( data.file() ) ) );
+            const auto displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( data.file().expanded() ) ) );
             if( displayIter != displays.end() )
             {
 

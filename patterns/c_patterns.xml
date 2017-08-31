@@ -69,94 +69,115 @@
    <begin>^\s*//</begin>
    <end>$</end>
   </range_pattern>
+  
   <range_pattern options="comments" style="Comment" parent="" name="Comment1" >
    <comments>middle of line C style comments</comments>
    <begin>//</begin>
    <end>$</end>
   </range_pattern>
+  
   <range_pattern options="span no_indent comments" style="Comment" parent="" name="Comment2" >
    <comments>begin of line C++ style comments</comments>
    <begin>^\s*/\*</begin>
    <end>\*/</end>
   </range_pattern>
+  
   <range_pattern options="span comments" style="Comment" parent="" name="Comment2" >
    <comments>middle of line C++ style comments</comments>
    <begin>/\*</begin>
    <end>\*/</end>
   </range_pattern>
+  
   <range_pattern options="no_indent " style="Scope" parent="" name="Scope" >
    <comments></comments>
    <begin>\b(public|private|protected|signals|slots|Q_SIGNALS|Q_SLOTS)\b</begin>
    <end>(:\s*$)|([^,\s*].$)</end>
   </range_pattern>
+  
   <range_pattern style="Keyword" parent="" name="Class Name" >
    <comments>class name</comments>
    <begin>\bclass\b</begin>
    <end>(.(?=(;|\{|:))|$)</end>
   </range_pattern>
+  
   <range_pattern style="Keyword" parent="" name="Namespace" >
    <comments>namespace</comments>
    <begin>\b(using\s+)?namespace\b</begin>
    <end>(.(?=(;|\{))|$)</end>
   </range_pattern>
+  
   <range_pattern style="Keyword" parent="" name="Typedef" >
    <comments>typedef (c++11)</comments>
    <begin>\b(using\s+)\b</begin>
    <end>(.(?=(;|\{))|$)</end>
   </range_pattern>
+  
   <keyword_pattern style="Keyword" parent="" name="Keyword" >
    <comments>keywords</comments>
    <keyword>\b(break|case|catch|continue|default|delete|do|(dynamic|static|const|reinterpret)_cast|else|emit|fabs|false|for(each|ever)?|goto|if|new|return|sizeof|switch|this|throw|true|try|while)\b</keyword>
   </keyword_pattern>
+  
   <keyword_pattern style="Keyword" parent="" name="Root Keyword" >
    <comments>root keywords</comments>
    <keyword>\b(kTRUE|kFALSE)\b</keyword>
   </keyword_pattern>
+  
   <keyword_pattern style="Storage Type" parent="" name="Root Storage Type" >
    <comments>storage type</comments>
    <keyword>\b(Bool_t|(U?Short_t)|(U?Int_t)|Double_t|Float_t|(U?Long(64)?_t)|Char_t|TString|(T(H|F)\d(F|I)?)|TString|(TGraph(Errors)?))\b</keyword>
   </keyword_pattern>
+  
+  <keyword_pattern style="Storage Type" parent="" name="Stl Storage Type" >
+   <comments>storage type (STL)</comments>
+   <keyword>\bstd::((string(::npos)?)|set|map|pair|list|((i|i?o)(f|string)?stream)|vector|\w*iterator|\w*inserter)\b</keyword>
+  </keyword_pattern>
+
   <keyword_pattern style="Keyword" parent="" name="Stl Keyword" >
    <comments>keywords</comments>
-   <keyword>\bstd::(abs|swap|make_pair|(count|find|remove)(_if)?|transform|endl|c(out|err|log)|(unique|shared)_ptr|(any|none|all)_of|equal_to)\b</keyword>
+   <keyword>\bstd::(\w+)\b</keyword>
   </keyword_pattern>
+  
   <keyword_pattern style="Keyword" parent="" name="Braces" >
    <comments>parenthesis</comments>
    <keyword>((\{|\[|\]|\})*(\{|\[|\]|\})(\{|\[|\]|\})*)</keyword>
   </keyword_pattern>
+
   <keyword_pattern style="Storage Type" parent="" name="Storage Type" >
    <comments>storage type</comments>
    <keyword>\b(nullptr|auto|(u?char)|wchar_t|bool|double|enum|float|(u?int)|(u?long)|operator|register|(u?short)|((un)?signed)|struct|union|void)\b</keyword>
   </keyword_pattern>
+  
   <keyword_pattern style="Storage Type" parent="" name="Storage Attributes" >
    <comments>storage type</comments>
    <keyword>\b(explicit|export|extern|const|friend|inline|mutable|static|template|typedef|typeid|typename|virtual|volatile|final|override|constexpr)\b</keyword>
   </keyword_pattern>
-  <keyword_pattern style="Storage Type" parent="" name="Stl Storage Type" >
-   <comments>storage type (STL)</comments>
-   <keyword>(\b(std::)((string(::npos)?)|set|map|pair|list|((i|i?o)(f|string)?stream)|vector)\b)|(std::(const_)?(reverse_)?iterator\b)</keyword>
-  </keyword_pattern>
+  
   <keyword_pattern style="Storage Type" parent="" name="t Storage Type" >
    <comments>storage type (STL)</comments>
    <keyword>(\b(u)?(int)(8|(16)|(32))_t\b)</keyword>
   </keyword_pattern>
+  
   <keyword_pattern style="Keyword" parent="" name="Math" >
    <comments>storage type (STL)</comments>
    <keyword>(\b(std::)((a?(cos|sin|tan))|log|exp|sqrt|pow|(f?abs)|min|max)\b)</keyword>
   </keyword_pattern>
+  
   <keyword_pattern style="Numeric Constants" parent="" name="Numeric Constants" >
    <comments>numeric constants</comments>
    <keyword>\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f)?\b</keyword>
   </keyword_pattern>
+  
   <range_pattern style="String" parent="" name="String" >
    <comments>strings</comments>
    <begin>XML_QUOTE</begin>
    <end>([^\\]XML_QUOTE|$)</end>
   </range_pattern>
+  
   <keyword_pattern style="String2" parent="" name="String single character" >
    <comments>single character strings</comments>
    <keyword>'(.|\\(.|\n))'</keyword>
   </keyword_pattern>
+  
   <keyword_pattern style="String2" parent="String" name="String Escape Character" >
    <comments>single escape characters</comments>
    <keyword>\\(.|\n)</keyword>

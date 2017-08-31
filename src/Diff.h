@@ -27,7 +27,8 @@
 
 #include <QPair>
 #include <QSet>
-#include <QVector>
+
+#include <array>
 
 class TextDisplay;
 
@@ -150,7 +151,7 @@ class Diff: public QObject, private Base::Counter<Diff>
     };
 
     //* file specific diff information
-    FileInformation::List files_;
+    std::array<FileInformation,2> files_;
 
     //* process
     CustomProcess process_;

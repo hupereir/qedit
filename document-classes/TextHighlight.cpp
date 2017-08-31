@@ -98,11 +98,10 @@ void TextHighlight::highlightBlock( const QString& text )
     // block delimiters parsing
     if( isBlockDelimitersEnabled() && needUpdate )
     {
-        bool segmentChanged( false );
-        for( auto& delimiter:blockDelimiters_ )
-        { segmentChanged |= _updateDelimiter( data, delimiter, text ); }
-
-        if( segmentChanged ) emit needSegmentUpdate();
+        if( std::accumulate( blockDelimiters_.begin(), blockDelimiters_.end(), false,
+            [this, data, &text]( bool value, const BlockDelimiter& delimiter )
+            { return _updateDelimiter( data, delimiter, text ) ? true:value; } ) )
+        { emit needSegmentUpdate(); }
     }
 
     // before try applying the found locations see if automatic spellcheck is on
@@ -296,14 +295,13 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
     // check activity
     // one loop over the remaining locations
     // stop at the first one that is found in the list of possibly active
-    locations.activeId().second = 0;
-    for( const auto& location:locations )
     {
-        if( activePatterns & location.id() )
-        {
-            locations.activeId().second = location.id();
-            break;
-        }
+        locations.activeId().second = 0;
+        auto iter = std::find_if( locations.begin(), locations.end(),
+            [&activePatterns]( const PatternLocation& location )
+            { return activePatterns & location.id(); } );
+
+        if( iter != locations.end() ) locations.activeId().second = iter->id();
     }
 
     return locations;

@@ -41,11 +41,11 @@ IndentPattern::IndentPattern( const QDomElement& element ):
     Debug::Throw( "IndentPattern::IndentPattern.\n" );
 
     // parse attributes
-    QDomNamedNodeMap attributes( element.attributes() );
+    const auto attributes( element.attributes() );
     for( int i=0; i<attributes.count(); i++ )
     {
 
-        QDomAttr attribute( attributes.item( i ).toAttr() );
+        const auto attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
         if( attribute.name() == Xml::Type ) setType( (Type) attribute.value().toInt() );
         else if( attribute.name() == Xml::Name ) setName( attribute.value() );
@@ -54,13 +54,13 @@ IndentPattern::IndentPattern( const QDomElement& element ):
     }
 
     // parse children
-    for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() )
+    for( auto&& childNode = element.firstChild(); !childNode.isNull(); childNode = childNode.nextSibling() )
     {
-        QDomElement child_element = child_node.toElement();
-        if( child_element.isNull() ) continue;
-        if( child_element.tagName() == Xml::Rule )
+        const auto childElement = childNode.toElement();
+        if( childElement.isNull() ) continue;
+        if( childElement.tagName() == Xml::Rule )
         {
-            Rule rule( child_element );
+            Rule rule( childElement );
             if( rule.isValid() ) addRule( rule );
         }
     }
@@ -73,7 +73,7 @@ IndentPattern::IndentPattern( const QDomElement& element ):
 QDomElement IndentPattern::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "IndentPattern::domElement.\n" );
-    QDomElement out( parent.createElement( Xml::IndentPattern ) );
+    auto out( parent.createElement( Xml::IndentPattern ) );
     out.setAttribute( Xml::Type, QString::number( Base::toIntegralType(type_) ) );
     if( !name_.isEmpty() ) out.setAttribute( Xml::Name, name_ );
     if( scale_ > 1 ) out.setAttribute( Xml::Scale, QString::number( scale_ ) );
@@ -115,10 +115,10 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
     Debug::Throw( "Rule::Rule.\n" );
 
     // parse attributes
-    QDomNamedNodeMap attributes( element.attributes() );
+    const auto attributes( element.attributes() );
     for( int i=0; i<attributes.count(); i++ )
     {
-        QDomAttr attribute( attributes.item( i ).toAttr() );
+        const auto attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
         if( attribute.name() == Xml::Par ) setParagraph( attribute.value().toInt() );
         else if( attribute.name() == Xml::Options )
@@ -129,10 +129,10 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
 
     // parse children
     // parse children elements
-    for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() )
+    for( auto&& childNode = element.firstChild(); !childNode.isNull(); childNode = childNode.nextSibling() )
     {
-        QDomElement child_element = child_node.toElement();
-        if( child_element.tagName() == Xml::RegExp ) setPattern( XmlString( child_element.text() ) );
+        const auto childElement = childNode.toElement();
+        if( childElement.tagName() == Xml::RegExp ) setPattern( XmlString( childElement.text() ) );
     }
 
     regexp_.setCaseSensitivity( flag( CaseInsensitive ) ? Qt::CaseInsensitive : Qt::CaseSensitive );
@@ -143,7 +143,7 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
 QDomElement IndentPattern::Rule::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "IndentPattern::Rule::DomElement.\n" );
-    QDomElement out( parent.createElement( Xml::Rule ) );
+    auto out( parent.createElement( Xml::Rule ) );
     out.setAttribute( Xml::Par, QString::number( paragraph() ) );
     if( flag( CaseInsensitive ) )  out.setAttribute( Xml::Options, Xml::OptionNoCase );
 

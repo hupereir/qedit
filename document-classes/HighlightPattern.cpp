@@ -41,10 +41,10 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     if( element.tagName() == Xml::KeywordPattern ) setType( Type::KeywordPattern );
     if( element.tagName() == Xml::RangePattern ) setType( Type::RangePattern );
 
-    QDomNamedNodeMap attributes( element.attributes() );
+    const auto attributes( element.attributes() );
     for( int i=0; i<attributes.count(); i++ )
     {
-        QDomAttr attribute( attributes.item( i ).toAttr() );
+        const auto attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
 
         if( attribute.name() == Xml::Name ) setName( attribute.value() );
@@ -63,13 +63,13 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     }
 
     // parse children
-    for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() )
+    for( auto&& childNode = element.firstChild(); !childNode.isNull(); childNode = childNode.nextSibling() )
     {
-        QDomElement child_element = child_node.toElement();
-        if( child_element.isNull() ) continue;
-        else if( child_element.tagName() == Xml::Keyword ) setKeyword( XmlString( child_element.text() ) );
-        else if( child_element.tagName() == Xml::Begin ) setBegin( XmlString( child_element.text() ) );
-        else if( child_element.tagName() == Xml::End ) setEnd( XmlString( child_element.text() ) );
+        const auto childElement = childNode.toElement();
+        if( childElement.isNull() ) continue;
+        else if( childElement.tagName() == Xml::Keyword ) setKeyword( XmlString( childElement.text() ) );
+        else if( childElement.tagName() == Xml::Begin ) setBegin( XmlString( childElement.text() ) );
+        else if( childElement.tagName() == Xml::End ) setEnd( XmlString( childElement.text() ) );
     }
 
 }
@@ -79,7 +79,7 @@ QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "HighlightPattern::domElement.\n" );
 
-    QDomElement out( parent.createElement( typeName() ) );
+    auto out( parent.createElement( typeName() ) );
     out.setAttribute( Xml::Name, name_ );
     out.setAttribute( Xml::Parent, HighlightPattern::parent_ );
     out.setAttribute( Xml::Style, style_.name() );

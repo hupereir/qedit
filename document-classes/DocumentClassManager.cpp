@@ -60,10 +60,10 @@ bool DocumentClassManager::read( const File& filename )
         return false;
     }
 
-    auto top = document.get().documentElement();
-    for(QDomNode node = top.firstChild(); !node.isNull(); node = node.nextSibling() )
+    const auto top = document.get().documentElement();
+    for( auto&& node = top.firstChild(); !node.isNull(); node = node.nextSibling() )
     {
-        QDomElement element = node.toElement();
+        const auto element = node.toElement();
         if( element.isNull() ) continue;
         if( element.tagName() == Xml::DocumentClass )
         {
@@ -120,7 +120,7 @@ bool DocumentClassManager::write( const DocumentClass& documentClass, const File
     QDomDocument document;
 
     // create main element
-    QDomElement top = document.appendChild( document.createElement( Xml::Patterns ) ).toElement();
+    auto top = document.appendChild( document.createElement( Xml::Patterns ) ).toElement();
     top.appendChild( documentClass.domElement( document ) );
 
     out.write( document.toByteArray() );
@@ -147,7 +147,6 @@ bool DocumentClassManager::write( const File& path ) const
         return false;
     }
 
-
     for( const auto& documentClass:documentClasses_ )
     {
         File filename( documentClass.file().localName().addPath( path ) );
@@ -161,7 +160,7 @@ bool DocumentClassManager::write( const File& path ) const
         QDomDocument document;
 
         // create main element
-        QDomElement top = document.appendChild( document.createElement( Xml::Patterns ) ).toElement();
+        auto top = document.appendChild( document.createElement( Xml::Patterns ) ).toElement();
         top.appendChild( documentClass.domElement( document ) );
 
         out.write( document.toByteArray() );

@@ -38,10 +38,10 @@ TextMacro::TextMacro( const QDomElement& element ):
     Debug::Throw( "TextMacro::TextMacro.\n" );
 
     // parse attributes
-    QDomNamedNodeMap attributes( element.attributes() );
+    const auto attributes( element.attributes() );
     for( int i=0; i<attributes.count(); i++ )
     {
-        QDomAttr attribute( attributes.item( i ).toAttr() );
+        const auto attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
         if( attribute.name() == Xml::Name ) setName( attribute.value() );
         else if( attribute.name() == Xml::Accelerator ) setAccelerator( attribute.value() );
@@ -53,11 +53,11 @@ TextMacro::TextMacro( const QDomElement& element ):
     }
 
     // parse children
-    for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() )
+    for( auto&& childNode = element.firstChild(); !childNode.isNull(); childNode = childNode.nextSibling() )
     {
-        QDomElement child_element = child_node.toElement();
-        if( child_element.isNull() ) continue;
-        if( child_element.tagName() == Xml::Rule ) addRule( Rule( child_element ) );
+        const auto childElement = childNode.toElement();
+        if( childElement.isNull() ) continue;
+        if( childElement.tagName() == Xml::Rule ) addRule( Rule( childElement ) );
     }
 
     Q_ASSERT( isSeparator() || !rules_.empty() );
@@ -68,7 +68,7 @@ TextMacro::TextMacro( const QDomElement& element ):
 QDomElement TextMacro::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "TextMacro::domElement.\n" );
-    QDomElement out( parent.createElement( Xml::Macro ) );
+    auto out( parent.createElement( Xml::Macro ) );
 
     // dump attributes
     out.setAttribute( Xml::Name, name() );
@@ -123,10 +123,10 @@ TextMacro::Rule::Rule( const QDomElement& element ):
     Debug::Throw( "TextMacro::Rule::Rule.\n" );
 
     // parse attributes
-    QDomNamedNodeMap attributes( element.attributes() );
+    const auto attributes( element.attributes() );
     for( int i=0; i<attributes.count(); i++ )
     {
-        QDomAttr attribute( attributes.item( i ).toAttr() );
+        const auto attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
         if( attribute.name() == Xml::Options )
         {
@@ -135,12 +135,12 @@ TextMacro::Rule::Rule( const QDomElement& element ):
     }
 
     // parse children
-    for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() )
+    for( auto&& childNode = element.firstChild(); !childNode.isNull(); childNode = childNode.nextSibling() )
     {
-        QDomElement child_element = child_node.toElement();
-        if( child_element.isNull() ) continue;
-        if( child_element.tagName() == Xml::RegExp ) setPattern( XmlString( child_element.text() ) );
-        else if( child_element.tagName() == Xml::Replacement ) setReplaceText( XmlString( child_element.text() ) );
+        const auto childElement = childNode.toElement();
+        if( childElement.isNull() ) continue;
+        if( childElement.tagName() == Xml::RegExp ) setPattern( XmlString( childElement.text() ) );
+        else if( childElement.tagName() == Xml::Replacement ) setReplaceText( XmlString( childElement.text() ) );
     }
 
 }
@@ -150,7 +150,7 @@ QDomElement TextMacro::Rule::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "TextMacro::Rule::domElement.\n" );
 
-    QDomElement out( parent.createElement( Xml::Rule ) );
+    auto out( parent.createElement( Xml::Rule ) );
 
     // options
     if( noSplitting_ ) out.setAttribute( Xml::Options, Xml::OptionNoSplit );
@@ -199,7 +199,7 @@ TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) co
 TextMacro::Result TextMacro::Rule::_processText( QString& text, int position ) const
 {
     TextMacro::Result out;
-    for( int currentPosition = 0; ( currentPosition = pattern_.indexIn( text, currentPosition ) ) >= 0; currentPosition += replaceText_.length() )
+    for( int currentPosition = 0; ( currentPosition = pattern_.indexIn( text, currentPosition ) ) >= 0; currentPosition += replaceText_.size() - pattern_.matchedLength() )
     {
 
         Debug::Throw() << "TextMacro::Rule::_processText - position: " << currentPosition << " text: " << text << endl;

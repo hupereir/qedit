@@ -31,10 +31,10 @@ Counter( "TextParenthesis" )
     Debug::Throw( "TextParenthesis::TextParenthesis.\n" );
 
     // parse attributes
-    QDomNamedNodeMap attributes( element.attributes() );
+    const  auto attributes( element.attributes() );
     for( int i=0; i<attributes.count(); i++ )
     {
-        QDomAttr attribute( attributes.item( i ).toAttr() );
+        const auto attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
         if( attribute.name() == Xml::Begin ) first_ = XmlString( attribute.value() );
         else if( attribute.name() == Xml::End ) second_ = XmlString( attribute.value() );
@@ -48,15 +48,13 @@ Counter( "TextParenthesis" )
         regexp_.setPattern( pattern );
     }
 
-    //regexp_.setMinimal( true );
-
 }
 
 //_____________________________________________________
 QDomElement TextParenthesis::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "TextParenthesis::DomElement.\n" );
-    QDomElement out( parent.createElement( Xml::Parenthesis ) );
+    auto out( parent.createElement( Xml::Parenthesis ) );
 
     // dump attributes
     out.setAttribute( Xml::Begin, first() );

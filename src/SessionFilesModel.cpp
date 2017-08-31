@@ -172,8 +172,8 @@ QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const
         // fill url list
         {
             QList<QUrl> urlList;
-            for( const auto& filename:filenames )
-            { urlList.append( QUrl( QString( "file://%1" ).arg(filename) ) ); }
+            std::transform( filenames.begin(), filenames.end(), std::back_inserter( urlList ),
+                []( const QString& filename ) { return QUrl( QString( "file://%1" ).arg(filename) ); } );
             mimeData->setUrls( urlList );
         }
 

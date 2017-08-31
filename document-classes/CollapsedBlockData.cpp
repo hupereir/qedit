@@ -39,21 +39,16 @@ text_( block.text() )
 //_____________________________________________________________
 int CollapsedBlockData::blockCount() const
 {
-    int out(1);
-    for( const auto& child:children() )
-    { out += child.blockCount(); }
 
-    return out;
+    return std::accumulate( children_.begin(), children_.end(), 1,
+        []( int out, const CollapsedBlockData& child )
+        { return out + child.blockCount(); } );
 }
 
 //_____________________________________________________________
 QString CollapsedBlockData::toPlainText() const
 {
-
-    QString out( text() + "\n" );
-    for( const auto& child:children() )
-    { out += child.toPlainText(); }
-
-    return out;
-
+    return std::accumulate( children_.begin(), children_.end(), text()+"\n",
+        []( const QString& text, const CollapsedBlockData& child )
+        { return text + child.toPlainText(); } );
 }

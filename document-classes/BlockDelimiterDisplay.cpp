@@ -491,7 +491,7 @@ void BlockDelimiterDisplay::expandAllBlocks()
         // retrieve data and check if collapsed
         if( block.blockFormat().boolProperty( TextBlock::Collapsed ) )
         {
-            auto* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+            auto data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
             _expand( block, data, true );
         }
 
@@ -729,7 +729,6 @@ void BlockDelimiterDisplay::_updateMarker( QTextBlock& block, int& id, BlockMark
     // find block matching marker id
     if( marker.id() < id ) { for( ; marker.id() < id && block.isValid(); block = block.previous(), id-- ) {} }
     else if( marker.id() > id ) { for( ; marker.id() > id && block.isValid(); block = block.next(), id++ ) {} }
-    Q_ASSERT( block.isValid() );
 
     QRectF rect( editor_->document()->documentLayout()->blockBoundingRect( block ) );
     if( flag == Type::BlockBegin ) { marker.setPosition( (int) block.layout()->position().y() ); }
@@ -785,12 +784,12 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
         if( secondData )
         {
 
-            for( const auto& counter:secondData->delimiters().get() )
+            const auto delimiters( secondData->delimiters().get() );
+            if( std::any_of( delimiters.begin(), delimiters.end(),
+                []( const TextBlock::Delimiter& delimiter ) { return delimiter.begin(); } ) )
             {
-                if( !counter.begin() ) continue;
                 block = block.previous();
-                id--;
-                break;
+                --id;
             }
 
         }

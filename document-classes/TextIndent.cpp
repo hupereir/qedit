@@ -70,17 +70,16 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
         if( !previousBlock.isValid() ) _decrement( block );
         else {
 
-            for( const auto& pattern:patterns_ )
-            {
+            const auto iter = std::find_if( patterns_.begin(), patterns_.end(),
+                [this, &block]( const IndentPattern& pattern ) { return _acceptPattern( block, pattern ); } );
 
-                if( _acceptPattern( block, pattern ) )
-                {
-                    Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << endl;
-                    if( pattern.type() == IndentPattern::Type::Increment ) newTabs += pattern.scale();
-                    else if( pattern.type() == IndentPattern::Type::Decrement ) newTabs -= pattern.scale();
-                    else if( pattern.type() == IndentPattern::Type::DecrementAll ) newTabs = 0;
-                    break;
-                }
+            if( iter != patterns_.end() )
+            {
+                const auto& pattern = *iter;
+                Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << endl;
+                if( pattern.type() == IndentPattern::Type::Increment ) newTabs += pattern.scale();
+                else if( pattern.type() == IndentPattern::Type::Decrement ) newTabs -= pattern.scale();
+                else if( pattern.type() == IndentPattern::Type::DecrementAll ) newTabs = 0;
             }
 
             // make sure newTabs is not negative
@@ -130,17 +129,17 @@ void TextIndent::indent( QTextBlock block, bool newLine )
         // get previous paragraph tabs
         int previousTabs( _tabCount( previousBlock ) );
         int newTabs = previousTabs;
-        for( const auto& pattern:patterns_ )
-        {
-            if( _acceptPattern( block, pattern ) )
-            {
 
-                Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << endl;
-                if( pattern.type() == IndentPattern::Type::Increment ) newTabs += pattern.scale();
-                else if( pattern.type() == IndentPattern::Type::Decrement ) newTabs -= pattern.scale();
-                else if( pattern.type() == IndentPattern::Type::DecrementAll ) newTabs = 0;
-                break;
-            }
+        const auto iter = std::find_if( patterns_.begin(), patterns_.end(),
+            [this, &block]( const IndentPattern& pattern ) { return _acceptPattern( block, pattern ); } );
+
+        if( iter != patterns_.end() )
+        {
+            const auto& pattern( *iter );
+            Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << endl;
+            if( pattern.type() == IndentPattern::Type::Increment ) newTabs += pattern.scale();
+            else if( pattern.type() == IndentPattern::Type::Decrement ) newTabs -= pattern.scale();
+            else if( pattern.type() == IndentPattern::Type::DecrementAll ) newTabs = 0;
         }
 
         // make sure newTabs is not negative

@@ -32,20 +32,15 @@ DocumentClass::DocumentClass():
 
 //________________________________________________________
 DocumentClass::DocumentClass( const QDomElement& element ):
-    Counter( "DocumentClass" ),
-    default_( false ),
-    wrap_( false ),
-    emulateTabs_( false ),
-    tabSize_( 2 ),
-    baseIndentation_( 0 )
+    Counter( "DocumentClass" )
 {
     Debug::Throw( "DocumentClass::DocumentClass.\n" );
 
     // parse attributes
-    QDomNamedNodeMap attributes( element.attributes() );
+    const auto attributes( element.attributes() );
     for( int i=0; i<attributes.count(); i++ )
     {
-        QDomAttr attribute( attributes.item( i ).toAttr() );
+        const auto attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
 
         if( attribute.name() == Xml::Name ) name_ = attribute.value() ;
@@ -66,9 +61,9 @@ DocumentClass::DocumentClass( const QDomElement& element ):
     }
 
     // parse children
-    for(QDomNode child_node = element.firstChild(); !child_node.isNull(); child_node = child_node.nextSibling() )
+    for( auto&& childNode = element.firstChild(); !childNode.isNull(); childNode = childNode.nextSibling() )
     {
-        QDomElement childElement = child_node.toElement();
+        const auto childElement = childNode.toElement();
         if( childElement.isNull() ) continue;
 
         if( childElement.tagName() == Xml::Style )
@@ -196,7 +191,7 @@ QStringList DocumentClass::_associatePatterns()
 QDomElement DocumentClass::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "DocumentClass::domElement.\n" );
-    QDomElement out( parent.createElement( Xml::DocumentClass ) );
+    auto out( parent.createElement( Xml::DocumentClass ) );
 
     // dump attributes
     out.setAttribute( Xml::Name, name_ );

@@ -74,8 +74,10 @@ FileSystemFrame::FileSystemFrame( QWidget *parent ):
 
     // initialize local root path list
     File::List rootPathList;
-    for( const auto& fileInfo:QDir::drives() )
-    { rootPathList.append( File( fileInfo.path() ) ); }
+    const auto drives = QDir::drives();
+    std::transform( drives.begin(), drives.end(), std::back_inserter( rootPathList ),
+        []( const QFileInfo& fileInfo ) { return File( fileInfo.path() ); } );
+
     pathEditor_->setRootPathList( rootPathList );
 
     connect( pathEditor_, SIGNAL(pathChanged(File)), SLOT(_update()) );
@@ -307,17 +309,8 @@ void FileSystemFrame::_updateActions()
     Debug::Throw( "FileSystemFrame:_updateActions.\n" );
     FileRecord::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
 
-    bool hasEditableSelection( false );
-    bool hasRemovableSelection( false );
-    for( const auto& record:selection )
-    {
-        if( !record.hasFlag( BaseFileInfo::Navigator ) ) hasRemovableSelection = true;
-        if( record.hasFlag( BaseFileInfo::Document ) )
-        {
-            hasEditableSelection = true;
-            break;
-        }
-    }
+    const bool hasEditableSelection = std::any_of( selection.begin(), selection.end(), FileRecord::HasFlagFTor( BaseFileInfo::Document ) );
+    const bool hasRemovableSelection = hasEditableSelection || !std::all_of(  selection.begin(), selection.end(), FileRecord::HasFlagFTor( BaseFileInfo::Navigator ) );
 
     openAction_->setEnabled( hasEditableSelection );
     removeAction_->setEnabled( hasRemovableSelection );
@@ -336,7 +329,7 @@ void FileSystemFrame::_showToolTip( const QModelIndex& index )
     else {
 
         // fileInfo
-        const FileRecord record( model_.get( index ) );
+        const auto& record( model_.get( index ) );
 
         // icon
         QIcon icon;
@@ -344,9 +337,8 @@ void FileSystemFrame::_showToolTip( const QModelIndex& index )
         if( iconVariant.canConvert( QVariant::Icon ) ) icon = iconVariant.value<QIcon>();
 
         // rect
-        QRect rect( list_->visualRect( index ) );
-        rect.translate( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) );
-        toolTipWidget_->setIndexRect( rect );
+        toolTipWidget_->setIndexRect(
+            list_->visualRect( index ).translated( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) ) );
 
         // assign to tooltip widget
         toolTipWidget_->setRecord( record, icon );

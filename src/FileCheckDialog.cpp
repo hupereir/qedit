@@ -53,8 +53,10 @@ void FileCheckDialog::setFiles( const QStringList& files )
 
     Debug::Throw( "FileCheckDialog::setFiles.\n" );
     FileRecordModel::List records;
-    for( const auto& file:files )
-    { records.append( Base::Singleton::get().application<Application>()->recentFiles().get( File( file ) ) ); }
+
+    std::transform( files.begin(), files.end(), std::back_inserter( records ),
+        []( const QString& file )
+        { return Base::Singleton::get().application<Application>()->recentFiles().get( File( file ) ); } );
 
     model_.set( records );
 

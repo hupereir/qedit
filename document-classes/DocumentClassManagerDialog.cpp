@@ -40,7 +40,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     Debug::Throw( "DocumentClassManagerDialog::DocumentClassManagerDialog.\n" );
     setOptionName( "DOCUMENT_CLASS_MANAGER_DIALOG" );
 
-    QHBoxLayout* hLayout( new QHBoxLayout );
+    auto hLayout = new QHBoxLayout;
     hLayout->setSpacing(5);
     hLayout->setMargin(0);
     mainLayout().addLayout( hLayout );
@@ -53,7 +53,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     list_->setOptionName( "DOCUMENT_CLASS_MANAGER_LIST" );
 
     // buttons
-    QVBoxLayout* vLayout = new QVBoxLayout;
+    auto vLayout = new QVBoxLayout;
     vLayout->setSpacing(5);
     vLayout->setMargin(0);
     hLayout->addLayout( vLayout );
@@ -70,7 +70,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     vLayout->addStretch( 1 );
 
     // actions
-    QMenu* menu( new ContextMenu( list_ ) );
+    auto menu = new ContextMenu( list_ );
     addAction( addAction_ = new QAction( IconEngine::get( IconNames::Add ), tr( "Add" ), this ) );
     connect( addAction_, SIGNAL(triggered()), SLOT(_add()) );
     addAction_->setShortcut( QKeySequence::New );
@@ -175,9 +175,8 @@ void DocumentClassManagerDialog::_remove()
 void DocumentClassManagerDialog::_updateButtons()
 {
     // loop over selected items
-    bool removeEnabled( false );
-    for( const auto& documentClass:model_.get( list_->selectionModel()->selectedRows() ) )
-    { if( !documentClass.isBuildIn() ) { removeEnabled = true; break; } }
+    const auto selection( model_.get( list_->selectionModel()->selectedRows() ) );
+    const bool removeEnabled = std::any_of( selection.begin(), selection.end(), Base::Functor::UnaryTrue<DocumentClass, &DocumentClass::isBuildIn>() );
 
     removeAction_->setEnabled( removeEnabled );
     removeButton_->setEnabled( removeEnabled );

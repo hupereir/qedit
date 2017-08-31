@@ -188,8 +188,7 @@ bool WindowServer::closeAll()
     }
 
     QStringList files;
-    for( const auto& record:records )
-    { files.append( record.file() ); }
+    std::transform( records.begin(), records.end(), std::back_inserter(files), []( const FileRecord& record ) { return record.file(); } );
 
     return _close( files );
 
@@ -321,9 +320,6 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
 {
     Debug::Throw( "WindowServer::multipleFileReplace.\n" );
 
-    // keep track of number of replacements
-    int counts(0);
-
     // create progressDialog
     ProgressDialog dialog;
     dialog.setAttribute( Qt::WA_DeleteOnClose );
@@ -339,14 +335,16 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
     {
 
         // find matching window
-        auto iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file ) );
+        auto iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( file.expanded() ) );
         if( iter == windows.end() ) continue;
 
         // loop over views
         for( const auto& view:Base::KeySet<TextView>( *iter ) )
         {
+
             if( !view->selectDisplay( file ) ) continue;
-            TextDisplay* display( &view->activeDisplay() );
+
+            auto display( &view->activeDisplay() );
             connect( display, SIGNAL(progressAvailable(int)), &dialog, SLOT(setValue(int)) );
             maximum += display->toPlainText().size();
             displays.insert( display );
@@ -357,11 +355,13 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
     dialog.setMaximum( maximum );
 
     // loop over displays and perform replacement
-    for( const auto& display:displays )
-    {
-        counts += display->replaceInWindow( selection, false );
-        dialog.setOffset( dialog.value() );
-    }
+    int counts = std::accumulate( displays.begin(), displays.end(), 0,
+        [&dialog, &selection](int counts, TextDisplay* display)
+        {
+            counts += display->replaceInWindow( selection, false );
+            dialog.setOffset( dialog.value() );
+            return counts;
+        } );
 
     // close progress dialog
     dialog.close();
@@ -514,7 +514,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     Base::KeySet<MainWindow> windows( this );
 
     // try find editor with matching name
-    auto iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
+    auto iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file().expanded() ) );
     if( iter != windows.end() )
     {
 
@@ -597,13 +597,13 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
 
     // retrieve all windows and find one matching
     Base::KeySet<MainWindow> windows( this );
-    auto iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file() ) );
+    auto iter = std::find_if( windows.begin(), windows.end(), MainWindow::SameFileFTor( record.file().expanded() ) );
     if( iter != windows.end() )
     {
 
         // find matching view
         Base::KeySet<TextView> views( *iter );
-        auto&& viewIter = std::find_if( views.begin(), views.end(), MainWindow::SameFileFTor( record.file() ) );
+        auto&& viewIter = std::find_if( views.begin(), views.end(), MainWindow::SameFileFTor( record.file().expanded() ) );
         if( viewIter == views.end() )
         {
 
@@ -901,8 +901,7 @@ bool WindowServer::_close( FileRecord::List records )
     if( records.size() > 1 && !CloseFilesDialog( &_activeWindow(), records ).exec() ) return true;
 
     QStringList files;
-    for( const auto& record:records )
-    { files.append( record.file() ); }
+    std::transform( records.begin(), records.end(), std::back_inserter( files ), []( const FileRecord& record ) { return record.file(); } );
 
     return _close( files );
 
@@ -974,25 +973,23 @@ bool WindowServer::_close( QStringList files )
 //_______________________________________________
 MainWindow& WindowServer::_findWindow( const File& file )
 {
-    MainWindow* out( 0 );
+
+    MainWindow* out = nullptr;
 
     // retrieve windows
     for( const auto& window:Base::KeySet<MainWindow>( this ) )
     {
 
         // retrieve displays
-        for( const auto& display:window->associatedDisplays() )
+        auto displays( window->associatedDisplays() );
+        if( std::any_of( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file.expanded() ) ) )
         {
-            if( display->file() == file )
-            {
-                out = window;
-                break;
-            }
+            out = window;
+            break;
         }
 
     }
 
-    Q_CHECK_PTR( out );
     return *out;
 
 }
@@ -1015,28 +1012,27 @@ TextView& WindowServer::_findView( const File& file )
 //_______________________________________________
 TextDisplay& WindowServer::_findDisplay( const File& file )
 {
-    TextDisplay* out( nullptr );
+
+    TextDisplay* out = nullptr;
 
     // retrieve windows
     for( const auto& window:Base::KeySet<MainWindow>( this ) )
     {
 
         // retrieve displays
-        for( const auto& display:window->associatedDisplays() )
+        auto displays( window->associatedDisplays() );
+        auto iter = std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file.expanded() ) );
+        if( iter != displays.end() )
         {
-            if( display->file() == file )
-            {
-                out = display;
-                break;
-            }
+            out = *iter;
+            break;
         }
-
     }
 
-    Q_CHECK_PTR( out );
     return *out;
 
 }
+
 //_______________________________________________
 FileRecord WindowServer::_selectFileFromDialog()
 {

@@ -144,10 +144,13 @@ int TextView::modifiedDisplayCount() const
 }
 
 //________________________________________________________________
-bool TextView::selectDisplay( const File& file )
+bool TextView::selectDisplay( const File& constFile )
 {
 
     Debug::Throw( "TextView::selectDisplay.\n" );
+
+    // expand filename
+    const auto file = constFile.expanded();
 
     // check if active display match.
     if( TextDisplay::SameFileFTor( file )( &activeDisplay() ) ) return true;
@@ -425,7 +428,7 @@ void TextView::checkDisplayModifications( TextEditor* editor )
     // convert to TextDisplay
     TextDisplay& display( *static_cast<TextDisplay*>( editor ) );
 
-    Base::KeySet<TextDisplay>  deadDisplays;
+    Base::KeySet<TextDisplay> deadDisplays;
 
     // check file
     if( display.checkFileRemoved() == FileRemovedDialog::Close )
@@ -492,21 +495,21 @@ void TextView::diff()
     // retrieve displays associated to window
     // look for the first one that is not associated to the active display
     Base::KeySet<TextDisplay> displays( this );
-    auto iter = displays.begin();
-    for(; iter != displays.end(); ++iter )
-    {
-        if( !( *iter == &first || (*iter)->isAssociated( &first ) ) )
-        {
-            diff->setTextDisplays( first, *(*iter) );
-            break;
-        }
-    }
+    auto iter = std::find_if( displays.begin(), displays.end(),
+        [&first]( TextDisplay* display )
+        { return !( display == &first || display->isAssociated( &first ) ); } );
 
     // check that one display was found
     if( iter == displays.end() )
     {
+
         Debug::Throw(0, "TextView::diff - display not found.\n" );
         return;
+
+    } else {
+
+        diff->setTextDisplays( first, *(*iter) );
+
     }
 
     // try run
@@ -624,12 +627,10 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
         QWidget *child( nullptr );
 
         // retrieve children and loop
-        for( const auto& object:TextView::children() )
-        {
-            if( ( child = qobject_cast<QWidget*>( object ) ) )
-            { break; }
-
-        }
+        auto children( this->children() );
+        std::any_of( children.begin(), children.end(),
+            [&child]( QObject* object )
+            { return (child = qobject_cast<QWidget*>( object )); } );
 
         // try cast child to splitter
         // if exists and have same orientation, do not create a new one

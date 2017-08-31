@@ -29,10 +29,10 @@ HighlightStyle::HighlightStyle( const QDomElement& element ):
     Debug::Throw( "HighlightStyle::HighlightStyle.\n" );
 
     // parse attributes
-    QDomNamedNodeMap attributes( element.attributes() );
+    const auto attributes( element.attributes() );
     for( int i=0; i<attributes.count(); i++ )
     {
-        QDomAttr attribute( attributes.item( i ).toAttr() );
+        const auto attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
 
         if( attribute.name() == Xml::Name ) setName( attribute.value() );
@@ -46,7 +46,7 @@ HighlightStyle::HighlightStyle( const QDomElement& element ):
 QDomElement HighlightStyle::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "HighlighStyle::DomElement.\n" );
-    QDomElement out = parent.createElement( Xml::Style );
+    auto out = parent.createElement( Xml::Style );
     out.setAttribute( Xml::Name, name_ );
     if( format_ != Format::Default ) out.setAttribute( Xml::Format, QString::number(format_) );
     if( color_.isValid() ) out.setAttribute( Xml::Color, color_.name() );

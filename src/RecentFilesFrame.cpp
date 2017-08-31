@@ -202,11 +202,7 @@ void RecentFilesFrame::_open()
     FileRecordModel::List validSelection;
 
     for( const auto& record:model_.get( list_->selectionModel()->selectedRows() ) )
-    { if( record.isValid() ) validSelection.append( record ); }
-
-    // TODO: should check number of files
-    for( const auto& record:validSelection )
-    { emit fileActivated( record ); }
+    { if( record.isValid() ) emit fileActivated( record ); }
 
 }
 

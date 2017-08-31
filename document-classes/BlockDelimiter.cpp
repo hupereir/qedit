@@ -30,10 +30,10 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element, int id ):
 {
 
     // parse attributes
-    QDomNamedNodeMap attributes( element.attributes() );
+    const auto attributes( element.attributes() );
     for( int i=0; i<attributes.count(); i++ )
     {
-        QDomAttr attribute( attributes.item( i ).toAttr() );
+        const auto attribute( attributes.item( i ).toAttr() );
         if( attribute.isNull() ) continue;
         if( attribute.name() == Xml::Begin ) first_ = XmlString( attribute.value() );
         else if( attribute.name() == Xml::End ) second_ = XmlString( attribute.value() );
@@ -54,7 +54,7 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element, int id ):
 QDomElement BlockDelimiter::domElement( QDomDocument& parent ) const
 {
     Debug::Throw( "BlockDelimiter::DomElement.\n" );
-    QDomElement out( parent.createElement( Xml::BlockDelimiter ) );
+    auto out( parent.createElement( Xml::BlockDelimiter ) );
 
     // dump attributes
     out.setAttribute( Xml::Begin, first() );

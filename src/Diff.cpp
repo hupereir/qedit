@@ -32,7 +32,6 @@
 Diff::Diff( QObject* parent ):
     QObject( parent ),
     Counter( "Diff" ),
-    files_( 2 ),
     process_( this )
 {
     Debug::Throw( "Diff::Diff\n" );
@@ -155,9 +154,12 @@ void Diff::_parseLine( const QString& line )
     int position( line.indexOf( "c" ) );
     if( position >= 0 )
     {
-        QVector<Range> ranges(2);
-        ranges[0] = _parseRange(line.left( position ));
-        ranges[1] = _parseRange(line.mid( position+1 ));
+
+        const std::array<Range,2> ranges =
+        {{
+            _parseRange(line.left( position )),
+            _parseRange(line.mid( position+1 ))
+        }};
 
         for( int i = 0; i<= 1; i++ )
         { files_[i].insertConflictRange( ranges[i] ); }

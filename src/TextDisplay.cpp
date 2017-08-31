@@ -2819,20 +2819,19 @@ QString TextDisplay::_collapsedText( const QTextBlock& block ) const
 {
 
     Debug::Throw( "TextDisplay::_collapsedText.\n" );
-    QString text;
 
     // retrieve associated block format
-    QTextBlockFormat blockFormat( block.blockFormat() );
+    const auto blockFormat( block.blockFormat() );
     if( blockFormat.boolProperty( TextBlock::Collapsed ) && blockFormat.hasProperty( TextBlock::CollapsedData ) )
     {
 
-        CollapsedBlockData collapsedData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
-        for( const auto& child:collapsedData.children() )
-        { text += child.toPlainText(); }
+        const auto collapsedData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
+        const auto children( collapsedData.children() );
+        return std::accumulate( children.begin(), children.end(), QString(),
+            []( const QString& text, const CollapsedBlockData& child )
+            { return text + child.toPlainText(); } );
 
-    }
-
-    return text;
+    } else return QString();
 
 }
 

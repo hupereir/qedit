@@ -118,8 +118,7 @@ FileSelectionDialog::FileList FileSelectionDialog::selectedFiles() const
     // retrieve selection from the list
     auto selection( model_.get( list_->selectionModel()->selectedRows() ) );
     FileList files;
-    for( const auto& record:selection )
-    { files.append( record.file() ); }
+    std::transform( selection.begin(), selection.end(), std::back_inserter( files ), []( const FileRecord& record ) { return record.file(); } );
 
     return files;
 }

@@ -159,7 +159,7 @@ class TextMacro final: private Base::Counter<TextMacro>
         bool operator == ( const Rule& rule ) const
         {
             return
-                pattern().pattern() == rule.pattern().pattern() &&
+                pattern_.pattern() == rule.pattern_.pattern() &&
                 replaceText() == rule.replaceText() &&
                 split() == rule.split();
         }
@@ -167,7 +167,7 @@ class TextMacro final: private Base::Counter<TextMacro>
         //* less than operator
         bool operator < ( const Rule& rule ) const
         {
-            if( pattern().pattern() != rule.pattern().pattern() ) return pattern().pattern() < rule.pattern().pattern();
+            if( pattern_.pattern() != rule.pattern_.pattern() ) return pattern_.pattern() < rule.pattern_.pattern();
             if( replaceText() != rule.replaceText() ) return replaceText() < rule.replaceText();
             if( split() != rule.split() ) return split() < rule.split();
             return false;
