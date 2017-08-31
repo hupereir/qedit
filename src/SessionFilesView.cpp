@@ -26,6 +26,7 @@
 #include <QMimeData>
 #include <QPainter>
 
+#include <numeric>
 
 //____________________________________________________________________
 SessionFilesView::SessionFilesView( QWidget* parent ):

@@ -48,6 +48,8 @@
 #include <QApplication>
 #include <QTextStream>
 
+#include <numeric>
+
 //________________________________________________________________
 WindowServer::WindowServer( QObject* parent ):
     QObject( parent ),

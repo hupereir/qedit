@@ -25,6 +25,8 @@
 
 #include <QTextDocument>
 
+#include <numeric>
+
 //_________________________________________________________
 TextHighlight::TextHighlight( QTextDocument* document ):
     QSyntaxHighlighter( document ),

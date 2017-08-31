@@ -28,6 +28,8 @@
 #include <QLayout>
 #include <QScrollBar>
 
+#include <numeric>
+
 //____________________________________________________________________________
 RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::List& files ):
     CustomDialog( parent )

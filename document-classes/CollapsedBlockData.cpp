@@ -20,6 +20,8 @@
 #include "CollapsedBlockData.h"
 #include "HighlightBlockData.h"
 
+#include <numeric>
+
 //_____________________________________________________________
 CollapsedBlockData::CollapsedBlockData( const QTextBlock& block ):
 text_( block.text() )
