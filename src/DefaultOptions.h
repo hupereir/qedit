@@ -92,10 +92,16 @@ void installDefaultOptions()
 
     // file lists mask and sorting
     XmlOptions::get().set<int>( "SESSION_FILES_MASK", 1<<FileRecordModel::Filename );
+    XmlOptions::get().set<int>( "SESSION_FILES_SORT_COLUMN", FileRecordModel::Time );
+    XmlOptions::get().set<int>( "SESSION_FILES_SORT_ORDER", Qt::DescendingOrder );
+
     XmlOptions::get().set<int>( "RECENT_FILES_MASK", 1<<FileRecordModel::Filename );
+    XmlOptions::get().set<int>( "RECENT_FILES_SORT_COLUMN", FileRecordModel::Time );
+    XmlOptions::get().set<int>( "RECENT_FILES_SORT_ORDER", Qt::DescendingOrder );
 
     XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_MASK", 1<<FileSystemModel::Filename );
-    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_SORT_COLUMN", FileSystemModel::Time );
+    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_SORT_COLUMN", FileSystemModel::Filename );
+    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_SORT_ORDER", Qt::AscendingOrder );
 
     // toolbars
     XmlOptions::get().set<bool>( "DOCUMENT_CLASS_MANAGER_TOOLBAR", true );
