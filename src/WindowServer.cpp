@@ -326,7 +326,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
     ProgressDialog dialog;
     dialog.setAttribute( Qt::WA_DeleteOnClose );
     QtUtil::centerOnWidget( &dialog, qApp->activeWindow() );
-    dialog.setWindowTitle( Util::windowTitle( "Replace in Text - Qedit" ) );
+    dialog.setWindowTitle( Util::windowTitle( "Replace in Text" ) );
     dialog.show();
 
     // loop over files to get relevant displays
@@ -377,7 +377,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
 
     {
         InformationDialog dialog( &_activeWindow(), buffer );
-        dialog.setWindowTitle( "Replace in Text - Qedit" );
+        dialog.setWindowTitle( "Replace in Text" );
         dialog.centerOnWidget( qApp->activeWindow() );
         dialog.exec();
     }

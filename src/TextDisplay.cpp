@@ -684,7 +684,7 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( bool enableAll )
     if( enableAll ) flags |=  AskForSaveDialog::YesToAll | AskForSaveDialog::NoToAll;
 
     AskForSaveDialog dialog( this, file_, flags );
-    dialog.setWindowTitle( tr( "Save Files - Qedit" ) );
+    dialog.setWindowTitle( tr( "Save Files" ) );
     dialog.centerOnParent();
     int state( dialog.exec() );
     if( state == AskForSaveDialog::Yes ||  state == AskForSaveDialog::YesToAll ) save();
@@ -865,7 +865,7 @@ void TextDisplay::revertToSave()
 void TextDisplay::_textEncoding()
 {
     TextEncodingDialog dialog( this );
-    dialog.setWindowTitle( tr( "TextEncoding - Qedit" ) );
+    dialog.setWindowTitle( tr( "TextEncoding" ) );
     dialog.encodingWidget().setEncoding( textEncoding_ );
     if( dialog.exec() ) _setTextEncoding( dialog.encodingWidget().encoding() );
     return;
@@ -903,7 +903,7 @@ void TextDisplay::_setTextEncoding( const QByteArray& value )
                 "Changing text encoding requires that the current document is reloaded.\n"
                 "Discard changes to file '%1' ?" ).arg( file_.localName() );
             QuestionDialog dialog( this, buffer );
-            dialog.setWindowTitle( tr( "Reload Document - Qedit" ) );
+            dialog.setWindowTitle( tr( "Reload Document" ) );
             dialog.centerOnParent();
             if( !dialog.exec() ) return;
 

@@ -22,6 +22,7 @@
 
 #include "Counter.h"
 #include "File.h"
+#include "Util.h"
 
 #include <QString>
 
@@ -69,7 +70,7 @@ class WindowTitle final: private Base::Counter<WindowTitle>
         else what << "QEdit";
         if( flag_ == Modified ) what << QObject::tr( " (modified)" );
         if( flag_ == ReadOnly ) what << QObject::tr( " (read-only)" );
-        if( !file_.isEmpty() ) what << " - " << file_.path();
+        if( !file_.isEmpty() ) what << Util::windowTitleSeparator() << file_.path();
         return out;
     }
 

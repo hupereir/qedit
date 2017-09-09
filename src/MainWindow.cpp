@@ -369,7 +369,7 @@ void MainWindow::_revertToSave()
     if( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() )
     {
         InformationDialog dialog( this, tr( "No filename given. <Reload> canceled." ) );
-        dialog.setWindowTitle( tr( "Reload Document - Qedit" ) );
+        dialog.setWindowTitle( tr( "Reload Document" ) );
         dialog.exec();
         return;
     }
@@ -380,7 +380,7 @@ void MainWindow::_revertToSave()
     else buffer = QString( tr( "Reload file '%1' ?" ) ).arg( activeDisplay().file().localName() );
 
     QuestionDialog dialog( this, buffer );
-    dialog.setWindowTitle( tr( "Reload Document - Qedit" ) );
+    dialog.setWindowTitle( tr( "Reload Document" ) );
     if( !dialog.exec() ) return;
 
     activeDisplay().revertToSave();
@@ -411,7 +411,7 @@ void MainWindow::_print( PrintHelper& helper )
 
     // create prind dialog and run.
     QPrintDialog dialog( &printer, this );
-    dialog.setWindowTitle( tr( "Print Document - qedit" ) );
+    dialog.setWindowTitle( tr( "Print Document" ) );
 
     using WidgetList = QList<QWidget*>;
     dialog.setOptionTabs( Base::makeT<WidgetList>({ optionWidget }) );
@@ -437,7 +437,7 @@ void MainWindow::_printPreview()
 
     // create dialog, connect and execute
     PrintPreviewDialog dialog( this, CustomDialog::OkButton|CustomDialog::CancelButton );
-    dialog.setWindowTitle( tr( "Print Preview - qedit" ) );
+    dialog.setWindowTitle( tr( "Print Preview" ) );
     dialog.setHelper( &helper );
     if( !dialog.exec() ) return;
     _print( helper );
@@ -451,7 +451,7 @@ void MainWindow::_toHtml()
 
     // create dialog, connect and execute
     HtmlDialog dialog( this );
-    dialog.setWindowTitle( tr( "Export to HTML - qedit" ) );
+    dialog.setWindowTitle( tr( "Export to HTML" ) );
     dialog.setFile( File( activeDisplay().file().truncatedName() + ".html" ) );
     if( !dialog.exec() ) return;
 
@@ -1032,7 +1032,7 @@ void MainWindow::_updateWindowTitle()
             << endl;
     }
 
-    setWindowTitle( WindowTitle( activeDisplay().file() )
+    QMainWindow::setWindowTitle( WindowTitle( activeDisplay().file() )
         .setReadOnly( activeDisplay().isReadOnly() )
         .setModified( activeDisplay().document()->isModified() ).get()
         );

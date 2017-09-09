@@ -33,7 +33,7 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
 {
 
     Debug::Throw( "SaveAllDialog::SaveAllDialog.\n" );
-    setWindowTitle( tr( "Save Files - Qedit" ) );
+    setWindowTitle( tr( "Save Files" ) );
 
     Q_ASSERT( !files.empty() );
 

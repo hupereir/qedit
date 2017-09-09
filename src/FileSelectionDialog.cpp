@@ -39,7 +39,7 @@ CustomDialog( parent ),
 selection_( selection )
 {
 
-    setWindowTitle( tr( "File Selection - Qedit" ) );
+    setWindowTitle( tr( "File Selection" ) );
     setOptionName( "FILE_SELECTION_DIALOG" );
 
     // custom list display

@@ -35,7 +35,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
 
     Debug::Throw( "NewFileDialog::NewFileDialog.\n" );
 
-    setWindowTitle( tr( "File Not Found - Qedit" ) );
+    setWindowTitle( tr( "File Not Found" ) );
 
     // create vbox layout
     QVBoxLayout* layout=new QVBoxLayout;

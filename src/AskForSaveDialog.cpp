@@ -36,7 +36,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
 
     Debug::Throw( "AskForSaveDialog::AskForSaveDialog.\n" );
 
-    setWindowTitle( tr( "File Modified - Qedit" ) );
+    setWindowTitle( tr( "File Modified" ) );
 
     // create vbox layout
     QVBoxLayout* layout=new QVBoxLayout;

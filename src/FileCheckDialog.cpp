@@ -31,7 +31,7 @@ FileCheckDialog::FileCheckDialog( QWidget* parent ):
     CustomDialog( parent, CloseButton )
 {
     Debug::Throw( "FileCheckDialog::FileCheckDialog.\n" );
-    setWindowTitle( tr( "Monitored Files - Qedit" ) );
+    setWindowTitle( tr( "Monitored Files" ) );
     setOptionName( "FILE_CHECK_DIALOG" );
 
     layout()->setMargin(0);

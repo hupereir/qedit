@@ -33,7 +33,7 @@ RestoreSessionDialog::RestoreSessionDialog( QWidget* parent, FileRecord::List fi
 {
 
     Debug::Throw( "RestoreSessionDialog::RestoreSessionDialog.\n" );
-    setWindowTitle( tr( "Restore Saved Session - Qedit" ) );
+    setWindowTitle( tr( "Restore Saved Session" ) );
 
     if( files.size() == 1 )
     {
