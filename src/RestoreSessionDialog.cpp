@@ -38,11 +38,11 @@ RestoreSessionDialog::RestoreSessionDialog( QWidget* parent, FileRecord::List fi
     if( files.size() == 1 )
     {
 
-        setText( QString( tr( "Restore file '%1' from saved session ?" ) ).arg( files.front().file() ) );
+        setText( tr( "Restore file '%1' from saved session ?" ).arg( files.front().file() ) );
 
     } else {
 
-        setText( QString( tr( "Restore %1 files from saved session ?" ) ).arg( files.size() ) );
+        setText( tr( "Restore %1 files from saved session ?" ).arg( files.size() ) );
 
         auto treeView = new TreeView( this );
         setDetails( treeView );

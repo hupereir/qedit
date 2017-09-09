@@ -375,9 +375,9 @@ void MainWindow::_revertToSave()
     }
 
     // ask for confirmation
-    QString buffer;
-    if( activeDisplay().document()->isModified() ) buffer = QString( tr( "Discard changes to file '%1' ?" ) ).arg( activeDisplay().file().localName() );
-    else buffer = QString( tr( "Reload file '%1' ?" ) ).arg( activeDisplay().file().localName() );
+    const auto buffer = activeDisplay().document()->isModified() ?
+        tr( "Discard changes to file '%1' ?" ).arg( activeDisplay().file().localName() ):
+        tr( "Reload file '%1' ?" ).arg( activeDisplay().file().localName() );
 
     QuestionDialog dialog( this, buffer );
     dialog.setWindowTitle( tr( "Reload Document" ) );
@@ -465,7 +465,7 @@ void MainWindow::_toHtml()
     QFile out( file );
     if( !out.open( QIODevice::WriteOnly ) )
     {
-        InformationDialog( this, QString( tr( "Cannot write to file '%1'. <Export to HTML> canceled." ) ).arg( file ) ).exec();
+        InformationDialog( this, tr( "Cannot write to file '%1'. <Export to HTML> canceled." ).arg( file ) ).exec();
         return;
     }
 
@@ -772,8 +772,8 @@ void MainWindow::_updateCursorPosition()
     if( activeDisplay().hasBlockDelimiterDisplay() ) position.paragraph() += activeDisplay().blockDelimiterDisplay().collapsedBlockCount( position.paragraph() );
 
     // update labels
-    statusbar_->label(1).setText( QString( tr( "Line: %1" ) ).arg( position.paragraph()+1 ) , false );
-    statusbar_->label(2).setText( QString( tr( "Column: %1" ) ).arg( position.index()+1 ) , false );
+    statusbar_->label(1).setText( tr( "Line: %1" ).arg( position.paragraph()+1 ) , false );
+    statusbar_->label(2).setText( tr( "Column: %1" ).arg( position.index()+1 ) , false );
 
     return;
 }

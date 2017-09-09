@@ -67,14 +67,14 @@ bool Diff::run()
         // check if file exists
         if( !fileInformation.file().exists() )
         {
-            error_ = QString( tr( "file '%1' does not exist." ) ).arg( fileInformation.file() );
+            error_ = tr( "file '%1' does not exist." ).arg( fileInformation.file() );
             return false;
         }
 
         // check if file is a directory
         if( fileInformation.file().isDirectory() )
         {
-            error_ = QString( tr( "file '%1' is a directory." ) ).arg( fileInformation.file() );
+            error_ = tr( "file '%1' is a directory." ).arg( fileInformation.file() );
             return false;
         }
 
@@ -113,7 +113,7 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
     // check exit code
     if( status != QProcess::NormalExit )
     {
-        InformationDialog( 0, QString( tr( "diff excited with code %1" ) ).arg( code ) ).exec();
+        InformationDialog( nullptr, tr( "diff excited with code %1" ).arg( code ) ).exec();
         return;
     }
 

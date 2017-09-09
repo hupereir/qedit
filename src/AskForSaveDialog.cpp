@@ -45,10 +45,10 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     setLayout( layout );
 
     // create message
-    QString buffer = file.isEmpty() ? tr( "File has been modified.\nSave ?" ):QString( tr( "File '%1' has been modified.\nSave ?" ) ).arg( file.localName() );
+    const auto buffer = file.isEmpty() ? tr( "File has been modified.\nSave ?" ):tr( "File '%1' has been modified.\nSave ?" ).arg( file.localName() );
 
     // insert main vertical box
-    QHBoxLayout *hLayout( new QHBoxLayout );
+    auto hLayout( new QHBoxLayout );
     layout->addLayout( hLayout, 1 );
     QLabel* label = new QLabel( this );
     label->setPixmap( IconEngine::get( IconNames::DialogWarning ).pixmap( iconSize() ) );

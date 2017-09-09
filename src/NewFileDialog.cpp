@@ -44,7 +44,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     setLayout( layout );
 
     // create message
-    const QString buffer = QString( tr( "Cannot open file '%1'.\nNo such file or directory" ) ).arg( file );
+    const QString buffer = tr( "Cannot open file '%1'.\nNo such file or directory" ).arg( file );
 
     QHBoxLayout *hLayout( new QHBoxLayout );
     layout->addLayout( hLayout, 1 );

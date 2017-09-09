@@ -157,7 +157,7 @@ void DocumentClassManagerDialog::_remove()
     // ask confirmation
     QString buffer = (removedFiles.size() == 1 ) ?
         tr( "Remove all items from the selected file ?" ):
-        QString( tr( "Remove all items from the selected %1 files ?" ) ).arg( removedFiles.size() );
+        tr( "Remove all items from the selected %1 files ?" ).arg( removedFiles.size() );
     if( !QuestionDialog( this, buffer ).exec() ) return;
 
     DocumentClassManager::List removedItems;

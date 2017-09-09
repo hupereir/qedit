@@ -41,11 +41,11 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
     if( files.size() == 1 )
     {
 
-        setText( QString( tr( "File '%1' is modified. Save ?" ) ).arg( files.front().file() ) );
+        setText( tr( "File '%1' is modified. Save ?" ).arg( files.front().file() ) );
 
     } else {
 
-        setText( QString( tr( "%1 files are modified. Save ?" ) ).arg( files.size() ) );
+        setText( tr( "%1 files are modified. Save ?" ).arg( files.size() ) );
 
         auto treeView = new TreeView( this );
         setDetails( treeView );

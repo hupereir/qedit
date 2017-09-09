@@ -44,7 +44,7 @@ Counter( "FileRemovedDialog" )
     setLayout( layout );
 
     // create message
-    QString buffer = QString( tr( "File '%1' has been removed" ) ).arg( file.localName() );
+    QString buffer = tr( "File '%1' has been removed" ).arg( file.localName() );
 
     QHBoxLayout *hLayout( new QHBoxLayout );
     layout->addLayout( hLayout, 1 );

@@ -415,7 +415,7 @@ void Menu::_selectFile( QAction* action )
     // check if window was found
     if( windowIter == windows.end() )
     {
-        InformationDialog( this, QString( tr( "Unable to find a window containing file '%1'" ) ).arg( iter.value() ) ).exec();
+        InformationDialog( this, tr( "Unable to find a window containing file '%1'" ).arg( iter.value() ) ).exec();
         return;
     }
 

@@ -48,7 +48,7 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
     // label
     QString buffer = (files.size() == 1) ?
         tr( "Permanently delete this item ?" ):
-        QString( tr( "Permanently delete these %1 items ?" ) ).arg( files.size() );
+        tr( "Permanently delete these %1 items ?" ).arg( files.size() );
     auto textLabel = new QLabel( buffer, this );
 
     //! try load Question icon

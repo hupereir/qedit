@@ -30,7 +30,7 @@ RenameFileDialog::RenameFileDialog( QWidget* parent, FileRecord record ):
 
     Debug::Throw( "RenameFileDialog::RenameFileDialog.\n" );
 
-    QString buffer = QString( tr( "Rename the item '%1' to:" ) ).arg( record.file() );
+    QString buffer = tr( "Rename the item '%1' to:" ).arg( record.file() );
     mainLayout().addWidget( new QLabel( buffer, this ) );
     mainLayout().addWidget( editor_ = new LineEditor( this ) );
 

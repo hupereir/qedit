@@ -41,11 +41,11 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
     if( files.size() == 1 )
     {
 
-        setText( QString( tr( "Editing '%1'. Close ?" ) ).arg( files.front().file() ) );
+        setText( tr( "Editing '%1'. Close ?" ).arg( files.front().file() ) );
 
     } else {
 
-        setText( QString( tr( "Editing %1 files. Close ?" ) ).arg( files.size() ) );
+        setText( tr( "Editing %1 files. Close ?" ).arg( files.size() ) );
 
         TreeView* treeView = new TreeView( this );
         setDetails( treeView );
