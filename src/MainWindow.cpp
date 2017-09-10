@@ -411,7 +411,7 @@ void MainWindow::_print( PrintHelper& helper )
 
     // create prind dialog and run.
     QPrintDialog dialog( &printer, this );
-    dialog.setWindowTitle( tr( "Print Document" ) );
+    dialog.setWindowTitle( Util::windowTitle( tr( "Print Document" ) ) );
 
     using WidgetList = QList<QWidget*>;
     dialog.setOptionTabs( Base::makeT<WidgetList>({ optionWidget }) );
