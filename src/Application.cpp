@@ -241,7 +241,7 @@ void Application::_spellCheckConfiguration()
 
     // create dialog
     CustomDialog dialog;
-    dialog.setWindowTitle( "Spell Check Configuration" );
+    dialog.setWindowTitle( tr( "Spell Check Configuration" ) );
 
     SpellCheck::SpellCheckConfiguration* spellConfig = new SpellCheck::SpellCheckConfiguration( &dialog );
     dialog.mainLayout().addWidget( spellConfig );
@@ -266,7 +266,7 @@ void Application::_documentClassesConfiguration()
 {
     Debug::Throw( "Application::_documentClassesConfiguration.\n" );
     DocumentClassManagerDialog dialog;
-    dialog.setWindowTitle( "Document Types Configuration" );
+    dialog.setWindowTitle( tr( "Document Types Configuration" ) );
     if( !dialog.exec() ) return;
 
     XmlOptions::get().clearSpecialOptions( "PATTERN_FILENAME" );
@@ -298,7 +298,7 @@ void Application::_printSession()
     // create dialog
     CustomDialog dialog( 0, CustomDialog::CloseButton );
     dialog.setOptionName( "PRINT_SESSION_DIALOG" );
-    dialog.setWindowTitle( "Session files" );
+    dialog.setWindowTitle( tr( "Session files" ) );
     LogWidget* logWidget = new LogWidget( &dialog );
     dialog.mainLayout().addWidget( logWidget );
 

@@ -404,7 +404,7 @@ void FileSystemFrame::_remove()
 
     if( validSelection.empty() ) return;
     RemoveFilesDialog dialog( this, validSelection );
-    dialog.setWindowTitle( tr( "Delete Files - Qedit" ) );
+    dialog.setWindowTitle( tr( "Delete Files" ) );
     if( !dialog.exec() ) return;
 
     // loop over selected files and remove
@@ -426,7 +426,7 @@ void FileSystemFrame::_rename()
     FileRecord record( model_.get( index ) );
     if( record.hasFlag( BaseFileInfo::Navigator ) ) return;
     RenameFileDialog dialog( this, record );
-    dialog.setWindowTitle( tr( "Rename Item - Qedit" ) );
+    dialog.setWindowTitle( tr( "Rename Item" ) );
     dialog.centerOnWidget( window() );
     if( !dialog.exec() ) return;
 

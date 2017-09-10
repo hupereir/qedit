@@ -32,7 +32,7 @@ FileInformationDialog::FileInformationDialog( QWidget* parent, const FileRecord&
 
     // file name
     const File& file( record.file() );
-    setWindowTitle( QString( "%1 - Qedit" ).arg( file.isEmpty() ? tr( "File Information" ) : file.localName() ) );
+    setWindowTitle( file.isEmpty() ? tr( "File Information" ) : file.localName() );
 
     // file name
     if( !file.isEmpty() )
