@@ -253,7 +253,6 @@ void Application::_spellCheckConfiguration()
     if( dialog.exec() == QDialog::Rejected ) return;
     spellConfig->write( XmlOptions::get() );
     autospellConfig->write( XmlOptions::get() );
-    XmlOptions::write();
 
     emit spellCheckConfigurationChanged();
 
