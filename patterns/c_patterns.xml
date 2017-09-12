@@ -154,7 +154,7 @@
   
   <keyword_pattern style="Storage Type" parent="" name="t Storage Type" >
    <comments>storage type (STL)</comments>
-   <keyword>(\b(u)?(int)(8|(16)|(32))_t\b)</keyword>
+   <keyword>(\b(u)?(int)(8|16|32|64)_t\b)</keyword>
   </keyword_pattern>
   
   <keyword_pattern style="Keyword" parent="" name="Math" >
