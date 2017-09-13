@@ -357,7 +357,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
     dialog.setMaximum( maximum );
 
     // loop over displays and perform replacement
-    int counts = std::accumulate( displays.begin(), displays.end(), 0,
+    const auto counts = std::accumulate( displays.begin(), displays.end(), 0,
         [&dialog, &selection](int counts, TextDisplay* display)
         {
             counts += display->replaceInWindow( selection, false );

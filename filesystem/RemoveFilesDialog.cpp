@@ -78,7 +78,7 @@ RemoveFilesDialog::RemoveFilesDialog( QWidget* parent, const FileSystemModel::Li
     list_->header()->setSortIndicator( FileSystemModel::Filename, Qt::AscendingOrder );
 
     // resize list to accomodate longest item
-    int maxWidth = std::accumulate( files.begin(), files.end(), 0,
+    const auto maxWidth = std::accumulate( files.begin(), files.end(), 0,
         [this]( const int& maxWidth, const FileRecord& record )
         { return qMax( maxWidth, list_->fontMetrics().width( record.file() ) ); } );
 
