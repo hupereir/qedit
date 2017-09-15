@@ -32,10 +32,13 @@ set(filesystem_SOURCES
 )
 
 add_library(filesystem STATIC ${filesystem_SOURCES})
-target_link_libraries(filesystem ${QT_LIBRARIES})
 
 if(USE_QT5)
 
   target_link_libraries(filesystem Qt5::Widgets Qt5::Xml)
+
+else()
+
+  target_link_libraries(filesystem ${QT_LIBRARIES})
 
 endif()

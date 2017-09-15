@@ -94,7 +94,6 @@ add_platform_executable(qedit
   ${qedit_RESOURCES_RCC}
 )
 
-target_link_libraries(qedit ${QT_LIBRARIES})
 target_link_libraries(qedit document-classes filesystem)
 target_link_libraries(qedit
   base
@@ -109,10 +108,15 @@ if(ASPELL_FOUND)
 
 endif()
 
-install(TARGETS qedit DESTINATION ${BIN_INSTALL_DIR})
-
 if(USE_QT5)
 
   target_link_libraries(qedit Qt5::Network Qt5::PrintSupport Qt5::Widgets Qt5::Xml)
 
+else()
+
+  target_link_libraries(qedit ${QT_LIBRARIES})
+
 endif()
+
+install(TARGETS qedit DESTINATION ${BIN_INSTALL_DIR})
+

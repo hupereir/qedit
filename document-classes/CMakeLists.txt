@@ -68,10 +68,12 @@ add_library(document-classes STATIC
   ${document_classes_RESOURCES_RCC}
 )
 
-target_link_libraries(document-classes ${QT_LIBRARIES})
-
 if(USE_QT5)
 
   target_link_libraries(document-classes Qt5::Widgets Qt5::Xml)
+
+else()
+
+  target_link_libraries(document-classes ${QT_LIBRARIES})
 
 endif()
