@@ -129,7 +129,7 @@
   
   <keyword_pattern style="Storage Type" parent="" name="Stl Storage Type" >
    <comments>storage type (STL)</comments>
-   <keyword>\bstd::((string(::npos)?)|set|map|pair|list|((i|i?o)(f|string)?stream)|vector|\w*iterator|\w*inserter)\b</keyword>
+  <keyword>\bstd::((string(::npos)?)|set|map|pair|(initializer_)?list|((i|i?o)(f|string)?stream)|vector|\w*iterator|\w*inserter)\b</keyword>
   </keyword_pattern>
 
   <keyword_pattern style="Keyword" parent="" name="Stl Keyword" >
