@@ -35,6 +35,8 @@
 #include <QDomElement>
 #include <QRegExp>
 
+#include <functional>
+
 //* Highlight and indentation patterns for a given document class
 class DocumentClass final: private Base::Counter<DocumentClass>
 {

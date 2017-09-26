@@ -36,7 +36,7 @@
 
 //__________________________________________________________________
 FileSystemModel::FileSystemModel( QObject* parent ):
-    ListModel<FileRecord>( parent ),
+    ListModel( parent ),
     Counter( "FileSystemModel" ),
     columnTitles_( Base::makeT<QStringList>({ tr( "File" ), tr( "Size" ), tr( "Last Accessed" ) }) ),
     sizePropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Size ) )

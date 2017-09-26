@@ -43,7 +43,7 @@ class PrintHelper;
 class ReplaceWidget;
 class SelectLineWidget;
 
-//* editor main window
+//* main window
 class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, public Base::Key
 {
 
