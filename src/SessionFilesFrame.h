@@ -87,7 +87,7 @@ class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame
     //* signal emitted when file is asked to be saved
     void filesSaved( FileRecord::List );
 
-    protected Q_SLOTS:
+    private Q_SLOTS:
 
     //* previous file
     void _selectPreviousFile();

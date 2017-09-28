@@ -29,7 +29,7 @@
 #include "IconNames.h"
 #include "IconEngine.h"
 #include "MainWindow.h"
-#include "Menu.h"
+#include "MenuBar.h"
 #include "NavigationFrame.h"
 #include "NewFileDialog.h"
 #include "InformationDialog.h"
@@ -104,7 +104,7 @@ MainWindow& WindowServer::newMainWindow()
     connect( &window->navigationFrame().sessionFilesFrame().list(), SIGNAL(detach(File)), SLOT(_detach(File)) );
 
     // open actions
-    connect( &window->menu().recentFilesMenu(), SIGNAL(fileSelected(FileRecord)), SLOT(_open(FileRecord)) );
+    connect( &window->menuBar().recentFilesMenu(), SIGNAL(fileSelected(FileRecord)), SLOT(_open(FileRecord)) );
     connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
     connect( &window->navigationFrame().recentFilesFrame(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
     connect( &window->navigationFrame().fileSystemFrame(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );

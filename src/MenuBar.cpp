@@ -17,7 +17,7 @@
 *
 *******************************************************************************/
 
-#include "Menu.h"
+#include "MenuBar.h"
 
 #include "Application.h"
 #include "BlockDelimiterDisplay.h"
@@ -41,11 +41,11 @@
 #include "XmlOptions.h"
 
 //_______________________________________________
-Menu::Menu( QWidget* parent ):
+MenuBar::MenuBar( QWidget* parent ):
     QMenuBar( parent ),
-    Counter( "Menu" )
+    Counter( "MenuBar" )
 {
-    Debug::Throw( "Menu::Menu.\n" );
+    Debug::Throw( "MenuBar::MenuBar.\n" );
 
     // file menu
     auto menu = addMenu( tr( "File" ) );
@@ -140,7 +140,7 @@ Menu::Menu( QWidget* parent ):
 }
 
 //_______________________________________________
-void Menu::updateMacroMenu()
+void MenuBar::updateMacroMenu()
 {
 
     // retrieve current display
@@ -157,17 +157,17 @@ void Menu::updateMacroMenu()
 }
 
 //_______________________________________________
-void Menu::_updateRecentFilesMenu()
+void MenuBar::_updateRecentFilesMenu()
 {
-    Debug::Throw( "Menu::_updateRecentFilesMenu.\n" );
+    Debug::Throw( "MenuBar::_updateRecentFilesMenu.\n" );
     auto display( &static_cast<MainWindow*>( window() )->activeDisplay() );
     if( !display->isNewDocument() ) recentFilesMenu_->setCurrentFile( display->file() );
 }
 
 //_______________________________________________
-void Menu::_updateEditMenu()
+void MenuBar::_updateEditMenu()
 {
-    Debug::Throw( "Menu::_updateEditMenu.\n" );
+    Debug::Throw( "MenuBar::_updateEditMenu.\n" );
 
     editMenu_->clear();
 
@@ -186,9 +186,9 @@ void Menu::_updateEditMenu()
 }
 
 //_______________________________________________
-void Menu::_updateSearchMenu()
+void MenuBar::_updateSearchMenu()
 {
-    Debug::Throw( "Menu::_updateSearchMenu.\n" );
+    Debug::Throw( "MenuBar::_updateSearchMenu.\n" );
 
     searchMenu_->clear();
 
@@ -205,10 +205,10 @@ void Menu::_updateSearchMenu()
 }
 
 //_______________________________________________
-void Menu::_updatePreferenceMenu()
+void MenuBar::_updatePreferenceMenu()
 {
 
-    Debug::Throw( "Menu::_updatePreferenceMenu.\n" );
+    Debug::Throw( "MenuBar::_updatePreferenceMenu.\n" );
 
     // reference to needed objects
     auto application( Base::Singleton::get().application<Application>() );
@@ -256,10 +256,10 @@ void Menu::_updatePreferenceMenu()
 }
 
 //_______________________________________________
-void Menu::_updateToolsMenu()
+void MenuBar::_updateToolsMenu()
 {
 
-    Debug::Throw( "Menu::_updateToolsMenu.\n" );
+    Debug::Throw( "MenuBar::_updateToolsMenu.\n" );
 
     // retrieve mainWindow and current display
     auto mainWindow( static_cast<MainWindow*>(window()) );
@@ -338,10 +338,10 @@ void Menu::_updateToolsMenu()
 }
 
 //_______________________________________________
-void Menu::_updateWindowsMenu()
+void MenuBar::_updateWindowsMenu()
 {
 
-    Debug::Throw( "Menu::_updateWindowsMenu.\n" );
+    Debug::Throw( "MenuBar::_updateWindowsMenu.\n" );
     windowsMenu_->clear();
 
     // add session handling
@@ -387,17 +387,17 @@ void Menu::_updateWindowsMenu()
 }
 
 //_______________________________________________
-void Menu::_selectMacro( QString name )
+void MenuBar::_selectMacro( QString name )
 {
-    Debug::Throw( "Menu::_SelectMacro.\n" );
+    Debug::Throw( "MenuBar::_SelectMacro.\n" );
     static_cast<MainWindow*>(window())->activeDisplay().processMacro( name );
     return;
 }
 
 //_______________________________________________
-void Menu::_selectFile( QAction* action )
+void MenuBar::_selectFile( QAction* action )
 {
-    Debug::Throw( "Menu::_selectFile.\n" );
+    Debug::Throw( "MenuBar::_selectFile.\n" );
 
     // try retrieve id in map
     const auto iter = fileActions_.find( action );

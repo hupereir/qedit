@@ -46,20 +46,8 @@ class WindowTitle final: private Base::Counter<WindowTitle>
         flag_( flag )
     {}
 
-    //* change flag
-    WindowTitle& setFlag( const Flags& flag, bool value = true )
-    {
-        if( value ) flag_ = flag;
-        return *this;
-    }
-
-    //* change flag
-    WindowTitle& setModified( bool value = true )
-    { return setFlag( Modified, value ); }
-
-    //* change flag
-    WindowTitle& setReadOnly( bool value = true )
-    { return setFlag( ReadOnly, value ); }
+    //*@name accessors
+    //@{
 
     //* cast to string
     QString get() const
@@ -73,6 +61,27 @@ class WindowTitle final: private Base::Counter<WindowTitle>
         if( !file_.isEmpty() ) what << Util::windowTitleSeparator() << file_.path();
         return out;
     }
+
+    //@}
+
+    //*@name modifiers
+    //@{
+
+    //* change flag
+    void setFlag( const Flags& flag, bool value = true )
+    {
+        if( value ) flag_ = flag;
+    }
+
+    //* change flag
+    void setModified( bool value = true )
+    { setFlag( Modified, value ); }
+
+    //* change flag
+    void setReadOnly( bool value = true )
+    { setFlag( ReadOnly, value ); }
+
+    //@}
 
     private:
 

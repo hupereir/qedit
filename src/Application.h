@@ -151,11 +151,25 @@ class Application: public BaseApplication, private Base::Counter<Application>
 
     protected Q_SLOTS:
 
-    //* Update Document Classes from options
-    void _updateDocumentClasses();
-
     //* configuration
     void _configuration() override;
+
+    //* process request from application manager
+    bool _processCommand( Server::ServerCommand ) override;
+
+    protected:
+
+    //* timer events
+    /**
+    this allows to read files from arguments after the call
+    to "exec()" in the main routine,
+    */
+    void timerEvent( QTimerEvent* ) override;
+
+    private Q_SLOTS:
+
+    //* Update Document Classes from options
+    void _updateDocumentClasses();
 
     //* spellcheck configuration
     void _spellCheckConfiguration();
@@ -189,20 +203,6 @@ class Application: public BaseApplication, private Base::Counter<Application>
 
     //* exit safely
     void _exit();
-
-    //* process request from application manager
-    bool _processCommand( Server::ServerCommand ) override;
-
-    protected:
-
-    //* timer events
-    /**
-    this allows to read files from arguments after the call
-    to "exec()" in the main routine,
-    */
-    void timerEvent( QTimerEvent* ) override;
-
-    private Q_SLOTS:
 
     //* update configuration
     void _updateConfiguration();

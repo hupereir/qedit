@@ -53,7 +53,7 @@ set(qedit_SOURCES
   FileSelectionDialog.cpp
   HtmlHelper.cpp
   MainWindow.cpp
-  Menu.cpp
+  MenuBar.cpp
   NavigationFrame.cpp
   NavigationToolBar.cpp
   NewDocumentNameServer.cpp

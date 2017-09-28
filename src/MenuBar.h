@@ -33,7 +33,7 @@ class RecentFilesMenu;
 class TextMacroMenu;
 
 //* menu
-class Menu:public QMenuBar, private Base::Counter<Menu>
+class MenuBar:public QMenuBar, private Base::Counter<MenuBar>
 {
 
     //* Qt meta object declaration
@@ -42,7 +42,7 @@ class Menu:public QMenuBar, private Base::Counter<Menu>
     public:
 
     //* creator
-    explicit Menu( QWidget* );
+    explicit MenuBar( QWidget* );
 
     //* recent files menu
     RecentFilesMenu& recentFilesMenu() const

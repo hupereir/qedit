@@ -43,7 +43,7 @@ class DocumentClassMenu: public QMenu, private Base::Counter<DocumentClassMenu>
     //* emitted every time a document class is selected
     void documentClassSelected( QString );
 
-    protected Q_SLOTS:
+    private Q_SLOTS:
 
     //* update
     void _update();

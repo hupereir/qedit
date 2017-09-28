@@ -37,7 +37,7 @@
 class BaseStatusBar;
 class DocumentClassToolBar;
 class ElidedLabel;
-class Menu;
+class MenuBar;
 class NavigationFrame;
 class PrintHelper;
 class ReplaceWidget;
@@ -137,8 +137,8 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     //@}
 
     //* menu
-    Menu& menu() const
-    { return *menu_; }
+    MenuBar& menuBar() const
+    { return *menuBar_; }
 
     //* navigation window
     NavigationFrame& navigationFrame() const
@@ -552,8 +552,8 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     //*@name child widgets
     //@{
 
-    //* menu
-    Menu* menu_ = nullptr;
+    //* menuBar
+    MenuBar* menuBar_ = nullptr;
 
     //* right container
     QWidget* rightContainer_ = nullptr;

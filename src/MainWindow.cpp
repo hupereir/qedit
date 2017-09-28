@@ -46,7 +46,7 @@
 #include "IconNames.h"
 #include "InformationDialog.h"
 #include "LineEditor.h"
-#include "Menu.h"
+#include "MenuBar.h"
 #include "NavigationFrame.h"
 #include "NavigationToolBar.h"
 #include "NewFileDialog.h"
@@ -97,8 +97,8 @@ MainWindow::MainWindow(  QWidget* parent ):
     addAction( &application->closeAction() );
 
     // menu
-    setMenuBar( menu_ = new Menu( this ) );
-    connect( &menu().documentClassMenu(), SIGNAL(documentClassSelected(QString)), SLOT(selectClassName(QString)) );
+    setMenuBar( menuBar_ = new MenuBar( this ) );
+    connect( &menuBar_->documentClassMenu(), SIGNAL(documentClassSelected(QString)), SLOT(selectClassName(QString)) );
 
     // main widget is a splitter to store navigation window and active view
     QSplitter* splitter = new QSplitter( this );
@@ -740,10 +740,10 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
 
     // macros
     if( flags & TextDisplay::DocumentClassFlag )
-    { menu().updateMacroMenu(); }
+    { menuBar_->updateMacroMenu(); }
 
     if( flags & (TextDisplay::Cut|TextDisplay::Copy) )
-    { menu().macroMenu().updateState( activeDisplay().textCursor().hasSelection() ); }
+    { menuBar_->macroMenu().updateState( activeDisplay().textCursor().hasSelection() ); }
 
 }
 
@@ -1032,9 +1032,10 @@ void MainWindow::_updateWindowTitle()
             << endl;
     }
 
-    QMainWindow::setWindowTitle( WindowTitle( activeDisplay().file() )
-        .setReadOnly( activeDisplay().isReadOnly() )
-        .setModified( activeDisplay().document()->isModified() ).get()
-        );
+    WindowTitle title( activeDisplay().file() );
+    title.setReadOnly( activeDisplay().isReadOnly() );
+    title.setModified( activeDisplay().document()->isModified() );
+
+    QMainWindow::setWindowTitle( title.get() );
 
 }
