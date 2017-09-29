@@ -144,13 +144,10 @@ int TextView::modifiedDisplayCount() const
 }
 
 //________________________________________________________________
-bool TextView::selectDisplay( const File& constFile )
+bool TextView::selectDisplay( const File& file )
 {
 
-    Debug::Throw( "TextView::selectDisplay.\n" );
-
-    // expand filename
-    const auto file = constFile.expanded();
+    Debug::Throw() << "TextView::selectDisplay - file: " << file << endl;
 
     // check if active display match.
     if( TextDisplay::SameFileFTor( file )( &activeDisplay() ) ) return true;
