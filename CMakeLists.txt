@@ -56,8 +56,9 @@ else()
 
   endif()
 
+  add_subdirectory(base-filesystem)
+
 endif()
 
 add_subdirectory(document-classes)
-add_subdirectory(filesystem)
 add_subdirectory(src)

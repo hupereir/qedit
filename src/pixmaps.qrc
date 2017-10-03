@@ -11,10 +11,6 @@
 <file alias="icons/32x32/document-save-as.png">../pixmaps/document-save-as.png</file>      
 <file alias="icons/32x32/document-save.png">../pixmaps/document-save.png</file>         
 <file alias="icons/32x32/format-indent-more.png">../pixmaps/format-indent-more.png</file>    
-<file alias="icons/32x32/go-home.png">../pixmaps/go-home.png</file>               
-<file alias="icons/32x32/go-next.png">../pixmaps/go-next.png</file>               
-<file alias="icons/32x32/go-previous.png">../pixmaps/go-previous.png</file>           
-<file alias="icons/32x32/go-up.png">../pixmaps/go-up.png</file>                 
 <file alias="icons/32x32/tools-check-spelling.png">../pixmaps/tools-check-spelling.png</file>  
 <file alias="icons/32x32/user-home.png">../pixmaps/user-home.png</file>             
 <file alias="icons/32x32/view-bottom-new.png">../pixmaps/view-bottom-new.png</file>       
@@ -24,10 +20,5 @@
 <file alias="icons/32x32/view-right-new.png">../pixmaps/view-right-new.png</file>        
 <file alias="icons/32x32/view-split-left-right.png">../pixmaps/view-split-left-right.png</file> 
 <file alias="icons/32x32/view-split-top-bottom.png">../pixmaps/view-split-top-bottom.png</file> 
-
-<file alias="icons/32x32/folder.png">../pixmaps/folder.png</file>                
-<file alias="icons/32x32/application-x-zerosize.png">../pixmaps/application-x-zerosize.png</file>              
-<file alias="icons/32x32/emblem-symbolic-link.png">../pixmaps/emblem-symbolic-link.png</file>  
-
 </qresource>
 </RCC>

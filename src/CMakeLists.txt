@@ -28,8 +28,9 @@ if(ASPELL_FOUND)
   include_directories(${CMAKE_SOURCE_DIR}/base-spellcheck)
 endif()
 
+include_directories(${CMAKE_SOURCE_DIR}/base-filesystem)
+
 include_directories(${CMAKE_SOURCE_DIR}/document-classes)
-include_directories(${CMAKE_SOURCE_DIR}/filesystem)
 
 ########### configuration files ###############
 configure_file(Config.h.cmake Config.h)
@@ -94,12 +95,13 @@ add_platform_executable(qedit
   ${qedit_RESOURCES_RCC}
 )
 
-target_link_libraries(qedit document-classes filesystem)
+target_link_libraries(qedit document-classes)
 target_link_libraries(qedit
   base
   base-qt
   base-server
   base-help
+  base-filesystem
 )
 
 if(ASPELL_FOUND)

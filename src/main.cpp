@@ -62,6 +62,7 @@ int main (int argc, char *argv[])
 
     // resources
     Q_INIT_RESOURCE( basePixmaps );
+    Q_INIT_RESOURCE( baseFileSystem );
     Q_INIT_RESOURCE( patterns );
     Q_INIT_RESOURCE( pixmaps );
 

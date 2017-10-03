@@ -9,4 +9,5 @@ base-spellcheck
 base-ssh
 base-svg
 base-transparency
+base-filesystem
 *.spec
