@@ -24,6 +24,7 @@
 #include "DocumentClassManager.h"
 #include "ErrorHandler.h"
 #include "File.h"
+#include "FileSystemDefaultOptions.h"
 #include "ResourceMigration.h"
 #include "SystemOptions.h"
 #include "Singleton.h"
@@ -45,6 +46,7 @@ int main (int argc, char *argv[])
 
     // options
     installDefaultOptions();
+    installFileSystemOptions();
     installSystemOptions();
 
     // migrate old rc files

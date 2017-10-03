@@ -19,7 +19,6 @@
 
 #include "SidePanelWidget.h"
 
-#include "Application.h"
 #include "Debug.h"
 #include "FileSystemWidget.h"
 #include "RecentFilesWidget.h"

@@ -41,7 +41,6 @@ namespace IconNames
 
     static const QString Documents = "document-multiple";
     static const QString History = "view-history";
-    static const QString FileSystem = "folder";
 
     static const QString Pdf = "pdf";
     static const QString Indent = "format-indent-more";

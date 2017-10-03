@@ -71,7 +71,6 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( "DB_SIZE", 30 );
 
     XmlOptions::get().set<bool>( "IGNORE_AUTOMATIC_MACROS", false );
-    XmlOptions::get().set<bool>( "SHOW_HIDDEN_FILES", true );
     XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", true );
     XmlOptions::get().set<bool>( "TEXT_INDENT", true );
     XmlOptions::get().set<bool>( "TEXT_HIGHLIGHT", true );
@@ -84,7 +83,6 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( "SERVER_TIMEOUT_DELAY", 3000 );
 
     XmlOptions::get().set<bool>( "SHOW_SIDE_PANEL_WIDGET", true );
-    XmlOptions::get().set<bool>( "SHOW_NAVIGATOR", false );
     XmlOptions::get().set<bool>( "SHOW_TOOLTIPS", true );
 
     // splitters
@@ -126,14 +124,14 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( "MAX_SUGGESTIONS", 0 );
     #endif
 
-    XmlOptions::get().set<bool>( "NAVIGATION_SIDEBAR", true );
-    XmlOptions::get().set<int>( "NAVIGATION_SIDEBAR_LOCATION", Qt::LeftToolBarArea );
+    XmlOptions::get().set<bool>( "SIDE_PANEL_TOOLBAR", true );
+    XmlOptions::get().set<int>( "SIDE_PANEL_TOOLBAR_LOCATION", Qt::LeftToolBarArea );
+    XmlOptions::get().set<int>( "SIDE_PANEL_TOOLBAR_ICON_SIZE", 16 );
+    XmlOptions::get().set<int>( "SIDE_PANEL_TOOLBAR_TEXT_POSITION", 2 );
 
     XmlOptions::get().setRaw( "TEXT_ENCODING", QString( "UTF-8" ) );
 
     // toolbars default configuration
-    XmlOptions::get().set<int>( "NAVIGATION_SIDEBAR_ICON_SIZE", 16 );
-    XmlOptions::get().set<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION", 2 );
 
     // lists
     XmlOptions::get().set<int>( "FILE_SELECTION_LIST_MASK", (1<<FileRecordModel::Filename)|(1<<FileRecordModel::Time) );
