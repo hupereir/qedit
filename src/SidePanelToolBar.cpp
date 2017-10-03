@@ -101,7 +101,6 @@ void SidePanelToolBar::_updateConfiguration()
 
     // icon size
     const IconSize iconSize( static_cast<IconSize::Size>( XmlOptions::get().get<int>( "SIDE_PANEL_TOOLBAR_ICON_SIZE" ) ) );
-    setIconSize( iconSize.get() );
 
     // text label for toolbars
     const int toolButtonTextPosition( XmlOptions::get().get<int>( "SIDE_PANEL_TOOLBAR_TEXT_POSITION" ) );
@@ -109,6 +108,8 @@ void SidePanelToolBar::_updateConfiguration()
         toolButtonTextPosition:
         this->style()->styleHint( QStyle::SH_ToolButtonStyle ) );
 
+    // assign to toolbar
+    setIconSize( iconSize.get() );
     setToolButtonStyle( style );
 
     // also update buttons independently

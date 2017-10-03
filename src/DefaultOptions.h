@@ -97,10 +97,6 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( "RECENT_FILES_SORT_COLUMN", FileRecordModel::Time );
     XmlOptions::get().set<int>( "RECENT_FILES_SORT_ORDER", Qt::AscendingOrder );
 
-    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_MASK", 1<<FileSystemModel::Filename );
-    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_SORT_COLUMN", FileSystemModel::Filename );
-    XmlOptions::get().set<int>( "FILE_SYSTEM_LIST_SORT_ORDER", Qt::AscendingOrder );
-
     // toolbars
     XmlOptions::get().set<bool>( "DOCUMENT_CLASS_MANAGER_TOOLBAR", true );
     XmlOptions::get().set<bool>( "EDITION_TOOLBAR", true );
