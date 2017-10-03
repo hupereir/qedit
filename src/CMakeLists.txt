@@ -55,20 +55,20 @@ set(qedit_SOURCES
   HtmlHelper.cpp
   MainWindow.cpp
   MenuBar.cpp
-  NavigationFrame.cpp
-  NavigationToolBar.cpp
+  SidePanelToolBar.cpp
   NewDocumentNameServer.cpp
   NewFileDialog.cpp
   PrintHelper.cpp
   ProgressDialog.cpp
-  RecentFilesFrame.cpp
   RecentFilesModel.cpp
+  RecentFilesWidget.cpp
   ReplaceWidget.cpp
   RestoreSessionDialog.cpp
   SaveAllDialog.cpp
-  SessionFilesFrame.cpp
   SessionFilesModel.cpp
   SessionFilesView.cpp
+  SessionFilesWidget.cpp
+  SidePanelWidget.cpp
   TextDisplay.cpp
   TextView.cpp
   WindowServer.cpp

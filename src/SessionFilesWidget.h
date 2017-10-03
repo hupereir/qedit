@@ -1,5 +1,5 @@
-#ifndef RecentFilesFrame_h
-#define RecentFilesFrame_h
+#ifndef SessionFilesWidget_h
+#define SessionFilesWidget_h
 
 /******************************************************************************
 *
@@ -21,21 +21,19 @@
 *******************************************************************************/
 
 #include "Counter.h"
-#include "RecentFilesModel.h"
+#include "SessionFilesModel.h"
+#include "TreeView.h"
 
-#include <QAction>
 #include <QPaintEvent>
+#include <QAction>
+#include <QBasicTimer>
+#include <QTimerEvent>
 
-class FileList;
-class TreeView;
 class FileRecordToolTipWidget;
+class MimeTypeIconProvider;
 
 //* editor windows navigator
-/**
-displays an up-to-date list of recent files
-as well as files opened in current session
-*/
-class RecentFilesFrame: public QWidget, private Base::Counter<RecentFilesFrame>
+class SessionFilesWidget: public QWidget, private Base::Counter<SessionFilesWidget>
 {
 
     //* Qt meta object declaration
@@ -44,7 +42,7 @@ class RecentFilesFrame: public QWidget, private Base::Counter<RecentFilesFrame>
     public:
 
     //* creator
-    explicit RecentFilesFrame( QWidget* parent, FileList&  );
+    explicit SessionFilesWidget( QWidget* );
 
     //* list
     TreeView& list() const
@@ -53,9 +51,26 @@ class RecentFilesFrame: public QWidget, private Base::Counter<RecentFilesFrame>
     //* select file in list
     void select( const File& );
 
+    //*@name actions
+    //@{
+
+    //* previous file
+    QAction& previousFileAction() const
+    { return *previousFileAction_; }
+
+    //* previous file
+    QAction& nextFileAction() const
+    { return *nextFileAction_; }
+
+    //@}
+
+    //* model
+    const SessionFilesModel& model() const
+    { return model_; }
+
     public Q_SLOTS:
 
-    //* update
+    //* update session files
     void update();
 
     Q_SIGNALS:
@@ -63,27 +78,37 @@ class RecentFilesFrame: public QWidget, private Base::Counter<RecentFilesFrame>
     //* signal emitted when a file is selected
     void fileSelected( FileRecord );
 
-    //* signal emited when a file is selected
+    //* signal emitted when a file is selected
     void fileActivated( FileRecord );
 
-    protected:
+    //* signal emitted when file is asked to be closed
+    void filesClosed( FileRecord::List );
 
-    //* enter event
-    void enterEvent( QEvent* );
+    //* signal emitted when file is asked to be saved
+    void filesSaved( FileRecord::List );
 
     private Q_SLOTS:
 
-    //* update action
+    //* previous file
+    void _selectPreviousFile();
+
+    //* next file
+    void _selectNextFile();
+
+    //* update session files
     void _updateActions();
 
     //* show tooltip
     void _showToolTip( const QModelIndex& );
 
-    //* clean
-    void _clean();
-
     //* open
     void _open();
+
+    //* save
+    void _save();
+
+    //* close
+    void _close();
 
     //* sessionFilesItem selected
     void _itemSelected( const QModelIndex& index );
@@ -93,39 +118,38 @@ class RecentFilesFrame: public QWidget, private Base::Counter<RecentFilesFrame>
 
     private:
 
-    //*@name actions
-    //@{
-
     //* install actions
     void _installActions();
-
-    //@}
-
-    //* true if actions are locked (to disable signal emission during update)
-    bool actionsLocked_ = false;
-
-    //* recent files
-    FileList* recentFiles_ = nullptr;
 
     //* tooltip widget
     FileRecordToolTipWidget* toolTipWidget_ = nullptr;
 
+    //* mime type icon provider
+    MimeTypeIconProvider* mimeTypeIconProvider_ = nullptr;
+
     //* model
-    RecentFilesModel model_;
+    SessionFilesModel model_;
 
     //* list
-    TreeView* list_ = nullptr;
-
-    //@}
+    TreeView* list_;
 
     //*@name actions
     //@{
 
-    //* clean action
-    QAction* cleanAction_ = nullptr;
+    //* previous file
+    QAction* previousFileAction_;
+
+    //* next file
+    QAction* nextFileAction_;
 
     //* open action
-    QAction* openAction_ = nullptr;
+    QAction* openAction_;
+
+    //* save action
+    QAction* saveAction_;
+
+    //* close action
+    QAction *closeAction_;
 
     //@}
 

@@ -20,16 +20,16 @@
 #include "CustomPixmap.h"
 #include "CustomToolButton.h"
 #include "Debug.h"
-#include "FileSystemFrame.h"
+#include "FileSystemWidget.h"
 #include "IconEngine.h"
 #include "IconNames.h"
 #include "IconSizeMenu.h"
 #include "MainWindow.h"
-#include "NavigationToolBar.h"
-#include "NavigationFrame.h"
+#include "SidePanelToolBar.h"
+#include "SidePanelWidget.h"
 #include "QtUtil.h"
-#include "RecentFilesFrame.h"
-#include "SessionFilesFrame.h"
+#include "RecentFilesWidget.h"
+#include "SessionFilesWidget.h"
 #include "ToolBarMenu.h"
 #include "ToolButtonStyleMenu.h"
 
@@ -37,30 +37,30 @@
 #include <memory>
 
 //_______________________________________________________________
-NavigationToolBar::NavigationToolBar( QWidget* parent ):
+SidePanelToolBar::SidePanelToolBar( QWidget* parent ):
     CustomToolBar( tr( "Side bar" ), parent, "NAVIGATION_SIDEBAR" ),
-    navigationFrame_( 0 ),
+    sidePanelWidget_( nullptr ),
     enabled_( true )
 {
-    Debug::Throw( "NavigationToolBar:NavigationToolBar.\n" );
+    Debug::Throw( "SidePanelToolBar:SidePanelToolBar.\n" );
     setTransparent( true );
-    CustomToolBar::connect( this, SIGNAL(orientationChanged(Qt::Orientation)), SLOT(_orientationChanged(Qt::Orientation)) );
+    connect( this, SIGNAL(orientationChanged(Qt::Orientation)), SLOT(_orientationChanged(Qt::Orientation)) );
 }
 
 //_______________________________________________________________
-void NavigationToolBar::connect( NavigationFrame& frame )
+void SidePanelToolBar::connect( SidePanelWidget& widget )
 {
 
-    Debug::Throw( "NavigationToolBar::connect.\n" );
-    Q_ASSERT( !navigationFrame_ );
-    navigationFrame_ = &frame;
+    Debug::Throw( "SidePanelToolBar::connect.\n" );
+    Q_ASSERT( !sidePanelWidget_ );
+    sidePanelWidget_ = &widget;
 
-    CustomToolBar::connect( &_navigationFrame().visibilityAction(), SIGNAL(toggled(bool)), SLOT(_navigationFrameVisibilityChanged(bool)) );
+    connect( &sidePanelWidget_->visibilityAction(), SIGNAL(toggled(bool)), SLOT(_sidePanelWidgetVisibilityChanged(bool)) );
 
     // button group
-    QButtonGroup* button_group = new QButtonGroup( this );
-    CustomToolBar::connect( button_group, SIGNAL(buttonClicked(QAbstractButton*)), SLOT(_display(QAbstractButton*)) );
-    button_group->setExclusive( false );
+    auto buttonGroup = new QButtonGroup( this );
+    connect( buttonGroup, SIGNAL(buttonClicked(QAbstractButton*)), SLOT(_display(QAbstractButton*)) );
+    buttonGroup->setExclusive( false );
 
     // matching buttons
     CustomToolButton* button;
@@ -71,34 +71,34 @@ void NavigationToolBar::connect( NavigationFrame& frame )
     button->setToolTip( tr( "Files currently opened" ) );
     button->setChecked( true );
 
-    button_group->addButton( button );
-    buttons_.insert( button, &_navigationFrame().sessionFilesFrame() );
+    buttonGroup->addButton( button );
+    buttons_.insert( button, &sidePanelWidget_->sessionFilesWidget() );
 
     // recent files
     addWidget( button = _newToolButton( this, IconEngine::get( IconNames::History ) ) );
     button->setText( tr( "Recent Files" ) );
     button->setToolTip( tr( "Files recently opened" ) );
 
-    button_group->addButton( button );
-    buttons_.insert( button, &_navigationFrame().recentFilesFrame() );
+    buttonGroup->addButton( button );
+    buttons_.insert( button, &sidePanelWidget_->recentFilesWidget() );
 
     // file system
     addWidget( button = _newToolButton( this, IconEngine::get( IconNames::FileSystem ) ) );
     button->setText( tr( "File System" ) );
     button->setToolTip( tr( "File system browser" ) );
 
-    button_group->addButton( button );
-    buttons_.insert( button, &_navigationFrame().fileSystemFrame() );
+    buttonGroup->addButton( button );
+    buttons_.insert( button, &sidePanelWidget_->fileSystemWidget() );
 
     _updateConfiguration();
 
 }
 
 //____________________________________________________________
-void NavigationToolBar::_updateConfiguration()
+void SidePanelToolBar::_updateConfiguration()
 {
 
-    Debug::Throw( "NavigationToolBar::_updateConfiguration.\n" );
+    Debug::Throw( "SidePanelToolBar::_updateConfiguration.\n" );
 
     // icon size
     const IconSize iconSize( static_cast<IconSize::Size>( XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) ) );
@@ -120,30 +120,30 @@ void NavigationToolBar::_updateConfiguration()
 }
 
 //____________________________________________________________
-void NavigationToolBar::_updateToolButtonStyle( int style )
+void SidePanelToolBar::_updateToolButtonStyle( int style )
 {
 
-    Debug::Throw( "NavigationToolBar::_updateToolButtonStyle.\n" );
+    Debug::Throw( "SidePanelToolBar::_updateToolButtonStyle.\n" );
     XmlOptions::get().set<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION", (int)style );
     _updateConfiguration();
 
 }
 
 //____________________________________________________________
-void NavigationToolBar::_updateToolButtonIconSize( IconSize::Size size )
+void SidePanelToolBar::_updateToolButtonIconSize( IconSize::Size size )
 {
 
-    Debug::Throw( "NavigationToolBar::_updateToolButtonIconSize.\n" );
+    Debug::Throw( "SidePanelToolBar::_updateToolButtonIconSize.\n" );
     XmlOptions::get().set<int>( "NAVIGATION_SIDEBAR_ICON_SIZE", size );
     _updateConfiguration();
 
 }
 
 //______________________________________________________________________
-void NavigationToolBar::_navigationFrameVisibilityChanged( bool state )
+void SidePanelToolBar::_sidePanelWidgetVisibilityChanged( bool state )
 {
 
-    Debug::Throw() << "NavigationToolBar::_navigationFrameVisibilityChanged - state: " << state << endl;
+    Debug::Throw() << "SidePanelToolBar::_sidePanelWidgetVisibilityChanged - state: " << state << endl;
     if( !state )
     {
 
@@ -158,7 +158,7 @@ void NavigationToolBar::_navigationFrameVisibilityChanged( bool state )
         bool found( false );
         for( auto&& iter = buttons_.begin(); iter != buttons_.end() && !found; ++iter )
         {
-            if( iter.value() == _navigationFrame().currentWidget() )
+            if( iter.value() == sidePanelWidget_->currentWidget() )
             {
                 iter.key()->setChecked( true );
                 found = true;
@@ -172,10 +172,10 @@ void NavigationToolBar::_navigationFrameVisibilityChanged( bool state )
 }
 
 //______________________________________________________________________
-void NavigationToolBar::_orientationChanged( Qt::Orientation orientation )
+void SidePanelToolBar::_orientationChanged( Qt::Orientation orientation )
 {
 
-    Debug::Throw() << "NavigationToolBar::_orientationChanged - orientation: " << orientation << endl;
+    Debug::Throw() << "SidePanelToolBar::_orientationChanged - orientation: " << orientation << endl;
 
     for( auto&& iter = buttons_.begin(); iter != buttons_.end(); ++iter )
     { iter.key()->rotate( orientation == Qt::Horizontal ? CustomPixmap::Rotation::None : CustomPixmap::Rotation::CounterClockwise ); }
@@ -185,10 +185,10 @@ void NavigationToolBar::_orientationChanged( Qt::Orientation orientation )
 }
 
 //______________________________________________________________________
-void NavigationToolBar::_display( QAbstractButton* button )
+void SidePanelToolBar::_display( QAbstractButton* button )
 {
 
-    Debug::Throw( "NavigationToolBar:_display.\n" );
+    Debug::Throw( "SidePanelToolBar:_display.\n" );
 
     if( !enabled_ ) return;
     enabled_ = false;
@@ -208,13 +208,13 @@ void NavigationToolBar::_display( QAbstractButton* button )
     {
 
         // warning: the order is important. The current widget must be changed first, otherwise two buttons
-        // will be checked in the end due to the _navigationFrameVisibilityChanged slot.
-        _navigationFrame().setCurrentWidget( widget );
-        _navigationFrame().visibilityAction().setChecked( true );
+        // will be checked in the end due to the _sidePanelWidgetVisibilityChanged slot.
+        sidePanelWidget_->setCurrentWidget( widget );
+        sidePanelWidget_->visibilityAction().setChecked( true );
 
-    } else if( widget == _navigationFrame().currentWidget() ) {
+    } else if( widget == sidePanelWidget_->currentWidget() ) {
 
-        _navigationFrame().visibilityAction().setChecked( false );
+        sidePanelWidget_->visibilityAction().setChecked( false );
 
     }
 
@@ -224,9 +224,9 @@ void NavigationToolBar::_display( QAbstractButton* button )
 }
 
 //______________________________________________________________________
-void NavigationToolBar::contextMenuEvent( QContextMenuEvent* event )
+void SidePanelToolBar::contextMenuEvent( QContextMenuEvent* event )
 {
-    Debug::Throw( "NavigationToolBar::contextMenuEvent.\n" );
+    Debug::Throw( "SidePanelToolBar::contextMenuEvent.\n" );
 
     MainWindow* mainwindow( qobject_cast<MainWindow*>( window() ) );
     if( !mainwindow ) return;
@@ -235,8 +235,8 @@ void NavigationToolBar::contextMenuEvent( QContextMenuEvent* event )
     menu->toolButtonStyleMenu().select( (Qt::ToolButtonStyle) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_TEXT_POSITION" ) );
     menu->iconSizeMenu().select( (IconSize::Size) XmlOptions::get().get<int>( "NAVIGATION_SIDEBAR_ICON_SIZE" ) );
 
-    CustomToolBar::connect( &menu->toolButtonStyleMenu(), SIGNAL(styleSelected(int)), SLOT(_updateToolButtonStyle(int)) );
-    CustomToolBar::connect( &menu->iconSizeMenu(), SIGNAL(iconSizeSelected(IconSize::Size)), SLOT(_updateToolButtonIconSize(IconSize::Size)) );
+    connect( &menu->toolButtonStyleMenu(), SIGNAL(styleSelected(int)), SLOT(_updateToolButtonStyle(int)) );
+    connect( &menu->iconSizeMenu(), SIGNAL(iconSizeSelected(IconSize::Size)), SLOT(_updateToolButtonIconSize(IconSize::Size)) );
 
     // move and show menu
     menu->adjustSize();
@@ -245,7 +245,7 @@ void NavigationToolBar::contextMenuEvent( QContextMenuEvent* event )
 }
 
 //______________________________________________________________________
-CustomToolButton* NavigationToolBar::_newToolButton( QWidget* parent, QIcon icon ) const
+CustomToolButton* SidePanelToolBar::_newToolButton( QWidget* parent, QIcon icon ) const
 {
 
     CustomToolButton* button = new CustomToolButton( parent );

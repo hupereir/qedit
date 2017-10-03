@@ -17,7 +17,7 @@
 *
 *******************************************************************************/
 
-#include "RecentFilesFrame.h"
+#include "RecentFilesWidget.h"
 
 #include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
@@ -38,13 +38,13 @@
 #include <QLayout>
 
 //_______________________________________________________________
-RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
+RecentFilesWidget::RecentFilesWidget( QWidget* parent, FileList& files ):
     QWidget( parent ),
-    Counter( "RecentFilesFrame" ),
+    Counter( "RecentFilesWidget" ),
     recentFiles_( &files )
 {
 
-    Debug::Throw( "RecentFilesFrame:RecentFilesFrame.\n" );
+    Debug::Throw( "RecentFilesWidget:RecentFilesWidget.\n" );
 
     // layout
     setLayout( new QVBoxLayout );
@@ -87,10 +87,10 @@ RecentFilesFrame::RecentFilesFrame( QWidget* parent, FileList& files ):
 }
 
 //____________________________________________
-void RecentFilesFrame::select( const File& file )
+void RecentFilesWidget::select( const File& file )
 {
 
-    Debug::Throw() << "RecentFilesFrame::select - file: " << file << ".\n";
+    Debug::Throw() << "RecentFilesWidget::select - file: " << file << ".\n";
 
     // find model index that match the file
     QModelIndex index( model_.index( FileRecord( file ) ) );
@@ -109,10 +109,10 @@ void RecentFilesFrame::select( const File& file )
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::update()
+void RecentFilesWidget::update()
 {
 
-    Debug::Throw( "RecentFilesFrame:update.\n" );
+    Debug::Throw( "RecentFilesWidget:update.\n" );
 
     // lock signal emission
     actionsLocked_ = true;
@@ -131,10 +131,10 @@ void RecentFilesFrame::update()
 }
 
 //____________________________________________
-void RecentFilesFrame::enterEvent( QEvent* e )
+void RecentFilesWidget::enterEvent( QEvent* e )
 {
 
-    Debug::Throw( "RecentFilesFrame::enterEvent.\n" );
+    Debug::Throw( "RecentFilesWidget::enterEvent.\n" );
     QWidget::enterEvent( e );
 
     // check recent files validity
@@ -143,9 +143,9 @@ void RecentFilesFrame::enterEvent( QEvent* e )
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_updateActions()
+void RecentFilesWidget::_updateActions()
 {
-    Debug::Throw( "RecentFilesFrame:_updateActions.\n" );
+    Debug::Throw( "RecentFilesWidget:_updateActions.\n" );
     FileRecordModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
 
     bool hasValidSelection( std::any_of( selection.begin(), selection.end(), FileRecord::ValidFTor() ) );
@@ -154,7 +154,7 @@ void RecentFilesFrame::_updateActions()
 }
 
 //______________________________________________________
-void RecentFilesFrame::_showToolTip( const QModelIndex& index )
+void RecentFilesWidget::_showToolTip( const QModelIndex& index )
 {
 
     if( !index.isValid() ) toolTipWidget_->hide();
@@ -184,10 +184,10 @@ void RecentFilesFrame::_showToolTip( const QModelIndex& index )
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_clean()
+void RecentFilesWidget::_clean()
 {
 
-    Debug::Throw( "RecentFilesFrame:_clean.\n" );
+    Debug::Throw( "RecentFilesWidget:_clean.\n" );
     if( !QuestionDialog( window(), tr( "Remove invalid or duplicated files from list ?" ) ).exec() ) return;
     recentFiles_->clean();
     update();
@@ -195,10 +195,10 @@ void RecentFilesFrame::_clean()
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_open()
+void RecentFilesWidget::_open()
 {
 
-    Debug::Throw( "RecentFilesFrame:_open.\n" );
+    Debug::Throw( "RecentFilesWidget:_open.\n" );
     FileRecordModel::List validSelection;
 
     for( const auto& record:model_.get( list_->selectionModel()->selectedRows() ) )
@@ -207,26 +207,26 @@ void RecentFilesFrame::_open()
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_itemSelected( const QModelIndex& index )
+void RecentFilesWidget::_itemSelected( const QModelIndex& index )
 {
-    Debug::Throw( "RecentFilesFrame::_itemSelected.\n" );
+    Debug::Throw( "RecentFilesWidget::_itemSelected.\n" );
     if( !actionsLocked_ && index.isValid() )
     {  emit fileSelected( model_.get( index ) ); }
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_itemActivated( const QModelIndex& index )
+void RecentFilesWidget::_itemActivated( const QModelIndex& index )
 {
-    Debug::Throw( "RecentFilesFrame::_itemActivated.\n" );
+    Debug::Throw( "RecentFilesWidget::_itemActivated.\n" );
     if( !actionsLocked_ && index.isValid() )
     { emit fileActivated( model_.get( index ) ); }
 }
 
 //______________________________________________________________________
-void RecentFilesFrame::_installActions()
+void RecentFilesWidget::_installActions()
 {
 
-    Debug::Throw( "RecentFilesFrame::_installActions.\n" );
+    Debug::Throw( "RecentFilesWidget::_installActions.\n" );
 
     // clean
     addAction( cleanAction_ = new QAction( IconEngine::get( IconNames::Delete ), tr( "Clean" ), this ) );

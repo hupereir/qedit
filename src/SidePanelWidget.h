@@ -1,5 +1,5 @@
-#ifndef NavigationFrame_h
-#define NavigationFrame_h
+#ifndef SidePanelWidget_h
+#define SidePanelWidget_h
 
 /******************************************************************************
 *
@@ -28,12 +28,12 @@
 #include <QStackedWidget>
 #include <QToolButton>
 
-class SessionFilesFrame;
-class RecentFilesFrame;
-class FileSystemFrame;
+class SessionFilesWidget;
+class RecentFilesWidget;
+class FileSystemWidget;
 
 //* editor windows navigator
-class NavigationFrame: public QStackedWidget
+class SidePanelWidget: public QStackedWidget
 {
 
     Q_OBJECT
@@ -41,7 +41,7 @@ class NavigationFrame: public QStackedWidget
     public:
 
     //* creator
-    explicit NavigationFrame( QWidget* parent, FileList&  );
+    explicit SidePanelWidget( QWidget* parent, FileList&  );
 
     //*@name accessors
     //@{
@@ -55,16 +55,16 @@ class NavigationFrame: public QStackedWidget
     }
 
     //* session files
-    SessionFilesFrame& sessionFilesFrame() const
-    { return *sessionFilesFrame_; }
+    SessionFilesWidget& sessionFilesWidget() const
+    { return *sessionFilesWidget_; }
 
     //* recent files
-    RecentFilesFrame& recentFilesFrame() const
-    { return *recentFilesFrame_; }
+    RecentFilesWidget& recentFilesWidget() const
+    { return *recentFilesWidget_; }
 
     //* file system
-    FileSystemFrame& fileSystemFrame() const
-    { return *fileSystemFrame_; }
+    FileSystemWidget& fileSystemWidget() const
+    { return *fileSystemWidget_; }
 
     //* visibility
     QAction& visibilityAction() const
@@ -95,13 +95,13 @@ class NavigationFrame: public QStackedWidget
     int defaultWidth_ = -1;
 
     //* session files
-    SessionFilesFrame *sessionFilesFrame_;
+    SessionFilesWidget *sessionFilesWidget_;
 
     //* recent files
-    RecentFilesFrame *recentFilesFrame_;
+    RecentFilesWidget *recentFilesWidget_;
 
     //* file system
-    FileSystemFrame* fileSystemFrame_;
+    FileSystemWidget* fileSystemWidget_;
 
     //@}
 

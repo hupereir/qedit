@@ -28,9 +28,9 @@
 #include "HelpManager.h"
 #include "HelpText.h"
 #include "MainWindow.h"
-#include "NavigationFrame.h"
+#include "SidePanelWidget.h"
 #include "RecentFilesMenu.h"
-#include "SessionFilesFrame.h"
+#include "SessionFilesWidget.h"
 #include "InformationDialog.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
@@ -219,7 +219,7 @@ void MenuBar::_updatePreferenceMenu()
     preferenceMenu_->clear();
 
     // textdisplay actions
-    preferenceMenu_->addAction( &mainWindow->navigationFrame().visibilityAction() );
+    preferenceMenu_->addAction( &mainWindow->sidePanelWidget().visibilityAction() );
     preferenceMenu_->addAction( &display->showLineNumberAction() );
     preferenceMenu_->addAction( &display->showBlockDelimiterAction() );
     preferenceMenu_->addAction( &display->wrapModeAction() );
@@ -380,9 +380,9 @@ void MenuBar::_updateWindowsMenu()
     }
 
     windowsMenu_->addSeparator();
-    auto sessionFilesFrame( &static_cast<MainWindow*>(window())->navigationFrame().sessionFilesFrame() );
-    windowsMenu_->addAction( &sessionFilesFrame->previousFileAction() );
-    windowsMenu_->addAction( &sessionFilesFrame->nextFileAction() );
+    auto sessionFilesWidget( &static_cast<MainWindow*>(window())->sidePanelWidget().sessionFilesWidget() );
+    windowsMenu_->addAction( &sessionFilesWidget->previousFileAction() );
+    windowsMenu_->addAction( &sessionFilesWidget->nextFileAction() );
 
 }
 

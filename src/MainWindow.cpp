@@ -38,7 +38,7 @@
 #include "FileList.h"
 #include "FileRecordProperties.h"
 #include "FileSelectionDialog.h"
-#include "FileSystemFrame.h"
+#include "FileSystemWidget.h"
 #include "HighlightBlockFlags.h"
 #include "HtmlDialog.h"
 #include "HtmlHelper.h"
@@ -47,8 +47,6 @@
 #include "InformationDialog.h"
 #include "LineEditor.h"
 #include "MenuBar.h"
-#include "NavigationFrame.h"
-#include "NavigationToolBar.h"
 #include "NewFileDialog.h"
 #include "PixmapEngine.h"
 #include "PrinterOptionWidget.h"
@@ -56,10 +54,12 @@
 #include "PrintPreviewDialog.h"
 #include "QtUtil.h"
 #include "QuestionDialog.h"
-#include "RecentFilesFrame.h"
+#include "RecentFilesWidget.h"
 #include "ReplaceWidget.h"
 #include "SelectLineWidget.h"
-#include "SessionFilesFrame.h"
+#include "SessionFilesWidget.h"
+#include "SidePanelToolBar.h"
+#include "SidePanelWidget.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
@@ -105,21 +105,21 @@ MainWindow::MainWindow(  QWidget* parent ):
     splitter->setOrientation( Qt::Horizontal );
     setCentralWidget( splitter );
 
-    // insert navigationFrame
-    navigationFrame_ = new NavigationFrame( nullptr, application->recentFiles() );
-    navigationFrame_->setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
-    splitter->addWidget( navigationFrame_ );
+    // insert side panel
+    sidePanelWidget_ = new SidePanelWidget( nullptr, application->recentFiles() );
+    sidePanelWidget_->setDefaultWidth( XmlOptions::get().get<int>( "SIDE_PANEL_WIDTH" ) );
+    splitter->addWidget( sidePanelWidget_ );
 
-    connect( &navigationFrame_->visibilityAction(), SIGNAL(toggled(bool)), SLOT(_toggleNavigationFrame(bool)) );
+    connect( &sidePanelWidget_->visibilityAction(), SIGNAL(toggled(bool)), SLOT(_toggleSidePanelWidget(bool)) );
 
-    // need to add navigationFrame visibility action to this list
+    // need to add side panel widget visibility action to this list
     // to enable shortcut event if the frame is hidden
-    addAction( &navigationFrame_->visibilityAction() );
-    connect( &navigationFrame_->sessionFilesFrame(), SIGNAL(fileSelected(FileRecord)), SLOT(_selectDisplay(FileRecord)) );
-    connect( &navigationFrame_->recentFilesFrame(), SIGNAL(fileSelected(FileRecord)), SLOT(_selectDisplay(FileRecord)) );
+    addAction( &sidePanelWidget_->visibilityAction() );
+    connect( &sidePanelWidget_->sessionFilesWidget(), SIGNAL(fileSelected(FileRecord)), SLOT(_selectDisplay(FileRecord)) );
+    connect( &sidePanelWidget_->recentFilesWidget(), SIGNAL(fileSelected(FileRecord)), SLOT(_selectDisplay(FileRecord)) );
 
-    addAction( &navigationFrame_->sessionFilesFrame().nextFileAction() );
-    addAction( &navigationFrame_->sessionFilesFrame().previousFileAction() );
+    addAction( &sidePanelWidget_->sessionFilesWidget().nextFileAction() );
+    addAction( &sidePanelWidget_->sessionFilesWidget().previousFileAction() );
 
     // insert stack widget
     // right container
@@ -570,8 +570,8 @@ void MainWindow::timerEvent( QTimerEvent* event )
         resizeTimer_.stop();
 
         // save size
-        if( navigationFrame_->visibilityAction().isChecked() )
-        { XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", navigationFrame_->width() ); }
+        if( sidePanelWidget_->visibilityAction().isChecked() )
+        { XmlOptions::get().set<int>( "SIDE_PANEL_WIDTH", sidePanelWidget_->width() ); }
 
     } else return BaseMainWindow::timerEvent( event );
 
@@ -586,7 +586,7 @@ void MainWindow::_updateConfiguration()
     resize( sizeHint() );
 
     // navigation frame visibility
-    navigationFrame_->visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_NAVIGATION_FRAME") );
+    sidePanelWidget_->visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_SIDE_PANEL_WIDGET") );
 
     // assign icons to file in open previous menu based on class manager
     auto&& recentFiles( Base::Singleton::get().application<Application>()->recentFiles() );
@@ -611,10 +611,10 @@ void MainWindow::_saveConfiguration()
 { Debug::Throw( "MainWindow::_saveConfiguration.\n" ); }
 
 //________________________________________________________
-void MainWindow::_toggleNavigationFrame( bool state )
+void MainWindow::_toggleSidePanelWidget( bool state )
 {
-    Debug::Throw( "MainWindow::_toggleNavigationFrame.\n" );
-    XmlOptions::get().set<bool>( "SHOW_NAVIGATION_FRAME", state );
+    Debug::Throw( "MainWindow::_toggleSidePanelWidget.\n" );
+    XmlOptions::get().set<bool>( "SHOW_SIDE_PANEL_WIDGET", state );
 }
 
 //________________________________________________________
@@ -684,11 +684,11 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
         }
 
         // update session file frame
-        if( navigationFrame_ )
+        if( sidePanelWidget_ )
         {
-            navigationFrame_->sessionFilesFrame().select( activeDisplay().file() );
-            navigationFrame_->recentFilesFrame().select( activeDisplay().file() );
-            navigationFrame_->fileSystemFrame().setWorkingPath( activeDisplay().workingDirectory() );
+            sidePanelWidget_->sessionFilesWidget().select( activeDisplay().file() );
+            sidePanelWidget_->recentFilesWidget().select( activeDisplay().file() );
+            sidePanelWidget_->fileSystemWidget().setWorkingPath( activeDisplay().workingDirectory() );
         }
 
         // cursor position
@@ -935,9 +935,8 @@ void MainWindow::_installToolbars()
     connect( documentClassToolBar_, SIGNAL(documentClassSelected(QString)), SLOT(selectClassName(QString)) );
 
     // navigation toolbar
-    auto navigationToolbar = new NavigationToolBar( this );
-    navigationToolbar->connect( *navigationFrame_ );
-
+    auto sidePanelToolBar = new SidePanelToolBar( this );
+    sidePanelToolBar->connect( *sidePanelWidget_ );
 
 }
 

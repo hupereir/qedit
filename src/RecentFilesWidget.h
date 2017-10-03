@@ -1,5 +1,5 @@
-#ifndef SessionFilesFrame_h
-#define SessionFilesFrame_h
+#ifndef RecentFilesWidget_h
+#define RecentFilesWidget_h
 
 /******************************************************************************
 *
@@ -21,19 +21,21 @@
 *******************************************************************************/
 
 #include "Counter.h"
-#include "SessionFilesModel.h"
-#include "TreeView.h"
+#include "RecentFilesModel.h"
 
-#include <QPaintEvent>
 #include <QAction>
-#include <QBasicTimer>
-#include <QTimerEvent>
+#include <QPaintEvent>
 
+class FileList;
+class TreeView;
 class FileRecordToolTipWidget;
-class MimeTypeIconProvider;
 
 //* editor windows navigator
-class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame>
+/**
+displays an up-to-date list of recent files
+as well as files opened in current session
+*/
+class RecentFilesWidget: public QWidget, private Base::Counter<RecentFilesWidget>
 {
 
     //* Qt meta object declaration
@@ -42,7 +44,7 @@ class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame
     public:
 
     //* creator
-    explicit SessionFilesFrame( QWidget* );
+    explicit RecentFilesWidget( QWidget* parent, FileList&  );
 
     //* list
     TreeView& list() const
@@ -51,26 +53,9 @@ class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame
     //* select file in list
     void select( const File& );
 
-    //*@name actions
-    //@{
-
-    //* previous file
-    QAction& previousFileAction() const
-    { return *previousFileAction_; }
-
-    //* previous file
-    QAction& nextFileAction() const
-    { return *nextFileAction_; }
-
-    //@}
-
-    //* model
-    const SessionFilesModel& model() const
-    { return model_; }
-
     public Q_SLOTS:
 
-    //* update session files
+    //* update
     void update();
 
     Q_SIGNALS:
@@ -78,37 +63,27 @@ class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame
     //* signal emitted when a file is selected
     void fileSelected( FileRecord );
 
-    //* signal emitted when a file is selected
+    //* signal emited when a file is selected
     void fileActivated( FileRecord );
 
-    //* signal emitted when file is asked to be closed
-    void filesClosed( FileRecord::List );
+    protected:
 
-    //* signal emitted when file is asked to be saved
-    void filesSaved( FileRecord::List );
+    //* enter event
+    void enterEvent( QEvent* );
 
     private Q_SLOTS:
 
-    //* previous file
-    void _selectPreviousFile();
-
-    //* next file
-    void _selectNextFile();
-
-    //* update session files
+    //* update action
     void _updateActions();
 
     //* show tooltip
     void _showToolTip( const QModelIndex& );
 
+    //* clean
+    void _clean();
+
     //* open
     void _open();
-
-    //* save
-    void _save();
-
-    //* close
-    void _close();
 
     //* sessionFilesItem selected
     void _itemSelected( const QModelIndex& index );
@@ -118,38 +93,39 @@ class SessionFilesFrame: public QWidget, private Base::Counter<SessionFilesFrame
 
     private:
 
+    //*@name actions
+    //@{
+
     //* install actions
     void _installActions();
+
+    //@}
+
+    //* true if actions are locked (to disable signal emission during update)
+    bool actionsLocked_ = false;
+
+    //* recent files
+    FileList* recentFiles_ = nullptr;
 
     //* tooltip widget
     FileRecordToolTipWidget* toolTipWidget_ = nullptr;
 
-    //* mime type icon provider
-    MimeTypeIconProvider* mimeTypeIconProvider_ = nullptr;
-
     //* model
-    SessionFilesModel model_;
+    RecentFilesModel model_;
 
     //* list
-    TreeView* list_;
+    TreeView* list_ = nullptr;
+
+    //@}
 
     //*@name actions
     //@{
 
-    //* previous file
-    QAction* previousFileAction_;
-
-    //* next file
-    QAction* nextFileAction_;
+    //* clean action
+    QAction* cleanAction_ = nullptr;
 
     //* open action
-    QAction* openAction_;
-
-    //* save action
-    QAction* saveAction_;
-
-    //* close action
-    QAction *closeAction_;
+    QAction* openAction_ = nullptr;
 
     //@}
 

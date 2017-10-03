@@ -1,5 +1,5 @@
-#ifndef NavigationToolBar_h
-#define NavigationToolBar_h
+#ifndef SidePanelToolBar_h
+#define SidePanelToolBar_h
 
 /******************************************************************************
 *
@@ -28,14 +28,14 @@
 #include <QContextMenuEvent>
 #include <QHash>
 
-class NavigationFrame;
+class SidePanelWidget;
 
 //* editor windows navigator
 /**
 displays an up-to-date list of recent files
 as well as files opened in current session
 */
-class NavigationToolBar: public CustomToolBar
+class SidePanelToolBar: public CustomToolBar
 {
 
     //* Qt meta object declaration
@@ -44,10 +44,12 @@ class NavigationToolBar: public CustomToolBar
     public:
 
     //* creator
-    explicit NavigationToolBar( QWidget* );
+    explicit SidePanelToolBar( QWidget* );
+
+    using CustomToolBar::connect;
 
     //* set target
-    void connect( NavigationFrame& );
+    void connect( SidePanelWidget& );
 
     protected:
 
@@ -66,7 +68,7 @@ class NavigationToolBar: public CustomToolBar
     void _updateToolButtonIconSize( IconSize::Size );
 
     //* make sure proper buttons are changed when navigation frame visibility is changed
-    void _navigationFrameVisibilityChanged( bool );
+    void _sidePanelWidgetVisibilityChanged( bool );
 
     //* change orientation
     void _orientationChanged( Qt::Orientation );
@@ -77,8 +79,8 @@ class NavigationToolBar: public CustomToolBar
     private:
 
     //* navigation frame
-    NavigationFrame& _navigationFrame()
-    { return *navigationFrame_; }
+    SidePanelWidget& _sidePanelWidget()
+    { return *sidePanelWidget_; }
 
     //* tool button
     CustomToolButton* _newToolButton( QWidget* parent, QIcon ) const;
@@ -90,7 +92,7 @@ class NavigationToolBar: public CustomToolBar
     ButtonMap buttons_;
 
     //* stack widget
-    NavigationFrame* navigationFrame_ = nullptr;
+    SidePanelWidget* sidePanelWidget_ = nullptr;
 
     //* enablility
     /** this is used to avoid circular action triggers */

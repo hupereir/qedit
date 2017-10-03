@@ -25,22 +25,22 @@
 #include "CloseFilesDialog.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
-#include "FileSystemFrame.h"
+#include "FileSystemWidget.h"
 #include "IconNames.h"
 #include "IconEngine.h"
 #include "MainWindow.h"
 #include "MenuBar.h"
-#include "NavigationFrame.h"
 #include "NewFileDialog.h"
 #include "InformationDialog.h"
 #include "ProgressDialog.h"
 #include "QuestionDialog.h"
 #include "QtUtil.h"
-#include "RecentFilesFrame.h"
+#include "RecentFilesWidget.h"
 #include "RecentFilesMenu.h"
 #include "SaveAllDialog.h"
 #include "ScratchFileMonitor.h"
-#include "SessionFilesFrame.h"
+#include "SessionFilesWidget.h"
+#include "SidePanelWidget.h"
 #include "Singleton.h"
 #include "Util.h"
 
@@ -86,7 +86,7 @@ MainWindow& WindowServer::newMainWindow()
     connect( window, SIGNAL(modificationChanged()), SIGNAL(sessionFilesChanged()) );
     connect( window, SIGNAL(modificationChanged()), SLOT(_updateActions()) );
     connect( window, SIGNAL(scratchFileCreated(File)), scratchFileMonitor_, SLOT(add(File)) );
-    connect( this, SIGNAL(sessionFilesChanged()), &window->navigationFrame().sessionFilesFrame(), SLOT(update()) );
+    connect( this, SIGNAL(sessionFilesChanged()), &window->sidePanelWidget().sessionFilesWidget(), SLOT(update()) );
 
     connect( window, SIGNAL(activated(MainWindow*)), SLOT(_activeWindowChanged(MainWindow*)) );
     connect( &window->newFileAction(), SIGNAL(triggered()), SLOT(_newFile()) );
@@ -97,21 +97,21 @@ MainWindow& WindowServer::newMainWindow()
     connect( &window->openVerticalAction(), SIGNAL(triggered()), SLOT(_openVertical()) );
     connect( &window->detachAction(), SIGNAL(triggered()), SLOT(_detach()) );
 
-    connect( &window->navigationFrame().sessionFilesFrame().model(), SIGNAL(reparentFiles(File,File)), SLOT(_reparent(File,File)) );
-    connect( &window->navigationFrame().sessionFilesFrame().model(), SIGNAL(reparentFilesToMain(File,File)), SLOT(_reparentToMain(File,File)) );
+    connect( &window->sidePanelWidget().sessionFilesWidget().model(), SIGNAL(reparentFiles(File,File)), SLOT(_reparent(File,File)) );
+    connect( &window->sidePanelWidget().sessionFilesWidget().model(), SIGNAL(reparentFilesToMain(File,File)), SLOT(_reparentToMain(File,File)) );
 
-    connect( &window->navigationFrame().sessionFilesFrame().list(), SIGNAL(reparentFilesToMain(File,File)), SLOT(_reparentToMain(File,File)) );
-    connect( &window->navigationFrame().sessionFilesFrame().list(), SIGNAL(detach(File)), SLOT(_detach(File)) );
+    connect( &window->sidePanelWidget().sessionFilesWidget().list(), SIGNAL(reparentFilesToMain(File,File)), SLOT(_reparentToMain(File,File)) );
+    connect( &window->sidePanelWidget().sessionFilesWidget().list(), SIGNAL(detach(File)), SLOT(_detach(File)) );
 
     // open actions
     connect( &window->menuBar().recentFilesMenu(), SIGNAL(fileSelected(FileRecord)), SLOT(_open(FileRecord)) );
-    connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
-    connect( &window->navigationFrame().recentFilesFrame(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
-    connect( &window->navigationFrame().fileSystemFrame(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
+    connect( &window->sidePanelWidget().sessionFilesWidget(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
+    connect( &window->sidePanelWidget().recentFilesWidget(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
+    connect( &window->sidePanelWidget().fileSystemWidget(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
 
     // other actions
-    connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL(filesSaved(FileRecord::List)), SLOT(_save(FileRecord::List)) );
-    connect( &window->navigationFrame().sessionFilesFrame(), SIGNAL(filesClosed(FileRecord::List)), SLOT(_close(FileRecord::List)) );
+    connect( &window->sidePanelWidget().sessionFilesWidget(), SIGNAL(filesSaved(FileRecord::List)), SLOT(_save(FileRecord::List)) );
+    connect( &window->sidePanelWidget().sessionFilesWidget(), SIGNAL(filesClosed(FileRecord::List)), SLOT(_close(FileRecord::List)) );
 
     return *window;
 }
@@ -296,7 +296,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
             // also force update of the recent files frame
             // and center on desktop
             _activeWindow().activeView().setIsNewDocument();
-            _activeWindow().navigationFrame().recentFilesFrame().update();
+            _activeWindow().sidePanelWidget().recentFilesWidget().update();
 
         }
 

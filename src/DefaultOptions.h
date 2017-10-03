@@ -83,12 +83,12 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( "WINDOW_WIDTH", 700 );
     XmlOptions::get().set<int>( "SERVER_TIMEOUT_DELAY", 3000 );
 
-    XmlOptions::get().set<bool>( "SHOW_NAVIGATION_FRAME", true );
+    XmlOptions::get().set<bool>( "SHOW_SIDE_PANEL_WIDGET", true );
     XmlOptions::get().set<bool>( "SHOW_NAVIGATOR", false );
     XmlOptions::get().set<bool>( "SHOW_TOOLTIPS", true );
 
     // splitters
-    XmlOptions::get().set<int>( "NAVIGATION_FRAME_WIDTH", 200 );
+    XmlOptions::get().set<int>( "SIDE_PANEL_WIDTH", 200 );
 
     // file lists mask and sorting
     XmlOptions::get().set<int>( "SESSION_FILES_MASK", 1<<FileRecordModel::Filename );

@@ -1,5 +1,6 @@
 base
 base-cmake
+base-filesystem
 base-help
 base-notifications
 base-pixmaps
@@ -9,5 +10,4 @@ base-spellcheck
 base-ssh
 base-svg
 base-transparency
-base-filesystem
 *.spec

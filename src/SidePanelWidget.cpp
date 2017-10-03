@@ -17,33 +17,33 @@
 *
 *******************************************************************************/
 
-#include "NavigationFrame.h"
+#include "SidePanelWidget.h"
 
 #include "Application.h"
 #include "Debug.h"
-#include "FileSystemFrame.h"
-#include "RecentFilesFrame.h"
-#include "SessionFilesFrame.h"
+#include "FileSystemWidget.h"
+#include "RecentFilesWidget.h"
+#include "SessionFilesWidget.h"
 
 #include <QHeaderView>
 #include <QLayout>
 
 //_______________________________________________________________
-NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
+SidePanelWidget::SidePanelWidget( QWidget* parent, FileList& files ):
     QStackedWidget( parent )
 {
 
-    Debug::Throw( "NavigationFrame:NavigationFrame.\n" );
+    Debug::Throw( "SidePanelWidget:SidePanelWidget.\n" );
     layout()->setMargin(2);
     layout()->setSpacing(2);
 
     // stack widget
-    addWidget( sessionFilesFrame_ = new SessionFilesFrame(0) );
-    addWidget( recentFilesFrame_ = new RecentFilesFrame(0, files) );
-    addWidget( fileSystemFrame_ = new FileSystemFrame(0) );
+    addWidget( sessionFilesWidget_ = new SessionFilesWidget( nullptr ) );
+    addWidget( recentFilesWidget_ = new RecentFilesWidget( nullptr, files) );
+    addWidget( fileSystemWidget_ = new FileSystemWidget( nullptr ) );
 
     // current widget
-    setCurrentWidget( &sessionFilesFrame() );
+    setCurrentWidget( sessionFilesWidget_ );
 
     // connections
     connect( this, SIGNAL(currentChanged(int)), SLOT(_updateCurrentWidget()) );
@@ -54,10 +54,10 @@ NavigationFrame::NavigationFrame( QWidget* parent, FileList& files ):
 }
 
 //______________________________________________________________________
-void NavigationFrame::_installActions()
+void SidePanelWidget::_installActions()
 {
 
-    Debug::Throw( "NavigationFrame::_installActions.\n" );
+    Debug::Throw( "SidePanelWidget::_installActions.\n" );
     addAction( visibilityAction_ = new QAction( tr( "Show &Navigation Panel" ), this ) );
     visibilityAction_->setCheckable( true );
     visibilityAction_->setChecked( true );
@@ -66,14 +66,14 @@ void NavigationFrame::_installActions()
 }
 
 //______________________________________________________________________
-void NavigationFrame::_updateCurrentWidget()
+void SidePanelWidget::_updateCurrentWidget()
 {
 
-    Debug::Throw( "NavigationFrame::_updateCurrentWidget.\n" );
+    Debug::Throw( "SidePanelWidget::_updateCurrentWidget.\n" );
     if( !currentWidget() ) return;
 
-    if( currentWidget() == &sessionFilesFrame() ) { sessionFilesFrame().update(); }
-    else if( currentWidget() == &recentFilesFrame() ) { recentFilesFrame().update(); }
-    else if( currentWidget() == &fileSystemFrame() ) { fileSystemFrame().update(); }
+    if( currentWidget() == sessionFilesWidget_ ) { sessionFilesWidget_->update(); }
+    else if( currentWidget() == recentFilesWidget_ ) { recentFilesWidget_->update(); }
+    else if( currentWidget() == fileSystemWidget_ ) { fileSystemWidget_->update(); }
 
 }

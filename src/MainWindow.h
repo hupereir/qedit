@@ -37,7 +37,7 @@ class BaseStatusBar;
 class DocumentClassToolBar;
 class ElidedLabel;
 class MenuBar;
-class NavigationFrame;
+class SidePanelWidget;
 class PrintHelper;
 class ReplaceWidget;
 class SelectLineWidget;
@@ -140,8 +140,8 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     { return *menuBar_; }
 
     //* navigation window
-    NavigationFrame& navigationFrame() const
-    { return *navigationFrame_; }
+    SidePanelWidget& sidePanelWidget() const
+    { return *sidePanelWidget_; }
 
     //*@name active view/display managment
     //@{
@@ -379,7 +379,7 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     void _saveConfiguration();
 
     //* toggle navigation frame visibility
-    void _toggleNavigationFrame( bool );
+    void _toggleSidePanelWidget( bool );
 
     //* splitter moved
     void _splitterMoved();
@@ -392,7 +392,7 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
 
     //* select display from file
     /**
-    this is triggered by changing the selection in the sessionFilesFrame
+    this is triggered by changing the selection in the sessionFilesWidget
     of the navigation window. This ensures that the selected display
     is always the active one, as long as it belongs to this window
     */
@@ -561,7 +561,7 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     QStackedWidget* stack_ = nullptr;
 
     //* navigation window
-    NavigationFrame* navigationFrame_ = nullptr;
+    SidePanelWidget* sidePanelWidget_ = nullptr;
 
     //* main display widget
     TextView* activeView_ = nullptr;
