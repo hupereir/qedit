@@ -25,14 +25,13 @@
 #include "Key.h"
 #include "TextView.h"
 
-#include <QBasicTimer>
-#include <QTimerEvent>
 
 #include <QAction>
+#include <QBasicTimer>
 #include <QCloseEvent>
 #include <QLabel>
-#include <QSplitter>
 #include <QStackedWidget>
+#include <QTimerEvent>
 
 class BaseStatusBar;
 class DocumentClassToolBar;

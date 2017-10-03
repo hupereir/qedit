@@ -463,72 +463,6 @@ class TextDisplay: public TextEditor
 
     //@}
 
-    //* recent files
-    FileList& _recentFiles() const;
-
-    //* update document class
-    /** first parameter is file name, second tells if document is a new untitled document or not */
-    void _updateDocumentClass( File, bool );
-
-    //* set file name
-    void _setFile( const File& file );
-
-    //* is new document
-    void _setIsNewDocument( bool value )
-    { isNewDocument_ = value; }
-
-    //* set use compression
-    void _setUseCompression( bool value )
-    { useCompression_ = value; }
-
-    //* clear macros
-    void _clearMacros()
-    { macros_.clear(); }
-
-    //* macros
-    void _setMacros( const TextMacro::List& macros)
-    { macros_ = macros; }
-
-    //* last save time stamp
-    void _setLastSaved( const TimeStamp& stamp )
-    { lastSaved_ = stamp; }
-
-    //* working directory
-    void _setWorkingDirectory( const File& file )
-    { workingDirectory_ = file; }
-
-    //* if true file is not checked on enter event
-    bool _ignoreWarnings() const
-    { return ignoreWarnings_; }
-
-    //* if true file is not checked on enter event
-    void _setIgnoreWarnings( bool value )
-    { ignoreWarnings_ = value; }
-
-    //* true if macros list contains automatic macros
-    bool _hasAutomaticMacros() const;
-
-    //* process macro
-    void _processMacro( const TextMacro& );
-
-    //* returns true if text contents differs from file contents
-    bool _contentsChanged() const;
-
-    //* returns true if file was removed
-    bool _fileRemoved() const;
-
-    //* returns true if file was modified by external application
-    bool _fileModified();
-
-    //* track text modifications for syntax highlighting
-    void _setBlockModified( const QTextBlock& );
-
-    //* update tagged block colors
-    void _updateTaggedBlocks();
-
-    //* update margins
-    bool _updateMargin() override;
-
     protected Q_SLOTS:
 
     /** returns true if changed */
@@ -647,6 +581,72 @@ class TextDisplay: public TextEditor
     bool _fileIsAfs() const;
 
     private:
+
+    //* recent files
+    FileList& _recentFiles() const;
+
+    //* update document class
+    /** first parameter is file name, second tells if document is a new untitled document or not */
+    void _updateDocumentClass( File, bool );
+
+    //* set file name
+    void _setFile( const File& file );
+
+    //* is new document
+    void _setIsNewDocument( bool value )
+    { isNewDocument_ = value; }
+
+    //* set use compression
+    void _setUseCompression( bool value )
+    { useCompression_ = value; }
+
+    //* clear macros
+    void _clearMacros()
+    { macros_.clear(); }
+
+    //* macros
+    void _setMacros( const TextMacro::List& macros)
+    { macros_ = macros; }
+
+    //* last save time stamp
+    void _setLastSaved( const TimeStamp& stamp )
+    { lastSaved_ = stamp; }
+
+    //* working directory
+    void _setWorkingDirectory( const File& file )
+    { workingDirectory_ = file; }
+
+    //* if true file is not checked on enter event
+    bool _ignoreWarnings() const
+    { return ignoreWarnings_; }
+
+    //* if true file is not checked on enter event
+    void _setIgnoreWarnings( bool value )
+    { ignoreWarnings_ = value; }
+
+    //* true if macros list contains automatic macros
+    bool _hasAutomaticMacros() const;
+
+    //* process macro
+    void _processMacro( const TextMacro& );
+
+    //* returns true if text contents differs from file contents
+    bool _contentsChanged() const;
+
+    //* returns true if file was removed
+    bool _fileRemoved() const;
+
+    //* returns true if file was modified by external application
+    bool _fileModified();
+
+    //* track text modifications for syntax highlighting
+    void _setBlockModified( const QTextBlock& );
+
+    //* update tagged block colors
+    void _updateTaggedBlocks();
+
+    //* update margins
+    bool _updateMargin() override;
 
     //* actions
     void _installActions();

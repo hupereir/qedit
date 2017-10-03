@@ -43,17 +43,16 @@ class NavigationFrame: public QStackedWidget
     //* creator
     explicit NavigationFrame( QWidget* parent, FileList&  );
 
-    //* default size
-    void setDefaultWidth( int value )
-    { defaultWidth_ = value; }
-
-    //* default width
-    int defaultWidth() const
-    { return defaultWidth_; }
+    //*@name accessors
+    //@{
 
     //* size
     QSize sizeHint() const override
-    { return (defaultWidth_ ) >= 0 ? QSize( defaultWidth_, 0 ):QWidget::sizeHint(); }
+    {
+        return (defaultWidth_ ) >= 0 ?
+            QSize( defaultWidth_, 0 ):
+            QWidget::sizeHint();
+    }
 
     //* session files
     SessionFilesFrame& sessionFilesFrame() const
@@ -67,12 +66,18 @@ class NavigationFrame: public QStackedWidget
     FileSystemFrame& fileSystemFrame() const
     { return *fileSystemFrame_; }
 
-    //*@name actions
-    //@{
-
     //* visibility
     QAction& visibilityAction() const
     { return *visibilityAction_; }
+
+    //@}
+
+    //*@name modifiers
+    //@{
+
+    //* default size
+    void setDefaultWidth( int value )
+    { defaultWidth_ = value; }
 
     //@}
 

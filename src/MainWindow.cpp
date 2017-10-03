@@ -106,9 +106,9 @@ MainWindow::MainWindow(  QWidget* parent ):
     setCentralWidget( splitter );
 
     // insert navigationFrame
-    navigationFrame_ = new NavigationFrame(0, application->recentFiles() );
+    navigationFrame_ = new NavigationFrame( nullptr, application->recentFiles() );
     navigationFrame_->setDefaultWidth( XmlOptions::get().get<int>( "NAVIGATION_FRAME_WIDTH" ) );
-    splitter->addWidget( &navigationFrame() );
+    splitter->addWidget( navigationFrame_ );
 
     connect( &navigationFrame_->visibilityAction(), SIGNAL(toggled(bool)), SLOT(_toggleNavigationFrame(bool)) );
 
@@ -936,7 +936,7 @@ void MainWindow::_installToolbars()
 
     // navigation toolbar
     auto navigationToolbar = new NavigationToolBar( this );
-    navigationToolbar->connect( navigationFrame() );
+    navigationToolbar->connect( *navigationFrame_ );
 
 
 }
