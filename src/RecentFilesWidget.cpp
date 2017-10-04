@@ -157,7 +157,7 @@ void RecentFilesWidget::_updateActions()
 void RecentFilesWidget::_showToolTip( const QModelIndex& index )
 {
 
-    if( !index.isValid() ) toolTipWidget_->hide();
+    if( !( index.isValid() && window()->isActiveWindow() ) ) toolTipWidget_->hide();
     else {
 
         // fileInfo
