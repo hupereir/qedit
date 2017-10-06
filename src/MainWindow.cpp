@@ -168,8 +168,6 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     //* configuration
     connect( application, SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
-    connect( application, SIGNAL(saveConfiguration()), SLOT(_saveConfiguration()) );
-    connect( qApp, SIGNAL(aboutToQuit()), SLOT(_saveConfiguration()) );
     _updateConfiguration();
 
 }
@@ -605,10 +603,6 @@ void MainWindow::_updateConfiguration()
     }
 
 }
-
-//________________________________________________________
-void MainWindow::_saveConfiguration()
-{ Debug::Throw( "MainWindow::_saveConfiguration.\n" ); }
 
 //________________________________________________________
 void MainWindow::_toggleSidePanelWidget( bool state )

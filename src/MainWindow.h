@@ -375,9 +375,6 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
     //* update configuration
     void _updateConfiguration();
 
-    //* update configuration
-    void _saveConfiguration();
-
     //* toggle navigation frame visibility
     void _toggleSidePanelWidget( bool );
 
