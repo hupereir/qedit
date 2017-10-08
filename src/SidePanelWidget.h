@@ -30,7 +30,7 @@
 
 class SessionFilesWidget;
 class RecentFilesWidget;
-class FileSystemWidget;
+class BaseFileSystemWidget;
 
 //* editor windows navigator
 class SidePanelWidget: public QStackedWidget
@@ -63,7 +63,7 @@ class SidePanelWidget: public QStackedWidget
     { return *recentFilesWidget_; }
 
     //* file system
-    FileSystemWidget& fileSystemWidget() const
+    BaseFileSystemWidget& fileSystemWidget() const
     { return *fileSystemWidget_; }
 
     //* visibility
@@ -101,7 +101,7 @@ class SidePanelWidget: public QStackedWidget
     RecentFilesWidget *recentFilesWidget_;
 
     //* file system
-    FileSystemWidget* fileSystemWidget_;
+    BaseFileSystemWidget* fileSystemWidget_;
 
     //@}
 

@@ -25,7 +25,7 @@
 #include "CloseFilesDialog.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
-#include "FileSystemWidget.h"
+#include "BaseFileSystemWidget.h"
 #include "IconNames.h"
 #include "IconEngine.h"
 #include "MainWindow.h"

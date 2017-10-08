@@ -20,7 +20,7 @@
 #include "SidePanelWidget.h"
 
 #include "Debug.h"
-#include "FileSystemWidget.h"
+#include "BaseFileSystemWidget.h"
 #include "RecentFilesWidget.h"
 #include "SessionFilesWidget.h"
 
@@ -39,7 +39,7 @@ SidePanelWidget::SidePanelWidget( QWidget* parent, FileList& files ):
     // stack widget
     addWidget( sessionFilesWidget_ = new SessionFilesWidget( nullptr ) );
     addWidget( recentFilesWidget_ = new RecentFilesWidget( nullptr, files) );
-    addWidget( fileSystemWidget_ = new FileSystemWidget( nullptr ) );
+    addWidget( fileSystemWidget_ = new BaseFileSystemWidget( nullptr ) );
 
     // current widget
     setCurrentWidget( sessionFilesWidget_ );

@@ -38,7 +38,7 @@
 #include "FileList.h"
 #include "FileRecordProperties.h"
 #include "FileSelectionDialog.h"
-#include "FileSystemWidget.h"
+#include "BaseFileSystemWidget.h"
 #include "HighlightBlockFlags.h"
 #include "HtmlDialog.h"
 #include "HtmlHelper.h"

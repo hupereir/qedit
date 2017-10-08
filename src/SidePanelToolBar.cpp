@@ -20,7 +20,7 @@
 #include "CustomPixmap.h"
 #include "CustomToolButton.h"
 #include "Debug.h"
-#include "FileSystemWidget.h"
+#include "BaseFileSystemWidget.h"
 #include "IconEngine.h"
 #include "IconNames.h"
 #include "IconSizeMenu.h"
