@@ -25,7 +25,7 @@
 #include "TextBlockDelimiter.h"
 #include "PatternLocationSet.h"
 
-#if USE_ASPELL
+#if WITH_ASPELL
 #include "Word.h"
 #endif
 
@@ -103,7 +103,7 @@ class HighlightBlockData: public TextBlockData
 
     //@}
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
     //*@name spelling
     //@{
     //* set of misspelled words
@@ -136,7 +136,7 @@ class HighlightBlockData: public TextBlockData
 
     //@}
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
     //* set of misspelled words and position in associated block
     SpellCheck::Word::Set words_;
     #endif

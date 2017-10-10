@@ -870,7 +870,7 @@ void MainWindow::_installActions()
     connect( filePropertiesAction_, SIGNAL(triggered()), SLOT(_fileInfo()) );
 
     addAction( spellcheckAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), tr( "Spell Check..." ), this ) );
-    #if USE_ASPELL
+    #if WITH_ASPELL
     connect( spellcheckAction_, SIGNAL(triggered()), SLOT(_spellcheck()) );
     spellcheckAction_->setEnabled( !SpellCheck::SpellInterface().dictionaries().empty() );
     #endif
@@ -911,7 +911,7 @@ void MainWindow::_installToolbars()
     toolbar = new CustomToolBar( tr( "Tools" ), this, "EXTRA_TOOLBAR" );
     toolbar->addAction( filePropertiesAction_ );
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
     toolbar->addAction( spellcheckAction_ );
     #endif
 

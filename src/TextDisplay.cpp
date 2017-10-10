@@ -58,7 +58,7 @@
 #include "Util.h"
 #include "XmlOptions.h"
 
-#if USE_ASPELL
+#if WITH_ASPELL
 #include "SpellDialog.h"
 #include "SuggestionMenu.h"
 #endif
@@ -146,7 +146,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
     connect( this, SIGNAL(indent(QTextBlock,bool)), textIndent_, SLOT(indent(QTextBlock,bool)) );
     connect( this, SIGNAL(indent(QTextBlock,QTextBlock)), textIndent_, SLOT(indent(QTextBlock,QTextBlock)) );
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
 
     // install menus
     filterMenu_ = new SpellCheck::FilterMenu( this );
@@ -1177,7 +1177,7 @@ void TextDisplay::_updateDocumentClass( File file, bool newDocument )
 
     // rehighlight text entirely
     // because Pattern Ids may have changed even if the className has not changed.
-    #if USE_ASPELL
+    #if WITH_ASPELL
     if( textHighlight_->isHighlightEnabled() && !textHighlight_->spellParser().isEnabled() ) rehighlight();
     #else
     if( textHighlight_->isHighlightEnabled() ) rehighlight();
@@ -1250,7 +1250,7 @@ void TextDisplay::selectFilter( const QString& filter )
 {
     Debug::Throw( "TextDisplay::selectFilter.\n" );
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
     // local reference to interface
     SpellCheck::SpellInterface& interface( textHighlight_->spellParser().interface() );
 
@@ -1279,7 +1279,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
 {
     Debug::Throw( "TextDisplay::selectDictionary.\n" );
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
     // local reference to interface
     SpellCheck::SpellInterface& interface( textHighlight_->spellParser().interface() );
 
@@ -1433,7 +1433,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 {
     Debug::Throw( "TextDisplay::_autoSpellContextEvent.\n" );
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
 
     // check autospell enability
     if( !textHighlight_->spellParser().isEnabled() ) return false;
@@ -1519,7 +1519,7 @@ void TextDisplay::_installActions()
     autoSpellAction_->setShortcutContext( Qt::WidgetShortcut );
     autoSpellAction_->setCheckable( true );
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
     autoSpellAction_->setChecked( textHighlight_->spellParser().isEnabled() );
     connect( autoSpellAction_, SIGNAL(toggled(bool)), SLOT(_toggleAutoSpell(bool)) );
     #else
@@ -1528,7 +1528,7 @@ void TextDisplay::_installActions()
 
     // spell checking
     addAction( spellcheckAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), "Check Spelling...", this ) );
-    #if USE_ASPELL
+    #if WITH_ASPELL
     connect( spellcheckAction_, SIGNAL(triggered()), SLOT(_spellcheck()) );
     #else
     spellcheckAction_->setVisible( false );
@@ -1554,7 +1554,7 @@ void TextDisplay::_installActions()
     filePropertiesAction_->setToolTip( "Display current file properties" );
     connect( filePropertiesAction_, SIGNAL(triggered()), SLOT(_fileProperties()) );
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
 
     filterMenuAction_ = filterMenu_->menuAction();
     dictionaryMenuAction_ = dictionaryMenu_->menuAction();
@@ -1910,7 +1910,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
 
     Debug::Throw() << "TextDisplay::_updateSpellCheckConfiguration - file: " << file << " new document:" << isNewDocument() << endl;
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
 
     // spellcheck configuration
     bool changed( false );
@@ -2069,7 +2069,7 @@ void TextDisplay::_toggleParenthesisHighlight( bool state )
 //_______________________________________________________
 void TextDisplay::_toggleAutoSpell( bool state )
 {
-    #if USE_ASPELL
+    #if WITH_ASPELL
     Debug::Throw( "TextDisplay::_toggleAutoSpell.\n" );
 
     // propagate to textHighlight
@@ -2140,7 +2140,7 @@ void TextDisplay::_spellcheck()
 {
     Debug::Throw( "TextDisplay::_spellcheck.\n" );
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
     // create dialog
     SpellCheck::SpellDialog dialog( this );
     dialog.interface().setIgnoredWords( textHighlight_->spellParser().interface().ignoredWords() );
@@ -2466,7 +2466,7 @@ void TextDisplay::_textModified()
 void TextDisplay::_ignoreMisspelledWord( QString word )
 {
     Debug::Throw() << "TextDisplay::_ignoreMisspelledWord - word: " << word << endl;
-    #if USE_ASPELL
+    #if WITH_ASPELL
     textHighlight_->spellParser().interface().ignoreWord( word );
     rehighlight();
     #endif
@@ -2478,7 +2478,7 @@ void TextDisplay::_ignoreMisspelledWord( QString word )
 void TextDisplay::_replaceMisspelledSelection( QString word )
 {
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
     Debug::Throw() << "TextDisplay::_replaceMisspelledSelection - word: " << word << endl;
     auto cursor( textCursor() );
     cursor.insertText( word );

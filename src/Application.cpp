@@ -35,7 +35,7 @@
 #include "XmlOptions.h"
 #include "XmlDef.h"
 
-#if USE_ASPELL
+#if WITH_ASPELL
 #include "AutoSpellConfiguration.h"
 #include "SpellCheckConfiguration.h"
 #include "SpellInterface.h"
@@ -66,7 +66,7 @@ bool Application::initApplicationManager()
     if( !BaseApplication::initApplicationManager() ) return false;
     else {
 
-        #if USE_ASPELL
+        #if WITH_ASPELL
         bool accepted( true );
         if( parser.hasFlag( "--list-dictionaries" ) )
         {
@@ -163,7 +163,7 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
     out.registerFlag( "--close", tr( "close displays matching file names and exit") );
     out.registerOption( CommandLineParser::Tag( "--orientation", "-o" ), tr( "string" ), tr( "select view orientation for tabbed edition (vertical|horizontal)") );
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
     out.registerFlag( "--autospell", tr( "switch autospell on for all files") );
     out.registerOption( "--filter", tr( "string" ), tr( "select filter for spell checking") );
     out.registerOption( "--dictionary", tr( "string" ), tr( "select dictionary for spell checking") );
@@ -235,7 +235,7 @@ void Application::_configuration()
 void Application::_spellCheckConfiguration()
 {
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
 
     Debug::Throw( "Application::_spellCheckConfiguration.\n" );
 

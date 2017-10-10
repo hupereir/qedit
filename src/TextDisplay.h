@@ -38,7 +38,7 @@
 #include "TextMacro.h"
 #include "TimeStamp.h"
 
-#if USE_ASPELL
+#if WITH_ASPELL
 #include "DictionaryMenu.h"
 #include "FilterMenu.h"
 #endif
@@ -337,7 +337,7 @@ class TextDisplay: public TextEditor
     QAction& filePropertiesAction() const
     { return *filePropertiesAction_; }
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
 
     //* spellcheck dictionary selection
     QAction& dictionaryMenuAction() const
@@ -749,7 +749,7 @@ class TextDisplay: public TextEditor
     //* toggle text highlighting
     QAction* filePropertiesAction_ = nullptr;
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
 
     //* spellcheck dictionary selection menu
     QAction* dictionaryMenuAction_;
@@ -782,7 +782,7 @@ class TextDisplay: public TextEditor
 
     //@}
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
 
     //* spellcheck dictionary selection menu
     SpellCheck::DictionaryMenu* dictionaryMenu_ = nullptr;

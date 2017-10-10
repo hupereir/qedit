@@ -28,7 +28,7 @@
 #include "Key.h"
 #include "TextParenthesis.h"
 
-#if USE_ASPELL
+#if WITH_ASPELL
 #include "SpellParser.h"
 #endif
 
@@ -144,7 +144,7 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
         patterns_.clear();
     }
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
 
     //* embedded spellcheck parser
     const SpellCheck::SpellParser& spellParser() const
@@ -222,7 +222,7 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     //*@name spell checking
     //@{
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
 
     //* spell check parser
     SpellCheck::SpellParser spellParser_;

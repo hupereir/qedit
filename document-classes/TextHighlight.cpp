@@ -48,7 +48,7 @@ void TextHighlight::highlightBlock( const QString& text )
 
     // check if syntax highlighting is enabled
     bool highlightEnabled( isHighlightEnabled()  && !patterns_.empty() );
-    #if USE_ASPELL
+    #if WITH_ASPELL
     highlightEnabled |= spellParser_.isEnabled();
     #endif
 
@@ -107,7 +107,7 @@ void TextHighlight::highlightBlock( const QString& text )
     }
 
     // before try applying the found locations see if automatic spellcheck is on
-    #if USE_ASPELL
+    #if WITH_ASPELL
     if( spellParser_.isEnabled() )
     {
 
@@ -138,7 +138,7 @@ void TextHighlight::highlightBlock( const QString& text )
 PatternLocationSet TextHighlight::locationSet( const QString& text, int activeId )
 {
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
     if( spellParser_.isEnabled() ) return _spellCheckLocationSet( text );
     else
     #endif
@@ -316,7 +316,7 @@ PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, H
 
     PatternLocationSet locations;
 
-    #if USE_ASPELL
+    #if WITH_ASPELL
 
     // insert highlight
     const SpellCheck::Word::Set& words( spellParser_.parse( text ) );
