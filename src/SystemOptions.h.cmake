@@ -34,7 +34,7 @@ void installSystemOptions( void )
     XmlOptions::get().setAutoDefault( true );
     XmlOptions::get().set( "DIFF_COMMAND", "@DIFF@" );
 
-    #ifdef USE_ASPELL
+    #ifdef WITH_ASPELL
     XmlOptions::get().set( "ASPELL", "@ASPELL@" );
     XmlOptions::get().set( "DICTIONARY", "en" );
     XmlOptions::get().set( "DICTIONARY_FILTER", "none" );
