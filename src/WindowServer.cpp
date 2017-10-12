@@ -753,8 +753,7 @@ void WindowServer::_detach( TextDisplay& activeDisplayLocal )
 void WindowServer::_reparent( const File& first, const File& second )
 {
 
-    Debug::Throw( "WindowServer::_reparent.\n" );
-
+    Debug::Throw(0) << "WindowServer::_reparent - first: " << first << " second: " << second << endl;
     // retrieve windows
     auto&& firstDisplay( _findDisplay( first ) );
     auto&& firstView( _findView( first ) );
@@ -1015,6 +1014,7 @@ TextView& WindowServer::_findView( const File& file )
 TextDisplay& WindowServer::_findDisplay( const File& file )
 {
 
+    Debug::Throw(0) << "WindowServer::_findDisplay - file: " << file << " expanded: " << file.expanded() << endl;
     TextDisplay* out = nullptr;
 
     // retrieve windows
@@ -1023,7 +1023,8 @@ TextDisplay& WindowServer::_findDisplay( const File& file )
 
         // retrieve displays
         auto displays( window->associatedDisplays() );
-        auto iter = std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file.expanded() ) );
+        auto iter = std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) );
+        // auto iter = std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file.expanded() ) );
         if( iter != displays.end() )
         {
             out = *iter;
