@@ -753,7 +753,7 @@ void WindowServer::_detach( TextDisplay& activeDisplayLocal )
 void WindowServer::_reparent( const File& first, const File& second )
 {
 
-    Debug::Throw(0) << "WindowServer::_reparent - first: " << first << " second: " << second << endl;
+    Debug::Throw() << "WindowServer::_reparent - first: " << first << " second: " << second << endl;
     // retrieve windows
     auto&& firstDisplay( _findDisplay( first ) );
     auto&& firstView( _findView( first ) );
@@ -1014,7 +1014,7 @@ TextView& WindowServer::_findView( const File& file )
 TextDisplay& WindowServer::_findDisplay( const File& file )
 {
 
-    Debug::Throw(0) << "WindowServer::_findDisplay - file: " << file << " expanded: " << file.expanded() << endl;
+    Debug::Throw() << "WindowServer::_findDisplay - file: " << file << endl;
     TextDisplay* out = nullptr;
 
     // retrieve windows
