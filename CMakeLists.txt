@@ -8,7 +8,7 @@ SET(QEDIT_VERSION_PATCH 1)
 set(QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION_PATCH})
 
 ########### modules #################
-set(CMAKE_MODULE_PATH $CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/base-cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/base-cmake")
 include(Macros)
 include(FeatureSummary)
 setup_cmake_settings()
