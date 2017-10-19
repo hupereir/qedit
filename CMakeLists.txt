@@ -10,7 +10,6 @@ set(QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION_
 ########### modules #################
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/base-cmake")
 include(Macros)
-include(FeatureSummary)
 setup_cmake_settings()
 setup_compiler_flags()
 
@@ -63,6 +62,4 @@ endif()
 
 add_subdirectory(document-classes)
 add_subdirectory(src)
-
-feature_summary(WHAT PACKAGES_FOUND DESCRIPTION "Found packages:")
-feature_summary(WHAT PACKAGES_NOT_FOUND DESCRIPTION "Not found packages:")
+write_feature_summary()
