@@ -45,7 +45,7 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     enum ColumnType
     {
         Name,
-        Filename,
+        FileName,
         nColumns
     };
 

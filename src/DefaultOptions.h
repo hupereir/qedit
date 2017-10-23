@@ -89,11 +89,11 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( "SIDE_PANEL_WIDTH", 200 );
 
     // file lists mask and sorting
-    XmlOptions::get().set<int>( "SESSION_FILES_MASK", 1<<FileRecordModel::Filename );
+    XmlOptions::get().set<int>( "SESSION_FILES_MASK", 1<<FileRecordModel::FileName );
     XmlOptions::get().set<int>( "SESSION_FILES_SORT_COLUMN", FileRecordModel::Time );
     XmlOptions::get().set<int>( "SESSION_FILES_SORT_ORDER", Qt::AscendingOrder );
 
-    XmlOptions::get().set<int>( "RECENT_FILES_MASK", 1<<FileRecordModel::Filename );
+    XmlOptions::get().set<int>( "RECENT_FILES_MASK", 1<<FileRecordModel::FileName );
     XmlOptions::get().set<int>( "RECENT_FILES_SORT_COLUMN", FileRecordModel::Time );
     XmlOptions::get().set<int>( "RECENT_FILES_SORT_ORDER", Qt::AscendingOrder );
 
@@ -130,8 +130,8 @@ void installDefaultOptions()
     // toolbars default configuration
 
     // lists
-    XmlOptions::get().set<int>( "FILE_SELECTION_LIST_MASK", (1<<FileRecordModel::Filename)|(1<<FileRecordModel::Time) );
-    XmlOptions::get().set<int>( "CLOSE_FILES_LIST_MASK", (1<<FileRecordModel::Filename)|(1<<FileRecordModel::Time) );
+    XmlOptions::get().set<int>( "FILE_SELECTION_LIST_MASK", (1<<FileRecordModel::FileName)|(1<<FileRecordModel::Time) );
+    XmlOptions::get().set<int>( "CLOSE_FILES_LIST_MASK", (1<<FileRecordModel::FileName)|(1<<FileRecordModel::Time) );
 
     // autosave
     XmlOptions::get().setRaw( "AUTOSAVE_PATH", Util::tmp() );

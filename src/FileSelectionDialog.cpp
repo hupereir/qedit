@@ -53,7 +53,7 @@ selection_( selection )
 
     // mask
     int mask(
-        (1<<FileRecordModel::Filename)|
+        (1<<FileRecordModel::FileName)|
         (1<<FileRecordModel::Path ));
     int classColumn( model_.findColumn( "class_name" ) );
     if( classColumn >= 0 ) mask |= (1<<classColumn);

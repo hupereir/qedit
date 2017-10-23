@@ -72,7 +72,7 @@ QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
         switch( index.column() )
         {
             case Name: return documentClass.name();
-            case Filename:
+            case FileName:
             {
                 if( documentClass.isBuildIn() ) return tr( "Internal" );
                 else return documentClass.file().get();
@@ -129,7 +129,7 @@ bool DocumentClassModel::SortFTor::operator () ( const DocumentClass& constFirst
     switch( type_ )
     {
         case Name: return DocumentClass::WeakLessThanFTor()( first, second );
-        case Filename: return first.file() < second.file();
+        case FileName: return first.file() < second.file();
         default: return true;
     }
 

@@ -34,7 +34,7 @@ QVariant RecentFilesModel::data( const QModelIndex& index, int role ) const
     // check index, role and column
     if( !index.isValid() ) return QVariant();
 
-    if( showIcons() && role == Qt::DecorationRole && index.column() == Filename )
+    if( showIcons() && role == Qt::DecorationRole && index.column() == FileName )
     {
         // retrieve associated file info
         const FileRecord& record( get(index) );
