@@ -27,6 +27,7 @@
 #include "FileRemovedDialog.h"
 #include "Debug.h"
 #include "FileCheck.h"
+#include "FileCheckData.h"
 #include "FileRecord.h"
 #include "Functors.h"
 #include "HighlightBlockFlags.h"
@@ -102,7 +103,7 @@ class TextDisplay: public TextEditor
     { return lastSaved_; }
 
     //* file check data
-    const FileCheck::Data& fileCheckData() const
+    const FileCheckData& fileCheckData() const
     { return fileCheckData_; }
 
     //* class name
@@ -235,10 +236,10 @@ class TextDisplay: public TextEditor
     void clearFileCheckData();
 
     //* file check data
-    void setFileCheckData( FileCheck::Data data );
+    void setFileCheckData( FileCheckData );
 
     //* ask for save if modified
-    AskForSaveDialog::ReturnCode askForSave( bool enable_all = false );
+    AskForSaveDialog::ReturnCode askForSave( bool enableAll = false );
 
     //* check if file has been removed externally
     FileRemovedDialog::ReturnCode checkFileRemoved();
@@ -685,7 +686,7 @@ class TextDisplay: public TextEditor
     QString className_;
 
     //* filesystem check data
-    FileCheck::Data fileCheckData_;
+    FileCheckData fileCheckData_;
 
     //* diff conflict color
     QColor diffConflictColor_;

@@ -26,6 +26,7 @@
 #include <QApplication>
 #include <algorithm>
 
+//* used to monitor file changes
 //____________________________________________________
 FileCheck::FileCheck( QObject* parent ):
     QObject( parent ),
@@ -75,78 +76,59 @@ void FileCheck::_fileChanged( const QString& file )
 
     // filecheck data
     File local( file );
-    Data data( local );
-
+    FileCheckData data( local );
     if( !local.exists() )
     {
 
-        data.setFlag( Data::Removed );
+        data.setFlag( FileCheckData::Flag::Removed );
         data.setTimeStamp( TimeStamp::now() );
         removeFile( file );
 
     } else {
 
-        data.setFlag( Data::Modified );
+        data.setFlag( FileCheckData::Flag::Modified );
         data.setTimeStamp( local.lastModified() );
 
     }
 
-    data_.insert( data );
-    timer_.start( 200, this );
+    _checkData( data );
 
 }
 
-//______________________________________________________
-void FileCheck::timerEvent( QTimerEvent* event )
+//______________________________________________________________________________
+void FileCheck::_checkData( const FileCheckData& data )
 {
-    if( event->timerId() == timer_.timerId() )
+
+    Base::KeySet<TextDisplay> displays( this );
+    const auto displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( data.file().expanded() ) ) );
+    if( displayIter != displays.end() )
     {
 
-        // stop timer
-        timer_.stop();
-        if( data_.empty() ) return;
-
-        Base::KeySet<TextDisplay> displays( this );
-        for( const auto& data:data_ )
+        // assign to this display and others
+        Base::KeySet<TextDisplay> associatedDisplays( *displayIter );
+        associatedDisplays.insert( *displayIter );
+        for( const auto& display:associatedDisplays )
         {
 
-            const auto displayIter( std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( data.file().expanded() ) ) );
-            if( displayIter != displays.end() )
-            {
+            // check whether data are still relevant for this display
+            if( !( data.flag() == FileCheckData::Flag::Removed || (display->lastSaved().isValid() && (*displayIter)->lastSaved() < data.timeStamp()) ) )
+            { continue; }
 
-                // assign to this display and others
-                Base::KeySet<TextDisplay> associatedDisplays( *displayIter );
-                associatedDisplays.insert( *displayIter );
-                for( const auto& display:associatedDisplays )
-                {
+            (*displayIter)->setFileCheckData( data );
+            if( !( display->isActive() && display->BaseEditor::hasFocus() ) )
+            { continue; }
 
-                    // check whether data are still relevant for this display
-                    if( !( data.flag() == Data::Removed || (display->lastSaved().isValid() && (*displayIter)->lastSaved() < data.timeStamp()) ) )
-                    { continue; }
-
-                    (*displayIter)->setFileCheckData( data );
-                    if( !( display->isActive() && display->BaseEditor::hasFocus() ) )
-                    { continue; }
-
-                    // retrieve associated TextView
-                    Base::KeySet<TextView> views( display );
-                    if( !views.empty() ) (*views.begin())->checkDisplayModifications( *displayIter );
-
-                }
-
-            } else {
-
-                // permanently remove file from list
-                removeFile( data.file() );
-
-            }
+            // retrieve associated TextView
+            Base::KeySet<TextView> views( display );
+            if( !views.empty() ) (*views.begin())->checkDisplayModifications( *displayIter );
 
         }
 
-        // clear
-        data_.clear();
+    } else {
 
-    } else return QObject::timerEvent( event );
+        // permanently remove file from list
+        removeFile( data.file() );
 
+    }
 
 }

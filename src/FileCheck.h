@@ -21,6 +21,7 @@
 *******************************************************************************/
 
 #include "File.h"
+#include "FileCheckData.h"
 #include "Key.h"
 #include "TimeStamp.h"
 
@@ -53,81 +54,18 @@ class FileCheck: public QObject, public Base::Key, private Base::Counter<FileChe
     //* remove file
     void removeFile( const QString& );
 
-    //* used to monitor file changes
-    class Data
-    {
-        public:
-
-        //* flag
-        enum Flag
-        {
-            None,
-            Removed,
-            Modified
-        };
-
-        //* constructor
-        explicit Data( File file = File(), Flag flag = None, TimeStamp stamp = TimeStamp() ):
-            file_( file ),
-            flag_( flag ),
-            timeStamp_( stamp )
-        {}
-
-        //* file
-        void setFile( const File& file )
-        { file_ = file; }
-
-        //* file
-        const File& file() const
-        { return file_; }
-
-        //* flag
-        void setFlag( const Flag& flag )
-        { flag_ = flag; }
-
-        //* flag
-        const Flag& flag() const
-        { return flag_; }
-
-        //* timestamp
-        void setTimeStamp( const TimeStamp& stamp )
-        { timeStamp_ = stamp; }
-
-        //* timestamp
-        const TimeStamp& timeStamp() const
-        { return timeStamp_; }
-
-        private:
-
-        //* file
-        File file_;
-
-        //* flag
-        Flag flag_;
-
-        //* timestamp
-        TimeStamp timeStamp_;
-
-    };
-
-    //* map data to file
-    using DataSet = QSet<Data>;
-
-
     //* file system watcher
     const QFileSystemWatcher& fileSystemWatcher() const
     { return fileSystemWatcher_; }
-
-    protected:
-
-    //* timer event, to handle multiple file modification at once
-    void timerEvent( QTimerEvent* event ) override;
 
     private Q_SLOTS:
 
     void _fileChanged( const QString& );
 
     private:
+
+    //* check data
+    void _checkData( const FileCheckData& );
 
     //* file system watcher
     QFileSystemWatcher fileSystemWatcher_;
@@ -138,23 +76,6 @@ class FileCheck: public QObject, public Base::Key, private Base::Counter<FileChe
     //* file set
     FileSet files_;
 
-    //* map files and modification data
-    DataSet data_;
-
-    //* resize timer
-    QBasicTimer timer_;
-
 };
-
-//* equal to operator
-inline bool operator == ( const FileCheck::Data& first, const FileCheck::Data& second )
-{ return first.file() == second.file(); }
-
-//* less than operator
-inline bool operator < ( const FileCheck::Data& first, const FileCheck::Data& second )
-{ return first.file() < second.file(); }
-
-inline uint qHash( const FileCheck::Data& data )
-{ return qHash( data.file() ); }
 
 #endif

@@ -151,7 +151,7 @@ FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) con
             // set flags
             int flags( FileRecordProperties::None );
             if( display->document()->isModified() ) flags |= FileRecordProperties::Modified;
-            if( display->fileCheckData().flag() != FileCheck::Data::None ) flags |= FileRecordProperties::Altered;
+            if( display->fileCheckData().flag() != FileCheckData::Flag::None ) flags |= FileRecordProperties::Altered;
 
             if( isActiveWindow )
             {

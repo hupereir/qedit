@@ -647,18 +647,18 @@ void TextDisplay::clearFileCheckData()
 
     Debug::Throw( "TextDisplay::clearFileCheckData.\n" );
 
-    if( fileCheckData_.flag() == FileCheck::Data::None ) return;
+    if( fileCheckData_.flag() == FileCheckData::Flag::None ) return;
 
     // clear file check data
     Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
     for( const auto& display:displays )
-    { display->setFileCheckData( FileCheck::Data() ); }
+    { display->setFileCheckData( FileCheckData() ); }
 
 }
 
 //___________________________________________________________________________
-void TextDisplay::setFileCheckData( FileCheck::Data data )
+void TextDisplay::setFileCheckData( FileCheckData data )
 {
     Debug::Throw( "TextDisplay::setFileCheckData.\n" );
 
@@ -1756,7 +1756,7 @@ bool TextDisplay::_fileRemoved() const
     */
 
     // check file flag
-    if( !( _fileIsAfs() || fileCheckData_.flag() == FileCheck::Data::Removed || fileCheckData_.flag() == FileCheck::Data::Modified ) )
+    if( !( _fileIsAfs() || fileCheckData_.flag() == FileCheckData::Flag::Removed || fileCheckData_.flag() == FileCheckData::Flag::Modified ) )
     { return false; }
 
     // make sure file is still removed
@@ -1780,7 +1780,7 @@ bool TextDisplay::_fileModified()
 
     // check file
     if( file_.isEmpty() || isNewDocument() ) return false;
-    if( !( _fileIsAfs() || fileCheckData_.flag() == FileCheck::Data::Removed || fileCheckData_.flag() == FileCheck::Data::Modified ) )
+    if( !( _fileIsAfs() || fileCheckData_.flag() == FileCheckData::Flag::Removed || fileCheckData_.flag() == FileCheckData::Flag::Modified ) )
     { return false; }
 
     if( !lastSaved().isValid() ) return false;
