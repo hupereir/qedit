@@ -479,7 +479,7 @@ void MainWindow::_toHtml()
     // retrieve command and execute
     const QString command( dialog.command() );
     if( !command.isEmpty() )
-    { ( Command( command ) << file ).run(); }
+    { ( Base::Command( command ) << file ).run(); }
 
     return;
 
