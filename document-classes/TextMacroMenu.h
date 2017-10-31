@@ -54,7 +54,7 @@ class TextMacroMenu: public QMenu, private Base::Counter<TextMacroMenu>
     //* update state
     void updateState( bool );
 
-    protected Q_SLOTS:
+    private Q_SLOTS:
 
     //* emited when an action is selected
     void _processAction( QAction* action );

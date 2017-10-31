@@ -42,7 +42,7 @@ class DocumentClassManagerDialog: public CustomDialog
     //* list of user files
     File::List userFiles() const;
 
-    protected Q_SLOTS:
+    private Q_SLOTS:
 
     //* read
     void _reload();
