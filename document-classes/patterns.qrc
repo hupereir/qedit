@@ -1,4 +1,5 @@
-<!DOCTYPE RCC><RCC version="1.0">
+<!DOCTYPE RCC>
+<RCC version="1.0">
   <qresource>
     <file alias="patterns/c_patterns.xml">../patterns/c_patterns.xml</file>
     <file alias="patterns/default_patterns.xml">../patterns/default_patterns.xml</file>

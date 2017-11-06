@@ -63,7 +63,7 @@ class RecentFilesWidget: public QWidget, private Base::Counter<RecentFilesWidget
     //* signal emitted when a file is selected
     void fileSelected( FileRecord );
 
-    //* signal emited when a file is selected
+    //* signal emitted when a file is selected
     void fileActivated( FileRecord );
 
     protected:

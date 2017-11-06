@@ -56,7 +56,7 @@ class TextMacroMenu: public QMenu, private Base::Counter<TextMacroMenu>
 
     private Q_SLOTS:
 
-    //* emited when an action is selected
+    //* emitted when an action is selected
     void _processAction( QAction* action );
 
     private:
