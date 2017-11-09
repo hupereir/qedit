@@ -30,10 +30,6 @@ class NewDocumentNameServer
 
     public:
 
-    //* constructor
-    explicit NewDocumentNameServer()
-    {}
-
     //* get name
     QString get();
 
