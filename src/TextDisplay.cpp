@@ -346,18 +346,18 @@ void TextDisplay::synchronize( TextDisplay* other )
 void TextDisplay::setIsNewDocument()
 {
 
-    Debug::Throw( "TextDisplay::setIsNewDocument.\n" );
+    Debug::Throw( 0, "TextDisplay::setIsNewDocument.\n" );
 
     // do nothing if already set
     if( isNewDocument() )
     {
-        Debug::Throw( "TextDisplay::setIsNewDocument - done.\n" );
+        Debug::Throw( 0, "TextDisplay::setIsNewDocument - done.\n" );
         return;
     }
 
     // generate filename
-    File file( NewDocumentNameServer().get() );
-    Debug::Throw() << "TextDisplay::setIsNewDocument - file: " << file << endl;
+    File file( newDocumentNameServer().get() );
+    Debug::Throw(0) << "TextDisplay::setIsNewDocument - file: " << file << endl;
 
     // retrieve display and associated
     Base::KeySet<TextDisplay> displays( this );
@@ -427,7 +427,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
     }
 
     // remove new document version from name server
-    if( isNewDocument() ) { NewDocumentNameServer().remove( file_ ); }
+    if( isNewDocument() ) { newDocumentNameServer().remove( file_ ); }
 
     // retrieve display and associated, update document class
     // this is needed to avoid highlight glitch when oppening file
@@ -798,7 +798,7 @@ void TextDisplay::saveAs()
     }
 
     // remove new document version from name server, and FileCheck, if needed
-    if( isNewDocument() ) { NewDocumentNameServer().remove( file_ ); }
+    if( isNewDocument() ) { newDocumentNameServer().remove( file_ ); }
     else if( !file_.isEmpty() ) { Base::Singleton::get().application<Application>()->fileCheck().removeFile( file_ ); }
 
     // update filename and document class for this and associates
