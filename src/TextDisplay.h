@@ -394,11 +394,7 @@ class TextDisplay: public TextEditor
 
         //* predicate
         bool operator() ( const TextDisplay* display ) const
-        {
-            return
-                display->file().isEmpty() ||
-                (display->isNewDocument() && !display->document()->isModified() );
-        }
+        { return display->file().isEmpty(); }
 
     };
 
