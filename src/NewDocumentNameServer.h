@@ -48,18 +48,29 @@ class NewDocumentNameServer
 
         public:
 
+        using List = QList<Version>;
+
         //* constructor
         explicit Version( int value ):
             value_( value )
         {}
 
-        //* get name
+        //*@name accessors
+        //@{
+
+        //* name
         QString name() const;
 
-        //* version number
-        int value_;
+        //* value
+        int value() const
+        { return value_; }
 
-        using List = QList<Version>;
+        //@}
+
+        private:
+
+        //* version number
+        int value_ = 0;
 
     };
 
