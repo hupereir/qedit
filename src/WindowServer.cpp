@@ -252,6 +252,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
                 {
                     _applyCommandLineArguments( _activeWindow().activeDisplay(), parser );
                     first = false;
+                    _activeWindow().uniconify();
                 }
 
             } else {
@@ -272,6 +273,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
     } else {
 
         // default mode
+        bool first( true );
         for( const auto& filename:filenames )
         {
 
@@ -283,13 +285,20 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
             if( opened ) { _applyCommandLineArguments( _activeWindow().activeDisplay(), parser ); }
             fileOpened |= opened;
 
+            if( first && opened )
+            {
+                _activeWindow().uniconify();
+                first = false;
+            }
+
         }
 
     }
 
     if( !fileOpened )
     {
-        if( firstCall_ ) {
+        if( firstCall_ )
+        {
 
             // at first call and if no file was oppened,
             // set the current display as a new document.
@@ -300,10 +309,10 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
 
         }
 
-        _activeWindow().uniconify();
-
     }
     firstCall_ = false;
+
+    _activeWindow().uniconify();
 
     return;
 
@@ -520,7 +529,6 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
     if( iter != windows.end() )
     {
 
-        (*iter)->uniconify();
         (*iter)->selectDisplay( record.file() );
         _setActiveWindow( **iter );
         Debug::Throw() << "WindowServer::_open - file: " << record.file() << " found matching." << endl;
@@ -546,9 +554,6 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
         (*iter)->setActiveView( **viewIter );
         view = *viewIter;
 
-        // uniconify
-        (*iter)->uniconify();
-
     }
 
     // if no window found, create a new one
@@ -567,9 +572,6 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
 
             // create new view
             _activeWindow().newTextView( record );
-
-            // uniconify
-            _activeWindow().uniconify();
 
         }
 
