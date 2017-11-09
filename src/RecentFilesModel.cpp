@@ -37,7 +37,7 @@ QVariant RecentFilesModel::data( const QModelIndex& index, int role ) const
     if( showIcons() && role == Qt::DecorationRole && index.column() == FileName )
     {
         // retrieve associated file info
-        const FileRecord& record( get(index) );
+        auto record( get(index) );
         const QIcon icon( mimeTypeIconProvider_->icon( record.file().extension() ) );
 
         if( !icon.isNull() ) return icon;
