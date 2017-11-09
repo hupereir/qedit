@@ -346,25 +346,19 @@ void TextDisplay::synchronize( TextDisplay* other )
 void TextDisplay::setIsNewDocument()
 {
 
-    Debug::Throw( 0, "TextDisplay::setIsNewDocument.\n" );
+    Debug::Throw( "TextDisplay::setIsNewDocument.\n" );
 
     // do nothing if already set
-    if( isNewDocument() )
-    {
-        Debug::Throw( 0, "TextDisplay::setIsNewDocument - done.\n" );
-        return;
-    }
+    if( isNewDocument() ) return;
 
     // generate filename
     File file( newDocumentNameServer().get() );
-    Debug::Throw(0) << "TextDisplay::setIsNewDocument - file: " << file << endl;
 
     // retrieve display and associated
     Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );
     for( const auto& display:displays )
     {
-
         display->_setIsNewDocument( true );
         display->setClassName( className() );
         display->_updateDocumentClass( File(), true );
@@ -373,14 +367,11 @@ void TextDisplay::setIsNewDocument()
 
         // disable file info action
         display->filePropertiesAction_->setEnabled( false );
-
     }
-    Debug::Throw( "TextDisplay::setIsNewDocument - filename set.\n" );
 
     // perform first autosave
     auto application( Base::Singleton::get().application<Application>() );
     application->autoSave().saveFiles( this );
-    Debug::Throw( "TextDisplay::setIsNewDocument - done.\n" );
 
 }
 
