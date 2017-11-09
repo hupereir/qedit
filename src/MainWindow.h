@@ -191,11 +191,6 @@ class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, publ
 
     //@}
 
-    //*@name configuration
-    //@{
-
-    //@}
-
     //*@name actions
     //@{
 
