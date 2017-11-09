@@ -217,7 +217,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
     // check number of files
     if( filenames.size() > 10 )
     {
-        auto buffer =
+        const auto buffer =
             tr( "Do you really want to open %1 files at the same time ?\n"
             "This might be resource intensive and can overload your computer.\n"
             "If you choose No, only the first file will be opened." ).arg( filenames.size() );
