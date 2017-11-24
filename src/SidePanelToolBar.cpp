@@ -44,6 +44,8 @@ SidePanelToolBar::SidePanelToolBar( QWidget* parent ):
 {
     Debug::Throw( "SidePanelToolBar:SidePanelToolBar.\n" );
     setTransparent( true );
+    setForcedVisible( true );
+    setMovable( false );
     connect( this, SIGNAL(orientationChanged(Qt::Orientation)), SLOT(_orientationChanged(Qt::Orientation)) );
 }
 
