@@ -168,7 +168,6 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     //* configuration
     connect( application, SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
-    _updateConfiguration();
 
 }
 
