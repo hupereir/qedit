@@ -161,20 +161,20 @@
   <block_delimiter begin=" do " end="end" regexp="(do )|(end\s*do)" />
 
 <!--Text macros-->
-  <macro accelerator="Alt+C" name="Clean end of line" options="automatic" >
+  <macro accelerator="Alt+C" name="Clean End Of Line" options="automatic" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>
    </rule>
   </macro>
   <macro options="separator" name="generic" />
-  <macro name="Add comments" >
+  <macro name="Add Comments" >
    <rule>
     <regexp>^</regexp>
     <replacement>c </replacement>
    </rule>
   </macro>
-  <macro name="Remove comments" >
+  <macro name="Remove Comments" >
    <rule>
     <regexp>^c </regexp>
     <replacement></replacement>

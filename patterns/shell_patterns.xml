@@ -99,38 +99,38 @@
 <!--Block delimiters-->
 
 <!--Text macros-->
-  <macro accelerator="Alt+T" name="Add one tab indentation" >
+  <macro accelerator="Alt+T" name="Add One Tab Indentation" >
    <rule>
     <regexp>^</regexp>
     <replacement>XML_TAB</replacement>
    </rule>
   </macro>
-  <macro accelerator="Shift+Alt+T" name="Remove one tab indentation" >
+  <macro accelerator="Shift+Alt+T" name="Remove One Tab Indentation" >
    <rule>
     <regexp>^\t</regexp>
     <replacement></replacement>
    </rule>
   </macro>
-  <macro name="Remove all tab indentations" >
+  <macro name="Remove All Tab Indentations" >
    <rule>
     <regexp>^\t+</regexp>
     <replacement></replacement>
    </rule>
   </macro>
-  <macro name="Clean end of line" options="automatic" >
+  <macro name="Clean End Of Line" options="automatic" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>
    </rule>
   </macro>
   <macro options="separator" name="generic" />
-  <macro accelerator="Alt+C" name="Add comments" >
+  <macro accelerator="Alt+C" name="Add Comments" >
    <rule>
     <regexp>^</regexp>
     <replacement># </replacement>
    </rule>
   </macro>
-  <macro accelerator="Shift+Alt+C" name="Remove comments" >
+  <macro accelerator="Shift+Alt+C" name="Remove Comments" >
    <rule>
     <regexp>^# </regexp>
     <replacement></replacement>

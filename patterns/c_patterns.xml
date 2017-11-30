@@ -352,45 +352,45 @@ and this one is an opening bracket</comments>
   <block_delimiter begin="/*" end="*/" regexp="(^\s*/\*)|(\s+/\*)|(\*/)" />
 
 <!--Text macros-->
-  <macro accelerator="Alt+T" name="Add one tab indentation" >
+  <macro accelerator="Alt+T" name="Add One Tab Indentation" >
    <rule>
     <regexp>^</regexp>
     <replacement>XML_TAB</replacement>
    </rule>
   </macro>
-  <macro accelerator="Shift+Alt+T" name="Remove one tab indentation" >
+  <macro accelerator="Shift+Alt+T" name="Remove One Tab Indentation" >
    <rule>
     <regexp>^\t</regexp>
     <replacement></replacement>
    </rule>
   </macro>
-  <macro accelerator="Shift+Ctrl+I" name="Remove all tab indentations" >
+  <macro accelerator="Shift+Ctrl+I" name="Remove All Tab Indentations" >
    <rule>
     <regexp>^\s+</regexp>
     <replacement></replacement>
    </rule>
   </macro>
-  <macro name="Clean end of line" options="automatic" >
+  <macro name="Clean End Of Line" options="automatic" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>
    </rule>
   </macro>
   <macro options="separator" name="generic" />
-  <macro accelerator="Alt+C" name="Add C++ comments" >
+  <macro accelerator="Alt+C" name="Add C++ Comments" >
    <rule>
     <regexp>^</regexp>
     <replacement>// </replacement>
    </rule>
   </macro>
-  <macro accelerator="Shift+Alt+C" name="Remove C++ comments" >
+  <macro accelerator="Shift+Alt+C" name="Remove C++ Comments" >
    <rule>
     <regexp>^//(\s|$)</regexp>
     <replacement></replacement>
    </rule>
   </macro>
   <macro options="separator" name="generic" />
-  <macro name="Add C line comments" >
+  <macro name="Add C Line Comments" >
    <rule>
     <regexp>^</regexp>
     <replacement>/*</replacement>
@@ -400,7 +400,7 @@ and this one is an opening bracket</comments>
     <replacement>*/</replacement>
    </rule>
   </macro>
-  <macro name="Remove C line comments" >
+  <macro name="Remove C Line Comments" >
    <rule>
     <regexp>^\s*/\*</regexp>
     <replacement></replacement>
@@ -410,7 +410,7 @@ and this one is an opening bracket</comments>
     <replacement></replacement>
    </rule>
   </macro>
-  <macro name="Add C bar comments" >
+  <macro name="Add C Bar Comments" >
    <rule>
     <regexp>^</regexp>
     <replacement>XML_TAB</replacement>
@@ -424,7 +424,7 @@ and this one is an opening bracket</comments>
     <replacement>XML_ENDL*/</replacement>
    </rule>
   </macro>
-  <macro name="Remove C bar comments" >
+  <macro name="Remove C Bar Comments" >
    <rule options="no_split" >
     <regexp>^/\*\n?</regexp>
     <replacement></replacement>

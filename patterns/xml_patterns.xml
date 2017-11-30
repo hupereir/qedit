@@ -122,32 +122,32 @@
   <block_delimiter begin="XML_LTitem" end="itemXML_GT" regexp="(XML_LTitem)|(itemXML_GT)" />
 
 <!--Text macros-->
-  <macro name="Add one tab indentation" >
+  <macro name="Add One Tab Indentation" >
    <rule>
     <regexp>^</regexp>
     <replacement>XML_TAB</replacement>
    </rule>
   </macro>
-  <macro name="Remove one tab indentation" >
+  <macro name="Remove One Tab Indentation" >
    <rule>
     <regexp>^\t</regexp>
     <replacement></replacement>
    </rule>
   </macro>
-  <macro name="Remove all tab indentations" >
+  <macro name="Remove All Tab Indentations" >
    <rule>
     <regexp>^\s+</regexp>
     <replacement></replacement>
    </rule>
   </macro>
-  <macro name="Clean end of line" >
+  <macro name="Clean End Of Line" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>
    </rule>
   </macro>
   <macro options="separator" name="generic" />
-  <macro name="Add line comments" >
+  <macro name="Add Line Comments" >
    <rule>
     <regexp>^</regexp>
     <replacement>XML_LT!--</replacement>
@@ -157,7 +157,7 @@
     <replacement>--XML_GT</replacement>
    </rule>
   </macro>
-  <macro name="Remove line comments" >
+  <macro name="Remove Line Comments" >
    <rule>
     <regexp>^\s*XML_LT\!--</regexp>
     <replacement></replacement>
@@ -167,7 +167,7 @@
     <replacement></replacement>
    </rule>
   </macro>
-  <macro accelerator="Alt+C" name="Add bar comments" >
+  <macro accelerator="Alt+C" name="Add Bar Comments" >
    <rule>
     <regexp>^</regexp>
     <replacement>XML_TAB</replacement>
@@ -181,7 +181,7 @@
     <replacement>XML_ENDL--XML_GT</replacement>
    </rule>
   </macro>
-  <macro accelerator="Shift+Alt+C" name="Remove bar comments" >
+  <macro accelerator="Shift+Alt+C" name="Remove Bar Comments" >
    <rule options="no_split" >
     <regexp>^\s*XML_LT\!--\n?</regexp>
     <replacement></replacement>

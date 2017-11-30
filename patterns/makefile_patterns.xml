@@ -114,51 +114,51 @@
 <!--Block delimiters-->
 
 <!--Text macros-->
-  <macro name="Add one tab indentation" >
+  <macro name="Add One Tab Indentation" >
    <rule>
     <regexp>^</regexp>
     <replacement>XML_TAB</replacement>
    </rule>
   </macro>
-  <macro name="Remove one tab indentation" >
+  <macro name="Remove One Tab Indentation" >
    <rule>
     <regexp>^\t</regexp>
     <replacement></replacement>
    </rule>
   </macro>
-  <macro accelerator="Alt+C" name="Clean end of line" options="automatic" >
+  <macro accelerator="Alt+C" name="Clean End Of Line" options="automatic" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>
    </rule>
   </macro>
   <macro options="separator" name="generic" />
-  <macro name="Add leading space characters" >
+  <macro name="Add Leading Space Characters" >
    <rule>
     <regexp>^</regexp>
     <replacement>  </replacement>
    </rule>
   </macro>
-  <macro name="Remove leading spaces and tabs" >
+  <macro name="Remove Leading Spaces And Tabs" >
    <rule>
     <regexp>^\s+</regexp>
     <replacement></replacement>
    </rule>
   </macro>
-  <macro accelerator="Alt+C" name="Clean end of line" >
+  <macro accelerator="Alt+C" name="Clean End Of Line" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>
    </rule>
   </macro>
   <macro options="separator" name="generic" />
-  <macro name="Add comments" >
+  <macro name="Add Comments" >
    <rule>
     <regexp>^</regexp>
     <replacement># </replacement>
    </rule>
   </macro>
-  <macro name="Remove comments" >
+  <macro name="Remove Comments" >
    <rule>
     <regexp>^# </regexp>
     <replacement></replacement>
