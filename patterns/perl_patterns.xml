@@ -56,8 +56,8 @@
   </keyword_pattern>
   <range_pattern style="String" parent="" name="String" >
    <comments></comments>
-   <begin>XML_QUOTE</begin>
-   <end>([^\\]XML_QUOTE|$)</end>
+   <begin>&quot;</begin>
+   <end>([^\\]&quot;|$)</end>
   </range_pattern>
   <range_pattern style="String2" parent="" name="String2" >
    <comments></comments>
@@ -108,7 +108,7 @@
   </keyword_pattern>
   <keyword_pattern style="Function" parent="" name="Function" >
    <comments></comments>
-   <keyword>(\b|XML_AND)(\w+)\s*(?=\()</keyword>
+   <keyword>(\b|&amp;)(\w+)\s*(?=\()</keyword>
   </keyword_pattern>
 
 <!--Indentation patterns-->

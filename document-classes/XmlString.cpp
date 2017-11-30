@@ -24,34 +24,10 @@
 //__________________________________
 const XmlString::ConversionList& XmlString::_conversions()
 {
-    static const auto conversions = Base::makeT<ConversionList>({
-
-        Conversion( "<", "XML_LT" ),
-        Conversion( ">", "XML_GT" ),
-        Conversion( "&", "XML_AND" ),
-        Conversion( "\"", "XML_QUOTE" ),
-
-        Conversion( QString::fromUtf8( "à" ), "XML_AGRAVE" ),
-        Conversion( QString::fromUtf8( "â" ), "XML_AHAT" ),
-        Conversion( QString::fromUtf8( "ä" ), "XML_ATREM" ),
-        Conversion( QString::fromUtf8( "é" ), "XML_ECUTE" ),
-        Conversion( QString::fromUtf8( "è" ), "XML_EGRAVE" ),
-        Conversion( QString::fromUtf8( "ê" ), "XML_EHAT" ),
-        Conversion( QString::fromUtf8( "ë" ), "XML_EYTRM" ),
-        Conversion( QString::fromUtf8( "î" ), "XML_IHAT" ),
-        Conversion( QString::fromUtf8( "ï" ), "XML_ITREM" ),
-        Conversion( QString::fromUtf8( "ô" ), "XML_OHAT" ),
-        Conversion( QString::fromUtf8( "ö" ), "XML_OTREM" ),
-        Conversion( QString::fromUtf8( "ù" ), "XML_UGRAVE" ),
-        Conversion( QString::fromUtf8( "û" ), "XML_UHAT" ),
-        Conversion( QString::fromUtf8( "ç" ), "XML_CCED" ),
-
+    static const auto conversions = Base::makeT<ConversionList>(
+    {
         Conversion( "\t", "XML_TAB" ),
-        Conversion( "\n", "XML_ENDL" ),
-
-        // this conversion is needed for XML not to remove entries that consist of empty spaces only
-        // it is used in xmlToText but not in textToXml
-        Conversion( "", "XML_NONE" )
+        Conversion( "\n", "XML_ENDL" )
     });
 
     return conversions;

@@ -39,8 +39,8 @@
   </range_pattern>
   <range_pattern style="String" parent="" name="String" >
    <comments></comments>
-   <begin>XML_QUOTE</begin>
-   <end>[^\\]XML_QUOTE</end>
+   <begin>&quot;</begin>
+   <end>[^\\]&quot;</end>
   </range_pattern>
   <range_pattern style="String" parent="" name="String2" >
    <comments></comments>
@@ -49,8 +49,8 @@
   </range_pattern>
   <range_pattern options="span no_indent " style="String" parent="" name="String3" >
    <comments></comments>
-   <begin>XML_QUOTE.*\\</begin>
-   <end>([^\\]XML_QUOTE)|([^\\].$)</end>
+   <begin>&quot;.*\\</begin>
+   <end>([^\\]&quot;)|([^\\].$)</end>
   </range_pattern>
   <keyword_pattern style="Keyword2" parent="String3" name="Separator" >
    <comments></comments>
@@ -78,7 +78,7 @@
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Logical" >
    <comments></comments>
-   <keyword>((\!|\=)?=)|(XML_AND?XML_AND)|(\|?\|)</keyword>
+   <keyword>((\!|\=)?=)|(&amp;?&amp;)|(\|?\|)</keyword>
   </keyword_pattern>
   <keyword_pattern style="End Of Line" parent="" name="End Of Line" >
    <comments></comments>
@@ -86,7 +86,7 @@
   </keyword_pattern>
   <keyword_pattern style="Function" parent="" name="Function" >
    <comments></comments>
-   <keyword>(\b|XML_AND)([^\s]+)\s*(?=\()</keyword>
+   <keyword>(\b|&amp;)([^\s]+)\s*(?=\()</keyword>
   </keyword_pattern>
 
 <!--Indentation patterns-->

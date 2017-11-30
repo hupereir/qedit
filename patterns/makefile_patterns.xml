@@ -53,8 +53,8 @@
   </keyword_pattern>
   <range_pattern style="String" parent="Command" name="String" >
    <comments></comments>
-   <begin>XML_QUOTE</begin>
-   <end>[^\\]XML_QUOTE</end>
+   <begin>&quot;</begin>
+   <end>[^\\]&quot;</end>
   </range_pattern>
   <range_pattern style="String" parent="Command" name="String2" >
    <comments></comments>

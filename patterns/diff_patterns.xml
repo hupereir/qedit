@@ -31,12 +31,12 @@
 <!--Highlight patterns-->
   <range_pattern style="in" parent="" name="in" >
    <comments></comments>
-   <begin>XML_LT</begin>
+   <begin>&lt;</begin>
    <end>$</end>
   </range_pattern>
   <range_pattern style="out" parent="" name="out" >
    <comments></comments>
-   <begin>XML_GT</begin>
+   <begin>&gt;</begin>
    <end>$</end>
   </range_pattern>
   <keyword_pattern style="delimiter" parent="" name="delimiter" >

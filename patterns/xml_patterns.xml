@@ -40,28 +40,28 @@
 <!--Highlight patterns-->
   <range_pattern style="Text" parent="" name="Text" >
    <comments></comments>
-   <begin>^\s*(?!(\s|XML_LT))</begin>
-   <end>(.(?=XML_LT))</end>
+   <begin>^\s*(?!(\s|&lt;))</begin>
+   <end>(.(?=&lt;))</end>
   </range_pattern>
   <range_pattern options="no_indent " style="Text" parent="" name="Text2" >
    <comments></comments>
-   <begin>^\s*(?!(\s|XML_LT))</begin>
+   <begin>^\s*(?!(\s|&lt;))</begin>
    <end>.(?=$)</end>
   </range_pattern>
   <range_pattern options="span comments" style="Comment" parent="" name="Comment" >
    <comments></comments>
-   <begin>XML_LT!--</begin>
-   <end>--XML_GT</end>
+   <begin>&lt;!--</begin>
+   <end>--&gt;</end>
   </range_pattern>
   <range_pattern style="Tag" parent="" name="Tag" >
    <comments></comments>
-   <begin>XML_LT/?</begin>
-   <end>(/?XML_GT)|$</end>
+   <begin>&lt;/?</begin>
+   <end>(/?&gt;)|$</end>
   </range_pattern>
   <range_pattern style="String" parent="Tag" name="String" >
    <comments></comments>
-   <begin>XML_QUOTE</begin>
-   <end>(XML_QUOTE|$)</end>
+   <begin>&quot;</begin>
+   <end>(&quot;|$)</end>
   </range_pattern>
   <range_pattern style="String" parent="Tag" name="String2" >
    <comments></comments>
@@ -78,48 +78,48 @@
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="Tag" name="Keyword" >
    <comments></comments>
-   <keyword>(XML_LT/?|/?XML_GT|=)</keyword>
+   <keyword>(&lt;/?|/?&gt;|=)</keyword>
   </keyword_pattern>
 
 <!--Indentation patterns-->
   <indent_pattern type="3" >
    <rule par="0" >
-    <regexp>^\s*(?!(XML_LT|\s))</regexp>
+    <regexp>^\s*(?!(&lt;|\s))</regexp>
    </rule>
   </indent_pattern>
   <indent_pattern type="0" >
    <rule par="0" >
-    <regexp>^\s*XML_LT(?!/\!)\w+\b\s*(\w+=XML_QUOTE.+XML_QUOTE\s*)*XML_GT.*XML_LT/\w+\b\s*XML_GT\s*$</regexp>
+    <regexp>^\s*&lt;(?!/\!)\w+\b\s*(\w+=&quot;.+&quot;\s*)*&gt;.*&lt;/\w+\b\s*&gt;\s*$</regexp>
    </rule>
   </indent_pattern>
   <indent_pattern type="0" >
    <rule par="-1" >
-    <regexp>^\s*XML_LT(?!/\!)\w+\b\s*(\w+=XML_QUOTE.+XML_QUOTE\s*)*XML_GT</regexp>
+    <regexp>^\s*&lt;(?!/\!)\w+\b\s*(\w+=&quot;.+&quot;\s*)*&gt;</regexp>
    </rule>
    <rule par="0" >
-    <regexp>XML_LT/\w+\b\s*XML_GT\s*$</regexp>
+    <regexp>&lt;/\w+\b\s*&gt;\s*$</regexp>
    </rule>
   </indent_pattern>
   <indent_pattern type="1" >
    <rule par="-1" >
-    <regexp>^\s*XML_LT(?!/\!)\w+\b\s*(\w+=XML_QUOTE.+XML_QUOTE\s*)*XML_GT</regexp>
+    <regexp>^\s*&lt;(?!/\!)\w+\b\s*(\w+=&quot;.+&quot;\s*)*&gt;</regexp>
    </rule>
   </indent_pattern>
   <indent_pattern type="2" >
    <rule par="0" >
-    <regexp>^\s*XML_LT/\w+\b\s*XML_GT\s*$</regexp>
+    <regexp>^\s*&lt;/\w+\b\s*&gt;\s*$</regexp>
    </rule>
   </indent_pattern>
 
 <!--Parenthesis-->
-  <parenthesis begin="XML_LT" end="XML_GT" regexp="(XML_LT)|(XML_GT)" />
+  <parenthesis begin="&lt;" end="&gt;" regexp="(&lt;)|(&gt;)" />
   <parenthesis begin="(" end=")" regexp="\(|\)" />
   <parenthesis begin="[" end="]" regexp="\[|\]" />
   <parenthesis begin="{" end="}" regexp="\{|\}" />
 
 <!--Block delimiters-->
-  <block_delimiter begin="XML_LT!--" end="--XML_GT" regexp="(XML_LT\!--)|(--XML_GT)" />
-  <block_delimiter begin="XML_LTitem" end="itemXML_GT" regexp="(XML_LTitem)|(itemXML_GT)" />
+  <block_delimiter begin="&lt;!--" end="--&gt;" regexp="(&lt;\!--)|(--&gt;)" />
+  <block_delimiter begin="&lt;item" end="item&gt;" regexp="(&lt;item)|(item&gt;)" />
 
 <!--Text macros-->
   <macro name="Add One Tab Indentation" >
@@ -150,20 +150,20 @@
   <macro name="Add Line Comments" >
    <rule>
     <regexp>^</regexp>
-    <replacement>XML_LT!--</replacement>
+    <replacement>&lt;!--</replacement>
    </rule>
    <rule>
     <regexp>$</regexp>
-    <replacement>--XML_GT</replacement>
+    <replacement>--&gt;</replacement>
    </rule>
   </macro>
   <macro name="Remove Line Comments" >
    <rule>
-    <regexp>^\s*XML_LT\!--</regexp>
+    <regexp>^\s*&lt;\!--</regexp>
     <replacement></replacement>
    </rule>
    <rule>
-    <regexp>--XML_GT\s*$</regexp>
+    <regexp>--&gt;\s*$</regexp>
     <replacement></replacement>
    </rule>
   </macro>
@@ -174,20 +174,20 @@
    </rule>
    <rule options="no_split" >
     <regexp>^</regexp>
-    <replacement>XML_LT!--XML_ENDL</replacement>
+    <replacement>&lt;!--XML_ENDL</replacement>
    </rule>
    <rule options="no_split" >
     <regexp>$</regexp>
-    <replacement>XML_ENDL--XML_GT</replacement>
+    <replacement>XML_ENDL--&gt;</replacement>
    </rule>
   </macro>
   <macro accelerator="Shift+Alt+C" name="Remove Bar Comments" >
    <rule options="no_split" >
-    <regexp>^\s*XML_LT\!--\n?</regexp>
+    <regexp>^\s*&lt;\!--\n?</regexp>
     <replacement></replacement>
    </rule>
    <rule options="no_split" >
-    <regexp>\n?--XML_GT\s*$</regexp>
+    <regexp>\n?--&gt;\s*$</regexp>
     <replacement></replacement>
    </rule>
    <rule>

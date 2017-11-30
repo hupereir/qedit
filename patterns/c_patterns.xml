@@ -47,13 +47,13 @@
 <!--Highlight patterns-->
   <range_pattern options="span " style="Cvs In" parent="" name="Cvs In" >
    <comments>cvs conflict</comments>
-   <begin>^\s*XML_LT{7}</begin>
+   <begin>^\s*&lt;{7}</begin>
    <end>^\s*\={3}</end>
   </range_pattern>
   <range_pattern options="span " style="Cvs Out" parent="" name="Cvs Out" >
    <comments>cvs conflict</comments>
    <begin>\={3}\s*$</begin>
-   <end>^\s*XML_GT{7}</end>
+   <end>^\s*&gt;{7}</end>
   </range_pattern>
   <keyword_pattern style="End Of Line" parent="" name="End Of Line" >
    <comments>end of line</comments>
@@ -169,8 +169,8 @@
   
   <range_pattern style="String" parent="" name="String" >
    <comments>strings</comments>
-   <begin>XML_QUOTE</begin>
-   <end>([^\\]XML_QUOTE|$)</end>
+   <begin>&quot;</begin>
+   <end>([^\\]&quot;|$)</end>
   </range_pattern>
   
   <keyword_pattern style="String2" parent="" name="String single character" >
