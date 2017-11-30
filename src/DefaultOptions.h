@@ -120,10 +120,10 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( "MAX_SUGGESTIONS", 0 );
     #endif
 
-    XmlOptions::get().set<bool>( "SIDE_PANEL_TOOLBAR", true );
+    XmlOptions::get().set( "SIDE_PANEL_TOOLBAR", Option::create<bool>( true, Option::None ) );
+    XmlOptions::get().set( "SIDE_PANEL_TOOLBAR_LOCATION", Option::create<int>( Qt::LeftToolBarArea, Option::None ) );
     XmlOptions::get().set<int>( "SIDE_PANEL_TOOLBAR_LOCATION", Qt::LeftToolBarArea );
     XmlOptions::get().set<int>( "SIDE_PANEL_TOOLBAR_ICON_SIZE", 16 );
-    XmlOptions::get().set<int>( "SIDE_PANEL_TOOLBAR_TEXT_POSITION", 2 );
 
     XmlOptions::get().setRaw( "TEXT_ENCODING", QString( "UTF-8" ) );
 
