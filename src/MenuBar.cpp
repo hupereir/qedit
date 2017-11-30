@@ -301,7 +301,7 @@ void MenuBar::_updateToolsMenu()
     const bool currentBlockTagged( hasTags && display->isCurrentBlockTagged() );
 
     toolsMenu_->addAction( &display->tagBlockAction() );
-    display->tagBlockAction().setText( hasSelection ? tr( "Tag Selected Blocks" ) : tr( "Tag current block" ) );
+    display->tagBlockAction().setText( hasSelection ? tr( "Tag Selected Blocks" ) : tr( "Tag Current Block" ) );
 
     toolsMenu_->addAction( &display->nextTagAction() );
     display->nextTagAction().setEnabled( hasTags );
