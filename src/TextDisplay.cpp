@@ -1401,11 +1401,9 @@ void TextDisplay::paintEvent( QPaintEvent* event )
     painter.setPen( _marginWidget().foregroundColor() );
 
     // loop over found blocks
-    TextBlockRange range(
-        cursorForPosition( event->rect().topLeft() ).block(),
-        cursorForPosition( event->rect().bottomRight() ).block().next() );
-
-    for( const auto& block:range )
+    const auto first( cursorForPosition( event->rect().topLeft() ).block() );
+    const auto last( cursorForPosition( event->rect().bottomRight() ).block() );
+    for( auto block( first ); block != last.next() && block.isValid(); block = block.next() )
     {
         if( !block.blockFormat().boolProperty( TextBlock::Collapsed ) ) continue;
 
