@@ -164,7 +164,7 @@ void SessionFilesWidget::_updateActions()
 void SessionFilesWidget::_showToolTip( const QModelIndex& index )
 {
 
-    if( !( index.isValid() && window()->isActiveWindow() ) ) toolTipWidget_->hide();
+    if( !index.isValid() ) toolTipWidget_->hide();
     else {
 
         // fileInfo
@@ -180,9 +180,9 @@ void SessionFilesWidget::_showToolTip( const QModelIndex& index )
         }
 
         // rect
-        auto rect = list_->visualRect( index );
-        rect.translate( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) );
-        toolTipWidget_->setIndexRect( rect );
+        toolTipWidget_->setIndexRect(
+            list_->visualRect( index ).
+            translated( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) ) );
 
         // assign to tooltip widget
         toolTipWidget_->setRecord( record, icon );

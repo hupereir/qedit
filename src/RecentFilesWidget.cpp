@@ -157,24 +157,20 @@ void RecentFilesWidget::_updateActions()
 void RecentFilesWidget::_showToolTip( const QModelIndex& index )
 {
 
-    if( !( index.isValid() && window()->isActiveWindow() ) ) toolTipWidget_->hide();
+    if( !index.isValid() ) toolTipWidget_->hide();
     else {
 
-        // fileInfo
+        // update tooltip content
         const auto record( model_.get( index ) );
-
-        // icon
         QIcon icon;
-        QVariant iconVariant( model_.data( index, Qt::DecorationRole ) );
+        const auto iconVariant( model_.data( index, Qt::DecorationRole ) );
         if( iconVariant.canConvert( QVariant::Icon ) ) icon = iconVariant.value<QIcon>();
+        toolTipWidget_->setRecord( record, icon );
 
         // rect
-        const auto rect = list_->visualRect( index )
-            .translated( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) );
-        toolTipWidget_->setIndexRect( rect );
-
-        // assign to tooltip widget
-        toolTipWidget_->setRecord( record, icon );
+        toolTipWidget_->setIndexRect(
+            list_->visualRect( index ).
+            translated( list_->viewport()->mapToGlobal( QPoint( 0, 0 ) ) ) );
 
         // show
         toolTipWidget_->showDelayed();
