@@ -2237,8 +2237,8 @@ void TextDisplay::_addBaseIndentation()
     const auto end = document()->findBlock( std::max( cursor.position(), cursor.anchor() ) );
     for( const auto& block:TextBlockRange(begin, end.next() ) )
     {
-        // check block
-        if( !block.isValid() ) continue;
+        // break on invalid block
+        if( !block.isValid() ) break;
 
         // retrieve text
         QString text( block.text() );
@@ -2300,8 +2300,9 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
     // loop over blocks
     for( const auto& block:range )
     {
-        // check block
-        if( !block.isValid() ) continue;
+
+        // break on invalid block
+        if( !block.isValid() ) break;
 
         // retrieve text
         QString text( block.text() );
