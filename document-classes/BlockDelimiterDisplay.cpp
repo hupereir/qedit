@@ -933,6 +933,9 @@ CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const BlockDelimiterDi
         for( const auto& block:TextBlockRange( blocks.first.next(), blocks.second.next() ) )
         {
 
+            // break on invalid block
+            if( !block.isValid() ) break;
+
             // create collapse block data
             CollapsedBlockData currentCollapsedData( block );
 
