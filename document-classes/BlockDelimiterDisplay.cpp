@@ -485,7 +485,6 @@ void BlockDelimiterDisplay::expandAllBlocks()
     QTextCursor cursor( document.begin() );
     cursor.beginEditBlock();
 
-    // do not use ranges here because document blocks vary while inside the loop
     for( const auto& block:TextBlockRange( document ) )
     {
         // retrieve data and check if collapsed
