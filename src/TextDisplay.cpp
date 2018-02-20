@@ -450,7 +450,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
         if( !uncompressed.isEmpty() )
         {
             auto buffer = tr( "File '%1' is compressed.\nUncompress before opening ?" ).arg( file );
-            auto&& dialog = QuestionDialog( this, buffer );
+            QuestionDialog dialog( this, buffer );
             dialog.setOptionName( "COMPRESSION_DIALOG" );
             dialog.okButton().setText( tr( "Yes" ) );
             dialog.cancelButton().setText( tr( "No" ) );
