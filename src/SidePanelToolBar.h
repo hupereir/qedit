@@ -70,9 +70,6 @@ class SidePanelToolBar: public CustomToolBar
     //* make sure proper buttons are changed when navigation frame visibility is changed
     void _sidePanelWidgetVisibilityChanged( bool );
 
-    //* change orientation
-    void _orientationChanged( Qt::Orientation );
-
     //* display item page
     void _display( QAbstractButton* );
 

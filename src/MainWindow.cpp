@@ -100,15 +100,31 @@ MainWindow::MainWindow(  QWidget* parent ):
     setMenuBar( menuBar_ = new MenuBar( this ) );
     connect( &menuBar_->documentClassMenu(), SIGNAL(documentClassSelected(QString)), SLOT(selectClassName(QString)) );
 
+    // main widget
+    auto mainWidget = new QWidget( this );
+    setCentralWidget( mainWidget );
+    auto hLayout = new QHBoxLayout;
+    hLayout->setSpacing(0);
+    hLayout->setMargin(0);
+    mainWidget->setLayout( hLayout );
+
+    // side panel toolbar
+    auto sidePanelToolBar = new SidePanelToolBar( mainWidget );
+    sidePanelToolBar->setOrientation( Qt::Vertical );
+    hLayout->addWidget( sidePanelToolBar, 0 );
+
     // main widget is a splitter to store navigation window and active view
-    QSplitter* splitter = new QSplitter( this );
+    QSplitter* splitter = new QSplitter( mainWidget );
+    hLayout->addWidget( splitter, 1 );
     splitter->setOrientation( Qt::Horizontal );
-    setCentralWidget( splitter );
 
     // insert side panel
     sidePanelWidget_ = new SidePanelWidget( nullptr, application->recentFiles() );
     sidePanelWidget_->setDefaultWidth( XmlOptions::get().get<int>( "SIDE_PANEL_WIDTH" ) );
     splitter->addWidget( sidePanelWidget_ );
+
+    // navigation toolbar
+    sidePanelToolBar->connect( *sidePanelWidget_ );
 
     connect( &sidePanelWidget_->visibilityAction(), SIGNAL(toggled(bool)), SLOT(_toggleSidePanelWidget(bool)) );
 
@@ -926,10 +942,6 @@ void MainWindow::_installToolbars()
     // document class toolbar
     documentClassToolBar_ = new DocumentClassToolBar( this );
     connect( documentClassToolBar_, SIGNAL(documentClassSelected(QString)), SLOT(selectClassName(QString)) );
-
-    // navigation toolbar
-    auto sidePanelToolBar = new SidePanelToolBar( this );
-    sidePanelToolBar->connect( *sidePanelWidget_ );
 
 }
 

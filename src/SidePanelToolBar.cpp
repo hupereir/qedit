@@ -44,9 +44,6 @@ SidePanelToolBar::SidePanelToolBar( QWidget* parent ):
 {
     Debug::Throw( "SidePanelToolBar:SidePanelToolBar.\n" );
     setTransparent( true );
-    setForcedVisible( true );
-    setMovable( false );
-    connect( this, SIGNAL(orientationChanged(Qt::Orientation)), SLOT(_orientationChanged(Qt::Orientation)) );
 }
 
 //_______________________________________________________________
@@ -174,19 +171,6 @@ void SidePanelToolBar::_sidePanelWidgetVisibilityChanged( bool state )
 
     }
 
-
-}
-
-//______________________________________________________________________
-void SidePanelToolBar::_orientationChanged( Qt::Orientation orientation )
-{
-
-    Debug::Throw() << "SidePanelToolBar::_orientationChanged - orientation: " << orientation << endl;
-
-    for( auto&& iter = buttons_.begin(); iter != buttons_.end(); ++iter )
-    { iter.key()->rotate( orientation == Qt::Horizontal ? CustomPixmap::Rotation::None : CustomPixmap::Rotation::CounterClockwise ); }
-
-    adjustSize();
 
 }
 
