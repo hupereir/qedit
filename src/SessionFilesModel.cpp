@@ -255,7 +255,7 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         for( const auto& url:urls )
         {
 
-            #if QT_VERSION >= 0x040800
+            #if QT_VERSION >= QT_VERSION_CHECK( 4, 8, 0 )
             // check that local file
             if( !url.isLocalFile() ) continue;
             #endif
