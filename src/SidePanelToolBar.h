@@ -22,11 +22,11 @@
 
 #include "IconSize.h"
 #include "CustomToolBar.h"
-#include "CustomToolButton.h"
 
 #include <QAbstractButton>
 #include <QContextMenuEvent>
 #include <QHash>
+#include <QToolButton>
 
 class SidePanelWidget;
 
@@ -80,10 +80,10 @@ class SidePanelToolBar: public CustomToolBar
     { return *sidePanelWidget_; }
 
     //* tool button
-    CustomToolButton* _newToolButton( QWidget* parent, QIcon ) const;
+    QToolButton* _newToolButton( QWidget* parent, QIcon ) const;
 
     //* map widget to action
-    using ButtonMap = QHash<CustomToolButton*, QWidget* >;
+    using ButtonMap = QHash<QToolButton*, QWidget* >;
 
     //* map widget to action in the toolbar
     ButtonMap buttons_;

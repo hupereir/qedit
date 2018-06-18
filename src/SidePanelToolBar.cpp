@@ -61,7 +61,7 @@ void SidePanelToolBar::connect( SidePanelWidget& widget )
     buttonGroup->setExclusive( false );
 
     // matching buttons
-    CustomToolButton* button;
+    QToolButton* button;
 
     // session files
     addWidget( button = _newToolButton( this,  IconEngine::get( IconNames::Documents ) ) );
@@ -235,18 +235,14 @@ void SidePanelToolBar::contextMenuEvent( QContextMenuEvent* event )
 }
 
 //______________________________________________________________________
-CustomToolButton* SidePanelToolBar::_newToolButton( QWidget* parent, QIcon icon ) const
+QToolButton* SidePanelToolBar::_newToolButton( QWidget* parent, QIcon icon ) const
 {
 
     CustomToolButton* button = new CustomToolButton( parent );
     button->setIcon( icon );
     button->setCheckable( true );
-
-    // customize button appearence
+    button->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     button->setUpdateFromOptions( false );
-
-    if( orientation() == Qt::Vertical )
-    { button->rotate( CustomPixmap::Rotation::CounterClockwise ); }
 
     return button;
 
