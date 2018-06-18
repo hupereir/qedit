@@ -243,6 +243,7 @@ QToolButton* SidePanelToolBar::_newToolButton( QWidget* parent, QIcon icon ) con
     button->setCheckable( true );
     button->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     button->setUpdateFromOptions( false );
+    button->setProperty( "_kde_toolButton_alignment", Qt::AlignLeft );
 
     return button;
 
