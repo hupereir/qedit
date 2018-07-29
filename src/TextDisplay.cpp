@@ -1834,13 +1834,13 @@ bool TextDisplay::_updateMargin()
     Debug::Throw( "TextDisplay::_updateMargin.\n" );
 
     TextEditor::_updateMargin();
-    int left_margin( _leftMargin() );
+    int leftMargin( _leftMargin() );
 
-    blockDelimiterDisplay_->setOffset( left_margin );
+    blockDelimiterDisplay_->setOffset( leftMargin );
     if( showBlockDelimiterAction_->isChecked() && showBlockDelimiterAction_->isVisible() )
-    { left_margin += blockDelimiterDisplay_->width(); }
+    { leftMargin += blockDelimiterDisplay_->width(); }
 
-    return _setLeftMargin( left_margin );
+    return _setLeftMargin( leftMargin );
 
 }
 
@@ -1879,10 +1879,9 @@ void TextDisplay::_updateConfiguration()
 
     {
         // font
-        QFont font;
-        font.fromString( XmlOptions::get().raw( "FIXED_FONT_NAME" ) );
-        int line_spacing = QFontMetrics( font ).lineSpacing() + 1;
-        blockDelimiterDisplay_->setWidth( line_spacing );
+        const auto font( this->font() );
+        int lineSpacing = QFontMetrics( font ).lineSpacing() + 1;
+        blockDelimiterDisplay_->setWidth( lineSpacing );
         _updateMargin();
     }
 
