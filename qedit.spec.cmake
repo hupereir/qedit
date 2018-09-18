@@ -22,7 +22,7 @@ automatic spell-checking.
 %setup -q -n %{name}-%{ver} %{rel}
 
 %build
-cmake -DCMAKE_INSTALL_PREFIX=%{prefix} .
+cmake -DCMAKE_INSTALL_PREFIX=%{prefix} -DUSE_QT5=1 .
 make -j4
 
 %install
