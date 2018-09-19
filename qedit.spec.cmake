@@ -1,17 +1,15 @@
-%define ver      @QEDIT_VERSION@
-%define rel      0
-%define prefix   /usr
+Name:       @CPACK_PACKAGE_NAME@
+Version:    @CPACK_PACKAGE_VERSION@
+Release:    0%{dist}
+Vendor: @CPACK_PACKAGE_VENDOR@
+
+License: GPLV2
 
 Summary: Qt based advanced text editor
-Name: qedit
-Version: %{ver}
-Release: %{rel}
-License: GPL
 Group: Applications/Editors
-Source: %{name}-%{ver}.tar.gz
-BuildRoot: /var/tmp/%{name}-buildroot
 
-Requires: qt4-common >= 4.2 , libqtcore4 >= 4.2, libqtgui4 >= 4.2, aspell >= 0.60.4, libaspell15 >= 0.60.4
+Source: %{name}-%{version}.tar.gz
+BuildRoot: /var/tmp/%{name}-buildroot
 
 %description
 Qt based advanced text editor. Supports syntax highlighting, matching-parenthesis highlighting, auto-indentation,
@@ -19,9 +17,10 @@ customizable text macro for many languages, such as C/C++, fortran, Makefile, HT
 automatic spell-checking.
 
 %prep
-%setup -q -n %{name}-%{ver} %{rel}
+%setup -q -n %{name}-%{version} %{release}
 
 %build
+%define prefix /usr
 cmake -DCMAKE_INSTALL_PREFIX=%{prefix} -DUSE_QT5=1 .
 make -j4
 
@@ -36,4 +35,5 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc COPYING INSTALL
 %{prefix}/bin/qedit
+
 %changelog
