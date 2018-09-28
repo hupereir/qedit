@@ -1,6 +1,6 @@
-Name:       @CPACK_PACKAGE_NAME@
-Version:    @CPACK_PACKAGE_VERSION@
-Release:    0%{dist}
+Name: @CPACK_PACKAGE_NAME@
+Version: @CPACK_PACKAGE_VERSION@
+Release: 1%{dist}
 Vendor: @CPACK_PACKAGE_VENDOR@
 
 License: GPLV2
