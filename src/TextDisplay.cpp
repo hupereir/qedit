@@ -567,7 +567,7 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved()
 
     }
 
-    return FileRemovedDialog::ReturnCode( state );
+    return static_cast<FileRemovedDialog::ReturnCode>( state );
 
 }
 
@@ -621,7 +621,7 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified()
         default: break;
     }
 
-    return FileModifiedDialog::ReturnCode( state );
+    return static_cast<FileModifiedDialog::ReturnCode>( state );
 
 }
 
