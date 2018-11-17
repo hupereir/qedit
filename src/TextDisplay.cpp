@@ -566,22 +566,6 @@ void TextDisplay::checkFileReadOnly()
     setReadOnly( file_.exists() && !file_.isWritable() );
 }
 
-//____________________________________________
-void TextDisplay::clearFileCheckData()
-{
-
-    Debug::Throw( "TextDisplay::clearFileCheckData.\n" );
-
-    if( fileCheckData_.flag() == FileCheckData::Flag::None ) return;
-
-    // clear file check data
-    Base::KeySet<TextDisplay> displays( this );
-    displays.insert( this );
-    for( const auto& display:displays )
-    { display->setFileCheckData( FileCheckData() ); }
-
-}
-
 //___________________________________________________________________________
 void TextDisplay::setFileCheckData( FileCheckData data )
 {
@@ -595,6 +579,22 @@ void TextDisplay::setFileCheckData( FileCheckData data )
 
     // emit file modification signal, to update session file frames
     if( flagsChanged ) emit needUpdate( Modified );
+
+}
+
+//____________________________________________
+void TextDisplay::clearFileCheckData()
+{
+
+    Debug::Throw( "TextDisplay::clearFileCheckData.\n" );
+
+    if( fileCheckData_.flag() == FileCheckData::Flag::None ) return;
+
+    // clear file check data
+    Base::KeySet<TextDisplay> displays( this );
+    displays.insert( this );
+    for( const auto& display:displays )
+    { display->setFileCheckData( FileCheckData() ); }
 
 }
 

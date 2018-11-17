@@ -232,11 +232,11 @@ class TextDisplay: public TextEditor
     //* new document name server
     static NewDocumentNameServer& newDocumentNameServer();
 
-    //* clear file check data
-    void clearFileCheckData();
-
     //* file check data
     void setFileCheckData( FileCheckData );
+
+    //* clear file check data
+    void clearFileCheckData();
 
     //* ask for save if modified
     AskForSaveDialog::ReturnCode askForSave( bool enableAll = false );
