@@ -1805,6 +1805,40 @@ bool TextDisplay::_fileModified()
 }
 
 //_____________________________________________________________
+void TextDisplay::_closeFileRemovedDialogs()
+{
+    Debug::Throw( "TextDisplay::_closeFileRemovedDialogs.\n" );
+
+    // get associated displays
+    Base::KeySet<TextDisplay> associatedDisplays( this );
+    associatedDisplays.insert( this );
+
+    for( const auto& display:associatedDisplays )
+    {
+        for( const auto& dialog : Base::KeySet<FileRemovedDialog>(display) )
+        { dialog->deleteLater(); }
+    }
+
+}
+
+//_____________________________________________________________
+void TextDisplay::_closeFileModifiedDialogs()
+{
+    Debug::Throw( "TextDisplay::_closeFileModifiedDialogs.\n" );
+
+    // get associated displays
+    Base::KeySet<TextDisplay> associatedDisplays( this );
+    associatedDisplays.insert( this );
+
+    for( const auto& display:associatedDisplays )
+    {
+        for( const auto& dialog : Base::KeySet<FileModifiedDialog>(display) )
+        { dialog->deleteLater(); }
+    }
+
+}
+
+//_____________________________________________________________
 void TextDisplay::_setBlockModified( const QTextBlock& block )
 {
     // check if highlight is enabled.
@@ -2842,7 +2876,10 @@ void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode actio
             }
 
             if( action == FileRemovedDialog::Close )
-            { emit requestClose( file_ ); }
+            {
+                document()->setModified( false );
+                emit requestClose( file_ );
+            }
 
         }
         break;

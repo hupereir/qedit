@@ -648,6 +648,12 @@ class TextDisplay: public TextEditor
     //* returns true if file was modified by external application
     bool _fileModified();
 
+    //* close file removed dialogs
+    void _closeFileRemovedDialogs();
+
+    //* close file modified dialogs
+    void _closeFileModifiedDialogs();
+
     //* track text modifications for syntax highlighting
     void _setBlockModified( const QTextBlock& );
 
