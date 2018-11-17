@@ -523,6 +523,24 @@ void TextView::diff()
 }
 
 //____________________________________________
+FileRemovedWidget* TextView::createFileRemovedWidget( const File& file )
+{
+    Debug::Throw( "TextView::createFileRemovedWidget.\n" );
+    auto widget = new FileRemovedWidget( this, file );
+    informationLayout_->addWidget( widget );
+    return widget;
+}
+
+//____________________________________________
+FileModifiedWidget* TextView::createFileModifiedWidget( const File& file )
+{
+    Debug::Throw( "TextView::createFileModifiedWidget.\n" );
+    auto widget = new FileModifiedWidget( this, file );
+    informationLayout_->addWidget( widget );
+    return widget;
+}
+
+//____________________________________________
 void TextView::_checkDisplays()
 {
 

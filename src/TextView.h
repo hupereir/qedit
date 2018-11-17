@@ -21,7 +21,9 @@
 *******************************************************************************/
 
 #include "Counter.h"
+#include "FileModifiedWidget.h"
 #include "FileRecord.h"
+#include "FileRemovedWidget.h"
 #include "Key.h"
 #include "TextDisplay.h"
 
@@ -124,6 +126,12 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     //* position timer
     QTimer& positionTimer()
     { return positionTimer_; }
+
+    //* file removed widget
+    FileRemovedWidget* createFileRemovedWidget( const File& );
+
+    //* file modified widget
+    FileModifiedWidget* createFileModifiedWidget( const File& );
 
     //@}
 

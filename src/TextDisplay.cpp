@@ -33,9 +33,7 @@
 #include "DocumentClassMenu.h"
 #include "ElidedLabel.h"
 #include "FileInformationDialog.h"
-#include "FileModifiedWidget.h"
 #include "FileRecordProperties.h"
-#include "FileRemovedWidget.h"
 #include "GridLayout.h"
 #include "HighlightBlockData.h"
 #include "HighlightBlockFlags.h"
@@ -55,6 +53,7 @@
 #include "TextIndent.h"
 #include "TextMacro.h"
 #include "TextSeparator.h"
+#include "TextView.h"
 #include "Util.h"
 #include "XmlOptions.h"
 
@@ -525,11 +524,15 @@ void TextDisplay::checkFileRemoved()
     // check if warnings are enabled and file is removed. Do nothing otherwise
     if( _ignoreWarnings() || !_fileRemoved() ) return;
 
+    // get parent textview
+    Base::KeySet<TextView> textViews( this );
+    if( textViews.empty() ) return;
+
     // disable check. This prevents recursion in macOS
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    auto widget = new FileRemovedWidget( this, file() );
+    auto widget = (*textViews.begin())->createFileRemovedWidget( file() );
     Base::Key::associate( this, widget );
     connect( widget, SIGNAL(actionSelected(FileRemovedWidget::ReturnCode)), SLOT(_processFileRemovedAction(FileRemovedWidget::ReturnCode)) );
     widget->show();
@@ -550,11 +553,15 @@ void TextDisplay::checkFileModified()
         return;
     }
 
+    // get parent textview
+    Base::KeySet<TextView> textViews( this );
+    if( textViews.empty() ) return;
+
     // disable check. This prevents recursion in macOS
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    auto widget = new FileModifiedWidget( this, file() );
+    auto widget = (*textViews.begin())->createFileModifiedWidget( file() );
     Base::Key::associate( this, widget );
     connect( widget, SIGNAL(actionSelected(FileModifiedWidget::ReturnCode)), SLOT(_processFileModifiedAction(FileModifiedWidget::ReturnCode)) );
     widget->show();
