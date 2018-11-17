@@ -1033,6 +1033,39 @@ void TextDisplay::clearTag( QTextBlock block, int tags )
 
 }
 
+//_____________________________________________________________
+void TextDisplay::closeFileRemovedDialogs()
+{
+    Debug::Throw( "TextDisplay::closeFileRemovedDialogs.\n" );
+
+    // get associated displays
+    Base::KeySet<TextDisplay> associatedDisplays( this );
+    associatedDisplays.insert( this );
+
+    for( const auto& display:associatedDisplays )
+    {
+        for( const auto& dialog : Base::KeySet<FileRemovedDialog>(display) )
+        { dialog->deleteLater(); }
+    }
+
+}
+
+//_____________________________________________________________
+void TextDisplay::closeFileModifiedDialogs()
+{
+    Debug::Throw( "TextDisplay::closeFileModifiedDialogs.\n" );
+
+    // get associated displays
+    Base::KeySet<TextDisplay> associatedDisplays( this );
+    associatedDisplays.insert( this );
+
+    for( const auto& display:associatedDisplays )
+    {
+        for( const auto& dialog : Base::KeySet<FileModifiedDialog>(display) )
+        { dialog->deleteLater(); }
+    }
+
+}
 
 //_____________________________________________________________
 bool TextDisplay::isCurrentBlockTagged() const
@@ -1801,40 +1834,6 @@ bool TextDisplay::_fileModified()
     // update last_save to avoid chain questions
     lastSaved_ = fileModified;
     return true;
-
-}
-
-//_____________________________________________________________
-void TextDisplay::_closeFileRemovedDialogs()
-{
-    Debug::Throw( "TextDisplay::_closeFileRemovedDialogs.\n" );
-
-    // get associated displays
-    Base::KeySet<TextDisplay> associatedDisplays( this );
-    associatedDisplays.insert( this );
-
-    for( const auto& display:associatedDisplays )
-    {
-        for( const auto& dialog : Base::KeySet<FileRemovedDialog>(display) )
-        { dialog->deleteLater(); }
-    }
-
-}
-
-//_____________________________________________________________
-void TextDisplay::_closeFileModifiedDialogs()
-{
-    Debug::Throw( "TextDisplay::_closeFileModifiedDialogs.\n" );
-
-    // get associated displays
-    Base::KeySet<TextDisplay> associatedDisplays( this );
-    associatedDisplays.insert( this );
-
-    for( const auto& display:associatedDisplays )
-    {
-        for( const auto& dialog : Base::KeySet<FileModifiedDialog>(display) )
-        { dialog->deleteLater(); }
-    }
 
 }
 

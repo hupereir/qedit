@@ -289,6 +289,13 @@ class TextDisplay: public TextEditor
     //* clear block tags if match argument
     void clearTag( QTextBlock, int tags );
 
+    //* close file removed dialogs
+    void closeFileRemovedDialogs();
+
+    //* close file modified dialogs
+    void closeFileModifiedDialogs();
+
+
     //@}
 
     //*@name actions
@@ -647,12 +654,6 @@ class TextDisplay: public TextEditor
 
     //* returns true if file was modified by external application
     bool _fileModified();
-
-    //* close file removed dialogs
-    void _closeFileRemovedDialogs();
-
-    //* close file modified dialogs
-    void _closeFileModifiedDialogs();
 
     //* track text modifications for syntax highlighting
     void _setBlockModified( const QTextBlock& );
