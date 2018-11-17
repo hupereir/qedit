@@ -23,9 +23,10 @@
 #include "BaseDialog.h"
 #include "Counter.h"
 #include "File.h"
+#include "Key.h"
 
 //* QDialog used to ask if a new file should be created
-class FileModifiedDialog: public BaseDialog, private Base::Counter<FileModifiedDialog>
+class FileModifiedDialog: public BaseDialog, public Base::Key, private Base::Counter<FileModifiedDialog>
 {
 
     //* Qt macro
