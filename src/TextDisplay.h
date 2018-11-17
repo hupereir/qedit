@@ -568,6 +568,8 @@ class TextDisplay: public TextEditor
     //* clear current block tags
     void _clearTag();
 
+    private:
+
     //* true if a block is collapsed
     bool _blockIsCollapsed( const QTextBlock& ) const;
 
@@ -576,8 +578,6 @@ class TextDisplay: public TextEditor
 
     //* returns true if file is on afs
     bool _fileIsAfs() const;
-
-    private:
 
     //* recent files
     FileList& _recentFiles() const;
