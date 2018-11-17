@@ -102,11 +102,7 @@ void TextView::setFile( File file )
 {
 
     Debug::Throw() << "TextView::setFile - " << file << endl;
-    if( file.isEmpty() )
-    {
-        Debug::Throw(0) << "TextView::setFile - invalid file name" << file << endl;
-        return;
-    }
+    if( file.isEmpty() ) return;
 
     // look for first empty display
     Base::KeySet<TextDisplay> displays( this );
@@ -566,6 +562,22 @@ void TextView::_activeDisplayChanged( TextEditor* editor )
     setActiveDisplay( *static_cast<TextDisplay*>(editor) );
 }
 
+//____________________________________________
+void TextView::_closeDisplay( const File& file )
+{
+
+    Debug::Throw( "TextView::_closeDisplay.\n" );
+
+    // do nothing if file not set
+    if( file.isEmpty() ) return;
+
+    // get associated displays
+    Base::KeySet<TextDisplay> associatedDisplays( this );
+    for( const auto& display:associatedDisplays )
+    { if( display->file() == file ) closeDisplay( *display ); }
+
+}
+
 //____________________________________________________________
 QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clone )
 {
@@ -679,6 +691,7 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     connect( display, SIGNAL(hasFocus(TextEditor*)), SLOT(checkDisplayModifications(TextEditor*)) );
     connect( display, SIGNAL(cursorPositionChanged()), &positionTimer_, SLOT(start()) );
     connect( display, SIGNAL(modifiersChanged(TextEditor::Modifiers)), SIGNAL(modifiersChanged(TextEditor::Modifiers)) );
+    connect( display, SIGNAL(requestClose(File)), SLOT(_closeDisplay(File)) );
 
     connect( display, SIGNAL(undoAvailable(bool)), SIGNAL(undoAvailable(bool)) );
     connect( display, SIGNAL(redoAvailable(bool)), SIGNAL(redoAvailable(bool)) );

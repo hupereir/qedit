@@ -162,6 +162,9 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     //* display focus changed
     void _activeDisplayChanged( TextEditor* );
 
+    //* close displays associated to file
+    void _closeDisplay( const File& );
+
     private:
 
     //* create new splitter

@@ -414,6 +414,9 @@ class TextDisplay: public TextEditor
     /* \param flags, bitwise or of UpdateFlags */
     void needUpdate( TextDisplay::UpdateFlags );
 
+    //* request display close
+    void requestClose( File );
+
     public Q_SLOTS:
 
     //* set document class
@@ -499,16 +502,11 @@ class TextDisplay: public TextEditor
     //* toggle automatic macros
     void _toggleIgnoreAutomaticMacros( bool state );
 
-    //*@name spell check
-    //@{
-
     //* autospell
     void _toggleAutoSpell( bool state );
 
     //* run spellcheck
     void _spellcheck();
-
-    //@}
 
     //* change text encoding
     void _textEncoding();
