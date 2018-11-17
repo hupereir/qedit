@@ -176,6 +176,12 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     //* closed
     bool closed_ = false;
 
+    //* warning widgets layout
+    QLayout* informationLayout_ = nullptr;
+
+    // editor layout
+    QLayout* editorLayout_ = nullptr;
+
     //* text display with focus
     TextDisplay* activeDisplay_ = nullptr;
 

@@ -57,13 +57,26 @@ TextView::TextView( QWidget* parent ):
     setAttribute( Qt::WA_DeleteOnClose );
 
     // main layout
-    setLayout( new QVBoxLayout );
-    layout()->setMargin(0);
-    layout()->setSpacing(0);
+    auto layout = new QVBoxLayout;
+    setLayout( layout );
+    layout->setMargin(0);
+    layout->setSpacing(0);
+
+    // information layout
+    informationLayout_ = new QVBoxLayout;
+    informationLayout_->setMargin(0);
+    informationLayout_->setSpacing(0);
+    layout->addLayout( informationLayout_ );
+
+    // editor layout
+    editorLayout_ = new QVBoxLayout;
+    editorLayout_->setMargin(0);
+    editorLayout_->setSpacing(0);
+    layout->addLayout( editorLayout_ );
 
     // create new Text display and register autosave thread
     TextDisplay& display = _newTextDisplay( this );
-    layout()->addWidget( &display );
+    editorLayout_->addWidget( &display );
     display.setActive( true );
     Base::Singleton::get().application<Application>()->autoSave().newThread( &display );
     Base::Singleton::get().application<Application>()->fileCheck().registerDisplay( &display );
@@ -273,10 +286,14 @@ void TextView::closeDisplay( TextDisplay& display )
 
             grandParentSplitter->insertWidget( grandParentSplitter->indexOf( parentSplitter ), child );
 
+        } else if( grandParent == this ) {
+
+            child->setParent( this );
+            editorLayout_->addWidget( child );
+
         } else {
 
-            child->setParent( grandParent );
-            grandParent->layout()->addWidget( child );
+            Debug::Throw(0, "TextView::closeDisplay - something is wrong with layouts.\n" );
 
         }
 
@@ -585,12 +602,16 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
                 splitter->setOrientation( orientation );
                 parentSplitter->insertWidget( parentSplitter->indexOf( &activeDisplay() ), splitter );
 
-            } else {
+            } else if( parent == this ) {
 
                 // create a splitter with correct orientation
-                splitter = new LocalSplitter(parent);
+                splitter = new LocalSplitter(this);
                 splitter->setOrientation( orientation );
-                parent->layout()->addWidget( splitter );
+                editorLayout_->addWidget( splitter );
+
+            } else {
+
+                Debug::Throw(0, "TextView::_newSplitter - something is wrong with layouts.\n" );
 
             }
 
