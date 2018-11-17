@@ -41,16 +41,12 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     //* constructor
     explicit TextView( QWidget* );
 
+    //*@name accessors
+    //@{
+
     //* true if widget is being deleted
     bool isClosed() const
     { return closed_; }
-
-    //* set to true if widget is to be deleted
-    void setIsClosed( bool value )
-    { closed_ = value; }
-
-    //*@name display management
-    //@{
 
     //* true if has associated displays
     bool hasDisplays() const
@@ -66,28 +62,29 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     //* return number of independent modified displays
     int modifiedDisplayCount() const;
 
-    //@}
-
-    //*@name display management
-    //@{
-
-    //* retrieve active display
-    TextDisplay& activeDisplay()
-    {
-        Q_CHECK_PTR( activeDisplay_ );
-        return *activeDisplay_;
-    }
-
     //* retrieve active display
     const TextDisplay& activeDisplay() const
     { return *activeDisplay_; }
 
-    //* select display from file
-    bool selectDisplay( const File& file );
-
     //* true if display passed in argument is active
     bool isActiveDisplay( const TextDisplay& display ) const
     { return &display == activeDisplay_; }
+
+    //@}
+
+    //*@name modifiers
+    //@{
+
+    //* set to true if widget is to be deleted
+    void setIsClosed( bool value )
+    { closed_ = value; }
+
+    //* retrieve active display
+    TextDisplay& activeDisplay()
+    { return *activeDisplay_; }
+
+    //* select display from file
+    bool selectDisplay( const File& file );
 
     //* change active display manualy
     void setActiveDisplay( TextDisplay& );
@@ -98,8 +95,6 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     //* close display
     /** Ask for save if display is modified */
     void closeDisplay( TextDisplay& );
-
-    //@}
 
     //* set new document
     void setIsNewDocument();
@@ -129,6 +124,8 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     //* position timer
     QTimer& positionTimer()
     { return positionTimer_; }
+
+    //@}
 
     Q_SIGNALS:
 
