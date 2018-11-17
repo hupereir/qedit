@@ -2780,7 +2780,7 @@ void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode actio
 {
     Debug::Throw() << "TextDisplay::_processFileRemovedAction - action: " << Base::toIntegralType( action ) << endl;
 
-    // restore check
+    clearFileCheckData();
     _setIgnoreWarnings( false );
 
     // process action
@@ -2833,7 +2833,7 @@ void TextDisplay::_processFileModifiedAction( FileModifiedDialog::ReturnCode act
 
     Debug::Throw() << "TextDisplay::_processFileModifiedAction - action: " << Base::toIntegralType( action ) << endl;
 
-    // restore check
+    clearFileCheckData();
     _setIgnoreWarnings( false );
 
     // perform dialog action
