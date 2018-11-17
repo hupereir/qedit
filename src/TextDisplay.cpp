@@ -2865,6 +2865,15 @@ void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode actio
         break;
 
         case FileRemovedDialog::Ignore:
+        {
+            Base::KeySet<TextDisplay> displays( this );
+            displays.insert( this );
+            for( const auto& display:displays )
+            { display->_setIgnoreWarnings( true ); }
+
+        }
+        break;
+
         case FileRemovedDialog::Close:
         {
             Base::KeySet<TextDisplay> displays( this );
@@ -2875,12 +2884,7 @@ void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode actio
                 display->setModified( false );
             }
 
-            if( action == FileRemovedDialog::Close )
-            {
-                document()->setModified( false );
-                emit requestClose( file_ );
-            }
-
+            emit requestClose( file_ );
         }
         break;
 
