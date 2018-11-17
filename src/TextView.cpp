@@ -30,6 +30,21 @@
 
 #include <QLayout>
 
+//* local QSplitter object, derived from Counter
+/** helps keeping track of how many splitters are created/deleted */
+class LocalSplitter: public QSplitter, private Base::Counter<LocalSplitter>
+{
+
+    public:
+
+    //* constructor
+    explicit LocalSplitter( QWidget* parent = nullptr ):
+        QSplitter( parent ),
+        Counter( "LocalSplitter" )
+    { Debug::Throw( "LocalSplitter::LocalSplitter.\n" ); }
+
+};
+
 //___________________________________________________________________
 TextView::TextView( QWidget* parent ):
     QWidget( parent ),
@@ -250,7 +265,7 @@ void TextView::closeDisplay( TextDisplay& display )
         auto grandParent( parentSplitter->parentWidget() );
 
         // try cast to a splitter
-        QSplitter* grandParentSplitter( qobject_cast<QSplitter*>( grandParent ) );
+        auto grandParentSplitter( qobject_cast<QSplitter*>( grandParent ) );
 
         // move child to grandParentSplitter if any
         if( grandParentSplitter )
@@ -556,7 +571,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
 {
 
     Debug::Throw( "TextView::_newSplitter.\n" );
-    QSplitter *splitter = 0;
+    QSplitter *splitter( nullptr );
 
     if( clone )
     {
@@ -581,7 +596,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
                 Debug::Throw( "TextView::_newSplitter - found parent splitter.\n" );
                 // create a splitter with correct orientation
                 // give him no parent, because the parent is set in QSplitter::insertWidget()
-                splitter = new LocalSplitter(0);
+                splitter = new LocalSplitter();
                 splitter->setOrientation( orientation );
                 parentSplitter->insertWidget( parentSplitter->indexOf( &activeDisplay() ), splitter );
 
@@ -699,9 +714,3 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     return *display;
 
 }
-
-//__________________________________________________
-LocalSplitter::LocalSplitter( QWidget* parent ):
-    QSplitter( parent ),
-    Counter( "LocalSplitter" )
-{ Debug::Throw( "LocalSplitter::LocalSplitter.\n" ); }

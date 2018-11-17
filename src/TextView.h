@@ -184,16 +184,4 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
 
 };
 
-//* local QSplitter object, derived from Counter
-/** helps keeping track of how many splitters are created/deleted */
-class LocalSplitter: public QSplitter, private Base::Counter<LocalSplitter>
-{
-
-    public:
-
-    //* constructor
-    explicit LocalSplitter( QWidget* );
-
-};
-
 #endif
