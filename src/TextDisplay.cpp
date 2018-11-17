@@ -631,7 +631,8 @@ void TextDisplay::save()
     // check file name
     if( file_.isEmpty() || isNewDocument() ) return saveAs();
 
-    // clear associated dialogs
+    // clear file removde/file modified data
+    clearFileCheckData();
     closeFileRemovedDialogs();
     closeFileModifiedDialogs();
 
@@ -766,7 +767,8 @@ void TextDisplay::revertToSave()
 
     Debug::Throw( "TextDisplay::revertToSave.\n" );
 
-    // clear associated dialogs
+    // clear file removde/file modified data
+    clearFileCheckData();
     closeFileRemovedDialogs();
     closeFileModifiedDialogs();
 
