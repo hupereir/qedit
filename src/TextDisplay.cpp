@@ -795,7 +795,7 @@ void TextDisplay::saveAs()
     // update filename and document class for this and associates
     // the class name is reset, to allow a document class
     // matching the new filename to get loaded
-    setClassName( "" );
+    clearClassName();
 
     Base::KeySet<TextDisplay> displays( this );
     displays.insert( this );

@@ -263,6 +263,10 @@ class TextDisplay: public TextEditor
     void setClassName( QString name )
     { className_ = name; }
 
+    //* clear class name
+    void clearClassName()
+    { className_.clear(); }
+
     //* text highlight
     TextHighlight& textHighlight()
     { return *textHighlight_; }
