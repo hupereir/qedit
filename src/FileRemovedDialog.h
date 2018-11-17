@@ -22,6 +22,7 @@
 
 #include "BaseDialog.h"
 #include "Counter.h"
+#include "CppUtil.h"
 #include "File.h"
 #include "Key.h"
 
@@ -35,7 +36,7 @@ class FileRemovedDialog: public BaseDialog, public Base::Key, private Base::Coun
     public:
 
     //* return codes
-    enum ReturnCode
+    enum class ReturnCode
     {
 
         SaveAgain,
@@ -48,23 +49,40 @@ class FileRemovedDialog: public BaseDialog, public Base::Key, private Base::Coun
     //* constructor
     explicit FileRemovedDialog( QWidget* parent, const File& file );
 
+    Q_SIGNALS:
+
+    //* emitted when a given action is selected
+    void actionSelected( FileRemovedDialog::ReturnCode );
+
     private Q_SLOTS:
 
     //* re-saved removed file
     void _reSave()
-    { done( SaveAgain ); }
+    {
+        emit actionSelected( ReturnCode::SaveAgain );
+        done( Base::toIntegralType( ReturnCode::SaveAgain ) );
+    }
 
     //* save file with new name
     void _saveAs()
-    { done( SaveAs ); }
+    {
+        emit actionSelected( ReturnCode::SaveAs );
+        done( Base::toIntegralType( ReturnCode::SaveAs ) );
+    }
 
     //* close current editor
     void _close()
-    { done( Close ); }
+    {
+        emit actionSelected( ReturnCode::Close );
+        done( Base::toIntegralType( ReturnCode::Close ) );
+    }
 
     //* ignore warning
     void _ignore()
-    { done( Ignore ); }
+    {
+        emit actionSelected( ReturnCode::Ignore );
+        done( Base::toIntegralType( ReturnCode::Ignore ) );
+    }
 
 };
 

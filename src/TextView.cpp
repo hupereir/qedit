@@ -439,40 +439,9 @@ void TextView::checkDisplayModifications( TextEditor* editor )
 
     // convert to TextDisplay
     TextDisplay& display( *static_cast<TextDisplay*>( editor ) );
-
-    Base::KeySet<TextDisplay> deadDisplays;
-
-    // check file
-    if( display.checkFileRemoved() == FileRemovedDialog::Close )
-    {
-
-        // register displays as dead
-        Base::KeySet<TextDisplay> associatedDisplays( &display );
-        for( const auto& displayIter:associatedDisplays )
-        { deadDisplays.insert( displayIter ); }
-
-        display.document()->setModified( false );
-        deadDisplays.insert( &display );
-
-    } else {
-
-        display.checkFileReadOnly();
-        display.checkFileModified();
-
-    }
-
-    // clear flags
-    display.clearFileCheckData();
-
-    // delete dead displays
-    if( !deadDisplays.empty() )
-    {
-
-        Debug::Throw() << "TextView::checkDisplayModifications - dead displays: " << deadDisplays.size() << endl;
-        for( const auto& display:deadDisplays )
-        { closeDisplay( *display ); }
-
-    }
+    display.checkFileRemoved();
+    display.checkFileReadOnly();
+    display.checkFileModified();
 
 }
 

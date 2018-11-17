@@ -518,65 +518,23 @@ void TextDisplay::_setFile( const File& file )
 }
 
 //___________________________________________________________________________
-FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved()
+void TextDisplay::checkFileRemoved()
 {
     Debug::Throw() << "TextDisplay::checkFileRemoved - " << file_ << endl;
 
     // check if warnings are enabled and file is removed. Do nothing otherwise
-    if( _ignoreWarnings() || !_fileRemoved() ) return FileRemovedDialog::Ignore;
+    if( _ignoreWarnings() || !_fileRemoved() ) return;
 
     // disable check. This prevents recursion in macOS
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    FileRemovedDialog dialog( this, file() );
-    dialog.centerOnParent();
-    auto state( dialog.exec() );
-
-    // restore check
-    _setIgnoreWarnings( false );
-
-    // process dialog action
-    switch( state )
-    {
-
-        case FileRemovedDialog::SaveAgain:
-        // set document as modified (to force the file to be saved) and save
-        setModified( true );
-        save();
-        break;
-
-        case FileRemovedDialog::SaveAs:
-        saveAs();
-        break;
-
-        case FileRemovedDialog::Ignore:
-        {
-            Base::KeySet<TextDisplay> displays( this );
-            displays.insert( this );
-            for( const auto& display:displays )
-            { display->_setIgnoreWarnings( true ); }
-        }
-        break;
-
-        case FileRemovedDialog::Close:
-        {
-            Base::KeySet<TextDisplay> displays( this );
-            displays.insert( this );
-            for( const auto& display:displays )
-            {
-                display->_setIgnoreWarnings( true );
-                display->setModified( false );
-            }
-        }
-        break;
-
-        default: break;
-
-    }
-
-    return static_cast<FileRemovedDialog::ReturnCode>( state );
-
+    auto dialog = new FileRemovedDialog( this, file() );
+    Base::Key::associate( this, dialog );
+    connect( dialog, SIGNAL(actionSelected(FileRemovedDialog::ReturnCode)), SLOT(_processFileRemovedAction(FileRemovedDialog::ReturnCode)) );
+    dialog->centerOnParent();
+    dialog->show();
+    return;
 }
 
 
@@ -592,43 +550,11 @@ void TextDisplay::checkFileModified()
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    FileModifiedDialog dialog( this, file() );
-    dialog.centerOnParent();
-    auto state( dialog.exec() );
-
-    // restore check
-    _setIgnoreWarnings( false );
-
-    // perform dialog action
-    switch( state )
-    {
-
-        case FileModifiedDialog::SaveAgain:
-        document()->setModified( true );
-        save();
-        break;
-
-        case FileModifiedDialog::SaveAs:
-        saveAs();
-        break;
-
-        case FileModifiedDialog::Reload:
-        setModified( false );
-        revertToSave();
-        break;
-
-        case FileModifiedDialog::Ignore:
-        {
-            Base::KeySet<TextDisplay> displays( this );
-            displays.insert( this );
-            for( const auto& display:displays )
-            { display->_setIgnoreWarnings( true ); }
-        }
-        break;
-
-        default: break;
-    }
-
+    auto dialog = new FileModifiedDialog( this, file() );
+    Base::Key::associate( this, dialog );
+    connect( dialog, SIGNAL(actionSelected(FileModifiedDialog::ReturnCode)), SLOT(_processFileModifiedAction(FileModifiedDialog::ReturnCode)) );
+    dialog->centerOnParent();
+    dialog->show();
     return;
 
 }
@@ -2852,7 +2778,7 @@ void TextDisplay::_clearTag()
 //___________________________________________________________________________
 void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode action )
 {
-    Debug::Throw() << "TextDisplay::_processFileRemovedAction - action: " << action << endl;
+    Debug::Throw() << "TextDisplay::_processFileRemovedAction - action: " << Base::toIntegralType( action ) << endl;
 
     // restore check
     _setIgnoreWarnings( false );
@@ -2861,17 +2787,17 @@ void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode actio
     switch( action )
     {
 
-        case FileRemovedDialog::SaveAgain:
+        case FileRemovedDialog::ReturnCode::SaveAgain:
         // set document as modified (to force the file to be saved) and save
         setModified( true );
         save();
         break;
 
-        case FileRemovedDialog::SaveAs:
+        case FileRemovedDialog::ReturnCode::SaveAs:
         saveAs();
         break;
 
-        case FileRemovedDialog::Ignore:
+        case FileRemovedDialog::ReturnCode::Ignore:
         {
             Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );
@@ -2881,7 +2807,7 @@ void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode actio
         }
         break;
 
-        case FileRemovedDialog::Close:
+        case FileRemovedDialog::ReturnCode::Close:
         {
             Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );
@@ -2905,7 +2831,7 @@ void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode actio
 void TextDisplay::_processFileModifiedAction( FileModifiedDialog::ReturnCode action )
 {
 
-    Debug::Throw() << "TextDisplay::_processFileModifiedAction - action: " << action << endl;
+    Debug::Throw() << "TextDisplay::_processFileModifiedAction - action: " << Base::toIntegralType( action ) << endl;
 
     // restore check
     _setIgnoreWarnings( false );
@@ -2914,21 +2840,21 @@ void TextDisplay::_processFileModifiedAction( FileModifiedDialog::ReturnCode act
     switch( action )
     {
 
-        case FileModifiedDialog::SaveAgain:
+        case FileModifiedDialog::ReturnCode::SaveAgain:
         document()->setModified( true );
         save();
         break;
 
-        case FileModifiedDialog::SaveAs:
+        case FileModifiedDialog::ReturnCode::SaveAs:
         saveAs();
         break;
 
-        case FileModifiedDialog::Reload:
+        case FileModifiedDialog::ReturnCode::Reload:
         setModified( false );
         revertToSave();
         break;
 
-        case FileModifiedDialog::Ignore:
+        case FileModifiedDialog::ReturnCode::Ignore:
         {
             Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );

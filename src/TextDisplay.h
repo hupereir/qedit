@@ -242,7 +242,7 @@ class TextDisplay: public TextEditor
     AskForSaveDialog::ReturnCode askForSave( bool enableAll = false );
 
     //* check if file has been removed externally
-    FileRemovedDialog::ReturnCode checkFileRemoved();
+    void checkFileRemoved();
 
     //* check if file has been modified externally
     void checkFileModified();
@@ -579,13 +579,9 @@ class TextDisplay: public TextEditor
 
     //* process file removed action
     void _processFileRemovedAction( FileRemovedDialog::ReturnCode );
-    void _processFileRemovedAction( int action )
-    { _processFileRemovedAction( static_cast<FileRemovedDialog::ReturnCode>( action ) ); }
 
     //* process file modified action
     void _processFileModifiedAction( FileModifiedDialog::ReturnCode );
-    void _processFileModifiedAction( int action )
-    { _processFileModifiedAction( static_cast<FileModifiedDialog::ReturnCode>( action ) ); }
 
     private:
 
