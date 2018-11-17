@@ -705,6 +705,10 @@ void TextDisplay::save()
     // check file name
     if( file_.isEmpty() || isNewDocument() ) return saveAs();
 
+    // clear associated dialogs
+    closeFileRemovedDialogs();
+    closeFileModifiedDialogs();
+
     // check is contents differ from saved file
     if( _contentsChanged() )
     {
@@ -835,6 +839,10 @@ void TextDisplay::revertToSave()
 {
 
     Debug::Throw( "TextDisplay::revertToSave.\n" );
+
+    // clear associated dialogs
+    closeFileRemovedDialogs();
+    closeFileModifiedDialogs();
 
     // store scrollbar positions
     int x( horizontalScrollBar()->value() );
