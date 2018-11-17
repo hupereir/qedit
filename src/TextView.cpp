@@ -66,13 +66,13 @@ TextView::TextView( QWidget* parent ):
     informationLayout_ = new QVBoxLayout;
     informationLayout_->setMargin(0);
     informationLayout_->setSpacing(0);
-    layout->addLayout( informationLayout_ );
+    layout->addLayout( informationLayout_, 0 );
 
     // editor layout
     editorLayout_ = new QVBoxLayout;
     editorLayout_->setMargin(0);
     editorLayout_->setSpacing(0);
-    layout->addLayout( editorLayout_ );
+    layout->addLayout( editorLayout_, 1 );
 
     // create new Text display and register autosave thread
     TextDisplay& display = _newTextDisplay( this );
