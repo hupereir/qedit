@@ -570,6 +570,16 @@ class TextDisplay: public TextEditor
     //* clear current block tags
     void _clearTag();
 
+    //* process file removed action
+    void _processFileRemovedAction( FileRemovedDialog::ReturnCode );
+    void _processFileRemovedAction( int action )
+    { _processFileRemovedAction( static_cast<FileRemovedDialog::ReturnCode>( action ) ); }
+
+    //* process file modified action
+    void _processFileModifiedAction( FileModifiedDialog::ReturnCode );
+    void _processFileModifiedAction( int action )
+    { _processFileModifiedAction( static_cast<FileModifiedDialog::ReturnCode>( action ) ); }
+
     private:
 
     //* true if a block is collapsed

@@ -2809,6 +2809,92 @@ void TextDisplay::_clearTag()
 }
 
 //___________________________________________________________________________
+void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode action )
+{
+    Debug::Throw() << "TextDisplay::_processFileRemovedAction - action: " << action << endl;
+
+    // restore check
+    _setIgnoreWarnings( false );
+
+    // process action
+    switch( action )
+    {
+
+        case FileRemovedDialog::SaveAgain:
+        // set document as modified (to force the file to be saved) and save
+        setModified( true );
+        save();
+        break;
+
+        case FileRemovedDialog::SaveAs:
+        saveAs();
+        break;
+
+        case FileRemovedDialog::Ignore:
+        case FileRemovedDialog::Close:
+        {
+            Base::KeySet<TextDisplay> displays( this );
+            displays.insert( this );
+            for( const auto& display:displays )
+            {
+                display->_setIgnoreWarnings( true );
+                display->setModified( false );
+            }
+
+            if( action == FileRemovedDialog::Close )
+            { emit requestClose( file_ ); }
+
+        }
+        break;
+
+        default: break;
+
+    }
+
+}
+
+//___________________________________________________________________________
+void TextDisplay::_processFileModifiedAction( FileModifiedDialog::ReturnCode action )
+{
+
+    Debug::Throw() << "TextDisplay::_processFileModifiedAction - action: " << action << endl;
+
+    // restore check
+    _setIgnoreWarnings( false );
+
+    // perform dialog action
+    switch( action )
+    {
+
+        case FileModifiedDialog::SaveAgain:
+        document()->setModified( true );
+        save();
+        break;
+
+        case FileModifiedDialog::SaveAs:
+        saveAs();
+        break;
+
+        case FileModifiedDialog::Reload:
+        setModified( false );
+        revertToSave();
+        break;
+
+        case FileModifiedDialog::Ignore:
+        {
+            Base::KeySet<TextDisplay> displays( this );
+            displays.insert( this );
+            for( const auto& display:displays )
+            { display->_setIgnoreWarnings( true ); }
+        }
+        break;
+
+        default: break;
+    }
+
+}
+
+//___________________________________________________________________________
 bool TextDisplay::_blockIsCollapsed( const QTextBlock& block ) const
 {
 
