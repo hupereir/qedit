@@ -43,7 +43,7 @@ class ReplaceWidget;
 class SelectLineWidget;
 
 //* main window
-class MainWindow: public BaseMainWindow, private Base::Counter<MainWindow>, public Base::Key
+class MainWindow: public BaseMainWindow, public Base::Key, private Base::Counter<MainWindow>
 {
 
     Q_OBJECT

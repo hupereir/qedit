@@ -30,7 +30,7 @@
 #include <QTimer>
 
 //* handles multiple views
-class TextView: public QWidget, private Base::Counter<TextView>, public Base::Key
+class TextView: public QWidget, public Base::Key, private Base::Counter<TextView>
 {
 
     //* Qt meta object declaration

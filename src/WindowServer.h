@@ -35,7 +35,7 @@ class ScratchFileMonitor;
 class TextDisplay;
 class TextView;
 
-class WindowServer: public QObject, private Base::Counter<WindowServer>, public Base::Key
+class WindowServer: public QObject, public Base::Key, private Base::Counter<WindowServer>
 {
 
     //* Qt meta object declaration
