@@ -23,8 +23,8 @@
 #include "AskForSaveDialog.h"
 #include "BlockDelimiter.h"
 #include "FileList.h"
-#include "FileModifiedDialog.h"
-#include "FileRemovedDialog.h"
+#include "FileModifiedWidget.h"
+#include "FileRemovedWidget.h"
 #include "Debug.h"
 #include "FileCheck.h"
 #include "FileCheckData.h"
@@ -290,10 +290,10 @@ class TextDisplay: public TextEditor
     void clearTag( QTextBlock, int tags );
 
     //* close file removed dialogs
-    void closeFileRemovedDialogs();
+    void closeFileRemovedWidgets();
 
     //* close file modified dialogs
-    void closeFileModifiedDialogs();
+    void closeFileModifiedWidgets();
 
 
     //@}
@@ -578,10 +578,10 @@ class TextDisplay: public TextEditor
     void _clearTag();
 
     //* process file removed action
-    void _processFileRemovedAction( FileRemovedDialog::ReturnCode );
+    void _processFileRemovedAction( FileRemovedWidget::ReturnCode );
 
     //* process file modified action
-    void _processFileModifiedAction( FileModifiedDialog::ReturnCode );
+    void _processFileModifiedAction( FileModifiedWidget::ReturnCode );
 
     private:
 

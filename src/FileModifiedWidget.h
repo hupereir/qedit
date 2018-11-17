@@ -1,5 +1,5 @@
-#ifndef FileModifiedDialog_h
-#define FileModifiedDialog_h
+#ifndef FileModifiedWidget_h
+#define FileModifiedWidget_h
 
 /******************************************************************************
 *
@@ -20,14 +20,15 @@
 *
 *******************************************************************************/
 
-#include "BaseDialog.h"
 #include "Counter.h"
 #include "CppUtil.h"
 #include "File.h"
 #include "Key.h"
 
+#include <QWidget>
+
 //* QDialog used to ask if a new file should be created
-class FileModifiedDialog: public BaseDialog, public Base::Key, private Base::Counter<FileModifiedDialog>
+class FileModifiedWidget: public QWidget, public Base::Key, private Base::Counter<FileModifiedWidget>
 {
 
     //* Qt macro
@@ -47,12 +48,12 @@ class FileModifiedDialog: public BaseDialog, public Base::Key, private Base::Cou
     };
 
     //* constructor
-    explicit FileModifiedDialog( QWidget* parent, const File& file );
+    explicit FileModifiedWidget( QWidget* parent, const File& file );
 
     Q_SIGNALS:
 
     //* emitted when a given action is selected
-    void actionSelected( FileModifiedDialog::ReturnCode );
+    void actionSelected( FileModifiedWidget::ReturnCode );
 
     private Q_SLOTS:
 
@@ -60,7 +61,7 @@ class FileModifiedDialog: public BaseDialog, public Base::Key, private Base::Cou
     void _reLoad()
     {
         emit actionSelected( ReturnCode::Reload );
-        done( Base::toIntegralType( ReturnCode::Reload ) );
+        deleteLater();
     }
 
 
@@ -68,21 +69,21 @@ class FileModifiedDialog: public BaseDialog, public Base::Key, private Base::Cou
     void _reSave()
     {
         emit actionSelected( ReturnCode::SaveAgain );
-        done( Base::toIntegralType( ReturnCode::SaveAgain ) );
+        deleteLater();
     }
 
     //* save file with new name
     void _saveAs()
     {
         emit actionSelected( ReturnCode::SaveAs );
-        done( Base::toIntegralType( ReturnCode::SaveAs ) );
+        deleteLater();
     }
 
     //* save file with new name
     void _ignore()
     {
         emit actionSelected( ReturnCode::Ignore );
-        done( Base::toIntegralType( ReturnCode::Ignore ) );
+        deleteLater();
     }
 
 };

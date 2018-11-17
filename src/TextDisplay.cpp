@@ -33,9 +33,9 @@
 #include "DocumentClassMenu.h"
 #include "ElidedLabel.h"
 #include "FileInformationDialog.h"
-#include "FileModifiedDialog.h"
+#include "FileModifiedWidget.h"
 #include "FileRecordProperties.h"
-#include "FileRemovedDialog.h"
+#include "FileRemovedWidget.h"
 #include "GridLayout.h"
 #include "HighlightBlockData.h"
 #include "HighlightBlockFlags.h"
@@ -529,11 +529,10 @@ void TextDisplay::checkFileRemoved()
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    auto dialog = new FileRemovedDialog( this, file() );
-    Base::Key::associate( this, dialog );
-    connect( dialog, SIGNAL(actionSelected(FileRemovedDialog::ReturnCode)), SLOT(_processFileRemovedAction(FileRemovedDialog::ReturnCode)) );
-    dialog->centerOnParent();
-    dialog->show();
+    auto widget = new FileRemovedWidget( this, file() );
+    Base::Key::associate( this, widget );
+    connect( widget, SIGNAL(actionSelected(FileRemovedWidget::ReturnCode)), SLOT(_processFileRemovedAction(FileRemovedWidget::ReturnCode)) );
+    widget->show();
     return;
 }
 
@@ -544,17 +543,21 @@ void TextDisplay::checkFileModified()
     Debug::Throw() << "TextDisplay::checkFileModified - " << file_ << endl;
 
     // check if warnings are enabled and file is modified. Do nothing otherwise
-    if( _ignoreWarnings() || !_fileModified() ) return;
+    if( _ignoreWarnings() ) return;
+    if( !_fileModified() )
+    {
+        clearFileCheckData();
+        return;
+    }
 
     // disable check. This prevents recursion in macOS
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    auto dialog = new FileModifiedDialog( this, file() );
-    Base::Key::associate( this, dialog );
-    connect( dialog, SIGNAL(actionSelected(FileModifiedDialog::ReturnCode)), SLOT(_processFileModifiedAction(FileModifiedDialog::ReturnCode)) );
-    dialog->centerOnParent();
-    dialog->show();
+    auto widget = new FileModifiedWidget( this, file() );
+    Base::Key::associate( this, widget );
+    connect( widget, SIGNAL(actionSelected(FileModifiedWidget::ReturnCode)), SLOT(_processFileModifiedAction(FileModifiedWidget::ReturnCode)) );
+    widget->show();
     return;
 
 }
@@ -633,8 +636,8 @@ void TextDisplay::save()
 
     // clear file removde/file modified data
     clearFileCheckData();
-    closeFileRemovedDialogs();
-    closeFileModifiedDialogs();
+    closeFileRemovedWidgets();
+    closeFileModifiedWidgets();
 
     // check is contents differ from saved file
     if( _contentsChanged() )
@@ -769,8 +772,8 @@ void TextDisplay::revertToSave()
 
     // clear file removde/file modified data
     clearFileCheckData();
-    closeFileRemovedDialogs();
-    closeFileModifiedDialogs();
+    closeFileRemovedWidgets();
+    closeFileModifiedWidgets();
 
     // store scrollbar positions
     int x( horizontalScrollBar()->value() );
@@ -970,9 +973,9 @@ void TextDisplay::clearTag( QTextBlock block, int tags )
 }
 
 //_____________________________________________________________
-void TextDisplay::closeFileRemovedDialogs()
+void TextDisplay::closeFileRemovedWidgets()
 {
-    Debug::Throw( "TextDisplay::closeFileRemovedDialogs.\n" );
+    Debug::Throw( "TextDisplay::closeFileRemovedWidgets.\n" );
 
     // get associated displays
     Base::KeySet<TextDisplay> associatedDisplays( this );
@@ -980,16 +983,16 @@ void TextDisplay::closeFileRemovedDialogs()
 
     for( const auto& display:associatedDisplays )
     {
-        for( const auto& dialog : Base::KeySet<FileRemovedDialog>(display) )
+        for( const auto& dialog : Base::KeySet<FileRemovedWidget>(display) )
         { dialog->deleteLater(); }
     }
 
 }
 
 //_____________________________________________________________
-void TextDisplay::closeFileModifiedDialogs()
+void TextDisplay::closeFileModifiedWidgets()
 {
-    Debug::Throw( "TextDisplay::closeFileModifiedDialogs.\n" );
+    Debug::Throw( "TextDisplay::closeFileModifiedWidgets.\n" );
 
     // get associated displays
     Base::KeySet<TextDisplay> associatedDisplays( this );
@@ -997,7 +1000,7 @@ void TextDisplay::closeFileModifiedDialogs()
 
     for( const auto& display:associatedDisplays )
     {
-        for( const auto& dialog : Base::KeySet<FileModifiedDialog>(display) )
+        for( const auto& dialog : Base::KeySet<FileModifiedWidget>(display) )
         { dialog->deleteLater(); }
     }
 
@@ -2778,7 +2781,7 @@ void TextDisplay::_clearTag()
 }
 
 //___________________________________________________________________________
-void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode action )
+void TextDisplay::_processFileRemovedAction( FileRemovedWidget::ReturnCode action )
 {
     Debug::Throw() << "TextDisplay::_processFileRemovedAction - action: " << Base::toIntegralType( action ) << endl;
 
@@ -2789,17 +2792,17 @@ void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode actio
     switch( action )
     {
 
-        case FileRemovedDialog::ReturnCode::SaveAgain:
+        case FileRemovedWidget::ReturnCode::SaveAgain:
         // set document as modified (to force the file to be saved) and save
         setModified( true );
         save();
         break;
 
-        case FileRemovedDialog::ReturnCode::SaveAs:
+        case FileRemovedWidget::ReturnCode::SaveAs:
         saveAs();
         break;
 
-        case FileRemovedDialog::ReturnCode::Ignore:
+        case FileRemovedWidget::ReturnCode::Ignore:
         {
             Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );
@@ -2809,7 +2812,7 @@ void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode actio
         }
         break;
 
-        case FileRemovedDialog::ReturnCode::Close:
+        case FileRemovedWidget::ReturnCode::Close:
         {
             Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );
@@ -2830,7 +2833,7 @@ void TextDisplay::_processFileRemovedAction( FileRemovedDialog::ReturnCode actio
 }
 
 //___________________________________________________________________________
-void TextDisplay::_processFileModifiedAction( FileModifiedDialog::ReturnCode action )
+void TextDisplay::_processFileModifiedAction( FileModifiedWidget::ReturnCode action )
 {
 
     Debug::Throw() << "TextDisplay::_processFileModifiedAction - action: " << Base::toIntegralType( action ) << endl;
@@ -2842,21 +2845,21 @@ void TextDisplay::_processFileModifiedAction( FileModifiedDialog::ReturnCode act
     switch( action )
     {
 
-        case FileModifiedDialog::ReturnCode::SaveAgain:
+        case FileModifiedWidget::ReturnCode::SaveAgain:
         document()->setModified( true );
         save();
         break;
 
-        case FileModifiedDialog::ReturnCode::SaveAs:
+        case FileModifiedWidget::ReturnCode::SaveAs:
         saveAs();
         break;
 
-        case FileModifiedDialog::ReturnCode::Reload:
+        case FileModifiedWidget::ReturnCode::Reload:
         setModified( false );
         revertToSave();
         break;
 
-        case FileModifiedDialog::ReturnCode::Ignore:
+        case FileModifiedWidget::ReturnCode::Ignore:
         {
             Base::KeySet<TextDisplay> displays( this );
             displays.insert( this );

@@ -1,5 +1,5 @@
-#ifndef FileRemovedDialog_h
-#define FileRemovedDialog_h
+#ifndef FileRemovedWidget_h
+#define FileRemovedWidget_h
 
 /******************************************************************************
 *
@@ -20,14 +20,15 @@
 *
 *******************************************************************************/
 
-#include "BaseDialog.h"
 #include "Counter.h"
 #include "CppUtil.h"
 #include "File.h"
 #include "Key.h"
 
+#include <QWidget>
+
 //* QDialog used when a file has been removed from disk
-class FileRemovedDialog: public BaseDialog, public Base::Key, private Base::Counter<FileRemovedDialog>
+class FileRemovedWidget: public QWidget, public Base::Key, private Base::Counter<FileRemovedWidget>
 {
 
     //* Qt macro
@@ -47,12 +48,12 @@ class FileRemovedDialog: public BaseDialog, public Base::Key, private Base::Coun
     };
 
     //* constructor
-    explicit FileRemovedDialog( QWidget* parent, const File& file );
+    explicit FileRemovedWidget( QWidget* parent, const File& file );
 
     Q_SIGNALS:
 
     //* emitted when a given action is selected
-    void actionSelected( FileRemovedDialog::ReturnCode );
+    void actionSelected( FileRemovedWidget::ReturnCode );
 
     private Q_SLOTS:
 
@@ -60,28 +61,28 @@ class FileRemovedDialog: public BaseDialog, public Base::Key, private Base::Coun
     void _reSave()
     {
         emit actionSelected( ReturnCode::SaveAgain );
-        done( Base::toIntegralType( ReturnCode::SaveAgain ) );
+        deleteLater();
     }
 
     //* save file with new name
     void _saveAs()
     {
         emit actionSelected( ReturnCode::SaveAs );
-        done( Base::toIntegralType( ReturnCode::SaveAs ) );
+        deleteLater();
     }
 
     //* close current editor
     void _close()
     {
         emit actionSelected( ReturnCode::Close );
-        done( Base::toIntegralType( ReturnCode::Close ) );
+        deleteLater();
     }
 
     //* ignore warning
     void _ignore()
     {
         emit actionSelected( ReturnCode::Ignore );
-        done( Base::toIntegralType( ReturnCode::Ignore ) );
+        deleteLater();
     }
 
 };

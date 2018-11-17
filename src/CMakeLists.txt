@@ -49,8 +49,8 @@ set(qedit_SOURCES
   DocumentClassToolBar.cpp
   FileCheck.cpp
   FileCheckDialog.cpp
-  FileModifiedDialog.cpp
-  FileRemovedDialog.cpp
+  FileModifiedWidget.cpp
+  FileRemovedWidget.cpp
   FileSelectionDialog.cpp
   HtmlHelper.cpp
   MainWindow.cpp

@@ -229,8 +229,8 @@ void TextView::closeDisplay( TextDisplay& display )
         display.askForSave() ==  AskForSaveDialog::Cancel ) return;
 
     // cleanup associated dialogs
-    display.closeFileRemovedDialogs();
-    display.closeFileModifiedDialogs();
+    display.closeFileRemovedWidgets();
+    display.closeFileModifiedWidgets();
 
     // retrieve displays associated to current
     Base::KeySet<TextDisplay> displays( &display );

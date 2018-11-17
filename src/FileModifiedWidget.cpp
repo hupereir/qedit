@@ -17,7 +17,7 @@
 *
 *******************************************************************************/
 
-#include "FileRemovedDialog.h"
+#include "FileModifiedWidget.h"
 #include "IconNames.h"
 #include "IconEngine.h"
 #include "QtUtil.h"
@@ -28,14 +28,14 @@
 #include <QPushButton>
 
 //________________________________________________________
-FileRemovedDialog::FileRemovedDialog( QWidget* parent, const File& file ):
-BaseDialog( parent ),
-Counter( "FileRemovedDialog" )
+FileModifiedWidget::FileModifiedWidget( QWidget* parent, const File& file ):
+QWidget( parent ),
+Counter( "FileModifiedWidget" )
 {
 
-    Debug::Throw( "FileRemovedDialog::FileRemovedDialog.\n" );
+    Debug::Throw( "FileModifiedWidget::FileModifiedWidget.\n" );
 
-    setWindowTitle( tr( "File Removed" ) );
+    setWindowTitle( tr( "File Modified" ) );
 
     // create vbox layout
     QVBoxLayout* layout=new QVBoxLayout;
@@ -44,14 +44,7 @@ Counter( "FileRemovedDialog" )
     setLayout( layout );
 
     // create message
-    QString buffer = tr( "File '%1' has been removed" ).arg( file.localName() );
-
-    QHBoxLayout *hLayout( new QHBoxLayout );
-    layout->addLayout( hLayout, 1 );
-    QLabel* label = new QLabel( this );
-    label->setPixmap( IconEngine::get( IconNames::DialogWarning ).pixmap( iconSize() ) );
-    hLayout->addWidget( label, 0, Qt::AlignHCenter );
-    hLayout->addWidget( new QLabel( buffer, this ), 1, Qt::AlignHCenter );
+    layout->addWidget( new QLabel( tr( "%1 has been modified by another application" ).arg( file.localName() ), this ) );
 
     // horizontal separator
     QFrame* frame( new QFrame( this ) );
@@ -60,30 +53,31 @@ Counter( "FileRemovedDialog" )
 
     // button layout
     QHBoxLayout *buttonLayout = new QHBoxLayout;
+    buttonLayout->setMargin(0);
     buttonLayout->setSpacing( 5 );
     layout->addLayout( buttonLayout );
-    buttonLayout->addStretch(1);
+    buttonLayout->addStretch( 1 );
+
+    // reload button.
+    QPushButton* button;
+    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::Reload ), "&Reload", this ) );
+    connect( button, SIGNAL(clicked()), SLOT(_reLoad()) );
+    button->setToolTip( "Reload file from disc. Modifications will be lost" );
 
     // resave button
-    QPushButton* button;
-    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::Save ), tr( "Save Again" ), this ) );
+    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::Save ), "&Save Again", this ) );
     connect( button, SIGNAL(clicked()), SLOT(_reSave()) );
-    button->setToolTip( tr( "Save file again. Disc modifications will be lost" ) );
+    button->setToolTip( "Save file again. Disc modifications will be lost" );
 
     // save as button
-    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::SaveAs ), tr( "Save As" ), this ) );
+    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::SaveAs ), "&Save As", this ) );
     connect( button, SIGNAL(clicked()), SLOT(_saveAs()) );
-    button->setToolTip( tr( "Save file with a different name" ) );
-
-    // close button.
-    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogClose ), tr( "Close" ), this ) );
-    connect( button, SIGNAL(clicked()), SLOT(_close()) );
-    button->setToolTip( tr( "Close window" ) );
+    button->setToolTip( "Save file with a different name" );
 
     // ignore button.
-    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogCancel ), tr( "Ignore" ), this ) );
+    buttonLayout->addWidget( button = new QPushButton(  IconEngine::get( IconNames::DialogCancel ), "&Ignore", this ) );
     connect( button, SIGNAL(clicked()), SLOT(_ignore()) );
-    button->setToolTip( tr( "Ignore warning" ) );
+    button->setToolTip( "Ignore warning" );
 
     adjustSize();
 
