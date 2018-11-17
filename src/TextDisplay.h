@@ -245,7 +245,7 @@ class TextDisplay: public TextEditor
     FileRemovedDialog::ReturnCode checkFileRemoved();
 
     //* check if file has been modified externally
-    FileModifiedDialog::ReturnCode checkFileModified();
+    void checkFileModified();
 
     //* check if file read-only state has changed
     void checkFileReadOnly();

@@ -573,12 +573,12 @@ FileRemovedDialog::ReturnCode TextDisplay::checkFileRemoved()
 
 
 //___________________________________________________________________________
-FileModifiedDialog::ReturnCode TextDisplay::checkFileModified()
+void TextDisplay::checkFileModified()
 {
     Debug::Throw() << "TextDisplay::checkFileModified - " << file_ << endl;
 
     // check if warnings are enabled and file is modified. Do nothing otherwise
-    if( _ignoreWarnings() || !_fileModified() ) return FileModifiedDialog::Ignore;
+    if( _ignoreWarnings() || !_fileModified() ) return;
 
     // disable check. This prevents recursion in macOS
     _setIgnoreWarnings( true );
@@ -621,7 +621,7 @@ FileModifiedDialog::ReturnCode TextDisplay::checkFileModified()
         default: break;
     }
 
-    return static_cast<FileModifiedDialog::ReturnCode>( state );
+    return;
 
 }
 
