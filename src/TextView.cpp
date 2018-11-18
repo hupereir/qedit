@@ -616,7 +616,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
                 Debug::Throw( "TextView::_newSplitter - found parent splitter.\n" );
                 // create a splitter with correct orientation
                 // give him no parent, because the parent is set in QSplitter::insertWidget()
-                splitter = new LocalSplitter();
+                splitter = new LocalSplitter;
                 splitter->setOrientation( orientation );
                 parentSplitter->insertWidget( parentSplitter->indexOf( &activeDisplay() ), splitter );
 

@@ -20,15 +20,13 @@
 *
 *******************************************************************************/
 
-#include "Counter.h"
 #include "CppUtil.h"
 #include "File.h"
+#include "InformationWidget.h"
 #include "Key.h"
 
-#include <QWidget>
-
 //* QDialog used when a file has been removed from disk
-class FileRemovedWidget: public QWidget, public Base::Key, private Base::Counter<FileRemovedWidget>
+class FileRemovedWidget: public InformationWidget, public Base::Key
 {
 
     //* Qt macro

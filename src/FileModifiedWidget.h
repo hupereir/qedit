@@ -20,15 +20,13 @@
 *
 *******************************************************************************/
 
-#include "Counter.h"
 #include "CppUtil.h"
 #include "File.h"
+#include "InformationWidget.h"
 #include "Key.h"
 
-#include <QWidget>
-
 //* QDialog used to ask if a new file should be created
-class FileModifiedWidget: public QWidget, public Base::Key, private Base::Counter<FileModifiedWidget>
+class FileModifiedWidget: public InformationWidget, public Base::Key
 {
 
     //* Qt macro

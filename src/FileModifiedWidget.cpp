@@ -22,15 +22,13 @@
 #include "IconEngine.h"
 #include "QtUtil.h"
 
-#include <QFrame>
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
 
 //________________________________________________________
 FileModifiedWidget::FileModifiedWidget( QWidget* parent, const File& file ):
-QWidget( parent ),
-Counter( "FileModifiedWidget" )
+InformationWidget( parent )
 {
 
     Debug::Throw( "FileModifiedWidget::FileModifiedWidget.\n" );
@@ -38,21 +36,16 @@ Counter( "FileModifiedWidget" )
     setWindowTitle( tr( "File Modified" ) );
 
     // create vbox layout
-    QVBoxLayout* layout=new QVBoxLayout;
-    layout->setSpacing(5);
+    auto layout=new QVBoxLayout;
+    layout->setSpacing(10);
     layout->setMargin(10);
     setLayout( layout );
 
     // create message
     layout->addWidget( new QLabel( tr( "%1 has been modified by another application" ).arg( file.localName() ), this ) );
 
-    // horizontal separator
-    QFrame* frame( new QFrame( this ) );
-    frame->setFrameStyle( QFrame::HLine | QFrame::Sunken );
-    layout->addWidget( frame );
-
     // button layout
-    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    auto buttonLayout = new QHBoxLayout;
     buttonLayout->setMargin(0);
     buttonLayout->setSpacing( 5 );
     layout->addLayout( buttonLayout );

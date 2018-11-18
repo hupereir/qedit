@@ -28,15 +28,14 @@
 
 //________________________________________________________
 FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
-QWidget( parent ),
-Counter( "FileRemovedWidget" )
+InformationWidget( parent )
 {
 
     Debug::Throw( "FileRemovedWidget::FileRemovedWidget.\n" );
 
     // create vbox layout
-    QVBoxLayout* layout=new QVBoxLayout;
-    layout->setSpacing(5);
+    auto layout=new QVBoxLayout;
+    layout->setSpacing(10);
     layout->setMargin(10);
     setLayout( layout );
 
@@ -44,7 +43,7 @@ Counter( "FileRemovedWidget" )
     layout->addWidget( new QLabel( tr( "File '%1' has been removed" ).arg( file.localName() ), this ) );
 
     // button layout
-    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    auto buttonLayout = new QHBoxLayout;
     buttonLayout->setSpacing( 5 );
     layout->addLayout( buttonLayout );
     buttonLayout->addStretch(1);
