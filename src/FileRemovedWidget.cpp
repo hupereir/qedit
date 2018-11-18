@@ -32,40 +32,26 @@ InformationWidget( parent )
 {
 
     Debug::Throw( "FileRemovedWidget::FileRemovedWidget.\n" );
-
-    // create vbox layout
-    auto layout=new QVBoxLayout;
-    layout->setSpacing(10);
-    layout->setMargin(10);
-    setLayout( layout );
-
-    // create message
-    layout->addWidget( new QLabel( tr( "File '%1' has been removed." ).arg( file.localName() ), this ) );
-
-    // button layout
-    auto buttonLayout = new QHBoxLayout;
-    buttonLayout->setSpacing( 5 );
-    layout->addLayout( buttonLayout );
-    buttonLayout->addStretch(1);
+    setText( tr( " The file '%1' has been deleted by another application." ).arg( file.localName() ) );
 
     // resave button
     QPushButton* button;
-    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::Save ), tr( "Save Again" ), this ) );
+    buttonLayout().addWidget( button = new QPushButton( IconEngine::get( IconNames::Save ), tr( "Save Again" ), this ) );
     connect( button, SIGNAL(clicked()), SLOT(_reSave()) );
     button->setToolTip( tr( "Save file again. Disc modifications will be lost" ) );
 
     // save as button
-    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::SaveAs ), tr( "Save As" ), this ) );
+    buttonLayout().addWidget( button = new QPushButton( IconEngine::get( IconNames::SaveAs ), tr( "Save As" ), this ) );
     connect( button, SIGNAL(clicked()), SLOT(_saveAs()) );
     button->setToolTip( tr( "Save file with a different name" ) );
 
     // close button.
-    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogClose ), tr( "Close" ), this ) );
+    buttonLayout().addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogClose ), tr( "Close" ), this ) );
     connect( button, SIGNAL(clicked()), SLOT(_close()) );
     button->setToolTip( tr( "Close window" ) );
 
     // ignore button.
-    buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogCancel ), tr( "Ignore" ), this ) );
+    buttonLayout().addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogCancel ), tr( "Ignore" ), this ) );
     connect( button, SIGNAL(clicked()), SLOT(_ignore()) );
     button->setToolTip( tr( "Ignore warning" ) );
 

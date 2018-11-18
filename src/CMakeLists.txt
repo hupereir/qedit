@@ -53,7 +53,6 @@ set(qedit_SOURCES
   FileRemovedWidget.cpp
   FileSelectionDialog.cpp
   HtmlHelper.cpp
-  InformationWidget.cpp
   MainWindow.cpp
   MenuBar.cpp
   SidePanelToolBar.cpp
