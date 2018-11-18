@@ -42,7 +42,7 @@ InformationWidget( parent )
     setLayout( layout );
 
     // create message
-    layout->addWidget( new QLabel( tr( "%1 has been modified by another application" ).arg( file.localName() ), this ) );
+    layout->addWidget( new QLabel( tr( "%1 has been modified by another application." ).arg( file.localName() ), this ) );
 
     // button layout
     auto buttonLayout = new QHBoxLayout;

@@ -40,7 +40,7 @@ InformationWidget( parent )
     setLayout( layout );
 
     // create message
-    layout->addWidget( new QLabel( tr( "File '%1' has been removed" ).arg( file.localName() ), this ) );
+    layout->addWidget( new QLabel( tr( "File '%1' has been removed." ).arg( file.localName() ), this ) );
 
     // button layout
     auto buttonLayout = new QHBoxLayout;

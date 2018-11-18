@@ -18,7 +18,7 @@
 *******************************************************************************/
 
 #include "InformationWidget.h"
-
+#include "Color.h"
 #include <QPainter>
 
 //___________________________________________________________
@@ -30,16 +30,25 @@ Counter( "InformationWidget" )
 //___________________________________________________________
 void InformationWidget::paintEvent( QPaintEvent* event )
 {
+
+    const auto baseColor = palette().color( QPalette::Active, QPalette::Window );
+    const auto outlineColor = palette().color( QPalette::Active, QPalette::Highlight );
+    Base::Color backgroundColor( outlineColor );
+
+    const qreal alpha = 0.2;
+    backgroundColor.merge( baseColor, alpha );
+
     QPainter painter( this );
     painter.setClipRegion( event->region() );
-
-    auto outlineColor = palette().color( QPalette::Highlight );
-    auto backgroundColor( outlineColor );
-    backgroundColor.setAlphaF( 0.3 );
-
     painter.setRenderHints( QPainter::Antialiasing );
-    painter.setPen( QPen( outlineColor, 2 ) );
-    painter.setBrush( backgroundColor );
 
-    painter.drawRoundedRect( QRectF( rect() ).adjusted( 2, 2, -2, -2 ), 3, 3 );
+    const qreal penWidth = 2;
+    painter.setPen( QPen( outlineColor, penWidth ) );
+    painter.setBrush( backgroundColor.get() );
+
+    const qreal margin = penWidth/2 + 1;
+    const qreal radius = 3;
+    const auto rect = QRectF( this->rect() ).adjusted( margin, margin, -margin, -margin );
+    painter.drawRoundedRect( rect, radius, radius );
+
 }
