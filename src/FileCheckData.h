@@ -45,29 +45,39 @@ class FileCheckData: private Base::Counter<FileCheckData>
         timeStamp_( stamp )
     {}
 
-    //* file
-    void setFile( const File& file )
-    { file_ = file; }
+    //*@name accessors
+    //@{
 
     //* file
     const File& file() const
     { return file_; }
 
     //* flag
-    void setFlag( const Flag& flag )
-    { flag_ = flag; }
-
-    //* flag
     const Flag& flag() const
     { return flag_; }
+
+    //* timestamp
+    const TimeStamp& timeStamp() const
+    { return timeStamp_; }
+
+    //@}
+
+    //*@name modifiers
+    //@{
+
+    //* file
+    void setFile( const File& file )
+    { file_ = file; }
+
+    //* flag
+    void setFlag( const Flag& flag )
+    { flag_ = flag; }
 
     //* timestamp
     void setTimeStamp( const TimeStamp& stamp )
     { timeStamp_ = stamp; }
 
-    //* timestamp
-    const TimeStamp& timeStamp() const
-    { return timeStamp_; }
+    //@}
 
     private:
 
