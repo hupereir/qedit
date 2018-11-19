@@ -16,7 +16,6 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 *******************************************************************************/
-
 #include "TextDisplay.h"
 
 #include "LineEditor.h"
@@ -629,7 +628,6 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( bool enableAll )
 
 }
 
-
 //___________________________________________________________________________
 void TextDisplay::save()
 {
@@ -641,13 +639,30 @@ void TextDisplay::save()
     // check file name
     if( file_.isEmpty() || isNewDocument() ) return saveAs();
 
+    // see if contents is changed
+    const bool contentsChanged( _contentsChanged() );
+
+    // warn if there are modifications on disk
+    if( contentsChanged && (fileCheckData_.flag() == FileCheckData::Flag::Modified) )
+    {
+        QuestionDialog dialog( this, tr(
+            "The file %1 has been modified by another program. \n\n"
+            "Do you really want to save your local modifications ? This will overwrite the changes made in the file on disk." )
+            .arg( file_.localName() ) );
+
+        dialog.okButton().setText( tr( "Save" ) );
+        dialog.okButton().setIcon( IconEngine::get( IconNames::Save ) );
+        if( !dialog.exec() ) return;
+
+    }
+
     // clear file removde/file modified data
     clearFileCheckData();
     closeFileRemovedWidgets();
     closeFileModifiedWidgets();
 
     // check is contents differ from saved file
-    if( _contentsChanged() )
+    if( contentsChanged )
     {
 
         // make backup
