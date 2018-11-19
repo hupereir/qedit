@@ -34,26 +34,33 @@ InformationWidget( parent )
     Debug::Throw( "FileRemovedWidget::FileRemovedWidget.\n" );
     setText( tr( " The file '%1' has been deleted by another application." ).arg( file.localName() ) );
 
-    // resave button
-    QPushButton* button;
-    buttonLayout().addWidget( button = new QPushButton( IconEngine::get( IconNames::Save ), tr( "Save Again" ), this ) );
-    connect( button, SIGNAL(clicked()), SLOT(_reSave()) );
-    button->setToolTip( tr( "Save file again. Disc modifications will be lost" ) );
+    {
+        // resave button
+        auto button = addButton( IconEngine::get( IconNames::Save ), tr( "Save Again" ) );
+        connect( button, SIGNAL(clicked()), SLOT(_reSave()) );
+        button->setToolTip( tr( "Save file again. Disc modifications will be lost" ) );
+    }
 
-    // save as button
-    buttonLayout().addWidget( button = new QPushButton( IconEngine::get( IconNames::SaveAs ), tr( "Save As" ), this ) );
-    connect( button, SIGNAL(clicked()), SLOT(_saveAs()) );
-    button->setToolTip( tr( "Save file with a different name" ) );
+    {
+        // save as button
+        auto button = addButton( IconEngine::get( IconNames::SaveAs ), tr( "Save As" ) );
+        connect( button, SIGNAL(clicked()), SLOT(_saveAs()) );
+        button->setToolTip( tr( "Save file with a different name" ) );
+    }
 
-    // close button.
-    buttonLayout().addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogClose ), tr( "Close" ), this ) );
-    connect( button, SIGNAL(clicked()), SLOT(_close()) );
-    button->setToolTip( tr( "Close window" ) );
+    {
+        // close button.
+        auto button = addButton( IconEngine::get( IconNames::DialogClose ), tr( "Close" ) );
+        connect( button, SIGNAL(clicked()), SLOT(_close()) );
+        button->setToolTip( tr( "Close window" ) );
+    }
 
-    // ignore button.
-    buttonLayout().addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogCancel ), tr( "Ignore" ), this ) );
-    connect( button, SIGNAL(clicked()), SLOT(_ignore()) );
-    button->setToolTip( tr( "Ignore warning" ) );
+    {
+        // ignore button.
+        auto button = addButton( IconEngine::get( IconNames::DialogCancel ), tr( "Ignore" ) );
+        connect( button, SIGNAL(clicked()), SLOT(_ignore()) );
+        button->setToolTip( tr( "Ignore warning" ) );
+    }
 
     adjustSize();
 
