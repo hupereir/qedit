@@ -290,10 +290,10 @@ class TextDisplay: public TextEditor
     void clearTag( QTextBlock, int tags );
 
     //* close file removed dialogs
-    void closeFileRemovedWidgets();
+    void hideFileRemovedWidgets();
 
     //* close file modified dialogs
-    void closeFileModifiedWidgets();
+    void hideFileModifiedWidgets();
 
 
     //@}

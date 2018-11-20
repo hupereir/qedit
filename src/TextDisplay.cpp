@@ -534,7 +534,7 @@ void TextDisplay::checkFileRemoved()
     auto widget = (*textViews.begin())->createFileRemovedWidget( file() );
     Base::Key::associate( this, widget );
     connect( widget, SIGNAL(actionSelected(FileRemovedWidget::ReturnCode)), SLOT(_processFileRemovedAction(FileRemovedWidget::ReturnCode)) );
-    widget->showAnimated();
+    widget->animatedShow();
     return;
 }
 
@@ -563,7 +563,7 @@ void TextDisplay::checkFileModified()
     auto widget = (*textViews.begin())->createFileModifiedWidget( file() );
     Base::Key::associate( this, widget );
     connect( widget, SIGNAL(actionSelected(FileModifiedWidget::ReturnCode)), SLOT(_processFileModifiedAction(FileModifiedWidget::ReturnCode)) );
-    widget->showAnimated();
+    widget->animatedShow();
     return;
 
 }
@@ -658,8 +658,8 @@ void TextDisplay::save()
 
     // clear file removde/file modified data
     clearFileCheckData();
-    closeFileRemovedWidgets();
-    closeFileModifiedWidgets();
+    hideFileRemovedWidgets();
+    hideFileModifiedWidgets();
 
     // check is contents differ from saved file
     if( contentsChanged )
@@ -794,8 +794,8 @@ void TextDisplay::revertToSave()
 
     // clear file removde/file modified data
     clearFileCheckData();
-    closeFileRemovedWidgets();
-    closeFileModifiedWidgets();
+    hideFileRemovedWidgets();
+    hideFileModifiedWidgets();
 
     // store scrollbar positions
     int x( horizontalScrollBar()->value() );
@@ -995,9 +995,9 @@ void TextDisplay::clearTag( QTextBlock block, int tags )
 }
 
 //_____________________________________________________________
-void TextDisplay::closeFileRemovedWidgets()
+void TextDisplay::hideFileRemovedWidgets()
 {
-    Debug::Throw( "TextDisplay::closeFileRemovedWidgets.\n" );
+    Debug::Throw( "TextDisplay::hideFileRemovedWidgets.\n" );
 
     // get associated displays
     Base::KeySet<TextDisplay> associatedDisplays( this );
@@ -1006,15 +1006,15 @@ void TextDisplay::closeFileRemovedWidgets()
     for( const auto& display:associatedDisplays )
     {
         for( const auto& dialog : Base::KeySet<FileRemovedWidget>(display) )
-        { dialog->deleteLater(); }
+        { dialog->animatedHide(); }
     }
 
 }
 
 //_____________________________________________________________
-void TextDisplay::closeFileModifiedWidgets()
+void TextDisplay::hideFileModifiedWidgets()
 {
-    Debug::Throw( "TextDisplay::closeFileModifiedWidgets.\n" );
+    Debug::Throw( "TextDisplay::hideFileModifiedWidgets.\n" );
 
     // get associated displays
     Base::KeySet<TextDisplay> associatedDisplays( this );
@@ -1023,7 +1023,7 @@ void TextDisplay::closeFileModifiedWidgets()
     for( const auto& display:associatedDisplays )
     {
         for( const auto& dialog : Base::KeySet<FileModifiedWidget>(display) )
-        { dialog->deleteLater(); }
+        { dialog->animatedHide(); }
     }
 
 }

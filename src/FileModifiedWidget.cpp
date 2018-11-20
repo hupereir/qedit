@@ -74,26 +74,26 @@ InformationWidget( parent )
 void FileModifiedWidget::_reLoad()
 {
     emit actionSelected( ReturnCode::Reload );
-    hideAnimated();
+    animatedHide();
 }
 
 //________________________________________________________
 void FileModifiedWidget::_reSave()
 {
     emit actionSelected( ReturnCode::SaveAgain );
-    hideAnimated();
+    animatedHide();
 }
 
 //________________________________________________________
 void FileModifiedWidget::_saveAs()
 {
     emit actionSelected( ReturnCode::SaveAs );
-    hideAnimated();
+    animatedHide();
 }
 
 //________________________________________________________
 void FileModifiedWidget::_ignore()
 {
     emit actionSelected( ReturnCode::Ignore );
-    hideAnimated();
+    animatedHide();
 }
