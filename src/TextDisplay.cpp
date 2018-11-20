@@ -534,7 +534,7 @@ void TextDisplay::checkFileRemoved()
     auto widget = (*textViews.begin())->createFileRemovedWidget( file() );
     Base::Key::associate( this, widget );
     connect( widget, SIGNAL(actionSelected(FileRemovedWidget::ReturnCode)), SLOT(_processFileRemovedAction(FileRemovedWidget::ReturnCode)) );
-    widget->show();
+    widget->showAnimated();
     return;
 }
 
@@ -563,7 +563,7 @@ void TextDisplay::checkFileModified()
     auto widget = (*textViews.begin())->createFileModifiedWidget( file() );
     Base::Key::associate( this, widget );
     connect( widget, SIGNAL(actionSelected(FileModifiedWidget::ReturnCode)), SLOT(_processFileModifiedAction(FileModifiedWidget::ReturnCode)) );
-    widget->show();
+    widget->showAnimated();
     return;
 
 }

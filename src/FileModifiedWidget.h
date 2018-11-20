@@ -56,33 +56,16 @@ class FileModifiedWidget: public InformationWidget, public Base::Key
     private Q_SLOTS:
 
     //* re-saved removed file
-    void _reLoad()
-    {
-        emit actionSelected( ReturnCode::Reload );
-        deleteLater();
-    }
-
+    void _reLoad();
 
     //* re-saved removed file
-    void _reSave()
-    {
-        emit actionSelected( ReturnCode::SaveAgain );
-        deleteLater();
-    }
+    void _reSave();
 
     //* save file with new name
-    void _saveAs()
-    {
-        emit actionSelected( ReturnCode::SaveAs );
-        deleteLater();
-    }
+    void _saveAs();
 
     //* save file with new name
-    void _ignore()
-    {
-        emit actionSelected( ReturnCode::Ignore );
-        deleteLater();
-    }
+    void _ignore();
 
 };
 

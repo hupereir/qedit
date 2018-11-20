@@ -56,32 +56,16 @@ class FileRemovedWidget: public InformationWidget, public Base::Key
     private Q_SLOTS:
 
     //* re-saved removed file
-    void _reSave()
-    {
-        emit actionSelected( ReturnCode::SaveAgain );
-        deleteLater();
-    }
+    void _reSave();
 
     //* save file with new name
-    void _saveAs()
-    {
-        emit actionSelected( ReturnCode::SaveAs );
-        deleteLater();
-    }
+    void _saveAs();
 
     //* close current editor
-    void _close()
-    {
-        emit actionSelected( ReturnCode::Close );
-        deleteLater();
-    }
+    void _close();
 
     //* ignore warning
-    void _ignore()
-    {
-        emit actionSelected( ReturnCode::Ignore );
-        deleteLater();
-    }
+    void _ignore();
 
 };
 

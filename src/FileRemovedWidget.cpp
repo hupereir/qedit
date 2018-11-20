@@ -64,4 +64,35 @@ InformationWidget( parent )
 
     adjustSize();
 
+    // delete on hide
+    connect( this, SIGNAL(hideAnimationFinished()), SLOT(deleteLater()) );
+
+}
+
+//________________________________________________________
+void FileRemovedWidget::_reSave()
+{
+    emit actionSelected( ReturnCode::SaveAgain );
+    hideAnimated();
+}
+
+//________________________________________________________
+void FileRemovedWidget::_saveAs()
+{
+    emit actionSelected( ReturnCode::SaveAs );
+    hideAnimated();
+}
+
+//________________________________________________________
+void FileRemovedWidget::_close()
+{
+    emit actionSelected( ReturnCode::Close );
+    hideAnimated();
+}
+
+//________________________________________________________
+void FileRemovedWidget::_ignore()
+{
+    emit actionSelected( ReturnCode::Ignore );
+    hideAnimated();
 }
