@@ -28,7 +28,7 @@
 
 //________________________________________________________
 FileModifiedWidget::FileModifiedWidget( QWidget* parent, const File& file ):
-InformationWidget( parent )
+    InformationWidget( parent, MessageType::Warning )
 {
 
     Debug::Throw( "FileModifiedWidget::FileModifiedWidget.\n" );
