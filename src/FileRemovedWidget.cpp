@@ -28,7 +28,7 @@
 
 //________________________________________________________
 FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
-    InformationWidget( parent, MessageType::Warning )
+    InformationWidget( parent, MessageType::Information )
 {
 
     Debug::Throw( "FileRemovedWidget::FileRemovedWidget.\n" );
