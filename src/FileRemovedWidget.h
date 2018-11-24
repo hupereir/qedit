@@ -22,11 +22,11 @@
 
 #include "CppUtil.h"
 #include "File.h"
-#include "InformationWidget.h"
+#include "MessageWidget.h"
 #include "Key.h"
 
 //* QDialog used when a file has been removed from disk
-class FileRemovedWidget: public InformationWidget, public Base::Key
+class FileRemovedWidget: public MessageWidget, public Base::Key
 {
 
     //* Qt macro

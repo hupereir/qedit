@@ -22,11 +22,11 @@
 
 #include "CppUtil.h"
 #include "File.h"
-#include "InformationWidget.h"
+#include "MessageWidget.h"
 #include "Key.h"
 
 //* QDialog used to ask if a new file should be created
-class FileModifiedWidget: public InformationWidget, public Base::Key
+class FileModifiedWidget: public MessageWidget, public Base::Key
 {
 
     //* Qt macro
