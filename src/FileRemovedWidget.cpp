@@ -72,27 +72,27 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
 //________________________________________________________
 void FileRemovedWidget::_reSave()
 {
-    emit actionSelected( ReturnCode::SaveAgain );
     animatedHide();
+    emit actionSelected( ReturnCode::SaveAgain );
 }
 
 //________________________________________________________
 void FileRemovedWidget::_saveAs()
 {
-    emit actionSelected( ReturnCode::SaveAs );
     animatedHide();
+    emit actionSelected( ReturnCode::SaveAs );
 }
 
 //________________________________________________________
 void FileRemovedWidget::_close()
 {
-    emit actionSelected( ReturnCode::Close );
     animatedHide();
+    emit actionSelected( ReturnCode::Close );
 }
 
 //________________________________________________________
 void FileRemovedWidget::_ignore()
 {
-    emit actionSelected( ReturnCode::Ignore );
     animatedHide();
+    emit actionSelected( ReturnCode::Ignore );
 }

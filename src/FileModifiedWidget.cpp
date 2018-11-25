@@ -73,27 +73,27 @@ FileModifiedWidget::FileModifiedWidget( QWidget* parent, const File& file ):
 //________________________________________________________
 void FileModifiedWidget::_reLoad()
 {
-    emit actionSelected( ReturnCode::Reload );
     animatedHide();
+    emit actionSelected( ReturnCode::Reload );
 }
 
 //________________________________________________________
 void FileModifiedWidget::_reSave()
 {
-    emit actionSelected( ReturnCode::SaveAgain );
     animatedHide();
+    emit actionSelected( ReturnCode::SaveAgain );
 }
 
 //________________________________________________________
 void FileModifiedWidget::_saveAs()
 {
-    emit actionSelected( ReturnCode::SaveAs );
     animatedHide();
+    emit actionSelected( ReturnCode::SaveAs );
 }
 
 //________________________________________________________
 void FileModifiedWidget::_ignore()
 {
-    emit actionSelected( ReturnCode::Ignore );
     animatedHide();
+    emit actionSelected( ReturnCode::Ignore );
 }
