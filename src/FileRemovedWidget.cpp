@@ -38,6 +38,7 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
         // resave button
         auto button = addButton( IconEngine::get( IconNames::Save ), tr( "Save Again" ) );
         connect( button, SIGNAL(clicked()), SLOT(_reSave()) );
+        connect( button, SIGNAL(clicked()), SLOT(animatedHide()) );
         button->setToolTip( tr( "Save file again. Disc modifications will be lost" ) );
     }
 
@@ -45,6 +46,7 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
         // save as button
         auto button = addButton( IconEngine::get( IconNames::SaveAs ), tr( "Save As" ) );
         connect( button, SIGNAL(clicked()), SLOT(_saveAs()) );
+        connect( button, SIGNAL(clicked()), SLOT(animatedHide()) );
         button->setToolTip( tr( "Save file with a different name" ) );
     }
 
@@ -52,6 +54,7 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
         // close button.
         auto button = addButton( IconEngine::get( IconNames::DialogClose ), tr( "Close" ) );
         connect( button, SIGNAL(clicked()), SLOT(_close()) );
+        connect( button, SIGNAL(clicked()), SLOT(animatedHide()) );
         button->setToolTip( tr( "Close window" ) );
     }
 
@@ -59,6 +62,7 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
         // ignore button.
         auto button = addButton( IconEngine::get( IconNames::DialogCancel ), tr( "Ignore" ) );
         connect( button, SIGNAL(clicked()), SLOT(_ignore()) );
+        connect( button, SIGNAL(clicked()), SLOT(animatedHide()) );
         button->setToolTip( tr( "Ignore warning" ) );
     }
 
@@ -71,28 +75,16 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
 
 //________________________________________________________
 void FileRemovedWidget::_reSave()
-{
-    animatedHide();
-    emit actionSelected( ReturnCode::SaveAgain );
-}
+{ emit actionSelected( ReturnCode::SaveAgain ); }
 
 //________________________________________________________
 void FileRemovedWidget::_saveAs()
-{
-    animatedHide();
-    emit actionSelected( ReturnCode::SaveAs );
-}
+{ emit actionSelected( ReturnCode::SaveAs ); }
 
 //________________________________________________________
 void FileRemovedWidget::_close()
-{
-    animatedHide();
-    emit actionSelected( ReturnCode::Close );
-}
+{ emit actionSelected( ReturnCode::Close ); }
 
 //________________________________________________________
 void FileRemovedWidget::_ignore()
-{
-    animatedHide();
-    emit actionSelected( ReturnCode::Ignore );
-}
+{ emit actionSelected( ReturnCode::Ignore ); }
