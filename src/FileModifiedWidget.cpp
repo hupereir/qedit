@@ -33,7 +33,7 @@ FileModifiedWidget::FileModifiedWidget( QWidget* parent, const File& file ):
 
     Debug::Throw( "FileModifiedWidget::FileModifiedWidget.\n" );
 
-    setText( tr( " The file '%1' has been modified by another application." ).arg( file.localName() ) );
+    setFile( file );
 
     {
         // reload button
@@ -73,6 +73,10 @@ FileModifiedWidget::FileModifiedWidget( QWidget* parent, const File& file ):
     connect( this, SIGNAL(hideAnimationFinished()), SLOT(deleteLater()) );
 
 }
+
+//________________________________________________________
+void FileModifiedWidget::setFile( const File& file )
+{ setText( tr( " The file '%1' has been modified by another application." ).arg( file.localName() ) ); }
 
 //________________________________________________________
 void FileModifiedWidget::_reLoad()

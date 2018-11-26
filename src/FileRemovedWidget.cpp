@@ -32,7 +32,7 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
 {
 
     Debug::Throw( "FileRemovedWidget::FileRemovedWidget.\n" );
-    setText( tr( " The file '%1' has been deleted by another application." ).arg( file.localName() ) );
+    setFile( file );
 
     {
         // resave button
@@ -72,6 +72,10 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
     connect( this, SIGNAL(hideAnimationFinished()), SLOT(deleteLater()) );
 
 }
+
+//________________________________________________________
+void FileRemovedWidget::setFile( const File& file )
+{ setText( tr( " The file '%1' has been deleted by another application." ).arg( file.localName() ) ); }
 
 //________________________________________________________
 void FileRemovedWidget::_reSave()

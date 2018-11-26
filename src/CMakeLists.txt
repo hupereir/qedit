@@ -50,6 +50,7 @@ set(qedit_SOURCES
   FileCheck.cpp
   FileCheckDialog.cpp
   FileModifiedWidget.cpp
+  FileReadOnlyWidget.cpp
   FileRemovedWidget.cpp
   FileSelectionDialog.cpp
   HtmlHelper.cpp

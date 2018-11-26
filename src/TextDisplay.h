@@ -295,6 +295,8 @@ class TextDisplay: public TextEditor
     //* close file modified dialogs
     void hideFileModifiedWidgets();
 
+    //* close file modified dialogs
+    void hideFileReadOnlyWidgets();
 
     //@}
 

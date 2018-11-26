@@ -32,6 +32,7 @@
 #include "DocumentClassMenu.h"
 #include "ElidedLabel.h"
 #include "FileInformationDialog.h"
+#include "FileReadOnlyWidget.h"
 #include "FileRecordProperties.h"
 #include "GridLayout.h"
 #include "HighlightBlockData.h"
@@ -230,6 +231,24 @@ void TextDisplay::setReadOnly( bool value )
     TextEditor::setReadOnly( value );
 
     if( changed && isActive() ) emit needUpdate( ReadOnly );
+
+    if( changed && isReadOnly() && Base::KeySet<FileReadOnlyWidget>( this ).empty() )
+    {
+
+        // get parent textview
+        Base::KeySet<TextView> textViews( this );
+        if( !textViews.empty() )
+        {
+            auto widget = new FileReadOnlyWidget();
+            widget->setFile( file() );
+            (*textViews.begin())->addMessageWidget( widget );
+            Base::Key::associate( this, widget );
+        }
+
+    }
+
+    if( !isReadOnly() ) hideFileReadOnlyWidgets();
+
 }
 
 //______________________________________________________________________________
@@ -531,7 +550,8 @@ void TextDisplay::checkFileRemoved()
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    auto widget = new FileRemovedWidget( nullptr, file() );
+    auto widget = new FileRemovedWidget;
+    widget->setFile( file() );
     (*textViews.begin())->addMessageWidget( widget );
     Base::Key::associate( this, widget );
     connect( widget, SIGNAL(actionSelected(FileRemovedWidget::ReturnCode)), SLOT(_processFileRemovedAction(FileRemovedWidget::ReturnCode)) );
@@ -561,7 +581,8 @@ void TextDisplay::checkFileModified()
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    auto widget = new FileModifiedWidget( nullptr, file() );
+    auto widget = new FileModifiedWidget;
+    widget->setFile( file() );
     (*textViews.begin())->addMessageWidget( widget );
     Base::Key::associate( this, widget );
     connect( widget, SIGNAL(actionSelected(FileModifiedWidget::ReturnCode)), SLOT(_processFileModifiedAction(FileModifiedWidget::ReturnCode)) );
@@ -1025,6 +1046,23 @@ void TextDisplay::hideFileModifiedWidgets()
     for( const auto& display:associatedDisplays )
     {
         for( const auto& dialog : Base::KeySet<FileModifiedWidget>(display) )
+        { dialog->animatedHide(); }
+    }
+
+}
+
+//_____________________________________________________________
+void TextDisplay::hideFileReadOnlyWidgets()
+{
+    Debug::Throw( "TextDisplay::hideFileReadOnlyWidgets.\n" );
+
+    // get associated displays
+    Base::KeySet<TextDisplay> associatedDisplays( this );
+    associatedDisplays.insert( this );
+
+    for( const auto& display:associatedDisplays )
+    {
+        for( const auto& dialog : Base::KeySet<FileReadOnlyWidget>(display) )
         { dialog->animatedHide(); }
     }
 

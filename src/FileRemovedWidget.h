@@ -20,7 +20,6 @@
 *
 *******************************************************************************/
 
-#include "CppUtil.h"
 #include "File.h"
 #include "MessageWidget.h"
 #include "Key.h"
@@ -46,7 +45,14 @@ class FileRemovedWidget: public MessageWidget, public Base::Key
     };
 
     //* constructor
-    explicit FileRemovedWidget( QWidget* parent, const File& file );
+    explicit FileRemovedWidget( QWidget* = nullptr, const File& = File() );
+
+    //*@ modifiers
+    //@{
+
+    void setFile( const File& );
+
+    //@}
 
     Q_SIGNALS:
 

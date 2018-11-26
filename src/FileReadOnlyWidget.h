@@ -1,5 +1,5 @@
-#ifndef FileModifiedWidget_h
-#define FileModifiedWidget_h
+#ifndef FileReadOnlyWidget_h
+#define FileReadOnlyWidget_h
 
 /******************************************************************************
 *
@@ -25,7 +25,7 @@
 #include "Key.h"
 
 //* QDialog used to ask if a new file should be created
-class FileModifiedWidget: public MessageWidget, public Base::Key
+class FileReadOnlyWidget: public MessageWidget, public Base::Key
 {
 
     //* Qt macro
@@ -33,19 +33,8 @@ class FileModifiedWidget: public MessageWidget, public Base::Key
 
     public:
 
-    //* return codes
-    enum class ReturnCode
-    {
-
-        SaveAgain,
-        SaveAs,
-        Reload,
-        Ignore
-
-    };
-
     //* constructor
-    explicit FileModifiedWidget( QWidget* = nullptr, const File& = File() );
+    explicit FileReadOnlyWidget( QWidget* = nullptr, const File& = File() );
 
     //*@ modifiers
     //@{
@@ -53,25 +42,6 @@ class FileModifiedWidget: public MessageWidget, public Base::Key
     void setFile( const File& );
 
     //@}
-
-    Q_SIGNALS:
-
-    //* emitted when a given action is selected
-    void actionSelected( FileModifiedWidget::ReturnCode );
-
-    private Q_SLOTS:
-
-    //* re-saved removed file
-    void _reLoad();
-
-    //* re-saved removed file
-    void _reSave();
-
-    //* save file with new name
-    void _saveAs();
-
-    //* save file with new name
-    void _ignore();
 
 };
 
