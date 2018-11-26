@@ -24,6 +24,7 @@
 #include "Diff.h"
 #include "InformationDialog.h"
 #include "MainWindow.h"
+#include "MessageWidget.h"
 #include "NewFileDialog.h"
 #include "Singleton.h"
 #include "TextView.h"
@@ -523,21 +524,12 @@ void TextView::diff()
 }
 
 //____________________________________________
-FileRemovedWidget* TextView::createFileRemovedWidget( const File& file )
+void TextView::addMessageWidget( MessageWidget* widget )
 {
-    Debug::Throw( "TextView::createFileRemovedWidget.\n" );
-    auto widget = new FileRemovedWidget( this, file );
+    Debug::Throw( "TextView::addMessageWidget.\n" );
+    widget->setParent( this );
     informationLayout_->addWidget( widget );
-    return widget;
-}
-
-//____________________________________________
-FileModifiedWidget* TextView::createFileModifiedWidget( const File& file )
-{
-    Debug::Throw( "TextView::createFileModifiedWidget.\n" );
-    auto widget = new FileModifiedWidget( this, file );
-    informationLayout_->addWidget( widget );
-    return widget;
+    return;
 }
 
 //____________________________________________

@@ -531,7 +531,8 @@ void TextDisplay::checkFileRemoved()
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    auto widget = (*textViews.begin())->createFileRemovedWidget( file() );
+    auto widget = new FileRemovedWidget( nullptr, file() );
+    (*textViews.begin())->addMessageWidget( widget );
     Base::Key::associate( this, widget );
     connect( widget, SIGNAL(actionSelected(FileRemovedWidget::ReturnCode)), SLOT(_processFileRemovedAction(FileRemovedWidget::ReturnCode)) );
     widget->animatedShow();
@@ -560,7 +561,8 @@ void TextDisplay::checkFileModified()
     _setIgnoreWarnings( true );
 
     // ask action from dialog
-    auto widget = (*textViews.begin())->createFileModifiedWidget( file() );
+    auto widget = new FileModifiedWidget( nullptr, file() );
+    (*textViews.begin())->addMessageWidget( widget );
     Base::Key::associate( this, widget );
     connect( widget, SIGNAL(actionSelected(FileModifiedWidget::ReturnCode)), SLOT(_processFileModifiedAction(FileModifiedWidget::ReturnCode)) );
     widget->animatedShow();
