@@ -43,4 +43,4 @@ FileReadOnlyWidget::FileReadOnlyWidget( QWidget* parent, const File& file ):
 
 //________________________________________________________
 void FileReadOnlyWidget::setFile( const File& file )
-{ setText( tr( " The file '%1' is open in read-only mode." ).arg( file.localName() ) ); }
+{ setText( tr( "The file '%1' is open in read-only mode." ).arg( file.localName() ) ); }

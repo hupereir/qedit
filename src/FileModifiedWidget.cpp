@@ -76,7 +76,7 @@ FileModifiedWidget::FileModifiedWidget( QWidget* parent, const File& file ):
 
 //________________________________________________________
 void FileModifiedWidget::setFile( const File& file )
-{ setText( tr( " The file '%1' has been modified by another application." ).arg( file.localName() ) ); }
+{ setText( tr( "The file '%1' has been modified by another application." ).arg( file.localName() ) ); }
 
 //________________________________________________________
 void FileModifiedWidget::_reLoad()

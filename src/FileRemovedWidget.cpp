@@ -75,7 +75,7 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
 
 //________________________________________________________
 void FileRemovedWidget::setFile( const File& file )
-{ setText( tr( " The file '%1' has been deleted by another application." ).arg( file.localName() ) ); }
+{ setText( tr( "The file '%1' has been deleted by another application." ).arg( file.localName() ) ); }
 
 //________________________________________________________
 void FileRemovedWidget::_reSave()
