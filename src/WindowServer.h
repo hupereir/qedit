@@ -63,7 +63,7 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     FileRecord::List records( Flags = None, QWidget* activeWindow = 0 ) const;
 
     //* close all windows gracefully
-    /** returns false if the opperation was cancelled. */
+    /** returns false if the opperation was canceled. */
     bool closeAll();
 
     //* read file from arguments and open relevant windows
