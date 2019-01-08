@@ -185,7 +185,7 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     QLayout* informationLayout_ = nullptr;
 
     // editor layout
-    QLayout* editorLayout_ = nullptr;
+    QBoxLayout* editorLayout_ = nullptr;
 
     //* text display with focus
     TextDisplay* activeDisplay_ = nullptr;

@@ -239,7 +239,7 @@ void TextDisplay::setReadOnly( bool value )
         Base::KeySet<TextView> textViews( this );
         if( !textViews.empty() )
         {
-            auto widget = new FileReadOnlyWidget();
+            auto widget = new FileReadOnlyWidget;
             widget->setFile( file() );
             (*textViews.begin())->addMessageWidget( widget );
             Base::Key::associate( this, widget );

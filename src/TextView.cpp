@@ -77,7 +77,7 @@ TextView::TextView( QWidget* parent ):
 
     // create new Text display and register autosave thread
     TextDisplay& display = _newTextDisplay( this );
-    editorLayout_->addWidget( &display );
+    editorLayout_->addWidget( &display, 1 );
     display.setActive( true );
     Base::Singleton::get().application<Application>()->autoSave().newThread( &display );
     Base::Singleton::get().application<Application>()->fileCheck().registerDisplay( &display );
@@ -290,7 +290,7 @@ void TextView::closeDisplay( TextDisplay& display )
         } else if( grandParent == this ) {
 
             child->setParent( this );
-            editorLayout_->addWidget( child );
+            editorLayout_->addWidget( child, 1 );
 
         } else {
 
@@ -617,7 +617,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
                 // create a splitter with correct orientation
                 splitter = new LocalSplitter(this);
                 splitter->setOrientation( orientation );
-                editorLayout_->addWidget( splitter );
+                editorLayout_->addWidget( splitter, 1 );
 
             } else {
 
