@@ -669,7 +669,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
             // create new splitter
             splitter = new LocalSplitter( this );
             splitter->setOrientation( orientation );
-            layout()->addWidget( splitter );
+            static_cast<QBoxLayout*>(layout())->addWidget( splitter, 1 );
 
             // reparent first child
             splitter->addWidget( child );
