@@ -174,6 +174,10 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         spinbox->setSuffix( tr( "s" ) );
         addOptionWidget( spinbox );
 
+        spinbox->setSpecialValueText( tr( "Never" ) );
+        spinbox->setMinimum( 0 );
+        spinbox->setMaximum( 10 );
+
         // text encoding
         OptionComboBox* combobox;
         gridLayout->addWidget( label = new QLabel( tr( "Default font encoding:" ), box ) );
