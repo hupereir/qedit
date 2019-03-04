@@ -277,22 +277,11 @@ void TextDisplay::installContextMenuActions( BaseContextMenu* menu, bool )
     clearTagAction_->setEnabled( currentBlockTagged );
     clearAllTagsAction_->setEnabled( hasTags );
 
-    BaseContextMenu* tagMenu = new BaseContextMenu( menu );
-    tagMenu->setHideDisabledActions( true );
-    tagMenu->setTitle( tr( "Tags" ) );
-
-    menu->addMenu( tagMenu );
-    tagMenu->addAction( tagBlockAction_ );
-    tagMenu->addAction( nextTagAction_ );
-    tagMenu->addAction( previousTagAction_ );
-    tagMenu->addAction( clearTagAction_ );
-    tagMenu->addAction( clearAllTagsAction_ );
-
-    // document class menu
-    QMenu* documentClassMenu = new DocumentClassMenu( this );
-    documentClassMenu->setTitle( tr( "Select Document Class" ) );
-    connect( documentClassMenu, SIGNAL(documentClassSelected(QString)), SLOT(selectClassName(QString)) );
-    menu->addMenu( documentClassMenu );
+    menu->addAction( tagBlockAction_ );
+    menu->addAction( nextTagAction_ );
+    menu->addAction( previousTagAction_ );
+    menu->addAction( clearTagAction_ );
+    menu->addAction( clearAllTagsAction_ );
 
     return;
 }
