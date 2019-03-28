@@ -25,7 +25,6 @@
 #include "Key.h"
 #include "TextView.h"
 
-
 #include <QAction>
 #include <QBasicTimer>
 #include <QCloseEvent>
