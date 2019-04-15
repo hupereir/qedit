@@ -1,5 +1,5 @@
 <patterns>
- <class pattern="\.bib$" icon="text-x-tex.png" name="latex" >
+ <class pattern="\.bib$" icon="text-x-tex.png" name="bibtex" >
 
 <!--Options-->
   <Option>
