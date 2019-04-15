@@ -45,12 +45,12 @@
   <style format="0" name="Word" color="#ff0000" />
 
 <!--Highlight patterns-->
-  <range_pattern options="span " style="Cvs In" parent="" name="Cvs In" >
+  <range_pattern options="span" style="Cvs In" parent="" name="Cvs In" >
    <comments>cvs conflict</comments>
    <begin>^\s*&lt;{7}</begin>
    <end>^\s*\={3}</end>
   </range_pattern>
-  <range_pattern options="span " style="Cvs Out" parent="" name="Cvs Out" >
+  <range_pattern options="span" style="Cvs Out" parent="" name="Cvs Out" >
    <comments>cvs conflict</comments>
    <begin>\={3}\s*$</begin>
    <end>^\s*&gt;{7}</end>

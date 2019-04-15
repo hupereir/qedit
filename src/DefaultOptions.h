@@ -53,6 +53,7 @@ void installDefaultOptions()
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/fortran_patterns.xml", Option::Flag::None) );
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/html_patterns.xml", Option::Flag::None) );
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/latex_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/bibtex_patterns.xml", Option::Flag::None) );
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/makefile_patterns.xml", Option::Flag::None) );
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/perl_patterns.xml", Option::Flag::None) );
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/shell_patterns.xml", Option::Flag::None) );

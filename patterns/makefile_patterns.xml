@@ -42,7 +42,7 @@
    <begin>^\s*#</begin>
    <end>$</end>
   </range_pattern>
-  <range_pattern options="span " style="Command" parent="" name="Command" >
+  <range_pattern options="span" style="Command" parent="" name="Command" >
    <comments></comments>
    <begin>^.*\t</begin>
    <end>([^\\]$)</end>
@@ -61,12 +61,12 @@
    <begin>'</begin>
    <end>([^\\]'|$)</end>
   </range_pattern>
-  <range_pattern options="span " style="Macro" parent="" name="Macro" >
+  <range_pattern options="span" style="Macro" parent="" name="Macro" >
    <comments></comments>
    <begin>^.+=</begin>
    <end>([^\\]$)</end>
   </range_pattern>
-  <range_pattern options="span " style="Rule" parent="" name="Rule" >
+  <range_pattern options="span" style="Rule" parent="" name="Rule" >
    <comments></comments>
    <begin>^.+\:</begin>
    <end>([^\\]$)</end>

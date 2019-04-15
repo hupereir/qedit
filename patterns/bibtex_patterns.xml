@@ -1,5 +1,5 @@
 <patterns>
- <class pattern="\.(tex|sty|cls|def)$" icon="text-x-tex.png" name="latex" >
+ <class pattern="\.bib$" icon="text-x-tex.png" name="latex" >
 
 <!--Options-->
   <Option>
@@ -24,72 +24,56 @@
   </Option>
 
 <!--Highlight styles-->
-  <style format="0" name="Attribute" color="#0000aa" />
   <style format="0" name="Braces" color="#0000ff" />
   <style format="2" name="Comment" color="#ff8c00" />
   <style format="0" name="Keyword" color="#ff0000" />
-  <style format="0" name="Math" color="#0000ff" />
+  <style format="0" name="String" color="#00cd00" />
 
 <!--Highlight patterns-->
-  <range_pattern options="comments" style="Comment" parent="" name="Comment" >
-   <comments></comments>
-   <begin>%</begin>
-   <end>$</end>
-  </range_pattern>
-  <range_pattern options="span" style="Attribute" parent="" name="Attribute" >
-   <comments></comments>
-   <begin>\\((\w+)|[^\s\d])(\[(\s|\d|\w)*\])?\{</begin>
-   <end>[^\\]\}</end>
-  </range_pattern>
-  <range_pattern options="span" style="Math" parent="" name="Math" >
-   <comments></comments>
-   <begin>\$</begin>
-   <end>\$</end>
-  </range_pattern>
   <keyword_pattern style="Braces" parent="" name="Braces" >
    <comments></comments>
    <keyword>((\{|\[|\]|\})*(\{|\[|\]|\})(\{|\[|\]|\})*)</keyword>
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Keyword" >
    <comments></comments>
-   <keyword>\\((\w+\b)|[^\s\d])</keyword>
+   <keyword>@(article|book(let)?|conference|in(book|collection|proceedings)|manual|(masters|phd)thesis|misc|phdthesis|techreport|unpublished)</keyword>
   </keyword_pattern>
-  <keyword_pattern style="Keyword" parent="Attribute" name="Keyword2" >
+  <range_pattern style="String" parent="" name="String" >
+   <comments>strings</comments>
+   <begin>&quot;</begin>
+   <end>([^\\]&quot;|$)</end>
+  </range_pattern>
+  <range_pattern options="comments" style="Comment" parent="" name="Comment" >
    <comments></comments>
-   <keyword>\\((\w+\b)|[^\s\d])</keyword>
-  </keyword_pattern>
+   <begin>%</begin>
+   <end>$</end>
+  </range_pattern>
 
 <!--Indentation patterns-->
+  <indent_pattern type="1" name="1" >
+   <rule par="-1" >
+   <regexp>^\s*@(\w+)\{</regexp>
+   </rule>
+  <comments>increment if previous line is @...{</comments>
+  </indent_pattern>
+ 
+  <indent_pattern type="2" name="3" >
+   <rule par="0" >
+    <regexp>^\s*\}</regexp>
+   </rule>
+   <comments>decrement pattern when closing curly bracket in previous line</comments>
+  </indent_pattern>
 
 <!--Parenthesis-->
   <parenthesis begin="(" end=")" regexp="\(|\)" />
   <parenthesis begin="[" end="]" regexp="\[|\]" />
   <parenthesis begin="{" end="}" regexp="\{|\}" />
-  <parenthesis begin="\begin" end="\end" regexp="(\\begin)|(\\end)" />
 
 <!--Block delimiters-->
   <block_delimiter begin="{" end="}" regexp="\{|\}" />
   <block_delimiter begin="\begin" end="\end" regexp="(\\begin)|(\\end)" />
 
 <!--Text macros-->
-  <macro accelerator="Alt+T" name="Add One Tab Indentation" >
-   <rule>
-    <regexp>^</regexp>
-    <replacement>XML_TAB</replacement>
-   </rule>
-  </macro>
-  <macro accelerator="Shift+Alt+T" name="Remove One Tab Indentation" >
-   <rule>
-    <regexp>^\t</regexp>
-    <replacement></replacement>
-   </rule>
-  </macro>
-  <macro name="Remove All Tab Indentations" >
-   <rule>
-    <regexp>^\t+</regexp>
-    <replacement></replacement>
-   </rule>
-  </macro>
   <macro name="Clean End Of Line" >
    <rule>
     <regexp>\s+$</regexp>
