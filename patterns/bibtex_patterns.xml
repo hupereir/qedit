@@ -34,15 +34,18 @@
    <comments></comments>
    <keyword>((\{|\[|\]|\})*(\{|\[|\]|\})(\{|\[|\]|\})*)</keyword>
   </keyword_pattern>
-  <keyword_pattern style="Keyword" parent="" name="Keyword" >
+
+  <keyword_pattern style="Keyword" parent="" name="Keyword">
    <comments></comments>
    <keyword>@(article|book(let)?|conference|in(book|collection|proceedings)|manual|(masters|phd)thesis|misc|phdthesis|techreport|unpublished)</keyword>
   </keyword_pattern>
-  <range_pattern style="String" parent="" name="String" >
+
+  <range_pattern options="span" style="String" parent="" name="String" >
    <comments>strings</comments>
    <begin>&quot;</begin>
-   <end>([^\\]&quot;|$)</end>
+   <end>&quot;</end>
   </range_pattern>
+
   <range_pattern options="comments" style="Comment" parent="" name="Comment" >
    <comments></comments>
    <begin>%</begin>
