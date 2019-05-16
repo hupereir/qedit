@@ -55,7 +55,7 @@
     <replacement></replacement>
    </rule>
   </macro>
-  <macro accelerator="Alt+C" name="Clean End Of Line" >
+  <macro accelerator="Alt+D" name="Clean End Of Line" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>

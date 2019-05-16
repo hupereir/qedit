@@ -161,7 +161,7 @@
   <block_delimiter begin=" do " end="end" regexp="(do )|(end\s*do)" />
 
 <!--Text macros-->
-  <macro accelerator="Alt+C" name="Clean End Of Line" options="automatic" >
+  <macro accelerator="Alt+D" name="Clean End Of Line" options="automatic" >
    <rule>
     <regexp>\s+$</regexp>
     <replacement></replacement>

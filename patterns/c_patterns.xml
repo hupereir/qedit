@@ -377,13 +377,13 @@ and this one is an opening bracket</comments>
    </rule>
   </macro>
   <macro options="separator" name="generic" />
-  <macro accelerator="Alt+C" name="Add C++ Comments" >
+  <macro accelerator="Alt+D" name="Add C++ Comments" >
    <rule>
     <regexp>^</regexp>
     <replacement>// </replacement>
    </rule>
   </macro>
-  <macro accelerator="Shift+Alt+C" name="Remove C++ Comments" >
+  <macro accelerator="Shift+Alt+D" name="Remove C++ Comments" >
    <rule>
     <regexp>^//(\s|$)</regexp>
     <replacement></replacement>

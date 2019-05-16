@@ -232,13 +232,13 @@
    </rule>
   </macro>
   <macro options="separator" name="generic" />
-  <macro accelerator="Alt+C" name="Add Comments" >
+  <macro accelerator="Alt+D" name="Add Comments" >
    <rule>
     <regexp>^</regexp>
     <replacement># </replacement>
    </rule>
   </macro>
-  <macro accelerator="Shift+Alt+C" name="Remove Comments" >
+  <macro accelerator="Shift+Alt+D" name="Remove Comments" >
    <rule>
     <regexp>^# </regexp>
     <replacement></replacement>
