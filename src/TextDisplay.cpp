@@ -1456,6 +1456,24 @@ void TextDisplay::paintEvent( QPaintEvent* event )
 
 }
 
+//______________________________________________________________
+void TextDisplay::changeEvent(QEvent *event)
+{
+
+    // base class
+    TextEditor::changeEvent( event );
+
+    // update margin
+    if( event->type() == QEvent::FontChange && blockDelimiterDisplay_ )
+    {
+
+        blockDelimiterDisplay_->needUpdate();
+        _updateMargin();
+        _marginWidget().setDirty();
+
+    }
+}
+
 //________________________________________________
 bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 {

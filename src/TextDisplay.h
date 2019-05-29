@@ -470,6 +470,9 @@ class TextDisplay: public TextEditor
     //* paint event
     void paintEvent( QPaintEvent* ) override;
 
+    //* change event
+    void changeEvent( QEvent* ) override;
+
     //* raise autospell context menu
     /** returns true if autospell context menu is used */
     bool _autoSpellContextEvent( QContextMenuEvent* );
