@@ -1466,11 +1466,10 @@ void TextDisplay::changeEvent(QEvent *event)
     // update margin
     if( event->type() == QEvent::FontChange && blockDelimiterDisplay_ )
     {
-
-        blockDelimiterDisplay_->needUpdate();
+        const auto font( this->font() );
+        const int lineSpacing = QFontMetrics( font ).lineSpacing() + 1;
+        blockDelimiterDisplay_->setWidth( lineSpacing );
         _updateMargin();
-        _marginWidget().setDirty();
-
     }
 }
 
@@ -1486,14 +1485,14 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 
     // block and cursor
     QTextCursor cursor( cursorForPosition( event->pos() ) );
-    QTextBlock block( cursor.block() );
+    auto block( cursor.block() );
 
     // block data
-    HighlightBlockData* data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    auto data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
     if( !data ) return false;
 
     // try retrieve misspelled word
-    SpellCheck::Word word( data->misspelledWord( cursor.position() - block.position() ) );
+    auto word( data->misspelledWord( cursor.position() - block.position() ) );
     if( word.isEmpty() || textHighlight_->spellParser().interface().isWordIgnored( word.get() ) )
     { return false; }
 
@@ -1925,14 +1924,6 @@ void TextDisplay::_updateConfiguration()
     // block delimiters, line numbers and margin
     showBlockDelimiterAction_->setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
     noAutomaticMacrosAction_->setChecked( XmlOptions::get().get<bool>( "IGNORE_AUTOMATIC_MACROS" ) );
-
-    {
-        // font
-        const auto font( this->font() );
-        int lineSpacing = QFontMetrics( font ).lineSpacing() + 1;
-        blockDelimiterDisplay_->setWidth( lineSpacing );
-        _updateMargin();
-    }
 
     // encoding
     // todo: condition that on whether was modified by menu or not
