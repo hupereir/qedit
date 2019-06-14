@@ -2263,7 +2263,7 @@ void TextDisplay::_addBaseIndentation()
     if( !textIndent_->baseIndentation() ) return;
 
     // define regexp to perform replacement
-    QRegExp leadingSpaceRegExp( "^\\s*" );
+    static QRegExp leadingSpaceRegExp( "^\\s*" );
     QString replacement( textIndent_->baseIndentation(), ' ' );
 
     // retrieve cursor
