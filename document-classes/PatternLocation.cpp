@@ -42,11 +42,11 @@ QTextCharFormat PatternLocation::format() const
 
     QTextCharFormat out;
 
-    out.setFontWeight( (format_&Format::Bold) ? QFont::Bold : QFont::Normal );
-    out.setFontItalic( format_&Format::Italic );
-    out.setFontUnderline( format_&Format::Underline );
-    out.setFontOverline( format_&Format::Overline );
-    out.setFontStrikeOut( format_&Format::Strike );
+    out.setFontWeight( (format_&TextFormat::Bold) ? QFont::Bold : QFont::Normal );
+    out.setFontItalic( format_&TextFormat::Italic );
+    out.setFontUnderline( format_&TextFormat::Underline );
+    out.setFontOverline( format_&TextFormat::Overline );
+    out.setFontStrikeOut( format_&TextFormat::Strike );
     if( color_.isValid() ) out.setForeground( color_ );
 
     return out;

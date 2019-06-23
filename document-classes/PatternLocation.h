@@ -74,7 +74,7 @@ class PatternLocation final: private Base::Counter<PatternLocation>
     { return flags() & flag; }
 
     //* format
-    Format::TextFormatFlags fontFormat() const
+    TextFormat::Flags fontFormat() const
     { return format_; }
 
     //* color
@@ -138,7 +138,7 @@ class PatternLocation final: private Base::Counter<PatternLocation>
     HighlightPattern::Flags flags_ = 0;
 
     //* style font format
-    Format::TextFormatFlags format_ = 0;
+    TextFormat::Flags format_ = 0;
 
     //* style color
     QColor color_;

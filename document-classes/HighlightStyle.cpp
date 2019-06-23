@@ -36,7 +36,7 @@ HighlightStyle::HighlightStyle( const QDomElement& element ):
         if( attribute.isNull() ) continue;
 
         if( attribute.name() == Xml::Name ) setName( attribute.value() );
-        else if( attribute.name() == Xml::Format ) setFontFormat( (Format::TextFormatFlags) attribute.value().toInt() );
+        else if( attribute.name() == Xml::Format ) setFontFormat( static_cast<TextFormat::Flags>( attribute.value().toInt() ) );
         else if( attribute.name() == Xml::Color ) setColor( QColor( attribute.value() ) );
 
     }
@@ -48,7 +48,7 @@ QDomElement HighlightStyle::domElement( QDomDocument& parent ) const
     Debug::Throw( "HighlighStyle::DomElement.\n" );
     auto out = parent.createElement( Xml::Style );
     out.setAttribute( Xml::Name, name_ );
-    if( format_ != Format::Default ) out.setAttribute( Xml::Format, QString::number(format_) );
+    if( format_ != TextFormat::Default ) out.setAttribute( Xml::Format, QString::number(format_) );
     if( color_.isValid() ) out.setAttribute( Xml::Color, color_.name() );
     return out;
 }

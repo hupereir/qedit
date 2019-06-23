@@ -41,7 +41,7 @@ class HighlightStyle final: private Base::Counter<HighlightStyle>
     //* constructor
     explicit HighlightStyle(
         const QString& name = "default",
-        Format::TextFormatFlags format = Format::Default,
+        TextFormat::Flags format = TextFormat::Default,
         const QColor& color = QColor() ):
         Counter( "HighlightStyle" ),
         name_( name ),
@@ -79,11 +79,11 @@ class HighlightStyle final: private Base::Counter<HighlightStyle>
     { name_ = name; }
 
     //* format
-    Format::TextFormatFlags fontFormat() const
+    TextFormat::Flags fontFormat() const
     { return format_; }
 
     //* format
-    void setFontFormat( Format::TextFormatFlags format )
+    void setFontFormat( TextFormat::Flags format )
     { format_ = format; }
 
     //* color
@@ -100,7 +100,7 @@ class HighlightStyle final: private Base::Counter<HighlightStyle>
     QString name_;
 
     //* format (bitwise or of TextFormatInfo)
-    Format::TextFormatFlags format_ = Format::Default;
+    TextFormat::Flags format_ = TextFormat::Default;
 
     //* color
     QColor color_;
