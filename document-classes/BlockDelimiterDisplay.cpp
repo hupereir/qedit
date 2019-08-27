@@ -86,10 +86,10 @@ void BlockDelimiterDisplay::synchronize( const BlockDelimiterDisplay* other )
 void BlockDelimiterDisplay::addActions( QMenu& menu )
 {
 
-    menu.addAction( &_collapseCurrentAction() );
-    menu.addAction( &_collapseAction() );
-    menu.addAction( &_expandCurrentAction() );
-    menu.addAction( &expandAllAction() );
+    menu.addAction( collapseCurrentAction_ );
+    menu.addAction( collapseAction_ );
+    menu.addAction( expandCurrentAction_ );
+    menu.addAction( expandAllAction_ );
 
 }
 
@@ -101,8 +101,8 @@ void BlockDelimiterDisplay::updateCurrentBlockActionState()
     _updateSegments();
     _selectSegmentFromCursor(  editor_->textCursor().position() );
 
-    _collapseCurrentAction().setEnabled( selectedSegment_.isValid() && !selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
-    _expandCurrentAction().setEnabled( selectedSegment_.isValid() && selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
+    collapseCurrentAction_->setEnabled( selectedSegment_.isValid() && !selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
+    expandCurrentAction_->setEnabled( selectedSegment_.isValid() && selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
 
 }
 
@@ -129,7 +129,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     int lastIndex = editor_->cursorForPosition( QPoint( 0,  height ) ).position() + 1;
 
     // add horizontal offset
-    painter.translate( _offset(), 0 );
+    painter.translate( offset_, 0 );
     height += yOffset;
 
     // retrieve matching segments
@@ -177,7 +177,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
     }
 
     // begin tick
-    for( auto& segment:segments_ )
+    for( auto&& segment:segments_ )
     {
 
         // check validity
@@ -210,12 +210,12 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
     event->accept();
 
     // check mouse event position
-    if( event->pos().x() - _offset() > width() ) return;
+    if( event->pos().x() - offset_ > width() ) return;
 
     // get position from event
     _updateSegments();
     _updateSegmentMarkers();
-    _selectSegmentFromPosition( event->pos()+QPoint( -_offset(), editor_->verticalScrollBar()->value() ) );
+    _selectSegmentFromPosition( event->pos()+QPoint( -offset_ , editor_->verticalScrollBar()->value() ) );
 
     // check button
     switch( event->button() )
@@ -234,11 +234,11 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
             editor_->clearBoxSelection();
 
             // retrieve matching segments
-            HighlightBlockData* data(0);
+            HighlightBlockData* data( nullptr );
             TextBlockPair blocks( _findBlocks( selectedSegment_, data ) );
 
             // check if block is collapsed
-            const QTextBlockFormat blockFormat( blocks.first.blockFormat() );
+            const auto blockFormat( blocks.first.blockFormat() );
             if( blockFormat.boolProperty( TextBlock::Collapsed ) )
             {
 
@@ -263,8 +263,8 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
         {
 
             // update collapse and expand current action state
-            _expandCurrentAction().setEnabled( selectedSegment_.isValid() && selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
-            _collapseCurrentAction().setEnabled( selectedSegment_.isValid() && !selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
+            expandCurrentAction_->setEnabled( selectedSegment_.isValid() && selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
+            collapseCurrentAction_->setEnabled( selectedSegment_.isValid() && !selectedSegment_.hasFlag( BlockDelimiterSegment::Collapsed ) );
             QMenu menu( editor_ );
             addActions( menu );
             menu.exec( event->globalPos() );
@@ -342,7 +342,7 @@ void BlockDelimiterDisplay::_collapseCurrentBlock()
         editor_->clearBoxSelection();
 
         // find matching blocks
-        HighlightBlockData *data(0);
+        HighlightBlockData *data = nullptr;
         TextBlockPair blocks( _findBlocks( selectedSegment_, data ) );
 
         // collapse
@@ -367,7 +367,7 @@ void BlockDelimiterDisplay::_expandCurrentBlock()
     {
 
         // find matching blocks
-        HighlightBlockData *data(0);
+        HighlightBlockData *data = nullptr;
         TextBlockPair blocks( _findBlocks( selectedSegment_, data ) );
 
         // collapse
@@ -418,7 +418,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks()
         previous = current;
 
         // get matching blocks
-        HighlightBlockData *data(0);
+        HighlightBlockData *data = nullptr;
         TextBlockPair blocks( _findBlocks( block, id, current, data ) );
 
         // do nothing if block is already collapsed
@@ -702,8 +702,8 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
     std::sort( segments_.begin(), segments_.end(), BlockDelimiterSegment::SortFTor() );
 
     // update expand all action
-    expandAllAction().setEnabled( hasCollapsedBlocks );
-    _collapseAction().setEnabled( hasExpandedBlocks );
+    expandAllAction_->setEnabled( hasCollapsedBlocks );
+    collapseAction_->setEnabled( hasExpandedBlocks );
 
 }
 

@@ -30,10 +30,7 @@ int TextMacro::idCounter_ = 0;
 TextMacro::TextMacro( const QDomElement& element ):
     Counter( "TextMacro" ),
     id_( idCounter_++ ),
-    name_( "generic" ),
-    accelerator_( "" ),
-    isSeparator_( false ),
-    isAutomatic_( false )
+    name_( "generic" )
 {
     Debug::Throw( "TextMacro::TextMacro.\n" );
 
@@ -95,7 +92,7 @@ QAction* TextMacro::action() const
     if( isAutomatic() ) label = QString( QObject::tr( "%1 (automatic)" ) ).arg( name() );
     else label = name();
 
-    QAction* out( new QAction( label, 0 ) );
+    auto out( new QAction( label, nullptr ) );
     if( !accelerator().isEmpty() )
     { out->setShortcut( QKeySequence( accelerator() ) ); }
 

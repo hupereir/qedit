@@ -142,27 +142,6 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     //* update segments
     void _updateSegments( bool );
 
-    //* offest
-    int _offset() const
-    { return offset_; }
-
-    //*@name actions
-    //@{
-
-    //* expand current block
-    QAction& _collapseCurrentAction() const
-    { return *collapseCurrentAction_; }
-
-    //* expand current block
-    QAction& _expandCurrentAction() const
-    { return *expandCurrentAction_; }
-
-    //* collapse top level block
-    QAction& _collapseAction() const
-    { return *collapseAction_; }
-
-    //@}
-
     //* block marker type
     enum class Type
     {

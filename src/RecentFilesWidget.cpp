@@ -93,7 +93,7 @@ void RecentFilesWidget::select( const File& file )
     Debug::Throw() << "RecentFilesWidget::select - file: " << file << ".\n";
 
     // find model index that match the file
-    QModelIndex index( model_.index( FileRecord( file ) ) );
+    const auto index( model_.index( FileRecord( file ) ) );
 
     // check if index is valid and not selected
     if( !index.isValid() ) return;

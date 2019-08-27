@@ -38,7 +38,7 @@ QVariant RecentFilesModel::data( const QModelIndex& index, int role ) const
     {
         // retrieve associated file info
         auto record( get(index) );
-        const QIcon icon( mimeTypeIconProvider_->icon( record.file().extension() ) );
+        const auto icon( mimeTypeIconProvider_->icon( record.file().extension() ) );
 
         if( !icon.isNull() ) return icon;
         else return FileRecordModel::data( index, role );
