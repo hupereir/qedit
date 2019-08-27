@@ -36,8 +36,7 @@
 #include "XmlDef.h"
 
 #if WITH_ASPELL
-#include "AutoSpellConfiguration.h"
-#include "SpellCheckConfiguration.h"
+#include "SpellCheckConfigurationDialog.h"
 #include "SpellInterface.h"
 #endif
 
@@ -240,21 +239,10 @@ void Application::_spellCheckConfiguration()
     Debug::Throw( "Application::_spellCheckConfiguration.\n" );
 
     // create dialog
-    CustomDialog dialog;
-    dialog.setWindowTitle( tr( "Spell Check Configuration" ) );
-
-    SpellCheck::SpellCheckConfiguration* spellConfig = new SpellCheck::SpellCheckConfiguration( &dialog );
-    dialog.mainLayout().addWidget( spellConfig );
-
-    SpellCheck::AutoSpellConfiguration* autospellConfig = new SpellCheck::AutoSpellConfiguration( &dialog );
-    dialog.mainLayout().addWidget( autospellConfig );
+    SpellCheck::ConfigurationDialog dialog;
+    connect( &dialog, SIGNAL(configurationChanged()), SIGNAL(spellCheckConfigurationChanged()) );
     dialog.centerOnWidget( qApp->activeWindow() );
-
-    if( dialog.exec() == QDialog::Rejected ) return;
-    spellConfig->write( XmlOptions::get() );
-    autospellConfig->write( XmlOptions::get() );
-
-    emit spellCheckConfigurationChanged();
+    dialog.exec();
 
     #endif
 
