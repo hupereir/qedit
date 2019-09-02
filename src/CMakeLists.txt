@@ -78,22 +78,12 @@ set(qedit_SOURCES
 
 set(qedit_RESOURCES pixmaps.qrc)
 
-if(USE_QT5)
-
-  qt5_add_resources(qedit_RESOURCES_RCC ${qedit_RESOURCES})
-
-else()
-
-  qt4_add_resources(qedit_RESOURCES_RCC ${qedit_RESOURCES})
-
-endif()
-
 add_application_icon(qedit_SOURCES ${CMAKE_SOURCE_DIR}/qedit)
 add_desktop_file(${CMAKE_SOURCE_DIR}/qedit)
 add_platform_executable(qedit
   ${QEDIT_VERSION}
   ${qedit_SOURCES}
-  ${qedit_RESOURCES_RCC}
+  ${qedit_RESOURCES}
 )
 
 target_link_libraries(qedit document-classes)

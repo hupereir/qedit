@@ -365,7 +365,7 @@ bool TextHighlight::_updateDelimiter( HighlightBlockData* data, const BlockDelim
     for( int position = 0; (position = delimiter.regexp().indexIn( text, position ) ) >= 0; position += delimiter.regexp().matchedLength() )
     {
         const bool isCommented( data->locations().isCommented( position ) );
-        const QString matchedString( text.mid( position, delimiter.regexp().matchedLength() ) );
+        const auto matchedString( text.midRef( position, delimiter.regexp().matchedLength() ) );
         if( matchedString.contains( delimiter.first() ) ) counter.increment( isCommented );
         else if( matchedString.contains( delimiter.second() ) ) counter.decrement( isCommented );
     }

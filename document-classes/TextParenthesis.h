@@ -81,8 +81,8 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
         bool operator() ( const TextParenthesis& parenthesis ) const
         {
             return
-                text_.left( parenthesis.first().size() ) == parenthesis.first() ||
-                text_.left( parenthesis.second().size() ) == parenthesis.second();
+                text_.leftRef( parenthesis.first().size() ) == parenthesis.first() ||
+                text_.leftRef( parenthesis.second().size() ) == parenthesis.second();
         }
 
         private:
@@ -98,7 +98,7 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
         public:
 
         //* constructor
-        explicit FirstElementFTor( const QString& text ):
+        explicit FirstElementFTor( const QStringRef& text ):
             text_( text )
         {}
 
@@ -109,7 +109,7 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
         private:
 
         //* predicted character
-        const QString& text_;
+        const QStringRef& text_;
 
     };
 
@@ -119,7 +119,7 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
         public:
 
         //* constructor
-        explicit SecondElementFTor( const QString& text ):
+        explicit SecondElementFTor( const QStringRef& text ):
             text_( text )
         {}
 
@@ -130,7 +130,7 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
         private:
 
         //* predicted character
-        const QString& text_;
+        const QStringRef& text_;
 
     };
 

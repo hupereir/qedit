@@ -53,19 +53,9 @@ set(document_classes_SOURCES
 
 set(document_classes_RESOURCES patterns.qrc)
 
-if(USE_QT5)
-
-  qt5_add_resources(document_classes_RESOURCES_RCC ${document_classes_RESOURCES})
-
-else()
-
-  qt4_add_resources(document_classes_RESOURCES_RCC ${document_classes_RESOURCES})
-
-endif()
-
 add_library(document-classes STATIC
   ${document_classes_SOURCES}
-  ${document_classes_RESOURCES_RCC}
+  ${document_classes_RESOURCES}
 )
 
 if(USE_QT5)

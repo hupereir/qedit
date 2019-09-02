@@ -234,10 +234,10 @@ int TextIndent::_tabCount( const QTextBlock& block )
     // both normal and emulated tabs are counted
     while( index < text.size() )
     {
-        if( text.mid( index, editor_->normalTabCharacter().size() ) == editor_->normalTabCharacter() )
+        if( text.midRef( index, editor_->normalTabCharacter().size() ) == editor_->normalTabCharacter() )
         { index += editor_->normalTabCharacter().size(); count++; }
 
-        else if( text.mid( index, editor_->emulatedTabCharacter().size() ) == editor_->emulatedTabCharacter() )
+        else if( text.midRef( index, editor_->emulatedTabCharacter().size() ) == editor_->emulatedTabCharacter() )
         { index += editor_->emulatedTabCharacter().size(); count++; }
 
         else break;
@@ -284,11 +284,11 @@ void TextIndent::_decrement( QTextBlock block )
     static const QRegExp regexp( "^\\s+" );
 
     // search text and remove characters
-    if( regexp.indexIn( block.text().mid( baseIndentation() ) ) >= 0 )
+    if( block.text().indexOf( regexp, baseIndentation() ) >= 0 )
     {
-        int position( currentCursor_.position() );
-        int anchor( currentCursor_.anchor() );
-        int length( regexp.matchedLength() );
+        const int position( currentCursor_.position() );
+        const int anchor( currentCursor_.anchor() );
+        const int length( regexp.matchedLength() );
         Debug::Throw() << "TextIndent::_decrement - matched length: " << length << endl;
 
         cursor.setPosition( cursor.position() + length, QTextCursor::KeepAnchor );
