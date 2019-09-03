@@ -281,10 +281,10 @@ void TextIndent::_decrement( QTextBlock block )
     cursor.setPosition( block.position() + baseIndentation(), QTextCursor::MoveAnchor );
 
     // leading space characters regexp
-    static const QRegExp regexp( "^\\s+" );
+    static QRegExp regexp( "\\s+" );
 
     // search text and remove characters
-    if( block.text().indexOf( regexp, baseIndentation() ) >= 0 )
+    if( block.text().indexOf( regexp, baseIndentation() ) == 0 )
     {
         const int position( currentCursor_.position() );
         const int anchor( currentCursor_.anchor() );
