@@ -82,7 +82,7 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     //@}
 
     //* open mode
-    enum OpenMode
+    enum class OpenMode
     {
         ActiveWindow,
         NewWindow
@@ -92,15 +92,15 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     void multipleFileReplace( QList<File>, TextSelection );
 
     //* orientation
-    enum OrientationMode
+    enum class OrientationMode
     {
         Normal,
         Diff
     };
 
     //* default orientation
-    const Qt::Orientation& defaultOrientation( const OrientationMode& mode = Normal )
-    { return mode == Normal ? defaultOrientation_:defaultDiffOrientation_; }
+    const Qt::Orientation& defaultOrientation( const OrientationMode& mode = OrientationMode::Normal )
+    { return mode == OrientationMode::Normal ? defaultOrientation_:defaultDiffOrientation_; }
 
     Q_SIGNALS:
 
@@ -143,15 +143,15 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
 
     //* open in new window
     bool _openInNewWindow( FileRecord record )
-    { return _open( record, NewWindow ); }
+    { return _open( record, OpenMode::NewWindow ); }
 
     //* open in active window
     bool _openInActiveWindow( FileRecord record )
-    { return _open( record, ActiveWindow ); }
+    { return _open( record, OpenMode::ActiveWindow ); }
 
     //* open in current tab
     bool _openInActiveView( FileRecord record )
-    { return _open( record, defaultOrientation( Normal ) ); }
+    { return _open( record, defaultOrientation( OrientationMode::Normal ) ); }
 
     //* open in active view
     bool _openHorizontal()
@@ -249,12 +249,12 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     {
         switch( mode )
         {
-            case Diff:
+            case OrientationMode::Diff:
             defaultDiffOrientation_ = value;
             break;
 
             default:
-            case Normal:
+            case OrientationMode::Normal:
             defaultOrientation_ = value;
             break;
         }
@@ -271,7 +271,7 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     Qt::Orientation defaultDiffOrientation_ = Qt::Horizontal;
 
     //* open mode
-    OpenMode openMode_ = ActiveWindow;
+    OpenMode openMode_ = OpenMode::ActiveWindow;
 
     //* active window
     MainWindow* activeWindow_ = nullptr;

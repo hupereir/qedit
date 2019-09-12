@@ -21,6 +21,7 @@
 *******************************************************************************/
 
 #include "Color.h"
+#include "CppUtil.h"
 #include "FileRecordModel.h"
 #include "FileSystemModel.h"
 #include "MainWindow.h"
@@ -109,7 +110,7 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( "HIGHLIGHT_PARAGRAPH", 1 );
 
     /* multiple views */
-    XmlOptions::get().set<int>( "OPEN_MODE", WindowServer::ActiveWindow );
+    XmlOptions::get().set<int>( "OPEN_MODE", Base::toIntegralType( WindowServer::OpenMode::ActiveWindow ) );
     XmlOptions::get().set<int>( "ORIENTATION", Qt::Horizontal );
     XmlOptions::get().set<int>( "DIFF_ORIENTATION", Qt::Horizontal );
 

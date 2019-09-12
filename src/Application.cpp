@@ -380,7 +380,7 @@ bool Application::_processCommand( Server::ServerCommand command )
 {
 
     if( BaseApplication::_processCommand( command ) ) return true;
-    if( command.command() == Server::ServerCommand::Raise )
+    if( command.command() == Server::ServerCommand::CommandType::Raise )
     {
 
         // copy arguments and try open

@@ -32,7 +32,7 @@ class WindowTitle final: private Base::Counter<WindowTitle>
     public:
 
     //* Flags
-    enum Flags
+    enum class Flag
     {
         None,
         Modified,
@@ -40,7 +40,7 @@ class WindowTitle final: private Base::Counter<WindowTitle>
     };
 
     //* constructor
-    explicit WindowTitle( const File& file = File(), const Flags& flag = None ):
+    explicit WindowTitle( const File& file = File(), const Flag& flag = Flag::None ):
         Counter( "WindowTitle" ),
         file_( file ),
         flag_( flag )
@@ -56,8 +56,8 @@ class WindowTitle final: private Base::Counter<WindowTitle>
         QTextStream what( &out );
         if( !file_.isEmpty() ) what << file_.localName();
         else what << "QEdit";
-        if( flag_ == Modified ) what << QObject::tr( " (modified)" );
-        if( flag_ == ReadOnly ) what << QObject::tr( " (read-only)" );
+        if( flag_ == Flag::Modified ) what << QObject::tr( " (modified)" );
+        if( flag_ == Flag::ReadOnly ) what << QObject::tr( " (read-only)" );
         if( !file_.isEmpty() ) what << Util::windowTitleSeparator() << file_.path();
         return out;
     }
@@ -68,18 +68,18 @@ class WindowTitle final: private Base::Counter<WindowTitle>
     //@{
 
     //* change flag
-    void setFlag( const Flags& flag, bool value = true )
+    void setFlag( const Flag& flag, bool value = true )
     {
         if( value ) flag_ = flag;
     }
 
     //* change flag
     void setModified( bool value = true )
-    { setFlag( Modified, value ); }
+    { setFlag( Flag::Modified, value ); }
 
     //* change flag
     void setReadOnly( bool value = true )
-    { setFlag( ReadOnly, value ); }
+    { setFlag( Flag::ReadOnly, value ); }
 
     //@}
 
@@ -89,7 +89,7 @@ class WindowTitle final: private Base::Counter<WindowTitle>
     File file_;
 
     //* flags
-    Flags flag_;
+    Flag flag_;
 
 };
 
