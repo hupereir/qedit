@@ -25,7 +25,6 @@
 #include "Debug.h"
 #include "HighlightPattern.h"
 #include "HighlightBlockFlags.h"
-#include "Key.h"
 #include "TextParenthesis.h"
 
 #if WITH_ASPELL

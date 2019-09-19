@@ -60,7 +60,7 @@ void TextHighlight::highlightBlock( const QString& text )
     bool needUpdate( true );
 
     // try retrieve block data
-    HighlightBlockData* data = dynamic_cast<HighlightBlockData*>( currentBlockUserData() );
+    auto data = dynamic_cast<HighlightBlockData*>( currentBlockUserData() );
 
     if( data )
     {
@@ -73,7 +73,7 @@ void TextHighlight::highlightBlock( const QString& text )
     } else {
 
         // try retrieve data from parent type
-        TextBlockData* textData = static_cast<TextBlockData*>( currentBlockUserData() );
+        auto textData = static_cast<TextBlockData*>( currentBlockUserData() );
         data = textData ? new HighlightBlockData( textData ) : new HighlightBlockData;
         setCurrentBlockUserData( data );
 
