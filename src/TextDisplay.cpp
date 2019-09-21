@@ -2561,7 +2561,7 @@ void TextDisplay::_highlightParenthesis()
     bool found( false );
     auto iter( std::find_if(
         parenthesis.begin(), parenthesis.end(),
-        TextParenthesis::FirstElementFTor( text.leftRef( position ) ) ) );
+        TextParenthesis::FirstElementFTor( text.left( position ) ) ) );
 
     if( iter != parenthesis.end() )
     {
@@ -2629,7 +2629,7 @@ void TextDisplay::_highlightParenthesis()
     if( !( found || (iter =
         std::find_if(
         parenthesis.begin(), parenthesis.end(),
-        TextParenthesis::SecondElementFTor( text.leftRef( position ) ) )) == parenthesis.end()  ) )
+        TextParenthesis::SecondElementFTor( text.left( position ) ) )) == parenthesis.end()  ) )
     {
 
         // store commented state

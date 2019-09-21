@@ -98,7 +98,7 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
         public:
 
         //* constructor
-        explicit FirstElementFTor( const QStringRef& text ):
+        explicit FirstElementFTor( const QString& text ):
             text_( text )
         {}
 
@@ -109,7 +109,7 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
         private:
 
         //* predicted character
-        const QStringRef& text_;
+        const QString& text_;
 
     };
 
@@ -119,7 +119,7 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
         public:
 
         //* constructor
-        explicit SecondElementFTor( const QStringRef& text ):
+        explicit SecondElementFTor( const QString& text ):
             text_( text )
         {}
 
@@ -130,7 +130,7 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
         private:
 
         //* predicted character
-        const QStringRef& text_;
+        const QString& text_;
 
     };
 

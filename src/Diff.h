@@ -79,7 +79,7 @@ class Diff: public QObject, private Base::Counter<Diff>
     void _parseLine( const QString& line );
 
     //* parse a diff line
-    static Range _parseRange( const QStringRef& range );
+    static Range _parseRange( const QString& range );
 
     //* file specific diff informations
     class FileInformation

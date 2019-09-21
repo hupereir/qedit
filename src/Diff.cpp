@@ -157,8 +157,8 @@ void Diff::_parseLine( const QString& line )
 
         const std::array<Range,2> ranges =
         {{
-            _parseRange(line.leftRef( position )),
-            _parseRange(line.midRef( position+1 ))
+            _parseRange(line.left( position )),
+            _parseRange(line.mid( position+1 ))
         }};
 
         for( int i = 0; i<= 1; i++ )
@@ -171,7 +171,7 @@ void Diff::_parseLine( const QString& line )
     position = line.indexOf( "a" );
     if( position >= 0 )
     {
-        auto range( line.midRef( position+1, line.size() ) );
+        auto range( line.mid( position+1, line.size() ) );
         files_[1].insertAddedRange( _parseRange( range ) );
         return;
     }
@@ -180,7 +180,7 @@ void Diff::_parseLine( const QString& line )
     position = line.indexOf( "d" );
     if( position >= 0 )
     {
-        auto range( line.leftRef( position ) );
+        auto range( line.left( position ) );
         files_[0].insertAddedRange( _parseRange( range ) );
         return;
     }
@@ -192,7 +192,7 @@ void Diff::_parseLine( const QString& line )
 }
 
 //_____________________________________________________
-Diff::Range Diff::_parseRange( const QStringRef& range )
+Diff::Range Diff::_parseRange( const QString& range )
 {
 
     Debug::Throw() << "Diff::_parseRange - " << range << endl;
