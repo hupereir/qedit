@@ -41,7 +41,7 @@ int main (int argc, char *argv[])
 
     // error handler
     ErrorHandler::initialize();
-    ErrorHandler::get().disableMessage( "qUncompress: Z_DATA_ERROR: Input data is corrupted file" );
+    ErrorHandler::get().disableMessage( "qUncompress: Z_DATA_ERROR: Input data is corrupted" );
     ErrorHandler::get().disableMessage( "qUncompress: Input data is corrupted file" );
 
     // options
