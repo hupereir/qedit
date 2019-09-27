@@ -371,7 +371,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
         {
             counts += display->replaceInWindow( selection, false );
             dialog.setOffset( dialog.value() );
-            return counts;
+            return std::move(counts);
         } );
 
     // close progress dialog

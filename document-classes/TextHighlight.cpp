@@ -102,7 +102,7 @@ void TextHighlight::highlightBlock( const QString& text )
     {
         if( std::accumulate( blockDelimiters_.begin(), blockDelimiters_.end(), false,
             [this, data, &text]( bool value, const BlockDelimiter& delimiter )
-            { return _updateDelimiter( data, delimiter, text ) ? true:value; } ) )
+            { return _updateDelimiter( data, delimiter, text ) ? true:std::move(value); } ) )
         { emit needSegmentUpdate(); }
     }
 

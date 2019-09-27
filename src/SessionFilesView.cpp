@@ -104,8 +104,8 @@ QPixmap SessionFilesView::_renderToPixmap( const QModelIndexList& indexes, QRect
 
     // generate pixmap
     rect = std::accumulate( indexes.begin(), indexes.end(), QRect(),
-        [this]( const QRect& rect, const QModelIndex& index )
-        { return rect | visualRect( index ); } );
+        [this]( QRect rect, const QModelIndex& index )
+        { return std::move(rect) | visualRect( index ); } );
 
     QPixmap pixmap( rect.size() );
     pixmap.fill( Qt::transparent );

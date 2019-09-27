@@ -44,13 +44,13 @@ int CollapsedBlockData::blockCount() const
 
     return std::accumulate( children_.begin(), children_.end(), 1,
         []( int out, const CollapsedBlockData& child )
-        { return out + child.blockCount(); } );
+        { return std::move(out) + child.blockCount(); } );
 }
 
 //_____________________________________________________________
 QString CollapsedBlockData::toPlainText() const
 {
     return std::accumulate( children_.begin(), children_.end(), text()+"\n",
-        []( const QString& text, const CollapsedBlockData& child )
-        { return text + child.toPlainText(); } );
+        []( QString text, const CollapsedBlockData& child )
+        { return std::move(text) + child.toPlainText(); } );
 }

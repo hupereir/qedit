@@ -927,7 +927,7 @@ QString TextDisplay::toPlainText() const
 
             // add collapsed text
             current += _collapsedText( block );
-            return current;
+            return std::move(current);
         }
     );
 }
@@ -1716,7 +1716,7 @@ void TextDisplay::_processMacro( const TextMacro& macro )
                 text += block.text();
                 if( block.next().isValid() || _blockIsCollapsed( block ) ) text += "\n";
                 text += _collapsedText( block );
-                return text;
+                return std::move(text);
             });
 
         // last block
@@ -2958,8 +2958,8 @@ QString TextDisplay::_collapsedText( const QTextBlock& block ) const
         const auto collapsedData( blockFormat.property( TextBlock::CollapsedData ).value<CollapsedBlockData>() );
         const auto children( collapsedData.children() );
         return std::accumulate( children.begin(), children.end(), QString(),
-            []( const QString& text, const CollapsedBlockData& child )
-            { return text + child.toPlainText(); } );
+            []( QString text, const CollapsedBlockData& child )
+            { return std::move(text) + child.toPlainText(); } );
 
     } else return QString();
 
