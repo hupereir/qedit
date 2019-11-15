@@ -30,7 +30,6 @@
 #include <QAbstractTextDocumentLayout>
 #include <QTextDocument>
 #include <QTextBlock>
-#include <QTextLayout>
 
 #include <QApplication>
 #include <QMenu>
@@ -396,7 +395,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks()
     CursorList cursors;
 
     // get first block
-    QTextBlock block( editor_->document()->begin() );
+    auto block( editor_->document()->begin() );
     int id(0);
 
     // create Text cursor
@@ -423,7 +422,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks()
 
         // do nothing if block is already collapsed
         cursor.setPosition( blocks.first.position(), QTextCursor::MoveAnchor );
-        QTextBlockFormat blockFormat( cursor.blockFormat() );
+        auto blockFormat( cursor.blockFormat() );
         if( blockFormat.boolProperty( TextBlock::Collapsed ) ) continue;
 
         // update block format
@@ -554,7 +553,7 @@ void BlockDelimiterDisplay::_synchronizeBlockData() const
         if( !data ) continue;
 
         // store collapse state
-        QTextBlockFormat blockFormat( block.blockFormat() );
+        auto blockFormat( block.blockFormat() );
         bool collapsed( blockFormat.boolProperty( TextBlock::Collapsed ) );
         if( data->hasFlag( TextBlock::BlockCollapsed ) != collapsed )
         {
@@ -610,11 +609,11 @@ void BlockDelimiterDisplay::_updateSegments( bool isCommented )
             if( !data ) continue;
 
             // store collapse state
-            QTextBlockFormat blockFormat( block.blockFormat() );
+            auto blockFormat( block.blockFormat() );
             const bool collapsed( blockFormat.boolProperty( TextBlock::Collapsed ) );
 
             // get delimiter data
-            TextBlock::Delimiter delimiter( data->delimiters().get( blockDelimiter.id() ) );
+            auto delimiter( data->delimiters().get( blockDelimiter.id() ) );
             if( collapsed )
             {
                 Q_ASSERT( blockFormat.hasProperty( TextBlock::CollapsedData ) );

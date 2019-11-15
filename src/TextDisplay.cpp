@@ -63,7 +63,6 @@
 #endif
 
 #include <QApplication>
-#include <QAbstractTextDocumentLayout>
 #include <QCheckBox>
 #include <QLabel>
 #include <QPainter>
@@ -71,7 +70,6 @@
 #include <QMenu>
 #include <QScrollBar>
 #include <QTextCodec>
-#include <QTextLayout>
 
 #include <new>
 #include <numeric>
