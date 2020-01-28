@@ -23,7 +23,6 @@
 #include "AutoSave.h"
 #include "BaseStatusBar.h"
 #include "BlockDelimiterDisplay.h"
-#include "ClockLabel.h"
 #include "Command.h"
 #include "CppUtil.h"
 #include "CustomToolButton.h"
