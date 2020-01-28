@@ -1,20 +1,5 @@
 ########### Qt configuration #########
-if(USE_QT5)
-
-  find_package(Qt5Widgets REQUIRED)
-  find_package(Qt5Network REQUIRED)
-  find_package(Qt5Xml REQUIRED)
-  find_package(Qt5PrintSupport REQUIRED)
-
-else()
-
-  find_package(Qt4 REQUIRED)
-  set(QT_USE_QTNETWORK TRUE)
-  set(QT_USE_QTXML TRUE)
-  include(${QT_USE_FILE})
-  add_definitions(${QT_DEFINITIONS})
-
-endif()
+find_package(Qt5 COMPONENTS Widgets Network Xml PrintSupport REQUIRED )
 
 ########### includes #########
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -29,7 +14,6 @@ if(ASPELL_FOUND)
 endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/base-filesystem)
-
 include_directories(${CMAKE_SOURCE_DIR}/document-classes)
 
 ########### configuration files ###############
@@ -96,20 +80,9 @@ target_link_libraries(qedit
 )
 
 if(ASPELL_FOUND)
-
   target_link_libraries(qedit base-spellcheck)
-
 endif()
 
-if(USE_QT5)
-
-  target_link_libraries(qedit Qt5::Network Qt5::PrintSupport Qt5::Widgets Qt5::Xml)
-
-else()
-
-  target_link_libraries(qedit ${QT_LIBRARIES})
-
-endif()
-
+target_link_libraries(qedit Qt5::Network Qt5::PrintSupport Qt5::Widgets Qt5::Xml)
 install(TARGETS qedit DESTINATION ${BIN_INSTALL_DIR})
 
