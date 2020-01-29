@@ -19,24 +19,20 @@
 
 #include "XmlString.h"
 
-#include "CppUtil.h"
+#include <QPair>
 
-//__________________________________
-const XmlString::ConversionList& XmlString::_conversions()
+//* text to Xml conversion pair list
+using Conversion = QPair<QString, QString>;
+static const auto conversions =
 {
-    static const auto conversions = Base::makeT<ConversionList>(
-    {
-        Conversion( "\t", "XML_TAB" ),
-        Conversion( "\n", "XML_ENDL" )
-    });
-
-    return conversions;
-}
+    Conversion( "\t", "XML_TAB" ),
+    Conversion( "\n", "XML_ENDL" )
+};
 
 //__________________________________
 XmlString::XmlString( const QString& other ):
     value_( other )
 {
-    for( const auto& conversion:_conversions() )
+    for( const auto& conversion:conversions )
     { if( !conversion.second.isEmpty() ) value_ = value_.replace( conversion.second, conversion.first ); }
 }

@@ -424,9 +424,7 @@ void MainWindow::_print( PrintHelper& helper )
     // create prind dialog and run.
     QPrintDialog dialog( &printer, this );
     dialog.setWindowTitle( Util::windowTitle( tr( "Print Document" ) ) );
-
-    using WidgetList = QList<QWidget*>;
-    dialog.setOptionTabs( Base::makeT<WidgetList>({ optionWidget }) );
+    dialog.setOptionTabs( { optionWidget } );
     if( dialog.exec() == QDialog::Rejected ) return;
 
     // add output file to scratch files, if any

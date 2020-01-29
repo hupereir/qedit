@@ -84,7 +84,7 @@ bool Diff::run()
     _clear();
 
     // create command and pass to process
-    const auto command = Base::makeT<QStringList>({
+    const QStringList command({
         XmlOptions::get().raw( "DIFF_COMMAND" ),
         files_[0].file(),
         files_[1].file()

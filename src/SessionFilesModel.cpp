@@ -18,8 +18,6 @@
 *******************************************************************************/
 
 #include "SessionFilesModel.h"
-
-#include "CppUtil.h"
 #include "CustomPixmap.h"
 #include "FileRecordProperties.h"
 #include "IconNames.h"
@@ -130,10 +128,7 @@ const QIcon& SessionFilesModel::_icon( int type )
 
 //______________________________________________________________________
 QStringList SessionFilesModel::mimeTypes() const
-{
-    static const auto mimeTypes = Base::makeT<QStringList>( { FileRecord::MimeType, "text/uri-list" });
-    return mimeTypes;
-}
+{ return { FileRecord::MimeType, "text/uri-list" }; }
 
 //______________________________________________________________________
 QMimeData* SessionFilesModel::mimeData(const QModelIndexList &indexes) const

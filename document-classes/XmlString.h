@@ -21,8 +21,6 @@
 *******************************************************************************/
 
 #include <QString>
-#include <QPair>
-#include <QList>
 
 //* some Xml utilities
 class XmlString final
@@ -37,15 +35,6 @@ class XmlString final
     operator const QString& () const { return value_; }
 
     private:
-
-    //* text to Xml conversion pair type
-    using Conversion = QPair<QString, QString>;
-
-    //* text to Xml conversion pair type
-    using ConversionList = QList<Conversion>;
-
-    //* text to Xml conversion pair list
-    static const ConversionList& _conversions();
 
     //* value
     QString value_;
