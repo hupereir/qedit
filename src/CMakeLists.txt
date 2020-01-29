@@ -1,6 +1,10 @@
 ########### Qt configuration #########
 find_package(Qt5 COMPONENTS Widgets Network Xml PrintSupport REQUIRED )
 
+if( WIN32 AND NOT ENABLE_SHARED )
+  fix_win32_static_compilation()
+endif()
+
 ########### includes #########
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/base)
