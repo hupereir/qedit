@@ -106,7 +106,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         layout->setMargin(0);
 
         // enable/disabled widget based on checkbox state
-        connect( checkbox, SIGNAL(toggled(bool)), widget, SLOT(setDisabled(bool)) );
+        connect( checkbox, &QAbstractButton::toggled, widget, &QWidget::setDisabled );
 
         // tab emulation
         checkbox = new OptionCheckBox( tr( "Emulate tabs" ), box, "TAB_EMULATION" );
@@ -154,7 +154,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         layout->addWidget( wrap_checkbox );
         addOptionWidget( wrap_checkbox );
 
-        connect( checkbox, SIGNAL(toggled(bool)), wrap_checkbox, SLOT(setDisabled(bool)) );
+        connect( checkbox, &QAbstractButton::toggled, wrap_checkbox, &QWidget::setDisabled );
 
         layout->addWidget( checkbox = new OptionCheckBox( tr( "Show line numbers" ), box, "SHOW_LINE_NUMBERS" ) );
         checkbox->setToolTip( tr( "Turn on/off line numbers" ) );
@@ -283,7 +283,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     recentFilesConfiguration->read();
     connect( this, SIGNAL(ok()), recentFilesConfiguration, SLOT(write()) );
     connect( this, SIGNAL(apply()), recentFilesConfiguration, SLOT(write()) );
-    connect( this, SIGNAL(reset()), recentFilesConfiguration, SLOT(reload()) );
+    connect( this, &BaseConfigurationDialog::reset, recentFilesConfiguration, &RecentFilesConfiguration::reload );
 
     // tooltips
     page = &addPage( IconEngine::get( IconNames::PreferencesAppearance), tr( "Tooltips" ), tr( "Tooltips appearance" ) );
@@ -299,7 +299,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     hLayout->addSpacing( _checkBoxSpacing() );
     hLayout->addWidget( configurationWidget = new BaseFileInfoConfigurationWidget( page ) );
     configurationWidget->setEnabled( false );
-    connect( checkbox, SIGNAL(toggled(bool)), configurationWidget, SLOT(setEnabled(bool)) );
+    connect( checkbox, &QAbstractButton::toggled, configurationWidget, &QWidget::setEnabled );
     addOptionWidget( configurationWidget );
 
     // misc
@@ -343,8 +343,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     checkbox->setChecked( false );
     spinbox->setEnabled( false );
     edit->setEnabled( false );
-    connect( checkbox, SIGNAL(toggled(bool)), spinbox, SLOT(setEnabled(bool)) );
-    connect( checkbox, SIGNAL(toggled(bool)), edit, SLOT(setEnabled(bool)) );
+    connect( checkbox, &QAbstractButton::toggled, spinbox, &QWidget::setEnabled );
+    connect( checkbox, &QAbstractButton::toggled, edit, &QWidget::setEnabled );
 
     // misc
     page->layout()->addWidget( box = new QGroupBox( tr( "Third-Party Applications" ), page ) );

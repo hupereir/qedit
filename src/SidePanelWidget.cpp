@@ -45,7 +45,7 @@ SidePanelWidget::SidePanelWidget( QWidget* parent, FileList& files ):
     setCurrentWidget( sessionFilesWidget_ );
 
     // connections
-    connect( this, SIGNAL(currentChanged(int)), SLOT(_updateCurrentWidget()) );
+    connect( this, &QStackedWidget::currentChanged, this, &SidePanelWidget::_updateCurrentWidget );
 
     // actions
     _installActions();
@@ -60,7 +60,7 @@ void SidePanelWidget::_installActions()
     addAction( visibilityAction_ = new QAction( tr( "Show &Navigation Panel" ), this ) );
     visibilityAction_->setCheckable( true );
     visibilityAction_->setChecked( true );
-    connect( visibilityAction_, SIGNAL(toggled(bool)), SLOT(setVisible(bool)) );
+    connect( visibilityAction_, &QAction::toggled, this, &QWidget::setVisible );
 
 }
 

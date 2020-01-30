@@ -37,39 +37,39 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
     {
         // resave button
         auto button = addButton( IconEngine::get( IconNames::Save ), tr( "Save Again" ) );
-        connect( button, SIGNAL(clicked()), SLOT(_reSave()) );
-        connect( button, SIGNAL(clicked()), SLOT(animatedHide()) );
+        connect( button, &QAbstractButton::clicked, this, &FileRemovedWidget::_reSave );
+        connect( button, &QAbstractButton::clicked, this, &MessageWidget::animatedHide );
         button->setToolTip( tr( "Save file again. Disc modifications will be lost" ) );
     }
 
     {
         // save as button
         auto button = addButton( IconEngine::get( IconNames::SaveAs ), tr( "Save As" ) );
-        connect( button, SIGNAL(clicked()), SLOT(_saveAs()) );
-        connect( button, SIGNAL(clicked()), SLOT(animatedHide()) );
+        connect( button, &QAbstractButton::clicked, this, &FileRemovedWidget::_saveAs );
+        connect( button, &QAbstractButton::clicked, this, &MessageWidget::animatedHide );
         button->setToolTip( tr( "Save file with a different name" ) );
     }
 
     {
         // close button.
         auto button = addButton( IconEngine::get( IconNames::DialogClose ), tr( "Close" ) );
-        connect( button, SIGNAL(clicked()), SLOT(_close()) );
-        connect( button, SIGNAL(clicked()), SLOT(animatedHide()) );
+        connect( button, &QAbstractButton::clicked, this, &FileRemovedWidget::_close );
+        connect( button, &QAbstractButton::clicked, this, &MessageWidget::animatedHide );
         button->setToolTip( tr( "Close window" ) );
     }
 
     {
         // ignore button.
         auto button = addButton( IconEngine::get( IconNames::DialogCancel ), tr( "Ignore" ) );
-        connect( button, SIGNAL(clicked()), SLOT(_ignore()) );
-        connect( button, SIGNAL(clicked()), SLOT(animatedHide()) );
+        connect( button, &QAbstractButton::clicked, this, &FileRemovedWidget::_ignore );
+        connect( button, &QAbstractButton::clicked, this, &MessageWidget::animatedHide );
         button->setToolTip( tr( "Ignore warning" ) );
     }
 
     adjustSize();
 
     // delete on hide
-    connect( this, SIGNAL(hideAnimationFinished()), SLOT(deleteLater()) );
+    connect( this, &MessageWidget::hideAnimationFinished, this, &QObject::deleteLater );
 
 }
 

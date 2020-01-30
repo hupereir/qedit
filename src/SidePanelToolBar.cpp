@@ -53,7 +53,7 @@ void SidePanelToolBar::connect( SidePanelWidget& widget )
     Debug::Throw( "SidePanelToolBar::connect.\n" );
     sidePanelWidget_ = &widget;
 
-    connect( &sidePanelWidget_->visibilityAction(), SIGNAL(toggled(bool)), SLOT(_sidePanelWidgetVisibilityChanged(bool)) );
+    connect( &sidePanelWidget_->visibilityAction(), &QAction::toggled, this, &SidePanelToolBar::_sidePanelWidgetVisibilityChanged );
 
     // button group
     auto buttonGroup = new QButtonGroup( this );
@@ -225,8 +225,8 @@ void SidePanelToolBar::contextMenuEvent( QContextMenuEvent* event )
     menu->toolButtonStyleMenu().select( (Qt::ToolButtonStyle) XmlOptions::get().get<int>( "SIDE_PANEL_TOOLBAR_TEXT_POSITION" ) );
     menu->iconSizeMenu().select( (IconSize::Size) XmlOptions::get().get<int>( "SIDE_PANEL_TOOLBAR_ICON_SIZE" ) );
 
-    connect( &menu->toolButtonStyleMenu(), SIGNAL(styleSelected(int)), SLOT(_updateToolButtonStyle(int)) );
-    connect( &menu->iconSizeMenu(), SIGNAL(iconSizeSelected(IconSize::Size)), SLOT(_updateToolButtonIconSize(IconSize::Size)) );
+    connect( &menu->toolButtonStyleMenu(), &ToolButtonStyleMenu::styleSelected, this, &SidePanelToolBar::_updateToolButtonStyle );
+    connect( &menu->iconSizeMenu(), &IconSizeMenu::iconSizeSelected, this, &SidePanelToolBar::_updateToolButtonIconSize );
 
     // move and show menu
     menu->adjustSize();

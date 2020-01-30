@@ -75,11 +75,11 @@ RecentFilesWidget::RecentFilesWidget( QWidget* parent, FileList& files ):
     menu->addAction( cleanAction_ );
 
     // connections
-    connect( &model_, SIGNAL(layoutChanged()), list_, SLOT(updateMask()) );
-    connect( list_, SIGNAL(customContextMenuRequested(QPoint)), SLOT(_updateActions()) );
-    connect( list_->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), SLOT(_itemSelected(QModelIndex)) );
-    connect( list_, SIGNAL(activated(QModelIndex)), SLOT(_itemActivated(QModelIndex)) );
-    connect( list_, SIGNAL(hovered(QModelIndex)), SLOT(_showToolTip(QModelIndex)) );
+    connect( &model_, &QAbstractItemModel::layoutChanged, list_, &TreeView::updateMask );
+    connect( list_, &QWidget::customContextMenuRequested, this, &RecentFilesWidget::_updateActions );
+    connect( list_->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &RecentFilesWidget::_itemSelected );
+    connect( list_, &QAbstractItemView::activated, this, &RecentFilesWidget::_itemActivated );
+    connect( list_, &TreeView::hovered, this, &RecentFilesWidget::_showToolTip );
 
     connect( recentFiles_, SIGNAL(validFilesChecked()), SLOT(update()) );
     connect( recentFiles_, SIGNAL(contentsChanged()), SLOT(update()) );
@@ -226,12 +226,12 @@ void RecentFilesWidget::_installActions()
 
     // clean
     addAction( cleanAction_ = new QAction( IconEngine::get( IconNames::Delete ), tr( "Clean" ), this ) );
-    connect( cleanAction_, SIGNAL(triggered()), SLOT(_clean()) );
+    connect( cleanAction_, &QAction::triggered, this, &RecentFilesWidget::_clean );
     cleanAction_->setEnabled( false );
     cleanAction_->setToolTip( tr( "Clean invalid files" ) );
 
     // open
     addAction( openAction_ = new QAction( IconEngine::get( IconNames::Open ), tr( "Open Selected Files" ), this ) );
-    connect( openAction_, SIGNAL(triggered()), SLOT(_open()) );
+    connect( openAction_, &QAction::triggered, this, &RecentFilesWidget::_open );
 
 }

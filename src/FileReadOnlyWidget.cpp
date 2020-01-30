@@ -37,7 +37,7 @@ FileReadOnlyWidget::FileReadOnlyWidget( QWidget* parent, const File& file ):
     addDefaultCloseButton();
 
     // delete on hide
-    connect( this, SIGNAL(hideAnimationFinished()), SLOT(deleteLater()) );
+    connect( this, &MessageWidget::hideAnimationFinished, this, &QObject::deleteLater );
 
 }
 

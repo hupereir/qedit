@@ -32,6 +32,6 @@ ReplaceWidget::ReplaceWidget( QWidget* parent ):
     // insert multiple file buttons
     QAction* action;
     _replaceAllMenu().addAction( action = new QAction( tr( "Files" ), this ) );
-    connect( action, SIGNAL(triggered()), SIGNAL(replaceInFiles()) );
+    connect( action, &QAction::triggered, this, &ReplaceWidget::replaceInFiles );
 
 }

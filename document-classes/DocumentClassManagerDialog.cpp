@@ -59,36 +59,36 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     hLayout->addLayout( vLayout );
 
     vLayout->addWidget( addButton_ = new QPushButton( IconEngine::get( IconNames::Add ), tr( "Add" ), this ) );
-    connect( addButton_, SIGNAL(clicked()), SLOT(_add()) );
+    connect( addButton_, &QAbstractButton::clicked, this, &DocumentClassManagerDialog::_add );
 
     vLayout->addWidget( removeButton_ = new QPushButton( IconEngine::get( IconNames::Remove ), tr( "Remove" ), this ) );
-    connect( removeButton_, SIGNAL(clicked()), SLOT(_remove()) );
+    connect( removeButton_, &QAbstractButton::clicked, this, &DocumentClassManagerDialog::_remove );
 
     vLayout->addWidget( reloadButton_ = new QPushButton( IconEngine::get( IconNames::Reload ), tr( "Reload" ), this ) );
-    connect( reloadButton_, SIGNAL(clicked()), SLOT(_reload()) );
+    connect( reloadButton_, &QAbstractButton::clicked, this, &DocumentClassManagerDialog::_reload );
 
     vLayout->addStretch( 1 );
 
     // actions
     auto menu = new ContextMenu( list_ );
     addAction( addAction_ = new QAction( IconEngine::get( IconNames::Add ), tr( "Add" ), this ) );
-    connect( addAction_, SIGNAL(triggered()), SLOT(_add()) );
+    connect( addAction_, &QAction::triggered, this, &DocumentClassManagerDialog::_add );
     addAction_->setShortcut( QKeySequence::New );
     menu->addAction( addAction_ );
 
     addAction( removeAction_ = new QAction( IconEngine::get( IconNames::Remove ), tr( "Remove" ), this ) );
-    connect( removeAction_, SIGNAL(triggered()), SLOT(_remove()) );
+    connect( removeAction_, &QAction::triggered, this, &DocumentClassManagerDialog::_remove );
     removeAction_->setShortcut( QKeySequence::Delete );
     menu->addAction( removeAction_ );
 
     addAction( reloadAction_ = new QAction( IconEngine::get( IconNames::Reload ), tr( "Reload" ), this ) );
-    connect( reloadAction_, SIGNAL(triggered()), SLOT(_reload()) );
+    connect( reloadAction_, &QAction::triggered, this, &DocumentClassManagerDialog::_reload );
     reloadAction_->setShortcut( QKeySequence::Refresh );
     menu->addAction( reloadAction_ );
 
     // updates
-    connect( list_->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(_updateButtons()) );
-    connect( list_->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(_updateButtons()) );
+    connect( list_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &DocumentClassManagerDialog::_updateButtons );
+    connect( list_->selectionModel(), &QItemSelectionModel::currentChanged, this, &DocumentClassManagerDialog::_updateButtons );
 
     _reload();
     _updateButtons();

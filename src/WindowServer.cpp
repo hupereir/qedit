@@ -60,11 +60,11 @@ WindowServer::WindowServer( QObject* parent ):
 
     // create actions
     saveAllAction_ = new QAction( IconEngine::get( IconNames::SaveAll ), tr( "Save All" ), this );
-    connect( saveAllAction_, SIGNAL(triggered()), SLOT(_saveAll()) );
+    connect( saveAllAction_, &QAction::triggered, this, &WindowServer::_saveAll );
 
     // scratch files
     scratchFileMonitor_ = new ScratchFileMonitor( this );
-    connect( qApp, SIGNAL(aboutToQuit()), scratchFileMonitor_, SLOT(deleteScratchFiles()) );
+    connect( qApp, &QCoreApplication::aboutToQuit, scratchFileMonitor_, &ScratchFileMonitor::deleteScratchFiles );
 
     // configuration
     connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
@@ -82,23 +82,23 @@ MainWindow& WindowServer::newMainWindow()
     _setActiveWindow( *window );
 
     // these connections are needed to make sure all windows recieve modifications of session files
-    connect( window, SIGNAL(destroyed()), SIGNAL(sessionFilesChanged()) );
-    connect( window, SIGNAL(modificationChanged()), SIGNAL(sessionFilesChanged()) );
-    connect( window, SIGNAL(modificationChanged()), SLOT(_updateActions()) );
-    connect( window, SIGNAL(scratchFileCreated(File)), scratchFileMonitor_, SLOT(add(File)) );
+    connect( window, &QObject::destroyed, this, &WindowServer::sessionFilesChanged );
+    connect( window, &MainWindow::modificationChanged, this, &WindowServer::sessionFilesChanged );
+    connect( window, &MainWindow::modificationChanged, this, &WindowServer::_updateActions );
+    connect( window, &MainWindow::scratchFileCreated, scratchFileMonitor_, &ScratchFileMonitor::add );
     connect( this, SIGNAL(sessionFilesChanged()), &window->sidePanelWidget().sessionFilesWidget(), SLOT(update()) );
 
-    connect( window, SIGNAL(activated(MainWindow*)), SLOT(_activeWindowChanged(MainWindow*)) );
+    connect( window, &MainWindow::activated, this, &WindowServer::_activeWindowChanged );
     connect( &window->newFileAction(), SIGNAL(triggered()), SLOT(_newFile()) );
 
     // open actions
     connect( &window->openAction(), SIGNAL(triggered()), SLOT(_open()) );
-    connect( &window->openHorizontalAction(), SIGNAL(triggered()), SLOT(_openHorizontal()) );
-    connect( &window->openVerticalAction(), SIGNAL(triggered()), SLOT(_openVertical()) );
+    connect( &window->openHorizontalAction(), &QAction::triggered, this, &WindowServer::_openHorizontal );
+    connect( &window->openVerticalAction(), &QAction::triggered, this, &WindowServer::_openVertical );
     connect( &window->detachAction(), SIGNAL(triggered()), SLOT(_detach()) );
 
-    connect( &window->sidePanelWidget().sessionFilesWidget().model(), SIGNAL(reparentFiles(File,File)), SLOT(_reparent(File,File)) );
-    connect( &window->sidePanelWidget().sessionFilesWidget().model(), SIGNAL(reparentFilesToMain(File,File)), SLOT(_reparentToMain(File,File)) );
+    connect( &window->sidePanelWidget().sessionFilesWidget().model(), &SessionFilesModel::reparentFiles, this, &WindowServer::_reparent );
+    connect( &window->sidePanelWidget().sessionFilesWidget().model(), &SessionFilesModel::reparentFilesToMain, this, &WindowServer::_reparentToMain );
 
     connect( &window->sidePanelWidget().sessionFilesWidget().list(), SIGNAL(reparentFilesToMain(File,File)), SLOT(_reparentToMain(File,File)) );
     connect( &window->sidePanelWidget().sessionFilesWidget().list(), SIGNAL(detach(File)), SLOT(_detach(File)) );
@@ -110,7 +110,7 @@ MainWindow& WindowServer::newMainWindow()
     connect( &window->sidePanelWidget().fileSystemWidget(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
 
     // other actions
-    connect( &window->sidePanelWidget().sessionFilesWidget(), SIGNAL(filesSaved(FileRecord::List)), SLOT(_save(FileRecord::List)) );
+    connect( &window->sidePanelWidget().sessionFilesWidget(), &SessionFilesWidget::filesSaved, this, &WindowServer::_save );
     connect( &window->sidePanelWidget().sessionFilesWidget(), SIGNAL(filesClosed(FileRecord::List)), SLOT(_close(FileRecord::List)) );
 
     return *window;

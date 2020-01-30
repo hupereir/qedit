@@ -690,18 +690,18 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     TextDisplay* display = new TextDisplay( parent );
 
     // connections
-    connect( display, SIGNAL(needUpdate(TextDisplay::UpdateFlags)), SIGNAL(needUpdate(TextDisplay::UpdateFlags)) );
+    connect( display, &TextDisplay::needUpdate, this, &TextView::needUpdate );
     connect( display, SIGNAL(hasFocus(TextEditor*)), SLOT(_activeDisplayChanged(TextEditor*)) );
     connect( display, SIGNAL(hasFocus(TextEditor*)), SLOT(checkDisplayModifications(TextEditor*)) );
     connect( display, SIGNAL(cursorPositionChanged()), &positionTimer_, SLOT(start()) );
-    connect( display, SIGNAL(modifiersChanged(TextEditor::Modifiers)), SIGNAL(modifiersChanged(TextEditor::Modifiers)) );
-    connect( display, SIGNAL(requestClose(File)), SLOT(_closeDisplay(File)) );
+    connect( display, &TextEditor::modifiersChanged, this, &TextView::modifiersChanged );
+    connect( display, &TextDisplay::requestClose, this, &TextView::_closeDisplay );
 
-    connect( display, SIGNAL(undoAvailable(bool)), SIGNAL(undoAvailable(bool)) );
-    connect( display, SIGNAL(redoAvailable(bool)), SIGNAL(redoAvailable(bool)) );
+    connect( display, &QTextEdit::undoAvailable, this, &TextView::undoAvailable );
+    connect( display, &QTextEdit::redoAvailable, this, &TextView::redoAvailable );
 
-    connect( display, SIGNAL(destroyed()), SLOT(_checkDisplays()) );
-    connect( display, SIGNAL(destroyed()), SIGNAL(displayCountChanged()) );
+    connect( display, &QObject::destroyed, this, &TextView::_checkDisplays );
+    connect( display, &QObject::destroyed, this, &TextView::displayCountChanged );
 
     // retrieve parent main window
     MainWindow &window = *static_cast<MainWindow*>( TextView::window() );
@@ -709,17 +709,17 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     // customize display actions
     /* this is needed to be able to handle a single dialog for stacked windows */
     display->gotoLineAction().disconnect();
-    connect( &display->gotoLineAction(), SIGNAL(triggered()), &window, SLOT(selectLineFromDialog()) );
+    connect( &display->gotoLineAction(), &QAction::triggered, &window, &MainWindow::selectLineFromDialog );
 
     display->findAction().disconnect();
-    connect( &display->findAction(), SIGNAL(triggered()), &window, SLOT(findFromDialog()) );
-    connect( display, SIGNAL(noMatchFound()), &window, SIGNAL(noMatchFound()) );
-    connect( display, SIGNAL(matchFound()), &window, SIGNAL(matchFound()) );
-    connect( display, SIGNAL(lineNotFound()), &window, SIGNAL(lineNotFound()) );
-    connect( display, SIGNAL(lineFound()), &window, SIGNAL(lineFound()) );
+    connect( &display->findAction(), &QAction::triggered, &window, &MainWindow::findFromDialog );
+    connect( display, &TextEditor::noMatchFound, &window, &MainWindow::noMatchFound );
+    connect( display, &TextEditor::matchFound, &window, &MainWindow::matchFound );
+    connect( display, &TextEditor::lineNotFound, &window, &MainWindow::lineNotFound );
+    connect( display, &TextEditor::lineFound, &window, &MainWindow::lineFound );
 
     display->replaceAction().disconnect();
-    connect( &display->replaceAction(), SIGNAL(triggered()), &window, SLOT(replaceFromDialog()) );
+    connect( &display->replaceAction(), &QAction::triggered, &window, &MainWindow::replaceFromDialog );
 
     // associate display to this editFrame
     Base::Key::associate( this, display );

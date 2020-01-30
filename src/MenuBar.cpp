@@ -88,35 +88,35 @@ MenuBar::MenuBar( QWidget* parent ):
 
     // recent files menu current file needs to be updated prior to the menu to be shown
     // this is performed every time the "file menu" is shown.
-    connect( menu, SIGNAL(aboutToShow()), SLOT(_updateRecentFilesMenu()) );
+    connect( menu, &QMenu::aboutToShow, this, &MenuBar::_updateRecentFilesMenu );
 
     // Edit menu
     editMenu_ = addMenu( tr( "Edit" ) );
-    connect( editMenu_, SIGNAL(aboutToShow()), SLOT(_updateEditMenu()) );
+    connect( editMenu_, &QMenu::aboutToShow, this, &MenuBar::_updateEditMenu );
 
     // Search menu
     searchMenu_ = addMenu( tr( "Search" ) );
-    connect( searchMenu_, SIGNAL(aboutToShow()), SLOT(_updateSearchMenu()) );
+    connect( searchMenu_, &QMenu::aboutToShow, this, &MenuBar::_updateSearchMenu );
 
     // windows
     windowsActionGroup_ = new ActionGroup( this );
     addMenu( windowsMenu_ = new CustomMenu( tr( "Session" ), this ) );
-    connect( windowsMenu_, SIGNAL(aboutToShow()), SLOT(_updateWindowsMenu()) );
-    connect( windowsMenu_, SIGNAL(triggered(QAction*)), SLOT(_selectFile(QAction*)) );
+    connect( windowsMenu_, &QMenu::aboutToShow, this, &MenuBar::_updateWindowsMenu );
+    connect( windowsMenu_, &QMenu::triggered, this, &MenuBar::_selectFile );
 
     // tools
     toolsMenu_ = addMenu( tr( "Tools" ) );
-    connect( toolsMenu_, SIGNAL(aboutToShow()), SLOT(_updateToolsMenu()) );
+    connect( toolsMenu_, &QMenu::aboutToShow, this, &MenuBar::_updateToolsMenu );
 
     // macros
     addMenu( macroMenu_ = new TextMacroMenu( this ) );
     macroMenu_->setTitle( tr( "Macros" ) );
-    connect( macroMenu_, SIGNAL(aboutToShow()), SLOT(updateMacroMenu()) );
-    connect( macroMenu_, SIGNAL(textMacroSelected(QString)), SLOT(_selectMacro(QString)) );
+    connect( macroMenu_, &QMenu::aboutToShow, this, &MenuBar::updateMacroMenu );
+    connect( macroMenu_, &TextMacroMenu::textMacroSelected, this, &MenuBar::_selectMacro );
 
     // Settings
     preferenceMenu_ = addMenu( tr( "Settings" ) );
-    connect( preferenceMenu_, SIGNAL(aboutToShow()), SLOT(_updatePreferenceMenu()) );
+    connect( preferenceMenu_, &QMenu::aboutToShow, this, &MenuBar::_updatePreferenceMenu );
 
     // help manager
     auto help( new Base::HelpManager( this ) );

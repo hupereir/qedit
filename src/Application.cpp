@@ -127,7 +127,7 @@ bool Application::realizeWidget()
 
     // window server
     windowServer_.reset( new WindowServer );
-    connect( windowServer_.get(), SIGNAL(sessionFilesChanged()), SLOT(_updateSessionActions()) );
+    connect( windowServer_.get(), &WindowServer::sessionFilesChanged, this, &Application::_updateSessionActions );
 
     // create first window and show
     windowServer_->newMainWindow().centerOnDesktop();
@@ -225,7 +225,7 @@ void Application::_configuration()
     Debug::Throw( "Application::_configuration.\n" );
     emit saveConfiguration();
     ConfigurationDialog dialog;
-    connect( &dialog, SIGNAL(configurationChanged()), SIGNAL(configurationChanged()) );
+    connect( &dialog, &BaseConfigurationDialog::configurationChanged, this, &BaseCoreApplication::configurationChanged );
     dialog.centerOnWidget( qApp->activeWindow() );
     dialog.exec();
 }
@@ -240,7 +240,7 @@ void Application::_spellCheckConfiguration()
 
     // create dialog
     SpellCheck::ConfigurationDialog dialog;
-    connect( &dialog, SIGNAL(configurationChanged()), SIGNAL(spellCheckConfigurationChanged()) );
+    connect( &dialog, &BaseConfigurationDialog::configurationChanged, this, &Application::spellCheckConfigurationChanged );
     dialog.centerOnWidget( qApp->activeWindow() );
     dialog.exec();
 
@@ -425,39 +425,39 @@ void Application::_installActions()
 
     // need to modify closeAction signal for proper exit
     closeAction().disconnect();
-    connect( &closeAction(), SIGNAL(triggered()), SLOT(_exit()) );
+    connect( &closeAction(), &QAction::triggered, this, &Application::_exit );
 
     // spell check
     spellCheckConfigurationAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), tr( "Configure Spell Checking..." ), this );
-    connect( spellCheckConfigurationAction_, SIGNAL(triggered()), SLOT(_spellCheckConfiguration()) );
+    connect( spellCheckConfigurationAction_, &QAction::triggered, this, &Application::_spellCheckConfiguration );
 
     // document classes
     documentClassesConfigurationAction_ = new QAction( IconEngine::get( IconNames::Configure ), tr( "Configure Document Types..." ), this );
-    connect( documentClassesConfigurationAction_, SIGNAL(triggered()), SLOT(_documentClassesConfiguration()) );
+    connect( documentClassesConfigurationAction_, &QAction::triggered, this, &Application::_documentClassesConfiguration );
 
     // save session
     saveSessionAction_ = new QAction( IconEngine::get( IconNames::Save ), tr( "Save Current Session" ), this );
-    connect( saveSessionAction_, SIGNAL(triggered()), SLOT(_saveSession()) );
+    connect( saveSessionAction_, &QAction::triggered, this, &Application::_saveSession );
 
     // print session
     printSessionAction_ = new QAction( IconEngine::get( IconNames::Print ), tr( "Print Current Session" ), this );
-    connect( printSessionAction_, SIGNAL(triggered()), SLOT(_printSession()) );
+    connect( printSessionAction_, &QAction::triggered, this, &Application::_printSession );
 
     // restore session
     restoreSessionAction_ = new QAction( IconEngine::get( IconNames::Open ), tr( "Restore Saved Session" ), this );
-    connect( restoreSessionAction_, SIGNAL(triggered()), SLOT(_restoreSession()) );
+    connect( restoreSessionAction_, &QAction::triggered, this, &Application::_restoreSession );
 
     // restore session
     restoreLastSessionAction_ = new QAction( IconEngine::get( IconNames::Open ), tr( "Restore Last Session" ), this );
-    connect( restoreLastSessionAction_, SIGNAL(triggered()), SLOT(_restoreLastSession()) );
+    connect( restoreLastSessionAction_, &QAction::triggered, this, &Application::_restoreLastSession );
 
     // discard session
     discardSessionAction_ = new QAction( IconEngine::get( IconNames::Delete ), tr( "Discard Saved Session" ), this );
-    connect( discardSessionAction_, SIGNAL(triggered()), SLOT(_discardSession()) );
+    connect( discardSessionAction_, &QAction::triggered, this, &Application::_discardSession );
 
     // monitored files
     monitoredFilesAction_ = new QAction( tr( "Show Monitored Files" ), this );
     monitoredFilesAction_->setToolTip( tr( "Show monitored files" ) );
-    connect( monitoredFilesAction_, SIGNAL(triggered()), SLOT(_showMonitoredFiles()) );
+    connect( monitoredFilesAction_, &QAction::triggered, this, &Application::_showMonitoredFiles );
 
 }

@@ -125,13 +125,13 @@ MainWindow::MainWindow(  QWidget* parent ):
     // navigation toolbar
     sidePanelToolBar->connect( *sidePanelWidget_ );
 
-    connect( &sidePanelWidget_->visibilityAction(), SIGNAL(toggled(bool)), SLOT(_toggleSidePanelWidget(bool)) );
+    connect( &sidePanelWidget_->visibilityAction(), &QAction::toggled, this, &MainWindow::_toggleSidePanelWidget );
 
     // need to add side panel widget visibility action to this list
     // to enable shortcut event if the frame is hidden
     addAction( &sidePanelWidget_->visibilityAction() );
-    connect( &sidePanelWidget_->sessionFilesWidget(), SIGNAL(fileSelected(FileRecord)), SLOT(_selectDisplay(FileRecord)) );
-    connect( &sidePanelWidget_->recentFilesWidget(), SIGNAL(fileSelected(FileRecord)), SLOT(_selectDisplay(FileRecord)) );
+    connect( &sidePanelWidget_->sessionFilesWidget(), &SessionFilesWidget::fileSelected, this, &MainWindow::_selectDisplay );
+    connect( &sidePanelWidget_->recentFilesWidget(), &RecentFilesWidget::fileSelected, this, &MainWindow::_selectDisplay );
 
     addAction( &sidePanelWidget_->sessionFilesWidget().nextFileAction() );
     addAction( &sidePanelWidget_->sessionFilesWidget().previousFileAction() );
@@ -148,7 +148,7 @@ MainWindow::MainWindow(  QWidget* parent ):
     stack_ = new QStackedWidget( rightContainer_ );
     rightContainer_->layout()->addWidget( stack_ );
     stack_->layout()->setMargin(2);
-    connect( stack_, SIGNAL(widgetRemoved(int)), SLOT(_activeViewChanged()) );
+    connect( stack_, &QStackedWidget::widgetRemoved, this, &MainWindow::_activeViewChanged );
 
     // embedded widgets
     _createFindWidget();
@@ -161,7 +161,7 @@ MainWindow::MainWindow(  QWidget* parent ):
     // assign stretch factors
     splitter->setStretchFactor( 0, 0 );
     splitter->setStretchFactor( 1, 1 );
-    connect( splitter, SIGNAL(splitterMoved(int,int)), SLOT(_splitterMoved()) );
+    connect( splitter, &QSplitter::splitterMoved, this, &MainWindow::_splitterMoved );
 
     // state frame
     setStatusBar( statusbar_ = new BaseStatusBar( this ) );
@@ -418,8 +418,8 @@ void MainWindow::_print( PrintHelper& helper )
     // create options widget
     PrinterOptionWidget* optionWidget( new PrinterOptionWidget );
     optionWidget->setHelper( &helper );
-    connect( optionWidget, SIGNAL(orientationChanged(QPrinter::Orientation)), &helper, SLOT(setOrientation(QPrinter::Orientation)) );
-    connect( optionWidget, SIGNAL(pageModeChanged(BasePrintHelper::PageMode)), &helper, SLOT(setPageMode(BasePrintHelper::PageMode)) );
+    connect( optionWidget, &PrinterOptionWidget::orientationChanged, &helper, &BasePrintHelper::setOrientation );
+    connect( optionWidget, &PrinterOptionWidget::pageModeChanged, &helper, &BasePrintHelper::setPageMode );
 
     // create prind dialog and run.
     QPrintDialog dialog( &printer, this );
@@ -797,7 +797,7 @@ void MainWindow::_installActions()
     addAction( cloneAction_ = new QAction( IconEngine::get( IconNames::ViewLeftRight ), tr( "Clone" ), this ) );
     cloneAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_N );
     cloneAction_->setToolTip( tr( "Clone current display" ) );
-    connect( cloneAction_, SIGNAL(triggered()), SLOT(_splitDisplay()) );
+    connect( cloneAction_, &QAction::triggered, this, &MainWindow::_splitDisplay );
 
     addAction( detachAction_ = new QAction( IconEngine::get( IconNames::ViewDetach ), tr( "Detach" ), this ) );
     detachAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_O );
@@ -817,27 +817,27 @@ void MainWindow::_installActions()
     addAction( closeDisplayAction_ = new QAction( IconEngine::get( IconNames::ViewRemove ), tr( "Close Display" ), this ) );
     closeDisplayAction_->setShortcut( QKeySequence::Close );
     closeDisplayAction_->setToolTip( tr( "Close current display" ) );
-    connect( closeDisplayAction_, SIGNAL(triggered()), SLOT(_closeDisplay()) );
+    connect( closeDisplayAction_, &QAction::triggered, this, &MainWindow::_closeDisplay );
 
     addAction( closeWindowAction_ = new QAction( IconEngine::get( IconNames::Close ), tr( "Close Window" ), this ) );
     closeWindowAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_W );
     closeWindowAction_->setToolTip( tr( "Close current display" ) );
-    connect( closeWindowAction_, SIGNAL(triggered()), SLOT(_closeWindow()) );
+    connect( closeWindowAction_, &QAction::triggered, this, &MainWindow::_closeWindow );
 
     addAction( saveAction_ = new QAction( IconEngine::get( IconNames::Save ), tr( "Save" ), this ) );
     saveAction_->setShortcut( QKeySequence::Save );
     saveAction_->setToolTip( tr( "Save current file" ) );
-    connect( saveAction_, SIGNAL(triggered()), SLOT(_save()) );
+    connect( saveAction_, &QAction::triggered, this, &MainWindow::_save );
 
     addAction( saveAsAction_ = new QAction( IconEngine::get( IconNames::SaveAs ), tr( "Save As..." ), this ) );
     saveAsAction_->setShortcut( QKeySequence::SaveAs );
     saveAsAction_->setToolTip( tr( "Save current file with a different name" ) );
-    connect( saveAsAction_, SIGNAL(triggered()), SLOT(_saveAs()) );
+    connect( saveAsAction_, &QAction::triggered, this, &MainWindow::_saveAs );
 
     addAction( revertToSaveAction_ = new QAction( IconEngine::get( IconNames::Reload ), tr( "Reload" ), this ) );
     revertToSaveAction_->setShortcut( QKeySequence::Refresh );
     revertToSaveAction_->setToolTip( tr( "Reload saved version of current file" ) );
-    connect( revertToSaveAction_, SIGNAL(triggered()), SLOT(_revertToSave()) );
+    connect( revertToSaveAction_, &QAction::triggered, this, &MainWindow::_revertToSave );
 
     addAction( printAction_ = new QAction( IconEngine::get( IconNames::Print ), tr( "Print..." ), this ) );
     printAction_->setToolTip( tr( "Print current file" ) );
@@ -845,59 +845,59 @@ void MainWindow::_installActions()
     connect( printAction_, SIGNAL(triggered()), SLOT(_print()) );
 
     addAction( printPreviewAction_ = new QAction( IconEngine::get( IconNames::PrintPreview ), tr( "Print Preview..." ), this ) );
-    connect( printPreviewAction_, SIGNAL(triggered()), SLOT(_printPreview()) );
+    connect( printPreviewAction_, &QAction::triggered, this, &MainWindow::_printPreview );
 
     addAction( htmlAction_ = new QAction( IconEngine::get( IconNames::Html ), tr( "Export to HTML..." ), this ) );
-    connect( htmlAction_, SIGNAL(triggered()), SLOT(_toHtml()) );
+    connect( htmlAction_, &QAction::triggered, this, &MainWindow::_toHtml );
 
     addAction( undoAction_ = new QAction( IconEngine::get( IconNames::Undo ), tr( "Undo" ), this ) );
     undoAction_->setToolTip( tr( "Undo last action" ) );
     undoAction_->setEnabled( false );
-    connect( undoAction_, SIGNAL(triggered()), SLOT(_undo()) );
+    connect( undoAction_, &QAction::triggered, this, &MainWindow::_undo );
 
     addAction( redoAction_ = new QAction( IconEngine::get( IconNames::Redo ), tr( "Redo" ), this ) );
     redoAction_->setToolTip( tr( "Redo last undone action" ) );
     redoAction_->setEnabled( false );
-    connect( redoAction_, SIGNAL(triggered()), SLOT(_redo()) );
+    connect( redoAction_, &QAction::triggered, this, &MainWindow::_redo );
 
     addAction( cutAction_ = new QAction( IconEngine::get( IconNames::Cut ), tr( "Cut" ), this ) );
     cutAction_->setToolTip( tr( "Cut current selection and copy to clipboard" ) );
     cutAction_->setEnabled( false );
-    connect( cutAction_, SIGNAL(triggered()), SLOT(_cut()) );
+    connect( cutAction_, &QAction::triggered, this, &MainWindow::_cut );
 
     addAction( copyAction_ = new QAction( IconEngine::get( IconNames::Copy ), tr( "Copy" ), this ) );
     copyAction_->setToolTip( tr( "Copy current selection to clipboard" ) );
     copyAction_->setEnabled( false );
-    connect( copyAction_, SIGNAL(triggered()), SLOT(_copy()) );
+    connect( copyAction_, &QAction::triggered, this, &MainWindow::_copy );
 
     addAction( pasteAction_ = new QAction( IconEngine::get( IconNames::Paste ), tr( "Paste" ), this ) );
     pasteAction_->setToolTip( tr( "Paste clipboard to text" ) );
     pasteAction_->setEnabled( !qApp->clipboard()->text().isEmpty() );
-    connect( pasteAction_, SIGNAL(triggered()), SLOT(_paste()) );
+    connect( pasteAction_, &QAction::triggered, this, &MainWindow::_paste );
 
     addAction( filePropertiesAction_ = new QAction( IconEngine::get( IconNames::Information ), tr( "Properties..." ), this ) );
     filePropertiesAction_->setShortcut( Qt::ALT + Qt::Key_Return );
     filePropertiesAction_->setToolTip( tr( "Display file informations" ) );
     filePropertiesAction_->setEnabled( false );
-    connect( filePropertiesAction_, SIGNAL(triggered()), SLOT(_fileInfo()) );
+    connect( filePropertiesAction_, &QAction::triggered, this, &MainWindow::_fileInfo );
 
     addAction( spellcheckAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), tr( "Spell Check..." ), this ) );
     #if WITH_ASPELL
-    connect( spellcheckAction_, SIGNAL(triggered()), SLOT(_spellcheck()) );
+    connect( spellcheckAction_, &QAction::triggered, this, &MainWindow::_spellcheck );
     spellcheckAction_->setEnabled( !SpellCheck::SpellInterface().dictionaries().empty() );
     #endif
 
     addAction( diffAction_ = new QAction( "Diff Files", this ) );
-    connect( diffAction_, SIGNAL(triggered()), SLOT(_diff()) );
+    connect( diffAction_, &QAction::triggered, this, &MainWindow::_diff );
     diffAction_->setEnabled( false );
 
     addAction( splitDisplayHorizontalAction_ =new QAction( IconEngine::get( IconNames::ViewTopBottom ), tr( "Clone Display Top/Bottom" ), this ) );
     splitDisplayHorizontalAction_->setToolTip( tr( "Clone current display vertically" ) );
-    connect( splitDisplayHorizontalAction_, SIGNAL(triggered()), SLOT(_splitDisplayVertical()) );
+    connect( splitDisplayHorizontalAction_, &QAction::triggered, this, &MainWindow::_splitDisplayVertical );
 
     addAction( splitDisplayVerticalAction_ =new QAction( IconEngine::get( IconNames::ViewLeftRight ), tr( "Clone Display Left/Right" ), this ) );
     splitDisplayVerticalAction_->setToolTip( tr( "Clone current display horizontally" ) );
-    connect( splitDisplayVerticalAction_, SIGNAL(triggered()), SLOT(_splitDisplayHorizontal()) );
+    connect( splitDisplayVerticalAction_, &QAction::triggered, this, &MainWindow::_splitDisplayHorizontal );
 
 }
 
@@ -938,7 +938,7 @@ void MainWindow::_installToolbars()
 
     // document class toolbar
     documentClassToolBar_ = new DocumentClassToolBar( this );
-    connect( documentClassToolBar_, SIGNAL(documentClassSelected(QString)), SLOT(selectClassName(QString)) );
+    connect( documentClassToolBar_, &DocumentClassToolBar::documentClassSelected, this, &MainWindow::selectClassName );
 
 }
 
@@ -955,7 +955,7 @@ void MainWindow::_createFindWidget()
         connect( findWidget_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
         connect( this, SIGNAL(matchFound()), findWidget_, SLOT(matchFound()) );
         connect( this, SIGNAL(noMatchFound()), findWidget_, SLOT(noMatchFound()) );
-        connect( &findWidget_->closeButton(), SIGNAL(clicked()), SLOT(_restoreFocus()) );
+        connect( &findWidget_->closeButton(), &QAbstractButton::clicked, this, &MainWindow::_restoreFocus );
         findWidget_->hide();
 
     }
@@ -974,12 +974,12 @@ void MainWindow::_createReplaceWidget()
         replaceWidget_ = new ReplaceWidget( rightContainer_ );
         rightContainer_->layout()->addWidget( replaceWidget_ );
         connect( replaceWidget_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
-        connect( replaceWidget_, SIGNAL(replace(TextSelection)), SLOT(_replace(TextSelection)) );
-        connect( replaceWidget_, SIGNAL(replaceInWindow(TextSelection)), SLOT(_replaceInWindow(TextSelection)) );
-        connect( replaceWidget_, SIGNAL(replaceInSelection(TextSelection)), SLOT(_replaceInSelection(TextSelection)) );
-        connect( replaceWidget_, SIGNAL(replaceInFiles()), SLOT(_multipleFileReplace()) );
-        connect( replaceWidget_, SIGNAL(menuAboutToShow()), SLOT(_updateReplaceInSelection()) );
-        connect( &replaceWidget_->closeButton(), SIGNAL(clicked()), SLOT(_restoreFocus()) );
+        connect( replaceWidget_, &BaseReplaceWidget::replace, this, &MainWindow::_replace );
+        connect( replaceWidget_, &BaseReplaceWidget::replaceInWindow, this, &MainWindow::_replaceInWindow );
+        connect( replaceWidget_, &BaseReplaceWidget::replaceInSelection, this, &MainWindow::_replaceInSelection );
+        connect( replaceWidget_, &ReplaceWidget::replaceInFiles, this, &MainWindow::_multipleFileReplace );
+        connect( replaceWidget_, &BaseReplaceWidget::menuAboutToShow, this, &MainWindow::_updateReplaceInSelection );
+        connect( &replaceWidget_->closeButton(), &QAbstractButton::clicked, this, &MainWindow::_restoreFocus );
         replaceWidget_->hide();
 
         connect( this, SIGNAL(matchFound()), replaceWidget_, SLOT(matchFound()) );
@@ -996,10 +996,10 @@ void MainWindow::_createSelectLineWidget()
     {
         selectLineWidget_ = new SelectLineWidget( this, true );
         rightContainer_->layout()->addWidget( selectLineWidget_ );
-        connect( selectLineWidget_, SIGNAL(lineSelected(int)), SLOT(_selectLine(int)) );
-        connect( this, SIGNAL(lineFound()), selectLineWidget_, SLOT(matchFound()) );
-        connect( this, SIGNAL(lineNotFound()), selectLineWidget_, SLOT(noMatchFound()) );
-        connect( &selectLineWidget_->closeButton(), SIGNAL(clicked()), SLOT(_restoreFocus()) );
+        connect( selectLineWidget_, &SelectLineWidget::lineSelected, this, &MainWindow::_selectLine );
+        connect( this, &MainWindow::lineFound, selectLineWidget_, &SelectLineWidget::matchFound );
+        connect( this, &MainWindow::lineNotFound, selectLineWidget_, &SelectLineWidget::noMatchFound );
+        connect( &selectLineWidget_->closeButton(), &QAbstractButton::clicked, this, &MainWindow::_restoreFocus );
         selectLineWidget_->hide();
     }
 }
@@ -1008,13 +1008,13 @@ void MainWindow::_createSelectLineWidget()
 void MainWindow::_connectView( TextView& view )
 {
     Debug::Throw( "MainWindow::_connectView.\n" );
-    connect( &view, SIGNAL(modifiersChanged(TextEditor::Modifiers)), SLOT(_updateModifiers()) );
-    connect( &view, SIGNAL(needUpdate(TextDisplay::UpdateFlags)), SLOT(_update(TextDisplay::UpdateFlags)) );
-    connect( &view, SIGNAL(displayCountChanged()), SLOT(_updateDisplayCount()) );
-    connect( &view, SIGNAL(displayCountChanged()), &Base::Singleton::get().application<Application>()->windowServer(), SIGNAL(sessionFilesChanged()) );
-    connect( &view, SIGNAL(undoAvailable(bool)), &undoAction(), SLOT(setEnabled(bool)) );
-    connect( &view, SIGNAL(redoAvailable(bool)), &redoAction(), SLOT(setEnabled(bool)) );
-    connect( &view.positionTimer(), SIGNAL(timeout()), SLOT(_updateCursorPosition()) );
+    connect( &view, &TextView::modifiersChanged, this, &MainWindow::_updateModifiers );
+    connect( &view, &TextView::needUpdate, this, &MainWindow::_update );
+    connect( &view, &TextView::displayCountChanged, this, &MainWindow::_updateDisplayCount );
+    connect( &view, &TextView::displayCountChanged, &Base::Singleton::get().application<Application>()->windowServer(), &WindowServer::sessionFilesChanged );
+    connect( &view, &TextView::undoAvailable, &undoAction(), &QAction::setEnabled );
+    connect( &view, &TextView::redoAvailable, &redoAction(), &QAction::setEnabled );
+    connect( &view.positionTimer(), &QTimer::timeout, this, &MainWindow::_updateCursorPosition );
 
 }
 

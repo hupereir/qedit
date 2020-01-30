@@ -71,7 +71,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     if( buttons & Create )
     {
         buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogAccept ), tr( "Create" ), this ) );
-        connect( button, SIGNAL(clicked()), SLOT(_create()) );
+        connect( button, &QAbstractButton::clicked, this, &NewFileDialog::_create );
     }
 
     // cancel button.
@@ -79,14 +79,14 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     {
         buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogCancel ), tr( "Cancel" ), this ) );
         button->setShortcut( Qt::Key_Escape );
-        connect( button, SIGNAL(clicked()), SLOT(_cancel()) );
+        connect( button, &QAbstractButton::clicked, this, &NewFileDialog::_cancel );
     }
 
     // cancel button.
     if( buttons & Exit )
     {
         buttonLayout->addWidget( button = new QPushButton( IconEngine::get( IconNames::DialogClose ), tr( "Exit" ), this ) );
-        connect( button, SIGNAL(clicked()), SLOT(_exit()) );
+        connect( button, &QAbstractButton::clicked, this, &NewFileDialog::_exit );
     }
 
     adjustSize();

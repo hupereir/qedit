@@ -68,7 +68,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     if( buttons & Yes )
     {
         button = buttonBox->addButton( QDialogButtonBox::Yes );
-        connect( button, SIGNAL(clicked()), SLOT(_yes()) );
+        connect( button, &QAbstractButton::clicked, this, &AskForSaveDialog::_yes );
         #if defined(Q_OS_WIN)
         button->setIcon( IconEngine::get( IconNames::DialogOk ) );
         #endif
@@ -79,7 +79,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     if( buttons & YesToAll )
     {
         button = buttonBox->addButton( QDialogButtonBox::YesToAll );
-        connect( button, SIGNAL(clicked()), SLOT(_yesToAll()) );
+        connect( button, &QAbstractButton::clicked, this, &AskForSaveDialog::_yesToAll );
         button->setIcon( IconEngine::get( IconNames::DialogAccept ) );
         button->setToolTip( tr( "Save all modified files to disk" ) );
     }
@@ -88,7 +88,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     if( buttons & No )
     {
         button = buttonBox->addButton( QDialogButtonBox::No );
-        connect( button, SIGNAL(clicked()), SLOT(_no()) );
+        connect( button, &QAbstractButton::clicked, this, &AskForSaveDialog::_no );
         button->setIcon( IconEngine::get( IconNames::DialogClose ) );
         button->setToolTip( tr( "Ignore file modifications" ) );
     }
@@ -97,7 +97,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     if( buttons & NoToAll )
     {
         button = buttonBox->addButton( QDialogButtonBox::NoToAll );
-        connect( button, SIGNAL(clicked()), SLOT(_noToAll()) );
+        connect( button, &QAbstractButton::clicked, this, &AskForSaveDialog::_noToAll );
         button->setIcon( IconEngine::get( IconNames::DialogClose ) );
         button->setToolTip( tr( "Ignore all files modifications" ) );
     }
@@ -107,7 +107,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     {
         button = buttonBox->addButton( QDialogButtonBox::Cancel );
         button->setShortcut( Qt::Key_Escape );
-        connect( button, SIGNAL(clicked()), SLOT(_cancel()) );
+        connect( button, &QAbstractButton::clicked, this, &AskForSaveDialog::_cancel );
         button->setToolTip( tr( "Cancel current action" ) );
     }
 
