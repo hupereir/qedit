@@ -69,7 +69,7 @@ class SessionFilesWidget: public QWidget, private Base::Counter<SessionFilesWidg
     { return model_; }
 
     //* update session files
-    void update();
+    void updateFiles();
 
     Q_SIGNALS:
 

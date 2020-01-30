@@ -55,24 +55,17 @@ SidePanelWidget::SidePanelWidget( QWidget* parent, FileList& files ):
 //______________________________________________________________________
 void SidePanelWidget::_installActions()
 {
-
     Debug::Throw( "SidePanelWidget::_installActions.\n" );
     addAction( visibilityAction_ = new QAction( tr( "Show &Navigation Panel" ), this ) );
     visibilityAction_->setCheckable( true );
     visibilityAction_->setChecked( true );
     connect( visibilityAction_, &QAction::toggled, this, &QWidget::setVisible );
-
 }
 
 //______________________________________________________________________
 void SidePanelWidget::_updateCurrentWidget()
 {
-
     Debug::Throw( "SidePanelWidget::_updateCurrentWidget.\n" );
-    if( !currentWidget() ) return;
-
-    if( currentWidget() == sessionFilesWidget_ ) { sessionFilesWidget_->update(); }
-    else if( currentWidget() == recentFilesWidget_ ) { recentFilesWidget_->update(); }
-    else if( currentWidget() == fileSystemWidget_ ) { fileSystemWidget_->update(); }
-
+    if( currentWidget() == sessionFilesWidget_ ) { sessionFilesWidget_->updateFiles(); }
+    else if( currentWidget() == recentFilesWidget_ ) { recentFilesWidget_->updateFiles(); }
 }

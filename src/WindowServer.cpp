@@ -87,7 +87,7 @@ MainWindow& WindowServer::newMainWindow()
     connect( window, &MainWindow::modificationChanged, this, &WindowServer::sessionFilesChanged );
     connect( window, &MainWindow::modificationChanged, this, &WindowServer::_updateActions );
     connect( window, &MainWindow::scratchFileCreated, scratchFileMonitor_, &ScratchFileMonitor::add );
-    connect( this, &WindowServer::sessionFilesChanged, &window->sidePanelWidget().sessionFilesWidget(), QOverload<>::of(&QWidget::update) );
+    connect( this, &WindowServer::sessionFilesChanged, &window->sidePanelWidget().sessionFilesWidget(), &SessionFilesWidget::updateFiles );
 
     connect( window, &MainWindow::activated, this, &WindowServer::_activeWindowChanged );
     connect( &window->newFileAction(), &QAction::triggered, this, QOverload<>::of(&WindowServer::_newFile) );
@@ -296,20 +296,14 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
 
     }
 
-    if( !fileOpened )
+    if( !fileOpened && firstCall_ )
     {
-        if( firstCall_ )
-        {
-
-            // at first call and if no file was oppened,
-            // set the current display as a new document.
-            // also force update of the recent files frame
-            // and center on desktop
-            _activeWindow().activeView().setIsNewDocument();
-            _activeWindow().sidePanelWidget().recentFilesWidget().update();
-
-        }
-
+        // at first call and if no file was oppened,
+        // set the current display as a new document.
+        // also force update of the recent files frame
+        // and center on desktop
+        _activeWindow().activeView().setIsNewDocument();
+        _activeWindow().sidePanelWidget().recentFilesWidget().updateFiles();
     }
     firstCall_ = false;
 

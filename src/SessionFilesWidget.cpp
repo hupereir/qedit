@@ -119,12 +119,12 @@ void SessionFilesWidget::select( const File& file )
 }
 
 //______________________________________________________________________
-void SessionFilesWidget::update()
+void SessionFilesWidget::updateFiles()
 {
-    Debug::Throw( "SessionFilesWidget:update.\n" );
+    Debug::Throw( "SessionFilesWidget:updateFiles.\n" );
 
     // store in model
-    auto records( Base::Singleton::get().application<Application>()->windowServer().records( WindowServer::None, window() ) );
+    const auto records( Base::Singleton::get().application<Application>()->windowServer().records( WindowServer::None, window() ) );
     model_.update( records );
 
     list_->updateMask();
@@ -133,9 +133,6 @@ void SessionFilesWidget::update()
     // make sure selected record appear selected in list
     auto iter = std::find_if( records.begin(), records.end(), FileRecord::HasFlagFTor( FileRecordProperties::Selected ) );
     if( iter != records.end() ) select( iter->file() );
-
-    Debug::Throw( "SessionFilesWidget:update - done.\n" );
-
 }
 
 //______________________________________________________________________

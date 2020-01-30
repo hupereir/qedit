@@ -53,8 +53,8 @@ class RecentFilesWidget: public QWidget, private Base::Counter<RecentFilesWidget
     //* select file in list
     void select( const File& );
 
-    //* update
-    void update();
+    //* update recent files
+    void updateFiles();
 
     Q_SIGNALS:
 

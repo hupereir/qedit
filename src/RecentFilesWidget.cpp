@@ -81,8 +81,8 @@ RecentFilesWidget::RecentFilesWidget( QWidget* parent, FileList& files ):
     connect( list_, &QAbstractItemView::activated, this, &RecentFilesWidget::_itemActivated );
     connect( list_, &TreeView::hovered, this, &RecentFilesWidget::_showToolTip );
 
-    connect( recentFiles_, &FileList::validFilesChecked, this, QOverload<>::of(&QWidget::update) );
-    connect( recentFiles_, &FileList::contentsChanged, this, QOverload<>::of(&QWidget::update) );
+    connect( recentFiles_, &FileList::validFilesChecked, this, &RecentFilesWidget::updateFiles );
+    connect( recentFiles_, &FileList::contentsChanged, this, &RecentFilesWidget::updateFiles );
 
 }
 
@@ -109,10 +109,9 @@ void RecentFilesWidget::select( const File& file )
 }
 
 //______________________________________________________________________
-void RecentFilesWidget::update()
+void RecentFilesWidget::updateFiles()
 {
-
-    Debug::Throw( "RecentFilesWidget:update.\n" );
+    Debug::Throw( "RecentFilesWidget:updateFiles.\n" );
 
     // lock signal emission
     actionsLocked_ = true;
@@ -127,7 +126,6 @@ void RecentFilesWidget::update()
 
     // unlock
     actionsLocked_ = false;
-
 }
 
 //____________________________________________
@@ -186,7 +184,7 @@ void RecentFilesWidget::_clean()
     Debug::Throw( "RecentFilesWidget:_clean.\n" );
     if( !QuestionDialog( window(), tr( "Remove invalid or duplicated files from list ?" ) ).exec() ) return;
     recentFiles_->clean();
-    update();
+    updateFiles();
 
 }
 

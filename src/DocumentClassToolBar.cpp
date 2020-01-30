@@ -61,7 +61,7 @@ void DocumentClassToolBar::_currentIndexChanged( int index )
 //________________________________________________________________
 void DocumentClassToolBar::_update()
 {
-    Debug::Throw( "DocumentClassToolBar::update.\n" );
+    Debug::Throw( "DocumentClassToolBar::_update.\n" );
 
     // store current item
     QString currentClass( _comboBox().currentText() );
