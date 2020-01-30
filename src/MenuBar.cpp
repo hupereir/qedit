@@ -325,7 +325,7 @@ void MenuBar::_updateToolsMenu()
 
     // rehighlight
     toolsMenu_->addSeparator();
-    auto action = toolsMenu_->addAction( tr( "Rehighlight" ), window(), SLOT(rehighlight()) );
+    auto action = toolsMenu_->addAction( tr( "Rehighlight" ), static_cast<MainWindow*>(window()), &MainWindow::rehighlight );
     bool enabled( display->textHighlightAction().isEnabled() && display->textHighlightAction().isChecked() );
 
     #if WITH_ASPELL
