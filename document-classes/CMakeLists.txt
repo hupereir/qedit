@@ -21,8 +21,6 @@ set(document_classes_SOURCES
   CollapsedBlockData.cpp
   DocumentClass.cpp
   DocumentClassManager.cpp
-  DocumentClassManagerDialog.cpp
-  DocumentClassModel.cpp
   HighlightBlockData.cpp
   HighlightPattern.cpp
   HighlightStyle.cpp

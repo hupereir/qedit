@@ -65,12 +65,10 @@ class Diff: public QObject, private Base::Counter<Diff>
     //* range list
     using BlockSet = QSet< int >;
 
-    private Q_SLOTS:
+    private:
 
     //* parse the diff output
     void _parseOutput( int, QProcess::ExitStatus );
-
-    private:
 
     //* clear ranges
     void _clear();

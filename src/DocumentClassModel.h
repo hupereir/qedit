@@ -72,12 +72,10 @@ class DocumentClassModel : public ListModel<DocumentClass, DocumentClass::WeakEq
     //* sort
     void _sort( int, Qt::SortOrder ) override;
 
-    private Q_SLOTS:
+    private:
 
     //* configuration
     void _updateConfiguration();
-
-    private:
 
     //* list column names
     const std::array<QString, nColumns> columnTitles_ =

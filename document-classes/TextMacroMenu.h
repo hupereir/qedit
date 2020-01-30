@@ -41,25 +41,21 @@ class TextMacroMenu: public QMenu, private Base::Counter<TextMacroMenu>
     //* set enabled
     void setEnabled( bool );
 
-    Q_SIGNALS:
-
-    //* emitted every time a text macro is selected
-    void textMacroSelected( QString );
-
-    public Q_SLOTS:
-
     //* update macros
     void update( const TextMacro::List& );
 
     //* update state
     void updateState( bool );
 
-    private Q_SLOTS:
+    Q_SIGNALS:
+
+    //* emitted every time a text macro is selected
+    void textMacroSelected( QString );
+
+    private:
 
     //* emitted when an action is selected
     void _processAction( QAction* action );
-
-    private:
 
     //* container for macros
     class MacroContainer

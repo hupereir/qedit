@@ -19,6 +19,7 @@
 
 #include "DocumentClassModel.h"
 
+#include "Application.h"
 #include "CustomPixmap.h"
 #include "IconEngine.h"
 #include "Singleton.h"
@@ -35,7 +36,7 @@ DocumentClassModel::IconCache& DocumentClassModel::_icons()
 DocumentClassModel::DocumentClassModel( QObject* parent ):
     ListModel(parent),
     Counter( "DocumentClassModel" )
-{ connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) ); }
+{ connect( Base::Singleton::get().application<Application>(), &Application::configurationChanged, this, &DocumentClassModel::_updateConfiguration ); }
 
 //__________________________________________________________________
 Qt::ItemFlags DocumentClassModel::flags( const QModelIndex& index ) const

@@ -103,15 +103,13 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     //* update expand/collapse current block action state
     void updateCurrentBlockActionState();
 
-    public Q_SLOTS:
-
     //* need update
     void needUpdate();
 
     //* expand all blocks
     void expandAllBlocks();
 
-    private Q_SLOTS:
+    private:
 
     //* collapse current block
     void _collapseCurrentBlock();
@@ -127,8 +125,6 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
 
     //* block count changed
     void _blockCountChanged();
-
-    private:
 
     //* install actions
     void _installActions();

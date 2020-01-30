@@ -31,6 +31,7 @@
 #include "Diff.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
+#include "DocumentClassMenu.h"
 #include "DocumentClassToolBar.h"
 #include "ElidedLabel.h"
 #include "FileCheckDialog.h"
@@ -97,7 +98,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     // menu
     setMenuBar( menuBar_ = new MenuBar( this ) );
-    connect( &menuBar_->documentClassMenu(), SIGNAL(documentClassSelected(QString)), SLOT(selectClassName(QString)) );
+    connect( static_cast<DocumentClassMenu*>(&menuBar_->documentClassMenu()), &DocumentClassMenu::documentClassSelected, this, &MainWindow::selectClassName);
 
     // main widget
     auto mainWidget = new QWidget( this );
@@ -182,7 +183,7 @@ MainWindow::MainWindow(  QWidget* parent ):
     _installToolbars();
 
     //* configuration
-    connect( application, SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
+    connect( application, &Application::configurationChanged, this, &MainWindow::_updateConfiguration);
 
 }
 
@@ -842,7 +843,7 @@ void MainWindow::_installActions()
     addAction( printAction_ = new QAction( IconEngine::get( IconNames::Print ), tr( "Print..." ), this ) );
     printAction_->setToolTip( tr( "Print current file" ) );
     printAction_->setShortcut( QKeySequence::Print );
-    connect( printAction_, SIGNAL(triggered()), SLOT(_print()) );
+    connect( printAction_, &QAction::triggered, this, QOverload<>::of(&MainWindow::_print) );
 
     addAction( printPreviewAction_ = new QAction( IconEngine::get( IconNames::PrintPreview ), tr( "Print Preview..." ), this ) );
     connect( printPreviewAction_, &QAction::triggered, this, &MainWindow::_printPreview );
@@ -952,9 +953,9 @@ void MainWindow::_createFindWidget()
 
         findWidget_ = new BaseFindWidget( rightContainer_ );
         rightContainer_->layout()->addWidget( findWidget_ );
-        connect( findWidget_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
-        connect( this, SIGNAL(matchFound()), findWidget_, SLOT(matchFound()) );
-        connect( this, SIGNAL(noMatchFound()), findWidget_, SLOT(noMatchFound()) );
+        connect( findWidget_, &BaseFindWidget::find, this, &MainWindow::_find );
+        connect( this, &MainWindow::matchFound, findWidget_, &BaseFindWidget::matchFound );
+        connect( this, &MainWindow::noMatchFound, findWidget_, &BaseFindWidget::noMatchFound );
         connect( &findWidget_->closeButton(), &QAbstractButton::clicked, this, &MainWindow::_restoreFocus );
         findWidget_->hide();
 
@@ -973,7 +974,7 @@ void MainWindow::_createReplaceWidget()
 
         replaceWidget_ = new ReplaceWidget( rightContainer_ );
         rightContainer_->layout()->addWidget( replaceWidget_ );
-        connect( replaceWidget_, SIGNAL(find(TextSelection)), SLOT(_find(TextSelection)) );
+        connect( replaceWidget_, &BaseReplaceWidget::find, this, &MainWindow::_find );
         connect( replaceWidget_, &BaseReplaceWidget::replace, this, &MainWindow::_replace );
         connect( replaceWidget_, &BaseReplaceWidget::replaceInWindow, this, &MainWindow::_replaceInWindow );
         connect( replaceWidget_, &BaseReplaceWidget::replaceInSelection, this, &MainWindow::_replaceInSelection );
@@ -982,8 +983,8 @@ void MainWindow::_createReplaceWidget()
         connect( &replaceWidget_->closeButton(), &QAbstractButton::clicked, this, &MainWindow::_restoreFocus );
         replaceWidget_->hide();
 
-        connect( this, SIGNAL(matchFound()), replaceWidget_, SLOT(matchFound()) );
-        connect( this, SIGNAL(noMatchFound()), replaceWidget_, SLOT(noMatchFound()) );
+        connect( this, &MainWindow::matchFound, replaceWidget_, &BaseReplaceWidget::matchFound );
+        connect( this, &MainWindow::noMatchFound, replaceWidget_, &BaseReplaceWidget::noMatchFound );
 
     }
 

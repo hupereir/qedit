@@ -68,8 +68,6 @@ class SessionFilesWidget: public QWidget, private Base::Counter<SessionFilesWidg
     const SessionFilesModel& model() const
     { return model_; }
 
-    public Q_SLOTS:
-
     //* update session files
     void update();
 
@@ -87,7 +85,7 @@ class SessionFilesWidget: public QWidget, private Base::Counter<SessionFilesWidg
     //* signal emitted when file is asked to be saved
     void filesSaved( FileRecord::List );
 
-    private Q_SLOTS:
+    private:
 
     //* previous file
     void _selectPreviousFile();
@@ -115,8 +113,6 @@ class SessionFilesWidget: public QWidget, private Base::Counter<SessionFilesWidg
 
     //* sessionFilesItem selected
     void _itemActivated( const QModelIndex& index );
-
-    private:
 
     //* install actions
     void _installActions();

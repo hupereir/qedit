@@ -18,6 +18,7 @@
 *******************************************************************************/
 
 #include "AutoSave.h"
+#include "Application.h"
 #include "AutoSaveThread.h"
 
 #include "Debug.h"
@@ -34,7 +35,7 @@ AutoSave::AutoSave( QObject* parent ):
     Counter( "AutoSave" )
 {
     Debug::Throw( "AutoSave::AutoSave.\n" );
-    connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
+    connect( Base::Singleton::get().application<Application>(), &Application::configurationChanged, this, &AutoSave::_updateConfiguration );
 }
 
 //______________________________________________________

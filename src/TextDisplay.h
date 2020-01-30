@@ -411,23 +411,6 @@ class TextDisplay: public TextEditor
 
     };
 
-    Q_SIGNALS:
-
-    //* emitted when indentation several blocks is required
-    void indent( QTextBlock, QTextBlock );
-
-    //* emitted when indentation of one block is required
-    void indent( QTextBlock, bool  );
-
-    //* emitted whenever mainwindow toolbar, window title or file name editor needs update
-    /* \param flags, bitwise or of UpdateFlags */
-    void needUpdate( TextDisplay::UpdateFlags );
-
-    //* request display close
-    void requestClose( File );
-
-    public Q_SLOTS:
-
     //* set document class
     void updateDocumentClass()
     { _updateDocumentClass( file_, isNewDocument_ ); }
@@ -452,6 +435,21 @@ class TextDisplay: public TextEditor
 
     //* set focus, delayed
     void setFocusDelayed();
+
+    Q_SIGNALS:
+
+    //* emitted when indentation several blocks is required
+    void indent( QTextBlock, QTextBlock );
+
+    //* emitted when indentation of one block is required
+    void indent( QTextBlock, bool  );
+
+    //* emitted whenever mainwindow toolbar, window title or file name editor needs update
+    /* \param flags, bitwise or of UpdateFlags */
+    void needUpdate( TextDisplay::UpdateFlags );
+
+    //* request display close
+    void requestClose( File );
 
     protected:
 
@@ -479,18 +477,19 @@ class TextDisplay: public TextEditor
 
     //@}
 
-    protected Q_SLOTS:
-
     /** returns true if changed */
     bool _toggleWrapMode( bool ) override;
 
-    private Q_SLOTS:
+    private:
 
     //* update configuration
     void _updateConfiguration();
 
     //* spellcheck configuration
-    void _updateSpellCheckConfiguration( File file = File() );
+    void _updateSpellCheckConfiguration()
+    { _updateSpellCheckConfiguration( File() ); }
+
+    void _updateSpellCheckConfiguration( File );
 
     //* indent paragraph (when return or tab is pressed)
     void _indentCurrentParagraph();
@@ -587,8 +586,6 @@ class TextDisplay: public TextEditor
 
     //* process file modified action
     void _processFileModifiedAction( FileModifiedWidget::ReturnCode );
-
-    private:
 
     //* true if a block is collapsed
     bool _blockIsCollapsed( const QTextBlock& ) const;

@@ -45,8 +45,6 @@ class HtmlHelper: public QObject, private Base::Counter<HtmlHelper>
         editor_( editor )
     { Debug::Throw( "HtmlHelper::HtmlHelper.\n" ); }
 
-    public Q_SLOTS:
-
     //* print
     void print( QIODevice* );
 

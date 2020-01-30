@@ -84,8 +84,6 @@ class TextIndent: public QObject, private Base::Counter<TextIndent>
         patterns_.clear();
     }
 
-    public Q_SLOTS:
-
     //* highlight blocks
     void indent( QTextBlock first, QTextBlock last );
 

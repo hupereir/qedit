@@ -53,8 +53,6 @@ class RecentFilesWidget: public QWidget, private Base::Counter<RecentFilesWidget
     //* select file in list
     void select( const File& );
 
-    public Q_SLOTS:
-
     //* update
     void update();
 
@@ -69,9 +67,9 @@ class RecentFilesWidget: public QWidget, private Base::Counter<RecentFilesWidget
     protected:
 
     //* enter event
-    void enterEvent( QEvent* );
+    void enterEvent( QEvent* ) override;
 
-    private Q_SLOTS:
+    private:
 
     //* update action
     void _updateActions();
@@ -90,8 +88,6 @@ class RecentFilesWidget: public QWidget, private Base::Counter<RecentFilesWidget
 
     //* sessionFilesItem selected
     void _itemActivated( const QModelIndex& index );
-
-    private:
 
     //*@name actions
     //@{

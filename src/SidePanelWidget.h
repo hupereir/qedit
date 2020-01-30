@@ -81,12 +81,10 @@ class SidePanelWidget: public QStackedWidget
 
     //@}
 
-    private Q_SLOTS:
+    private:
 
     //* update current widget
     void _updateCurrentWidget();
-
-    private:
 
     //* install actions
     void _installActions();

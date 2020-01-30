@@ -58,11 +58,9 @@ class FileCheck: public QObject, public Base::Key, private Base::Counter<FileChe
     const QFileSystemWatcher& fileSystemWatcher() const
     { return fileSystemWatcher_; }
 
-    private Q_SLOTS:
+    private:
 
     void _fileChanged( const QString& );
-
-    private:
 
     //* check data
     void _checkData( const FileCheckData& );

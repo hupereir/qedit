@@ -40,6 +40,7 @@
 #include "SaveAllDialog.h"
 #include "ScratchFileMonitor.h"
 #include "SessionFilesWidget.h"
+#include "SessionFilesView.h"
 #include "SidePanelWidget.h"
 #include "Singleton.h"
 #include "Util.h"
@@ -67,7 +68,7 @@ WindowServer::WindowServer( QObject* parent ):
     connect( qApp, &QCoreApplication::aboutToQuit, scratchFileMonitor_, &ScratchFileMonitor::deleteScratchFiles );
 
     // configuration
-    connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
+    connect( Base::Singleton::get().application<Application>(), &Application::configurationChanged, this, &WindowServer::_updateConfiguration );
     _updateConfiguration();
 
 }
@@ -86,32 +87,32 @@ MainWindow& WindowServer::newMainWindow()
     connect( window, &MainWindow::modificationChanged, this, &WindowServer::sessionFilesChanged );
     connect( window, &MainWindow::modificationChanged, this, &WindowServer::_updateActions );
     connect( window, &MainWindow::scratchFileCreated, scratchFileMonitor_, &ScratchFileMonitor::add );
-    connect( this, SIGNAL(sessionFilesChanged()), &window->sidePanelWidget().sessionFilesWidget(), SLOT(update()) );
+    connect( this, &WindowServer::sessionFilesChanged, &window->sidePanelWidget().sessionFilesWidget(), QOverload<>::of(&QWidget::update) );
 
     connect( window, &MainWindow::activated, this, &WindowServer::_activeWindowChanged );
-    connect( &window->newFileAction(), SIGNAL(triggered()), SLOT(_newFile()) );
+    connect( &window->newFileAction(), &QAction::triggered, this, QOverload<>::of(&WindowServer::_newFile) );
 
     // open actions
-    connect( &window->openAction(), SIGNAL(triggered()), SLOT(_open()) );
+    connect( &window->openAction(), &QAction::triggered, this, QOverload<>::of( &WindowServer::_open ) );
     connect( &window->openHorizontalAction(), &QAction::triggered, this, &WindowServer::_openHorizontal );
     connect( &window->openVerticalAction(), &QAction::triggered, this, &WindowServer::_openVertical );
-    connect( &window->detachAction(), SIGNAL(triggered()), SLOT(_detach()) );
+    connect( &window->detachAction(), &QAction::triggered, this, QOverload<>::of(&WindowServer::_detach) );
 
     connect( &window->sidePanelWidget().sessionFilesWidget().model(), &SessionFilesModel::reparentFiles, this, &WindowServer::_reparent );
     connect( &window->sidePanelWidget().sessionFilesWidget().model(), &SessionFilesModel::reparentFilesToMain, this, &WindowServer::_reparentToMain );
 
-    connect( &window->sidePanelWidget().sessionFilesWidget().list(), SIGNAL(reparentFilesToMain(File,File)), SLOT(_reparentToMain(File,File)) );
-    connect( &window->sidePanelWidget().sessionFilesWidget().list(), SIGNAL(detach(File)), SLOT(_detach(File)) );
+    connect( static_cast<SessionFilesView*>(&window->sidePanelWidget().sessionFilesWidget().list()), &SessionFilesView::reparentFilesToMain, this, &WindowServer::_reparentToMain );
+    connect( static_cast<SessionFilesView*>(&window->sidePanelWidget().sessionFilesWidget().list()), &SessionFilesView::detach, this, QOverload<>::of(&WindowServer::_detach) );
 
     // open actions
-    connect( &window->menuBar().recentFilesMenu(), SIGNAL(fileSelected(FileRecord)), SLOT(_open(FileRecord)) );
-    connect( &window->sidePanelWidget().sessionFilesWidget(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
-    connect( &window->sidePanelWidget().recentFilesWidget(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
-    connect( &window->sidePanelWidget().fileSystemWidget(), SIGNAL(fileActivated(FileRecord)), SLOT(_open(FileRecord)) );
+    connect( &window->menuBar().recentFilesMenu(), &RecentFilesMenu::fileSelected, this, QOverload<FileRecord>::of(&WindowServer::_open) );
+    connect( &window->sidePanelWidget().sessionFilesWidget(), &SessionFilesWidget::fileActivated, this, QOverload<FileRecord>::of(&WindowServer::_open) );
+    connect( &window->sidePanelWidget().recentFilesWidget(), &RecentFilesWidget::fileActivated, this, QOverload<FileRecord>::of(&WindowServer::_open) );
+    connect( &window->sidePanelWidget().fileSystemWidget(), &BaseFileSystemWidget::fileActivated, this, QOverload<FileRecord>::of(&WindowServer::_open) );
 
     // other actions
     connect( &window->sidePanelWidget().sessionFilesWidget(), &SessionFilesWidget::filesSaved, this, &WindowServer::_save );
-    connect( &window->sidePanelWidget().sessionFilesWidget(), SIGNAL(filesClosed(FileRecord::List)), SLOT(_close(FileRecord::List)) );
+    connect( &window->sidePanelWidget().sessionFilesWidget(), &SessionFilesWidget::filesClosed, this, QOverload<FileRecord::List>::of(&WindowServer::_close) );
 
     return *window;
 }
@@ -356,7 +357,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
             if( !view->selectDisplay( file ) ) continue;
 
             auto display( &view->activeDisplay() );
-            connect( display, SIGNAL(progressAvailable(int)), &dialog, SLOT(setValue(int)) );
+            connect( display, &TextDisplay::progressAvailable, &dialog, &ProgressDialog::setValue );
             maximum += display->toPlainText().size();
             displays.insert( display );
         }

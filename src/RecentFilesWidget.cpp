@@ -81,8 +81,8 @@ RecentFilesWidget::RecentFilesWidget( QWidget* parent, FileList& files ):
     connect( list_, &QAbstractItemView::activated, this, &RecentFilesWidget::_itemActivated );
     connect( list_, &TreeView::hovered, this, &RecentFilesWidget::_showToolTip );
 
-    connect( recentFiles_, SIGNAL(validFilesChecked()), SLOT(update()) );
-    connect( recentFiles_, SIGNAL(contentsChanged()), SLOT(update()) );
+    connect( recentFiles_, &FileList::validFilesChecked, this, QOverload<>::of(&QWidget::update) );
+    connect( recentFiles_, &FileList::contentsChanged, this, QOverload<>::of(&QWidget::update) );
 
 }
 

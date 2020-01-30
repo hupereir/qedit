@@ -691,9 +691,9 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
 
     // connections
     connect( display, &TextDisplay::needUpdate, this, &TextView::needUpdate );
-    connect( display, SIGNAL(hasFocus(TextEditor*)), SLOT(_activeDisplayChanged(TextEditor*)) );
-    connect( display, SIGNAL(hasFocus(TextEditor*)), SLOT(checkDisplayModifications(TextEditor*)) );
-    connect( display, SIGNAL(cursorPositionChanged()), &positionTimer_, SLOT(start()) );
+    connect( display, &TextDisplay::hasFocus, this, &TextView::_activeDisplayChanged );
+    connect( display, &TextDisplay::hasFocus, this, &TextView::checkDisplayModifications );
+    connect( display, &TextDisplay::cursorPositionChanged, &positionTimer_, QOverload<>::of(&QTimer::start) );
     connect( display, &TextEditor::modifiersChanged, this, &TextView::modifiersChanged );
     connect( display, &TextDisplay::requestClose, this, &TextView::_closeDisplay );
 

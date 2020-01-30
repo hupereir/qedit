@@ -149,7 +149,7 @@ class Application: public BaseApplication, private Base::Counter<Application>
     //* document classes have been modified
     void documentClassesChanged();
 
-    protected Q_SLOTS:
+    protected:
 
     //* configuration
     void _configuration() override;
@@ -157,7 +157,6 @@ class Application: public BaseApplication, private Base::Counter<Application>
     //* process request from application manager
     bool _processCommand( Server::ServerCommand ) override;
 
-    protected:
 
     //* timer events
     /**
@@ -166,7 +165,7 @@ class Application: public BaseApplication, private Base::Counter<Application>
     */
     void timerEvent( QTimerEvent* ) override;
 
-    private Q_SLOTS:
+    private:
 
     //* Update Document Classes from options
     void _updateDocumentClasses();
@@ -206,8 +205,6 @@ class Application: public BaseApplication, private Base::Counter<Application>
 
     //* update configuration
     void _updateConfiguration();
-
-    private:
 
     //* install actions
     void _installActions();

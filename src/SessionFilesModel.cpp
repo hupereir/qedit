@@ -18,6 +18,7 @@
 *******************************************************************************/
 
 #include "SessionFilesModel.h"
+#include "Application.h"
 #include "CustomPixmap.h"
 #include "FileRecordProperties.h"
 #include "IconNames.h"
@@ -43,11 +44,9 @@ SessionFilesModel::IconCache& SessionFilesModel::_icons()
 SessionFilesModel::SessionFilesModel( QObject* parent ):
     FileRecordModel( parent )
 {
-
     Debug::Throw("SessionFilesModel::SessionFilesModel.\n" );
     setShowIcons( false );
-    connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
-
+    connect( Base::Singleton::get().application<Application>(), &Application::configurationChanged, this, &SessionFilesModel::_updateConfiguration );
 }
 
 //__________________________________________________________________

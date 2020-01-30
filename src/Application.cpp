@@ -133,7 +133,7 @@ bool Application::realizeWidget()
     windowServer_->newMainWindow().centerOnDesktop();
 
     // update configuration
-    connect( this, SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
+    connect( this, &Application::configurationChanged, this, &Application::_updateConfiguration );
     emit configurationChanged();
 
     _updateSessionActions();
@@ -402,7 +402,7 @@ void Application::timerEvent( QTimerEvent* event )
 
         startupTimer_.stop();
         windowServer_->readFilesFromArguments( commandLineParser( _arguments() ) );
-        connect( qApp, SIGNAL(lastWindowClosed()), qApp, SLOT(quit()), Qt::UniqueConnection );
+        connect( qApp, &QApplication::lastWindowClosed, qApp, &QApplication::quit, Qt::UniqueConnection );
 
     } else return QObject::timerEvent( event );
 }

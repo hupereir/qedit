@@ -42,15 +42,13 @@ class DocumentClassToolBar: public CustomToolBar
     //* emitted every time a document class is selected
     void documentClassSelected( QString );
 
-    private Q_SLOTS:
+    private:
 
     //* update list
     void _update();
 
     //* current index changed
     void _currentIndexChanged( int );
-
-    private:
 
     //* document class selection combo box
     QComboBox& _comboBox() const

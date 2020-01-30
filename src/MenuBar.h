@@ -55,12 +55,10 @@ class MenuBar:public QMenuBar, private Base::Counter<MenuBar>
     TextMacroMenu& macroMenu() const
     { return *macroMenu_; }
 
-    public Q_SLOTS:
-
     //* update macro menu
     void updateMacroMenu();
 
-    private Q_SLOTS:
+    private:
 
     //* update recent files menu
     /** this is needed so that the current file appears checked in the menu */
@@ -86,8 +84,6 @@ class MenuBar:public QMenuBar, private Base::Counter<MenuBar>
 
     //* select file from windows menu
     void _selectFile( QAction* );
-
-    private:
 
     //* local action group
     /** used to track memory leaks */

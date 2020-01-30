@@ -59,7 +59,7 @@ class FileRemovedWidget: public MessageWidget, public Base::Key
     //* emitted when a given action is selected
     void actionSelected( FileRemovedWidget::ReturnCode );
 
-    private Q_SLOTS:
+    private:
 
     //* re-saved removed file
     void _reSave();

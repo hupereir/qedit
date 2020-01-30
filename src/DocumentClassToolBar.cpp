@@ -17,11 +17,12 @@
 *
 *******************************************************************************/
 
+#include "DocumentClassToolBar.h"
+
 #include "Application.h"
 #include "Debug.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
-#include "DocumentClassToolBar.h"
 #include "Singleton.h"
 
 #include <QLabel>
@@ -34,8 +35,8 @@ CustomToolBar( tr( "Document Classes" ), parent, "DOCUMENT_CLASS_TOOLBAR" )
     Debug::Throw( "DocumentClassToolBar::DocumentClassToolBar.\n" );
     addWidget( combobox_ = new QComboBox( this ) );
 
-    connect( &_comboBox(), SIGNAL(currentIndexChanged(int)), SLOT(_currentIndexChanged(int)) );
-    connect( Base::Singleton::get().application(), SIGNAL(documentClassesChanged()), SLOT(_update()) );
+    connect( &_comboBox(), QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DocumentClassToolBar::_currentIndexChanged );
+    connect( Base::Singleton::get().application<Application>(), &Application::documentClassesChanged, this, &DocumentClassToolBar::_update );
     _update();
 }
 

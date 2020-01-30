@@ -67,12 +67,10 @@ class SessionFilesModel: public FileRecordModel
     //* file open
     void requestOpen( FileRecord );
 
-    private Q_SLOTS:
+    private:
 
     //* configuration
     void _updateConfiguration();
-
-    private:
 
     //* icon
     static const QIcon& _icon( int );

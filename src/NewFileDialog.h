@@ -50,7 +50,7 @@ class NewFileDialog: public BaseDialog, private Base::Counter<NewFileDialog>
     //* constructor
     explicit NewFileDialog( QWidget*, const File&, ReturnCodes = Default );
 
-    private Q_SLOTS:
+    private:
 
     //* create new file
     void _create()

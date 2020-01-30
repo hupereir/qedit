@@ -107,7 +107,7 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     //* emitted whenever the session file list is modified
     void sessionFilesChanged();
 
-    private Q_SLOTS:
+    private:
 
     //* update configuration
     void _updateConfiguration();
@@ -196,8 +196,6 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
 
     //* close selected files
     bool _close( FileRecord::List );
-
-    private:
 
     //* new file
     void _newFile( OpenMode );

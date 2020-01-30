@@ -33,7 +33,9 @@ set(qedit_SOURCES
   CloseFilesDialog.cpp
   ConfigurationDialog.cpp
   Diff.cpp
+  DocumentClassManagerDialog.cpp
   DocumentClassMenu.cpp
+  DocumentClassModel.cpp
   DocumentClassToolBar.cpp
   FileCheck.cpp
   FileCheckDialog.cpp

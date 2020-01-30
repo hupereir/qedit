@@ -291,6 +291,28 @@ class MainWindow: public BaseMainWindow, public Base::Key, private Base::Counter
 
     //@}
 
+    //* select class name
+    void selectClassName( QString value )
+    { activeView_->selectClassName( value ); }
+
+    //* rehighlight all text displays
+    void rehighlight()
+    { activeView_->rehighlight(); }
+
+    //*@name reimplemented from TextEditor
+    //@{
+
+    //* find text from dialog
+    void findFromDialog();
+
+    //* replace text from dialog
+    void replaceFromDialog();
+
+    //* select line from dialog
+    void selectLineFromDialog();
+
+    //@}
+
     Q_SIGNALS:
 
     //* emitted when window is activated
@@ -328,31 +350,6 @@ class MainWindow: public BaseMainWindow, public Base::Key, private Base::Counter
 
     //@}
 
-
-    public Q_SLOTS:
-
-    //* select class name
-    void selectClassName( QString value )
-    { activeView_->selectClassName( value ); }
-
-    //* rehighlight all text displays
-    void rehighlight()
-    { activeView_->rehighlight(); }
-
-    //*@name reimplemented from TextEditor
-    //@{
-
-    //* find text from dialog
-    void findFromDialog();
-
-    //* replace text from dialog
-    void replaceFromDialog();
-
-    //* select line from dialog
-    void selectLineFromDialog();
-
-    //@}
-
     protected:
 
     //* generic event
@@ -364,7 +361,7 @@ class MainWindow: public BaseMainWindow, public Base::Key, private Base::Counter
     //* timer event
     void timerEvent( QTimerEvent* ) override;
 
-    private Q_SLOTS:
+    private:
 
     //* update configuration
     void _updateConfiguration();
@@ -514,8 +511,6 @@ class MainWindow: public BaseMainWindow, public Base::Key, private Base::Counter
 
     //* display cursor position in state window
     void _updateCursorPosition();
-
-    private:
 
     //* install actions
     void _installActions();

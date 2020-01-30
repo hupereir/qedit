@@ -42,8 +42,6 @@ class PrintHelper: public BasePrintHelper, private Base::Counter<PrintHelper>
         editor_( editor )
     { Debug::Throw( "PrintHelper::PrintHelper.\n" ); }
 
-    public Q_SLOTS:
-
     //* print
     void print( QPrinter* );
 

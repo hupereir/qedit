@@ -54,13 +54,11 @@ class AutoSave: public QObject, private Base::Counter<AutoSave>
 
     void timerEvent( QTimerEvent* ) override;
 
-    private Q_SLOTS:
+    private:
 
     //* update configuration
     /* update interval between threads */
     void _updateConfiguration();
-
-    private:
 
     bool _enabled() const
     { return enabled_ && interval_ > 0; }

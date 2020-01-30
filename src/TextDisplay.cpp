@@ -140,8 +140,8 @@ TextDisplay::TextDisplay( QWidget* parent ):
     // connections
     connect( this, &QTextEdit::selectionChanged, this, &TextDisplay::_selectionChanged );
     connect( this, &QTextEdit::cursorPositionChanged, this, &TextDisplay::_highlightParenthesis );
-    connect( this, SIGNAL(indent(QTextBlock,bool)), textIndent_, SLOT(indent(QTextBlock,bool)) );
-    connect( this, SIGNAL(indent(QTextBlock,QTextBlock)), textIndent_, SLOT(indent(QTextBlock,QTextBlock)) );
+    connect( this, QOverload<QTextBlock,bool>::of(&TextDisplay::indent), textIndent_, QOverload<QTextBlock,bool>::of(&TextIndent::indent) );
+    connect( this, QOverload<QTextBlock,QTextBlock>::of(&TextDisplay::indent), textIndent_, QOverload<QTextBlock,QTextBlock>::of(&TextIndent::indent) );
 
     #if WITH_ASPELL
 
@@ -159,13 +159,13 @@ TextDisplay::TextDisplay( QWidget* parent ):
 
     // connections
     // track contents changed for syntax highlighting
-    connect( document(), SIGNAL(contentsChange(int,int,int)), SLOT(_setBlockModified(int,int,int)) );
+    connect( document(), &QTextDocument::contentsChange, this, QOverload<int,int,int>::of(&TextDisplay::_setBlockModified) );
     connect( document(), &QTextDocument::modificationChanged, this, &TextDisplay::_textModified );
 
     // track configuration modifications
-    connect( Base::Singleton::get().application(), SIGNAL(configurationChanged()), SLOT(_updateConfiguration()) );
-    connect( Base::Singleton::get().application(), SIGNAL(spellCheckConfigurationChanged()), SLOT(_updateSpellCheckConfiguration()) );
-    connect( Base::Singleton::get().application(), SIGNAL(documentClassesChanged()), SLOT(updateDocumentClass()) );
+    connect( Base::Singleton::get().application<Application>(), &Application::configurationChanged, this, &TextDisplay::_updateConfiguration );
+    connect( Base::Singleton::get().application<Application>(), &Application::spellCheckConfigurationChanged, this, QOverload<>::of( &TextDisplay::_updateSpellCheckConfiguration) );
+    connect( Base::Singleton::get().application<Application>(), &Application::documentClassesChanged, this, &TextDisplay::updateDocumentClass );
     _updateConfiguration();
     _updateSpellCheckConfiguration();
 
@@ -308,7 +308,7 @@ void TextDisplay::synchronize( TextDisplay* other )
 
     // restore connection with document
     // track contents changed for syntax highlighting
-    connect( TextDisplay::document(), SIGNAL(contentsChange(int,int,int)), SLOT(_setBlockModified(int,int,int)) );
+    connect( TextDisplay::document(), &QTextDocument::contentsChange, this, QOverload<int,int,int>::of(&TextDisplay::_setBlockModified) );
     connect( TextDisplay::document(), &QTextDocument::modificationChanged, this, &TextDisplay::_textModified );
 
     // indentation

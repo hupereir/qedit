@@ -42,7 +42,7 @@ class DocumentClassManagerDialog: public CustomDialog
     //* list of user files
     File::List userFiles() const;
 
-    private Q_SLOTS:
+    private:
 
     //* read
     void _reload();
@@ -55,8 +55,6 @@ class DocumentClassManagerDialog: public CustomDialog
 
     //* update buttons
     void _updateButtons();
-
-    private:
 
     //* user treeview
     TreeView* list_ = nullptr;

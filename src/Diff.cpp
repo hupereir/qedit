@@ -33,10 +33,7 @@ Diff::Diff( QObject* parent ):
     QObject( parent ),
     Counter( "Diff" ),
     process_( this )
-{
-    Debug::Throw( "Diff::Diff\n" );
-    connect( &process_, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(_parseOutput(int,QProcess::ExitStatus)) );
-}
+{ connect( &process_, QOverload<int,QProcess::ExitStatus>::of( &QProcess::finished ), this, &Diff::_parseOutput ); }
 
 //_________________________________________________________________
 bool Diff::run()

@@ -43,8 +43,6 @@ class ProgressDialog:public QProgressDialog, private Base::Counter<ProgressDialo
     void setOffset( int value )
     { offset_ = value; }
 
-    public Q_SLOTS:
-
     //* value
     void setValue( int value )
     { QProgressDialog::setValue( _offset()+value ); }

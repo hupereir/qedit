@@ -56,7 +56,7 @@ class SidePanelToolBar: public CustomToolBar
     //* context menu
     void contextMenuEvent( QContextMenuEvent* ) override;
 
-    private Q_SLOTS:
+    private:
 
     //* update configuration
     void _updateConfiguration();
@@ -72,8 +72,6 @@ class SidePanelToolBar: public CustomToolBar
 
     //* display item page
     void _display( QAbstractButton* );
-
-    private:
 
     //* navigation frame
     SidePanelWidget& _sidePanelWidget()

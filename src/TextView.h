@@ -132,6 +132,10 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
 
     //@}
 
+    //* check modified displays
+    void checkDisplayModifications( TextEditor* );
+
+
     Q_SIGNALS:
 
     //* emitted when parent window must be update
@@ -149,12 +153,7 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     //* current display redo is available
     void redoAvailable( bool );
 
-    public Q_SLOTS:
-
-    //* check modified displays
-    void checkDisplayModifications( TextEditor* );
-
-    private Q_SLOTS:
+    private:
 
     //* check number of displays
     /**
@@ -169,8 +168,6 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
 
     //* close displays associated to file
     void _closeDisplay( const File& );
-
-    private:
 
     //* create new splitter
     QSplitter& _newSplitter( const Qt::Orientation&, bool  );

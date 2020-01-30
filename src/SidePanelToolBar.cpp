@@ -57,7 +57,7 @@ void SidePanelToolBar::connect( SidePanelWidget& widget )
 
     // button group
     auto buttonGroup = new QButtonGroup( this );
-    connect( buttonGroup, SIGNAL(buttonClicked(QAbstractButton*)), SLOT(_display(QAbstractButton*)) );
+    connect( buttonGroup, QOverload<QAbstractButton*>::of(&QButtonGroup::buttonClicked), this, &SidePanelToolBar::_display );
     buttonGroup->setExclusive( false );
 
     // matching buttons

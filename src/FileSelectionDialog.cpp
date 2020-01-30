@@ -74,7 +74,7 @@ selection_( selection )
     // select all
     buttonLayout().insertWidget( 0, button = new QPushButton( tr( "Select All" ), this ) );
     button->setToolTip( tr( "Select all files in list" ) );
-    connect( button, SIGNAL(clicked()), list_, SLOT(selectAll()) );
+    connect( button, &QPushButton::clicked, list_, &TreeView::selectAll );
     selectAllButton_ = button;
 
     // replace

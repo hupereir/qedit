@@ -44,12 +44,10 @@ class FileSelectionDialog: public CustomDialog
     //* selected files
     FileList selectedFiles() const;
 
-    private Q_SLOTS:
+    private:
 
     //* update buttons
     void _updateButtons();
-
-    private:
 
     //* model
     FileRecordModel model_;
