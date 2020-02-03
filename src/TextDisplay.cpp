@@ -1344,7 +1344,7 @@ void TextDisplay::selectClassName( QString name )
 
 //_______________________________________________________
 void TextDisplay::setFocusDelayed()
-{ QMetaObject::invokeMethod( this, "setFocus", Qt::QueuedConnection ); }
+{ QMetaObject::invokeMethod( this, QOverload<>::of(&TextDisplay::setFocus), Qt::QueuedConnection ); }
 
 //_______________________________________________________
 bool TextDisplay::event( QEvent* event )
