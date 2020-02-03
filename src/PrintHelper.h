@@ -43,7 +43,7 @@ class PrintHelper: public BasePrintHelper, private Base::Counter<PrintHelper>
     { Debug::Throw( "PrintHelper::PrintHelper.\n" ); }
 
     //* print
-    void print( QPrinter* );
+    void print( QPrinter* ) override;
 
     private:
 
