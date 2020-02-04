@@ -52,6 +52,9 @@ class MainWindow: public BaseMainWindow, public Base::Key, private Base::Counter
     //* constructor
     explicit MainWindow( QWidget* = nullptr );
 
+    //* destructor
+    ~MainWindow() override;
+
     //*@name file management
     //@{
 

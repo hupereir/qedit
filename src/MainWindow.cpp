@@ -188,6 +188,18 @@ MainWindow::MainWindow(  QWidget* parent ):
 }
 
 //___________________________________________________________
+MainWindow::~MainWindow()
+{
+    /*
+       manually delete associated text view,
+       to avoid crash resulting of the order by which objects are deleted
+       otherwise
+    */
+    for( auto&& view:Base::KeySet<TextView>(this) )
+    { delete view; }
+}
+
+//___________________________________________________________
 TextView& MainWindow::newTextView( FileRecord record )
 {
     Debug::Throw( "MainWindow::newTextView.\n" );
