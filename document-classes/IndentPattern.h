@@ -27,7 +27,7 @@
 
 #include <QDomElement>
 #include <QDomDocument>
-#include <QRegExp>
+#include <QRegularExpression>
 
 //* Base class for syntax highlighting
 class IndentPattern final: private Base::Counter<IndentPattern>
@@ -95,7 +95,7 @@ class IndentPattern final: private Base::Counter<IndentPattern>
         { return paragraph_; }
 
         //* regexp
-        const QRegExp& pattern() const
+        const QRegularExpression& pattern() const
         { return regexp_; }
 
         //* true if valid
@@ -146,7 +146,7 @@ class IndentPattern final: private Base::Counter<IndentPattern>
         int paragraph_;
 
         //* regexp
-        QRegExp regexp_;
+        QRegularExpression regexp_;
 
         //* flags
         Flags flags_;

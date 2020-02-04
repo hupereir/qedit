@@ -25,7 +25,7 @@
 
 #include <QDomElement>
 #include <QDomDocument>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QList>
 
 //* text parenthesis (for highlighting)
@@ -60,7 +60,7 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
     { second_ = value; }
 
     //* regExp that match either block start or end
-    const QRegExp& regexp() const
+    const QRegularExpression& regexp() const
     { return regexp_; }
 
     //* regext
@@ -143,7 +143,7 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
     QString second_;
 
     //* regular expression that match either of both characters
-    QRegExp regexp_;
+    QRegularExpression regexp_;
 
     //* streamer
     friend QTextStream& operator << ( QTextStream& out, const TextParenthesis& parenthesis )

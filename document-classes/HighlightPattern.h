@@ -27,7 +27,7 @@
 
 #include <QDomElement>
 #include <QDomDocument>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QString>
 #include <QList>
 
@@ -114,15 +114,15 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     { return children_; }
 
     //* keyword regexp
-    const QRegExp& keyword() const
+    const QRegularExpression& keyword() const
     { return keyword_; }
 
     //* begin regexp
-    const QRegExp& begin() const
+    const QRegularExpression& begin() const
     { return keyword_; }
 
     //* end regexp
-    const QRegExp& end() const
+    const QRegularExpression& end() const
     { return end_; }
 
     //* flags
@@ -273,10 +273,10 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     //@{
 
     //* keyword regexp (or begin in case of range pattern)
-    QRegExp keyword_;
+    QRegularExpression keyword_;
 
     //* range end regexp
-    QRegExp end_;
+    QRegularExpression end_;
 
     //@}
 

@@ -33,7 +33,7 @@
 
 #include <QDomDocument>
 #include <QDomElement>
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include <functional>
 
@@ -76,11 +76,11 @@ class DocumentClass final: private Base::Counter<DocumentClass>
     { return buildIn_; }
 
     //* filename matching pattern
-    const QRegExp& fileMatchingPattern() const
+    const QRegularExpression& fileMatchingPattern() const
     { return filePattern_; }
 
     //* first line matching pattern
-    const QRegExp& firstLineMatchingPattern() const
+    const QRegularExpression& firstLineMatchingPattern() const
     { return firstlinePattern_; }
 
     //* return true if document class match filename
@@ -219,11 +219,11 @@ class DocumentClass final: private Base::Counter<DocumentClass>
     File file_;
 
     //* file pattern
-    QRegExp filePattern_;
+    QRegularExpression filePattern_;
 
     //* first line pattern
     /** it is used to see if a file match based on its first line rather than its extension */
-    QRegExp firstlinePattern_;
+    QRegularExpression firstlinePattern_;
 
     //* is class default
     bool default_ = false;

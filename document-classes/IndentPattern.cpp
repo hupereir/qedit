@@ -135,7 +135,8 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
         if( childElement.tagName() == Xml::RegExp ) setPattern( XmlString( childElement.text() ) );
     }
 
-    regexp_.setCaseSensitivity( flag( CaseInsensitive ) ? Qt::CaseInsensitive : Qt::CaseSensitive );
+    if( flag( CaseInsensitive ) ) regexp_.setPatternOptions( regexp_.patternOptions()|QRegularExpression::CaseInsensitiveOption );
+    else regexp_.setPatternOptions( regexp_.patternOptions()&~QRegularExpression::CaseInsensitiveOption );
 
 }
 
@@ -156,9 +157,4 @@ QDomElement IndentPattern::Rule::domElement( QDomDocument& parent ) const
 
 //________________________________________________________
 bool IndentPattern::Rule::accept( const QString& text ) const
-{
-
-    if( !pattern().isValid() ) return true;
-    return pattern().indexIn( text ) >= 0;
-
-}
+{ return !regexp_.isValid() || text.contains( regexp_ ); }

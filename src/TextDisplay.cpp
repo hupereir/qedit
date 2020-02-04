@@ -99,13 +99,6 @@ NewDocumentNameServer& TextDisplay::newDocumentNameServer()
 }
 
 //___________________________________________________
-QRegExp& TextDisplay::_emptyLineRegExp()
-{
-    static QRegExp regexp( "(^\\s*$)" );
-    return regexp;
-}
-
-//___________________________________________________
 TextDisplay::TextDisplay( QWidget* parent ):
     TextEditor( parent ),
     workingDirectory_( Util::workingDirectory() ),
@@ -897,11 +890,11 @@ bool TextDisplay::hasLeadingTabs() const
     Debug::Throw( "TextDisplay::hasLeadingTabs.\n" );
 
     // define regexp to perform replacement
-    QRegExp wrongTabRegExp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
+    const auto wrongTabRegExp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
     const TextBlockRange range( document() );
     return std::any_of( range.begin(), range.end(),
         [&wrongTabRegExp](const QTextBlock& block)
-        { return wrongTabRegExp.indexIn( block.text() ) >= 0; } );
+        { return block.text().contains( wrongTabRegExp ); } );
 
 }
 
@@ -938,9 +931,16 @@ bool TextDisplay::ignoreBlock( const QTextBlock& block ) const
     if( isEmptyBlock( block ) ) return true;
 
     // try retrieve highlight data
-    HighlightBlockData *data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
+    auto data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
     return ( data && data->ignoreBlock() );
 
+}
+
+//___________________________________________________________________________
+bool TextDisplay::isEmptyBlock( const QTextBlock& block ) const
+{
+    static const QRegularExpression regexp( "(^\\s*$)" );
+    return regexp.match( block.text() ).hasMatch();
 }
 
 //___________________________________________________________________________
@@ -2320,7 +2320,7 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
     setUpdatesEnabled( false );
 
     // define regexp to perform replacement
-    QRegExp wrongTabRegExp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
+    const auto& wrongTabRegExp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
     QString wrongTab( _hasTabEmulation() ? normalTabCharacter():emulatedTabCharacter() );
 
     // define blocks to process
@@ -2345,16 +2345,17 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
         QString text( block.text() );
 
         // look for leading tabs
-        if( wrongTabRegExp.indexIn( text ) < 0 ) continue;
+        const auto match( wrongTabRegExp.match( text ) );
+        if( !match.hasMatch() ) continue;
 
         // select with cursor
         QTextCursor cursor( block );
         cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
-        cursor.setPosition( cursor.position() + wrongTabRegExp.matchedLength(), QTextCursor::KeepAnchor );
+        cursor.setPosition( cursor.position() + match.capturedLength(), QTextCursor::KeepAnchor );
 
         // create replacement string and insert.
         QString buffer;
-        for( int i=0; i< int(wrongTabRegExp.matchedLength()/wrongTab.size()); i++ )
+        for( int i=0; i< int(match.capturedLength()/wrongTab.size()); i++ )
         { buffer += tabCharacter(); }
         cursor.insertText( buffer );
 
@@ -2561,6 +2562,8 @@ void TextDisplay::_highlightParenthesis()
         parenthesis.begin(), parenthesis.end(),
         TextParenthesis::FirstElementFTor( text.left( position ) ) ) );
 
+    QRegularExpressionMatch match;
+
     if( iter != parenthesis.end() )
     {
 
@@ -2591,14 +2594,15 @@ void TextDisplay::_highlightParenthesis()
             }
 
             // parse text
-            for( ;(position = iter->regexp().indexIn( text, position ) ) >= 0; position += iter->regexp().matchedLength() )
+            auto matchIter = iter->regexp().globalMatch( text, position );
+            while( matchIter.hasNext() )
             {
-
-                // make sure comment status matches
+                // get match
+                match = matchIter.next();
                 if( isComment == locations.isCommented( position ) )
                 {
-                    if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->second() ) increment--;
-                    else if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment++;
+                    if( match.captured() == iter->second() ) increment--;
+                    else if( match.captured() == iter->first() ) increment++;
 
                     if( increment < 0 )
                     {
@@ -2608,6 +2612,8 @@ void TextDisplay::_highlightParenthesis()
 
                 }
 
+                // increment position
+                position = match.capturedEnd();
             }
 
             if( !found )
@@ -2660,14 +2666,14 @@ void TextDisplay::_highlightParenthesis()
             if( position < 0 ) position = text.length();
 
             // parse text
-            while( position >= 0 && (position = iter->regexp().lastIndexIn( text.left(position) ) ) >= 0 )
+            while( position >= 0 && (position = text.left( position ).lastIndexOf( iter->regexp(), -1, &match ) ) >= 0 )
             {
 
                 if( isComment == locations.isCommented( position ) )
                 {
 
-                    if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->first() ) increment--;
-                    else if( const_cast<QRegExp&>(iter->regexp()).cap() == iter->second() ) increment++;
+                    if( match.captured() == iter->first() ) increment--;
+                    else if( match.captured() == iter->second() ) increment++;
 
                     if( increment < 0 )
                     {
@@ -2695,7 +2701,7 @@ void TextDisplay::_highlightParenthesis()
     // highlight
     if( found && position < block.length() )
     {
-        parenthesisHighlight_->highlight( position + block.position(), iter->regexp().matchedLength() );
+        parenthesisHighlight_->highlight( position + block.position(), match.capturedLength() );
         textHighlight_->rehighlightBlock( block );
     }
 

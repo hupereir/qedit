@@ -23,6 +23,7 @@
 #include "XmlOption.h"
 #include "XmlString.h"
 
+#include <QRegularExpression>
 #include <algorithm>
 
 //________________________________________________________
@@ -195,8 +196,8 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
 
     // dump attributes
     out.setAttribute( Xml::Name, name_ );
-    if( !filePattern_.isEmpty() ) out.setAttribute( Xml::Pattern, filePattern_.pattern() );
-    if( !firstlinePattern_.isEmpty() ) out.setAttribute( Xml::FirstLinePattern, firstlinePattern_.pattern() );
+    if( !filePattern_.pattern().isEmpty() ) out.setAttribute( Xml::Pattern, filePattern_.pattern() );
+    if( !firstlinePattern_.pattern().isEmpty() ) out.setAttribute( Xml::FirstLinePattern, firstlinePattern_.pattern() );
 
     // icon
     if( !icon().isEmpty() ) out.setAttribute( Xml::Icon, icon() );
@@ -258,26 +259,28 @@ bool DocumentClass::match( const File& file ) const
     Debug::Throw( "DocumentClass::Match.\n" );
 
     // check if class is default
-    if( default_ ) return true;
+    if( default_ ) { return true; }
 
     // check if file pattern match
-    if( !filePattern_.isEmpty() && filePattern_.isValid() && filePattern_.indexIn( file ) >= 0 ) return true;
+    if( !filePattern_.pattern().isEmpty() && filePattern_.isValid() && file.contains( filePattern_ ) )
+    { return true; }
 
     // check if first line of file match firstlinePattern_
     QFile in( file );
-    if( !firstlinePattern_.isEmpty() && firstlinePattern_.isValid() && in.open( QIODevice::ReadOnly ) )
+    if( !firstlinePattern_.pattern().isEmpty() && firstlinePattern_.isValid() && in.open( QIODevice::ReadOnly ) )
     {
 
         QString line;
-        static const QRegExp emptyLineRegexp( "(^\\s*$)" );
+        static const QRegularExpression emptyLineRegexp( "(^\\s*$)" );
         while( in.bytesAvailable() && !(line = in.readLine(1024)).isNull() )
         {
 
             // skip empty lines
-            if( line.isEmpty() || emptyLineRegexp.indexIn( line ) >= 0 ) continue;
+            if( line.isEmpty() || emptyLineRegexp.match( line ).hasMatch() )
+            { continue; }
 
             // check non empty lines
-            return ( firstlinePattern_.indexIn( line ) >= 0 );
+            return ( firstlinePattern_.match( line ).hasMatch() );
 
         }
     }

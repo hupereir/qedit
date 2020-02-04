@@ -145,14 +145,16 @@ bool HighlightPattern::_findKeyword( PatternLocationSet& locations, const QStrin
     active=false;
 
     // check RegExp
-    if( keyword_.isEmpty() ) return false;
+    if( keyword_.pattern().isEmpty() ) return false;
 
     // process text
     bool found( false );
-    for( int position = 0; (position = keyword_.indexIn( text, position )) >= 0; position += keyword_.matchedLength() )
+    auto iter = keyword_.globalMatch( text );
+    while( iter.hasNext() )
     {
+        const auto match( iter.next() );
+        locations.insert( PatternLocation( *this, match.capturedStart(), match.capturedLength() ) );
         found = true;
-        locations.insert( PatternLocation( *this, position, keyword_.matchedLength() ) );
     }
 
     return found;
@@ -164,7 +166,7 @@ bool HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
 {
 
     // check RegExp
-    if( begin().isEmpty() || end().isEmpty() ) return false;
+    if( keyword_.pattern().isEmpty() || end_.pattern().isEmpty() ) return false;
 
     int begin(0);
     int end(0);
@@ -177,7 +179,8 @@ bool HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
     {
 
         // if active, look for end match
-        end = HighlightPattern::end().indexIn( text, 0 );
+        QRegularExpressionMatch match;
+        end = text.indexOf( end_, 0, &match);
         if( end < 0 )
         {
 
@@ -193,7 +196,7 @@ bool HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
             // pattern is not active any more but one needs to check if it does not start again
             active = false;
             found = true;
-            end+=HighlightPattern::end().matchedLength();
+            end += match.capturedLength();
             locations.insert( PatternLocation( *this, 0, end ) );
 
         }
@@ -207,8 +210,9 @@ bool HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
         // look for begin match
         // start from end index, which is either 0, or the last
         // found end in case of spanning active patterns
+        QRegularExpressionMatch beginMatch;
         begin = end;
-        begin = HighlightPattern::begin().indexIn( text, begin );
+        begin = text.indexOf( keyword_, begin, &beginMatch );
         if( begin < 0 )
         {
             active = false;
@@ -216,11 +220,12 @@ bool HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
         }
 
         // look for end match
-        end = HighlightPattern::end().indexIn( text, begin );
+        QRegularExpressionMatch endMatch;
+        end = text.indexOf( end_, begin, &endMatch );
 
         // avoid zero length match
-        if( begin == end && HighlightPattern::begin().matchedLength() == HighlightPattern::end().matchedLength() )
-        { end = HighlightPattern::end().indexIn( text, begin+HighlightPattern::begin().matchedLength() ); }
+        if( begin == end && beginMatch.capturedLength() == endMatch.capturedLength() )
+        { end = text.indexOf( end_, begin + beginMatch.capturedLength() ); }
 
         if( end < 0 )
         {
@@ -239,7 +244,7 @@ bool HighlightPattern::_findRange( PatternLocationSet& locations, const QString&
         // found end matching begin
         // append new text location
         found = true;
-        end += HighlightPattern::end().matchedLength();
+        end += endMatch.capturedLength();
         locations.insert( PatternLocation( *this, begin, end-begin ) );
 
     }

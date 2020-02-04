@@ -44,7 +44,7 @@
 #include "FilterMenu.h"
 #endif
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTimer>
 #include <QAction>
 
@@ -136,8 +136,7 @@ class TextDisplay: public TextEditor
     QString toPlainText() const;
 
     // return true if block is an empty line
-    bool isEmptyBlock( const QTextBlock& block ) const override
-    { return _emptyLineRegExp().indexIn( block.text() ) >= 0; }
+    bool isEmptyBlock( const QTextBlock& block ) const override;
 
     //* return true is block is to be ignored from indentation scheme
     bool ignoreBlock( const QTextBlock& block ) const override;
@@ -664,9 +663,6 @@ class TextDisplay: public TextEditor
 
     //* actions
     void _installActions();
-
-    //* empty line
-    static QRegExp& _emptyLineRegExp();
 
     //* file
     File file_;
