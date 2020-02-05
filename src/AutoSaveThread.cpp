@@ -85,7 +85,7 @@ File AutoSaveThread::autoSaveName( const File& file )
     File relativeName( QDir::root().relativeFilePath( file ).replace( "/", "_" ).replace(":","_") );
 
     // get qedit default autosave path
-    QString autoSavePath = QString( "%1/qedit/%2" ).arg( XmlOptions::get().raw( "AUTOSAVE_PATH" ), Util::user() );
+    QString autoSavePath = QString( "%1/qedit/%2" ).arg( XmlOptions::get().raw( QStringLiteral("AUTOSAVE_PATH") ), Util::user() );
 
     // generate autosave name
     return relativeName.addPath( File( QDir( autoSavePath ).absolutePath() ) );

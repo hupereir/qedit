@@ -82,7 +82,7 @@ bool Diff::run()
 
     // create command and pass to process
     const QStringList command({
-        XmlOptions::get().raw( "DIFF_COMMAND" ),
+        XmlOptions::get().raw( QStringLiteral("DIFF_COMMAND") ),
         files_[0].file(),
         files_[1].file()
     });

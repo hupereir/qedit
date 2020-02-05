@@ -99,10 +99,10 @@ void SidePanelToolBar::_updateConfiguration()
     Debug::Throw( QStringLiteral("SidePanelToolBar::_updateConfiguration.\n") );
 
     // icon size
-    const IconSize iconSize( static_cast<IconSize::Size>( XmlOptions::get().get<int>( "SIDE_PANEL_TOOLBAR_ICON_SIZE" ) ) );
+    const IconSize iconSize( static_cast<IconSize::Size>( XmlOptions::get().get<int>( QStringLiteral("SIDE_PANEL_TOOLBAR_ICON_SIZE") ) ) );
 
     // text label for toolbars
-    const int toolButtonTextPosition( XmlOptions::get().get<int>( "SIDE_PANEL_TOOLBAR_TEXT_POSITION" ) );
+    const int toolButtonTextPosition( XmlOptions::get().get<int>( QStringLiteral("SIDE_PANEL_TOOLBAR_TEXT_POSITION") ) );
     const auto style = static_cast<Qt::ToolButtonStyle>( toolButtonTextPosition >= 0 ?
         toolButtonTextPosition:
         this->style()->styleHint( QStyle::SH_ToolButtonStyle ) );
@@ -127,7 +127,7 @@ void SidePanelToolBar::_updateToolButtonStyle( int style )
 {
 
     Debug::Throw( QStringLiteral("SidePanelToolBar::_updateToolButtonStyle.\n") );
-    XmlOptions::get().set<int>( "SIDE_PANEL_TOOLBAR_TEXT_POSITION", (int)style );
+    XmlOptions::get().set<int>( QStringLiteral("SIDE_PANEL_TOOLBAR_TEXT_POSITION"), (int)style );
     _updateConfiguration();
 
 }
@@ -137,7 +137,7 @@ void SidePanelToolBar::_updateToolButtonIconSize( IconSize::Size size )
 {
 
     Debug::Throw( QStringLiteral("SidePanelToolBar::_updateToolButtonIconSize.\n") );
-    XmlOptions::get().set<int>( "SIDE_PANEL_TOOLBAR_ICON_SIZE", size );
+    XmlOptions::get().set<int>( QStringLiteral("SIDE_PANEL_TOOLBAR_ICON_SIZE"), size );
     _updateConfiguration();
 
 }
@@ -222,8 +222,8 @@ void SidePanelToolBar::contextMenuEvent( QContextMenuEvent* event )
     if( !mainwindow ) return;
     std::unique_ptr<ToolBarMenu> menu( mainwindow->toolBarMenu( this ) );
 
-    menu->toolButtonStyleMenu().select( (Qt::ToolButtonStyle) XmlOptions::get().get<int>( "SIDE_PANEL_TOOLBAR_TEXT_POSITION" ) );
-    menu->iconSizeMenu().select( (IconSize::Size) XmlOptions::get().get<int>( "SIDE_PANEL_TOOLBAR_ICON_SIZE" ) );
+    menu->toolButtonStyleMenu().select( (Qt::ToolButtonStyle) XmlOptions::get().get<int>( QStringLiteral("SIDE_PANEL_TOOLBAR_TEXT_POSITION") ) );
+    menu->iconSizeMenu().select( (IconSize::Size) XmlOptions::get().get<int>( QStringLiteral("SIDE_PANEL_TOOLBAR_ICON_SIZE") ) );
 
     connect( &menu->toolButtonStyleMenu(), &ToolButtonStyleMenu::styleSelected, this, &SidePanelToolBar::_updateToolButtonStyle );
     connect( &menu->iconSizeMenu(), &IconSizeMenu::iconSizeSelected, this, &SidePanelToolBar::_updateToolButtonIconSize );

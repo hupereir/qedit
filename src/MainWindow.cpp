@@ -120,7 +120,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     // insert side panel
     sidePanelWidget_ = new SidePanelWidget( nullptr, application->recentFiles() );
-    sidePanelWidget_->setDefaultWidth( XmlOptions::get().get<int>( "SIDE_PANEL_WIDTH" ) );
+    sidePanelWidget_->setDefaultWidth( XmlOptions::get().get<int>( QStringLiteral("SIDE_PANEL_WIDTH") ) );
     splitter->addWidget( sidePanelWidget_ );
 
     // navigation toolbar
@@ -594,7 +594,7 @@ void MainWindow::timerEvent( QTimerEvent* event )
 
         // save size
         if( sidePanelWidget_->visibilityAction().isChecked() )
-        { XmlOptions::get().set<int>( "SIDE_PANEL_WIDTH", sidePanelWidget_->width() ); }
+        { XmlOptions::get().set<int>( QStringLiteral("SIDE_PANEL_WIDTH"), sidePanelWidget_->width() ); }
 
     } else return BaseMainWindow::timerEvent( event );
 
@@ -609,7 +609,7 @@ void MainWindow::_updateConfiguration()
     resize( sizeHint() );
 
     // navigation frame visibility
-    sidePanelWidget_->visibilityAction().setChecked( XmlOptions::get().get<bool>("SHOW_SIDE_PANEL_WIDGET") );
+    sidePanelWidget_->visibilityAction().setChecked( XmlOptions::get().get<bool>(QStringLiteral("SHOW_SIDE_PANEL_WIDGET")) );
 
     // assign icons to file in open previous menu based on class manager
     auto&& recentFiles( Base::Singleton::get().application<Application>()->recentFiles() );
@@ -633,7 +633,7 @@ void MainWindow::_updateConfiguration()
 void MainWindow::_toggleSidePanelWidget( bool state )
 {
     Debug::Throw( QStringLiteral("MainWindow::_toggleSidePanelWidget.\n") );
-    XmlOptions::get().set<bool>( "SHOW_SIDE_PANEL_WIDGET", state );
+    XmlOptions::get().set<bool>( QStringLiteral("SHOW_SIDE_PANEL_WIDGET"), state );
 }
 
 //________________________________________________________

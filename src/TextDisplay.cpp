@@ -669,7 +669,7 @@ void TextDisplay::save()
     {
 
         // make backup
-        if( XmlOptions::get().get<bool>( "BACKUP" ) && file_.exists() ) file_.backup();
+        if( XmlOptions::get().get<bool>( QStringLiteral("BACKUP") ) && file_.exists() ) file_.backup();
 
         // open output file
         QFile out( file_ );
@@ -1139,16 +1139,16 @@ void TextDisplay::_updateDocumentClass( File file, bool newDocument )
 
         FileRecord& record( _recentFiles().get( file ) );
         if( record.hasProperty( wrapPropertyId_ ) ) wrapModeAction().setChecked( record.property( wrapPropertyId_ ).toInt() );
-        else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( documentClass.wrap() );
+        else if( XmlOptions::get().get<bool>( QStringLiteral("WRAP_FROM_CLASS") ) ) wrapModeAction().setChecked( documentClass.wrap() );
 
-    } else if( XmlOptions::get().get<bool>( "WRAP_FROM_CLASS" ) ) wrapModeAction().setChecked( documentClass.wrap() );
+    } else if( XmlOptions::get().get<bool>( QStringLiteral("WRAP_FROM_CLASS") ) ) wrapModeAction().setChecked( documentClass.wrap() );
 
     // need to update tab size here because at the time it was set in _updateConfiguration,
     // the font might not have been right
-    _setTabSize( XmlOptions::get().get<int>("TAB_SIZE") );
+    _setTabSize( XmlOptions::get().get<int>(QStringLiteral("TAB_SIZE")) );
 
     // tab emulation
-    if( XmlOptions::get().get<bool>( "EMULATE_TABS_FROM_CLASS" ) )
+    if( XmlOptions::get().get<bool>( QStringLiteral("EMULATE_TABS_FROM_CLASS") ) )
     {
         tabEmulationAction().setChecked( documentClass.emulateTabs() );
         if( documentClass.tabSize() > 0 ) _setTabSize( documentClass.tabSize() );
@@ -1910,22 +1910,22 @@ void TextDisplay::_updateConfiguration()
     Debug::Throw( QStringLiteral("TextDisplay::_updateConfiguration.\n") );
 
     // indentation
-    textIndentAction_->setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
+    textIndentAction_->setChecked( XmlOptions::get().get<bool>( QStringLiteral("TEXT_INDENT") ) );
 
     // syntax highlighting
-    textHighlightAction_->setChecked( XmlOptions::get().get<bool>( "TEXT_HIGHLIGHT" ) );
+    textHighlightAction_->setChecked( XmlOptions::get().get<bool>( QStringLiteral("TEXT_HIGHLIGHT") ) );
 
     // parenthesis highlight
     textHighlight_->setParenthesisHighlightColor( XmlOptions::get().get<Base::Color>( "PARENTHESIS_COLOR" ) );
-    parenthesisHighlightAction_->setChecked( XmlOptions::get().get<bool>( "TEXT_PARENTHESIS" ) );
+    parenthesisHighlightAction_->setChecked( XmlOptions::get().get<bool>( QStringLiteral("TEXT_PARENTHESIS") ) );
 
     // block delimiters, line numbers and margin
-    showBlockDelimiterAction_->setChecked( XmlOptions::get().get<bool>( "SHOW_BLOCK_DELIMITERS" ) );
-    noAutomaticMacrosAction_->setChecked( XmlOptions::get().get<bool>( "IGNORE_AUTOMATIC_MACROS" ) );
+    showBlockDelimiterAction_->setChecked( XmlOptions::get().get<bool>( QStringLiteral("SHOW_BLOCK_DELIMITERS") ) );
+    noAutomaticMacrosAction_->setChecked( XmlOptions::get().get<bool>( QStringLiteral("IGNORE_AUTOMATIC_MACROS") ) );
 
     // encoding
     // todo: condition that on whether was modified by menu or not
-    _setTextEncoding( XmlOptions::get().raw( "TEXT_ENCODING" ) );
+    _setTextEncoding( XmlOptions::get().raw( QStringLiteral("TEXT_ENCODING") ) );
     textEncodingMenu_->select( textEncoding_ );
 
     // retrieve diff colors
@@ -1949,7 +1949,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
     // spellcheck configuration
     bool changed( false );
     changed |= textHighlight_->spellParser().setColor( QColor( XmlOptions::get().get<Base::Color>("AUTOSPELL_COLOR") ) );
-    changed |= textHighlight_->spellParser().setFontFormat( static_cast<TextFormat::Flags>( XmlOptions::get().get<int>("AUTOSPELL_FONT_FORMAT") ) );
+    changed |= textHighlight_->spellParser().setFontFormat( static_cast<TextFormat::Flags>( XmlOptions::get().get<int>(QStringLiteral("AUTOSPELL_FONT_FORMAT")) ) );
     textHighlight_->updateSpellPattern();
     autoSpellAction_->setEnabled( textHighlight_->spellParser().color().isValid() );
 
@@ -1961,8 +1961,8 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
     SpellCheck::SpellInterface& interface( textHighlight_->spellParser().interface() );
 
     // load default filter and dictionaries
-    QString filter( XmlOptions::get().raw("DICTIONARY_FILTER") );
-    QString dictionary( XmlOptions::get().raw( "DICTIONARY" ) );
+    QString filter( XmlOptions::get().raw(QStringLiteral("DICTIONARY_FILTER")) );
+    QString dictionary( XmlOptions::get().raw( QStringLiteral("DICTIONARY") ) );
 
     // overwrite with file record
     if( file.isEmpty() ) file = file_;
@@ -2140,7 +2140,7 @@ void TextDisplay::_toggleShowBlockDelimiters( bool state )
     { blockDelimiterDisplay_->expandAllAction().trigger(); }
 
     // update options
-    XmlOptions::get().set<bool>( "SHOW_BLOCK_DELIMITERS", state );
+    XmlOptions::get().set<bool>( QStringLiteral("SHOW_BLOCK_DELIMITERS"), state );
 
     // propagate to other displays
     if( isSynchronized() )
@@ -2164,7 +2164,7 @@ void TextDisplay::_toggleIgnoreAutomaticMacros( bool state )
 {
 
     // update options
-    XmlOptions::get().set<bool>( "IGNORE_AUTOMATIC_MACROS", state );
+    XmlOptions::get().set<bool>( QStringLiteral("IGNORE_AUTOMATIC_MACROS"), state );
 
     return;
 }
@@ -2180,8 +2180,8 @@ void TextDisplay::_spellcheck()
     dialog.interface().setIgnoredWords( textHighlight_->spellParser().interface().ignoredWords() );
 
     // default dictionary from XmlOptions
-    QString defaultFilter( XmlOptions::get().raw("DICTIONARY_FILTER") );
-    QString defaultDictionary( XmlOptions::get().raw( "DICTIONARY" ) );
+    QString defaultFilter( XmlOptions::get().raw(QStringLiteral("DICTIONARY_FILTER")) );
+    QString defaultDictionary( XmlOptions::get().raw( QStringLiteral("DICTIONARY") ) );
 
     // try overwrite with file record
     if( !( file_.isEmpty()  || isNewDocument() ) )

@@ -61,11 +61,11 @@ RestoreSessionDialog::RestoreSessionDialog( QWidget* parent, FileRecord::List fi
         treeView->setOptionName( "SAVE_FILES_LIST" );
 
         // sort list and select all items
-        if( XmlOptions::get().contains( "SESSION_FILES_SORT_COLUMN" ) && XmlOptions::get().contains( "SESSION_FILES_SORT_ORDER" ) )
+        if( XmlOptions::get().contains( QStringLiteral("SESSION_FILES_SORT_COLUMN") ) && XmlOptions::get().contains( "SESSION_FILES_SORT_ORDER" ) )
         {
             treeView->sortByColumn(
-                XmlOptions::get().get<int>( "SESSION_FILES_SORT_COLUMN" ),
-                (Qt::SortOrder)(XmlOptions::get().get<int>( "SESSION_FILES_SORT_ORDER" ) ) );
+                XmlOptions::get().get<int>( QStringLiteral("SESSION_FILES_SORT_COLUMN") ),
+                (Qt::SortOrder)(XmlOptions::get().get<int>( QStringLiteral("SESSION_FILES_SORT_ORDER") ) ) );
         }
 
     }

@@ -151,8 +151,8 @@ void AutoSave::_updateConfiguration()
     Debug::Throw( QStringLiteral("AutoSave::_updateConfiguration.\n") );
 
     // save AutoSave interval and start timer
-    enabled_ = XmlOptions::get().get<bool>( "AUTOSAVE" );
-    interval_ = 1000*XmlOptions::get().get<int>("AUTOSAVE_INTERVAL");
+    enabled_ = XmlOptions::get().get<bool>( QStringLiteral("AUTOSAVE") );
+    interval_ = 1000*XmlOptions::get().get<int>(QStringLiteral("AUTOSAVE_INTERVAL"));
 
     if( interval_ > 0 ) timer_.start( interval_, this );
     else timer_.stop();

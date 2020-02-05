@@ -50,8 +50,8 @@ int main (int argc, char *argv[])
     installSystemOptions();
 
     // migrate old rc files
-    File oldRCFile( XmlOptions::get().raw( "OLD_RC_FILE" ) );
-    File rcFile( XmlOptions::get().raw( "RC_FILE" ) );
+    File oldRCFile( XmlOptions::get().raw( QStringLiteral("OLD_RC_FILE") ) );
+    File rcFile( XmlOptions::get().raw( QStringLiteral("RC_FILE") ) );
     ResourceMigration( oldRCFile ).migrate( rcFile );
 
     // assign and read
@@ -59,7 +59,7 @@ int main (int argc, char *argv[])
     XmlOptions::read();
 
     // debug level
-    Debug::setLevel( XmlOptions::get().get<int>( "DEBUG_LEVEL" ) );
+    Debug::setLevel( XmlOptions::get().get<int>( QStringLiteral("DEBUG_LEVEL") ) );
     if( Debug::level() ) Debug::Throw() << XmlOptions::get() << endl;
 
     // resources

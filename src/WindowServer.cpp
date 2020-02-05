@@ -394,9 +394,9 @@ void WindowServer::_updateConfiguration()
 {
 
     Debug::Throw( QStringLiteral("WindowServer::_updateConfiguration.\n") );
-    openMode_ = (OpenMode) XmlOptions::get().get<int>( "OPEN_MODE" );
-    _setDefaultOrientation( OrientationMode::Normal, (Qt::Orientation) XmlOptions::get().get<int>( "ORIENTATION" ) );
-    _setDefaultOrientation( OrientationMode::Diff, (Qt::Orientation) XmlOptions::get().get<int>( "DIFF_ORIENTATION" ) );
+    openMode_ = (OpenMode) XmlOptions::get().get<int>( QStringLiteral("OPEN_MODE") );
+    _setDefaultOrientation( OrientationMode::Normal, (Qt::Orientation) XmlOptions::get().get<int>( QStringLiteral("ORIENTATION") ) );
+    _setDefaultOrientation( OrientationMode::Diff, (Qt::Orientation) XmlOptions::get().get<int>( QStringLiteral("DIFF_ORIENTATION") ) );
 
 }
 
