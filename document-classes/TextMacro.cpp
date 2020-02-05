@@ -185,7 +185,7 @@ TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) co
 
         }
 
-        text = lines.join( QLatin1String( "\n" ) );
+        text = lines.join( QStringLiteral( "\n" ) );
         return out;
 
     }
