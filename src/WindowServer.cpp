@@ -437,7 +437,7 @@ void WindowServer::_newFile( WindowServer::OpenMode mode )
         if( viewIter == views.end() )
         {
 
-            Debug::Throw(0, "WindowServer::_newFile - invalid view.\n" );
+            Debug::Throw(0, QStringLiteral("WindowServer::_newFile - invalid view.\n") );
             return;
         }
 
@@ -606,7 +606,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
         if( viewIter == views.end() )
         {
 
-            Debug::Throw(0, "WindowServer::_open - invalid view.\n" );
+            Debug::Throw(0, QStringLiteral("WindowServer::_open - invalid view.\n") );
             return false;
         }
 
@@ -791,7 +791,7 @@ void WindowServer::_reparent( const File& first, const File& second )
     Base::KeySet<MainWindow> windows( view );
     if( windows.size() != 1 )
     {
-        Debug::Throw(0, "WindowServer::_reparent - invalid number of windows.\n" );
+        Debug::Throw(0, QStringLiteral("WindowServer::_reparent - invalid number of windows.\n") );
         return;
     }
 
@@ -1000,7 +1000,7 @@ TextView& WindowServer::_findView( const File& file )
     Base::KeySet<TextView> views( display );
     if( views.size() != 1 )
     {
-        Debug::Throw(0, "WindowServer::_findView - no view found.\n" );
+        Debug::Throw(0, QStringLiteral("WindowServer::_findView - no view found.\n") );
         abort();
     }
 
@@ -1132,7 +1132,7 @@ void WindowServer::_setActiveWindow( MainWindow& window )
     Debug::Throw() << "WindowServer::setActiveWindow - key: " << window.key() << endl;
     if( !window.isAssociated( this ) )
     {
-        Debug::Throw(0, "WindowServer::_setActiveWindow - invalid window.\n" );
+        Debug::Throw(0, QStringLiteral("WindowServer::_setActiveWindow - invalid window.\n") );
         return;
     }
 

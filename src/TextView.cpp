@@ -203,7 +203,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
     Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << endl;
     if( !display.isAssociated( this ) )
     {
-        Debug::Throw(0, "TextView::setActiveDisplay - invalid display.\n" );
+        Debug::Throw(0, QStringLiteral("TextView::setActiveDisplay - invalid display.\n") );
         return;
     }
 
@@ -294,7 +294,7 @@ void TextView::closeDisplay( TextDisplay& display )
 
         } else {
 
-            Debug::Throw(0, "TextView::closeDisplay - something is wrong with layouts.\n" );
+            Debug::Throw(0, QStringLiteral("TextView::closeDisplay - something is wrong with layouts.\n") );
 
         }
 
@@ -502,7 +502,7 @@ void TextView::diff()
     if( iter == displays.end() )
     {
 
-        Debug::Throw(0, "TextView::diff - display not found.\n" );
+        Debug::Throw(0, QStringLiteral("TextView::diff - display not found.\n") );
         return;
 
     } else {
@@ -621,7 +621,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
 
             } else {
 
-                Debug::Throw(0, "TextView::_newSplitter - something is wrong with layouts.\n" );
+                Debug::Throw(0, QStringLiteral("TextView::_newSplitter - something is wrong with layouts.\n") );
 
             }
 
