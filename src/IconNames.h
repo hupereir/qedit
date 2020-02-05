@@ -29,30 +29,30 @@
 namespace IconNames
 {
 
-    static const QString Close = "document-close";
+    static const QString Close = QStringLiteral("document-close");
 
-    static const QString Save = "document-save";
-    static const QString SaveAs = "document-save-as";
-    static const QString SaveAll = "document-save-all";
-    static const QString New = "document-new";
+    static const QString Save = QStringLiteral("document-save");
+    static const QString SaveAs = QStringLiteral("document-save-as");
+    static const QString SaveAll = QStringLiteral("document-save-all");
+    static const QString New = QStringLiteral("document-new");
 
-    static const QString Up = "arrow-up";
-    static const QString Down = "arrow-down";
+    static const QString Up = QStringLiteral("arrow-up");
+    static const QString Down = QStringLiteral("arrow-down");
 
-    static const QString Documents = "document-multiple";
-    static const QString History = "view-history";
+    static const QString Documents = QStringLiteral("document-multiple");
+    static const QString History = QStringLiteral("view-history");
 
-    static const QString Pdf = "pdf";
-    static const QString Indent = "format-indent-more";
-    static const QString SpellCheck = "tools-check-spelling";
-    static const QString ViewLeftRight = "view-split-left-right";
-    static const QString ViewTopBottom = "view-split-top-bottom";
-    static const QString ViewRight = "view-right-new";
-    static const QString ViewBottom = "view-bottom-new";
-    static const QString ViewRemove = "view-close";
-    static const QString ViewDetach = "view-fullscreen";
+    static const QString Pdf = QStringLiteral("pdf");
+    static const QString Indent = QStringLiteral("format-indent-more");
+    static const QString SpellCheck = QStringLiteral("tools-check-spelling");
+    static const QString ViewLeftRight = QStringLiteral("view-split-left-right");
+    static const QString ViewTopBottom = QStringLiteral("view-split-top-bottom");
+    static const QString ViewRight = QStringLiteral("view-right-new");
+    static const QString ViewBottom = QStringLiteral("view-bottom-new");
+    static const QString ViewRemove = QStringLiteral("view-close");
+    static const QString ViewDetach = QStringLiteral("view-fullscreen");
 
-    static const QString Tag = "bookmarks";
+    static const QString Tag = QStringLiteral("bookmarks");
 
 }
 

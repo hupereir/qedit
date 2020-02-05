@@ -124,7 +124,7 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
 
         index++;
 
-        static const QString removedLines( "<>-" );
+        static const QString removedLines( QStringLiteral("<>-") );
         if( removedLines.indexOf( buffer[0] ) >= 0 ) continue;
 
         // parse remaining lines
