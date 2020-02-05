@@ -2261,7 +2261,7 @@ void TextDisplay::_addBaseIndentation()
     if( !textIndent_->baseIndentation() ) return;
 
     // define regexp to perform replacement
-    static QRegExp leadingSpaceRegExp( "^\\s*" );
+    static const QRegularExpression leadingSpaceRegExp( "^\\s*" );
     QString replacement( textIndent_->baseIndentation(), ' ' );
 
     // retrieve cursor
@@ -2281,12 +2281,13 @@ void TextDisplay::_addBaseIndentation()
         QString text( block.text() );
 
         // look for leading tabs
-        if( leadingSpaceRegExp.indexIn( text ) < 0 ) continue;
+        const auto match( leadingSpaceRegExp.match( text ) );
+        if( !match.hasMatch() ) continue;
 
         // select with cursor
         QTextCursor cursor( block );
         cursor.movePosition( QTextCursor::StartOfBlock, QTextCursor::MoveAnchor );
-        cursor.setPosition( cursor.position() + leadingSpaceRegExp.matchedLength(), QTextCursor::KeepAnchor );
+        cursor.setPosition( cursor.position() + match.capturedLength(), QTextCursor::KeepAnchor );
         cursor.insertText( replacement );
     }
 

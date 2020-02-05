@@ -22,7 +22,7 @@
 #include "TextBlockRange.h"
 #include "TextEditor.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QProgressDialog>
 
 //______________________________________________
@@ -281,15 +281,13 @@ void TextIndent::_decrement( QTextBlock block )
     cursor.setPosition( block.position() + baseIndentation(), QTextCursor::MoveAnchor );
 
     // leading space characters regexp
-    static QRegExp regexp( "\\s+" );
-
-    // search text and remove characters
-    if( block.text().indexOf( regexp, baseIndentation() ) == 0 )
+    static QRegularExpression regexp( "^\\s+" );
+    const auto match( regexp.match( block.text() ) );
+    if( match.hasMatch() )
     {
         const int position( currentCursor_.position() );
         const int anchor( currentCursor_.anchor() );
-        const int length( regexp.matchedLength() );
-        Debug::Throw() << "TextIndent::_decrement - matched length: " << length << endl;
+        const int length( match.capturedLength() );
 
         cursor.setPosition( cursor.position() + length, QTextCursor::KeepAnchor );
         cursor.removeSelectedText();
