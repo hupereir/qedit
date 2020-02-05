@@ -32,7 +32,7 @@ FileCheckDialog::FileCheckDialog( QWidget* parent ):
 {
     Debug::Throw( QStringLiteral("FileCheckDialog::FileCheckDialog.\n") );
     setWindowTitle( tr( "Monitored Files" ) );
-    setOptionName( "FILE_CHECK_DIALOG" );
+    setOptionName( QStringLiteral("FILE_CHECK_DIALOG") );
 
     layout()->setMargin(0);
     buttonLayout().setMargin(5);
@@ -43,7 +43,7 @@ FileCheckDialog::FileCheckDialog( QWidget* parent ):
     list_->setSelectionMode( QAbstractItemView::NoSelection );
 
     // add options
-    list_->setOptionName( "FILE_CHECK_LIST" );
+    list_->setOptionName( QStringLiteral("FILE_CHECK_LIST") );
 
 }
 

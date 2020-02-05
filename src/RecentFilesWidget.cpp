@@ -60,7 +60,7 @@ RecentFilesWidget::RecentFilesWidget( QWidget* parent, FileList& files ):
     list_->setDragEnabled( true );
     list_->setModel( &model_ );
     list_->setSelectionMode( QAbstractItemView::ContiguousSelection );
-    list_->setOptionName( "RECENT_FILES" );
+    list_->setOptionName( QStringLiteral("RECENT_FILES") );
     list_->header()->hide();
 
     // actions

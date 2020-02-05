@@ -61,7 +61,7 @@ Counter( QStringLiteral("SessionFilesWidget") )
     layout()->addWidget( list_ = new SessionFilesView( this ) );
     list_->setMouseTracking( true );
     list_->setModel( &model_ );
-    list_->setOptionName( "SESSION_FILES" );
+    list_->setOptionName( QStringLiteral("SESSION_FILES") );
     list_->header()->hide();
     list_->setDragEnabled( true );
     list_->setAcceptDrops( true );

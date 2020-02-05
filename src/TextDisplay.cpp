@@ -448,7 +448,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
         {
             auto buffer = tr( "File '%1' is compressed.\nUncompress before opening ?" ).arg( file );
             QuestionDialog dialog( this, buffer );
-            dialog.setOptionName( "COMPRESSION_DIALOG" );
+            dialog.setOptionName( QStringLiteral("COMPRESSION_DIALOG") );
             dialog.okButton().setText( tr( "Yes" ) );
             dialog.cancelButton().setText( tr( "No" ) );
             if( dialog.exec() )

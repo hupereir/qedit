@@ -40,7 +40,7 @@ selection_( selection )
 {
 
     setWindowTitle( tr( "File Selection" ) );
-    setOptionName( "FILE_SELECTION_DIALOG" );
+    setOptionName( QStringLiteral("FILE_SELECTION_DIALOG") );
 
     // custom list display
     list_ = new TreeView( this );
@@ -59,7 +59,7 @@ selection_( selection )
     if( classColumn >= 0 ) mask |= (1<<classColumn);
     list_->setMask( mask );
     list_->resizeColumns();
-    list_->setOptionName( "FILE_SELECTION_LIST" );
+    list_->setOptionName( QStringLiteral("FILE_SELECTION_LIST") );
     mainLayout().addWidget( list_ );
 
     // generic button
@@ -83,7 +83,7 @@ selection_( selection )
     _updateButtons();
 
     // sort list and select all items
-    if( XmlOptions::get().contains( QStringLiteral("SESSION_FILES_SORT_COLUMN") ) && XmlOptions::get().contains( "SESSION_FILES_SORT_ORDER" ) )
+    if( XmlOptions::get().contains( QStringLiteral("SESSION_FILES_SORT_COLUMN") ) && XmlOptions::get().contains( QStringLiteral("SESSION_FILES_SORT_ORDER") ) )
     {
         list_->sortByColumn(
             XmlOptions::get().get<int>( QStringLiteral("SESSION_FILES_SORT_COLUMN") ),

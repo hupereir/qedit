@@ -194,14 +194,14 @@ void Application::_updateDocumentClasses()
     QTextStream what( &buffer );
 
     // read user specific patterns
-    for( const auto& option:XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
+    for( const auto& option:XmlOptions::get().specialOptions( QStringLiteral("PATTERN_FILENAME") ) )
     {
         classManager_->read( File( option.raw() ) );
         what << classManager_->readError();
     }
 
     // read build-in patterns
-    for( const auto& option:XmlOptions::get().specialOptions( "DEFAULT_PATTERN_FILENAME" ) )
+    for( const auto& option:XmlOptions::get().specialOptions( QStringLiteral("DEFAULT_PATTERN_FILENAME") ) )
     {
         classManager_->read( File( option.raw() ) );
         what << classManager_->readError();
@@ -284,7 +284,7 @@ void Application::_printSession()
 
     // create dialog
     CustomDialog dialog( 0, CustomDialog::CloseButton );
-    dialog.setOptionName( "PRINT_SESSION_DIALOG" );
+    dialog.setOptionName( QStringLiteral("PRINT_SESSION_DIALOG") );
     dialog.setWindowTitle( tr( "Session files" ) );
     LogWidget* logWidget = new LogWidget( &dialog );
     dialog.mainLayout().addWidget( logWidget );

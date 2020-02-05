@@ -36,17 +36,17 @@ void installDefaultOptions()
 
     // set options default values
     XmlOptions::get().setAutoDefault( true );
-    XmlOptions::get().keep( "PIXMAP_PATH" );
+    XmlOptions::get().keep( QStringLiteral("PIXMAP_PATH") );
     XmlOptions::get().add( "PIXMAP_PATH", "/usr/share/icons/oxygen/32x32/mimetypes");
 
     // font
     XmlOptions::get().set( "FIXED_FONT_NAME", Option( "fixed" ) );
 
     // user specified document classes
-    XmlOptions::get().keep( "PATTERN_FILENAME" );
+    XmlOptions::get().keep( QStringLiteral("PATTERN_FILENAME") );
 
     // built-in document classes
-    XmlOptions::get().keep( "DEFAULT_PATTERN_FILENAME" );
+    XmlOptions::get().keep( QStringLiteral("DEFAULT_PATTERN_FILENAME") );
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/c_patterns.xml" , Option::Flag::None ) );
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/alice_patterns.xml", Option::Flag::None) );
     XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/default_patterns.xml", Option::Flag::None) );

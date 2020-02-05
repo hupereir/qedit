@@ -38,7 +38,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
 {
 
     Debug::Throw( QStringLiteral("DocumentClassManagerDialog::DocumentClassManagerDialog.\n") );
-    setOptionName( "DOCUMENT_CLASS_MANAGER_DIALOG" );
+    setOptionName( QStringLiteral("DOCUMENT_CLASS_MANAGER_DIALOG") );
 
     auto hLayout = new QHBoxLayout;
     hLayout->setSpacing(5);
@@ -50,7 +50,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     list_->setModel( &model_ );
     list_->setSortingEnabled( false );
     list_->header()->hide();
-    list_->setOptionName( "DOCUMENT_CLASS_MANAGER_LIST" );
+    list_->setOptionName( QStringLiteral("DOCUMENT_CLASS_MANAGER_LIST") );
 
     // buttons
     auto vLayout = new QVBoxLayout;
@@ -112,11 +112,11 @@ void DocumentClassManagerDialog::_reload()
     Debug::Throw( QStringLiteral("DocumentClassManager::Dialog::_reload.\n") );
 
     DocumentClassManager classManager;
-    for( const auto& option:XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
+    for( const auto& option:XmlOptions::get().specialOptions( QStringLiteral("PATTERN_FILENAME") ) )
     { classManager.read( File( option.raw() ) ); }
 
     // read build-in patterns
-    for( const auto& option:XmlOptions::get().specialOptions( "DEFAULT_PATTERN_FILENAME" ) )
+    for( const auto& option:XmlOptions::get().specialOptions( QStringLiteral("DEFAULT_PATTERN_FILENAME") ) )
     { classManager.read( File( option.raw() ) ); }
 
     // update model

@@ -34,7 +34,7 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
 
     Debug::Throw( QStringLiteral("CloseFilesDialog::CloseFilesDialog.\n") );
     setWindowTitle( tr( "Close Files" ) );
-    setOptionName( "CLOSE_FILES_DIALOG" );
+    setOptionName( QStringLiteral("CLOSE_FILES_DIALOG") );
 
     Q_ASSERT( !files.empty() );
 
@@ -61,10 +61,10 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
         treeView->setMask( mask );
         treeView->resizeColumns();
 
-        treeView->setOptionName( "CLOSE_FILES_LIST" );
+        treeView->setOptionName( QStringLiteral("CLOSE_FILES_LIST") );
 
         // sort list and select all items
-        if( XmlOptions::get().contains( QStringLiteral("SESSION_FILES_SORT_COLUMN") ) && XmlOptions::get().contains( "SESSION_FILES_SORT_ORDER" ) )
+        if( XmlOptions::get().contains( QStringLiteral("SESSION_FILES_SORT_COLUMN") ) && XmlOptions::get().contains( QStringLiteral("SESSION_FILES_SORT_ORDER") ) )
         {
             treeView->sortByColumn(
                 XmlOptions::get().get<int>( QStringLiteral("SESSION_FILES_SORT_COLUMN") ),
