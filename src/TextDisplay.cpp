@@ -2607,6 +2607,8 @@ void TextDisplay::_highlightParenthesis()
 
                     if( increment < 0 )
                     {
+                        // increment position
+                        position = match.capturedStart();
                         found = true;
                         break;
                     }
