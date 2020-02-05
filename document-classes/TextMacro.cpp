@@ -196,24 +196,23 @@ TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) co
 TextMacro::Result TextMacro::Rule::_processText( QString& text, int position ) const
 {
     TextMacro::Result out;
-    for( int currentPosition = 0; ( currentPosition = pattern_.indexIn( text, currentPosition ) ) >= 0; currentPosition += replaceText_.size() - pattern_.matchedLength() )
+    QRegularExpressionMatch match;
+    for( int currentPosition = 0; ( currentPosition = text.indexOf( pattern_, currentPosition, &match ) ) >= 0; currentPosition += replaceText_.size() - match.capturedLength() )
     {
-
-        Debug::Throw() << "TextMacro::Rule::_processText - position: " << currentPosition << " text: " << text << endl;
 
         // replacement occured
         out.first = true;
 
         // replace in text
-        text.replace( currentPosition, pattern_.matchedLength(), replaceText_ );
+        text.replace( currentPosition, match.capturedLength(), replaceText_ );
 
         // update output displacements
         if( position >= 0 && currentPosition <= position + out.second )
-        { out.second += replaceText_.length() - qMin( pattern_.matchedLength(), position + out.second - currentPosition ); }
+        { out.second += replaceText_.length() - qMin( match.capturedLength(), position + out.second - currentPosition ); }
 
         // end of line pattern must stop after first iteration
         // in order not to enter infinite loop
-        if( pattern_.pattern() == "$" ) break;
+        if( pattern_.pattern() == QStringLiteral( "$" ) ) break;
 
     }
 

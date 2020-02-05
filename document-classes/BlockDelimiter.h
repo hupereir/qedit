@@ -26,7 +26,7 @@
 
 #include <QDomElement>
 #include <QDomDocument>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QList>
 
 //* text delimiter (for highlighting)
@@ -65,7 +65,7 @@ class BlockDelimiter final: private Base::Counter<BlockDelimiter>
     { second_ = value; }
 
     //* regExp that match either block start or end
-    const QRegExp& regexp() const
+    const QRegularExpression& regexp() const
     { return regexp_; }
 
     //* regext
@@ -85,7 +85,7 @@ class BlockDelimiter final: private Base::Counter<BlockDelimiter>
     QString second_;
 
     //* regular expression that match either of both characters
-    QRegExp regexp_;
+    QRegularExpression regexp_;
 
     //* streamer
     friend QTextStream& operator << ( QTextStream& out, const BlockDelimiter& delimiter )

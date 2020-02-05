@@ -27,8 +27,8 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QAction>
-#include <QRegExp>
 #include <QList>
+#include <QRegularExpression>
 
 //* Text modification macro
 class TextMacro final: private Base::Counter<TextMacro>
@@ -181,7 +181,7 @@ class TextMacro final: private Base::Counter<TextMacro>
         Result processText( QString& text, int position ) const;
 
         //* pattern
-        const QRegExp& pattern() const
+        const QRegularExpression& pattern() const
         { return pattern_; }
 
         //* parent name
@@ -224,7 +224,7 @@ class TextMacro final: private Base::Counter<TextMacro>
 
         //@}
         //* match pattern
-        QRegExp pattern_;
+        QRegularExpression pattern_;
 
         //* replacement text
         QString replaceText_;
