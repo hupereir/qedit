@@ -939,7 +939,7 @@ bool TextDisplay::ignoreBlock( const QTextBlock& block ) const
 //___________________________________________________________________________
 bool TextDisplay::isEmptyBlock( const QTextBlock& block ) const
 {
-    static const QRegularExpression regexp( "(^\\s*$)" );
+    static const QRegularExpression regexp( QStringLiteral("(^\\s*$)") );
     return regexp.match( block.text() ).hasMatch();
 }
 
@@ -2261,7 +2261,7 @@ void TextDisplay::_addBaseIndentation()
     if( !textIndent_->baseIndentation() ) return;
 
     // define regexp to perform replacement
-    static const QRegularExpression leadingSpaceRegExp( "^\\s*" );
+    static const QRegularExpression leadingSpaceRegExp( QStringLiteral("^\\s*") );
     QString replacement( textIndent_->baseIndentation(), ' ' );
 
     // retrieve cursor

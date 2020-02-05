@@ -271,7 +271,7 @@ bool DocumentClass::match( const File& file ) const
     {
 
         QString line;
-        static const QRegularExpression emptyLineRegexp( "(^\\s*$)" );
+        static const QRegularExpression emptyLineRegexp( QStringLiteral("(^\\s*$)") );
         while( in.bytesAvailable() && !(line = in.readLine(1024)).isNull() )
         {
 

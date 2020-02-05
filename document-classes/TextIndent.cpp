@@ -281,7 +281,7 @@ void TextIndent::_decrement( QTextBlock block )
     cursor.setPosition( block.position() + baseIndentation(), QTextCursor::MoveAnchor );
 
     // leading space characters regexp
-    static QRegularExpression regexp( "^\\s+" );
+    static QRegularExpression regexp( QStringLiteral("^\\s+") );
     const auto match( regexp.match( block.text() ) );
     if( match.hasMatch() )
     {
