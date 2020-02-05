@@ -30,15 +30,15 @@ int& IndentPattern::_counter()
 
 //_____________________________________________________
 IndentPattern::IndentPattern():
-    Counter( "IndentPattern" )
+    Counter( QStringLiteral("IndentPattern") )
 {}
 
 //_____________________________________________________
 IndentPattern::IndentPattern( const QDomElement& element ):
-    Counter( "IndentPattern" ),
+    Counter( QStringLiteral("IndentPattern") ),
     id_( _counter()++ )
 {
-    Debug::Throw( "IndentPattern::IndentPattern.\n" );
+    Debug::Throw( QStringLiteral("IndentPattern::IndentPattern.\n") );
 
     // parse attributes
     const auto attributes( element.attributes() );
@@ -72,7 +72,7 @@ IndentPattern::IndentPattern( const QDomElement& element ):
 //_____________________________________________________
 QDomElement IndentPattern::domElement( QDomDocument& parent ) const
 {
-    Debug::Throw( "IndentPattern::domElement.\n" );
+    Debug::Throw( QStringLiteral("IndentPattern::domElement.\n") );
     auto out( parent.createElement( Xml::IndentPattern ) );
     out.setAttribute( Xml::Type, QString::number( Base::toIntegralType(type_) ) );
     if( !name_.isEmpty() ) out.setAttribute( Xml::Name, name_ );
@@ -109,10 +109,10 @@ QString IndentPattern::typeName( Type type )
 
 //_____________________________________________________
 IndentPattern::Rule::Rule( const QDomElement& element ):
-    Counter( "IndentPattern::Rule" ),
+    Counter( QStringLiteral("IndentPattern::Rule") ),
     flags_( None )
 {
-    Debug::Throw( "Rule::Rule.\n" );
+    Debug::Throw( QStringLiteral("Rule::Rule.\n") );
 
     // parse attributes
     const auto attributes( element.attributes() );
@@ -143,7 +143,7 @@ IndentPattern::Rule::Rule( const QDomElement& element ):
 //________________________________________________________
 QDomElement IndentPattern::Rule::domElement( QDomDocument& parent ) const
 {
-    Debug::Throw( "IndentPattern::Rule::DomElement.\n" );
+    Debug::Throw( QStringLiteral("IndentPattern::Rule::DomElement.\n") );
     auto out( parent.createElement( Xml::Rule ) );
     out.setAttribute( Xml::Par, QString::number( paragraph() ) );
     if( flag( CaseInsensitive ) )  out.setAttribute( Xml::Options, Xml::OptionNoCase );

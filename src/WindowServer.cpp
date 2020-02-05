@@ -54,10 +54,10 @@
 //________________________________________________________________
 WindowServer::WindowServer( QObject* parent ):
     QObject( parent ),
-    Counter( "WindowServer" )
+    Counter( QStringLiteral("WindowServer") )
 {
 
-    Debug::Throw( "WindowServer::WindowServer.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::WindowServer.\n") );
 
     // create actions
     saveAllAction_ = new QAction( IconEngine::get( IconNames::SaveAll ), tr( "Save All" ), this );
@@ -76,7 +76,7 @@ WindowServer::WindowServer( QObject* parent ):
 //_____________________________________
 MainWindow& WindowServer::newMainWindow()
 {
-    Debug::Throw( "WindowServer::newMainWindow.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::newMainWindow.\n") );
     auto window = new MainWindow;
 
     Base::Key::associate( this, window );
@@ -121,7 +121,7 @@ MainWindow& WindowServer::newMainWindow()
 FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) const
 {
 
-    Debug::Throw( "WindowServer::records.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::records.\n") );
 
     // output
     FileRecord::List records;
@@ -177,7 +177,7 @@ FileRecord::List WindowServer::records( Flags recordFlags, QWidget* window ) con
 bool WindowServer::closeAll()
 {
 
-    Debug::Throw( "WindowServer::closeAll.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::closeAll.\n") );
 
     // retrieve opened files
     auto records( WindowServer::records() );
@@ -201,7 +201,7 @@ bool WindowServer::closeAll()
 void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
 {
 
-    Debug::Throw( "WindowServer::readFilesFromArguments.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::readFilesFromArguments.\n") );
 
     // retrieve files from arguments
     // const CommandLineParser parser( Application::commandLineParser( arguments ) );
@@ -324,7 +324,7 @@ void WindowServer::open( const FileRecord::List& records )
 //___________________________________________________________
 void WindowServer::multipleFileReplace( QList<File> files, TextSelection selection )
 {
-    Debug::Throw( "WindowServer::multipleFileReplace.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::multipleFileReplace.\n") );
 
     // create progressDialog
     ProgressDialog dialog;
@@ -393,7 +393,7 @@ void WindowServer::multipleFileReplace( QList<File> files, TextSelection selecti
 void WindowServer::_updateConfiguration()
 {
 
-    Debug::Throw( "WindowServer::_updateConfiguration.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_updateConfiguration.\n") );
     openMode_ = (OpenMode) XmlOptions::get().get<int>( "OPEN_MODE" );
     _setDefaultOrientation( OrientationMode::Normal, (Qt::Orientation) XmlOptions::get().get<int>( "ORIENTATION" ) );
     _setDefaultOrientation( OrientationMode::Diff, (Qt::Orientation) XmlOptions::get().get<int>( "DIFF_ORIENTATION" ) );
@@ -411,7 +411,7 @@ void WindowServer::_activeWindowChanged( MainWindow* window )
 void WindowServer::_updateActions()
 {
 
-    Debug::Throw( "WindowServer::_updateActions.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_updateActions.\n") );
     saveAllAction_->setEnabled( !records( ModifiedOnly ).empty() );
 
 }
@@ -420,7 +420,7 @@ void WindowServer::_updateActions()
 void WindowServer::_newFile( WindowServer::OpenMode mode )
 {
 
-    Debug::Throw( "WindowServer::_newFile.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_newFile.\n") );
 
     // retrieve all MainWindows
     Base::KeySet<MainWindow> windows( this );
@@ -481,7 +481,7 @@ void WindowServer::_newFile( WindowServer::OpenMode mode )
 void WindowServer::_newFile( Qt::Orientation orientation )
 {
 
-    Debug::Throw( "WindowServer::_newFile.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_newFile.\n") );
 
     // retrieve active view
     auto& activeView( _activeWindow().activeView() );
@@ -680,7 +680,7 @@ bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
 void WindowServer::_detach()
 {
 
-    Debug::Throw( "WindowServer::_detach.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_detach.\n") );
 
     // check number of independent displays
     auto& activeWindowLocal( _activeWindow() );
@@ -702,7 +702,7 @@ void WindowServer::_detach( const File& file )
     auto&& activeWindowLocal( _activeWindow() );
     if( activeWindowLocal.activeView().independentDisplayCount() <= 1 && Base::KeySet<TextView>( &_activeWindow() ).size() <= 1 )
     {
-        Debug::Throw( "WindowServer::_detach - invalid display count.\n" );
+        Debug::Throw( QStringLiteral("WindowServer::_detach - invalid display count.\n") );
         return;
     }
 
@@ -854,7 +854,7 @@ void WindowServer::_reparentToMain( const File& first, const File& second )
 //_______________________________________________
 void WindowServer::_saveAll()
 {
-    Debug::Throw( "WindowServer::_saveAll.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_saveAll.\n") );
     _save( records( ModifiedOnly ) );
     return;
 
@@ -863,7 +863,7 @@ void WindowServer::_saveAll()
 //_______________________________________________
 void WindowServer::_save( FileRecord::List records )
 {
-    Debug::Throw( "WindowServer::_save.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_save.\n") );
 
     // check how many records are modified
     if( records.empty() ) return;
@@ -890,7 +890,7 @@ void WindowServer::_save( FileRecord::List records )
 //_______________________________________________
 bool WindowServer::_close( FileRecord::List records )
 {
-    Debug::Throw( "WindowServer::_close.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_close.\n") );
 
     // check how many records are modified
     if( records.isEmpty() ) return false;
@@ -1037,7 +1037,7 @@ TextDisplay& WindowServer::_findDisplay( const File& file )
 FileRecord WindowServer::_selectFileFromDialog()
 {
 
-    Debug::Throw( "WindowServer::_selectFileFromDialog.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_selectFileFromDialog.\n") );
 
     FileRecord record;
 
@@ -1055,7 +1055,7 @@ FileRecord WindowServer::_selectFileFromDialog()
 //_______________________________________________
 bool WindowServer::_createNewFile( const FileRecord& record )
 {
-    Debug::Throw( "WindowServer::_createNewFile.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_createNewFile.\n") );
 
     // check file is valid
     if( record.file().isEmpty() ) return false;
@@ -1103,7 +1103,7 @@ bool WindowServer::_createNewFile( const FileRecord& record )
 //________________________________________________________________
 void WindowServer::_applyCommandLineArguments( TextDisplay& display, const CommandLineParser& parser )
 {
-    Debug::Throw( "WindowServer::_applyCommandLineArguments.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_applyCommandLineArguments.\n") );
 
     //! see if autospell action is required
     bool autospell( parser.hasFlag( "--autospell" ) );
@@ -1122,7 +1122,7 @@ void WindowServer::_applyCommandLineArguments( TextDisplay& display, const Comma
     #endif
 
     if( autospell ) display.autoSpellAction().setChecked( true );
-    Debug::Throw( "WindowServer::_applyCommandLineArguments - done.\n" );
+    Debug::Throw( QStringLiteral("WindowServer::_applyCommandLineArguments - done.\n") );
 
 }
 

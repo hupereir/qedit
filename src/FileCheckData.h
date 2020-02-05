@@ -39,7 +39,7 @@ class FileCheckData: private Base::Counter<FileCheckData>
 
     //* constructor
     explicit FileCheckData( File file = File(), Flag flag = Flag::None, TimeStamp stamp = TimeStamp() ):
-        Counter( "FileCheckData" ),
+        Counter( QStringLiteral("FileCheckData") ),
         file_( file ),
         flag_( flag ),
         timeStamp_( stamp )

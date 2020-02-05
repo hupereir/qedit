@@ -37,7 +37,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     CustomDialog( parent, OkButton|CancelButton )
 {
 
-    Debug::Throw( "DocumentClassManagerDialog::DocumentClassManagerDialog.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassManagerDialog::DocumentClassManagerDialog.\n") );
     setOptionName( "DOCUMENT_CLASS_MANAGER_DIALOG" );
 
     auto hLayout = new QHBoxLayout;
@@ -109,7 +109,7 @@ File::List DocumentClassManagerDialog::userFiles() const
 void DocumentClassManagerDialog::_reload()
 {
 
-    Debug::Throw( "DocumentClassManager::Dialog::_reload.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassManager::Dialog::_reload.\n") );
 
     DocumentClassManager classManager;
     for( const auto& option:XmlOptions::get().specialOptions( "PATTERN_FILENAME" ) )
@@ -128,7 +128,7 @@ void DocumentClassManagerDialog::_reload()
 void DocumentClassManagerDialog::_add()
 {
 
-    Debug::Throw( "DocumentClassManagerDialog::_add.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassManagerDialog::_add.\n") );
     FileDialog dialog( this );
     dialog.setAcceptMode( QFileDialog::AcceptOpen );
     dialog.setFileMode( QFileDialog::ExistingFile );
@@ -145,7 +145,7 @@ void DocumentClassManagerDialog::_add()
 //______________________________________________________________________
 void DocumentClassManagerDialog::_remove()
 {
-    Debug::Throw( "DocumentClassManagerDialog::_remove.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassManagerDialog::_remove.\n") );
 
     // loop over selected items
     QSet<File> removedFiles;

@@ -25,7 +25,7 @@
 
 //_________________________________________________________
 BlockDelimiter::BlockDelimiter( const QDomElement& element, int id ):
-    Counter( "BlockDelimiter" ),
+    Counter( QStringLiteral("BlockDelimiter") ),
     id_( id )
 {
 
@@ -53,7 +53,7 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element, int id ):
 //_____________________________________________________
 QDomElement BlockDelimiter::domElement( QDomDocument& parent ) const
 {
-    Debug::Throw( "BlockDelimiter::DomElement.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiter::DomElement.\n") );
     auto out( parent.createElement( Xml::BlockDelimiter ) );
 
     // dump attributes

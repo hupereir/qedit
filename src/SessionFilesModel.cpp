@@ -44,7 +44,7 @@ SessionFilesModel::IconCache& SessionFilesModel::_icons()
 SessionFilesModel::SessionFilesModel( QObject* parent ):
     FileRecordModel( parent )
 {
-    Debug::Throw("SessionFilesModel::SessionFilesModel.\n" );
+    Debug::Throw(QStringLiteral("SessionFilesModel::SessionFilesModel.\n") );
     setShowIcons( false );
     connect( Base::Singleton::get().application<Application>(), &Application::configurationChanged, this, &SessionFilesModel::_updateConfiguration );
 }
@@ -91,7 +91,7 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
 //____________________________________________________________
 void SessionFilesModel::_updateConfiguration()
 {
-    Debug::Throw( "SessionFilesModel::_updateConfiguration.\n" );
+    Debug::Throw( QStringLiteral("SessionFilesModel::_updateConfiguration.\n") );
     _icons().clear();
 }
 

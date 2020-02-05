@@ -25,10 +25,10 @@
 
 //_________________________________________________________
 TextParenthesis::TextParenthesis( const QDomElement& element ):
-Counter( "TextParenthesis" )
+Counter( QStringLiteral("TextParenthesis") )
 {
 
-    Debug::Throw( "TextParenthesis::TextParenthesis.\n" );
+    Debug::Throw( QStringLiteral("TextParenthesis::TextParenthesis.\n") );
 
     // parse attributes
     const  auto attributes( element.attributes() );
@@ -53,7 +53,7 @@ Counter( "TextParenthesis" )
 //_____________________________________________________
 QDomElement TextParenthesis::domElement( QDomDocument& parent ) const
 {
-    Debug::Throw( "TextParenthesis::DomElement.\n" );
+    Debug::Throw( QStringLiteral("TextParenthesis::DomElement.\n") );
     auto out( parent.createElement( Xml::Parenthesis ) );
 
     // dump attributes

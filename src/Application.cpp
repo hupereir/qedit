@@ -45,13 +45,13 @@
 //____________________________________________
 Application::Application( CommandLineArguments arguments ):
     BaseApplication( nullptr, arguments ),
-    Counter( "Application" )
+    Counter( QStringLiteral("Application") )
 {}
 
 //____________________________________________
 bool Application::initApplicationManager()
 {
-    Debug::Throw( "Application::initApplicationManager.\n" );
+    Debug::Throw( QStringLiteral("Application::initApplicationManager.\n") );
 
     // retrieve files from arguments and expand if needed
     auto parser = commandLineParser( _arguments() );
@@ -92,7 +92,7 @@ bool Application::initApplicationManager()
 //____________________________________________
 bool Application::realizeWidget()
 {
-    Debug::Throw( "Application::realizeWidget.\n" );
+    Debug::Throw( QStringLiteral("Application::realizeWidget.\n") );
 
     // check if the method has already been called.
     if( !BaseApplication::realizeWidget() ) return false;
@@ -150,7 +150,7 @@ bool Application::realizeWidget()
 //____________________________________________
 CommandLineParser Application::commandLineParser( CommandLineArguments arguments, bool ignoreWarnings ) const
 {
-    Debug::Throw( "Application::commandLineParser.\n" );
+    Debug::Throw( QStringLiteral("Application::commandLineParser.\n") );
     CommandLineParser out( BaseApplication::commandLineParser() );
 
     out.setGroup( CommandLineParser::applicationGroupName );
@@ -184,7 +184,7 @@ void Application::usage() const
 //____________________________________________________________
 void Application::_updateDocumentClasses()
 {
-    Debug::Throw( "Application::_updateDocumentClasses.\n" );
+    Debug::Throw( QStringLiteral("Application::_updateDocumentClasses.\n") );
 
     // clear document classes
     classManager_->clear();
@@ -222,7 +222,7 @@ void Application::_updateDocumentClasses()
 //___________________________________________________________
 void Application::_configuration()
 {
-    Debug::Throw( "Application::_configuration.\n" );
+    Debug::Throw( QStringLiteral("Application::_configuration.\n") );
     emit saveConfiguration();
     ConfigurationDialog dialog;
     connect( &dialog, &BaseConfigurationDialog::configurationChanged, this, &BaseCoreApplication::configurationChanged );
@@ -236,7 +236,7 @@ void Application::_spellCheckConfiguration()
 
     #if WITH_ASPELL
 
-    Debug::Throw( "Application::_spellCheckConfiguration.\n" );
+    Debug::Throw( QStringLiteral("Application::_spellCheckConfiguration.\n") );
 
     // create dialog
     SpellCheck::ConfigurationDialog dialog;
@@ -251,7 +251,7 @@ void Application::_spellCheckConfiguration()
 //_______________________________________________
 void Application::_documentClassesConfiguration()
 {
-    Debug::Throw( "Application::_documentClassesConfiguration.\n" );
+    Debug::Throw( QStringLiteral("Application::_documentClassesConfiguration.\n") );
     DocumentClassManagerDialog dialog;
     dialog.setWindowTitle( tr( "Document Types Configuration" ) );
     if( !dialog.exec() ) return;
@@ -267,7 +267,7 @@ void Application::_documentClassesConfiguration()
 //___________________________________________________________
 void Application::_saveSession()
 {
-    Debug::Throw( "Application::_saveSession.\n" );
+    Debug::Throw( QStringLiteral("Application::_saveSession.\n") );
     sessionFiles_->set( windowServer_->records( WindowServer::ExistingOnly ) );
     static_cast<XmlFileList*>(sessionFiles_.get())->write();
     _updateSessionActions();
@@ -276,7 +276,7 @@ void Application::_saveSession()
 //___________________________________________________________
 void Application::_printSession()
 {
-    Debug::Throw( "Application::_printSession.\n" );
+    Debug::Throw( QStringLiteral("Application::_printSession.\n") );
 
     // get session records
     const FileRecord::List records( windowServer_->records( WindowServer::ExistingOnly ) );
@@ -300,7 +300,7 @@ void Application::_printSession()
 //___________________________________________________________
 void Application::_restoreSession()
 {
-    Debug::Throw( "Application::_restoreSession.\n" );
+    Debug::Throw( QStringLiteral("Application::_restoreSession.\n") );
     auto&& records( sessionFiles_->records() );
     if( !( records.isEmpty() || !RestoreSessionDialog( qApp->activeWindow(), records ).exec() ) )
     { windowServer_->open( records ); }
@@ -309,7 +309,7 @@ void Application::_restoreSession()
 //___________________________________________________________
 void Application::_restoreLastSession()
 {
-    Debug::Throw( "Application::_restoreLastSession.\n" );
+    Debug::Throw( QStringLiteral("Application::_restoreLastSession.\n") );
     auto&& records( lastSessionFiles_->records() );
     if( !( records.isEmpty() || !RestoreSessionDialog( qApp->activeWindow(), records ).exec() ) )
     { windowServer_->open( records ); }
@@ -318,7 +318,7 @@ void Application::_restoreLastSession()
 //___________________________________________________________
 void Application::_discardSession()
 {
-    Debug::Throw( "Application::_discardSession.\n" );
+    Debug::Throw( QStringLiteral("Application::_discardSession.\n") );
     sessionFiles_->clear();
     static_cast<XmlFileList*>(sessionFiles_.get())->write();
     _updateSessionActions();
@@ -335,7 +335,7 @@ void Application::_updateLastSessionFiles()
 void Application::_updateSessionActions()
 {
 
-    Debug::Throw( "Application::_updateSessionActions.\n" );
+    Debug::Throw( QStringLiteral("Application::_updateSessionActions.\n") );
 
     {
         const bool empty( sessionFiles_->isEmpty() );
@@ -357,7 +357,7 @@ void Application::_updateSessionActions()
 void Application::_showMonitoredFiles()
 {
 
-    Debug::Throw( "Application::_showMonitoredFiles.\n" );
+    Debug::Throw( QStringLiteral("Application::_showMonitoredFiles.\n") );
     FileCheckDialog dialog( qApp->activeWindow() );
     dialog.setFiles( fileCheck_->fileSystemWatcher().files() );
     dialog.exec();
@@ -368,7 +368,7 @@ void Application::_showMonitoredFiles()
 void Application::_exit()
 {
 
-    Debug::Throw( "Application::_exit.\n" );
+    Debug::Throw( QStringLiteral("Application::_exit.\n") );
     _updateLastSessionFiles();
     if( !windowServer_->closeAll() ) return;
     qApp->quit();
@@ -396,7 +396,7 @@ bool Application::_processCommand( Server::ServerCommand command )
 //___________________________________________________________
 void Application::timerEvent( QTimerEvent* event )
 {
-    Debug::Throw( "Application::timerEvent.\n" );
+    Debug::Throw( QStringLiteral("Application::timerEvent.\n") );
     if( event->timerId() == startupTimer_.timerId() )
     {
 
@@ -410,7 +410,7 @@ void Application::timerEvent( QTimerEvent* event )
 //_________________________________________________
 void Application::_updateConfiguration()
 {
-    Debug::Throw( "Application::_updateConfiguration.\n" );
+    Debug::Throw( QStringLiteral("Application::_updateConfiguration.\n") );
     static_cast<XmlFileList*>(recentFiles_.get())->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
     static_cast<XmlFileList*>(sessionFiles_.get())->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
     static_cast<XmlFileList*>(lastSessionFiles_.get())->setDBFile( File( XmlOptions::get().raw( "RC_FILE" ) ) );
@@ -421,7 +421,7 @@ void Application::_updateConfiguration()
 void Application::_installActions()
 {
 
-    Debug::Throw( "Application::_installActions.\n" );
+    Debug::Throw( QStringLiteral("Application::_installActions.\n") );
 
     // need to modify closeAction signal for proper exit
     closeAction().disconnect();

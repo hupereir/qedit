@@ -28,14 +28,14 @@
 
 //________________________________________________________
 DocumentClass::DocumentClass():
-    Counter( "DocumentClass" )
-{ Debug::Throw( "DocumentClass::DocumentClass.\n" ); }
+    Counter( QStringLiteral("DocumentClass") )
+{ Debug::Throw( QStringLiteral("DocumentClass::DocumentClass.\n") ); }
 
 //________________________________________________________
 DocumentClass::DocumentClass( const QDomElement& element ):
-    Counter( "DocumentClass" )
+    Counter( QStringLiteral("DocumentClass") )
 {
-    Debug::Throw( "DocumentClass::DocumentClass.\n" );
+    Debug::Throw( QStringLiteral("DocumentClass::DocumentClass.\n") );
 
     // parse attributes
     const auto attributes( element.attributes() );
@@ -148,7 +148,7 @@ bool operator == ( const DocumentClass& first, const DocumentClass& second )
 QStringList DocumentClass::_associatePatterns()
 {
 
-    Debug::Throw( "DocumentClass::_associatePatterns.\n" );
+    Debug::Throw( QStringLiteral("DocumentClass::_associatePatterns.\n") );
     QStringList out;
 
     // assign pattern ids
@@ -191,7 +191,7 @@ QStringList DocumentClass::_associatePatterns()
 //________________________________________________
 QDomElement DocumentClass::domElement( QDomDocument& parent ) const
 {
-    Debug::Throw( "DocumentClass::domElement.\n" );
+    Debug::Throw( QStringLiteral("DocumentClass::domElement.\n") );
     auto out( parent.createElement( Xml::DocumentClass ) );
 
     // dump attributes
@@ -256,7 +256,7 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
 bool DocumentClass::match( const File& file ) const
 {
 
-    Debug::Throw( "DocumentClass::Match.\n" );
+    Debug::Throw( QStringLiteral("DocumentClass::Match.\n") );
 
     // check if class is default
     if( default_ ) { return true; }

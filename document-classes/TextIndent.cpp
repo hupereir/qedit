@@ -28,15 +28,15 @@
 //______________________________________________
 TextIndent::TextIndent( TextEditor* editor ):
     QObject( editor ),
-    Counter( "TextIndent" ),
+    Counter( QStringLiteral("TextIndent") ),
     editor_( editor )
-{ Debug::Throw( "TextIndent::TextIndent.\n" ); }
+{ Debug::Throw( QStringLiteral("TextIndent::TextIndent.\n") ); }
 
 //______________________________________________
 void TextIndent::indent( QTextBlock first, QTextBlock last )
 {
 
-    Debug::Throw( "TextIndent::indent (multi-block).\n" );
+    Debug::Throw( QStringLiteral("TextIndent::indent (multi-block).\n") );
     if( !isEnabled() || patterns_.empty() ) return;
 
     // store all blocks prior to starting modifications

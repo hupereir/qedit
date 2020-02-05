@@ -38,7 +38,7 @@ class AutoSaveThread: public QThread, public Base::Key, private Base::Counter<Au
     //* constructor
     explicit AutoSaveThread( QObject* parent ):
         QThread( parent ),
-        Counter( "AutoSaveThread" )
+        Counter( QStringLiteral("AutoSaveThread") )
     {}
 
     //*@name accessors

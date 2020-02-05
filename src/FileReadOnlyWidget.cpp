@@ -31,7 +31,7 @@ FileReadOnlyWidget::FileReadOnlyWidget( QWidget* parent, const File& file ):
     MessageWidget( parent, MessageType::Information )
 {
 
-    Debug::Throw( "FileReadOnlyWidget::FileReadOnlyWidget.\n" );
+    Debug::Throw( QStringLiteral("FileReadOnlyWidget::FileReadOnlyWidget.\n") );
 
     setFile( file );
     addDefaultCloseButton();

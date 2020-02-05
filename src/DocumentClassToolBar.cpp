@@ -32,7 +32,7 @@ DocumentClassToolBar::DocumentClassToolBar( QWidget* parent ):
 CustomToolBar( tr( "Document Classes" ), parent, "DOCUMENT_CLASS_TOOLBAR" )
 {
 
-    Debug::Throw( "DocumentClassToolBar::DocumentClassToolBar.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassToolBar::DocumentClassToolBar.\n") );
     addWidget( combobox_ = new QComboBox( this ) );
 
     connect( &_comboBox(), QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DocumentClassToolBar::_currentIndexChanged );
@@ -43,7 +43,7 @@ CustomToolBar( tr( "Document Classes" ), parent, "DOCUMENT_CLASS_TOOLBAR" )
 //________________________________________________________________
 void DocumentClassToolBar::update( QString className )
 {
-    Debug::Throw( "DocumentClassToolBar::update.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassToolBar::update.\n") );
     currentClass_ = className;
     _comboBox().setCurrentIndex( _comboBox().findText( className ) );
 }
@@ -51,7 +51,7 @@ void DocumentClassToolBar::update( QString className )
 //________________________________________________________________
 void DocumentClassToolBar::_currentIndexChanged( int index )
 {
-    Debug::Throw( "DocumentClassToolBar::_currentIndexChanged.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassToolBar::_currentIndexChanged.\n") );
     QString className( _comboBox().itemText( index ) );
     if( className == currentClass_ ) return;
     currentClass_ = className;
@@ -61,7 +61,7 @@ void DocumentClassToolBar::_currentIndexChanged( int index )
 //________________________________________________________________
 void DocumentClassToolBar::_update()
 {
-    Debug::Throw( "DocumentClassToolBar::_update.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassToolBar::_update.\n") );
 
     // store current item
     QString currentClass( _comboBox().currentText() );

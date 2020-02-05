@@ -95,7 +95,7 @@ class MenuBar:public QMenuBar, private Base::Counter<MenuBar>
         //* constructor
         explicit ActionGroup( QObject* parent ):
             QActionGroup( parent ),
-            Counter( "Menu::ActionGroup" )
+            Counter( QStringLiteral("Menu::ActionGroup") )
         {}
 
     };

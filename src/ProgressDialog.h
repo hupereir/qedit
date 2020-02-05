@@ -36,7 +36,7 @@ class ProgressDialog:public QProgressDialog, private Base::Counter<ProgressDialo
     //* constructor
     explicit ProgressDialog( QWidget* parent = nullptr ):
         QProgressDialog( parent ),
-        Counter( "ProgressDialog" )
+        Counter( QStringLiteral("ProgressDialog") )
     {}
 
     //* offset

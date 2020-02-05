@@ -30,14 +30,14 @@
 //_________________________________________________________
 TextHighlight::TextHighlight( QTextDocument* document ):
     QSyntaxHighlighter( document ),
-    Counter( "TextHighlight" )
+    Counter( QStringLiteral("TextHighlight") )
 {}
 
 //_______________________________________________________
 void TextHighlight::setParenthesis( const TextParenthesis::List& parenthesis )
 {
 
-    Debug::Throw( "TextHighlight::setParenthesis.\n" );
+    Debug::Throw( QStringLiteral("TextHighlight::setParenthesis.\n") );
     parenthesis_ = parenthesis;
 
 }

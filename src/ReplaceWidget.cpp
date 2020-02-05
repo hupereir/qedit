@@ -27,7 +27,7 @@
 ReplaceWidget::ReplaceWidget( QWidget* parent ):
     BaseReplaceWidget( parent )
 {
-    Debug::Throw( "ReplaceWidget::ReplaceWidget.\n" );
+    Debug::Throw( QStringLiteral("ReplaceWidget::ReplaceWidget.\n") );
 
     // insert multiple file buttons
     QAction* action;

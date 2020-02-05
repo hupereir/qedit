@@ -112,7 +112,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
     filterPropertyId_( FileRecord::PropertyId::get( FileRecordProperties::Filter ) )
 {
 
-    Debug::Throw("TextDisplay::TextDisplay.\n" );
+    Debug::Throw(QStringLiteral("TextDisplay::TextDisplay.\n") );
 
     // disable rich text
     setAcceptRichText( false );
@@ -162,7 +162,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
     _updateConfiguration();
     _updateSpellCheckConfiguration();
 
-    Debug::Throw( "TextDisplay::TextDisplay - done.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::TextDisplay - done.\n") );
 
 }
 
@@ -196,13 +196,13 @@ void TextDisplay::setModified( bool value )
     // do nothing if state is unchanged
     if( value == document()->isModified() )
     {
-        Debug::Throw( "TextDisplay::setModified - unchanged.\n" );
+        Debug::Throw( QStringLiteral("TextDisplay::setModified - unchanged.\n") );
         return;
     }
 
     if( value && isReadOnly() )
     {
-        Debug::Throw( "TextDisplay::setModified - rejected.\n" );
+        Debug::Throw( QStringLiteral("TextDisplay::setModified - rejected.\n") );
         return;
     }
 
@@ -246,7 +246,7 @@ void TextDisplay::setReadOnly( bool value )
 void TextDisplay::installContextMenuActions( BaseContextMenu* menu, bool )
 {
 
-    Debug::Throw( "TextDisplay::installContextMenuActions.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::installContextMenuActions.\n") );
 
     // see if tagged blocks are present
     const bool hasTags( hasTaggedBlocks() );
@@ -289,7 +289,7 @@ void TextDisplay::paintMargin( QPainter& painter )
 void TextDisplay::synchronize( TextDisplay* other )
 {
 
-    Debug::Throw( "TextDisplay::synchronize.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::synchronize.\n") );
 
     // replace base class syntax highlighter prior to calling base class synchronization
     /* this prevents from calling to invalid block of memory which the textHighlight gets deleted
@@ -343,7 +343,7 @@ void TextDisplay::synchronize( TextDisplay* other )
 void TextDisplay::setIsNewDocument()
 {
 
-    Debug::Throw( "TextDisplay::setIsNewDocument.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::setIsNewDocument.\n") );
 
     // do nothing if already set
     if( isNewDocument() ) return;
@@ -432,7 +432,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
         display->_updateSpellCheckConfiguration( file );
     }
 
-    Debug::Throw( "TextDisplay::setFile - updated displays.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::setFile - updated displays.\n") );
 
     // check file and try open.
     QFile in( tmp );
@@ -458,7 +458,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
             }
         }
 
-        Debug::Throw( "TextDisplay::setFile - file read.\n" );
+        Debug::Throw( QStringLiteral("TextDisplay::setFile - file read.\n") );
 
         // get encoding
         auto codec( QTextCodec::codecForName( textEncoding_ ) );
@@ -469,7 +469,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
         setModified( false );
         _setIgnoreWarnings( false );
 
-        Debug::Throw( "TextDisplay::setFile - content set.\n" );
+        Debug::Throw( QStringLiteral("TextDisplay::setFile - content set.\n") );
 
     }
 
@@ -483,7 +483,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
     // perform first autosave
     auto application( Base::Singleton::get().application<Application>() );
     application->autoSave().saveFiles( this );
-    Debug::Throw( "TextDisplay::setFile - done.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::setFile - done.\n") );
 
 }
 
@@ -510,7 +510,7 @@ void TextDisplay::_setFile( const File& file )
     checkFileReadOnly();
 
     if( isActive() ) emit needUpdate( FileName );
-    Debug::Throw( "TextDisplay::_setFile - done.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_setFile - done.\n") );
 
 }
 
@@ -574,14 +574,14 @@ void TextDisplay::checkFileModified()
 //___________________________________________________________________________
 void TextDisplay::checkFileReadOnly()
 {
-    Debug::Throw( "TextDisplay::checkFileReadOnly.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::checkFileReadOnly.\n") );
     setReadOnly( file_.exists() && !file_.isWritable() );
 }
 
 //___________________________________________________________________________
 void TextDisplay::setFileCheckData( FileCheckData data )
 {
-    Debug::Throw( "TextDisplay::setFileCheckData.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::setFileCheckData.\n") );
 
     // check if data flag is different from stored
     bool flagsChanged( data.flag() != fileCheckData_.flag() );
@@ -598,7 +598,7 @@ void TextDisplay::setFileCheckData( FileCheckData data )
 void TextDisplay::clearFileCheckData()
 {
 
-    Debug::Throw( "TextDisplay::clearFileCheckData.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::clearFileCheckData.\n") );
 
     if( fileCheckData_.flag() == FileCheckData::Flag::None ) return;
 
@@ -613,7 +613,7 @@ void TextDisplay::clearFileCheckData()
 //___________________________________________________________________________
 AskForSaveDialog::ReturnCode TextDisplay::askForSave( bool enableAll )
 {
-    Debug::Throw( "TextDisplay::askForSave.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::askForSave.\n") );
 
     if( !( document()->isModified() && _contentsChanged() ) ) return AskForSaveDialog::Yes;
 
@@ -634,7 +634,7 @@ AskForSaveDialog::ReturnCode TextDisplay::askForSave( bool enableAll )
 //___________________________________________________________________________
 void TextDisplay::save()
 {
-    Debug::Throw( "TextDisplay::save.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::save.\n") );
 
     // do nothing if not modified
     if( !document()->isModified() ) return;
@@ -732,7 +732,7 @@ void TextDisplay::save()
 //___________________________________________________________________________
 void TextDisplay::saveAs()
 {
-    Debug::Throw( "TextDisplay::saveAs.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::saveAs.\n") );
 
     // define default file
     auto defaultFile( file_ );
@@ -793,7 +793,7 @@ void TextDisplay::saveAs()
 void TextDisplay::revertToSave()
 {
 
-    Debug::Throw( "TextDisplay::revertToSave.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::revertToSave.\n") );
 
     // clear file removde/file modified data
     clearFileCheckData();
@@ -887,7 +887,7 @@ void TextDisplay::_setTextEncoding( const QByteArray& value )
 //_______________________________________________________
 bool TextDisplay::hasLeadingTabs() const
 {
-    Debug::Throw( "TextDisplay::hasLeadingTabs.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::hasLeadingTabs.\n") );
 
     // define regexp to perform replacement
     const auto wrongTabRegExp( _hasTabEmulation() ? _normalTabRegExp():_emulatedTabRegExp() );
@@ -902,7 +902,7 @@ bool TextDisplay::hasLeadingTabs() const
 QString TextDisplay::toPlainText() const
 {
 
-    Debug::Throw( "TextDisplay::toPlainText.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::toPlainText.\n") );
 
     // check blockDelimiterAction
     if( !( showBlockDelimiterAction_->isEnabled() && showBlockDelimiterAction_->isChecked() ) )
@@ -946,7 +946,7 @@ bool TextDisplay::isEmptyBlock( const QTextBlock& block ) const
 //___________________________________________________________________________
 void TextDisplay::tagBlock( QTextBlock block, int tag )
 {
-    Debug::Throw( "TextDisplay::tagBlock.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::tagBlock.\n") );
 
     auto data( dynamic_cast<HighlightBlockData*>( block.userData() ) );
     if( !data ) block.setUserData( data = new HighlightBlockData );
@@ -1000,14 +1000,14 @@ void TextDisplay::clearTag( QTextBlock block, int tags )
         clearBackground( block );
     }
 
-    Debug::Throw( "TextDisplay::clearTag - done.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::clearTag - done.\n") );
 
 }
 
 //_____________________________________________________________
 void TextDisplay::hideFileRemovedWidgets()
 {
-    Debug::Throw( "TextDisplay::hideFileRemovedWidgets.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::hideFileRemovedWidgets.\n") );
 
     // get associated displays
     Base::KeySet<TextDisplay> associatedDisplays( this );
@@ -1024,7 +1024,7 @@ void TextDisplay::hideFileRemovedWidgets()
 //_____________________________________________________________
 void TextDisplay::hideFileModifiedWidgets()
 {
-    Debug::Throw( "TextDisplay::hideFileModifiedWidgets.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::hideFileModifiedWidgets.\n") );
 
     // get associated displays
     Base::KeySet<TextDisplay> associatedDisplays( this );
@@ -1041,7 +1041,7 @@ void TextDisplay::hideFileModifiedWidgets()
 //_____________________________________________________________
 void TextDisplay::hideFileReadOnlyWidgets()
 {
-    Debug::Throw( "TextDisplay::hideFileReadOnlyWidgets.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::hideFileReadOnlyWidgets.\n") );
 
     // get associated displays
     Base::KeySet<TextDisplay> associatedDisplays( this );
@@ -1059,7 +1059,7 @@ void TextDisplay::hideFileReadOnlyWidgets()
 bool TextDisplay::isCurrentBlockTagged() const
 {
 
-    Debug::Throw( "TextDisplay::isCurrentBlockTagged.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::isCurrentBlockTagged.\n") );
 
     const auto cursor( textCursor() );
     const TextBlockRange range =
@@ -1082,7 +1082,7 @@ bool TextDisplay::isCurrentBlockTagged() const
 bool TextDisplay::hasTaggedBlocks() const
 {
 
-    Debug::Throw( "TextDisplay::hasTaggedBlocks.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::hasTaggedBlocks.\n") );
     const TextBlockRange range( document() );
     return std::any_of( range.begin(), range.end(),
         []( const QTextBlock& block )
@@ -1098,7 +1098,7 @@ bool TextDisplay::hasTaggedBlocks() const
 void TextDisplay::_updateDocumentClass( File file, bool newDocument )
 {
 
-    Debug::Throw( "TextDisplay::_updateDocumentClass\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_updateDocumentClass\n") );
 
     textHighlight_->clear();
     textIndent_->clear();
@@ -1112,21 +1112,21 @@ void TextDisplay::_updateDocumentClass( File file, bool newDocument )
     // try load document class from className
     if( !className().isEmpty() )
     {
-        Debug::Throw( "TextDisplay::updateDocumentClass - try use className().\n" );
+        Debug::Throw( QStringLiteral("TextDisplay::updateDocumentClass - try use className().\n") );
         documentClass = application->classManager().get( className() );
     }
 
     // try load from file
     if( documentClass.name().isEmpty() && !( file.isEmpty() || newDocument ) )
     {
-        Debug::Throw( "TextDisplay::updateDocumentClass - try use filename.\n" );
+        Debug::Throw( QStringLiteral("TextDisplay::updateDocumentClass - try use filename.\n") );
         documentClass = application->classManager().find( file );
     }
 
     // use default
     if( documentClass.name().isEmpty() )
     {
-        Debug::Throw( "TextDisplay::updateDocumentClass - using default.\n" );
+        Debug::Throw( QStringLiteral("TextDisplay::updateDocumentClass - using default.\n") );
         documentClass = application->classManager().defaultClass();
     }
 
@@ -1231,14 +1231,14 @@ void TextDisplay::processMacro( QString name )
 //_______________________________________________________
 void TextDisplay::rehighlight()
 {
-    Debug::Throw( "TextDisplay::rehighlight.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::rehighlight.\n") );
 
     // set all block to modified
     for( const auto& block:TextBlockRange( document() ) )
     { _setBlockModified( block ); }
 
     textHighlight_->setDocument( document() );
-    Debug::Throw( "TextDisplay::rehighlight. done.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::rehighlight. done.\n") );
 
 }
 
@@ -1247,7 +1247,7 @@ void TextDisplay::rehighlight()
 void TextDisplay::clearAllTags( int flags )
 {
 
-    Debug::Throw( "TextDisplay::clearAllTags.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::clearAllTags.\n") );
 
     setUpdatesEnabled( false );
 
@@ -1268,7 +1268,7 @@ void TextDisplay::clearAllTags( int flags )
 //_______________________________________
 void TextDisplay::selectFilter( const QString& filter )
 {
-    Debug::Throw( "TextDisplay::selectFilter.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::selectFilter.\n") );
 
     #if WITH_ASPELL
     // local reference to interface
@@ -1297,7 +1297,7 @@ void TextDisplay::selectFilter( const QString& filter )
 //_______________________________________
 void TextDisplay::selectDictionary( const QString& dictionary )
 {
-    Debug::Throw( "TextDisplay::selectDictionary.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::selectDictionary.\n") );
 
     #if WITH_ASPELL
     // local reference to interface
@@ -1326,7 +1326,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
 //________________________________________________________________
 void TextDisplay::selectClassName( QString name )
 {
-    Debug::Throw( "TextDisplay::SelectClassName.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::SelectClassName.\n") );
 
     // retrieve all displays matching active
     // and update class name
@@ -1406,7 +1406,7 @@ void TextDisplay::keyPressEvent( QKeyEvent* event )
 void TextDisplay::contextMenuEvent( QContextMenuEvent* event )
 {
 
-    Debug::Throw( "TextEditor::contextMenuEvent.\n" );
+    Debug::Throw( QStringLiteral("TextEditor::contextMenuEvent.\n") );
 
     if( _autoSpellContextEvent( event ) ) return;
     else {
@@ -1474,7 +1474,7 @@ void TextDisplay::changeEvent(QEvent *event)
 //________________________________________________
 bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 {
-    Debug::Throw( "TextDisplay::_autoSpellContextEvent.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_autoSpellContextEvent.\n") );
 
     #if WITH_ASPELL
 
@@ -1523,7 +1523,7 @@ bool TextDisplay::_autoSpellContextEvent( QContextMenuEvent* event )
 void TextDisplay::_installActions()
 {
 
-    Debug::Throw( "TextDisplay::_installActions.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_installActions.\n") );
 
     // actions
     addAction( textIndentAction_ = new QAction( IconEngine::get( IconNames::Indent ), "Indent Text", this ) );
@@ -1761,7 +1761,7 @@ void TextDisplay::_processMacro( const TextMacro& macro )
 bool TextDisplay::_contentsChanged() const
 {
 
-    Debug::Throw( "TextDisplay::_contentsChanged.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_contentsChanged.\n") );
 
     // check file
     if( file_.isEmpty() || isNewDocument() ) return true;
@@ -1859,7 +1859,7 @@ void TextDisplay::_setBlockModified( const QTextBlock& block )
 void TextDisplay::_updateTaggedBlocks()
 {
 
-    Debug::Throw( "TextDisplay::_updateTaggedBlocks.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_updateTaggedBlocks.\n") );
 
     // loop over block
     for( const auto& block:TextBlockRange( document() ) )
@@ -1877,7 +1877,7 @@ void TextDisplay::_updateTaggedBlocks()
 //___________________________________________________________________________
 bool TextDisplay::_updateMargin()
 {
-    Debug::Throw( "TextDisplay::_updateMargin.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_updateMargin.\n") );
 
     TextEditor::_updateMargin();
     int leftMargin( _leftMargin() );
@@ -1907,7 +1907,7 @@ bool TextDisplay::_toggleWrapMode( bool state )
 //___________________________________________________________________________
 void TextDisplay::_updateConfiguration()
 {
-    Debug::Throw( "TextDisplay::_updateConfiguration.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_updateConfiguration.\n") );
 
     // indentation
     textIndentAction_->setChecked( XmlOptions::get().get<bool>( "TEXT_INDENT" ) );
@@ -2009,7 +2009,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
 //_______________________________________________________
 void TextDisplay::_indentCurrentParagraph()
 {
-    Debug::Throw( "TextDisplay::_indentCurrentParagraph.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_indentCurrentParagraph.\n") );
     if( !textIndent_->isEnabled() ) return;
     emit indent( textCursor().block(), false );
 }
@@ -2018,7 +2018,7 @@ void TextDisplay::_indentCurrentParagraph()
 void TextDisplay::_toggleTextIndent( bool state )
 {
 
-    Debug::Throw( "TextDisplay::_toggleTextIndent.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_toggleTextIndent.\n") );
 
     // update text indent
     textIndent_->setEnabled( textIndentAction_->isEnabled() && state );
@@ -2043,7 +2043,7 @@ void TextDisplay::_toggleTextIndent( bool state )
 void TextDisplay::_toggleTextHighlight( bool state )
 {
 
-    Debug::Throw( "TextDisplay::_toggleTextHighlight.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_toggleTextHighlight.\n") );
     if( textHighlight_->setHighlightEnabled( textHighlightAction_->isEnabled() && state ) )
     { rehighlight(); }
 
@@ -2104,7 +2104,7 @@ void TextDisplay::_toggleParenthesisHighlight( bool state )
 void TextDisplay::_toggleAutoSpell( bool state )
 {
     #if WITH_ASPELL
-    Debug::Throw( "TextDisplay::_toggleAutoSpell.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_toggleAutoSpell.\n") );
 
     // propagate to textHighlight
     textHighlight_->spellParser().setEnabled( state );
@@ -2172,7 +2172,7 @@ void TextDisplay::_toggleIgnoreAutomaticMacros( bool state )
 //_______________________________________________________
 void TextDisplay::_spellcheck()
 {
-    Debug::Throw( "TextDisplay::_spellcheck.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_spellcheck.\n") );
 
     #if WITH_ASPELL
     // create dialog
@@ -2225,7 +2225,7 @@ void TextDisplay::_spellcheck()
 //_______________________________________________________
 void TextDisplay::_indentSelection()
 {
-    Debug::Throw( "TextDisplay::_indentSelection.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_indentSelection.\n") );
 
     // check activity, indentation and text selection
     if( !textIndent_->isEnabled() ) return;
@@ -2255,7 +2255,7 @@ void TextDisplay::_indentSelection()
 //_______________________________________________________
 void TextDisplay::_addBaseIndentation()
 {
-    Debug::Throw( "TextDisplay::_addBaseIndentation.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_addBaseIndentation.\n") );
 
     // check activity, indentation and text selection
     if( !textIndent_->baseIndentation() ) return;
@@ -2303,7 +2303,7 @@ void TextDisplay::_addBaseIndentation()
 //_______________________________________________________
 void TextDisplay::_replaceLeadingTabs( bool confirm )
 {
-    Debug::Throw( "TextDisplay::_replaceLeadingTabs.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_replaceLeadingTabs.\n") );
 
     // ask for confirmation
     if( confirm )
@@ -2365,7 +2365,7 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
     // enable updates
     setUpdatesEnabled( true );
 
-    Debug::Throw( "TextDisplay::_replaceLeadingTabs - done.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_replaceLeadingTabs - done.\n") );
     return;
 }
 
@@ -2373,7 +2373,7 @@ void TextDisplay::_replaceLeadingTabs( bool confirm )
 //_______________________________________________________
 void TextDisplay::_fileProperties()
 {
-    Debug::Throw( "TextDisplay::_fileProperties.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_fileProperties.\n") );
     if( file_.isEmpty() || isNewDocument() ) return;
 
     // prior to showing the dialog
@@ -2387,7 +2387,7 @@ void TextDisplay::_fileProperties()
     layout->setMargin(5);
     layout->setSpacing( 5 );
     box->setLayout( layout );
-    Debug::Throw( "TextDisplay::_fileProperties - Miscellaneous tab booked.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_fileProperties - Miscellaneous tab booked.\n") );
 
     auto gridLayout = new GridLayout;
     gridLayout->setMargin(0);
@@ -2490,7 +2490,7 @@ void TextDisplay::_setBlockModified( int position, int, int added )
 //__________________________________________________
 void TextDisplay::_textModified()
 {
-    Debug::Throw( "TextDisplay::_textModified.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_textModified.\n") );
 
     // document should never appear modified
     // for readonly displays
@@ -2714,7 +2714,7 @@ void TextDisplay::_highlightParenthesis()
 void TextDisplay::_tagBlock()
 {
 
-    Debug::Throw( "TextDisplay::_tagBlock.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_tagBlock.\n") );
 
     const auto cursor( textCursor() );
     const TextBlockRange range = cursor.hasSelection() ?
@@ -2732,7 +2732,7 @@ void TextDisplay::_tagBlock()
 //__________________________________________________
 void TextDisplay::_nextTag()
 {
-    Debug::Throw( "TextDisplay::_nextTag.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_nextTag.\n") );
     auto cursor( textCursor() );
     QTextBlock block( cursor.block() );
     TextBlockData* data;
@@ -2767,7 +2767,7 @@ void TextDisplay::_nextTag()
 //__________________________________________________
 void TextDisplay::_previousTag()
 {
-    Debug::Throw( "TextDisplay::_previousTag.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_previousTag.\n") );
     auto cursor( textCursor() );
     QTextBlock block( cursor.block() );
     TextBlockData* data;
@@ -2803,7 +2803,7 @@ void TextDisplay::_previousTag()
 void TextDisplay::_clearTag()
 {
 
-    Debug::Throw( "TextEditor::_clearTag.\n" );
+    Debug::Throw( QStringLiteral("TextEditor::_clearTag.\n") );
 
     auto cursor( textCursor() );
     if( cursor.hasSelection() )
@@ -2942,7 +2942,7 @@ void TextDisplay::_processFileModifiedAction( FileModifiedWidget::ReturnCode act
 bool TextDisplay::_blockIsCollapsed( const QTextBlock& block ) const
 {
 
-    Debug::Throw( "TextDisplay::_blockIsCollapsed.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_blockIsCollapsed.\n") );
     QTextBlockFormat blockFormat( block.blockFormat() );
     return blockFormat.boolProperty( TextBlock::Collapsed ) && blockFormat.hasProperty( TextBlock::CollapsedData );
 
@@ -2953,7 +2953,7 @@ bool TextDisplay::_blockIsCollapsed( const QTextBlock& block ) const
 QString TextDisplay::_collapsedText( const QTextBlock& block ) const
 {
 
-    Debug::Throw( "TextDisplay::_collapsedText.\n" );
+    Debug::Throw( QStringLiteral("TextDisplay::_collapsedText.\n") );
 
     // retrieve associated block format
     const auto blockFormat( block.blockFormat() );

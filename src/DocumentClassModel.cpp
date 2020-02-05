@@ -35,7 +35,7 @@ DocumentClassModel::IconCache& DocumentClassModel::_icons()
 //__________________________________________________________________
 DocumentClassModel::DocumentClassModel( QObject* parent ):
     ListModel(parent),
-    Counter( "DocumentClassModel" )
+    Counter( QStringLiteral("DocumentClassModel") )
 { connect( Base::Singleton::get().application<Application>(), &Application::configurationChanged, this, &DocumentClassModel::_updateConfiguration ); }
 
 //__________________________________________________________________
@@ -116,7 +116,7 @@ void DocumentClassModel::_sort( int column, Qt::SortOrder order )
 //____________________________________________________________
 void DocumentClassModel::_updateConfiguration()
 {
-    Debug::Throw( "DocumentClassModel::_updateConfiguration.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassModel::_updateConfiguration.\n") );
     _icons().clear();
 }
 

@@ -29,13 +29,13 @@
 
 //________________________________________________________
 DocumentClassManager::DocumentClassManager():
-    Counter( "DocumentClassManager" )
-{ Debug::Throw( "DocumentclassManager::DocumentClassManager.\n" ); }
+    Counter( QStringLiteral("DocumentClassManager") )
+{ Debug::Throw( QStringLiteral("DocumentclassManager::DocumentClassManager.\n") ); }
 
 //________________________________________________________
 void DocumentClassManager::clear()
 {
-    Debug::Throw( "DocumentClassManager::Clear.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassManager::Clear.\n") );
     documentClasses_.clear();
     readError_.clear();
 }
@@ -176,7 +176,7 @@ bool DocumentClassManager::write( const File& path ) const
 DocumentClass DocumentClassManager::defaultClass() const
 {
 
-    Debug::Throw( "DocumentClassManager::defaultClass.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassManager::defaultClass.\n") );
 
     const auto iter = std::find_if( documentClasses_.begin(), documentClasses_.end(), DocumentClass::IsDefaultFTor() );
     return (iter == documentClasses_.end()) ? DocumentClass():*iter;

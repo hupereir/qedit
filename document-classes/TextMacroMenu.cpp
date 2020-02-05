@@ -22,16 +22,16 @@
 //___________________________________________________________
 TextMacroMenu::TextMacroMenu( QWidget* parent ):
 QMenu( parent ),
-Counter( "TextMacroMenu" )
+Counter( QStringLiteral("TextMacroMenu") )
 {
-    Debug::Throw( "TextMacroMenu::TextMacroMenu.\n" );
+    Debug::Throw( QStringLiteral("TextMacroMenu::TextMacroMenu.\n") );
     connect( this, &QMenu::triggered, this, &TextMacroMenu::_processAction );
 }
 
 //___________________________________________________________
 void TextMacroMenu::update( const TextMacro::List& macros )
 {
-    Debug::Throw( "TextMacroMenu::update.\n" );
+    Debug::Throw( QStringLiteral("TextMacroMenu::update.\n") );
     clear();
     actions_.clear();
 
@@ -56,7 +56,7 @@ void TextMacroMenu::update( const TextMacro::List& macros )
 //___________________________________________________________
 void TextMacroMenu::updateState( bool value )
 {
-    Debug::Throw( "TextMacroMenu::updateState.\n" );
+    Debug::Throw( QStringLiteral("TextMacroMenu::updateState.\n") );
     for( auto&& iter = actions_.begin(); iter != actions_.end(); iter++ )
     { iter.key()->setEnabled( value || iter.value().isAutomatic() ); }
 }

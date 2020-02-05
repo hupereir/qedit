@@ -32,7 +32,7 @@ SidePanelWidget::SidePanelWidget( QWidget* parent, FileList& files ):
     QStackedWidget( parent )
 {
 
-    Debug::Throw( "SidePanelWidget:SidePanelWidget.\n" );
+    Debug::Throw( QStringLiteral("SidePanelWidget:SidePanelWidget.\n") );
     layout()->setMargin(2);
     layout()->setSpacing(2);
 
@@ -55,7 +55,7 @@ SidePanelWidget::SidePanelWidget( QWidget* parent, FileList& files ):
 //______________________________________________________________________
 void SidePanelWidget::_installActions()
 {
-    Debug::Throw( "SidePanelWidget::_installActions.\n" );
+    Debug::Throw( QStringLiteral("SidePanelWidget::_installActions.\n") );
     addAction( visibilityAction_ = new QAction( tr( "Show &Navigation Panel" ), this ) );
     visibilityAction_->setCheckable( true );
     visibilityAction_->setChecked( true );
@@ -65,7 +65,7 @@ void SidePanelWidget::_installActions()
 //______________________________________________________________________
 void SidePanelWidget::_updateCurrentWidget()
 {
-    Debug::Throw( "SidePanelWidget::_updateCurrentWidget.\n" );
+    Debug::Throw( QStringLiteral("SidePanelWidget::_updateCurrentWidget.\n") );
     if( currentWidget() == sessionFilesWidget_ ) { sessionFilesWidget_->updateFiles(); }
     else if( currentWidget() == recentFilesWidget_ ) { recentFilesWidget_->updateFiles(); }
 }

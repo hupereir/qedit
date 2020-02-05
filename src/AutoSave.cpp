@@ -32,9 +32,9 @@
 //______________________________________________________
 AutoSave::AutoSave( QObject* parent ):
     QObject( parent ),
-    Counter( "AutoSave" )
+    Counter( QStringLiteral("AutoSave") )
 {
-    Debug::Throw( "AutoSave::AutoSave.\n" );
+    Debug::Throw( QStringLiteral("AutoSave::AutoSave.\n") );
     connect( Base::Singleton::get().application<Application>(), &Application::configurationChanged, this, &AutoSave::_updateConfiguration );
 }
 
@@ -42,7 +42,7 @@ AutoSave::AutoSave( QObject* parent ):
 void AutoSave::newThread( TextDisplay* display )
 {
 
-    Debug::Throw( "AutoSave::newThread.\n" );
+    Debug::Throw( QStringLiteral("AutoSave::newThread.\n") );
 
     // create thread with custom deleter
     ThreadPtr thread( new AutoSaveThread( this ), [](AutoSaveThread* thread)
@@ -67,7 +67,7 @@ void AutoSave::newThread( TextDisplay* display )
 void AutoSave::saveFiles( const TextDisplay* display )
 {
 
-    Debug::Throw( "AutoSave::saveFiles.\n" );
+    Debug::Throw( QStringLiteral("AutoSave::saveFiles.\n") );
 
     // do nothing if interval is 0
     if( !( _enabled() ) || threads_.empty() ) return;
@@ -148,7 +148,7 @@ void AutoSave::timerEvent( QTimerEvent* event )
 void AutoSave::_updateConfiguration()
 {
 
-    Debug::Throw( "AutoSave::_updateConfiguration.\n" );
+    Debug::Throw( QStringLiteral("AutoSave::_updateConfiguration.\n") );
 
     // save AutoSave interval and start timer
     enabled_ = XmlOptions::get().get<bool>( "AUTOSAVE" );

@@ -31,7 +31,7 @@ FileModifiedWidget::FileModifiedWidget( QWidget* parent, const File& file ):
     MessageWidget( parent, MessageType::Information )
 {
 
-    Debug::Throw( "FileModifiedWidget::FileModifiedWidget.\n" );
+    Debug::Throw( QStringLiteral("FileModifiedWidget::FileModifiedWidget.\n") );
 
     setFile( file );
 

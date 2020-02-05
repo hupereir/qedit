@@ -27,7 +27,7 @@
 //__________________________________________________________________________
 void HtmlHelper::print( QIODevice* device )
 {
-    Debug::Throw( "HtmlHelper::print.\n" );
+    Debug::Throw( QStringLiteral("HtmlHelper::print.\n") );
 
     // check editor
     Q_CHECK_PTR( editor_ );

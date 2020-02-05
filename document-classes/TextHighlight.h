@@ -139,7 +139,7 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     //* patterns
     void clear()
     {
-        Debug::Throw( "TextHighlight.clear.\n" );
+        Debug::Throw( QStringLiteral("TextHighlight.clear.\n") );
         patterns_.clear();
     }
 

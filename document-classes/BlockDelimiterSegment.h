@@ -55,7 +55,7 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
         const BlockMarker& begin = BlockMarker(),
         const BlockMarker& end = BlockMarker(),
         Flags flags = None ):
-        Counter( "BlockDelimiterSegment" ),
+        Counter( QStringLiteral("BlockDelimiterSegment") ),
         begin_( begin ),
         end_( end ),
         flags_( flags )

@@ -41,7 +41,7 @@ class WindowTitle final: private Base::Counter<WindowTitle>
 
     //* constructor
     explicit WindowTitle( const File& file = File(), const Flag& flag = Flag::None ):
-        Counter( "WindowTitle" ),
+        Counter( QStringLiteral("WindowTitle") ),
         file_( file ),
         flag_( flag )
     {}

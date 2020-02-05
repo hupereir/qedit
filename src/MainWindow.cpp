@@ -79,10 +79,10 @@
 //_____________________________________________________
 MainWindow::MainWindow(  QWidget* parent ):
     BaseMainWindow( parent ),
-    Counter( "MainWindow" )
+    Counter( QStringLiteral("MainWindow") )
 {
 
-    Debug::Throw( "MainWindow::MainWindow.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::MainWindow.\n") );
     setOptionName( "WINDOW" );
 
     // tell window to delete on exit
@@ -202,7 +202,7 @@ MainWindow::~MainWindow()
 //___________________________________________________________
 TextView& MainWindow::newTextView( FileRecord record )
 {
-    Debug::Throw( "MainWindow::newTextView.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::newTextView.\n") );
 
     // create new view and add to this file
     auto view = new TextView( this );
@@ -287,7 +287,7 @@ bool MainWindow::selectDisplay( const File& file )
 //_____________________________________________________________________
 void MainWindow::saveAll()
 {
-    Debug::Throw( "MainWindow::saveAll.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::saveAll.\n") );
     for( const auto& view:Base::KeySet<TextView>( this ) )
     { view->saveAll(); }
 }
@@ -295,7 +295,7 @@ void MainWindow::saveAll()
 //_____________________________________________________________________
 void MainWindow::ignoreAll()
 {
-    Debug::Throw( "MainWindow::ignoreAll.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::ignoreAll.\n") );
     for( const auto& view:Base::KeySet<TextView>( this ) )
     { view->ignoreAll(); }
 }
@@ -303,7 +303,7 @@ void MainWindow::ignoreAll()
 //_____________________________________________________________________
 void MainWindow::findFromDialog()
 {
-    Debug::Throw( "MainWindow::findFromDialog.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::findFromDialog.\n") );
 
     // create find widget
     if( !findWidget_ ) _createFindWidget();
@@ -335,7 +335,7 @@ void MainWindow::findFromDialog()
 //_____________________________________________________________________
 void MainWindow::replaceFromDialog()
 {
-    Debug::Throw( "MainWindow::replaceFromDialog.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::replaceFromDialog.\n") );
 
     // create replace widget
     if( !replaceWidget_ ) _createReplaceWidget();
@@ -372,7 +372,7 @@ void MainWindow::replaceFromDialog()
 void MainWindow::selectLineFromDialog()
 {
 
-    Debug::Throw( "TextEditor::selectLineFromDialog.\n" );
+    Debug::Throw( QStringLiteral("TextEditor::selectLineFromDialog.\n") );
 
     // create select line widget
     if( !selectLineWidget_ ) _createSelectLineWidget();
@@ -388,7 +388,7 @@ void MainWindow::selectLineFromDialog()
 void MainWindow::_revertToSave()
 {
 
-    Debug::Throw( "MainWindow::_revertToSave.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_revertToSave.\n") );
 
     // check filename
     if( activeDisplay().file().isEmpty() || activeDisplay().isNewDocument() )
@@ -415,7 +415,7 @@ void MainWindow::_revertToSave()
 //___________________________________________________________
 void MainWindow::_print()
 {
-    Debug::Throw( "MainWindow::_print.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_print.\n") );
     PrintHelper helper( this, &activeDisplay() );
     _print( helper );
 }
@@ -453,7 +453,7 @@ void MainWindow::_print( PrintHelper& helper )
 //___________________________________________________________
 void MainWindow::_printPreview()
 {
-    Debug::Throw( "MainWindow::_printPreview.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_printPreview.\n") );
 
     // create helper
     PrintHelper helper( this, &activeDisplay() );
@@ -470,7 +470,7 @@ void MainWindow::_printPreview()
 //___________________________________________________________
 void MainWindow::_toHtml()
 {
-    Debug::Throw( "MainWindow::_toHtml.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_toHtml.\n") );
 
     // create dialog, connect and execute
     HtmlDialog dialog( this );
@@ -532,7 +532,7 @@ bool MainWindow::event( QEvent* event )
 //____________________________________________
 void MainWindow::closeEvent( QCloseEvent* event )
 {
-    Debug::Throw( "MainWindow::closeEvent.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::closeEvent.\n") );
 
     // accept event
     event->accept();
@@ -604,7 +604,7 @@ void MainWindow::timerEvent( QTimerEvent* event )
 void MainWindow::_updateConfiguration()
 {
 
-    Debug::Throw( "MainWindow::_updateConfiguration.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_updateConfiguration.\n") );
 
     resize( sizeHint() );
 
@@ -632,14 +632,14 @@ void MainWindow::_updateConfiguration()
 //________________________________________________________
 void MainWindow::_toggleSidePanelWidget( bool state )
 {
-    Debug::Throw( "MainWindow::_toggleSidePanelWidget.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_toggleSidePanelWidget.\n") );
     XmlOptions::get().set<bool>( "SHOW_SIDE_PANEL_WIDGET", state );
 }
 
 //________________________________________________________
 void MainWindow::_splitterMoved()
 {
-    Debug::Throw( "MainWindow::_splitterMoved.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_splitterMoved.\n") );
     resizeTimer_.start( 200, this );
 }
 
@@ -661,7 +661,7 @@ void MainWindow::_splitDisplay()
 
 void MainWindow::_multipleFileReplace()
 {
-    Debug::Throw( "MainWindow::_multipleFileReplace.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_multipleFileReplace.\n") );
     auto selection( replaceWidget_->selection( false ) );
 
     // show dialog and check answer
@@ -801,7 +801,7 @@ void MainWindow::_updateCursorPosition()
 void MainWindow::_installActions()
 {
 
-    Debug::Throw( "MainWindow::_installActions.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_installActions.\n") );
 
     addAction( newFileAction_ = new QAction( IconEngine::get( IconNames::New ), tr( "New" ), this ) );
     newFileAction_->setShortcut( QKeySequence::New );
@@ -959,7 +959,7 @@ void MainWindow::_installToolbars()
 void MainWindow::_createFindWidget()
 {
 
-    Debug::Throw( "MainWindow::_createFindWidget.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_createFindWidget.\n") );
     if( !findWidget_ )
     {
 
@@ -980,7 +980,7 @@ void MainWindow::_createFindWidget()
 //_____________________________________________________________________
 void MainWindow::_createReplaceWidget()
 {
-    Debug::Throw( "MainWindow::_CreateReplaceDialog.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_CreateReplaceDialog.\n") );
     if( !( replaceWidget_ ) )
     {
 
@@ -1020,7 +1020,7 @@ void MainWindow::_createSelectLineWidget()
 //_________________________________________________________________
 void MainWindow::_connectView( TextView& view )
 {
-    Debug::Throw( "MainWindow::_connectView.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_connectView.\n") );
     connect( &view, &TextView::modifiersChanged, this, &MainWindow::_updateModifiers );
     connect( &view, &TextView::needUpdate, this, &MainWindow::_update );
     connect( &view, &TextView::displayCountChanged, this, &MainWindow::_updateDisplayCount );
@@ -1034,7 +1034,7 @@ void MainWindow::_connectView( TextView& view )
 //___________________________________________________________
 void MainWindow::_updateWindowTitle()
 {
-    Debug::Throw( "MainWindow::_updateWindowTitle.\n" );
+    Debug::Throw( QStringLiteral("MainWindow::_updateWindowTitle.\n") );
 
     {
         bool readonly( activeDisplay().isReadOnly() );

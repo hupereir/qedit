@@ -101,7 +101,7 @@ selection_( selection )
 void FileSelectionDialog::_updateButtons()
 {
 
-    Debug::Throw( "FileSelectionDialog::_updateButtons.\n" );
+    Debug::Throw( QStringLiteral("FileSelectionDialog::_updateButtons.\n") );
     QList<QModelIndex> selection( list_->selectionModel()->selectedRows() );
 
     clearSelectionButton_->setEnabled( !selection.empty() );
@@ -113,7 +113,7 @@ void FileSelectionDialog::_updateButtons()
 FileSelectionDialog::FileList FileSelectionDialog::selectedFiles() const
 {
 
-    Debug::Throw( "FileSelectionDialog::_replace.\n" );
+    Debug::Throw( QStringLiteral("FileSelectionDialog::_replace.\n") );
 
     // retrieve selection from the list
     auto selection( model_.get( list_->selectionModel()->selectedRows() ) );

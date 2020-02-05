@@ -41,19 +41,19 @@ class LocalSplitter: public QSplitter, private Base::Counter<LocalSplitter>
     //* constructor
     explicit LocalSplitter( QWidget* parent = nullptr ):
         QSplitter( parent ),
-        Counter( "LocalSplitter" )
-    { Debug::Throw( "LocalSplitter::LocalSplitter.\n" ); }
+        Counter( QStringLiteral("LocalSplitter") )
+    { Debug::Throw( QStringLiteral("LocalSplitter::LocalSplitter.\n") ); }
 
 };
 
 //___________________________________________________________________
 TextView::TextView( QWidget* parent ):
     QWidget( parent ),
-    Counter( "TextView" ),
+    Counter( QStringLiteral("TextView") ),
     positionTimer_(this)
 {
 
-    Debug::Throw( "TextView::TextView.\n" );
+    Debug::Throw( QStringLiteral("TextView::TextView.\n") );
 
     setAttribute( Qt::WA_DeleteOnClose );
 
@@ -91,7 +91,7 @@ TextView::TextView( QWidget* parent ):
 //____________________________________________
 void TextView::setIsNewDocument()
 {
-    Debug::Throw( "TextView::setIsNewDocument.\n" );
+    Debug::Throw( QStringLiteral("TextView::setIsNewDocument.\n") );
 
     // look for first empty display
     Base::KeySet<TextDisplay> displays( this );
@@ -335,7 +335,7 @@ void TextView::closeDisplay( TextDisplay& display )
 TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, bool clone )
 {
 
-    Debug::Throw( "TextView::splitDisplay.\n" );
+    Debug::Throw( QStringLiteral("TextView::splitDisplay.\n") );
 
     // keep local pointer to current active display
     auto& activeDisplayLocal( activeDisplay() );
@@ -408,7 +408,7 @@ TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, bool cl
 //____________________s________________________
 void TextView::saveAll()
 {
-    Debug::Throw( "TextView::saveAll.\n" );
+    Debug::Throw( QStringLiteral("TextView::saveAll.\n") );
 
     // retrieve all displays
     for( const auto& display:Base::KeySet<TextDisplay>( this ) )
@@ -422,7 +422,7 @@ void TextView::saveAll()
 //____________________________________________
 void TextView::ignoreAll()
 {
-    Debug::Throw( "TextView::ignoreAll.\n" );
+    Debug::Throw( QStringLiteral("TextView::ignoreAll.\n") );
 
     // retrieve all displays
     for( const auto& display:Base::KeySet<TextDisplay>( this ) )
@@ -435,7 +435,7 @@ void TextView::ignoreAll()
 //________________________________________________________________
 void TextView::rehighlight()
 {
-    Debug::Throw( "TextView::rehighlight.\n" );
+    Debug::Throw( QStringLiteral("TextView::rehighlight.\n") );
 
     // retrieve associated TextDisplay
     Base::KeySet<TextDisplay> displays( this );
@@ -453,7 +453,7 @@ void TextView::rehighlight()
 void TextView::checkDisplayModifications( TextEditor* editor )
 {
 
-    Debug::Throw( "TextView::checkDisplayModifications.\n" );
+    Debug::Throw( QStringLiteral("TextView::checkDisplayModifications.\n") );
 
     // convert to TextDisplay
     TextDisplay& display( *static_cast<TextDisplay*>( editor ) );
@@ -466,7 +466,7 @@ void TextView::checkDisplayModifications( TextEditor* editor )
 //_______________________________________________________
 void TextView::diff()
 {
-    Debug::Throw( "TextView::diff.\n" );
+    Debug::Throw( QStringLiteral("TextView::diff.\n") );
 
     // retrieve displays
     int n_displays( independentDisplayCount() );
@@ -526,7 +526,7 @@ void TextView::diff()
 //____________________________________________
 void TextView::addMessageWidget( MessageWidget* widget )
 {
-    Debug::Throw( "TextView::addMessageWidget.\n" );
+    Debug::Throw( QStringLiteral("TextView::addMessageWidget.\n") );
     widget->setParent( this );
     informationLayout_->addWidget( widget );
     return;
@@ -540,7 +540,7 @@ void TextView::_checkDisplays()
     Base::KeySet<TextDisplay> displays( this );
     if( displays.empty() )
     {
-        Debug::Throw( "TextView::_checkDisplays - closing.\n" );
+        Debug::Throw( QStringLiteral("TextView::_checkDisplays - closing.\n") );
         setIsClosed( true );
         close();
         return;
@@ -566,7 +566,7 @@ void TextView::_activeDisplayChanged( TextEditor* editor )
 void TextView::_closeDisplay( const File& file )
 {
 
-    Debug::Throw( "TextView::_closeDisplay.\n" );
+    Debug::Throw( QStringLiteral("TextView::_closeDisplay.\n") );
 
     // do nothing if file not set
     if( file.isEmpty() ) return;
@@ -582,7 +582,7 @@ void TextView::_closeDisplay( const File& file )
 QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clone )
 {
 
-    Debug::Throw( "TextView::_newSplitter.\n" );
+    Debug::Throw( QStringLiteral("TextView::_newSplitter.\n") );
     QSplitter *splitter( nullptr );
 
     if( clone )
@@ -605,7 +605,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
             if( parentSplitter )
             {
 
-                Debug::Throw( "TextView::_newSplitter - found parent splitter.\n" );
+                Debug::Throw( QStringLiteral("TextView::_newSplitter - found parent splitter.\n") );
                 // create a splitter with correct orientation
                 // give him no parent, because the parent is set in QSplitter::insertWidget()
                 splitter = new LocalSplitter;
@@ -684,7 +684,7 @@ QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clon
 //_____________________________________________________________
 TextDisplay& TextView::_newTextDisplay( QWidget* parent )
 {
-    Debug::Throw( "\nTextView::_newTextDisplay.\n" );
+    Debug::Throw( QStringLiteral("\nTextView::_newTextDisplay.\n") );
 
     // create textDisplay
     TextDisplay* display = new TextDisplay( parent );

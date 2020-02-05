@@ -43,10 +43,10 @@
 //_______________________________________________________________
 SessionFilesWidget::SessionFilesWidget( QWidget* parent ):
 QWidget( parent ),
-Counter( "SessionFilesWidget" )
+Counter( QStringLiteral("SessionFilesWidget") )
 {
 
-    Debug::Throw( "SessionFilesWidget:SessionFilesWidget.\n" );
+    Debug::Throw( QStringLiteral("SessionFilesWidget:SessionFilesWidget.\n") );
 
     // layout
     setLayout( new QVBoxLayout );
@@ -121,7 +121,7 @@ void SessionFilesWidget::select( const File& file )
 //______________________________________________________________________
 void SessionFilesWidget::updateFiles()
 {
-    Debug::Throw( "SessionFilesWidget:updateFiles.\n" );
+    Debug::Throw( QStringLiteral("SessionFilesWidget:updateFiles.\n") );
 
     // store in model
     const auto records( Base::Singleton::get().application<Application>()->windowServer().records( WindowServer::None, window() ) );
@@ -139,7 +139,7 @@ void SessionFilesWidget::updateFiles()
 void SessionFilesWidget::_updateActions()
 {
 
-    Debug::Throw( "SessionFilesWidget:_updateActions.\n" );
+    Debug::Throw( QStringLiteral("SessionFilesWidget:_updateActions.\n") );
 
     // get number of entries in model
     int counts( model_.rowCount() );
@@ -195,7 +195,7 @@ void SessionFilesWidget::_showToolTip( const QModelIndex& index )
 void SessionFilesWidget::_selectPreviousFile()
 {
 
-    Debug::Throw( "SessionFilesWidget:_selectPreviousFile.\n" );
+    Debug::Throw( QStringLiteral("SessionFilesWidget:_selectPreviousFile.\n") );
 
     // check counts
     int counts( model_.rowCount() );
@@ -226,7 +226,7 @@ void SessionFilesWidget::_selectPreviousFile()
 void SessionFilesWidget::_selectNextFile()
 {
 
-    Debug::Throw( "SessionFilesWidget:_selectNextFile.\n" );
+    Debug::Throw( QStringLiteral("SessionFilesWidget:_selectNextFile.\n") );
 
     // check counts
     int counts( model_.rowCount() );
@@ -256,7 +256,7 @@ void SessionFilesWidget::_selectNextFile()
 void SessionFilesWidget::_open()
 {
 
-    Debug::Throw( "SessionFilesWidget:_open.\n" );
+    Debug::Throw( QStringLiteral("SessionFilesWidget:_open.\n") );
     for( const auto& record:model_.get( list_->selectionModel()->selectedRows() ) )
     { emit fileActivated( record ); }
 
@@ -266,7 +266,7 @@ void SessionFilesWidget::_open()
 void SessionFilesWidget::_save()
 {
 
-    Debug::Throw( "SessionFilesWidget:_save.\n" );
+    Debug::Throw( QStringLiteral("SessionFilesWidget:_save.\n") );
 
     FileRecord::List modifiedRecords;
     for( const auto& record:model_.get( list_->selectionModel()->selectedRows() ) )
@@ -292,7 +292,7 @@ void SessionFilesWidget::_itemSelected( const QModelIndex& index )
 void SessionFilesWidget::_itemActivated( const QModelIndex& index )
 {
 
-    Debug::Throw( "SessionFilesWidget::_itemActivated.\n" );
+    Debug::Throw( QStringLiteral("SessionFilesWidget::_itemActivated.\n") );
     if( !index.isValid() ) return;
     emit fileActivated( model_.get( index ) );
 
@@ -302,7 +302,7 @@ void SessionFilesWidget::_itemActivated( const QModelIndex& index )
 void SessionFilesWidget::_installActions()
 {
 
-    Debug::Throw( "SessionFilesWidget::_installActions.\n" );
+    Debug::Throw( QStringLiteral("SessionFilesWidget::_installActions.\n") );
 
     // next file
     addAction( nextFileAction_ = new QAction( IconEngine::get(  IconNames::Down ), tr( "Select next File" ), this ) );

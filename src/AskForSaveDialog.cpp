@@ -31,10 +31,10 @@
 //________________________________________________________
 AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCodes buttons ):
     BaseDialog( parent ),
-    Counter( "AskForSaveDialog" )
+    Counter( QStringLiteral("AskForSaveDialog") )
 {
 
-    Debug::Throw( "AskForSaveDialog::AskForSaveDialog.\n" );
+    Debug::Throw( QStringLiteral("AskForSaveDialog::AskForSaveDialog.\n") );
 
     setWindowTitle( tr( "File Modified" ) );
 

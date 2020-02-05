@@ -43,9 +43,9 @@
 //_______________________________________________
 MenuBar::MenuBar( QWidget* parent ):
     QMenuBar( parent ),
-    Counter( "MenuBar" )
+    Counter( QStringLiteral("MenuBar") )
 {
-    Debug::Throw( "MenuBar::MenuBar.\n" );
+    Debug::Throw( QStringLiteral("MenuBar::MenuBar.\n") );
 
     // file menu
     auto menu = addMenu( tr( "File" ) );
@@ -159,7 +159,7 @@ void MenuBar::updateMacroMenu()
 //_______________________________________________
 void MenuBar::_updateRecentFilesMenu()
 {
-    Debug::Throw( "MenuBar::_updateRecentFilesMenu.\n" );
+    Debug::Throw( QStringLiteral("MenuBar::_updateRecentFilesMenu.\n") );
     auto display( &static_cast<MainWindow*>( window() )->activeDisplay() );
     if( !display->isNewDocument() ) recentFilesMenu_->setCurrentFile( display->file() );
 }
@@ -167,7 +167,7 @@ void MenuBar::_updateRecentFilesMenu()
 //_______________________________________________
 void MenuBar::_updateEditMenu()
 {
-    Debug::Throw( "MenuBar::_updateEditMenu.\n" );
+    Debug::Throw( QStringLiteral("MenuBar::_updateEditMenu.\n") );
 
     editMenu_->clear();
 
@@ -188,7 +188,7 @@ void MenuBar::_updateEditMenu()
 //_______________________________________________
 void MenuBar::_updateSearchMenu()
 {
-    Debug::Throw( "MenuBar::_updateSearchMenu.\n" );
+    Debug::Throw( QStringLiteral("MenuBar::_updateSearchMenu.\n") );
 
     searchMenu_->clear();
 
@@ -208,7 +208,7 @@ void MenuBar::_updateSearchMenu()
 void MenuBar::_updatePreferenceMenu()
 {
 
-    Debug::Throw( "MenuBar::_updatePreferenceMenu.\n" );
+    Debug::Throw( QStringLiteral("MenuBar::_updatePreferenceMenu.\n") );
 
     // reference to needed objects
     auto application( Base::Singleton::get().application<Application>() );
@@ -259,7 +259,7 @@ void MenuBar::_updatePreferenceMenu()
 void MenuBar::_updateToolsMenu()
 {
 
-    Debug::Throw( "MenuBar::_updateToolsMenu.\n" );
+    Debug::Throw( QStringLiteral("MenuBar::_updateToolsMenu.\n") );
 
     // retrieve mainWindow and current display
     auto mainWindow( static_cast<MainWindow*>(window()) );
@@ -341,7 +341,7 @@ void MenuBar::_updateToolsMenu()
 void MenuBar::_updateWindowsMenu()
 {
 
-    Debug::Throw( "MenuBar::_updateWindowsMenu.\n" );
+    Debug::Throw( QStringLiteral("MenuBar::_updateWindowsMenu.\n") );
     windowsMenu_->clear();
 
     // add session handling
@@ -389,7 +389,7 @@ void MenuBar::_updateWindowsMenu()
 //_______________________________________________
 void MenuBar::_selectMacro( QString name )
 {
-    Debug::Throw( "MenuBar::_SelectMacro.\n" );
+    Debug::Throw( QStringLiteral("MenuBar::_SelectMacro.\n") );
     static_cast<MainWindow*>(window())->activeDisplay().processMacro( name );
     return;
 }
@@ -397,7 +397,7 @@ void MenuBar::_selectMacro( QString name )
 //_______________________________________________
 void MenuBar::_selectFile( QAction* action )
 {
-    Debug::Throw( "MenuBar::_selectFile.\n" );
+    Debug::Throw( QStringLiteral("MenuBar::_selectFile.\n") );
 
     // try retrieve id in map
     const auto iter = fileActions_.find( action );

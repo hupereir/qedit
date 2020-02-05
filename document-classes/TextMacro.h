@@ -41,7 +41,7 @@ class TextMacro final: private Base::Counter<TextMacro>
     using ListIterator = QListIterator<TextMacro>;
 
     //* constructor
-    explicit TextMacro(): Counter( "TextMacro" )
+    explicit TextMacro(): Counter( QStringLiteral("TextMacro") )
     {}
 
     //* constructor from DomElement

@@ -40,11 +40,11 @@
 //_______________________________________________________________
 RecentFilesWidget::RecentFilesWidget( QWidget* parent, FileList& files ):
     QWidget( parent ),
-    Counter( "RecentFilesWidget" ),
+    Counter( QStringLiteral("RecentFilesWidget") ),
     recentFiles_( &files )
 {
 
-    Debug::Throw( "RecentFilesWidget:RecentFilesWidget.\n" );
+    Debug::Throw( QStringLiteral("RecentFilesWidget:RecentFilesWidget.\n") );
 
     // layout
     setLayout( new QVBoxLayout );
@@ -111,7 +111,7 @@ void RecentFilesWidget::select( const File& file )
 //______________________________________________________________________
 void RecentFilesWidget::updateFiles()
 {
-    Debug::Throw( "RecentFilesWidget:updateFiles.\n" );
+    Debug::Throw( QStringLiteral("RecentFilesWidget:updateFiles.\n") );
 
     // lock signal emission
     actionsLocked_ = true;
@@ -132,7 +132,7 @@ void RecentFilesWidget::updateFiles()
 void RecentFilesWidget::enterEvent( QEvent* e )
 {
 
-    Debug::Throw( "RecentFilesWidget::enterEvent.\n" );
+    Debug::Throw( QStringLiteral("RecentFilesWidget::enterEvent.\n") );
     QWidget::enterEvent( e );
 
     // check recent files validity
@@ -143,7 +143,7 @@ void RecentFilesWidget::enterEvent( QEvent* e )
 //______________________________________________________________________
 void RecentFilesWidget::_updateActions()
 {
-    Debug::Throw( "RecentFilesWidget:_updateActions.\n" );
+    Debug::Throw( QStringLiteral("RecentFilesWidget:_updateActions.\n") );
     FileRecordModel::List selection( model_.get( list_->selectionModel()->selectedRows() ) );
 
     bool hasValidSelection( std::any_of( selection.begin(), selection.end(), FileRecord::ValidFTor() ) );
@@ -181,7 +181,7 @@ void RecentFilesWidget::_showToolTip( const QModelIndex& index )
 void RecentFilesWidget::_clean()
 {
 
-    Debug::Throw( "RecentFilesWidget:_clean.\n" );
+    Debug::Throw( QStringLiteral("RecentFilesWidget:_clean.\n") );
     if( !QuestionDialog( window(), tr( "Remove invalid or duplicated files from list ?" ) ).exec() ) return;
     recentFiles_->clean();
     updateFiles();
@@ -192,7 +192,7 @@ void RecentFilesWidget::_clean()
 void RecentFilesWidget::_open()
 {
 
-    Debug::Throw( "RecentFilesWidget:_open.\n" );
+    Debug::Throw( QStringLiteral("RecentFilesWidget:_open.\n") );
     FileRecordModel::List validSelection;
 
     for( const auto& record:model_.get( list_->selectionModel()->selectedRows() ) )
@@ -203,7 +203,7 @@ void RecentFilesWidget::_open()
 //______________________________________________________________________
 void RecentFilesWidget::_itemSelected( const QModelIndex& index )
 {
-    Debug::Throw( "RecentFilesWidget::_itemSelected.\n" );
+    Debug::Throw( QStringLiteral("RecentFilesWidget::_itemSelected.\n") );
     if( !actionsLocked_ && index.isValid() )
     {  emit fileSelected( model_.get( index ) ); }
 }
@@ -211,7 +211,7 @@ void RecentFilesWidget::_itemSelected( const QModelIndex& index )
 //______________________________________________________________________
 void RecentFilesWidget::_itemActivated( const QModelIndex& index )
 {
-    Debug::Throw( "RecentFilesWidget::_itemActivated.\n" );
+    Debug::Throw( QStringLiteral("RecentFilesWidget::_itemActivated.\n") );
     if( !actionsLocked_ && index.isValid() )
     { emit fileActivated( model_.get( index ) ); }
 }
@@ -220,7 +220,7 @@ void RecentFilesWidget::_itemActivated( const QModelIndex& index )
 void RecentFilesWidget::_installActions()
 {
 
-    Debug::Throw( "RecentFilesWidget::_installActions.\n" );
+    Debug::Throw( QStringLiteral("RecentFilesWidget::_installActions.\n") );
 
     // clean
     addAction( cleanAction_ = new QAction( IconEngine::get( IconNames::Delete ), tr( "Clean" ), this ) );

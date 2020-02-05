@@ -31,7 +31,7 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
     MessageWidget( parent, MessageType::Information )
 {
 
-    Debug::Throw( "FileRemovedWidget::FileRemovedWidget.\n" );
+    Debug::Throw( QStringLiteral("FileRemovedWidget::FileRemovedWidget.\n") );
     setFile( file );
 
     {

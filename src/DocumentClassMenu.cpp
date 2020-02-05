@@ -31,9 +31,9 @@
 //_____________________________________________
 DocumentClassMenu::DocumentClassMenu( QWidget* parent ):
 QMenu( parent ),
-Counter( "DocumentClassMenu" )
+Counter( QStringLiteral("DocumentClassMenu") )
 {
-    Debug::Throw( "DocumentClassMenu::DocumentClassMenu.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassMenu::DocumentClassMenu.\n") );
     actionGroup_ = new QActionGroup( this );
     connect( this, &QMenu::aboutToShow, this, &DocumentClassMenu::_update );
     connect( this, &QMenu::triggered, this, &DocumentClassMenu::_selectClassName );
@@ -42,7 +42,7 @@ Counter( "DocumentClassMenu" )
 //_____________________________________________
 void DocumentClassMenu::_update()
 {
-    Debug::Throw( "DocumentClassMenu::_update.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassMenu::_update.\n") );
 
     // clear menu
     clear();
@@ -72,7 +72,7 @@ void DocumentClassMenu::_update()
 //_____________________________________________
 void DocumentClassMenu::_selectClassName( QAction* action )
 {
-    Debug::Throw( "DocumentClassMenu::_selectClassName.\n" );
+    Debug::Throw( QStringLiteral("DocumentClassMenu::_selectClassName.\n") );
     auto iter = actions_.find( action );
     if( iter != actions_.end() )
     { emit documentClassSelected( iter.value() ); }

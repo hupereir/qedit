@@ -38,9 +38,9 @@ class PrintHelper: public BasePrintHelper, private Base::Counter<PrintHelper>
     //* constructor
     explicit PrintHelper( QObject* parent, TextDisplay* editor ):
         BasePrintHelper( parent ),
-        Counter( "PrintHelper" ),
+        Counter( QStringLiteral("PrintHelper") ),
         editor_( editor )
-    { Debug::Throw( "PrintHelper::PrintHelper.\n" ); }
+    { Debug::Throw( QStringLiteral("PrintHelper::PrintHelper.\n") ); }
 
     //* print
     void print( QPrinter* ) override;

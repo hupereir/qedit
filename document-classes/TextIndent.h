@@ -73,14 +73,14 @@ class TextIndent: public QObject, private Base::Counter<TextIndent>
     //* patterns
     void setPatterns( const IndentPattern::List& patterns )
     {
-        Debug::Throw( "TextIndent::SetPatterns.\n" );
+        Debug::Throw( QStringLiteral("TextIndent::SetPatterns.\n") );
         patterns_ = patterns;
     }
 
     //* patterns
     void clear()
     {
-        Debug::Throw( "TextIndent::clear.\n" );
+        Debug::Throw( QStringLiteral("TextIndent::clear.\n") );
         patterns_.clear();
     }
 

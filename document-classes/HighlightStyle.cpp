@@ -24,9 +24,9 @@
 
 //_____________________________________________________
 HighlightStyle::HighlightStyle( const QDomElement& element ):
-    Counter( "HighlightStyle" )
+    Counter( QStringLiteral("HighlightStyle") )
 {
-    Debug::Throw( "HighlightStyle::HighlightStyle.\n" );
+    Debug::Throw( QStringLiteral("HighlightStyle::HighlightStyle.\n") );
 
     // parse attributes
     const auto attributes( element.attributes() );
@@ -45,7 +45,7 @@ HighlightStyle::HighlightStyle( const QDomElement& element ):
 //_____________________________________________________
 QDomElement HighlightStyle::domElement( QDomDocument& parent ) const
 {
-    Debug::Throw( "HighlighStyle::DomElement.\n" );
+    Debug::Throw( QStringLiteral("HighlighStyle::DomElement.\n") );
     auto out = parent.createElement( Xml::Style );
     out.setAttribute( Xml::Name, name_ );
     if( format_ != TextFormat::Default ) out.setAttribute( Xml::Format, QString::number(format_) );

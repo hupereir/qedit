@@ -32,7 +32,7 @@ SaveAllDialog::SaveAllDialog( QWidget* parent, FileRecord::List files ):
     QuestionDialog( parent )
 {
 
-    Debug::Throw( "SaveAllDialog::SaveAllDialog.\n" );
+    Debug::Throw( QStringLiteral("SaveAllDialog::SaveAllDialog.\n") );
     setWindowTitle( tr( "Save Files" ) );
 
     Q_ASSERT( !files.empty() );

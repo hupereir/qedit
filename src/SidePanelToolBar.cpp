@@ -42,7 +42,7 @@ SidePanelToolBar::SidePanelToolBar( QWidget* parent ):
     sidePanelWidget_( nullptr ),
     enabled_( true )
 {
-    Debug::Throw( "SidePanelToolBar:SidePanelToolBar.\n" );
+    Debug::Throw( QStringLiteral("SidePanelToolBar:SidePanelToolBar.\n") );
     setTransparent( true );
 }
 
@@ -50,7 +50,7 @@ SidePanelToolBar::SidePanelToolBar( QWidget* parent ):
 void SidePanelToolBar::connect( SidePanelWidget& widget )
 {
 
-    Debug::Throw( "SidePanelToolBar::connect.\n" );
+    Debug::Throw( QStringLiteral("SidePanelToolBar::connect.\n") );
     sidePanelWidget_ = &widget;
 
     connect( &sidePanelWidget_->visibilityAction(), &QAction::toggled, this, &SidePanelToolBar::_sidePanelWidgetVisibilityChanged );
@@ -96,7 +96,7 @@ void SidePanelToolBar::connect( SidePanelWidget& widget )
 void SidePanelToolBar::_updateConfiguration()
 {
 
-    Debug::Throw( "SidePanelToolBar::_updateConfiguration.\n" );
+    Debug::Throw( QStringLiteral("SidePanelToolBar::_updateConfiguration.\n") );
 
     // icon size
     const IconSize iconSize( static_cast<IconSize::Size>( XmlOptions::get().get<int>( "SIDE_PANEL_TOOLBAR_ICON_SIZE" ) ) );
@@ -126,7 +126,7 @@ void SidePanelToolBar::_updateConfiguration()
 void SidePanelToolBar::_updateToolButtonStyle( int style )
 {
 
-    Debug::Throw( "SidePanelToolBar::_updateToolButtonStyle.\n" );
+    Debug::Throw( QStringLiteral("SidePanelToolBar::_updateToolButtonStyle.\n") );
     XmlOptions::get().set<int>( "SIDE_PANEL_TOOLBAR_TEXT_POSITION", (int)style );
     _updateConfiguration();
 
@@ -136,7 +136,7 @@ void SidePanelToolBar::_updateToolButtonStyle( int style )
 void SidePanelToolBar::_updateToolButtonIconSize( IconSize::Size size )
 {
 
-    Debug::Throw( "SidePanelToolBar::_updateToolButtonIconSize.\n" );
+    Debug::Throw( QStringLiteral("SidePanelToolBar::_updateToolButtonIconSize.\n") );
     XmlOptions::get().set<int>( "SIDE_PANEL_TOOLBAR_ICON_SIZE", size );
     _updateConfiguration();
 
@@ -178,7 +178,7 @@ void SidePanelToolBar::_sidePanelWidgetVisibilityChanged( bool state )
 void SidePanelToolBar::_display( QAbstractButton* button )
 {
 
-    Debug::Throw( "SidePanelToolBar:_display.\n" );
+    Debug::Throw( QStringLiteral("SidePanelToolBar:_display.\n") );
 
     if( !enabled_ ) return;
     enabled_ = false;
@@ -216,7 +216,7 @@ void SidePanelToolBar::_display( QAbstractButton* button )
 //______________________________________________________________________
 void SidePanelToolBar::contextMenuEvent( QContextMenuEvent* event )
 {
-    Debug::Throw( "SidePanelToolBar::contextMenuEvent.\n" );
+    Debug::Throw( QStringLiteral("SidePanelToolBar::contextMenuEvent.\n") );
 
     MainWindow* mainwindow( qobject_cast<MainWindow*>( window() ) );
     if( !mainwindow ) return;

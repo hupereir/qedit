@@ -32,7 +32,7 @@ CloseFilesDialog::CloseFilesDialog( QWidget* parent, FileRecord::List files ):
     QuestionDialog( parent )
 {
 
-    Debug::Throw( "CloseFilesDialog::CloseFilesDialog.\n" );
+    Debug::Throw( QStringLiteral("CloseFilesDialog::CloseFilesDialog.\n") );
     setWindowTitle( tr( "Close Files" ) );
     setOptionName( "CLOSE_FILES_DIALOG" );
 

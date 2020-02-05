@@ -31,14 +31,14 @@
 //__________________________________________________________________
 Diff::Diff( QObject* parent ):
     QObject( parent ),
-    Counter( "Diff" ),
+    Counter( QStringLiteral("Diff") ),
     process_( this )
 { connect( &process_, QOverload<int,QProcess::ExitStatus>::of( &QProcess::finished ), this, &Diff::_parseOutput ); }
 
 //_________________________________________________________________
 bool Diff::run()
 {
-    Debug::Throw( "Diff::run.\n" );
+    Debug::Throw( QStringLiteral("Diff::run.\n") );
 
     // see if process is not already running
     if( process_.state() != QProcess::NotRunning )
@@ -97,7 +97,7 @@ bool Diff::run()
 void Diff::_clear()
 {
 
-    Debug::Throw( "Diff::_Clear.\n" );
+    Debug::Throw( QStringLiteral("Diff::_Clear.\n") );
     for( auto& file:files_ ) file.clear();
     return;
 }
@@ -105,7 +105,7 @@ void Diff::_clear()
 //________________________________________________________________
 void Diff::_parseOutput( int code, QProcess::ExitStatus status )
 {
-    Debug::Throw(  "Diff::_parseOutput.\n" );
+    Debug::Throw(  QStringLiteral("Diff::_parseOutput.\n") );
 
     // check exit code
     if( status != QProcess::NormalExit )
@@ -207,13 +207,13 @@ Diff::Range Diff::_parseRange( const QString& range )
 
 //___________________________________________________________________
 Diff::FileInformation::FileInformation()
-{ Debug::Throw( "Diff::FileInformation::FileInformation.\n" ); }
+{ Debug::Throw( QStringLiteral("Diff::FileInformation::FileInformation.\n") ); }
 
 //___________________________________________________________________
 void Diff::FileInformation::setDisplay( TextDisplay& display )
 {
 
-    Debug::Throw( "Diff::FileInformation::setDisplay.\n" );
+    Debug::Throw( QStringLiteral("Diff::FileInformation::setDisplay.\n") );
 
     // keep pointer to display
     display_ = &display;

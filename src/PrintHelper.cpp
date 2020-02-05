@@ -30,7 +30,7 @@
 //__________________________________________________________________________
 void PrintHelper::print( QPrinter* printer )
 {
-    Debug::Throw( "PrintHelper::print.\n" );
+    Debug::Throw( QStringLiteral("PrintHelper::print.\n") );
 
     // check editor
     Q_CHECK_PTR( editor_ );

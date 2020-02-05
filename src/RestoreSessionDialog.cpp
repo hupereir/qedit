@@ -32,7 +32,7 @@ RestoreSessionDialog::RestoreSessionDialog( QWidget* parent, FileRecord::List fi
     QuestionDialog( parent )
 {
 
-    Debug::Throw( "RestoreSessionDialog::RestoreSessionDialog.\n" );
+    Debug::Throw( QStringLiteral("RestoreSessionDialog::RestoreSessionDialog.\n") );
     setWindowTitle( tr( "Restore Saved Session" ) );
 
     if( files.size() == 1 )

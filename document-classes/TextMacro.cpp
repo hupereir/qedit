@@ -28,11 +28,11 @@ int TextMacro::idCounter_ = 0;
 
 //_____________________________________________________
 TextMacro::TextMacro( const QDomElement& element ):
-    Counter( "TextMacro" ),
+    Counter( QStringLiteral("TextMacro") ),
     id_( idCounter_++ ),
     name_( "generic" )
 {
-    Debug::Throw( "TextMacro::TextMacro.\n" );
+    Debug::Throw( QStringLiteral("TextMacro::TextMacro.\n") );
 
     // parse attributes
     const auto attributes( element.attributes() );
@@ -64,7 +64,7 @@ TextMacro::TextMacro( const QDomElement& element ):
 //_____________________________________________________
 QDomElement TextMacro::domElement( QDomDocument& parent ) const
 {
-    Debug::Throw( "TextMacro::domElement.\n" );
+    Debug::Throw( QStringLiteral("TextMacro::domElement.\n") );
     auto out( parent.createElement( Xml::Macro ) );
 
     // dump attributes
@@ -114,10 +114,10 @@ TextMacro::Result TextMacro::processText( QString& text, int position ) const
 
 //_______________________________________________________
 TextMacro::Rule::Rule( const QDomElement& element ):
-    Counter( "TextMacro::Rule" )
+    Counter( QStringLiteral("TextMacro::Rule") )
 {
 
-    Debug::Throw( "TextMacro::Rule::Rule.\n" );
+    Debug::Throw( QStringLiteral("TextMacro::Rule::Rule.\n") );
 
     // parse attributes
     const auto attributes( element.attributes() );
@@ -145,7 +145,7 @@ TextMacro::Rule::Rule( const QDomElement& element ):
 //_____________________________________________________
 QDomElement TextMacro::Rule::domElement( QDomDocument& parent ) const
 {
-    Debug::Throw( "TextMacro::Rule::domElement.\n" );
+    Debug::Throw( QStringLiteral("TextMacro::Rule::domElement.\n") );
 
     auto out( parent.createElement( Xml::Rule ) );
 
@@ -166,7 +166,7 @@ QDomElement TextMacro::Rule::domElement( QDomDocument& parent ) const
 //_________________________________________________________________________________
 TextMacro::Result TextMacro::Rule::processText( QString& text, int position ) const
 {
-    Debug::Throw( "TextMacro::Rule::ProcessText.\n" );
+    Debug::Throw( QStringLiteral("TextMacro::Rule::ProcessText.\n") );
 
     // check validity
     if( !isValid() ) return TextMacro::Result();

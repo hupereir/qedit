@@ -30,7 +30,7 @@
 FileCheckDialog::FileCheckDialog( QWidget* parent ):
     CustomDialog( parent, CloseButton )
 {
-    Debug::Throw( "FileCheckDialog::FileCheckDialog.\n" );
+    Debug::Throw( QStringLiteral("FileCheckDialog::FileCheckDialog.\n") );
     setWindowTitle( tr( "Monitored Files" ) );
     setOptionName( "FILE_CHECK_DIALOG" );
 
@@ -51,7 +51,7 @@ FileCheckDialog::FileCheckDialog( QWidget* parent ):
 void FileCheckDialog::setFiles( const QStringList& files )
 {
 
-    Debug::Throw( "FileCheckDialog::setFiles.\n" );
+    Debug::Throw( QStringLiteral("FileCheckDialog::setFiles.\n") );
     FileRecordModel::List records;
 
     std::transform( files.begin(), files.end(), std::back_inserter( records ),

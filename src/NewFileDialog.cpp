@@ -30,10 +30,10 @@
 //________________________________________________________
 NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes buttons ):
     BaseDialog( parent ),
-    Counter( "NewFileDialog" )
+    Counter( QStringLiteral("NewFileDialog") )
 {
 
-    Debug::Throw( "NewFileDialog::NewFileDialog.\n" );
+    Debug::Throw( QStringLiteral("NewFileDialog::NewFileDialog.\n") );
 
     setWindowTitle( tr( "File Not Found" ) );
 

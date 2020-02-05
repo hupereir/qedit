@@ -35,7 +35,7 @@ namespace TextBlock
 
         //* constructor
         explicit Delimiter():
-            Counter( "TextBlock::Delimiter" )
+            Counter( QStringLiteral("TextBlock::Delimiter") )
         {}
 
         //*@name accessors
@@ -75,7 +75,7 @@ namespace TextBlock
 
             //* constructor
             explicit List():
-                Counter( "TextBlock::Delimiter::List" )
+                Counter( QStringLiteral("TextBlock::Delimiter::List") )
                 {}
 
             //* sum operator (warning: this is not a reflexive operator)

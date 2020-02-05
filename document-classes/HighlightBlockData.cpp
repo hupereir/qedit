@@ -34,7 +34,7 @@ HighlightBlockData::HighlightBlockData():
 SpellCheck::Word HighlightBlockData::misspelledWord( int position ) const
 {
 
-    Debug::Throw( "HighlightBlockData::misspelledWord.\n" );
+    Debug::Throw( QStringLiteral("HighlightBlockData::misspelledWord.\n") );
     auto iter = std::find_if( words_.begin(), words_.end(), SpellCheck::Word::AtPositionFTor( position ) );
     return (iter == words_.end()) ? SpellCheck::Word():*iter;
 

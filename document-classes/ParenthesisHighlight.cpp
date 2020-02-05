@@ -27,9 +27,9 @@
 //_______________________________________________________________________
 ParenthesisHighlight::ParenthesisHighlight( TextEditor* parent ):
     QObject( parent ),
-    Counter( "ParenthesisHighlight" ),
+    Counter( QStringLiteral("ParenthesisHighlight") ),
     parent_( parent )
-{ Debug::Throw( "ParenthesisHighlight::ParenthesisHighlight.\n" ); }
+{ Debug::Throw( QStringLiteral("ParenthesisHighlight::ParenthesisHighlight.\n") ); }
 
 //______________________________________________________________________
 QList<QTextBlock> ParenthesisHighlight::clear()
@@ -67,7 +67,7 @@ QList<QTextBlock> ParenthesisHighlight::clear()
 //______________________________________________________________________
 void ParenthesisHighlight::synchronize( const ParenthesisHighlight& highlight )
 {
-    Debug::Throw( "ParenthesisHighlight::synchronized.\n" );
+    Debug::Throw( QStringLiteral("ParenthesisHighlight::synchronized.\n") );
     enabled_ = highlight.enabled_;
     cleared_ = highlight.cleared_;
     location_ = highlight.location_;

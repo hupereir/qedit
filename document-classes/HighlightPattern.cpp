@@ -28,16 +28,16 @@ QString HighlightPattern::noParentPattern_( "None" );
 
 //___________________________________________________________________________
 HighlightPattern::HighlightPattern():
-    Counter( "HighlightPattern" ),
+    Counter( QStringLiteral("HighlightPattern") ),
     name_( "default" )
 {}
 
 //___________________________________________________________________________
 HighlightPattern::HighlightPattern( const QDomElement& element ):
-    Counter( "HighlightPattern" ),
+    Counter( QStringLiteral("HighlightPattern") ),
     name_( "default" )
 {
-    Debug::Throw( "HighlightPattern::HighlightPattern.\n" );
+    Debug::Throw( QStringLiteral("HighlightPattern::HighlightPattern.\n") );
     if( element.tagName() == Xml::KeywordPattern ) setType( Type::KeywordPattern );
     if( element.tagName() == Xml::RangePattern ) setType( Type::RangePattern );
 
@@ -77,7 +77,7 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
 //______________________________________________________
 QDomElement HighlightPattern::domElement( QDomDocument& parent ) const
 {
-    Debug::Throw( "HighlightPattern::domElement.\n" );
+    Debug::Throw( QStringLiteral("HighlightPattern::domElement.\n") );
 
     auto out( parent.createElement( typeName() ) );
     out.setAttribute( Xml::Name, name_ );

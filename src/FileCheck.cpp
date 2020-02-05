@@ -30,16 +30,16 @@
 //____________________________________________________
 FileCheck::FileCheck( QObject* parent ):
     QObject( parent ),
-    Counter( "FileCheck" )
+    Counter( QStringLiteral("FileCheck") )
 {
-    Debug::Throw( "FileCheck::FileCheck.\n" );
+    Debug::Throw( QStringLiteral("FileCheck::FileCheck.\n") );
     connect( &fileSystemWatcher_, &QFileSystemWatcher::fileChanged, this, &FileCheck::_fileChanged );
 }
 
 //______________________________________________________
 void FileCheck::registerDisplay( TextDisplay* display )
 {
-    Debug::Throw( "FileCheck::registerDisplay.\n" );
+    Debug::Throw( QStringLiteral("FileCheck::registerDisplay.\n") );
     if( !isAssociated( display ) ) { Base::Key::associate( this, display ); }
 }
 

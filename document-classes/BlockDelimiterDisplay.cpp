@@ -40,11 +40,11 @@
 //____________________________________________________________________________
 BlockDelimiterDisplay::BlockDelimiterDisplay(TextEditor* editor ):
     QObject( editor ),
-    Counter( "BlockDelimiterDisplay" ),
+    Counter( QStringLiteral("BlockDelimiterDisplay") ),
     editor_( editor )
 {
 
-    Debug::Throw( "BlockDelimiterDisplay::BlockDelimiterDisplay.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::BlockDelimiterDisplay.\n") );
 
     // actions
     _installActions();
@@ -63,7 +63,7 @@ BlockDelimiterDisplay::BlockDelimiterDisplay(TextEditor* editor ):
 //__________________________________________
 void BlockDelimiterDisplay::synchronize( const BlockDelimiterDisplay* other )
 {
-    Debug::Throw( "BlockDelimiterDisplay::synchronize.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::synchronize.\n") );
 
     // copy members
     delimiters_ = other->delimiters_;
@@ -205,7 +205,7 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
 void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
 {
 
-    Debug::Throw( "BlockDelimiterDisplay::mousePressEvent.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::mousePressEvent.\n") );
     event->accept();
 
     // check mouse event position
@@ -283,7 +283,7 @@ void BlockDelimiterDisplay::mousePressEvent( QMouseEvent* event )
 void BlockDelimiterDisplay::setWidth( int width )
 {
 
-    Debug::Throw( "BlockDelimiterDisplay::setWidth.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::setWidth.\n") );
 
     // set dimensions needed to redraw marker and lines
     // this is done to minimize the amount of maths in the paintEvent method
@@ -328,7 +328,7 @@ void BlockDelimiterDisplay::_blockCountChanged()
 //________________________________________________________
 void BlockDelimiterDisplay::_collapseCurrentBlock()
 {
-    Debug::Throw(  "BlockDelimiterDisplay::_collapseCurrentBlock.\n" );
+    Debug::Throw(  QStringLiteral("BlockDelimiterDisplay::_collapseCurrentBlock.\n") );
 
     /* update segments if needed */
     _updateSegments();
@@ -356,7 +356,7 @@ void BlockDelimiterDisplay::_collapseCurrentBlock()
 void BlockDelimiterDisplay::_expandCurrentBlock()
 {
 
-    Debug::Throw( "BlockDelimiterDisplay::_expandCurrentBlock.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::_expandCurrentBlock.\n") );
 
     /* update segments if needed */
     _updateSegments();
@@ -384,7 +384,7 @@ void BlockDelimiterDisplay::_expandCurrentBlock()
 //________________________________________________________
 void BlockDelimiterDisplay::_collapseTopLevelBlocks()
 {
-    Debug::Throw( "BlockDelimiterDisplay::_collapseTopLevelBlocks.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::_collapseTopLevelBlocks.\n") );
 
     /* update segments if needed */
     _updateSegments();
@@ -470,7 +470,7 @@ void BlockDelimiterDisplay::_collapseTopLevelBlocks()
 void BlockDelimiterDisplay::expandAllBlocks()
 {
 
-    Debug::Throw( "BlockDelimiterDisplay::expandAllBlocks.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::expandAllBlocks.\n") );
 
     // clear box selection
     editor_->clearBoxSelection();
@@ -512,7 +512,7 @@ void BlockDelimiterDisplay::needUpdate()
 void BlockDelimiterDisplay::_installActions()
 {
 
-    Debug::Throw( "BlockDelimiterDisplay::_installActions.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::_installActions.\n") );
 
     collapseCurrentAction_ = new QAction( tr( "Collapse Current Block" ), this );
     collapseCurrentAction_->setToolTip( tr( "Collapse current collapsed block" ) );
@@ -754,7 +754,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
     HighlightBlockData*& data ) const
 {
 
-    Debug::Throw( "BlockDelimiterDisplay::_findBlocks.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::_findBlocks.\n") );
     TextBlockPair out;
 
     // look for first block
@@ -802,7 +802,7 @@ BlockDelimiterDisplay::TextBlockPair BlockDelimiterDisplay::_findBlocks(
 //________________________________________________________
 void BlockDelimiterDisplay::_selectSegmentFromCursor( int cursor )
 {
-    Debug::Throw( "BlockDelimiterDisplay::_selectSegmentFromCursor.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::_selectSegmentFromCursor.\n") );
     auto iter = std::find_if( segments_.begin(), segments_.end(), BlockDelimiterSegment::ContainsFTor( cursor ) );
     _setSelectedSegment( iter == segments_.end() ? BlockDelimiterSegment():*iter );
 }
@@ -811,7 +811,7 @@ void BlockDelimiterDisplay::_selectSegmentFromCursor( int cursor )
 //________________________________________________________
 void BlockDelimiterDisplay::_selectSegmentFromPosition( const QPoint& position )
 {
-    Debug::Throw( "BlockDelimiterDisplay::_selectSegmentFromPosition.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::_selectSegmentFromPosition.\n") );
     auto iter = std::find_if(
         segments_.begin(), segments_.end(),
         BlockDelimiterSegment::ActiveFTor( position ) );
@@ -879,7 +879,7 @@ void BlockDelimiterDisplay::_expand( const QTextBlock& block, HighlightBlockData
 void BlockDelimiterDisplay::_collapse( const BlockDelimiterDisplay::TextBlockPair& blocks, HighlightBlockData* data ) const
 {
 
-    Debug::Throw( "BlockDelimiterDisplay::_collapse.\n" );
+    Debug::Throw( QStringLiteral("BlockDelimiterDisplay::_collapse.\n") );
 
     // create cursor and move at end of block
     QTextCursor cursor( blocks.first );

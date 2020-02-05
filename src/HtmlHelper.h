@@ -41,9 +41,9 @@ class HtmlHelper: public QObject, private Base::Counter<HtmlHelper>
     //* constructor
     explicit HtmlHelper( QObject* parent, TextDisplay* editor ):
         QObject( parent ),
-        Counter( "HtmlHelper" ),
+        Counter( QStringLiteral("HtmlHelper") ),
         editor_( editor )
-    { Debug::Throw( "HtmlHelper::HtmlHelper.\n" ); }
+    { Debug::Throw( QStringLiteral("HtmlHelper::HtmlHelper.\n") ); }
 
     //* print
     void print( QIODevice* );

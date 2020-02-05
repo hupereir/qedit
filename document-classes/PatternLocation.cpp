@@ -21,12 +21,12 @@
 
 //_____________________________________________________
 PatternLocation::PatternLocation():
-    Counter( "PatternLocation" )
+    Counter( QStringLiteral("PatternLocation") )
 {}
 
 //_____________________________________________________
 PatternLocation::PatternLocation( const HighlightPattern& parent, int position, int length ):
-    Counter( "PatternLocation" ),
+    Counter( QStringLiteral("PatternLocation") ),
     id_( parent.id() ),
     parentId_( parent.parentId() ),
     flags_( parent.flags() ),
