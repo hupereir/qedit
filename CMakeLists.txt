@@ -7,6 +7,9 @@ SET(QEDIT_VERSION_MINOR 8)
 SET(QEDIT_VERSION_PATCH 4)
 set(QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION_PATCH})
 
+########### options ###############
+option( USE_SHARED_LIBS "Use Shared Libraries" OFF )
+
 ########### modules #################
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/base-cmake")
 include(Macros)
@@ -20,9 +23,6 @@ set(CPACK_PACKAGE_VERSION "${QEDIT_VERSION}")
 set(CPACK_SOURCE_GENERATOR TGZ)
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 include(CPack)
-
-########### options ###############
-option( USE_SHARED_LIBS "Use Shared Libraries" OFF )
 
 ########### configuration files ###############
 configure_file(qedit.spec.cmake ${CMAKE_SOURCE_DIR}/qedit.spec)
