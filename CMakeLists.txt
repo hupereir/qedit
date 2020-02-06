@@ -21,6 +21,9 @@ set(CPACK_SOURCE_GENERATOR TGZ)
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 include(CPack)
 
+########### options ###############
+option( USE_SHARED_LIBS "Use Shared Libraries" OFF )
+
 ########### configuration files ###############
 configure_file(qedit.spec.cmake ${CMAKE_SOURCE_DIR}/qedit.spec)
 
@@ -38,7 +41,7 @@ else()
 endif()
 
 ########### subdirectories ###############
-if(ENABLE_SHARED)
+if(USE_SHARED_LIBS)
 
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
   link_directories(${CMAKE_INSTALL_PREFIX}/lib)

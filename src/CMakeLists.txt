@@ -1,7 +1,7 @@
 ########### Qt configuration #########
 find_package(Qt5 COMPONENTS Widgets Network Xml PrintSupport REQUIRED )
 
-if( WIN32 AND NOT ENABLE_SHARED )
+if( WIN32 AND NOT USE_SHARED_LIBS )
   fix_win32_static_compilation()
 endif()
 
