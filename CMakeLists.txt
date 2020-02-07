@@ -48,6 +48,7 @@ if(USE_SHARED_LIBS)
 
 else()
 
+  add_definitions(-DSTATIC_BUILD)
   add_subdirectory(base)
   add_subdirectory(base-qt)
   add_subdirectory(base-server)
