@@ -25,6 +25,7 @@
 #include <QDrag>
 #include <QMimeData>
 #include <QPainter>
+#include <QStyleOptionViewItem>
 
 #include <numeric>
 
@@ -112,7 +113,7 @@ QPixmap SessionFilesView::_renderToPixmap( const QModelIndexList& indexes, QRect
     QPainter painter( &pixmap );
     for( const auto& index:indexes )
     {
-        QStyleOptionViewItemV4 option;
+        QStyleOptionViewItem option;
 
         // set option state
         option.showDecorationSelected = true;

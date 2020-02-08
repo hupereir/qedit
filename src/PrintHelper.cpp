@@ -63,7 +63,7 @@ void PrintHelper::print( QPrinter* printer )
 
         // since QT5 extra formats need to be applied before starting the layout
         // create ranges
-        QList<QTextLayout::FormatRange> formatRanges;
+        QVector<QTextLayout::FormatRange> formatRanges;
 
         // need to redo highlighting rather that use HighlightBlockData
         // because the latter do not store autospell patterns.
@@ -85,7 +85,7 @@ void PrintHelper::print( QPrinter* printer )
         }
 
         // save formats
-        textLayout.setAdditionalFormats( formatRanges );
+        textLayout.setFormats( formatRanges );
 
         // layout text
         textLayout.beginLayout();
