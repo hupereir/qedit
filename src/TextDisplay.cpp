@@ -918,7 +918,7 @@ QString TextDisplay::toPlainText() const
 
             // add collapsed text
             current += _collapsedText( block );
-            return std::move(current);
+            return current;
         }
     );
 }
@@ -1714,7 +1714,7 @@ void TextDisplay::_processMacro( const TextMacro& macro )
                 text += block.text();
                 if( block.next().isValid() || _blockIsCollapsed( block ) ) text += "\n";
                 text += _collapsedText( block );
-                return std::move(text);
+                return text;
             });
 
         // last block
