@@ -105,10 +105,10 @@ MainWindow& WindowServer::newMainWindow()
     connect( static_cast<SessionFilesView*>(&window->sidePanelWidget().sessionFilesWidget().list()), &SessionFilesView::detach, this, QOverload<>::of(&WindowServer::_detach) );
 
     // open actions
-    connect( &window->menuBar().recentFilesMenu(), &RecentFilesMenu::fileSelected, this, QOverload<FileRecord>::of(&WindowServer::_open) );
-    connect( &window->sidePanelWidget().sessionFilesWidget(), &SessionFilesWidget::fileActivated, this, QOverload<FileRecord>::of(&WindowServer::_open) );
-    connect( &window->sidePanelWidget().recentFilesWidget(), &RecentFilesWidget::fileActivated, this, QOverload<FileRecord>::of(&WindowServer::_open) );
-    connect( &window->sidePanelWidget().fileSystemWidget(), &BaseFileSystemWidget::fileActivated, this, QOverload<FileRecord>::of(&WindowServer::_open) );
+    connect( &window->menuBar().recentFilesMenu(), &RecentFilesMenu::fileSelected, this, QOverload<const FileRecord&>::of(&WindowServer::_open) );
+    connect( &window->sidePanelWidget().sessionFilesWidget(), &SessionFilesWidget::fileActivated, this, QOverload<const FileRecord&>::of(&WindowServer::_open) );
+    connect( &window->sidePanelWidget().recentFilesWidget(), &RecentFilesWidget::fileActivated, this, QOverload<const FileRecord&>::of(&WindowServer::_open) );
+    connect( &window->sidePanelWidget().fileSystemWidget(), &BaseFileSystemWidget::fileActivated, this, QOverload<const FileRecord&>::of(&WindowServer::_open) );
 
     // other actions
     connect( &window->sidePanelWidget().sessionFilesWidget(), &SessionFilesWidget::filesSaved, this, &WindowServer::_save );
@@ -208,7 +208,7 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
     auto filenames( parser.orphans() );
 
     // close mode
-    if( parser.hasFlag( "--close" ) )
+    if( parser.hasFlag( QStringLiteral("--close") ) )
     {
         _close( filenames );
         firstCall_ = false;
@@ -230,16 +230,16 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
     bool fileOpened( false );
 
     // tabbed | diff mode
-    const bool tabbed( parser.hasFlag( "--tabbed" ) );
-    bool diff( parser.hasFlag( "--diff" ) );
+    const bool tabbed( parser.hasFlag( QStringLiteral("--tabbed") ) );
+    bool diff( parser.hasFlag( QStringLiteral("--diff") ) );
     if( ( tabbed || diff ) && filenames.size() > 1 )
     {
         Qt::Orientation orientation( defaultOrientation( diff ? OrientationMode::Diff:OrientationMode::Normal ) );
-        if( parser.hasOption( "--orientation" ) )
+        if( parser.hasOption( QStringLiteral("--orientation") ) )
         {
-            QString value( parser.option( "--orientation" ) );
-            if( value == "vertical" ) orientation = Qt::Vertical;
-            else if( value == "horizontal" ) orientation = Qt::Horizontal;
+            QString value( parser.option( QStringLiteral("--orientation") ) );
+            if( value == QLatin1String("vertical") ) orientation = Qt::Vertical;
+            else if( value == QLatin1String("horizontal") ) orientation = Qt::Horizontal;
         }
 
         bool first( true );
@@ -279,8 +279,8 @@ void WindowServer::readFilesFromArguments( const CommandLineParser& parser )
         {
 
             OpenMode mode( openMode_ );
-            if( parser.hasFlag( "--same-window" ) ) mode = OpenMode::ActiveWindow;
-            else if( parser.hasFlag( "--new-window" ) ) mode = OpenMode::NewWindow;
+            if( parser.hasFlag( QStringLiteral("--same-window") ) ) mode = OpenMode::ActiveWindow;
+            else if( parser.hasFlag( QStringLiteral("--new-window") ) ) mode = OpenMode::NewWindow;
 
             bool opened = _open( FileRecord( File( filename ).expand() ), mode );
             if( opened ) { _applyCommandLineArguments( _activeWindow().activeDisplay(), parser ); }
@@ -322,7 +322,7 @@ void WindowServer::open( const FileRecord::List& records )
 }
 
 //___________________________________________________________
-void WindowServer::multipleFileReplace( QList<File> files, TextSelection selection )
+void WindowServer::multipleFileReplace( const QList<File> &files, const TextSelection &selection )
 {
     Debug::Throw( QStringLiteral("WindowServer::multipleFileReplace.\n") );
 
@@ -497,7 +497,7 @@ void WindowServer::_newFile( Qt::Orientation orientation )
 }
 
 //_______________________________________________
-bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
+bool WindowServer::_open( const FileRecord &record, WindowServer::OpenMode mode )
 {
 
     Debug::Throw() << "WindowServer::_open - file: " << record.file() << "." << endl;
@@ -580,7 +580,7 @@ bool WindowServer::_open( FileRecord record, WindowServer::OpenMode mode )
 }
 
 //_______________________________________________
-bool WindowServer::_open( FileRecord record, Qt::Orientation orientation )
+bool WindowServer::_open( const FileRecord &record, Qt::Orientation orientation )
 {
 
     Debug::Throw() << "WindowServer::_open - file: " << record.file() << " orientation: " << orientation << endl;
@@ -1106,12 +1106,12 @@ void WindowServer::_applyCommandLineArguments( TextDisplay& display, const Comma
     Debug::Throw( QStringLiteral("WindowServer::_applyCommandLineArguments.\n") );
 
     //! see if autospell action is required
-    bool autospell( parser.hasFlag( "--autospell" ) );
+    bool autospell( parser.hasFlag( QStringLiteral("--autospell") ) );
 
     #if WITH_ASPELL
     //! see if autospell filter and dictionary are required
-    QString filter = parser.hasOption( "--filter" ) ? parser.option( "--filter" ) : "";
-    QString dictionary = parser.hasOption( "--dictionary" ) ? parser.option( "--dictionary" ) : "";
+    QString filter = parser.hasOption( QStringLiteral("--filter") ) ? parser.option( QStringLiteral("--filter") ) : QLatin1String("");
+    QString dictionary = parser.hasOption( QStringLiteral("--dictionary") ) ? parser.option( QStringLiteral("--dictionary") ) : QLatin1String("");
     Debug::Throw() << "WindowServer::_applyCommandLineArguments -"
         << " filter:" << filter
         << " dictionary: " << dictionary

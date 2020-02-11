@@ -133,8 +133,8 @@ TextDisplay::TextDisplay( QWidget* parent ):
     // connections
     connect( this, &QTextEdit::selectionChanged, this, &TextDisplay::_selectionChanged );
     connect( this, &QTextEdit::cursorPositionChanged, this, &TextDisplay::_highlightParenthesis );
-    connect( this, QOverload<QTextBlock,bool>::of(&TextDisplay::indent), textIndent_, QOverload<QTextBlock,bool>::of(&TextIndent::indent) );
-    connect( this, QOverload<QTextBlock,QTextBlock>::of(&TextDisplay::indent), textIndent_, QOverload<QTextBlock,QTextBlock>::of(&TextIndent::indent) );
+    connect( this, QOverload<QTextBlock,bool>::of(&TextDisplay::indent), textIndent_, QOverload<const QTextBlock&,bool>::of(&TextIndent::indent) );
+    connect( this, QOverload<QTextBlock,QTextBlock>::of(&TextDisplay::indent), textIndent_, QOverload<const QTextBlock&,const QTextBlock&>::of(&TextIndent::indent) );
 
     #if WITH_ASPELL
 
@@ -579,7 +579,7 @@ void TextDisplay::checkFileReadOnly()
 }
 
 //___________________________________________________________________________
-void TextDisplay::setFileCheckData( FileCheckData data )
+void TextDisplay::setFileCheckData( const FileCheckData &data )
 {
     Debug::Throw( QStringLiteral("TextDisplay::setFileCheckData.\n") );
 
@@ -914,7 +914,7 @@ QString TextDisplay::toPlainText() const
         [this]( QString current, const QTextBlock& block )
         {
             current += block.text();
-            if( block.next().isValid() || _blockIsCollapsed( block ) ) current += "\n";
+            if( block.next().isValid() || _blockIsCollapsed( block ) ) current += QLatin1String("\n");
 
             // add collapsed text
             current += _collapsedText( block );
@@ -976,7 +976,7 @@ void TextDisplay::tagBlock( QTextBlock block, int tag )
 }
 
 //___________________________________________________________________________
-void TextDisplay::clearTag( QTextBlock block, int tags )
+void TextDisplay::clearTag( const QTextBlock &block, int tags )
 {
     Debug::Throw() << "TextDisplay::clearTag - key: " << key() << endl;
     TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
@@ -1095,7 +1095,7 @@ bool TextDisplay::hasTaggedBlocks() const
 }
 
 //___________________________________________________________________________
-void TextDisplay::_updateDocumentClass( File file, bool newDocument )
+void TextDisplay::_updateDocumentClass( const File &file, bool newDocument )
 {
 
     Debug::Throw( QStringLiteral("TextDisplay::_updateDocumentClass\n") );
@@ -1211,7 +1211,7 @@ void TextDisplay::_updateDocumentClass( File file, bool newDocument )
 }
 
 //_____________________________________________
-void TextDisplay::processMacro( QString name )
+void TextDisplay::processMacro( const QString &name )
 {
 
     Debug::Throw() << "TextDisplay::processMacro - " << name << endl;
@@ -1324,7 +1324,7 @@ void TextDisplay::selectDictionary( const QString& dictionary )
 }
 
 //________________________________________________________________
-void TextDisplay::selectClassName( QString name )
+void TextDisplay::selectClassName( const QString &name )
 {
     Debug::Throw( QStringLiteral("TextDisplay::SelectClassName.\n") );
 
@@ -1526,38 +1526,38 @@ void TextDisplay::_installActions()
     Debug::Throw( QStringLiteral("TextDisplay::_installActions.\n") );
 
     // actions
-    addAction( textIndentAction_ = new QAction( IconEngine::get( IconNames::Indent ), "Indent Text", this ) );
+    addAction( textIndentAction_ = new QAction( IconEngine::get( IconNames::Indent ), QStringLiteral("Indent Text"), this ) );
     textIndentAction_->setCheckable( true );
     textIndentAction_->setChecked( textIndent_->isEnabled() );
     connect( textIndentAction_, &QAction::toggled, this, &TextDisplay::_toggleTextIndent );
 
-    addAction( textHighlightAction_ = new QAction( "Highlight Text", this ) );
+    addAction( textHighlightAction_ = new QAction( QStringLiteral("Highlight Text"), this ) );
     textHighlightAction_->setCheckable( true );
     textHighlightAction_->setChecked( textHighlight_->isHighlightEnabled() );
     textHighlightAction_->setShortcut( Qt::Key_F8 );
     textHighlightAction_->setShortcutContext( Qt::WidgetShortcut );
     connect( textHighlightAction_, &QAction::toggled, this, &TextDisplay::_toggleTextHighlight );
 
-    addAction( parenthesisHighlightAction_ = new QAction( "Highlight Parenthesis", this ) );
+    addAction( parenthesisHighlightAction_ = new QAction( QStringLiteral("Highlight Parenthesis"), this ) );
     parenthesisHighlightAction_->setCheckable( true );
     parenthesisHighlightAction_->setChecked( parenthesisHighlight_->isEnabled() );
     connect( parenthesisHighlightAction_, &QAction::toggled, this, &TextDisplay::_toggleParenthesisHighlight );
 
-    addAction( noAutomaticMacrosAction_ = new QAction( "Disable Automatic Actions", this ) );
+    addAction( noAutomaticMacrosAction_ = new QAction( QStringLiteral("Disable Automatic Actions"), this ) );
     noAutomaticMacrosAction_->setCheckable( true );
     noAutomaticMacrosAction_->setChecked( false );
-    noAutomaticMacrosAction_->setToolTip( "Do not execute automatic actions loaded from document class when saving document" );
+    noAutomaticMacrosAction_->setToolTip( QStringLiteral("Do not execute automatic actions loaded from document class when saving document") );
     connect( noAutomaticMacrosAction_, &QAction::toggled, this, &TextDisplay::_toggleIgnoreAutomaticMacros );
 
-    addAction( showBlockDelimiterAction_ =new QAction( "Show Block Delimiters", this ) );
-    showBlockDelimiterAction_->setToolTip( "Show/hide block delimiters" );
+    addAction( showBlockDelimiterAction_ =new QAction( QStringLiteral("Show Block Delimiters"), this ) );
+    showBlockDelimiterAction_->setToolTip( QStringLiteral("Show/hide block delimiters") );
     showBlockDelimiterAction_->setCheckable( true );
     showBlockDelimiterAction_->setShortcut( Qt::Key_F9 );
     showBlockDelimiterAction_->setShortcutContext( Qt::WidgetShortcut );
     connect( showBlockDelimiterAction_, &QAction::toggled, this, &TextDisplay::_toggleShowBlockDelimiters );
 
     // autospell
-    addAction( autoSpellAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), "Automatic Spell Checking", this ) );
+    addAction( autoSpellAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), QStringLiteral("Automatic Spell Checking"), this ) );
     autoSpellAction_->setShortcut( Qt::Key_F6 );
     autoSpellAction_->setShortcutContext( Qt::WidgetShortcut );
     autoSpellAction_->setCheckable( true );
@@ -1570,7 +1570,7 @@ void TextDisplay::_installActions()
     #endif
 
     // spell checking
-    addAction( spellcheckAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), "Check Spelling...", this ) );
+    addAction( spellcheckAction_ = new QAction( IconEngine::get( IconNames::SpellCheck ), QStringLiteral("Check Spelling..."), this ) );
     #if WITH_ASPELL
     connect( spellcheckAction_, &QAction::triggered, this, &TextDisplay::_spellcheck );
     #else
@@ -1578,23 +1578,23 @@ void TextDisplay::_installActions()
     #endif
 
     // indent selection
-    addAction( indentSelectionAction_ = new QAction( IconEngine::get( IconNames::Indent ), "Indent Selection", this ) );
+    addAction( indentSelectionAction_ = new QAction( IconEngine::get( IconNames::Indent ), QStringLiteral("Indent Selection"), this ) );
     indentSelectionAction_->setShortcut( Qt::CTRL + Qt::Key_I );
     indentSelectionAction_->setShortcutContext( Qt::WidgetShortcut );
     connect( indentSelectionAction_, &QAction::triggered, this, &TextDisplay::_indentSelection );
 
     // base indentation
-    addAction( baseIndentAction_ = new QAction( IconEngine::get( IconNames::Indent ), "Add Base Indentation", this ) );
+    addAction( baseIndentAction_ = new QAction( IconEngine::get( IconNames::Indent ), QStringLiteral("Add Base Indentation"), this ) );
     baseIndentAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_I );
     connect( baseIndentAction_, &QAction::triggered, this, &TextDisplay::_addBaseIndentation );
 
     // replace leading tabs
-    addAction( leadingTabsAction_ = new QAction( "Replace leading tabs", this ) );
+    addAction( leadingTabsAction_ = new QAction( QStringLiteral("Replace leading tabs"), this ) );
     connect( leadingTabsAction_, &QAction::triggered, this, &TextDisplay::_replaceLeadingTabs );
 
     // file information
-    addAction( filePropertiesAction_ = new QAction( IconEngine::get( IconNames::Information ), "Properties...", this ) );
-    filePropertiesAction_->setToolTip( "Display current file properties" );
+    addAction( filePropertiesAction_ = new QAction( IconEngine::get( IconNames::Information ), QStringLiteral("Properties..."), this ) );
+    filePropertiesAction_->setToolTip( QStringLiteral("Display current file properties") );
     connect( filePropertiesAction_, &QAction::triggered, this, &TextDisplay::_fileProperties );
 
     #if WITH_ASPELL
@@ -1607,31 +1607,31 @@ void TextDisplay::_installActions()
 
     #endif
 
-    addAction( textEncodingAction_ = new QAction( "Text Encoding...", this ) );
+    addAction( textEncodingAction_ = new QAction( QStringLiteral("Text Encoding..."), this ) );
     connect( textEncodingAction_, &QAction::triggered, this, &TextDisplay::_textEncoding );
 
     textEncodingMenuAction_ = textEncodingMenu_->menuAction();
 
     // tag block action
-    addAction( tagBlockAction_ = new QAction( IconEngine::get( IconNames::Tag ), "Tag Selected Blocks", this ) );
+    addAction( tagBlockAction_ = new QAction( IconEngine::get( IconNames::Tag ), QStringLiteral("Tag Selected Blocks"), this ) );
     connect( tagBlockAction_, &QAction::triggered, this, &TextDisplay::_tagBlock );
 
     // clear current block tags
-    addAction( clearTagAction_ = new QAction( "Clear Current Tag", this ) );
+    addAction( clearTagAction_ = new QAction( QStringLiteral("Clear Current Tag"), this ) );
     connect( clearTagAction_, &QAction::triggered, this, &TextDisplay::_clearTag );
 
     // clear all tags
-    addAction( clearAllTagsAction_ = new QAction( "Clear All Tags", this ) );
+    addAction( clearAllTagsAction_ = new QAction( QStringLiteral("Clear All Tags"), this ) );
     connect( clearAllTagsAction_, &QAction::triggered, this, &TextDisplay::clearAllTags );
 
     // next tag action
-    addAction( nextTagAction_ = new QAction( IconEngine::get( IconNames::Down ), "Goto Next Tagged Block", this ) );
+    addAction( nextTagAction_ = new QAction( IconEngine::get( IconNames::Down ), QStringLiteral("Goto Next Tagged Block"), this ) );
     connect( nextTagAction_, &QAction::triggered, this, &TextDisplay::_nextTag );
     nextTagAction_->setShortcut( Qt::ALT + Qt::Key_Down );
     nextTagAction_->setShortcutContext( Qt::WidgetShortcut );
 
     // previous tag action
-    addAction( previousTagAction_ = new QAction( IconEngine::get( IconNames::Up ), "Goto Previous Tagged Block", this ) );
+    addAction( previousTagAction_ = new QAction( IconEngine::get( IconNames::Up ), QStringLiteral("Goto Previous Tagged Block"), this ) );
     connect( previousTagAction_, &QAction::triggered, this, &TextDisplay::_previousTag );
     previousTagAction_->setShortcut( Qt::ALT + Qt::Key_Up );
     previousTagAction_->setShortcutContext( Qt::WidgetShortcut );
@@ -1704,7 +1704,7 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     } else {
 
         text = begin.text().mid( positionBegin - begin.position() );
-        if( begin.next().isValid() || _blockIsCollapsed( begin ) ) text += "\n";
+        if( begin.next().isValid() || _blockIsCollapsed( begin ) ) text += QLatin1String("\n");
         text += _collapsedText( begin );
 
         const TextBlockRange range( begin.next(), end );
@@ -1712,13 +1712,13 @@ void TextDisplay::_processMacro( const TextMacro& macro )
             [this]( QString text, const QTextBlock& block )
             {
                 text += block.text();
-                if( block.next().isValid() || _blockIsCollapsed( block ) ) text += "\n";
+                if( block.next().isValid() || _blockIsCollapsed( block ) ) text += QLatin1String("\n");
                 text += _collapsedText( block );
                 return text;
             });
 
         // last block
-        text += end.text().left( positionEnd - end.position() );
+        text += end.text().leftRef( positionEnd - end.position() );
 
     }
 
@@ -1916,7 +1916,7 @@ void TextDisplay::_updateConfiguration()
     textHighlightAction_->setChecked( XmlOptions::get().get<bool>( QStringLiteral("TEXT_HIGHLIGHT") ) );
 
     // parenthesis highlight
-    textHighlight_->setParenthesisHighlightColor( XmlOptions::get().get<Base::Color>( "PARENTHESIS_COLOR" ) );
+    textHighlight_->setParenthesisHighlightColor( XmlOptions::get().get<Base::Color>( QStringLiteral("PARENTHESIS_COLOR") ) );
     parenthesisHighlightAction_->setChecked( XmlOptions::get().get<bool>( QStringLiteral("TEXT_PARENTHESIS") ) );
 
     // block delimiters, line numbers and margin
@@ -1929,9 +1929,9 @@ void TextDisplay::_updateConfiguration()
     textEncodingMenu_->select( textEncoding_ );
 
     // retrieve diff colors
-    diffConflictColor_ = XmlOptions::get().get<Base::Color>( "DIFF_CONFLICT_COLOR" );
-    diffAddedColor_ = XmlOptions::get().get<Base::Color>( "DIFF_ADDED_COLOR" );
-    userTagColor_ = XmlOptions::get().get<Base::Color>( "TAGGED_BLOCK_COLOR" );
+    diffConflictColor_ = XmlOptions::get().get<Base::Color>( QStringLiteral("DIFF_CONFLICT_COLOR") );
+    diffAddedColor_ = XmlOptions::get().get<Base::Color>( QStringLiteral("DIFF_ADDED_COLOR") );
+    userTagColor_ = XmlOptions::get().get<Base::Color>( QStringLiteral("TAGGED_BLOCK_COLOR") );
 
     // update paragraph tags
     _updateTaggedBlocks();
@@ -1948,7 +1948,7 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
 
     // spellcheck configuration
     bool changed( false );
-    changed |= textHighlight_->spellParser().setColor( QColor( XmlOptions::get().get<Base::Color>("AUTOSPELL_COLOR") ) );
+    changed |= textHighlight_->spellParser().setColor( QColor( XmlOptions::get().get<Base::Color>(QStringLiteral("AUTOSPELL_COLOR")) ) );
     changed |= textHighlight_->spellParser().setFontFormat( static_cast<TextFormat::Flags>( XmlOptions::get().get<int>(QStringLiteral("AUTOSPELL_FONT_FORMAT")) ) );
     textHighlight_->updateSpellPattern();
     autoSpellAction_->setEnabled( textHighlight_->spellParser().color().isValid() );
@@ -2398,15 +2398,15 @@ void TextDisplay::_fileProperties()
 
     // number of characters
     auto item = new GridLayoutItem( box, gridLayout );
-    item->setKey( "Number of characters:" );
+    item->setKey( QStringLiteral("Number of characters:") );
     item->setText( QString::number(toPlainText().size()) );
 
     // number of lines
     item = new GridLayoutItem( box, gridLayout );
-    item->setKey( "Number of lines:" );
+    item->setKey( QStringLiteral("Number of lines:") );
     item->setText( QString::number( TextEditor::blockCount()) );
 
-    gridLayout->addWidget( new QLabel( "Text highlighting:", box ) );
+    gridLayout->addWidget( new QLabel( QStringLiteral("Text highlighting:"), box ) );
     {
         auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked( textHighlight_->isHighlightEnabled() );
@@ -2414,7 +2414,7 @@ void TextDisplay::_fileProperties()
         gridLayout->addWidget( checkbox );
     }
 
-    gridLayout->addWidget( new QLabel( "Paragraph highlighting:", box ) );
+    gridLayout->addWidget( new QLabel( QStringLiteral("Paragraph highlighting:"), box ) );
     {
         auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked( blockHighlightAction().isChecked() );
@@ -2422,7 +2422,7 @@ void TextDisplay::_fileProperties()
         gridLayout->addWidget( checkbox );
     }
 
-    gridLayout->addWidget( new QLabel( "Parenthesis highlighting:", box ) );
+    gridLayout->addWidget( new QLabel( QStringLiteral("Parenthesis highlighting:"), box ) );
     {
         auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked( textHighlight_->isParenthesisEnabled() );
@@ -2430,7 +2430,7 @@ void TextDisplay::_fileProperties()
         gridLayout->addWidget( checkbox );
     }
 
-    gridLayout->addWidget( new QLabel( "Text indentation:", box ) );
+    gridLayout->addWidget( new QLabel( QStringLiteral("Text indentation:"), box ) );
     {
         auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked(  textIndent_->isEnabled() );
@@ -2438,7 +2438,7 @@ void TextDisplay::_fileProperties()
         gridLayout->addWidget( checkbox );
     }
 
-    gridLayout->addWidget( new QLabel( "Text wrapping:", box ) );
+    gridLayout->addWidget( new QLabel( QStringLiteral("Text wrapping:"), box ) );
     {
         auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked( wrapModeAction().isChecked() );
@@ -2446,7 +2446,7 @@ void TextDisplay::_fileProperties()
         gridLayout->addWidget( checkbox );
     }
 
-    gridLayout->addWidget( new QLabel( "Tab emulation:", box ) );
+    gridLayout->addWidget( new QLabel( QStringLiteral("Tab emulation:"), box ) );
     {
         auto checkbox( new QCheckBox( box ) );
         checkbox->setChecked( tabEmulationAction().isChecked() );
@@ -2456,7 +2456,7 @@ void TextDisplay::_fileProperties()
 
     // document class
     item = new GridLayoutItem( box, gridLayout, GridLayoutItem::Flag::Elide );
-    item->setKey( "Document class file name:" );
+    item->setKey( QStringLiteral("Document class file name:") );
     auto documentClass( Base::Singleton::get().application<Application>()->classManager().get( className() ) );
     item->setText( documentClass.file() );
 
@@ -2465,12 +2465,12 @@ void TextDisplay::_fileProperties()
 
     // autosave
     item = new GridLayoutItem( box, gridLayout, GridLayoutItem::Flag::Elide|GridLayoutItem::Flag::Selectable );
-    item->setKey( "Auto-save file name:" );
+    item->setKey( QStringLiteral("Auto-save file name:") );
     item->setText( AutoSaveThread::autoSaveName( file_ ) );
 
     layout->addStretch();
 
-    dialog.tabWidget().addTab( box, "Information" );
+    dialog.tabWidget().addTab( box, QStringLiteral("Information") );
 
     // execute dialog
     dialog.centerOnParent();
@@ -2500,7 +2500,7 @@ void TextDisplay::_textModified()
 }
 
 //__________________________________________________
-void TextDisplay::_ignoreMisspelledWord( QString word )
+void TextDisplay::_ignoreMisspelledWord( const QString &word )
 {
     Debug::Throw() << "TextDisplay::_ignoreMisspelledWord - word: " << word << endl;
     #if WITH_ASPELL
@@ -2512,7 +2512,7 @@ void TextDisplay::_ignoreMisspelledWord( QString word )
 }
 
 //__________________________________________________
-void TextDisplay::_replaceMisspelledSelection( QString word )
+void TextDisplay::_replaceMisspelledSelection( const QString &word )
 {
 
     #if WITH_ASPELL
@@ -2755,7 +2755,7 @@ void TextDisplay::_nextTag()
 
     if( !block.isValid() )
     {
-        InformationDialog( this, "No tagged block found." ).exec();
+        InformationDialog( this, QStringLiteral("No tagged block found.") ).exec();
         return;
     }
 
@@ -2790,7 +2790,7 @@ void TextDisplay::_previousTag()
 
     if( !block.isValid() )
     {
-        InformationDialog( this, "No tagged block found." ).exec();
+        InformationDialog( this, QStringLiteral("No tagged block found.") ).exec();
         return;
     }
 
@@ -2974,4 +2974,4 @@ QString TextDisplay::_collapsedText( const QTextBlock& block ) const
 
 //___________________________________________________________________________
 bool TextDisplay::_fileIsAfs() const
-{ return file_.get().indexOf( "/afs" ) == 0; }
+{ return file_.get().indexOf( QLatin1String("/afs") ) == 0; }

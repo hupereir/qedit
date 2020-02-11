@@ -54,13 +54,13 @@ class AutoSaveThread: public QThread, public Base::Key, private Base::Counter<Au
     //@{
 
     //* file
-    void setFile( File );
+    void setFile( const File &);
 
     //* set content
     void setContent( const QString& );
 
     //* set encoding
-    void setTextEncoding( QByteArray );
+    void setTextEncoding( const QByteArray &);
 
     //* set use compression
     void setUseCompression( bool );

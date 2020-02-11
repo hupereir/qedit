@@ -232,7 +232,7 @@ class TextDisplay: public TextEditor
     static NewDocumentNameServer& newDocumentNameServer();
 
     //* file check data
-    void setFileCheckData( FileCheckData );
+    void setFileCheckData( const FileCheckData &);
 
     //* clear file check data
     void clearFileCheckData();
@@ -259,7 +259,7 @@ class TextDisplay: public TextEditor
     void revertToSave();
 
     //* class name
-    void setClassName( QString name )
+    void setClassName( const QString &name )
     { className_ = name; }
 
     //* clear class name
@@ -286,7 +286,7 @@ class TextDisplay: public TextEditor
     void tagBlock( QTextBlock, int tag );
 
     //* clear block tags if match argument
-    void clearTag( QTextBlock, int tags );
+    void clearTag( const QTextBlock&, int tags );
 
     //* close file removed dialogs
     void hideFileRemovedWidgets();
@@ -415,7 +415,7 @@ class TextDisplay: public TextEditor
     { _updateDocumentClass( file_, isNewDocument_ ); }
 
     //* process macro by name
-    void processMacro( QString );
+    void processMacro( const QString &);
 
     //* rehighlight
     void rehighlight();
@@ -430,7 +430,7 @@ class TextDisplay: public TextEditor
     void selectDictionary( const QString& );
 
     //* select class name
-    void selectClassName( QString );
+    void selectClassName( const QString &);
 
     //* set focus, delayed
     void setFocusDelayed();
@@ -559,11 +559,11 @@ class TextDisplay: public TextEditor
 
     //* ignore current misspelled word
     /** this method does nothing if not compiled against aspell */
-    void _ignoreMisspelledWord( QString );
+    void _ignoreMisspelledWord( const QString &);
 
     //* replace current selection with spell-checked suggestion
     /** this method does nothing if not compiled against aspell */
-    void _replaceMisspelledSelection( QString );
+    void _replaceMisspelledSelection( const QString &);
 
     //* highlight parenthesis
     void _highlightParenthesis();
@@ -600,7 +600,7 @@ class TextDisplay: public TextEditor
 
     //* update document class
     /** first parameter is file name, second tells if document is a new untitled document or not */
-    void _updateDocumentClass( File, bool );
+    void _updateDocumentClass( const File&, bool );
 
     //* set file name
     void _setFile( const File& file );

@@ -72,7 +72,7 @@ class BlockMarker
     bool valid_  = false;
 
     //* streamer
-    friend QTextStream& operator << ( QTextStream& out, const BlockMarker& marker )
+    friend QTextStream& operator << ( QTextStream& out, BlockMarker marker )
     {
         out << "(" << marker.id() << "," << marker.cursor() << "," << marker.position() << ")";
         return out;
@@ -82,11 +82,11 @@ class BlockMarker
 
 
 //* equal to operator
-inline bool operator == ( const BlockMarker& first, const BlockMarker& second )
+inline bool operator == ( BlockMarker first, BlockMarker second )
 { return first.cursor() == second.cursor(); }
 
 //* less than operator
-inline bool operator < ( const BlockMarker& first, const BlockMarker& second )
+inline bool operator < ( BlockMarker first, BlockMarker second )
 { return first.cursor() < second.cursor(); }
 
 #endif

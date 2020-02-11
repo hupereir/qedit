@@ -41,31 +41,31 @@ void HtmlHelper::print( QIODevice* device )
 QString HtmlHelper::_htmlString()
 {
 
-    QDomDocument document( "Html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\"" );
+    QDomDocument document( QStringLiteral("Html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\"") );
 
     // html
-    QDomElement html = document.appendChild( document.createElement( "Html" ) ).toElement();
-    html.setAttribute( "xmlns", "Http://www.w3.org/1999/xhtml" );
+    QDomElement html = document.appendChild( document.createElement( QStringLiteral("Html") ) ).toElement();
+    html.setAttribute( QStringLiteral("xmlns"), QStringLiteral("Http://www.w3.org/1999/xhtml") );
 
     // head
-    QDomElement head = html.appendChild( document.createElement( "Head" ) ).toElement();
+    QDomElement head = html.appendChild( document.createElement( QStringLiteral("Head") ) ).toElement();
     QDomElement meta;
 
     // meta information
-    meta = head.appendChild( document.createElement( "meta" ) ).toElement();
-    meta.setAttribute( "content", "Text/html; charset=utf8" );
-    meta.setAttribute( "Http-equiv", "Content-Type" );
-    meta = head.appendChild( document.createElement( "meta" ) ).toElement();
-    meta.setAttribute( "content", "QEdit" );
-    meta.setAttribute( "name", "Generator" );
+    meta = head.appendChild( document.createElement( QStringLiteral("meta") ) ).toElement();
+    meta.setAttribute( QStringLiteral("content"), QStringLiteral("Text/html; charset=utf8") );
+    meta.setAttribute( QStringLiteral("Http-equiv"), QStringLiteral("Content-Type") );
+    meta = head.appendChild( document.createElement( QStringLiteral("meta") ) ).toElement();
+    meta.setAttribute( QStringLiteral("content"), QStringLiteral("QEdit") );
+    meta.setAttribute( QStringLiteral("name"), QStringLiteral("Generator") );
 
     // title
-    QDomElement title = head.appendChild( document.createElement( "Title" ) ).toElement();
+    QDomElement title = head.appendChild( document.createElement( QStringLiteral("Title") ) ).toElement();
     title.appendChild( document.createTextNode( editor_->file().get().toUtf8() ) );
 
     // body
     html.
-        appendChild( document.createElement( "Body" ) ).
+        appendChild( document.createElement( QStringLiteral("Body") ) ).
         appendChild( _htmlNode( document ) );
 
     /*
@@ -74,8 +74,8 @@ QString HtmlHelper::_htmlString()
     and end of line
     */
     QString htmlString( document.toString(0) );
-    htmlString = htmlString.replace( "</span>\n", "</span>", Qt::CaseInsensitive );
-    htmlString = htmlString.replace( "<br/>", "", Qt::CaseInsensitive );
+    htmlString = htmlString.replace( QLatin1String("</span>\n"), QLatin1String("</span>"), Qt::CaseInsensitive );
+    htmlString = htmlString.replace( QLatin1String("<br/>"), QLatin1String(""), Qt::CaseInsensitive );
     return htmlString;
 }
 
@@ -85,7 +85,7 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
 {
 
     // clear highlight locations and rehighlight
-    QDomElement out = document.createElement( "Pre" );
+    QDomElement out = document.createElement( QStringLiteral("Pre") );
 
     int activeId( 0 );
 
@@ -112,7 +112,7 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
         int lineIndex( 0 );
 
         // parse text
-        QString buffer("");
+        QString buffer(QLatin1String(""));
         for( int index = 0; index < text.size(); index++, lineIndex++ )
         {
 
@@ -138,22 +138,22 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
                 // append text to current element and reset stream
                 if( !buffer.isEmpty() )
                 {
-                    if( span.isNull() ) span  = out.appendChild( document.createElement( "Span" ) ).toElement();
+                    if( span.isNull() ) span  = out.appendChild( document.createElement( QStringLiteral("Span") ) ).toElement();
                     HtmlTextNode( buffer, span, document );
                     if( lineBreak )
                     {
-                        out.appendChild( document.createElement( "Br" ) );
+                        out.appendChild( document.createElement( QStringLiteral("Br") ) );
                         lineBreak = false;
                         lineIndex = 0;
                     }
-                    buffer = "";
+                    buffer = QLatin1String("");
                 }
 
                 // update pattern
                 currentPatternId = patternId;
 
                 // update current element
-                span = out.appendChild( document.createElement( "Span" ) ).toElement();
+                span = out.appendChild( document.createElement( QStringLiteral("Span") ) ).toElement();
                 if( location.isValid() )
                 {
 
@@ -170,7 +170,7 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
                     const QColor& color = location.color();
                     if( color.isValid() ) formatStream << "color: " << color.name() << "; ";
 
-                    span.setAttribute( "Style", buffer );
+                    span.setAttribute( QStringLiteral("Style"), buffer );
 
                 }
             }
@@ -181,11 +181,11 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
 
         if( !buffer.isEmpty() )
         {
-            if( span.isNull() ) span  = out.appendChild( document.createElement( "Span" ) ).toElement();
+            if( span.isNull() ) span  = out.appendChild( document.createElement( QStringLiteral("Span") ) ).toElement();
             span.appendChild( document.createTextNode( buffer.toUtf8() ) );
         }
 
-        out.appendChild( document.createElement( "Br" ) );
+        out.appendChild( document.createElement( QStringLiteral("Br") ) );
 
     }
 

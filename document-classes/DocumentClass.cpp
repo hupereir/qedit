@@ -203,7 +203,7 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
     if( !icon().isEmpty() ) out.setAttribute( Xml::Icon, icon() );
 
     // options
-    out.appendChild( parent.createTextNode( "\n\n" ) );
+    out.appendChild( parent.createTextNode( QStringLiteral("\n\n") ) );
     out.appendChild( parent.createComment( QObject::tr( "Options" ) ) );
     out.appendChild( XmlOption( Xml::OptionWrap, Option().set<bool>( wrap() ) ).domElement( parent ) );
     out.appendChild( XmlOption( Xml::OptionEmulateTabs, Option().set<bool>( emulateTabs() ) ).domElement( parent ) );
@@ -214,37 +214,37 @@ QDomElement DocumentClass::domElement( QDomDocument& parent ) const
     { out.appendChild( XmlOption( Xml::TabSize, Option().set<int>( tabSize() ) ).domElement( parent ) ); }
 
     // dump highlight styles
-    out.appendChild( parent.createTextNode( "\n\n" ) );
+    out.appendChild( parent.createTextNode( QStringLiteral("\n\n") ) );
     out.appendChild( parent.createComment( QObject::tr( "Highlight styles" ) ) );
     for( const auto& style:highlightStyles_ )
     { out.appendChild( style.domElement( parent ) ); }
 
     // dump highlight patterns
-    out.appendChild( parent.createTextNode( "\n\n" ) );
+    out.appendChild( parent.createTextNode( QStringLiteral("\n\n") ) );
     out.appendChild( parent.createComment( QObject::tr( "Highlight patterns" ) ) );
     for( const auto& pattern:highlightPatterns_ )
     { out.appendChild( pattern.domElement( parent ) ); }
 
     // dump indent patterns
-    out.appendChild( parent.createTextNode( "\n\n" ) );
+    out.appendChild( parent.createTextNode( QStringLiteral("\n\n") ) );
     out.appendChild( parent.createComment( QObject::tr( "Indentation patterns" ) ) );
     for( const auto& pattern:indentPatterns_ )
     { out.appendChild( pattern.domElement( parent ) ); }
 
     // dump parenthesis
-    out.appendChild( parent.createTextNode( "\n\n" ) );
+    out.appendChild( parent.createTextNode( QStringLiteral("\n\n") ) );
     out.appendChild( parent.createComment( QObject::tr( "Parenthesis" ) ) );
     for( const auto& parenthesis:textParenthesis_ )
     { out.appendChild( parenthesis.domElement( parent ) ); }
 
     // dump block delimiters
-    out.appendChild( parent.createTextNode( "\n\n" ) );
+    out.appendChild( parent.createTextNode( QStringLiteral("\n\n") ) );
     out.appendChild( parent.createComment( QObject::tr( "Block delimiters" ) ) );
     for( const auto& delimiter:blockDelimiters_ )
     { out.appendChild( delimiter.domElement( parent ) ); }
 
     // dump text macros
-    out.appendChild( parent.createTextNode( "\n\n" ) );
+    out.appendChild( parent.createTextNode( QStringLiteral("\n\n") ) );
     out.appendChild( parent.createComment( QObject::tr( "Text macros" ) ) );
     for( const auto& macro:textMacros_ )
     { out.appendChild( macro.domElement( parent ) ); }

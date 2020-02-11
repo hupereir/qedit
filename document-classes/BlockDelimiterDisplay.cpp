@@ -809,7 +809,7 @@ void BlockDelimiterDisplay::_selectSegmentFromCursor( int cursor )
 
 
 //________________________________________________________
-void BlockDelimiterDisplay::_selectSegmentFromPosition( const QPoint& position )
+void BlockDelimiterDisplay::_selectSegmentFromPosition( QPoint position )
 {
     Debug::Throw( QStringLiteral("BlockDelimiterDisplay::_selectSegmentFromPosition.\n") );
     auto iter = std::find_if(
@@ -959,7 +959,7 @@ CollapsedBlockData BlockDelimiterDisplay::_collapsedData( const BlockDelimiterDi
 }
 
 //_________________________________________________________________________
-void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, const QRect& rect, bool collapsed ) const
+void BlockDelimiterDisplay::_drawDelimiter( QPainter& painter, QRect rect, bool collapsed ) const
 {
 
     QRectF local( rect );

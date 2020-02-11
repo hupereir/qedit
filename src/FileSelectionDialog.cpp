@@ -55,7 +55,7 @@ selection_( selection )
     int mask(
         (1<<FileRecordModel::FileName)|
         (1<<FileRecordModel::Path ));
-    int classColumn( model_.findColumn( "class_name" ) );
+    int classColumn( model_.findColumn( QStringLiteral("class_name") ) );
     if( classColumn >= 0 ) mask |= (1<<classColumn);
     list_->setMask( mask );
     list_->resizeColumns();

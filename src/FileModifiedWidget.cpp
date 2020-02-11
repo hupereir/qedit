@@ -37,34 +37,34 @@ FileModifiedWidget::FileModifiedWidget( QWidget* parent, const File& file ):
 
     {
         // reload button
-        auto button = addButton( IconEngine::get( IconNames::Reload ), "&Reload" );
+        auto button = addButton( IconEngine::get( IconNames::Reload ), QStringLiteral("&Reload") );
         connect( button, &QAbstractButton::clicked, this, &FileModifiedWidget::_reLoad );
         connect( button, &QAbstractButton::clicked, this, &MessageWidget::animatedHide );
-        button->setToolTip( "Reload file from disc. Modifications will be lost" );
+        button->setToolTip( QStringLiteral("Reload file from disc. Modifications will be lost") );
     }
 
     {
         // resave button
-        auto button = addButton( IconEngine::get( IconNames::Save ), "&Save Again" );
+        auto button = addButton( IconEngine::get( IconNames::Save ), QStringLiteral("&Save Again") );
         connect( button, &QAbstractButton::clicked, this, &FileModifiedWidget::_reSave );
         connect( button, &QAbstractButton::clicked, this, &MessageWidget::animatedHide );
-        button->setToolTip( "Save file again. Disc modifications will be lost" );
+        button->setToolTip( QStringLiteral("Save file again. Disc modifications will be lost") );
     }
 
     {
         // save as button
-        auto button = addButton( IconEngine::get( IconNames::SaveAs ), "&Save As" );
+        auto button = addButton( IconEngine::get( IconNames::SaveAs ), QStringLiteral("&Save As") );
         connect( button, &QAbstractButton::clicked, this, &FileModifiedWidget::_saveAs );
         connect( button, &QAbstractButton::clicked, this, &MessageWidget::animatedHide );
-        button->setToolTip( "Save file with a different name" );
+        button->setToolTip( QStringLiteral("Save file with a different name") );
     }
 
     {
         // ignore button.
-        auto button = addButton(  IconEngine::get( IconNames::DialogCancel ), "&Ignore" );
+        auto button = addButton(  IconEngine::get( IconNames::DialogCancel ), QStringLiteral("&Ignore") );
         connect( button, &QAbstractButton::clicked, this, &FileModifiedWidget::_ignore );
         connect( button, &QAbstractButton::clicked, this, &MessageWidget::animatedHide );
-        button->setToolTip( "Ignore warning" );
+        button->setToolTip( QStringLiteral("Ignore warning") );
     }
 
     adjustSize();

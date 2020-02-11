@@ -38,7 +38,7 @@
 
 //_______________________________________________________________
 SidePanelToolBar::SidePanelToolBar( QWidget* parent ):
-    CustomToolBar( tr( "Side bar" ), parent, "SIDE_PANEL_TOOLBAR" ),
+    CustomToolBar( tr( "Side bar" ), parent, QStringLiteral("SIDE_PANEL_TOOLBAR") ),
     sidePanelWidget_( nullptr ),
     enabled_( true )
 {
@@ -235,7 +235,7 @@ void SidePanelToolBar::contextMenuEvent( QContextMenuEvent* event )
 }
 
 //______________________________________________________________________
-QToolButton* SidePanelToolBar::_newToolButton( QWidget* parent, QIcon icon ) const
+QToolButton* SidePanelToolBar::_newToolButton( QWidget* parent, const QIcon &icon ) const
 {
 
     CustomToolButton* button = new CustomToolButton( parent );

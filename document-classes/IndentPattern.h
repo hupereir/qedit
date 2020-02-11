@@ -110,7 +110,7 @@ class IndentPattern final: private Base::Counter<IndentPattern>
         { return flags_; }
 
         //* flags
-        bool flag( const Flag& flag ) const
+        bool flag( IndentPattern::Rule::Flag flag ) const
         { return flags_ & flag; }
 
         //@}
@@ -131,7 +131,7 @@ class IndentPattern final: private Base::Counter<IndentPattern>
         { flags_ = flags; }
 
         //* flags
-        void setFlag( const Flag& flag, bool value )
+        void setFlag( IndentPattern::Rule::Flag flag, bool value )
         {
             if( value ) flags_ |= flag;
             else flags_ &= (~flag);

@@ -33,9 +33,9 @@ QString NewDocumentNameServer::get()
 }
 
 //______________________________________
-void NewDocumentNameServer::remove( QString name )
+void NewDocumentNameServer::remove( const QString &name )
 { versions_.erase( std::remove_if( versions_.begin(), versions_.end(), SameVersionFTor( name ) ), versions_.end() ); }
 
 //______________________________________
 QString NewDocumentNameServer::Version::name() const
-{ return (value_ > 0) ? QString( "%1 (%2)" ).arg( defaultName_ ).arg( value_ ):defaultName_; }
+{ return (value_ > 0) ? QStringLiteral( "%1 (%2)" ).arg( defaultName_ ).arg( value_ ):defaultName_; }

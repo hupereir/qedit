@@ -169,7 +169,7 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     void _selectSegmentFromCursor( int );
 
     //* select segment from mouse position
-    void _selectSegmentFromPosition( const QPoint& );
+    void _selectSegmentFromPosition( QPoint  );
 
     //* selected segment
     void _setSelectedSegment( const BlockDelimiterSegment& segment )
@@ -185,7 +185,7 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     CollapsedBlockData _collapsedData( const TextBlockPair& ) const;
 
     //* draw delimiter
-    void _drawDelimiter( QPainter& painter, const QRect& rect, bool collapsed ) const;
+    void _drawDelimiter( QPainter& painter, QRect rect, bool collapsed ) const;
 
     //* associated editor
     TextEditor* editor_ = nullptr;

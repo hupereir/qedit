@@ -89,7 +89,7 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     };
 
     //* multiple files replace
-    void multipleFileReplace( QList<File>, TextSelection );
+    void multipleFileReplace( const QList<File>&, const TextSelection &);
 
     //* orientation
     enum class OrientationMode
@@ -99,7 +99,7 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     };
 
     //* default orientation
-    const Qt::Orientation& defaultOrientation( const OrientationMode& mode = OrientationMode::Normal )
+    const Qt::Orientation& defaultOrientation( WindowServer::OrientationMode mode = OrientationMode::Normal )
     { return mode == OrientationMode::Normal ? defaultOrientation_:defaultDiffOrientation_; }
 
     Q_SIGNALS:
@@ -138,19 +138,19 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     { return _open( _selectFileFromDialog() ); }
 
     //* open file
-    bool _open( FileRecord record )
+    bool _open( const FileRecord &record )
     { return _open( record, openMode_ ); }
 
     //* open in new window
-    bool _openInNewWindow( FileRecord record )
+    bool _openInNewWindow( const FileRecord &record )
     { return _open( record, OpenMode::NewWindow ); }
 
     //* open in active window
-    bool _openInActiveWindow( FileRecord record )
+    bool _openInActiveWindow( const FileRecord &record )
     { return _open( record, OpenMode::ActiveWindow ); }
 
     //* open in current tab
-    bool _openInActiveView( FileRecord record )
+    bool _openInActiveView( const FileRecord &record )
     { return _open( record, defaultOrientation( OrientationMode::Normal ) ); }
 
     //* open in active view
@@ -201,10 +201,10 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     void _newFile( OpenMode );
 
     //* open file
-    bool _open( FileRecord, OpenMode );
+    bool _open( const FileRecord&, OpenMode );
 
     //* open file
-    bool _open( FileRecord, Qt::Orientation );
+    bool _open( const FileRecord&, Qt::Orientation );
 
     //* find mainwindow matching given file
     MainWindow& _findWindow( const File& );
@@ -243,7 +243,7 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     { return *activeWindow_; }
 
     //* default orientation for split tabs
-    void _setDefaultOrientation( const OrientationMode& mode, const Qt::Orientation& value )
+    void _setDefaultOrientation( WindowServer::OrientationMode mode, Qt::Orientation value )
     {
         switch( mode )
         {

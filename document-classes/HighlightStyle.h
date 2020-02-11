@@ -40,7 +40,7 @@ class HighlightStyle final: private Base::Counter<HighlightStyle>
 
     //* constructor
     explicit HighlightStyle(
-        const QString& name = "default",
+        const QString& name = QStringLiteral("default"),
         TextFormat::Flags format = TextFormat::Default,
         const QColor& color = QColor() ):
         Counter( QStringLiteral("HighlightStyle") ),

@@ -44,7 +44,7 @@ Counter( QStringLiteral("TextParenthesis") )
     // create regexp
     if( regexp_.pattern().isEmpty() )
     {
-        QString pattern = QString("(") + first() + ")|(" + second() + ")";
+        QString pattern = QStringLiteral("(") + first() + ")|(" + second() + ")";
         regexp_.setPattern( pattern );
     }
 

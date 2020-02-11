@@ -99,14 +99,14 @@ class Diff: public QObject, private Base::Counter<Diff>
         { return file_; }
 
         //* add added range
-        void insertAddedRange( const Range& range )
+        void insertAddedRange( Diff::Range range )
         {
             for( int index = range.first; index <= range.second; ++index )
             { added_.insert( index ); }
         }
 
         //* add conflict range
-        void insertConflictRange( const Range& range )
+        void insertConflictRange( Diff::Range range )
         {
             for( int index = range.first; index <= range.second; ++index )
             { conflicts_.insert( index ); }

@@ -200,7 +200,7 @@ MainWindow::~MainWindow()
 }
 
 //___________________________________________________________
-TextView& MainWindow::newTextView( FileRecord record )
+TextView& MainWindow::newTextView( const FileRecord &record )
 {
     Debug::Throw( QStringLiteral("MainWindow::newTextView.\n") );
 

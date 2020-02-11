@@ -111,7 +111,7 @@ class TextMacro final: private Base::Counter<TextMacro>
     second is the net increment in terms of number of characters between input and output text
     */
     using Result = QPair<bool, int>;
-    static Result& addToResult( Result& first, const Result& second )
+    static Result& addToResult( Result& first, TextMacro::Result second )
     {
         first.first |= second.first;
         first.second += second.second;

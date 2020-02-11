@@ -34,7 +34,7 @@ class NewDocumentNameServer
     QString get();
 
     //* remove (this is used to avoid that version number is incremented too quickly)
-    void remove( QString );
+    void remove( const QString &);
 
     private:
 

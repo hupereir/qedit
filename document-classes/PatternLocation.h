@@ -70,7 +70,7 @@ class PatternLocation final: private Base::Counter<PatternLocation>
     { return flags_; }
 
     //* flags
-    bool hasFlag( const HighlightPattern::Flag& flag ) const
+    bool hasFlag( HighlightPattern::Flag flag ) const
     { return flags() & flag; }
 
     //* format

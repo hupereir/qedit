@@ -62,19 +62,19 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     box->setLayout( new QVBoxLayout );
     box->layout()->setMargin(0);
 
-    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Show block delimiters" ), box, "SHOW_BLOCK_DELIMITERS" ) );
+    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Show block delimiters" ), box, QStringLiteral("SHOW_BLOCK_DELIMITERS") ) );
     checkbox->setToolTip( tr( "Turn on/off block delimiters" ) );
     addOptionWidget( checkbox );
 
-    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Highlight syntax" ), box, "TEXT_HIGHLIGHT" ) );
+    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Highlight syntax" ), box, QStringLiteral("TEXT_HIGHLIGHT") ) );
     checkbox->setToolTip( tr( "Turn on/off syntax highlighting" ) );
     addOptionWidget( checkbox );
 
-    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Highlight parenthesis" ), box, "TEXT_PARENTHESIS" ) );
+    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Highlight parenthesis" ), box, QStringLiteral("TEXT_PARENTHESIS") ) );
     checkbox->setToolTip( tr( "Turn on/off highlighting of oppening/closing parenthesis" ) );
     addOptionWidget( checkbox );
 
-    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Automatic indentation" ), box, "TEXT_INDENT" ) );
+    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Automatic indentation" ), box, QStringLiteral("TEXT_INDENT") ) );
     checkbox->setToolTip( tr( "Turn on/off automatic text indentation" ) );
     addOptionWidget( checkbox );
 
@@ -93,7 +93,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         page->layout()->addWidget( box );
 
         OptionCheckBox* checkbox;
-        box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Use document class tab emulation mode" ), box, "EMULATE_TABS_FROM_CLASS" ) );
+        box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Use document class tab emulation mode" ), box, QStringLiteral("EMULATE_TABS_FROM_CLASS") ) );
         checkbox->setToolTip( tr( "Use tab emulation mode read from document class in place of the one specified in the default configuration" ) );
 
         addOptionWidget( checkbox );
@@ -109,7 +109,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         connect( checkbox, &QAbstractButton::toggled, widget, &QWidget::setDisabled );
 
         // tab emulation
-        checkbox = new OptionCheckBox( tr( "Emulate tabs" ), box, "TAB_EMULATION" );
+        checkbox = new OptionCheckBox( tr( "Emulate tabs" ), box, QStringLiteral("TAB_EMULATION") );
         checkbox->setToolTip( tr( "Turn on/off tab emulation using space characters" ) );
         layout->addWidget( checkbox );
         addOptionWidget( checkbox );
@@ -120,7 +120,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         layout->addLayout( hLayout );
 
         hLayout->addWidget( label = new QLabel( tr( "Tab size: " ), box ) );
-        OptionSpinBox* spinbox = new OptionSpinBox( box, "TAB_SIZE" );
+        OptionSpinBox* spinbox = new OptionSpinBox( box, QStringLiteral("TAB_SIZE") );
         spinbox->setMinimum( 2 );
         spinbox->setMaximum( 20 );
         spinbox->setToolTip( tr( "Tab size (in unit of space characters)" ) );
@@ -145,18 +145,18 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         QVBoxLayout* layout = new QVBoxLayout;
         box->setLayout( layout );
 
-        box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Use document class wrap mode" ), box, "WRAP_FROM_CLASS" ) );
+        box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Use document class wrap mode" ), box, QStringLiteral("WRAP_FROM_CLASS") ) );
         checkbox->setToolTip( tr( "Use wrap mode read from document class in place of the one specified in the default configuration" ) );
         addOptionWidget( checkbox );
 
-        OptionCheckBox* wrap_checkbox = new OptionCheckBox( tr( "Wrap text" ), box, "WRAP_TEXT" );
+        OptionCheckBox* wrap_checkbox = new OptionCheckBox( tr( "Wrap text" ), box, QStringLiteral("WRAP_TEXT") );
         wrap_checkbox->setToolTip( tr( "Turn on/off line wrapping at editor border" ) );
         layout->addWidget( wrap_checkbox );
         addOptionWidget( wrap_checkbox );
 
         connect( checkbox, &QAbstractButton::toggled, wrap_checkbox, &QWidget::setDisabled );
 
-        layout->addWidget( checkbox = new OptionCheckBox( tr( "Show line numbers" ), box, "SHOW_LINE_NUMBERS" ) );
+        layout->addWidget( checkbox = new OptionCheckBox( tr( "Show line numbers" ), box, QStringLiteral("SHOW_LINE_NUMBERS") ) );
         checkbox->setToolTip( tr( "Turn on/off line numbers" ) );
         addOptionWidget( checkbox );
 
@@ -170,7 +170,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
         OptionSpinBox* spinbox;
         gridLayout->addWidget( label = new QLabel( tr( "Automatically hide mouse cursor after: " ), box ) );
-        gridLayout->addWidget( spinbox = new OptionSpinBox( box, "AUTOHIDE_CURSOR_DELAY" ) );
+        gridLayout->addWidget( spinbox = new OptionSpinBox( box, QStringLiteral("AUTOHIDE_CURSOR_DELAY") ) );
         spinbox->setSuffix( tr( "s" ) );
         addOptionWidget( spinbox );
 
@@ -181,7 +181,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         // text encoding
         OptionComboBox* combobox;
         gridLayout->addWidget( label = new QLabel( tr( "Default font encoding:" ), box ) );
-        gridLayout->addWidget( combobox = new OptionComboBox( box, "TEXT_ENCODING" ) );
+        gridLayout->addWidget( combobox = new OptionComboBox( box, QStringLiteral("TEXT_ENCODING") ) );
         QList<QByteArray> codecs( QTextCodec::availableCodecs() );
         for( const auto& value:codecs ) { combobox->addItem( value ); }
         label->setBuddy( combobox );
@@ -202,25 +202,25 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     box->setLayout( gridLayout );
 
     gridLayout->addWidget( label = new QLabel( tr( "Parenthesis matching:" ), box ) );
-    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "PARENTHESIS_COLOR" ) );
+    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, QStringLiteral("PARENTHESIS_COLOR") ) );
     label->setBuddy( colorDisplay );
     addOptionWidget( colorDisplay );
     checkbox->setToolTip( tr( "Color for matching parenthesis" ) );
 
     gridLayout->addWidget( label = new QLabel( tr( "Tagged paragraphs:" ), box ) );
-    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "TAGGED_BLOCK_COLOR" ) );
+    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, QStringLiteral("TAGGED_BLOCK_COLOR") ) );
     label->setBuddy( colorDisplay );
     addOptionWidget( colorDisplay );
     checkbox->setToolTip( tr( "Color for tagged paragraphs" ) );
 
     gridLayout->addWidget( label = new QLabel( tr( "Conflicting paragraphs:" ), box ) );
-    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "DIFF_CONFLICT_COLOR" ) );
+    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, QStringLiteral("DIFF_CONFLICT_COLOR") ) );
     label->setBuddy( colorDisplay );
     addOptionWidget( colorDisplay );
     colorDisplay->setToolTip( tr( "Highlight color for diff conflict paragraphs" ) );
 
     gridLayout->addWidget( label = new QLabel( tr( "Added paragraphs:" ), box ) );
-    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, "DIFF_ADDED_COLOR" ) );
+    gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, QStringLiteral("DIFF_ADDED_COLOR") ) );
     label->setBuddy( colorDisplay );
     addOptionWidget( colorDisplay );
     colorDisplay->setToolTip( tr( "Highlight color for diff added paragraphs" ) );
@@ -253,7 +253,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     // splitting
     gridLayout->addWidget( label = new QLabel( tr( "Default view orientation:" ), box ) );
-    gridLayout->addWidget( combobox = new OptionComboBox( box, "ORIENTATION" ) );
+    gridLayout->addWidget( combobox = new OptionComboBox( box, QStringLiteral("ORIENTATION") ) );
     combobox->setUseValue( false );
     combobox->addItem( tr( "Top to Bottom" ) );
     combobox->addItem( tr( "Left to Right" ) );
@@ -264,7 +264,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     // splitting
     gridLayout->addWidget( label = new QLabel( tr( "Default view orientation (diff mode):" ), box ) );
-    gridLayout->addWidget( combobox = new OptionComboBox( box, "DIFF_ORIENTATION" ) );
+    gridLayout->addWidget( combobox = new OptionComboBox( box, QStringLiteral("DIFF_ORIENTATION") ) );
     combobox->setUseValue( false );
     combobox->addItem( tr( "Top to Bottom" ) );
     combobox->addItem( tr( "Left to Right" ) );
@@ -287,7 +287,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     // tooltips
     page = &addPage( IconEngine::get( IconNames::PreferencesAppearance), tr( "Tooltips" ), tr( "Tooltips appearance" ) );
-    page->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Show tooltips" ), page, "SHOW_TOOLTIPS" ) );
+    page->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Show tooltips" ), page, QStringLiteral("SHOW_TOOLTIPS") ) );
     addOptionWidget( checkbox );
 
     hLayout = new QHBoxLayout;
@@ -308,11 +308,11 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     box->setLayout( new QVBoxLayout );
 
-    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Make backup of files when saving modifications" ), box, "BACKUP" ) );
+    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Make backup of files when saving modifications" ), box, QStringLiteral("BACKUP") ) );
     checkbox->setToolTip( tr( "Make backup of the file prior to saving modifications" ) );
     addOptionWidget( checkbox );
 
-    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Save files regularly in a temporary directory" ), box, "AUTOSAVE" ) );
+    box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Save files regularly in a temporary directory" ), box, QStringLiteral("AUTOSAVE") ) );
     checkbox->setToolTip(
         tr( "Make automatic copies of edited files in\n"
         "specified directory to allow crash recovery" ) );
@@ -325,8 +325,8 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     box->layout()->addItem( gridLayout );
 
     gridLayout->addWidget( label = new QLabel( tr( "Autosave interval:" ), box ) );
-    gridLayout->addWidget( spinbox = new OptionSpinBox( box, "AUTOSAVE_INTERVAL" ) );
-    spinbox->setSuffix( "s" );
+    gridLayout->addWidget( spinbox = new OptionSpinBox( box, QStringLiteral("AUTOSAVE_INTERVAL") ) );
+    spinbox->setSuffix( QStringLiteral("s") );
     spinbox->setMinimum( 1 );
     spinbox->setMaximum( 300 );
     spinbox->setToolTip( tr( "Interval between two autosave" ) );
@@ -335,7 +335,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     OptionBrowsedLineEditor *edit;
     gridLayout->addWidget( label = new QLabel( tr( "Autosave path:" ), box ) );
-    gridLayout->addWidget( edit = new OptionBrowsedLineEditor( box, "AUTOSAVE_PATH" ) );
+    gridLayout->addWidget( edit = new OptionBrowsedLineEditor( box, QStringLiteral("AUTOSAVE_PATH") ) );
     edit->setToolTip( tr( "Directory where autosaved files are stored" ) );
     label->setBuddy( edit );
     addOptionWidget( edit );
@@ -356,7 +356,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     box->layout()->addItem( hLayout );
 
     hLayout->addWidget( label = new QLabel( tr( "Diff command:" ), box ) );
-    hLayout->addWidget( edit = new OptionBrowsedLineEditor( box, "DIFF_COMMAND" ) );
+    hLayout->addWidget( edit = new OptionBrowsedLineEditor( box, QStringLiteral("DIFF_COMMAND") ) );
     edit->setToolTip( tr( "Command used to diff files" ) );
     label->setBuddy( edit );
     addOptionWidget( edit );

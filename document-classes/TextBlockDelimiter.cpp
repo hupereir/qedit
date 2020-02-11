@@ -32,7 +32,7 @@ namespace TextBlock
     }
 
     //_______________________________________________
-    Delimiter::Pair& Delimiter::Pair::operator += (const Delimiter::Pair& other )
+    Delimiter::Pair& Delimiter::Pair::operator += (Delimiter::Pair other )
     {
         Debug::Throw( QStringLiteral("Delimiter::operator +=\n") );
 

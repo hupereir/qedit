@@ -78,7 +78,7 @@ class SidePanelToolBar: public CustomToolBar
     { return *sidePanelWidget_; }
 
     //* tool button
-    QToolButton* _newToolButton( QWidget* parent, QIcon ) const;
+    QToolButton* _newToolButton( QWidget* parent, const QIcon &) const;
 
     //* map widget to action
     using ButtonMap = QHash<QToolButton*, QWidget* >;

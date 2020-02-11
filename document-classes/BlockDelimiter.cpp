@@ -43,7 +43,7 @@ BlockDelimiter::BlockDelimiter( const QDomElement& element, int id ):
     // create regexp
     if( regexp_.pattern().isEmpty() )
     {
-        QString pattern = QString("(") + first() + ")|(" + second() + ")";
+        QString pattern = QStringLiteral("(") + first() + ")|(" + second() + ")";
         regexp_.setPattern( pattern );
     }
 

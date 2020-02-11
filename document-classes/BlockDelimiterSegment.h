@@ -52,8 +52,8 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
 
     //* constructor
     explicit BlockDelimiterSegment(
-        const BlockMarker& begin = BlockMarker(),
-        const BlockMarker& end = BlockMarker(),
+        BlockMarker begin = BlockMarker(),
+        BlockMarker end = BlockMarker(),
         Flags flags = None ):
         Counter( QStringLiteral("BlockDelimiterSegment") ),
         begin_( begin ),
@@ -65,7 +65,7 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
     //@{
 
     //* flags
-    bool hasFlag( const Flag& flag ) const
+    bool hasFlag( BlockDelimiterSegment::Flag flag ) const
     { return flags_ & flag; }
 
     //* collapsed
@@ -96,7 +96,7 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
     //@{
 
     //* flags
-    BlockDelimiterSegment& setFlag( const Flag& flag, bool value )
+    BlockDelimiterSegment& setFlag( BlockDelimiterSegment::Flag flag, bool value )
     {
         if( value ) flags_ |= flag;
         else flags_ &= (~flag);
@@ -107,7 +107,7 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
     BlockMarker& begin() { return begin_; }
 
     //* begin point
-    BlockDelimiterSegment& setBegin( const BlockMarker& begin )
+    BlockDelimiterSegment& setBegin( BlockMarker begin )
     {
         begin_ = begin;
         return *this;
@@ -117,14 +117,14 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
     BlockMarker& end() { return end_; }
 
     //* end point
-    BlockDelimiterSegment& setEnd( const BlockMarker& end )
+    BlockDelimiterSegment& setEnd( BlockMarker end )
     {
         end_ = end;
         return *this;
     }
 
     //* active rect
-    void setActiveRect( const QRect& rect )
+    void setActiveRect( QRect rect )
     { active_ = rect; }
 
     //@}
@@ -136,7 +136,7 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
         public:
 
         //* creator
-        explicit ActiveFTor( const QPoint& point ):
+        explicit ActiveFTor( QPoint point ):
             point_( point )
         {}
 

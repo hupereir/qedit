@@ -40,7 +40,7 @@ class WindowTitle final: private Base::Counter<WindowTitle>
     };
 
     //* constructor
-    explicit WindowTitle( const File& file = File(), const Flag& flag = Flag::None ):
+    explicit WindowTitle( const File& file = File(), WindowTitle::Flag flag = Flag::None ):
         Counter( QStringLiteral("WindowTitle") ),
         file_( file ),
         flag_( flag )
@@ -68,7 +68,7 @@ class WindowTitle final: private Base::Counter<WindowTitle>
     //@{
 
     //* change flag
-    void setFlag( const Flag& flag, bool value = true )
+    void setFlag( WindowTitle::Flag flag, bool value = true )
     {
         if( value ) flag_ = flag;
     }

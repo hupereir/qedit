@@ -30,7 +30,7 @@ int TextMacro::idCounter_ = 0;
 TextMacro::TextMacro( const QDomElement& element ):
     Counter( QStringLiteral("TextMacro") ),
     id_( idCounter_++ ),
-    name_( "generic" )
+    name_( QStringLiteral("generic") )
 {
     Debug::Throw( QStringLiteral("TextMacro::TextMacro.\n") );
 

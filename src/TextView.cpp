@@ -112,7 +112,7 @@ void TextView::setIsNewDocument()
 }
 
 //____________________________________________
-void TextView::setFile( File file )
+void TextView::setFile( const File &file )
 {
 
     Debug::Throw() << "TextView::setFile - " << file << endl;
@@ -332,7 +332,7 @@ void TextView::closeDisplay( TextDisplay& display )
 }
 
 //___________________________________________________________
-TextDisplay& TextView::splitDisplay( const Qt::Orientation& orientation, bool clone )
+TextDisplay& TextView::splitDisplay( Qt::Orientation orientation, bool clone )
 {
 
     Debug::Throw( QStringLiteral("TextView::splitDisplay.\n") );
@@ -579,7 +579,7 @@ void TextView::_closeDisplay( const File& file )
 }
 
 //____________________________________________________________
-QSplitter& TextView::_newSplitter( const Qt::Orientation& orientation, bool clone )
+QSplitter& TextView::_newSplitter( Qt::Orientation orientation, bool clone )
 {
 
     Debug::Throw( QStringLiteral("TextView::_newSplitter.\n") );

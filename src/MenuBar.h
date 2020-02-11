@@ -80,7 +80,7 @@ class MenuBar:public QMenuBar, private Base::Counter<MenuBar>
     void _updateWindowsMenu();
 
     //* select macro from menu
-    void _selectMacro( QString );
+    void _selectMacro( const QString &);
 
     //* select file from windows menu
     void _selectFile( QAction* );

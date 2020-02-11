@@ -33,7 +33,7 @@ TextIndent::TextIndent( TextEditor* editor ):
 { Debug::Throw( QStringLiteral("TextIndent::TextIndent.\n") ); }
 
 //______________________________________________
-void TextIndent::indent( QTextBlock first, QTextBlock last )
+void TextIndent::indent( const QTextBlock &first, const QTextBlock &last )
 {
 
     Debug::Throw( QStringLiteral("TextIndent::indent (multi-block).\n") );
@@ -105,7 +105,7 @@ void TextIndent::indent( QTextBlock first, QTextBlock last )
 }
 
 //______________________________________________
-void TextIndent::indent( QTextBlock block, bool newLine )
+void TextIndent::indent( const QTextBlock &block, bool newLine )
 {
 
     if( !isEnabled() || patterns_.empty() ) return;
@@ -160,7 +160,7 @@ void TextIndent::indent( QTextBlock block, bool newLine )
 }
 
 //____________________________________________
-bool TextIndent::_acceptPattern( QTextBlock block, const IndentPattern& pattern ) const
+bool TextIndent::_acceptPattern( const QTextBlock &block, const IndentPattern& pattern ) const
 {
 
     // retrieve rules associated to pattern
@@ -247,7 +247,7 @@ int TextIndent::_tabCount( const QTextBlock& block )
 }
 
 //____________________________________________
-void TextIndent::_addBaseIndentation( QTextBlock block )
+void TextIndent::_addBaseIndentation( const QTextBlock &block )
 {
 
     Q_ASSERT( baseIndentation() );
@@ -273,7 +273,7 @@ void TextIndent::_addBaseIndentation( QTextBlock block )
 }
 
 //____________________________________________
-void TextIndent::_decrement( QTextBlock block )
+void TextIndent::_decrement( const QTextBlock &block )
 {
 
     // set a cursor at beginning of block
@@ -300,7 +300,7 @@ void TextIndent::_decrement( QTextBlock block )
 }
 
 //____________________________________________
-void TextIndent::_increment( QTextBlock block, int count )
+void TextIndent::_increment( const QTextBlock &block, int count )
 {
 
     Debug::Throw() << "TextIndent::_increment - count " << count << endl;

@@ -29,7 +29,7 @@
 
 //________________________________________________________________
 DocumentClassToolBar::DocumentClassToolBar( QWidget* parent ):
-CustomToolBar( tr( "Document Classes" ), parent, "DOCUMENT_CLASS_TOOLBAR" )
+CustomToolBar( tr( "Document Classes" ), parent, QStringLiteral("DOCUMENT_CLASS_TOOLBAR") )
 {
 
     Debug::Throw( QStringLiteral("DocumentClassToolBar::DocumentClassToolBar.\n") );
@@ -41,7 +41,7 @@ CustomToolBar( tr( "Document Classes" ), parent, "DOCUMENT_CLASS_TOOLBAR" )
 }
 
 //________________________________________________________________
-void DocumentClassToolBar::update( QString className )
+void DocumentClassToolBar::update( const QString &className )
 {
     Debug::Throw( QStringLiteral("DocumentClassToolBar::update.\n") );
     currentClass_ = className;

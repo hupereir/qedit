@@ -48,7 +48,7 @@ bool Diff::run()
     }
 
     // reset error
-    error_ = "";
+    error_ = QLatin1String("");
 
     // check files
     for( const auto& fileInformation:files_ )
@@ -148,7 +148,7 @@ void Diff::_parseLine( const QString& line )
     Debug::Throw() << "Diff::_parseLine - " << line << endl;
 
     // see if line is a conflict
-    int position( line.indexOf( "c" ) );
+    int position( line.indexOf( QLatin1String("c") ) );
     if( position >= 0 )
     {
 
@@ -165,7 +165,7 @@ void Diff::_parseLine( const QString& line )
 
 
     // see if line is added
-    position = line.indexOf( "a" );
+    position = line.indexOf( QLatin1String("a") );
     if( position >= 0 )
     {
         auto range( line.mid( position+1, line.size() ) );
@@ -174,7 +174,7 @@ void Diff::_parseLine( const QString& line )
     }
 
     // see if line is deleted
-    position = line.indexOf( "d" );
+    position = line.indexOf( QLatin1String("d") );
     if( position >= 0 )
     {
         auto range( line.left( position ) );
@@ -195,10 +195,10 @@ Diff::Range Diff::_parseRange( const QString& range )
     Debug::Throw() << "Diff::_parseRange - " << range << endl;
 
     // look for "," in string
-    int position( range.indexOf( "," ) );
+    int position( range.indexOf( QLatin1String(",") ) );
     Range out( ( position < 0 ) ?
         Range( range.toUInt(), range.toUInt() ):
-        Range( range.left( position ).toUInt(), range.mid( position+1 ).toUInt() ) );
+        Range( range.left( position ).toUInt(), range.midRef( position+1 ).toUInt() ) );
 
     Debug::Throw() << "Diff::_parseRange - (" << out.first << "," << out.second << ")" << endl;
     return out;
@@ -234,7 +234,7 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
     } else {
 
         // create temporary file
-        file_ = File( QString( "/tmp/_qedit_%1_%2_%3" ).arg( Util::user() ).arg( TimeStamp::now().unixTime() ).arg( Util::pid() ) );
+        file_ = File( QStringLiteral( "/tmp/_qedit_%1_%2_%3" ).arg( Util::user() ).arg( TimeStamp::now().unixTime() ).arg( Util::pid() ) );
 
         // try dump text in file
         QFile out( file_ );

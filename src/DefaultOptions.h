@@ -37,37 +37,37 @@ void installDefaultOptions()
     // set options default values
     XmlOptions::get().setAutoDefault( true );
     XmlOptions::get().keep( QStringLiteral("PIXMAP_PATH") );
-    XmlOptions::get().add( "PIXMAP_PATH", "/usr/share/icons/oxygen/32x32/mimetypes");
+    XmlOptions::get().add( QStringLiteral("PIXMAP_PATH"), "/usr/share/icons/oxygen/32x32/mimetypes");
 
     // font
-    XmlOptions::get().set( "FIXED_FONT_NAME", Option( "fixed" ) );
+    XmlOptions::get().set( QStringLiteral("FIXED_FONT_NAME"), Option( "fixed" ) );
 
     // user specified document classes
     XmlOptions::get().keep( QStringLiteral("PATTERN_FILENAME") );
 
     // built-in document classes
     XmlOptions::get().keep( QStringLiteral("DEFAULT_PATTERN_FILENAME") );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/c_patterns.xml" , Option::Flag::None ) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/alice_patterns.xml", Option::Flag::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/default_patterns.xml", Option::Flag::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/diff_patterns.xml", Option::Flag::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/fortran_patterns.xml", Option::Flag::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/html_patterns.xml", Option::Flag::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/latex_patterns.xml", Option::Flag::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/bibtex_patterns.xml", Option::Flag::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/makefile_patterns.xml", Option::Flag::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/perl_patterns.xml", Option::Flag::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/shell_patterns.xml", Option::Flag::None) );
-    XmlOptions::get().add( "DEFAULT_PATTERN_FILENAME", Option( ":/patterns/xml_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/c_patterns.xml" , Option::Flag::None ) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/alice_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/default_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/diff_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/fortran_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/html_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/latex_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/bibtex_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/makefile_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/perl_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/shell_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/xml_patterns.xml", Option::Flag::None) );
 
     XmlOptions::get().set<bool>( QStringLiteral("CUSTOM_BLOCK_DELIMITERS"), true );
 
     // diff configuration
-    XmlOptions::get().set( "DIFF_ADDED_COLOR", Base::Color( "#acdde5" ) );
-    XmlOptions::get().set( "DIFF_CONFLICT_COLOR", Base::Color( "#9addaa" ) );
+    XmlOptions::get().set( QStringLiteral("DIFF_ADDED_COLOR"), Base::Color( "#acdde5" ) );
+    XmlOptions::get().set( QStringLiteral("DIFF_CONFLICT_COLOR"), Base::Color( "#9addaa" ) );
 
-    XmlOptions::get().set( "PARENTHESIS_COLOR", Base::Color( Qt::red ) );
-    XmlOptions::get().set( "TAGGED_BLOCK_COLOR", Base::Color( "#fffdd4" ) );
+    XmlOptions::get().set( QStringLiteral("PARENTHESIS_COLOR"), Base::Color( Qt::red ) );
+    XmlOptions::get().set( QStringLiteral("TAGGED_BLOCK_COLOR"), Base::Color( "#fffdd4" ) );
 
     XmlOptions::get().set<bool>( QStringLiteral("BACKUP"), false );
     XmlOptions::get().set<int>( QStringLiteral("DB_SIZE"), 30 );
@@ -115,9 +115,9 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( QStringLiteral("DIFF_ORIENTATION"), Qt::Horizontal );
 
     #ifdef WITH_ASPELL
-    XmlOptions::get().set( "DICTIONARY", "en" );
-    XmlOptions::get().set( "DICTIONARY_FILTER", "none" );
-    XmlOptions::get().set( "AUTOSPELL_COLOR", "red" );
+    XmlOptions::get().set( QStringLiteral("DICTIONARY"), "en" );
+    XmlOptions::get().set( QStringLiteral("DICTIONARY_FILTER"), "none" );
+    XmlOptions::get().set( QStringLiteral("AUTOSPELL_COLOR"), "red" );
     XmlOptions::get().set<int>( QStringLiteral("AUTOSPELL_FONT_FORMAT"), 0 );
     XmlOptions::get().set<int>( QStringLiteral("MAX_SUGGESTIONS"), 0 );
     #endif
@@ -125,7 +125,7 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( QStringLiteral("SIDE_PANEL_TOOLBAR_TEXT_POSITION"), Qt::ToolButtonFollowStyle );
     XmlOptions::get().set<int>( QStringLiteral("SIDE_PANEL_TOOLBAR_ICON_SIZE"), 16 );
 
-    XmlOptions::get().setRaw( QStringLiteral("TEXT_ENCODING"), QString( "UTF-8" ) );
+    XmlOptions::get().setRaw( QStringLiteral("TEXT_ENCODING"), QStringLiteral( "UTF-8" ) );
 
     // toolbars default configuration
 
@@ -139,8 +139,8 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( QStringLiteral("AUTOSAVE_INTERVAL"), 20 );
 
     // resource file
-    XmlOptions::get().set( "OLD_RC_FILE", Option( File(".qeditrc").addPath(Util::home()), Option::Flag::None ) );
-    XmlOptions::get().set( "RC_FILE", Option( File("qeditrc").addPath(Util::config()), Option::Flag::None ) );
+    XmlOptions::get().set( QStringLiteral("OLD_RC_FILE"), Option( File(".qeditrc").addPath(Util::home()), Option::Flag::None ) );
+    XmlOptions::get().set( QStringLiteral("RC_FILE"), Option( File("qeditrc").addPath(Util::config()), Option::Flag::None ) );
 
     XmlOptions::get().setAutoDefault( false );
 

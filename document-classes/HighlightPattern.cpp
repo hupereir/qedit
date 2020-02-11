@@ -24,18 +24,18 @@
 #include "XmlString.h"
 
 //___________________________________________________________________________
-QString HighlightPattern::noParentPattern_( "None" );
+QString HighlightPattern::noParentPattern_( QStringLiteral("None") );
 
 //___________________________________________________________________________
 HighlightPattern::HighlightPattern():
     Counter( QStringLiteral("HighlightPattern") ),
-    name_( "default" )
+    name_( QStringLiteral("default") )
 {}
 
 //___________________________________________________________________________
 HighlightPattern::HighlightPattern( const QDomElement& element ):
     Counter( QStringLiteral("HighlightPattern") ),
-    name_( "default" )
+    name_( QStringLiteral("default") )
 {
     Debug::Throw( QStringLiteral("HighlightPattern::HighlightPattern.\n") );
     if( element.tagName() == Xml::KeywordPattern ) setType( Type::KeywordPattern );

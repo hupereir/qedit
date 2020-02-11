@@ -149,7 +149,7 @@ class MainWindow: public BaseMainWindow, public Base::Key, private Base::Counter
     //@{
 
     //* create new TextView
-    TextView& newTextView( FileRecord record = FileRecord() );
+    TextView& newTextView( const FileRecord &record = FileRecord() );
 
     //* active view
     TextView& activeView()
@@ -295,7 +295,7 @@ class MainWindow: public BaseMainWindow, public Base::Key, private Base::Counter
     //@}
 
     //* select class name
-    void selectClassName( QString value )
+    void selectClassName( const QString &value )
     { activeView_->selectClassName( value ); }
 
     //* rehighlight all text displays
@@ -387,7 +387,7 @@ class MainWindow: public BaseMainWindow, public Base::Key, private Base::Counter
     of the navigation window. This ensures that the selected display
     is always the active one, as long as it belongs to this window
     */
-    void _selectDisplay( FileRecord record )
+    void _selectDisplay( const FileRecord &record )
     { selectDisplay( record.file() ); }
 
     //* clone current file
@@ -470,19 +470,19 @@ class MainWindow: public BaseMainWindow, public Base::Key, private Base::Counter
     { activeView_->diff(); }
 
     //* find
-    void _find( TextSelection selection )
+    void _find( const TextSelection &selection )
     { activeDisplay().find( selection ); }
 
     //* find
-    void _replace( TextSelection selection )
+    void _replace( const TextSelection &selection )
     { activeDisplay().replace( selection ); }
 
     //* find
-    void _replaceInSelection( TextSelection selection )
+    void _replaceInSelection( const TextSelection &selection )
     { activeDisplay().replaceInSelection( selection ); }
 
     //* find
-    void _replaceInWindow( TextSelection selection )
+    void _replaceInWindow( const TextSelection &selection )
     { activeDisplay().replaceInWindow( selection ); }
 
     //* select line

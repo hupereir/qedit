@@ -102,10 +102,10 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     void setIsNewDocument();
 
     //* set file and read
-    void setFile( File file );
+    void setFile( const File &file );
 
     //* split display
-    TextDisplay& splitDisplay( const Qt::Orientation&, bool clone );
+    TextDisplay& splitDisplay( Qt::Orientation , bool clone );
 
     //* save all displays
     void saveAll();
@@ -114,7 +114,7 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     void ignoreAll();
 
     //* select class name
-    void selectClassName( QString value )
+    void selectClassName( const QString &value )
     { activeDisplay().selectClassName( value ); }
 
     //* rehighlight all displays
@@ -170,7 +170,7 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     void _closeDisplay( const File& );
 
     //* create new splitter
-    QSplitter& _newSplitter( const Qt::Orientation&, bool  );
+    QSplitter& _newSplitter( Qt::Orientation , bool  );
 
     //* create new TextDisplay
     TextDisplay& _newTextDisplay( QWidget* );

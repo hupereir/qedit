@@ -35,7 +35,7 @@ class DocumentClassToolBar: public CustomToolBar
     explicit DocumentClassToolBar( QWidget* );
 
     //* update selection
-    void update( QString );
+    void update( const QString &);
 
     Q_SIGNALS:
 

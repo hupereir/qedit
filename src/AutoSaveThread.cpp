@@ -31,7 +31,7 @@
 #include <QTextCodec>
 
 //_______________________________________________________________
-void AutoSaveThread::setFile( File file )
+void AutoSaveThread::setFile( const File &file )
 {
     QMutexLocker locker( &mutex_ );
     File tmp( autoSaveName( file ) );
@@ -55,7 +55,7 @@ void AutoSaveThread::setContent( const QString& content )
 }
 
 //________________________________________________________________
-void AutoSaveThread::setTextEncoding( QByteArray encoding )
+void AutoSaveThread::setTextEncoding( const QByteArray &encoding )
 {
     QMutexLocker locker( &mutex_ );
     if( textEncoding_ != encoding )
@@ -82,10 +82,10 @@ File AutoSaveThread::autoSaveName( const File& file )
 
     // get full path of current file, relative to root.
     // replace special characters by "_"
-    File relativeName( QDir::root().relativeFilePath( file ).replace( "/", "_" ).replace(":","_") );
+    File relativeName( QDir::root().relativeFilePath( file ).replace( QLatin1String("/"), QLatin1String("_") ).replace(QLatin1String(":"),QLatin1String("_")) );
 
     // get qedit default autosave path
-    QString autoSavePath = QString( "%1/qedit/%2" ).arg( XmlOptions::get().raw( QStringLiteral("AUTOSAVE_PATH") ), Util::user() );
+    QString autoSavePath = QStringLiteral( "%1/qedit/%2" ).arg( XmlOptions::get().raw( QStringLiteral("AUTOSAVE_PATH") ), Util::user() );
 
     // generate autosave name
     return relativeName.addPath( File( QDir( autoSavePath ).absolutePath() ) );
@@ -101,7 +101,7 @@ void AutoSaveThread::run()
 
         // make sure path exists
         QDir path( file().path() );
-        if( !( path.exists() || path.mkpath( "." ) ) ) return;
+        if( !( path.exists() || path.mkpath( QStringLiteral(".") ) ) ) return;
 
         // write to file
         QFile out( file_ );

@@ -43,7 +43,7 @@
 #include <QMessageBox>
 
 //____________________________________________
-Application::Application( CommandLineArguments arguments ):
+Application::Application( const CommandLineArguments &arguments ):
     BaseApplication( nullptr, arguments ),
     Counter( QStringLiteral("Application") )
 {}
@@ -67,13 +67,13 @@ bool Application::initApplicationManager()
 
         #if WITH_ASPELL
         bool accepted( true );
-        if( parser.hasFlag( "--list-dictionaries" ) )
+        if( parser.hasFlag( QStringLiteral("--list-dictionaries") ) )
         {
             SpellCheck::SpellInterface().listDictionaries();
             accepted = false;
         }
 
-        if( parser.hasFlag( "--list-filters" ) )
+        if( parser.hasFlag( QStringLiteral("--list-filters") ) )
         {
             SpellCheck::SpellInterface().listFilters();
             accepted = false;
@@ -148,26 +148,26 @@ bool Application::realizeWidget()
 }
 
 //____________________________________________
-CommandLineParser Application::commandLineParser( CommandLineArguments arguments, bool ignoreWarnings ) const
+CommandLineParser Application::commandLineParser( const CommandLineArguments& arguments, bool ignoreWarnings ) const
 {
     Debug::Throw( QStringLiteral("Application::commandLineParser.\n") );
     CommandLineParser out( BaseApplication::commandLineParser() );
 
     out.setGroup( CommandLineParser::applicationGroupName );
-    out.registerFlag( CommandLineParser::Tag( "--tabbed", "-t" ), tr( "opens files in same window") );
-    out.registerFlag( "--same-window", tr( "open files in same window") );
-    out.registerFlag( CommandLineParser::Tag( "--new-window", "-n" ), tr( "open files in a new window") );
-    out.registerFlag( CommandLineParser::Tag( "--diff", "-d" ), tr( "open files in same window and perform diff") );
+    out.registerFlag( CommandLineParser::Tag( QStringLiteral("--tabbed"), QStringLiteral("-t") ), tr( "opens files in same window") );
+    out.registerFlag( QStringLiteral("--same-window"), tr( "open files in same window") );
+    out.registerFlag( CommandLineParser::Tag( QStringLiteral("--new-window"), QStringLiteral("-n") ), tr( "open files in a new window") );
+    out.registerFlag( CommandLineParser::Tag( QStringLiteral("--diff"), QStringLiteral("-d") ), tr( "open files in same window and perform diff") );
     // out.registerFlag( CommandLineParser::Tag( "--list", "-l" ), tr( "list all opened files" ) );
-    out.registerFlag( "--close", tr( "close displays matching file names and exit") );
-    out.registerOption( CommandLineParser::Tag( "--orientation", "-o" ), tr( "string" ), tr( "select view orientation for tabbed edition (vertical|horizontal)") );
+    out.registerFlag( QStringLiteral("--close"), tr( "close displays matching file names and exit") );
+    out.registerOption( CommandLineParser::Tag( QStringLiteral("--orientation"), QStringLiteral("-o") ), tr( "string" ), tr( "select view orientation for tabbed edition (vertical|horizontal)") );
 
     #if WITH_ASPELL
-    out.registerFlag( "--autospell", tr( "switch autospell on for all files") );
-    out.registerOption( "--filter", tr( "string" ), tr( "select filter for spell checking") );
-    out.registerOption( "--dictionary", tr( "string" ), tr( "select dictionary for spell checking") );
-    out.registerFlag( "--list-filters", tr( "list all filters available to spell checking") );
-    out.registerFlag( "--list-dictionaries", tr( "list all dictionaries available to spell checking") );
+    out.registerFlag( QStringLiteral("--autospell"), tr( "switch autospell on for all files") );
+    out.registerOption( QStringLiteral("--filter"), tr( "string" ), tr( "select filter for spell checking") );
+    out.registerOption( QStringLiteral("--dictionary"), tr( "string" ), tr( "select dictionary for spell checking") );
+    out.registerFlag( QStringLiteral("--list-filters"), tr( "list all filters available to spell checking") );
+    out.registerFlag( QStringLiteral("--list-dictionaries"), tr( "list all dictionaries available to spell checking") );
     #endif
 
     if( !arguments.isEmpty() ) out.parse( arguments, ignoreWarnings );
@@ -177,7 +177,7 @@ CommandLineParser Application::commandLineParser( CommandLineArguments arguments
 //____________________________________________
 void Application::usage() const
 {
-    _usage( "qedit", tr("[options] [files]") );
+    _usage( QStringLiteral("qedit"), tr("[options] [files]") );
     commandLineParser().usage();
 }
 
@@ -256,9 +256,9 @@ void Application::_documentClassesConfiguration()
     dialog.setWindowTitle( tr( "Document Types Configuration" ) );
     if( !dialog.exec() ) return;
 
-    XmlOptions::get().clearSpecialOptions( "PATTERN_FILENAME" );
+    XmlOptions::get().clearSpecialOptions( QStringLiteral("PATTERN_FILENAME") );
     for( const auto& file:dialog.userFiles() )
-    { XmlOptions::get().add( "PATTERN_FILENAME", file ); }
+    { XmlOptions::get().add( QStringLiteral("PATTERN_FILENAME"), file ); }
 
     _updateDocumentClasses();
 
@@ -376,7 +376,7 @@ void Application::_exit()
 }
 
 //________________________________________________
-bool Application::_processCommand( Server::ServerCommand command )
+bool Application::_processCommand( const Server::ServerCommand& command )
 {
 
     if( BaseApplication::_processCommand( command ) ) return true;

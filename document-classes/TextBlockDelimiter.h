@@ -110,7 +110,7 @@ namespace TextBlock
             {}
 
             //* sum operator (warning: this is not a reflexive operator)
-            Pair& operator += ( const Pair& );
+            Pair& operator += ( TextBlock::Delimiter::Pair  );
 
             //* increment
             void increment()
@@ -130,7 +130,7 @@ namespace TextBlock
             int end_ = 0;
 
             //* equal to
-            friend bool operator == (const Pair& first, const Pair& second)
+            friend bool operator == (TextBlock::Delimiter::Pair first, TextBlock::Delimiter::Pair second)
             { return first.begin_ == second.begin_ && first.end_ == second.end_; }
 
         };

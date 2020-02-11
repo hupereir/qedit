@@ -130,7 +130,7 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     { return flags_; }
 
     //* flags
-    bool hasFlag( const Flag& flag ) const
+    bool hasFlag( HighlightPattern::Flag flag ) const
     { return flags_ & flag; }
 
     //* validity
@@ -166,7 +166,7 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     { type_ = type; }
 
     //* parent style name
-    void setParent( QString parent )
+    void setParent( const QString &parent )
     { parent_ = parent; }
 
     //* parent id
@@ -178,7 +178,7 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     { style_ = style; }
 
     //* add child
-    void addChild( HighlightPattern child )
+    void addChild( const HighlightPattern &child )
     { children_ << child; }
 
     //* clear children
@@ -198,11 +198,11 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     { end_.setPattern( keyword ); }
 
     //* flags
-    void setFlags( const Flags& flags )
+    void setFlags( HighlightPattern::Flags flags )
     { flags_ = flags; }
 
     //* flags
-    void setFlag( const Flag& flag, bool value )
+    void setFlag( HighlightPattern::Flag flag, bool value )
     {
         if( value ) flags_ |= flag;
         else flags_ &= (~flag);

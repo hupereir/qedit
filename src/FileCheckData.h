@@ -38,7 +38,7 @@ class FileCheckData: private Base::Counter<FileCheckData>
     };
 
     //* constructor
-    explicit FileCheckData( File file = File(), Flag flag = Flag::None, TimeStamp stamp = TimeStamp() ):
+    explicit FileCheckData( const File &file = File(), Flag flag = Flag::None, const TimeStamp &stamp = TimeStamp() ):
         Counter( QStringLiteral("FileCheckData") ),
         file_( file ),
         flag_( flag ),
@@ -70,7 +70,7 @@ class FileCheckData: private Base::Counter<FileCheckData>
     { file_ = file; }
 
     //* flag
-    void setFlag( const Flag& flag )
+    void setFlag( FileCheckData::Flag flag )
     { flag_ = flag; }
 
     //* timestamp

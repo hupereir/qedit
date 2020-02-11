@@ -387,7 +387,7 @@ void MenuBar::_updateWindowsMenu()
 }
 
 //_______________________________________________
-void MenuBar::_selectMacro( QString name )
+void MenuBar::_selectMacro( const QString &name )
 {
     Debug::Throw( QStringLiteral("MenuBar::_SelectMacro.\n") );
     static_cast<MainWindow*>(window())->activeDisplay().processMacro( name );
