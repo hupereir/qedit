@@ -33,6 +33,8 @@
 class AutoSaveThread: public QThread, public Base::Key, private Base::Counter<AutoSaveThread>
 {
 
+    Q_OBJECT
+
     public:
 
     //* constructor

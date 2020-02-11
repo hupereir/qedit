@@ -36,6 +36,8 @@
 class LocalSplitter: public QSplitter, private Base::Counter<LocalSplitter>
 {
 
+    Q_OBJECT
+
     public:
 
     //* constructor
@@ -731,3 +733,5 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     return *display;
 
 }
+
+#include "TextView.moc"

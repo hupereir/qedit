@@ -84,18 +84,13 @@ void AutoSave::saveFiles( const TextDisplay* display )
 
     if( display )
     {
-
         if( !( display->file().isEmpty() || display->isNewDocument() ) )
         {
-
             // if a valid display is provided
             for( auto thread:Base::KeySet<AutoSaveThread>( display ) )
             { if( !thread->isRunning() ) updateThread( thread, *display ); }
-
         }
-
     } else {
-
         // first remove empty threads
         threads_.erase(
             std::remove_if( threads_.begin(), threads_.end(),
@@ -106,7 +101,6 @@ void AutoSave::saveFiles( const TextDisplay* display )
         // loop over threads and restart
         for( auto&& iter = threads_.begin(); iter != threads_.end(); ++iter )
         {
-
             // check if argument display, if valid, is associated to this thread
             if( display && !(*iter)->isAssociated( display ) ) continue;
 
@@ -120,41 +114,30 @@ void AutoSave::saveFiles( const TextDisplay* display )
             auto&& display( **displays.begin() );
             if( !( display.file().isEmpty() || display.isNewDocument() ) )
             { updateThread( iter->get(), display ); }
-
         }
-
     }
 
     // restart timer
     if( !( threads_.empty() || timer_.isActive() ) )  timer_.start( interval_, this );
-
 }
 
 //______________________________________________________
 void AutoSave::timerEvent( QTimerEvent* event )
 {
-
     if( event->timerId() == timer_.timerId() )
     {
-
         timer_.stop();
         saveFiles();
-
-    } else return QObject::timerEvent( event );
-
+    } else QObject::timerEvent( event );
 }
 
 //______________________________________________________
 void AutoSave::_updateConfiguration()
 {
-
     Debug::Throw( QStringLiteral("AutoSave::_updateConfiguration.\n") );
-
     // save AutoSave interval and start timer
     enabled_ = XmlOptions::get().get<bool>( QStringLiteral("AUTOSAVE") );
     interval_ = 1000*XmlOptions::get().get<int>(QStringLiteral("AUTOSAVE_INTERVAL"));
-
     if( interval_ > 0 ) timer_.start( interval_, this );
     else timer_.stop();
-
 }

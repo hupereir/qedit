@@ -191,13 +191,9 @@ void RecentFilesWidget::_clean()
 //______________________________________________________________________
 void RecentFilesWidget::_open()
 {
-
     Debug::Throw( QStringLiteral("RecentFilesWidget:_open.\n") );
-    FileRecordModel::List validSelection;
-
     for( const auto& record:model_.get( list_->selectionModel()->selectedRows() ) )
     { if( record.isValid() ) emit fileActivated( record ); }
-
 }
 
 //______________________________________________________________________

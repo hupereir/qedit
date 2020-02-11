@@ -23,10 +23,10 @@
 #include "BlockMarker.h"
 #include "Functors.h"
 
-#include <QList>
 #include <QPair>
 #include <QPoint>
 #include <QRect>
+#include <QVector>
 
 // used to draw block segment
 class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
@@ -35,9 +35,9 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
     public:
 
     //* list
-    using List = QList<BlockDelimiterSegment>;
-    using ListIterator = QListIterator<BlockDelimiterSegment>;
-    using MutableListIterator = QMutableListIterator<BlockDelimiterSegment>;
+    using List = QVector<BlockDelimiterSegment>;
+    using ListIterator = QVectorIterator<BlockDelimiterSegment>;
+    using MutableListIterator = QMutableVectorIterator<BlockDelimiterSegment>;
 
     //* flags
     enum Flag
