@@ -32,17 +32,17 @@ void installSystemOptions( void )
 
     // print commands
     XmlOptions::get().setAutoDefault( true );
-    XmlOptions::get().set( "DIFF_COMMAND", "@DIFF@" );
+    XmlOptions::get().set( QStringLiteral( "DIFF_COMMAND" ), QStringLiteral( "@DIFF@" ) );
 
     #ifdef WITH_ASPELL
-    XmlOptions::get().set( "ASPELL", "@ASPELL@" );
-    XmlOptions::get().set( "DICTIONARY", "en" );
-    XmlOptions::get().set( "DICTIONARY_FILTER", "none" );
+    XmlOptions::get().set( QStringLiteral( "ASPELL" ), QStringLiteral( "@ASPELL@" ) );
+    XmlOptions::get().set( QStringLiteral( "DICTIONARY" ), QStringLiteral( "en" ) );
+    XmlOptions::get().set( QStringLiteral( "DICTIONARY_FILTER" ), QStringLiteral( "none" ) );
     #endif
 
     #if !defined(Q_OS_WIN)
-    XmlOptions::get().keep( "HTML_COMMAND" );
-    XmlOptions::get().add( "HTML_COMMAND", "@XDG_OPEN@" );
+    XmlOptions::get().keep( QStringLiteral( "HTML_COMMAND" ) );
+    XmlOptions::get().add( QStringLiteral( "HTML_COMMAND" ), QStringLiteral( "@XDG_OPEN@" ) );
     #endif
 
     XmlOptions::get().setAutoDefault( false );

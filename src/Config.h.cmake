@@ -24,5 +24,5 @@
 *
 *******************************************************************************/
 
-#define VERSION "@QEDIT_VERSION@"
+#define VERSION QStringLiteral( "@QEDIT_VERSION@" )
 #endif
