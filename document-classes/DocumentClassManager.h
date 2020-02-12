@@ -25,7 +25,7 @@
 #include "File.h"
 
 #include <QString>
-#include <QList>
+#include <QVector>
 
 class DocumentClass;
 
@@ -74,7 +74,7 @@ class DocumentClassManager final: private Base::Counter<DocumentClassManager>
     bool remove( const QString& name );
 
     //* shortcut to list of document classes
-    using List = QList<DocumentClass>;
+    using List = QVector<DocumentClass>;
 
     //* get all classes
     const List& classes() const
