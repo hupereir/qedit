@@ -459,7 +459,7 @@ void MainWindow::_printPreview()
     PrintHelper helper( this, &activeDisplay() );
 
     // create dialog, connect and execute
-    PrintPreviewDialog dialog( this, CustomDialog::OkButton|CustomDialog::CancelButton );
+    PrintPreviewDialog dialog( this, Dialog::OkButton|Dialog::CancelButton );
     dialog.setWindowTitle( tr( "Print Preview" ) );
     dialog.setHelper( &helper );
     if( !dialog.exec() ) return;

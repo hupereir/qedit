@@ -27,7 +27,7 @@
 #include <QMenuBar>
 #include <QHash>
 
-class CustomMenu;
+class BaseMenu;
 class RecentFilesMenu;
 class TextMacroMenu;
 
@@ -125,7 +125,7 @@ class MenuBar:public QMenuBar, private Base::Counter<MenuBar>
     TextMacroMenu* macroMenu_ = nullptr;
 
     //* windows menu
-    CustomMenu* windowsMenu_ = nullptr;
+    BaseMenu* windowsMenu_ = nullptr;
 
     //@}
 

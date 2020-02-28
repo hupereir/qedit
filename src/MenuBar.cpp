@@ -21,7 +21,7 @@
 
 #include "Application.h"
 #include "BlockDelimiterDisplay.h"
-#include "CustomMenu.h"
+#include "BaseMenu.h"
 #include "DebugMenu.h"
 #include "DefaultHelpText.h"
 #include "DocumentClassMenu.h"
@@ -100,7 +100,7 @@ MenuBar::MenuBar( QWidget* parent ):
 
     // windows
     windowsActionGroup_ = new ActionGroup( this );
-    addMenu( windowsMenu_ = new CustomMenu( tr( "Session" ), this ) );
+    addMenu( windowsMenu_ = new BaseMenu( tr( "Session" ), this ) );
     connect( windowsMenu_, &QMenu::aboutToShow, this, &MenuBar::_updateWindowsMenu );
     connect( windowsMenu_, &QMenu::triggered, this, &MenuBar::_selectFile );
 

@@ -35,7 +35,7 @@
 
 //________________________________________________________
 FileSelectionDialog::FileSelectionDialog( QWidget* parent, const TextSelection& selection ):
-CustomDialog( parent ),
+Dialog( parent ),
 selection_( selection )
 {
 

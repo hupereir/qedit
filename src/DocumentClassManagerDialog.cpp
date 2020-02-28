@@ -34,7 +34,7 @@
 
 //______________________________________________________________________
 DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
-    CustomDialog( parent, OkButton|CancelButton )
+    Dialog( parent, OkButton|CancelButton )
 {
 
     Debug::Throw( QStringLiteral("DocumentClassManagerDialog::DocumentClassManagerDialog.\n") );

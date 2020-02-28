@@ -283,7 +283,7 @@ void Application::_printSession()
     if( records.empty() ) return;
 
     // create dialog
-    CustomDialog dialog( 0, CustomDialog::CloseButton );
+    Dialog dialog( 0, Dialog::CloseButton );
     dialog.setOptionName( QStringLiteral("PRINT_SESSION_DIALOG") );
     dialog.setWindowTitle( tr( "Session files" ) );
     LogWidget* logWidget = new LogWidget( &dialog );
