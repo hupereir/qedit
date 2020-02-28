@@ -26,7 +26,7 @@
 #include "BlockDelimiterDisplay.h"
 #include "FileDialog.h"
 #include "Color.h"
-#include "CustomTextDocument.h"
+#include "TextDocument.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassMenu.h"

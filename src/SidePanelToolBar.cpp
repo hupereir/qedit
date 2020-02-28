@@ -17,19 +17,20 @@
 *
 *******************************************************************************/
 
-#include "CustomPixmap.h"
-#include "CustomToolButton.h"
+#include "SidePanelToolBar.h"
+
+#include "ToolButton.h"
 #include "Debug.h"
 #include "BaseFileSystemWidget.h"
 #include "IconEngine.h"
 #include "IconNames.h"
 #include "IconSizeMenu.h"
 #include "MainWindow.h"
-#include "SidePanelToolBar.h"
-#include "SidePanelWidget.h"
+#include "Pixmap.h"
 #include "QtUtil.h"
 #include "RecentFilesWidget.h"
 #include "SessionFilesWidget.h"
+#include "SidePanelWidget.h"
 #include "ToolBarMenu.h"
 #include "ToolButtonStyleMenu.h"
 
@@ -38,7 +39,7 @@
 
 //_______________________________________________________________
 SidePanelToolBar::SidePanelToolBar( QWidget* parent ):
-    CustomToolBar( tr( "Side bar" ), parent, QStringLiteral("SIDE_PANEL_TOOLBAR") ),
+    ToolBar( tr( "Side bar" ), parent, QStringLiteral("SIDE_PANEL_TOOLBAR") ),
     sidePanelWidget_( nullptr ),
     enabled_( true )
 {
@@ -238,7 +239,7 @@ void SidePanelToolBar::contextMenuEvent( QContextMenuEvent* event )
 QToolButton* SidePanelToolBar::_newToolButton( QWidget* parent, const QIcon &icon ) const
 {
 
-    CustomToolButton* button = new CustomToolButton( parent );
+    auto button = new ToolButton( parent );
     button->setIcon( icon );
     button->setCheckable( true );
     button->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );

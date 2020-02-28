@@ -21,7 +21,7 @@
 *******************************************************************************/
 
 #include "IconSize.h"
-#include "CustomToolBar.h"
+#include "ToolBar.h"
 
 #include <QAbstractButton>
 #include <QContextMenuEvent>
@@ -35,7 +35,7 @@ class SidePanelWidget;
 displays an up-to-date list of recent files
 as well as files opened in current session
 */
-class SidePanelToolBar: public CustomToolBar
+class SidePanelToolBar: public ToolBar
 {
 
     //* Qt meta object declaration
@@ -46,7 +46,7 @@ class SidePanelToolBar: public CustomToolBar
     //* creator
     explicit SidePanelToolBar( QWidget* );
 
-    using CustomToolBar::connect;
+    using ToolBar::connect;
 
     //* set target
     void connect( SidePanelWidget& );

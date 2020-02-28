@@ -19,7 +19,7 @@
 
 #include "SessionFilesModel.h"
 #include "Application.h"
-#include "CustomPixmap.h"
+#include "Pixmap.h"
 #include "FileRecordProperties.h"
 #include "IconNames.h"
 #include "IconEngine.h"
@@ -116,7 +116,7 @@ const QIcon& SessionFilesModel::_icon( int type )
         if( !prototype.isNull() ) size = prototype.actualSize( size );
 
         // create empty pixmap
-        icon = CustomPixmap( size, CustomPixmap::Flag::Transparent );
+        icon = Pixmap( size, Pixmap::Flag::Transparent );
 
     }
 

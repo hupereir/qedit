@@ -25,8 +25,8 @@
 #include "BlockDelimiterDisplay.h"
 #include "Command.h"
 #include "CppUtil.h"
-#include "CustomToolButton.h"
-#include "CustomToolBar.h"
+#include "ToolButton.h"
+#include "ToolBar.h"
 #include "Debug.h"
 #include "Diff.h"
 #include "DocumentClass.h"
@@ -919,13 +919,13 @@ void MainWindow::_installToolbars()
 {
 
     // file toolbar
-    auto toolbar = new CustomToolBar( tr( "Main Toolbar" ), this, QStringLiteral("FILE_TOOLBAR") );
+    auto toolbar = new ToolBar( tr( "Main Toolbar" ), this, QStringLiteral("FILE_TOOLBAR") );
     toolbar->addAction( newFileAction_ );
     toolbar->addAction( openAction_ );
     toolbar->addAction( saveAction_ );
 
     // edition toolbar
-    toolbar = new CustomToolBar( tr( "Edition" ), this, QStringLiteral("EDITION_TOOLBAR") );
+    toolbar = new ToolBar( tr( "Edition" ), this, QStringLiteral("EDITION_TOOLBAR") );
     toolbar->addAction( undoAction_ );
     toolbar->addAction( redoAction_ );
     toolbar->addAction( cutAction_ );
@@ -933,7 +933,7 @@ void MainWindow::_installToolbars()
     toolbar->addAction( pasteAction_ );
 
     // extra toolbar
-    toolbar = new CustomToolBar( tr( "Tools" ), this, QStringLiteral("EXTRA_TOOLBAR") );
+    toolbar = new ToolBar( tr( "Tools" ), this, QStringLiteral("EXTRA_TOOLBAR") );
     toolbar->addAction( filePropertiesAction_ );
 
     #if WITH_ASPELL
@@ -941,7 +941,7 @@ void MainWindow::_installToolbars()
     #endif
 
     // splitting toolbar
-    toolbar = new CustomToolBar( tr( "Multiple Displays" ), this, QStringLiteral("SPLIT_TOOLBAR") );
+    toolbar = new ToolBar( tr( "Multiple Displays" ), this, QStringLiteral("SPLIT_TOOLBAR") );
     toolbar->addAction( splitDisplayHorizontalAction_ );
     toolbar->addAction( splitDisplayVerticalAction_ );
     toolbar->addAction( openHorizontalAction_ );

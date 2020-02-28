@@ -20,7 +20,7 @@
 #include "DocumentClassModel.h"
 
 #include "Application.h"
-#include "CustomPixmap.h"
+#include "Pixmap.h"
 #include "IconEngine.h"
 #include "Singleton.h"
 #include "XmlOptions.h"
@@ -150,7 +150,7 @@ const QIcon& DocumentClassModel::_icon( const QString& name )
     {
         const int iconSize( XmlOptions::get().get<int>( QStringLiteral("LIST_ICON_SIZE") ) );
         const QSize size( iconSize, iconSize );
-        icon = CustomPixmap( size, CustomPixmap::Flag::Transparent );
+        icon = Pixmap( size, Pixmap::Flag::Transparent );
     }
 
     return _icons().insert( name, icon ).value();

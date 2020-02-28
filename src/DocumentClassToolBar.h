@@ -19,12 +19,12 @@
 *
 *******************************************************************************/
 
-#include "CustomToolBar.h"
+#include "ToolBar.h"
 
 #include <QComboBox>
 
 //* display available document classes
-class DocumentClassToolBar: public CustomToolBar
+class DocumentClassToolBar: public ToolBar
 {
 
     Q_OBJECT
