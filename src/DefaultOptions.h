@@ -139,7 +139,6 @@ void installDefaultOptions()
     XmlOptions::get().set<int>( QStringLiteral("AUTOSAVE_INTERVAL"), 20 );
 
     // resource file
-    XmlOptions::get().set( QStringLiteral("OLD_RC_FILE"), Option( File(".qeditrc").addPath(Util::home()), Option::Flag::None ) );
     XmlOptions::get().set( QStringLiteral("RC_FILE"), Option( File("qeditrc").addPath(Util::config()), Option::Flag::None ) );
 
     XmlOptions::get().setAutoDefault( false );
