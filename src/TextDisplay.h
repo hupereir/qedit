@@ -420,8 +420,12 @@ class TextDisplay: public TextEditor
     //* rehighlight
     void rehighlight();
 
+    //* clear all blocks
+    void clearAllTags()
+    { clearAllTags( TextBlock::All ); }
+
     //* clear all blocks if match argument
-    void clearAllTags( int tags = TextBlock::All );
+    void clearAllTags( int );
 
     //* change autospell filter
     void selectFilter( const QString& );

@@ -1622,7 +1622,7 @@ void TextDisplay::_installActions()
 
     // clear all tags
     addAction( clearAllTagsAction_ = new QAction( QStringLiteral("Clear All Tags"), this ) );
-    connect( clearAllTagsAction_, &QAction::triggered, this, &TextDisplay::clearAllTags );
+    connect( clearAllTagsAction_, &QAction::triggered, this, [this](bool){ clearAllTags(); } );
 
     // next tag action
     addAction( nextTagAction_ = new QAction( IconEngine::get( IconNames::Down ), QStringLiteral("Goto Next Tagged Block"), this ) );
