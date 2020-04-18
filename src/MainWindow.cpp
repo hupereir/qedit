@@ -25,8 +25,6 @@
 #include "BlockDelimiterDisplay.h"
 #include "Command.h"
 #include "CppUtil.h"
-#include "ToolButton.h"
-#include "ToolBar.h"
 #include "Debug.h"
 #include "Diff.h"
 #include "DocumentClass.h"
@@ -65,6 +63,9 @@
 #include "TextHighlight.h"
 #include "TextIndent.h"
 #include "TextMacroMenu.h"
+#include "ToolBar.h"
+#include "ToolBarSpacerItem.h"
+#include "ToolButton.h"
 #include "WindowServer.h"
 #include "WindowTitle.h"
 #include "XmlOptions.h"
@@ -93,7 +94,7 @@ MainWindow::MainWindow(  QWidget* parent ):
 
     // additional actions from Application
     // they need to be added so that short cuts still work even when menu bar is hidden)
-    auto&& application( Base::Singleton::get().application<Application>() );
+    auto application( Base::Singleton::get().application<Application>() );
     addAction( &application->closeAction() );
 
     // menu
@@ -114,7 +115,7 @@ MainWindow::MainWindow(  QWidget* parent ):
     hLayout->addWidget( sidePanelToolBar, 0 );
 
     // main widget is a splitter to store navigation window and active view
-    QSplitter* splitter = new QSplitter( mainWidget );
+    auto splitter = new QSplitter( mainWidget );
     hLayout->addWidget( splitter, 1 );
     splitter->setOrientation( Qt::Horizontal );
 
@@ -952,6 +953,11 @@ void MainWindow::_installToolbars()
     // document class toolbar
     documentClassToolBar_ = new DocumentClassToolBar( this );
     connect( documentClassToolBar_, &DocumentClassToolBar::documentClassSelected, this, &MainWindow::selectClassName );
+
+    // application menu
+    toolbar =  new ToolBar( tr( "Application Menu" ), this, QStringLiteral("APPMENU_TOOLBAR") );
+    toolbar->addWidget( new ToolBarSpacerItem );
+    addApplicationMenu( toolbar );
 
 }
 
