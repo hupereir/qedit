@@ -684,10 +684,8 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
 
     if( flags & ( TextDisplay::FileName | TextDisplay::ReadOnly | TextDisplay::Modified ) )
     {
-
         _updateWindowTitle();
         saveAction_->setEnabled( !activeDisplay().isReadOnly() && activeDisplay().document()->isModified() );
-
     }
 
     if( flags & TextDisplay::Modified )
@@ -760,10 +758,16 @@ void MainWindow::_update( TextDisplay::UpdateFlags flags )
 
     // macros
     if( flags & TextDisplay::DocumentClassFlag )
-    { menuBar_->updateMacroMenu(); }
+    {
+        menuBar_->updateMacroMenu();
+        updateApplicationMenu();
+    }
 
     if( flags & (TextDisplay::Cut|TextDisplay::Copy) )
-    { menuBar_->macroMenu().updateState( activeDisplay().textCursor().hasSelection() ); }
+    {
+        menuBar_->macroMenu().updateState( activeDisplay().textCursor().hasSelection() );
+        updateApplicationMenu();
+    }
 
 }
 
