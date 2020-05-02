@@ -1751,7 +1751,7 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     setTextCursor( cursor );
 
     // replace leading tabs in selection
-    _replaceLeadingTabs( false );
+    // _replaceLeadingTabs( false );
 
     return;
 
