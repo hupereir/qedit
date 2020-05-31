@@ -47,9 +47,21 @@ void AutoSave::newThread( TextDisplay* display )
     // create thread with custom deleter
     ThreadPtr thread( new AutoSaveThread( this ), [](AutoSaveThread* thread)
     {
-        auto autosaved( thread->file() );
-        if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
-        delete thread;
+        if( thread->isRunning() )
+        {
+            thread->disconnect();
+            QObject::connect( thread, &QThread::finished, thread, [thread]()
+            {
+                auto autosaved( thread->file() );
+                if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
+                thread->deleteLater();
+            } );
+            thread->quit();
+        } else {
+            auto autosaved( thread->file() );
+            if( autosaved.exists() && autosaved.isWritable() ) autosaved.remove();
+            thread->deleteLater();
+        }
     });
 
     // associate to MainWindow
