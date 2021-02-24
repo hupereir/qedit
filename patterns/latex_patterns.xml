@@ -43,8 +43,8 @@
   </range_pattern>
   <range_pattern options="span" style="Math" parent="" name="Math" >
    <comments></comments>
-   <begin>\$</begin>
-   <end>\$</end>
+   <begin>(?&lt;!\\)\$</begin>
+   <end>(?&lt;!\\)\$</end>
   </range_pattern>
   <keyword_pattern style="Braces" parent="" name="Braces" >
    <comments></comments>
