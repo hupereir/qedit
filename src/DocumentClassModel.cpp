@@ -88,11 +88,10 @@ QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
 }
 
 //__________________________________________________________________
-QVariant DocumentClassModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant DocumentClassModel::headerData(int section, Qt::Orientation, int role) const
 {
 
     if(
-        orientation == Qt::Horizontal &&
         role == Qt::DisplayRole &&
         section >= 0 &&
         section < nColumns )

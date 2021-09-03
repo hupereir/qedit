@@ -1090,7 +1090,7 @@ bool WindowServer::_createNewFile( const FileRecord& record )
         break;
 
         default:
-        case NewFileDialog::Exit: qApp->quit();
+        case NewFileDialog::Exit: qApp->quit(); return false;
         case NewFileDialog::Cancel: return false;
         break;
 
