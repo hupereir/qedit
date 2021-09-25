@@ -28,6 +28,14 @@
 
 #include <QFile>
 
+namespace
+{
+
+    //! local temporary file counter, needed to avoid collisions
+    static unsigned int tempFileIndex = 0;
+
+}
+
 //__________________________________________________________________
 Diff::Diff( QObject* parent ):
     QObject( parent ),
@@ -234,7 +242,15 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
     } else {
 
         // create temporary file
-        file_ = File( QStringLiteral( "/tmp/_qedit_%1_%2_%3" ).arg( Util::user() ).arg( TimeStamp::now().unixTime() ).arg( Util::pid() ) );
+        file_.set(
+            QStringLiteral( "/tmp/_qedit_%1_%2_%3_%4" )
+            .arg( Util::user() )
+            .arg( TimeStamp::now().unixTime() )
+            .arg( Util::pid() )
+            .arg( ++tempFileIndex ) );
+
+        Debug::Throw() << "Diff::FileInformation::setDisplay - writting content to file: " << file_ << endl;
+
 
         // try dump text in file
         QFile out( file_ );
