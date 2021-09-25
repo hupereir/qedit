@@ -52,12 +52,50 @@ class HighlightStyle final: private Base::Counter<HighlightStyle>
     //* constructor from DomElement
     explicit HighlightStyle( const QDomElement& );
 
+    //!@name accessors
+    //@{
+
     //* write to DomElement
     QDomElement domElement( QDomDocument& parent ) const;
 
     //* name
     const QString& name() const
     { return name_; }
+
+    //* format
+    TextFormat::Flags fontFormat() const
+    { return format_; }
+
+    //* background color
+    const QColor& backgroundColor() const
+    { return backgroundColor_; }
+
+    //* color
+    const QColor& color() const
+    { return color_; }
+
+    //@}
+
+    //!@name modifiers
+    //@{
+
+    //* name
+    void setName( const QString& name )
+    { name_ = name; }
+
+    //* format
+    void setFontFormat( TextFormat::Flags format )
+    { format_ = format; }
+
+    //* color
+    void setBackgroundColor( const QColor& color )
+    { backgroundColor_ = color; }
+
+    //* color
+    void setColor( const QColor& color )
+    { color_ = color; }
+
+    //@}
 
     //* same name ftor
     using SameNameFTor = Base::Functor::Unary<HighlightStyle, const QString&, &HighlightStyle::name>;
@@ -74,26 +112,6 @@ class HighlightStyle final: private Base::Counter<HighlightStyle>
     //* typedef for list of patterns
     using List = QList<HighlightStyle>;
 
-    //* name
-    void setName( const QString& name )
-    { name_ = name; }
-
-    //* format
-    TextFormat::Flags fontFormat() const
-    { return format_; }
-
-    //* format
-    void setFontFormat( TextFormat::Flags format )
-    { format_ = format; }
-
-    //* color
-    const QColor& color() const
-    { return color_; }
-
-    //* color
-    void setColor( const QColor& color )
-    { color_ = color; }
-
     private:
 
     //* pattern name
@@ -101,6 +119,9 @@ class HighlightStyle final: private Base::Counter<HighlightStyle>
 
     //* format (bitwise or of TextFormatInfo)
     TextFormat::Flags format_ = TextFormat::Default;
+
+    //* background color
+    QColor backgroundColor_;
 
     //* color
     QColor color_;

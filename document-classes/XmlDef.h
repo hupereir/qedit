@@ -47,6 +47,7 @@ namespace Xml
     static const QString Name( QStringLiteral("name") );
     static const QString Format( QStringLiteral("format") );
     static const QString Color( QStringLiteral("color") );
+    static const QString BackgroundColor( QStringLiteral("background") );
     //@}
 
     //*@name highlight pattern
