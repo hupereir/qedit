@@ -19,12 +19,12 @@
 
 #include "Diff.h"
 #include "HighlightBlockFlags.h"
-#include "XmlOptions.h"
+#include "InformationDialog.h"
 #include "TextBlockRange.h"
 #include "TextDisplay.h"
 #include "TimeStamp.h"
-#include "InformationDialog.h"
 #include "Util.h"
+#include "XmlOptions.h"
 
 #include <QFile>
 
