@@ -59,13 +59,10 @@ class Diff: public QObject, private Base::Counter<Diff>
     const QString& error() const
     { return error_; }
 
-    //* paragraph range
-    using Range = QPair< int, int >;
-
-    //* range list
-    using BlockSet = QSet< int >;
-
     private:
+
+    //* paragraph range
+    using Range = QPair<int,int>;
 
     //* parse the diff output
     void _parseOutput( int, QProcess::ExitStatus );
@@ -139,6 +136,9 @@ class Diff: public QObject, private Base::Counter<Diff>
         at destruction
         */
         bool isTemporary_ = false;
+
+        //* range list
+        using BlockSet = QSet<int>;
 
         //* added paragraphs
         BlockSet added_;

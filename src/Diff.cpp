@@ -204,7 +204,7 @@ Diff::Range Diff::_parseRange( const QString& range )
 
     // look for "," in string
     int position( range.indexOf( QLatin1String(",") ) );
-    Range out( ( position < 0 ) ?
+    const auto out( ( position < 0 ) ?
         Range( range.toUInt(), range.toUInt() ):
         Range( range.left( position ).toUInt(), range.midRef( position+1 ).toUInt() ) );
 
@@ -243,7 +243,7 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
 
         // create temporary file
         file_.set(
-            QStringLiteral( "/tmp/_qedit_%1_%2_%3_%4" )
+            QStringLiteral( "/tmp/_qedit_diff_%1_%2_%3_%4" )
             .arg( Util::user() )
             .arg( TimeStamp::now().unixTime() )
             .arg( Util::pid() )
