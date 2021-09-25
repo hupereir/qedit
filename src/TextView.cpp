@@ -487,11 +487,10 @@ void TextView::diff()
     }
 
     // create diff object
-    // Diff* diff = new Diff( this );
-    Diff *diff( new Diff( this ) );
+    auto diff( new Diff( this ) );
 
     // store active display as first to compare
-    TextDisplay& first = activeDisplay();
+    auto& first = activeDisplay();
 
     // retrieve displays associated to window
     // look for the first one that is not associated to the active display
