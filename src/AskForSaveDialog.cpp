@@ -21,6 +21,7 @@
 #include "BaseIconNames.h"
 #include "GridLayout.h"
 #include "IconEngine.h"
+#include "QtUtil.h"
 
 #include <QDialogButtonBox>
 #include <QFrame>
@@ -41,7 +42,7 @@ AskForSaveDialog::AskForSaveDialog( QWidget* parent, const File& file, ReturnCod
     // create vbox layout
     QVBoxLayout* layout=new QVBoxLayout;
     layout->setSpacing(5);
-    layout->setMargin(10);
+    QtUtil::setMargin(layout, 10);
     setLayout( layout );
 
     // create message

@@ -55,7 +55,7 @@ int main (int argc, char *argv[])
 
     // debug level
     Debug::setLevel( XmlOptions::get().get<int>( QStringLiteral("DEBUG_LEVEL") ) );
-    if( Debug::level() ) Debug::Throw() << XmlOptions::get() << endl;
+    if( Debug::level() ) Debug::Throw() << XmlOptions::get() << Qt::endl;
 
     // resources
     Q_INIT_RESOURCE( patterns );

@@ -76,7 +76,7 @@ void TextIndent::indent( const QTextBlock &first, const QTextBlock &last )
             if( iter != patterns_.end() )
             {
                 const auto& pattern = *iter;
-                Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << endl;
+                Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << Qt::endl;
                 if( pattern.type() == IndentPattern::Type::Increment ) newTabs += pattern.scale();
                 else if( pattern.type() == IndentPattern::Type::Decrement ) newTabs -= pattern.scale();
                 else if( pattern.type() == IndentPattern::Type::DecrementAll ) newTabs = 0;
@@ -136,7 +136,7 @@ void TextIndent::indent( const QTextBlock &block, bool newLine )
         if( iter != patterns_.end() )
         {
             const auto& pattern( *iter );
-            Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << endl;
+            Debug::Throw() << "TextIndent::indent - accepted pattern: " << pattern.name() << Qt::endl;
             if( pattern.type() == IndentPattern::Type::Increment ) newTabs += pattern.scale();
             else if( pattern.type() == IndentPattern::Type::Decrement ) newTabs -= pattern.scale();
             else if( pattern.type() == IndentPattern::Type::DecrementAll ) newTabs = 0;
@@ -177,7 +177,7 @@ bool TextIndent::_acceptPattern( const QTextBlock &block, const IndentPattern& p
 
             if( !rule.accept( copy.text() ) )
             {
-                Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "] rejected" << endl;
+                Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "] rejected" << Qt::endl;
                 accepted = false;
             }
 
@@ -200,7 +200,7 @@ bool TextIndent::_acceptPattern( const QTextBlock &block, const IndentPattern& p
 
             Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "]"
                 << " decrement: " << decrement << " true: " << trueDecrement
-                << endl;
+                << Qt::endl;
 
             // check paragraph and regexp
             // here one could have a flag on the indentation pattern rules
@@ -209,7 +209,7 @@ bool TextIndent::_acceptPattern( const QTextBlock &block, const IndentPattern& p
             // that cannot otherwise.
             if( !copy.isValid() || !rule.accept( copy.text() ) )
             {
-                Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "] rejected" << endl;
+                Debug::Throw() << "TextIndent::_acceptPattern - [" << pattern.name() << "," << ruleId << "] rejected" << Qt::endl;
                 accepted = false;
             }
 
@@ -296,14 +296,14 @@ void TextIndent::_decrement( const QTextBlock &block )
             currentCursor_.setPosition( qMax( 0, anchor - length ), QTextCursor::MoveAnchor );
             currentCursor_.setPosition( qMax( 0, position - length ), QTextCursor::KeepAnchor );
         }
-    } else { Debug::Throw() << "TextIndent::_decrement - no match" << endl; }
+    } else { Debug::Throw() << "TextIndent::_decrement - no match" << Qt::endl; }
 }
 
 //____________________________________________
 void TextIndent::_increment( const QTextBlock &block, int count )
 {
 
-    Debug::Throw() << "TextIndent::_increment - count " << count << endl;
+    Debug::Throw() << "TextIndent::_increment - count " << count << Qt::endl;
 
     // first make sure that the line has at least baseIndentation_ characters
     QTextCursor cursor( block );

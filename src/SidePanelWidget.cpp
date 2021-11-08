@@ -17,12 +17,13 @@
 *
 *******************************************************************************/
 
-#include "SidePanelWidget.h"
-
-#include "Debug.h"
 #include "BaseFileSystemWidget.h"
+#include "Debug.h"
+#include "QtUtil.h"
 #include "RecentFilesWidget.h"
 #include "SessionFilesWidget.h"
+#include "SidePanelWidget.h"
+
 
 #include <QHeaderView>
 #include <QLayout>
@@ -33,7 +34,7 @@ SidePanelWidget::SidePanelWidget( QWidget* parent, FileList& files ):
 {
 
     Debug::Throw( QStringLiteral("SidePanelWidget:SidePanelWidget.\n") );
-    layout()->setMargin(2);
+    QtUtil::setMargin(layout(), 2);
     layout()->setSpacing(2);
 
     // stack widget

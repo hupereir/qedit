@@ -106,7 +106,7 @@ MainWindow::MainWindow(  QWidget* parent ):
     setCentralWidget( mainWidget );
     auto hLayout = new QHBoxLayout;
     hLayout->setSpacing(0);
-    hLayout->setMargin(0);
+    QtUtil::setMargin(hLayout, 0);
     mainWidget->setLayout( hLayout );
 
     // side panel toolbar
@@ -142,14 +142,14 @@ MainWindow::MainWindow(  QWidget* parent ):
     // right container
     rightContainer_ = new QWidget( nullptr );
     rightContainer_->setLayout( new QVBoxLayout );
-    rightContainer_->layout()->setMargin(0);
+    QtUtil::setMargin(rightContainer_->layout(), 0);
     rightContainer_->layout()->setSpacing(0);
     splitter->addWidget( rightContainer_ );
 
     // stack
     stack_ = new QStackedWidget( rightContainer_ );
     rightContainer_->layout()->addWidget( stack_ );
-    stack_->layout()->setMargin(2);
+    QtUtil::setMargin(stack_->layout(), 2);
     connect( stack_, &QStackedWidget::widgetRemoved, this, &MainWindow::_activeViewChanged );
 
     // embedded widgets
@@ -226,7 +226,7 @@ TextView& MainWindow::newTextView( const FileRecord &record )
 void MainWindow::setActiveView( TextView& view )
 {
 
-    Debug::Throw() << "MainWindow::setActiveView - key: " << view.key() << endl;
+    Debug::Throw() << "MainWindow::setActiveView - key: " << view.key() << Qt::endl;
 
     // do nothing if active view did not change
     if( activeView_ == &view ) return;
@@ -263,9 +263,9 @@ Base::KeySet<TextDisplay> MainWindow::associatedDisplays() const
 bool MainWindow::selectDisplay( const File& file )
 {
 
-    Debug::Throw() << "MainWindow::selectDisplay - file: " << file << endl;
-    Debug::Throw() << "MainWindow::selectDisplay - active view: " << activeView_->key() << endl;
-    Debug::Throw() << "MainWindow::selectDisplay - active view displays: " << Base::KeySet<TextDisplay>( &activeView() ).size() << endl;
+    Debug::Throw() << "MainWindow::selectDisplay - file: " << file << Qt::endl;
+    Debug::Throw() << "MainWindow::selectDisplay - active view: " << activeView_->key() << Qt::endl;
+    Debug::Throw() << "MainWindow::selectDisplay - active view displays: " << Base::KeySet<TextDisplay>( &activeView() ).size() << Qt::endl;
 
     // do nothing if already selected
     if( !activeView_->isClosed() && activeView_->activeDisplay().file() == file ) return true;
@@ -648,7 +648,7 @@ void MainWindow::_splitterMoved()
 void MainWindow::_activeViewChanged()
 {
 
-    Debug::Throw() << "MainWindow::_activeViewChanged" << endl;
+    Debug::Throw() << "MainWindow::_activeViewChanged" << Qt::endl;
 
     auto widget( stack_->currentWidget() );
     if( !widget ) close();
@@ -680,7 +680,7 @@ void MainWindow::_multipleFileReplace()
 void MainWindow::_update( TextDisplay::UpdateFlags flags )
 {
 
-    Debug::Throw() << "MainWindow::_update - flags: " << flags << endl;
+    Debug::Throw() << "MainWindow::_update - flags: " << flags << Qt::endl;
 
     if( flags & ( TextDisplay::FileName | TextDisplay::ReadOnly | TextDisplay::Modified ) )
     {
@@ -1053,7 +1053,7 @@ void MainWindow::_updateWindowTitle()
             << " file: " << activeDisplay().file()
             << " readonly: " << readonly
             << " modified: " << modified
-            << endl;
+            << Qt::endl;
     }
 
     WindowTitle title( activeDisplay().file() );

@@ -147,7 +147,7 @@ void SidePanelToolBar::_updateToolButtonIconSize( IconSize::Size size )
 void SidePanelToolBar::_sidePanelWidgetVisibilityChanged( bool state )
 {
 
-    Debug::Throw() << "SidePanelToolBar::_sidePanelWidgetVisibilityChanged - state: " << state << endl;
+    Debug::Throw() << "SidePanelToolBar::_sidePanelWidgetVisibilityChanged - state: " << state << Qt::endl;
     if( !state )
     {
 

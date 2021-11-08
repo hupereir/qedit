@@ -84,7 +84,7 @@ QByteArray safeUncompress( const QByteArray& content )
 
     } catch( std::bad_alloc& exception ) {
 
-        Debug::Throw() << "safeUncompress - caught bad_alloc exception: " << exception.what() << endl;
+        Debug::Throw() << "safeUncompress - caught bad_alloc exception: " << exception.what() << Qt::endl;
         return QByteArray();
 
     }
@@ -170,7 +170,7 @@ TextDisplay::TextDisplay( QWidget* parent ):
 TextDisplay::~TextDisplay()
 {
 
-    Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << endl;
+    Debug::Throw() << "TextDisplay::~TextDisplay - key: " << key() << Qt::endl;
     if( !( isNewDocument() || file_.isEmpty() ) && Base::KeySet<TextDisplay>( this ).empty() )
     { Base::Singleton::get().application<Application>()->fileCheck().removeFile( file_ ); }
 
@@ -191,7 +191,7 @@ int TextDisplay::blockCount( const QTextBlock& block ) const
 void TextDisplay::setModified( bool value )
 {
 
-    Debug::Throw() << "TextDisplay::setModified - value: " << value << endl;
+    Debug::Throw() << "TextDisplay::setModified - value: " << value << Qt::endl;
 
     // do nothing if state is unchanged
     if( value == document()->isModified() )
@@ -216,7 +216,7 @@ void TextDisplay::setModified( bool value )
 //_____________________________________________________
 void TextDisplay::setReadOnly( bool value )
 {
-    Debug::Throw() << "TextDisplay::setReadOnly - value: " << value << endl;
+    Debug::Throw() << "TextDisplay::setReadOnly - value: " << value << Qt::endl;
 
     bool changed = (value != isReadOnly() );
     TextEditor::setReadOnly( value );
@@ -376,10 +376,10 @@ void TextDisplay::setIsNewDocument()
 void TextDisplay::setFile( File file, bool checkAutoSave )
 {
 
-    Debug::Throw() << "TextDisplay::setFile " << file << endl;
+    Debug::Throw() << "TextDisplay::setFile " << file << Qt::endl;
     if( file.isEmpty() )
     {
-        Debug::Throw(0) << "TextDisplay::setFile - invalid file:" << file << endl;
+        Debug::Throw(0) << "TextDisplay::setFile - invalid file:" << file << Qt::endl;
         return;
     }
 
@@ -491,7 +491,7 @@ void TextDisplay::setFile( File file, bool checkAutoSave )
 void TextDisplay::_setFile( const File& file )
 {
 
-    Debug::Throw() << "TextDisplay::_setFile - file: " << file << endl;
+    Debug::Throw() << "TextDisplay::_setFile - file: " << file << Qt::endl;
 
     file_ = file;
     if( !isNewDocument() && file.exists() )
@@ -517,7 +517,7 @@ void TextDisplay::_setFile( const File& file )
 //___________________________________________________________________________
 void TextDisplay::checkFileRemoved()
 {
-    Debug::Throw() << "TextDisplay::checkFileRemoved - " << file_ << endl;
+    Debug::Throw() << "TextDisplay::checkFileRemoved - " << file_ << Qt::endl;
 
     // check if warnings are enabled and file is removed. Do nothing otherwise
     if( _ignoreWarnings() || !_fileRemoved() ) return;
@@ -543,7 +543,7 @@ void TextDisplay::checkFileRemoved()
 //___________________________________________________________________________
 void TextDisplay::checkFileModified()
 {
-    Debug::Throw() << "TextDisplay::checkFileModified - " << file_ << endl;
+    Debug::Throw() << "TextDisplay::checkFileModified - " << file_ << Qt::endl;
 
     // check if warnings are enabled and file is modified. Do nothing otherwise
     if( _ignoreWarnings() ) return;
@@ -848,8 +848,8 @@ void TextDisplay::_setTextEncoding( const QByteArray& value )
     auto oldCodec( QTextCodec::codecForName( textEncoding_ ) );
     if( !oldCodec ) return;
 
-    Debug::Throw() << "TextDisplay::_setTextEncoding - old codec: " << textEncoding_ << endl;
-    Debug::Throw() << "TextDisplay::_setTextEncoding - new codec: " << value << endl;
+    Debug::Throw() << "TextDisplay::_setTextEncoding - old codec: " << textEncoding_ << Qt::endl;
+    Debug::Throw() << "TextDisplay::_setTextEncoding - new codec: " << value << Qt::endl;
     if( file_.isEmpty() || isNewDocument_ )
     {
 
@@ -978,7 +978,7 @@ void TextDisplay::tagBlock( QTextBlock block, int tag )
 //___________________________________________________________________________
 void TextDisplay::clearTag( const QTextBlock &block, int tags )
 {
-    Debug::Throw() << "TextDisplay::clearTag - key: " << key() << endl;
+    Debug::Throw() << "TextDisplay::clearTag - key: " << key() << Qt::endl;
     TextBlockData *data( static_cast<TextBlockData*>( block.userData() ) );
     if( !data ) return;
 
@@ -1214,7 +1214,7 @@ void TextDisplay::_updateDocumentClass( const File &file, bool newDocument )
 void TextDisplay::processMacro( const QString &name )
 {
 
-    Debug::Throw() << "TextDisplay::processMacro - " << name << endl;
+    Debug::Throw() << "TextDisplay::processMacro - " << name << Qt::endl;
 
     // retrieve macro that match argument name
     auto macroIter = std::find_if( macros_.begin(), macros_.end(), TextMacro::SameNameFTor( name ) );
@@ -1726,7 +1726,7 @@ void TextDisplay::_processMacro( const TextMacro& macro )
     auto result( macro.processText( text, cursorPosition ) );
     if( !result.first ) return;
 
-    Debug::Throw() << "TextDisplay::processText - increment: " << result.second << endl;
+    Debug::Throw() << "TextDisplay::processText - increment: " << result.second << Qt::endl;
 
     // update selection
     cursor.setPosition( positionBegin );
@@ -1786,7 +1786,7 @@ bool TextDisplay::_contentsChanged() const
 //____________________________________________
 bool TextDisplay::_fileRemoved() const
 {
-    Debug::Throw() << "TextDisplay::_fileRemoved - " << file_ << endl;
+    Debug::Throw() << "TextDisplay::_fileRemoved - " << file_ << Qt::endl;
 
     // check new document
     if( file_.isEmpty() || isNewDocument() ) return false;
@@ -1819,7 +1819,7 @@ bool TextDisplay::_fileRemoved() const
 bool TextDisplay::_fileModified()
 {
 
-    Debug::Throw() << "TextDisplay::_fileModified - " << file_ << endl;
+    Debug::Throw() << "TextDisplay::_fileModified - " << file_ << Qt::endl;
 
     // check file
     if( file_.isEmpty() || isNewDocument() ) return false;
@@ -1894,7 +1894,7 @@ bool TextDisplay::_updateMargin()
 bool TextDisplay::_toggleWrapMode( bool state )
 {
 
-    Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "True":"False") << endl;
+    Debug::Throw() << "TextDisplay::_toggleWrapMode - " << (state ? "True":"False") << Qt::endl;
     if( !TextEditor::_toggleWrapMode( state ) ) return false;
 
     if( !( file_.isEmpty() || isNewDocument() ) )
@@ -1942,7 +1942,7 @@ void TextDisplay::_updateConfiguration()
 void TextDisplay::_updateSpellCheckConfiguration( File file )
 {
 
-    Debug::Throw() << "TextDisplay::_updateSpellCheckConfiguration - file: " << file << " new document:" << isNewDocument() << endl;
+    Debug::Throw() << "TextDisplay::_updateSpellCheckConfiguration - file: " << file << " new document:" << isNewDocument() << Qt::endl;
 
     #if WITH_ASPELL
 
@@ -1972,13 +1972,13 @@ void TextDisplay::_updateSpellCheckConfiguration( File file )
         if( record.hasProperty( filterPropertyId_ ) && interface.hasFilter( record.property( filterPropertyId_ ) ) )
         {
             filter = record.property( filterPropertyId_ );
-            Debug::Throw() << "TextDisplay::_updateSpellCheckConfiguration - filter: " << filter << endl;
+            Debug::Throw() << "TextDisplay::_updateSpellCheckConfiguration - filter: " << filter << Qt::endl;
         }
 
         if( record.hasProperty( dictionaryPropertyId_ ) && interface.hasDictionary( record.property( dictionaryPropertyId_ ) ) )
         {
             dictionary = record.property( dictionaryPropertyId_ );
-            Debug::Throw() << "TextDisplay::_updateSpellCheckConfiguration - dictionary: " << dictionary << endl;
+            Debug::Throw() << "TextDisplay::_updateSpellCheckConfiguration - dictionary: " << dictionary << Qt::endl;
         }
 
     }
@@ -2071,7 +2071,7 @@ void TextDisplay::_toggleParenthesisHighlight( bool state )
         << " state: " << state
         << " color: " << textHighlight_->parenthesisHighlightColor().isValid()
         << " parenthesis: " << textHighlight_->parenthesis().empty()
-        << endl;
+        << Qt::endl;
 
     // propagate to textHighlight
     textHighlight_->setParenthesisEnabled(
@@ -2384,13 +2384,13 @@ void TextDisplay::_fileProperties()
     // add additional informations frame
     auto box( new QWidget );
     auto layout = new QVBoxLayout;
-    layout->setMargin(5);
+    QtUtil::setMargin(layout, 5);
     layout->setSpacing( 5 );
     box->setLayout( layout );
     Debug::Throw( QStringLiteral("TextDisplay::_fileProperties - Miscellaneous tab booked.\n") );
 
     auto gridLayout = new GridLayout;
-    gridLayout->setMargin(0);
+    QtUtil::setMargin(gridLayout, 0);
     gridLayout->setSpacing( 5 );
     gridLayout->setMaxCount( 2 );
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
@@ -2502,7 +2502,7 @@ void TextDisplay::_textModified()
 //__________________________________________________
 void TextDisplay::_ignoreMisspelledWord( const QString &word )
 {
-    Debug::Throw() << "TextDisplay::_ignoreMisspelledWord - word: " << word << endl;
+    Debug::Throw() << "TextDisplay::_ignoreMisspelledWord - word: " << word << Qt::endl;
     #if WITH_ASPELL
     textHighlight_->spellParser().interface().ignoreWord( word );
     rehighlight();
@@ -2516,7 +2516,7 @@ void TextDisplay::_replaceMisspelledSelection( const QString &word )
 {
 
     #if WITH_ASPELL
-    Debug::Throw() << "TextDisplay::_replaceMisspelledSelection - word: " << word << endl;
+    Debug::Throw() << "TextDisplay::_replaceMisspelledSelection - word: " << word << Qt::endl;
     auto cursor( textCursor() );
     cursor.insertText( word );
     #else
@@ -2584,7 +2584,7 @@ void TextDisplay::_highlightParenthesis()
                 const auto blockFormat( block.blockFormat() );
                 if( !blockFormat.hasProperty( TextBlock::CollapsedData ) )
                 {
-                    Debug::Throw(0) << "TextDisplay::_highlightParenthesis - missing CollapsedData property" << endl;
+                    Debug::Throw(0) << "TextDisplay::_highlightParenthesis - missing CollapsedData property" << Qt::endl;
                     block = block.next();
                     continue;
                 }
@@ -2656,7 +2656,7 @@ void TextDisplay::_highlightParenthesis()
                 const auto blockFormat( block.blockFormat() );
                 if( !blockFormat.hasProperty( TextBlock::CollapsedData ) )
                 {
-                    Debug::Throw(0) << "TextDisplay::_highlightParenthesis - missing CollapsedData property" << endl;
+                    Debug::Throw(0) << "TextDisplay::_highlightParenthesis - missing CollapsedData property" << Qt::endl;
                     block = block.next();
                     continue;
                 }
@@ -2850,7 +2850,7 @@ void TextDisplay::_clearTag()
 //___________________________________________________________________________
 void TextDisplay::_processFileRemovedAction( FileRemovedWidget::ReturnCode action )
 {
-    Debug::Throw() << "TextDisplay::_processFileRemovedAction - action: " << Base::toIntegralType( action ) << endl;
+    Debug::Throw() << "TextDisplay::_processFileRemovedAction - action: " << Base::toIntegralType( action ) << Qt::endl;
 
     clearFileCheckData();
     _setIgnoreWarnings( false );
@@ -2903,7 +2903,7 @@ void TextDisplay::_processFileRemovedAction( FileRemovedWidget::ReturnCode actio
 void TextDisplay::_processFileModifiedAction( FileModifiedWidget::ReturnCode action )
 {
 
-    Debug::Throw() << "TextDisplay::_processFileModifiedAction - action: " << Base::toIntegralType( action ) << endl;
+    Debug::Throw() << "TextDisplay::_processFileModifiedAction - action: " << Base::toIntegralType( action ) << Qt::endl;
 
     clearFileCheckData();
     _setIgnoreWarnings( false );

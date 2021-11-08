@@ -279,9 +279,9 @@ class IndentPattern final: private Base::Counter<IndentPattern>
     //* dumper
     friend QTextStream& operator << ( QTextStream& out, const IndentPattern& pattern )
     {
-        out << "IndentPattern - name: " << pattern.name_ << " type: " << Base::toIntegralType( pattern.type_ ) << endl;
+        out << "IndentPattern - name: " << pattern.name_ << " type: " << Base::toIntegralType( pattern.type_ ) << Qt::endl;
         for( const auto& rule:pattern.rules_ )
-        { out << "  " << rule << endl; }
+        { out << "  " << rule << Qt::endl; }
         return out;
     }
 

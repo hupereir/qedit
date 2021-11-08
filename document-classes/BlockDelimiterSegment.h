@@ -200,7 +200,7 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
     QRect active_;
 
     //* flags
-    Flags flags_ = 0;
+    Flags flags_ = None;
 
     //* streamer
     friend QTextStream& operator << ( QTextStream& out, const BlockDelimiterSegment& segment )
@@ -213,7 +213,7 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
     friend QTextStream& operator << ( QTextStream& out, const BlockDelimiterSegment::List& segments )
     {
         for( const auto& segment:segments )
-        { out << segment << endl; }
+        { out << segment << Qt::endl; }
         return out;
     }
 

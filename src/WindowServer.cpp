@@ -403,7 +403,7 @@ void WindowServer::_updateConfiguration()
 //____________________________________________
 void WindowServer::_activeWindowChanged( MainWindow* window )
 {
-    Debug::Throw() << "WindowServer::_activeWindowChanged - " << window->key() << endl;
+    Debug::Throw() << "WindowServer::_activeWindowChanged - " << window->key() << Qt::endl;
     _setActiveWindow( *window );
 }
 
@@ -500,7 +500,7 @@ void WindowServer::_newFile( Qt::Orientation orientation )
 bool WindowServer::_open( const FileRecord &record, WindowServer::OpenMode mode )
 {
 
-    Debug::Throw() << "WindowServer::_open - file: " << record.file() << "." << endl;
+    Debug::Throw() << "WindowServer::_open - file: " << record.file() << "." << Qt::endl;
 
     // do nothing if record is empty
     if( record.file().isEmpty() ) return false;
@@ -526,7 +526,7 @@ bool WindowServer::_open( const FileRecord &record, WindowServer::OpenMode mode 
 
         (*iter)->selectDisplay( record.file() );
         _setActiveWindow( **iter );
-        Debug::Throw() << "WindowServer::_open - file: " << record.file() << " found matching." << endl;
+        Debug::Throw() << "WindowServer::_open - file: " << record.file() << " found matching." << Qt::endl;
         return true;
 
     }
@@ -574,7 +574,7 @@ bool WindowServer::_open( const FileRecord &record, WindowServer::OpenMode mode 
 
     qApp->processEvents();
 
-    Debug::Throw() << "WindowServer::_open - file: " << record.file() << " done." << endl;
+    Debug::Throw() << "WindowServer::_open - file: " << record.file() << " done." << Qt::endl;
     return true;
 
 }
@@ -583,7 +583,7 @@ bool WindowServer::_open( const FileRecord &record, WindowServer::OpenMode mode 
 bool WindowServer::_open( const FileRecord &record, Qt::Orientation orientation )
 {
 
-    Debug::Throw() << "WindowServer::_open - file: " << record.file() << " orientation: " << orientation << endl;
+    Debug::Throw() << "WindowServer::_open - file: " << record.file() << " orientation: " << orientation << Qt::endl;
 
     // do nothing if record is empty
     if( record.file().isEmpty() ) return false;
@@ -696,7 +696,7 @@ void WindowServer::_detach()
 void WindowServer::_detach( const File& file )
 {
 
-    Debug::Throw() << "WindowServer::_detach - file: " << file << endl;
+    Debug::Throw() << "WindowServer::_detach - file: " << file << Qt::endl;
 
     // check number of independent displays
     auto&& activeWindowLocal( _activeWindow() );
@@ -750,7 +750,7 @@ void WindowServer::_detach( TextDisplay& activeDisplayLocal )
 void WindowServer::_reparent( const File& first, const File& second )
 {
 
-    Debug::Throw() << "WindowServer::_reparent - first: " << first << " second: " << second << endl;
+    Debug::Throw() << "WindowServer::_reparent - first: " << first << " second: " << second << Qt::endl;
     // retrieve windows
     auto&& firstDisplay( _findDisplay( first ) );
     auto&& firstView( _findView( first ) );
@@ -807,7 +807,7 @@ void WindowServer::_reparent( const File& first, const File& second )
 void WindowServer::_reparentToMain( const File& first, const File& second )
 {
 
-    Debug::Throw() << "WindowServer::_reparentToMain - first: " << first << " second: " << second << endl;
+    Debug::Throw() << "WindowServer::_reparentToMain - first: " << first << " second: " << second << Qt::endl;
 
     // retrieve windows
     auto& firstDisplay( _findDisplay( first ) );
@@ -941,7 +941,7 @@ bool WindowServer::_close( QStringList files )
                 // see if file is in list
                 if( std::none_of( files.begin(), files.end(), Base::Functor::SameFTor<QString>(display->file()) ) ) continue;
 
-                Debug::Throw() << "WindowServer::_close - file: " << display->file() << endl;
+                Debug::Throw() << "WindowServer::_close - file: " << display->file() << Qt::endl;
 
                 if( display->document()->isModified() )
                 {
@@ -1011,7 +1011,7 @@ TextView& WindowServer::_findView( const File& file )
 TextDisplay& WindowServer::_findDisplay( const File& file )
 {
 
-    Debug::Throw() << "WindowServer::_findDisplay - file: " << file << endl;
+    Debug::Throw() << "WindowServer::_findDisplay - file: " << file << Qt::endl;
     TextDisplay* out = nullptr;
 
     // retrieve windows
@@ -1068,7 +1068,7 @@ bool WindowServer::_createNewFile( const FileRecord& record )
     dialog.centerOnParent();
     int state = dialog.exec();
 
-    Debug::Throw() << "WindowServer::Open - New file dialog state: " << state << endl;
+    Debug::Throw() << "WindowServer::Open - New file dialog state: " << state << Qt::endl;
     switch( state )
     {
 
@@ -1115,7 +1115,7 @@ void WindowServer::_applyCommandLineArguments( TextDisplay& display, const Comma
     Debug::Throw() << "WindowServer::_applyCommandLineArguments -"
         << " filter:" << filter
         << " dictionary: " << dictionary
-        << endl;
+        << Qt::endl;
 
     if( !filter.isEmpty() ) display.selectFilter( filter );
     if( !dictionary.isEmpty() ) display.selectDictionary( dictionary );
@@ -1129,7 +1129,7 @@ void WindowServer::_applyCommandLineArguments( TextDisplay& display, const Comma
 //________________________________________________________________
 void WindowServer::_setActiveWindow( MainWindow& window )
 {
-    Debug::Throw() << "WindowServer::setActiveWindow - key: " << window.key() << endl;
+    Debug::Throw() << "WindowServer::setActiveWindow - key: " << window.key() << Qt::endl;
     if( !window.isAssociated( this ) )
     {
         Debug::Throw(0, QStringLiteral("WindowServer::_setActiveWindow - invalid window.\n") );

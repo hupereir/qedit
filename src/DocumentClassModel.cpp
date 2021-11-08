@@ -107,7 +107,7 @@ QVariant DocumentClassModel::headerData(int section, Qt::Orientation, int role) 
 void DocumentClassModel::_sort( int column, Qt::SortOrder order )
 {
 
-    Debug::Throw() << "DocumentClassModel::sort - column: " << column << " order: " << order << endl;
+    Debug::Throw() << "DocumentClassModel::sort - column: " << column << " order: " << order << Qt::endl;
     std::sort( _get().begin(), _get().end(), SortFTor( (ColumnType) column, order ) );
 
 }
@@ -139,7 +139,7 @@ bool DocumentClassModel::SortFTor::operator () ( const DocumentClass& constFirst
 const QIcon& DocumentClassModel::_icon( const QString& name )
 {
 
-    Debug::Throw() << "DocumentClassModel::_icon - name: " << name << endl;
+    Debug::Throw() << "DocumentClassModel::_icon - name: " << name << Qt::endl;
 
     IconCache::const_iterator iter( _icons().find( name ) );
     if( iter != _icons().end() ) return iter.value();

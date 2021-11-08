@@ -17,24 +17,25 @@
 *
 *******************************************************************************/
 
-#include "SessionFilesWidget.h"
-
 #include "Application.h"
-#include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
+#include "ColumnSortingMenu.h"
 #include "ContextMenu.h"
 #include "Debug.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
 #include "FileRecordToolTipWidget.h"
-#include "IconNames.h"
 #include "IconEngine.h"
+#include "IconNames.h"
 #include "MimeTypeIconProvider.h"
+#include "QtUtil.h"
 #include "SessionFilesView.h"
+#include "SessionFilesWidget.h"
 #include "Singleton.h"
 #include "Util.h"
 #include "WindowServer.h"
 #include "XmlOptions.h"
+
 
 #include <QButtonGroup>
 #include <QHeaderView>
@@ -50,7 +51,7 @@ Counter( QStringLiteral("SessionFilesWidget") )
 
     // layout
     setLayout( new QVBoxLayout );
-    layout()->setMargin(0);
+    QtUtil::setMargin(layout(), 0);
     layout()->setSpacing(2);
 
     // tooltip widget and icon provider

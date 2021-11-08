@@ -17,17 +17,18 @@
 *
 *******************************************************************************/
 
-#include "DocumentClassManagerDialog.h"
-
 #include "BaseIconNames.h"
 #include "ContextMenu.h"
-#include "DocumentClassManager.h"
 #include "DocumentClass.h"
+#include "DocumentClassManager.h"
+#include "DocumentClassManagerDialog.h"
 #include "FileDialog.h"
 #include "IconEngine.h"
+#include "QtUtil.h"
 #include "QuestionDialog.h"
 #include "TreeView.h"
 #include "XmlOptions.h"
+
 
 #include <QHeaderView>
 #include <QLayout>
@@ -42,7 +43,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
 
     auto hLayout = new QHBoxLayout;
     hLayout->setSpacing(5);
-    hLayout->setMargin(0);
+    QtUtil::setMargin(hLayout, 0);
     mainLayout().addLayout( hLayout );
 
     // setup list
@@ -55,7 +56,7 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     // buttons
     auto vLayout = new QVBoxLayout;
     vLayout->setSpacing(5);
-    vLayout->setMargin(0);
+    QtUtil::setMargin(vLayout, 0);
     hLayout->addLayout( vLayout );
 
     vLayout->addWidget( addButton_ = new QPushButton( IconEngine::get( IconNames::Add ), tr( "Add" ), this ) );

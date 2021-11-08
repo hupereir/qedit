@@ -97,7 +97,7 @@ class PatternLocationSet final
     {
         out << "[" << locations.activeId().first << "," << locations.activeId().second << "] ";
         for( const auto& location:locations )
-        { out << location << endl; }
+        { out << location << Qt::endl; }
         return out;
     }
 

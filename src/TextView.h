@@ -187,6 +187,9 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     //* text display with focus
     TextDisplay* activeDisplay_ = nullptr;
 
+    //* diff module
+    BaseDiff* diffModule_ = nullptr;
+
     //* position update timer
     QTimer positionTimer_;
 

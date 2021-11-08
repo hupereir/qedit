@@ -21,6 +21,7 @@
 #include "Debug.h"
 #include "FileCheckDialog.h"
 #include "FileList.h"
+#include "QtUtil.h"
 #include "Singleton.h"
 #include "TreeView.h"
 
@@ -34,8 +35,8 @@ FileCheckDialog::FileCheckDialog( QWidget* parent ):
     setWindowTitle( tr( "Monitored Files" ) );
     setOptionName( QStringLiteral("FILE_CHECK_DIALOG") );
 
-    layout()->setMargin(0);
-    buttonLayout().setMargin(5);
+    QtUtil::setMargin(layout(), 0);
+    QtUtil::setMargin(&buttonLayout(), 5);
 
     // custom list display
     mainLayout().addWidget( list_ = new TreeView( this ) );

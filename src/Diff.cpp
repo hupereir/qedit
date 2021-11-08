@@ -143,9 +143,6 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
     for( auto& file:files_ )
     { file.highlightDisplay(); }
 
-    // delete this object
-    deleteLater();
-
     return;
 
 }
@@ -153,7 +150,7 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
 //______________________________________________________
 void Diff::_parseLine( const QString& line )
 {
-    Debug::Throw() << "Diff::_parseLine - " << line << endl;
+    Debug::Throw() << "Diff::_parseLine - " << line << Qt::endl;
 
     // see if line is a conflict
     int position( line.indexOf( QLatin1String("c") ) );
@@ -200,7 +197,7 @@ void Diff::_parseLine( const QString& line )
 Diff::Range Diff::_parseRange( const QString& range )
 {
 
-    Debug::Throw() << "Diff::_parseRange - " << range << endl;
+    Debug::Throw() << "Diff::_parseRange - " << range << Qt::endl;
 
     // look for "," in string
     int position( range.indexOf( QLatin1String(",") ) );
@@ -208,7 +205,7 @@ Diff::Range Diff::_parseRange( const QString& range )
         Range( range.toUInt(), range.toUInt() ):
         Range( range.left( position ).toUInt(), range.midRef( position+1 ).toUInt() ) );
 
-    Debug::Throw() << "Diff::_parseRange - (" << out.first << "," << out.second << ")" << endl;
+    Debug::Throw() << "Diff::_parseRange - (" << out.first << "," << out.second << ")" << Qt::endl;
     return out;
 
 }
@@ -249,14 +246,14 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
             .arg( Util::pid() )
             .arg( ++tempFileIndex ) );
 
-        Debug::Throw() << "Diff::FileInformation::setDisplay - writting content to file: " << file_ << endl;
+        Debug::Throw() << "Diff::FileInformation::setDisplay - writting content to file: " << file_ << Qt::endl;
 
 
         // try dump text in file
         QFile out( file_ );
         if( !out.open( QIODevice::WriteOnly ) )
         {
-            Debug::Throw() << "Diff::FileInformation::setDisplay - cannot write to file " << file_ << endl;
+            Debug::Throw() << "Diff::FileInformation::setDisplay - cannot write to file " << file_ << Qt::endl;
             return;
         }
 
@@ -270,7 +267,7 @@ void Diff::FileInformation::setDisplay( TextDisplay& display )
 
     }
 
-    Debug::Throw() << "Diff::FileInformation::setDisplay - file: " << file_ << endl;
+    Debug::Throw() << "Diff::FileInformation::setDisplay - file: " << file_ << Qt::endl;
 
     return;
 }
@@ -283,7 +280,7 @@ Diff::FileInformation::~FileInformation()
 void Diff::FileInformation::highlightDisplay()
 {
 
-    Debug::Throw() << "Diff::FileInformation::highlightDisplay." << endl;
+    Debug::Throw() << "Diff::FileInformation::highlightDisplay." << Qt::endl;
 
     // loop over display blocks
     int id(1);

@@ -135,10 +135,10 @@ class PatternLocation final: private Base::Counter<PatternLocation>
     int parentId_ = 0;
 
     //* pattern flags
-    HighlightPattern::Flags flags_ = 0;
+    HighlightPattern::Flags flags_ = {};
 
     //* style font format
-    TextFormat::Flags format_ = 0;
+    TextFormat::Flags format_ = {};
 
     //* style color
     QColor color_;

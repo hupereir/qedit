@@ -43,7 +43,7 @@ void DocumentClassManager::clear()
 //________________________________________________________
 bool DocumentClassManager::read( const File& filename )
 {
-    Debug::Throw() << "DocumentClassManager::read - file: " << filename << endl;
+    Debug::Throw() << "DocumentClassManager::read - file: " << filename << Qt::endl;
 
     // reset Read error
     readError_.clear();
@@ -100,7 +100,7 @@ bool DocumentClassManager::read( const File& filename )
 //________________________________________________________
 bool DocumentClassManager::write( const QString& className, const File& filename ) const
 {
-    Debug::Throw() << "DocumentClassManager::write - class: " << className << " file: " << filename << endl;
+    Debug::Throw() << "DocumentClassManager::write - class: " << className << " file: " << filename << Qt::endl;
 
     // try retrieve DocumentClass
     const auto iter = std::find_if( documentClasses_.begin(), documentClasses_.end(), DocumentClass::SameNameFTor( className ) );
@@ -133,24 +133,24 @@ bool DocumentClassManager::write( const DocumentClass& documentClass, const File
 //________________________________________________________
 bool DocumentClassManager::write( const File& path ) const
 {
-    Debug::Throw() << "DocumentClassManager::write - path: " << path << endl;
+    Debug::Throw() << "DocumentClassManager::write - path: " << path << Qt::endl;
 
     if( !path.exists() )
     {
-        Debug::Throw(0) << "DocumentClassManager::write - path " << path << " does not exist" << endl;
+        Debug::Throw(0) << "DocumentClassManager::write - path " << path << " does not exist" << Qt::endl;
         return false;
     }
 
     if( !path.isDirectory() )
     {
-        Debug::Throw(0) << "DocumentClassManager::write - path " << path << " is not a directory" << endl;
+        Debug::Throw(0) << "DocumentClassManager::write - path " << path << " is not a directory" << Qt::endl;
         return false;
     }
 
     for( const auto& documentClass:documentClasses_ )
     {
         File filename( documentClass.file().localName().addPath( path ) );
-        Debug::Throw(0) << "DocumentClassManager::write - writing class " << documentClass.name() << " to file " << filename << endl;
+        Debug::Throw(0) << "DocumentClassManager::write - writing class " << documentClass.name() << " to file " << filename << Qt::endl;
 
         // try open file
         QFile out( filename );
@@ -186,7 +186,7 @@ DocumentClass DocumentClassManager::defaultClass() const
 //________________________________________________________
 DocumentClass DocumentClassManager::find( const File& filename ) const
 {
-    Debug::Throw() << "DocumentClassManager::find - file: " << filename << endl;
+    Debug::Throw() << "DocumentClassManager::find - file: " << filename << Qt::endl;
 
     // try load class matching name
     const auto iter = std::find_if(
@@ -200,7 +200,7 @@ DocumentClass DocumentClassManager::find( const File& filename ) const
 //________________________________________________________
 DocumentClass DocumentClassManager::get( const QString& name ) const
 {
-    Debug::Throw() << "DocumentClassManager::Get - name: " << name << endl;
+    Debug::Throw() << "DocumentClassManager::Get - name: " << name << Qt::endl;
 
     // try load class matching name
     const auto iter = std::find_if(
@@ -214,7 +214,7 @@ DocumentClass DocumentClassManager::get( const QString& name ) const
 //________________________________________________________
 bool DocumentClassManager::remove( const QString& name )
 {
-    Debug::Throw() << "DocumentClassManager::Remove - name: " << name << endl;
+    Debug::Throw() << "DocumentClassManager::Remove - name: " << name << Qt::endl;
 
     // find class list matching name
     const auto iter = std::find_if(

@@ -48,7 +48,7 @@ RecentFilesWidget::RecentFilesWidget( QWidget* parent, FileList& files ):
 
     // layout
     setLayout( new QVBoxLayout );
-    layout()->setMargin(0);
+    QtUtil::setMargin(layout(), 0);
     layout()->setSpacing(2);
 
     // tooltip widget

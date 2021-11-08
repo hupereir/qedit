@@ -42,7 +42,7 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
         << "SessionFilesView::startDrag -"
         << " state: " << state()
         << " supported: " << supportedActions
-        << endl;
+        << Qt::endl;
 
     // check lock to prevent recursive calls
     if( locked_ )

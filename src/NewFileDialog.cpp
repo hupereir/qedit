@@ -40,7 +40,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     // create vbox layout
     QVBoxLayout* layout=new QVBoxLayout;
     layout->setSpacing(5);
-    layout->setMargin(10);
+    QtUtil::setMargin(layout, 10);
     setLayout( layout );
 
     // create message
@@ -61,7 +61,7 @@ NewFileDialog::NewFileDialog( QWidget* parent, const File& file, ReturnCodes but
     // button layout
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->setSpacing(5);
-    buttonLayout->setMargin(0);
+    QtUtil::setMargin(buttonLayout, 0);
     layout->addLayout( buttonLayout );
 
     buttonLayout->addStretch(1);

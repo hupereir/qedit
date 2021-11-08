@@ -17,22 +17,23 @@
 *
 *******************************************************************************/
 
-#include "ConfigurationDialog.h"
-
 #include "Application.h"
 #include "BaseFileInfoConfigurationWidget.h"
+#include "ConfigurationDialog.h"
 #include "Debug.h"
 #include "GridLayout.h"
 #include "IconEngine.h"
 #include "IconNames.h"
-#include "OptionComboBox.h"
-#include "OptionListBox.h"
 #include "OptionBrowsedLineEditor.h"
 #include "OptionCheckBox.h"
 #include "OptionColorDisplay.h"
+#include "OptionComboBox.h"
+#include "OptionListBox.h"
 #include "OptionSpinBox.h"
+#include "QtUtil.h"
 #include "RecentFilesConfiguration.h"
 #include "Singleton.h"
+
 
 #include <QLabel>
 #include <QGroupBox>
@@ -60,7 +61,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     // edition flags
     page->layout()->addWidget( box = new QWidget( page ) );
     box->setLayout( new QVBoxLayout );
-    box->layout()->setMargin(0);
+    QtUtil::setMargin(box->layout(), 0);
 
     box->layout()->addWidget( checkbox = new OptionCheckBox( tr( "Show block delimiters" ), box, QStringLiteral("SHOW_BLOCK_DELIMITERS") ) );
     checkbox->setToolTip( tr( "Turn on/off block delimiters" ) );
@@ -103,7 +104,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         QWidget* widget = new QWidget( box );
         layout->addWidget( widget );
         widget->setLayout( layout = new QVBoxLayout );
-        layout->setMargin(0);
+        QtUtil::setMargin(layout, 0);
 
         // enable/disabled widget based on checkbox state
         connect( checkbox, &QAbstractButton::toggled, widget, &QWidget::setDisabled );
@@ -116,7 +117,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
         // tab size
         QHBoxLayout* hLayout = new QHBoxLayout;
-        hLayout->setMargin(0);
+        QtUtil::setMargin(hLayout, 0);
         layout->addLayout( hLayout );
 
         hLayout->addWidget( label = new QLabel( tr( "Tab size: " ), box ) );
@@ -163,7 +164,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
         // auto hide cursor
         QLabel* label;
         GridLayout* gridLayout = new GridLayout;
-        gridLayout->setMargin(0);
+        QtUtil::setMargin(gridLayout, 0);
         gridLayout->setMaxCount(2);
         gridLayout->setColumnAlignment( 0, Qt::AlignVCenter|Qt::AlignRight );
         layout->addLayout( gridLayout );
@@ -197,7 +198,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
 
     GridLayout* gridLayout = new GridLayout;
     gridLayout->setMaxCount(2);
-    gridLayout->setMargin(0);
+    QtUtil::setMargin(gridLayout, 0);
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
     box->setLayout( gridLayout );
 
@@ -233,7 +234,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     page->layout()->addWidget( box = new QWidget( page ) );
 
     gridLayout = new GridLayout;
-    gridLayout->setMargin(0);
+    QtUtil::setMargin(gridLayout, 0);
     gridLayout->setMaxCount(2);
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
     box->setLayout( gridLayout );
@@ -291,7 +292,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     addOptionWidget( checkbox );
 
     hLayout = new QHBoxLayout;
-    hLayout->setMargin(0);
+    QtUtil::setMargin(hLayout, 0);
     hLayout->setSpacing(5);
     page->layout()->addItem( hLayout );
 
@@ -319,7 +320,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     addOptionWidget( checkbox );
 
     gridLayout = new GridLayout;
-    gridLayout->setMargin(0);
+    QtUtil::setMargin(gridLayout, 0);
     gridLayout->setMaxCount(2);
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
     box->layout()->addItem( gridLayout );
@@ -352,7 +353,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     box->setLayout( new QVBoxLayout );
 
     hLayout = new QHBoxLayout;
-    hLayout->setMargin(0);
+    QtUtil::setMargin(hLayout, 0);
     box->layout()->addItem( hLayout );
 
     hLayout->addWidget( label = new QLabel( tr( "Diff command:" ), box ) );

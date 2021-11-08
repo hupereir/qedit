@@ -47,7 +47,7 @@ void FileCheck::registerDisplay( TextDisplay* display )
 void FileCheck::addFile( const QString& file )
 {
 
-    Debug::Throw() << "FileCheck::addFile: " << file << endl;
+    Debug::Throw() << "FileCheck::addFile: " << file << Qt::endl;
     if( files_.find( file ) == files_.end() )
     {
         files_.insert( file );
@@ -60,7 +60,7 @@ void FileCheck::addFile( const QString& file )
 void FileCheck::removeFile( const QString& file )
 {
 
-    Debug::Throw() << "FileCheck::removeFile: " << file << endl;
+    Debug::Throw() << "FileCheck::removeFile: " << file << Qt::endl;
     files_.remove( file );
     fileSystemWatcher_.removePath( file );
 
@@ -72,7 +72,7 @@ void FileCheck::removeFile( const QString& file )
 void FileCheck::_fileChanged( const QString& file )
 {
 
-    Debug::Throw() << "FileCheck::_fileChanged: " << file << endl;
+    Debug::Throw() << "FileCheck::_fileChanged: " << file << Qt::endl;
 
     // filecheck data
     File local( file );

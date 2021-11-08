@@ -17,6 +17,8 @@
 *
 *******************************************************************************/
 
+#include "TextView.h"
+
 #include "Application.h"
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
@@ -26,8 +28,8 @@
 #include "MainWindow.h"
 #include "MessageWidget.h"
 #include "NewFileDialog.h"
+#include "QtUtil.h"
 #include "Singleton.h"
-#include "TextView.h"
 
 #include <QLayout>
 
@@ -48,6 +50,8 @@ class LocalSplitter: public QSplitter, private Base::Counter<LocalSplitter>
 
 };
 
+#include "TextView.moc"
+
 //___________________________________________________________________
 TextView::TextView( QWidget* parent ):
     QWidget( parent ),
@@ -62,18 +66,18 @@ TextView::TextView( QWidget* parent ):
     // main layout
     auto layout = new QVBoxLayout;
     setLayout( layout );
-    layout->setMargin(0);
+    QtUtil::setMargin(layout, 0);
     layout->setSpacing(0);
 
     // information layout
     informationLayout_ = new QVBoxLayout;
-    informationLayout_->setMargin(0);
+    QtUtil::setMargin(informationLayout_, 0);
     informationLayout_->setSpacing(0);
     layout->addLayout( informationLayout_, 0 );
 
     // editor layout
     editorLayout_ = new QVBoxLayout;
-    editorLayout_->setMargin(0);
+    QtUtil::setMargin(editorLayout_, 0);
     editorLayout_->setSpacing(0);
     layout->addLayout( editorLayout_, 1 );
 
@@ -83,6 +87,9 @@ TextView::TextView( QWidget* parent ):
     display.setActive( true );
     Base::Singleton::get().application<Application>()->autoSave().newThread( &display );
     Base::Singleton::get().application<Application>()->fileCheck().registerDisplay( &display );
+
+    // create diff module
+    diffModule_ = new Diff( this );
 
     // position update timer
     positionTimer_.setSingleShot( true );
@@ -117,7 +124,7 @@ void TextView::setIsNewDocument()
 void TextView::setFile( const File &file )
 {
 
-    Debug::Throw() << "TextView::setFile - " << file << endl;
+    Debug::Throw() << "TextView::setFile - " << file << Qt::endl;
     if( file.isEmpty() ) return;
 
     // look for first empty display
@@ -174,7 +181,7 @@ int TextView::modifiedDisplayCount() const
 bool TextView::selectDisplay( const File& file )
 {
 
-    Debug::Throw() << "TextView::selectDisplay - file: " << file << endl;
+    Debug::Throw() << "TextView::selectDisplay - file: " << file << Qt::endl;
 
     // check if active display match.
     if( TextDisplay::SameFileFTor( file )( &activeDisplay() ) ) return true;
@@ -202,7 +209,7 @@ void TextView::closeActiveDisplay()
 void TextView::setActiveDisplay( TextDisplay& display )
 {
 
-    Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << endl;
+    Debug::Throw() << "TextView::setActiveDisplay - key: " << display.key() << Qt::endl;
     if( !display.isAssociated( this ) )
     {
         Debug::Throw(0, QStringLiteral("TextView::setActiveDisplay - invalid display.\n") );
@@ -236,7 +243,7 @@ void TextView::setActiveDisplay( TextDisplay& display )
 void TextView::closeDisplay( TextDisplay& display )
 {
 
-    Debug::Throw() << "TextView::closeDisplay - display: " << display.key() << endl;
+    Debug::Throw() << "TextView::closeDisplay - display: " << display.key() << Qt::endl;
 
     // check if display is modified and has no associates in window
     if(
@@ -317,17 +324,18 @@ void TextView::closeDisplay( TextDisplay& display )
 
     // if no associated displays, retrieve all, set the first as active
     if( displays.empty() ) displays = Base::KeySet<TextDisplay>( this );
-    Base::KeySetIterator<TextDisplay> iterator( displays.get() );
-    iterator.toBack();
-    while( iterator.hasPrevious() )
+    TextDisplay* active = nullptr;
+
+    for( const auto& current:displays )
     {
-        auto current( iterator.previous() );
         if( current != &display && !current->isClosed() )
-        {
-            setActiveDisplay( *current );
-            activeDisplay().setFocus();
-            break;
-        }
+        { active = current; }
+    }
+
+    if( active )
+    {
+        setActiveDisplay( *active );
+        activeDisplay().setFocus();
     }
 
 
@@ -537,7 +545,7 @@ void TextView::addMessageWidget( MessageWidget* widget )
 void TextView::_checkDisplays()
 {
 
-    Debug::Throw() << "TextView::_checkDisplays - key: " << key() << endl;
+    Debug::Throw() << "TextView::_checkDisplays - key: " << key() << Qt::endl;
     Base::KeySet<TextDisplay> displays( this );
     if( displays.empty() )
     {
@@ -559,7 +567,7 @@ void TextView::_checkDisplays()
 //____________________________________________
 void TextView::_activeDisplayChanged( TextEditor* editor )
 {
-    Debug::Throw() << "TextView::_activeDisplayChanged - " << editor->key() << endl;
+    Debug::Throw() << "TextView::_activeDisplayChanged - " << editor->key() << Qt::endl;
     setActiveDisplay( *static_cast<TextDisplay*>(editor) );
 }
 
@@ -733,4 +741,3 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
 
 }
 
-#include "TextView.moc"
