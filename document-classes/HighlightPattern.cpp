@@ -18,10 +18,10 @@
 *******************************************************************************/
 
 #include "HighlightPattern.h"
-
 #include "PatternLocationSet.h"
 #include "XmlDef.h"
 #include "XmlString.h"
+
 
 //___________________________________________________________________________
 QString HighlightPattern::noParentPattern_( QStringLiteral("None") );

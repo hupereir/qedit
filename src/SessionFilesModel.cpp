@@ -19,14 +19,14 @@
 
 #include "SessionFilesModel.h"
 #include "Application.h"
-#include "Pixmap.h"
 #include "FileRecordProperties.h"
-#include "IconNames.h"
 #include "IconEngine.h"
+#include "IconNames.h"
+#include "Pixmap.h"
+#include "QOrderedSet.h"
 #include "Singleton.h"
 #include "XmlFileRecord.h"
 #include "XmlOptions.h"
-#include "QOrderedSet.h"
 
 #include <QMimeData>
 #include <QPalette>

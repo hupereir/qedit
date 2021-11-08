@@ -20,12 +20,12 @@
 #include "AutoSave.h"
 #include "Application.h"
 #include "AutoSaveThread.h"
-
 #include "Debug.h"
 #include "MainWindow.h"
 #include "Options.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
+
 
 #include <algorithm>
 

@@ -21,8 +21,8 @@
 *******************************************************************************/
 
 #include "File.h"
-#include "MessageWidget.h"
 #include "Key.h"
+#include "MessageWidget.h"
 
 //* QDialog used when a file has been removed from disk
 class FileRemovedWidget: public MessageWidget, public Base::Key

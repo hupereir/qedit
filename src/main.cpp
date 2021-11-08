@@ -25,8 +25,8 @@
 #include "ErrorHandler.h"
 #include "File.h"
 #include "FileSystemDefaultOptions.h"
-#include "SystemOptions.h"
 #include "Singleton.h"
+#include "SystemOptions.h"
 #include "XmlFileRecord.h"
 #include "XmlOptions.h"
 

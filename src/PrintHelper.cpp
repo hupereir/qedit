@@ -18,11 +18,11 @@
 *******************************************************************************/
 
 #include "PrintHelper.h"
-
 #include "PatternLocationSet.h"
 #include "TextBlockRange.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
+
 
 #include <QTextLayout>
 #include <QTextLine>

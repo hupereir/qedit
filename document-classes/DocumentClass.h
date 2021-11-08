@@ -23,13 +23,13 @@
 #include "BlockDelimiter.h"
 #include "Counter.h"
 #include "Debug.h"
-#include "IndentPattern.h"
-#include "TextParenthesis.h"
-#include "TextMacro.h"
 #include "File.h"
 #include "Functors.h"
 #include "HighlightPattern.h"
 #include "HighlightStyle.h"
+#include "IndentPattern.h"
+#include "TextMacro.h"
+#include "TextParenthesis.h"
 
 #include <QDomDocument>
 #include <QDomElement>

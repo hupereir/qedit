@@ -18,11 +18,11 @@
 *******************************************************************************/
 
 #include "HtmlHelper.h"
-
 #include "HtmlTextNode.h"
 #include "PatternLocationSet.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
+
 
 //__________________________________________________________________________
 void HtmlHelper::print( QIODevice* device )

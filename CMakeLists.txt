@@ -16,8 +16,6 @@ include(Macros)
 setup_cmake_settings()
 setup_compiler_flags()
 
-add_compile_definitions(QT_DISABLE_DEPRECATED_BEFORE=0x050F00)
-
 ########### packages ###############
 set(CPACK_PACKAGE_NAME "qedit")
 set(CPACK_PACKAGE_VENDOR "hugo.pereira@free.fr")

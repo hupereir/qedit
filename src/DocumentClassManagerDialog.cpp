@@ -17,11 +17,11 @@
 *
 *******************************************************************************/
 
+#include "DocumentClassManagerDialog.h"
 #include "BaseIconNames.h"
 #include "ContextMenu.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
-#include "DocumentClassManagerDialog.h"
 #include "FileDialog.h"
 #include "IconEngine.h"
 #include "QtUtil.h"

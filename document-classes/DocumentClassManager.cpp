@@ -17,8 +17,8 @@
 *
 *******************************************************************************/
 
-#include "DocumentClass.h"
 #include "DocumentClassManager.h"
+#include "DocumentClass.h"
 #include "IndentPattern.h"
 #include "QtUtil.h"
 #include "XmlDef.h"

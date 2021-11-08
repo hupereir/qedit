@@ -18,10 +18,8 @@
 *******************************************************************************/
 
 #include "SidePanelToolBar.h"
-
-#include "ToolButton.h"
-#include "Debug.h"
 #include "BaseFileSystemWidget.h"
+#include "Debug.h"
 #include "IconEngine.h"
 #include "IconNames.h"
 #include "IconSizeMenu.h"
@@ -32,7 +30,9 @@
 #include "SessionFilesWidget.h"
 #include "SidePanelWidget.h"
 #include "ToolBarMenu.h"
+#include "ToolButton.h"
 #include "ToolButtonStyleMenu.h"
+
 
 #include <QButtonGroup>
 #include <memory>

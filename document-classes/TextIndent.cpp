@@ -18,9 +18,9 @@
 *******************************************************************************/
 
 #include "TextIndent.h"
-
 #include "TextBlockRange.h"
 #include "TextEditor.h"
+
 
 #include <QRegularExpression>
 #include <QProgressDialog>

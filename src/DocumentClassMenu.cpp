@@ -18,7 +18,6 @@
 *******************************************************************************/
 
 #include "DocumentClassMenu.h"
-
 #include "Application.h"
 #include "Debug.h"
 #include "DocumentClass.h"
@@ -27,6 +26,7 @@
 #include "MainWindow.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
+
 
 //_____________________________________________
 DocumentClassMenu::DocumentClassMenu( QWidget* parent ):

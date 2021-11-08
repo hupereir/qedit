@@ -17,11 +17,11 @@
 *
 *******************************************************************************/
 
-#include "Debug.h"
-#include "HighlightPattern.h"
-#include "HighlightBlockData.h"
-#include "TextParenthesis.h"
 #include "TextHighlight.h"
+#include "Debug.h"
+#include "HighlightBlockData.h"
+#include "HighlightPattern.h"
+#include "TextParenthesis.h"
 
 #include <QTextDocument>
 

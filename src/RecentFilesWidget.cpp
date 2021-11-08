@@ -18,20 +18,20 @@
 *******************************************************************************/
 
 #include "RecentFilesWidget.h"
-
-#include "ColumnSortingMenu.h"
 #include "ColumnSelectionMenu.h"
+#include "ColumnSortingMenu.h"
 #include "ContextMenu.h"
 #include "Debug.h"
-#include "IconNames.h"
-#include "IconEngine.h"
 #include "FileList.h"
 #include "FileRecordToolTipWidget.h"
-#include "QuestionDialog.h"
+#include "IconEngine.h"
+#include "IconNames.h"
 #include "QtUtil.h"
+#include "QuestionDialog.h"
 #include "TreeView.h"
 #include "Util.h"
 #include "XmlOptions.h"
+
 
 #include <QButtonGroup>
 #include <QHeaderView>

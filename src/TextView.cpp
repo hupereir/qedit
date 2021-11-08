@@ -18,7 +18,6 @@
 *******************************************************************************/
 
 #include "TextView.h"
-
 #include "Application.h"
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
@@ -30,6 +29,7 @@
 #include "NewFileDialog.h"
 #include "QtUtil.h"
 #include "Singleton.h"
+
 
 #include <QLayout>
 
@@ -740,4 +740,3 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     return *display;
 
 }
-

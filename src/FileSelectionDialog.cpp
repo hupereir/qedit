@@ -17,11 +17,11 @@
 *
 *******************************************************************************/
 
+#include "FileSelectionDialog.h"
 #include "Application.h"
 #include "Debug.h"
 #include "MainWindow.h"
 #include "RecentFilesMenu.h"
-#include "FileSelectionDialog.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
 #include "TreeView.h"

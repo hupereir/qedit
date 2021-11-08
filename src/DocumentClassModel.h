@@ -21,8 +21,8 @@
 *******************************************************************************/
 
 #include "Counter.h"
-#include "ListModel.h"
 #include "DocumentClass.h"
+#include "ListModel.h"
 
 #include <QIcon>
 #include <QHash>

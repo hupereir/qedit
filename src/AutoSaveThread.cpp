@@ -18,10 +18,10 @@
 *******************************************************************************/
 
 #include "AutoSaveThread.h"
-
 #include "Operators.h"
-#include "XmlOptions.h"
 #include "Util.h"
+#include "XmlOptions.h"
+
 
 #include <QApplication>
 #include <QDir>

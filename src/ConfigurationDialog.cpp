@@ -17,9 +17,9 @@
 *
 *******************************************************************************/
 
+#include "ConfigurationDialog.h"
 #include "Application.h"
 #include "BaseFileInfoConfigurationWidget.h"
-#include "ConfigurationDialog.h"
 #include "Debug.h"
 #include "GridLayout.h"
 #include "IconEngine.h"

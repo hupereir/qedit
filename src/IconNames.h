@@ -20,8 +20,8 @@
 *
 *******************************************************************************/
 
-#include "FileSystemIconNames.h"
 #include "BaseIconNames.h"
+#include "FileSystemIconNames.h"
 
 #include <QString>
 

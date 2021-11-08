@@ -17,9 +17,9 @@
 *
 *******************************************************************************/
 
+#include "FileCheckDialog.h"
 #include "Application.h"
 #include "Debug.h"
-#include "FileCheckDialog.h"
 #include "FileList.h"
 #include "QtUtil.h"
 #include "Singleton.h"

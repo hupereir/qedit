@@ -17,20 +17,17 @@
 *
 *******************************************************************************/
 #include "TextDisplay.h"
-
-#include "LineEditor.h"
 #include "Application.h"
 #include "AutoSave.h"
 #include "AutoSaveThread.h"
 #include "BaseContextMenu.h"
 #include "BlockDelimiterDisplay.h"
-#include "FileDialog.h"
 #include "Color.h"
-#include "TextDocument.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
 #include "DocumentClassMenu.h"
 #include "ElidedLabel.h"
+#include "FileDialog.h"
 #include "FileInformationDialog.h"
 #include "FileReadOnlyWidget.h"
 #include "FileRecordProperties.h"
@@ -40,15 +37,19 @@
 #include "IconEngine.h"
 #include "IconNames.h"
 #include "InformationDialog.h"
+#include "LineEditor.h"
 #include "LineNumberDisplay.h"
-#include "QuestionDialog.h"
 #include "QtUtil.h"
+#include "QuestionDialog.h"
 #include "Singleton.h"
+#include "SpellDialog.h"
+#include "SuggestionMenu.h"
 #include "TextBlockRange.h"
+#include "TextDocument.h"
 #include "TextEditorMarginWidget.h"
 #include "TextEncodingDialog.h"
-#include "TextEncodingWidget.h"
 #include "TextEncodingMenu.h"
+#include "TextEncodingWidget.h"
 #include "TextHighlight.h"
 #include "TextIndent.h"
 #include "TextMacro.h"
@@ -57,9 +58,8 @@
 #include "Util.h"
 #include "XmlOptions.h"
 
+
 #if WITH_ASPELL
-#include "SpellDialog.h"
-#include "SuggestionMenu.h"
 #endif
 
 #include <QApplication>

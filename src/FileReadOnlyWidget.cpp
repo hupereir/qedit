@@ -18,8 +18,8 @@
 *******************************************************************************/
 
 #include "FileReadOnlyWidget.h"
-#include "IconNames.h"
 #include "IconEngine.h"
+#include "IconNames.h"
 #include "QtUtil.h"
 
 #include <QLabel>

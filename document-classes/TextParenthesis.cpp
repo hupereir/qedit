@@ -18,10 +18,10 @@
 *******************************************************************************/
 
 #include "TextParenthesis.h"
-
 #include "Debug.h"
 #include "XmlDef.h"
 #include "XmlString.h"
+
 
 //_________________________________________________________
 TextParenthesis::TextParenthesis( const QDomElement& element ):

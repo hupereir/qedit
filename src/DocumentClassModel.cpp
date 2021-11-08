@@ -18,12 +18,12 @@
 *******************************************************************************/
 
 #include "DocumentClassModel.h"
-
 #include "Application.h"
-#include "Pixmap.h"
 #include "IconEngine.h"
+#include "Pixmap.h"
 #include "Singleton.h"
 #include "XmlOptions.h"
+
 
 //__________________________________________________________________
 DocumentClassModel::IconCache& DocumentClassModel::_icons()

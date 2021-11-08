@@ -21,8 +21,8 @@
 *******************************************************************************/
 
 #include "File.h"
-#include "MessageWidget.h"
 #include "Key.h"
+#include "MessageWidget.h"
 
 //* QDialog used to ask if a new file should be created
 class FileModifiedWidget: public MessageWidget, public Base::Key

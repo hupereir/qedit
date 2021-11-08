@@ -18,32 +18,32 @@
 *******************************************************************************/
 
 #include "WindowServer.h"
-
 #include "Application.h"
-#include "FileDialog.h"
-#include "Debug.h"
+#include "BaseFileSystemWidget.h"
 #include "CloseFilesDialog.h"
+#include "Debug.h"
+#include "FileDialog.h"
 #include "FileList.h"
 #include "FileRecordProperties.h"
-#include "BaseFileSystemWidget.h"
-#include "IconNames.h"
 #include "IconEngine.h"
+#include "IconNames.h"
+#include "InformationDialog.h"
 #include "MainWindow.h"
 #include "MenuBar.h"
 #include "NewFileDialog.h"
-#include "InformationDialog.h"
 #include "ProgressDialog.h"
-#include "QuestionDialog.h"
 #include "QtUtil.h"
-#include "RecentFilesWidget.h"
+#include "QuestionDialog.h"
 #include "RecentFilesMenu.h"
+#include "RecentFilesWidget.h"
 #include "SaveAllDialog.h"
 #include "ScratchFileMonitor.h"
-#include "SessionFilesWidget.h"
 #include "SessionFilesView.h"
+#include "SessionFilesWidget.h"
 #include "SidePanelWidget.h"
 #include "Singleton.h"
 #include "Util.h"
+
 
 #include <QAction>
 #include <QApplication>

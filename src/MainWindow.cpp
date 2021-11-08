@@ -18,9 +18,9 @@
 *******************************************************************************/
 
 #include "MainWindow.h"
-
 #include "Application.h"
 #include "AutoSave.h"
+#include "BaseFileSystemWidget.h"
 #include "BaseStatusBar.h"
 #include "BlockDelimiterDisplay.h"
 #include "Command.h"
@@ -36,7 +36,6 @@
 #include "FileList.h"
 #include "FileRecordProperties.h"
 #include "FileSelectionDialog.h"
-#include "BaseFileSystemWidget.h"
 #include "HighlightBlockFlags.h"
 #include "HtmlDialog.h"
 #include "HtmlHelper.h"
@@ -47,9 +46,9 @@
 #include "MenuBar.h"
 #include "NewFileDialog.h"
 #include "PixmapEngine.h"
-#include "PrinterOptionWidget.h"
 #include "PrintHelper.h"
 #include "PrintPreviewDialog.h"
+#include "PrinterOptionWidget.h"
 #include "QtUtil.h"
 #include "QuestionDialog.h"
 #include "RecentFilesWidget.h"
@@ -69,6 +68,7 @@
 #include "WindowServer.h"
 #include "WindowTitle.h"
 #include "XmlOptions.h"
+
 
 #include <QObjectList>
 #include <QApplication>

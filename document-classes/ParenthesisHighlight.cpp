@@ -18,9 +18,9 @@
 *******************************************************************************/
 
 #include "ParenthesisHighlight.h"
+#include "HighlightBlockData.h"
 #include "TextBlockRange.h"
 #include "TextEditor.h"
-#include "HighlightBlockData.h"
 
 #include <QTextDocument>
 

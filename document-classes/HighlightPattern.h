@@ -20,10 +20,10 @@
 *
 *******************************************************************************/
 
-#include "HighlightStyle.h"
 #include "Counter.h"
 #include "Debug.h"
 #include "Functors.h"
+#include "HighlightStyle.h"
 
 #include <QDomElement>
 #include <QDomDocument>

@@ -21,9 +21,9 @@
 *******************************************************************************/
 
 #include "Counter.h"
-#include "QuestionDialog.h"
 #include "FileRecord.h"
 #include "FileRecordModel.h"
+#include "QuestionDialog.h"
 
 //* close files
 class CloseFilesDialog: public QuestionDialog

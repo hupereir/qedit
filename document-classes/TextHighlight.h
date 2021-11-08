@@ -23,12 +23,12 @@
 #include "BlockDelimiter.h"
 #include "Counter.h"
 #include "Debug.h"
-#include "HighlightPattern.h"
 #include "HighlightBlockFlags.h"
+#include "HighlightPattern.h"
+#include "SpellParser.h"
 #include "TextParenthesis.h"
 
 #if WITH_ASPELL
-#include "SpellParser.h"
 #endif
 
 #include <QSyntaxHighlighter>

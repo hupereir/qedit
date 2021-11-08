@@ -17,15 +17,15 @@
 *
 *******************************************************************************/
 
-#include "BlockHighlight.h"
-
-#include "Debug.h"
 #include "BlockDelimiterDisplay.h"
+#include "BlockHighlight.h"
+#include "Debug.h"
 #include "HighlightBlockData.h"
 #include "TextBlockRange.h"
 #include "TextEditor.h"
 #include "TextHighlight.h"
 #include "XmlOptions.h"
+
 
 #include <QAbstractTextDocumentLayout>
 #include <QTextDocument>

@@ -20,8 +20,8 @@
 *
 *******************************************************************************/
 
-#include "FileRecordModel.h"
 #include "Debug.h"
+#include "FileRecordModel.h"
 
 #include <QHash>
 

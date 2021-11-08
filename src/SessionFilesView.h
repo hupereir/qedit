@@ -20,8 +20,8 @@
 *
 *******************************************************************************/
 
-#include "TreeView.h"
 #include "File.h"
+#include "TreeView.h"
 
 class SessionFilesView: public TreeView
 {

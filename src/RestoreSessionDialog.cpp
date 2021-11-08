@@ -18,12 +18,12 @@
 *******************************************************************************/
 
 #include "RestoreSessionDialog.h"
-
 #include "Debug.h"
-#include "IconNames.h"
 #include "IconEngine.h"
+#include "IconNames.h"
 #include "TreeView.h"
 #include "XmlOptions.h"
+
 
 #include <QTextStream>
 

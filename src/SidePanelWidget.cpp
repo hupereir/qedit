@@ -17,12 +17,12 @@
 *
 *******************************************************************************/
 
+#include "SidePanelWidget.h"
 #include "BaseFileSystemWidget.h"
 #include "Debug.h"
 #include "QtUtil.h"
 #include "RecentFilesWidget.h"
 #include "SessionFilesWidget.h"
-#include "SidePanelWidget.h"
 
 
 #include <QHeaderView>

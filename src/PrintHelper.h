@@ -19,8 +19,8 @@
 *
 *******************************************************************************/
 
-#include "Counter.h"
 #include "BasePrintHelper.h"
+#include "Counter.h"
 #include "Debug.h"
 
 #include <QPrinter>

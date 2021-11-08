@@ -18,12 +18,12 @@
 *******************************************************************************/
 
 #include "DocumentClassToolBar.h"
-
 #include "Application.h"
 #include "Debug.h"
 #include "DocumentClass.h"
 #include "DocumentClassManager.h"
 #include "Singleton.h"
+
 
 #include <QLabel>
 

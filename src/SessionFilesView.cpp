@@ -18,8 +18,8 @@
 *******************************************************************************/
 
 #include "SessionFilesView.h"
-
 #include "XmlFileRecord.h"
+
 
 #include <QDomDocument>
 #include <QDrag>

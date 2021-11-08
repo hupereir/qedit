@@ -18,10 +18,10 @@
 *******************************************************************************/
 
 #include "BlockDelimiter.h"
-
 #include "Debug.h"
 #include "XmlDef.h"
 #include "XmlString.h"
+
 
 //_________________________________________________________
 BlockDelimiter::BlockDelimiter( const QDomElement& element, int id ):

@@ -21,8 +21,8 @@
 *******************************************************************************/
 
 #include "PatternLocation.h"
-
 #include "QOrderedSet.h"
+
 
 //* set of pattern locations
 class PatternLocationSet final

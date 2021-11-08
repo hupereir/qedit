@@ -17,6 +17,7 @@
 *
 *******************************************************************************/
 
+#include "SessionFilesWidget.h"
 #include "Application.h"
 #include "ColumnSelectionMenu.h"
 #include "ColumnSortingMenu.h"
@@ -30,7 +31,6 @@
 #include "MimeTypeIconProvider.h"
 #include "QtUtil.h"
 #include "SessionFilesView.h"
-#include "SessionFilesWidget.h"
 #include "Singleton.h"
 #include "Util.h"
 #include "WindowServer.h"

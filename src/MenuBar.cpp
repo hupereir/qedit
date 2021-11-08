@@ -18,20 +18,19 @@
 *******************************************************************************/
 
 #include "MenuBar.h"
-
 #include "Application.h"
-#include "BlockDelimiterDisplay.h"
 #include "BaseMenu.h"
+#include "BlockDelimiterDisplay.h"
 #include "DebugMenu.h"
 #include "DefaultHelpText.h"
 #include "DocumentClassMenu.h"
 #include "HelpManager.h"
 #include "HelpText.h"
+#include "InformationDialog.h"
 #include "MainWindow.h"
-#include "SidePanelWidget.h"
 #include "RecentFilesMenu.h"
 #include "SessionFilesWidget.h"
-#include "InformationDialog.h"
+#include "SidePanelWidget.h"
 #include "Singleton.h"
 #include "TextDisplay.h"
 #include "TextHighlight.h"
@@ -39,6 +38,7 @@
 #include "Util.h"
 #include "WindowServer.h"
 #include "XmlOptions.h"
+
 
 //_______________________________________________
 MenuBar::MenuBar( QWidget* parent ):

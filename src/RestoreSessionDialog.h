@@ -21,9 +21,9 @@
 *******************************************************************************/
 
 #include "Counter.h"
-#include "QuestionDialog.h"
 #include "FileRecord.h"
 #include "FileRecordModel.h"
+#include "QuestionDialog.h"
 
 //* save all modified files
 class RestoreSessionDialog: public QuestionDialog

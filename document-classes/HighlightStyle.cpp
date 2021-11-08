@@ -18,9 +18,9 @@
 *******************************************************************************/
 
 #include "HighlightStyle.h"
-
 #include "Debug.h"
 #include "XmlDef.h"
+
 
 //_____________________________________________________
 HighlightStyle::HighlightStyle( const QDomElement& element ):
