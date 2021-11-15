@@ -40,4 +40,4 @@ set(document_classes_SOURCES
 set(document_classes_RESOURCES patterns.qrc)
 
 add_library(document-classes STATIC ${document_classes_SOURCES} ${document_classes_RESOURCES})
-target_link_libraries(document-classes Qt5::Widgets Qt5::Xml)
+target_link_libraries(document-classes Qt::Widgets Qt::Xml)

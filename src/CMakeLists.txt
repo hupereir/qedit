@@ -89,6 +89,6 @@ if(ASPELL_FOUND)
   target_link_libraries(qedit base-spellcheck)
 endif()
 
-target_link_libraries(qedit Qt5::Network Qt5::PrintSupport Qt5::Widgets Qt5::Xml)
+target_link_libraries(qedit Qt::Network Qt::PrintSupport Qt::Widgets Qt::Xml)
 install(TARGETS qedit DESTINATION ${BIN_INSTALL_DIR})
 
