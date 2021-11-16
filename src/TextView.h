@@ -29,6 +29,7 @@
 #include <QWidget>
 #include <QTimer>
 
+class Diff;
 class MessageWidget;
 
 //* handles multiple views
@@ -188,7 +189,7 @@ class TextView: public QWidget, public Base::Key, private Base::Counter<TextView
     TextDisplay* activeDisplay_ = nullptr;
 
     //* diff module
-    BaseDiff* diffModule_ = nullptr;
+    Diff* diffModule_ = nullptr;
 
     //* position update timer
     QTimer positionTimer_;
