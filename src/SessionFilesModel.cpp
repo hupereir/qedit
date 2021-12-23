@@ -52,11 +52,9 @@ SessionFilesModel::SessionFilesModel( QObject* parent ):
 //__________________________________________________________________
 Qt::ItemFlags SessionFilesModel::flags(const QModelIndex &index) const
 {
-
     // get flags from parent class
     Qt::ItemFlags flags( FileRecordModel::flags( index ) );
     return flags | Qt::ItemIsDropEnabled;
-
 }
 
 //__________________________________________________________________
@@ -67,8 +65,7 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
     if( !index.isValid() ) return QVariant();
 
     // retrieve associated file info
-    const FileRecord& record( get(index) );
-
+    const auto& record( get(index) );
     if( role == Qt::DecorationRole && index.column() == FileName )
     {
 
@@ -201,11 +198,15 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         if( parent.isValid() )
         {
 
-            FileRecord target( get( parent ) );
+            auto target( get( parent ) );
 
             // loop over sources and emit proper signal
             for( const auto& record:records )
-            { emit reparentFiles( record.file(), target.file() ); }
+            { 
+                // see if source record is in model
+                if( index( record ).isValid() ) emit reparentFiles( record.file(), target.file() ); 
+                else emit requestOpen( record );
+            }
 
             return true;
 
@@ -236,7 +237,10 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
 
             // emit relevant reparent signal
             for( const auto& record:records )
-            { emit reparentFilesToMain( record.file(), target.file() ); }
+            { 
+                if( index( record ).isValid() ) emit reparentFilesToMain( record.file(), target.file() ); 
+                else emit requestOpen( record );
+            }
 
             return true;
 

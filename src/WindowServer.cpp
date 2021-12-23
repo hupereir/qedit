@@ -751,7 +751,12 @@ void WindowServer::_reparent( const File& first, const File& second )
 {
 
     Debug::Throw() << "WindowServer::_reparent - first: " << first << " second: " << second << Qt::endl;
-    // retrieve windows
+
+    // do nothing if displays are not found
+    if( !_hasDisplay( first ) ) return;
+    if( !_hasDisplay( second ) ) return;
+    
+    // retrieve windows    
     auto&& firstDisplay( _findDisplay( first ) );
     auto&& firstView( _findView( first ) );
 
@@ -1008,6 +1013,24 @@ TextView& WindowServer::_findView( const File& file )
 }
 
 //_______________________________________________
+bool WindowServer::_hasDisplay( const File& file ) const
+{
+
+    Debug::Throw() << "WindowServer::_hasDisplay - file: " << file << Qt::endl;
+
+    // retrieve windows
+    for( const auto& window:Base::KeySet<MainWindow>( this ) )
+    {
+        // retrieve displays
+        auto displays( window->associatedDisplays() );
+        auto iter = std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) );
+        if( iter != displays.end() ) return true;
+    }
+
+    return false;
+}
+
+//_______________________________________________
 TextDisplay& WindowServer::_findDisplay( const File& file )
 {
 
@@ -1017,16 +1040,11 @@ TextDisplay& WindowServer::_findDisplay( const File& file )
     // retrieve windows
     for( const auto& window:Base::KeySet<MainWindow>( this ) )
     {
-
         // retrieve displays
         auto displays( window->associatedDisplays() );
         auto iter = std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file ) );
         // auto iter = std::find_if( displays.begin(), displays.end(), TextDisplay::SameFileFTor( file.expanded() ) );
-        if( iter != displays.end() )
-        {
-            out = *iter;
-            break;
-        }
+        if( iter != displays.end() ) return **iter;
     }
 
     return *out;

@@ -213,6 +213,9 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     TextView& _findView( const File& );
 
     //* find display matching given file
+    bool _hasDisplay( const File& ) const;
+
+    //* find display matching given file
     TextDisplay& _findDisplay( const File& );
 
     //* select file record from dialog
