@@ -197,15 +197,14 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         // get current record
         if( parent.isValid() )
         {
-
-            auto target( get( parent ) );
+            const auto target( get( parent ) );
 
             // loop over sources and emit proper signal
             for( const auto& record:records )
             { 
                 // see if source record is in model
                 if( index( record ).isValid() ) emit reparentFiles( record.file(), target.file() ); 
-                else emit requestOpen( record );
+                else emit requestOpen( record, target.file() );
             }
 
             return true;
@@ -221,14 +220,13 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
                 QModelIndex index( SessionFilesModel::index( row, 0 ) );
                 if( flags( index ) & Qt::ItemIsEnabled )
                 {
-                    FileRecord record( get( index ) );
+                    const auto record( get( index ) );
                     if( record.hasFlag( FileRecordProperties::Active ) )
                     {
                         targetIndex = index;
                         target = record;
                         break;
                     }
-
                 }
             }
 
@@ -248,21 +246,39 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
 
     } else if( data->hasUrls() ) {
 
-        // TODO: should check number of files
-        const auto urls( data->urls() );
-        for( const auto& url:urls )
+        // get current record
+        if( parent.isValid() )
         {
-
-            // check that local file
-            if( !url.isLocalFile() ) continue;
-
-            // get file and check existence
-            const File file( url.path() );
-            if( file.exists() && !file.isDirectory() )
-            { emit requestOpen( FileRecord( file ) ); }
-
+            const auto target( get( parent ) );
+            
+            // TODO: should check number of files
+            const auto urls( data->urls() );
+            for( const auto& url:urls )
+            {
+                // check that local file
+                if( !url.isLocalFile() ) continue;
+                
+                // get file and check existence
+                const File file( url.path() );
+                if( file.exists() && !file.isDirectory() )
+                { emit requestOpen( FileRecord( file ), target.file() ); }
+            }
+        } else {
+            const auto urls( data->urls() );
+            for( const auto& url:urls )
+            {
+                
+                // check that local file
+                if( !url.isLocalFile() ) continue;
+                
+                // get file and check existence
+                const File file( url.path() );
+                if( file.exists() && !file.isDirectory() )
+                { emit requestOpen( FileRecord( file ) ); }
+                
+            }
         }
-
+        
         return true;
 
     } else return false;

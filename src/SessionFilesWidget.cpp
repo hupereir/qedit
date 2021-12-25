@@ -89,7 +89,7 @@ Counter( QStringLiteral("SessionFilesWidget") )
 
     // connections
     connect( &model_, &QAbstractItemModel::layoutChanged, list_, &TreeView::updateMask );
-    connect( &model_, &SessionFilesModel::requestOpen, this, &SessionFilesWidget::fileActivated );
+    connect( &model_, QOverload<FileRecord>::of(&SessionFilesModel::requestOpen), this, &SessionFilesWidget::fileActivated );
     connect( list_, &QWidget::customContextMenuRequested, this, &SessionFilesWidget::_updateActions );
     connect( list_->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &SessionFilesWidget::_itemSelected );
     connect( list_, &QAbstractItemView::activated, this, &SessionFilesWidget::_itemActivated );

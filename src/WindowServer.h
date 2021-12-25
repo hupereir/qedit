@@ -141,6 +141,9 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     bool _open( const FileRecord &record )
     { return _open( record, openMode_ ); }
 
+    //* open file, splitting with existing display
+    bool _open( FileRecord, File );
+
     //* open in new window
     bool _openInNewWindow( const FileRecord &record )
     { return _open( record, OpenMode::NewWindow ); }

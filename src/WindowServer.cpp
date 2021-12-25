@@ -101,6 +101,10 @@ MainWindow& WindowServer::newMainWindow()
     connect( &window->sidePanelWidget().sessionFilesWidget().model(), &SessionFilesModel::reparentFiles, this, &WindowServer::_reparent );
     connect( &window->sidePanelWidget().sessionFilesWidget().model(), &SessionFilesModel::reparentFilesToMain, this, &WindowServer::_reparentToMain );
 
+    connect( &window->sidePanelWidget().sessionFilesWidget().model(), 
+        QOverload<FileRecord,File>::of(&SessionFilesModel::requestOpen), this, 
+        QOverload<FileRecord,File>::of(&WindowServer::_open) );
+
     connect( static_cast<SessionFilesView*>(&window->sidePanelWidget().sessionFilesWidget().list()), &SessionFilesView::reparentFilesToMain, this, &WindowServer::_reparentToMain );
     connect( static_cast<SessionFilesView*>(&window->sidePanelWidget().sessionFilesWidget().list()), &SessionFilesView::detach, this, QOverload<>::of(&WindowServer::_detach) );
 
@@ -497,6 +501,67 @@ void WindowServer::_newFile( Qt::Orientation orientation )
 }
 
 //_______________________________________________
+bool WindowServer::_open( FileRecord record, File second )
+{
+
+    Debug::Throw() << "WindowServer::_open - file: " << record.file() << "." << Qt::endl;
+
+    // do nothing if record is empty
+    if( record.file().isEmpty() ) return false;
+
+    // do nothing if second display is not found
+    if( !_hasDisplay( second ) ) return false;
+
+    // if there is already a display with first record, reparent
+    if( _hasDisplay( record.file() ) ) 
+    {
+        _reparent( record.file(), second );
+        return true;
+    }
+    
+    // see if file is directory
+    if( record.file().isDirectory() )
+    {
+
+        QString buffer;
+        QTextStream( &buffer ) << "File \"" << record.file() << "\" is a directory. <Open> canceled.";
+        InformationDialog( &_activeWindow(), buffer ).exec();
+        return false;
+
+    }
+
+    // create file if it does not exist
+    if( !( record.file().exists() || _createNewFile( record ) ) ) return false;
+
+    // retrieve second view
+    auto& view = _findView( second );
+ 
+    // create new display in text view
+    view.selectDisplay( second );
+    TextDisplay& newDisplay = view.splitDisplay( defaultOrientation( OrientationMode::Normal ), false );
+    newDisplay.setFile( record.file() );
+
+    // mark as active
+    view.setActiveDisplay( newDisplay );
+
+    // make view active
+    Base::KeySet<MainWindow> windows( view );
+    if( windows.size() != 1 )
+    {
+        Debug::Throw(0, QStringLiteral("WindowServer::_open - invalid number of windows.\n") );
+        return true;
+    }
+
+    auto&& window( **windows.begin() );
+    window.setActiveView( view );
+    window.raise();
+
+    Debug::Throw() << "WindowServer::_open - file: " << record.file() << " done." << Qt::endl;
+    return true;
+
+}
+
+//_______________________________________________
 bool WindowServer::_open( const FileRecord &record, WindowServer::OpenMode mode )
 {
 
@@ -773,7 +838,7 @@ void WindowServer::_reparent( const File& first, const File& second )
     // save modification state
     bool modified( firstDisplay.document()->isModified() );
 
-    // retrieve second display and corresponding view
+    // retrieve second view
     auto& view = _findView( second );
 
     // do nothing if first and second display already belong to the same view

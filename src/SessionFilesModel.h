@@ -67,6 +67,9 @@ class SessionFilesModel: public FileRecordModel
     //* file open
     void requestOpen( FileRecord );
 
+    //* file open
+    void requestOpen( FileRecord, File );
+
     private:
 
     //* configuration
