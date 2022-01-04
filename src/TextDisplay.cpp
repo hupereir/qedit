@@ -42,8 +42,6 @@
 #include "QtUtil.h"
 #include "QuestionDialog.h"
 #include "Singleton.h"
-#include "SpellDialog.h"
-#include "SuggestionMenu.h"
 #include "TextBlockRange.h"
 #include "TextDocument.h"
 #include "TextEditorMarginWidget.h"
@@ -58,8 +56,9 @@
 #include "Util.h"
 #include "XmlOptions.h"
 
-
 #if WITH_ASPELL
+#include "SpellDialog.h"
+#include "SuggestionMenu.h"
 #endif
 
 #include <QApplication>

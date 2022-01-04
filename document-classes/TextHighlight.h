@@ -25,10 +25,10 @@
 #include "Debug.h"
 #include "HighlightBlockFlags.h"
 #include "HighlightPattern.h"
-#include "SpellParser.h"
 #include "TextParenthesis.h"
 
 #if WITH_ASPELL
+#include "SpellParser.h"
 #endif
 
 #include <QSyntaxHighlighter>

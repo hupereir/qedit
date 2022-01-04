@@ -28,8 +28,6 @@
 #include "LogWidget.h"
 #include "MainWindow.h"
 #include "RestoreSessionDialog.h"
-#include "SpellCheckConfigurationDialog.h"
-#include "SpellInterface.h"
 #include "Util.h"
 #include "WindowServer.h"
 #include "XmlDef.h"
@@ -38,6 +36,8 @@
 #include "XmlOptions.h"
 
 #if WITH_ASPELL
+#include "SpellCheckConfigurationDialog.h"
+#include "SpellInterface.h"
 #endif
 
 #include <QMessageBox>
