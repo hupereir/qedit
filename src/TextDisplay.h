@@ -23,14 +23,12 @@
 #include "AskForSaveDialog.h"
 #include "BlockDelimiter.h"
 #include "Debug.h"
-#include "DictionaryMenu.h"
 #include "FileCheck.h"
 #include "FileCheckData.h"
 #include "FileList.h"
 #include "FileModifiedWidget.h"
 #include "FileRecord.h"
 #include "FileRemovedWidget.h"
-#include "FilterMenu.h"
 #include "Functors.h"
 #include "HighlightBlockFlags.h"
 #include "HighlightPattern.h"
@@ -42,6 +40,8 @@
 #include "TimeStamp.h"
 
 #if WITH_ASPELL
+#include "DictionaryMenu.h"
+#include "FilterMenu.h"
 #endif
 
 #include <QRegularExpression>

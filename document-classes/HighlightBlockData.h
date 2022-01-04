@@ -24,9 +24,9 @@
 #include "PatternLocationSet.h"
 #include "TextBlockData.h"
 #include "TextBlockDelimiter.h"
-#include "Word.h"
 
 #if WITH_ASPELL
+#include "Word.h"
 #endif
 
 //* TextBlock data for syntax highlighting
