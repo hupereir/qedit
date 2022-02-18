@@ -26,7 +26,6 @@
 
 #include <QDomElement>
 #include <QDomDocument>
-#include <QAction>
 #include <QList>
 #include <QRegularExpression>
 
@@ -136,9 +135,6 @@ class TextMacro final: private Base::Counter<TextMacro>
 
     //* used to get macro by name
     using SameNameFTor = Base::Functor::Unary<TextMacro, const QString&, &TextMacro::name>;
-
-    //* return action
-    QAction* action() const;
 
     //* used to store regular expression and corresponding replacement text
     class Rule final: private Base::Counter<Rule>

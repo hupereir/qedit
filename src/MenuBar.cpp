@@ -148,7 +148,8 @@ void MenuBar::updateMacroMenu()
     bool hasSelection( display->textCursor().hasSelection() );
     auto macros( display->macros() );
 
-    macroMenu_->update( macros );
+    const bool enableAutomatic( !display->noAutomaticMacrosAction().isChecked() );
+    macroMenu_->update( macros, enableAutomatic );
     macroMenu_->updateState( hasSelection );
     macroMenu_->addSeparator();
     macroMenu_->addAction( &display->noAutomaticMacrosAction() );

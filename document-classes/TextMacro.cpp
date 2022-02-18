@@ -84,23 +84,6 @@ QDomElement TextMacro::domElement( QDomDocument& parent ) const
 }
 
 //_____________________________________________________
-QAction* TextMacro::action() const
-{
-
-    // create action label
-    QString label;
-    if( isAutomatic() ) label = QString( QObject::tr( "%1 (automatic)" ) ).arg( name() );
-    else label = name();
-
-    auto out( new QAction( label, nullptr ) );
-    if( !accelerator().isEmpty() )
-    { out->setShortcut( QKeySequence( accelerator() ) ); }
-
-    return out;
-}
-
-
-//_____________________________________________________
 TextMacro::Result TextMacro::processText( QString& text, int position ) const
 {
 

@@ -42,7 +42,7 @@ class TextMacroMenu: public QMenu, private Base::Counter<TextMacroMenu>
     void setEnabled( bool );
 
     //* update macros
-    void update( const TextMacro::List& );
+    void update( const TextMacro::List&, bool enableAutomatic );
 
     //* update state
     void updateState( bool );

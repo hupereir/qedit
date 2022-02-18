@@ -19,6 +19,23 @@
 
 #include "TextMacroMenu.h"
 
+namespace
+{   
+    QAction* createAction( const TextMacro& macro, bool enableAutomatic )
+    {
+        // create action label
+        const QString label = ( macro.isAutomatic() && enableAutomatic ) ? 
+            QString( QObject::tr( "%1 (automatic)" ) ).arg( macro.name() ):
+            macro.name();
+        
+        auto out( new QAction( label, nullptr ) );
+        if( !macro.accelerator().isEmpty() )
+        { out->setShortcut( QKeySequence( macro.accelerator() ) ); }
+        
+        return out;
+    }
+}
+
 //___________________________________________________________
 TextMacroMenu::TextMacroMenu( QWidget* parent ):
 QMenu( parent ),
@@ -29,7 +46,7 @@ Counter( QStringLiteral("TextMacroMenu") )
 }
 
 //___________________________________________________________
-void TextMacroMenu::update( const TextMacro::List& macros )
+void TextMacroMenu::update( const TextMacro::List& macros, bool enableAutomatic )
 {
     Debug::Throw( QStringLiteral("TextMacroMenu::update.\n") );
     clear();
@@ -40,14 +57,12 @@ void TextMacroMenu::update( const TextMacro::List& macros )
 
         if( macro.isSeparator() ) addSeparator();
         else {
-
             // create menu entry
-            auto action = macro.action();
+            auto action = createAction( macro, enableAutomatic );
             addAction( action );
 
             // insert in map
             actions_.insert( action, MacroContainer( macro ) );
-
         }
     }
 
