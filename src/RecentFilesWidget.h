@@ -25,6 +25,7 @@
 
 #include <QAction>
 #include <QPaintEvent>
+#include <QWidget>
 
 class FileList;
 class TreeView;
@@ -67,8 +68,12 @@ class RecentFilesWidget: public QWidget, private Base::Counter<RecentFilesWidget
     protected:
 
     //* enter event
+    #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void enterEvent( QEvent* ) override;
-
+    #else
+    void enterEvent( QEnterEvent* ) override;
+    #endif
+    
     private:
 
     //* update action

@@ -308,12 +308,12 @@ void SessionFilesWidget::_installActions()
     // next file
     addAction( nextFileAction_ = new QAction( IconEngine::get(  IconNames::Down ), tr( "Select next File" ), this ) );
     connect( nextFileAction_, &QAction::triggered, this, &SessionFilesWidget::_selectNextFile );
-    nextFileAction_->setShortcut( Qt::CTRL + Qt::Key_Tab );
+    nextFileAction_->setShortcut( Qt::CTRL|Qt::Key_Tab );
 
     // previous file
     addAction( previousFileAction_ = new QAction( IconEngine::get(  IconNames::Up ), tr( "Select Previous File" ), this ) );
     connect( previousFileAction_, &QAction::triggered, this, &SessionFilesWidget::_selectPreviousFile );
-    previousFileAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Tab );
+    previousFileAction_->setShortcut( Qt::SHIFT|Qt::CTRL|Qt::Key_Tab );
 
     // open
     addAction( openAction_ = new QAction( IconEngine::get( IconNames::Open ), tr( "Open" ), this ) );

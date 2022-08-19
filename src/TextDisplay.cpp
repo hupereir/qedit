@@ -814,7 +814,7 @@ void TextDisplay::revertToSave()
     verticalScrollBar()->setValue( y );
 
     // adjust cursor postion
-    position = std::min( position, toPlainText().size() );
+    position = std::min<qsizetype>( position, toPlainText().size() );
 
     // restore cursor
     auto cursor( textCursor() );
@@ -1578,13 +1578,13 @@ void TextDisplay::_installActions()
 
     // indent selection
     addAction( indentSelectionAction_ = new QAction( IconEngine::get( IconNames::Indent ), QStringLiteral("Indent Selection"), this ) );
-    indentSelectionAction_->setShortcut( Qt::CTRL + Qt::Key_I );
+    indentSelectionAction_->setShortcut( Qt::CTRL|Qt::Key_I );
     indentSelectionAction_->setShortcutContext( Qt::WidgetShortcut );
     connect( indentSelectionAction_, &QAction::triggered, this, &TextDisplay::_indentSelection );
 
     // base indentation
     addAction( baseIndentAction_ = new QAction( IconEngine::get( IconNames::Indent ), QStringLiteral("Add Base Indentation"), this ) );
-    baseIndentAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_I );
+    baseIndentAction_->setShortcut( Qt::SHIFT|Qt::CTRL|Qt::Key_I );
     connect( baseIndentAction_, &QAction::triggered, this, &TextDisplay::_addBaseIndentation );
 
     // replace leading tabs
@@ -1626,13 +1626,13 @@ void TextDisplay::_installActions()
     // next tag action
     addAction( nextTagAction_ = new QAction( IconEngine::get( IconNames::Down ), QStringLiteral("Goto Next Tagged Block"), this ) );
     connect( nextTagAction_, &QAction::triggered, this, &TextDisplay::_nextTag );
-    nextTagAction_->setShortcut( Qt::ALT + Qt::Key_Down );
+    nextTagAction_->setShortcut( Qt::ALT|Qt::Key_Down );
     nextTagAction_->setShortcutContext( Qt::WidgetShortcut );
 
     // previous tag action
     addAction( previousTagAction_ = new QAction( IconEngine::get( IconNames::Up ), QStringLiteral("Goto Previous Tagged Block"), this ) );
     connect( previousTagAction_, &QAction::triggered, this, &TextDisplay::_previousTag );
-    previousTagAction_->setShortcut( Qt::ALT + Qt::Key_Up );
+    previousTagAction_->setShortcut( Qt::ALT|Qt::Key_Up );
     previousTagAction_->setShortcutContext( Qt::WidgetShortcut );
 
 }
@@ -1717,7 +1717,7 @@ void TextDisplay::_processMacro( const TextMacro& macro )
             });
 
         // last block
-        text += end.text().leftRef( positionEnd - end.position() );
+        text += end.text().left( positionEnd - end.position() );
 
     }
 

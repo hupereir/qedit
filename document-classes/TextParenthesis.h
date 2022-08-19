@@ -81,8 +81,8 @@ class TextParenthesis final: private Base::Counter<TextParenthesis>
         bool operator() ( const TextParenthesis& parenthesis ) const
         {
             return
-                text_.leftRef( parenthesis.first().size() ) == parenthesis.first() ||
-                text_.leftRef( parenthesis.second().size() ) == parenthesis.second();
+                text_.left( parenthesis.first().size() ) == parenthesis.first() ||
+                text_.left( parenthesis.second().size() ) == parenthesis.second();
         }
 
         private:

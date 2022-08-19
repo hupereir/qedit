@@ -2,7 +2,11 @@
 project(DOCUMENT_CLASSES)
 
 ########### Qt configuration #########
+if(USE_QT6)
+find_package(Qt6 COMPONENTS Widgets Xml REQUIRED)
+else()
 find_package(Qt5 COMPONENTS Widgets Xml REQUIRED)
+endif()
 
 ########### includes ###############
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

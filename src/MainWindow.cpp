@@ -813,12 +813,12 @@ void MainWindow::_installActions()
     newFileAction_->setToolTip( tr( "Create a new empty file" ) );
 
     addAction( cloneAction_ = new QAction( IconEngine::get( IconNames::ViewLeftRight ), tr( "Clone" ), this ) );
-    cloneAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_N );
+    cloneAction_->setShortcut( Qt::SHIFT|Qt::CTRL|Qt::Key_N );
     cloneAction_->setToolTip( tr( "Clone current display" ) );
     connect( cloneAction_, &QAction::triggered, this, &MainWindow::_splitDisplay );
 
     addAction( detachAction_ = new QAction( IconEngine::get( IconNames::ViewDetach ), tr( "Detach" ), this ) );
-    detachAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_O );
+    detachAction_->setShortcut( Qt::SHIFT|Qt::CTRL|Qt::Key_O );
     detachAction_->setToolTip( tr( "Detach current display" ) );
     detachAction_->setEnabled( false );
 
@@ -838,7 +838,7 @@ void MainWindow::_installActions()
     connect( closeDisplayAction_, &QAction::triggered, this, &MainWindow::_closeDisplay );
 
     addAction( closeWindowAction_ = new QAction( IconEngine::get( IconNames::Close ), tr( "Close Window" ), this ) );
-    closeWindowAction_->setShortcut( Qt::SHIFT+Qt::CTRL+Qt::Key_W );
+    closeWindowAction_->setShortcut( Qt::SHIFT|Qt::CTRL|Qt::Key_W );
     closeWindowAction_->setToolTip( tr( "Close current display" ) );
     connect( closeWindowAction_, &QAction::triggered, this, &MainWindow::_closeWindow );
 
@@ -894,7 +894,7 @@ void MainWindow::_installActions()
     connect( pasteAction_, &QAction::triggered, this, &MainWindow::_paste );
 
     addAction( filePropertiesAction_ = new QAction( IconEngine::get( IconNames::Information ), tr( "Properties..." ), this ) );
-    filePropertiesAction_->setShortcut( Qt::ALT + Qt::Key_Return );
+    filePropertiesAction_->setShortcut( Qt::ALT|Qt::Key_Return );
     filePropertiesAction_->setToolTip( tr( "Display file informations" ) );
     filePropertiesAction_->setEnabled( false );
     connect( filePropertiesAction_, &QAction::triggered, this, &MainWindow::_fileInfo );

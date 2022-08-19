@@ -1,5 +1,9 @@
 ########### Qt configuration #########
+if(USE_QT6)
+find_package(Qt6 COMPONENTS Widgets Network Xml PrintSupport Core5Compat REQUIRED )
+else()
 find_package(Qt5 COMPONENTS Widgets Network Xml PrintSupport REQUIRED )
+endif()
 
 if( WIN32 AND NOT USE_SHARED_LIBS )
   fix_win32_static_compilation()
@@ -84,6 +88,11 @@ target_link_libraries(qedit
   base-help
   base-filesystem
 )
+
+if(USE_QT6)
+  # needed for QTextCodec
+  target_link_libraries(qedit Qt::Core5Compat)
+endif()
 
 if(ASPELL_FOUND)
   target_link_libraries(qedit base-spellcheck)

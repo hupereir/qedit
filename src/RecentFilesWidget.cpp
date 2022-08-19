@@ -129,7 +129,11 @@ void RecentFilesWidget::updateFiles()
 }
 
 //____________________________________________
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void RecentFilesWidget::enterEvent( QEvent* e )
+#else
+void RecentFilesWidget::enterEvent( QEnterEvent* e )
+#endif
 {
 
     Debug::Throw( QStringLiteral("RecentFilesWidget::enterEvent.\n") );

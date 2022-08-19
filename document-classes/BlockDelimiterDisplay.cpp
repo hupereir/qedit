@@ -528,13 +528,13 @@ void BlockDelimiterDisplay::_installActions()
 
     collapseAction_ = new QAction( tr( "Collapse Top-Level Blocks" ), this );
     collapseAction_->setToolTip( tr( "Collapse all top level blocks" ) );
-    collapseAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Minus );
+    collapseAction_->setShortcut( Qt::SHIFT|Qt::CTRL|Qt::Key_Minus );
     connect( collapseAction_, &QAction::triggered, this, &BlockDelimiterDisplay::_collapseTopLevelBlocks );
     collapseAction_->setEnabled( true );
 
     expandAllAction_ = new QAction( tr( "Expand All Blocks" ), this );
     expandAllAction_->setToolTip( tr( "Expand all collapsed blocks" ) );
-    expandAllAction_->setShortcut( Qt::SHIFT + Qt::CTRL + Qt::Key_Plus );
+    expandAllAction_->setShortcut( Qt::SHIFT|Qt::CTRL|Qt::Key_Plus );
     connect( expandAllAction_, &QAction::triggered, this, &BlockDelimiterDisplay::expandAllBlocks );
     expandAllAction_->setEnabled( false );
 

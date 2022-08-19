@@ -203,7 +203,7 @@ Diff::Range Diff::_parseRange( const QString& range )
     int position( range.indexOf( QLatin1String(",") ) );
     const auto out( ( position < 0 ) ?
         Range( range.toUInt(), range.toUInt() ):
-        Range( range.left( position ).toUInt(), range.midRef( position+1 ).toUInt() ) );
+        Range( range.left( position ).toUInt(), range.mid( position+1 ).toUInt() ) );
 
     Debug::Throw() << "Diff::_parseRange - (" << out.first << "," << out.second << ")" << Qt::endl;
     return out;

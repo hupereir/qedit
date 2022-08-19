@@ -18,6 +18,8 @@
 *******************************************************************************/
 
 #include "NewDocumentNameServer.h"
+
+#include <QObject>
 #include <QTextStream>
 #include <algorithm>
 

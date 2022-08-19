@@ -234,10 +234,10 @@ int TextIndent::_tabCount( const QTextBlock& block )
     // both normal and emulated tabs are counted
     while( index < text.size() )
     {
-        if( text.midRef( index, editor_->normalTabCharacter().size() ) == editor_->normalTabCharacter() )
+        if( text.mid( index, editor_->normalTabCharacter().size() ) == editor_->normalTabCharacter() )
         { index += editor_->normalTabCharacter().size(); count++; }
 
-        else if( text.midRef( index, editor_->emulatedTabCharacter().size() ) == editor_->emulatedTabCharacter() )
+        else if( text.mid( index, editor_->emulatedTabCharacter().size() ) == editor_->emulatedTabCharacter() )
         { index += editor_->emulatedTabCharacter().size(); count++; }
 
         else break;

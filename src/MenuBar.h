@@ -23,9 +23,10 @@
 #include "Counter.h"
 #include "File.h"
 
+#include <QActionGroup>
+#include <QHash>
 #include <QMenu>
 #include <QMenuBar>
-#include <QHash>
 
 class BaseMenu;
 class RecentFilesMenu;
