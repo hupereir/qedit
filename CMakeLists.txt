@@ -8,6 +8,7 @@ set(QEDIT_VERSION_PATCH 4)
 set(QEDIT_VERSION ${QEDIT_VERSION_MAJOR}.${QEDIT_VERSION_MINOR}.${QEDIT_VERSION_PATCH})
 
 ########### options ###############
+option( USE_QT6 "Use QT6 Libraries" OFF )
 option( USE_SHARED_LIBS "Use Shared Libraries" OFF )
 
 ########### modules #################
