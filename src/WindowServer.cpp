@@ -825,6 +825,12 @@ void WindowServer::_reparent( const File& first, const File& second )
     auto&& firstDisplay( _findDisplay( first ) );
     auto&& firstView( _findView( first ) );
 
+    // retrieve second view
+    auto& view = _findView( second );
+
+    // do nothing if first and second display already belong to the same view
+    if( &view == &firstView ) return;
+
     // check for first display clones
     if( !Base::KeySet<TextDisplay>(firstDisplay).empty() )
     {
@@ -837,12 +843,6 @@ void WindowServer::_reparent( const File& first, const File& second )
 
     // save modification state
     bool modified( firstDisplay.document()->isModified() );
-
-    // retrieve second view
-    auto& view = _findView( second );
-
-    // do nothing if first and second display already belong to the same view
-    if( &view == &firstView ) return;
 
     // create new display in text view
     view.selectDisplay( second );
