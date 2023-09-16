@@ -154,6 +154,15 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, int activeId
 }
 
 //_________________________________________________________
+void TextHighlight::updateSpellPattern()
+{ 
+    HighlightStyle style( QStringLiteral("spellcheck_style") );
+    style.setFontFormat( spellParser_.fontFormat() );
+    style.setColor( spellParser_.color() );
+    spellPattern_.setStyle( std::move( style ) );
+}
+
+//_________________________________________________________
 PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, int activeId ) const
 {
 
@@ -369,7 +378,9 @@ void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
 
         QTextCharFormat format( currentFormat );
         QTextCharFormat old( TextHighlight::format( location.position() ) );
-        if( old.hasProperty( QTextFormat::BackgroundBrush ) ) format.setBackground( old.background() );
+        if( old.hasProperty( QTextFormat::BackgroundBrush ) && !format.hasProperty( QTextFormat::BackgroundBrush ) )
+        { format.setBackground( old.background() ); }
+        
         setFormat( location.position(), location.length(), format );
 
     }

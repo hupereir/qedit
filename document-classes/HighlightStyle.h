@@ -38,16 +38,8 @@ class HighlightStyle final: private Base::Counter<HighlightStyle>
 
     public:
 
-    //* constructor
-    explicit HighlightStyle(
-        const QString& name = QStringLiteral("default"),
-        TextFormat::Flags format = TextFormat::Default,
-        const QColor& color = QColor() ):
-        Counter( QStringLiteral("HighlightStyle") ),
-        name_( name ),
-        format_( format ),
-        color_( color )
-    {}
+    //* default constructor
+    explicit HighlightStyle( const QString& = QStringLiteral("default") );
 
     //* constructor from DomElement
     explicit HighlightStyle( const QDomElement& );

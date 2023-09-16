@@ -32,6 +32,7 @@ PatternLocation::PatternLocation( const HighlightPattern& parent, int position, 
     flags_( parent.flags() ),
     format_( parent.style().fontFormat() ),
     color_( parent.style().color() ),
+    backgroundColor_( parent.style().backgroundColor() ),
     position_( position ),
     length_( length )
 {}
@@ -41,13 +42,13 @@ QTextCharFormat PatternLocation::format() const
 {
 
     QTextCharFormat out;
-
     out.setFontWeight( (format_&TextFormat::Bold) ? QFont::Bold : QFont::Normal );
     out.setFontItalic( format_&TextFormat::Italic );
     out.setFontUnderline( format_&TextFormat::Underline );
     out.setFontOverline( format_&TextFormat::Overline );
     out.setFontStrikeOut( format_&TextFormat::Strike );
     if( color_.isValid() ) out.setForeground( color_ );
+    if( backgroundColor_.isValid() ) out.setBackground( backgroundColor_ );
 
     return out;
 }

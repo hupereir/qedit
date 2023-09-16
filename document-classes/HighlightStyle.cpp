@@ -21,7 +21,12 @@
 #include "Debug.h"
 #include "XmlDef.h"
 
-
+//_____________________________________________________
+HighlightStyle::HighlightStyle( const QString& name ): 
+    Counter( QStringLiteral("HighlightStyle") ),
+    name_( name )
+{}
+    
 //_____________________________________________________
 HighlightStyle::HighlightStyle( const QDomElement& element ):
     Counter( QStringLiteral("HighlightStyle") )
@@ -39,7 +44,6 @@ HighlightStyle::HighlightStyle( const QDomElement& element ):
         else if( attribute.name() == Xml::Format ) setFontFormat( static_cast<TextFormat::Flags>( attribute.value().toInt() ) );
         else if( attribute.name() == Xml::BackgroundColor ) setBackgroundColor( QColor( attribute.value() ) );
         else if( attribute.name() == Xml::Color ) setColor( QColor( attribute.value() ) );
-
     }
 }
 

@@ -175,8 +175,7 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     { return spellPattern_; }
 
     //* update highlight pattern associated to auto-spell
-    void updateSpellPattern()
-    { spellPattern_.setStyle( HighlightStyle( QStringLiteral("spellcheck_style"), spellParser_.fontFormat(), spellParser_.color() ) ); }
+    void updateSpellPattern();
 
     #endif
 

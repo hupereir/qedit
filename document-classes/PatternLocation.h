@@ -143,6 +143,9 @@ class PatternLocation final: private Base::Counter<PatternLocation>
     //* style color
     QColor color_;
 
+    //* background color
+    QColor backgroundColor_;
+    
     //* position in text
     int position_ = 0;
 
