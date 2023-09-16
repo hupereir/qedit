@@ -392,7 +392,6 @@ class TextDisplay: public TextEditor
 
     //@}
 
-
     //* used to select editor with matching filename
     using SameFileFTor = Base::Functor::Unary<TextDisplay, const File&, &TextDisplay::file>;
 
@@ -410,6 +409,9 @@ class TextDisplay: public TextEditor
 
     };
 
+    //* find next occurence of TextSelection
+    void find( const TextSelection& ) override;
+    
     //* set document class
     void updateDocumentClass()
     { _updateDocumentClass( file_, isNewDocument_ ); }

@@ -1092,7 +1092,7 @@ bool TextDisplay::hasTaggedBlocks() const
 
     return false;
 }
-
+    
 //___________________________________________________________________________
 void TextDisplay::_updateDocumentClass( const File &file, bool newDocument )
 {
@@ -1207,6 +1207,13 @@ void TextDisplay::_updateDocumentClass( const File &file, bool newDocument )
 
     return;
 
+}
+
+//_____________________________________________
+void TextDisplay::find( const TextSelection& selection )
+{
+    TextEditor::find( selection );
+    if( textHighlight_ ) textHighlight_->findAll( selection );
 }
 
 //_____________________________________________
@@ -1917,6 +1924,9 @@ void TextDisplay::_updateConfiguration()
     // parenthesis highlight
     textHighlight_->setParenthesisHighlightColor( XmlOptions::get().get<Base::Color>( QStringLiteral("PARENTHESIS_COLOR") ) );
     parenthesisHighlightAction_->setChecked( XmlOptions::get().get<bool>( QStringLiteral("TEXT_PARENTHESIS") ) );
+
+    // text selection
+    textHighlight_->setTextSelectionHighlightColor( XmlOptions::get().get<Base::Color>( QStringLiteral("TEXTSELECTION_HIGHLIGHT_COLOR") ) );
 
     // block delimiters, line numbers and margin
     showBlockDelimiterAction_->setChecked( XmlOptions::get().get<bool>( QStringLiteral("SHOW_BLOCK_DELIMITERS") ) );

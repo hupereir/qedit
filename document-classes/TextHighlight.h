@@ -26,6 +26,7 @@
 #include "HighlightBlockFlags.h"
 #include "HighlightPattern.h"
 #include "TextParenthesis.h"
+#include "TextSelection.h"
 
 #if WITH_ASPELL
 #include "SpellParser.h"
@@ -136,6 +137,22 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
 
     //@}
 
+    //*@name text selection highlight
+    //@{
+    //* highghlight color
+    void setTextSelectionHighlightColor( const QColor& color )
+    { textSelectionHighlightFormat_.setBackground( color ); }
+    
+    //* highghlight color
+    QColor textSelectionHighlightColor() const
+    { return textSelectionHighlightFormat_.background().color(); }
+    
+    //* find text selection
+    void findAll( const TextSelection& textSelection )
+    { textSelection_ = textSelection; }
+    
+    //@}
+    
     //* patterns
     void clear()
     {
@@ -179,6 +196,9 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     //* retrieve highlight location for given text
     PatternLocationSet _spellCheckLocationSet( const QString& text, HighlightBlockData* data = 0 );
 
+    //* retrieve text selection location sets 
+    PatternLocationSet _textSelectionLocationSet( const QString& text );
+    
     //* apply locations to current block
     void _applyPatterns( const PatternLocationSet& locations );
 
@@ -191,6 +211,12 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     //* list of highlight patterns
     HighlightPattern::List patterns_;
 
+    //* text selection highlight pattern
+    QTextCharFormat textSelectionHighlightFormat_;
+    
+    //* current text selection
+    TextSelection textSelection_;
+    
     //@}
 
     //*@name text parenthesis
@@ -218,20 +244,19 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
 
     //@}
 
+    #if WITH_ASPELL
     //*@name spell checking
     //@{
-
-    #if WITH_ASPELL
 
     //* spell check parser
     SpellCheck::SpellParser spellParser_;
 
     //* spellcheck highlight pattern
     HighlightPattern spellPattern_;
+    //@}
 
     #endif
 
-    //@}
 
 };
 

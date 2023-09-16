@@ -118,6 +118,12 @@ void TextHighlight::highlightBlock( const QString& text )
     }
     #endif
 
+    // text selection
+    if( textSelection_.flag( TextSelection::HighlightAll ) && !textSelection_.text().isEmpty() )
+    {
+        _textSelectionLocationSet( text );
+    }
+    
     // apply new location set
     if( !locations.empty() ) _applyPatterns( locations );
 
@@ -312,7 +318,6 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
 //_________________________________________________________
 PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, HighlightBlockData* data )
 {
-
     PatternLocationSet locations;
 
     #if WITH_ASPELL
@@ -328,7 +333,23 @@ PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, H
     #endif
 
     return locations;
+}
 
+//_________________________________________________________
+PatternLocationSet TextHighlight::_textSelectionLocationSet( const QString& text )
+{
+    // check text selection
+    if( !textSelection_.flag( TextSelection::HighlightAll ) || textSelection_.text().isEmpty() || text.isEmpty() ) 
+    { return PatternLocationSet(); }
+    
+    // for now ignore regexp
+    // PatternLocationSet locations;
+    int position = 0;
+    while( (position = text.indexOf( textSelection_.text(), position) ) )
+    {
+    }
+    
+    return PatternLocationSet();
 }
 
 //_________________________________________________________

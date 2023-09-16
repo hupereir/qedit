@@ -48,7 +48,6 @@ class PatternLocationSet final
     //* return true if current position corresponds to commented text
     bool isCommented( int ) const;
 
-
     using const_iterator = QOrderedSet<PatternLocation>::const_iterator;
     const_iterator begin() const { return set_.begin(); }
     const_iterator end() const { return set_.end(); }

@@ -67,6 +67,7 @@ void installDefaultOptions()
     XmlOptions::get().set( QStringLiteral("DIFF_CONFLICT_COLOR"), Base::Color( "#9addaa" ) );
 
     XmlOptions::get().set( QStringLiteral("PARENTHESIS_COLOR"), Base::Color( Qt::red ) );
+    XmlOptions::get().set( QStringLiteral("TEXTSELECTION_HIGHLIGHT_COLOR"), Base::Color( Qt::yellow ) );
     XmlOptions::get().set( QStringLiteral("TAGGED_BLOCK_COLOR"), Base::Color( "#fffdd4" ) );
 
     XmlOptions::get().set<bool>( QStringLiteral("BACKUP"), false );
