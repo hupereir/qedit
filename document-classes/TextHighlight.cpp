@@ -154,6 +154,14 @@ PatternLocationSet TextHighlight::locationSet( const QString& text, int activeId
 }
 
 //_________________________________________________________
+void TextHighlight::setTextSelectionHighlightColor( const QColor& color )
+{
+    HighlightStyle style( QStringLiteral("textselection_style") );
+    style.setBackgroundColor( color );
+    textSelectionHighlightFormat_.setStyle( style ); 
+}
+    
+//_________________________________________________________
 void TextHighlight::updateSpellPattern()
 { 
     HighlightStyle style( QStringLiteral("spellcheck_style") );

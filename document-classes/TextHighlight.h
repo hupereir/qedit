@@ -140,12 +140,11 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     //*@name text selection highlight
     //@{
     //* highghlight color
-    void setTextSelectionHighlightColor( const QColor& color )
-    { textSelectionHighlightFormat_.setBackground( color ); }
+    void setTextSelectionHighlightColor( const QColor& );
     
     //* highghlight color
     QColor textSelectionHighlightColor() const
-    { return textSelectionHighlightFormat_.background().color(); }
+    { return textSelectionHighlightFormat_.style().backgroundColor(); }
     
     //* find text selection
     void findAll( const TextSelection& textSelection )
@@ -211,7 +210,7 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     HighlightPattern::List patterns_;
 
     //* text selection highlight pattern
-    QTextCharFormat textSelectionHighlightFormat_;
+    HighlightPattern textSelectionHighlightFormat_;
     
     //* current text selection
     TextSelection textSelection_;
