@@ -134,15 +134,7 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     { return flags_ & flag; }
 
     //* validity
-    bool isValid() const
-    {
-        switch( type_ )
-        {
-            case Type::KeywordPattern: return keyword_.isValid();
-            case Type::RangePattern: return keyword_.isValid() && end_.isValid();
-            default: return false;
-        }
-    }
+    bool isValid() const;
 
     //@}
 
@@ -186,26 +178,56 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     { children_.clear(); }
 
     //* keyword
-    void setKeyword( const QString& keyword )
-    { keyword_.setPattern( keyword ); }
+    void setKeyword( const QString& value )
+    { 
+        keyword_.setPattern( value ); 
+        _updatePatternOptions( keyword_ );
+    }
 
     //* keyword
-    void setBegin( const QString& keyword )
-    { setKeyword( keyword ); }
+    void setBegin( const QString& value )
+    { setKeyword( value ); }
 
     //* range end pattern
-    void setEnd( const QString& keyword )
-    { end_.setPattern( keyword ); }
+    void setEnd( const QString& value )
+    { 
+        end_.setPattern( value ); 
+        _updatePatternOptions( end_ );
+    }
+    
+    //* keyword
+    void setKeyword( const QRegularExpression& value )
+    {
+        keyword_ = value; 
+        _updatePatternOptions( keyword_ );
+    }
+    
+    //* begin
+    void setBegin( const QRegularExpression& value )
+    { setKeyword( value ); }
+   
+    //* end
+    void setEnd( const QRegularExpression& value )
+    {
+        end_ = value;
+        _updatePatternOptions( end_ );
+    }
 
     //* flags
     void setFlags( HighlightPattern::Flags flags )
-    { flags_ = flags; }
+    { 
+        flags_ = flags; 
+        _updatePatternOptions( keyword_ );
+        _updatePatternOptions( end_ );
+    }
 
     //* flags
     void setFlag( HighlightPattern::Flag flag, bool value )
     {
         if( value ) flags_ |= flag;
         else flags_ &= (~flag);
+        _updatePatternOptions( keyword_ );
+        _updatePatternOptions( end_ );
     }
 
     //* process text and update the matching locations.
@@ -231,15 +253,17 @@ class HighlightPattern final: private Base::Counter<HighlightPattern>
     //* used to pattern by id
     using SameIdFTor = Base::Functor::Unary<HighlightPattern, int, &HighlightPattern::id>;
 
-    protected:
+    private:
 
+    //* update pattern options for provided regular expression
+    /** explicitly, implements caseinsensitivity */
+    void _updatePatternOptions( QRegularExpression& ) const;
+    
     //* find keyword pattern
     bool _findKeyword( PatternLocationSet&, const QString&, bool& ) const;
 
     //* find range pattern
     bool _findRange( PatternLocationSet&, const QString&, bool& ) const;
-
-    private:
 
     //* unique id
     /**

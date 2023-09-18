@@ -31,15 +31,15 @@
 TextHighlight::TextHighlight( QTextDocument* document ):
     QSyntaxHighlighter( document ),
     Counter( QStringLiteral("TextHighlight") )
-{}
+{
+    textSelectionHighlightPattern_.setType( HighlightPattern::Type::KeywordPattern );
+}
 
 //_______________________________________________________
 void TextHighlight::setParenthesis( const TextParenthesis::List& parenthesis )
 {
-
     Debug::Throw( QStringLiteral("TextHighlight::setParenthesis.\n") );
     parenthesis_ = parenthesis;
-
 }
 
 //_________________________________________________________
@@ -119,9 +119,10 @@ void TextHighlight::highlightBlock( const QString& text )
     #endif
 
     // text selection
-    if( textSelection_.flag( TextSelection::HighlightAll ) && !textSelection_.text().isEmpty() )
+    if( textSelectionHighlightPattern_.isValid() )
     {
-        _textSelectionLocationSet( text );
+        bool active = false;
+        textSelectionHighlightPattern_.processText( locations, text, active );        
     }
     
     // apply new location set
@@ -158,9 +159,47 @@ void TextHighlight::setTextSelectionHighlightColor( const QColor& color )
 {
     HighlightStyle style( QStringLiteral("textselection_style") );
     style.setBackgroundColor( color );
-    textSelectionHighlightFormat_.setStyle( style ); 
+    textSelectionHighlightPattern_.setStyle( style ); 
 }
+
+//_________________________________________________________
+bool TextHighlight::updateTextSelection(const TextSelection& textSelection )
+{
     
+    // check if changed
+    if( textSelection == textSelection_ ) 
+    {
+        // do nothing, return unchanged
+        return false; 
+    }
+
+    // if highlight all has not changed and is false, also do nothing
+    if( !( textSelection_.hasFlag( TextSelection::HighlightAll ) || textSelection.hasFlag( TextSelection::HighlightAll ) ) )
+    {
+        textSelection_ = textSelection;
+        return false;
+    }
+    
+    // update stored selection
+    textSelection_ = textSelection;
+    
+    // update text selection highlight pattern
+    if( !textSelection.hasFlag( TextSelection::HighlightAll ) || textSelection.text().isEmpty() ) 
+    { 
+        textSelectionHighlightPattern_.setKeyword( QRegularExpression() );
+    } else {    
+        textSelectionHighlightPattern_.setFlag( HighlightPattern::CaseInsensitive, !textSelection.hasFlag( TextSelection::CaseSensitive ) );
+        if( textSelection.hasFlag( TextSelection::RegExp ) ) textSelectionHighlightPattern_.setKeyword( textSelection.text() );
+        else {
+            auto escaped = QRegularExpression::escape( textSelection.text() );
+            if( textSelection.hasFlag( TextSelection::EntireWord )) escaped = QStringLiteral( "\\b" ) + escaped + QStringLiteral( "\\b" );
+            textSelectionHighlightPattern_.setKeyword( escaped );
+        }
+    }
+    
+    return true;
+}
+
 //_________________________________________________________
 void TextHighlight::updateSpellPattern()
 { 
@@ -289,9 +328,9 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
                 locations.erase( current );
             }
 
-            // no overlap with prev. Check against parent
         } else if( iter->position() < parent->position()+(int)parent->length()  ) {
 
+            // no overlap with prev. Check against parent
             if( iter->parentId() == parent->id() )
             {
                 prev = iter;
@@ -350,23 +389,6 @@ PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, H
     #endif
 
     return locations;
-}
-
-//_________________________________________________________
-PatternLocationSet TextHighlight::_textSelectionLocationSet( const QString& text )
-{
-    // check text selection
-    if( !textSelection_.flag( TextSelection::HighlightAll ) || textSelection_.text().isEmpty() || text.isEmpty() ) 
-    { return PatternLocationSet(); }
-    
-    // for now ignore regexp
-    // PatternLocationSet locations;
-    int position = 0;
-    while( (position = text.indexOf( textSelection_.text(), position) ) )
-    {
-    }
-    
-    return PatternLocationSet();
 }
 
 //_________________________________________________________

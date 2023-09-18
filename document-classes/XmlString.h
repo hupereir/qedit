@@ -34,6 +34,9 @@ class XmlString final
     //* conversion
     operator const QString& () const { return value_; }
 
+    //! accessor
+    const QString& get() const { return value_; }
+    
     private:
 
     //* value

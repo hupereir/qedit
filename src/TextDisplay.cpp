@@ -1213,7 +1213,10 @@ void TextDisplay::_updateDocumentClass( const File &file, bool newDocument )
 void TextDisplay::find( const TextSelection& selection )
 {
     TextEditor::find( selection );
-    if( textHighlight_ ) textHighlight_->findAll( selection );
+    
+    // also update text highlight
+    if( textHighlight_ && textHighlight_->updateTextSelection( selection ) )
+    { textHighlight_->rehighlight(); }
 }
 
 //_____________________________________________
@@ -1237,15 +1240,11 @@ void TextDisplay::processMacro( const QString &name )
 //_______________________________________________________
 void TextDisplay::rehighlight()
 {
-    Debug::Throw( QStringLiteral("TextDisplay::rehighlight.\n") );
-
     // set all block to modified
     for( const auto& block:TextBlockRange( document() ) )
     { _setBlockModified( block ); }
 
-    textHighlight_->setDocument( document() );
-    Debug::Throw( QStringLiteral("TextDisplay::rehighlight. done.\n") );
-
+    textHighlight_->rehighlight();
 }
 
 

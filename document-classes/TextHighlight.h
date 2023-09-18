@@ -144,18 +144,17 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     
     //* highghlight color
     QColor textSelectionHighlightColor() const
-    { return textSelectionHighlightFormat_.style().backgroundColor(); }
+    { return textSelectionHighlightPattern_.style().backgroundColor(); }
     
     //* find text selection
-    void findAll( const TextSelection& textSelection )
-    { textSelection_ = textSelection; }
+    bool updateTextSelection( const TextSelection& );
     
     //@}
     
     //* patterns
     void clear()
     {
-        Debug::Throw( QStringLiteral("TextHighlight.clear.\n") );
+        Debug::Throw( QStringLiteral("TextHighlight::clear.\n") );
         patterns_.clear();
     }
 
@@ -193,9 +192,6 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
 
     //* retrieve highlight location for given text
     PatternLocationSet _spellCheckLocationSet( const QString& text, HighlightBlockData* data = 0 );
-
-    //* retrieve text selection location sets 
-    PatternLocationSet _textSelectionLocationSet( const QString& text );
     
     //* apply locations to current block
     void _applyPatterns( const PatternLocationSet& locations );
@@ -209,12 +205,12 @@ class TextHighlight: public QSyntaxHighlighter, private Base::Counter<TextHighli
     //* list of highlight patterns
     HighlightPattern::List patterns_;
 
-    //* text selection highlight pattern
-    HighlightPattern textSelectionHighlightFormat_;
-    
-    //* current text selection
+    //* text selection
     TextSelection textSelection_;
     
+    //* text selection highlight pattern
+    HighlightPattern textSelectionHighlightPattern_;
+        
     //@}
 
     //*@name text parenthesis

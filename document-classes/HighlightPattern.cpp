@@ -57,9 +57,7 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
             if( attribute.value().indexOf( Xml::OptionNoIndent, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( NoIndent, true );
             if( attribute.value().indexOf( Xml::OptionNoCase, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( CaseInsensitive, true );
             if( attribute.value().indexOf( Xml::OptionComment, 0, Qt::CaseInsensitive ) >= 0 ) setFlag( Comment, true );
-
         }
-
     }
 
     // parse children
@@ -67,7 +65,7 @@ HighlightPattern::HighlightPattern( const QDomElement& element ):
     {
         const auto childElement = childNode.toElement();
         if( childElement.isNull() ) continue;
-        else if( childElement.tagName() == Xml::Keyword ) setKeyword( XmlString( childElement.text() ) );
+        else if( childElement.tagName() == Xml::Keyword ) setKeyword( XmlString( childElement.text() ).get() );
         else if( childElement.tagName() == Xml::Begin ) setBegin( XmlString( childElement.text() ) );
         else if( childElement.tagName() == Xml::End ) setEnd( XmlString( childElement.text() ) );
     }
@@ -137,16 +135,40 @@ QString HighlightPattern::typeName( Type type )
     }
 }
 
+ //____________________________________________________________
+bool HighlightPattern::isValid() const
+{
+    switch( type_ )
+    {
+        case Type::KeywordPattern: 
+        return keyword_.isValid() && !keyword_.pattern().isEmpty();
+        
+        case Type::RangePattern: 
+        return 
+            keyword_.isValid() && !keyword_.pattern().isEmpty() &&
+            end_.isValid() && !end_.pattern().isEmpty();
+
+        default: return false;
+    }
+}
+
+//____________________________________________________________
+void HighlightPattern::_updatePatternOptions( QRegularExpression& regexp ) const
+{
+    auto patternOptions( regexp.patternOptions() );
+    patternOptions.setFlag( QRegularExpression::CaseInsensitiveOption, hasFlag( CaseInsensitive ) );
+    regexp.setPatternOptions( patternOptions );
+}
+
 //____________________________________________________________
 bool HighlightPattern::_findKeyword( PatternLocationSet& locations, const QString& text, bool& active ) const
 {
-
     // disable activity
     active=false;
 
     // check RegExp
     if( keyword_.pattern().isEmpty() ) return false;
-
+    
     // process text
     bool found( false );
     auto iter = keyword_.globalMatch( text );
@@ -158,7 +180,6 @@ bool HighlightPattern::_findKeyword( PatternLocationSet& locations, const QStrin
     }
 
     return found;
-
 }
 
 //____________________________________________________________
