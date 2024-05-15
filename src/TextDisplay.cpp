@@ -1216,7 +1216,9 @@ void TextDisplay::find( const TextSelection& selection )
     
     // also update text highlight
     if( textHighlight_ && textHighlight_->updateTextSelection( selection ) )
-    { textHighlight_->rehighlight(); }
+    { 
+        textHighlight_->rehighlight(); 
+    }
 }
 
 //_____________________________________________

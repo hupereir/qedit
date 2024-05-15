@@ -665,9 +665,11 @@ QSplitter& TextView::_newSplitter( Qt::Orientation orientation, bool clone )
 
         // retrieve children and loop
         auto children( this->children() );
-        std::any_of( children.begin(), children.end(),
-            [&child]( QObject* object )
-            { return (child = qobject_cast<QWidget*>( object )); } );
+        for( const auto& object:children )
+        {
+            if( (child =  qobject_cast<QWidget*>( object ) ) )
+            { break;}
+        }
 
         // try cast child to splitter
         // if exists and have same orientation, do not create a new one

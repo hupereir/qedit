@@ -63,23 +63,19 @@ void TextHighlight::highlightBlock( const QString& text )
 
     if( data )
     {
-
         // see if block needs update
         needUpdate =
             data->hasFlag( TextBlock::BlockModified ) ||
             (highlightEnabled && (locations = data->locations()).activeId().first != activeId );
-
     } else {
-
         // try retrieve data from parent type
         auto textData = static_cast<TextBlockData*>( currentBlockUserData() );
         data = textData ? new HighlightBlockData( textData ) : new HighlightBlockData;
         setCurrentBlockUserData( data );
-
     }
-
+    
     // highlight patterns
-    if( needUpdate && highlightEnabled )
+    if( highlightEnabled && needUpdate )
     {
 
         // get new set of highlight locations
@@ -166,12 +162,15 @@ void TextHighlight::setTextSelectionHighlightColor( const QColor& color )
 bool TextHighlight::updateTextSelection(const TextSelection& textSelection )
 {
     
+    const bool changed = 
+        (textSelection_.hasFlag( TextSelection::HighlightAll ) != textSelection.hasFlag( TextSelection::HighlightAll ) ) ||
+        (textSelection_.hasFlag( TextSelection::CaseSensitive ) != textSelection.hasFlag( TextSelection::CaseSensitive ) ) ||
+        (textSelection_.hasFlag( TextSelection::EntireWord ) != textSelection.hasFlag( TextSelection::EntireWord ) ) ||
+        (textSelection_.hasFlag( TextSelection::RegExp ) != textSelection.hasFlag( TextSelection::RegExp ) ) ||
+        (textSelection_.text() != textSelection.text());
+
     // check if changed
-    if( textSelection == textSelection_ ) 
-    {
-        // do nothing, return unchanged
-        return false; 
-    }
+    if( !changed ) return false; 
 
     // if highlight all has not changed and is false, also do nothing
     if( !( textSelection_.hasFlag( TextSelection::HighlightAll ) || textSelection.hasFlag( TextSelection::HighlightAll ) ) )
