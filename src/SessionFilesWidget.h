@@ -127,25 +127,25 @@ class SessionFilesWidget: public QWidget, private Base::Counter<SessionFilesWidg
     SessionFilesModel model_;
 
     //* list
-    TreeView* list_;
+    TreeView* list_ = nullptr;
 
     //*@name actions
     //@{
 
     //* previous file
-    QAction* previousFileAction_;
+    QAction* previousFileAction_ = nullptr;
 
     //* next file
-    QAction* nextFileAction_;
+    QAction* nextFileAction_ = nullptr;
 
     //* open action
-    QAction* openAction_;
+    QAction* openAction_ = nullptr;
 
     //* save action
-    QAction* saveAction_;
+    QAction* saveAction_ = nullptr;
 
     //* close action
-    QAction *closeAction_;
+    QAction *closeAction_ = nullptr;
 
     //@}
 
