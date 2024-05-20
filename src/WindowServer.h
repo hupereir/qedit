@@ -134,35 +134,28 @@ class WindowServer: public QObject, public Base::Key, private Base::Counter<Wind
     //@{
 
     //* from dialog
-    bool _open()
-    { return _open( _selectFileFromDialog() ); }
+    bool _open();
 
     //* open file
-    bool _open( const FileRecord &record )
-    { return _open( record, openMode_ ); }
+    bool _open( const FileRecord &record );
 
     //* open file, splitting with existing display
     bool _open( FileRecord, File );
 
     //* open in new window
-    bool _openInNewWindow( const FileRecord &record )
-    { return _open( record, OpenMode::NewWindow ); }
+    bool _openInNewWindow( const FileRecord &record );
 
     //* open in active window
-    bool _openInActiveWindow( const FileRecord &record )
-    { return _open( record, OpenMode::ActiveWindow ); }
+    bool _openInActiveWindow( const FileRecord &record );
 
     //* open in current tab
-    bool _openInActiveView( const FileRecord &record )
-    { return _open( record, defaultOrientation( OrientationMode::Normal ) ); }
+    bool _openInActiveView( const FileRecord &record );
 
     //* open in active view
-    bool _openHorizontal()
-    { return _open( _selectFileFromDialog(), Qt::Vertical ); }
+    bool _openHorizontal();
 
     //* open in active view
-    bool _openVertical()
-    { return _open( _selectFileFromDialog(), Qt::Horizontal ); }
+    bool _openVertical();
 
     //@}
 

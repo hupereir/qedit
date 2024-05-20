@@ -501,6 +501,35 @@ void WindowServer::_newFile( Qt::Orientation orientation )
 }
 
 //_______________________________________________
+bool WindowServer::_open()
+{ return _open( _selectFileFromDialog() ); }
+
+//_______________________________________________
+bool WindowServer::_open( const FileRecord &record )
+{ return _open( record, openMode_ ); }
+
+//_______________________________________________
+bool WindowServer::_openInNewWindow( const FileRecord &record )
+{ return _open( record, OpenMode::NewWindow ); }
+
+//_______________________________________________
+bool WindowServer::_openInActiveWindow( const FileRecord &record )
+{ return _open( record, OpenMode::ActiveWindow ); }
+
+//_______________________________________________
+bool WindowServer::_openInActiveView( const FileRecord &record )
+{ return _open( record, defaultOrientation( OrientationMode::Normal ) ); }
+
+//_______________________________________________
+bool WindowServer::_openHorizontal()
+{ return _open( _selectFileFromDialog(), Qt::Vertical ); }
+
+//_______________________________________________
+bool WindowServer::_openVertical()
+{ return _open( _selectFileFromDialog(), Qt::Horizontal ); }
+
+    
+//_______________________________________________
 bool WindowServer::_open( FileRecord record, File second )
 {
 
