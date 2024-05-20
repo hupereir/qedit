@@ -141,6 +141,9 @@ class Application: public BaseApplication, private Base::Counter<Application>
 
     //@}
 
+    // check last window close signal
+    void lastWindowClose();
+    
     Q_SIGNALS:
 
     //* spellcheck configuration modified

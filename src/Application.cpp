@@ -34,6 +34,7 @@
 #include "XmlFileList.h"
 #include "XmlFileRecord.h"
 #include "XmlOptions.h"
+#include "WaylandUtil.h"
 
 #if WITH_ASPELL
 #include "SpellCheckConfigurationDialog.h"
@@ -97,9 +98,12 @@ bool Application::realizeWidget()
     // check if the method has already been called.
     if( !BaseApplication::realizeWidget() ) return false;
 
-    // disable exit on last window
-    // this is re-enabled manually after arguments are read
-    qApp->setQuitOnLastWindowClosed( false );
+    if(!WaylandUtil::isWayland())
+    {
+        // disable exit on last window
+        // this is re-enabled manually after arguments are read
+        qApp->setQuitOnLastWindowClosed( false ); 
+    }
 
     // actions
     _installActions();
@@ -334,9 +338,7 @@ void Application::_updateLastSessionFiles()
 //___________________________________________________________
 void Application::_updateSessionActions()
 {
-
     Debug::Throw( QStringLiteral("Application::_updateSessionActions.\n") );
-
     {
         const bool empty( sessionFiles_->isEmpty() );
         const bool recordsEmpty( windowServer_->records( WindowServer::ExistingOnly ).isEmpty() );
@@ -350,29 +352,24 @@ void Application::_updateSessionActions()
         const bool empty( lastSessionFiles_->isEmpty() );
         restoreLastSessionAction_->setEnabled( !empty );
     }
-
 }
 
 //_____________________________________________
 void Application::_showMonitoredFiles()
 {
-
     Debug::Throw( QStringLiteral("Application::_showMonitoredFiles.\n") );
     FileCheckDialog dialog( qApp->activeWindow() );
     dialog.setFiles( fileCheck_->fileSystemWatcher().files() );
     dialog.exec();
-
 }
 
 //_______________________________________________
 void Application::_exit()
 {
-
     Debug::Throw( QStringLiteral("Application::_exit.\n") );
     _updateLastSessionFiles();
     if( !windowServer_->closeAll() ) return;
     qApp->quit();
-
 }
 
 //________________________________________________
@@ -382,7 +379,6 @@ bool Application::_processCommand( const Server::ServerCommand& command )
     if( BaseApplication::_processCommand( command ) ) return true;
     if( command.command() == Server::ServerCommand::CommandType::Raise )
     {
-
         // copy arguments and try open
         _setArguments( command.arguments() );
         startupTimer_.start( 100, this );
@@ -399,15 +395,19 @@ void Application::timerEvent( QTimerEvent* event )
     Debug::Throw( QStringLiteral("Application::timerEvent.\n") );
     if( event->timerId() == startupTimer_.timerId() )
     {
-
         startupTimer_.stop();
         windowServer_->readFilesFromArguments( commandLineParser( _arguments() ) );
-        connect( qApp, &QApplication::lastWindowClosed, qApp, &QApplication::quit, Qt::UniqueConnection );
-
-    } else return QObject::timerEvent( event );
+        connect( qApp, &QGuiApplication::lastWindowClosed, this, &Application::lastWindowClose, Qt::UniqueConnection );    } else return QObject::timerEvent( event );
 }
 
 //_________________________________________________
+void Application::lastWindowClose()
+{
+    Debug::Throw(QStringLiteral("Application::lastWindowClose.\n")); 
+    QCoreApplication::quit();
+}
+
+    //_________________________________________________
 void Application::_updateConfiguration()
 {
     Debug::Throw( QStringLiteral("Application::_updateConfiguration.\n") );
