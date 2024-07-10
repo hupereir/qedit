@@ -1092,7 +1092,7 @@ bool TextDisplay::hasTaggedBlocks() const
 
     return false;
 }
-    
+
 //___________________________________________________________________________
 void TextDisplay::_updateDocumentClass( const File &file, bool newDocument )
 {
@@ -1213,11 +1213,11 @@ void TextDisplay::_updateDocumentClass( const File &file, bool newDocument )
 void TextDisplay::find( const TextSelection& selection )
 {
     TextEditor::find( selection );
-    
+
     // also update text highlight
     if( textHighlight_ && textHighlight_->updateTextSelection( selection ) )
-    { 
-        textHighlight_->rehighlight(); 
+    {
+        textHighlight_->rehighlight();
     }
 }
 
@@ -2410,6 +2410,14 @@ void TextDisplay::_fileProperties()
     auto item = new GridLayoutItem( box, gridLayout );
     item->setKey( QStringLiteral("Number of characters:") );
     item->setText( QString::number(toPlainText().size()) );
+
+    // number of words
+    item = new GridLayoutItem( box, gridLayout );
+    item->setKey( QStringLiteral("Number of words:") );
+    {
+        const auto word_count = toPlainText().split(QRegularExpression("\\s+"), Qt::SkipEmptyParts).size();
+        item->setText( QString::number(word_count) );
+    }
 
     // number of lines
     item = new GridLayoutItem( box, gridLayout );
