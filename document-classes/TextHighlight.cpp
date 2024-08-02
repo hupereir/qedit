@@ -73,7 +73,7 @@ void TextHighlight::highlightBlock( const QString& text )
         data = textData ? new HighlightBlockData( textData ) : new HighlightBlockData;
         setCurrentBlockUserData( data );
     }
-    
+
     // highlight patterns
     if( highlightEnabled && needUpdate )
     {
@@ -118,9 +118,9 @@ void TextHighlight::highlightBlock( const QString& text )
     if( textSelectionHighlightPattern_.isValid() )
     {
         bool active = false;
-        textSelectionHighlightPattern_.processText( locations, text, active );        
+        textSelectionHighlightPattern_.processText( locations, text, active );
     }
-    
+
     // apply new location set
     if( !locations.empty() ) _applyPatterns( locations );
 
@@ -155,14 +155,14 @@ void TextHighlight::setTextSelectionHighlightColor( const QColor& color )
 {
     HighlightStyle style( QStringLiteral("textselection_style") );
     style.setBackgroundColor( color );
-    textSelectionHighlightPattern_.setStyle( style ); 
+    textSelectionHighlightPattern_.setStyle( style );
 }
 
 //_________________________________________________________
 bool TextHighlight::updateTextSelection(const TextSelection& textSelection )
 {
-    
-    const bool changed = 
+
+    const bool changed =
         (textSelection_.hasFlag( TextSelection::HighlightAll ) != textSelection.hasFlag( TextSelection::HighlightAll ) ) ||
         (textSelection_.hasFlag( TextSelection::CaseSensitive ) != textSelection.hasFlag( TextSelection::CaseSensitive ) ) ||
         (textSelection_.hasFlag( TextSelection::EntireWord ) != textSelection.hasFlag( TextSelection::EntireWord ) ) ||
@@ -170,7 +170,7 @@ bool TextHighlight::updateTextSelection(const TextSelection& textSelection )
         (textSelection_.text() != textSelection.text());
 
     // check if changed
-    if( !changed ) return false; 
+    if( !changed ) return false;
 
     // if highlight all has not changed and is false, also do nothing
     if( !( textSelection_.hasFlag( TextSelection::HighlightAll ) || textSelection.hasFlag( TextSelection::HighlightAll ) ) )
@@ -178,15 +178,15 @@ bool TextHighlight::updateTextSelection(const TextSelection& textSelection )
         textSelection_ = textSelection;
         return false;
     }
-    
+
     // update stored selection
     textSelection_ = textSelection;
-    
+
     // update text selection highlight pattern
-    if( !textSelection.hasFlag( TextSelection::HighlightAll ) || textSelection.text().isEmpty() ) 
-    { 
+    if( !textSelection.hasFlag( TextSelection::HighlightAll ) || textSelection.text().isEmpty() )
+    {
         textSelectionHighlightPattern_.setKeyword( QRegularExpression() );
-    } else {    
+    } else {
         textSelectionHighlightPattern_.setFlag( HighlightPattern::CaseInsensitive, !textSelection.hasFlag( TextSelection::CaseSensitive ) );
         if( textSelection.hasFlag( TextSelection::RegExp ) ) textSelectionHighlightPattern_.setKeyword( textSelection.text() );
         else {
@@ -195,18 +195,20 @@ bool TextHighlight::updateTextSelection(const TextSelection& textSelection )
             textSelectionHighlightPattern_.setKeyword( escaped );
         }
     }
-    
+
     return true;
 }
 
+#if WITH_ASPELL
 //_________________________________________________________
 void TextHighlight::updateSpellPattern()
-{ 
+{
     HighlightStyle style( QStringLiteral("spellcheck_style") );
     style.setFontFormat( spellParser_.fontFormat() );
     style.setColor( spellParser_.color() );
     spellPattern_.setStyle( std::move( style ) );
 }
+#endif
 
 //_________________________________________________________
 PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, int activeId ) const
@@ -409,7 +411,7 @@ void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
         QTextCharFormat old( TextHighlight::format( location.position() ) );
         if( old.hasProperty( QTextFormat::BackgroundBrush ) && !format.hasProperty( QTextFormat::BackgroundBrush ) )
         { format.setBackground( old.background() ); }
-        
+
         setFormat( location.position(), location.length(), format );
 
     }
