@@ -161,7 +161,7 @@ class DocumentClass final: private Base::Counter<DocumentClass>
     {};
 
     //* less than ftor
-    class WeakLessThanFTor: public std::binary_function< DocumentClass, DocumentClass, bool>
+    class WeakLessThanFTor:
     {
         public:
 
