@@ -157,8 +157,7 @@ class DocumentClass final: private Base::Counter<DocumentClass>
 
     //* equal to ftor
     class WeakEqualFTor:
-        public Base::Functor::BinaryEqual<DocumentClass, const QString&, &DocumentClass::name>,
-        public std::binary_function< DocumentClass, DocumentClass, bool>
+        public Base::Functor::BinaryEqual<DocumentClass, const QString&, &DocumentClass::name>
     {};
 
     //* less than ftor
