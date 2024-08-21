@@ -33,6 +33,7 @@ TextHighlight::TextHighlight( QTextDocument* document ):
     Counter( QStringLiteral("TextHighlight") )
 {
     textSelectionHighlightPattern_.setType( HighlightPattern::Type::KeywordPattern );
+    textSelectionHighlightPattern_.setParentId(-1);
 }
 
 //_______________________________________________________

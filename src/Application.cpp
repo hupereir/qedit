@@ -85,9 +85,7 @@ bool Application::initApplicationManager()
         #else
         return true;
         #endif
-
     }
-
 }
 
 //____________________________________________
@@ -101,8 +99,7 @@ bool Application::realizeWidget()
     if(!WaylandUtil::isWayland())
     {
         // disable exit on last window
-        // this is re-enabled manually after arguments are read
-        qApp->setQuitOnLastWindowClosed( false ); 
+        qApp->setQuitOnLastWindowClosed( false );
     }
 
     // actions
@@ -148,7 +145,6 @@ bool Application::realizeWidget()
     startupTimer_.start( 0, this );
 
     return true;
-
 }
 
 //____________________________________________
@@ -237,9 +233,7 @@ void Application::_configuration()
 //_______________________________________________
 void Application::_spellCheckConfiguration()
 {
-
     #if WITH_ASPELL
-
     Debug::Throw( QStringLiteral("Application::_spellCheckConfiguration.\n") );
 
     // create dialog
@@ -247,9 +241,7 @@ void Application::_spellCheckConfiguration()
     connect( &dialog, &BaseConfigurationDialog::configurationChanged, this, &Application::spellCheckConfigurationChanged );
     dialog.centerOnWidget( qApp->activeWindow() );
     dialog.exec();
-
     #endif
-
 }
 
 //_______________________________________________
@@ -265,7 +257,6 @@ void Application::_documentClassesConfiguration()
     { XmlOptions::get().add( QStringLiteral("PATTERN_FILENAME"), file ); }
 
     _updateDocumentClasses();
-
 }
 
 //___________________________________________________________
@@ -375,7 +366,6 @@ void Application::_exit()
 //________________________________________________
 bool Application::_processCommand( const Server::ServerCommand& command )
 {
-
     if( BaseApplication::_processCommand( command ) ) return true;
     if( command.command() == Server::ServerCommand::CommandType::Raise )
     {
@@ -384,9 +374,7 @@ bool Application::_processCommand( const Server::ServerCommand& command )
         startupTimer_.start( 100, this );
         return true;
     }
-
     return false;
-
 }
 
 //___________________________________________________________
@@ -403,7 +391,7 @@ void Application::timerEvent( QTimerEvent* event )
 //_________________________________________________
 void Application::lastWindowClose()
 {
-    Debug::Throw(QStringLiteral("Application::lastWindowClose.\n")); 
+    Debug::Throw(QStringLiteral("Application::lastWindowClose.\n"));
     QCoreApplication::quit();
 }
 
@@ -411,16 +399,16 @@ void Application::lastWindowClose()
 void Application::_updateConfiguration()
 {
     Debug::Throw( QStringLiteral("Application::_updateConfiguration.\n") );
-    static_cast<XmlFileList*>(recentFiles_.get())->setDBFile( File( XmlOptions::get().raw( QStringLiteral("RC_FILE") ) ) );
-    static_cast<XmlFileList*>(sessionFiles_.get())->setDBFile( File( XmlOptions::get().raw( QStringLiteral("RC_FILE") ) ) );
-    static_cast<XmlFileList*>(lastSessionFiles_.get())->setDBFile( File( XmlOptions::get().raw( QStringLiteral("RC_FILE") ) ) );
+    const File db_file( XmlOptions::get().raw( QStringLiteral("RC_FILE") ) );
+    static_cast<XmlFileList*>(recentFiles_.get())->setDBFile(db_file);
+    static_cast<XmlFileList*>(sessionFiles_.get())->setDBFile(db_file);
+    static_cast<XmlFileList*>(lastSessionFiles_.get())->setDBFile(db_file);
     recentFiles_->setMaxSize( XmlOptions::get().get<int>( QStringLiteral("DB_SIZE") ) );
 }
 
 //___________________________________________________________
 void Application::_installActions()
 {
-
     Debug::Throw( QStringLiteral("Application::_installActions.\n") );
 
     // need to modify closeAction signal for proper exit
@@ -459,5 +447,4 @@ void Application::_installActions()
     monitoredFilesAction_ = new QAction( tr( "Show Monitored Files" ), this );
     monitoredFilesAction_->setToolTip( tr( "Show monitored files" ) );
     connect( monitoredFilesAction_, &QAction::triggered, this, &Application::_showMonitoredFiles );
-
 }
