@@ -49,7 +49,7 @@ int main (int argc, char *argv[])
     installSystemOptions();
 
     // resources
-    File rcFile( XmlOptions::get().raw( QStringLiteral("RC_FILE") ) );
+    const File rcFile( XmlOptions::get().raw( QStringLiteral("RC_FILE") ) );
     XmlOptions::setFile( rcFile );
     XmlOptions::read();
 

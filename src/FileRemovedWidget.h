@@ -36,12 +36,10 @@ class FileRemovedWidget: public MessageWidget, public Base::Key
     //* return codes
     enum class ReturnCode
     {
-
         SaveAgain,
         SaveAs,
         Close,
         Ignore
-
     };
 
     //* constructor
@@ -49,9 +47,7 @@ class FileRemovedWidget: public MessageWidget, public Base::Key
 
     //*@ modifiers
     //@{
-
     void setFile( const File& );
-
     //@}
 
     Q_SIGNALS:
