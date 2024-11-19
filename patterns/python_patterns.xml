@@ -10,7 +10,12 @@
   <Option>
    <Name>emulate_tabs</Name>
    <Value>1</Value>
-   <flags>4</flags>
+   <flags>2</flags>
+  </Option>
+  <Option>
+   <Name>tab_size</Name>
+   <Value>4</Value>
+   <flags>2</flags>
   </Option>
   <Option>
    <Name>default</Name>
@@ -82,12 +87,30 @@
   </keyword_pattern>
 
 <!--Indentation patterns-->
-  <indent_pattern type="1" name="0" >
+  <indent_pattern type="0" name="0" >
+   <rule par="0" >
+    <regexp>^\s*except</regexp>
+   </rule>
    <rule par="-1" >
     <regexp>(:\s*($|#))</regexp>
    </rule>
-   <comments>kincrement if previous line ends with :</comments>
+   <comments>keep unchanged when previous line ends with : but this one starts with except</comments>
   </indent_pattern>
+
+  <indent_pattern type="2" name="1" >
+   <rule par="0" >
+    <regexp>^\s*except</regexp>
+   </rule>
+   <comments>decrepent if this line starts with except</comments>
+  </indent_pattern>
+
+  <indent_pattern type="1" name="2" >
+   <rule par="-1" >
+    <regexp>(:\s*($|#))</regexp>
+   </rule>
+   <comments>increment if previous line ends with :</comments>
+  </indent_pattern>
+
 
 <!--Parenthesis-->
   <parenthesis begin="(" end=")" regexp="\(|\)" />
