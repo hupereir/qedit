@@ -57,6 +57,7 @@ void installDefaultOptions()
     XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/bibtex_patterns.xml", Option::Flag::None) );
     XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/makefile_patterns.xml", Option::Flag::None) );
     XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/perl_patterns.xml", Option::Flag::None) );
+    XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/python_patterns.xml", Option::Flag::None) );
     XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/shell_patterns.xml", Option::Flag::None) );
     XmlOptions::get().add( QStringLiteral("DEFAULT_PATTERN_FILENAME"), Option( ":/patterns/xml_patterns.xml", Option::Flag::None) );
 

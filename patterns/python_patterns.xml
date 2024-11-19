@@ -1,5 +1,5 @@
 <patterns>
- <class pattern="((/\.(((t?c)|ba)?sh)rc)|(/\w+\.(((t?c)|ba)?sh))|(/\w+\.cmake)|(/configure(\.(in|ac))?)|\.alias|CMakeLists\.txt|\.jd(f|l))$" icon="text-x-script.png" first_line_pattern="^\s*#\s*!\s*(/.*bin/)?((t?c|k|ba)?sh)" name="shell" >
+ <class pattern="(/\w+\.py)$" first_line_pattern="^\s*#\s*!\s*(/.*bin/)?(env\s*)?(python)" icon="text-x-python.png" name="python" >
 
 <!--Options-->
   <Option>
@@ -10,7 +10,7 @@
   <Option>
    <Name>emulate_tabs</Name>
    <Value>1</Value>
-   <flags>2</flags>
+   <flags>4</flags>
   </Option>
   <Option>
    <Name>default</Name>
@@ -60,17 +60,9 @@
    <comments></comments>
    <keyword>\$((\w+\b)|\{(\?)?(\w+)\})</keyword>
   </keyword_pattern>
-  <keyword_pattern style="Keyword2" parent="" name="Assigned variables" >
-   <comments></comments>
-   <keyword>\b(set(env)?|alias)\s+\w+\b</keyword>
-  </keyword_pattern>
-  <keyword_pattern style="Keyword2" parent="Assigned variables" name="Keyword2" >
-   <comments></comments>
-   <keyword>\b(set(env)?|alias)\b</keyword>
-  </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Keyword" >
    <comments></comments>
-   <keyword>\b((set)?env|eval|export|umask|bindkey|(end)?if|break|end|then|else|source|echo|fi|test|in|case|esac|for(each)?|print|cd|cp|exit|rm|ls|do(ne)?)\b</keyword>
+   <keyword>\b(if|def|else|for(each)?|print|return|try|except|from|import)\b</keyword>
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Braces" >
    <comments></comments>
@@ -82,7 +74,7 @@
   </keyword_pattern>
   <keyword_pattern style="End Of Line" parent="" name="End Of Line" >
    <comments></comments>
-   <keyword>;</keyword>
+   <keyword>(:)\s*$</keyword>
   </keyword_pattern>
   <keyword_pattern style="Function" parent="" name="Function" >
    <comments></comments>
@@ -90,6 +82,12 @@
   </keyword_pattern>
 
 <!--Indentation patterns-->
+  <indent_pattern type="1" name="0" >
+   <rule par="-1" >
+    <regexp>(:\s*($|#))</regexp>
+   </rule>
+   <comments>kincrement if previous line ends with :</comments>
+  </indent_pattern>
 
 <!--Parenthesis-->
   <parenthesis begin="(" end=")" regexp="\(|\)" />

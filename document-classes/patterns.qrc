@@ -10,6 +10,7 @@
     <file alias="patterns/bibtex_patterns.xml">../patterns/bibtex_patterns.xml</file>
     <file alias="patterns/makefile_patterns.xml">../patterns/makefile_patterns.xml</file>
     <file alias="patterns/perl_patterns.xml">../patterns/perl_patterns.xml</file>
+    <file alias="patterns/python_patterns.xml">../patterns/python_patterns.xml</file>
     <file alias="patterns/shell_patterns.xml">../patterns/shell_patterns.xml</file>
     <file alias="patterns/xml_patterns.xml">../patterns/xml_patterns.xml</file>
   </qresource>
