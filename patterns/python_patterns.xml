@@ -67,7 +67,7 @@
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Keyword" >
    <comments></comments>
-   <keyword>\b(if|def|else|for(each)?|print|return|try|except|from|import)\b</keyword>
+   <keyword>\b(if|def|else|for(each)?|in|print|return|try|except|from|import|with)\b</keyword>
   </keyword_pattern>
   <keyword_pattern style="Keyword" parent="" name="Braces" >
    <comments></comments>
@@ -87,21 +87,25 @@
   </keyword_pattern>
 
 <!--Indentation patterns-->
-  <indent_pattern type="0" name="0" >
-   <rule par="0" >
-    <regexp>^\s*except</regexp>
-   </rule>
-   <rule par="-1" >
-    <regexp>(:\s*($|#))</regexp>
-   </rule>
-   <comments>keep unchanged when previous line ends with : but this one starts with except</comments>
-  </indent_pattern>
-
   <indent_pattern type="2" name="1" >
    <rule par="0" >
     <regexp>^\s*except</regexp>
    </rule>
-   <comments>decrepent if this line starts with except</comments>
+   <comments>decrement if this line starts with except</comments>
+  </indent_pattern>
+
+  <indent_pattern type="2" name="1" >
+   <rule par="0" >
+    <regexp>^\s*else\s*:</regexp>
+   </rule>
+   <comments>decrement if this line starts with else</comments>
+  </indent_pattern>
+
+  <indent_pattern type="2" name="1.1" >
+   <rule par="-1" >
+    <regexp>^\s*return</regexp>
+   </rule>
+   <comments>increment if previous line ends with :</comments>
   </indent_pattern>
 
   <indent_pattern type="1" name="2" >
@@ -110,7 +114,6 @@
    </rule>
    <comments>increment if previous line ends with :</comments>
   </indent_pattern>
-
 
 <!--Parenthesis-->
   <parenthesis begin="(" end=")" regexp="\(|\)" />
