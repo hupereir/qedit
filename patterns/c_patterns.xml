@@ -114,7 +114,7 @@
   
   <keyword_pattern style="Keyword" parent="" name="Keyword" >
    <comments>keywords</comments>
-   <keyword>\b(break|case|catch|continue|default|delete|do|(dynamic|static|const|reinterpret)_cast|else|emit|fabs|false|for(each|ever)?|goto|if|new|return|sizeof|switch|this|throw|true|try|while)\b</keyword>
+   <keyword>\b(break|case|catch|continue|default|delete|do|(dynamic|static|const|reinterpret)_cast|else|emit|fabs|false|for(each|ever)?|goto|if|new|return|sizeof|switch|this|throw|true|try|while|(static_)?assert)\b</keyword>
   </keyword_pattern>
   
   <keyword_pattern style="Keyword" parent="" name="Root Keyword" >
