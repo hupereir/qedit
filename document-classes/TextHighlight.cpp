@@ -387,7 +387,9 @@ PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, H
 
     // store misspelled words
     if( data ) data->setMisspelledWords( words );
-
+    #else
+    Q_UNUSED(text);
+    Q_UNUSED(data);
     #endif
 
     return locations;
