@@ -60,6 +60,7 @@ int main (int argc, char *argv[])
     // resources
     Q_INIT_RESOURCE( patterns );
     Q_INIT_RESOURCE( pixmaps );
+    Q_INIT_RESOURCE( basePixmaps );
 
     // application
     QApplication application( argc, argv );
