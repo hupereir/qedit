@@ -370,7 +370,6 @@ PatternLocationSet TextHighlight::_highlightLocationSet( const QString& text, in
     }
 
     return locations;
-
 }
 
 //_________________________________________________________
@@ -398,7 +397,6 @@ PatternLocationSet TextHighlight::_spellCheckLocationSet( const QString& text, H
 //_________________________________________________________
 void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
 {
-
     // initialize style
     int patternId(-1);
     QTextCharFormat currentFormat;
@@ -411,15 +409,12 @@ void TextHighlight::_applyPatterns( const PatternLocationSet& locations )
         }
 
         QTextCharFormat format( currentFormat );
-        QTextCharFormat old( TextHighlight::format( location.position() ) );
+        const QTextCharFormat old( TextHighlight::format( location.position() ) );
         if( old.hasProperty( QTextFormat::BackgroundBrush ) && !format.hasProperty( QTextFormat::BackgroundBrush ) )
         { format.setBackground( old.background() ); }
 
         setFormat( location.position(), location.length(), format );
-
     }
-
-    return;
 }
 
 //_________________________________________________________
