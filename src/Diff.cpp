@@ -123,14 +123,11 @@ void Diff::_parseOutput( int code, QProcess::ExitStatus status )
     }
 
     // retrieve all stdout and put into stream
-    const auto out( process_.readAllStandardOutput() );
-    const auto in( QString( out ).split( QLatin1Char('\n') ) );
-    int index(0);
-
+    const auto in( QString( process_.readAllStandardOutput()  ).split( QLatin1Char('\n') ) );
     for( const auto& buffer:in )
     {
 
-        index++;
+        if( buffer.isEmpty() ) continue;
 
         static const QString removedLines( QStringLiteral("<>-") );
         if( removedLines.indexOf( buffer[0] ) >= 0 ) continue;
