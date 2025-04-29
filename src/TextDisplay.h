@@ -32,6 +32,7 @@
 #include "Functors.h"
 #include "HighlightBlockFlags.h"
 #include "HighlightPattern.h"
+#include "IntegralType.h"
 #include "NewDocumentNameServer.h"
 #include "ParenthesisHighlight.h"
 #include "TextEditor.h"
@@ -216,7 +217,7 @@ class TextDisplay: public TextEditor
 
     };
 
-    Q_DECLARE_FLAGS( UpdateFlags, UpdateFlag )
+    using UpdateFlags = Base::underlying_type_t<UpdateFlag>;
 
     // set to true if widget is to be deleted
     void setIsClosed( bool value )
@@ -411,7 +412,7 @@ class TextDisplay: public TextEditor
 
     //* find next occurence of TextSelection
     void find( const TextSelection& ) override;
-    
+
     //* set document class
     void updateDocumentClass()
     { _updateDocumentClass( file_, isNewDocument_ ); }
@@ -821,7 +822,5 @@ class TextDisplay: public TextEditor
     BlockDelimiterDisplay* blockDelimiterDisplay_ = nullptr;
 
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( TextDisplay::UpdateFlags )
 
 #endif

@@ -205,7 +205,7 @@ class BlockDelimiterSegment final: private Base::Counter<BlockDelimiterSegment>
     //* streamer
     friend QTextStream& operator << ( QTextStream& out, const BlockDelimiterSegment& segment )
     {
-        out << "begin: " << segment.begin() << " end: " << segment.end() << " flags: " << segment.flags_;
+        out << "begin: " << segment.begin() << " end: " << segment.end() << " flags: " << (Flags::Int) segment.flags_;
         return out;
     }
 
