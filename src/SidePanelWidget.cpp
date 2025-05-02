@@ -24,7 +24,6 @@
 #include "RecentFilesWidget.h"
 #include "SessionFilesWidget.h"
 
-
 #include <QHeaderView>
 #include <QLayout>
 
@@ -41,6 +40,10 @@ SidePanelWidget::SidePanelWidget( QWidget* parent, FileList& files ):
     addWidget( sessionFilesWidget_ = new SessionFilesWidget( nullptr ) );
     addWidget( recentFilesWidget_ = new RecentFilesWidget( nullptr, files) );
     addWidget( fileSystemWidget_ = new BaseFileSystemWidget( nullptr ) );
+
+    // widget edges
+    QtUtil::setWidgetSides( &recentFilesWidget_->list(), Qt::LeftEdge );
+    QtUtil::setWidgetSides( &fileSystemWidget_->list(), Qt::LeftEdge );
 
     // current widget
     setCurrentWidget( sessionFilesWidget_ );

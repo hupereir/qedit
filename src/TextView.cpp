@@ -698,7 +698,8 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     Debug::Throw( QStringLiteral("\nTextView::_newTextDisplay.\n") );
 
     // create textDisplay
-    TextDisplay* display = new TextDisplay( parent );
+    auto display = new TextDisplay( parent );
+    QtUtil::setWidgetSides(display, {});
 
     // connections
     connect( display, &TextDisplay::needUpdate, this, &TextView::needUpdate );
@@ -715,7 +716,7 @@ TextDisplay& TextView::_newTextDisplay( QWidget* parent )
     connect( display, &QObject::destroyed, this, &TextView::displayCountChanged );
 
     // retrieve parent main window
-    MainWindow &window = *static_cast<MainWindow*>( TextView::window() );
+    auto &window = *static_cast<MainWindow*>( TextView::window() );
 
     // customize display actions
     /* this is needed to be able to handle a single dialog for stacked windows */

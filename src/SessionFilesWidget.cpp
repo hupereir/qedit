@@ -60,6 +60,7 @@ Counter( QStringLiteral("SessionFilesWidget") )
 
     // list
     layout()->addWidget( list_ = new SessionFilesView( this ) );
+    QtUtil::setWidgetSides( list_, Qt::LeftEdge );
     list_->setMouseTracking( true );
     list_->setModel( &model_ );
     list_->setOptionName( QStringLiteral("SESSION_FILES") );

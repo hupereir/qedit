@@ -635,6 +635,8 @@ void MainWindow::_toggleSidePanelWidget( bool state )
 {
     Debug::Throw( QStringLiteral("MainWindow::_toggleSidePanelWidget.\n") );
     XmlOptions::get().set<bool>( QStringLiteral("SHOW_SIDE_PANEL_WIDGET"), state );
+
+    // also adjust sides
 }
 
 //________________________________________________________

@@ -37,7 +37,6 @@ SessionFilesView::SessionFilesView( QWidget* parent ):
 //____________________________________________________________________
 void SessionFilesView::startDrag( Qt::DropActions supportedActions )
 {
-
     Debug::Throw()
         << "SessionFilesView::startDrag -"
         << " state: " << state()
@@ -58,11 +57,11 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
     if( indexes.isEmpty() ) return;
 
     // get mime data
-    QMimeData* data = model()->mimeData( indexes );
+    auto data = model()->mimeData( indexes );
     if( !data ) return;
 
     // create drag
-    QDrag* drag = new QDrag(this);
+    auto drag = new QDrag(this);
     drag->setMimeData(data);
 
     // generate pixmap
@@ -71,7 +70,6 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
 
     if( !drag->exec( supportedActions, defaultDropAction() ) )
     {
-
         // get dropped file record (use XML)
         // dom document
         QDomDocument document;
@@ -83,15 +81,12 @@ void SessionFilesView::startDrag( Qt::DropActions supportedActions )
         bool first( true );
         for( const auto& record:records )
         {
-
             if( first )
             {
                 first = false;
                 emit detach( record.file() );
             } else emit reparentFilesToMain( record.file(), target );
-
         }
-
     }
 
     // unlock
