@@ -43,7 +43,7 @@ SidePanelWidget::SidePanelWidget( QWidget* parent, FileList& files ):
 
     // widget edges
     QtUtil::setWidgetSides( &recentFilesWidget_->list(), Qt::LeftEdge );
-    QtUtil::setWidgetSides( &fileSystemWidget_->list(), Qt::LeftEdge );
+    QtUtil::setWidgetSides( &fileSystemWidget_->list(), Qt::TopEdge|Qt::LeftEdge );
 
     // current widget
     setCurrentWidget( sessionFilesWidget_ );
