@@ -30,7 +30,7 @@
 
 class SidePanelWidget;
 
-//* editor windows navigator
+//! editor windows navigator
 /**
 displays an up-to-date list of recent files
 as well as files opened in current session
@@ -38,58 +38,58 @@ as well as files opened in current session
 class SidePanelToolBar: public ToolBar
 {
 
-    //* Qt meta object declaration
+    //! Qt meta object declaration
     Q_OBJECT
 
     public:
 
-    //* creator
+    //! creator
     explicit SidePanelToolBar( QWidget* );
 
     using ToolBar::connect;
 
-    //* set target
+    //! set target
     void connect( SidePanelWidget& );
 
     protected:
 
-    //* context menu
+    //! context menu
     void contextMenuEvent( QContextMenuEvent* ) override;
 
     private:
 
-    //* update configuration
+    //! update configuration
     void _updateConfiguration();
 
-    //* toolbar text position
+    //! toolbar text position
     void _updateToolButtonStyle( int );
 
-    //* toolbar text position
+    //! toolbar text position
     void _updateToolButtonIconSize( IconSize::Size );
 
-    //* make sure proper buttons are changed when navigation frame visibility is changed
+    //! make sure proper buttons are changed when navigation frame visibility is changed
     void _sidePanelWidgetVisibilityChanged( bool );
 
-    //* display item page
+    //! display item page
     void _display( QAbstractButton* );
 
-    //* navigation frame
+    //! navigation frame
     SidePanelWidget& _sidePanelWidget()
     { return *sidePanelWidget_; }
 
-    //* tool button
+    //! tool button
     QToolButton* _newToolButton( QWidget* parent, const QIcon &) const;
 
-    //* map widget to action
+    //! map widget to action
     using ButtonMap = QHash<QToolButton*, QWidget* >;
 
-    //* map widget to action in the toolbar
+    //! map widget to action in the toolbar
     ButtonMap buttons_;
 
-    //* stack widget
+    //! stack widget
     SidePanelWidget* sidePanelWidget_ = nullptr;
 
-    //* enablility
+    //! enablility
     /** this is used to avoid circular action triggers */
     bool enabled_ = true;
 

@@ -21,6 +21,7 @@
 #include "BaseFileSystemWidget.h"
 #include "Debug.h"
 #include "QtUtil.h"
+#include "PathEditor.h"
 #include "RecentFilesWidget.h"
 #include "SessionFilesWidget.h"
 
@@ -42,8 +43,12 @@ SidePanelWidget::SidePanelWidget( QWidget* parent, FileList& files ):
     addWidget( fileSystemWidget_ = new BaseFileSystemWidget( nullptr ) );
 
     // widget edges
+    QtUtil::setWidgetSides( &sessionFilesWidget_->list(), Qt::LeftEdge );
     QtUtil::setWidgetSides( &recentFilesWidget_->list(), Qt::LeftEdge );
     QtUtil::setWidgetSides( &fileSystemWidget_->list(), Qt::TopEdge|Qt::LeftEdge );
+
+    fileSystemWidget_->pathEditor().setWidgetSides( Qt::TopEdge|Qt::LeftEdge );
+    fileSystemWidget_->layout()->setSpacing(0);
 
     // current widget
     setCurrentWidget( sessionFilesWidget_ );
