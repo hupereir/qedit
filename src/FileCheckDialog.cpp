@@ -36,7 +36,7 @@ FileCheckDialog::FileCheckDialog( QWidget* parent ):
     setOptionName( QStringLiteral("FILE_CHECK_DIALOG") );
 
     QtUtil::setMargin(layout(), 0);
-    QtUtil::setMargin(&buttonLayout(), 5);
+    QtUtil::setMargin(&buttonLayout(), defaultMargin());
 
     // custom list display
     mainLayout().addWidget( list_ = new TreeView( this ) );
