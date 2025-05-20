@@ -84,6 +84,8 @@ DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
     connect( cancelButton, &QAbstractButton::clicked, this, &QDialog::reject );
     buttonLayout->addWidget(cancelButton);
 
+    cancelButton->setFocus();
+
     // actions
     auto menu = new ContextMenu( list_ );
     addAction( addAction_ = new QAction( IconEngine::get( IconNames::Add ), tr( "Add" ), this ) );

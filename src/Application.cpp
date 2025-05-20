@@ -249,7 +249,6 @@ void Application::_documentClassesConfiguration()
 {
     Debug::Throw( QStringLiteral("Application::_documentClassesConfiguration.\n") );
     DocumentClassManagerDialog dialog;
-    dialog.setWindowTitle( tr( "Document Types Configuration" ) );
     if( !dialog.exec() ) return;
 
     XmlOptions::get().clearSpecialOptions( QStringLiteral("PATTERN_FILENAME") );
