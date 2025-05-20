@@ -20,7 +20,7 @@
 *
 *******************************************************************************/
 
-#include "Dialog.h"
+#include "BaseDialog.h"
 #include "DocumentClassModel.h"
 
 #include <QAction>
@@ -29,7 +29,7 @@
 class TreeView;
 
 //* handles list of connection attributes
-class DocumentClassManagerDialog: public Dialog
+class DocumentClassManagerDialog: public BaseDialog
 {
 
     Q_OBJECT

@@ -35,40 +35,54 @@
 
 //______________________________________________________________________
 DocumentClassManagerDialog::DocumentClassManagerDialog( QWidget* parent ):
-    Dialog( parent, OkButton|CancelButton )
+    BaseDialog( parent )
 {
 
     Debug::Throw( QStringLiteral("DocumentClassManagerDialog::DocumentClassManagerDialog.\n") );
     setOptionName( QStringLiteral("DOCUMENT_CLASS_MANAGER_DIALOG") );
+    setWindowTitle( tr( "Document Type Configuration" ) );
 
-    auto hLayout = new QHBoxLayout;
-    hLayout->setSpacing(5);
-    QtUtil::setMargin(hLayout, 0);
-    mainLayout().addLayout( hLayout );
+    auto layout( new QHBoxLayout );
+    layout->setSpacing(0);
+    QtUtil::setMargin(layout, 0);
+    setLayout( layout );
 
     // setup list
-    hLayout->addWidget( list_ = new TreeView( this ) );
+    list_ = new TreeView( this );
     list_->setModel( &model_ );
     list_->setSortingEnabled( false );
     list_->header()->hide();
     list_->setOptionName( QStringLiteral("DOCUMENT_CLASS_MANAGER_LIST") );
+    layout->addWidget( list_, 1 );
+    QtUtil::setWidgetSides(list_, Qt::TopEdge|Qt::RightEdge);
 
     // buttons
-    auto vLayout = new QVBoxLayout;
-    vLayout->setSpacing(5);
-    QtUtil::setMargin(vLayout, 0);
-    hLayout->addLayout( vLayout );
+    auto buttonLayout = new QVBoxLayout;
+    buttonLayout->setSpacing(5);
+    QtUtil::setMargin(buttonLayout, 5);
+    layout->addLayout( buttonLayout, 0 );
 
-    vLayout->addWidget( addButton_ = new QPushButton( IconEngine::get( IconNames::Add ), tr( "Add" ), this ) );
+    buttonLayout->addWidget( addButton_ = new QPushButton( IconEngine::get( IconNames::Add ), tr( "Add" ), this ) );
     connect( addButton_, &QAbstractButton::clicked, this, &DocumentClassManagerDialog::_add );
 
-    vLayout->addWidget( removeButton_ = new QPushButton( IconEngine::get( IconNames::Remove ), tr( "Remove" ), this ) );
+    buttonLayout->addWidget( removeButton_ = new QPushButton( IconEngine::get( IconNames::Remove ), tr( "Remove" ), this ) );
     connect( removeButton_, &QAbstractButton::clicked, this, &DocumentClassManagerDialog::_remove );
 
-    vLayout->addWidget( reloadButton_ = new QPushButton( IconEngine::get( IconNames::Reload ), tr( "Reload" ), this ) );
+    buttonLayout->addWidget( reloadButton_ = new QPushButton( IconEngine::get( IconNames::Reload ), tr( "Reload" ), this ) );
     connect( reloadButton_, &QAbstractButton::clicked, this, &DocumentClassManagerDialog::_reload );
 
-    vLayout->addStretch( 1 );
+    buttonLayout->addStretch( 1 );
+
+    // dialog buttons
+    auto okButton = new QPushButton( IconEngine::get( IconNames::DialogOk ), tr( "OK" ), this );
+    okButton->setAutoDefault(false);
+    connect( okButton, &QAbstractButton::clicked, this, &QDialog::accept );
+    buttonLayout->addWidget(okButton);
+
+    auto cancelButton = new QPushButton( IconEngine::get( IconNames::DialogCancel ), tr( "Cancel" ), this );
+    cancelButton->setAutoDefault(false);
+    connect( cancelButton, &QAbstractButton::clicked, this, &QDialog::reject );
+    buttonLayout->addWidget(cancelButton);
 
     // actions
     auto menu = new ContextMenu( list_ );
