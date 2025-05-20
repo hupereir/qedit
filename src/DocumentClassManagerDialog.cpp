@@ -193,7 +193,7 @@ void DocumentClassManagerDialog::_updateButtons()
 {
     // loop over selected items
     const auto selection( model_.get( list_->selectionModel()->selectedRows() ) );
-    const bool removeEnabled = std::any_of( selection.begin(), selection.end(), Base::Functor::UnaryTrue<DocumentClass, &DocumentClass::isBuildIn>() );
+    const bool removeEnabled = std::any_of( selection.begin(), selection.end(), Base::Functor::UnaryFalse<DocumentClass, &DocumentClass::isBuildIn>() );
 
     removeAction_->setEnabled( removeEnabled );
     removeButton_->setEnabled( removeEnabled );
