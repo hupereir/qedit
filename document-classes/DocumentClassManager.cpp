@@ -56,7 +56,7 @@ bool DocumentClassManager::read( const File& filename )
     XmlDocument document;
     if( !document.setContent( &file ) )
     {
-        readError_ = QString( QObject::tr( "An error occured while parsing document classes.\n %1" ) ).arg( document.error() );
+        readError_ = QString( QObject::tr( "An error occured while parsing document classes.\n %1" ) ).arg( document.error().toString() );
         return false;
     }
 
