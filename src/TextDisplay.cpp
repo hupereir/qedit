@@ -257,7 +257,7 @@ void TextDisplay::installContextMenuActions( BaseContextMenu* menu, bool )
     TextEditor::installContextMenuActions( menu, false );
 
     // add specific actions
-    menu->insertAction( &wrapModeAction(), &showBlockDelimiterAction() );
+    menu->insertAction( &wrapModeAction(), showBlockDelimiterAction_ );
     menu->addSeparator();
 
     // tags submenu
@@ -272,8 +272,6 @@ void TextDisplay::installContextMenuActions( BaseContextMenu* menu, bool )
     menu->addAction( previousTagAction_ );
     menu->addAction( clearTagAction_ );
     menu->addAction( clearAllTagsAction_ );
-
-    return;
 }
 
 //__________________________________________________________

@@ -164,7 +164,7 @@ class TextDisplay: public TextEditor
     void setReadOnly( bool ) override;
 
     //* install actions in context menu
-    void installContextMenuActions( BaseContextMenu* menu, bool = true ) override;
+    void installContextMenuActions( BaseContextMenu* menu, bool  /* all actions */ = true ) override;
 
     //* draw margins
     void paintMargin( QPainter& ) override;
