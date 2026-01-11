@@ -62,7 +62,7 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
 {
 
     // check index, role and column
-    if( !index.isValid() ) return QVariant();
+    if( !index.isValid() ) return {};
 
     // retrieve associated file info
     const auto& record( get(index) );
@@ -81,7 +81,7 @@ QVariant SessionFilesModel::data( const QModelIndex& index, int role ) const
 
     } else return FileRecordModel::data( index, role );
 
-    return QVariant();
+    return {};
 
 }
 
@@ -201,9 +201,9 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
 
             // loop over sources and emit proper signal
             for( const auto& record:records )
-            { 
+            {
                 // see if source record is in model
-                if( index( record ).isValid() ) emit reparentFiles( record.file(), target.file() ); 
+                if( index( record ).isValid() ) emit reparentFiles( record.file(), target.file() );
                 else emit requestOpen( record, target.file() );
             }
 
@@ -235,8 +235,8 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
 
             // emit relevant reparent signal
             for( const auto& record:records )
-            { 
-                if( index( record ).isValid() ) emit reparentFilesToMain( record.file(), target.file() ); 
+            {
+                if( index( record ).isValid() ) emit reparentFilesToMain( record.file(), target.file() );
                 else emit requestOpen( record );
             }
 
@@ -250,14 +250,14 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
         if( parent.isValid() )
         {
             const auto target( get( parent ) );
-            
+
             // TODO: should check number of files
             const auto urls( data->urls() );
             for( const auto& url:urls )
             {
                 // check that local file
                 if( !url.isLocalFile() ) continue;
-                
+
                 // get file and check existence
                 const File file( url.path() );
                 if( file.exists() && !file.isDirectory() )
@@ -267,18 +267,18 @@ bool SessionFilesModel::dropMimeData(const QMimeData* data , Qt::DropAction acti
             const auto urls( data->urls() );
             for( const auto& url:urls )
             {
-                
+
                 // check that local file
                 if( !url.isLocalFile() ) continue;
-                
+
                 // get file and check existence
                 const File file( url.path() );
                 if( file.exists() && !file.isDirectory() )
                 { emit requestOpen( FileRecord( file ) ); }
-                
+
             }
         }
-        
+
         return true;
 
     } else return false;

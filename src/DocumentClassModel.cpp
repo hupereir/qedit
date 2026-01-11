@@ -56,7 +56,7 @@ QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
 {
 
     // check index
-    if( !contains( index ) ) return QVariant();
+    if( !contains( index ) ) return {};
 
     // retrieve associated file info
     const DocumentClass& documentClass( get()[index.row()] );
@@ -83,7 +83,7 @@ QVariant DocumentClassModel::data( const QModelIndex& index, int role ) const
         }
     }
 
-    return QVariant();
+    return {};
 
 }
 
@@ -98,7 +98,7 @@ QVariant DocumentClassModel::headerData(int section, Qt::Orientation, int role) 
     { return columnTitles_[section]; }
 
     // return empty
-    return QVariant();
+    return {};
 
 }
 
