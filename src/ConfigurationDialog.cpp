@@ -196,7 +196,7 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     // additional colors
     page->layout()->addWidget( box = new QWidget( page ) );
 
-    GridLayout* gridLayout = new GridLayout;
+    auto gridLayout = new GridLayout;
     gridLayout->setMaxCount(2);
     QtUtil::setMargin(gridLayout, 0);
     gridLayout->setColumnAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
@@ -206,13 +206,13 @@ ConfigurationDialog::ConfigurationDialog( QWidget* parent ):
     gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, QStringLiteral("PARENTHESIS_COLOR") ) );
     label->setBuddy( colorDisplay );
     addOptionWidget( colorDisplay );
-    checkbox->setToolTip( tr( "Color for matching parenthesis" ) );
+    colorDisplay->setToolTip( tr( "Color for matching parenthesis" ) );
 
     gridLayout->addWidget( label = new QLabel( tr( "Tagged paragraphs:" ), box ) );
     gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, QStringLiteral("TAGGED_BLOCK_COLOR") ) );
     label->setBuddy( colorDisplay );
     addOptionWidget( colorDisplay );
-    checkbox->setToolTip( tr( "Color for tagged paragraphs" ) );
+    colorDisplay->setToolTip( tr( "Color for tagged paragraphs" ) );
 
     gridLayout->addWidget( label = new QLabel( tr( "Conflicting paragraphs:" ), box ) );
     gridLayout->addWidget( colorDisplay = new OptionColorDisplay( box, QStringLiteral("DIFF_CONFLICT_COLOR") ) );
