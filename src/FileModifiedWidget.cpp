@@ -53,7 +53,7 @@ FileModifiedWidget::FileModifiedWidget( QWidget* parent, const File& file ):
 
     {
         // save as button
-        auto button = addButton( IconEngine::get( IconNames::SaveAs ), QStringLiteral("&Save As") );
+        auto button = addButton( IconEngine::get( IconNames::SaveAs ), QStringLiteral("&Save As...") );
         connect( button, &QAbstractButton::clicked, this, &FileModifiedWidget::_saveAs );
         connect( button, &QAbstractButton::clicked, this, &MessageWidget::animatedHide );
         button->setToolTip( QStringLiteral("Save file with a different name") );

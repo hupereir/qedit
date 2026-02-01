@@ -44,7 +44,7 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
 
     {
         // save as button
-        auto button = addButton( IconEngine::get( IconNames::SaveAs ), tr( "Save As" ) );
+        auto button = addButton( IconEngine::get( IconNames::SaveAs ), tr( "Save As..." ) );
         connect( button, &QAbstractButton::clicked, this, &FileRemovedWidget::_saveAs );
         connect( button, &QAbstractButton::clicked, this, &MessageWidget::animatedHide );
         button->setToolTip( tr( "Save file with a different name" ) );
@@ -52,10 +52,10 @@ FileRemovedWidget::FileRemovedWidget( QWidget* parent, const File& file ):
 
     {
         // close button.
-        auto button = addButton( IconEngine::get( IconNames::DialogClose ), tr( "Close" ) );
+        auto button = addButton( IconEngine::get( IconNames::DocumentClose ), tr( "Close File" ) );
         connect( button, &QAbstractButton::clicked, this, &FileRemovedWidget::_close );
         connect( button, &QAbstractButton::clicked, this, &MessageWidget::animatedHide );
-        button->setToolTip( tr( "Close window" ) );
+        button->setToolTip( tr( "Close file" ) );
     }
 
     {
