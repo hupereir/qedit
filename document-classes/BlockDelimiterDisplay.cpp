@@ -114,7 +114,6 @@ void BlockDelimiterDisplay::paint( QPainter& painter )
 
     // store colors
     foreground_ = painter.pen().color();
-    background_ = painter.brush().color();
 
     /* update segments if needed */
     _updateSegments();

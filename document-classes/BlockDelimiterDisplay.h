@@ -211,9 +211,6 @@ class BlockDelimiterDisplay: public QObject, private Base::Counter<BlockDelimite
     //* foreground color
     QColor foreground_;
 
-    //* background color
-    QColor background_;
-
     //*@name marker dimension
     //@{
 
