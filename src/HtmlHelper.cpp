@@ -109,11 +109,10 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
         QDomElement span;
         int currentPatternId = -1;
         bool lineBreak( false );
-        int lineIndex( 0 );
 
         // parse text
         QString buffer(QLatin1String(""));
-        for( int index = 0; index < text.size(); index++, lineIndex++ )
+        for( int index = 0; index < text.size(); index++ )
         {
 
             // parse locations
@@ -144,7 +143,6 @@ QDomElement HtmlHelper::_htmlNode( QDomDocument& document )
                     {
                         out.appendChild( document.createElement( QStringLiteral("Br") ) );
                         lineBreak = false;
-                        lineIndex = 0;
                     }
                     buffer = QLatin1String("");
                 }
